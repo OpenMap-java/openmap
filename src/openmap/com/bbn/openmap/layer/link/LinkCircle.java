@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkCircle.java,v $
 // $RCSfile: LinkCircle.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:56 $
+// $Revision: 1.5 $
+// $Date: 2007/02/26 17:12:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -57,10 +57,8 @@ public class LinkCircle implements LinkGraphicConstants,
     /**
      * Write a circle with x/y placement.
      * 
-     * @param x1 window position of center point from left of window,
-     *        in pixels
-     * @param y1 window position of center point from top of window,
-     *        in pixels
+     * @param x1 window position of center point from left of window, in pixels
+     * @param y1 window position of center point from top of window, in pixels
      * @param w horizontal diameter of circle/ellipse, pixels
      * @param h vertical diameter of circle/ellipse, pixels
      * @param properties attributes for the circle.
@@ -72,8 +70,8 @@ public class LinkCircle implements LinkGraphicConstants,
             throws IOException {
 
         dos.write(Link.CIRCLE_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_CIRCLE);
-        dos.writeInt(RENDERTYPE_XY);
+        dos.writeByte(GRAPHICTYPE_CIRCLE);
+        dos.writeByte(RENDERTYPE_XY);
         dos.writeInt(x1);
         dos.writeInt(y1);
         dos.writeInt(w);
@@ -86,10 +84,10 @@ public class LinkCircle implements LinkGraphicConstants,
      * 
      * @param latPoint latitude of center of circle/ellipse.
      * @param lonPoint longitude of center of circle/ellipse.
-     * @param offset_x1 # pixels to the right the center will be moved
-     *        from lonPoint.
-     * @param offset_y1 # pixels down that the center will be moved
-     *        from latPoint.
+     * @param offset_x1 # pixels to the right the center will be moved from
+     *        lonPoint.
+     * @param offset_y1 # pixels down that the center will be moved from
+     *        latPoint.
      * @param w horizontal diameter of circle/ellipse, pixels.
      * @param h vertical diameter of circle/ellipse, pixels.
      * @param properties attributes for the circle.
@@ -102,8 +100,8 @@ public class LinkCircle implements LinkGraphicConstants,
             throws IOException {
 
         dos.write(Link.CIRCLE_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_CIRCLE);
-        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeByte(GRAPHICTYPE_CIRCLE);
+        dos.writeByte(RENDERTYPE_OFFSET);
         dos.writeFloat(latPoint);
         dos.writeFloat(lonPoint);
         dos.writeInt(offset_x1);
@@ -114,8 +112,8 @@ public class LinkCircle implements LinkGraphicConstants,
     }
 
     /**
-     * Write a circle with a certain radius at a Lat/Lon location.
-     * Assumes the radius is in decimal degrees.
+     * Write a circle with a certain radius at a Lat/Lon location. Assumes the
+     * radius is in decimal degrees.
      * 
      * @param latPoint latitude of center point, decimal degrees
      * @param lonPoint longitude of center point, decimal degrees
@@ -131,15 +129,14 @@ public class LinkCircle implements LinkGraphicConstants,
     }
 
     /**
-     * Write a circle with a certain radius at a Lat/Lon location, and
-     * allows you to specify units of the radius.
+     * Write a circle with a certain radius at a Lat/Lon location, and allows
+     * you to specify units of the radius.
      * 
      * @param latPoint latitude of center of circle in decimal degrees
-     * @param lonPoint longitude of center of circle in decimal
-     *        degrees
+     * @param lonPoint longitude of center of circle in decimal degrees
      * @param radius distance
-     * @param units integer value for units for distance - KM, MILES,
-     *        NMILES. If &lt; 0, assume decimal degrees.
+     * @param units integer value for units for distance - KM, MILES, NMILES. If
+     *        &lt; 0, assume decimal degrees.
      * @param properties attributes for the circle.
      * @param dos DataOutputStream.
      * @throws IOException
@@ -151,19 +148,18 @@ public class LinkCircle implements LinkGraphicConstants,
     }
 
     /**
-     * Write a circle with a certain radius at a Lat/Lon location, and
-     * allows you to specify units of the radius, as well as the
-     * number of verticies to use to approximate the circle.
+     * Write a circle with a certain radius at a Lat/Lon location, and allows
+     * you to specify units of the radius, as well as the number of verticies to
+     * use to approximate the circle.
      * 
      * @param latPoint latitude of center of circle in decimal degrees
-     * @param lonPoint longitude of center of circle in decimal
-     *        degrees
+     * @param lonPoint longitude of center of circle in decimal degrees
      * @param radius distance
-     * @param units integer value for units for distance -
-     *        OMCircle.KM, OMCircle.MILES, OMCircle.NMILES. If &lt; 0,
-     *        assume decimal degrees.
-     * @param nverts number of vertices for the poly-circle (if &lt;
-     *        3, value is generated internally).
+     * @param units integer value for units for distance - OMCircle.KM,
+     *        OMCircle.MILES, OMCircle.NMILES. If &lt; 0, assume decimal
+     *        degrees.
+     * @param nverts number of vertices for the poly-circle (if &lt; 3, value is
+     *        generated internally).
      * @param properties attributes for the circle.
      * @param dos DataOutputStream.
      * @throws IOException
@@ -173,12 +169,12 @@ public class LinkCircle implements LinkGraphicConstants,
                              DataOutputStream dos) throws IOException {
         // Write this out...
         dos.write(Link.CIRCLE_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_CIRCLE);
-        dos.writeInt(RENDERTYPE_LATLON);
+        dos.writeByte(GRAPHICTYPE_CIRCLE);
+        dos.writeByte(RENDERTYPE_LATLON);
         dos.writeFloat(latPoint);
         dos.writeFloat(lonPoint);
         dos.writeFloat(radius);
-        dos.writeInt(units);
+        dos.writeByte(units);
         dos.writeInt(nverts);
         properties.write(dos);
     }
@@ -221,9 +217,8 @@ public class LinkCircle implements LinkGraphicConstants,
     }
 
     /**
-     * Read the circle protocol off the data input, and return an
-     * OMCircle. Assumes the header for the graphic has already been
-     * read.
+     * Read the circle protocol off the data input, and return an OMCircle.
+     * Assumes the header for the graphic has already been read.
      * 
      * @param dis the DataInputStream
      * @return OMCircle
@@ -231,19 +226,36 @@ public class LinkCircle implements LinkGraphicConstants,
      * @see com.bbn.openmap.omGraphics.OMCircle
      */
     public static OMCircle read(DataInputStream dis) throws IOException {
+        return read(dis, null);
+    }
+
+    /**
+     * Read the circle protocol off the data input, and return an OMCircle.
+     * Assumes the header for the graphic has already been read.
+     * 
+     * @param dis the DataInputStream
+     * @param propertiesBuffer a LinkProperties object used to cache previous
+     *        settings that can be set on the OMPoly being read.
+     * @return OMCircle
+     * @throws IOException
+     * @see com.bbn.openmap.omGraphics.OMCircle
+     */
+    public static OMCircle read(DataInputStream dis,
+                                LinkProperties propertiesBuffer)
+            throws IOException {
 
         OMCircle circle = null;
         float lat, lon, radius;
         int x, y, w, h;
 
-        int renderType = dis.readInt();
+        int renderType = dis.readByte();
 
         switch (renderType) {
         case RENDERTYPE_LATLON:
             lat = dis.readFloat();
             lon = dis.readFloat();
             radius = dis.readFloat();
-            int units = dis.readInt();
+            int units = dis.readByte();
             int nverts = dis.readInt();
 
             Length unit = Length.DECIMAL_DEGREE;
@@ -284,9 +296,8 @@ public class LinkCircle implements LinkGraphicConstants,
         default:
         }
 
-        LinkProperties properties = new LinkProperties(dis);
         if (circle != null) {
-            properties.setProperties(circle);
+            LinkProperties.loadPropertiesIntoOMGraphic(dis, circle, propertiesBuffer);
         }
 
         return circle;

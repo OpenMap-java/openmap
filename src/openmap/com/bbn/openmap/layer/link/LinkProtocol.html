@@ -58,6 +58,14 @@
       enhance the rendering options passed through the properties,
       include different line style and fill pattern definitions.
       <LI> v0.5 added the LinkEllipse.
+      <LI> v0.6 changed the constants used for identifying different
+      sections of the protocol, in order to reduce the amount of bytes
+      sent over the wire.  In some cases, ints were reduced to bytes
+      for attributes that have a possible set of values. The
+      LinkProperties object was adjusted to have an optional first set
+      of control properties that specify how the current set of
+      LinkProperties relates to the previous set.  This allows for
+      more efficient caching of values.
     </UL>
 
   <P>
@@ -179,13 +187,13 @@
 	    <!-- First Line -->
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Map Request</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:MAP_REQUEST&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;MR&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Action Request</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:ACTION_REQUEST&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;AR&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>GUI Request (Undefined)</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:GUI_REQUEST&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;GUIR&gt;</TD></TR>
 
 	    <TR>
 	      <TD WIDTH="30%" BGCOLOR="#3399FF">
@@ -197,19 +205,19 @@
 	    </TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Graphics Description</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:GRAPHICS&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;G&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Gesture Description</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:ACTIONS&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;A&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>GUI Description (Undefined)</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:GUI&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;GUI&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>No Action</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:HUH?&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;?&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Close Link</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:CLOSE_LINK&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;C&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" BGCOLOR="#3399FF">
 		<P ALIGN="CENTER"><B><FONT COLOR="white">
@@ -222,37 +230,37 @@
 	    <!-- First Line -->
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Arc</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:ARC&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;A&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Bitmap</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:BITMAP&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;B&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Circle</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:CIRCLE&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;C&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Ellipse</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:ELLIPSE&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;E&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Grid</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:GRID&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;GD&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Line</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:LINE&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;L&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Point</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:POINT&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;PO&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Poly</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:POLY&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;PY&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Raster</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;RA&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Rectangle</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:RECTANGLE&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;RE&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Text</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:TEXT&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;T&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" BGCOLOR="#3399FF">
 		<P ALIGN="CENTER"><B><FONT COLOR="white">
@@ -265,14 +273,14 @@
 	    <!-- First Line -->
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Update Graphics</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:UPDATE_GRAPHICS&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;UG&gt;</TD></TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Update GUI (Undefined)</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:UPDATE_GUI&gt;</TD>	
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;UGUI&gt;</TD>	
 	      </TR>
 	    <TR>
 	      <TD WIDTH="30%" VALIGN="TOP"><P>Update Map (Server directed)</TD>
-	      <TD WIDTH="20%" VALIGN="TOP">&lt;OMLINK:UPDATE_MAP&gt;</TD></TR>
+	      <TD WIDTH="20%" VALIGN="TOP">&lt;UM&gt;</TD></TR>
         </TABLE></TR></TABLE>
 <a name="tails"></a>
     <P>
@@ -334,9 +342,9 @@
 	    </TR>
 	    <!-- First Line -->
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">20</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
-	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:MAP_REQUEST&gt;</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;MR&gt;</TD>
 	    </TR>
 	    <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
@@ -515,9 +523,9 @@
 	    </TR>
 	    <!-- First Line -->
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">23</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ACTION_REQUEST&gt;</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;AR&gt;</TD>
 	    </TR>
 	    <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
@@ -614,9 +622,9 @@
 	    </TR>
 	    <!-- First Line -->
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">23</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ACTION_REQUEST&gt;</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;AR&gt;</TD>
 	    </TR>
 	    <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
@@ -688,9 +696,9 @@
 	    </TR>
 	    <!-- First Line -->
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">23</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ACTION_REQUEST&gt;</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;AR&gt;</TD>
 	    </TR>
 	    <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
@@ -906,9 +914,9 @@
 	    </TR>
 	    <!-- First Line -->
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">17</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:GRAPHICS&gt;</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;G&gt;</TD>
 	    </TR>
 	    <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
@@ -971,9 +979,9 @@
 	    </TR>
 	    <!-- First Line -->
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">16</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ACTIONS&gt;</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;A&gt;</TD>
 	    </TR>
 	    <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
@@ -1033,9 +1041,9 @@
 	    </TR>
 	    <!-- First Line -->
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:HUH?&gt;</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;?&gt;</TD>
 	    </TR>
 	    <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
@@ -1072,9 +1080,9 @@
 	    </TR>
 	    <!-- First Line -->
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">19</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:CLOSE_LINK&gt;</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;Q&gt;</TD>
 	    </TR>
 	    <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
@@ -1122,20 +1130,20 @@
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ARC&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;A&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Arcs, the value is 10.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For Lat/Lon
               rendering, the value is 1.</TD>
@@ -1159,8 +1167,8 @@
               Radius of the arc, in units defined in the next field.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Units of the radius measurement. Values can be:<BR>
               Decimal Degrees = -1<BR>
@@ -1218,20 +1226,20 @@
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ARC&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;A&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Arcs, the value is 10.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For X/Y
               rendering, the value is 2.</TD>
@@ -1304,20 +1312,20 @@
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ARC&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;A&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Arcs, the value is 10.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For offset
               rendering, the value is 3.</TD>
@@ -1404,20 +1412,20 @@
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:BITMAP&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;B&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Bitmaps, the value is 1.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For Lat/Lon
               rendering, the value is 1.</TD>
@@ -1487,20 +1495,20 @@
 	    </TR>
 	    <!-- First Line -->
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:BITMAP&gt;</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;B&gt;</TD>
 	    </TR>
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	      <TD WIDTH="50%" VALIGN="TOP">
 		This space is for a graphic type identifier.  For
 		Bitmaps, the value is 1.</TD>
 	    </TR>
 	    <TR BGCOLOR="#99FF99">
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	      <TD WIDTH="50%" VALIGN="TOP">
 		This space is for a Rendertype identifier.  For X/Y
               rendering, the value is 2.</TD>
@@ -1572,20 +1580,20 @@
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:BITMAP&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;B&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Bitmaps, the value is 1.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For offset
               rendering, the value is 3.</TD>
@@ -1674,20 +1682,20 @@
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:CIRCLE&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;C&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Circles, the value is 6.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For Lat/Lon
               rendering, the value is 1.</TD>
@@ -1711,8 +1719,8 @@
               Radius of the circle, in units defined in the next field.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Units of the radius measurement. Values can be:<BR>
               Decimal Degrees = -1<BR>
@@ -1757,20 +1765,20 @@
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:CIRCLE&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;C&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Circles, the value is 6.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For X/Y
               rendering, the value is 2.</TD>
@@ -1830,20 +1838,20 @@
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:CIRCLE&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;C&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Circles, the value is 6.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For offset
               rendering, the value is 3.</TD>
@@ -1918,20 +1926,20 @@
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ELLIPSE&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;E&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Ellipses, the value is 11.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For Lat/Lon
               rendering, the value is 1.</TD>
@@ -1961,8 +1969,8 @@
               Minor axis value of the ellipse, in units defined in the next field.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Units of the axis measurements. Values can be:<BR>
               Decimal Degrees = -1<BR>
@@ -2005,20 +2013,20 @@
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ELLIPSE&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;E&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Ellipses, the value is 11.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For X/Y
               rendering, the value is 2.</TD>
@@ -2084,20 +2092,20 @@
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:ELLIPSE&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;E&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Ellipses, the value is 11.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For offset
               rendering, the value is 3.</TD>
@@ -2205,20 +2213,20 @@ between lat/lon or x/y to the grid.<P>
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:GRID&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;GD&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Grids, the value is 8.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For Lat/Lon
               rendering, the value is 1.</TD>
@@ -2267,8 +2275,8 @@ between lat/lon or x/y to the grid.<P>
               Horizontal resolution of the columns, in degrees/point.</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Major dimension designation, indicating the primary
 	      dimension of the data.  If the data is listed as columns 
@@ -2316,20 +2324,20 @@ between lat/lon or x/y to the grid.<P>
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:GRID&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;GD&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Grids, the value is 8.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For X/Y
               rendering, the value is 2.</TD>
@@ -2380,8 +2388,8 @@ between lat/lon or x/y to the grid.<P>
               Horizontal resolution of the columns, in pixels/point.</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Major dimension designation, indicating the primary
 	      dimension of the data.  If the data is listed as columns 
@@ -2429,20 +2437,20 @@ between lat/lon or x/y to the grid.<P>
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:GRID&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;GD&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Grids, the value is 8.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For offset
               rendering, the value is 3.</TD>
@@ -2505,8 +2513,8 @@ between lat/lon or x/y to the grid.<P>
               Horizontal resolution of the columns, in pixels/point.</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Major dimension designation, indicating the primary
 	      dimension of the data.  If the data is listed as columns 
@@ -2558,27 +2566,27 @@ between lat/lon or x/y to the grid.<P>
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:LINE&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;L&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Lines, the value is 4.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For Lat/Lon
               rendering, the value is 1.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Line type definition.  The possible values are:<BR>
               Unknown line type = 0<BR>
@@ -2648,20 +2656,20 @@ between lat/lon or x/y to the grid.<P>
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:LINE&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;L&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Lines, the value is 4.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For X/Y
               rendering, the value is 2.</TD>
@@ -2723,20 +2731,20 @@ between lat/lon or x/y to the grid.<P>
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:LINE&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;L&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Lines, the value is 4.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For offset
               rendering, the value is 3.</TD>
@@ -2795,7 +2803,6 @@ between lat/lon or x/y to the grid.<P>
 <P>
 <HR>
 <a name="Point"></a>
-
    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
       <!-- Head Line -->
       <TR><B>Link Point at a Lat/Lon Location</B>
@@ -2815,20 +2822,20 @@ between lat/lon or x/y to the grid.<P>
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">14</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:POINT&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;PO&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
 	      Points, the value is 9.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For Lat/Lon
               rendering, the value is 1.</TD>
@@ -2882,20 +2889,20 @@ between lat/lon or x/y to the grid.<P>
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">14</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:POINT&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;PO&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
 	      Points, the value is 9.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For X/Y
               rendering, the value is 2.</TD>
@@ -2951,20 +2958,20 @@ between lat/lon or x/y to the grid.<P>
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">14</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:POINT&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;PO&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
 	      Points, the value is 9.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For offset
               rendering, the value is 3.</TD>
@@ -3013,6 +3020,8 @@ between lat/lon or x/y to the grid.<P>
 	      that the point should be rendered as a circle.</TD>
 	  </TR>
 	</TABLE></TR></TABLE>
+
+<P>
 <P>
 <HR>
 <a name="Poly"></a>
@@ -3039,27 +3048,27 @@ between lat/lon or x/y to the grid.<P>
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:POLY&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;PY&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Polys, the value is 3.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For Lat/Lon
               rendering, the value is 1.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Line type definition.  The possible values are:<BR>
               Unknown line type = 0<BR>
@@ -3083,8 +3092,8 @@ between lat/lon or x/y to the grid.<P>
               values, in decimal degrees.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Units of the lat/lon values.  Possibilities include:<BR>
               Decimal degrees = 0<BR>
@@ -3127,20 +3136,20 @@ between lat/lon or x/y to the grid.<P>
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:POLY&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;PY&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Lines, the value is 3.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For X/Y
               rendering, the value is 2.</TD>
@@ -3191,20 +3200,20 @@ between lat/lon or x/y to the grid.<P>
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:POLY&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;PY&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Lines, the value is 3.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For offset
               rendering, the value is 3.</TD>
@@ -3241,8 +3250,8 @@ between lat/lon or x/y to the grid.<P>
               coordinate mode, described next.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Coordinate mode of the x/y points. If the coordinate
               mode is from the origin, then all the x values refer to
@@ -3297,27 +3306,27 @@ colortable is an array of RGB integers.
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;RA&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Rasters, the value is 7.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For Lat/Lon
               rendering, the value is 1.</TD>
 	  </TR>
 	  <TR BGCOLOR="#FF9999">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Image format.  This Raster is using the direct
               colormodel, and the value is 0.</TD>
@@ -3390,27 +3399,27 @@ colortable is an array of RGB integers.
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;RA&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Rasters, the value is 7.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For X/Y
               rendering, the value is 2.</TD>
 	  </TR>
 	  <TR BGCOLOR="#FF9999">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Image format.  This Raster is using the direct
               colormodel, and the value is 0.</TD>
@@ -3484,27 +3493,27 @@ colortable is an array of RGB integers.
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;RA&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Rasters, the value is 7.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For offset
               rendering, the value is 3.</TD>
 	  </TR>
 	  <TR BGCOLOR="#FF9999">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Image format.  This Raster is using the direct
               colormodel, and the value is 0.
@@ -3590,27 +3599,27 @@ colortable is an array of RGB integers.
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;RA&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Rasters, the value is 7.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For Lat/Lon
               rendering, the value is 1.</TD>
 	  </TR>
 	  <TR BGCOLOR="#FF9999">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Image format.  This Raster is using the indexed
               colormodel, and the value is 1.</TD>
@@ -3702,27 +3711,27 @@ colortable is an array of RGB integers.
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;RA&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Rasters, the value is 7.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For X/Y
               rendering, the value is 2.</TD>
 	  </TR>
 	  <TR BGCOLOR="#FF9999">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Image format.  This Raster is using the indexed
               colormodel, and the value is 1.</TD>
@@ -3809,27 +3818,27 @@ colortable is an array of RGB integers.
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;RA&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Rasters, the value is 7.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For offset
               rendering, the value is 3.</TD>
 	  </TR>
 	  <TR BGCOLOR="#FF9999">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Image format.  This Raster is using the indexed
               colormodel, and the value is 1.
@@ -3934,27 +3943,27 @@ colortable is an array of RGB integers.
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;RA&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Rasters, the value is 7.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For Lat/Lon
               rendering, the value is 1.</TD>
 	  </TR>
 	  <TR BGCOLOR="#FF9999">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Image format.  This Raster is referencing an URL, and
               the value is 2.</TD>
@@ -4003,27 +4012,27 @@ colortable is an array of RGB integers.
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;RA&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Rasters, the value is 7.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For X/Y
               rendering, the value is 2.</TD>
 	  </TR>
 	  <TR BGCOLOR="#FF9999">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Image format.  This Raster is referencing an URL, and
               the value is 2.</TD>
@@ -4072,27 +4081,27 @@ colortable is an array of RGB integers.
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">15</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RASTER&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;RA&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Rasters, the value is 7.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For offset
               rendering, the value is 3.</TD>
 	  </TR>
 	  <TR BGCOLOR="#FF9999">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Image format.  This Raster is referencing an URL, and
               the value is 2.
@@ -4157,27 +4166,27 @@ colortable is an array of RGB integers.
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">18</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RECTANGLE&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;RE&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Rectangles, the value is 5.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For Lat/Lon
               rendering, the value is 1.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Line type definition.  The possible values are:<BR>
               Unknown line type = 0<BR>
@@ -4247,20 +4256,20 @@ colortable is an array of RGB integers.
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">18</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RECTANGLE&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;RE&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Rectangles, the value is 5.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For X/Y
               rendering, the value is 2.</TD>
@@ -4322,20 +4331,20 @@ colortable is an array of RGB integers.
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">18</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:RECTANGLE&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;RE&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Rectangles, the value is 5.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For offset
               rendering, the value is 3.</TD>
@@ -4417,20 +4426,20 @@ determines the left-to-right location of the charaters on the baseline.
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:TEXT&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;T&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Text, the value is 2.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For Lat/Lon
               rendering, the value is 1.</TD>
@@ -4448,8 +4457,8 @@ determines the left-to-right location of the charaters on the baseline.
               Longitude of the text, in decimal degrees.</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Justification of text with regard to the Lat/Lon point.
               Possible values:<BR> left = 0<BR> center = 1<BR> right =
@@ -4487,20 +4496,20 @@ determines the left-to-right location of the charaters on the baseline.
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:TEXT&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;T&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Text, the value is 5.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For X/Y
               rendering, the value is 2.</TD>
@@ -4520,8 +4529,8 @@ determines the left-to-right location of the charaters on the baseline.
               text, in pixels.</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Justification of text with regard to the Lat/Lon point.
               Possible values:<BR> left = 0<BR> center = 1<BR> right =
@@ -4559,20 +4568,20 @@ determines the left-to-right location of the charaters on the baseline.
 	  </TR>
 	  <!-- First Line -->
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">13</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">3</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	    <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:TEXT&gt;</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">&lt;T&gt;</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a graphic type identifier.  For
               Text, the value is 2.</TD>
 	  </TR>
 	  <TR BGCOLOR="#99FF99">
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               This space is for a Rendertype identifier.  For offset
               rendering, the value is 3.</TD>
@@ -4604,8 +4613,8 @@ determines the left-to-right location of the charaters on the baseline.
               location, of the text, in pixels.</TD>
 	  </TR>
 	  <TR>
-	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               Justification of text with regard to the Lat/Lon point.
               Possible values:<BR> left = 0<BR> center = 1<BR> right =
@@ -4662,215 +4671,215 @@ representation of an opaque red should be passed as FFFF0000.
 	    </TR>
 	    <!-- First Line -->
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">lineColor</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">lc</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-		Property describing the RGB Integer for the line color.</TD>
+		Property key describing the RGB Integer for the line color.</TD>
 	    </TR>
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">highlightColor</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">hc</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-		Property describing the RGB Integer for the highlight line color.</TD>
+		Property key describing the RGB Integer for the highlight line color.</TD>
 	    </TR>
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">fillColor</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">fc</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-		Property describing the RGB Integer for the fill color.</TD>
+		Property key describing the RGB Integer for the fill color.</TD>
 	    </TR>
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">lineWidth</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">lw</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-		Property describing the integer for the line width.</TD>
+		Property key describing the integer for the line width.</TD>
 	    </TR>
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">textString</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">ts</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-		Property describing the content string for LinkText objects.</TD>
+		Property key describing the content string for LinkText objects.</TD>
 	    </TR>
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">textFont</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">tf</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-		Property describing the font description string for
+		Property key describing the font description string for
 		LinkText objects.</TD>
 	    </TR>
 
             <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">rotation</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">rot</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-		Property describing the amount of rotation for
+		Property key describing the amount of rotation for
                 LinkGraphics that support rotation, like LinkText and
                 LinkRaster objects.</TD>
 	    </TR>
             <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">textBaseline</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">tbl</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the location of the baseline for
+                Property key describing the location of the baseline for
                 LinkText objects (BASELINE_BOTTOM, BASELINE_MIDDLE or
                 BASELINE_TOP.  BOTTOM is the default).</TD>
 	    </TR>
             <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">rasterImageURL</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">riu</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the URL of an image that a
+                Property key describing the URL of an image that a
                 LinkRaster would use if configured to do that.</TD>
 	    </TR>
             <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">SOLID</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">gid</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the solid line style.</TD>
-	    </TR>
-            <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">LONG_DASH</TD>
-	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the long dash line style.</TD>
-	    </TR>
-            <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">DASH</TD>
-	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the dash line style.</TD>
-	    </TR>
-            <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">DOT</TD>
-	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the dot line style.</TD>
-	    </TR>
-            <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">DASH_DOT</TD>
-	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the dash-dot line style.</TD>
-	    </TR>
-            <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">DASH_DOT_DOT</TD>
-	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the dash-dot-dot line style.</TD>
-	    </TR>
-            <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">SOLID</TD>
-	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the solid fill pattern.</TD>
-	    </TR>
-            <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">VERTICAL</TD>
-	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the vertical stripe fill pattern.</TD>
-	    </TR>
-            <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">HORIZONTAL</TD>
-	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the horizontal stripe fill pattern.</TD>
-	    </TR>
-            <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">CROSS</TD>
-	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the cross-hatch fill pattern.</TD>
-	    </TR>
-            <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">DIAG_CROSS</TD>
-	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the diagonal cross-hatch fill pattern.</TD>
-	    </TR>
-            <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">FORWARD_DIAG</TD>
-	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the forward diagonal cross fill pattern.</TD>
-	    </TR>
-            <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">BACKWARD_DIAG</TD>
-	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the backward diagonal cross fill pattern.</TD>
-	    </TR>
-            <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">graphicID</TD>
-	      <TD WIDTH="70%" VALIGN="TOP">
-		Property describing graphic identifier for a Link
+		Property key describing graphic identifier for a Link
 		Graphic object.</TD>
 	    </TR>
 	    <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">url</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-		Property describing a url to be used for a list or object.</TD>
+		Property key describing a url to be used for a list or object.</TD>
 	    </TR>
 	    <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">html</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-		Property describing html text to be displayed for a
+		Property key describing html text to be displayed for a
 		list or object.</TD>
 	    </TR>
 	    <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">info</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-		Property describing a short message to be displayed
+		Property key describing a short message to be displayed
 		for a list or object.</TD>
 	    </TR>
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">message</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">mess</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-		Property describing test for a pop-up window or other
+		Property key describing text for a pop-up window or other
 		messaging tool for be used for a list or object.</TD>
 	    </TR>
             <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">time</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing a time entry.</TD>
+                Property key describing a time entry.</TD>
 	    </TR>
             <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">latitude</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">lat</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the decimal degree latitude for a
+                Property key describing the decimal degree latitude for a
                 projection definition (Server directed).</TD>
 	    </TR>
             <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">longitude</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">lon</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the decimal degree longitude for a
+                Property key describing the decimal degree longitude for a
                 projection definition (Server directed).</TD>
 	    </TR>
             <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">scale</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">s</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the scale for a projection
+                Property key describing the scale for a projection
                 definition (Server directed).</TD>
 	    </TR>
             <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">width</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">w</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the pixel width of a
+                Property key describing the pixel width of a
                 projection definition (Server directed).</TD>
 	    </TR>
             <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">height</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">h</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the pixel height of a
+                Property key describing the pixel height of a
                 projection definition (Server directed).</TD>
 	    </TR>
             <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">projection</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">p</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the projection type of a
+                Property key describing the projection type of a
 	        projection definition (Server directed).</TD>
 	    </TR>
             <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">latmin</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the lower latitude in decimal
+                Property key describing the lower latitude in decimal
                 degrees of a projection definition (Server directed).</TD>
 	    </TR>
             <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">lonmin</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the westward longitude in decimal
+                Property key describing the westward longitude in decimal
                 degrees of a projection definition (Server directed).</TD>
 	    </TR>
             <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">latmax</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the upper latitude in decimal
+                Property key describing the upper latitude in decimal
                 degrees of a projection definition (Server directed).</TD>
 	    </TR>
             <TR>
 	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">lonmax</TD>
 	      <TD WIDTH="70%" VALIGN="TOP">
-                Property describing the eastward longitude in decimal
+                Property key describing the eastward longitude in decimal
                 degrees of a projection definition (Server directed).</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">S</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property value describing the solid line style.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">LD</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property value describing the long dash line style.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">DA</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property value describing the dash line style.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">D</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property value describing the dot line style.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">DAD</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property value describing the dash-dot line style.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">DADD</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property value describing the dash-dot-dot line style.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">S</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property value describing the solid fill pattern.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">V</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property value describing the vertical stripe fill pattern.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">H</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property value describing the horizontal stripe fill pattern.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">C</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property value describing the cross-hatch fill pattern.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">DC</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property value describing the diagonal cross-hatch fill pattern.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">FD</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property value describing the forward diagonal cross fill pattern.</TD>
+	    </TR>
+            <TR>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">BD</TD>
+	      <TD WIDTH="70%" VALIGN="TOP">
+                Property value describing the backward diagonal cross fill pattern.</TD>
 	    </TR>
 	  </TABLE></TR></TABLE>
 <P>
@@ -4910,13 +4919,13 @@ the addition and deletion of graphics.
 	    </TR>
 	    <!-- First Line -->
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">24</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:UPDATE_GRAPHICS&gt;</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;UG&gt;</TD>
 	    </TR>
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	      <TD WIDTH="50%" VALIGN="TOP">
 		Action identifier.  For graphic actions, the value is 0</TD>
 	    </TR>
@@ -5038,13 +5047,13 @@ update the location (projection) of a map.
 	    </TR>
 	    <!-- First Line -->
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">24</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">ASCII char</TD>
-	      <TD WIDTH="50%" VALIGN="TOP">&lt;OMLINK:UPDATE_MAP&gt;</TD>
+	      <TD WIDTH="50%" VALIGN="TOP">&lt;UM&gt;</TD>
 	    </TR>
 	    <TR>
-	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
-	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	      <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	      <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
 	      <TD WIDTH="50%" VALIGN="TOP">
 		Action identifier.  For graphic actions, the value is 2.</TD>
 	    </TR>
@@ -5063,7 +5072,10 @@ update the location (projection) of a map.
 <HR>
 <a name="args"></a>
 <b>Args</b> are an array of strings which represent key-value
-pairs.<P>
+pairs.  As of version 0.6, the args may contain a key-value pair at
+the start of the list that advises if these args should overwrite the
+last set of args (reuse) or be read without memory of previous args
+(clear).  This key-value pair is optional.<P>
 
    <TABLE BORDER=1 CELLSPACING="1" WIDTH="80%" BGCOLOR="#99CCFF">
       <!-- Head Line -->
@@ -5094,7 +5106,34 @@ pairs.<P>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER"></TD>
 	    <TD WIDTH="50%" VALIGN="TOP">
               The key-value pairs follow:</TD>
-	  </TR>	  <TR>
+	  </TR>	 
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Length of key (1) for management policy (to reuse or clear
+              any buffered properties).</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Text representing management policy key, or 'p'.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Length of value (1) for management policy setting.</TD>
+	  </TR>
+	  <TR BGCOLOR="#99FF99">
+	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">1</TD>
+	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">byte</TD>
+	    <TD WIDTH="50%" VALIGN="TOP">
+              Text representing management policy value ('R' to reuse, 'C'
+              to clear).</TD>
+	  </TR>
+	  <TR>
 	    <TD WIDTH="10%" VALIGN="TOP"><P ALIGN="CENTER">4</TD>
 	    <TD WIDTH="20%" VALIGN="TOP"><P ALIGN="CENTER">int</TD>
 	    <TD WIDTH="50%" VALIGN="TOP">

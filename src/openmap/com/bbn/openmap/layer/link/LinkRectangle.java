@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkRectangle.java,v $
 // $RCSfile: LinkRectangle.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:57 $
+// $Revision: 1.5 $
+// $Date: 2007/02/26 17:12:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -61,9 +61,9 @@ public class LinkRectangle implements LinkGraphicConstants,
      * @param lt2 latitude of south edge, decimal degrees.
      * @param ln2 longitude of east edge, decimal degrees.
      * @param lType line type - see lineType.
-     * @param nsegs number of segment points (only for
-     *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and
-     *        if &lt; 1, this value is generated internally)
+     * @param nsegs number of segment points (only for LINETYPE_GREATCIRCLE or
+     *        LINETYPE_RHUMB line types, and if &lt; 1, this value is generated
+     *        internally)
      * @param properties description of drawing attributes.
      * @param dos DataOutputStream
      * @throws IOException
@@ -73,9 +73,9 @@ public class LinkRectangle implements LinkGraphicConstants,
                              DataOutputStream dos) throws IOException {
 
         dos.write(Link.RECTANGLE_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_RECTANGLE);
-        dos.writeInt(RENDERTYPE_LATLON);
-        dos.writeInt(lType);
+        dos.writeByte(GRAPHICTYPE_RECTANGLE);
+        dos.writeByte(RENDERTYPE_LATLON);
+        dos.writeByte(lType);
         dos.writeFloat(lt1);
         dos.writeFloat(ln1);
         dos.writeFloat(lt2);
@@ -86,18 +86,17 @@ public class LinkRectangle implements LinkGraphicConstants,
     }
 
     /**
-     * Construct an XY rectangle. It doesn't matter which corners of
-     * the rectangle are used, as long as they are opposite from each
-     * other.
+     * Construct an XY rectangle. It doesn't matter which corners of the
+     * rectangle are used, as long as they are opposite from each other.
      * 
-     * @param px1 x pixel position of the first corner relative to the
-     *        window origin
-     * @param py1 y pixel position of the first corner relative to the
-     *        window origin
-     * @param px2 x pixel position of the second corner relative to
-     *        the window origin
-     * @param py2 y pixel position of the second corner relative to
-     *        the window origin
+     * @param px1 x pixel position of the first corner relative to the window
+     *        origin
+     * @param py1 y pixel position of the first corner relative to the window
+     *        origin
+     * @param px2 x pixel position of the second corner relative to the window
+     *        origin
+     * @param py2 y pixel position of the second corner relative to the window
+     *        origin
      * @param properties description of drawing attributes.
      * @param dos DataOutputStream
      * @throws IOException
@@ -107,8 +106,8 @@ public class LinkRectangle implements LinkGraphicConstants,
             throws IOException {
 
         dos.write(Link.RECTANGLE_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_RECTANGLE);
-        dos.writeInt(RENDERTYPE_XY);
+        dos.writeByte(GRAPHICTYPE_RECTANGLE);
+        dos.writeByte(RENDERTYPE_XY);
         dos.writeInt(px1);
         dos.writeInt(py1);
         dos.writeInt(px2);
@@ -118,20 +117,19 @@ public class LinkRectangle implements LinkGraphicConstants,
 
     /**
      * Construct an XY rectangle relative to a lat/lon point
-     * (RENDERTYPE_OFFSET). It doesn't matter which corners of the
-     * rectangle are used, as long as they are opposite from each
-     * other.
+     * (RENDERTYPE_OFFSET). It doesn't matter which corners of the rectangle are
+     * used, as long as they are opposite from each other.
      * 
      * @param lt1 latitude of the reference point, decimal degrees.
      * @param ln1 longitude of the reference point, decimal degrees.
-     * @param px1 x pixel position of the first corner relative to the
+     * @param px1 x pixel position of the first corner relative to the reference
+     *        point
+     * @param py1 y pixel position of the first corner relative to the reference
+     *        point
+     * @param px2 x pixel position of the second corner relative to the
      *        reference point
-     * @param py1 y pixel position of the first corner relative to the
+     * @param py2 y pixel position of the second corner relative to the
      *        reference point
-     * @param px2 x pixel position of the second corner relative to
-     *        the reference point
-     * @param py2 y pixel position of the second corner relative to
-     *        the reference point
      * @param properties description of drawing attributes.
      * @param dos DataOutputStream
      * @throws IOException
@@ -141,8 +139,8 @@ public class LinkRectangle implements LinkGraphicConstants,
                              DataOutputStream dos) throws IOException {
 
         dos.write(Link.RECTANGLE_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_RECTANGLE);
-        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeByte(GRAPHICTYPE_RECTANGLE);
+        dos.writeByte(RENDERTYPE_OFFSET);
         dos.writeFloat(lt1);
         dos.writeFloat(ln1);
         dos.writeInt(px1);
@@ -192,8 +190,8 @@ public class LinkRectangle implements LinkGraphicConstants,
     }
 
     /**
-     * Read the DataInputStream, and create an OMRect. Assumes that
-     * the LinkRectangle header has been read from the link.
+     * Read the DataInputStream, and create an OMRect. Assumes that the
+     * LinkRectangle header has been read from the link.
      * 
      * @param dis DataInputStream
      * @return OMRect
@@ -201,16 +199,32 @@ public class LinkRectangle implements LinkGraphicConstants,
      * @see com.bbn.openmap.omGraphics.OMRect
      */
     public static OMRect read(DataInputStream dis) throws IOException {
+        return read(dis, null);
+    }
 
+    /**
+     * Read the DataInputStream, and create an OMRect. Assumes that the
+     * LinkRectangle header has been read from the link.
+     * 
+     * @param dis DataInputStream
+     * @param propertiesBuffer a LinkProperties object used to cache previous
+     *        settings that can be set on the OMRect being read.
+     * @return OMRect
+     * @throws IOException
+     * @see com.bbn.openmap.omGraphics.OMRect
+     */
+    public static OMRect read(DataInputStream dis,
+                              LinkProperties propertiesBuffer)
+            throws IOException {
         OMRect rect = null;
         int x1, y1, x2, y2;
         float lt1, ln1, lt2, ln2;
 
-        int renderType = dis.readInt();
+        int renderType = dis.readByte();
 
         switch (renderType) {
         case RENDERTYPE_LATLON:
-            int lineType = dis.readInt();
+            int lineType = dis.readByte();
             lt1 = dis.readFloat();
             ln1 = dis.readFloat();
             lt2 = dis.readFloat();
@@ -241,9 +255,8 @@ public class LinkRectangle implements LinkGraphicConstants,
         default:
         }
 
-        LinkProperties properties = new LinkProperties(dis);
         if (rect != null) {
-            properties.setProperties(rect);
+            LinkProperties.loadPropertiesIntoOMGraphic(dis, rect, propertiesBuffer);
         }
 
         return rect;

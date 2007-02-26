@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkPoly.java,v $
 // $RCSfile: LinkPoly.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:57 $
+// $Revision: 1.6 $
+// $Date: 2007/02/26 17:12:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,11 +35,10 @@ import java.io.IOException;
 public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
 
     /**
-     * Write a poly, with an array of alternating lat/lon points.
-     * Lat/lons in decimal degrees.
+     * Write a poly, with an array of alternating lat/lon points. Lat/lons in
+     * decimal degrees.
      * 
-     * @param llPoints alternating latitude and logitude points of
-     *        poly.
+     * @param llPoints alternating latitude and logitude points of poly.
      * @param units degrees or radians.
      * @param lType straight, rhumb, great circle.
      * @param properties description of drawing attributes.
@@ -55,12 +54,10 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
     /**
      * Write a poly.
      * 
-     * @param llpoints alternating latitude and longitude points of
-     *        poly.
+     * @param llpoints alternating latitude and longitude points of poly.
      * @param units degrees or radians.
      * @param lType straight, rhumb, great circle.
-     * @param nsegs number of segments to use to approimate curved
-     *        poly lines..
+     * @param nsegs number of segments to use to approimate curved poly lines..
      * @param properties description of drawing attributes.
      * @param dos DataOutputStream
      * @throws IOException
@@ -70,16 +67,16 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
             throws IOException {
 
         dos.write(Link.POLY_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_POLY);
-        dos.writeInt(RENDERTYPE_LATLON);
-        dos.writeInt(lType);
+        dos.writeByte(GRAPHICTYPE_POLY);
+        dos.writeByte(RENDERTYPE_LATLON);
+        dos.writeByte(lType);
         dos.writeInt(llpoints.length);
 
         for (int i = 0; i < llpoints.length; i++) {
             dos.writeFloat(llpoints[i]);
         }
 
-        dos.writeInt(units);
+        dos.writeByte(units);
         dos.writeInt(nsegs);
 
         properties.write(dos);
@@ -92,8 +89,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param lonpoints longitude points of poly.
      * @param units degrees or radians.
      * @param lType straight, rhumb, great circle.
-     * @param nsegs number of segments to use to approimate curved
-     *        poly lines..
+     * @param nsegs number of segments to use to approimate curved poly lines..
      * @param properties description of drawing attributes.
      * @param dos DataOutputStream
      * @throws IOException
@@ -103,9 +99,9 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
                              DataOutputStream dos) throws IOException {
 
         dos.write(Link.POLY_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_POLY);
-        dos.writeInt(RENDERTYPE_LATLON);
-        dos.writeInt(lType);
+        dos.writeByte(GRAPHICTYPE_POLY);
+        dos.writeByte(RENDERTYPE_LATLON);
+        dos.writeByte(lType);
 
         int length = latpoints.length;
         // We only want to write out the points that have equal
@@ -121,7 +117,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
             dos.writeFloat(lonpoints[i]);
         }
 
-        dos.writeInt(units);
+        dos.writeByte(units);
         dos.writeInt(nsegs);
 
         properties.write(dos);
@@ -139,8 +135,8 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
                              DataOutputStream dos) throws IOException {
 
         dos.write(Link.POLY_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_POLY);
-        dos.writeInt(RENDERTYPE_XY);
+        dos.writeByte(GRAPHICTYPE_POLY);
+        dos.writeByte(RENDERTYPE_XY);
         dos.writeInt(xypoints.length);
 
         for (int i = 0; i < xypoints.length; i++) {
@@ -163,8 +159,8 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
             throws IOException {
 
         dos.write(Link.POLY_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_POLY);
-        dos.writeInt(RENDERTYPE_XY);
+        dos.writeByte(GRAPHICTYPE_POLY);
+        dos.writeByte(RENDERTYPE_XY);
         int numPoints = xpoints.length + ypoints.length;
         dos.writeInt(numPoints);
 
@@ -182,9 +178,9 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param latPoint the latitude anchor point of the poly.
      * @param lonPoint the longitude anchor point of the poly.
      * @param xypoints alternating x and y offset polygon points.
-     * @param cMode Coordinate Mode (Origin or Previous) that indicate
-     *        whether the x and y points are relative to the first
-     *        point, or to the previous point. .
+     * @param cMode Coordinate Mode (Origin or Previous) that indicate whether
+     *        the x and y points are relative to the first point, or to the
+     *        previous point. .
      * @param properties description of drawing attributes.
      * @param dos DataOutputStream
      * @throws IOException
@@ -194,8 +190,8 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
                              DataOutputStream dos) throws IOException {
 
         dos.write(Link.POLY_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_POLY);
-        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeByte(GRAPHICTYPE_POLY);
+        dos.writeByte(RENDERTYPE_OFFSET);
         dos.writeFloat(latPoint);
         dos.writeFloat(lonPoint);
         dos.writeInt(xypoints.length);
@@ -204,7 +200,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
             dos.writeInt(xypoints[i]);
         }
 
-        dos.writeInt(cMode);
+        dos.writeByte(cMode);
         properties.write(dos);
     }
 
@@ -215,9 +211,9 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param lonPoint the longitude anchor point of the poly.
      * @param xpoints horizontal pixel offset polygon points.
      * @param ypoints vertical pixel offset polygon points.
-     * @param cMode Coordinate Mode (Origin or Previous) that indicate
-     *        whether the x and y points are relative to the first
-     *        point, or to the previous point. .
+     * @param cMode Coordinate Mode (Origin or Previous) that indicate whether
+     *        the x and y points are relative to the first point, or to the
+     *        previous point. .
      * @param properties description of drawing attributes.
      * @param dos DataOutputStream
      * @throws IOException
@@ -228,8 +224,8 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
             throws IOException {
 
         dos.write(Link.POLY_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_POLY);
-        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeByte(GRAPHICTYPE_POLY);
+        dos.writeByte(RENDERTYPE_OFFSET);
         dos.writeFloat(latPoint);
         dos.writeFloat(lonPoint);
         int numPoints = xpoints.length + ypoints.length;
@@ -239,7 +235,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
             dos.writeInt(xpoints[i]);
             dos.writeInt(ypoints[i]);
         }
-        dos.writeInt(cMode);
+        dos.writeByte(cMode);
         properties.write(dos);
     }
 
@@ -276,8 +272,8 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
     }
 
     /**
-     * Read the DataInputStream to create a OMPoly. Assumes the
-     * LinkPoly header has already been read.
+     * Read the DataInputStream to create a OMPoly. Assumes the LinkPoly header
+     * has already been read.
      * 
      * @param dis DataInputStream
      * @return OMPoly
@@ -285,33 +281,50 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
      * @see com.bbn.openmap.omGraphics.OMPoly
      */
     public static OMPoly read(DataInputStream dis) throws IOException {
+        return read(dis, null);
+    }
+
+    /**
+     * Read the DataInputStream to create a OMPoly. Assumes the LinkPoly header
+     * has already been read.
+     * 
+     * @param dis DataInputStream
+     * @param propertiesBuffer a LinkProperties object used to cache previous
+     *        settings that can be set on the OMPoly being read.
+     * @return OMPoly
+     * @throws IOException
+     * @see com.bbn.openmap.omGraphics.OMPoly
+     */
+    public static OMPoly read(DataInputStream dis,
+                              LinkProperties propertiesBuffer)
+            throws IOException {
 
         OMPoly poly = null;
         int numPoints;
         int[] xpoints, ypoints;
 
-        int renderType = dis.readInt();
+        int renderType = dis.readByte();
 
         switch (renderType) {
         case RENDERTYPE_LATLON:
-            int lineType = dis.readInt();
+            int lineType = dis.readByte();
             numPoints = dis.readInt();
 
             float[] llpoints = new float[numPoints];
             for (int i = 0; i < numPoints; i++) {
                 llpoints[i] = dis.readFloat();
             }
-            int units = dis.readInt();
+            int units = dis.readByte();
             int nsegs = dis.readInt();
 
             if (Debug.debugging("linkdetail")) {
                 System.out.println("  Lat/Lon LinkPoly:");
                 System.out.println("  linetype = " + lineType);
                 System.out.println("  number of points = " + numPoints / 2);
-                //              for (int i = 0; i < numPoints; i+=2) {
-                //                  System.out.println(" Lat = " + llpoints[i] +
-                //                                     ", Lon = " + llpoints[i+1]);
-                //              }
+                // for (int i = 0; i < numPoints; i+=2) {
+                // System.out.println(" Lat = " + llpoints[i] +
+                // ", Lon = " + llpoints[i+1]);
+                // }
                 System.out.println("  units = " + units);
                 System.out.println("  nsegs = " + nsegs);
             }
@@ -331,10 +344,10 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
             if (Debug.debugging("linkdetail")) {
                 System.out.println("  X/Y LinkPoly:");
                 System.out.println("  number of points = " + numPoints / 2);
-                //              for (i = 0; i < numPoints; i++) {
-                //                  System.out.println(" X = " + xpoints[i] +
-                //                                     ", Y = " + ypoints[i]);
-                //              }
+                // for (i = 0; i < numPoints; i++) {
+                // System.out.println(" X = " + xpoints[i] +
+                // ", Y = " + ypoints[i]);
+                // }
             }
 
             poly = new OMPoly(xpoints, ypoints);
@@ -351,17 +364,17 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
                 xpoints[i] = dis.readInt();
                 ypoints[i] = dis.readInt();
             }
-            int cMode = dis.readInt();
+            int cMode = dis.readByte();
 
             if (Debug.debugging("linkdetail")) {
                 System.out.println("  Offset LinkPoly:");
                 System.out.println("  lat = " + lat_1);
                 System.out.println("  lon = " + lon_1);
                 System.out.println("  number of points = " + numPoints / 2);
-                //              for (i = 0; i < numPoints; i+=2) {
-                //                  System.out.println(" Lat = " + llpoints[i] +
-                //                                     ", Lon = " + llpoints[i+1]);
-                //              }
+                // for (i = 0; i < numPoints; i+=2) {
+                // System.out.println(" Lat = " + llpoints[i] +
+                // ", Lon = " + llpoints[i+1]);
+                // }
                 System.out.println("  cMode = " + cMode);
             }
 
@@ -370,9 +383,8 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
         default:
         }
 
-        LinkProperties properties = new LinkProperties(dis);
         if (poly != null) {
-            properties.setProperties(poly);
+            LinkProperties.loadPropertiesIntoOMGraphic(dis, poly, propertiesBuffer);
         }
 
         return poly;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGraphicList.java,v $
 // $RCSfile: LinkGraphicList.java,v $
-// $Revision: 1.8 $
-// $Date: 2006/10/10 22:05:15 $
+// $Revision: 1.9 $
+// $Date: 2007/02/26 17:12:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -141,7 +141,11 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @return properties
      */
     public LinkProperties getProperties() {
-        return properties;
+        if (properties != null) {
+            return properties;
+        } else {
+            return LinkProperties.EMPTY_PROPERTIES;
+        }
     }
 
     /**
@@ -199,9 +203,15 @@ public class LinkGraphicList implements LinkGraphicConstants {
             }
         }
 
-        properties = new LinkProperties(link);
+        if (properties != null) {
+            properties.clear();
+        }
+
+        properties = LinkProperties.read(link.dis, properties);
 
         Debug.message("link", "LinkGraphicList: reading graphics:");
+
+        LinkProperties propertiesBuffer = new LinkProperties(properties);
 
         while (true) {
             graphic = null;
@@ -219,38 +229,38 @@ public class LinkGraphicList implements LinkGraphicConstants {
                 return header;
             }
 
-            graphicType = link.dis.readInt();
+            graphicType = link.dis.readByte();
 
             switch (graphicType) {
             case GRAPHICTYPE_LINE:
-                graphic = LinkLine.read(link.dis);
+                graphic = LinkLine.read(link.dis, propertiesBuffer);
                 break;
             case GRAPHICTYPE_POLY:
-                graphic = LinkPoly.read(link.dis);
+                graphic = LinkPoly.read(link.dis, propertiesBuffer);
                 break;
             case GRAPHICTYPE_RECTANGLE:
-                graphic = LinkRectangle.read(link.dis);
+                graphic = LinkRectangle.read(link.dis, propertiesBuffer);
                 break;
             case GRAPHICTYPE_POINT:
-                graphic = LinkPoint.read(link.dis);
+                graphic = LinkPoint.read(link.dis, propertiesBuffer);
                 break;
             case GRAPHICTYPE_CIRCLE:
-                graphic = LinkCircle.read(link.dis);
+                graphic = LinkCircle.read(link.dis, propertiesBuffer);
                 break;
             case GRAPHICTYPE_ELLIPSE:
-                graphic = LinkEllipse.read(link.dis);
+                graphic = LinkEllipse.read(link.dis, propertiesBuffer);
                 break;
             case GRAPHICTYPE_RASTER:
-                graphic = LinkRaster.read(link.dis);
+                graphic = LinkRaster.read(link.dis, propertiesBuffer);
                 break;
             case GRAPHICTYPE_BITMAP:
-                graphic = LinkBitmap.read(link.dis);
+                graphic = LinkBitmap.read(link.dis, propertiesBuffer);
                 break;
             case GRAPHICTYPE_TEXT:
-                graphic = LinkText.read(link.dis);
+                graphic = LinkText.read(link.dis, propertiesBuffer);
                 break;
             case GRAPHICTYPE_GRID:
-                graphic = LinkGrid.read(link.dis);
+                graphic = LinkGrid.read(link.dis, propertiesBuffer);
                 break;
             default:
                 throw new IOException("LinkGraphicList: received unknown graphic type.");
@@ -632,9 +642,8 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @param properties attributes for the circle.
      * @throws IOException
      */
-    public void addEllipse(float latPoint, float lonPoint,
-                           float majorAxisSpan, float minorAxisSpan,
-                           int units, float rotationAngle,
+    public void addEllipse(float latPoint, float lonPoint, float majorAxisSpan,
+                           float minorAxisSpan, int units, float rotationAngle,
                            LinkProperties properties) throws IOException {
 
         LinkEllipse.write(latPoint,
@@ -662,7 +671,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
     public void addEllipse(int x1, int y1, int majorAxisSpan,
                            int minorAxisSpan, float rotateAngle,
                            LinkProperties properties) throws IOException {
-        
+
         LinkEllipse.write(x1,
                 y1,
                 majorAxisSpan,
@@ -687,7 +696,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
     public void addEllipse(float latPoint, float lonPoint, int w, int h,
                            float rotateAngle, LinkProperties properties)
             throws IOException {
-        
+
         LinkEllipse.write(latPoint,
                 lonPoint,
                 w,
@@ -717,7 +726,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
     public void addEllipse(float latPoint, float lonPoint, int offset_x1,
                            int offset_y1, int w, int h, float rotateAngle,
                            LinkProperties properties) throws IOException {
-        
+
         LinkEllipse.write(latPoint,
                 lonPoint,
                 offset_x1,

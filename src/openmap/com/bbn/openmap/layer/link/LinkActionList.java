@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkActionList.java,v $
 // $RCSfile: LinkActionList.java,v $
-// $Revision: 1.7 $
-// $Date: 2006/10/10 22:05:16 $
+// $Revision: 1.8 $
+// $Date: 2007/02/26 17:12:45 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -197,7 +197,12 @@ public class LinkActionList implements LinkActionConstants,
             }
         }
 
-        properties = new LinkProperties(link);
+        if (properties != null) {
+            properties.clear();
+        }
+        
+        properties = LinkProperties.read(link.dis, properties);
+        LinkProperties graphicProperties = null;
 
         Debug.message("link", "LinkActionList: reading actions:");
 
@@ -218,7 +223,7 @@ public class LinkActionList implements LinkActionConstants,
                 return header;
             }
 
-            gestureType = link.dis.readInt();
+            gestureType = link.dis.readByte();
 
             switch (gestureType) {
             case ACTION_GRAPHICS:
@@ -234,8 +239,8 @@ public class LinkActionList implements LinkActionConstants,
                             proj,
                             generator));
                 } else {
-                    LinkProperties props = new LinkProperties(link);
-                    updates.addElement(new GraphicUpdate(graphicAction, props.getProperty(LPC_GRAPHICID)));
+                    graphicProperties = LinkProperties.read(link.dis, graphicProperties);
+                    updates.addElement(new GraphicUpdate(graphicAction, graphicProperties.getProperty(LPC_GRAPHICID)));
                 }
                 reacted = true;
                 break;
@@ -243,7 +248,10 @@ public class LinkActionList implements LinkActionConstants,
                 break;
             case ACTION_MAP:
                 mapUpdate = true;
-                mapProperties = new LinkProperties(link);
+                if (mapProperties != null) {
+                    mapProperties.clear();
+                }
+                mapProperties = LinkProperties.read(link.dis, mapProperties);
                 break;
             default:
                 System.err.println("LinkActionList: received unknown gesture type.");
@@ -273,7 +281,7 @@ public class LinkActionList implements LinkActionConstants,
             return null;
         }
 
-        int graphicType = link.dis.readInt();
+        int graphicType = link.dis.readByte();
 
         switch (graphicType) {
         case LinkGraphicList.GRAPHICTYPE_LINE:
@@ -349,7 +357,7 @@ public class LinkActionList implements LinkActionConstants,
      */
     public void deselectGraphics() throws IOException {
         link.dos.write(Link.UPDATE_GRAPHICS.getBytes());
-        link.dos.writeInt(ACTION_GRAPHICS);
+        link.dos.writeByte(ACTION_GRAPHICS);
         link.dos.writeInt(MODIFY_DESELECTALL_GRAPHIC_MASK);
         LinkProperties.EMPTY_PROPERTIES.write(link.dos); // Write
         // empty
@@ -368,7 +376,7 @@ public class LinkActionList implements LinkActionConstants,
     public void modifyGraphic(int maskDescription, LinkProperties props)
             throws IOException {
         link.dos.write(Link.UPDATE_GRAPHICS.getBytes());
-        link.dos.writeInt(ACTION_GRAPHICS);
+        link.dos.writeByte(ACTION_GRAPHICS);
         link.dos.writeInt(maskDescription);
         props.write(link.dos);
     }
@@ -385,7 +393,7 @@ public class LinkActionList implements LinkActionConstants,
     public void writeGraphicGestureHeader(int graphicUpdateMask)
             throws IOException {
         link.dos.write(Link.UPDATE_GRAPHICS.getBytes());
-        link.dos.writeInt(ACTION_GRAPHICS);
+        link.dos.writeByte(ACTION_GRAPHICS);
         link.dos.writeInt(graphicUpdateMask);
     }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkPoint.java,v $
 // $RCSfile: LinkPoint.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:56 $
+// $Revision: 1.5 $
+// $Date: 2007/02/26 17:12:47 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,20 +31,19 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- * Read and write the Link protocol for points. The protocol for the
- * point has location information for the point, as well as a radius
- * value indicating the size associated with this point. OMPoints also
- * support whether the point should be rendered as a rectangle or an
- * oval. That choice is specified as a property for the LinkPoint,
- * along with any other rendering or attribute information that should
- * be applied to the point.
+ * Read and write the Link protocol for points. The protocol for the point has
+ * location information for the point, as well as a radius value indicating the
+ * size associated with this point. OMPoints also support whether the point
+ * should be rendered as a rectangle or an oval. That choice is specified as a
+ * property for the LinkPoint, along with any other rendering or attribute
+ * information that should be applied to the point.
  */
 public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants {
 
     /**
-     * The property for the LinkPoint to specify if the OMPoint should
-     * be rendered as an oval. The value should be true or false,
-     * depending if the point should be rendered as an oval.
+     * The property for the LinkPoint to specify if the OMPoint should be
+     * rendered as an oval. The value should be true or false, depending if the
+     * point should be rendered as an oval.
      */
     public final static String LPC_POINT_OVAL = "oval";
 
@@ -63,8 +62,8 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
             throws IOException {
 
         dos.write(Link.POINT_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_POINT);
-        dos.writeInt(RENDERTYPE_LATLON);
+        dos.writeByte(GRAPHICTYPE_POINT);
+        dos.writeByte(RENDERTYPE_LATLON);
         dos.writeFloat(lt);
         dos.writeFloat(ln);
         dos.writeInt(radius);
@@ -74,10 +73,10 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
     /**
      * Construct an XY point at a screen location..
      * 
-     * @param px1 x pixel position of the first corner relative to the
-     *        window origin
-     * @param py1 y pixel position of the first corner relative to the
-     *        window origin
+     * @param px1 x pixel position of the first corner relative to the window
+     *        origin
+     * @param py1 y pixel position of the first corner relative to the window
+     *        origin
      * @param radius pixel radius of the point.
      * @param properties description of drawing attributes.
      * @param dos DataOutputStream
@@ -88,8 +87,8 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
             throws IOException {
 
         dos.write(Link.POINT_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_POINT);
-        dos.writeInt(RENDERTYPE_XY);
+        dos.writeByte(GRAPHICTYPE_POINT);
+        dos.writeByte(RENDERTYPE_XY);
         dos.writeInt(px1);
         dos.writeInt(py1);
         dos.writeInt(radius);
@@ -97,16 +96,16 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
     }
 
     /**
-     * Construct an XY point relative to a lat/lon point
-     * (RENDERTYPE_OFFSET). It doesn't matter which corners of the
-     * point are used, as long as they are opposite from each other.
+     * Construct an XY point relative to a lat/lon point (RENDERTYPE_OFFSET). It
+     * doesn't matter which corners of the point are used, as long as they are
+     * opposite from each other.
      * 
      * @param lt latitude of the reference point, decimal degrees.
      * @param ln longitude of the reference point, decimal degrees.
-     * @param px1 x pixel position of the first corner relative to the
-     *        reference point
-     * @param py1 y pixel position of the first corner relative to the
-     *        reference point
+     * @param px1 x pixel position of the first corner relative to the reference
+     *        point
+     * @param py1 y pixel position of the first corner relative to the reference
+     *        point
      * @param radius a pixel radius of the point.
      * @param properties description of drawing attributes.
      * @param dos DataOutputStream
@@ -117,8 +116,8 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
             throws IOException {
 
         dos.write(Link.POINT_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_POINT);
-        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeByte(GRAPHICTYPE_POINT);
+        dos.writeByte(RENDERTYPE_OFFSET);
         dos.writeFloat(lt);
         dos.writeFloat(ln);
         dos.writeInt(px1);
@@ -165,8 +164,8 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
     }
 
     /**
-     * Read the DataInputStream, and create an OMPoint. Assumes that
-     * the LinkPoint header has been read from the link.
+     * Read the DataInputStream, and create an OMPoint. Assumes that the
+     * LinkPoint header has been read from the link.
      * 
      * @param dis DataInputStream
      * @return OMPoint
@@ -174,12 +173,28 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
      * @see com.bbn.openmap.omGraphics.OMPoint
      */
     public static OMPoint read(DataInputStream dis) throws IOException {
+        return read(dis, null);
+    }
 
+    /**
+     * Read the DataInputStream, and create an OMPoint. Assumes that the
+     * LinkPoint header has been read from the link.
+     * 
+     * @param dis DataInputStream
+     * @param propertiesBuffer a LinkProperties object used to cache previous
+     *        settings that can be set on the OMPoint being read.
+     * @return OMPoint
+     * @throws IOException
+     * @see com.bbn.openmap.omGraphics.OMPoint
+     */
+    public static OMPoint read(DataInputStream dis,
+                               LinkProperties propertiesBuffer)
+            throws IOException {
         OMPoint point = null;
         int x1, y1, radius;
         float lt, ln;
 
-        int renderType = dis.readInt();
+        int renderType = dis.readByte();
 
         switch (renderType) {
         case RENDERTYPE_LATLON:
@@ -209,12 +224,16 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
         default:
         }
 
-        LinkProperties properties = new LinkProperties(dis);
         if (point != null) {
-            properties.setProperties(point);
-            point.setOval(PropUtils.booleanFromProperties(properties,
-                    LPC_POINT_OVAL,
-                    OMPoint.DEFAULT_ISOVAL));
+            propertiesBuffer = LinkProperties.loadPropertiesIntoOMGraphic(dis,
+                    point,
+                    propertiesBuffer);
+
+            if (propertiesBuffer != null) {
+                point.setOval(PropUtils.booleanFromProperties(propertiesBuffer,
+                        LPC_POINT_OVAL,
+                        OMPoint.DEFAULT_ISOVAL));
+            }
         }
 
         return point;

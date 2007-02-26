@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLayer.java,v $
 // $RCSfile: LinkLayer.java,v $
-// $Revision: 1.15 $
-// $Date: 2005/12/09 21:09:07 $
+// $Revision: 1.16 $
+// $Date: 2007/02/26 17:12:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,56 +54,53 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The LinkLayer is a Swing component, and an OpenMap layer, that
- * communicates with a server via the Link protocol. It transmits
- * graphics requests and gesture information, and handles the
- * responses to those queries. The entry in the openmap.properties
- * file looks like this:
+ * The LinkLayer is a Swing component, and an OpenMap layer, that communicates
+ * with a server via the Link protocol. It transmits graphics requests and
+ * gesture information, and handles the responses to those queries. The entry in
+ * the openmap.properties file looks like this:
  * <P>
  * 
  * <pre>
- *  
- *   
- *    
- *    
- *     # port number of server
- *     link.port=3031
- *    
- *     # host name of server
- *     link.host=host.com
- *    
- *     # URL of properties file for server attributes.  Properties
- *     # contained in this file are passed directly to the server to provide
- *     # additional information to the server about how to provide the
- *     # graphics.  Some standard properties are listed in the
- *     # LinkPropertiesConstants file, but any property can be passed to the
- *     # server.  How the server handles the property depends on the server,
- *     # but non-applicable properties are ignored.
- *     link.propertiesURL=http://location.of.properties.file.com
  *    
  *     
- *    
- *   
+ *      
+ *      
+ *       # port number of server
+ *       link.port=3031
+ *      
+ *       # host name of server
+ *       link.host=host.com
+ *      
+ *       # URL of properties file for server attributes.  Properties
+ *       # contained in this file are passed directly to the server to provide
+ *       # additional information to the server about how to provide the
+ *       # graphics.  Some standard properties are listed in the
+ *       # LinkPropertiesConstants file, but any property can be passed to the
+ *       # server.  How the server handles the property depends on the server,
+ *       # but non-applicable properties are ignored.
+ *       link.propertiesURL=http://location.of.properties.file.com
+ *      
+ *       
+ *      
+ *     
  * </pre>
  * 
- * You have to call setProperties() on this layer to set its
- * parameters, and to start the thread that listens to updates from
- * the server.
+ * You have to call setProperties() on this layer to set its parameters, and to
+ * start the thread that listens to updates from the server.
  */
 public class LinkLayer extends OMGraphicHandlerLayer implements
         MapMouseListener, LinkPropertiesConstants, LinkActionConstants,
         DrawingToolRequestor {
 
     /**
-     * The thread listener used to communicate asynchronously. The
-     * LinkLayer sends out requsts and notifications to the server,
-     * and the LinkListener reads any input from the server, making
-     * calls on the LinkLayer as appropriate.
+     * The thread listener used to communicate asynchronously. The LinkLayer
+     * sends out requsts and notifications to the server, and the LinkListener
+     * reads any input from the server, making calls on the LinkLayer as
+     * appropriate.
      */
     protected LinkListener listener;
     /**
-     * A masked integer describing which gestures should be sent to
-     * the server.
+     * A masked integer describing which gestures should be sent to the server.
      */
     protected int gestureDescriptor = 0;
     /** The port to connect to the server on. */
@@ -111,13 +108,13 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     /** The host where the server is running. */
     protected String host;
     /**
-     * The special parameters (attributes) transmitted to the server
-     * with every query.
+     * The special parameters (attributes) transmitted to the server with every
+     * query.
      */
     protected LinkProperties args;
     /**
-     * The object that provides a link to the layer (and its various
-     * threads) on a coordinateed basis.
+     * The object that provides a link to the layer (and its various threads) on
+     * a coordinateed basis.
      */
     protected LinkManager linkManager = null;
     /** The flag to supress pop-up messages. */
@@ -126,20 +123,18 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     protected OMGridGenerator currentGenerator = null;
 
     /**
-     * The property name to specify what port the server is running
-     * on. "port"
+     * The property name to specify what port the server is running on. "port"
      */
     public final static String PortProperty = "port";
     /**
-     * The property name to specify the hostname the server is running
-     * on. "host"
+     * The property name to specify the hostname the server is running on.
+     * "host"
      */
     public final static String HostProperty = "host";
     /**
-     * The property name to specify a URL of a properties file
-     * containing properties that will be sent to the server within
-     * requests to it. The contents of this file depends on the
-     * server. "propertiesURL"
+     * The property name to specify a URL of a properties file containing
+     * properties that will be sent to the server within requests to it. The
+     * contents of this file depends on the server. "propertiesURL"
      */
     public final static String ArgsProperty = "propertiesURL";
     public final static String ServerLocationProperty = "isl";
@@ -148,34 +143,33 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
      */
     public final static String QuietProperty = "quiet";
     /**
-     * The property to specify which grid generator to use for grid
-     * objects. "gridGenerator"
+     * The property to specify which grid generator to use for grid objects.
+     * "gridGenerator"
      */
     public final static String GridGeneratorProperty = "gridGenerator";
     /**
-     * The property to set a pixel distance limit for gestures.
-     * "distanceLimit"
+     * The property to set a pixel distance limit for gestures. "distanceLimit"
      */
     public final static String DistanceLimitProperty = "distanceLimit";
 
     public final static int DEFAULT_DISTANCE_LIMIT = 4;
 
     /**
-     * The maximum distance away a mouse event can happen away from a
-     * graphic in order for it to be considered to have touched.
+     * The maximum distance away a mouse event can happen away from a graphic in
+     * order for it to be considered to have touched.
      */
     protected int distanceLimit = DEFAULT_DISTANCE_LIMIT;
 
     /**
-     * The property to set to true if the server should be able to
-     * decide when to kill the client, the overall application. False
-     * by default, only modified in setProperties. "exitOnCommand"
+     * The property to set to true if the server should be able to decide when
+     * to kill the client, the overall application. False by default, only
+     * modified in setProperties. "exitOnCommand"
      */
     public final static String ExitOnCommandProperty = "exitOnCommand";
 
     /**
-     * The default constructor for the Layer. All of the attributes
-     * are set to their default values.
+     * The default constructor for the Layer. All of the attributes are set to
+     * their default values.
      */
     public LinkLayer() {
         // We don't want to reset the OMGraphicsList automatically
@@ -194,8 +188,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Constructor to use when LinkLayer is not being used with
-     * OpenMap application.
+     * Constructor to use when LinkLayer is not being used with OpenMap
+     * application.
      * 
      * @param host the hostname of the server's computer.
      * @param port the port number of the server.
@@ -242,16 +236,16 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Called when the layer is no longer part of the map. In this
-     * case, we should disconnect from the server if we have a link.
+     * Called when the layer is no longer part of the map. In this case, we
+     * should disconnect from the server if we have a link.
      */
     public void removed(Container cont) {
         linkManager.resetLink();
     }
 
     /**
-     * Sets the masked integer which indicates what types of events
-     * get sent to the server.
+     * Sets the masked integer which indicates what types of events get sent to
+     * the server.
      * 
      * @param descriptor masked int
      * @see LinkActionRequest
@@ -261,8 +255,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Gets the masked integer which indicates what types of events
-     * get sent to the server.
+     * Gets the masked integer which indicates what types of events get sent to
+     * the server.
      * 
      * @return descriptor masked int
      * @see LinkActionRequest
@@ -274,8 +268,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     /**
      * Set all the Link properties from a properties object.
      * 
-     * @param prefix the prefix to the properties tha might
-     *        individualize it to a particular layer.
+     * @param prefix the prefix to the properties tha might individualize it to
+     *        a particular layer.
      * @param properties the properties for the layer.
      */
     public void setProperties(String prefix, Properties properties) {
@@ -307,6 +301,15 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             try {
                 URL propertiesFile = new URL(propertiesURL);
                 args.load(propertiesFile.openStream());
+
+                // Need to do something here. The LinkPropertiesConstants have
+                // changed in LinkProtocol version .6, to much small strings
+                // that don't match up with the DrawingAttributes properties. We
+                // need to check for the old property names and replace them
+                // with the new property names.
+
+                checkAndReplaceOldPropertyNames(args);
+
             } catch (java.net.MalformedURLException mue) {
                 System.err.println("LinkLayer:  Properties URL isn't valid: "
                         + realPrefix + ArgsProperty);
@@ -332,6 +335,43 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
         // currentGenerator);
     }
 
+    /**
+     * The LinkPropertiesConstants have changed in LinkProtocol version .6, to
+     * much small strings that don't match up with the DrawingAttributes
+     * properties. We need to check for the old property names and replace them
+     * with the new property names.
+     * 
+     * @param props
+     */
+    public void checkAndReplaceOldPropertyNames(LinkProperties props) {
+        checkAndReplaceOldPropertyName(props, LPC_OLD_LINECOLOR, LPC_LINECOLOR);
+        checkAndReplaceOldPropertyName(props, LPC_OLD_LINESTYLE, LPC_LINESTYLE);
+        checkAndReplaceOldPropertyName(props,
+                LPC_OLD_HIGHLIGHTCOLOR,
+                LPC_HIGHLIGHTCOLOR);
+        checkAndReplaceOldPropertyName(props, LPC_OLD_FILLCOLOR, LPC_FILLCOLOR);
+        checkAndReplaceOldPropertyName(props,
+                LPC_OLD_FILLPATTERN,
+                LPC_FILLPATTERN);
+        checkAndReplaceOldPropertyName(props, LPC_OLD_LINEWIDTH, LPC_LINEWIDTH);
+        checkAndReplaceOldPropertyName(props,
+                LPC_OLD_LINKTEXTSTRING,
+                LPC_LINKTEXTSTRING);
+        checkAndReplaceOldPropertyName(props,
+                LPC_OLD_LINKTEXTFONT,
+                LPC_LINKTEXTFONT);
+    }
+
+    public void checkAndReplaceOldPropertyName(LinkProperties props,
+                                               String oldPropertyName,
+                                               String newPropertyName) {
+        String property = props.getProperty(oldPropertyName);
+        if (property != null) {
+            props.remove(oldPropertyName);
+            props.put(newPropertyName, property);
+        }
+    }
+
     protected void setListener(LinkListener ll) {
         listener = ll;
     }
@@ -341,14 +381,13 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Prepares the graphics for the layer. This is where the
-     * getRectangle() method call is made on the link.
+     * Prepares the graphics for the layer. This is where the getRectangle()
+     * method call is made on the link.
      * <p>
-     * Occasionally it is necessary to abort a prepare call. When this
-     * happens, the map will set the cancel bit in the LayerThread,
-     * (the thread that is running the prepare). If this Layer needs
-     * to do any cleanups during the abort, it should do so, but
-     * return out of the prepare asap.
+     * Occasionally it is necessary to abort a prepare call. When this happens,
+     * the map will set the cancel bit in the LayerThread, (the thread that is
+     * running the prepare). If this Layer needs to do any cleanups during the
+     * abort, it should do so, but return out of the prepare asap.
      * 
      * @return a list of graphics.
      */
@@ -736,9 +775,9 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Looks at a properties object, and checks for the pre-defined
-     * messaging attributes. Then, the information delegator is called
-     * to handle their display.
+     * Looks at a properties object, and checks for the pre-defined messaging
+     * attributes. Then, the information delegator is called to handle their
+     * display.
      * 
      * @param props LinkProperties containing messages.
      */
@@ -769,8 +808,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Return the strings identifying the Mouse Modes that the
-     * MapMouseListener wants to receive gestures from.
+     * Return the strings identifying the Mouse Modes that the MapMouseListener
+     * wants to receive gestures from.
      */
     public String[] getMouseModeServiceList() {
         String[] services = { SelectMouseMode.modeID };
@@ -831,19 +870,18 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Given a graphic and the type of gesture caught, react to it
-     * based on the properties object located in the Graphic. The
-     * default behavior here is that if the gesture is a MouseMoved,
-     * select the graphic, and if there is an info line, show it. If
-     * the gesture is a MouseRelease, display the info line, and also
-     * check the following, in this order: url and then html. If there
-     * is a message property, the message is sent in a pop-up window.
+     * Given a graphic and the type of gesture caught, react to it based on the
+     * properties object located in the Graphic. The default behavior here is
+     * that if the gesture is a MouseMoved, select the graphic, and if there is
+     * an info line, show it. If the gesture is a MouseRelease, display the info
+     * line, and also check the following, in this order: url and then html. If
+     * there is a message property, the message is sent in a pop-up window.
      * 
      * @param graphic the graphic to check out.
      * @param descriptor the type of gesture.
      * @param e mouse event, to get location.
-     * @return true if the server still needs to be told - per
-     *         descriptor bit 11.
+     * @return true if the server still needs to be told - per descriptor bit
+     *         11.
      */
     protected boolean graphicGestureReaction(OMGraphic graphic, int descriptor,
                                              MouseEvent e) {
@@ -903,11 +941,10 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Send the query, act on the response, and tell the caller if the
-     * gesture was consumed. The Link actually gets a copy of the
-     * layer to handle communication with the InformationDelegator.
-     * The GraphicUpdates are handled in this method - the graphics
-     * list is modified.
+     * Send the query, act on the response, and tell the caller if the gesture
+     * was consumed. The Link actually gets a copy of the layer to handle
+     * communication with the InformationDelegator. The GraphicUpdates are
+     * handled in this method - the graphics list is modified.
      * 
      * @param descriptor a masked integer telling the type of gesture.
      * @param e the MouseEvent.
@@ -920,29 +957,30 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             LinkOMGraphicList graphics = getGraphicList(); // Get old
             // list
 
+            OMGraphic gesGraphic = null;
             if (graphics == null) {
                 // Nothing to search on - this condition occurs when
                 // the layer is already busy getting new graphics as a
                 // result of a changed projection.
+                // It also occurs when the layer does not have any graphics
+                // in it.
                 Debug.message("link", "LinkLayer: null graphics list.");
-                return false;
+            } else {
+                if (e == null) {
+                    graphics.deselectAll();
+                    return false;
+                }
+
+                // Find out if a graphic is closeby...
+                // int gesGraphicIndex = graphics.findIndexOfClosest(e.getX(),
+                // e.getY(),
+                // distanceLimit);
+
+                // We need to do this to deselect everything else too.
+                gesGraphic = graphics.selectClosest(e.getX(),
+                        e.getY(),
+                        distanceLimit);
             }
-
-            if (e == null) {
-                graphics.deselectAll();
-                return false;
-            }
-
-            // Find out if a graphic is closeby...
-            // int gesGraphicIndex =
-            // graphics.findIndexOfClosest(e.getX(),
-            // e.getY(),
-            // distanceLimit);
-
-            // We need to do this to deselect everything else too.
-            OMGraphic gesGraphic = graphics.selectClosest(e.getX(),
-                    e.getY(),
-                    distanceLimit);
 
             String id = null;
 
@@ -1004,6 +1042,10 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             synchronized (l) {
                 if (id != null) {
                     args.setProperty(LPC_GRAPHICID, id);
+                } else {
+                    // Reset this to prevent sending the id of a previously
+                    // selected graphic when no graphic is clicked on.
+                    args.remove(LPC_GRAPHICID);
                 }
 
                 // Send the query
@@ -1148,10 +1190,9 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Set the search distance limit pixel distance for graphics
-     * searches. When the graphics list is checked for a graphic that
-     * is closest to a mouse event, this is the pixel limit within
-     * hits are considered.
+     * Set the search distance limit pixel distance for graphics searches. When
+     * the graphics list is checked for a graphic that is closest to a mouse
+     * event, this is the pixel limit within hits are considered.
      * 
      * @param limit the pixel limit to consider something "closest".
      */
@@ -1164,8 +1205,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Get the search distance limit pixel distance for graphics
-     * searches.
+     * Get the search distance limit pixel distance for graphics searches.
      */
     public int getDistanceLimit() {
         return distanceLimit;

@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkArc.java,v $
 // $RCSfile: LinkArc.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:56 $
+// $Revision: 1.4 $
+// $Date: 2007/02/26 17:12:46 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -75,8 +75,8 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
             throws IOException {
 
         dos.write(Link.ARC_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_ARC);
-        dos.writeInt(RENDERTYPE_XY);
+        dos.writeByte(GRAPHICTYPE_ARC);
+        dos.writeByte(RENDERTYPE_XY);
         dos.writeInt(x1);
         dos.writeInt(y1);
         dos.writeInt(w);
@@ -109,8 +109,8 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
             throws IOException {
 
         dos.write(Link.ARC_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_ARC);
-        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeByte(GRAPHICTYPE_ARC);
+        dos.writeByte(RENDERTYPE_OFFSET);
         dos.writeFloat(latPoint);
         dos.writeFloat(lonPoint);
         dos.writeInt(offset_x1);
@@ -196,12 +196,12 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
             throws IOException {
         // Write this out...
         dos.write(Link.ARC_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_ARC);
-        dos.writeInt(RENDERTYPE_LATLON);
+        dos.writeByte(GRAPHICTYPE_ARC);
+        dos.writeByte(RENDERTYPE_LATLON);
         dos.writeFloat(latPoint);
         dos.writeFloat(lonPoint);
         dos.writeFloat(radius);
-        dos.writeInt(units);
+        dos.writeByte(units);
         dos.writeInt(nverts);
         dos.writeFloat(s);
         dos.writeFloat(e);
@@ -266,7 +266,7 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
         float lat, lon, radius, start, extent;
         int x, y, w, h;
 
-        int renderType = dis.readInt();
+        int renderType = dis.readByte();
 
         switch (renderType) {
         case RENDERTYPE_LATLON:
@@ -275,7 +275,7 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
             radius = dis.readFloat();
             start = dis.readFloat();
             extent = dis.readFloat();
-            int units = dis.readInt();
+            int units = dis.readByte();
             int nverts = dis.readInt();
 
             Length unit = Length.DECIMAL_DEGREE;

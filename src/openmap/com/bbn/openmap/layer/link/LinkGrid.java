@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGrid.java,v $
 // $RCSfile: LinkGrid.java,v $
-// $Revision: 1.6 $
-// $Date: 2004/10/14 18:05:56 $
+// $Revision: 1.7 $
+// $Date: 2007/02/26 17:12:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,10 +31,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- * Reading and writing the Link protocol version of a grid object. It
- * is assumed that the client will know how to render/handle this grid
- * when it arrives, since it doesn't have any implicit drawing
- * attributes, despite having a semantics object.
+ * Reading and writing the Link protocol version of a grid object. It is assumed
+ * that the client will know how to render/handle this grid when it arrives,
+ * since it doesn't have any implicit drawing attributes, despite having a
+ * semantics object.
  */
 public class LinkGrid implements LinkGraphicConstants {
 
@@ -45,12 +45,12 @@ public class LinkGrid implements LinkGraphicConstants {
      * @param ln longitude of the left side of the grid.
      * @param rows number of vertical points of the grid.
      * @param columns number of horizontal points of the grid.
-     * @param orientation the direction of the vertical axits of the
-     *        grid, in radians from up ( North).
+     * @param orientation the direction of the vertical axits of the grid, in
+     *        radians from up ( North).
      * @param vResolution degrees/point between rows of the grid.
      * @param hResolution degrees/point between columns of the grid.
-     * @param major designation of the presentation of the data, as
-     *        columns (COLUMN_MAJOR) or rows (ROW_MAJOR).
+     * @param major designation of the presentation of the data, as columns
+     *        (COLUMN_MAJOR) or rows (ROW_MAJOR).
      * @param data data points of the grid.
      * @param properties description of drawing attributes.
      * @param dos the data output stream to write the object to.
@@ -63,8 +63,8 @@ public class LinkGrid implements LinkGraphicConstants {
             throws IOException {
 
         dos.write(Link.GRID_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_GRID);
-        dos.writeInt(RENDERTYPE_LATLON);
+        dos.writeByte(GRAPHICTYPE_GRID);
+        dos.writeByte(RENDERTYPE_LATLON);
         dos.writeFloat(lt);
         dos.writeFloat(ln);
         dos.writeInt(rows);
@@ -72,7 +72,7 @@ public class LinkGrid implements LinkGraphicConstants {
         dos.writeFloat(orientation);
         dos.writeFloat(vResolution);
         dos.writeFloat(hResolution);
-        dos.writeInt(major);
+        dos.writeByte(major);
 
         dos.writeInt(data.length);
         for (int i = 0; i < data.length; i++) {
@@ -89,12 +89,12 @@ public class LinkGrid implements LinkGraphicConstants {
      * @param y1 window location of the top of the grid.
      * @param rows number of vertical points of the grid.
      * @param columns number of horizontal points of the grid.
-     * @param orientation the direction of the vertical axits of the
-     *        grid, in radians from up ( North).
+     * @param orientation the direction of the vertical axits of the grid, in
+     *        radians from up ( North).
      * @param vResolution pixels/point between rows of the grid.
      * @param hResolution pixels/point between columns of the grid.
-     * @param major designation of the presentation of the data, as
-     *        columns (COLUMN_MAJOR) or rows (ROW_MAJOR).
+     * @param major designation of the presentation of the data, as columns
+     *        (COLUMN_MAJOR) or rows (ROW_MAJOR).
      * @param data data points of the grid.
      * @param properties description of drawing attributes.
      * @param dos the data output stream to write the object to.
@@ -107,8 +107,8 @@ public class LinkGrid implements LinkGraphicConstants {
             throws IOException {
 
         dos.write(Link.GRID_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_GRID);
-        dos.writeInt(RENDERTYPE_XY);
+        dos.writeByte(GRAPHICTYPE_GRID);
+        dos.writeByte(RENDERTYPE_XY);
         dos.writeInt(x1);
         dos.writeInt(y1);
 
@@ -117,7 +117,7 @@ public class LinkGrid implements LinkGraphicConstants {
         dos.writeFloat(orientation);
         dos.writeFloat(vResolution);
         dos.writeFloat(hResolution);
-        dos.writeInt(major);
+        dos.writeByte(major);
 
         dos.writeInt(data.length);
         for (int i = 0; i < data.length; i++) {
@@ -131,18 +131,17 @@ public class LinkGrid implements LinkGraphicConstants {
      * Lat/lon placement with XY offset.
      * 
      * @param lt latitude of the top of the image, before the offset.
-     * @param ln longitude of the left side of the image, before the
-     *        offset.
+     * @param ln longitude of the left side of the image, before the offset.
      * @param offset_x1 number of pixels to move image to the right.
      * @param offset_y1 number of pixels to move image down.
      * @param rows number of vertical points of the grid.
      * @param columns number of horizontal points of the grid.
-     * @param orientation the direction of the vertical axits of the
-     *        grid, in radians from up ( North).
+     * @param orientation the direction of the vertical axits of the grid, in
+     *        radians from up ( North).
      * @param vResolution pixels/point between rows of the grid.
      * @param hResolution pixels/point between columns of the grid.
-     * @param major designation of the presentation of the data, as
-     *        columns (COLUMN_MAJOR) or rows (ROW_MAJOR).
+     * @param major designation of the presentation of the data, as columns
+     *        (COLUMN_MAJOR) or rows (ROW_MAJOR).
      * @param data data points of the grid.
      * @param properties description of drawing attributes.
      * @param dos the data output stream to write the object to.
@@ -155,8 +154,8 @@ public class LinkGrid implements LinkGraphicConstants {
                              DataOutputStream dos) throws IOException {
 
         dos.write(Link.GRID_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_GRID);
-        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeByte(GRAPHICTYPE_GRID);
+        dos.writeByte(RENDERTYPE_OFFSET);
         dos.writeFloat(lt);
         dos.writeFloat(ln);
         dos.writeInt(offset_x1);
@@ -167,7 +166,7 @@ public class LinkGrid implements LinkGraphicConstants {
         dos.writeFloat(orientation);
         dos.writeFloat(vResolution);
         dos.writeFloat(hResolution);
-        dos.writeInt(major);
+        dos.writeByte(major);
 
         dos.writeInt(data.length);
         for (int i = 0; i < data.length; i++) {
@@ -249,8 +248,8 @@ public class LinkGrid implements LinkGraphicConstants {
     }
 
     /**
-     * Read a Grid off a DataInputStream. Assumes the Grid header has
-     * already been read.
+     * Read a Grid off a DataInputStream. Assumes the Grid header has already
+     * been read.
      * 
      * @param dis DataInputStream to read from.
      * @return OMGrid
@@ -258,6 +257,23 @@ public class LinkGrid implements LinkGraphicConstants {
      * @see com.bbn.openmap.omGraphics.OMGrid
      */
     public static OMGrid read(DataInputStream dis) throws IOException {
+        return read(dis, null);
+    }
+
+    /**
+     * Read a Grid off a DataInputStream. Assumes the Grid header has already
+     * been read.
+     * 
+     * @param dis DataInputStream to read from.
+     * @param propertiesBuffer a LinkProperties object used to cache previous
+     *        settings that can be set on the OMPoly being read.
+     * @return OMGrid
+     * @throws IOException
+     * @see com.bbn.openmap.omGraphics.OMGrid
+     */
+    public static OMGrid read(DataInputStream dis,
+                              LinkProperties propertiesBuffer)
+            throws IOException {
 
         Debug.message("linkdetail", "LinkGrid: reading from link.");
 
@@ -267,7 +283,7 @@ public class LinkGrid implements LinkGraphicConstants {
         int x = 0;
         int y = 0;
 
-        int renderType = dis.readInt();
+        int renderType = dis.readByte();
 
         switch (renderType) {
         case RENDERTYPE_OFFSET:
@@ -275,7 +291,7 @@ public class LinkGrid implements LinkGraphicConstants {
             lon = dis.readFloat();
             Debug.message("linkdetail", "LinkGrid: Offset Lat/Lon = " + lat
                     + "/" + lon + " with");
-        // Fall through...
+            // Fall through...
         case RENDERTYPE_XY:
             x = dis.readInt();
             y = dis.readInt();
@@ -294,7 +310,7 @@ public class LinkGrid implements LinkGraphicConstants {
         float orientation = dis.readFloat();
         float vResolution = dis.readFloat();
         float hResolution = dis.readFloat();
-        int major = dis.readInt();
+        int major = dis.readByte();
 
         int length = dis.readInt();
 
@@ -322,17 +338,17 @@ public class LinkGrid implements LinkGraphicConstants {
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[0].length; j++) {
                 data[i][j] = dis.readInt();
-                //                  Debug.message("linkdetail", "LinkGrid reading " +
-                //                                (rows*i + j) + " " +
-                //                                (major !=
+                // Debug.message("linkdetail", "LinkGrid reading " +
+                // (rows*i + j) + " " +
+                // (major !=
                 // LinkGraphicConstants.COLUMN_MAJOR?"column":"row")+
-                //                                " " + j + " = " + Integer.toHexString(data[i][j]) +
-                //                                " (" + data[i][j] + ")");
+                // " " + j + " = " + Integer.toHexString(data[i][j]) +
+                // " (" + data[i][j] + ")");
             }
-            //          Debug.message("linkdetail", "LinkGrid reading " +
-            //                        (major ==
+            // Debug.message("linkdetail", "LinkGrid reading " +
+            // (major ==
             // LinkGraphicConstants.COLUMN_MAJOR?"column":"row")+
-            //                        " " + i);
+            // " " + i);
         }
 
         Debug.message("linkdetail", "LinkGrid read all the data.");
@@ -351,13 +367,11 @@ public class LinkGrid implements LinkGraphicConstants {
 
         Debug.message("linkdetail", "LinkGrid created OMGrid.");
 
-        LinkProperties properties = new LinkProperties(dis);
-
         if (grid != null) {
             grid.setMajor(major == LinkGraphicConstants.COLUMN_MAJOR ? true
                     : false);
             grid.setOrientation(orientation);
-            grid.setAppObject(properties);
+            LinkProperties.loadPropertiesIntoOMGraphic(dis, grid, propertiesBuffer);
         }
 
         Debug.message("linkdetail", "LinkGrid done.");

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkConstants.java,v $
 // $RCSfile: LinkConstants.java,v $
-// $Revision: 1.4 $
-// $Date: 2006/10/10 22:05:16 $
+// $Revision: 1.5 $
+// $Date: 2007/02/26 17:12:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,62 +35,62 @@ public interface LinkConstants {
     public final static String END_TOTAL = "\r";
     /** The symbol used to end a section/part of a request/response. */
     public final static String END_SECTION = "\n";
-    /** The Link Protocol version. Latest version is 0.3. */
-    public static final float LINK_VERSION = 0.3f;
+    /** The Link Protocol version. Latest version is 0.6. */
+    public static final float LINK_VERSION = 0.6f;
 
     /** Graphics request header. */
-    public static final String MAP_REQUEST_HEADER = "<OMLINK:MAP_REQUEST>";
+    public static final String MAP_REQUEST_HEADER = "<MR>";
     /** Gesture request header. */
-    public static final String ACTION_REQUEST_HEADER = "<OMLINK:ACTION_REQUEST>";
+    public static final String ACTION_REQUEST_HEADER = "<AR>";
     /** GUI request header. */
-    public static final String GUI_REQUEST_HEADER = "<OMLINK:GUI_REQUEST>";
+    public static final String GUI_REQUEST_HEADER = "<GUIR>";
     /** Graphics response header. */
-    public static final String GRAPHICS_HEADER = "<OMLINK:GRAPHICS>";
+    public static final String GRAPHICS_HEADER = "<G>";
     /** Gesture response header. */
-    public static final String ACTIONS_HEADER = "<OMLINK:ACTIONS>";
+    public static final String ACTIONS_HEADER = "<A>";
     /** GUI response header. */
-    public static final String GUI_HEADER = "<OMLINK:GUI>";
+    public static final String GUI_HEADER = "<GUI>";
     /** Close Link header. */
-    public static final String CLOSE_LINK_HEADER = "<OMLINK:CLOSE_LINK>";
+    public static final String CLOSE_LINK_HEADER = "<Q>";
     /** No Action header. */
-    public static final String HUH_HEADER = "<OMLINK:HUH?>";
+    public static final String HUH_HEADER = "<?>";
     /** Ping request header. */
-    public static final String PING_REQUEST_HEADER = "<OMLINK:PING_REQUEST>";
+    public static final String PING_REQUEST_HEADER = "<PRQ>";
     /** Ping response header */
-    public static final String PING_RESPONSE_HEADER = "<OMLINK:PING_RESPONSE>";
+    public static final String PING_RESPONSE_HEADER = "<PR>";
     /** Header to instruct the other other side to quit. */
-    public static final String SHUTDOWN_HEADER = "<OMLINK:SHUTDOWN>";
+    public static final String SHUTDOWN_HEADER = "<SDWN>";
 
     /** Bitmap graphic object header. */
-    public static final String BITMAP_HEADER = "<OMLINK:BITMAP>";
+    public static final String BITMAP_HEADER = "<B>";
     /** Text graphic object header. */
-    public static final String TEXT_HEADER = "<OMLINK:TEXT>";
+    public static final String TEXT_HEADER = "<T>";
     /** Poly graphic object header. */
-    public static final String POLY_HEADER = "<OMLINK:POLY>";
+    public static final String POLY_HEADER = "<PY>";
     /** Line graphic object header. */
-    public static final String LINE_HEADER = "<OMLINK:LINE>";
+    public static final String LINE_HEADER = "<L>";
     /** Rectangle graphic object header. */
-    public static final String RECTANGLE_HEADER = "<OMLINK:RECTANGLE>";
+    public static final String RECTANGLE_HEADER = "<RE>";
     /** Circle graphic object header. */
-    public static final String CIRCLE_HEADER = "<OMLINK:CIRCLE>";
+    public static final String CIRCLE_HEADER = "<C>";
     /** Raster graphic object header. */
-    public static final String RASTER_HEADER = "<OMLINK:RASTER>";
+    public static final String RASTER_HEADER = "<RA>";
     /** Grid graphic object header. */
-    public static final String GRID_HEADER = "<OMLINK:GRID>";
-    /** Graphic graphic object header. */
-    public static final String GRAPHIC_HEADER = "<OMLINK:GRAPHIC>";
+    public static final String GRID_HEADER = "<GD>";
+    /** Generic graphic object header. */
+    public static final String GRAPHIC_HEADER = "<GR>";
     /** Point graphic object header. */
-    public static final String POINT_HEADER = "<OMLINK:POINT>";
+    public static final String POINT_HEADER = "<PO>";
     /** Arc graphic object header. */
-    public static final String ARC_HEADER = "<OMLINK:ARC>";
+    public static final String ARC_HEADER = "<A>";
     /** Ellipse graphic object header. */
-    public static final String ELLIPSE_HEADER = "<OMLINK:ELLIPSE>";
+    public static final String ELLIPSE_HEADER = "<E>";
 
     /** Graphics action object header. */
-    public static final String UPDATE_GRAPHICS = "<OMLINK:UPDATE_GRAPHICS>";
+    public static final String UPDATE_GRAPHICS = "<UG>";
     /** GUI action object header. */
-    public static final String UPDATE_GUI = "<OMLINK:UPDATE_GUI>";
+    public static final String UPDATE_GUI = "<UGUI>";
     /** Map action object header. */
-    public static final String UPDATE_MAP = "<OMLINK:UPDATE_MAP>";
+    public static final String UPDATE_MAP = "<UM>";
 
 }

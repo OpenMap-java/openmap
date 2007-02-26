@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkRaster.java,v $
 // $RCSfile: LinkRaster.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:57 $
+// $Revision: 1.5 $
+// $Date: 2007/02/26 17:12:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,9 +50,8 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param w width of the image, in pixels.
      * @param h height of the image, in pixels.
      * @param pix color values for the pixels.
-     * @param properties description of drawing attributes. Not used,
-     *        but included to be consistant with the protocol graphics
-     *        format.
+     * @param properties description of drawing attributes. Not used, but
+     *        included to be consistant with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -61,9 +60,9 @@ public class LinkRaster implements LinkGraphicConstants,
             throws IOException {
 
         dos.write(Link.RASTER_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_RASTER);
-        dos.writeInt(RENDERTYPE_LATLON);
-        dos.writeInt(COLORMODEL_DIRECT);
+        dos.writeByte(GRAPHICTYPE_RASTER);
+        dos.writeByte(RENDERTYPE_LATLON);
+        dos.writeByte(COLORMODEL_DIRECT);
         dos.writeFloat(lt);
         dos.writeFloat(ln);
         dos.writeInt(w);
@@ -84,9 +83,8 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param w width of the image, in pixels.
      * @param h height of the image, in pixels.
      * @param pix color values for the pixels.
-     * @param properties description of drawing attributes. Not used,
-     *        but included to be consistant with the protocol graphics
-     *        format.
+     * @param properties description of drawing attributes. Not used, but
+     *        included to be consistant with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -95,9 +93,9 @@ public class LinkRaster implements LinkGraphicConstants,
             throws IOException {
 
         dos.write(Link.RASTER_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_RASTER);
-        dos.writeInt(RENDERTYPE_XY);
-        dos.writeInt(COLORMODEL_DIRECT);
+        dos.writeByte(GRAPHICTYPE_RASTER);
+        dos.writeByte(RENDERTYPE_XY);
+        dos.writeByte(COLORMODEL_DIRECT);
         dos.writeInt(x1);
         dos.writeInt(y1);
         dos.writeInt(w);
@@ -115,16 +113,14 @@ public class LinkRaster implements LinkGraphicConstants,
      * colormodel.
      * 
      * @param lt latitude of the top of the image, before the offset.
-     * @param ln longitude of the left side of the image, before the
-     *        offset.
+     * @param ln longitude of the left side of the image, before the offset.
      * @param offset_x1 number of pixels to move image to the right.
      * @param offset_y1 number of pixels to move image down.
      * @param w width of the image, in pixels.
      * @param h height of the image, in pixels.
      * @param pix color values for the pixels.
-     * @param properties description of drawing attributes. Not used,
-     *        but included to be consistant with the protocol graphics
-     *        format.
+     * @param properties description of drawing attributes. Not used, but
+     *        included to be consistant with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -134,9 +130,9 @@ public class LinkRaster implements LinkGraphicConstants,
             throws IOException {
 
         dos.write(Link.RASTER_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_RASTER);
-        dos.writeInt(RENDERTYPE_OFFSET);
-        dos.writeInt(COLORMODEL_DIRECT);
+        dos.writeByte(GRAPHICTYPE_RASTER);
+        dos.writeByte(RENDERTYPE_OFFSET);
+        dos.writeByte(COLORMODEL_DIRECT);
         dos.writeFloat(lt);
         dos.writeFloat(ln);
         dos.writeInt(offset_x1);
@@ -159,9 +155,8 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param image java.awt.Image to use for image.
      * @param image_width width of image in pixels.
      * @param image_height height of image in pixels.
-     * @param properties description of drawing attributes. Not used,
-     *        but included to be consistant with the protocol graphics
-     *        format.
+     * @param properties description of drawing attributes. Not used, but
+     *        included to be consistant with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -192,9 +187,8 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param image java.awt.Image to use for image.
      * @param image_width width of image in pixels.
      * @param image_height height of image in pixels.
-     * @param properties description of drawing attributes. Not used,
-     *        but included to be consistant with the protocol graphics
-     *        format.
+     * @param properties description of drawing attributes. Not used, but
+     *        included to be consistant with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -220,16 +214,14 @@ public class LinkRaster implements LinkGraphicConstants,
      * Write an image, Lat/Lon with X/Y placement with an ImageIcon.
      * 
      * @param lt latitude of the top of the image, before the offset.
-     * @param ln longitude of the left side of the image, before the
-     *        offset.
+     * @param ln longitude of the left side of the image, before the offset.
      * @param offset_x1 number of pixels to move image to the right.
      * @param offset_y1 number of pixels to move image down.
      * @param image java.awt.Image to use for image.
      * @param image_width width of image in pixels.
      * @param image_height height of image in pixels.
-     * @param properties description of drawing attributes. Not used,
-     *        but included to be consistant with the protocol graphics
-     *        format.
+     * @param properties description of drawing attributes. Not used, but
+     *        included to be consistant with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -259,9 +251,8 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param lt latitude of the top of the image.
      * @param ln longitude of the left side of the image.
      * @param ii ImageIcon to use for image.
-     * @param properties description of drawing attributes. Not used,
-     *        but included to be consistant with the protocol graphics
-     *        format.
+     * @param properties description of drawing attributes. Not used, but
+     *        included to be consistant with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -290,9 +281,8 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param x1 window location of the left side of the image.
      * @param y1 window location of the top of the image.
      * @param ii ImageIcon to use for image.
-     * @param properties description of drawing attributes. Not used,
-     *        but included to be consistant with the protocol graphics
-     *        format.
+     * @param properties description of drawing attributes. Not used, but
+     *        included to be consistant with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -319,14 +309,12 @@ public class LinkRaster implements LinkGraphicConstants,
      * Write an image, Lat/Lon with X/Y placement with an ImageIcon.
      * 
      * @param lt latitude of the top of the image, before the offset.
-     * @param ln longitude of the left side of the image, before the
-     *        offset.
+     * @param ln longitude of the left side of the image, before the offset.
      * @param offset_x1 number of pixels to move image to the right.
      * @param offset_y1 number of pixels to move image down.
      * @param ii ImageIcon to use for image.
-     * @param properties description of drawing attributes. Not used,
-     *        but included to be consistant with the protocol graphics
-     *        format.
+     * @param properties description of drawing attributes. Not used, but
+     *        included to be consistant with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -353,7 +341,7 @@ public class LinkRaster implements LinkGraphicConstants,
 
     }
 
-    ////////////////////////////////////// IMAGEICON LOADED FROM AN
+    // //////////////////////////////////// IMAGEICON LOADED FROM AN
     // URL
 
     /**
@@ -362,9 +350,8 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param lt latitude of the top of the image.
      * @param ln longitude of the left side of the image.
      * @param url URL to download the image from.
-     * @param properties description of drawing attributes. Not used,
-     *        but included to be consistant with the protocol graphics
-     *        format.
+     * @param properties description of drawing attributes. Not used, but
+     *        included to be consistant with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -373,9 +360,9 @@ public class LinkRaster implements LinkGraphicConstants,
             throws IOException {
 
         dos.write(Link.RASTER_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_RASTER);
-        dos.writeInt(RENDERTYPE_LATLON);
-        dos.writeInt(COLORMODEL_URL);
+        dos.writeByte(GRAPHICTYPE_RASTER);
+        dos.writeByte(RENDERTYPE_LATLON);
+        dos.writeByte(COLORMODEL_URL);
         dos.writeFloat(lt);
         dos.writeFloat(ln);
         properties.setProperty(LPC_LINKRASTERIMAGEURL, url);
@@ -388,9 +375,8 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param x1 window location of the left side of the image.
      * @param y1 window location of the top of the image.
      * @param url URL to download the image from.
-     * @param properties description of drawing attributes. Not used,
-     *        but included to be consistant with the protocol graphics
-     *        format.
+     * @param properties description of drawing attributes. Not used, but
+     *        included to be consistant with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -399,9 +385,9 @@ public class LinkRaster implements LinkGraphicConstants,
             throws IOException {
 
         dos.write(Link.RASTER_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_RASTER);
-        dos.writeInt(RENDERTYPE_XY);
-        dos.writeInt(COLORMODEL_URL);
+        dos.writeByte(GRAPHICTYPE_RASTER);
+        dos.writeByte(RENDERTYPE_XY);
+        dos.writeByte(COLORMODEL_URL);
         dos.writeInt(x1);
         dos.writeInt(y1);
         properties.setProperty(LPC_LINKRASTERIMAGEURL, url);
@@ -412,14 +398,12 @@ public class LinkRaster implements LinkGraphicConstants,
      * Write an image, Lat/Lon with X/Y placement with an ImageIcon.
      * 
      * @param lt latitude of the top of the image, before the offset.
-     * @param ln longitude of the left side of the image, before the
-     *        offset.
+     * @param ln longitude of the left side of the image, before the offset.
      * @param offset_x1 number of pixels to move image to the right.
      * @param offset_y1 number of pixels to move image down.
      * @param url URL to download the image from.
-     * @param properties description of drawing attributes. Not used,
-     *        but included to be consistant with the protocol graphics
-     *        format.
+     * @param properties description of drawing attributes. Not used, but
+     *        included to be consistant with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -428,9 +412,9 @@ public class LinkRaster implements LinkGraphicConstants,
                              DataOutputStream dos) throws IOException {
 
         dos.write(Link.RASTER_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_RASTER);
-        dos.writeInt(RENDERTYPE_OFFSET);
-        dos.writeInt(COLORMODEL_URL);
+        dos.writeByte(GRAPHICTYPE_RASTER);
+        dos.writeByte(RENDERTYPE_OFFSET);
+        dos.writeByte(COLORMODEL_URL);
         dos.writeFloat(lt);
         dos.writeFloat(ln);
         dos.writeInt(offset_x1);
@@ -439,12 +423,12 @@ public class LinkRaster implements LinkGraphicConstants,
         properties.write(dos);
     }
 
-    ////////////////////////////////////// BYTE PIXELS with
+    // //////////////////////////////////// BYTE PIXELS with
     // COLORTABLE
 
     /**
-     * Lat/Lon placement with a indexed colormodel, which is using a
-     * colortable and a byte array to contruct the int[] pixels.
+     * Lat/Lon placement with a indexed colormodel, which is using a colortable
+     * and a byte array to contruct the int[] pixels.
      * 
      * @param lt latitude of the top of the image.
      * @param ln longitude of the left side of the image.
@@ -453,9 +437,8 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param bytes colortable index values for the pixels.
      * @param colorTable color array corresponding to bytes
      * @param trans transparency of image.
-     * @param properties description of drawing attributes. Not used,
-     *        but included to be consistant with the protocol graphics
-     *        format.
+     * @param properties description of drawing attributes. Not used, but
+     *        included to be consistant with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -465,9 +448,9 @@ public class LinkRaster implements LinkGraphicConstants,
             throws IOException {
 
         dos.write(Link.RASTER_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_RASTER);
-        dos.writeInt(RENDERTYPE_LATLON);
-        dos.writeInt(COLORMODEL_INDEXED);
+        dos.writeByte(GRAPHICTYPE_RASTER);
+        dos.writeByte(RENDERTYPE_LATLON);
+        dos.writeByte(COLORMODEL_INDEXED);
         dos.writeFloat(lt);
         dos.writeFloat(ln);
         dos.writeInt(w);
@@ -486,8 +469,8 @@ public class LinkRaster implements LinkGraphicConstants,
     }
 
     /**
-     * XY placement with a indexed colormodel, which is using a
-     * colortable and a byte array to contruct the int[] pixels.
+     * XY placement with a indexed colormodel, which is using a colortable and a
+     * byte array to contruct the int[] pixels.
      * 
      * @param x1 window location of the left side of the image.
      * @param y1 window location of the top of the image.
@@ -496,9 +479,8 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param bytes colortable index values for the pixels.
      * @param colorTable color array corresponding to bytes
      * @param trans transparency of image.
-     * @param properties description of drawing attributes. Not used,
-     *        but included to be consistant with the protocol graphics
-     *        format.
+     * @param properties description of drawing attributes. Not used, but
+     *        included to be consistant with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -508,9 +490,9 @@ public class LinkRaster implements LinkGraphicConstants,
             throws IOException {
 
         dos.write(Link.RASTER_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_RASTER);
-        dos.writeInt(RENDERTYPE_XY);
-        dos.writeInt(COLORMODEL_INDEXED);
+        dos.writeByte(GRAPHICTYPE_RASTER);
+        dos.writeByte(RENDERTYPE_XY);
+        dos.writeByte(COLORMODEL_INDEXED);
         dos.writeInt(x1);
         dos.writeInt(y1);
         dos.writeInt(w);
@@ -529,13 +511,11 @@ public class LinkRaster implements LinkGraphicConstants,
     }
 
     /**
-     * Lat/lon placement with XY offset with a indexed colormodel,
-     * which is using a colortable and a byte array to construct the
-     * int[] pixels.
+     * Lat/lon placement with XY offset with a indexed colormodel, which is
+     * using a colortable and a byte array to construct the int[] pixels.
      * 
      * @param lt latitude of the top of the image, before the offset.
-     * @param ln longitude of the left side of the image, before the
-     *        offset.
+     * @param ln longitude of the left side of the image, before the offset.
      * @param offset_x1 number of pixels to move image to the right.
      * @param offset_y1 number of pixels to move image down.
      * @param w width of the image, in pixels.
@@ -543,9 +523,8 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param bytes colortable index values for the pixels.
      * @param colorTable color array corresponding to bytes
      * @param trans transparency of image.
-     * @param properties description of drawing attributes. Not used,
-     *        but included to be consistant with the protocol graphics
-     *        format.
+     * @param properties description of drawing attributes. Not used, but
+     *        included to be consistant with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -555,9 +534,9 @@ public class LinkRaster implements LinkGraphicConstants,
                              DataOutputStream dos) throws IOException {
 
         dos.write(Link.RASTER_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_RASTER);
-        dos.writeInt(RENDERTYPE_OFFSET);
-        dos.writeInt(COLORMODEL_INDEXED);
+        dos.writeByte(GRAPHICTYPE_RASTER);
+        dos.writeByte(RENDERTYPE_OFFSET);
+        dos.writeByte(COLORMODEL_INDEXED);
         dos.writeFloat(lt);
         dos.writeFloat(ln);
         dos.writeInt(offset_x1);
@@ -594,8 +573,8 @@ public class LinkRaster implements LinkGraphicConstants,
     }
 
     /**
-     * Read the DataInputStream, and create an OMRaster. Assumes that
-     * the LinkRaster header has been read from the link.
+     * Read the DataInputStream, and create an OMRaster. Assumes that the
+     * LinkRaster header has been read from the link.
      * 
      * @param dis DataInputStream
      * @return OMRaster
@@ -603,6 +582,23 @@ public class LinkRaster implements LinkGraphicConstants,
      * @see com.bbn.openmap.omGraphics.OMRaster
      */
     public static OMRaster read(DataInputStream dis) throws IOException {
+        return read(dis, null);
+    }
+
+    /**
+     * Read the DataInputStream, and create an OMRaster. Assumes that the
+     * LinkRaster header has been read from the link.
+     * 
+     * @param dis DataInputStream
+     * @param propertiesBuffer a LinkProperties object used to cache previous
+     *        settings that can be set on the OMPoly being read.
+     * @return OMRaster
+     * @throws IOException
+     * @see com.bbn.openmap.omGraphics.OMRaster
+     */
+    public static OMRaster read(DataInputStream dis,
+                                LinkProperties propertiesBuffer)
+            throws IOException {
 
         OMRaster raster = null;
         float lat = 0;
@@ -616,8 +612,8 @@ public class LinkRaster implements LinkGraphicConstants,
 
         Debug.message("link", "LinkRaster | Reading Raster graphic");
 
-        int renderType = dis.readInt();
-        int colorModel = dis.readInt();
+        int renderType = dis.readByte();
+        int colorModel = dis.readByte();
 
         if (Debug.debugging("link")) {
             System.out.println("LinkRaster | Rendertype = " + renderType
@@ -628,7 +624,7 @@ public class LinkRaster implements LinkGraphicConstants,
         case RENDERTYPE_OFFSET:
             lat = dis.readFloat();
             lon = dis.readFloat();
-        // Fall through...
+            // Fall through...
         case RENDERTYPE_XY:
             x = dis.readInt();
             y = dis.readInt();
@@ -729,7 +725,7 @@ public class LinkRaster implements LinkGraphicConstants,
             }
         }
 
-        LinkProperties properties = new LinkProperties(dis);
+        LinkProperties properties = LinkProperties.read(dis, propertiesBuffer);
 
         if (colorModel == COLORMODEL_URL) {
             url = properties.getProperty(LPC_LINKRASTERIMAGEURL);
@@ -750,7 +746,7 @@ public class LinkRaster implements LinkGraphicConstants,
         }
 
         if (raster != null) {
-            raster.setAppObject(properties);
+            properties.setProperties(raster);
             raster.setRotationAngle((double) ProjMath.degToRad(PropUtils.floatFromProperties(properties,
                     LPC_LINKROTATION,
                     0.0f)));

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkText.java,v $
 // $RCSfile: LinkText.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/09 18:08:42 $
+// $Revision: 1.7 $
+// $Date: 2007/02/26 17:12:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,11 +54,11 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
                              DataOutputStream dos) throws IOException {
 
         dos.write(Link.TEXT_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_TEXT);
-        dos.writeInt(RENDERTYPE_LATLON);
+        dos.writeByte(GRAPHICTYPE_TEXT);
+        dos.writeByte(RENDERTYPE_LATLON);
         dos.writeFloat(latPoint);
         dos.writeFloat(lonPoint);
-        dos.writeInt(just);
+        dos.writeByte(just);
 
         properties.setProperty(LPC_LINKTEXTSTRING, stuff);
         properties.setProperty(LPC_LINKTEXTFONT, font);
@@ -83,11 +83,11 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
                              DataOutputStream dos) throws IOException {
 
         dos.write(Link.TEXT_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_TEXT);
-        dos.writeInt(RENDERTYPE_XY);
+        dos.writeByte(GRAPHICTYPE_TEXT);
+        dos.writeByte(RENDERTYPE_XY);
         dos.writeInt(x1);
         dos.writeInt(y1);
-        dos.writeInt(just);
+        dos.writeByte(just);
 
         properties.setProperty(LPC_LINKTEXTSTRING, stuff);
         properties.setProperty(LPC_LINKTEXTFONT, font);
@@ -116,12 +116,13 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
                              DataOutputStream dos) throws IOException {
 
         dos.write(Link.TEXT_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_TEXT);
-        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeByte(GRAPHICTYPE_TEXT);
+        dos.writeByte(RENDERTYPE_OFFSET);
         dos.writeFloat(latPoint);
         dos.writeFloat(lonPoint);
         dos.writeInt(offset_x1);
         dos.writeInt(offset_y1);
+        dos.writeByte(just);
 
         properties.setProperty(LPC_LINKTEXTSTRING, stuff);
         properties.setProperty(LPC_LINKTEXTFONT, font);
@@ -169,7 +170,31 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
         }
     }
 
+    /**
+     * Read the DataInputStream to create a OMText. Assumes the LinkText header
+     * has already been read.
+     * 
+     * @param dis DataInputStream
+     * @return OMText
+     * @throws IOException
+     * @see com.bbn.openmap.omGraphics.OMText
+     */
     public static OMText read(DataInputStream dis) throws IOException {
+        return read(dis, null);
+    }
+    
+    /**
+     * Read the DataInputStream to create a OMText. Assumes the LinkText header
+     * has already been read.
+     * 
+     * @param dis DataInputStream
+     * @param propertiesBuffer a LinkProperties object used to cache previous
+     *        settings that can be set on the OMText being read.
+     * @return OMText
+     * @throws IOException
+     * @see com.bbn.openmap.omGraphics.OMText
+     */
+    public static OMText read(DataInputStream dis, LinkProperties propertiesBuffer) throws IOException {
 
         OMText text = null;
         float lat = 0;
@@ -179,7 +204,7 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
         int just = 0;
         String string, font;
 
-        int renderType = dis.readInt();
+        int renderType = dis.readByte();
 
         switch (renderType) {
         case RENDERTYPE_OFFSET:
@@ -195,9 +220,9 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
             lon = dis.readFloat();
         }
 
-        just = dis.readInt();
+        just = dis.readByte();
 
-        LinkProperties properties = new LinkProperties(dis);
+        LinkProperties properties = LinkProperties.read(dis, propertiesBuffer);
 
         string = properties.getProperty(LPC_LINKTEXTSTRING);
         font = properties.getProperty(LPC_LINKTEXTFONT);

@@ -7,8 +7,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkEllipse.java,v $
 // $RCSfile: LinkEllipse.java,v $
-// $Revision: 1.2 $
-// $Date: 2006/10/10 22:05:17 $
+// $Revision: 1.3 $
+// $Date: 2007/02/26 17:12:46 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,13 +55,13 @@ public class LinkEllipse implements LinkGraphicConstants,
             throws IOException {
 
         dos.write(Link.ELLIPSE_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_ELLIPSE);
-        dos.writeInt(RENDERTYPE_LATLON);
+        dos.writeByte(GRAPHICTYPE_ELLIPSE);
+        dos.writeByte(RENDERTYPE_LATLON);
         dos.writeFloat(latPoint);
         dos.writeFloat(lonPoint);
         dos.writeFloat(majorAxisSpan);
         dos.writeFloat(minorAxisSpan);
-        dos.writeInt(units);
+        dos.writeByte(units);
         dos.writeFloat(rotationAngle);
         properties.write(dos);
     }
@@ -81,8 +81,8 @@ public class LinkEllipse implements LinkGraphicConstants,
                              LinkProperties properties, DataOutputStream dos)
             throws IOException {
         dos.write(Link.ELLIPSE_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_ELLIPSE);
-        dos.writeInt(RENDERTYPE_XY);
+        dos.writeByte(GRAPHICTYPE_ELLIPSE);
+        dos.writeByte(RENDERTYPE_XY);
         dos.writeInt(x1);
         dos.writeInt(y1);
         dos.writeInt(majorAxisSpan);
@@ -125,8 +125,8 @@ public class LinkEllipse implements LinkGraphicConstants,
                              LinkProperties properties, DataOutputStream dos)
             throws IOException {
         dos.write(Link.ELLIPSE_HEADER.getBytes());
-        dos.writeInt(GRAPHICTYPE_ELLIPSE);
-        dos.writeInt(RENDERTYPE_OFFSET);
+        dos.writeByte(GRAPHICTYPE_ELLIPSE);
+        dos.writeByte(RENDERTYPE_OFFSET);
         dos.writeFloat(latPoint);
         dos.writeFloat(lonPoint);
         dos.writeInt(offset_x1);
@@ -148,7 +148,7 @@ public class LinkEllipse implements LinkGraphicConstants,
                     llp.getLongitude(),
                     (float) Length.KM.fromRadians(ellipse.getMajorAxis()),
                     (float) Length.KM.fromRadians(ellipse.getMinorAxis()),
-                    0, /* Length.KM*/
+                    0, /* Length.KM */
                     (float) ellipse.getRotationAngle(),
                     props,
                     link.dos);
@@ -189,11 +189,26 @@ public class LinkEllipse implements LinkGraphicConstants,
      * @see com.bbn.openmap.omGraphics.OMEllipse
      */
     public static OMEllipse read(DataInputStream dis) throws IOException {
+        return read(dis, null);
+    }
 
+    /**
+     * Read the ellipse protocol off the data input, and return an OMEllipse.
+     * Assumes the header for the graphic has already been read.
+     * 
+     * @param dis the DataInputStream
+     * @param propertiesBuffer a LinkProperties object used to cache previous
+     *        settings that can be set on the OMPoly being read.
+     * @return OMEllipse
+     * @throws IOException
+     * @see com.bbn.openmap.omGraphics.OMEllipse
+     */
+    public static OMEllipse read(DataInputStream dis,
+                                 LinkProperties propertiesBuffer)
+            throws IOException {
         OMEllipse ellipse = null;
-        LinkProperties properties = null;
 
-        int renderType = dis.readInt();
+        int renderType = dis.readByte();
 
         switch (renderType) {
         case RENDERTYPE_LATLON: {
@@ -201,7 +216,7 @@ public class LinkEllipse implements LinkGraphicConstants,
             float lon = dis.readFloat();
             double majorAxisSpan = dis.readFloat();
             double minorAxisSpan = dis.readFloat();
-            int units = dis.readInt();
+            int units = dis.readByte();
             double rotationAngle = dis.readFloat();
 
             Length unit = Length.DECIMAL_DEGREE;
@@ -219,8 +234,6 @@ public class LinkEllipse implements LinkGraphicConstants,
                 break;
             }
 
-            properties = new LinkProperties(dis);
-
             ellipse = new OMEllipse(new LatLonPoint(lat, lon), majorAxisSpan, minorAxisSpan, unit, rotationAngle);
             break;
         }
@@ -230,7 +243,6 @@ public class LinkEllipse implements LinkGraphicConstants,
             int majorAxisSpan = dis.readInt();
             int minorAxisSpan = dis.readInt();
             double rotationAngle = dis.readFloat();
-            properties = new LinkProperties(dis);
 
             ellipse = new OMEllipse(x, y, majorAxisSpan, minorAxisSpan, rotationAngle);
             break;
@@ -244,8 +256,6 @@ public class LinkEllipse implements LinkGraphicConstants,
             int h = dis.readInt();
             double rotationAngle = dis.readFloat();
 
-            properties = new LinkProperties(dis);
-
             ellipse = new OMEllipse(new LatLonPoint(lat, lon), offsetX, offsetY, w, h, rotationAngle);
             break;
         }
@@ -256,7 +266,7 @@ public class LinkEllipse implements LinkGraphicConstants,
         }
 
         if (ellipse != null) {
-            properties.setProperties(ellipse);
+            LinkProperties.loadPropertiesIntoOMGraphic(dis, ellipse, propertiesBuffer);
         }
 
         return ellipse;
