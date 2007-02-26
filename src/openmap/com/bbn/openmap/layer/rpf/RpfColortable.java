@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfColortable.java,v $
 // $RCSfile: RpfColortable.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:03 $
+// $Revision: 1.5 $
+// $Date: 2007/02/26 17:34:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,12 +42,11 @@ import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.Debug;
 
 /**
- * Set up the colors used in creating the images. They are created
- * from RGB value arrays read in from the RPF file. If the number of
- * colors that are allowed is less than 216, then the RpfColortable
- * looks inside the RpfFile and uses the color conversion tables
- * inside. There will still be 216 color indexes, but some of the
- * colors will be duplicates.
+ * Set up the colors used in creating the images. They are created from RGB
+ * value arrays read in from the RPF file. If the number of colors that are
+ * allowed is less than 216, then the RpfColortable looks inside the RpfFile and
+ * uses the color conversion tables inside. There will still be 216 color
+ * indexes, but some of the colors will be duplicates.
  */
 public class RpfColortable {
 
@@ -59,9 +58,9 @@ public class RpfColortable {
     public final static int DEFAULT_OPAQUENESS = 255;
 
     /**
-     * Color conversion table (to be filled) from within frame,
-     * colortable section. The colortable is always 216 entries long.
-     * If you want fewer colors, some of the entries are duplicated.
+     * Color conversion table (to be filled) from within frame, colortable
+     * section. The colortable is always 216 entries long. If you want fewer
+     * colors, some of the entries are duplicated.
      */
     public int[] colorConvTable = new int[CADRG_COLORS];
     /** Index to use a color conversion table, and if so, which one. */
@@ -76,13 +75,13 @@ public class RpfColortable {
     /** Chart Series Code for these colors. */
     public String seriesCode;
     /**
-     * The index of the A.TOC file in the RpfTocHandler being used for
-     * the current colors.
+     * The index of the A.TOC file in the RpfTocHandler being used for the
+     * current colors.
      */
     protected int tocNumber = -1;
     /**
-     * The index of the RpfEntry in the A.TOC file being used for the
-     * current colors.
+     * The index of the RpfEntry in the A.TOC file being used for the current
+     * colors.
      */
     protected int entryNumber = -1;
 
@@ -101,11 +100,26 @@ public class RpfColortable {
     }
 
     /**
+     * Load the provided colortable with the color values of this colortable.
+     * The A.TOC values that are set by the RpfFrameCacheHandler are not set,
+     * just the color table information read from the RPF frame file.
+     * 
+     * @param colortable
+     */
+    public void setFrom(RpfColortable colortable) {
+        colors = colortable.colors;
+        reducedColorTable = colortable.reducedColorTable;
+        colorConvTable = colortable.colorConvTable;
+        Cib = colortable.Cib;
+        opaqueness = colortable.opaqueness;
+        zone = colortable.zone;
+    }
+
+    /**
      * Set the alpha values of the OMColors, which governs the
      * transparency/opaqueness of the images.
      * 
-     * @param value index between 0-255 (0 is transparent, 255 is
-     *        opaque)
+     * @param value index between 0-255 (0 is transparent, 255 is opaque)
      */
     public void setOpaqueness(int value) {
         opaqueness = value;
@@ -124,11 +138,10 @@ public class RpfColortable {
 
     /**
      * Set the alpha values of the OMColors, which governs the
-     * transparency/opaqueness of the images. This method lets you set
-     * the value as a percentage between 0-100.
+     * transparency/opaqueness of the images. This method lets you set the value
+     * as a percentage between 0-100.
      * 
-     * @param percent index between 0-100 (0 is transparent, 100 is
-     *        opaque)
+     * @param percent index between 0-100 (0 is transparent, 100 is opaque)
      */
     public void setOpaquePercent(int percent) {
         setOpaqueness((int) ((float) (percent * 2.55)));
@@ -155,20 +168,18 @@ public class RpfColortable {
     }
 
     /**
-     * Returns the color reduction index. These values correspond to
-     * the constants defined in this class.
+     * Returns the color reduction index. These values correspond to the
+     * constants defined in this class.
      */
     public int getColorTableReduction() {
         return reducedColorTable;
     }
 
     /**
-     * If this object is going to provide colors for CIB imagery, you
-     * have to let this object know that. Set this to true. It is
-     * false by default.
+     * If this object is going to provide colors for CIB imagery, you have to
+     * let this object know that. Set this to true. It is false by default.
      * 
-     * @param value true if the colortable will be used for greyscale
-     *        images.
+     * @param value true if the colortable will be used for greyscale images.
      */
     public void setCib(boolean value) {
         Cib = value;
@@ -179,8 +190,8 @@ public class RpfColortable {
     }
 
     /**
-     * Should be set when a new colortable is read in, so that you can
-     * tell when you don't have to read a new one.
+     * Should be set when a new colortable is read in, so that you can tell when
+     * you don't have to read a new one.
      */
     public void setATOCIndexes(int tocIndex, int entryIndex) {
         tocNumber = tocIndex;
@@ -188,39 +199,36 @@ public class RpfColortable {
     }
 
     /**
-     * Return true of the toc index and entry index are the same as
-     * what the colortable is currently holding.
+     * Return true of the toc index and entry index are the same as what the
+     * colortable is currently holding.
      */
     public boolean isSameATOCIndexes(int tocIndex, int entryIndex) {
         return (tocIndex == tocNumber && entryIndex == entryNumber);
     }
 
     /**
-     * Not really used, but someone might need them. Returns the A.TOC
-     * index number of the colors, to compare to see if a new
-     * colortable is needed.
+     * Not really used, but someone might need them. Returns the A.TOC index
+     * number of the colors, to compare to see if a new colortable is needed.
      */
     public int getTocNumber() {
         return tocNumber;
     }
 
     /**
-     * Not really used, but someone might need them. Returns the A.TOC
-     * entry number of the colors, to compare to see if a new
-     * colortable is needed.
+     * Not really used, but someone might need them. Returns the A.TOC entry
+     * number of the colors, to compare to see if a new colortable is needed.
      */
     public int getEntryNumber() {
         return entryNumber;
     }
 
     /**
-     * The method to call to read in the colortable from within the
-     * RPF file. The method will use the input to determine where in
-     * the file to read from.
+     * The method to call to read in the colortable from within the RPF file.
+     * The method will use the input to determine where in the file to read
+     * from.
      * 
      * @param binFile the file to read it in from.
-     * @param loc the RpfLocationRecord that tells you where the
-     *        sections are.
+     * @param loc the RpfLocationRecord that tells you where the sections are.
      * @return an array of OMColors to use in images.
      */
     public Color[] parseColorLookUpTable(BinaryFile binFile,
@@ -230,7 +238,7 @@ public class RpfColortable {
             Debug.output("RpfColortable:  creating new colors for colortable.");
         }
 
-        //  change this to the proper color structur
+        // change this to the proper color structur
         Color[] rgb = new Color[CADRG_COLORS]; /* DKS NEW: 216 */
         int i, j;
 
@@ -238,17 +246,17 @@ public class RpfColortable {
         int red, green, blue, alpha;
 
         int numColorOffsetRecs; // uchar, # of color/gray offset
-                                // records */
-        int numColorConvOffsetRecs; //uchar
-        int offsetRecordLength = 17; //ushort
+        // records */
+        int numColorConvOffsetRecs; // uchar
+        int offsetRecordLength = 17; // ushort
 
         /* see frame.h */
         ColorOffset[] colorOffset;
 
-        long colormapOffsetTableOffset; //uint
+        long colormapOffsetTableOffset; // uint
 
         /* color converter subsection hdr */
-        long colorConvOffsetTableOffset; //uint
+        long colorConvOffsetTableOffset; // uint
         int colorConvOffsetRecl; // ushort
         int colorConvRecl; // ushort
 
@@ -284,8 +292,7 @@ public class RpfColortable {
             colorOffset = new ColorOffset[numColorOffsetRecs];
 
             /*
-             * DKS. Read color/gray offset records (colormap
-             * subsection)
+             * DKS. Read color/gray offset records (colormap subsection)
              */
             if (Debug.debugging("rpfdetail")) {
                 Debug.output("RpfColortable: Colormap subsection loc[1]: "
@@ -308,14 +315,10 @@ public class RpfColortable {
             }
 
             if (reducedColorTable == COLORS_216 || Cib) { /*
-                                                           * 216 or
-                                                           * 217
-                                                           * colors
-                                                           * desired.
-                                                           * No cct
-                                                           * reading
-                                                           * needed
-                                                           */
+                                                             * 216 or 217 colors
+                                                             * desired. No cct
+                                                             * reading needed
+                                                             */
                 /* Read colormap offset table */
                 for (i = 0; i < numColorOffsetRecs; i++) { /* 3 */
                     colorOffset[i] = new ColorOffset();
@@ -355,8 +358,8 @@ public class RpfColortable {
                     if (foundLUT) {
 
                         /*
-                         * Read the color/gray records: 216 or 217
-                         * (transp) color table.
+                         * Read the color/gray records: 216 or 217 (transp)
+                         * color table.
                          */
                         /* loc[1] is colormap subsection */
                         binFile.seek(loc[1].componentLocation
@@ -373,42 +376,36 @@ public class RpfColortable {
                             // Allocate the OMColor here......
                             if (Cib) {
                                 red = binFile.read() & 0x00ff; /*
-                                                                * read
-                                                                * mono
-                                                                * byte
-                                                                * value
-                                                                */
+                                                                 * read mono
+                                                                 * byte value
+                                                                 */
                                 alpha = opaqueness;
                                 green = red;
                                 blue = red;
                             } else {
                                 red = binFile.read() & 0x00ff; /*
-                                                                * read
-                                                                * byte
-                                                                * value
-                                                                */
+                                                                 * read byte
+                                                                 * value
+                                                                 */
                                 green = binFile.read() & 0x00ff; /*
-                                                                  * read
-                                                                  * byte
-                                                                  * value
-                                                                  */
+                                                                     * read byte
+                                                                     * value
+                                                                     */
                                 blue = binFile.read() & 0x00ff; /*
-                                                                 * read
-                                                                 * byte
+                                                                 * read byte
                                                                  * value
                                                                  */
                                 alpha = binFile.read(); /*
-                                                         * read byte
-                                                         * value
+                                                         * read byte value
                                                          */
 
                                 alpha = opaqueness;
 
                                 /* DKS NEW TRANSP */
                                 if (ncr == 217 && rgb[(int) (ncr - 1)] == null) { /*
-                                                                                   * transp
-                                                                                   * exists
-                                                                                   */
+                                                                                     * transp
+                                                                                     * exists
+                                                                                     */
                                     alpha = 255;
                                     red = 255;
                                     green = 255;
@@ -458,10 +455,8 @@ public class RpfColortable {
 
                 /* Color Converter offset table */
                 for (i = 0; i < numColorConvOffsetRecs; i++) { /*
-                                                                * 2
-                                                                * cct
-                                                                * recs
-                                                                */
+                                                                 * 2 cct recs
+                                                                 */
 
                     cct[i] = new ColorConversionTable();
                     cct[i].colorConvTableId = (int) binFile.readShort();
@@ -482,8 +477,8 @@ public class RpfColortable {
 
                 for (i = 0; i < numColorConvOffsetRecs; i++) { /* 2 */
                     /*
-                     * Read colormap subsection for this target table:
-                     * find # color/gray recs.
+                     * Read colormap subsection for this target table: find #
+                     * color/gray recs.
                      */
                     binFile.seek(loc[1].componentLocation
                             + cct[i].colorConvTargetTableOffset);
@@ -511,8 +506,7 @@ public class RpfColortable {
                     }
 
                     if (foundLUT) { /*
-                                     * continue reading colormap
-                                     * subsection
+                                     * continue reading colormap subsection
                                      */
                         colorOffset[i].colorElementLength = binFile.read();
                         colorOffset[i].histogramRecordLength = (int) binFile.readShort();
@@ -524,36 +518,30 @@ public class RpfColortable {
                             Debug.output(colorOffset[i].toString());
                         }
 
-                        //////////////////////////////
+                        // ////////////////////////////
                         /*
-                         * loc[1] is colormap subsection. Seek to
-                         * color/gray table.
+                         * loc[1] is colormap subsection. Seek to color/gray
+                         * table.
                          */
                         binFile.seek(loc[1].componentLocation
                                 + colorOffset[i].colorTableOffset);
 
                         /*
-                         * Read the color/gray records: 32 or 33, or
-                         * 16 or 17 color tables
+                         * Read the color/gray records: 32 or 33, or 16 or 17
+                         * color tables
                          */
                         for (j = 0; j < ncr; j++) { /*
-                                                     * 32 or 33, or 16
-                                                     * or 17
+                                                     * 32 or 33, or 16 or 17
                                                      */
                             red = binFile.read() & 0x00ff; /*
-                                                            * read
-                                                            * byte
-                                                            * value
-                                                            */
+                                                             * read byte value
+                                                             */
                             green = binFile.read() & 0x00ff; /*
-                                                              * read
-                                                              * byte
-                                                              * value
-                                                              */
+                                                                 * read byte
+                                                                 * value
+                                                                 */
                             blue = binFile.read() & 0x00ff; /*
-                                                             * read
-                                                             * byte
-                                                             * value
+                                                             * read byte value
                                                              */
                             alpha = binFile.read(); /* read byte value */
 
@@ -561,9 +549,9 @@ public class RpfColortable {
 
                             /* DKS NEW TRANSP */
                             if (ncr == 217 && rgb[(int) (ncr - 1)] == null) { /*
-                                                                               * transp
-                                                                               * exists
-                                                                               */
+                                                                                 * transp
+                                                                                 * exists
+                                                                                 */
                                 alpha = opaqueness;
                                 red = 255;
                                 green = 255;
@@ -609,9 +597,8 @@ public class RpfColortable {
             } /* else CCT needed */
 
             if (reducedColorTable == COLORS_216) { /*
-                                                    * 216 colors
-                                                    * chosen
-                                                    */
+                                                     * 216 colors chosen
+                                                     */
                 if (Debug.debugging("rpfdetail"))
                     Debug.output("RpfColortable: WARNING - Full 216 colors being used\n");
                 for (j = 0; j < CADRG_COLORS; j++) { /* 216 */
@@ -619,7 +606,7 @@ public class RpfColortable {
                 } /* for j */
             }
 
-            //  Since the CIB doesn't contain ccts, we need to fake
+            // Since the CIB doesn't contain ccts, we need to fake
             // it...
             if (Cib && reducedColorTable != COLORS_216) {
                 int divisor, midoffset;
@@ -653,7 +640,7 @@ public class RpfColortable {
                 }
 
             } // if Cib
-            //  For CADRG that has a cct or also Cib that doesn't
+            // For CADRG that has a cct or also Cib that doesn't
             /* DKS. cct added here instead of load_frame */
             else if (reducedColorTable != COLORS_216) {
                 for (j = 0; j < CADRG_COLORS; j++) { /* 216 */
@@ -721,11 +708,11 @@ public class RpfColortable {
 
     static public class ColorConversionTable {
 
-        public int colorConvTableId; //ushort
+        public int colorConvTableId; // ushort
         public long colorConvNumRecs; // uint
-        public long colorConvTableOffset; //uint
-        public long colorConvSourceTableOffset; //uint
-        public long colorConvTargetTableOffset; //uint
+        public long colorConvTableOffset; // uint
+        public long colorConvSourceTableOffset; // uint
+        public long colorConvTargetTableOffset; // uint
 
         public ColorConversionTable() {}
 
@@ -780,4 +767,3 @@ public class RpfColortable {
 
     }
 }
-
