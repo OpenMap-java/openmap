@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/ColorPropertyEditor.java,v $
 // $RCSfile: ColorPropertyEditor.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/05/24 17:55:51 $
+// $Revision: 1.8 $
+// $Date: 2007/03/06 22:42:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -96,6 +96,11 @@ public class ColorPropertyEditor extends PropertyEditorSupport {
                         title,
                         startingColor);
 
+                if (color == null) {
+                    // Cancelled.
+                    color = startingColor;
+                }
+                
                 ColorPropertyEditor.this.setValue(color);
             }
         });
