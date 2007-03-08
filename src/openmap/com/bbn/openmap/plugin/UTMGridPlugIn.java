@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.16 $
-// $Date: 2006/05/22 23:55:12 $
+// $Revision: 1.17 $
+// $Date: 2007/03/08 19:38:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,9 +38,11 @@ import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.bbn.openmap.I18n;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMColorChooser;
 import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGeometryList;
@@ -62,31 +64,30 @@ import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.quadtree.QuadTree;
 
 /**
- * The UTMGridPlugIn renders UTM Zone areas, and renders a grid
- * marking equal-distance areas around the center of the current
- * projection. This distance grid only extends east-west for 500km in
- * both directions from the center of the current zone because that is
- * the extent of accuracy for those measurements - after that, you get
- * too far away from the central meridian for the current UTM zone.
+ * The UTMGridPlugIn renders UTM Zone areas, and renders a grid marking
+ * equal-distance areas around the center of the current projection. This
+ * distance grid only extends east-west for 500km in both directions from the
+ * center of the current zone because that is the extent of accuracy for those
+ * measurements - after that, you get too far away from the central meridian for
+ * the current UTM zone.
  * <p>
  * 
- * Currently, this plugin only draws 100km distance squares. Updates
- * on the way. The plugin has the following properties that may be
- * set:
+ * Currently, this plugin only draws 100km distance squares. Updates on the way.
+ * The plugin has the following properties that may be set:
  * <p>
  * 
  * <pre>
- * 
- * 
- *  # Turn zone area labels on when zoomed in closer than 1:33M (true
- *  # is default)
- *  showZones=true
- *  showLabels=true
- *  # Color for UTM Zone area boundaries
- *  utmGridColor=hex AARRGGBB value
- *  # Color for the distance area grid lines
- *  distanceGridColor= hex AARRGGBB value
- *  
+ *   
+ *   
+ *    # Turn zone area labels on when zoomed in closer than 1:33M (true
+ *    # is default)
+ *    showZones=true
+ *    showLabels=true
+ *    # Color for UTM Zone area boundaries
+ *    utmGridColor=hex AARRGGBB value
+ *    # Color for the distance area grid lines
+ *    distanceGridColor= hex AARRGGBB value
+ *    
  * </pre>
  */
 public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
@@ -102,8 +103,8 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     protected float labelCutoffScale = DEFAULT_UTM_LABEL_CUTOFF_SCALE;
     protected boolean show100kGrid = false;
     /**
-     * Resolution should be MRGS accuracy, 0 for none, 1-5 otherwise,
-     * where 1 = 10000 meter grid, 5 is 1 meter grid.
+     * Resolution should be MRGS accuracy, 0 for none, 1-5 otherwise, where 1 =
+     * 10000 meter grid, 5 is 1 meter grid.
      */
     protected int distanceGridResolution = 0;
     protected Paint utmGridPaint = Color.black;
@@ -243,12 +244,11 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     }
 
     /**
-     * Called to create 100km distance grid lines. Was originally
-     * designed to accept different gridLineInterval distances, but
-     * has only been debugged and tested for 100000.
+     * Called to create 100km distance grid lines. Was originally designed to
+     * accept different gridLineInterval distances, but has only been debugged
+     * and tested for 100000.
      * 
-     * @param utm the UTMPoint of the center of the area to create
-     *        lines for.
+     * @param utm the UTMPoint of the center of the area to create lines for.
      */
     protected OMGraphicList createEquiDistanceLines(UTMPoint utm,
                                                     int gridLineInterval) {
@@ -371,18 +371,17 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     }
 
     /**
-     * Create a list of rectangles representing equal areas of MGRS
-     * coordinates around a lat/lon location. The rectangles are laid
-     * out on the MGRS grid, their size determined by the accuracy
-     * limitation given, which reflects how many digits are provided
-     * in a MGRS coordinate. Uses WGS 84 ellipsoid.
+     * Create a list of rectangles representing equal areas of MGRS coordinates
+     * around a lat/lon location. The rectangles are laid out on the MGRS grid,
+     * their size determined by the accuracy limitation given, which reflects
+     * how many digits are provided in a MGRS coordinate. Uses WGS 84 ellipsoid.
      * 
      * @param llp the lat/lon point of concern.
-     * @param accuracy the number of digits for northing and easting
-     *        values of a MGRS coordinate, which implicitly translates
-     *        to meters - 5 (1 meter) to 1 (10,000 meter).
-     * @param numRects the number of rectangles in each direction from
-     *        the llp to create.
+     * @param accuracy the number of digits for northing and easting values of a
+     *        MGRS coordinate, which implicitly translates to meters - 5 (1
+     *        meter) to 1 (10,000 meter).
+     * @param numRects the number of rectangles in each direction from the llp
+     *        to create.
      */
     protected OMGeometryList createMGRSRectangles(LatLonPoint llp,
                                                   int accuracy, int numRects) {
@@ -390,18 +389,17 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     }
 
     /**
-     * Create a list of rectangles representing equal areas of MGRS
-     * coordinates around a lat/lon location. The rectangles are laid
-     * out on the MGRS grid, their size determined by the accuracy
-     * limitation given, which reflects how many digits are provided
-     * in a MGRS coordinate.
+     * Create a list of rectangles representing equal areas of MGRS coordinates
+     * around a lat/lon location. The rectangles are laid out on the MGRS grid,
+     * their size determined by the accuracy limitation given, which reflects
+     * how many digits are provided in a MGRS coordinate.
      * 
      * @param llp the lat/lon point of concern.
-     * @param accuracy the number of digits for northing and easting
-     *        values of a MGRS coordinate, which implicitly translates
-     *        to meters - 5 (1 meter) to 1 (10,000 meter).
-     * @param numRects the number of rectangles in each direction from
-     *        the llp to create.
+     * @param accuracy the number of digits for northing and easting values of a
+     *        MGRS coordinate, which implicitly translates to meters - 5 (1
+     *        meter) to 1 (10,000 meter).
+     * @param numRects the number of rectangles in each direction from the llp
+     *        to create.
      * @param ellipsoid the ellipsoid to use.
      */
     protected OMGeometryList createMGRSRectangles(LatLonPoint llp,
@@ -439,18 +437,17 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     }
 
     /**
-     * Create a polygon representing an equidistant area, at a meters
-     * offset with a meters interval.
+     * Create a polygon representing an equidistant area, at a meters offset
+     * with a meters interval.
      * 
      * @param mgrsBasePoint the center point of interest that has been
-     *        normalized for the units of the rectangle (meters, km,
-     *        etc).
-     * @param voffset vertical offset in meters, normalized for units,
-     *        for entire polygon.
-     * @param hoffset horizontal offset in meters, normalized for
-     *        units, for entire polygon.
-     * @param interval edge length of rectangle polygon in meters,
-     *        normalized for units.
+     *        normalized for the units of the rectangle (meters, km, etc).
+     * @param voffset vertical offset in meters, normalized for units, for
+     *        entire polygon.
+     * @param hoffset horizontal offset in meters, normalized for units, for
+     *        entire polygon.
+     * @param interval edge length of rectangle polygon in meters, normalized
+     *        for units.
      * @param ellipsoid Ellipsoid for coordinate translation.
      */
     protected OMGeometry createMGRSRectangle(MGRSPoint mgrsBasePoint,
@@ -519,12 +516,12 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     }
 
     /**
-     * The getRectangle call is the main call into the PlugIn module.
-     * The module is expected to fill the graphics list with objects
-     * that are within the screen parameters passed.
+     * The getRectangle call is the main call into the PlugIn module. The module
+     * is expected to fill the graphics list with objects that are within the
+     * screen parameters passed.
      * 
-     * @param p projection of the screen, holding scale, center
-     *        coords, height, width.
+     * @param p projection of the screen, holding scale, center coords, height,
+     *        width.
      */
     public OMGraphicList getRectangle(Projection p) {
 
@@ -543,7 +540,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
             list.add(horizontalList);
         }
 
-        LatLonPoint center = (LatLonPoint)p.getCenter(new LatLonPoint.Double());
+        LatLonPoint center = (LatLonPoint) p.getCenter(new LatLonPoint.Double());
         UTMPoint utm = new UTMPoint(center);
 
         if (show100kGrid) {
@@ -559,15 +556,15 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
             float decisionAid = 100000f / (float) Math.pow(10,
                     distanceGridResolution);
             float dglc = 30f * decisionAid; // distance grid label
-                                            // cutoff
-            //          Debug.output("Basing decision to display labels on " +
+            // cutoff
+            // Debug.output("Basing decision to display labels on " +
             // dglc);
 
             int numberBasedForScale = (int) (p.getScale() / (2 * decisionAid));
             if (numberBasedForScale > 10) {
                 numberBasedForScale = 10;
             }
-            //          Debug.output(numberBasedForScale + "");
+            // Debug.output(numberBasedForScale + "");
 
             OMGeometryList geoList = createMGRSRectangles(center,
                     distanceGridResolution,
@@ -624,10 +621,10 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
             Point2D ul = p.getUpperLeft();
             Point2D lr = p.getLowerRight();
 
-            Vector labels = labelTree.get((float)ul.getY(),
-                    (float)ul.getX(),
-                    (float)lr.getY(),
-                    (float)lr.getX());
+            Vector labels = labelTree.get((float) ul.getY(),
+                    (float) ul.getX(),
+                    (float) lr.getY(),
+                    (float) lr.getX());
 
             labelList.setTargets(labels);
             labelList.setLinePaint(getUTMGridPaint());
@@ -638,7 +635,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         list.generate(p);
         Debug.message("utmgrid", "Done.");
         return list;
-    } //end getRectangle
+    } // end getRectangle
 
     public Component getGUI() {
         JPanel panel = new JPanel();
@@ -724,9 +721,10 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         gridbag.setConstraints(resPanel, c);
         panel.add(resPanel);
 
-        JButton utmGridColorButton = new JButton(i18n.get(UTMGridPlugIn.class,
-                "utmGridColorButton",
-                "Set UTM Grid Color"));
+        JButton utmGridColorButton = new JButton(DrawingAttributes.getIconForPaint(getUTMGridPaint(),
+                true));
+        utmGridColorButton.setContentAreaFilled(false);
+        utmGridColorButton.setBorder(null);
         utmGridColorButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 Color tmpPaint = getNewPaint((Component) ae.getSource(),
@@ -736,18 +734,30 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
                         (Color) getUTMGridPaint());
                 if (tmpPaint != null) {
                     setUTMGridPaint(tmpPaint);
+                    ((JButton) ae.getSource()).setIcon(DrawingAttributes.getIconForPaint(tmpPaint,
+                            true));
                     doPrepare();
                 }
             }
         });
 
-        c.gridy = 4;
-        gridbag.setConstraints(utmGridColorButton, c);
-        panel.add(utmGridColorButton);
+        JLabel utmGridLabel = new JLabel(i18n.get(UTMGridPlugIn.class,
+                "utmGridColorButton",
+                "Set UTM Grid Color"));
 
-        JButton distGridColorButton = new JButton(i18n.get(UTMGridPlugIn.class,
-                "distGridColorButton",
-                "Set Distance Grid Color"));
+        JPanel utmGridPanel = new JPanel();
+        utmGridPanel.add(utmGridColorButton);
+        utmGridPanel.add(utmGridLabel);
+        
+        c.gridy = 4;
+        c.anchor = GridBagConstraints.WEST;
+        gridbag.setConstraints(utmGridPanel, c);
+        panel.add(utmGridPanel);
+
+        JButton distGridColorButton = new JButton(DrawingAttributes.getIconForPaint(getDistanceGridPaint(),
+                true));
+        distGridColorButton.setContentAreaFilled(false);
+        distGridColorButton.setBorder(null);
         distGridColorButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 Color tmpPaint = getNewPaint((Component) ae.getSource(),
@@ -757,30 +767,36 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
                         (Color) getDistanceGridPaint());
                 if (tmpPaint != null) {
                     setDistanceGridPaint(tmpPaint);
+                    ((JButton) ae.getSource()).setIcon(DrawingAttributes.getIconForPaint(tmpPaint,
+                            true));
                     doPrepare();
                 }
             }
         });
-
+        JLabel distanceGridLabel = new JLabel(i18n.get(UTMGridPlugIn.class,
+                "distGridColorButton",
+                "Set Distance Grid Color"));
+        JPanel distGridPanel = new JPanel();
+        distGridPanel.add(distGridColorButton);
+        distGridPanel.add(distanceGridLabel);
         c.gridy = 5;
-        gridbag.setConstraints(distGridColorButton, c);
-        panel.add(distGridColorButton);
+        gridbag.setConstraints(distGridPanel, c);
+        panel.add(distGridPanel);
 
         return panel;
     }
 
     /**
-     * A convenience method to get a color from a JColorChooser. Null
-     * will be returned if the JColorChooser lock is in place, or if
-     * something else is done where the JColorChooser would normally
-     * return null.
+     * A convenience method to get a color from a JColorChooser. Null will be
+     * returned if the JColorChooser lock is in place, or if something else is
+     * done where the JColorChooser would normally return null.
      * 
      * @param source the source component for the JColorChooser.
      * @param title the String to label the JColorChooser window.
-     * @param startingColor the color to give to the JColorChooser to
-     *        start with. Returned if the cancel button is pressed.
-     * @return Color chosen from the JColorChooser, null if lock for
-     *         chooser can't be sequired.
+     * @param startingColor the color to give to the JColorChooser to start
+     *        with. Returned if the cancel button is pressed.
+     * @return Color chosen from the JColorChooser, null if lock for chooser
+     *         can't be sequired.
      */
     protected Color getNewPaint(Component source, String title,
                                 Color startingColor) {
@@ -793,14 +809,14 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     }
 
     /**
-     * A lock to use to limit the number of JColorChoosers that can
-     * pop up for a given DrawingAttributes GUI.
+     * A lock to use to limit the number of JColorChoosers that can pop up for a
+     * given DrawingAttributes GUI.
      */
     private boolean colorChooserLock = false;
 
     /**
-     * Get the lock to use a JColorChooser. Returns true if you got
-     * the lock, false if you didn't.
+     * Get the lock to use a JColorChooser. Returns true if you got the lock,
+     * false if you didn't.
      */
     protected synchronized boolean getLock() {
         if (colorChooserLock == false) {
@@ -973,8 +989,8 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     }
 
     /**
-     * Resolution should be MRGS accuracy, 0 for none, 1-5 otherwise,
-     * where 1 = 10000 meter grid, 5 is 1 meter grid.
+     * Resolution should be MRGS accuracy, 0 for none, 1-5 otherwise, where 1 =
+     * 10000 meter grid, 5 is 1 meter grid.
      */
     public void setDistanceGridResolution(int value) {
         distanceGridResolution = value;
