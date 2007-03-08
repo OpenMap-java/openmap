@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.25 $
-// $Date: 2006/03/06 15:56:53 $
+// $Revision: 1.26 $
+// $Date: 2007/03/08 19:33:55 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -529,7 +529,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
         }
 
         if (mattedCheckBox != null) {
-            mattedCheckBox.setIcon(getMattedIcon());
+            mattedCheckBox.setIcon(getMattedIcon(mattingPaint, linePaint));
         }
 
         propertyChangeSupport.firePropertyChange("linePaint",
@@ -629,7 +629,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
         }
 
         if (mattedCheckBox != null) {
-            mattedCheckBox.setIcon(getMattedIcon());
+            mattedCheckBox.setIcon(getMattedIcon(mattingPaint, linePaint));
         }
 
         propertyChangeSupport.firePropertyChange("mattingPaint",
@@ -1199,10 +1199,10 @@ public class DrawingAttributes implements ActionListener, Serializable,
         }
 
         if (mattedCheckBox != null) {
-            mattedCheckBox.setIcon(getMattedIcon());
+            mattedCheckBox.setIcon(getMattedIcon(mattingPaint, linePaint));
             mattedCheckBox.setSelected(matted);
         } else {
-            mattedCheckBox = new JToggleButton(getMattedIcon(), isMatted());
+            mattedCheckBox = new JToggleButton(getMattedIcon(mattingPaint, linePaint), isMatted());
             mattedCheckBox.setActionCommand(MattedCommand);
             mattedCheckBox.addActionListener(this);
             interString = i18n.get(DrawingAttributes.class,
@@ -1959,7 +1959,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
         return OMIconFactory.getIcon(icon_width, icon_height, parts);
     }
 
-    public ImageIcon getIconForPaint(Paint paint, boolean fill) {
+    public static ImageIcon getIconForPaint(Paint paint, boolean fill) {
 
         if (paint == null)
             paint = Color.black;
@@ -1994,18 +1994,14 @@ public class DrawingAttributes implements ActionListener, Serializable,
         return OMIconFactory.getIcon(icon_width, icon_height, parts);
     }
 
-    public ImageIcon getMattedIcon() {
-
-        Paint paint = getMattingPaint();
-
+    public static ImageIcon getMattedIcon(Paint mattingPaint, Paint linePaint) {
         DrawingAttributes da = new DrawingAttributes();
-        da.setLinePaint(paint);
+        da.setLinePaint(mattingPaint);
         da.setStroke(new BasicStroke(2));
 
         DrawingAttributes fillda = new DrawingAttributes();
-        Paint lp = getLinePaint();
-        fillda.setLinePaint(lp);
-        fillda.setFillPaint(lp);
+        fillda.setLinePaint(linePaint);
+        fillda.setFillPaint(linePaint);
         da.setStroke(new BasicStroke(2));
 
         OpenMapAppPartCollection collection = OpenMapAppPartCollection.getInstance();
