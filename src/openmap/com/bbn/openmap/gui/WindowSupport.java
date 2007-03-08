@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.22 $
-// $Date: 2006/11/20 20:17:47 $
+// $Revision: 1.23 $
+// $Date: 2007/03/08 19:23:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -275,11 +275,11 @@ public class WindowSupport extends ListenerSupport implements
         return wsd;
     }
 
-    protected static Class getDefaultWindowSupportDisplayType() {
+    public static Class getDefaultWindowSupportDisplayType() {
         return defaultWindowSupportDisplayType;
     }
 
-    protected static void setDefaultWindowSupportDisplayType(
+    public static void setDefaultWindowSupportDisplayType(
                                                              Class defaultWindowSupportDisplayType) {
         WindowSupport.defaultWindowSupportDisplayType = defaultWindowSupportDisplayType;
     }
