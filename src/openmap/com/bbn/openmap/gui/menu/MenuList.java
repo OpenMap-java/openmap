@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/menu/MenuList.java,v $
 // $RCSfile: MenuList.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:50 $
+// $Revision: 1.6 $
+// $Date: 2007/03/08 17:35:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,42 +39,42 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The MenuList is a component that creates a set of JMenus from
- * Properties, and can provide a JMenuBar or JMenu with those JMenus.
- * Used by the MapPanel.
+ * The MenuList is a component that creates a set of JMenus from Properties, and
+ * can provide a JMenuBar or JMenu with those JMenus. Used by the MapPanel.
  * <P>
  * 
- * The MenuList can be used in lieu of defining the OpenMap MenuBar
- * and each Menu in the openmap.components property. The MenuList can
- * be defined instead, with the menus it should create. It has one
- * property:
+ * The MenuList can be used in lieu of defining the OpenMap MenuBar and each
+ * Menu in the openmap.components property. The MenuList can be defined instead,
+ * with the menus it should create. It has one property:
  * 
  * <pre>
- * 
- * 
- *  menulist.menus=menu1 menu2 menu3
- *  menu1.class=classname of menu1
- *  menu2.class=classname of menu2
- *  menu3.class=classname of menu3
- * 
- *  
+ *   
+ *   
+ *    menulist.menus=menu1 menu2 menu3
+ *    menu1.class=classname of menu1
+ *    menu2.class=classname of menu2
+ *    menu3.class=classname of menu3
+ *   
+ *    
  * </pre>
  * 
- * When the MenuList.setBeanContext() method gets called, the MenuList
- * will add its menus to that MapHandler/BeanContext.
+ * When the MenuList.setBeanContext() method gets called, the MenuList will add
+ * its menus to that MapHandler/BeanContext.
  * 
- * By default, the MenuList will provide an OpenMap MenuBar when asked
- * for a JMenuBar, which will figure out if one of the child menus is
- * a HelpMenu and place it at the end of the MenuBar menus.
+ * By default, the MenuList will provide an OpenMap MenuBar when asked for a
+ * JMenuBar, which will figure out if one of the child menus is a HelpMenu and
+ * place it at the end of the MenuBar menus.
  */
 public class MenuList extends OMComponent {
 
     public final static String MenusProperty = "menus";
+    public final static String MenuNameProperty = "name";
 
     protected LinkedList menus;
 
     protected MenuBar menuBar;
     protected JMenu menu;
+    protected String name = "Map";
 
     /**
      * Create an empty MenuList.
@@ -84,12 +84,11 @@ public class MenuList extends OMComponent {
     }
 
     /**
-     * Get a MenuBar with JMenus on it. If the MenuList has been given
-     * a MapHandler, the Menus will have been added to it, and
-     * therefore will be connected to OpenMap components. The MenuBar
-     * is not added to the MapHandler and probably shouldn't be, since
-     * it will find and re-add the Menus it finds there in some random
-     * order.
+     * Get a MenuBar with JMenus on it. If the MenuList has been given a
+     * MapHandler, the Menus will have been added to it, and therefore will be
+     * connected to OpenMap components. The MenuBar is not added to the
+     * MapHandler and probably shouldn't be, since it will find and re-add the
+     * Menus it finds there in some random order.
      */
     public JMenuBar getMenuBar() {
         if (menuBar == null) {
@@ -105,15 +104,14 @@ public class MenuList extends OMComponent {
     }
 
     /**
-     * Get a JMenu with JMenus on it as sub-menus. If the MenuList has
-     * been given a MapHandler, the Menus will have been added to it,
-     * and therefore will be connected to OpenMap components. This
-     * menu will be named "OpenMap", but you can rename it if you
-     * want.
+     * Get a JMenu with JMenus on it as sub-menus. If the MenuList has been
+     * given a MapHandler, the Menus will have been added to it, and therefore
+     * will be connected to OpenMap components. This menu will be named "Map",
+     * but you can rename it if you want.
      */
     public JMenu getMenu() {
         if (menu == null) {
-            menu = new JMenu("OpenMap");
+            menu = new JMenu(name);
         }
 
         menu.removeAll();
@@ -125,12 +123,13 @@ public class MenuList extends OMComponent {
     }
 
     /**
-     * The MenuList will look for the "menus" property and build its
-     * menus.
+     * The MenuList will look for the "menus" property and build its menus.
      */
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        name = props.getProperty(prefix + MenuNameProperty, name);
+
         Vector menuItems = PropUtils.parseSpacedMarkers(props.getProperty(realPrefix
                 + MenusProperty));
         if (!menuItems.isEmpty()) {
@@ -190,8 +189,11 @@ public class MenuList extends OMComponent {
                 ps.getProperties(props);
             }
         }
-        props.put(PropUtils.getScopedPropertyPrefix(this) + MenusProperty,
-                itemList.toString());
+
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        props.put(prefix + MenusProperty, itemList.toString());
+        props.put(prefix + MenuNameProperty, name);
+
         return props;
     }
 
@@ -200,15 +202,26 @@ public class MenuList extends OMComponent {
      */
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
-        props.put(MenusProperty,
-                "List of marker names for menu component properties.");
+        PropUtils.setI18NPropertyInfo(i18n,
+                props,
+                MenuList.class,
+                MenusProperty,
+                "List of Menus",
+                "List of marker names for menu component properties.",
+                null);
+        PropUtils.setI18NPropertyInfo(i18n,
+                props,
+                MenuList.class,
+                MenuNameProperty,
+                "Name",
+                "Name of the Menu provided by the MenuList.",
+                null);
         return props;
     }
 
     /**
-     * Called when the MenuList is added to the
-     * MapHandler/BeanContext. The MenuList will add its menus to the
-     * BeanContext.
+     * Called when the MenuList is added to the MapHandler/BeanContext. The
+     * MenuList will add its menus to the BeanContext.
      */
     public void setBeanContext(BeanContext bc) throws PropertyVetoException {
 
@@ -220,4 +233,3 @@ public class MenuList extends OMComponent {
     }
 
 }
-
