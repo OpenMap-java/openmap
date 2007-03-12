@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: RpfUtil.java,v $
-//$Revision: 1.3 $
-//$Date: 2006/08/17 15:19:06 $
+//$Revision: 1.4 $
+//$Date: 2007/03/12 20:52:46 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -169,6 +169,7 @@ public class RpfUtil {
             }
             for (int i = 0; i < entries.length; i++) {
                 RpfTocEntry entry = entries[i];
+                toc.loadFrameInformation(entry);
 
                 double udinterval = (entry.coverage.nw_lat - entry.coverage.se_lat)
                         / entry.vertFrames;
@@ -238,10 +239,11 @@ public class RpfUtil {
     protected List getFrameList(RpfTocEntry entry, double rlinterval,
                                 double udinterval) {
         List frameList = new LinkedList();
+        
         for (int hor = 0; hor < entry.horizFrames; hor++) {
             for (int ver = 0; ver < entry.vertFrames; ver++) {
 
-                RpfFrameEntry frame = entry.frames[ver][hor];
+                RpfFrameEntry frame = entry.getFrame(ver, hor);
 
                 double left = entry.coverage.nw_lon + (rlinterval * hor);
                 double right = left + rlinterval;
