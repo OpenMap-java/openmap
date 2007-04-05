@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServer.java,v $
 // $RCSfile: ImageServer.java,v $
-// $Revision: 1.12 $
-// $Date: 2007/01/25 22:11:40 $
+// $Revision: 1.13 $
+// $Date: 2007/04/05 21:23:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,7 +27,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.RenderingHints;
-import java.awt.geom.Point2D;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +47,7 @@ import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.ProjectionFactory;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -974,7 +974,7 @@ public class ImageServer implements
                 projClass = Mercator.class;
             }
 
-            Point2D center = new Point2D.Float(PropUtils.floatFromProperties(props,
+            LatLonPoint.Float center = new LatLonPoint.Float(PropUtils.floatFromProperties(props,
                     Environment.Latitude,
                     0f), PropUtils.floatFromProperties(props,
                     Environment.Longitude,
@@ -1075,7 +1075,7 @@ public class ImageServer implements
         if (arg != null) {
             String ps = arg[0];
             try {
-
+                ProjectionFactory.loadDefaultProjections();
                 URL url = PropUtils.getResourceOrFileOrURL(null, ps);
                 InputStream inputStream = url.openStream();
 
