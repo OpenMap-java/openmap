@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageServer.java,v $
 // $RCSfile: ImageServer.java,v $
-// $Revision: 1.13 $
-// $Date: 2007/04/05 21:23:21 $
+// $Revision: 1.14 $
+// $Date: 2007/04/17 20:23:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.RenderingHints;
+import java.awt.geom.Point2D;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +44,7 @@ import com.bbn.openmap.MapBean;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.plugin.PlugIn;
 import com.bbn.openmap.plugin.PlugInLayer;
+import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
@@ -974,12 +976,22 @@ public class ImageServer implements
                 projClass = Mercator.class;
             }
 
-            LatLonPoint.Float center = new LatLonPoint.Float(PropUtils.floatFromProperties(props,
-                    Environment.Latitude,
-                    0f), PropUtils.floatFromProperties(props,
-                    Environment.Longitude,
-                    0f));
-
+            Point2D center = null;
+            
+            if (GeoProj.class.isAssignableFrom(projClass)) {
+                center = new LatLonPoint.Float(PropUtils.floatFromProperties(props,
+                        Environment.Latitude,
+                        0f), PropUtils.floatFromProperties(props,
+                        Environment.Longitude,
+                        0f));
+            } else {
+                center = new Point2D.Float(PropUtils.floatFromProperties(props,
+                        Environment.Latitude,
+                        0f), PropUtils.floatFromProperties(props,
+                        Environment.Longitude,
+                        0f));
+            }
+            
             proj = ProjectionFactory.makeProjection(projClass,
                     center,
                     PropUtils.floatFromProperties(props,
