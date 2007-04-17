@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionFactory.java,v $
 // $RCSfile: ProjectionFactory.java,v $
-// $Revision: 1.14 $
-// $Date: 2007/01/25 22:11:41 $
+// $Revision: 1.15 $
+// $Date: 2007/04/17 20:25:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -487,6 +487,7 @@ public class ProjectionFactory extends OMComponent {
             pf.addProjectionLoader(new com.bbn.openmap.proj.CADRGLoader());
             pf.addProjectionLoader(new com.bbn.openmap.proj.LLXYLoader());
             pf.addProjectionLoader(new com.bbn.openmap.proj.GnomonicLoader());
+            pf.addProjectionLoader(new com.bbn.openmap.proj.CartesianLoader());
         }
         return pf;
     }
