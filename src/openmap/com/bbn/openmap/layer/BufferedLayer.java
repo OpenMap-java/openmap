@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/BufferedLayer.java,v $
 // $RCSfile: BufferedLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/08/09 19:20:29 $
+// $Revision: 1.10 $
+// $Date: 2007/04/17 20:35:54 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,35 +54,32 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * A BufferedLayer is a layer that buffers a group of layers into an
- * image. When this layer repaints, the image gets rendered. This
- * layer can be used to group a set of layers into one, and was
- * designed with the idea that it is a background layer where a more
- * animated layer would be on top of it.
+ * A BufferedLayer is a layer that buffers a group of layers into an image. When
+ * this layer repaints, the image gets rendered. This layer can be used to group
+ * a set of layers into one, and was designed with the idea that it is a
+ * background layer where a more animated layer would be on top of it.
  * <P>
  * 
- * This layer contains a MapBean, and any layer that gets added to it
- * simply gets added to the MapBean. When a layer needs to redraw
- * itself, it can act normally, and the BufferedLayer will get updated
- * as needed. If the MapBean is a BufferedMapBean (which it is by
- * default), then the layers will get buffered into an image.
+ * This layer contains a MapBean, and any layer that gets added to it simply
+ * gets added to the MapBean. When a layer needs to redraw itself, it can act
+ * normally, and the BufferedLayer will get updated as needed. If the MapBean is
+ * a BufferedMapBean (which it is by default), then the layers will get buffered
+ * into an image.
  * <P>
  * 
- * There are some special considerations to think about when using
- * this layer if the background is at all transparent. The image
- * buffer will need to be recreated at certain times in order to
- * prevent leftover images from the previous paintings. When the
- * background is set for the layer, the transparency is tested if the
- * background is a Color and the setHasTransparentBackground() method
- * is called accordingly. If a different Paint object is set in the
- * BufferedLayer, it's up to you to set this variable. This causes a
- * new image to be created every time a new projection is provided to
- * the layer. If the layers added to this BufferedLayer are active,
- * meaning that their content could change between projection changes,
- * you should set the hasActiveLayers flag to true. this causes a new
- * image buffer to be created every time a layer repaints itself.
- * Again, this is only important if the background color of the layer
- * is transparent.
+ * There are some special considerations to think about when using this layer if
+ * the background is at all transparent. The image buffer will need to be
+ * recreated at certain times in order to prevent leftover images from the
+ * previous paintings. When the background is set for the layer, the
+ * transparency is tested if the background is a Color and the
+ * setHasTransparentBackground() method is called accordingly. If a different
+ * Paint object is set in the BufferedLayer, it's up to you to set this
+ * variable. This causes a new image to be created every time a new projection
+ * is provided to the layer. If the layers added to this BufferedLayer are
+ * active, meaning that their content could change between projection changes,
+ * you should set the hasActiveLayers flag to true. this causes a new image
+ * buffer to be created every time a layer repaints itself. Again, this is only
+ * important if the background color of the layer is transparent.
  * <P>
  * 
  * The BufferedLayer can be configured in the openmap.properties file:
@@ -108,29 +105,27 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     public final static String HasActiveLayersProperty = "hasActiveLayers";
 
     /**
-     * Used to recreate the buffer on every repaint() call made by
-     * every layer. Makes for a lot of image buffer creation. If the
-     * layers may call repaint() and change what they present between
-     * projection changes, then this needs to be set to true.
-     * Otherwise, the old graphics will still be visible. This only
-     * needs to be set if the background is at all transparent. If the
-     * background of the internal MapBean is opaque, set this to
-     * false, which is the default.
+     * Used to recreate the buffer on every repaint() call made by every layer.
+     * Makes for a lot of image buffer creation. If the layers may call
+     * repaint() and change what they present between projection changes, then
+     * this needs to be set to true. Otherwise, the old graphics will still be
+     * visible. This only needs to be set if the background is at all
+     * transparent. If the background of the internal MapBean is opaque, set
+     * this to false, which is the default.
      */
     protected boolean hasActiveLayers = false;
 
     /**
-     * Used to tell the BufferedLayer that the background is
-     * transparent. Will cause a new image buffer to be created when
-     * the projection changes, in order to cover up what was already
-     * there. This is set to true but default, since the internal
-     * MapBean color is set to OMColor.clear.
+     * Used to tell the BufferedLayer that the background is transparent. Will
+     * cause a new image buffer to be created when the projection changes, in
+     * order to cover up what was already there. This is set to true but
+     * default, since the internal MapBean color is set to OMColor.clear.
      */
     protected boolean hasTransparentBackground = true;
 
     /**
-     * The MapBean used as the group organized. If this is a
-     * BufferedMapBean, the layer will provide a buffered image.
+     * The MapBean used as the group organized. If this is a BufferedMapBean,
+     * the layer will provide a buffered image.
      */
     MapBean mapBean;
 
@@ -213,9 +208,9 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     }
 
     /**
-     * Not really implemented, because the mechanism for providing a
-     * set of properties that let you add a variable number of new
-     * objects as children to this one.
+     * Not really implemented, because the mechanism for providing a set of
+     * properties that let you add a variable number of new objects as children
+     * to this one.
      */
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
@@ -224,10 +219,10 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     }
 
     /**
-     * If true, will cause a new image buffer to be recreated for
-     * every layer.repaint() call. Should only be set to true if the
-     * background is at all transparent, and if the layers could
-     * change between projection changes.
+     * If true, will cause a new image buffer to be recreated for every
+     * layer.repaint() call. Should only be set to true if the background is at
+     * all transparent, and if the layers could change between projection
+     * changes.
      */
     public void setHasActiveLayers(boolean value) {
         hasActiveLayers = value;
@@ -238,9 +233,8 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     }
 
     /**
-     * If true, will create a new image buffer when the projection
-     * changes. Should be set to true if the background has any
-     * transparency.
+     * If true, will create a new image buffer when the projection changes.
+     * Should be set to true if the background has any transparency.
      */
     public void setHasTransparentBackground(boolean value) {
         hasTransparentBackground = value;
@@ -265,9 +259,8 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     }
 
     /**
-     * Method for BeanContextChild interface. Gets an iterator from
-     * the BeanContext to call findAndInit() over. Sets BeanContext on
-     * sub-layers.
+     * Method for BeanContextChild interface. Gets an iterator from the
+     * BeanContext to call findAndInit() over. Sets BeanContext on sub-layers.
      */
     public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
         super.setBeanContext(in_bc);
@@ -281,8 +274,7 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     }
 
     /**
-     * Add a layer to the group. Sets the BeanContext on the added
-     * layer.
+     * Add a layer to the group. Sets the BeanContext on the added layer.
      */
     public void addLayer(Layer layer) {
         mapBean.add(layer);
@@ -323,10 +315,10 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     }
 
     /**
-     * You can change what kind of MapBean is used to hold onto the
-     * layers. This method just sets the new MapBean into the layer,
-     * as is. If there was a previous MapBean with layers, they're
-     * gone and replaces with whatever is attached to the new MapBean.
+     * You can change what kind of MapBean is used to hold onto the layers. This
+     * method just sets the new MapBean into the layer, as is. If there was a
+     * previous MapBean with layers, they're gone and replaces with whatever is
+     * attached to the new MapBean.
      * 
      * @param mb new MapBean
      */
@@ -349,9 +341,9 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     }
 
     /**
-     * Set the background color of the group. Actually sets the
-     * background color of the projection used by the internal
-     * MapBean, and which then forces a repaint() on it.
+     * Set the background color of the group. Actually sets the background color
+     * of the projection used by the internal MapBean, and which then forces a
+     * repaint() on it.
      * 
      * @param color java.awt.Color.
      */
@@ -360,9 +352,8 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     }
 
     /**
-     * Set the background paint of the group. Actually sets the
-     * background paint of the projection used by the internal
-     * MapBean.
+     * Set the background paint of the group. Actually sets the background paint
+     * of the projection used by the internal MapBean.
      * 
      * @param paint java.awt.Paint
      */
@@ -378,8 +369,8 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     }
 
     /**
-     * Get the background color of the image. Actually returns the
-     * background color of the projection of the internal MapBean.
+     * Get the background color of the image. Actually returns the background
+     * color of the projection of the internal MapBean.
      * 
      * @return color java.awt.Color
      */
@@ -397,9 +388,9 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     }
 
     /**
-     * Part of the Layer/ProjectionListener thing. The internal
-     * MapBean's projection gets set here, which forces the group
-     * layers to receive it as well.
+     * Part of the Layer/ProjectionListener thing. The internal MapBean's
+     * projection gets set here, which forces the group layers to receive it as
+     * well.
      */
     public void projectionChanged(com.bbn.openmap.event.ProjectionEvent pe) {
         Projection proj = setProjection(pe);
@@ -417,8 +408,7 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     JPanel panel = null;
 
     /**
-     * Should be called if layers are added or removed from the
-     * buffer.
+     * Should be called if layers are added or removed from the buffer.
      */
     public void resetPalette() {
         panel = null;
@@ -426,10 +416,9 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     }
 
     /**
-     * Get the GUI (palettes) for the layers. The BufferedLayer
-     * actually creates a JTabbedPane holding the palettes for all of
-     * its layers, and also has a pane for itself that provides
-     * visibility control for the group layers.
+     * Get the GUI (palettes) for the layers. The BufferedLayer actually creates
+     * a JTabbedPane holding the palettes for all of its layers, and also has a
+     * pane for itself that provides visibility control for the group layers.
      */
     public Component getGUI() {
         if (panel == null) {
@@ -466,8 +455,7 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     }
 
     /**
-     * Class that helps track turning on/off layers in the buffered
-     * layer.
+     * Class that helps track turning on/off layers in the buffered layer.
      */
     protected class VisHelper extends JCheckBox implements ActionListener {
         Layer layer;
@@ -496,8 +484,8 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     }
 
     /**
-     * Part of the ProjectionPainter interface. The group layers are
-     * given the projection and the graphics to paint into.
+     * Part of the ProjectionPainter interface. The group layers are given the
+     * projection and the graphics to paint into.
      */
     public void renderDataForProjection(Projection proj, Graphics g) {
         Component[] layersComps = mapBean.getComponents();
@@ -509,8 +497,8 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     }
 
     /**
-     * PropertyChangeListener method, to listen for the source map's
-     * background changes. Act on if necessary.
+     * PropertyChangeListener method, to listen for the source map's background
+     * changes. Act on if necessary.
      */
     public void propertyChange(PropertyChangeEvent pce) {
         if (pce.getPropertyName() == MapBean.BackgroundProperty) {
@@ -519,10 +507,10 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     }
 
     /**
-     * An simple extension of the BufferedMapBean that calls a layer,
-     * presumably its parent, to call repaint(). This is necessary in
-     * order to make sure Swing calls paint properly. Only repaint()
-     * is overridden in this class over a standard BufferedMapBean.
+     * An simple extension of the BufferedMapBean that calls a layer, presumably
+     * its parent, to call repaint(). This is necessary in order to make sure
+     * Swing calls paint properly. Only repaint() is overridden in this class
+     * over a standard BufferedMapBean.
      */
     public class BLMapBean extends BufferedMapBean {
         /** The layer to call back. */
@@ -538,6 +526,16 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
         }
 
         /**
+         * For the Buffered Layer MapBean, the background color is always clear.
+         * Let the layers add the color...
+         * 
+         * @return color java.awt.Color.
+         */
+        public Color getBackground() {
+            return OMColor.clear;
+        }
+
+        /**
          * Set the buffer dirty, and call repaint on the layer.
          */
         public void repaint() {
@@ -548,7 +546,7 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
                         + hasActiveLayers);
             }
 
-            if (hasActiveLayers && hasTransparentBackground) {
+            if ((hasActiveLayers || hasLayers()) && hasTransparentBackground) {
                 wipeImage();
             }
 
@@ -558,9 +556,9 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
         }
 
         /**
-         * We need this because if the background to the BufferedLayer
-         * is clear, we need to clear out anything that was previously
-         * there. This seems to be the only way to do it.
+         * We need this because if the background to the BufferedLayer is clear,
+         * we need to clear out anything that was previously there. This seems
+         * to be the only way to do it.
          */
         public void wipeImage() {
             setBufferDirty(true);
@@ -590,6 +588,12 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
                 height = 1;
 
             return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        }
+        
+        /**
+         * We override this to do nothing because we don't want a border on the BufferedLayer.
+         */
+        public void paintBorder(Graphics g) {
         }
     }
 }
