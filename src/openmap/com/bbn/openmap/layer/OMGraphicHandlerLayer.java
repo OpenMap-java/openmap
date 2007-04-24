@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.31 $
-// $Date: 2007/04/05 21:23:21 $
+// $Revision: 1.32 $
+// $Date: 2007/04/24 15:20:18 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -204,6 +204,13 @@ public class OMGraphicHandlerLayer extends Layer implements
      * 1f is opaque.
      */
     public final static String TransparencyProperty = "transparency";
+    /**
+     * The property to tell the layer if the thread launched for prepare()
+     * method calls can be interrupted. If false, the thread will be allowed to
+     * complete it's work. This (false) is generally a good setting for layers
+     * contacting servers. The default setting is, however, true.
+     */
+    public final static String InterruptableProperty = "interruptable";
 
     /**
      * Filter support that can be used to manage OMGraphics.
@@ -240,6 +247,29 @@ public class OMGraphicHandlerLayer extends Layer implements
      * occuring.
      */
     protected boolean consumeEvents = false;
+
+    /**
+     * Flag used to avoid the SwingWorker to be interrupted. Usefull for layers
+     * that load an image from a server such as the WMSPlugin to avoid an ugly
+     * java output "Interrupted while loading image".
+     */
+    protected boolean interruptable = true;
+
+    /**
+     * Sets the interruptable flag
+     */
+    public void setInterruptable(boolean b) {
+        interruptable = b;
+    }
+
+    /**
+     * Queries for the interruptable flag.
+     * 
+     * @return
+     */
+    public boolean isInterruptable() {
+        return interruptable;
+    }
 
     // OMGraphicHandler methods, deferred to FilterSupport...
 
@@ -410,7 +440,7 @@ public class OMGraphicHandlerLayer extends Layer implements
 
     protected void interrupt() {
         try {
-            if (layerWorker != null) {
+            if (layerWorker != null && interruptable) {
                 layerWorker.interrupt();
             }
         } catch (SecurityException se) {
@@ -665,7 +695,8 @@ public class OMGraphicHandlerLayer extends Layer implements
                     Debug.output(msg);
                     e.printStackTrace();
                 } else {
-                    Debug.output(getName() + " layer ran out of memory, attempting to recover...");
+                    Debug.output(getName()
+                            + " layer ran out of memory, attempting to recover...");
                 }
             } catch (Exception e) {
                 msg = getName() + "|LayerWorker.construct(): " + e.getMessage();
@@ -872,6 +903,9 @@ public class OMGraphicHandlerLayer extends Layer implements
 
         setTransparency(PropUtils.floatFromProperties(props, realPrefix
                 + TransparencyProperty, getTransparency()));
+
+        setInterruptable(PropUtils.booleanFromProperties(props, realPrefix
+                + InterruptableProperty, isInterruptable()));
     }
 
     /**
@@ -946,6 +980,9 @@ public class OMGraphicHandlerLayer extends Layer implements
 
         props.put(prefix + TransparencyProperty,
                 Float.toString(getTransparency()));
+
+        props.put(prefix + InterruptableProperty,
+                Boolean.toString(isInterruptable()));
 
         return props;
     }
@@ -1036,6 +1073,14 @@ public class OMGraphicHandlerLayer extends Layer implements
                 "Transparency setting for layer, between 0 (clear) and 1",
                 null);
 
+        PropUtils.setI18NPropertyInfo(i18n,
+                list,
+                OMGraphicHandlerLayer.class,
+                InterruptableProperty,
+                "Interruptable",
+                "Flat to set whether the layer should immediately stop performing current work when the projection changes.",
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        
         return list;
     }
 
