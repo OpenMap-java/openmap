@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/EarthquakeLayer.java,v $
 // $RCSfile: EarthquakeLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/09 19:20:29 $
+// $Revision: 1.8 $
+// $Date: 2007/04/24 19:53:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -317,7 +317,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
             } catch (IOException e) {
                 Debug.error("EarthquakeLayer.getEarthquakeData(): "
                         + "can't read from the socket: " + e);
-                if (cancelled) {
+                if (isCancelled()) {
                     return null;
                 }
             }

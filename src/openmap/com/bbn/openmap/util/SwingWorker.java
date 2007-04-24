@@ -3,21 +3,24 @@ package com.bbn.openmap.util;
 import javax.swing.SwingUtilities;
 
 /**
- * This is the 3rd version of SwingWorker (also known as SwingWorker
- * 3), an abstract class that you subclass to perform GUI-related work
- * in a dedicated thread. For instructions on using this class, see:
+ * This is the 3rd version of SwingWorker (also known as SwingWorker 3), an
+ * abstract class that you subclass to perform GUI-related work in a dedicated
+ * thread. For instructions on using this class, see:
  * 
  * http://java.sun.com/docs/books/tutorial/uiswing/misc/threads.html
  * 
- * Note that the API changed slightly in the 3rd version: You must now
- * invoke start() on the SwingWorker after creating it.
+ * Note that the API changed slightly in the 3rd version: You must now invoke
+ * start() on the SwingWorker after creating it.
  */
 public abstract class SwingWorker {
+
     private Object value; // see getValue(), setValue()
 
+    private boolean interrupted = false;
+
     /**
-     * Class to maintain reference to current worker thread under
-     * separate synchronization control.
+     * Class to maintain reference to current worker thread under separate
+     * synchronization control.
      */
     private static class ThreadVar {
         private Thread thread;
@@ -38,8 +41,8 @@ public abstract class SwingWorker {
     private ThreadVar threadVar;
 
     /**
-     * Get the value produced by the worker thread, or null if it
-     * hasn't been constructed yet.
+     * Get the value produced by the worker thread, or null if it hasn't been
+     * constructed yet.
      */
     protected synchronized Object getValue() {
         return value;
@@ -53,20 +56,19 @@ public abstract class SwingWorker {
     }
 
     /**
-     * Compute the value to be returned by the <code>get</code>
-     * method.
+     * Compute the value to be returned by the <code>get</code> method.
      */
     public abstract Object construct();
 
     /**
-     * Called on the event dispatching thread (not on the worker
-     * thread) after the <code>construct</code> method has returned.
+     * Called on the event dispatching thread (not on the worker thread) after
+     * the <code>construct</code> method has returned.
      */
     public void finished() {}
 
     /**
-     * A new method that interrupts the worker thread. Call this
-     * method to force the worker to stop what it's doing.
+     * A new method that interrupts the worker thread. Call this method to force
+     * the worker to stop what it's doing.
      */
     public void interrupt() {
         Thread t = threadVar.get();
@@ -74,15 +76,19 @@ public abstract class SwingWorker {
             t.interrupt();
         }
         threadVar.clear();
+        interrupted = true;
+    }
+
+    public boolean isInterrupted() {
+        return interrupted;
     }
 
     /**
-     * Return the value created by the <code>construct</code>
-     * method. Returns null if either the constructing thread or the
-     * current thread was interrupted before a value was produced.
+     * Return the value created by the <code>construct</code> method. Returns
+     * null if either the constructing thread or the current thread was
+     * interrupted before a value was produced.
      * 
-     * @return the value created by the <code>construct</code>
-     *         method
+     * @return the value created by the <code>construct</code> method
      */
     public Object get() {
         while (true) {
@@ -93,15 +99,19 @@ public abstract class SwingWorker {
             try {
                 t.join();
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // propagate
+                // 2006.05.09 Attempting to fix synchro bug
+                // Thread.currentThread().interrupt(); // propagate
+//                System.out.println("OMSwingWorker interrupted : " + this);
+                t.interrupt();
+                interrupted = true;
                 return null;
             }
         }
     }
 
     /**
-     * Start a thread that will call the <code>construct</code>
-     * method and then exit.
+     * Start a thread that will call the <code>construct</code> method and
+     * then exit.
      */
     public SwingWorker() {
         final Runnable doFinished = new Runnable() {
@@ -112,13 +122,19 @@ public abstract class SwingWorker {
 
         Runnable doConstruct = new Runnable() {
             public void run() {
+                Object value = null;
                 try {
-                    setValue(construct());
+                    value = construct();
+                    // setValue(construct());
                 } finally {
+                    if (!Thread.currentThread().isInterrupted()) { // TW
+                        setValue(value);
+                    } else {
+                        setValue(null);
+                    }
+                    SwingUtilities.invokeLater(doFinished); // TW
                     threadVar.clear();
                 }
-
-                SwingUtilities.invokeLater(doFinished);
             }
         };
 
@@ -137,8 +153,7 @@ public abstract class SwingWorker {
     }
 
     /**
-     * For compatibility with old versions of SwingWorker, calls
-     * start().
+     * For compatibility with old versions of SwingWorker, calls start().
      */
     public void execute() {
         start();

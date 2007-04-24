@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
-// $Revision: 1.32 $
-// $Date: 2007/04/24 15:20:18 $
+// $Revision: 1.33 $
+// $Date: 2007/04/24 19:53:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -137,24 +137,24 @@ import com.bbn.openmap.util.SwingWorker;
  * dictate important behavior:
  * 
  * <pre>
+ *   
+ *    
+ *    
+ *     layer.projectionChangePolicy=pcp
+ *     layer.pcp.class=com.bbn.openmap.layer.policy.StandardPCPolicy
+ *    
+ *     layer.renderPolicy=srp
+ *     layer.srp.class=com.bbn.openmap.layer.policy.StandardRenderPolicy
+ *     # or
+ *     layer.renderPolicy=ta
+ *     layer.ta.class=com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy
+ *     layer.ta.renderingHints=KEY_TEXT_ANTIALIASING
+ *     layer.ta.KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_ON
+ *    
+ *     layer.mouseModes=Gestures
+ *     layer.consumeEvents=true
  *     
- *      
- *      
- *       layer.projectionChangePolicy=pcp
- *       layer.pcp.class=com.bbn.openmap.layer.policy.StandardPCPolicy
- *      
- *       layer.renderPolicy=srp
- *       layer.srp.class=com.bbn.openmap.layer.policy.StandardRenderPolicy
- *       # or
- *       layer.renderPolicy=ta
- *       layer.ta.class=com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy
- *       layer.ta.renderingHints=KEY_TEXT_ANTIALIASING
- *       layer.ta.KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_ON
- *      
- *       layer.mouseModes=Gestures
- *       layer.consumeEvents=true
- *       
- *      
+ *    
  * </pre>
  */
 public class OMGraphicHandlerLayer extends Layer implements
@@ -440,8 +440,10 @@ public class OMGraphicHandlerLayer extends Layer implements
 
     protected void interrupt() {
         try {
-            if (layerWorker != null && interruptable) {
-                layerWorker.interrupt();
+            synchronized (LAYERWORKER_LOCK) {
+                if (layerWorker != null && interruptable) {
+                    layerWorker.interrupt();
+                }
             }
         } catch (SecurityException se) {
             Debug.output(getName()
@@ -529,34 +531,30 @@ public class OMGraphicHandlerLayer extends Layer implements
      * workerComplete() which will call repaint() on this layer.
      */
     public void doPrepare() {
-
-        if (isWorking()) {
-            if (Debug.debugging("layer")) {
-                Debug.output(getName()
-                        + " layer already working in prepare(), cancelling");
+        synchronized (LAYERWORKER_LOCK) {
+            if (isWorking()) {
+                if (Debug.debugging("layer")) {
+                    Debug.output(getName()
+                            + " layer already working in prepare(), cancelling");
+                }
+                setCancelled(true);
+                return;
             }
-            setCancelled(true);
-            return;
+            // If there isn't a worker thread working on a projection
+            // changed or other doPrepare call, then create a thread that
+            // will do the real work. If there is a thread working on
+            // this, then set the cancelled flag in the layer.
+            setLayerWorker(createLayerWorker());
         }
-
-        // If there isn't a worker thread working on a projection
-        // changed or other doPrepare call, then create a thread that
-        // will do the real work. If there is a thread working on
-        // this, then set the cancelled flag in the layer.
-        setLayerWorker(createLayerWorker());
     }
 
     /**
      * A check to see if the SwingWorker is doing something.
      */
     public boolean isWorking() {
-        boolean ret = false;
-
         synchronized (LAYERWORKER_LOCK) {
-            ret = (layerWorker != null);
+            return (layerWorker != null && !layerWorker.isInterrupted());
         }
-
-        return ret;
     }
 
     /**
@@ -611,9 +609,9 @@ public class OMGraphicHandlerLayer extends Layer implements
      * Set when the something has changed while a swing worker is gathering
      * graphics, and we want it to stop early.
      */
-    protected boolean cancelled = false;
-    protected Object CANCELLED_LOCK = new Object();
-    protected Object LAYERWORKER_LOCK = new Object();
+    // protected boolean cancelled = false;
+    // protected Object CANCELLED_LOCK = new Object();
+    protected final Object LAYERWORKER_LOCK = new Object();
 
     /**
      * Used to set the cancelled flag in the layer. The swing worker checks this
@@ -621,22 +619,25 @@ public class OMGraphicHandlerLayer extends Layer implements
      * working. If this is set to true, the swing worker quits when it is safe.
      */
     public void setCancelled(boolean set) {
-        if (set) {
-            interrupt();// if the layerWorker is busy, stop it.
-        }
-
-        synchronized (CANCELLED_LOCK) {
-            cancelled = set;
+        // synchronized (CANCELLED_LOCK) {
+        synchronized (LAYERWORKER_LOCK) {
+            // cancelled = set;
+            if (set) {
+                interrupt();// if the layerWorker is busy, stop it.
+                // System.out.println(">>Interrupting (setCancelled)");
+            }
         }
     }
 
     /** Check to see if the cancelled flag has been set. */
     public boolean isCancelled() {
-        boolean ret = false;
-        synchronized (CANCELLED_LOCK) {
-            ret = cancelled;
+        synchronized (LAYERWORKER_LOCK) {
+            return layerWorker != null && layerWorker.isInterrupted();
         }
-        return ret;
+        /*
+         * boolean ret = false; synchronized (CANCELLED_LOCK) { ret = cancelled; }
+         * return ret;
+         */
     }
 
     /**
@@ -647,14 +648,27 @@ public class OMGraphicHandlerLayer extends Layer implements
      * @param worker the worker that has the graphics.
      */
     protected void workerComplete(LayerWorker worker) {
-        if (!isCancelled()) {
+        synchronized (LAYERWORKER_LOCK) {
+            if (layerWorker != worker) {
+                return; //
+            }
+            if (layerWorker.isInterrupted()) {
+                setCancelled(false); // reset
+                setLayerWorker(createLayerWorker()); // try again with
+                // current proj
+                return;
+            }
+            // success!
             setLayerWorker(null);
             getProjectionChangePolicy().workerComplete((OMGraphicList) worker.get());
-            repaint();
-        } else {
-            setCancelled(false);
-            setLayerWorker(createLayerWorker());
         }
+        repaint();
+        /*
+         * if (!isCancelled()) { setLayerWorker(null);
+         * getProjectionChangePolicy().workerComplete((OMGraphicList)
+         * worker.get()); repaint(); } else { setCancelled(false);
+         * setLayerWorker(createLayerWorker()); }
+         */
     }
 
     /**
@@ -720,8 +734,15 @@ public class OMGraphicHandlerLayer extends Layer implements
          */
         public void finished() {
             workerComplete(this);
-            fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+            if (!isInterrupted()) {
+                fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
+            }
         }
+
+        public String toString() {
+            return getName() + " LayerWorker";
+        }
+
     }
 
     /**
@@ -1080,7 +1101,7 @@ public class OMGraphicHandlerLayer extends Layer implements
                 "Interruptable",
                 "Flat to set whether the layer should immediately stop performing current work when the projection changes.",
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-        
+
         return list;
     }
 

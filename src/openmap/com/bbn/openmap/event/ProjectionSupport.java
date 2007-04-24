@@ -14,26 +14,27 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ProjectionSupport.java,v $
 // $RCSfile: ProjectionSupport.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/09 17:37:09 $
+// $Revision: 1.8 $
+// $Date: 2007/04/24 19:53:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.event;
 
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
-
 import java.util.Iterator;
 
+import com.bbn.openmap.proj.Projection;
+
 /**
- * This is a utility class that can be used by beans that need support
- * for handling ProjectionListeners and firing ProjectionEvents. You
- * can use an instance of this class as a member field of your bean
- * and delegate work to it.
+ * This is a utility class that can be used by beans that need support for
+ * handling ProjectionListeners and firing ProjectionEvents. You can use an
+ * instance of this class as a member field of your bean and delegate work to
+ * it.
  */
 public class ProjectionSupport extends ListenerSupport {
+
+    protected ProjectionChangeNotifier pcNotifier = new ProjectionChangeNotifier();
 
     /**
      * Construct a ProjectionSupport.
@@ -49,6 +50,7 @@ public class ProjectionSupport extends ListenerSupport {
      */
     public ProjectionSupport(Object aSource) {
         super(aSource);
+        pcNotifier.start();
     }
 
     /**
@@ -75,41 +77,112 @@ public class ProjectionSupport extends ListenerSupport {
      * @param proj Projection
      */
     public void fireProjectionChanged(Projection proj) {
+        if (proj == null || size() == 0)
+            return; // no event or no listeners
 
-        if (size() == 0)
-            return;
-
-        ProjectionEvent evt = new ProjectionEvent(getSource(), proj);
-
-        ProjectionChangedRunnable pcr = new ProjectionChangedRunnable(evt);
-        new Thread(pcr).start();
+        pcNotifier.fireProjectionEvent(new ProjectionEvent(getSource(), proj));
+        /*
+         * ProjectionEvent evt = new ProjectionEvent(getSource(), proj);
+         * 
+         * ProjectionSupportII.ProjectionChangedRunnable pcr = new
+         * ProjectionSupportII.ProjectionChangedRunnable(evt); new
+         * Thread(pcr).start();
+         */
     }
 
     /**
-     * A Runnable class that disperses the projection, instead of
-     * letting the Swing thread do it. A new one is created for every
-     * projection change, so the current ProjectionEvent object is
-     * getting delivered with it.
+     * A Runnable class that disperses the projection, instead of letting the
+     * Swing thread do it. A new one is created for every projection change, so
+     * the current ProjectionEvent object is getting delivered with it.
      */
-    protected class ProjectionChangedRunnable implements Runnable {
+//    protected class ProjectionChangedRunnable implements Runnable {
+//        protected ProjectionEvent projEvent;
+//
+//        public ProjectionChangedRunnable(ProjectionEvent pe) {
+//            projEvent = pe;
+//        }
+//
+//        public void run() {
+//            ProjectionListener target = null;
+//            Iterator it = iterator();
+//            while (it.hasNext()) {
+//                target = (ProjectionListener) it.next();
+//                if (Debug.debugging("mapbean")) {
+//                    Debug.output("ProjectionChangeRunnable: firing projection change, target is: "
+//                            + target);
+//                }
+//                target.projectionChanged(projEvent);
+//            }
+//        }
+//    };
+
+    /**
+     * A thread that disperses the projection event, instead of letting the
+     * Swing thread do it. A new one is created for every projection change, so
+     * the current ProjectionEvent object is getting delivered with it.
+     */
+    protected class ProjectionChangeNotifier extends Thread {
+
+        private final Object lock = new Object();
+
+        /* current projection event */
         protected ProjectionEvent projEvent;
 
-        public ProjectionChangedRunnable(ProjectionEvent pe) {
-            projEvent = pe;
+        /* next projection event */
+        protected ProjectionEvent nextEvent;
+
+        /* a flag to kneow if we are terminated (which is never ) */
+        protected boolean terminated = false;
+
+        public ProjectionChangeNotifier() {}
+
+        protected boolean isEventInProgress() {
+            // synchronized(lock){
+            return projEvent != null;
+            // }
+        }
+
+        public void fireProjectionEvent(ProjectionEvent event) {
+            synchronized (lock) {
+                nextEvent = event;
+                lock.notifyAll(); // wakes up thread if sleeping
+            }
         }
 
         public void run() {
-            ProjectionListener target = null;
-            Iterator it = iterator();
-            while (it.hasNext()) {
-                target = (ProjectionListener) it.next();
-                if (Debug.debugging("mapbean")) {
-                    Debug.output("ProjectionChangeRunnable: firing projection change, target is: "
-                            + target);
+            while (!terminated) { // run forever
+                synchronized (lock) {
+                    if (nextEvent != null) {
+                        projEvent = nextEvent;
+                        nextEvent = null;
+                    }
                 }
-                target.projectionChanged(projEvent);
+                if (projEvent != null) {
+                    for (Iterator it = listeners.iterator(); it.hasNext();) {
+                        Object o = it.next();
+                        if (nextEvent != null) {
+                            break; // new event has been posted, bail out
+                        }
+                        if (o instanceof ProjectionListener) {
+                            ((ProjectionListener) o).projectionChanged(projEvent);
+                        }
+                    }
+                    // notification is complete
+                    synchronized (lock) {
+                        projEvent = null;
+                    }
+                } else { // there is no event
+                    // just wait until we are woken up for the next event
+                    try {
+                        synchronized (lock) {
+                            lock.wait();
+                        }
+                    } catch (InterruptedException x) {
+                        // do nothing, just reenter loop
+                    }
+                }
             }
         }
-    };
+    }
 
 }
