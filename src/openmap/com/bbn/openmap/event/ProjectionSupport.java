@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ProjectionSupport.java,v $
 // $RCSfile: ProjectionSupport.java,v $
-// $Revision: 1.8 $
-// $Date: 2007/04/24 19:53:44 $
+// $Revision: 1.9 $
+// $Date: 2007/05/16 04:05:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,7 @@
 package com.bbn.openmap.event;
 
 import java.util.Iterator;
+import java.util.Vector;
 
 import com.bbn.openmap.proj.Projection;
 
@@ -95,27 +96,27 @@ public class ProjectionSupport extends ListenerSupport {
      * Swing thread do it. A new one is created for every projection change, so
      * the current ProjectionEvent object is getting delivered with it.
      */
-//    protected class ProjectionChangedRunnable implements Runnable {
-//        protected ProjectionEvent projEvent;
-//
-//        public ProjectionChangedRunnable(ProjectionEvent pe) {
-//            projEvent = pe;
-//        }
-//
-//        public void run() {
-//            ProjectionListener target = null;
-//            Iterator it = iterator();
-//            while (it.hasNext()) {
-//                target = (ProjectionListener) it.next();
-//                if (Debug.debugging("mapbean")) {
-//                    Debug.output("ProjectionChangeRunnable: firing projection change, target is: "
-//                            + target);
-//                }
-//                target.projectionChanged(projEvent);
-//            }
-//        }
-//    };
-
+    // protected class ProjectionChangedRunnable implements Runnable {
+    // protected ProjectionEvent projEvent;
+    //
+    // public ProjectionChangedRunnable(ProjectionEvent pe) {
+    // projEvent = pe;
+    // }
+    //
+    // public void run() {
+    // ProjectionListener target = null;
+    // Iterator it = iterator();
+    // while (it.hasNext()) {
+    // target = (ProjectionListener) it.next();
+    // if (Debug.debugging("mapbean")) {
+    // Debug.output("ProjectionChangeRunnable: firing projection change, target
+    // is: "
+    // + target);
+    // }
+    // target.projectionChanged(projEvent);
+    // }
+    // }
+    // };
     /**
      * A thread that disperses the projection event, instead of letting the
      * Swing thread do it. A new one is created for every projection change, so
@@ -150,6 +151,7 @@ public class ProjectionSupport extends ListenerSupport {
         }
 
         public void run() {
+            Vector lstnrs = null;
             while (!terminated) { // run forever
                 synchronized (lock) {
                     if (nextEvent != null) {
@@ -157,8 +159,15 @@ public class ProjectionSupport extends ListenerSupport {
                         nextEvent = null;
                     }
                 }
-                if (projEvent != null) {
-                    for (Iterator it = listeners.iterator(); it.hasNext();) {
+
+                if (projEvent != null && listeners != null) {
+                    if (lstnrs == null) {
+                        lstnrs = (Vector) listeners.clone();
+                    } else {
+                        lstnrs.clear();
+                    }
+                    lstnrs.addAll(listeners);
+                    for (Iterator it = lstnrs.iterator(); it.hasNext();) {
                         Object o = it.next();
                         if (nextEvent != null) {
                             break; // new event has been posted, bail out
