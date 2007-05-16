@@ -29,7 +29,7 @@ import java.util.List;
  * 
  * @author Sachin Date
  * @author Ken Anderson
- * @version $Revision: 1.17 $ on $Date: 2007/02/13 20:02:12 $
+ * @version $Revision: 1.18 $ on $Date: 2007/05/16 03:27:19 $
  */
 public class Intersection {
 
@@ -901,7 +901,7 @@ public class Intersection {
         Geo p2 = new Geo(lat2, lon2);
         Geo p3 = new Geo(lat3, lon3);
         Geo p4 = new Geo(lat4, lon4);
-        
+
         Geo[] results = getSegIntersection(p1, p2, p3, p4);
         Geo i1 = results[0];
         Geo i2 = results[1];
@@ -1213,6 +1213,71 @@ public class Intersection {
             pl0.initialize(pl1);
         }
         return false;
+    }
+
+    /**
+     * Is one region's boundary within 'near' range of a region? Note: good
+     * practice is s describes a smaller area than r.
+     * 
+     * @return the Geo location where the condition was first met, null if the
+     *         condition wasn't met.
+     */
+    public static final Geo isPolyNearPoly(GeoArray s, GeoArray r, double near) {
+        int rlen = r.getSize();
+        int slen = s.getSize();
+        Geo pl0 = r.get(rlen - 1);
+        Geo pl1 = new Geo();
+        Geo sl0 = s.get(slen - 1);
+        Geo sl1 = new Geo();
+        for (int j = 0; j < rlen; j++) {
+            pl1 = r.get(j, pl1);
+            for (int i = 0; i < slen; i++) {
+                sl1 = s.get(i, sl1);
+                Geo ret = segmentsIntersectOrNear(sl0, sl1, pl0, pl1, near);
+
+                if (ret != null) {
+                    return ret;
+                }
+                sl0 = sl1;
+            }
+            pl0 = pl1;
+        }
+        return null;
+    }
+
+    /**
+     * Is one region's boundary within 'near' range of a region? Note: good
+     * practice is s describes a smaller area than r.
+     * 
+     * @return a List where the polys intersect within the range, null if the
+     *         condition wasn't met.
+     */
+    public static final List polyNearPoly(GeoArray s, GeoArray r, double near) {
+        int rlen = r.getSize();
+        int slen = s.getSize();
+        Geo pl0 = r.get(rlen - 1);
+        Geo pl1 = new Geo();
+        Geo sl0 = s.get(slen - 1);
+        Geo sl1 = new Geo();
+        List list = null;
+        for (int j = 0; j < rlen; j++) {
+            pl1 = r.get(j, pl1);
+            for (int i = 0; i < slen; i++) {
+                sl1 = s.get(i, sl1);
+                Geo ret = segmentsIntersectOrNear(sl0, sl1, pl0, pl1, near);
+
+                if (ret != null) {
+                    if (list == null) {
+                        list = new LinkedList();
+                    }
+                    list.add(ret);
+                }
+                sl0 = sl1;
+            }
+            pl0 = pl1;
+        }
+
+        return list;
     }
 
     /**
