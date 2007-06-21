@@ -14,8 +14,8 @@
  * 
  * $Source: /cvs/distapps/openmap/src/cserver/link/include/Link.h,v $
  * $RCSfile: Link.h,v $
- * $Revision: 1.3 $
- * $Date: 2006/10/10 22:05:18 $
+ * $Revision: 1.4 $
+ * $Date: 2007/06/21 21:43:44 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -45,7 +45,7 @@
 
 #define UNKNOWN -1
 
-#define VERSION 0.3
+#define VERSION 0.6
 
 /*see protocol*/
 
@@ -110,54 +110,56 @@ enum JUSTIFICATION {JUSTIFY_LEFT, JUSTIFY_CENTER, JUSTIFY_RIGHT};
 enum ACTIONTYPE {ACTIONGRAPHIC, ACTIONGUI};
 
 /*  REQUEST HEADERS*/
-#define MAP_REQUEST_HEADER "<OMLINK:MAP_REQUEST>"
+#define MAP_REQUEST_HEADER "<MR>"
 #define lMAP_REQUEST_HEADER strlen(MAP_REQUEST_HEADER)
-#define ACTION_REQUEST_HEADER "<OMLINK:ACTION_REQUEST>"
+#define ACTION_REQUEST_HEADER "<AR>"
 #define lACTION_REQUEST_HEADER strlen(ACTION_REQUEST_HEADER)
-#define GUI_REQUEST_HEADER "<OMLINK:GUI_REQUEST>"
+#define GUI_REQUEST_HEADER "<GUIR>"
 #define lGUI_REQUEST_HEADER strlen(GUI_REQUEST_HEADER)
 
 /*  RESPONSE HEADERS*/
-#define GRAPHICS_RESPONSE_HEADER "<OMLINK:GRAPHICS>"
+#define GRAPHICS_RESPONSE_HEADER "<G>"
 #define lGRAPHICS_RESPONSE_HEADER strlen(GRAPHICS_RESPONSE_HEADER)
-#define GESTURE_RESPONSE_HEADER "<OMLINK:ACTIONS>"
+#define GESTURE_RESPONSE_HEADER "<A>"
 #define lGESTURE_RESPONSE_HEADER strlen(GESTURE_RESPONSE_HEADER)
-#define GUI_RESPONSE_HEADER "<OMLINK:GUI>"
+#define GUI_RESPONSE_HEADER "<GUI>"
 #define lGUI_RESPONSE_HEADER strlen(GUI_RESPONSE_HEADER)
-#define CLOSE_LINK_HEADER "<OMLINK:CLOSE_LINK>"
+#define CLOSE_LINK_HEADER "<Q>"
 #define lCLOSE_LINK_HEADER strlen(CLOSE_LINK_HEADER)
-#define HUH_HEADER "<OMLINK:HUH?>"
+#define HUH_HEADER "<?>"
 #define lHUH_HEADER strlen(HUH_HEADER)
 
 /* Graphic Headers*/
-#define BITMAP_HEADER "<OMLINK:BITMAP>"
+#define BITMAP_HEADER "<B>"
 #define lBITMAP_HEADER strlen(BITMAP_HEADER)
-#define CIRCLE_HEADER "<OMLINK:CIRCLE>"
+#define CIRCLE_HEADER "<C>"
 #define lCIRCLE_HEADER strlen(CIRCLE_HEADER)
-#define ELLIPSE_HEADER "<OMLINK:ELLIPSE>"
+#define ELLIPSE_HEADER "<E>"
 #define lELLIPSE_HEADER strlen(ELLIPSE_HEADER)
-#define GRID_HEADER "<OMLINK:GRID>"
+#define GRID_HEADER "<GD>"
 #define lGRID_HEADER strlen(GRID_HEADER)
-#define LINE_HEADER "<OMLINK:LINE>"
+#define LINE_HEADER "<L>"
 #define lLINE_HEADER strlen(LINE_HEADER)
-#define POLY_HEADER "<OMLINK:POLY>"
+#define POLY_HEADER "<PY>"
 #define lPOLY_HEADER strlen(POLY_HEADER)
-#define TEXT_HEADER "<OMLINK:TEXT>"
+#define TEXT_HEADER "<T>"
 #define lTEXT_HEADER strlen(TEXT_HEADER)
-#define RASTER_HEADER "<OMLINK:RASTER>"    
+#define RASTER_HEADER "<RA>"    
 #define lRASTER_HEADER strlen(RASTER_HEADER)
-#define RECTANGLE_HEADER "<OMLINK:RECTANGLE>"
-#define lRECTANGLE_HEADER strlen(RECTANGLE_HEADER)
-#define TEXT_HEADER "<OMLINK:TEXT>"
-#define lTEXT_HEADER strlen(TEXT_HEADER)
-#define POINT_HEADER "<OMLINK:POINT>"
+#define RECTANGLE_HEADER "<RE>"
+#define lRECTANGLE_HEADER strlen(RECTANGLE_HEADER) 
+#define POINT_HEADER "<PO>"
 #define lPOINT_HEADER strlen(POINT_HEADER)
-   
+#define GRAPHIC_HEADER "<GD>"
+#define lGRAPHIC_HEADER strlen(GRAPHIC_HEADER)
+  
 /* Gesture Response Headers*/
-#define UPDATE_GRAPHICS "<OMLINK:ACTION_GRAPHICS>"
+#define UPDATE_GRAPHICS "<UG>"
 #define lUPDATE_GRAPHICS strlen(UPDATE_GRAPHICS)
-#define UPDATE_GUI "<OMLINK:ACTION_GUI>"
+#define UPDATE_GUI "<UGUI>"
 #define lUPDATE_GUI strlen(UPDATE_GUI)
+#define UPDATE_MAP "<UM>"
+#define lUPDATE_MAP strlen(UPDATE_MAP)
 
 /*
   Predefined keys for key value pairs stored in the LinkArgs.
@@ -165,22 +167,22 @@ enum ACTIONTYPE {ACTIONGRAPHIC, ACTIONGUI};
 
 /* For graphic attributes. */
 /** The line color attribute name. */
-#define LPC_LINECOLOR "lineColor"
+#define LPC_LINECOLOR "lc"
 /** The highlight color attribute name. */
-#define LPC_HIGHLIGHTCOLOR "highlightColor"
+#define LPC_HIGHLIGHTCOLOR "hc"
 /** The fill color attribute name. */
-#define LPC_FILLCOLOR "fillColor"
+#define LPC_FILLCOLOR "fc"
 /** The line width attribute name. */
-#define LPC_LINEWIDTH "lineWidth"
+#define LPC_LINEWIDTH "lw"
 /** The text graphic contents attribute name. */
-#define LPC_LINKTEXTSTRING "textString"
+#define LPC_LINKTEXTSTRING "ts"
 /** The font representation attribute name. */
-#define LPC_LINKTEXTFONT "textFont"
+#define LPC_LINKTEXTFONT "tf"
 /** The attribute name for a URL for an image in LinkRaster.  Only
     used in some circumstances. */
-#define LPC_LINKRASTERIMAGEURL "rasterImageURL"
+#define LPC_LINKRASTERIMAGEURL "riu"
 /** The graphic identifier attribute name. */
-#define LPC_GRAPHICID "graphicID"
+#define LPC_GRAPHICID "gid"
 
 /* Constants that can fire a information delegator action.*/
 /** The URL text attribute name. */
@@ -190,7 +192,7 @@ enum ACTIONTYPE {ACTIONGRAPHIC, ACTIONGUI};
 /** The Information Line (status line) attribute name. */
 #define LPC_INFO "info"
 /** The Message text (in a pop-up window) attribute name. */
-#define LPC_MESSAGE "message"
+#define LPC_MESSAGE "mess"
     
 struct MapRequest;
 struct ActionRequest;
