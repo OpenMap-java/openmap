@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/shape/ShapeSpecialist.java,v $
 // $RCSfile: ShapeSpecialist.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/09 21:01:26 $
+// $Revision: 1.5 $
+// $Date: 2007/06/21 21:39:44 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,7 +28,6 @@ import java.util.Properties;
 import java.util.Vector;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.CSpecialist.MouseEvent;
 import com.bbn.openmap.CSpecialist.UGraphic;
 import com.bbn.openmap.CSpecialist.WidgetChange;
@@ -37,16 +36,16 @@ import com.bbn.openmap.layer.shape.SpatialIndex;
 import com.bbn.openmap.layer.specialist.SColor;
 import com.bbn.openmap.layer.specialist.SGraphic;
 import com.bbn.openmap.layer.specialist.Specialist;
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * Implements the Specialist interface so that we can serve graphics
- * to OpenMap via CORBA. This specialist handles shape files, with the
- * coordinates in the shape files being in decimal degrees, not
- * pre-projected x-y coordinates. The specialist looks for a property
- * file to know where where the shape file and spatial index file is,
- * and how to color the shapes.
+ * Implements the Specialist interface so that we can serve graphics to OpenMap
+ * via CORBA. This specialist handles shape files, with the coordinates in the
+ * shape files being in decimal degrees, not pre-projected x-y coordinates. The
+ * specialist looks for a property file to know where where the shape file and
+ * spatial index file is, and how to color the shapes.
  */
 public class ShapeSpecialist extends Specialist {
 
@@ -54,20 +53,17 @@ public class ShapeSpecialist extends Specialist {
     public final static String shapeFileProperty = "shapeFile";
 
     /**
-     * The name of the property that holds the name of the spatial
-     * index file.
+     * The name of the property that holds the name of the spatial index file.
      */
     public final static String spatialIndexProperty = "spatialIndex";
 
     /**
-     * The name of the property that holds the line color of the
-     * graphics.
+     * The name of the property that holds the line color of the graphics.
      */
     public final static String lineColorProperty = "lineColor";
 
     /**
-     * The name of the property that holds the fill color of the
-     * graphics.
+     * The name of the property that holds the fill color of the graphics.
      */
     public final static String fillColorProperty = "fillColor";
 
@@ -83,16 +79,18 @@ public class ShapeSpecialist extends Specialist {
     /** The color to fill the shapes. */
     protected SColor fillColor = null;
 
-//    final private static SColor nullColor = new SColor((short) 0, (short) 0, (short) 0);
-//    final private static EStipple nullStipple = new EStipple(null, (short) 0, (short) 0, new byte[0]);
-//    final private static EComp nullComp = new EComp(null, "");
-//    final private static XYPoint nullP1 = new XYPoint((short) 0, (short) 0);
-//    final private static XYPoint[] nullPA = new XYPoint[0];
-//    final private static LLPoint nullLL1 = new LLPoint(0.0f, 0.0f);
+    // final private static SColor nullColor = new SColor((short) 0, (short) 0,
+    // (short) 0);
+    // final private static EStipple nullStipple = new EStipple(null, (short) 0,
+    // (short) 0, new byte[0]);
+    // final private static EComp nullComp = new EComp(null, "");
+    // final private static XYPoint nullP1 = new XYPoint((short) 0, (short) 0);
+    // final private static XYPoint[] nullPA = new XYPoint[0];
+    // final private static LLPoint nullLL1 = new LLPoint(0.0f, 0.0f);
 
     /**
-     * default constructor is called when we're loading the class
-     * directly into OpenMap. Not used.
+     * default constructor is called when we're loading the class directly into
+     * OpenMap. Not used.
      */
     public ShapeSpecialist() {
         super("ShapeSpecialist", (short) 2, false);
@@ -102,8 +100,7 @@ public class ShapeSpecialist extends Specialist {
      * The real constructor to use.
      * 
      * @param shapeFile the shapefile.
-     * @param spatialIndexFile the created index file (.ssx) for this
-     *        shp file.
+     * @param spatialIndexFile the created index file (.ssx) for this shp file.
      */
     public ShapeSpecialist(String shapeFile, String spatialIndexFile) {
         super("ShapeSpecialist", (short) 2, false);
@@ -114,8 +111,7 @@ public class ShapeSpecialist extends Specialist {
      * Loads the spatial index from the two files.
      * 
      * @param shapeFile the shapefile.
-     * @param spatialIndexFile the created index file (.ssx) for this
-     *        shp file.
+     * @param spatialIndexFile the created index file (.ssx) for this shp file.
      */
     public void init(String shapeFile, String spatialIndexFile) {
         spatialIndex = locateAndSetShapeData(shapeFile, spatialIndexFile);
@@ -126,7 +122,7 @@ public class ShapeSpecialist extends Specialist {
      * 
      * @param ll1 the upper left LLPoint.
      * @param ll2 the lower right LLPoint.
-     * @return OMGraphicList
+     * @return Vector of ESRISpecialistRecords.
      */
     protected Vector computeGraphics(com.bbn.openmap.CSpecialist.LLPoint ll1,
                                      com.bbn.openmap.CSpecialist.LLPoint ll2) {
@@ -141,8 +137,9 @@ public class ShapeSpecialist extends Specialist {
         // ll2.lon, but we need to be careful of the check for
         // equality because
         // of floating point arguments...
-        if ((ll1.lon > ll2.lon)
-                || MoreMath.approximately_equal(ll1.lon, ll2.lon, .001f)) {
+        // Since we don't have the projection scale here, we're going to assume
+        // that we're not zoomed in.
+        if (ProjMath.isCrossingDateline(ll1.lon, ll2.lon, 1000000f)) {
 
             if (Debug.debugging("shape")) {
                 Debug.output("Dateline is on screen");
@@ -219,7 +216,7 @@ public class ShapeSpecialist extends Specialist {
                                     org.omg.CORBA.StringHolder dynamicArgs,
                                     com.bbn.openmap.CSpecialist.GraphicChange notifyOnChange,
                                     String uniqueID) {
-        //      System.out.println("ShapeSpecialist.fillRectangle()");
+        // System.out.println("ShapeSpecialist.fillRectangle()");
         try {
             Vector list = computeGraphics(ll1, ll2);
             int len = list.size();
@@ -230,7 +227,7 @@ public class ShapeSpecialist extends Specialist {
                 ugraphics[i] = sg.ufill();
             }
 
-            //          System.out.println("ShapeSpecialist.fillRectangle():
+            // System.out.println("ShapeSpecialist.fillRectangle():
             // got "+ugraphics.length+" graphics");
             return ugraphics;
         } catch (Throwable t) {
@@ -238,7 +235,7 @@ public class ShapeSpecialist extends Specialist {
             t.printStackTrace();
 
             // Don't throw another one! Try to recover!
-            //          throw new RuntimeException();
+            // throw new RuntimeException();
 
             return new UGraphic[0];
         }
@@ -251,14 +248,14 @@ public class ShapeSpecialist extends Specialist {
         SpatialIndex si = null;
 
         if (spatialIndexFile.isAbsolute()) {
-            //          System.out.println("Absolute!");
+            // System.out.println("Absolute!");
             try {
                 si = new SpecialistSpatialIndex(spatialIndexFileName, shapeFileName);
             } catch (java.io.IOException e) {
                 e.printStackTrace();
             }
         } else {
-            //          System.out.println("Relative!");
+            // System.out.println("Relative!");
             Vector dirs = Environment.getClasspathDirs();
             int nDirs = dirs.size();
             if (nDirs > 0) {
@@ -268,8 +265,8 @@ public class ShapeSpecialist extends Specialist {
                     if (sif.isFile()) {
                         File sf = new File(dir, shapeFileName);
                         try {
-                            //                          System.out.println(sif.toString());
-                            //                          System.out.println(sf.toString());
+                            // System.out.println(sif.toString());
+                            // System.out.println(sf.toString());
                             si = new SpecialistSpatialIndex(sif.toString(), sf.toString());
                             break;
                         } catch (java.io.IOException e) {
@@ -343,7 +340,7 @@ public class ShapeSpecialist extends Specialist {
                 String ssx = properties.getProperty(spatialIndexProperty);
                 String shp = properties.getProperty(shapeFileProperty);
 
-                //              System.out.println("Getting " + shp + " and " +
+                // System.out.println("Getting " + shp + " and " +
                 // ssx);
 
                 init(shp, ssx);
@@ -371,9 +368,9 @@ public class ShapeSpecialist extends Specialist {
 
     /**
      * Load the named file from the named directory into the given
-     * <code>Properties</code> instance. If the file is not found a
-     * warning is issued. If an IOExceptio occurs, a fatal error is
-     * printed and the application will exit.
+     * <code>Properties</code> instance. If the file is not found a warning is
+     * issued. If an IOExceptio occurs, a fatal error is printed and the
+     * application will exit.
      * 
      * @param file the name of the file
      * @return the loaded properties
