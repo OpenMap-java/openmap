@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: EsriGraphicFactory.java,v $
-//$Revision: 1.7 $
-//$Date: 2007/06/21 21:39:02 $
+//$Revision: 1.8 $
+//$Date: 2007/06/21 21:52:16 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -76,7 +76,10 @@ public class EsriGraphicFactory implements ShapeConstants {
             list = createEsriGraphicList(header.shapeType);
         }
         int offset = 100; // next byte past header;
-
+        // BAJ 20070604 Stop here for empty shape files
+        if (header.fileLength == offset) {          
+            return list;
+        }
         // Put a flag in here to force the file to be read until EOF
         boolean ignoreFileLength = logger.isLoggable(Level.FINE);
 
@@ -134,7 +137,10 @@ public class EsriGraphicFactory implements ShapeConstants {
             list = createEsriGraphicList(header.shapeType);
         }
         int offset = 100; // next byte past header;
-
+        // BAJ 20070604 Stop here for empty shape files
+        if (header.fileLength == offset) {          
+            return list;
+        }
         // Put a flag in here to force the file to be read until EOF
         boolean ignoreFileLength = logger.isLoggable(Level.FINE);
 
