@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfTableModel.java,v $
 // $RCSfile: DbfTableModel.java,v $
-// $Revision: 1.14 $
-// $Date: 2006/08/25 15:36:12 $
+// $Revision: 1.15 $
+// $Date: 2007/06/21 21:39:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -153,20 +153,24 @@ public class DbfTableModel extends AbstractTableModel implements
 
     protected boolean DEBUG = false;
 
+    protected DbfTableModel() {
+        parent = this;
+        DEBUG = Debug.debugging("shape");
+    }
+
     /**
      * Creates a blank DbfTableModel
      * 
      * @param columnCount The number of columns this model will manage
      */
     public DbfTableModel(int columnCount) {
+        this();
         _columnCount = columnCount;
         _records = new ArrayList();
         _lengths = new int[columnCount];
         _decimalCounts = new byte[columnCount];
         _types = new byte[columnCount];
         _names = new String[columnCount];
-        parent = this;
-        DEBUG = Debug.debugging("shape");
     }
 
     /**
@@ -175,13 +179,13 @@ public class DbfTableModel extends AbstractTableModel implements
      * @param is The dbf file
      */
     public DbfTableModel(DbfInputStream is) {
+        this();
         _lengths = is.getLengths();
         _decimalCounts = is.getDecimalCounts();
         _names = is.getColumnNames();
         _types = is.getTypes();
         _records = is.getRecords();
         _columnCount = is.getColumnCount();
-        parent = this;
     }
 
     /**
@@ -282,6 +286,24 @@ public class DbfTableModel extends AbstractTableModel implements
      */
     public String getColumnName(int column) {
         return _names[column];
+    }
+
+    /**
+     * Find the column index of the column with the given name.
+     * 
+     * @param columnName
+     * @return If the columnName is valid, some number between 0-column count.
+     *         Otherwise, -1 for non-valid names.
+     */
+    public int getColumnIndexForName(String columnName) {
+        if (_names != null) {
+            for (int i = 0; i < _names.length; i++) {
+                if (_names[i].equalsIgnoreCase(columnName)) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 
     /**
@@ -394,7 +416,7 @@ public class DbfTableModel extends AbstractTableModel implements
         JTable t = getTable();
         t.setModel(this);
         t.setSelectionModel(lsm);
-        t.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        t.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         return t;
     }
 

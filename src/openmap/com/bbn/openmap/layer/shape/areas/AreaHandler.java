@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaHandler.java,v $
 // $RCSfile: AreaHandler.java,v $
-// $Revision: 1.12 $
-// $Date: 2006/08/25 15:36:15 $
+// $Revision: 1.13 $
+// $Date: 2007/06/21 21:39:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,7 +32,6 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.shape.DbfTableModel;
 import com.bbn.openmap.dataAccess.shape.ShapeConstants;
@@ -46,7 +45,10 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGeometryList;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.GeoCoordTransformation;
+import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -198,6 +200,7 @@ public class AreaHandler implements PropertyConsumer {
     protected Properties originalProperties = null;
     protected String originalPrefix = null;
     protected SpatialIndex spatialIndex = null;
+    protected GeoCoordTransformation coordTransform = null;
 
     // public AreaHandler() {}
 
@@ -251,6 +254,20 @@ public class AreaHandler implements PropertyConsumer {
         // These will get initialized when someone asks for it.
         // Otherwise, it delays the startup of the map.
         politicalAreas = null;
+        
+        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        
+        String transClassName = props.getProperty(realPrefix
+                + ShapeLayer.TransformProperty);
+        if (transClassName != null) {
+            try {
+                coordTransform = (GeoCoordTransformation) ComponentFactory.create(transClassName,
+                        realPrefix + ShapeLayer.TransformProperty,
+                        props);
+            } catch (ClassCastException cce) {
+                
+            }
+        }
     }
 
     /** PropertyConsumer method. */
@@ -259,6 +276,10 @@ public class AreaHandler implements PropertyConsumer {
             props = new Properties();
         }
 
+        if (coordTransform != null && coordTransform instanceof PropertyConsumer) {
+            ((PropertyConsumer)coordTransform).getProperties(props);
+        }
+        
         return props;
     }
 
@@ -367,8 +388,9 @@ public class AreaHandler implements PropertyConsumer {
         // Now, match the attributes to the graphics. Find the
         // indexes of the name and the search key. Also figure out
         // which areas have special coloring needs.
-        keyIndex = PropUtils.intFromProperties(props, prefix
-                + keyIndexProperty, keyIndex);
+        keyIndex = PropUtils.intFromProperties(props,
+                prefix + keyIndexProperty,
+                keyIndex);
         nameIndex = PropUtils.intFromProperties(props, prefix
                 + nameIndexProperty, nameIndex);
         String areas = props.getProperty(prefix + areasProperty);
@@ -435,7 +457,7 @@ public class AreaHandler implements PropertyConsumer {
                         omgraphics,
                         drawingAttributes,
                         (Projection) null,
-                        (Projection) null);
+                        coordTransform);
 
                 for (Iterator it = omgraphics.iterator(); it.hasNext();) {
                     OMGraphic omg = (OMGraphic) it.next();
@@ -497,24 +519,23 @@ public class AreaHandler implements PropertyConsumer {
         // check for dateline anomaly on the screen. we check for
         // ulLon >= lrLon, but we need to be careful of the check for
         // equality because of floating point arguments...
-        if ((ulLon > lrLon)
-                || MoreMath.approximately_equal(ulLon, lrLon, .001f)) {
+        if (ProjMath.isCrossingDateline(ulLon, lrLon, proj.getScale())) {
             if (Debug.debugging("shape")) {
                 Debug.output("ShapeLayer.computeGraphics(): Dateline is on screen");
             }
 
-            double ymin = Math.min(ulLat, lrLat);
-            double ymax = Math.max(ulLat, lrLat);
+            double ymin = (double) Math.min(ulLat, lrLat);
+            double ymax = (double) Math.max(ulLat, lrLat);
 
             checkSpatialIndexEntries(ulLon, ymin, 180.0d, ymax, list, proj);
             checkSpatialIndexEntries(-180.0d, ymin, lrLon, ymax, list, proj);
 
         } else {
 
-            double xmin = Math.min(ulLon, lrLon);
-            double xmax = Math.max(ulLon, lrLon);
-            double ymin = Math.min(ulLat, lrLat);
-            double ymax = Math.max(ulLat, lrLat);
+            double xmin = (double) Math.min(ulLon, lrLon);
+            double xmax = (double) Math.max(ulLon, lrLon);
+            double ymin = (double) Math.min(ulLat, lrLat);
+            double ymax = (double) Math.max(ulLat, lrLat);
 
             checkSpatialIndexEntries(xmin, ymin, xmax, ymax, list, proj);
         }
@@ -540,13 +561,13 @@ public class AreaHandler implements PropertyConsumer {
 
         try {
             // There should be the same number of objects in both iterators.
-            Iterator entryIt = spatialIndex.entryIterator();
+            Iterator entryIt = spatialIndex.entryIterator(coordTransform);
             Iterator omgIt = getGraphics().iterator();
             while (entryIt.hasNext() && omgIt.hasNext()) {
                 Entry entry = (Entry) entryIt.next();
                 OMGraphic omg = (OMGraphic) omgIt.next();
                 if (entry.intersects(xmin, ymin, xmax, ymax)) {
-                     if (proj != null) {
+                    if (proj != null) {
                         omg.generate(proj);
                     }
                     retList.add(omg);
@@ -1024,6 +1045,14 @@ public class AreaHandler implements PropertyConsumer {
                     + ")");
         }
         return result;
+    }
+
+    public GeoCoordTransformation getCoordTransform() {
+        return coordTransform;
+    }
+
+    public void setCoordTransform(GeoCoordTransformation dataTransform) {
+        this.coordTransform = dataTransform;
     }
 
     /**

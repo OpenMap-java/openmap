@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/BinaryBufferedFile.java,v $
 // $RCSfile: BinaryBufferedFile.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:51 $
+// $Revision: 1.4 $
+// $Date: 2007/06/21 21:39:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -236,18 +236,18 @@ public class BinaryBufferedFile extends BinaryFile {
     public long available() throws IOException {
         return (length() - firstbyteoffset - curptr);
     }
-
+    
     /**
-     * closes the underlying file input, and releases some resources
+     * Disposes the underlying file input, and releases some resources
      * of the class. Calling any other members after this one will
      * return bogus results.
      * 
      * @exception IOException IO errors envountered in closing the
      *            file
      */
-    public void close() throws IOException {
+    public void dispose() throws IOException {
         buffer = null;
-        super.close();
+        super.dispose();
     }
 
     public int read() throws IOException {
@@ -401,6 +401,22 @@ public class BinaryBufferedFile extends BinaryFile {
         return MoreMath.BuildShort(buffer, curptr - 2, MSBFirst);
     }
 
+    /**
+     * Reads and returns a integer from 2 bytes.
+     * 
+     * @return the 2 bytes merged into a short, according to the
+     *         current byte ordering, and then unsigned to int.
+     * @exception EOFException there were less than 2 bytes left in
+     *            the file
+     * @exception FormatException rethrow of IOExceptions encountered
+     *            while reading the bytes for the short
+     * @see #read(byte[])
+     */
+    public int readUnsignedShort() throws EOFException, FormatException {
+        // MSBFirst must be set when we are called
+        return MoreMath.signedToInt(readShort());
+    }
+    
     /**
      * Reads an array of shorts.
      * 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/FileInputReader.java,v $
 // $RCSfile: FileInputReader.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:51 $
+// $Revision: 1.4 $
+// $Date: 2007/06/21 21:39:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,7 +55,8 @@ public class FileInputReader implements InputReader {
         if (Debug.debugging("binaryfile")) {
             Debug.output("FileInputReader created from " + f.getAbsolutePath());
         }
-        init(f);
+        name = f.getAbsolutePath();
+        inputFile = init(f);
     }
 
     /**
@@ -72,7 +73,8 @@ public class FileInputReader implements InputReader {
         if (Debug.debugging("binaryfile")) {
             Debug.output("FileInputReader created from " + f);
         }
-        init(new File(f));
+        name = f;
+        inputFile = init(new File(f));
     }
 
     /**
@@ -90,9 +92,9 @@ public class FileInputReader implements InputReader {
      * @param f a java.io.File
      * @throws IOException
      */
-    protected void init(File f) throws IOException {
+    protected RandomAccessFile init(File f) throws IOException {
+        RandomAccessFile inputFile = null;
         try {
-            name = f.getName();
             inputFile = new RandomAccessFile(f, "r");
         } catch (IOException i) {
             if (i instanceof FileNotFoundException) {
@@ -105,7 +107,8 @@ public class FileInputReader implements InputReader {
             } else {
                 throw i;
             }
-        }       
+        }
+        return inputFile;
     }
 
     /**
@@ -116,6 +119,13 @@ public class FileInputReader implements InputReader {
         return inputFile;
     }
 
+    public RandomAccessFile checkInputFile() throws IOException {
+        if (inputFile == null && name != null) {
+            inputFile = init(new File(name));
+        }
+        return inputFile;
+    }
+    
     /**
      * Skip over n bytes in the input file
      *
@@ -125,7 +135,7 @@ public class FileInputReader implements InputReader {
      * in the underlying file
      */
     public long skipBytes(long n) throws IOException {
-        return inputFile.skipBytes((int)n);
+        return checkInputFile().skipBytes((int)n);
     }
 
     /**
@@ -136,7 +146,7 @@ public class FileInputReader implements InputReader {
      * the underlying file
      */
     public long getFilePointer() throws IOException {
-        return inputFile.getFilePointer();
+        return checkInputFile().getFilePointer();
     }
 
     /**
@@ -147,7 +157,7 @@ public class FileInputReader implements InputReader {
      * underlying file.
      */
     public void seek(long pos) throws IOException {
-        inputFile.seek(pos);
+        checkInputFile().seek(pos);
     }
 
     /**
@@ -158,7 +168,7 @@ public class FileInputReader implements InputReader {
      * underlying file.
      */
     public long length() throws IOException {
-        return inputFile.length();
+        return checkInputFile().length();
     }
 
     /**
@@ -195,7 +205,7 @@ public class FileInputReader implements InputReader {
      * @exception IOException Any IO errors encountered in reading from the file
      */
     public int read() throws IOException {
-        return inputFile.read();
+        return checkInputFile().read();
     }
 
     /**
@@ -208,7 +218,7 @@ public class FileInputReader implements InputReader {
      * @exception IOException Any IO errors encountered in reading from the file
      */
     public int read(byte b[], int off, int len) throws IOException {
-        return inputFile.read(b, off, len);
+        return checkInputFile().read(b, off, len);
     }
 
     /** 
@@ -221,7 +231,7 @@ public class FileInputReader implements InputReader {
      * @see java.io.RandomAccessFile#read(byte[])
      */
     public int read(byte b[]) throws IOException {
-        return inputFile.read(b);
+        return checkInputFile().read(b);
     }
 
     /** 
@@ -238,11 +248,11 @@ public class FileInputReader implements InputReader {
      */
     public byte[] readBytes(int howmany, boolean allowless) 
         throws EOFException, FormatException {
-
         byte foo[] = new byte[howmany];
         int gotsofar = 0;
         int err = 0;
         try {
+            RandomAccessFile inputFile = checkInputFile();
             while (gotsofar < howmany) {
                 err = inputFile.read(foo, gotsofar, howmany - gotsofar);
 

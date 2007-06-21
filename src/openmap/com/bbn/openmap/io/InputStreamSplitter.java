@@ -14,15 +14,18 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/InputStreamSplitter.java,v $
 // $RCSfile: InputStreamSplitter.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:52 $
+// $Revision: 1.4 $
+// $Date: 2007/06/21 21:39:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.io;
 
-import java.io.*;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * The <code>InputStreamSplitter</code> is a

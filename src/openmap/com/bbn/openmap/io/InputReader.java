@@ -14,15 +14,16 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/InputReader.java,v $
 // $RCSfile: InputReader.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:51 $
+// $Revision: 1.4 $
+// $Date: 2007/06/21 21:39:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.io;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.IOException;
 
 /**
  * The InputReader is an interface that isolates the data file source

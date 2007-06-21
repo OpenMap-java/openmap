@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Ellipsoid.java,v $
 // $RCSfile: Ellipsoid.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:22 $
+// $Revision: 1.5 $
+// $Date: 2007/06/21 21:39:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,12 +26,12 @@ package com.bbn.openmap.proj;
  * A class representing a reference Ellipsoid for UTM calculations.
  * <p>
  * 
- * Adapted to Java by Colin Mummery (colin_mummery@agilent.com) from
- * C++ code by Chuck Gantz (chuck.gantz@globalstar.com).
+ * Adapted to Java by Colin Mummery (colin_mummery@agilent.com) from C++ code by
+ * Chuck Gantz (chuck.gantz@globalstar.com).
  */
 public class Ellipsoid {
 
-    //The ellipsoids defined for this implementation
+    // The ellipsoids defined for this implementation
     /** "Airy" */
     public final static Ellipsoid AIRY = new Ellipsoid("Airy", 6377563.0d, 0.00667054d);
     /** "Australian National" */
@@ -107,11 +107,10 @@ public class Ellipsoid {
     }
 
     /**
-     * Returns an array of all available ellipsoids in alphabetical
-     * order by name.
+     * Returns an array of all available ellipsoids in alphabetical order by
+     * name.
      * 
-     * @return An Ellipsoid[] array containing all the available
-     *         ellipsoids
+     * @return An Ellipsoid[] array containing all the available ellipsoids
      */
     public static Ellipsoid[] getAllEllipsoids() {
 
@@ -123,6 +122,28 @@ public class Ellipsoid {
                 WGS_60, WGS_66, WGS_72, WGS_84 };
 
         return all;
+    }
+
+    /**
+     * Given the name of an Ellipsoid, find the object for it out of the
+     * possible selections. Returns null if the Ellipsoid isn't found.
+     * 
+     * @param name
+     * @return
+     */
+    public static Ellipsoid getByName(String name) {
+        Ellipsoid[] all = getAllEllipsoids();
+        if (name != null && name.length() > 0) {
+            name = name.replace("_", " ");
+
+            for (int i = 0; i < all.length; i++) {
+                if (name.equalsIgnoreCase(all[i].name)) {
+                    return all[i];
+                }
+            }
+        }
+
+        return null;
     }
 
     /**

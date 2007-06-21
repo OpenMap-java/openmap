@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndexHandler.java,v $
 // $RCSfile: SpatialIndexHandler.java,v $
-// $Revision: 1.9 $
-// $Date: 2006/08/25 15:36:15 $
+// $Revision: 1.10 $
+// $Date: 2007/06/21 21:39:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,12 +41,15 @@ import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.dataAccess.shape.DbfHandler;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.shape.SpatialIndex.Entry;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.GeoCoordTransformation;
+import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -57,11 +60,11 @@ import com.bbn.openmap.util.PropUtils;
  * GUI.
  */
 public class SpatialIndexHandler implements PropertyConsumer {
-    public SpatialIndex spatialIndex;
-    public String shapeFileName = null;
-    public String spatialIndexFileName = null;
-    public String imageURLString = null;
-
+    protected SpatialIndex spatialIndex;
+    protected String shapeFileName = null;
+    protected String spatialIndexFileName = null;
+    protected String imageURLString = null;
+    protected GeoCoordTransformation coordTranslator;
     protected String prettyName = null;
     protected DrawingAttributes drawingAttributes;
     protected boolean enabled = true;
@@ -196,6 +199,18 @@ public class SpatialIndexHandler implements PropertyConsumer {
                 + EnabledProperty, enabled);
         buffered = PropUtils.booleanFromProperties(props, realPrefix
                 + BufferedProperty, buffered);
+
+        String transClassName = props.getProperty(realPrefix
+                + ShapeLayer.TransformProperty);
+        if (transClassName != null) {
+            try {
+                coordTranslator = (GeoCoordTransformation) ComponentFactory.create(transClassName,
+                        realPrefix + ShapeLayer.TransformProperty,
+                        props);
+            } catch (ClassCastException cce) {
+
+            }
+        }
     }
 
     /** Property Consumer method. */
@@ -221,6 +236,14 @@ public class SpatialIndexHandler implements PropertyConsumer {
         }
         props.put(prefix + EnabledProperty, new Boolean(enabled).toString());
         props.put(prefix + BufferedProperty, new Boolean(buffered).toString());
+
+        if (spatialIndex != null) {
+            DbfHandler dbfh = spatialIndex.getDbf();
+            if (dbfh != null) {
+                dbfh.getProperties(props);
+            }
+        }
+
         return props;
     }
 
@@ -311,6 +334,14 @@ public class SpatialIndexHandler implements PropertyConsumer {
         return props;
     }
 
+    public GeoCoordTransformation getCoordTranslator() {
+        return coordTranslator;
+    }
+
+    public void setCoordTranslator(GeoCoordTransformation coordTranslator) {
+        this.coordTranslator = coordTranslator;
+    }
+
     /**
      * Create the OMGraphics out of the records that fall inside the bounding
      * box.
@@ -384,20 +415,15 @@ public class SpatialIndexHandler implements PropertyConsumer {
                     list,
                     drawingAttributes,
                     proj,
-                    (Projection) null);
+                    coordTranslator);
 
         } else {
 
             if (bufferedList == null) {
-                bufferedList = getWholePlanet();
+                bufferedList = getWholePlanet(coordTranslator);
             }
 
-            checkSpatialIndexEntries(xmin,
-                    ymin,
-                    xmax,
-                    ymax,
-                    list,
-                    proj);
+            checkSpatialIndexEntries(xmin, ymin, xmax, ymax, list, proj);
 
         }
 
@@ -432,6 +458,14 @@ public class SpatialIndexHandler implements PropertyConsumer {
      */
     protected OMGraphicList getWholePlanet() throws IOException,
             FormatException {
+        return getWholePlanet((GeoCoordTransformation) null);
+    }
+
+    /**
+     * Get the graphics for the entire planet.
+     */
+    protected OMGraphicList getWholePlanet(GeoCoordTransformation dataTransform)
+            throws IOException, FormatException {
         return spatialIndex.getOMGraphics(-180,
                 -90,
                 180,
@@ -439,7 +473,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
                 (OMGraphicList) null,
                 drawingAttributes,
                 (Projection) null,
-                (Projection) null);
+                dataTransform);
     }
 
     public void setPrettyName(String set) {
@@ -477,7 +511,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
     public boolean close(boolean done) {
         if (spatialIndex != null) {
             return spatialIndex.close(done);
-		}
+        }
         return false;
     }
 }

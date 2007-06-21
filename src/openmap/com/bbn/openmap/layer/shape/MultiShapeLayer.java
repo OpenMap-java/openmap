@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/MultiShapeLayer.java,v $
 // $RCSfile: MultiShapeLayer.java,v $
-// $Revision: 1.14 $
-// $Date: 2006/08/25 15:36:14 $
+// $Revision: 1.15 $
+// $Date: 2007/06/21 21:38:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,9 +35,9 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.Debug;
@@ -78,7 +78,7 @@ import com.bbn.openmap.util.PropUtils;
  *   
  * </pre></code>
  * 
- * @version $Revision: 1.14 $ $Date: 2006/08/25 15:36:14 $
+ * @version $Revision: 1.15 $ $Date: 2007/06/21 21:38:59 $
  * @see SpatialIndex
  */
 public class MultiShapeLayer extends ShapeLayer {
@@ -260,8 +260,7 @@ public class MultiShapeLayer extends ShapeLayer {
         // check for dateline anomaly on the screen. we check for
         // ulLon >= lrLon, but we need to be careful of the check for
         // equality because of floating point arguments...
-        if ((ulLon > lrLon)
-                || MoreMath.approximately_equal(ulLon, lrLon, .001f)) {
+        if (ProjMath.isCrossingDateline(ulLon, lrLon, projection.getScale())) {
             if (Debug.debugging("shape")) {
                 Debug.output("MultiShapeLayer.computeGraphics(): Dateline is on screen");
             }

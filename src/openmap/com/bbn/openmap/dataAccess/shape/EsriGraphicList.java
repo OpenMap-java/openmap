@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriGraphicList.java,v $
 // $RCSfile: EsriGraphicList.java,v $
-// $Revision: 1.9 $
-// $Date: 2007/01/30 20:15:18 $
+// $Revision: 1.10 $
+// $Date: 2007/06/21 21:39:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -278,7 +278,7 @@ public abstract class EsriGraphicList extends OMGraphicList implements
     public static void main(String[] args) {
         Debug.init();
 
-        ArgParser ap = new ArgParser("ArgParser");
+        ArgParser ap = new ArgParser("EsriGraphicList");
         ap.add("fixcl", "Check and fix content length of Shape file", 1);
         ap.add("print", "Display text structure of shapes in Shape file", 1);
 

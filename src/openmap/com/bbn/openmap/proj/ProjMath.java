@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjMath.java,v $
 // $RCSfile: ProjMath.java,v $
-// $Revision: 1.8 $
-// $Date: 2006/04/07 15:21:09 $
+// $Revision: 1.9 $
+// $Date: 2007/06/21 21:39:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -327,7 +327,7 @@ public final class ProjMath {
     }
 
     /**
-     * @deprecated use wrapLongitde instead.
+     * @deprecated use wrapLongitude instead.
      */
     public final static double wrap_longitude(double lon) {
         return wrapLongitude(lon);
@@ -524,4 +524,29 @@ public final class ProjMath {
      * degToRad(lat) + "," + degToRad(lon) + ") : (" + radToDeg(degToRad(lat)) +
      * "," + radToDeg(degToRad(lon)) + ")"); } }
      */
+
+    /**
+     * Generic test for seeing if an left longitude value and a right longitude
+     * value seem to constitute crossing the dateline.
+     * 
+     * @param leftLon the leftmost longitude, in decimal degrees. Expected to
+     *        represent the location of the left side of a map window.
+     * @param rightLon the rightmost longitude, in decimal degrees. Expected to
+     *        represent the location of the right side of a map window.
+     * @param projScale the projection scale, considered if the two values are
+     *        very close to each other and leftLon less than rightLon.
+     * @return true if it seems like these two longitude values represent a
+     *         dateline crossing.
+     */
+    public static boolean isCrossingDateline(double leftLon, double rightLon,
+                                             float projScale) {
+        // if the left longiude is greater than the right, we're obviously
+        // crossing the dateline. If they are approximately equal, we could be
+        // showing the whole earth, but only if the scale is significantly
+        // large. If the scale is small, we could be really zoomed in.
+        return ((leftLon > rightLon) || (MoreMath.approximately_equal(leftLon,
+                rightLon,
+                .001f) && projScale > 1000000f));
+    }
+
 }

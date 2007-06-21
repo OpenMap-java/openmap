@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfCoverageManager.java,v $
 // $RCSfile: RpfCoverageManager.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/12/09 21:09:05 $
+// $Revision: 1.6 $
+// $Date: 2007/06/21 21:39:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,11 +26,11 @@ package com.bbn.openmap.layer.rpf;
 import java.awt.Color;
 import java.util.Vector;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.proj.CADRG;
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
@@ -99,8 +99,7 @@ public class RpfCoverageManager {
 
         Vector[] hemisphereData;
 
-        if ((ullon > lrlon)
-                || MoreMath.approximately_equal(ullon, lrlon, .001f)) {
+        if (ProjMath.isCrossingDateline(ullon, lrlon, proj.getScale())) {
 
             hemisphereData = new Vector[2];
             hemisphereData[0] = frameProvider.getCatalogCoverage(ullat,
@@ -128,9 +127,9 @@ public class RpfCoverageManager {
         omGraphics.removeAllElements();
 
         currentLineType = OMGraphic.LINETYPE_RHUMB;
-        // if (proj instanceof Cylindrical) {
-        // currentLineType = OMGraphic.LINETYPE_STRAIGHT;
-        // }
+        //      if (proj instanceof Cylindrical) {
+        //          currentLineType = OMGraphic.LINETYPE_STRAIGHT;
+        //      }
 
         OMGraphicList cgs = new OMGraphicList();
         OMGraphicList tlms = new OMGraphicList();

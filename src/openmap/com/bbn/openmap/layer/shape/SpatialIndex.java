@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndex.java,v $
 // $RCSfile: SpatialIndex.java,v $
-// $Revision: 1.11 $
-// $Date: 2006/08/25 15:36:14 $
+// $Revision: 1.12 $
+// $Date: 2007/06/21 21:39:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,6 +36,8 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.dataAccess.shape.DbfHandler;
 import com.bbn.openmap.dataAccess.shape.EsriGraphicFactory;
 import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.BinaryFile;
@@ -44,6 +46,7 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.GeoCoordTransformation;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -135,7 +138,7 @@ import com.bbn.openmap.util.Debug;
  * </UL>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.11 $ $Date: 2006/08/25 15:36:14 $
+ * @version $Revision: 1.12 $ $Date: 2007/06/21 21:39:00 $
  * @see ShapeIndex
  */
 public class SpatialIndex extends ShapeUtils {
@@ -161,11 +164,25 @@ public class SpatialIndex extends ShapeUtils {
     /** The shape file. */
     protected BinaryBufferedFile shp;
 
+    /**
+     * The handler for dbf file information.
+     */
+    protected DbfHandler dbf;
+
     /** The icon to use for point objects. */
     protected ImageIcon pointIcon;
 
     /** The bounds of all the shapes in the shape file. */
     protected ESRIBoundingBox bounds = null;
+
+    /**
+     * The file name for the shape file, for opening/reopening.
+     */
+    protected String shpFileName;
+    /**
+     * The file name for the spatial index file, for opening/reopening.
+     */
+    protected String ssxFileName;
 
     /**
      * A cached list of the SpatialIndex file entries, for repeated reference.
@@ -184,7 +201,8 @@ public class SpatialIndex extends ShapeUtils {
      * @exception IOException if something goes wrong opening the file
      */
     public SpatialIndex(String ssxFilename) throws IOException {
-        ssx = new BinaryBufferedFile(ssxFilename);
+        this.ssxFileName = ssxFilename;
+        // ssx = new BinaryBufferedFile(ssxFilename);
     }
 
     /**
@@ -201,8 +219,11 @@ public class SpatialIndex extends ShapeUtils {
                     + ");");
         }
 
-        ssx = new BinaryBufferedFile(ssxFilename);
-        shp = new BinaryBufferedFile(shpFilename);
+        this.shpFileName = shpFilename;
+        this.ssxFileName = ssxFilename;
+
+        // ssx = new BinaryBufferedFile(ssxFilename);
+        // shp = new BinaryBufferedFile(shpFilename);
     }
 
     /**
@@ -296,6 +317,13 @@ public class SpatialIndex extends ShapeUtils {
         Vector v = new Vector();
         int sRecordSize = DEFAULT_SHAPE_RECORD_SIZE;
         byte sRecord[] = new byte[sRecordSize];
+
+        if (ssxFileName == null || shpFileName == null) {
+            return null;
+        }
+
+        ssx = new BinaryBufferedFile(ssxFileName);
+        shp = new BinaryBufferedFile(shpFileName);
 
         // Need to figure out what the shape type is...
         ssx.seek(32);
@@ -395,8 +423,8 @@ public class SpatialIndex extends ShapeUtils {
         }
         int nRecords = v.size();
 
-        ssx.seek(0);
-        shp.seek(0);
+        ssx.close();
+        shp.close();
         ESRIRecord result[] = new ESRIRecord[nRecords];
         v.copyInto(result);
         return result;
@@ -435,9 +463,9 @@ public class SpatialIndex extends ShapeUtils {
      * @param drawingAttributes DrawingAttributes to set on the OMGraphics.
      * @param mapProj the Map Projection for the OMGraphics so they can be
      *        generated right after creation.
-     * @param dataProj for preprojected data, the data's projection to use to
-     *        translate the coordinates to decimal degree lat/lon. Can be null
-     *        to leave the coordinates untouched.
+     * @param dataProj for preprojected data, a coordinate translator for the
+     *        data's projection to use to translate the coordinates to decimal
+     *        degree lat/lon. Can be null to leave the coordinates untouched.
      * @return an OMGraphicList containing OMGraphics that intersect the given
      *         rectangle
      * @exception IOException if something goes wrong reading the files
@@ -445,7 +473,8 @@ public class SpatialIndex extends ShapeUtils {
     public OMGraphicList getOMGraphics(double xmin, double ymin, double xmax,
                                        double ymax, OMGraphicList list,
                                        DrawingAttributes drawingAttributes,
-                                       Projection mapProj, Projection dataProj)
+                                       Projection mapProj,
+                                       GeoCoordTransformation dataProj)
             throws IOException, FormatException {
 
         if (Debug.debugging("spatialindex")) {
@@ -458,14 +487,22 @@ public class SpatialIndex extends ShapeUtils {
             list = new OMGraphicList();
         }
 
-        if (ssx == null || shp == null) {
+        if (shp == null) {
+            shp = new BinaryBufferedFile(shpFileName);
+        }
+
+        if (shp == null) {
             return list;
         }
 
         EsriGraphicFactory.ReadByteTracker byteTracker = new EsriGraphicFactory.ReadByteTracker();
         EsriGraphicFactory factory = getFactory();
+        factory.setDataCoordTransformation(dataProj);
 
-        for (Iterator it = entryIterator(); it.hasNext();) {
+        OMGraphicList labels = new OMGraphicList();
+        list.add(labels);
+
+        for (Iterator it = entryIterator(dataProj); it.hasNext();) {
             Entry entry = (Entry) it.next();
 
             if (entry.intersects(xmin, ymin, xmax, ymax)) {
@@ -478,6 +515,10 @@ public class SpatialIndex extends ShapeUtils {
                             pointIcon,
                             byteTracker);
 
+                    if (dbf != null) {
+                        omg = dbf.evaluate(omg, labels, mapProj);
+                    }
+
                     if (omg != null) {
                         omg.generate(mapProj);
                         list.add(omg);
@@ -489,6 +530,10 @@ public class SpatialIndex extends ShapeUtils {
                     break;
                 }
             }
+        }
+
+        if (shp != null) {
+            shp.close();
         }
 
         return list;
@@ -523,6 +568,19 @@ public class SpatialIndex extends ShapeUtils {
      * @throws FormatException
      */
     public Iterator entryIterator() throws IOException, FormatException {
+        return entryIterator(null);
+    }
+
+    /**
+     * Provides an iterator over the SpatialIndex entries.
+     * 
+     * @param dataTransform GeoCoordTransform for pre-projected data.
+     * @return
+     * @throws IOException
+     * @throws FormatException
+     */
+    public Iterator entryIterator(GeoCoordTransformation dataTransform)
+            throws IOException, FormatException {
         if (entries == null) {
             boolean gatherBounds = false;
             if (bounds == null) {
@@ -530,7 +588,7 @@ public class SpatialIndex extends ShapeUtils {
                 gatherBounds = true;
             }
 
-            entries = readIndexFile(gatherBounds ? bounds : null);
+            entries = readIndexFile(gatherBounds ? bounds : null, dataTransform);
         }
 
         return entries.iterator();
@@ -545,11 +603,34 @@ public class SpatialIndex extends ShapeUtils {
      */
     protected List readIndexFile(ESRIBoundingBox bounds) throws IOException,
             FormatException {
+        return readIndexFile(bounds, null);
+    }
+
+    /**
+     * 
+     * @param bounds if not null, add min/max values to them.
+     * @param dataTransform GeoCoordTransform for pre-projected data.
+     * @return
+     * @throws IOException
+     * @throws FormatException
+     */
+    protected List readIndexFile(ESRIBoundingBox bounds,
+                                 GeoCoordTransformation dataTransform)
+            throws IOException, FormatException {
         entries = new ArrayList();
 
         byte ixRecord[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
-        ssx.byteOrder(false);
+
+        if (ssx == null) {
+            ssx = new BinaryBufferedFile(ssxFileName);
+            ssx.byteOrder(false);
+        }
         ssx.seek(100); // skip the file header
+
+        LatLonPoint llp = null;
+        if (dataTransform != null) {
+            llp = new LatLonPoint();
+        }
 
         while (true) {
             int result = ssx.read(ixRecord, 0, SPATIAL_INDEX_RECORD_LENGTH);
@@ -561,6 +642,15 @@ public class SpatialIndex extends ShapeUtils {
                 double xmax = readLEDouble(ixRecord, 24);
                 double ymax = readLEDouble(ixRecord, 32);
                 int byteOffset = readBEInt(ixRecord, 0) * 2;
+
+                if (dataTransform != null) {
+                    dataTransform.inverse(xmin, ymin, llp);
+                    xmin = llp.getLongitude();
+                    ymin = llp.getLatitude();
+                    dataTransform.inverse(xmax, ymax, llp);
+                    xmax = llp.getLongitude();
+                    ymax = llp.getLatitude();
+                }
 
                 if (Debug.debugging("spatialindexdetail")) {
                     Debug.output("  " + xmin + ", " + ymin + "\n  " + xmax
@@ -1175,5 +1265,13 @@ public class SpatialIndex extends ShapeUtils {
             bounds.addPoint(xMax, yMax);
         }
 
+    }
+
+    public DbfHandler getDbf() {
+        return dbf;
+    }
+
+    public void setDbf(DbfHandler dbf) {
+        this.dbf = dbf;
     }
 }

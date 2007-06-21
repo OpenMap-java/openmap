@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/BufferedShapeLayer.java,v $
 // $RCSfile: BufferedShapeLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2006/08/25 15:36:14 $
+// $Revision: 1.9 $
+// $Date: 2007/06/21 21:39:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,11 +27,11 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.Iterator;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.shape.SpatialIndex.Entry;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
@@ -67,7 +67,7 @@ public class BufferedShapeLayer extends ShapeLayer {
                 (OMGraphicList) null,
                 drawingAttributes,
                 (Projection) null,
-                (Projection) null);
+                coordTransform);
     }
 
     /**
@@ -114,8 +114,7 @@ public class BufferedShapeLayer extends ShapeLayer {
         // check for dateline anomaly on the screen. we check for
         // ulLon >= lrLon, but we need to be careful of the check for
         // equality because of floating point arguments...
-        if ((ulLon > lrLon)
-                || MoreMath.approximately_equal(ulLon, lrLon, .001f)) {
+        if (ProjMath.isCrossingDateline(ulLon, lrLon, proj.getScale())) {
             if (Debug.debugging("shape")) {
                 Debug.output("ShapeLayer.computeGraphics(): Dateline is on screen");
             }

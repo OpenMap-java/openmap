@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: EsriGraphicFactory.java,v $
-//$Revision: 1.6 $
-//$Date: 2007/01/30 20:15:19 $
+//$Revision: 1.7 $
+//$Date: 2007/06/21 21:39:02 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -44,6 +44,7 @@ import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.GeoCoordTransformation;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public class EsriGraphicFactory implements ShapeConstants {
@@ -51,13 +52,14 @@ public class EsriGraphicFactory implements ShapeConstants {
     public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.EsriGraphicFactory");
 
     protected int lineType = OMGraphic.LINETYPE_STRAIGHT;
-    protected Projection dataProjection = null;
+    protected GeoCoordTransformation dataTransformation = null;
+    protected Class precision = Float.TYPE;
 
     public EsriGraphicFactory() {}
 
-    public EsriGraphicFactory(int lineType, Projection dataProjection) {
+    public EsriGraphicFactory(int lineType, GeoCoordTransformation dataTransformation) {
         this.lineType = lineType;
-        this.dataProjection = dataProjection;
+        this.dataTransformation = dataTransformation;
     }
 
     public OMGraphicList getEsriGraphics(BinaryFile shp,
@@ -437,8 +439,8 @@ public class EsriGraphicFactory implements ShapeConstants {
                                              Object representation,
                                              DrawingAttributes drawingAttributes) {
 
-        if (dataProjection != null) {
-            Point2D llp = dataProjection.inverse(x, y);
+        if (dataTransformation != null) {
+            Point2D llp = dataTransformation.inverse(x, y);
             x = llp.getX();
             y = llp.getY();
         }
@@ -472,9 +474,7 @@ public class EsriGraphicFactory implements ShapeConstants {
      *        that Point (center-justified). If it's null, the drawing
      *        attributes values will be used for an OMPoint.
      * @param drawingAttributes the attributes for the OMGraphic.
-     * @param dataProj the data projection to use to convert file coordinates to
-     *        decimal degree lat/lon data. If null, it's assumed that the file
-     *        has decimal degree lat/lon data.
+     * @param byteTracker
      * @return OMPoint or OMScalingRaster or OMText
      * @throws IOException
      */
@@ -1172,7 +1172,6 @@ public class EsriGraphicFactory implements ShapeConstants {
                                              LittleEndianInputStream iStream,
                                              int shapeType,
                                              DrawingAttributes drawingAttributes,
-                                             Projection dataProj,
                                              ReadByteTracker byteTracker)
             throws IOException, FormatException {
         EsriGraphic ret = null;
@@ -1243,7 +1242,7 @@ public class EsriGraphicFactory implements ShapeConstants {
             coords = getFloatCoords(shpFile,
                     length,
                     isPolygon(shapeType),
-                    dataProjection,
+                    dataTransformation,
                     byteTracker);
 
             EsriGraphic omp = createEsriPoly(shapeType,
@@ -1260,7 +1259,7 @@ public class EsriGraphicFactory implements ShapeConstants {
         coords = getFloatCoords(shpFile,
                 length,
                 isPolygon(shapeType),
-                dataProjection,
+                dataTransformation,
                 byteTracker);
 
         EsriGraphic omp = createEsriPoly(shapeType,
@@ -1306,7 +1305,7 @@ public class EsriGraphicFactory implements ShapeConstants {
             coords = getFloatCoords(iStream,
                     length,
                     isPolygon(shapeType),
-                    dataProjection,
+                    dataTransformation,
                     byteTracker);
 
             EsriGraphic omp = createEsriPoly(shapeType,
@@ -1323,7 +1322,7 @@ public class EsriGraphicFactory implements ShapeConstants {
         coords = getFloatCoords(iStream,
                 length,
                 isPolygon(shapeType),
-                dataProjection,
+                dataTransformation,
                 byteTracker);
 
         EsriGraphic omp = createEsriPoly(shapeType,
@@ -1341,15 +1340,16 @@ public class EsriGraphicFactory implements ShapeConstants {
 
     protected static float[] getFloatCoords(BinaryFile shpFile, int length,
                                             boolean isPolygon,
-                                            Projection dataProj,
+                                            GeoCoordTransformation dataTrans,
                                             ReadByteTracker bitTracker)
             throws IOException, FormatException {
 
         float[] coords = new float[isPolygon ? length * 2 + 2 : length * 2];
         int j = 0;
 
+        // Create the llp here and reuse it for coordinate transformations.
         LatLonPoint llp = null;
-        if (dataProj != null) {
+        if (dataTrans != null) {
             llp = new LatLonPoint.Double();
         }
 
@@ -1358,8 +1358,8 @@ public class EsriGraphicFactory implements ShapeConstants {
             double y = shpFile.readDouble();
             bitTracker.addRead(2 * 8);
 
-            if (dataProj != null) {
-                dataProj.inverse(x, y, llp);
+            if (dataTrans != null) {
+                dataTrans.inverse(x, y, llp);
                 x = llp.getRadLon();
                 y = llp.getRadLat();
             } else {
@@ -1380,32 +1380,33 @@ public class EsriGraphicFactory implements ShapeConstants {
 
     protected static float[] getFloatCoords(LittleEndianInputStream iStream,
                                             int length, boolean isPolygon,
-                                            Projection dataProj,
+                                            GeoCoordTransformation dataTrans,
                                             ReadByteTracker bitTracker)
             throws IOException, FormatException {
 
         float[] coords = new float[isPolygon ? length * 2 + 2 : length * 2];
         int j = 0;
-        
+
+        // Create the llp here and reuse it for coordinate transformations.
         LatLonPoint llp = null;
-        if (dataProj != null) {
+        if (dataTrans != null) {
             llp = new LatLonPoint.Double();
         }
-        
+
         for (j = 0; j < length; j++) {
             double x = iStream.readLEDouble();
             double y = iStream.readLEDouble();
             bitTracker.addRead(2 * 8);
 
-            if (dataProj != null) {
-                dataProj.inverse(x, y, llp);
+            if (dataTrans != null) {
+                dataTrans.inverse(x, y, llp);
                 x = llp.getRadLon();
                 y = llp.getRadLat();
             } else {
                 x = ProjMath.degToRad(x);
                 y = ProjMath.degToRad(y);
             }
-            
+
             coords[j * 2] = (float) y;
             coords[j * 2 + 1] = (float) x;
         }
@@ -1418,32 +1419,33 @@ public class EsriGraphicFactory implements ShapeConstants {
     }
 
     protected static double[] getCoords(BinaryFile shpFile, int length,
-                                        boolean isPolygon, Projection dataProj,
+                                        boolean isPolygon, GeoCoordTransformation dataTrans,
                                         ReadByteTracker bitTracker)
             throws IOException, FormatException {
 
         double[] coords = new double[length * 2];
         int j = 0;
-        
+
+        // Create the llp here and reuse it for coordinate transformations.
         LatLonPoint llp = null;
-        if (dataProj != null) {
+        if (dataTrans != null) {
             llp = new LatLonPoint.Double();
         }
-        
+
         for (j = 0; j < length; j++) {
             double x = shpFile.readDouble();
             double y = shpFile.readDouble();
             bitTracker.addRead(2 * 8);
 
-            if (dataProj != null) {
-                dataProj.inverse(x, y, llp);
+            if (dataTrans != null) {
+                dataTrans.inverse(x, y, llp);
                 x = llp.getRadLon();
                 y = llp.getRadLat();
             } else {
                 x = ProjMath.degToRad(x);
                 y = ProjMath.degToRad(y);
             }
-            
+
             coords[j * 2] = y;
             coords[j * 2 + 1] = x;
         }
@@ -1457,32 +1459,33 @@ public class EsriGraphicFactory implements ShapeConstants {
 
     protected static double[] getCoords(LittleEndianInputStream iStream,
                                         int length, boolean isPolygon,
-                                        Projection dataProj,
+                                        Projection dataTrans,
                                         ReadByteTracker bitTracker)
             throws IOException, FormatException {
 
         double[] coords = new double[length * 2];
         int j = 0;
-        
+
+        // Create the llp here and reuse it for coordinate transformations.
         LatLonPoint llp = null;
-        if (dataProj != null) {
+        if (dataTrans != null) {
             llp = new LatLonPoint.Double();
         }
-        
+
         for (j = 0; j < length; j++) {
             double x = iStream.readLEDouble();
             double y = iStream.readLEDouble();
             bitTracker.addRead(2 * 8);
 
-            if (dataProj != null) {
-                dataProj.inverse(x, y, llp);
+            if (dataTrans != null) {
+                dataTrans.inverse(x, y, llp);
                 x = llp.getRadLon();
                 y = llp.getRadLat();
             } else {
                 x = ProjMath.degToRad(x);
                 y = ProjMath.degToRad(y);
             }
-            
+
             coords[j * 2] = y;
             coords[j * 2 + 1] = x;
         }
@@ -1597,6 +1600,30 @@ public class EsriGraphicFactory implements ShapeConstants {
         case SHAPE_TYPE_POLYLINEZ:
         }
         return ret;
+    }
+
+    public GeoCoordTransformation getDataCoordTransformation() {
+        return dataTransformation;
+    }
+
+    public void setDataCoordTransformation(GeoCoordTransformation dataTrans) {
+        this.dataTransformation = dataTrans;
+    }
+
+    public int getLineType() {
+        return lineType;
+    }
+
+    public void setLineType(int lineType) {
+        this.lineType = lineType;
+    }
+
+    public Class getPrecision() {
+        return precision;
+    }
+
+    public void setPrecision(Class precision) {
+        this.precision = precision;
     }
 
     public static class ReadByteTracker {

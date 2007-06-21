@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/DbfInputStream.java,v $
 // $RCSfile: DbfInputStream.java,v $
-// $Revision: 1.10 $
-// $Date: 2006/08/25 15:36:15 $
+// $Revision: 1.11 $
+// $Date: 2007/06/21 21:39:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -80,6 +80,8 @@ public class DbfInputStream {
      * ArrayList
      */
     private ArrayList _records = null;
+    
+    public final static Double ZERO = new Double(0);
 
     /**
      * Creates a LittleEndianInputStream then uses it to read the contents of
@@ -185,7 +187,7 @@ public class DbfInputStream {
         _decimalCounts = new byte[_columnCount];
 
         for (int n = 0; n <= _columnCount - 1; n++) {
-            _columnNames[n] = _leis.readString(11);
+            _columnNames[n] = _leis.readString(11).trim();
             //
             // Some TIGER dbf files from ESRI have nulls
             // in the column names. Delete them.
@@ -215,9 +217,9 @@ public class DbfInputStream {
         df.setDecimalFormatSymbols(dfs);
 
         _leis.skipBytes(2);
-        _records = new ArrayList();
+        _records = new ArrayList(_rowCount);
         for (int r = 0; r <= _rowCount - 1; r++) {
-            ArrayList record = new ArrayList();
+            ArrayList record = new ArrayList(_columnCount);
             for (int c = 0; c <= _columnCount - 1; c++) {
                 int length = _lengths[c];
                 if (length == -1)
@@ -241,7 +243,7 @@ public class DbfInputStream {
                                     + r
                                     + ", expected number and got " + cell);
                         }
-                        record.add(c, new Double(0));
+                        record.add(c, ZERO);
                     }
                 } else {
                     record.add(c, cell);

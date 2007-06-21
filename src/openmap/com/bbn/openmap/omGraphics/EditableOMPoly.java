@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoly.java,v $
 // $RCSfile: EditableOMPoly.java,v $
-// $Revision: 1.15 $
-// $Date: 2006/03/06 15:56:53 $
+// $Revision: 1.16 $
+// $Date: 2007/06/21 21:38:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1220,7 +1220,11 @@ public class EditableOMPoly extends EditableOMAbstractLine {
     public GrabPoint[] getGrabPoints() {
         int size = polyGrabPoints.size();
 
-        if (gPoints.length != size + 1) {
+        // The second half of the test is the fix to the bug that caused
+        // OMEditablePolys to be unresponsive when the colors changed. Thanks,
+        // Stephane!
+        if (gPoints.length != size + 1
+                || ((size > 0) && (!gPoints[0].equals(polyGrabPoints.get(0))))) {
             Debug.message("eomg",
                     "EditableOMPoly.getGrabPoints(): recreating grab points");
             gPoints = new GrabPoint[size + 1];
@@ -1359,9 +1363,9 @@ public class EditableOMPoly extends EditableOMAbstractLine {
             buttonBox = new GridBagToolBar();
             ((GridBagToolBar) buttonBox).setOrientation(orientation);
         }
-        
+
         buttonBox.add(PaletteHelper.getToolBarFill(orientation));
-        
+
         URL url;
         ImageIcon imageIcon;
         if (polygonButton == null) {

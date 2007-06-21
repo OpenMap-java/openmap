@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.24 $
-// $Date: 2006/12/15 18:40:44 $
+// $Revision: 1.25 $
+// $Date: 2007/06/21 21:39:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,7 @@
 package com.bbn.openmap.layer.shape;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,12 +39,19 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.dataAccess.shape.DbfHandler;
+import com.bbn.openmap.io.BinaryBufferedFile;
+import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.GeoCoordTransformation;
+import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.DataBoundsProvider;
 import com.bbn.openmap.util.Debug;
@@ -57,29 +65,29 @@ import com.bbn.openmap.util.PropUtils;
  * data in the .dbf file.
  * <p>
  * <code><pre>
+ *    
  *     
  *      
  *       
- *        
- *         ############################
- *         # Properties for a shape layer
- *         shapeLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
- *         shapeLayer.prettyName=Name_for_Menu
- *         shapeLayer.shapeFile=&amp;ltpath to shapefile (.shp)&amp;gt
- *         shapeLayer.spatialIndex=&amp;ltpath to generated spatial index file (.ssx)&amp;gt
- *         shapeLayer.lineColor=ff000000
- *         shapeLayer.fillColor=ff000000
- *         # plus any other properties used by the DrawingAttributes object.
- *         shapeLayer.pointImageURL=&amp;ltURL for image to use for point objects&amp;gt
- *         ############################
- *         
+ *        ############################
+ *        # Properties for a shape layer
+ *        shapeLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
+ *        shapeLayer.prettyName=Name_for_Menu
+ *        shapeLayer.shapeFile=&amp;ltpath to shapefile (.shp)&amp;gt
+ *        shapeLayer.spatialIndex=&amp;ltpath to generated spatial index file (.ssx)&amp;gt
+ *        shapeLayer.lineColor=ff000000
+ *        shapeLayer.fillColor=ff000000
+ *        # plus any other properties used by the DrawingAttributes object.
+ *        shapeLayer.pointImageURL=&amp;ltURL for image to use for point objects&amp;gt
+ *        ############################
  *        
  *       
  *      
+ *     
  * </pre></code>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.24 $ $Date: 2006/12/15 18:40:44 $
+ * @version $Revision: 1.25 $ $Date: 2007/06/21 21:39:00 $
  * @see SpatialIndex
  */
 public class ShapeLayer extends OMGraphicHandlerLayer implements
@@ -107,6 +115,11 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
     public final static String shadowXProperty = "shadowX";
     public final static String shadowYProperty = "shadowY";
 
+    /**
+     * The name of the class providing translation services if needed.
+     */
+    public final static String TransformProperty = "transform";
+
     /** * The holders of the shadow offset. ** */
     protected int shadowX = 0;
     protected int shadowY = 0;
@@ -117,7 +130,12 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
     /**
      * The DrawingAttributes object to describe the rendering of graphics.
      */
-    protected DrawingAttributes drawingAttributes = (DrawingAttributes) DrawingAttributes.DEFAULT.clone();
+    protected DrawingAttributes drawingAttributes;
+    /**
+     * A translator for converting pre-projected coordinates from the file into
+     * decimal degree lat/lon.
+     */
+    protected GeoCoordTransformation coordTransform;
 
     // For writing out to properties file later.
     String shapeFileName = null;
@@ -144,6 +162,14 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
         return spatialIndex;
     }
 
+    public GeoCoordTransformation getCoordTransform() {
+        return coordTransform;
+    }
+
+    public void setCoordTransform(GeoCoordTransformation coordTranslator) {
+        this.coordTransform = coordTranslator;
+    }
+
     /**
      * This method gets called from setProperties.
      * 
@@ -167,6 +193,30 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                         spatialIndexFileName);
             } else {
                 spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName);
+            }
+
+            String dbfFileName = shapeFileName.substring(0,
+                    shapeFileName.indexOf(".shp"))
+                    + ".dbf";
+            try {
+                if (BinaryFile.exists(dbfFileName)) {
+                    BinaryBufferedFile bbf = new BinaryBufferedFile(dbfFileName);
+                    DbfHandler dbfh = new DbfHandler(bbf);
+                    dbfh.setProperties(realPrefix, props);
+                    spatialIndex.setDbf(dbfh);
+                }
+            } catch (FormatException fe) {
+                if (Debug.debugging("shape")) {
+                    Debug.error("ShapeLayer: Couldn't create DBF handler for "
+                            + dbfFileName + ", FormatException: "
+                            + fe.getMessage());
+                }
+            } catch (IOException ioe) {
+                if (Debug.debugging("shape")) {
+                    Debug.error("ShapeLayer: Couldn't create DBF handler for "
+                            + dbfFileName + ", IOException: "
+                            + ioe.getMessage());
+                }
             }
 
             imageURLString = props.getProperty(realPrefix
@@ -216,6 +266,18 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                 + shadowXProperty, 0);
         shadowY = PropUtils.intFromProperties(props, realPrefix
                 + shadowYProperty, 0);
+
+        String transClassName = props.getProperty(realPrefix
+                + TransformProperty);
+        if (transClassName != null) {
+            try {
+                coordTransform = (GeoCoordTransformation) ComponentFactory.create(transClassName,
+                        realPrefix + TransformProperty,
+                        props);
+            } catch (ClassCastException cce) {
+
+            }
+        }
     }
 
     /**
@@ -242,6 +304,18 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
             DrawingAttributes da = (DrawingAttributes) DrawingAttributes.DEFAULT.clone();
             da.setPropertyPrefix(getPropertyPrefix());
             da.getProperties(props);
+        }
+
+        if (coordTransform != null
+                && coordTransform instanceof PropertyConsumer) {
+            ((PropertyConsumer) coordTransform).getProperties(props);
+        }
+
+        if (spatialIndex != null) {
+            DbfHandler dbfh = spatialIndex.getDbf();
+            if (dbfh != null) {
+                dbfh.getProperties(props);
+            }
         }
 
         return props;
@@ -333,6 +407,18 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
         return drawingAttributes;
     }
 
+    public String getInfoText(OMGraphic omg) {
+        return (String) omg.getAttribute(OMGraphic.INFOLINE);
+    }
+
+    /**
+     * If applicable, should return a tool tip for the OMGraphic. Return null if
+     * nothing should be shown.
+     */
+    public String getToolTipTextFor(OMGraphic omg) {
+        return (String) omg.getAttribute(OMGraphic.TOOLTIP);
+    }
+
     /**
      * Create the OMGraphics using the shape file and SpatialIndex.
      * 
@@ -388,8 +474,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
         // check for dateline anomaly on the screen. we check for
         // ulLon >= lrLon, but we need to be careful of the check for
         // equality because of floating point arguments...
-        if ((ulLon > lrLon)
-                || MoreMath.approximately_equal(ulLon, lrLon, .001f)) {
+        if (ProjMath.isCrossingDateline(ulLon, lrLon, projection.getScale())) {
             if (Debug.debugging("shape")) {
                 Debug.output("ShapeLayer.computeGraphics(): Dateline is on screen");
             }
@@ -406,7 +491,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                         list,
                         drawingAttributes,
                         projection,
-                        null);
+                        coordTransform);
                 list = spatialIndex.getOMGraphics(-180.0d,
                         ymin,
                         lrLon,
@@ -414,7 +499,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                         list,
                         drawingAttributes,
                         projection,
-                        null);
+                        coordTransform);
 
             } catch (InterruptedIOException iioe) {
                 // This means that the thread has been interrupted,
@@ -442,7 +527,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                         list,
                         drawingAttributes,
                         projection,
-                        null);
+                        coordTransform);
             } catch (InterruptedIOException iioe) {
                 // This means that the thread has been interrupted,
                 // probably due to a projection change. Not a big
@@ -549,5 +634,18 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
             }
         }
         return box;
+    }
+
+    /**
+     * Called when the Layer is removed from the MapBean, giving an opportunity
+     * to clean up.
+     */
+    public void removed(Container cont) {
+        OMGraphicList list = getList();
+        if (list != null) {
+            list.clear();
+            list = null;
+        }
+
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/BufferedLayer.java,v $
 // $RCSfile: BufferedLayer.java,v $
-// $Revision: 1.10 $
-// $Date: 2007/04/17 20:35:54 $
+// $Revision: 1.11 $
+// $Date: 2007/06/21 21:39:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -399,7 +399,7 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
                 && hasTransparentBackground) {
             ((BLMapBean) mapBean).wipeImage();
         }
-        mapBean.setProjection(proj);
+        mapBean.setProjection(proj == null ? proj : proj.makeClone());
     }
 
     /**
@@ -589,11 +589,11 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
 
             return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         }
-        
+
         /**
-         * We override this to do nothing because we don't want a border on the BufferedLayer.
+         * We override this to do nothing because we don't want a border on the
+         * BufferedLayer.
          */
-        public void paintBorder(Graphics g) {
-        }
+        public void paintBorder(Graphics g) {}
     }
 }

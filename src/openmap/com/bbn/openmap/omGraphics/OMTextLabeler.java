@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: OMTextLabeler.java,v $
-//$Revision: 1.3 $
-//$Date: 2006/08/09 21:08:34 $
+//$Revision: 1.4 $
+//$Date: 2007/06/21 21:38:59 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -45,9 +45,9 @@ public class OMTextLabeler extends OMText implements OMLabeler {
     public final static int ANCHOR_BOTTOMLEFT = 6;
     public final static int ANCHOR_BOTTOM = 7;
     public final static int ANCHOR_BOTTOMRIGHT = 8;
-    
+
     protected int anchor = ANCHOR_CENTER;
-    
+
     /**
      * 
      */
@@ -62,7 +62,7 @@ public class OMTextLabeler extends OMText implements OMLabeler {
     public OMTextLabeler(String stuff, int just) {
         this(stuff, DEFAULT_FONT, just, ANCHOR_CENTER);
     }
-    
+
     public OMTextLabeler(String stuff, int just, int loc) {
         this(stuff, DEFAULT_FONT, just, loc);
     }
@@ -75,7 +75,7 @@ public class OMTextLabeler extends OMText implements OMLabeler {
     public OMTextLabeler(String stuff, Font font, int just) {
         this(stuff, font, just, ANCHOR_CENTER);
     }
-    
+
     public OMTextLabeler(String stuff, Font font, int just, int loc) {
         setRenderType(RENDERTYPE_XY);
         setData(stuff);
@@ -87,22 +87,26 @@ public class OMTextLabeler extends OMText implements OMLabeler {
     public void setLocation(GeneralPath gp) {
         if (gp != null) {
             Rectangle rect = gp.getBounds();
-            
+
             double x = rect.getX();
             double y = rect.getY();
-            
-            if (anchor == ANCHOR_TOP || anchor == ANCHOR_CENTER || anchor == ANCHOR_BOTTOM) {
+
+            if (anchor == ANCHOR_TOP || anchor == ANCHOR_CENTER
+                    || anchor == ANCHOR_BOTTOM) {
                 x += rect.getWidth() / 2;
-            } else if (anchor == ANCHOR_TOPRIGHT || anchor == ANCHOR_RIGHT || anchor == ANCHOR_BOTTOMRIGHT) {
+            } else if (anchor == ANCHOR_TOPRIGHT || anchor == ANCHOR_RIGHT
+                    || anchor == ANCHOR_BOTTOMRIGHT) {
                 x += rect.getWidth();
             }
-            
-            if (anchor == ANCHOR_LEFT || anchor == ANCHOR_CENTER || anchor == ANCHOR_RIGHT) {
+
+            if (anchor == ANCHOR_LEFT || anchor == ANCHOR_CENTER
+                    || anchor == ANCHOR_RIGHT) {
                 y += rect.getHeight() / 2;
-            } else if (anchor == ANCHOR_BOTTOMLEFT || anchor == ANCHOR_BOTTOM || anchor == ANCHOR_BOTTOMRIGHT) {
+            } else if (anchor == ANCHOR_BOTTOMLEFT || anchor == ANCHOR_BOTTOM
+                    || anchor == ANCHOR_BOTTOMRIGHT) {
                 y += rect.getHeight();
             }
-            
+
             setLocation(new Point((int) x, (int) y));
         }
     }
@@ -124,16 +128,15 @@ public class OMTextLabeler extends OMText implements OMLabeler {
     /*
      * (non-Javadoc)
      * 
-     * @see com.bbn.openmap.omGraphics.OMLabeler#setLocation(int[][],
-     *      int[][])
+     * @see com.bbn.openmap.omGraphics.OMLabeler#setLocation(int[][], int[][])
      */
     public void setLocation(int[] xpoints, int[] ypoints) {
         setLocation(getCenter(xpoints, ypoints));
     }
 
     /**
-     * Calculate the projected area of the poly. Algorithm used is
-     * from some australian astronomy website =)
+     * Calculate the projected area of the poly. Algorithm used is from some
+     * australian astronomy website =)
      * http://astronomy.swin.edu.au/~pbourke/geometry/polyarea
      */
     protected static double calculateProjectedArea(int[] xpts, int[] ypts) {
@@ -152,27 +155,47 @@ public class OMTextLabeler extends OMText implements OMLabeler {
     }
 
     /**
-     * Get the calculated center where the label string is drawn.
-     * Algorithm used is from some australian astronomy website =)
+     * Get the calculated center where the label string is drawn. Algorithm used
+     * is from some australian astronomy website =)
      * http://astronomy.swin.edu.au/~pbourke/geometry/polyarea
      */
     protected static Point getCenter(int[] xpts, int[] ypts) {
-        float cx = 0.0f;
-        float cy = 0.0f;
-        double A = calculateProjectedArea(xpts, ypts);
-        int j = 0;
-        double factor = 0;
+
 
         int npoints = xpts.length;
+        if (npoints == 1) {
+            Point center = new Point(xpts[0], ypts[0]);
+            return center;
+        }
+        if (npoints == 2) {
+            // rmcneil - two points, A=0, div zero below
+            int x;
+            if (xpts[1] > xpts[0])
+                x = xpts[0] + ((xpts[1] - xpts[0]) / 2);
+            else
+                x = xpts[1] + ((xpts[0] - xpts[1]) / 2);
+            int y;
+            if (ypts[1] > ypts[0])
+                y = ypts[0] + ((ypts[1] - ypts[0]) / 2);
+            else
+                y = ypts[1] + ((ypts[0] - ypts[1]) / 2);
+            Point center = new Point(x, y);
+            return center;
+        }
 
+        double factor = 0;
+        double cx = 0.0f;
+        double cy = 0.0f;
+        
         for (int i = 0; i < npoints; ++i) {
-            j = (i + 1) % npoints;
+            int j = (i + 1) % npoints;
 
             factor = xpts[i] * ypts[j] - xpts[j] * ypts[i];
             cx += (xpts[i] + xpts[j]) * factor;
             cy += (ypts[i] + ypts[j]) * factor;
         }
 
+        double A = calculateProjectedArea(xpts, ypts);
         A = A * 6.0;
         factor = 1.0 / A;
 
@@ -191,7 +214,7 @@ public class OMTextLabeler extends OMText implements OMLabeler {
         cx *= factor;
         cy *= factor;
 
-        Point center = new Point(Math.round(cx), Math.round(cy));
+        Point center = new Point((int)Math.round(cx), (int)Math.round(cy));
         return center;
     }
 

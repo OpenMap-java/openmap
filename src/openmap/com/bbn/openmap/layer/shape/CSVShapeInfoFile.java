@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/CSVShapeInfoFile.java,v $
 // $RCSfile: CSVShapeInfoFile.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:04 $
+// $Revision: 1.4 $
+// $Date: 2007/06/21 21:39:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,6 +23,7 @@
 package com.bbn.openmap.layer.shape;
 
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.dataAccess.shape.ShapeConstants;
 import com.bbn.openmap.io.CSVFile;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
@@ -75,7 +76,8 @@ public class CSVShapeInfoFile extends CSVFile {
                     // assigned to the records start with 1, while
                     // everything else we do starts with 0...
                     Object inforec = getRecord(recnum.intValue() - 1);
-                    omg.setAppObject(inforec);
+                    omg.putAttribute(ShapeConstants.SHAPE_DBF_INFO_ATTRIBUTE,
+                            inforec);
                 } catch (ClassCastException cce) {
                     if (Debug.debugging("shape")) {
                         cce.printStackTrace();

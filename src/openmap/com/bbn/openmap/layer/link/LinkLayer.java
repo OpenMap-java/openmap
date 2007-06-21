@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLayer.java,v $
 // $RCSfile: LinkLayer.java,v $
-// $Revision: 1.16 $
-// $Date: 2007/02/26 17:12:43 $
+// $Revision: 1.17 $
+// $Date: 2007/06/21 21:39:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,7 +35,6 @@ import java.util.Vector;
 
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
@@ -534,8 +533,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
 
         LinkBoundingPoly[] boundingPolys = null;
 
-        if ((ulLon > lrLon)
-                || MoreMath.approximately_equal(ulLon, lrLon, .001f)) {
+        if (ProjMath.isCrossingDateline(ulLon, lrLon, proj.getScale())) {
             Debug.message("link", "Dateline is on screen");
 
             float ymin = (float) Math.min(ulLat, lrLat);

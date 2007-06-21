@@ -14,16 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/URLInputReader.java,v $
 // $RCSfile: URLInputReader.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:52 $
+// $Revision: 1.4 $
+// $Date: 2007/06/21 21:39:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.io;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.URL;
+
 import com.bbn.openmap.util.Debug;
 
 /**

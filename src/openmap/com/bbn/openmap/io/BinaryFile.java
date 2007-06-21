@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/BinaryFile.java,v $
 // $RCSfile: BinaryFile.java,v $
-// $Revision: 1.10 $
-// $Date: 2006/08/16 23:18:06 $
+// $Revision: 1.11 $
+// $Date: 2007/06/21 21:39:02 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,10 +37,9 @@ import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The BinaryFile is the standard object used to access data files. It
- * acts like a RandomAccessFile, but will work on jar file contents
- * and URLs, too. The source of the data is isolated through the
- * InputReader interface.
+ * The BinaryFile is the standard object used to access data files. It acts like
+ * a RandomAccessFile, but will work on jar file contents and URLs, too. The
+ * source of the data is isolated through the InputReader interface.
  */
 public class BinaryFile {
     private static int openCount = 0;
@@ -49,15 +48,15 @@ public class BinaryFile {
     private InputReader inputReader = null;
 
     /**
-     * The byte order of the underlying file. (<code>true</code>==
-     * MSB-First == big-endian)
+     * The byte order of the underlying file. (<code>true</code>== MSB-First ==
+     * big-endian)
      */
     protected boolean MSBFirst = false;
 
     /**
-     * Constructs a new BinaryFile with the specified file as the
-     * input. The default byte-order is LSB first. Reads start at the
-     * first byte of the file.
+     * Constructs a new BinaryFile with the specified file as the input. The
+     * default byte-order is LSB first. Reads start at the first byte of the
+     * file.
      * 
      * @param f the file to be opened for reading
      * @exception IOException pass-through errors from opening a
@@ -71,20 +70,18 @@ public class BinaryFile {
     }
 
     /**
-     * Constructs a new BinaryFile with the specified file as the
-     * input. The byte-order is undefined. Reads start at the first
-     * byte of the file. This constructor looks for the file with the
-     * string given, and will call the correct constructor as
-     * appropriate. If the string represents a file available locally,
-     * then the BinaryFile will be accessed with a FileInputReader
-     * using a RandomAccessFile. If it's only available as a resource,
-     * then a StreamInputReader will be used. The name should be a
-     * path to a file, or the name of a resource that can be found in
-     * the classpath, or a URL.
+     * Constructs a new BinaryFile with the specified file as the input. The
+     * byte-order is undefined. Reads start at the first byte of the file. This
+     * constructor looks for the file with the string given, and will call the
+     * correct constructor as appropriate. If the string represents a file
+     * available locally, then the BinaryFile will be accessed with a
+     * FileInputReader using a RandomAccessFile. If it's only available as a
+     * resource, then a StreamInputReader will be used. The name should be a
+     * path to a file, or the name of a resource that can be found in the
+     * classpath, or a URL.
      * 
      * @param name the name of the file to be opened for reading
-     * @exception IOException pass-through errors from opening the
-     *            file.
+     * @exception IOException pass-through errors from opening the file.
      */
     public BinaryFile(String name) throws IOException {
         boolean showDebug = false;
@@ -195,11 +192,11 @@ public class BinaryFile {
     }
 
     /**
-     * Takes a name of a file, and checks to see if it reflects an
-     * entry in a jar file. (Check the filename and see if it looks
-     * like "jarfile!jarfileentry".) If it is, it separates the path,
-     * and set the inputReader to a JarInputReader and returns true.
-     * If not, it returns false.
+     * Takes a name of a file, and checks to see if it reflects an entry in a
+     * jar file. (Check the filename and see if it looks like
+     * "jarfile!jarfileentry".) If it is, it separates the path, and set the
+     * inputReader to a JarInputReader and returns true. If not, it returns
+     * false.
      */
     protected boolean setJarInputReader(String name) throws IOException {
 
@@ -239,11 +236,11 @@ public class BinaryFile {
                 // impllications of this call, though, at some point.
 
                 // DGK added
-                File f = new File(jarFileName); 
+                File f = new File(jarFileName);
                 if (f.exists() == false) {
-                    return false; 
+                    return false;
                 }
-                
+
                 setInputReader(new JarInputReader(jarFileName, jarEntryName));
                 return true;
             }
@@ -258,13 +255,11 @@ public class BinaryFile {
     }
 
     /**
-     * A simple test method to determine if a file or directory,
-     * represented by a string, can be found by the current Java
-     * environment. Uses the same tests as BinaryFile constructor for
-     * tracking down a file.
+     * A simple test method to determine if a file or directory, represented by
+     * a string, can be found by the current Java environment. Uses the same
+     * tests as BinaryFile constructor for tracking down a file.
      * 
-     * @param name A path to a file, a URL, or a path to a jar file
-     *        entry.
+     * @param name A path to a file, a URL, or a path to a jar file entry.
      */
     public static boolean exists(String name) {
         boolean exists = false;
@@ -352,17 +347,16 @@ public class BinaryFile {
     }
 
     /**
-     * Get the inputReader used for accessing the file, for quering
-     * purposes. Don't use it to get data, or the file pointers may
-     * get messed up.
+     * Get the inputReader used for accessing the file, for quering purposes.
+     * Don't use it to get data, or the file pointers may get messed up.
      */
     public InputReader getInputReader() {
         return inputReader;
     }
 
     /**
-     * Set the input reader used by the BinaryFile. Make sure it's
-     * intialized properly.
+     * Set the input reader used by the BinaryFile. Make sure it's intialized
+     * properly.
      */
     public void setInputReader(InputReader reader) {
         if (Debug.debugging("binaryfile")) {
@@ -374,8 +368,8 @@ public class BinaryFile {
     /**
      * Set the byte-ordering used to read shorts, int, etc.
      * 
-     * @param msbfirst <code>true</code>= MSB first,
-     *        <code>false</code>= LSB first
+     * @param msbfirst <code>true</code>= MSB first, <code>false</code>=
+     *        LSB first
      */
     public void byteOrder(boolean msbfirst) {
         MSBFirst = msbfirst;
@@ -395,8 +389,8 @@ public class BinaryFile {
      * 
      * @param n the number of bytes to skip
      * @return the actual number of bytes skipped. annoying, isn't it?
-     * @exception IOException Any IO errors that occur in skipping
-     *            bytes in the underlying file
+     * @exception IOException Any IO errors that occur in skipping bytes in the
+     *            underlying file
      */
     public long skipBytes(long n) throws IOException {
         return inputReader.skipBytes(n);
@@ -406,8 +400,8 @@ public class BinaryFile {
      * Get the index of the next character to be read
      * 
      * @return the index
-     * @exception IOException Any IO errors that occur in accessing
-     *            the underlying file
+     * @exception IOException Any IO errors that occur in accessing the
+     *            underlying file
      */
     public long getFilePointer() throws IOException {
         return inputReader.getFilePointer();
@@ -417,8 +411,8 @@ public class BinaryFile {
      * Set the index of the next character to be read.
      * 
      * @param pos the position to seek to.
-     * @exception IOException Any IO Errors that occur in seeking the
-     *            underlying file.
+     * @exception IOException Any IO Errors that occur in seeking the underlying
+     *            file.
      */
     public void seek(long pos) throws IOException {
         inputReader.seek(pos);
@@ -434,26 +428,34 @@ public class BinaryFile {
     /**
      * Return how many bytes left to be read in the file.
      * 
-     * @return the number of bytes remaining to be read (counted in
-     *         bytes)
-     * @exception IOException Any IO errors encountered in accessing
-     *            the file
+     * @return the number of bytes remaining to be read (counted in bytes)
+     * @exception IOException Any IO errors encountered in accessing the file
      */
     public long available() throws IOException {
         return inputReader.available();
     }
 
     /**
-     * Closes the underlying file
+     * Closes the underlying file, but with a chance for re-opening if accessed
+     * again.
      * 
-     * @exception IOException Any IO errors encountered in accessing
-     *            the file
+     * @exception IOException Any IO errors encountered in accessing the file
      */
     public void close() throws IOException {
         if (inputReader != null) {
             inputReader.close();
             openCount--;
         }
+    }
+
+    /**
+     * Closes underlying file, get rid of resources and knowledge of file. To be
+     * called when you don't need the file any more.
+     * 
+     * @throws IOException
+     */
+    public void dispose() throws IOException {
+        close();
         inputReader = null;
     }
 
@@ -461,8 +463,7 @@ public class BinaryFile {
      * Read from the file.
      * 
      * @return one byte from the file. -1 for EOF
-     * @exception IOException Any IO errors encountered in reading
-     *            from the file
+     * @exception IOException Any IO errors encountered in reading from the file
      */
     public int read() throws IOException {
         return inputReader.read();
@@ -475,8 +476,7 @@ public class BinaryFile {
      * @param off the first array position to read into
      * @param len the number of bytes to read
      * @return the number of bytes read
-     * @exception IOException Any IO errors encountered in reading
-     *            from the file
+     * @exception IOException Any IO errors encountered in reading from the file
      */
     public int read(byte b[], int off, int len) throws IOException {
         return inputReader.read(b, off, len);
@@ -488,8 +488,7 @@ public class BinaryFile {
      * @param b the byte array to read into. Equivelent to
      *        <code>read(b, 0, b.length)</code>
      * @return the number of bytes read
-     * @exception IOException Any IO errors encountered in reading
-     *            from the file
+     * @exception IOException Any IO errors encountered in reading from the file
      * @see java.io.RandomAccessFile#read(byte[])
      */
     public int read(byte b[]) throws IOException {
@@ -502,12 +501,11 @@ public class BinaryFile {
      * @param howmany the number of bytes to read
      * @param allowless if we can return fewer bytes than requested
      * @return the array of bytes read.
-     * @exception FormatException Any IO Exceptions, plus an
-     *            end-of-file encountered after reading some, but now
-     *            enough, bytes when allowless was <code>false</code>
-     * @exception EOFException Encountered an end-of-file while
-     *            allowless was <code>false</code>, but NO bytes
-     *            had been read.
+     * @exception FormatException Any IO Exceptions, plus an end-of-file
+     *            encountered after reading some, but now enough, bytes when
+     *            allowless was <code>false</code>
+     * @exception EOFException Encountered an end-of-file while allowless was
+     *            <code>false</code>, but NO bytes had been read.
      */
     public byte[] readBytes(int howmany, boolean allowless)
             throws EOFException, FormatException {
@@ -519,8 +517,8 @@ public class BinaryFile {
      * Reads and returns a single byte, cast to a char
      * 
      * @return the byte read from the file, cast to a char
-     * @exception EOFException the end-of-file has been reached, so no
-     *            chars where available
+     * @exception EOFException the end-of-file has been reached, so no chars
+     *            where available
      * @exception FormatException a rethrown IOException
      */
     public char readChar() throws EOFException, FormatException {
@@ -537,14 +535,27 @@ public class BinaryFile {
     }
 
     /**
+     * Read a byte from the file, return an unsigned integer.
+     * 
+     * @return one byte from the file. -1 for EOF causes EOFException
+     * @exception IOException Any IO errors encountered in reading from the file
+     */
+    public int readUnsigned() throws IOException, EOFException {
+        byte b = (byte) read();
+        if (b == -1) {
+            throw new EOFException();
+        }
+        return MoreMath.signedToInt(b);
+    }
+
+    /**
      * Reads and returns a short.
      * 
-     * @return the 2 bytes merged into a short, according to the
-     *         current byte ordering
-     * @exception EOFException there were less than 2 bytes left in
-     *            the file
-     * @exception FormatException rethrow of IOExceptions encountered
-     *            while reading the bytes for the short
+     * @return the 2 bytes merged into a short, according to the current byte
+     *         ordering
+     * @exception EOFException there were less than 2 bytes left in the file
+     * @exception FormatException rethrow of IOExceptions encountered while
+     *            reading the bytes for the short
      * @see #read(byte[])
      */
     public short readShort() throws EOFException, FormatException {
@@ -553,14 +564,28 @@ public class BinaryFile {
     }
 
     /**
+     * Reads and returns a integer from 2 bytes.
+     * 
+     * @return the 2 bytes merged into a short, according to the current byte
+     *         ordering, and then unsigned to int.
+     * @exception EOFException there were less than 2 bytes left in the file
+     * @exception FormatException rethrow of IOExceptions encountered while
+     *            reading the bytes for the short
+     * @see #read(byte[])
+     */
+    public int readUnsignedShort() throws EOFException, FormatException {
+        // MSBFirst must be set when we are called
+        return MoreMath.signedToInt(readShort());
+    }
+
+    /**
      * Reads and returns a long
      * 
-     * @return the 4 bytes merged into a long, according to the
-     *         current byte ordering
-     * @exception EOFException there were less than 4 bytes left in
-     *            the file
-     * @exception FormatException rethrow of IOExceptions encountered
-     *            while reading the bytes for the integer
+     * @return the 4 bytes merged into a long, according to the current byte
+     *         ordering
+     * @exception EOFException there were less than 4 bytes left in the file
+     * @exception FormatException rethrow of IOExceptions encountered while
+     *            reading the bytes for the integer
      * @see #read(byte[])
      */
     public int readInteger() throws EOFException, FormatException {
@@ -578,12 +603,11 @@ public class BinaryFile {
     /**
      * Reads and returns a long
      * 
-     * @return the 8 bytes merged into a long, according to the
-     *         current byte ordering
-     * @exception EOFException there were less than 8 bytes left in
-     *            the file
-     * @exception FormatException rethrow of IOExceptions encountered
-     *            while reading the bytes for the long
+     * @return the 8 bytes merged into a long, according to the current byte
+     *         ordering
+     * @exception EOFException there were less than 8 bytes left in the file
+     * @exception FormatException rethrow of IOExceptions encountered while
+     *            reading the bytes for the long
      * @see #read(byte[])
      */
     public long readLong() throws EOFException, FormatException {
@@ -593,12 +617,11 @@ public class BinaryFile {
     /**
      * Reads and returns a float
      * 
-     * @return the 4 bytes merged into a float, according to the
-     *         current byte ordering
-     * @exception EOFException there were less than 4 bytes left in
-     *            the file
-     * @exception FormatException rethrow of IOExceptions encountered
-     *            while reading the bytes for the float
+     * @return the 4 bytes merged into a float, according to the current byte
+     *         ordering
+     * @exception EOFException there were less than 4 bytes left in the file
+     * @exception FormatException rethrow of IOExceptions encountered while
+     *            reading the bytes for the float
      * @see #read(byte[])
      */
     public float readFloat() throws EOFException, FormatException {
@@ -615,12 +638,11 @@ public class BinaryFile {
     /**
      * Reads and returns a double
      * 
-     * @return the 8 bytes merged into a double, according to the
-     *         current byte ordering
-     * @exception EOFException there were less than 8 bytes left in
-     *            the file
-     * @exception FormatException rethrow of IOExceptions encountered
-     *            while reading the bytes for the short
+     * @return the 8 bytes merged into a double, according to the current byte
+     *         ordering
+     * @exception EOFException there were less than 8 bytes left in the file
+     * @exception FormatException rethrow of IOExceptions encountered while
+     *            reading the bytes for the short
      * @see #read(byte[])
      */
     public double readDouble() throws EOFException, FormatException {
@@ -628,15 +650,15 @@ public class BinaryFile {
     }
 
     /**
-     * Reads <code>length</code> bytes and returns a string composed
-     * of the bytes cast to chars
+     * Reads <code>length</code> bytes and returns a string composed of the
+     * bytes cast to chars
      * 
      * @param length the number of bytes to read into the string
      * @return the composed string
-     * @exception EOFException there were less than
-     *            <code>length</code> bytes left in the file
-     * @exception FormatException rethrow of IOExceptions encountered
-     *            while reading the bytes for the short
+     * @exception EOFException there were less than <code>length</code> bytes
+     *            left in the file
+     * @exception FormatException rethrow of IOExceptions encountered while
+     *            reading the bytes for the short
      */
     public String readFixedLengthString(int length) throws EOFException,
             FormatException {
@@ -646,17 +668,16 @@ public class BinaryFile {
     }
 
     /**
-     * Read a bytes and throw an InvalidCharException if it doesn't
-     * match <code>expected</code>
+     * Read a bytes and throw an InvalidCharException if it doesn't match
+     * <code>expected</code>
      * 
      * @param expected what the next char is claimed to be
-     * @exception EOFException there wasn't a byte, so we can't check
-     *            for a match
-     * @exception InvalidCharException throws when the character read
-     *            doesn't match <code>expected</code> The .c member
-     *            of the thrown exception is the actual char read
-     * @exception FormatException some other error from reading the
-     *            file
+     * @exception EOFException there wasn't a byte, so we can't check for a
+     *            match
+     * @exception InvalidCharException throws when the character read doesn't
+     *            match <code>expected</code> The .c member of the thrown
+     *            exception is the actual char read
+     * @exception FormatException some other error from reading the file
      */
     public void assertChar(char expected) throws EOFException, FormatException {
         char c = readChar();
@@ -667,13 +688,11 @@ public class BinaryFile {
     }
 
     /**
-     * Reads a string until the specified delimiter or EOF is
-     * encountered
+     * Reads a string until the specified delimiter or EOF is encountered
      * 
      * @param delim the end-of-string delimiter
      * @return the string that was read
-     * @exception FormatException rethrow of IOExceptions from the
-     *            read methods
+     * @exception FormatException rethrow of IOExceptions from the read methods
      */
     public String readToDelimiter(char delim) throws FormatException {
         StringBuffer buildretval = new StringBuffer();
@@ -702,15 +721,14 @@ public class BinaryFile {
     }
 
     /**
-     * Maintains a list of objects that can be closed so that other
-     * files can be opened.
+     * Maintains a list of objects that can be closed so that other files can be
+     * opened.
      */
     private static Vector closableList = new Vector();
 
     /**
-     * Add an object that can be closed if needed. Duplicates are
-     * allowed. Only holds a WeakReference, so that the object can
-     * still be garbage-collected.
+     * Add an object that can be closed if needed. Duplicates are allowed. Only
+     * holds a WeakReference, so that the object can still be garbage-collected.
      * 
      * @param it the object that can be closed
      */

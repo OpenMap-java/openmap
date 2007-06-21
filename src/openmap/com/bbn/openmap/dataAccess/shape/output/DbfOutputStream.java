@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/DbfOutputStream.java,v $
 // $RCSfile: DbfOutputStream.java,v $
-// $Revision: 1.13 $
-// $Date: 2006/01/27 18:36:38 $
+// $Revision: 1.14 $
+// $Date: 2007/06/21 21:39:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,9 +26,12 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 
+import com.bbn.openmap.dataAccess.shape.DbfFile;
 import com.bbn.openmap.dataAccess.shape.DbfTableModel;
+import com.bbn.openmap.io.FormatException;
 
 /**
  * Writes date in a DbfTableModel to a file, conforming to the DBF III file
@@ -202,7 +205,44 @@ public class DbfOutputStream {
         _leos.writeByte(0); // Byte 31 Reserved Bytes(0) #31
     }
 
+    protected void writeDbfFileRecords(DbfFile model) throws IOException {
+        java.text.NumberFormat df = NumberFormat.getNumberInstance(Locale.ENGLISH);
+        int rowCount = model.getRowCount();
+        int columnCount = model.getColumnCount();
+        for (int r = 0; r <= rowCount - 1; r++) {
+            try {
+                List record = model.getRecordData(r);
+                _leos.writeByte(32);
+                for (int c = 0; c <= columnCount - 1; c++) {
+                    byte type = model.getType(c);
+                    String value = null;
+                    if (type == DbfTableModel.TYPE_NUMERIC) {
+                        Object obj = record.get(c);
+                        if (obj instanceof Double) {
+                            value = ""
+                                    + df.format(((Double) obj).doubleValue());
+                        } else {
+                            value = (value != null) ? obj.toString() : "";
+                        }
+                    } else {
+                        value = (String) record.get(c);
+                    }
+                    int length = model.getLength(c);
+                    _leos.writeString(value, length);
+                }
+            } catch (FormatException fe) {
+                continue;
+            }
+        }
+    }
+
     public void writeRecords(DbfTableModel model) throws IOException {
+
+        if (model instanceof DbfFile) {
+            writeDbfFileRecords((DbfFile) model);
+            return;
+        }
+
         java.text.NumberFormat df = NumberFormat.getNumberInstance(Locale.ENGLISH);
         int rowCount = model.getRowCount();
         int columnCount = model.getColumnCount();
@@ -225,10 +265,10 @@ public class DbfOutputStream {
 
                         value = "" + df.format(((Double) obj).doubleValue());
                     } else {
-                        // value = ""; 
+                        // value = "";
                         // Instead of making up a value, try to
                         // represent it as true as possible.
-                        value = (value != null)?obj.toString():"";
+                        value = (value != null) ? obj.toString() : "";
                     }
                 } else {
                     value = (String) model.getValueAt(r, c);

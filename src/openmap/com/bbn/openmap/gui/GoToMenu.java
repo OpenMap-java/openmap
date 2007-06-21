@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.18 $
-// $Date: 2006/02/27 15:11:35 $
+// $Revision: 1.19 $
+// $Date: 2007/06/21 21:38:59 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -29,8 +29,9 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -133,7 +134,8 @@ public class GoToMenu extends AbstractOpenMapMenu {
     public GoToMenu() {
         super();
         setText(i18n.get(this, "goto", defaultText));
-        setMnemonic(i18n.get(this, "goto", I18n.MNEMONIC, defaultMnemonic).charAt(0));
+        setMnemonic(i18n.get(this, "goto", I18n.MNEMONIC, defaultMnemonic)
+                .charAt(0));
 
         // dataBoundsMenu = new OMBasicMenu("Go Over Data");
         dataBoundsMenu = new OMBasicMenu(i18n.get(this,
@@ -206,9 +208,8 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
         if (locationList != null) {
             Vector views = PropUtils.parseSpacedMarkers(locationList);
-            Enumeration things = views.elements();
-            while (things.hasMoreElements()) {
-                String viewPrefix = (String) things.nextElement();
+            for (Iterator it = views.iterator(); it.hasNext();) {
+                String viewPrefix = (String) it.next();
                 addLocationItem(viewPrefix, props);
             }
         }
@@ -227,9 +228,8 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
         StringBuffer viewList = new StringBuffer();
 
-        Enumeration cv = customViews.elements();
-        while (cv.hasMoreElements()) {
-            GoToButton gtb = (GoToButton) cv.nextElement();
+        for (Iterator it = ensureCustomViews().iterator(); it.hasNext();) {
+            GoToButton gtb = (GoToButton) it.next();
 
             String sanitizedName = gtb.getText().replace(' ', '_');
             viewList.append(" " + sanitizedName);
@@ -280,7 +280,39 @@ public class GoToMenu extends AbstractOpenMapMenu {
         add(new GoToButton(i18n.get(this, "world", "World"), 0, 0, Float.MAX_VALUE, Mercator.MercatorName));
     }
 
-    Vector customViews = new Vector();
+    protected List customViews;
+
+    /**
+     * An internal callback method that creates the custom views List object.
+     * Override to change what kind of object gets created (it's a Vector by
+     * default).
+     * 
+     * @return List
+     */
+    protected List createCustomViews() {
+        return new Vector();
+    }
+
+    public List getCustomViews() {
+        return customViews;
+    }
+
+    /**
+     * Should call this when dealing with the custom views list, will always
+     * return a non-null answer.
+     * 
+     * @return List
+     */
+    public List ensureCustomViews() {
+        if (customViews == null) {
+            customViews = createCustomViews();
+        }
+        return customViews;
+    }
+
+    public void setCustomViews(List views) {
+        customViews = views;
+    }
 
     /**
      * Parse and add the view from properties.
@@ -306,7 +338,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
             float lon = new Float(lonString).floatValue();
             float scale = new Float(scaleString).floatValue();
             GoToButton gtb = new GoToButton(locationName, lat, lon, scale, projID);
-            customViews.add(gtb);
+            ensureCustomViews().add(gtb);
             add(gtb);
 
         } catch (NumberFormatException nfe) {
@@ -335,7 +367,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
      * Add a button to the menu that will set the map to a particular view.
      */
     public void addView(GoToButton newOne) {
-        customViews.add(newOne);
+        ensureCustomViews().add(newOne);
         add(newOne);
         revalidate();
     }
@@ -355,7 +387,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
             if (map != null) {
                 Projection proj = map.getProjection();
                 Point2D llp = proj.getCenter();
-                new GoToButton((float)llp.getY(), (float)llp.getX(), proj.getScale(), proj.getName());
+                new GoToButton((float) llp.getY(), (float) llp.getX(), proj.getScale(), proj.getName());
             }
         }
     }
@@ -383,11 +415,12 @@ public class GoToMenu extends AbstractOpenMapMenu {
             NameFetcher nf = new NameFetcher(this);
             if (map != null) {
                 Point p = map.getLocationOnScreen();
-                int x = (int)p.getX();
-                int y = (int)p.getY();
+                int x = (int) p.getX();
+                int y = (int) p.getY();
                 int w = map.getWidth();
                 int h = map.getHeight();
-                nf.setLocation(x + (w-nf.getWidth())/2, y + (h - nf.getHeight())/2);
+                nf.setLocation(x + (w - nf.getWidth()) / 2, y
+                        + (h - nf.getHeight()) / 2);
             }
             nf.setVisible(true);
         }
@@ -401,7 +434,9 @@ public class GoToMenu extends AbstractOpenMapMenu {
         }
 
         /**
-         * Gets called when the NameFetcher sucessfully retrieves a name for the view.
+         * Gets called when the NameFetcher sucessfully retrieves a name for the
+         * view.
+         * 
          * @param name new name for the button.
          */
         public void setNameAndAdd(String name) {
@@ -449,7 +484,9 @@ public class GoToMenu extends AbstractOpenMapMenu {
             JPanel namePanel = new JPanel();
             namePanel.setLayout(new FlowLayout());
 
-            label = new JLabel(i18n.get(GoToMenu.class, "nameOfView", "Name of View: "));
+            label = new JLabel(i18n.get(GoToMenu.class,
+                    "nameOfView",
+                    "Name of View: "));
             nameField = new JTextField("", 20);
 
             namePanel.add(label);
@@ -463,7 +500,9 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
             buttonPanel.setLayout(gridbag);
 
-            applybutton = new JButton(i18n.get(GoToMenu.class, "addView", "Add View"));
+            applybutton = new JButton(i18n.get(GoToMenu.class,
+                    "addView",
+                    "Add View"));
             applybutton.addActionListener(this);
             gridbag.setConstraints(applybutton, c);
 

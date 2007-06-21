@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaShapeLayer.java,v $
 // $RCSfile: AreaShapeLayer.java,v $
-// $Revision: 1.8 $
-// $Date: 2006/08/25 15:36:15 $
+// $Revision: 1.9 $
+// $Date: 2007/06/21 21:39:01 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -60,6 +60,22 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
         super.setProperties(prefix, props);
         areas = new AreaHandler(spatialIndex, drawingAttributes);
         areas.setProperties(prefix, props);
+    }
+    
+    public Properties getProperties(Properties props) {
+        props = super.getProperties(props);
+        if (areas != null) {
+            areas.getProperties(props);
+        }
+        return props;
+    }
+    
+    public Properties getPropertyInfo(Properties props) {
+        props = super.getPropertyInfo(props);
+        if (areas != null) {
+            areas.getPropertyInfo(props);
+        }
+        return props;
     }
 
     /**
