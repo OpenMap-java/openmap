@@ -6,21 +6,6 @@
 	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" path="src/j3d"/>
 	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" path="src/svg"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/Users/dietrick/ext/batik-1.6/batik-rasterizer.jar"/>
-	<classpathentry kind="lib" path="/Users/dietrick/ext/batik-1.6/lib/batik-svg-dom.jar"/>
-	<classpathentry kind="lib" path="/Users/dietrick/ext/batik-1.6/lib/batik-awt-util.jar"/>
-	<classpathentry kind="lib" path="/Users/dietrick/ext/batik-1.6/lib/batik-util.jar"/>
-	<classpathentry kind="lib" path="/Users/dietrick/ext/batik-1.6/lib/batik-dom.jar"/>
-	<classpathentry kind="lib" path="/Users/dietrick/ext/batik-1.6/lib/batik-svggen.jar"/>
-	<classpathentry kind="lib" path="/Users/dietrick/ext/batik-1.6/lib/js.jar"/>
-	<classpathentry kind="lib" path="/Users/dietrick/ext/batik-1.6/lib/batik-script.jar"/>
-	<classpathentry kind="lib" path="/Users/dietrick/ext/batik-1.6/lib/batik-parser.jar"/>
-	<classpathentry kind="lib" path="/Users/dietrick/ext/batik-1.6/lib/batik-transcoder.jar"/>
-	<classpathentry kind="lib" path="/Users/dietrick/ext/batik-1.6/lib/batik-bridge.jar"/>
-	<classpathentry kind="lib" path="/Users/dietrick/ext/batik-1.6/lib/batik-extension.jar"/>
-	<classpathentry kind="lib" path="/Users/dietrick/ext/batik-1.6/lib/batik-ext.jar"/>
-	<classpathentry kind="lib" path="/Users/dietrick/ext/batik-1.6/lib/batik-xml.jar"/>
-	<classpathentry kind="lib" path="/Users/dietrick/ext/batik-1.6/lib/batik-css.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
