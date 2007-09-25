@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/time/TimeConstants.java,v $
 // $RCSfile: TimeConstants.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:50 $
+// $Revision: 1.5 $
+// $Date: 2007/09/25 17:31:26 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -23,7 +23,7 @@
 package com.bbn.openmap.gui.time;
 
 /**
- * Iterface that defines some properties that can be used by these
+ * Interface that defines some properties that can be used by these
  * components.
  */
 public interface TimeConstants {
