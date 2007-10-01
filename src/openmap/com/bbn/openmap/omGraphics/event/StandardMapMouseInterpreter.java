@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/event/StandardMapMouseInterpreter.java,v $
 // $RCSfile: StandardMapMouseInterpreter.java,v $
-// $Revision: 1.17 $
-// $Date: 2006/03/09 20:02:56 $
-// $Author: dietrick $
+// $Revision: 1.18 $
+// $Date: 2007/10/01 21:43:38 $
+// $Author: epgordon $
 // 
 // **********************************************************************
 
@@ -31,6 +31,7 @@ import java.util.List;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.ToolTipManager;
 
 import com.bbn.openmap.event.MapMouseEvent;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
@@ -48,7 +49,7 @@ import com.bbn.openmap.util.Debug;
  * <p>
  * 
  * The StandardMapMouseInterpreter uses highlighing to indicate that
- * mouse movement is occuring over an OMGraphic, and gives the layer
+ * mouse movement is occurring over an OMGraphic, and gives the layer
  * three ways to react to that movement. After finding out if the
  * OMGraphic is highlightable, the SMMI will tell the layer to
  * highlight the OMGraphic (which usually means to call select() on
@@ -64,7 +65,7 @@ import com.bbn.openmap.util.Debug;
  * OMGraphic, this is usually handled by handing the OMGraphic off to
  * the OMDrawingTool. However the GestureResponsPolicy handles the
  * situation where the selection is of multiple OMGraphics, and the
- * layer should prepare to handle those situations as movment or
+ * layer should prepare to handle those situations as movement or
  * deletion notifications. This usually means to change the
  * OMGraphic's display to indicate that the OMGraphics have been
  * selected. Selection notifications can come in series, and the
@@ -116,7 +117,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
 
     /**
      * Helper class used to keep track of OMGraphics of interest.
-     * Interest means that a MouseEvent that occured over an OMGraphic
+     * Interest means that a MouseEvent that occurred over an OMGraphic
      * that combined with another MouseEvent, may be interpreted as a
      * significant event.
      */
@@ -144,8 +145,8 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
         }
 
         /**
-         * A check to see if a mouse event that is occuring over an
-         * OMGraphic is infact occuring over the one of interest, and
+         * A check to see if a mouse event that is occurring over an
+         * OMGraphic is infact occurring over the one of interest, and
          * with the same mouse button.
          */
         public boolean appliesTo(OMGraphic geom, MouseEvent me) {
@@ -219,7 +220,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
      * false, lower layers will also receive events, which will let
      * them react too. Intended to let other layers provide
      * information about what the mouse is over when editing is
-     * occuring.
+     * occurring.
      */
     public void setConsumeEvents(boolean consume) {
         consumeEvents = consume;
@@ -300,7 +301,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
 
     /**
      * Return the OMGraphic object that is under a mouse event
-     * occurance on the map, null if nothing applies.
+     * occurrance on the map, null if nothing applies.
      */
     public OMGraphic getGeometryUnder(MouseEvent me) {
         OMGraphic omg = null;
@@ -499,7 +500,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
     protected boolean noTimerOverOMGraphic = true;
 
     /**
-     * Set whether to ignore the timer when movement is occuring over
+     * Set whether to ignore the timer when movement is occurring over
      * an OMGraphic. Sometimes unhighlight can be inappropriately
      * delayed when timer is enabled.
      */
@@ -509,7 +510,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
 
     /**
      * Get whether the timer should be ignored when movement is
-     * occuring over an OMGraphic.
+     * occurring over an OMGraphic.
      */
     public boolean getNoTimerOverOMGraphic() {
         return noTimerOverOMGraphic;
@@ -766,7 +767,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
         }
 
         if (grp != null) {
-            handleToolTip(grp.getToolTipTextFor(omg));
+            handleToolTip(grp.getToolTipTextFor(omg), me);
             handleInfoLine(grp.getInfoText(omg));
             if (grp.isHighlightable(omg)) {
                 grp.highlight(omg);
@@ -778,7 +779,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
     /**
      * Given a tool tip String, use the layer to get it displayed.
      */
-    protected void handleToolTip(String tip) {
+    protected void handleToolTip(String tip, MouseEvent me) {
         if (lastToolTip == tip) {
             return;
         }
@@ -786,6 +787,11 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
         if (layer != null) {
             if (lastToolTip != null) {
                 layer.fireRequestToolTip(lastToolTip);
+                // forward the event to the tool tip manager so it will popup
+                // the tool tip right away, otherwise an additional event is
+                // required to trigger it
+                ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
+                toolTipManager.mouseMoved(me);
             } else {
                 layer.fireHideToolTip();
             }
@@ -813,7 +819,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
         if (grp != null) {
             grp.unhighlight(omg);
         }
-        handleToolTip(null);
+        handleToolTip(null, null);
         handleInfoLine(null);
         return false;
     }
