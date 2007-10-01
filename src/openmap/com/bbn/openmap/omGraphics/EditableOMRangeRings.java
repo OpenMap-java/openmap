@@ -14,24 +14,29 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRangeRings.java,v $
 // $RCSfile: EditableOMRangeRings.java,v $
-// $Revision: 1.11 $
-// $Date: 2006/03/06 15:56:52 $
-// $Author: dietrick $
+// $Revision: 1.12 $
+// $Date: 2007/10/01 21:55:41 $
+// $Author: epgordon $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.text.DecimalFormat;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.border.EmptyBorder;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
@@ -43,7 +48,9 @@ import com.bbn.openmap.util.Debug;
  */
 public class EditableOMRangeRings extends EditableOMCircle {
 
-    protected boolean snapToInterval = false;
+    protected static int lastInterval;
+    protected static Length lastUnit;
+    protected static boolean snapToInterval = false;
 
     /**
      * Create the EditableOMRangeRings, setting the state machine to create the
@@ -117,6 +124,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
 
     public void updateInterval(int val) {
         ((OMRangeRings) circle).setInterval(val);
+        lastInterval = val;
         if (intervalField != null) {
             intervalField.setText(Integer.toString(val));
         }
@@ -162,7 +170,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
 
     protected JTextField intervalField = null;
     protected JToolBar rrToolBar = null;
-    protected transient java.text.DecimalFormat df = new java.text.DecimalFormat();
+    protected transient DecimalFormat df = new DecimalFormat();
     protected I18n i18n = Environment.getI18n();
 
     protected JToolBar getRangeRingGUI() {
@@ -171,20 +179,8 @@ public class EditableOMRangeRings extends EditableOMCircle {
             rrToolBar.setFloatable(false);
             rrToolBar.setMargin(new Insets(0, 1, 0, 1));
 
-            // JPanel intervalPanel =
-            // PaletteHelper.createPaletteJPanel("Interval");
-            intervalField = new JTextField(Integer.toString(((OMRangeRings) circle).getInterval()), 5);
-            intervalField.setMargin(new Insets(0, 1, 0, 1));
-            intervalField.setHorizontalAlignment(JTextField.RIGHT);
-            intervalField.setToolTipText(i18n.get(this,
-                    "intervalField.tooltip",
-                    "Value for interval between rings."));
-            intervalField.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    updateInterval(((JTextField) (ae.getSource())).getText());
-                }
-            });
-
+            configureRangeRings();
+            intervalField = makeIntervalField();
             rrToolBar.add(intervalField);
 
             // JSlider intervalSlide = new JSlider(
@@ -210,98 +206,162 @@ public class EditableOMRangeRings extends EditableOMCircle {
             // }
             // });
 
-            Length[] available = Length.getAvailable();
-            String[] unitStrings = new String[available.length + 1];
-
-            String current = null;
-            Length l = ((OMRangeRings) circle).getIntervalUnits();
-            if (l != null) {
-                current = l.toString();
-            }
-
-            int currentIndex = unitStrings.length - 1;
-
-            for (int i = 0; i < available.length; i++) {
-                unitStrings[i] = available[i].toString();
-                if (current != null && unitStrings[i].equals(current)) {
-                    currentIndex = i;
-                }
-            }
-            unitStrings[unitStrings.length - 1] = i18n.get(this,
-                    "unitStrings.concentric",
-                    "concentric");
-
-            JComboBox unitList = new JComboBox(unitStrings);
-            unitList.setBorder(new javax.swing.border.EmptyBorder(0, 1, 0, 1));
-
-            unitList.setSelectedIndex(currentIndex);
-            unitList.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    JComboBox jcb = (JComboBox) e.getSource();
-                    OMRangeRings rr = (OMRangeRings) circle;
-                    Length newLength = Length.get((String) jcb.getSelectedItem());
-                    Length oldLength = rr.getIntervalUnits();
-
-                    /*
-                     * If newLength is not null and oldLength is not null, just
-                     * translate the distance that is current specified. If
-                     * newLength is null, then find out how many rings are on
-                     * the range ring and set the interval to that. If oldLength
-                     * is null, find out the radius and divide it by the number
-                     * of rings - 1.
-                     */
-
-                    int value = interpretValue(intervalField.getText());
-                    if (value <= 0) {
-                        value = 4;
-                    }
-
-
-                    if (newLength != null && oldLength != null) {
-                        value = (int) newLength.fromRadians(oldLength.toRadians(value));
-                    } else {
-                        int numSubCircles;
-                        if (rr.subCircles == null || rr.subCircles.length == 0) {
-                            numSubCircles = 1;
-                        } else {
-                            numSubCircles = rr.subCircles.length;
-                        }
-
-                        if (newLength == null) {
-                            value = numSubCircles;
-                        } else if (oldLength == null) {
-                            value = (int) Math.ceil(newLength.fromRadians(Length.DECIMAL_DEGREE.toRadians(rr.getRadius()))
-                                    / numSubCircles);
-                        }
-                    }
-
-                    ((OMRangeRings) circle).setIntervalUnits(newLength);
-                    updateInterval(value);
-                }
-            });
-
-            rrToolBar.add(unitList);
-
-            String snapText = i18n.get(this, "snapToInterval", "Snap");
-            JCheckBox snapBox = new JCheckBox(snapText, isSnapToInterval());
-            snapText = i18n.get(this,
-                    "snapToInterval",
-                    I18n.TOOLTIP,
-                    "Round radius to nearest interval value.");
-            snapBox.setToolTipText(snapText);
-            snapBox.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    setSnapToInterval(((JCheckBox) ae.getSource()).isSelected());
-                    if (snapToInterval) {
-                        setRadius(circle.getRadius());
-                    }
-                    redraw(null, true);
-                }
-            });
-
-            rrToolBar.add(snapBox);
+            rrToolBar.add(makeUnitsCombo());
+            rrToolBar.add(makeSnapCheckBox());
         }
         return rrToolBar;
+    }
+
+    private void configureRangeRings() {
+        ((OMRangeRings)circle).setInterval(getInterval());
+        ((OMRangeRings)circle).setIntervalUnits(getUnits());
+    }
+
+    private int getInterval() {
+        return (! isNewRing())
+            ? ((OMRangeRings)circle).getInterval()
+            : haveUserSpecifiedValue()
+            ? lastInterval
+            : OMRangeRings.DEFAULT_INTERVAL;
+    }
+
+    private Length getUnits() {
+        return (! isNewRing())
+            ? ((OMRangeRings)circle).getIntervalUnits()
+            : haveUserSpecifiedValue()
+            ? lastUnit
+            : null;
+    }
+
+    private boolean isNewRing() {
+        // we rely on interval units not being initialized during construction
+        return (((OMRangeRings)circle).getIntervalUnits() == null);
+    }
+
+    private boolean haveUserSpecifiedValue() {
+        // lastUnit is not null if the user made a selection with the comboBox
+        return (lastUnit != null);
+    }
+
+    private JTextField makeIntervalField() {
+        JTextField field = new JTextField(
+                Integer.toString(((OMRangeRings) circle).getInterval()), 5);
+        field.setMargin(new Insets(0, 1, 0, 1));
+        // without minimum size set, field can be too small to use
+        field.setMinimumSize(new Dimension(40,  18));
+        field.setHorizontalAlignment(JTextField.RIGHT);
+        field.setToolTipText(i18n.get(this,
+                "intervalField.tooltip",
+                "Value for interval between rings."));
+        field.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                updateInterval(((JTextField) (ae.getSource())).getText());
+            }
+        });
+        // Users forget to hit Enter, which is required for an action event,
+        // then wonder why the rings they draw don't have the desired value.
+        // Adding a focus listener addresses this issue.
+        field.addFocusListener(new FocusAdapter() {
+            public void focusLost(FocusEvent event) {
+                if (! event.isTemporary()) {
+                    updateInterval(
+                            ((JTextField) (event.getSource())).getText());
+                }
+            }
+        });
+        return field;
+    }
+
+    private JComboBox makeUnitsCombo() {
+        Length[] available = Length.getAvailable();
+        String[] unitStrings = new String[available.length + 1];
+
+        String current = null;
+        Length l = ((OMRangeRings) circle).getIntervalUnits();
+        if (l != null) {
+            current = l.toString();
+        }
+
+        int currentIndex = unitStrings.length - 1;
+
+        for (int i = 0; i < available.length; i++) {
+            unitStrings[i] = available[i].toString();
+            if (current != null && unitStrings[i].equals(current)) {
+                currentIndex = i;
+            }
+        }
+        unitStrings[unitStrings.length - 1] = i18n.get(this,
+                "unitStrings.concentric",
+                "concentric");
+
+        JComboBox combo = new JComboBox(unitStrings);
+        combo.setBorder(new EmptyBorder(0, 1, 0, 1));
+        combo.setSelectedIndex(currentIndex);
+        combo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JComboBox jcb = (JComboBox) e.getSource();
+                OMRangeRings rr = (OMRangeRings) circle;
+                Length newLength = Length.get((String) jcb.getSelectedItem());
+                Length oldLength = rr.getIntervalUnits();
+
+                /*
+                 * If newLength is not null and oldLength is not null, just
+                 * translate the distance that is current specified. If
+                 * newLength is null, then find out how many rings are on
+                 * the range ring and set the interval to that. If oldLength
+                 * is null, find out the radius and divide it by the number
+                 * of rings - 1.
+                 */
+
+                int value = interpretValue(intervalField.getText());
+                if (value <= 0) {
+                    value = 4;
+                }
+
+                if (newLength != null && oldLength != null) {
+                    value = (int) newLength.fromRadians(oldLength.toRadians(value));
+                } else {
+                    int numSubCircles;
+                    if (rr.subCircles == null || rr.subCircles.length == 0) {
+                        numSubCircles = 1;
+                    } else {
+                        numSubCircles = rr.subCircles.length;
+                    }
+
+                    if (newLength == null) {
+                        value = numSubCircles;
+                    } else if (oldLength == null) {
+                        value = (int) Math.ceil(newLength.fromRadians(Length.DECIMAL_DEGREE.toRadians(rr.getRadius()))
+                                / numSubCircles);
+                    }
+                }
+
+                ((OMRangeRings) circle).setIntervalUnits(newLength);
+                lastUnit = newLength;
+                updateInterval(value);
+            }
+        });
+        return combo;
+    }
+
+    private JCheckBox makeSnapCheckBox() {
+        String snapText = i18n.get(this, "snapToInterval", "Snap");
+        JCheckBox snapBox = new JCheckBox(snapText, isSnapToInterval());
+        snapText = i18n.get(this,
+                "snapToInterval",
+                I18n.TOOLTIP,
+                "Round radius to nearest interval value.");
+        snapBox.setToolTipText(snapText);
+        snapBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                setSnapToInterval(((JCheckBox) ae.getSource()).isSelected());
+                if (snapToInterval) {
+                    setRadius(circle.getRadius());
+                }
+                redraw(null, true);
+            }
+        });
+        return snapBox;
     }
 
     protected boolean drawLabelsHolder = true;
