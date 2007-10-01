@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMGraphicDeleteTool.java,v $
 // $RCSfile: OMGraphicDeleteTool.java,v $
-// $Revision: 1.7 $
-// $Date: 2006/01/18 17:44:15 $
-// $Author: dietrick $
+// $Revision: 1.8 $
+// $Date: 2007/10/01 21:34:28 $
+// $Author: epgordon $
 // 
 // **********************************************************************
 
@@ -106,7 +106,8 @@ public class OMGraphicDeleteTool extends OMToolComponent implements
     public void keyPressed(KeyEvent e) {}
 
     public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+        if ((e.getKeyCode() == KeyEvent.VK_BACK_SPACE)
+                || (e.getKeyCode() == KeyEvent.VK_DELETE)) {
             deleteSelected();
         }
     }
