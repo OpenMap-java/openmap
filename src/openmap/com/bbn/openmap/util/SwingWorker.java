@@ -1,7 +1,5 @@
 package com.bbn.openmap.util;
 
-import javax.swing.SwingUtilities;
-
 /**
  * This is the 3rd version of SwingWorker (also known as SwingWorker 3), an
  * abstract class that you subclass to perform GUI-related work in a dedicated
@@ -101,7 +99,7 @@ public abstract class SwingWorker {
             } catch (InterruptedException e) {
                 // 2006.05.09 Attempting to fix synchro bug
                 // Thread.currentThread().interrupt(); // propagate
-//                System.out.println("OMSwingWorker interrupted : " + this);
+                // System.out.println("OMSwingWorker interrupted : " + this);
                 t.interrupt();
                 interrupted = true;
                 return null;
@@ -132,7 +130,15 @@ public abstract class SwingWorker {
                     } else {
                         setValue(null);
                     }
-                    SwingUtilities.invokeLater(doFinished); // TW
+
+                    // The original version called for the invokeLater method to
+                    // be used to launch the finishing thread, but that moves
+                    // the work back to the AWT thread. That seems like overkill
+                    // if every layer does this, and the performance of layers
+                    // greatly improves when this is moved to a different thread.
+                    // SwingUtilities.invokeLater(doFinished); // TW
+                    Thread fT = new Thread(doFinished);
+                    fT.start();
                     threadVar.clear();
                 }
             }
