@@ -29,7 +29,7 @@ import java.util.List;
  * 
  * @author Sachin Date
  * @author Ken Anderson
- * @version $Revision: 1.18 $ on $Date: 2007/05/16 03:27:19 $
+ * @version $Revision: 1.19 $ on $Date: 2007/10/09 20:41:12 $
  */
 public class Intersection {
 
@@ -547,7 +547,8 @@ public class Intersection {
 
     /**
      * Point i is on the great circle defined by the points a and b. Returns
-     * true if i is between a and b, false otherwise.
+     * true if i is between a and b, false otherwise. NOTE: i is assumed to be
+     * on the great circle line.
      */
     public static boolean isOnSegment(Geo a, Geo b, Geo i) {
 
@@ -555,6 +556,20 @@ public class Intersection {
         // 1.e-15))
 
         return ((a.distance(i) < a.distance(b)) && (b.distance(i) < b.distance(a)));
+    }
+
+    /**
+     * Returns true if i is on the great circle between a and b and between
+     * them, false otherwise. In other words, this method does the great circle
+     * test for you, too.
+     */
+    public static boolean isOnSegment(Geo a, Geo b, Geo i, double withinRad) {
+
+        // assert (< (Math.abs (.dot (.crossNormalize a b) i))
+        // 1.e-15))
+
+        return ((Math.abs(a.crossNormalize(b).dot(i)) <= withinRad)
+                && (a.distance(i) < a.distance(b)) && (b.distance(i) < b.distance(a)));
     }
 
     /**
