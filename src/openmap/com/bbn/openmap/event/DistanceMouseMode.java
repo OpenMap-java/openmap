@@ -21,22 +21,27 @@
 
 package com.bbn.openmap.event;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+import java.util.Properties;
+import java.util.Vector;
+
 import com.bbn.openmap.InformationDelegator;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.omGraphics.OMCircle;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMLine;
-import com.bbn.openmap.proj.*;
+import com.bbn.openmap.proj.GreatCircle;
+import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.Planet;
+import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
-import java.util.Properties;
-import java.util.Vector;
 
 /**
  * This mouse mode draws a rubberband line and circle between each mouse click
