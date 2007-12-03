@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: BasicSymbolImageMaker.java,v $
-//$Revision: 1.3 $
-//$Date: 2006/04/07 15:28:07 $
+//$Revision: 1.4 $
+//$Date: 2007/12/03 23:47:37 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -37,6 +37,7 @@ import javax.swing.ImageIcon;
 import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.ImageScaler;
 import com.bbn.openmap.util.PropUtils;
 
 public class BasicSymbolImageMaker extends OMComponent implements
@@ -131,9 +132,8 @@ public class BasicSymbolImageMaker extends OMComponent implements
             }
 
             BufferedImage bi = BufferedImageHelper.getBufferedImage(fileURL);
-            return new ImageIcon(bi.getScaledInstance((int) di.getWidth(),
-                    (int) di.getHeight(),
-                    java.awt.Image.SCALE_SMOOTH));
+            return new ImageIcon(ImageScaler.getOptimalScalingImage(bi, (int) di.getWidth(),
+                    (int) di.getHeight()));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NullPointerException npe) {

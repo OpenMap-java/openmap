@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMap.java,v $
 // $RCSfile: OpenMap.java,v $
-// $Revision: 1.14 $
-// $Date: 2006/02/27 15:11:36 $
+// $Revision: 1.15 $
+// $Date: 2007/12/03 23:47:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -36,50 +36,51 @@ import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The OpenMap application framework. This class creates a
- * PropertyHandler that searches the classpath, config directory and
- * user's home directory for an openmap.properties file, and creates
- * the application based on the contents of the properties files. It
- * also creates an MapPanel and an OpenMapFrame to be used for the
- * application and adds them to the MapHandler contained in the
- * MapPanel. All other components are added to that MapHandler as
- * well, and they use the MapHandler to locate, connect and
- * communicate with each other.
+ * The OpenMap application framework. This class creates a PropertyHandler that
+ * searches the classpath, config directory and user's home directory for an
+ * openmap.properties file, and creates the application based on the contents of
+ * the properties files. It also creates an MapPanel and an OpenMapFrame to be
+ * used for the application and adds them to the MapHandler contained in the
+ * MapPanel. All other components are added to that MapHandler as well, and they
+ * use the MapHandler to locate, connect and communicate with each other.
  */
 public class OpenMap {
 
     protected MapPanel mapPanel;
 
     /**
-     * Create a new OpenMap framework object - creates a MapPanel,
-     * OpenMapFrame, and brings up the layer palettes that are being
-     * told to be open at startup. The MapPanel will create a
-     * PropertiesHandler that will search for an openmap.properties
-     * file.
+     * Create a new OpenMap framework object - creates a MapPanel, OpenMapFrame,
+     * and brings up the layer palettes that are being told to be open at
+     * startup. The MapPanel will create a PropertiesHandler that will search
+     * for an openmap.properties file.
      */
     public OpenMap() {
         this(null);
     }
 
     /**
-     * Create a new OpenMap framework object - creates a MapPanel,
-     * OpenMapFrame, and brings up the layer palettes that are being
-     * told to be open at startup. The properties in the
-     * PropertyHandler will be used to configure the application.
-     * PropertyHandler may be null.
+     * Create a new OpenMap framework object - creates a MapPanel, OpenMapFrame,
+     * and brings up the layer palettes that are being told to be open at
+     * startup. The properties in the PropertyHandler will be used to configure
+     * the application. PropertyHandler may be null.
      */
     public OpenMap(PropertyHandler propertyHandler) {
-        mapPanel = new BasicMapPanel(propertyHandler);
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
+        mapPanel = new BasicMapPanel(propertyHandler, true);
+
+        // Schedule a job for the event-dispatching thread:
+        // creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+                // TODO There's something going on here with the progress
+                // reporter and the swing thread that is causing the app to hang
+                // in Leopard.
                 showInFrame();
             }
         });
     }
 
-    public void showInFrame() {
+    protected void showInFrame() {
+        ((BasicMapPanel)mapPanel).create();
         OpenMapFrame omf = new OpenMapFrame();
         setWindowListenerOnFrame(omf);
         getMapHandler().add(omf);
@@ -90,13 +91,13 @@ public class OpenMap {
     }
 
     /**
-     * A method called to set the WindowListener behavior on an
-     * OpenMapFrame used for the OpenMap application. By default, this
-     * method adds a WindowAdapter that calls System.exit(0), killing
-     * java. You can extend this to add a WindowListener to the
-     * OpenMapFrame that does nothing or something else.
+     * A method called internally to set the WindowListener behavior on an OpenMapFrame
+     * used for the OpenMap application. By default, this method adds a
+     * WindowAdapter that calls System.exit(0), killing java. You can extend
+     * this to add a WindowListener to the OpenMapFrame that does nothing or
+     * something else.
      */
-    public void setWindowListenerOnFrame(OpenMapFrame omf) {
+    protected void setWindowListenerOnFrame(OpenMapFrame omf) {
         omf.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
@@ -119,10 +120,9 @@ public class OpenMap {
     }
 
     /**
-     * Create and return an OpenMap object that uses a standard
-     * PropertyHandler to configure itself. The OpenMap object has a
-     * MapHandler that you can use to gain access to all the
-     * components.
+     * Create and return an OpenMap object that uses a standard PropertyHandler
+     * to configure itself. The OpenMap object has a MapHandler that you can use
+     * to gain access to all the components.
      * 
      * @return OpenMap
      * @see #getMapHandler
@@ -132,10 +132,9 @@ public class OpenMap {
     }
 
     /**
-     * Create and return an OpenMap object that uses a standard
-     * PropertyHandler to configure itself. The OpenMap object has a
-     * MapHandler that you can use to gain access to all the
-     * components.
+     * Create and return an OpenMap object that uses a standard PropertyHandler
+     * to configure itself. The OpenMap object has a MapHandler that you can use
+     * to gain access to all the components.
      * 
      * @return OpenMap
      * @see #getMapHandler

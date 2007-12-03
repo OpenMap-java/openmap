@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/DrawingEditorTool.java,v $
 // $RCSfile: DrawingEditorTool.java,v $
-// $Revision: 1.11 $
-// $Date: 2006/04/11 00:15:06 $
+// $Revision: 1.12 $
+// $Date: 2007/12/03 23:47:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -752,6 +752,10 @@ public class DrawingEditorTool extends AbstractEditorTool implements
         showAttributes = PropUtils.booleanFromProperties(props, prefix
                 + ShowAttributesProperty, showAttributes);
 
+        if (drawingTool != null) {
+            drawingTool.setProperties(prefix, props);
+        }
+        
         String loaderListString = props.getProperty(prefix + LoaderProperty);
 
         if (loaderListString != null) {

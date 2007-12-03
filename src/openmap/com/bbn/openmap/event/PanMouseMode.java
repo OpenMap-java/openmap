@@ -24,6 +24,7 @@ import javax.swing.border.Border;
 
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.ImageScaler;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -112,15 +113,10 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
             try {
                 Toolkit tk = Toolkit.getDefaultToolkit();
                 ImageIcon pointer = new ImageIcon(getClass().getResource("pan.gif"));
-                Dimension bestSize = tk.getBestCursorSize(pointer.getIconWidth(),
-                        pointer.getIconHeight());
-                Image pointerImage = pointer.getImage()
-                        .getScaledInstance((int) bestSize.getWidth(),
-                                (int) bestSize.getHeight(),
-                                Image.SCALE_SMOOTH);
-                Cursor cursor = tk.createCustomCursor(pointerImage,
-                        new Point(0, 0),
-                        "PP");
+                Dimension bestSize = tk.getBestCursorSize(pointer.getIconWidth(), pointer.getIconHeight());
+                Image pointerImage = ImageScaler.getOptimalScalingImage(pointer.getImage(),(int) bestSize.getWidth(),
+                                                                          (int) bestSize.getHeight());
+                Cursor cursor = tk.createCustomCursor(pointerImage, new Point(0, 0), "PP");
                 setModeCursor(cursor);
                 return;
             } catch (Exception e) {
@@ -135,13 +131,10 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
         super.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        opaqueness = PropUtils.floatFromProperties(props, prefix
-                + OpaquenessProperty, opaqueness);
-        leaveShadow = PropUtils.booleanFromProperties(props, prefix
-                + LeaveShadowProperty, leaveShadow);
+        opaqueness = PropUtils.floatFromProperties(props, prefix + OpaquenessProperty, opaqueness);
+        leaveShadow = PropUtils.booleanFromProperties(props, prefix + LeaveShadowProperty, leaveShadow);
 
-        setUseCursor(PropUtils.booleanFromProperties(props, prefix
-                + UseCursorProperty, isUseCursor()));
+        setUseCursor(PropUtils.booleanFromProperties(props, prefix + UseCursorProperty, isUseCursor()));
 
     }
 
@@ -149,8 +142,7 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
         props = super.getProperties(props);
         String prefix = PropUtils.getScopedPropertyPrefix(this);
         props.put(prefix + OpaquenessProperty, Float.toString(getOpaqueness()));
-        props.put(prefix + LeaveShadowProperty,
-                Boolean.toString(isLeaveShadow()));
+        props.put(prefix + LeaveShadowProperty, Boolean.toString(isLeaveShadow()));
         props.put(prefix + UseCursorProperty, Boolean.toString(isUseCursor()));
         return props;
     }
@@ -159,27 +151,27 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
         props = super.getPropertyInfo(props);
 
         PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                PanMouseMode.class,
-                OpaquenessProperty,
-                "Transparency",
-                "Transparency level for moving map, between 0 (clear) and 1 (opaque).",
-                null);
+                                      props,
+                                      PanMouseMode.class,
+                                      OpaquenessProperty,
+                                      "Transparency",
+                                      "Transparency level for moving map, between 0 (clear) and 1 (opaque).",
+                                      null);
         PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                PanMouseMode.class,
-                LeaveShadowProperty,
-                "Leave Shadow",
-                "Display current map in background while panning.",
-                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+                                      props,
+                                      PanMouseMode.class,
+                                      LeaveShadowProperty,
+                                      "Leave Shadow",
+                                      "Display current map in background while panning.",
+                                      "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                PanMouseMode.class,
-                UseCursorProperty,
-                "Use Cursor",
-                "Use hand cursor for mouse mode.",
-                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+                                      props,
+                                      PanMouseMode.class,
+                                      UseCursorProperty,
+                                      "Use Cursor",
+                                      "Use hand cursor for mouse mode.",
+                                      "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         return props;
     }
@@ -240,14 +232,10 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
                  * Drawing image whith transparence and in the mouse position
                  * minus origianl mouse click position
                  */
-                gr2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-                        opaqueness));
+                gr2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opaqueness));
                 gr2d.drawImage(bufferedMapImage, x - oX, y - oY, null);
 
-                ((Graphics2D) mb.getGraphics()).drawImage(bufferedRenderingImage,
-                        0,
-                        0,
-                        null);
+                ((Graphics2D) mb.getGraphics()).drawImage(bufferedRenderingImage, 0, 0, null);
             }
         }
         super.mouseDragged(arg0);

@@ -21,6 +21,7 @@ import java.beans.*;
 import java.util.*;
 
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.ImageScaler;
 
 /**
  * The BeanBox class manages a set of java beans that are delivered to
@@ -219,9 +220,8 @@ public abstract class BeanBox {
         Dimension d = Toolkit.getDefaultToolkit().getBestCursorSize(16, 16);
         if (Debug.debugging("beanbox"))
             Debug.output("" + d);
-        img = img.getScaledInstance((int) d.getWidth(),
-                (int) d.getHeight(),
-                Image.SCALE_FAST);
+        img = ImageScaler.getOptimalScalingImage(img,(int) d.getWidth(),
+                (int) d.getHeight());
 
         return img;
     }

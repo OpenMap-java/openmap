@@ -177,7 +177,7 @@ public class Inspector implements ActionListener {
      * @param pc The property consumer to create a gui for.
      * @return JComponent, a panel holding the interface to set the properties.
      */
-    public JComponent createPropertyGUI(PropertyConsumer pc) {
+    public JComponent createEmbeddedPropertyGUI(PropertyConsumer pc) {
         // fill variables
         this.propertyConsumer = pc;
         Properties props = new Properties();
@@ -186,7 +186,7 @@ public class Inspector implements ActionListener {
         info = pc.getPropertyInfo(info);
         String prefix = pc.getPropertyPrefix();
 
-        return createPropertyGUI(prefix, props, info);
+        return createEmbeddedPropertyGUI(prefix, props, info);
     }
 
     /**
@@ -209,8 +209,9 @@ public class Inspector implements ActionListener {
      *        properties.
      * @return JComponent, a panel holding the interface to set the properties.
      */
-    public JComponent createPropertyGUI(String prefix, Properties props,
-                                        Properties info) {
+    public JComponent createEmbeddedPropertyGUI(String prefix,
+                                                Properties props,
+                                                Properties info) {
 
         if (Debug.debugging("inspectordetail")) {
             Debug.output("Inspector creating GUI for " + prefix
@@ -235,8 +236,6 @@ public class Inspector implements ActionListener {
 
         int num = sortedKeys.size();
         editors = new Hashtable(num);
-
-        JButton doneButton = null, cancelButton = null;
 
         JPanel component = new JPanel();
         component.setLayout(new BorderLayout());
@@ -335,9 +334,58 @@ public class Inspector implements ActionListener {
 
         // create the palette's scroll pane
         JScrollPane scrollPane = new JScrollPane(propertyPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBorder(null);
         // scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         scrollPane.setAlignmentY(Component.TOP_ALIGNMENT);
         component.add(scrollPane, BorderLayout.CENTER);
+        return component;
+    }
+
+    /**
+     * Creates a JComponent with the properties to be changed. This component is
+     * suitable for inclusion into a GUI.
+     * 
+     * @param pc The property consumer to create a gui for.
+     * @return JComponent, a panel holding the interface to set the properties.
+     */
+    public JComponent createPropertyGUI(PropertyConsumer pc) {
+        // fill variables
+        this.propertyConsumer = pc;
+        Properties props = new Properties();
+        props = pc.getProperties(props);
+        Properties info = new Properties();
+        info = pc.getPropertyInfo(info);
+        String prefix = pc.getPropertyPrefix();
+
+        return createPropertyGUI(prefix, props, info);
+    }
+
+    /**
+     * Creates a JComponent with the properties to be changed. This component is
+     * suitable for inclusion into a GUI. Don't use this method directly! Use
+     * the createPropertyGUI(PropertyConsumer) instead. You will get a
+     * NullPointerException if you use this method without setting the
+     * PropertyConsumer in the Inspector.
+     * 
+     * @param prefix the property prefix for the property consumer. Received
+     *        from the PropertyConsumer.getPropertyPrefix() method. Properties
+     *        that start with this prefix will have the prefix removed from the
+     *        display, so the GUI will only show the actual property name.
+     * @param props the properties received from the
+     *        PropertyConsumer.getProperties() method.
+     * @param info the properties received from the
+     *        PropertyConsumer.getPropertyInfo() method, containing descriptions
+     *        and any specific PropertyEditors that should be used for a
+     *        particular property named in the PropertyConsumer.getProperties()
+     *        properties.
+     * @return JComponent, a panel holding the interface to set the properties.
+     */
+    public JComponent createPropertyGUI(String prefix, Properties props,
+                                        Properties info) {
+
+        JComponent component = createEmbeddedPropertyGUI(prefix, props, info);
+
+        JButton doneButton = null, cancelButton = null;
 
         JPanel buttons = new JPanel();
         if (print) {
@@ -400,6 +448,18 @@ public class Inspector implements ActionListener {
             if (print) {
                 System.exit(0);
             }
+        }
+    }
+
+    /**
+     * Tells the Inspector to collect the properties from the editors and set
+     * them on its PropertyConsumer.
+     */
+    public void collectAndSetProperties() {
+        if (propertyConsumer != null) {
+            String prefix = propertyConsumer.getPropertyPrefix();
+            Properties props = collectProperties();
+            propertyConsumer.setProperties(prefix, props);
         }
     }
 

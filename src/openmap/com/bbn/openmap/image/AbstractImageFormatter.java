@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/AbstractImageFormatter.java,v $
 // $RCSfile: AbstractImageFormatter.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/12/09 21:09:08 $
+// $Revision: 1.10 $
+// $Date: 2007/12/03 23:47:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,6 +37,7 @@ import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.ImageScaler;
 
 /**
  * The abstract implementation of the ImageFormatter. The
@@ -310,9 +311,8 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
                     + scaledHeight);
         }
 
-        java.awt.Image image = bufferedImage.getScaledInstance(scaledWidth,
-                scaledHeight,
-                java.awt.Image.SCALE_SMOOTH);
+        java.awt.Image image = ImageScaler.getOptimalScalingImage(bufferedImage, scaledWidth,
+                scaledHeight);
 
         if (Debug.debugging("formatter")) {
             Debug.output("Formatter: creating scaled image...");
