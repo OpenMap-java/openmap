@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.30 $
-// $Date: 2006/06/13 21:33:43 $
+// $Revision: 1.31 $
+// $Date: 2007/12/03 23:40:38 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1386,6 +1386,10 @@ public abstract class Layer extends JComponent implements ProjectionListener,
         return windowSupport;
     }
 
+    /**
+     * Callback method to override how window support is created.
+     * @return
+     */
     protected WindowSupport createWindowSupport() {
         return new ScrollPaneWindowSupport(getGUI(), getName());
     }
