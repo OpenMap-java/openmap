@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: LatLonPoint.java,v $
-//$Revision: 1.1 $
-//$Date: 2005/12/09 21:09:02 $
+//$Revision: 1.2 $
+//$Date: 2007/12/03 23:39:31 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -319,7 +319,7 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
 
         /**
          * Find a LatLonPoint a distance and direction away from this point,
-         * based on the sphercal earth model.
+         * based on the spherical earth model.
          * 
          * @param dist distance, in radians.
          * @param az radians of azimuth (direction) east of north (-PI &lt;= Az
