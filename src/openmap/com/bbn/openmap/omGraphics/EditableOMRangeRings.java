@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRangeRings.java,v $
 // $RCSfile: EditableOMRangeRings.java,v $
-// $Revision: 1.12 $
-// $Date: 2007/10/01 21:55:41 $
-// $Author: epgordon $
+// $Revision: 1.13 $
+// $Date: 2007/12/04 00:18:32 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 
@@ -24,6 +24,7 @@ package com.bbn.openmap.omGraphics;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,11 +32,16 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.text.DecimalFormat;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import com.bbn.openmap.Environment;
@@ -43,6 +49,7 @@ import com.bbn.openmap.I18n;
 import com.bbn.openmap.gui.GridBagToolBar;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PaletteHelper;
 
 /**
  */
@@ -115,7 +122,8 @@ public class EditableOMRangeRings extends EditableOMCircle {
         Debug.message("eomg", "EditableOMRangeRings.getGUI");
         if (graphicAttributes != null) {
             JComponent panel = graphicAttributes.getColorAndLineGUI();
-            panel.add(getRangeRingGUI());
+//            panel.add(getRangeRingGUI());
+            getRangeRingGUI(graphicAttributes.getOrientation(), panel);
             return panel;
         } else {
             return getRangeRingGUI();
@@ -172,44 +180,105 @@ public class EditableOMRangeRings extends EditableOMCircle {
     protected JToolBar rrToolBar = null;
     protected transient DecimalFormat df = new DecimalFormat();
     protected I18n i18n = Environment.getI18n();
+    protected JComponent attributeBox;
+    
+    protected JComponent getRangeRingGUI() {
+        return getRangeRingGUI(SwingConstants.HORIZONTAL, (JComponent) null);
+        
+//        if (rrToolBar == null) {
+//            rrToolBar = new GridBagToolBar();
+//            rrToolBar.setFloatable(false);
+//            rrToolBar.setMargin(new Insets(0, 1, 0, 1));
+//
+//            configureRangeRings();
+//            intervalField = makeIntervalField();
+//            rrToolBar.add(intervalField);
+//
+//            // JSlider intervalSlide = new JSlider(
+//            // JSlider.HORIZONTAL, 1/*min*/, 200/*max*/,
+//            // ((OMRangeRings)circle).getInterval()/*inital*/);
+//            // java.util.Hashtable dict = new java.util.Hashtable();
+//            // dict.put(new Integer(1), new JLabel("1"));
+//            // dict.put(new Integer(50), new JLabel("50"));
+//            // dict.put(new Integer(100), new JLabel("100"));
+//            // dict.put(new Integer(150), new JLabel("150"));
+//            // dict.put(new Integer(200), new JLabel("200"));
+//            // intervalSlide.setLabelTable(dict);
+//            // intervalSlide.setPaintLabels(true);
+//            // intervalSlide.setMajorTickSpacing(10);
+//            // intervalSlide.setPaintTicks(true);
+//            // intervalSlide.setSnapToTicks(false);
+//            // intervalSlide.addChangeListener(new ChangeListener() {
+//            // public void stateChanged(ChangeEvent ce) {
+//            // JSlider slider = (JSlider) ce.getSource();
+//            // if (slider.getValueIsAdjusting()) {
+//            // ((OMRangeRings)circle).setInterval(slider.getValue());
+//            // }
+//            // }
+//            // });
+//
+//            rrToolBar.add(makeUnitsCombo());
+//            rrToolBar.add(makeSnapCheckBox());
+//        }
+//        return rrToolBar;
+    }
+    
+    /**
+     * Get the GUI associated with changing the Text.
+     * 
+     * @param orientation SwingConstants.HORIZONTAL/VERTICAL
+     * @param guiComp the JComponent to add stuff to. If the orientation is
+     *        HORIZONTAL, the components will be added directly to this
+     *        component, or to a new JComponent that is returned if null. If the
+     *        orientation is Vertical, a button will be added to the guiComp, or
+     *        returned. This button will call up a dialog box with the settings,
+     *        since they don't really lay out vertically.
+     * @return
+     */
+    protected JComponent getRangeRingGUI(int orientation, JComponent guiComp) {
+        attributeBox = null;
 
-    protected JToolBar getRangeRingGUI() {
-        if (rrToolBar == null) {
-            rrToolBar = new GridBagToolBar();
-            rrToolBar.setFloatable(false);
-            rrToolBar.setMargin(new Insets(0, 1, 0, 1));
+        if (guiComp == null || orientation == SwingConstants.VERTICAL) {
+            attributeBox = javax.swing.Box.createHorizontalBox();
+            attributeBox.add(PaletteHelper.getToolBarFill(orientation));
 
-            configureRangeRings();
-            intervalField = makeIntervalField();
-            rrToolBar.add(intervalField);
+            attributeBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+            attributeBox.setAlignmentY(Component.CENTER_ALIGNMENT);
 
-            // JSlider intervalSlide = new JSlider(
-            // JSlider.HORIZONTAL, 1/*min*/, 200/*max*/,
-            // ((OMRangeRings)circle).getInterval()/*inital*/);
-            // java.util.Hashtable dict = new java.util.Hashtable();
-            // dict.put(new Integer(1), new JLabel("1"));
-            // dict.put(new Integer(50), new JLabel("50"));
-            // dict.put(new Integer(100), new JLabel("100"));
-            // dict.put(new Integer(150), new JLabel("150"));
-            // dict.put(new Integer(200), new JLabel("200"));
-            // intervalSlide.setLabelTable(dict);
-            // intervalSlide.setPaintLabels(true);
-            // intervalSlide.setMajorTickSpacing(10);
-            // intervalSlide.setPaintTicks(true);
-            // intervalSlide.setSnapToTicks(false);
-            // intervalSlide.addChangeListener(new ChangeListener() {
-            // public void stateChanged(ChangeEvent ce) {
-            // JSlider slider = (JSlider) ce.getSource();
-            // if (slider.getValueIsAdjusting()) {
-            // ((OMRangeRings)circle).setInterval(slider.getValue());
-            // }
-            // }
-            // });
-
-            rrToolBar.add(makeUnitsCombo());
-            rrToolBar.add(makeSnapCheckBox());
+            if (orientation == SwingConstants.HORIZONTAL) {
+                guiComp = attributeBox;
+            }
+        } else if (orientation == SwingConstants.HORIZONTAL) {
+            attributeBox = guiComp;
         }
-        return rrToolBar;
+
+        if (orientation == SwingConstants.VERTICAL) {
+            JButton launchButton = new JButton("RR");
+            launchButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    if (attributeBox != null) {
+                        JDialog dialog = new JDialog();
+                        dialog.setContentPane(attributeBox);
+                        dialog.setModal(true);
+                        dialog.pack();
+                        dialog.setLocationRelativeTo((JButton)ae.getSource());
+                        dialog.setVisible(true);
+                    }
+                }
+            });
+            guiComp.add(launchButton);
+        }
+
+        configureRangeRings();
+        intervalField = makeIntervalField();
+        attributeBox.add(intervalField);
+
+        attributeBox.add(makeUnitsCombo());
+        attributeBox.add(makeSnapCheckBox());
+        
+//        attributeBox.add(PaletteHelper.getToolBarFill(SwingConstants.HORIZONTAL));
+  
+        return guiComp;
     }
 
     private void configureRangeRings() {
