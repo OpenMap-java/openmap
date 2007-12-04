@@ -14,22 +14,23 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkArc.java,v $
 // $RCSfile: LinkArc.java,v $
-// $Revision: 1.4 $
-// $Date: 2007/02/26 17:12:46 $
+// $Revision: 1.5 $
+// $Date: 2007/12/04 00:27:12 $
 // $Author: dietrick $
 //
 // **********************************************************************
 
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.omGraphics.OMArc;
-import com.bbn.openmap.proj.Length;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.LatLonPoint;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.omGraphics.OMArc;
+import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.util.Debug;
 
 /**
  * Reading and writing a Link protocol version of a circle.
@@ -258,9 +259,24 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param dis the DataInputStream
      * @return OMArc
      * @throws IOException
-     * @see com.bbn.openmap.omGraphics.OMArc
+     * @see com.bbn.openmap.omGraphics.OMLine
      */
     public static OMArc read(DataInputStream dis) throws IOException {
+        return read(dis, null);
+    }
+    
+    /**
+     * Read the arc protocol off the data input, and return an OMArc.
+     * Assumes the header for the graphic has already been read.
+     * 
+     * @param dis the DataInputStream
+     * @param propertiesBuffer a LinkProperties object used to cache previous
+     *        settings that can be set on the OMArc being read.
+     * @return OMArc
+     * @throws IOException
+     * @see com.bbn.openmap.omGraphics.OMArc
+     */
+    public static OMArc read(DataInputStream dis, LinkProperties propertiesBuffer) throws IOException {
 
         OMArc arc = null;
         float lat, lon, radius, start, extent;
@@ -319,9 +335,10 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
         default:
         }
 
-        LinkProperties properties = new LinkProperties(dis);
         if (arc != null) {
-            properties.setProperties(arc);
+            LinkProperties.loadPropertiesIntoOMGraphic(dis,
+                    arc,
+                    propertiesBuffer);
         }
 
         return arc;

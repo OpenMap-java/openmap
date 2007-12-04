@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkActionList.java,v $
 // $RCSfile: LinkActionList.java,v $
-// $Revision: 1.8 $
-// $Date: 2007/02/26 17:12:45 $
+// $Revision: 1.9 $
+// $Date: 2007/12/04 00:27:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -202,7 +202,7 @@ public class LinkActionList implements LinkActionConstants,
         }
         
         properties = LinkProperties.read(link.dis, properties);
-        LinkProperties graphicProperties = null;
+        LinkProperties graphicProperties = new LinkProperties();
 
         Debug.message("link", "LinkActionList: reading actions:");
 
@@ -235,7 +235,7 @@ public class LinkActionList implements LinkActionConstants,
 
                 if (LinkUtil.isMask(graphicAction, UPDATE_ADD_GRAPHIC_MASK)
                         || LinkUtil.isMask(graphicAction, UPDATE_GRAPHIC_MASK)) {
-                    updates.addElement(readGraphic(graphicAction,
+                    updates.addElement(readGraphic(graphicAction, graphicProperties,
                             proj,
                             generator));
                 } else {
@@ -269,7 +269,7 @@ public class LinkActionList implements LinkActionConstants,
      *        objects.
      * @throws IOException.
      */
-    protected GraphicUpdate readGraphic(int graphicAction, Projection proj,
+    protected GraphicUpdate readGraphic(int graphicAction, LinkProperties graphicProperties, Projection proj,
                                         OMGridGenerator generator)
             throws IOException {
 
@@ -285,37 +285,37 @@ public class LinkActionList implements LinkActionConstants,
 
         switch (graphicType) {
         case LinkGraphicList.GRAPHICTYPE_LINE:
-            graphic = LinkLine.read(link.dis);
+            graphic = LinkLine.read(link.dis, graphicProperties);
             break;
         case LinkGraphicList.GRAPHICTYPE_POLY:
-            graphic = LinkPoly.read(link.dis);
+            graphic = LinkPoly.read(link.dis, graphicProperties);
             break;
         case LinkGraphicList.GRAPHICTYPE_RECTANGLE:
-            graphic = LinkRectangle.read(link.dis);
+            graphic = LinkRectangle.read(link.dis, graphicProperties);
             break;
         case LinkGraphicList.GRAPHICTYPE_POINT:
-            graphic = LinkPoint.read(link.dis);
+            graphic = LinkPoint.read(link.dis, graphicProperties);
             break;
         case LinkGraphicList.GRAPHICTYPE_CIRCLE:
-            graphic = LinkCircle.read(link.dis);
+            graphic = LinkCircle.read(link.dis, graphicProperties);
             break;
         case LinkGraphicList.GRAPHICTYPE_ELLIPSE:
-            graphic = LinkEllipse.read(link.dis);
+            graphic = LinkEllipse.read(link.dis, graphicProperties);
             break;
         case LinkGraphicList.GRAPHICTYPE_RASTER:
-            graphic = LinkRaster.read(link.dis);
+            graphic = LinkRaster.read(link.dis, graphicProperties);
             break;
         case LinkGraphicList.GRAPHICTYPE_BITMAP:
-            graphic = LinkBitmap.read(link.dis);
+            graphic = LinkBitmap.read(link.dis, graphicProperties);
             break;
         case LinkGraphicList.GRAPHICTYPE_TEXT:
-            graphic = LinkText.read(link.dis);
+            graphic = LinkText.read(link.dis, graphicProperties);
             break;
         case LinkGraphicList.GRAPHICTYPE_GRID:
-            graphic = LinkGrid.read(link.dis);
+            graphic = LinkGrid.read(link.dis, graphicProperties);
             break;
         case LinkGraphicList.GRAPHICTYPE_ARC:
-            graphic = LinkArc.read(link.dis);
+            graphic = LinkArc.read(link.dis, graphicProperties);
             break;
         default:
             System.err.println("LinkActionList: received unknown graphic type.");

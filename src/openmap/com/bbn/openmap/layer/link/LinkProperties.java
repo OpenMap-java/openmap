@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkProperties.java,v $
 // $RCSfile: LinkProperties.java,v $
-// $Revision: 1.6 $
-// $Date: 2007/02/26 17:12:44 $
+// $Revision: 1.7 $
+// $Date: 2007/12/04 00:27:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -274,7 +274,8 @@ public class LinkProperties extends Properties implements
                                                              OMGraphic omg,
                                                              LinkProperties propertiesBuffer)
             throws IOException {
-        LinkProperties readProperties = read(dis, propertiesBuffer);
+        LinkProperties readProperties = (LinkProperties) read(dis,
+                propertiesBuffer).clone();
         readProperties.setProperties(omg); // load them into OMGraphic..
         return readProperties;
     }

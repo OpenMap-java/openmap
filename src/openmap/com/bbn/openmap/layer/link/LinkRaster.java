@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkRaster.java,v $
 // $RCSfile: LinkRaster.java,v $
-// $Revision: 1.5 $
-// $Date: 2007/02/26 17:12:46 $
+// $Revision: 1.6 $
+// $Date: 2007/12/04 00:27:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -725,7 +725,7 @@ public class LinkRaster implements LinkGraphicConstants,
             }
         }
 
-        LinkProperties properties = LinkProperties.read(dis, propertiesBuffer);
+        LinkProperties properties = (LinkProperties) LinkProperties.read(dis, propertiesBuffer).clone();
 
         if (colorModel == COLORMODEL_URL) {
             url = properties.getProperty(LPC_LINKRASTERIMAGEURL);

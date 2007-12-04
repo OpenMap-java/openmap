@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkText.java,v $
 // $RCSfile: LinkText.java,v $
-// $Revision: 1.7 $
-// $Date: 2007/02/26 17:12:43 $
+// $Revision: 1.8 $
+// $Date: 2007/12/04 00:27:12 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -66,8 +66,7 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
     }
 
     /**
-     * Creates a text object, with XY placement, and default SansSerif
-     * font.
+     * Creates a text object, with XY placement, and default SansSerif font.
      * 
      * @param x1 horizontal window pixel location of the string.
      * @param y1 vertical window pixel location of the string.
@@ -99,10 +98,10 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
      * 
      * @param latPoint latitude of center of text/ellipse.
      * @param lonPoint longitude of center of text/ellipse.
-     * @param offset_x1 # pixels to the right the center will be moved
-     *        from lonPoint.
-     * @param offset_y1 # pixels down that the center will be moved
-     *        from latPoint.
+     * @param offset_x1 # pixels to the right the center will be moved from
+     *        lonPoint.
+     * @param offset_y1 # pixels down that the center will be moved from
+     *        latPoint.
      * @param stuff the string to be displayed.
      * @param font the Font description for the string.
      * @param just the justification of the string.
@@ -182,7 +181,7 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
     public static OMText read(DataInputStream dis) throws IOException {
         return read(dis, null);
     }
-    
+
     /**
      * Read the DataInputStream to create a OMText. Assumes the LinkText header
      * has already been read.
@@ -194,7 +193,9 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
      * @throws IOException
      * @see com.bbn.openmap.omGraphics.OMText
      */
-    public static OMText read(DataInputStream dis, LinkProperties propertiesBuffer) throws IOException {
+    public static OMText read(DataInputStream dis,
+                              LinkProperties propertiesBuffer)
+            throws IOException {
 
         OMText text = null;
         float lat = 0;
@@ -222,7 +223,8 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
 
         just = dis.readByte();
 
-        LinkProperties properties = LinkProperties.read(dis, propertiesBuffer);
+        LinkProperties properties = (LinkProperties) LinkProperties.read(dis,
+                propertiesBuffer).clone();
 
         string = properties.getProperty(LPC_LINKTEXTSTRING);
         font = properties.getProperty(LPC_LINKTEXTFONT);
