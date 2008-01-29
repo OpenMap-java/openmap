@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMLine.java,v $
 // $RCSfile: EditableOMLine.java,v $
-// $Revision: 1.10 $
-// $Date: 2006/02/16 16:22:47 $
+// $Revision: 1.11 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,19 +25,21 @@ package com.bbn.openmap.omGraphics;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.editable.GraphicEditState;
 import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
 import com.bbn.openmap.omGraphics.editable.LineStateMachine;
+import com.bbn.openmap.omGraphics.geom.NonRegional;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The EditableOMLine encompasses an OMLine, providing methods for
- * modifying or creating it.
+ * The EditableOMLine encompasses an OMLine, providing methods for modifying or
+ * creating it.
  */
-public class EditableOMLine extends EditableOMAbstractLine {
+public class EditableOMLine extends EditableOMAbstractLine implements
+        NonRegional {
 
     protected GrabPoint gp1;
     protected GrabPoint gp2;
@@ -52,24 +54,24 @@ public class EditableOMLine extends EditableOMAbstractLine {
     public final static int OFFSET_POINT_INDEX = 2;
 
     /**
-     * Create the EditableOMLine, setting the state machine to create
-     * the line off of the gestures.
+     * Create the EditableOMLine, setting the state machine to create the line
+     * off of the gestures.
      */
     public EditableOMLine() {
         createGraphic(null);
     }
 
     /**
-     * Create an EditableOMLine with the lineType and renderType
-     * parameters in the GraphicAttributes object.
+     * Create an EditableOMLine with the lineType and renderType parameters in
+     * the GraphicAttributes object.
      */
     public EditableOMLine(GraphicAttributes ga) {
         createGraphic(ga);
     }
 
     /**
-     * Create the EditableOMLine with an OMLine already defined, ready
-     * for editing.
+     * Create the EditableOMLine with an OMLine already defined, ready for
+     * editing.
      * 
      * @param oml OMLine that should be edited.
      */
@@ -78,10 +80,9 @@ public class EditableOMLine extends EditableOMAbstractLine {
     }
 
     /**
-     * Create and initialize the state machine that interprets the
-     * modifying gestures/commands, as well as ititialize the grab
-     * points. Also allocates the grab point array needed by the
-     * EditableOMLine.
+     * Create and initialize the state machine that interprets the modifying
+     * gestures/commands, as well as ititialize the grab points. Also allocates
+     * the grab point array needed by the EditableOMLine.
      */
     public void init() {
         Debug.message("eomg", "EditableOMLine.init()");
@@ -90,9 +91,9 @@ public class EditableOMLine extends EditableOMAbstractLine {
     }
 
     /**
-     * Set the graphic within the state machine. If the graphic is
-     * null, then one shall be created, and located off screen until
-     * the gestures driving the state machine place it on the map.
+     * Set the graphic within the state machine. If the graphic is null, then
+     * one shall be created, and located off screen until the gestures driving
+     * the state machine place it on the map.
      */
     public void setGraphic(OMGraphic graphic) {
         init();
@@ -142,7 +143,7 @@ public class EditableOMLine extends EditableOMAbstractLine {
         }
 
         if (ga != null) {
-            ga.setTo(line);
+            ga.setTo(line, true);
         }
     }
 
@@ -154,8 +155,8 @@ public class EditableOMLine extends EditableOMAbstractLine {
     }
 
     /**
-     * Set the GrabPoint that is in the middle of being modified, as a
-     * result of a mouseDragged event, or other selection process.
+     * Set the GrabPoint that is in the middle of being modified, as a result of
+     * a mouseDragged event, or other selection process.
      */
     public void setMovingPoint(GrabPoint gp) {
         super.setMovingPoint(gp);
@@ -163,28 +164,27 @@ public class EditableOMLine extends EditableOMAbstractLine {
     }
 
     /**
-     * Attach to the Moving OffsetGrabPoint so if it moves, it will
-     * move this EditableOMGraphic with it. EditableOMGraphic version
-     * doesn't do anything, each subclass has to decide which of its
-     * OffsetGrabPoints should be attached to it.
+     * Attach to the Moving OffsetGrabPoint so if it moves, it will move this
+     * EditableOMGraphic with it. EditableOMGraphic version doesn't do anything,
+     * each subclass has to decide which of its OffsetGrabPoints should be
+     * attached to it.
      */
     public void attachToMovingGrabPoint(OffsetGrabPoint gp) {
         gp.addGrabPoint(gpo);
     }
 
     /**
-     * Detach from a Moving OffsetGrabPoint. The EditableOMGraphic
-     * version doesn't do anything, each subclass should remove
-     * whatever GrabPoint it would have attached to an
-     * OffsetGrabPoint.
+     * Detach from a Moving OffsetGrabPoint. The EditableOMGraphic version
+     * doesn't do anything, each subclass should remove whatever GrabPoint it
+     * would have attached to an OffsetGrabPoint.
      */
     public void detachFromMovingGrabPoint(OffsetGrabPoint gp) {
         gp.removeGrabPoint(gpo);
     }
 
     /**
-     * Check to make sure the grab points are not null. If they are,
-     * allocate them, and them assign them to the array.
+     * Check to make sure the grab points are not null. If they are, allocate
+     * them, and them assign them to the array.
      */
     public void assertGrabPoints() {
         if (gp1 == null) {
@@ -205,9 +205,9 @@ public class EditableOMLine extends EditableOMAbstractLine {
     }
 
     /**
-     * Set the grab points for the graphic provided, setting them on
-     * the extents of the graphic. Called when you want to set the
-     * grab points off the location of the graphic.
+     * Set the grab points for the graphic provided, setting them on the extents
+     * of the graphic. Called when you want to set the grab points off the
+     * location of the graphic.
      */
     public void setGrabPoints(OMGraphic graphic) {
         if (!(graphic instanceof OMLine)) {
@@ -268,9 +268,9 @@ public class EditableOMLine extends EditableOMAbstractLine {
     }
 
     /**
-     * Take the current location of the GrabPoints, and modify the
-     * location parameters of the OMLine with them. Called when you
-     * want the graphic to change according to the grab points.
+     * Take the current location of the GrabPoints, and modify the location
+     * parameters of the OMLine with them. Called when you want the graphic to
+     * change according to the grab points.
      */
     public void setGrabPoints() {
 
@@ -278,9 +278,9 @@ public class EditableOMLine extends EditableOMAbstractLine {
         if (renderType == OMGraphic.RENDERTYPE_LATLON) {
             if (projection != null) {
                 float[] floats = new float[4];
-                LatLonPoint llp = LatLonPoint.getLatLon(gp1.getX(),
+                LatLonPoint llp = (LatLonPoint) projection.inverse(gp1.getX(),
                         gp1.getY(),
-                        projection);
+                        new LatLonPoint.Double());
 
                 floats[0] = llp.getLatitude();
                 floats[1] = llp.getLongitude();
@@ -297,9 +297,9 @@ public class EditableOMLine extends EditableOMAbstractLine {
             // Do the offset point.
             if (projection != null) {
                 float[] floats = new float[4];
-                LatLonPoint llp = LatLonPoint.getLatLon(gpo.getX(),
+                LatLonPoint llp = (LatLonPoint) projection.inverse(gpo.getX(),
                         gpo.getY(),
-                        projection);
+                        new LatLonPoint.Double());
 
                 floats[0] = llp.getLatitude();
                 floats[1] = llp.getLongitude();
@@ -335,13 +335,12 @@ public class EditableOMLine extends EditableOMAbstractLine {
     }
 
     /**
-     * Called to set the OffsetGrabPoint to the current mouse
-     * location, and update the OffsetGrabPoint with all the other
-     * GrabPoint locations, so everything can shift smoothly. Should
-     * also set the OffsetGrabPoint to the movingPoint. Should be
-     * called only once at the beginning of the general movement, in
-     * order to set the movingPoint. After that, redraw(e) should just
-     * be called, and the movingPoint will make the adjustments to the
+     * Called to set the OffsetGrabPoint to the current mouse location, and
+     * update the OffsetGrabPoint with all the other GrabPoint locations, so
+     * everything can shift smoothly. Should also set the OffsetGrabPoint to the
+     * movingPoint. Should be called only once at the beginning of the general
+     * movement, in order to set the movingPoint. After that, redraw(e) should
+     * just be called, and the movingPoint will make the adjustments to the
      * graphic that are needed.
      */
     public void move(MouseEvent e) {
@@ -363,9 +362,9 @@ public class EditableOMLine extends EditableOMAbstractLine {
     }
 
     /**
-     * Use the current projection to place the graphics on the screen.
-     * Has to be called to at least assure the graphics that they are
-     * ready for rendering. Called when the graphic position changes.
+     * Use the current projection to place the graphics on the screen. Has to be
+     * called to at least assure the graphics that they are ready for rendering.
+     * Called when the graphic position changes.
      * 
      * @param proj com.bbn.openmap.proj.Projection
      * @return true
@@ -388,9 +387,8 @@ public class EditableOMLine extends EditableOMAbstractLine {
     }
 
     /**
-     * Given a new projection, the grab points may need to be
-     * repositioned off the current position of the graphic. Called
-     * when the projection changes.
+     * Given a new projection, the grab points may need to be repositioned off
+     * the current position of the graphic. Called when the projection changes.
      */
     public void regenerate(Projection proj) {
         Debug.message("eomg", "EditableOMLine.regenerate()");
@@ -409,9 +407,9 @@ public class EditableOMLine extends EditableOMAbstractLine {
     }
 
     /**
-     * Draw the EditableOMLine parts into the java.awt.Graphics
-     * object. The grab points are only rendered if the line machine
-     * state is LineSelectedState.LINE_SELECTED.
+     * Draw the EditableOMLine parts into the java.awt.Graphics object. The grab
+     * points are only rendered if the line machine state is
+     * LineSelectedState.LINE_SELECTED.
      * 
      * @param graphics java.awt.Graphics.
      */
@@ -444,8 +442,7 @@ public class EditableOMLine extends EditableOMAbstractLine {
 
         if (state instanceof GraphicSelectedState
                 || state instanceof GraphicEditState /*
-                                                         * || state
-                                                         * instanceof
+                                                         * || state instanceof
                                                          * LineSetOffsetState
                                                          */) {
             if (gpo != null

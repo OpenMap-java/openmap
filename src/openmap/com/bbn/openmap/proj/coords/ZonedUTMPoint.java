@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: ZonedUTMPoint.java,v $
-//$Revision: 1.3 $
-//$Date: 2006/05/22 23:55:30 $
+//$Revision: 1.4 $
+//$Date: 2008/01/29 22:04:13 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -27,8 +27,8 @@ package com.bbn.openmap.proj.coords;
 import com.bbn.openmap.proj.Ellipsoid;
 
 /**
- * A ZonedUTMPoint is a UTMPoint that handles a MGRS zone letter
- * instead of N or S.
+ * A ZonedUTMPoint is a UTMPoint that handles a MGRS zone letter instead of N or
+ * S.
  * 
  * @author dietrick
  */
@@ -80,38 +80,35 @@ public class ZonedUTMPoint extends UTMPoint {
      * Converts UTM coords to lat/long given an ellipsoid.
      * <p>
      * Equations from USGS Bulletin 1532 <br>
-     * East Longitudes are positive, West longitudes are negative.
-     * <br>
-     * North latitudes are positive, South latitudes are negative.
-     * <br>
+     * East Longitudes are positive, West longitudes are negative. <br>
+     * North latitudes are positive, South latitudes are negative. <br>
      * 
      * @param ellip an ellipsoid definition.
-     * @param UTMNorthing A float value for the northing to be
-     *        converted.
-     * @param UTMEasting A float value for the easting to be
-     *        converted.
+     * @param UTMNorthing A float value for the northing to be converted.
+     * @param UTMEasting A float value for the easting to be converted.
      * @param ZoneNumber An int value specifiying the UTM zone number.
-     * @param ZoneLetter A char value specifying the ZoneLetter within
-     *        the ZoneNumber, letter being MGRS zone.
-     * @param llpoint a LatLonPoint, if you want it to be filled in
-     *        with the results. If null, a new LatLonPoint will be
-     *        allocated.
-     * @return A LatLonPoint class instance containing the lat/long
-     *         value, or <code>null</code> if conversion failed. If
-     *         you pass in a LatLonPoint, it will be returned as well,
-     *         if successful.
+     * @param ZoneLetter A char value specifying the ZoneLetter within the
+     *        ZoneNumber, letter being MGRS zone.
+     * @param llpoint a LatLonPoint, if you want it to be filled in with the
+     *        results. If null, a new LatLonPoint will be allocated.
+     * @return A LatLonPoint class instance containing the lat/long value, or
+     *         <code>null</code> if conversion failed. If you pass in a
+     *         LatLonPoint, it will be returned as well, if successful.
      */
     public static LatLonPoint ZonedUTMtoLL(Ellipsoid ellip, float UTMNorthing,
                                            float UTMEasting, int ZoneNumber,
                                            char ZoneLetter, LatLonPoint llpoint) {
-        return UTMPoint.UTMtoLL(ellip, UTMNorthing, UTMEasting, ZoneNumber,
-                MGRSPoint.MGRSZoneToUTMZone(ZoneLetter), llpoint);
+        return UTMPoint.UTMtoLL(ellip,
+                UTMNorthing,
+                UTMEasting,
+                ZoneNumber,
+                MGRSPoint.MGRSZoneToUTMZone(ZoneLetter),
+                llpoint);
     }
 
     /**
-     * Determines the correct MGRS letter designator for the given
-     * latitude returns 'Z' if latitude is outside the MGRS limits of
-     * 84N to 80S.
+     * Determines the correct MGRS letter designator for the given latitude
+     * returns 'Z' if latitude is outside the MGRS limits of 84N to 80S.
      * 
      * @param lat The float value of the latitude.
      * 
@@ -119,8 +116,8 @@ public class ZonedUTMPoint extends UTMPoint {
      */
     protected char getLetterDesignator(double lat) {
 
-        //This is here as an error flag to show that the Latitude is
-        //outside MGRS limits
+        // This is here as an error flag to show that the Latitude is
+        // outside MGRS limits
         char LetterDesignator = 'Z';
 
         if ((84 >= lat) && (lat >= 72))

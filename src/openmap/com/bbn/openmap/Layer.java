@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.31 $
-// $Date: 2007/12/03 23:40:38 $
+// $Revision: 1.32 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************

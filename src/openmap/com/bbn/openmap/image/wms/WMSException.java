@@ -1,5 +1,5 @@
 /*
- * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/WMSException.java,v 1.1 2007/01/26 15:04:23 dietrick Exp $
+ * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/WMSException.java,v 1.2 2008/01/29 22:04:13 dietrick Exp $
  *
  * Copyright 2001-2005 OBR Centrum Techniki Morskiej, All rights reserved.
  *
@@ -9,13 +9,21 @@ package com.bbn.openmap.image.wms;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.bbn.openmap.util.Debug;
-import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+//import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
+//import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+//import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 /**
  * Generates a WMS Exception in the form of XML with the specified code and
@@ -109,6 +117,62 @@ public class WMSException extends Exception {
         this(message, null);
     }
 
+//    /**
+//     * Creates a new WMSException object.
+//     * 
+//     * @param message
+//     * @param code
+//     */
+//    public WMSException(String message, String code) {
+//        super();
+//        Message = message;
+//        Code = code;
+//
+//        Document doc = new DocumentImpl();
+//        Element root = doc.createElement("ServiceExceptionReport");
+//        root.setAttribute("version", "1.1.0");
+//        Element ex = doc.createElement("ServiceException");
+//        ex.appendChild(doc.createTextNode(Message));
+//        if (Code != null)
+//            ex.setAttribute("code", Code);
+//
+//        root.appendChild(ex);
+//        doc.appendChild(root);
+//
+//        StringWriter strWriter = null;
+//        XMLSerializer serializer = null;
+//        OutputFormat outFormat = null;
+//
+//        try {
+//            serializer = new XMLSerializer();
+//            strWriter = new StringWriter();
+//            outFormat = new OutputFormat();
+//
+//            // Setup format settings
+//            outFormat.setEncoding("UTF-8");
+//            outFormat.setVersion("1.0");
+//            outFormat.setIndenting(true);
+//            outFormat.setIndent(2);
+//
+//            // Define a Writer
+//            serializer.setOutputCharStream(strWriter);
+//
+//            // Apply the format settings
+//            serializer.setOutputFormat(outFormat);
+//
+//            // Serialize XML Document
+//            serializer.serialize(doc);
+//            this.XML = strWriter.toString();
+//            strWriter.close();
+//        } catch (IOException ioEx) {
+//            Debug.output("WMSException Internal Error !\n[");
+//            ioEx.printStackTrace();
+//            Debug.output("]");
+//            this.XML = INTERNALERROR;
+//        }
+//
+//    }
+    
     /**
      * Creates a new WMSException object.
      * 
@@ -120,7 +184,11 @@ public class WMSException extends Exception {
         Message = message;
         Code = code;
 
-        Document doc = new DocumentImpl();
+        try {
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = builder.newDocument();
+
+//            Document doc = new DocumentImpl();
         Element root = doc.createElement("ServiceExceptionReport");
         root.setAttribute("version", "1.1.0");
         Element ex = doc.createElement("ServiceException");
@@ -131,34 +199,43 @@ public class WMSException extends Exception {
         root.appendChild(ex);
         doc.appendChild(root);
 
-        StringWriter strWriter = null;
-        XMLSerializer serializer = null;
-        OutputFormat outFormat = null;
+        StringWriter strWriter = new StringWriter();
+//        XMLSerializer serializer = null;
+//        OutputFormat outFormat = null;
+        Transformer tr = TransformerFactory.newInstance().newTransformer();
+        tr.setOutputProperty(OutputKeys.INDENT, "yes");
+        tr.setOutputProperty(OutputKeys.METHOD,"xml");
+        tr.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        tr.setOutputProperty(OutputKeys.VERSION,"1.0");
+        tr.setOutputProperty(OutputKeys.ENCODING,"UTF-8");
+        
+//      Serialize XML Document
+        tr.transform( new DOMSource(doc),new StreamResult(strWriter));    
 
-        try {
-            serializer = new XMLSerializer();
-            strWriter = new StringWriter();
-            outFormat = new OutputFormat();
-
-            // Setup format settings
-            outFormat.setEncoding("UTF-8");
-            outFormat.setVersion("1.0");
-            outFormat.setIndenting(true);
-            outFormat.setIndent(2);
-
-            // Define a Writer
-            serializer.setOutputCharStream(strWriter);
-
-            // Apply the format settings
-            serializer.setOutputFormat(outFormat);
-
-            // Serialize XML Document
-            serializer.serialize(doc);
+//        try {
+//            serializer = new XMLSerializer();
+//            strWriter = new StringWriter();
+//            outFormat = new OutputFormat();
+//
+//            // Setup format settings
+//            outFormat.setEncoding("UTF-8");
+//            outFormat.setVersion("1.0");
+//            outFormat.setIndenting(true);
+//            outFormat.setIndent(2);
+//
+//            // Define a Writer
+//            serializer.setOutputCharStream(strWriter);
+//
+//            // Apply the format settings
+//            serializer.setOutputFormat(outFormat);
+//
+//            // Serialize XML Document
+//            serializer.serialize(doc);
             this.XML = strWriter.toString();
             strWriter.close();
-        } catch (IOException ioEx) {
+        } catch (Exception ex) {
             Debug.output("WMSException Internal Error !\n[");
-            ioEx.printStackTrace();
+            ex.printStackTrace();
             Debug.output("]");
             this.XML = INTERNALERROR;
         }

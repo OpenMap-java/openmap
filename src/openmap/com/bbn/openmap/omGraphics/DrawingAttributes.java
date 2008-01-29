@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.26 $
-// $Date: 2007/03/08 19:33:55 $
+// $Revision: 1.27 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -52,10 +52,13 @@ import java.util.StringTokenizer;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
@@ -65,11 +68,11 @@ import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.gui.GridBagToolBar;
 import com.bbn.openmap.image.BufferedImageHelper;
+import com.bbn.openmap.omGraphics.geom.NonRegional;
 import com.bbn.openmap.tools.icon.IconPartList;
 import com.bbn.openmap.tools.icon.OMIconFactory;
 import com.bbn.openmap.tools.icon.OpenMapAppPartCollection;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.propertyEditor.OptionPropertyEditor;
 
@@ -86,37 +89,37 @@ import com.bbn.openmap.util.propertyEditor.OptionPropertyEditor;
  * listed below. If a property is not set, the default value will be used.
  * 
  * <pre>
- *          
- *           
- *            
- *             
- *              # The Edge or Line color
- *              lineColor=AARRGGBB (Hex ARGB Color, black is default)
- *              # The Fill color for 2D shapes
- *              fillColor=AARRGGBB (Hex ARGB Color, clean is default)
- *              # A highlight color to switch a graphic to when &quot;selected&quot;.
- *              selectColor=AARRGGBB (Hex ARGB Color, black is default)
- *              # A file or URL that can be used for a fill pattern, in place of the fill color.
- *              fillPattern=file://file (default is N/A)
- *              # The line width of the edge of the graphic
- *              lineWidth=int (1 is default)
- *              # A pattern to use for a dashed line, reflected as a
- *              # space-separated list of numbers, which are interpreted as on dash
- *              # length, off dash length, on dash length, etc.  
- *              dashPattern=10 5 3 5 (5 5 is the default if an error occurs reading the numbers, a non-dashed line is the default.)  
- *              The phase for the dash pattern,
- *              dashPhase=0.0f (0 is the default)
- *              # The scale to use for certain measurements, so that fill patterns
- *              # can be scaled depending on the map scale compaired to the
- *              # baseScale.
- *              baseScale=XXXXXX (where 1:XXXXXX is the scale to use.  N/A for the default).
- *              # Set whether any OMPoints that are given to the DrawingAttributes object are oval or rectangle.
- *              pointOval=false
- *              # Set the pixel radius of any OMPoint given to the DrawingAttributes object.
- *              pointRadius=2
- *            
- *           
- *          
+ * 
+ *  
+ *   
+ *    
+ *     # The Edge or Line color
+ *     lineColor=AARRGGBB (Hex ARGB Color, black is default)
+ *     # The Fill color for 2D shapes
+ *     fillColor=AARRGGBB (Hex ARGB Color, clean is default)
+ *     # A highlight color to switch a graphic to when &quot;selected&quot;.
+ *     selectColor=AARRGGBB (Hex ARGB Color, black is default)
+ *     # A file or URL that can be used for a fill pattern, in place of the fill color.
+ *     fillPattern=file://file (default is N/A)
+ *     # The line width of the edge of the graphic
+ *     lineWidth=int (1 is default)
+ *     # A pattern to use for a dashed line, reflected as a
+ *     # space-separated list of numbers, which are interpreted as on dash
+ *     # length, off dash length, on dash length, etc.  
+ *     dashPattern=10 5 3 5 (5 5 is the default if an error occurs reading the numbers, a non-dashed line is the default.)  
+ *     The phase for the dash pattern,
+ *     dashPhase=0.0f (0 is the default)
+ *     # The scale to use for certain measurements, so that fill patterns
+ *     # can be scaled depending on the map scale compaired to the
+ *     # baseScale.
+ *     baseScale=XXXXXX (where 1:XXXXXX is the scale to use.  N/A for the default).
+ *     # Set whether any OMPoints that are given to the DrawingAttributes object are oval or rectangle.
+ *     pointOval=false
+ *     # Set the pixel radius of any OMPoint given to the DrawingAttributes object.
+ *     pointRadius=2
+ *   
+ *  
+ * 
  * 
  */
 public class DrawingAttributes implements ActionListener, Serializable,
@@ -289,9 +292,16 @@ public class DrawingAttributes implements ActionListener, Serializable,
     private JButton mattingColorButton;
     private JToggleButton mattedCheckBox;
 
+    protected JMenuItem lineColorItem;
+    protected JMenuItem fillColorItem;
+    protected JMenuItem selectColorItem;
+    protected JMenuItem mattingColorItem;
+    protected JCheckBoxMenuItem mattedEnabledItem;
+
     protected final static int icon_width = 20;
     protected final static int icon_height = 20;
-
+    /** Flag to disable choice of fill paint selection, from an external source. */
+    protected boolean enableFillPaintChoice = true;
     public static boolean alwaysSetTextToBlack = false;
 
     protected transient BasicStrokeEditorMenu bse;
@@ -373,11 +383,12 @@ public class DrawingAttributes implements ActionListener, Serializable,
         clone.matted = matted;
         clone.pointOval = pointOval;
         clone.pointRadius = pointRadius;
+        clone.enableFillPaintChoice = enableFillPaintChoice;
     }
 
     public boolean equals(DrawingAttributes da) {
         return (da.linePaint == linePaint &&
-        // da.textPaint == textPaint &&
+                // da.textPaint == textPaint &&
                 da.selectPaint == selectPaint && da.fillPaint == fillPaint
                 && da.mattingPaint == mattingPaint
                 && da.fillPattern == fillPattern && da.stroke == stroke
@@ -755,6 +766,14 @@ public class DrawingAttributes implements ActionListener, Serializable,
      * OMGraphic.
      */
     public void setFrom(OMGraphic graphic) {
+        setFrom(graphic, false);
+    }
+
+    /**
+     * Set the DrawingAttributes parameters based on the current settings of an
+     * OMGraphic, and reset the GUI of the DrawingAttributes object if desired.
+     */
+    public void setFrom(OMGraphic graphic, boolean resetGUI) {
         if (graphic == null)
             return;
 
@@ -776,10 +795,14 @@ public class DrawingAttributes implements ActionListener, Serializable,
             pointOval = ((OMPoint) graphic).isOval();
         }
 
+        enableFillPaintChoice = !(graphic instanceof NonRegional);
+
         // Don't want to call this here, it is CPU intensive.
         // resetGUI should be called only when the GUI needs to be
         // updated.
-        // resetGUI();
+        if (resetGUI) {
+            resetGUI();
+        }
 
         if (propertyChangeSupport != null) {
             propertyChangeSupport.firePropertyChange("all", true, true);
@@ -801,6 +824,26 @@ public class DrawingAttributes implements ActionListener, Serializable,
      * @param graphic OMGraphic.
      */
     public void setTo(OMGraphic graphic) {
+        setTo(graphic, false);
+    }
+
+    /**
+     * Set all the attributes for the graphic that are contained within this
+     * DrawingAttributes class.
+     * <P>
+     * 
+     * If the fillPattern is set to a TexturePaint, and the fillPaint is null or
+     * clear, then the fillPattern will be set as the fill paint. Otherwise, the
+     * fillPaint will be set in the OMGraphic, and the fillPattern will be set
+     * too. If the OMGraphic.textureMask is != null, then it will get painted on
+     * top of the fillPaint. Makes for effects if the fillPattern has some
+     * transparent spots.
+     * 
+     * @param graphic OMGraphic.
+     * @param resetGUI reset the GUI if desired, set the enableFillPaintChoice
+     *        option if OMGraphic allows it.
+     */
+    public void setTo(OMGraphic graphic, boolean resetGUI) {
         if (graphic == null)
             return;
 
@@ -827,6 +870,13 @@ public class DrawingAttributes implements ActionListener, Serializable,
         if (graphic instanceof OMPoint) {
             ((OMPoint) graphic).setRadius(pointRadius);
             ((OMPoint) graphic).setOval(pointOval);
+        }
+
+        // The GraphicAttribute might be rendering options for this graphic,
+        // needs to know if fill paint choices are available.
+        if (resetGUI) {
+            enableFillPaintChoice = !(graphic instanceof NonRegional);
+            resetGUI();
         }
     }
 
@@ -930,6 +980,11 @@ public class DrawingAttributes implements ActionListener, Serializable,
                     (Color) linePaint);
             if (tmpPaint != null) {
                 setLinePaint(tmpPaint);
+
+                lineButton.setIcon(getDrawingAttributesIcon(this,
+                        icon_width,
+                        icon_height,
+                        true));
             }
 
         } else if (command == FillColorCommand && fillPaint instanceof Color) {
@@ -941,6 +996,11 @@ public class DrawingAttributes implements ActionListener, Serializable,
                     (Color) fillPaint);
             if (tmpPaint != null) {
                 setFillPaint(tmpPaint);
+
+                lineButton.setIcon(getDrawingAttributesIcon(this,
+                        icon_width,
+                        icon_height,
+                        true));
             }
 
         } else if (command == SelectColorCommand
@@ -964,10 +1024,19 @@ public class DrawingAttributes implements ActionListener, Serializable,
                     (Color) mattingPaint);
             if (tmpPaint != null) {
                 setMattingPaint(tmpPaint);
+
+                lineButton.setIcon(getDrawingAttributesIcon(this,
+                        icon_width,
+                        icon_height,
+                        true));
             }
         } else if (command == MattedCommand) {
-            JToggleButton check = (JToggleButton) e.getSource();
-            setMatted(check.isSelected());
+            setMatted(mattedEnabledItem.getState());
+
+            lineButton.setIcon(getDrawingAttributesIcon(this,
+                    icon_width,
+                    icon_height,
+                    true));
         } else {
             if (Debug.debugging("drawingattributes")) {
                 Debug.output("DrawingAttributes.actionPerformed: unrecognized command > "
@@ -1038,77 +1107,95 @@ public class DrawingAttributes implements ActionListener, Serializable,
 
             toolbar = new GridBagToolBar();
             gridbag.setConstraints(toolbar, c);
-
         }
 
         resetGUI();
         palette.removeAll(); // Remove cruft from past OMGraphics
         toolbar.removeAll(); // Remove cruft from past OMGraphics
-//        palette.add(toolbar); // Add back the basic toolbar
         toolbar.setOrientation(orientation);
-        toolbar.add(lineColorButton);
-        toolbar.add(fillColorButton);
-        toolbar.add(selectColorButton);
-        toolbar.add(mattingColorButton);
+        palette.add(toolbar); // Add back the basic toolbar
 
-        toolbar.add(PaletteHelper.getToolBarFill(orientation));
-        toolbar.add(mattedCheckBox);
+        // Old settings, with a button being added for each parameter. Now these
+        // are adjusted on the popup menu.
+        // toolbar.add(lineColorButton);
+        // toolbar.add(fillColorButton);
+        // toolbar.add(selectColorButton);
+        // toolbar.add(mattingColorButton);
+        // toolbar.add(new JLabel(" "));
+        // toolbar.add(mattedCheckBox);
 
-        if (stroke instanceof BasicStroke) {
-            BasicStrokeEditorMenu tmpbse = getBasicStrokeEditor();
-            tmpbse.setOrientation(getOrientation());
-            if (tmpbse != null) {
-                int orientation = getOrientation();
-                int iWidth = 50;
-                int iHeight = icon_height;
-                if (orientation == SwingConstants.VERTICAL) {
-                    iHeight = iWidth;
-                    iWidth = icon_width;
+        lineButton = new JButton(getDrawingAttributesIcon(this,
+                icon_width,
+                icon_height,
+                true));
+
+        lineButton.setToolTipText(i18n.get(DrawingAttributes.class,
+                "drawingAttributesButton",
+                I18n.TOOLTIP,
+                "Modify Drawing Parameters"));
+
+        lineButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                JButton button = getLineButton();
+                JPopupMenu popup = new JPopupMenu();
+
+                setPreStrokeMenuOptions(popup);
+                setStrokeMenuOptions(popup);
+                setPostStrokeMenuOptions(popup);
+
+                popup.show(button, button.getWidth(), 0);
+            }
+        });
+
+        toolbar.add(lineButton);
+
+        return palette;
+    }
+
+    /**
+     * Callout method to add stuff to popup menu before the stroke editor is
+     * consulted for additions. Adds colors and line menu additions (arrowhead
+     * controls for lines, for instance).
+     * 
+     * @param popup
+     */
+    protected void setPreStrokeMenuOptions(JPopupMenu popup) {
+        popup.add(getColorMenu());
+
+        JMenu[] menus = getLineMenuAdditions();
+
+        if (menus != null) {
+            for (int i = 0; i < menus.length; i++) {
+                JMenu menu = menus[i];
+                if (menu != null) {
+                    popup.add(menu);
                 }
-                ImageIcon icon = BasicStrokeEditorMenu.createIcon(tmpbse.getBasicStroke(),
-                        iWidth,
-                        iHeight,
-                        orientation == SwingConstants.HORIZONTAL);
-                lineButton = new JButton(icon);
-
-                lineButton.setToolTipText(i18n.get(DrawingAttributes.class,
-                        "lineButton",
-                        I18n.TOOLTIP,
-                        "Modify Line Parameters"));
-
-                lineButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent ae) {
-                        JButton button = getLineButton();
-                        JPopupMenu popup = new JPopupMenu();
-
-                        JMenu menu = getLineTypeMenu();
-                        if (menu != null) {
-                            popup.add(menu);
-                        }
-
-                        getBasicStrokeEditor().setGUI(popup);
-
-                        JMenu[] menus = getLineMenuAdditions();
-                        if (menus != null) {
-                            for (int i = 0; i < menus.length; i++) {
-                                menu = menus[i];
-                                if (menu != null) {
-                                    popup.add(menu);
-                                }
-                            }
-                        }
-
-                        popup.show(button, button.getWidth(), 0);
-                    }
-                });
-                tmpbse.setLaunchButton(lineButton);
-                toolbar.add(PaletteHelper.getToolBarFill(orientation));
-                toolbar.add(lineButton);
             }
         }
+    }
 
-//        return palette;
-        return toolbar;
+    /**
+     * Calls the editor for strokes to get popup menu addition for stroke
+     * editing.
+     * 
+     * @param popup
+     */
+    protected void setStrokeMenuOptions(JPopupMenu popup) {
+        if (stroke instanceof BasicStroke) {
+            BasicStrokeEditorMenu tmpbse = getBasicStrokeEditor();
+            if (tmpbse != null) {
+                tmpbse.setGUI(popup);
+            }
+        }
+    }
+
+    /**
+     * Callout method to add stuff to menu after the stroke menus.
+     * 
+     * @param popup
+     */
+    protected void setPostStrokeMenuOptions(JPopupMenu popup) {
+    // Nothing to add here...
     }
 
     /**
@@ -1119,11 +1206,24 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Get the menu that adjusts the line type. DrawingAttributes doesn't know
-     * about this, but GraphicAttributes, the subclass, does.
+     * Gets the JMenu that has the color control options.
+     * 
+     * @return
      */
-    public JMenu getLineTypeMenu() {
-        return null;
+    public JMenu getColorMenu() {
+        JMenu colorMenu = null;
+        colorMenu = new JMenu(i18n.get(GraphicAttributes.class,
+                "Color",
+                "Color"));
+        colorMenu.add(lineColorItem);
+        colorMenu.add(fillColorItem);
+        colorMenu.add(selectColorItem);
+        colorMenu.add(mattingColorItem);
+        colorMenu.add(new JSeparator());
+        colorMenu.add(mattedEnabledItem);
+        
+        fillColorItem.setEnabled(enableFillPaintChoice);
+        return colorMenu;
     }
 
     /**
@@ -1145,71 +1245,95 @@ public class DrawingAttributes implements ActionListener, Serializable,
     public void resetGUI() {
         String interString;
 
-        if (lineColorButton != null) {
-            lineColorButton.setIcon(getIconForPaint(getLinePaint(), false));
+        if (lineColorItem != null) {
+            // lineColorButton.setIcon(getIconForPaint(getLinePaint(), false));
         } else {
-            lineColorButton = new JButton(getIconForPaint(getLinePaint(), false));
-            lineColorButton.setActionCommand(LineColorCommand);
-            lineColorButton.addActionListener(this);
+            // lineColorButton = new JButton(getIconForPaint(getLinePaint(),
+            // false));
             interString = i18n.get(DrawingAttributes.class,
-                    "lineColorButton",
+                    "lineColorItem",
+                    "Change Edge Color");
+            lineColorItem = new JMenuItem(interString);
+            lineColorItem.setActionCommand(LineColorCommand);
+            lineColorItem.addActionListener(this);
+            interString = i18n.get(DrawingAttributes.class,
+                    "lineColorItem",
                     I18n.TOOLTIP,
-                    "Change Edge Color (true/opaque)");
-            lineColorButton.setToolTipText(interString);
+                    "Change edge color for rendering.");
+            lineColorItem.setToolTipText(interString);
         }
 
-        if (fillColorButton != null) {
-            fillColorButton.setIcon(getIconForPaint(getFillPaint(), true));
+        if (fillColorItem != null) {
+            // fillColorButton.setIcon(getIconForPaint(getFillPaint(), true));
         } else {
-            fillColorButton = new JButton(getIconForPaint(getFillPaint(), true));
-            fillColorButton.setActionCommand(FillColorCommand);
-            fillColorButton.addActionListener(this);
+            // fillColorButton = new JButton(getIconForPaint(getFillPaint(),
+            // true));
             interString = i18n.get(DrawingAttributes.class,
-                    "fillColorButton",
+                    "fillColorItem",
+                    "Change Fill Color");
+            fillColorItem = new JMenuItem(interString);
+            fillColorItem.setActionCommand(FillColorCommand);
+            fillColorItem.addActionListener(this);
+            interString = i18n.get(DrawingAttributes.class,
+                    "fillColorItem",
                     I18n.TOOLTIP,
-                    "Change Fill Color (true/opaque)");
-            fillColorButton.setToolTipText(interString);
+                    "Change fill color for rendering.");
+            fillColorItem.setToolTipText(interString);
         }
 
-        if (selectColorButton != null) {
-            selectColorButton.setIcon(getIconForPaint(getSelectPaint(), false));
+        if (selectColorItem != null) {
+            // selectColorButton.setIcon(getIconForPaint(getSelectPaint(),
+            // false));
         } else {
-            selectColorButton = new JButton(getIconForPaint(getSelectPaint(),
-                    false));
-            selectColorButton.setActionCommand(SelectColorCommand);
-            selectColorButton.addActionListener(this);
+            // selectColorButton = new JButton(getIconForPaint(getSelectPaint(),
+            // false));
             interString = i18n.get(DrawingAttributes.class,
-                    "selectColorButton",
+                    "selectColorItem",
+                    "Change Highlight Edge Color");
+            selectColorItem = new JMenuItem(interString);
+            selectColorItem.setActionCommand(SelectColorCommand);
+            selectColorItem.addActionListener(this);
+            interString = i18n.get(DrawingAttributes.class,
+                    "selectColorItem",
                     I18n.TOOLTIP,
-                    "Change Highlight Edge Color (true/opaque)");
-            selectColorButton.setToolTipText(interString);
+                    "Change highlight edge color rendered during selection.");
+            selectColorItem.setToolTipText(interString);
         }
 
-        if (mattingColorButton != null) {
-            mattingColorButton.setIcon(getMattingIconForPaint());
+        if (mattingColorItem != null) {
+            // mattingColorButton.setIcon(getMattingIconForPaint());
         } else {
-            mattingColorButton = new JButton(getMattingIconForPaint());
-            mattingColorButton.setActionCommand(MattingColorCommand);
-            mattingColorButton.addActionListener(this);
+            // mattingColorButton = new JButton(getMattingIconForPaint());
             interString = i18n.get(DrawingAttributes.class,
-                    "mattingColorButton",
+                    "mattingColorItem",
+                    "Change Matted Edge Color");
+            mattingColorItem = new JMenuItem(interString);
+            mattingColorItem.setActionCommand(MattingColorCommand);
+            mattingColorItem.addActionListener(this);
+            interString = i18n.get(DrawingAttributes.class,
+                    "mattingColorItem",
                     I18n.TOOLTIP,
-                    "Change Matted Edge Color (true/opaque)");
-            mattingColorButton.setToolTipText(interString);
+                    "Change the color of the border around the edge.");
+            mattingColorItem.setToolTipText(interString);
         }
 
         if (mattedCheckBox != null) {
-            mattedCheckBox.setIcon(getMattedIcon(mattingPaint, linePaint));
-            mattedCheckBox.setSelected(matted);
+            // mattedCheckBox.setIcon(getMattedIcon(mattingPaint));
+            // mattedCheckBox.setSelected(matted);
         } else {
-            mattedCheckBox = new JToggleButton(getMattedIcon(mattingPaint, linePaint), isMatted());
-            mattedCheckBox.setActionCommand(MattedCommand);
-            mattedCheckBox.addActionListener(this);
+            // mattedCheckBox = new JToggleButton(getMattedIcon(mattingPaint),
+            // isMatted());
             interString = i18n.get(DrawingAttributes.class,
-                    "mattedCheckBox",
+                    "mattedEnableItem",
+                    "Enable Matting on Edge");
+            mattedEnabledItem = new JCheckBoxMenuItem(interString, matted);
+            mattedEnabledItem.setActionCommand(MattedCommand);
+            mattedEnabledItem.addActionListener(this);
+            interString = i18n.get(DrawingAttributes.class,
+                    "mattedEnableItem",
                     I18n.TOOLTIP,
-                    "Enable/Disable Matting on Edge");
-            mattedCheckBox.setToolTipText(interString);
+                    "Enable/Disable matting on edge.");
+            mattedEnabledItem.setToolTipText(interString);
         }
 
         if (stroke instanceof BasicStroke) {
@@ -1790,7 +1914,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
                 null);
 
         // This line messes order up when called by classes using DrawingAttributes.
-        //list.put(initPropertiesProperty, getInitPropertiesOrder());
+        // list.put(initPropertiesProperty, getInitPropertiesOrder());
 
         return list;
     }
@@ -1830,6 +1954,12 @@ public class DrawingAttributes implements ActionListener, Serializable,
     public void propertyChange(PropertyChangeEvent pce) {
         if (pce.getSource() instanceof BasicStrokeEditorMenu) {
             setStroke((BasicStroke) pce.getNewValue());
+
+            lineButton.setIcon(getDrawingAttributesIcon(this,
+                    icon_width,
+                    icon_height,
+                    true));
+
         }
     }
 
@@ -1914,6 +2044,14 @@ public class DrawingAttributes implements ActionListener, Serializable,
         }
     }
 
+    /**
+     * Create a GradientPaint object for the given shape.
+     * 
+     * @param shape shape to take measurements from to set GradientPaint
+     *        settings - .3 h/w lighter to .7 h/w darker.
+     * @param paint the base color to use for gradient.
+     * @return GradientPaint for shape.
+     */
     public static Paint getGradientPaintForShape(Shape shape, Paint paint) {
         if (paint instanceof Color) {
             Color color = (Color) paint;
@@ -1925,6 +2063,10 @@ public class DrawingAttributes implements ActionListener, Serializable,
         return paint;
     }
 
+    /**
+     * @return a matting paint choice icon for the current settings of this
+     *         DrawingAttributes object, with the matting paint used.
+     */
     public ImageIcon getMattingIconForPaint() {
 
         Paint paint = getMattingPaint();
@@ -1959,6 +2101,13 @@ public class DrawingAttributes implements ActionListener, Serializable,
         return OMIconFactory.getIcon(icon_width, icon_height, parts);
     }
 
+    /**
+     * @param paint the paint to use for the icon.
+     * @param fill if fill color should be used.
+     * @return an ImageIcon for the provided paint object, two triangles in
+     *         upper left and lower right. Upper left version has transparency
+     *         set.
+     */
     public static ImageIcon getIconForPaint(Paint paint, boolean fill) {
 
         if (paint == null)
@@ -1994,9 +2143,15 @@ public class DrawingAttributes implements ActionListener, Serializable,
         return OMIconFactory.getIcon(icon_width, icon_height, parts);
     }
 
+    /**
+     * @param mattingPaint
+     * @param linePaint
+     * @return an ImageIcon that shows a square with the matting paint and line
+     *         paint.
+     */
     public static ImageIcon getMattedIcon(Paint mattingPaint, Paint linePaint) {
         DrawingAttributes da = new DrawingAttributes();
-        da.setLinePaint(mattingPaint);
+        da.setMattingPaint(mattingPaint);
         da.setStroke(new BasicStroke(2));
 
         DrawingAttributes fillda = new DrawingAttributes();
@@ -2014,6 +2169,57 @@ public class DrawingAttributes implements ActionListener, Serializable,
         return OMIconFactory.getIcon(icon_width, icon_height, parts);
     }
 
+    /**
+     * Given a BasicStroke, create an ImageIcon that shows it.
+     * 
+     * @param stroke the BasicStroke to draw on the Icon.
+     * @param width the width of the icon.
+     * @param height the height of the icon.
+     * @param horizontalOrientation if true, draw line on the icon horizontally,
+     *        else draw it vertically.
+     */
+    public static ImageIcon getDrawingAttributesIcon(
+                                                     DrawingAttributes attributes,
+                                                     int width,
+                                                     int height,
+                                                     boolean horizontalOrientation) {
+
+        BufferedImage bigImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = (Graphics2D) bigImage.getGraphics();
+
+        g.setBackground(OMColor.clear);
+
+        if (attributes.enableFillPaintChoice) {
+            g.setPaint(attributes.fillPaint);
+            g.fillRect(0, 0, width, height);
+        }
+
+        if (attributes.matted) {
+            BasicStroke mattedStroke = new BasicStroke(((BasicStroke) attributes.stroke).getLineWidth() + 2f);
+            g.setStroke(mattedStroke);
+            g.setPaint(attributes.mattingPaint);
+            g.drawLine(0, height / 2, width, height / 2);
+        }
+
+        g.setPaint(attributes.linePaint);
+        g.setStroke(attributes.stroke);
+        if (horizontalOrientation) {
+            g.drawLine(0 + 3, height / 2, width - 3, height / 2);
+        } else {
+            g.drawLine(width / 2, 0 + 3, width / 2, height - 3);
+        }
+
+        return new ImageIcon(bigImage);
+    }
+
+    public boolean isEnableFillPaintChoice() {
+        return enableFillPaintChoice;
+    }
+
+    public void setEnableFillPaintChoice(boolean enableFillPaintChoice) {
+        this.enableFillPaintChoice = enableFillPaintChoice;
+    }
+    
     public int getOrientation() {
         return orientation;
     }
@@ -2021,5 +2227,4 @@ public class DrawingAttributes implements ActionListener, Serializable,
     public void setOrientation(int orientation) {
         this.orientation = orientation;
     }
-
 }

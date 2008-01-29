@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMDistance.java,v $
 // $RCSfile: EditableOMDistance.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:06:10 $
+// $Revision: 1.9 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -86,7 +86,7 @@ public class EditableOMDistance extends EditableOMPoly {
 
         if (ga != null) {
             ga.setRenderType(poly.getRenderType());
-            ga.setTo(poly);
+            ga.setTo(poly, true);
         }
     }
 

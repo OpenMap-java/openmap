@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: EsriGraphicFactory.java,v $
-//$Revision: 1.8 $
-//$Date: 2007/06/21 21:52:16 $
+//$Revision: 1.9 $
+//$Date: 2008/01/29 22:04:13 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -77,7 +77,7 @@ public class EsriGraphicFactory implements ShapeConstants {
         }
         int offset = 100; // next byte past header;
         // BAJ 20070604 Stop here for empty shape files
-        if (header.fileLength == offset) {          
+        if (header.fileLength == offset) {
             return list;
         }
         // Put a flag in here to force the file to be read until EOF
@@ -138,7 +138,7 @@ public class EsriGraphicFactory implements ShapeConstants {
         }
         int offset = 100; // next byte past header;
         // BAJ 20070604 Stop here for empty shape files
-        if (header.fileLength == offset) {          
+        if (header.fileLength == offset) {
             return list;
         }
         // Put a flag in here to force the file to be read until EOF
@@ -1465,7 +1465,7 @@ public class EsriGraphicFactory implements ShapeConstants {
 
     protected static double[] getCoords(LittleEndianInputStream iStream,
                                         int length, boolean isPolygon,
-                                        Projection dataTrans,
+                                        GeoCoordTransformation dataTrans,
                                         ReadByteTracker bitTracker)
             throws IOException, FormatException {
 

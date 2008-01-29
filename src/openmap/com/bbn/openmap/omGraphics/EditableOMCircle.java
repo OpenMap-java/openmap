@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMCircle.java,v $
 // $RCSfile: EditableOMCircle.java,v $
-// $Revision: 1.10 $
-// $Date: 2006/02/16 16:25:41 $
+// $Revision: 1.11 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -162,7 +162,7 @@ public class EditableOMCircle extends EditableOMGraphic {
         }
 
         if (ga != null) {
-            ga.setTo(circle);
+            ga.setTo(circle, true);
         }
     }
 
@@ -489,17 +489,17 @@ public class EditableOMCircle extends EditableOMGraphic {
             }
 
             if (projection != null) {
-                
+
                 LatLonPoint llp = LatLonPoint.getLatLon(llgp.getX(),
                         llgp.getY(),
                         projection);
 
                 circle.setCenter(llp);
-                
+
                 // Do the radius for LATLON circles.
                 if (renderType == OMGraphic.RENDERTYPE_LATLON
                         && movingPoint == gpr) {
-                                        
+
                     LatLonPoint llpm = LatLonPoint.getLatLon(gpr.getX(),
                             gpr.getY(),
                             projection);
@@ -579,6 +579,7 @@ public class EditableOMCircle extends EditableOMGraphic {
 
     /**
      * To be overloaded if needed when setting circle's radius.
+     * 
      * @param radius in DECIMAL_DEGREES
      */
     protected void setRadius(float radius) {

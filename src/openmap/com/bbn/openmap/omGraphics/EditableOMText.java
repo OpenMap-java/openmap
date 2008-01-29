@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMText.java,v $
 // $RCSfile: EditableOMText.java,v $
-// $Revision: 1.11 $
-// $Date: 2006/03/06 15:56:53 $
+// $Revision: 1.12 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -154,7 +154,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         }
 
         if (ga != null) {
-            ga.setTo(text);
+            ga.setTo(text, true);
             text.setLinePaint(ga.getLinePaint());
         }
 
@@ -498,7 +498,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
             JComponent gaGUI = (JComponent) graphicAttributes.getGUI();
             // ((JComponent) gaGUI).add(getTextGUI());
 
-            getTextGUI(graphicAttributes.getOrientation(), gaGUI);
+            getTextGUI(graphicAttributes.getOrientation(),
+                    graphicAttributes.toolbar);
 
             return gaGUI;
         } else {
@@ -538,21 +539,21 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
 
         if (guiComp == null || orientation == SwingConstants.VERTICAL) {
             attributeBox = javax.swing.Box.createHorizontalBox();
-            attributeBox.add(PaletteHelper.getToolBarFill(orientation));
 
             attributeBox.setAlignmentX(Component.CENTER_ALIGNMENT);
             attributeBox.setAlignmentY(Component.CENTER_ALIGNMENT);
 
-            if (orientation == SwingConstants.HORIZONTAL) {
-                guiComp = attributeBox;
-            }
-        } else if (orientation == SwingConstants.HORIZONTAL) {
+         } else if (orientation == SwingConstants.HORIZONTAL) {
             attributeBox = guiComp;
         }
 
+        guiComp.add(PaletteHelper.getToolBarFill(orientation));
+
         if (orientation == SwingConstants.VERTICAL) {
             JButton launchButton = new JButton(getTextAccentToggleButtonImage(DrawingAttributes.icon_width,
-                    DrawingAttributes.icon_height, text.getFont(), "T"));
+                    DrawingAttributes.icon_height,
+                    text.getFont(),
+                    "T"));
             launchButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     if (attributeBox != null) {
@@ -560,7 +561,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
                         dialog.setContentPane(attributeBox);
                         dialog.setModal(true);
                         dialog.pack();
-                        dialog.setLocationRelativeTo((JButton)ae.getSource());
+                        dialog.setLocationRelativeTo((JButton) ae.getSource());
                         dialog.setVisible(true);
                     }
                 }
@@ -574,7 +575,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         }
 
         attributeBox.add(PaletteHelper.getToolBarFill(SwingConstants.HORIZONTAL));
-        
+
         JTextField textField = new JTextField(textString, 25);
         textField.setActionCommand(TextFieldCommand);
         textField.addActionListener(this);
@@ -611,7 +612,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         sizesFont.addActionListener(this);
 
         int textButtonWidth = 10;
-        int textButtonHeight = 20;
+        int textButtonHeight = 15;
 
         boldFont = new JToggleButton();
         boldFont.setIcon(getTextAccentToggleButtonImage(textButtonWidth,

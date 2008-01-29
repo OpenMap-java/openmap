@@ -14,9 +14,9 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/OMGraphicDeleteTool.java,v $
 // $RCSfile: OMGraphicDeleteTool.java,v $
-// $Revision: 1.8 $
-// $Date: 2007/10/01 21:34:28 $
-// $Author: epgordon $
+// $Revision: 1.9 $
+// $Date: 2008/01/29 22:04:13 $
+// $Author: dietrick $
 // 
 // **********************************************************************
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/AbstractImageFormatter.java,v $
 // $RCSfile: AbstractImageFormatter.java,v $
-// $Revision: 1.10 $
-// $Date: 2007/12/03 23:47:14 $
+// $Revision: 1.11 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,7 +37,6 @@ import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.ImageScaler;
 
 /**
  * The abstract implementation of the ImageFormatter. The

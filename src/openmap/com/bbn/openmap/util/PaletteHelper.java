@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PaletteHelper.java,v $
 // $RCSfile: PaletteHelper.java,v $
-// $Revision: 1.5 $
-// $Date: 2006/03/03 20:19:21 $
+// $Revision: 1.6 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -396,9 +396,9 @@ public class PaletteHelper {
     public static JComponent getToolBarFill(int orientation) {
         Dimension dim = null;
         if (orientation == SwingConstants.HORIZONTAL) {
-            dim = new Dimension(2, 0);
+            dim = new Dimension(2, 1);
         } else {
-            dim = new Dimension(0, 2);
+            dim = new Dimension(1, 2);
         }
         return new Box.Filler(dim, dim, dim);
     }

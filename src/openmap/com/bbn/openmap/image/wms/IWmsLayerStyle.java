@@ -1,5 +1,5 @@
 /*
- * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/IWmsLayerStyle.java,v 1.1 2007/01/26 15:04:23 dietrick Exp $
+ * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/IWmsLayerStyle.java,v 1.2 2008/01/29 22:04:13 dietrick Exp $
  *
  * Copyright 2001-2005 OBR Centrum Techniki Morskiej, All rights reserved.
  *

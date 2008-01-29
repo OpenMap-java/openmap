@@ -20,8 +20,8 @@ import java.awt.*;
 import java.beans.*;
 import java.util.*;
 
+import com.bbn.openmap.image.ImageScaler;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.ImageScaler;
 
 /**
  * The BeanBox class manages a set of java beans that are delivered to

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/DMSLatLonPoint.java,v $
 // $RCSfile: DMSLatLonPoint.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/12/09 21:09:02 $
+// $Revision: 1.6 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,21 +25,20 @@ package com.bbn.openmap.proj.coords;
 import com.bbn.openmap.util.Assert;
 
 /**
- * Encapsulates a latitude and longitude coordinate in degrees,
- * minutes and seconds as well as the sign.
+ * Encapsulates a latitude and longitude coordinate in degrees, minutes and
+ * seconds as well as the sign.
  * <p>
  * 
- * Original code contributed by Colin Mummery
- * (colin_mummery@yahoo.com)
+ * Original code contributed by Colin Mummery (colin_mummery@yahoo.com)
  */
 public class DMSLatLonPoint implements Cloneable {
 
-    private final static float MINUTE = 1 / 60.0f;
-    private final static float SECOND = 1 / 3600.0f;
+    private final static double MINUTE = 1 / 60.0;
+    private final static double SECOND = 1 / 3600.0;
 
     /**
-     * Indicates if the latitude is negative, the actual int values
-     * are always positive.
+     * Indicates if the latitude is negative, the actual int values are always
+     * positive.
      */
     public boolean lat_isnegative;
     /**
@@ -53,11 +52,11 @@ public class DMSLatLonPoint implements Cloneable {
     /**
      * The number of seconds in the latitude.
      */
-    public float lat_seconds;
+    public double lat_seconds;
 
     /**
-     * Indicates if the longitude is negative, the actual int values
-     * are always positive.
+     * Indicates if the longitude is negative, the actual int values are always
+     * positive.
      */
     public boolean lon_isnegative;
     /**
@@ -71,7 +70,7 @@ public class DMSLatLonPoint implements Cloneable {
     /**
      * The number of seconds in the longitude.
      */
-    public float lon_seconds;
+    public double lon_seconds;
 
     /**
      * Construct a default LatLonPoint with zero values.
@@ -79,23 +78,21 @@ public class DMSLatLonPoint implements Cloneable {
     public DMSLatLonPoint() {}
 
     /**
-     * Construct a DMSLatLonPoint from raw int lat/lon. All parameters
-     * are checked for their validity.
+     * Construct a DMSLatLonPoint from raw int lat/lon. All parameters are
+     * checked for their validity.
      * 
-     * @param lat_isnegative boolean value indicating the sign of the
-     *        latitude
+     * @param lat_isnegative boolean value indicating the sign of the latitude
      * @param lat_degrees integer number of degrees in latitude
      * @param lat_minutes integer number of minutes in latitude
      * @param lat_seconds float number of seconds in latitude
-     * @param lon_isnegative boolean value indicating the sign of the
-     *        longitude
+     * @param lon_isnegative boolean value indicating the sign of the longitude
      * @param lon_degrees integer number of degrees in longitude
      * @param lon_minutes integer number of minutes in longitude
      * @param lon_seconds float number of seconds in longitude
      */
     public DMSLatLonPoint(boolean lat_isnegative, int lat_degrees,
-            int lat_minutes, float lat_seconds, boolean lon_isnegative,
-            int lon_degrees, int lon_minutes, float lon_seconds) {
+            int lat_minutes, double lat_seconds, boolean lon_isnegative,
+            int lon_degrees, int lon_minutes, double lon_seconds) {
 
         this.lat_isnegative = lat_isnegative;
         this.lat_degrees = (int) LatLonPoint.normalizeLatitude(lat_degrees);
@@ -126,8 +123,8 @@ public class DMSLatLonPoint implements Cloneable {
     }
 
     /**
-     * A static method which takes an instance of a LatLongPoint and
-     * sets the correct values into an instance of DMSLatLonPoint.
+     * A static method which takes an instance of a LatLongPoint and sets the
+     * correct values into an instance of DMSLatLonPoint.
      * 
      * @param llp A LatLonPoint instance.
      * @param dllp A DMSLatLonPoint instance.
@@ -145,7 +142,7 @@ public class DMSLatLonPoint implements Cloneable {
         dllp.lon_isnegative = false;
 
         // First do the latitude
-        float val = (float) llp.getLatitude();
+        double val = llp.getLatitude();
 
         if (val < 0) {
             dllp.lat_isnegative = true;
@@ -160,7 +157,7 @@ public class DMSLatLonPoint implements Cloneable {
             // we could round up
             int deg = (int) val;
             // take out the whole degrees
-            float rem = val - deg;
+            double rem = val - deg;
             // Do we have anything left to convert to a minute
             if (rem >= MINUTE) { // get the minutes
                 int min = (int) (rem * 60);
@@ -169,19 +166,18 @@ public class DMSLatLonPoint implements Cloneable {
             }
             // Any seconds left?
             if (rem >= SECOND) { // get the seconds
-                float sec = (rem * 3600f);
+                double sec = (rem * 3600.0);
                 dllp.lat_seconds = sec;
                 rem = rem - (sec * SECOND);
             }
         } else {
-            dllp.lat_isnegative = false; // we don't want a
-                                            // negative
+            dllp.lat_isnegative = false; // we don't want a negative
             // zero
         }
 
         // Next repeat the code for longitude, easiest just to repeat
         // it
-        val = (float) llp.getLongitude();
+        val = llp.getLongitude();
         if (val < 0) {
             dllp.lon_isnegative = true;
             val = -val;
@@ -191,14 +187,14 @@ public class DMSLatLonPoint implements Cloneable {
 
         if (val >= SECOND) {
             int deg = (int) val;
-            float rem = val - deg;
+            double rem = val - deg;
             if (rem >= MINUTE) {
-                int min = (int) (rem * 60);
+                int min = (int) (rem * 60.0);
                 dllp.lon_minutes = min;
                 rem = rem - (min * MINUTE);
             }
             if (rem >= SECOND) {
-                float sec = rem * 3600f;
+                double sec = rem * 3600.0;
                 dllp.lon_seconds = sec;
                 rem = rem - (sec * SECOND);
             }
@@ -208,8 +204,8 @@ public class DMSLatLonPoint implements Cloneable {
     }
 
     /**
-     * Return a LatLonPoint from this DMSLatLonPoint. The LatLonPoint
-     * is allocated here.
+     * Return a LatLonPoint from this DMSLatLonPoint. The LatLonPoint is
+     * allocated here.
      * 
      * @return LatLonPoint, full of decimal degrees.
      */
@@ -218,18 +214,18 @@ public class DMSLatLonPoint implements Cloneable {
     }
 
     /**
-     * Return a LatLonPoint from this DMSLatLonPoint. The LatLonPoint
-     * is allocated here if the llp is null. If it's not null, then
-     * the llp is loaded with the proper values.
+     * Return a LatLonPoint from this DMSLatLonPoint. The LatLonPoint is
+     * allocated here if the llp is null. If it's not null, then the llp is
+     * loaded with the proper values.
      * 
      * @param llp the LatLonPoint to load up.
      * @return LatLonPoint, full of decimal degrees.
      */
     public LatLonPoint getLatLonPoint(LatLonPoint llp) {
-        float lat = getDecimalLatitude();
-        float lon = getDecimalLongitude();
+        double lat = getDecimalLatitude();
+        double lon = getDecimalLongitude();
         if (llp == null) {
-            return new LatLonPoint.Float(lat, lon);
+            return new LatLonPoint.Double(lat, lon);
         } else {
             llp.setLatLon(lat, lon);
             return llp;
@@ -241,8 +237,8 @@ public class DMSLatLonPoint implements Cloneable {
      * 
      * @return A float value for the latitude
      */
-    public float getDecimalLatitude() {
-        float val = (lat_degrees + (lat_minutes * MINUTE) + (lat_seconds * SECOND));
+    public double getDecimalLatitude() {
+        double val = (lat_degrees + (lat_minutes * MINUTE) + (lat_seconds * SECOND));
         return (lat_isnegative) ? -val : val;
     }
 
@@ -251,8 +247,8 @@ public class DMSLatLonPoint implements Cloneable {
      * 
      * @return A float value for the longitude
      */
-    public float getDecimalLongitude() {
-        float val = (lon_degrees + (lon_minutes * MINUTE) + (lon_seconds * SECOND));
+    public double getDecimalLongitude() {
+        double val = (lon_degrees + (lon_minutes * MINUTE) + (lon_seconds * SECOND));
         return (lon_isnegative) ? -val : val;
     }
 
@@ -271,8 +267,8 @@ public class DMSLatLonPoint implements Cloneable {
     }
 
     /**
-     * Set DMSLatLonPoint. Sets the current instance values to be the
-     * same as another DMSLatLonPoint instance.
+     * Set DMSLatLonPoint. Sets the current instance values to be the same as
+     * another DMSLatLonPoint instance.
      * 
      * @param llpt DMSLatLonPoint
      */
@@ -338,10 +334,10 @@ public class DMSLatLonPoint implements Cloneable {
     /**
      * Sets the minutes and seconds to something sane.
      * 
-     * @param val an float value for the minutes or seconds
+     * @param val an double value for the minutes or seconds
      * @return float value normalized
      */
-    final public static float normalize_value(float val) {
+    final public static double normalize_value(double val) {
         val = val % 60f;
         if (val < 0f) {
             val += 60f;
@@ -350,10 +346,9 @@ public class DMSLatLonPoint implements Cloneable {
     }
 
     /**
-     * Generate a hash value for the point. Hash by spreading the
-     * values across a 32 bit int, ignoring the sign allow 8 bits (max
-     * 255) for degrees, 7 bits (max 127) for (minutes + seconds) so
-     * the total is 30 bits.
+     * Generate a hash value for the point. Hash by spreading the values across
+     * a 32 bit int, ignoring the sign allow 8 bits (max 255) for degrees, 7
+     * bits (max 127) for (minutes + seconds) so the total is 30 bits.
      * 
      * @return An int hash value representing the point.
      */

@@ -1,5 +1,5 @@
 /*
- * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/CapabilitiesSupport.java,v 1.1 2007/01/26 15:04:22 dietrick Exp $
+ * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/CapabilitiesSupport.java,v 1.2 2008/01/29 22:04:13 dietrick Exp $
  *
  * Copyright 2001-2005 OBR Centrum Techniki Morskiej, All rights reserved.
  *
@@ -8,7 +8,6 @@ package com.bbn.openmap.image.wms;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,6 +17,13 @@ import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -26,8 +32,10 @@ import org.w3c.dom.Node;
 import com.bbn.openmap.image.ImageServer;
 import com.bbn.openmap.image.ImageServerConstants;
 import com.bbn.openmap.image.WMTConstants;
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+import com.bbn.openmap.layer.util.http.HttpConnection;
+//import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+//import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+
 
 /**
  * @version $Header:
@@ -73,7 +81,8 @@ public class CapabilitiesSupport implements ImageServerConstants {
      * @param requestHandler
      * @param requestProperties
      */
-    public CapabilitiesSupport(Properties props, int port, String path) throws WMSException {
+    public CapabilitiesSupport(Properties props, String scheme, String hostName, int port, String path)
+            throws WMSException {
 
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -89,15 +98,7 @@ public class CapabilitiesSupport implements ImageServerConstants {
         List keywords = Arrays.asList(strKeywords);
         setKeywords(keywords);
 
-        String hostAddress = null;
-        try {
-            InetAddress address = InetAddress.getLocalHost();
-            hostAddress = address.getHostAddress();
-        } catch (Exception ex) {
-            throw new WMSException("Unable to get own IP address " + ex.getMessage(),
-                    WMSException.INTERNALERROR);
-        }
-        String url = "http://" + hostAddress + ":" + port + path;
+        String url = scheme + "://" + hostName + ":" + port + path;
         setOnlineResource(FMT_MAIN, url);
         setOnlineResource(FMT_GETMAP, url);
         setOnlineResource(FMT_GETCAPS, url);
@@ -108,7 +109,10 @@ public class CapabilitiesSupport implements ImageServerConstants {
         setFormats(FMT_GETCAPS, al);
 
         al.clear();
-        al.add("text/plain");
+        al.add(HttpConnection.CONTENT_PLAIN);
+        al.add(HttpConnection.CONTENT_HTML);
+        // TODO: support other formats like application/vnd.ogc.gml and text/xml?
+        // TODO: configurable or perhaps gettable from the FeatureInfoResponse
         setFormats(FMT_GETFEATUREINFO, al);
 
         al.clear();
@@ -254,7 +258,7 @@ public class CapabilitiesSupport implements ImageServerConstants {
         e.setAttribute("fixedWidth", Integer.toString(wmsLayer.getFixedWidth()));
         e.setAttribute("fixedHeight", Integer.toString(wmsLayer.getFixedHeight()));
 
-        e.appendChild(textnode("Name", wmsLayer.getName()));
+        e.appendChild(textnode("Name", wmsLayer.getWmsName()));
         e.appendChild(textnode("Title", wmsLayer.getTitle()));
         e.appendChild(textnode("Abstract", wmsLayer.getAbstract()));
 
@@ -297,27 +301,66 @@ public class CapabilitiesSupport implements ImageServerConstants {
         return true;
     }
 
+//    // Generate String out of the XML document object
+//    /**
+//     * @throws IOException
+//     */
+//    public String generateXMLString() throws IOException {
+//        StringWriter strWriter = new StringWriter();
+//        XMLSerializer probeMsgSerializer = new XMLSerializer();
+//        OutputFormat outFormat = new OutputFormat();
+//
+//        // Setup format settings
+//        outFormat.setEncoding("UTF-8");
+//        outFormat.setVersion("1.0");
+//        outFormat.setIndenting(true);
+//        outFormat.setIndent(2);
+//
+//        probeMsgSerializer.setOutputCharStream(strWriter);
+//        probeMsgSerializer.setOutputFormat(outFormat);
+//
+//        // Serialize XML Document
+//        Document document = generateCapabilitiesDocument();
+//        probeMsgSerializer.serialize(document);
+//        String xmlStr = strWriter.toString();
+//        strWriter.close();
+//        return xmlStr;
+//    }
+    
     // Generate String out of the XML document object
     /**
-     * @throws IOException
+     * @throws IOException, TransformerException, TransformerConfigurationException
      */
-    public String generateXMLString() throws IOException {
+    public String generateXMLString() throws IOException, TransformerConfigurationException,
+    				TransformerException {
         StringWriter strWriter = new StringWriter();
-        XMLSerializer probeMsgSerializer = new XMLSerializer();
-        OutputFormat outFormat = new OutputFormat();
-
-        // Setup format settings
-        outFormat.setEncoding("UTF-8");
-        outFormat.setVersion("1.0");
-        outFormat.setIndenting(true);
-        outFormat.setIndent(2);
-
-        probeMsgSerializer.setOutputCharStream(strWriter);
-        probeMsgSerializer.setOutputFormat(outFormat);
-
-        // Serialize XML Document
+        Transformer tr = TransformerFactory.newInstance().newTransformer();
+        tr.setOutputProperty(OutputKeys.INDENT, "yes");
+        tr.setOutputProperty(OutputKeys.METHOD,"xml");
+        tr.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        tr.setOutputProperty(OutputKeys.VERSION,"1.0");
+        tr.setOutputProperty(OutputKeys.ENCODING,"UTF-8");
+        
+//      Serialize XML Document
         Document document = generateCapabilitiesDocument();
-        probeMsgSerializer.serialize(document);
+        tr.transform( new DOMSource(document),new StreamResult(strWriter));       
+        
+
+//        XMLSerializer probeMsgSerializer = new XMLSerializer();
+//        OutputFormat outFormat = new OutputFormat();
+//
+//        // Setup format settings
+//        outFormat.setEncoding("UTF-8");
+//        outFormat.setVersion("1.0");
+//        outFormat.setIndenting(true);
+//        outFormat.setIndent(2);
+//
+//        probeMsgSerializer.setOutputCharStream(strWriter);
+//        probeMsgSerializer.setOutputFormat(outFormat);
+//
+//        // Serialize XML Document
+//        Document document = generateCapabilitiesDocument();
+//        probeMsgSerializer.serialize(document);
         String xmlStr = strWriter.toString();
         strWriter.close();
         return xmlStr;

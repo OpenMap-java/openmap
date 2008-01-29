@@ -14,20 +14,19 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/NedFrame.java,v $
 //$RCSfile: NedFrame.java,v $
-//$Revision: 1.4 $
-//$Date: 2004/10/14 18:06:24 $
+//$Revision: 1.5 $
+//$Date: 2008/01/29 22:04:13 $
 //$Author: dietrick $
 //
 //***********************************************************
 
 package com.bbn.openmap.proj.coords;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.ProjMath;
 
 /**
- * Encapsulates the NED (North-East-Down) coordinate system. This is
- * also know as local tangent plane (LTP).
+ * Encapsulates the NED (North-East-Down) coordinate system. This is also know
+ * as local tangent plane (LTP).
  * <p>
  * Author: Robert Hayes
  * <p>
@@ -57,8 +56,7 @@ public class NedFrame {
     }
 
     /**
-     * Construct a NedFrame from ECEF vector and latitude and
-     * longitude.
+     * Construct a NedFrame from ECEF vector and latitude and longitude.
      * 
      * @param x ecef x.
      * @param y ecef y.
@@ -322,19 +320,19 @@ public class NedFrame {
     }
 
     /*
-     * public final static void main (String[] args) { // TEST1 double
-     * temp[] = new double[3]; temp[0] = 13; temp[1] = 5; temp[2] = 8;
+     * public final static void main (String[] args) { // TEST1 double temp[] =
+     * new double[3]; temp[0] = 13; temp[1] = 5; temp[2] = 8;
      * 
      * LatLonPoint llpt = new LatLonPoint(40.00,-74.500);
-     * System.out.println("llpt" + llpt); System.out.println("ecef:" +
-     * temp[0] + " : " + temp[1] + " : " + temp[2]);
+     * System.out.println("llpt" + llpt); System.out.println("ecef:" + temp[0] + " : " +
+     * temp[1] + " : " + temp[2]);
      * 
-     * NedFrame nedv = new NedFrame(temp,llpt);
-     * System.out.println("ned" + nedv);
+     * NedFrame nedv = new NedFrame(temp,llpt); System.out.println("ned" +
+     * nedv);
      * 
-     * temp = nedv.toGeocentricFrame(llpt); System.out.println("ecef:" +
-     * temp[0] + " : " + temp[1] + " : " + temp[2]); }
+     * temp = nedv.toGeocentricFrame(llpt); System.out.println("ecef:" + temp[0] + " : " +
+     * temp[1] + " : " + temp[2]); }
      */
 
-}//class
+}// class
 

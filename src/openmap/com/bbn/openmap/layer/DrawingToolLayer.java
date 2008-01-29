@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.32 $
-// $Date: 2007/01/30 18:39:36 $
+// $Revision: 1.33 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,6 +38,8 @@ import java.io.StreamCorruptedException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -126,7 +128,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
     /**
      * The name of the file to read/save OMGraphics in.
      */
-    protected String fileName = null;
+    protected String[] fileName;
 
     protected boolean DTL_DEBUG = false;
 
@@ -148,7 +150,10 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             setMouseModeIDsForEvents(new String[] { SelectMouseMode.modeID });
         }
 
-        fileName = props.getProperty(realPrefix + SerializedURLNameProperty);
+        String fileList = props.getProperty(realPrefix + SerializedURLNameProperty);
+        if (fileList != null) {
+        	fileName=fileList.split(" ");
+        }
     }
 
     public Properties getProperties(Properties props) {
@@ -156,8 +161,10 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
         props.put(prefix + ShowHintsProperty, new Boolean(showHints).toString());
-        props.put(prefix + SerializedURLNameProperty,
-                PropUtils.unnull(fileName));
+        for (int i=0;i<fileName.length;i++) {
+        	props.put(prefix + SerializedURLNameProperty,
+        			PropUtils.unnull(fileName[i]));
+        }
         return props;
     }
 
@@ -201,7 +208,6 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         if (list == null) {
             list = load();
         }
-
         if (list != null && proj != null) {
             list.generate(proj);
         }
@@ -491,18 +497,21 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
      * 
      */
     public void saveOMGraphics() {
-        if (fileName == null) {
-            fileName = FileUtils.getFilePathToSaveFromUser(i18n.get(DrawingToolLayer.class,
+        if (fileName==null) {
+        	fileName=new String[1];
+        }
+        if (fileName[0] == null) {
+            fileName[0] = FileUtils.getFilePathToSaveFromUser(i18n.get(DrawingToolLayer.class,
                     "CHOOSE_SAVE",
                     "Choose file to use to save layer:"));
         }
 
-        if (fileName != null) {
+        if (fileName[0] != null) {
             OMGraphicList list = getList();
 
             if (list != null) {
                 try {
-                    FileOutputStream fos = new FileOutputStream(new File(fileName));
+                    FileOutputStream fos = new FileOutputStream(new File(fileName[0]));
                     ObjectOutputStream oos = new ObjectOutputStream(fos);
                     oos.writeObject(list);
                     oos.close();
@@ -525,20 +534,27 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         OMGraphicList list = null;
 
         if (fileName != null) {
-            try {
-                URL url = PropUtils.getResourceOrFileOrURL(fileName);
-                if (url != null) {
-                    if (fileName.endsWith("shp")) {
-                        DbfTableModel dbf = DbfTableModel.getDbfTableModel(PropUtils.getResourceOrFileOrURL(fileName.replace(".shp", ".dbf")));;
-                        list = EsriGraphicList.getEsriGraphicList(url, null, dbf);
-                    } else {
-                        ObjectInputStream ois = new ObjectInputStream(url.openStream());
-                        list = (OMGraphicList) ois.readObject();
-                        ois.close();
-                    }
-                    return list;
-                }
-            } catch (FileNotFoundException e) {
+        	try {
+        		List graphicList=new ArrayList();
+        		for (int i=0;i<fileName.length;i++) {
+        			URL url = PropUtils.getResourceOrFileOrURL(fileName[i]);
+        			if (url != null) {
+        				if (fileName[i].endsWith("shp")) {
+        					DbfTableModel dbf = DbfTableModel.getDbfTableModel(PropUtils.getResourceOrFileOrURL(fileName[i].replaceAll(".shp", ".dbf")));;
+        					list = EsriGraphicList.getEsriGraphicList(url, null, dbf);
+        				} else {
+        					ObjectInputStream ois = new ObjectInputStream(url.openStream());
+        					list = (OMGraphicList) ois.readObject();
+        					ois.close();
+        				}
+        				for (int j=0;j<list.size();j++) {
+        					graphicList.add(list.getOMGraphicAt(j));
+        				}
+        			}
+        		}
+        		OMGraphicList fullList=new OMGraphicList(graphicList);
+				return fullList;
+        	} catch (FileNotFoundException e) {
                 if (DTL_DEBUG) {
                     e.printStackTrace();
                 }
@@ -717,10 +733,10 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
     }
 
     public String getFileName() {
-        return fileName;
+        return fileName[0];
     }
 
     public void setSFileName(String serializedFile) {
-        this.fileName = serializedFile;
+        this.fileName[0] = serializedFile;
     }
 }

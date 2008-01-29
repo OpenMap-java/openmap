@@ -14,23 +14,22 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/EnuFrame.java,v $
 //$RCSfile: EnuFrame.java,v $
-//$Revision: 1.5 $
-//$Date: 2004/10/14 18:06:23 $
+//$Revision: 1.6 $
+//$Date: 2008/01/29 22:04:13 $
 //$Author: dietrick $
 //
 //***********************************************************
 
 package com.bbn.openmap.proj.coords;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.ProjMath;
 
 /**
  * Encapsulates the ENU (East-North-Up) coordinate system.
  * <p>
- * I like the idea of hiding the detail of the transformation from the
- * user. The user needs no detailed knowledge of mathematics and if we
- * change the algorithm, nobody will be affected.
+ * I like the idea of hiding the detail of the transformation from the user. The
+ * user needs no detailed knowledge of mathematics and if we change the
+ * algorithm, nobody will be affected.
  * <p>
  * Author: Robert Hayes
  */
@@ -278,9 +277,9 @@ public class EnuFrame {
     /*
      * public static void main(String[] args) {
      * 
-     * double ecefVector[] = new double[3]; double enuVector[] = new
-     * double[3]; double longitude = Math.toRadians(40.00); double
-     * latitude = Math.toRadians(-74.50)
+     * double ecefVector[] = new double[3]; double enuVector[] = new double[3];
+     * double longitude = Math.toRadians(40.00); double latitude =
+     * Math.toRadians(-74.50)
      * 
      * EnuFrame test = new EnuFrame();
      * 
@@ -292,21 +291,17 @@ public class EnuFrame {
      * //System.err.println("" + ecefVector[0] + ":" + ecefVector[2]+
      * ecefVector[2] ); //System.err.println("" + enuVector[0] + ":" +
      * enuVector[2]+ enuVector[2] );
-     * 
-     *  // TEST1 test.ecef2enu(ecefVector, latitude, longitude,
-     * enuVector); System.err.println("TEST1:");
-     * System.err.println("ECEF:" + ecefVector[0] + " : " +
+     *  // TEST1 test.ecef2enu(ecefVector, latitude, longitude, enuVector);
+     * System.err.println("TEST1:"); System.err.println("ECEF:" + ecefVector[0] + " : " +
      * ecefVector[1]+ " :" +ecefVector[2] ); System.err.println("ENU:" +
      * enuVector[0] + " : " + enuVector[1]+ " : "+enuVector[2] );
      * 
-     * ecefVector[0] = 0.e0; ecefVector[1] = 0.e0; ecefVector[2] =
-     * 0.e0;
-     *  // TEST2 test.enu2ecef(ecefVector, latitude, longitude,
-     * enuVector); System.err.println("TEST2:");
-     * System.err.println("ENU:" + enuVector[0] + " : " +
+     * ecefVector[0] = 0.e0; ecefVector[1] = 0.e0; ecefVector[2] = 0.e0; //
+     * TEST2 test.enu2ecef(ecefVector, latitude, longitude, enuVector);
+     * System.err.println("TEST2:"); System.err.println("ENU:" + enuVector[0] + " : " +
      * enuVector[1]+ " : "+enuVector[2] ); System.err.println("ECEF:" +
      * ecefVector[0] + " : " + ecefVector[1]+ " :" +ecefVector[2] ); }
      */
 
-}//class
+}// class
 

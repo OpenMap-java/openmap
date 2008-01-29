@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/DrawingEditorTool.java,v $
 // $RCSfile: DrawingEditorTool.java,v $
-// $Revision: 1.12 $
-// $Date: 2007/12/03 23:47:14 $
+// $Revision: 1.13 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -436,6 +436,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
             // GraphicAttributes used in the OMDrawingTool.
             DrawingAttributes da = (DrawingAttributes) drawingAttributesTable.get(ttc);
             if (da != null) {
+                da.setOrientation(ga.getOrientation());
                 da.setTo(ga);
             }
 

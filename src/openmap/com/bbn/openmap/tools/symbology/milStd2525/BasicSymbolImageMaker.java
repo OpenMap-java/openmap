@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: BasicSymbolImageMaker.java,v $
-//$Revision: 1.4 $
-//$Date: 2007/12/03 23:47:37 $
+//$Revision: 1.5 $
+//$Date: 2008/01/29 22:04:13 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -36,8 +36,8 @@ import javax.swing.ImageIcon;
 
 import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.image.BufferedImageHelper;
+import com.bbn.openmap.image.ImageScaler;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.ImageScaler;
 import com.bbn.openmap.util.PropUtils;
 
 public class BasicSymbolImageMaker extends OMComponent implements

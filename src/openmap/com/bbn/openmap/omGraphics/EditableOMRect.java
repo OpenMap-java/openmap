@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRect.java,v $
 // $RCSfile: EditableOMRect.java,v $
-// $Revision: 1.8 $
-// $Date: 2006/08/09 21:08:33 $
+// $Revision: 1.9 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -157,7 +157,7 @@ public class EditableOMRect extends EditableOMGraphic {
         }
 
         if (ga != null) {
-            ga.setTo(rect);
+            ga.setTo(rect, true);
         }
 
         assertGrabPoints();

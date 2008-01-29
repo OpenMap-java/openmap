@@ -16,22 +16,21 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: UTMGCT.java,v $
-//$Revision: 1.1 $
-//$Date: 2007/06/21 21:39:03 $
+//$Revision: 1.2 $
+//$Date: 2008/01/29 22:04:13 $
 //$Author: dietrick $
 //
 //**********************************************************************
 
 package com.bbn.openmap.proj.coords;
 
-import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.Properties;
 
-import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.proj.Ellipsoid;
 import com.bbn.openmap.util.PropUtils;
 
-public class UTMGCT extends OMComponent implements GeoCoordTransformation {
+public class UTMGCT extends AbstractGCT implements GeoCoordTransformation {
 
     public final static String NorthingProperty = "northing";
     public final static String EastingProperty = "easting";
@@ -62,11 +61,7 @@ public class UTMGCT extends OMComponent implements GeoCoordTransformation {
         this.utm = utm;
     }
 
-    public Point forward(double lat, double lon) {
-        return forward(lat, lon, new Point());
-    }
-
-    public Point forward(double lat, double lon, Point ret) {
+    public synchronized Point2D forward(double lat, double lon, Point2D ret) {
         if (utm == null) {
             return null;
         }
@@ -77,11 +72,7 @@ public class UTMGCT extends OMComponent implements GeoCoordTransformation {
         return ret;
     }
 
-    public LatLonPoint inverse(double x, double y) {
-        return inverse(x, y, new LatLonPoint.Double());
-    }
-
-    public LatLonPoint inverse(double x, double y, LatLonPoint ret) {
+    public synchronized LatLonPoint inverse(double x, double y, LatLonPoint ret) {
         if (utm == null) {
             return null;
         }
@@ -123,7 +114,7 @@ public class UTMGCT extends OMComponent implements GeoCoordTransformation {
                     Character.toString(utm.zone_letter));
 
             props.put(prefix + ElliposoidProperty, ellipsoid.name.toUpperCase()
-                    .replace(" ", "_"));
+                    .replace(' ', '_'));
         }
         return props;
     }
@@ -131,5 +122,13 @@ public class UTMGCT extends OMComponent implements GeoCoordTransformation {
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
         return props;
+    }
+
+    public Ellipsoid getEllipsoid() {
+        return ellipsoid;
+    }
+
+    public void setEllipsoid(Ellipsoid ellipsoid) {
+        this.ellipsoid = ellipsoid;
     }
 }

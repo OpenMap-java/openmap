@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMLineLoader.java,v $
 // $RCSfile: OMLineLoader.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:26 $
+// $Revision: 1.5 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,11 +27,12 @@ import com.bbn.openmap.omGraphics.EditableOMLine;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.omGraphics.geom.NonRegional;
 
 /**
  * Loader that knows how to create/edit OMLine objects.
  */
-public class OMLineLoader extends AbstractToolLoader implements EditToolLoader {
+public class OMLineLoader extends AbstractToolLoader implements EditToolLoader, NonRegional {
 
     protected String graphicClassName = "com.bbn.openmap.omGraphics.OMLine";
 

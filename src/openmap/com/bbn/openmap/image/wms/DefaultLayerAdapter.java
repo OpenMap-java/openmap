@@ -1,5 +1,5 @@
 /*
- * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/DefaultLayerAdapter.java,v 1.1 2007/01/26 15:04:23 dietrick Exp $
+ * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/DefaultLayerAdapter.java,v 1.2 2008/01/29 22:04:13 dietrick Exp $
  *
  * Copyright 2001-2005 OBR Centrum Techniki Morskiej, All rights reserved.
  *
@@ -9,7 +9,7 @@ package com.bbn.openmap.image.wms;
 import com.bbn.openmap.Layer;
 
 /**
- * @version $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/DefaultLayerAdapter.java,v 1.1 2007/01/26 15:04:23 dietrick Exp $
+ * @version $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/DefaultLayerAdapter.java,v 1.2 2008/01/29 22:04:13 dietrick Exp $
  * @author pitek
  */
 public class DefaultLayerAdapter implements IWmsLayer {
@@ -24,7 +24,7 @@ public class DefaultLayerAdapter implements IWmsLayer {
 
     /**
      * Creates a new instance of OpenMapLayerAdapter
-     *
+     * 
      * @param layer
      */
     public DefaultLayerAdapter(Layer layer) {
@@ -36,6 +36,15 @@ public class DefaultLayerAdapter implements IWmsLayer {
      */
     public boolean isQueryable() {
         return false;
+    }
+
+    public LayerFeatureInfoResponse query(int x, int y) {
+        return new LayerFeatureInfoResponse() {
+
+            public void output(String contentType, StringBuffer out) {
+            }
+
+        };
     }
 
     /**
@@ -76,7 +85,7 @@ public class DefaultLayerAdapter implements IWmsLayer {
     /**
      * @return
      */
-    public String getName() {
+    public String getWmsName() {
         return layer.getPropertyPrefix();
     }
 
@@ -138,5 +147,5 @@ public class DefaultLayerAdapter implements IWmsLayer {
     public void setDefaultStyle() {
         // DO NOTHING
     }
-     
+
 }

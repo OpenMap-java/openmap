@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
 // $RCSfile: OMDrawingToolLauncher.java,v $
-// $Revision: 1.20 $
-// $Date: 2006/02/14 21:04:47 $
+// $Revision: 1.21 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,6 +44,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
@@ -56,6 +57,7 @@ import com.bbn.openmap.gui.OMToolComponent;
 import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.geom.NonRegional;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
@@ -104,6 +106,8 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     protected DrawingToolRequestor currentRequestor;
     protected String currentCreation;
     protected JComboBox requestors;
+
+    protected JPanel panel3;
 
     /**
      * Property for setting the maximum number of loader buttons to allow in the
@@ -259,7 +263,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     }
 
     /**
-     * Fillse combobox with recent values.
+     * Fills combobox with recent values.
      */
     private void resetCombo() {
         Object oldChoice = null;
@@ -280,6 +284,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
         for (int loop = 0; loop < actions.length; loop++) {
             requestors.addActionListener(actions[loop]);
         }
+        setCurrentRequestor((String) requestors.getSelectedItem());
 
     }
 
@@ -373,20 +378,28 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
 
         renderTypeList.setSelectedIndex(defaultGraphicAttributes.getRenderType() - 1);
 
-        panel = PaletteHelper.createVerticalPanel(i18n.get(OMDrawingToolLauncher.class,
+        panel = PaletteHelper.createHorizontalPanel(i18n.get(OMDrawingToolLauncher.class,
                 "panelGraphicAttributes",
                 "Graphic Attributes:"));
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.CENTER;
+        panel.setLayout(gridbag);
 
-        JPanel panel2 = PaletteHelper.createVerticalPanel(i18n.get(OMDrawingToolLauncher.class,
+        String interString = i18n.get(OMDrawingToolLauncher.class,
                 "panelRenderingType",
-                "Rendering Type:"));
+                "Rendering Type:");
+        JPanel panel2 = new JPanel();
+        JLabel renderTypeLabel = new JLabel(interString);
+        panel2.add(renderTypeLabel);
         panel2.add(renderTypeList);
-        JPanel panel3 = PaletteHelper.createVerticalPanel(i18n.get(OMDrawingToolLauncher.class,
-                "panelLineColorTypes",
-                "Line Types and Colors:"));
-        panel3.add(defaultGraphicAttributes.getGUI());
+
+        panel3 = new JPanel();
+        updateDrawingAttributesGUI();
+
+        gridbag.setConstraints(panel2, c);
         panel.add(panel2);
+        gridbag.setConstraints(panel3, c);
         panel.add(panel3);
         palette.add(panel);
 
@@ -417,6 +430,16 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
                 getWindowSupport().killWindow();
             }
         });
+    }
+
+    protected void updateDrawingAttributesGUI() {
+        panel3.removeAll();
+        String interString = i18n.get(OMDrawingToolLauncher.class,
+                "panelLineColorTypes",
+                "Line/Colors:");
+        JLabel lcLabel = new JLabel(interString);
+        panel3.add(lcLabel);
+        panel3.add(defaultGraphicAttributes.getGUI());
     }
 
     protected JComponent getToolWidgets() {
@@ -602,6 +625,9 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
 
             for (int i = 0; i < ec.length; i++) {
                 if (prettyName.equals(etl.getPrettyName(ec[i]))) {
+                    defaultGraphicAttributes.setEnableFillPaintChoice(!(etl instanceof NonRegional));
+                    updateDrawingAttributesGUI();
+                    panel3.revalidate();
                     return ec[i];
                 }
             }

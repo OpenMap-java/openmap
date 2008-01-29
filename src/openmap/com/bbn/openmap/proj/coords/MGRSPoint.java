@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.16 $
-// $Date: 2006/06/26 13:48:19 $
+// $Revision: 1.17 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -36,68 +36,64 @@ import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 
 /**
- * A class representing a MGRS coordinate that has the ability to
- * provide the decimal degree lat/lon equivalent, as well as the UTM
- * equivalent. This class does not do checks to see if the MGRS
- * coordiantes provided actually make sense. It assumes that the
- * values are valid.
+ * A class representing a MGRS coordinate that has the ability to provide the
+ * decimal degree lat/lon equivalent, as well as the UTM equivalent. This class
+ * does not do checks to see if the MGRS coordiantes provided actually make
+ * sense. It assumes that the values are valid.
  */
 public class MGRSPoint extends ZonedUTMPoint {
 
     /**
-     * UTM zones are grouped, and assigned to one of a group of 6
-     * sets.
+     * UTM zones are grouped, and assigned to one of a group of 6 sets.
      */
     protected final static int NUM_100K_SETS = 6;
     /**
-     * The column letters (for easting) of the lower left value, per
-     * set.
+     * The column letters (for easting) of the lower left value, per set.
      */
     public final static int[] SET_ORIGIN_COLUMN_LETTERS = { 'A', 'J', 'S', 'A',
             'J', 'S' };
     /**
-     * The row letters (for northing) of the lower left value, per
-     * set.
+     * The row letters (for northing) of the lower left value, per set.
      */
     public final static int[] SET_ORIGIN_ROW_LETTERS = { 'A', 'F', 'A', 'F',
             'A', 'F' };
     /**
-     * The column letters (for easting) of the lower left value, per
-     * set,, for Bessel Ellipsoid.
+     * The column letters (for easting) of the lower left value, per set,, for
+     * Bessel Ellipsoid.
      */
     public final static int[] BESSEL_SET_ORIGIN_COLUMN_LETTERS = { 'A', 'J',
             'S', 'A', 'J', 'S' };
     /**
-     * The row letters (for northing) of the lower left value, per
-     * set, for Bessel Ellipsoid.
+     * The row letters (for northing) of the lower left value, per set, for
+     * Bessel Ellipsoid.
      */
     public final static int[] BESSEL_SET_ORIGIN_ROW_LETTERS = { 'L', 'R', 'L',
             'R', 'L', 'R' };
 
     public final static int SET_NORTHING_ROLLOVER = 20000000;
     /**
-     * Use 5 digits for northing and easting values, for 1 meter
-     * accuracy of coordinate.
+     * Use 5 digits for northing and easting values, for 1 meter accuracy of
+     * coordinate.
      */
     public final static int ACCURACY_1_METER = 5;
     /**
-     * Use 4 digits for northing and easting values, for 10 meter
-     * accuracy of coordinate.
+     * Use 4 digits for northing and easting values, for 10 meter accuracy of
+     * coordinate.
      */
     public final static int ACCURACY_10_METER = 4;
     /**
-     * Use 3 digits for northing and easting values, for 100 meter
-     * accuracy of coordinate.
+     * Use 3 digits for northing and easting values, for 100 meter accuracy of
+     * coordinate.
      */
     public final static int ACCURACY_100_METER = 3;
     /**
-     * Use 2 digits for northing and easting values, for 1000 meter
-     * accuracy of coordinate.
+     * Use 2 digits for northing and easting values, for 1000 meter accuracy of
+     * coordinate.
      */
     public final static int ACCURACY_1000_METER = 2;
     /**
-     * Use 1 digits for northing and easting values, for 10000 meter
-     * accuracy of coordinate.
+     * Use 1 digits for northing and easting values, for 10000 meter accuracy of
+     * coordinate.
      */
     public final static int ACCURACY_10000_METER = 1;
 
@@ -118,17 +114,17 @@ public class MGRSPoint extends ZonedUTMPoint {
     protected String mgrs;
 
     /**
-     * Controls the number of digits that the MGRS coordinate will
-     * have, which directly affects the accuracy of the coordinate.
-     * Default is ACCURACY_1_METER, which indicates that MGRS
-     * coordinates will have 10 digits (5 easting, 5 northing) after
-     * the 100k two letter code, indicating 1 meter resolution.
+     * Controls the number of digits that the MGRS coordinate will have, which
+     * directly affects the accuracy of the coordinate. Default is
+     * ACCURACY_1_METER, which indicates that MGRS coordinates will have 10
+     * digits (5 easting, 5 northing) after the 100k two letter code, indicating
+     * 1 meter resolution.
      */
     protected int accuracy = ACCURACY_1_METER;
 
     /**
-     * Point to create if you are going to use the static methods to
-     * fill the values in.
+     * Point to create if you are going to use the static methods to fill the
+     * values in.
      */
     public MGRSPoint() {
         DEBUG = Debug.debugging("mgrs");
@@ -143,8 +139,7 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Contructs a new MGRSPoint instance from values in another
-     * MGRSPoint.
+     * Contructs a new MGRSPoint instance from values in another MGRSPoint.
      */
     public MGRSPoint(MGRSPoint point) {
         this();
@@ -165,16 +160,14 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Contruct a MGRSPoint from a LatLonPoint, assuming a WGS_84
-     * ellipsoid.
+     * Contruct a MGRSPoint from a LatLonPoint, assuming a WGS_84 ellipsoid.
      */
     public MGRSPoint(LatLonPoint llpoint) {
         this(llpoint, Ellipsoid.WGS_84);
     }
 
     /**
-     * Construct a MGRSPoint from a LatLonPoint and a particular
-     * ellipsoid.
+     * Construct a MGRSPoint from a LatLonPoint and a particular ellipsoid.
      */
     public MGRSPoint(LatLonPoint llpoint, Ellipsoid ellip) {
         this();
@@ -182,9 +175,9 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Set the MGRS value for this Point. Will be decoded, and the UTM
-     * values figured out. You can call toLatLonPoint() to translate
-     * it to lat/lon decimal degrees.
+     * Set the MGRS value for this Point. Will be decoded, and the UTM values
+     * figured out. You can call toLatLonPoint() to translate it to lat/lon
+     * decimal degrees.
      */
     public void setMGRS(String mgrsString) {
         try {
@@ -209,16 +202,14 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Convert this MGRSPoint to a LatLonPoint, and assume a WGS_84
-     * ellisoid.
+     * Convert this MGRSPoint to a LatLonPoint, and assume a WGS_84 ellisoid.
      */
     public LatLonPoint toLatLonPoint() {
         return toLatLonPoint(Ellipsoid.WGS_84, new LatLonPoint.Double());
     }
 
     /**
-     * Convert this MGRSPoint to a LatLonPoint, and use the given
-     * ellipsoid.
+     * Convert this MGRSPoint to a LatLonPoint, and use the given ellipsoid.
      */
     public LatLonPoint toLatLonPoint(Ellipsoid ellip) {
         return toLatLonPoint(ellip, new LatLonPoint.Double());
@@ -247,9 +238,8 @@ public class MGRSPoint extends ZonedUTMPoint {
      * @param mgrsp to convert.
      * @param ellip Ellipsoid for earth model.
      * @param llp a LatLonPoint to fill in values for. If null, a new
-     *        LatLonPoint will be returned. If not null, the new
-     *        values will be set in this object, and it will be
-     *        returned.
+     *        LatLonPoint will be returned. If not null, the new values will be
+     *        set in this object, and it will be returned.
      * @return LatLonPoint with values converted from MGRS coordinate.
      */
     public static LatLonPoint MGRStoLL(MGRSPoint mgrsp, Ellipsoid ellip,
@@ -270,9 +260,8 @@ public class MGRSPoint extends ZonedUTMPoint {
      * @param mgrsp to convert.
      * @param ellip Ellipsoid for earth model.
      * @param llp a LatLonPoint to fill in values for. If null, a new
-     *        LatLonPoint will be returned. If not null, the new
-     *        values will be set in this object, and it will be
-     *        returned.
+     *        LatLonPoint will be returned. If not null, the new values will be
+     *        set in this object, and it will be returned.
      * @return LatLonPoint with values converted from MGRS coordinate.
      */
     public static LatLonPoint MGRStoLL(Ellipsoid ellip, float northing,
@@ -289,8 +278,7 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Converts a LatLonPoint to a MGRS Point, assuming the WGS_84
-     * ellipsoid.
+     * Converts a LatLonPoint to a MGRS Point, assuming the WGS_84 ellipsoid.
      * 
      * @return MGRSPoint, or null if something bad happened.
      */
@@ -302,11 +290,10 @@ public class MGRSPoint extends ZonedUTMPoint {
      * Converts a LatLonPoint to a MGRS Point.
      * 
      * @param llpoint the LatLonPoint to convert.
-     * @param mgrsp a MGRSPoint to put the results in. If it's null, a
-     *        MGRSPoint will be allocated.
-     * @return MGRSPoint, or null if something bad happened. If a
-     *         MGRSPoint was passed in, it will also be returned on a
-     *         successful conversion.
+     * @param mgrsp a MGRSPoint to put the results in. If it's null, a MGRSPoint
+     *        will be allocated.
+     * @return MGRSPoint, or null if something bad happened. If a MGRSPoint was
+     *         passed in, it will also be returned on a successful conversion.
      */
     public static MGRSPoint LLtoMGRS(LatLonPoint llpoint, MGRSPoint mgrsp) {
         return LLtoMGRS(llpoint, Ellipsoid.WGS_84, mgrsp);
@@ -317,9 +304,9 @@ public class MGRSPoint extends ZonedUTMPoint {
      * 
      * @param llp LatLonPoint to convert.
      * @param ellip Ellipsoid for earth model.
-     * @param mgrsp a MGRSPoint to fill in values for. If null, a new
-     *        MGRSPoint will be returned. If not null, the new values
-     *        will be set in this object, and it will be returned.
+     * @param mgrsp a MGRSPoint to fill in values for. If null, a new MGRSPoint
+     *        will be returned. If not null, the new values will be set in this
+     *        object, and it will be returned.
      * @return MGRSPoint with values converted from lat/lon.
      */
     public static MGRSPoint LLtoMGRS(LatLonPoint llp, Ellipsoid ellip,
@@ -344,8 +331,8 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Method that provides a check for MGRS zone letters. Returns an
-     * uppercase version of any valid letter passed in.
+     * Method that provides a check for MGRS zone letters. Returns an uppercase
+     * version of any valid letter passed in.
      */
     protected char checkZone(char zone) {
         zone = Character.toUpperCase(zone);
@@ -360,9 +347,9 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Set the number of digits to use for easting and northing
-     * numbers in the mgrs string, which reflects the accuracy of the
-     * corrdinate. From 5 (1 meter) to 1 (10,000 meter).
+     * Set the number of digits to use for easting and northing numbers in the
+     * mgrs string, which reflects the accuracy of the corrdinate. From 5 (1
+     * meter) to 1 (10,000 meter).
      */
     public void setAccuracy(int value) {
         accuracy = value;
@@ -476,8 +463,8 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Create the mgrs string based on the internal UTM settings,
-     * using the accuracy set in the MGRSPoint.
+     * Create the mgrs string based on the internal UTM settings, using the
+     * accuracy set in the MGRSPoint.
      */
     protected void resolve() {
         resolve(accuracy);
@@ -486,10 +473,9 @@ public class MGRSPoint extends ZonedUTMPoint {
     /**
      * Create the mgrs string based on the internal UTM settings.
      * 
-     * @param digitAccuracy The number of digits to use for the
-     *        northing and easting numbers. 5 digits reflect a 1 meter
-     *        accuracy, 4 - 10 meter, 3 - 100 meter, 2 - 1000 meter, 1 -
-     *        10,000 meter.
+     * @param digitAccuracy The number of digits to use for the northing and
+     *        easting numbers. 5 digits reflect a 1 meter accuracy, 4 - 10
+     *        meter, 3 - 100 meter, 2 - 1000 meter, 1 - 10,000 meter.
      */
     protected void resolve(int digitAccuracy) {
         if (zone_letter == 'Z') {
@@ -550,48 +536,48 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Provided so that extensions to this class can provide different
-     * origin letters, in case of different ellipsoids. The int[]
-     * represents all of the first letters in the bottom left corner
-     * of each set box, as shown in an MGRS 100K box layout.
+     * Provided so that extensions to this class can provide different origin
+     * letters, in case of different ellipsoids. The int[] represents all of the
+     * first letters in the bottom left corner of each set box, as shown in an
+     * MGRS 100K box layout.
      */
     protected int[] getOriginColumnLetters() {
         return originColumnLetters;
     }
 
     /**
-     * Provided so that extensions to this class can provide different
-     * origin letters, in case of different ellipsoids. The int[]
-     * represents all of the first letters in the bottom left corner
-     * of each set box, as shown in an MGRS 100K box layout.
+     * Provided so that extensions to this class can provide different origin
+     * letters, in case of different ellipsoids. The int[] represents all of the
+     * first letters in the bottom left corner of each set box, as shown in an
+     * MGRS 100K box layout.
      */
     protected void setOriginColumnLetters(int[] letters) {
         originColumnLetters = letters;
     }
 
     /**
-     * Provided so that extensions to this class can provide different
-     * origin letters, in case of different ellipsoids. The int[]
-     * represents all of the second letters in the bottom left corner
-     * of each set box, as shown in an MGRS 100K box layout.
+     * Provided so that extensions to this class can provide different origin
+     * letters, in case of different ellipsoids. The int[] represents all of the
+     * second letters in the bottom left corner of each set box, as shown in an
+     * MGRS 100K box layout.
      */
     protected int[] getOriginRowLetters() {
         return originRowLetters;
     }
 
     /**
-     * Provided so that extensions to this class can provide different
-     * origin letters, in case of different ellipsoids. The int[]
-     * represents all of the second letters in the bottom left corner
-     * of each set box, as shown in an MGRS 100K box layout.
+     * Provided so that extensions to this class can provide different origin
+     * letters, in case of different ellipsoids. The int[] represents all of the
+     * second letters in the bottom left corner of each set box, as shown in an
+     * MGRS 100K box layout.
      */
     protected void setOriginRowLetters(int[] letters) {
         originRowLetters = letters;
     }
 
     /**
-     * Get the two letter 100k designator for a given UTM easting,
-     * northing and zone number value.
+     * Get the two letter 100k designator for a given UTM easting, northing and
+     * zone number value.
      */
     protected String get100kID(float easting, float northing, int zone_number) {
         int set = get100kSetForZone(zone_number);
@@ -601,10 +587,9 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Given the first letter from a two-letter MGRS 100k zone, and
-     * given the MGRS table set for the zone number, figure out the
-     * easting value that should be added to the other, secondary
-     * easting value.
+     * Given the first letter from a two-letter MGRS 100k zone, and given the
+     * MGRS table set for the zone number, figure out the easting value that
+     * should be added to the other, secondary easting value.
      */
     protected float getEastingFromChar(char e, int set) {
         int baseCol[] = getOriginColumnLetters();
@@ -638,20 +623,18 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Given the second letter from a two-letter MGRS 100k zone, and
-     * given the MGRS table set for the zone number, figure out the
-     * northing value that should be added to the other, secondary
-     * northing value. You have to remember that Northings are
-     * determined from the equator, and the vertical cycle of letters
-     * mean a 2000000 additional northing meters. This happens approx.
-     * every 18 degrees of latitude. This method does *NOT* count any
-     * additional northings. You have to figure out how many 2000000
-     * meters need to be added for the zone letter of the MGRS
-     * coordinate.
+     * Given the second letter from a two-letter MGRS 100k zone, and given the
+     * MGRS table set for the zone number, figure out the northing value that
+     * should be added to the other, secondary northing value. You have to
+     * remember that Northings are determined from the equator, and the vertical
+     * cycle of letters mean a 2000000 additional northing meters. This happens
+     * approx. every 18 degrees of latitude. This method does *NOT* count any
+     * additional northings. You have to figure out how many 2000000 meters need
+     * to be added for the zone letter of the MGRS coordinate.
      * 
      * @param n second letter of the MGRS 100k zone
-     * @param set the MGRS table set number, which is dependent on the
-     *        UTM zone number.
+     * @param set the MGRS table set number, which is dependent on the UTM zone
+     *        number.
      */
     protected float getNorthingFromChar(char n, int set) {
 
@@ -694,18 +677,16 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Get the two-letter MGRS 100k designator given information
-     * translated from the UTM northing, easting and zone number.
+     * Get the two-letter MGRS 100k designator given information translated from
+     * the UTM northing, easting and zone number.
      * 
-     * @param setColumn the column index as it relates to the MGRS
-     *        100k set spreadsheet, created from the UTM easting.
-     *        Values are 1-8.
+     * @param setColumn the column index as it relates to the MGRS 100k set
+     *        spreadsheet, created from the UTM easting. Values are 1-8.
      * @param setRow the row index as it relates to the MGRS 100k set
-     *        spreadsheet, created from the UTM northing value. Values
-     *        are from 0-19.
-     * @param set the set block, as it relates to the MGRS 100k set
-     *        spreadsheet, created from the UTM zone. Values are from
-     *        1-60.
+     *        spreadsheet, created from the UTM northing value. Values are from
+     *        0-19.
+     * @param set the set block, as it relates to the MGRS 100k set spreadsheet,
+     *        created from the UTM zone. Values are from 1-60.
      * @return two letter MGRS 100k code.
      */
     protected String get100kID(int setColumn, int setRow, int set) {
@@ -816,8 +797,7 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Testing method, used to print out the MGRS 100k two letter set
-     * tables.
+     * Testing method, used to print out the MGRS 100k two letter set tables.
      */
     protected void print100kSets() {
         StringBuffer sb = null;
@@ -838,11 +818,11 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * The function getMinNorthing returns the minimum northing value
-     * of a MGRS zone.
+     * The function getMinNorthing returns the minimum northing value of a MGRS
+     * zone.
      * 
-     * portted from Geotrans' c Lattitude_Band_Value strucure table.
-     * zoneLetter : MGRS zone (input)
+     * portted from Geotrans' c Lattitude_Band_Value strucure table. zoneLetter :
+     * MGRS zone (input)
      */
 
     protected float getMinNorthing(char zoneLetter)
@@ -932,11 +912,11 @@ public class MGRSPoint extends ZonedUTMPoint {
         try {
 
             /*
-             * File inFile = new File(fName + ".dat"); File outFile =
-             * new File(fName + ".out"); FileInputStream fis = new
+             * File inFile = new File(fName + ".dat"); File outFile = new
+             * File(fName + ".out"); FileInputStream fis = new
              * FileInputStream(inFile); FileOutputStream fos = new
-             * FileOutputStream(outFile); BufferedInputStream bis =
-             * new BufferedInputStream(fis);
+             * FileOutputStream(outFile); BufferedInputStream bis = new
+             * BufferedInputStream(fis);
              */
             pos = new PrintStream(new FileOutputStream(new File(fName + ".out")));
             lnr = new LineNumberReader(new InputStreamReader(new BufferedInputStream(new FileInputStream(new File(fName)))));

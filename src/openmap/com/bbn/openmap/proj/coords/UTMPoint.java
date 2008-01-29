@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/UTMPoint.java,v $
 // $RCSfile: UTMPoint.java,v $
-// $Revision: 1.14 $
-// $Date: 2006/07/07 21:56:57 $
+// $Revision: 1.15 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -29,8 +29,8 @@ import com.bbn.openmap.proj.ProjMath;
  * A class representing a UTM co-ordinate.
  * <p>
  * 
- * Adapted to Java by Colin Mummery (colin_mummery@yahoo.com) from C++
- * code by Chuck Gantz (chuck.gantz@globalstar.com)
+ * Adapted to Java by Colin Mummery (colin_mummery@yahoo.com) from C++ code by
+ * Chuck Gantz (chuck.gantz@globalstar.com)
  */
 public class UTMPoint {
 
@@ -47,14 +47,13 @@ public class UTMPoint {
      */
     public int zone_number;
     /**
-     * For UTM, 'N' or 'S', to designate the northern or southern
-     * hemisphere.
+     * For UTM, 'N' or 'S', to designate the northern or southern hemisphere.
      */
     public char zone_letter;
 
     /**
-     * Point to create if you are going to use the static methods to
-     * fill the values in.
+     * Point to create if you are going to use the static methods to fill the
+     * values in.
      */
     public UTMPoint() {}
 
@@ -64,8 +63,8 @@ public class UTMPoint {
      * @param northing The northing component.
      * @param easting The easting component.
      * @param zone_number The zone of the coordinate.
-     * @param zone_letter For UTM, 'N' or 'S', to designate the
-     *        northern or southern hemisphere.
+     * @param zone_letter For UTM, 'N' or 'S', to designate the northern or
+     *        southern hemisphere.
      * @throws Number format exception of N or S isn't used.
      */
     public UTMPoint(float northing, float easting, int zone_number,
@@ -77,8 +76,7 @@ public class UTMPoint {
     }
 
     /**
-     * Contructs a new UTMPoint instance from values in another
-     * UTMPoint.
+     * Contructs a new UTMPoint instance from values in another UTMPoint.
      */
     public UTMPoint(UTMPoint point) {
         this(point.northing,
@@ -88,16 +86,14 @@ public class UTMPoint {
     }
 
     /**
-     * Contruct a UTMPoint from a LatLonPoint, assuming a WGS_84
-     * ellipsoid.
+     * Contruct a UTMPoint from a LatLonPoint, assuming a WGS_84 ellipsoid.
      */
     public UTMPoint(LatLonPoint llpoint) {
         this(llpoint, Ellipsoid.WGS_84);
     }
 
     /**
-     * Construct a UTMPoint from a LatLonPoint and a particular
-     * ellipsoid.
+     * Construct a UTMPoint from a LatLonPoint and a particular ellipsoid.
      */
     public UTMPoint(LatLonPoint llpoint, Ellipsoid ellip) {
         this();
@@ -105,8 +101,8 @@ public class UTMPoint {
     }
 
     /**
-     * Method that provides a check for UTM zone letters. Returns an
-     * uppercase version of any valid letter passed in, 'N' or 'S'.
+     * Method that provides a check for UTM zone letters. Returns an uppercase
+     * version of any valid letter passed in, 'N' or 'S'.
      * 
      * @throws NumberFormatException if zone letter is invalid.
      */
@@ -122,24 +118,22 @@ public class UTMPoint {
     }
 
     /**
-     * Convert this UTMPoint to a LatLonPoint, and assume a WGS_84
-     * ellisoid.
+     * Convert this UTMPoint to a LatLonPoint, and assume a WGS_84 ellisoid.
      */
     public LatLonPoint toLatLonPoint() {
         return UTMtoLL(this, Ellipsoid.WGS_84, new LatLonPoint.Double());
     }
 
     /**
-     * Convert this UTMPoint to a LatLonPoint, and use the given
-     * ellipsoid.
+     * Convert this UTMPoint to a LatLonPoint, and use the given ellipsoid.
      */
     public LatLonPoint toLatLonPoint(Ellipsoid ellip) {
         return UTMtoLL(this, ellip, new LatLonPoint.Double());
     }
 
     /**
-     * Fill in the given LatLonPoint with the converted values of this
-     * UTMPoint, and use the given ellipsoid.
+     * Fill in the given LatLonPoint with the converted values of this UTMPoint,
+     * and use the given ellipsoid.
      */
     public LatLonPoint toLatLonPoint(Ellipsoid ellip, LatLonPoint llpoint) {
         return UTMtoLL(this, ellip, llpoint);
@@ -157,8 +151,7 @@ public class UTMPoint {
     }
 
     /**
-     * Converts a LatLonPoint to a UTM Point, assuming the WGS_84
-     * ellipsoid.
+     * Converts a LatLonPoint to a UTM Point, assuming the WGS_84 ellipsoid.
      * 
      * @return UTMPoint, or null if something bad happened.
      */
@@ -170,34 +163,56 @@ public class UTMPoint {
      * Converts a LatLonPoint to a UTM Point.
      * 
      * @param llpoint the LatLonPoint to convert.
-     * @param utmpoint a UTMPoint to put the results in. If it's null,
-     *        a UTMPoint will be allocated.
-     * @return UTMPoint, or null if something bad happened. If a
-     *         UTMPoint was passed in, it will also be returned on a
-     *         successful conversion.
+     * @param utmpoint a UTMPoint to put the results in. If it's null, a
+     *        UTMPoint will be allocated.
+     * @return UTMPoint, or null if something bad happened. If a UTMPoint was
+     *         passed in, it will also be returned on a successful conversion.
      */
     public static UTMPoint LLtoUTM(LatLonPoint llpoint, UTMPoint utmpoint) {
         return LLtoUTM(llpoint, Ellipsoid.WGS_84, utmpoint);
     }
 
     /**
-     * Converts a set of Longitude and Latitude co-ordinates to UTM
-     * given an ellipsoid
+     * Converts a set of Longitude and Latitude co-ordinates to UTM given an
+     * ellipsoid
      * 
      * @param ellip an ellipsoid definition.
      * @param llpoint the coordinate to be converted
-     * @param utmpoint A UTMPoint instance to put the results in. If
-     *        null, a new UTMPoint will be allocated.
-     * @return A UTM class instance containing the value of
-     *         <code>null</code> if conversion failed. If you pass
-     *         in a UTMPoint, it will be returned as well if
-     *         successful.
+     * @param utmpoint A UTMPoint instance to put the results in. If null, a new
+     *        UTMPoint will be allocated.
+     * @return A UTM class instance containing the value of <code>null</code>
+     *         if conversion failed. If you pass in a UTMPoint, it will be
+     *         returned as well if successful.
      */
     public static UTMPoint LLtoUTM(LatLonPoint llpoint, Ellipsoid ellip,
                                    UTMPoint utmpoint) {
 
-        double Lat = llpoint.getLatitude();
-        double Long = llpoint.getLongitude();
+        // find the native zone for the given llpoint
+        int zoneNumber = getZoneNumber(llpoint.getLatitude(),
+                llpoint.getLongitude());
+        boolean isnorthern = (llpoint.getLatitude() >= 0f);
+
+        return LLtoUTM(llpoint, ellip, utmpoint, zoneNumber, isnorthern);
+    }
+
+    /**
+     * Converts a set of Longitude and Latitude co-ordinates to UTM given an
+     * ellipsoid and the UTM zone to use.
+     * 
+     * @param ellip an ellipsoid definition.
+     * @param llpoint the coordinate to be converted
+     * @param utmPoint A UTMPoint instance to put the results in. If null, a new
+     *        UTMPoint will be allocated.
+     * @param zoneNumber the number of the zone
+     * @param isNorthern true if zone is in norhering hemispehere
+     * @return A UTM class instance containing the value of <code>null</code>
+     *         if conversion failed. If you pass in a UTMPoint, it will be
+     *         returned as well if successful.
+     */
+    public static UTMPoint LLtoUTM(LatLonPoint llpoint, Ellipsoid ellip,
+                                   UTMPoint utmPoint, int zoneNumber,
+                                   boolean isNorthern) {
+
         double a = ellip.radius;
         double eccSquared = ellip.eccsq;
         double k0 = 0.9996;
@@ -209,33 +224,8 @@ public class UTMPoint {
         double LatRad = llpoint.getRadLat();
         double LongRad = llpoint.getRadLon();
         double LongOriginRad;
-        int ZoneNumber;
 
-        ZoneNumber = (int) ((Long + 180) / 6) + 1;
-
-        // Make sure the longitude 180.00 is in Zone 60
-        if (Long == 180) {
-            ZoneNumber = 60;
-        }
-
-        // Special zone for Norway
-        if (Lat >= 56.0f && Lat < 64.0f && Long >= 3.0f && Long < 12.0f) {
-            ZoneNumber = 32;
-        }
-
-        // Special zones for Svalbard
-        if (Lat >= 72.0f && Lat < 84.0f) {
-            if (Long >= 0.0f && Long < 9.0f)
-                ZoneNumber = 31;
-            else if (Long >= 9.0f && Long < 21.0f)
-                ZoneNumber = 33;
-            else if (Long >= 21.0f && Long < 33.0f)
-                ZoneNumber = 35;
-            else if (Long >= 33.0f && Long < 42.0f)
-                ZoneNumber = 37;
-        }
-        LongOrigin = (ZoneNumber - 1) * 6 - 180 + 3; // +3 puts
-                                                        // origin
+        LongOrigin = (zoneNumber - 1) * 6 - 180 + 3; // +3 puts origin
         // in middle of
         // zone
         LongOriginRad = ProjMath.degToRad(LongOrigin);
@@ -272,26 +262,26 @@ public class UTMPoint {
                 * (A * A / 2 + (5 - T + 9 * C + 4 * C * C) * A * A * A * A
                         / 24.0d + (61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared)
                         * A * A * A * A * A * A / 720.0d)));
-        if (Lat < 0.0f) {
+        if (!isNorthern) {
             UTMNorthing += 10000000.0f; // 10000000 meter offset for
             // southern hemisphere
         }
 
-        if (utmpoint == null) {
-            utmpoint = new UTMPoint();
+        if (utmPoint == null) {
+            utmPoint = new UTMPoint();
         }
 
-        utmpoint.northing = (float) Math.rint(UTMNorthing);
-        utmpoint.easting = (float) Math.rint(UTMEasting);
-        utmpoint.zone_number = ZoneNumber;
-        utmpoint.zone_letter = utmpoint.getLetterDesignator(Lat);
+        utmPoint.northing = (float) Math.rint(UTMNorthing);
+        utmPoint.easting = (float) Math.rint(UTMEasting);
+        utmPoint.zone_number = zoneNumber;
+        utmPoint.zone_letter = isNorthern ? 'N' : 'S';
 
-        return utmpoint;
+        return utmPoint;
     }
 
     /**
-     * Returns 'N' if the latitude is equal to or above the equator,
-     * 'S' if it's below.
+     * Returns 'N' if the latitude is equal to or above the equator, 'S' if it's
+     * below.
      * 
      * @param lat The float value of the latitude.
      * 
@@ -308,18 +298,16 @@ public class UTMPoint {
     }
 
     /**
-     * Converts UTM coords to lat/long given an ellipsoid given an
-     * instance of UTMPoint.
+     * Converts UTM coords to lat/long given an ellipsoid given an instance of
+     * UTMPoint.
      * 
      * @param utm_point A UTMPoint instance.
      * @param ellip a ellipsoid definition.
-     * @param llpoint a LatLonPoint, if you want it to be filled in
-     *        with the results. If null, a new LatLonPoint will be
-     *        allocated.
-     * @return A LatLonPoint class instance containing the lat/long
-     *         value, or <code>null</code> if conversion failed. If
-     *         you pass in a LatLonPoint, it will be returned as well,
-     *         if successful.
+     * @param llpoint a LatLonPoint, if you want it to be filled in with the
+     *        results. If null, a new LatLonPoint will be allocated.
+     * @return A LatLonPoint class instance containing the lat/long value, or
+     *         <code>null</code> if conversion failed. If you pass in a
+     *         LatLonPoint, it will be returned as well, if successful.
      */
     public static LatLonPoint UTMtoLL(UTMPoint utm_point, Ellipsoid ellip,
                                       LatLonPoint llpoint) {
@@ -332,24 +320,19 @@ public class UTMPoint {
     }
 
     /**
-     * Converts UTM coords to lat/long given an ellipsoid. This is a
-     * convenience class where the Zone can be specified as a single
-     * string eg."61N" which is then broken down into the ZoneNumber
-     * and ZoneLetter.
+     * Converts UTM coords to lat/long given an ellipsoid. This is a convenience
+     * class where the Zone can be specified as a single string eg."61N" which
+     * is then broken down into the ZoneNumber and ZoneLetter.
      * 
      * @param ellip an ellipsoid definition.
-     * @param UTMNorthing A float value for the northing to be
-     *        converted.
-     * @param UTMEasting A float value for the easting to be
-     *        converted.
+     * @param UTMNorthing A float value for the northing to be converted.
+     * @param UTMEasting A float value for the easting to be converted.
      * @param UTMZone A String value for the UTM zone eg."61N".
-     * @param llpoint a LatLonPoint, if you want it to be filled in
-     *        with the results. If null, a new LatLonPoint will be
-     *        allocated.
-     * @return A LatLonPoint class instance containing the lat/long
-     *         value, or <code>null</code> if conversion failed. If
-     *         you pass in a LatLonPoint, it will be returned as well,
-     *         if successful.
+     * @param llpoint a LatLonPoint, if you want it to be filled in with the
+     *        results. If null, a new LatLonPoint will be allocated.
+     * @return A LatLonPoint class instance containing the lat/long value, or
+     *         <code>null</code> if conversion failed. If you pass in a
+     *         LatLonPoint, it will be returned as well, if successful.
      */
     public static LatLonPoint UTMtoLL(Ellipsoid ellip, float UTMNorthing,
                                       float UTMEasting, String UTMZone,
@@ -361,8 +344,7 @@ public class UTMPoint {
         }
 
         int ZoneNumber = 1;
-        char ZoneLetter = 'N'; // northern hemisphere by default if
-                                // no
+        char ZoneLetter = 'N'; // northern hemisphere by default if no
         // character is found
 
         // Break out the Zone number and zone letter from the UTMZone
@@ -398,35 +380,31 @@ public class UTMPoint {
     }
 
     /**
-     * Converts UTM coords to lat/long given an ellipsoid. This is a
-     * convenience class where the exact Zone letter is not known.
-     * Instead only the hemisphere needs to be indicated.
+     * Converts UTM coords to lat/long given an ellipsoid. This is a convenience
+     * class where the exact Zone letter is not known. Instead only the
+     * hemisphere needs to be indicated.
      * 
      * @param ellip an ellipsoid definition.
-     * @param UTMNorthing A float value for the northing to be
-     *        converted.
-     * @param UTMEasting A float value for the easting to be
-     *        converted.
+     * @param UTMNorthing A float value for the northing to be converted.
+     * @param UTMEasting A float value for the easting to be converted.
      * @param ZoneNumber An int value indicating the float number.
-     * @param isnorthern A boolean which is true for the northern
-     *        hemisphere otherwise false for the southern.
-     * @param llpoint a LatLonPoint, if you want it to be filled in
-     *        with the results. If null, a new LatLonPoint will be
-     *        allocated.
-     * @return A LatLonPoint class instance containing the lat/long
-     *         value, or <code>null</code> if conversion failed. If
-     *         you pass in a LatLonPoint, it will be returned as well,
-     *         if successful.
+     * @param isNorthern A boolean which is true for the northern hemisphere
+     *        otherwise false for the southern.
+     * @param llpoint a LatLonPoint, if you want it to be filled in with the
+     *        results. If null, a new LatLonPoint will be allocated.
+     * @return A LatLonPoint class instance containing the lat/long value, or
+     *         <code>null</code> if conversion failed. If you pass in a
+     *         LatLonPoint, it will be returned as well, if successful.
      */
     public static LatLonPoint UTMtoLL(Ellipsoid ellip, float UTMNorthing,
                                       float UTMEasting, int ZoneNumber,
-                                      boolean isnorthern, LatLonPoint llpoint) {
+                                      boolean isNorthern, LatLonPoint llpoint) {
 
         return UTMtoLL(ellip,
                 UTMNorthing,
                 UTMEasting,
                 ZoneNumber,
-                (isnorthern) ? 'N' : 'S',
+                (isNorthern) ? 'N' : 'S',
                 llpoint);
     }
 
@@ -434,33 +412,27 @@ public class UTMPoint {
      * Converts UTM coords to lat/long given an ellipsoid.
      * <p>
      * Equations from USGS Bulletin 1532 <br>
-     * East Longitudes are positive, West longitudes are negative.
-     * <br>
-     * North latitudes are positive, South latitudes are negative.
-     * <br>
+     * East Longitudes are positive, West longitudes are negative. <br>
+     * North latitudes are positive, South latitudes are negative. <br>
      * 
      * @param ellip an ellipsoid definition.
-     * @param UTMNorthing A float value for the northing to be
-     *        converted.
-     * @param UTMEasting A float value for the easting to be
-     *        converted.
-     * @param ZoneNumber An int value specifiying the UTM zone number.
-     * @param ZoneLetter A char value specifying the ZoneLetter within
-     *        the ZoneNumber.
-     * @param llpoint a LatLonPoint, if you want it to be filled in
-     *        with the results. If null, a new LatLonPoint will be
-     *        allocated.
-     * @return A LatLonPoint class instance containing the lat/long
-     *         value, or <code>null</code> if conversion failed. If
-     *         you pass in a LatLonPoint, it will be returned as well,
-     *         if successful.
+     * @param UTMNorthing A float value for the northing to be converted.
+     * @param UTMEasting A float value for the easting to be converted.
+     * @param zoneNumber An int value specifiying the UTM zone number.
+     * @param zoneLetter A char value specifying the ZoneLetter within the
+     *        ZoneNumber.
+     * @param llpoint a LatLonPoint, if you want it to be filled in with the
+     *        results. If null, a new LatLonPoint will be allocated.
+     * @return A LatLonPoint class instance containing the lat/long value, or
+     *         <code>null</code> if conversion failed. If you pass in a
+     *         LatLonPoint, it will be returned as well, if successful.
      */
     public static LatLonPoint UTMtoLL(Ellipsoid ellip, float UTMNorthing,
-                                      float UTMEasting, int ZoneNumber,
-                                      char ZoneLetter, LatLonPoint llpoint) {
+                                      float UTMEasting, int zoneNumber,
+                                      char zoneLetter, LatLonPoint llpoint) {
 
         // check the ZoneNummber is valid
-        if (ZoneNumber < 0 || ZoneNumber > 60) {
+        if (zoneNumber < 0 || zoneNumber > 60) {
             return null;
         }
 
@@ -482,14 +454,13 @@ public class UTMPoint {
         // hemisphere, this is the only time we use the letter So even
         // if the Zone letter isn't exactly correct it should indicate
         // the hemisphere correctly
-        if (ZoneLetter == 'S') {
+        if (zoneLetter == 'S') {
             y -= 10000000.0d;// remove 10,000,000 meter offset used
             // for southern hemisphere
         }
 
         // There are 60 zones with zone 1 being at West -180 to -174
-        LongOrigin = (ZoneNumber - 1) * 6 - 180 + 3; // +3 puts
-                                                        // origin
+        LongOrigin = (zoneNumber - 1) * 6 - 180 + 3; // +3 puts origin
         // in middle of
         // zone
 
@@ -517,7 +488,7 @@ public class UTMPoint {
                         * Math.sin(phi1Rad), 1.5);
         D = x / (N1 * k0);
 
-        double Lat = phi1Rad
+        double lat = phi1Rad
                 - (N1 * Math.tan(phi1Rad) / R1)
                 * (D
                         * D
@@ -526,18 +497,54 @@ public class UTMPoint {
                         * D * D * D * D / 24 + (61 + 90 * T1 + 298 * C1 + 45
                         * T1 * T1 - 252 * eccPrimeSquared - 3 * C1 * C1)
                         * D * D * D * D * D * D / 720);
-        Lat = ProjMath.radToDeg(Lat);
+        lat = ProjMath.radToDeg(lat);
 
-        double Long = (D - (1 + 2 * T1 + C1) * D * D * D / 6 + (5 - 2 * C1 + 28
+        double lon = (D - (1 + 2 * T1 + C1) * D * D * D / 6 + (5 - 2 * C1 + 28
                 * T1 - 3 * C1 * C1 + 8 * eccPrimeSquared + 24 * T1 * T1)
                 * D * D * D * D * D / 120)
                 / Math.cos(phi1Rad);
-        Long = LongOrigin + ProjMath.radToDeg(Long);
+        lon = LongOrigin + ProjMath.radToDeg(lon);
         if (llpoint != null) {
-            llpoint.setLatLon(Lat, Long);
+            llpoint.setLatLon(lat, lon);
             return llpoint;
         } else {
-            return new LatLonPoint.Float((float) Lat, (float) Long);
+            return new LatLonPoint.Double(lat, lon);
         }
     }
+
+    /**
+     * Find zone number based on the given latitude and longitude in *degrees*.
+     * 
+     * @param lat
+     * @param lon
+     * @return
+     */
+    public static int getZoneNumber(double lat, double lon) {
+        int zoneNumber = (int) ((lon + 180) / 6) + 1;
+
+        // Make sure the longitude 180.00 is in Zone 60
+        if (lon == 180) {
+            zoneNumber = 60;
+        }
+
+        // Special zone for Norway
+        if (lat >= 56.0f && lat < 64.0f && lon >= 3.0f && lon < 12.0f) {
+            zoneNumber = 32;
+        }
+
+        // Special zones for Svalbard
+        if (lat >= 72.0f && lat < 84.0f) {
+            if (lon >= 0.0f && lon < 9.0f)
+                zoneNumber = 31;
+            else if (lon >= 9.0f && lon < 21.0f)
+                zoneNumber = 33;
+            else if (lon >= 21.0f && lon < 33.0f)
+                zoneNumber = 35;
+            else if (lon >= 33.0f && lon < 42.0f)
+                zoneNumber = 37;
+        }
+
+        return zoneNumber;
+    }
+
 }

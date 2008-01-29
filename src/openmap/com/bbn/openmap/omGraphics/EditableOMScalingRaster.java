@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMScalingRaster.java,v $
 // $RCSfile: EditableOMScalingRaster.java,v $
-// $Revision: 1.10 $
-// $Date: 2006/08/09 21:08:34 $
+// $Revision: 1.11 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,13 +38,14 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The EditableOMScalingRaster encompasses an OMScalingRaster, providing methods
- * for modifying or creating it. This class only modifies OMScaling Rasters in
- * lat/lon space (RENDERTYPE_LATLON). When you grab at the raster, you change
- * the size of the entire rect. Grabbing the center point moves the raster. If
- * there is an offset point, moving the center point changes the rect's position
- * in relation to the offset point. Moving the offset point moves the rect,
- * keeping the distance to the center point constant.
+ * The EditableOMScalingRaster encompasses an OMScalingRaster,
+ * providing methods for modifying or creating it. This class only
+ * modifies OMScaling Rasters in lat/lon space (RENDERTYPE_LATLON).
+ * When you grab at the raster, you change the size of the entire
+ * rect. Grabbing the center point moves the raster. If there is an
+ * offset point, moving the center point changes the rect's position
+ * in relation to the offset point. Moving the offset point moves the
+ * rect, keeping the distance to the center point constant.
  */
 public class EditableOMScalingRaster extends EditableOMGraphic {
 
@@ -66,24 +67,24 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     public final static int OFFSET_POINT_INDEX = 5;
 
     /**
-     * Create the EditableOMRect, setting the state machine to create the rect
-     * off of the gestures.
+     * Create the EditableOMRect, setting the state machine to create
+     * the rect off of the gestures.
      */
     public EditableOMScalingRaster() {
         createGraphic(null);
     }
 
     /**
-     * Create an EditableOMScalingRaster with the rectType and renderType
-     * parameters in the GraphicAttributes object.
+     * Create an EditableOMScalingRaster with the rectType and
+     * renderType parameters in the GraphicAttributes object.
      */
     public EditableOMScalingRaster(GraphicAttributes ga) {
         createGraphic(ga);
     }
 
     /**
-     * Create the EditableOMScalingRaster with an OMScalingRaster already
-     * defined, ready for editing.
+     * Create the EditableOMScalingRaster with an OMScalingRaster
+     * already defined, ready for editing.
      * 
      * @param omsr OMScalingRaster that should be edited.
      */
@@ -92,9 +93,10 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     }
 
     /**
-     * Create and initialize the state machine that interprets the modifying
-     * gestures/commands, as well as ititialize the grab points. Also allocates
-     * the grab point array needed by the EditableOMScalingRaster.
+     * Create and initialize the state machine that interprets the
+     * modifying gestures/commands, as well as ititialize the grab
+     * points. Also allocates the grab point array needed by the
+     * EditableOMScalingRaster.
      */
     public void init() {
         Debug.message("eomg", "EditableOMScalingRaster.init()");
@@ -104,9 +106,9 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     }
 
     /**
-     * Set the graphic within the state machine. If the graphic is null, then
-     * one shall be created, and located off screen until the gestures driving
-     * the state machine place it on the map.
+     * Set the graphic within the state machine. If the graphic is
+     * null, then one shall be created, and located off screen until
+     * the gestures driving the state machine place it on the map.
      */
     public void setGraphic(OMGraphic graphic) {
         init();
@@ -133,10 +135,7 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
         if (!Environment.isApplet()) {
             pathToFile = com.bbn.openmap.util.FileUtils.getFilePathToOpenFromUser("Choose Image File for Raster");
         } else {
-            JOptionPane.showMessageDialog(null,
-                    "Can't search for images in an applet!",
-                    "Can't Choose Image",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Can't search for images in an applet!", "Can't Choose Image", JOptionPane.ERROR_MESSAGE);
         }
 
         if (pathToFile == null)
@@ -154,22 +153,25 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
         }
 
         if (ga != null) {
-            ga.setTo(raster);
+            ga.setTo(raster, true);
         }
 
         assertGrabPoints();
     }
 
     /**
-     * Get the OMGraphic being created/modified by the EditableOMScalingRaster.
+     * Get the OMGraphic being created/modified by the
+     * EditableOMScalingRaster.
      */
     public OMGraphic getGraphic() {
         return raster;
     }
     
     /**
-     * Set the GrabPoint that is in the middle of being modified, as a result of
-     * a mouseDragged event, or other selection process.
+     * Attach to the Moving OffsetGrabPoint so if it moves, it will
+     * move this EditableOMGraphic with it. EditableOMGraphic version
+     * doesn't do anything, each subclass has to decide which of its
+     * OffsetGrabPoints should be attached to it.
      */
     public void attachToMovingGrabPoint(OffsetGrabPoint gp) {
         gp.addGrabPoint(gpo);
@@ -207,8 +209,8 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     protected int lastRenderType = -1;
 
     /**
-     * Check to make sure the grab points are not null. If they are, allocate
-     * them, and them assign them to the array.
+     * Check to make sure the grab points are not null. If they are,
+     * allocate them, and them assign them to the array.
      */
     public void assertGrabPoints() {
         OMGraphic omg = getGraphic();
@@ -279,9 +281,9 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     }
 
     /**
-     * Set the grab points for the graphic provided, setting them on the extents
-     * of the graphic. Called when you want to set the grab points off the
-     * location of the graphic.
+     * Set the grab points for the graphic provided, setting them on
+     * the extents of the graphic. Called when you want to set the
+     * grab points off the location of the graphic.
      */
     public void setGrabPoints(OMGraphic graphic) {
         Debug.message("eomg", "EditableOMScalingRaster.setGrabPoints(graphic)");
@@ -435,9 +437,10 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     }
 
     /**
-     * Take the current location of the GrabPoints, and modify the location
-     * parameters of the OMScalingRaster with them. Called when you want the
-     * graphic to change according to the grab points.
+     * Take the current location of the GrabPoints, and modify the
+     * location parameters of the OMScalingRaster with them. Called
+     * when you want the graphic to change according to the grab
+     * points.
      */
     public void setGrabPoints() {
 
@@ -626,20 +629,21 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     }
 
     /**
-     * Called to set the OffsetGrabPoint to the current mouse location, and
-     * update the OffsetGrabPoint with all the other GrabPoint locations, so
-     * everything can shift smoothly. Should also set the OffsetGrabPoint to the
-     * movingPoint. Should be called only once at the beginning of the general
-     * movement, in order to set the movingPoint. After that, redraw(e) should
-     * just be called, and the movingPoint will make the adjustments to the
+     * Called to set the OffsetGrabPoint to the current mouse
+     * location, and update the OffsetGrabPoint with all the other
+     * GrabPoint locations, so everything can shift smoothly. Should
+     * also set the OffsetGrabPoint to the movingPoint. Should be
+     * called only once at the beginning of the general movement, in
+     * order to set the movingPoint. After that, redraw(e) should just
+     * be called, and the movingPoint will make the adjustments to the
      * graphic that are needed.
      */
     public void move(java.awt.event.MouseEvent e) {}
 
     /**
-     * Use the current projection to place the graphics on the screen. Has to be
-     * called to at least assure the graphics that they are ready for rendering.
-     * Called when the graphic position changes.
+     * Use the current projection to place the graphics on the screen.
+     * Has to be called to at least assure the graphics that they are
+     * ready for rendering. Called when the graphic position changes.
      * 
      * @param proj com.bbn.openmap.proj.Projection
      * @return true
@@ -659,8 +663,9 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     }
 
     /**
-     * Given a new projection, the grab points may need to be repositioned off
-     * the current position of the graphic. Called when the projection changes.
+     * Given a new projection, the grab points may need to be
+     * repositioned off the current position of the graphic. Called
+     * when the projection changes.
      */
     public void regenerate(Projection proj) {
         Debug.message("eomg", "EditableOMScalingRaster.regenerate()");
@@ -672,9 +677,9 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
     }
 
     /**
-     * Draw the EditableOMScalingRaster parts into the java.awt.Graphics object.
-     * The grab points are only rendered if the rect machine state is
-     * RectSelectedState.RECT_SELECTED.
+     * Draw the EditableOMScalingRaster parts into the
+     * java.awt.Graphics object. The grab points are only rendered if
+     * the rect machine state is RectSelectedState.RECT_SELECTED.
      * 
      * @param graphics java.awt.Graphics.
      */

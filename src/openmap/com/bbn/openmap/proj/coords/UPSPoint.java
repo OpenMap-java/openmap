@@ -14,15 +14,13 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/UPSPoint.java,v $
 // $RCSfile: UPSPoint.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/11 20:39:18 $
+// $Revision: 1.8 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 //
 // **********************************************************************
 
 package com.bbn.openmap.proj.coords;
-
-import com.bbn.openmap.LatLonPoint;
 
 /**
  * Class UPSPoint.
@@ -47,16 +45,16 @@ public class UPSPoint {
     /** Northing */
     protected double northing;
     /** Hemisphere */
-    //protected boolean southernHemisphere;
+    // protected boolean southernHemisphere;
     private double Degree = Math.PI / 180.0;
 
-    //WGS-1984: 6378137.0, 298.257223563 0.00669438d
+    // WGS-1984: 6378137.0, 298.257223563 0.00669438d
 
     /** Constructor for the UPSPoint object */
     public UPSPoint() {
         this.easting = 0;
         this.northing = 0;
-        //southernHemisphere = false;
+        // southernHemisphere = false;
     }
 
     /**
@@ -68,13 +66,12 @@ public class UPSPoint {
     public UPSPoint(double easting, double northing) {
         this.easting = easting;
         this.northing = northing;
-        //southernHemisphere = southern;
+        // southernHemisphere = southern;
     }
 
     /**
-     * Static method to create a UPSPoint object from lat/lon
-     * coordiantes. Method avoids conflict with (double, double)
-     * constructor.
+     * Static method to create a UPSPoint object from lat/lon coordiantes.
+     * Method avoids conflict with (double, double) constructor.
      * 
      * @param lat latitude in decimal degrees
      * @param lon longitude in decimal degrees
@@ -114,7 +111,7 @@ public class UPSPoint {
 
         double lambda = lon * Degree;
         double phi = Math.abs(lat * Degree);
-        //double phi = (lat * Degree);
+        // double phi = (lat * Degree);
 
         a = 6378137.0;
         es = 0.00669438d;
@@ -135,7 +132,7 @@ public class UPSPoint {
         if (lat > 0.0) {
             // Northern hemisphere
             y = -(y);
-            //southernHemisphere = false;
+            // southernHemisphere = false;
         }
         x += 2.0e6;
         // Add in false easting and northing
@@ -155,7 +152,7 @@ public class UPSPoint {
      * @return returns a LatLonPoint
      */
     public LatLonPoint toLatLonPoint(boolean southernHemisphere) {
-        LatLonPoint llp = new LatLonPoint();
+        LatLonPoint llp = new LatLonPoint.Double();
         double lon = 0;
         double lat = 0;
         double a = 0;
@@ -291,16 +288,16 @@ public class UPSPoint {
      * Tested against the NIMA calculator
      */
     public static void main(String[] args) {
-        //TEST1 - NORTH & WEST
-        LatLonPoint llpt1 = new LatLonPoint(87.00, -74.50);
+        // TEST1 - NORTH & WEST
+        LatLonPoint llpt1 = new LatLonPoint.Double(87.00, -74.50);
         System.out.println(llpt1.toString());
         UPSPoint ups = new UPSPoint(llpt1);
         System.out.println(ups.toString());
         LatLonPoint llpt2 = ups.toLatLonPoint(false);
         System.out.println(llpt2.toString());
-        //TEST2 - SOUTH & EAST
+        // TEST2 - SOUTH & EAST
         System.out.println("--------------------------------------------");
-        llpt1 = new LatLonPoint(-89.00, 110.50);
+        llpt1 = new LatLonPoint.Double(-89.00, 110.50);
         System.out.println(llpt1.toString());
         ups = new UPSPoint(llpt1);
         System.out.println(ups.toString());
@@ -308,4 +305,3 @@ public class UPSPoint {
         System.out.println(llpt2.toString());
     }
 }
-

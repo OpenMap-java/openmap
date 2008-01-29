@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/WMTConstants.java,v $
 // $RCSfile: WMTConstants.java,v $
-// $Revision: 1.3 $
-// $Date: 2007/01/25 22:11:40 $
+// $Revision: 1.4 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -64,6 +64,13 @@ public interface WMTConstants {
      * WMT requests.
      */
     public final static String LAYERS = "LAYERS";
+    
+    /**
+     * Query Layer list (QUERY_LAYERS), comma separated layer names. Required for
+     * WMS GetFeatureInfo requests.
+     */
+    public final static String QUERY_LAYERS = "QUERY_LAYERS";
+    
     /**
      * (STYLES) Comma separated list for one rendering style per
      * requested layer. Required for WMT requests.
@@ -98,6 +105,13 @@ public interface WMTConstants {
      * Output format for image (FORMAT). Required for WMT requests.
      */
     public final static String FORMAT = "FORMAT";
+    
+    /**
+     * Output format for GetFeatureInfo request (INFO_FORMAT). Required for WMS
+     * GetFeatureInfo requests.
+     */
+    public final static String INFO_FORMAT = "INFO_FORMAT";
+    
     /**
      * (TRANSPARENT) true if the background color should be rendered
      * as transparent, if the image format supports transparency, or

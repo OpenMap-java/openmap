@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/learn/InteractionLayer.java,v $
 // $RCSfile: InteractionLayer.java,v $
-// $Revision: 1.1 $
-// $Date: 2007/02/26 16:56:04 $
+// $Revision: 1.2 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -95,7 +95,7 @@ public class InteractionLayer extends BasicLayer {
      * @return new OMGraphicList with OMGraphics that you always want to display
      *         and reproject as necessary.
      * 
-     * @see BasicDisplayLayer#prepare
+     * @see BasicLayer#prepare
      */
     public OMGraphicList init() {
 

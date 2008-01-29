@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoly.java,v $
 // $RCSfile: EditableOMPoly.java,v $
-// $Revision: 1.16 $
-// $Date: 2007/06/21 21:38:59 $
+// $Revision: 1.17 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -269,7 +269,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
 
         if (ga != null) {
             ga.setRenderType(poly.getRenderType());
-            ga.setTo(poly);
+            ga.setTo(poly, true);
         }
     }
 
@@ -534,7 +534,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
                     } else {
                         floats[2 * i] = (float) llp.getY();
                         floats[2 * i + 1] = (float) llp.getX();
-                    }
+                }
                 }
 
                 poly.setLocation((float[]) floats, poly.getUnits());
@@ -690,7 +690,6 @@ public class EditableOMPoly extends EditableOMAbstractLine {
             if (projection != null) {
 
                 float[] ll = poly.getLatLonArray();
-
                 int actualPosition = (position == Integer.MAX_VALUE ? ll.length
                         : position * 2);
 
@@ -871,7 +870,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
                 } else {
                     poly.lat = (float) llpnt.getY();
                     poly.lon = (float) llpnt.getX();
-                }
+            }
             }
 
             poly.setLocation(poly.lat, poly.lon, poly.getUnits(), newxs, newys);
@@ -1312,7 +1311,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
             JMenu ahm = getArrowHeadMenu();
             graphicAttributes.setLineMenuAdditions(new JMenu[] { ahm });
             JComponent gaGUI = (JComponent) graphicAttributes.getGUI();
-            getPolyGUI(graphicAttributes.getOrientation(), gaGUI);
+            getPolyGUI(graphicAttributes.getOrientation(), graphicAttributes.toolbar);
             return gaGUI;
         } else {
             return getPolyGUI();

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRangeRings.java,v $
 // $RCSfile: EditableOMRangeRings.java,v $
-// $Revision: 1.13 $
-// $Date: 2007/12/04 00:18:32 $
+// $Revision: 1.14 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,7 +24,6 @@ package com.bbn.openmap.omGraphics;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,16 +36,13 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.gui.GridBagToolBar;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
@@ -55,6 +51,9 @@ import com.bbn.openmap.util.PaletteHelper;
  */
 public class EditableOMRangeRings extends EditableOMCircle {
 
+    // TODO need to update the memory mechanism between OMRangeRings that are
+    // being edited/created so that statics aren't being used. Maybe add a
+    // properties object to DrawingAttributes and have the memory there.
     protected static int lastInterval;
     protected static Length lastUnit;
     protected static boolean snapToInterval = false;
@@ -106,7 +105,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
         circle = new OMRangeRings(90f, -180f, 0f);
 
         if (ga != null) {
-            ga.setTo(circle);
+            ga.setTo(circle, true);
         }
     }
 
@@ -122,8 +121,9 @@ public class EditableOMRangeRings extends EditableOMCircle {
         Debug.message("eomg", "EditableOMRangeRings.getGUI");
         if (graphicAttributes != null) {
             JComponent panel = graphicAttributes.getColorAndLineGUI();
-//            panel.add(getRangeRingGUI());
-            getRangeRingGUI(graphicAttributes.getOrientation(), panel);
+            // panel.add(getRangeRingGUI());
+            getRangeRingGUI(graphicAttributes.getOrientation(),
+                    graphicAttributes.toolbar);
             return panel;
         } else {
             return getRangeRingGUI();
@@ -181,48 +181,48 @@ public class EditableOMRangeRings extends EditableOMCircle {
     protected transient DecimalFormat df = new DecimalFormat();
     protected I18n i18n = Environment.getI18n();
     protected JComponent attributeBox;
-    
+
     protected JComponent getRangeRingGUI() {
         return getRangeRingGUI(SwingConstants.HORIZONTAL, (JComponent) null);
-        
-//        if (rrToolBar == null) {
-//            rrToolBar = new GridBagToolBar();
-//            rrToolBar.setFloatable(false);
-//            rrToolBar.setMargin(new Insets(0, 1, 0, 1));
-//
-//            configureRangeRings();
-//            intervalField = makeIntervalField();
-//            rrToolBar.add(intervalField);
-//
-//            // JSlider intervalSlide = new JSlider(
-//            // JSlider.HORIZONTAL, 1/*min*/, 200/*max*/,
-//            // ((OMRangeRings)circle).getInterval()/*inital*/);
-//            // java.util.Hashtable dict = new java.util.Hashtable();
-//            // dict.put(new Integer(1), new JLabel("1"));
-//            // dict.put(new Integer(50), new JLabel("50"));
-//            // dict.put(new Integer(100), new JLabel("100"));
-//            // dict.put(new Integer(150), new JLabel("150"));
-//            // dict.put(new Integer(200), new JLabel("200"));
-//            // intervalSlide.setLabelTable(dict);
-//            // intervalSlide.setPaintLabels(true);
-//            // intervalSlide.setMajorTickSpacing(10);
-//            // intervalSlide.setPaintTicks(true);
-//            // intervalSlide.setSnapToTicks(false);
-//            // intervalSlide.addChangeListener(new ChangeListener() {
-//            // public void stateChanged(ChangeEvent ce) {
-//            // JSlider slider = (JSlider) ce.getSource();
-//            // if (slider.getValueIsAdjusting()) {
-//            // ((OMRangeRings)circle).setInterval(slider.getValue());
-//            // }
-//            // }
-//            // });
-//
-//            rrToolBar.add(makeUnitsCombo());
-//            rrToolBar.add(makeSnapCheckBox());
-//        }
-//        return rrToolBar;
+
+        // if (rrToolBar == null) {
+        // rrToolBar = new GridBagToolBar();
+        // rrToolBar.setFloatable(false);
+        // rrToolBar.setMargin(new Insets(0, 1, 0, 1));
+        //
+        // configureRangeRings();
+        // intervalField = makeIntervalField();
+        // rrToolBar.add(intervalField);
+        //
+        // // JSlider intervalSlide = new JSlider(
+        // // JSlider.HORIZONTAL, 1/*min*/, 200/*max*/,
+        // // ((OMRangeRings)circle).getInterval()/*inital*/);
+        // // java.util.Hashtable dict = new java.util.Hashtable();
+        // // dict.put(new Integer(1), new JLabel("1"));
+        // // dict.put(new Integer(50), new JLabel("50"));
+        // // dict.put(new Integer(100), new JLabel("100"));
+        // // dict.put(new Integer(150), new JLabel("150"));
+        // // dict.put(new Integer(200), new JLabel("200"));
+        // // intervalSlide.setLabelTable(dict);
+        // // intervalSlide.setPaintLabels(true);
+        // // intervalSlide.setMajorTickSpacing(10);
+        // // intervalSlide.setPaintTicks(true);
+        // // intervalSlide.setSnapToTicks(false);
+        // // intervalSlide.addChangeListener(new ChangeListener() {
+        // // public void stateChanged(ChangeEvent ce) {
+        // // JSlider slider = (JSlider) ce.getSource();
+        // // if (slider.getValueIsAdjusting()) {
+        // // ((OMRangeRings)circle).setInterval(slider.getValue());
+        // // }
+        // // }
+        // // });
+        //
+        // rrToolBar.add(makeUnitsCombo());
+        // rrToolBar.add(makeSnapCheckBox());
+        // }
+        // return rrToolBar;
     }
-    
+
     /**
      * Get the GUI associated with changing the Text.
      * 
@@ -240,7 +240,6 @@ public class EditableOMRangeRings extends EditableOMCircle {
 
         if (guiComp == null || orientation == SwingConstants.VERTICAL) {
             attributeBox = javax.swing.Box.createHorizontalBox();
-            attributeBox.add(PaletteHelper.getToolBarFill(orientation));
 
             attributeBox.setAlignmentX(Component.CENTER_ALIGNMENT);
             attributeBox.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -252,6 +251,8 @@ public class EditableOMRangeRings extends EditableOMCircle {
             attributeBox = guiComp;
         }
 
+        guiComp.add(PaletteHelper.getToolBarFill(orientation));
+
         if (orientation == SwingConstants.VERTICAL) {
             JButton launchButton = new JButton("RR");
             launchButton.addActionListener(new ActionListener() {
@@ -261,7 +262,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
                         dialog.setContentPane(attributeBox);
                         dialog.setModal(true);
                         dialog.pack();
-                        dialog.setLocationRelativeTo((JButton)ae.getSource());
+                        dialog.setLocationRelativeTo((JButton) ae.getSource());
                         dialog.setVisible(true);
                     }
                 }
@@ -275,36 +276,31 @@ public class EditableOMRangeRings extends EditableOMCircle {
 
         attributeBox.add(makeUnitsCombo());
         attributeBox.add(makeSnapCheckBox());
-        
-//        attributeBox.add(PaletteHelper.getToolBarFill(SwingConstants.HORIZONTAL));
-  
+
+        // attributeBox.add(PaletteHelper.getToolBarFill(SwingConstants.HORIZONTAL));
+
         return guiComp;
     }
 
     private void configureRangeRings() {
-        ((OMRangeRings)circle).setInterval(getInterval());
-        ((OMRangeRings)circle).setIntervalUnits(getUnits());
+        ((OMRangeRings) circle).setInterval(getInterval());
+        ((OMRangeRings) circle).setIntervalUnits(getUnits());
     }
 
     private int getInterval() {
-        return (! isNewRing())
-            ? ((OMRangeRings)circle).getInterval()
-            : haveUserSpecifiedValue()
-            ? lastInterval
-            : OMRangeRings.DEFAULT_INTERVAL;
+        return (!isNewRing()) ? ((OMRangeRings) circle).getInterval()
+                : haveUserSpecifiedValue() ? lastInterval
+                        : OMRangeRings.DEFAULT_INTERVAL;
     }
 
     private Length getUnits() {
-        return (! isNewRing())
-            ? ((OMRangeRings)circle).getIntervalUnits()
-            : haveUserSpecifiedValue()
-            ? lastUnit
-            : null;
+        return (!isNewRing()) ? ((OMRangeRings) circle).getIntervalUnits()
+                : haveUserSpecifiedValue() ? lastUnit : null;
     }
 
     private boolean isNewRing() {
         // we rely on interval units not being initialized during construction
-        return (((OMRangeRings)circle).getIntervalUnits() == null);
+        return (((OMRangeRings) circle).getIntervalUnits() == null);
     }
 
     private boolean haveUserSpecifiedValue() {
@@ -313,11 +309,10 @@ public class EditableOMRangeRings extends EditableOMCircle {
     }
 
     private JTextField makeIntervalField() {
-        JTextField field = new JTextField(
-                Integer.toString(((OMRangeRings) circle).getInterval()), 5);
+        JTextField field = new JTextField(Integer.toString(((OMRangeRings) circle).getInterval()), 5);
         field.setMargin(new Insets(0, 1, 0, 1));
         // without minimum size set, field can be too small to use
-        field.setMinimumSize(new Dimension(40,  18));
+        field.setMinimumSize(new Dimension(40, 18));
         field.setHorizontalAlignment(JTextField.RIGHT);
         field.setToolTipText(i18n.get(this,
                 "intervalField.tooltip",
@@ -332,9 +327,8 @@ public class EditableOMRangeRings extends EditableOMCircle {
         // Adding a focus listener addresses this issue.
         field.addFocusListener(new FocusAdapter() {
             public void focusLost(FocusEvent event) {
-                if (! event.isTemporary()) {
-                    updateInterval(
-                            ((JTextField) (event.getSource())).getText());
+                if (!event.isTemporary()) {
+                    updateInterval(((JTextField) (event.getSource())).getText());
                 }
             }
         });
@@ -376,10 +370,10 @@ public class EditableOMRangeRings extends EditableOMCircle {
                 /*
                  * If newLength is not null and oldLength is not null, just
                  * translate the distance that is current specified. If
-                 * newLength is null, then find out how many rings are on
-                 * the range ring and set the interval to that. If oldLength
-                 * is null, find out the radius and divide it by the number
-                 * of rings - 1.
+                 * newLength is null, then find out how many rings are on the
+                 * range ring and set the interval to that. If oldLength is
+                 * null, find out the radius and divide it by the number of
+                 * rings - 1.
                  */
 
                 int value = interpretValue(intervalField.getText());
@@ -464,8 +458,8 @@ public class EditableOMRangeRings extends EditableOMCircle {
         return snapToInterval;
     }
 
-    public void setSnapToInterval(boolean snapToInterval) {
-        this.snapToInterval = snapToInterval;
+    public void setSnapToInterval(boolean sti) {
+        snapToInterval = sti;
     }
 
     protected void setRadius(float radius) {

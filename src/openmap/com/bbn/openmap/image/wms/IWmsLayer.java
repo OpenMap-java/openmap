@@ -1,5 +1,5 @@
 /*
- * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/IWmsLayer.java,v 1.1 2007/01/26 15:04:23 dietrick Exp $
+ * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/IWmsLayer.java,v 1.2 2008/01/29 22:04:13 dietrick Exp $
  *
  * Copyright 2001-2005 OBR Centrum Techniki Morskiej, All rights reserved.
  *
@@ -7,7 +7,7 @@
 package com.bbn.openmap.image.wms;
 
 /**
- * @version $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/IWmsLayer.java,v 1.1 2007/01/26 15:04:23 dietrick Exp $
+ * @version $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/IWmsLayer.java,v 1.2 2008/01/29 22:04:13 dietrick Exp $
  * @author pitek
  */
 public interface IWmsLayer {
@@ -18,9 +18,10 @@ public interface IWmsLayer {
     public String getTitle();
 
     /**
-     * @return
+     * @return a String representing the short layer name. It is like
+     *         {@link Layer#getPropertyPrefix()} and are used in WMS Urls.
      */
-    public String getName();
+    public String getWmsName();
 
     /**
      * @return
@@ -36,6 +37,15 @@ public interface IWmsLayer {
      * @return
      */
     public boolean isQueryable();
+    
+    /**
+     * Do a GetFeatureInfo query.
+     * 
+     * @param x
+     * @param y
+     * @return
+     */
+    public LayerFeatureInfoResponse query(int x, int y);
 
     /**
      * @return
@@ -82,4 +92,5 @@ public interface IWmsLayer {
     /**
      */
     public void setDefaultStyle();
+    
 }

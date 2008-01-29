@@ -1,5 +1,5 @@
 /*
- * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/WmsLayerFactory.java,v 1.1 2007/01/26 15:04:22 dietrick Exp $
+ * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/WmsLayerFactory.java,v 1.2 2008/01/29 22:04:13 dietrick Exp $
  *
  * Copyright 2001-2005 OBR Centrum Techniki Morskiej, All rights reserved.
  *
@@ -17,11 +17,8 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * Class responsible for creation IWmsLayer for gi
+ * Class responsible for creation IWmsLayer for Layers.
  * 
- * @version $Header:
- *          /cvs/CVS_LEBA/external/openmap/openmap/src/openmap/com/bbn/openmap/wms/WmsLayerFactory.java,v
- *          1.1 2006/03/21 10:27:54 tomrak Exp $
  * @author tomrak
  */
 public class WmsLayerFactory {
@@ -34,6 +31,7 @@ public class WmsLayerFactory {
             for (Iterator it = PropUtils.parseSpacedMarkers(wmsLayers)
                     .iterator(); it.hasNext();) {
                 Object key = it.next();
+                // TODO: looks like layerClass is supposed to be the IWmsLayer. realy messy
                 Class layerClass = Class.forName(props.getProperty((String) key
                         + ".layerClass"));
                 Class clazz = Class.forName(props.getProperty((String) key
@@ -45,7 +43,24 @@ public class WmsLayerFactory {
         }
     }
 
+    /**
+     * "Convert" the Layer to a IWmsLayer.
+     * 
+     * 1. pri: Will return the given Layer if it is a IWmsLayer.
+     * 
+     * 2. pri: Use the .layerClass property for a IWmsLayer that takes Layer in
+     * the constructor to wrap the Layer in a IWmsLayer. TODO: This is a bit messy and
+     * should be refactored.
+     * 
+     * 3. pri: Wrap it in DefaultLayerAdapter.
+     * 
+     * @param layer
+     * @return
+     */
     IWmsLayer createWmsLayer(Layer layer) {
+        if (layer instanceof IWmsLayer) {
+            return (IWmsLayer) layer;
+        }
         Class layerClass = layer.getClass();
         Class wmsLayerClass = (Class) wmsLayersMap.get(layerClass);
         if (wmsLayerClass == null) {

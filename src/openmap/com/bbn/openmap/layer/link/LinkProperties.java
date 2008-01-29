@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkProperties.java,v $
 // $RCSfile: LinkProperties.java,v $
-// $Revision: 1.7 $
-// $Date: 2007/12/04 00:27:12 $
+// $Revision: 1.8 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************

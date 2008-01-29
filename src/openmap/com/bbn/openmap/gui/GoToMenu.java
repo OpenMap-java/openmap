@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/GoToMenu.java,v $
 // $RCSfile: GoToMenu.java,v $
-// $Revision: 1.19 $
-// $Date: 2007/06/21 21:38:59 $
+// $Revision: 1.20 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -134,8 +134,8 @@ public class GoToMenu extends AbstractOpenMapMenu {
     public GoToMenu() {
         super();
         setText(i18n.get(this, "goto", defaultText));
-        setMnemonic(i18n.get(this, "goto", I18n.MNEMONIC, defaultMnemonic)
-                .charAt(0));
+//        setMnemonic(i18n.get(this, "goto", I18n.MNEMONIC, defaultMnemonic)
+//                .charAt(0));
 
         // dataBoundsMenu = new OMBasicMenu("Go Over Data");
         dataBoundsMenu = new OMBasicMenu(i18n.get(this,

@@ -23,8 +23,8 @@ import javax.swing.ImageIcon;
 import javax.swing.border.Border;
 
 import com.bbn.openmap.MapBean;
+import com.bbn.openmap.image.ImageScaler;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.ImageScaler;
 import com.bbn.openmap.util.PropUtils;
 
 /**

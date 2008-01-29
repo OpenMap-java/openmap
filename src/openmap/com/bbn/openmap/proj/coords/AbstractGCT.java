@@ -15,7 +15,7 @@
 //$Source:
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
-//$RCSfile: GeoCoordTransformation.java,v $
+//$RCSfile: AbstractGCT.java,v $
 //$Revision: 1.2 $
 //$Date: 2008/01/29 22:04:13 $
 //$Author: dietrick $
@@ -26,19 +26,20 @@ package com.bbn.openmap.proj.coords;
 
 import java.awt.geom.Point2D;
 
-/**
- * A DecimalDegreeTranslator is an object that knows how to translate a set of
- * coordinates from one coordinate system definition to/from a set of decimal
- * degree coordinates.
- * 
- * @author dietrick
- */
-public interface GeoCoordTransformation {
-    Point2D forward(double lat, double lon);
+import com.bbn.openmap.OMComponent;
 
-    Point2D forward(double lat, double lon, Point2D ret);
+public abstract class AbstractGCT extends OMComponent implements GeoCoordTransformation {
 
-    LatLonPoint inverse(double x, double y);
+    public Point2D forward(double lat, double lon) {
+        return forward(lat, lon, new Point2D.Double());
+    }
 
-    LatLonPoint inverse(double x, double y, LatLonPoint ret);
+    public abstract Point2D forward(double lat, double lon, Point2D ret);
+
+    public LatLonPoint inverse(double x, double y) {
+        return inverse(x, y, new LatLonPoint.Double());
+    }
+
+    public abstract LatLonPoint inverse(double x, double y, LatLonPoint ret);
+
 }

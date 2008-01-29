@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/GraphicAttributes.java,v $
 // $RCSfile: GraphicAttributes.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/08/10 22:25:08 $
+// $Revision: 1.12 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -30,34 +30,33 @@ import java.util.Properties;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
+import com.bbn.openmap.omGraphics.geom.NonRegional;
 import com.bbn.openmap.proj.LineType;
 import com.bbn.openmap.util.PropUtils;
 
 /**
  * The GraphicAttributes provides an extension to DrawingAttributes by
- * provideing a mechanism for loading and managing different graphic
- * attributes that may be used, such as line type (LINETYPE_STRAIGHT,
- * LINETYPE_GREATCIRCLE, LINETYPE_RHUMB, or LINETYPE_UNKNOWN), or
- * render type (RENDERTYPE_XY, RENDERTYPE_LATLON, RENDERTYPE_OFFSET,
- * or RENDERTYPE_UNKNOWN). The DrawingAttributes class fishes out the
- * applicable properties for you, creates the objects needed, and then
- * lets you get those objects when needed.
+ * provideing a mechanism for loading and managing different graphic attributes
+ * that may be used, such as line type (LINETYPE_STRAIGHT, LINETYPE_GREATCIRCLE,
+ * LINETYPE_RHUMB, or LINETYPE_UNKNOWN), or render type (RENDERTYPE_XY,
+ * RENDERTYPE_LATLON, RENDERTYPE_OFFSET, or RENDERTYPE_UNKNOWN). The
+ * DrawingAttributes class fishes out the applicable properties for you, creates
+ * the objects needed, and then lets you get those objects when needed.
  */
 public class GraphicAttributes extends DrawingAttributes implements
         ActionListener, Serializable, OMGraphicConstants {
 
     /**
-     * The name of the property that holds the line type of the
-     * graphic.
+     * The name of the property that holds the line type of the graphic.
      */
     public final static String lineTypeProperty = "lineType";
     /**
-     * The name of the property that holds the render type of the
-     * graphic.
+     * The name of the property that holds the render type of the graphic.
      */
     public final static String renderTypeProperty = "renderType";
 
@@ -69,20 +68,20 @@ public class GraphicAttributes extends DrawingAttributes implements
     protected boolean enableLineTypeChoice = true;
 
     public final static GraphicAttributes DEFAULT = new GraphicAttributes();
-    
+
     private I18n i18n = Environment.getI18n();
 
     /**
-     * Create a GraphicAttributes with the default settings - clear
-     * fill paint and pattern, sold black edge line of width 1.
+     * Create a GraphicAttributes with the default settings - clear fill paint
+     * and pattern, sold black edge line of width 1.
      */
     public GraphicAttributes() {
         super();
     }
 
     /**
-     * Create the GraphicAttributes and call init without a prefix for
-     * the properties. Call init without a prefix for the properties.
+     * Create the GraphicAttributes and call init without a prefix for the
+     * properties. Call init without a prefix for the properties.
      * 
      * @param props the Properties to look in.
      */
@@ -91,12 +90,11 @@ public class GraphicAttributes extends DrawingAttributes implements
     }
 
     /**
-     * Create the GraphicAttributes and call init with a prefix for
-     * the properties.
+     * Create the GraphicAttributes and call init with a prefix for the
+     * properties.
      * 
      * @param prefix the prefix marker to use for a property, like
-     *        prefix.propertyName. The period is added in this
-     *        function.
+     *        prefix.propertyName. The period is added in this function.
      * @param props the Properties to look in.
      */
     public GraphicAttributes(String prefix, Properties props) {
@@ -104,8 +102,8 @@ public class GraphicAttributes extends DrawingAttributes implements
     }
 
     /**
-     * If you want to get a DEFAULT DrawingAttributes object that you
-     * may modify, get your own copy.
+     * If you want to get a DEFAULT DrawingAttributes object that you may
+     * modify, get your own copy.
      */
     public static GraphicAttributes getGADefaultClone() {
         return (GraphicAttributes) DEFAULT.clone();
@@ -130,7 +128,7 @@ public class GraphicAttributes extends DrawingAttributes implements
             realPrefix = "";
         }
 
-        //  Set up the Graphic attributes.
+        // Set up the Graphic attributes.
         lineType = PropUtils.intFromProperties(props, realPrefix
                 + lineTypeProperty, LINETYPE_UNKNOWN);
 
@@ -159,8 +157,8 @@ public class GraphicAttributes extends DrawingAttributes implements
     }
 
     /**
-     * Set the line type. If it isn't straight, great circle or rhumb,
-     * it's set to unknown.
+     * Set the line type. If it isn't straight, great circle or rhumb, it's set
+     * to unknown.
      */
     public void setLineType(int lt) {
         int oldLineType = lineType;
@@ -185,8 +183,8 @@ public class GraphicAttributes extends DrawingAttributes implements
     }
 
     /**
-     * Set the render type. If it isn't xy, lat/lon, or lat/lon with
-     * offset, it's set to unknown.
+     * Set the render type. If it isn't xy, lat/lon, or lat/lon with offset,
+     * it's set to unknown.
      */
     public void setRenderType(int rt) {
         int oldRenderType = renderType;
@@ -205,39 +203,73 @@ public class GraphicAttributes extends DrawingAttributes implements
     }
 
     /**
-     * Set the GraphicAttributes parameters based on the current
-     * settings of an OMGraphic.
+     * Set the GraphicAttributes parameters based on the current settings of an
+     * OMGraphic.
      */
     public void setFrom(OMGraphic graphic) {
-        if (graphic == null)
-            return;
-
-        super.setFrom(graphic);
-        lineType = graphic.getLineType();
-        renderType = graphic.getRenderType();
-        enableLineTypeChoice = graphic.hasLineTypeChoice();
+        setFrom(graphic, false);
     }
 
     /**
-     * Set all the attributes for the graphic that are contained
-     * within this GraphicAttributes class.
+     * Set the GraphicAttributes parameters based on the current settings of an
+     * OMGraphic.
+     * 
+     * @param graphic OMGraphic to gather settings from.
+     * @param resetGUI flag to cause GraphicAttribute GUI reset.
+     */
+    public void setFrom(OMGraphic graphic, boolean resetGUI) {
+        if (graphic == null)
+            return;
+
+        super.setFrom(graphic, false);
+        lineType = graphic.getLineType();
+        renderType = graphic.getRenderType();
+        enableLineTypeChoice = graphic.hasLineTypeChoice();
+        
+        if (resetGUI) {
+            resetGUI();
+        }
+    }
+
+    /**
+     * Set all the attributes for the graphic that are contained within this
+     * GraphicAttributes class.
      * 
      * @param graphic OMGraphic.
      */
     public void setTo(OMGraphic graphic) {
-        if (graphic == null)
-            return;
-
-        super.setTo(graphic);
-        graphic.setLineType(lineType);
-        graphic.setRenderType(renderType);
+        setTo(graphic, false);
     }
 
     /**
-     * Method should be called on this GraphicAttributes object if the
-     * OMGraphic type doesn't support line types to disable the choice
-     * from the line menu. Circles, range rings, points, etc. are all
-     * examples of shapes that disable linetype choice.
+     * Set all the attributes for the graphic that are contained within this
+     * GraphicAttributes class.
+     * 
+     * @param graphic OMGraphic.
+     * @param resetGUI reset the GraphicAttributes GUI if desired.
+     */
+    public void setTo(OMGraphic graphic, boolean resetGUI) {
+        if (graphic == null)
+            return;
+
+        super.setTo(graphic, false);
+        graphic.setLineType(lineType);
+        graphic.setRenderType(renderType);
+
+        if (resetGUI) {
+            // The GraphicAttribute might be rendering options for this graphic,
+            // needs to know if line type choices are available.
+            enableLineTypeChoice = graphic.hasLineTypeChoice();
+            enableFillPaintChoice = !(graphic instanceof NonRegional);
+            resetGUI();
+        }
+    }
+
+    /**
+     * Method should be called on this GraphicAttributes object if the OMGraphic
+     * type doesn't support line types to disable the choice from the line menu.
+     * Circles, range rings, points, etc. are all examples of shapes that
+     * disable linetype choice.
      */
     public void setEnableLineTypeChoice(boolean value) {
         enableLineTypeChoice = value;
@@ -247,11 +279,21 @@ public class GraphicAttributes extends DrawingAttributes implements
         return enableLineTypeChoice;
     }
 
+    protected void setPreStrokeMenuOptions(JPopupMenu popup) {
+        super.setPreStrokeMenuOptions(popup);
+        JMenu ltm = getLineTypeMenu();
+        if (ltm != null) {
+            popup.add(ltm);
+        }
+    }
+
     public JMenu getLineTypeMenu() {
         JMenu lineTypeMenu = null;
 
         if (renderType == RENDERTYPE_LATLON && enableLineTypeChoice) {
-            lineTypeMenu = new JMenu(i18n.get(GraphicAttributes.class, "Line_Type", "Line Type"));
+            lineTypeMenu = new JMenu(i18n.get(GraphicAttributes.class,
+                    "Line_Type",
+                    "Line Type"));
 
             ActionListener listener = new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
@@ -264,19 +306,24 @@ public class GraphicAttributes extends DrawingAttributes implements
             };
 
             ButtonGroup group = new ButtonGroup();
-            JRadioButtonMenuItem button = new JRadioButtonMenuItem(i18n.get(GraphicAttributes.class, "Great_Circle", "Great Circle"), lineType == LineType.GreatCircle);
+            JRadioButtonMenuItem button = new JRadioButtonMenuItem(i18n.get(DrawingAttributes.class,
+                    "Great_Circle",
+                    "Great Circle"), lineType == LineType.GreatCircle);
             button.setActionCommand(String.valueOf(LineType.GreatCircle));
-            group.add(button);
             button.addActionListener(listener);
             lineTypeMenu.add(button);
 
-            button = new JRadioButtonMenuItem(i18n.get(GraphicAttributes.class, "Rhumb", "Rhumb"), lineType == LineType.Rhumb);
+            button = new JRadioButtonMenuItem(i18n.get(GraphicAttributes.class,
+                    "Rhumb",
+                    "Rhumb"), lineType == LineType.Rhumb);
             button.setActionCommand(String.valueOf(LineType.Rhumb));
             group.add(button);
             button.addActionListener(listener);
             lineTypeMenu.add(button);
 
-            button = new JRadioButtonMenuItem(i18n.get(GraphicAttributes.class, "Straight", "Straight"), lineType == LineType.Straight);
+            button = new JRadioButtonMenuItem(i18n.get(GraphicAttributes.class,
+                    "Straight",
+                    "Straight"), lineType == LineType.Straight);
             button.setActionCommand(String.valueOf(LineType.Straight));
             group.add(button);
             button.addActionListener(listener);
