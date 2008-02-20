@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/ImageFormatter.java,v $
 // $RCSfile: ImageFormatter.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:05:50 $
+// $Revision: 1.3 $
+// $Date: 2008/02/20 01:41:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -125,4 +125,10 @@ public interface ImageFormatter {
      * Some are listed in the WMTConstants interface file.
      */
     public String getFormatLabel();
+    
+    /**
+     * Get the Mime Content Type created by the ImageFormatter.
+     */
+    public String getContentType();
+
 }

@@ -9,13 +9,14 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/wmsservlet/WEB-INF/src/com/bbn/openmap/wmsservlet/OgcWmsServlet.java,v $
-// $Revision: 1.3 $ $Date: 2007/01/26 15:04:52 $ $Author: dietrick $
+// $Revision: 1.4 $ $Date: 2008/02/20 01:41:08 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.wmsservlet;
 
 import java.io.IOException;
 import java.util.Properties;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -61,8 +62,25 @@ public class OgcWmsServlet extends HttpServlet {
             IOException {
         Debug.message("wms", "OgcWmsServlet.createRequestHandler : ");
 
-        // configure this by subclassing the servlet and override this method
-        String mapDefinition = "WEB-INF/openmap.properties";
+        // use context parameter "mapDefinition" for path to openmap.properties.
+        // default to "openmap.properties".
+        String mapDefinition = getServletContext().getInitParameter("mapDefinition");
+        if (mapDefinition == null) {
+            mapDefinition = "openmap.properties";
+        }
+        
+        String schema = request.getScheme();
+        if (schema == null) {
+            throw new ServletException("schema is not specified");
+        }
+
+        String hostName = request.getLocalName();
+        if (hostName == null) {
+            hostName = request.getLocalAddr();
+            if (hostName == null) {
+                throw new ServletException("local name or addr is not specified");
+            }
+        }
 
         int serverPort = request.getServerPort();
 
@@ -75,13 +93,20 @@ public class OgcWmsServlet extends HttpServlet {
         if (servletPath == null) {
             throw new ServletException("servlet path is not specified");
         }
+        
+        // can be used to encode extra things in the path info. only usable by
+        // subclassing OgcWmsServlet
+        String servletPathInfo = request.getPathInfo();
+        if (servletPathInfo == null) {
+            servletPathInfo = "";
+        }
 
         Debug.message("wms", "Using map definition:" + mapDefinition);
         try {
             PropertyHandler propHandler = new PropertyHandler(mapDefinition);
             Properties props = propHandler.getProperties();
-            WmsRequestHandler wmsRequestHandler = new WmsRequestHandler(serverPort, contextPath
-                    + servletPath, props);
+            WmsRequestHandler wmsRequestHandler = new WmsRequestHandler(schema, hostName,
+                    serverPort, contextPath + servletPath + servletPathInfo, props);
             return wmsRequestHandler;
         } catch (java.net.MalformedURLException me) {
             Debug.message("wms", "MS: caught MalformedURLException - \n" + me.getMessage());
@@ -102,7 +127,6 @@ public class OgcWmsServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Debug.message("wms", "OgcWmsServlet.doGet");
-
         WmsRequestHandler wmsRequestHandler = createRequestHandler(request);
 
         Properties properties = parsePropertiesFromRequest(request);

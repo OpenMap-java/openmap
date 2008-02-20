@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/SunJPEGFormatter.java,v
 // $
 // $RCSfile: SunJPEGFormatter.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/09 19:17:31 $
+// $Revision: 1.6 $
+// $Date: 2008/02/20 01:41:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,7 @@ package com.bbn.openmap.image;
 import java.awt.image.BufferedImage;
 import java.util.Properties;
 
+import com.bbn.openmap.layer.util.http.HttpConnection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -80,4 +81,9 @@ public class SunJPEGFormatter extends AbstractImageFormatter {
     public String getFormatLabel() {
         return WMTConstants.IMAGEFORMAT_JPEG;
     }
+    
+    public String getContentType() {
+        return HttpConnection.CONTENT_JPEG;
+    }
+
 }

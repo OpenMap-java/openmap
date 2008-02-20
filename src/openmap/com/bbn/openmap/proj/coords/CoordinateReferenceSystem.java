@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 import com.bbn.openmap.proj.Ellipsoid;
+import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.LLXYLoader;
 import com.bbn.openmap.proj.MercatorLoader;
 import com.bbn.openmap.proj.Proj;
@@ -143,11 +144,11 @@ public class CoordinateReferenceSystem {
 
     }
 
-    public Proj createProjection(Properties overrideProjectionParameters) {
+    public GeoProj createProjection(Properties overrideProjectionParameters) {
         Properties projectionParameters = new Properties();
         projectionParameters.putAll(defaultProjectionParameters);
         projectionParameters.putAll(overrideProjectionParameters);
-        return (Proj) projectionLoader().create(projectionParameters);
+        return (GeoProj) projectionLoader().create(projectionParameters);
     }
 
     public void prepareProjection(Proj proj) {

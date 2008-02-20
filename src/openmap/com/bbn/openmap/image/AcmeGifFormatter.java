@@ -14,14 +14,15 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/AcmeGifFormatter.java,v $
 // $RCSfile: AcmeGifFormatter.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:50 $
+// $Revision: 1.4 $
+// $Date: 2008/02/20 01:41:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.image;
 
+import com.bbn.openmap.layer.util.http.HttpConnection;
 import com.bbn.openmap.util.Debug;
 
 import java.util.*;
@@ -78,4 +79,9 @@ public class AcmeGifFormatter extends AbstractImageFormatter {
     public java.awt.Graphics getGraphics(int width, int height) {
         return getGraphics(width, height, BufferedImage.TYPE_INT_ARGB);
     }
+    
+    public String getContentType() {
+        return HttpConnection.CONTENT_GIF;
+    }
+
 }

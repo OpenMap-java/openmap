@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/wmsservlet/WEB-INF/src/com/bbn/openmap/wmsservlet/HttpResponse.java,v $
 // $RCSfile: HttpResponse.java,v $
-// $Revision: 1.2 $
-// $Date: 2007/01/25 22:11:42 $
+// $Revision: 1.3 $
+// $Date: 2008/02/20 01:41:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -24,8 +24,9 @@ package com.bbn.openmap.wmsservlet;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+
 import javax.servlet.http.HttpServletResponse;
+
 import com.bbn.openmap.layer.util.http.IHttpResponse;
 
 /**
@@ -48,7 +49,7 @@ public class HttpResponse implements IHttpResponse {
     }
 
     /**
-     * Write a String response to the OutputStream.
+     * Write a String response encoded as UTF-8 to the OutputStream.
      * 
      * @param out
      *            the OutputStream of the response.
@@ -58,10 +59,7 @@ public class HttpResponse implements IHttpResponse {
      *            the string containing the response.
      */
     public void writeHttpResponse(String contentType, String response) throws IOException {
-        httpResponse.setContentType(contentType);
-        OutputStreamWriter osw = new OutputStreamWriter(httpResponse.getOutputStream());
-        osw.write(response);
-        osw.flush();
+        writeHttpResponse(contentType, response.getBytes("UTF-8"));
     }
 
     /**
@@ -76,6 +74,7 @@ public class HttpResponse implements IHttpResponse {
      */
     public void writeHttpResponse(String contentType, byte[] response) throws IOException {
         httpResponse.setContentType(contentType);
+        httpResponse.setContentLength(response.length);
         OutputStream out = httpResponse.getOutputStream();
         out.write(response, 0, response.length);
         out.flush();

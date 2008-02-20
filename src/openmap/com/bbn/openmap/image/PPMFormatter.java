@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/PPMFormatter.java,v $
 // $RCSfile: PPMFormatter.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/09 19:17:31 $
+// $Revision: 1.5 $
+// $Date: 2008/02/20 01:41:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,6 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.util.Properties;
 
+import com.bbn.openmap.layer.util.http.HttpConnection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -148,4 +149,9 @@ public class PPMFormatter extends AbstractImageFormatter {
     public String getFormatLabel() {
         return WMTConstants.IMAGEFORMAT_PPM;
     }
+    
+    public String getContentType() {
+        return HttpConnection.CONTENT_PPM;
+    }
+
 }

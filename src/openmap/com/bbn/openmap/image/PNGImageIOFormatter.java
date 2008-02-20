@@ -7,13 +7,15 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: PNGImageIOFormatter.java,v $
-//$Revision: 1.1 $
-//$Date: 2005/01/10 16:14:07 $
+//$Revision: 1.2 $
+//$Date: 2008/02/20 01:41:08 $
 //$Author: dietrick $
 //
 //**********************************************************************
 
 package com.bbn.openmap.image;
+
+import com.bbn.openmap.layer.util.http.HttpConnection;
 
 public class PNGImageIOFormatter extends ImageIOFormatter {
 
@@ -33,5 +35,10 @@ public class PNGImageIOFormatter extends ImageIOFormatter {
     public String getFormatLabel() {
         return WMTConstants.IMAGEFORMAT_PNG;
     }
+    
+    public String getContentType() {
+        return HttpConnection.CONTENT_PNG;
+    }
+
 }
 
