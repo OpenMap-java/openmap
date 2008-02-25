@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: ZonedUTMPoint.java,v $
-//$Revision: 1.4 $
-//$Date: 2008/01/29 22:04:13 $
+//$Revision: 1.5 $
+//$Date: 2008/02/25 23:19:07 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -53,6 +53,9 @@ public class ZonedUTMPoint extends UTMPoint {
               easting,
               zone_number,
               MGRSPoint.MGRSZoneToUTMZone(zone_letter));
+        // Need to remember the zone_letter passed in, that's the point of this
+        // class.
+        this.zone_letter = zone_letter;
     }
 
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.17 $
-// $Date: 2007/03/08 19:38:36 $
+// $Revision: 1.18 $
+// $Date: 2008/02/25 23:19:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -87,6 +87,12 @@ import com.bbn.openmap.util.quadtree.QuadTree;
  *    utmGridColor=hex AARRGGBB value
  *    # Color for the distance area grid lines
  *    distanceGridColor= hex AARRGGBB value
+ *    labelCutoffScale=scale to start showing labels, default is 33000000
+ *    show100KmGrid=false
+ *    utmGridColor
+ *    distanceGridColor
+ *    distanceGridResolution=0 (not shown by default, 1 = 10000 meter grid, 5 is 1 meter grid)
+ *    mgrsLabels=false
  *    
  * </pre>
  */
@@ -102,6 +108,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     protected boolean showLabels = true;
     protected float labelCutoffScale = DEFAULT_UTM_LABEL_CUTOFF_SCALE;
     protected boolean show100kGrid = false;
+    protected boolean labelsAsMGRS = false;
     /**
      * Resolution should be MRGS accuracy, 0 for none, 1-5 otherwise, where 1 =
      * 10000 meter grid, 5 is 1 meter grid.
@@ -134,6 +141,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     public final static String UTMGridColorProperty = "utmGridColor";
     public final static String DistanceGridColorProperty = "distanceGridColor";
     public final static String DistanceGridResolutionProperty = "distanceGridResolution";
+    public final static String LabelsAsMGRSProperty = "mgrsLabels";
 
     public UTMGridPlugIn() {
         UTM_DEBUG = Debug.debugging("utmgrid");
@@ -230,6 +238,45 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         addLabel(llp, UTMPoint.LLtoUTM(llp, utm), labelTree);
         llp.setLongitude(33f);
         addLabel(llp, UTMPoint.LLtoUTM(llp, utm), labelTree);
+
+        return labelTree;
+    }
+
+    protected QuadTree createMGRSZoneLabels() {
+
+        QuadTree labelTree = new QuadTree();
+
+        // Need to use MGRSPoint to get MGRS zone letters, the UTM
+        // zone letters are N and S for the hemisphere, which isn't
+        // very interesting.
+        MGRSPoint mgrs = new MGRSPoint();
+        LatLonPoint llp = new LatLonPoint.Double();
+        float latitude;
+        float longitude;
+
+        for (int lat = -80; lat <= 72; lat += 8) {
+            for (int lon = -180; lon < 180; lon += 6) {
+
+                latitude = (float) lat;
+                longitude = (float) lon;
+
+                if (lat == 56 && lon == 6) {
+                    longitude = 3f;
+                } else if (lat == 72 && (lon > 0 && lon < 42)) {
+                    continue;
+                }
+                llp.setLatLon(latitude, longitude);
+                addLabel(llp, MGRSPoint.LLtoMGRS(llp, mgrs), labelTree);
+            }
+        }
+
+        latitude = 72f;
+        llp.setLatLon(latitude, 9f);
+        addLabel(llp, MGRSPoint.LLtoMGRS(llp, mgrs), labelTree);
+        llp.setLongitude(21f);
+        addLabel(llp, MGRSPoint.LLtoMGRS(llp, mgrs), labelTree);
+        llp.setLongitude(33f);
+        addLabel(llp, MGRSPoint.LLtoMGRS(llp, mgrs), labelTree);
 
         return labelTree;
     }
@@ -409,9 +456,6 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         mgrs.setAccuracy(accuracy);
         MGRSPoint.LLtoMGRS(llp, ellipsoid, mgrs);
 
-        mgrs = new MGRSPoint(mgrs.getMGRS());
-        mgrs.setAccuracy(accuracy);
-
         float accuracyBonus = 100000f / (float) Math.pow(10, accuracy);
 
         OMGeometryList list = new OMGeometryList();
@@ -437,7 +481,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     }
 
     /**
-     * Create a polygon representing an equidistant area, at a meters offset
+     * Create a polygon representing an equi-distant area, at a meters offset
      * with a meters interval.
      * 
      * @param mgrsBasePoint the center point of interest that has been
@@ -501,8 +545,8 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         llpoints[7] = llp1.getLongitude();
 
         MGRSPoint mgrs = new MGRSPoint(northing, easting, zone_number, zone_letter);
-        mgrs.setAccuracy(mgrsBasePoint.getAccuracy());
-        MGRSPoint.MGRStoLL(mgrs, ellipsoid, llp1);
+        mgrs.resolve(mgrsBasePoint.getAccuracy());
+        // MGRSPoint.MGRStoLL(mgrs, ellipsoid, llp1);
         String mgrsString = mgrs.getMGRS();
 
         if (Debug.debugging("utmgriddetail"))
@@ -530,7 +574,11 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         if (verticalList == null) {
             verticalList = createUTMZoneVerticalLines();
             horizontalList = createUTMZoneHorizontalLines();
-            labelTree = createUTMZoneLabels();
+            if (labelsAsMGRS) {
+                labelTree = createMGRSZoneLabels();
+            } else {
+                labelTree = createUTMZoneLabels();
+            }
         }
 
         list.clear();
@@ -748,7 +796,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         JPanel utmGridPanel = new JPanel();
         utmGridPanel.add(utmGridColorButton);
         utmGridPanel.add(utmGridLabel);
-        
+
         c.gridy = 4;
         c.anchor = GridBagConstraints.WEST;
         gridbag.setConstraints(utmGridPanel, c);
@@ -852,25 +900,26 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
                 + DistanceGridColorProperty, distanceGridPaint);
         setDistanceGridResolution(PropUtils.intFromProperties(props, prefix
                 + DistanceGridResolutionProperty, distanceGridResolution));
+        labelsAsMGRS = PropUtils.booleanFromProperties(props, prefix
+                + LabelsAsMGRSProperty, labelsAsMGRS);
     }
 
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
 
         String prefix = PropUtils.getScopedPropertyPrefix(this);
-        props.put(prefix + ShowLabelsProperty,
-                new Boolean(showLabels).toString());
+        props.put(prefix + ShowLabelsProperty, Boolean.toString(showLabels));
         props.put(prefix + ShowZonesProperty, new Boolean(showZones).toString());
         props.put(prefix + LabelCutoffScaleProperty,
                 Float.toString(labelCutoffScale));
-        props.put(prefix + Show100kGridProperty,
-                new Boolean(show100kGrid).toString());
+        props.put(prefix + Show100kGridProperty, Boolean.toString(show100kGrid));
         props.put(prefix + UTMGridColorProperty,
                 Integer.toHexString(((Color) utmGridPaint).getRGB()));
         props.put(prefix + DistanceGridColorProperty,
                 Integer.toHexString(((Color) distanceGridPaint).getRGB()));
         props.put(prefix + DistanceGridResolutionProperty,
                 Integer.toString(distanceGridResolution));
+        props.put(prefix + LabelsAsMGRSProperty, Boolean.toString(labelsAsMGRS));
         return props;
     }
 
@@ -949,10 +998,18 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         props.put(DistanceGridResolutionProperty + LabelEditorProperty,
                 interString);
 
+        PropUtils.setI18NPropertyInfo(i18n,
+                props,
+                UTMGridPlugIn.class,
+                LabelsAsMGRSProperty,
+                "Labels as MRGS",
+                "Flag to display labels in MGRS notation, or UTM.",
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+
         props.put(initPropertiesProperty, ShowZonesProperty + " "
                 + UTMGridColorProperty + " " + Show100kGridProperty + " "
                 + ShowLabelsProperty + " " + DistanceGridResolutionProperty
-                + " " + DistanceGridColorProperty);
+                + " " + DistanceGridColorProperty + " " + LabelsAsMGRSProperty);
         return props;
     }
 

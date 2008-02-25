@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PropUtils.java,v
 // $
 // $RCSfile: PropUtils.java,v $
-// $Revision: 1.14 $
-// $Date: 2006/12/15 18:39:55 $
+// $Revision: 1.15 $
+// $Date: 2008/02/25 23:19:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,7 +54,7 @@ public class PropUtils {
      *        names.
      * @return Vector of marker names.
      */
-    public static Vector parseSpacedMarkers(String markerList) {
+    public static Vector<String> parseSpacedMarkers(String markerList) {
         return parseMarkers(markerList, " ");
     }
 
@@ -68,12 +68,12 @@ public class PropUtils {
      *        elements.
      * @return Vector of marker names.
      */
-    public static Vector parseMarkers(String markerList, String delim) {
-        Vector vector = null;
+    public static Vector<String> parseMarkers(String markerList, String delim) {
+        Vector<String> vector = null;
 
         if (markerList == null) {
             Debug.message("propertiesdetail", "PropUtils: marker list null!");
-            return new Vector(0);
+            return new Vector<String>(0);
         }
 
         if (Debug.debugging("propertiesdetail")) {
@@ -85,7 +85,7 @@ public class PropUtils {
         markerList = markerList.replace('\"', '\0');
         // Next, tokenize the space delimited string
         StringTokenizer tokens = new StringTokenizer(markerList, delim);
-        vector = new Vector(tokens.countTokens());
+        vector = new Vector<String>(tokens.countTokens());
         while (tokens.hasMoreTokens()) {
             String name = tokens.nextToken().trim();
             vector.addElement(name);
@@ -144,10 +144,10 @@ public class PropUtils {
 
         Properties props = new Properties();
 
-        Vector keyValuePairs = parseMarkers(list, propertySeparators);
+        Vector<String> keyValuePairs = parseMarkers(list, propertySeparators);
         for (int i = 0; i < keyValuePairs.size(); i++) {
             // Next, tokenize the space delimited string
-            StringTokenizer tokens = new StringTokenizer((String) keyValuePairs.elementAt(i), keyValueSeparators);
+            StringTokenizer tokens = new StringTokenizer(keyValuePairs.elementAt(i), keyValueSeparators);
 
             try {
                 String key = tokens.nextToken().trim();
@@ -167,7 +167,7 @@ public class PropUtils {
      * @param to the destination Properties object.
      */
     public static void copyProperties(Properties from, Properties to) {
-        Enumeration keys = from.keys();
+        Enumeration<Object> keys = from.keys();
 
         while (keys.hasMoreElements()) {
             String key = (String) keys.nextElement();
@@ -635,7 +635,7 @@ public class PropUtils {
         int size = props.size();
         String[] ret = new String[size * 2]; // key and value
         int count = 0;
-        Enumeration things = props.propertyNames();
+        Enumeration<?> things = props.propertyNames();
         while (things.hasMoreElements()) {
             ret[count] = (String) things.nextElement();
             ret[count + 1] = (String) props.getProperty(ret[count]);
@@ -681,7 +681,7 @@ public class PropUtils {
      * @throws java.net.MalformedURLException
      * @return URL
      */
-    public static URL getResourceOrFileOrURL(Class askingClass, String name)
+    public static URL getResourceOrFileOrURL(Class<? extends Object> askingClass, String name)
             throws java.net.MalformedURLException {
 
         boolean DEBUG = Debug.debugging("proputils");
@@ -787,7 +787,7 @@ public class PropUtils {
      *         in.
      */
     public static Properties setI18NPropertyInfo(I18n i18n, Properties info,
-                                                 Class classToSetFor,
+                                                 Class<? extends Object> classToSetFor,
                                                  String propertyName,
                                                  String label, String tooltip,
                                                  String editor) {

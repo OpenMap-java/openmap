@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.17 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.18 $
+// $Date: 2008/02/25 23:19:07 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -311,7 +311,15 @@ public class MGRSPoint extends ZonedUTMPoint {
      */
     public static MGRSPoint LLtoMGRS(LatLonPoint llp, Ellipsoid ellip,
                                      MGRSPoint mgrsp) {
+
+        if (mgrsp == null || !(mgrsp instanceof MGRSPoint)) {
+            mgrsp = new MGRSPoint();
+        }
+
+        // Calling LLtoUTM here results in N/S zone letters! wrong!
         mgrsp = (MGRSPoint) LLtoUTM(llp, ellip, mgrsp);
+        // Need to add this to set the right letter for the latitude.
+        mgrsp.zone_letter = mgrsp.getLetterDesignator(llp.getLatitude());
         mgrsp.resolve();
         return mgrsp;
     }
@@ -348,7 +356,7 @@ public class MGRSPoint extends ZonedUTMPoint {
 
     /**
      * Set the number of digits to use for easting and northing numbers in the
-     * mgrs string, which reflects the accuracy of the corrdinate. From 5 (1
+     * mgrs string, which reflects the accuracy of the coordinate. From 5 (1
      * meter) to 1 (10,000 meter).
      */
     public void setAccuracy(int value) {
@@ -463,21 +471,23 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Create the mgrs string based on the internal UTM settings, using the
-     * accuracy set in the MGRSPoint.
-     */
-    protected void resolve() {
-        resolve(accuracy);
-    }
-
-    /**
-     * Create the mgrs string based on the internal UTM settings.
+     * Create the mgrs string based on the internal UTM settings, should be
+     * called if the accuracy changes.
      * 
      * @param digitAccuracy The number of digits to use for the northing and
      *        easting numbers. 5 digits reflect a 1 meter accuracy, 4 - 10
      *        meter, 3 - 100 meter, 2 - 1000 meter, 1 - 10,000 meter.
      */
-    protected void resolve(int digitAccuracy) {
+    public void resolve(int digitAccuracy) {
+        setAccuracy(digitAccuracy);
+        resolve();
+    }
+    
+    /**
+     * Create the mgrs string based on the internal UTM settings, using the
+     * accuracy set in the MGRSPoint.
+     */
+    public void resolve() {
         if (zone_letter == 'Z') {
             mgrs = "Latitude limit exceeded";
         } else {
@@ -493,7 +503,7 @@ public class MGRSPoint extends ZonedUTMPoint {
                         + snorthing + " derived from " + northing);
             }
 
-            while (digitAccuracy + 1 > seasting.length()) {
+            while (accuracy + 1 > seasting.length()) {
                 seasting.insert(0, '0');
             }
 
@@ -501,7 +511,7 @@ public class MGRSPoint extends ZonedUTMPoint {
             // be
             // used for calculating stuff here.
 
-            while (digitAccuracy + 1 > snorthing.length()) {
+            while (accuracy + 1 > snorthing.length()) {
                 snorthing.insert(0, '0');
             }
 
@@ -515,8 +525,8 @@ public class MGRSPoint extends ZonedUTMPoint {
             }
 
             try {
-                sb.append(seasting.substring(1, digitAccuracy + 1)
-                        + snorthing.substring(1, digitAccuracy + 1));
+                sb.append(seasting.substring(1, accuracy + 1)
+                        + snorthing.substring(1, accuracy + 1));
 
                 mgrs = sb.toString();
             } catch (IndexOutOfBoundsException ioobe) {
