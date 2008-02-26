@@ -14,47 +14,45 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoint.java,v $
 // $RCSfile: OMPoint.java,v $
-// $Revision: 1.11 $
-// $Date: 2006/02/16 16:22:47 $
+// $Revision: 1.12 $
+// $Date: 2008/02/25 23:59:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
 
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 import java.io.Serializable;
 
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
- * A OMPoint is used to mark a specific point. You can set this point
- * as a lat/lon position, a screen X/Y position, or a lat/lon position
- * with a screen X/Y offset. The position can be marked with a
- * rectangle or circle with an adjusted radius. The radius is the
- * pixel distance from the center of the location to each edge of the
- * marking rectangle or circle.
+ * A OMPoint is used to mark a specific point. You can set this point as a
+ * lat/lon position, a screen X/Y position, or a lat/lon position with a screen
+ * X/Y offset. The position can be marked with a rectangle or circle with an
+ * adjusted radius. The radius is the pixel distance from the center of the
+ * location to each edge of the marking rectangle or circle.
  */
 public class OMPoint extends OMGraphic implements Serializable {
 
     public final static int DEFAULT_RADIUS = 2;
     public final static boolean DEFAULT_ISOVAL = false;
     /**
-     * The number of pixels in the radius for the point
-     * representation.
+     * The number of pixels in the radius for the point representation.
      */
     protected int radius = DEFAULT_RADIUS;
     /**
-     * Horizontal window position of point, in pixels from left side
-     * of window.
+     * Horizontal window position of point, in pixels from left side of window.
      */
     protected int x = 0;
     /**
-     * Vertical window position of point, in pixels from the top of
-     * the window.
+     * Vertical window position of point, in pixels from the top of the window.
      */
     protected int y = 0;
     /** Latitude of point, decimal degrees. */
@@ -71,16 +69,14 @@ public class OMPoint extends OMGraphic implements Serializable {
     }
 
     /**
-     * Create an OMPoint at a lat/lon position, with the default
-     * radius.
+     * Create an OMPoint at a lat/lon position, with the default radius.
      */
     public OMPoint(float lat, float lon) {
         this(lat, lon, DEFAULT_RADIUS);
     }
 
     /**
-     * Create an OMPoint at a lat/lon position, with the specified
-     * radius.
+     * Create an OMPoint at a lat/lon position, with the specified radius.
      */
     public OMPoint(float lat, float lon, int radius) {
         setRenderType(RENDERTYPE_LATLON);
@@ -89,16 +85,16 @@ public class OMPoint extends OMGraphic implements Serializable {
     }
 
     /**
-     * Create an OMPoint at a lat/lon position with a screen X/Y pixel
-     * offset, with the default radius.
+     * Create an OMPoint at a lat/lon position with a screen X/Y pixel offset,
+     * with the default radius.
      */
     public OMPoint(float lat, float lon, int offsetx, int offsety) {
         this(lat, lon, offsetx, offsety, DEFAULT_RADIUS);
     }
 
     /**
-     * Create an OMPoint at a lat/lon position with a screen X/Y pixel
-     * offset, with the specified radius.
+     * Create an OMPoint at a lat/lon position with a screen X/Y pixel offset,
+     * with the specified radius.
      */
     public OMPoint(float lat, float lon, int offsetx, int offsety, int radius) {
         setRenderType(RENDERTYPE_OFFSET);
@@ -107,16 +103,16 @@ public class OMPoint extends OMGraphic implements Serializable {
     }
 
     /**
-     * Put the point at a screen location, marked with a rectangle
-     * with edge size DEFAULT_RADIUS * 2 + 1.
+     * Put the point at a screen location, marked with a rectangle with edge
+     * size DEFAULT_RADIUS * 2 + 1.
      */
     public OMPoint(int x, int y) {
         this(x, y, DEFAULT_RADIUS);
     }
 
     /**
-     * Put the point at a screen location, marked with a rectangle
-     * with edge size radius * 2 + 1.
+     * Put the point at a screen location, marked with a rectangle with edge
+     * size radius * 2 + 1.
      */
     public OMPoint(int x, int y, int radius) {
         setRenderType(RENDERTYPE_XY);
@@ -138,8 +134,8 @@ public class OMPoint extends OMGraphic implements Serializable {
     }
 
     /**
-     * For screen x/y rendertype points, to move the point location.
-     * This method does not call setX() and setY().
+     * For screen x/y rendertype points, to move the point location. This method
+     * does not call setX() and setY().
      */
     public void set(int x, int y) {
         // You have to set these directly, or you can mess up the grab
@@ -196,8 +192,8 @@ public class OMPoint extends OMGraphic implements Serializable {
     }
 
     /**
-     * Set the radius of the marking rectangle. The edge size of the
-     * marking rectangle will be radius * 2 + 1.
+     * Set the radius of the marking rectangle. The edge size of the marking
+     * rectangle will be radius * 2 + 1.
      */
     public void setRadius(int radius) {
         this.radius = radius;
@@ -242,7 +238,7 @@ public class OMPoint extends OMGraphic implements Serializable {
             Debug.message("omgraphic", "OMPoint: null projection in generate!");
             return false;
         }
-        
+
         // reset the internals
         int x1 = 0;
         int x2 = 0;
@@ -255,12 +251,12 @@ public class OMPoint extends OMGraphic implements Serializable {
             y1 = y - radius;
             x2 = x + radius;
             y2 = y + radius;
-            
+
             break;
         case RENDERTYPE_OFFSET:
         case RENDERTYPE_LATLON:
             if (!proj.isPlotable(lat1, lon1)) {
-                setNeedToRegenerate(true);//HMMM not the best flag
+                setNeedToRegenerate(true);// HMMM not the best flag
                 return false;
             }
             Point p1 = (Point) proj.forward(lat1, lon1, new Point());
@@ -285,7 +281,7 @@ public class OMPoint extends OMGraphic implements Serializable {
 
         initLabelingDuringGenerate();
         setLabelLocation(new Point(x2, y1));
-        
+
         setNeedToRegenerate(false);
         return true;
     }
@@ -294,5 +290,154 @@ public class OMPoint extends OMGraphic implements Serializable {
         return false;
     }
 
-}
+    public static class Image extends OMPoint {
+        protected java.awt.Image image;
+        protected boolean useImage = true;
+        protected int imageX = 0;
+        protected int imageY = 0;
 
+        /**
+         * Create an OMPoint at a lat/lon position, with the default radius.
+         */
+        public Image(float lat, float lon) {
+            super(lat, lon);
+        }
+
+        /**
+         * Create an OMPoint at a lat/lon position, with the specified radius.
+         */
+        public Image(float lat, float lon, int radius) {
+            super(lat, lon, radius);
+        }
+
+        /**
+         * Create an OMPoint at a lat/lon position with a screen X/Y pixel
+         * offset, with the default radius.
+         */
+        public Image(float lat, float lon, int offsetx, int offsety) {
+            this(lat, lon, offsetx, offsety, DEFAULT_RADIUS);
+        }
+
+        /**
+         * Create an OMPoint at a lat/lon position with a screen X/Y pixel
+         * offset, with the specified radius.
+         */
+        public Image(float lat, float lon, int offsetx, int offsety, int radius) {
+            super(lat, lon, offsetx, offsety, radius);
+        }
+
+        /**
+         * Put the point at a screen location, marked with a rectangle with edge
+         * size DEFAULT_RADIUS * 2 + 1.
+         */
+        public Image(int x, int y) {
+            this(x, y, DEFAULT_RADIUS);
+        }
+
+        /**
+         * Put the point at a screen location, marked with a rectangle with edge
+         * size radius * 2 + 1.
+         */
+        public Image(int x, int y, int radius) {
+            super(x, y, radius);
+        }
+
+        public java.awt.Image getImage() {
+            return image;
+        }
+
+        public void setImage(java.awt.Image image) {
+            this.image = image;
+        }
+
+        public boolean isUseImage() {
+            return useImage;
+        }
+
+        public void setUseImage(boolean useImage) {
+            setNeedToRegenerate(this.useImage != useImage);
+            this.useImage = useImage;
+        }
+
+        /**
+         * Prepare the rectangle for rendering.
+         * 
+         * @param proj Projection
+         * @return true if generate was successful
+         */
+        public boolean generate(Projection proj) {
+            if (!isUseImage() || image == null) {
+                return super.generate(proj);
+            }
+
+            setShape(null);
+            if (proj == null) {
+                Debug.message("omgraphic",
+                        "OMPoint: null projection in generate!");
+                return false;
+            }
+
+            // reset the internals
+            int imageHeight = image.getHeight(null);
+            int imageWidth = image.getWidth(null);
+            int imageOffsetX = imageWidth / 2;
+            int imageOffsetY = imageHeight / 2;
+            switch (renderType) {
+            case RENDERTYPE_XY:
+                imageX = x - imageOffsetX;
+                imageY = y - imageOffsetY;
+
+                break;
+            case RENDERTYPE_OFFSET:
+            case RENDERTYPE_LATLON:
+                if (!proj.isPlotable(lat1, lon1)) {
+                    setNeedToRegenerate(true);// HMMM not the best flag
+                    return false;
+                }
+                Point2D p1 = proj.forward(lat1, lon1);
+
+                imageX = (int) p1.getX() + x - imageOffsetX;
+                imageY = (int) p1.getY() + y - imageOffsetY;
+                break;
+            case RENDERTYPE_UNKNOWN:
+                System.err.println("OMPoint.Image.generate(): invalid RenderType");
+                return false;
+            }
+
+            shape = createBoxShape(imageX, imageY, imageWidth, imageHeight);
+
+            initLabelingDuringGenerate();
+            setLabelLocation(new Point(imageX + imageWidth, imageY
+                    + imageOffsetY));
+
+            setNeedToRegenerate(false);
+            return true;
+        }
+
+        /**
+         * Render the image when useImage is true, or calls super implementation
+         * otherwise
+         * 
+         * @see com.bbn.openmap.omGraphics.OMGraphic#render(java.awt.Graphics)
+         */
+        public void render(Graphics g) {
+            if (!isRenderable())
+                return;
+
+            if (isUseImage()) {
+                g.drawImage(image, imageX, imageY, null);
+                renderLabel(g);
+            } else
+                super.render(g);
+        }
+
+        /**
+         * Overriding this method will get mouse events to work over any part of
+         * the image.
+         */
+        public boolean shouldRenderFill() {
+            return isUseImage() || super.shouldRenderFill();
+        }
+    }
+
+}
