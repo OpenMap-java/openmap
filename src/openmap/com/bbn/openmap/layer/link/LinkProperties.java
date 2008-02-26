@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkProperties.java,v $
 // $RCSfile: LinkProperties.java,v $
-// $Revision: 1.8 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.9 $
+// $Date: 2008/02/26 17:39:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -352,11 +352,15 @@ public class LinkProperties extends Properties implements
 
     public Paint getPaint(String paintProperty, String defaultPaintString) {
         Paint paint = null;
+
+        String paintKey = "paint" + getProperty(paintProperty);
+
         if (paintProperty != null) {
-            paint = (Paint) renderAttributesCache.get(paintProperty);
+            paint = (Paint) renderAttributesCache.get(paintKey);
 
             if (paint == null) {
-                paint = (Paint) renderAttributesCache.get(defaultPaintString);
+                paint = (Paint) renderAttributesCache.get("paint"
+                        + defaultPaintString);
             }
 
             if (paint != null) {
@@ -369,7 +373,7 @@ public class LinkProperties extends Properties implements
                 defaultPaintString,
                 true);
 
-        renderAttributesCache.put(paintProperty, paint);
+        renderAttributesCache.put(paintKey, paint);
 
         return paint;
     }
@@ -377,23 +381,28 @@ public class LinkProperties extends Properties implements
     public Paint getFillPaint() {
 
         Paint fillPaint = getPaint(LPC_FILLCOLOR, CLEAR_COLOR_STRING);
-
-        String fillPaintString = getProperty(LPC_FILLCOLOR);
         String fillPatternString = getProperty(LPC_FILLPATTERN);
 
         if (fillPatternString == null
                 || fillPatternString.equalsIgnoreCase(LPC_SOLID_PATTERN)) {
             return fillPaint;
         } else {
+            String fillPaintString = getProperty(LPC_FILLCOLOR);
+            String texturePaintKey = "fill" + fillPaintString + fillPatternString;
 
             if (fillPaintString == null) {
                 fillPaint = Color.black;
 
-                TexturePaint ret = (TexturePaint) renderAttributesCache.get(fillPaintString
-                        + fillPatternString);
+                TexturePaint ret = (TexturePaint) renderAttributesCache.get("fill" + fillPaint + fillPatternString);
 
                 if (ret != null) {
                     return ret;
+                } else {
+                    ret = (TexturePaint) renderAttributesCache.get(texturePaintKey);
+
+                    if (ret != null) {
+                        return ret;
+                    }
                 }
             }
 
@@ -437,8 +446,7 @@ public class LinkProperties extends Properties implements
             Rectangle r = new Rectangle(0, 0, 8, 8);
             TexturePaint texturePaint = new TexturePaint(bi, r);
 
-            renderAttributesCache.put(fillPaintString + fillPatternString,
-                    texturePaint);
+            renderAttributesCache.put(texturePaintKey, texturePaint);
             return texturePaint;
         }
     }
