@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/Tokenizer.java,v $
 // $RCSfile: Tokenizer.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:30 $
+// $Revision: 1.4 $
+// $Date: 2008/02/27 01:05:52 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,15 +37,21 @@ public class Tokenizer extends java.io.PushbackReader {
 
     // KRA 25Oct98: class Match requires access to NEWLINE and EOF,
     // YOW!
-    static Object NEWLINE = new Object() {
+    public final static Object NEWLINE = new Object() {
         public String toString() {
             return "<newline>";
         }
     };
 
-    static Object EOF = new Object() {
+    public final static Object EOF = new Object() {
         public String toString() {
             return "<EOF>";
+        }
+    };
+    
+    public final static Object EMPTY = new Object() {
+        public String toString() {
+            return "";
         }
     };
 
