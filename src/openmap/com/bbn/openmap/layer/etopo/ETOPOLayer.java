@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/etopo/ETOPOLayer.java,v $
 // $RCSfile: ETOPOLayer.java,v $
-// $Revision: 1.10 $
-// $Date: 2006/02/16 16:22:48 $
+// $Revision: 1.11 $
+// $Date: 2008/02/27 01:57:17 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -54,56 +54,47 @@ import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * ETOPOLayer extends Layer to provide rendering of the ETOPO5 world
- * elevation data set. The ETOPO5 data consists of terrain altitude
- * and ocean depth measurements at 5 minute intervals for the entire
- * globe. Rendering is allowed in any projection that implements the
- * inverse(int,int) method. Two types of rendering are provided:
- * grayscale slope-shaded and colored slope-shaded.
+ * ETOPOLayer extends Layer to provide rendering of the ETOPO5 world elevation
+ * data set. The ETOPO5 data consists of terrain altitude and ocean depth
+ * measurements at 5 minute intervals for the entire globe. Rendering is allowed
+ * in any projection that implements the inverse(int,int) method. Two types of
+ * rendering are provided: grayscale slope-shaded and colored slope-shaded.
  * <p>
  * The distribution consists of the following:
  * <ul>
  * <li>1. ETOPOLayer.java</li>
- * <li>2. ETOPO5 (5 minute spacing data set, 4320x2160 shorts, ~18MB)
- * </li>
- * <li>3. ETOPO10 (10 minute spacing data set, sampled from ETOPO5,
- * ~4.6MB)</li>
- * <li>4. ETOPO15 (15 minute spacing data set, sampled from ETOPO5,
- * ~2MB)</li>
- * <li>5. ETOPOLayer.properties (example properties for
- * openmap.properties)</li>
+ * <li>2. ETOPO5 (5 minute spacing data set, 4320x2160 shorts, ~18MB) </li>
+ * <li>3. ETOPO10 (10 minute spacing data set, sampled from ETOPO5, ~4.6MB)</li>
+ * <li>4. ETOPO15 (15 minute spacing data set, sampled from ETOPO5, ~2MB)</li>
+ * <li>5. ETOPOLayer.properties (example properties for openmap.properties)</li>
  * </ul>
  * <p>
- * The sampled ETOPO data sets are provided to speed up the loading of
- * data to compute the slope shading. The algorithm inverse projects
- * the x/y screen coords (for the entire projection screen space) to
- * get the corresponding lat/lon coords then samples the database to
- * get altitude/depth and slope values. While this method is slower
- * than the forward projection method, it does provide a more
- * attractive screen presentation and will support all projections
- * (not just the equidistant cylindrical). A palette provides the
- * ability to choose between the 5,10, or 15 minute resolutions, as
- * well as color or grayscale selection, transparency, and slope
- * contrast.
+ * The sampled ETOPO data sets are provided to speed up the loading of data to
+ * compute the slope shading. The algorithm inverse projects the x/y screen
+ * coords (for the entire projection screen space) to get the corresponding
+ * lat/lon coords then samples the database to get altitude/depth and slope
+ * values. While this method is slower than the forward projection method, it
+ * does provide a more attractive screen presentation and will support all
+ * projections (not just the equidistant cylindrical). A palette provides the
+ * ability to choose between the 5,10, or 15 minute resolutions, as well as
+ * color or grayscale selection, transparency, and slope contrast.
  * <p>
- * The ETOPOLayer also relies on properties to set its variables, such
- * as the etopo frame paths (there can be several at a time), the
- * opaqueness of the frame images, number of colors to use, and some
- * other display variables. The ETOPOLayer properties look something
- * like this:
+ * The ETOPOLayer also relies on properties to set its variables, such as the
+ * etopo frame paths (there can be several at a time), the opaqueness of the
+ * frame images, number of colors to use, and some other display variables. The
+ * ETOPOLayer properties look something like this:
  * <P>
  * 
- * #------------------------------ <BR># Properties for ETOPOLayer
- * <BR>
- * #------------------------------ <BR># This property should reflect
- * the paths to the etopo directory <BR>
+ * #------------------------------ <BR># Properties for ETOPOLayer <BR>
+ * #------------------------------ <BR># This property should reflect the paths
+ * to the etopo directory <BR>
  * etopo.path=c:/openmap/share <BR>
  * <BR># Number between 0-255: 0 is transparent, 255 is opaque <BR>
  * etopo.opaque=255 <BR>
  * <BR># Number of colors to use on the maps - 16, 32, 216 <BR>
  * etopo.number.colors=216 <BR>
- * <BR># Type of display for the data <BR># 0 = grayscale slope
- * shading <BR># 1 = colored slope shading <BR>
+ * <BR># Type of display for the data <BR># 0 = grayscale slope shading <BR>#
+ * 1 = colored slope shading <BR>
  * etopo.view.type=1 <BR>
  * <BR># Contrast setting, 1-5 <BR>
  * etopo.contrast=3 <BR>
@@ -113,7 +104,7 @@ import com.bbn.openmap.util.PropUtils;
  * #------------------------------------- <BR># End of properties for
  * ETOPOLayer <BR>
  * #------------------------------------- <BR>
- *  
+ * 
  */
 public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener {
 
@@ -121,8 +112,8 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
     public static final int SLOPESHADING = 0;
 
     /**
-     * Colorized slope shading. Color basnds are based on elevation,
-     * and are accented by shaded indications.
+     * Colorized slope shading. Color basnds are based on elevation, and are
+     * accented by shaded indications.
      */
     public static final int COLOREDSHADING = 1;
 
@@ -150,27 +141,25 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 
     /** ETOPO elevation files */
     protected final static String[] etopoFileNames = { "/ETOPO2", "/ETOPO5",
-            "/ETOPO10", "/ETOPO15" }; //ep-g
+            "/ETOPO10", "/ETOPO15" }; // ep-g
 
     /** dimensions of the ETOPO files (don't mess with these!) */
-    protected final static int[] etopoWidths = { 10800, 4320, 2160, 1440 };//ep-g
-    protected final static int[] etopoHeights = { 5400, 2160, 1080, 720 }; //ep-g
+    protected final static int[] etopoWidths = { 10800, 4320, 2160, 1440 };// ep-g
+    protected final static int[] etopoHeights = { 5400, 2160, 1080, 720 }; // ep-g
 
     /**
-     * Spacings (in meters) between adjacent lon points at the
-     * equater. The values here were aesthetically defined (they are
-     * not the actual spacings)
+     * Spacings (in meters) between adjacent lon points at the equater. The
+     * values here were aesthetically defined (they are not the actual spacings)
      */
     protected final static double[] etopoSpacings = { 1800., 3500., 7000.,
-            10500. }; //ep-g
+            10500. }; // ep-g
 
     /**
-     * The display type for the etopo images. Slope shading is
-     * grayscale terrain modeling with highlights and shading, with
-     * the 'sun' being in the NorthWest. Colored Elevation shading is
-     * the same thing, except colors are added to indicate the
-     * elevation. Band shading colors the pixels according to a range
-     * of elevations.
+     * The display type for the etopo images. Slope shading is grayscale terrain
+     * modeling with highlights and shading, with the 'sun' being in the
+     * NorthWest. Colored Elevation shading is the same thing, except colors are
+     * added to indicate the elevation. Band shading colors the pixels according
+     * to a range of elevations.
      */
     protected int viewType;
 
@@ -183,17 +172,24 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
     /** transparency control */
     protected int opaqueness;
 
+    /**
+     * Number of pixel spacers that should be added to a data file, per line, to
+     * adjust for skewing.
+     */
+    protected int spacer = 0;
+
     /** property suffixes */
     public static final String ETOPOPathProperty = "path";
     public static final String OpaquenessProperty = "opaque";
     public static final String ETOPOViewTypeProperty = "view.type";
     public static final String ETOPOSlopeAdjustProperty = "contrast";
     public static final String ETOPOMinuteSpacingProperty = "minute.spacing";
+    public static final String ETOPOPixelSpacerProperty = "spacer";
 
     /**
-     * Holds the slope values, updated when the resolution changes or
-     * the slope adjustment (contrast) is changed. Slope values are
-     * scaled between -127 to 127.
+     * Holds the slope values, updated when the resolution changes or the slope
+     * adjustment (contrast) is changed. Slope values are scaled between -127 to
+     * 127.
      */
     protected byte[] slopeMap = null;
 
@@ -221,19 +217,18 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
     protected boolean spacingReset = true;
 
     /**
-     * The default constructor for the Layer. All of the attributes
-     * are set to their default values.
+     * The default constructor for the Layer. All of the attributes are set to
+     * their default values.
      */
     public ETOPOLayer() {
         this(null);
     }
 
     /**
-     * The default constructor for the Layer. All of the attributes
-     * are set to their default values.
+     * The default constructor for the Layer. All of the attributes are set to
+     * their default values.
      * 
-     * @param pathToETOPODir path to the directory holding the ETOPO
-     *        data
+     * @param pathToETOPODir path to the directory holding the ETOPO data
      */
     public ETOPOLayer(String pathToETOPODir) {
         setName("ETOPO");
@@ -339,14 +334,16 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
         minuteSpacing = PropUtils.intFromProperties(properties, prefix
                 + ETOPOMinuteSpacingProperty, DEFAULT_MINUTE_SPACING);
 
+        spacer = PropUtils.intFromProperties(properties, prefix
+                + ETOPOPixelSpacerProperty, spacer);
+
     }
 
     /**
-     * Builds the slope index map. This method is called when the
-     * ETOPO resolution changes and when the slope contrast changes.
-     * The slope of the terrain is cliped; slopes are between the
-     * range of +/- 45 deg. The calculated slope value is then
-     * linearly scaled to the range +/- 127.
+     * Builds the slope index map. This method is called when the ETOPO
+     * resolution changes and when the slope contrast changes. The slope of the
+     * terrain is cliped; slopes are between the range of +/- 45 deg. The
+     * calculated slope value is then linearly scaled to the range +/- 127.
      */
     protected void buildSlopeMap() {
         // this should never happen, but...
@@ -354,11 +351,11 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
             return;
 
         // get resolution index
-        int resIdx = minuteSpacing / 5; //ep-g
+        int resIdx = minuteSpacing / 5; // ep-g
         if (resIdx < 0)
             resIdx = 0;
-        else if (resIdx > 3) //ep-g
-            resIdx = 3; //ep-g
+        else if (resIdx > 3) // ep-g
+            resIdx = 3; // ep-g
 
         // Set deltaX constant. The deltaX is actually is smaller at
         // latitude
@@ -421,25 +418,25 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
     }
 
     /**
-     * Loads the database from the appropriate file based on the
-     * current resolution. The data files are in INTEL format (must
-     * call BinaryBufferedFile.byteOrder(true)).
+     * Loads the database from the appropriate file based on the current
+     * resolution. The data files are in INTEL format (must call
+     * BinaryBufferedFile.byteOrder(true)).
      */
     protected void loadBuffer() {
 
         // get the resolution index
-        int resIdx = minuteSpacing / 5; //ep-g
+        int resIdx = minuteSpacing / 5; // ep-g
         if (resIdx < 0)
             resIdx = 0;
-        else if (resIdx > 3) //ep-g
-            resIdx = 3; //ep-g
+        else if (resIdx > 3) // ep-g
+            resIdx = 3; // ep-g
 
         // build file name
         String fileName = path + etopoFileNames[resIdx];
 
         // Clean this out...dfd
         dataBuffer = null;
-        
+
         try {
 
             // treat as buffered binary
@@ -449,23 +446,21 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
             // set width/height
             bufferWidth = etopoWidths[resIdx];
             bufferHeight = etopoHeights[resIdx];
-            
+
             int spacer = 1;
 
             // don't know why I have to do this, but there seems to be
             // a wrapping thing going on with different data sets.
             switch (minuteSpacing) {
             case (2):
-                spacer = 1;
+                spacer = 1 + this.spacer;
                 break;
             case (5):
-                spacer = 0;
+                spacer = 0 + this.spacer;
                 break;
             default:
-                spacer = 1;
+                spacer = 1 + this.spacer;
             }
-
-//            bufferWidth = bufferWidth + spacer;
 
             // allocate storage
             dataBuffer = new short[(bufferWidth + spacer) * bufferHeight];
@@ -477,9 +472,9 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
             // done
             binFile.close();
 
-            //This is important for image creation.
+            // This is important for image creation.
             bufferWidth += spacer;
-            
+
         } catch (FileNotFoundException e) {
             Debug.error("ETOPOLayer loadBuffer(): file " + fileName
                     + " not found");
@@ -495,28 +490,27 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 
     /*
      * Builds the raster image that has the dimensions of the current
-     * projection. The alogorithm is is follows: <P><pre> allocate
-     * storage the size of the projection (use ints for RGBA)
+     * projection. The alogorithm is is follows: <P><pre> allocate storage the
+     * size of the projection (use ints for RGBA)
      * 
      * for each screen point
      * 
-     * inverse project screen point to get lat/lon (world coords) get
-     * altitude and/or slope at the world coord compute (lookup) color
-     * at the world coord set color value into screen coord location
+     * inverse project screen point to get lat/lon (world coords) get altitude
+     * and/or slope at the world coord compute (lookup) color at the world coord
+     * set color value into screen coord location
      * 
      * end
      * 
      * create OMRaster from the int array data. </pre>
      * 
-     * The code contains a HACK (primarily for the Orthographic
-     * projection) since * x/y values which would return an "Outer
-     * Space" value actually return lat/lon values for the center of
-     * the projection (see Orthographic.inverse(...)). This resulted
-     * in the "Outer Space" being painted the color of whatever the
-     * center lat/lon was. The HACK turns any center lat/lon value
-     * into black. Of course, this causes valid center lat/lon values
-     * to be painted black, but the trade off is worth it visually.
-     * The appropriate method may be to have Projection.inverse and
+     * The code contains a HACK (primarily for the Orthographic projection)
+     * since * x/y values which would return an "Outer Space" value actually
+     * return lat/lon values for the center of the projection (see
+     * Orthographic.inverse(...)). This resulted in the "Outer Space" being
+     * painted the color of whatever the center lat/lon was. The HACK turns any
+     * center lat/lon value into black. Of course, this causes valid center
+     * lat/lon values to be painted black, but the trade off is worth it
+     * visually. The appropriate method may be to have Projection.inverse and
      * its variants raise an exception for "Outer Space" values.
      */
     protected OMRaster buildRaster() {
@@ -650,14 +644,13 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
     }
 
     /**
-     * Prepares the graphics for the layer. This is where the
-     * getRectangle() method call is made on the etopo.
+     * Prepares the graphics for the layer. This is where the getRectangle()
+     * method call is made on the etopo.
      * <p>
-     * Occasionally it is necessary to abort a prepare call. When this
-     * happens, the map will set the cancel bit in the LayerThread,
-     * (the thread that is running the prepare). If this Layer needs
-     * to do any cleanups during the abort, it should do so, but
-     * return out of the prepare asap.
+     * Occasionally it is necessary to abort a prepare call. When this happens,
+     * the map will set the cancel bit in the LayerThread, (the thread that is
+     * running the prepare). If this Layer needs to do any cleanups during the
+     * abort, it should do so, but return out of the prepare asap.
      */
     public synchronized OMGraphicList prepare() {
 
@@ -704,7 +697,7 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
         OMGraphicList omGraphicList = new OMGraphicList();
         omGraphicList.addOMGraphic(buildRaster());
 
-        /////////////////////
+        // ///////////////////
         // safe quit
         int size = 0;
         if (omGraphicList != null) {
@@ -726,9 +719,9 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
         return omGraphicList;
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // GUI
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     /** The user interface palette for the ETOPO layer. */
     protected Box palette = null;
@@ -749,35 +742,35 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
             // The ETOPO resolution selector
             JPanel resPanel = PaletteHelper.createPaletteJPanel("Lat/Lon Spacing");
             String[] resStrings = { "2 Minute", "5 Minute", "10 Minute",
-                    "15 Minute" }; //ep-g
+                    "15 Minute" }; // ep-g
 
             JComboBox resList = new JComboBox(resStrings);
             resList.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     JComboBox jcb = (JComboBox) e.getSource();
                     int newRes = jcb.getSelectedIndex();
-                    int curRes = minuteSpacing / 5; //ep-g
+                    int curRes = minuteSpacing / 5; // ep-g
                     if (curRes != newRes)
                         spacingReset = true;
                     switch (newRes) {
                     case 0:
                         minuteSpacing = 2;
-                        break; //ep-g
+                        break; // ep-g
                     case 1:
                         minuteSpacing = 5;
-                        break; //ep-g
+                        break; // ep-g
                     case 2:
                         minuteSpacing = 10;
-                        break; //ep-g
+                        break; // ep-g
                     case 3:
                         minuteSpacing = 15;
-                        break; //ep-g
+                        break; // ep-g
                     }
 
                 }
             });
 
-            resList.setSelectedIndex(minuteSpacing / 5); //ep-g
+            resList.setSelectedIndex(minuteSpacing / 5); // ep-g
             resPanel.add(resList);
 
             // The ETOPO view selector
@@ -862,9 +855,9 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
         return palette;
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // ActionListener interface implementation
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     /**
      * Used just for the redraw button.

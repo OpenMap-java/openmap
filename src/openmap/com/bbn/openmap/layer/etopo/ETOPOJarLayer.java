@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/etopo/ETOPOJarLayer.java,v $
 // $RCSfile: ETOPOJarLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2006/02/16 16:22:48 $
+// $Revision: 1.8 $
+// $Date: 2008/02/27 01:57:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -90,7 +90,21 @@ public class ETOPOJarLayer extends ETOPOLayer {
             bufferWidth = etopoWidths[resIdx];
             bufferHeight = etopoHeights[resIdx];
 
-            int numberOfWords = (bufferWidth + 1) * bufferHeight;
+            int spacer = 1;
+            // don't know why I have to do this, but there seems to be
+            // a wrapping thing going on with different data sets.
+            switch (minuteSpacing) {
+            case (2):
+                spacer = 1 + this.spacer;
+                break;
+            case (5):
+                spacer = 0 + this.spacer;
+                break;
+            default:
+                spacer = 1 + this.spacer;
+            }
+            
+            int numberOfWords = (bufferWidth + spacer) * bufferHeight;
 
             // allocate storage
             dataBuffer = new short[numberOfWords];
@@ -108,7 +122,7 @@ public class ETOPOJarLayer extends ETOPOLayer {
             bis.close();
 
             // don't know why I have to do this, but...
-            bufferWidth = bufferWidth + 1;
+            bufferWidth = bufferWidth + spacer;
 
         } catch (FileNotFoundException e) {
             Debug.error("ETOPOLayer loadBuffer(): file " + 
