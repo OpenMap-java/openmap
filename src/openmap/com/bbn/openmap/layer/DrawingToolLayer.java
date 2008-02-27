@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.33 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.34 $
+// $Date: 2008/02/27 01:30:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -151,7 +151,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         }
 
         String fileList = props.getProperty(realPrefix + SerializedURLNameProperty);
-        if (fileList != null) {
+        if (fileList != null && fileList.trim().length() > 0) {
         	fileName=fileList.split(" ");
         }
     }
