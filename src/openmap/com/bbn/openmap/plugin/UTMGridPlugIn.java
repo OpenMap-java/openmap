@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.18 $
-// $Date: 2008/02/25 23:19:07 $
+// $Revision: 1.19 $
+// $Date: 2008/02/27 02:10:00 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -110,7 +110,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     protected boolean show100kGrid = false;
     protected boolean labelsAsMGRS = false;
     /**
-     * Resolution should be MRGS accuracy, 0 for none, 1-5 otherwise, where 1 =
+     * Resolution should be MGRS accuracy, 0 for none, 1-5 otherwise, where 1 =
      * 10000 meter grid, 5 is 1 meter grid.
      */
     protected int distanceGridResolution = 0;
@@ -1002,7 +1002,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
                 props,
                 UTMGridPlugIn.class,
                 LabelsAsMGRSProperty,
-                "Labels as MRGS",
+                "Labels as MGRS",
                 "Flag to display labels in MGRS notation, or UTM.",
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
@@ -1046,7 +1046,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     }
 
     /**
-     * Resolution should be MRGS accuracy, 0 for none, 1-5 otherwise, where 1 =
+     * Resolution should be MGRS accuracy, 0 for none, 1-5 otherwise, where 1 =
      * 10000 meter grid, 5 is 1 meter grid.
      */
     public void setDistanceGridResolution(int value) {
