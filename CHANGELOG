@@ -1,3 +1,189 @@
+2008-02-27  Don Dietrick  <dietrick@wonkavision.local>
+	
+	* The com.bbn.openmap.util.propertyEditor.Inspector was updated to
+	provide a simple GUI that can be inserted on behalf of a
+	PropertyConsumer, without providing window controls, etc.  It can
+	be used just to provide the widgets for the PropertyConsumer
+	adjustments.
+
+	The DrawingAttributesPropertyEditor was created as an example of
+	creating a property editor widget that can control multiple
+	properties in a single GUI widget.
+	
+	* The com.bbn.openmap.util.cacheHandler package was added,
+	allowing for a more generic caching mechanism than was provided by
+	the com.bbn.openmap.layer.util.cacheHandler package.
+	
+	* The GeoCoordTransformation interface was added, providing a
+	mechanism that allows transformations from pre-projected
+	coordinates into lat/lon space.  The
+	com.bbn.openmap.dataAccess.shape classes can use the
+	GeoCoordTransformation objects in order to display pre-projected
+	shape data.  Several GCTs have been implemented, including
+	LatLonGCT, MercatorGCT, UTMGCT.  A CoordinateReferenceSystem
+	object also uses the GCTs, and assists the WMS server code in
+	handling requests.
+
+	The MGRSPoint was updated to handle zone letters correctly,
+	instead of defaulting to UTM values.
+	
+	* UTMProjection added.
+	
+	* OMGraphic improvements:
+
+	- OMEllipses with XY and OFFSET rendertypes were added.
+	- OMGraphicHash was added.
+	- OMTextLabeler was updated to handle different anchor locations.
+	- OMPoint.Image class was added, an OMPoint that uses an Image to
+	mark the location.  The image does not change size with respect to
+	map scale, as the OMScalingIcon does.
+	- OMGraphicList findAll() method fixed when inner vague lists were
+	used.
+	- The EditableOMGraphic GUIs for Text and Range Rings were updated
+	to have better persistence across different OMGraphics.
+	- The DrawingAttributes GUI, including the color settings, was
+	moved into the pop-up menu, replacing all of the buttons.  Just
+	the stroke button remains, and the colors on that button adjust
+	according to the DrawingAttributes settings.
+
+	* The DrawingToolLauncher GUI was updated to handle the
+	DrawingAttributes GUI changes.
+
+	* The VPFConfig class was modified to maintain knowledge of
+	current features set on a VPFLayer that it is modifying.
+
+	* The RPF Layer code was improved.  The RPFCacheHandler was
+	modified to reduce the number of bytes utilized in the cache
+	tracking mechanism, which greatly decreases memory usage for large
+	datasets.  The RPFFrameEntry was modified to use fewer bytes for
+	file name storage, also saving memory for large datasets.
+
+	The RPFLayer was modified to use the OMGraphicHandlerLayer's
+	transparency mechanism, replacing the colortable mechanism that
+	was in place.
+
+	* The Link Protocol has been updated to version 0.5, with a
+	greatly reduced transmission footprint by making all of the field
+	headers one or two characters long.  A cache mechanism was added
+	to the protocol and on the client Java code that allows values
+	sent previously to be reused for later graphics.
+
+	* Added com.bbn.openmap.layer.learn package, to hold layers that
+	serve as examples for specific capabilities.  BasicLayer and
+	InteractionLayer added.
+
+	* OMGraphicHandlerLayer has improved SwingWorker threading
+	support, including the interruption mechanism and thread locking.
+	Transparency can now be set on any OMGraphicHandlerLayer, and
+	there is a GUI widget available that can be added to any palette.
+
+	* The DrawingToolLayer has improved file support, including
+	reading from multiple shape files to reproduce previous savings.
+
+	* The DeclutterMatrix has improved access to a java.awt.Graphics
+	object that prevents locking during multi-threaded access.
+
+	* The com.bbn.openmap.io.FileInputReader handles reopening files
+	that have been closed.  The BinaryFile and BinaryBufferedFile can
+	now read unsigned shorts upon request.
+
+	* The com.bbn.openmap.image.wms package adds much better WMS
+	support, including handling GetCapabilities requests.
+
+	* The com.bbn.openmap.image.ImageScaler class was added, providing
+	better image scaling performance in the AbstractImageFormatter and
+	OMScalingRasters.
+
+	ImageFormatters now provide their content type for web delivery.
+
+	The ColorReducer class provides support for color reduction in
+	images, and the PNG32ImageFormatter and PNG8ImageFormatter was
+	added.
+
+	The WMS servlet was updated to handle the new web mapping server
+	support code.
+
+	* WindowSupport windows no longer shrink when it they are
+	repeatedly brought up.  This fix affects the OverviewMapHandler,
+	LayersPanel, CoordPanel, Layer palettes, etc.
+
+	* The CoordPanel was updated to use WindowSupport, replacing the
+	CoordDialog and CoordInternalFrame.
+
+	* The new GeoArray object was created to improve memory management
+	and performance for the com.bbn.openmap.geo package components.
+	The ConvexHull and RadialRegion classes were also added to the
+	package.
+
+	* The ProjectionSupport threading model was improved, adding a
+	more robust threading lock mechanism during projection change
+	notifications.
+
+	* The PanMouseMode image management and projection handling was
+	improved.
+
+	* The AbstractMouseMode (affecting all mouse modes) has better
+	support for defining custom cursors and icons.  Support for
+	specifying the zoom direction to mouse wheel relationship was
+	added.
+
+	* The com.bbn.openmap.dataAccess.shape package was updated to add
+	support for all Shape types.  The EsriGraphicFactory class now
+	creates EsriGraphics from files and streams, and both the
+	com.bbn.openmap.plugin.esri and com.bbn.openmap.layer.shape
+	componets use this com.bbn.openmap.dataAccess.shape package.  The
+	DbfFile class was created to allow better handling of dbf files,
+	providing a way to limit what fields are read out of a file and
+	kept in memory.  The DbfHandler class was created to manage
+	EsriGraphics and their rendering attributes/labels/tooltips/info
+	based on the dbf file contents.  The DbfHandler class lets you set
+	rules for dbf file contents so you can draw map objects different
+	based on attribute values.  The ShapeLayer was updated to use this
+	class.
+
+	* iso8211 package had some bug fixes related to the DDFSubfields
+	and definitions.
+
+	* MapBean was updated to support ProjectionChangeVetoExceptions,
+	so that layers or other components can now limit what a projection
+	can change to.
+
+	* LayerHandler can now have it's own prefix to be used to define
+	layers in the properties file.  Previously, the LayerHandler
+	looked for an 'openmap.layers' property for its layer list.  While
+	'openmap.layers' still works, it now looks for a
+	'<markername>.layers' property first, where <markername> is the
+	keyword used to define the LayerHandler object instance in the
+	'openmap.components' property, or whatever Property prefix the
+	LayerHandler is given in the setProperties(...) method.
+
+	The LayerHandler was also updated to handle background layers
+	better, so that background layers show up at the bottom of layer
+	lists.
+
+	* Layer has hasGUI() can let component know if a GUI is available.
+	The LayerPanels use this to disable their palette icons if a GUI
+	is not available for a particular layer.
+
+	* LatLonPoint has been updated to contain many more functions to
+	assist with determining relationships with other
+	LatLonPoints (distance, etc).
+
+	* Added I18 supports for many more GUI components.  This effort is
+	continuing.
+
+	* Added support for GeoTIFF and geocoded images via the
+	com.bbn.openmap.dataAccess.image package. This support is for
+	images that are in a equal-arc WGS84 decimal degree projection.
+	Relies on the JAI package being available on the host system.  The
+	ImageTile class is a subclass of OMScalingRaster that handles the
+	display of these files. GeoTIFFs with embedded projection
+	information are handled, as well as other image formats with world
+	files. The com.bbn.openmap.layer.imageTile.ImageTileLayer is a
+	layer that handles the display of ImageTiles, and serves as an
+	example of how to use the new com.bbbn.openmap.dataAccess.image
+	package.
+
 2006-02-14  Don Dietrick  <dietrick@bbn.com>
 
 	* Updated LayerHandler to manage layers in the MapHandler better.
