@@ -1,4 +1,13 @@
 2008-02-27  Don Dietrick  <dietrick@wonkavision.local>
+
+	* Updated the PropertyHandler to have it's own property prefix.  This 
+	property prefix is used by the PropertyHandler when it looks for a 
+	properties file, and when it looks inside the properties file for 
+	application level properties, like the components list, include 
+	files, and the configuration directory.  Where the PropertyHandler
+	used to only be able to look for an openmap.properties file that 
+	contained an openmap.components property, you can now define a 
+	different prefix for the file and property.
 	
 	* The com.bbn.openmap.util.propertyEditor.Inspector was updated to
 	provide a simple GUI that can be inserted on behalf of a
