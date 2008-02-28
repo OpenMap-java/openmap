@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/PropertyHandler.java,v $
 // $RCSfile: PropertyHandler.java,v $
-// $Revision: 1.28 $
-// $Date: 2006/08/09 21:08:40 $
+// $Revision: 1.29 $
+// $Date: 2008/02/28 23:36:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -60,10 +60,9 @@ import com.bbn.openmap.util.PropUtils;
  * in hooking up with other objects. It's assumed that many objects will want to
  * contact this object, and find the properties that apply to them. There is one
  * exception this: When components start implementing the PropertyProvider
- * interface, and the PropertyHandler becomes capable of creating an
- * openmap.properties file, then the PropertyHandler will be able to use the
- * BeanContext to query PropertyProviders to get their properties to put in the
- * properties file.
+ * interface, and the PropertyHandler becomes capable of creating an properties
+ * file, then the PropertyHandler will be able to use the BeanContext to query
+ * PropertyProviders to get their properties to put in the properties file.
  * <P>
  * 
  * The PropertyHandler looks in several places for an openmap.properties file:
@@ -73,10 +72,9 @@ import com.bbn.openmap.util.PropUtils;
  * <LI>in the user's home directory.
  * </UL>
  * 
- * For each openmap.properties file, a check is performed to look within for an
- * openmap.include property containing a marker name list. That list is parsed,
- * and each item is checked (markerName.URL) for an URL to another properties
- * file.
+ * For each properties file, a check is performed to look within for an include
+ * property containing a marker name list. That list is parsed, and each item is
+ * checked (markerName.URL) for an URL to another properties file.
  * <P>
  * 
  * Also significant, the PropertyHandler can be given a BeanContext to load
@@ -105,15 +103,34 @@ public class PropertyHandler extends MapHandlerChild implements
         SoloMapComponent {
 
     /**
-     * The name of the properties file to read. (openmap.properties is default)
+     * All components can have access to an I18n object, which is provided by
+     * the Environment.
      */
-    public final static String propsFileName = "openmap.properties";
+    protected transient I18n i18n = Environment.getI18n();
 
     /**
-     * The name of the system directory containing a properties file.
-     * (openmap.configDir)
+     * The propertyPrefix can be set to reflect a particular set of properties,
+     * or for an application. If this variable is not set, 'openmap' will be
+     * used. This prefix will be placed in front of the default properties file
+     * that will be sought if a specific properties file is not specified, and
+     * will also be placed in front of the standard application component
+     * properties.
      */
-    public final static String configDirProperty = "openmap.configDir";
+    protected String propertyPrefix;
+
+    /**
+     * The appendix for the name of the properties file to read. The
+     * propertyPrefix will be prepended to this string for the default property
+     * file search.
+     */
+    public final static String propsFileName = "properties";
+
+    /**
+     * The name of the system directory containing a properties file. The
+     * propertyPrefix.configDir property will be checked for a possible location
+     * for properties.
+     */
+    public final static String configDirProperty = "configDir";
 
     /**
      * The property name used to hold a list of marker names. Each marker name
@@ -122,7 +139,7 @@ public class PropertyHandler extends MapHandlerChild implements
      * <P>
      * 
      * <PRE>
-     * 
+     * # if 'openmap' is the PropertyHandler property prefix...
      * openmap.components=name1 name2 name3
      * name1.class=com.bbn.openmap.InformationDelegator
      * name2.class=com.bbn.openmap.MouseDelegator
@@ -130,7 +147,7 @@ public class PropertyHandler extends MapHandlerChild implements
      * 
      * </PRE>
      */
-    public final static String componentProperty = "openmap.components";
+    public final static String componentProperty = "components";
 
     /**
      * The property name used to hold a list of marker names. Each marker name
@@ -146,16 +163,16 @@ public class PropertyHandler extends MapHandlerChild implements
      * 
      * </PRE>
      */
-    public final static String includeProperty = "openmap.include";
+    public final static String includeProperty = "include";
 
     /**
-     * The property name used to hold a file, resorce or URL of a file to use
+     * The property name used to hold a file, resource or URL of a file to use
      * containing localized properties, like layer names. This is optional, if
      * it's not in the openmap.properties file or the properties file being read
      * in, an openmap_&ltlocalization string&gt.properties file will be searched
      * for in the classpath (i.e. openmap.localized=openmap_en_US.properties).
      */
-    public final static String localizedProperty = "openmap.localized";
+    public final static String localizedProperty = "localized";
 
     /** Final openmap properties object. */
     protected Properties properties = new Properties();
@@ -284,6 +301,10 @@ public class PropertyHandler extends MapHandlerChild implements
             Debug.output("***** Searching for properties ****");
         }
 
+        String propertyPrefix = getPropertyPrefix();
+
+        String propsFileName = propertyPrefix + PropertyHandler.propsFileName;
+
         // look for openmap.properties file in jar archive(of course
         // only in same package as this class) or wherever this
         // object's class file lives.
@@ -342,6 +363,9 @@ public class PropertyHandler extends MapHandlerChild implements
             systemProperties = new Properties();
         }
 
+        String configDirProperty = propertyPrefix
+                + PropertyHandler.configDirProperty;
+
         String openmapConfigDirectory = systemProperties.getProperty(configDirProperty);
 
         if (openmapConfigDirectory == null) {
@@ -379,7 +403,8 @@ public class PropertyHandler extends MapHandlerChild implements
                 propsFileName);
 
         // Include properties from config file properties.
-        includeProperties = getIncludeProperties(tmpProperties.getProperty(includeProperty),
+        includeProperties = getIncludeProperties(tmpProperties.getProperty(propertyPrefix
+                + includeProperty),
                 tmpProperties);
         merge(includeProperties,
                 "include file properties",
@@ -419,7 +444,8 @@ public class PropertyHandler extends MapHandlerChild implements
         // Before we the user properties into the overall properties,
         // need to check for the include properties URLs, and load
         // those first.
-        includeProperties = getIncludeProperties(tmpProperties.getProperty(includeProperty),
+        includeProperties = getIncludeProperties(tmpProperties.getProperty(propertyPrefix
+                + includeProperty),
                 tmpProperties);
         merge(includeProperties, "include file properties", userHomeDirectory);
 
@@ -430,7 +456,8 @@ public class PropertyHandler extends MapHandlerChild implements
         // Well, they used to take the highest precedence. Now, we
         // look for a localized property file, and write those
         // properties on top.
-        localizedProperties = getLocalizedProperties(tmpProperties.getProperty(localizedProperty),
+        localizedProperties = getLocalizedProperties(tmpProperties.getProperty(propertyPrefix
+                + localizedProperty),
                 userHomeDirectory);
         merge(localizedProperties, "localized properties", null);
 
@@ -510,7 +537,8 @@ public class PropertyHandler extends MapHandlerChild implements
     protected void init(Properties props, String howString) {
 
         // Include properties noted in resources properties.
-        Properties includeProperties = getIncludeProperties(props.getProperty(includeProperty),
+        Properties includeProperties = getIncludeProperties(props.getProperty(getPropertyPrefix()
+                + includeProperty),
                 props);
         merge(includeProperties, "include file properties", howString);
 
@@ -764,18 +792,23 @@ public class PropertyHandler extends MapHandlerChild implements
             return;
         }
 
-        ProgressListenerGauge plg;
+        ProgressListenerGauge plg = null;
 
-        try {
-            plg = new ProgressListenerGauge("OpenMap Setup");
-            plg.setWindowSupport(new WindowSupport(plg, new WindowSupport.Frm("", true)));
-            addProgressListener(plg);
-        } catch (Exception e) {
-            // Since ProgressListenerGauge is a Swing component, catch
-            // any exception that would be tossed if it can't be
-            // created, like if the PropertyHandler is being used on a
-            // unix system without a DISPLAY.
-            plg = null;
+        if (updateProgress) {
+            try {
+                String internString = i18n.get(this.getClass(),
+                        "progressTitle",
+                        "Progress");
+                plg = new ProgressListenerGauge(internString);
+                plg.setWindowSupport(new WindowSupport(plg, new WindowSupport.Frm("", true)));
+                addProgressListener(plg);
+            } catch (Exception e) {
+                // Since ProgressListenerGauge is a Swing component, catch
+                // any exception that would be tossed if it can't be
+                // created, like if the PropertyHandler is being used on a
+                // unix system without a DISPLAY.
+                // plg = null;
+            }
         }
 
         Vector debugList = PropUtils.parseSpacedMarkers(properties.getProperty(Environment.DebugList));
@@ -790,6 +823,8 @@ public class PropertyHandler extends MapHandlerChild implements
             }
         }
 
+        String componentProperty = getPropertyPrefix()
+                + PropertyHandler.componentProperty;
         Vector componentList = PropUtils.parseSpacedMarkers(properties.getProperty(componentProperty));
 
         if (Debug.debugging("propertiesdetail")) {
@@ -797,10 +832,11 @@ public class PropertyHandler extends MapHandlerChild implements
                     + componentList);
         }
 
-        fireProgressUpdate(ProgressEvent.START,
-                "OpenMap - Creating Components",
-                0,
-                100);
+        if (updateProgress) {
+            fireProgressUpdate(ProgressEvent.START, i18n.get(this.getClass(),
+                    "creatingComponentsProgressMessage",
+                    "Creating Components"), 0, 100);
+        }
 
         Vector components = ComponentFactory.create(componentList,
                 properties,
@@ -840,11 +876,25 @@ public class PropertyHandler extends MapHandlerChild implements
         // Added as a result of the addLater(obj) call above...
         mapHandler.purgeLaterList();
 
-        fireProgressUpdate(ProgressEvent.DONE,
-                "Created all components, ready...",
-                size,
-                size);
-        removeProgressListener(plg);
+        if (updateProgress) {
+            fireProgressUpdate(ProgressEvent.DONE, i18n.get(this.getClass(),
+                    "completedProgressMessage",
+                    "Created all components, ready..."), size, size);
+            removeProgressListener(plg);
+        }
+    }
+
+    public String getPropertyPrefix() {
+        String propertyPrefix = this.propertyPrefix;
+        if (propertyPrefix == null) {
+            propertyPrefix = Environment.OpenMapPrefix;
+        }
+        propertyPrefix = PropUtils.getScopedPropertyPrefix(propertyPrefix);
+        return propertyPrefix;
+    }
+
+    public void setPropertyPrefix(String propertyPrefix) {
+        this.propertyPrefix = propertyPrefix;
     }
 
     /**
@@ -1044,7 +1094,9 @@ public class PropertyHandler extends MapHandlerChild implements
         Object someObj;
         int numComponents = 0;
         String markerName;
-        StringBuffer componentMarkerString = new StringBuffer(PropertyHandler.componentProperty
+        String componentProperty = ph.getPropertyPrefix()
+                + PropertyHandler.componentProperty;
+        StringBuffer componentMarkerString = new StringBuffer(componentProperty
                 + "=");
 
         StringBuffer componentPropsString = new StringBuffer();
@@ -1054,7 +1106,7 @@ public class PropertyHandler extends MapHandlerChild implements
             // Ahh, phProps'l never be null, right?
 
             // Let's build them from the current properties file.
-            componentMarkerString.append(phProps.getProperty(PropertyHandler.componentProperty));
+            componentMarkerString.append(phProps.getProperty(componentProperty));
 
             Vector componentList = PropUtils.parseSpacedMarkers(phProps.getProperty(componentProperty));
 

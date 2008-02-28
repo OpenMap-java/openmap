@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DrawingToolLayer.java,v $
 // $RCSfile: DrawingToolLayer.java,v $
-// $Revision: 1.34 $
-// $Date: 2008/02/27 01:30:15 $
+// $Revision: 1.35 $
+// $Date: 2008/02/28 23:36:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -150,9 +150,10 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             setMouseModeIDsForEvents(new String[] { SelectMouseMode.modeID });
         }
 
-        String fileList = props.getProperty(realPrefix + SerializedURLNameProperty);
+        String fileList = props.getProperty(realPrefix
+                + SerializedURLNameProperty);
         if (fileList != null && fileList.trim().length() > 0) {
-        	fileName=fileList.split(" ");
+            fileName = fileList.split(" ");
         }
     }
 
@@ -161,9 +162,11 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
         props.put(prefix + ShowHintsProperty, new Boolean(showHints).toString());
-        for (int i=0;i<fileName.length;i++) {
-        	props.put(prefix + SerializedURLNameProperty,
-        			PropUtils.unnull(fileName[i]));
+        if (fileName != null && fileName.length > 0) {
+            for (int i = 0; i < fileName.length; i++) {
+                props.put(prefix + SerializedURLNameProperty,
+                        PropUtils.unnull(fileName[i]));
+            }
         }
         return props;
     }
@@ -497,8 +500,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
      * 
      */
     public void saveOMGraphics() {
-        if (fileName==null) {
-        	fileName=new String[1];
+        if (fileName == null) {
+            fileName = new String[1];
         }
         if (fileName[0] == null) {
             fileName[0] = FileUtils.getFilePathToSaveFromUser(i18n.get(DrawingToolLayer.class,
@@ -534,27 +537,31 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         OMGraphicList list = null;
 
         if (fileName != null) {
-        	try {
-        		List graphicList=new ArrayList();
-        		for (int i=0;i<fileName.length;i++) {
-        			URL url = PropUtils.getResourceOrFileOrURL(fileName[i]);
-        			if (url != null) {
-        				if (fileName[i].endsWith("shp")) {
-        					DbfTableModel dbf = DbfTableModel.getDbfTableModel(PropUtils.getResourceOrFileOrURL(fileName[i].replaceAll(".shp", ".dbf")));;
-        					list = EsriGraphicList.getEsriGraphicList(url, null, dbf);
-        				} else {
-        					ObjectInputStream ois = new ObjectInputStream(url.openStream());
-        					list = (OMGraphicList) ois.readObject();
-        					ois.close();
-        				}
-        				for (int j=0;j<list.size();j++) {
-        					graphicList.add(list.getOMGraphicAt(j));
-        				}
-        			}
-        		}
-        		OMGraphicList fullList=new OMGraphicList(graphicList);
-				return fullList;
-        	} catch (FileNotFoundException e) {
+            try {
+                List graphicList = new ArrayList();
+                for (int i = 0; i < fileName.length; i++) {
+                    URL url = PropUtils.getResourceOrFileOrURL(fileName[i]);
+                    if (url != null) {
+                        if (fileName[i].endsWith("shp")) {
+                            DbfTableModel dbf = DbfTableModel.getDbfTableModel(PropUtils.getResourceOrFileOrURL(fileName[i].replaceAll(".shp",
+                                    ".dbf")));
+                            ;
+                            list = EsriGraphicList.getEsriGraphicList(url,
+                                    null,
+                                    dbf);
+                        } else {
+                            ObjectInputStream ois = new ObjectInputStream(url.openStream());
+                            list = (OMGraphicList) ois.readObject();
+                            ois.close();
+                        }
+                        for (int j = 0; j < list.size(); j++) {
+                            graphicList.add(list.getOMGraphicAt(j));
+                        }
+                    }
+                }
+                OMGraphicList fullList = new OMGraphicList(graphicList);
+                return fullList;
+            } catch (FileNotFoundException e) {
                 if (DTL_DEBUG) {
                     e.printStackTrace();
                 }
