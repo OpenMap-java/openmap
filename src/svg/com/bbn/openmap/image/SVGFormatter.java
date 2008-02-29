@@ -16,8 +16,8 @@
  * **********************************************************************
  * 
  * $Source: /cvs/distapps/openmap/src/svg/com/bbn/openmap/image/SVGFormatter.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/10/14 18:06:32 $
+ * $Revision: 1.7 $
+ * $Date: 2008/02/29 16:35:08 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -215,5 +215,9 @@ public class SVGFormatter extends AbstractImageFormatter {
      */
     public String getFormatLabel() {
         return WMTConstants.IMAGEFORMAT_SVG;
+    }
+
+    public String getContentType() {
+        return "image/svg+xml";
     }
 }
