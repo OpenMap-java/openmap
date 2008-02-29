@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: DbfHandler.java,v $
-//$Revision: 1.1 $
-//$Date: 2007/06/21 21:39:01 $
+//$Revision: 1.2 $
+//$Date: 2008/02/29 01:03:02 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -748,7 +748,7 @@ public class DbfHandler extends OMComponent {
             if (val instanceof String) {
                 compare = ((String) key).compareTo(val.toString());
             } else if (val instanceof Double) {
-                if (!(key instanceof String)) {
+                if (key instanceof String) {
                     java.text.DecimalFormat df = new java.text.DecimalFormat();
                     DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.ENGLISH);
                     df.setDecimalFormatSymbols(dfs);
