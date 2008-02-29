@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/dted/DTEDFrame.java,v $
 // $RCSfile: DTEDFrame.java,v $
-// $Revision: 1.6 $
-// $Date: 2006/02/27 15:11:36 $
+// $Revision: 1.7 $
+// $Date: 2008/02/29 00:51:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -468,7 +468,7 @@ public class DTEDFrame implements Closable {
             // Allocate the rows of the row
             elevations[lon_index] = new short[uhl.num_lat_points];
             for (int j = 0; j < uhl.num_lat_points; j++) {
-                elevations[lon_index][j] = binFile.readShort();
+                elevations[lon_index][j] = binFile.readShortData();
             }
 
         } catch (IOException e3) {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/BinaryFile.java,v $
 // $RCSfile: BinaryFile.java,v $
-// $Revision: 1.11 $
-// $Date: 2007/06/21 21:39:02 $
+// $Revision: 1.12 $
+// $Date: 2008/02/29 00:51:10 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -561,6 +561,32 @@ public class BinaryFile {
     public short readShort() throws EOFException, FormatException {
         // MSBFirst must be set when we are called
         return MoreMath.BuildShort(readBytes(2, false), MSBFirst);
+    }
+
+    /**
+     * Code for reading shorts that are two-byte integers, high order first, and
+     * negatives are signed magnitude. Users may have to switch the bytes and
+     * convert negatives to the complement they use. This can be done by putting
+     * the low order byte first, then turning off bit 15 (the high order bit),
+     * and then multiplying by -1." Basically they are encoded as positive
+     * numbers, but bit 15 is set to 1.
+     * 
+     * @return
+     * @throws EOFException
+     * @throws FormatException
+     */
+    public short readShortData() throws EOFException, FormatException {
+        // read in the two bytes
+        byte[] bytevec = readBytes(2, false);
+
+        // check for negative values - bit 7 of byte 0
+        if (bytevec[0] < 0) {
+            // mask bit 7
+            bytevec[0] &= 0x7f;
+            // create the short and multiply the result by -1
+            return ((short) (MoreMath.BuildShort(bytevec, true) * -1));
+        }
+        return MoreMath.BuildShort(bytevec, true);
     }
 
     /**
