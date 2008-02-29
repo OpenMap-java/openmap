@@ -1,4 +1,8 @@
-2008-02-27  Don Dietrick  <dietrick@wonkavision.local>
+2008-02-29  Don Dietrick  <dietrick@bbn.com>
+
+	* OpenMap 4.6.4 released.
+
+2008-02-27  Don Dietrick  <dietrick@bbn.com>
 
 	* Updated the PropertyHandler to have it's own property prefix.  This 
 	property prefix is used by the PropertyHandler when it looks for a 
