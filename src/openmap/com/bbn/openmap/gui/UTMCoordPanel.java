@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/UTMCoordPanel.java,v $
 // $RCSfile: UTMCoordPanel.java,v $
-// $Revision: 1.8 $
-// $Date: 2006/05/22 23:53:05 $
+// $Revision: 1.9 $
+// $Date: 2008/02/29 00:33:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -87,7 +87,7 @@ public class UTMCoordPanel extends CoordPanel implements Serializable {
         zoneNumber.setToolTipText(i18n.get(UTMCoordPanel.class,
                 "zone",
                 I18n.TOOLTIP,
-                "Zone Number: 0-60"));
+                "Zone Number: 1-60"));
         gridbag.setConstraints(zoneNumber, c);
         add(zoneNumber);
 
