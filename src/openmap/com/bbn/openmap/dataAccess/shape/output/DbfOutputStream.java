@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/DbfOutputStream.java,v $
 // $RCSfile: DbfOutputStream.java,v $
-// $Revision: 1.14 $
-// $Date: 2007/06/21 21:39:04 $
+// $Revision: 1.15 $
+// $Date: 2008/02/29 00:58:36 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -222,7 +222,7 @@ public class DbfOutputStream {
                             value = ""
                                     + df.format(((Double) obj).doubleValue());
                         } else {
-                            value = (value != null) ? obj.toString() : "";
+                            value = (obj != null) ? obj.toString() : "";
                         }
                     } else {
                         value = (String) record.get(c);
@@ -268,7 +268,7 @@ public class DbfOutputStream {
                         // value = "";
                         // Instead of making up a value, try to
                         // represent it as true as possible.
-                        value = (value != null) ? obj.toString() : "";
+                        value = (obj != null) ? obj.toString() : "";
                     }
                 } else {
                     value = (String) model.getValueAt(r, c);
