@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/CSVTokenizer.java,v $
 // $RCSfile: CSVTokenizer.java,v $
-// $Revision: 1.5 $
-// $Date: 2008/02/27 01:05:52 $
+// $Revision: 1.6 $
+// $Date: 2008/03/03 16:44:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,25 +54,38 @@ public class CSVTokenizer extends Tokenizer {
         this.numberReadAsString = numberReadAsString;
     }
 
+    protected Object lastTokened = NEWLINE;
+
     /**
      * Return the next object read from the stream.
      */
     public Object token() {
         int c = next();
+        Object ret = null;
         if (c == ',') {
-            return tokenAfterComma();
+            if (lastTokened == NEWLINE) {
+                // Catch the first empty field on a new line.
+                putback(c);
+                ret = EMPTY;
+            } else {
+                ret = tokenAfterComma();
+            }
         } else if (c == '\n')
-            return NEWLINE;
+            ret = NEWLINE;
         else if (c == '"')
-            return tokenString(next());
+            ret = tokenString(next());
         else if (c == '\\')
-            return tokenString(c);
+            ret = tokenString(c);
         else if ((c == '-' || c == '.' || isDigit(c)) && !numberReadAsString)
-            return tokenNumber(c);
+            ret = tokenNumber(c);
         else if (c == -1)
-            return EOF;
+            ret = EOF;
         else
-            return tokenAny(c);
+            ret = tokenAny(c);
+
+        lastTokened = ret;
+        
+        return ret;
     }
 
     /**
