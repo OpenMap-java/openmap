@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoly.java,v $
 // $RCSfile: EditableOMPoly.java,v $
-// $Revision: 1.17 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.18 $
+// $Date: 2008/03/12 17:31:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -406,6 +406,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
 
         assertGrabPoints();
         polyGrabPoints.clear();
+        arrayCleared = true;
         gpo.clear();
 
         OMPoly poly = (OMPoly) graphic;
@@ -534,7 +535,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
                     } else {
                         floats[2 * i] = (float) llp.getY();
                         floats[2 * i + 1] = (float) llp.getX();
-                }
+                    }
                 }
 
                 poly.setLocation((float[]) floats, poly.getUnits());
@@ -870,7 +871,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
                 } else {
                     poly.lat = (float) llpnt.getY();
                     poly.lon = (float) llpnt.getX();
-            }
+                }
             }
 
             poly.setLocation(poly.lat, poly.lon, poly.getUnits(), newxs, newys);
@@ -1212,6 +1213,11 @@ public class EditableOMPoly extends EditableOMAbstractLine {
     }
 
     /**
+     * Flag to keep track of when the grab point array has been rebuilt in setGrabPoints().
+     */
+    boolean arrayCleared = true;
+
+    /**
      * Get the array of grab points used for the EditableOMGraphic. Creates the
      * array by copying all the grab points out of the ArrayList, and tacking
      * the offset grab point to the end.
@@ -1222,8 +1228,11 @@ public class EditableOMPoly extends EditableOMAbstractLine {
         // The second half of the test is the fix to the bug that caused
         // OMEditablePolys to be unresponsive when the colors changed. Thanks,
         // Stephane!
-        if (gPoints.length != size + 1
-                || ((size > 0) && (!gPoints[0].equals(polyGrabPoints.get(0))))) {
+        // if (gPoints.length != size + 1
+        // || ((size > 0) && (!gPoints[0].equals(polyGrabPoints.get(0))))) {
+
+        if (gPoints.length != size + 1 || arrayCleared) {
+            arrayCleared = false;
             Debug.message("eomg",
                     "EditableOMPoly.getGrabPoints(): recreating grab points");
             gPoints = new GrabPoint[size + 1];
@@ -1311,7 +1320,8 @@ public class EditableOMPoly extends EditableOMAbstractLine {
             JMenu ahm = getArrowHeadMenu();
             graphicAttributes.setLineMenuAdditions(new JMenu[] { ahm });
             JComponent gaGUI = (JComponent) graphicAttributes.getGUI();
-            getPolyGUI(graphicAttributes.getOrientation(), graphicAttributes.toolbar);
+            getPolyGUI(graphicAttributes.getOrientation(),
+                    graphicAttributes.toolbar);
             return gaGUI;
         } else {
             return getPolyGUI();
