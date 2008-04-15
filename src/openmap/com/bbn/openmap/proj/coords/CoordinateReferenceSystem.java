@@ -10,6 +10,7 @@ import com.bbn.openmap.proj.Ellipsoid;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.LLXYLoader;
 import com.bbn.openmap.proj.MercatorLoader;
+import com.bbn.openmap.proj.Planet;
 import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.ProjectionLoader;
 import com.bbn.openmap.proj.UTMProjectionLoader;
@@ -36,21 +37,13 @@ public class CoordinateReferenceSystem {
         crss.put("CRS:84",
                 new CoordinateReferenceSystem(LatLonGCT.INSTANCE, LLXYLoader.class, Ellipsoid.WGS_84));
 
-        // http://johndeck.blogspot.com/2005_09_01_johndeck_archive.html
-        // <54004> +proj=merc +lat_ts=0 +lon_0=0 +k=1.000000 +x_0=0 +y_0=0
-        // +ellps=WGS84 +datum=WGS84 +units=m no_defs <>
-        crss.put("EPSG:54004",
-                new CoordinateReferenceSystem(MercatorMeterGCT.INSTANCE, MercatorLoader.class, Ellipsoid.WGS_84));
-
-        // http://locative.us/freemap/gdal/data/cubewerx_extra.wkt
-        // 41001,PROJCS["WGS84 / Simple Mercator",GEOGCS["WGS
-        // 84",DATUM["WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Decimal_Degree",0.0174532925199433]],PROJECTION["Mercator_1SP"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",0],PARAMETER["false_easting",0],PARAMETER["false_northing",0],UNIT["Meter",1],AUTHORITY["EPSG","41001"]]
-        crss.put("AUTO:41001",
-                new CoordinateReferenceSystem(MercatorMeterGCT.INSTANCE, MercatorLoader.class, Ellipsoid.WGS_84));
-
-        // http://wiki.osgeo.org/index.php/WMS_Tiling_Client_Recommendation
-        crss.put("OSGEO:41001",
-                new CoordinateReferenceSystem(MercatorMeterGCT.INSTANCE, MercatorLoader.class, Ellipsoid.WGS_84));
+        // Spherical Mercator for overlaying with Google Maps
+        // http://trac.openlayers.org/wiki/SphericalMercator
+        crss.put("EPSG:900913",
+                new CoordinateReferenceSystem(new MercatorMeterGCT(
+                        Planet.wgs84_earthEquatorialRadiusMeters_D,
+                        Planet.wgs84_earthEquatorialRadiusMeters_D), MercatorLoader.class,
+                        Ellipsoid.WGS_84));
 
         addUtms();
 
@@ -151,11 +144,9 @@ public class CoordinateReferenceSystem {
         return (GeoProj) projectionLoader().create(projectionParameters);
     }
 
-    public void prepareProjection(Proj proj) {
+    public void prepareProjection(GeoProj proj) {
         // TODO: do we need this??
-        
-        // TODO: Needs to be updated to check for GeoProj.
-//        proj.setPlanetRadius((float) ellipsoid.radius);
+        proj.setPlanetRadius((float) ellipsoid.radius);
     }
 
     /**
