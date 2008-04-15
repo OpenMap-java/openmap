@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: ConvexHull.java,v $
-//$Revision: 1.4 $
-//$Date: 2008/04/15 21:48:31 $
+//$Revision: 1.5 $
+//$Date: 2008/04/15 21:51:01 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -29,8 +29,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.TreeSet;
-
-import com.bbn.openmap.proj.Length;
 
 /**
  * This class contains static methods that can be used to create convex hull
