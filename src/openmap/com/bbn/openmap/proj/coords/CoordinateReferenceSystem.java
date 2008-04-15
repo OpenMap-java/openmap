@@ -11,7 +11,6 @@ import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.LLXYLoader;
 import com.bbn.openmap.proj.MercatorLoader;
 import com.bbn.openmap.proj.Planet;
-import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.ProjectionLoader;
 import com.bbn.openmap.proj.UTMProjectionLoader;
 
