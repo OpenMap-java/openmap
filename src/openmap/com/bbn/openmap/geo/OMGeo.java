@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: OMGeo.java,v $
-//$Revision: 1.4 $
-//$Date: 2007/02/13 20:02:11 $
+//$Revision: 1.5 $
+//$Date: 2008/07/11 14:45:25 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -60,6 +60,7 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
     }
 
     protected OMGeo(GeoExtent ge, int lineType) {
+        this();
         setExtent(ge);
         setLineType(lineType);
     }

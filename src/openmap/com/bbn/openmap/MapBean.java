@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.21 $
-// $Date: 2008/06/03 17:24:00 $
+// $Revision: 1.22 $
+// $Date: 2008/07/11 14:45:24 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -179,7 +179,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * layer on and off won't cause them to get rid of their resources, in case
      * the user is just creating different views of the map.
      */
-    protected Vector removedLayers = new Vector(0);
+    protected Vector<Layer> removedLayers = new Vector<Layer>(0);
 
     /**
      * Some users may want the layers deleted immediately when they are removed
@@ -194,7 +194,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * This vector is to let the layers know when they have been added to the
      * map.
      */
-    protected Vector addedLayers = new Vector(0);
+    protected Vector<Layer> addedLayers = new Vector<Layer>(0);
 
     /**
      * The PaintListeners want to know when the map has been repainted.
@@ -620,7 +620,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * @param aProjection Projection
      */
     public void setProjection(Projection aProjection) {
-        if (aProjection != null) {
+        if (aProjection != null && !aProjection.getProjectionID().contains("NaN")) {
             setBufferDirty(true);
             projection = (Proj) aProjection;
             setPreferredSize(new Dimension(projection.getWidth(), projection.getHeight()));
@@ -733,15 +733,16 @@ public class MapBean extends JComponent implements ComponentListener,
     public void componentAdded(ContainerEvent e) {
         // Blindly cast. addImpl has already checked to be
         // sure the child is a Layer.
-        addProjectionListener((Layer) e.getChild());
+        Layer childLayer = (Layer) e.getChild();
+        addProjectionListener(childLayer);
 
         // If the new layer is in the queue to have removed() called
         // on it take it off the queue, and don't add it to the
         // added() queue (it doesn't know that it was removed, yet).
         // Otherwise, add it to the queue to have added() called on
         // it.
-        if (!removedLayers.removeElement(e.getChild())) {
-            addedLayers.addElement(e.getChild());
+        if (!removedLayers.removeElement(childLayer)) {
+            addedLayers.addElement(childLayer);
         }
         changeLayers(e);
     }
@@ -762,8 +763,9 @@ public class MapBean extends JComponent implements ComponentListener,
     public void componentRemoved(ContainerEvent e) {
         // Blindly cast. addImpl has already checked to be
         // sure the child is a Layer.
-        removeProjectionListener((Layer) e.getChild());
-        removedLayers.addElement(e.getChild());
+        Layer childLayer = (Layer) e.getChild();
+        removeProjectionListener(childLayer);
+        removedLayers.addElement(childLayer);
         changeLayers(e);
     }
 
