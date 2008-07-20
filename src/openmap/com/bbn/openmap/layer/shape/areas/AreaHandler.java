@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaHandler.java,v $
 // $RCSfile: AreaHandler.java,v $
-// $Revision: 1.13 $
-// $Date: 2007/06/21 21:39:01 $
+// $Revision: 1.14 $
+// $Date: 2008/07/20 05:46:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -254,9 +254,9 @@ public class AreaHandler implements PropertyConsumer {
         // These will get initialized when someone asks for it.
         // Otherwise, it delays the startup of the map.
         politicalAreas = null;
-        
+
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
-        
+
         String transClassName = props.getProperty(realPrefix
                 + ShapeLayer.TransformProperty);
         if (transClassName != null) {
@@ -265,7 +265,7 @@ public class AreaHandler implements PropertyConsumer {
                         realPrefix + ShapeLayer.TransformProperty,
                         props);
             } catch (ClassCastException cce) {
-                
+
             }
         }
     }
@@ -277,9 +277,9 @@ public class AreaHandler implements PropertyConsumer {
         }
 
         if (coordTransform != null && coordTransform instanceof PropertyConsumer) {
-            ((PropertyConsumer)coordTransform).getProperties(props);
+            ((PropertyConsumer) coordTransform).getProperties(props);
         }
-        
+
         return props;
     }
 
@@ -560,6 +560,7 @@ public class AreaHandler implements PropertyConsumer {
                                             Projection proj) {
 
         try {
+
             // There should be the same number of objects in both iterators.
             Iterator entryIt = spatialIndex.entryIterator(coordTransform);
             Iterator omgIt = getGraphics().iterator();

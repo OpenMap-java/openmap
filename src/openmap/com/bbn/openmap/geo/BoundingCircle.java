@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: BoundingCircle.java,v $
-//$Revision: 1.9 $
-//$Date: 2007/02/13 20:02:10 $
+//$Revision: 1.10 $
+//$Date: 2008/07/20 05:46:31 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -140,6 +140,22 @@ public interface BoundingCircle {
         
         public String toString() {
             return "BoundingCircle: center(" + center + ") with radius (" + radius + ")";
+        }
+        
+        public static BoundingCircle createFromLatLonDegrees(double[] latlons) {
+            return new BoundingCircle.Impl(GeoArray.Double.createFromLatLonDegrees(latlons));
+        }
+        
+        public static BoundingCircle createFromLatLonDegrees(float[] latlons) {
+            return new BoundingCircle.Impl(GeoArray.Float.createFromLatLonDegrees(latlons));
+        }
+        
+        public static BoundingCircle createFromLatLonRadians(double[] latlons) {
+            return new BoundingCircle.Impl(GeoArray.Double.createFromLatLonRadians(latlons));
+        }
+        
+        public static BoundingCircle createFromLatLonRadians(float[] latlons) {
+            return new BoundingCircle.Impl(GeoArray.Float.createFromLatLonRadians(latlons));
         }
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/MultiShapeLayer.java,v $
 // $RCSfile: MultiShapeLayer.java,v $
-// $Revision: 1.15 $
-// $Date: 2007/06/21 21:38:59 $
+// $Revision: 1.16 $
+// $Date: 2008/07/20 05:46:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -78,7 +78,7 @@ import com.bbn.openmap.util.PropUtils;
  *   
  * </pre></code>
  * 
- * @version $Revision: 1.15 $ $Date: 2007/06/21 21:38:59 $
+ * @version $Revision: 1.16 $ $Date: 2008/07/20 05:46:31 $
  * @see SpatialIndex
  */
 public class MultiShapeLayer extends ShapeLayer {
@@ -165,7 +165,6 @@ public class MultiShapeLayer extends ShapeLayer {
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
         props.remove(prefix + shapeFileProperty);
-        props.remove(prefix + spatialIndexProperty);
         props.remove(prefix + pointImageURLProperty);
 
         Iterator sis = spatialIndexes.iterator();
@@ -201,10 +200,8 @@ public class MultiShapeLayer extends ShapeLayer {
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
         props.remove(shapeFileProperty);
-        props.remove(spatialIndexProperty);
         props.remove(pointImageURLProperty);
         props.remove(shapeFileProperty + ScopedEditorProperty);
-        props.remove(spatialIndexProperty + ScopedEditorProperty);
         props.remove(pointImageURLProperty + ScopedEditorProperty);
 
         Iterator sis = spatialIndexes.iterator();

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/shape/ShapeLinkServer.java,v $
 // $RCSfile: ShapeLinkServer.java,v $
-// $Revision: 1.5 $
-// $Date: 2007/02/26 17:12:48 $
+// $Revision: 1.6 $
+// $Date: 2008/07/20 05:46:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,10 +69,9 @@ public class ShapeLinkServer extends LinkServer implements
 
     protected LinkProperties lineProperties;
 
-    public ShapeLinkServer(Socket socket, String shapeFile,
-            String spatialIndexFile) {
+    public ShapeLinkServer(Socket socket, String shapeFile) {
         super(socket);
-        locateAndSetShapeData(shapeFile, spatialIndexFile);
+        locateAndSetShapeData(shapeFile);
     }
 
     public void finalize() {
@@ -225,15 +224,20 @@ public class ShapeLinkServer extends LinkServer implements
         }
     }
 
-    protected void locateAndSetShapeData(String shapeFileName,
-                                         String spatialIndexFileName) {
+    protected void locateAndSetShapeData(String shapeFileName) {
         Debug.message("shape", "ShapeLinkServer: Reading shape file.");
+        
+        String spatialIndexFileName = shapeFileName.substring(0,
+                shapeFileName.indexOf(".shp"))
+                + ".ssx";
+
+        
         File spatialIndexFile = new File(spatialIndexFileName);
 
         if (spatialIndexFile.isAbsolute()) {
             // System.out.println("Absolute!");
             try {
-                spatialIndex = new LinkSpatialIndex(spatialIndexFileName, shapeFileName);
+                spatialIndex = new LinkSpatialIndex(shapeFileName);
             } catch (java.io.IOException e) {
                 if (Debug.debugging("shape")) {
                     e.printStackTrace();
@@ -252,7 +256,7 @@ public class ShapeLinkServer extends LinkServer implements
                         try {
                             // System.out.println(sif.toString());
                             // System.out.println(sf.toString());
-                            spatialIndex = new LinkSpatialIndex(sif.toString(), sf.toString());
+                            spatialIndex = new LinkSpatialIndex(sf.toString());
                             break;
                         } catch (java.io.IOException e) {
                             if (Debug.debugging("shape")) {

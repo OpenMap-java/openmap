@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/shape/LinkSpatialIndex.java,v $
 // $RCSfile: LinkSpatialIndex.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:58 $
+// $Revision: 1.4 $
+// $Date: 2008/07/20 05:46:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,26 +31,13 @@ import com.bbn.openmap.layer.shape.*;
 public class LinkSpatialIndex extends SpatialIndex {
 
     /**
-     * Opens a spatial index file for reading.
+     * Opens a spatial index file for the given shp file.
      * 
-     * @param ssxFilename the name of the spatial index file
+     * @param shpFilename the name of the shape file to base index file search off of.
      * @exception IOException if something goes wrong opening the file
      */
-    public LinkSpatialIndex(String ssxFilename) throws IOException {
-        super(ssxFilename);
-    }
-
-    /**
-     * Opens a spatial index file and it's associated shape file.
-     * 
-     * @param ssxFilename the name of the spatial index file
-     * @param shpFilename the name of the shape file
-     * @exception IOException if something goes wrong opening the
-     *            files
-     */
-    public LinkSpatialIndex(String ssxFilename, String shpFilename)
-            throws IOException {
-        super(ssxFilename, shpFilename);
+    public LinkSpatialIndex(String shpFilename) throws IOException {
+        super(shpFilename);
     }
 
     /**

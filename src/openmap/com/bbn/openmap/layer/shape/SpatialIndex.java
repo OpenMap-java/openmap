@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndex.java,v $
 // $RCSfile: SpatialIndex.java,v $
-// $Revision: 1.12 $
-// $Date: 2007/06/21 21:39:00 $
+// $Revision: 1.13 $
+// $Date: 2008/07/20 05:46:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -119,7 +119,7 @@ import com.bbn.openmap.util.Debug;
  * <DD><i>Dumps spatial index information including bounding boxes to stdout.
  * </i></DD>
  * <p>
- * <DT>java com.bbn.openmap.layer.shape.SpatialIndex -c file.ssx file.shp</DT>
+ * <DT>java com.bbn.openmap.layer.shape.SpatialIndex -c file.shp</DT>
  * <DD><i>Creates spatial index <code>file.ssx</code> from shape file
  * <code>file.shp</code>. </i></DD>
  * <p>
@@ -138,7 +138,7 @@ import com.bbn.openmap.util.Debug;
  * </UL>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.12 $ $Date: 2007/06/21 21:39:00 $
+ * @version $Revision: 1.13 $ $Date: 2008/07/20 05:46:31 $
  * @see ShapeIndex
  */
 public class SpatialIndex extends ShapeUtils {
@@ -158,9 +158,6 @@ public class SpatialIndex extends ShapeUtils {
     /** Default size for shape record buffer. */
     public final static int DEFAULT_SHAPE_RECORD_SIZE = 50000;
 
-    /** The spatial index file. */
-    protected BinaryBufferedFile ssx;
-
     /** The shape file. */
     protected BinaryBufferedFile shp;
 
@@ -179,15 +176,11 @@ public class SpatialIndex extends ShapeUtils {
      * The file name for the shape file, for opening/reopening.
      */
     protected String shpFileName;
-    /**
-     * The file name for the spatial index file, for opening/reopening.
-     */
-    protected String ssxFileName;
 
     /**
      * A cached list of the SpatialIndex file entries, for repeated reference.
      */
-    protected List entries;
+    protected List<Entry> entries;
 
     /**
      * A factory object to use to create OMGraphics from the shp file.
@@ -195,14 +188,17 @@ public class SpatialIndex extends ShapeUtils {
     EsriGraphicFactory factory = new EsriGraphicFactory();
 
     /**
-     * Opens a spatial index file for reading.
+     * Opens a spatial index file for reading based on the location of the
+     * provided shp file.
      * 
      * @param ssxFilename the name of the spatial index file
      * @exception IOException if something goes wrong opening the file
      */
-    public SpatialIndex(String ssxFilename) throws IOException {
-        this.ssxFileName = ssxFilename;
-        // ssx = new BinaryBufferedFile(ssxFilename);
+    public SpatialIndex(String shpFilename) throws IOException {
+        this.shpFileName = shpFilename;
+        if (Debug.debugging("spatialindex")) {
+            Debug.output("SpatialIndex(" + shpFilename + ");");
+        }
     }
 
     /**
@@ -211,19 +207,41 @@ public class SpatialIndex extends ShapeUtils {
      * @param ssxFilename the name of the spatial index file
      * @param shpFilename the name of the shape file
      * @exception IOException if something goes wrong opening the files
+     * @deprecated ssx file is figured based on the shp file path
      */
     public SpatialIndex(String ssxFilename, String shpFilename)
             throws IOException {
-        if (Debug.debugging("spatialindex")) {
-            Debug.output("SpatialIndex(" + ssxFilename + ", " + shpFilename
-                    + ");");
+        this(shpFilename);
+    }
+
+    /**
+     * Figures out the ssx file name from the shp file name.
+     * 
+     * @param shpFileName
+     * @return
+     */
+    public static String ssx(String shpFileName) {
+        String ret = null;
+        if (shpFileName != null) {
+            ret = shpFileName.substring(0, shpFileName.indexOf(".shp"))
+                    + ".ssx";
         }
+        return ret;
+    }
 
-        this.shpFileName = shpFilename;
-        this.ssxFileName = ssxFilename;
-
-        // ssx = new BinaryBufferedFile(ssxFilename);
-        // shp = new BinaryBufferedFile(shpFilename);
+    /**
+     * Figures out the dbf file name from the shp file name.
+     * 
+     * @param shpFileName
+     * @return
+     */
+    public static String dbf(String shpFileName) {
+        String ret = null;
+        if (shpFileName != null) {
+            ret = shpFileName.substring(0, shpFileName.indexOf(".shp"))
+                    + ".dbf";
+        }
+        return ret;
     }
 
     /**
@@ -318,12 +336,14 @@ public class SpatialIndex extends ShapeUtils {
         int sRecordSize = DEFAULT_SHAPE_RECORD_SIZE;
         byte sRecord[] = new byte[sRecordSize];
 
-        if (ssxFileName == null || shpFileName == null) {
+        if (shpFileName == null) {
             return null;
         }
 
-        ssx = new BinaryBufferedFile(ssxFileName);
-        shp = new BinaryBufferedFile(shpFileName);
+        BinaryBufferedFile ssx = new BinaryBufferedFile(ssx(shpFileName));
+        if (shp == null) {
+            shp = new BinaryBufferedFile(shpFileName);
+        }
 
         // Need to figure out what the shape type is...
         ssx.seek(32);
@@ -425,6 +445,7 @@ public class SpatialIndex extends ShapeUtils {
 
         ssx.close();
         shp.close();
+        shp = null;
         ESRIRecord result[] = new ESRIRecord[nRecords];
         v.copyInto(result);
         return result;
@@ -502,8 +523,8 @@ public class SpatialIndex extends ShapeUtils {
         OMGraphicList labels = new OMGraphicList();
         list.add(labels);
 
-        for (Iterator it = entryIterator(dataProj); it.hasNext();) {
-            Entry entry = (Entry) it.next();
+        for (Iterator<Entry> it = entryIterator(dataProj); it.hasNext();) {
+            Entry entry = it.next();
 
             if (entry.intersects(xmin, ymin, xmax, ymax)) {
 
@@ -515,12 +536,15 @@ public class SpatialIndex extends ShapeUtils {
                             pointIcon,
                             byteTracker);
 
-                    if (dbf != null) {
-                        omg = dbf.evaluate(omg, labels, mapProj);
-                    }
-
                     if (omg != null) {
-                        omg.generate(mapProj);
+
+                        if (dbf != null) {
+                            omg = dbf.evaluate(omg, labels, mapProj);
+                        }
+
+                        if (mapProj != null) {
+                            omg.generate(mapProj);
+                        }
                         list.add(omg);
                     }
 
@@ -534,10 +558,113 @@ public class SpatialIndex extends ShapeUtils {
 
         if (shp != null) {
             shp.close();
+            shp = null;
         }
 
         return list;
 
+    }
+
+    /**
+     * Retrieves all OMGraphics in the shape file.
+     * 
+     * @param retList OMGraphicList to add OMGraphics to and return, if null one
+     *        will be created.
+     * @param drawingAttributes DrawingAttributes to set on the OMGraphics.
+     * @param mapProj the Map Projection for the OMGraphics so they can be
+     *        generated right after creation. This will also be used by the
+     *        DbfHandler, to determine if some OMGraphics should not be returned
+     *        based on attribute settings.
+     * @param dataProj for preprojected data, a coordinate translator for the
+     *        data's projection to use to translate the coordinates to decimal
+     *        degree lat/lon. Can be null to leave the coordinates untouched.
+     * @return an OMGraphicList containing OMGraphics that intersect the given
+     *         rectangle
+     * @exception IOException if something goes wrong reading the files
+     */
+    public OMGraphicList getAllOMGraphics(OMGraphicList retList,
+                                          DrawingAttributes drawingAttributes,
+                                          Projection mapProj,
+                                          GeoCoordTransformation dataProj)
+            throws IOException, FormatException {
+
+        if (retList == null) {
+            retList = new OMGraphicList();
+        }
+
+        if (shp == null) {
+            shp = new BinaryBufferedFile(shpFileName);
+        }
+
+        if (shp == null) {
+            return retList;
+        }
+
+        EsriGraphicFactory factory = getFactory();
+        factory.setDataCoordTransformation(dataProj);
+        factory.getEsriGraphics(shp,
+                drawingAttributes,
+                pointIcon,
+                mapProj,
+                retList);
+
+        shp.close();
+
+        return retList;
+    }
+
+    /**
+     * Takes the contents of the list and evaluates them against the information
+     * contained in the DbfHandler set in this SpatialIndex class.
+     * 
+     * @param retList the list of OMGraphics to evaluate.
+     * @param mapProj the current map projection to be used by the DbfHandler to
+     *        determine if some OMGraphics should be visible.
+     * @return OMGraphicList containing OMGraphics modified/passing evaluations
+     *         rules in the DbfHandler.
+     */
+    public OMGraphicList evaluateDbf(OMGraphicList retList, Projection mapProj) {
+
+        if (dbf != null) {
+            OMGraphicList labels = new OMGraphicList();
+            retList.add(labels);
+
+            OMGraphicList testList = new OMGraphicList();
+            for (Iterator it = retList.iterator(); it.hasNext();) {
+                OMGraphic omg = (OMGraphic) it.next();
+
+                if (omg != null) {
+
+                    omg = dbf.evaluate(omg, labels, mapProj);
+
+                    if (mapProj != null) {
+                        omg.generate(mapProj);
+                    }
+                    testList.add(omg);
+                }
+            }
+            retList = testList;
+        }
+
+        return retList;
+    }
+
+    /**
+     * Evaluates the OMGraphic against the DbfHandler rules.
+     * 
+     * @param omg the OMGraphic to evaluate.
+     * @param labels for DbfHandler label rules. Assumes that you are managing
+     *        display of the labels list.
+     * @param mapProj for DbfHandler scale rules.
+     * @return OMGraphic if it passes the rules.
+     */
+    public OMGraphic evaluate(OMGraphic omg, OMGraphicList labels,
+                              Projection mapProj) {
+        if (dbf != null) {
+            omg = dbf.evaluate(omg, labels, mapProj);
+        }
+
+        return omg;
     }
 
     /**
@@ -614,17 +741,29 @@ public class SpatialIndex extends ShapeUtils {
      * @throws IOException
      * @throws FormatException
      */
-    protected List readIndexFile(ESRIBoundingBox bounds,
-                                 GeoCoordTransformation dataTransform)
+    protected List<Entry> readIndexFile(ESRIBoundingBox bounds,
+                                        GeoCoordTransformation dataTransform)
             throws IOException, FormatException {
-        entries = new ArrayList();
+        entries = new ArrayList<Entry>();
 
         byte ixRecord[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
 
-        if (ssx == null) {
-            ssx = new BinaryBufferedFile(ssxFileName);
-            ssx.byteOrder(false);
+        if (shpFileName == null) {
+            return entries;
         }
+
+        String ssxFileName = ssx(shpFileName);
+
+        if (!BinaryBufferedFile.exists(ssxFileName)) {
+            // If we got this far without an ssx existing, then we should just
+            // create one in memory.
+            entries = SpatialIndex.MemoryIndex.create(shpFileName);
+            return entries;
+        }
+
+        BinaryBufferedFile ssx = new BinaryBufferedFile(ssxFileName);
+
+        ssx.byteOrder(false);
         ssx.seek(100); // skip the file header
 
         LatLonPoint llp = null;
@@ -706,6 +845,11 @@ public class SpatialIndex extends ShapeUtils {
         byte ixRecord[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
         int recNum = 0;
 
+        if (shpFileName == null) {
+            return;
+        }
+
+        BinaryBufferedFile ssx = new BinaryBufferedFile(ssx(shpFileName));
         ssx.seek(100); // skip the file header
         while (true) {
             int result = ssx.read(ixRecord, 0, SPATIAL_INDEX_RECORD_LENGTH);
@@ -730,269 +874,7 @@ public class SpatialIndex extends ShapeUtils {
                                 : ""));
             }
         }
-    }
-
-    /**
-     * Writes the spatial index for a polygon shape file.
-     * 
-     * @param is the shape file input stream
-     * @param ptr the current position in the file
-     * @param os the spatial index file output stream
-     */
-    protected static void indexPolygons(InputStream is, long ptr,
-                                        OutputStream os) {
-        boolean moreRecords = true;
-        byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
-        byte outBuf[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
-        int result;
-        int shapeType;
-        int nRecords = 0;
-        int recLengthWords, recLengthBytes /* , recNumber */;
-        long recOffset;
-        int recBufSize = 100000;
-        byte recBuf[] = new byte[recBufSize];
-        ESRIBoundingBox polyBounds;
-
-        try {
-            while (moreRecords) {
-                result = is.read(rHdr, 0, SHAPE_RECORD_HEADER_LENGTH);
-                if (result < 0) {
-                    moreRecords = false;
-                    Debug.output("Shapefile SpatialIndex Found " + nRecords
-                            + " records");
-                    Debug.output("Shapefile SpatialIndex recBufSize = "
-                            + recBufSize);
-                } else {
-                    nRecords++;
-                    recOffset = ptr;
-                    /* recNumber = */readBEInt(rHdr, 0);
-                    recLengthWords = readBEInt(rHdr, 4);
-                    recLengthBytes = recLengthWords * 2;
-
-                    if (recLengthBytes > recBufSize) {
-                        Debug.output("Shapefile SpatialIndex increasing recBufSize to "
-                                + recLengthBytes);
-                        recBufSize = recLengthBytes;
-                        recBuf = new byte[recBufSize];
-                    }
-
-                    result = is.read(recBuf, 0, recLengthBytes);
-                    // Null shapes are allowed in any shape file, at any time.
-                    shapeType = readLEInt(recBuf, 0);
-                    if (shapeType != SHAPE_TYPE_NULL) {
-                        polyBounds = readBox(recBuf, 4);
-                    } else {
-                        polyBounds = new ESRIBoundingBox();
-                    }
-                    ptr += recLengthBytes + 8;
-
-                    writeBEInt(outBuf, 0, (int) (recOffset / 2));
-                    writeBEInt(outBuf, 4, recLengthWords);
-                    writeLEDouble(outBuf, 8, polyBounds.min.x);
-                    writeLEDouble(outBuf, 16, polyBounds.min.y);
-                    writeLEDouble(outBuf, 24, polyBounds.max.x);
-                    writeLEDouble(outBuf, 32, polyBounds.max.y);
-                    os.write(outBuf, 0, SPATIAL_INDEX_RECORD_LENGTH);
-                }
-            }
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (java.io.IOException e) {
-            }
-        }
-    }
-
-    /**
-     * Writes the spatial index for a point shape file.
-     * 
-     * @param is the shape file input stream
-     * @param ptr the current position in the file
-     * @param os the spatial index file output stream
-     */
-    protected static void indexPoints(InputStream is, long ptr, OutputStream os) {
-        boolean moreRecords = true;
-        byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
-        byte outBuf[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
-        int result;
-        int nRecords = 0;
-        int recLengthWords, recLengthBytes/* , recNumber */;
-        long recOffset;
-        int shapeType;
-        int recBufSize = 20;
-        byte recBuf[] = new byte[recBufSize];
-        double x = 0;
-        double y = 0;
-
-        try {
-            while (moreRecords) {
-                result = is.read(rHdr, 0, SHAPE_RECORD_HEADER_LENGTH);
-                if (result < 0) {
-                    moreRecords = false;
-                    Debug.output("Found " + nRecords + " records");
-                    Debug.output("recBufSize = " + recBufSize);
-                } else {
-                    nRecords++;
-                    recOffset = ptr;
-                    /* recNumber = */readBEInt(rHdr, 0);
-                    recLengthWords = readBEInt(rHdr, 4);
-                    recLengthBytes = recLengthWords * 2;
-
-                    if (recLengthBytes > recBufSize) {
-                        Debug.output("Shapefile SpatialIndex increasing recBufSize to "
-                                + recLengthBytes);
-                        recBufSize = recLengthBytes;
-                        recBuf = new byte[recBufSize];
-                    }
-
-                    result = is.read(recBuf, 0, recLengthBytes);
-                    // Null shapes are allowed in any shape file, at any time.
-                    shapeType = readLEInt(recBuf, 0);
-                    if (shapeType != SHAPE_TYPE_NULL) {
-                        x = readLEDouble(recBuf, 4);
-                        y = readLEDouble(recBuf, 12);
-                    }
-                    ptr += recLengthBytes + 8;
-
-                    writeBEInt(outBuf, 0, (int) (recOffset / 2));
-                    writeBEInt(outBuf, 4, recLengthWords);
-                    writeLEDouble(outBuf, 8, x);
-                    writeLEDouble(outBuf, 16, y);
-                    writeLEDouble(outBuf, 24, x);
-                    writeLEDouble(outBuf, 32, y);
-                    os.write(outBuf, 0, SPATIAL_INDEX_RECORD_LENGTH);
-                }
-            }
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (java.io.IOException e) {
-            }
-        }
-    }
-
-    /**
-     * Writes the spatial index for a null shape file.
-     * 
-     * @param is the shape file input stream
-     * @param ptr the current position in the file
-     * @param os the spatial index file output stream
-     */
-    protected static void indexNulls(InputStream is, long ptr, OutputStream os) {
-        boolean moreRecords = true;
-        byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
-        byte outBuf[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
-        int result;
-        int nRecords = 0;
-        int recLengthWords, recLengthBytes/* , recNumber */;
-        long recOffset;
-        int recBufSize = 20;
-        byte recBuf[] = new byte[recBufSize];
-        double x;
-        double y;
-
-        try {
-            while (moreRecords) {
-                result = is.read(rHdr, 0, SHAPE_RECORD_HEADER_LENGTH);
-                if (result < 0) {
-                    moreRecords = false;
-                    Debug.output("Found " + nRecords + " records");
-                    Debug.output("recBufSize = " + recBufSize);
-                } else {
-                    nRecords++;
-                    recOffset = ptr;
-                    /* recNumber = */readBEInt(rHdr, 0);
-                    recLengthWords = readBEInt(rHdr, 4);
-                    recLengthBytes = recLengthWords * 2;
-
-                    if (recLengthBytes > recBufSize) {
-                        Debug.output("Shapefile SpatialIndex increasing recBufSize to "
-                                + recLengthBytes);
-                        recBufSize = recLengthBytes;
-                        recBuf = new byte[recBufSize];
-                    }
-
-                    result = is.read(recBuf, 0, recLengthBytes);
-                    x = 0;
-                    y = 0;
-                    ptr += recLengthBytes + 8;
-
-                    writeBEInt(outBuf, 0, (int) (recOffset / 2));
-                    writeBEInt(outBuf, 4, recLengthWords);
-                    writeLEDouble(outBuf, 8, x);
-                    writeLEDouble(outBuf, 16, y);
-                    writeLEDouble(outBuf, 24, x);
-                    writeLEDouble(outBuf, 32, y);
-                    os.write(outBuf, 0, SPATIAL_INDEX_RECORD_LENGTH);
-                }
-            }
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (java.io.IOException e) {
-            }
-        }
-    }
-
-    /**
-     * Creates a spatial index for a shape file. Reads the records from the
-     * shape file, writing appropriate index records to the spatial index file.
-     * 
-     * @param inFile the shape file
-     * @param outFile the spatial index file
-     */
-    public static void createIndex(String inFile, String outFile) {
-        byte fileHeader[] = new byte[SHAPE_FILE_HEADER_LENGTH];
-        FileInputStream shp = null;
-        FileOutputStream ssx = null;
-        int shapeType;
-        try {
-            shp = new FileInputStream(inFile);
-            ssx = new FileOutputStream(outFile);
-            shp.read(fileHeader, 0, SHAPE_FILE_HEADER_LENGTH);
-            ssx.write(fileHeader, 0, SHAPE_FILE_HEADER_LENGTH);
-            shapeType = readLEInt(fileHeader, 32);
-            switch (shapeType) {
-            case SHAPE_TYPE_NULL:
-                indexNulls(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
-                break;
-            case SHAPE_TYPE_POINT:
-            case SHAPE_TYPE_POINTZ:
-            case SHAPE_TYPE_POINTM:
-                indexPoints(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
-                break;
-            case SHAPE_TYPE_MULTIPOINT:
-            case SHAPE_TYPE_MULTIPOINTZ:
-            case SHAPE_TYPE_MULTIPOINTM:
-                // case SHAPE_TYPE_ARC:
-            case SHAPE_TYPE_POLYLINE:
-            case SHAPE_TYPE_POLYLINEZ:
-            case SHAPE_TYPE_POLYLINEM:
-            case SHAPE_TYPE_POLYGON:
-            case SHAPE_TYPE_POLYGONZ:
-            case SHAPE_TYPE_POLYGONM:
-                indexPolygons(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
-                break;
-            default:
-                Debug.error("Shapefile SpatialIndex.createIndex:  Unknown shape type: "
-                        + shapeType);
-            }
-
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                shp.close();
-                ssx.close();
-            } catch (java.io.IOException e) {
-            }
-        }
+        ssx.close();
     }
 
     /**
@@ -1006,7 +888,7 @@ public class SpatialIndex extends ShapeUtils {
 
         out.println("Usage:");
         out.println();
-        out.println("java " + className + " -c file.ssx file.shp");
+        out.println("java " + className + " -c file.shp");
         out.println("Creates spatial index <file.ssx> from "
                 + "shape file <file.shp>.");
         out.println();
@@ -1054,8 +936,12 @@ public class SpatialIndex extends ShapeUtils {
      */
     public static SpatialIndex locateAndSetShapeData(String shapeFileName) {
         SpatialIndex spi = null;
+
+        if (shapeFileName == null) {
+            return null;
+        }
+
         int appendixIndex = shapeFileName.indexOf(".shp");
-        String spatialIndexFileName, newShapeFileName, newSpatialIndexFileName;
 
         if (Debug.debugging("shape")) {
             Debug.output("SpatialIndex: created with just the shape file "
@@ -1067,8 +953,7 @@ public class SpatialIndex extends ShapeUtils {
             if (BinaryFile.exists(shapeFileName)) {
                 // OK, the shape files exists - now look for spatial
                 // index file next to it.
-                spatialIndexFileName = shapeFileName.substring(0, appendixIndex)
-                        + ".ssx";
+                String spatialIndexFileName = ssx(shapeFileName);
 
                 // Now, see if the spatialIndexFileName exists, and if
                 // not, create it.
@@ -1081,27 +966,20 @@ public class SpatialIndex extends ShapeUtils {
                     // OK, the spatial index doesn't exist, but if the
                     // shape file is local, we have a shot at creating
                     // it.
-                    newShapeFileName = locateFile(shapeFileName);
+                    String newShapeFileName = locateFile(shapeFileName);
 
                     if (newShapeFileName != null) {
                         // It's Local!!
                         Debug.output("Creating spatial index file: "
                                 + spatialIndexFileName);
 
-                        appendixIndex = newShapeFileName.indexOf(".shp");
-                        newSpatialIndexFileName = newShapeFileName.substring(0,
-                                appendixIndex)
-                                + ".ssx";
-                        SpatialIndex.createIndex(newShapeFileName,
-                                newSpatialIndexFileName);
-                    } else {
-                        Debug.error("Can't create SpatialIndex for URL/JAR shapefile: "
-                                + shapeFileName);
+                        // SpatialIndex.FileIndex.create(newShapeFileName);
                     }
                 }
 
                 try {
-                    spi = new SpatialIndex(spatialIndexFileName, shapeFileName);
+                    spi = new SpatialIndex(shapeFileName);
+
                 } catch (java.io.IOException ioe) {
                     Debug.error(ioe.getMessage());
                     ioe.printStackTrace(Debug.getErrorStream());
@@ -1119,28 +997,6 @@ public class SpatialIndex extends ShapeUtils {
             }
         }
 
-        return spi;
-    }
-
-    public static SpatialIndex locateAndSetShapeData(String shapeFileName,
-                                                     String spatialIndexFileName) {
-        SpatialIndex spi = null;
-        String message = "ShapeLayer SpatialIndex: problem setting up the shape files:\n      shape file: "
-                + shapeFileName
-                + "\n     spatial index file: "
-                + spatialIndexFileName;
-
-        try {
-            if (BinaryFile.exists(shapeFileName)
-                    && BinaryFile.exists(spatialIndexFileName)) {
-                spi = new SpatialIndex(spatialIndexFileName, shapeFileName);
-            } else {
-                Debug.error(message);
-            }
-        } catch (java.io.IOException ioe) {
-            Debug.error(message + "\n" + ioe.getMessage());
-            ioe.printStackTrace(Debug.getErrorStream());
-        }
         return spi;
     }
 
@@ -1177,9 +1033,8 @@ public class SpatialIndex extends ShapeUtils {
                 System.exit(1);
             }
         } else if ((argc == 3) && argv[0].equals("-c")) {
-            String indexFile = argv[1];
-            String shapeFile = argv[2];
-            SpatialIndex.createIndex(shapeFile, indexFile);
+            String shapeFile = argv[1];
+            SpatialIndex.FileIndex.create(shapeFile);
         } else {
             printUsage(System.err);
             System.exit(1);
@@ -1215,10 +1070,6 @@ public class SpatialIndex extends ShapeUtils {
                 shp.close();
             }
 
-            if (ssx != null) {
-                ssx.close();
-            }
-
             return true;
         } catch (IOException ioe) {
 
@@ -1227,6 +1078,11 @@ public class SpatialIndex extends ShapeUtils {
         return false;
     }
 
+    /**
+     * The spatial information for each shp entry is held in one of these.
+     * 
+     * @author dietrick
+     */
     public static class Entry {
 
         double xMin;
@@ -1273,5 +1129,580 @@ public class SpatialIndex extends ShapeUtils {
 
     public void setDbf(DbfHandler dbf) {
         this.dbf = dbf;
+    }
+
+    public static class FileIndex {
+
+        protected FileIndex() {}
+
+        public static void create(String shpFile) {
+            FileIndex fi = new FileIndex();
+            fi.createIndex(shpFile);
+        }
+
+        /**
+         * Writes the spatial index for a polygon shape file.
+         * 
+         * @param is the shape file input stream
+         * @param ptr the current position in the file
+         * @param os the spatial index file output stream
+         */
+        protected void indexPolygons(InputStream is, long ptr, OutputStream os) {
+            boolean moreRecords = true;
+            byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
+            byte outBuf[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
+            int result;
+            int shapeType;
+            int nRecords = 0;
+            int recLengthWords, recLengthBytes /* , recNumber */;
+            long recOffset;
+            int recBufSize = 100000;
+            byte recBuf[] = new byte[recBufSize];
+            ESRIBoundingBox polyBounds;
+
+            try {
+                while (moreRecords) {
+                    result = is.read(rHdr, 0, SHAPE_RECORD_HEADER_LENGTH);
+                    if (result < 0) {
+                        moreRecords = false;
+                        if (Debug.debugging("shape")) {
+                            Debug.output("Shapefile SpatialIndex Found "
+                                    + nRecords + " records");
+                            Debug.output("Shapefile SpatialIndex recBufSize = "
+                                    + recBufSize);
+                        }
+                    } else {
+                        nRecords++;
+                        recOffset = ptr;
+                        /* recNumber = */readBEInt(rHdr, 0);
+                        recLengthWords = readBEInt(rHdr, 4);
+                        recLengthBytes = recLengthWords * 2;
+
+                        if (recLengthBytes > recBufSize) {
+                            if (Debug.debugging("shape")) {
+                                Debug.output("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
+                            }
+                            recBufSize = recLengthBytes;
+                            recBuf = new byte[recBufSize];
+                        }
+
+                        result = is.read(recBuf, 0, recLengthBytes);
+                        // Null shapes are allowed in any shape file, at any
+                        // time.
+                        shapeType = readLEInt(recBuf, 0);
+                        if (shapeType != SHAPE_TYPE_NULL) {
+                            polyBounds = readBox(recBuf, 4);
+                        } else {
+                            polyBounds = new ESRIBoundingBox();
+                        }
+                        ptr += recLengthBytes + 8;
+
+                        writeBEInt(outBuf, 0, (int) (recOffset / 2));
+                        writeBEInt(outBuf, 4, recLengthWords);
+                        writeLEDouble(outBuf, 8, polyBounds.min.x);
+                        writeLEDouble(outBuf, 16, polyBounds.min.y);
+                        writeLEDouble(outBuf, 24, polyBounds.max.x);
+                        writeLEDouble(outBuf, 32, polyBounds.max.y);
+                        os.write(outBuf, 0, SPATIAL_INDEX_RECORD_LENGTH);
+                    }
+                }
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    is.close();
+                } catch (java.io.IOException e) {
+                }
+            }
+        }
+
+        /**
+         * Writes the spatial index for a point shape file.
+         * 
+         * @param is the shape file input stream
+         * @param ptr the current position in the file
+         * @param os the spatial index file output stream
+         */
+        protected void indexPoints(InputStream is, long ptr, OutputStream os) {
+            boolean moreRecords = true;
+            byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
+            byte outBuf[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
+            int result;
+            int nRecords = 0;
+            int recLengthWords, recLengthBytes/* , recNumber */;
+            long recOffset;
+            int shapeType;
+            int recBufSize = 20;
+            byte recBuf[] = new byte[recBufSize];
+            double x = 0;
+            double y = 0;
+
+            try {
+                while (moreRecords) {
+                    result = is.read(rHdr, 0, SHAPE_RECORD_HEADER_LENGTH);
+                    if (result < 0) {
+                        moreRecords = false;
+                        if (Debug.debugging("shape")) {
+                            Debug.output("Found " + nRecords + " records");
+                            Debug.output("recBufSize = " + recBufSize);
+                        }
+                    } else {
+                        nRecords++;
+                        recOffset = ptr;
+                        /* recNumber = */readBEInt(rHdr, 0);
+                        recLengthWords = readBEInt(rHdr, 4);
+                        recLengthBytes = recLengthWords * 2;
+
+                        if (recLengthBytes > recBufSize) {
+                            if (Debug.debugging("shape")) {
+                                Debug.output("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
+                            }
+                            recBufSize = recLengthBytes;
+                            recBuf = new byte[recBufSize];
+                        }
+
+                        result = is.read(recBuf, 0, recLengthBytes);
+                        // Null shapes are allowed in any shape file, at any
+                        // time.
+                        shapeType = readLEInt(recBuf, 0);
+                        if (shapeType != SHAPE_TYPE_NULL) {
+                            x = readLEDouble(recBuf, 4);
+                            y = readLEDouble(recBuf, 12);
+                        }
+                        ptr += recLengthBytes + 8;
+
+                        writeBEInt(outBuf, 0, (int) (recOffset / 2));
+                        writeBEInt(outBuf, 4, recLengthWords);
+                        writeLEDouble(outBuf, 8, x);
+                        writeLEDouble(outBuf, 16, y);
+                        writeLEDouble(outBuf, 24, x);
+                        writeLEDouble(outBuf, 32, y);
+                        os.write(outBuf, 0, SPATIAL_INDEX_RECORD_LENGTH);
+                    }
+                }
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    is.close();
+                } catch (java.io.IOException e) {
+                }
+            }
+        }
+
+        /**
+         * Writes the spatial index for a null shape file.
+         * 
+         * @param is the shape file input stream
+         * @param ptr the current position in the file
+         * @param os the spatial index file output stream
+         */
+        protected void indexNulls(InputStream is, long ptr, OutputStream os) {
+            boolean moreRecords = true;
+            byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
+            byte outBuf[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
+            int result;
+            int nRecords = 0;
+            int recLengthWords, recLengthBytes/* , recNumber */;
+            long recOffset;
+            int recBufSize = 20;
+            byte recBuf[] = new byte[recBufSize];
+            double x;
+            double y;
+
+            try {
+                while (moreRecords) {
+                    result = is.read(rHdr, 0, SHAPE_RECORD_HEADER_LENGTH);
+                    if (result < 0) {
+                        moreRecords = false;
+                        if (Debug.debugging("shape")) {
+                            Debug.output("Found " + nRecords + " records");
+                            Debug.output("recBufSize = " + recBufSize);
+                        }
+                    } else {
+                        nRecords++;
+                        recOffset = ptr;
+                        /* recNumber = */readBEInt(rHdr, 0);
+                        recLengthWords = readBEInt(rHdr, 4);
+                        recLengthBytes = recLengthWords * 2;
+
+                        if (recLengthBytes > recBufSize) {
+                            if (Debug.debugging("shape")) {
+                                Debug.output("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
+                            }
+                            recBufSize = recLengthBytes;
+                            recBuf = new byte[recBufSize];
+                        }
+
+                        result = is.read(recBuf, 0, recLengthBytes);
+                        x = 0;
+                        y = 0;
+                        ptr += recLengthBytes + 8;
+
+                        writeBEInt(outBuf, 0, (int) (recOffset / 2));
+                        writeBEInt(outBuf, 4, recLengthWords);
+                        writeLEDouble(outBuf, 8, x);
+                        writeLEDouble(outBuf, 16, y);
+                        writeLEDouble(outBuf, 24, x);
+                        writeLEDouble(outBuf, 32, y);
+                        os.write(outBuf, 0, SPATIAL_INDEX_RECORD_LENGTH);
+                    }
+                }
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    is.close();
+                } catch (java.io.IOException e) {
+                }
+            }
+        }
+
+        /**
+         * Creates a spatial index for a shape file. Reads the records from the
+         * shape file, writing appropriate index records to the spatial index
+         * file.
+         * 
+         * @param inFile the shape file or spatial index file, the method will
+         *        figure it out based on the file name extension.
+         */
+        public void createIndex(String inFile) {
+            String ssxFile = null;
+            String shpFile = null;
+            if (inFile.endsWith(".shp")) {
+                shpFile = inFile;
+                ssxFile = ssx(shpFile);
+            } else if (inFile.endsWith(".ssx")) {
+                ssxFile = inFile;
+                shpFile = ssxFile.substring(0, ssxFile.indexOf(".ssx"))
+                        + ".shp";
+            } else {
+                return;
+            }
+
+            byte fileHeader[] = new byte[SHAPE_FILE_HEADER_LENGTH];
+            FileInputStream shp = null;
+            FileOutputStream ssx = null;
+            int shapeType;
+            try {
+                shp = new FileInputStream(shpFile);
+                ssx = new FileOutputStream(ssxFile);
+                shp.read(fileHeader, 0, SHAPE_FILE_HEADER_LENGTH);
+                ssx.write(fileHeader, 0, SHAPE_FILE_HEADER_LENGTH);
+                shapeType = readLEInt(fileHeader, 32);
+                switch (shapeType) {
+                case SHAPE_TYPE_NULL:
+                    indexNulls(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
+                    break;
+                case SHAPE_TYPE_POINT:
+                case SHAPE_TYPE_POINTZ:
+                case SHAPE_TYPE_POINTM:
+                    indexPoints(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
+                    break;
+                case SHAPE_TYPE_MULTIPOINT:
+                case SHAPE_TYPE_MULTIPOINTZ:
+                case SHAPE_TYPE_MULTIPOINTM:
+                    // case SHAPE_TYPE_ARC:
+                case SHAPE_TYPE_POLYLINE:
+                case SHAPE_TYPE_POLYLINEZ:
+                case SHAPE_TYPE_POLYLINEM:
+                case SHAPE_TYPE_POLYGON:
+                case SHAPE_TYPE_POLYGONZ:
+                case SHAPE_TYPE_POLYGONM:
+                    indexPolygons(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
+                    break;
+                default:
+                    Debug.error("Shapefile SpatialIndex.createIndex:  Unknown shape type: "
+                            + shapeType);
+                }
+
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    shp.close();
+                    ssx.close();
+                } catch (java.io.IOException e) {
+                }
+            }
+        }
+    }
+
+    public static class MemoryIndex {
+
+        protected MemoryIndex() {}
+
+        public static List<Entry> create(String shpFile) {
+            MemoryIndex mi = new MemoryIndex();
+            return mi.createIndex(shpFile);
+        }
+
+        /**
+         * Writes the spatial index for a polygon shape file.
+         * 
+         * @param is the shape file input stream
+         * @param ptr the current position in the file
+         * @param entries a List of Entries to add to
+         */
+        protected void indexPolygons(InputStream is, long ptr,
+                                     List<Entry> entries) {
+            boolean moreRecords = true;
+            byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
+            int result;
+            int shapeType;
+            int nRecords = 0;
+            int recLengthWords, recLengthBytes /* , recNumber */;
+            long recOffset;
+            int recBufSize = 100000;
+            byte recBuf[] = new byte[recBufSize];
+            ESRIBoundingBox polyBounds;
+
+            try {
+                while (moreRecords) {
+                    result = is.read(rHdr, 0, SHAPE_RECORD_HEADER_LENGTH);
+                    if (result < 0) {
+                        moreRecords = false;
+                        if (Debug.debugging("shape")) {
+                            Debug.output("Shapefile SpatialIndex Found "
+                                    + nRecords + " records");
+                            Debug.output("Shapefile SpatialIndex recBufSize = "
+                                    + recBufSize);
+                        }
+                    } else {
+                        nRecords++;
+                        recOffset = ptr;
+                        /* recNumber = */readBEInt(rHdr, 0);
+                        recLengthWords = readBEInt(rHdr, 4);
+                        recLengthBytes = recLengthWords * 2;
+
+                        if (recLengthBytes > recBufSize) {
+                            if (Debug.debugging("shape")) {
+                                Debug.output("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
+                            }
+                            recBufSize = recLengthBytes;
+                            recBuf = new byte[recBufSize];
+                        }
+
+                        result = is.read(recBuf, 0, recLengthBytes);
+                        // Null shapes are allowed in any shape file, at any
+                        // time.
+                        shapeType = readLEInt(recBuf, 0);
+                        if (shapeType != SHAPE_TYPE_NULL) {
+                            polyBounds = readBox(recBuf, 4);
+                        } else {
+                            polyBounds = new ESRIBoundingBox();
+                        }
+                        ptr += recLengthBytes + 8;
+
+                        Entry entry = new Entry(polyBounds.min.x, polyBounds.min.y, polyBounds.max.x, polyBounds.max.y, (int) recOffset);
+                        entries.add(entry);
+                    }
+                }
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    is.close();
+                } catch (java.io.IOException e) {
+                }
+            }
+        }
+
+        /**
+         * Writes the spatial index for a point shape file.
+         * 
+         * @param is the shape file input stream
+         * @param ptr the current position in the file
+         * @param entries a List of Entries to add to
+         */
+        protected void indexPoints(InputStream is, long ptr, List<Entry> entries) {
+            boolean moreRecords = true;
+            byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
+            int result;
+            int nRecords = 0;
+            int recLengthWords, recLengthBytes/* , recNumber */;
+            long recOffset;
+            int shapeType;
+            int recBufSize = 20;
+            byte recBuf[] = new byte[recBufSize];
+            double x = 0;
+            double y = 0;
+
+            try {
+                while (moreRecords) {
+                    result = is.read(rHdr, 0, SHAPE_RECORD_HEADER_LENGTH);
+                    if (result < 0) {
+                        moreRecords = false;
+                        if (Debug.debugging("shape")) {
+                            Debug.output("Found " + nRecords + " records");
+                            Debug.output("recBufSize = " + recBufSize);
+                        }
+                    } else {
+                        nRecords++;
+                        recOffset = ptr;
+                        /* recNumber = */readBEInt(rHdr, 0);
+                        recLengthWords = readBEInt(rHdr, 4);
+                        recLengthBytes = recLengthWords * 2;
+
+                        if (recLengthBytes > recBufSize) {
+                            if (Debug.debugging("shape")) {
+                                Debug.output("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
+                            }
+                            recBufSize = recLengthBytes;
+                            recBuf = new byte[recBufSize];
+                        }
+
+                        result = is.read(recBuf, 0, recLengthBytes);
+                        // Null shapes are allowed in any shape file, at any
+                        // time.
+                        shapeType = readLEInt(recBuf, 0);
+                        if (shapeType != SHAPE_TYPE_NULL) {
+                            x = readLEDouble(recBuf, 4);
+                            y = readLEDouble(recBuf, 12);
+                        }
+                        ptr += recLengthBytes + 8;
+
+                        Entry entry = new Entry(x, y, x, y, (int) recOffset);
+                        entries.add(entry);
+                    }
+                }
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    is.close();
+                } catch (java.io.IOException e) {
+                }
+            }
+        }
+
+        /**
+         * Writes the spatial index for a null shape file.
+         * 
+         * @param is the shape file input stream
+         * @param ptr the current position in the file
+         * @param entries a List of Entries to add to
+         */
+        protected void indexNulls(InputStream is, long ptr, List<Entry> entries) {
+            boolean moreRecords = true;
+            byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
+            int result;
+            int nRecords = 0;
+            int recLengthWords, recLengthBytes/* , recNumber */;
+            long recOffset;
+            int recBufSize = 20;
+            byte recBuf[] = new byte[recBufSize];
+            double x;
+            double y;
+
+            try {
+                while (moreRecords) {
+                    result = is.read(rHdr, 0, SHAPE_RECORD_HEADER_LENGTH);
+                    if (result < 0) {
+                        moreRecords = false;
+                        if (Debug.debugging("shape")) {
+                            Debug.output("Found " + nRecords + " records");
+                            Debug.output("recBufSize = " + recBufSize);
+                        }
+                    } else {
+                        nRecords++;
+                        recOffset = ptr;
+                        /* recNumber = */readBEInt(rHdr, 0);
+                        recLengthWords = readBEInt(rHdr, 4);
+                        recLengthBytes = recLengthWords * 2;
+
+                        if (recLengthBytes > recBufSize) {
+                            if (Debug.debugging("shape")) {
+                                Debug.output("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
+                            }
+                            recBufSize = recLengthBytes;
+                            recBuf = new byte[recBufSize];
+                        }
+
+                        result = is.read(recBuf, 0, recLengthBytes);
+                        x = 0;
+                        y = 0;
+                        ptr += recLengthBytes + 8;
+
+                        Entry entry = new Entry(x, y, x, y, (int) recOffset);
+                        entries.add(entry);
+                    }
+                }
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    is.close();
+                } catch (java.io.IOException e) {
+                }
+            }
+        }
+
+        /**
+         * Creates a spatial index for a shape file. Reads the records from the
+         * shape file, writing appropriate index records to the spatial index
+         * file.
+         * 
+         * @param inFile the shape file.
+         */
+        public List<Entry> createIndex(String inFile) {
+            String shpFile = null;
+            List<Entry> entries = new ArrayList<Entry>();
+            if (inFile.endsWith(".shp")) {
+                shpFile = inFile;
+            } else {
+                return entries;
+            }
+
+            byte fileHeader[] = new byte[SHAPE_FILE_HEADER_LENGTH];
+            FileInputStream shp = null;
+            int shapeType;
+            try {
+                shp = new FileInputStream(shpFile);
+                shp.read(fileHeader, 0, SHAPE_FILE_HEADER_LENGTH);
+                shapeType = readLEInt(fileHeader, 32);
+                switch (shapeType) {
+                case SHAPE_TYPE_NULL:
+                    indexNulls(shp, SHAPE_FILE_HEADER_LENGTH, entries);
+                    break;
+                case SHAPE_TYPE_POINT:
+                case SHAPE_TYPE_POINTZ:
+                case SHAPE_TYPE_POINTM:
+                    indexPoints(shp, SHAPE_FILE_HEADER_LENGTH, entries);
+                    break;
+                case SHAPE_TYPE_MULTIPOINT:
+                case SHAPE_TYPE_MULTIPOINTZ:
+                case SHAPE_TYPE_MULTIPOINTM:
+                    // case SHAPE_TYPE_ARC:
+                case SHAPE_TYPE_POLYLINE:
+                case SHAPE_TYPE_POLYLINEZ:
+                case SHAPE_TYPE_POLYLINEM:
+                case SHAPE_TYPE_POLYGON:
+                case SHAPE_TYPE_POLYGONZ:
+                case SHAPE_TYPE_POLYGONM:
+                    indexPolygons(shp, SHAPE_FILE_HEADER_LENGTH, entries);
+                    break;
+                default:
+                    Debug.error("Shapefile SpatialIndex.createIndex:  Unknown shape type: "
+                            + shapeType);
+                }
+
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    shp.close();
+                } catch (java.io.IOException e) {
+                }
+            }
+
+            return entries;
+        }
     }
 }

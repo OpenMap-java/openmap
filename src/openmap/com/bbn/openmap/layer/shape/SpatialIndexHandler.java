@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndexHandler.java,v $
 // $RCSfile: SpatialIndexHandler.java,v $
-// $Revision: 1.10 $
-// $Date: 2007/06/21 21:39:00 $
+// $Revision: 1.11 $
+// $Date: 2008/07/20 05:46:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,6 +42,8 @@ import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.shape.DbfHandler;
+import com.bbn.openmap.io.BinaryBufferedFile;
+import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.shape.SpatialIndex.Entry;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
@@ -57,12 +59,12 @@ import com.bbn.openmap.util.PropUtils;
  * The SpatialIndexHandler keeps track of all the stuff dealing with a
  * particular shape file - file names, colors, etc. You can ask it to create
  * OMGraphics based on a bounding box, and make adjustments to it through its
- * GUI.
+ * GUI. This is the object to use if you just want to deal with the contents of
+ * a shape file but not display them.
  */
 public class SpatialIndexHandler implements PropertyConsumer {
     protected SpatialIndex spatialIndex;
     protected String shapeFileName = null;
-    protected String spatialIndexFileName = null;
     protected String imageURLString = null;
     protected GeoCoordTransformation coordTranslator;
     protected String prettyName = null;
@@ -83,11 +85,17 @@ public class SpatialIndexHandler implements PropertyConsumer {
         setProperties(prefix, props);
     }
 
+    public static SpatialIndex create(String prefix, Properties props) {
+        SpatialIndexHandler sih = new SpatialIndexHandler(prefix, props);
+        return sih.getSpatialIndex();
+    }
+
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("For " + prettyName + ":\n");
         sb.append("  Shape file name: " + shapeFileName + "\n");
-        sb.append("  Spatal index file name: " + spatialIndexFileName + "\n");
+        sb.append("  Spatal index file name: "
+                + SpatialIndex.ssx(shapeFileName) + "\n");
         sb.append("  image URL: " + imageURLString + "\n");
         sb.append("  drawing attributes: " + drawingAttributes + "\n");
         return sb.toString();
@@ -153,16 +161,31 @@ public class SpatialIndexHandler implements PropertyConsumer {
         prettyName = props.getProperty(realPrefix + Layer.PrettyNameProperty);
         shapeFileName = props.getProperty(realPrefix
                 + ShapeLayer.shapeFileProperty);
-        spatialIndexFileName = props.getProperty(realPrefix
-                + ShapeLayer.spatialIndexProperty);
 
-        if (shapeFileName != null && !shapeFileName.equals("")) {
-            if (spatialIndexFileName != null
-                    && !spatialIndexFileName.equals("")) {
-                spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName,
-                        spatialIndexFileName);
-            } else {
-                spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName);
+        if (shapeFileName != null && shapeFileName.endsWith(".shp")) {
+
+            spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName);
+            String dbfFileName = SpatialIndex.dbf(shapeFileName);
+
+            try {
+                if (BinaryFile.exists(dbfFileName)) {
+                    BinaryBufferedFile bbf = new BinaryBufferedFile(dbfFileName);
+                    DbfHandler dbfh = new DbfHandler(bbf);
+                    dbfh.setProperties(realPrefix, props);
+                    spatialIndex.setDbf(dbfh);
+                }
+            } catch (FormatException fe) {
+                if (Debug.debugging("shape")) {
+                    Debug.error("ShapeLayer: Couldn't create DBF handler for "
+                            + dbfFileName + ", FormatException: "
+                            + fe.getMessage());
+                }
+            } catch (IOException ioe) {
+                if (Debug.debugging("shape")) {
+                    Debug.error("ShapeLayer: Couldn't create DBF handler for "
+                            + dbfFileName + ", IOException: "
+                            + ioe.getMessage());
+                }
             }
 
             imageURLString = props.getProperty(realPrefix
@@ -186,13 +209,10 @@ public class SpatialIndexHandler implements PropertyConsumer {
             }
 
         } else {
-            Debug.error(realPrefix
-                    + ": One of the following properties was null or empty:");
+            Debug.error(realPrefix + ": No shape file name provided:");
             Debug.error("\t" + realPrefix + ShapeLayer.shapeFileProperty);
-            Debug.error("\t" + realPrefix + ShapeLayer.spatialIndexProperty);
         }
-        props.put(ShapeLayer.spatialIndexProperty,
-                "Location of Spatial Index file - .ssx (File, URL or relative file path).");
+
         drawingAttributes = new DrawingAttributes(realPrefix, props);
 
         enabled = PropUtils.booleanFromProperties(props, realPrefix
@@ -222,8 +242,6 @@ public class SpatialIndexHandler implements PropertyConsumer {
         String prefix = PropUtils.getScopedPropertyPrefix(this);
         props.put(prefix + ShapeLayer.shapeFileProperty,
                 (shapeFileName == null ? "" : shapeFileName));
-        props.put(prefix + ShapeLayer.spatialIndexProperty,
-                (spatialIndexFileName == null ? "" : spatialIndexFileName));
         props.put(prefix + ShapeLayer.pointImageURLProperty,
                 (imageURLString == null ? "" : imageURLString));
 
@@ -276,18 +294,19 @@ public class SpatialIndexHandler implements PropertyConsumer {
         props.put(ShapeLayer.shapeFileProperty + ScopedEditorProperty,
                 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
-        interString = i18n.get(ShapeLayer.class,
-                ShapeLayer.spatialIndexProperty,
-                I18n.TOOLTIP,
-                "Location of Spatial Index file - .ssx (File, URL or relative file path).");
-        props.put(ShapeLayer.spatialIndexProperty, interString);
-        interString = i18n.get(ShapeLayer.class,
-                ShapeLayer.spatialIndexProperty,
-                ShapeLayer.spatialIndexProperty);
-        props.put(ShapeLayer.spatialIndexProperty + LabelEditorProperty,
-                interString);
-        props.put(ShapeLayer.spatialIndexProperty + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        // interString = i18n.get(ShapeLayer.class,
+        // ShapeLayer.spatialIndexProperty,
+        // I18n.TOOLTIP,
+        // "Location of Spatial Index file - .ssx (File, URL or relative file
+        // path).");
+        // props.put(ShapeLayer.spatialIndexProperty, interString);
+        // interString = i18n.get(ShapeLayer.class,
+        // ShapeLayer.spatialIndexProperty,
+        // ShapeLayer.spatialIndexProperty);
+        // props.put(ShapeLayer.spatialIndexProperty + LabelEditorProperty,
+        // interString);
+        // props.put(ShapeLayer.spatialIndexProperty + ScopedEditorProperty,
+        // "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
         interString = i18n.get(ShapeLayer.class,
                 ShapeLayer.pointImageURLProperty,
@@ -430,6 +449,17 @@ public class SpatialIndexHandler implements PropertyConsumer {
         return list;
     }
 
+    /**
+     * Checks the buffered list of OMGraphics from the shp file and figures out
+     * of they intersect the provided bounds.
+     * 
+     * @param xmin minimum longitude, decimal degrees.
+     * @param ymin minimum latitude, decimal degrees.
+     * @param xmax maximum longitude, decimal degrees.
+     * @param ymax maximum latitude, decimal degrees.
+     * @param retList the list that passing OMGraphics will be added to.
+     * @param proj the current map projection.
+     */
     protected void checkSpatialIndexEntries(double xmin, double ymin,
                                             double xmax, double ymax,
                                             OMGraphicList retList,
@@ -437,11 +467,19 @@ public class SpatialIndexHandler implements PropertyConsumer {
         // There should be the same number of objects in both iterators.
         Iterator entryIt = spatialIndex.entries.iterator();
         Iterator omgIt = bufferedList.iterator();
+
+        OMGraphicList labels = null;
+        if (spatialIndex.getDbf() != null) {
+            labels = new OMGraphicList();
+            retList.add(labels);
+        }
+
         while (entryIt.hasNext() && omgIt.hasNext()) {
             Entry entry = (Entry) entryIt.next();
             OMGraphic omg = (OMGraphic) omgIt.next();
             omg.generate(proj);
             if (entry.intersects(xmin, ymin, xmax, ymax)) {
+                omg = spatialIndex.evaluate(omg, labels, proj);
                 drawingAttributes.setTo(omg);
                 retList.add(omg);
             }
@@ -458,7 +496,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
      */
     protected OMGraphicList getWholePlanet() throws IOException,
             FormatException {
-        return getWholePlanet((GeoCoordTransformation) null);
+        return getWholePlanet(coordTranslator);
     }
 
     /**
@@ -466,11 +504,9 @@ public class SpatialIndexHandler implements PropertyConsumer {
      */
     protected OMGraphicList getWholePlanet(GeoCoordTransformation dataTransform)
             throws IOException, FormatException {
-        return spatialIndex.getOMGraphics(-180,
-                -90,
-                180,
-                90,
-                (OMGraphicList) null,
+        // Sets the entries
+        spatialIndex.readIndexFile(null, dataTransform);
+        return spatialIndex.getAllOMGraphics((OMGraphicList) null,
                 drawingAttributes,
                 (Projection) null,
                 dataTransform);
@@ -498,6 +534,30 @@ public class SpatialIndexHandler implements PropertyConsumer {
 
     public DrawingAttributes getDrawingAttributes() {
         return drawingAttributes;
+    }
+
+    public SpatialIndex getSpatialIndex() {
+        return spatialIndex;
+    }
+
+    public void setSpatialIndex(SpatialIndex spatialIndex) {
+        this.spatialIndex = spatialIndex;
+    }
+
+    public String getShapeFileName() {
+        return shapeFileName;
+    }
+
+    public void setShapeFileName(String shapeFileName) {
+        this.shapeFileName = shapeFileName;
+    }
+
+    public String getImageURLString() {
+        return imageURLString;
+    }
+
+    public void setImageURLString(String imageURLString) {
+        this.imageURLString = imageURLString;
     }
 
     public void setEnabled(boolean set) {

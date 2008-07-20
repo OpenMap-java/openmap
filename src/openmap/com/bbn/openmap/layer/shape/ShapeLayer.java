@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.25 $
-// $Date: 2007/06/21 21:39:00 $
+// $Revision: 1.26 $
+// $Date: 2008/07/20 05:46:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -87,7 +87,7 @@ import com.bbn.openmap.util.PropUtils;
  * </pre></code>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.25 $ $Date: 2007/06/21 21:39:00 $
+ * @version $Revision: 1.26 $ $Date: 2008/07/20 05:46:31 $
  * @see SpatialIndex
  */
 public class ShapeLayer extends OMGraphicHandlerLayer implements
@@ -95,11 +95,6 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
 
     /** The name of the property that holds the name of the shape file. */
     public final static String shapeFileProperty = "shapeFile";
-
-    /**
-     * The name of the property that holds the name of the spatial index file.
-     */
-    public final static String spatialIndexProperty = "spatialIndex";
 
     /** The URL of an image to use for point objects. */
     public final static String pointImageURLProperty = "pointImageURL";
@@ -139,7 +134,6 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
 
     // For writing out to properties file later.
     String shapeFileName = null;
-    String spatialIndexFileName = null;
     String imageURLString = null;
 
     /**
@@ -182,22 +176,11 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
     protected void setFileProperties(String realPrefix, Properties props) {
         shapeFileName = props.getProperty(realPrefix + shapeFileProperty);
 
-        spatialIndexFileName = props.getProperty(realPrefix
-                + spatialIndexProperty);
-
         if (shapeFileName != null && !shapeFileName.equals("")) {
-            SpatialIndex spatialIndex;
-            if (spatialIndexFileName != null
-                    && !spatialIndexFileName.equals("")) {
-                spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName,
-                        spatialIndexFileName);
-            } else {
-                spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName);
-            }
 
-            String dbfFileName = shapeFileName.substring(0,
-                    shapeFileName.indexOf(".shp"))
-                    + ".dbf";
+            spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName);
+            String dbfFileName = SpatialIndex.dbf(shapeFileName);
+
             try {
                 if (BinaryFile.exists(dbfFileName)) {
                     BinaryBufferedFile bbf = new BinaryBufferedFile(dbfFileName);
@@ -241,9 +224,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
             setSpatialIndex(spatialIndex);
 
         } else {
-            Debug.error("One of the following properties was null or empty:");
+            Debug.error("No Shape file was specified:");
             Debug.error("\t" + realPrefix + shapeFileProperty);
-            Debug.error("\t" + realPrefix + spatialIndexProperty);
         }
     }
 
@@ -289,8 +271,6 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
         String prefix = PropUtils.getScopedPropertyPrefix(this);
         props.put(prefix + shapeFileProperty, (shapeFileName == null ? ""
                 : shapeFileName));
-        props.put(prefix + spatialIndexProperty,
-                (spatialIndexFileName == null ? "" : spatialIndexFileName));
         props.put(prefix + pointImageURLProperty, (imageURLString == null ? ""
                 : imageURLString));
 
@@ -350,9 +330,9 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                 "Attributes that determine how the shapes will be drawn.",
                 "com.bbn.openmap.omGraphics.DrawingAttributesPropertyEditor");
 
-        list.put(initPropertiesProperty, shapeFileProperty + " "
-                + spatialIndexProperty + " " + pointImageURLProperty + " "
-                + shadowXProperty + " " + shadowYProperty + " " + dummyMarker + " "
+        list.put(initPropertiesProperty, shapeFileProperty + " " + " "
+                + pointImageURLProperty + " " + shadowXProperty + " "
+                + shadowYProperty + " " + dummyMarker + " "
                 + AddToBeanContextProperty + " " + MinScaleProperty + " "
                 + MaxScaleProperty);
 
@@ -362,14 +342,6 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                 shapeFileProperty,
                 shapeFileProperty,
                 "Location of Shape file - .shp (File, CURL or relative file path).",
-                "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-
-        PropUtils.setI18NPropertyInfo(i18n,
-                list,
-                ShapeLayer.class,
-                spatialIndexProperty,
-                spatialIndexProperty,
-                "Location of Spatial Index file - .ssx (File, URL or relative file path).",
                 "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
         PropUtils.setI18NPropertyInfo(i18n,

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/BufferedShapeLayer.java,v $
 // $RCSfile: BufferedShapeLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2007/06/21 21:39:00 $
+// $Revision: 1.10 $
+// $Date: 2008/07/20 05:46:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -60,11 +60,8 @@ public class BufferedShapeLayer extends ShapeLayer {
      */
     protected OMGraphicList getWholePlanet() throws IOException,
             FormatException {
-        return spatialIndex.getOMGraphics(-180,
-                -90,
-                180,
-                90,
-                (OMGraphicList) null,
+        spatialIndex.readIndexFile(null, coordTransform);
+        return spatialIndex.getAllOMGraphics((OMGraphicList) null,
                 drawingAttributes,
                 (Projection) null,
                 coordTransform);
@@ -131,7 +128,6 @@ public class BufferedShapeLayer extends ShapeLayer {
             double xmax = Math.max(ulLon, lrLon);
             double ymin = Math.min(ulLat, lrLat);
             double ymax = Math.max(ulLat, lrLat);
-
             checkSpatialIndexEntries(xmin, ymin, xmax, ymax, list, proj);
         }
 

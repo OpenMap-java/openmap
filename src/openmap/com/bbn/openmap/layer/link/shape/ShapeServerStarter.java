@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/shape/ShapeServerStarter.java,v $
 // $RCSfile: ShapeServerStarter.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:59 $
+// $Revision: 1.4 $
+// $Date: 2008/07/20 05:46:31 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,16 +37,18 @@ import com.bbn.openmap.layer.link.*;
 public class ShapeServerStarter extends LinkServerStarter {
 
     protected String shapeFile;
-    protected String shapeIndex;
 
     public ShapeServerStarter(int port, String shapeFile, String shapeIndex) {
+        this(port, shapeFile);
+    }
+    
+    public ShapeServerStarter(int port, String shapeFile) {
         super(port);
         this.shapeFile = shapeFile;
-        this.shapeIndex = shapeIndex;
     }
 
     public Thread startNewServer(Socket sock) {
-        return (new ShapeLinkServer(sock, shapeFile, shapeIndex));
+        return (new ShapeLinkServer(sock, shapeFile));
     }
 
     public static void main(String[] argv) {
@@ -56,7 +58,6 @@ public class ShapeServerStarter extends LinkServerStarter {
         Environment.init(p);
 
         int pnumber = -1;
-        String ssx = null;
         String shp = null;
         for (int i = 0; i < argv.length; i++) {
             if (argv[i].equals("-port") && argv.length > i + 1) {
@@ -66,24 +67,21 @@ public class ShapeServerStarter extends LinkServerStarter {
                 } catch (NumberFormatException e) {
                     pnumber = -1;
                 }
-            } else if (argv[i].indexOf(".ssx") != -1
-                    || argv[i].indexOf(".SSX") != -1) {
-                ssx = argv[i];
             } else if (argv[i].indexOf(".shp") != -1
                     || argv[i].indexOf(".SHP") != -1) {
                 shp = argv[i];
             }
         }
 
-        if (pnumber < 0 || ssx == null || shp == null) {
-            System.out.println("Need to start the server with a port number, shape file and spatial index file.");
-            System.err.println("Usage: java com.bbn.openmap.layer.link.shape.ShapeServerStarter <ShapeFile Name.shp> <ShapeFile Spatial Index File.ssx> -port <port number>");
+        if (pnumber < 0 || shp == null) {
+            System.out.println("Need to start the server with a port number and shape file.");
+            System.err.println("Usage: java com.bbn.openmap.layer.link.shape.ShapeServerStarter <ShapeFile Name.shp> -port <port number>");
             System.exit(-1);
         }
 
         System.out.println("ShapeServerStarter: Starting up on port " + pnumber
                 + ".");
-        ShapeServerStarter serverStarter = new ShapeServerStarter(pnumber, argv[0], argv[1]);
+        ShapeServerStarter serverStarter = new ShapeServerStarter(pnumber, shp);
 
         while (true) {
             serverStarter.run();
