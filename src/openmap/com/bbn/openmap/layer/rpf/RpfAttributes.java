@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfAttributes.java,v $
 // $RCSfile: RpfAttributes.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:02 $
+// $Revision: 1.5 $
+// $Date: 2008/07/21 03:41:17 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -268,7 +268,6 @@ public class RpfAttributes {
                     dataLevel = (int) binFile.readShort(); // ushort
                     break;
                 }
-                i--;
             }
 
         } catch (IOException e) {
