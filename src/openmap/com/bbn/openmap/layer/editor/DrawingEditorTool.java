@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/editor/DrawingEditorTool.java,v $
 // $RCSfile: DrawingEditorTool.java,v $
-// $Revision: 1.13 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.14 $
+// $Date: 2008/09/16 18:37:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -335,7 +335,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
      * it.
      */
     public void resetForNewGraphic() {
-        // if thingToCreate is null, then omdtmm will be set to null
+    	// if thingToCreate is null, then omdtmm will be set to null
         // and the drawingTool deactivated. If thingToCreate is not
         // null, omdtmm will be ready to receive mouse events for
         // editing the new OMGraphic.
@@ -446,6 +446,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
             }
 
             drawingTool.setMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK);
+            
             if (drawingTool.create(ttc,
                     ga,
                     (DrawingToolRequestor) getLayer(),
@@ -482,6 +483,14 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     public boolean mousePressed(MouseEvent e) {
         if (wantsEvents()) {
             if (omdtmm != null) {
+            	
+                // if you only want one OMGraphic at a time:
+//                OMGraphicList omgl = layer.getList();
+//                if (omgl != null && omgl.size() > 0) {
+//                	omgl.clear();
+//                	layer.repaint();
+//                }
+            	
                 omdtmm.mousePressed(e);
             }
             return consumeEvents;
