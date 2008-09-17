@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/DbfOutputStream.java,v $
 // $RCSfile: DbfOutputStream.java,v $
-// $Revision: 1.15 $
-// $Date: 2008/02/29 00:58:36 $
+// $Revision: 1.16 $
+// $Date: 2008/09/17 20:47:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,6 +25,8 @@ package com.bbn.openmap.dataAccess.shape.output;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
@@ -243,40 +245,47 @@ public class DbfOutputStream {
             return;
         }
 
-        java.text.NumberFormat df = NumberFormat.getNumberInstance(Locale.ENGLISH);
+        DecimalFormat df = new DecimalFormat();
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.ENGLISH);
+        df.setDecimalFormatSymbols(dfs);
+
         int rowCount = model.getRowCount();
         int columnCount = model.getColumnCount();
         for (int r = 0; r <= rowCount - 1; r++) {
             _leos.writeByte(32);
             for (int c = 0; c <= columnCount - 1; c++) {
                 byte type = model.getType(c);
-                String value = null;
-                if (type == DbfTableModel.TYPE_NUMERIC) {
-                    Object obj = model.getValueAt(r, c);
-                    if (obj instanceof Double) {
-                        // Why Number?
-                        // Number d = (Number)model.getValueAt(r, c);
-                        // This seems to sometimes write out
-                        // exponetial numbers, which is bad for
-                        // reading it back in.
-                        // value = ((Number)obj).toString();
-                        // value =
-                        // df.format(((Double)obj).doubleValue());
+                int numDecSpaces = model.getDecimalCount(c);
+                df.setMaximumFractionDigits(numDecSpaces);
+                String value = getStringForType(model.getValueAt(r, c),
+                        type,
+                        df);
 
-                        value = "" + df.format(((Double) obj).doubleValue());
-                    } else {
-                        // value = "";
-                        // Instead of making up a value, try to
-                        // represent it as true as possible.
-                        value = (obj != null) ? obj.toString() : "";
-                    }
-                } else {
-                    value = (String) model.getValueAt(r, c);
-                }
                 int length = model.getLength(c);
                 _leos.writeString(value, length);
             }
         }
+    }
+
+    protected String getStringForType(Object obj, byte type, DecimalFormat df) {
+        String ret = "";
+        if (type == DbfTableModel.TYPE_NUMERIC
+                || type == DbfTableModel.TYPE_LONG
+                || type == DbfTableModel.TYPE_FLOAT
+                || type == DbfTableModel.TYPE_DOUBLE
+                || type == DbfTableModel.TYPE_AUTOINCREMENT) {
+
+            try {
+                ret = df.format(((Double) obj).doubleValue());
+            } catch (Exception e) {
+                ret = "";
+            }
+
+        } else if (obj instanceof String) {
+            ret = (String) obj;
+        }
+
+        return ret;
     }
 
     public void close() throws IOException {

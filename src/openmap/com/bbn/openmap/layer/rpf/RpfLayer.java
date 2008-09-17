@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/rpf/RpfLayer.java,v $
 // $RCSfile: RpfLayer.java,v $
-// $Revision: 1.22 $
-// $Date: 2006/10/19 20:30:25 $
+// $Revision: 1.23 $
+// $Date: 2008/09/17 20:47:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -812,10 +812,10 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
         return box;
     }
 
-    public void setTransparency(float value) {
-        super.setTransparency(value);
-        viewAttributes.opaqueness = (int) (value * 255f);
-    }
+//    public void setTransparency(float value) {
+//        super.setTransparency(value);
+//        viewAttributes.opaqueness = (int) (value * 255f);
+//    }
 
     // ----------------------------------------------------------------------
     // ActionListener interface implementation

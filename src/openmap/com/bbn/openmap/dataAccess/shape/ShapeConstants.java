@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/ShapeConstants.java,v
 // $
 // $RCSfile: ShapeConstants.java,v $
-// $Revision: 1.8 $
-// $Date: 2006/08/25 15:36:12 $
+// $Revision: 1.9 $
+// $Date: 2008/09/17 20:47:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -70,17 +70,31 @@ public interface ShapeConstants {
     public static final int SHAPE_TYPE_MULTIPOINTM = 28;
     public static final int SHAPE_TYPE_MULTIPATCH = 31;
 
-    public static final Byte DBF_TYPE_CHARACTER = new Byte((byte) 67);
-    public static final String DBF_CHARACTER = "Character";
-    public static final Byte DBF_TYPE_DATE = new Byte((byte) 68);
-    public static final String DBF_DATE = "Date";
-    public static final Byte DBF_TYPE_NUMERIC = new Byte((byte) 78);
-    public static final String DBF_NUMERIC = "Number";
-    public static final Byte DBF_TYPE_LOGICAL = new Byte((byte) 76);
-    public static final String DBF_LOGICAL = "Boolean";
-    public static final Byte DBF_TYPE_MEMO = new Byte((byte) 77);
+    public static final Byte DBF_TYPE_BINARY = new Byte((byte) 'B');
+    public static final String DBF_BINARY = "binary";
+    public static final Byte DBF_TYPE_CHARACTER = new Byte((byte) 'C');
+    public static final String DBF_CHARACTER = "character";
+    public static final Byte DBF_TYPE_DATE = new Byte((byte) 'D');
+    public static final String DBF_DATE = "date";
+    public static final Byte DBF_TYPE_NUMERIC = new Byte((byte) 'N');
+    public static final String DBF_NUMERIC = "numeric";
+    public static final Byte DBF_TYPE_LOGICAL = new Byte((byte) 'L');
+    public static final String DBF_LOGICAL = "boolean";
+    public static final Byte DBF_TYPE_MEMO = new Byte((byte) 'M');
     public static final String DBF_MEMO = "Memo";
-
+    public static final Byte DBF_TYPE_TIMESTAMP = new Byte((byte) '@');
+    public static final String DBF_TIMESTAMP = "timestamp";
+    public static final Byte DBF_TYPE_LONG = new Byte((byte) 'I');
+    public static final String DBF_LONG = "long";
+    public static final Byte DBF_TYPE_AUTOINCREMENT = new Byte((byte) '+');
+    public static final String DBF_AUTOINCREMENT = "autoincrement";
+    public static final Byte DBF_TYPE_FLOAT = new Byte((byte) 'F');
+    public static final String DBF_FLOAT = "float";
+    public static final Byte DBF_TYPE_DOUBLE = new Byte((byte) 'O');
+    public static final String DBF_DOUBLE = "double";
+    public static final Byte DBF_TYPE_OLE = new Byte((byte) 'G');
+    public static final String DBF_OLE = "OLE";
+    
     public static final String PARAM_DBF = "dbf";
     public static final String PARAM_SHX = "shx";
     public static final String PARAM_SHP = "shp";
@@ -148,7 +162,8 @@ public interface ShapeConstants {
     public static final String SHAPE_MAX_Z_ATTRIBUTE = "MAX_Z";
 
     /**
-     * Attribute key for storing a bounding box in an attribute map for a record.
+     * Attribute key for storing a bounding box in an attribute map for a
+     * record.
      */
     public static final String SHAPE_BOUNDS_ATTRIBUTE = "BOUNDS";
 

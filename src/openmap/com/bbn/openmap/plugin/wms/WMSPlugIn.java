@@ -1,7 +1,7 @@
 /* **********************************************************************
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/wms/WMSPlugIn.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/01/13 21:05:23 $
+ * $Revision: 1.7 $
+ * $Date: 2008/09/17 20:47:51 $
  * $Author: dietrick $
  *
  * Code provided by Raj Singh, raj@rajsingh.org
@@ -262,7 +262,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
 
         setTransparent(setList.getProperty(prefix + TransparentProperty));
 
-        backgroundColor = setList.getProperty(prefix + BackgroundColorProperty);
+        setBackgroundColor(setList.getProperty(prefix + BackgroundColorProperty));
 
         setWmsVersion(setList.getProperty(prefix + WMSVersionProperty));
 
@@ -378,6 +378,15 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
     }
 
     public void setBackgroundColor(String backgroundColor) {
+        if (backgroundColor != null) {
+            if (backgroundColor.length() > 6) {
+                backgroundColor = backgroundColor.substring(backgroundColor.length() - 6);
+            }
+
+            if (!backgroundColor.startsWith("0x")) {
+                backgroundColor = "0x" + backgroundColor;
+            }
+        }
         this.backgroundColor = backgroundColor;
     }
 

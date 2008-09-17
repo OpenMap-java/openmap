@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfTableModel.java,v $
 // $RCSfile: DbfTableModel.java,v $
-// $Revision: 1.15 $
-// $Date: 2007/06/21 21:39:01 $
+// $Revision: 1.16 $
+// $Date: 2008/09/17 20:47:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -89,11 +89,67 @@ import com.bbn.openmap.util.PropUtils;
 public class DbfTableModel extends AbstractTableModel implements
         ShapeConstants, TableModelListener {
 
-    public static final int TYPE_CHARACTER = 67;
-    public static final int TYPE_DATE = 68;
-    public static final int TYPE_NUMERIC = 78;
-    public static final int TYPE_LOGICAL = 76;
-    public static final int TYPE_MEMO = 77;
+    /*
+     * Binary, Memo, OLE Fields and .DBT Files
+     * 
+     * Binary, memo, and OLE fields store data in .DBT files consisting of
+     * blocks numbered sequentially (0, 1, 2, etc.). SET BLOCKSIZE determines
+     * the size of each block. The first block in the .DBT file, block 0, is the
+     * .DBT file header. Each binary, memo, or OLE field of each record in the
+     * .DBF file contains the number of the block (in OEM code page values)
+     * where the field's data actually begins. If a field contains no data, the
+     * .DBF file contains blanks (0x20) rather than a number.
+     * 
+     * When data is changed in a field, the block numbers may also change and
+     * the number in the .DBF may be changed to reflect the new location.
+     */
+
+    /**
+     * 10 digits representing a .DBT block number. The number is stored as a
+     * string, right justified and padded with blanks.
+     */
+    public static final int TYPE_BINARY = 'B';
+    /**
+     * All OEM code page characters - padded with blanks to the width of the
+     * field.
+     */
+    public static final int TYPE_CHARACTER = 'C';
+    /** 8 bytes - date stored as a string in the format YYYYMMDD. */
+    public static final int TYPE_DATE = 'D';
+    /**
+     * Number stored as a string, right justified, and padded with blanks to the
+     * width of the field.
+     */
+    public static final int TYPE_NUMERIC = 'N';
+    /** 1 byte - initialized to 0x20 (space) otherwise T or F. */
+    public static final int TYPE_LOGICAL = 'L';
+    /**
+     * 10 digits (bytes) representing a .DBT block number. The number is stored
+     * as a string, right justified and padded with blanks.
+     */
+    public static final int TYPE_MEMO = 'M';
+    /**
+     * 8 bytes - two longs, first for date, second for time. The date is the
+     * number of days since 01/01/4713 BC. Time is hours * 3600000L + minutes *
+     * 60000L + Seconds * 1000L
+     */
+    public static final int TYPE_TIMESTAMP = '@';
+    /** 4 bytes. Leftmost bit used to indicate sign, 0 negative. */
+    public static final int TYPE_LONG = 'I';
+    /** Same as a Long */
+    public static final int TYPE_AUTOINCREMENT = '+';
+    /**
+     * Number stored as a string, right justified, and padded with blanks to the
+     * width of the field.
+     */
+    public static final int TYPE_FLOAT = 'F';
+    /** 8 bytes - no conversions, stored as a double. */
+    public static final int TYPE_DOUBLE = 'O';
+    /**
+     * 10 digits (bytes) representing a .DBT block number. The number is stored
+     * as a string, right justified and padded with blanks.
+     */
+    public static final int TYPE_OLE = 'G';
 
     /**
      * Edit button mask, to allow adding/removing rows. Be very careful with
@@ -608,6 +664,10 @@ public class DbfTableModel extends AbstractTableModel implements
             ArrayList modelRecord = (ArrayList) modelRecords.next();
 
             String modelColumnName = (String) modelRecord.get(0);
+            Byte modelType = (Byte) modelRecord.get(1);
+            Integer modelLengthOfField = (Integer) modelRecord.get(2);
+            Integer modelNumDecPlaces = (Integer) modelRecord.get(3);
+            
             index++;
             if (index < _columnCount) {
                 String columnName = _names[index];
@@ -620,6 +680,12 @@ public class DbfTableModel extends AbstractTableModel implements
                         break;
                     }
                     columnName = _names[index];
+                }
+
+                if (columnName.equalsIgnoreCase(modelColumnName)) {
+                    _types[index] = modelType.byteValue();
+                    _lengths[index] = modelLengthOfField.intValue();
+                    _decimalCounts[index] = modelNumDecPlaces.byteValue();
                 }
 
             } else {
@@ -800,8 +866,7 @@ public class DbfTableModel extends AbstractTableModel implements
             DbfTableModel dtm = new DbfTableModel(dis);
             dtm.setWritable(true);
             dtm.exitOnClose = true;
-            dtm.showGUI(args[0], MODIFY_ROW_MASK | MODIFY_COLUMN_MASK
-                    | SAVE_MASK);
+            dtm.showGUI(args[0], MODIFY_ROW_MASK | MODIFY_COLUMN_MASK | SAVE_MASK);
             is.close();
         } catch (Exception e) {
             Debug.error(e.getMessage());

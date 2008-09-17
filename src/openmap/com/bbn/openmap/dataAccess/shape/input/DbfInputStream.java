@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/DbfInputStream.java,v $
 // $RCSfile: DbfInputStream.java,v $
-// $Revision: 1.11 $
-// $Date: 2007/06/21 21:39:03 $
+// $Revision: 1.12 $
+// $Date: 2008/09/17 20:47:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,7 +25,9 @@ package com.bbn.openmap.dataAccess.shape.input;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -80,7 +82,7 @@ public class DbfInputStream {
      * ArrayList
      */
     private ArrayList _records = null;
-    
+
     public final static Double ZERO = new Double(0);
 
     /**
@@ -212,7 +214,7 @@ public class DbfInputStream {
         // Thanks to Bart Jourquin for the heads-up that some locales
         // may try to read this data incorrectly. DBF files have to
         // have '.' as decimal markers, not ','
-        java.text.DecimalFormat df = new java.text.DecimalFormat();
+        DecimalFormat df = new DecimalFormat();
         DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.ENGLISH);
         df.setDecimalFormatSymbols(dfs);
 
@@ -225,32 +227,58 @@ public class DbfInputStream {
                 if (length == -1)
                     length = 255;
                 int type = _types[c];
+                int numDecSpaces = _decimalCounts[c];
+                df.setMaximumFractionDigits(numDecSpaces);
                 String cell = _leis.readString(length);
-                if (type == DbfTableModel.TYPE_NUMERIC && !cell.equals("")) {
-                    try {
-                        // record.add(c, new Double(cell));
-                        record.add(c, new Double(df.parse(cell).doubleValue()));
-                        // } catch (NumberFormatException nfe) {
-                        // Debug.error("DbfInputStream: error reading
-                        // column " + c + ", row " + r +
-                        // ", expected number and got " + cell);
-                        // record.add(c, new Double(0));
-                    } catch (java.text.ParseException pe) {
-                        if (Debug.debugging("shape")) {
-                            Debug.error("DbfInputStream:  error parsing column "
-                                    + c
-                                    + ", row "
-                                    + r
-                                    + ", expected number and got " + cell);
-                        }
-                        record.add(c, ZERO);
+                try {
+                    record.add(c, getObjectForType(cell, type, df));
+                } catch (ParseException pe) {
+                    if (Debug.debugging("shape")) {
+                        Debug.error("DbfInputStream:  error parsing column "
+                                + c
+                                + ", row "
+                                + r
+                                + ", expected number and got " + cell);
                     }
-                } else {
-                    record.add(c, cell);
+                    record.add(c, ZERO);
                 }
             }
             _records.add(record);
             _leis.skipBytes(1);
         }
+    }
+
+    protected Object getObjectForType(String cellContents, int type,
+                                      DecimalFormat df)
+            throws java.text.ParseException {
+        Object ret = cellContents;
+        if (type == DbfTableModel.TYPE_NUMERIC
+                || type == DbfTableModel.TYPE_LONG
+                || type == DbfTableModel.TYPE_FLOAT
+                || type == DbfTableModel.TYPE_DOUBLE
+                || type == DbfTableModel.TYPE_AUTOINCREMENT) {
+            if (cellContents.length() > 0) {
+                ret = new Double(df.parse(cellContents).doubleValue());
+            } else {
+                ret = ZERO;
+            }
+        } else if (type == DbfTableModel.TYPE_BINARY
+                || type == DbfTableModel.TYPE_MEMO
+                || type == DbfTableModel.TYPE_OLE) {
+            if (cellContents.length() < 10) {
+                cellContents = cellContents.trim();
+                StringBuffer bu = new StringBuffer();
+                int numSpaces = 10 - cellContents.length();
+                for (int i = 0; i < numSpaces; i++) {
+                    bu.append(" ");
+                }
+                bu.append(cellContents);
+                ret = bu.toString();
+            }
+        } else if (type == DbfTableModel.TYPE_TIMESTAMP) {
+            // uhhhhhh....
+        }
+
+        return ret;
     }
 }

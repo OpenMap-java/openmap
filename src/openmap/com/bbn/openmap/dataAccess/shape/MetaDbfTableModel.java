@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/MetaDbfTableModel.java,v $
 // $RCSfile: MetaDbfTableModel.java,v $
-// $Revision: 1.5 $
-// $Date: 2006/08/25 15:36:13 $
+// $Revision: 1.6 $
+// $Date: 2008/09/17 20:47:51 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -137,7 +137,9 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
     public void setValueAt(Object object, int row, int column) {
 
         if (column == META_TYPE_COLUMN_NUMBER) {
-            if (DBF_CHARACTER.equals(object)
+            if (DBF_BINARY.equals(object) || DBF_TYPE_BINARY.equals(object)) {
+                object = DBF_TYPE_BINARY;
+            } else if (DBF_CHARACTER.equals(object)
                     || DBF_TYPE_CHARACTER.equals(object)) {
                 object = DBF_TYPE_CHARACTER;
             } else if (DBF_DATE.equals(object) || DBF_TYPE_DATE.equals(object)) {
@@ -150,10 +152,26 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
                 object = DBF_TYPE_LOGICAL;
             } else if (DBF_MEMO.equals(object) || DBF_TYPE_MEMO.equals(object)) {
                 object = DBF_TYPE_MEMO;
+            } else if (DBF_TIMESTAMP.equals(object)
+                    || DBF_TYPE_TIMESTAMP.equals(object)) {
+                object = DBF_TYPE_TIMESTAMP;
+            } else if (DBF_LONG.equals(object) || DBF_TYPE_LONG.equals(object)) {
+                object = DBF_TYPE_LONG;
+            } else if (DBF_AUTOINCREMENT.equals(object)
+                    || DBF_TYPE_AUTOINCREMENT.equals(object)) {
+                object = DBF_TYPE_AUTOINCREMENT;
+            } else if (DBF_FLOAT.equals(object)
+                    || DBF_TYPE_FLOAT.equals(object)) {
+                object = DBF_TYPE_FLOAT;
+            } else if (DBF_DOUBLE.equals(object)
+                    || DBF_TYPE_DOUBLE.equals(object)) {
+                object = DBF_TYPE_DOUBLE;
+            } else if (DBF_OLE.equals(object) || DBF_TYPE_OLE.equals(object)) {
+                object = DBF_TYPE_OLE;
             } else {
                 Debug.error("Rejected "
                         + object
-                        + " as input. Use: \n    Character, Number, Date, Boolean, or Memo");
+                        + " as input. Use: \n    binary, character, date, boolean, memo, timestamp, long, autoincrement, float, double or OLE");
                 return;
             }
 
@@ -183,6 +201,20 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
                 cell = DBF_LOGICAL;
             } else if (DBF_TYPE_MEMO.equals(cell)) {
                 cell = DBF_MEMO;
+            } else if (DBF_TYPE_BINARY.equals(cell)) {
+                cell = DBF_BINARY;
+            } else if (DBF_TYPE_TIMESTAMP.equals(cell)) {
+                cell = DBF_TIMESTAMP;
+            } else if (DBF_TYPE_FLOAT.equals(cell)) {
+                cell = DBF_FLOAT;
+            } else if (DBF_TYPE_DOUBLE.equals(cell)) {
+                cell = DBF_DOUBLE;
+            } else if (DBF_TYPE_LONG.equals(cell)) {
+                cell = DBF_LONG;
+            } else if (DBF_TYPE_AUTOINCREMENT.equals(cell)) {
+                cell = DBF_AUTOINCREMENT;
+            } else if (DBF_TYPE_OLE.equals(cell)) {
+                cell = DBF_OLE;
             }
             // Else just keep it what it is.
         }
