@@ -1,7 +1,7 @@
 /* **********************************************************************
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/wms/WMSPlugIn.java,v $
- * $Revision: 1.8 $
- * $Date: 2008/09/19 14:20:14 $
+ * $Revision: 1.9 $
+ * $Date: 2008/09/19 18:13:34 $
  * $Author: dietrick $
  *
  * Code provided by Raj Singh, raj@rajsingh.org
@@ -264,7 +264,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
 
         setBackgroundColor(setList.getProperty(prefix + BackgroundColorProperty));
 
-        setWmsVersion(setList.getProperty(prefix + WMSVersionProperty));
+        setWmsVersion(setList.getProperty(prefix + WMSVersionProperty, wmsVersion));
 
         layers = setList.getProperty(prefix + LayersProperty);
         styles = setList.getProperty(prefix + StylesProperty);
@@ -468,9 +468,9 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
      * @param wmsVer
      */
     public void setWmsVersion(String wmsVer) {
-        if (wmsVer == null) {
-            wmsVer = "1.1.0";
-            Debug.output("WMSPlugin: wmsVersion was null, now set to 1.1.0");
+        if (wmsVer == null || wmsVer.length() == 0) {
+            wmsVer = "1.1.1";
+            Debug.output("WMSPlugin: wmsVersion was null, now set to 1.1.1");
         }
 
         if (Debug.debugging("wms")) {
