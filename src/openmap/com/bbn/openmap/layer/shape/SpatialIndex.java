@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndex.java,v $
 // $RCSfile: SpatialIndex.java,v $
-// $Revision: 1.13 $
-// $Date: 2008/07/20 05:46:31 $
+// $Revision: 1.14 $
+// $Date: 2008/09/19 14:31:43 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -138,7 +138,7 @@ import com.bbn.openmap.util.Debug;
  * </UL>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.13 $ $Date: 2008/07/20 05:46:31 $
+ * @version $Revision: 1.14 $ $Date: 2008/09/19 14:31:43 $
  * @see ShapeIndex
  */
 public class SpatialIndex extends ShapeUtils {
@@ -540,6 +540,11 @@ public class SpatialIndex extends ShapeUtils {
 
                         if (dbf != null) {
                             omg = dbf.evaluate(omg, labels, mapProj);
+
+                            if (omg == null) {
+                                // Failed dbf test, should be ignored.
+                                continue;
+                            }
                         }
 
                         if (mapProj != null) {
