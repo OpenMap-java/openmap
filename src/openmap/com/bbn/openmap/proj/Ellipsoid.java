@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Ellipsoid.java,v $
 // $RCSfile: Ellipsoid.java,v $
-// $Revision: 1.5 $
-// $Date: 2007/06/21 21:39:02 $
+// $Revision: 1.6 $
+// $Date: 2008/09/19 14:20:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,6 +28,8 @@ package com.bbn.openmap.proj;
  * 
  * Adapted to Java by Colin Mummery (colin_mummery@agilent.com) from C++ code by
  * Chuck Gantz (chuck.gantz@globalstar.com).
+ * 
+ * @see http://en.wikipedia.org/wiki/Figure_of_the_Earth
  */
 public class Ellipsoid {
 
@@ -59,7 +61,7 @@ public class Ellipsoid {
     /** "Hough" */
     public final static Ellipsoid HOUGH = new Ellipsoid("Hough", 6378270.0d, 0.00672267d);
     /** "International" */
-    public final static Ellipsoid INTERNATIONAL = new Ellipsoid("International", 6378388.0d, 0.00672267d);
+    public final static Ellipsoid INTERNATIONAL = new Ellipsoid("International", 6378388.0d, 0.00672267d, 6356911.946d);
     /** "Krassovsky" */
     public final static Ellipsoid KRASSOVSKY = new Ellipsoid("Krassovsky", 6378245.0d, 0.006693422d);
     /** "Modified Airy" */
@@ -77,22 +79,27 @@ public class Ellipsoid {
     /** "WGS-72" */
     public final static Ellipsoid WGS_72 = new Ellipsoid("WGS 72", 6378135.0d, 0.006694318d);
     /** "WGS-84" */
-    public final static Ellipsoid WGS_84 = new Ellipsoid("WGS 84", 6378137.0d, 0.00669438d);
+    public final static Ellipsoid WGS_84 = new Ellipsoid("WGS 84", 6378137.0d, 0.00669438d, 6356752.3142d);
 
     /**
      * The display name for this ellipsoid.
      */
-    public String name;
+    public final String name;
 
     /**
      * The equitorial radius for this ellipsoid.
      */
-    public double radius;
+    public final double radius;
+    
+    /**
+     * The polar radius for this ellipsoid.
+     */
+    public final double polarRadius;
 
     /**
      * The square of this ellipsoid's eccentricity.
      */
-    public double eccsq;
+    public final double eccsq;
 
     /**
      * Constructs a new Ellipsoid instance.
@@ -101,11 +108,24 @@ public class Ellipsoid {
      * @param eccsq The square of the eccentricity for this ellipsoid.
      */
     public Ellipsoid(String name, double radius, double eccsq) {
-        this.name = name;
-        this.radius = radius;
-        this.eccsq = eccsq;
+        this(name, radius, eccsq, Double.NaN);
     }
 
+    /**
+     * Constructs a new Ellipsoid instance.
+     * 
+     * @param name The name of the ellipsoid.
+     * @param equitorialRadius The earth equitorial radius for this ellipsoid.
+     * @param eccsq The square of the eccentricity for this ellipsoid.
+     * @param polarRadius The earth polar radius for this ellipsoid.
+     */
+    public Ellipsoid(String name, double equitorialRadius, double eccsq, double polarRadius) {
+        this.name = name;
+        this.radius = equitorialRadius;
+        this.eccsq = eccsq;
+        this.polarRadius = polarRadius;
+    }
+    
     /**
      * Returns an array of all available ellipsoids in alphabetical order by
      * name.

@@ -1,5 +1,5 @@
 /*
- * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/CapabilitiesSupport.java,v 1.3 2008/02/20 01:41:09 dietrick Exp $
+ * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/CapabilitiesSupport.java,v 1.4 2008/09/19 14:20:14 dietrick Exp $
  *
  * Copyright 2001-2005 OBR Centrum Techniki Morskiej, All rights reserved.
  *
@@ -32,7 +32,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.bbn.openmap.image.ImageServer;
-import com.bbn.openmap.image.ImageServerConstants;
 import com.bbn.openmap.image.WMTConstants;
 import com.bbn.openmap.layer.util.http.HttpConnection;
 import com.bbn.openmap.proj.coords.CoordinateReferenceSystem;
@@ -43,7 +42,7 @@ import com.bbn.openmap.proj.coords.CoordinateReferenceSystem;
  *          1.1 2006/03/21 10:27:54 tomrak Exp $
  * @author pitek
  */
-public class CapabilitiesSupport implements ImageServerConstants {
+public class CapabilitiesSupport {
 
     public static final String WMSPrefix = ImageServer.OpenMapPrefix + "wms.";
 
@@ -199,29 +198,44 @@ public class CapabilitiesSupport implements ImageServerConstants {
     private void createLayerElement(Document doc, Element layers, IWmsLayer wmsLayer){
         org.w3c.dom.Element layerElement = (org.w3c.dom.Element) node(doc, "Layer");
         layerElement.setAttribute("queryable", wmsLayer.isQueryable() ? "1" : "0");
-        layerElement.setAttribute("opaque", wmsLayer.isOpaque() ? "1" : "0");
-        layerElement.setAttribute("cascaded", wmsLayer.isCascaded() ? "1" : "0");
-        layerElement.setAttribute("noSubsets", wmsLayer.isNoSubsets() ? "1" : "0");
-        layerElement.setAttribute("fixedWidth", Integer.toString(wmsLayer.getFixedWidth()));
-        layerElement.setAttribute("fixedHeight", Integer.toString(wmsLayer.getFixedHeight()));
+        // implied layerElement.setAttribute("cascaded", "0");
+        layerElement.setAttribute("opaque", "0");
+        layerElement.setAttribute("noSubsets", "0");
+        // implied layerElement.setAttribute("fixedWidth", "0");
+        // implied layerElement.setAttribute("fixedHeight", "0");
 
         layerElement.appendChild(textnode(doc, "Name", wmsLayer.getWmsName()));
         layerElement.appendChild(textnode(doc, "Title", wmsLayer.getTitle()));
-        layerElement.appendChild(textnode(doc, "Abstract", wmsLayer.getAbstract()));
-
-        // put styles
-        IWmsLayerStyle[] styles = wmsLayer.getStyles();
-        for (int i = 0; i < styles.length; i++) {
-            IWmsLayerStyle style = styles[i];
-            org.w3c.dom.Element styleElement = (org.w3c.dom.Element) node(doc, "Style");
-            styleElement.appendChild(textnode(doc, "Name", style.getName())); // "default"
-            styleElement.appendChild(textnode(doc, "Title", style.getTitle())); // "Default
-                                                                            // style"
-            if (style.getAbstract() != null) {
-                styleElement.appendChild(textnode(doc, "Abstract", style.getAbstract()));
-            }
-            layerElement.appendChild(styleElement);
+        if (wmsLayer.getAbstract() != null) {
+            layerElement.appendChild(textnode(doc, "Abstract", wmsLayer.getAbstract()));
         }
+
+        // add styles
+        IWmsLayerStyle[] styles = wmsLayer.getStyles();
+        if (styles != null) {
+            for (int i = 0; i < styles.length; i++) {
+                IWmsLayerStyle style = styles[i];
+                org.w3c.dom.Element styleElement = (org.w3c.dom.Element) node(doc, "Style");
+                styleElement.appendChild(textnode(doc, "Name", style.getName())); // "default"
+                styleElement.appendChild(textnode(doc, "Title", style.getTitle())); // "Default
+                // style"
+                if (style.getAbstract() != null) {
+                    styleElement.appendChild(textnode(doc, "Abstract", style.getAbstract()));
+                }
+                layerElement.appendChild(styleElement);
+            }
+        }
+
+        // add nested layers
+        if (wmsLayer instanceof IWmsNestedLayer) {
+            IWmsLayer[] nestedLayers = ((IWmsNestedLayer) wmsLayer).getNestedLayers();
+            if (nestedLayers != null) {
+                for (int i = 0; i < nestedLayers.length; i++) {
+                    createLayerElement(doc, layerElement, nestedLayers[i]);
+                }
+            }
+        }
+        
         layers.appendChild(layerElement);
     }
 
@@ -326,9 +340,12 @@ public class CapabilitiesSupport implements ImageServerConstants {
      * @param Text
      * @return
      */
-    private Node textnode(Document doc, String Name, String Text) {
+    private Node textnode(Document doc, String Name, String text) {
         Element e1 = doc.createElement(Name);
-        Node n = doc.createTextNode(Text);
+        if (text == null) {
+            text = "";
+        }
+        Node n = doc.createTextNode(text);
         e1.appendChild(n);
         return e1;
     }

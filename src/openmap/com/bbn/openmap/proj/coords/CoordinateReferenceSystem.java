@@ -1,5 +1,6 @@
 package com.bbn.openmap.proj.coords;
 
+import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -11,154 +12,202 @@ import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.LLXYLoader;
 import com.bbn.openmap.proj.MercatorLoader;
 import com.bbn.openmap.proj.Planet;
+import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.proj.ProjectionLoader;
 import com.bbn.openmap.proj.UTMProjectionLoader;
 
 public class CoordinateReferenceSystem {
 
-    private GeoCoordTransformation coordTransform;
+	private String code;
 
-    private ProjectionLoader projLoader;
+	private GeoCoordTransformation coordTransform;
 
-    private String projLoaderClassName;
+	private ProjectionLoader projLoader;
 
-    private Ellipsoid ellipsoid = Ellipsoid.WGS_84;
+	private String projLoaderClassName;
 
-    private Properties defaultProjectionParameters;
+	private Ellipsoid ellipsoid = Ellipsoid.WGS_84;
 
-    protected static final Map<String, CoordinateReferenceSystem> crss;
+	private Properties defaultProjectionParameters;
 
-    static {
-        crss = Collections.synchronizedMap(new TreeMap<String, CoordinateReferenceSystem>());
+	protected static final Map crss = Collections.synchronizedMap(new TreeMap());
 
-        crss.put("EPSG:4326",
-                new CoordinateReferenceSystem(LatLonGCT.INSTANCE, LLXYLoader.class, Ellipsoid.WGS_84));
-        crss.put("CRS:84",
-                new CoordinateReferenceSystem(LatLonGCT.INSTANCE, LLXYLoader.class, Ellipsoid.WGS_84));
+	static {
+		// unprojected wgs84
+		addCrs(new CoordinateReferenceSystem("EPSG:4326",
+				LatLonGCT.INSTANCE, LLXYLoader.class, Ellipsoid.WGS_84));
+		addCrs(new CoordinateReferenceSystem("CRS:84",
+				LatLonGCT.INSTANCE, LLXYLoader.class, Ellipsoid.WGS_84));
+		
+		// unprojected ED50
+		addCrs(new CoordinateReferenceSystem("EPSG:4230", new DatumShiftGCT(
+				Ellipsoid.INTERNATIONAL), LLXYLoader.class,
+				Ellipsoid.INTERNATIONAL));
 
-        // Spherical Mercator for overlaying with Google Maps
-        // http://trac.openlayers.org/wiki/SphericalMercator
-        crss.put("EPSG:900913",
-                new CoordinateReferenceSystem(new MercatorMeterGCT(
-                        Planet.wgs84_earthEquatorialRadiusMeters_D,
-                        Planet.wgs84_earthEquatorialRadiusMeters_D), MercatorLoader.class,
-                        Ellipsoid.WGS_84));
+		// Spherical Mercator for overlaying with Google Maps
+		// http://trac.openlayers.org/wiki/SphericalMercator
+		addCrs(new CoordinateReferenceSystem("EPSG:900913",
+				new MercatorMeterGCT(
+						Planet.wgs84_earthEquatorialRadiusMeters_D,
+						Planet.wgs84_earthEquatorialRadiusMeters_D),
+				MercatorLoader.class, Ellipsoid.WGS_84));
 
-        addUtms();
+		addUtms();
 
-    }
+	}
+	
+	private static void addCrs(CoordinateReferenceSystem crs) {
+		crss.put(crs.getCode(), crs);
+	}
 
-    private static void addUtms() {
-        for (int zone = 1; zone <= 60; zone++) {
+	private static void addUtms() {
+		for (int zone = 1; zone <= 60; zone++) {
 
-            String zoneCode = String.valueOf(zone);
-            while (zoneCode.length() < 2) {
-                zoneCode = "0" + zoneCode;
-            }
+			String zoneCode = String.valueOf(zone);
+			while (zoneCode.length() < 2) {
+				zoneCode = "0" + zoneCode;
+			}
 
-            // addUtm("EPSG:32631", 31, 'N', Ellipsoid.WGS_84);
-            addUtm("EPSG:326" + zoneCode, zone, 'N', Ellipsoid.WGS_84);
-            // addUtm("EPSG:32731", 31, 'S', Ellipsoid.WGS_84);
-            addUtm("EPSG:327" + zoneCode, zone, 'S', Ellipsoid.WGS_84);
+			// wgs84 utm
+			addUtm("EPSG:326" + zoneCode, zone, 'N', Ellipsoid.WGS_84);
+			addUtm("EPSG:327" + zoneCode, zone, 'S', Ellipsoid.WGS_84);
 
-            // addUtm("EPSG:25833", 33, 'N', Ellipsoid.GRS_1980);
-            // TODO: is this correct?
-            // addUtm("EPSG:258" + zoneCode, zone, 'N', Ellipsoid.GRS_1980);
-        }
-    }
+			// ed50 utm
+			if ((zone >= 28) && (zone <= 38)) {
+				addUtm("EPSG:230" + zoneCode, zone, 'N',
+						Ellipsoid.INTERNATIONAL);
+			}
+		}
+	}
 
-    private static void addUtm(String epsg, int zone_number, char zone_letter,
-                               Ellipsoid ellps) {
-        // some properties for the projection loader
-        Properties projProps = new Properties();
-        projProps.put(UTMProjectionLoader.ZONE_NUMBER,
-                Integer.toString(zone_number));
-        projProps.put(UTMProjectionLoader.ZONE_LETTER,
-                Character.toString(zone_letter));
-        projProps.put(UTMProjectionLoader.ELLIPSOID, ellps);
-        // The northing and easting values of the UTMPoint are not important,
-        // the utm point is only used as a placeholder for zone numbers and
-        // letters, and as a placeholder for n and e for inverse calculations.
-        UTMPoint utmp = new UTMPoint(0, 0, zone_number, zone_letter);
-        UTMGCT gct = new UTMGCT(utmp);
-        gct.setEllipsoid(ellps);
-        crss.put(epsg,
-                new CoordinateReferenceSystem(gct, UTMProjectionLoader.class, ellps, projProps));
-    }
+	private static void addUtm(String epsg, int zone_number, char zone_letter,
+			Ellipsoid ellps) {
+		// some properties for the projection loader
+		Properties projProps = new Properties();
+		projProps.put(UTMProjectionLoader.ZONE_NUMBER, Integer
+				.toString(zone_number));
+		projProps.put(UTMProjectionLoader.ZONE_LETTER, Character
+				.toString(zone_letter));
+		UTMGCT utmgct = new UTMGCT(zone_number, zone_letter);
+		utmgct.setEllipsoid(ellps);
 
-    public CoordinateReferenceSystem(GeoCoordTransformation coordConverter,
-            Class projLoaderClass, Ellipsoid ellipsoid) {
-        this.coordTransform = coordConverter;
-        this.projLoaderClassName = projLoaderClass.getName();
-        this.ellipsoid = ellipsoid;
-        this.defaultProjectionParameters = new Properties();
-    }
+		GeoCoordTransformation gct = utmgct;
 
-    public CoordinateReferenceSystem(GeoCoordTransformation coordConverter,
-            Class projLoaderClass, Ellipsoid ellipsoid,
-            Properties projectionParameters) {
-        this.coordTransform = coordConverter;
-        this.projLoaderClassName = projLoaderClass.getName();
-        this.ellipsoid = ellipsoid;
-        this.defaultProjectionParameters = projectionParameters;
-    }
+		// add datum shift for non-wgs84
+		if (ellps != Ellipsoid.WGS_84) {
+			DatumShiftGCT egct = new DatumShiftGCT(ellps);
+			gct = new MultiGCT(new GeoCoordTransformation[] { egct, utmgct });
+		}
+		 
 
-    public static CoordinateReferenceSystem getForCode(String code) {
-        CoordinateReferenceSystem crs = (CoordinateReferenceSystem) crss.get(code);
-        // TODO: handle extra parameters like
-        // AUTO2:42003,0.3048006096012192,-100,45. See ISO/DIS 19128 wms v1.3.0
-        // chapter 6.7.3.4
-        return crs;
-    }
+		addCrs(new CoordinateReferenceSystem(epsg, gct,
+				UTMProjectionLoader.class, ellps, projProps));
+	}
 
-    public static Collection getCodes() {
-        return crss.keySet();
-    }
+	public CoordinateReferenceSystem(String code,
+			GeoCoordTransformation coordConverter, Class projLoaderClass,
+			Ellipsoid ellipsoid) {
+		this.code = code;
+		this.coordTransform = coordConverter;
+		this.projLoaderClassName = projLoaderClass.getName();
+		this.ellipsoid = ellipsoid;
+		
+		defaultProjectionParameters = new Properties();
+		defaultProjectionParameters.put(ProjectionFactory.DATUM, ellipsoid);
+	}
 
-    protected ProjectionLoader projectionLoader() {
+	public CoordinateReferenceSystem(String code,
+			GeoCoordTransformation coordConverter, Class projLoaderClass,
+			Ellipsoid ellipsoid, Properties projectionParameters) {
+		this(code, coordConverter, projLoaderClass, ellipsoid);
+		
+		defaultProjectionParameters.putAll(projectionParameters);
+	}
 
-        if (projLoader != null) {
-            return projLoader;
-        }
+	public static CoordinateReferenceSystem getForCode(String code) {
+		CoordinateReferenceSystem crs = (CoordinateReferenceSystem) crss
+				.get(code);
+		// TODO: handle extra parameters like
+		// AUTO2:42003,0.3048006096012192,-100,45. See ISO/DIS 19128 wms v1.3.0
+		// chapter 6.7.3.4
+		// TODO: clone to simplify transformator by not being thread safe?
+		return crs;
+	}
 
-        try {
-            Class cl = Class.forName(projLoaderClassName);
-            Object o = cl.newInstance();
-            projLoader = (ProjectionLoader) o;
-            return projLoader;
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException(e.getMessage());
-        } catch (InstantiationException e) {
-            throw new IllegalStateException(e.getMessage());
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException(e.getMessage());
-        }
+	public static Collection getCodes() {
+		return crss.keySet();
+	}
 
-    }
+	protected ProjectionLoader projectionLoader() {
 
-    public GeoProj createProjection(Properties overrideProjectionParameters) {
-        Properties projectionParameters = new Properties();
-        projectionParameters.putAll(defaultProjectionParameters);
-        projectionParameters.putAll(overrideProjectionParameters);
-        return (GeoProj) projectionLoader().create(projectionParameters);
-    }
+		if (projLoader != null) {
+			return projLoader;
+		}
 
-    public void prepareProjection(GeoProj proj) {
-        // TODO: do we need this??
-        proj.setPlanetRadius((float) ellipsoid.radius);
-    }
+		try {
+			Class cl = Class.forName(projLoaderClassName);
+			Object o = cl.newInstance();
+			projLoader = (ProjectionLoader) o;
+			return projLoader;
+		} catch (ClassNotFoundException e) {
+			throw new IllegalStateException(e.getMessage());
+		} catch (InstantiationException e) {
+			throw new IllegalStateException(e.getMessage());
+		} catch (IllegalAccessException e) {
+			throw new IllegalStateException(e.getMessage());
+		}
 
-    /**
-     * Convert the given (projected) coordinate in the CRS to a LatLonPoint.
-     * 
-     * TODO: should we return null or throw if not possible?
-     * 
-     * @param x
-     * @param y
-     * @return
-     */
-    public LatLonPoint inverse(double x, double y) {
-        return coordTransform.inverse(x, y);
-    }
+	}
+
+	public GeoProj createProjection(Properties overrideProjectionParameters) {
+		Properties projectionParameters = new Properties();
+		projectionParameters.putAll(defaultProjectionParameters);
+		projectionParameters.putAll(overrideProjectionParameters);
+		return (GeoProj) projectionLoader().create(projectionParameters);
+	}
+
+	/**
+	 * Return a EPSG code like "EPSG:4326"
+	 * 
+	 * @return
+	 */
+	public String getCode() {
+		return code;
+	}
+
+	public void prepareProjection(GeoProj proj) {
+		// TODO: do we need this??
+		proj.setPlanetRadius((float) ellipsoid.radius);
+	}
+
+	/**
+	 * Convert the given (projected) coordinate in the CRS to a LatLonPoint.
+	 * 
+	 * TODO: should we return null or throw if not possible?
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public LatLonPoint inverse(double x, double y) {
+		return coordTransform.inverse(x, y);
+	}
+
+	public Point2D forward(double lat, double lon) {
+		return coordTransform.forward(lat, lon);
+	}
+
+	public int hashCode() {
+		return getCode().hashCode();
+	}
+
+	public boolean equals(Object obj) {
+		if (obj instanceof CoordinateReferenceSystem) {
+			CoordinateReferenceSystem o = (CoordinateReferenceSystem) obj;
+			return getCode().equals(o.getCode());
+		}
+		return false;
+	}
 
 }

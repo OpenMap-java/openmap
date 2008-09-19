@@ -9,23 +9,22 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/wmsservlet/WEB-INF/src/com/bbn/openmap/wmsservlet/OgcWmsServlet.java,v $
-// $Revision: 1.4 $ $Date: 2008/02/20 01:41:08 $ $Author: dietrick $
+// $Revision: 1.5 $ $Date: 2008/09/19 14:20:14 $ $Author: dietrick $
 // **********************************************************************
 package com.bbn.openmap.wmsservlet;
 
 import java.io.IOException;
 import java.util.Properties;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bbn.openmap.PropertyHandler;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.image.wms.WMSException;
 import com.bbn.openmap.image.wms.WmsRequestHandler;
+import com.bbn.openmap.util.Debug;
 
 /**
  * 
@@ -74,12 +73,9 @@ public class OgcWmsServlet extends HttpServlet {
             throw new ServletException("schema is not specified");
         }
 
-        String hostName = request.getLocalName();
+        String hostName = request.getServerName();
         if (hostName == null) {
-            hostName = request.getLocalAddr();
-            if (hostName == null) {
-                throw new ServletException("local name or addr is not specified");
-            }
+            throw new ServletException("server name not specified");
         }
 
         int serverPort = request.getServerPort();

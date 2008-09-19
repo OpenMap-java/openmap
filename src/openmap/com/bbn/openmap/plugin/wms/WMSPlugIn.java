@@ -1,7 +1,7 @@
 /* **********************************************************************
  * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/wms/WMSPlugIn.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/09/17 20:47:51 $
+ * $Revision: 1.8 $
+ * $Date: 2008/09/19 14:20:14 $
  * $Author: dietrick $
  *
  * Code provided by Raj Singh, raj@rajsingh.org
@@ -39,8 +39,8 @@ import com.bbn.openmap.util.PropUtils;
  *     #For the plugin layer, add wms_plugin to openmap.layers list
  *     wms_plugin=com.bbn.openmap.plugin.wms.WMSPlugIn
  *     wms_plugin.wmsserver=A URL for the WMS server (eg. http://host.domain.name/servlet/com.esri.wms.Esrimap)
- *     wms_plugin.wmsversion=OpenGIS WMS version number (eg. 1.1.0)
- *     wms_plugin.format=image format (eg. JPEG, GIF, PNG from WMTConstants.java)
+ *     wms_plugin.wmsversion=OpenGIS WMS version number (eg. 1.1.1)
+ *     wms_plugin.format=image format (eg. image/jpeg, image/png)
  *     wms_plugin.transparent=true or false, depends on imageformat
  *     wms_plugin.backgroundcolor=RGB hex string (RRGGBB)
  *     wms_plugin.layers=comma separated list of map layer names (eg. SDE.SASAUS_BND_COASTL,SDE.SASAUS_BND_POLBNDL)
@@ -70,7 +70,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
     /** true=make the backgroundColor transparent */
     protected String transparent = null;
     /** version of the Web map server spec the server supports */
-    protected String wmsVersion = null;
+    protected String wmsVersion = "1.1.1";
     /** Comma-separated list of layer names */
     protected String layers = null;
     /** Comma-separated list of style names */
@@ -165,7 +165,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         }
 
         StringBuffer buf = new StringBuffer(queryHeader);
-        buf.append("?" + "VERSION" + "=" + wmsVersion + "&"
+        buf.append("?" + WMTConstants.VERSION + "=" + wmsVersion + "&"
                 + WMTConstants.REQUEST + "=" + mapRequestName + "&"
                 + WMTConstants.SRS + "=" + "EPSG:4326" + "&"
                 + WMTConstants.BBOX + "=" + bbox + "&" + WMTConstants.HEIGHT
@@ -173,7 +173,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
                 + WMTConstants.EXCEPTIONS + "=" + errorHandling);
 
         if (imageFormat != null) {
-            buf.append("&" + FORMAT + "=" + imageFormat);
+            buf.append("&" + WMTConstants.FORMAT + "=" + imageFormat);
 
             String baseImageFormat = imageFormat;
             if (baseImageFormat.indexOf('/') > 0)
@@ -184,19 +184,19 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         }
 
         if (transparent != null) {
-            buf.append("&" + TRANSPARENT + "=" + transparent);
+            buf.append("&" + WMTConstants.TRANSPARENT + "=" + transparent);
         }
 
         if (backgroundColor != null) {
-            buf.append("&" + BGCOLOR + "=" + backgroundColor);
+            buf.append("&" + WMTConstants.BGCOLOR + "=" + backgroundColor);
         }
 
         if (layers != null) {
-            buf.append("&" + LAYERS + "=" + layers);
+            buf.append("&" + WMTConstants.LAYERS + "=" + layers);
         }
 
         if (styles != null) {
-            buf.append("&" + STYLES + "=" + styles);
+            buf.append("&" + WMTConstants.STYLES + "=" + styles);
         }
 
         if (Debug.debugging("wms")) {
@@ -333,15 +333,12 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
     }
 
     public void setImageFormat(String newImageFormat) {
-        // check without a potential heading 'image/'
-        String checkImageFormat = newImageFormat;
-        if (newImageFormat.indexOf('/') > 0)
-            checkImageFormat = newImageFormat.substring(newImageFormat.indexOf('/'));
-
-        if (checkImageFormat.equals(WMTConstants.IMAGEFORMAT_GIF)
-                || checkImageFormat.equals(WMTConstants.IMAGEFORMAT_JPEG)
-                || checkImageFormat.equals(WMTConstants.IMAGEFORMAT_PNG)) {
+        if (newImageFormat.indexOf('/') > 0) {
             imageFormat = newImageFormat;
+        } else {
+            // convert "PNG" to "image/png" to be compatible with old OpenMap
+            // practice
+            imageFormat = "image/" + newImageFormat.toLowerCase();
         }
     }
 

@@ -1,13 +1,17 @@
 /*
- * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/IWmsLayer.java,v 1.2 2008/01/29 22:04:13 dietrick Exp $
+ * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/IWmsLayer.java,v 1.3 2008/09/19 14:20:14 dietrick Exp $
  *
  * Copyright 2001-2005 OBR Centrum Techniki Morskiej, All rights reserved.
  *
  */
 package com.bbn.openmap.image.wms;
 
+import java.util.Properties;
+
 /**
- * @version $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/IWmsLayer.java,v 1.2 2008/01/29 22:04:13 dietrick Exp $
+ * @version $Header:
+ *          /cvs/openmap/openmap/src/openmap/com/bbn/openmap/image/wms/IWmsLayer.java,v
+ *          1.2.2.1 2008/08/20 11:28:43 halset Exp $
  * @author pitek
  */
 public interface IWmsLayer {
@@ -31,13 +35,8 @@ public interface IWmsLayer {
     /**
      * @return
      */
-    public String getKeywordList();
-
-    /**
-     * @return
-     */
     public boolean isQueryable();
-    
+
     /**
      * Do a GetFeatureInfo query.
      * 
@@ -50,36 +49,11 @@ public interface IWmsLayer {
     /**
      * @return
      */
-    public boolean isCascaded();
-
-    /**
-     * @return
-     */
-    public boolean isOpaque();
-
-    /**
-     * @return
-     */
-    public boolean isNoSubsets();
-
-    /**
-     * @return
-     */
-    public int getFixedWidth();
-
-    /**
-     * @return
-     */
-    public int getFixedHeight();
-
-    /**
-     * @return
-     */
     public IWmsLayerStyle[] getStyles();
 
     /**
      * Ustawia styl w warstwie.
-     *
+     * 
      * @param name
      */
     public void setStyle(String name);
@@ -92,5 +66,17 @@ public interface IWmsLayer {
     /**
      */
     public void setDefaultStyle();
-    
+
+    /**
+     * OpenMap will use this method to set request parameters to the layer. The
+     * layer can then pick up extra non-standard parameters if needed.
+     * <p>
+     * For nested layers, this method may be called several times.
+     * <p>
+     * See wms-1.1.1 chapter 6.5.11 Vendor-Specific Parameters
+     * 
+     * @param requestParameters
+     */
+    public void setRequestParameters(Properties requestParameters);
+
 }

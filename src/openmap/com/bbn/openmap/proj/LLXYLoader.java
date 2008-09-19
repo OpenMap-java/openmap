@@ -14,20 +14,20 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LLXYLoader.java,v $
 // $RCSfile: LLXYLoader.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/12/09 21:09:01 $
+// $Revision: 1.5 $
+// $Date: 2008/09/19 14:20:14 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.proj;
 
-import java.awt.geom.Point2D;
-import java.util.Properties;
-
-import com.bbn.openmap.proj.coords.LatLonPoint;
-import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.proj.coords.DatumShiftGCT;
 import com.bbn.openmap.util.PropUtils;
+import com.bbn.openmap.util.Debug;
+
+import java.util.Properties;
 
 /**
  * ProjectionLoader to add the LLXY projection to an OpenMap
@@ -52,7 +52,7 @@ public class LLXYLoader extends BasicProjectionLoader implements
     public Projection create(Properties props) throws ProjectionException {
 
         try {
-            LatLonPoint llp = convertToLLP((Point2D) props.get(ProjectionFactory.CENTER));
+            LatLonPoint llp = (LatLonPoint) props.get(ProjectionFactory.CENTER);
             float scale = PropUtils.floatFromProperties(props,
                     ProjectionFactory.SCALE,
                     10000000);
@@ -62,7 +62,15 @@ public class LLXYLoader extends BasicProjectionLoader implements
             int width = PropUtils.intFromProperties(props,
                     ProjectionFactory.WIDTH,
                     100);
-            return new LLXY(llp, scale, width, height);
+            
+            GeoProj proj = new LLXY(llp, scale, width, height);
+            
+            Ellipsoid ellps = (Ellipsoid) props.get(ProjectionFactory.DATUM);
+            if ((ellps != null) && (ellps != Ellipsoid.WGS_84)) {
+				proj = new DatumShiftProjection(proj, new DatumShiftGCT(ellps));
+			}
+            
+            return proj;
 
         } catch (Exception e) {
             if (Debug.debugging("proj")) {

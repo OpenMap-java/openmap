@@ -123,18 +123,30 @@ public class ColorReducer {
         }
 
         int[] palette = Quantize32.quantizeImage(pixels, colors);
+        colors = palette.length;
+        
+        // ImageIO (at least on Mac) does not like to *read* png images with
+        // only a single color in the color index
+        boolean useExtraColors = false;
+        int minimumColors = 2;
+        if (colors < minimumColors) {
+            colors = minimumColors;
+            useExtraColors = true;
+        }
 
         byte[] r = new byte[colors];
         byte[] g = new byte[colors];
         byte[] b = new byte[colors];
         byte[] a = new byte[colors];
-
-        // need to have full(256) size array to get rid of ugly rare erros msg
-        // from GIFImageWriter.
-        Arrays.fill(r, (byte) OMColor.clear.getRed());
-        Arrays.fill(g, (byte) OMColor.clear.getGreen());
-        Arrays.fill(b, (byte) OMColor.clear.getBlue());
-        Arrays.fill(a, (byte) OMColor.clear.getAlpha());
+        
+        if (useExtraColors) {
+            // can not be clear as ArcGIS does not handle PNG with multiple
+            // clear entries in the color index
+            Arrays.fill(r, (byte) OMColor.green.getRed());
+            Arrays.fill(g, (byte) OMColor.green.getGreen());
+            Arrays.fill(b, (byte) OMColor.green.getBlue());
+            Arrays.fill(a, (byte) OMColor.green.getAlpha());
+        }
 
         for (int i = 0; i < palette.length; i++) {
             Color c = new Color(palette[i], true);

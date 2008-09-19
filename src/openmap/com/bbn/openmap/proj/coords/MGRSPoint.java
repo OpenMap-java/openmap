@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.18 $
-// $Date: 2008/02/25 23:19:07 $
+// $Revision: 1.19 $
+// $Date: 2008/09/19 14:20:14 $
 // $Author: dietrick $
 //
 // **********************************************************************
