@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleFilterLayer.java,v $
 // $RCSfile: ScaleFilterLayer.java,v $
-// $Revision: 1.13 $
-// $Date: 2006/10/13 16:03:04 $
+// $Revision: 1.14 $
+// $Date: 2008/09/26 12:07:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -250,6 +250,9 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * @param props Properties
      */
     protected void parseLayers(String prefix, Properties props) {
+        PropUtils.putDataPrefixToLayerList(this, props, prefix
+                + layersProperty);
+        
         String layersString = props.getProperty(prefix + layersProperty);
         Vector layers = getLayers();
         if (layersString == null || layersString.equals("")) {

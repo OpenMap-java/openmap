@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: DbfHandler.java,v $
-//$Revision: 1.3 $
-//$Date: 2008/07/20 05:46:31 $
+//$Revision: 1.4 $
+//$Date: 2008/09/26 12:07:56 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -196,6 +196,26 @@ public class DbfHandler extends OMComponent {
         }
 
         return props;
+    }
+
+    public DbfFile getDbf() {
+        return dbf;
+    }
+
+    public void setDbf(DbfFile dbf) {
+        this.dbf = dbf;
+    }
+
+    public DrawingAttributes getDefaultDA() {
+        return defaultDA;
+    }
+
+    public void setDefaultDA(DrawingAttributes defaultDA) {
+        this.defaultDA = defaultDA;
+    }
+
+    public void setRules(List<Rule> rules) {
+        this.rules = rules;
     }
 
     public void addRule(Rule rule) {

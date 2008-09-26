@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/BufferedLayer.java,v $
 // $RCSfile: BufferedLayer.java,v $
-// $Revision: 1.11 $
-// $Date: 2007/06/21 21:39:03 $
+// $Revision: 1.12 $
+// $Date: 2008/09/26 12:07:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,6 +26,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Paint;
 import java.awt.event.ActionEvent;
@@ -39,7 +41,6 @@ import java.beans.beancontext.BeanContext;
 import java.util.Properties;
 import java.util.Vector;
 
-import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -146,7 +147,10 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
 
         hasActiveLayers = PropUtils.booleanFromProperties(props, prefix
                 + HasActiveLayersProperty, hasActiveLayers);
-
+        
+        PropUtils.putDataPrefixToLayerList(this, props, prefix
+                + LayersProperty);
+        
         Vector layersValue = PropUtils.parseSpacedMarkers(props.getProperty(prefix
                 + LayersProperty));
         Vector startuplayers = PropUtils.parseSpacedMarkers(props.getProperty(prefix
@@ -425,12 +429,27 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
             Component[] layerComps = getLayers();
 
             panel = new JPanel();
+            GridBagLayout pGridbag = new GridBagLayout();
+            GridBagConstraints pC = new GridBagConstraints();
+            pC.fill = GridBagConstraints.BOTH;
+            pC.weightx = 1.0f;
+            pC.weighty = 1.0f;
+            panel.setLayout(pGridbag);
+
             JTabbedPane tabs = new JTabbedPane();
+            pGridbag.setConstraints(tabs, pC);
+            panel.add(tabs);
 
             JPanel bfPanel = new JPanel();
-            bfPanel.setLayout(new BoxLayout(bfPanel, BoxLayout.Y_AXIS));
-            bfPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // LEFT
-            bfPanel.setAlignmentY(Component.CENTER_ALIGNMENT); // BOTTOM
+            GridBagLayout gridbag = new GridBagLayout();
+            GridBagConstraints c = new GridBagConstraints();
+            c.fill = GridBagConstraints.BOTH;
+            c.weightx = 0.0f;
+            c.weighty = 0.0f;
+            c.anchor = GridBagConstraints.CENTER;
+            c.gridwidth = GridBagConstraints.REMAINDER;
+            bfPanel.setLayout(gridbag);
+
             tabs.addTab("Layer Visibility", bfPanel);
 
             for (int i = 0; i < layerComps.length; i++) {
@@ -441,9 +460,9 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
                 }
 
                 VisHelper layerVisibility = new VisHelper(layer);
+                gridbag.setConstraints(layerVisibility, c);
                 bfPanel.add(layerVisibility);
             }
-            panel.add(tabs);
         }
         return panel;
     }

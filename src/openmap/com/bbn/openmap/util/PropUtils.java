@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/PropUtils.java,v
 // $
 // $RCSfile: PropUtils.java,v $
-// $Revision: 1.15 $
-// $Date: 2008/02/25 23:19:07 $
+// $Revision: 1.16 $
+// $Date: 2008/09/26 12:07:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -42,6 +43,7 @@ import javax.swing.JFileChooser;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
+import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
 
 public class PropUtils {
@@ -681,7 +683,9 @@ public class PropUtils {
      * @throws java.net.MalformedURLException
      * @return URL
      */
-    public static URL getResourceOrFileOrURL(Class<? extends Object> askingClass, String name)
+    public static URL getResourceOrFileOrURL(
+                                             Class<? extends Object> askingClass,
+                                             String name)
             throws java.net.MalformedURLException {
 
         boolean DEBUG = Debug.debugging("proputils");
@@ -786,7 +790,9 @@ public class PropUtils {
      * @return Properties object passed in, or new one if null Properties passed
      *         in.
      */
-    public static Properties setI18NPropertyInfo(I18n i18n, Properties info,
+    public static Properties setI18NPropertyInfo(
+                                                 I18n i18n,
+                                                 Properties info,
                                                  Class<? extends Object> classToSetFor,
                                                  String propertyName,
                                                  String label, String tooltip,
@@ -815,5 +821,28 @@ public class PropUtils {
             }
         }
         return info;
+    }
+
+    public static void putDataPrefixToLayerList(Layer layer, Properties props,
+                                                String layerListProperty) {
+        String dataPrefix = (String) layer.getAttribute(Layer.DataPathPrefixProperty);
+        if (dataPrefix != null && dataPrefix.length() > 0) {
+            putDataPrefixToLayerList(dataPrefix, props, layerListProperty);
+        }
+    }
+
+    /**
+     * Handle setting the dataPathPrefixes on all layer's properties.
+     */
+    public static void putDataPrefixToLayerList(String dataPrefix,
+                                                Properties props,
+                                                String layerListProperty) {
+        Vector<String> layersValue = parseSpacedMarkers(props.getProperty(layerListProperty));
+
+        for (Iterator<String> it = layersValue.iterator(); it.hasNext();) {
+            String markerName = getScopedPropertyPrefix(it.next());
+            props.setProperty(markerName + Layer.DataPathPrefixProperty,
+                    dataPrefix);
+        }
     }
 }

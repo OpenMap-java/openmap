@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.32 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.33 $
+// $Date: 2008/09/26 12:07:56 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -181,6 +181,13 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * convenience.
      */
     public static final String RedrawCmd = "redrawCmd";
+    /**
+     * Generic property that may be set for a layer to let it know at runtime
+     * that a path prefix needs to be added to a relative data path. This
+     * property should be set in the attributes of a layer after being read from
+     * properties.
+     */
+    public static final String DataPathPrefixProperty = "dataPathPrefix";
 
     /**
      * The listeners to the Layer that respond to requests for information
@@ -393,6 +400,12 @@ public abstract class Layer extends JComponent implements ProjectionListener,
                 + MinScaleProperty, getMinScale()));
         setMaxScale(PropUtils.floatFromProperties(props, realPrefix
                 + MaxScaleProperty, getMaxScale()));
+
+        String dataPathPrefix = props.getProperty(realPrefix
+                + DataPathPrefixProperty, "");
+        if (dataPathPrefix.length() > 0) {
+            putAttribute(DataPathPrefixProperty, dataPathPrefix);
+        }
     }
 
     public void setName(String name) {
@@ -447,6 +460,11 @@ public abstract class Layer extends JComponent implements ProjectionListener,
         }
         if (getMaxScale() != Float.MAX_VALUE) {
             props.put(prefix + MaxScaleProperty, Float.toString(getMaxScale()));
+        }
+
+        String dataPathPrefix = (String) getAttribute(DataPathPrefixProperty);
+        if (dataPathPrefix != null) {
+            props.put(prefix + DataPathPrefixProperty, dataPathPrefix);
         }
 
         return props;
@@ -1388,6 +1406,7 @@ public abstract class Layer extends JComponent implements ProjectionListener,
 
     /**
      * Callback method to override how window support is created.
+     * 
      * @return
      */
     protected WindowSupport createWindowSupport() {
@@ -1550,6 +1569,19 @@ public abstract class Layer extends JComponent implements ProjectionListener,
             ret = attributes.get(key);
         }
         return ret;
+    }
+
+    /**
+     * The dataPathPrefix lets you append a path to a relative path at runtime.
+     * This method checks the layer attribute for such a prefix path, and
+     * prepends it to the given string.
+     */
+    protected String prependDataPathPrefix(String fileName) {
+        String dataPathPrefix = (String) getAttribute(Layer.DataPathPrefixProperty);
+        if (dataPathPrefix != null && dataPathPrefix.length() > 0) {
+            fileName = dataPathPrefix + "/" + fileName;
+        }
+        return fileName;
     }
 
 }
