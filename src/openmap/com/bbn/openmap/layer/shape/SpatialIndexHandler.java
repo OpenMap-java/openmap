@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndexHandler.java,v $
 // $RCSfile: SpatialIndexHandler.java,v $
-// $Revision: 1.11 $
-// $Date: 2008/07/20 05:46:31 $
+// $Revision: 1.12 $
+// $Date: 2008/09/28 19:06:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -159,8 +159,17 @@ public class SpatialIndexHandler implements PropertyConsumer {
         setPropertyPrefix(prefix);
         String realPrefix = PropUtils.getScopedPropertyPrefix(this);
         prettyName = props.getProperty(realPrefix + Layer.PrettyNameProperty);
-        shapeFileName = props.getProperty(realPrefix
-                + ShapeLayer.shapeFileProperty);
+        String dataPathPrefix = props.getProperty(prefix
+                + Layer.DataPathPrefixProperty);
+
+        if (dataPathPrefix != null && dataPathPrefix.length() > 0) {
+            dataPathPrefix += "/";
+        } else {
+            dataPathPrefix = "";
+        }
+        
+        shapeFileName = dataPathPrefix
+                + props.getProperty(realPrefix + ShapeLayer.shapeFileProperty);
 
         if (shapeFileName != null && shapeFileName.endsWith(".shp")) {
 

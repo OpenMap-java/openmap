@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndex.java,v $
 // $RCSfile: SpatialIndex.java,v $
-// $Revision: 1.14 $
-// $Date: 2008/09/19 14:31:43 $
+// $Revision: 1.15 $
+// $Date: 2008/09/28 19:06:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -138,7 +138,7 @@ import com.bbn.openmap.util.Debug;
  * </UL>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.14 $ $Date: 2008/09/19 14:31:43 $
+ * @version $Revision: 1.15 $ $Date: 2008/09/28 19:06:07 $
  * @see ShapeIndex
  */
 public class SpatialIndex extends ShapeUtils {
@@ -975,8 +975,10 @@ public class SpatialIndex extends ShapeUtils {
 
                     if (newShapeFileName != null) {
                         // It's Local!!
-                        Debug.output("Creating spatial index file: "
-                                + spatialIndexFileName);
+                        if (Debug.debugging("shape")) {
+                            Debug.output("Creating spatial index file: "
+                                    + spatialIndexFileName);
+                        }
 
                         // SpatialIndex.FileIndex.create(newShapeFileName);
                     }

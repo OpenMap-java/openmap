@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/Layer.java,v $
 // $RCSfile: Layer.java,v $
-// $Revision: 1.33 $
-// $Date: 2008/09/26 12:07:56 $
+// $Revision: 1.34 $
+// $Date: 2008/09/28 19:06:07 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -370,6 +370,17 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * @param props the <code>Properties</code> object
      */
     public void setProperties(String prefix, Properties props) {
+        setLayerProperties(prefix, props);
+    }
+
+    /**
+     * Called by setProperties. Allows subclasses to avoid super.setProperties()
+     * while still having basic Layer settings taken care of.
+     * 
+     * @param prefix the token to prefix the property names
+     * @param props the <code>Properties</code> object
+     */
+    protected void setLayerProperties(String prefix, Properties props) {
         String prettyName = PrettyNameProperty;
         setPropertyPrefix(prefix);
 
