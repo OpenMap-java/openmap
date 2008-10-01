@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/BufferedLayer.java,v $
 // $RCSfile: BufferedLayer.java,v $
-// $Revision: 1.12 $
-// $Date: 2008/09/26 12:07:56 $
+// $Revision: 1.13 $
+// $Date: 2008/10/01 15:26:30 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,6 +50,8 @@ import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.omGraphics.OMColor;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -67,22 +69,7 @@ import com.bbn.openmap.util.PropUtils;
  * a BufferedMapBean (which it is by default), then the layers will get buffered
  * into an image.
  * <P>
- * 
- * There are some special considerations to think about when using this layer if
- * the background is at all transparent. The image buffer will need to be
- * recreated at certain times in order to prevent leftover images from the
- * previous paintings. When the background is set for the layer, the
- * transparency is tested if the background is a Color and the
- * setHasTransparentBackground() method is called accordingly. If a different
- * Paint object is set in the BufferedLayer, it's up to you to set this
- * variable. This causes a new image to be created every time a new projection
- * is provided to the layer. If the layers added to this BufferedLayer are
- * active, meaning that their content could change between projection changes,
- * you should set the hasActiveLayers flag to true. this causes a new image
- * buffer to be created every time a layer repaints itself. Again, this is only
- * important if the background color of the layer is transparent.
- * <P>
- * 
+
  * The BufferedLayer can be configured in the openmap.properties file:
  * 
  * <pre>
@@ -92,29 +79,16 @@ import com.bbn.openmap.util.PropUtils;
  *  bufLayer.prettyName=My Layer Group
  *  bufLayer.layers=layer1 layer2 layer3
  *  bufLayer.visibleLayers=layer1 layer3
- *  bufLayer.hasActiveLayers=false
- * 
- *  
  * </pre>
  * 
  * layer1, layer2, etc should be defined as any other openmap layer.
  */
-public class BufferedLayer extends Layer implements PropertyChangeListener {
+public class BufferedLayer extends OMGraphicHandlerLayer implements
+        PropertyChangeListener {
 
     public final static String LayersProperty = "layers";
     public final static String VisibleLayersProperty = "visibleLayers";
-    public final static String HasActiveLayersProperty = "hasActiveLayers";
 
-    /**
-     * Used to recreate the buffer on every repaint() call made by every layer.
-     * Makes for a lot of image buffer creation. If the layers may call
-     * repaint() and change what they present between projection changes, then
-     * this needs to be set to true. Otherwise, the old graphics will still be
-     * visible. This only needs to be set if the background is at all
-     * transparent. If the background of the internal MapBean is opaque, set
-     * this to false, which is the default.
-     */
-    protected boolean hasActiveLayers = false;
 
     /**
      * Used to tell the BufferedLayer that the background is transparent. Will
@@ -145,15 +119,11 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        hasActiveLayers = PropUtils.booleanFromProperties(props, prefix
-                + HasActiveLayersProperty, hasActiveLayers);
-        
-        PropUtils.putDataPrefixToLayerList(this, props, prefix
-                + LayersProperty);
-        
-        Vector layersValue = PropUtils.parseSpacedMarkers(props.getProperty(prefix
+        PropUtils.putDataPrefixToLayerList(this, props, prefix + LayersProperty);
+
+        Vector<String> layersValue = PropUtils.parseSpacedMarkers(props.getProperty(prefix
                 + LayersProperty));
-        Vector startuplayers = PropUtils.parseSpacedMarkers(props.getProperty(prefix
+        Vector<String> startuplayers = PropUtils.parseSpacedMarkers(props.getProperty(prefix
                 + VisibleLayersProperty));
 
         Layer[] layers = LayerHandler.getLayers(layersValue,
@@ -205,8 +175,6 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
         props.put(prefix + LayersProperty, layersListProperty.toString());
         props.put(prefix + VisibleLayersProperty,
                 startupLayersListProperty.toString());
-        props.put(prefix + HasActiveLayersProperty,
-                new Boolean(hasActiveLayers).toString());
 
         return props;
     }
@@ -220,20 +188,6 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
         props = super.getPropertyInfo(props);
 
         return props;
-    }
-
-    /**
-     * If true, will cause a new image buffer to be recreated for every
-     * layer.repaint() call. Should only be set to true if the background is at
-     * all transparent, and if the layers could change between projection
-     * changes.
-     */
-    public void setHasActiveLayers(boolean value) {
-        hasActiveLayers = value;
-    }
-
-    public boolean getHasActiveLayers() {
-        return hasActiveLayers;
     }
 
     /**
@@ -311,11 +265,6 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
      */
     public Component[] getLayers() {
         return mapBean.getComponents();
-    }
-
-    public void firePaletteEvent(ComponentEvent event) {
-        super.firePaletteEvent(event);
-        hasActiveLayers = (event.getID() == ComponentEvent.COMPONENT_SHOWN);
     }
 
     /**
@@ -399,11 +348,22 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
     public void projectionChanged(com.bbn.openmap.event.ProjectionEvent pe) {
         Projection proj = setProjection(pe);
 
-        if (proj != null && mapBean instanceof BLMapBean
-                && hasTransparentBackground) {
-            ((BLMapBean) mapBean).wipeImage();
+        if (proj != null) {
+            mapBean.setProjection(proj);
         }
-        mapBean.setProjection(proj == null ? proj : proj.makeClone());
+    }
+
+    protected OMRaster raster;
+
+    public OMGraphicList prepare() {
+        OMGraphicList list = new OMGraphicList();
+        Projection proj = getProjection();
+        if (raster != null && proj != null) {
+            raster.generate(proj);
+            list.add(raster);
+        }
+
+        return list;
     }
 
     /**
@@ -467,9 +427,15 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
         return panel;
     }
 
+    protected void updateRaster(Image mapImage) {
+        raster = new OMRaster(0, 0, mapImage);
+        doPrepare();
+    }
+
     public void paint(Graphics g) {
         if (hasLayers()) {
-            super.paint(g);
+            // mapBean.paintChildren(g);
+            mapBean.paint(g);
         }
     }
 
@@ -494,9 +460,9 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
                                 : " off"));
             }
 
-            if (mapBean instanceof BLMapBean && hasTransparentBackground) {
-                ((BLMapBean) mapBean).wipeImage();
-            }
+//            if (mapBean instanceof BLMapBean && hasTransparentBackground) {
+//                ((BLMapBean) mapBean).wipeImage();
+//            }
 
             layer.repaint();
         }
@@ -511,7 +477,9 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
 
         for (int i = layersComps.length - 1; i >= 0; i--) {
             Layer layer = (Layer) layersComps[i];
-            layer.renderDataForProjection(proj, g);
+            if (layer.isVisible()) {
+                layer.renderDataForProjection(proj, g);
+            }
         }
     }
 
@@ -557,40 +525,23 @@ public class BufferedLayer extends Layer implements PropertyChangeListener {
         /**
          * Set the buffer dirty, and call repaint on the layer.
          */
-        public void repaint() {
-            setBufferDirty(true);
+        public void repaint(Layer layer) {
 
-            if (Debug.debugging("bufferedlayer")) {
-                Debug.output("BLMapBean.repaint() has active layers = "
-                        + hasActiveLayers);
+            drawingBuffer = createImage(this.getWidth(), this.getHeight());
+            Component[] comps = getComponents();
+            Projection proj = getProjection();
+            Graphics g = drawingBuffer.getGraphics();
+            if (comps != null && proj != null) {
+                for (int i = comps.length - 1; i >= 0; i--) {
+                    Layer l = (Layer) comps[i];
+                    if (l.isVisible()) {
+                        l.renderDataForProjection(proj, g);
+                    }
+                }
             }
 
-            if ((hasActiveLayers || hasLayers()) && hasTransparentBackground) {
-                wipeImage();
-            }
-
-            if (layer != null) {
-                layer.repaint();
-            }
-        }
-
-        /**
-         * We need this because if the background to the BufferedLayer is clear,
-         * we need to clear out anything that was previously there. This seems
-         * to be the only way to do it.
-         */
-        public void wipeImage() {
-            setBufferDirty(true);
-
-            // Need to do some optimization for this to figure out
-            // which is really faster, recreating a new image, or
-            // cycling though the pixels. Plus, the image should be
-            // reset if the background is slighly transparent if any
-            // layer can change between overall cleansings.
-
-            if (this.getBackground() == OMColor.clear) {
-                drawingBuffer = createImage(this.getWidth(), this.getHeight());
-            }
+            setBufferDirty(false);
+            updateRaster(drawingBuffer);
         }
 
         /**
