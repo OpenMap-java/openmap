@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.text.DecimalFormat;
 import java.text.Format;
 import java.util.Properties;
 
@@ -39,6 +40,8 @@ public class RangeRingsMouseMode extends CoordMouseMode {
      * The property string used to set the numRings member variable.
      */
     public static final String NUM_RINGS_PROPERTY = "numRings";
+
+    public transient DecimalFormat df = new DecimalFormat("0.###");
 
     /**
      * Format used to draw distances.
@@ -501,8 +504,8 @@ public class RangeRingsMouseMode extends CoordMouseMode {
      * @return label String.
      */
     protected String getOriginLabel() {
-        return "(" + df.format(origin.getY()) + ", "
-                + df.format(origin.getX()) + ")";
+        return "(" + df.format(origin.getY()) + ", " + df.format(origin.getX())
+                + ")";
     }
 
     /**

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/AbstractMouseMode.java,v $
 // $RCSfile: AbstractMouseMode.java,v $
-// $Revision: 1.13 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.14 $
+// $Date: 2008/10/10 00:57:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,7 +28,6 @@ import java.awt.event.MouseWheelEvent;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
-import java.text.DecimalFormat;
 import java.util.Properties;
 
 import javax.swing.Icon;
@@ -91,8 +90,6 @@ public class AbstractMouseMode extends OMComponent implements MapMouseMode,
      * NavMouseMode, for instance.
      */
     protected transient Icon guiIcon = null;
-
-    public transient DecimalFormat df = new DecimalFormat("0.###");
 
     protected transient boolean visible = true;
 

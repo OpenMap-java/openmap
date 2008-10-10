@@ -25,10 +25,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.text.DecimalFormat;
 import java.util.Properties;
 import java.util.Vector;
 
 import com.bbn.openmap.InformationDelegator;
+import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.omGraphics.OMCircle;
@@ -39,7 +41,6 @@ import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Planet;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -68,11 +69,11 @@ import com.bbn.openmap.util.PropUtils;
  * You can set the units used for measurements by setting the property:
  * 
  * <pre>
- *     
+ * 
  *      prefix.units= &amp;lt name for Length.java (km, miles, meters, nm, all) &amp;gt
- *      
+ *  
  * </pre>
- *
+ * 
  * Note that "all" will display nm, km, and miles.
  * 
  */
@@ -87,8 +88,11 @@ public class DistanceMouseMode extends CoordMouseMode {
     public final static String ShowAngleProperty = "showAngle";
     public final static String RepaintToCleanProperty = "repaintToClean";
 
+    public transient DecimalFormat df = new DecimalFormat("0.###");
+
     /**
-     * Special units value for displaying all units ... use only in properties file
+     * Special units value for displaying all units ... use only in properties
+     * file
      */
     public final static String AllUnitsPropertyValue = "all";
 
@@ -107,7 +111,7 @@ public class DistanceMouseMode extends CoordMouseMode {
     /**
      * Vector to store all distance segments, first point and last point pairs
      */
-    public Vector segments = new Vector();
+    public Vector<Point2D> segments = new Vector<Point2D>();
     /**
      * Distance of the current segment
      */
@@ -574,7 +578,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      */
     public void cleanUp() {
         // a quick way to clean the vector
-        segments = new Vector();
+        segments = new Vector<Point2D>();
         // reset the total distance
         totalDistance = 0.0;
         distance = 0.0;

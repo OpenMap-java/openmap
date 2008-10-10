@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/DbfInputStream.java,v $
 // $RCSfile: DbfInputStream.java,v $
-// $Revision: 1.12 $
-// $Date: 2008/09/17 20:47:51 $
+// $Revision: 1.13 $
+// $Date: 2008/10/10 00:57:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -82,8 +82,6 @@ public class DbfInputStream {
      * ArrayList
      */
     private ArrayList _records = null;
-
-    public final static Double ZERO = new Double(0);
 
     /**
      * Creates a LittleEndianInputStream then uses it to read the contents of
@@ -231,16 +229,15 @@ public class DbfInputStream {
                 df.setMaximumFractionDigits(numDecSpaces);
                 String cell = _leis.readString(length);
                 try {
-                    record.add(c, getObjectForType(cell, type, df));
+                    record.add(c,
+                            DbfTableModel.getObjectForType(cell, type, df));
                 } catch (ParseException pe) {
                     if (Debug.debugging("shape")) {
                         Debug.error("DbfInputStream:  error parsing column "
-                                + c
-                                + ", row "
-                                + r
+                                + c + ", row " + r
                                 + ", expected number and got " + cell);
                     }
-                    record.add(c, ZERO);
+                    record.add(c, DbfTableModel.ZERO);
                 }
             }
             _records.add(record);
@@ -248,37 +245,4 @@ public class DbfInputStream {
         }
     }
 
-    protected Object getObjectForType(String cellContents, int type,
-                                      DecimalFormat df)
-            throws java.text.ParseException {
-        Object ret = cellContents;
-        if (type == DbfTableModel.TYPE_NUMERIC
-                || type == DbfTableModel.TYPE_LONG
-                || type == DbfTableModel.TYPE_FLOAT
-                || type == DbfTableModel.TYPE_DOUBLE
-                || type == DbfTableModel.TYPE_AUTOINCREMENT) {
-            if (cellContents.length() > 0) {
-                ret = new Double(df.parse(cellContents).doubleValue());
-            } else {
-                ret = ZERO;
-            }
-        } else if (type == DbfTableModel.TYPE_BINARY
-                || type == DbfTableModel.TYPE_MEMO
-                || type == DbfTableModel.TYPE_OLE) {
-            if (cellContents.length() < 10) {
-                cellContents = cellContents.trim();
-                StringBuffer bu = new StringBuffer();
-                int numSpaces = 10 - cellContents.length();
-                for (int i = 0; i < numSpaces; i++) {
-                    bu.append(" ");
-                }
-                bu.append(cellContents);
-                ret = bu.toString();
-            }
-        } else if (type == DbfTableModel.TYPE_TIMESTAMP) {
-            // uhhhhhh....
-        }
-
-        return ret;
-    }
 }

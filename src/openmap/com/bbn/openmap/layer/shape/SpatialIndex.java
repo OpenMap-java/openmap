@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndex.java,v $
 // $RCSfile: SpatialIndex.java,v $
-// $Revision: 1.15 $
-// $Date: 2008/09/28 19:06:07 $
+// $Revision: 1.16 $
+// $Date: 2008/10/10 00:57:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -138,7 +138,7 @@ import com.bbn.openmap.util.Debug;
  * </UL>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.15 $ $Date: 2008/09/28 19:06:07 $
+ * @version $Revision: 1.16 $ $Date: 2008/10/10 00:57:22 $
  * @see ShapeIndex
  */
 public class SpatialIndex extends ShapeUtils {
@@ -180,7 +180,7 @@ public class SpatialIndex extends ShapeUtils {
     /**
      * A cached list of the SpatialIndex file entries, for repeated reference.
      */
-    protected List<Entry> entries;
+    protected List entries;
 
     /**
      * A factory object to use to create OMGraphics from the shp file.
@@ -523,8 +523,8 @@ public class SpatialIndex extends ShapeUtils {
         OMGraphicList labels = new OMGraphicList();
         list.add(labels);
 
-        for (Iterator<Entry> it = entryIterator(dataProj); it.hasNext();) {
-            Entry entry = it.next();
+        for (Iterator it = entryIterator(dataProj); it.hasNext();) {
+            Entry entry = (Entry) it.next();
 
             if (entry.intersects(xmin, ymin, xmax, ymax)) {
 
@@ -564,6 +564,10 @@ public class SpatialIndex extends ShapeUtils {
         if (shp != null) {
             shp.close();
             shp = null;
+        }
+
+        if (dbf != null) {
+            dbf.close();
         }
 
         return list;
@@ -746,10 +750,10 @@ public class SpatialIndex extends ShapeUtils {
      * @throws IOException
      * @throws FormatException
      */
-    protected List<Entry> readIndexFile(ESRIBoundingBox bounds,
-                                        GeoCoordTransformation dataTransform)
+    protected List readIndexFile(ESRIBoundingBox bounds,
+                                 GeoCoordTransformation dataTransform)
             throws IOException, FormatException {
-        entries = new ArrayList<Entry>();
+        entries = new ArrayList();
 
         byte ixRecord[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
 
@@ -975,10 +979,8 @@ public class SpatialIndex extends ShapeUtils {
 
                     if (newShapeFileName != null) {
                         // It's Local!!
-                        if (Debug.debugging("shape")) {
-                            Debug.output("Creating spatial index file: "
-                                    + spatialIndexFileName);
-                        }
+                        Debug.output("Creating spatial index file: "
+                                + spatialIndexFileName);
 
                         // SpatialIndex.FileIndex.create(newShapeFileName);
                     }
@@ -1442,7 +1444,7 @@ public class SpatialIndex extends ShapeUtils {
 
         protected MemoryIndex() {}
 
-        public static List<Entry> create(String shpFile) {
+        public static List create(String shpFile) {
             MemoryIndex mi = new MemoryIndex();
             return mi.createIndex(shpFile);
         }
@@ -1454,8 +1456,7 @@ public class SpatialIndex extends ShapeUtils {
          * @param ptr the current position in the file
          * @param entries a List of Entries to add to
          */
-        protected void indexPolygons(InputStream is, long ptr,
-                                     List<Entry> entries) {
+        protected void indexPolygons(InputStream is, long ptr, List entries) {
             boolean moreRecords = true;
             byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
             int result;
@@ -1526,7 +1527,7 @@ public class SpatialIndex extends ShapeUtils {
          * @param ptr the current position in the file
          * @param entries a List of Entries to add to
          */
-        protected void indexPoints(InputStream is, long ptr, List<Entry> entries) {
+        protected void indexPoints(InputStream is, long ptr, List entries) {
             boolean moreRecords = true;
             byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
             int result;
@@ -1595,7 +1596,7 @@ public class SpatialIndex extends ShapeUtils {
          * @param ptr the current position in the file
          * @param entries a List of Entries to add to
          */
-        protected void indexNulls(InputStream is, long ptr, List<Entry> entries) {
+        protected void indexNulls(InputStream is, long ptr, List entries) {
             boolean moreRecords = true;
             byte rHdr[] = new byte[SHAPE_RECORD_HEADER_LENGTH];
             int result;
@@ -1658,9 +1659,9 @@ public class SpatialIndex extends ShapeUtils {
          * 
          * @param inFile the shape file.
          */
-        public List<Entry> createIndex(String inFile) {
+        public List createIndex(String inFile) {
             String shpFile = null;
-            List<Entry> entries = new ArrayList<Entry>();
+            List entries = new ArrayList();
             if (inFile.endsWith(".shp")) {
                 shpFile = inFile;
             } else {

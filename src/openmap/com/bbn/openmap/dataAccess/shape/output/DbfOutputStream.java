@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/DbfOutputStream.java,v $
 // $RCSfile: DbfOutputStream.java,v $
-// $Revision: 1.16 $
-// $Date: 2008/09/17 20:47:51 $
+// $Revision: 1.17 $
+// $Date: 2008/10/10 00:57:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,13 +27,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
 
-import com.bbn.openmap.dataAccess.shape.DbfFile;
 import com.bbn.openmap.dataAccess.shape.DbfTableModel;
-import com.bbn.openmap.io.FormatException;
 
 /**
  * Writes date in a DbfTableModel to a file, conforming to the DBF III file
@@ -207,48 +203,13 @@ public class DbfOutputStream {
         _leos.writeByte(0); // Byte 31 Reserved Bytes(0) #31
     }
 
-    protected void writeDbfFileRecords(DbfFile model) throws IOException {
-        java.text.NumberFormat df = NumberFormat.getNumberInstance(Locale.ENGLISH);
-        int rowCount = model.getRowCount();
-        int columnCount = model.getColumnCount();
-        for (int r = 0; r <= rowCount - 1; r++) {
-            try {
-                List record = model.getRecordData(r);
-                _leos.writeByte(32);
-                for (int c = 0; c <= columnCount - 1; c++) {
-                    byte type = model.getType(c);
-                    String value = null;
-                    if (type == DbfTableModel.TYPE_NUMERIC) {
-                        Object obj = record.get(c);
-                        if (obj instanceof Double) {
-                            value = ""
-                                    + df.format(((Double) obj).doubleValue());
-                        } else {
-                            value = (obj != null) ? obj.toString() : "";
-                        }
-                    } else {
-                        value = (String) record.get(c);
-                    }
-                    int length = model.getLength(c);
-                    _leos.writeString(value, length);
-                }
-            } catch (FormatException fe) {
-                continue;
-            }
-        }
-    }
-
     public void writeRecords(DbfTableModel model) throws IOException {
-
-        if (model instanceof DbfFile) {
-            writeDbfFileRecords((DbfFile) model);
-            return;
-        }
 
         DecimalFormat df = new DecimalFormat();
         DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.ENGLISH);
         df.setDecimalFormatSymbols(dfs);
-
+        df.setGroupingUsed(false);
+        
         int rowCount = model.getRowCount();
         int columnCount = model.getColumnCount();
         for (int r = 0; r <= rowCount - 1; r++) {
@@ -257,7 +218,8 @@ public class DbfOutputStream {
                 byte type = model.getType(c);
                 int numDecSpaces = model.getDecimalCount(c);
                 df.setMaximumFractionDigits(numDecSpaces);
-                String value = getStringForType(model.getValueAt(r, c),
+                df.setGroupingUsed(false);
+                String value = DbfTableModel.getStringForType(model.getValueAt(r, c),
                         type,
                         df);
 
@@ -265,27 +227,6 @@ public class DbfOutputStream {
                 _leos.writeString(value, length);
             }
         }
-    }
-
-    protected String getStringForType(Object obj, byte type, DecimalFormat df) {
-        String ret = "";
-        if (type == DbfTableModel.TYPE_NUMERIC
-                || type == DbfTableModel.TYPE_LONG
-                || type == DbfTableModel.TYPE_FLOAT
-                || type == DbfTableModel.TYPE_DOUBLE
-                || type == DbfTableModel.TYPE_AUTOINCREMENT) {
-
-            try {
-                ret = df.format(((Double) obj).doubleValue());
-            } catch (Exception e) {
-                ret = "";
-            }
-
-        } else if (obj instanceof String) {
-            ret = (String) obj;
-        }
-
-        return ret;
     }
 
     public void close() throws IOException {

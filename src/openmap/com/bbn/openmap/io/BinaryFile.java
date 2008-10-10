@@ -14,14 +14,15 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/BinaryFile.java,v $
 // $RCSfile: BinaryFile.java,v $
-// $Revision: 1.12 $
-// $Date: 2008/02/29 00:51:10 $
+// $Revision: 1.13 $
+// $Date: 2008/10/10 00:57:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.io;
 
+import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -65,6 +66,17 @@ public class BinaryFile {
      */
     public BinaryFile(File f) throws IOException {
         inputReader = new FileInputReader(f);
+        classCount++;
+        openCount++;
+    }
+    
+    /**
+     * Constructs a new BinaryFile with the specified inputReader as the input.
+     * 
+     * @param inputReader the input reader to be opened for reading
+     */
+    private BinaryFile(InputReader inputReader) {
+        this.inputReader = inputReader;
         classCount++;
         openCount++;
     }
@@ -787,4 +799,29 @@ public class BinaryFile {
             }
         }
     }
+    
+    /**
+     * Read the {@link BinaryFile} into memory and return a new
+     * {@link BinaryFile} instance working on that in-memory version of the
+     * file.
+     * 
+     * @param in
+     * @return
+     * @throws IOException
+     */
+    public BinaryFile readFully() throws IOException {
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buf = new byte[4096];
+
+        seek(0);
+        int len;
+        while (available() > 0) {
+            len = read(buf);
+            baos.write(buf, 0, len);
+        }
+
+        return new BinaryFile(new ByteArrayInputReader(baos.toByteArray()));
+    }
+
 }

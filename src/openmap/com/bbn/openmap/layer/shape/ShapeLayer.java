@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.27 $
-// $Date: 2008/09/26 12:07:56 $
+// $Revision: 1.28 $
+// $Date: 2008/10/10 00:57:22 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,7 +39,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.shape.DbfHandler;
 import com.bbn.openmap.io.BinaryBufferedFile;
@@ -88,7 +87,7 @@ import com.bbn.openmap.util.PropUtils;
  * </pre></code>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.27 $ $Date: 2008/09/26 12:07:56 $
+ * @version $Revision: 1.28 $ $Date: 2008/10/10 00:57:22 $
  * @see SpatialIndex
  */
 public class ShapeLayer extends OMGraphicHandlerLayer implements
@@ -166,6 +165,21 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
+     * A call-back method to override in case you want to change the BinaryFile
+     * used to in the DbfHandler.
+     * 
+     * @param dbfFileName path to DBF file.
+     * @return DbfHandler with BinaryFile set in it.
+     * @throws FormatException
+     * @throws IOException
+     */
+    protected DbfHandler createDbfHandler(String dbfFileName)
+            throws FormatException, IOException {
+        BinaryBufferedFile bbf = new BinaryBufferedFile(dbfFileName);
+        return new DbfHandler(bbf);
+    }
+
+    /**
      * This method gets called from setProperties.
      * 
      * @param realPrefix This prefix has already been scoped, which means it is
@@ -176,8 +190,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
      */
     protected void setFileProperties(String realPrefix, Properties props) {
         shapeFileName = props.getProperty(realPrefix + shapeFileProperty);
-        shapeFileName = prependDataPathPrefix(shapeFileName);
-        
+
         if (shapeFileName != null && !shapeFileName.equals("")) {
 
             spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName);
@@ -185,8 +198,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
 
             try {
                 if (BinaryFile.exists(dbfFileName)) {
-                    BinaryBufferedFile bbf = new BinaryBufferedFile(dbfFileName);
-                    DbfHandler dbfh = new DbfHandler(bbf);
+                    DbfHandler dbfh = createDbfHandler(dbfFileName);
                     dbfh.setProperties(realPrefix, props);
                     spatialIndex.setDbf(dbfh);
                 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfFile.java,v $
 // $RCSfile: DbfFile.java,v $
-// $Revision: 1.2 $
-// $Date: 2007/06/21 21:39:01 $
+// $Revision: 1.3 $
+// $Date: 2008/10/10 00:57:21 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,11 +28,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import com.bbn.openmap.dataAccess.shape.input.DbfInputStream;
 import com.bbn.openmap.dataAccess.shape.output.DbfOutputStream;
 import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.BinaryFile;
@@ -136,8 +136,25 @@ public class DbfFile extends DbfTableModel {
             if (DEBUG && _headerLength != bf.getFilePointer()) {
                 Debug.output("DbfFile: Header length specified in file doesn't match current pointer location");
             }
+
         } catch (EOFException eofe) {
             throw new FormatException(eofe.getMessage());
+        }
+    }
+
+    /**
+     * Tells the BinaryFile input reader to close, releasing the file pointer.
+     * Will automatically reopen if necessary.
+     */
+    public void close() {
+        if (bf != null) {
+            try {
+                bf.close();
+            } catch (IOException e) {
+                if (Debug.debugging("shape")) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -210,31 +227,16 @@ public class DbfFile extends DbfTableModel {
                 if (length == -1)
                     length = 255;
                 int type = _types[targetColumnIndex];
-
+                int numDecSpaces = _decimalCounts[targetColumnIndex];
+                df.setMaximumFractionDigits(numDecSpaces);
                 String cell = bf.readFixedLengthString(length).trim();
-                if (type == DbfTableModel.TYPE_NUMERIC && !cell.equals("")) {
-                    try {
-                        // record.add(c, new Double(cell));
-                        record.add(targetColumnIndex, new Double(df.parse(cell)
-                                .doubleValue()));
-                        // } catch (NumberFormatException nfe) {
-                        // Debug.error("DbfInputStream: error reading
-                        // column " + c + ", row " + r +
-                        // ", expected number and got " + cell);
-                        // record.add(c, new Double(0));
-                    } catch (java.text.ParseException pe) {
-                        if (Debug.debugging("shape")) {
-                            Debug.error("DbfInputStream:  error parsing column "
-                                    + targetColumnIndex
-                                    + ", row "
-                                    + index
-                                    + ", expected number and got " + cell);
-                        }
-                        record.add(targetColumnIndex, DbfInputStream.ZERO);
-                    }
-                } else {
-                    record.add(targetColumnIndex, cell);
+                Object obj = cell;
+                try {
+                    obj = getObjectForType(cell, type, df);
+                } catch (ParseException pe) {
+                    // Don't need to do anything, obj == cell;
                 }
+                record.add(targetColumnIndex, obj);
                 targetColumnIndex++;
             } else {
                 bf.skipBytes(((Integer) _columnMask[c]).intValue());
@@ -245,7 +247,7 @@ public class DbfFile extends DbfTableModel {
 
     /**
      * Clear the record information from memory.
-     *
+     * 
      */
     public void clearRecords() {
         if (_records != null) {
@@ -290,6 +292,7 @@ public class DbfFile extends DbfTableModel {
         try {
             BinaryBufferedFile bbf = new BinaryBufferedFile(dbf);
             model = new DbfFile(bbf);
+            model.close();
         } catch (Exception exception) {
             if (Debug.debugging("shape")) {
                 Debug.error("problem loading DBF file" + exception.getMessage());
@@ -336,11 +339,16 @@ public class DbfFile extends DbfTableModel {
         }
 
         boolean readData = ap.getArgValues("columns") == null;
-        ags = ap.getArgValues("num");
-        if (ags != null) {
-            try {
-                num = Double.parseDouble(ags[0]);
-            } catch (NumberFormatException nfe) {
+
+        if (!readData) {
+            num = 0;
+        } else {
+            ags = ap.getArgValues("num");
+            if (ags != null) {
+                try {
+                    num = Double.parseDouble(ags[0]);
+                } catch (NumberFormatException nfe) {
+                }
             }
         }
 
@@ -350,18 +358,23 @@ public class DbfFile extends DbfTableModel {
         try {
 
             DbfFile dtm = (DbfFile) DbfFile.getDbfTableModel(source);
+
+            if (dtm == null) {
+                System.out.println("Problem reading " + source);
+                System.exit(-1);
+            }
+
             if (columns != null) {
                 dtm.setColumnMask(columnMask);
             }
+
+            dtm.readData(0, (int) num);
 
             if (target != null) {
                 OutputStream os = new FileOutputStream(target);
                 DbfOutputStream dos = new DbfOutputStream(os);
                 dos.writeModel(dtm);
             } else {
-                if (readData) {
-                    dtm.readData(0, (int) num);
-                }
                 dtm.setWritable(true);
                 dtm.exitOnClose = true;
                 dtm.showGUI(args[0], MODIFY_ROW_MASK | MODIFY_COLUMN_MASK
