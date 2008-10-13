@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: DbfHandler.java,v $
-//$Revision: 1.5 $
-//$Date: 2008/10/10 00:57:21 $
+//$Revision: 1.6 $
+//$Date: 2008/10/13 15:40:11 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -105,7 +105,7 @@ import com.bbn.openmap.util.PropUtils;
 public class DbfHandler extends OMComponent {
 
     protected DbfFile dbf;
-    protected List rules;
+    protected List<Rule> rules;
     protected DrawingAttributes defaultDA;
 
     /*
@@ -129,7 +129,6 @@ public class DbfHandler extends OMComponent {
     public final static String RuleActionMaxScale = "maxScale";
 
     protected DbfHandler() {
-        rules = new Vector();
         defaultDA = new DrawingAttributes();
     }
 
@@ -150,10 +149,10 @@ public class DbfHandler extends OMComponent {
         defaultDA.setProperties(prefix, props);
 
         String rulesString = props.getProperty(prefix + RuleListProperty);
-        Vector keysV = PropUtils.parseSpacedMarkers(rulesString);
-
-        for (Iterator it = keysV.iterator(); it.hasNext();) {
-            String ruleMarker = (String) it.next();
+        Vector<String> keysV = PropUtils.parseSpacedMarkers(rulesString);
+        List<Rule> rules = getRules();
+        for (Iterator<String> it = keysV.iterator(); it.hasNext();) {
+            String ruleMarker = it.next();
 
             Rule rule = new Rule(dbf);
             rule.setProperties(prefix + ruleMarker, props);
@@ -168,8 +167,8 @@ public class DbfHandler extends OMComponent {
         StringBuffer ruleList = new StringBuffer();
         int createdRuleNum = 1;
 
-        for (Iterator it = getRuleIterator(); it.hasNext();) {
-            Rule rule = (Rule) it.next();
+        for (Iterator<Rule> it = getRuleIterator(); it.hasNext();) {
+            Rule rule = it.next();
             String rulePrefix = rule.getPropertyPrefix();
 
             // For rules created programmatically without a prefix, need to
@@ -198,22 +197,49 @@ public class DbfHandler extends OMComponent {
         return props;
     }
 
+    public DbfFile getDbf() {
+        return dbf;
+    }
+
+    public void setDbf(DbfFile dbf) {
+        this.dbf = dbf;
+    }
+
+    public DrawingAttributes getDefaultDA() {
+        return defaultDA;
+    }
+
+    public void setDefaultDA(DrawingAttributes defaultDA) {
+        this.defaultDA = defaultDA;
+    }
+
+    public void setRules(List<Rule> rules) {
+        this.rules = rules;
+    }
+
     public void addRule(Rule rule) {
         if (rule != null) {
-            rules.add(rule);
+            getRules().add(rule);
         }
     }
 
     public boolean removeRule(Rule rule) {
         if (rule != null) {
-            return rules.remove(rule);
+            return getRules().remove(rule);
         }
 
         return false;
     }
 
     public void clearRules() {
-        rules.clear();
+        getRules().clear();
+    }
+
+    public List<Rule> getRules() {
+        if (rules == null) {
+            rules = new Vector<Rule>();
+        }
+        return rules;
     }
 
     /**
@@ -221,8 +247,8 @@ public class DbfHandler extends OMComponent {
      * 
      * @return
      */
-    public Iterator getRuleIterator() {
-        return rules.iterator();
+    public Iterator<Rule> getRuleIterator() {
+        return getRules().iterator();
     }
 
     /**
@@ -256,6 +282,10 @@ public class DbfHandler extends OMComponent {
     public OMGraphic evaluate(OMGraphic omg, OMGraphicList labelList,
                               Projection proj) {
         Integer index = (Integer) omg.getAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE);
+
+        if (index == null) {
+            return omg;
+        }
         // Off by one, the index in the shp file starts at 1,
         // the dbf starts at 0
         return evaluate(index.intValue() - 1, omg, labelList, proj);
@@ -277,24 +307,29 @@ public class DbfHandler extends OMComponent {
     public OMGraphic evaluate(int index, OMGraphic omg,
                               OMGraphicList labelList, Projection proj) {
 
-        if (rules == null || rules.size() == 0) {
+        List<Rule> rules = getRules();
+        if (rules.size() == 0) {
             return omg;
         }
 
         try {
             List record = dbf.getRecordData(index);
-            for (Iterator it = rules.iterator(); it.hasNext();) {
+            for (Iterator<Rule> it = getRuleIterator(); it.hasNext();) {
                 Rule rule = (Rule) it.next();
 
                 Object recVal = record.get(rule.keyIndex);
                 if (rule.evaluate(recVal)) {
 
-                    float scale = proj.getScale();
+                    float scale = 0f;
+
+                    if (proj != null) {
+                        scale = proj.getScale();
 
                     if (scale < rule.displayMinScale
                             || scale > rule.displayMaxScale) {
                         // We met the rule, it's telling us not to display.
                         return null;
+                    }
                     }
 
                     if (rule.infolineIndicies != null) {
@@ -521,7 +556,7 @@ public class DbfHandler extends OMComponent {
             int[] indicies = null;
             String actionLabel = props.getProperty(actionProperty);
             if (actionLabel != null) {
-                Vector columnNames = PropUtils.parseSpacedMarkers(actionLabel);
+                Vector<String> columnNames = PropUtils.parseSpacedMarkers(actionLabel);
                 int numCols = columnNames.size();
                 indicies = new int[numCols];
 
