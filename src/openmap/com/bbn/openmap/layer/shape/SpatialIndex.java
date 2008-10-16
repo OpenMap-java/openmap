@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndex.java,v $
 // $RCSfile: SpatialIndex.java,v $
-// $Revision: 1.17 $
-// $Date: 2008/10/16 03:26:50 $
+// $Revision: 1.18 $
+// $Date: 2008/10/16 18:03:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -138,7 +138,7 @@ import com.bbn.openmap.util.Debug;
  * </UL>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.17 $ $Date: 2008/10/16 03:26:50 $
+ * @version $Revision: 1.18 $ $Date: 2008/10/16 18:03:03 $
  * @see ShapeIndex
  */
 public class SpatialIndex extends ShapeUtils {
@@ -969,21 +969,6 @@ public class SpatialIndex extends ShapeUtils {
                 if (Debug.debugging("shape")) {
                     Debug.output("Trying to locate spatial index file "
                             + spatialIndexFileName);
-                }
-
-                if (!BinaryFile.exists(spatialIndexFileName)) {
-                    // OK, the spatial index doesn't exist, but if the
-                    // shape file is local, we have a shot at creating
-                    // it.
-                    String newShapeFileName = locateFile(shapeFileName);
-
-                    if (newShapeFileName != null) {
-                        // It's Local!!
-                        Debug.output("Creating spatial index file: "
-                                + spatialIndexFileName);
-
-                        // SpatialIndex.FileIndex.create(newShapeFileName);
-                    }
                 }
 
                 try {
