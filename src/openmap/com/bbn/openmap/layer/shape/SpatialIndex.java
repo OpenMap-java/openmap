@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndex.java,v $
 // $RCSfile: SpatialIndex.java,v $
-// $Revision: 1.16 $
-// $Date: 2008/10/10 00:57:22 $
+// $Revision: 1.17 $
+// $Date: 2008/10/16 03:26:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -138,7 +138,7 @@ import com.bbn.openmap.util.Debug;
  * </UL>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.16 $ $Date: 2008/10/10 00:57:22 $
+ * @version $Revision: 1.17 $ $Date: 2008/10/16 03:26:50 $
  * @see ShapeIndex
  */
 public class SpatialIndex extends ShapeUtils {
@@ -332,7 +332,7 @@ public class SpatialIndex extends ShapeUtils {
 
         byte ixRecord[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
         int recNum = 0;
-        Vector v = new Vector();
+        Vector<ESRIRecord> v = new Vector<ESRIRecord>();
         int sRecordSize = DEFAULT_SHAPE_RECORD_SIZE;
         byte sRecord[] = new byte[sRecordSize];
 
@@ -523,7 +523,7 @@ public class SpatialIndex extends ShapeUtils {
         OMGraphicList labels = new OMGraphicList();
         list.add(labels);
 
-        for (Iterator it = entryIterator(dataProj); it.hasNext();) {
+        for (Iterator<?> it = entryIterator(dataProj); it.hasNext();) {
             Entry entry = (Entry) it.next();
 
             if (entry.intersects(xmin, ymin, xmax, ymax)) {

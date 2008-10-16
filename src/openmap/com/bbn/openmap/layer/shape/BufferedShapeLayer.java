@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/BufferedShapeLayer.java,v $
 // $RCSfile: BufferedShapeLayer.java,v $
-// $Revision: 1.10 $
-// $Date: 2008/07/20 05:46:31 $
+// $Revision: 1.11 $
+// $Date: 2008/10/16 03:26:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -139,15 +139,31 @@ public class BufferedShapeLayer extends ShapeLayer {
                                             OMGraphicList retList,
                                             Projection proj) {
         // There should be the same number of objects in both iterators.
-        Iterator entryIt = spatialIndex.entries.iterator();
-        Iterator omgIt = bufferedList.iterator();
+        Iterator<?> entryIt = spatialIndex.entries.iterator();
+        Iterator<?> omgIt = bufferedList.iterator();
+        
+        OMGraphicList labels = null;
+        if (spatialIndex.getDbf() != null) {
+            labels = new OMGraphicList();
+            retList.add(labels);
+        }
+        
         while (entryIt.hasNext() && omgIt.hasNext()) {
             Entry entry = (Entry) entryIt.next();
             OMGraphic omg = (OMGraphic) omgIt.next();
             if (entry.intersects(xmin, ymin, xmax, ymax)) {
+                // We want to set attributes before the evaluate method is
+                // called, since there might be special attributes set on the
+                // omg based on dbf contents.
                 drawingAttributes.setTo(omg);
-                omg.generate(proj);
-                retList.add(omg);
+                omg = spatialIndex.evaluate(omg, labels, proj);
+
+                // omg can be null from the evaluate method, if the omg doesn't
+                // pass proj and rule tests.
+                if (omg != null) {
+                    omg.generate(proj);
+                    retList.add(omg);
+                }
             }
         }
     }

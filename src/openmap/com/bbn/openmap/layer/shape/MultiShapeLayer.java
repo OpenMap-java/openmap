@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/MultiShapeLayer.java,v $
 // $RCSfile: MultiShapeLayer.java,v $
-// $Revision: 1.16 $
-// $Date: 2008/07/20 05:46:31 $
+// $Revision: 1.17 $
+// $Date: 2008/10/16 03:26:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -78,24 +78,24 @@ import com.bbn.openmap.util.PropUtils;
  *   
  * </pre></code>
  * 
- * @version $Revision: 1.16 $ $Date: 2008/07/20 05:46:31 $
+ * @version $Revision: 1.17 $ $Date: 2008/10/16 03:26:50 $
  * @see SpatialIndex
  */
 public class MultiShapeLayer extends ShapeLayer {
 
     public final static String ShapeFileListProperty = "shapeFileList";
-    protected Collection spatialIndexes;
+    protected Collection<SpatialIndexHandler> spatialIndexes;
 
     /**
      * Initializes an empty shape layer.
      */
     public MultiShapeLayer() {}
 
-    public void setSpatialIndexes(Collection siv) {
+    public void setSpatialIndexes(Collection<SpatialIndexHandler> siv) {
         spatialIndexes = siv;
     }
 
-    public Collection getSpatialIndexes() {
+    public Collection<SpatialIndexHandler> getSpatialIndexes() {
         return spatialIndexes;
     }
 
@@ -137,13 +137,13 @@ public class MultiShapeLayer extends ShapeLayer {
 
         // Divide up the names ...
         StringTokenizer tokens = new StringTokenizer(listValue, " ");
-        Collection shapeFiles = new Vector();
+        Collection<String> shapeFiles = new Vector<String>();
         while (tokens.hasMoreTokens()) {
             shapeFiles.add(tokens.nextToken());
         }
 
-        spatialIndexes = new Vector(shapeFiles.size());
-        Iterator list = shapeFiles.iterator();
+        spatialIndexes = new Vector<SpatialIndexHandler>(shapeFiles.size());
+        Iterator<String> list = shapeFiles.iterator();
 
         while (list.hasNext()) {
             String listName = (String) list.next();
@@ -167,10 +167,10 @@ public class MultiShapeLayer extends ShapeLayer {
         props.remove(prefix + shapeFileProperty);
         props.remove(prefix + pointImageURLProperty);
 
-        Iterator sis = spatialIndexes.iterator();
+        Iterator<SpatialIndexHandler> sis = spatialIndexes.iterator();
         StringBuffer list = new StringBuffer();
         while (sis.hasNext()) {
-            SpatialIndexHandler sih = (SpatialIndexHandler) sis.next();
+            SpatialIndexHandler sih = sis.next();
             sih.getProperties(props);
             String pp = sih.getPropertyPrefix();
             // Can't be null, if they are part of this layer...
@@ -204,9 +204,9 @@ public class MultiShapeLayer extends ShapeLayer {
         props.remove(shapeFileProperty + ScopedEditorProperty);
         props.remove(pointImageURLProperty + ScopedEditorProperty);
 
-        Iterator sis = spatialIndexes.iterator();
+        Iterator<SpatialIndexHandler> sis = spatialIndexes.iterator();
         while (sis.hasNext()) {
-            ((SpatialIndexHandler) sis.next()).getPropertyInfo(props);
+            sis.next().getPropertyInfo(props);
         }
 
         props.put(ShapeFileListProperty,
@@ -251,8 +251,6 @@ public class MultiShapeLayer extends ShapeLayer {
 
         OMGraphicList masterList = new OMGraphicList();
         OMGraphicList list = null;
-        SpatialIndexHandler sih;
-        Iterator sii;
 
         // check for dateline anomaly on the screen. we check for
         // ulLon >= lrLon, but we need to be careful of the check for
@@ -265,9 +263,9 @@ public class MultiShapeLayer extends ShapeLayer {
             double ymin = Math.min(ulLat, lrLat);
             double ymax = Math.max(ulLat, lrLat);
 
-            sii = spatialIndexes.iterator();
+            Iterator<SpatialIndexHandler> sii = spatialIndexes.iterator();
             while (sii.hasNext()) {
-                sih = (SpatialIndexHandler) sii.next();
+                SpatialIndexHandler sih = (SpatialIndexHandler) sii.next();
                 if (!sih.enabled)
                     continue;
 
@@ -299,9 +297,9 @@ public class MultiShapeLayer extends ShapeLayer {
             double ymin = (double) Math.min(ulLat, lrLat);
             double ymax = (double) Math.max(ulLat, lrLat);
 
-            sii = spatialIndexes.iterator();
+            Iterator<SpatialIndexHandler> sii = spatialIndexes.iterator();
             while (sii.hasNext()) {
-                sih = (SpatialIndexHandler) sii.next();
+                SpatialIndexHandler sih = (SpatialIndexHandler) sii.next();
 
                 if (!sih.enabled)
                     continue;
@@ -342,9 +340,9 @@ public class MultiShapeLayer extends ShapeLayer {
             box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
             box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-            Iterator sii = spatialIndexes.iterator();
+            Iterator<SpatialIndexHandler> sii = spatialIndexes.iterator();
             while (sii.hasNext()) {
-                SpatialIndexHandler sih = (SpatialIndexHandler) sii.next();
+                SpatialIndexHandler sih = sii.next();
                 JPanel stuff = (JPanel) sih.getGUI();
                 if (stuff != null) {
                     tabs.addTab(sih.getPrettyName(), stuff);
@@ -370,8 +368,8 @@ public class MultiShapeLayer extends ShapeLayer {
 
         ESRIBoundingBox bounds = new ESRIBoundingBox();
 
-        for (Iterator sii = spatialIndexes.iterator(); sii.hasNext();) {
-            SpatialIndexHandler sih = (SpatialIndexHandler) sii.next();
+        for (Iterator<SpatialIndexHandler> sii = spatialIndexes.iterator(); sii.hasNext();) {
+            SpatialIndexHandler sih = sii.next();
             if (sih != null && sih.spatialIndex != null) {
                 ESRIBoundingBox boundingBox = sih.spatialIndex.getBounds();
                 if (bounds != null) {

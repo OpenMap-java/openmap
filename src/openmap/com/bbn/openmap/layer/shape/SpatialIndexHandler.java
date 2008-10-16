@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndexHandler.java,v $
 // $RCSfile: SpatialIndexHandler.java,v $
-// $Revision: 1.12 $
-// $Date: 2008/09/28 19:06:07 $
+// $Revision: 1.13 $
+// $Date: 2008/10/16 03:26:50 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -167,7 +167,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
         } else {
             dataPathPrefix = "";
         }
-        
+
         shapeFileName = dataPathPrefix
                 + props.getProperty(realPrefix + ShapeLayer.shapeFileProperty);
 
@@ -474,8 +474,8 @@ public class SpatialIndexHandler implements PropertyConsumer {
                                             OMGraphicList retList,
                                             Projection proj) {
         // There should be the same number of objects in both iterators.
-        Iterator entryIt = spatialIndex.entries.iterator();
-        Iterator omgIt = bufferedList.iterator();
+        Iterator<?> entryIt = spatialIndex.entries.iterator();
+        Iterator<?> omgIt = bufferedList.iterator();
 
         OMGraphicList labels = null;
         if (spatialIndex.getDbf() != null) {
@@ -486,11 +486,19 @@ public class SpatialIndexHandler implements PropertyConsumer {
         while (entryIt.hasNext() && omgIt.hasNext()) {
             Entry entry = (Entry) entryIt.next();
             OMGraphic omg = (OMGraphic) omgIt.next();
-            omg.generate(proj);
             if (entry.intersects(xmin, ymin, xmax, ymax)) {
-                omg = spatialIndex.evaluate(omg, labels, proj);
+                // We want to set attributes before the evaluate method is
+                // called, since there might be special attributes set on the
+                // omg based on dbf contents.
                 drawingAttributes.setTo(omg);
-                retList.add(omg);
+                omg = spatialIndex.evaluate(omg, labels, proj);
+
+                // omg can be null from the evaluate method, if the omg doesn't
+                // pass proj and rule tests.
+                if (omg != null) {
+                    omg.generate(proj);
+                    retList.add(omg);
+                }
             }
         }
     }
