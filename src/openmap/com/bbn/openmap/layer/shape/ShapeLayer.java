@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ShapeLayer.java,v $
 // $RCSfile: ShapeLayer.java,v $
-// $Revision: 1.28 $
-// $Date: 2008/10/10 00:57:22 $
+// $Revision: 1.29 $
+// $Date: 2008/10/16 17:58:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -87,7 +87,7 @@ import com.bbn.openmap.util.PropUtils;
  * </pre></code>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.28 $ $Date: 2008/10/10 00:57:22 $
+ * @version $Revision: 1.29 $ $Date: 2008/10/16 17:58:15 $
  * @see SpatialIndex
  */
 public class ShapeLayer extends OMGraphicHandlerLayer implements
@@ -190,6 +190,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
      */
     protected void setFileProperties(String realPrefix, Properties props) {
         shapeFileName = props.getProperty(realPrefix + shapeFileProperty);
+        shapeFileName = prependDataPathPrefix(shapeFileName);
 
         if (shapeFileName != null && !shapeFileName.equals("")) {
 
