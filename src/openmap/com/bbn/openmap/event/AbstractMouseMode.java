@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/AbstractMouseMode.java,v $
 // $RCSfile: AbstractMouseMode.java,v $
-// $Revision: 1.14 $
-// $Date: 2008/10/10 00:57:21 $
+// $Revision: 1.15 $
+// $Date: 2008/10/16 19:33:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -167,7 +167,7 @@ public class AbstractMouseMode extends OMComponent implements MapMouseMode,
      * 
      * @return Class that has icon image file next to it in classpath.
      */
-    protected Class getClassToUseForIconRetrieval() {
+    protected Class<?> getClassToUseForIconRetrieval() {
         return getClass();
     }
 
@@ -622,7 +622,7 @@ public class AbstractMouseMode extends OMComponent implements MapMouseMode,
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
 
-        Class thisClass = getClass();
+        Class<?> thisClass = getClass();
         String internString = i18n.get(thisClass,
                 PrettyNameProperty,
                 I18n.TOOLTIP,

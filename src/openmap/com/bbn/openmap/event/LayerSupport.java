@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/LayerSupport.java,v $
 // $RCSfile: LayerSupport.java,v $
-// $Revision: 1.8 $
-// $Date: 2006/04/07 17:27:18 $
+// $Revision: 1.9 $
+// $Date: 2008/10/16 19:33:09 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -77,7 +77,7 @@ public class LayerSupport extends ListenerSupport {
     public void fireLayer(int type, Layer[] layers) {
         Debug.message("layersupport", "LayerSupport | fireLayer");
 
-        Iterator it = iterator();
+        Iterator<?> it = iterator();
         if (Debug.debugging("layersupport")) {
             Debug.output("LayerSupport calling setLayers on " + size()
                     + " objects");
@@ -98,7 +98,7 @@ public class LayerSupport extends ListenerSupport {
     /**
      * Event information stack.
      */
-    protected Vector events = new Vector();
+    protected Vector<Object> events = new Vector<Object>();
 
     /**
      * Pushed the information onto a Vector stack to get executed by a

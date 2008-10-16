@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/MapMouseSupport.java,v $
 // $RCSfile: MapMouseSupport.java,v $
-// $Revision: 1.8 $
-// $Date: 2004/10/14 18:05:45 $
+// $Revision: 1.9 $
+// $Date: 2008/10/16 19:33:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -218,7 +218,7 @@ public class MapMouseSupport extends ListenerSupport {
                 Debug.output("MMS.fireMapMousePressed(): proxy enabled, but side stepping to send event to primary listeners");
             }
 
-            Iterator it = iterator();
+            Iterator<?> it = iterator();
             while (it.hasNext() && !consumed) {
                 MapMouseListener target = (MapMouseListener) it.next();
                 consumed = target.mousePressed(evt) && consumeEvents;
@@ -273,7 +273,7 @@ public class MapMouseSupport extends ListenerSupport {
         if (proxy == null || evt.isShiftDown()
                 || (proxyDistributionMask & PROXY_DISTRIB_MOUSE_RELEASED) > 0) {
 
-            Iterator it = iterator();
+            Iterator<?> it = iterator();
             while (it.hasNext() && !consumed) {
                 consumed = ((MapMouseListener) it.next()).mouseReleased(evt)
                         && consumeEvents;
@@ -319,7 +319,7 @@ public class MapMouseSupport extends ListenerSupport {
         if (proxy == null || evt.isShiftDown()
                 || (proxyDistributionMask & PROXY_DISTRIB_MOUSE_CLICKED) > 0) {
 
-            Iterator it = iterator();
+            Iterator<?> it = iterator();
 
             while (it.hasNext() && !consumed) {
                 MapMouseListener target = (MapMouseListener) it.next();
@@ -360,7 +360,7 @@ public class MapMouseSupport extends ListenerSupport {
 
             evt = new MapMouseEvent(getParentMode(), evt);
 
-            Iterator it = iterator();
+            Iterator<?> it = iterator();
 
             while (it.hasNext()) {
                 ((MapMouseListener) it.next()).mouseEntered(evt);
@@ -394,7 +394,7 @@ public class MapMouseSupport extends ListenerSupport {
 
             evt = new MapMouseEvent(getParentMode(), evt);
 
-            Iterator it = iterator();
+            Iterator<?> it = iterator();
 
             while (it.hasNext()) {
                 ((MapMouseListener) it.next()).mouseExited(evt);
@@ -429,7 +429,7 @@ public class MapMouseSupport extends ListenerSupport {
 
             evt = new MapMouseEvent(getParentMode(), evt);
 
-            Iterator it = iterator();
+            Iterator<?> it = iterator();
 
             while (it.hasNext() && !consumed) {
                 consumed = ((MapMouseListener) it.next()).mouseDragged(evt)
@@ -469,7 +469,7 @@ public class MapMouseSupport extends ListenerSupport {
 
             evt = new MapMouseEvent(getParentMode(), evt);
 
-            Iterator it = iterator();
+            Iterator<?> it = iterator();
 
             while (it.hasNext()) {
                 MapMouseListener target = (MapMouseListener) it.next();

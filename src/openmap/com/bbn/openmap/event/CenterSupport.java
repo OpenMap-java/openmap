@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/CenterSupport.java,v $
 // $RCSfile: CenterSupport.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:05:44 $
+// $Revision: 1.6 $
+// $Date: 2008/10/16 19:33:08 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,7 +69,7 @@ public class CenterSupport extends ListenerSupport {
      * @see CenterEvent
      */
     public synchronized void fireCenter(float latitude, float longitude) {
-        Iterator it = iterator();
+        Iterator<?> it = iterator();
         if (size() == 0)
             return;
 

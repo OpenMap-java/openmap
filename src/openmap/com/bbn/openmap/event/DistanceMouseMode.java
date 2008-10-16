@@ -30,7 +30,6 @@ import java.util.Properties;
 import java.util.Vector;
 
 import com.bbn.openmap.InformationDelegator;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.omGraphics.OMCircle;
@@ -41,6 +40,7 @@ import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Planet;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -273,6 +273,9 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param e mouse event.
      */
     public void mouseClicked(MouseEvent e) {
+        
+        mouseSupport.fireMapMouseClicked(e);
+        
         if (e.getSource() instanceof MapBean) {
             // if double (or more) mouse clicked
             if (e.getClickCount() >= 2) {
@@ -301,6 +304,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param e mouse event.
      */
     public void mousePressed(MouseEvent e) {
+        mouseSupport.fireMapMousePressed(e);
         e.getComponent().requestFocus();
 
         if (e.getSource() instanceof MapBean) {
@@ -332,6 +336,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param e mouse event.
      */
     public void mouseMoved(MouseEvent e) {
+        mouseSupport.fireMapMouseMoved(e);
         if (e.getSource() instanceof MapBean) {
             // only when the mouse has already been pressed
             if (mousePressed) {
@@ -423,6 +428,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param e mouse event.
      */
     public void mouseEntered(MouseEvent e) {
+        mouseSupport.fireMapMouseEntered(e);
         // get the map bean
         if (e.getSource() instanceof MapBean)
             theMap = (MapBean) (e.getSource());
@@ -437,6 +443,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param e mouse event.
      */
     public void mouseExited(MouseEvent e) {
+        mouseSupport.fireMapMouseExited(e);
         if (e.getSource() instanceof MapBean) {
             // erase the old line first
             paintRubberband(rPoint1, rPoint2);
