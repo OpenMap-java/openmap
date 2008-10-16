@@ -1,5 +1,5 @@
 /*
- * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/WmsRequestHandler.java,v 1.4 2008/09/19 14:20:14 dietrick Exp $
+ * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/WmsRequestHandler.java,v 1.5 2008/10/16 03:30:35 dietrick Exp $
  *
  * Copyright 2001-2005 OBR Centrum Techniki Morskiej, All rights reserved.
  *
@@ -158,16 +158,33 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         }
     }
     
-    protected Layer getLayerByName(String layerPropertyPrefix) {
-        for (int i = 0; i < layers.length; i++) {
-            Layer layer = layers[i];
-            if (layerPropertyPrefix.equals(layer.getPropertyPrefix())) {
-                return layer;
-            }
-        }
-        return null;
+    protected IWmsLayer getLayerByName(String wmsName) {
+        return (IWmsLayer) wmsLayerByName.get(wmsName);
     }
 
+    /**
+     * Return the top OpenMap {@link Layer} for the given wms layer name. 
+     * 
+     * @param name
+     * @return
+     */
+    protected Layer getTopLayerByName(String wmsName) {
+        IWmsLayer layer = getLayerByName(wmsName);
+        if (layer == null) {
+            return null;
+        }
+        if (layer instanceof IWmsNestedLayer) {
+            layer = ((IWmsNestedLayer) layer).getTopLayer();
+        }
+        if (layer instanceof DefaultLayerAdapter) {
+            return ((DefaultLayerAdapter) layer).layer;
+        }
+        if (layer instanceof Layer) {
+            return (Layer) layer;
+        }
+        throw new IllegalStateException("Top layer must be a OpenMap Layer, not " + layer.getClass());
+    }
+    
     /**
      * @param request
      * @param out
@@ -359,7 +376,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
             String queryLayerName = (String)it.next();
             
             IWmsLayer wmslayer = (IWmsLayer) wmsLayerByName.get(queryLayerName);
-            Layer layer = getLayerByName(queryLayerName);
+            Layer layer = getTopLayerByName(queryLayerName);
             
             layer.setProjection(new ProjectionEvent(this, projection));
             
