@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: DbfHandler.java,v $
-//$Revision: 1.6 $
-//$Date: 2008/10/13 15:40:11 $
+//$Revision: 1.7 $
+//$Date: 2008/11/11 00:35:52 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -281,14 +281,16 @@ public class DbfHandler extends OMComponent {
      */
     public OMGraphic evaluate(OMGraphic omg, OMGraphicList labelList,
                               Projection proj) {
-        Integer index = (Integer) omg.getAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE);
+        Object obj = omg.getAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE);
 
-        if (index == null) {
-            return omg;
+        if (obj instanceof Integer) {
+            Integer index = (Integer) obj;
+            // Off by one, the index in the shp file starts at 1,
+            // the dbf starts at 0
+            return evaluate(index.intValue() - 1, omg, labelList, proj);
         }
-        // Off by one, the index in the shp file starts at 1,
-        // the dbf starts at 0
-        return evaluate(index.intValue() - 1, omg, labelList, proj);
+
+        return omg;
     }
 
     /**
@@ -325,11 +327,11 @@ public class DbfHandler extends OMComponent {
                     if (proj != null) {
                         scale = proj.getScale();
 
-                    if (scale < rule.displayMinScale
-                            || scale > rule.displayMaxScale) {
-                        // We met the rule, it's telling us not to display.
-                        return null;
-                    }
+                        if (scale < rule.displayMinScale
+                                || scale > rule.displayMaxScale) {
+                            // We met the rule, it's telling us not to display.
+                            return null;
+                        }
                     }
 
                     if (rule.infolineIndicies != null) {
