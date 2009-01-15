@@ -1,12 +1,11 @@
 /*
- * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/WMSException.java,v 1.2 2008/01/29 22:04:13 dietrick Exp $
+ * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/WMSException.java,v 1.3 2009/01/15 19:38:33 dietrick Exp $
  *
  * Copyright 2001-2005 OBR Centrum Techniki Morskiej, All rights reserved.
  *
  */
 package com.bbn.openmap.image.wms;
 
-import java.io.IOException;
 import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -21,9 +20,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.bbn.openmap.util.Debug;
-//import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
-//import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-//import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 /**
  * Generates a WMS Exception in the form of XML with the specified code and

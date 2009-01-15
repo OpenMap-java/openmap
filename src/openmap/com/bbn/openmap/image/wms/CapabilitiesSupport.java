@@ -1,5 +1,5 @@
 /*
- * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/CapabilitiesSupport.java,v 1.4 2008/09/19 14:20:14 dietrick Exp $
+ * $Header: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/wms/CapabilitiesSupport.java,v 1.5 2009/01/15 19:38:33 dietrick Exp $
  *
  * Copyright 2001-2005 OBR Centrum Techniki Morskiej, All rights reserved.
  *
@@ -34,6 +34,7 @@ import org.w3c.dom.Node;
 import com.bbn.openmap.image.ImageServer;
 import com.bbn.openmap.image.WMTConstants;
 import com.bbn.openmap.layer.util.http.HttpConnection;
+import com.bbn.openmap.proj.coords.BoundingBox;
 import com.bbn.openmap.proj.coords.CoordinateReferenceSystem;
 
 /**
@@ -72,7 +73,7 @@ public class CapabilitiesSupport {
 
     private String layersTitle;
 
-    private Collection projections = CoordinateReferenceSystem.getCodes();
+    private Collection crsCodes = CoordinateReferenceSystem.getCodes();
 
     /**
      * Creates a new instance of CapabilitiesSupport
@@ -184,10 +185,17 @@ public class CapabilitiesSupport {
     private Element createLayersElement(Document doc) {
         Element layers = doc.createElement("Layer");
         layers.appendChild(textnode(doc, "Title", layersTitle));
-        for (Iterator it = projections.iterator(); it.hasNext();) {
+        for (Iterator it = crsCodes.iterator(); it.hasNext();) {
             layers.appendChild(textnode(doc, "SRS", (String) it.next()));
         }
-        setBoundingBox(doc, layers, "-180", "-90", "180", "90");
+        
+        // append bounding boxes
+        appendLatLonBoundingBox(doc, layers);
+        for (Iterator it = crsCodes.iterator(); it.hasNext();) {
+            appendSRSBoundingBox(doc, layers, (String) it.next());
+        }
+        
+        // append layers
         for (Iterator it = wmslayers.iterator(); it.hasNext();) {
             IWmsLayer wmsLayer = (IWmsLayer) it.next();
             createLayerElement(doc, layers, wmsLayer);
@@ -300,15 +308,30 @@ public class CapabilitiesSupport {
         this.layersTitle = title;
     }
 
-    private void setBoundingBox(Document doc, Element layers, String minx, String miny, String maxx, String maxy) {
+    private void appendLatLonBoundingBox(Document doc, Element layers) {
         org.w3c.dom.Element e1 = (org.w3c.dom.Element) node(doc, "LatLonBoundingBox");
-        e1.setAttribute("minx", minx);
-        e1.setAttribute("miny", miny);
-        e1.setAttribute("maxx", maxx);
-        e1.setAttribute("maxy", maxy);
+        e1.setAttribute("minx", "-180");
+        e1.setAttribute("miny", "-90");
+        e1.setAttribute("maxx", "180");
+        e1.setAttribute("maxy", "90");
         layers.appendChild(e1);
     }
 
+    private void appendSRSBoundingBox(Document doc, Element layers, String crsCode) {
+        CoordinateReferenceSystem crs = CoordinateReferenceSystem.getForCode(crsCode);
+        BoundingBox bbox = crs.getBoundingBox();
+        if (bbox == null) {
+            return;
+        }
+        org.w3c.dom.Element e1 = (org.w3c.dom.Element) node(doc, "BoundingBox");
+        e1.setAttribute("SRS", crs.getCode());
+        e1.setAttribute("minx", Double.toString(bbox.getMinX()));
+        e1.setAttribute("miny", Double.toString(bbox.getMinY()));
+        e1.setAttribute("maxx", Double.toString(bbox.getMaxX()));
+        e1.setAttribute("maxy", Double.toString(bbox.getMaxY()));
+        layers.appendChild(e1);
+    }
+    
     /**
      * Generate String out of the XML document object
      * 

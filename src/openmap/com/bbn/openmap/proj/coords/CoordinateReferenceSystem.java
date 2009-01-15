@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import com.bbn.openmap.proj.Ellipsoid;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.LLXYLoader;
+import com.bbn.openmap.proj.LambertConformalLoader;
 import com.bbn.openmap.proj.MercatorLoader;
 import com.bbn.openmap.proj.Planet;
 import com.bbn.openmap.proj.Proj;
@@ -24,6 +25,8 @@ public class CoordinateReferenceSystem {
 	private GeoCoordTransformation coordTransform;
 
 	private ProjectionLoader projLoader;
+	
+	private BoundingBox boundingBox;
 
 	private String projLoaderClassName;
 
@@ -44,7 +47,7 @@ public class CoordinateReferenceSystem {
 		addCrs(new CoordinateReferenceSystem("EPSG:4230", new DatumShiftGCT(
 				Ellipsoid.INTERNATIONAL), LLXYLoader.class,
 				Ellipsoid.INTERNATIONAL));
-
+		
 		// Spherical Mercator for overlaying with Google Maps
 		// http://trac.openlayers.org/wiki/SphericalMercator
 		addCrs(new CoordinateReferenceSystem("EPSG:900913",
@@ -55,7 +58,29 @@ public class CoordinateReferenceSystem {
 
 		addUtms();
 
+		// Estonian Coordinate System of 1997 - EPSG:3301
+		// http://spatialreference.org/ref/epsg/3301/
+		// bounding box is needed by uDig. bounding box values from a national WMS from Estonian
+		addLcc("EPSG:3301", Ellipsoid.GRS_1980, 59.33333333333334, 58d, 57.51755393055556d, 24d,
+                500000, 6375000, new BoundingBox(300000, 6.3e+06, 800000, 6.7e+06));
 	}
+	
+	private static void addLcc(String code, Ellipsoid ellps, double sp1, double sp2, double refLat,
+            double centMeri, double falseEast, double falseNorth, BoundingBox bbox) {
+	    
+        Properties props = new Properties();
+        props.put(LambertConformalLoader.StandardParallelOneProperty, Double.toString(sp1));
+        props.put(LambertConformalLoader.StandardParallelTwoProperty, Double.toString(sp2));
+        props.put(LambertConformalLoader.ReferenceLatitudeProperty, Double.toString(refLat));
+        props.put(LambertConformalLoader.CentralMeridianProperty, Double.toString(centMeri));
+        props.put(LambertConformalLoader.FalseEastingProperty, Double.toString(falseEast));
+        props.put(LambertConformalLoader.FalseNorthingProperty, Double.toString(falseNorth));
+        props.put(ProjectionFactory.DATUM, ellps);
+        props.put(ProjectionFactory.CENTER, new LatLonPoint.Double(refLat, centMeri));
+
+        addCrs(new CoordinateReferenceSystem(code, new LambertConformalGCT(props),
+                LambertConformalLoader.class, ellps, props, bbox));
+    }
 	
 	private static void addCrs(CoordinateReferenceSystem crs) {
 		crss.put(crs.getCode(), crs);
@@ -94,8 +119,8 @@ public class CoordinateReferenceSystem {
 
 		GeoCoordTransformation gct = utmgct;
 
-		// add datum shift for non-wgs84
-		if (ellps != Ellipsoid.WGS_84) {
+		// add datum shift for non-wgs84/grs80
+		if (!((ellps == Ellipsoid.WGS_84)||(ellps == Ellipsoid.GRS_1980))) {
 			DatumShiftGCT egct = new DatumShiftGCT(ellps);
 			gct = new MultiGCT(new GeoCoordTransformation[] { egct, utmgct });
 		}
@@ -120,11 +145,18 @@ public class CoordinateReferenceSystem {
 	public CoordinateReferenceSystem(String code,
 			GeoCoordTransformation coordConverter, Class projLoaderClass,
 			Ellipsoid ellipsoid, Properties projectionParameters) {
-		this(code, coordConverter, projLoaderClass, ellipsoid);
-		
-		defaultProjectionParameters.putAll(projectionParameters);
+		this(code, coordConverter, projLoaderClass, ellipsoid, projectionParameters, null);
 	}
 
+    public CoordinateReferenceSystem(String code,
+            GeoCoordTransformation coordConverter, Class projLoaderClass,
+            Ellipsoid ellipsoid, Properties projectionParameters, BoundingBox boundingBox) {
+        this(code, coordConverter, projLoaderClass, ellipsoid);
+        
+        defaultProjectionParameters.putAll(projectionParameters);
+        this.boundingBox = boundingBox;
+    }
+    
 	public static CoordinateReferenceSystem getForCode(String code) {
 		CoordinateReferenceSystem crs = (CoordinateReferenceSystem) crss
 				.get(code);
@@ -175,6 +207,14 @@ public class CoordinateReferenceSystem {
 	public String getCode() {
 		return code;
 	}
+	
+	/**
+     * Return the bounding box of this coordinate system or null if the bounding
+     * box is not defined.
+     */
+    public BoundingBox getBoundingBox() {
+        return boundingBox;
+    }
 
 	public void prepareProjection(GeoProj proj) {
 		// TODO: do we need this??
@@ -209,5 +249,5 @@ public class CoordinateReferenceSystem {
 		}
 		return false;
 	}
-
+	
 }

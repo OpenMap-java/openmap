@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Ellipsoid.java,v $
 // $RCSfile: Ellipsoid.java,v $
-// $Revision: 1.6 $
-// $Date: 2008/09/19 14:20:14 $
+// $Revision: 1.7 $
+// $Date: 2009/01/15 19:38:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,13 +55,13 @@ public class Ellipsoid {
     /** "GRS 1967" */
     public final static Ellipsoid GRS_1967 = new Ellipsoid("GRS 1967", 6378160.0d, 0.006694605d);
     /** "GRS 1980" */
-    public final static Ellipsoid GRS_1980 = new Ellipsoid("GRS 1980", 6378137.0d, 0.00669438d);
+    public final static Ellipsoid GRS_1980 = new Ellipsoid("GRS 1980", 6378137.0d, 0.081819191d, 0.00669438d, 6356752.3141d);
     /** "Helmert 1906" */
     public final static Ellipsoid HELMERT_1906 = new Ellipsoid("Helmert 1906", 6378200.0d, 0.006693422d);
     /** "Hough" */
     public final static Ellipsoid HOUGH = new Ellipsoid("Hough", 6378270.0d, 0.00672267d);
     /** "International" */
-    public final static Ellipsoid INTERNATIONAL = new Ellipsoid("International", 6378388.0d, 0.00672267d, 6356911.946d);
+    public final static Ellipsoid INTERNATIONAL = new Ellipsoid("International", 6378388.0d, 0.08199189, 0.00672267d, 6356911.946d);
     /** "Krassovsky" */
     public final static Ellipsoid KRASSOVSKY = new Ellipsoid("Krassovsky", 6378245.0d, 0.006693422d);
     /** "Modified Airy" */
@@ -79,7 +79,7 @@ public class Ellipsoid {
     /** "WGS-72" */
     public final static Ellipsoid WGS_72 = new Ellipsoid("WGS 72", 6378135.0d, 0.006694318d);
     /** "WGS-84" */
-    public final static Ellipsoid WGS_84 = new Ellipsoid("WGS 84", 6378137.0d, 0.00669438d, 6356752.3142d);
+    public final static Ellipsoid WGS_84 = new Ellipsoid("WGS 84", 6378137.0d, 0.081819191d, 0.00669438d, 6356752.3142d);
 
     /**
      * The display name for this ellipsoid.
@@ -97,6 +97,11 @@ public class Ellipsoid {
     public final double polarRadius;
 
     /**
+     * The ellipsoid's eccentricity.
+     */
+    public final double ecc;
+    
+    /**
      * The square of this ellipsoid's eccentricity.
      */
     public final double eccsq;
@@ -108,7 +113,7 @@ public class Ellipsoid {
      * @param eccsq The square of the eccentricity for this ellipsoid.
      */
     public Ellipsoid(String name, double radius, double eccsq) {
-        this(name, radius, eccsq, Double.NaN);
+        this(name, radius, eccsq, Double.NaN, Double.NaN);
     }
 
     /**
@@ -116,12 +121,14 @@ public class Ellipsoid {
      * 
      * @param name The name of the ellipsoid.
      * @param equitorialRadius The earth equitorial radius for this ellipsoid.
+     * @param ecc The eccentricity for this ellipsoid.
      * @param eccsq The square of the eccentricity for this ellipsoid.
      * @param polarRadius The earth polar radius for this ellipsoid.
      */
-    public Ellipsoid(String name, double equitorialRadius, double eccsq, double polarRadius) {
+    public Ellipsoid(String name, double equitorialRadius, double ecc, double eccsq, double polarRadius) {
         this.name = name;
         this.radius = equitorialRadius;
+        this.ecc = ecc;
         this.eccsq = eccsq;
         this.polarRadius = polarRadius;
     }
@@ -154,7 +161,7 @@ public class Ellipsoid {
     public static Ellipsoid getByName(String name) {
         Ellipsoid[] all = getAllEllipsoids();
         if (name != null && name.length() > 0) {
-            name = name.replace("_", " ");
+            name = name.replace('_', ' ');
 
             for (int i = 0; i < all.length; i++) {
                 if (name.equalsIgnoreCase(all[i].name)) {

@@ -14,21 +14,20 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LambertConformalLoader.java,v $
 // $RCSfile: LambertConformalLoader.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/12/09 21:09:00 $
+// $Revision: 1.5 $
+// $Date: 2009/01/15 19:38:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.proj;
 
-import java.awt.geom.Point2D;
-import java.util.Properties;
-
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.proj.coords.LatLonPoint;
-import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.util.PropUtils;
+import com.bbn.openmap.util.Debug;
+
+import java.util.Properties;
 
 /**
  * ProjectionLoader to add the LambertConformal projection to an
@@ -67,7 +66,7 @@ public class LambertConformalLoader extends BasicProjectionLoader implements
     public Projection create(Properties props) throws ProjectionException {
 
         try {
-            LatLonPoint llp = convertToLLP((Point2D) props.get(ProjectionFactory.CENTER));
+            LatLonPoint llp = (LatLonPoint) props.get(ProjectionFactory.CENTER);
             float scale = PropUtils.floatFromProperties(props,
                     ProjectionFactory.SCALE,
                     10000000);
@@ -95,8 +94,9 @@ public class LambertConformalLoader extends BasicProjectionLoader implements
             double fn = PropUtils.doubleFromProperties(props,
                     FalseNorthingProperty,
                     falseNorthing);
+            Ellipsoid ellps = (Ellipsoid) props.get(ProjectionFactory.DATUM);
 
-            return new LambertConformal(llp, scale, width, height, central_meridian, sp_one, sp_two, rl, fe, fn);
+            return new LambertConformal(llp, scale, width, height, central_meridian, sp_one, sp_two, rl, fe, fn, ellps);
 
         } catch (Exception e) {
             if (Debug.debugging("proj")) {
