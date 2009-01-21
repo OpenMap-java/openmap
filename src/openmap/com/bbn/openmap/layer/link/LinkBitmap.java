@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkBitmap.java,v $
 // $RCSfile: LinkBitmap.java,v $
-// $Revision: 1.6 $
-// $Date: 2007/02/26 17:12:44 $
+// $Revision: 1.7 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -140,8 +140,8 @@ public class LinkBitmap implements LinkGraphicConstants,
 
         switch (bitmap.getRenderType()) {
         case OMBitmap.RENDERTYPE_LATLON:
-            LinkBitmap.write(bitmap.getLat(),
-                    bitmap.getLon(),
+            LinkBitmap.write((float) bitmap.getLat(),
+                    (float) bitmap.getLon(),
                     bitmap.getWidth(),
                     bitmap.getHeight(),
                     bitmap.getBits(),
@@ -158,8 +158,8 @@ public class LinkBitmap implements LinkGraphicConstants,
                     link.dos);
             break;
         case OMBitmap.RENDERTYPE_OFFSET:
-            LinkBitmap.write(bitmap.getLat(),
-                    bitmap.getLon(),
+            LinkBitmap.write((float) bitmap.getLat(),
+                    (float) bitmap.getLon(),
                     bitmap.getX(),
                     bitmap.getY(),
                     bitmap.getBits(),

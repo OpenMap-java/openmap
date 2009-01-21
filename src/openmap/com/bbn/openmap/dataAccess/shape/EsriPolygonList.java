@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolygonList.java,v $
 // $RCSfile: EsriPolygonList.java,v $
-// $Revision: 1.11 $
-// $Date: 2007/01/30 18:39:35 $
+// $Revision: 1.12 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -124,7 +124,7 @@ public class EsriPolygonList extends EsriGraphicList {
 
     // converts rectangles into polygons
     public static OMPoly convert(OMRect omRect) {
-        float[] rectPoints = new float[10];
+        double[] rectPoints = new double[10];
 
         // get the northwest corner
         rectPoints[0] = (omRect.getNorthLat());
@@ -158,7 +158,7 @@ public class EsriPolygonList extends EsriGraphicList {
         // get the PathIterator that defines the outline of the circle
         PathIterator circle = shape.getPathIterator(null);
         Vector initialPoints = new Vector();
-        float[] segPoints = new float[2];
+        double[] segPoints = new double[2];
 
         while (!circle.isDone()) {
             // by passing segpoints the array is filled with each x\y
@@ -169,7 +169,7 @@ public class EsriPolygonList extends EsriGraphicList {
             circle.next();
         }
 
-        float[] circlePoints = new float[initialPoints.size()];
+        double[] circlePoints = new double[initialPoints.size()];
 
         if (proj == null) {
             return null;

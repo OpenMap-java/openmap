@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/mif/MIFLoader.java,v $
 // $RCSfile: MIFLoader.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/09 18:42:41 $
+// $Revision: 1.7 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -144,11 +144,11 @@ public class MIFLoader {
     }
 
     public OMGraphicList loadFile() throws IOException, MIFException {
-        float[] ptarray = null;
+        double[] ptarray = null;
 
         // Used by region to do the polygon calculation
-        float[] latpts = null;
-        float[] lonpts = null;
+        double[] latpts = null;
+        double[] lonpts = null;
 
         // Specifies the expected next action in the loop
         int action = PROCESS_HEADER;
@@ -238,7 +238,7 @@ public class MIFLoader {
                         ismultiple = true;
                     } else {
                         number = Integer.parseInt(tok);
-                        ptarray = new float[number + number];
+                        ptarray = new double[number + number];
                         count = 0;
                         action = PROCESS_PLINE;
                     }
@@ -345,7 +345,7 @@ public class MIFLoader {
                 }
                 number = Integer.parseInt(tok);
                 count = 0;
-                ptarray = new float[number + number];
+                ptarray = new double[number + number];
                 action = PROCESS_PLINE;
                 break SWITCH;
 
@@ -396,9 +396,9 @@ public class MIFLoader {
                 }
                 number = Integer.parseInt(tok);
                 count = 0;
-                ptarray = new float[number + number];
-                latpts = new float[number];
-                lonpts = new float[number];
+                ptarray = new double[number + number];
+                latpts = new double[number];
+                lonpts = new double[number];
                 action = PROCESS_REGION;
                 break SWITCH;
 

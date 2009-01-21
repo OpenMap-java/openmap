@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGeometry.java,v $
 // $RCSfile: OMGeometry.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/01/10 16:58:33 $
+// $Revision: 1.7 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -32,11 +32,10 @@ import com.bbn.openmap.proj.Projection;
  * Base class of OpenMap OMGraphics geometry.
  * <p>
  * 
- * The geometry classes are intended to pull the object location data
- * out of the OMGraphics. If you have a bunch of OMGraphics that are
- * all rendered with common attributes, you can create a bunch of
- * OMGeometry objects to plavce in a OMGeometryList that will render
- * them all alike.
+ * The geometry classes are intended to pull the object location data out of the
+ * OMGraphics. If you have a bunch of OMGraphics that are all rendered with
+ * common attributes, you can create a bunch of OMGeometry objects to plavce in
+ * a OMGeometryList that will render them all alike.
  * 
  * @see OMGeometryList
  * @see Projection
@@ -44,11 +43,10 @@ import com.bbn.openmap.proj.Projection;
 public interface OMGeometry {
 
     /**
-     * Set the line type for the graphic, which will affect how the
-     * lines will be drawn. See the definition of the lineType
-     * parameter. Accepts LINETYPE_RHUMB, LINETYPE_STRAIGHT and
-     * LINETYPE_GREATCIRCLE. Any weird values get set to
-     * LINETYPE_STRAIGHT.
+     * Set the line type for the graphic, which will affect how the lines will
+     * be drawn. See the definition of the lineType parameter. Accepts
+     * LINETYPE_RHUMB, LINETYPE_STRAIGHT and LINETYPE_GREATCIRCLE. Any weird
+     * values get set to LINETYPE_STRAIGHT.
      * 
      * @param value the line type of the graphic.
      */
@@ -65,16 +63,14 @@ public interface OMGeometry {
     /**
      * Return the render type.
      * 
-     * @return the rendertype of the object - RENDERTYPE_LATLON,
-     *         RENDERTYPE_XY, RENDERTYPE_OFFSET and
-     *         RENDERTYPE_UNKNOWN.
+     * @return the rendertype of the object - RENDERTYPE_LATLON, RENDERTYPE_XY,
+     *         RENDERTYPE_OFFSET and RENDERTYPE_UNKNOWN.
      */
     public int getRenderType();
 
     /**
-     * Sets the regenerate flag for the graphic. This flag is used to
-     * determine if extra work needs to be done to prepare the object
-     * for rendering.
+     * Sets the regenerate flag for the graphic. This flag is used to determine
+     * if extra work needs to be done to prepare the object for rendering.
      * 
      * @param value boolean
      */
@@ -89,9 +85,9 @@ public interface OMGeometry {
 
     /**
      * Set the visibility variable. NOTE: <br>
-     * This is checked by the OMGeometryList when it iterates through
-     * its list for render and gesturing. It is not checked by the
-     * internal OMGeometry methods, although maybe it should be...
+     * This is checked by the OMGeometryList when it iterates through its list
+     * for render and gesturing. It is not checked by the internal OMGeometry
+     * methods, although maybe it should be...
      * 
      * @param visible boolean
      */
@@ -105,24 +101,21 @@ public interface OMGeometry {
     public boolean isVisible();
 
     /**
-     * Let the geometry object know that it is selected. No action
-     * mandated.
+     * Let the geometry object know that it is selected. No action mandated.
      */
     public void select();
 
     /**
-     * Let the geometry object know that it is not selected. No action
-     * mandated.
+     * Let the geometry object know that it is not selected. No action mandated.
      */
     public void deselect();
 
     /**
-     * Holds an application specific object for later access. This can
-     * be used to associate an application object with an OMGeometry
-     * for later retrieval. For instance, when the graphic is clicked
-     * on, the application gets the OMGeometry object back from the
-     * OMGeometryList, and can then get back to the application level
-     * object through this pointer.
+     * Holds an application specific object for later access. This can be used
+     * to associate an application object with an OMGeometry for later
+     * retrieval. For instance, when the graphic is clicked on, the application
+     * gets the OMGeometry object back from the OMGeometryList, and can then get
+     * back to the application level object through this pointer.
      * 
      * @param obj Object
      */
@@ -165,18 +158,17 @@ public interface OMGeometry {
      */
     public Map getAttributes();
 
-    //////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////
 
     /**
-     * Prepare the geometry for rendering. This must be done before
-     * calling <code>render()</code>! If a vector graphic has
-     * lat-lon components, then we project these vertices into x-y
-     * space. For raster graphics we prepare in a different fashion.
+     * Prepare the geometry for rendering. This must be done before calling
+     * <code>render()</code>! If a vector graphic has lat-lon components, then
+     * we project these vertices into x-y space. For raster graphics we prepare
+     * in a different fashion.
      * <p>
-     * If the generate is unsuccessful, it's usually because of some
-     * oversight, (for instance if <code>proj</code> is null), and
-     * if debugging is enabled, a message may be output to the
-     * controlling terminal.
+     * If the generate is unsuccessful, it's usually because of some oversight,
+     * (for instance if <code>proj</code> is null), and if debugging is enabled,
+     * a message may be output to the controlling terminal.
      * <p>
      * 
      * @param proj Projection
@@ -191,40 +183,55 @@ public interface OMGeometry {
     public boolean isRenderable();
 
     /**
-     * Paint the graphic, as a filled shape.
+     * Paint the graphic. This paints the graphic into the Graphics context.
+     * This is similar to <code>paint()</code> function of java.awt.Components.
+     * Note that if the graphic has not been generated, it should not be
+     * rendered.
      * <P>
      * 
-     * This paints the graphic into the Graphics context. This is
-     * similar to <code>paint()</code> function of
-     * java.awt.Components. Note that if the graphic has not been
-     * generated or if it isn't visible, it will not be rendered.
+     * It's expected that this method will call fill and draw, respectively.
+     * 
+     * @param g Graphics2D context to render into.
+     */
+    public void render(Graphics g);
+
+    /**
+     * Paint the graphic, as a filled shape. This method has been broken out of
+     * render as a way to allow OMGeometries to fine-tune their rendering
+     * process.
      * <P>
      * 
-     * This method used to be abstract, but with the conversion of
-     * OMGeometrys to internally represent themselves as
-     * java.awt.Shape objects, it's a more generic method. If the
-     * OMGeometry hasn't been updated to use Shape objects, it should
-     * have its own render method.
+     * This paints the graphic into the Graphics context. This is similar to
+     * <code>paint()</code> function of java.awt.Components. Note that if the
+     * graphic has not been generated or if it isn't visible, it will not be
+     * rendered.
+     * <P>
+     * 
+     * This method used to be abstract, but with the conversion of OMGeometrys
+     * to internally represent themselves as java.awt.Shape objects, it's a more
+     * generic method. If the OMGeometry hasn't been updated to use Shape
+     * objects, it should have its own render method.
      * 
      * @param g Graphics2D context to render into.
      */
     public void fill(Graphics g);
 
     /**
-     * Paint the graphic, as an outlined shape.
+     * Paint the graphic, as an outlined shape. This method has been broken out
+     * of render as a way to allow OMGeometries to fine-tune their rendering
+     * process.
      * <P>
      * 
-     * This paints the graphic into the Graphics context. This is
-     * similar to <code>paint()</code> function of
-     * java.awt.Components. Note that if the graphic has not been
-     * generated or if it isn't visible, it will not be rendered.
+     * This paints the graphic into the Graphics context. This is similar to
+     * <code>paint()</code> function of java.awt.Components. Note that if the
+     * graphic has not been generated or if it isn't visible, it will not be
+     * rendered.
      * <P>
      * 
-     * This method used to be abstract, but with the conversion of
-     * OMGeometrys to internally represent themselves as
-     * java.awt.Shape objects, it's a more generic method. If the
-     * OMGeometry hasn't been updated to use Shape objects, it should
-     * have its own render method.
+     * This method used to be abstract, but with the conversion of OMGeometrys
+     * to internally represent themselves as java.awt.Shape objects, it's a more
+     * generic method. If the OMGeometry hasn't been updated to use Shape
+     * objects, it should have its own render method.
      * 
      * @param g Graphics2D context to render into.
      */
@@ -234,87 +241,86 @@ public interface OMGeometry {
      * Return the shortest distance from the graphic to an XY-point.
      * <p>
      * 
-     * This method used to be abstract, but with the conversion of
-     * OMGeometrys to internally represent themselves as
-     * java.awt.Shape objects, it's a more generic method. If the
-     * OMGeometry hasn't been updated to use Shape objects, it should
-     * have its own distance method.
+     * This method used to be abstract, but with the conversion of OMGeometrys
+     * to internally represent themselves as java.awt.Shape objects, it's a more
+     * generic method. If the OMGeometry hasn't been updated to use Shape
+     * objects, it should have its own distance method.
      * 
      * @param x X coordinate of the point.
      * @param y Y coordinate of the point.
-     * @return float distance, in pixels, from graphic to the point.
-     *         Returns Float.POSITIVE_INFINITY if the graphic isn't
-     *         ready (ungenerated).
+     * @return float distance, in pixels, from graphic to the point. Returns
+     *         Float.POSITIVE_INFINITY if the graphic isn't ready (ungenerated).
      */
     public float distance(int x, int y);
 
     /**
-     * Answsers the question whether or not the OMGeometry contains
-     * the given pixel point.
+     * Answsers the question whether or not the OMGeometry contains the given
+     * pixel point.
      * <P>
-     * This method used to be abstract, but with the conversion of
-     * OMGeometrys to internally represent themselves as
-     * java.awt.Shape objects, it's a more generic method. If the
-     * OMGeometry hasn't been updated to use Shape objects, it should
-     * have its own contains method.
+     * This method used to be abstract, but with the conversion of OMGeometrys
+     * to internally represent themselves as java.awt.Shape objects, it's a more
+     * generic method. If the OMGeometry hasn't been updated to use Shape
+     * objects, it should have its own contains method.
      * <P>
-     * This method duplicates a java.awt.Shape method, with some
-     * protection wrapped around it. If you have other queries for the
-     * internal Shape object, just ask for it and then ask it
-     * directly. This method is provided because it is the most
-     * useful, used when determining if a mouse event is occuring over
-     * an object on the map.
+     * This method duplicates a java.awt.Shape method, with some protection
+     * wrapped around it. If you have other queries for the internal Shape
+     * object, just ask for it and then ask it directly. This method is provided
+     * because it is the most useful, used when determining if a mouse event is
+     * occuring over an object on the map.
      * 
      * @param x X pixel coordinate of the point.
      * @param y Y pixel coordinate of the point.
-     * @return getShape().contains(x, y), false if the OMGraphic
-     *         hasn't been generated yet.
+     * @return getShape().contains(x, y), false if the OMGraphic hasn't been
+     *         generated yet.
      */
     public boolean contains(int x, int y);
 
     /**
-     * Invoke this to regenerate a "dirty" graphic. This method is a
-     * wrapper around the <code>generate()</code> method. It invokes
-     * <code>generate()</code> only if</code> needToRegenerate()
-     * </code> on the graphic returns true. To force a graphic to be
-     * generated, call <code>generate()</code> directly.
+     * Invoke this to regenerate a "dirty" graphic. This method is a wrapper
+     * around the <code>generate()</code> method. It invokes
+     * <code>generate()</code> only if</code> needToRegenerate() </code> on the
+     * graphic returns true. To force a graphic to be generated, call
+     * <code>generate()</code> directly.
      * 
      * @param proj the Projection
-     * @return true if generated, false if didn't do it (maybe a
-     *         problem).
+     * @return true if generated, false if didn't do it (maybe a problem).
      * @see #generate
      */
     public boolean regenerate(Projection proj);
 
     /**
-     * Get the java.awt.Shape object that represents the projected
-     * graphic.
+     * Get the java.awt.Shape object that represents the projected graphic.
      * <p>
      * 
-     * The java.awt.Shape object gives you the ability to do a little
-     * spatial analysis on the graphics.
+     * The java.awt.Shape object gives you the ability to do a little spatial
+     * analysis on the graphics.
      * 
-     * @return java.awt.geom.GeneralPath (Shape), or null if the
-     *         graphic needs to be generated with the current map
-     *         projection, or null if the OMGeometry hasn't been
-     *         updated to use Shape objects for its internal
-     *         representation.
+     * @return java.awt.geom.GeneralPath (Shape), or null if the graphic needs
+     *         to be generated with the current map projection, or null if the
+     *         OMGeometry hasn't been updated to use Shape objects for its
+     *         internal representation.
      */
     public GeneralPath getShape();
 
     /**
-     * Set the java.awt.Shape object that represents the projected
-     * graphic. Ideally, the OMGeometry will set this internally. This
-     * method is provided to clear out the object to save memory, or
-     * to allow manipulations if the situation dictates.
+     * Set the java.awt.Shape object that represents the projected graphic.
+     * Ideally, the OMGeometry will set this internally. This method is provided
+     * to clear out the object to save memory, or to allow manipulations if the
+     * situation dictates.
      * <p>
      * 
-     * The java.awt.Shape object gives you the ability to do a little
-     * spatial analysis on the graphics.
+     * The java.awt.Shape object gives you the ability to do a little spatial
+     * analysis on the graphics.
      * 
-     * @param gp java.awt.geom.GeneralPath (Shape), or null if the
-     *        graphic needs to be cleared or regenerated.
+     * @param gp java.awt.geom.GeneralPath (Shape), or null if the graphic needs
+     *        to be cleared or regenerated.
      */
     public void setShape(GeneralPath gp);
+
+    /**
+     * OMGeometry method for returning a simple description of itself, for
+     * debugging purposes.
+     */
+    public String getDescription();
 
 }

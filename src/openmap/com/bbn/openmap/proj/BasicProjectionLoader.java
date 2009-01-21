@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/BasicProjectionLoader.java,v $
 // $RCSfile: BasicProjectionLoader.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/12/09 21:09:01 $
+// $Revision: 1.6 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -59,7 +59,7 @@ import com.bbn.openmap.util.PropUtils;
 public abstract class BasicProjectionLoader extends OMComponent implements
         ProjectionLoader {
 
-    protected Class projClass;
+    protected Class<? extends Projection> projClass;
     protected String prettyName;
     protected String description;
 
@@ -69,7 +69,7 @@ public abstract class BasicProjectionLoader extends OMComponent implements
     /**
      * Set the basic parameters needed for a ProjectionLoader.
      */
-    public BasicProjectionLoader(Class pClass, String pName, String pDescription) {
+    public BasicProjectionLoader(Class<? extends Projection> pClass, String pName, String pDescription) {
         projClass = pClass;
         prettyName = pName;
         description = pDescription;
@@ -79,7 +79,7 @@ public abstract class BasicProjectionLoader extends OMComponent implements
      * Get a class name to use for the projection. This will be used
      * as a key in the projection factory.
      */
-    public Class getProjectionClass() {
+    public Class<? extends Projection> getProjectionClass() {
         return projClass;
     }
 

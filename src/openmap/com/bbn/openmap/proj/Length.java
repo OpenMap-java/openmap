@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Length.java,v $
 // $RCSfile: Length.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/10 22:31:00 $
+// $Revision: 1.8 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,10 +27,9 @@ import com.bbn.openmap.I18n;
 import com.bbn.openmap.util.Debug;
 
 /**
- * Length is a convenience class used for a couple of things. It can
- * be used to specifiy unit type, and can be used for conversion from
- * radians to/from whatever units are represented by the implemented
- * class.
+ * Length is a convenience class used for a couple of things. It can be used to
+ * specifiy unit type, and can be used for conversion from radians to/from
+ * whatever units are represented by the implemented class.
  */
 public class Length {
 
@@ -46,11 +45,29 @@ public class Length {
     public final static Length NM = new Length("nautical mile", "nm", Planet.wgs84_earthEquatorialCircumferenceNMiles_D);
     /** Decimal Degrees, in WGS 84 Spherical earth model units. */
     public final static Length DECIMAL_DEGREE = new Length("decimal degree", "deg", 360.0);
-    /** Radians, in terms of a spherical earth. */
-    public final static Length RADIAN = new Length("radian", "rad", com.bbn.openmap.MoreMath.TWO_PI_D);
     /** Data Mile, in WGS 84 spherical earth model units. */
     public final static Length DM = new Length("datamile", "dm", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0 / 6000.0);
 
+    /** Radians, in terms of a spherical earth. */
+    public final static Length RADIAN = new Length("radian", "rad",
+            com.bbn.openmap.MoreMath.TWO_PI_D) {
+        public float toRadians(float numUnits) {
+            return numUnits;
+        }
+
+        public double toRadians(double numUnits) {
+            return numUnits;
+        }
+
+        public float fromRadians(float numRadians) {
+            return numRadians;
+        }
+
+        public double fromRadians(double numRadians) {
+            return numRadians;
+        }
+    };
+    
     /** Unit/radians */
     protected final double constant;
     protected final String name;
@@ -59,20 +76,21 @@ public class Length {
     protected I18n i18n = Environment.getI18n();
 
     /**
-     * Create a Length, with a name an the number of it's units that
-     * go around the earth at its equator. The name and abbreviation
-     * are converted to lower case for consistency.
+     * Create a Length, with a name an the number of it's units that go around
+     * the earth at its equator. The name and abbreviation are converted to
+     * lower case for consistency.
      */
     public Length(String name, String abbr, double unitEquatorCircumference) {
         this.name = i18n.get(this, abbr + ".name", name).toLowerCase().intern();
         this.unitEquatorCircumference = unitEquatorCircumference;
-        this.constant = unitEquatorCircumference / com.bbn.openmap.MoreMath.TWO_PI_D;
+        this.constant = unitEquatorCircumference
+                / com.bbn.openmap.MoreMath.TWO_PI_D;
         this.abbr = abbr.toLowerCase().intern();
     }
 
     /**
-     * Given a number of units provided by this Length, convert to a
-     * number of radians.
+     * Given a number of units provided by this Length, convert to a number of
+     * radians.
      */
     public float toRadians(float numUnits) {
         if (Debug.debugging("length")) {
@@ -91,8 +109,8 @@ public class Length {
     }
 
     /**
-     * Given a number of radians, convert to the number of units
-     * represented by this length.
+     * Given a number of radians, convert to the number of units represented by
+     * this length.
      */
     public float fromRadians(float numRadians) {
         if (Debug.debugging("length")) {
@@ -103,8 +121,8 @@ public class Length {
     }
 
     /**
-     * Given a number of radians, convert to the number of units
-     * represented by this length.
+     * Given a number of radians, convert to the number of units represented by
+     * this length.
      */
     public double fromRadians(double numRadians) {
         if (Debug.debugging("length")) {
@@ -129,18 +147,17 @@ public class Length {
     }
 
     /**
-     * Get a list of the Lengths currently defined as static
-     * implementations of this class.
+     * Get a list of the Lengths currently defined as static implementations of
+     * this class.
      */
     public static Length[] getAvailable() {
         return new Length[] { METER, KM, FEET, MILE, DM, NM, DECIMAL_DEGREE };
     }
 
     /**
-     * Get the Length object with the given name or abbreviation. If
-     * nothing exists with that name, then return null. The lower case
-     * version of the name or abbreviation is checked against the
-     * available options.
+     * Get the Length object with the given name or abbreviation. If nothing
+     * exists with that name, then return null. The lower case version of the
+     * name or abbreviation is checked against the available options.
      */
     public static Length get(String name) {
         Length[] choices = getAvailable();
@@ -153,4 +170,5 @@ public class Length {
         }
         return null;
     }
+
 }

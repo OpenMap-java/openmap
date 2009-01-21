@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRect.java,v $
 // $RCSfile: EditableOMRect.java,v $
-// $Revision: 1.9 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.10 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -150,7 +150,7 @@ public class EditableOMRect extends EditableOMGraphic {
             rect = new OMRect(90f, -180f, 90f, -180f, lineType);
             break;
         case (OMGraphic.RENDERTYPE_OFFSET):
-            rect = new OMRect(90f, -180f, -1, -1, 1, 1);
+            rect = new OMRect(90d, -180d, -1, -1, 1, 1);
             break;
         default:
             rect = new OMRect(-1, -1, -1, -1);
@@ -198,8 +198,8 @@ public class EditableOMRect extends EditableOMGraphic {
         super.setMovingPoint(gp);
     }
 
-    float diffx;
-    float diffy;
+    double diffx;
+    double diffy;
 
     // Called from the state machine...
     public void initRectSize() {
@@ -312,10 +312,10 @@ public class EditableOMRect extends EditableOMGraphic {
                     || renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
                 if (projection != null) {
-                    float wlon = rect.getWestLon();
-                    float nlat = rect.getNorthLat();
-                    float elon = rect.getEastLon();
-                    float slat = rect.getSouthLat();
+                    double wlon = rect.getWestLon();
+                    double nlat = rect.getNorthLat();
+                    double elon = rect.getEastLon();
+                    double slat = rect.getSouthLat();
 
                     llp = new LatLonPoint(nlat, wlon);
                     Point2D p = projection.forward(llp);

@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkArc.java,v $
 // $RCSfile: LinkArc.java,v $
-// $Revision: 1.6 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.7 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -26,10 +26,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.OMArc;
-import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -216,11 +215,11 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
         switch (arc.getRenderType()) {
         case OMArc.RENDERTYPE_LATLON:
             llp = arc.getLatLon();
-            LinkArc.write(llp.getLatitude(),
-                    llp.getLongitude(),
-                    arc.getRadius(),
-                    arc.getStartAngle(),
-                    arc.getExtentAngle(),
+            LinkArc.write((float) llp.getLatitude(),
+                    (float) llp.getLongitude(),
+                    (float) arc.getRadius(),
+                    (float) arc.getStartAngle(),
+                    (float) arc.getExtentAngle(),
                     props,
                     link.dos);
             break;
@@ -229,21 +228,21 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
                     arc.getY(),
                     arc.getWidth(),
                     arc.getHeight(),
-                    arc.getStartAngle(),
-                    arc.getExtentAngle(),
+                    (float) arc.getStartAngle(),
+                    (float) arc.getExtentAngle(),
                     props,
                     link.dos);
             break;
         case OMArc.RENDERTYPE_OFFSET:
             llp = arc.getLatLon();
-            LinkArc.write(llp.getLatitude(),
-                    llp.getLongitude(),
+            LinkArc.write((float) llp.getLatitude(),
+                    (float) llp.getLongitude(),
                     arc.getOffX(),
                     arc.getOffY(),
                     arc.getWidth(),
                     arc.getHeight(),
-                    arc.getStartAngle(),
-                    arc.getExtentAngle(),
+                    (float) arc.getStartAngle(),
+                    (float) arc.getExtentAngle(),
                     props,
                     link.dos);
             break;
@@ -309,7 +308,7 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
             default:
             }
 
-            arc = new OMArc(new LatLonPoint(lat, lon), radius, unit, nverts, start, extent);
+            arc = new OMArc(new LatLonPoint.Double(lat, lon), radius, unit, nverts, start, extent);
             break;
         case RENDERTYPE_XY:
             x = dis.readInt();

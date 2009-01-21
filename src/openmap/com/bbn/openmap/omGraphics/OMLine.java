@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMLine.java,v $
 // $RCSfile: OMLine.java,v $
-// $Revision: 1.14 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.15 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -61,7 +61,7 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
     protected boolean isPolyline = false;
 
     /** latlons is a array of 4 floats - lat1, lon1, lat2, lon2. */
-    protected float[] latlons = null;
+    protected double[] latlons = null;
 
     /** pts is an array of 4 ints - px1, py1, px2, py2. */
     protected int[] pts = null;
@@ -96,7 +96,7 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
      * @param lineType a choice between LINETYPE_STRAIGHT,
      *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB.
      */
-    public OMLine(float lat_1, float lon_1, float lat_2, float lon_2,
+    public OMLine(double lat_1, double lon_1, double lat_2, double lon_2,
             int lineType) {
         this(lat_1, lon_1, lat_2, lon_2, lineType, -1);
     }
@@ -114,10 +114,10 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
      *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and
      *        if &lt; 1, this value is generated internally)
      */
-    public OMLine(float lat_1, float lon_1, float lat_2, float lon_2,
+    public OMLine(double lat_1, double lon_1, double lat_2, double lon_2,
             int lineType, int nsegs) {
         super(RENDERTYPE_LATLON, lineType, DECLUTTERTYPE_NONE);
-        latlons = new float[4];
+        latlons = new double[4];
         latlons[0] = lat_1;
         latlons[2] = lat_2;
         latlons[1] = lon_1;
@@ -168,7 +168,7 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
     public OMLine(float lat_1, float lon_1, int x1, int y1, int x2, int y2) {
 
         super(RENDERTYPE_OFFSET, LINETYPE_STRAIGHT, DECLUTTERTYPE_NONE);
-        latlons = new float[4];
+        latlons = new double[4];
         pts = new int[4];
         latlons[0] = lat_1;
         latlons[1] = lon_1;
@@ -187,7 +187,7 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
      * 
      * @param lls array of floats - lat1, lon1, lat2, lon2
      */
-    public void setLL(float[] lls) {
+    public void setLL(double[] lls) {
         latlons = lls;
         setNeedToRegenerate(true);
     }
@@ -201,7 +201,7 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
      * 
      * @return the lat lon array, and all are decimal degrees.
      */
-    public float[] getLL() {
+    public double[] getLL() {
         return latlons;
     }
 
@@ -368,8 +368,8 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
                         lineType,
                         nsegs);
                 } else {
-                    lines = proj.forwardLine(new Point2D.Float(latlons[1], latlons[0]),
-                            new Point2D.Float(latlons[3], latlons[2]));
+                    lines = proj.forwardLine(new Point2D.Double(latlons[1], latlons[0]),
+                            new Point2D.Double(latlons[3], latlons[2]));
                 }
 
                 int size = lines.size();

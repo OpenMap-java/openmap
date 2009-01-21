@@ -43,8 +43,7 @@ import com.bbn.openmap.util.Debug;
  *  
  * </pre></code>
  * <p>
- * NOTE: the color properties do not support alpha value if running on
- * JDK 1.1.
+ * NOTE: the color properties do not support alpha value if running on JDK 1.1.
  */
 public class NexradLayer extends OMGraphicHandlerLayer {
 
@@ -147,10 +146,10 @@ public class NexradLayer extends OMGraphicHandlerLayer {
 
         OMGraphicList graphics = new OMGraphicList();
 
-        float ul[] = { 0, 0 };
-        float ur[] = { 0, 0 };
-        float ll[] = { 0, 0 };
-        float lr[] = { 0, 0 };
+        double ul[] = { 0, 0 };
+        double ur[] = { 0, 0 };
+        double ll[] = { 0, 0 };
+        double lr[] = { 0, 0 };
 
         for (int x = 0; x < xcount; x++) {
             ll = hrap2lonlat(ulhrapx + x, ulhrapy);
@@ -167,7 +166,7 @@ public class NexradLayer extends OMGraphicHandlerLayer {
                                 + x + " " + y);
                     }
 
-                    float polypoints[] = { ul[0], ul[1], ur[0], ur[1], lr[0],
+                    double polypoints[] = { ul[0], ul[1], ur[0], ur[1], lr[0],
                             lr[1], ll[0], ll[1], ul[0], ul[1] };
                     OMPoly poly = new OMPoly(polypoints, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
                     Color plotc = scaledColor(rain[x][y]);
@@ -216,7 +215,7 @@ public class NexradLayer extends OMGraphicHandlerLayer {
         return (new Color(plotColor.getRed(), plotColor.getGreen(), plotColor.getBlue(), alphaValue));
     }
 
-    public float[] hrap2lonlat(int xhrap, int yhrap) {
+    public double[] hrap2lonlat(int xhrap, int yhrap) {
         float mesh = 4762.5f;
         float earthr = 6371200.0f;
         float stlond = -105.0f;
@@ -237,7 +236,7 @@ public class NexradLayer extends OMGraphicHandlerLayer {
         } else {
             lond = 360.0f - ang;
         }
-        float res[] = { latd, lond };
+        double res[] = { latd, lond };
         return res;
     }
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRangeRings.java,v $
 // $RCSfile: OMRangeRings.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/12/22 23:15:14 $
+// $Revision: 1.7 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,9 +25,9 @@ package com.bbn.openmap.omGraphics;
 import java.awt.Graphics;
 import java.io.Serializable;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * An object that manages a series of range circles. It is really an OMCircle
@@ -82,8 +82,8 @@ public class OMRangeRings extends OMCircle implements Serializable {
      * @param radius distance in decimal degrees (converted to radians
      *        internally).
      */
-    public OMRangeRings(float latPoint, float lonPoint, float radius) {
-        this(new LatLonPoint(latPoint, lonPoint),
+    public OMRangeRings(double latPoint, double lonPoint, double radius) {
+        this(new LatLonPoint.Double(latPoint, lonPoint),
              radius,
              Length.DECIMAL_DEGREE,
              -1);
@@ -98,9 +98,9 @@ public class OMRangeRings extends OMCircle implements Serializable {
      * @param radius distance
      * @param units com.bbn.openmap.proj.Length object.
      */
-    public OMRangeRings(float latPoint, float lonPoint, float radius,
+    public OMRangeRings(double latPoint, double lonPoint, double radius,
             Length units) {
-        this(new LatLonPoint(latPoint, lonPoint), radius, units, -1);
+        this(new LatLonPoint.Double(latPoint, lonPoint), radius, units, -1);
     }
 
     /**
@@ -114,9 +114,9 @@ public class OMRangeRings extends OMCircle implements Serializable {
      * @param nverts number of vertices for the poly-circle (if &lt; 3, value is
      *        generated internally)
      */
-    public OMRangeRings(float latPoint, float lonPoint, float radius,
+    public OMRangeRings(double latPoint, double lonPoint, double radius,
             Length units, int nverts) {
-        this(new LatLonPoint(latPoint, lonPoint), radius, units, nverts);
+        this(new LatLonPoint.Double(latPoint, lonPoint), radius, units, nverts);
     }
 
     /**
@@ -130,7 +130,7 @@ public class OMRangeRings extends OMCircle implements Serializable {
      * @param nverts number of vertices for the poly-circle(if &lt; 3, value is
      *        generated internally)
      */
-    public OMRangeRings(LatLonPoint center, float radius, Length units,
+    public OMRangeRings(LatLonPoint center, double radius, Length units,
             int nverts) {
         super(center, radius, units, nverts);
         centerPoint = createCenterPoint();
@@ -138,7 +138,7 @@ public class OMRangeRings extends OMCircle implements Serializable {
     }
 
     protected OMPoint createCenterPoint() {
-        return new OMPoint((float) center.getLatitude(), (float) center.getLongitude());
+        return new OMPoint(center.getLatitude(), center.getLongitude());
     }
 
     /**

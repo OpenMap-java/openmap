@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingRaster.java,v $
 // $RCSfile: OMScalingRaster.java,v $
-// $Revision: 1.15 $
-// $Date: 2006/12/15 18:39:54 $
+// $Revision: 1.16 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -60,13 +60,13 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     /**
      * The latitude of the lower right corner for the image, in decimal degrees.
      */
-    protected float lat2 = 0.0f;
+    protected double lat2 = 0.0f;
 
     /**
      * The longitude of the lower right corner for the image, in decimal
      * degrees.
      */
-    protected float lon2 = 0.0f;
+    protected double lon2 = 0.0f;
 
     /**
      * This the original version of the image, which we keep around for
@@ -102,7 +102,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @param h height of the image, in pixels.
      * @param pix color values for the pixels.
      */
-    public OMScalingRaster(float ullat, float ullon, float lrlat, float lrlon,
+    public OMScalingRaster(double ullat, double ullon, double lrlat, double lrlon,
             int w, int h, int[] pix) {
 
         super(ullat, ullon, w, h, pix);
@@ -121,7 +121,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @param lrlon longitude of the right side of the image.
      * @param ii ImageIcon used for the image.
      */
-    public OMScalingRaster(float ullat, float ullon, float lrlat, float lrlon,
+    public OMScalingRaster(double ullat, double ullon, double lrlat, double lrlon,
             ImageIcon ii) {
         this(ullat, ullon, lrlat, lrlon, ii.getImage());
     }
@@ -135,7 +135,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @param lrlon longitude of the right side of the image.
      * @param ii Image used for the image.
      */
-    public OMScalingRaster(float ullat, float ullon, float lrlat, float lrlon,
+    public OMScalingRaster(double ullat, double ullon, double lrlat, double lrlon,
             Image ii) {
         super();
         setRenderType(OMGraphic.RENDERTYPE_LATLON);
@@ -165,7 +165,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @param colorTable color array corresponding to bytes
      * @param trans transparency of image.
      */
-    public OMScalingRaster(float ullat, float ullon, float lrlat, float lrlon,
+    public OMScalingRaster(double ullat, double ullon, double lrlat, double lrlon,
             int w, int h, byte[] bytes, Color[] colorTable, int trans) {
 
         super(ullat, ullon, w, h, bytes, colorTable, trans);
@@ -480,7 +480,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * 
      * @param value latitude in decimal degrees.
      */
-    public void setULLat(float value) {
+    public void setULLat(double value) {
         setLat(value);
     }
 
@@ -489,7 +489,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * 
      * @return the latitude in decimal degrees.
      */
-    public float getULLat() {
+    public double getULLat() {
         return getLat();
     }
 
@@ -498,7 +498,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * 
      * @param value the longitude in decimal degrees.
      */
-    public void setULLon(float value) {
+    public void setULLon(double value) {
         setLon(value);
     }
 
@@ -507,7 +507,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * 
      * @return longitude in decimal degrees.
      */
-    public float getULLon() {
+    public double getULLon() {
         return getLon();
     }
 
@@ -516,7 +516,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * 
      * @param value latitude in decimal degrees.
      */
-    public void setLRLat(float value) {
+    public void setLRLat(double value) {
         if (lat2 == value)
             return;
         lat2 = value;
@@ -528,7 +528,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * 
      * @return the latitude in decimal degrees.
      */
-    public float getLRLat() {
+    public double getLRLat() {
         return lat2;
     }
 
@@ -537,7 +537,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * 
      * @param value the longitude in decimal degrees.
      */
-    public void setLRLon(float value) {
+    public void setLRLon(double value) {
         if (lon2 == value)
             return;
         lon2 = value;
@@ -549,7 +549,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * 
      * @return longitude in decimal degrees.
      */
-    public float getLRLon() {
+    public double getLRLon() {
         return lon2;
     }
 

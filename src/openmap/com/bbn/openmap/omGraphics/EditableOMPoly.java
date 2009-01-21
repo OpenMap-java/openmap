@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoly.java,v $
 // $RCSfile: EditableOMPoly.java,v $
-// $Revision: 1.18 $
-// $Date: 2008/03/12 17:31:17 $
+// $Revision: 1.19 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -280,7 +280,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
         OMGraphic g = null;
         switch (renderType) {
         case (OMGraphic.RENDERTYPE_LATLON):
-            g = new OMPoly(new float[0], OMGraphic.RADIANS, lineType);
+            g = new OMPoly(new double[0], OMGraphic.RADIANS, lineType);
             break;
         case (OMGraphic.RENDERTYPE_OFFSET):
             g = new OMPoly(90f, -180f, new int[0], OMPoly.COORDMODE_ORIGIN);
@@ -424,7 +424,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
 
                 if (projection != null) {
 
-                    float[] ll = poly.getLatLonArray();
+                    double[] ll = poly.getLatLonArray();
                     boolean rads = poly.getUnits() == OMGraphic.RADIANS;
                     gb = null; // reset for this loop
 
@@ -525,7 +525,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
         boolean rads = (poly.getUnits() == OMGraphic.RADIANS);
         if (renderType == OMGraphic.RENDERTYPE_LATLON) {
             if (projection != null) {
-                float[] floats = new float[polyGrabPoints.size() * 2];
+                double[] floats = new double[polyGrabPoints.size() * 2];
                 for (i = 0; i < polyGrabPoints.size(); i++) {
                     gb = (GrabPoint) polyGrabPoints.get(i);
                     projection.inverse(gb.getX(), gb.getY(), llp);
@@ -538,7 +538,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
                     }
                 }
 
-                poly.setLocation((float[]) floats, poly.getUnits());
+                poly.setLocation((double[]) floats, poly.getUnits());
             } else {
                 Debug.message("eomg",
                         "EditableOMPoly.setGrabPoints: projection is null, can't figure out LATLON points for poly.");
@@ -690,7 +690,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
 
             if (projection != null) {
 
-                float[] ll = poly.getLatLonArray();
+                double[] ll = poly.getLatLonArray();
                 int actualPosition = (position == Integer.MAX_VALUE ? ll.length
                         : position * 2);
 
@@ -705,10 +705,10 @@ public class EditableOMPoly extends EditableOMAbstractLine {
                     }
                 }
 
-                float[] newll = new float[ll.length + 2];
+                double[] newll = new double[ll.length + 2];
 
-                float newlat;
-                float newlon;
+                double newlat;
+                double newlon;
 
                 if (rads) {
                     newlat = (float) llpnt.getRadLat();
@@ -748,7 +748,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
                             actualPosition + 2,
                             ll.length - actualPosition);
                 }
-                poly.setLocation((float[]) newll, poly.getUnits());
+                poly.setLocation((double[]) newll, poly.getUnits());
             }
         } else if (renderType == OMGraphic.RENDERTYPE_XY) {
             // Grab the projected endpoints
@@ -929,8 +929,8 @@ public class EditableOMPoly extends EditableOMAbstractLine {
 
             if (projection != null) {
 
-                float[] ll = poly.getLatLonArray();
-                float[] newll = new float[ll.length - 2];
+                double[] ll = poly.getLatLonArray();
+                double[] newll = new double[ll.length - 2];
 
                 int actualPosition = (position == Integer.MAX_VALUE ? ll.length
                         : position * 2);
@@ -954,7 +954,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
                             actualPosition,
                             ll.length - actualPosition - 2);
                 }
-                poly.setLocation((float[]) newll, poly.getUnits());
+                poly.setLocation((double[]) newll, poly.getUnits());
             }
         } else {
             // Grab the projected endpoints

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/ByteRasterLocation.java,v $
 // $RCSfile: ByteRasterLocation.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:59 $
+// $Revision: 1.5 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -52,7 +52,7 @@ public class ByteRasterLocation extends Location {
      *        ImageIcon can use to create an Image icon. Can also be
      *        the binary contents of an image from a database query.
      */
-    public ByteRasterLocation(float latitude, float longitude, String name,
+    public ByteRasterLocation(double latitude, double longitude, String name,
             byte bytearr[]) {
         super(latitude, longitude, name, getIconRaster(latitude,
                 longitude,
@@ -100,7 +100,7 @@ public class ByteRasterLocation extends Location {
      *        ImageIcon can use to create an Image icon. Can also be
      *        the binary contents of an image from a database query.
      */
-    public ByteRasterLocation(float latitude, float longitude, int xOffset,
+    public ByteRasterLocation(double latitude, double longitude, int xOffset,
             int yOffset, String name, byte bytearr[]) {
         super(latitude,
               longitude,
@@ -125,7 +125,7 @@ public class ByteRasterLocation extends Location {
      *        ImageIcon can use to create an Image icon. Can also be
      *        the binary contents of an image from a database query.
      */
-    public static OMRaster getIconRaster(float lat, float lon, byte bytearr[]) {
+    public static OMRaster getIconRaster(double lat, double lon, byte bytearr[]) {
 
         ImageIcon icon = getIconRaster(bytearr);
         if (icon == null)
@@ -171,7 +171,7 @@ public class ByteRasterLocation extends Location {
      *        ImageIcon can use to create an Image icon. Can also be
      *        the binary contents of an image from a database query.
      */
-    public static OMRaster getIconRaster(float lat, float lon, int x, int y,
+    public static OMRaster getIconRaster(double lat, double lon, int x, int y,
                                          byte bytearr[]) {
         ImageIcon icon = getIconRaster(bytearr);
         if (icon == null)
@@ -229,7 +229,7 @@ public class ByteRasterLocation extends Location {
      * Given a new latitude/longitude, reposition the graphic and
      * label.
      */
-    public void setGraphicLocations(float latitude, float longitude) {
+    public void setGraphicLocations(double latitude, double longitude) {
         if (location instanceof OMRaster) {
             OMRaster ras = (OMRaster) location;
             ras.setLat(latitude);
@@ -262,7 +262,7 @@ public class ByteRasterLocation extends Location {
      * Given a new latitude/longitude with x/y offset points,
      * reposition the graphic and label.
      */
-    public void setGraphicLocations(float latitude, float longitude,
+    public void setGraphicLocations(double latitude, double longitude,
                                     int offsetX, int offsetY) {
         if (location instanceof OMRaster) {
             OMRaster ras = (OMRaster) location;

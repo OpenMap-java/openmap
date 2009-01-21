@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/NatCubicClosedSpline.java,v $
 //$RCSfile: NatCubicClosedSpline.java,v $
-//$Revision: 1.4 $
-//$Date: 2004/10/14 18:06:11 $
+//$Revision: 1.5 $
+//$Date: 2009/01/21 01:24:41 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -117,14 +117,14 @@ public class NatCubicClosedSpline extends NatCubicSpline {
      * @see com.bbn.openmap.omGraphics.NatCubicSpline#calc(float[],
      *      float)
      */
-    public float[] calc(float[] llpoints, float precision) {
+    public double[] calc(double[] llpoints, float precision) {
 
-        float[] llpts = llpoints;
+        double[] llpts = llpoints;
         int l = llpoints.length;
         if (l > 4) {
             if (Math.abs(llpoints[0] - llpoints[l - 2]) < 1e-5
                     && Math.abs(llpoints[1] - llpoints[l - 1]) < 1e-5) {
-                llpts = new float[l - 2];
+                llpts = new double[l - 2];
                 System.arraycopy(llpoints, 0, llpts, 0, l - 2);
             }
         }

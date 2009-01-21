@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/DrawingAttributes.java,v $
 // $RCSfile: DrawingAttributes.java,v $
-// $Revision: 1.27 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.28 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -68,6 +68,7 @@ import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.gui.GridBagToolBar;
 import com.bbn.openmap.image.BufferedImageHelper;
+import com.bbn.openmap.omGraphics.awt.ShapeRenderer;
 import com.bbn.openmap.omGraphics.geom.NonRegional;
 import com.bbn.openmap.tools.icon.IconPartList;
 import com.bbn.openmap.tools.icon.OMIconFactory;
@@ -123,7 +124,7 @@ import com.bbn.openmap.util.propertyEditor.OptionPropertyEditor;
  * 
  */
 public class DrawingAttributes implements ActionListener, Serializable,
-        Cloneable, PropertyConsumer, PropertyChangeListener {
+        Cloneable, PropertyConsumer, PropertyChangeListener, ShapeRenderer {
 
     /**
      * The name of the property that holds the line paint of the graphics.

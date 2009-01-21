@@ -54,8 +54,8 @@ public class DatumShiftProjection extends GeoProj {
                 (float) centerInDifferentDatum.getX());
     }
 
-    public ArrayList _forwardPoly(float[] rawllpts, int ltype, int nsegs,
-                                  boolean isFilled) {
+    public ArrayList<int[]> _forwardPoly(float[] rawllpts, int ltype,
+                                         int nsegs, boolean isFilled) {
 
         float[] rawllptsInDifferentDatum = new float[rawllpts.length];
 
@@ -75,8 +75,8 @@ public class DatumShiftProjection extends GeoProj {
                 isFilled);
     }
 
-    protected ArrayList _forwardPoly(double[] rawllpts, int ltype, int nsegs,
-                                     boolean isFilled) {
+    protected ArrayList<int[]> _forwardPoly(double[] rawllpts, int ltype,
+                                            int nsegs, boolean isFilled) {
 
         double[] rawllptsInDifferentDatum = new double[rawllpts.length];
 

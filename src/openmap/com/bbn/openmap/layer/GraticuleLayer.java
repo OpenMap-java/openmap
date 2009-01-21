@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/GraticuleLayer.java,v $
 // $RCSfile: GraticuleLayer.java,v $
-// $Revision: 1.15 $
-// $Date: 2006/02/16 16:22:49 $
+// $Revision: 1.16 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -841,7 +841,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         int stepSize;
         // Choose how far apart the lines will be.
         stepSize = ((showWhichLines == SHOW_ONES) ? 1 : 5);
-        float[] llp;
+        double[] llp;
         OMPoly currentLine;
         OMText currentText;
 
@@ -858,13 +858,13 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
             // generate parallel of latitude North/South of the
             // equator
             if (west < 0 && east > 0) {
-                llp = new float[6];
+                llp = new double[6];
                 llp[2] = lat;
                 llp[3] = 0f;
                 llp[4] = lat;
                 llp[5] = east;
             } else {
-                llp = new float[4];
+                llp = new double[4];
                 llp[2] = lat;
                 llp[3] = east;
             }
@@ -910,13 +910,13 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
             float lon = (float) i;
 
             if (north < 0 && south > 0) {
-                llp = new float[6];
+                llp = new double[6];
                 llp[2] = 0f;
                 llp[3] = lon;
                 llp[4] = south;
                 llp[5] = lon;
             } else {
-                llp = new float[4];
+                llp = new double[4];
                 llp[2] = south;
                 llp[3] = lon;
             }
@@ -978,7 +978,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 float lat = (float) (10 * i * j);
                 // generate parallel of latitude North/South of the
                 // equator
-                float[] llp = { lat, -180f, lat, -90f, lat, 0f, lat, 90f, lat,
+                double[] llp = { lat, -180f, lat, -90f, lat, 0f, lat, 90f, lat,
                         180f };
                 currentLine = new OMPoly(llp, OMGraphic.DECIMAL_DEGREES, boxy ? OMGraphic.LINETYPE_STRAIGHT
                         : OMGraphic.LINETYPE_RHUMB);
@@ -992,7 +992,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
             for (int j = -1; j < 2; j += 2) {
                 float lon = (float) (10 * i * j);
                 // not quite 90.0 for beautification reasons.
-                float[] llp = { 80f, lon, 0f, lon, -80f, lon };
+                double[] llp = { 80f, lon, 0f, lon, -80f, lon };
                 if (MoreMath.approximately_equal(Math.abs(lon), 90f, 0.001f)) {
                     llp[0] = 90f;
                     llp[4] = -90f;
@@ -1139,7 +1139,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         // generate Prime Meridian and Dateline
         for (int j = 0; j < 360; j += 180) {
             float lon = (float) j;
-            float[] llp = { 90f, lon, 0f, lon, -90f, lon };
+            double[] llp = { 90f, lon, 0f, lon, -90f, lon };
             currentLine = new OMPoly(llp, OMGraphic.DECIMAL_DEGREES, boxy ? OMGraphic.LINETYPE_STRAIGHT
                     : OMGraphic.LINETYPE_GREATCIRCLE);
             currentLine.setLinePaint(dateLineColor);
@@ -1147,7 +1147,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         }
 
         // equator
-        float[] llp = { 0f, -180f, 0f, -90f, 0f, 0f, 0f, 90f, 0f, 180f };
+        double[] llp = { 0f, -180f, 0f, -90f, 0f, 0f, 0f, 90f, 0f, 180f };
         // polyline
         currentLine = new OMPoly(llp, OMGraphic.DECIMAL_DEGREES, boxy ? OMGraphic.LINETYPE_STRAIGHT
                 : OMGraphic.LINETYPE_GREATCIRCLE);

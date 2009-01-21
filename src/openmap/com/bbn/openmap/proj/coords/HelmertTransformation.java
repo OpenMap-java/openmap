@@ -18,20 +18,20 @@ public class HelmertTransformation {
 	/**
 	 * Parameters to transform from WGS84 to ED50 north of 62deg N.
 	 */
-	private static final HelmertTransformation WGS84_TO_ED50_N62N = new HelmertTransformation(
+	public static final HelmertTransformation WGS84_TO_ED50_N62N = new HelmertTransformation(
 			116.641d, 56.931d, 110.559d, -0.000004327d, -0.000004464d,
 			0.000004444d, ppmToM(3.520d), TYPE_POSITION_VECTOR);
 
 	/**
 	 * Parameters to transform from ED50 to WGS84 north of 62deg N.
 	 */
-	private static final HelmertTransformation ED50_TO_WGS84_N62N = WGS84_TO_ED50_N62N
+	public static final HelmertTransformation ED50_TO_WGS84_N62N = WGS84_TO_ED50_N62N
 			.createReverse();
 
 	/**
 	 * Parameters to transform from WGS84 to ED50 south of 62deg N.
 	 */
-	private static final HelmertTransformation WGS84_TO_ED50_S62N = new HelmertTransformation(
+	public static final HelmertTransformation WGS84_TO_ED50_S62N = new HelmertTransformation(
 			90.365d, 101.130d, 123.384d, -0.000001614d, -0.000000373d,
 			-0.000004334d, ppmToM(-1.994d), TYPE_POSITION_VECTOR);
 

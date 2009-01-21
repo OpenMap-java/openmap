@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFFeatureGraphicWarehouse.java,v $
 // $RCSfile: VPFFeatureGraphicWarehouse.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/12/09 21:08:57 $
+// $Revision: 1.9 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -209,7 +209,7 @@ public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
      */
     public void createArea(CoverageTable covtable, AreaTable areatable,
                            List facevec, LatLonPoint ll1, LatLonPoint ll2,
-                           float dpplat, float dpplon, String featureType) {
+                           double dpplat, double dpplon, String featureType) {
 
         List ipts = new ArrayList();
 
@@ -250,8 +250,8 @@ public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
      *  
      */
     public void createEdge(CoverageTable c, EdgeTable edgetable, List edgevec,
-                           LatLonPoint ll1, LatLonPoint ll2, float dpplat,
-                           float dpplon, CoordFloatString coords,
+                           LatLonPoint ll1, LatLonPoint ll2, double dpplat,
+                           double dpplon, CoordFloatString coords,
                            String featureType) {
 
         int id = ((Integer) edgevec.get(0)).intValue();
@@ -284,7 +284,7 @@ public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
      *  
      */
     public void createText(CoverageTable c, TextTable texttable, List textvec,
-                           float latitude, float longitude, String text,
+                           double latitude, double longitude, String text,
                            String featureType) {
 
         OMText txt = createOMText(text, latitude, longitude);
@@ -299,7 +299,7 @@ public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
      * feature.
      */
     public void createNode(CoverageTable c, NodeTable t, List nodeprim,
-                           float latitude, float longitude,
+                           double latitude, double longitude,
                            boolean isEntityNode, String featureType) {
         OMPoint pt = createOMPoint(latitude, longitude);
         int id = ((Integer) nodeprim.get(0)).intValue();

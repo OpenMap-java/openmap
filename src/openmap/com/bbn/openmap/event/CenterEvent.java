@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/CenterEvent.java,v $
 // $RCSfile: CenterEvent.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:44 $
+// $Revision: 1.4 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -28,8 +28,8 @@ package com.bbn.openmap.event;
  */
 public class CenterEvent extends java.util.EventObject {
 
-    private transient float latitude;
-    private transient float longitude;
+    private transient double latitude;
+    private transient double longitude;
 
     /**
      * Construct a CenterEvent.
@@ -38,7 +38,7 @@ public class CenterEvent extends java.util.EventObject {
      * @param lat float latitude in decimal degrees
      * @param lon float longitude in decimal degrees
      */
-    public CenterEvent(Object source, float lat, float lon) {
+    public CenterEvent(Object source, double lat, double lon) {
         super(source);
         latitude = lat;
         longitude = lon;
@@ -49,7 +49,7 @@ public class CenterEvent extends java.util.EventObject {
      * 
      * @return float latitude in decimal degrees
      */
-    public float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
@@ -58,7 +58,7 @@ public class CenterEvent extends java.util.EventObject {
      * 
      * @return float latitude in decimal degrees
      */
-    public float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 }

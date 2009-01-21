@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OverviewMapAreaLayer.java,v $
 // $RCSfile: OverviewMapAreaLayer.java,v $
-// $Revision: 1.7 $
-// $Date: 2006/08/09 21:08:30 $
+// $Revision: 1.8 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -130,7 +130,7 @@ public class OverviewMapAreaLayer extends Layer implements
 
         } else {
             // populate the coordinate array for the polygon
-            float llarr[] = new float[l.size() * 2];
+            double llarr[] = new double[l.size() * 2];
             for (int i = 0; i < l.size(); i++) {
                 int pos = i * 2;
                 LatLonPoint llp = ((LatLonPoint) l.get(i));

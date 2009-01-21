@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoint.java,v $
 // $RCSfile: OMPoint.java,v $
-// $Revision: 1.12 $
-// $Date: 2008/02/25 23:59:11 $
+// $Revision: 1.13 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -56,9 +56,9 @@ public class OMPoint extends OMGraphic implements Serializable {
      */
     protected int y = 0;
     /** Latitude of point, decimal degrees. */
-    protected float lat1 = 0.0f;
+    protected double lat1 = 0.0f;
     /** Longitude of point, decimal degrees. */
-    protected float lon1 = 0.0f;
+    protected double lon1 = 0.0f;
 
     /** Set to true if you want little circles marking the point. */
     protected boolean oval = DEFAULT_ISOVAL;
@@ -71,14 +71,14 @@ public class OMPoint extends OMGraphic implements Serializable {
     /**
      * Create an OMPoint at a lat/lon position, with the default radius.
      */
-    public OMPoint(float lat, float lon) {
+    public OMPoint(double lat, double lon) {
         this(lat, lon, DEFAULT_RADIUS);
     }
 
     /**
      * Create an OMPoint at a lat/lon position, with the specified radius.
      */
-    public OMPoint(float lat, float lon, int radius) {
+    public OMPoint(double lat, double lon, int radius) {
         setRenderType(RENDERTYPE_LATLON);
         set(lat, lon);
         this.radius = radius;
@@ -88,7 +88,7 @@ public class OMPoint extends OMGraphic implements Serializable {
      * Create an OMPoint at a lat/lon position with a screen X/Y pixel offset,
      * with the default radius.
      */
-    public OMPoint(float lat, float lon, int offsetx, int offsety) {
+    public OMPoint(double lat, double lon, int offsetx, int offsety) {
         this(lat, lon, offsetx, offsety, DEFAULT_RADIUS);
     }
 
@@ -96,7 +96,7 @@ public class OMPoint extends OMGraphic implements Serializable {
      * Create an OMPoint at a lat/lon position with a screen X/Y pixel offset,
      * with the specified radius.
      */
-    public OMPoint(float lat, float lon, int offsetx, int offsety, int radius) {
+    public OMPoint(double lat, double lon, int offsetx, int offsety, int radius) {
         setRenderType(RENDERTYPE_OFFSET);
         set(lat, lon, offsetx, offsety);
         this.radius = radius;
@@ -121,13 +121,13 @@ public class OMPoint extends OMGraphic implements Serializable {
     }
 
     /** For lat/lon rendertype points, to move the point location. */
-    public void set(float lat, float lon) {
+    public void set(double lat, double lon) {
         setLat(lat);
         setLon(lon);
     }
 
     /** For offset rendertype points, to move the point location. */
-    public void set(float lat, float lon, int offsetx, int offsety) {
+    public void set(double lat, double lon, int offsetx, int offsety) {
         setLat(lat);
         setLon(lon);
         set(offsetx, offsety);
@@ -148,24 +148,24 @@ public class OMPoint extends OMGraphic implements Serializable {
     }
 
     /** Set the latitude of the point, in decimal degrees. */
-    public void setLat(float lat) {
+    public void setLat(double lat) {
         this.lat1 = lat;
         setNeedToRegenerate(true);
     }
 
     /** Get the latitude of the point, in decimal degrees. */
-    public float getLat() {
+    public double getLat() {
         return lat1;
     }
 
     /** Set the longitude of the point, in decimal degrees. */
-    public void setLon(float lon) {
+    public void setLon(double lon) {
         this.lon1 = lon;
         setNeedToRegenerate(true);
     }
 
     /** Get the longitude of the point, in decimal degrees. */
-    public float getLon() {
+    public double getLon() {
         return lon1;
     }
 

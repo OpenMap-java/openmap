@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/e00/TX7.java,v $
 // $RCSfile: TX7.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/12/09 21:09:12 $
+// $Revision: 1.8 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -52,12 +52,12 @@ public class TX7 extends OMGraphic {
     LatLonPoint llp1 = new LatLonPoint(), llp2 = new LatLonPoint();
     Point pt1 = new Point(), pt2 = new Point();
     AffineTransform at = new AffineTransform();
-    float llpoints[];
+    double llpoints[];
     String str;
     Font font = defaultFont;
     GlyphVector gv;
     //GeneralPath path;
-    float distance;
+    double distance;
     boolean badprojection;
     final static Font defaultFont = new Font("Arial", Font.PLAIN, 10);
 
@@ -69,7 +69,7 @@ public class TX7 extends OMGraphic {
      * @param isRadian true if lat lons given in radians
      * @since
      */
-    public TX7(float llpoints[], String str, boolean isRadian) {
+    public TX7(double llpoints[], String str, boolean isRadian) {
         this(llpoints, str, isRadian, null);
     }
 
@@ -82,7 +82,7 @@ public class TX7 extends OMGraphic {
      * @param font font used to draw text
      * @since
      */
-    public TX7(float llpoints[], String str, boolean isRadian, Font font) {
+    public TX7(double llpoints[], String str, boolean isRadian, Font font) {
         if (str == null)
             this.str = " ";
         else
@@ -101,7 +101,7 @@ public class TX7 extends OMGraphic {
      * @param str Text *
      * @since
      */
-    public TX7(float llpoints[], String str) {
+    public TX7(double llpoints[], String str) {
         this(llpoints, str, true, null);
     }
 
@@ -134,7 +134,7 @@ public class TX7 extends OMGraphic {
      * @param isRadian true if lat lons given in radians
      * @since
      */
-    public void setLocation(float[] llpoints, boolean isRadian) {
+    public void setLocation(double[] llpoints, boolean isRadian) {
         this.llpoints = llpoints;
         if (!isRadian) {
             float cv = (float) (Math.PI / 180.0);
@@ -170,7 +170,7 @@ public class TX7 extends OMGraphic {
      * @return array on lat lon lat lon ... in radians
      * @since
      */
-    public float[] getLocation() {
+    public double[] getLocation() {
         return llpoints;
     }
 
@@ -237,10 +237,10 @@ public class TX7 extends OMGraphic {
      * @since
      */
     void compute() {
-        float lt1;
-        float ln1;
-        float lt2;
-        float ln2;
+        double lt1;
+        double ln1;
+        double lt2;
+        double ln2;
         FontRenderContext frc = new FontRenderContext(new AffineTransform(), true, true);
         gv = font.createGlyphVector(frc, str);
         Rectangle2D r = gv.getLogicalBounds();
@@ -259,14 +259,14 @@ public class TX7 extends OMGraphic {
         setNeedToRegenerate(true);
         visible = false;
 
-        float[] ds = new float[nseg];
-        float[] az = new float[nseg];
-        float[] cs = new float[nseg];
+        double[] ds = new double[nseg];
+        double[] az = new double[nseg];
+        double[] cs = new double[nseg];
         int j = 2;
-        float s = 0;
-        float corr = 0;
-        float dz;
-        float az0 = 0;
+        double s = 0;
+        double corr = 0;
+        double dz;
+        double az0 = 0;
         for (int i = 0; i < nseg; i++) {
             //if(j>llpoints.length-2){System.out.println(j+" "+i+"
             // "+nseg);nseg=1;break;}

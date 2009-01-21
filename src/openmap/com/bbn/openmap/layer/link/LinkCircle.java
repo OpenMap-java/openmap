@@ -14,22 +14,22 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkCircle.java,v $
 // $RCSfile: LinkCircle.java,v $
-// $Revision: 1.5 $
-// $Date: 2007/02/26 17:12:45 $
+// $Revision: 1.6 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.omGraphics.OMCircle;
-import com.bbn.openmap.proj.Length;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.LatLonPoint;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+
+import com.bbn.openmap.omGraphics.OMCircle;
+import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.Debug;
 
 /**
  * Reading and writing a Link protocol version of a circle.
@@ -186,9 +186,9 @@ public class LinkCircle implements LinkGraphicConstants,
         switch (circle.getRenderType()) {
         case OMCircle.RENDERTYPE_LATLON:
             llp = circle.getLatLon();
-            LinkCircle.write(llp.getLatitude(),
-                    llp.getLongitude(),
-                    circle.getRadius(),
+            LinkCircle.write((float) llp.getLatitude(),
+                    (float) llp.getLongitude(),
+                    (float) circle.getRadius(),
                     props,
                     link.dos);
             break;
@@ -273,7 +273,7 @@ public class LinkCircle implements LinkGraphicConstants,
             default:
             }
 
-            circle = new OMCircle(new LatLonPoint(lat, lon), radius, unit, nverts);
+            circle = new OMCircle(new LatLonPoint.Double(lat, lon), radius, unit, nverts);
             break;
         case RENDERTYPE_XY:
             x = dis.readInt();

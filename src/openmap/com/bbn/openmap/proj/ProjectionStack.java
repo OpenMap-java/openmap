@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionStack.java,v $
 // $RCSfile: ProjectionStack.java,v $
-// $Revision: 1.7 $
-// $Date: 2006/02/16 16:22:46 $
+// $Revision: 1.8 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -65,8 +65,8 @@ public class ProjectionStack extends OMComponent implements ActionListener,
     public final static transient String ClearForwardStackCmd = "clearForwardStack";
     public final static transient String ClearStacksCmd = "clearStacks";
 
-    protected Stack backStack;
-    protected Stack forwardStack;
+    protected Stack<ProjHolder> backStack;
+    protected Stack<ProjHolder> forwardStack;
 
     protected ProjectionStackSupport triggers;
 
@@ -104,7 +104,7 @@ public class ProjectionStack extends OMComponent implements ActionListener,
         if (command == BackProjCmd && backStack != null && backStack.size() > 1) {
 
             pop();
-            currentProjection = (ProjHolder) backStack.peek();
+            currentProjection = backStack.peek();
             changeProjection = true;
         } else if (command == ForwardProjCmd && forwardStack != null
                 && !forwardStack.empty()) {
@@ -193,10 +193,10 @@ public class ProjectionStack extends OMComponent implements ActionListener,
      * @return the ProjHolder pushed onto the forwardStack.
      */
     protected synchronized ProjHolder pop() {
-        ProjHolder proj = (ProjHolder) backStack.pop();
+        ProjHolder proj = backStack.pop();
 
         if (forwardStack == null) {
-            forwardStack = new Stack();
+            forwardStack = new Stack<ProjHolder>();
         }
 
         while (forwardStack.size() >= stackSize) {
@@ -213,11 +213,11 @@ public class ProjectionStack extends OMComponent implements ActionListener,
      * @return the ProjHolder pushed on the backStack.
      */
     protected synchronized ProjHolder backPop() {
-        ProjHolder proj = (ProjHolder) forwardStack.pop();
+        ProjHolder proj = forwardStack.pop();
 
         // This has almost no chance of happening...
         if (backStack == null) {
-            backStack = new Stack();
+            backStack = new Stack<ProjHolder>();
         }
 
         while (backStack.size() >= stackSize) {
@@ -236,13 +236,13 @@ public class ProjectionStack extends OMComponent implements ActionListener,
      */
     protected synchronized ProjHolder push(ProjHolder proj) {
         if (backStack == null) {
-            backStack = new Stack();
+            backStack = new Stack<ProjHolder>();
         }
 
         if (backStack.size() >= stackSize) {
             backStack.removeElementAt(0);
         }
-        return (ProjHolder) backStack.push(proj);
+        return backStack.push(proj);
     }
 
     public void fireStackStatus() {
@@ -321,7 +321,7 @@ public class ProjectionStack extends OMComponent implements ActionListener,
 
     public class ProjHolder {
 
-        public Class projClass;
+        public Class<? extends Projection> projClass;
         public float scale;
         public Point2D center;
         protected Point tmpPoint1;

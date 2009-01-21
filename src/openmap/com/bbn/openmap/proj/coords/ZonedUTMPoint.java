@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: ZonedUTMPoint.java,v $
-//$Revision: 1.5 $
-//$Date: 2008/02/25 23:19:07 $
+//$Revision: 1.6 $
+//$Date: 2009/01/21 01:24:41 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -47,7 +47,7 @@ public class ZonedUTMPoint extends UTMPoint {
      * @param zone_number The zone of the coordinate.
      * @param zone_letter MGRS zone letter
      */
-    public ZonedUTMPoint(float northing, float easting, int zone_number,
+    public ZonedUTMPoint(double northing, double easting, int zone_number,
             char zone_letter) {
         super(northing,
               easting,
@@ -98,8 +98,8 @@ public class ZonedUTMPoint extends UTMPoint {
      *         <code>null</code> if conversion failed. If you pass in a
      *         LatLonPoint, it will be returned as well, if successful.
      */
-    public static LatLonPoint ZonedUTMtoLL(Ellipsoid ellip, float UTMNorthing,
-                                           float UTMEasting, int ZoneNumber,
+    public static LatLonPoint ZonedUTMtoLL(Ellipsoid ellip, double UTMNorthing,
+                                           double UTMEasting, int ZoneNumber,
                                            char ZoneLetter, LatLonPoint llpoint) {
         return UTMPoint.UTMtoLL(ellip,
                 UTMNorthing,

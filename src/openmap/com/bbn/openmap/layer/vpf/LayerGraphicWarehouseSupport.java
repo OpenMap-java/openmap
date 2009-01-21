@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/LayerGraphicWarehouseSupport.java,v $
-// $Revision: 1.12 $ $Date: 2005/12/09 21:08:57 $ $Author: dietrick $
+// $Revision: 1.13 $ $Date: 2009/01/21 01:24:41 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -419,7 +419,7 @@ public abstract class LayerGraphicWarehouseSupport implements
      */
     public static OMPoly createAreaOMPoly(List ipts, int totalSize,
                                           LatLonPoint ll1, LatLonPoint ll2,
-                                          float dpplat, float dpplon,
+                                          double dpplat, double dpplon,
                                           boolean doAntarcticaWorkaround) {
         int i, j, size = ipts.size();
         int npts = 0;
@@ -430,7 +430,7 @@ public abstract class LayerGraphicWarehouseSupport implements
         //      }
 
         // *2 for pairs
-        float[] llpts = new float[totalSize * 2];
+        double[] llpts = new double[totalSize * 2];
 
         // only do it if we're in the vicinity
         if (doAntarcticaWorkaround) {
@@ -441,7 +441,7 @@ public abstract class LayerGraphicWarehouseSupport implements
             CoordFloatString cfs = (CoordFloatString) ipts.get(j);
             int cfscnt = cfs.tcount;
             int cfssz = cfs.tsize;
-            float cfsvals[] = cfs.vals;
+            double cfsvals[] = cfs.vals;
             if (cfscnt > 0) { // normal
                 for (i = 0; i < cfscnt; i++) {
                     llpts[npts++] = ProjMath.degToRad(cfsvals[i * cfssz + 1]);//lat
@@ -462,7 +462,7 @@ public abstract class LayerGraphicWarehouseSupport implements
         //only check if bottom edge of screen below a certain
         // latitude
         if (doAntarcticaWorkaround) {
-            float[] newllpts = new float[llpts.length];
+            double[] newllpts = new double[llpts.length];
             for (i = 0; i < newllpts.length; i += 2) {
                 newllpts[i] = llpts[i];
                 newllpts[i + 1] = llpts[i + 1];
@@ -514,7 +514,7 @@ public abstract class LayerGraphicWarehouseSupport implements
      */
     public static OMPoly createEdgeOMPoly(CoordFloatString coords,
                                           LatLonPoint ll1, LatLonPoint ll2,
-                                          float dpplat, float dpplon) {
+                                          double dpplat, double dpplon) {
         // thin the data
         //      if (doThinning) {
         //          List ipts = new ArrayList(1);
@@ -522,7 +522,7 @@ public abstract class LayerGraphicWarehouseSupport implements
         //          doThinning(ipts);
         //      }
 
-        float[] llpts = coords.vals; //NOTE: lon,lat order!
+        double[] llpts = coords.vals; //NOTE: lon,lat order!
 
         // handle larger tuples (do extra O(n) loop to extract only
         // lon/lats.
@@ -532,7 +532,7 @@ public abstract class LayerGraphicWarehouseSupport implements
              * Debug.output("EdgeTable.drawTile: big tuple size: " +
              * coords.tsize); }
              */
-            float[] newllpts = new float[coords.tcount * 2];//*2 for
+            double[] newllpts = new double[coords.tcount * 2];//*2 for
                                                             // pairs
             int len = newllpts.length;
             for (int i = 0, j = 0; i < len; i += 2, j += 3) {
@@ -541,7 +541,7 @@ public abstract class LayerGraphicWarehouseSupport implements
             }
             llpts = newllpts;
         } else {
-            float lon;
+            double lon;
             int len = llpts.length;
             for (int i = 0; i < len; i += 2) {
                 lon = ProjMath.degToRad(llpts[i]);
@@ -604,7 +604,7 @@ public abstract class LayerGraphicWarehouseSupport implements
             CoordFloatString cfs = (CoordFloatString) ipts.get(j);
             int cfscnt = cfs.tcount;
             int cfssz = cfs.tsize;
-            float[] cfsvals = cfs.vals;
+            double[] cfsvals = cfs.vals;
             int npts = 0;
 
             // handle reverse
@@ -614,7 +614,7 @@ public abstract class LayerGraphicWarehouseSupport implements
             }
 
             // copy points
-            float[] llpts = new float[cfscnt << 1];
+            double[] llpts = new double[cfscnt << 1];
             for (int i = 0; i < cfscnt; i++) {
                 llpts[npts++] = cfsvals[i * cfssz];//lon
                 llpts[npts++] = cfsvals[i * cfssz + 1];//lat
@@ -644,8 +644,8 @@ public abstract class LayerGraphicWarehouseSupport implements
      * @param latitude the latitude of where to place the text
      * @param longitude the longitude of where to place the text
      */
-    public static OMText createOMText(String text, float latitude,
-                                      float longitude) {
+    public static OMText createOMText(String text, double latitude,
+                                      double longitude) {
 
         OMText txt = new OMText(latitude, longitude, text, OMText.JUSTIFY_LEFT);
         return txt;
@@ -657,7 +657,7 @@ public abstract class LayerGraphicWarehouseSupport implements
      * @param latitude the latitude of where to place the text
      * @param longitude the longitude of where to place the text
      */
-    public static OMPoint createOMPoint(float latitude, float longitude) {
+    public static OMPoint createOMPoint(double latitude, double longitude) {
 
         return new OMPoint(latitude, longitude);
     }

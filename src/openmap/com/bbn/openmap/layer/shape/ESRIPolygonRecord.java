@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPolygonRecord.java,v $ 
 // $RCSfile: ESRIPolygonRecord.java,v $ 
-// $Revision: 1.7 $ 
-// $Date: 2005/08/09 18:48:03 $ 
+// $Revision: 1.8 $ 
+// $Date: 2009/01/21 01:24:42 $ 
 // $Author: dietrick $ 
 // 
 // ********************************************************************** 
@@ -42,7 +42,7 @@ import com.bbn.openmap.proj.ProjMath;
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
  * @author HACK-author blame it on aculline
- * @version $Revision: 1.7 $ $Date: 2005/08/09 18:48:03 $
+ * @version $Revision: 1.8 $ $Date: 2009/01/21 01:24:42 $
  */
 public class ESRIPolygonRecord extends ESRIRecord {
 
@@ -141,7 +141,7 @@ public class ESRIPolygonRecord extends ESRIRecord {
      * @param radians coordinates: y,x,y,x,... (lat,lon) order in
      *        RADIANS!
      */
-    public void add(float radians[]) {
+    public void add(double radians[]) {
         ESRIPoly newPoly = new ESRIPoly.ESRIFloatPoly(radians);
 
         int numParts = polygons.length;
@@ -179,7 +179,7 @@ public class ESRIPolygonRecord extends ESRIRecord {
         if (nPolys <= 0)
             return;
         OMPoly p = null;
-        float[] pts;
+        double[] pts;
         boolean ispolyg = isPolygon();
         /*
          * modifications in the next 4 lines marked with as: allow to
@@ -244,7 +244,7 @@ public class ESRIPolygonRecord extends ESRIRecord {
             return null;
         }
 
-        float[] pts;
+        double[] pts;
         boolean ispolyg = isPolygon();
         OMGeometry geom = null;
 
@@ -331,7 +331,7 @@ public class ESRIPolygonRecord extends ESRIRecord {
         for (int i = 0; i < numParts; i++) {
             // REMEMBER: stored internally as y,x order (lat,lon
             // order)
-            float[] pts = ((ESRIPoly.ESRIFloatPoly) polygons[i]).getRadians();
+            double[] pts = ((ESRIPoly.ESRIFloatPoly) polygons[i]).getRadians();
             int nPts = pts.length;
             for (int j = 0; j < nPts; j += 2) {
                 nBytes += writeLEDouble(b,

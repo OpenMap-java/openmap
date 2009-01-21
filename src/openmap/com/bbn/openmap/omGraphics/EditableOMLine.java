@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMLine.java,v $
 // $RCSfile: EditableOMLine.java,v $
-// $Revision: 1.11 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.12 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -232,7 +232,7 @@ public class EditableOMLine extends EditableOMAbstractLine implements
                 // then then the end points may not be on the screen.
                 if (projection != null) {
 
-                    float[] ll = line.getLL();
+                    double[] ll = line.getLL();
                     Point2D p = projection.forward(ll[0], ll[1]);
                     gp1.set((int) p.getX(), (int) p.getY());
 
@@ -255,7 +255,7 @@ public class EditableOMLine extends EditableOMAbstractLine implements
             if (line.getRenderType() == OMGraphic.RENDERTYPE_OFFSET
                     && projection != null) {
 
-                float[] ll = line.getLL();
+                double[] ll = line.getLL();
                 Point2D p = projection.forward(ll[0], ll[1]);
 
                 gpo.set((int) p.getX(), (int) p.getY());
@@ -277,7 +277,7 @@ public class EditableOMLine extends EditableOMAbstractLine implements
         int renderType = line.getRenderType();
         if (renderType == OMGraphic.RENDERTYPE_LATLON) {
             if (projection != null) {
-                float[] floats = new float[4];
+                double[] floats = new double[4];
                 LatLonPoint llp = (LatLonPoint) projection.inverse(gp1.getX(),
                         gp1.getY(),
                         new LatLonPoint.Double());
@@ -296,7 +296,7 @@ public class EditableOMLine extends EditableOMAbstractLine implements
         } else if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
             // Do the offset point.
             if (projection != null) {
-                float[] floats = new float[4];
+                double[] floats = new double[4];
                 LatLonPoint llp = (LatLonPoint) projection.inverse(gpo.getX(),
                         gpo.getY(),
                         new LatLonPoint.Double());

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/test/HelloWorldLayer.java,v $
 // $RCSfile: HelloWorldLayer.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/12/09 21:09:13 $
+// $Revision: 1.5 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -94,7 +94,7 @@ public class HelloWorldLayer extends Layer {
         OMPoly poly;
 
         // H
-        poly = new OMPoly(new float[] { 10f, -150f, 35f, -150f, 35f, -145f,
+        poly = new OMPoly(new double[] { 10f, -150f, 35f, -150f, 35f, -145f,
                 25f, -145f, 25f, -135f, 35f, -135f, 35f, -130f, 10f, -130f,
                 10f, -135f, 20f, -135f, 20f, -145f, 10f, -145f, 10f, -150f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
         poly.setLinePaint(Color.black);
@@ -102,7 +102,7 @@ public class HelloWorldLayer extends Layer {
         list.add(poly);
 
         // E
-        poly = new OMPoly(new float[] { 10f, -120f, 35f, -120f, 35f, -100f,
+        poly = new OMPoly(new double[] { 10f, -120f, 35f, -120f, 35f, -100f,
                 30f, -100f, 30f, -115f, 25f, -115f, 25f, -105f, 20f, -105f,
                 20f, -115f, 15f, -115f, 15f, -100f, 10f, -100f, 10f, -120f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
         poly.setLinePaint(Color.black);
@@ -110,31 +110,31 @@ public class HelloWorldLayer extends Layer {
         list.add(poly);
 
         // L
-        poly = new OMPoly(new float[] { 10f, -90f, 35f, -90f, 35f, -85f, 15f,
+        poly = new OMPoly(new double[] { 10f, -90f, 35f, -90f, 35f, -85f, 15f,
                 -85f, 15f, -75f, 10f, -75f, 10f, -90f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
         poly.setLinePaint(Color.black);
         poly.setFillPaint(Color.green);
         list.add(poly);
 
         // L
-        poly = new OMPoly(new float[] { 10f, -70f, 35f, -70f, 35f, -65f, 15f,
+        poly = new OMPoly(new double[] { 10f, -70f, 35f, -70f, 35f, -65f, 15f,
                 -65f, 15f, -55f, 10f, -55f, 10f, -70f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
         poly.setLinePaint(Color.black);
         poly.setFillPaint(Color.green);
         list.add(poly);
 
         // O
-        poly = new OMPoly(new float[] { 10f, -50f, 35f, -50f, 35f, -30f, 10f,
+        poly = new OMPoly(new double[] { 10f, -50f, 35f, -50f, 35f, -30f, 10f,
                 -30f, 10f, -50f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
         poly.setLinePaint(Color.black);
         poly.setFillPaint(OMGraphic.clear);
         list.add(poly);
-        poly = new OMPoly(new float[] { 15f, -45f, 30f, -45f, 30f, -35f, 15f,
+        poly = new OMPoly(new double[] { 15f, -45f, 30f, -45f, 30f, -35f, 15f,
                 -35f, 15f, -45f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
         poly.setLinePaint(Color.black);
         poly.setFillPaint(OMGraphic.clear);
         list.add(poly);
-        poly = new OMPoly(new float[] { 10f, -50f, 35f, -50f, 35f, -30f, 10f,
+        poly = new OMPoly(new double[] { 10f, -50f, 35f, -50f, 35f, -30f, 10f,
                 -30f, 10f, -45f, 15f, -45f, 15f, -35f, 30f, -35f, 30f, -45f,
                 10f, -45f, 10f, -50f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
         poly.setLinePaint(OMGraphic.clear);
@@ -142,7 +142,7 @@ public class HelloWorldLayer extends Layer {
         list.add(poly);
 
         // W
-        poly = new OMPoly(new float[] { -35f, -5f, -10f, -5f, -10f, 0f, -25f,
+        poly = new OMPoly(new double[] { -35f, -5f, -10f, -5f, -10f, 0f, -25f,
                 0f, -25f, 5f, -20f, 5f, -20f, 10f, -25f, 10f, -25f, 15f, -10f,
                 15f, -10f, 20f, -35f, 20f, -35f, 10f, -30f, 10f, -30f, 5f,
                 -35f, 5f, -35f, -5f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
@@ -151,17 +151,17 @@ public class HelloWorldLayer extends Layer {
         list.add(poly);
 
         // O
-        poly = new OMPoly(new float[] { -35f, 30f, -10f, 30f, -10f, 50f, -35f,
+        poly = new OMPoly(new double[] { -35f, 30f, -10f, 30f, -10f, 50f, -35f,
                 50f, -35f, 30f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
         poly.setLinePaint(Color.black);
         poly.setFillPaint(OMGraphic.clear);
         list.add(poly);
-        poly = new OMPoly(new float[] { -30f, 35f, -15f, 35f, -15f, 45f, -30f,
+        poly = new OMPoly(new double[] { -30f, 35f, -15f, 35f, -15f, 45f, -30f,
                 45f, -30f, 35f, }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
         poly.setLinePaint(Color.black);
         poly.setFillPaint(OMGraphic.clear);
         list.add(poly);
-        poly = new OMPoly(new float[] { -35f, 30f, -10f, 30f, -10f, 50f, -35f,
+        poly = new OMPoly(new double[] { -35f, 30f, -10f, 30f, -10f, 50f, -35f,
                 50f, -35f, 35f, -30f, 35f, -30f, 45f, -15f, 45f, -15f, 35f,
                 -35f, 35f, -35f, 30f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
         poly.setLinePaint(OMGraphic.clear);
@@ -169,18 +169,18 @@ public class HelloWorldLayer extends Layer {
         list.add(poly);
 
         // R
-        poly = new OMPoly(new float[] { -35f, 60f, -10f, 60f, -10f, 75f, -20f,
+        poly = new OMPoly(new double[] { -35f, 60f, -10f, 60f, -10f, 75f, -20f,
                 75f, -25f, 70f, -30f, 80f, -35f, 80f, -35f, 75f, -30f, 70f,
                 -30f, 65f, -35f, 65f, -35f, 60f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
         poly.setLinePaint(Color.black);
         poly.setFillPaint(OMGraphic.clear);
         list.add(poly);
-        poly = new OMPoly(new float[] { -20f, 65f, -15f, 65f, -15f, 70f, -20f,
+        poly = new OMPoly(new double[] { -20f, 65f, -15f, 65f, -15f, 70f, -20f,
                 70f, -20f, 65f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
         poly.setLinePaint(Color.black);
         poly.setFillPaint(OMGraphic.clear);
         list.add(poly);
-        poly = new OMPoly(new float[] { -35f, 60f, -10f, 60f, -10f, 75f, -20f,
+        poly = new OMPoly(new double[] { -35f, 60f, -10f, 60f, -10f, 75f, -20f,
                 75f, -25f, 70f, -30f, 80f, -35f, 80f, -35f, 75f, -30f, 70f,
                 -30f, 65f, -20f, 65f, -20f, 70f, -15f, 70f, -15f, 65f, -35f,
                 65f, -35f, 60f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
@@ -189,24 +189,24 @@ public class HelloWorldLayer extends Layer {
         list.add(poly);
 
         // L
-        poly = new OMPoly(new float[] { -35f, 90f, -10f, 90f, -10f, 95f, -30f,
+        poly = new OMPoly(new double[] { -35f, 90f, -10f, 90f, -10f, 95f, -30f,
                 95f, -30f, 105f, -35f, 105f, -35f, 90f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
         poly.setLinePaint(Color.black);
         poly.setFillPaint(Color.green);
         list.add(poly);
 
         // D
-        poly = new OMPoly(new float[] { -35f, 110f, -10f, 110f, -10f, 125f,
+        poly = new OMPoly(new double[] { -35f, 110f, -10f, 110f, -10f, 125f,
                 -15f, 130f, -30f, 130f, -35f, 125f, -35f, 110f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
         poly.setLinePaint(Color.black);
         poly.setFillPaint(OMGraphic.clear);
         list.add(poly);
-        poly = new OMPoly(new float[] { -30f, 115f, -15f, 115f, -15f, 120f,
+        poly = new OMPoly(new double[] { -30f, 115f, -15f, 115f, -15f, 120f,
                 -20f, 125f, -25f, 125f, -30f, 120f, -30f, 115f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);
         poly.setLinePaint(Color.black);
         poly.setFillPaint(OMGraphic.clear);
         list.add(poly);
-        poly = new OMPoly(new float[] { -35f, 110f, -10f, 110f, -10f, 125f,
+        poly = new OMPoly(new double[] { -35f, 110f, -10f, 110f, -10f, 125f,
                 -15f, 130f, -30f, 130f, -35f, 125f, -35f, 115f, -30f, 115f,
                 -30f, 120f, -25f, 125f, -20f, 125f, -15f, 120f, -15f, 115f,
                 -35f, 115f, -35f, 110f }, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB, 32);

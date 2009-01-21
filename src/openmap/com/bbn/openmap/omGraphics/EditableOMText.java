@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMText.java,v $
 // $RCSfile: EditableOMText.java,v $
-// $Revision: 1.12 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.13 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -283,8 +283,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
                     || renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
                 if (projection != null) {
-                    float lon = text.getLon();
-                    float lat = text.getLat();
+                    double lon = text.getLon();
+                    double lat = text.getLat();
 
                     llp = new LatLonPoint(lat, lon);
                     Point2D p = projection.forward(llp);

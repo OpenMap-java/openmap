@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMBitmap.java,v $
 // $RCSfile: OMBitmap.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/08/09 20:01:45 $
+// $Revision: 1.6 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -112,7 +112,7 @@ public class OMBitmap extends OMRasterObject implements Serializable {
      * @param bytes byte array of bitmap, each bit representing a
      *        pixel.
      */
-    public OMBitmap(float lt, float ln, int w, int h, byte[] bytes) {
+    public OMBitmap(double lt, double ln, int w, int h, byte[] bytes) {
 
         super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         lat = lt;
@@ -159,7 +159,7 @@ public class OMBitmap extends OMRasterObject implements Serializable {
      * @param bytes byte array of bitmap, each bit representing a
      *        pixel.
      */
-    public OMBitmap(float lt, float ln, int offset_x1, int offset_y1, int w,
+    public OMBitmap(double lt, double ln, int offset_x1, int offset_y1, int w,
             int h, byte[] bytes) {
 
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);

@@ -35,14 +35,14 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
     /**
      * Create an LabeledOMSpline from a list of float lat/lon pairs.
      */
-    public LabeledOMSpline(float[] llPoints, int units, int lType) {
+    public LabeledOMSpline(double[] llPoints, int units, int lType) {
         super(llPoints, units, lType);
     }
 
     /**
      * Create an LabeledOMSpline from a list of float lat/lon pairs.
      */
-    public LabeledOMSpline(float[] llPoints, int units, int lType, int nsegs) {
+    public LabeledOMSpline(double[] llPoints, int units, int lType, int nsegs) {
         super(llPoints, units, lType, nsegs);
     }
 

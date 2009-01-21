@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFGraphicWarehouse.java,v $
 // $RCSfile: VPFGraphicWarehouse.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/12/09 21:08:57 $
+// $Revision: 1.6 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -46,8 +46,8 @@ public interface VPFGraphicWarehouse extends VPFWarehouse {
      * @param ll2 lowerright of selection region (passed to warehouse)
      */
     public void createArea(CoverageTable c, AreaTable a, List l,
-                           LatLonPoint ll1, LatLonPoint ll2, float dpplat,
-                           float dpplon);
+                           LatLonPoint ll1, LatLonPoint ll2, double dpplat,
+                           double dpplon);
 
     /**
      * Method called by the VPF reader code to construct an edge
@@ -64,8 +64,8 @@ public interface VPFGraphicWarehouse extends VPFWarehouse {
      * @param ll2 lowerright of selection region (passed to warehouse)
      */
     public void createEdge(CoverageTable c, EdgeTable e, List l,
-                           LatLonPoint ll1, LatLonPoint ll2, float dpplat,
-                           float dpplon, CoordFloatString coords);
+                           LatLonPoint ll1, LatLonPoint ll2, double dpplat,
+                           double dpplon, CoordFloatString coords);
 
     /**
      * Method called by the VPF reader code to construct a text
@@ -79,7 +79,7 @@ public interface VPFGraphicWarehouse extends VPFWarehouse {
      * @param text the text string
      */
     public void createText(CoverageTable c, TextTable t, List textprim,
-                           float latitude, float longitude, String text);
+                           double latitude, double longitude, String text);
 
     /**
      * Method called by the VPF reader code to construct a node
@@ -94,5 +94,5 @@ public interface VPFGraphicWarehouse extends VPFWarehouse {
      *        if we are reading connected nodes
      */
     public void createNode(CoverageTable c, NodeTable t, List nodeprim,
-                           float latitude, float longitude, boolean isEntityNode);
+                           double latitude, double longitude, boolean isEntityNode);
 }

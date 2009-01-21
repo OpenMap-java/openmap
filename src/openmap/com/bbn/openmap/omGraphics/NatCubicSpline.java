@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/NatCubicSpline.java,v $
 //$RCSfile: NatCubicSpline.java,v $
-//$Revision: 1.4 $
-//$Date: 2004/10/14 18:06:11 $
+//$Revision: 1.5 $
+//$Date: 2009/01/21 01:24:41 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -137,8 +137,8 @@ public class NatCubicSpline {
      *        coordinates * 100
      * @return float[]
      */
-    public float[] calc(float[] llpoints, float precision) {
-        float[] res;
+    public double[] calc(double[] llpoints, double precision) {
+        double[] res;
         if (llpoints.length > 4) { // 2 points
 
             int[] xpoints = new int[(int) (llpoints.length / 2)];
@@ -166,10 +166,10 @@ public class NatCubicSpline {
                 }
             }
 
-            res = new float[p.npoints * 2];
+            res = new double[p.npoints * 2];
             for (int i = 0, j = 0; i < p.npoints; i++, j += 2) {
-                res[j] = (float) p.xpoints[i] * precision;
-                res[j + 1] = (float) p.ypoints[i] * precision;
+                res[j] = (double) p.xpoints[i] * precision;
+                res[j + 1] = (double) p.ypoints[i] * precision;
             }
 
             p = null;

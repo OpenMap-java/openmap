@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/io/BinaryFile.java,v $
 // $RCSfile: BinaryFile.java,v $
-// $Revision: 1.13 $
-// $Date: 2008/10/10 00:57:21 $
+// $Revision: 1.14 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -69,7 +69,7 @@ public class BinaryFile {
         classCount++;
         openCount++;
     }
-    
+
     /**
      * Constructs a new BinaryFile with the specified inputReader as the input.
      * 
@@ -673,6 +673,13 @@ public class BinaryFile {
         }
     }
 
+    public void readFloatArray(double vec[], int offset, int len)
+            throws EOFException, FormatException {
+        for (int i = 0; i < len; i++) {
+            vec[offset++] = readFloat();
+        }
+    }
+
     /**
      * Reads and returns a double
      * 
@@ -799,7 +806,7 @@ public class BinaryFile {
             }
         }
     }
-    
+
     /**
      * Read the {@link BinaryFile} into memory and return a new
      * {@link BinaryFile} instance working on that in-memory version of the
@@ -810,7 +817,7 @@ public class BinaryFile {
      * @throws IOException
      */
     public BinaryFile readFully() throws IOException {
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buf = new byte[4096];
 

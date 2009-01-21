@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/ShpOutputStream.java,v $
 // $RCSfile: ShpOutputStream.java,v $
-// $Revision: 1.6 $
-// $Date: 2007/01/30 18:39:33 $
+// $Revision: 1.7 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -113,7 +113,7 @@ public class ShpOutputStream {
      * @return The index data that is used to create the .shx file
      */
     protected int[][] createPolyIndex(EsriGraphicList list) {
-        float[] data;
+        double[] data;
 
         int[][] indexData = new int[2][list.size()];
         int pos = 50;
@@ -183,7 +183,7 @@ public class ShpOutputStream {
         int[] offsets = new int[sublist.size()];
         for (int j = 0; j < sublist.size(); j++) {
             OMPoly poly = (OMPoly) sublist.getOMGraphicAt(j);
-            float[] data = poly.getLatLonArray();
+            double[] data = poly.getLatLonArray();
             offsets[j] = pos / 2;
             pos += data.length;
         }
@@ -201,14 +201,14 @@ public class ShpOutputStream {
         int numPoints = 0;
         for (int i = 0; i < sublist.size(); i++) {
             OMPoly poly = (OMPoly) sublist.getOMGraphicAt(i);
-            float[] data = poly.getLatLonArray();
+            double[] data = poly.getLatLonArray();
             numPoints += data.length;
         }
         numPoints /= 2;
         return numPoints;
     }
 
-    protected void writeExtents(float[] extents) throws IOException {
+    protected void writeExtents(double[] extents) throws IOException {
 
         if (_leos == null) {
             return;
@@ -264,7 +264,7 @@ public class ShpOutputStream {
         _leos.writeLEInt(list.getType()); // Byte 32 Shape Type
 
         // Writes bounding box.
-        float[] extents = list.getExtents();
+        double[] extents = list.getExtents();
         writeExtents(extents);
 
         _leos.writeDouble(0.0); // Byte 68
@@ -317,7 +317,7 @@ public class ShpOutputStream {
                 // Write the geometry for each part
                 for (int j = 0; j < sublist.size(); j++) {
                     poly = (OMPoly) sublist.getOMGraphicAt(j);
-                    float[] data = poly.getLatLonArray();
+                    double[] data = poly.getLatLonArray();
                     int n = 0;
                     while (n < data.length) {
                         Float lat = new Float(data[n++]);
@@ -334,7 +334,7 @@ public class ShpOutputStream {
                 _leos.writeLEInt(1);
 
                 poly = (OMPoly) graphic;
-                float[] data = poly.getLatLonArray();
+                double[] data = poly.getLatLonArray();
 
                 // Write number of points for shape
                 _leos.writeLEInt(data.length / 2);
@@ -384,7 +384,7 @@ public class ShpOutputStream {
         _leos.writeLEInt(list.getType());
 
         // Writes bounding box.
-        float[] extents = list.getExtents();
+        double[] extents = list.getExtents();
         writeExtents(extents);
 
         _leos.writeDouble(0.0);

@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: OMGeo.java,v $
-//$Revision: 1.5 $
-//$Date: 2008/07/11 14:45:25 $
+//$Revision: 1.6 $
+//$Date: 2009/01/21 01:24:42 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -200,7 +200,7 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
             // reset the internals
             initLabelingDuringGenerate();
 
-            float[] latlons = getSegArray();
+            double[] latlons = getSegArray();
 
             ArrayList lines = null;
             if (proj instanceof GeoProj) {
@@ -209,8 +209,8 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
                         lineType,
                         -1);
             } else {
-                lines = proj.forwardLine(new Point2D.Float(latlons[1], latlons[0]),
-                        new Point2D.Float(latlons[3], latlons[2]));
+                lines = proj.forwardLine(new Point2D.Double(latlons[1], latlons[0]),
+                        new Point2D.Double(latlons[3], latlons[2]));
             }
 
             int size = lines.size();
@@ -242,7 +242,7 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
             return ((GeoSegment) getExtent()).getSeg();
         }
 
-        public float[] getSegArray() {
+        public double[] getSegArray() {
             return ((GeoSegment) getExtent()).getSegArray();
         }
 

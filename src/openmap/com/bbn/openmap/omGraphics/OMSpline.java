@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMSpline.java,v $
 //$RCSfile: OMSpline.java,v $
-//$Revision: 1.10 $
-//$Date: 2005/12/09 21:09:03 $
+//$Revision: 1.11 $
+//$Date: 2009/01/21 01:24:41 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -73,7 +73,7 @@ public class OMSpline extends OMPoly {
      *        or OMGraphic.DECIMAL_DEGREES
      * @param lType line type, from a list defined in OMGraphic.
      */
-    public OMSpline(float[] llPoints, int units, int lType) {
+    public OMSpline(double[] llPoints, int units, int lType) {
         super(llPoints, units, lType);
     }
 
@@ -100,7 +100,7 @@ public class OMSpline extends OMPoly {
      *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and
      *        if &lt; 1, this value is generated internally)
      */
-    public OMSpline(float[] llPoints, int units, int lType, int nsegs) {
+    public OMSpline(double[] llPoints, int units, int lType, int nsegs) {
         super(llPoints, units, lType, nsegs);
     }
 
@@ -137,7 +137,7 @@ public class OMSpline extends OMPoly {
      * @param xypoints int[] of x,y pairs
      * @param cMode offset coordinate mode
      */
-    public OMSpline(float latPoint, float lonPoint, int[] xypoints, int cMode) {
+    public OMSpline(double latPoint, double lonPoint, int[] xypoints, int cMode) {
         super(latPoint, lonPoint, xypoints, cMode);
     }
 
@@ -152,7 +152,7 @@ public class OMSpline extends OMPoly {
      * @param yPoints int[] of y coordinates
      * @param cMode offset coordinate mode
      */
-    public OMSpline(float latPoint, float lonPoint, int[] xPoints,
+    public OMSpline(double latPoint, double lonPoint, int[] xPoints,
             int[] yPoints, int cMode) {
         super(latPoint, lonPoint, xPoints, yPoints, cMode);
     }
@@ -250,7 +250,7 @@ public class OMSpline extends OMPoly {
             }
 
             // spline creation ; precision 1e-8 rad = 0.002"
-            float[] splinellpts = spline.calc(rawllpts, 1e-8f);
+            double[] splinellpts = spline.calc(rawllpts, 1e-8f);
 
             // polygon/polyline project the polygon/polyline.
             // Vertices should already be in radians.

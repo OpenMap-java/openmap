@@ -93,14 +93,15 @@ public class UTMProjection extends GeoProj {
     public Point2D forward(LatLonPoint llp, Point2D pt) {
         return forward(llp, pt, new UTMPoint());
     }
-    
+
     @Override
     public Point2D forward(double lat, double lon, Point2D pt, boolean isRadian) {
         LatLonPoint llp = new LatLonPoint.Double(lat, lon, isRadian);
         return forward(llp, pt, new UTMPoint());
     }
-    
-    public Point2D forward(double lat, double lon, Point2D pt, boolean isRadian, UTMPoint utmPoint) {
+
+    public Point2D forward(double lat, double lon, Point2D pt,
+                           boolean isRadian, UTMPoint utmPoint) {
         LatLonPoint llp = new LatLonPoint.Double(lat, lon, isRadian);
         return forward(llp, pt, utmPoint);
     }
@@ -159,7 +160,8 @@ public class UTMProjection extends GeoProj {
         // the same earth radius up north..
 
         float widthPX = point2.x - point1.x;
-        float heightPX = point2.y - point1.y;
+
+        // float heightPX = point2.y - point1.y;
 
         UTMPoint xx1 = UTMPoint.LLtoUTM(ll1,
                 ellps,
@@ -172,7 +174,7 @@ public class UTMProjection extends GeoProj {
                 zone_number,
                 isnorthern);
 
-        float widthMap = (xx2.easting - xx1.easting);
+        double widthMap = (xx2.easting - xx1.easting);
         float widthScale = (float) (((double) getPPM()) * (widthMap / widthPX));
 
         // float heightMap = (xx2.northing - xx1.northing);
@@ -180,8 +182,8 @@ public class UTMProjection extends GeoProj {
         // heightPX));
 
         // TODO: use width-, height- or medium scale? I guess width- and height
-        // scale should be
-        // equal as the grid inside a single UTM zone is quadratic.
+        // scale should be equal as the grid inside a single UTM zone is
+        // quadratic.
 
         return widthScale;
     }
@@ -190,15 +192,15 @@ public class UTMProjection extends GeoProj {
         return true;
     }
 
-    protected ArrayList _forwardPoly(float[] rawllpts, int ltype, int nsegs,
-                                     boolean isFilled) {
+    protected ArrayList<int[]> _forwardPoly(float[] rawllpts, int ltype,
+                                            int nsegs, boolean isFilled) {
         // TODO: copied from Cylindrical. may need to change.
         int n, k, flag = 0, min = 0, max = 0, xp, xadj = 0;
 
         // determine length of pairs list
         int len = rawllpts.length >> 1; // len/2, chop off extra
         if (len < 2)
-            return new ArrayList(0);
+            return new ArrayList<int[]>(0);
 
         // handle complicated line in specific routines
         if (isComplicatedLineType(ltype)) {
@@ -246,8 +248,8 @@ public class UTMProjection extends GeoProj {
         min *= -1;// positive magnitude
 
         // now create the return list
-        ArrayList ret_val = null;
-        ret_val = new ArrayList(2 + 2 * (max + min));
+        ArrayList<int[]> ret_val = null;
+        ret_val = new ArrayList<int[]>(2 + 2 * (max + min));
         ret_val.add(xs);
         ret_val.add(ys);
         int[] altx = null;
@@ -288,15 +290,15 @@ public class UTMProjection extends GeoProj {
     }// _forwardPoly()
 
     @Override
-    protected ArrayList _forwardPoly(double[] rawllpts, int ltype, int nsegs,
-                                     boolean isFilled) {
+    protected ArrayList<int[]> _forwardPoly(double[] rawllpts, int ltype,
+                                            int nsegs, boolean isFilled) {
         // TODO: copied from Cylindrical. may need to change.
         int n, k, flag = 0, min = 0, max = 0, xp, xadj = 0;
 
         // determine length of pairs list
         int len = rawllpts.length >> 1; // len/2, chop off extra
         if (len < 2)
-            return new ArrayList(0);
+            return new ArrayList<int[]>(0);
 
         // handle complicated line in specific routines
         if (isComplicatedLineType(ltype)) {
@@ -344,8 +346,8 @@ public class UTMProjection extends GeoProj {
         min *= -1;// positive magnitude
 
         // now create the return list
-        ArrayList ret_val = null;
-        ret_val = new ArrayList(2 + 2 * (max + min));
+        ArrayList<int[]> ret_val = null;
+        ret_val = new ArrayList<int[]>(2 + 2 * (max + min));
         ret_val.add(xs);
         ret_val.add(ys);
         int[] altx = null;

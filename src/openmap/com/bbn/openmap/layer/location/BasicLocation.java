@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/BasicLocation.java,v $
 // $RCSfile: BasicLocation.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:59 $
+// $Revision: 1.4 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -53,7 +53,7 @@ public class BasicLocation extends Location {
      * @param locationMarker the OMGraphic to use for the location
      *        mark.
      */
-    public BasicLocation(float latitude, float longitude, String name,
+    public BasicLocation(double latitude, double longitude, String name,
             OMGraphic locationMarker) {
         super(latitude, longitude, name, locationMarker);
     }
@@ -92,7 +92,7 @@ public class BasicLocation extends Location {
      * @param locationMarker the OMGraphic to use for the location
      *        mark.
      */
-    public BasicLocation(float latitude, float longitude, int xOffset,
+    public BasicLocation(double latitude, double longitude, int xOffset,
             int yOffset, String name, OMGraphic locationMarker) {
         super(latitude, longitude, xOffset, yOffset, name, locationMarker);
     }
@@ -101,7 +101,7 @@ public class BasicLocation extends Location {
      * Called by setLocations(). Assumes the dot for the location
      * marker, and a text object as the label, stored to the right.
      */
-    public void setGraphicLocations(float latitude, float longitude) {
+    public void setGraphicLocations(double latitude, double longitude) {
         if (location instanceof OMRect) {
             ((OMRect) location).setLocation(latitude, longitude, -1, -1, 1, 1);
         }
@@ -125,7 +125,7 @@ public class BasicLocation extends Location {
      * Called by setLocations(). Assumes the dot for the location
      * marker, and a text object as the label, stored to the right.
      */
-    public void setGraphicLocations(float latitude, float longitude,
+    public void setGraphicLocations(double latitude, double longitude,
                                     int offsetX, int offsetY) {
         if (location instanceof OMRect) {
             ((OMRect) location).setLocation(latitude,

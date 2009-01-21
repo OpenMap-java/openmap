@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VMAP2Shape.java,v $
 // $RCSfile: VMAP2Shape.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/09/09 21:21:17 $
+// $Revision: 1.8 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -79,12 +79,11 @@ public class VMAP2Shape {
     }
 
     /**
-     * Write the shape file, assumes that the properties have been
-     * loaded and the graphics fetched from the VPF database.
+     * Write the shape file, assumes that the properties have been loaded and
+     * the graphics fetched from the VPF database.
      * 
      * @param shapeFileName the file name to write the shapes into.
-     * @param graphics OMGraphics from VPF database to write to shape
-     *        file.
+     * @param graphics OMGraphics from VPF database to write to shape file.
      */
     public void writeShapeFile(String shapeFileName, OMGraphicList graphics) {
         try {
@@ -122,13 +121,14 @@ public class VMAP2Shape {
                                 + omg.getRenderType());
                     }
                 }
-                
+
                 graphics = saveGraphics;
 
                 // join polylines
                 if (false) {
                     nGraphics = graphics.size();
-                    System.out.println("Joining " + nGraphics + " polyline candidates.");
+                    System.out.println("Joining " + nGraphics
+                            + " polyline candidates.");
                     graphics = joinCommonLines(graphics, zero_eps);
                 }
             }
@@ -166,9 +166,8 @@ public class VMAP2Shape {
     }
 
     /**
-     * Iterates through graphic list finding non-connected polylines.
-     * iterates over these to find lines with common endpoints and
-     * joining them.
+     * Iterates through graphic list finding non-connected polylines. iterates
+     * over these to find lines with common endpoints and joining them.
      * 
      * @param list
      * @param zero_eps
@@ -178,7 +177,7 @@ public class VMAP2Shape {
                                                    float zero_eps) {
         int size = list.size();
         int len1, len2;
-        float lat1, lon1, lat2, lon2;
+        double lat1, lon1, lat2, lon2;
         OMGraphic obj;
         OMGraphicList newGraphics = new OMGraphicList();
         OMGraphicList plineGraphics = new OMGraphicList();
@@ -198,7 +197,7 @@ public class VMAP2Shape {
         // endpoints
         size = plineGraphics.size();
         OMPoly poly1, poly2;
-        float[] rads1, rads2, radians;
+        double[] rads1, rads2, radians;
         System.out.println("maybe joining " + size + " polylines...");
         // nasty!: > O(n^2)
         for (int i = 0; i < size; i++) {
@@ -232,7 +231,7 @@ public class VMAP2Shape {
                 if (MoreMath.approximately_equal(lat1, lat2, zero_eps)
                         && MoreMath.approximately_equal(lon1, lon2, zero_eps)) {
                     // System.out.println("joining...");
-                    radians = new float[len1 + len2 - 2];
+                    radians = new double[len1 + len2 - 2];
                     System.arraycopy(rads1, 0, radians, 0, len1);
                     System.arraycopy(rads2, 0, radians, len1 - 2, len2);
                     poly1.setLocation(radians, OMGraphic.RADIANS);
@@ -255,15 +254,15 @@ public class VMAP2Shape {
     }
 
     /** traverse array and coalesce adjacent points which are the same */
-    public static float[] coalesce_points(float[] radians, float eps,
-                                          boolean ispolyg) {
+    public static double[] coalesce_points(double[] radians, double eps,
+                                           boolean ispolyg) {
         int write = 2;
         int len = radians.length;
         for (int i = write - 2, j = write; j < len; j += 2) {
-            float lat1 = ProjMath.radToDeg(radians[i]);
-            float lon1 = ProjMath.radToDeg(radians[i + 1]);
-            float lat2 = ProjMath.radToDeg(radians[j]);
-            float lon2 = ProjMath.radToDeg(radians[j + 1]);
+            double lat1 = ProjMath.radToDeg(radians[i]);
+            double lon1 = ProjMath.radToDeg(radians[i + 1]);
+            double lat2 = ProjMath.radToDeg(radians[j]);
+            double lon2 = ProjMath.radToDeg(radians[j + 1]);
             if (MoreMath.approximately_equal(lat1, lat2, eps)
                     && MoreMath.approximately_equal(lon1, lon2, eps)) {
                 continue;
@@ -278,15 +277,15 @@ public class VMAP2Shape {
                 && MoreMath.approximately_equal(radians[1], radians[5], eps)) {
             write -= 2;// eliminate wrapped vertex
         }
-        float[] newrads = new float[write];
+        double[] newrads = new double[write];
         System.arraycopy(radians, 0, newrads, 0, write);
         return newrads;
     }
 
     /** return true if we should throw away the poly */
     protected boolean maybeThrowAwayPoly(OMPoly poly) {
-        float[] radians = poly.getLatLonArray();
-        float lat, lon, thresh = ProjMath.degToRad(threshold);
+        double[] radians = poly.getLatLonArray();
+        double lat, lon, thresh = ProjMath.degToRad(threshold);
         radians = coalesce_points(radians, 0.0001f, poly.isPolygon());
         poly.setLocation(radians, OMGraphic.RADIANS);// install new
         if (radians.length < 4) {
@@ -296,7 +295,7 @@ public class VMAP2Shape {
             return true;
         }
         int len = radians.length;
-        float d;
+        double d;
         for (int i = 0; i < len; i += 2) {
             // test for proximity to 1-degree marks. this hopefully
             // avoids the problem of throwing away tiled slivers.

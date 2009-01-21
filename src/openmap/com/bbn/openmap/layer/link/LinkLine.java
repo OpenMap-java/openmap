@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkLine.java,v $
 // $RCSfile: LinkLine.java,v $
-// $Revision: 1.5 $
-// $Date: 2007/02/26 17:12:47 $
+// $Revision: 1.6 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -155,11 +155,11 @@ public class LinkLine implements LinkGraphicConstants, LinkPropertiesConstants {
 
         switch (line.getRenderType()) {
         case OMLine.RENDERTYPE_LATLON:
-            float[] ll = line.getLL();
-            LinkLine.write(ll[0],
-                    ll[1],
-                    ll[2],
-                    ll[3],
+            double[] ll = line.getLL();
+            LinkLine.write((float) ll[0],
+                    (float) ll[1],
+                    (float) ll[2],
+                    (float) ll[3],
                     line.getLineType(),
                     line.getNumSegs(),
                     props,
@@ -172,8 +172,8 @@ public class LinkLine implements LinkGraphicConstants, LinkPropertiesConstants {
         case OMLine.RENDERTYPE_OFFSET:
             ll = line.getLL();
             pts = line.getPts();
-            LinkLine.write(ll[0],
-                    ll[1],
+            LinkLine.write((float) ll[0],
+                    (float) ll[1],
                     pts[0],
                     pts[1],
                     pts[2],

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/EsriPlugIn.java,v $
 // $RCSfile: EsriPlugIn.java,v $
-// $Revision: 1.16 $
-// $Date: 2006/08/29 14:51:52 $
+// $Revision: 1.17 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -843,7 +843,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
         }
 
         if (_list != null) {
-            float[] extents = _list.getExtents();
+            double[] extents = _list.getExtents();
             box = new DataBounds((double) extents[1], (double) extents[0], (double) extents[3], (double) extents[2]);
         }
         return box;

@@ -216,7 +216,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
 
         if (projCenter.getX() > selectionWidthMinutes
                 || scale != projection.getScale()) {
-            float nCenterLon = TimelineLayer.forwardProjectMillis(gameEndTime
+            double nCenterLon = TimelineLayer.forwardProjectMillis(gameEndTime
                     - gameStartTime) / 2f;
             projCenter.setLocation(nCenterLon, 0);
             projection = new Cartesian(projCenter, scale, projection.getWidth(), projection.getHeight());
@@ -402,7 +402,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
 
             zoomDelegate.fireZoom(ZoomEvent.ABSOLUTE, scale);
 
-            float nCenterLon = TimelineLayer.forwardProjectMillis(gameEndTime
+            double nCenterLon = TimelineLayer.forwardProjectMillis(gameEndTime
                     - gameStartTime) / 2f;
 
             logger.fine("Telling the center delegate that the new center is 0, "
@@ -677,11 +677,11 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
 
     public void mouseMoved() {}
 
-    protected float updateMouseTimeDisplay(MouseEvent e) {
+    protected double updateMouseTimeDisplay(MouseEvent e) {
         Projection proj = getProjection();
         Point2D latLong = proj.inverse(e.getPoint());
-        float lon = (float) latLong.getX();
-        float endTime = TimelineLayer.forwardProjectMillis(gameEndTime
+        double lon = latLong.getX();
+        double endTime = TimelineLayer.forwardProjectMillis(gameEndTime
                 - gameStartTime);
         if (lon < 0) {
             lon = 0;

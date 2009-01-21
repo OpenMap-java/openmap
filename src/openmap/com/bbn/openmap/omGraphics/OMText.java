@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.19 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.20 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -148,13 +148,13 @@ public class OMText extends OMGraphic implements Serializable {
      * The latitude location for the text, used for lat/lon or offset rendertype
      * texts, in decimal degrees.
      */
-    protected float lat = 0.0f;
+    protected double lat = 0.0f;
 
     /**
      * The longitude location for the text, used for lat/lon or offset
      * rendertype texts, in decimal degrees.
      */
-    protected float lon = 0.0f;
+    protected double lon = 0.0f;
 
     /** The string to be displayed. */
     protected String data = null;
@@ -242,7 +242,7 @@ public class OMText extends OMGraphic implements Serializable {
      * @param stuff the string to be displayed.
      * @param just the justification of the string
      */
-    public OMText(float lt, float ln, String stuff, int just) {
+    public OMText(double lt, double ln, String stuff, int just) {
         this(lt, ln, stuff, DEFAULT_FONT, just);
     }
 
@@ -255,7 +255,7 @@ public class OMText extends OMGraphic implements Serializable {
      * @param font the Font description for the string.
      * @param just the justification of the string
      */
-    public OMText(float lt, float ln, String stuff, Font font, int just) {
+    public OMText(double lt, double ln, String stuff, Font font, int just) {
 
         super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
@@ -306,7 +306,7 @@ public class OMText extends OMGraphic implements Serializable {
      * @param aString the string to be displayed.
      * @param just the justification of the string
      */
-    public OMText(float lt, float ln, int offX, int offY, String aString,
+    public OMText(double lt, double ln, int offX, int offY, String aString,
             int just) {
         this(lt, ln, offX, offY, aString, DEFAULT_FONT, just);
     }
@@ -322,7 +322,7 @@ public class OMText extends OMGraphic implements Serializable {
      * @param font the Font description for the string.
      * @param just the justification of the string
      */
-    public OMText(float lt, float ln, int offX, int offY, String aString,
+    public OMText(double lt, double ln, int offX, int offY, String aString,
             Font font, int just) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         lat = lt;
@@ -479,7 +479,7 @@ public class OMText extends OMGraphic implements Serializable {
      * 
      * @return the latitude, in decimal degrees.
      */
-    public float getLat() {
+    public double getLat() {
         return lat;
     }
 
@@ -488,7 +488,7 @@ public class OMText extends OMGraphic implements Serializable {
      * 
      * @param l latitude for new location, in decimal degrees.
      */
-    public void setLat(float l) {
+    public void setLat(double l) {
         lat = l;
         setNeedToRegenerate(true);
     }
@@ -498,7 +498,7 @@ public class OMText extends OMGraphic implements Serializable {
      * 
      * @return the longitude location of the string, in decimal degrees.
      */
-    public float getLon() {
+    public double getLon() {
         return lon;
     }
 
@@ -507,7 +507,7 @@ public class OMText extends OMGraphic implements Serializable {
      * 
      * @param l the longitude location for the string, in decimal degrees.
      */
-    public void setLon(float l) {
+    public void setLon(double l) {
         lon = l;
         setNeedToRegenerate(true);
     }

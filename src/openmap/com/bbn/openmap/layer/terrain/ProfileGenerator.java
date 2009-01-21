@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/terrain/ProfileGenerator.java,v $
 // $RCSfile: ProfileGenerator.java,v $
-// $Revision: 1.10 $
-// $Date: 2006/02/27 15:11:35 $
+// $Revision: 1.11 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -144,25 +144,25 @@ public class ProfileGenerator implements TerrainTool {
      * was drawn. The lat lon points are in an array of floats, that
      * alternate, lat, lon, etc.
      */
-    public float[] setLLPoints() {
-        float[] points;
+    public double[] setLLPoints() {
+        double[] points;
         int num_points = coords.size();
 
         if (num_points <= 1) {
 
-            points = new float[4];
+            points = new double[4];
             if (num_points == 0) {
                 points[0] = 0f;
                 points[1] = -6f;
             } else {
-                points[0] = (float)((LatLonPoint) coords.elementAt(0)).getRadLat();
-                points[1] = (float)((LatLonPoint) coords.elementAt(0)).getRadLon();
+                points[0] = ((LatLonPoint) coords.elementAt(0)).getRadLat();
+                points[1] = ((LatLonPoint) coords.elementAt(0)).getRadLon();
             }
 
             points[2] = points[0];
             points[3] = points[1];
         } else {
-            points = new float[coords.size() * 2];
+            points = new double[coords.size() * 2];
             for (int i = 0; i < coords.size(); i++) {
                 points[i * 2] = (float)((LatLonPoint) coords.elementAt(i)).getRadLat();
                 points[(i * 2) + 1] = (float)((LatLonPoint) coords.elementAt(i)).getRadLon();

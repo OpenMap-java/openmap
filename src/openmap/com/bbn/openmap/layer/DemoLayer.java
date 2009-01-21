@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/DemoLayer.java,v $
 // $RCSfile: DemoLayer.java,v $
-// $Revision: 1.24 $
-// $Date: 2006/10/13 16:03:44 $
+// $Revision: 1.25 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -219,7 +219,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         spline2.setLinePaint(Color.green);
         omList.add(spline2);
 
-        float[] llPoints = { 55.0f, -10.0f, 50.0f, -5.0f, 45.0f, -7.0f, 43.0f,
+        double[] llPoints = { 55.0f, -10.0f, 50.0f, -5.0f, 45.0f, -7.0f, 43.0f,
                 -12.0f, 55.0f, -10.0f };
         OMDecoratedSpline omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         ShapeDecorator sd = new ShapeDecorator();
@@ -228,7 +228,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         omds.setDecorator(sd);
         omList.add(omds);
 
-        llPoints = new float[] { 56.0f, -11.0f, 51.0f, -6.0f, 46.0f, -8.0f,
+        llPoints = new double[] { 56.0f, -11.0f, 51.0f, -6.0f, 46.0f, -8.0f,
                 44.0f, -13.0f, 56.0f, -11.0f };
         omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         sd = new ShapeDecorator();
@@ -237,7 +237,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         omds.setDecorator(sd);
         omList.add(omds);
 
-        llPoints = new float[] { 57.0f, -12.0f, 52.0f, -7.0f, 47.0f, -9.0f,
+        llPoints = new double[] { 57.0f, -12.0f, 52.0f, -7.0f, 47.0f, -9.0f,
                 45.0f, -14.0f, 57.0f, -12.0f };
         omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         sd = new ShapeDecorator();
@@ -248,11 +248,11 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         omds.setDecorator(sd);
         omList.add(omds);
 
-        float[] llPoints2 = { 55.0f, -12.0f, 50.0f, -7.0f, 45.0f, -9.0f, 43.0f,
+        double[] llPoints2 = { 55.0f, -12.0f, 50.0f, -7.0f, 45.0f, -9.0f, 43.0f,
                 -14.0f };
         OMHotSurfaceFront hf = new OMHotSurfaceFront(llPoints2, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         omList.add(hf);
-        float[] llPoints3 = { 55.0f, -14.0f, 50.0f, -9.0f, 45.0f, -11.0f,
+        double[] llPoints3 = { 55.0f, -14.0f, 50.0f, -9.0f, 45.0f, -11.0f,
                 43.0f, -16.0f };
         OMOcclusion oc = new OMOcclusion(llPoints3, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         omList.add(oc);
@@ -301,7 +301,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         ell.setFillPaint(Color.yellow);
         omList.add(ell);
 
-        float[] llp2 = new float[] { 0.41789755f, -1.435303f, 0.41813868f,
+        double[] llp2 = new double[] { 0.41789755f, -1.435303f, 0.41813868f,
                 -1.3967744f };
 
         OMPoly p2 = new OMPoly(llp2, OMGraphic.RADIANS, OMGraphic.LINETYPE_RHUMB);

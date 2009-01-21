@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/ShpInputStream.java,v $
 // $RCSfile: ShpInputStream.java,v $
-// $Revision: 1.9 $
-// $Date: 2006/08/25 15:36:15 $
+// $Revision: 1.10 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -133,7 +133,7 @@ public class ShpInputStream implements ShapeConstants {
         int[] offsets = new int[sublist.size()];
         for (int j = 0; j < sublist.size(); j++) {
             OMPoly poly = (OMPoly) sublist.getOMGraphicAt(j);
-            float[] data = poly.getLatLonArray();
+            double[] data = poly.getLatLonArray();
             offsets[j] = pos / 2;
             pos += data.length;
         }
@@ -192,7 +192,7 @@ public class ShpInputStream implements ShapeConstants {
         int numPoints = 0;
         for (int i = 0; i < sublist.size(); i++) {
             OMPoly poly = (OMPoly) sublist.getOMGraphicAt(i);
-            float[] data = poly.getLatLonArray();
+            double[] data = poly.getLatLonArray();
             numPoints += data.length;
         }
         numPoints /= 2;
@@ -247,7 +247,7 @@ public class ShpInputStream implements ShapeConstants {
                     offsets[n] = _leis.readLEInt();
                 }
 
-                float[] points;
+                double[] points;
                 OMGraphic poly = null;
                 EsriGraphicList sublist = null;
 
@@ -268,10 +268,10 @@ public class ShpInputStream implements ShapeConstants {
                     int i = 0;
                     if (j != numParts - 1) {
                         numVertices = (offsets[j + 1]) - offsets[j];
-                        points = new float[numVertices * 2];
+                        points = new double[numVertices * 2];
                     } else {
                         numVertices = (numPoints - offsets[j]);
-                        points = new float[numVertices * 2];
+                        points = new double[numVertices * 2];
                     }
                     for (int n = 0; n < numVertices; n++) {
                         double lambda = _leis.readLEDouble();
@@ -324,7 +324,7 @@ public class ShpInputStream implements ShapeConstants {
                         eg = sublist;
                     }
 
-                    float[] ex1 = eg.getExtents();
+                    double[] ex1 = eg.getExtents();
                     Debug.output("extents of list: xmin=" + ex1[1] + ", ymin="
                             + ex1[0] + ", xmax=" + ex1[3] + ", ymax=" + ex1[2]);
                     Debug.output("list.size=" + list.size());
@@ -333,7 +333,7 @@ public class ShpInputStream implements ShapeConstants {
         }
 
         if (Debug.debugging("esri")) {
-            float[] ex = list.getExtents();
+            double[] ex = list.getExtents();
             Debug.output("extents of list: xmin=" + ex[1] + ", ymin=" + ex[0]
                     + ", xmax=" + ex[3] + ", ymax=" + ex[2]);
         }

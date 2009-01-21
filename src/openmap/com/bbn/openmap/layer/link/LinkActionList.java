@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkActionList.java,v $
 // $RCSfile: LinkActionList.java,v $
-// $Revision: 1.10 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.11 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1642,7 +1642,7 @@ public class LinkActionList implements LinkActionConstants,
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
-    public void updatePoly(float[] llPoints, int units, int lType,
+    public void updatePoly(double[] llPoints, int units, int lType,
                            LinkProperties properties, int graphicUpdateMask)
             throws IOException {
         writeGraphicGestureHeader(graphicUpdateMask);
@@ -1661,7 +1661,7 @@ public class LinkActionList implements LinkActionConstants,
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
-    public void updatePoly(float[] llpoints, int units, int lType, int nsegs,
+    public void updatePoly(double[] llpoints, int units, int lType, int nsegs,
                            LinkProperties properties, int graphicUpdateMask)
             throws IOException {
         writeGraphicGestureHeader(graphicUpdateMask);

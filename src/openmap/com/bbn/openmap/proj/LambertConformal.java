@@ -4,8 +4,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LambertConformal.java,v $
 // $RCSfile: LambertConformal.java,v $
-// $Revision: 1.8 $
-// $Date: 2009/01/15 19:38:33 $
+// $Revision: 1.9 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -329,7 +329,7 @@ public class LambertConformal extends GeoProj {
         if (p == null) {
             p = new Point2D.Double();
         }
-        
+
         p.setLocation(xrel, yrel);
 
         return p;
@@ -371,7 +371,7 @@ public class LambertConformal extends GeoProj {
         if (llp == null) {
             llp = new LatLonPoint.Double();
         }
-        
+
         llp.setLocation(lamda_deg, phi_deg);
 
         return llp;
@@ -595,17 +595,17 @@ public class LambertConformal extends GeoProj {
      *        line types, and if &lt; 1, this value is generated internally)
      * @param isFilled filled poly? this is currently ignored for cylindrical
      *        projections.
-     * @return Vector of x[], y[], x[], y[], ... projected poly
+     * @return ArrayList<int[]> of x[], y[], x[], y[], ... projected poly
      */
-    protected ArrayList _forwardPoly(float[] rawllpts, int ltype, int nsegs,
-                                     boolean isFilled) {
+    protected ArrayList<int[]> _forwardPoly(float[] rawllpts, int ltype,
+                                            int nsegs, boolean isFilled) {
 
         int i, j;
 
         // determine length of pairs
         int len = rawllpts.length >> 1; // len/2, chop off extra
         if (len < 2)
-            return new ArrayList(0);
+            return new ArrayList<int[]>(0);
 
         // Not concerned with any polygons that are completely below
         // 60S
@@ -621,7 +621,7 @@ public class LambertConformal extends GeoProj {
             }
         }
         if (allBelowMinLat) {
-            return new ArrayList(0);
+            return new ArrayList<int[]>(0);
         }
 
         // handle complicated line in specific routines
@@ -640,22 +640,22 @@ public class LambertConformal extends GeoProj {
             ys[i] = temp.y;
         }
 
-        ArrayList ret_val = new ArrayList(2);
+        ArrayList<int[]> ret_val = new ArrayList<int[]>(2);
         ret_val.add(xs);
         ret_val.add(ys);
 
         return ret_val;
     }
 
-    public ArrayList _forwardPoly(double[] rawllpts, int ltype, int nsegs,
-                                  boolean isFilled) {
+    public ArrayList<int[]> _forwardPoly(double[] rawllpts, int ltype,
+                                         int nsegs, boolean isFilled) {
 
         int i, j;
 
         // determine length of pairs
         int len = rawllpts.length >> 1; // len/2, chop off extra
         if (len < 2)
-            return new ArrayList(0);
+            return new ArrayList<int[]>(0);
 
         // Not concerned with any polygons that are completely below
         // 60S
@@ -671,7 +671,7 @@ public class LambertConformal extends GeoProj {
             }
         }
         if (allBelowMinLat) {
-            return new ArrayList(0);
+            return new ArrayList<int[]>(0);
         }
 
         // handle complicated line in specific routines
@@ -690,7 +690,7 @@ public class LambertConformal extends GeoProj {
             ys[i] = temp.y;
         }
 
-        ArrayList ret_val = new ArrayList(2);
+        ArrayList<int[]> ret_val = new ArrayList<int[]>(2);
         ret_val.add(xs);
         ret_val.add(ys);
 
@@ -718,7 +718,6 @@ public class LambertConformal extends GeoProj {
         // the same earth radius up north..
 
         double widthPX = point2.x - point1.x;
-        double heightPX = point2.y - point1.y;
 
         Point2D xx1 = LLToWorld(ll1.getLatitude(),
                 ll1.getLongitude(),
@@ -730,10 +729,12 @@ public class LambertConformal extends GeoProj {
         double widthMap = (xx2.getX() - xx1.getX());
         double widthScale = (((double) getPPM()) * (widthMap / widthPX));
 
-        double heightMap = (xx2.getY() - xx1.getY());
-        double heightScale = (((double) getPPM()) * (heightMap / heightPX));
-
         // TODO: use width-, height- or medium scale?
+        // Until then, this isn't needed:
+
+        // double heightPX = point2.y - point1.y;
+        // double heightMap = (xx2.getY() - xx1.getY());
+        // double heightScale = (((double) getPPM()) * (heightMap / heightPX));
 
         return (float) widthScale;
     }

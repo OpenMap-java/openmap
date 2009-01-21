@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/Tester.java,v $
 // $RCSfile: Tester.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:21 $
+// $Revision: 1.5 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -211,10 +211,10 @@ public class Tester extends JFrame implements ShapeConstants {
      */
     public void addPolylineRecord1(EsriLayer layer) {
         OMGraphicList shapeData = new EsriPolylineList();
-        float[] part0 = new float[] { 35.0f, -120.0f, -25.0f, -95.0f, 56.0f,
-                -30.0f };
-        float[] part1 = new float[] { -15.0f, -110.0f, 13.0f, -80.0f, -25.0f,
-                10.0f };
+        double[] part0 = new double[] { 35.0, -120.0, -25.0, -95.0, 56.0,
+                -30.0 };
+        double[] part1 = new double[] { -15.0, -110.0, 13.0, -80.0, -25.0,
+                10.0 };
         EsriPolyline poly0 = new EsriPolyline(part0, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB);
         EsriPolyline poly1 = new EsriPolyline(part1, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB);
         shapeData.add(poly0); //part 1
@@ -232,7 +232,7 @@ public class Tester extends JFrame implements ShapeConstants {
      */
     public void addPolylineRecord2(EsriLayer layer) {
         OMGraphicList shapeData = new EsriPolylineList();
-        float[] part0 = new float[] { 12.0f, -175.0f, -30.0f, 85.0f, 25.0f,
+        double[] part0 = new double[] { 12.0f, -175.0f, -30.0f, 85.0f, 25.0f,
                 15.0f };
         EsriPolyline poly0 = new EsriPolyline(part0, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB);
         shapeData.add(poly0); //part 1
@@ -250,11 +250,11 @@ public class Tester extends JFrame implements ShapeConstants {
     public void addPolylineRecord3(EsriLayer layer) {
         //Create geometry data
         OMGraphicList shapeData = new EsriPolylineList();
-        float[] part0 = new float[] { -25.0f, -140.0f, -50.0f, -95.0f, 65.0f,
+        double[] part0 = new double[] { -25.0f, -140.0f, -50.0f, -95.0f, 65.0f,
                 51.0f };
-        float[] part1 = new float[] { -10.0f, -130.0f, -47.0f, -101.0f, 71.0f,
+        double[] part1 = new double[] { -10.0f, -130.0f, -47.0f, -101.0f, 71.0f,
                 59.0f };
-        float[] part2 = new float[] { -15.0f, -151.0f, -49.0f, -100.0f, 76.0f,
+        double[] part2 = new double[] { -15.0f, -151.0f, -49.0f, -100.0f, 76.0f,
                 41.0f };
 
         EsriPolyline poly0 = new EsriPolyline(part0, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB);
@@ -285,7 +285,7 @@ public class Tester extends JFrame implements ShapeConstants {
         OMGraphicList shapeData = new EsriPolygonList();
         //float[] part0 = new float[]{45.0f, -120.0f, -45.0f, -95.0f,
         // 10.0f, 30.0f, 45.0f, -120.0f};
-        float[] part0 = new float[] { 45.0f, -70.0f, 30.0f, -30.0f, 10.0f,
+        double[] part0 = new double[] { 45.0f, -70.0f, 30.0f, -30.0f, 10.0f,
                 -80.0f, 30.0f, -120.0f, 45.0f, -70.0f };
         //    float[] part1 = new float[]{35.0f, -70.0f, 30.0f, -110.0f,
         // 15.0f, -80.0f, 30.0f, -40.0f, 35.0f, 70.0f};

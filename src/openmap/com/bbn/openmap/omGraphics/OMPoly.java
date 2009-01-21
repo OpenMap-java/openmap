@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMPoly.java,v $
 // $RCSfile: OMPoly.java,v $
-// $Revision: 1.19 $
-// $Date: 2006/11/10 21:34:26 $
+// $Revision: 1.20 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -110,13 +110,13 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * For RENDERTYPE_OFFSET, the latitude of the starting point of the poly.
      * Stored as radians!
      */
-    protected float lat = 0.0f;
+    protected double lat = 0.0f;
 
     /**
      * For RENDERTYPE_OFFSET, the longitude of the starting point of the poly.
      * Stored as radians!
      */
-    protected float lon = 0.0f;
+    protected double lon = 0.0f;
 
     /**
      * For RENDERTYPE_OFFSET, type of offset.
@@ -143,7 +143,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     protected boolean isPolygon = false;
 
     /** raw float lats and lons stored internally in radians. */
-    protected float[] rawllpts = null;
+    protected double[] rawllpts = null;
 
     /**
      * Flag for telling the OMPoly to use the Shape objects to represent itself
@@ -176,7 +176,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      *        OMGraphic.DECIMAL_DEGREES
      * @param lType line type, from a list defined in OMGraphic.
      */
-    public OMPoly(float[] llPoints, int units, int lType) {
+    public OMPoly(double[] llPoints, int units, int lType) {
         this(llPoints, units, lType, -1);
     }
 
@@ -201,7 +201,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      *        LINETYPE_RHUMB line types, and if &lt; 1, this value is generated
      *        internally)
      */
-    public OMPoly(float[] llPoints, int units, int lType, int nsegs) {
+    public OMPoly(double[] llPoints, int units, int lType, int nsegs) {
         super(RENDERTYPE_LATLON, lType, DECLUTTERTYPE_NONE);
         setLocation(llPoints, units);
         this.nsegs = nsegs;
@@ -242,7 +242,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * @param xypoints int[] of x,y pairs
      * @param cMode offset coordinate mode
      */
-    public OMPoly(float latPoint, float lonPoint, int[] xypoints, int cMode) {
+    public OMPoly(double latPoint, double lonPoint, int[] xypoints, int cMode) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
         setLocation(latPoint, lonPoint, OMGraphic.DECIMAL_DEGREES, xypoints);
@@ -260,7 +260,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * @param yPoints int[] of y coordinates
      * @param cMode offset coordinate mode
      */
-    public OMPoly(float latPoint, float lonPoint, int[] xPoints, int[] yPoints,
+    public OMPoly(double latPoint, double lonPoint, int[] xPoints, int[] yPoints,
             int cMode) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
@@ -290,7 +290,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * @param units radians or decimal degrees. Use OMGraphic.RADIANS or
      *        OMGraphic.DECIMAL_DEGREES
      */
-    public void setLocation(float[] llPoints, int units) {
+    public void setLocation(double[] llPoints, int units) {
         this.units = OMGraphic.RADIANS;
         if (units == OMGraphic.DECIMAL_DEGREES) {
             ProjMath.arrayDegToRad(llPoints);
@@ -345,7 +345,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      *        OMGraphic.DECIMAL_DEGREES
      * @param xypoints array of x/y points, arranged x, y, x, y, etc.
      */
-    public void setLocation(float latPoint, float lonPoint, int units,
+    public void setLocation(double latPoint, double lonPoint, int units,
                             int[] xypoints) {
         this.units = OMGraphic.RADIANS;
         if (units == OMGraphic.DECIMAL_DEGREES) {
@@ -378,7 +378,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * @param xPoints int[] of x coordinates
      * @param yPoints int[] of y coordinates
      */
-    public void setLocation(float latPoint, float lonPoint, int units,
+    public void setLocation(double latPoint, double lonPoint, int units,
                             int[] xPoints, int[] yPoints) {
         this.units = OMGraphic.RADIANS;
         if (units == OMGraphic.DECIMAL_DEGREES) {
@@ -400,7 +400,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * 
      * @return float[] rawllpts of lat, lon, lat, lon
      */
-    public float[] getLatLonArray() {
+    public double[] getLatLonArray() {
         // If the OMPoly has been generated with a non GeoProj projection, these
         // coordinates are going to be in decimal degrees, to make that that
         // generation easier. They should be translated back into radians, for
@@ -416,7 +416,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * Set the latitude of the offset point, in decimal degrees. For
      * RENDERTYPE_OFFSET Polygons.
      */
-    public void setLat(float lat) {
+    public void setLat(double lat) {
         this.lat = ProjMath.degToRad(lat);
         setNeedToRegenerate(true);
     }
@@ -425,7 +425,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * Get the latitude of the offset point, in decimal degrees. For
      * RENDERTYPE_OFFSET Polygons.
      */
-    public float getLat() {
+    public double getLat() {
         return ProjMath.radToDeg(lat);
     }
 
@@ -433,7 +433,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * Set the longitude of the offset point, in decimal degrees. For
      * RENDERTYPE_OFFSET Polygons.
      */
-    public void setLon(float lon) {
+    public void setLon(double lon) {
         this.lon = ProjMath.degToRad(lon);
         setNeedToRegenerate(true);
     }
@@ -442,7 +442,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * Get the longitude of the offset point, in decimal degrees. For
      * RENDERTYPE_OFFSET Polygons.
      */
-    public float getLon() {
+    public double getLon() {
         return ProjMath.radToDeg(lon);
     }
 
@@ -999,7 +999,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     /** For XMLEncoder */
-    public float[] getRawllpts() {
+    public double[] getRawllpts() {
         return this.rawllpts;
     }
 

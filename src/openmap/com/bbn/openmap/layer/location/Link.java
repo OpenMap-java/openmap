@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/Link.java,v $
 // $RCSfile: Link.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/09 18:15:13 $
+// $Revision: 1.5 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,9 +50,9 @@ public class Link extends Location {
      * endpoints are contained in the Location superclass.
      */
     /** The lat of point 2. */
-    public float lat2 = 0.0f;
+    public double lat2 = 0.0f;
     /** The lon of point 2. */
-    public float lon2 = 0.0f;
+    public double lon2 = 0.0f;
     /** The x of point 2. */
     public int x2 = 0;
     /** The y of point 2. */
@@ -92,7 +92,7 @@ public class Link extends Location {
      * @param linetype LINETYPE_STRAIGHT, LINETYPE_GREATCIRCLE,
      *        LINETYPE_RHUMB
      */
-    public Link(float lat1, float lon1, float lat2, float lon2, String details,
+    public Link(double lat1, double lon1, double lat2, double lon2, String details,
             Paint paint, boolean dashed, float thickness, int linetype) {
 
         if (Debug.debugging("location")) {
@@ -183,7 +183,7 @@ public class Link extends Location {
      * @param lat2 the latitude of the second location
      * @param lon2 the longitude of the second location
      */
-    public void setLocation(float lat1, float lon1, float lat2, float lon2) {
+    public void setLocation(double lat1, double lon1, double lat2, double lon2) {
 
         this.lat = lat1;
         this.lon = lon1;
@@ -191,7 +191,7 @@ public class Link extends Location {
         this.lon2 = lon2;
 
         OMLine line = (OMLine) getLocationMarker();
-        float[] locs = { lat1, lon1, lat2, lon2 };
+        double[] locs = { lat1, lon1, lat2, lon2 };
         line.setLL(locs);
     }
 
@@ -221,13 +221,13 @@ public class Link extends Location {
     }
 
     /** Does nothing - marker handled in setLocation methods. */
-    public void setGraphicLocations(float latitude, float longitude) {}
+    public void setGraphicLocations(double latitude, double longitude) {}
 
     /** Does nothing - marker handled in setLocation methods. */
     public void setGraphicLocations(int x, int y) {}
 
     /** Does nothing - marker handled in setLocation methods. */
-    public void setGraphicLocations(float latitude, float longitude,
+    public void setGraphicLocations(double latitude, double longitude,
                                     int offsetX, int offsetY) {}
 
     public void setLinkColor(Paint linkPaint) {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkRectangle.java,v $
 // $RCSfile: LinkRectangle.java,v $
-// $Revision: 1.5 $
-// $Date: 2007/02/26 17:12:43 $
+// $Revision: 1.6 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -158,10 +158,10 @@ public class LinkRectangle implements LinkGraphicConstants,
 
         switch (rect.getRenderType()) {
         case OMRect.RENDERTYPE_LATLON:
-            LinkRectangle.write(rect.getNorthLat(),
-                    rect.getWestLon(),
-                    rect.getSouthLat(),
-                    rect.getEastLon(),
+            LinkRectangle.write((float) rect.getNorthLat(),
+                    (float) rect.getWestLon(),
+                    (float) rect.getSouthLat(),
+                    (float) rect.getEastLon(),
                     rect.getLineType(),
                     props,
                     link.dos);
@@ -175,8 +175,8 @@ public class LinkRectangle implements LinkGraphicConstants,
                     link.dos);
             break;
         case OMRect.RENDERTYPE_OFFSET:
-            LinkRectangle.write(rect.getNorthLat(),
-                    rect.getWestLon(),
+            LinkRectangle.write((float) rect.getNorthLat(),
+                    (float) rect.getWestLon(),
                     rect.getLeft(),
                     rect.getTop(),
                     rect.getRight(),
@@ -218,7 +218,7 @@ public class LinkRectangle implements LinkGraphicConstants,
             throws IOException {
         OMRect rect = null;
         int x1, y1, x2, y2;
-        float lt1, ln1, lt2, ln2;
+        double lt1, ln1, lt2, ln2;
 
         int renderType = dis.readByte();
 
@@ -256,7 +256,9 @@ public class LinkRectangle implements LinkGraphicConstants,
         }
 
         if (rect != null) {
-            LinkProperties.loadPropertiesIntoOMGraphic(dis, rect, propertiesBuffer);
+            LinkProperties.loadPropertiesIntoOMGraphic(dis,
+                    rect,
+                    propertiesBuffer);
         }
 
         return rect;

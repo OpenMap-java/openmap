@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRangeRings.java,v $
 // $RCSfile: EditableOMRangeRings.java,v $
-// $Revision: 1.14 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.15 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -462,13 +462,13 @@ public class EditableOMRangeRings extends EditableOMCircle {
         snapToInterval = sti;
     }
 
-    protected void setRadius(float radius) {
+    protected void setRadius(double radius) {
         if (circle != null) {
             if (snapToInterval) {
                 OMRangeRings rr = (OMRangeRings) circle;
                 Length units = rr.getIntervalUnits();
                 if (units != null) {
-                    float rds = units.fromRadians(Length.DECIMAL_DEGREE.toRadians(radius));
+                    double rds = units.fromRadians(Length.DECIMAL_DEGREE.toRadians(radius));
                     radius = Math.round(rds / rr.getInterval())
                             * rr.getInterval();
                     radius = Length.DECIMAL_DEGREE.fromRadians(units.toRadians(radius));

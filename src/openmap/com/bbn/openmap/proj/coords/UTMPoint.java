@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/UTMPoint.java,v $
 // $RCSfile: UTMPoint.java,v $
-// $Revision: 1.15 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.16 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -37,11 +37,11 @@ public class UTMPoint {
     /**
      * The northing component of the coordinate.
      */
-    public float northing;
+    public double northing;
     /**
      * The easting component of the coordinate.
      */
-    public float easting;
+    public double easting;
     /**
      * The zone number of the coordinate, must be between 1 and 60.
      */
@@ -67,10 +67,10 @@ public class UTMPoint {
      *        southern hemisphere.
      * @throws Number format exception of N or S isn't used.
      */
-    public UTMPoint(float northing, float easting, int zone_number,
+    public UTMPoint(double northing, double easting, int zone_number,
             char zone_letter) {
-        this.northing = (float) Math.rint(northing);
-        this.easting = (float) Math.rint(easting);
+        this.northing = Math.rint(northing);
+        this.easting = Math.rint(easting);
         this.zone_number = zone_number;
         this.zone_letter = checkZone(zone_letter);
     }
@@ -271,8 +271,8 @@ public class UTMPoint {
             utmPoint = new UTMPoint();
         }
 
-        utmPoint.northing = (float) Math.rint(UTMNorthing);
-        utmPoint.easting = (float) Math.rint(UTMEasting);
+        utmPoint.northing = Math.rint(UTMNorthing);
+        utmPoint.easting = Math.rint(UTMEasting);
         utmPoint.zone_number = zoneNumber;
         utmPoint.zone_letter = isNorthern ? 'N' : 'S';
 
@@ -334,8 +334,8 @@ public class UTMPoint {
      *         <code>null</code> if conversion failed. If you pass in a
      *         LatLonPoint, it will be returned as well, if successful.
      */
-    public static LatLonPoint UTMtoLL(Ellipsoid ellip, float UTMNorthing,
-                                      float UTMEasting, String UTMZone,
+    public static LatLonPoint UTMtoLL(Ellipsoid ellip, double UTMNorthing,
+                                      double UTMEasting, String UTMZone,
                                       LatLonPoint llpoint) {
 
         // without the zone we can't calculate the Lat and Long
@@ -396,8 +396,8 @@ public class UTMPoint {
      *         <code>null</code> if conversion failed. If you pass in a
      *         LatLonPoint, it will be returned as well, if successful.
      */
-    public static LatLonPoint UTMtoLL(Ellipsoid ellip, float UTMNorthing,
-                                      float UTMEasting, int ZoneNumber,
+    public static LatLonPoint UTMtoLL(Ellipsoid ellip, double UTMNorthing,
+                                      double UTMEasting, int ZoneNumber,
                                       boolean isNorthern, LatLonPoint llpoint) {
 
         return UTMtoLL(ellip,
@@ -427,8 +427,8 @@ public class UTMPoint {
      *         <code>null</code> if conversion failed. If you pass in a
      *         LatLonPoint, it will be returned as well, if successful.
      */
-    public static LatLonPoint UTMtoLL(Ellipsoid ellip, float UTMNorthing,
-                                      float UTMEasting, int zoneNumber,
+    public static LatLonPoint UTMtoLL(Ellipsoid ellip, double UTMNorthing,
+                                      double UTMEasting, int zoneNumber,
                                       char zoneLetter, LatLonPoint llpoint) {
 
         // check the ZoneNummber is valid

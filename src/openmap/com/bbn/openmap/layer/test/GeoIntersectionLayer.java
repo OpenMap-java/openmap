@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GeoIntersectionLayer.java,v $
-//$Revision: 1.6 $
-//$Date: 2007/02/07 17:52:18 $
+//$Revision: 1.7 $
+//$Date: 2009/01/21 01:24:42 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -591,7 +591,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
             double y = r.getY();
             double h = r.getHeight();
             double w = r.getWidth();
-            float[] rawll = ((OMPoly) omg).getLatLonArray();
+            double[] rawll = ((OMPoly) omg).getLatLonArray();
             Point2D llHolder = new Point2D.Double();
             Geo g = new Geo(0, 0);
             int[] pix = new int[(int) (h * w)];
@@ -787,7 +787,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
 
     public static class OMLineSegment implements GeoSegment {
         Geo[] geos;
-        float[] segArray;
+        double[] segArray;
 
         public OMLineSegment(OMLine oml) {
             segArray = oml.getLL();
@@ -810,7 +810,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
          * 
          * @see com.bbn.openmap.geo.GeoSegment#getSegArray()
          */
-        public float[] getSegArray() {
+        public double[] getSegArray() {
             return segArray;
         }
 
@@ -918,7 +918,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
 
             getDrawnIntersectorList().clear();
             setShowCrossingPoints(false);
-            float[] coords = new float[] { 33.4f, -77.2f, 34f, -79.5f, 35f,
+            double[] coords = new double[] { 33.4f, -77.2f, 34f, -79.5f, 35f,
                     -90f, 40f, -100f, 45f, -101f, 50f, -83.2f, 35f, -65.7f,
                     -34f, -70.5f, 33.4f, -77.2f };
 

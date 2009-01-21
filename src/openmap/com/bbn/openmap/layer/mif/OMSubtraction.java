@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/mif/OMSubtraction.java,v $
 // $RCSfile: OMSubtraction.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:01 $
+// $Revision: 1.4 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -44,12 +44,12 @@ public class OMSubtraction extends OMGraphic implements Serializable {
     Vector subs; //An array of the subtractions to make
     Projection project;
 
-    public OMSubtraction(float[] lat, float[] lon) {
+    public OMSubtraction(double[] lat, double[] lon) {
         super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         outer = new SubArea(lat, lon);
     }
 
-    boolean contains(float[] latp, float[] lonp) {
+    boolean contains(double[] latp, double[] lonp) {
         if (outer.contains(latp, lonp)) {
             if (subs == null)
                 subs = new Vector();
@@ -110,8 +110,8 @@ public class OMSubtraction extends OMGraphic implements Serializable {
 
     class SubArea {
 
-        float[] lat;
-        float[] lon;
+        double[] lat;
+        double[] lon;
         int[] x, y;
         int len;
 
@@ -119,7 +119,7 @@ public class OMSubtraction extends OMGraphic implements Serializable {
         // Polygon class is no good cos it needs ints
         GeneralPath gpath;
 
-        SubArea(float[] lat, float[] lon) {
+        SubArea(double[] lat, double[] lon) {
             this.lat = lat;
             this.lon = lon;
             len = lat.length;
@@ -141,14 +141,14 @@ public class OMSubtraction extends OMGraphic implements Serializable {
             return proj.isPlotable(lat[0], lon[0]);
         }
 
-        boolean contains(float[] latp, float[] lonp) {
+        boolean contains(double[] latp, double[] lonp) {
 
             if (gpath == null) {
                 gpath = new GeneralPath();
                 for (int i = 0; i < len; i++) {
                     if (i == 0)
-                        gpath.moveTo(lat[0], lon[0]);
-                    gpath.lineTo(lat[i], lon[i]);
+                        gpath.moveTo((float) lat[0], (float) lon[0]);
+                    gpath.lineTo((float) lat[i], (float) lon[i]);
                 }
                 gpath.closePath();
             }

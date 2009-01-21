@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRaster.java,v $
 // $RCSfile: OMRaster.java,v $
-// $Revision: 1.7 $
-// $Date: 2006/08/09 21:08:33 $
+// $Revision: 1.8 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -131,7 +131,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param pix color values for the pixels.
      * @see #setPixel
      */
-    public OMRaster(float lt, float ln, int w, int h, int[] pix) {
+    public OMRaster(double lt, double ln, int w, int h, int[] pix) {
 
         super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         setColorModel(COLORMODEL_DIRECT);
@@ -184,7 +184,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param pix color values for the pixels.
      * @see #setPixel
      */
-    public OMRaster(float lt, float ln, int offset_x1, int offset_y1, int w,
+    public OMRaster(double lt, double ln, int offset_x1, int offset_y1, int w,
             int h, int[] pix) {
 
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
@@ -211,7 +211,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param ln longitude of the left side of the image.
      * @param ii ImageIcon used for the image.
      */
-    public OMRaster(float lt, float ln, ImageIcon ii) {
+    public OMRaster(double lt, double ln, ImageIcon ii) {
         this(lt, ln, ii.getImage());
     }
 
@@ -222,7 +222,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param ln longitude of the left side of the image.
      * @param ii Image used for the image.
      */
-    public OMRaster(float lt, float ln, Image ii) {
+    public OMRaster(double lt, double ln, Image ii) {
         super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         setColorModel(COLORMODEL_IMAGEICON);
         lat = lt;
@@ -267,7 +267,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param offset_y1 number of pixels to move image down.
      * @param ii ImageIcon used for the image.
      */
-    public OMRaster(float lt, float ln, int offset_x1, int offset_y1,
+    public OMRaster(double lt, double ln, int offset_x1, int offset_y1,
             ImageIcon ii) {
         this(lt, ln, offset_x1, offset_y1, ii.getImage());
     }
@@ -287,7 +287,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param offset_y1 number of pixels to move image down.
      * @param ii Image used for the image.
      */
-    public OMRaster(float lt, float ln, int offset_x1, int offset_y1, Image ii) {
+    public OMRaster(double lt, double ln, int offset_x1, int offset_y1, Image ii) {
 
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         setColorModel(COLORMODEL_IMAGEICON);
@@ -314,7 +314,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param trans transparency of image.
      * @see #setPixel
      */
-    public OMRaster(float lt, float ln, int w, int h, byte[] bytes,
+    public OMRaster(double lt, double ln, int w, int h, byte[] bytes,
             Color[] colorTable, int trans) {
 
         super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
@@ -392,7 +392,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
      * @param trans transparency of image.
      * @see #setPixel
      */
-    public OMRaster(float lt, float ln, int offset_x1, int offset_y1, int w,
+    public OMRaster(double lt, double ln, int offset_x1, int offset_y1, int w,
             int h, byte[] bytes, Color[] colorTable, int trans) {
 
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);

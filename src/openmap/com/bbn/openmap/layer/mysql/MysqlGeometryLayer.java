@@ -274,7 +274,7 @@ public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
      */
     protected OMGraphic createLine(MysqlLine myLine) {
 
-        OMPoly ompoly = new OMPoly(DoubleToFloat(myLine.getCoordinateArray()), OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
+        OMPoly ompoly = new OMPoly(myLine.getCoordinateArray(), OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
 
         drawingAttributes.setTo(ompoly);
         return ompoly;
@@ -299,7 +299,7 @@ public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
         }
 
         for (int i = 0; i < size; i++) {
-            ompoly = new OMPoly(DoubleToFloat((double[]) v.elementAt(i)), OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
+            ompoly = new OMPoly((double[]) v.elementAt(i), OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT);
 
             drawingAttributes.setTo(ompoly);
 

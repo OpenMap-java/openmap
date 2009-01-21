@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/labeled/EditableLabeledOMPoly.java,v $
 // $RCSfile: EditableLabeledOMPoly.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:18 $
+// $Revision: 1.5 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -63,7 +63,7 @@ public class EditableLabeledOMPoly extends EditableOMPoly {
         OMGraphic g = null;
         switch (renderType) {
         case (OMGraphic.RENDERTYPE_LATLON):
-            g = new LabeledOMPoly(new float[0], OMGraphic.RADIANS, lineType);
+            g = new LabeledOMPoly(new double[0], OMGraphic.RADIANS, lineType);
             break;
         case (OMGraphic.RENDERTYPE_OFFSET):
             g = new LabeledOMPoly(90f, -180f, new int[0], OMPoly.COORDMODE_ORIGIN);

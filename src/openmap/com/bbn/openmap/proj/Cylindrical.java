@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Cylindrical.java,v $
 // $RCSfile: Cylindrical.java,v $
-// $Revision: 1.9 $
-// $Date: 2006/05/19 14:57:12 $
+// $Revision: 1.10 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -292,14 +292,14 @@ public abstract class Cylindrical extends GeoProj {
      *        projections.
      * @return ArrayList of x[], y[], x[], y[], ... the projected poly
      */
-    protected ArrayList _forwardPoly(float[] rawllpts, int ltype, int nsegs,
+    protected ArrayList<int[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs,
                                      boolean isFilled) {
         int n, k, flag = 0, min = 0, max = 0, xp, xadj = 0;
 
         // determine length of pairs list
         int len = rawllpts.length >> 1; // len/2, chop off extra
         if (len < 2)
-            return new ArrayList(0);
+            return new ArrayList<int[]>(0);
 
         // handle complicated line in specific routines
         if (isComplicatedLineType(ltype)) {
@@ -338,8 +338,8 @@ public abstract class Cylindrical extends GeoProj {
         min *= -1;// positive magnitude
 
         // now create the return list
-        ArrayList ret_val = null;
-        ret_val = new ArrayList(2 + 2 * (max + min));
+        ArrayList<int[]> ret_val = null;
+        ret_val = new ArrayList<int[]>(2 + 2 * (max + min));
         ret_val.add(xs);
         ret_val.add(ys);
         int[] altx = null;
@@ -409,14 +409,14 @@ public abstract class Cylindrical extends GeoProj {
      *        projections.
      * @return ArrayList of x[], y[], x[], y[], ... the projected poly
      */
-    protected ArrayList _forwardPoly(double[] rawllpts, int ltype, int nsegs,
+    protected ArrayList<int[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs,
                                      boolean isFilled) {
         int n, k, flag = 0, min = 0, max = 0, xp, xadj = 0;
 
         // determine length of pairs list
         int len = rawllpts.length >> 1; // len/2, chop off extra
         if (len < 2)
-            return new ArrayList(0);
+            return new ArrayList<int[]>(0);
 
         // handle complicated line in specific routines
         if (isComplicatedLineType(ltype)) {
@@ -455,8 +455,8 @@ public abstract class Cylindrical extends GeoProj {
         min *= -1;// positive magnitude
 
         // now create the return list
-        ArrayList ret_val = null;
-        ret_val = new ArrayList(2 + 2 * (max + min));
+        ArrayList<int[]> ret_val = null;
+        ret_val = new ArrayList<int[]>(2 + 2 * (max + min));
         ret_val.add(xs);
         ret_val.add(ys);
         int[] altx = null;

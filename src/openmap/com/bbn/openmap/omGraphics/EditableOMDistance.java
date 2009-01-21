@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMDistance.java,v $
 // $RCSfile: EditableOMDistance.java,v $
-// $Revision: 1.9 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.10 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -99,7 +99,7 @@ public class EditableOMDistance extends EditableOMPoly {
         case (OMGraphic.RENDERTYPE_OFFSET):
             System.err.println("Offset type not supported for OMDistance");
         }
-        g = new OMDistance(new float[0], OMGraphic.RADIANS, lineType, Length.NM);
+        g = new OMDistance(new double[0], OMGraphic.RADIANS, lineType, Length.NM);
         ((OMDistance) g).setDoShapes(true);
         return g;
     }

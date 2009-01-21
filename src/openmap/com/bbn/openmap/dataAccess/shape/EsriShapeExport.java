@@ -764,7 +764,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
     public static boolean isPolygon(OMPoly omPoly) {
         boolean isPolygon = false;
         // get the array of lat/lon points
-        float[] points = omPoly.getLatLonArray();
+        double[] points = omPoly.getLatLonArray();
         int i = points.length;
 
         // compare the first and last set of points, equal points

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMEllipse.java,v $
 // $RCSfile: OMEllipse.java,v $
-// $Revision: 1.5 $
-// $Date: 2006/10/10 22:05:19 $
+// $Revision: 1.6 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -26,11 +26,11 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -44,7 +44,7 @@ public class OMEllipse extends OMCircle {
 
     protected double majorAxisSpan;
     protected double minorAxisSpan;
-    protected float[] rawllpts;
+    protected double[] rawllpts;
 
     /**
      * Create a OMEllipse, positioned with a lat-lon center and a lat-lon axis.
@@ -162,7 +162,7 @@ public class OMEllipse extends OMCircle {
      * Get the float[] of points that make up the ellipse. In radians, lat, lon,
      * lat, lon, etc. May be null if generate hasn't been called.
      */
-    public float[] getLatLonPoints() {
+    public double[] getLatLonPoints() {
         return rawllpts;
     }
 
@@ -170,7 +170,7 @@ public class OMEllipse extends OMCircle {
      * Given that the center point and the axis are set, calculate the new
      * lat/lon points all around the ellipse from the center.
      */
-    public float[] createLatLonPoints() {
+    public double[] createLatLonPoints() {
         // First, need to calculate the lat/lon points for the
         // ellipse.
         int i;
@@ -182,8 +182,8 @@ public class OMEllipse extends OMCircle {
         double y;
         double a;
         double b;
-        float[] azimuth = new float[nMax + 1];
-        float[] llPoints = new float[2 * (nMax + 1)];
+        double[] azimuth = new double[nMax + 1];
+        double[] llPoints = new double[2 * (nMax + 1)];
 
         a = majorAxisSpan / 2.0;
         b = minorAxisSpan / 2.0;
@@ -223,12 +223,12 @@ public class OMEllipse extends OMCircle {
 
         for (i = 0; i < nMax + 1; i++) {
 
-            com.bbn.openmap.proj.coords.LatLonPoint llPt = GreatCircle.sphericalBetween((float) center.getRadLat(),
+            LatLonPoint llPt = GreatCircle.sphericalBetween((float) center.getRadLat(),
                     (float) center.getRadLon(),
                     (float) distance[i],
                     azimuth[i]);
-            llPoints[nCounter++] = (float) llPt.getRadLat();
-            llPoints[nCounter++] = (float) llPt.getRadLon();
+            llPoints[nCounter++] = llPt.getRadLat();
+            llPoints[nCounter++] = llPt.getRadLon();
         }
 
         return llPoints;

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/URLRasterLocation.java,v $
 // $RCSfile: URLRasterLocation.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/09/13 14:38:52 $
+// $Revision: 1.9 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -54,7 +54,7 @@ public class URLRasterLocation extends Location {
      * @param name the label for the location.
      * @param iconURL a string to a URL for an image
      */
-    public URLRasterLocation(float latitude, float longitude, String name,
+    public URLRasterLocation(double latitude, double longitude, String name,
             String iconURL) {
         super(latitude, longitude, name, getIconRaster(latitude,
                 longitude,
@@ -75,7 +75,7 @@ public class URLRasterLocation extends Location {
      * @param name the label for the location.
      * @param iconURL a URL for an image
      */
-    public URLRasterLocation(float latitude, float longitude, String name,
+    public URLRasterLocation(double latitude, double longitude, String name,
             URL iconURL) {
         super(latitude, longitude, name, getIconRaster(latitude,
                 longitude,
@@ -138,7 +138,7 @@ public class URLRasterLocation extends Location {
      * @param name the label for the location.
      * @param iconURL a String for a URL for an image
      */
-    public URLRasterLocation(float latitude, float longitude, int xOffset,
+    public URLRasterLocation(double latitude, double longitude, int xOffset,
             int yOffset, String name, String iconURL) {
         super(latitude,
               longitude,
@@ -165,7 +165,7 @@ public class URLRasterLocation extends Location {
      * @param name the label for the location.
      * @param iconURL a URL for an image
      */
-    public URLRasterLocation(float latitude, float longitude, int xOffset,
+    public URLRasterLocation(double latitude, double longitude, int xOffset,
             int yOffset, String name, URL iconURL) {
         super(latitude,
               longitude,
@@ -187,7 +187,7 @@ public class URLRasterLocation extends Location {
      * @param lon longitude in decimal degrees.
      * @param iconURL a URL for an image
      */
-    public static OMRaster getIconRaster(float lat, float lon, String iconURL) {
+    public static OMRaster getIconRaster(double lat, double lon, String iconURL) {
         URL url = getIconRasterURL(iconURL);
         if (url == null)
             return null;
@@ -202,7 +202,7 @@ public class URLRasterLocation extends Location {
      * @param lon longitude in decimal degrees.
      * @param iconURL a URL for an image
      */
-    public static OMRaster getIconRaster(float lat, float lon, URL iconURL) {
+    public static OMRaster getIconRaster(double lat, double lon, URL iconURL) {
 
         ImageIcon icon = new ImageIcon(iconURL);
         if (icon == null)
@@ -260,7 +260,7 @@ public class URLRasterLocation extends Location {
      *        point.
      * @param iconURL a String for URL for an image
      */
-    public static OMRaster getIconRaster(float lat, float lon, int x, int y,
+    public static OMRaster getIconRaster(double lat, double lon, int x, int y,
                                          String iconURL) {
         URL url = getIconRasterURL(iconURL);
         if (url == null)
@@ -280,7 +280,7 @@ public class URLRasterLocation extends Location {
      *        point.
      * @param iconURL a URL for an image
      */
-    public static OMRaster getIconRaster(float lat, float lon, int x, int y,
+    public static OMRaster getIconRaster(double lat, double lon, int x, int y,
                                          URL iconURL) {
         ImageIcon icon = new ImageIcon(iconURL);
         if (icon == null)
@@ -308,7 +308,7 @@ public class URLRasterLocation extends Location {
      * Given a new latitude/longitude, reposition the graphic and
      * label.
      */
-    public void setGraphicLocations(float latitude, float longitude) {
+    public void setGraphicLocations(double latitude, double longitude) {
         if (location instanceof OMRaster) {
             OMRaster ras = (OMRaster) location;
             ras.setLat(latitude);
@@ -342,7 +342,7 @@ public class URLRasterLocation extends Location {
      * Given a new latitude/longitude with x/y offset points,
      * reposition the graphic and label.
      */
-    public void setGraphicLocations(float latitude, float longitude,
+    public void setGraphicLocations(double latitude, double longitude,
                                     int offsetX, int offsetY) {
         if (location instanceof OMRaster) {
             OMRaster ras = (OMRaster) location;

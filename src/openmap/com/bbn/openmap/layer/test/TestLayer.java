@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/test/TestLayer.java,v $
 // $RCSfile: TestLayer.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/09 18:51:46 $
+// $Revision: 1.7 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -247,7 +247,7 @@ public class TestLayer extends OMGraphicHandlerLayer implements
         switch (poly.rt) {
         case OMGraphic.RENDERTYPE_LATLON:
             int len = poly.llpts.length;
-            float[] llpts = new float[len];
+            double[] llpts = new double[len];
             System.arraycopy(poly.llpts, 0, llpts, 0, len);
             ompoly = new OMPoly(llpts, OMPoly.DECIMAL_DEGREES, poly.type, poly.nsegs);
             break;

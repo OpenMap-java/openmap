@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriPolygonZ.java,v $
 // $RCSfile: EsriPolygonZ.java,v $
-// $Revision: 1.3 $
-// $Date: 2006/09/05 14:18:29 $
+// $Revision: 1.4 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,15 +37,15 @@ public class EsriPolygonZ extends EsriPolygon implements Cloneable, EsriGraphic 
 
     protected float[] extents;
 
-    public EsriPolygonZ(float[] points, int units, int lineType) {
+    public EsriPolygonZ(double[] points, int units, int lineType) {
         super(points, units, lineType);
     }
 
     public static EsriPolygon convert(OMPoly ompoly) {
         if (ompoly.getRenderType() == RENDERTYPE_LATLON) {
 
-            float[] rawLL = ompoly.getLatLonArray();
-            float[] degreePoints = new float[rawLL.length];
+            double[] rawLL = ompoly.getLatLonArray();
+            double[] degreePoints = new double[rawLL.length];
             System.arraycopy(rawLL, 0, degreePoints, 0, rawLL.length);
 
             EsriPolygonZ ePoly = new EsriPolygonZ(degreePoints, OMGraphic.RADIANS, ompoly.getLineType());

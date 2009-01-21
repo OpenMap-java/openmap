@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/e00/ArcData.java,v
 // $
 // $RCSfile: ArcData.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:54 $
+// $Revision: 1.5 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,7 +25,7 @@
 package com.bbn.openmap.layer.e00;
 
 public class ArcData extends E00Data {
-    float[] coords;
+    double[] coords;
     int deja = 0;
 
     public ArcData() {}

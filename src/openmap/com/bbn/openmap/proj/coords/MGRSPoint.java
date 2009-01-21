@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/MGRSPoint.java,v $
 // $RCSfile: MGRSPoint.java,v $
-// $Revision: 1.19 $
-// $Date: 2008/09/19 14:20:14 $
+// $Revision: 1.20 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -154,7 +154,7 @@ public class MGRSPoint extends ZonedUTMPoint {
     /**
      * Create a MGRSPoint from UTM values;
      */
-    public MGRSPoint(float northing, float easting, int zoneNumber,
+    public MGRSPoint(double northing, double easting, int zoneNumber,
             char zoneLetter) {
         super(northing, easting, zoneNumber, zoneLetter);
     }
@@ -264,8 +264,8 @@ public class MGRSPoint extends ZonedUTMPoint {
      *        set in this object, and it will be returned.
      * @return LatLonPoint with values converted from MGRS coordinate.
      */
-    public static LatLonPoint MGRStoLL(Ellipsoid ellip, float northing,
-                                       float easting, int zoneNumber,
+    public static LatLonPoint MGRStoLL(Ellipsoid ellip, double northing,
+                                       double easting, int zoneNumber,
                                        char zoneLetter, LatLonPoint llp) {
         // return UTMtoLL(mgrsp, ellip, llp);
 
@@ -589,7 +589,7 @@ public class MGRSPoint extends ZonedUTMPoint {
      * Get the two letter 100k designator for a given UTM easting, northing and
      * zone number value.
      */
-    protected String get100kID(float easting, float northing, int zone_number) {
+    protected String get100kID(double easting, double northing, int zone_number) {
         int set = get100kSetForZone(zone_number);
         int setColumn = ((int) easting / 100000);
         int setRow = ((int) northing / 100000) % 20;

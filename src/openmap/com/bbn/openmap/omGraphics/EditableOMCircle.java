@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMCircle.java,v $
 // $RCSfile: EditableOMCircle.java,v $
-// $Revision: 1.11 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.12 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,7 +25,6 @@ package com.bbn.openmap.omGraphics;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.editable.CircleStateMachine;
 import com.bbn.openmap.omGraphics.editable.GraphicEditState;
@@ -36,6 +35,7 @@ import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -490,9 +490,9 @@ public class EditableOMCircle extends EditableOMGraphic {
 
             if (projection != null) {
 
-                LatLonPoint llp = LatLonPoint.getLatLon(llgp.getX(),
+                LatLonPoint llp = (LatLonPoint) projection.inverse(llgp.getX(),
                         llgp.getY(),
-                        projection);
+                        new LatLonPoint.Double());
 
                 circle.setCenter(llp);
 
@@ -500,22 +500,22 @@ public class EditableOMCircle extends EditableOMGraphic {
                 if (renderType == OMGraphic.RENDERTYPE_LATLON
                         && movingPoint == gpr) {
 
-                    LatLonPoint llpm = LatLonPoint.getLatLon(gpr.getX(),
+                    LatLonPoint llpm = (LatLonPoint) projection.inverse(gpr.getX(),
                             gpr.getY(),
-                            projection);
+                            new LatLonPoint.Double());
 
-                    float radius;
+                    double radius;
 
                     if (projection instanceof GeoProj) {
-                        radius = Length.DECIMAL_DEGREE.fromRadians((float) GreatCircle.sphericalDistance(llpm.getRadLat(),
+                        radius = Length.DECIMAL_DEGREE.fromRadians(GreatCircle.sphericalDistance(llpm.getRadLat(),
                                 llpm.getRadLon(),
                                 llp.getRadLat(),
                                 llp.getRadLon()));
                     } else {
-                        radius = DrawUtil.distance((float) llpm.getX(),
-                                (float) llpm.getY(),
-                                (float) llp.getX(),
-                                (float) llp.getY());
+                        radius = DrawUtil.distance(llpm.getX(),
+                                llpm.getY(),
+                                llp.getX(),
+                                llp.getY());
                     }
 
                     setRadius(radius);
@@ -582,7 +582,7 @@ public class EditableOMCircle extends EditableOMGraphic {
      * 
      * @param radius in DECIMAL_DEGREES
      */
-    protected void setRadius(float radius) {
+    protected void setRadius(double radius) {
         if (circle != null) {
             circle.setRadius(radius);
         }

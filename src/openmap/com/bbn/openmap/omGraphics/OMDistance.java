@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMDistance.java,v $
 // $RCSfile: OMDistance.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/12/09 21:09:03 $
+// $Revision: 1.12 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -71,7 +71,7 @@ public class OMDistance extends OMPoly {
      *        or OMGraphic.DECIMAL_DEGREES
      * @param lType line type, from a list defined in OMGraphic.
      */
-    public OMDistance(float[] llPoints, int units, int lType,
+    public OMDistance(double[] llPoints, int units, int lType,
             Length distanceUnits) {
         this(llPoints, units, lType, -1, distanceUnits);
     }
@@ -99,7 +99,7 @@ public class OMDistance extends OMPoly {
      *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and
      *        if &lt; 1, this value is generated internally)
      */
-    public OMDistance(float[] llPoints, int units, int lType, int nsegs,
+    public OMDistance(double[] llPoints, int units, int lType, int nsegs,
             Length distanceUnits) {
         super(llPoints, units, lType, nsegs);
         setDistUnits(distanceUnits);
@@ -119,7 +119,7 @@ public class OMDistance extends OMPoly {
         return distUnits;
     }
 
-    public void setLocation(float[] llPoints, int units) {
+    public void setLocation(double[] llPoints, int units) {
         this.units = OMGraphic.RADIANS;
         if (units == OMGraphic.DECIMAL_DEGREES) {
             ProjMath.arrayDegToRad(llPoints);
@@ -141,8 +141,8 @@ public class OMDistance extends OMPoly {
         }
 
         Geo lastGeo = new Geo(rawllpts[0], rawllpts[1], units == DECIMAL_DEGREES);
-        float latpnt = rawllpts[0];
-        float lonpnt = rawllpts[1];
+        double latpnt = rawllpts[0];
+        double lonpnt = rawllpts[1];
         if (units == RADIANS) {
             latpnt = ProjMath.radToDeg(latpnt);
             lonpnt = ProjMath.radToDeg(lonpnt);

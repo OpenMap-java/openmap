@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRasterObject.java,v $
 // $RCSfile: OMRasterObject.java,v $
-// $Revision: 1.15 $
-// $Date: 2006/12/15 18:39:53 $
+// $Revision: 1.16 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -125,13 +125,13 @@ public abstract class OMRasterObject extends OMGraphic implements Serializable,
      * The latitude of the upper left corner for the image, in decimal
      * degrees.
      */
-    protected float lat = 0.0f;
+    protected double lat = 0.0f;
 
     /**
      * The longitude of the upper left corner for the image, in
      * decimal degrees.
      */
-    protected float lon = 0.0f;
+    protected double lon = 0.0f;
 
     /**
      * The width of the image, in pixels. This always reflects the
@@ -606,7 +606,7 @@ public abstract class OMRasterObject extends OMGraphic implements Serializable,
      * 
      * @param value latitude in decimal degrees.
      */
-    public void setLat(float value) {
+    public void setLat(double value) {
         if (lat == value)
             return;
         lat = value;
@@ -618,7 +618,7 @@ public abstract class OMRasterObject extends OMGraphic implements Serializable,
      * 
      * @return the latitude in decimal degrees.
      */
-    public float getLat() {
+    public double getLat() {
         return lat;
     }
 
@@ -628,7 +628,7 @@ public abstract class OMRasterObject extends OMGraphic implements Serializable,
      * 
      * @param value the longitude in decimal degrees.
      */
-    public void setLon(float value) {
+    public void setLon(double value) {
         if (lon == value)
             return;
         lon = value;
@@ -640,7 +640,7 @@ public abstract class OMRasterObject extends OMGraphic implements Serializable,
      * 
      * @return longitude in decimal degrees.
      */
-    public float getLon() {
+    public double getLon() {
         return lon;
     }
 

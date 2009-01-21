@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkText.java,v $
 // $RCSfile: LinkText.java,v $
-// $Revision: 1.9 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.10 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -136,8 +136,8 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
 
         switch (text.getRenderType()) {
         case OMText.RENDERTYPE_LATLON:
-            write(text.getLat(),
-                    text.getLon(),
+            write((float) text.getLat(),
+                    (float) text.getLon(),
                     text.getData(),
                     OMText.fontToXFont(text.getFont()),
                     text.getJustify(),
@@ -154,8 +154,8 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
                     link.dos);
             break;
         case OMText.RENDERTYPE_OFFSET:
-            write(text.getLat(),
-                    text.getLon(),
+            write((float) text.getLat(),
+                    (float) text.getLon(),
                     text.getX(),
                     text.getY(),
                     text.getData(),

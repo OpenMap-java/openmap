@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionLoader.java,v $
 // $RCSfile: ProjectionLoader.java,v $
-// $Revision: 1.3 $
-// $Date: 2005/08/11 20:39:16 $
+// $Revision: 1.4 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -42,7 +42,7 @@ public interface ProjectionLoader {
      * Get a class name to use for the projection. This will be used
      * as a key in the projection factory.
      */
-    public Class getProjectionClass();
+    public Class<? extends Projection> getProjectionClass();
 
     /**
      * Get a pretty name for the projection.

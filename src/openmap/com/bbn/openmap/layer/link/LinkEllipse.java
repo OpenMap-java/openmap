@@ -7,8 +7,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkEllipse.java,v $
 // $RCSfile: LinkEllipse.java,v $
-// $Revision: 1.3 $
-// $Date: 2007/02/26 17:12:46 $
+// $Revision: 1.4 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -19,9 +19,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.OMEllipse;
 import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -234,7 +234,7 @@ public class LinkEllipse implements LinkGraphicConstants,
                 break;
             }
 
-            ellipse = new OMEllipse(new LatLonPoint(lat, lon), majorAxisSpan, minorAxisSpan, unit, rotationAngle);
+            ellipse = new OMEllipse(new LatLonPoint.Double(lat, lon), majorAxisSpan, minorAxisSpan, unit, rotationAngle);
             break;
         }
         case RENDERTYPE_XY: {
@@ -256,7 +256,7 @@ public class LinkEllipse implements LinkGraphicConstants,
             int h = dis.readInt();
             double rotationAngle = dis.readFloat();
 
-            ellipse = new OMEllipse(new LatLonPoint(lat, lon), offsetX, offsetY, w, h, rotationAngle);
+            ellipse = new OMEllipse(new LatLonPoint.Double(lat, lon), offsetX, offsetY, w, h, rotationAngle);
             break;
         }
         default: {
@@ -266,7 +266,9 @@ public class LinkEllipse implements LinkGraphicConstants,
         }
 
         if (ellipse != null) {
-            LinkProperties.loadPropertiesIntoOMGraphic(dis, ellipse, propertiesBuffer);
+            LinkProperties.loadPropertiesIntoOMGraphic(dis,
+                    ellipse,
+                    propertiesBuffer);
         }
 
         return ellipse;

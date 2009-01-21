@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/PolygonGeometry.java,v $
 // $RCSfile: PolygonGeometry.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/12/09 21:09:12 $
+// $Revision: 1.8 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -189,7 +189,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
     public static class LL extends PolygonGeometry {
 
         /** raw float lats and lons stored internally in radians. */
-        protected float[] rawllpts = null;
+        protected double[] rawllpts = null;
 
         /**
          * Number of segments to draw (used only for
@@ -220,7 +220,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types,
          *        and if &lt; 1, this value is generated internally)
          */
-        public LL(float[] llPoints, int units, int lType, int nsegs) {
+        public LL(double[] llPoints, int units, int lType, int nsegs) {
             setLineType(lType);
             setLocation(llPoints, units);
             setNumSegs(nsegs);
@@ -247,7 +247,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          *        OMGraphic.RADIANS or OMGraphic.DECIMAL_DEGREES
          * @param lType line type, from a list defined in OMGraphic.
          */
-        public LL(float[] llPoints, int units, int lType) {
+        public LL(double[] llPoints, int units, int lType) {
             this(llPoints, units, lType, -1);
         }
 
@@ -271,7 +271,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          * @param units radians or decimal degrees. Use
          *        OMGraphic.RADIANS or OMGraphic.DECIMAL_DEGREES
          */
-        public void setLocation(float[] llPoints, int units) {
+        public void setLocation(double[] llPoints, int units) {
             if (units == OMGraphic.DECIMAL_DEGREES) {
                 ProjMath.arrayDegToRad(llPoints);
             }
@@ -286,7 +286,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          * 
          * @return float[] rawllpts of lat, lon, lat, lon
          */
-        public float[] getLatLonArray() {
+        public double[] getLatLonArray() {
             return rawllpts;
         }
 
@@ -552,13 +552,13 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          * The latitude of the starting point of the poly. Stored as
          * radians!
          */
-        protected float lat = 0.0f;
+        protected double lat = 0.0f;
 
         /**
          * The longitude of the starting point of the poly. Stored as
          * radians!
          */
-        protected float lon = 0.0f;
+        protected double lon = 0.0f;
 
         /**
          * Type of offset.
@@ -578,7 +578,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          * @param xypoints int[] of x,y pairs
          * @param cMode offset coordinate mode
          */
-        public Offset(float latPoint, float lonPoint, int[] xypoints, int cMode) {
+        public Offset(double latPoint, double lonPoint, int[] xypoints, int cMode) {
             setLocation(latPoint, lonPoint, OMGraphic.DECIMAL_DEGREES, xypoints);
             setCoordMode(cMode);
         }
@@ -594,7 +594,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          * @param yPoints int[] of y coordinates
          * @param cMode offset coordinate mode
          */
-        public Offset(float latPoint, float lonPoint, int[] xPoints,
+        public Offset(double latPoint, double lonPoint, int[] xPoints,
                 int[] yPoints, int cMode) {
 
             setLocation(latPoint,
@@ -617,7 +617,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          * @param xypoints array of x/y points, arranged x, y, x, y,
          *        etc.
          */
-        public void setLocation(float latPoint, float lonPoint, int units,
+        public void setLocation(double latPoint, double lonPoint, int units,
                                 int[] xypoints) {
             if (units == OMGraphic.DECIMAL_DEGREES) {
                 lat = ProjMath.degToRad(latPoint);
@@ -648,7 +648,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          * @param xPoints int[] of x coordinates
          * @param yPoints int[] of y coordinates
          */
-        public void setLocation(float latPoint, float lonPoint, int units,
+        public void setLocation(double latPoint, double lonPoint, int units,
                                 int[] xPoints, int[] yPoints) {
             if (units == OMGraphic.DECIMAL_DEGREES) {
                 lat = ProjMath.degToRad(latPoint);
@@ -685,7 +685,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
         /**
          * Set the latitude of the offset point, in decimal degrees.
          */
-        public void setLat(float lat) {
+        public void setLat(double lat) {
             this.lat = ProjMath.degToRad(lat);
             setNeedToRegenerate(true);
         }
@@ -693,14 +693,14 @@ public abstract class PolygonGeometry extends BasicGeometry implements
         /**
          * Get the latitude of the offset point, in decimal degrees.
          */
-        public float getLat() {
+        public double getLat() {
             return ProjMath.radToDeg(lat);
         }
 
         /**
          * Set the longitude of the offset point, in decimal degrees.
          */
-        public void setLon(float lon) {
+        public void setLon(double lon) {
             this.lon = ProjMath.degToRad(lon);
             setNeedToRegenerate(true);
         }
@@ -708,7 +708,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
         /**
          * Get the longitude of the offset point, in decimal degrees.
          */
-        public float getLon() {
+        public double getLon() {
             return ProjMath.radToDeg(lon);
         }
 

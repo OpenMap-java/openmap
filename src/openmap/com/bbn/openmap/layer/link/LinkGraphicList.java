@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkGraphicList.java,v $
 // $RCSfile: LinkGraphicList.java,v $
-// $Revision: 1.9 $
-// $Date: 2007/02/26 17:12:44 $
+// $Revision: 1.10 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1403,7 +1403,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
-    public void addPoly(float[] llPoints, int units, int lType,
+    public void addPoly(double[] llPoints, int units, int lType,
                         LinkProperties properties) throws IOException {
         LinkPoly.write(llPoints, units, lType, properties, link.dos);
     }
@@ -1419,7 +1419,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkPoly
      */
-    public void addPoly(float[] llpoints, int units, int lType, int nsegs,
+    public void addPoly(double[] llpoints, int units, int lType, int nsegs,
                         LinkProperties properties) throws IOException {
         LinkPoly.write(llpoints, units, lType, nsegs, properties, link.dos);
     }

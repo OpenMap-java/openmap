@@ -33,7 +33,7 @@ public interface GeoSegment extends GeoExtent {
      *         point" and the second is the next. If there isn't another point
      *         available, will throw an indexOutOfBounds exception.
      */
-    float[] getSegArray();
+    double[] getSegArray();
 
     public static class Impl implements GeoSegment {
         protected Geo[] seg;
@@ -52,10 +52,9 @@ public interface GeoSegment extends GeoExtent {
             return seg;
         }
 
-        public float[] getSegArray() {
-            return new float[] { (float) seg[0].getLatitude(),
-                    (float) seg[0].getLongitude(),
-                    (float) seg[1].getLatitude(), (float) seg[1].getLongitude() };
+        public double[] getSegArray() {
+            return new double[] { seg[0].getLatitude(), seg[0].getLongitude(),
+                    seg[1].getLatitude(), seg[1].getLongitude() };
         }
 
         public BoundingCircle getBoundingCircle() {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphic.java,v $
 // $RCSfile: OMGraphic.java,v $
-// $Revision: 1.15 $
-// $Date: 2006/05/19 17:54:03 $
+// $Revision: 1.16 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -268,32 +268,6 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
      */
     public int getRenderType() {
         return renderType;
-    }
-
-    /**
-     * OMGraphic method for returning a simple description of the OMGraphic.
-     * 
-     * @param level used by OMGraphicLists to provide an offset, or a notion of
-     *        embedding.
-     */
-    public String getDescription(int level) {
-        if (level == 0) {
-            return getDescription();
-        } else {
-            return "|--> " + getDescription();
-        }
-    }
-
-    /**
-     * OMGraphic method for returning a simple description of the OMGraphic.
-     */
-    public String getDescription() {
-        String cname = getClass().getName();
-        int lastPeriod = cname.lastIndexOf('.');
-        if (lastPeriod != -1) {
-            cname = cname.substring(lastPeriod + 1);
-        }
-        return cname;
     }
 
     /**
@@ -1014,7 +988,7 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
 
     /**
      * Generic return of SinkGraphic for subclasses that don't implement clone
-     * properly for some reason.
+     * properly, which is applicable for all of them right now..
      */
     public Object clone() {
         try {

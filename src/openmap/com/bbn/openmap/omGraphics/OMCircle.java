@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMCircle.java,v $
 // $RCSfile: OMCircle.java,v $
-// $Revision: 1.9 $
-// $Date: 2005/12/09 21:09:04 $
+// $Revision: 1.10 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -27,9 +27,9 @@ import java.awt.geom.Ellipse2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * Graphic object that represents a circle or an ellipse.
@@ -70,7 +70,7 @@ public class OMCircle extends OMArc implements Serializable {
      * @param w horizontal diameter of circle/ellipse, pixels
      * @param h vertical diameter of circle/ellipse, pixels
      */
-    public OMCircle(float latPoint, float lonPoint, int w, int h) {
+    public OMCircle(double latPoint, double lonPoint, int w, int h) {
         this(latPoint, lonPoint, 0, 0, w, h);
     }
 
@@ -102,7 +102,7 @@ public class OMCircle extends OMArc implements Serializable {
      * @param w horizontal diameter of circle/ellipse, pixels.
      * @param h vertical diameter of circle/ellipse, pixels.
      */
-    public OMCircle(float latPoint, float lonPoint, int offset_x1,
+    public OMCircle(double latPoint, double lonPoint, int offset_x1,
             int offset_y1, int w, int h) {
         super(latPoint, lonPoint, offset_x1, offset_y1, w, h, 0f, 360f);
     }
@@ -116,7 +116,7 @@ public class OMCircle extends OMArc implements Serializable {
      * @param radius distance in decimal degrees (converted to radians
      *        internally).
      */
-    public OMCircle(float latPoint, float lonPoint, float radius) {
+    public OMCircle(double latPoint, double lonPoint, double radius) {
         this(latPoint, lonPoint, radius, Length.DECIMAL_DEGREE, -1);
     }
 
@@ -130,7 +130,7 @@ public class OMCircle extends OMArc implements Serializable {
      * @param radius distance
      * @param units com.bbn.openmap.proj.Length object.
      */
-    public OMCircle(float latPoint, float lonPoint, float radius, Length units) {
+    public OMCircle(double latPoint, double lonPoint, double radius, Length units) {
         this(latPoint, lonPoint, radius, units, -1);
     }
 
@@ -147,9 +147,9 @@ public class OMCircle extends OMArc implements Serializable {
      * @param nverts number of vertices for the poly-circle (if &lt;
      *        3, value is generated internally)
      */
-    public OMCircle(float latPoint, float lonPoint, float radius, Length units,
+    public OMCircle(double latPoint, double lonPoint, double radius, Length units,
             int nverts) {
-        this(new LatLonPoint(latPoint, lonPoint), radius, units, nverts);
+        this(new LatLonPoint.Double(latPoint, lonPoint), radius, units, nverts);
     }
 
     /**
@@ -163,7 +163,7 @@ public class OMCircle extends OMArc implements Serializable {
      * @param nverts number of vertices for the poly-circle(if &lt; 3,
      *        value is generated internally)
      */
-    public OMCircle(LatLonPoint center, float radius, Length units, int nverts) {
+    public OMCircle(LatLonPoint center, double radius, Length units, int nverts) {
         super(center, radius, units, nverts, 0f, 360f);
     }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/asrp/ASRPDirectoryHandler.java,v $
 // $RCSfile: ASRPDirectoryHandler.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:05:40 $
+// $Revision: 1.3 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -197,10 +197,10 @@ public class ASRPDirectoryHandler {
 
         for (Iterator it = asrps.iterator(); it.hasNext();) {
             OMRect rect = ((ASRPDirectory) it.next()).getBounds();
-            float n = rect.getNorthLat();
-            float s = rect.getSouthLat();
-            float w = rect.getWestLon();
-            float e = rect.getEastLon();
+            double n = rect.getNorthLat();
+            double s = rect.getSouthLat();
+            double w = rect.getWestLon();
+            double e = rect.getEastLon();
 
             if (n < miny)
                 miny = n;

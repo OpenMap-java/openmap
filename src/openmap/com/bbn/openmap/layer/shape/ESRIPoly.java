@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/ESRIPoly.java,v $
 // $RCSfile: ESRIPoly.java,v $
-// $Revision: 1.4 $
-// $Date: 2006/05/19 14:40:49 $
+// $Revision: 1.5 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,7 +41,7 @@ import com.bbn.openmap.util.Debug;
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
  * @author HACK-author blame it on aculline
- * @version $Revision: 1.4 $ $Date: 2006/05/19 14:40:49 $
+ * @version $Revision: 1.5 $ $Date: 2009/01/21 01:24:42 $
  */
 public abstract class ESRIPoly extends ShapeUtils {
 
@@ -68,7 +68,7 @@ public abstract class ESRIPoly extends ShapeUtils {
          * (lat,lon,...). This is to allow for optimized processing by
          * OpenMap.
          */
-        protected float[] radians;
+        protected double[] radians;
 
         /**
          * Flag noting if the internal representation of coordinates
@@ -93,7 +93,7 @@ public abstract class ESRIPoly extends ShapeUtils {
                 Debug.output("ESRIPoly w/" + nPts + " points");
             }
             nPoints = nPts;
-            radians = new float[nPoints * 2];
+            radians = new double[nPoints * 2];
         }
 
         /**
@@ -103,7 +103,7 @@ public abstract class ESRIPoly extends ShapeUtils {
          * @param radians float[] coordinates: y,x,y,x,... (lat,lon)
          *        order in RADIANS!
          */
-        public ESRIFloatPoly(float[] radians) {
+        public ESRIFloatPoly(double[] radians) {
             this.radians = radians;
             this.isRadians = true;
             nPoints = radians.length / 2;
@@ -116,7 +116,7 @@ public abstract class ESRIPoly extends ShapeUtils {
          * @param radians float[] coordinates: y,x,y,x,... (lat,lon)
          *        order in RADIANS!
          */
-        public ESRIFloatPoly(float[] radians, boolean isRadians) {
+        public ESRIFloatPoly(double[] radians, boolean isRadians) {
             this.radians = radians;
             nPoints = radians.length / 2;
             this.isRadians = isRadians;
@@ -129,7 +129,7 @@ public abstract class ESRIPoly extends ShapeUtils {
          * 
          * @return float[] RADIAN y,x,y,x,... (lat,lon)
          */
-        public float[] getRadians() {
+        public double[] getRadians() {
             if (!isRadians) {
                 ProjMath.arrayDegToRad(radians);
                 isRadians = true;
@@ -144,7 +144,7 @@ public abstract class ESRIPoly extends ShapeUtils {
          * 
          * @return float[] DECIMAL_DEGREES y,x,y,x,... (lat,lon)
          */
-        public float[] getDecimalDegrees() {
+        public double[] getDecimalDegrees() {
             if (isRadians) {
                 ProjMath.arrayRadToDeg(radians);
                 isRadians = false;
@@ -189,7 +189,7 @@ public abstract class ESRIPoly extends ShapeUtils {
          * @param index the ordinal of the vertex of interest
          * @return the x (longitude) coordinate in decimal degrees
          */
-        public float getX(int index) {
+        public double getX(int index) {
             // REMEMBER: y,x order (lat,lon order)
             return ProjMath.radToDeg(radians[(index * 2) + 1]);//x
                                                                // (lon)
@@ -201,7 +201,7 @@ public abstract class ESRIPoly extends ShapeUtils {
          * @param index the ordinal of the vertex of interest
          * @return the y (latitude) coordinate in decimal degrees
          */
-        public float getY(int index) {
+        public double getY(int index) {
             // REMEMBER: y,x order (lat,lon order)
             return ProjMath.radToDeg(radians[(index * 2)]);//y (lat)
         }

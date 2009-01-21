@@ -196,11 +196,11 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         }
     }
 
-    public static float forwardProjectMillis(long time) {
-        return (float) time / 60000f; // 60000 millis per minute
+    public static double forwardProjectMillis(long time) {
+        return (double) time / 60000f; // 60000 millis per minute
     }
 
-    public static long inverseProjectMillis(float timef) {
+    public static long inverseProjectMillis(double timef) {
         return (long) (timef * 60000f); // 60000 millis per minute
     }
 
@@ -652,7 +652,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             return true;
         }
 
-        float lon = updateMouseTimeDisplay(e);
+        double lon = updateMouseTimeDisplay(e);
 
         if (clock != null) {
             clock.setTime(gameStartTime + inverseProjectMillis(lon));
@@ -664,11 +664,11 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         return true;
     }
 
-    protected float updateMouseTimeDisplay(MouseEvent e) {
+    protected double updateMouseTimeDisplay(MouseEvent e) {
         Projection proj = getProjection();
         Point2D latLong = proj.inverse(e.getPoint());
-        float lon = (float) latLong.getX();
-        float endTime = forwardProjectMillis(gameEndTime - gameStartTime);
+        double lon =  latLong.getX();
+        double endTime = forwardProjectMillis(gameEndTime - gameStartTime);
         if (lon < 0) {
             lon = 0;
         } else if (lon > endTime) {
@@ -917,7 +917,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             setRenderType(OMRect.RENDERTYPE_LATLON);
         }
 
-        public void setLocation(float left, float right) {
+        public void setLocation(double left, double right) {
             super.setLocation(0f, left, 0f, right, OMRect.LINETYPE_STRAIGHT);
         }
 
@@ -990,7 +990,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             public RatingArea(long time, String rating) {
                 super();
                 this.rating = rating;
-                float timef = forwardProjectMillis(time);
+                double timef = forwardProjectMillis(time);
                 setLocation(timef, timef);
                 Color ratingColor = badColor;
 //                if (rating.equals(AAREvent.ATT_VAL_GOOD_RATING)) {
@@ -1007,9 +1007,9 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             }
 
             public void addTime(long timeToAdd) {
-                float time = forwardProjectMillis(timeToAdd);
-                float east = getEastLon();
-                float west = getWestLon();
+                double time = forwardProjectMillis(timeToAdd);
+                double east = getEastLon();
+                double west = getWestLon();
                 boolean updated = false;
                 if (time < west) {
                     west = time;
@@ -1033,7 +1033,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
             public PlayFilterSection(long time) {
                 super();
-                float timef = forwardProjectMillis(time);
+                double timef = forwardProjectMillis(time);
                 setLocation(timef, timef);
                 setLinePaint(color);
                 setFillPaint(color);
@@ -1048,7 +1048,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
              *         1 if time is after bounds.
              */
             public int isWithin(long timel) {
-                float time = forwardProjectMillis(timel);
+                double time = forwardProjectMillis(timel);
                 int ret = -1;
                 if (time >= getWestLon()) {
                     ret++;
@@ -1067,9 +1067,9 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             }
 
             public void addTime(long timeToAdd) {
-                float time = forwardProjectMillis(timeToAdd);
-                float east = getEastLon();
-                float west = getWestLon();
+                double time = forwardProjectMillis(timeToAdd);
+                double east = getEastLon();
+                double west = getWestLon();
                 boolean updated = false;
                 if (time < west) {
                     west = time;

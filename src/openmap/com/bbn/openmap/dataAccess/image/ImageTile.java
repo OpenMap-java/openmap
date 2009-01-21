@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/image/ImageTile.java,v $
 // $RCSfile: ImageTile.java,v $
-// $Revision: 1.4 $
-// $Date: 2007/01/22 16:35:39 $
+// $Revision: 1.5 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -78,7 +78,7 @@ public class ImageTile extends OMScalingRaster implements Serializable {
      * @param lrlon longitude of the right side of the image.
      * @param ii ImageIcon used for the image.
      */
-    public ImageTile(float ullat, float ullon, float lrlat, float lrlon,
+    public ImageTile(double ullat, double ullon, double lrlat, double lrlon,
             ImageReader imageDecoder, CacheHandler cache) {
         super();
         setRenderType(OMGraphic.RENDERTYPE_LATLON);
@@ -102,7 +102,7 @@ public class ImageTile extends OMScalingRaster implements Serializable {
      * @param lrlon longitude of the right side of the image.
      * @param ii ImageIcon used for the image.
      */
-    public ImageTile(float ullat, float ullon, float lrlat, float lrlon,
+    public ImageTile(double ullat, double ullon, double lrlat, double lrlon,
             BufferedImage image) {
         super(ullat, ullon, lrlat, lrlon, image);
     }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/CoordFloatString.java,v $
 // $RCSfile: CoordFloatString.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:07 $
+// $Revision: 1.5 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -37,7 +37,7 @@ public class CoordFloatString {
     /** the number of elements in a tuple */
     public int tsize;
     /** where we store the data as x1,y1,z1,x2,y2,z2,... */
-    public float vals[];
+    public double vals[];
 
     /**
      * Construct a CoordFloatString from a file input
@@ -54,7 +54,7 @@ public class CoordFloatString {
         tcount = tuplecount;
         tsize = tuplesize;
         int totallen = tcount * tsize;
-        vals = new float[totallen];
+        vals = new double[totallen];
         try {
             input.readFloatArray(vals, 0, totallen);
         } catch (EOFException e) {
@@ -111,7 +111,7 @@ public class CoordFloatString {
      * @return the first value of the tuple given by
      *         <code>tuple</code>
      */
-    public float getXasFloat(int tuple) {
+    public double getXasFloat(int tuple) {
         return vals[tuple * tsize];
     }
 
@@ -122,7 +122,7 @@ public class CoordFloatString {
      * @return the second value of the tuple given by
      *         <code>tuple</code>
      */
-    public float getYasFloat(int tuple) {
+    public double getYasFloat(int tuple) {
         return vals[tuple * tsize + 1];
     }
 
@@ -133,7 +133,7 @@ public class CoordFloatString {
      * @return the third value of the tuple given by
      *         <code>tuple</code>
      */
-    public float getZasFloat(int tuple) {
+    public double getZasFloat(int tuple) {
         return vals[tuple * tsize + 2];
     }
 
@@ -143,8 +143,8 @@ public class CoordFloatString {
      * @param tuple the index of the tuple
      * @return the tuple given by <code>tuple</code>
      */
-    public float[] getasFloatV(int tuple) {
-        float rv[] = new float[tsize];
+    public double[] getasFloatV(int tuple) {
+        double rv[] = new double[tsize];
         for (int i = 0; i < tsize; i++) {
             rv[i] = vals[tsize * tuple + i];
         }
@@ -158,7 +158,7 @@ public class CoordFloatString {
      * @param val the index of the value
      * @return the tuple given by <code>tuple</code>
      */
-    public float getasFloat(int tuple, int val) {
+    public double getasFloat(int tuple, int val) {
         return vals[tuple * tsize + val];
     }
 

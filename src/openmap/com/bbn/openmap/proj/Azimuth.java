@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Azimuth.java,v $
 // $RCSfile: Azimuth.java,v $
-// $Revision: 1.9 $
-// $Date: 2006/04/07 15:21:10 $
+// $Revision: 1.10 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -477,9 +477,9 @@ public abstract class Azimuth extends GeoProj {
      *        rhumbline line types, and if &lt; 1, this value is
      *        generated internally)
      * @param isFilled filled poly?
-     * @return ArrayList of x[], y[], x[], y[], ... projected poly
+     * @return ArrayList<int[]> of x[], y[], x[], y[], ... projected poly
      */
-    protected ArrayList _forwardPoly(float[] rawllpts, int ltype, int nsegs,
+    protected ArrayList<int[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs,
                                      boolean isFilled) {
         // Idea:
         // The azimuthal projection family (mostly) shows one
@@ -567,7 +567,7 @@ public abstract class Azimuth extends GeoProj {
 
         int len = rawllpts.length >>> 1;
         if (len < 2)
-            return new ArrayList(0);
+            return new ArrayList<int[]>(0);
 
         // handle complicated line in specific routines
         if (isComplicatedLineType(ltype))
@@ -579,7 +579,7 @@ public abstract class Azimuth extends GeoProj {
         // forward
         Point temp = new Point();
         AzimuthVar az_first = null, az_save = null, azVar = new AzimuthVar();
-        ArrayList sections = new ArrayList(128);
+        ArrayList<AzimuthVar> sections = new ArrayList<AzimuthVar>(128);
         int[] x_, xs = new int[len];
         int[] y_, ys = new int[len];
 
@@ -647,14 +647,14 @@ public abstract class Azimuth extends GeoProj {
 
         // poly completely inside
         if (invalid_count == 0) {
-            ArrayList ret_val = new ArrayList(2);
+            ArrayList<int[]> ret_val = new ArrayList<int[]>(2);
             ret_val.add(xs);
             ret_val.add(ys);
             return ret_val;
         }
         // poly completely outside
         if (invalid_count == len) {
-            return new ArrayList(0);
+            return new ArrayList<int[]>(0);
         }
 
         // handle poly that is partially inside hemisphere
@@ -701,7 +701,7 @@ public abstract class Azimuth extends GeoProj {
         }
 
         int size = sections.size();
-        ArrayList ret_val = new ArrayList(size);
+        ArrayList<int[]> ret_val = new ArrayList<int[]>(size);
 
         // filled poly: handle fill problems
         if (isFilled && (len > 2)) {
@@ -737,15 +737,15 @@ public abstract class Azimuth extends GeoProj {
      *        rhumbline line types, and if &lt; 1, this value is
      *        generated internally)
      * @param isFilled filled poly?
-     * @return ArrayList of x[], y[], x[], y[], ... projected poly
+     * @return ArrayList<int[]> of x[], y[], x[], y[], ... projected poly
      */
-    protected ArrayList _forwardPoly(double[] rawllpts, int ltype, int nsegs,
+    protected ArrayList<int[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs,
                                      boolean isFilled) {
         boolean DEBUG = Debug.debugging("proj");
 
         int len = rawllpts.length >>> 1;
         if (len < 2)
-            return new ArrayList(0);
+            return new ArrayList<int[]>(0);
 
         // handle complicated line in specific routines
         if (isComplicatedLineType(ltype))
@@ -757,7 +757,7 @@ public abstract class Azimuth extends GeoProj {
         // forward
         Point temp = new Point();
         AzimuthVar az_first = null, az_save = null, azVar = new AzimuthVar();
-        ArrayList sections = new ArrayList(128);
+        ArrayList<AzimuthVar> sections = new ArrayList<AzimuthVar>(128);
         int[] x_, xs = new int[len];
         int[] y_, ys = new int[len];
 
@@ -825,14 +825,14 @@ public abstract class Azimuth extends GeoProj {
 
         // poly completely inside
         if (invalid_count == 0) {
-            ArrayList ret_val = new ArrayList(2);
+            ArrayList<int[]> ret_val = new ArrayList<int[]>(2);
             ret_val.add(xs);
             ret_val.add(ys);
             return ret_val;
         }
         // poly completely outside
         if (invalid_count == len) {
-            return new ArrayList(0);
+            return new ArrayList<int[]>(0);
         }
 
         // handle poly that is partially inside hemisphere
@@ -879,7 +879,7 @@ public abstract class Azimuth extends GeoProj {
         }
 
         int size = sections.size();
-        ArrayList ret_val = new ArrayList(size);
+        ArrayList<int[]> ret_val = new ArrayList<int[]>(size);
 
         // filled poly: handle fill problems
         if (isFilled && (len > 2)) {
@@ -1010,10 +1010,16 @@ public abstract class Azimuth extends GeoProj {
     // original poly to draw the bounding outline (remember that
     // polylines don't have the fill problem just described!)
     //
-    private void generateFilledPoly(int[] xs, int[] ys, ArrayList sections,
-                                    ArrayList ret_vec) {
+    private void generateFilledPoly(int[] xs, int[] ys, ArrayList<AzimuthVar> sections,
+                                    ArrayList<int[]> ret_vec) {
         AzimuthVar beginAz, oiAz, ioAz;
+        /*
+         * the merged list is going to end up being series of lists of two AzimuthVar objects, then a double[]
+         */
         ArrayList merged = null;
+        /*
+         * The masterList is going to end up holding a merged ArrayList and an Integer count of vertexes.
+         */
         ArrayList masterList = new ArrayList();
         double[] edgePoints = null;
 
@@ -1128,7 +1134,7 @@ public abstract class Azimuth extends GeoProj {
     // Find the closest azimuth value to the one listed. Check in
     // appropriate clockwise or counter-clockwise direction. This is
     // called from generateFilledPoly().
-    private int findClosestAzimuth(ArrayList sections, double az,
+    private int findClosestAzimuth(ArrayList<AzimuthVar> sections, double az,
                                    boolean clockwise) {
         double delta;
         double closest = (clockwise) ? -MoreMath.TWO_PI_D : MoreMath.TWO_PI_D;
@@ -1211,7 +1217,7 @@ public abstract class Azimuth extends GeoProj {
     // closed poly coordinates to the return ArrayList. This is called
     // from generateFilledPoly().
     private void hemisphereClip(int[] xs, int[] ys, AzimuthVar oiAz,
-                                AzimuthVar ioAz, ArrayList ret_vec) {
+                                AzimuthVar ioAz, ArrayList<int[]> ret_vec) {
         double[] radpts = getHemisphereEdge(oiAz.current_azimuth,
                 ioAz.current_azimuth);
         int len = radpts.length;

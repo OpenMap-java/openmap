@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GeoCrossDemoLayer.java,v $
-//$Revision: 1.2 $
-//$Date: 2006/04/07 17:39:00 $
+//$Revision: 1.3 $
+//$Date: 2009/01/21 01:24:42 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -107,7 +107,7 @@ public class GeoCrossDemoLayer extends EditorLayer {
         for (Iterator it = lines.iterator(); it.hasNext();) {
 
             OMLine line = (OMLine) it.next();
-            float[] ll = line.getLL();
+            double[] ll = line.getLL();
             Geo g1 = new Geo(ll[0], ll[1]);
             Geo g2 = new Geo(ll[2], ll[3]);
 
@@ -125,7 +125,7 @@ public class GeoCrossDemoLayer extends EditorLayer {
 
             if (oldLine != null) {
 
-                float[] ll2 = oldLine.getLL();
+                double[] ll2 = oldLine.getLL();
                 Geo g3 = new Geo(ll2[0], ll2[1]);
                 Geo g4 = new Geo(ll2[2], ll2[3]);
 

@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/meteo/OMOcclusion.java,v $
 //$RCSfile: OMOcclusion.java,v $
-//$Revision: 1.5 $
-//$Date: 2005/08/11 20:39:14 $
+//$Revision: 1.6 $
+//$Date: 2009/01/21 01:24:41 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -54,7 +54,7 @@ public class OMOcclusion extends OMDecoratedSpline {
      * @param units
      * @param lType
      */
-    public OMOcclusion(float[] llPoints, int units, int lType) {
+    public OMOcclusion(double[] llPoints, int units, int lType) {
         super(llPoints, units, lType);
     }
 
@@ -66,7 +66,7 @@ public class OMOcclusion extends OMDecoratedSpline {
      * @param lType
      * @param nsegs
      */
-    public OMOcclusion(float[] llPoints, int units, int lType, int nsegs) {
+    public OMOcclusion(double[] llPoints, int units, int lType, int nsegs) {
         super(llPoints, units, lType, nsegs);
     }
 

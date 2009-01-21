@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/PathGLPoint.java,v $
 // $RCSfile: PathGLPoint.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/12/09 21:09:06 $
+// $Revision: 1.5 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,12 +39,12 @@ import com.bbn.openmap.util.Debug;
  */
 public class PathGLPoint extends GLPoint {
 
-    float[] pathPoints = null;
+    double[] pathPoints = null;
     OMPoly poly = null;
     int pathIndex = 0;
-    float currentSegDist = 0f;
-    float nextSegOffset = 0f;
-    float rate = Length.METER.toRadians(10000);
+    double currentSegDist = 0;
+    double nextSegOffset = 0f;
+    double rate = Length.METER.toRadians(10000);
 
     public PathGLPoint(OMPoly path, int radius, boolean isOval) {
         super(0f, 0f, radius, isOval);
@@ -57,8 +57,8 @@ public class PathGLPoint extends GLPoint {
         }
     }
 
-    public float[] getSegmentCoordinates(int currentPathIndex) {
-        float[] latlons = new float[4];
+    public double[] getSegmentCoordinates(int currentPathIndex) {
+        double[] latlons = new double[4];
 
         if (pathIndex > pathPoints.length - 2 || pathIndex < 0) {
             pathIndex = 0;
@@ -100,12 +100,12 @@ public class PathGLPoint extends GLPoint {
             Debug.output("PathGLPoint.moveAlong(): segment " + (pathIndex / 2)
                     + " of " + (pathPoints.length / 2));
         }
-        float azimuth;
+        double azimuth;
         LatLonPoint newPoint;
 
-        float[] latlons = getSegmentCoordinates(pathIndex);
+        double[] latlons = getSegmentCoordinates(pathIndex);
 
-        float segLength = GreatCircle.sphericalDistance(latlons[0],
+        double segLength = GreatCircle.sphericalDistance(latlons[0],
                 latlons[1],
                 latlons[2],
                 latlons[3]);
@@ -113,7 +113,7 @@ public class PathGLPoint extends GLPoint {
             Debug.output("PathGLPoint.moveAlong(): segment Length " + segLength
                     + ", and already have " + currentSegDist + " of it.");
         }
-        float needToTravel = rate;
+        double needToTravel = rate;
         int originalPathIndex = pathIndex;
         int loopingTimes = 0;
         while (needToTravel >= segLength - currentSegDist) {

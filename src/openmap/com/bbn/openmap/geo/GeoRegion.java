@@ -42,7 +42,7 @@ public interface GeoRegion extends GeoPath {
          * 
          * @param lls alternating lat/lon in decimal degrees.
          */
-        public Impl(float[] lls) {
+        public Impl(double[] lls) {
             this(lls, true);
         }
 
@@ -52,7 +52,7 @@ public interface GeoRegion extends GeoPath {
          * @param lls alternating lat/lon values.
          * @param isDegrees true if lat/lon are in degrees, false if in radians.
          */
-        public Impl(float[] lls, boolean isDegrees) {
+        public Impl(double[] lls, boolean isDegrees) {
             super(lls, isDegrees);
         }
 

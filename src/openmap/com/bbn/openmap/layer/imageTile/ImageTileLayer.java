@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: ImageTileLayer.java,v $
-//$Revision: 1.3 $
-//$Date: 2007/01/22 16:35:40 $
+//$Revision: 1.4 $
+//$Date: 2009/01/21 01:24:42 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -780,7 +780,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                     ImageTile tile = selectedTiles2[i];
 
                     if (rec == null) {
-                        rec = new Rectangle2D.Float(tile.getLRLon(), tile.getLRLat(), 0f, 0f);
+                        rec = new Rectangle2D.Double(tile.getLRLon(), tile.getLRLat(), 0f, 0f);
                         rec.add(tile.getULLon(), tile.getULLat());
                     } else {
                         rec.add(tile.getULLon(), tile.getULLat());

@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayerDCWWarehouse.java,v $
-// $Revision: 1.6 $ $Date: 2005/12/09 21:08:58 $ $Author: dietrick $
+// $Revision: 1.7 $ $Date: 2009/01/21 01:24:41 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -176,7 +176,7 @@ public class VPFLayerDCWWarehouse extends LayerGraphicWarehouseSupport {
      */
     public void createArea(CoverageTable covtable, AreaTable areatable,
                            List facevec, LatLonPoint ll1, LatLonPoint ll2,
-                           float dpplat, float dpplon) {
+                           double dpplat, double dpplon) {
         List ipts = new ArrayList();
 
         if (areaTypeExcludes != null) {
@@ -237,7 +237,7 @@ public class VPFLayerDCWWarehouse extends LayerGraphicWarehouseSupport {
      */
     public void createEdge(CoverageTable covtable, EdgeTable edgetable,
                            List edgevec, LatLonPoint ll1, LatLonPoint ll2,
-                           float dpplat, float dpplon, CoordFloatString coords) {
+                           double dpplat, double dpplon, CoordFloatString coords) {
         // Kept these here to keep in mind that it may be possible to
         // further figure out what exactly we have here.
         if (lineTypeExcludes != null) {
@@ -260,7 +260,7 @@ public class VPFLayerDCWWarehouse extends LayerGraphicWarehouseSupport {
      * 
      */
     public void createText(CoverageTable covtable, TextTable texttable,
-                           List textvec, float latitude, float longitude,
+                           List textvec, double latitude, double longitude,
                            String text) {
         // Kept these here to keep in mind that it may be possible to
         // further figure out what exactly we have here.
@@ -283,7 +283,7 @@ public class VPFLayerDCWWarehouse extends LayerGraphicWarehouseSupport {
      * Method called by the VPF reader code to construct a node feature.
      */
     public void createNode(CoverageTable c, NodeTable t, List nodeprim,
-                           float latitude, float longitude, boolean isEntityNode) {
+                           double latitude, double longitude, boolean isEntityNode) {
         OMPoint pt = createOMPoint(latitude, longitude);
         drawingAttributes.setTo(pt);
         graphics.add(pt);

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/e00/E00Parser.java,v $
 // $RCSfile: E00Parser.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/08/11 20:39:18 $
+// $Revision: 1.9 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -263,7 +263,7 @@ public class E00Parser {
      * @param F the float array receiving the result
      * @since
      */
-    void parseString(String S, float[] F) {
+    void parseString(String S, double[] F) {
         int i = 0;
         for (int j = 0; i < F.length && j < S.length(); j += 14)
             F[i++] = Float.parseFloat(S.substring(j, j + 14).trim());
@@ -356,7 +356,7 @@ public class E00Parser {
         Debug.message("e00", "E00: read TX7");
         tx7 = new OMGraphicList();
         int[] header = new int[8];
-        float[] coords = new float[2];
+        double[] coords = new double[2];
         isr.readLine();
         while (true) {
             String S = isr.readLine();
@@ -368,7 +368,7 @@ public class E00Parser {
             int n = header[2];
             for (int i = 0; i < 8; i++)
                 isr.readLine();
-            float[] llpoints = new float[2 * n];
+            double[] llpoints = new double[2 * n];
             int k = 0;
             for (int j = 0; j < n; j++) {
                 S = isr.readLine();
@@ -441,7 +441,7 @@ public class E00Parser {
     void readLAB() throws IOException {
         Debug.message("e00", "E00: read LAB");
         labs = new OMGraphicList();
-        float[] coords = new float[2];
+        double[] coords = new double[2];
         int[] header = new int[1];
         while (true) {
             String S = isr.readLine();
@@ -475,7 +475,7 @@ public class E00Parser {
         arcs = new OMGraphicList();
         int narc = 1;
         int[] header = new int[7];
-        float[] coords = new float[4];
+        double[] coords = new double[4];
         while (true) {
             String S = isr.readLine();
             if (S == null)
@@ -486,7 +486,7 @@ public class E00Parser {
                 break;
             int n = header[6];
             //System.out.println("E00: arc n° "+header[0]+" "+n );
-            float[] llpoints = new float[2 * n];
+            double[] llpoints = new double[2 * n];
             int k = 0;
             for (int j = 0; j < n; j++) {
                 S = isr.readLine();

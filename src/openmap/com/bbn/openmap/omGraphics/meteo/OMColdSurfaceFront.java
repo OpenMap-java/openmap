@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/meteo/OMColdSurfaceFront.java,v $
 //$RCSfile: OMColdSurfaceFront.java,v $
-//$Revision: 1.3 $
-//$Date: 2004/10/14 18:06:19 $
+//$Revision: 1.4 $
+//$Date: 2009/01/21 01:24:41 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -51,7 +51,7 @@ public class OMColdSurfaceFront extends OMDecoratedSpline {
      * @param units
      * @param lType
      */
-    public OMColdSurfaceFront(float[] llPoints, int units, int lType) {
+    public OMColdSurfaceFront(double[] llPoints, int units, int lType) {
         super(llPoints, units, lType);
     }
 
@@ -63,7 +63,7 @@ public class OMColdSurfaceFront extends OMDecoratedSpline {
      * @param lType
      * @param nsegs
      */
-    public OMColdSurfaceFront(float[] llPoints, int units, int lType, int nsegs) {
+    public OMColdSurfaceFront(double[] llPoints, int units, int lType, int nsegs) {
         super(llPoints, units, lType, nsegs);
     }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.19 $
-// $Date: 2008/02/27 02:10:00 $
+// $Revision: 1.20 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -49,6 +49,7 @@ import com.bbn.openmap.omGraphics.OMGeometryList;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.omGraphics.geom.BasicGeometry;
 import com.bbn.openmap.omGraphics.geom.PolygonGeometry;
@@ -77,8 +78,8 @@ import com.bbn.openmap.util.quadtree.QuadTree;
  * <p>
  * 
  * <pre>
- *   
- *   
+ * 
+ * 
  *    # Turn zone area labels on when zoomed in closer than 1:33M (true
  *    # is default)
  *    showZones=true
@@ -93,7 +94,7 @@ import com.bbn.openmap.util.quadtree.QuadTree;
  *    distanceGridColor
  *    distanceGridResolution=0 (not shown by default, 1 = 10000 meter grid, 5 is 1 meter grid)
  *    mgrsLabels=false
- *    
+ * 
  * </pre>
  */
 public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
@@ -151,32 +152,32 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     protected OMGeometryList createUTMZoneVerticalLines() {
 
         OMGeometryList verticalList = new OMGeometryList();
-        float[] points = null;
+        double[] points = null;
 
-        for (int lon = -180; lon < 180; lon += 6) {
+        for (double lon = -180; lon < 180; lon += 6) {
             if (lon == 6) {
-                points = new float[] { 56f, lon, -80f, lon };
+                points = new double[] { 56f, lon, -80f, lon };
             } else if (lon > 6 && lon < 42) {
-                points = new float[] { 72f, lon, -80f, lon };
+                points = new double[] { 72f, lon, -80f, lon };
             } else {
-                points = new float[] { 84f, lon, -80f, lon };
+                points = new double[] { 84f, lon, -80f, lon };
             }
             verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
         }
 
-        points = new float[] { 72f, 6f, 64f, 6f };
+        points = new double[] { 72f, 6f, 64f, 6f };
         verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
 
-        points = new float[] { 64f, 3f, 56f, 3f };
+        points = new double[] { 64f, 3f, 56f, 3f };
         verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
 
-        points = new float[] { 84f, 9f, 72f, 9f };
+        points = new double[] { 84f, 9f, 72f, 9f };
         verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
 
-        points = new float[] { 84f, 21f, 72f, 21f };
+        points = new double[] { 84f, 21f, 72f, 21f };
         verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
 
-        points = new float[] { 84f, 33f, 72f, 33f };
+        points = new double[] { 84f, 33f, 72f, 33f };
         verticalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE));
 
         verticalList.setLinePaint(utmGridPaint);
@@ -186,15 +187,15 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
 
     protected OMGeometryList createUTMZoneHorizontalLines() {
         OMGeometryList horizontalList = new OMGeometryList();
-        float[] points = null;
+        double[] points = null;
 
-        for (float lat = -80f; lat <= 72f; lat += 8f) {
-            points = new float[] { lat, -180f, lat, -90f, lat, 0f, lat, 90f,
+        for (double lat = -80f; lat <= 72f; lat += 8f) {
+            points = new double[] { lat, -180f, lat, -90f, lat, 0f, lat, 90f,
                     lat, 180f };
             horizontalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB));
         }
 
-        points = new float[] { 84f, -180f, 84f, -90f, 84f, 0f, 84f, 90f, 84f,
+        points = new double[] { 84f, -180f, 84f, -90f, 84f, 0f, 84f, 90f, 84f,
                 180f };
         horizontalList.add(new PolylineGeometry.LL(points, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB));
 
@@ -316,14 +317,14 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         OMLine line;
         BasicGeometry poly;
 
-        float lat2;
+        double lat2;
         int endNorthing = (int) Math.floor(utm.northing / INTERVAL_100K) + 10;
         int startNorthing = (int) Math.floor(utm.northing / INTERVAL_100K) - 10;
 
         int numVertLines = 9;
         int numHorLines = endNorthing - startNorthing;
 
-        float[][] vertPoints = new float[numVertLines][numHorLines * 2];
+        double[][] vertPoints = new double[numVertLines][numHorLines * 2];
 
         if (UTM_DEBUG_VERBOSE) {
             Debug.output("Array is [" + vertPoints.length + "]["
@@ -456,12 +457,12 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         mgrs.setAccuracy(accuracy);
         MGRSPoint.LLtoMGRS(llp, ellipsoid, mgrs);
 
-        float accuracyBonus = 100000f / (float) Math.pow(10, accuracy);
+        double accuracyBonus = 100000 / Math.pow(10, accuracy);
 
         OMGeometryList list = new OMGeometryList();
 
-        for (float i = -numRects * accuracyBonus; i < numRects * accuracyBonus; i += accuracyBonus) {
-            for (float j = -numRects * accuracyBonus; j < numRects
+        for (double i = -numRects * accuracyBonus; i < numRects * accuracyBonus; i += accuracyBonus) {
+            for (double j = -numRects * accuracyBonus; j < numRects
                     * accuracyBonus; j += accuracyBonus) {
                 if (Debug.debugging("utmdistancegrid")) {
                     System.out.print(".");
@@ -495,13 +496,13 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
      * @param ellipsoid Ellipsoid for coordinate translation.
      */
     protected OMGeometry createMGRSRectangle(MGRSPoint mgrsBasePoint,
-                                             float voffset, float hoffset,
-                                             float interval, Ellipsoid ellipsoid) {
+                                             double voffset, double hoffset,
+                                             double interval, Ellipsoid ellipsoid) {
 
-        float[] llpoints = new float[10];
+        double[] llpoints = new double[10];
 
-        float easting = mgrsBasePoint.easting + hoffset;
-        float northing = mgrsBasePoint.northing + voffset;
+        double easting = mgrsBasePoint.easting + hoffset;
+        double northing = mgrsBasePoint.northing + voffset;
         int zone_number = mgrsBasePoint.zone_number;
         char zone_letter = mgrsBasePoint.zone_letter;
 
@@ -601,9 +602,8 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         if (distanceGridResolution > 0) {
             Debug.message("utmgrid", "Creating distance lines...");
 
-            float decisionAid = 100000f / (float) Math.pow(10,
-                    distanceGridResolution);
-            float dglc = 30f * decisionAid; // distance grid label
+            double decisionAid = 100000f / Math.pow(10, distanceGridResolution);
+            double dglc = 30f * decisionAid; // distance grid label
             // cutoff
             // Debug.output("Basing decision to display labels on " +
             // dglc);
@@ -625,14 +625,14 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
                 OMGraphicList textList = new OMGraphicList();
                 LatLonPoint llp = new LatLonPoint.Double();
                 Point point = new Point();
-                Iterator it = geoList.iterator();
+                Iterator<OMGeometry> it = geoList.iterator();
                 while (it.hasNext()) {
                     PolygonGeometry.LL pll = (PolygonGeometry.LL) it.next();
                     String labelString = (String) (pll).getAppObject();
                     if (labelString == null) {
                         continue;
                     }
-                    float[] ll = pll.getLatLonArray();
+                    double[] ll = pll.getLatLonArray();
                     llp.setLatLon(ll[0], ll[1], true);
 
                     p.forward(llp, point);

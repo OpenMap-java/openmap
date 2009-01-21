@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/FanCompress.java,v $
 // $RCSfile: FanCompress.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:06:30 $
+// $Revision: 1.4 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -51,15 +51,15 @@ public abstract class FanCompress {
 
         private int read = 0;
         private int write = 0;
-        protected float[] array;
-        protected float zero_eps = 0.0001f;
+        protected double[] array;
+        protected double zero_eps = 0.0001;
 
         /**
          * Construct a FanCompress object which deals in floats.
          * 
          * @param array float[] array of coordinate pairs.
          */
-        public FloatCompress(float[] array) {
+        public FloatCompress(double[] array) {
             this.array = array;
         }
 
@@ -123,8 +123,8 @@ public abstract class FanCompress {
          * 
          * @return float[]
          */
-        public float[] getArray() {
-            float[] ret_val = new float[write];
+        public double[] getArray() {
+            double[] ret_val = new double[write];
             System.arraycopy(array, 0, ret_val, 0, write);
             return ret_val;
         }

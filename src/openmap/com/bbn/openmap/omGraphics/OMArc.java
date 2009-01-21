@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMArc.java,v $
 // $RCSfile: OMArc.java,v $
-// $Revision: 1.12 $
-// $Date: 2006/09/12 17:56:43 $
+// $Revision: 1.13 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -33,12 +33,12 @@ import java.awt.geom.PathIterator;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.Cylindrical;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -77,7 +77,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * class use Decimal Degrees, or ask for a Length object to use for units.
      * The radius is converted to radians for internal use.
      */
-    protected float radius = 0.0f;
+    protected double radius = 0.0f;
     /**
      * The pixel horizontal diameter of the arc. For XY and OFFSET arcs.
      */
@@ -92,12 +92,12 @@ public class OMArc extends OMGraphic implements Serializable {
      * decimal degrees because the java.awt.geom.Arc object wants it in decimal
      * degrees. 0 is North?
      */
-    protected float start = 0.0f;
+    protected double start = 0.0f;
 
     /**
      * The angular extent of the arc in decimal degrees.
      */
-    protected float extent = 360.0f;
+    protected double extent = 360.0f;
 
     /**
      * For Arcs, how the arc should be closed when rendered. Arc2D.OPEN is the
@@ -148,7 +148,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * @param s starting angle of arc, decimal degrees
      * @param e angular extent of arc, decimal degrees
      */
-    public OMArc(float latPoint, float lonPoint, int w, int h, float s, float e) {
+    public OMArc(double latPoint, double lonPoint, int w, int h, double s, double e) {
         this(latPoint, lonPoint, 0, 0, w, h, s, e);
     }
 
@@ -165,7 +165,7 @@ public class OMArc extends OMGraphic implements Serializable {
      *        positive extents go in the counter-clockwise direction, matching
      *        the java.awt.geom.Arc2D convention.
      */
-    public OMArc(int x1, int y1, int w, int h, float s, float e) {
+    public OMArc(int x1, int y1, int w, int h, double s, double e) {
         super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
         this.x1 = x1;
@@ -193,11 +193,11 @@ public class OMArc extends OMGraphic implements Serializable {
      *        arcs, positive extents go in the counter-clockwise direction,
      *        matching the java.awt.geom.Arc2D convention.
      */
-    public OMArc(float latPoint, float lonPoint, int offset_x1, int offset_y1,
-            int w, int h, float s, float e) {
+    public OMArc(double latPoint, double lonPoint, int offset_x1, int offset_y1,
+            int w, int h, double s, double e) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
-        center = new LatLonPoint(latPoint, lonPoint);
+        center = new LatLonPoint.Double(latPoint, lonPoint);
         off_x = offset_x1;
         off_y = offset_y1;
         width = w;
@@ -219,9 +219,9 @@ public class OMArc extends OMGraphic implements Serializable {
      *        arcs, positive extents go in the clockwise direction, matching the
      *        OpenMap convention in coordinate space.
      */
-    public OMArc(float latPoint, float lonPoint, float radius, float s, float e) {
+    public OMArc(double latPoint, double lonPoint, double radius, double s, double e) {
 
-        this(new LatLonPoint(latPoint, lonPoint),
+        this(new LatLonPoint.Double(latPoint, lonPoint),
              radius,
              Length.DECIMAL_DEGREE,
              -1,
@@ -242,9 +242,9 @@ public class OMArc extends OMGraphic implements Serializable {
      *        arcs, positive extents go in the clockwise direction, matching the
      *        OpenMap convention in coordinate space.
      */
-    public OMArc(float latPoint, float lonPoint, float radius, Length units,
-            float s, float e) {
-        this(new LatLonPoint(latPoint, lonPoint), radius, units, -1, s, e);
+    public OMArc(double latPoint, double lonPoint, double radius, Length units,
+                 double s, double e) {
+        this(new LatLonPoint.Double(latPoint, lonPoint), radius, units, -1, s, e);
     }
 
     /**
@@ -262,9 +262,9 @@ public class OMArc extends OMGraphic implements Serializable {
      *        arcs, positive extents go in the clockwise direction, matching the
      *        OpenMap convention in coordinate space.
      */
-    public OMArc(float latPoint, float lonPoint, float radius, Length units,
-            int nverts, float s, float e) {
-        this(new LatLonPoint(latPoint, lonPoint), radius, units, nverts, s, e);
+    public OMArc(double latPoint, double lonPoint, double radius, Length units,
+            int nverts, double s, double e) {
+        this(new LatLonPoint.Double(latPoint, lonPoint), radius, units, nverts, s, e);
     }
 
     /**
@@ -282,8 +282,8 @@ public class OMArc extends OMGraphic implements Serializable {
      *        arcs, positive extents go in the clockwise direction, matching the
      *        OpenMap convention in coordinate space.
      */
-    public OMArc(LatLonPoint center, float radius, Length units, int nverts,
-            float s, float e) {
+    public OMArc(LatLonPoint center, double radius, Length units, int nverts,
+                 double s, double e) {
 
         super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         this.radius = units.toRadians(radius);
@@ -349,9 +349,9 @@ public class OMArc extends OMGraphic implements Serializable {
      * Get the radius. This is meaningful only if the render type is
      * RENDERTYPE_LATLON.
      * 
-     * @return float radius in decimal degrees
+     * @return double radius in decimal degrees
      */
-    public float getRadius() {
+    public double getRadius() {
         return Length.DECIMAL_DEGREE.fromRadians(radius);
     }
 
@@ -380,7 +380,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * 
      * @return the starting angle of the arc in decimal degrees.
      */
-    public float getStartAngle() {
+    public double getStartAngle() {
         return start;
     }
 
@@ -393,7 +393,7 @@ public class OMArc extends OMGraphic implements Serializable {
      *         OFFSET rendertype arcs, positive extents go in the clockwise
      *         direction, matching the java.awt.geom.Arc2D convention.
      */
-    public float getExtentAngle() {
+    public double getExtentAngle() {
         return extent;
     }
 
@@ -467,8 +467,8 @@ public class OMArc extends OMGraphic implements Serializable {
      * @param lat latitude in decimal degrees
      * @param lon longitude in decimal degrees
      */
-    public void setLatLon(float lat, float lon) {
-        setCenter(new LatLonPoint(lat, lon));
+    public void setLatLon(double lat, double lon) {
+        setCenter(new LatLonPoint.Double(lat, lon));
     }
 
     /**
@@ -500,7 +500,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * 
      * @param radius float radius in decimal degrees
      */
-    public void setRadius(float radius) {
+    public void setRadius(double radius) {
         this.radius = Length.DECIMAL_DEGREE.toRadians(radius);
         setNeedToRegenerate(true);
     }
@@ -512,7 +512,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * @param radius float radius
      * @param units Length specifying unit type.
      */
-    public void setRadius(float radius, Length units) {
+    public void setRadius(double radius, Length units) {
         this.radius = units.toRadians(radius);
         setNeedToRegenerate(true);
     }
@@ -548,7 +548,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * 
      * @param value the starting angle of the arc in decimal degrees.
      */
-    public void setStart(float value) {
+    public void setStart(double value) {
         if (start == value)
             return;
         start = value;
@@ -564,7 +564,7 @@ public class OMArc extends OMGraphic implements Serializable {
      *        OFFSET rendertype arcs, positive extents go in the clockwise
      *        direction, matching the java.awt.geom.Arc2D convention.
      */
-    public void setExtent(float value) {
+    public void setExtent(double value) {
         if (extent == value)
             return;
         extent = value;
@@ -814,8 +814,8 @@ public class OMArc extends OMGraphic implements Serializable {
      * information and make a call to Arc2D.Float with start, extent and arcType
      * information.
      */
-    protected Shape createArcShape(float x, float y, float fwidth, float fheight) {
-        return new Arc2D.Float(x, y, fwidth, fheight, start, extent, arcType);
+    protected Shape createArcShape(double x, double y, double fwidth, double fheight) {
+        return new Arc2D.Double(x, y, fwidth, fheight, start, extent, arcType);
     }
 
     /**
@@ -825,7 +825,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * information.
      */
     protected ArrayList getCoordLists(GeoProj proj, LatLonPoint center,
-                                      float radius, int nverts) {
+                                      double radius, int nverts) {
 
         int at = (arcType == Arc2D.OPEN && !isClear(fillPaint) ? Arc2D.CHORD
                 : arcType);

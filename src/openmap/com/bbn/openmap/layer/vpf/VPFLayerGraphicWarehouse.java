@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFLayerGraphicWarehouse.java,v $
 // $RCSfile: VPFLayerGraphicWarehouse.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/12/09 21:08:57 $
+// $Revision: 1.6 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -257,7 +257,7 @@ public class VPFLayerGraphicWarehouse extends LayerGraphicWarehouseSupport {
      */
     public void createArea(CoverageTable covtable, AreaTable areatable,
                            List facevec, LatLonPoint ll1, LatLonPoint ll2,
-                           float dpplat, float dpplon) {
+                           double dpplat, double dpplon) {
         if (areaSkipFeatures == null) {
             areaSkipFeatures = getSkipArray(areaFeatures, areatable, ".aft_id");
         }
@@ -310,8 +310,8 @@ public class VPFLayerGraphicWarehouse extends LayerGraphicWarehouseSupport {
      *  
      */
     public void createEdge(CoverageTable c, EdgeTable edgetable, List edgevec,
-                           LatLonPoint ll1, LatLonPoint ll2, float dpplat,
-                           float dpplon, CoordFloatString coords) {
+                           LatLonPoint ll1, LatLonPoint ll2, double dpplat,
+                           double dpplon, CoordFloatString coords) {
 
         if (edgeSkipFeatures == null) {
             if (Debug.debugging("vpf")) {
@@ -361,7 +361,7 @@ public class VPFLayerGraphicWarehouse extends LayerGraphicWarehouseSupport {
      *  
      */
     public void createText(CoverageTable c, TextTable texttable, List textvec,
-                           float latitude, float longitude, String text) {
+                           double latitude, double longitude, String text) {
 
         if (textSkipFeatures == null) {
             textSkipFeatures = getSkipArray(textFeatures, texttable, ".tft_id");
@@ -378,7 +378,7 @@ public class VPFLayerGraphicWarehouse extends LayerGraphicWarehouseSupport {
     }
 
     public void createNode(CoverageTable c, NodeTable nt, List nodeprim,
-                           float latitude, float longitude, boolean isEntityNode) {
+                           double latitude, double longitude, boolean isEntityNode) {
         int[] skipFeatures = null;
         if (isEntityNode) {
             if (epointSkipFeatures == null) {

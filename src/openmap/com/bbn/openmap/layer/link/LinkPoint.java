@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkPoint.java,v $
 // $RCSfile: LinkPoint.java,v $
-// $Revision: 1.5 $
-// $Date: 2007/02/26 17:12:47 $
+// $Revision: 1.6 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -136,8 +136,8 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
                 : "false");
         switch (point.getRenderType()) {
         case OMPoint.RENDERTYPE_LATLON:
-            LinkPoint.write(point.getLat(),
-                    point.getLon(),
+            LinkPoint.write((float) point.getLat(),
+                    (float) point.getLon(),
                     point.getRadius(),
                     props,
                     link.dos);
@@ -150,8 +150,8 @@ public class LinkPoint implements LinkGraphicConstants, LinkPropertiesConstants 
                     link.dos);
             break;
         case OMPoint.RENDERTYPE_OFFSET:
-            LinkPoint.write(point.getLat(),
-                    point.getLon(),
+            LinkPoint.write((float) point.getLat(),
+                    (float) point.getLon(),
                     point.getX(),
                     point.getY(),
                     point.getRadius(),

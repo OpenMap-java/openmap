@@ -37,8 +37,7 @@ public interface GeoPath extends GeoExtent {
      * 
      * @return the Geo points of the Path
      */
-//    Geo[] toPointArray();
-
+    // Geo[] toPointArray();
     GeoArray getPoints();
 
     /**
@@ -102,7 +101,7 @@ public interface GeoPath extends GeoExtent {
          * 
          * @param lls alternating lat/lon in decimal degrees.
          */
-        public Impl(float[] lls) {
+        public Impl(double[] lls) {
             this(lls, true);
         }
 
@@ -112,7 +111,7 @@ public interface GeoPath extends GeoExtent {
          * @param lls alternating lat/lon values.
          * @param isDegrees true if lat/lon are in degrees, false if in radians.
          */
-        public Impl(float[] lls, boolean isDegrees) {
+        public Impl(double[] lls, boolean isDegrees) {
             if (isDegrees) {
                 pts = GeoArray.Float.createFromLatLonDegrees(lls);
             } else {
@@ -157,9 +156,9 @@ public interface GeoPath extends GeoExtent {
             }
         }
 
-//        public Geo[] toPointArray() {
-//            return pts.toPointArray();
-//        }
+        // public Geo[] toPointArray() {
+        // return pts.toPointArray();
+        // }
 
         public boolean isSegmentNear(GeoSegment s, double epsilon) {
             return Intersection.isSegmentNearPoly(s, getPoints(), epsilon) != null;
@@ -261,11 +260,10 @@ public interface GeoPath extends GeoExtent {
              *         isn't another point available, will throw an
              *         indexOutOfBounds exception.
              */
-            public float[] getSegArray() {
-                return new float[] { (float) seg[0].getLatitude(),
-                        (float) seg[0].getLongitude(),
-                        (float) seg[1].getLatitude(),
-                        (float) seg[1].getLongitude() };
+            public double[] getSegArray() {
+                return new double[] { seg[0].getLatitude(),
+                        seg[0].getLongitude(), seg[1].getLatitude(),
+                        seg[1].getLongitude() };
             }
 
             /**
@@ -291,7 +289,7 @@ public interface GeoPath extends GeoExtent {
         protected class PointIt implements GeoPath.PointIterator, GeoPoint {
             int i = -1;
             Geo pt = new Geo();
-            
+
             public PointIt() {}
 
             public boolean hasNext() {

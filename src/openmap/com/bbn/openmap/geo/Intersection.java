@@ -29,7 +29,7 @@ import java.util.List;
  * 
  * @author Sachin Date
  * @author Ken Anderson
- * @version $Revision: 1.19 $ on $Date: 2007/10/09 20:41:12 $
+ * @version $Revision: 1.20 $ on $Date: 2009/01/21 01:24:42 $
  */
 public class Intersection {
 
@@ -860,6 +860,25 @@ public class Intersection {
         return in;
     }
 
+    /**
+     * Ask if a Geo point is in a polygon.
+     * 
+     * @param x
+     * @param poly float array where [lat, lon, lat, lon,...]
+     * @param polyInDegrees true of poly floats represent decimal degrees.
+     * @return true for Geo in poly
+     */
+    public static boolean isPointInPolygon(Geo x, double[] poly,
+                                           boolean polyInDegrees) {
+        if (polyInDegrees) {
+            return isPointInPolygon(x,
+                    GeoArray.Float.createFromLatLonDegrees(poly));
+        } else {
+            return isPointInPolygon(x,
+                    GeoArray.Float.createFromLatLonRadians(poly));
+        }
+    }
+    
     /**
      * Ask if a Geo point is in a polygon.
      * 

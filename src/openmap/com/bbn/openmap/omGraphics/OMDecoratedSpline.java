@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMDecoratedSpline.java,v $
 //$RCSfile: OMDecoratedSpline.java,v $
-//$Revision: 1.7 $
-//$Date: 2005/08/11 20:39:14 $
+//$Revision: 1.8 $
+//$Date: 2009/01/21 01:24:41 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -58,7 +58,7 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
      * @param units
      * @param lType
      */
-    public OMDecoratedSpline(float[] llPoints, int units, int lType) {
+    public OMDecoratedSpline(double[] llPoints, int units, int lType) {
         super(llPoints, units, lType);
         initDecorations();
     }
@@ -71,7 +71,7 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
      * @param lType
      * @param nsegs
      */
-    public OMDecoratedSpline(float[] llPoints, int units, int lType, int nsegs) {
+    public OMDecoratedSpline(double[] llPoints, int units, int lType, int nsegs) {
         super(llPoints, units, lType, nsegs);
         initDecorations();
     }
@@ -105,7 +105,7 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
      * @param xypoints
      * @param cMode
      */
-    public OMDecoratedSpline(float latPoint, float lonPoint, int[] xypoints,
+    public OMDecoratedSpline(double latPoint, double lonPoint, int[] xypoints,
             int cMode) {
         super(latPoint, lonPoint, xypoints, cMode);
         initDecorations();
@@ -120,7 +120,7 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
      * @param yPoints
      * @param cMode
      */
-    public OMDecoratedSpline(float latPoint, float lonPoint, int[] xPoints,
+    public OMDecoratedSpline(double latPoint, double lonPoint, int[] xPoints,
             int[] yPoints, int cMode) {
         super(latPoint, lonPoint, xPoints, yPoints, cMode);
         initDecorations();

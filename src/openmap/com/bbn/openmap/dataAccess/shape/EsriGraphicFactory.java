@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: EsriGraphicFactory.java,v $
-//$Revision: 1.9 $
-//$Date: 2008/01/29 22:04:13 $
+//$Revision: 1.10 $
+//$Date: 2009/01/21 01:24:41 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -53,11 +53,12 @@ public class EsriGraphicFactory implements ShapeConstants {
 
     protected int lineType = OMGraphic.LINETYPE_STRAIGHT;
     protected GeoCoordTransformation dataTransformation = null;
-    protected Class precision = Float.TYPE;
+    protected Class<?> precision = Float.TYPE;
 
     public EsriGraphicFactory() {}
 
-    public EsriGraphicFactory(int lineType, GeoCoordTransformation dataTransformation) {
+    public EsriGraphicFactory(int lineType,
+            GeoCoordTransformation dataTransformation) {
         this.lineType = lineType;
         this.dataTransformation = dataTransformation;
     }
@@ -1174,8 +1175,7 @@ public class EsriGraphicFactory implements ShapeConstants {
         return ret;
     }
 
-    protected EsriGraphic createPolyMGraphic(
-                                             LittleEndianInputStream iStream,
+    protected EsriGraphic createPolyMGraphic(LittleEndianInputStream iStream,
                                              int shapeType,
                                              DrawingAttributes drawingAttributes,
                                              ReadByteTracker byteTracker)
@@ -1240,12 +1240,12 @@ public class EsriGraphicFactory implements ShapeConstants {
 
         int origin = parts[0];
         int length = 0;
-        float[] coords;
+        double[] coords;
         for (int i = 1; i < numParts; i++) {
             int nextOrigin = parts[i];
             length = nextOrigin - origin;
 
-            coords = getFloatCoords(shpFile,
+            coords = getCoords(shpFile,
                     length,
                     isPolygon(shapeType),
                     dataTransformation,
@@ -1262,7 +1262,7 @@ public class EsriGraphicFactory implements ShapeConstants {
 
         length = numPoints - origin;
 
-        coords = getFloatCoords(shpFile,
+        coords = getCoords(shpFile,
                 length,
                 isPolygon(shapeType),
                 dataTransformation,
@@ -1303,12 +1303,12 @@ public class EsriGraphicFactory implements ShapeConstants {
 
         int origin = parts[0];
         int length = 0;
-        float[] coords;
+        double[] coords;
         for (int i = 1; i < numParts; i++) {
             int nextOrigin = parts[i];
             length = nextOrigin - origin;
 
-            coords = getFloatCoords(iStream,
+            coords = getCoords(iStream,
                     length,
                     isPolygon(shapeType),
                     dataTransformation,
@@ -1325,7 +1325,7 @@ public class EsriGraphicFactory implements ShapeConstants {
 
         length = numPoints - origin;
 
-        coords = getFloatCoords(iStream,
+        coords = getCoords(iStream,
                 length,
                 isPolygon(shapeType),
                 dataTransformation,
@@ -1425,11 +1425,12 @@ public class EsriGraphicFactory implements ShapeConstants {
     }
 
     protected static double[] getCoords(BinaryFile shpFile, int length,
-                                        boolean isPolygon, GeoCoordTransformation dataTrans,
+                                        boolean isPolygon,
+                                        GeoCoordTransformation dataTrans,
                                         ReadByteTracker bitTracker)
             throws IOException, FormatException {
 
-        double[] coords = new double[length * 2];
+        double[] coords = new double[isPolygon ? length * 2 + 2 : length * 2];
         int j = 0;
 
         // Create the llp here and reuse it for coordinate transformations.
@@ -1469,7 +1470,7 @@ public class EsriGraphicFactory implements ShapeConstants {
                                         ReadByteTracker bitTracker)
             throws IOException, FormatException {
 
-        double[] coords = new double[length * 2];
+        double[] coords = new double[isPolygon ? length * 2 + 2 : length * 2];
         int j = 0;
 
         // Create the llp here and reuse it for coordinate transformations.
@@ -1509,7 +1510,7 @@ public class EsriGraphicFactory implements ShapeConstants {
                 || shapeType == SHAPE_TYPE_POLYGONM;
     }
 
-    public static EsriGraphic createEsriPoly(int shapeType, float[] coords,
+    public static EsriGraphic createEsriPoly(int shapeType, double[] coords,
                                              int lineType, DrawingAttributes da) {
 
         if (da == null) {
@@ -1624,11 +1625,11 @@ public class EsriGraphicFactory implements ShapeConstants {
         this.lineType = lineType;
     }
 
-    public Class getPrecision() {
+    public Class<?> getPrecision() {
         return precision;
     }
 
-    public void setPrecision(Class precision) {
+    public void setPrecision(Class<?> precision) {
         this.precision = precision;
     }
 

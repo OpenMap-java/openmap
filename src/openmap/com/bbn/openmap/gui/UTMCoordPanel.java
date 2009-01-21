@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/UTMCoordPanel.java,v $
 // $RCSfile: UTMCoordPanel.java,v $
-// $Revision: 1.9 $
-// $Date: 2008/02/29 00:33:32 $
+// $Revision: 1.10 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -153,8 +153,8 @@ public class UTMCoordPanel extends CoordPanel implements Serializable {
         }
 
         UTMPoint utm = new UTMPoint(llpoint);
-        northing.setText(Float.toString(utm.northing));
-        easting.setText(Float.toString(utm.easting));
+        northing.setText(Double.toString(utm.northing));
+        easting.setText(Double.toString(utm.easting));
         zoneNumber.setText(Integer.toString(utm.zone_number));
         zoneLetter.setText((char) utm.zone_letter + "");
     }

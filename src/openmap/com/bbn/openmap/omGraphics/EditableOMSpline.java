@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMSpline.java,v $
 //$RCSfile: EditableOMSpline.java,v $
-//$Revision: 1.5 $
-//$Date: 2004/10/14 18:06:11 $
+//$Revision: 1.6 $
+//$Date: 2009/01/21 01:24:41 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -67,7 +67,7 @@ public class EditableOMSpline extends EditableOMPoly {
         OMGraphic g = null;
         switch (renderType) {
         case (OMGraphic.RENDERTYPE_LATLON):
-            g = new OMSpline(new float[0], OMGraphic.RADIANS, lineType);
+            g = new OMSpline(new double[0], OMGraphic.RADIANS, lineType);
             break;
         case (OMGraphic.RENDERTYPE_OFFSET):
             g = new OMSpline(90f, -180f, new int[0], OMSpline.COORDMODE_ORIGIN);

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriGraphicList.java,v $
 // $RCSfile: EsriGraphicList.java,v $
-// $Revision: 1.10 $
-// $Date: 2007/06/21 21:39:02 $
+// $Revision: 1.11 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -49,7 +49,7 @@ import com.bbn.openmap.util.PropUtils;
 public abstract class EsriGraphicList extends OMGraphicList implements
         ShapeConstants, EsriGraphic {
 
-    protected float[] extents;
+    protected double[] extents;
     protected int type;
 
     /**
@@ -117,7 +117,7 @@ public abstract class EsriGraphicList extends OMGraphicList implements
      * The lat/lon extent of the EsriGraphicList contents, assumed to contain
      * miny, minx, maxy maxx in order of the array.
      */
-    public void setExtents(float[] extents) {
+    public void setExtents(double[] extents) {
         this.extents = extents;
     }
 
@@ -125,18 +125,18 @@ public abstract class EsriGraphicList extends OMGraphicList implements
      * The lat/lon extent of the EsriGraphicList contents, returned as miny,
      * minx, maxy maxx in order of the array.
      */
-    public float[] getExtents() {
+    public double[] getExtents() {
         if (extents == null) {
             // These are set to their opposites to guarantee some
             // movement.
-            extents = new float[] { 90f, 180f, -90f, -180f };
+            extents = new double[] { 90f, 180f, -90f, -180f };
         }
 
         return extents;
     }
 
-    public void addExtents(float[] graphicExtents) {
-        float[] ex = getExtents();
+    public void addExtents(double[] graphicExtents) {
+        double[] ex = getExtents();
 
         // Check both graphic extents in case they are inadvertently
         // switched.

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/link/LinkPoly.java,v $
 // $RCSfile: LinkPoly.java,v $
-// $Revision: 1.6 $
-// $Date: 2007/02/26 17:12:45 $
+// $Revision: 1.7 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -45,7 +45,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param dos DataOutputStream
      * @throws IOException
      */
-    public static void write(float[] llPoints, int units, int lType,
+    public static void write(double[] llPoints, int units, int lType,
                              LinkProperties properties, DataOutputStream dos)
             throws IOException {
         LinkPoly.write(llPoints, units, lType, -1, properties, dos);
@@ -62,7 +62,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param dos DataOutputStream
      * @throws IOException
      */
-    public static void write(float[] llpoints, int units, int lType, int nsegs,
+    public static void write(double[] llpoints, int units, int lType, int nsegs,
                              LinkProperties properties, DataOutputStream dos)
             throws IOException {
 
@@ -73,7 +73,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
         dos.writeInt(llpoints.length);
 
         for (int i = 0; i < llpoints.length; i++) {
-            dos.writeFloat(llpoints[i]);
+            dos.writeFloat((float) llpoints[i]);
         }
 
         dos.writeByte(units);
@@ -258,8 +258,8 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
             write(poly.getXs(), poly.getYs(), props, link.dos);
             break;
         case OMPoly.RENDERTYPE_OFFSET:
-            write(poly.getLat(),
-                    poly.getLon(),
+            write((float)poly.getLat(),
+                    (float)poly.getLon(),
                     poly.getXs(),
                     poly.getYs(),
                     poly.getCoordMode(),
@@ -310,7 +310,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
             int lineType = dis.readByte();
             numPoints = dis.readInt();
 
-            float[] llpoints = new float[numPoints];
+            double[] llpoints = new double[numPoints];
             for (int i = 0; i < numPoints; i++) {
                 llpoints[i] = dis.readFloat();
             }

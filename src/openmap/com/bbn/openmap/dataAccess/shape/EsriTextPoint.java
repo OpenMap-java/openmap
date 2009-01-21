@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriTextPoint.java,v $
 // $RCSfile: EsriTextPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2006/08/25 15:36:12 $
+// $Revision: 1.3 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,7 +38,7 @@ public class EsriTextPoint extends OMText  implements Cloneable, EsriGraphic,
 
     protected int type = SHAPE_TYPE_POINT;
     
-    public EsriTextPoint(float lat, float lon, String stuff, int justification) {
+    public EsriTextPoint(double lat, double lon, String stuff, int justification) {
         super(lat, lon, stuff, justification);
     }
 
@@ -46,7 +46,7 @@ public class EsriTextPoint extends OMText  implements Cloneable, EsriGraphic,
      * The lat/lon extent of the EsriGraphic, assumed to contain miny,
      * minx, maxy maxx in order of the array.
      */
-    public void setExtents(float[] extents) {
+    public void setExtents(double[] extents) {
     // we know what it is.
     }
 
@@ -54,8 +54,8 @@ public class EsriTextPoint extends OMText  implements Cloneable, EsriGraphic,
      * The lat/lon extent of the EsriGraphic, returned as miny, minx,
      * maxy maxx in order of the array.
      */
-    public float[] getExtents() {
-        float[] ex = new float[4];
+    public double[] getExtents() {
+        double[] ex = new double[4];
         ex[0] = getLat();
         ex[1] = getLon();
         ex[2] = getLat();

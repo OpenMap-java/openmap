@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriIconPoint.java,v $
 // $RCSfile: EsriIconPoint.java,v $
-// $Revision: 1.2 $
-// $Date: 2006/08/25 15:36:13 $
+// $Revision: 1.3 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,11 +41,11 @@ public class EsriIconPoint extends OMScalingIcon implements Cloneable,
     
     protected int type = SHAPE_TYPE_POINT;
 
-    public EsriIconPoint(float lat, float lon, ImageIcon imageIcon) {
+    public EsriIconPoint(double lat, double lon, ImageIcon imageIcon) {
         super(lat, lon, imageIcon);
     }
 
-    public EsriIconPoint(float lat, float lon, Image image) {
+    public EsriIconPoint(double lat, double lon, Image image) {
         super(lat, lon, image);
     }
 
@@ -53,7 +53,7 @@ public class EsriIconPoint extends OMScalingIcon implements Cloneable,
      * The lat/lon extent of the EsriGraphic, assumed to contain miny, minx,
      * maxy maxx in order of the array.
      */
-    public void setExtents(float[] extents) {
+    public void setExtents(double[] extents) {
     // we know what it is.
     }
 
@@ -61,8 +61,8 @@ public class EsriIconPoint extends OMScalingIcon implements Cloneable,
      * The lat/lon extent of the EsriGraphic, returned as miny, minx, maxy maxx
      * in order of the array.
      */
-    public float[] getExtents() {
-        float[] ex = new float[4];
+    public double[] getExtents() {
+        double[] ex = new double[4];
         ex[0] = getLat();
         ex[1] = getLon();
         ex[2] = getLat();

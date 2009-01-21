@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/PolylineGeometry.java,v $
 // $RCSfile: PolylineGeometry.java,v $
-// $Revision: 1.5 $
-// $Date: 2004/10/14 18:06:17 $
+// $Revision: 1.6 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -128,7 +128,7 @@ public abstract class PolylineGeometry extends PolygonGeometry implements
          *        OMGraphic.RADIANS or OMGraphic.DECIMAL_DEGREES
          * @param lType line type, from a list defined in OMGraphic.
          */
-        public LL(float[] llPoints, int units, int lType) {
+        public LL(double[] llPoints, int units, int lType) {
             this(llPoints, units, lType, -1);
         }
 
@@ -155,7 +155,7 @@ public abstract class PolylineGeometry extends PolygonGeometry implements
          *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types,
          *        and if &lt; 1, this value is generated internally)
          */
-        public LL(float[] llPoints, int units, int lType, int nsegs) {
+        public LL(double[] llPoints, int units, int lType, int nsegs) {
             super(llPoints, units, lType, nsegs);
             setIsPolygon(false);
         }
@@ -202,7 +202,7 @@ public abstract class PolylineGeometry extends PolygonGeometry implements
          * @param xypoints int[] of x,y pairs
          * @param cMode offset coordinate mode
          */
-        public Offset(float latPoint, float lonPoint, int[] xypoints, int cMode) {
+        public Offset(double latPoint, double lonPoint, int[] xypoints, int cMode) {
             super(latPoint, lonPoint, xypoints, cMode);
             setIsPolygon(false);
         }
@@ -218,7 +218,7 @@ public abstract class PolylineGeometry extends PolygonGeometry implements
          * @param yPoints int[] of y coordinates
          * @param cMode offset coordinate mode
          */
-        public Offset(float latPoint, float lonPoint, int[] xPoints,
+        public Offset(double latPoint, double lonPoint, int[] xPoints,
                 int[] yPoints, int cMode) {
 
             super(latPoint, lonPoint, xPoints, yPoints, cMode);

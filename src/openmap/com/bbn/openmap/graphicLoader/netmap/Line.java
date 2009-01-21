@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/netmap/Line.java,v $
 // $RCSfile: Line.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:46 $
+// $Revision: 1.5 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -38,7 +38,7 @@ public class Line extends OMLine {
     protected Node node2 = null;
     protected int shape = 0;
     protected int index = 0;
-    protected float[] ll = null;
+    protected double[] ll = null;
 
     public Line(String label, int index, int shape, int color, Node node1,
             Node node2) {
@@ -51,7 +51,7 @@ public class Line extends OMLine {
         this.label = label;
         this.color = NodeColor.colorOf(color);
 
-        this.ll = new float[4];
+        this.ll = new double[4];
 
         setPos(node1);
         setPos(node2);
@@ -102,7 +102,7 @@ public class Line extends OMLine {
         return NodeColor.valueOf(this.color);
     }
 
-    public void setPos(float lat1, float lon1, float lat2, float lon2) {
+    public void setPos(double lat1, double lon1, double lat2, double lon2) {
         ll[0] = lat1;
         ll[1] = lon1;
         ll[2] = lat2;
@@ -128,7 +128,7 @@ public class Line extends OMLine {
         setPos(node2);
     }
 
-    public float[] getPos() {
+    public double[] getPos() {
         return ll;
     }
 

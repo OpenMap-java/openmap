@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/ShxOutputStream.java,v $
 // $RCSfile: ShxOutputStream.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:44 $
+// $Revision: 1.5 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,16 +31,15 @@ import java.io.*;
  */
 public class ShxOutputStream {
     /**
-     * An outputstream that writes primitive data types in little
-     * endian or big endian
+     * An outputstream that writes primitive data types in little endian or big
+     * endian
      */
     private LittleEndianOutputStream _leos = null;
 
     /**
      * Chains an output stream to a LittleEndianOutputStream
      * 
-     * @param os An outputstream to chain a LittleEndianOutputStream
-     *        to
+     * @param os An outputstream to chain a LittleEndianOutputStream to
      */
     public ShxOutputStream(OutputStream os) {
         BufferedOutputStream bos = new BufferedOutputStream(os);
@@ -48,30 +47,29 @@ public class ShxOutputStream {
     }
 
     /**
-     * Writes the index, with the default extents of the graphics
-     * being the entire earth.
+     * Writes the index, with the default extents of the graphics being the
+     * entire earth.
      * 
      * @param indexData The index data to write
      * @param layerType Tye type of layer being written
      * @return True if no exceptions occur
      */
     public boolean writeIndex(int[][] indexData, int layerType) {
-        return writeIndex(indexData, layerType, new float[] { -90f, -180f, 90f,
-                180f });
+        return writeIndex(indexData, layerType, new double[] { -90, -180, 90,
+                180 });
     }
 
     /**
-     * Writes the index, with the default extents of the graphics
-     * being the entire earth.
+     * Writes the index, with the default extents of the graphics being the
+     * entire earth.
      * 
      * @param indexData The index data to write
      * @param layerType Tye type of layer being written
-     * @param extents an array of floats describing, in order, miny,
-     *        minx, maxy, maxx for the area that the graphics in the
-     *        shape file cover.
+     * @param extents an array of floats describing, in order, miny, minx, maxy,
+     *        maxx for the area that the graphics in the shape file cover.
      * @return True if no exceptions occur
      */
-    public boolean writeIndex(int[][] indexData, int layerType, float[] extents) {
+    public boolean writeIndex(int[][] indexData, int layerType, double[] extents) {
 
         try {
             _leos.writeInt(9994);
@@ -87,15 +85,15 @@ public class ShxOutputStream {
             if (extents[0] == 90f && extents[1] == 180f && extents[2] == -90f
                     && extents[3] == -180f) {
 
-                //Whoa! not set from defaults correctly!
+                // Whoa! not set from defaults correctly!
                 // use old, hardcoded way.
-                _leos.writeLEDouble(-180.0); //Hard-coding extents.
-                _leos.writeLEDouble(-90.0); //When viewed through
-                                            // ArcView, this will
-                _leos.writeLEDouble(180.0); //cause window to zoom to
-                                            // world extents
-                _leos.writeLEDouble(90.0); //instead of layer
-                                           // extents.
+                _leos.writeLEDouble(-180.0); // Hard-coding extents.
+                _leos.writeLEDouble(-90.0); // When viewed through
+                // ArcView, this will
+                _leos.writeLEDouble(180.0); // cause window to zoom to
+                // world extents
+                _leos.writeLEDouble(90.0); // instead of layer
+                // extents.
 
             } else {
                 _leos.writeLEDouble((float) extents[1]);

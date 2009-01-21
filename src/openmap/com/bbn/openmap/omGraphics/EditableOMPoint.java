@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoint.java,v $
 // $RCSfile: EditableOMPoint.java,v $
-// $Revision: 1.14 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.15 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -268,8 +268,8 @@ public class EditableOMPoint extends EditableOMGraphic {
                     || renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
                 if (projection != null) {
-                    float lon = point.getLon();
-                    float lat = point.getLat();
+                    double lon = point.getLon();
+                    double lat = point.getLat();
 
                     llp = new LatLonPoint.Double(lat, lon);
                     Point2D p = projection.forward(llp);

@@ -12,7 +12,7 @@
 // </copyright>
 // **********************************************************************
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/TextTable.java,v $
-// $Revision: 1.6 $ $Date: 2005/12/09 21:08:57 $ $Author: dietrick $
+// $Revision: 1.7 $ $Date: 2009/01/21 01:24:41 $ $Author: dietrick $
 // **********************************************************************
 
 package com.bbn.openmap.layer.vpf;
@@ -91,8 +91,8 @@ public class TextTable extends PrimitiveTable {
             for (List text = new ArrayList(); parseRow(text);) {
                 String textval = (String) text.get(textColumn);
                 CoordFloatString coords = (CoordFloatString) text.get(coordColumn);
-                float lat = coords.getYasFloat(0);
-                float lon = coords.getXasFloat(0);
+                double lat = coords.getYasFloat(0);
+                double lon = coords.getXasFloat(0);
 
                 if ((lat > ll2lat) && (lat < ll1lat) && (lon > ll1lon)
                         && (lon < ll2lon)) {
@@ -144,8 +144,8 @@ public class TextTable extends PrimitiveTable {
         String textval = (String) text.get(textColumn);
         CoordFloatString coords = (CoordFloatString) text.get(coordColumn);
 
-        float lat = coords.getYasFloat(0);
-        float lon = coords.getXasFloat(0);
+        double lat = coords.getYasFloat(0);
+        double lon = coords.getXasFloat(0);
         if ((lat > ll2lat) && (lat < ll1lat) && (lon > ll1lon)
                 && (lon < ll2lon)) {
             warehouse.createText(covtable,

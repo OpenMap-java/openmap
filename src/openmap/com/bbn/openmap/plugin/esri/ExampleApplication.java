@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/esri/ExampleApplication.java,v
 // $
 // $RCSfile: ExampleApplication.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/09 20:33:38 $
+// $Revision: 1.5 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -265,9 +265,9 @@ public class ExampleApplication extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 EsriPolylineList shapeData = new EsriPolylineList();
                 ArrayList tabularData = new ArrayList();
-                float[] part0 = new float[] { 35.0f, -120.0f, -25.0f, -95.0f,
+                double[] part0 = new double[] { 35.0f, -120.0f, -25.0f, -95.0f,
                         56.0f, -30.0f };
-                float[] part1 = new float[] { -15.0f, -110.0f, 13.0f, -80.0f,
+                double[] part1 = new double[] { -15.0f, -110.0f, 13.0f, -80.0f,
                         -25.0f, 10.0f };
                 EsriPolyline poly0 = new EsriPolyline(part0, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB);
                 EsriPolyline poly1 = new EsriPolyline(part1, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB);

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/vpf/VPFFeatureWarehouse.java,v $
 // $RCSfile: VPFFeatureWarehouse.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/12/09 21:08:57 $
+// $Revision: 1.6 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -40,21 +40,21 @@ public interface VPFFeatureWarehouse extends VPFWarehouse {
      */
     public void createArea(CoverageTable covtable, AreaTable areatable,
                            List facevec, LatLonPoint ll1, LatLonPoint ll2,
-                           float dpplat, float dpplon, String featureType);
+                           double dpplat, double dpplon, String featureType);
 
     /**
      *  
      */
     public void createEdge(CoverageTable c, EdgeTable edgetable, List edgevec,
-                           LatLonPoint ll1, LatLonPoint ll2, float dpplat,
-                           float dpplon, CoordFloatString coords,
+                           LatLonPoint ll1, LatLonPoint ll2, double dpplat,
+                           double dpplon, CoordFloatString coords,
                            String featureType);
 
     /**
      *  
      */
     public void createText(CoverageTable c, TextTable texttable, List textvec,
-                           float latitude, float longitude, String text,
+                           double latitude, double longitude, String text,
                            String featureType);
 
     /**
@@ -62,6 +62,6 @@ public interface VPFFeatureWarehouse extends VPFWarehouse {
      * feature.
      */
     public void createNode(CoverageTable c, NodeTable t, List nodeprim,
-                           float latitude, float longitude,
+                           double latitude, double longitude,
                            boolean isEntityNode, String featureType);
 }

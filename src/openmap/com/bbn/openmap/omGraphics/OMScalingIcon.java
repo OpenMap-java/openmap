@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMScalingIcon.java,v $
 // $RCSfile: OMScalingIcon.java,v $
-// $Revision: 1.9 $
-// $Date: 2006/02/16 16:22:47 $
+// $Revision: 1.10 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -75,7 +75,7 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      *        size.
      * @see #setPixel
      */
-    public OMScalingIcon(float centerLat, float centerLon, int offsetX,
+    public OMScalingIcon(double centerLat, double centerLon, int offsetX,
             int offsetY, int w, int h, int[] pix, float baseScale) {
 
         super(centerLat, centerLon, 0f, 0f, w, h, pix);
@@ -99,7 +99,7 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      * @param baseScale the scale where the icon will be show regular
      *        size.
      */
-    public OMScalingIcon(float centerLat, float centerLon, int offsetX,
+    public OMScalingIcon(double centerLat, double centerLon, int offsetX,
             int offsetY, ImageIcon ii, float baseScale) {
         this(centerLat, centerLon, offsetX, offsetY, ii.getImage(), baseScale);
     }
@@ -113,7 +113,7 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      * @param centerLon longitude of the left side of the image.
      * @param ii ImageIcon used for the image.
      */
-    public OMScalingIcon(float centerLat, float centerLon, ImageIcon ii) {
+    public OMScalingIcon(double centerLat, double centerLon, ImageIcon ii) {
         this(centerLat, centerLon, ii.getImage());
     }
 
@@ -130,7 +130,7 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      * @param baseScale the scale where the icon will be show regular
      *        size.
      */
-    public OMScalingIcon(float centerLat, float centerLon, int offsetX,
+    public OMScalingIcon(double centerLat, double centerLon, int offsetX,
             int offsetY, Image ii, float baseScale) {
         super();
         setRenderType(OMGraphic.RENDERTYPE_LATLON);
@@ -153,7 +153,7 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      * @param centerLon longitude of the left side of the image.
      * @param image ImageIcon used for the image.
      */
-    public OMScalingIcon(float centerLat, float centerLon, Image image) {
+    public OMScalingIcon(double centerLat, double centerLon, Image image) {
         this(centerLat, centerLon, 0, 0, image, 4000000);
         setMaxScale(4000000);
         setMinScale(4000000);

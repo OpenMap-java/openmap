@@ -58,7 +58,7 @@ public class EditableLabeledOMSpline extends EditableOMSpline {
         OMGraphic g = null;
         switch (renderType) {
         case (OMGraphic.RENDERTYPE_LATLON):
-            g = new LabeledOMSpline(new float[0], OMGraphic.RADIANS, lineType);
+            g = new LabeledOMSpline(new double[0], OMGraphic.RADIANS, lineType);
             break;
         case (OMGraphic.RENDERTYPE_OFFSET):
             g = new LabeledOMSpline(90f, -180f, new int[0], OMSpline.COORDMODE_ORIGIN);

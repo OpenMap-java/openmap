@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMScalingRaster.java,v $
 // $RCSfile: EditableOMScalingRaster.java,v $
-// $Revision: 1.11 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.12 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -195,13 +195,13 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
         super.setMovingPoint(gp);
     }
 
-    float diffx;
-    float diffy;
+    double diffx;
+    double diffy;
 
     // Called from the state machine...
     public void initRectSize() {
-        diffx = Math.abs(raster.getLRLon() - raster.getULLon()) / 2f;
-        diffy = Math.abs(raster.getULLat() - raster.getLRLat()) / 2f;
+        diffx = Math.abs(raster.getLRLon() - raster.getULLon()) / 2;
+        diffy = Math.abs(raster.getULLat() - raster.getLRLat()) / 2;
         //      Debug.output("initRectSize(): diffx:" + diffx + ", diffy:"
         // + diffy);
     }
@@ -319,10 +319,10 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
                     || renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
                 if (projection != null) {
-                    float wlon = raster.getULLon();
-                    float nlat = raster.getULLat();
-                    float elon = raster.getLRLon();
-                    float slat = raster.getLRLat();
+                    double wlon = raster.getULLon();
+                    double nlat = raster.getULLat();
+                    double elon = raster.getLRLon();
+                    double slat = raster.getLRLat();
 
                     llp = new LatLonPoint(nlat, wlon);
                     Point2D p = projection.forward(llp);
@@ -408,8 +408,8 @@ public class EditableOMScalingRaster extends EditableOMGraphic {
      */
     protected void setGrabPointsForOMSI(OMScalingIcon icon) {
         if (projection != null) {
-            float lon = icon.getLon();
-            float lat = icon.getLat();
+            double lon = icon.getLon();
+            double lat = icon.getLat();
             int renderType = icon.getRenderType();
             LatLonPoint llp = new LatLonPoint(lat, lon);
             Point2D p = projection.forward(llp);

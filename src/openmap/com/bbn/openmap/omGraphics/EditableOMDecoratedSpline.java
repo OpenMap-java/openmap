@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMDecoratedSpline.java,v $
 //$RCSfile: EditableOMDecoratedSpline.java,v $
-//$Revision: 1.4 $
-//$Date: 2004/10/14 18:06:10 $
+//$Revision: 1.5 $
+//$Date: 2009/01/21 01:24:41 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -67,7 +67,7 @@ public class EditableOMDecoratedSpline extends EditableOMSpline {
         OMGraphic g = null;
         switch (renderType) {
         case (OMGraphic.RENDERTYPE_LATLON):
-            g = new OMDecoratedSpline(new float[0], OMGraphic.RADIANS, lineType);
+            g = new OMDecoratedSpline(new double[0], OMGraphic.RADIANS, lineType);
             break;
         case (OMGraphic.RENDERTYPE_OFFSET):
             g = new OMSpline(90f, -180f, new int[0], OMDecoratedSpline.COORDMODE_ORIGIN);

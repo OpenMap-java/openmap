@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/ProjectionStackSupport.java,v $
 // $RCSfile: ProjectionStackSupport.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:06:23 $
+// $Revision: 1.5 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -34,7 +34,7 @@ import java.util.Iterator;
  */
 public class ProjectionStackSupport implements java.io.Serializable {
 
-    transient private ArrayList triggers;
+    transient private ArrayList<ProjectionStackTrigger> triggers;
 
     /**
      * Construct a ProjectionStackSupport.
@@ -48,7 +48,7 @@ public class ProjectionStackSupport implements java.io.Serializable {
      */
     public synchronized void add(ProjectionStackTrigger pt) {
         if (triggers == null) {
-            triggers = new ArrayList();
+            triggers = new ArrayList<ProjectionStackTrigger>();
         }
 
         if (!triggers.contains(pt)) {
@@ -73,12 +73,12 @@ public class ProjectionStackSupport implements java.io.Serializable {
      * 
      * @return Vector of triggers, null if none have been added.
      */
-    public synchronized ArrayList getTriggers() {
+    public synchronized ArrayList<ProjectionStackTrigger> getTriggers() {
         if (triggers == null) {
             return null;
         }
 
-        return (ArrayList) triggers.clone();
+        return (ArrayList<ProjectionStackTrigger>) triggers.clone();
     }
 
     public int size() {
@@ -97,17 +97,16 @@ public class ProjectionStackSupport implements java.io.Serializable {
     public void fireStackStatus(boolean enableBackProjections,
                                 boolean enableForwardProjections) {
 
-        ProjectionStackTrigger target;
-        ArrayList targets = getTriggers();
+        ArrayList<ProjectionStackTrigger> targets = getTriggers();
 
         if (triggers == null) {
             return;
         }
 
-        Iterator iterator = targets.iterator();
+        Iterator<ProjectionStackTrigger> iterator = targets.iterator();
 
         while (iterator.hasNext()) {
-            target = (ProjectionStackTrigger) iterator.next();
+            ProjectionStackTrigger target = iterator.next();
             if (Debug.debugging("projectionstack")) {
                 Debug.output("ProjectionStackSupport.fireStackStatus(): target is: "
                         + target);

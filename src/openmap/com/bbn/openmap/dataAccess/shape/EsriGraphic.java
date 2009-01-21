@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/EsriGraphic.java,v $
 // $RCSfile: EsriGraphic.java,v $
-// $Revision: 1.5 $
-// $Date: 2006/08/25 15:36:14 $
+// $Revision: 1.6 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,13 +33,13 @@ public interface EsriGraphic extends ShapeConstants {
      * The lat/lon extent of the EsriGraphic, assumed to contain miny, minx,
      * maxy maxx in order of the array.
      */
-    public void setExtents(float[] extents);
+    public void setExtents(double[] extents);
 
     /**
      * The lat/lon extent of the EsriGraphic, returned as miny, minx, maxy maxx
      * in order of the array.
      */
-    public float[] getExtents();
+    public double[] getExtents();
 
     /**
      * Shallow copy this graphic. The contract is that the cloned object should

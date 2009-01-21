@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Projection.java,v $
 // $RCSfile: Projection.java,v $
-// $Revision: 1.8 $
-// $Date: 2006/08/09 21:08:32 $
+// $Revision: 1.9 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -348,23 +348,23 @@ public interface Projection extends java.io.Serializable {
     /**
      * Forward project a line defined by two coordinate endpoints.
      * <p>
-     * Returns a ArrayList of (x[], y[]) coordinate pair(s) of the projected
+     * Returns a ArrayList<int[]> of (x[], y[]) coordinate pair(s) of the projected
      * line(s).
      */
-    public ArrayList forwardLine(Point2D ll1, Point2D ll2);
+    public ArrayList<int[]> forwardLine(Point2D ll1, Point2D ll2);
 
     /**
      * Forward project a rectangle defined by an upper left point and a lower
      * right point.
      * <p>
-     * Returns a ArrayList of (x[], y[]) coordinate pairs of the projected
+     * Returns a ArrayList<int[]> of (x[], y[]) coordinate pairs of the projected
      * points.
      * 
      * @param ll1 Point2D of northwest corner
      * @param ll2 Point2D of southeast corner
      * @return ArrayList
      */
-    public ArrayList forwardRect(Point2D ll1, Point2D ll2);
+    public ArrayList<int[]> forwardRect(Point2D ll1, Point2D ll2);
 
     /**
      * Forward project a polygin defined by the coordinates. The isFilled flag
@@ -374,9 +374,9 @@ public interface Projection extends java.io.Serializable {
      * @param rawllpts a set of y, x coordinates.
      * @param isFilled true of is important to note the area of the poly,
      *        instead of just the edge.
-     * @return ArrayList containg sets of int[]x, int[] y arrays.
+     * @return ArrayList<int[]> containg sets of int[]x, int[] y arrays.
      */
-    public ArrayList forwardPoly(float[] rawllpts, boolean isFilled);
+    public ArrayList<int[]> forwardPoly(float[] rawllpts, boolean isFilled);
 
     /**
      * Forward project a polygin defined by the coordinates. The isFilled flag
@@ -386,9 +386,9 @@ public interface Projection extends java.io.Serializable {
      * @param rawllpts a set of y, x coordinates.
      * @param isFilled true of is important to note the area of the poly,
      *        instead of just the edge.
-     * @return ArrayList containg sets of int[]x, int[] y arrays.
+     * @return ArrayList<int[]> containg sets of int[]x, int[] y arrays.
      */
-    public ArrayList forwardPoly(double[] rawllpts, boolean isFilled);
+    public ArrayList<int[]> forwardPoly(double[] rawllpts, boolean isFilled);
 
     /**
      * Forward project a raw array of world coordinates. This assumes nothing

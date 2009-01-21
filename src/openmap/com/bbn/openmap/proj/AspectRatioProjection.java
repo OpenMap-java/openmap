@@ -88,9 +88,9 @@ public class AspectRatioProjection extends GeoProj {
         return (int) (((float) y - halfHeight) / yFactor + halfWrappedHeight);
     }
 
-    protected ArrayList _forwardPoly(float[] rawllpts, int ltype, int nsegs,
+    protected ArrayList<int[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs,
                                      boolean isFilled) {
-        ArrayList stuff = wrappedProjection._forwardPoly(rawllpts,
+        ArrayList<int[]> stuff = wrappedProjection._forwardPoly(rawllpts,
                 ltype,
                 nsegs,
                 isFilled);
@@ -195,9 +195,9 @@ public class AspectRatioProjection extends GeoProj {
     }
 
     @Override
-    protected ArrayList _forwardPoly(double[] rawllpts, int ltype, int nsegs,
+    protected ArrayList<int[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs,
                                      boolean isFilled) {
-        ArrayList stuff = wrappedProjection._forwardPoly(rawllpts,
+        ArrayList<int[]> stuff = wrappedProjection._forwardPoly(rawllpts,
                 ltype,
                 nsegs,
                 isFilled);

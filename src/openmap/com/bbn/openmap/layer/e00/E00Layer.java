@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/e00/E00Layer.java,v $
 // $RCSfile: E00Layer.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/08/09 18:07:32 $
+// $Revision: 1.8 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -491,7 +491,7 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
 
         Vector V = new Vector();
         int n = arcs.size();
-        float ll[];
+        double ll[];
         int llsize;
         double lnmax = Double.MIN_VALUE;
         double lnmin = Double.MAX_VALUE;
@@ -510,7 +510,7 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
             llsize = ll.length;
             if ((ll[0] != ll[llsize - 2]) || (ll[1] != ll[llsize - 1])) {
                 // contour non clos;
-                float[] coords = new float[] { ll[0], ll[1], ll[llsize - 2],
+                double[] coords = new double[] { ll[0], ll[1], ll[llsize - 2],
                         ll[llsize - 1] };
                 ArcData dn = new ArcData(data);
                 dn.coords = coords;
@@ -546,10 +546,10 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
         ArcData d2;
         //chercher les connections;
         ArcData dx;
-        float lt1;
-        float lg1;
-        float lt2;
-        float lg2;
+        double lt1;
+        double lg1;
+        double lt2;
+        double lg2;
         for (int i = 0; i < unClosedCount; i++) {
             d0 = unClosed[i];
             d0.deja = 0;
@@ -651,7 +651,7 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
         PrintStream out = null;
         double lt;
         double ln;
-        float ll[];
+        double ll[];
         int llsize;
         int n;
         File f = chooseFile(1);

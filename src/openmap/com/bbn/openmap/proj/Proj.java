@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Proj.java,v $
 // $RCSfile: Proj.java,v $
-// $Revision: 1.13 $
-// $Date: 2006/08/09 21:08:32 $
+// $Revision: 1.14 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -627,7 +627,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         return true;
     }
 
-    public ArrayList forwardLine(Point2D ll1, Point2D ll2) {
+    public ArrayList<int[]> forwardLine(Point2D ll1, Point2D ll2) {
         double[] rawllpts = { ll1.getY(), ll1.getX(), ll2.getY(), ll2.getX() };
         return forwardPoly(rawllpts, false);
     }
@@ -637,9 +637,9 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * 
      * @param ll1 LatLonPoint
      * @param ll2 LatLonPoint
-     * @return ArrayList
+     * @return ArrayList<int[]>
      */
-    public ArrayList forwardRect(Point2D ll1, Point2D ll2) {
+    public ArrayList<int[]> forwardRect(Point2D ll1, Point2D ll2) {
         double[] rawllpts = { ll1.getY(), ll1.getX(), ll1.getY(), ll2.getX(),
                 ll2.getY(), ll2.getX(), ll2.getY(), ll1.getX(),
                 // connect:
@@ -647,7 +647,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         return forwardPoly(rawllpts, true);
     }
 
-    public ArrayList forwardPoly(float[] rawllpts, boolean isFilled) {
+    public ArrayList<int[]> forwardPoly(float[] rawllpts, boolean isFilled) {
         // For regular OMGraphics, some of the rawllpts are in radians and must
         // be translated into decimal degrees before they really are able to be
         // displayed here, i.e.:
@@ -659,7 +659,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         // determine length of pairs list
         int len = rawllpts.length >> 1; // len/2, chop off extra
         if (len < 2)
-            return new ArrayList(0);
+            return new ArrayList<int[]>(0);
 
         // determine when to stop
         Point temp = new Point(0, 0);
@@ -678,21 +678,21 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         }
 
         // now create the return list
-        ArrayList ret_val = null;
-        ret_val = new ArrayList(2);
+        ArrayList<int[]> ret_val = null;
+        ret_val = new ArrayList<int[]>(2);
         ret_val.add(xs);
         ret_val.add(ys);
 
         return ret_val;
     }
 
-    public ArrayList forwardPoly(double[] rawllpts, boolean isFilled) {
+    public ArrayList<int[]> forwardPoly(double[] rawllpts, boolean isFilled) {
         int n, k;
 
         // determine length of pairs list
         int len = rawllpts.length >> 1; // len/2, chop off extra
         if (len < 2)
-            return new ArrayList(0);
+            return new ArrayList<int[]>(0);
 
         // determine when to stop
         Point temp = new Point(0, 0);
@@ -711,8 +711,8 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         }
 
         // now create the return list
-        ArrayList ret_val = null;
-        ret_val = new ArrayList(2);
+        ArrayList<int[]> ret_val = null;
+        ret_val = new ArrayList<int[]>(2);
         ret_val.add(xs);
         ret_val.add(ys);
         return ret_val;

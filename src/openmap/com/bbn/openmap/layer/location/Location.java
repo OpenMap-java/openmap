@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/location/Location.java,v $
 // $RCSfile: Location.java,v $
-// $Revision: 1.11 $
-// $Date: 2005/12/09 21:09:07 $
+// $Revision: 1.12 $
+// $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -55,12 +55,12 @@ public abstract class Location extends OMGraphic {
      * The main latitude of object, in decimal degrees, for
      * RENDERTYPE_LATLON and RENDERTYPE_OFFSET locations.
      */
-    public float lat = 0.0f;
+    public double lat = 0.0f;
     /**
      * The main longitude of object, in decimal degrees, for
      * RENDERTYPE_LATLON and RENDERTYPE_OFFSET locations.
      */
-    public float lon = 0.0f;
+    public double lon = 0.0f;
     /**
      * The x pixel offset from the longitude, for RENDERTYPE_OFFSET
      * locations.
@@ -148,7 +148,7 @@ public abstract class Location extends OMGraphic {
      * @param locationMarker the OMGraphic to use for the location
      *        mark.
      */
-    public Location(float latitude, float longitude, String name,
+    public Location(double latitude, double longitude, String name,
             OMGraphic locationMarker) {
 
         setLocation(latitude, longitude);
@@ -234,7 +234,7 @@ public abstract class Location extends OMGraphic {
      * @param locationMarker the OMGraphic to use for the location
      *        mark.
      */
-    public Location(float latitude, float longitude, int xOffset, int yOffset,
+    public Location(double latitude, double longitude, int xOffset, int yOffset,
             String name, OMGraphic locationMarker) {
         setLocation(latitude, longitude, xOffset, yOffset);
         this.name = name;
@@ -263,7 +263,7 @@ public abstract class Location extends OMGraphic {
     }
 
     /** Set the placement of the location. */
-    public void setLocation(float latitude, float longitude) {
+    public void setLocation(double latitude, double longitude) {
         lat = latitude;
         lon = longitude;
 
@@ -291,7 +291,7 @@ public abstract class Location extends OMGraphic {
     }
 
     /** Set the placement of the location. */
-    public void setLocation(float latitude, float longitude, int xOffset,
+    public void setLocation(double latitude, double longitude, int xOffset,
                             int yOffset) {
         lat = latitude;
         lon = longitude;
@@ -340,11 +340,11 @@ public abstract class Location extends OMGraphic {
         }
     }
 
-    public abstract void setGraphicLocations(float latitude, float longitude);
+    public abstract void setGraphicLocations(double latitude, double longitude);
 
     public abstract void setGraphicLocations(int x, int y);
 
-    public abstract void setGraphicLocations(float latitude, float longitude,
+    public abstract void setGraphicLocations(double latitude, double longitude,
                                              int offsetX, int offsetY);
 
     /**

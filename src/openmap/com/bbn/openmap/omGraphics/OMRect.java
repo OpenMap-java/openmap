@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRect.java,v $
 // $RCSfile: OMRect.java,v $
-// $Revision: 1.6 $
-// $Date: 2006/02/16 16:22:47 $
+// $Revision: 1.7 $
+// $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -64,9 +64,9 @@ public class OMRect extends OMGraphic implements Serializable {
      */
     protected int y1 = 0;
     /** Latitude of first corner, decimal degrees. */
-    protected float lat1 = 0.0f;
+    protected double lat1 = 0.0f;
     /** Longitude of first corner, decimal degrees. */
-    protected float lon1 = 0.0f;
+    protected double lon1 = 0.0f;
     /**
      * Horizontal window position of second corner, in pixels from left side of
      * window.
@@ -78,9 +78,9 @@ public class OMRect extends OMGraphic implements Serializable {
      */
     protected int y2 = 0;
     /** Latitude of second corner, decimal degrees. */
-    protected float lat2 = 0.0f;
+    protected double lat2 = 0.0f;
     /** Longitude of second corner, decimal degrees. */
-    protected float lon2 = 0.0f;
+    protected double lon2 = 0.0f;
 
     /**
      * Number of segments to draw (used only for LINETYPE_GREATCIRCLE or
@@ -102,7 +102,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * @param ln2 longitude of east edge, decimal degrees.
      * @param lType line type - see OMGraphic.lineType.
      */
-    public OMRect(float lt1, float ln1, float lt2, float ln2, int lType) {
+    public OMRect(double lt1, double ln1, double lt2, double ln2, int lType) {
         this(lt1, ln1, lt2, ln2, lType, -1);
     }
 
@@ -118,7 +118,7 @@ public class OMRect extends OMGraphic implements Serializable {
      *        LINETYPE_RHUMB line types, and if &lt; 1, this value is generated
      *        internally)
      */
-    public OMRect(float lt1, float ln1, float lt2, float ln2, int lType,
+    public OMRect(double lt1, double ln1, double lt2, double ln2, int lType,
             int nsegs) {
         super(RENDERTYPE_LATLON, lType, DECLUTTERTYPE_NONE);
         lat1 = lt1;
@@ -166,7 +166,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * @param py2 y pixel position of the second corner relative to the
      *        reference point
      */
-    public OMRect(float lt1, float ln1, int px1, int py1, int px2, int py2) {
+    public OMRect(double lt1, double ln1, int px1, int py1, int px2, int py2) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         lat1 = lt1;
         lon1 = ln1;
@@ -185,7 +185,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * @param ln2 longitude of east edge, decimal degrees.
      * @param lType line type - see OMGraphic.lineType.
      */
-    public void setLocation(float lt1, float ln1, float lt2, float ln2,
+    public void setLocation(double lt1, double ln1, double lt2, double ln2,
                             int lType) {
         setRenderType(RENDERTYPE_LATLON);
         setLineType(lType);
@@ -235,7 +235,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * @param py2 y pixel position of the second corner relative to the
      *        reference point
      */
-    public void setLocation(float lt1, float ln1, int px1, int py1, int px2,
+    public void setLocation(double lt1, double ln1, int px1, int py1, int px2,
                             int py2) {
         setRenderType(RENDERTYPE_OFFSET);
         setLineType(LINETYPE_UNKNOWN);
@@ -254,7 +254,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * 
      * @return float latitude
      */
-    public float getNorthLat() {
+    public double getNorthLat() {
         return lat1;
     }
 
@@ -264,7 +264,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * 
      * @return float longitude
      */
-    public float getWestLon() {
+    public double getWestLon() {
         return lon1;
     }
 
@@ -273,7 +273,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * 
      * @return float latitude
      */
-    public float getSouthLat() {
+    public double getSouthLat() {
         return lat2;
     }
 
@@ -282,7 +282,7 @@ public class OMRect extends OMGraphic implements Serializable {
      * 
      * @return float longitude
      */
-    public float getEastLon() {
+    public double getEastLon() {
         return lon2;
     }
 
@@ -386,8 +386,8 @@ public class OMRect extends OMGraphic implements Serializable {
                         nsegs,
                         !isClear(fillPaint));
             } else {
-                rects = proj.forwardRect(new Point2D.Float(lon1, lat1),
-                        new Point2D.Float(lon2, lat2));
+                rects = proj.forwardRect(new Point2D.Double(lon1, lat1),
+                        new Point2D.Double(lon2, lat2));
             }
             int size = rects.size();
 
