@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/MetaDbfTableModel.java,v $
 // $RCSfile: MetaDbfTableModel.java,v $
-// $Revision: 1.6 $
-// $Date: 2008/09/17 20:47:51 $
+// $Revision: 1.7 $
+// $Date: 2009/02/05 18:46:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -41,7 +41,7 @@ import com.bbn.openmap.util.Debug;
  * An extension of the DbfTableModel that allows editing of the format of the
  * TbfTableModel, allowing addition and deletion of columns of the
  * DbfTableModel. The original DbfTableModel column headers are scanned and put
- * into records, and edited the rows. Be careful with this.
+ * into records, and edited as rows. Be careful with this.
  */
 public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
 

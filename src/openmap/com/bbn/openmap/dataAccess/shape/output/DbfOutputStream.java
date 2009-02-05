@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/output/DbfOutputStream.java,v $
 // $RCSfile: DbfOutputStream.java,v $
-// $Revision: 1.17 $
-// $Date: 2008/10/10 00:57:21 $
+// $Revision: 1.18 $
+// $Date: 2009/02/05 18:46:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -216,12 +216,13 @@ public class DbfOutputStream {
             _leos.writeByte(32);
             for (int c = 0; c <= columnCount - 1; c++) {
                 byte type = model.getType(c);
+                int columnLength = model.getLength(c);
                 int numDecSpaces = model.getDecimalCount(c);
                 df.setMaximumFractionDigits(numDecSpaces);
                 df.setGroupingUsed(false);
                 String value = DbfTableModel.getStringForType(model.getValueAt(r, c),
                         type,
-                        df);
+                        df, columnLength);
 
                 int length = model.getLength(c);
                 _leos.writeString(value, length);

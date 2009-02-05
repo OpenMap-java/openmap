@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/event/ProjectionSupport.java,v $
 // $RCSfile: ProjectionSupport.java,v $
-// $Revision: 1.9 $
-// $Date: 2007/05/16 04:05:15 $
+// $Revision: 1.10 $
+// $Date: 2009/02/05 18:46:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -82,41 +82,13 @@ public class ProjectionSupport extends ListenerSupport {
             return; // no event or no listeners
 
         pcNotifier.fireProjectionEvent(new ProjectionEvent(getSource(), proj));
-        /*
-         * ProjectionEvent evt = new ProjectionEvent(getSource(), proj);
-         * 
-         * ProjectionSupportII.ProjectionChangedRunnable pcr = new
-         * ProjectionSupportII.ProjectionChangedRunnable(evt); new
-         * Thread(pcr).start();
-         */
     }
 
-    /**
-     * A Runnable class that disperses the projection, instead of letting the
-     * Swing thread do it. A new one is created for every projection change, so
-     * the current ProjectionEvent object is getting delivered with it.
-     */
-    // protected class ProjectionChangedRunnable implements Runnable {
-    // protected ProjectionEvent projEvent;
-    //
-    // public ProjectionChangedRunnable(ProjectionEvent pe) {
-    // projEvent = pe;
-    // }
-    //
-    // public void run() {
-    // ProjectionListener target = null;
-    // Iterator it = iterator();
-    // while (it.hasNext()) {
-    // target = (ProjectionListener) it.next();
-    // if (Debug.debugging("mapbean")) {
-    // Debug.output("ProjectionChangeRunnable: firing projection change, target
-    // is: "
-    // + target);
-    // }
-    // target.projectionChanged(projEvent);
-    // }
-    // }
-    // };
+    public void dispose() {
+        pcNotifier.setTerminated(true);
+        super.removeAll();
+    }
+
     /**
      * A thread that disperses the projection event, instead of letting the
      * Swing thread do it. A new one is created for every projection change, so
@@ -132,10 +104,18 @@ public class ProjectionSupport extends ListenerSupport {
         /* next projection event */
         protected ProjectionEvent nextEvent;
 
-        /* a flag to kneow if we are terminated (which is never ) */
+        /* a flag to know if we are terminated. */
         protected boolean terminated = false;
 
         public ProjectionChangeNotifier() {}
+
+        public boolean isTerminated() {
+            return terminated;
+        }
+
+        public void setTerminated(boolean terminated) {
+            this.terminated = terminated;
+        }
 
         protected boolean isEventInProgress() {
             // synchronized(lock){
@@ -152,7 +132,7 @@ public class ProjectionSupport extends ListenerSupport {
 
         public void run() {
             Vector lstnrs = null;
-            while (!terminated) { // run forever
+            while (!terminated) { // run while parent mapbean exists
                 synchronized (lock) {
                     if (nextEvent != null) {
                         projEvent = nextEvent;
@@ -181,7 +161,7 @@ public class ProjectionSupport extends ListenerSupport {
                         projEvent = null;
                     }
                 } else { // there is no event
-                    // just wait until we are woken up for the next event
+                    // just wait until we are awakened for the next event
                     try {
                         synchronized (lock) {
                             lock.wait();

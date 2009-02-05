@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/input/DbfInputStream.java,v $
 // $RCSfile: DbfInputStream.java,v $
-// $Revision: 1.13 $
-// $Date: 2008/10/10 00:57:21 $
+// $Revision: 1.14 $
+// $Date: 2009/02/05 18:46:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -230,14 +230,14 @@ public class DbfInputStream {
                 String cell = _leis.readString(length);
                 try {
                     record.add(c,
-                            DbfTableModel.getObjectForType(cell, type, df));
+                            DbfTableModel.getObjectForType(cell, type, df, length));
                 } catch (ParseException pe) {
                     if (Debug.debugging("shape")) {
                         Debug.error("DbfInputStream:  error parsing column "
                                 + c + ", row " + r
                                 + ", expected number and got " + cell);
                     }
-                    record.add(c, DbfTableModel.ZERO);
+                    record.add(c, DbfTableModel.appendWhitespaceOrTrim(null, length));
                 }
             }
             _records.add(record);

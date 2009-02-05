@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfFile.java,v $
 // $RCSfile: DbfFile.java,v $
-// $Revision: 1.3 $
-// $Date: 2008/10/10 00:57:21 $
+// $Revision: 1.4 $
+// $Date: 2009/02/05 18:46:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -232,7 +232,7 @@ public class DbfFile extends DbfTableModel {
                 String cell = bf.readFixedLengthString(length).trim();
                 Object obj = cell;
                 try {
-                    obj = getObjectForType(cell, type, df);
+                    obj = getObjectForType(cell, type, df, length);
                 } catch (ParseException pe) {
                     // Don't need to do anything, obj == cell;
                 }

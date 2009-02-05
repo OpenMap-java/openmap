@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
-// $Revision: 1.22 $
-// $Date: 2008/07/11 14:45:24 $
+// $Revision: 1.23 $
+// $Date: 2009/02/05 18:46:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -78,8 +78,8 @@ import com.bbn.openmap.util.Debug;
  * two reasons to call MapBean methods: controlling the projection, and adding
  * or removing layers.
  * <p>
- * When controlling the MapBean projection, simply call the method that applies -
- * setCenter, pan, zoom, etc. NOTE: If you are setting more than one parameter
+ * When controlling the MapBean projection, simply call the method that applies
+ * - setCenter, pan, zoom, etc. NOTE: If you are setting more than one parameter
  * of the projection, it's more efficient to getProjection(), directly set the
  * parameters of the projection object, and then call setProjection() with the
  * modified projection. That way, each ProjectionListener of the MapBean (each
@@ -267,12 +267,28 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     /**
-     * Return a stringified representation of the MapBean.
+     * Return a string-ified representation of the MapBean.
      * 
      * @return String
      */
     public String toString() {
         return getClass().getName() + "@" + Integer.toHexString(hashCode());
+    }
+
+    /**
+     * Call when getting rid of the MapBean, it releases pointers to all
+     * listeners and kills the ProjectionSupport thread.
+     */
+    public void dispose() {
+        if (projectionSupport != null) {
+            projectionSupport.dispose();
+        }
+
+        painters.removeAll();
+        addedLayers.removeAllElements();
+
+        removeAll();
+        purgeAndNotifyRemovedLayers();
     }
 
     /*----------------------------------------------------------------------
@@ -620,7 +636,8 @@ public class MapBean extends JComponent implements ComponentListener,
      * @param aProjection Projection
      */
     public void setProjection(Projection aProjection) {
-        if (aProjection != null && !aProjection.getProjectionID().contains("NaN")) {
+        if (aProjection != null
+                && !aProjection.getProjectionID().contains("NaN")) {
             setBufferDirty(true);
             projection = (Proj) aProjection;
             setPreferredSize(new Dimension(projection.getWidth(), projection.getHeight()));

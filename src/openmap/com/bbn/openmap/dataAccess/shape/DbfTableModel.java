@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/DbfTableModel.java,v $
 // $RCSfile: DbfTableModel.java,v $
-// $Revision: 1.17 $
-// $Date: 2008/10/10 00:57:21 $
+// $Revision: 1.18 $
+// $Date: 2009/02/05 18:46:11 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -180,7 +180,8 @@ public class DbfTableModel extends AbstractTableModel implements
     public static final int SAVE_MASK = 1 << 4;
 
     /**
-     * Object value held for every NUMERIC cell that had a problem importing.
+     * Old Object value held for every NUMERIC cell that had a problem
+     * importing. Now, those cells are filled with whitespace.
      */
     public final static Double ZERO = new Double(0);
 
@@ -882,25 +883,71 @@ public class DbfTableModel extends AbstractTableModel implements
         return location;
     }
 
+    /**
+     * Takes the object and converts it to a String for output.
+     * 
+     * @param obj
+     * @param type
+     * @param df
+     * @return a string value representing the object. If the object is null, a
+     *         whitespace string will be returned.
+     */
     public static String getStringForType(Object obj, byte type,
-                                          DecimalFormat df) {
+                                          DecimalFormat df, int columnLength) {
         String ret = "";
-        if (isNumericalType(type)) {
-            try {
-                ret = df.format(((Double) obj).doubleValue());
-            } catch (Exception e) {
-                ret = "";
-            }
 
-        } else if (obj instanceof String) {
-            ret = (String) obj;
+        if (obj != null) {
+
+            if (isNumericalType(type)) {
+                try {
+                    ret = df.format(((Double) obj).doubleValue());
+                } catch (Exception e) {
+                    ret = "";
+                }
+
+            } else if (obj instanceof String) {
+                ret = (String) obj;
+            }
+        }
+
+        if (ret.length() != columnLength) {
+            ret = appendWhitespaceOrTrim(ret, columnLength);
         }
 
         return ret;
     }
 
+    /**
+     * A method that looks at the length of String s and returns a copy of it
+     * with whitespace appended to the end to allow it to have the provided
+     * length.
+     * 
+     * @param s
+     * @param length
+     * @return
+     */
+    public static String appendWhitespaceOrTrim(String s, int length) {
+        if (s == null) {
+            s = new String("");
+        }
+
+        int retLength = s.length();
+        if (retLength < length) {
+            StringBuffer sb = new StringBuffer(s);
+            int numWhites = length - retLength;
+            for (int i = 0; i < numWhites; i++) {
+                sb.append(" ");
+            }
+            s = sb.toString();
+        } else if (retLength > length) {
+            s = s.substring(length);
+        }
+
+        return s;
+    }
+
     public static Object getObjectForType(String cellContents, int type,
-                                          DecimalFormat df)
+                                          DecimalFormat df, int columnLength)
             throws java.text.ParseException {
         Object ret = cellContents;
         if (isNumericalType((byte) type)) {
@@ -912,13 +959,19 @@ public class DbfTableModel extends AbstractTableModel implements
                     ret = new Double(df.parse(cellContents).doubleValue());
                 }
             } else {
-                ret = ZERO;
+                // If we come across a numerical cell that doesn't contain data,
+                // we should create an empty whitespace string in that cell
+                // instead of setting it to ZERO. ZERO has a very different
+                // meaning.
+
+                ret = appendWhitespaceOrTrim(null, columnLength);
             }
         } else if (type == DbfTableModel.TYPE_BINARY
                 || type == DbfTableModel.TYPE_MEMO
                 || type == DbfTableModel.TYPE_OLE) {
             if (cellContents.length() < 10) {
                 cellContents = cellContents.trim();
+                // prepending whitespace.
                 StringBuffer bu = new StringBuffer();
                 int numSpaces = 10 - cellContents.length();
                 for (int i = 0; i < numSpaces; i++) {
@@ -937,24 +990,80 @@ public class DbfTableModel extends AbstractTableModel implements
     public static void main(String[] args) {
         Debug.init();
         if (args.length < 1) {
-            System.exit(0);
+            test();
+        } else {
+
+            try {
+
+                URL dbf = PropUtils.getResourceOrFileOrURL(args[0]);
+                InputStream is = dbf.openStream();
+                DbfInputStream dis = new DbfInputStream(is);
+                DbfTableModel dtm = new DbfTableModel(dis);
+                dtm.setWritable(true);
+                dtm.exitOnClose = true;
+                dtm.showGUI(args[0], MODIFY_ROW_MASK | MODIFY_COLUMN_MASK
+                        | SAVE_MASK);
+                is.close();
+            } catch (Exception e) {
+                Debug.error(e.getMessage());
+                e.printStackTrace();
+            }
         }
+    }
+
+    public static void test() {
+        DbfTableModel dtm = new DbfTableModel(2);
+        dtm.setColumnName(0, "NAME");
+        dtm.setColumnName(1, "VALUE");
+
+        dtm.setDecimalCount(0, (byte) 0);
+        dtm.setDecimalCount(1, (byte) 3);
+
+        dtm.setLength(0, 20);
+        dtm.setLength(1, 10);
+
+        dtm.setType(0, TYPE_CHARACTER);
+        dtm.setType(1, TYPE_DOUBLE);
+
+        ArrayList record = new ArrayList();
+        record.add("ok");
+        record.add(new Double(345.3));
+        dtm.addRecord(record);
+
+        record = new ArrayList();
+        record.add("null");
+        record.add(null);
+        dtm.addRecord(record);
+
+        record = new ArrayList();
+        record.add("blank");
+        record.add("");
+        dtm.addRecord(record);
+        
+        record = new ArrayList();
+        record.add("zero");
+        record.add(new Double(0));
+        dtm.addRecord(record);
 
         try {
+            write(dtm, "./test.dbf");
 
-            URL dbf = PropUtils.getResourceOrFileOrURL(args[0]);
-            InputStream is = dbf.openStream();
-            DbfInputStream dis = new DbfInputStream(is);
-            DbfTableModel dtm = new DbfTableModel(dis);
-            dtm.setWritable(true);
-            dtm.exitOnClose = true;
-            dtm.showGUI(args[0], MODIFY_ROW_MASK | MODIFY_COLUMN_MASK
+            dtm = read(new File("./test.dbf").toURL());
+
+            dtm.showGUI("test.dbf", MODIFY_ROW_MASK | MODIFY_COLUMN_MASK
                     | SAVE_MASK);
-            is.close();
+
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         } catch (Exception e) {
-            Debug.error(e.getMessage());
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
     }
 
     class DbfJTable extends JTable {
@@ -985,7 +1094,13 @@ public class DbfTableModel extends AbstractTableModel implements
         }
 
         public void setValue(Object value) {
-            setText((value == null) ? "" : formatter.format(value));
+            try {
+                setText(formatter.format(value));
+                return;
+            } catch (Exception e) {
+                
+            }
+            setText("");
         }
     }
 }
