@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMGraphicList.java,v $
 // $RCSfile: OMGraphicList.java,v $
-// $Revision: 1.21 $
-// $Date: 2009/01/21 01:24:41 $
+// $Revision: 1.22 $
+// $Date: 2009/02/20 17:15:27 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -1069,7 +1069,7 @@ public class OMGraphicList extends OMGraphic implements GraphicList,
 
         // cannot select a graphic which isn't visible
         if (!shouldProcess(graphic)) {
-            return null;
+            return current;
         }
 
         if (graphic instanceof OMGraphicList) {
