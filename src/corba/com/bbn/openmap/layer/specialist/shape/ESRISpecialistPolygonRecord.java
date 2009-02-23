@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/shape/ESRISpecialistPolygonRecord.java,v $
 // $RCSfile: ESRISpecialistPolygonRecord.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/08/09 21:01:26 $
+// $Revision: 1.5 $
+// $Date: 2009/02/23 22:37:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -61,7 +61,7 @@ public class ESRISpecialistPolygonRecord extends ESRIPolygonRecord implements
         if (nPolys <= 0)
             return;
         SPoly sp = null;
-        float[] pts;
+        double[] pts;
         LLPoint[] ll;
         //boolean ispolyg = isPolygon();
 
@@ -71,7 +71,7 @@ public class ESRISpecialistPolygonRecord extends ESRIPolygonRecord implements
             ll = new LLPoint[pts.length / 2];
 
             for (int j = 0; j < ll.length; j++) {
-                ll[j] = new LLPoint(pts[j * 2], pts[(j * 2) + 1]);
+                ll[j] = new LLPoint((float) pts[j * 2], (float) pts[(j * 2) + 1]);
             }
 
             sp = new SPoly(ll, LineType.LT_GreatCircle);

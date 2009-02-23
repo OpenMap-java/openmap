@@ -16,8 +16,8 @@
  * **********************************************************************
  * 
  * $Source: /cvs/distapps/openmap/src/svg/com/bbn/openmap/image/SVGFormatter.java,v $
- * $Revision: 1.7 $
- * $Date: 2008/02/29 16:35:08 $
+ * $Revision: 1.8 $
+ * $Date: 2009/02/23 22:37:33 $
  * $Author: dietrick $
  * 
  * **********************************************************************
@@ -28,13 +28,14 @@ package com.bbn.openmap.image;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.Properties;
 
-import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.batik.dom.GenericDOMImplementation;
-import org.w3c.dom.Document;
+import org.apache.batik.svggen.SVGGraphics2D;
 import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
 
 import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.util.Debug;

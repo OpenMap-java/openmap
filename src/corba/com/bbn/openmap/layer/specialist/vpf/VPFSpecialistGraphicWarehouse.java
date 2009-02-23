@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/vpf/VPFSpecialistGraphicWarehouse.java,v
 // $
 // $RCSfile: VPFSpecialistGraphicWarehouse.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/12/09 21:09:10 $
+// $Revision: 1.5 $
+// $Date: 2009/02/23 22:37:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -210,7 +210,7 @@ public class VPFSpecialistGraphicWarehouse extends GraphicWarehouseSupport {
      */
     public void createArea(CoverageTable covtable, AreaTable areatable,
                            List facevec, LatLonPoint ll1, LatLonPoint ll2,
-                           float dpplat, float dpplon) {
+                           double dpplat, double dpplon) {
         if (areaSkipFeatures == null) {
             areaSkipFeatures = getSkipArray(areaFeatures, areatable, ".aft_id");
         }
@@ -248,7 +248,7 @@ public class VPFSpecialistGraphicWarehouse extends GraphicWarehouseSupport {
             return;
         }
 
-        SPoly py = createAreaSPoly(ipts, totalSize, ll1, ll2, dpplat, dpplon);
+        SPoly py = createAreaSPoly(ipts, totalSize, ll1, ll2, (float) dpplat, (float) dpplon);
         if (py == null) {
             return;
         }
@@ -276,7 +276,7 @@ public class VPFSpecialistGraphicWarehouse extends GraphicWarehouseSupport {
      */
     public void createEdge(CoverageTable covtable, EdgeTable edgetable,
                            List edgevec, LatLonPoint ll1, LatLonPoint ll2,
-                           float dpplat, float dpplon, CoordFloatString coords) {
+                           double dpplat, double dpplon, CoordFloatString coords) {
         if (edgeSkipFeatures == null) {
             edgeSkipFeatures = getSkipArray(edgeFeatures, edgetable, ".lft_id");
         }
@@ -307,7 +307,7 @@ public class VPFSpecialistGraphicWarehouse extends GraphicWarehouseSupport {
         //      String desc = covtable.getLineDescription(edgevec,
         // lineType);
 
-        SPoly py = createEdgeSPoly(coords, ll1, ll2, dpplat, dpplon);
+        SPoly py = createEdgeSPoly(coords, ll1, ll2, (float) dpplat, (float) dpplon);
         if (py == null) {
             return;
         }
@@ -334,7 +334,7 @@ public class VPFSpecialistGraphicWarehouse extends GraphicWarehouseSupport {
      *  
      */
     public void createText(CoverageTable covtable, TextTable texttable,
-                           List textvec, float latitude, float longitude,
+                           List textvec, double latitude, double longitude,
                            String text) {
         if (textSkipFeatures == null) {
             textSkipFeatures = getSkipArray(textFeatures, texttable, ".tft_id");
@@ -348,7 +348,7 @@ public class VPFSpecialistGraphicWarehouse extends GraphicWarehouseSupport {
         //      String desc = covtable.getTextDescription(textvec,
         // textType);
 
-        SText py = createTextSText(text, latitude, longitude);
+        SText py = createTextSText(text, (float) latitude, (float) longitude);
         if (py == null) {
             return;
         }
@@ -382,7 +382,7 @@ public class VPFSpecialistGraphicWarehouse extends GraphicWarehouseSupport {
      *        if we are reading connected nodes
      */
     public void createNode(CoverageTable c, NodeTable t, List nodeprim,
-                           float latitude, float longitude, boolean isEntityNode) {
+                           double latitude, double longitude, boolean isEntityNode) {
 
     }
 }

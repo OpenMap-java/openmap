@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JPoly.java,v
 // $
 // $RCSfile: JPoly.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:36 $
+// $Revision: 1.4 $
+// $Date: 2009/02/23 22:37:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -60,11 +60,11 @@ public class JPoly extends OMPoly implements Serializable, JObjectHolder {
         npts = epoly.llpoints.length;
         if (npts > 0) {
             int i, j;
-            rawllpts = (isPolygon) ? new float[npts * 2 + 2]//*2 for
+            rawllpts = (isPolygon) ? new double[npts * 2 + 2]//*2 for
                                                             // pairs
                                                             // +2 for
                                                             // connect
-                    : new float[npts * 2];//*2 for pairs
+                    : new double[npts * 2];//*2 for pairs
 
             for (i = 0, j = 0; i < npts; i++, j += 2) {
                 rawllpts[j] = ProjMath.degToRad(epoly.llpoints[i].lat);
@@ -158,7 +158,7 @@ public class JPoly extends OMPoly implements Serializable, JObjectHolder {
             com.bbn.openmap.CSpecialist.LLPoint[] llpoints = update.llpoints();
             npts = llpoints.length;
             if (npts > 0) {
-                rawllpts = new float[npts * 2];
+                rawllpts = new double[npts * 2];
 
                 for (int i = 0; i < npts; i += 2) {
                     rawllpts[i] = llpoints[i].lat;

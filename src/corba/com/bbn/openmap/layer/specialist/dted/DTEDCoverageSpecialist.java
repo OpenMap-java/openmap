@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/dted/DTEDCoverageSpecialist.java,v $
 // $RCSfile: DTEDCoverageSpecialist.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/12/09 21:09:15 $
+// $Revision: 1.9 $
+// $Date: 2009/02/23 22:37:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -50,16 +50,14 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
- * HACK: this specialist copies functionality from the
- * DTEDCoverageLayer.
+ * HACK: this specialist copies functionality from the DTEDCoverageLayer.
  */
 public class DTEDCoverageSpecialist extends Specialist {
 
     /** The paths to the DTED directories, telling where the data is. */
     protected String[] paths = { "/mnt/cdrom/dted", "/mnt/disk/dted" };
     /**
-     * The paths to the DTED Level 2 directories, telling where the
-     * data is.
+     * The paths to the DTED Level 2 directories, telling where the data is.
      */
     protected String[] paths2 = { "/mnt/cdrom/dted_level2",
             "/mnt/disk/dted_level2" };
@@ -86,21 +84,21 @@ public class DTEDCoverageSpecialist extends Specialist {
     protected Color level2Color = defaultLevel2Color;
 
     /**
-     * A setting for how transparent to make the images. The default
-     * is 255, which is totally opaque.
+     * A setting for how transparent to make the images. The default is 255,
+     * which is totally opaque.
      */
     protected int opaqueness = DTEDFrameColorTable.DEFAULT_OPAQUENESS;
     /** Flag to fill the coverage rectangles. */
     protected boolean fillRects = false;
     /**
-     * Location of coverage summary file. If it doesn't exists, one
-     * will be created here for later use.
+     * Location of coverage summary file. If it doesn't exists, one will be
+     * created here for later use.
      */
     protected String coverageFile = "/mnt/disk/coverage.dted";
 
     /**
-     * Location of coverage summary file, if supplied as a URL. If it
-     * doesn't exists, a coverage file will be used instead.
+     * Location of coverage summary file, if supplied as a URL. If it doesn't
+     * exists, a coverage file will be used instead.
      */
     protected String coverageURL = null;
 
@@ -129,24 +127,21 @@ public class DTEDCoverageSpecialist extends Specialist {
     /** Property setting to show level 0 data on startup. */
     public static final String ShowLevel0Property = ".level0.showcov";
     /**
-     * Property to use to change the color for coverage of level 0
-     * data.
+     * Property to use to change the color for coverage of level 0 data.
      */
     public static final String Level0ColorProperty = ".level0.color";
 
     /** Property setting to show level 1 data on startup. */
     public static final String ShowLevel1Property = ".level1.showcov";
     /**
-     * Property to use to change the color for coverage of level 1
-     * data.
+     * Property to use to change the color for coverage of level 1 data.
      */
     public static final String Level1ColorProperty = ".level1.color";
 
     /** Property setting to show level 2 data on startup. */
     public static final String ShowLevel2Property = ".level2.showcov";
     /**
-     * Property to use to change the color for coverage of level 2
-     * data.
+     * Property to use to change the color for coverage of level 2 data.
      */
     public static final String Level2ColorProperty = ".level2.color";
     /** Property to use for filled rectangles (when java supports it). */
@@ -154,19 +149,19 @@ public class DTEDCoverageSpecialist extends Specialist {
     /** Property to use to fill rectangles. */
     public static final String FillProperty = ".fill";
     /**
-     * The file to read/write coverage summary. If it doesn't exist
-     * here, it will be created and placed here.
+     * The file to read/write coverage summary. If it doesn't exist here, it
+     * will be created and placed here.
      */
     public static final String CoverageFileProperty = ".coverageFile";
     /**
-     * A URL to read coverage summary. If it doesn't exist, the
-     * coverage file will be tried.
+     * A URL to read coverage summary. If it doesn't exist, the coverage file
+     * will be tried.
      */
     public static final String CoverageURLProperty = ".coverageURL";
 
     /**
-     * The default constructor for the Layer. All of the attributes
-     * are set to their default values.
+     * The default constructor for the Layer. All of the attributes are set to
+     * their default values.
      */
     public DTEDCoverageSpecialist() {
         super("DTEDCoverageSpecialist", (short) 2, false);
@@ -187,8 +182,7 @@ public class DTEDCoverageSpecialist extends Specialist {
     /**
      * Set all the DTED properties from a properties object.
      * 
-     * @param prefix string prefix used in the properties file for
-     *        this layer.
+     * @param prefix string prefix used in the properties file for this layer.
      * @param properties the properties set in the properties file.
      */
     public void setProperties(String prefix, java.util.Properties properties) {
@@ -244,13 +238,11 @@ public class DTEDCoverageSpecialist extends Specialist {
     }
 
     /**
-     * Takes a String of File.separator separated paths, and returns
-     * an array of strings instead.
+     * Takes a String of File.separator separated paths, and returns an array of
+     * strings instead.
      * 
-     * @param rawPaths the string of paths separated by a
-     *        File.separator.
-     * @return Array of strings representing paths to dted
-     *         directories.
+     * @param rawPaths the string of paths separated by a File.separator.
+     * @return Array of strings representing paths to dted directories.
      */
     protected String[] initPathsFromProperties(String rawPaths) {
         String[] retPaths = null;
@@ -273,13 +265,13 @@ public class DTEDCoverageSpecialist extends Specialist {
     }
 
     /**
-     * Take a string, representing the hex values for a color, and
-     * convert it to a java Color.
+     * Take a string, representing the hex values for a color, and convert it to
+     * a java Color.
      * 
      * @param p properties.
      * @param propName the name of the property.
-     * @param dfault the default color to use if the property value
-     *        doesn't work.
+     * @param dfault the default color to use if the property value doesn't
+     *        work.
      * @return the java Color.
      */
     protected Color parseColor(Properties p, String propName, Color dfault) {
@@ -298,8 +290,8 @@ public class DTEDCoverageSpecialist extends Specialist {
     }
 
     /**
-     * Take a string, representing the hex values for a color, and
-     * convert it to a java Color.
+     * Take a string, representing the hex values for a color, and convert it to
+     * a java Color.
      * 
      * @param colorString the hex string value (RGB)
      * @return the java Color.
@@ -397,7 +389,7 @@ public class DTEDCoverageSpecialist extends Specialist {
                     fillColor = omr.getFillColor().getRGB();
                     eg.fillColor = new EColor(null, (short) ((fillColor & 0xff0000) >> 8), (short) (fillColor & 0x00ff00), (short) ((fillColor & 0x0000ff) << 8));
                 }
-                er = new ERectangle(eg, nullP1, nullP1, new LLPoint(omr.getNorthLat(), omr.getWestLon()), new LLPoint(omr.getSouthLat(), omr.getEastLon()));
+                er = new ERectangle(eg, nullP1, nullP1, new LLPoint((float) omr.getNorthLat(), (float) omr.getWestLon()), new LLPoint((float) omr.getSouthLat(), (float) omr.getEastLon()));
                 ug = new UGraphic();
                 ug.erect(er);
                 ugraphics[i] = ug;

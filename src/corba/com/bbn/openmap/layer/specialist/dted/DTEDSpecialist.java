@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/dted/DTEDSpecialist.java,v $
 // $RCSfile: DTEDSpecialist.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/12/09 21:09:15 $
+// $Revision: 1.6 $
+// $Date: 2009/02/23 22:37:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -138,7 +138,7 @@ public class DTEDSpecialist extends Specialist {
             OMRaster omr = (OMRaster) omgraphics.getOMGraphicAt(i);
             eg = createEGraphic();
             ct = createColorTable(omr.getColors());
-            er = new ERaster(eg, nullP1, new LLPoint(omr.getLat(), omr.getLon()), omr.getBits(), (short) omr.getWidth(), (short) omr.getHeight(), (short) 0, (short) 0, (short) ct.length, ct, (short) omr.getTransparent());
+            er = new ERaster(eg, nullP1, new LLPoint((float) omr.getLat(), (float) omr.getLon()), omr.getBits(), (short) omr.getWidth(), (short) omr.getHeight(), (short) 0, (short) 0, (short) ct.length, ct, (short) omr.getTransparent());
             ug = new UGraphic();
             ug.eras(er);
             ugraphics[i] = ug;

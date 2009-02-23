@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/plugin/pilot/Pilot.java,v $
 // $RCSfile: Pilot.java,v $
-// $Revision: 1.4 $
-// $Date: 2005/12/09 21:09:06 $
+// $Revision: 1.5 $
+// $Date: 2009/02/23 22:37:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -61,7 +61,7 @@ public class Pilot extends OMPoint implements ActionListener, FocusListener {
     protected String name;
     protected float height = 0;// meters.
 
-    public Pilot(float lat, float lon, int radius, boolean isOval) {
+    public Pilot(double lat, double lon, int radius, boolean isOval) {
         super(lat, lon, radius);
         setOval(isOval);
     }

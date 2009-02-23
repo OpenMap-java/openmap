@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/JLine.java,v $
 // $RCSfile: JLine.java,v $
-// $Revision: 1.3 $
-// $Date: 2004/10/14 18:05:36 $
+// $Revision: 1.4 $
+// $Date: 2009/02/23 22:37:32 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -39,7 +39,7 @@ public class JLine extends OMLine implements JObjectHolder {
     public JLine(ELine eline) {
         super();
         JGraphic.fillOMGraphicParams(this, eline.egraphic);
-        float[] lls = new float[4];
+        double[] lls = new double[4];
         int[] pts = new int[4];
         lls[0] = eline.ll1.lat;
         lls[1] = eline.ll1.lon;
@@ -74,7 +74,7 @@ public class JLine extends OMLine implements JObjectHolder {
         // set fixed point
         case com.bbn.openmap.CSpecialist.LinePackage.settableFields._LF_ll1:
             LLPoint ll1 = update.ll1();
-            float[] lls = getLL();
+            double[] lls = getLL();
             lls[0] = ll1.lat;
             lls[1] = ll1.lon;
             break;

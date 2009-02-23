@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/plugin/pilot/PilotPath.java,v $
 // $RCSfile: PilotPath.java,v $
-// $Revision: 1.7 $
-// $Date: 2006/02/27 15:11:36 $
+// $Revision: 1.8 $
+// $Date: 2009/02/23 22:37:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -63,7 +63,7 @@ import com.bbn.openmap.util.Debug;
  */
 public class PilotPath extends Pilot implements NavBehaviorProvider {
 
-    float[] pathPoints = null;
+    double[] pathPoints = null;
     OMPoly poly = null;
     int pathIndex = 0;
     float currentSegDist = 0f;
@@ -97,8 +97,8 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
     /**
      * Returns the coordinates for the current poly segment.
      */
-    public float[] getSegmentCoordinates(int currentPathIndex) {
-        float[] latlons = new float[4];
+    public double[] getSegmentCoordinates(int currentPathIndex) {
+        double[] latlons = new double[4];
 
         if (pathIndex > pathPoints.length - 2 || pathIndex < 0) {
             pathIndex = 0;
@@ -145,9 +145,9 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
                     + " of " + (pathPoints.length / 2));
         }
 
-        float[] latlons = getSegmentCoordinates(pathIndex);
+        double[] latlons = getSegmentCoordinates(pathIndex);
 
-        float segLength = GreatCircle.sphericalDistance(latlons[0],
+        double segLength = GreatCircle.sphericalDistance(latlons[0],
                 latlons[1],
                 latlons[2],
                 latlons[3]);
@@ -196,7 +196,7 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
 
         // Staying on this segment, just calculate where the
         // next point on the segment is.
-        float azimuth = GreatCircle.sphericalAzimuth(latlons[0],
+        double azimuth = GreatCircle.sphericalAzimuth(latlons[0],
                 latlons[1],
                 latlons[2],
                 latlons[3]);

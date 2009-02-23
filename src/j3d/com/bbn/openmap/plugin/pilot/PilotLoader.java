@@ -14,24 +14,37 @@
 // 
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/plugin/pilot/PilotLoader.java,v $
 // $RCSfile: PilotLoader.java,v $
-// $Revision: 1.4 $
-// $Date: 2004/10/14 18:05:38 $
+// $Revision: 1.5 $
+// $Date: 2009/02/23 22:37:33 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.plugin.pilot;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Iterator;
-import javax.swing.*;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
 
 import com.bbn.openmap.MapHandler;
-import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.graphicLoader.MMLGraphicLoader;
-import com.bbn.openmap.tools.drawing.*;
+import com.bbn.openmap.omGraphics.BasicStrokeEditor;
+import com.bbn.openmap.omGraphics.GraphicAttributes;
+import com.bbn.openmap.omGraphics.OMAction;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicHandler;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
+import com.bbn.openmap.tools.drawing.OMDrawingTool;
 import com.bbn.openmap.util.Debug;
 
 /**
