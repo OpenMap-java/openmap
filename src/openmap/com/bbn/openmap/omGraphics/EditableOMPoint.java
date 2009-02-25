@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoint.java,v $
 // $RCSfile: EditableOMPoint.java,v $
-// $Revision: 1.15 $
-// $Date: 2009/01/21 01:24:41 $
+// $Revision: 1.16 $
+// $Date: 2009/02/25 22:34:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -316,7 +316,7 @@ public class EditableOMPoint extends EditableOMGraphic {
             if (projection != null) {
                 // movingPoint == gpc
                 llp1 = (LatLonPoint) projection.inverse(gpc.getX(), gpc.getY(), new LatLonPoint.Double());
-                point.set(llp1.getLatitude(), llp1.getLongitude());
+                point.set(llp1.getY(), llp1.getX());
                 // point.setNeedToRegenerate set
             }
         }
@@ -331,8 +331,8 @@ public class EditableOMPoint extends EditableOMGraphic {
                     gpo.getY(),
                     new LatLonPoint.Double());
 
-            point.setLat(llp1.getLatitude());
-            point.setLon(llp1.getLongitude());
+            point.setLat(llp1.getY());
+            point.setLon(llp1.getX());
 
             if (settingOffset || movingPoint == gpc) {
                 // Don't call point.setLocation because we only want

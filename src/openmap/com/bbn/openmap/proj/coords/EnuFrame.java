@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/EnuFrame.java,v $
 //$RCSfile: EnuFrame.java,v $
-//$Revision: 1.6 $
-//$Date: 2008/01/29 22:04:13 $
+//$Revision: 1.7 $
+//$Date: 2009/02/25 22:34:04 $
 //$Author: dietrick $
 //
 //***********************************************************
@@ -65,8 +65,8 @@ public class EnuFrame {
      * @param ecefv representing an ecef vector.
      */
     public EnuFrame(double[] ecefv, LatLonPoint llpt) {
-        double lat_ = (double) llpt.getLatitude();
-        double lon_ = (double) llpt.getLongitude();
+        double lat_ = llpt.getY();
+        double lon_ = llpt.getX();
 
         double latitude = ProjMath.degToRad(lat_);
         double longitude = ProjMath.degToRad(lon_);
@@ -93,8 +93,8 @@ public class EnuFrame {
      * @return a double of ecef values
      */
     public double[] toGeocentricFrame(LatLonPoint llpt) {
-        double lat_ = (double) llpt.getLatitude();
-        double lon_ = (double) llpt.getLongitude();
+        double lat_ = (double) llpt.getY();
+        double lon_ = (double) llpt.getX();
 
         double latitude = ProjMath.degToRad(lat_);
         double longitude = ProjMath.degToRad(lon_);

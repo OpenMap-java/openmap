@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/DMSLatLonPoint.java,v $
 // $RCSfile: DMSLatLonPoint.java,v $
-// $Revision: 1.6 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.7 $
+// $Date: 2009/02/25 22:34:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -142,7 +142,7 @@ public class DMSLatLonPoint implements Cloneable {
         dllp.lon_isnegative = false;
 
         // First do the latitude
-        double val = llp.getLatitude();
+        double val = llp.getY();
 
         if (val < 0) {
             dllp.lat_isnegative = true;
@@ -177,7 +177,7 @@ public class DMSLatLonPoint implements Cloneable {
 
         // Next repeat the code for longitude, easiest just to repeat
         // it
-        val = llp.getLongitude();
+        val = llp.getX();
         if (val < 0) {
             dllp.lon_isnegative = true;
             val = -val;

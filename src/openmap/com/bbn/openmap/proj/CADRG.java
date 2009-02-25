@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/CADRG.java,v $
 // $RCSfile: CADRG.java,v $
-// $Revision: 1.11 $
-// $Date: 2007/02/19 18:44:33 $
+// $Revision: 1.12 $
+// $Date: 2009/02/25 22:34:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -603,10 +603,10 @@ public class CADRG extends Cylindrical implements EqualArc {
             double dx = Math.abs(point2.getX() - point1.getX());
             double dy = Math.abs(point2.getY() - point1.getY());
 
-            double nCenterLat = Math.min(ll1.getLatitude(), ll2.getLatitude())
-                    + Math.abs(ll1.getLatitude() - ll2.getLatitude()) / 2;
-            double nCenterLon = Math.min(ll1.getLongitude(), ll2.getLongitude())
-                    + Math.abs(ll1.getLongitude() - ll2.getLongitude()) / 2;
+            double nCenterLat = Math.min(ll1.getY(), ll2.getY())
+                    + Math.abs(ll1.getY() - ll2.getY()) / 2;
+            double nCenterLon = Math.min(ll1.getX(), ll2.getX())
+                    + Math.abs(ll1.getX() - ll2.getX()) / 2;
 
             if (dx < dy) {
                 double dlat = Math.abs(ll1.getLatitude() - ll2.getLatitude());

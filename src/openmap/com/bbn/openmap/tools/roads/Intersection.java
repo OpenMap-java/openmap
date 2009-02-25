@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/roads/Intersection.java,v
 // $
 // $RCSfile: Intersection.java,v $
-// $Revision: 1.2 $
-// $Date: 2004/10/14 18:06:27 $
+// $Revision: 1.3 $
+// $Date: 2009/02/25 22:34:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -67,9 +67,9 @@ public class Intersection extends Waypoint implements RoadObject {
 
     public static String getLatLonPointName(LatLonPoint loc) {
         StringBuffer buf = new StringBuffer(24);
-        buf.append((int) (loc.getLatitude() * GRID));
+        buf.append((int) (loc.getY() * GRID));
         buf.append(",");
-        buf.append((int) (loc.getLongitude() * GRID));
+        buf.append((int) (loc.getX() * GRID));
         return new String(buf.toString());
     }
 

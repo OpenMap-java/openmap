@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/dted/DTEDCacheHandler.java,v $
 // $RCSfile: DTEDCacheHandler.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/12/09 21:09:05 $
+// $Revision: 1.7 $
+// $Date: 2009/02/25 22:34:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -379,10 +379,10 @@ public class DTEDCacheHandler {
                 sf_lrlon = (double) frameLon + ((double) subx * width_degrees)
                         + sf_width_degrees;
 
-                if ((ulCoords.getLatitude() > sf_lrlat && lrCoords.getLatitude() < sf_ullat)
+                if ((ulCoords.getY() > sf_lrlat && lrCoords.getY() < sf_ullat)
                         &&
 
-                        (ulCoords.getLongitude() < sf_lrlon && lrCoords.getLongitude() > sf_ullon)
+                        (ulCoords.getX() < sf_lrlon && lrCoords.getX() > sf_ullon)
                         &&
 
                         subx < numXSubframes) {

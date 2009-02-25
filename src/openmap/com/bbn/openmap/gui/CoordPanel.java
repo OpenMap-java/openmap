@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/CoordPanel.java,v $
 // $RCSfile: CoordPanel.java,v $
-// $Revision: 1.7 $
-// $Date: 2006/05/22 23:53:06 $
+// $Revision: 1.8 $
+// $Date: 2009/02/25 22:34:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -115,10 +115,10 @@ public class CoordPanel extends JPanel implements Serializable {
      *         boxes
      */
     public LatLonPoint getLatLon() {
-        float lat, lon;
+        double lat, lon;
         try {
-            lat = Float.valueOf(latitude.getText()).floatValue();
-            lon = Float.valueOf(longitude.getText()).floatValue();
+            lat = Double.valueOf(latitude.getText()).doubleValue();
+            lon = Double.valueOf(longitude.getText()).doubleValue();
         } catch (NumberFormatException except) {
             Debug.error("CoordPanel.getLatLon(): " + except.toString());
             clearTextBoxes();
@@ -143,8 +143,8 @@ public class CoordPanel extends JPanel implements Serializable {
         if (llpoint == null) {
             clearTextBoxes();
         } else {
-            latitude.setText("" + llpoint.getLatitude());
-            longitude.setText("" + llpoint.getLongitude());
+            latitude.setText("" + llpoint.getY());
+            longitude.setText("" + llpoint.getX());
         }
     }
 
@@ -163,7 +163,7 @@ public class CoordPanel extends JPanel implements Serializable {
             Debug.output("CoordPanel.setCenter(): " + llp);
         }
 
-        centerDelegate.fireCenter(llp.getLatitude(), llp.getLongitude());
+        centerDelegate.fireCenter(llp.getY(), llp.getX());
         return true;
     }
 

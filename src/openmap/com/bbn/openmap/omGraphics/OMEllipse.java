@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMEllipse.java,v $
 // $RCSfile: OMEllipse.java,v $
-// $Revision: 1.6 $
-// $Date: 2009/01/21 01:24:41 $
+// $Revision: 1.7 $
+// $Date: 2009/02/25 22:34:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -93,7 +93,7 @@ public class OMEllipse extends OMCircle {
      */
     public OMEllipse(LatLonPoint centerPoint, int w, int h, double rotateAngle) {
         // Use circle constructor
-        super(centerPoint.getLatitude(), centerPoint.getLongitude(), 0, 0, w, h);
+        super(centerPoint.getY(), centerPoint.getX(), 0, 0, w, h);
         setRotationAngle(rotateAngle);
     }
 
@@ -111,8 +111,8 @@ public class OMEllipse extends OMCircle {
      */
     public OMEllipse(LatLonPoint centerPoint, int offset_x1, int offset_y1,
             int w, int h, double rotateAngle) {
-        super(centerPoint.getLatitude(),
-              centerPoint.getLongitude(),
+        super(centerPoint.getY(),
+              centerPoint.getX(),
               offset_x1,
               offset_y1,
               w,

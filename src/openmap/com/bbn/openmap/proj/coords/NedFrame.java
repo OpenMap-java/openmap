@@ -14,8 +14,8 @@
 //
 //$Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/NedFrame.java,v $
 //$RCSfile: NedFrame.java,v $
-//$Revision: 1.5 $
-//$Date: 2008/01/29 22:04:13 $
+//$Revision: 1.6 $
+//$Date: 2009/02/25 22:34:04 $
 //$Author: dietrick $
 //
 //***********************************************************
@@ -94,8 +94,8 @@ public class NedFrame {
 
         double ecef[] = new double[3];
         double ned[] = new double[3];
-        double lat_ = (double) llpt.getLatitude();
-        double lon_ = (double) llpt.getLongitude();
+        double lat_ = llpt.getY();
+        double lon_ = llpt.getX();
         double latitude = ProjMath.degToRad(lat_);
         double longitude = ProjMath.degToRad(lon_);
 
@@ -121,8 +121,8 @@ public class NedFrame {
         // All calculations are done using radians!
         double ecef[] = new double[3];
         double ned[] = new double[3];
-        double lat_ = (double) llpt.getLatitude();
-        double lon_ = (double) llpt.getLongitude();
+        double lat_ = llpt.getY();
+        double lon_ = llpt.getX();
         double latitude = ProjMath.degToRad(lat_);
         double longitude = ProjMath.degToRad(lon_);
 

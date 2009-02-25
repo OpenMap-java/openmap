@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/UPSPoint.java,v $
 // $RCSfile: UPSPoint.java,v $
-// $Revision: 1.8 $
-// $Date: 2008/01/29 22:04:13 $
+// $Revision: 1.9 $
+// $Date: 2009/02/25 22:34:04 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -88,9 +88,7 @@ public class UPSPoint {
      * @param llpt LatLonPoint
      */
     public UPSPoint(LatLonPoint llpt) {
-        double lat = (double) llpt.getLatitude();
-        double lon = (double) llpt.getLongitude();
-        this.toUPS(lat, lon);
+        this.toUPS(llpt.getY(), llpt.getX());
     }
 
     /**

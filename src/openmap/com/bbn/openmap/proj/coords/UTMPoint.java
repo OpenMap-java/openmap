@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/UTMPoint.java,v $
 // $RCSfile: UTMPoint.java,v $
-// $Revision: 1.16 $
-// $Date: 2009/01/21 01:24:41 $
+// $Revision: 1.17 $
+// $Date: 2009/02/25 22:34:04 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -188,8 +188,8 @@ public class UTMPoint {
                                    UTMPoint utmpoint) {
 
         // find the native zone for the given llpoint
-        int zoneNumber = getZoneNumber(llpoint.getLatitude(),
-                llpoint.getLongitude());
+        int zoneNumber = getZoneNumber(llpoint.getY(),
+                llpoint.getX());
         boolean isnorthern = (llpoint.getLatitude() >= 0f);
 
         return LLtoUTM(llpoint, ellip, utmpoint, zoneNumber, isnorthern);

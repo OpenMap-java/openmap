@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRangeRings.java,v $
 // $RCSfile: OMRangeRings.java,v $
-// $Revision: 1.7 $
-// $Date: 2009/01/21 01:24:41 $
+// $Revision: 1.8 $
+// $Date: 2009/02/25 22:34:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -138,7 +138,7 @@ public class OMRangeRings extends OMCircle implements Serializable {
     }
 
     protected OMPoint createCenterPoint() {
-        return new OMPoint(center.getLatitude(), center.getLongitude());
+        return new OMPoint(center.getY(), center.getX());
     }
 
     /**
@@ -246,7 +246,7 @@ public class OMRangeRings extends OMCircle implements Serializable {
         OMCircle[] circles;
         OMText[] t;
         int i;
-        float rad;
+        double rad;
         String value;
         if (intervalUnits == null) {
             int noUnitInterval = interval - 1;
@@ -254,29 +254,29 @@ public class OMRangeRings extends OMCircle implements Serializable {
             t = new OMText[noUnitInterval];
 
             for (i = 0; i < noUnitInterval; i++) {
-                rad = (float) ((i + 1) * radius / (noUnitInterval + 1));
+                rad = (i + 1) * radius / (noUnitInterval + 1);
                 circles[i] = new OMCircle(center, rad, Length.RADIAN, -1);
                 value = ((i + 1) + "/" + (noUnitInterval + 1));
-                t[i] = new OMText(center.getLatitude()
-                        + Length.DECIMAL_DEGREE.fromRadians(rad), center.getLongitude(), value, OMText.JUSTIFY_CENTER);
+                t[i] = new OMText(center.getY()
+                        + Length.DECIMAL_DEGREE.fromRadians(rad), center.getX(), value, OMText.JUSTIFY_CENTER);
             }
         } else {
-            float realDistanceInterval = intervalUnits.toRadians(interval);
+            double realDistanceInterval = intervalUnits.toRadians(interval);
             int number = (int) (radius / realDistanceInterval);
             circles = new OMCircle[number];
             t = new OMText[number + 1];
             for (i = 0; i < number; i++) {
-                rad = (float) ((i + 1) * realDistanceInterval);
+                rad = (i + 1) * realDistanceInterval;
                 circles[i] = new OMCircle(center, rad, Length.RADIAN, -1);
                 value = (form.format((double) intervalUnits.fromRadians(rad))
                         + " " + intervalUnits.getAbbr());
-                t[i] = new OMText(center.getLatitude()
-                        + Length.DECIMAL_DEGREE.fromRadians(rad), center.getLongitude(), value, OMText.JUSTIFY_CENTER);
+                t[i] = new OMText(center.getY()
+                        + Length.DECIMAL_DEGREE.fromRadians(rad), center.getX(), value, OMText.JUSTIFY_CENTER);
             }
             value = (form.format((double) intervalUnits.fromRadians(radius))
                     + " " + intervalUnits.getAbbr());
-            t[i] = new OMText(center.getLatitude()
-                    + Length.DECIMAL_DEGREE.fromRadians(radius), center.getLongitude(), value, OMText.JUSTIFY_CENTER);
+            t[i] = new OMText(center.getY()
+                    + Length.DECIMAL_DEGREE.fromRadians(radius), center.getX(), value, OMText.JUSTIFY_CENTER);
         }
         labels = t;
         return circles;

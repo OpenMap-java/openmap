@@ -29,8 +29,8 @@ public class MultiGCT extends AbstractGCT {
 	public LatLonPoint inverse(double x, double y, LatLonPoint ret) {
 		for (int i = gcts.length - 1; i >= 0; i--) {
 			ret = gcts[i].inverse(x, y, ret);
-			x = ret.getLongitude();
-			y = ret.getLatitude();
+			x = ret.getX();
+			y = ret.getY();
 		}
 		return ret;
 	}

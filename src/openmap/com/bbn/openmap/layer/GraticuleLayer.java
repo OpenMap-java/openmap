@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/GraticuleLayer.java,v $
 // $RCSfile: GraticuleLayer.java,v $
-// $Revision: 1.16 $
-// $Date: 2009/01/21 01:24:42 $
+// $Revision: 1.17 $
+// $Date: 2009/02/25 22:34:04 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -893,11 +893,11 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 } else {
                     llpoint = new LatLonPoint(lat, west);
                     while (projection.forward(llpoint).getX() < 0) {
-                        llpoint.setLongitude(llpoint.getLongitude() + stepSize);
+                        llpoint.setLongitude(llpoint.getX() + stepSize);
                     }
                 }
 
-                currentText = new OMText(llpoint.getLatitude(), llpoint.getLongitude(),
+                currentText = new OMText(llpoint.getY(), llpoint.getX(),
                 // Move them up a little
                         (int) 2, (int) -2, Integer.toString((int) lat), font, OMText.JUSTIFY_LEFT);
                 currentText.setLinePaint(textColor);
@@ -944,11 +944,11 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 } else {
                     llpoint = new LatLonPoint(south, lon);
                     while (projection.forward(llpoint).getY() > projection.getHeight()) {
-                        llpoint.setLatitude(llpoint.getLatitude() + stepSize);
+                        llpoint.setLatitude(llpoint.getX() + stepSize);
                     }
                 }
 
-                currentText = new OMText(llpoint.getLatitude(), llpoint.getLongitude(),
+                currentText = new OMText(llpoint.getY(), llpoint.getX(),
                 // Move them up a little
                         (int) 2, (int) -5, Integer.toString((int) lon), font, OMText.JUSTIFY_CENTER);
                 currentText.setLinePaint(textColor);
@@ -1079,12 +1079,12 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                     } else {
                         llpoint = new LatLonPoint(lat, west);
                         while (projection.forward(llpoint).getX() < 0) {
-                            llpoint.setLongitude(llpoint.getLongitude()
+                            llpoint.setLongitude(llpoint.getX()
                                     + stepSize);
                         }
                     }
 
-                    currentText = new OMText(llpoint.getLatitude(), llpoint.getLongitude(), (int) 2, (int) -2, // Move
+                    currentText = new OMText(llpoint.getY(), llpoint.getX(), (int) 2, (int) -2, // Move
                             // them
                             // up a
                             // little
@@ -1109,11 +1109,11 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 } else {
                     llpoint = new LatLonPoint(south, lon);
                     while (projection.forward(llpoint).getY() > projection.getHeight()) {
-                        llpoint.setLatitude(llpoint.getLatitude() + stepSize);
+                        llpoint.setLatitude(llpoint.getX() + stepSize);
                     }
                 }
 
-                currentText = new OMText(llpoint.getLatitude(), llpoint.getLongitude(),
+                currentText = new OMText(llpoint.getY(), llpoint.getX(),
                 // Move them up a little
                         (int) 2, (int) -5, Integer.toString((int) lon), font, OMText.JUSTIFY_CENTER);
                 currentText.setLinePaint(textColor);

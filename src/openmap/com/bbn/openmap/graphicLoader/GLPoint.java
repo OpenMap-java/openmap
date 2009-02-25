@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/GLPoint.java,v $
 // $RCSfile: GLPoint.java,v $
-// $Revision: 1.5 $
-// $Date: 2009/01/21 01:24:42 $
+// $Revision: 1.6 $
+// $Date: 2009/02/25 22:34:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -97,8 +97,8 @@ public class GLPoint extends OMPoint implements ActionListener, FocusListener {
                 units.toRadians(distance),
                 Az);
 
-        setLat(newLocation.getLatitude());
-        setLon(newLocation.getLongitude());
+        setLat(newLocation.getY());
+        setLon(newLocation.getX());
     }
 
     public void setStationary(boolean set) {

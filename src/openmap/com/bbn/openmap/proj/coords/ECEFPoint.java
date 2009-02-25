@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/coords/ECEFPoint.java,v $
 // $RCSfile: ECEFPoint.java,v $
-// $Revision: 1.8 $
-// $Date: 2008/09/19 14:20:14 $
+// $Revision: 1.9 $
+// $Date: 2009/02/25 22:34:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -230,7 +230,7 @@ public class ECEFPoint {
      * @param pt LatLonPoint
      */
     public void setLatLon(LatLonPoint pt) {
-        setLatLon(pt.getLatitude(), pt.getLongitude());
+        setLatLon(pt.getY(), pt.getX(), Ellipsoid.WGS_84);
     }
 
     /**

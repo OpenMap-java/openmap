@@ -175,7 +175,7 @@ public class DatumShiftProjection extends GeoProj {
     public LatLonPoint inverse(double x, double y, Point2D pt) {
         LatLonPoint llpt = assertLatLonPoint(pt);
         llpt = (LatLonPoint) wrappedProjection.inverse(x, y, llpt);
-        return datum.inverse(llpt.getLongitude(), llpt.getLatitude(), llpt);
+        return datum.inverse(llpt.getX(), llpt.getY(), llpt);
     }
 
     public boolean isPlotable(double lat, double lon) {

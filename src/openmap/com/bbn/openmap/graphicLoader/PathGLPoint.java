@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/PathGLPoint.java,v $
 // $RCSfile: PathGLPoint.java,v $
-// $Revision: 1.5 $
-// $Date: 2009/01/21 01:24:42 $
+// $Revision: 1.6 $
+// $Date: 2009/02/25 22:34:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -162,8 +162,8 @@ public class PathGLPoint extends GLPoint {
                 currentSegDist + needToTravel,
                 azimuth);
 
-        setLat(newPoint.getLatitude());
-        setLon(newPoint.getLongitude());
+        setLat(newPoint.getY());
+        setLon(newPoint.getX());
 
         currentSegDist = GreatCircle.sphericalDistance(latlons[0],
                 latlons[1],

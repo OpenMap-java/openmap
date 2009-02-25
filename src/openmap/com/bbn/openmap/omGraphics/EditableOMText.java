@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMText.java,v $
 // $RCSfile: EditableOMText.java,v $
-// $Revision: 1.13 $
-// $Date: 2009/01/21 01:24:41 $
+// $Revision: 1.14 $
+// $Date: 2009/02/25 22:34:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -330,8 +330,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
             if (projection != null) {
                 // movingPoint == gpc
                 llp1 = LatLonPoint.getLatLon(gpc.getX(), gpc.getY(), projection);
-                text.setLat(llp1.getLatitude());
-                text.setLon(llp1.getLongitude());
+                text.setLat(llp1.getY());
+                text.setLon(llp1.getX());
                 // text.setNeedToRegenerate set
             }
         }
@@ -344,8 +344,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
 
             llp1 = LatLonPoint.getLatLon(gpo.getX(), gpo.getY(), projection);
 
-            text.setLat(llp1.getLatitude());
-            text.setLon(llp1.getLongitude());
+            text.setLat(llp1.getY());
+            text.setLon(llp1.getX());
 
             if (settingOffset || movingPoint == gpc) {
                 // Don't call point.setLocation because we only want

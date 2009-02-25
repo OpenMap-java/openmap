@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/UTMGridPlugIn.java,v $
 // $RCSfile: UTMGridPlugIn.java,v $
-// $Revision: 1.20 $
-// $Date: 2009/01/21 01:24:41 $
+// $Revision: 1.21 $
+// $Date: 2009/02/25 22:34:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -283,10 +283,10 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     }
 
     protected void addLabel(LatLonPoint llp, UTMPoint utm, QuadTree labelTree) {
-        float latitude = llp.getLatitude();
-        float longitude = llp.getLongitude();
-        labelTree.put(latitude,
-                longitude,
+        double latitude = llp.getY();
+        double longitude = llp.getX();
+        labelTree.put((float) latitude,
+                (float) longitude,
                 new OMText(latitude, longitude, 2, -2, utm.zone_number + ""
                         + utm.zone_letter, OMText.JUSTIFY_LEFT));
     }
@@ -348,8 +348,8 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
                     utmp.easting = (float) (j + 1) * gridLineInterval;
                     llp = utmp.toLatLonPoint(Ellipsoid.WGS_84, llp);
 
-                    vertPoints[j][coordCount] = llp.getLatitude();
-                    vertPoints[j][coordCount + 1] = llp.getLongitude();
+                    vertPoints[j][coordCount] = llp.getY();
+                    vertPoints[j][coordCount + 1] = llp.getX();
 
                     if (UTM_DEBUG_VERBOSE) {
                         Debug.output("for vline " + j + ", point " + i
@@ -368,7 +368,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
             lat2 = point1.getLatitude();
 
             if (lat2 < 84f) {
-                line = new OMLine(point1.getLatitude(), point1.getLongitude(), point2.getLatitude(), point2.getLongitude(), OMGraphic.LINETYPE_GREATCIRCLE);
+                line = new OMLine(point1.getY(), point1.getX(), point2.getY(), point2.getX(), OMGraphic.LINETYPE_GREATCIRCLE);
                 line.setLinePaint(distanceGridPaint);
                 list.add(line);
             }
@@ -409,7 +409,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
                 point1 = utm1.toLatLonPoint(Ellipsoid.WGS_84, point1);
                 point2 = utm2.toLatLonPoint(Ellipsoid.WGS_84, point2);
 
-                line = new OMLine(point1.getLatitude(), point1.getLongitude(), point2.getLatitude(), point2.getLongitude(), OMGraphic.LINETYPE_GREATCIRCLE);
+                line = new OMLine(point1.getY(), point1.getX(), point2.getY(), point2.getX(), OMGraphic.LINETYPE_GREATCIRCLE);
                 line.setLinePaint(distanceGridPaint);
                 list.add(line);
             }
@@ -513,10 +513,10 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
                 zone_number,
                 zone_letter,
                 llp1);
-        llpoints[0] = llp1.getLatitude();
-        llpoints[1] = llp1.getLongitude();
-        llpoints[8] = llp1.getLatitude();
-        llpoints[9] = llp1.getLongitude();
+        llpoints[0] = llp1.getY();
+        llpoints[1] = llp1.getX();
+        llpoints[8] = llp1.getY();
+        llpoints[9] = llp1.getX();
 
         MGRSPoint.MGRStoLL(ellipsoid,
                 northing,
@@ -524,8 +524,8 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
                 zone_number,
                 zone_letter,
                 llp1);
-        llpoints[2] = llp1.getLatitude();
-        llpoints[3] = llp1.getLongitude();
+        llpoints[2] = llp1.getY();
+        llpoints[3] = llp1.getX();
 
         MGRSPoint.MGRStoLL(ellipsoid,
                 northing + interval,
@@ -533,8 +533,8 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
                 zone_number,
                 zone_letter,
                 llp1);
-        llpoints[4] = llp1.getLatitude();
-        llpoints[5] = llp1.getLongitude();
+        llpoints[4] = llp1.getY();
+        llpoints[5] = llp1.getX();
 
         MGRSPoint.MGRStoLL(ellipsoid,
                 northing + interval,
@@ -542,8 +542,8 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
                 zone_number,
                 zone_letter,
                 llp1);
-        llpoints[6] = llp1.getLatitude();
-        llpoints[7] = llp1.getLongitude();
+        llpoints[6] = llp1.getY();
+        llpoints[7] = llp1.getX();
 
         MGRSPoint mgrs = new MGRSPoint(northing, easting, zone_number, zone_letter);
         mgrs.resolve(mgrsBasePoint.getAccuracy());
@@ -646,7 +646,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
                     if ((x > -buffer || x < p.getWidth() + buffer)
                             && (y > -buffer || y < p.getHeight() + buffer)) {
 
-                        OMText label = new OMText(llp.getLatitude(), llp.getLongitude(), 4, -4, labelString, OMText.JUSTIFY_LEFT);
+                        OMText label = new OMText(llp.getY(), llp.getX(), 4, -4, labelString, OMText.JUSTIFY_LEFT);
                         label.setLinePaint(distanceGridPaint);
                         textList.add(label);
                     }

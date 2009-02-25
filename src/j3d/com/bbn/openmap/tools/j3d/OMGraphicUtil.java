@@ -14,8 +14,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/j3d/com/bbn/openmap/tools/j3d/OMGraphicUtil.java,v $
 // $RCSfile: OMGraphicUtil.java,v $
-// $Revision: 1.6 $
-// $Date: 2005/08/11 19:27:04 $
+// $Revision: 1.7 $
+// $Date: 2009/02/25 22:34:04 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -211,8 +211,8 @@ public class OMGraphicUtil {
 
         LatLonPoint anchorLL = new LatLonPoint(grid.getLatitude(), grid.getLongitude());
 //        Point anchorP = projection.forward(anchorLL);
-        float vRes = grid.getVerticalResolution();
-        float hRes = grid.getHorizontalResolution();
+        double vRes = grid.getVerticalResolution();
+        double hRes = grid.getHorizontalResolution();
 
         gridStrip = new TriangleStripArray(stripCount * numberVerticesPerStrip, TriangleStripArray.COORDINATES
                 | TriangleStripArray.COLOR_3 | TriangleStripArray.NORMALS, stripCounts);
@@ -254,8 +254,8 @@ public class OMGraphicUtil {
                 Debug.output("Creating strip " + j);
             }
             // I think the '-' should be '+'... (changed, DFD)
-            float lat1 = anchorLL.getLatitude() + ((float) j * vRes);
-            float lat2 = anchorLL.getLatitude() + (((float) j + 1f) * vRes);
+            double lat1 = anchorLL.getY() + (j * vRes);
+            double lat2 = anchorLL.getY() + (( j + 1.0) * vRes);
 
             for (int k = 0; k < numCols; k++) {
 
@@ -263,7 +263,7 @@ public class OMGraphicUtil {
                     Debug.output("   working row " + k);
                 }
 
-                float lon = anchorLL.getLongitude() + ((float) k * hRes);
+                double lon = anchorLL.getX() + (k * hRes);
 
                 projection.forward(lat1, lon, p);
                 if (major) {

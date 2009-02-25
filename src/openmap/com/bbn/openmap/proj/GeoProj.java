@@ -16,8 +16,8 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: GeoProj.java,v $
-//$Revision: 1.6 $
-//$Date: 2009/01/21 01:24:41 $
+//$Revision: 1.7 $
+//$Date: 2009/02/25 22:34:04 $
 //$Author: dietrick $
 //
 //**********************************************************************
@@ -966,14 +966,14 @@ public abstract class GeoProj extends Proj {
                 // point1 is to the right of point2. switch the
                 // LatLonPoints so that ll1 is west (left) of ll2.
                 if (point1.getX() > point2.getX()) {
-                    lat1 = ll1.getLatitude();
-                    lon1 = ll1.getLongitude();
+                    lat1 = ll1.getY();
+                    lon1 = ll1.getX();
                     ll1.setLatLon(ll2);
                     ll2.setLatLon(lat1, lon1);
                 }
 
-                lon1 = ll1.getLongitude();
-                lon2 = ll2.getLongitude();
+                lon1 = ll1.getX();
+                lon2 = ll2.getX();
 
                 // allow for crossing dateline
                 if (lon1 > lon2) {

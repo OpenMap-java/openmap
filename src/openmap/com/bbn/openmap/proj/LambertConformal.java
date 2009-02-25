@@ -4,8 +4,8 @@
 //
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/LambertConformal.java,v $
 // $RCSfile: LambertConformal.java,v $
-// $Revision: 1.9 $
-// $Date: 2009/01/21 01:24:41 $
+// $Revision: 1.10 $
+// $Date: 2009/02/25 22:34:04 $
 // $Author: dietrick $
 //
 // **********************************************************************
@@ -201,7 +201,7 @@ public class LambertConformal extends GeoProj {
 
         Point2D lp = new Point2D.Double();
         LatLonPoint origin = new LatLonPoint.Double(referenceLatitude, centralMeridian);
-        LLToWorld(origin.getLatitude(), origin.getLongitude(), lp);
+        LLToWorld(origin.getY(), origin.getX(), lp);
         locationOriginX = lp.getX();
         locationOriginY = lp.getY();
 
@@ -430,7 +430,7 @@ public class LambertConformal extends GeoProj {
      * @return returns true is plotable, otherwise false
      */
     public boolean isPlotable(LatLonPoint llpoint) {
-        return isPlotable(llpoint.getLatitude(), llpoint.getLongitude());
+        return isPlotable(llpoint.getY(), llpoint.getX());
     }
 
     /**
@@ -719,11 +719,11 @@ public class LambertConformal extends GeoProj {
 
         double widthPX = point2.x - point1.x;
 
-        Point2D xx1 = LLToWorld(ll1.getLatitude(),
-                ll1.getLongitude(),
+        Point2D xx1 = LLToWorld(ll1.getY(),
+                ll1.getX(),
                 new Point2D.Double());
-        Point2D xx2 = LLToWorld(ll2.getLatitude(),
-                ll2.getLongitude(),
+        Point2D xx2 = LLToWorld(ll2.getY(),
+                ll2.getX(),
                 new Point2D.Double());
 
         double widthMap = (xx2.getX() - xx1.getX());
@@ -786,7 +786,7 @@ public class LambertConformal extends GeoProj {
         Point2D lp = new Point2D.Double();
         LatLonPoint pt = new LatLonPoint.Double(50.679572292f, 5.807370150f);
         Debug.message("Lambert", "(3)"
-                + proj.LLToWorld(pt.getLatitude(), pt.getLongitude(), lp));
+                + proj.LLToWorld(pt.getY(), pt.getX(), lp));
     }
 
 }

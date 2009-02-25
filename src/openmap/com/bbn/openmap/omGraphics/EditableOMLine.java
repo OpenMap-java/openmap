@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMLine.java,v $
 // $RCSfile: EditableOMLine.java,v $
-// $Revision: 1.12 $
-// $Date: 2009/01/21 01:24:41 $
+// $Revision: 1.13 $
+// $Date: 2009/02/25 22:34:03 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -277,18 +277,18 @@ public class EditableOMLine extends EditableOMAbstractLine implements
         int renderType = line.getRenderType();
         if (renderType == OMGraphic.RENDERTYPE_LATLON) {
             if (projection != null) {
-                double[] floats = new double[4];
+                double[] coords = new double[4];
                 LatLonPoint llp = (LatLonPoint) projection.inverse(gp1.getX(),
                         gp1.getY(),
                         new LatLonPoint.Double());
 
-                floats[0] = llp.getLatitude();
-                floats[1] = llp.getLongitude();
+                coords[0] = llp.getY();
+                coords[1] = llp.getX();
 
                 projection.inverse(gp2.getX(), gp2.getY(), llp);
-                floats[2] = llp.getLatitude();
-                floats[3] = llp.getLongitude();
-                line.setLL(floats);
+                coords[2] = llp.getY();
+                coords[3] = llp.getX();
+                line.setLL(coords);
             } else {
                 Debug.message("eomg",
                         "EditableOMLine.setGrabPoints: projection is null, can't figure out LATLON points for line.");
@@ -296,16 +296,16 @@ public class EditableOMLine extends EditableOMAbstractLine implements
         } else if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
             // Do the offset point.
             if (projection != null) {
-                double[] floats = new double[4];
+                double[] coords = new double[4];
                 LatLonPoint llp = (LatLonPoint) projection.inverse(gpo.getX(),
                         gpo.getY(),
                         new LatLonPoint.Double());
 
-                floats[0] = llp.getLatitude();
-                floats[1] = llp.getLongitude();
-                floats[2] = 0;// not used
-                floats[3] = 0;// not used
-                line.setLL(floats);
+                coords[0] = llp.getY();
+                coords[1] = llp.getX();
+                coords[2] = 0;// not used
+                coords[3] = 0;// not used
+                line.setLL(coords);
             } else {
                 Debug.message("eomg",
                         "EditableOMLine.setGrabPoints: projection is null, can't figure out LATLON points for line offset.");

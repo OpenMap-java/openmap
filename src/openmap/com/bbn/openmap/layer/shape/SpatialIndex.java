@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/SpatialIndex.java,v $
 // $RCSfile: SpatialIndex.java,v $
-// $Revision: 1.18 $
-// $Date: 2008/10/16 18:03:03 $
+// $Revision: 1.19 $
+// $Date: 2009/02/25 22:34:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -138,7 +138,7 @@ import com.bbn.openmap.util.Debug;
  * </UL>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
- * @version $Revision: 1.18 $ $Date: 2008/10/16 18:03:03 $
+ * @version $Revision: 1.19 $ $Date: 2009/02/25 22:34:04 $
  * @see ShapeIndex
  */
 public class SpatialIndex extends ShapeUtils {
@@ -793,11 +793,11 @@ public class SpatialIndex extends ShapeUtils {
 
                 if (dataTransform != null) {
                     dataTransform.inverse(xmin, ymin, llp);
-                    xmin = llp.getLongitude();
-                    ymin = llp.getLatitude();
+                    xmin = llp.getX();
+                    ymin = llp.getY();
                     dataTransform.inverse(xmax, ymax, llp);
-                    xmax = llp.getLongitude();
-                    ymax = llp.getLatitude();
+                    xmax = llp.getX();
+                    ymax = llp.getY();
                 }
 
                 if (Debug.debugging("spatialindexdetail")) {

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/DMSCoordPanel.java,v $
 // $RCSfile: DMSCoordPanel.java,v $
-// $Revision: 1.8 $
-// $Date: 2006/05/22 23:53:05 $
+// $Revision: 1.9 $
+// $Date: 2009/02/25 22:34:04 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -198,8 +198,8 @@ public class DMSCoordPanel extends CoordPanel implements Serializable {
             return;
         }
 
-        double lat = llpoint.getLatitude();
-        double lon = llpoint.getLongitude();
+        double lat = llpoint.getY();
+        double lon = llpoint.getX();
 
         double direction = 1;
         if (lat < 0)
