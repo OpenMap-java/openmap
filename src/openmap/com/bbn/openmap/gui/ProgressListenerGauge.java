@@ -16,8 +16,8 @@
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/ProgressListenerGauge.java,v
 // $
 // $RCSfile: ProgressListenerGauge.java,v $
-// $Revision: 1.6 $
-// $Date: 2006/02/14 20:55:52 $
+// $Revision: 1.7 $
+// $Date: 2009/02/26 21:16:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -31,6 +31,7 @@ import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 
 import com.bbn.openmap.event.ProgressEvent;
 import com.bbn.openmap.event.ProgressListener;
@@ -95,6 +96,16 @@ public class ProgressListenerGauge extends JPanel implements ProgressListener {
     }
 
     public synchronized void updateProgress(ProgressEvent evt) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            System.out.println("ProgressListenerGauge:  updating in EDT");
+            updateProgressFromEDT(evt);
+        } else {
+            System.out.println("ProgressListenerGauge:  invoking later");
+            SwingUtilities.invokeLater(new MyWorker(evt));
+        }
+    }
+
+    public synchronized void updateProgressFromEDT(ProgressEvent evt) {
         int type = evt.getType();
 
         if (type == ProgressEvent.START || type == ProgressEvent.UPDATE) {
@@ -112,6 +123,23 @@ public class ProgressListenerGauge extends JPanel implements ProgressListener {
 
     public void setWindowSupport(WindowSupport windowSupport) {
         this.windowSupport = windowSupport;
+    }
+
+    class MyWorker implements Runnable {
+
+        private ProgressEvent pe;
+
+        public MyWorker(ProgressEvent pe) {
+            this.pe = pe;
+        }
+
+        public void run() {
+            try {
+                updateProgressFromEDT(pe);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/app/OpenMap.java,v $
 // $RCSfile: OpenMap.java,v $
-// $Revision: 1.15 $
-// $Date: 2007/12/03 23:47:14 $
+// $Revision: 1.16 $
+// $Date: 2009/02/26 21:16:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -66,6 +66,11 @@ public class OpenMap {
      */
     public OpenMap(PropertyHandler propertyHandler) {
         mapPanel = new BasicMapPanel(propertyHandler, true);
+        // Creates the components in the main application thread. If any of
+        // these components need to update their GUI, they should hand a
+        // Runnable object to the SwingUtilities.invokeLater(Runnable) method,
+        // and it will be updated accordingly.
+        ((BasicMapPanel) mapPanel).create();
 
         // Schedule a job for the event-dispatching thread:
         // creating and showing this application's GUI.
@@ -80,7 +85,6 @@ public class OpenMap {
     }
 
     protected void showInFrame() {
-        ((BasicMapPanel)mapPanel).create();
         OpenMapFrame omf = new OpenMapFrame();
         setWindowListenerOnFrame(omf);
         getMapHandler().add(omf);
@@ -91,11 +95,11 @@ public class OpenMap {
     }
 
     /**
-     * A method called internally to set the WindowListener behavior on an OpenMapFrame
-     * used for the OpenMap application. By default, this method adds a
-     * WindowAdapter that calls System.exit(0), killing java. You can extend
-     * this to add a WindowListener to the OpenMapFrame that does nothing or
-     * something else.
+     * A method called internally to set the WindowListener behavior on an
+     * OpenMapFrame used for the OpenMap application. By default, this method
+     * adds a WindowAdapter that calls System.exit(0), killing java. You can
+     * extend this to add a WindowListener to the OpenMapFrame that does nothing
+     * or something else.
      */
     protected void setWindowListenerOnFrame(OpenMapFrame omf) {
         omf.addWindowListener(new WindowAdapter() {

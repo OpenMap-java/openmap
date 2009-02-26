@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/StatusLightPanel.java,v $
 // $RCSfile: StatusLightPanel.java,v $
-// $Revision: 1.6 $
-// $Date: 2006/02/27 23:21:00 $
+// $Revision: 1.7 $
+// $Date: 2009/02/26 21:16:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -35,12 +35,14 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.LayerStatusEvent;
 import com.bbn.openmap.event.LayerStatusListener;
+import com.bbn.openmap.gui.LayersPanel.MyWorker;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -116,6 +118,14 @@ public class StatusLightPanel extends OMComponentPanel implements
      * change (layers) of the MapBean.
      */
     protected void listenToLayers(Layer[] newLayers) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            listenToLayersFromEDT(newLayers);
+        } else {
+            SwingUtilities.invokeLater(new MyWorker(newLayers));
+        }
+    }
+    
+    protected void listenToLayersFromEDT(Layer[] newLayers) {
         int i;
 
         if (layers != null) {
@@ -359,6 +369,23 @@ public class StatusLightPanel extends OMComponentPanel implements
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
         
         return props;
+    }
+    
+    class MyWorker implements Runnable {
+
+        private Layer[] layers;
+
+        public MyWorker(Layer[] inLayers) {
+            layers = inLayers.clone();
+        }
+
+        public void run() {
+            try {
+                listenToLayersFromEDT(layers);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
 

@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersMenu.java,v $
 // $RCSfile: LayersMenu.java,v $
-// $Revision: 1.10 $
-// $Date: 2006/01/13 22:50:01 $
+// $Revision: 1.11 $
+// $Date: 2009/02/26 21:16:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -33,6 +33,7 @@ import java.io.Serializable;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
+import javax.swing.SwingUtilities;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
@@ -244,12 +245,20 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
     }
 
     /**
-     * Set the layers that are on the menu. Calls setLayers(layers, true);
+     * Set the layers that are on the menu. Calls for AWT thread to update
+     * layers
      * 
      * @param inLayers the array of layers.
      */
     public void setLayers(Layer[] inLayers) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            setLayersFromEDT(inLayers);
+        } else {
+            SwingUtilities.invokeLater(new MyWorker(inLayers));
+        }
+    }
 
+    protected void setLayersFromEDT(Layer[] inLayers) {
         removeAll();
 
         // Set everything up for the new layers
@@ -554,5 +563,22 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
             throws PropertyVetoException {
         super.fireVetoableChange(name, oldValue, newValue);
         beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
+    }
+
+    class MyWorker implements Runnable {
+
+        private Layer[] layers;
+
+        public MyWorker(Layer[] inLayers) {
+            layers = inLayers.clone();
+        }
+
+        public void run() {
+            try {
+                setLayersFromEDT(layers);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

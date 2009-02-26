@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/LayersPanel.java,v $
 // $RCSfile: LayersPanel.java,v $
-// $Revision: 1.16 $
-// $Date: 2006/07/10 23:20:56 $
+// $Revision: 1.17 $
+// $Date: 2009/02/26 21:16:15 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -47,6 +47,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 
 import com.bbn.openmap.BufferedLayerMapBean;
 import com.bbn.openmap.I18n;
@@ -56,6 +57,7 @@ import com.bbn.openmap.LightMapHandlerChild;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.event.LayerEvent;
 import com.bbn.openmap.event.LayerListener;
+import com.bbn.openmap.gui.LayersMenu.MyWorker;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -163,7 +165,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     public final static String ControlButtonsProperty = "controls";
     /**
      * A property that can be used for controlling how the to top and to bottom
-     * cammands will be interpreted when a BufferedLayerMapBean is used. See the
+     * commands will be interpreted when a BufferedLayerMapBean is used. See the
      * definition of bufferedBoundary.
      */
     public final static String BufferedBoundaryProperty = "boundary";
@@ -405,15 +407,29 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
-     * Set the layers that are in the LayersPanel. Make sure that the layer[] is
-     * the same as that passed to any other OpenMap component, like the
-     * LayersMenu. This method checks to see if the layer[] has actually
-     * changed, in order or in size. If it has, then createPanel() is called to
-     * rebuild the LayersPanel.
+     * Set the layers that are on the menu. Calls for AWT thread to update
+     * layers
      * 
      * @param inLayers the array of layers.
      */
     public void setLayers(Layer[] inLayers) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            setLayersFromEDT(inLayers);
+        } else {
+            SwingUtilities.invokeLater(new MyWorker(inLayers));
+        }
+    }
+
+    /**
+     * Set the layers that are in the LayersPanel. Make sure that the layer[] is
+     * the same as that passed to any other OpenMap component, like the
+     * LayersMenu. This method checks to see if the layer[] has actually
+     * changed, in order or in size. If it has, then createPanel() is called to
+     * rebuild the LayersPanel. Should be called within the Event Dispatch Thread.
+     * 
+     * @param inLayers the array of layers.
+     */
+    protected void setLayersFromEDT(Layer[] inLayers) {
         Layer[] layers = inLayers;
 
         if (inLayers == null) {
@@ -1106,5 +1122,22 @@ public class LayersPanel extends OMToolComponent implements Serializable,
                 "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         return props;
+    }
+    
+    class MyWorker implements Runnable {
+
+        private Layer[] layers;
+
+        public MyWorker(Layer[] inLayers) {
+            layers = inLayers.clone();
+        }
+
+        public void run() {
+            try {
+                setLayersFromEDT(layers);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
