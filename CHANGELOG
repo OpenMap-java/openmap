@@ -1,10 +1,69 @@
+2009-02-27  Don Dietrick  <dietrick@wonkavision.local>
+
+	* The CSVTokenizer was updated to properly handle empty fields in
+	front and end of lines.
+
+	* The projection package was updated with the DatumShiftProjection
+	which wraps projections to provide datum shifting.  The
+	CoordinateReferenceSystem has been updated to use new
+	GeoCoordTransformation objects for different projection types.
+
+	* For OMGraphics, the EditableOMPoly, OMGraphicList and OMText all
+	had minor bug fixes.  Polygons are now re-editable after colors
+	are modified, OMGraphicLists had selection problems patched, and
+	OMText FontSizer setter was fixed.
+
+	* MapHandler was modified with an overriding remove method that
+	also checks to see if an object being removed was a
+	BeanContextMembershipListener.  The parent class was adding such
+	objects to a special list when they were added, but not removing
+	them from that list when they were removed from the context.  This
+	was causing a memory leak of sorts.
+
+	* Added MapBean.dispose() method, which cleans up the projection
+	support thread and releases lingering handles on layer objects.
+	ProjectionSupport also has dispose() method that is called to
+	clean up.
+
+	* Layer.setProperties() functionality was broken out to a
+	setLayerProperties() method so subclasses could override
+	setProperties() and still get to to the superclass functionality
+	if desired.
+
+	* Updated the ShapeLayer and package.  The SpatialIndex no longer
+	needs to be defined, it will be found or made next to the shape
+	file.  The dbf file will automatically be used if found, and the
+	DbfFile rule handling was improved.  All of the various Shape
+	layers in the com.bbn.openmap.layer.shape package were update to
+	work using the same EsriGraphicFactory mechanisms.
+
+	* BinaryFile modified with improved name handling for
+	FileInputReader, separating absolute path and file name queries.
+	ByteArrayInputReader added to allow BinaryFile to contain entire
+	file in memory.
+
+	* WMS package updated to have capabilies query handling, improved
+	layer control and new SRS handling. The WMSPlugIn was updated to
+	WMS version 1.1.1 and has better query handling.
+
+	* Added method to ConvexHull to allow for tolerances when trying
+	to determine equal points to reduce the number of unnecessary
+	points in the resulting polygon.
+
+	* Added the CoordInfoFormatter and CoordInfoFormatHandler to make
+	it easier to define how coordinates were displayed in the
+	InformationDelegator from CoordMouseModes.
+
+	* Updated dbf attribute type handing and handling of null cells.
+	Padding with spaces instead of null characters.
+
 2008-02-29  Don Dietrick  <dietrick@bbn.com>
 
 	* OpenMap 4.6.4 released.
 
 2008-02-27  Don Dietrick  <dietrick@bbn.com>
 
-	* Updated the PropertyHandler to have it's own property prefix.  This 
+	* Updated the PropertyHandler to have its own property prefix.  This 
 	property prefix is used by the PropertyHandler when it looks for a 
 	properties file, and when it looks inside the properties file for 
 	application level properties, like the components list, include 
