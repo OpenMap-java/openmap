@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
-// $Revision: 1.20 $
-// $Date: 2009/01/21 01:24:41 $
+// $Revision: 1.19 $
+// $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -398,8 +398,8 @@ public class OMText extends OMGraphic implements Serializable {
      */
     public void setFontSizer(FontSizer fs) {
         Font bf = getFont();
-        if (fontSizer != null) {
-            bf = fontSizer.getFont();
+        if (fs != null) {
+            bf = fs.getFont();
         }
 
         fontSizer = fs;
