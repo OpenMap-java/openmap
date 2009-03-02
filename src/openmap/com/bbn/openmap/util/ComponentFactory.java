@@ -480,7 +480,21 @@ public class ComponentFactory {
                 Debug.output("ComponentFactory.create: " + className);
             }
 
-            Class newObjClass = Class.forName(className.trim());
+
+            // Apparently, this fails in certain cases where OpenMap is being
+            // used as a plugin in a NetBeans or Eclise architecture and the
+            // application classloader isn't aware of the plugins classes. It
+            // limits the creation of the object to classes in the caller's
+            // classloader.
+            // Class newObjClass = Class.forName(className.trim());
+            // replaced with:
+
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            if (cl == null) {
+                cl = this.getClass().getClassLoader();
+            }
+            Class newObjClass = Class.forName(className.trim(), true, cl);
+            
             if (DEBUG)
                 Debug.output(" - got class for " + className);
 
