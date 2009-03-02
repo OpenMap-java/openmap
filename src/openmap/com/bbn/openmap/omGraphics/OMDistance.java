@@ -22,8 +22,11 @@
 
 package com.bbn.openmap.omGraphics;
 
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Paint;
 import java.text.DecimalFormat;
+import java.util.Iterator;
 
 import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.proj.Length;
@@ -32,8 +35,7 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
- * OMGraphic object that represents a polyline, labeled with
- * distances.
+ * OMGraphic object that represents a polyline, labeled with distances.
  */
 public class OMDistance extends OMPoly {
 
@@ -42,6 +44,14 @@ public class OMDistance extends OMPoly {
 
     protected transient Length distUnits = Length.NM;
     public DecimalFormat df = new DecimalFormat("0.#");
+    /**
+     * Paint used for labels
+     */
+    protected Paint labelPaint;
+    /**
+     * Font used for labels
+     */
+    protected Font labelFont;
 
     /**
      * Construct a default OMDistance.
@@ -56,19 +66,17 @@ public class OMDistance extends OMPoly {
      * <p>
      * NOTES:
      * <ul>
-     * <li>llPoints array is converted into radians IN PLACE for more
-     * efficient handling internally if it's not already in radians!
-     * For even better performance, you should send us an array
-     * already in radians format!
-     * <li>If you want the poly to be connected (as a polygon), you
-     * need to ensure that the first and last coordinate pairs are the
-     * same.
+     * <li>llPoints array is converted into radians IN PLACE for more efficient
+     * handling internally if it's not already in radians! For even better
+     * performance, you should send us an array already in radians format!
+     * <li>If you want the poly to be connected (as a polygon), you need to
+     * ensure that the first and last coordinate pairs are the same.
      * </ul>
      * 
-     * @param llPoints array of lat/lon points, arranged lat, lon,
-     *        lat, lon, etc.
-     * @param units radians or decimal degrees. Use OMGraphic.RADIANS
-     *        or OMGraphic.DECIMAL_DEGREES
+     * @param llPoints array of lat/lon points, arranged lat, lon, lat, lon,
+     *        etc.
+     * @param units radians or decimal degrees. Use OMGraphic.RADIANS or
+     *        OMGraphic.DECIMAL_DEGREES
      * @param lType line type, from a list defined in OMGraphic.
      */
     public OMDistance(double[] llPoints, int units, int lType,
@@ -81,23 +89,21 @@ public class OMDistance extends OMPoly {
      * <p>
      * NOTES:
      * <ul>
-     * <li>llPoints array is converted into radians IN PLACE for more
-     * efficient handling internally if it's not already in radians!
-     * For even better performance, you should send us an array
-     * already in radians format!
-     * <li>If you want the poly to be connected (as a polygon), you
-     * need to ensure that the first and last coordinate pairs are the
-     * same.
+     * <li>llPoints array is converted into radians IN PLACE for more efficient
+     * handling internally if it's not already in radians! For even better
+     * performance, you should send us an array already in radians format!
+     * <li>If you want the poly to be connected (as a polygon), you need to
+     * ensure that the first and last coordinate pairs are the same.
      * </ul>
      * 
-     * @param llPoints array of lat/lon points, arranged lat, lon,
-     *        lat, lon, etc.
-     * @param units radians or decimal degrees. Use OMGraphic.RADIANS
-     *        or OMGraphic.DECIMAL_DEGREES
+     * @param llPoints array of lat/lon points, arranged lat, lon, lat, lon,
+     *        etc.
+     * @param units radians or decimal degrees. Use OMGraphic.RADIANS or
+     *        OMGraphic.DECIMAL_DEGREES
      * @param lType line type, from a list defined in OMGraphic.
-     * @param nsegs number of segment points (only for
-     *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and
-     *        if &lt; 1, this value is generated internally)
+     * @param nsegs number of segment points (only for LINETYPE_GREATCIRCLE or
+     *        LINETYPE_RHUMB line types, and if &lt; 1, this value is generated
+     *        internally)
      */
     public OMDistance(double[] llPoints, int units, int lType, int nsegs,
             Length distanceUnits) {
@@ -175,16 +181,15 @@ public class OMDistance extends OMPoly {
                 latpnt = ProjMath.radToDeg(latpnt);
                 lonpnt = ProjMath.radToDeg(lonpnt);
             }
-            
+
             points.add(new OMPoint(latpnt, lonpnt, 1));
             lastGeo.initialize(curGeo);
         }
     }
 
     /**
-     * Get an OMText label for a segments between the given lat/lon
-     * points whose given distance and cumulative distance is
-     * specified.
+     * Get an OMText label for a segments between the given lat/lon points whose
+     * given distance and cumulative distance is specified.
      */
     public OMText createLabel(Geo g1, Geo g2, float dist, float cumulativeDist,
                               Length distanceUnits) {
@@ -203,20 +208,20 @@ public class OMDistance extends OMPoly {
             mid = g1.midPoint(g2);
         }
 
-        //      String text = ((int)dist) + " (" + ((int)cumulativeDist) +
+        // String text = ((int)dist) + " (" + ((int)cumulativeDist) +
         // ")";
 
         String text = (df.format(distanceUnits.fromRadians(dist))) + " ("
                 + (df.format(distanceUnits.fromRadians(cumulativeDist))) + ") "
                 + distanceUnits.getAbbr();
         OMText omtext = new OMText((float) mid.getLatitude(), (float) mid.getLongitude(), text, OMText.JUSTIFY_LEFT);
-        //      omtext.setLinePaint(new Color(200, 200, 255));
+        // omtext.setLinePaint(new Color(200, 200, 255));
         return omtext;
     }
 
     /**
-     * Return the distance between that lat/lons defined in radians.
-     * The returned value is in radians.
+     * Return the distance between that lat/lons defined in radians. The
+     * returned value is in radians.
      */
     public float getDist(Geo g1, Geo g2) {
         switch (getLineType()) {
@@ -249,8 +254,8 @@ public class OMDistance extends OMPoly {
     }
 
     /**
-     * Flag used by the EditableOMDistance to do quick movement paints
-     * in a cleaner way.
+     * Flag used by the EditableOMDistance to do quick movement paints in a
+     * cleaner way.
      */
     protected boolean paintOnlyPoly = false;
 
@@ -263,17 +268,82 @@ public class OMDistance extends OMPoly {
         super.render(g);
 
         if (!paintOnlyPoly) {
-            labels.setLinePaint(getLinePaint());
-            if (isMatted()) {
-                labels.setFillPaint(getMattingPaint());
-            }
-
-            points.setLinePaint(getLinePaint());
-            points.setFillPaint(getLinePaint());
-
-            labels.render(g);
-            points.render(g);
+            renderPoints(g);
+            renderLabels(g);
         }
+    }
+
+    /**
+     * render points
+     */
+    protected void renderPoints(Graphics g) {
+        Paint pointPaint = getLabelPaint();
+
+        for (Iterator<OMGeometry> it = points.iterator(); it.hasNext();) {
+            OMGraphic point = (OMPoint) it.next();
+            point.setLinePaint(pointPaint);
+            point.setFillPaint(pointPaint);
+            point.render(g);
+        }
+    }
+
+    /**
+     * render labels
+     */
+    protected void renderLabels(Graphics g) {
+        Font f = getFont();
+        Paint labelPaint = getLabelPaint();
+        Paint mattingPaint = getMattingPaint();
+        boolean isMatted = isMatted();
+        for (Iterator<OMGeometry> it = labels.iterator(); it.hasNext();) {
+            OMText text = (OMText) it.next();
+            text.setFont(f);
+            text.setLinePaint(labelPaint);
+            if (isMatted) {
+                text.setFillPaint(mattingPaint);
+            }
+            text.render(g);
+        }
+    }
+
+    /**
+     * Set paint used for labels
+     * 
+     * @param lPaint paint used for labels
+     */
+    public void setLabelPaint(Paint lPaint) {
+        labelPaint = lPaint;
+    }
+
+    /**
+     * @return normal paint used for labels
+     */
+    public Paint getLabelPaint() {
+        if (labelPaint == null) {
+            return getLinePaint();
+        }
+        return labelPaint;
+    }
+
+    /**
+     * @param font font used for labels
+     */
+    public void setFont(Font font) {
+        if (font == null) {
+            labelFont = OMText.DEFAULT_FONT;
+        } else {
+            labelFont = font;
+        }
+    }
+
+    /**
+     * @return font used for labels
+     */
+    public Font getFont() {
+        if (labelFont == null) {
+            labelFont = OMText.DEFAULT_FONT;
+        }
+        return labelFont;
     }
 
     private void writeObject(java.io.ObjectOutputStream stream)
