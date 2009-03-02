@@ -97,10 +97,8 @@ public class ProgressListenerGauge extends JPanel implements ProgressListener {
 
     public synchronized void updateProgress(ProgressEvent evt) {
         if (SwingUtilities.isEventDispatchThread()) {
-            System.out.println("ProgressListenerGauge:  updating in EDT");
             updateProgressFromEDT(evt);
         } else {
-            System.out.println("ProgressListenerGauge:  invoking later");
             SwingUtilities.invokeLater(new MyWorker(evt));
         }
     }
