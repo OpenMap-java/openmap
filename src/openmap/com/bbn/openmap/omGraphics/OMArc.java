@@ -148,7 +148,8 @@ public class OMArc extends OMGraphic implements Serializable {
      * @param s starting angle of arc, decimal degrees
      * @param e angular extent of arc, decimal degrees
      */
-    public OMArc(double latPoint, double lonPoint, int w, int h, double s, double e) {
+    public OMArc(double latPoint, double lonPoint, int w, int h, double s,
+            double e) {
         this(latPoint, lonPoint, 0, 0, w, h, s, e);
     }
 
@@ -193,8 +194,8 @@ public class OMArc extends OMGraphic implements Serializable {
      *        arcs, positive extents go in the counter-clockwise direction,
      *        matching the java.awt.geom.Arc2D convention.
      */
-    public OMArc(double latPoint, double lonPoint, int offset_x1, int offset_y1,
-            int w, int h, double s, double e) {
+    public OMArc(double latPoint, double lonPoint, int offset_x1,
+            int offset_y1, int w, int h, double s, double e) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
         center = new LatLonPoint.Double(latPoint, lonPoint);
@@ -219,7 +220,8 @@ public class OMArc extends OMGraphic implements Serializable {
      *        arcs, positive extents go in the clockwise direction, matching the
      *        OpenMap convention in coordinate space.
      */
-    public OMArc(double latPoint, double lonPoint, double radius, double s, double e) {
+    public OMArc(double latPoint, double lonPoint, double radius, double s,
+            double e) {
 
         this(new LatLonPoint.Double(latPoint, lonPoint),
              radius,
@@ -243,8 +245,13 @@ public class OMArc extends OMGraphic implements Serializable {
      *        OpenMap convention in coordinate space.
      */
     public OMArc(double latPoint, double lonPoint, double radius, Length units,
-                 double s, double e) {
-        this(new LatLonPoint.Double(latPoint, lonPoint), radius, units, -1, s, e);
+            double s, double e) {
+        this(new LatLonPoint.Double(latPoint, lonPoint),
+             radius,
+             units,
+             -1,
+             s,
+             e);
     }
 
     /**
@@ -264,7 +271,12 @@ public class OMArc extends OMGraphic implements Serializable {
      */
     public OMArc(double latPoint, double lonPoint, double radius, Length units,
             int nverts, double s, double e) {
-        this(new LatLonPoint.Double(latPoint, lonPoint), radius, units, nverts, s, e);
+        this(new LatLonPoint.Double(latPoint, lonPoint),
+             radius,
+             units,
+             nverts,
+             s,
+             e);
     }
 
     /**
@@ -283,7 +295,7 @@ public class OMArc extends OMGraphic implements Serializable {
      *        OpenMap convention in coordinate space.
      */
     public OMArc(LatLonPoint center, double radius, Length units, int nverts,
-                 double s, double e) {
+            double s, double e) {
 
         super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         this.radius = units.toRadians(radius);
@@ -814,7 +826,8 @@ public class OMArc extends OMGraphic implements Serializable {
      * information and make a call to Arc2D.Float with start, extent and arcType
      * information.
      */
-    protected Shape createArcShape(double x, double y, double fwidth, double fheight) {
+    protected Shape createArcShape(double x, double y, double fwidth,
+                                   double fheight) {
         return new Arc2D.Double(x, y, fwidth, fheight, start, extent, arcType);
     }
 
@@ -898,6 +911,11 @@ public class OMArc extends OMGraphic implements Serializable {
             if (shouldRenderFill()) {
                 setGraphicsForFill(g);
                 fill(g);
+                // draw texture
+                if (textureMask != null && textureMask != fillPaint) {
+                    setGraphicsColor(g, textureMask);
+                    fill(g);
+                }
             }
 
             // BUG There is still a bug apparent when, in a
@@ -913,4 +931,16 @@ public class OMArc extends OMGraphic implements Serializable {
             }
         }
     }
+
+    /**
+     * @see com.bbn.openmap.omGraphics.OMGraphic#clone()
+     */
+    public Object clone() {
+        OMArc clone = (OMArc) super.clone();
+        clone.setNeedToRegenerate(true);
+        if (center != null)
+            clone.center = (LatLonPoint) center.clone();
+        return clone;
+    }
+
 }
