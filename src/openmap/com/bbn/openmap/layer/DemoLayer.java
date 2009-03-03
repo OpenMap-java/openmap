@@ -379,9 +379,9 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
                     new Dimension(100, 100));
             if (ii != null) {
                 OMScalingIcon omsi = new OMScalingIcon(20f, -50f, ii);
-                omsi.setBaseScale(1000000);
+                omsi.setBaseScale(4000000);
                 omsi.setMinScale(1000000);
-                omsi.setMaxScale(5000000);
+                omsi.setMaxScale(6000000);
 
                 omsi.putAttribute(OMGraphicConstants.LABEL,
                         new OMTextLabeler("SFPPV-----*****", OMText.JUSTIFY_LEFT, OMTextLabeler.ANCHOR_RIGHT));
