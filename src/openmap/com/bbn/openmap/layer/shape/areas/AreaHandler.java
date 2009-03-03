@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaHandler.java,v $
 // $RCSfile: AreaHandler.java,v $
-// $Revision: 1.14 $
-// $Date: 2008/07/20 05:46:31 $
+// $Revision: 1.4.2.8 $
+// $Date: 2009/03/03 04:59:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -25,6 +25,7 @@ package com.bbn.openmap.layer.shape.areas;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -40,7 +41,6 @@ import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.shape.CSVShapeInfoFile;
 import com.bbn.openmap.layer.shape.ShapeLayer;
 import com.bbn.openmap.layer.shape.SpatialIndex;
-import com.bbn.openmap.layer.shape.SpatialIndex.Entry;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGeometryList;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -67,8 +67,8 @@ import com.bbn.openmap.util.PropUtils;
  * <P>
  * 
  * <pre>
- *                
- *                 
+ * 
+ * 
  *                  layer.class=com.bbn.openmap.layer.shape.areas.AreaShapeLayer
  *                  layer.prettyName=Layer Name
  *                  layer.shapeFile=/usr/local/data/shape/shapefile.shp
@@ -110,8 +110,8 @@ import com.bbn.openmap.util.PropUtils;
  *                  layer.areas.MA.lineColor=ff00ff00
  *                  layer.areas.RI.fillColor=ffff0000
  *                  layer.areas.RI.lineColor=ff00ff00
- *                  
- *                 
+ * 
+ * 
  * </pre>
  * 
  * <P>
@@ -240,8 +240,7 @@ public class AreaHandler implements PropertyConsumer {
     /**
      * Initializes this object from the given properties
      * 
-     * @param props the <code>Properties</code> holding settings for this
-     *        object
+     * @param props the <code>Properties</code> holding settings for this object
      */
     public void setProperties(String prefix, Properties props) {
         if (Debug.debugging("areas")) {
@@ -276,7 +275,8 @@ public class AreaHandler implements PropertyConsumer {
             props = new Properties();
         }
 
-        if (coordTransform != null && coordTransform instanceof PropertyConsumer) {
+        if (coordTransform != null
+                && coordTransform instanceof PropertyConsumer) {
             ((PropertyConsumer) coordTransform).getProperties(props);
         }
 
@@ -459,13 +459,8 @@ public class AreaHandler implements PropertyConsumer {
                         (Projection) null,
                         coordTransform);
 
-                for (Iterator it = omgraphics.iterator(); it.hasNext();) {
-                    OMGraphic omg = (OMGraphic) it.next();
-                    Integer recNum = (Integer) omg.getAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE);
-                    if (recNum != null) {
-                        getDrawParams(recNum.intValue()).setTo(omg);
-                    }
-                }
+                updateDrawingParameters(omgraphics);
+
             } catch (IOException ioe) {
                 Debug.error(ioe.getMessage());
             } catch (FormatException fe) {
@@ -473,6 +468,19 @@ public class AreaHandler implements PropertyConsumer {
             }
         }
         return omgraphics;
+    }
+
+    protected void updateDrawingParameters(OMGraphicList omgl) {
+        if (omgl != null) {
+            for (Iterator it = omgl.iterator(); it.hasNext();) {
+                OMGraphic omg = (OMGraphic) it.next();
+                Integer recNum = (Integer) omg.getAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE);
+                if (recNum != null) {
+                    getDrawParams(recNum.intValue()).setTo(omg);
+                    omg.putAttribute(OMGraphic.INFOLINE, getName(recNum));
+                }
+            }
+        }
     }
 
     /**
@@ -520,15 +528,43 @@ public class AreaHandler implements PropertyConsumer {
         // ulLon >= lrLon, but we need to be careful of the check for
         // equality because of floating point arguments...
         if (ProjMath.isCrossingDateline(ulLon, lrLon, proj.getScale())) {
-            if (Debug.debugging("shape")) {
-                Debug.output("ShapeLayer.computeGraphics(): Dateline is on screen");
+            if (Debug.debugging("areas")) {
+                Debug.output("AreaHander.getGraphics(): Dateline is on screen");
             }
 
-            double ymin = (double) Math.min(ulLat, lrLat);
-            double ymax = (double) Math.max(ulLat, lrLat);
+            double ymin = Math.min(ulLat, lrLat);
+            double ymax = Math.max(ulLat, lrLat);
 
-            checkSpatialIndexEntries(ulLon, ymin, 180.0d, ymax, list, proj);
-            checkSpatialIndexEntries(-180.0d, ymin, lrLon, ymax, list, proj);
+            try {
+
+                list = spatialIndex.getOMGraphics(ulLon,
+                        ymin,
+                        180.0d,
+                        ymax,
+                        list,
+                        drawingAttributes,
+                        proj,
+                        coordTransform);
+                list = spatialIndex.getOMGraphics(-180.0d,
+                        ymin,
+                        lrLon,
+                        ymax,
+                        list,
+                        drawingAttributes,
+                        proj,
+                        coordTransform);
+
+            } catch (InterruptedIOException iioe) {
+                // This means that the thread has been interrupted,
+                // probably due to a projection change. Not a big
+                // deal, just return, don't do any more work, and let
+                // the next thread solve all problems.
+                list = null;
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (FormatException fe) {
+                fe.printStackTrace();
+            }
 
         } else {
 
@@ -536,50 +572,30 @@ public class AreaHandler implements PropertyConsumer {
             double xmax = (double) Math.max(ulLon, lrLon);
             double ymin = (double) Math.min(ulLat, lrLat);
             double ymax = (double) Math.max(ulLat, lrLat);
-
-            checkSpatialIndexEntries(xmin, ymin, xmax, ymax, list, proj);
-        }
-
-        return list;
-    }
-
-    /**
-     * Uses the SpatialIndex object to create the OMGraphics that fit within the
-     * boundaries.
-     * 
-     * @param xmin
-     * @param ymin
-     * @param xmax
-     * @param ymax
-     * @param retList
-     * @param proj
-     */
-    protected void checkSpatialIndexEntries(double xmin, double ymin,
-                                            double xmax, double ymax,
-                                            OMGraphicList retList,
-                                            Projection proj) {
-
-        try {
-
-            // There should be the same number of objects in both iterators.
-            Iterator entryIt = spatialIndex.entryIterator(coordTransform);
-            Iterator omgIt = getGraphics().iterator();
-            while (entryIt.hasNext() && omgIt.hasNext()) {
-                Entry entry = (Entry) entryIt.next();
-                OMGraphic omg = (OMGraphic) omgIt.next();
-                if (entry.intersects(xmin, ymin, xmax, ymax)) {
-                    if (proj != null) {
-                        omg.generate(proj);
-                    }
-                    retList.add(omg);
-                }
+            try {
+                list = spatialIndex.getOMGraphics(xmin,
+                        ymin,
+                        xmax,
+                        ymax,
+                        list,
+                        drawingAttributes,
+                        proj,
+                        coordTransform);
+            } catch (InterruptedIOException iioe) {
+                // This means that the thread has been interrupted,
+                // probably due to a projection change. Not a big
+                // deal, just return, don't do any more work, and let
+                // the next thread solve all problems.
+                list = null;
+            } catch (java.io.IOException ex) {
+                ex.printStackTrace();
+            } catch (FormatException fe) {
+                fe.printStackTrace();
             }
-
-        } catch (IOException ioe) {
-            Debug.error(ioe.getMessage());
-        } catch (FormatException fe) {
-            Debug.error(fe.getMessage());
         }
+
+        updateDrawingParameters(list);
+        return list;
     }
 
     /**
@@ -927,7 +943,7 @@ public class AreaHandler implements PropertyConsumer {
 
                 Object obj = graphic.getAttribute(ShapeConstants.SHAPE_DBF_INFO_ATTRIBUTE);
                 if (obj == null) {
-                    if (Debug.debugging("verbose")) {
+                    if (Debug.debugging("areas")) {
                         Debug.error("AreaHandler: No attributes for graphic #"
                                 + i);
                     }
@@ -952,7 +968,7 @@ public class AreaHandler implements PropertyConsumer {
                                 + key);
                     }
                 } else {
-                    if (Debug.debugging("verbose")) {
+                    if (Debug.debugging("areas")) {
                         Debug.output("AreaHandler: Unidentified app object type "
                                 + obj);
                     }

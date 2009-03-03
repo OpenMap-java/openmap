@@ -14,20 +14,17 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/shape/areas/AreaShapeLayer.java,v $
 // $RCSfile: AreaShapeLayer.java,v $
-// $Revision: 1.9 $
-// $Date: 2007/06/21 21:39:01 $
+// $Revision: 1.4.2.5 $
+// $Date: 2009/03/03 04:59:13 $
 // $Author: dietrick $
 // 
 // **********************************************************************
 
 package com.bbn.openmap.layer.shape.areas;
 
-import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.Properties;
-import java.util.Vector;
 
-import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.layer.shape.ShapeLayer;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -40,7 +37,7 @@ import com.bbn.openmap.proj.Projection;
  * 
  * @see com.bbn.openmap.layer.shape.areas.AreaHandler
  */
-public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
+public class AreaShapeLayer extends ShapeLayer {
 
     protected AreaHandler areas;
 
@@ -48,6 +45,7 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
      */
     public AreaShapeLayer() {
         super();
+        setMouseModeIDsForEvents(new String[] { "Gestures" });
     }
 
     /**
@@ -60,6 +58,7 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
         super.setProperties(prefix, props);
         areas = new AreaHandler(spatialIndex, drawingAttributes);
         areas.setProperties(prefix, props);
+        areas.setCoordTransform(super.getCoordTransform());
     }
     
     public Properties getProperties(Properties props) {
@@ -130,132 +129,8 @@ public class AreaShapeLayer extends ShapeLayer implements MapMouseListener {
         return areas.findPoliticalArea(area_abbrev);
     }
 
-    // ----------------------------------------------------------------------
-    // MapMouseListener interface
-    // ----------------------------------------------------------------------
-    private OMGraphic selectedGraphic;
-
-    public boolean mouseMoved(MouseEvent e) {
-        OMGraphicList omgraphics = (OMGraphicList) getList();
-        if (omgraphics == null)
-            return false;
-
-        OMGraphic newSelectedGraphic = omgraphics.selectClosest(e.getX(),
-                e.getY(),
-                2.0f);
-
-        if (newSelectedGraphic != selectedGraphic) {
-            if (selectedGraphic != null) {
-                selectedGraphic.deselect();
-            }
-
-            selectedGraphic = newSelectedGraphic;
-            if (newSelectedGraphic != null) {
-                newSelectedGraphic.select();
-                Object obj = newSelectedGraphic.getAppObject();
-                if (obj instanceof String) {
-                    fireRequestInfoLine((String) obj);
-                } else if (obj instanceof Vector) {
-                    fireRequestInfoLine(areas.getName((Vector) obj));
-                } else if (obj instanceof Integer) {
-                    fireRequestInfoLine(areas.getName((Integer) obj));
-                } else {
-                    fireRequestInfoLine("");
-                }
-            } else {
-                fireRequestInfoLine("");
-            }
-            repaint();
-            return true;
-        }
-
-        if (newSelectedGraphic == null) {
-            return false;
-        } else {
-            return true;
-        }
+    public boolean isHighlightable(OMGraphic omg) {
+        return true;
     }
-
-    public MapMouseListener getMapMouseListener() {
-        return this;
-    }
-
-    /**
-     * Return a list of the modes that are interesting to the MapMouseListener.
-     * You MUST override this with the modes you're interested in.
-     */
-    public String[] getMouseModeServiceList() {
-        String[] modes = new String[1];
-        modes[0] = com.bbn.openmap.event.SelectMouseMode.modeID;
-
-        return modes;
-    }
-
-    // Mouse Listener events
-    // //////////////////////
-
-    /**
-     * Invoked when a mouse button has been pressed on a component.
-     * 
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mousePressed(MouseEvent e) {
-        return false; // did not handle the event
-    }
-
-    /**
-     * Invoked when a mouse button has been released on a component.
-     * 
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseReleased(MouseEvent e) {
-        return false;
-    }
-
-    /**
-     * Invoked when the mouse has been clicked on a component.
-     * 
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseClicked(MouseEvent e) {
-        return false;
-    }
-
-    /**
-     * Invoked when the mouse enters a component.
-     * 
-     * @param e MouseEvent
-     */
-    public void mouseEntered(MouseEvent e) {}
-
-    /**
-     * Invoked when the mouse exits a component.
-     * 
-     * @param e MouseEvent
-     */
-    public void mouseExited(MouseEvent e) {}
-
-    // Mouse Motion Listener events
-    // /////////////////////////////
-
-    /**
-     * Invoked when a mouse button is pressed on a component and then dragged.
-     * The listener will receive these events if it
-     * 
-     * @param e MouseEvent
-     * @return false
-     */
-    public boolean mouseDragged(MouseEvent e) {
-        return false;
-    }
-
-    /**
-     * Handle a mouse cursor moving without the button being pressed. Another
-     * layer has consumed the event.
-     */
-    public void mouseMoved() {}
-
+    
 }
