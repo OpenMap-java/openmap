@@ -14,8 +14,8 @@
 // 
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/gui/WindowSupport.java,v $
 // $RCSfile: WindowSupport.java,v $
-// $Revision: 1.23 $
-// $Date: 2007/03/08 19:23:03 $
+// $Revision: 1.14.2.9 $
+// $Date: 2007/03/08 19:22:19 $
 // $Author: dietrick $
 // 
 // **********************************************************************
@@ -258,7 +258,8 @@ public class WindowSupport extends ListenerSupport implements
      */
     protected WSDisplay createDisplay(Frame owner) {
         WSDisplay wsd;
-        if (persistentDisplayType == null && Environment.getBoolean(Environment.UseInternalFrames)) {
+        if (persistentDisplayType == null
+                && Environment.getBoolean(Environment.UseInternalFrames)) {
             wsd = new IntrnlFrm(title);
         } else {
             Class wTypeClass = persistentDisplayType == null ? getDefaultWindowSupportDisplayType()
@@ -275,12 +276,41 @@ public class WindowSupport extends ListenerSupport implements
         return wsd;
     }
 
+    /**
+     * Called when a display type is known, and may override the default
+     * settings. A Frm is created if the displayType is not null but not a valid
+     * WSDisplay type.
+     * 
+     * @param owner
+     * @displayType a WSDisplay class to create. If null, the
+     *              persistentDisplayType will be used.
+     * @return WSDisplay
+     */
+    protected WSDisplay createDisplay(Frame owner, Class displayType) {
+        WSDisplay wsd;
+
+        if (displayType == null) {
+            return createDisplay(owner);
+        }
+
+        if (displayType == Dlg.class) {
+            wsd = new Dlg(owner, title);
+        } else if (displayType == IntrnlFrm.class) {
+            wsd = new IntrnlFrm(title);
+        } else {
+            wsd = new Frm(title);
+        }
+
+        setDisplay(wsd);
+        return wsd;
+    }
+
     public static Class getDefaultWindowSupportDisplayType() {
         return defaultWindowSupportDisplayType;
     }
 
     public static void setDefaultWindowSupportDisplayType(
-                                                             Class defaultWindowSupportDisplayType) {
+                                                          Class defaultWindowSupportDisplayType) {
         WindowSupport.defaultWindowSupportDisplayType = defaultWindowSupportDisplayType;
     }
 
@@ -362,6 +392,23 @@ public class WindowSupport extends ListenerSupport implements
      *        zero the content size will be used.
      */
     public void displayInWindow(Frame owner, int x, int y, int width, int height) {
+       displayInWindow(owner, null, x, y, width, height);
+    }
+
+    /**
+     * Display the window.
+     * 
+     * @param owner Frame for JDialog
+     * @param displayType the WSDisplay class to use for the window.
+     * @param x the horizontal pixel location for the window.
+     * @param y the vertical pixel location for the window.
+     * @param width the horizontal size of the window, if less than or equal to
+     *        zero the content size will be used.
+     * @param height the vertical size of the window, if less than or equal to
+     *        zero the content size will be used.
+     */
+    public void displayInWindow(Frame owner, Class displayType, int x, int y,
+                                int width, int height) {
 
         if (content == null) {
             Debug.message("windowsupport",
@@ -378,8 +425,13 @@ public class WindowSupport extends ListenerSupport implements
             }
         }
 
+        if (display != null && display.getClass() != displayType) {
+            display.dispose();
+            display = null;
+        }
+
         if (display == null) {
-            display = createDisplay(owner);
+            display = createDisplay(owner, displayType);
         }
 
         Container displayWindow = display.getWindow();
