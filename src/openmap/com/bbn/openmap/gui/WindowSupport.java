@@ -392,7 +392,7 @@ public class WindowSupport extends ListenerSupport implements
      *        zero the content size will be used.
      */
     public void displayInWindow(Frame owner, int x, int y, int width, int height) {
-       displayInWindow(owner, null, x, y, width, height);
+        displayInWindow(owner, null, x, y, width, height);
     }
 
     /**
@@ -425,7 +425,8 @@ public class WindowSupport extends ListenerSupport implements
             }
         }
 
-        if (display != null && display.getClass() != displayType) {
+        if (display != null && displayType != null
+                && !display.getClass().getName().equals(displayType.getName())) {
             display.dispose();
             display = null;
         }
