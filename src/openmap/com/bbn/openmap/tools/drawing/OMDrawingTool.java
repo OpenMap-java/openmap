@@ -27,7 +27,6 @@ import java.awt.Cursor;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -1570,7 +1569,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
                 }
             }
 
-            ws.displayInWindow(frame,
+            ws.displayInWindow(frame, WindowSupport.Dlg.class,
                     windowx + xoffset,
                     windowy + yoffset,
                     -1,
