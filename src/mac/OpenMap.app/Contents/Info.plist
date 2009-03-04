@@ -5,7 +5,7 @@
 	<key>CFBundleName</key>
 	<string>OpenMap</string>
 	<key>CFBundleVersion</key>
-	<string>4.7</string>
+	<string>@version@</string>
 	<key>CFBundleAllowMixedLocalizations</key>
 	<string>false</string>
 	<key>CFBundleExecutable</key>
@@ -17,7 +17,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleGetInfoString</key>
-	<string>OpenMap 4.7, Copyright (C) BBN Technologies LLC</string>
+	<string>OpenMap @version@, Copyright (C) BBN Technologies LLC</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleIconFile</key>
@@ -27,7 +27,7 @@
 		<key>WorkingDirectory</key>
 		<string>$APP_PACKAGE/Contents/Resources/Java</string>
 		<key>VMOptions</key>
-		<string>-Xmx256m</string>
+		<string>-Xmx768m</string>
 		<key>MainClass</key>
 		<string>com.bbn.openmap.app.OpenMap</string>
 		<key>JVMVersion</key>
@@ -38,6 +38,7 @@
 			<string>$JAVAROOT/openmap.jar</string>
 			<string>$JAVAROOT/omcorba.jar</string>
 			<string>$JAVAROOT/omsvg.jar</string>
+			<string>$JAVAROOT/omj3d.jar</string>
 			<string>$JAVAROOT/milStd2525_png.jar</string>
 			<string>$APP_PACKAGE/Contents/Resources/share</string>
 			</array>
