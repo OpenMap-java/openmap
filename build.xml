@@ -8,8 +8,6 @@
 	<target name="init" description="Sets properties needed by the other targets.">
 
 		<property name="openmap.home" value="." />
-		<property name="install.dir" value="openmap_5.0b" />
-		<property name="install.zip" value="openmap_5.0b.zip" />
 
 		<property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
 		                             **/ChangeLog, **/*.html, **/*.txt,
@@ -20,12 +18,16 @@
 					   **/*.gif, **/*.png" />
 		<property name="mac.app" value="OpenMap.app" />
 		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
+		<property name="openmap_version" value="5.0_beta" />
 
 		<property name="openmap.src" value="${openmap.home}/src/openmap" />
 		<property name="svg.src" value="${openmap.home}/src/svg" />
 		<property name="j3d.src" value="${openmap.home}/src/j3d" />
 		<property name="corba.src" value="${openmap.home}/src/corba" />
-
+		<property name="openmap_package.dir" value="${openmap.home}/package" />
+		<property name="openmap_mac_package.dir" value="${openmap_package.dir}/OpenMap_${openmap_version}" />
+		<property name="openmap_release.dir" value="${openmap_mac_package.dir}/openmap-${openmap_version}" />
+		<property name="openmap.zip" value="openmap-${openmap_version}.zip" />
 	</target>
 
 	<!--  ############################
@@ -57,7 +59,7 @@
 	</target>
 
 	<target name="jars" depends="classes" description="Compiles OpenMap and alternative classes.">
-		<Ant antfile="${openmap.src}/build.xml" target="jar.openmap" inheritAll="false" />
+		<ant antfile="${openmap.src}/build.xml" target="jar.openmap" inheritAll="false" />
 		<ant antfile="${svg.src}/build.xml" target="jar.svg" inheritAll="false" />
 		<ant antfile="${j3d.src}/build.xml" target="jar.j3d" inheritAll="false" />
 		<ant antfile="${corba.src}/build.xml" target="jar.corba" inheritAll="false" />
@@ -81,14 +83,17 @@
 	<!--  ############################
 	Cleanup targets
 	############################ -->
-	<target name="clean_all" depends="clean, clean_docs" description="Delete jar files, class files, and generated documentation." />
+	<target name="clean_all" depends="clean, clean_docs" description="Delete jar files, class files, and generated documentation.">
+		<delete dir="${mac.app}" />
+		<delete dir="${openmap_package.dir}" />
+		<delete file="${openmap.zip}" />
+	</target>
 
 	<target name="clean" depends="init" description="Delete jar files and all class files.">
 		<ant antfile="${openmap.src}/build.xml" target="clean.openmap" />
 		<ant antfile="${svg.src}/build.xml" target="clean.svg" />
 		<ant antfile="${j3d.src}/build.xml" target="clean.j3d" />
 		<ant antfile="${corba.src}/build.xml" target="clean.corba" />
-		<delete dir="${mac.app}" />
 	</target>
 
 	<target name="distclean" depends="init" description="Delete class files, but not the jar files.">
@@ -119,6 +124,8 @@
 	</target>
 
 	<target name="mac" depends="all" description="Create MacOS X application.">
+		<delete dir="${mac.app}" />
+
 		<copy todir="${mac.app}">
 			<fileset dir="${openmap.home}/src/mac/OpenMap.app" />
 		</copy>
@@ -133,23 +140,66 @@
 			<fileset dir="${openmap.home}/lib" includes="**/*.jar" />
 		</copy>
 
+		<replace file="${mac.app}/Contents/Info.plist" token="@version@" value="${openmap_version}" />
+
 		<chmod file="${mac.app}/Contents/MacOS/JavaApplicationStub" perm="ugo+rx" />
 		<chmod dir="${mac.app}" perm="ugo+rx" />
-
 	</target>
 
-	<target name="dist" depends="init" description="Creates OpenMap distribution zip file.">
-		<delete dir="${install.dir}" />
-		<copy todir="${install.dir}" >
-		  <fileset dir="${openmap.home}" includes="ANT_ENV.bat, AUTHORS, CHANGELOG, INSTALL, INSTALL.win32, LICENSE, README, bin/**, src/**, doc/**, lib/**, iis/**, share/**, openmap.properties, build.xml" excludes="classes/**, **/CVS/**" />
+	<target name="package" description="Create a directory containing the OpenMap release package." depends="clean_all, all, jars, mac, docs">
+		<delete dir="${openmap_package.dir}" />
+		<property name="install_excludes" value="**/CVS, **/.DS_Store, **/*~" />
+		<copy file="${openmap.home}/bin/openmap.bat" tofile="${openmap_release.dir}/openmap.bat" />
+		<copy file="${openmap.home}/bin/openmap" tofile="${openmap_release.dir}/openmap" />
+		<copy file="${openmap.home}/openmap.properties" tofile="${openmap_release.dir}/openmap.properties" />
+		<copy todir="${openmap_release.dir}">
+			<fileset dir="${openmap.home}">
+				<include name="openmap.properties" />
+				<include name="README" />
+				<include name="AUTHORS" />
+				<include name="CHANGELOG" />
+				<include name="INSTALL*" />
+				<include name="LICENSE" />
+				<include name="build.xml" />
+			</fileset>
 		</copy>
+		<copy todir="${openmap_release.dir}/iis">
+			<fileset dir="${openmap.home}/iis">
+				<exclude name="${install_excludes}" />
+			</fileset>
+		</copy>
+		<copy todir="${openmap_release.dir}/src">
+			<fileset dir="${openmap.home}/src">
+				<exclude name="${install_excludes}" />
+			</fileset>
+		</copy>
+		<copy todir="${openmap_release.dir}/doc">
+			<fileset dir="${openmap.home}/doc">
+				<exclude name="${install_excludes}" />
+			</fileset>
+		</copy>
+		<copy todir="${openmap_release.dir}/lib">
+			<fileset dir="${openmap.home}/lib">
+				<exclude name="${install_excludes}" />
+			</fileset>
+		</copy>
+		<copy todir="${openmap_release.dir}/share">
+			<fileset dir="${openmap.home}/share">
+				<exclude name="${install_excludes}" />
+			</fileset>
+		</copy>
+		<ant target="zip" />
+		<copy todir="${openmap_mac_package.dir}/${mac.app}">
+			<fileset dir="${mac.app}" />
+		</copy>
+		<copy file="openmap.properties" todir="${openmap_mac_package.dir}" />
 
-		<chmod dir="${install.dir}" perm="ugo+rx" />
+		<chmod file="${openmap_mac_package.dir}/${mac.app}/Contents/MacOS/JavaApplicationStub" perm="ugo+rx" />
+		<chmod dir="${openmap_mac_package.dir}/${mac.app}" perm="ugo+rx" />
 	</target>
 
-	<target name="zip" description="Create a zip file containing the OpenMap application for installation." depends="dist">
-		<zip destfile="${install.zip}" basedir="${openmap.home}" includes="${install.dir}/**"/>
-		<delete dir="${install.dir}" />
+	<target name="zip" description="Create a OpenMap package zip file." depends="init">
+		<zip destfile="${openmap.zip}" basedir="${openmap_mac_package.dir}" includes="**" />
 	</target>
 
 </project>
