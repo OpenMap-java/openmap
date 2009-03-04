@@ -27,7 +27,7 @@
 		<key>WorkingDirectory</key>
 		<string>$APP_PACKAGE/Contents/Resources/Java</string>
 		<key>VMOptions</key>
-		<string>-Xmx256m -Ddebug.showprogress</string>
+		<string>-Xmx256m</string>
 		<key>MainClass</key>
 		<string>com.bbn.openmap.app.OpenMap</string>
 		<key>JVMVersion</key>
