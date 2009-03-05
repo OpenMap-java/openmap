@@ -18,7 +18,7 @@
 					   **/*.gif, **/*.png" />
 		<property name="mac.app" value="OpenMap.app" />
 		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
-		<property name="openmap_version" value="5.0_beta" />
+		<property name="openmap_version" value="4.6.5" />
 
 		<property name="openmap.src" value="${openmap.home}/src/openmap" />
 		<property name="svg.src" value="${openmap.home}/src/svg" />
@@ -27,7 +27,7 @@
 		<property name="openmap_package.dir" value="${openmap.home}/package" />
 		<property name="openmap_mac_package.dir" value="${openmap_package.dir}/OpenMap_${openmap_version}" />
 		<property name="openmap_release.dir" value="${openmap_mac_package.dir}/openmap-${openmap_version}" />
-		<property name="openmap.zip" value="openmap-${openmap_version}.zip" />
+		<property name="openmap.zip" value="${openmap_package.dir}/openmap-${openmap_version}.zip" />
 	</target>
 
 	<!--  ############################
@@ -86,7 +86,6 @@
 	<target name="clean_all" depends="clean, clean_docs" description="Delete jar files, class files, and generated documentation.">
 		<delete dir="${mac.app}" />
 		<delete dir="${openmap_package.dir}" />
-		<delete file="${openmap.zip}" />
 	</target>
 
 	<target name="clean" depends="init" description="Delete jar files and all class files.">
@@ -196,6 +195,8 @@
 
 		<chmod file="${openmap_mac_package.dir}/${mac.app}/Contents/MacOS/JavaApplicationStub" perm="ugo+rx" />
 		<chmod dir="${openmap_mac_package.dir}/${mac.app}" perm="ugo+rx" />
+		<!-- Remove top level mac app, the one to use for the release is in the package directory -->
+		<delete dir="${mac.app}" />
 	</target>
 
 	<target name="zip" description="Create a OpenMap package zip file." depends="init">
