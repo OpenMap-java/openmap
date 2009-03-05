@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 # Modified from the ant startup script to start OpenMap instead.
 
@@ -28,7 +28,7 @@ if [ "$OPENMAP_HOME" = "" ] ; then
     OPENMAP_HOME=${HOME}/openmap
   fi
 
-  ## resolve links - $0 may be a link to ant's home
+  ## resolve links - $0 may be a link to openmap's home
   PRG=$0
   progname=`basename $0`
   
