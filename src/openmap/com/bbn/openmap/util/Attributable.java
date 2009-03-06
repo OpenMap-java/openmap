@@ -56,18 +56,18 @@ public interface Attributable {
     public void clearAttributes();
 
     /**
-     * Convenience method to allow supperclass methods access to an attribute
+     * Convenience method to allow super class methods access to an attribute
      * table if they are acting as a wrapper.
      * 
      * @return
      */
-    public Map getAttributes();
+    public Map<?, ?> getAttributes();
     
     /**
-     * Convenience method to allow supperclass methods access to an attribute
+     * Convenience method to allow super class methods access to an attribute
      * table if they are acting as a wrapper.
      * 
      * @return
      */
-    public void setAttributes(Map map);
+    public void setAttributes(Map<?, ?> map);
 }
