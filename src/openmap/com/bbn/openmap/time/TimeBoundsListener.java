@@ -25,15 +25,18 @@ package com.bbn.openmap.time;
 import java.beans.PropertyChangeListener;
 
 /**
- * A component that is interested in knowing about
- * TimeBoundsProviders. Once it is given access to
- * TimeBoundsProviders, it will make queries on them.
+ * A component that is interested in knowing about time bounds, i.e. a window of
+ * time. A TimeBoundsHandler will notify the listener when the time bounds
+ * changes.
  */
 public interface TimeBoundsListener extends PropertyChangeListener {
 
-    public void addTimeBoundsProvider(TimeBoundsProvider tbp);
-
-    public void removeTimeBoundsProvider(TimeBoundsProvider tbp);
-
-    public void clearTimeBoundsProviders();
+    /**
+     * This method will be called on the TimeBoundsListener to let it know that
+     * the time bounds have changed.
+     * 
+     * @param tbe TimeBoundsEvent with the source of the change along with the
+     *        old and new values.
+     */
+    void updateTimeBounds(TimeBoundsEvent tbe);
 }

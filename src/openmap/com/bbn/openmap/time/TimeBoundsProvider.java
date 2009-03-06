@@ -22,61 +22,39 @@
 
 package com.bbn.openmap.time;
 
-import java.beans.PropertyChangeListener;
-
 /**
- * A component that can provide information about a time range it
- * cares about.
+ * A component that can provide information about a time range it cares about.
  */
 public interface TimeBoundsProvider {
 
-    public final static String ACTIVE_PROPERTY = "ACTIVE_PROPERTY";
-    public final static String ACTIVE = "ACTIVE";
-    public final static String INACTIVE = "INACTIVE";
-
     /**
-     * A method called on the TimeBoundsProvider to retrieve the
-     * provider's time bounds.
+     * A method called on the TimeBoundsProvider to retrieve the provider's time
+     * bounds.
      */
     public TimeBounds getTimeBounds();
 
     /**
-     * A method called on the TimeBoundsProvider to set the provider's
-     * time bounds.
-     */
-    public void setTimeBounds(TimeBounds tb);
-
-    /**
-     * A method called on the TimeBoundsProvider to inform it of some
-     * external time bounds, in case it wants to react to it in some
-     * way.
+     * A method called on the TimeBoundsProvider to inform it of some external
+     * time bounds, in case it wants to react to it in some way.
      */
     public void handleTimeBounds(TimeBounds tb);
 
     /**
-     * A query that can be made to the TimeBoundsProvider asking it if
-     * it is active, and if it's time bounds should be considered.
+     * A query that can be made to the TimeBoundsProvider asking it if it is
+     * active, and if it's time bounds should be considered.
      */
     public boolean isActive();
 
     /**
-     * TimeBoundsListeners expect that ACTIVE notifications will come
-     * as PropertyChangeEvents. This method is for the listener adding
-     * itself to the provider as a listener. For purposes of the
-     * TimeBoundsProvider, the ACTIVE_PROPERTY should be the string
-     * passed in here.
+     * The TimeBoundsProvider keep track of the handlers it needs to notify when
+     * the bounds or activeness changes.  Called when a new handler needs to know.
      */
-    public void addPropertyChangeListener(String propertyName,
-                                          PropertyChangeListener pcl);
+    public void addTimeBoundsHandler(TimeBoundsHandler tbh);
 
     /**
-     * TimeBoundsListeners expect that ACTIVE notifications will come
-     * as PropertyChangeEvents. This method is for the listener
-     * removing itself from the provider as a listener. For purposes
-     * of the TimeBoundsProvider, the ACTIVE_PROPERTY should be the
-     * string passed in here.
+     * The TimeBoundsProvider keep track of the handlers it needs to notify when
+     * the bounds or activeness changes. Called when a handler doesn't need to know.
      */
-    public void removePropertyChangeListener(String propertyName,
-                                             PropertyChangeListener pcl);
+    public void removeTimeBoundsHandler(TimeBoundsHandler tbh);
 
 }

@@ -26,18 +26,38 @@ package com.bbn.openmap.time;
 import java.io.Serializable;
 
 /**
+ * The heartbeat of the application that indicates what the current display time
+ * is, for all other components to react to. It might reflect the current system
+ * time, or the time that should be reflected in some recording playback.
  * 
  * @author dietrick
  */
 public class TimeEvent implements Serializable {
 
+    /**
+     * The source of the TimeEvent.
+     */
     protected Object source;
+    /**
+     * The current system time, millis from unix epoch.
+     */
     protected long systemTime;
+    /**
+     * The current offset time, in millis from the start of the time frame of
+     * interest.
+     */
     protected long offsetTime;
+    /**
+     * The current simulation time, if the current system time does not
+     * correspond to the time frame of the data.
+     */
     protected long simTime;
-    protected String timerStatus;
+    /**
+     * Description of how/why time changed.
+     */
+    protected TimerStatus timerStatus;
 
-    public final static TimeEvent NO_TIME = new TimeEvent(null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, Clock.TIME_SET_STATUS);
+    public final static TimeEvent NO_TIME = new TimeEvent(null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, TimerStatus.INACTIVE);
 
     /**
      * Create a time event.
@@ -51,7 +71,7 @@ public class TimeEvent implements Serializable {
      * @param timerStatus
      */
     public TimeEvent(Object src, long systemTime, long offsetTime,
-            long simTime, String timerStatus) {
+            long simTime, TimerStatus timerStatus) {
         this.source = src;
         this.systemTime = systemTime;
         this.offsetTime = offsetTime;
@@ -73,17 +93,17 @@ public class TimeEvent implements Serializable {
      *        active mission or media, in millis. When the offset time (time -
      *        system time) is added to this time, you should have the current
      *        game time.
-     * @param timerStatus a property string for what kind of TimeEvent should be
+     * @param timerStatus to describe what kind of TimeEvent should be
      *        created.
      * @return a TimeEvent, or TimeEvent.NO_TIME object if the time values
      *         indicate that no time has been set on the clock.
      */
     public static TimeEvent create(Object src, long time, long systemTime,
-                                   long simTime, String timerStatus) {
+                                   long simTime, TimerStatus timerStatus) {
         if (time == Long.MIN_VALUE || time == Long.MAX_VALUE) {
             return NO_TIME;
         }
-        
+
         return new TimeEvent(src, time, time - systemTime, simTime + time
                 - systemTime, timerStatus);
     }
@@ -110,7 +130,7 @@ public class TimeEvent implements Serializable {
      * 
      * @return String identifying what's going on with the timer.
      */
-    public String getTimerStatus() {
+    public TimerStatus getTimerStatus() {
         return timerStatus;
     }
 

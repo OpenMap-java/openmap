@@ -206,9 +206,9 @@ public class TimerRateHolder implements PropertyConsumer, Serializable {
         propPrefix = p;
     }
 
-    public static List getTimerRateHolders(String prefix, Properties properties) {
+    public static List<TimerRateHolder> getTimerRateHolders(String prefix, Properties properties) {
 
-        List timerRateHolders = new LinkedList();
+        List<TimerRateHolder> timerRateHolders = new LinkedList<TimerRateHolder>();
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
         String paceFormatString = properties.getProperty(prefix
                 + PaceFormatProperty, DEFAULT_PACE_FORMAT);
@@ -230,8 +230,8 @@ public class TimerRateHolder implements PropertyConsumer, Serializable {
                         + timerRatesString);
             }
 
-            Vector rates = PropUtils.parseSpacedMarkers(timerRatesString);
-            Iterator it = rates.iterator();
+            Vector<String> rates = PropUtils.parseSpacedMarkers(timerRatesString);
+            Iterator<String> it = rates.iterator();
             while (it.hasNext()) {
                 String ratePrefix = (String) it.next();
                 TimerRateHolder trh = new TimerRateHolder(paceFormat, paceBaselineString);

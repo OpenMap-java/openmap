@@ -32,12 +32,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
 
 import javax.swing.Timer;
 
 import com.bbn.openmap.OMComponent;
-import com.bbn.openmap.gui.time.RealTimeHandler;
-import com.bbn.openmap.gui.time.TimeConstants;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -49,27 +48,7 @@ import com.bbn.openmap.util.PropUtils;
  * time notifications as PropertyChangeEvents.
  */
 public class Clock extends OMComponent implements RealTimeHandler,
-        TimeConstants, ActionListener, PropertyChangeListener,
-        TimeBoundsListener, Serializable {
-
-    /**
-     * Property name fired for time PropertyChangeEvents dealing with general
-     * TimeEvents, when the clock is being started, stopped or jumped to a new
-     * location.
-     */
-    public final static String TIMER_STATUS_PROPERTY = "TIMER_STATUS_PROPERTY";
-
-    /**
-     * Property placed in TimeEvent object for TIMER_STATUS_PROPERTY events, for
-     * those time events where the time is being set by a component that can
-     * jump time - NOT the timer running as usual."
-     */
-    public final static String TIME_SET_STATUS = "TIME_SET_STATUS";
-
-    /**
-     * Property fired when the TimeBounds change.
-     */
-    public final static String TIME_BOUNDS_PROPERTY = "TIME_BOUNDS_PROPERTY";
+        ActionListener, PropertyChangeListener, TimeBoundsHandler, Serializable {
 
     /**
      * timeFormat, used for the times listed in properties for rates/pace.
@@ -96,9 +75,11 @@ public class Clock extends OMComponent implements RealTimeHandler,
 
     protected int clockDirection = 1;
 
-    protected List timerRates;
+    protected List<TimerRateHolder> timerRates;
 
-    protected transient List timeBoundsProviders;
+    protected transient List<TimeBoundsProvider> timeBoundsProviders;
+    protected transient List<TimeBoundsListener> timeBoundsListeners;
+    protected transient List<TimeEventListener> timeEventListeners;
 
     /**
      * The delay between timer pulses, in milliseconds.
@@ -107,8 +88,10 @@ public class Clock extends OMComponent implements RealTimeHandler,
 
     public Clock() {
         createTimer();
-        timerRates = new LinkedList();
-        timeBoundsProviders = new LinkedList();
+        timerRates = new LinkedList<TimerRateHolder>();
+        timeBoundsProviders = new Vector<TimeBoundsProvider>();
+        timeBoundsListeners = new Vector<TimeBoundsListener>();
+        timeEventListeners = new Vector<TimeEventListener>();
     }
 
     // //////////////////////////
@@ -137,11 +120,22 @@ public class Clock extends OMComponent implements RealTimeHandler,
         return timeIncrement;
     }
 
+    /**
+     * Called to set the clock to a specific time, usually for jumps.
+     * 
+     * @param t the time in unix epoch terms
+     */
     public void setTime(long t) {
-        setTime(t, TIME_SET_STATUS);
+        setTime(t, TimerStatus.UPDATE);
     }
 
-    protected void setTime(long t, String timeStatus) {
+    /**
+     * The call to set the clock for all reasons.
+     * 
+     * @param t the time in unix epoch terms
+     * @param timeStatus TimerStatus indicating how the clock is changing.
+     */
+    protected void setTime(long t, TimerStatus timeStatus) {
 
         // Catch interative cycles and other duplications that may be
         // triggered from other gui components.
@@ -157,11 +151,11 @@ public class Clock extends OMComponent implements RealTimeHandler,
     }
 
     /**
-     * The method that delivers the current time status to its
-     * PropertyChangeListeners.
+     * The method that delivers the current time status to the
+     * TimeEventListeners.
      */
-    protected void fireClockUpdate(String timerStatus) {
-        firePropertyChange(TIMER_STATUS_PROPERTY, null, TimeEvent.create(this,
+    protected void fireClockUpdate(TimerStatus timerStatus) {
+        fireUpdateTime(TimeEvent.create(this,
         // time, time - systemTime, simTime + time - systemTime,
                 time,
                 systemTime,
@@ -181,11 +175,12 @@ public class Clock extends OMComponent implements RealTimeHandler,
      */
     public void startClock() {
         if (!timer.isRunning()) {
-            firePropertyChange(TIMER_RUNNING_STATUS,
-                    TIMER_STOPPED,
-                    (getClockDirection() > 0 ? TIMER_FORWARD : TIMER_BACKWARD));
-            fireClockUpdate(getClockDirection() > 0 ? TIMER_FORWARD
-                    : TIMER_BACKWARD);
+            firePropertyChange(TIMER_STATUS,
+                    TimerStatus.STOPPED,
+                    (getClockDirection() > 0 ? TimerStatus.FORWARD
+                            : TimerStatus.BACKWARD));
+            fireClockUpdate(getClockDirection() > 0 ? TimerStatus.FORWARD
+                    : TimerStatus.BACKWARD);
         }
         if (Debug.debugging("clock")) {
             Debug.output("Clock: Starting clock");
@@ -198,10 +193,11 @@ public class Clock extends OMComponent implements RealTimeHandler,
      */
     public void stopClock() {
         if (timer.isRunning()) {
-            firePropertyChange(TIMER_RUNNING_STATUS,
-                    (getClockDirection() > 0 ? TIMER_FORWARD : TIMER_BACKWARD),
-                    TIMER_STOPPED);
-            fireClockUpdate(TIMER_STOPPED);
+            firePropertyChange(TIMER_STATUS,
+                    (getClockDirection() > 0 ? TimerStatus.FORWARD
+                            : TimerStatus.BACKWARD),
+                    TimerStatus.STOPPED);
+            fireClockUpdate(TimerStatus.STOPPED);
             timer.stop();
         }
     }
@@ -212,8 +208,8 @@ public class Clock extends OMComponent implements RealTimeHandler,
      * negative, clock runs backward.
      */
     public void setClockDirection(int direction) {
-        String oldDirection = clockDirection > 0 ? TIMER_FORWARD
-                : TIMER_BACKWARD;
+        TimerStatus oldDirection = clockDirection > 0 ? TimerStatus.FORWARD
+                : TimerStatus.BACKWARD;
 
         if (direction >= 0) {
             clockDirection = 1;
@@ -221,14 +217,12 @@ public class Clock extends OMComponent implements RealTimeHandler,
             clockDirection = -1;
         }
 
-        String newDirection = clockDirection > 0 ? TIMER_FORWARD
-                : TIMER_BACKWARD;
+        TimerStatus newDirection = clockDirection > 0 ? TimerStatus.FORWARD
+                : TimerStatus.BACKWARD;
 
         if (timer.isRunning()) {
             if (oldDirection != newDirection) {
-                firePropertyChange(TIMER_RUNNING_STATUS,
-                        oldDirection,
-                        newDirection);
+                firePropertyChange(TIMER_STATUS, oldDirection, newDirection);
                 fireClockUpdate(newDirection);
             }
         }
@@ -247,14 +241,14 @@ public class Clock extends OMComponent implements RealTimeHandler,
      * Move the clock forward one clock interval.
      */
     public void stepForward() {
-        changeTimeBy(timeIncrement, timeWrap, TIME_SET_STATUS);
+        changeTimeBy(timeIncrement, timeWrap, TimerStatus.STEP_FORWARD);
     }
 
     /**
      * Move the clock back one clock interval.
      */
     public void stepBackward() {
-        changeTimeBy(-timeIncrement, timeWrap, TIME_SET_STATUS);
+        changeTimeBy(-timeIncrement, timeWrap, TimerStatus.STEP_BACKWARD);
     }
 
     // ///// Convenience methods for ReadTimeHandler
@@ -268,7 +262,8 @@ public class Clock extends OMComponent implements RealTimeHandler,
      * @param amount to change the current time by, in milliseconds.
      */
     protected void changeTimeBy(long amount) {
-        changeTimeBy(amount, timeWrap, TIMER_TIME_STATUS);
+        changeTimeBy(amount, timeWrap, (amount >= 0 ? TimerStatus.FORWARD
+                : TimerStatus.BACKWARD));
     }
 
     /**
@@ -278,12 +273,14 @@ public class Clock extends OMComponent implements RealTimeHandler,
      * 
      * @param amount to change the current time by, in milliseconds.
      * @param wrapAroundTimeLimits if true, the time will be set as if the start
-     *        and end times ofthe scenario are connected, so that moving the
+     *        and end times of the scenario are connected, so that moving the
      *        time past the time scale in either direction will put the time at
      *        the other end of the scale.
      */
     protected void changeTimeBy(long amount, boolean wrapAroundTimeLimits) {
-        changeTimeBy(amount, wrapAroundTimeLimits, TIMER_TIME_STATUS);
+        changeTimeBy(amount,
+                wrapAroundTimeLimits,
+                (amount >= 0 ? TimerStatus.FORWARD : TimerStatus.BACKWARD));
     }
 
     /**
@@ -302,7 +299,7 @@ public class Clock extends OMComponent implements RealTimeHandler,
      *        specifically set to something.
      */
     protected void changeTimeBy(long amount, boolean wrapAroundTimeLimits,
-                                String timeStatus) {
+                                TimerStatus timeStatus) {
 
         long oldTime = getTime();
         long newTime;
@@ -352,7 +349,8 @@ public class Clock extends OMComponent implements RealTimeHandler,
             // they will listen to if the clock is running backwards.
             changeTimeBy(timeIncrement * clockDirection,
                     timeWrap,
-                    clockDirection < 0 ? TIME_SET_STATUS : TIMER_TIME_STATUS);
+                    clockDirection < 0 ? TimerStatus.UPDATE
+                            : TimerStatus.FORWARD);
         }
     }
 
@@ -370,7 +368,7 @@ public class Clock extends OMComponent implements RealTimeHandler,
     }
 
     // //////////////////////////////
-    // TimeBoundsListener methods
+    // TimeBoundsProvider methods
     // //////////////////////////////
 
     /**
@@ -380,22 +378,78 @@ public class Clock extends OMComponent implements RealTimeHandler,
     public void addTimeBoundsProvider(TimeBoundsProvider tbp) {
         if (!timeBoundsProviders.contains(tbp)) {
             timeBoundsProviders.add(tbp);
-            tbp.addPropertyChangeListener(TimeBoundsProvider.ACTIVE_PROPERTY,
-                    this);
             resetTimeBounds();
         }
     }
 
     public void removeTimeBoundsProvider(TimeBoundsProvider tbp) {
         timeBoundsProviders.remove(tbp);
-        tbp.removePropertyChangeListener(TimeBoundsProvider.ACTIVE_PROPERTY,
-                this);
         resetTimeBounds();
     }
 
     public void clearTimeBoundsProviders() {
         timeBoundsProviders.clear();
         resetTimeBounds();
+    }
+
+    // //////////////////////////////
+    // TimeBoundsListener methods
+    // //////////////////////////////
+
+    /**
+     * Add a TimeBoundsListener to the clock, so it knows who to tell when the
+     * time bounds change.
+     */
+    public void addTimeBoundsListener(TimeBoundsListener tbl) {
+        if (!timeBoundsListeners.contains(tbl)) {
+            timeBoundsListeners.add(tbl);
+        }
+    }
+
+    public void removeTimeBoundsListener(TimeBoundsListener tbl) {
+        timeBoundsListeners.remove(tbl);
+    }
+
+    public void clearTimeBoundsListeners() {
+        timeBoundsListeners.clear();
+    }
+
+    public void fireUpdateTimeBounds(TimeBoundsEvent tbe) {
+        if (timeBoundsListeners != null) {
+            for (Iterator<TimeBoundsListener> it = timeBoundsListeners.iterator(); it.hasNext();) {
+                it.next().updateTimeBounds(tbe);
+            }
+        }
+    }
+
+    // //////////////////////////////
+    // TimeEventListener methods
+    // //////////////////////////////
+
+    /**
+     * Add a TimeEventListener to the clock, so it knows who to update when the
+     * time changes.
+     */
+    public void addTimeEventListener(TimeEventListener tel) {
+        if (!timeEventListeners.contains(tel)) {
+            timeEventListeners.add(tel);
+        }
+    }
+
+    public void removeTimeEventListener(TimeEventListener tel) {
+        timeEventListeners.remove(tel);
+    }
+
+    public void clearTimeEventListeners() {
+        timeEventListeners.clear();
+    }
+
+    public void fireUpdateTime(TimeEvent te) {
+        if (timeEventListeners != null) {
+            for (Iterator<TimeEventListener> it = timeEventListeners.iterator(); it.hasNext();) {
+                it.next().updateTime(te);
+            }
+        }
     }
 
     // //////////////////////////////
@@ -413,8 +467,8 @@ public class Clock extends OMComponent implements RealTimeHandler,
         endTime = Long.MIN_VALUE;
         int activeTimeBoundsProviderCount = 0;
 
-        for (Iterator it = timeBoundsProviders.iterator(); it.hasNext();) {
-            TimeBoundsProvider tbp = (TimeBoundsProvider) it.next();
+        for (Iterator<TimeBoundsProvider> it = timeBoundsProviders.iterator(); it.hasNext();) {
+            TimeBoundsProvider tbp = it.next();
             if (tbp.isActive()) {
                 activeTimeBoundsProviderCount++;
                 TimeBounds bounds = tbp.getTimeBounds();
@@ -440,8 +494,8 @@ public class Clock extends OMComponent implements RealTimeHandler,
         systemTime = startTime;
 
         TimeBounds tb = new TimeBounds(startTime, endTime);
-        for (Iterator it = timeBoundsProviders.iterator(); it.hasNext();) {
-            ((TimeBoundsProvider) it.next()).handleTimeBounds(tb);
+        for (Iterator<TimeBoundsProvider> it = timeBoundsProviders.iterator(); it.hasNext();) {
+            it.next().handleTimeBounds(tb);
         }
 
         long currentTime = time;
@@ -455,12 +509,13 @@ public class Clock extends OMComponent implements RealTimeHandler,
         } else if (currentTime > endTime) {
             setTime(endTime);
         }
-        firePropertyChange(TIME_BOUNDS_PROPERTY, oldtb, tb);
+
+        fireUpdateTimeBounds(new TimeBoundsEvent(this, oldtb, tb));
     }
 
     /**
-     * Add a time to the time range, fire a TIME_BOUNDS_PROPERTY change if the
-     * time range changes.
+     * Add a time to the time range, fire a TimeBoundsEvent if the time range
+     * changes.
      * 
      * @param timeStamp in milliseconds
      */
@@ -471,9 +526,7 @@ public class Clock extends OMComponent implements RealTimeHandler,
         addTime(timeStamp);
 
         if (oldStartTime != startTime || oldEndTime != endTime) {
-            firePropertyChange(TIME_BOUNDS_PROPERTY,
-                    new TimeBounds(oldStartTime, oldEndTime),
-                    new TimeBounds(startTime, endTime));
+            fireUpdateTimeBounds(new TimeBoundsEvent(this, new TimeBounds(oldStartTime, oldEndTime), new TimeBounds(startTime, endTime)));
         }
     }
 
@@ -589,14 +642,14 @@ public class Clock extends OMComponent implements RealTimeHandler,
     /**
      * Get a list of TimerRateHolders.
      */
-    public List getTimerRates() {
+    public List<TimerRateHolder> getTimerRates() {
         return timerRates;
     }
 
     /**
      * Make sure the List contains TimerRateHolders.
      */
-    public void setTimerRates(List rates) {
+    public void setTimerRates(List<TimerRateHolder> rates) {
         timerRates = rates;
     }
 
@@ -660,7 +713,7 @@ public class Clock extends OMComponent implements RealTimeHandler,
             Debug.output("Clock: adding property change listener");
         }
 
-        super.addPropertyChangeListener(TIMER_RUNNING_STATUS, pcl);
+        super.addPropertyChangeListener(TIMER_STATUS, pcl);
         initializePropertyChangeListener(pcl);
     }
 
@@ -675,10 +728,10 @@ public class Clock extends OMComponent implements RealTimeHandler,
      * latest info.
      */
     protected void initializePropertyChangeListener(PropertyChangeListener pcl) {
-        String runningStatus = timer.isRunning() ? (getClockDirection() > 0 ? TIMER_FORWARD
-                : TIMER_BACKWARD)
-                : TIMER_STOPPED;
-        firePropertyChange(TIMER_RUNNING_STATUS, null, runningStatus);
+        TimerStatus runningStatus = timer.isRunning() ? (getClockDirection() > 0 ? TimerStatus.FORWARD
+                : TimerStatus.BACKWARD)
+                : TimerStatus.STOPPED;
+        firePropertyChange(TIMER_STATUS, null, runningStatus);
         fireClockUpdate(runningStatus);
     }
 
@@ -688,4 +741,5 @@ public class Clock extends OMComponent implements RealTimeHandler,
     public boolean isRunning() {
         return timer.isRunning();
     }
+
 }
