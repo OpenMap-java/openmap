@@ -22,9 +22,10 @@
 
 package com.bbn.openmap.omGraphics.event;
 
+import java.util.Vector;
+
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
-import java.util.Vector;
 
 /**
  * A class to help SelectionProviders manage SelectionListeners, and
@@ -32,7 +33,7 @@ import java.util.Vector;
  */
 public class SelectionSupport {
 
-    transient private Vector listeners;
+    transient private Vector<SelectionListener> listeners;
     private Object source;
 
     public SelectionSupport(Object src) {
@@ -46,7 +47,7 @@ public class SelectionSupport {
      */
     public synchronized void addSelectionListener(SelectionListener listener) {
         if (listeners == null) {
-            listeners = new Vector();
+            listeners = new Vector<SelectionListener>();
         }
         listeners.addElement(listener);
     }
@@ -82,18 +83,18 @@ public class SelectionSupport {
     public void fireSelection(OMGraphic omg, DrawingToolRequestor dtr,
                               boolean isSelected) {
 
-        Vector targets;
+        Vector<SelectionListener> targets;
         synchronized (this) {
             if (listeners == null) {
                 return;
             }
-            targets = (java.util.Vector) listeners.clone();
+            targets = (java.util.Vector<SelectionListener>) listeners.clone();
         }
 
         SelectionEvent evt = new SelectionEvent(source, omg, dtr, isSelected);
 
         for (int i = 0; i < targets.size(); i++) {
-            SelectionListener target = (SelectionListener) targets.elementAt(i);
+            SelectionListener target = targets.elementAt(i);
             target.selectionNotification(evt);
         }
     }
