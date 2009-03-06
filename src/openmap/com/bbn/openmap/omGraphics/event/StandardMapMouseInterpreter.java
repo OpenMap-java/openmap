@@ -141,7 +141,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
          * interest.
          */
         public boolean appliesTo(OMGraphic geom) {
-            return (geom == omg);
+            return (geom != null && geom.equals(omg));
         }
 
         /**
@@ -150,7 +150,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
          * with the same mouse button.
          */
         public boolean appliesTo(OMGraphic geom, MouseEvent me) {
-            return (geom == omg && sameButton(me));
+            return (geom != null && geom.equals(omg) && sameButton(me));
         }
 
         /**
@@ -702,13 +702,13 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
      * 
      * @return true if popup was presented, false if not.
      */
-    protected boolean displayPopup(List contents, MouseEvent me) {
+    protected boolean displayPopup(List<?> contents, MouseEvent me) {
         if (DEBUG) {
             Debug.output("displayPopup(" + contents + ") " + me);
         }
-        if (contents != null && contents.size() > 0) {
+        if (contents != null && !contents.isEmpty()) {
             JPopupMenu jpm = new JPopupMenu();
-            Iterator it = contents.iterator();
+            Iterator<?> it = contents.iterator();
             while (it.hasNext()) {
                 Object obj = it.next();
                 if (obj instanceof java.awt.Component) {
@@ -780,7 +780,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
      * Given a tool tip String, use the layer to get it displayed.
      */
     protected void handleToolTip(String tip, MouseEvent me) {
-        if (lastToolTip == tip) {
+        if (lastToolTip != null && lastToolTip.equals(tip)) {
             return;
         }
         lastToolTip = tip;
