@@ -117,13 +117,13 @@ public class OMText extends OMGraphic implements Serializable {
      */
     public final static transient int BASELINE_TOP = 2;
 
-    public static final Font DEFAULT_FONT = new Font("SansSerif", java.awt.Font.PLAIN, 12);
+    public static final transient Font DEFAULT_FONT = new Font("SansSerif", java.awt.Font.PLAIN, 12);
 
     /**
      * The default text matte stroke that is used to surround each character
      * with the color set in the textMatteColor attribute.
      */
-    public static final Stroke DEFAULT_TEXT_MATTE_STROKE = new BasicStroke(2f);
+    public static final transient Stroke DEFAULT_TEXT_MATTE_STROKE = new BasicStroke(2f);
     // ----------------------------------------------------------------------
     // Fields
     // ----------------------------------------------------------------------
@@ -198,7 +198,7 @@ public class OMText extends OMGraphic implements Serializable {
      * The stroke used to paint the outline of each character. The stroke should
      * be larger than 1 to give proper effect.
      */
-    protected Stroke textMatteStroke = DEFAULT_TEXT_MATTE_STROKE;
+    protected transient Stroke textMatteStroke = DEFAULT_TEXT_MATTE_STROKE;
 
     // ----------------------------------------------------------------------
     // Caches
@@ -351,8 +351,8 @@ public class OMText extends OMGraphic implements Serializable {
      * is not null, this font will be set in that object as well, and the active
      * font will come from the font sizer. To make the set font the constant
      * font, set the font sizer to null. Flushes the cache fields
-     * <code>fm</code>, <code>widths</code>, and <code>polyBounds</code>.
-     * Calls setScaledFont.
+     * <code>fm</code>, <code>widths</code>, and <code>polyBounds</code>. Calls
+     * setScaledFont.
      * 
      * @param aFont font to be used for the text.
      * 
@@ -591,9 +591,9 @@ public class OMText extends OMGraphic implements Serializable {
 
     /**
      * Sets the string contents that are presented. Flushes the cache fields
-     * <code>parsedData</code>,<code>widths</code>, and
-     * <code>polyBounds</code>. HACK synchronized so that it doesn't
-     * interfere with other methods that are using parsedData.
+     * <code>parsedData</code>,<code>widths</code>, and <code>polyBounds</code>.
+     * HACK synchronized so that it doesn't interfere with other methods that
+     * are using parsedData.
      * 
      * @param d the text to be displayed
      * 
@@ -644,8 +644,7 @@ public class OMText extends OMGraphic implements Serializable {
 
     /**
      * Sets the location of the baseline of this OMText. Flushes the cache
-     * fields <code>fm</code>,<code>widths</code>, and
-     * <code>polyBounds</code>.
+     * fields <code>fm</code>,<code>widths</code>, and <code>polyBounds</code>.
      * 
      * @param b one of BASELINE_BOTTOM, BASELINE_MIDDLE or BASELINE_TOP.
      * @see #polyBounds
@@ -668,8 +667,8 @@ public class OMText extends OMGraphic implements Serializable {
     }
 
     /**
-     * Sets the show bounds field. When <code>true</code>, the bounding box
-     * of this text is displayed.
+     * Sets the show bounds field. When <code>true</code>, the bounding box of
+     * this text is displayed.
      * 
      * @deprecated use setMatted(boolean) instead.
      * @param show true to show, false to hide.
@@ -1356,8 +1355,11 @@ public class OMText extends OMGraphic implements Serializable {
             oos.writeInt(f.getSize());
             oos.writeInt(f.getStyle());
         }
-    }
 
+        writeStroke(oos, stroke, OMGraphic.BASIC_STROKE);
+        writeStroke(oos, textMatteStroke, DEFAULT_TEXT_MATTE_STROKE);
+    }
+    
     /**
      * Reconstitute from an ObjectInputStream.
      */
@@ -1376,6 +1378,9 @@ public class OMText extends OMGraphic implements Serializable {
         } else {
             f = OMText.DEFAULT_FONT;
         }
-    }
+
+        stroke = readStroke(ois, OMGraphic.BASIC_STROKE);
+        textMatteStroke = readStroke(ois, DEFAULT_TEXT_MATTE_STROKE);
+     }
 
 }

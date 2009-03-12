@@ -726,13 +726,13 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
 
     /**
      * Prepare the graphic for rendering. This must be done before calling
-     * <code>render()</code>! If a vector graphic has lat-lon components,
-     * then we project these vertices into x-y space. For raster graphics we
-     * prepare in a different fashion.
+     * <code>render()</code>! If a vector graphic has lat-lon components, then
+     * we project these vertices into x-y space. For raster graphics we prepare
+     * in a different fashion.
      * <p>
      * If the generate is unsuccessful, it's usually because of some oversight,
-     * (for instance if <code>proj</code> is null), and if debugging is
-     * enabled, a message may be output to the controlling terminal.
+     * (for instance if <code>proj</code> is null), and if debugging is enabled,
+     * a message may be output to the controlling terminal.
      * <p>
      * 
      * @param proj Projection
@@ -743,9 +743,8 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
 
     /**
      * Paint the graphic. This paints the graphic into the Graphics context.
-     * This is similar to <code>paint()</code> function of
-     * java.awt.Components. Note that if the graphic has not been generated, it
-     * will not be rendered.
+     * This is similar to <code>paint()</code> function of java.awt.Components.
+     * Note that if the graphic has not been generated, it will not be rendered.
      * <P>
      * 
      * This method used to be abstract, but with the conversion of OMGraphics to
@@ -954,9 +953,9 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
     /**
      * Invoke this to regenerate a "dirty" graphic. This method is a wrapper
      * around the <code>generate()</code> method. It invokes
-     * <code>generate()</code> only if</code> needToRegenerate() </code> on
-     * the graphic returns true. To force a graphic to be generated, call <code>generate()</code>
-     * directly.
+     * <code>generate()</code> only if</code> needToRegenerate() </code> on the
+     * graphic returns true. To force a graphic to be generated, call
+     * <code>generate()</code> directly.
      * 
      * @param proj the Projection
      * @return true if generated, false if didn't do it (maybe a problem).
@@ -1006,9 +1005,13 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
 
         // Now write the Stroke. Take into account the stroke member
         // could be null.
+        writeStroke(oos, stroke, OMGraphic.BASIC_STROKE);
+    }
 
-        boolean writeStroke = (stroke != OMGraphic.BASIC_STROKE)
-                && stroke != null;
+    protected void writeStroke(ObjectOutputStream oos, Stroke stroke,
+                               Stroke defStroke) throws IOException {
+
+        boolean writeStroke = (stroke != defStroke) && stroke != null;
 
         if (writeStroke) {
             // First write a flag indicating if a Stroke is on the
@@ -1048,6 +1051,12 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
         ois.defaultReadObject();
 
         // Read the Stroke
+        stroke = readStroke(ois, OMGraphic.BASIC_STROKE);
+    }
+
+    protected Stroke readStroke(ObjectInputStream ois, Stroke defStroke)
+            throws ClassNotFoundException, IOException {
+        Stroke stroke = defStroke;
 
         // Get the flag indicating a stroke was streamed
         boolean streamHasStroke = ois.readBoolean();
@@ -1066,9 +1075,8 @@ public abstract class OMGraphic extends BasicGeometry implements OMGeometry,
             } else {
                 stroke = (Stroke) ois.readObject();
             }
-        } else {
-            stroke = OMGraphic.BASIC_STROKE;
         }
-    }
 
+        return stroke;
+    }
 }
