@@ -273,13 +273,13 @@ public abstract class CoordMouseMode extends AbstractMouseMode implements
     public void setCoordFormatterHandler(
                                          CoordInfoFormatterHandler coordFormatterHandler) {
         if (this.coordFormatterHandler != null) {
-            coordFormatterHandler.removePropertyChangeListener(CoordInfoFormatterHandler.FORMATTER_PROPERTY,
+            this.coordFormatterHandler.removePropertyChangeListener(CoordInfoFormatterHandler.FORMATTER_PROPERTY,
                     this);
         }
 
         this.coordFormatterHandler = coordFormatterHandler;
 
-        if (this.coordFormatterHandler != null) {
+        if (coordFormatterHandler != null) {
             coordFormatterHandler.addPropertyChangeListener(CoordInfoFormatterHandler.FORMATTER_PROPERTY,
                     this);
         }
