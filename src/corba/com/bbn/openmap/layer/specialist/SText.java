@@ -22,9 +22,16 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.CSpecialist.GraphicPackage.*;
-import com.bbn.openmap.CSpecialist.TextPackage.*;
+import com.bbn.openmap.corba.CSpecialist.LLPoint;
+import com.bbn.openmap.corba.CSpecialist.UGraphic;
+import com.bbn.openmap.corba.CSpecialist.UpdateGraphic;
+import com.bbn.openmap.corba.CSpecialist.XYPoint;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.DeclutterType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.LineType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.RenderType;
+import com.bbn.openmap.corba.CSpecialist.TextPackage.EText;
+import com.bbn.openmap.corba.CSpecialist.TextPackage.TF_update;
 
 /**
  * A SText graphic object is used to put text on the client's screen.
@@ -199,7 +206,7 @@ public class SText extends SGraphic /* used to be _TextImplBase */{
     }
 
     //  Gesture responses
-    public void changeP1(com.bbn.openmap.CSpecialist.XYPoint p1) {
+    public void changeP1(com.bbn.openmap.corba.CSpecialist.XYPoint p1) {
         p1_ = p1;
         TF_update gupdate = new TF_update();
         gupdate.p1(p1);
@@ -208,7 +215,7 @@ public class SText extends SGraphic /* used to be _TextImplBase */{
         addGraphicChange(ug);
     }
 
-    public void changeLl1(com.bbn.openmap.CSpecialist.LLPoint ll1) {
+    public void changeLl1(com.bbn.openmap.corba.CSpecialist.LLPoint ll1) {
         ll1_ = ll1;
         TF_update gupdate = new TF_update();
         gupdate.ll1(ll1);

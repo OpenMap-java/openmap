@@ -822,4 +822,9 @@ public class InformationDelegator extends OMComponentPanel implements
     public String getPreferredLocation() {
         return preferredLocation;
     }
+
+    public String getParentName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

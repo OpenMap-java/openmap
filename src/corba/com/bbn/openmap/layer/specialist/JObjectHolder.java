@@ -25,10 +25,10 @@ package com.bbn.openmap.layer.specialist;
 /** class JGraphic */
 public interface JObjectHolder {
 
-    public void setObject(com.bbn.openmap.CSpecialist.EComp aObject);
+    public void setObject(com.bbn.openmap.corba.CSpecialist.EComp aObject);
 
-    public com.bbn.openmap.CSpecialist.EComp getObject();
+    public com.bbn.openmap.corba.CSpecialist.EComp getObject();
 
     public void update(
-                       com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update);
+                       com.bbn.openmap.corba.CSpecialist.GraphicPackage.GF_update update);
 }

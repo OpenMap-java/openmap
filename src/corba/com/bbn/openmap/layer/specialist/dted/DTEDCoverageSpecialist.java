@@ -30,14 +30,14 @@ import java.util.StringTokenizer;
 
 import org.omg.CORBA.StringHolder;
 
-import com.bbn.openmap.CSpecialist.CProjection;
-import com.bbn.openmap.CSpecialist.GraphicChange;
-import com.bbn.openmap.CSpecialist.LLPoint;
-import com.bbn.openmap.CSpecialist.UGraphic;
-import com.bbn.openmap.CSpecialist.XYPoint;
-import com.bbn.openmap.CSpecialist.CColorPackage.EColor;
-import com.bbn.openmap.CSpecialist.GraphicPackage.EGraphic;
-import com.bbn.openmap.CSpecialist.RectanglePackage.ERectangle;
+import com.bbn.openmap.corba.CSpecialist.CProjection;
+import com.bbn.openmap.corba.CSpecialist.GraphicChange;
+import com.bbn.openmap.corba.CSpecialist.LLPoint;
+import com.bbn.openmap.corba.CSpecialist.UGraphic;
+import com.bbn.openmap.corba.CSpecialist.XYPoint;
+import com.bbn.openmap.corba.CSpecialist.CColorPackage.EColor;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.EGraphic;
+import com.bbn.openmap.corba.CSpecialist.RectanglePackage.ERectangle;
 import com.bbn.openmap.layer.dted.DTEDCoverageManager;
 import com.bbn.openmap.layer.dted.DTEDFrameColorTable;
 import com.bbn.openmap.layer.specialist.MakeProjection;

@@ -25,7 +25,7 @@
 package com.bbn.openmap.layer.specialist;
 
 import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.CSpecialist.CProjection;
+import com.bbn.openmap.corba.CSpecialist.CProjection;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Orthographic;

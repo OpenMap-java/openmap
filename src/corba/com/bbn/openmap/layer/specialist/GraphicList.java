@@ -22,8 +22,10 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import java.util.*;
-import com.bbn.openmap.CSpecialist.*;
+import java.util.Vector;
+
+import com.bbn.openmap.corba.CSpecialist.Comp;
+import com.bbn.openmap.corba.CSpecialist.UGraphic;
 
 /**
  * This class implements a basic GraphicList class that [OpenMap]

@@ -25,7 +25,7 @@
     <property name="javac.excludes" value="${general.excludes}, **/*.gif, **/*.png" />
 
     <!-- used to check to see if the idls need to be compiled, or if they have been. -->
-    <property name="cspecialist.home" value="${corba.src}/com/bbn/openmap/CSpecialist"/>
+    <property name="cspecialist.home" value="${corba.src}/com/bbn/openmap/corba/CSpecialist"/>
     <property name="crfp.home" value="${corba.src}/com/bbn/openmap/layer/rpf/corba/CRpfFrameProvider"/>
     <property name="corbaimage.home" value="${corba.src}/com/bbn/openmap/plugin/corbaImage/corbaImageServer"/>
 
@@ -117,7 +117,7 @@
 
     <echo message="  CORBA Specialist package..."/>
     <exec executable="${idl2java.compiler}" failifexecutionfails="false" >
-      <arg line='-td ${corba.src} -fall -pkgPrefix CSpecialist com.bbn.openmap com/bbn/openmap/layer/specialist/Specialist.idl'/>
+      <arg line='-td ${corba.src} -fall -pkgPrefix CSpecialist com.bbn.openmap.corba com/bbn/openmap/layer/specialist/Specialist.idl'/>
     </exec>
 
     <echo message="  CORBA ImageServer package..."/>

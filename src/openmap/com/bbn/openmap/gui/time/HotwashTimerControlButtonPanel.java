@@ -29,8 +29,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 
-import com.bbn.openmap.gui.time.RealTimeHandler;
-import com.bbn.openmap.gui.time.TimerControlButtonPanel;
+import com.bbn.openmap.time.RealTimeHandler;
+import com.bbn.openmap.time.TimerStatus;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -88,25 +88,25 @@ public class HotwashTimerControlButtonPanel extends TimerControlButtonPanel {
 
         backwardButton = new JButton(backwardIcon);
         backwardButton.setToolTipText("Run Timer Backwards");
-        backwardButton.setActionCommand(TIMER_BACKWARD);
+        backwardButton.setActionCommand(TimerStatus.TIMER_BACKWARD);
         backwardButton.addActionListener(this);
         // jtb.add(backwardButton);
 
         forwardStepButton = new JButton(backwardStepIcon);
         forwardStepButton.setToolTipText("Step Timer Backward");
-        forwardStepButton.setActionCommand(TIMER_STEP_BACKWARD);
+        forwardStepButton.setActionCommand(TimerStatus.TIMER_STEP_BACKWARD);
         forwardStepButton.addActionListener(this);
         jtb.add(forwardStepButton);
 
         forwardButton = new JButton(forwardIcon);
         forwardButton.setToolTipText("Run Timer Forward");
-        forwardButton.setActionCommand(TIMER_FORWARD);
+        forwardButton.setActionCommand(TimerStatus.TIMER_FORWARD);
         forwardButton.addActionListener(this);
         jtb.add(forwardButton);
 
         backwardStepButton = new JButton(forwardStepIcon);
         backwardStepButton.setToolTipText("Step Timer Forward");
-        backwardStepButton.setActionCommand(TIMER_STEP_FORWARD);
+        backwardStepButton.setActionCommand(TimerStatus.TIMER_STEP_FORWARD);
         backwardStepButton.addActionListener(this);
         jtb.add(backwardStepButton);
 

@@ -22,7 +22,8 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 
 /** class JGraphic */
 public class JGraphicList extends OMGraphicList {
@@ -59,7 +60,7 @@ public class JGraphicList extends OMGraphicList {
         while (targets.hasNext()) {
             OMGraphic graphic = (OMGraphic) targets.next();
             if (graphic instanceof JObjectHolder) {
-                com.bbn.openmap.CSpecialist.EComp ecomp = ((JObjectHolder) graphic).getObject();
+                com.bbn.openmap.corba.CSpecialist.EComp ecomp = ((JObjectHolder) graphic).getObject();
                 if (ecomp.cID.equals(gID)) {
                     return graphic;
                 }

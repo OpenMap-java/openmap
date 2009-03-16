@@ -22,9 +22,16 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.CSpecialist.GraphicPackage.*;
-import com.bbn.openmap.CSpecialist.RectanglePackage.*;
+import com.bbn.openmap.corba.CSpecialist.LLPoint;
+import com.bbn.openmap.corba.CSpecialist.UGraphic;
+import com.bbn.openmap.corba.CSpecialist.UpdateGraphic;
+import com.bbn.openmap.corba.CSpecialist.XYPoint;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.DeclutterType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.LineType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.RenderType;
+import com.bbn.openmap.corba.CSpecialist.RectanglePackage.ERectangle;
+import com.bbn.openmap.corba.CSpecialist.RectanglePackage.RF_update;
 
 /**
  * SRect is a specialist rectangle graphic object
@@ -161,7 +168,7 @@ public class SRect extends SGraphic /* used to be _RectangleImplBase */{
     }
 
     //  Update methods as a result of gesture impulses...
-    public void changeLl1(com.bbn.openmap.CSpecialist.LLPoint ll1) {
+    public void changeLl1(com.bbn.openmap.corba.CSpecialist.LLPoint ll1) {
         ll1_ = ll1;
         RF_update gupdate = new RF_update();
         gupdate.ll1(ll1);
@@ -170,7 +177,7 @@ public class SRect extends SGraphic /* used to be _RectangleImplBase */{
         addGraphicChange(ug);
     }
 
-    public void changeLl2(com.bbn.openmap.CSpecialist.LLPoint ll2) {
+    public void changeLl2(com.bbn.openmap.corba.CSpecialist.LLPoint ll2) {
         ll2_ = ll2;
         RF_update gupdate = new RF_update();
         gupdate.ll2(ll2);
@@ -179,7 +186,7 @@ public class SRect extends SGraphic /* used to be _RectangleImplBase */{
         addGraphicChange(ug);
     }
 
-    public void changeP1(com.bbn.openmap.CSpecialist.XYPoint p1) {
+    public void changeP1(com.bbn.openmap.corba.CSpecialist.XYPoint p1) {
         p1_ = p1;
         RF_update gupdate = new RF_update();
         gupdate.p1(p1);
@@ -188,7 +195,7 @@ public class SRect extends SGraphic /* used to be _RectangleImplBase */{
         addGraphicChange(ug);
     }
 
-    public void changeP2(com.bbn.openmap.CSpecialist.XYPoint p2) {
+    public void changeP2(com.bbn.openmap.corba.CSpecialist.XYPoint p2) {
         p2_ = p2;
         RF_update gupdate = new RF_update();
         gupdate.p2(p2);

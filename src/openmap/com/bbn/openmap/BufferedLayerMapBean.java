@@ -32,24 +32,22 @@ import com.bbn.openmap.layer.BufferedLayer;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The BufferedLayerMapBean is a BufferedMapBean with an additional
- * image buffer that holds Layers designated as background layers. The
- * additional image buffer is a BufferedLayer that this MapBean
- * manages, and all background layers are added to the BufferedLayer,
- * which is automatically added to the bottom of the map. When layers
- * are added to the MapBean via the setLayers() method, the
- * Layer.getAddAsBackground() flag is checked, and if that is true for
- * a layer, it is added to the BufferedLayer. The background layers do
- * not receive mouse events.
+ * The BufferedLayerMapBean is a BufferedMapBean with an additional image buffer
+ * that holds Layers designated as background layers. The additional image
+ * buffer is a BufferedLayer that this MapBean manages, and all background
+ * layers are added to the BufferedLayer, which is automatically added to the
+ * bottom of the map. When layers are added to the MapBean via the setLayers()
+ * method, the Layer.getAddAsBackground() flag is checked, and if that is true
+ * for a layer, it is added to the BufferedLayer. The background layers do not
+ * receive mouse events.
  * <P>
  * 
- * It should be cautioned that the appearance of the map may not match
- * the layer stack as it is delivered to the MapBean because of this
- * flag. If, for example, layers 1 and 4 are marked as background
- * layers, while layers 2 and 3 are not (in a 4 layer stack), then the
- * map will show layers 2, 3, 1, 4, with layers 1 and 4 being
- * displayed from the BufferedLayer. Something to think about when it
- * comes to designing GUI elements.
+ * It should be cautioned that the appearance of the map may not match the layer
+ * stack as it is delivered to the MapBean because of this flag. If, for
+ * example, layers 1 and 4 are marked as background layers, while layers 2 and 3
+ * are not (in a 4 layer stack), then the map will show layers 2, 3, 1, 4, with
+ * layers 1 and 4 being displayed from the BufferedLayer. Something to think
+ * about when it comes to designing GUI elements.
  */
 public class BufferedLayerMapBean extends BufferedMapBean {
 
@@ -66,8 +64,8 @@ public class BufferedLayerMapBean extends BufferedMapBean {
     }
 
     /**
-     * Set the background color of the map. Actually sets the
-     * background color of the projection, and calls repaint().
+     * Set the background color of the map. Actually sets the background color
+     * of the projection, and calls repaint().
      * 
      * @param color java.awt.Color.
      */
@@ -96,24 +94,28 @@ public class BufferedLayerMapBean extends BufferedMapBean {
     }
 
     /**
-     * Set the MapBeanRepaintPolicy used by the MapBean. This method
-     * is overriden in order to pass the policy on to the MapBean
-     * stored in the internal BufferedLayer.
+     * Set the MapBeanRepaintPolicy used by the MapBean. This method is
+     * overridden in order to pass the policy on to the MapBean stored in the
+     * internal BufferedLayer.
      */
     public void setMapBeanRepaintPolicy(MapBeanRepaintPolicy mbrp) {
         super.setMapBeanRepaintPolicy(mbrp);
 
-        MapBeanRepaintPolicy mbrp2 = (MapBeanRepaintPolicy) mbrp.clone();
         MapBean mb = getBufferedLayer().getMapBean();
         if (mb != null) {
-            mb.setMapBeanRepaintPolicy(mbrp2);
-            mbrp2.setMap(mb);
+            if (mbrp == null) {
+                mb.setMapBeanRepaintPolicy(mbrp);
+            } else {
+                MapBeanRepaintPolicy mbrp2 = (MapBeanRepaintPolicy) mbrp.clone();
+                mb.setMapBeanRepaintPolicy(mbrp2);
+                mbrp2.setMap(mb);
+            }
         }
     }
 
     /**
-     * LayerListener interface method. A list of layers will be added,
-     * removed, or replaced based on on the type of LayerEvent.
+     * LayerListener interface method. A list of layers will be added, removed,
+     * or replaced based on on the type of LayerEvent.
      * 
      * @param evt a LayerEvent
      */
@@ -196,7 +198,7 @@ public class BufferedLayerMapBean extends BufferedMapBean {
                     debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
                 }
 
-                //              add(layers[i]);
+                // add(layers[i]);
                 layers[i].setVisible(true);
 
                 if (layers[i].getAddAsBackground()) {
@@ -241,9 +243,9 @@ public class BufferedLayerMapBean extends BufferedMapBean {
     }
 
     /**
-     * ContainerListener Interface method. Should not be called
-     * directly. Part of the ContainerListener interface, and it's
-     * here to make the MapBean a good Container citizen.
+     * ContainerListener Interface method. Should not be called directly. Part
+     * of the ContainerListener interface, and it's here to make the MapBean a
+     * good Container citizen.
      * 
      * @param e ContainerEvent
      */
@@ -291,5 +293,16 @@ public class BufferedLayerMapBean extends BufferedMapBean {
         addedLayers.removeAllElements();
 
         currentLayers = newLayers;
+    }
+
+    /**
+     * Call when getting rid of the MapBean, it releases pointers to all
+     * listeners and kills the ProjectionSupport thread.
+     */
+    public void dispose() {
+        if (bufferedLayer != null) {
+            bufferedLayer.getMapBean().dispose();
+        }
+        super.dispose();
     }
 }

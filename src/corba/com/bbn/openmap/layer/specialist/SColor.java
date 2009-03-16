@@ -22,8 +22,8 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.CSpecialist.CColorPackage.*;
+import com.bbn.openmap.corba.CSpecialist._CColorStub;
+import com.bbn.openmap.corba.CSpecialist.CColorPackage.EColor;
 
 /**
  * A SColor is a specialist graphic object parameter that lets you

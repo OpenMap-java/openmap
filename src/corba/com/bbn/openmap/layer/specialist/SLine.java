@@ -22,9 +22,16 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.CSpecialist.GraphicPackage.*;
-import com.bbn.openmap.CSpecialist.LinePackage.*;
+import com.bbn.openmap.corba.CSpecialist.LLPoint;
+import com.bbn.openmap.corba.CSpecialist.UGraphic;
+import com.bbn.openmap.corba.CSpecialist.UpdateGraphic;
+import com.bbn.openmap.corba.CSpecialist.XYPoint;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.DeclutterType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.LineType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.RenderType;
+import com.bbn.openmap.corba.CSpecialist.LinePackage.ELine;
+import com.bbn.openmap.corba.CSpecialist.LinePackage.LF_update;
 
 /**
  * A SLine is a specialist graphic object that represents a line.
@@ -147,7 +154,7 @@ public class SLine extends SGraphic /* used to be _LineImplBase */{
     }
 
     //  Update methods as a result of gesture impulses...
-    public void changeLl1(com.bbn.openmap.CSpecialist.LLPoint ll1) {
+    public void changeLl1(com.bbn.openmap.corba.CSpecialist.LLPoint ll1) {
         ll1_ = ll1;
         LF_update gupdate = new LF_update();
         gupdate.ll1(ll1);
@@ -156,7 +163,7 @@ public class SLine extends SGraphic /* used to be _LineImplBase */{
         addGraphicChange(ug);
     }
 
-    public void changeLl2(com.bbn.openmap.CSpecialist.LLPoint ll2) {
+    public void changeLl2(com.bbn.openmap.corba.CSpecialist.LLPoint ll2) {
         ll2_ = ll2;
         LF_update gupdate = new LF_update();
         gupdate.ll2(ll2);
@@ -165,7 +172,7 @@ public class SLine extends SGraphic /* used to be _LineImplBase */{
         addGraphicChange(ug);
     }
 
-    public void changeP1(com.bbn.openmap.CSpecialist.XYPoint p1) {
+    public void changeP1(com.bbn.openmap.corba.CSpecialist.XYPoint p1) {
         p1_ = p1;
         LF_update gupdate = new LF_update();
         gupdate.p1(p1);
@@ -174,7 +181,7 @@ public class SLine extends SGraphic /* used to be _LineImplBase */{
         addGraphicChange(ug);
     }
 
-    public void changeP2(com.bbn.openmap.CSpecialist.XYPoint p2) {
+    public void changeP2(com.bbn.openmap.corba.CSpecialist.XYPoint p2) {
         p2_ = p2;
         LF_update gupdate = new LF_update();
         gupdate.p2(p2);

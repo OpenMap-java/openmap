@@ -277,7 +277,7 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * The BeanContext allows Layers to find other components, and other
      * components to find the layer, if the layer is added to it.
      */
-    protected transient BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
+    protected transient BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
 
     /**
      * All layers have access to an I18n object, which is provided by the

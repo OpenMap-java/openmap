@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.beancontext.BeanContextChildSupport;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
@@ -87,6 +88,9 @@ public class Clock extends OMComponent implements RealTimeHandler,
     protected int updateInterval = 1000;
 
     public Clock() {
+        // Created again with the peer not set, this allows the Clock to be
+        // added to multiple MapHandlers.
+        beanContextChildSupport = new BeanContextChildSupport();
         createTimer();
         timerRates = new LinkedList<TimerRateHolder>();
         timeBoundsProviders = new Vector<TimeBoundsProvider>();

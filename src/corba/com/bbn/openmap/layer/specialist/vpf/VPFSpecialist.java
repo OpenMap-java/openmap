@@ -22,17 +22,22 @@
 
 package com.bbn.openmap.layer.specialist.vpf;
 
-import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.MoreMath;
-import com.bbn.openmap.layer.specialist.*;
-import com.bbn.openmap.layer.util.http.HttpServer;
-import com.bbn.openmap.layer.vpf.*;
-import com.bbn.openmap.util.Debug;
-
 import java.io.File;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
+
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.corba.CSpecialist.CheckButton;
+import com.bbn.openmap.corba.CSpecialist.Comp;
+import com.bbn.openmap.corba.CSpecialist.MouseEvent;
+import com.bbn.openmap.corba.CSpecialist.UGraphic;
+import com.bbn.openmap.corba.CSpecialist.WidgetChange;
+import com.bbn.openmap.layer.specialist.SCheckBox;
+import com.bbn.openmap.layer.specialist.Specialist;
+import com.bbn.openmap.layer.util.http.HttpServer;
+import com.bbn.openmap.layer.vpf.LibrarySelectionTable;
+import com.bbn.openmap.util.Debug;
 
 /**
  * Implement the Specialist interface so that we can serve graphics to
@@ -221,12 +226,12 @@ public class VPFSpecialist extends Specialist {
     }
 
     public UGraphic[] fillRectangle(
-                                    com.bbn.openmap.CSpecialist.CProjection p,
-                                    com.bbn.openmap.CSpecialist.LLPoint ll1,
-                                    com.bbn.openmap.CSpecialist.LLPoint ll2,
+                                    com.bbn.openmap.corba.CSpecialist.CProjection p,
+                                    com.bbn.openmap.corba.CSpecialist.LLPoint ll1,
+                                    com.bbn.openmap.corba.CSpecialist.LLPoint ll2,
                                     java.lang.String staticArgs,
                                     org.omg.CORBA.StringHolder dynamicArgs,
-                                    com.bbn.openmap.CSpecialist.GraphicChange notifyOnChange,
+                                    com.bbn.openmap.corba.CSpecialist.GraphicChange notifyOnChange,
                                     String uniqueID) {
         try {
             LatLonPoint newll1 = new LatLonPoint(ll1.lat, ll1.lon);

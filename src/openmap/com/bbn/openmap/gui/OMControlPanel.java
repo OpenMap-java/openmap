@@ -198,4 +198,9 @@ public class OMControlPanel extends OMComponentPanel implements MapPanelChild {
     public String getPreferredLocation() {
         return preferredLocation;
     }
+
+    public String getParentName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

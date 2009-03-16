@@ -28,9 +28,9 @@ import java.util.Properties;
 import java.util.Vector;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.CSpecialist.MouseEvent;
-import com.bbn.openmap.CSpecialist.UGraphic;
-import com.bbn.openmap.CSpecialist.WidgetChange;
+import com.bbn.openmap.corba.CSpecialist.MouseEvent;
+import com.bbn.openmap.corba.CSpecialist.UGraphic;
+import com.bbn.openmap.corba.CSpecialist.WidgetChange;
 import com.bbn.openmap.layer.shape.ESRIRecord;
 import com.bbn.openmap.layer.shape.SpatialIndex;
 import com.bbn.openmap.layer.specialist.SColor;
@@ -124,8 +124,8 @@ public class ShapeSpecialist extends Specialist {
      * @param ll2 the lower right LLPoint.
      * @return Vector of ESRISpecialistRecords.
      */
-    protected Vector computeGraphics(com.bbn.openmap.CSpecialist.LLPoint ll1,
-                                     com.bbn.openmap.CSpecialist.LLPoint ll2) {
+    protected Vector computeGraphics(com.bbn.openmap.corba.CSpecialist.LLPoint ll1,
+                                     com.bbn.openmap.corba.CSpecialist.LLPoint ll2) {
 
         if (spatialIndex == null)
             return new Vector();
@@ -209,12 +209,12 @@ public class ShapeSpecialist extends Specialist {
      * The CSpecialist function.
      */
     public UGraphic[] fillRectangle(
-                                    com.bbn.openmap.CSpecialist.CProjection p,
-                                    com.bbn.openmap.CSpecialist.LLPoint ll1,
-                                    com.bbn.openmap.CSpecialist.LLPoint ll2,
+                                    com.bbn.openmap.corba.CSpecialist.CProjection p,
+                                    com.bbn.openmap.corba.CSpecialist.LLPoint ll1,
+                                    com.bbn.openmap.corba.CSpecialist.LLPoint ll2,
                                     java.lang.String staticArgs,
                                     org.omg.CORBA.StringHolder dynamicArgs,
-                                    com.bbn.openmap.CSpecialist.GraphicChange notifyOnChange,
+                                    com.bbn.openmap.corba.CSpecialist.GraphicChange notifyOnChange,
                                     String uniqueID) {
         // System.out.println("ShapeSpecialist.fillRectangle()");
         try {

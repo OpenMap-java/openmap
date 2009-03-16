@@ -63,7 +63,7 @@ public abstract class OMComponentPanel extends JPanel implements
      * BeanContextChildSupport object provides helper functions for
      * BeanContextChild interface.
      */
-    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
+    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
 
     protected OMComponentPanel() {
         super();
@@ -196,7 +196,7 @@ public abstract class OMComponentPanel extends JPanel implements
      * @param it Iterator to use to go through a list of objects. Find the ones
      *        you need, and hook yourself up.
      */
-    public void findAndInit(Iterator it) {
+    public void findAndInit(Iterator<?> it) {
         while (it.hasNext()) {
             findAndInit(it.next());
         }
@@ -218,7 +218,7 @@ public abstract class OMComponentPanel extends JPanel implements
      * from the object used in those methods.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-        Iterator it = bcme.iterator();
+        Iterator<?> it = bcme.iterator();
         while (it.hasNext()) {
             findAndUndo(it.next());
         }

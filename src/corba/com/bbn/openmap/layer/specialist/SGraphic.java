@@ -22,11 +22,24 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.CSpecialist.CColorPackage.*;
-import com.bbn.openmap.CSpecialist.CStipplePackage.*;
-import com.bbn.openmap.CSpecialist.GraphicPackage.*;
-import java.util.*;
+import java.util.Vector;
+
+import com.bbn.openmap.corba.CSpecialist.CColor;
+import com.bbn.openmap.corba.CSpecialist.CStipple;
+import com.bbn.openmap.corba.CSpecialist.Comp;
+import com.bbn.openmap.corba.CSpecialist.EComp;
+import com.bbn.openmap.corba.CSpecialist.Graphic;
+import com.bbn.openmap.corba.CSpecialist.UGraphic;
+import com.bbn.openmap.corba.CSpecialist.UpdateGraphic;
+import com.bbn.openmap.corba.CSpecialist.UpdateRecord;
+import com.bbn.openmap.corba.CSpecialist.CColorPackage.EColor;
+import com.bbn.openmap.corba.CSpecialist.CStipplePackage.EStipple;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.DeclutterType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.EGraphic;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.GF_update;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.LineType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.RenderType;
 
 /**
  * The SGraphic class is the base class for the specialist graphic
@@ -37,7 +50,7 @@ public abstract class SGraphic {
 
     private static long gid = 0;
     Vector graphicUpdateList_ = null;
-    protected com.bbn.openmap.CSpecialist.GraphicPackage.EGraphic eg;
+    protected com.bbn.openmap.corba.CSpecialist.GraphicPackage.EGraphic eg;
     final private static EColor nullColor = new EColor(null, (short) 0, (short) 0, (short) 0);
     final private static EStipple nullStipple = new EStipple(null, (short) 0, (short) 0, new byte[0]);
     final private static EComp nullComp = new EComp(null, "");
@@ -49,7 +62,7 @@ public abstract class SGraphic {
         eg.obj = nullComp;
         eg.gType = GraphicType.GT_Raster;
         eg.rType = RenderType.RT_LatLon;
-        eg.lType = com.bbn.openmap.CSpecialist.GraphicPackage.LineType.LT_Unknown;
+        eg.lType = com.bbn.openmap.corba.CSpecialist.GraphicPackage.LineType.LT_Unknown;
         eg.dcType = DeclutterType.DC_None;
         eg.lineWidth = 1;
         eg.gID = Long.toString(gid++);

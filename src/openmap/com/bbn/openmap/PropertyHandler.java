@@ -525,7 +525,7 @@ public class PropertyHandler extends MapHandlerChild implements
      * properties it finds, overwriting the ones with the same key. Called by
      * the two constructors where a Properties object is passed in, or when a
      * URL for a Properties file is provided. This is not called by the
-     * consstructor that has to go looking for the properties to use.
+     * constructor that has to go looking for the properties to use.
      * 
      * @param props the properties to merge into the properties held by the
      *        PropertyHandler.

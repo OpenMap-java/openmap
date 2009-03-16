@@ -22,8 +22,8 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.GraphicChange;
-import com.bbn.openmap.CSpecialist._GraphicChangeStub;
+import com.bbn.openmap.corba.CSpecialist.GraphicChange;
+import com.bbn.openmap.corba.CSpecialist._GraphicChangeStub;
 
 /**
  */
@@ -58,7 +58,7 @@ public class JGraphicChange extends _GraphicChangeStub implements GraphicChange 
      */
     public void SetClientAttributes(
                                     boolean forceRedraw,
-                                    com.bbn.openmap.CSpecialist.UpdateRecord[] info) {}
+                                    com.bbn.openmap.corba.CSpecialist.UpdateRecord[] info) {}
 
     /**
      */

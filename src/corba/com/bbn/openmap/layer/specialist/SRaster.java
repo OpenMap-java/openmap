@@ -22,9 +22,17 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.CSpecialist.GraphicPackage.*;
-import com.bbn.openmap.CSpecialist.RasterPackage.*;
+import com.bbn.openmap.corba.CSpecialist.CTEntry;
+import com.bbn.openmap.corba.CSpecialist.LLPoint;
+import com.bbn.openmap.corba.CSpecialist.UGraphic;
+import com.bbn.openmap.corba.CSpecialist.UpdateGraphic;
+import com.bbn.openmap.corba.CSpecialist.XYPoint;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.DeclutterType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.LineType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.RenderType;
+import com.bbn.openmap.corba.CSpecialist.RasterPackage.ERaster;
+import com.bbn.openmap.corba.CSpecialist.RasterPackage.RASF_update;
 
 /**
  * SRaster is a specialist graphic object that creates and manipulates
@@ -298,19 +306,19 @@ public class SRaster extends SGraphic /* used to be _RasterImplBase */{
     // was before. Setting the number of colors or color table
     // automatically makes them align to the larger value. I try to
     // copy previous color values to the new table.
-    public void p1(com.bbn.openmap.CSpecialist.XYPoint p1) {
+    public void p1(com.bbn.openmap.corba.CSpecialist.XYPoint p1) {
         p1_ = p1;
     }
 
-    public com.bbn.openmap.CSpecialist.XYPoint p1() {
+    public com.bbn.openmap.corba.CSpecialist.XYPoint p1() {
         return p1_;
     }
 
-    public void ll1(com.bbn.openmap.CSpecialist.LLPoint ll1) {
+    public void ll1(com.bbn.openmap.corba.CSpecialist.LLPoint ll1) {
         ll1_ = ll1;
     }
 
-    public com.bbn.openmap.CSpecialist.LLPoint ll1() {
+    public com.bbn.openmap.corba.CSpecialist.LLPoint ll1() {
         return ll1_;
     }
 
@@ -392,7 +400,7 @@ public class SRaster extends SGraphic /* used to be _RasterImplBase */{
         return ugraphic;
     }
 
-    public void changeP1(com.bbn.openmap.CSpecialist.XYPoint p1) {
+    public void changeP1(com.bbn.openmap.corba.CSpecialist.XYPoint p1) {
         p1_ = p1;
         RASF_update gupdate = new RASF_update();
         gupdate.p1(p1);
@@ -401,7 +409,7 @@ public class SRaster extends SGraphic /* used to be _RasterImplBase */{
         addGraphicChange(ug);
     }
 
-    public void changeLl1(com.bbn.openmap.CSpecialist.LLPoint ll1) {
+    public void changeLl1(com.bbn.openmap.corba.CSpecialist.LLPoint ll1) {
         ll1_ = ll1;
         RASF_update gupdate = new RASF_update();
         gupdate.ll1(ll1);

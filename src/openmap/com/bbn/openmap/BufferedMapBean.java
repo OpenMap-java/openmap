@@ -29,20 +29,17 @@ import java.awt.event.ComponentEvent;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The BufferedMapBean extends the MapBean by adding (you guessed it)
- * buffering.
+ * The BufferedMapBean extends the MapBean by adding (you guessed it) buffering.
  * <p>
- * Specifically, the layers are stored in a java.awt.Image so that the
- * frequent painting done by Swing on lightweight components will not
- * cause the layers to do unnecessary work rerendering themselves each
- * time.
+ * Specifically, the layers are stored in a java.awt.Image so that the frequent
+ * painting done by Swing on lightweight components will not cause the layers to
+ * do unnecessary work rerendering themselves each time.
  * <P>
- * Changing the default clipping area may cause some Layers to not be
- * drawn completely, depending on what the clipping area is set to and
- * when the layer is trying to get itself painted. When manually
- * adjusting clipping area, make sure that when restricted clipping is
- * over that a full repaint occurs if there is a chance that another
- * layer may be trying to paint itself.
+ * Changing the default clipping area may cause some Layers to not be drawn
+ * completely, depending on what the clipping area is set to and when the layer
+ * is trying to get itself painted. When manually adjusting clipping area, make
+ * sure that when restricted clipping is over that a full repaint occurs if
+ * there is a chance that another layer may be trying to paint itself.
  */
 public class BufferedMapBean extends MapBean {
 
@@ -61,8 +58,8 @@ public class BufferedMapBean extends MapBean {
     }
 
     /**
-     * Invoked when component has been resized. Layer buffer is
-     * nullified. and super.componentResized(e) is called.
+     * Invoked when component has been resized. Layer buffer is nullified. and
+     * super.componentResized(e) is called.
      * 
      * @param e ComponentEvent
      */
@@ -70,6 +67,9 @@ public class BufferedMapBean extends MapBean {
         // reset drawingBuffer
         boolean bad = false;
         try {
+            if (drawingBuffer != null) {
+                drawingBuffer.flush();
+            }
             drawingBuffer = createImage(getWidth(), getHeight());
         } catch (java.lang.NegativeArraySizeException nae) {
             bad = true;
@@ -89,15 +89,14 @@ public class BufferedMapBean extends MapBean {
     /**
      * Paint the child components of this component.
      * <p>
-     * WE STRONGLY RECOMMEND THAT YOU DO NOT OVERRIDE THIS METHOD The
-     * map layers are buffered in an Image which is drawn to the
-     * screen. The buffer is refreshed after repaint() is called on a
-     * layer.
+     * WE STRONGLY RECOMMEND THAT YOU DO NOT OVERRIDE THIS METHOD The map layers
+     * are buffered in an Image which is drawn to the screen. The buffer is
+     * refreshed after repaint() is called on a layer.
      * <p>
-     * In our view, paint() is called on the MapBean excessively, such
-     * as when tool tips are displayed and removed on the LayerPanel,
-     * or on when menu items are highlighted. This method should
-     * greatly reduce the number of times Layers are rendered.
+     * In our view, paint() is called on the MapBean excessively, such as when
+     * tool tips are displayed and removed on the LayerPanel, or on when menu
+     * items are highlighted. This method should greatly reduce the number of
+     * times Layers are rendered.
      * 
      * @param g Graphics
      */
@@ -106,10 +105,10 @@ public class BufferedMapBean extends MapBean {
     }
 
     /**
-     * Same as paintChildren, but allows you to set a clipping area to
-     * paint. Be careful with this, because if the clipping area is
-     * set while some layer decides to paint itself, that layer may
-     * not have all it's objects painted. Same warnings apply.
+     * Same as paintChildren, but allows you to set a clipping area to paint. Be
+     * careful with this, because if the clipping area is set while some layer
+     * decides to paint itself, that layer may not have all it's objects
+     * painted. Same warnings apply.
      */
     public void paintChildren(Graphics g, Rectangle clip) {
 
@@ -166,12 +165,11 @@ public class BufferedMapBean extends MapBean {
     }
 
     /**
-     * Interface-like method to query if the MapBean is buffered, so
-     * you can control behavior better. Allows the removal of specific
-     * instance-like quieries for, say, BufferedMapBean, when all you
-     * really want to know is if you have the data is buffered, and if
-     * so, should be buffer be cleared. For the BufferedMapBean,
-     * always true.
+     * Interface-like method to query if the MapBean is buffered, so you can
+     * control behavior better. Allows the removal of specific instance-like
+     * quieries for, say, BufferedMapBean, when all you really want to know is
+     * if you have the data is buffered, and if so, should be buffer be cleared.
+     * For the BufferedMapBean, always true.
      */
     public boolean isBuffered() {
         return true;
@@ -179,8 +177,8 @@ public class BufferedMapBean extends MapBean {
 
     /**
      * Marks the image buffer as dirty if value is false. On the next
-     * <code>paintChildren()</code>, we will call
-     * <code>paint()</code> on all Layer components.
+     * <code>paintChildren()</code>, we will call <code>paint()</code> on all
+     * Layer components.
      * 
      * @param value boolean
      */
@@ -197,4 +195,9 @@ public class BufferedMapBean extends MapBean {
         return bufferDirty;
     }
 
+    public void dispose() {
+        drawingBuffer.flush();
+        drawingBuffer = null;
+        super.dispose();
+    }
 }

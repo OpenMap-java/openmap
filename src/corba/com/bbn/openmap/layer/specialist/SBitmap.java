@@ -22,10 +22,17 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.CSpecialist.BitmapPackage.*;
-import com.bbn.openmap.CSpecialist.CStipplePackage.*;
-import com.bbn.openmap.CSpecialist.GraphicPackage.*;
+import com.bbn.openmap.corba.CSpecialist.LLPoint;
+import com.bbn.openmap.corba.CSpecialist.UGraphic;
+import com.bbn.openmap.corba.CSpecialist.UpdateGraphic;
+import com.bbn.openmap.corba.CSpecialist.XYPoint;
+import com.bbn.openmap.corba.CSpecialist.BitmapPackage.BF_update;
+import com.bbn.openmap.corba.CSpecialist.BitmapPackage.EBitmap;
+import com.bbn.openmap.corba.CSpecialist.CStipplePackage.EStipple;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.DeclutterType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.LineType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.RenderType;
 
 /**
  * SBitmap is a specialist graphic object that creates and manipulates
@@ -116,19 +123,19 @@ public class SBitmap extends SGraphic /* used to be _BitmapImplBase */{
         bmref_ = null;
     }
 
-    public void p1(com.bbn.openmap.CSpecialist.XYPoint p1) {
+    public void p1(com.bbn.openmap.corba.CSpecialist.XYPoint p1) {
         p1_ = p1;
     }
 
-    public com.bbn.openmap.CSpecialist.XYPoint p1() {
+    public com.bbn.openmap.corba.CSpecialist.XYPoint p1() {
         return p1_;
     }
 
-    public void ll1(com.bbn.openmap.CSpecialist.LLPoint ll1) {
+    public void ll1(com.bbn.openmap.corba.CSpecialist.LLPoint ll1) {
         ll1_ = ll1;
     }
 
-    public com.bbn.openmap.CSpecialist.LLPoint ll1() {
+    public com.bbn.openmap.corba.CSpecialist.LLPoint ll1() {
         return ll1_;
     }
 
@@ -197,7 +204,7 @@ public class SBitmap extends SGraphic /* used to be _BitmapImplBase */{
     }
 
     //  Update methods as a result of gesture impulses...
-    public void changeP1(com.bbn.openmap.CSpecialist.XYPoint p1) {
+    public void changeP1(com.bbn.openmap.corba.CSpecialist.XYPoint p1) {
         p1_ = p1;
         BF_update gupdate = new BF_update();
         gupdate.p1(p1);
@@ -206,7 +213,7 @@ public class SBitmap extends SGraphic /* used to be _BitmapImplBase */{
         addGraphicChange(ug);
     }
 
-    public void changeLl1(com.bbn.openmap.CSpecialist.LLPoint ll1) {
+    public void changeLl1(com.bbn.openmap.corba.CSpecialist.LLPoint ll1) {
         ll1_ = ll1;
         BF_update gupdate = new BF_update();
         gupdate.ll1(ll1);

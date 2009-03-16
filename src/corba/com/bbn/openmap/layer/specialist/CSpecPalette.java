@@ -23,15 +23,34 @@
 package com.bbn.openmap.layer.specialist;
 
 /*  AWT & Schwing  */
-import javax.swing.*;
-import javax.swing.event.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-/*  CORBA  */
-import com.bbn.openmap.CSpecialist.*;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JTextArea;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-/*  OpenMap  */
+import com.bbn.openmap.corba.CSpecialist.ButtonBox;
+import com.bbn.openmap.corba.CSpecialist.CheckBox;
+import com.bbn.openmap.corba.CSpecialist.CheckButton;
+import com.bbn.openmap.corba.CSpecialist.ListBox;
+import com.bbn.openmap.corba.CSpecialist.RadioBox;
+import com.bbn.openmap.corba.CSpecialist.Slider;
+import com.bbn.openmap.corba.CSpecialist.TextBox;
+import com.bbn.openmap.corba.CSpecialist.UWidget;
+import com.bbn.openmap.corba.CSpecialist.WidgetType;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 

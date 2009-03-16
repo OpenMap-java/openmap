@@ -22,7 +22,8 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.*;
+import com.bbn.openmap.corba.CSpecialist.EComp;
+import com.bbn.openmap.corba.CSpecialist._CompStub;
 
 /**
  * A SComp class is used to provide additional functionality for a
@@ -48,10 +49,10 @@ public class SComp extends _CompStub {
         self = new EComp(this, cID);
     }
 
-    public com.bbn.openmap.CSpecialist.ActionUnion[] sendGesture(
-                                                                 com.bbn.openmap.CSpecialist.MouseEvent gesture,
+    public com.bbn.openmap.corba.CSpecialist.ActionUnion[] sendGesture(
+                                                                 com.bbn.openmap.corba.CSpecialist.MouseEvent gesture,
                                                                  java.lang.String uniqueID) {
-        return new com.bbn.openmap.CSpecialist.ActionUnion[0];
+        return new com.bbn.openmap.corba.CSpecialist.ActionUnion[0];
     }
 
     /**

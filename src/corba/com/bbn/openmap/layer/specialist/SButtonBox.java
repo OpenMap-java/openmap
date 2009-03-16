@@ -22,7 +22,8 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.*;
+import com.bbn.openmap.corba.CSpecialist.UWidget;
+import com.bbn.openmap.corba.CSpecialist._ButtonBoxStub;
 
 /**
  * Class SButtonBox is a specialist palette widget. It is a box that

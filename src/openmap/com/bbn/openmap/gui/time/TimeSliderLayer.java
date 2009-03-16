@@ -37,9 +37,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.bbn.openmap.time.Clock;
-import com.bbn.openmap.time.TimeBounds;
-import com.bbn.openmap.time.TimeEvent;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapBean;
@@ -50,7 +47,6 @@ import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.event.ZoomEvent;
 import com.bbn.openmap.event.ZoomListener;
 import com.bbn.openmap.event.ZoomSupport;
-import com.bbn.openmap.gui.time.TimeConstants;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphicList;
@@ -60,6 +56,13 @@ import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.proj.Cartesian;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.time.Clock;
+import com.bbn.openmap.time.TimeBounds;
+import com.bbn.openmap.time.TimeBoundsEvent;
+import com.bbn.openmap.time.TimeBoundsListener;
+import com.bbn.openmap.time.TimeEvent;
+import com.bbn.openmap.time.TimeEventListener;
+import com.bbn.openmap.time.TimerStatus;
 import com.bbn.openmap.tools.icon.BasicIconPart;
 import com.bbn.openmap.tools.icon.IconPart;
 import com.bbn.openmap.tools.icon.OMIconFactory;
@@ -70,7 +73,8 @@ import com.bbn.openmap.tools.icon.OMIconFactory;
  * Render events and allow for their selection on a variable-scale timeline
  */
 public class TimeSliderLayer extends OMGraphicHandlerLayer implements
-        PropertyChangeListener, MapMouseListener, ComponentListener {
+        PropertyChangeListener, MapMouseListener, ComponentListener,
+        TimeBoundsListener, TimeEventListener {
 
     protected static Logger logger = Logger.getLogger("com.bbn.hotwash.gui.TimeSliderLayer");
 
@@ -149,8 +153,8 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
     public void findAndInit(Object someObj) {
         if (someObj instanceof Clock) {
             clock = ((Clock) someObj);
-            clock.addPropertyChangeListener(Clock.TIMER_STATUS_PROPERTY, this);
-            clock.addPropertyChangeListener(Clock.TIME_BOUNDS_PROPERTY, this);
+            clock.addPropertyChangeListener(Clock.TIMER_STATUS, this);
+            clock.addTimeBoundsListener(this);
 
             gameStartTime = ((Clock) someObj).getStartTime();
             gameEndTime = ((Clock) someObj).getEndTime();
@@ -427,60 +431,35 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
         }
     }
 
-    /*
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent evt) {
-        String propertyName = evt.getPropertyName();
-        if (propertyName.equals(Clock.TIME_BOUNDS_PROPERTY)) {
+    public void updateTime(TimeEvent te) {
 
-            TimeBounds timeBounds = (TimeBounds) evt.getNewValue();
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine(propertyName + ": " + timeBounds);
-            }
+        if (checkAndSetForNoTime(te)) {
+            return;
+        }
 
-            gameStartTime = timeBounds.getStartTime();
-            gameEndTime = timeBounds.getEndTime();
+        TimerStatus timerStatus = te.getTimerStatus();
 
-            updateTimeLabels(gameStartTime, gameEndTime);
+        if (timerStatus.equals(TimerStatus.STEP_FORWARD)
+                || timerStatus.equals(TimerStatus.STEP_BACKWARD)
+                || timerStatus.equals(TimerStatus.UPDATE)) {
 
-            // DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy
-            // HH:mm:ss");
-            // Date date = new Date(gameStartTime);
-            // String sts = dateFormat.format(date);
-            // date.setTime(gameEndTime);
-            // String ets = dateFormat.format(date);
+            currentTime = te.getSystemTime();
+            currentTime -= gameStartTime;
 
-            maxSelectionWidthMinutes = TimelineLayer.forwardProjectMillis(gameEndTime
-                    - gameStartTime);
-            if (selectionWidthMinutes > maxSelectionWidthMinutes
-                    || selectionWidthMinutes < .0001) {
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("resetting selectionWidthMinutes to max (time bounds property change), was "
-                            + selectionWidthMinutes
-                            + ", now "
-                            + maxSelectionWidthMinutes);
-                }
-                selectionWidthMinutes = maxSelectionWidthMinutes;
-            }
+            selectionCenter = TimelineLayer.forwardProjectMillis(currentTime);
+            resetControlWidgets();
+            repaint();
+        }
 
-            finalizeProjection();
-            doPrepare();
-        } else if (propertyName == Clock.TIMER_STATUS_PROPERTY) {
-
-            TimeEvent te = (TimeEvent) evt.getNewValue();
-
-            if (checkAndSetForNoTime(te)) {
-                return;
-            }
-
-            // Clock clock = (Clock) te.getSource();
-            String timeEventType = te.getTimerStatus();
-
-            if (timeEventType == TimeConstants.TIMER_STEP_FORWARD
-                    || timeEventType == TimeConstants.TIMER_STEP_BACKWARD
-                    || timeEventType == Clock.TIME_SET_STATUS) {
-                // if (((Clock) te.getSource()).isRunning()) {
+        if (timerStatus.equals(TimerStatus.FORWARD)
+                || timerStatus.equals(TimerStatus.BACKWARD)
+                || timerStatus.equals(TimerStatus.STOPPED)) {
+            // Checking for a running clock prevents a time status
+            // update after the clock is stopped. The
+            // AudioFileHandlers don't care about the current time
+            // if it isn't running.
+            if (((Clock) te.getSource()).isRunning()) {
+                // update(te.getSystemTime());
                 currentTime = te.getSystemTime();
                 currentTime -= gameStartTime;
 
@@ -488,23 +467,17 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
                 resetControlWidgets();
                 repaint();
             }
+        }
 
-            if (timeEventType == Clock.TIMER_TIME_STATUS) {
-                // Checking for a running clock prevents a time status
-                // update after the clock is stopped. The
-                // AudioFileHandlers don't care about the current time
-                // if it isn't running.
-                if (((Clock) te.getSource()).isRunning()) {
-                    // update(te.getSystemTime());
-                    currentTime = te.getSystemTime();
-                    currentTime -= gameStartTime;
+    }
 
-                    selectionCenter = TimelineLayer.forwardProjectMillis(currentTime);
-                    resetControlWidgets();
-                    repaint();
-                }
-            }
-        } else if (propertyName == MapBean.ProjectionProperty) {
+    /*
+     * @seejava.beans.PropertyChangeListener#propertyChange(java.beans.
+     * PropertyChangeEvent)
+     */
+    public void propertyChange(PropertyChangeEvent evt) {
+        String propertyName = evt.getPropertyName();
+        if (propertyName == MapBean.ProjectionProperty) {
             // This property should be from the TimelineLayer's MapBean, solely
             // for the scale measurement.
             logger.fine(propertyName + " from " + evt.getSource());
@@ -772,6 +745,11 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
             return ret;
 
         }
+
+        public String getParentName() {
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
 
     public void paint(Graphics g) {
@@ -804,6 +782,46 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
             setLocation(0 + lo, 0 + to, proj.getWidth() + ro, proj.getHeight()
                     + bo);
             return super.generate(proj);
+        }
+
+    }
+
+    public void updateTimeBounds(TimeBoundsEvent tbe) {
+
+        TimeBounds timeBounds = (TimeBounds) tbe.getNewTimeBounds();
+
+        if (timeBounds != null) {
+
+            gameStartTime = timeBounds.getStartTime();
+            gameEndTime = timeBounds.getEndTime();
+
+            updateTimeLabels(gameStartTime, gameEndTime);
+
+            // DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy
+            // HH:mm:ss");
+            // Date date = new Date(gameStartTime);
+            // String sts = dateFormat.format(date);
+            // date.setTime(gameEndTime);
+            // String ets = dateFormat.format(date);
+
+            maxSelectionWidthMinutes = TimelineLayer.forwardProjectMillis(gameEndTime
+                    - gameStartTime);
+            if (selectionWidthMinutes > maxSelectionWidthMinutes
+                    || selectionWidthMinutes < .0001) {
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("resetting selectionWidthMinutes to max (time bounds property change), was "
+                            + selectionWidthMinutes
+                            + ", now "
+                            + maxSelectionWidthMinutes);
+                }
+                selectionWidthMinutes = maxSelectionWidthMinutes;
+            }
+
+            finalizeProjection();
+            doPrepare();
+        } else {
+            // TODO handle when time bounds are null, meaning when no time
+            // bounds providers are active.
         }
 
     }

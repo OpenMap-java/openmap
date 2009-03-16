@@ -24,15 +24,18 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.LLPoint;
-import com.bbn.openmap.CSpecialist.PolyPackage.*;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.ProjMath;
 import java.io.Serializable;
+
+import com.bbn.openmap.corba.CSpecialist.LLPoint;
+import com.bbn.openmap.corba.CSpecialist.PolyPackage.CoordMode;
+import com.bbn.openmap.corba.CSpecialist.PolyPackage.EPoly;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.proj.ProjMath;
 
 public class JPoly extends OMPoly implements Serializable, JObjectHolder {
 
-    protected transient com.bbn.openmap.CSpecialist.EComp object = null;
+    protected transient com.bbn.openmap.corba.CSpecialist.EComp object = null;
 
     /** Constructor. */
     public JPoly(EPoly epoly) {
@@ -94,16 +97,16 @@ public class JPoly extends OMPoly implements Serializable, JObjectHolder {
 
     }
 
-    public void setObject(com.bbn.openmap.CSpecialist.EComp aObject) {
+    public void setObject(com.bbn.openmap.corba.CSpecialist.EComp aObject) {
         object = aObject;
     }
 
-    public com.bbn.openmap.CSpecialist.EComp getObject() {
+    public com.bbn.openmap.corba.CSpecialist.EComp getObject() {
         return object;
     }
 
     public void update(
-                       com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update) {
+                       com.bbn.openmap.corba.CSpecialist.GraphicPackage.GF_update update) {
         JGraphic.update((JObjectHolder) this, update);
     }
 
@@ -111,13 +114,13 @@ public class JPoly extends OMPoly implements Serializable, JObjectHolder {
      * update() - takes a PolyPackage.PF_update and changes the fields
      * that need to be. Called as a result of a gesture.
      */
-    public void update(com.bbn.openmap.CSpecialist.PolyPackage.PF_update update) {
+    public void update(com.bbn.openmap.corba.CSpecialist.PolyPackage.PF_update update) {
         int npts;
 
         switch (update.discriminator().value()) {
 
         // set fixed point
-        case com.bbn.openmap.CSpecialist.PolyPackage.settableFields._PF_ll1:
+        case com.bbn.openmap.corba.CSpecialist.PolyPackage.settableFields._PF_ll1:
             LLPoint ll = update.ll1();
             lat = ll.lat;
             lon = ll.lon;
@@ -126,7 +129,7 @@ public class JPoly extends OMPoly implements Serializable, JObjectHolder {
 
         // set coordinate mode
 
-        case com.bbn.openmap.CSpecialist.PolyPackage.settableFields._PF_cMode:
+        case com.bbn.openmap.corba.CSpecialist.PolyPackage.settableFields._PF_cMode:
             int newMode = getCoordMode(update.cMode());
             if (newMode != coordMode) {
                 coordMode = newMode;
@@ -135,9 +138,9 @@ public class JPoly extends OMPoly implements Serializable, JObjectHolder {
             break;
 
         // set xypoints
-        case com.bbn.openmap.CSpecialist.PolyPackage.settableFields._PF_xypoints:
+        case com.bbn.openmap.corba.CSpecialist.PolyPackage.settableFields._PF_xypoints:
 
-            com.bbn.openmap.CSpecialist.XYPoint[] xypoints = update.xypoints();
+            com.bbn.openmap.corba.CSpecialist.XYPoint[] xypoints = update.xypoints();
             npts = xypoints.length;
             if (npts > 0) {
                 xs = new int[npts];
@@ -154,8 +157,8 @@ public class JPoly extends OMPoly implements Serializable, JObjectHolder {
             break;
 
         // set llpoints
-        case com.bbn.openmap.CSpecialist.PolyPackage.settableFields._PF_llpoints:
-            com.bbn.openmap.CSpecialist.LLPoint[] llpoints = update.llpoints();
+        case com.bbn.openmap.corba.CSpecialist.PolyPackage.settableFields._PF_llpoints:
+            com.bbn.openmap.corba.CSpecialist.LLPoint[] llpoints = update.llpoints();
             npts = llpoints.length;
             if (npts > 0) {
                 rawllpts = new double[npts * 2];

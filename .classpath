@@ -2,10 +2,10 @@
 <classpath>
 	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" path="src/openmap"/>
 	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" path="src/ext"/>
-	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" path="src/corba"/>
-	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" path="src/j3d"/>
-	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" path="src/svg"/>
+	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" output="classes/corba" path="src/corba"/>
+	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" output="classes/j3d" path="src/j3d"/>
+	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" output="classes/svg" path="src/svg"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
-	<classpathentry kind="output" path="classes"/>
+	<classpathentry kind="output" path="classes/openmap"/>
 </classpath>

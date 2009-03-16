@@ -23,9 +23,9 @@
 package com.bbn.openmap.layer.editor;
 
 import java.awt.Container;
-import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -39,8 +39,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
-import com.bbn.openmap.MapBean;
 import com.bbn.openmap.InformationDelegator;
+import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MouseDelegator;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.MapMouseMode;
@@ -700,6 +700,10 @@ public class DrawingEditorTool extends AbstractEditorTool implements
 
         mouseDelegator = md;
 
+        if (md == null) {
+            return;
+        }
+        
         EditorLayer el = (EditorLayer) getLayer();
         if (el != null) {
             mouseDelegator.addMouseMode(el.getMouseMode());

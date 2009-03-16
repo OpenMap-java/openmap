@@ -33,46 +33,49 @@ import java.beans.beancontext.BeanContextMembershipListener;
 import java.util.Iterator;
 
 /**
- * MapHandlerChild shows you all the methods you need to add to an
- * object for it be a good member of the MapHandler. The MapHandler is
- * actually a BeanContext object, which is simply a container for a
- * bunch of objects that may be interested in other objects. If you
- * are using this object as a model to figure out what methods to add
- * to other objects, there are a couple of things to notice. First,
- * java.awt.Components already have a PropertyChangeSupport object in
- * it, so you don't need to implement the methods that deal with
+ * MapHandlerChild shows you all the methods you need to add to an object for it
+ * be a good member of the MapHandler. The MapHandler is actually a BeanContext
+ * object, which is simply a container for a bunch of objects that may be
+ * interested in other objects. If you are using this object as a model to
+ * figure out what methods to add to other objects, there are a couple of things
+ * to notice. First, java.awt.Components already have a PropertyChangeSupport
+ * object in it, so you don't need to implement the methods that deal with
  * property changes. For javax.swing.JComponents, they have
- * VetoablePropertySupport build in, but that object doesn't handle
- * certain methods needed by the BeanContextChild, most notably the
- * (add/remove)VetoableChangeListener() methods with a specific
- * property as an argument.
+ * VetoablePropertySupport build in, but that object doesn't handle certain
+ * methods needed by the BeanContextChild, most notably the
+ * (add/remove)VetoableChangeListener() methods with a specific property as an
+ * argument.
  * <P>
  * 
- * When you design a MapHandlerChild, you should make it comfortable
- * running without references to objects it depends on. It should wait
- * patiently for the other objects to be added to the MapHandler, and
- * then do the work itself to hook up. It should also listen for those
- * objects to be removed from the MapHandler, disengage gracefully,
- * and wait patiently until it finds something else to hook up to.
+ * When you design a MapHandlerChild, you should make it comfortable running
+ * without references to objects it depends on. It should wait patiently for the
+ * other objects to be added to the MapHandler, and then do the work itself to
+ * hook up. It should also listen for those objects to be removed from the
+ * MapHandler, disengage gracefully, and wait patiently until it finds something
+ * else to hook up to.
  * <P>
  * 
  * An object does not have to be a MapHandlerChild to be added to the
- * MapHandler, but it does need to be one to be able to use it. If you
- * use the findAndInit(Iterator) method to look for objects, you'll
- * find it is called on two different conditions. It's called when
- * this MapHandlerChild is added to the MapHandler, and it then
- * receives a list of all the objects currently contained in the
- * MapHandler. It is also called when other objects are added to the
- * MapHandler. The list then contains objects that have just been
- * added. The findAndInit(Object) method has been added to allow
- * subclassed objects to call super.findAndInit(Object) to let the
- * super classes handles the objects they care about.
+ * MapHandler, but it does need to be one to be able to use it. If you use the
+ * findAndInit(Iterator) method to look for objects, you'll find it is called on
+ * two different conditions. It's called when this MapHandlerChild is added to
+ * the MapHandler, and it then receives a list of all the objects currently
+ * contained in the MapHandler. It is also called when other objects are added
+ * to the MapHandler. The list then contains objects that have just been added.
+ * The findAndInit(Object) method has been added to allow subclassed objects to
+ * call super.findAndInit(Object) to let the super classes handles the objects
+ * they care about.
  * <P>
  * 
- * When objects are removed from the BeanContext, the
- * childrenRemoved() method is called with a list of objects being
- * removed. Likewise, the findAndUndo(Object) method has been added
- * for the benefit of subclasses.
+ * When objects are removed from the BeanContext, the childrenRemoved() method
+ * is called with a list of objects being removed. Likewise, the
+ * findAndUndo(Object) method has been added for the benefit of subclasses.
+ * <P>
+ * 
+ * MapHandlerChild objects expect to be added to only one BeanContext. The
+ * BeanContextChildSupport object detects when it has a different BeanContext
+ * added to it, and it will fire property change notifications to get itself
+ * removed from the first BeanContext.
  */
 public class MapHandlerChild implements BeanContextChild,
         BeanContextMembershipListener, LightMapHandlerChild {
@@ -81,17 +84,16 @@ public class MapHandlerChild implements BeanContextChild,
      * BeanContextChildSupport object provides helper functions for
      * BeanContextChild interface.
      */
-    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
+    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
 
     /**
-     * This is the method that your object can use to find other
-     * objects within the MapHandler (BeanContext). This method gets
-     * called when the object gets added to the MapHandler, or when
-     * another object gets added to the MapHandler after the object is
-     * a member.
+     * This is the method that your object can use to find other objects within
+     * the MapHandler (BeanContext). This method gets called when the object
+     * gets added to the MapHandler, or when another object gets added to the
+     * MapHandler after the object is a member.
      * 
-     * @param it Iterator to use to go through a list of objects. Find
-     *        the ones you need, and hook yourself up.
+     * @param it Iterator to use to go through a list of objects. Find the ones
+     *        you need, and hook yourself up.
      */
     public void findAndInit(Iterator it) {
         while (it.hasNext()) {
@@ -100,28 +102,27 @@ public class MapHandlerChild implements BeanContextChild,
     }
 
     /**
-     * The findAndInit method has been made non-abstract, because it
-     * now calls this method for every object that is in the iterator
-     * it receives. This lets subclasses call a method on super
-     * classes so they can handle their needs as well.
+     * The findAndInit method has been made non-abstract, because it now calls
+     * this method for every object that is in the iterator it receives. This
+     * lets subclasses call a method on super classes so they can handle their
+     * needs as well.
      */
     public void findAndInit(Object obj) {}
 
     /**
-     * BeanContextMembershipListener method. Called when a new object
-     * is added to the BeanContext of this object.
+     * BeanContextMembershipListener method. Called when a new object is added
+     * to the BeanContext of this object.
      */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
         findAndInit(bcme.iterator());
     }
 
     /**
-     * BeanContextMembershipListener method. Called when a new object
-     * is removed from the BeanContext of this object. For the Layer,
-     * this method doesn't do anything. If your layer does something
-     * with the childrenAdded method, or findAndInit, you should take
-     * steps in this method to unhook the layer from the object used
-     * in those methods.
+     * BeanContextMembershipListener method. Called when a new object is removed
+     * from the BeanContext of this object. For the Layer, this method doesn't
+     * do anything. If your layer does something with the childrenAdded method,
+     * or findAndInit, you should take steps in this method to unhook the layer
+     * from the object used in those methods.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
         Iterator it = bcme.iterator();
@@ -131,10 +132,10 @@ public class MapHandlerChild implements BeanContextChild,
     }
 
     /**
-     * The childrenRemoved has been changed to go through its iterator
-     * to call this method with every object. This lets subclasses
-     * call this method on their super class, so it can handle what it
-     * needs to with objects it may be interested in.
+     * The childrenRemoved has been changed to go through its iterator to call
+     * this method with every object. This lets subclasses call this method on
+     * their super class, so it can handle what it needs to with objects it may
+     * be interested in.
      */
     public void findAndUndo(Object obj) {}
 
@@ -145,9 +146,9 @@ public class MapHandlerChild implements BeanContextChild,
 
     /**
      * Method for BeanContextChild interface. Adds this object as a
-     * BeanContextMembership listener, set the BeanContext in this
-     * objects BeanContextSupport, and receives the initial list of
-     * objects currently contained in the BeanContext.
+     * BeanContextMembership listener, set the BeanContext in this objects
+     * BeanContextSupport, and receives the initial list of objects currently
+     * contained in the BeanContext.
      */
     public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
 
@@ -159,10 +160,9 @@ public class MapHandlerChild implements BeanContextChild,
     }
 
     /**
-     * Method for BeanContextChild interface. Uses the
-     * BeanContextChildSupport to add a listener to this object's
-     * property. You don't need this function for objects that extend
-     * java.awt.Component.
+     * Method for BeanContextChild interface. Uses the BeanContextChildSupport
+     * to add a listener to this object's property. You don't need this function
+     * for objects that extend java.awt.Component.
      */
     public void addPropertyChangeListener(String propertyName,
                                           PropertyChangeListener in_pcl) {
@@ -170,10 +170,9 @@ public class MapHandlerChild implements BeanContextChild,
     }
 
     /**
-     * Method for BeanContextChild interface. Uses the
-     * BeanContextChildSupport to remove a listener to this object's
-     * property. You don't need this function for objects that extend
-     * java.awt.Component.
+     * Method for BeanContextChild interface. Uses the BeanContextChildSupport
+     * to remove a listener to this object's property. You don't need this
+     * function for objects that extend java.awt.Component.
      */
     public void removePropertyChangeListener(String propertyName,
                                              PropertyChangeListener in_pcl) {
@@ -182,10 +181,9 @@ public class MapHandlerChild implements BeanContextChild,
     }
 
     /**
-     * Method for BeanContextChild interface. Uses the
-     * BeanContextChildSupport to add a listener to this object's
-     * property. This listener wants to have the right to veto a
-     * property change.
+     * Method for BeanContextChild interface. Uses the BeanContextChildSupport
+     * to add a listener to this object's property. This listener wants to have
+     * the right to veto a property change.
      */
     public void addVetoableChangeListener(String propertyName,
                                           VetoableChangeListener in_vcl) {
@@ -193,9 +191,9 @@ public class MapHandlerChild implements BeanContextChild,
     }
 
     /**
-     * Method for BeanContextChild interface. Uses the
-     * BeanContextChildSupport to remove a listener to this object's
-     * property. The listener has the power to veto property changes.
+     * Method for BeanContextChild interface. Uses the BeanContextChildSupport
+     * to remove a listener to this object's property. The listener has the
+     * power to veto property changes.
      */
     public void removeVetoableChangeListener(String propertyName,
                                              VetoableChangeListener in_vcl) {
@@ -204,32 +202,30 @@ public class MapHandlerChild implements BeanContextChild,
     }
 
     /**
-     * Method for BeanContextChild interface. Uses the
-     * BeanContextChildSupport to fire a property change. You don't
-     * need this function for objects that extend java.awt.Component.
+     * Method for BeanContextChild interface. Uses the BeanContextChildSupport
+     * to fire a property change. You don't need this function for objects that
+     * extend java.awt.Component.
      */
     public void firePropertyChange(String name, Object oldValue, Object newValue) {
         beanContextChildSupport.firePropertyChange(name, oldValue, newValue);
     }
 
     /**
-     * Report a vetoable property update to any registered listeners.
-     * If anyone vetos the change, then fire a new event reverting
-     * everyone to the old value and then rethrow the
-     * PropertyVetoException.
+     * Report a vetoable property update to any registered listeners. If anyone
+     * vetos the change, then fire a new event reverting everyone to the old
+     * value and then rethrow the PropertyVetoException.
      * <P>
      * 
      * No event is fired if old and new are equal and non-null.
      * <P>
      * 
-     * @param name The programmatic name of the property that is about
-     *        to change
+     * @param name The programmatic name of the property that is about to change
      * 
      * @param oldValue The old value of the property
      * @param newValue - The new value of the property
      * 
-     * @throws PropertyVetoException if the recipient wishes the
-     *         property change to be rolled back.
+     * @throws PropertyVetoException if the recipient wishes the property change
+     *         to be rolled back.
      */
     public void fireVetoableChange(String name, Object oldValue, Object newValue)
             throws PropertyVetoException {

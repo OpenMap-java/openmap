@@ -23,9 +23,16 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.CSpecialist.GraphicPackage.*;
-import com.bbn.openmap.CSpecialist.UnitSymbolPackage.*;
+import com.bbn.openmap.corba.CSpecialist.LLPoint;
+import com.bbn.openmap.corba.CSpecialist.UGraphic;
+import com.bbn.openmap.corba.CSpecialist.UpdateGraphic;
+import com.bbn.openmap.corba.CSpecialist.XYPoint;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.DeclutterType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.LineType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.RenderType;
+import com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.EUnitSymbol;
+import com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.USF_update;
 
 /** FM101 Unit Symbols are part of a Goverment standard for icons. */
 
@@ -184,16 +191,16 @@ public class SUnitSymbol extends SGraphic /*used to be _UnitSymbolImplBase*/ {
   
 
     // Object methods
-    public void p1(com.bbn.openmap.CSpecialist.XYPoint p1) {
+    public void p1(com.bbn.openmap.corba.CSpecialist.XYPoint p1) {
         p1_ = p1;
     }
-    public com.bbn.openmap.CSpecialist.XYPoint p1() {
+    public com.bbn.openmap.corba.CSpecialist.XYPoint p1() {
         return p1_;
     }
-    public void ll1(com.bbn.openmap.CSpecialist.LLPoint ll1) {
+    public void ll1(com.bbn.openmap.corba.CSpecialist.LLPoint ll1) {
         ll1_ = ll1;
     }
-    public com.bbn.openmap.CSpecialist.LLPoint ll1() {
+    public com.bbn.openmap.corba.CSpecialist.LLPoint ll1() {
         return ll1_;
     }
 
@@ -276,7 +283,7 @@ public class SUnitSymbol extends SGraphic /*used to be _UnitSymbolImplBase*/ {
     }
 
     //  Update methods as a result of gesture impulses...
-    public void changeP1(com.bbn.openmap.CSpecialist.XYPoint p1) {
+    public void changeP1(com.bbn.openmap.corba.CSpecialist.XYPoint p1) {
         p1_ = p1;
         USF_update gupdate = new USF_update();
         gupdate.p1(p1);
@@ -284,7 +291,7 @@ public class SUnitSymbol extends SGraphic /*used to be _UnitSymbolImplBase*/ {
         ug.usf_update(gupdate);
         addGraphicChange(ug);
     }
-    public void changeLl1(com.bbn.openmap.CSpecialist.LLPoint ll1) {
+    public void changeLl1(com.bbn.openmap.corba.CSpecialist.LLPoint ll1) {
         ll1_ = ll1;
         USF_update gupdate = new USF_update();
         gupdate.ll1(ll1);

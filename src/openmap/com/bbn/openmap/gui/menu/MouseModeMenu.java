@@ -47,7 +47,7 @@ public class MouseModeMenu extends AbstractOpenMapMenu implements
     protected transient JRadioButtonMenuItem[] mouseModeButtons = new JRadioButtonMenuItem[0];
     protected transient ButtonGroup group2 = null;
     protected I18n i18n = Environment.getI18n();
-    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
+    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
 
     public MouseModeMenu() {
         super();

@@ -29,11 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import com.bbn.openmap.CSpecialist.Comp;
-import com.bbn.openmap.CSpecialist.LLPoint;
-import com.bbn.openmap.CSpecialist.UGraphic;
-import com.bbn.openmap.CSpecialist.GraphicPackage.LineType;
-import com.bbn.openmap.CSpecialist.GraphicPackage.RenderType;
+import com.bbn.openmap.corba.CSpecialist.Comp;
+import com.bbn.openmap.corba.CSpecialist.LLPoint;
+import com.bbn.openmap.corba.CSpecialist.UGraphic;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.LineType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.RenderType;
 import com.bbn.openmap.layer.specialist.GraphicList;
 import com.bbn.openmap.layer.specialist.SColor;
 import com.bbn.openmap.layer.specialist.SPoly;

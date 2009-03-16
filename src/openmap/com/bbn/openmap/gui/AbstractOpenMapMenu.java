@@ -110,7 +110,7 @@ abstract public class AbstractOpenMapMenu extends JMenu implements
      */
     protected I18n i18n = Environment.getI18n();
 
-    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
+    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
 
     /**
      * Token uniquely identifying this component in the application

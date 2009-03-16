@@ -22,12 +22,17 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.CColorPackage.EColor;
-import com.bbn.openmap.CSpecialist.GraphicPackage.*;
-import com.bbn.openmap.omGraphics.*;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.io.Serializable;
+
+import com.bbn.openmap.corba.CSpecialist.CColorPackage.EColor;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.DeclutterType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.EGraphic;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.LineType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.RenderType;
+import com.bbn.openmap.omGraphics.OMGraphic;
 
 /** class JGraphic */
 public class JGraphic implements Serializable {
@@ -177,7 +182,7 @@ public class JGraphic implements Serializable {
     }
 
     //    public static OMStipple getOMStipple(
-    //      com.bbn.openmap.CSpecialist.CStipplePackage.EStipple estip)
+    //      com.bbn.openmap.corba.CSpecialist.CStipplePackage.EStipple estip)
     //    {
     //      System.err.println("EGraphic.getOMStipple: unimplemented");
     //      return (OMStipple) null;
@@ -189,30 +194,30 @@ public class JGraphic implements Serializable {
      * constructGesture() - constructs a CSpecialist.MouseEvent from a
      * MapGesture
      */
-    protected static com.bbn.openmap.CSpecialist.MouseEvent constructGesture(
+    protected static com.bbn.openmap.corba.CSpecialist.MouseEvent constructGesture(
                                                                              MapGesture gest) {
 
-        com.bbn.openmap.CSpecialist.Mouse mouse = new com.bbn.openmap.CSpecialist.Mouse();
+        com.bbn.openmap.corba.CSpecialist.Mouse mouse = new com.bbn.openmap.corba.CSpecialist.Mouse();
 
         // set the mouse parameters
-        mouse.point = new com.bbn.openmap.CSpecialist.XYPoint((short) gest.point.x, (short) gest.point.y);
-        mouse.llpoint = new com.bbn.openmap.CSpecialist.LLPoint(gest.llpoint.getLatitude(), gest.llpoint.getLongitude());
+        mouse.point = new com.bbn.openmap.corba.CSpecialist.XYPoint((short) gest.point.x, (short) gest.point.y);
+        mouse.llpoint = new com.bbn.openmap.corba.CSpecialist.LLPoint(gest.llpoint.getLatitude(), gest.llpoint.getLongitude());
         mouse.press = gest.press;
         mouse.mousebutton = gest.mousebutton;
-        mouse.modifiers = new com.bbn.openmap.CSpecialist.key_modifiers(gest.alt, gest.shift, gest.control);
+        mouse.modifiers = new com.bbn.openmap.corba.CSpecialist.key_modifiers(gest.alt, gest.shift, gest.control);
         //      mouse.modifiers.meta = gest.meta;
 
         // construct the CSpecialist.MouseEvent
-        com.bbn.openmap.CSpecialist.MouseEvent event = new com.bbn.openmap.CSpecialist.MouseEvent();
+        com.bbn.openmap.corba.CSpecialist.MouseEvent event = new com.bbn.openmap.corba.CSpecialist.MouseEvent();
         switch (gest.event_type) {
-        case com.bbn.openmap.CSpecialist.MouseType._ClickEvent:
+        case com.bbn.openmap.corba.CSpecialist.MouseType._ClickEvent:
             event.click(mouse);
             break;
-        case com.bbn.openmap.CSpecialist.MouseType._MotionEvent:
+        case com.bbn.openmap.corba.CSpecialist.MouseType._MotionEvent:
             event.motion(mouse);
             break;
-        case com.bbn.openmap.CSpecialist.MouseType._KeyEvent:
-            event.keypress(new com.bbn.openmap.CSpecialist.Keypress(mouse.point, gest.key, mouse.modifiers));
+        case com.bbn.openmap.corba.CSpecialist.MouseType._KeyEvent:
+            event.keypress(new com.bbn.openmap.corba.CSpecialist.Keypress(mouse.point, gest.key, mouse.modifiers));
             break;
         default:
             System.err.println("JGraphic.constructGesture() - invalid type");
@@ -222,44 +227,44 @@ public class JGraphic implements Serializable {
 
     public static void update(
                               JObjectHolder graphic,
-                              com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update) {
+                              com.bbn.openmap.corba.CSpecialist.GraphicPackage.GF_update update) {
 
         // do the updates, but don't rerender just yet
         switch (update.discriminator().value()) {
 
         // mousable object changed
-        case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_object:
+        case com.bbn.openmap.corba.CSpecialist.GraphicPackage.settableFields._GF_object:
             graphic.setObject(update.obj());
             break;
 
         // line type changed
-        case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_lType:
+        case com.bbn.openmap.corba.CSpecialist.GraphicPackage.settableFields._GF_lType:
             ((OMGraphic) graphic).setLineType(update.lType().value());
             break;
 
         // render type changed
-        case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_rType:
+        case com.bbn.openmap.corba.CSpecialist.GraphicPackage.settableFields._GF_rType:
             ((OMGraphic) graphic).setRenderType(update.rType().value());
             break;
 
-        case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_color:
+        case com.bbn.openmap.corba.CSpecialist.GraphicPackage.settableFields._GF_color:
             ((OMGraphic) graphic).setLinePaint(getColor(update.color()));
             break;
 
-        case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_fillColor:
+        case com.bbn.openmap.corba.CSpecialist.GraphicPackage.settableFields._GF_fillColor:
             ((OMGraphic) graphic).setFillPaint(getColor(update.fillColor()));
             break;
 
-        case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_lineWidth:
+        case com.bbn.openmap.corba.CSpecialist.GraphicPackage.settableFields._GF_lineWidth:
             ((OMGraphic) graphic).setStroke(new BasicStroke(update.lineWidth()));
             break;
 
-        case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_stipple:
+        case com.bbn.openmap.corba.CSpecialist.GraphicPackage.settableFields._GF_stipple:
             System.err.println("ignoring stipple");
             //            ((OMGraphic)graphic).setStipple(getOMStipple(update.stipple()));
             break;
 
-        case com.bbn.openmap.CSpecialist.GraphicPackage.settableFields._GF_fillStipple:
+        case com.bbn.openmap.corba.CSpecialist.GraphicPackage.settableFields._GF_fillStipple:
             System.err.println("ignoring fill stipple");
             //            ((OMGraphic)graphic).setFillStipple(getOMStipple(update.fillStipple()));
             break;

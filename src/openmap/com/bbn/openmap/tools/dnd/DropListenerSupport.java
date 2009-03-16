@@ -66,7 +66,7 @@ public class DropListenerSupport implements PropertyChangeListener,
      * BeanContextChildSupport object provides helper functions for
      * BeanContextChild interface.
      */
-    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
+    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
 
     /**
      * Construct a DropListenerSupport without an associated MapBean.

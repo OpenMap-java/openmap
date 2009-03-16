@@ -65,7 +65,7 @@ public class OpenMapApplet extends JApplet implements
      * BeanContextChildSupport object provides helper functions for
      * BeanContextChild interface.
      */
-    private BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
+    private BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
 
     // pinfo used to have these parameters, too, but that doesn't
     // seem right to include visibroker arguments in the generic

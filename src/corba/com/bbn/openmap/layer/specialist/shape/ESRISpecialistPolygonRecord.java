@@ -25,10 +25,12 @@ package com.bbn.openmap.layer.specialist.shape;
 import java.io.IOException;
 import java.util.Vector;
 
-import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.CSpecialist.GraphicPackage.*;
-import com.bbn.openmap.layer.shape.*;
-import com.bbn.openmap.layer.specialist.*;
+import com.bbn.openmap.corba.CSpecialist.LLPoint;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.LineType;
+import com.bbn.openmap.layer.shape.ESRIPoly;
+import com.bbn.openmap.layer.shape.ESRIPolygonRecord;
+import com.bbn.openmap.layer.specialist.SColor;
+import com.bbn.openmap.layer.specialist.SPoly;
 
 /**
  */

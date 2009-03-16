@@ -94,7 +94,7 @@ public class MouseDelegator implements PropertyChangeListener,
      * BeanContextChildSupport object provides helper functions for
      * BeanContextChild interface.
      */
-    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
+    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
 
     /**
      * Construct a MouseDelegator with an associated MapBean.

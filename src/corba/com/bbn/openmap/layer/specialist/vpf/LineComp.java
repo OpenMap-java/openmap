@@ -22,9 +22,9 @@
 
 package com.bbn.openmap.layer.specialist.vpf;
 
+import com.bbn.openmap.corba.CSpecialist.ActionUnion;
+import com.bbn.openmap.corba.CSpecialist.MouseEvent;
 import com.bbn.openmap.layer.specialist.SComp;
-import com.bbn.openmap.CSpecialist.MouseEvent;
-import com.bbn.openmap.CSpecialist.ActionUnion;
 
 /**
  * Extent the SComp class to allow us to remember a string we get

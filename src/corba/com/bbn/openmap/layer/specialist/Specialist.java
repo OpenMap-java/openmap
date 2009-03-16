@@ -22,10 +22,22 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.util.corba.CORBASupport;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import com.bbn.openmap.corba.CSpecialist.ActionUnion;
+import com.bbn.openmap.corba.CSpecialist.CProjection;
+import com.bbn.openmap.corba.CSpecialist.GraphicChange;
+import com.bbn.openmap.corba.CSpecialist.LLPoint;
+import com.bbn.openmap.corba.CSpecialist.MouseEvent;
+import com.bbn.openmap.corba.CSpecialist.ServerPOA;
+import com.bbn.openmap.corba.CSpecialist.UGraphic;
+import com.bbn.openmap.corba.CSpecialist.UWidget;
+import com.bbn.openmap.corba.CSpecialist.UpdateRecord;
+import com.bbn.openmap.corba.CSpecialist.WidgetChange;
 import com.bbn.openmap.util.Debug;
-import java.util.*;
+import com.bbn.openmap.util.corba.CORBASupport;
 
 /**
  * The Specialist is the base class for all specialists. It assists

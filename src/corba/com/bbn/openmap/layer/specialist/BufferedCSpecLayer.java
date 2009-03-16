@@ -27,10 +27,10 @@ import java.awt.geom.Point2D;
 
 import org.omg.CORBA.StringHolder;
 
-import com.bbn.openmap.CSpecialist.CProjection;
-import com.bbn.openmap.CSpecialist.LLPoint;
-import com.bbn.openmap.CSpecialist.Server;
-import com.bbn.openmap.CSpecialist.UGraphic;
+import com.bbn.openmap.corba.CSpecialist.CProjection;
+import com.bbn.openmap.corba.CSpecialist.LLPoint;
+import com.bbn.openmap.corba.CSpecialist.Server;
+import com.bbn.openmap.corba.CSpecialist.UGraphic;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 

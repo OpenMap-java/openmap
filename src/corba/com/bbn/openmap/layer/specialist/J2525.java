@@ -24,18 +24,19 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.U2525SymbolPackage.E2525Symbol;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.Projection;
-
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.ImageObserver;
+
 import javax.swing.ImageIcon;
+
+import com.bbn.openmap.corba.CSpecialist.U2525SymbolPackage.E2525Symbol;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.proj.Projection;
 
 public class J2525 extends OMGraphic implements JObjectHolder {
 
-    protected transient com.bbn.openmap.CSpecialist.EComp object = null;
+    protected transient com.bbn.openmap.corba.CSpecialist.EComp object = null;
 
     E2525Symbol e2525 = null;
     Point point1;
@@ -47,11 +48,11 @@ public class J2525 extends OMGraphic implements JObjectHolder {
         JGraphic.fillOMGraphicParams(this, e2525.egraphic);
     }
 
-    public void setObject(com.bbn.openmap.CSpecialist.EComp aObject) {
+    public void setObject(com.bbn.openmap.corba.CSpecialist.EComp aObject) {
         object = aObject;
     }
 
-    public com.bbn.openmap.CSpecialist.EComp getObject() {
+    public com.bbn.openmap.corba.CSpecialist.EComp getObject() {
         return object;
     }
 
@@ -136,7 +137,7 @@ public class J2525 extends OMGraphic implements JObjectHolder {
     }
 
     public void update(
-                       com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update) {
+                       com.bbn.openmap.corba.CSpecialist.GraphicPackage.GF_update update) {
         JGraphic.update((JObjectHolder) this, update);
     }
 

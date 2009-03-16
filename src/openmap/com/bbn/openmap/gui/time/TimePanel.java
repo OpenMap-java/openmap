@@ -37,6 +37,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -46,16 +49,13 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.AbstractBorder;
 
-//import com.bbn.hotwash.event.AAREventHandler;
-//import com.bbn.hotwash.event.AAREventSelectionCoordinator;
-import com.bbn.openmap.time.Clock;
-import com.bbn.openmap.time.TimeEvent;
-import com.bbn.openmap.time.TimeSliderSupport;
-import com.bbn.openmap.time.TimerRateHolder;
 import com.bbn.openmap.gui.MapPanelChild;
 import com.bbn.openmap.gui.OMComponentPanel;
-import com.bbn.openmap.gui.time.TimerRateComboBox;
-import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.time.Clock;
+import com.bbn.openmap.time.TimeEvent;
+import com.bbn.openmap.time.TimeEventListener;
+import com.bbn.openmap.time.TimerRateHolder;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * The TimePanel is a GUI widget that provides assortment of Clock controls,
@@ -66,7 +66,10 @@ import com.bbn.openmap.util.Debug;
  * panel with a title will be displayed.
  */
 public class TimePanel extends OMComponentPanel implements MapPanelChild,
-        PropertyChangeListener {
+        PropertyChangeListener, TimeEventListener {
+
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.time.TimePanel");
+
     /**
      * This property is used to signify whether the play filter should be used.
      */
@@ -94,8 +97,6 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
 
     protected TimerRateComboBox timerRateControl;
 
-    protected TimeSliderSupport timeSliderSupport;
-
     protected String preferredLocation = BorderLayout.SOUTH;
 
     protected boolean useTimeWrapToggle = false;
@@ -107,12 +108,22 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
 
     TimeSliderPanel timeSliderPanel;
 
+    protected String parentName;
+
     public TimePanel() {
     // Needs Clock to create interface.
     }
 
     public class NoBorder extends AbstractBorder {
         NoBorder() {}
+    }
+
+    public void setProperties(String prefix, Properties props) {
+        super.setProperties(prefix, props);
+
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        parentName = props.getProperty(prefix
+                + MapPanelChild.ParentNameProperty);
     }
 
     /**
@@ -125,8 +136,10 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 "  Timeline Controls  "));
 
-        if (clock == null)
+        if (clock == null) {
+            logger.info("No clock, not putting anything in interface.");
             return;
+        }
         // javax.swing.Border debugBorder =
         // BorderFactory.createLineBorder(Color.red);
         JPanel leftPanel = new JPanel();
@@ -167,8 +180,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         lgridbag.setConstraints(timerControl, c);
         leftPanel.add(timerControl);
 
-        clock.addPropertyChangeListener(Clock.TIMER_RUNNING_STATUS,
-                timerControl);
+        clock.addPropertyChangeListener(Clock.TIMER_STATUS, timerControl);
         /*
          * Not Used, but strangely enough needs to be created in order to tell
          * the clock how fast to run, one second per clock tick.
@@ -176,11 +188,11 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         timerRateControl = new TimerRateComboBox(clock);
         timerRateControl.setToolTipText("Change Clock Rate For Timeline");
 
-        List timerRates = clock.getTimerRates();
+        List<TimerRateHolder> timerRates = clock.getTimerRates();
 
-        Iterator it = timerRates.iterator();
+        Iterator<TimerRateHolder> it = timerRates.iterator();
         while (it.hasNext()) {
-            TimerRateHolder trh = (TimerRateHolder) it.next();
+            TimerRateHolder trh = it.next();
             timerRateControl.add(trh.getLabel(),
                     (int) trh.getClockInterval(),
                     (int) trh.getPace());
@@ -285,15 +297,6 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         }
     }
 
-    // protected void setTimeSliderLabels(String start, String end) {
-    // startTimeSliderLabel.setText(start);
-    // endTimeSliderLabel.setText(end);
-    // java.util.Hashtable dict = new java.util.Hashtable();
-    // dict.put(new Integer(timeSlider.getMinimum()), startTimeSliderLabel);
-    // dict.put(new Integer(timeSlider.getMaximum()), endTimeSliderLabel);
-    // timeSlider.setLabelTable(dict);
-    // }
-
     public String convertOffsetTimeToText(long offsetTime) {
         int hours = (int) (offsetTime / (60 * 60 * 1000));
         int minutes = (int) Math.abs((offsetTime % (60 * 60 * 1000))
@@ -312,97 +315,20 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         return preferredLocation;
     }
 
-    // protected void updateSlider(long startTime, long endTime) {
-    // boolean badNumbers = true;
-    //
-    // if (startTime != Long.MAX_VALUE && startTime < endTime) {
-    // badNumbers = false;
-    // updateTimeLabel(startTime, 0L);
-    // Date date = new Date(startTime);
-    // DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-    //
-    // String sts = dateFormat.format(date);
-    // date.setTime(endTime);
-    // String ets = dateFormat.format(date);
-    //
-    // int diff = (int) ((endTime - startTime) / 1000L);
-    // if (diff == 0 || diff < 0)
-    // diff = 1;
-    //
-    // // If diff is really big, paint ticks might get ugly.
-    // timeSlider.setPaintTicks(false);
-    //
-    // if (timeSliderSupport != null) {
-    //
-    // try {
-    // timeSliderSupport.setStartTime(startTime / 1000);
-    // timeSliderSupport.setEndTime(endTime / 1000);
-    // timeSlider.setMinimum(0);
-    // if (Debug.debugging("timepanel")) {
-    // Debug.output("TimePanel.updateSlider setting maximum: "
-    // + diff + " from et(" + endTime + ") - st("
-    // + startTime + ") = "
-    // + ((endTime - startTime) / 1000));
-    // }
-    // timeSlider.setMaximum(diff);
-    // } catch (Exception e) {
-    // Debug
-    // .output("Caught exception setting time slider support: "
-    // + e.getMessage());
-    // badNumbers = true;
-    // }
-    // }
-    //
-    // int majSpacing = 60; // every minute
-    // int minSpacing = 4;
-    // // If the time span is greater than a year
-    // if (diff > (3600 * 24 * 7 * 52)) { // really unlikely
-    // majSpacing = 3600 * 24 * 7 * 52;
-    // minSpacing = 12;
-    // badNumbers = true;
-    // } else if (diff > (3600 * 24 * 7 * 4)) { // month
-    // majSpacing = 3600 * 24 * 7 * 4;
-    // } else if (diff > (3600 * 24 * 7)) {// than a week
-    // majSpacing = 3600 * 24 * 7;
-    // minSpacing = 7;
-    // } else if (diff > (3600 * 24)) { // than a day
-    // majSpacing = 3600 * 24;
-    // minSpacing = 2;
-    // } else if (diff > 3600) { // than an hour
-    // majSpacing = 3600;
-    // } else if (diff > 1300) {
-    // majSpacing = 1300;
-    // minSpacing = 2;
-    // }
-    //
-    // try {
-    // if (!badNumbers) {
-    // timeSlider.setMajorTickSpacing(majSpacing);
-    // timeSlider.setMinorTickSpacing(majSpacing / minSpacing);
-    // timeSlider.setPaintTicks(true);
-    // timeSlider.setPaintLabels(true);
-    //
-    // setTimeSliderLabels(sts, ets);
-    //
-    // timeSlider.setEnabled(true);
-    // }
-    // } catch (NullPointerException npe) {
-    // // Not sure why this happens, we probably just want to
-    // // blow it off and keep moving until next time.
-    // badNumbers = true;
-    // }
-    // }
-    //
-    // if (badNumbers) {
-    // updateTimeLabel(Long.MAX_VALUE, 0);
-    //
-    // timeSlider.setValue(0);
-    // timeSlider.setPaintTicks(false);
-    // timeSlider.setPaintLabels(false);
-    // timeSlider.setEnabled(false);
-    // }
-    //
-    // }
+    public void updateTime(TimeEvent te) {
+
+        if (checkAndSetForNoTime(te)) {
+            return;
+        }
+
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("TimePanel received TIMER_STATUS property update: "
+                    + te);
+        }
+
+        updateTimeLabel(te.getSystemTime(), te.getOffsetTime());
+
+    }
 
     /**
      * PropertyChangeListener method called when a Clock fires, or the Clock
@@ -412,26 +338,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         String propertyName = pce.getPropertyName();
         Object newVal = pce.getNewValue();
 
-        if (propertyName.equals(Clock.TIMER_STATUS_PROPERTY)) {
-
-            TimeEvent te = (TimeEvent) newVal;
-
-            if (checkAndSetForNoTime(te)) {
-                return;
-            }
-
-            if (Debug.debugging("timepanel")) {
-                Debug.output("TimePanel received TIMER_STATUS_PROPERTY update: "
-                        + te);
-            }
-
-            updateTimeLabel(te.getSystemTime(), te.getOffsetTime());
-
-            // And the slider position
-            if (timeSliderSupport != null) {
-                timeSliderSupport.update(te.getSystemTime() / 1000);
-            }
-        } else if (propertyName.equals(TimelineLayer.PlayFilterProperty)) {
+        if (propertyName.equals(TimelineLayer.PlayFilterProperty)) {
             timerControl.enableForwardButton(((Boolean) newVal).booleanValue());
         } else if (propertyName.equals(TimelineLayer.MouseTimeProperty)) {
             updateMouseTimeDisplay(((Long) newVal).longValue());
@@ -451,7 +358,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
             updateMouseTimeDisplay(0l);
             timeLabel.setText(NO_TIME_STRING);
         }
-//        timerControl.setEnableState(!isNoTime);
+        // timerControl.setEnableState(!isNoTime);
 
         return isNoTime;
     }
@@ -481,17 +388,15 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
     }
 
     public void setClock(Clock cl) {
+        logger.info("found and setting clock: " + cl);
         if (clock != null) {
-            clock.removePropertyChangeListener(Clock.TIME_BOUNDS_PROPERTY, this);
-            clock.removePropertyChangeListener(Clock.TIMER_STATUS_PROPERTY,
-                    this);
+            clock.removeTimeEventListener(this);
         }
         clock = cl;
         createInterface(); // Moved here for distributed
         // configuration
         if (clock != null) {
-            clock.addPropertyChangeListener(Clock.TIME_BOUNDS_PROPERTY, this);
-            clock.addPropertyChangeListener(Clock.TIMER_STATUS_PROPERTY, this);
+            clock.addTimeEventListener(this);
         }
 
     }
@@ -515,20 +420,6 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
                 timeSliderPanel.getMapHandler().add(someObj);
             }
         }
-
-        if (timelinePanel != null) {
-//            if (someObj instanceof AAREventHandler) {
-//                // timelinePanel.getMapHandler().add(someObj);
-//            }
-//            if (someObj instanceof EventListPresenter) {
-//                timelinePanel.getMapHandler().add(someObj);
-//            }
-//
-//            if (someObj instanceof AAREventSelectionCoordinator) {
-//                timelinePanel.addMapComponent(someObj);
-//            }
-        }
-
     }
 
     /**
@@ -553,4 +444,13 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
             return timePanel;
         }
     }
+
+    public String getParentName() {
+        return parentName;
+    }
+
+    public void setParentName(String pName) {
+        parentName = pName;
+    }
+
 }

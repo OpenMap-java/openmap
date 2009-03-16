@@ -22,8 +22,8 @@
 
 package com.bbn.openmap.layer.specialist.vpf;
 
+import com.bbn.openmap.corba.CSpecialist.CheckButton;
 import com.bbn.openmap.layer.specialist.SCheckBox;
-import com.bbn.openmap.CSpecialist.*;
 
 /**
  * Class SCheckBox is a specialist palette widget. It is a box of
@@ -36,7 +36,7 @@ public class UsefulCheckbox extends SCheckBox {
     }
 
     public void selected(java.lang.String box_label,
-                         com.bbn.openmap.CSpecialist.CheckButton button,
+                         com.bbn.openmap.corba.CSpecialist.CheckButton button,
                          java.lang.String uniqueID) {
 
         for (int i = 0; i < buttons_.length; i++) {

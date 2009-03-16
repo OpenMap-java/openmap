@@ -24,6 +24,7 @@ package com.bbn.openmap.gui.time;
 
 import com.bbn.openmap.PropertyConsumer;
 
+import com.bbn.openmap.time.RealTimeHandler;
 import com.bbn.openmap.util.Debug;
 
 import java.awt.event.ActionEvent;

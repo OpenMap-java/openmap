@@ -624,4 +624,9 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
         setVisibility();
     }
 
+    public String getParentName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

@@ -22,7 +22,8 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.*;
+import com.bbn.openmap.corba.CSpecialist.UWidget;
+import com.bbn.openmap.corba.CSpecialist._SliderStub;
 
 /**
  * Class SSlider is a specialist palette widget. It is a slide bar

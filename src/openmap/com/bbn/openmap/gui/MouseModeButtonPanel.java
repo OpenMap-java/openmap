@@ -22,21 +22,24 @@
 
 package com.bbn.openmap.gui;
 
-import javax.swing.*;
-
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
-
-import java.beans.*;
+import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
 
+import javax.swing.ButtonGroup;
+import javax.swing.Icon;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+
+import com.bbn.openmap.MouseDelegator;
+import com.bbn.openmap.event.MapMouseMode;
+
 /**
- * The MouseModeButtonPanel is an alternative to the MouseModePanel.
- * Instead of providing an option menu listing all the MouseModes, a
- * series of buttons for all the MouseModes is displayed.
+ * The MouseModeButtonPanel is an alternative to the MouseModePanel. Instead of
+ * providing an option menu listing all the MouseModes, a series of buttons for
+ * all the MouseModes is displayed.
  * 
- * The MouseModeButtonPanel asks the MapMouseModes for their GUI
- * icons. If they don't have one, their ID Strin will be used.
+ * The MouseModeButtonPanel asks the MapMouseModes for their GUI icons. If they
+ * don't have one, their ID Strin will be used.
  */
 public class MouseModeButtonPanel extends MouseModePanel {
 
@@ -44,8 +47,7 @@ public class MouseModeButtonPanel extends MouseModePanel {
     /** for intialization, false */
     protected boolean floatable = false;
     /**
-     * to turn a button on when the active mouse mode changes behind
-     * the scenes.
+     * to turn a button on when the active mouse mode changes behind the scenes.
      */
     protected HashMap buttonSet = new HashMap();
 
@@ -59,12 +61,17 @@ public class MouseModeButtonPanel extends MouseModePanel {
     }
 
     /**
-     * Method overrides MouseModePane.setPanel. Construct the toolbar
-     * buttons from the mouse modes that are handled by the delegator.
+     * Method overrides MouseModePane.setPanel. Construct the toolbar buttons
+     * from the mouse modes that are handled by the delegator.
      */
     protected void setPanel(MouseDelegator md) {
         if (toolBar != null) {
-            remove(toolBar); //   remove it
+            remove(toolBar); // remove it
+        }
+
+        reset();
+        if (md == null) {
+            return;
         }
 
         toolBar = new JToolBar(); // Create a new one
@@ -133,10 +140,10 @@ public class MouseModeButtonPanel extends MouseModePanel {
         return toolBar.isFloatable();
     }
 
-    ////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////
     /**
-     * propertyChange - Listen for changes to the active mouse mode
-     * and for any changes to the list of available mouse modes.
+     * propertyChange - Listen for changes to the active mouse mode and for any
+     * changes to the list of available mouse modes.
      */
     public void propertyChange(PropertyChangeEvent evt) {
 
@@ -154,4 +161,13 @@ public class MouseModeButtonPanel extends MouseModePanel {
             setPanel(mouseDelegator);
         }
     } // End of propertyChange()
+    
+    public void reset() {
+        if (toolBar != null) {
+            remove(toolBar);
+            toolBar = null;
+        }
+        enabledButton = null;
+        buttonSet.clear();
+    }
 }

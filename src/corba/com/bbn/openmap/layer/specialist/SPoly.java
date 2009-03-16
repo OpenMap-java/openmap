@@ -22,9 +22,17 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.CSpecialist.PolyPackage.*;
-import com.bbn.openmap.CSpecialist.GraphicPackage.*;
+import com.bbn.openmap.corba.CSpecialist.LLPoint;
+import com.bbn.openmap.corba.CSpecialist.UGraphic;
+import com.bbn.openmap.corba.CSpecialist.UpdateGraphic;
+import com.bbn.openmap.corba.CSpecialist.XYPoint;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.DeclutterType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.LineType;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.RenderType;
+import com.bbn.openmap.corba.CSpecialist.PolyPackage.CoordMode;
+import com.bbn.openmap.corba.CSpecialist.PolyPackage.EPoly;
+import com.bbn.openmap.corba.CSpecialist.PolyPackage.PF_update;
 
 /**
  * An SPoly is a specialist graphic object that represents a polygon
@@ -167,7 +175,7 @@ public class SPoly extends SGraphic /* used to be _PolyImplBase */{
     }
 
     //  Update methods as a result of gesture impulses...
-    public void changeLl1(com.bbn.openmap.CSpecialist.LLPoint ll1) {
+    public void changeLl1(com.bbn.openmap.corba.CSpecialist.LLPoint ll1) {
         ll1_ = ll1;
         PF_update gupdate = new PF_update();
         gupdate.ll1(ll1);

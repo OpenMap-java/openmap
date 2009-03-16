@@ -65,12 +65,7 @@ public class OpenMap {
      * the application. PropertyHandler may be null.
      */
     public OpenMap(PropertyHandler propertyHandler) {
-        mapPanel = new BasicMapPanel(propertyHandler, true);
-        // Creates the components in the main application thread. If any of
-        // these components need to update their GUI, they should hand a
-        // Runnable object to the SwingUtilities.invokeLater(Runnable) method,
-        // and it will be updated accordingly.
-        ((BasicMapPanel) mapPanel).create();
+        configureMapPanel(propertyHandler);
 
         // Schedule a job for the event-dispatching thread:
         // creating and showing this application's GUI.
@@ -83,11 +78,26 @@ public class OpenMap {
             }
         });
     }
+    
+    protected void configureMapPanel(PropertyHandler propertyHandler) {
+        BasicMapPanel basicMapPanel = new BasicMapPanel(propertyHandler, true);
+        // Creates the components in the main application thread. If any of
+        // these components need to update their GUI, they should hand a
+        // Runnable object to the SwingUtilities.invokeLater(Runnable) method,
+        // and it will be updated accordingly.
+        basicMapPanel.create();
+        mapPanel = basicMapPanel;
+    }
 
     protected void showInFrame() {
-        OpenMapFrame omf = new OpenMapFrame();
+        OpenMapFrame omf = (OpenMapFrame) getMapHandler().get(com.bbn.openmap.gui.OpenMapFrame.class);
+
+        if (omf == null) {
+            omf = new OpenMapFrame("OpenMap");
+            getMapHandler().add(omf);
+        }
+
         setWindowListenerOnFrame(omf);
-        getMapHandler().add(omf);
 
         omf.setVisible(true);
         mapPanel.getMapBean().showLayerPalettes();
@@ -145,7 +155,16 @@ public class OpenMap {
      */
     public static OpenMap create(String propertiesFile) {
         Debug.init();
+        return new OpenMap(configurePropertyHandler(propertiesFile));
+    }
 
+    /**
+     * Given a path to a properties file, try to configure a PropertyHandler
+     * with it. If the properties file is not valid, the returned
+     * PropertyHandler will look for the openmap.properties file in the
+     * classpath and the user's home directory.
+     */
+    public static PropertyHandler configurePropertyHandler(String propertiesFile) {
         PropertyHandler propertyHandler = null;
 
         if (propertiesFile != null) {
@@ -162,7 +181,7 @@ public class OpenMap {
             }
         }
 
-        return new OpenMap(propertyHandler);
+        return propertyHandler;
     }
 
     /**

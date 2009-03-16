@@ -29,7 +29,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,7 +39,6 @@ import javax.swing.JPanel;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.event.CenterListener;
@@ -51,6 +49,7 @@ import com.bbn.openmap.gui.time.TimelineLayer.SelectionArea.PlayFilterSection;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMAction;
+import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
@@ -61,7 +60,11 @@ import com.bbn.openmap.proj.Cartesian;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.time.Clock;
 import com.bbn.openmap.time.TimeBounds;
+import com.bbn.openmap.time.TimeBoundsEvent;
+import com.bbn.openmap.time.TimeBoundsListener;
 import com.bbn.openmap.time.TimeEvent;
+import com.bbn.openmap.time.TimeEventListener;
+import com.bbn.openmap.time.TimerStatus;
 import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
 import com.bbn.openmap.tools.icon.BasicIconPart;
 import com.bbn.openmap.tools.icon.IconPart;
@@ -70,11 +73,13 @@ import com.bbn.openmap.tools.icon.OMIconFactory;
 /**
  * Timeline layer
  * 
- * Render events and allow for their selection on a variable-scale timeline
+ * Render events and allow for their selection on a variable-scale time line.
  */
 public class TimelineLayer extends OMGraphicHandlerLayer implements
         ActionListener, DrawingToolRequestor, PropertyChangeListener,
-        MapMouseListener, ComponentListener {
+        MapMouseListener, ComponentListener, TimeBoundsListener,
+        TimeEventListener {
+
     /**
      * This property is used to signify whether any AAREvents have been
      * designated as play filterable, so GUI controls for the play filter can be
@@ -113,8 +118,8 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     long gameStartTime = 0;
     long gameEndTime = 0;
 
-//    protected EventListPresenter eventListPresenter;
-//    protected AAREventSelectionCoordinator aesc;
+    // protected EventListPresenter eventListPresenter;
+    // protected AAREventSelectionCoordinator aesc;
     protected static Color tint = new Color(0x99000000, true);
 
     protected Clock clock;
@@ -136,7 +141,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
         centerDelegate = new CenterSupport(this);
         addComponentListener(this);
-        
+
         drape = new TimeDrape(0, 0, -1, -1);
         drape.setFillPaint(Color.gray);
         drape.setVisible(true);
@@ -146,26 +151,29 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     public void findAndInit(Object someObj) {
         if (someObj instanceof Clock) {
             clock = (Clock) someObj;
-            clock.addPropertyChangeListener(Clock.TIMER_STATUS_PROPERTY, this);
-            clock.addPropertyChangeListener(Clock.TIME_BOUNDS_PROPERTY, this);
+            // clock.addPropertyChangeListener(Clock.TIMER_STATUS_PROPERTY,
+            // this);
+            clock.addTimeEventListener(this);
+            clock.addTimeBoundsListener(this);
             setTimeBounds(clock.getStartTime(), clock.getEndTime());
         }
         if (someObj instanceof CenterListener) {
             centerDelegate.addCenterListener((CenterListener) someObj);
         }
-//        if (someObj instanceof EventListPresenter) {
-//            eventListPresenter = (EventListPresenter) someObj;
-//            selectionRect = null;
-//            eventListPresenter.addPropertyChangeListener(this);
-//        }
-//        if (someObj instanceof InformationDelegator) {
-//            ((InformationDelegator) someObj).setPreferredLocation(java.awt.BorderLayout.NORTH);
-//        }
-//
-//        if (someObj instanceof AAREventSelectionCoordinator) {
-//            aesc = (AAREventSelectionCoordinator) someObj;
-//            aesc.addPropertyChangeListener(this);
-//        }
+        // if (someObj instanceof EventListPresenter) {
+        // eventListPresenter = (EventListPresenter) someObj;
+        // selectionRect = null;
+        // eventListPresenter.addPropertyChangeListener(this);
+        // }
+        // if (someObj instanceof InformationDelegator) {
+        // ((InformationDelegator)
+        // someObj).setPreferredLocation(java.awt.BorderLayout.NORTH);
+        // }
+        //
+        // if (someObj instanceof AAREventSelectionCoordinator) {
+        // aesc = (AAREventSelectionCoordinator) someObj;
+        // aesc.addPropertyChangeListener(this);
+        // }
         if (someObj instanceof TimePanel.Wrapper) {
             TimePanel tp = ((TimePanel.Wrapper) someObj).getTimePanel();
             tp.addPropertyChangeListener(this);
@@ -175,20 +183,22 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
     public void findAndUndo(Object someObj) {
         if (someObj == clock) {
-            ((Clock) someObj).removePropertyChangeListener(Clock.TIMER_STATUS_PROPERTY,
-                    this);
+            // clock.removePropertyChangeListener(Clock.TIMER_STATUS_PROPERTY,
+            // this);
+            clock.removeTimeEventListener(this);
+            clock.removeTimeBoundsListener(this);
         }
         if (someObj instanceof CenterListener) {
             centerDelegate.removeCenterListener((CenterListener) someObj);
         }
-//        if (someObj == eventListPresenter) {
-//            eventListPresenter.removePropertyChangeListener(this);
-//            eventListPresenter = null;
-//        }
-//        if (someObj == aesc) {
-//            aesc.removePropertyChangeListener(this);
-//            aesc = null;
-//        }
+        // if (someObj == eventListPresenter) {
+        // eventListPresenter.removePropertyChangeListener(this);
+        // eventListPresenter = null;
+        // }
+        // if (someObj == aesc) {
+        // aesc.removePropertyChangeListener(this);
+        // aesc = null;
+        // }
         if (someObj instanceof TimePanel.Wrapper) {
             TimePanel tp = ((TimePanel.Wrapper) someObj).getTimePanel();
             removePropertyChangeListener(tp);
@@ -223,7 +233,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             } else {
                 graphicList.clear();
             }
-            
+
             if (drape == null) {
                 drape = new TimeDrape(0, 0, -1, -1);
                 drape.setFillPaint(Color.gray);
@@ -285,9 +295,9 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     public SelectionArea getSelectionRectangle(Projection proj) {
         if (selectionRect == null) {
             selectionRect = new SelectionArea();
-//            if (eventListPresenter != null) {
-//                selectionRect.setFillPaint(EventListPresenter.selectColor);
-//            }
+            // if (eventListPresenter != null) {
+            // selectionRect.setFillPaint(EventListPresenter.selectColor);
+            // }
         }
 
         selectionRect.generate(proj);
@@ -311,16 +321,17 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     protected OMGraphicList getEventList(Projection projection) {
 
         if (eventGraphicList == null) {
-//            if (eventListPresenter != null) {
-//                eventGraphicList = getEventList(eventListPresenter.getActiveEvents(),
-//                        projection);
-//
-//                // As long as we feel the need to recreate the event markers,
-//                // let's re-evaluate the annotations.
-//                evaluateEventAttributes();
-//            } else {
-//                eventGraphicList = new OMGraphicList();
-//            }
+            // if (eventListPresenter != null) {
+            // eventGraphicList =
+            // getEventList(eventListPresenter.getActiveEvents(),
+            // projection);
+            //
+            // // As long as we feel the need to recreate the event markers,
+            // // let's re-evaluate the annotations.
+            // evaluateEventAttributes();
+            // } else {
+            // eventGraphicList = new OMGraphicList();
+            // }
             eventGraphicList = new OMGraphicList();
         } else {
             eventGraphicList.generate(projection);
@@ -338,18 +349,19 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             while (it.hasNext()) {
                 Object object = it.next();
 
-//                if (object instanceof AAREvent) {
-//                    AAREvent event = (AAREvent) object;
-//
-//                    long time = event.getTimeStamp() - gameStartTime;
-//                    float lon = forwardProjectMillis(time);
-//                    EventMarkerLine currentLine = new EventMarkerLine(0f, lon, 6);
-//                    currentLine.setLinePaint(Color.black);
-//                    currentLine.setStroke(symbolStroke);
-//                    currentLine.generate(projection);
-//                    currentLine.putAttribute(ATT_KEY_EVENT, event);
-//                    eventGraphicList.addOMGraphic(currentLine);
-//                }
+                // if (object instanceof AAREvent) {
+                // AAREvent event = (AAREvent) object;
+                //
+                // long time = event.getTimeStamp() - gameStartTime;
+                // float lon = forwardProjectMillis(time);
+                // EventMarkerLine currentLine = new EventMarkerLine(0f, lon,
+                // 6);
+                // currentLine.setLinePaint(Color.black);
+                // currentLine.setStroke(symbolStroke);
+                // currentLine.generate(projection);
+                // currentLine.putAttribute(ATT_KEY_EVENT, event);
+                // eventGraphicList.addOMGraphic(currentLine);
+                // }
             }
         }
         return eventGraphicList;
@@ -382,10 +394,8 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     // GUI
     // ----------------------------------------------------------------------
 
-    /** The user interface palette for the DTED layer. */
     protected Box palette = null;
 
-    /** Creates the interface palette. */
     public java.awt.Component getGUI() {
 
         if (palette == null) {
@@ -472,64 +482,87 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         }
     }
 
+    public void updateTimeBounds(TimeBoundsEvent tbe) {
+        TimeBounds tb = tbe.getNewTimeBounds();
+        if (tb != null) {
+            setTimeBounds(tb.getStartTime(), tb.getEndTime());
+        } else {
+            // TODO set for null, which means there are no bounds.
+        }
+
+    }
+
+    public void updateTime(TimeEvent te) {
+
+        if (checkAndSetForNoTime(te)) {
+            return;
+        }
+
+        Clock clock = (Clock) te.getSource();
+        setTimeBounds(clock.getStartTime(), clock.getEndTime());
+
+        TimerStatus timerStatus = te.getTimerStatus();
+
+        if (timerStatus.equals(TimerStatus.STEP_FORWARD)
+                || timerStatus.equals(TimerStatus.STEP_BACKWARD)
+                || timerStatus.equals(TimerStatus.UPDATE)) {
+            // These TimerStatus updates reflect the current time being
+            // specifically set to a value, as opposed to the clock running
+            // normally.
+            currentTime = te.getSystemTime() - gameStartTime;
+            centerDelegate.fireCenter(0, forwardProjectMillis(currentTime));
+            timeLinesList = null;
+            doPrepare();
+        } else if (timerStatus.equals(TimerStatus.FORWARD)
+                || timerStatus.equals(TimerStatus.BACKWARD)
+                || timerStatus.equals(TimerStatus.STOPPED)) {
+            // Checking for a running clock prevents a time status
+            // update after the clock is stopped. The
+            // AudioFileHandlers don't care about the current time
+            // if it isn't running.
+
+            // This check might be avoided if just FORWARD and BACKWARD are sent
+            // if the clock is running. Need to check the behavior of the clock
+            // to make sure, and figure out what the state of the clock is when
+            // it stops.
+
+            if (clock.isRunning()) {
+                long currentTime = te.getSystemTime() - gameStartTime;
+
+                if (playFilter.reactToCurrentTime(currentTime,
+                        clock,
+                        gameStartTime)) {
+                    this.currentTime = currentTime;
+                    timeLinesList = null;
+                    centerDelegate.fireCenter(0,
+                            forwardProjectMillis(currentTime));
+                }
+            }
+        }
+        // } else if (propertyName ==
+        // EventListPresenter.ActiveEventsProperty) {
+        // eventGraphicList = null;
+        // logger.fine("EventListPresenter updated event list, calling doPrepare() "
+        // + evt.getNewValue());
+        // doPrepare();
+        // } else if (propertyName ==
+        // AAREventSelectionCoordinator.EventsSelectedProperty) {
+        // setSelectionRectangleToEvents();
+        // } else if (propertyName ==
+        // EventListPresenter.EventAttributesUpdatedProperty) {
+        // evaluateEventAttributes();
+        // doPrepare();
+
+    }
+
     /*
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     * @seejava.beans.PropertyChangeListener#propertyChange(java.beans.
+     * PropertyChangeEvent)
      */
     public void propertyChange(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
 
-        if (propertyName == Clock.TIME_BOUNDS_PROPERTY) {
-            TimeBounds tb = (TimeBounds) evt.getNewValue();
-            setTimeBounds(tb.getStartTime(), tb.getEndTime());
-        } else if (propertyName == Clock.TIMER_STATUS_PROPERTY) {
-            TimeEvent te = (TimeEvent) evt.getNewValue();
-
-            if (checkAndSetForNoTime(te)) {
-                return;
-            }
-
-            Clock clock = (Clock) te.getSource();
-            setTimeBounds(clock.getStartTime(), clock.getEndTime());
-
-            String timeEventType = te.getTimerStatus();
-
-            if (timeEventType == TimeConstants.TIMER_STEP_FORWARD
-                    || timeEventType == TimeConstants.TIMER_STEP_BACKWARD
-                    || timeEventType == Clock.TIME_SET_STATUS) {
-                currentTime = te.getSystemTime() - gameStartTime;
-                centerDelegate.fireCenter(0, forwardProjectMillis(currentTime));
-                timeLinesList = null;
-                doPrepare();
-
-            } else if (timeEventType == Clock.TIMER_TIME_STATUS) {
-                // Checking for a running clock prevents a time status
-                // update after the clock is stopped. The
-                // AudioFileHandlers don't care about the current time
-                // if it isn't running.
-                if (clock.isRunning()) {
-                    long currentTime = te.getSystemTime() - gameStartTime;
-
-                    if (playFilter.reactToCurrentTime(currentTime,
-                            clock,
-                            gameStartTime)) {
-                        this.currentTime = currentTime;
-                        timeLinesList = null;
-                        centerDelegate.fireCenter(0,
-                                forwardProjectMillis(currentTime));
-                    }
-                }
-            }
-//        } else if (propertyName == EventListPresenter.ActiveEventsProperty) {
-//            eventGraphicList = null;
-//            logger.fine("EventListPresenter updated event list, calling doPrepare() "
-//                    + evt.getNewValue());
-//            doPrepare();
-//        } else if (propertyName == AAREventSelectionCoordinator.EventsSelectedProperty) {
-//            setSelectionRectangleToEvents();
-//        } else if (propertyName == EventListPresenter.EventAttributesUpdatedProperty) {
-//            evaluateEventAttributes();
-//            doPrepare();
-        } else if (propertyName == TimePanel.PlayFilterProperty) {
+        if (propertyName == TimePanel.PlayFilterProperty) {
             boolean inUse = ((Boolean) evt.getNewValue()).booleanValue();
             playFilter.setInUse(inUse);
             firePropertyChange(PlayFilterProperty,
@@ -553,25 +586,26 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         double retVal = lon;
         double minDiff = Double.MAX_VALUE;
 
-//        if (eventListPresenter != null) {
-//
-//            for (Iterator it = eventListPresenter.getAllEvents(); it.hasNext();) {
-//
-//                Object object = it.next();
-//
-//                if (object instanceof AAREvent) {
-//                    AAREvent event = (AAREvent) object;
-//
-//                    long time = event.getTimeStamp() - gameStartTime;
-//                    float timeMinutes = forwardProjectMillis(time);
-//
-//                    if (Math.abs(timeMinutes - lon) < minDiff) {
-//                        minDiff = Math.abs(timeMinutes - lon);
-//                        retVal = timeMinutes;
-//                    }
-//                }
-//            }
-//        }
+        // if (eventListPresenter != null) {
+        //
+        // for (Iterator it = eventListPresenter.getAllEvents(); it.hasNext();)
+        // {
+        //
+        // Object object = it.next();
+        //
+        // if (object instanceof AAREvent) {
+        // AAREvent event = (AAREvent) object;
+        //
+        // long time = event.getTimeStamp() - gameStartTime;
+        // float timeMinutes = forwardProjectMillis(time);
+        //
+        // if (Math.abs(timeMinutes - lon) < minDiff) {
+        // minDiff = Math.abs(timeMinutes - lon);
+        // retVal = timeMinutes;
+        // }
+        // }
+        // }
+        // }
 
         return retVal;
     }
@@ -623,14 +657,15 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                     4);
 
             if (omg != null) {
-//                AAREvent sourceEvent = (AAREvent) omg.getAttribute(ATT_KEY_EVENT);
-//                if (sourceEvent != null) {
-//                    sourceEvent.putAttribute(AAREvent.ATT_KEY_SELECTED,
-//                            AAREvent.ATT_VAL_SELECTED);
-//                    Vector eventList = new Vector();
-//                    eventList.add(sourceEvent);
-//                    aesc.eventsSelected(eventList);
-//                }
+                // AAREvent sourceEvent = (AAREvent)
+                // omg.getAttribute(ATT_KEY_EVENT);
+                // if (sourceEvent != null) {
+                // sourceEvent.putAttribute(AAREvent.ATT_KEY_SELECTED,
+                // AAREvent.ATT_VAL_SELECTED);
+                // Vector eventList = new Vector();
+                // eventList.add(sourceEvent);
+                // aesc.eventsSelected(eventList);
+                // }
             }
         }
         doubleClick = false;
@@ -667,7 +702,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     protected double updateMouseTimeDisplay(MouseEvent e) {
         Projection proj = getProjection();
         Point2D latLong = proj.inverse(e.getPoint());
-        double lon =  latLong.getX();
+        double lon = latLong.getX();
         double endTime = forwardProjectMillis(gameEndTime - gameStartTime);
         if (lon < 0) {
             lon = 0;
@@ -694,10 +729,11 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                     4);
 
             if (omg != null) {
-//                AAREvent sourceEvent = (AAREvent) omg.getAttribute(ATT_KEY_EVENT);
-//                if (sourceEvent != null) {
-//                    details = sourceEvent.getDescription();
-//                }
+                // AAREvent sourceEvent = (AAREvent)
+                // omg.getAttribute(ATT_KEY_EVENT);
+                // if (sourceEvent != null) {
+                // details = sourceEvent.getDescription();
+                // }
             }
         }
 
@@ -746,77 +782,78 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
     protected List handleEventSelection() {
         List eventList = null;
-//        if (aesc != null && selectionRect != null) {
-//
-//            // The thing to be careful about here is that the selection
-//            // Rectangle isn't where the user clicked and released. It's snapped
-//            // to the visible events. It makes some weird behavior below when
-//            // you try to highlight a single event, because the time for that
-//            // event is the closest snapped time event, not the invisible event
-//            // that may be clicked on.
-//
-//            boolean goodDrag = selectionRect.isVisible();
-//            double lowerTime = selectionRect.getWestLon();
-//            double upperTime = selectionRect.getEastLon();
-//            // Convert to millis
-//            long lowerTimeStamp = inverseProjectMillis((float) lowerTime);
-//            long upperTimeStamp = inverseProjectMillis((float) upperTime);
-//
-//            boolean sameTime = lowerTimeStamp == upperTimeStamp;
-//            goodDrag = goodDrag && !sameTime;
-//
-//            boolean labeledRangeStart = false;
-//            AAREvent lastEventLabeled = null;
-//
-//            for (Iterator it = eventListPresenter.getAllEvents(); it.hasNext();) {
-//                if (eventList == null) {
-//                    eventList = new Vector();
-//                }
-//
-//                AAREvent event = (AAREvent) it.next();
-//                double timeStamp = event.getTimeStamp() - gameStartTime;
-//
-//                // Don't forget, need to go through all of the events, not just
-//                // the ones lower than the upper time stamp, because we need to
-//                // set the selected flag to null for all of them and then only
-//                // reset the ones that actually are selected.
-//                event.putAttribute(AAREvent.ATT_KEY_SELECTED, null);
-//
-//                if (goodDrag && timeStamp >= lowerTimeStamp
-//                        && timeStamp <= upperTimeStamp) {
-//                    eventList.add(event);
-//
-//                    // Needs to be updated to put ATT_VAL_SELECTED_START_RANGE,
-//                    // ATT_VAL_SELECTED_END_RANGE, or just ATT_VAL_SELECTED
-//                    if (!labeledRangeStart && lowerTimeStamp != upperTimeStamp) {
-//                        event.putAttribute(AAREvent.ATT_KEY_SELECTED,
-//                                AAREvent.ATT_VAL_SELECTED_START_RANGE);
-//                        labeledRangeStart = true;
-//                    } else {
-//                        event.putAttribute(AAREvent.ATT_KEY_SELECTED,
-//                                AAREvent.ATT_VAL_SELECTED);
-//                    }
-//                    lastEventLabeled = event;
-//                } else if (sameTime && timeStamp == lowerTimeStamp) {
-//
-//                    // This code just returns the closest visible snapped time
-//                    // event.
-//                    // event.putAttribute(AAREvent.ATT_KEY_SELECTED,
-//                    // AAREvent.ATT_VAL_SELECTED);
-//                    // eventList.add(event);
-//
-//                    // I guess this is OK when a visible event is clicked on,
-//                    // but it's not when a non-visible event is clicked on.
-//                }
-//            }
-//
-//            if (labeledRangeStart && lastEventLabeled != null) {
-//                lastEventLabeled.putAttribute(AAREvent.ATT_KEY_SELECTED,
-//                        AAREvent.ATT_VAL_SELECTED_END_RANGE);
-//            }
-//
-//            aesc.eventsSelected(eventList);
-//        }
+        // if (aesc != null && selectionRect != null) {
+        //
+        // // The thing to be careful about here is that the selection
+        // // Rectangle isn't where the user clicked and released. It's snapped
+        // // to the visible events. It makes some weird behavior below when
+        // // you try to highlight a single event, because the time for that
+        // // event is the closest snapped time event, not the invisible event
+        // // that may be clicked on.
+        //
+        // boolean goodDrag = selectionRect.isVisible();
+        // double lowerTime = selectionRect.getWestLon();
+        // double upperTime = selectionRect.getEastLon();
+        // // Convert to millis
+        // long lowerTimeStamp = inverseProjectMillis((float) lowerTime);
+        // long upperTimeStamp = inverseProjectMillis((float) upperTime);
+        //
+        // boolean sameTime = lowerTimeStamp == upperTimeStamp;
+        // goodDrag = goodDrag && !sameTime;
+        //
+        // boolean labeledRangeStart = false;
+        // AAREvent lastEventLabeled = null;
+        //
+        // for (Iterator it = eventListPresenter.getAllEvents(); it.hasNext();)
+        // {
+        // if (eventList == null) {
+        // eventList = new Vector();
+        // }
+        //
+        // AAREvent event = (AAREvent) it.next();
+        // double timeStamp = event.getTimeStamp() - gameStartTime;
+        //
+        // // Don't forget, need to go through all of the events, not just
+        // // the ones lower than the upper time stamp, because we need to
+        // // set the selected flag to null for all of them and then only
+        // // reset the ones that actually are selected.
+        // event.putAttribute(AAREvent.ATT_KEY_SELECTED, null);
+        //
+        // if (goodDrag && timeStamp >= lowerTimeStamp
+        // && timeStamp <= upperTimeStamp) {
+        // eventList.add(event);
+        //
+        // // Needs to be updated to put ATT_VAL_SELECTED_START_RANGE,
+        // // ATT_VAL_SELECTED_END_RANGE, or just ATT_VAL_SELECTED
+        // if (!labeledRangeStart && lowerTimeStamp != upperTimeStamp) {
+        // event.putAttribute(AAREvent.ATT_KEY_SELECTED,
+        // AAREvent.ATT_VAL_SELECTED_START_RANGE);
+        // labeledRangeStart = true;
+        // } else {
+        // event.putAttribute(AAREvent.ATT_KEY_SELECTED,
+        // AAREvent.ATT_VAL_SELECTED);
+        // }
+        // lastEventLabeled = event;
+        // } else if (sameTime && timeStamp == lowerTimeStamp) {
+        //
+        // // This code just returns the closest visible snapped time
+        // // event.
+        // // event.putAttribute(AAREvent.ATT_KEY_SELECTED,
+        // // AAREvent.ATT_VAL_SELECTED);
+        // // eventList.add(event);
+        //
+        // // I guess this is OK when a visible event is clicked on,
+        // // but it's not when a non-visible event is clicked on.
+        // }
+        // }
+        //
+        // if (labeledRangeStart && lastEventLabeled != null) {
+        // lastEventLabeled.putAttribute(AAREvent.ATT_KEY_SELECTED,
+        // AAREvent.ATT_VAL_SELECTED_END_RANGE);
+        // }
+        //
+        // aesc.eventsSelected(eventList);
+        // }
 
         return eventList;
     }
@@ -827,88 +864,91 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         SelectionArea.RatingArea currentRatingArea = null;
         SelectionArea.PlayFilterSection currentPlayFilter = null;
 
-//        if (eventListPresenter != null) {
-//            for (Iterator it = eventListPresenter.getAllEvents(); it.hasNext();) {
-//                AAREvent aare = (AAREvent) it.next();
-//                String rating = (String) aare.getAttribute(AAREvent.ATT_KEY_RATING);
-//                Object playFilterObj = aare.getAttribute(AAREvent.ATT_KEY_PLAY_FILTER);
-//                long timeStamp = aare.getTimeStamp() - gameStartTime;
-//
-//                if (rating != null) {
-//                    if (currentRatingArea != null
-//                            && !currentRatingArea.isRating(rating)) {
-//                        currentRatingArea = null;
-//                    }
-//
-//                    if (currentRatingArea == null) {
-//                        currentRatingArea = new SelectionArea.RatingArea(timeStamp, rating);
-//                        ratingAreas.add(currentRatingArea);
-//                    }
-//
-//                    currentRatingArea.addTime(timeStamp);
-//
-//                } else if (currentRatingArea != null) {
-//                    currentRatingArea = null;
-//                }
-//
-//                if (playFilterObj != null) {
-//                    if (currentPlayFilter != null) {
-//                        currentPlayFilter.addTime(timeStamp);
-//                    } else {
-//                        currentPlayFilter = new SelectionArea.PlayFilterSection(timeStamp);
-//                        // logger.info("adding play filter section to play
-//                        // filter");
-//                        playFilter.add(currentPlayFilter);
-//                    }
-//                } else {
-//                    currentPlayFilter = null;
-//                }
-//
-//            }
-//
-//            OMGraphicList list = getList();
-//            if (list != null && list.isVisible()) {
-//                firePropertyChange(PlayFilterProperty,
-//                        null,
-//                        new Boolean(!playFilter.isInUse()
-//                                || playFilter.size() > 0));
-//            }
-//
-//        }
+        // if (eventListPresenter != null) {
+        // for (Iterator it = eventListPresenter.getAllEvents(); it.hasNext();)
+        // {
+        // AAREvent aare = (AAREvent) it.next();
+        // String rating = (String) aare.getAttribute(AAREvent.ATT_KEY_RATING);
+        // Object playFilterObj =
+        // aare.getAttribute(AAREvent.ATT_KEY_PLAY_FILTER);
+        // long timeStamp = aare.getTimeStamp() - gameStartTime;
+        //
+        // if (rating != null) {
+        // if (currentRatingArea != null
+        // && !currentRatingArea.isRating(rating)) {
+        // currentRatingArea = null;
+        // }
+        //
+        // if (currentRatingArea == null) {
+        // currentRatingArea = new SelectionArea.RatingArea(timeStamp, rating);
+        // ratingAreas.add(currentRatingArea);
+        // }
+        //
+        // currentRatingArea.addTime(timeStamp);
+        //
+        // } else if (currentRatingArea != null) {
+        // currentRatingArea = null;
+        // }
+        //
+        // if (playFilterObj != null) {
+        // if (currentPlayFilter != null) {
+        // currentPlayFilter.addTime(timeStamp);
+        // } else {
+        // currentPlayFilter = new SelectionArea.PlayFilterSection(timeStamp);
+        // // logger.info("adding play filter section to play
+        // // filter");
+        // playFilter.add(currentPlayFilter);
+        // }
+        // } else {
+        // currentPlayFilter = null;
+        // }
+        //
+        // }
+        //
+        // OMGraphicList list = getList();
+        // if (list != null && list.isVisible()) {
+        // firePropertyChange(PlayFilterProperty,
+        // null,
+        // new Boolean(!playFilter.isInUse()
+        // || playFilter.size() > 0));
+        // }
+        //
+        // }
     }
 
     protected void setSelectionRectangleToEvents() {
-//        if (aesc != null) {
-//            selectionRect = getSelectionRectangle(getProjection());
-//
-//            double lowerTime = Double.POSITIVE_INFINITY;
-//            double upperTime = Double.NEGATIVE_INFINITY;
-//
-//            for (Iterator it = eventListPresenter.getAllEvents(); it.hasNext();) {
-//                AAREvent event = (AAREvent) it.next();
-//
-//                if (event.getAttribute(AAREvent.ATT_KEY_SELECTED) != null) {
-//                    // Convert to minutes for selectRect bounds
-//                    double timeStamp = (double) forwardProjectMillis(event.getTimeStamp()
-//                            - gameStartTime);
-//                    if (timeStamp < lowerTime) {
-//                        lowerTime = timeStamp;
-//                    }
-//                    if (timeStamp > upperTime) {
-//                        upperTime = timeStamp;
-//                    }
-//                }
-//            }
-//
-//            if (upperTime != Double.NEGATIVE_INFINITY
-//                    && lowerTime != Double.POSITIVE_INFINITY) {
-//                selectionRect.setLocation((float) lowerTime, (float) upperTime);
-//                selectionRect.setVisible(true);
-//                selectionRect.generate(getProjection());
-//            } else {
-//                selectionRect.setVisible(false);
-//            }
-//        }
+        // if (aesc != null) {
+        // selectionRect = getSelectionRectangle(getProjection());
+        //
+        // double lowerTime = Double.POSITIVE_INFINITY;
+        // double upperTime = Double.NEGATIVE_INFINITY;
+        //
+        // for (Iterator it = eventListPresenter.getAllEvents(); it.hasNext();)
+        // {
+        // AAREvent event = (AAREvent) it.next();
+        //
+        // if (event.getAttribute(AAREvent.ATT_KEY_SELECTED) != null) {
+        // // Convert to minutes for selectRect bounds
+        // double timeStamp = (double) forwardProjectMillis(event.getTimeStamp()
+        // - gameStartTime);
+        // if (timeStamp < lowerTime) {
+        // lowerTime = timeStamp;
+        // }
+        // if (timeStamp > upperTime) {
+        // upperTime = timeStamp;
+        // }
+        // }
+        // }
+        //
+        // if (upperTime != Double.NEGATIVE_INFINITY
+        // && lowerTime != Double.POSITIVE_INFINITY) {
+        // selectionRect.setLocation((float) lowerTime, (float) upperTime);
+        // selectionRect.setVisible(true);
+        // selectionRect.generate(getProjection());
+        // } else {
+        // selectionRect.setVisible(false);
+        // }
+        // }
         repaint();
     }
 
@@ -993,9 +1033,9 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                 double timef = forwardProjectMillis(time);
                 setLocation(timef, timef);
                 Color ratingColor = badColor;
-//                if (rating.equals(AAREvent.ATT_VAL_GOOD_RATING)) {
-//                    ratingColor = goodColor;
-//                }
+                // if (rating.equals(AAREvent.ATT_VAL_GOOD_RATING)) {
+                // ratingColor = goodColor;
+                // }
 
                 setLinePaint(ratingColor);
                 setFillPaint(ratingColor);
@@ -1161,7 +1201,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
     public static class TimeHashFactory {
 
-        List hashMarks = new ArrayList(5);
+        List<TimeHashMarks> hashMarks = new ArrayList<TimeHashMarks>(5);
         TimeHashMarks current;
 
         public TimeHashFactory() {
@@ -1181,8 +1221,8 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             double timeSpan = lr.getX() - ul.getX();
 
             TimeHashMarks thm = null;
-            for (Iterator it = hashMarks.iterator(); it.hasNext();) {
-                TimeHashMarks cthm = (TimeHashMarks) it.next();
+            for (Iterator<TimeHashMarks> it = hashMarks.iterator(); it.hasNext();) {
+                TimeHashMarks cthm = it.next();
                 if (cthm.passesThreshold(timeSpan)) {
                     thm = cthm;
                 } else {
@@ -1215,7 +1255,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             if (inUse) {
                 // logger.info("checking " + size() + " sections");
 
-                for (Iterator it = iterator(); it.hasNext();) {
+                for (Iterator<OMGeometry> it = iterator(); it.hasNext();) {
                     PlayFilterSection pfs = (PlayFilterSection) it.next();
                     int where = pfs.isWithin(currentTime);
                     if (where == 0) {
@@ -1433,4 +1473,5 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             }
         }
     }
+
 }

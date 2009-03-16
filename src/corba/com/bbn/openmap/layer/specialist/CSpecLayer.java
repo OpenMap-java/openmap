@@ -35,14 +35,14 @@ import org.omg.CORBA.ShortHolder;
 import org.omg.CORBA.StringHolder;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.CSpecialist.CProjection;
-import com.bbn.openmap.CSpecialist.GraphicChange;
-import com.bbn.openmap.CSpecialist.LLPoint;
-import com.bbn.openmap.CSpecialist.Server;
-import com.bbn.openmap.CSpecialist.ServerHelper;
-import com.bbn.openmap.CSpecialist.UGraphic;
-import com.bbn.openmap.CSpecialist.UWidget;
-import com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType;
+import com.bbn.openmap.corba.CSpecialist.CProjection;
+import com.bbn.openmap.corba.CSpecialist.GraphicChange;
+import com.bbn.openmap.corba.CSpecialist.LLPoint;
+import com.bbn.openmap.corba.CSpecialist.Server;
+import com.bbn.openmap.corba.CSpecialist.ServerHelper;
+import com.bbn.openmap.corba.CSpecialist.UGraphic;
+import com.bbn.openmap.corba.CSpecialist.UWidget;
+import com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType;
 import com.bbn.openmap.event.InfoDisplayEvent;
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.event.SelectMouseMode;
@@ -932,7 +932,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
                     evt.getY(),
                     selectDist.value);
 
-            com.bbn.openmap.CSpecialist.ActionUnion[] action = null;
+            com.bbn.openmap.corba.CSpecialist.ActionUnion[] action = null;
 
             switch (mapGesture.getMode()) {
             case (short) MapGesture.Raw:
@@ -1072,15 +1072,15 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
      * or reorders graphics.
      * <p>
      * 
-     * @param updateRec com.bbn.openmap.CSpecialist.UpdateRecord[]
+     * @param updateRec com.bbn.openmap.corba.CSpecialist.UpdateRecord[]
      */
     protected void updateGraphics(
-                                  com.bbn.openmap.CSpecialist.UpdateRecord[] updateRec) {
+                                  com.bbn.openmap.corba.CSpecialist.UpdateRecord[] updateRec) {
 
         JGraphicList jGraphics = (JGraphicList) getList();
         Projection projection = getProjection();
 
-        com.bbn.openmap.CSpecialist.UpdateGraphic upgraphic = null;
+        com.bbn.openmap.corba.CSpecialist.UpdateGraphic upgraphic = null;
         // parse updateRec (an array of UpdateRecord)
         for (int i = 0; i < updateRec.length; i++) {
             String gID = updateRec[i].gID; // get the graphic ID
@@ -1098,7 +1098,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
                 // determine the type of graphic update
                 switch (upgraphic.discriminator().value()) {
 
-                case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_Graphic:
+                case com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType._GT_Graphic:
                     JObjectHolder graphic = (JObjectHolder) jGraphics.getOMGraphicWithId(gID);
                     if (graphic != null) {
                         graphic.update(upgraphic.gf_update());
@@ -1106,7 +1106,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
                     }
                     break;
 
-                case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_Bitmap:
+                case com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType._GT_Bitmap:
                     JBitmap bitmap = (JBitmap) jGraphics.getOMGraphicWithId(gID);
                     if (bitmap != null) {
                         bitmap.update(upgraphic.bf_update());
@@ -1114,7 +1114,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
                     }
                     break;
 
-                case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_Text:
+                case com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType._GT_Text:
                     JText text = (JText) jGraphics.getOMGraphicWithId(gID);
                     if (text != null) {
                         text.update(upgraphic.tf_update());
@@ -1122,7 +1122,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
                     }
                     break;
 
-                case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_Poly:
+                case com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType._GT_Poly:
                     JPoly poly = (JPoly) jGraphics.getOMGraphicWithId(gID);
                     if (poly != null) {
                         poly.update(upgraphic.pf_update());
@@ -1130,7 +1130,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
                     }
                     break;
 
-                case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_Line:
+                case com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType._GT_Line:
                     JLine line = (JLine) jGraphics.getOMGraphicWithId(gID);
                     if (line != null) {
                         line.update(upgraphic.lf_update());
@@ -1138,7 +1138,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
                     }
                     break;
 
-                case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_Rectangle:
+                case com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType._GT_Rectangle:
                     JRect rect = (JRect) jGraphics.getOMGraphicWithId(gID);
                     if (rect != null) {
                         rect.update(upgraphic.rf_update());
@@ -1146,7 +1146,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
                     }
                     break;
 
-                case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_Raster:
+                case com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType._GT_Raster:
                     JRaster raster = (JRaster) jGraphics.getOMGraphicWithId(gID);
                     if (raster != null) {
                         raster.update(upgraphic.rasf_update());
@@ -1154,7 +1154,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
                     }
                     break;
 
-                case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_Circle:
+                case com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType._GT_Circle:
                     JCircle circ = (JCircle) jGraphics.getOMGraphicWithId(gID);
                     if (circ != null) {
                         circ.update(upgraphic.cf_update());
@@ -1162,7 +1162,7 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
                     }
                     break;
 
-                case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_UnitSymbol:
+                case com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType._GT_UnitSymbol:
                     JUnit unitsymbol = (JUnit) jGraphics.getOMGraphicWithId(gID);
                     if (unitsymbol != null) {
                         unitsymbol.update(upgraphic.usf_update());
@@ -1172,10 +1172,10 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
 
                 // Uncomment when implemented!!!!
 
-                case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_2525Symbol:
-                case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_ForceArrow:
-                case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_NewGraphic:
-                case com.bbn.openmap.CSpecialist.GraphicPackage.GraphicType._GT_ReorderGraphic:
+                case com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType._GT_2525Symbol:
+                case com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType._GT_ForceArrow:
+                case com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType._GT_NewGraphic:
+                case com.bbn.openmap.corba.CSpecialist.GraphicPackage.GraphicType._GT_ReorderGraphic:
                     System.err.println("CSpecLayer|"
                             + getName()
                             + "|updateGraphics: Graphics Update Type not implemented.");

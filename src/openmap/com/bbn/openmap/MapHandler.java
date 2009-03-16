@@ -24,6 +24,7 @@ package com.bbn.openmap;
 
 import java.beans.beancontext.BeanContextMembershipListener;
 import java.beans.beancontext.BeanContextServicesSupport;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -277,6 +278,42 @@ public class MapHandler extends BeanContextServicesSupport {
             super.removeBeanContextMembershipListener((BeanContextMembershipListener) obj);
         }
         return ret;
+    }
+
+    /**
+     * Create an iterator copy, to avoid ConcurrentModificationExceptions in the
+     * MapHandler if one of the components wants to add more components when the
+     * MapHandler is set as the BeanContext on them.
+     */
+    public Iterator iterator() {
+        Iterator it = super.iterator();
+        LinkedList list = new LinkedList();
+        while (it.hasNext()) {
+            list.add(it.next());
+        }
+
+        return list.iterator();
+    }
+
+    public void dispose() {
+        MapBean mb = (MapBean) get(com.bbn.openmap.MapBean.class);
+        if (mb != null) {
+            mb.dispose();
+        }
+
+        Iterator kids = iterator();
+        int size = size();
+        ArrayList kidList = new ArrayList(size);
+
+        while (kids.hasNext()) {
+            kidList.add(kids.next());
+        }
+
+        for (kids = kidList.iterator(); kids.hasNext();) {
+            Object obj = kids.next();
+            System.out.println("removing " + obj.getClass().getName());
+            remove(obj);
+        }
     }
 
 }

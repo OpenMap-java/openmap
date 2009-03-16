@@ -22,8 +22,8 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.*;
-import com.bbn.openmap.CSpecialist.CStipplePackage.*;
+import com.bbn.openmap.corba.CSpecialist._CStippleStub;
+import com.bbn.openmap.corba.CSpecialist.CStipplePackage.EStipple;
 
 /**
  * SStipple is a parameter for specialist graphics objects. It is a

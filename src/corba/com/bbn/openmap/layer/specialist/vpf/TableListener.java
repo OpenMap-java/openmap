@@ -23,11 +23,16 @@
 package com.bbn.openmap.layer.specialist.vpf;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
-import com.bbn.openmap.layer.util.http.*;
-import com.bbn.openmap.layer.util.html.*;
+import com.bbn.openmap.layer.util.html.Document;
+import com.bbn.openmap.layer.util.html.HeaderElement;
+import com.bbn.openmap.layer.util.html.StringElement;
+import com.bbn.openmap.layer.util.html.TableHeaderElement;
+import com.bbn.openmap.layer.util.html.TableRowElement;
+import com.bbn.openmap.layer.util.http.HttpRequestEvent;
+import com.bbn.openmap.layer.util.http.HttpRequestListener;
 import com.bbn.openmap.layer.vpf.DcwColumnInfo;
 import com.bbn.openmap.layer.vpf.DcwRecordFile;
 

@@ -22,7 +22,9 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.*;
+import com.bbn.openmap.corba.CSpecialist.CheckButton;
+import com.bbn.openmap.corba.CSpecialist.UWidget;
+import com.bbn.openmap.corba.CSpecialist._CheckBoxStub;
 
 /**
  * Class SCheckBox is a specialist palette widget. It is a box of
@@ -49,16 +51,16 @@ public class SCheckBox extends _CheckBoxStub {
         return label_;
     }
 
-    public void buttons(com.bbn.openmap.CSpecialist.CheckButton[] buttons) {
+    public void buttons(com.bbn.openmap.corba.CSpecialist.CheckButton[] buttons) {
         buttons_ = buttons;
     }
 
-    public com.bbn.openmap.CSpecialist.CheckButton[] buttons() {
+    public com.bbn.openmap.corba.CSpecialist.CheckButton[] buttons() {
         return buttons_;
     }
 
     public void selected(java.lang.String box_label,
-                         com.bbn.openmap.CSpecialist.CheckButton button,
+                         com.bbn.openmap.corba.CSpecialist.CheckButton button,
                          java.lang.String uniqueID) {
     //      System.out.println("CheckBox: New button selected.");
     //      System.out.println(" in box: " + box_label);

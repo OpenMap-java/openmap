@@ -22,40 +22,21 @@
 
 package com.bbn.openmap.graphicLoader.scenario;
 
-import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.beans.PropertyChangeSupport;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Properties;
 import java.util.Vector;
 
-import javax.swing.Box;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.graphicLoader.MMLGraphicLoader;
-import com.bbn.openmap.gui.Tool;
-import com.bbn.openmap.gui.time.RealTimeHandler;
-import com.bbn.openmap.gui.time.TimeConstants;
-import com.bbn.openmap.gui.time.TimeSliderSupport;
-import com.bbn.openmap.gui.time.TimerControlButtonPanel;
-import com.bbn.openmap.gui.time.TimerRateComboBox;
 import com.bbn.openmap.io.CSVFile;
 import com.bbn.openmap.layer.location.LocationHandler;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
@@ -63,42 +44,44 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicHandler;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.time.TimeBounds;
+import com.bbn.openmap.time.TimeBoundsHandler;
+import com.bbn.openmap.time.TimeBoundsProvider;
+import com.bbn.openmap.time.TimeEvent;
+import com.bbn.openmap.time.TimeEventListener;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.DataBoundsProvider;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The ScenarioGraphicLoader contains all the ScenarioGraphics and
- * manages the time for the scenario. The different organization
- * objects are represented in a location file that lists a name and an
- * icon URL. An activities file lists the different steps for the
- * organizations - where they are (lat/lon) and when. A timer in the
- * loader positions the organizations for that time, interpolating
- * location for times between time/location definitions. If an
- * organization stops to wait in a position, two activity locations
- * should be defined for that stop, for when the organization arrived
- * to that spot and when then left. Different properties need to be
- * set for the ScenarioGraphicLoader to let it know how the files,
- * Comma Separated Value (CSV) files, should be interpreted.
+ * The ScenarioGraphicLoader contains all the ScenarioGraphics and manages the
+ * time for the scenario. The different organization objects are represented in
+ * a location file that lists a name and an icon URL. An activities file lists
+ * the different steps for the organizations - where they are (lat/lon) and
+ * when. A timer in the loader positions the organizations for that time,
+ * interpolating location for times between time/location definitions. If an
+ * organization stops to wait in a position, two activity locations should be
+ * defined for that stop, for when the organization arrived to that spot and
+ * when then left. Different properties need to be set for the
+ * ScenarioGraphicLoader to let it know how the files, Comma Separated Value
+ * (CSV) files, should be interpreted.
  * <p>
  * 
- * The ScenarioGraphicLoader also lets you define different steps for
- * how to control the time, i.e. the timer rate. The clock interval
- * for the timer rate is measured in milliseconds, specifying how
- * often the map should be updated. Note that the more often the map
- * is updated, the more unresponsive the map can become. The pace for
- * the timer rate is how much 'senario time' passes for each time the
- * clock updates. You can define those steps in different formats, but
- * the default format for the pace is hh:mm:ss for
- * hours:minutes:seconds.
+ * The ScenarioGraphicLoader also lets you define different steps for how to
+ * control the time, i.e. the timer rate. The clock interval for the timer rate
+ * is measured in milliseconds, specifying how often the map should be updated.
+ * Note that the more often the map is updated, the more unresponsive the map
+ * can become. The pace for the timer rate is how much 'senario time' passes for
+ * each time the clock updates. You can define those steps in different formats,
+ * but the default format for the pace is hh:mm:ss for hours:minutes:seconds.
  * <p>
  * 
  * Sample properties:
  * 
  * <pre>
- *   
- *   
+ * 
+ * 
  *    scenario.class=com.bbn.openmap.graphicLoader.scenario.ScenarioGraphicLoader
  *    scenario.prettyName=Test Scenario
  *    scenario.locationFile=org-list.csv
@@ -141,18 +124,16 @@ import com.bbn.openmap.util.PropUtils;
  *    scenario.vf.prettyName=Very Fast
  *    scenario.vf.clockIntervalMillis=10
  *    scenario.vf.pace=01:00:00
- *    
+ * 
  * </pre>
  */
-public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
-        ComponentListener, DataBoundsProvider, RealTimeHandler, TimeConstants {
+public class ScenarioGraphicLoader extends MMLGraphicLoader implements
+        ComponentListener, DataBoundsProvider, TimeBoundsProvider,
+        TimeEventListener {
 
     public final static String TOTAL_SCENARIO_MODE = "TOTAL_SCENARIO";
     public final static String SNAPSHOT_SCENARIO_MODE = "SNAPSHOT_SCENARIO";
     public final static String SCENARIO_MODE_CMD = "SCENARIO_MODE_CMD";
-
-    public final static String DefaultTimerIntervalFormat = "HH:mm:ss";
-    public final static String DefaultPaceBaselineString = "00:00:00";
 
     protected String totalScenarioIconName = "totalScenarioTime.png";
     protected String snapshotIconName = "snapshotScenarioTime.png";
@@ -186,16 +167,6 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
     public final static String DefaultIconURLProperty = "defaultURL";
     /** timeFormat */
     public final static String TimeFormatProperty = "timeFormat";
-    /** timerInvervalFormat */
-    public final static String TimerIntervalFormatProperty = "timerIntervalFormat";
-    /** timerPaceBaseline */
-    public final static String TimerPaceBaselineProperty = "timerPaceBaseline";
-    /** clockIntervalMillis */
-    public final static String ClockIntervalProperty = "clockIntervalMillis";
-    /** pace */
-    public final static String PaceProperty = "pace";
-    /** timerRates */
-    public final static String TimerRatesProperty = "timerRates";
 
     protected String locationFile;
     protected boolean locationHeader = true;
@@ -209,49 +180,24 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
     protected int timeIndex;
     protected boolean eastIsNeg = false;
     protected int orientation = SwingConstants.HORIZONTAL;
-    
-    /**
-     * TimeFormat default is similar to IETF standard date syntax:
-     * "Sat, 12 Aug 1995 13:30:00 GMT" represented by (EEE, d MMM yyyy
-     * HH:mm:ss z), except for the local timezone.
-     */
-    protected SimpleDateFormat timeFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
-
-    /**
-     * The TimerIntervalFormat controls how the pace can be specified
-     * for the rate settings. The default is HH:mm:ss, you can use the
-     * timerIntervalFormat property to set it to something else.
-     */
-    protected SimpleDateFormat timerIntervalFormat = new SimpleDateFormat(DefaultTimerIntervalFormat);
-
-    protected String timerPaceBaselineString = DefaultPaceBaselineString;
-
-    protected long startTime = Long.MAX_VALUE;
-    protected long endTime = Long.MIN_VALUE;
-    protected long time = 0;
-    protected int timeIncrement = 1;
-    protected String mode = TOTAL_SCENARIO_MODE;
-    protected boolean timeWrap = (mode == SNAPSHOT_SCENARIO_MODE);
-    protected int clockDirection = 1;
+    protected String mode;
 
     /** Icon URL for points to use as default. May be null. */
     protected String defaultIconURL;
     protected boolean showNames = false;
     protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     protected ScenarioGraphicList scenarioGraphics = null;
-    protected LinkedList timerRates;
     protected DrawingAttributes drawingAttributes = null;
     protected DataBounds dataBounds = null;
-    protected Date timeDate = null;
+    /**
+     * TimeFormat default is similar to IETF standard date syntax:
+     * "Sat, 12 Aug 1995 13:30:00 GMT" represented by (EEE, d MMM yyyy HH:mm:ss
+     * z), except for the local timezone.
+     */
+    protected SimpleDateFormat timeFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
 
-    // / GUI ToolPanel widgets. Kept here to make their visibility
-    // adjustable.
-    protected JToggleButton timeWrapToggle;
-    protected JLabel timeLabel;
-    protected TimerControlButtonPanel timerControl;
-    protected TimerRateComboBox timerRateControl;
-    protected JSlider timeSlider;
-    protected TimeSliderSupport timeSliderSupport;
+    protected TimeBounds timeBounds;
+    protected long time;
 
     public ScenarioGraphicLoader() {
         drawingAttributes = new DrawingAttributes();
@@ -260,8 +206,8 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
     }
 
     /**
-     * The main method call in the ScenarioGraphicLoader that actually
-     * modifies the OMGraphics and updates the map.
+     * The main method call in the ScenarioGraphicLoader that actually modifies
+     * the OMGraphics and updates the map.
      */
     public synchronized void manageGraphics() {
         Projection p = getProjection();
@@ -271,11 +217,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
             if (scenarioGraphics == null) {
                 scenarioGraphics = createData();
 
-                // Update limits
-                if (timeSliderSupport != null) {
-                    timeSliderSupport.setStartTime(startTime);
-                    timeSliderSupport.setEndTime(endTime);
-                }
+                // TODO upate time Bounds
             }
 
             long currentTime = getTime();
@@ -296,191 +238,6 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
         } else {
             Debug.output("ScenarioGraphicLoader (" + getName()
                     + ") doesn't have a connection to the map.");
-        }
-    }
-
-    // RealTimeHandler methods.
-
-    public void setPace(int pace) {
-        timeIncrement = pace;
-    }
-
-    public int getPace() {
-        return timeIncrement;
-    }
-
-    public long getTime() {
-        return time;
-    }
-
-    public void setTime(long t) {
-        time = t;
-
-        if (timeDate != null && timeLabel != null) {
-            timeDate.setTime(time);
-            timeLabel.setText(timeFormat.format(timeDate));
-        }
-
-        if (timeSliderSupport != null) {
-            timeSliderSupport.update(time);
-        }
-
-        manageGraphics();
-    }
-
-    public void startClock() {
-        if (!timer.isRunning()) {
-            pcs.firePropertyChange(TIMER_RUNNING_STATUS,
-                    TIMER_STOPPED,
-                    (getClockDirection() > 0 ? TIMER_FORWARD : TIMER_BACKWARD));
-        }
-        if (Debug.debugging("scenario")) {
-            Debug.output("ScenarioGraphicLoader " + getName()
-                    + ": Starting clock");
-        }
-        timer.restart();
-    }
-
-    public void stopClock() {
-        if (timer.isRunning()) {
-            pcs.firePropertyChange(TIMER_RUNNING_STATUS,
-                    (getClockDirection() > 0 ? TIMER_FORWARD : TIMER_BACKWARD),
-                    TIMER_STOPPED);
-            timer.stop();
-        }
-    }
-
-    /**
-     * Set whether time increases or decreases when the clock is run.
-     * If direction is zero or greater, clock runs forward. If
-     * direction is negative, clock runs backward.
-     */
-    public void setClockDirection(int direction) {
-        String oldDirection = clockDirection > 0 ? TIMER_FORWARD
-                : TIMER_BACKWARD;
-
-        if (direction >= 0) {
-            clockDirection = 1;
-        } else {
-            clockDirection = -1;
-        }
-
-        String newDirection = clockDirection > 0 ? TIMER_FORWARD
-                : TIMER_BACKWARD;
-
-        if (timer.isRunning()) {
-            if (oldDirection != newDirection) {
-                pcs.firePropertyChange(TIMER_RUNNING_STATUS,
-                        oldDirection,
-                        newDirection);
-            }
-        }
-    }
-
-    /**
-     * Get whether time increases or decreases when the clock is run.
-     * If direction is zero or greater, clock runs forward. If
-     * direction is negative, clock runs backward.
-     */
-    public int getClockDirection() {
-        return clockDirection;
-    }
-
-    /**
-     * Call setTime with the amount given added to the current time.
-     * The amount should be negative if you are going backward through
-     * time. You need to make sure manageGraphics is called for the
-     * map to update.
-     * <p>
-     * 
-     * This method calls changeTimeBy(amount, wrapAroundTimeLimits),
-     * with wrapAroundTimeLimits being true of the mode of the
-     * ScenarioGraphicLoader is SNAPSHOT_SCENARIO_MODE.
-     * 
-     * @param amount to change the current time by, in milliseconds.
-     */
-    protected void changeTimeBy(long amount) {
-        changeTimeBy(amount, timeWrap);
-    }
-
-    /**
-     * Call setTime with the amount given added to the current time.
-     * The amount should be negative if you are going backward through
-     * time. You need to make sure manageGraphics is called for the
-     * map to update.
-     * 
-     * @param amount to change the current time by, in milliseconds.
-     * @param wrapAroundTimeLimits if true, the time will be set as if
-     *        the start and end times ofthe scenario are connected, so
-     *        that moving the time past the time scale in either
-     *        direction will put the time at the other end of the
-     *        scale.
-     */
-    protected void changeTimeBy(long amount, boolean wrapAroundTimeLimits) {
-
-        long oldTime = getTime();
-        long newTime;
-
-        if (oldTime > endTime || oldTime < startTime) {
-            if (wrapAroundTimeLimits) {
-                if (amount >= 0) {
-                    newTime = startTime + amount;
-                } else {
-                    newTime = endTime + amount;
-                }
-            } else {
-                if (amount >= 0) {
-                    newTime = startTime;
-                } else {
-                    newTime = endTime;
-                }
-
-                if (timer.isRunning()) {
-                    stopClock();
-                    setTime(newTime);
-                    return;
-                }
-            }
-        } else {
-            newTime = oldTime + amount;
-        }
-
-        if (Debug.debugging("scenario")) {
-            Debug.output("ScenarioGraphicLoader (" + getName()
-                    + ") changing time by [" + amount + "] to (" + newTime
-                    + ")");
-        }
-
-        setTime(newTime);
-    }
-
-    /**
-     * Move the clock forward one clock interval.
-     */
-    public void stepForward() {
-        changeTimeBy(timeIncrement, true);
-    }
-
-    /**
-     * Move the clock back one clock interval.
-     */
-    public void stepBackward() {
-        changeTimeBy(-timeIncrement, true);
-    }
-
-    /**
-     * ActionListener interface, gets called when the timer goes ping
-     * if their isn't a command with the ActionEvent. Otherwise, the
-     * command should be filled in.
-     */
-    public void actionPerformed(ActionEvent ae) {
-        // Will check to see if any GUI commands trigger this
-        // method, otherwise, it should just change the time.
-        String cmd = ae.getActionCommand();
-        if (cmd == SCENARIO_MODE_CMD) {
-            timeWrap = ((JToggleButton) ae.getSource()).isSelected();
-        } else {
-            changeTimeBy(timeIncrement * clockDirection);
         }
     }
 
@@ -551,6 +308,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
         if (activityFile != null && activityNameIndex != -1 && latIndex != -1
                 && lonIndex != -1 && timeIndex != -1) {
             Debug.message("scenario", "Reading activity file...");
+            timeBounds = new TimeBounds();
             try {
                 CSVFile activities = new CSVFile(activityFile);
                 activities.loadData(); // numbers as strings == false
@@ -559,7 +317,6 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
                     String name = null;
                     float lat;
                     float lon;
-                    long time;
 
                     Vector record = (Vector) records.next();
 
@@ -577,17 +334,10 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
                         // parse time from string, ending up with
                         // milliseconds from time epoch.
                         String timeString = (String) record.elementAt(timeIndex);
-                        timeDate = timeFormat.parse(timeString);
-                        time = timeDate.getTime();
+                        Date timeDate = timeFormat.parse(timeString);
+                        long time = timeDate.getTime();
 
-                        if (time < startTime) {
-                            startTime = time;
-                        }
-
-                        if (time > endTime) {
-                            endTime = time;
-                        }
-
+                        timeBounds.addTimeToBounds(time);
                         dataBounds.add((double) lon, (double) lat);
 
                         if (name != null) {
@@ -644,19 +394,19 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
             return list;
         }
 
-        this.time = startTime;
-
         Debug.message("scenario", "Reading files OK");
+
+        // Time will get updated automatically when the TimeEvent gets sent from
+        // the clock.
 
         return list;
     }
 
     /**
-     * The properties and prefix are managed and decoded here, for the
-     * standard uses of the ScenarioGraphicLoader.
+     * The properties and prefix are managed and decoded here, for the standard
+     * uses of the ScenarioGraphicLoader.
      * 
-     * @param prefix string prefix used in the properties file for
-     *        this layer.
+     * @param prefix string prefix used in the properties file for this layer.
      * @param properties the properties set in the properties file.
      */
     public void setProperties(String prefix, Properties properties) {
@@ -696,52 +446,6 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
 
         timeFormat = new SimpleDateFormat(timeFormatString);
 
-        String timerIntervalFormatString = properties.getProperty(prefix
-                + TimerIntervalFormatProperty,
-                ((SimpleDateFormat) timerIntervalFormat).toPattern());
-
-        timerPaceBaselineString = properties.getProperty(prefix
-                + TimerPaceBaselineProperty, timerPaceBaselineString);
-
-        timerIntervalFormat = new SimpleDateFormat(timerIntervalFormatString);
-
-        if (Debug.debugging("scenario")) {
-            Debug.output("ScenarioGraphicLoader timer rate pace pattern: "
-                    + timerIntervalFormatString);
-        }
-
-        String timerRatesString = properties.getProperty(prefix
-                + TimerRatesProperty);
-        timerRates = new LinkedList();
-        if (timerRatesString != null) {
-            if (Debug.debugging("scenario")) {
-                Debug.output("ScenarioGraphicLoader reading timer rates: "
-                        + timerRatesString);
-            }
-            Vector rates = PropUtils.parseSpacedMarkers(timerRatesString);
-            Iterator it = rates.iterator();
-            while (it.hasNext()) {
-                String ratePrefix = (String) it.next();
-                TimerRateHolder trh = new TimerRateHolder(timerIntervalFormat, timerPaceBaselineString);
-                trh.setProperties(prefix + ratePrefix, properties);
-                if (trh.valid) {
-                    timerRates.add(trh);
-                    if (Debug.debugging("scenario")) {
-                        Debug.output("ScenarioGraphicLoader adding " + trh);
-                    }
-                } else {
-                    if (Debug.debugging("scenario")) {
-                        Debug.output("ScenarioGraphicLoader NOT adding "
-                                + ratePrefix);
-                    }
-                }
-            }
-        } else {
-            if (Debug.debugging("scenario")) {
-                Debug.output("ScenarioGraphicLoader has no timer rate information");
-            }
-        }
-
         if (Debug.debugging("scenario")) {
             Debug.output("ScenarioGraphicLoader indexes:"
                     + "\n\tlocation file: " + locationFile
@@ -755,18 +459,16 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
     }
 
     /**
-     * PropertyConsumer method, to fill in a Properties object,
-     * reflecting the current values of the layer. If the layer has a
-     * propertyPrefix set, the property keys should have that prefix
-     * plus a separating '.' prepended to each propery key it uses for
-     * configuration.
+     * PropertyConsumer method, to fill in a Properties object, reflecting the
+     * current values of the layer. If the layer has a propertyPrefix set, the
+     * property keys should have that prefix plus a separating '.' prepended to
+     * each propery key it uses for configuration.
      * 
-     * @param props a Properties object to load the PropertyConsumer
-     *        properties into.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param props a Properties object to load the PropertyConsumer properties
+     *        into.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
@@ -802,24 +504,22 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
     }
 
     /**
-     * Method to fill in a Properties object with values reflecting
-     * the properties able to be set on this PropertyConsumer. The key
-     * for each property should be the raw property name (without a
-     * prefix) with a value that is a String that describes what the
-     * property key represents, along with any other information about
-     * the property that would be helpful (range, default value,
-     * etc.). This method takes care of the basic LocationHandler
-     * parameters, so any LocationHandlers that extend the
-     * AbstractLocationHandler should call this method, too, before
-     * adding any specific properties.
+     * Method to fill in a Properties object with values reflecting the
+     * properties able to be set on this PropertyConsumer. The key for each
+     * property should be the raw property name (without a prefix) with a value
+     * that is a String that describes what the property key represents, along
+     * with any other information about the property that would be helpful
+     * (range, default value, etc.). This method takes care of the basic
+     * LocationHandler parameters, so any LocationHandlers that extend the
+     * AbstractLocationHandler should call this method, too, before adding any
+     * specific properties.
      * 
-     * @param list a Properties object to load the PropertyConsumer
-     *        properties into. If getList equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param list a Properties object to load the PropertyConsumer properties
+     *        into. If getList equals null, then a new Properties object should
+     *        be created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
@@ -869,192 +569,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
 
         return list;
     }
-
-    // /**
-    // * Tool Method. The retrieval tool's interface. This is added to
-    // the
-    // * tool bar.
-    // *
-    // * @return String The key for this tool.
-    // */
-    // public Container getFace() {
-    // JToolBar jtb = new JToolBar();
-    // jtb.setFloatable(false);
-
-    // // TimerToggleButton ttb = new TimerToggleButton(this);
-    // // ttb.setToolTipText("Start/Stop Scenario Timer");
-    // // jtb.add(ttb);
-    // // pcs.addPropertyChangeListener(TIMER_RUNNING_STATUS, ttb);
-
-    // try {
-    // URL url = PropUtils.getResourceOrFileOrURL(this,
-    // snapshotIconName);
-    // ImageIcon snapshotIcon = new ImageIcon(url);
-
-    // url = PropUtils.getResourceOrFileOrURL(this,
-    // totalScenarioIconName);
-    // ImageIcon totalScenarioIcon = new ImageIcon(url);
-
-    // timeWrapToggle = new JToggleButton(totalScenarioIcon,
-    // timeWrap);
-    // timeWrapToggle.setSelectedIcon(snapshotIcon);
-    // timeWrapToggle.setActionCommand(SCENARIO_MODE_CMD);
-    // timeWrapToggle.addActionListener(this);
-    // timeWrapToggle.setToolTipText("Wrap Scenario Time Scale");
-    // jtb.add(timeWrapToggle);
-
-    // } catch (MalformedURLException murle) {
-    // Debug.error("ScenarioGraphicLoader " + getName() + ":" +
-    // murle.getMessage());
-    // } catch (NullPointerException npe) {
-    // Debug.error("ScenarioGraphicLoader " + getName() + ":" +
-    // npe.getMessage());
-    // }
-
-    // timerControl = new TimerControlButtonPanel(this);
-    // jtb.add(timerControl);
-    // pcs.addPropertyChangeListener(TIMER_RUNNING_STATUS,
-    // timerControl);
-
-    // String runningStatus = timer.isRunning()?(getClockDirection() >
-    // 0?TIMER_FORWARD:TIMER_BACKWARD):TIMER_STOPPED;
-    // pcs.firePropertyChange(TIMER_RUNNING_STATUS, null,
-    // runningStatus);
-
-    // timerRateControl = new TimerRateComboBox(this);
-    // timerRateControl.setToolTipText("Change clock rate for
-    // Scenario");
-
-    // Iterator it = timerRates.iterator();
-    // while (it.hasNext()) {
-    // TimerRateHolder trh = (TimerRateHolder)it.next();
-    // timerRateControl.add(trh.label, trh.clock, trh.pace);
-    // }
-
-    // int si = timerRates.size()/2;
-    // if (si > 0) {
-    // timerRateControl.setSelectedIndex(si);
-    // }
-
-    // jtb.add(timerRateControl);
-
-    // timeSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 0);
-    // timeSliderSupport = new TimeSliderSupport(timeSlider, this,
-    // startTime, endTime);
-    // jtb.add(timeSlider);
-
-    // timeLabel = new JLabel();
-    // java.awt.Font defaultFont = timeLabel.getFont();
-    // timeLabel.setFont(new java.awt.Font(defaultFont.getName(),
-    // defaultFont.getStyle(), 9));
-    // jtb.add(timeLabel);
-
-    // return jtb;
-    // }
-
-    /**
-     * Tool Method. The retrieval tool's interface. This is added to
-     * the tool bar.
-     * 
-     * @return String The key for this tool.
-     */
-    public Container getFace() {
-        JPanel jtb = new JPanel();
-
-        Box bigBox = Box.createHorizontalBox();
-        Box rightBox = Box.createVerticalBox();
-        Box leftBox = Box.createVerticalBox();
-        Box innerBox = Box.createHorizontalBox();
-
-        try {
-            URL url = PropUtils.getResourceOrFileOrURL(this, snapshotIconName);
-            ImageIcon snapshotIcon = new ImageIcon(url);
-
-            url = PropUtils.getResourceOrFileOrURL(this, totalScenarioIconName);
-            ImageIcon totalScenarioIcon = new ImageIcon(url);
-
-            timeWrapToggle = new JToggleButton(totalScenarioIcon, timeWrap);
-            timeWrapToggle.setSelectedIcon(snapshotIcon);
-            timeWrapToggle.setActionCommand(SCENARIO_MODE_CMD);
-            timeWrapToggle.addActionListener(this);
-            timeWrapToggle.setToolTipText("Wrap Scenario Time Scale");
-            // jtb.add(timeWrapToggle);
-            innerBox.add(timeWrapToggle);
-
-        } catch (MalformedURLException murle) {
-            Debug.error("ScenarioGraphicLoader " + getName() + ":"
-                    + murle.getMessage());
-        } catch (NullPointerException npe) {
-            Debug.error("ScenarioGraphicLoader " + getName() + ":"
-                    + npe.getMessage());
-        }
-
-        timerControl = new TimerControlButtonPanel(this);
-        // jtb.add(timerControl);
-        innerBox.add(timerControl);
-        rightBox.add(innerBox);
-
-        pcs.addPropertyChangeListener(TIMER_RUNNING_STATUS, timerControl);
-
-        String runningStatus = timer.isRunning() ? (getClockDirection() > 0 ? TIMER_FORWARD
-                : TIMER_BACKWARD)
-                : TIMER_STOPPED;
-        pcs.firePropertyChange(TIMER_RUNNING_STATUS, null, runningStatus);
-
-        timerRateControl = new TimerRateComboBox(this);
-        timerRateControl.setToolTipText("Change clock rate for Scenario");
-
-        Iterator it = timerRates.iterator();
-        while (it.hasNext()) {
-            TimerRateHolder trh = (TimerRateHolder) it.next();
-            timerRateControl.add(trh.label, trh.clock, trh.pace);
-        }
-
-        int si = timerRates.size() / 2;
-        if (si > 0) {
-            timerRateControl.setSelectedIndex(si);
-        }
-
-        // jtb.add(timerRateControl);
-        rightBox.add(timerRateControl);
-
-        timeSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 0);
-        timeSliderSupport = new TimeSliderSupport(timeSlider, this, startTime, endTime);
-        // jtb.add(timeSlider);
-        leftBox.add(timeSlider);
-
-        timeLabel = new JLabel(" ", SwingConstants.CENTER);
-        java.awt.Font defaultFont = timeLabel.getFont();
-        timeLabel.setFont(new java.awt.Font(defaultFont.getName(), defaultFont.getStyle(), 10));
-        // jtb.add(timeLabel);
-        leftBox.add(timeLabel);
-
-        URL url = ScenarioGraphicLoader.class.getResource("path.png");
-        ImageIcon icon = new ImageIcon(url);
-
-        JToggleButton modeButton = new JToggleButton(icon, mode == TOTAL_SCENARIO_MODE);
-        modeButton.setToolTipText((mode == TOTAL_SCENARIO_MODE ? "Hide"
-                : "Show")
-                + " scenario paths on " + getName());
-        modeButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                JToggleButton jtb = (JToggleButton) ae.getSource();
-                boolean sel = jtb.isSelected();
-                setMode((sel ? TOTAL_SCENARIO_MODE : SNAPSHOT_SCENARIO_MODE));
-                jtb.setToolTipText((sel ? "Hide" : "Show")
-                        + " scenario paths on " + getName());
-                manageGraphics();
-            }
-        });
-
-        bigBox.add(modeButton);
-        bigBox.add(leftBox);
-        bigBox.add(rightBox);
-        jtb.add(bigBox);
-
-        return jtb;
-    }
-
+ 
     public String getMode() {
         return mode;
     }
@@ -1097,9 +612,9 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
     public void componentShown(ComponentEvent ce) {}
 
     /**
-     * An OMGraphicList that knows what a ScenarioGraphic is, and
-     * knows when to tell it to draw itself at a particular time, or
-     * if it should draw its entire scenario path.
+     * An OMGraphicList that knows what a ScenarioGraphic is, and knows when to
+     * tell it to draw itself at a particular time, or if it should draw its
+     * entire scenario path.
      */
     public class ScenarioGraphicList extends OMGraphicList {
         public ScenarioGraphicList() {
@@ -1123,88 +638,48 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements Tool,
         }
     }
 
-    /**
-     * A convenience class that keeps track of a relationship between
-     * real-time changes and scenario-time changes.
-     */
-    public class TimerRateHolder implements PropertyConsumer {
-        String label;
-        int clock;
-        int pace;
-        SimpleDateFormat paceFormat;
-        String paceZero;
-        boolean valid = false;
-        String propPrefix;
-
-        /**
-         * Create a TimerRateHolder with a date format, and a baseline
-         * time. The default baseline time is "00:00:00", so if you
-         * need to change that, use this constructor. The pace for
-         * this TimerRateHolder should be a relative amount of time,
-         * and that relativity, taking into account the locale offset
-         * to GMT, is given by the baseline time. The baseline time
-         * should match the format given.
-         */
-        public TimerRateHolder(SimpleDateFormat simpleDateFormat, String dpz) {
-            paceFormat = simpleDateFormat;
-            paceZero = dpz;
-        }
-
-        public String toString() {
-            return "ScenarioGraphicLoader.TimerRateHolder [" + label
-                    + ", clock:" + clock + ", pace:" + pace + "] (" + valid
-                    + ")";
-        }
-
-        public void setProperties(Properties props) {
-            setProperties(null, props);
-        }
-
-        public void setProperties(String prefix, Properties props) {
-
-            propPrefix = prefix;
-            prefix = PropUtils.getScopedPropertyPrefix(prefix);
-
-            try {
-                label = props.getProperty(prefix + Layer.PrettyNameProperty);
-                clock = PropUtils.intFromProperties(props, prefix
-                        + ClockIntervalProperty, -1);
-                String paceString = props.getProperty(prefix + PaceProperty);
-                pace = (int) (paceFormat.parse(paceString).getTime() - paceFormat.parse(paceZero)
-                        .getTime());
-                valid = true;
-
-            } catch (NullPointerException npe) {
-                Debug.error("TimerRateHolder caught NPE: " + npe.getMessage());
-            } catch (ParseException pe) {
-                Debug.error("TimerRateHolder parse exception: "
-                        + pe.getMessage());
-            }
-        }
-
-        public Properties getProperties(Properties props) {
-            return props;
-        }
-
-        public Properties getPropertyInfo(Properties props) {
-            return props;
-        }
-
-        public String getPropertyPrefix() {
-            return propPrefix;
-        }
-
-        public void setPropertyPrefix(String p) {
-            propPrefix = p;
-        }
-    }
-
     public int getOrientation() {
         return orientation;
     }
 
     public void setOrientation(int orientation) {
         this.orientation = orientation;
+    }
+
+    // TimeBoundsProvider methods.
+
+    public void addTimeBoundsHandler(TimeBoundsHandler tbh) {
+    // TODO Auto-generated method stub
+
+    }
+
+    public TimeBounds getTimeBounds() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void handleTimeBounds(TimeBounds tb) {
+    // TODO Auto-generated method stub
+
+    }
+
+    public boolean isActive() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public void removeTimeBoundsHandler(TimeBoundsHandler tbh) {
+    // TODO Auto-generated method stub
+
+    }
+
+    public void updateTime(TimeEvent te) {
+    // TODO Auto-generated method stub
+
+    }
+
+    public long getTime() {
+        return time;
     }
 
 }

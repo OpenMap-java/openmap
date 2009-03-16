@@ -22,10 +22,11 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.proj.Projection;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+
+import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.proj.Projection;
 
 /** MapGesture - class for handling specialist gestures in OpenMap */
 public class MapGesture {
@@ -40,16 +41,16 @@ public class MapGesture {
 
     // The OM version of ActionTypes is set here.
     public static final int NoAction = -1;
-    public static final int UpdateGraphics = com.bbn.openmap.CSpecialist.ActionType._UpdateGraphics;
-    public static final int UpdatePalette = com.bbn.openmap.CSpecialist.ActionType._UpdatePalette;
-    public static final int InfoText = com.bbn.openmap.CSpecialist.ActionType._InfoText;
-    public static final int PlainText = com.bbn.openmap.CSpecialist.ActionType._PlainText;
-    public static final int HTMLText = com.bbn.openmap.CSpecialist.ActionType._HTMLText;
-    public static final int URL = com.bbn.openmap.CSpecialist.ActionType._URL;
+    public static final int UpdateGraphics = com.bbn.openmap.corba.CSpecialist.ActionType._UpdateGraphics;
+    public static final int UpdatePalette = com.bbn.openmap.corba.CSpecialist.ActionType._UpdatePalette;
+    public static final int InfoText = com.bbn.openmap.corba.CSpecialist.ActionType._InfoText;
+    public static final int PlainText = com.bbn.openmap.corba.CSpecialist.ActionType._PlainText;
+    public static final int HTMLText = com.bbn.openmap.corba.CSpecialist.ActionType._HTMLText;
+    public static final int URL = com.bbn.openmap.corba.CSpecialist.ActionType._URL;
 
-    public static final int clickEvent = com.bbn.openmap.CSpecialist.MouseType._ClickEvent;
-    public static final int motionEvent = com.bbn.openmap.CSpecialist.MouseType._MotionEvent;
-    public static final int keyEvent = com.bbn.openmap.CSpecialist.MouseType._KeyEvent;
+    public static final int clickEvent = com.bbn.openmap.corba.CSpecialist.MouseType._ClickEvent;
+    public static final int motionEvent = com.bbn.openmap.corba.CSpecialist.MouseType._MotionEvent;
+    public static final int keyEvent = com.bbn.openmap.corba.CSpecialist.MouseType._KeyEvent;
 
     // gesture modes
     public static final short Raw = 1;

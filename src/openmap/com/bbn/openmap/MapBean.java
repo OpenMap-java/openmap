@@ -284,8 +284,13 @@ public class MapBean extends JComponent implements ComponentListener,
             projectionSupport.dispose();
         }
 
-        painters.removeAll();
-        addedLayers.removeAllElements();
+        if (painters != null) {
+            painters.removeAll();
+        }
+        
+        if (addedLayers != null) {
+            addedLayers.removeAllElements();
+        }
 
         removeAll();
         purgeAndNotifyRemovedLayers();

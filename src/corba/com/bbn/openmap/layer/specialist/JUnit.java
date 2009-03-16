@@ -24,22 +24,24 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.CSpecialist.LLPoint;
-import com.bbn.openmap.CSpecialist.UnitSymbolPackage.*;
-import com.bbn.openmap.CSpecialist.XYPoint;
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.proj.Projection;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.image.*;
+import java.awt.image.ImageObserver;
+
 import javax.swing.ImageIcon;
+
+import com.bbn.openmap.corba.CSpecialist.LLPoint;
+import com.bbn.openmap.corba.CSpecialist.XYPoint;
+import com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.EUnitSymbol;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.proj.Projection;
 
 public class JUnit extends OMGraphic implements ImageObserver, JObjectHolder {
 
-    protected transient com.bbn.openmap.CSpecialist.EComp object = null;
+    protected transient com.bbn.openmap.corba.CSpecialist.EComp object = null;
 
     EUnitSymbol eunit = null;
     Point point1;
@@ -54,11 +56,11 @@ public class JUnit extends OMGraphic implements ImageObserver, JObjectHolder {
         this.eunit = eunit;
     }
 
-    public void setObject(com.bbn.openmap.CSpecialist.EComp aObject) {
+    public void setObject(com.bbn.openmap.corba.CSpecialist.EComp aObject) {
         object = aObject;
     }
 
-    public com.bbn.openmap.CSpecialist.EComp getObject() {
+    public com.bbn.openmap.corba.CSpecialist.EComp getObject() {
         return object;
     }
 
@@ -188,104 +190,104 @@ public class JUnit extends OMGraphic implements ImageObserver, JObjectHolder {
     }
 
     public void update(
-                       com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update) {
+                       com.bbn.openmap.corba.CSpecialist.GraphicPackage.GF_update update) {
         JGraphic.update((JObjectHolder) this, update);
     }
 
     public void update(
-                       com.bbn.openmap.CSpecialist.UnitSymbolPackage.USF_update update) {
+                       com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.USF_update update) {
         // do the updates, but don't rerender just yet
         setNeedToRegenerate(true); // flag dirty
 
         switch (update.discriminator().value()) {
         // set fixed point
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_ll1:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_ll1:
             LLPoint ll = update.ll1();
             eunit.ll1.lat = ll.lat;
             eunit.ll1.lon = ll.lon;
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_p1:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_p1:
             XYPoint pt = update.p1();
             eunit.p1.x = pt.x;
             eunit.p1.y = pt.y;
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_group:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_group:
             eunit.group = update.group();
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_symbol:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_symbol:
             eunit.symbol = update.symbol();
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_echelon:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_echelon:
             eunit.echelon = update.echelon();
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_left1:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_left1:
             eunit.left1 = update.left1();
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_left2:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_left2:
             eunit.left2 = update.left2();
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_left3:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_left3:
             eunit.left3 = update.left3();
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_left4:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_left4:
             eunit.left4 = update.left4();
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_right1:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_right1:
             eunit.right1 = update.right1();
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_right2:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_right2:
             eunit.right2 = update.right2();
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_right3:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_right3:
             eunit.right3 = update.right3();
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_right4:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_right4:
             eunit.right4 = update.right4();
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_top1:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_top1:
             eunit.top1 = update.top1();
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_bottom1:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_bottom1:
             String bottom1 = update.bottom1();
             eunit.bottom1 = bottom1;
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_nom_size:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_nom_size:
             eunit.nom_size = update.nom_size();
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_min_size:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_min_size:
             eunit.min_size = update.min_size();
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_max_size:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_max_size:
             short max_size = update.max_size();
             eunit.max_size = max_size;
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_scale:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_scale:
             eunit.scale = update.scale();
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_is_hq:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_is_hq:
             eunit.is_hq = update.is_hq();
             break;
 
-        case com.bbn.openmap.CSpecialist.UnitSymbolPackage.settableFields._USF_rotate:
+        case com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.settableFields._USF_rotate:
             eunit.rotate = update.rotate();
             break;
 

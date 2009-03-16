@@ -105,7 +105,7 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
      * BeanContextChildSupport object provides helper functions for
      * BeanContextChild interface.
      */
-    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport(this);
+    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
 
     /**
      * Hashtable for keeping references to potential drop targets

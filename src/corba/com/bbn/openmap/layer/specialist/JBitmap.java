@@ -27,15 +27,15 @@ package com.bbn.openmap.layer.specialist;
 // import netscape.application.*;
 import java.io.Serializable;
 
-import com.bbn.openmap.CSpecialist.BitmapPackage.*;
-import com.bbn.openmap.CSpecialist.LLPoint;
-import com.bbn.openmap.CSpecialist.XYPoint;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.corba.CSpecialist.LLPoint;
+import com.bbn.openmap.corba.CSpecialist.XYPoint;
+import com.bbn.openmap.corba.CSpecialist.BitmapPackage.EBitmap;
+import com.bbn.openmap.omGraphics.OMBitmap;
 
 public class JBitmap extends OMBitmap implements Serializable, JObjectHolder {
 
     public java.lang.String bmref;
-    protected transient com.bbn.openmap.CSpecialist.EComp object = null;
+    protected transient com.bbn.openmap.corba.CSpecialist.EComp object = null;
 
     protected int x_hot, y_hot;//UNUSED
 
@@ -56,58 +56,58 @@ public class JBitmap extends OMBitmap implements Serializable, JObjectHolder {
         bmref = ebit.bmref;
     }
 
-    public void setObject(com.bbn.openmap.CSpecialist.EComp aObject) {
+    public void setObject(com.bbn.openmap.corba.CSpecialist.EComp aObject) {
         object = aObject;
     }
 
-    public com.bbn.openmap.CSpecialist.EComp getObject() {
+    public com.bbn.openmap.corba.CSpecialist.EComp getObject() {
         return object;
     }
 
     public void update(
-                       com.bbn.openmap.CSpecialist.GraphicPackage.GF_update update) {
+                       com.bbn.openmap.corba.CSpecialist.GraphicPackage.GF_update update) {
         JGraphic.update((JObjectHolder) this, update);
     }
 
     public void update(
-                       com.bbn.openmap.CSpecialist.BitmapPackage.BF_update update) {
+                       com.bbn.openmap.corba.CSpecialist.BitmapPackage.BF_update update) {
         // do the updates, but don't rerender just yet
 
         switch (update.discriminator().value()) {
         // set fixed point
-        case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_ll1:
+        case com.bbn.openmap.corba.CSpecialist.BitmapPackage.settableFields._BF_ll1:
             LLPoint ll = update.ll1();
             setLat(ll.lat);
             setLon(ll.lon);
             break;
 
-        case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_p1:
+        case com.bbn.openmap.corba.CSpecialist.BitmapPackage.settableFields._BF_p1:
             XYPoint pt = update.p1();
             setX(pt.x);
             setY(pt.y);
             break;
 
-        case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_width:
+        case com.bbn.openmap.corba.CSpecialist.BitmapPackage.settableFields._BF_width:
             setWidth(update.width());
             break;
 
-        case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_height:
+        case com.bbn.openmap.corba.CSpecialist.BitmapPackage.settableFields._BF_height:
             setHeight(update.height());
             break;
 
-        case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_x_hot:
+        case com.bbn.openmap.corba.CSpecialist.BitmapPackage.settableFields._BF_x_hot:
             //            setX_hot(update.x_hot());
             break;
 
-        case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_y_hot:
+        case com.bbn.openmap.corba.CSpecialist.BitmapPackage.settableFields._BF_y_hot:
             //            setY_hot(update.y_hot());
             break;
 
-        case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_bits:
+        case com.bbn.openmap.corba.CSpecialist.BitmapPackage.settableFields._BF_bits:
             setBits(update.bits());
             break;
 
-        case com.bbn.openmap.CSpecialist.BitmapPackage.settableFields._BF_bmref:
+        case com.bbn.openmap.corba.CSpecialist.BitmapPackage.settableFields._BF_bmref:
             System.err.println("CSBitmap.update: bmref update not supported/necessary.");
             break;
 
