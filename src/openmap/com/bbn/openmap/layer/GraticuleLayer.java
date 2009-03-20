@@ -944,7 +944,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 } else {
                     llpoint = new LatLonPoint(south, lon);
                     while (projection.forward(llpoint).getY() > projection.getHeight()) {
-                        llpoint.setLatitude(llpoint.getX() + stepSize);
+                        llpoint.setLatitude(llpoint.getY() + stepSize);
                     }
                 }
 
@@ -1109,7 +1109,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 } else {
                     llpoint = new LatLonPoint(south, lon);
                     while (projection.forward(llpoint).getY() > projection.getHeight()) {
-                        llpoint.setLatitude(llpoint.getX() + stepSize);
+                        llpoint.setLatitude(llpoint.getY() + stepSize);
                     }
                 }
 
