@@ -37,11 +37,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.event.ProjectionListener;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.tools.roads.LayerView;
 import com.bbn.openmap.tools.roads.RoadFinder;
 import com.bbn.openmap.tools.roads.RoadServices;

@@ -26,7 +26,6 @@ import java.io.File;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.corba.CSpecialist.CheckButton;
 import com.bbn.openmap.corba.CSpecialist.Comp;
@@ -37,6 +36,7 @@ import com.bbn.openmap.layer.specialist.SCheckBox;
 import com.bbn.openmap.layer.specialist.Specialist;
 import com.bbn.openmap.layer.util.http.HttpServer;
 import com.bbn.openmap.layer.vpf.LibrarySelectionTable;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -234,8 +234,8 @@ public class VPFSpecialist extends Specialist {
                                     com.bbn.openmap.corba.CSpecialist.GraphicChange notifyOnChange,
                                     String uniqueID) {
         try {
-            LatLonPoint newll1 = new LatLonPoint(ll1.lat, ll1.lon);
-            LatLonPoint newll2 = new LatLonPoint(ll2.lat, ll2.lon);
+            LatLonPoint newll1 = new LatLonPoint.Double(ll1.lat, ll1.lon);
+            LatLonPoint newll2 = new LatLonPoint.Double(ll2.lat, ll2.lon);
 
             /*
              * If the we are zoomed out so that we _might_ have the

@@ -62,6 +62,8 @@ import com.bbn.openmap.event.ZoomListener;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.ProjectionFactory;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -168,7 +170,7 @@ public class MapBean extends JComponent implements ComponentListener,
 
     protected int minWidth = 100;
 
-    protected Proj projection = new Mercator(new LatLonPoint(DEFAULT_CENTER_LAT, DEFAULT_CENTER_LON), DEFAULT_SCALE, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    protected Proj projection = new Mercator(new LatLonPoint.Double(DEFAULT_CENTER_LAT, DEFAULT_CENTER_LON), DEFAULT_SCALE, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
     protected ProjectionSupport projectionSupport;
 
@@ -280,18 +282,28 @@ public class MapBean extends JComponent implements ComponentListener,
      * listeners and kills the ProjectionSupport thread.
      */
     public void dispose() {
+        setLayerRemovalDelayed(false);
+
         if (projectionSupport != null) {
             projectionSupport.dispose();
+            projectionSupport = null;
         }
 
         if (painters != null) {
             painters.removeAll();
-        }
-        
-        if (addedLayers != null) {
-            addedLayers.removeAllElements();
+            painters = null;
         }
 
+        if (addedLayers != null) {
+            addedLayers.removeAllElements();
+            addedLayers = null;
+        }
+
+        currentLayers = null;
+        projectionFactory = null;
+        
+        removeComponentListener(this);
+        removeContainerListener(this);
         removeAll();
         purgeAndNotifyRemovedLayers();
     }
@@ -521,7 +533,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * Sets the center of the map.
      * 
      * @param newCenter the center point of the map
-     * @see Proj#setCenter(LatLonPoint)
+     * @see Proj#setCenter(Point2D)
      */
     public void setCenter(Point2D newCenter) {
         projection.setCenter(newCenter);
@@ -1199,6 +1211,20 @@ public class MapBean extends JComponent implements ComponentListener,
             // they have to be layers
             ((Layer) comps[i]).hidePalette();
         }
+    }
+
+    protected ProjectionFactory projectionFactory;
+
+    public ProjectionFactory getProjectionFactory() {
+        if (projectionFactory == null) {
+            projectionFactory = ProjectionFactory.loadDefaultProjections();
+        }
+        
+        return projectionFactory;
+    }
+
+    public void setProjectionFactory(ProjectionFactory projFactory) {
+        projectionFactory = projFactory;
     }
 
 }

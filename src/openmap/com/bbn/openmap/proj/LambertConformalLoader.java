@@ -22,12 +22,13 @@
 
 package com.bbn.openmap.proj;
 
-import com.bbn.openmap.I18n;
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.util.Debug;
-
+import java.awt.geom.Point2D;
 import java.util.Properties;
+
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * ProjectionLoader to add the LambertConformal projection to an
@@ -66,7 +67,7 @@ public class LambertConformalLoader extends BasicProjectionLoader implements
     public Projection create(Properties props) throws ProjectionException {
 
         try {
-            LatLonPoint llp = (LatLonPoint) props.get(ProjectionFactory.CENTER);
+            LatLonPoint llp = convertToLLP((Point2D) props.get(ProjectionFactory.CENTER));
             float scale = PropUtils.floatFromProperties(props,
                     ProjectionFactory.SCALE,
                     10000000);

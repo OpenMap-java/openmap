@@ -296,8 +296,11 @@ public class MapHandler extends BeanContextServicesSupport {
     }
 
     public void dispose() {
+        addLaterVector = null;
+        
         MapBean mb = (MapBean) get(com.bbn.openmap.MapBean.class);
         if (mb != null) {
+            remove(mb);
             mb.dispose();
         }
 

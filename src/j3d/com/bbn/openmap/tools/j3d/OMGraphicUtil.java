@@ -42,7 +42,6 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Color4b;
 import javax.vecmath.Point3d;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.omGraphics.OMGeometryList;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -52,6 +51,7 @@ import com.bbn.openmap.omGraphics.grid.GridData;
 import com.bbn.openmap.omGraphics.grid.OMGridGenerator;
 import com.bbn.openmap.omGraphics.grid.SimpleColorGenerator;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.sun.j3d.utils.geometry.GeometryInfo;
 import com.sun.j3d.utils.geometry.NormalGenerator;
@@ -209,7 +209,7 @@ public class OMGraphicUtil {
             stripCounts[i] = numberVerticesPerStrip;
         }
 
-        LatLonPoint anchorLL = new LatLonPoint(grid.getLatitude(), grid.getLongitude());
+        LatLonPoint anchorLL = new LatLonPoint.Double(grid.getLatitude(), grid.getLongitude());
 //        Point anchorP = projection.forward(anchorLL);
         double vRes = grid.getVerticalResolution();
         double hRes = grid.getHorizontalResolution();

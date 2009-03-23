@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import com.bbn.openmap.MoreMath;
-import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * SunPosition calculates the latitude/longitude on the Earth that is
@@ -349,7 +349,7 @@ public class SunPosition {
         double tmpAscension = sunAscension - (MoreMath.TWO_PI / 24)
                 * greenwichSiderealTime(julianDate, cal);
 
-        return new LatLonPoint((float) (sunDeclination), (float) (tmpAscension), true);
+        return new LatLonPoint.Double(sunDeclination, tmpAscension, true);
     }
 
     /**
@@ -431,7 +431,7 @@ public class SunPosition {
         double tmpAscension = moonAscension - (MoreMath.TWO_PI / 24)
                 * greenwichSiderealTime(julianDate, cal);
 
-        return new LatLonPoint((float) (moonDeclination), (float) (tmpAscension), true);
+        return new LatLonPoint.Double(moonDeclination, tmpAscension, true);
     }
 
     /**

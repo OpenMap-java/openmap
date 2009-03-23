@@ -30,11 +30,11 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -204,8 +204,8 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
 
             ArrayList lines = null;
             if (proj instanceof GeoProj) {
-                lines = ((GeoProj) proj).forwardLine(new LatLonPoint(latlons[0], latlons[1]),
-                        new LatLonPoint(latlons[2], latlons[3]),
+                lines = ((GeoProj) proj).forwardLine(new LatLonPoint.Double(latlons[0], latlons[1]),
+                        new LatLonPoint.Double(latlons[2], latlons[3]),
                         lineType,
                         -1);
             } else {

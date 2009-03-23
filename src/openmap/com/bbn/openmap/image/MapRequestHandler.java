@@ -29,6 +29,7 @@ import java.net.URLDecoder;
 import java.util.Properties;
 import java.util.Vector;
 
+import com.bbn.openmap.Environment;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.layer.util.http.HttpConnection;
 import com.bbn.openmap.proj.Proj;
@@ -167,7 +168,7 @@ public class MapRequestHandler extends ImageServer implements
      */
     protected Projection initProjection(Properties props) {
         loadProjections(props);
-        Projection proj = ProjectionFactory.getDefaultProjectionFromEnvironment();
+        Projection proj = new ProjectionFactory().getDefaultProjectionFromEnvironment(Environment.getInstance());
 
         if (Debug.debugging("imageserver")) {
             Debug.output("MRH starting with default projection = " + proj);
@@ -387,7 +388,7 @@ public class MapRequestHandler extends ImageServer implements
 
         if (strLayers != null) {
 
-            Vector layers = PropUtils.parseMarkers(strLayers, ",");
+            Vector<String> layers = PropUtils.parseMarkers(strLayers, ",");
             if (Debug.debugging("imageserver")) {
                 Debug.output("MRH.handleMapRequest: requested layers >> "
                         + layers);
@@ -408,7 +409,7 @@ public class MapRequestHandler extends ImageServer implements
                         calculateVisibleLayerMask(),
                         bgPaint);
             } else {
-                Vector layers = PropUtils.parseMarkers(defaultLayers, " ");
+                Vector<String> layers = PropUtils.parseMarkers(defaultLayers, " ");
                 if (Debug.debugging("imageserver")) {
                     Debug.output("MRH.handleMapRequest: requested layers >> "
                             + layers + " out of " + getAllLayerNames());

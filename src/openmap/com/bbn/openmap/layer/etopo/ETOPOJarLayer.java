@@ -34,11 +34,11 @@ import java.io.EOFException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -226,7 +226,7 @@ public class ETOPOJarLayer extends ETOPOLayer {
             // get the center lat/lon (used by the HACK, see above in
             // method description)
             Point2D center = projection.getCenter();
-            LatLonPoint llp = new LatLonPoint();
+            LatLonPoint llp = new LatLonPoint.Double();
 
             // build array
             float lat;

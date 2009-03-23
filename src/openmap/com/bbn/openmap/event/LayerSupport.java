@@ -98,7 +98,7 @@ public class LayerSupport extends ListenerSupport {
     /**
      * Event information stack.
      */
-    protected Vector<Object> events = new Vector<Object>();
+    protected Vector<SetLayerRunnable> events = new Vector<SetLayerRunnable>();
 
     /**
      * Pushed the information onto a Vector stack to get executed by a
@@ -134,7 +134,7 @@ public class LayerSupport extends ListenerSupport {
      */
     public synchronized SetLayerRunnable popLayerEvent() {
         try {
-            return (SetLayerRunnable) events.remove(0);
+            return events.remove(0);
         } catch (ArrayIndexOutOfBoundsException aioobe) {
             return null;
         }

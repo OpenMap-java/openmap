@@ -30,7 +30,6 @@ import java.util.Vector;
 
 import javax.swing.Timer;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.image.JPEGHelper;
 import com.bbn.openmap.layer.rpf.RpfCacheHandler;
 import com.bbn.openmap.layer.rpf.RpfColortable;
@@ -47,6 +46,7 @@ import com.bbn.openmap.layer.rpf.corba.CRpfFrameProvider.RawImage;
 import com.bbn.openmap.layer.rpf.corba.CRpfFrameProvider.ServerPOA;
 import com.bbn.openmap.layer.rpf.corba.CRpfFrameProvider.XYPoint;
 import com.bbn.openmap.proj.CADRG;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.corba.CORBASupport;
 
@@ -263,7 +263,7 @@ public class CRFPServer extends ServerPOA implements ActionListener {
         currentViewAttributes = getCurrentViewAttributes(uniqueID);
         currentCache.setViewAttributes(currentViewAttributes);
 
-        LatLonPoint llpoint = new LatLonPoint(p.center.lat, p.center.lon);
+        LatLonPoint llpoint = new LatLonPoint.Double(p.center.lat, p.center.lon);
         CADRG proj = new CADRG(llpoint, p.scale, p.width, p.height);
 
         Vector vector = currentCache.getCoverage(ullat,
@@ -297,7 +297,7 @@ public class CRFPServer extends ServerPOA implements ActionListener {
         currentViewAttributes = getCurrentViewAttributes(uniqueID);
         currentCache.setViewAttributes(currentViewAttributes);
 
-        LatLonPoint llpoint = new LatLonPoint(p.center.lat, p.center.lon);
+        LatLonPoint llpoint = new LatLonPoint.Float(p.center.lat, p.center.lon);
         CADRG proj = new CADRG(llpoint, p.scale, p.width, p.height);
         Vector vector = currentCache.getCatalogCoverage(ullat,
                 ullon,

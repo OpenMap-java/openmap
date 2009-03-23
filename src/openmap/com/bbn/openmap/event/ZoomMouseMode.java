@@ -16,7 +16,6 @@ import java.awt.geom.Point2D;
 
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
@@ -79,7 +78,8 @@ public class ZoomMouseMode extends CoordMouseMode {
                     }
                     Projection proj = theMap.getProjection();
                     Point2D upperLeft = proj.inverse(squareUpperLeftX,
-                            squareUpperLeftY, new LatLonPoint.Double());
+                            squareUpperLeftY,
+                            new LatLonPoint.Double());
                     Point2D lowerRight = proj.inverse(squareUpperLeftX
                             + (int) (squareWidth), squareUpperLeftY
                             + (int) (squareHeight), new LatLonPoint.Double());
@@ -88,11 +88,12 @@ public class ZoomMouseMode extends CoordMouseMode {
                             lowerRight,
                             proj.forward(upperLeft),
                             proj.forward(lowerRight));
-                    final Projection newProj = ProjectionFactory.makeProjection(proj.getClass(),
-                            center,
-                            (float) necessaryScale,
-                            theMap.getWidth(),
-                            theMap.getHeight());
+                    final Projection newProj = theMap.getProjectionFactory()
+                            .makeProjection(proj.getClass(),
+                                    center,
+                                    (float) necessaryScale,
+                                    theMap.getWidth(),
+                                    theMap.getHeight());
 
                     Thread delayThread = new Thread() {
                         public void run() {

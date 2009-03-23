@@ -32,6 +32,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -47,7 +49,6 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 
@@ -61,9 +62,9 @@ import com.bbn.openmap.util.PropUtils;
  * you figure out what those strings are.
  * 
  * <pre>
- *   
- *    
- *     
+ * 
+ * 
+ * 
  *     #-----------------------------
  *     # Properties for a VMAP political layer
  *     #-----------------------------
@@ -156,14 +157,17 @@ import com.bbn.openmap.util.PropUtils;
  *     dcwPolitical.vpfPath=path to data
  *     dcwPolitical.coverageType=po
  *     dcwPolitical.featureTypes=edge area
- *      
- *     
- *    
+ * 
+ * 
+ * 
  * </pre>
  */
 
 public class VPFLayer extends OMGraphicHandlerLayer implements
         ProjectionListener, ActionListener, Serializable {
+
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.vpf.VPFLayer");
+
     /** property extension used to set the VPF root directory */
     public static final String pathProperty = "vpfPath";
     /**
@@ -309,7 +313,7 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
 
             // LST now set when paths are set.
         } catch (IllegalArgumentException iae) {
-            Debug.error("VPFLayer.setProperties: Illegal Argument Exception.\n\nPerhaps a file not found.  Check to make sure that the paths to the VPF data directories are the parents of \"lat\" or \"lat.\" files. \n\n"
+            logger.warning("Illegal Argument Exception.\n\nPerhaps a file not found.  Check to make sure that the paths to the VPF data directories are the parents of \"lat\" or \"lat.\" files. \n\n"
                     + iae);
         }
     }
@@ -369,12 +373,12 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
                     tmp.load(in);
                     in.close();
                 } else {
-                    Debug.error("VPFLayer: can't load default properties file");
+                    logger.warning("can't load default properties file");
                     // just use an empty properties file
                 }
                 defaultProps = tmp;
             } catch (IOException io) {
-                Debug.error("VPFLayer: can't load default properties: " + io);
+                logger.warning("can't load default properties: " + io);
                 defaultProps = new Properties();
             }
         }
@@ -385,9 +389,7 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
      * Set the data path to a single place.
      */
     public void setPath(String newPath) {
-        if (Debug.debugging("vpf")) {
-            Debug.output("VPFLayer setting paths to " + newPath);
-        }
+        logger.fine("setting paths to " + newPath);
         setPath(new String[] { newPath });
     }
 
@@ -516,9 +518,7 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
      * initialize the library selection table.
      */
     protected void initLST() {
-        if (Debug.debugging("vpf")) {
-            Debug.output("VPFLayer.initLST()");
-        }
+        logger.fine("initializing Library Selection Table (LST)");
 
         try {
             if (lst == null) {
@@ -534,8 +534,8 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
                         if (obj instanceof LibraryBean) {
                             LibraryBean lb = (LibraryBean) obj;
                             if (libraryBeanName.equals(lb.getName())) {
-                                if (Debug.debugging("vpf")) {
-                                    Debug.output("VPFLayer|" + getName()
+                                if (logger.isLoggable(Level.FINE)) {
+                                    logger.fine(getName()
                                             + ": setting library bean to "
                                             + lb.getName());
                                 }
@@ -552,26 +552,23 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
                         warehouse.setProperties(getPropertyPrefix(), props);
                         searchByFeatures = true; // because it is.
                         box = null;// force GUI to rebuild
-                        if (Debug.debugging("vpf")) {
-                            Debug.output("VPFLayer.initLST(libraryBean)");
-                        }
+
+                        logger.fine("VPFLayer.initLST(libraryBean)");
                     } else {
-                        if (Debug.debugging("vpf")) {
+                        if (logger.isLoggable(Level.FINE)) {
                             // Encasing it in a debug statement,
                             // because we could get here by adding the
                             // LayerHandler to the MapHandler before
                             // the LibraryBean.
-                            Debug.output("VPFLayer.init: Couldn't find libraryBean "
+                            logger.fine("Couldn't find libraryBean "
                                     + libraryBeanName + " to read VPF data");
                         }
                     }
                 } else {
                     if (dataPaths == null) {
-                        Debug.output("VPFLayer|" + getName() + ": path not set");
+                        logger.info("VPFLayer|" + getName() + ": path not set");
                     } else {
-                        if (Debug.debugging("vpf")) {
-                            Debug.output("VPFLayer.initLST(dataPaths)");
-                        }
+                        logger.fine("VPFLayer.initLST(dataPaths)");
                         lst = new LibrarySelectionTable(dataPaths);
                         lst.setCutoffScale(cutoffScale);
                     }
@@ -603,9 +600,7 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
      */
     public void checkWarehouse(boolean sbf) {
         if (warehouse == null) {
-            if (Debug.debugging("vpf")) {
-                Debug.output("VPFLayer.getWarehouse: creating warehouse");
-            }
+            logger.fine("need to create warehouse");
             if (lst != null && lst.getDatabaseName() != null
                     && lst.getDatabaseName().equals("DCW")) {
                 warehouse = new VPFLayerDCWWarehouse();
@@ -651,14 +646,14 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
             try {
                 initLST();
             } catch (IllegalArgumentException iae) {
-                Debug.error("VPFLayer.prepare: Illegal Argument Exception.\n\nPerhaps a file not found.  Check to make sure that the paths to the VPF data directories are the parents of \"lat\" or \"lat.\" files. \n\n"
+                logger.warning("VPFLayer.prepare: Illegal Argument Exception.\n\nPerhaps a file not found.  Check to make sure that the paths to the VPF data directories are the parents of \"lat\" or \"lat.\" files. \n\n"
                         + iae);
                 return null;
             }
 
             if (lst == null) {
-                if (Debug.debugging("vpf")) {
-                    Debug.output("VPFLayer| " + getName()
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("VPFLayer| " + getName()
                             + " prepare(), Library Selection Table not set.");
                 }
 
@@ -677,7 +672,7 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
                 }
             }
 
-            Debug.error("VPFLayer.getRectangle:  Data path probably wasn't set correctly ("
+            logger.warning("VPFLayer.getRectangle:  Data path probably wasn't set correctly ("
                     + dpb.toString() + ").  The warehouse not initialized.");
             return null;
         }
@@ -685,21 +680,20 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
         Projection p = getProjection();
 
         if (p == null || !(p instanceof GeoProj)) {
-            if (Debug.debugging("vpf")) {
-                Debug.error("VPFLayer.getRectangle() called with a projection ("
-                        + p
-                        + ") set in the layer, which isn't being handled.");
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("VPFLayer.getRectangle() called with a projection ("
+                        + p + ") set in the layer, which isn't being handled.");
             }
             return new OMGraphicList();
         }
 
         LatLonPoint upperleft = (LatLonPoint) p.getUpperLeft();
         LatLonPoint lowerright = (LatLonPoint) p.getLowerRight();
-        if (Debug.debugging("vpfdetail")) {
-            Debug.output("VPFLayer.getRectangle: " + coverageType /*
-                                                                     * + " " +
-                                                                     * dynamicArgs
-                                                                     */);
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer("VPFLayer.getRectangle: " + coverageType /*
+                                                                   * + " " +
+                                                                   * dynamicArgs
+                                                                   */);
         }
 
         warehouse.clear();
@@ -710,9 +704,8 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
 
         // Check both dynamic args and palette values when
         // deciding what to draw.
-        if (Debug.debugging("vpf")) {
-            Debug.output("VPFLayer.getRectangle(): "
-                    + "calling draw with boundaries: " + upperleft + " "
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("calling draw with boundaries: " + upperleft + " "
                     + lowerright);
         }
         long start = System.currentTimeMillis();
@@ -749,9 +742,8 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
         // " areas with " + areacount[1] + " points");
         // }
 
-        if (Debug.debugging("vpf")) {
-            Debug.output("VPFLayer.getRectangle(): read time: "
-                    + ((stop - start) / 1000d) + " seconds");
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("read time: " + ((stop - start) / 1000d) + " seconds");
         }
 
         OMGraphicList omglist = warehouse.getGraphics();
@@ -761,9 +753,8 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
         omglist.project(p);
         stop = System.currentTimeMillis();
 
-        if (Debug.debugging("vpf")) {
-            Debug.output("VPFLayer.getRectangle(): proj time: "
-                    + ((stop - start) / 1000d) + " seconds");
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("proj time: " + ((stop - start) / 1000d) + " seconds");
         }
         return omglist;
     }
@@ -781,7 +772,7 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
             try {
                 initLST();
             } catch (IllegalArgumentException iie) {
-                Debug.error(iie.getMessage());
+                logger.warning(iie.getMessage());
             }
         }
 

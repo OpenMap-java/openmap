@@ -34,11 +34,11 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Planet;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -49,7 +49,7 @@ import com.bbn.openmap.util.Debug;
  */
 public class TX7 extends OMGraphic {
     double w = 1, angle = 0;
-    LatLonPoint llp1 = new LatLonPoint(), llp2 = new LatLonPoint();
+    LatLonPoint llp1 = new LatLonPoint.Double(), llp2 = new LatLonPoint.Double();
     Point pt1 = new Point(), pt2 = new Point();
     AffineTransform at = new AffineTransform();
     double llpoints[];

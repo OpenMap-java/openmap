@@ -82,7 +82,6 @@ public class CADRG extends Cylindrical implements EqualArc {
      * 
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
-     * @see com.bbn.openmap.LatLonPoint#normalizeLatitude(float)
      * 
      */
     public double normalizeLatitude(double lat) {
@@ -417,7 +416,7 @@ public class CADRG extends Cylindrical implements EqualArc {
      * @see Proj#inverse(Point2D)
      * 
      */
-    public Point2D inverse(double x, double y, Point2D ret_val) {
+    public <T extends Point2D> T inverse(double x, double y, T ret_val) {
         // Debug.output("CADRG.inverse");
 
         /* offset back into pixel space from Drawable space */

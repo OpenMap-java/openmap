@@ -25,7 +25,7 @@
 package com.bbn.openmap.tools.roads;
 
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public class RoadPoint extends Waypoint implements RoadObject {
 

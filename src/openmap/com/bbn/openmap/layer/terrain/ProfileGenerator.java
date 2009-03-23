@@ -29,7 +29,6 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.util.Vector;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
 import com.bbn.openmap.image.AcmeGifFormatter;
 import com.bbn.openmap.layer.util.stateMachine.State;
@@ -39,6 +38,7 @@ import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -69,13 +69,13 @@ public class ProfileGenerator implements TerrainTool {
      * we need to get the elevations for all the points for the
      * profile.
      */
-    public Vector coords;
+    public Vector<LatLonPoint> coords;
     /**
      * These are the raw x-y points of the gestures, for the great
      * circle line points, too. These are used to construct the
      * profile image. An array of java.awt.Points.
      */
-    public Vector xypoints;
+    public Vector<Point> xypoints;
     /**
      * The line drawn on the screen representing the profile line
      * path.
@@ -110,8 +110,8 @@ public class ProfileGenerator implements TerrainTool {
     public void init() {
         lastMouse = null;
 
-        coords = new Vector();
-        xypoints = new Vector();
+        coords = new Vector<LatLonPoint>();
+        xypoints = new Vector<Point>();
 
         profileLine = new OMPoly(setLLPoints(), OMGraphic.RADIANS, OMGraphic.LINETYPE_GREATCIRCLE);
         profileLine.setLinePaint(toolColor);
@@ -379,7 +379,7 @@ public class ProfileGenerator implements TerrainTool {
      * @param event Mouse event that supplies the location
      */
     protected void addProfileEvent(MouseEvent event) {
-        LatLonPoint llp = LatLonPoint.getLatLon(event.getX(), event.getY(), proj);
+        LatLonPoint llp = proj.inverse(event.getX(), event.getY(), new LatLonPoint.Double());
         if (lastMouse != null) {
             // Check for proximity of the click, since a double
             // click means the end of the line.
@@ -416,8 +416,8 @@ public class ProfileGenerator implements TerrainTool {
      * @param ending the ending mouse event
      */
     protected void addGreatCirclePoints(MouseEvent beginning, MouseEvent ending) {
-        LatLonPoint beg = LatLonPoint.getLatLon(beginning.getX(), beginning.getY(), proj);
-        LatLonPoint end = LatLonPoint.getLatLon(ending.getX(), ending.getY(), proj);
+        LatLonPoint beg = proj.inverse(beginning.getX(), beginning.getY(), new LatLonPoint.Double());
+        LatLonPoint end = proj.inverse(ending.getX(), ending.getY(), new LatLonPoint.Double());
 
         int num_points = (TerrainLayer.numPixelsBetween(beginning.getX(),
                 beginning.getY(),
@@ -433,7 +433,7 @@ public class ProfileGenerator implements TerrainTool {
                 true);
         boolean geoProj = proj instanceof GeoProj;
         for (int i = 0; i < radPoints.length; i++) {
-            coords.addElement(new LatLonPoint(radPoints[i], radPoints[i + 1], true));
+            coords.addElement(new LatLonPoint.Double(radPoints[i], radPoints[i + 1], true));
             Point pt = new Point();
             if (geoProj) {
                 ((GeoProj)proj).forward(radPoints[i], radPoints[i + 1], pt, true);

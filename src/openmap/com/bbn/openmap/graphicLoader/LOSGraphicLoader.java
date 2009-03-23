@@ -34,7 +34,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
 import com.bbn.openmap.omGraphics.BasicStrokeEditor;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
@@ -46,6 +45,7 @@ import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.proj.DrawUtil;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
 import com.bbn.openmap.tools.drawing.OMDrawingTool;
 import com.bbn.openmap.tools.terrain.LOSGenerator;
@@ -149,9 +149,9 @@ public class LOSGraphicLoader extends MMLGraphicLoader implements
                 numPoints = (int) DrawUtil.distance(p1.getX(), p1.getY(), p2.getX(), p2.getY()) / 2;
             }
 
-            boolean isLOS = los.isLOS(new LatLonPoint(pt1.getLat(), pt1.getLon()),
+            boolean isLOS = los.isLOS(new LatLonPoint.Double(pt1.getLat(), pt1.getLon()),
                     pt1.getHeight(),
-                    new LatLonPoint(pt2.getLat(), pt2.getLon()),
+                    new LatLonPoint.Double(pt2.getLat(), pt2.getLon()),
                     pt2.getHeight(),
                     numPoints);
 

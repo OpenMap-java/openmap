@@ -24,7 +24,8 @@ package com.bbn.openmap.graphicLoader.scenario;
 
 import java.util.Comparator;
 
-import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.proj.coords.LatLonPoint;
+
 
 /**
  * A TimeStamp is a latitude and longitude associated with a time. The
@@ -74,7 +75,7 @@ public class TimeStamp implements Comparator {
     }
 
     public LatLonPoint getLocation() {
-        return getLocation(new LatLonPoint());
+        return getLocation(new LatLonPoint.Double());
     }
 
     public LatLonPoint getLocation(LatLonPoint llp) {

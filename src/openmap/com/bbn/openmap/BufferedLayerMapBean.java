@@ -301,7 +301,7 @@ public class BufferedLayerMapBean extends BufferedMapBean {
      */
     public void dispose() {
         if (bufferedLayer != null) {
-            bufferedLayer.getMapBean().dispose();
+            bufferedLayer.dispose();
         }
         super.dispose();
     }

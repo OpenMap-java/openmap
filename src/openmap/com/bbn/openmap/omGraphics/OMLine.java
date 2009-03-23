@@ -32,11 +32,11 @@ import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.geom.NonRegional;
 import com.bbn.openmap.omGraphics.util.ArcCalc;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -361,10 +361,10 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
                 isPolyline = true;
 
             } else {
-                ArrayList lines = null;
+                ArrayList<int[]> lines = null;
                 if (proj instanceof GeoProj) {
-                    lines = ((GeoProj) proj).forwardLine(new LatLonPoint(latlons[0], latlons[1]),
-                        new LatLonPoint(latlons[2], latlons[3]),
+                    lines = ((GeoProj) proj).forwardLine(new LatLonPoint.Double(latlons[0], latlons[1]),
+                        new LatLonPoint.Double(latlons[2], latlons[3]),
                         lineType,
                         nsegs);
                 } else {

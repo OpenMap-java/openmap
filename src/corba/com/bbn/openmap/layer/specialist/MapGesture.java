@@ -25,8 +25,8 @@ package com.bbn.openmap.layer.specialist;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /** MapGesture - class for handling specialist gestures in OpenMap */
 public class MapGesture {
@@ -106,11 +106,11 @@ public class MapGesture {
 
             if (projection != null) {
                 if (llpoint == null) {
-                    llpoint = new LatLonPoint();
+                    llpoint = new LatLonPoint.Double();
                 }
                 projection.inverse(point, llpoint);
             } else {
-                llpoint = new LatLonPoint(0f, 0f);
+                llpoint = new LatLonPoint.Double(0f, 0f);
             }
         }
 

@@ -1031,12 +1031,12 @@ public class PropertyHandler extends MapHandlerChild implements
         Point2D llp = proj.getCenter();
 
         printProperties(Environment.Latitude,
-                Float.toString((float) llp.getY()),
+                Double.toString(llp.getY()),
                 ps,
                 createdProperties);
 
         printProperties(Environment.Longitude,
-                Float.toString((float) llp.getX()),
+                Double.toString(llp.getX()),
                 ps,
                 createdProperties);
 
@@ -1359,8 +1359,10 @@ public class PropertyHandler extends MapHandlerChild implements
         }
 
         if (mapBean != null) {
-            mapBean.setProjection(ProjectionFactory.getDefaultProjectionFromEnvironment(mapBean.getWidth(),
-                    mapBean.getHeight()));
+            mapBean.setProjection(mapBean.getProjectionFactory()
+                    .getDefaultProjectionFromEnvironment(Environment.getInstance(),
+                            mapBean.getWidth(),
+                            mapBean.getHeight()));
         } else {
             Debug.error("Can't load new projection - can't find MapBean");
         }
@@ -1598,8 +1600,8 @@ public class PropertyHandler extends MapHandlerChild implements
     /**
      * Load a Properties object from the classpath. The method always returns a
      * <code>Properties</code> object. If there was an error loading the
-     * properties from <code>propsURL</code>, an empty
-     * <code>Properties</code> object is returned.
+     * properties from <code>propsURL</code>, an empty <code>Properties</code>
+     * object is returned.
      * 
      * @param propsURL the URL of the properties to be loaded
      * @return the loaded properties, or an empty Properties object if there was

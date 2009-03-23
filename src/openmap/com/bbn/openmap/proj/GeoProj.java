@@ -252,15 +252,15 @@ public abstract class GeoProj extends Proj {
      * 
      * @return Point2D center of projection, created just for you.
      */
-    public Point2D getCenter() {
-        return new Point2D.Double(Math.toDegrees(centerX), Math.toDegrees(centerY));
+    public LatLonPoint getCenter() {
+        return new LatLonPoint.Double(centerY, centerX, true);
     }
 
     /**
      * Returns a center Point2D that was provided, with the location filled into
      * the Point2D object. Calls Point2D.setLocation(x, y).
      */
-    public Point2D getCenter(Point2D center) {
+    public LatLonPoint getCenter(LatLonPoint center) {
         center.setLocation(Math.toDegrees(centerX), Math.toDegrees(centerY));
         return center;
     }
@@ -901,6 +901,32 @@ public abstract class GeoProj extends Proj {
         }
     }
 
+//    /**
+//     * Given a couple of points representing a bounding box, find out what the
+//     * scale should be in order to make those points appear at the corners of
+//     * the projection.
+//     * 
+//     * @param ll1 the upper left coordinates of the bounding box.
+//     * @param ll2 the lower right coordinates of the bounding box.
+//     * @param point1 a java.awt.Point reflecting a pixel spot on the projection
+//     *        that matches the ll1 coordinate, the upper left corner of the area
+//     *        of interest.
+//     * @param point2 a java.awt.Point reflecting a pixel spot on the projection
+//     *        that matches the ll2 coordinate, usually the lower right corner of
+//     *        the area of interest.
+//     */
+//    public float getScale(Point2D ll1, Point2D ll2, Point2D point1,
+//                          Point2D point2) {
+//        if (ll1 instanceof LatLonPoint && ll2 instanceof LatLonPoint) {
+//            return getScale(LatLonPoint.getDouble(ll1),
+//                    LatLonPoint.getDouble(ll2),
+//                    point1,
+//                    point2);
+//        }
+//
+//        return getScale();
+//    }
+
     /**
      * Given a couple of points representing a bounding box, find out what the
      * scale should be in order to make those points appear at the corners of
@@ -917,32 +943,6 @@ public abstract class GeoProj extends Proj {
      */
     public float getScale(Point2D ll1, Point2D ll2, Point2D point1,
                           Point2D point2) {
-        if (ll1 instanceof LatLonPoint && ll2 instanceof LatLonPoint) {
-            return getScale((LatLonPoint) ll1,
-                    (LatLonPoint) ll2,
-                    point1,
-                    point2);
-        }
-
-        return getScale();
-    }
-
-    /**
-     * Given a couple of points representing a bounding box, find out what the
-     * scale should be in order to make those points appear at the corners of
-     * the projection.
-     * 
-     * @param ll1 the upper left coordinates of the bounding box.
-     * @param ll2 the lower right coordinates of the bounding box.
-     * @param point1 a java.awt.Point reflecting a pixel spot on the projection
-     *        that matches the ll1 coordinate, the upper left corner of the area
-     *        of interest.
-     * @param point2 a java.awt.Point reflecting a pixel spot on the projection
-     *        that matches the ll2 coordinate, usually the lower right corner of
-     *        the area of interest.
-     */
-    public float getScale(LatLonPoint ll1, LatLonPoint ll2, Point2D point1,
-                          Point2D point2) {
 
         try {
 
@@ -953,7 +953,7 @@ public abstract class GeoProj extends Proj {
             double dy = Math.abs(point2.getY() - point1.getY());
 
             if (dx < dy) {
-                double dlat = Math.abs(ll1.getLatitude() - ll2.getLatitude());
+                double dlat = Math.abs(ll1.getY() - ll2.getY());
                 deltaDegrees = dlat;
                 deltaPix = getHeight();
 
@@ -968,8 +968,8 @@ public abstract class GeoProj extends Proj {
                 if (point1.getX() > point2.getX()) {
                     lat1 = ll1.getY();
                     lon1 = ll1.getX();
-                    ll1.setLatLon(ll2);
-                    ll2.setLatLon(lat1, lon1);
+                    ll1.setLocation(ll2);
+                    ll2.setLocation(lon1, lat1);
                 }
 
                 lon1 = ll1.getX();
@@ -1013,7 +1013,7 @@ public abstract class GeoProj extends Proj {
      * @return Point (new)
      */
     public Point2D forward(Point2D llp) {
-        return forward(llp.getY(), llp.getX(), new Point2D.Float(), false);
+        return forward(llp.getY(), llp.getX(), new Point2D.Double(), false);
     }
 
     public Point2D forward(double lat, double lon, Point2D pt) {
@@ -1033,8 +1033,8 @@ public abstract class GeoProj extends Proj {
      * @param point x,y Point
      * @return LatLonPoint (new)
      */
-    public Point2D inverse(Point2D point) {
-        return inverse(point.getX(), point.getY(), new LatLonPoint.Double());
+    public <T extends Point2D> T inverse(Point2D point) {
+        return (T) inverse(point.getX(), point.getY(), new LatLonPoint.Double());
     }
 
     /**
@@ -1045,8 +1045,8 @@ public abstract class GeoProj extends Proj {
      * @return LatLonPoint (new)
      * @see #inverse(Point2D)
      */
-    public Point2D inverse(int x, int y) {
-        return inverse(x, y, new LatLonPoint.Double());
+    public <T extends Point2D> T inverse(int x, int y) {
+        return (T) inverse(x, y, new LatLonPoint.Double());
     }
 
     /**

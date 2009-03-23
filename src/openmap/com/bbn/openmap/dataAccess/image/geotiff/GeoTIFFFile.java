@@ -44,6 +44,7 @@ import org.libtiff.jai.codecimpl.XTIFFImageDecoder;
 import com.bbn.openmap.dataAccess.image.ImageTile;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.CADRG;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.PropUtils;
 import com.sun.media.jai.codec.SeekableStream;
 
@@ -571,7 +572,7 @@ public class GeoTIFFFile {
                     gtfFile.dumpTags(gtfFile.getGtfDirectory().getFields());
                     System.out.println("------------");
 
-                    CADRG crg = new CADRG(new com.bbn.openmap.LatLonPoint(0f, 0f), 1500000, 600, 600);
+                    CADRG crg = new CADRG(new LatLonPoint.Double(0f, 0f), 1500000, 600, 600);
 
                     final OMRaster omsr = new OMRaster(0, 0, bi);
                     omsr.generate(crg);

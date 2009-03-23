@@ -153,6 +153,12 @@ public class ImageServer implements
     protected String propertiesPrefix = null;
 
     /**
+     * The ProjectionFactory to be used for image projections. If null, the
+     * default projection set will be used.
+     */
+    protected ProjectionFactory projectionFactory;
+
+    /**
      * Empty constructor that expects to be configured later.
      */
     protected ImageServer() {}
@@ -585,7 +591,7 @@ public class ImageServer implements
     /**
      * Determine the background color based on property settings. If the
      * property key isn't found, the openmap.BackgroundColor property will be
-     * used.  If that isn't found, then Color.white will be returned as default.
+     * used. If that isn't found, then Color.white will be returned as default.
      * 
      * @param props properties to check
      * @param propertyKey first key to check for.
@@ -910,6 +916,17 @@ public class ImageServer implements
     // }
     // }
 
+    public ProjectionFactory getProjectionFactory() {
+        if (projectionFactory == null) {
+            projectionFactory = ProjectionFactory.loadDefaultProjections();
+        }
+        return projectionFactory;
+    }
+
+    public void setProjectionFactory(ProjectionFactory projFactory) {
+        projectionFactory = projFactory;
+    }
+
     /**
      * For convenience, to create an image file based on the contents of a
      * properties file (like an openmap.properties file).
@@ -969,15 +986,16 @@ public class ImageServer implements
         // Initialize the map projection, scale, center with
         // user prefs or defaults
         if (proj == null) {
+            ProjectionFactory projFactory = is.getProjectionFactory();
             String projName = props.getProperty(Environment.Projection);
-            Class projClass = ProjectionFactory.getProjClassForName(projName);
+            Class<? extends Projection> projClass = projFactory.getProjClassForName(projName);
 
             if (projClass == null) {
                 projClass = Mercator.class;
             }
 
             Point2D center = null;
-            
+
             if (GeoProj.class.isAssignableFrom(projClass)) {
                 center = new LatLonPoint.Float(PropUtils.floatFromProperties(props,
                         Environment.Latitude,
@@ -991,8 +1009,8 @@ public class ImageServer implements
                         Environment.Longitude,
                         0f));
             }
-            
-            proj = ProjectionFactory.makeProjection(projClass,
+
+            proj = projFactory.makeProjection(projClass,
                     center,
                     PropUtils.floatFromProperties(props,
                             Environment.Scale,
@@ -1044,12 +1062,12 @@ public class ImageServer implements
      * modified openmap.properties file.
      * 
      * <pre>
-     *                 
-     *                  
+     * 
+     * 
      *                   java com.bbn.openmap.image.ImageServer -properties (path
-     *                    to properties file) -file (path to output image) 
-     *                   
-     *                  
+     *                    to properties file) -file (path to output image)
+     * 
+     * 
      * </pre>
      * 
      * <P>
@@ -1087,7 +1105,7 @@ public class ImageServer implements
         if (arg != null) {
             String ps = arg[0];
             try {
-                ProjectionFactory.loadDefaultProjections();
+
                 URL url = PropUtils.getResourceOrFileOrURL(null, ps);
                 InputStream inputStream = url.openStream();
 

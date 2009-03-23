@@ -183,7 +183,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
         // ProjectionFactory has been added. If it hasn't, create one
         // with the default ProjectionLoaders. We might want to
         // remove this at some point, but not having it here will
-        // catch some people by suprise when 4.6.1 comes out.
+        // catch some people by surprise when 4.6.1 comes out.
         Object obj = mh.get(com.bbn.openmap.proj.ProjectionFactory.class);
         if (obj == null) {
             Debug.message("basic",
@@ -193,7 +193,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 
         // Environment will only get loaded after the property file is
         // read.
-        mb.setProjection(ProjectionFactory.getDefaultProjectionFromEnvironment());
+        mb.setProjection(mb.getProjectionFactory().getDefaultProjectionFromEnvironment(Environment.getInstance()));
         mb.setBckgrnd(Environment.getCustomBackgroundColor());
     }
 
@@ -400,8 +400,18 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
         if (someObj instanceof MenuList && menuList == someObj) {
             menuList = null;
         }
+        
+        if (this.equals(someObj)) {
+            dispose();
+        }
     }
 
+    public void dispose() {
+        setMapBean(null);
+        setLayout(null);
+        removeAll();
+    }
+    
     // MapBean Methods:
     // ////////////////
 
@@ -426,7 +436,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
             }
         }
 
-        Projection proj = ProjectionFactory.getDefaultProjectionFromEnvironment();
+        Projection proj = new ProjectionFactory().getDefaultProjectionFromEnvironment(Environment.getInstance());
 
         if (Debug.debugging("mappanel")) {
             Debug.output("MapPanel: creating MapBean with initial projection "

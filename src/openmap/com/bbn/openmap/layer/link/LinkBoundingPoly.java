@@ -22,12 +22,12 @@
 
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.util.Debug;
-
-import java.io.IOException;
-import java.io.DataOutput;
 import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
+import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.Debug;
 
 /**
  * LinkBoundingPoly objects are used to describe simple polygons that
@@ -169,7 +169,7 @@ public class LinkBoundingPoly {
         for (int i = 0; i < points.length; i += 2) {
             lat = points[i];
             lon = points[i + 1];
-            boundingPoly[i] = new LatLonPoint(lat, lon);
+            boundingPoly[i] = new LatLonPoint.Double(lat, lon);
         }
         return boundingPoly;
     }

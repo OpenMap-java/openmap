@@ -28,9 +28,9 @@ import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -377,11 +377,11 @@ public class OMRect extends OMGraphic implements Serializable {
                     (int) Math.abs(y2 - y1)));
             break;
         case RENDERTYPE_LATLON:
-            ArrayList rects;
+            ArrayList<int[]> rects;
 
             if (proj instanceof GeoProj) {
-                rects = ((GeoProj) proj).forwardRect(new LatLonPoint(lat1, lon1), // NW
-                        new LatLonPoint(lat2, lon2), // SE
+                rects = ((GeoProj) proj).forwardRect(new LatLonPoint.Double(lat1, lon1), // NW
+                        new LatLonPoint.Double(lat2, lon2), // SE
                         lineType,
                         nsegs,
                         !isClear(fillPaint));
@@ -392,8 +392,8 @@ public class OMRect extends OMGraphic implements Serializable {
             int size = rects.size();
 
             for (int i = 0, j = 0; i < size; i += 2, j++) {
-                GeneralPath gp = createShape((int[]) rects.get(i),
-                        (int[]) rects.get(i + 1),
+                GeneralPath gp = createShape(rects.get(i),
+                        rects.get(i + 1),
                         true);
 
                 if (shape == null) {

@@ -62,7 +62,7 @@ public class UTMProjection extends GeoProj {
         wx = width / 2;
 
         if (xycenter != null) {
-            UTMPoint c = UTMPoint.LLtoUTM((LatLonPoint) getCenter(),
+            UTMPoint c = UTMPoint.LLtoUTM(getCenter(),
                     ellps,
                     new UTMPoint(),
                     zone_number,
@@ -120,16 +120,16 @@ public class UTMProjection extends GeoProj {
         return pt;
     }
 
-    public Point2D inverse(double x, double y, Point2D llpt) {
+    public <T extends Point2D> T inverse(double x, double y, T llpt) {
 
         double northing = xycenter.getY() + ((hy - y) / ppu);
         double easting = xycenter.getX() + ((x - wx) / ppu);
 
         if (!(llpt instanceof LatLonPoint)) {
-            llpt = new LatLonPoint.Double();
+            llpt = (T) new LatLonPoint.Double();
         }
 
-        llpt = UTMPoint.UTMtoLL(ellps,
+        llpt = (T) UTMPoint.UTMtoLL(ellps,
                 (float) northing,
                 (float) easting,
                 zone_number,
@@ -426,11 +426,11 @@ public class UTMProjection extends GeoProj {
         return true;
     }
 
-    public Point2D getLowerRight() {
+    public LatLonPoint getLowerRight() {
         return inverse(width - 1, height - 1);
     }
 
-    public Point2D getUpperLeft() {
+    public LatLonPoint getUpperLeft() {
         return inverse(0, 0);
     }
 
@@ -447,8 +447,6 @@ public class UTMProjection extends GeoProj {
      * 
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
-     * @see com.bbn.openmap.LatLonPoint#normalizeLatitude(float)
-     * 
      */
     public double normalizeLatitude(double lat) {
         if (lat > NORTH_POLE - epsilon) {

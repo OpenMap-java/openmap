@@ -28,9 +28,9 @@ import java.awt.Point;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.GreatCircle;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public class Road implements RoadObject, Serializable {
     Logger logger = Logger.getLogger(this.getClass().getName());
@@ -153,7 +153,7 @@ public class Road implements RoadObject, Serializable {
                     deltaLon += 360f;
                 else if (deltaLon > 180f)
                     deltaLon -= 360f;
-                return new LatLonPoint(prevLat + fraction * deltaLat, prevLon
+                return new LatLonPoint.Double(prevLat + fraction * deltaLat, prevLon
                         + fraction * deltaLon);
             }
             kilometers -= thisLength;

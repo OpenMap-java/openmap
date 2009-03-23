@@ -35,33 +35,31 @@ import java.util.Properties;
 import java.util.Vector;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
+import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.OMComponent;
+import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.SoloMapComponent;
+import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
- * The ProjectionFactory creates Projections. It used to have
- * Projection classes hard-coded into it which were accessable through
- * static methods, but this paradigm has been changed slightly so the
- * ProjectionFactory is actually a singleton which can be accessed by
- * a ProjectionFactory.getInstance() static method. This was done so
- * that the singleton, when added to the MapHandler, can look for
- * ProjectionLoaders to dynamically add projections to the factory.
- * For convenience, there are still some static methods on the
- * ProjectionFactory class which use the singleton to create and
- * return projection objects. Changes to the available projections can
- * be discovered through property changes.
+ * The ProjectionFactory creates Projections. It used to have Projection classes
+ * hard-coded into it which were accessible through static methods, but this
+ * paradigm has been changed slightly so the ProjectionFactory is a
+ * SoloMapComponent added to the MapHandler. It will attach itself to a MapBean
+ * if it finds one in the MapHandler.
  * <P>
  * 
- * The ProjectionFactory singleton instance can be added to the
- * MapHandler via the openmap.properties file by adding the
- * ProjectionFactoryLoader to the openmap.components property. If you
- * are using the openmap.properties file to configure your
- * application, you MUST add the ProjectionFactoryLoader, or you won't
- * see any projections.
+ * The ProjectionFactory can look for ProjectionLoaders in the MapHandler to
+ * dynamically add projections to the factory. The ProjectionHandler can also
+ * create ProjectionLoaders from property settings. Changes to the available
+ * projections can be discovered through property changes.
+ * <P>
  */
-public class ProjectionFactory extends OMComponent {
+public class ProjectionFactory extends OMComponent implements SoloMapComponent {
 
     /**
      * Center lat/lon property parameter for new projections passed to
@@ -69,78 +67,150 @@ public class ProjectionFactory extends OMComponent {
      */
     public final static String CENTER = "CENTER";
     /**
-     * Scale property parameter for new projections passed to
-     * ProjectionLoader.
+     * Scale property parameter for new projections passed to ProjectionLoader.
      */
     public final static String SCALE = "SCALE";
     /**
-     * Projeciton height (pixels) property parameter for new
-     * projections passed to ProjectionLoader.
+     * Projection height (pixels) property parameter for new projections passed
+     * to ProjectionLoader.
      */
     public final static String HEIGHT = "HEIGHT";
     /**
-     * Projection width (pixels) property parameter for new
-     * projections passed to ProjectionLoader.
+     * Projection width (pixels) property parameter for new projections passed
+     * to ProjectionLoader.
      */
     public final static String WIDTH = "WIDTH";
     /**
-     * Datum property parameter for new projections passed to
-     * ProjectionLoader.
+     * Datum property parameter for new projections passed to ProjectionLoader.
      */
     public final static String DATUM = "DATUM";
 
     /**
-     * The property name that is fired when the list of available
-     * projections has changed.
+     * The property name that is fired when the list of available projections
+     * has changed.
      */
     public final static String AvailableProjectionProperty = "AvailableProjections";
 
     /**
-     * PropertyChangeSupport for letting listeners know about new
-     * projections that are available from the factory.
+     * ProjectionFactory property used to designate new projection loaders that
+     * should be created from properties.
+     */
+    public final static String ProjectionLoadersProperty = "projectionLoaders";
+
+    /**
+     * PropertyChangeSupport for letting listeners know about new projections
+     * that are available from the factory.
      */
     protected PropertyChangeSupport pcs;
 
-    /**
-     * Singleton instance.
-     */
-    protected static ProjectionFactory instance;
+    // /**
+    // * Singleton instance.
+    // */
+    // protected static ProjectionFactory instance;
 
-    protected Vector projLoaders = new Vector();
+    protected Vector<ProjectionLoader> projLoaders = new Vector<ProjectionLoader>();
 
     /**
-     * Singleton constructor.
+     * 
      */
-    private ProjectionFactory() {
+    public ProjectionFactory() {
         pcs = new PropertyChangeSupport(this);
     }
 
     /**
-     * Get the singleton instance of the ProjectionFactory.
+     * Check the properties for those to create ProjectionLoaders.
      */
-    public static ProjectionFactory getInstance() {
-        if (instance == null) {
-            instance = new ProjectionFactory();
-        }
+    public void setProperties(String prefix, Properties props) {
+        super.setProperties(prefix, props);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        return instance;
+        String loaderPrefixesString = props.getProperty(prefix
+                + ProjectionLoadersProperty);
+        if (loaderPrefixesString != null) {
+            Vector<String> loaderPrefixes = PropUtils.parseSpacedMarkers(loaderPrefixesString);
+            Vector<?> loaders = ComponentFactory.create(loaderPrefixes,
+                    prefix,
+                    props);
+
+            for (Iterator<?> it = loaders.iterator(); it.hasNext();) {
+                Object obj = it.next();
+                if (obj instanceof ProjectionLoader) {
+                    projLoaders.add((ProjectionLoader) obj);
+                }
+            }
+        }
     }
 
     /**
-     * Returns an array of Projection names available from this
-     * factory.
+     * Create the properties to create ProjectionLoaders that this loader
+     * created.
      */
-    public static String[] getAvailableProjections() {
-        ProjectionFactory factory = getInstance();
+    public Properties getProperties(Properties props) {
+        props = super.getProperties(props);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-        // duplicate List to handle multiple simultanous requests
-        List projLoaders = new ArrayList(factory.getProjectionLoaders());
+        if (projLoaders != null) {
+            StringBuffer markerlist = new StringBuffer();
+            int count = 0;
+            for (Iterator<ProjectionLoader> it = projLoaders.iterator(); it.hasNext();) {
+
+                ProjectionLoader pl = it.next();
+                String markerName;
+                if (pl instanceof PropertyConsumer) {
+
+                    PropertyConsumer pc = (PropertyConsumer) pl;
+                    markerName = pc.getPropertyPrefix();
+
+                    // Need to do this here before the marker name
+                    // potentially changes
+                    props.put(markerName + ".class", pl.getClass().getName());
+
+                    if (markerName.startsWith(prefix)) {
+                        markerName = markerName.substring(prefix.length());
+                    }
+                    pc.getProperties(props);
+
+                } else {
+
+                    markerName = "projectionLoader" + (count++);
+                    // Need to do this here for any projection loaders
+                    // that aren't property consumers.
+                    props.put(markerName + ".class", pl.getClass().getName());
+
+                }
+
+                markerlist.append(" " + markerName);
+            }
+
+            props.put(prefix + ProjectionLoadersProperty, markerlist.toString());
+        }
+
+        return props;
+    }
+
+    // /**
+    // * Get the singleton instance of the ProjectionFactory.
+    // */
+    // public static ProjectionFactory getInstance() {
+    // if (instance == null) {
+    // instance = new ProjectionFactory();
+    // }
+    //
+    // return instance;
+    // }
+
+    /**
+     * Returns an array of Projection names available from this factory.
+     */
+    public String[] getAvailableProjections() {
+        // duplicate List to handle multiple simultaneous requests
+        List<ProjectionLoader> projLoaders = new ArrayList<ProjectionLoader>(getProjectionLoaders());
         int nProjections = projLoaders.size();
         String projNames[] = new String[nProjections];
         int i = 0;
 
-        for (Iterator it = projLoaders.iterator(); it.hasNext();) {
-            projNames[i++] = ((ProjectionLoader) it.next()).getPrettyName();
+        for (Iterator<ProjectionLoader> it = projLoaders.iterator(); it.hasNext();) {
+            projNames[i++] = it.next().getPrettyName();
         }
 
         return projNames;
@@ -149,14 +219,14 @@ public class ProjectionFactory extends OMComponent {
     /**
      * Return the Projection Class with the given pretty name.
      * 
-     * @param name the name of the projection, set in the pretty name
-     *        of it's ProjectionLoader.
+     * @param name the name of the projection, set in the pretty name of it's
+     *        ProjectionLoader.
      * @return Class of Projection, or null if not found.
      */
-    public static Class getProjClassForName(String name) {
+    public Class<? extends Projection> getProjClassForName(String name) {
         if (name != null) {
-            for (Iterator it = getInstance().iterator(); it.hasNext();) {
-                ProjectionLoader loader = (ProjectionLoader) it.next();
+            for (Iterator<ProjectionLoader> it = getProjectionLoaders().iterator(); it.hasNext();) {
+                ProjectionLoader loader = it.next();
                 if (name.equalsIgnoreCase(loader.getPrettyName())) {
                     return loader.getProjectionClass();
                 }
@@ -167,7 +237,7 @@ public class ProjectionFactory extends OMComponent {
             // return null. We just want to do this in case people
             // start using class names for pretty names.
             try {
-                return Class.forName(name);
+                return (Class<? extends Projection>) Class.forName(name);
             } catch (ClassNotFoundException cnfe) {
             }
 
@@ -176,10 +246,10 @@ public class ProjectionFactory extends OMComponent {
     }
 
     /**
-     * Makes a new projection based on the given projection class name
-     * and parameters from the given projection.
+     * Makes a new projection based on the given projection class name and
+     * parameters from the given projection.
      */
-    public static Projection makeProjection(String projClassName, Projection p) {
+    public Projection makeProjection(String projClassName, Projection p) {
 
         Point2D ctr = p.getCenter();
         return makeProjection(projClassName,
@@ -190,8 +260,8 @@ public class ProjectionFactory extends OMComponent {
     }
 
     /**
-     * Create a projection. If the Class for the classname can't be
-     * found, a Mercator projection will be returned.
+     * Create a projection. If the Class for the classname can't be found, a
+     * Mercator projection will be returned.
      * 
      * @param projClassName the classname of the projection.
      * @param center Point2D center of the projection.
@@ -200,16 +270,15 @@ public class ProjectionFactory extends OMComponent {
      * @param height pixel height of projection.
      * @return Projection
      */
-    public static Projection makeProjection(String projClassName,
-                                            Point2D center, float scale,
-                                            int width, int height) {
+    public Projection makeProjection(String projClassName, Point2D center,
+                                     float scale, int width, int height) {
 
         if (projClassName == null) {
             throw new ProjectionException("No projection class name specified");
         }
 
         try {
-            return makeProjection(Class.forName(projClassName),
+            return makeProjection((Class<? extends Projection>) Class.forName(projClassName),
                     center,
                     scale,
                     width,
@@ -221,8 +290,8 @@ public class ProjectionFactory extends OMComponent {
     }
 
     /**
-     * Create a projection. If the class can't be found, a Mercator
-     * projection will be returned.
+     * Create a projection. If the class can't be found, a Mercator projection
+     * will be returned.
      * 
      * @param projClass the class of the projection.
      * @param center Point2D center of the projection.
@@ -231,54 +300,54 @@ public class ProjectionFactory extends OMComponent {
      * @param height pixel height of projection.
      * @return Projection
      */
-    public static Projection makeProjection(Class projClass, Point2D center,
-                                            float scale, int width, int height) {
-
-        ProjectionFactory factory = getInstance();
+    public Projection makeProjection(Class<? extends Projection> projClass,
+                                     Point2D center, float scale, int width,
+                                     int height) {
 
         ProjectionLoader loader = MercatorLoader.defaultMercator;
 
-        for (Iterator it = factory.iterator(); it.hasNext();) {
+        for (Iterator<ProjectionLoader> it = iterator(); it.hasNext();) {
             ProjectionLoader pl = (ProjectionLoader) it.next();
             if (pl.getProjectionClass() == projClass) {
                 loader = pl;
             }
         }
 
-        return factory.makeProjection(loader, center, scale, width, height);
+        return makeProjection(loader, center, scale, width, height);
     }
 
     /**
-     * Looks at the Environment settings for the default projection
-     * and returns a Projection suited for those settings. If there is
-     * a problem creating the projection, the default projection of
-     * the MapBean will be returned. The ProjectionFactory needs to be
-     * loaded with the Projection class described in the properties
-     * before this will return an expected projection.
+     * Looks at the Environment settings for the default projection and returns
+     * a Projection suited for those settings. If there is a problem creating
+     * the projection, the default projection of the MapBean will be returned.
+     * The ProjectionFactory needs to be loaded with the Projection class
+     * described in the properties before this will return an expected
+     * projection.
      * 
      * @return Projection from Environment settings.
      */
-    public static Projection getDefaultProjectionFromEnvironment() {
-        return getDefaultProjectionFromEnvironment(0, 0);
+    public Projection getDefaultProjectionFromEnvironment(Environment e) {
+        return getDefaultProjectionFromEnvironment(e, 0, 0);
     }
 
     /**
-     * Looks at the Environment settings for the default projection
-     * and returns a Projection suited for those settings. If there is
-     * a problem creating the projection, the default projection of
-     * the MapBean will be returned. The ProjectionFactory needs to be
-     * loaded with the Projection class described in the properties
-     * before this will return an expected projection.
+     * Looks at the Environment settings for the default projection and returns
+     * a Projection suited for those settings. If there is a problem creating
+     * the projection, the default projection of the MapBean will be returned.
+     * The ProjectionFactory needs to be loaded with the Projection class
+     * described in the properties before this will return an expected
+     * projection.
      * 
      * @param width pixel height of projection. If 0 or less, the
      *        Environment.Width value will be used.
      * @param height pixel height of projection. If 0 or less, the
      *        Environment.Height value will be used.
-     * @return Projection from Environment settings, fit for the pixel
-     *         height and width provided.
+     * @return Projection from Environment settings, fit for the pixel height
+     *         and width provided.
      */
-    public static Projection getDefaultProjectionFromEnvironment(int width,
-                                                                 int height) {
+    public Projection getDefaultProjectionFromEnvironment(
+                                                          Environment environment,
+                                                          int width, int height) {
         // Initialize the map projection, scale, center
         // with user prefs or defaults
         Projection proj = null;
@@ -289,10 +358,10 @@ public class ProjectionFactory extends OMComponent {
                 MapBean.DEFAULT_HEIGHT) : height;
 
         try {
-            proj = ProjectionFactory.makeProjection(Environment.get(Environment.Projection),
-                    new LatLonPoint.Float(Environment.getFloat(Environment.Latitude,
-                            0f), Environment.getFloat(Environment.Longitude, 0f)),
-                    Environment.getFloat(Environment.Scale,
+            proj = makeProjection(Environment.get(Environment.Projection),
+                    new LatLonPoint.Float(environment.getFloat(Environment.Latitude,
+                            0f), environment.getFloat(Environment.Longitude, 0f)),
+                    environment.getFloat(Environment.Scale,
                             Float.POSITIVE_INFINITY),
                     w,
                     h);
@@ -305,10 +374,10 @@ public class ProjectionFactory extends OMComponent {
                         + Environment.get(Environment.Projection)
                         + ") property as a projection class, need a class name instead.  Using default of com.bbn.openmap.proj.Mercator.");
             }
-            proj = ProjectionFactory.makeProjection(Mercator.class,
-                    new LatLonPoint.Float(Environment.getFloat(Environment.Latitude,
-                            0f), Environment.getFloat(Environment.Longitude, 0f)),
-                    Environment.getFloat(Environment.Scale,
+            proj = makeProjection(Mercator.class,
+                    new LatLonPoint.Float(environment.getFloat(Environment.Latitude,
+                            0f), environment.getFloat(Environment.Longitude, 0f)),
+                    environment.getFloat(Environment.Scale,
                             Float.POSITIVE_INFINITY),
                     w,
                     h);
@@ -318,9 +387,9 @@ public class ProjectionFactory extends OMComponent {
     }
 
     /**
-     * Call the provided ProjectionLoader to create the projection
-     * with the given parameters. The parameters are converted to
-     * Properties before being passed to the ProjectionLoader.
+     * Call the provided ProjectionLoader to create the projection with the
+     * given parameters. The parameters are converted to Properties before being
+     * passed to the ProjectionLoader.
      * 
      * @param centerLat center latitude in decimal degrees.
      * @param centerLon center latitude in decimal degrees.
@@ -334,22 +403,20 @@ public class ProjectionFactory extends OMComponent {
     }
 
     /**
-     * Call the provided ProjectionLoader to create the projection
-     * with the given parameters. The parameters are converted to
-     * Properties before being passed to the ProjectionLoader. The
-     * ProjectionLoader should throw a ProjectionException from here
-     * if it has a problem creating the projection with the provided
-     * parameters.
+     * Call the provided ProjectionLoader to create the projection with the
+     * given parameters. The parameters are converted to Properties before being
+     * passed to the ProjectionLoader. The ProjectionLoader should throw a
+     * ProjectionException from here if it has a problem creating the projection
+     * with the provided parameters.
      * 
      * @param loader projection loader to use.
      * @param center Point2D center of the projection.
      * @param scale float scale.
      * @param width pixel width of projection.
      * @param height pixel height of projection.
-     * @param projProps a Properties object to add the parameters to,
-     *        which can include extra parameters that are needed by
-     *        this particular projection loader. If null, a Properties
-     *        object will be created.
+     * @param projProps a Properties object to add the parameters to, which can
+     *        include extra parameters that are needed by this particular
+     *        projection loader. If null, a Properties object will be created.
      * @return projection, or null if the projection can't be created.
      */
     public Projection makeProjection(ProjectionLoader loader, Point2D center,
@@ -403,7 +470,7 @@ public class ProjectionFactory extends OMComponent {
         }
     }
 
-    public Iterator iterator() {
+    public Iterator<ProjectionLoader> iterator() {
         return projLoaders.iterator();
     }
 
@@ -411,10 +478,10 @@ public class ProjectionFactory extends OMComponent {
         return projLoaders.size();
     }
 
-    public Collection getProjectionLoaders() {
+    public Collection<ProjectionLoader> getProjectionLoaders() {
         return Collections.unmodifiableCollection(projLoaders);
     }
-    
+
     protected void fireLoadersChanged() {
         pcs.firePropertyChange(AvailableProjectionProperty, null, projLoaders);
     }
@@ -444,18 +511,22 @@ public class ProjectionFactory extends OMComponent {
     }
 
     /**
-     * Using the MapHandler to find ProjectionLoaders being added from
-     * the application.
+     * Using the MapHandler to find ProjectionLoaders being added from the
+     * application.
      */
     public void findAndInit(Object obj) {
         if (obj instanceof ProjectionLoader) {
             addProjectionLoader((ProjectionLoader) obj);
         }
+
+        if (obj instanceof MapBean) {
+            ((MapBean) obj).setProjectionFactory(this);
+        }
     }
 
     /**
-     * Using the MapHandler to find ProjectionLoaders being removed
-     * from the application.
+     * Using the MapHandler to find ProjectionLoaders being removed from the
+     * application.
      */
     public void findAndUndo(Object obj) {
         if (obj instanceof ProjectionLoader) {
@@ -464,18 +535,27 @@ public class ProjectionFactory extends OMComponent {
     }
 
     /**
-     * Convenience method to load default projections into the shared
-     * instance of the ProjectionFactory.
+     * Convenience method to load a ProjectionFactory and default projections
+     * into the provided MapHandler.
      * 
-     * @return ProjectionFactory shared instance.
+     * @param mapHandler the MapHandler to receive the default ProjectionFactory
      */
-    public static ProjectionFactory loadDefaultProjections() {
-        return loadDefaultProjections(getInstance());
+    public static void loadDefaultProjections(MapHandler mapHandler) {
+        mapHandler.add(loadDefaultProjections(new ProjectionFactory()));
     }
 
     /**
-     * Convenience method to load default projections into a
-     * ProjectionFactory.
+     * Convenience method to load default projections into a ProjectionFactory
+     * that will be created.
+     * 
+     * @return ProjectionFactory
+     */
+    public static ProjectionFactory loadDefaultProjections() {
+        return loadDefaultProjections(new ProjectionFactory());
+    }
+
+    /**
+     * Convenience method to load default projections into a ProjectionFactory.
      * 
      * @param pf
      * @return ProjectionFactory
@@ -491,5 +571,4 @@ public class ProjectionFactory extends OMComponent {
         }
         return pf;
     }
-
 }

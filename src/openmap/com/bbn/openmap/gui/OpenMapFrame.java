@@ -313,6 +313,10 @@ public class OpenMapFrame extends JFrame implements
                 setJMenuBar(null);
             }
         }
+        
+        if (this.equals(someObj)) {
+            dispose();
+        }
     }
 
     /** Method for BeanContextChild interface. */
@@ -491,8 +495,10 @@ public class OpenMapFrame extends JFrame implements
     }
     
     public void dispose() {
-        System.out.println("cleaning up");
-        ((MapHandler) getBeanContext()).dispose();
+        MapHandler mh = ((MapHandler) getBeanContext());
+        if (mh != null) {
+            mh.dispose();
+        }
         getContentPane().removeAll();
         setJMenuBar(null);
         getRootPane().remove(this);

@@ -37,6 +37,7 @@ import javax.imageio.stream.FileCacheImageInputStream;
 import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.CADRG;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.PropUtils;
 
 public class WorldFileImageReader implements ImageReader {
@@ -143,7 +144,7 @@ public class WorldFileImageReader implements ImageReader {
 
                     BufferedImage bi = wfir.getBufferedImage();
 
-                    CADRG crg = new CADRG(new com.bbn.openmap.LatLonPoint(0f, 0f), 1500000, 600, 600);
+                    CADRG crg = new CADRG(new LatLonPoint.Double(0, 0), 1500000, 600, 600);
 
                     final OMRaster omsr = new OMRaster(0, 0, bi);
                     omsr.generate(crg);

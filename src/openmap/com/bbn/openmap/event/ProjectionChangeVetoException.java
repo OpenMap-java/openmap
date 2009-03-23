@@ -29,7 +29,7 @@ import java.util.Properties;
 
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.proj.Proj;
-import com.bbn.openmap.proj.ProjectionFactory;
+import com.bbn.openmap.proj.Projection;
 
 /**
  * An exception used by PropertyChangeListeners on the MapBean to veto a
@@ -94,8 +94,8 @@ public class ProjectionChangeVetoException extends RuntimeException {
      * @param scale set to null if the new projection scale is OK, otherwise
      *        provide a new scale value.
      */
-    public ProjectionChangeVetoException(String message, Class projectionType,
-            Point2D center, Number scale) {
+    public ProjectionChangeVetoException(String message,
+            Class<? extends Proj> projectionType, Point2D center, Number scale) {
         super(message);
         parameters = new Properties();
 
@@ -159,11 +159,13 @@ public class ProjectionChangeVetoException extends RuntimeException {
         Proj projection = (Proj) mapBean.getProjection();
         Object suggested = getSuggested(PROJECTION_TYPE);
         if (suggested instanceof Class && suggested != projection.getClass()) {
-            projection = (Proj) ProjectionFactory.makeProjection((Class) suggested,
-                    projection.getCenter(),
-                    projection.getScale(),
-                    projection.getWidth(),
-                    projection.getHeight());
+
+            projection = (Proj) mapBean.getProjectionFactory()
+                    .makeProjection((Class<? extends Projection>) suggested,
+                            projection.getCenter(),
+                            projection.getScale(),
+                            projection.getWidth(),
+                            projection.getHeight());
         }
 
         suggested = getSuggested(CENTER);

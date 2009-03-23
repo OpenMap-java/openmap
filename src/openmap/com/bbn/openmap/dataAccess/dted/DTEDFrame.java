@@ -36,6 +36,7 @@ import com.bbn.openmap.omGraphics.grid.SlopeGenerator;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -580,7 +581,7 @@ public class DTEDFrame implements Closable {
         float lat = df.dsi.lat_origin + .5f;
         float lon = df.dsi.lon_origin + .5f;
 
-        CADRG crg = new CADRG(new com.bbn.openmap.LatLonPoint(lat, lon), 1500000, 600, 600);
+        CADRG crg = new CADRG(new LatLonPoint.Double(lat, lon), 1500000, 600, 600);
 
         final com.bbn.openmap.omGraphics.OMRaster ras = df.getOMRaster(crg);
 

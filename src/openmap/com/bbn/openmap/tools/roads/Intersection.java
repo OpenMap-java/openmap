@@ -24,11 +24,12 @@
 
 package com.bbn.openmap.tools.roads;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.omGraphics.OMGraphicList;
 import java.awt.Color;
 import java.util.Enumeration;
 import java.util.Vector;
+
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public class Intersection extends Waypoint implements RoadObject {
     /**

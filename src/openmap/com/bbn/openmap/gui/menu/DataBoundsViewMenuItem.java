@@ -28,11 +28,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import com.bbn.openmap.InformationDelegator;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.DataBoundsProvider;
 import com.bbn.openmap.util.Debug;
@@ -59,10 +59,10 @@ public class DataBoundsViewMenuItem extends MapHandlerMenuItem implements
                 java.awt.geom.Point2D center = bounds.getCenter();
                 if (center != null) {
                     proj.setCenter(center.getY(), center.getX());
-                    LatLonPoint llp1 = new LatLonPoint(bounds.getMax().getY(), bounds.getMin()
+                    LatLonPoint llp1 = new LatLonPoint.Double(bounds.getMax().getY(), bounds.getMin()
                             .getX());
 
-                    LatLonPoint llp2 = new LatLonPoint(bounds.getMin().getY(), bounds.getMax()
+                    LatLonPoint llp2 = new LatLonPoint.Double(bounds.getMin().getY(), bounds.getMax()
                             .getX());
 
                     // 1.1 buffers the edges for viewing a little, a

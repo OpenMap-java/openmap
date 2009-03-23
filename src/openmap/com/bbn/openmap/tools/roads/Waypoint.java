@@ -29,9 +29,9 @@ import java.awt.Point;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRect;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public abstract class Waypoint extends Visual implements Serializable {
 
@@ -43,8 +43,7 @@ public abstract class Waypoint extends Visual implements Serializable {
     protected Point screenLocation = null;
 
     /**
-     * True if this waypoint has modified since it was created or
-     * written.
+     * True if this waypoint has modified since it was created or written.
      */
     private boolean modified = false;
 
@@ -97,12 +96,15 @@ public abstract class Waypoint extends Visual implements Serializable {
 
     public Point getScreenLocation() {
         if (screenLocation == null)
-            screenLocation = (Point) getRoadLayer().getProjection().forward(location, new Point());
+            screenLocation = (Point) getRoadLayer().getProjection()
+                    .forward(location, new Point());
         return screenLocation;
     }
 
     public void setScreenLocation(Point loc) {
-        setLocation(LatLonPoint.getLatLon(loc.x, loc.y, getRoadLayer().getProjection()));
+        setLocation(getRoadLayer().getProjection().inverse(loc.x,
+                loc.y,
+                new LatLonPoint.Double()));
     }
 
     public void update() {
@@ -110,17 +112,17 @@ public abstract class Waypoint extends Visual implements Serializable {
         screenLocation = null;
     }
 
-    //     /**
-    //      * Get the OMGraphic for this Waypoint.
-    //      * @return the visual OMGraphic. Create it if necessary
-    //      */
-    //     public OMGraphic getOMGraphic(Projection p) {
-    // 	if (visual == null) {
-    // 	    OMGraphicList gl = new OMGraphicList(1);
-    // 	    render(gl, p, true);
-    // 	}
-    // 	return visual;
-    //     }
+    // /**
+    // * Get the OMGraphic for this Waypoint.
+    // * @return the visual OMGraphic. Create it if necessary
+    // */
+    // public OMGraphic getOMGraphic(Projection p) {
+    // if (visual == null) {
+    // OMGraphicList gl = new OMGraphicList(1);
+    // render(gl, p, true);
+    // }
+    // return visual;
+    // }
 
     /**
      * Get the RoadLayer of which this is a part.
@@ -147,9 +149,8 @@ public abstract class Waypoint extends Visual implements Serializable {
     }
 
     /**
-     * Add the visual representation of this Waypoint to the graphics
-     * list. Our visual representation is just a rectangle with radius
-     * 2.
+     * Add the visual representation of this Waypoint to the graphics list. Our
+     * visual representation is just a rectangle with radius 2.
      */
     public abstract void render(OMGraphicList gl, boolean projectionIsNew);
 
@@ -183,4 +184,3 @@ public abstract class Waypoint extends Visual implements Serializable {
         return "Waypoint : location " + location;
     }
 }
-

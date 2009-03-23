@@ -30,8 +30,8 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.GreatCircle;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public class Route implements Cloneable, Serializable {
 

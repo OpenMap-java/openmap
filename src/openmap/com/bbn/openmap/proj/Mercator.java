@@ -110,8 +110,6 @@ public class Mercator extends Cylindrical {
      * 
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
-     * @see com.bbn.openmap.LatLonPoint#normalizeLatitude(float)
-     * 
      */
     public double normalizeLatitude(double lat) {
         if (lat > NORTH_POLE - epsilon) {
@@ -188,7 +186,7 @@ public class Mercator extends Cylindrical {
      * @return LatLonPoint llp
      * @see Proj#inverse(Point2D)
      */
-    public Point2D inverse(double x, double y, Point2D llp) {
+    public <T extends Point2D> T inverse(double x, double y, T llp) {
         // convert from screen to world coordinates
         x -= wx;
         y = hy - y;

@@ -44,7 +44,6 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.gui.menu.DataBoundsViewMenuItem;
 import com.bbn.openmap.gui.menu.OMBasicMenu;
@@ -64,8 +63,8 @@ import com.bbn.openmap.util.PropUtils;
  * properties:
  * 
  * <pre>
- *  
- *  
+ * 
+ * 
  *   gotoMenu.class=com.bbn.openmap.gui.GoToMenu
  *   #Add the default, world view option
  *   gotoMenu.addDefaults=true
@@ -93,8 +92,8 @@ import com.bbn.openmap.util.PropUtils;
  *   Caspian_Sea.longitude=47f
  *   Caspian_Sea.scale=1000000
  *   Caspian_Sea.projection=CADRG
- *  
- *   
+ * 
+ * 
  * </pre>
  */
 public class GoToMenu extends AbstractOpenMapMenu {
@@ -134,8 +133,8 @@ public class GoToMenu extends AbstractOpenMapMenu {
     public GoToMenu() {
         super();
         setText(i18n.get(this, "goto", defaultText));
-//        setMnemonic(i18n.get(this, "goto", I18n.MNEMONIC, defaultMnemonic)
-//                .charAt(0));
+        // setMnemonic(i18n.get(this, "goto", I18n.MNEMONIC, defaultMnemonic)
+        // .charAt(0));
 
         // dataBoundsMenu = new OMBasicMenu("Go Over Data");
         dataBoundsMenu = new OMBasicMenu(i18n.get(this,
@@ -447,13 +446,14 @@ public class GoToMenu extends AbstractOpenMapMenu {
         public void actionPerformed(ActionEvent ae) {
             if (map != null) {
                 Projection oldProj = map.getProjection();
-                Class projClass = ProjectionFactory.getProjClassForName(projectionID);
+                ProjectionFactory projFactory = map.getProjectionFactory();
+                Class<? extends Projection> projClass = projFactory.getProjClassForName(projectionID);
 
                 if (projClass == null) {
                     projClass = com.bbn.openmap.proj.Mercator.class;
                 }
 
-                Projection newProj = ProjectionFactory.makeProjection(projClass,
+                Projection newProj = projFactory.makeProjection(projClass,
                         new Point2D.Float(longitude, latitude),
                         scale,
                         oldProj.getWidth(),

@@ -24,12 +24,12 @@
 
 package com.bbn.openmap.layer.specialist;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.corba.CSpecialist.CProjection;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Orthographic;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public class MakeProjection {
     Projection p;
@@ -48,7 +48,7 @@ public class MakeProjection {
 
     public static Projection getProjection(CProjection mp) {
         Projection p;
-        LatLonPoint center = new LatLonPoint(mp.center.lat, mp.center.lon);
+        LatLonPoint center = new LatLonPoint.Double(mp.center.lat, mp.center.lon);
 
         switch (mp.kind) {
         case CADRGType:

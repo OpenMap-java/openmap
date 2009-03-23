@@ -41,7 +41,6 @@ import javax.swing.JPanel;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -50,6 +49,7 @@ import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.Cylindrical;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
@@ -91,8 +91,8 @@ import com.bbn.openmap.util.PropUtils;
  *    graticule.textColor=FF000000
  *    
  *   
- * </pre></code> In addition, you can get this layer to work with the OpenMap viewer
- * by editing your openmap.properties file: <code><pre>
+ * </pre></code> In addition, you can get this layer to work with the OpenMap
+ * viewer by editing your openmap.properties file: <code><pre>
  *  
  *   
  *    # layers
@@ -887,11 +887,11 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 if (boxy) {
                     projection.forward(lat, west, point);
                     point.x = 0;
-                    llpoint = LatLonPoint.getLatLon(point.x,
+                    llpoint = projection.inverse(point.x,
                             point.y,
-                            projection);
+                            new LatLonPoint.Double());
                 } else {
-                    llpoint = new LatLonPoint(lat, west);
+                    llpoint = new LatLonPoint.Double(lat, west);
                     while (projection.forward(llpoint).getX() < 0) {
                         llpoint.setLongitude(llpoint.getX() + stepSize);
                     }
@@ -899,7 +899,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
 
                 currentText = new OMText(llpoint.getY(), llpoint.getX(),
                 // Move them up a little
-                        (int) 2, (int) -2, Integer.toString((int) lat), font, OMText.JUSTIFY_LEFT);
+                (int) 2, (int) -2, Integer.toString((int) lat), font, OMText.JUSTIFY_LEFT);
                 currentText.setLinePaint(textColor);
                 lines.addOMGraphic(currentText);
             }
@@ -938,11 +938,11 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 if (boxy) {
                     projection.forward(south, lon, point);
                     point.y = projection.getHeight();
-                    llpoint = LatLonPoint.getLatLon(point.x,
+                    llpoint = projection.inverse(point.x,
                             point.y,
-                            projection);
+                            new LatLonPoint.Double());
                 } else {
-                    llpoint = new LatLonPoint(south, lon);
+                    llpoint = new LatLonPoint.Double(south, lon);
                     while (projection.forward(llpoint).getY() > projection.getHeight()) {
                         llpoint.setLatitude(llpoint.getY() + stepSize);
                     }
@@ -950,7 +950,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
 
                 currentText = new OMText(llpoint.getY(), llpoint.getX(),
                 // Move them up a little
-                        (int) 2, (int) -5, Integer.toString((int) lon), font, OMText.JUSTIFY_CENTER);
+                (int) 2, (int) -5, Integer.toString((int) lon), font, OMText.JUSTIFY_CENTER);
                 currentText.setLinePaint(textColor);
                 lines.addOMGraphic(currentText);
 
@@ -1017,7 +1017,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
      * constructGraticuleLines if the showRuler variable is true. Usually called
      * only if the ones and fives lines are not being drawn.
      * 
-     * @param up northern latitude corrdinate, in decimal degrees,
+     * @param up northern latitude coordinate, in decimal degrees,
      * @param down southern latitude coordinate, in decimal degrees.
      * @param left western longitude coordinate, in decimal degrees,
      * @param right eastern longitude coordinate, in decimal degrees.
@@ -1073,22 +1073,21 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                     if (boxy) {
                         projection.forward(lat, west, point);
                         point.x = 0;
-                        llpoint = LatLonPoint.getLatLon(point.x,
+                        llpoint = projection.inverse(point.x,
                                 point.y,
-                                projection);
+                                new LatLonPoint.Double());
                     } else {
-                        llpoint = new LatLonPoint(lat, west);
+                        llpoint = new LatLonPoint.Double(lat, west);
                         while (projection.forward(llpoint).getX() < 0) {
-                            llpoint.setLongitude(llpoint.getX()
-                                    + stepSize);
+                            llpoint.setLongitude(llpoint.getX() + stepSize);
                         }
                     }
 
                     currentText = new OMText(llpoint.getY(), llpoint.getX(), (int) 2, (int) -2, // Move
-                            // them
-                            // up a
-                            // little
-                            Integer.toString((int) lat), font, OMText.JUSTIFY_LEFT);
+                    // them
+                    // up a
+                    // little
+                    Integer.toString((int) lat), font, OMText.JUSTIFY_LEFT);
                     currentText.setLinePaint(textColor);
                     labels.addOMGraphic(currentText);
                 }
@@ -1103,11 +1102,11 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 if (boxy) {
                     projection.forward(south, lon, point);
                     point.y = projection.getHeight();
-                    llpoint = LatLonPoint.getLatLon(point.x,
+                    llpoint = projection.inverse(point.x,
                             point.y,
-                            projection);
+                            new LatLonPoint.Double());
                 } else {
-                    llpoint = new LatLonPoint(south, lon);
+                    llpoint = new LatLonPoint.Double(south, lon);
                     while (projection.forward(llpoint).getY() > projection.getHeight()) {
                         llpoint.setLatitude(llpoint.getY() + stepSize);
                     }
@@ -1115,7 +1114,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
 
                 currentText = new OMText(llpoint.getY(), llpoint.getX(),
                 // Move them up a little
-                        (int) 2, (int) -5, Integer.toString((int) lon), font, OMText.JUSTIFY_CENTER);
+                (int) 2, (int) -5, Integer.toString((int) lon), font, OMText.JUSTIFY_CENTER);
                 currentText.setLinePaint(textColor);
                 labels.addOMGraphic(currentText);
 

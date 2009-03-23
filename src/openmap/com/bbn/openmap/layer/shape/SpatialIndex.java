@@ -36,7 +36,6 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.dataAccess.shape.DbfHandler;
 import com.bbn.openmap.dataAccess.shape.EsriGraphicFactory;
 import com.bbn.openmap.io.BinaryBufferedFile;
@@ -47,6 +46,7 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.GeoCoordTransformation;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -777,7 +777,7 @@ public class SpatialIndex extends ShapeUtils {
 
         LatLonPoint llp = null;
         if (dataTransform != null) {
-            llp = new LatLonPoint();
+            llp = new LatLonPoint.Double();
         }
 
         while (true) {

@@ -48,7 +48,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.event.ProjectionListener;
 import com.bbn.openmap.omGraphics.OMGeometry;
@@ -56,6 +55,7 @@ import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.quadtree.QuadTree;
 
 /**
@@ -525,7 +525,7 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
     }
 
     protected LatLonPoint createLatLonPoint(int x, int y) {
-        return LatLonPoint.getLatLon(x, y, getProjection());
+        return getProjection().inverse(x, y, new LatLonPoint.Double());
     }
 
     protected Intersection findIntersection(LatLonPoint loc, String name) {

@@ -25,7 +25,7 @@ package com.bbn.openmap.tools.roads;
 import java.awt.Point;
 import java.util.List;
 
-import com.bbn.openmap.LatLonPoint;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * getPathOnRoad interface - any layer that implements this interface

@@ -39,7 +39,6 @@ import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.event.MapMouseEvent;
 import com.bbn.openmap.omGraphics.EditableOMPoly;
 import com.bbn.openmap.omGraphics.FontSizer;
@@ -73,6 +72,7 @@ import com.bbn.openmap.omGraphics.meteo.IceAreaShapeDecoration;
 import com.bbn.openmap.omGraphics.meteo.OMHotSurfaceFront;
 import com.bbn.openmap.omGraphics.meteo.OMOcclusion;
 import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.tools.drawing.DrawingTool;
 import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
 import com.bbn.openmap.tools.drawing.OMDrawingTool;
@@ -290,13 +290,13 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         }
         omList.add(pointList);
 
-        OMEllipse ell = new OMEllipse(new LatLonPoint(60f, -110), 1000, 300, Length.NM, com.bbn.openmap.MoreMath.HALF_PI / 2.0);
+        OMEllipse ell = new OMEllipse(new LatLonPoint.Double(60, -110), 1000, 300, Length.NM, com.bbn.openmap.MoreMath.HALF_PI / 2.0);
 
         ell.setLinePaint(Color.blue);
         // ell.setFillPaint(Color.yellow);
         omList.add(ell);
 
-        ell = new OMEllipse(new LatLonPoint(40f, -75), 800, 250, Length.MILE, 0);
+        ell = new OMEllipse(new LatLonPoint.Double(40, -75), 800, 250, Length.MILE, 0);
 
         ell.setFillPaint(Color.yellow);
         omList.add(ell);

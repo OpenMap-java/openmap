@@ -66,11 +66,12 @@ public class ImageServerUtils implements ImageServerConstants {
                 LAT,
                 (float) llp.getY());
 
-        Class projClass = null;
+        Class<? extends Projection> projClass = null;
         String projType = props.getProperty(PROJTYPE);
 
+        ProjectionFactory projFactory = ProjectionFactory.loadDefaultProjections();
         if (projType != null) {
-            projClass = ProjectionFactory.getProjClassForName(projType);
+            projClass = projFactory.getProjClassForName(projType);
         }
 
         if (projClass == null) {
@@ -84,7 +85,7 @@ public class ImageServerUtils implements ImageServerConstants {
                     + longitude + ", scale = " + scale);
         }
 
-        Proj proj = (Proj) ProjectionFactory.makeProjection(projClass,
+        Proj proj = (Proj) projFactory.makeProjection(projClass,
                 new Point2D.Float(longitude, latitude),
                 scale,
                 width,
@@ -121,7 +122,7 @@ public class ImageServerUtils implements ImageServerConstants {
         Paint backgroundColor = PropUtils.parseColorFromProperties(props,
                 BGCOLOR,
                 defPaint);
-        
+
         if (backgroundColor == null) {
             backgroundColor = Color.white;
         }

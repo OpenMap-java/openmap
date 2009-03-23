@@ -26,7 +26,6 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
 import com.bbn.openmap.event.LayerStatusEvent;
@@ -41,6 +40,7 @@ import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Planet;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.SwingWorker;
 
@@ -88,7 +88,7 @@ public class LOSGenerator implements TerrainTool {
     OMRaster LOSimage; // The image for the mask
     OMCircle LOScirc; // The circle modified for the image definition
     int LOSprecision; // The flag for the algorithm type
-    LatLonPoint LOSOffPagell = new LatLonPoint(-79f, -170f);
+    LatLonPoint LOSOffPagell = new LatLonPoint.Double(-79f, -170f);
     Point LOSOffPagep1 = new Point(-10, -10);
 
     /** The thread worker used to create the Terrain images. */
@@ -403,7 +403,7 @@ public class LOSGenerator implements TerrainTool {
         }
 
         // This needs to be before the next two lines after this
-        LatLonPoint cord = LatLonPoint.getLatLon(x, y, proj);
+        LatLonPoint cord = proj.inverse(x, y, new LatLonPoint.Double());
         x -= ox;
         y -= oy;
 
@@ -524,7 +524,7 @@ public class LOSGenerator implements TerrainTool {
         graphics.clear();
         LOScenterP.x = event.getX();
         LOScenterP.y = event.getY();
-        LOScenterLLP = LatLonPoint.getLatLon(LOScenterP.x, LOScenterP.y, proj);
+        LOScenterLLP = proj.inverse(LOScenterP.x, LOScenterP.y, new LatLonPoint.Double());
         LOScenterHeight = LOSobjectHeight;
         if (layer.frameCache != null) {
             LOScenterHeight += layer.frameCache.getElevation(LOScenterLLP.getLatitude(),

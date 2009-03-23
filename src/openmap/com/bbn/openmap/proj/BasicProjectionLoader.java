@@ -168,15 +168,7 @@ public abstract class BasicProjectionLoader extends OMComponent implements
     }
 
     public LatLonPoint convertToLLP(Point2D pt) {
-        LatLonPoint llp = null;
-        if (pt instanceof LatLonPoint) {
-            llp = (LatLonPoint) pt;
-        } else {
-            llp = new LatLonPoint.Float((float) pt.getY(), (float) pt.getX());
-        }
-
-        return llp;
-
+        return LatLonPoint.getDouble(pt);
     }
 
 }

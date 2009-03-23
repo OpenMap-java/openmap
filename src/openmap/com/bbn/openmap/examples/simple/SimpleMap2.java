@@ -24,7 +24,6 @@ package com.bbn.openmap.examples.simple;
 
 import java.util.Properties;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
@@ -36,6 +35,7 @@ import com.bbn.openmap.gui.OpenMapFrame;
 import com.bbn.openmap.gui.ToolPanel;
 import com.bbn.openmap.layer.GraticuleLayer;
 import com.bbn.openmap.layer.shape.ShapeLayer;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * This is a simple application that uses the OpenMap MapBean to show
@@ -83,7 +83,7 @@ public class SimpleMap2 {
             MapBean mapBean = mapPanel.getMapBean();
 
             // Set the map's center
-            mapBean.setCenter(new LatLonPoint(43.0f, -95.0f));
+            mapBean.setCenter(new LatLonPoint.Double(43.0, -95.0));
 
             // Set the map's scale 1:120 million
             mapBean.setScale(120000000f);

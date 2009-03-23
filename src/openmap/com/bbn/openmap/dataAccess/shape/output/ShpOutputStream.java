@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.dataAccess.shape.EsriGraphic;
 import com.bbn.openmap.dataAccess.shape.EsriGraphicList;
 import com.bbn.openmap.dataAccess.shape.EsriPointList;
@@ -37,6 +36,7 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * Writes data to a .shp file
@@ -394,7 +394,7 @@ public class ShpOutputStream {
 
         for (int i = 0; i < list.size(); i++) {
             OMPoint point = (OMPoint) list.getOMGraphicAt(i);
-            LatLonPoint pt = new LatLonPoint(point.getLat(), point.getLon());
+            LatLonPoint pt = new LatLonPoint.Double(point.getLat(), point.getLon());
 
             // Record header...
             _leos.writeInt(i + 1); // Record numbers start with 1
@@ -403,8 +403,8 @@ public class ShpOutputStream {
             // Beginning of Geometry data
             _leos.writeLEInt(list.getType());
 
-            Float lat = new Float(pt.getLatitude());
-            Float lon = new Float(pt.getLongitude());
+            Double lat = new Double(pt.getLatitude());
+            Double lon = new Double(pt.getLongitude());
 
             _leos.writeLEDouble(lon.doubleValue());
             _leos.writeLEDouble(lat.doubleValue());

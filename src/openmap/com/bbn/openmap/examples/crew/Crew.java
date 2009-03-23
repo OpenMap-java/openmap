@@ -30,7 +30,6 @@ import java.util.Properties;
 
 import javax.swing.JFrame;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapBean;
@@ -42,6 +41,7 @@ import com.bbn.openmap.gui.LayersPanel;
 import com.bbn.openmap.gui.OMToolSet;
 import com.bbn.openmap.gui.ToolPanel;
 import com.bbn.openmap.layer.shape.ShapeLayer;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * A sample application incorporating the <code>MapBean</code>.
@@ -98,7 +98,7 @@ public class Crew extends JFrame {
         // Create the MapBean.
         MapBean map = new MapBean();
         // Set the map's center property
-        map.setCenter(new LatLonPoint(43.0f, -95.0f));
+        map.setCenter(new LatLonPoint.Double(43.0f, -95.0f));
         // Add the MapBean to the MapHandler.
         mapHandler.add(map);
 

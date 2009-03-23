@@ -492,6 +492,17 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements
         }
     }
 
+    public void dispose() {
+        if (mapBean != null) {
+            mapBean.dispose();
+        }
+        
+        if (panel != null) {
+            panel.removeAll();
+            panel = null;
+        }
+    }
+    
     /**
      * An simple extension of the BufferedMapBean that calls a layer, presumably
      * its parent, to call repaint(). This is necessary in order to make sure
@@ -566,5 +577,10 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements
          * BufferedLayer.
          */
         public void paintBorder(Graphics g) {}
+        
+        public void dispose() {
+            layer = null;
+            super.dispose();
+        }
     }
 }

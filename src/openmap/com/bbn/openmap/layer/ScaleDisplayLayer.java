@@ -27,13 +27,13 @@ import java.util.Properties;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -176,8 +176,8 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
         line.setLinePaint(lineColor);
         graphics.add(line);
 
-        LatLonPoint loc1 = LatLonPoint.getLatLon(left_x, lower_y, projection);
-        LatLonPoint loc2 = LatLonPoint.getLatLon(right_x, lower_y, projection);
+        LatLonPoint loc1 = projection.inverse(left_x, lower_y, new LatLonPoint.Double());
+        LatLonPoint loc2 = projection.inverse(right_x, lower_y, new LatLonPoint.Double());
 
         double dist = GreatCircle.sphericalDistance(loc1.getRadLat(),
                 loc1.getRadLon(),

@@ -46,7 +46,6 @@ import javax.swing.SwingConstants;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.editable.GraphicEditState;
 import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
@@ -54,6 +53,7 @@ import com.bbn.openmap.omGraphics.editable.GraphicSetOffsetState;
 import com.bbn.openmap.omGraphics.editable.GraphicUndefinedState;
 import com.bbn.openmap.omGraphics.editable.TextStateMachine;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 
@@ -286,7 +286,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
                     double lon = text.getLon();
                     double lat = text.getLat();
 
-                    llp = new LatLonPoint(lat, lon);
+                    llp = new LatLonPoint.Double(lat, lon);
                     Point2D p = projection.forward(llp);
                     if (renderType == OMGraphic.RENDERTYPE_LATLON) {
                         doStraight = false;
@@ -329,7 +329,9 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
 
             if (projection != null) {
                 // movingPoint == gpc
-                llp1 = LatLonPoint.getLatLon(gpc.getX(), gpc.getY(), projection);
+                llp1 = projection.inverse(gpc.getX(),
+                        gpc.getY(),
+                        new LatLonPoint.Double());
                 text.setLat(llp1.getY());
                 text.setLon(llp1.getX());
                 // text.setNeedToRegenerate set
@@ -342,7 +344,9 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         // If the center point is moving, the offset distance changes
         if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
-            llp1 = LatLonPoint.getLatLon(gpo.getX(), gpo.getY(), projection);
+            llp1 = projection.inverse(gpo.getX(),
+                    gpo.getY(),
+                    new LatLonPoint.Double());
 
             text.setLat(llp1.getY());
             text.setLon(llp1.getX());
@@ -543,7 +547,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
             attributeBox.setAlignmentX(Component.CENTER_ALIGNMENT);
             attributeBox.setAlignmentY(Component.CENTER_ALIGNMENT);
 
-         } else if (orientation == SwingConstants.HORIZONTAL) {
+        } else if (orientation == SwingConstants.HORIZONTAL) {
             attributeBox = guiComp;
         }
 

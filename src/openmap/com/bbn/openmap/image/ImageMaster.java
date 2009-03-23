@@ -39,30 +39,29 @@ import java.util.Vector;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The ImageMaster is an organizer for running the ImageServer to
- * create one or more images. It relies on a properties file, which
- * sets up a series of entries for an ImageServer. Each entry has
- * parameters for setting up a projection for an image, a parameters
- * for a URL for the ImageServer to use to set up the layers for an
- * image, and a parameter to set the name and path of the output image
- * file.
+ * The ImageMaster is an organizer for running the ImageServer to create one or
+ * more images. It relies on a properties file, which sets up a series of
+ * entries for an ImageServer. Each entry has parameters for setting up a
+ * projection for an image, a parameters for a URL for the ImageServer to use to
+ * set up the layers for an image, and a parameter to set the name and path of
+ * the output image file.
  * <P>
- * Each map entry in the ImageServer has parameters for the projection
- * and layer properties to use for the map image, and the size,
- * location and format of the output image.
+ * Each map entry in the ImageServer has parameters for the projection and layer
+ * properties to use for the map image, and the size, location and format of the
+ * output image.
  */
 public class ImageMaster {
 
     /** Property for space separated image servers to be created. */
     public static final String ImageServersProperty = "servers";
     /**
-     * Property for the properties file holding property for a
-     * particular image.
+     * Property for the properties file holding property for a particular image.
      */
     public static final String ServerPropertiesProperty = "properties";
     /** Property for an image's projection type. */
@@ -90,8 +89,8 @@ public class ImageMaster {
     /** Property for an error log file. */
     public static final String ErrorLogFileProperty = "errorLogFile";
     /**
-     * Hashtable of instantiated layers across servers, to reduce
-     * duplication of same layers.
+     * Hashtable of instantiated layers across servers, to reduce duplication of
+     * same layers.
      */
     protected Hashtable instantiatedLayers = new Hashtable();
 
@@ -117,8 +116,8 @@ public class ImageMaster {
     }
 
     /**
-     * Loads properties from a java resource. This will load the named
-     * resource identifier into the given properties instance.
+     * Loads properties from a java resource. This will load the named resource
+     * identifier into the given properties instance.
      * 
      * @param props the Properties instance to receive the properties
      * @param resourceName the name of the resource to load
@@ -147,8 +146,8 @@ public class ImageMaster {
     }
 
     /**
-     * Loads properties from a java resource. This will load the named
-     * resource identifier into the given properties instance.
+     * Loads properties from a java resource. This will load the named resource
+     * identifier into the given properties instance.
      * 
      * @param props the Properties instance to receive the properties
      * @param url the url to load
@@ -168,9 +167,9 @@ public class ImageMaster {
 
     /**
      * Load the named file from the named directory into the given
-     * <code>Properties</code> instance. If the file is not found a
-     * warning is issued. If an IOException occurs, a fatal error is
-     * printed and the application will exit.
+     * <code>Properties</code> instance. If the file is not found a warning is
+     * issued. If an IOException occurs, a fatal error is printed and the
+     * application will exit.
      * 
      * @param file the name of the file
      * @return true if all's well.
@@ -206,9 +205,8 @@ public class ImageMaster {
 
     /**
      * This causes the ImageMaster to look through the list of
-     * ImageMasterHelpers and launch the next one that hasn't been
-     * completed. It will cause the program to exit if there is
-     * nothing more to do.
+     * ImageMasterHelpers and launch the next one that hasn't been completed. It
+     * will cause the program to exit if there is nothing more to do.
      */
     protected void doNext() {
         for (int i = 0; i < helpers.length; i++) {
@@ -221,9 +219,9 @@ public class ImageMaster {
     }
 
     /**
-     * Creates the ImageMasterHelper array from an ImageMaster
-     * properties object. After this method is called, call run() to
-     * start the servers on their creative ways.
+     * Creates the ImageMasterHelper array from an ImageMaster properties
+     * object. After this method is called, call run() to start the servers on
+     * their creative ways.
      * 
      * @param properties the ImageMaster properties.
      * @return ImageMasterHelper array.
@@ -301,8 +299,8 @@ public class ImageMaster {
     }
 
     /**
-     * <b>printHelp </b> should print a usage statement which reflects
-     * the command line needs of the ImageServer.
+     * <b>printHelp </b> should print a usage statement which reflects the
+     * command line needs of the ImageServer.
      */
     public static void printHelp() {
         Debug.output("");
@@ -354,8 +352,8 @@ public class ImageMaster {
     }
 
     /**
-     * Print the ImageServer properties file, referenced by the
-     * ImageMaster properties file.
+     * Print the ImageServer properties file, referenced by the ImageMaster
+     * properties file.
      */
     public static void printServerProps() {
         Debug.output("");
@@ -377,9 +375,8 @@ public class ImageMaster {
     }
 
     /**
-     * The ImageMasterHelper contains an ImageServer, and acts like
-     * the ImageReceiver to create the Image file when the bits are
-     * ready.
+     * The ImageMasterHelper contains an ImageServer, and acts like the
+     * ImageReceiver to create the Image file when the bits are ready.
      */
     public class ImageMasterHelper implements ImageReceiver {
         public ImageServer iServer;
@@ -438,12 +435,14 @@ public class ImageMaster {
                 }
             }
 
-            Class projClass = ProjectionFactory.getProjClassForName(projType);
+            ProjectionFactory projectionFactory = getProjectionFactory();
+
+            Class<? extends Projection> projClass = projectionFactory.getProjClassForName(projType);
             if (projClass == null) {
                 projClass = Mercator.class;
             }
 
-            proj = (Proj) ProjectionFactory.makeProjection(projClass,
+            proj = (Proj) projectionFactory.makeProjection(projClass,
                     new Point2D.Float(latitude, longitude),
                     scale,
                     width,
@@ -481,6 +480,16 @@ public class ImageMaster {
         }
 
         /**
+         * Override this method if you want to change the available projections
+         * from the defaults.
+         * 
+         * @return
+         */
+        public ProjectionFactory getProjectionFactory() {
+            return ProjectionFactory.loadDefaultProjections();
+        }
+
+        /**
          * Start the ImageServer on it's creative journey.
          */
         public void create() {
@@ -490,8 +499,7 @@ public class ImageMaster {
         }
 
         /**
-         * Receive the bytes from a image. ImageReceiver interface
-         * function.
+         * Receive the bytes from a image. ImageReceiver interface function.
          * 
          * @param imageBytes the formatted image..
          */

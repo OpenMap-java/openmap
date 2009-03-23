@@ -756,7 +756,7 @@ public class RpfCoverage implements ActionListener, RpfConstants,
             int length = tmpGraphics.size();
             for (int k = length - 1; k >= 0; k--) {
                 // HACK - this order is nicely arranged with the order
-                // that lists are arrainged by the
+                // that lists are arranged by the
                 // RpfCoverageManager!!!!
                 if (k == 0)
                     ((OMGraphicList) tmpGraphics.elementAt(k)).generate(proj);

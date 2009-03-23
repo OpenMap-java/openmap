@@ -60,10 +60,10 @@ import com.bbn.openmap.util.PropUtils;
  * <P>
  * 
  * <pre>
- *    
- *     
- *      
- *      
+ * 
+ * 
+ * 
+ * 
  *       # port number of server
  *       link.port=3031
  *      
@@ -78,10 +78,10 @@ import com.bbn.openmap.util.PropUtils;
  *       # server.  How the server handles the property depends on the server,
  *       # but non-applicable properties are ignored.
  *       link.propertiesURL=http://location.of.properties.file.com
- *      
- *       
- *      
- *     
+ * 
+ * 
+ * 
+ * 
  * </pre>
  * 
  * You have to call setProperties() on this layer to set its parameters, and to
@@ -1256,8 +1256,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                     ProjMath.degToRad(lonmin),
                     dist,
                     azimuth);
-            latitude = (float)center.getY();
-            longitude = (float)center.getX();
+            latitude = (float) center.getY();
+            longitude = (float) center.getX();
         }
 
         MapHandler mapHandler = (MapHandler) getBeanContext();
@@ -1269,13 +1269,13 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                 Debug.message("link", "Warning...mapBean = null");
             } else {
                 center = new Point2D.Float(latitude, longitude);
-                
+                ProjectionFactory projFactory = mapBean.getProjectionFactory();
                 if (projType != null) {
-                    Class projClass = ProjectionFactory.getProjClassForName(projType);
+                    Class<? extends Projection> projClass = projFactory.getProjClassForName(projType);
                     if (projClass == null) {
                         projClass = Mercator.class;
                     }
-                    projection = (Proj) ProjectionFactory.makeProjection(projClass,
+                    projection = (Proj) projFactory.makeProjection(projClass,
                             center,
                             scale,
                             width,

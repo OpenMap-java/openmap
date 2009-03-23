@@ -36,12 +36,11 @@ import com.bbn.openmap.event.ProjectionListener;
 import com.bbn.openmap.util.Debug;
 
 /**
- * Provides Projection Stack, to listen for projection changes and
- * remember them as they pass by. As a Tool, it provides a GUI so that
- * past projections can be retrieved, and, if a past projection is
- * being displayed, a forward projection stack is activated to provide
- * a path to get to the last projection set in the MapBean.
- * ProjectionStackTriggers should hook themselves up to the
+ * Provides Projection Stack, to listen for projection changes and remember them
+ * as they pass by. As a Tool, it provides a GUI so that past projections can be
+ * retrieved, and, if a past projection is being displayed, a forward projection
+ * stack is activated to provide a path to get to the last projection set in the
+ * MapBean. ProjectionStackTriggers should hook themselves up to the
  * ProjectionStack. The ProjectionStack is responsible for finding and
  * connecting to the MapBean.
  */
@@ -134,6 +133,16 @@ public class ProjectionStack extends OMComponent implements ActionListener,
     // ProjectionListener interface
     // ------------------------------------------------------------
 
+    protected ProjectionFactory getProjectionFactory(ProjectionEvent e) {
+        Object obj = e.getSource();
+        if (obj instanceof MapBean) {
+            return ((MapBean) obj).getProjectionFactory();
+        } else if (mapBean != null) {
+            return mapBean.getProjectionFactory();
+        }
+        return ProjectionFactory.loadDefaultProjections(); 
+    }
+
     /**
      * The Map projection has changed.
      * 
@@ -144,6 +153,7 @@ public class ProjectionStack extends OMComponent implements ActionListener,
             System.out.println("ProjectionStack.projectionChanged()");
         }
         Projection newProj = e.getProjection();
+
         // If the ProjectionStack doesn't already know about the
         // projection change, that means that it didn't instigate it,
         // and the new projection needs to get added to the stack,
@@ -152,7 +162,7 @@ public class ProjectionStack extends OMComponent implements ActionListener,
             Debug.message("projectionstack",
                     "ProjectionStack.projectionChanged() pushing projection on backStack");
             // push on the backStack, clear the forwardStack;
-            currentProjection = push(new ProjHolder(newProj));
+            currentProjection = push(new ProjHolder(newProj, getProjectionFactory(e)));
             if (forwardStack != null) {
                 forwardStack.clear();
             }
@@ -164,12 +174,11 @@ public class ProjectionStack extends OMComponent implements ActionListener,
     }
 
     /**
-     * Clear out the chosen projection stacks and fire an event to
-     * update the triggers on stack status.
+     * Clear out the chosen projection stacks and fire an event to update the
+     * triggers on stack status.
      * 
      * @param clearBackStack clear out the backward projection stack.
-     * @param clearForwardStack clear out the forward projection
-     *        stack.
+     * @param clearForwardStack clear out the forward projection stack.
      */
     public synchronized void clearStacks(boolean clearBackStack,
                                          boolean clearForwardStack) {
@@ -187,8 +196,7 @@ public class ProjectionStack extends OMComponent implements ActionListener,
     }
 
     /**
-     * Take a ProjHolder off the backStack, and push it on the forward
-     * stack.
+     * Take a ProjHolder off the backStack, and push it on the forward stack.
      * 
      * @return the ProjHolder pushed onto the forwardStack.
      */
@@ -207,8 +215,7 @@ public class ProjectionStack extends OMComponent implements ActionListener,
     }
 
     /**
-     * Take a ProjHolder off the forwardStack, and push it on the
-     * backStack.
+     * Take a ProjHolder off the forwardStack, and push it on the backStack.
      * 
      * @return the ProjHolder pushed on the backStack.
      */
@@ -228,8 +235,8 @@ public class ProjectionStack extends OMComponent implements ActionListener,
     }
 
     /**
-     * Put a new ProjHolder on the backStack, to remember for later in
-     * case we need to back up.
+     * Put a new ProjHolder on the backStack, to remember for later in case we
+     * need to back up.
      * 
      * @param proj ProjHolder.
      * @return the ProjHolder pushed on the backStack.
@@ -262,8 +269,7 @@ public class ProjectionStack extends OMComponent implements ActionListener,
     }
 
     /**
-     * ProjectionStackTriggers should call this method, and all will
-     * be well.
+     * ProjectionStackTriggers should call this method, and all will be well.
      */
     public void addProjectionStackTrigger(ProjectionStackTrigger trigger) {
         trigger.addActionListener(this);
@@ -276,8 +282,7 @@ public class ProjectionStack extends OMComponent implements ActionListener,
     }
 
     /**
-     * ProjectionStackTriggers should call this method, and all will
-     * be well.
+     * ProjectionStackTriggers should call this method, and all will be well.
      */
     public void removeProjectionStackTrigger(ProjectionStackTrigger trigger) {
         trigger.removeActionListener(this);
@@ -294,8 +299,8 @@ public class ProjectionStack extends OMComponent implements ActionListener,
     // ------------------------------------------------------------
 
     /**
-     * Look at the object received in a MapHandler status message and
-     * disconnect from it if necessary.
+     * Look at the object received in a MapHandler status message and disconnect
+     * from it if necessary.
      */
     public void findAndUndo(Object someObj) {
         if (someObj instanceof com.bbn.openmap.MapBean) {
@@ -309,8 +314,8 @@ public class ProjectionStack extends OMComponent implements ActionListener,
     }
 
     /**
-     * Look at the object received in a MapHandler status message and
-     * connect to it if necessary.
+     * Look at the object received in a MapHandler status message and connect to
+     * it if necessary.
      */
     public void findAndInit(Object someObj) {
         if (someObj instanceof com.bbn.openmap.MapBean) {
@@ -326,11 +331,13 @@ public class ProjectionStack extends OMComponent implements ActionListener,
         public Point2D center;
         protected Point tmpPoint1;
         protected Point tmpPoint2;
+        protected ProjectionFactory projFactory;
 
-        public ProjHolder(Projection proj) {
+        public ProjHolder(Projection proj, ProjectionFactory projectionFactory) {
             projClass = proj.getClass();
             scale = proj.getScale();
             center = proj.getCenter();
+            projFactory = projectionFactory;
         }
 
         public boolean equals(Projection proj) {
@@ -365,7 +372,7 @@ public class ProjectionStack extends OMComponent implements ActionListener,
         }
 
         public Projection create(int width, int height) {
-            return ProjectionFactory.makeProjection(projClass,
+            return projFactory.makeProjection(projClass,
                     center,
                     scale,
                     width,

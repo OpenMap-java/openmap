@@ -40,7 +40,6 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
@@ -49,6 +48,7 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
@@ -63,7 +63,7 @@ import com.bbn.openmap.util.PropUtils;
  * The distribution consists of the following:
  * <ul>
  * <li>1. ETOPOLayer.java</li>
- * <li>2. ETOPO5 (5 minute spacing data set, 4320x2160 shorts, ~18MB) </li>
+ * <li>2. ETOPO5 (5 minute spacing data set, 4320x2160 shorts, ~18MB)</li>
  * <li>3. ETOPO10 (10 minute spacing data set, sampled from ETOPO5, ~4.6MB)</li>
  * <li>4. ETOPO15 (15 minute spacing data set, sampled from ETOPO5, ~2MB)</li>
  * <li>5. ETOPOLayer.properties (example properties for openmap.properties)</li>
@@ -85,24 +85,32 @@ import com.bbn.openmap.util.PropUtils;
  * ETOPOLayer properties look something like this:
  * <P>
  * 
- * #------------------------------ <BR># Properties for ETOPOLayer <BR>
- * #------------------------------ <BR># This property should reflect the paths
- * to the etopo directory <BR>
+ * #------------------------------ <BR>
+ * # Properties for ETOPOLayer <BR>
+ * #------------------------------ <BR>
+ * # This property should reflect the paths to the etopo directory <BR>
  * etopo.path=c:/openmap/share <BR>
- * <BR># Number between 0-255: 0 is transparent, 255 is opaque <BR>
+ * <BR>
+ * # Number between 0-255: 0 is transparent, 255 is opaque <BR>
  * etopo.opaque=255 <BR>
- * <BR># Number of colors to use on the maps - 16, 32, 216 <BR>
+ * <BR>
+ * # Number of colors to use on the maps - 16, 32, 216 <BR>
  * etopo.number.colors=216 <BR>
- * <BR># Type of display for the data <BR># 0 = grayscale slope shading <BR>#
- * 1 = colored slope shading <BR>
+ * <BR>
+ * # Type of display for the data <BR>
+ * # 0 = grayscale slope shading <BR>
+ * # 1 = colored slope shading <BR>
  * etopo.view.type=1 <BR>
- * <BR># Contrast setting, 1-5 <BR>
+ * <BR>
+ * # Contrast setting, 1-5 <BR>
  * etopo.contrast=3 <BR>
- * <BR># lat/lon spacing in minutes <BR># must be 5, 10, or 15 <BR>
+ * <BR>
+ * # lat/lon spacing in minutes <BR>
+ * # must be 5, 10, or 15 <BR>
  * etopo.minute.spacing=10 <BR>
  * <BR>
- * #------------------------------------- <BR># End of properties for
- * ETOPOLayer <BR>
+ * #------------------------------------- <BR>
+ * # End of properties for ETOPOLayer <BR>
  * #------------------------------------- <BR>
  * 
  */
@@ -554,7 +562,7 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
             // get the center lat/lon (used by the HACK, see above in
             // method description)
             Point2D center = projection.getCenter();
-            LatLonPoint llp = new LatLonPoint();
+            LatLonPoint llp = new LatLonPoint.Double();
             // build array
             for (int y = sy; y < ey; y++) {
 
@@ -802,7 +810,7 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
             // The ETOPO Contrast Adjuster
             JPanel contrastPanel = PaletteHelper.createPaletteJPanel("Contrast Adjustment");
             JSlider contrastSlide = new JSlider(JSlider.HORIZONTAL, 1/* min */, 5/* max */, 3/* inital */);
-            java.util.Hashtable dict = new java.util.Hashtable();
+            java.util.Hashtable<Integer, JLabel> dict = new java.util.Hashtable<Integer, JLabel>();
             dict.put(new Integer(1), new JLabel("min"));
             dict.put(new Integer(5), new JLabel("max"));
             contrastSlide.setLabelTable(dict);

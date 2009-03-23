@@ -104,8 +104,8 @@ import com.bbn.openmap.util.PropUtils;
  * following properties to your openmap.properties file:
  * 
  * <pre>
- *     
- *     
+ * 
+ * 
  *       # First, add overviewMapHandler to the openmap.components marker name list.  Then, add:
  *     
  *       overviewMapHandler.class=com.bbn.opemap.gui.OverviewMapHandler
@@ -134,8 +134,8 @@ import com.bbn.openmap.util.PropUtils;
  *       overviewLayer.spatialIndex=/home/dietrick/dev/openmap/share/dcwpo-browse.ssx
  *       overviewLayer.lineColor=ff000000
  *       overviewLayer.fillColor=ffbdde83
- *     
- *     
+ * 
+ * 
  * </pre>
  * 
  * <p>
@@ -319,8 +319,8 @@ public class OverviewMapHandler extends OMToolComponent implements
      *     super.setProperties(prefix, props);
      *     // do local stuff
      * }
-     * </pre></code> If the addToBeanContext property is not defined, it is set to
-     * false here.
+     * </pre></code> If the addToBeanContext property is not defined, it is set
+     * to false here.
      * 
      * @param prefix the token to prefix the property names
      * @param props the <code>Properties</code> object
@@ -379,9 +379,17 @@ public class OverviewMapHandler extends OMToolComponent implements
         setLayers(LayerHandler.getLayers(overviewLayers, overviewLayers, props));
     }
 
+    protected ProjectionFactory getProjectionFactory() {
+        if (sourceMap != null) {
+            return sourceMap.getProjectionFactory();
+        }
+        return ProjectionFactory.loadDefaultProjections();
+    }
+
     private Proj createStartingProjection(String projName) {
 
-        Class projClass = ProjectionFactory.getProjClassForName(projName);
+        ProjectionFactory projectionFactory = getProjectionFactory();
+        Class<? extends Projection> projClass = projectionFactory.getProjClassForName(projName);
 
         if (projClass == null) {
             projClass = Mercator.class;
@@ -391,7 +399,7 @@ public class OverviewMapHandler extends OMToolComponent implements
         // size will get reset when it is added to a component, and
         // the projection will change when it is added to a MapBean
         // as a projection listener.p
-        return (Proj) ProjectionFactory.makeProjection(projClass,
+        return (Proj) projectionFactory.makeProjection(projClass,
                 new Point2D.Float(Environment.getFloat(Environment.Latitude, 0f), Environment.getFloat(Environment.Longitude,
                         0f)),
                 Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY)

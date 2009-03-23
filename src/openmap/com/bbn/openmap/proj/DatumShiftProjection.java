@@ -34,7 +34,7 @@ public class DatumShiftProjection extends GeoProj {
     private DatumShiftGCT datum;
 
     public DatumShiftProjection(GeoProj proj, DatumShiftGCT datum) {
-        super((LatLonPoint) proj.getCenter(),
+        super(proj.getCenter(),
               proj.getScale(),
               proj.getWidth(),
               proj.getHeight());

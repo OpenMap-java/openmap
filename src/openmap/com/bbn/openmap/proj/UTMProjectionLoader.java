@@ -1,9 +1,10 @@
 package com.bbn.openmap.proj;
 
+import java.awt.geom.Point2D;
 import java.util.Properties;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.coords.DatumShiftGCT;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -19,7 +20,7 @@ public class UTMProjectionLoader extends BasicProjectionLoader {
 
     public Projection create(Properties props) throws ProjectionException {
         try {
-            LatLonPoint center = (LatLonPoint) props.get(ProjectionFactory.CENTER);
+            LatLonPoint center = convertToLLP((Point2D) props.get(ProjectionFactory.CENTER));
             float scale = PropUtils.floatFromProperties(props,
                     ProjectionFactory.SCALE,
                     10000000);

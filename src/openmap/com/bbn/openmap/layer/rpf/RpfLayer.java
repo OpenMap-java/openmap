@@ -49,37 +49,34 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The RpfLayer fills the screen with RPF data. There is also a tool
- * available that allows you to see the coverage of the available
- * data. To view theimages, the projection of the map has to be set in
- * the ARC projection, which OpenMap calls the CADRG projection. The
- * RpfLayer can use several RPF directories at the same time, and
- * doesn't require that the data actually be there at runtime. That
- * way, you can give a location where the data may be mouted during
- * runtime(i.e. CDROM) and the layer will still use the data. The
- * scale of the projection does not necessarily have to match the
- * scale of a map series for that series to be displayed. There are
- * options, set in the RpfViewAttributes, that allow scaling of the
- * RPF images to match the map scale.
+ * The RpfLayer fills the screen with RPF data. There is also a tool available
+ * that allows you to see the coverage of the available data. To view theimages,
+ * the projection of the map has to be set in the ARC projection, which OpenMap
+ * calls the CADRG projection. The RpfLayer can use several RPF directories at
+ * the same time, and doesn't require that the data actually be there at
+ * runtime. That way, you can give a location where the data may be mouted
+ * during runtime(i.e. CDROM) and the layer will still use the data. The scale
+ * of the projection does not necessarily have to match the scale of a map
+ * series for that series to be displayed. There are options, set in the
+ * RpfViewAttributes, that allow scaling of the RPF images to match the map
+ * scale.
  * <P>
  * 
- * The RpfLayer uses the RpfCacheManager to get the images it needs to
- * display. Whenever the projection changes, the cache manager takes
- * the new projection and creates a OMGraphicList with the new image
- * frames and attribute text.
+ * The RpfLayer uses the RpfCacheManager to get the images it needs to display.
+ * Whenever the projection changes, the cache manager takes the new projection
+ * and creates a OMGraphicList with the new image frames and attribute text.
  * <P>
  * 
- * The RpfLayer gets its intial settings from properties. This should
- * be done right after the RpfLayer is created. The properties list
- * contains the location of the RPF directories, the opaqueness of the
- * images, the number of colors to use, and whether to show the images
- * and/or attributes by default. An example of the RpfLayer
- * properties:
+ * The RpfLayer gets its intial settings from properties. This should be done
+ * right after the RpfLayer is created. The properties list contains the
+ * location of the RPF directories, the opaqueness of the images, the number of
+ * colors to use, and whether to show the images and/or attributes by default.
+ * An example of the RpfLayer properties:
  * <P>
  * 
  * <pre>
- *  
-
+ * 
+ * 
  *           #-----------------------------
  *           # Properties for RpfLayer
  *           #-----------------------------
@@ -122,8 +119,8 @@ import com.bbn.openmap.util.PropUtils;
  *           #------------------------------------
  *           # End of properties for RpfLayer
  *           #------------------------------------
- *
- *   
+ * 
+ * 
  * </pre>
  * 
  */
@@ -131,18 +128,18 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
         RpfConstants, Serializable {
 
     /**
-     * The main source for the images and attribute information. All
-     * requests for graphic objects should go through this cache, and
-     * it will automatically handle getting the frame files, decoding
-     * them, and returning an object list.
+     * The main source for the images and attribute information. All requests
+     * for graphic objects should go through this cache, and it will
+     * automatically handle getting the frame files, decoding them, and
+     * returning an object list.
      */
     protected transient RpfCacheManager cache = null;
     /** The paths to the RPF directories, telling where the data is. */
     protected String[] paths;
     /**
-     * The display attributes for the maps. This object should not be
-     * replaced, because the caches all look at it, too. Just adjust
-     * the parameters within it.
+     * The display attributes for the maps. This object should not be replaced,
+     * because the caches all look at it, too. Just adjust the parameters within
+     * it.
      * 
      * @see RpfViewAttributes
      */
@@ -159,10 +156,9 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
     protected int auxSubframeCacheSize = RpfCacheManager.SMALL_CACHE_SIZE;
 
     /**
-     * The default constructor for the Layer. All of the attributes
-     * are set to their default values. Use this construct if you are
-     * going to use a standard properties file, which will set the
-     * paths.
+     * The default constructor for the Layer. All of the attributes are set to
+     * their default values. Use this construct if you are going to use a
+     * standard properties file, which will set the paths.
      */
     public RpfLayer() {
         setName("RPF");
@@ -171,11 +167,10 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
     }
 
     /**
-     * The default constructor for the Layer. All of the attributes
-     * are set to their default values.
+     * The default constructor for the Layer. All of the attributes are set to
+     * their default values.
      * 
-     * @param pathsToRPFDirs paths to the RPF directories that hold
-     *        A.TOC files.
+     * @param pathsToRPFDirs paths to the RPF directories that hold A.TOC files.
      */
     public RpfLayer(String[] pathsToRPFDirs) {
         this();
@@ -183,14 +178,26 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
     }
 
     /**
-     * Set the paths to the RPF directories, which are by default the
-     * parents of the A.TOC table of contents files. Creates the
-     * RpfFrameProvider.
+     * Set the paths to the RPF directories, which are by default the parents of
+     * the A.TOC table of contents files. Creates the RpfFrameProvider.
      * 
-     * @param pathsToRPFDirs Array of strings that list the paths to
-     *        RPF directories.
+     * @param pathsToRPFDirs Array of strings that list the paths to RPF
+     *        directories.
      */
     public void setPaths(String[] pathsToRPFDirs) {
+        if (paths != null && pathsToRPFDirs != null
+                && paths.length == pathsToRPFDirs.length) {
+            // If the paths haven't changed, don't do anything.
+            boolean same = true;
+            for (int i = 0; i < paths.length; i++) {
+                same = same && paths[i].equals(pathsToRPFDirs[i]);
+            }
+
+            if (same) {
+                return;
+            }
+        }
+
         if (pathsToRPFDirs != null) {
             setFrameProvider(new RpfFrameCacheHandler(pathsToRPFDirs));
         } else {
@@ -198,6 +205,9 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
             frameProvider = null;
         }
         paths = pathsToRPFDirs;
+
+        setCoverage(new RpfCoverage(this));
+
         this.cache = null;
     }
 
@@ -211,8 +221,8 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
     }
 
     /**
-     * Called when the layer is no longer part of the map. In this
-     * case, we should disconnect from the server if we have a link.
+     * Called when the layer is no longer part of the map. In this case, we
+     * should disconnect from the server if we have a link.
      */
     public void removed(java.awt.Container cont) {
         if (killCache) {
@@ -240,8 +250,8 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        paths = PropUtils.initPathsFromProperties(properties, prefix
-                + RpfPathsProperty, paths);
+        setPaths(PropUtils.initPathsFromProperties(properties, prefix
+                + RpfPathsProperty, paths));
 
         viewAttributes.setProperties(prefix, properties);
 
@@ -257,28 +267,25 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
         killCache = PropUtils.booleanFromProperties(properties, prefix
                 + KillCacheProperty, killCache);
 
-        if (coverage == null) {
-            setCoverage(new RpfCoverage(this));
+        if (coverage != null) {
+            coverage.setProperties(prefix, properties);
         }
-        coverage.setProperties(prefix, properties);
 
         resetPalette();
     }
 
     /**
-     * PropertyConsumer method, to fill in a Properties object,
-     * reflecting the current values of the layer. If the layer has a
-     * propertyPrefix set, the property keys should have that prefix
-     * plus a separating '.' prepended to each propery key it uses for
-     * configuration.
+     * PropertyConsumer method, to fill in a Properties object, reflecting the
+     * current values of the layer. If the layer has a propertyPrefix set, the
+     * property keys should have that prefix plus a separating '.' prepended to
+     * each propery key it uses for configuration.
      * 
-     * @param props a Properties object to load the PropertyConsumer
-     *        properties into. If props equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param props a Properties object to load the PropertyConsumer properties
+     *        into. If props equals null, then a new Properties object should be
+     *        created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
@@ -323,22 +330,20 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
     }
 
     /**
-     * Method to fill in a Properties object with values reflecting
-     * the properties able to be set on this PropertyConsumer. The key
-     * for each property should be the raw property name (without a
-     * prefix) with a value that is a String that describes what the
-     * property key represents, along with any other information about
-     * the property that would be helpful (range, default value,
-     * etc.). For Layer, this method should at least return the
-     * 'prettyName' property.
+     * Method to fill in a Properties object with values reflecting the
+     * properties able to be set on this PropertyConsumer. The key for each
+     * property should be the raw property name (without a prefix) with a value
+     * that is a String that describes what the property key represents, along
+     * with any other information about the property that would be helpful
+     * (range, default value, etc.). For Layer, this method should at least
+     * return the 'prettyName' property.
      * 
-     * @param list a Properties object to load the PropertyConsumer
-     *        properties into. If getList equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param list a Properties object to load the PropertyConsumer properties
+     *        into. If getList equals null, then a new Properties object should
+     *        be created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
@@ -451,8 +456,8 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
     }
 
     /**
-     * Set the view attributes for the layer. The frame provider view
-     * attributes are updated, and the cache is cleared.
+     * Set the view attributes for the layer. The frame provider view attributes
+     * are updated, and the cache is cleared.
      * 
      * @param rva the RpfViewAttributes used for the layer.
      */
@@ -473,19 +478,20 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
     }
 
     /**
-     * Set the RpfCoverage tool used by the layer. If the view
-     * attributes chart series setting is not equal to
-     * RpfViewAttributes.ANY, then the palette of the tool is not
-     * shown.
+     * Set the RpfCoverage tool used by the layer. If the view attributes chart
+     * series setting is not equal to RpfViewAttributes.ANY, then the palette of
+     * the tool is not shown.
      * 
      * @param cov the RpfCoverage tool.
      */
     public void setCoverage(RpfCoverage cov) {
         coverage = cov;
-        if (viewAttributes != null
-                && coverage != null
-                && !viewAttributes.chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)) {
-            coverage.setShowPalette(false);
+        if (coverage != null) {
+            if (viewAttributes != null
+                    && !viewAttributes.chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)) {
+                coverage.setShowPalette(false);
+            }
+            coverage.coverageManager = null;
         }
     }
 
@@ -499,9 +505,8 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
     }
 
     /**
-     * Set the RpfFrameProvider for the layer. Clears out the cache,
-     * and the frame provider gets the RpfViewAttributes held by the
-     * layer.
+     * Set the RpfFrameProvider for the layer. Clears out the cache, and the
+     * frame provider gets the RpfViewAttributes held by the layer.
      * 
      * @param fp the frame provider.
      */
@@ -520,11 +525,10 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
     }
 
     /**
-     * Returns the Vector containing RpfCoverageBoxes that was
-     * returned from the RpfFrameProvider as a result of the last
-     * setCache call. These provide rudimentary knowledge about what
-     * is being displayed. This vector is from the primary cache
-     * handler.
+     * Returns the Vector containing RpfCoverageBoxes that was returned from the
+     * RpfFrameProvider as a result of the last setCache call. These provide
+     * rudimentary knowledge about what is being displayed. This vector is from
+     * the primary cache handler.
      * 
      * @return Vector of RpfCoverageBoxes.
      */
@@ -533,29 +537,26 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
     }
 
     /**
-     * The projectionListener interface method that lets the Layer
-     * know when the projection has changes, and therefore new
-     * graphics have to created /supplied for the screen.
+     * The projectionListener interface method that lets the Layer know when the
+     * projection has changes, and therefore new graphics have to created
+     * /supplied for the screen.
      * 
-     * @param e The projection event, most likely fired from a map
-     *        bean.
+     * @param e The projection event, most likely fired from a map bean.
      */
     public void projectionChanged(ProjectionEvent e) {
         projectionChanged(e, false);
     }
 
     /**
-     * Called from projectionListener interface method that lets the
-     * Layer know when the projection has changes, and therefore new
-     * graphics have to created /supplied for the screen.
+     * Called from projectionListener interface method that lets the Layer know
+     * when the projection has changes, and therefore new graphics have to
+     * created /supplied for the screen.
      * 
-     * @param e The projection event, most likely fired from a map
-     *        bean.
-     * @param saveGraphicsForRedraw flag to test for whether the scale
-     *        and zone has changed for the projection. If true, and
-     *        the scale and zone is the same, we'll just reproject and
-     *        redraw the current frames before getting new ones, to
-     *        fake something happening quickly.
+     * @param e The projection event, most likely fired from a map bean.
+     * @param saveGraphicsForRedraw flag to test for whether the scale and zone
+     *        has changed for the projection. If true, and the scale and zone is
+     *        the same, we'll just reproject and redraw the current frames
+     *        before getting new ones, to fake something happening quickly.
      */
     public void projectionChanged(ProjectionEvent e,
                                   boolean saveGraphicsForRedraw) {
@@ -593,14 +594,13 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
     }
 
     /**
-     * Prepares the graphics for the layer. This is where the
-     * getRectangle() method call is made on the rpf.
+     * Prepares the graphics for the layer. This is where the getRectangle()
+     * method call is made on the rpf.
      * <p>
-     * Occasionally it is necessary to abort a prepare call. When this
-     * happens, the map will set the cancel bit in the LayerThread,
-     * (the thread that is running the prepare). If this Layer needs
-     * to do any cleanups during the abort, it should do so, but
-     * return out of the prepare asap.
+     * Occasionally it is necessary to abort a prepare call. When this happens,
+     * the map will set the cancel bit in the LayerThread, (the thread that is
+     * running the prepare). If this Layer needs to do any cleanups during the
+     * abort, it should do so, but return out of the prepare asap.
      * 
      * @return graphics list of images and attributes.
      */
@@ -741,8 +741,8 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
     private transient Box box = null;
 
     /**
-     * Provides the palette widgets to control the options of showing
-     * maps, or attribute text.
+     * Provides the palette widgets to control the options of showing maps, or
+     * attribute text.
      * 
      * @return Component object representing the palette widgets.
      */
@@ -812,18 +812,17 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
         return box;
     }
 
-//    public void setTransparency(float value) {
-//        super.setTransparency(value);
-//        viewAttributes.opaqueness = (int) (value * 255f);
-//    }
+    // public void setTransparency(float value) {
+    // super.setTransparency(value);
+    // viewAttributes.opaqueness = (int) (value * 255f);
+    // }
 
     // ----------------------------------------------------------------------
     // ActionListener interface implementation
     // ----------------------------------------------------------------------
 
     /**
-     * The Action Listener method, that reacts to the palette widgets
-     * actions.
+     * The Action Listener method, that reacts to the palette widgets actions.
      */
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);

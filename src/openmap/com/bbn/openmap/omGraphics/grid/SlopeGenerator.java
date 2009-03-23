@@ -25,13 +25,13 @@ package com.bbn.openmap.omGraphics.grid;
 import java.awt.Point;
 import java.awt.Shape;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGrid;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.SinkGraphic;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -158,7 +158,7 @@ public class SlopeGenerator implements OMGridGenerator {
 
         // Used for projections of image coordinates. Reused in the
         // loops to save memory.
-        LatLonPoint llp = new LatLonPoint();
+        LatLonPoint llp = new LatLonPoint.Double();
         Point point = new Point();
         ElevationColors colors = getColors();
 
@@ -188,7 +188,7 @@ public class SlopeGenerator implements OMGridGenerator {
 
                 // OK, on the map.
                 point.setLocation(screenx, screeny);
-                llp = LatLonPoint.getLatLon(point.x, point.y, proj);
+                llp = proj.inverse(point.x, point.y, new LatLonPoint.Double());
 
                 int yc = Math.round((llp.getLatitude() - grid.getLatitude())
                         / grid.getVerticalResolution());

@@ -402,6 +402,10 @@ public class Cartesian extends Proj implements Projection, java.io.Serializable 
         return true;
     }
 
+    public Point2D getCenter() {
+        return new Point2D.Double(centerX, centerY);
+    }
+    
     public double getBottomLimit() {
         return bottomLimit;
     }

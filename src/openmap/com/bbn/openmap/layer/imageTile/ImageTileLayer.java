@@ -82,6 +82,7 @@ import com.bbn.openmap.gui.LayersPanel;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMColor;
+import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Proj;
@@ -140,9 +141,9 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     protected String SHOW_TILES_TITLE;
     protected String HIDE_TILES_TITLE;
 
-    protected Vector filePaths;
+    protected Vector<String> filePaths;
 
-    protected Vector imageReaderLoaders;
+    protected Vector<ImageReaderLoader> imageReaderLoaders;
 
     protected ImageTile.Cache imageCache;
 
@@ -186,14 +187,13 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                 + ImageReaderLoadersProperty);
 
         if (imageReaderLoaders == null) {
-            imageReaderLoaders = new Vector();
+            imageReaderLoaders = new Vector<ImageReaderLoader>();
         }
 
         if (imageReaderLoaderString != null) {
             imageReaderLoaders.clear();
-            Vector idls = PropUtils.parseSpacedMarkers(imageReaderLoaderString);
-            for (Iterator it = idls.iterator(); it.hasNext();) {
-                String idlMarkerName = (String) it.next();
+            Vector<String> idls = PropUtils.parseSpacedMarkers(imageReaderLoaderString);
+            for (String idlMarkerName : idls) {
                 String idlClassName = props.getProperty(prefix + idlMarkerName);
 
                 Object obj = ComponentFactory.create(idlClassName);
@@ -210,7 +210,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
      * loads GeoTIFFImageReader.Loader.
      */
     protected void configureImageReaderLoaders() {
-        imageReaderLoaders = new Vector();
+        imageReaderLoaders = new Vector<ImageReaderLoader>();
 
         ImageReaderLoader idl = (ImageReaderLoader) ComponentFactory.create("com.bbn.openmap.dataAccess.image.geotiff.GeoTIFFImageReaderLoader");
 
@@ -238,7 +238,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         OMGraphicList list = getList();
         if (list != null) {
             StringBuffer buf = null;
-            for (Iterator it = list.iterator(); it.hasNext();) {
+            for (Iterator<OMGeometry> it = list.iterator(); it.hasNext();) {
                 if (buf == null) {
                     buf = new StringBuffer();
                 } else {
@@ -257,8 +257,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         if (imageReaderLoaders != null) {
             int count = 0;
             StringBuffer sbuf = null;
-            for (Iterator it = imageReaderLoaders.iterator(); it.hasNext(); count++) {
-                ImageReaderLoader idl = (ImageReaderLoader) it.next();
+            for (ImageReaderLoader idl : imageReaderLoaders) {
                 props.put(prefix + "idl" + count, idl.getClass().getName());
 
                 if (sbuf == null) {
@@ -376,8 +375,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         }
 
         if (filePaths != null) {
-            for (Iterator it = filePaths.iterator(); it.hasNext();) {
-                loadImage((String) it.next(), ret);
+            for (String path : filePaths) {
+                loadImage(path, ret);
             }
         }
         return ret;
@@ -409,8 +408,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                 if (fileURL != null) {
                     if (imageReaderLoaders != null) {
                         ImageTile imageTile = null;
-                        for (Iterator it = imageReaderLoaders.iterator(); it.hasNext();) {
-                            ImageReaderLoader idl = (ImageReaderLoader) it.next();
+                        for (ImageReaderLoader idl : imageReaderLoaders) {
                             if (idl.isLoadable(filePath)) {
                                 ImageReader id = idl.getImageReader(fileURL);
                                 ImageTile tmpImageTile = id.getImageTile(imageCache);
@@ -664,8 +662,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     protected void setVisibilityOnAllTiles(boolean visible) {
         OMGraphicList list = getList();
         if (list != null) {
-            for (Iterator it = list.iterator(); it.hasNext();) {
-                ((OMGraphic) it.next()).setVisible(visible);
+            for (Iterator<OMGeometry> it = list.iterator(); it.hasNext();) {
+                it.next().setVisible(visible);
             }
             repaint();
         }
@@ -794,7 +792,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                     Point2D anchor2 = new Point2D.Double(rec.getMaxX(), rec.getMinY());
 
                     Proj proj = (Proj) mapBean.getProjection();
-                    float scale = proj.getScale(anchor1, anchor2, null, null);
+                    float scale = proj.getScale(anchor1, anchor2, proj.forward(anchor1), proj.forward(anchor2));
                     if (logger.isLoggable(Level.FINE)) {
                         logger.fine("Images cover " + anchor1 + " to "
                                 + anchor2 + ", scale adjusted to " + scale);
@@ -837,7 +835,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     public void deselect() {
         OMGraphicList list = getList();
         if (list != null) {
-            for (Iterator it = list.iterator(); it.hasNext();) {
+            for (Iterator<OMGeometry> it = list.iterator(); it.hasNext();) {
                 ((OMGraphic) it.next()).setSelected(false);
             }
             repaint();
@@ -851,7 +849,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     public void resetSelectAttributes() {
         OMGraphicList list = getList();
         if (list != null) {
-            for (Iterator it = list.iterator(); it.hasNext();) {
+            for (Iterator<OMGeometry> it = list.iterator(); it.hasNext();) {
                 selectedDrawingAttributes.setTo((OMGraphic) it.next());
             }
             repaint();
@@ -1056,7 +1054,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             }
 
             int tileCount = 0;
-            for (Iterator it = list.iterator(); it.hasNext(); tileCount++) {
+            for (Iterator<OMGeometry> it = list.iterator(); it.hasNext(); tileCount++) {
                 ImageTile imageTile = (ImageTile) it.next();
 
                 if (checkForIndicies) {
@@ -1076,7 +1074,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             // and then set them again later.
             dlm.clear();
 
-            for (Iterator it = list.iterator(); it.hasNext(); tileCount++) {
+            for (Iterator<OMGeometry> it = list.iterator(); it.hasNext(); tileCount++) {
                 dlm.addElement(it.next());
             }
         }
@@ -1191,12 +1189,10 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         }
 
         public void mouseEntered(MouseEvent e) {
-        // TODO Auto-generated method stub
 
         }
 
         public void mouseExited(MouseEvent e) {
-        // TODO Auto-generated method stub
 
         }
 
@@ -1216,7 +1212,6 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         }
 
         public void mouseDragged(MouseEvent e) {
-        // TODO Auto-generated method stub
 
         }
 
@@ -1404,9 +1399,9 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
      */
     class ImageLoaderFileFilter extends FileFilter {
 
-        Vector imageReaderLoaders;
+        Vector<ImageReaderLoader> imageReaderLoaders;
 
-        public ImageLoaderFileFilter(Vector imgDcdrLdrs) {
+        public ImageLoaderFileFilter(Vector<ImageReaderLoader> imgDcdrLdrs) {
             imageReaderLoaders = imgDcdrLdrs;
         }
 
@@ -1416,8 +1411,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             }
 
             if (imageReaderLoaders != null) {
-                for (Iterator it = imageReaderLoaders.iterator(); it.hasNext();) {
-                    if (((ImageReaderLoader) it.next()).isLoadable(f.getName())) {
+                for (ImageReaderLoader irl : imageReaderLoaders) {
+                    if (irl.isLoadable(f.getName())) {
                         return true;
                     }
                 }

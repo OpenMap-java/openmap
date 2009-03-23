@@ -24,13 +24,11 @@
 
 package com.bbn.openmap.gui.menu;
 
+import javax.swing.JMenu;
+
 import com.bbn.openmap.gui.AbstractOpenMapMenu;
 import com.bbn.openmap.image.AbstractImageFormatter;
-import com.bbn.openmap.image.SunJPEGFormatter;
 import com.bbn.openmap.util.Debug;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 
 public class SaveAsMenu extends AbstractOpenMapMenu {
 
@@ -43,27 +41,6 @@ public class SaveAsMenu extends AbstractOpenMapMenu {
         add(new SaveAsJpegMenuItem());
         add(new SaveAsGifMenuItem());
         addSVGMenuItem(this);
-    }
-
-    /**
-     * Creates a menuitem that knows how to save MapBean as a virtual
-     * JPEG image, where the image size is independent of the view
-     * presented to the user.
-     * 
-     * @deprecated SaveAsVirtualImageMenuItem functionality has been
-     *             merged into regular SaveAsImageMenuItem.
-     * @return JMenuItem
-     */
-    public JMenuItem createSaveAsVirtualJpegMenuItem() {
-        SunJPEGFormatter formatter = new SunJPEGFormatter();
-        formatter.setImageQuality(1.0f);
-        SaveAsVirtualImageMenuItem virtualJpegMenuItem = new SaveAsVirtualImageMenuItem("Custom JPEG...", formatter);
-
-        if (getMapHandler() != null) {
-            virtualJpegMenuItem.setMapHandler(getMapHandler());
-        }
-
-        return virtualJpegMenuItem;
     }
 
     /**

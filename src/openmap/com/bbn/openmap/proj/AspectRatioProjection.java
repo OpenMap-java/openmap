@@ -51,7 +51,7 @@ public class AspectRatioProjection extends GeoProj {
      * @param h a int with the new height
      */
     public AspectRatioProjection(GeoProj proj, int w, int h) {
-        super((LatLonPoint) proj.getCenter(), proj.getScale(), w, h);
+        super(proj.getCenter(), proj.getScale(), w, h);
         wrappedProjection = proj;
         xHasFactor = proj.getWidth() != w;
         yHasFactor = proj.getHeight() != h;

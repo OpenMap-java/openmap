@@ -22,10 +22,10 @@
 
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.util.Debug;
-
 import java.io.IOException;
+
+import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.Debug;
 
 /**
  * A LinkMapRequest presents a view onto a map. This view can be used
@@ -170,7 +170,7 @@ public class LinkMapRequest {
         float lat = link.dis.readFloat();
         float lon = link.dis.readFloat();
 
-        center = new LatLonPoint(lat, lon);
+        center = new LatLonPoint.Float(lat, lon);
 
         scale = link.dis.readFloat();
         height = link.dis.readInt();

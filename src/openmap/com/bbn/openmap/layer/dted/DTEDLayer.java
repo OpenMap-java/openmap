@@ -26,7 +26,6 @@ package com.bbn.openmap.layer.dted;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
 import java.io.Serializable;
 
 import javax.swing.Box;
@@ -51,6 +50,7 @@ import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
@@ -956,8 +956,8 @@ public class DTEDLayer extends Layer implements ActionListener,
 
             // The DTED Contrast Adjuster
             JPanel contrastPanel = PaletteHelper.createPaletteJPanel("Contrast Adjustment");
-            JSlider contrastSlide = new JSlider(JSlider.HORIZONTAL, 1/* min */, 5/* max */, slopeAdjust/* inital */);
-            java.util.Hashtable dict = new java.util.Hashtable();
+            JSlider contrastSlide = new JSlider(JSlider.HORIZONTAL, 1/* min */, 5/* max */, slopeAdjust/* initial */);
+            java.util.Hashtable<Integer, JLabel> dict = new java.util.Hashtable<Integer, JLabel>();
             dict.put(new Integer(1), new JLabel("min"));
             dict.put(new Integer(5), new JLabel("max"));
             contrastSlide.setLabelTable(dict);
@@ -1060,7 +1060,7 @@ public class DTEDLayer extends Layer implements ActionListener,
 
     public boolean mouseReleased(MouseEvent e) {
         Projection projection = getProjection();
-        Point2D ll = projection.inverse(e.getX(), e.getY());
+        LatLonPoint ll = projection.inverse(e.getX(), e.getY(), new LatLonPoint.Double());
         location = new DTEDLocation(e.getX(), e.getY());
         location.setElevation(cache.getElevation((float)ll.getY(),
                 (float)ll.getX()));

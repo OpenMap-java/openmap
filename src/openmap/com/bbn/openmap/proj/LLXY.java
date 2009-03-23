@@ -118,7 +118,6 @@ public class LLXY extends Cylindrical implements EqualArc {
      * 
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
-     * @see com.bbn.openmap.LatLonPoint#normalize_latitude(float)
      */
     public double normalizeLatitude(double lat) {
         if (lat > NORTH_POLE) {
@@ -186,7 +185,7 @@ public class LLXY extends Cylindrical implements EqualArc {
      * @return LatLonPoint llp
      * @see Proj#inverse(Point2D)
      */
-    public Point2D inverse(double x, double y, Point2D llp) {
+    public <T extends Point2D> T inverse(double x, double y, T llp) {
 
         // convert from screen to world coordinates, and then
         // basically undo the math from the forward method.

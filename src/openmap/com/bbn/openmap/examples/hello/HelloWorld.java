@@ -32,16 +32,16 @@ import java.util.Vector;
 
 import javax.swing.JFrame;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.MouseDelegator;
 import com.bbn.openmap.MultipleSoloMapComponentException;
-import com.bbn.openmap.gui.ToolPanel;
-import com.bbn.openmap.gui.OMToolSet;
 import com.bbn.openmap.event.NavMouseMode;
+import com.bbn.openmap.gui.OMToolSet;
+import com.bbn.openmap.gui.ToolPanel;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * A sample application incorporating the <code>MapHandler</code>
@@ -98,7 +98,7 @@ public class HelloWorld extends JFrame {
         MapBean map = new MapBean();
 
         // Set the map's center property...
-        map.setCenter(new LatLonPoint(43.0f, -95.0f));
+        map.setCenter(new LatLonPoint.Double(43.0, -95.0));
         // and scale
         map.setScale(80000000f);
 

@@ -24,11 +24,11 @@ package com.bbn.openmap.tools.terrain;
 
 import java.awt.Color;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Planet;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -122,7 +122,7 @@ public class LOSGenerator {
                 endLLP.getX(),
                 numPoints,
                 true);
-        LatLonPoint llp = new LatLonPoint();
+        LatLonPoint llp = new LatLonPoint.Double();
         int size = llpoints.length;
         double losSlope = -MoreMath.HALF_PI;
         for (int i = 0; i < size; i += 2) {

@@ -172,7 +172,7 @@ public abstract class Cylindrical extends GeoProj {
      * @return LatLonPoint
      * 
      */
-    public Point2D getUpperLeft() {
+    public LatLonPoint getUpperLeft() {
         return inverse(0, 0);
     }
 
@@ -186,7 +186,7 @@ public abstract class Cylindrical extends GeoProj {
      * @return LatLonPoint
      * 
      */
-    public Point2D getLowerRight() {
+    public LatLonPoint getLowerRight() {
         return inverse(width - 1, height - 1);
     }
 

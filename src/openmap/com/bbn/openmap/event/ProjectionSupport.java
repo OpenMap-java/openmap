@@ -86,6 +86,7 @@ public class ProjectionSupport extends ListenerSupport {
 
     public void dispose() {
         pcNotifier.setTerminated(true);
+        pcNotifier.interrupt();
         super.removeAll();
     }
 
@@ -107,7 +108,9 @@ public class ProjectionSupport extends ListenerSupport {
         /* a flag to know if we are terminated. */
         protected boolean terminated = false;
 
-        public ProjectionChangeNotifier() {}
+        public ProjectionChangeNotifier() {
+            setName("ProjectionSupportThread");
+        }
 
         public boolean isTerminated() {
             return terminated;

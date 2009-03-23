@@ -149,7 +149,6 @@ public class Gnomonic extends Azimuth {
      * 
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
-     * @see com.bbn.openmap.LatLonPoint#normalizeLatitude(float)
      * 
      */
     public double normalizeLatitude(double lat) {
@@ -320,7 +319,7 @@ public class Gnomonic extends Azimuth {
      * @see Proj#inverse(Point2D)
      * 
      */
-    public Point2D inverse(double x, double y, Point2D llp) {
+    public <T extends Point2D> T inverse(double x, double y, T llp) {
         // convert from screen to world coordinates
         x = x - wx;
         y = hy - y;
@@ -389,7 +388,7 @@ public class Gnomonic extends Azimuth {
      * 
      * @return LatLonPoint
      */
-    public Point2D getUpperLeft() {
+    public LatLonPoint getUpperLeft() {
         LatLonPoint tmp = new LatLonPoint.Double();
         double lat, lon;
 
@@ -455,7 +454,7 @@ public class Gnomonic extends Azimuth {
      * 
      * @return LatLonPoint
      */
-    public Point2D getLowerRight() {
+    public LatLonPoint getLowerRight() {
         LatLonPoint tmp = new LatLonPoint.Double();
         double lat, lon;
 

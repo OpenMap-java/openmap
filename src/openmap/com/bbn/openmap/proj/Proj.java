@@ -64,8 +64,8 @@ import com.bbn.openmap.util.Debug;
  * any of the <code>set</code> methods directly, but let the MapBean do it for
  * you.
  * 
- * <li>All the various <code>forwardOBJ()</code> methods for ArrayList
- * graphics ultimately go through <code>forwardPoly()</code>.
+ * <li>All the various <code>forwardOBJ()</code> methods for ArrayList graphics
+ * ultimately go through <code>forwardPoly()</code>.
  * 
  * </ul>
  * 
@@ -92,7 +92,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
     protected double centerX;
     protected double centerY;
     protected String projID = null; // identifies this projection (if needed)
-    
+
     /**
      * The unprojected coordinates units of measure.
      */
@@ -121,8 +121,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
     /**
      * Set the scale of the projection.
      * <p>
-     * Sets the projection to the scale 1:s iff minscale &lt; s &lt; maxscale.
-     * <br>
+     * Sets the projection to the scale 1:s iff minscale &lt; s &lt; maxscale. <br>
      * If s &lt; minscale, sets the projection to minscale. <br>
      * If s &gt; maxscale, sets the projection to maxscale. <br>
      * 
@@ -237,15 +236,13 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * 
      * @return Point2D center of projection, created just for you.
      */
-    public Point2D getCenter() {
-        return new Point2D.Double(centerX, centerY);
-    }
+    public abstract <T extends Point2D> T getCenter();
 
     /**
      * Returns a center Point2D that was provided, with the location filled into
      * the Point2D object. Calls Point2D.setLocation(x, y).
      */
-    public Point2D getCenter(Point2D center) {
+    public <T extends Point2D> T getCenter(T center) {
         center.setLocation(centerX, centerY);
         return center;
     }
@@ -323,7 +320,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
             Debug.message("proj", "Proj.setParms: height too small!");
             this.height = MIN_HEIGHT;
         }
-        
+
         init();
 
         if (this.scale < minscale) {
@@ -331,7 +328,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         } else if (this.scale > maxscale) {
             this.scale = maxscale;
         }
-        
+
         computeParameters();
     }
 
@@ -447,7 +444,8 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
     }
 
     /**
-     * Forward projects a LatLonPoint into XY space and return a java.awt.geom.Point2D.
+     * Forward projects a LatLonPoint into XY space and return a
+     * java.awt.geom.Point2D.
      * 
      * @param llp LatLonPoint to be projected
      * @param pt Resulting XY Point2D
@@ -478,7 +476,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
 
     public abstract Point2D forward(double lat, double lon, Point2D pt);
 
-    public Point2D inverse(Point2D point, Point2D llpt) {
+    public <T extends Point2D> T inverse(Point2D point, T llpt) {
         return inverse(point.getX(), point.getY(), llpt);
     }
 
@@ -488,8 +486,8 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * @param point x,y Point2D
      * @return LatLonPoint (new)
      */
-    public Point2D inverse(Point2D point) {
-        return inverse(point.getX(), point.getY(), new Point2D.Double());
+    public <T extends Point2D> T inverse(Point2D point) {
+        return (T) inverse(point.getX(), point.getY(), new Point2D.Double());
     }
 
     /**
@@ -500,11 +498,11 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * @return LatLonPoint (new)
      * @see #inverse(Point)
      */
-    public Point2D inverse(double x, double y) {
-        return inverse(x, y, new Point2D.Double());
+    public <T extends Point2D> T inverse(double x, double y) {
+        return (T) inverse(x, y, new Point2D.Double());
     }
 
-    public abstract Point2D inverse(double x, double y, Point2D llpt);
+    public abstract <T extends Point2D> T inverse(double x, double y, T llpt);
 
     /**
      * Simple shape projection, doesn't take into account what kind of lines
@@ -884,12 +882,12 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * 
      * @param ll1 the upper left coordinates of the bounding box.
      * @param ll2 the lower right coordinates of the bounding box.
-     * @param point1 a java.awt.geom.Point2D reflecting a pixel spot on the projection
-     *        that matches the ll1 coordinate, the upper left corner of the area
-     *        of interest.
-     * @param point2 a java.awt.geom.Point2D reflecting a pixel spot on the projection
-     *        that matches the ll2 coordinate, usually the lower right corner of
-     *        the area of interest.
+     * @param point1 a java.awt.geom.Point2D reflecting a pixel spot on the
+     *        projection that matches the ll1 coordinate, the upper left corner
+     *        of the area of interest.
+     * @param point2 a java.awt.geom.Point2D reflecting a pixel spot on the
+     *        projection that matches the ll2 coordinate, usually the lower
+     *        right corner of the area of interest.
      */
     public abstract float getScale(Point2D ll1, Point2D ll2, Point2D point1,
                                    Point2D point2);
@@ -910,7 +908,8 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
 
     /**
      * Get the unprojected coordinates units of measure.
-     * @return Length.  May be null if unknown.
+     * 
+     * @return Length. May be null if unknown.
      * @see Length
      */
     public Length getUcuom() {
@@ -919,6 +918,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
 
     /**
      * Set the unprojected coordinates units of measure.
+     * 
      * @param ucuom
      */
     public void setUcuom(Length ucuom) {

@@ -196,7 +196,9 @@ public class BufferedMapBean extends MapBean {
     }
 
     public void dispose() {
-        drawingBuffer.flush();
+        if (drawingBuffer != null) {
+            drawingBuffer.flush();
+        }
         drawingBuffer = null;
         super.dispose();
     }

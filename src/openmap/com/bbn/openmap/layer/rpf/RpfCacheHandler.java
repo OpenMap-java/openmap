@@ -187,6 +187,9 @@ public class RpfCacheHandler {
      * @return RpfViewAttributes.
      */
     public RpfViewAttributes getViewAttributes() {
+        if (viewAttributes == null) {
+            viewAttributes = new RpfViewAttributes();
+        }
         return viewAttributes;
     }
 
@@ -199,7 +202,7 @@ public class RpfCacheHandler {
     public void setFrameProvider(RpfFrameProvider fp) {
         frameProvider = fp;
         if (frameProvider != null) {
-            frameProvider.setViewAttributes(viewAttributes);
+            frameProvider.setViewAttributes(getViewAttributes());
         }
         clearCache();
     }
@@ -218,7 +221,7 @@ public class RpfCacheHandler {
      */
     public void updateViewAttributes() {
         if (frameProvider != null) {
-            frameProvider.setViewAttributes(viewAttributes);
+            frameProvider.setViewAttributes(getViewAttributes());
         }
     }
 
@@ -346,7 +349,7 @@ public class RpfCacheHandler {
         // Figure out how much to scale the cached images. This would
         // be one of the big problems if we were going to merge
         // different data types.
-        if (viewAttributes.scaleImages) {
+        if (getViewAttributes().scaleImages) {
             // Do the work for a great scaling factor here...
 
             // Need to figure how much this will change for this scale
@@ -448,7 +451,7 @@ public class RpfCacheHandler {
         for (i = 0; i < subframeCacheSize; i++) {
             if (newCache) {
                 try {
-                    cache.subframe[i] = new RpfSubframe(viewAttributes.colorModel);
+                    cache.subframe[i] = new RpfSubframe(getViewAttributes().colorModel);
                 } catch (java.lang.OutOfMemoryError oome) {
                     Debug.error("RpfCacheHandler: \n\tRan out of memory allocating the image cache.\tConsider increasing the java memory heap using the -Xmx option.");
 
@@ -666,7 +669,7 @@ public class RpfCacheHandler {
 
                 if (ret == null) {
                     try {
-                        ret = new RpfSubframe(viewAttributes.colorModel);
+                        ret = new RpfSubframe(getViewAttributes().colorModel);
                         // See NOTE below on setScalingTo
                         ret.setScalingTo(scalingWidth, scalingHeight);
                     } catch (java.lang.OutOfMemoryError oome) {
@@ -726,6 +729,7 @@ public class RpfCacheHandler {
 
         RpfSubframe ret;
         RpfCoverageBox currentBox = null;
+        RpfViewAttributes viewAttributes = getViewAttributes();
         // x, y are the subframe indexes in the cache matrix
         int x = cbx + subframeBuffer;
         int y = cby + subframeBuffer;
@@ -876,6 +880,8 @@ public class RpfCacheHandler {
             return false;
         }
 
+        RpfViewAttributes viewAttributes = getViewAttributes();
+        
         subframe.opaqueness = viewAttributes.opaqueness;
 
         if (viewAttributes.colorModel == OMRasterObject.COLORMODEL_DIRECT) {

@@ -24,25 +24,24 @@ package com.bbn.openmap.omGraphics;
 
 import java.awt.geom.Point2D;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.editable.GraphicEditState;
 import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
 import com.bbn.openmap.omGraphics.editable.GraphicSetOffsetState;
 import com.bbn.openmap.omGraphics.editable.RectStateMachine;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The EditableOMRect encompasses an OMRect, providing methods for
- * modifying or creating it. This class only modifies rects in lat/lon
- * space (RENDERTYPE_LATLON) - and ellipses in screen space
- * (RENDERTYPE_XY or RENDERTYPE_OFFSET). When you grab at the rect,
- * you change the radius of the entire rect. Grabbing the center point
- * moves the rect. If there is an offset point, moving the center
- * point changes the rect's position in relation to the offset point.
- * Moving the offset point moves the rect, keeping the distance to the
- * center point constant.
+ * The EditableOMRect encompasses an OMRect, providing methods for modifying or
+ * creating it. This class only modifies rects in lat/lon space
+ * (RENDERTYPE_LATLON) - and ellipses in screen space (RENDERTYPE_XY or
+ * RENDERTYPE_OFFSET). When you grab at the rect, you change the radius of the
+ * entire rect. Grabbing the center point moves the rect. If there is an offset
+ * point, moving the center point changes the rect's position in relation to the
+ * offset point. Moving the offset point moves the rect, keeping the distance to
+ * the center point constant.
  */
 public class EditableOMRect extends EditableOMGraphic {
 
@@ -64,24 +63,24 @@ public class EditableOMRect extends EditableOMGraphic {
     public final static int OFFSET_POINT_INDEX = 5;
 
     /**
-     * Create the EditableOMRect, setting the state machine to create
-     * the rect off of the gestures.
+     * Create the EditableOMRect, setting the state machine to create the rect
+     * off of the gestures.
      */
     public EditableOMRect() {
         createGraphic(null);
     }
 
     /**
-     * Create an EditableOMRect with the rectType and renderType
-     * parameters in the GraphicAttributes object.
+     * Create an EditableOMRect with the rectType and renderType parameters in
+     * the GraphicAttributes object.
      */
     public EditableOMRect(GraphicAttributes ga) {
         createGraphic(ga);
     }
 
     /**
-     * Create the EditableOMRect with an OMRect already defined, ready
-     * for editing.
+     * Create the EditableOMRect with an OMRect already defined, ready for
+     * editing.
      * 
      * @param omc OMRect that should be edited.
      */
@@ -90,10 +89,9 @@ public class EditableOMRect extends EditableOMGraphic {
     }
 
     /**
-     * Create and initialize the state machine that interprets the
-     * modifying gestures/commands, as well as ititialize the grab
-     * points. Also allocates the grab point array needed by the
-     * EditableOMRect.
+     * Create and initialize the state machine that interprets the modifying
+     * gestures/commands, as well as ititialize the grab points. Also allocates
+     * the grab point array needed by the EditableOMRect.
      */
     public void init() {
         Debug.message("eomg", "EditableOMRect.init()");
@@ -103,9 +101,9 @@ public class EditableOMRect extends EditableOMGraphic {
     }
 
     /**
-     * Set the graphic within the state machine. If the graphic is
-     * null, then one shall be created, and located off screen until
-     * the gestures driving the state machine place it on the map.
+     * Set the graphic within the state machine. If the graphic is null, then
+     * one shall be created, and located off screen until the gestures driving
+     * the state machine place it on the map.
      */
     public void setGraphic(OMGraphic graphic) {
         init();
@@ -169,30 +167,29 @@ public class EditableOMRect extends EditableOMGraphic {
     public OMGraphic getGraphic() {
         return rect;
     }
-    
+
     /**
-     * Attach to the Moving OffsetGrabPoint so if it moves, it will
-     * move this EditableOMGraphic with it. EditableOMGraphic version
-     * doesn't do anything, each subclass has to decide which of its
-     * OffsetGrabPoints should be attached to it.
+     * Attach to the Moving OffsetGrabPoint so if it moves, it will move this
+     * EditableOMGraphic with it. EditableOMGraphic version doesn't do anything,
+     * each subclass has to decide which of its OffsetGrabPoints should be
+     * attached to it.
      */
     public void attachToMovingGrabPoint(OffsetGrabPoint gp) {
         gp.addGrabPoint(gpo);
     }
 
     /**
-     * Detach from a Moving OffsetGrabPoint. The EditableOMGraphic
-     * version doesn't do anything, each subclass should remove
-     * whatever GrabPoint it would have attached to an
-     * OffsetGrabPoint.
+     * Detach from a Moving OffsetGrabPoint. The EditableOMGraphic version
+     * doesn't do anything, each subclass should remove whatever GrabPoint it
+     * would have attached to an OffsetGrabPoint.
      */
     public void detachFromMovingGrabPoint(OffsetGrabPoint gp) {
         gp.removeGrabPoint(gpo);
     }
 
     /**
-     * Set the GrabPoint that is in the middle of being modified, as a
-     * result of a mouseDragged event, or other selection process.
+     * Set the GrabPoint that is in the middle of being modified, as a result of
+     * a mouseDragged event, or other selection process.
      */
     public void setMovingPoint(GrabPoint gp) {
         super.setMovingPoint(gp);
@@ -205,15 +202,15 @@ public class EditableOMRect extends EditableOMGraphic {
     public void initRectSize() {
         diffx = Math.abs(rect.getEastLon() - rect.getWestLon()) / 2f;
         diffy = Math.abs(rect.getNorthLat() - rect.getSouthLat()) / 2f;
-        //      Debug.output("initRectSize(): diffx:" + diffx + ", diffy:"
+        // Debug.output("initRectSize(): diffx:" + diffx + ", diffy:"
         // + diffy);
     }
 
     protected int lastRenderType = -1;
 
     /**
-     * Check to make sure the grab points are not null. If they are,
-     * allocate them, and them assign them to the array.
+     * Check to make sure the grab points are not null. If they are, allocate
+     * them, and them assign them to the array.
      */
     public void assertGrabPoints() {
         int rt = getGraphic().getRenderType();
@@ -225,27 +222,27 @@ public class EditableOMRect extends EditableOMGraphic {
         if (gpnw == null) {
             gpnw = new GrabPoint(-1, -1);
             gPoints[NW_POINT_INDEX] = gpnw;
-            //          gpnw.setFillPaint(Color.yellow);
+            // gpnw.setFillPaint(Color.yellow);
         }
         if (gpne == null) {
             gpne = new GrabPoint(-1, -1);
             gPoints[NE_POINT_INDEX] = gpne;
-            //          gpne.setFillPaint(Color.blue);
+            // gpne.setFillPaint(Color.blue);
         }
         if (gpsw == null) {
             gpsw = new GrabPoint(-1, -1);
             gPoints[SW_POINT_INDEX] = gpsw;
-            //          gpsw.setFillPaint(Color.green);
+            // gpsw.setFillPaint(Color.green);
         }
         if (gpse == null) {
             gpse = new GrabPoint(-1, -1);
             gPoints[SE_POINT_INDEX] = gpse;
-            //          gpse.setFillPaint(Color.orange);
+            // gpse.setFillPaint(Color.orange);
         }
 
         if (gpc == null) {
             gpc = new OffsetGrabPoint(-1, -1);
-            //          gpc.setFillPaint(Color.red);
+            // gpc.setFillPaint(Color.red);
             gPoints[CENTER_POINT_INDEX] = gpc;
             if (getGraphic().getRenderType() != OMGraphic.RENDERTYPE_LATLON) {
                 gpc.addGrabPoint(gpnw);
@@ -280,9 +277,9 @@ public class EditableOMRect extends EditableOMGraphic {
     }
 
     /**
-     * Set the grab points for the graphic provided, setting them on
-     * the extents of the graphic. Called when you want to set the
-     * grab points off the location of the graphic.
+     * Set the grab points for the graphic provided, setting them on the extents
+     * of the graphic. Called when you want to set the grab points off the
+     * location of the graphic.
      */
     public void setGrabPoints(OMGraphic graphic) {
         Debug.message("eomg", "EditableOMRect.setGrabPoints(graphic)");
@@ -317,7 +314,7 @@ public class EditableOMRect extends EditableOMGraphic {
                     double elon = rect.getEastLon();
                     double slat = rect.getSouthLat();
 
-                    llp = new LatLonPoint(nlat, wlon);
+                    llp = new LatLonPoint.Double(nlat, wlon);
                     Point2D p = projection.forward(llp);
                     if (renderType == OMGraphic.RENDERTYPE_LATLON) {
                         doStraight = false;
@@ -382,7 +379,7 @@ public class EditableOMRect extends EditableOMGraphic {
                 int middley = (bottom - top) / 2;
                 gpc.set(left + middlex, top + middley);
                 gpc.updateOffsets();
-                //              Debug.output("Center setting x: " + gpc.getX() + ",
+                // Debug.output("Center setting x: " + gpc.getX() + ",
                 // y:" + gpc.getY());
             }
 
@@ -397,9 +394,9 @@ public class EditableOMRect extends EditableOMGraphic {
     }
 
     /**
-     * Take the current location of the GrabPoints, and modify the
-     * location parameters of the OMRect with them. Called when you
-     * want the graphic to change according to the grab points.
+     * Take the current location of the GrabPoints, and modify the location
+     * parameters of the OMRect with them. Called when you want the graphic to
+     * change according to the grab points.
      */
     public void setGrabPoints() {
 
@@ -417,28 +414,39 @@ public class EditableOMRect extends EditableOMGraphic {
                 // set the upper left and lower right points
                 // accordingly.
                 if (movingPoint == gpne) {
-                    llp1 = LatLonPoint.getLatLon(gpne.getX(), gpne.getY(), projection);
+                    llp1 = projection.inverse(gpne.getX(),
+                            gpne.getY(),
+                            new LatLonPoint.Double());
                     rect.lat1 = llp1.getY();
                     rect.lon2 = llp1.getX();
                 } else if (movingPoint == gpnw) {
-                    llp1 = LatLonPoint.getLatLon(gpnw.getX(), gpnw.getY(), projection);
+                    llp1 = projection.inverse(gpnw.getX(),
+                            gpnw.getY(),
+                            new LatLonPoint.Double());
                     rect.lat1 = llp1.getY();
                     rect.lon1 = llp1.getX();
                 } else if (movingPoint == gpsw) {
-                    llp1 = LatLonPoint.getLatLon(gpsw.getX(), gpsw.getY(), projection);
+                    llp1 = projection.inverse(gpsw.getX(),
+                            gpsw.getY(),
+                            new LatLonPoint.Double());
                     rect.lat2 = llp1.getY();
                     rect.lon1 = llp1.getX();
                 } else if (movingPoint == gpse) {
-                    llp1 = LatLonPoint.getLatLon(gpse.getX(), gpse.getY(), projection);
-                    LatLonPoint llp2 = LatLonPoint.getLatLon(gpnw.getX(),
-                            gpnw.getY(), projection);
+                    llp1 = projection.inverse(gpse.getX(),
+                            gpse.getY(),
+                            new LatLonPoint.Double());
+                    LatLonPoint llp2 = projection.inverse(gpnw.getX(),
+                            gpnw.getY(),
+                            new LatLonPoint.Double());
                     rect.lat1 = llp2.getY();
                     rect.lon1 = llp2.getX();
                     rect.lat2 = llp1.getY();
                     rect.lon2 = llp1.getX();
                 } else {
-                    //movingPoint == gpc
-                    llp1 = LatLonPoint.getLatLon(gpc.getX(), gpc.getY(), projection);
+                    // movingPoint == gpc
+                    llp1 = projection.inverse(gpc.getX(),
+                            gpc.getY(),
+                            new LatLonPoint.Double());
                     rect.lat1 = llp1.getY() + diffy;
                     rect.lon1 = llp1.getX() - diffx;
                     rect.lat2 = llp1.getY() - diffy;
@@ -454,7 +462,9 @@ public class EditableOMRect extends EditableOMGraphic {
         // If the center point is moving, the offset distance changes
         if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
-            llp1 = LatLonPoint.getLatLon(gpo.getX(), gpo.getY(), projection);
+            llp1 = projection.inverse(gpo.getX(),
+                    gpo.getY(),
+                    new LatLonPoint.Double());
 
             rect.lat1 = llp1.getY();
             rect.lon1 = llp1.getX();
@@ -522,21 +532,20 @@ public class EditableOMRect extends EditableOMGraphic {
     }
 
     /**
-     * Called to set the OffsetGrabPoint to the current mouse
-     * location, and update the OffsetGrabPoint with all the other
-     * GrabPoint locations, so everything can shift smoothly. Should
-     * also set the OffsetGrabPoint to the movingPoint. Should be
-     * called only once at the beginning of the general movement, in
-     * order to set the movingPoint. After that, redraw(e) should just
-     * be called, and the movingPoint will make the adjustments to the
+     * Called to set the OffsetGrabPoint to the current mouse location, and
+     * update the OffsetGrabPoint with all the other GrabPoint locations, so
+     * everything can shift smoothly. Should also set the OffsetGrabPoint to the
+     * movingPoint. Should be called only once at the beginning of the general
+     * movement, in order to set the movingPoint. After that, redraw(e) should
+     * just be called, and the movingPoint will make the adjustments to the
      * graphic that are needed.
      */
     public void move(java.awt.event.MouseEvent e) {}
 
     /**
-     * Use the current projection to place the graphics on the screen.
-     * Has to be called to at least assure the graphics that they are
-     * ready for rendering. Called when the graphic position changes.
+     * Use the current projection to place the graphics on the screen. Has to be
+     * called to at least assure the graphics that they are ready for rendering.
+     * Called when the graphic position changes.
      * 
      * @param proj com.bbn.openmap.proj.Projection
      * @return true
@@ -556,9 +565,8 @@ public class EditableOMRect extends EditableOMGraphic {
     }
 
     /**
-     * Given a new projection, the grab points may need to be
-     * repositioned off the current position of the graphic. Called
-     * when the projection changes.
+     * Given a new projection, the grab points may need to be repositioned off
+     * the current position of the graphic. Called when the projection changes.
      */
     public void regenerate(Projection proj) {
         Debug.message("eomg", "EditableOMRect.regenerate()");
@@ -570,9 +578,9 @@ public class EditableOMRect extends EditableOMGraphic {
     }
 
     /**
-     * Draw the EditableOMRect parts into the java.awt.Graphics
-     * object. The grab points are only rendered if the rect machine
-     * state is RectSelectedState.RECT_SELECTED.
+     * Draw the EditableOMRect parts into the java.awt.Graphics object. The grab
+     * points are only rendered if the rect machine state is
+     * RectSelectedState.RECT_SELECTED.
      * 
      * @param graphics java.awt.Graphics.
      */
@@ -615,4 +623,3 @@ public class EditableOMRect extends EditableOMGraphic {
         }
     }
 }
-

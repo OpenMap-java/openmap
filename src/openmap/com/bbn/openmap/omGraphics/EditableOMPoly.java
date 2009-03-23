@@ -29,7 +29,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -38,7 +37,6 @@ import javax.swing.JMenu;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.gui.GridBagToolBar;
 import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.editable.GraphicEditState;
@@ -49,6 +47,7 @@ import com.bbn.openmap.omGraphics.editable.PolyStateMachine;
 import com.bbn.openmap.omGraphics.editable.PolyUndefinedState;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 
@@ -58,7 +57,7 @@ import com.bbn.openmap.util.PaletteHelper;
  */
 public class EditableOMPoly extends EditableOMAbstractLine {
 
-    protected ArrayList polyGrabPoints;
+    protected ArrayList<GrabPoint> polyGrabPoints;
     protected OffsetGrabPoint gpo; // offset
     protected OffsetGrabPoint gpm; // for grabbing the poly and
     // moving
@@ -366,7 +365,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
         // it's variable), and make sure everything's OK.
 
         if (polyGrabPoints == null) {
-            polyGrabPoints = new ArrayList();
+            polyGrabPoints = new ArrayList<GrabPoint>();
         }
 
         // At least we know about this one.
@@ -520,25 +519,25 @@ public class EditableOMPoly extends EditableOMAbstractLine {
     public void setGrabPoints() {
         int i;
         GrabPoint gb; // just to use a temp marker
-        LatLonPoint llp = new LatLonPoint();
+        LatLonPoint llp = new LatLonPoint.Double();
         int renderType = poly.getRenderType();
         boolean rads = (poly.getUnits() == OMGraphic.RADIANS);
         if (renderType == OMGraphic.RENDERTYPE_LATLON) {
             if (projection != null) {
-                double[] floats = new double[polyGrabPoints.size() * 2];
+                double[] radCoords = new double[polyGrabPoints.size() * 2];
                 for (i = 0; i < polyGrabPoints.size(); i++) {
                     gb = (GrabPoint) polyGrabPoints.get(i);
                     projection.inverse(gb.getX(), gb.getY(), llp);
                     if (rads) {
-                        floats[2 * i] = (float) llp.getRadLat();
-                        floats[2 * i + 1] = (float) llp.getRadLon();
+                        radCoords[2 * i] = llp.getRadLat();
+                        radCoords[2 * i + 1] = llp.getRadLon();
                     } else {
-                        floats[2 * i] = (float) llp.getY();
-                        floats[2 * i + 1] = (float) llp.getX();
+                        radCoords[2 * i] = llp.getY();
+                        radCoords[2 * i + 1] = llp.getX();
                     }
                 }
 
-                poly.setLocation((double[]) floats, poly.getUnits());
+                poly.setLocation(radCoords, poly.getUnits());
             } else {
                 Debug.message("eomg",
                         "EditableOMPoly.setGrabPoints: projection is null, can't figure out LATLON points for poly.");
@@ -694,7 +693,9 @@ public class EditableOMPoly extends EditableOMAbstractLine {
                 int actualPosition = (position == Integer.MAX_VALUE ? ll.length
                         : position * 2);
 
-                LatLonPoint llpnt = LatLonPoint.getLatLon(x, y, projection);
+                LatLonPoint llpnt = projection.inverse(x,
+                        y,
+                        new LatLonPoint.Double());
 
                 if (Debug.debugging("eomp")) {
                     Debug.output("EditableOMPoly: adding point to lat/lon poly at "
@@ -862,9 +863,10 @@ public class EditableOMPoly extends EditableOMAbstractLine {
                 // Could call projection.getCenter() but that might
                 // break if/when we make other projection
                 // libraries/paradigms active.
-                LatLonPoint llpnt = LatLonPoint.getLatLon(offsetX,
+                LatLonPoint llpnt = projection.inverse(offsetX,
                         offsetY,
-                        projection);
+                        new LatLonPoint.Double());
+
                 if (rads) {
                     poly.lat = (float) llpnt.getRadLat();
                     poly.lon = (float) llpnt.getRadLon();
@@ -1057,11 +1059,11 @@ public class EditableOMPoly extends EditableOMAbstractLine {
 
         // Reset the points to the offset point.
         int count = 0;
-        Iterator gps = polyGrabPoints.iterator();
-        while (gps.hasNext()) {
-            GrabPoint gb = (GrabPoint) gps.next();
-            ogp.addGrabPoint(gb);
-            count++;
+        for (GrabPoint gb : polyGrabPoints) {
+            if (gb != null) {
+                ogp.addGrabPoint(gb);
+                count++;
+            }
         }
 
         ogp.updateOffsets();
@@ -1082,18 +1084,16 @@ public class EditableOMPoly extends EditableOMAbstractLine {
         }
 
         // Generate all the grab points
-        Iterator gps = polyGrabPoints.iterator();
-        while (gps.hasNext()) {
-            GrabPoint gb = (GrabPoint) gps.next();
-            if (gb != null)
+        for (GrabPoint gb : polyGrabPoints) {
+            if (gb != null) {
                 gb.generate(proj);
+            }
         }
 
         if (gpo != null) {
             gpo.generate(proj);
             gpo.updateOffsets();
         }
-        ;
 
         return true;
     }
@@ -1110,9 +1110,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
         }
 
         // Generate all the grab points
-        Iterator gps = polyGrabPoints.iterator();
-        while (gps.hasNext()) {
-            GrabPoint gb = (GrabPoint) gps.next();
+        for (GrabPoint gb : polyGrabPoints) {
             if (gb != null) {
                 gb.generate(proj);
             }
@@ -1151,9 +1149,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
                 || state instanceof PolyAddNodeState
                 || state instanceof PolyDeleteNodeState) {
 
-            Iterator gps = polyGrabPoints.iterator();
-            while (gps.hasNext()) {
-                GrabPoint gb = (GrabPoint) gps.next();
+            for (GrabPoint gb : polyGrabPoints) {
                 if (gb != null) {
                     gb.setVisible(true);
                     poly.render(graphics);
@@ -1167,9 +1163,9 @@ public class EditableOMPoly extends EditableOMAbstractLine {
 
         if (state instanceof GraphicSelectedState
                 || state instanceof GraphicEditState /*
-                                                         * || state instanceof
-                                                         * PolySetOffsetState
-                                                         */) {
+                                                      * || state instanceof
+                                                      * PolySetOffsetState
+                                                      */) {
             if (gpo != null
                     && poly.getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
                 gpo.setVisible(true);
@@ -1213,7 +1209,8 @@ public class EditableOMPoly extends EditableOMAbstractLine {
     }
 
     /**
-     * Flag to keep track of when the grab point array has been rebuilt in setGrabPoints().
+     * Flag to keep track of when the grab point array has been rebuilt in
+     * setGrabPoints().
      */
     boolean arrayCleared = true;
 
@@ -1237,9 +1234,8 @@ public class EditableOMPoly extends EditableOMAbstractLine {
                     "EditableOMPoly.getGrabPoints(): recreating grab points");
             gPoints = new GrabPoint[size + 1];
             int counter = 0;
-            Iterator obj = polyGrabPoints.iterator();
-            while (obj.hasNext()) {
-                gPoints[counter++] = (GrabPoint) obj.next();
+            for (GrabPoint gb : polyGrabPoints) {
+                gPoints[counter++] = gb;
             }
             gPoints[counter] = gpo;
         }

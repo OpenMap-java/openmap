@@ -22,12 +22,20 @@
 
 package com.bbn.openmap.layer.vpf;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.io.FormatException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import java.util.*;
+import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMColor;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.Debug;
 
 /**
  * The VPFFeatureGraphicWarehouse extension that knows how to use a

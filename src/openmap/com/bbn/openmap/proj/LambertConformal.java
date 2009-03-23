@@ -227,7 +227,6 @@ public class LambertConformal extends GeoProj {
      * 
      * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
-     * @see com.bbn.openmap.LatLonPoint#normalizeLatitude(float)
      * 
      */
     public double normalizeLatitude(double lat) {
@@ -468,9 +467,9 @@ public class LambertConformal extends GeoProj {
      * @return LatLonPoint llp
      * @see Proj#inverse(Point)
      */
-    public Point2D inverse(double x, double y, Point2D llp) {
+    public <T extends Point2D> T inverse(double x, double y, T llp) {
         if (llp == null) {
-            llp = new LatLonPoint.Float();
+            llp = (T) new LatLonPoint.Float();
         }
         // convert from screen to world coordinates
         pixelToLL(x, y, llp);
@@ -486,7 +485,7 @@ public class LambertConformal extends GeoProj {
      * 
      * @return LatLonPoint
      */
-    public Point2D getUpperLeft() {
+    public LatLonPoint getUpperLeft() {
         // In a conic projection the upper left is meaningless
         // unless at realitively small scales.
         // Return 90.0 -180 until someone fugures out a better way.
@@ -502,7 +501,7 @@ public class LambertConformal extends GeoProj {
      * 
      * @return LatLonPoint
      */
-    public Point2D getLowerRight() {
+    public LatLonPoint getLowerRight() {
         // In a conic projection the upper left is meaningless
         // unless at realitively small scales.
         // Return 90.0 -180 until someone fugures out a better way.

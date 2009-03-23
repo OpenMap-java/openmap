@@ -24,13 +24,14 @@
 
 package com.bbn.openmap.tools.roads;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.omGraphics.OMLine;
-import com.bbn.openmap.omGraphics.OMGraphicList;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public class RoadLine extends Visual implements RoadObject {
 
@@ -52,7 +53,7 @@ public class RoadLine extends Visual implements RoadObject {
     public RoadPoint addRoadPoint(int x, int y) {
         RoadLayer layer = road.getRoadLayer();
         Projection p = layer.getProjection();
-        RoadPoint rp = new RoadPoint(road, LatLonPoint.getLatLon(x, y, p), layer);
+        RoadPoint rp = new RoadPoint(road, p.inverse(x, y, new LatLonPoint.Double()), layer);
         road.insertRoadPointAt(rp, index + 1);
         return rp;
     }

@@ -98,7 +98,7 @@ public interface Projection extends java.io.Serializable {
      * 
      * @return center point
      */
-    public Point2D getCenter();
+    public <T extends Point2D> T getCenter();
 
     /**
      * Get the center coordinates set in a Point2D object provided.
@@ -106,7 +106,7 @@ public interface Projection extends java.io.Serializable {
      * @param the Point2D to fill in.
      * @return center point provided.
      */
-    public Point2D getCenter(Point2D fillInThis);
+    public <T extends Point2D> T getCenter(T fillInThis);
 
     /**
      * Get the width of the map in pixels.
@@ -140,7 +140,7 @@ public interface Projection extends java.io.Serializable {
      * 
      * @return Point2D
      */
-    public Point2D getUpperLeft();
+    public <T extends Point2D> T getUpperLeft();
 
     /**
      * Get the lower right (southeast) point of the projection.
@@ -153,7 +153,7 @@ public interface Projection extends java.io.Serializable {
      * 
      * @return Point2D
      */
-    public Point2D getLowerRight();
+    public <T extends Point2D> T getLowerRight();
 
     /**
      * Checks if a point is plot-able.
@@ -283,7 +283,7 @@ public interface Projection extends java.io.Serializable {
      * @param point XY Point2D
      * @return Point2D (new)
      */
-    public Point2D inverse(Point2D point);
+    public <T extends Point2D> T inverse(Point2D point);
 
     /**
      * Inverse project a Point2D from map x/y space into world coordinates.
@@ -293,7 +293,7 @@ public interface Projection extends java.io.Serializable {
      *        Point2D object will be created if this is null.
      * @return Point2D Object containing result.
      */
-    public Point2D inverse(Point2D point2D, Point2D llpt);
+    public <T extends Point2D> T inverse(Point2D point2D, T llpt);
 
     /**
      * Inverse project x,y coordinates into world coordinates.
@@ -302,7 +302,7 @@ public interface Projection extends java.io.Serializable {
      * @param y integer y coordinate
      * @return Point2D (new)
      */
-    public Point2D inverse(double x, double y);
+    public <T extends Point2D> T inverse(double x, double y);
 
     /**
      * Inverse project x,y coordinates into world coordinates.
@@ -314,7 +314,7 @@ public interface Projection extends java.io.Serializable {
      * @return Point2D llpt
      * @see Proj#inverse(Point2D)
      */
-    public Point2D inverse(double x, double y, Point2D llpt);
+    public <T extends Point2D> T inverse(double x, double y, T llpt);
 
     /**
      * Pan the map/projection.
@@ -462,7 +462,7 @@ public interface Projection extends java.io.Serializable {
      *        projection that matches the ll2 coordinate, usually the lower
      *        right corner of the area of interest.
      */
-    public float getScale(Point2D ll1, Point2D ll2, Point2D point1, Point2D point2);
+    public <T extends Point2D> float getScale(T ll1, T ll2, Point2D point1, Point2D point2);
     
     /**
      * Get the unprojected coordinates units of measure.

@@ -43,10 +43,10 @@ import com.bbn.openmap.event.ProgressListener;
 import com.bbn.openmap.event.ProgressSupport;
 import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.BinaryFile;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.ArgParser;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.proj.coords.DMSLatLonPoint;
+import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.ArgParser;
+import com.bbn.openmap.util.Debug;
 
 /**
  * This is a class that will generate A.TOC files that the RpfLayer
@@ -1991,7 +1991,7 @@ public class MakeToc {
          * understand
          */
         /* how it works. All that I know is that it seems to. */
-        LatLonPoint llp = new LatLonPoint((float) latitude, (float) longitude);
+        LatLonPoint llp = new LatLonPoint.Double(latitude, longitude);
         DMSLatLonPoint dmsp = new DMSLatLonPoint(llp);
 
         char[] GEOSTRING = new char[6];

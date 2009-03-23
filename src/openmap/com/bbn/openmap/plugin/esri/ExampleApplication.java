@@ -47,7 +47,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapBean;
@@ -69,6 +68,7 @@ import com.bbn.openmap.gui.Tool;
 import com.bbn.openmap.gui.ToolPanel;
 import com.bbn.openmap.layer.GraticuleLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /*
  * ExampleApplication illustrates three uses of the EsriLayer: 1) how
@@ -150,7 +150,7 @@ public class ExampleApplication extends JFrame {
      */
     private EsriLayer pickEsriLayer() {
         Layer[] layers = _layerHandler.getLayers();
-        Vector vector = new Vector();
+        Vector<String> vector = new Vector<String>();
         for (int n = 0; n <= layers.length - 1; n++) {
             if (layers[n] instanceof EsriLayer) {
                 String name = layers[n].getName();
@@ -182,7 +182,7 @@ public class ExampleApplication extends JFrame {
     public void setupUI() {
         getContentPane().setLayout(new BorderLayout());
         setSize(640, 480);
-        _mapBean.setCenter(new LatLonPoint(43.0f, -95.0f));
+        _mapBean.setCenter(new LatLonPoint.Double(43.0f, -95.0f));
         _mapBean.setScale(120000000f);
         _layers = new Layer[1];
 
@@ -264,7 +264,7 @@ public class ExampleApplication extends JFrame {
         _addShape.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 EsriPolylineList shapeData = new EsriPolylineList();
-                ArrayList tabularData = new ArrayList();
+                ArrayList<String> tabularData = new ArrayList<String>();
                 double[] part0 = new double[] { 35.0f, -120.0f, -25.0f, -95.0f,
                         56.0f, -30.0f };
                 double[] part1 = new double[] { -15.0f, -110.0f, 13.0f, -80.0f,

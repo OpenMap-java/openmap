@@ -60,6 +60,38 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
     protected LatLonPoint() {}
 
     /**
+     * Factory method that will create a LatLonPoint.Float from a Point2D
+     * object. If pt2D is already a LatLonPoint.Float object, it is simply
+     * returned.
+     * 
+     * @param pt2D
+     * @return a LatLonPoint.Float object.
+     */
+    public static LatLonPoint getFloat(Point2D pt2D) {
+        if (pt2D instanceof Float) {
+            return (Float) pt2D;
+        } else {
+            return new Float(pt2D);
+        }
+    }
+
+    /**
+     * Factory method that will create a LatLonPoint.Double from a Point2D
+     * object. If pt2D is already a LatLonPoint.Double object, it is simply
+     * returned.
+     * 
+     * @param pt2D
+     * @return a LatLonPoint.Double object.
+     */
+    public static LatLonPoint getDouble(Point2D pt2D) {
+        if (pt2D instanceof Double) {
+            return (Double) pt2D;
+        } else {
+            return new Double(pt2D);
+        }
+    }
+
+    /**
      * Set the latitude, longitude for this point.
      * 
      * @param lat decimal degree latitude
@@ -147,6 +179,16 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
          */
         public Float(LatLonPoint llp) {
             setLatLon(llp.getLatitude(), llp.getLongitude(), false);
+        }
+
+        /**
+         * Create Float version from Point2D object, where the x, y values are
+         * expected to be decimal degrees.
+         * 
+         * @param pt2D
+         */
+        public Float(Point2D pt2D) {
+            setLatLon(pt2D.getY(), pt2D.getX(), false);
         }
 
         /**
@@ -365,13 +407,13 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
         }
 
         /**
-         * Calculate the <code>radlat_</code> and <code>radlon_</code>
-         * instance variables upon deserialization. Also, check
-         * <code>lat_</code> and <code>lon_</code> for safety; someone may
-         * have tampered with the stream.
+         * Calculate the <code>radlat_</code> and <code>radlon_</code> instance
+         * variables upon deserialization. Also, check <code>lat_</code> and
+         * <code>lon_</code> for safety; someone may have tampered with the
+         * stream.
          * 
-         * @param stream Stream to read <code>lat_</code> and
-         *        <code>lon_</code> from.
+         * @param stream Stream to read <code>lat_</code> and <code>lon_</code>
+         *        from.
          */
         private void readObject(java.io.ObjectInputStream stream)
                 throws IOException, ClassNotFoundException {
@@ -424,7 +466,7 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
         public Double(double lat, double lon, boolean isRadian) {
             setLatLon(lat, lon, isRadian);
         }
-        
+
         /**
          * Create Double version from another LatLonPoint.
          * 
@@ -432,6 +474,16 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
          */
         public Double(LatLonPoint llp) {
             setLatLon(llp.getY(), llp.getX(), false);
+        }
+
+        /**
+         * Create Double version from Point2D object, where the x, y values are
+         * expected to be decimal degrees.
+         * 
+         * @param pt2D
+         */
+        public Double(Point2D pt2D) {
+            setLatLon(pt2D.getY(), pt2D.getX(), false);
         }
 
         /**
@@ -585,9 +637,9 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
         }
 
         /**
-         * Calculate the <code>radLat</code> and <code>radLon</code>
-         * instance variables upon deserialization. Also, check <code>lat</code>
-         * and <code>lon</code> for safety; someone may have tampered with the
+         * Calculate the <code>radLat</code> and <code>radLon</code> instance
+         * variables upon deserialization. Also, check <code>lat</code> and
+         * <code>lon</code> for safety; someone may have tampered with the
          * stream.
          * 
          * @param stream Stream to read <code>lat</code> and <code>lon</code>
@@ -610,6 +662,7 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
 
     /**
      * Set location values from another lat/lon point.
+     * 
      * @param llp
      */
     public void setLatLon(LatLonPoint llp) {
@@ -618,6 +671,7 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
 
     /**
      * Ensure latitude is between the poles.
+     * 
      * @param lat
      * @return
      */
@@ -643,7 +697,8 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
     }
 
     /**
-     *  Ensure the longitude is between the dateline.
+     * Ensure the longitude is between the date line.
+     * 
      * @param lon
      * @return
      */
@@ -728,7 +783,7 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
     }
 
     /**
-     * Find the azimuth to another point, based on the sphercal earth model.
+     * Find the azimuth to another point, based on the spherical earth model.
      * 
      * @param toPoint LatLonPoint
      * @return the azimuth `Az' east of north from this point bearing toward the

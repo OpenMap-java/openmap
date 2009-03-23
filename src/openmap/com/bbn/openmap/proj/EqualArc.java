@@ -24,7 +24,7 @@ package com.bbn.openmap.proj;
 
 /**
  * A designator interface to let layers know that a Projection is an
- * Equal Arc projection, meaning that the variations in latitide and
+ * Equal Arc projection, meaning that the variations in latitude and
  * longitude are constant.
  */
 public interface EqualArc extends Projection {

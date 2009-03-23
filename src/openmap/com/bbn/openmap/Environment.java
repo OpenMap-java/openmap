@@ -39,45 +39,41 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * An Environment is a set of property lists that together specify the
- * runtime environment for this process.
+ * An Environment is a set of property lists that together specify the runtime
+ * environment for this process.
  * <p>
- * There is only one Environment, and it is accessed through static
- * member functions.
+ * There is only one Environment, and it is accessed through static member
+ * functions.
  * <p>
  * The environment is comprised of at least three property lists:
  * <ul>
- * <li>System properties form the basis of the environment. For
- * applications, This can be the System.getProperties(), or something
- * else. In the case of applets, this is a list of the ten system
- * properties that applets are allowed to access plus any applet
- * parameters.
+ * <li>System properties form the basis of the environment. For applications,
+ * This can be the System.getProperties(), or something else. In the case of
+ * applets, this is a list of the ten system properties that applets are allowed
+ * to access plus any applet parameters.
  * <p>
- * <li>Runtime properties are checked next. These are properties that
- * exist only while the process is running. They are calculated during
- * Environment initialization and are not persistent.
+ * <li>Runtime properties are checked next. These are properties that exist only
+ * while the process is running. They are calculated during Environment
+ * initialization and are not persistent.
  * <p>
- * <li>Hardcoded properties form the last level. These properties are
- * hardcoded default values that are specified in the code of this
- * file. They are meant to be used as a last resort.
+ * <li>Hardcoded properties form the last level. These properties are hardcoded
+ * default values that are specified in the code of this file. They are meant to
+ * be used as a last resort.
  * <p>
  * </ul>
- * When <code>Environment.get()</code> is called, all lists are
- * searched until the property is found. System properties are
- * searched first, then runtime properties, and then hardcoded
- * properties.
+ * When <code>Environment.get()</code> is called, all lists are searched until
+ * the property is found. System properties are searched first, then runtime
+ * properties, and then hardcoded properties.
  * <p>
- * This search pattern allows system properties and properties
- * specified as applet parameters or command line properties (using
- * -DProperty=value Java flag) to override more hardcoded properties
- * specified elsewhere, say in a user preferences file.
+ * This search pattern allows system properties and properties specified as
+ * applet parameters or command line properties (using -DProperty=value Java
+ * flag) to override more hardcoded properties specified elsewhere, say in a
+ * user preferences file.
  * 
- * @see java.util.Properties
+ * @see java.util.Properties <pre>
  * 
- * <pre>
  * 
- *  
- *   
+ * 
  *    # metanames of the names of the variables used in the OpenMap
  *    # system to configure the Enivironment class from the properties.
  *    openmap.Title - String for title of application window.
@@ -97,9 +93,9 @@ import com.bbn.openmap.util.PropUtils;
  *    openmap.Debug - Debug tokens to activate for printout.  @see com.bbn.openmap.util.Debug
  *   
  *    openmap.UniqueID String for unique identification of OpenMap instance (calculated)
- *    
- *   
- *  
+ * 
+ * 
+ * 
  * </pre>
  */
 public class Environment extends Properties {
@@ -156,15 +152,15 @@ public class Environment extends Properties {
     public final static transient String title = "$$Title=" + MapBean.title;
     public final static transient String version = "$$Version="
             + MapBean.version;
-    //  autobuild should set this.
+    // autobuild should set this.
     public final static transient String build = "$$BuildDate=";
 
     /**
      * Hardcoded default properties.
      * <p>
-     * These should be edited before each new version/installation of
-     * OpenMap. They are declared in such a way that they can be
-     * easily edited from a build script.
+     * These should be edited before each new version/installation of OpenMap.
+     * They are declared in such a way that they can be easily edited from a
+     * build script.
      * 
      * @param p Properties
      */
@@ -218,7 +214,7 @@ public class Environment extends Properties {
      */
     public static void init(Properties sysProps) {
         if (env != null) {
-            //              Debug.output("Reinitializing Environment!");
+            // Debug.output("Reinitializing Environment!");
             // overwrite properties
             env.installProps(sysProps);
             return;
@@ -229,8 +225,8 @@ public class Environment extends Properties {
     }
 
     /**
-     * Initializes the OpenMap environment. Installs the default
-     * System Properties into the Environment.
+     * Initializes the OpenMap environment. Installs the default System
+     * Properties into the Environment.
      */
     public static void init() {
         init(System.getProperties());
@@ -259,11 +255,15 @@ public class Environment extends Properties {
         commonInit();
     }
 
+    public static Environment getInstance() {
+        return env;
+    }
+
     /**
      * install Properties directly into the toplevel Environment list.
      * 
      * @param sysProps system properties
-     *  
+     * 
      */
     private void installProps(Properties sysProps) {
         // Copy the specified property list
@@ -295,10 +295,9 @@ public class Environment extends Properties {
     }
 
     /**
-     * Populates the system properties for an applet. Currently this
-     * property list contains the ten system properties available to
-     * applets and any applet parameters specified in
-     * Applet.getParameterInfo().
+     * Populates the system properties for an applet. Currently this property
+     * list contains the ten system properties available to applets and any
+     * applet parameters specified in Applet.getParameterInfo().
      * 
      * @param applet the applet
      * @see java.applet.Applet#getParameterInfo
@@ -335,16 +334,16 @@ public class Environment extends Properties {
     }
 
     /**
-     * Initializes the runtime properties list. Runtime properties are
-     * those properties that exist only while the program is running.
-     * They are not persistent. Persistent properties should be stored
-     * in the user properties list.
+     * Initializes the runtime properties list. Runtime properties are those
+     * properties that exist only while the program is running. They are not
+     * persistent. Persistent properties should be stored in the user properties
+     * list.
      * 
      * @param p The runtime properties list
      */
     protected static void initRuntimeProperties(Properties p) {
         if (isApplet()) {
-            p.put("user.name", "appletUser");//for convenience
+            p.put("user.name", "appletUser");// for convenience
         }
 
         java.net.InetAddress addr = null;
@@ -409,8 +408,8 @@ public class Environment extends Properties {
         } else if (osname.equalsIgnoreCase("Mac OS X")) {
             isXWindows = true;
             doingXWindowsWorkaround = true;
-            //      isXWindows = false;
-            //      doingXWindowsWorkaround = false;
+            // isXWindows = false;
+            // doingXWindowsWorkaround = false;
             com.bbn.openmap.omGraphics.DrawingAttributes.alwaysSetTextToBlack = true;
             Debug.message("env", "Environment: Excellent! Mac OS X!");
         } else {
@@ -429,8 +428,8 @@ public class Environment extends Properties {
     /**
      * Indicates whether the current process is an applet.
      * 
-     * @return <code>true</code> if process is an applet;
-     *         <code>false</code> otherwise.
+     * @return <code>true</code> if process is an applet; <code>false</code>
+     *         otherwise.
      */
     public static boolean isApplet() {
         return (applet != null);
@@ -454,29 +453,27 @@ public class Environment extends Properties {
     }
 
     /**
-     * Searches for the named property in the environment. If the key
-     * is not found, null is returned. All three property lists,
-     * runtime, user, and system are searched in that order.
+     * Searches for the named property in the environment. If the key is not
+     * found, null is returned. All three property lists, runtime, user, and
+     * system are searched in that order.
      * 
      * @param key the property key
      * @return the value of the property with the specified key or
-     *         <code>null</code> if there is no property with that
-     *         key.
+     *         <code>null</code> if there is no property with that key.
      */
     public static String get(String key) {
         return Environment.get(key, null);
     }
 
     /**
-     * Searches for the named property in the environment. If the key
-     * is not found, the default value is returned. All three property
-     * lists, runtime, user, and system are searched in that order.
+     * Searches for the named property in the environment. If the key is not
+     * found, the default value is returned. All three property lists, runtime,
+     * user, and system are searched in that order.
      * 
      * @param key the property key
      * @param defaultValue a default value
      * @return the value of the property with the specified key or
-     *         <code>defaultValue</code> if there is no property
-     *         with that key.
+     *         <code>defaultValue</code> if there is no property with that key.
      */
     public static String get(String key, String defaultValue) {
         if (env == null) {
@@ -495,8 +492,8 @@ public class Environment extends Properties {
      * 
      * @param key the property key.
      * @param value the value to the key.
-     * @return the value of the property set, or null if the
-     *         environment isn't ready for it.
+     * @return the value of the property set, or null if the environment isn't
+     *         ready for it.
      */
     public static String set(String key, String value) {
         if (env == null) {
@@ -514,9 +511,9 @@ public class Environment extends Properties {
      * Gets a boolean value out of the Environment.
      * 
      * @param key the property key
-     * @return the boolean value of the property or false if there is
-     *         no property with that key
-     *  
+     * @return the boolean value of the property or false if there is no
+     *         property with that key
+     * 
      */
     public static boolean getBoolean(String key) {
         return getBoolean(key, false);
@@ -527,9 +524,9 @@ public class Environment extends Properties {
      * 
      * @param key the property key
      * @param defaultValue a default value
-     * @return the boolean value of the property or defaultValue if
-     *         there is no property with that key
-     *  
+     * @return the boolean value of the property or defaultValue if there is no
+     *         property with that key
+     * 
      */
     public static boolean getBoolean(String key, boolean defaultValue) {
         String str = Environment.get(key, null);
@@ -544,9 +541,9 @@ public class Environment extends Properties {
      * Gets an integer value out of the Environment.
      * 
      * @param key the property key
-     * @return the integer value of the property or defaultValue if
-     *         there is no property with that key
-     *  
+     * @return the integer value of the property or defaultValue if there is no
+     *         property with that key
+     * 
      */
     public static int getInteger(String key) {
         return getInteger(key, Integer.MIN_VALUE, 10);
@@ -557,9 +554,9 @@ public class Environment extends Properties {
      * 
      * @param key the property key
      * @param defaultValue a default value
-     * @return the integer value of the property or defaultValue if
-     *         there is no property with that key
-     *  
+     * @return the integer value of the property or defaultValue if there is no
+     *         property with that key
+     * 
      */
     public static int getInteger(String key, int defaultValue) {
         return getInteger(key, defaultValue, 10);
@@ -571,9 +568,9 @@ public class Environment extends Properties {
      * @param key the property key
      * @param defaultValue a default value
      * @param radix base value
-     * @return the integer value of the property or defaultValue if
-     *         there is no property with that key
-     *  
+     * @return the integer value of the property or defaultValue if there is no
+     *         property with that key
+     * 
      */
     public static int getInteger(String key, int defaultValue, int radix) {
         String str = Environment.get(key, null);
@@ -592,9 +589,9 @@ public class Environment extends Properties {
      * Gets a float value out of the Environment.
      * 
      * @param key the property key
-     * @return the float value of the property or defaultValue if
-     *         there is no property with that key
-     *  
+     * @return the float value of the property or defaultValue if there is no
+     *         property with that key
+     * 
      */
     public static float getFloat(String key) {
         return getFloat(key, Float.NaN);
@@ -605,9 +602,9 @@ public class Environment extends Properties {
      * 
      * @param key the property key
      * @param defaultValue a default value
-     * @return the float value of the property or defaultValue if
-     *         there is no property with that key
-     *  
+     * @return the float value of the property or defaultValue if there is no
+     *         property with that key
+     * 
      */
     public static float getFloat(String key, float defaultValue) {
         String str = Environment.get(key, null);
@@ -626,9 +623,9 @@ public class Environment extends Properties {
      * Gets a double value out of the Environment.
      * 
      * @param key the property key
-     * @return the double value of the property or defaultValue if
-     *         there is no property with that key
-     *  
+     * @return the double value of the property or defaultValue if there is no
+     *         property with that key
+     * 
      */
     public static double getDouble(String key) {
         return getDouble(key, Double.NaN);
@@ -639,9 +636,9 @@ public class Environment extends Properties {
      * 
      * @param key the property key
      * @param defaultValue a default value
-     * @return the double value of the property or defaultValue if
-     *         there is no property with that key
-     *  
+     * @return the double value of the property or defaultValue if there is no
+     *         property with that key
+     * 
      */
     public static double getDouble(String key, double defaultValue) {
         String str = Environment.get(key, null);
@@ -666,8 +663,7 @@ public class Environment extends Properties {
     }
 
     /**
-     * Adds a key/value pair to the Environment's system properties
-     * list.
+     * Adds a key/value pair to the Environment's system properties list.
      * 
      * @param key the key, used later for retrieval
      * @param value the associate value
@@ -678,8 +674,7 @@ public class Environment extends Properties {
     }
 
     /**
-     * Adds a key/value pair to the Environment's runtime properties
-     * list.
+     * Adds a key/value pair to the Environment's runtime properties list.
      * 
      * @param key the key, used later for retrieval
      * @param value the associate value
@@ -693,7 +688,7 @@ public class Environment extends Properties {
      * Returns the toplevel Properties list of the Environment.
      * 
      * @return Properties system properties
-     *  
+     * 
      */
     public static Properties getProperties() {
         return env;
@@ -705,7 +700,7 @@ public class Environment extends Properties {
      * Note: you probably don't want to call this in a tight loop.
      * 
      * @return String timestamp YYYYMMDDhhmmss
-     *  
+     * 
      */
     public static String timestamp() {
         Calendar calendar = Calendar.getInstance();
@@ -718,20 +713,20 @@ public class Environment extends Properties {
     /**
      * Check if this is an XWindows-based VM.
      * <p>
-     * Note: this only returns a valid result if the Environment has
-     * been initialized.
+     * Note: this only returns a valid result if the Environment has been
+     * initialized.
      * <p>
      * 
      * @return boolean
-     *  
+     * 
      */
     public final static boolean isXWindowSystem() {
         return isXWindows;
     }
 
     /**
-     * Generate a unique string. This should be unique compared to
-     * other strings generated this way.
+     * Generate a unique string. This should be unique compared to other strings
+     * generated this way.
      * 
      * @return String
      * @see Environment#timestamp
@@ -741,8 +736,8 @@ public class Environment extends Properties {
     }
 
     /**
-     * Returns elements of the CLASSPATH that are directories.
-     * CLASSPATH elements that are not directories are not returned.
+     * Returns elements of the CLASSPATH that are directories. CLASSPATH
+     * elements that are not directories are not returned.
      * 
      * @return Vector of Strings
      */
@@ -767,20 +762,18 @@ public class Environment extends Properties {
     }
 
     /**
-     * Add a resource path to internal Vector. This path will get
-     * added to the classpath, if the Environment is asked for
-     * classpaths.
+     * Add a resource path to internal Vector. This path will get added to the
+     * classpath, if the Environment is asked for classpaths.
      */
     public static void addPathToClasspaths(String path) {
         extraPaths.addElement(path);
     }
 
     /**
-     * Checks the Environment to see if a BackgroundColor string, set
-     * as a hex ARGB string, has been set. If it hasn't or if it
-     * doesn't represent a valid color number, then null is returned,
-     * which should be interpreted as an excuse to use the default
-     * pretty blue embedded in the projection.
+     * Checks the Environment to see if a BackgroundColor string, set as a hex
+     * ARGB string, has been set. If it hasn't or if it doesn't represent a
+     * valid color number, then null is returned, which should be interpreted as
+     * an excuse to use the default pretty blue embedded in the projection.
      */
     public static Color getCustomBackgroundColor() {
         String colorRep = get(BackgroundColor);
@@ -796,11 +789,11 @@ public class Environment extends Properties {
     }
 
     /**
-     * A method to set the Environment to be able to tell other
-     * components to InternalFrames.
+     * A method to set the Environment to be able to tell other components to
+     * InternalFrames.
      * 
-     * @param rootPane to use for the internal frames - the method
-     *        gets the LayeredPane from the rootPane.
+     * @param rootPane to use for the internal frames - the method gets the
+     *        LayeredPane from the rootPane.
      */
     public static void useInternalFrames(JRootPane rootPane) {
         if (rootPane != null) {
@@ -811,8 +804,8 @@ public class Environment extends Properties {
     }
 
     /**
-     * A method to set the Environment to be able to tell other
-     * components to InternalFrames.
+     * A method to set the Environment to be able to tell other components to
+     * InternalFrames.
      * 
      * @param layeredPane to use for the internal frames.
      */
@@ -828,8 +821,8 @@ public class Environment extends Properties {
     }
 
     /**
-     * Get the JLayeredPane to use for Internal Frames. May be null if
-     * the Environment hasn't be set with the root pane.
+     * Get the JLayeredPane to use for Internal Frames. May be null if the
+     * Environment hasn't be set with the root pane.
      */
     public static JLayeredPane getInternalFrameDesktop() {
         return env.desktop;
@@ -844,4 +837,3 @@ public class Environment extends Properties {
         return i18n;
     }
 }
-

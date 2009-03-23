@@ -22,9 +22,9 @@
 
 package com.bbn.openmap.layer.dted;
 
-import com.bbn.openmap.LatLonPoint;
-import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.proj.EqualArc;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -184,8 +184,8 @@ public class DTEDCacheHandler {
     public void setProjection(EqualArc proj, float lat1, float lon1,
                               float lat2, float lon2) {
 
-        ulCoords = new LatLonPoint(lat1, lon1);
-        lrCoords = new LatLonPoint(lat2, lon2);
+        ulCoords = new LatLonPoint.Float(lat1, lon1);
+        lrCoords = new LatLonPoint.Float(lat2, lon2);
         double xpi = 360 / proj.getXPixConstant();
         double ypi = 90 / proj.getYPixConstant();
 

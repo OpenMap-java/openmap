@@ -44,7 +44,6 @@ import javax.swing.Timer;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapBean;
@@ -53,6 +52,7 @@ import com.bbn.openmap.event.LayerEvent;
 import com.bbn.openmap.event.LayerListener;
 import com.bbn.openmap.proj.LLXY;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -941,7 +941,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
     public void setScale(float scale) {
         this.scale = scale;
 
-        LatLonPoint center = new LatLonPoint();
+        LatLonPoint center = new LatLonPoint.Double();
         LLXY llxy = new LLXY(center, scale, 2000, 1000);
         Point2D p1 = llxy.forward(90f, -180f);
         Point2D p2 = llxy.forward(-90f, 180f);

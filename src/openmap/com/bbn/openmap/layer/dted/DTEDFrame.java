@@ -33,6 +33,7 @@ import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.OMRasterObject;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.proj.EqualArc;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -1068,7 +1069,7 @@ public class DTEDFrame implements Closable {
         float lat = df.dsi.lat_origin + .5f;
         float lon = df.dsi.lon_origin + .5f;
 
-        CADRG crg = new CADRG(new com.bbn.openmap.LatLonPoint(lat, lon), 1500000, 600, 600);
+        CADRG crg = new CADRG(new LatLonPoint.Double(lat, lon), 1500000, 600, 600);
         final OMRaster ras = df.getOMRaster(crg);
 
         // Pushes the image to the left top of the frame.

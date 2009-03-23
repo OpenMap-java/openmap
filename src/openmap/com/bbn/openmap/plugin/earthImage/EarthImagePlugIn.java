@@ -32,13 +32,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
-import com.bbn.openmap.LatLonPoint;
 import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.image.ImageServerConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.plugin.AbstractPlugIn;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -283,8 +283,8 @@ public class EarthImagePlugIn extends AbstractPlugIn implements
                 int clear = 0x00000000;
 
                 Point ctp = new Point();
-                LatLonPoint llp = new LatLonPoint();
-                LatLonPoint center = (LatLonPoint) p.getCenter(new LatLonPoint());
+                LatLonPoint llp = new LatLonPoint.Double();
+                LatLonPoint center = p.getCenter(new LatLonPoint.Double());
 
                 for (int i = 0; i < projWidth; i++) {
                     for (int j = 0; j < projHeight; j++) {
