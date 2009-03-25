@@ -29,8 +29,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Vector;
-
-import com.bbn.openmap.util.Debug;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The MapHandler is an extension of the BeanContextServicesSupport, with the
@@ -68,13 +68,15 @@ import com.bbn.openmap.util.Debug;
  */
 public class MapHandler extends BeanContextServicesSupport {
 
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.MapHandler");
+
     protected SoloMapComponentPolicy policy;
     protected boolean DEBUG = false;
     protected boolean addInProgress = false;
     protected Vector addLaterVector = null;
 
     public MapHandler() {
-        DEBUG = Debug.debugging("maphandler");
+        DEBUG = logger.isLoggable(Level.FINE);
     }
 
     /**
@@ -110,7 +112,7 @@ public class MapHandler extends BeanContextServicesSupport {
             addLaterVector = new Vector();
         }
         if (DEBUG) {
-            Debug.output("=== Adding " + obj.getClass().getName()
+            logger.fine("=== Adding " + obj.getClass().getName()
                     + " to list for later addition");
         }
         addLaterVector.add(obj);
@@ -131,7 +133,7 @@ public class MapHandler extends BeanContextServicesSupport {
             while (it.hasNext()) {
                 Object obj = it.next();
                 if (DEBUG) {
-                    Debug.output("+++ Adding " + obj.getClass().getName()
+                    logger.fine("+++ Adding " + obj.getClass().getName()
                             + " to MapHandler from later list.");
                 }
                 add(obj);
@@ -170,7 +172,7 @@ public class MapHandler extends BeanContextServicesSupport {
 
                 if (isAddInProgress()) {
                     if (DEBUG) {
-                        Debug.output("MapHandler: Attempting to add while add in progress, adding ["
+                        logger.fine("MapHandler: Attempting to add while add in progress, adding ["
                                 + obj.getClass().getName() + "]object to list");
                     }
                     addLater(obj);
@@ -183,10 +185,10 @@ public class MapHandler extends BeanContextServicesSupport {
                 }
             }
         } catch (java.util.ConcurrentModificationException cme) {
-            Debug.error("MapHandler caught ConcurrentModificationException when adding ["
+            logger.warning("MapHandler caught ConcurrentModificationException when adding ["
                     + obj.getClass().getName()
                     + "]. The addition of this component to the MapHandler is causing some other component to attempt to be added as well, and the coping mechanism in the MapHandler is not handling it well.");
-            if (Debug.debugging("maphandler")) {
+            if (DEBUG) {
                 cme.printStackTrace();
             }
             addLater(obj);
@@ -295,9 +297,13 @@ public class MapHandler extends BeanContextServicesSupport {
         return list.iterator();
     }
 
+    /**
+     * Calls dispose() on the contained MapBean and removes all objects from
+     * BeanContext.
+     */
     public void dispose() {
         addLaterVector = null;
-        
+
         MapBean mb = (MapBean) get(com.bbn.openmap.MapBean.class);
         if (mb != null) {
             remove(mb);
@@ -314,7 +320,7 @@ public class MapHandler extends BeanContextServicesSupport {
 
         for (kids = kidList.iterator(); kids.hasNext();) {
             Object obj = kids.next();
-            System.out.println("removing " + obj.getClass().getName());
+            logger.fine("removing " + obj.getClass().getName());
             remove(obj);
         }
     }

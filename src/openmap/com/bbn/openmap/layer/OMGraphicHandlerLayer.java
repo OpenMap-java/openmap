@@ -713,7 +713,7 @@ public class OMGraphicHandlerLayer extends Layer implements
                             + " layer ran out of memory, attempting to recover...");
                 }
             } catch (Exception e) {
-                msg = getName() + "|LayerWorker.construct(): " + e.getMessage();
+                msg = getName() + "|LayerWorker.construct(): " + e.getClass().getName() + ", " + e.getMessage();
                 Debug.output(msg);
                 if (Debug.debugging("layer")) {
                     e.printStackTrace();
@@ -907,13 +907,12 @@ public class OMGraphicHandlerLayer extends Layer implements
 
         String mmString = props.getProperty(realPrefix + MouseModesProperty);
         if (mmString != null) {
-            Vector mmv = PropUtils.parseSpacedMarkers(mmString);
+            Vector<String> mmv = PropUtils.parseSpacedMarkers(mmString);
             if (mmv.size() > 0) {
                 String[] mm = new String[mmv.size()];
-                Iterator it = mmv.iterator();
                 int i = 0;
-                while (it.hasNext()) {
-                    mm[i++] = (String) it.next();
+                for (String it : mmv) {
+                    mm[i++] = it;
                 }
                 setMouseModeIDsForEvents(mm);
             }

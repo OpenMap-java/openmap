@@ -193,7 +193,8 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 
         // Environment will only get loaded after the property file is
         // read.
-        mb.setProjection(mb.getProjectionFactory().getDefaultProjectionFromEnvironment(Environment.getInstance()));
+        mb.setProjection(mb.getProjectionFactory()
+                .getDefaultProjectionFromEnvironment(Environment.getInstance()));
         mb.setBckgrnd(Environment.getCustomBackgroundColor());
     }
 
@@ -370,7 +371,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
                 invalidate();
             }
         }
-        
+
         if (someObj instanceof MenuList) {
             menuList = (MenuList) someObj;
         }
@@ -400,18 +401,21 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
         if (someObj instanceof MenuList && menuList == someObj) {
             menuList = null;
         }
-        
+
         if (this.equals(someObj)) {
             dispose();
         }
     }
 
+    /**
+     * Sets the MapBean variable to null and removes all children.
+     */
     public void dispose() {
         setMapBean(null);
         setLayout(null);
         removeAll();
     }
-    
+
     // MapBean Methods:
     // ////////////////
 

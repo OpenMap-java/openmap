@@ -29,12 +29,11 @@ import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
 
 /**
- * The MapPanel is a interface describing a component that contains a
- * MapBean, MapHandler, menu widgets and all the other components
- * connected to make an OpenMap map widget. A MapPanel is a
- * self-contained OpenMap Swing component. It is expected that the
- * MapPanel will extend from java.awt.Container. If it doesn't, it
- * might not be automatically added to the OpenMapFrame or
+ * The MapPanel is a interface describing a component that contains a MapBean,
+ * MapHandler, menu widgets and all the other components connected to make an
+ * OpenMap map widget. A MapPanel is a self-contained OpenMap Swing component.
+ * It is expected that the MapPanel will extend from java.awt.Container. If it
+ * doesn't, it might not be automatically added to the OpenMapFrame or
  * OpenMapApplet if it is found in the MapHandler.
  */
 public interface MapPanel {
@@ -45,9 +44,8 @@ public interface MapPanel {
     public MapBean getMapBean();
 
     /**
-     * Get the MapHandler used for the MapPanel. You should be able to
-     * use the MapHandler to get to any component used in the
-     * MapPanel.
+     * Get the MapHandler used for the MapPanel. You should be able to use the
+     * MapHandler to get to any component used in the MapPanel.
      */
     public MapHandler getMapHandler();
 
@@ -60,4 +58,9 @@ public interface MapPanel {
      * Get a JMenu containing sub-menus to control the map.
      */
     public JMenu getMapMenu();
+
+    /**
+     * Tell the panel to release components.
+     */
+    public void dispose();
 }

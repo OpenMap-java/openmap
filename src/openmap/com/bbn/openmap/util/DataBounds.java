@@ -22,7 +22,6 @@
 
 package com.bbn.openmap.util;
 
-import java.awt.Point;
 import java.awt.geom.Point2D;
 
 /**
@@ -32,6 +31,8 @@ public class DataBounds {
 
     protected Point2D min;
     protected Point2D max;
+    
+    protected DataBounds hardLimits;
 
     public DataBounds() {}
 
@@ -40,7 +41,7 @@ public class DataBounds {
         add(maxx, maxy);
     }
 
-    public DataBounds(Point minP, Point maxP) {
+    public DataBounds(Point2D minP, Point2D maxP) {
         add(minP);
         add(maxP);
     }
@@ -96,6 +97,22 @@ public class DataBounds {
                 maxx = x;
             if (maxy < y)
                 maxy = y;
+            
+            if (hardLimits != null) {
+                double hlminx = hardLimits.min.getX();
+                double hlminy = hardLimits.min.getY();
+                double hlmaxx = hardLimits.max.getX();
+                double hlmaxy = hardLimits.max.getY();
+                
+                if (hlminx > minx)
+                    minx = hlminx;
+                if (hlminy > miny)
+                    miny = hlminy;
+                if (hlmaxx < maxx)
+                    maxx = hlmaxx;
+                if (hlmaxy < maxy)
+                    maxy = hlmaxy;
+            }
 
             min.setLocation(minx, miny);
             max.setLocation(maxx, maxy);
@@ -104,5 +121,27 @@ public class DataBounds {
 
     public void add(Point2D point) {
         add((double) point.getX(), (double) point.getY());
+    }
+    
+    public boolean contains(Point2D query) {
+        double x = query.getX();
+        double y = query.getY();
+        return x >= min.getX() && x < max.getX() && y >= min.getY() && y <= max.getY();
+    }
+    
+    public double getWidth() {
+        return max.getX() - min.getX();
+    }
+    
+    public double getHeight() {
+        return max.getY() - min.getY();
+    }
+
+    public DataBounds getHardLimits() {
+        return hardLimits;
+    }
+
+    public void setHardLimits(DataBounds hardLimits) {
+        this.hardLimits = hardLimits;
     }
 }

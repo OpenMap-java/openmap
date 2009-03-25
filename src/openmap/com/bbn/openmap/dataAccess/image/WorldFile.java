@@ -106,7 +106,7 @@ public class WorldFile {
         x = Double.parseDouble(br.readLine());
         y = Double.parseDouble(br.readLine());
 
-        logger.info(this.toString());
+        logger.fine(this.toString());
     }
 
     public String toString() {
@@ -115,6 +115,13 @@ public class WorldFile {
                 + rowRot + ")]";
     }
 
+    /**
+     * Given a path to a image file, discover the world file which should be
+     * next to it.
+     * 
+     * @param imageFileURL the path to the image file, not the world file.
+     * @return WorldFile object for the image.
+     */
     public static WorldFile get(URL imageFileURL) {
         WorldFile wf = null;
         try {
@@ -187,9 +194,9 @@ public class WorldFile {
             URL wfURL = new URL(wfURLString);
             return wfURL.openStream();
         } catch (MalformedURLException murle) {
-            logger.warning("MalformedURLException for " + wfURLString);
+            logger.fine("MalformedURLException for " + wfURLString);
         } catch (IOException ioe) {
-            logger.warning("IOException for " + wfURLString);
+            logger.fine("IOException for " + wfURLString);
         }
         return null;
 

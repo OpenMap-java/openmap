@@ -313,7 +313,7 @@ public class OpenMapFrame extends JFrame implements
                 setJMenuBar(null);
             }
         }
-        
+
         if (this.equals(someObj)) {
             dispose();
         }
@@ -493,12 +493,18 @@ public class OpenMapFrame extends JFrame implements
     public boolean getUseAsInternalFrameRootPaneIfNecessary() {
         return useAsInternalFrameRootPaneIfNecessary;
     }
-    
+
+    /**
+     * Calls dispose on the BeanContext (MapHandler) and then removes references
+     * to other children.
+     */
     public void dispose() {
+
         MapHandler mh = ((MapHandler) getBeanContext());
         if (mh != null) {
             mh.dispose();
         }
+
         getContentPane().removeAll();
         setJMenuBar(null);
         getRootPane().remove(this);

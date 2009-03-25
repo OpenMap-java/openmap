@@ -1,3 +1,73 @@
+2009-03-24  Don Dietrick  <dietrick@dhcp89-073-115.bbn.com>
+
+	* Added com.bbn.openmap.omGraphics.util.ImageWarp, which takes an
+	image file and warps it to fit a given projection.  Can be created
+	with a image path or BufferedImage, takes a DataBounds or
+	WorldFile object to specify where the image is, and also takes a
+	GeoCoordsTransformation to handle preprojected images.  Also added
+	the com.bbn.openmap.omGraphic.OMWarpingImage that wraps around an
+	ImageWarp object to display the image on the map as an OMGraphic.
+	
+	* Modified the DataBounds object to provide height and width
+	calculations (deltas between max and mix), and can also have an
+	internal DataBounds object that serves as hard limits for added
+	values.  The hard limits override any point values that may be
+	added.
+
+	* Simplified the OMApplet.html file, with simple APPLET tags.
+	
+	* Removed com.bbn.openmap.LatLonPoint.  The
+	com.bbn.openmap.proj.coords.LatLonPoint is the class to use now.
+
+	* Fixed problem where the ProjectionSupport thread continued to
+	run, preventing garbage collection of the MapPanel and all its
+	contents.  That thread gets interrupted when the MapBean is
+	disposed.  Added dispose() methods on MapPanel, MapBean,
+	ProjectionSupport, OpenMapFrame that release objects. Dispose
+	should be called on the MapHandler, and when OMComponents detect
+	they have been removed from the MapHandler in their findAndUndo
+	method, they should call dispose() on themselves if they have that
+	method.
+
+	* The ProjectionFactory is no longer a singleton.  A
+	ProjectionFactory is expected to be placed in a MapHandler, where
+	it will attach itself to the MapBean and can be accessed through
+	the MapBean.  If a ProjectionFactory is not set and requested from
+	the MapBean, the MapBean will create a ProjectionFactory with the
+	default set of ProjectionLoaders.  The ProjectionFactoryLoader
+	class has been removed, and that functionality (creating
+	ProjectionLoaders from Properties) has been incorporated into the
+	ProjectionFactory.  The ProjectionFactory should be created like
+	any other component added to the MapHandler, via the properties or
+	programmatically added to the MapHandler.
+
+2009-03-14  Don Dietrick  <dietrick@wonkavision.local>
+
+	* OpenMap 5.0 released as beta via SVN repository. All further
+	changes will apply to version 5.0.  OpenMap 5.0 requires Java 5
+	(jre 1.5.x).
+
+	* The com.bbn.openmap.proj.coords.LatLonPoint has been created
+	and it extends java.awt.Point2D.  You can instantiate
+	LatLonPoint.Double and LatLonPoint.Float classes, just like
+	Point2D.  Note that the Point2D methods follow the x, y ordering
+	of arguments, but that the setLocation() methods of LatLonPoint
+	follow the lat, lon ordering.  The old LatLonPoint currently
+	extends the new LatLonPoint.Float object.
+
+	* The Proj/Projection class and interface are now based on
+	java.awt.Point2D objects. The GeoProj class extends Projection,
+	and Point2D objects in coordinate space are now LatLonPoints as
+	allowed with Generics.  The Cartesian projection handles projected
+	data.
+
+	* The OMShape object is added to handle cartesian shapes, taking
+	java.awt.Shape objects and managed as an OMGraphic.
+	
+2009-03-05  Don Dietrick  <dietrick@wonkavision.local>
+
+	* OpenMap 4.6.5 released.
+	
 2009-02-27  Don Dietrick  <dietrick@wonkavision.local>
 
 	* The CSVTokenizer was updated to properly handle empty fields in
