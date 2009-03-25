@@ -230,7 +230,7 @@ public class CoordinateReferenceSystem {
 
     public void prepareProjection(GeoProj proj) {
         // TODO: do we need this??
-        proj.setPlanetRadius((float) ellipsoid.radius);
+        proj.setPlanetRadius(ellipsoid.radius);
     }
 
     /**

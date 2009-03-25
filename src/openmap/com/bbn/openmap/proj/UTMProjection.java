@@ -81,15 +81,6 @@ public class UTMProjection extends GeoProj {
         ppu = (((float) pixelsPerMeter) / getScale());
     }
 
-    public float normalize_latitude(float lat) {
-        if (lat > NORTH_POLE) {
-            return NORTH_POLE;
-        } else if (lat < SOUTH_POLE) {
-            return SOUTH_POLE;
-        }
-        return lat;
-    }
-
     public Point2D forward(LatLonPoint llp, Point2D pt) {
         return forward(llp, pt, new UTMPoint());
     }
@@ -130,8 +121,8 @@ public class UTMProjection extends GeoProj {
         }
 
         llpt = (T) UTMPoint.UTMtoLL(ellps,
-                (float) northing,
-                (float) easting,
+                northing,
+                easting,
                 zone_number,
                 isnorthern,
                 (LatLonPoint) llpt);
@@ -153,22 +144,23 @@ public class UTMProjection extends GeoProj {
      *        that matches the ll2 coordinate, usually the lower right corner of
      *        the area of interest.
      */
-    public float getScale(LatLonPoint ll1, LatLonPoint ll2, Point point1,
-                          Point point2) {
+    @Override
+    public float getScale(Point2D ll1, Point2D ll2, Point2D point1,
+                          Point2D point2) {
 
         // super does not calculate scale correct for projections that does use
         // the same earth radius up north..
 
-        float widthPX = point2.x - point1.x;
+        double widthPX = point2.getX() - point1.getX();
 
         // float heightPX = point2.y - point1.y;
 
-        UTMPoint xx1 = UTMPoint.LLtoUTM(ll1,
+        UTMPoint xx1 = UTMPoint.LLtoUTM((LatLonPoint)ll1,
                 ellps,
                 new UTMPoint(),
                 zone_number,
                 isnorthern);
-        UTMPoint xx2 = UTMPoint.LLtoUTM(ll2,
+        UTMPoint xx2 = UTMPoint.LLtoUTM((LatLonPoint)ll2,
                 ellps,
                 new UTMPoint(),
                 zone_number,
@@ -186,10 +178,6 @@ public class UTMProjection extends GeoProj {
         // quadratic.
 
         return widthScale;
-    }
-
-    public boolean isPlotable(float lat, float lon) {
-        return true;
     }
 
     protected ArrayList<int[]> _forwardPoly(float[] rawllpts, int ltype,

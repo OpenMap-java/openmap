@@ -44,7 +44,8 @@ public class DatumShiftProjection extends GeoProj {
         setCenter(proj.getCenter());
     }
 
-    public void setCenter(float lat, float lon) {
+    @Override
+    public void setCenter(double lat, double lon) {
         super.setCenter(lat, lon);
 
         Point2D centerInDifferentDatum = datum.forward(lat,
@@ -183,9 +184,10 @@ public class DatumShiftProjection extends GeoProj {
         return wrappedProjection.isPlotable(t.getY(), t.getX());
     }
 
-    public float getScale(LatLonPoint ll1, LatLonPoint ll2, Point point1,
-                          Point point2) {
-        return wrappedProjection.getScale(ll1, ll2, point1, point2);
-    }
+    @Override
+	public float getScale(Point2D ll1, Point2D ll2, Point2D point1,
+			Point2D point2) {
+		return wrappedProjection.getScale(ll1, ll2, point1, point2);
+	}
 
 }

@@ -710,13 +710,14 @@ public class LambertConformal extends GeoProj {
      *        that matches the ll2 coordinate, usually the lower right corner of
      *        the area of interest.
      */
-    public float getScale(LatLonPoint ll1, LatLonPoint ll2, Point point1,
-                          Point point2) {
+    @Override
+    public float getScale(Point2D ll1, Point2D ll2, Point2D point1,
+                          Point2D point2) {
 
         // super does not calculate scale correct for projections that does use
         // the same earth radius up north..
 
-        double widthPX = point2.x - point1.x;
+        double widthPX = point2.getX() - point1.getX();
 
         Point2D xx1 = LLToWorld(ll1.getY(),
                 ll1.getX(),

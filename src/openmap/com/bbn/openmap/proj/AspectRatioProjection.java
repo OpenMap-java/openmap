@@ -3,11 +3,8 @@ package com.bbn.openmap.proj;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
-import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-
-import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * A Projection that wraps another projection, but stretch the image to another
@@ -142,16 +139,14 @@ public class AspectRatioProjection extends GeoProj {
         return wrappedProjection.normalizeLatitude(lat);
     }
 
-    public Point2D forward(LatLonPoint llp, Point pt) {
+    @Override
+    public Point2D forward(Point2D llp, Point2D pt) {
         return fromWrapped(wrappedProjection.forward(llp, pt));
     }
 
-    public Point2D forward(float lat, float lon, Point pt) {
+    @Override
+    public Point2D forward(double lat, double lon, Point2D pt) {
         return fromWrapped(wrappedProjection.forward(lat, lon, pt));
-    }
-
-    public Point2D forward(float lat, float lon, Point pt, boolean isRadian) {
-        return fromWrapped(wrappedProjection.forward(lat, lon, pt, isRadian));
     }
 
     public boolean forwardRaw(float[] rawllpts, int rawoff, int[] xcoords,
@@ -182,14 +177,12 @@ public class AspectRatioProjection extends GeoProj {
         return wrappedProjection.getUpperLeft();
     }
 
-    public Point2D inverse(Point point, LatLonPoint llpt) {
-        return inverse(point.x, point.y, llpt);
+    @Override
+    public Point2D inverse(Point2D point, Point2D llpt) {
+        return inverse(point.getX(), point.getY(), llpt);
     }
 
-    public Point2D inverse(int x, int y, LatLonPoint llpt) {
-        return wrappedProjection.inverse(xToWrapped(x), yToWrapped(y), llpt);
-    }
-
+    @Override
     public boolean isPlotable(float lat, float lon) {
         return wrappedProjection.isPlotable(lat, lon);
     }
