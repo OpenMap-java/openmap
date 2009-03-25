@@ -49,7 +49,7 @@ public class Mercator extends Cylindrical {
     protected static double epsilon = 0.01f;
 
     // world<->screen coordinate offsets
-    protected transient int hy, wx;
+    protected transient double hy, wx;
 
     // almost constant projection parameters
     protected transient double tanCtrLat;
@@ -167,12 +167,9 @@ public class Mercator extends Cylindrical {
 
         // same as forward_x and forward_y, and convert to screen
         // coords
-        double x = (int) Math.round(scaled_radius
-                * wrapLongitude(lon - centerX))
-                + wx;
-        double y = hy
-                - (int) Math.round(scaled_radius
-                        * (MoreMath.asinh(Math.tan(lat)) - asinh_of_tanCtrLat));
+		double x = (scaled_radius * wrapLongitude(lon - centerX)) + wx;
+		double y = hy
+				- (scaled_radius * (MoreMath.asinh(Math.tan(lat)) - asinh_of_tanCtrLat));
         p.setLocation(x, y);
         return p;
     }
