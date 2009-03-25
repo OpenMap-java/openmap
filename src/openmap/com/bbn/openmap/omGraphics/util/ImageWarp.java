@@ -213,7 +213,9 @@ public class ImageWarp {
             Point2D imageCoord = new Point2D.Double();
             Point2D center = p.getCenter();
 
-            logger.info(projectedImageBounds.toString());
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(projectedImageBounds.toString());
+            }
 
             int minx = (int) Math.floor(projectedImageBounds.getMin().getX());
             int miny = (int) Math.floor(projectedImageBounds.getMin().getY());
@@ -300,7 +302,7 @@ public class ImageWarp {
             logger.fine("just using whole screen image");
             return new DataBounds(0, 0, p.getWidth(), p.getHeight());
         }
-        
+
         DataBounds db = null;
         if (sourceImageBounds != null) {
             int pw = p.getWidth();
