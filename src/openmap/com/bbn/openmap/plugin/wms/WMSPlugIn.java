@@ -14,6 +14,7 @@
 
 package com.bbn.openmap.plugin.wms;
 
+import java.awt.geom.Point2D;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -35,7 +36,7 @@ import com.bbn.openmap.util.PropUtils;
  * It has some properties that you can set in the openmap.properties file:
  * 
  * <pre>
- *    
+ * 
  *     #For the plugin layer, add wms_plugin to openmap.layers list
  *     wms_plugin=com.bbn.openmap.plugin.wms.WMSPlugIn
  *     wms_plugin.wmsserver=A URL for the WMS server (eg. http://host.domain.name/servlet/com.esri.wms.Esrimap)
@@ -47,7 +48,7 @@ import com.bbn.openmap.util.PropUtils;
  *     wms_plugin.styles=comma separated list of layer rendering styles corresponding to the layers listed
  *     wms_plugin.vendorspecificnames=comma separated list of vendor specific parameter names in order (eg. SERVICENAME)
  *     wms_plugin.vendorspecificvalues=comma separated list of vendor specific parameter values in order (eg. default)
- *     
+ * 
  * </pre>
  * 
  * <p>
@@ -156,10 +157,12 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         String width = "undefined";
 
         if (p != null) {
-            bbox = Double.toString(p.getUpperLeft().getX()) + ","
-                    + Double.toString(p.getLowerRight().getY()) + ","
-                    + Double.toString(p.getLowerRight().getX()) + ","
-                    + Double.toString(p.getUpperLeft().getY());
+            Point2D ul = p.getUpperLeft();
+            Point2D lr = p.getLowerRight();
+            bbox = Double.toString(ul.getX()) + ","
+                    + Double.toString(lr.getY()) + ","
+                    + Double.toString(lr.getX()) + ","
+                    + Double.toString(ul.getY());
             height = Integer.toString(p.getHeight());
             width = Integer.toString(p.getWidth());
         }
@@ -264,7 +267,8 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
 
         setBackgroundColor(setList.getProperty(prefix + BackgroundColorProperty));
 
-        setWmsVersion(setList.getProperty(prefix + WMSVersionProperty, wmsVersion));
+        setWmsVersion(setList.getProperty(prefix + WMSVersionProperty,
+                wmsVersion));
 
         layers = setList.getProperty(prefix + LayersProperty);
         styles = setList.getProperty(prefix + StylesProperty);

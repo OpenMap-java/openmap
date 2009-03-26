@@ -549,8 +549,9 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             boundingPolys[0] = new LinkBoundingPoly(ulLon, lrLat, lrLon, ulLat);
         }
 
-        LinkMapRequest.write((float) proj.getCenter().getY(),
-                (float) proj.getCenter().getX(),
+        Point2D center = proj.getCenter();
+        LinkMapRequest.write((float) center.getY(),
+                (float) center.getX(),
                 proj.getScale(),
                 proj.getHeight(),
                 proj.getWidth(),

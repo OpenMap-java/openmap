@@ -877,8 +877,9 @@ public class OverviewMapHandler extends OMToolComponent implements
             // This is really not the radius but the half width in radians.
             float radius = uom.toRadians(width) / 2;
 
-            Point2D left = (Point2D) p.getCenter().clone();
-            Point2D right = (Point2D) p.getCenter().clone();
+            Point2D center = p.getCenter();
+            Point2D left =  new Point2D.Double(center.getX(), center.getY());
+            Point2D right = new Point2D.Double(center.getX(), center.getY());
 
             double newLeftX = projUom.fromRadians(projUom.toRadians(left.getX())
                     - radius);

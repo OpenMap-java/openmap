@@ -53,7 +53,7 @@ import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The DTEDLayer fills the screen with DTED data. To view the DTED iamges, the
+ * The DTEDLayer fills the screen with DTED data. To view the DTED images, the
  * projection has to be set in a Equal ARC projection, which OpenMap calls the
  * CADRG projection or the LLXY projection. In Gesture mode, clicking on the map
  * will cause the DTEDLayer to place a point on the window and show the

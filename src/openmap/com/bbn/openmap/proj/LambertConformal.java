@@ -487,8 +487,8 @@ public class LambertConformal extends GeoProj {
      */
     public LatLonPoint getUpperLeft() {
         // In a conic projection the upper left is meaningless
-        // unless at realitively small scales.
-        // Return 90.0 -180 until someone fugures out a better way.
+        // unless at relatively small scales.
+        // Return 90.0 -180 until someone figures out a better way.
         return new LatLonPoint.Double(90.0, -180.0);
     }
 
@@ -503,8 +503,8 @@ public class LambertConformal extends GeoProj {
      */
     public LatLonPoint getLowerRight() {
         // In a conic projection the upper left is meaningless
-        // unless at realitively small scales.
-        // Return 90.0 -180 until someone fugures out a better way.
+        // unless at relatively small scales.
+        // Return 90.0 -180 until someone figures out a better way.
         return new LatLonPoint.Double(-90.0, 180.0);
     }
 

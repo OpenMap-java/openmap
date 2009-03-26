@@ -236,7 +236,9 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * 
      * @return Point2D center of projection, created just for you.
      */
-    public abstract <T extends Point2D> T getCenter();
+    public Point2D getCenter() {
+        return getCenter(new Point2D.Double());
+    }
 
     /**
      * Returns a center Point2D that was provided, with the location filled into
@@ -486,8 +488,8 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * @param point x,y Point2D
      * @return LatLonPoint (new)
      */
-    public <T extends Point2D> T inverse(Point2D point) {
-        return (T) inverse(point.getX(), point.getY(), new Point2D.Double());
+    public Point2D inverse(Point2D point) {
+        return inverse(point.getX(), point.getY(), new Point2D.Double());
     }
 
     /**
@@ -498,8 +500,8 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * @return LatLonPoint (new)
      * @see #inverse(Point)
      */
-    public <T extends Point2D> T inverse(double x, double y) {
-        return (T) inverse(x, y, new Point2D.Double());
+    public Point2D inverse(double x, double y) {
+        return inverse(x, y, new Point2D.Double());
     }
 
     public abstract <T extends Point2D> T inverse(double x, double y, T llpt);
@@ -923,5 +925,19 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      */
     public void setUcuom(Length ucuom) {
         this.ucuom = ucuom;
+    }
+
+    /**
+     * Get the world coordinate of the upper left corner of the map.
+     */
+    public Point2D getUpperLeft() {
+        return inverse(0, 0, new Point2D.Double());
+    }
+
+    /**
+     * Get the world coordinate of the lower right corner of the map.
+     */
+    public Point2D getLowerRight() {
+        return inverse(width, height, new Point2D.Double());
     }
 }

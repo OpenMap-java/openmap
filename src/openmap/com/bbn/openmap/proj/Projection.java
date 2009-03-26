@@ -346,7 +346,7 @@ public interface Projection extends java.io.Serializable {
     public void pan(float Az);
 
     /**
-     * Forward project a line defined by two coordinate endpoints.
+     * Forward project a line defined by two coordinate end points.
      * <p>
      * Returns a ArrayList<int[]> of (x[], y[]) coordinate pair(s) of the projected
      * line(s).
@@ -367,26 +367,26 @@ public interface Projection extends java.io.Serializable {
     public ArrayList<int[]> forwardRect(Point2D ll1, Point2D ll2);
 
     /**
-     * Forward project a polygin defined by the coordinates. The isFilled flag
-     * is only occasionaly important, for certain projections in certain
+     * Forward project a polygon defined by the coordinates. The isFilled flag
+     * is only occasionally important, for certain projections in certain
      * situations.
      * 
      * @param rawllpts a set of y, x coordinates.
      * @param isFilled true of is important to note the area of the poly,
      *        instead of just the edge.
-     * @return ArrayList<int[]> containg sets of int[]x, int[] y arrays.
+     * @return ArrayList<int[]> contains sets of int[]x, int[] y arrays.
      */
     public ArrayList<int[]> forwardPoly(float[] rawllpts, boolean isFilled);
 
     /**
-     * Forward project a polygin defined by the coordinates. The isFilled flag
-     * is only occasionaly important, for certain projections in certain
+     * Forward project a polygon defined by the coordinates. The isFilled flag
+     * is only occasionally important, for certain projections in certain
      * situations.
      * 
      * @param rawllpts a set of y, x coordinates.
      * @param isFilled true of is important to note the area of the poly,
      *        instead of just the edge.
-     * @return ArrayList<int[]> containg sets of int[]x, int[] y arrays.
+     * @return ArrayList<int[]> contains sets of int[]x, int[] y arrays.
      */
     public ArrayList<int[]> forwardPoly(double[] rawllpts, boolean isFilled);
 

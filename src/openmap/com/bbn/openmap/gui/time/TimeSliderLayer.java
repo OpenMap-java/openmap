@@ -540,8 +540,8 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
             Projection projection = getProjection();
 
             if (projection != null) {
-                setSelectionCenter(projection.inverse((double) x, (double) y)
-                        .getX());
+                Point2D invPnt = projection.inverse(x, y);
+                setSelectionCenter(invPnt.getX());
                 resetControlWidgets();
                 updateTimeline();
             }
@@ -592,6 +592,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
         }
 
         double worldMouse;
+        Point2D invPnt;
         int x = e.getPoint().x;
         int y = e.getPoint().y;
         int selectionCenterX = (int) projection.forward(0, selectionCenter)
@@ -600,9 +601,8 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
         switch (dragState) {
 
         case PRIMARY_HANDLE:
-
-            setSelectionCenter(projection.inverse((double) x, (double) y)
-                    .getX());
+            invPnt = projection.inverse(x, y);
+            setSelectionCenter(invPnt.getX());
             break;
 
         case LEFT_HANDLE:
@@ -611,7 +611,8 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
                 x = selectionCenterX - sliderPointHalfWidth;
             }
 
-            worldMouse = projection.inverse((double) x, (double) y).getX();
+            invPnt = projection.inverse(x, y);
+            worldMouse = invPnt.getX();
             selectionWidthMinutes = 2 * (selectionCenter - worldMouse);
             break;
 
@@ -620,8 +621,8 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
             if (x <= selectionCenterX + sliderPointHalfWidth) {
                 x = selectionCenterX + sliderPointHalfWidth;
             }
-
-            worldMouse = projection.inverse((double) x, (double) y).getX();
+            invPnt = projection.inverse(x, y);
+            worldMouse = invPnt.getX();
             selectionWidthMinutes = 2 * (worldMouse - selectionCenter);
             break;
         }

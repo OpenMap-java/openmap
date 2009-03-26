@@ -23,6 +23,7 @@
 
 package com.bbn.openmap.plugin.corbaImage;
 
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -109,10 +110,11 @@ public class CorbaImagePlugIn extends WebImagePlugIn implements ImageServerConst
         buf.append(REQUEST + "=" + MAP + "&");
 
         if (p != null) {
+            Point2D center = p.getCenter();
             buf.append(PROJTYPE + "=" + p.getName() + "&" +
                        SCALE + "=" + p.getScale() + "&" +
-                       LAT + "=" + p.getCenter().getY() + "&" +
-                       LON + "=" + p.getCenter().getX() + "&" +
+                       LAT + "=" + center.getY() + "&" +
+                       LON + "=" + center.getX() + "&" +
                        HEIGHT + "=" + p.getHeight() + "&" +
                        WIDTH + "=" + p.getWidth());
         } else {

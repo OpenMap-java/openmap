@@ -256,20 +256,6 @@ public class Cartesian extends Proj implements Projection, java.io.Serializable 
     }
 
     /**
-     * Get the world coordinate of the upper left corner of the map.
-     */
-    public Point2D getUpperLeft() {
-        return inverse(0, 0, new Point2D.Double());
-    }
-
-    /**
-     * Get the world coordinate of the lower right corner of the map.
-     */
-    public Point2D getLowerRight() {
-        return inverse(width, height, new Point2D.Double());
-    }
-
-    /**
      * Forward project a world coordinate into screen space.
      * 
      * @param wy vertical coordinate component in world units.
@@ -328,7 +314,6 @@ public class Cartesian extends Proj implements Projection, java.io.Serializable 
          * transform3.transform(tmp, iPoint1); transform1.inverseTransform(tmp,
          * worldPoint); } catch (NoninvertibleTransformException e) {
          * e.printStackTrace(); } catch (Exception e) { e.printStackTrace(); }
-         * 
          */
         return worldPoint;
     }
@@ -360,7 +345,8 @@ public class Cartesian extends Proj implements Projection, java.io.Serializable 
      */
     public Shape forwardShape(Shape shape) {
         return super.forwardShape(shape);
-//        return transform4.createTransformedShape(transform2.createTransformedShape(transform1.createTransformedShape(shape)));
+        // return
+        // transform4.createTransformedShape(transform2.createTransformedShape(transform1.createTransformedShape(shape)));
 
         // Set Proj.java for the iterator way of doing this.
     }
@@ -405,7 +391,7 @@ public class Cartesian extends Proj implements Projection, java.io.Serializable 
     public Point2D getCenter() {
         return new Point2D.Double(centerX, centerY);
     }
-    
+
     public double getBottomLimit() {
         return bottomLimit;
     }

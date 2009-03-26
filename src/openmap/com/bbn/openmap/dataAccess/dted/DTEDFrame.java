@@ -235,7 +235,7 @@ public class DTEDFrame implements Closable {
 
                 int lflon_index = (int) Math.floor(lon_index);
                 int lclon_index = (int) Math.ceil(lon_index);
-                // int lflat_index = (int) Math.floor(lat_index);
+                /* int lflat_index = (int) Math.floor(lat_index); */
                 int lclat_index = (int) Math.ceil(lat_index);
 
                 if (elevations[lflon_index] == null)

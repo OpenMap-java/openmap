@@ -22,10 +22,11 @@
 
 package com.bbn.openmap.plugin.shis;
 
+import java.awt.geom.Point2D;
 import java.util.Properties;
 
 import com.bbn.openmap.image.ImageServerConstants;
-import com.bbn.openmap.plugin.*;
+import com.bbn.openmap.plugin.WebImagePlugIn;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -93,10 +94,11 @@ public class SHISPlugIn extends WebImagePlugIn implements ImageServerConstants {
         buf.append(REQUEST + "=" + MAP + "&");
 
         if (p != null) {
+            Point2D center = p.getCenter();
             buf.append(PROJTYPE + "=" + p.getName() + "&" + SCALE + "="
                     + p.getScale() + "&" + LAT + "="
-                    + p.getCenter().getY() + "&" + LON + "="
-                    + p.getCenter().getX() + "&" + HEIGHT + "="
+                    + center.getY() + "&" + LON + "="
+                    + center.getX() + "&" + HEIGHT + "="
                     + p.getHeight() + "&" + WIDTH + "=" + p.getWidth());
         } else {
             buf.append(PROJTYPE + "=name_undefined&" + SCALE

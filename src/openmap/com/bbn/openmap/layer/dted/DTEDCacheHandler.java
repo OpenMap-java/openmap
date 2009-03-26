@@ -22,17 +22,19 @@
 
 package com.bbn.openmap.layer.dted;
 
+import java.awt.geom.Point2D;
+
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The DTEDCacheHandler controls the real cache of DTED frames. It is
- * managed by the DTEDCacheManager, and the manager asks it for
- * frames. The DTEDCacheHandler goes to its cache for the images, but
- * it also manages the configuration of the frames, and figures out
- * what frames are needed, given a projection.
+ * The DTEDCacheHandler controls the real cache of DTED frames. It is managed by
+ * the DTEDCacheManager, and the manager asks it for frames. The
+ * DTEDCacheHandler goes to its cache for the images, but it also manages the
+ * configuration of the frames, and figures out what frames are needed, given a
+ * projection.
  */
 public class DTEDCacheHandler {
     /** Default frame cache size. */
@@ -48,7 +50,7 @@ public class DTEDCacheHandler {
     protected int frameCacheSize = -1; // No limit.
     /** The colors used by the frames to create the images. */
     protected DTEDFrameColorTable colortable; // numColors, reduced
-                                              // colortable
+    // colortable
 
     // Setting up the screen...
     protected LatLonPoint ulCoords, lrCoords;
@@ -57,8 +59,8 @@ public class DTEDCacheHandler {
     protected int numXSubframes, numYSubframes;
     protected int lastSubframeWidth, lastSubframeHeight;
     protected int currentFrameCacheSize = -10; // guarantees that it
-                                               // will changed first
-                                               // time.
+    // will changed first
+    // time.
 
     // Returning the images...
     protected boolean firstImageReturned = true;
@@ -67,7 +69,7 @@ public class DTEDCacheHandler {
     protected int subx = 0;
     protected int suby = 0;
     protected boolean newframe = false;
-    protected DTEDFrame frame = null;
+    protected DTEDSubframedFrame frame = null;
 
     /** A description of the drawing attributes of the images. */
     protected DTEDFrameSubframeInfo dfsi = new DTEDFrameSubframeInfo(DTEDFrameSubframe.NOSHADING, DTEDFrameSubframe.DEFAULT_BANDHEIGHT, DTEDFrameSubframe.LEVEL_0, DTEDFrameSubframe.DEFAULT_SLOPE_ADJUST);
@@ -111,10 +113,10 @@ public class DTEDCacheHandler {
     }
 
     /**
-     * Normally, the cache grows and shrinks as appropriate according
-     * to the number of frames needed to cover the screen. If you want
-     * to limit the size it can grow, set the size. If it's negative,
-     * then there will be no limit.
+     * Normally, the cache grows and shrinks as appropriate according to the
+     * number of frames needed to cover the screen. If you want to limit the
+     * size it can grow, set the size. If it's negative, then there will be no
+     * limit.
      */
     public void setFrameCacheSize(int size) {
         if (size <= 0) {
@@ -125,16 +127,15 @@ public class DTEDCacheHandler {
     }
 
     /**
-     * Get the limit imposed on the number of frames used in the
-     * cache.
+     * Get the limit imposed on the number of frames used in the cache.
      */
     public int getFrameCacheSize() {
         return frameCacheSize;
     }
 
     /**
-     * Get an elevation at a point. Always uses the cache to load the
-     * frame and get the data.
+     * Get an elevation at a point. Always uses the cache to load the frame and
+     * get the data.
      */
     public int getElevation(float lat, float lon) {
         return frameCache.getElevation(lat, lon);
@@ -150,42 +151,41 @@ public class DTEDCacheHandler {
     }
 
     /**
-     * The method to call to let the cache handler know what the
-     * projection looks like so it can figure out which frames (and
-     * subframes) will be needed.
+     * The method to call to let the cache handler know what the projection
+     * looks like so it can figure out which frames (and subframes) will be
+     * needed.
      * 
      * @param proj the EqualArc projection of the screen.
      */
     public void setProjection(EqualArc proj) {
         setProjection(proj,
-                (float)proj.getUpperLeft().getY(),
-                (float)proj.getUpperLeft().getX(),
-                (float)proj.getLowerRight().getY(),
-                (float)proj.getLowerRight().getX());
+                ((Point2D) proj.getUpperLeft()).getY(),
+                ((Point2D) proj.getUpperLeft()).getX(),
+                ((Point2D) proj.getLowerRight()).getY(),
+                ((Point2D) proj.getLowerRight()).getX());
     }
 
     /**
-     * The method to call to let the cache handler know what the
-     * projection looks like so it can figure out which frames (and
-     * subframes) will be needed. Should be called when the
-     * CacheHandler is dealing with just a part of the map, such as
-     * when the map covers the dateline or equator.
+     * The method to call to let the cache handler know what the projection
+     * looks like so it can figure out which frames (and subframes) will be
+     * needed. Should be called when the CacheHandler is dealing with just a
+     * part of the map, such as when the map covers the dateline or equator.
      * 
      * @param proj the EqualArc projection of the screen.
-     * @param lat1 latitude of the upper left corner of the window, in
-     *        decimal degrees.
-     * @param lon1 longitude of the upper left corner of the window,
-     *        in decimal degrees.
-     * @param lat2 latitude of the lower right corner of the window,
-     *        in decimal degrees.
-     * @param lon2 longitude of the lower right corner of the window,
-     *        in decimal degrees.
+     * @param lat1 latitude of the upper left corner of the window, in decimal
+     *        degrees.
+     * @param lon1 longitude of the upper left corner of the window, in decimal
+     *        degrees.
+     * @param lat2 latitude of the lower right corner of the window, in decimal
+     *        degrees.
+     * @param lon2 longitude of the lower right corner of the window, in decimal
+     *        degrees.
      */
-    public void setProjection(EqualArc proj, float lat1, float lon1,
-                              float lat2, float lon2) {
+    public void setProjection(EqualArc proj, double lat1, double lon1,
+                              double lat2, double lon2) {
 
-        ulCoords = new LatLonPoint.Float(lat1, lon1);
-        lrCoords = new LatLonPoint.Float(lat2, lon2);
+        ulCoords = new LatLonPoint.Double(lat1, lon1);
+        lrCoords = new LatLonPoint.Double(lat2, lon2);
         double xpi = 360 / proj.getXPixConstant();
         double ypi = 90 / proj.getYPixConstant();
 
@@ -268,14 +268,26 @@ public class DTEDCacheHandler {
 
             if (Debug.debugging("dted"))
                 Debug.output("***** Screen Parameters Changed! \n"
-                        + " Frame width (pix) = " + frame_width + "\n"
-                        + " Frame height (pix) = " + frame_height + "\n"
-                        + " Num x subframes = " + numXSubframes + "\n"
-                        + " Num y subframes = " + numYSubframes + "\n"
-                        + " last sf width = " + lastSubframeWidth + "\n"
-                        + " last sf height = " + lastSubframeHeight + "\n"
-                        + " X pix interval = " + xpi + "\n"
-                        + " Y pix interval = " + ypi + "\n");
+                        + " Frame width (pix) = "
+                        + frame_width
+                        + "\n"
+                        + " Frame height (pix) = "
+                        + frame_height
+                        + "\n"
+                        + " Num x subframes = "
+                        + numXSubframes
+                        + "\n"
+                        + " Num y subframes = "
+                        + numYSubframes
+                        + "\n"
+                        + " last sf width = "
+                        + lastSubframeWidth
+                        + "\n"
+                        + " last sf height = "
+                        + lastSubframeHeight
+                        + "\n"
+                        + " X pix interval = "
+                        + xpi + "\n" + " Y pix interval = " + ypi + "\n");
 
         } else if (Math.abs(numFramesNeeded - currentFrameCacheSize) > numFramesNeeded / 2) {
             currentFrameCacheSize = numFramesNeeded;
@@ -288,15 +300,14 @@ public class DTEDCacheHandler {
     }
 
     /**
-     * Returns the next OMRaster image. When setProjection() is
-     * called, the cache sets the projection parameters it needs, and
-     * also resets this popping mechanism. When this mechanism is
-     * reset, you can keep calling this method to get another subframe
-     * image. When it returns a null value, it is done. It will
-     * automatically skip over window frames it doesn't have, and
-     * return the next one it does have. It traverses from the top
-     * left to right frames, and top to bottom for each column of
-     * frames. It handles all the subframes for a frame at one time.
+     * Returns the next OMRaster image. When setProjection() is called, the
+     * cache sets the projection parameters it needs, and also resets this
+     * popping mechanism. When this mechanism is reset, you can keep calling
+     * this method to get another subframe image. When it returns a null value,
+     * it is done. It will automatically skip over window frames it doesn't
+     * have, and return the next one it does have. It traverses from the top
+     * left to right frames, and top to bottom for each column of frames. It
+     * handles all the subframes for a frame at one time.
      * 
      * @return OMRaster image.
      */
@@ -355,7 +366,7 @@ public class DTEDCacheHandler {
                 frame = frameCache.get(frameLat, frameLon, dfsi.dtedLevel);
             }
 
-            //  Figure out subframe lat/lon and height/width
+            // Figure out subframe lat/lon and height/width
             if (frame != null) {
 
                 newframe = false;
@@ -419,4 +430,3 @@ public class DTEDCacheHandler {
     }
 
 }
-

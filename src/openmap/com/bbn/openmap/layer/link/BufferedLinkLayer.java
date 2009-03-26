@@ -23,6 +23,7 @@
 package com.bbn.openmap.layer.link;
 
 /*  Java Core  */
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
@@ -191,8 +192,10 @@ public class BufferedLinkLayer extends LinkLayer {
         LinkBoundingPoly[] boundingPolys = new LinkBoundingPoly[1];
         boundingPolys[0] = new LinkBoundingPoly(-180.0f, -90f, 180f, 90);
 
-        LinkMapRequest.write((float)proj.getCenter().getY(),
-                (float)proj.getCenter().getX(),
+        
+        Point2D center = proj.getCenter();
+        LinkMapRequest.write((float) center.getY(),
+                (float) center.getX(),
                 proj.getScale(),
                 proj.getHeight(),
                 proj.getWidth(),

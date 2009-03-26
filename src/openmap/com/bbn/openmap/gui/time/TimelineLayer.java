@@ -969,8 +969,10 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         protected void updateY(Projection proj) {
             // The difference here is that the upper and lower bounds are
             // determined by the projection.
-            lat1 = (float) proj.getUpperLeft().getY();
-            lat2 = (float) proj.getLowerRight().getY();
+            Point2D ul = proj.getUpperLeft();
+            Point2D lr = proj.getLowerRight();
+            lat1 = ul.getY();
+            lat2 = lr.getY();
         }
 
         public static class PreTime extends SelectionArea {
@@ -986,7 +988,8 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             public boolean generate(Projection proj) {
                 // The difference here is that the vertical bounds are
                 // determined the starting time and all times before that.
-                float ulx = (float) proj.getUpperLeft().getX();
+                Point2D ul = proj.getUpperLeft();
+                double ulx = ul.getX();
                 if (ulx >= lon2) {
                     lon1 = lon2;
                 } else {
@@ -1011,7 +1014,8 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             public boolean generate(Projection proj) {
                 // The difference here is that the vertical bounds are
                 // determined the end time and all times after that.
-                float lrx = (float) proj.getLowerRight().getX();
+                Point2D lr = proj.getLowerRight();
+                double lrx = lr.getX();
                 if (lrx <= lon1) {
                     lon2 = lon1;
                 } else {
@@ -1100,9 +1104,10 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             }
 
             protected void updateY(Projection proj) {
-                lat1 = (float) proj.getUpperLeft().getY();
+                Point2D ul = proj.getUpperLeft();
+                lat1 = ul.getY();
                 Point2D lrpt = proj.inverse(0, proj.getHeight() / 8);
-                lat2 = (float) lrpt.getY();
+                lat2 = lrpt.getY();
                 idString = null;
             }
 

@@ -26,6 +26,7 @@ import java.awt.geom.Point2D;
 import java.util.Properties;
 
 import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.dataAccess.dted.DTEDFrameUtil;
 import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.layer.util.cacheHandler.CacheHandler;
 import com.bbn.openmap.layer.util.cacheHandler.CacheObject;
@@ -198,10 +199,10 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
      * @param lon longitude of point
      * @param level the dted level wanted (0, 1, 2)
      */
-    public DTEDFrame get(double lat, double lon, int level) {
+    public DTEDSubframedFrame get(double lat, double lon, int level) {
         String name = findFileName(lat, lon, level);
         if (name != null) {
-            return (DTEDFrame) get(name);
+            return (DTEDSubframedFrame) get(name);
         }
         return null;
     }
@@ -218,7 +219,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
          * @param id passed to superclass
          * @param obj passed to superclass
          */
-        public DTEDCacheObject(String id, DTEDFrame obj) {
+        public DTEDCacheObject(String id, DTEDSubframedFrame obj) {
             super(id, obj);
         }
 
@@ -227,7 +228,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
          * for garbage collection.
          */
         public void finalize() {
-            ((DTEDFrame) obj).dispose();
+            ((DTEDSubframedFrame) obj).dispose();
         }
     }
 
@@ -242,7 +243,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
         if (dtedFramePath != null) {
             // If it's a DTED level 0 frame, read it all in,
             // otherwise, read just what you need.
-            DTEDFrame frame = new DTEDFrame(dtedFramePath, dtedFramePath.endsWith("dt0"));
+            DTEDSubframedFrame frame = new DTEDSubframedFrame(dtedFramePath, dtedFramePath.endsWith("dt0"));
             frame.initSubframes(numXSubframes, numYSubframes);
 
             if (frame.frame_is_valid) {
@@ -304,7 +305,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
                 continue;
             }
 
-            DTEDFrame frame = (DTEDFrame) (dco.obj);
+            DTEDSubframedFrame frame = (DTEDSubframedFrame) (dco.obj);
             dco.cachedTime = 0;
 
             if (frame == null) {
@@ -357,11 +358,11 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
      */
     public int getElevation(float lat, float lon) {
         for (int i = /* dted level */1; i >= /* dted level */0; i--) {
-            DTEDFrame frame = null;
+            DTEDSubframedFrame frame = null;
             String dtedFileName = findFileName((double) lat, (double) lon, i);
 
             if (dtedFileName != null)
-                frame = (DTEDFrame) get(dtedFileName);
+                frame = (DTEDSubframedFrame) get(dtedFileName);
 
             if (frame != null)
                 return (int) frame.elevationAt(lat, lon);
@@ -441,7 +442,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
      */
     protected short[][] getElevations(float ullat, float ullon, float lrlat,
                                       float lrlon, int dtedLevel,
-                                      DTEDFrame refFrame) {
+                                      DTEDSubframedFrame refFrame) {
 
         float upper = ullat;
         float lower = lrlat;
@@ -482,7 +483,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
 
         short[][][][] es = new short[xSize][ySize][][];
         int x, y;
-        DTEDFrame frame = null;
+        DTEDSubframedFrame frame = null;
         boolean needCalc = false;
         // Let's march through the frames, bottom to top, left to
         // right.
@@ -510,7 +511,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
                 else
                     upperlat = (float) Math.floor(lower) + (float) (y + 1);
 
-                DTEDFrame thisFrame = get(lowerlat, lowerlon, dtedLevel);
+                DTEDSubframedFrame thisFrame = get(lowerlat, lowerlon, dtedLevel);
 
                 if (thisFrame != null) {
                     //                  System.out.println("Getting elev for " +

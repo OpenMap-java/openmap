@@ -23,7 +23,6 @@
 package com.bbn.openmap.proj;
 
 import java.awt.Point;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import com.bbn.openmap.MoreMath;
@@ -173,7 +172,7 @@ public abstract class Cylindrical extends GeoProj {
      * 
      */
     public LatLonPoint getUpperLeft() {
-        return inverse(0, 0);
+        return inverse(0, 0, new LatLonPoint.Double());
     }
 
     /**
@@ -187,7 +186,7 @@ public abstract class Cylindrical extends GeoProj {
      * 
      */
     public LatLonPoint getLowerRight() {
-        return inverse(width - 1, height - 1);
+        return inverse(width - 1, height - 1, new LatLonPoint.Double());
     }
 
     /**
