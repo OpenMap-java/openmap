@@ -1033,7 +1033,7 @@ public abstract class GeoProj extends Proj {
      * @param point x,y Point
      * @return LatLonPoint (new)
      */
-    public Point2D inverse(Point2D point) {
+    public LatLonPoint inverse(Point2D point) {
         return inverse(point.getX(), point.getY(), new LatLonPoint.Double());
     }
 
@@ -1045,7 +1045,7 @@ public abstract class GeoProj extends Proj {
      * @return LatLonPoint (new)
      * @see #inverse(Point2D)
      */
-    public Point2D inverse(int x, int y) {
+    public LatLonPoint inverse(int x, int y) {
         return inverse(x, y, new LatLonPoint.Double());
     }
 
