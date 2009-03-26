@@ -38,7 +38,7 @@ public class Orthographic extends Azimuth {
      */
     public final static transient String OrthographicName = "Orthographic";
 
-    protected int hy, wx;
+    protected double hy, wx;
 
     // almost constant projection parameters
     protected double cosCtrLat;

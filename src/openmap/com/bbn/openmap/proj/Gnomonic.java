@@ -39,7 +39,7 @@ public class Gnomonic extends Azimuth {
      */
     public final static transient String GnomonicName = "Gnomonic";
 
-    protected int hy, wx;
+    protected double hy, wx;
 
     // almost constant projection parameters
     protected double cosCtrLat;

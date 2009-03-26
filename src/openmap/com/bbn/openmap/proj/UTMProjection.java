@@ -21,13 +21,13 @@ public class UTMProjection extends GeoProj {
     // TODO: find a better name?
     protected Point2D.Double xycenter = new Point2D.Double();
 
-    protected int hy, wx;
+    protected double hy, wx;
 
     /**
      * Pixel per map unit. this is for a projection with a quadratic grid like
      * utm
      */
-    protected float ppu;
+    protected double ppu;
 
     // used for calculating wrapping of ArrayList graphics
     // TODO: copied from Cylindrical. may need to change.
@@ -104,8 +104,8 @@ public class UTMProjection extends GeoProj {
                 zone_number,
                 isnorthern);
 
-        pt.setLocation((wx + Math.round(ppu
-                * (utmPoint.easting - xycenter.getX()))), (hy - Math.round(ppu
+        pt.setLocation((wx + (ppu
+                * (utmPoint.easting - xycenter.getX()))), (hy - (ppu
                 * (utmPoint.northing - xycenter.getY()))));
 
         return pt;

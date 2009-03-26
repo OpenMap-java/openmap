@@ -39,7 +39,7 @@ public class LLXY extends Cylindrical implements EqualArc {
     public final static transient String LLXYName = "LLXY";
 
     // world<->screen coordinate offsets
-    protected int hy, wx;
+    protected double hy, wx;
     protected double cLon;
     protected double cLat;
     /** Pixel per degree */

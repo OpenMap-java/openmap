@@ -11,8 +11,11 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -56,12 +59,12 @@ public class CapabilitiesSupport {
     public static final int FMT_EXCEPTIONS = 3;
 
     public static final int FMT_MAIN = 3;
-
-    private List[] formatsList = { null, null, null, null };
+    
+    private Map<Integer, List<String>> formatsList = new HashMap<Integer, List<String>>();
 
     private String[] onlineResourcesList = { null, null, null, null };
 
-    private List keywordsList = null;
+    private List<String> keywordsList = null;
 
     private String wmsTitle = null;
 
@@ -69,11 +72,11 @@ public class CapabilitiesSupport {
 
     private int updateSequence = 1;
 
-    private List wmslayers = new ArrayList();
+    private List<IWmsLayer> wmslayers = new ArrayList<IWmsLayer>();
 
     private String layersTitle;
 
-    private Collection crsCodes = CoordinateReferenceSystem.getCodes();
+    private Collection<String> crsCodes = CoordinateReferenceSystem.getCodes();
 
     /**
      * Creates a new instance of CapabilitiesSupport
@@ -89,7 +92,7 @@ public class CapabilitiesSupport {
         wmsAbstract = props.getProperty(WMSPrefix + "Abstract", "Sample Abstract");
         layersTitle = props.getProperty(WMSPrefix + "LayersTitle", "Sample Layer List");
         String[] strKeywords = props.getProperty(WMSPrefix + "Keyword", "").split(" ");
-        List keywords = Arrays.asList(strKeywords);
+        List<String> keywords = Arrays.asList(strKeywords);
         setKeywords(keywords);
 
         String url = scheme + "://" + hostName + ":" + port + path;
@@ -98,7 +101,10 @@ public class CapabilitiesSupport {
         setOnlineResource(FMT_GETCAPS, url);
         setOnlineResource(FMT_GETFEATUREINFO, url);
 
-        List al = new ArrayList();
+        List<String> al = new ArrayList<String>();
+        setFormats(FMT_GETMAP, al);
+        
+        al.clear();
         al.add("application/vnd.ogc.wms_xml");
         setFormats(FMT_GETCAPS, al);
 
@@ -162,17 +168,17 @@ public class CapabilitiesSupport {
         Node capability = doc.createElement("Capability");
         Element request = doc.createElement("Request");
 
-        request.appendChild(requestcap(doc, WMTConstants.GETCAPABILITIES, formatsList[FMT_GETCAPS], "Get",
+        request.appendChild(requestcap(doc, WMTConstants.GETCAPABILITIES, formatsList.get(FMT_GETCAPS), "Get",
                 onlineResourcesList[FMT_GETCAPS]));
-        request.appendChild(requestcap(doc, WMTConstants.GETMAP, formatsList[FMT_GETMAP], "Get",
+        request.appendChild(requestcap(doc, WMTConstants.GETMAP, formatsList.get(FMT_GETMAP), "Get",
                 onlineResourcesList[FMT_GETMAP]));
-        request.appendChild(requestcap(doc, WMTConstants.GETFEATUREINFO, formatsList[FMT_GETFEATUREINFO],
+        request.appendChild(requestcap(doc, WMTConstants.GETFEATUREINFO, formatsList.get(FMT_GETFEATUREINFO),
                 "Get", onlineResourcesList[FMT_GETFEATUREINFO]));
         capability.appendChild(request);
 
         Element exceptionElement = doc.createElement("Exception");
-        for (int i = 0; i < formatsList[FMT_EXCEPTIONS].size(); i++) {
-            exceptionElement.appendChild(textnode(doc, "Format", (String) formatsList[FMT_EXCEPTIONS].get(i)));
+        for(String format : formatsList.get(FMT_EXCEPTIONS)) {
+            exceptionElement.appendChild(textnode(doc, "Format", format));
         }
         capability.appendChild(exceptionElement);
 
@@ -185,19 +191,22 @@ public class CapabilitiesSupport {
     private Element createLayersElement(Document doc) {
         Element layers = doc.createElement("Layer");
         layers.appendChild(textnode(doc, "Title", layersTitle));
-        for (Iterator it = crsCodes.iterator(); it.hasNext();) {
-            layers.appendChild(textnode(doc, "SRS", (String) it.next()));
+        for (Iterator<String> it = crsCodes.iterator(); it.hasNext();) {
+            layers.appendChild(textnode(doc, "SRS", it.next()));
         }
         
         // append bounding boxes
         appendLatLonBoundingBox(doc, layers);
-        for (Iterator it = crsCodes.iterator(); it.hasNext();) {
-            appendSRSBoundingBox(doc, layers, (String) it.next());
+        for (Iterator<String> it = crsCodes.iterator(); it.hasNext();) {
+            appendSRSBoundingBox(doc, layers, it.next());
         }
         
         // append layers
-        for (Iterator it = wmslayers.iterator(); it.hasNext();) {
-            IWmsLayer wmsLayer = (IWmsLayer) it.next();
+        // in OpenMap, the layer on top is listed first, but in WMS
+        // Capabilities, the layer on top is listed at the bottom
+        List<IWmsLayer> reverseLayers = new ArrayList<IWmsLayer>(wmslayers);
+        Collections.reverse(reverseLayers);
+        for (IWmsLayer wmsLayer : reverseLayers) {
             createLayerElement(doc, layers, wmsLayer);
         }
         return layers;
@@ -258,13 +267,13 @@ public class CapabilitiesSupport {
      * @param formats
      * @return
      */
-    public boolean setFormats(int request, List formats) {
+    public boolean setFormats(int request, List<String> formats) {
         switch (request) {
         case FMT_GETMAP:
         case FMT_GETCAPS:
         case FMT_GETFEATUREINFO:
         case FMT_EXCEPTIONS:
-            formatsList[request] = new ArrayList(formats);
+            formatsList.put(request, new ArrayList<String>(formats));
             break;
         default:
             return false;
@@ -295,7 +304,7 @@ public class CapabilitiesSupport {
      * @param keywordsList
      * @return
      */
-    public void setKeywords(List keywordsList) {
+    public void setKeywords(List<String> keywordsList) {
         this.keywordsList = keywordsList;
     }
 
@@ -388,7 +397,7 @@ public class CapabilitiesSupport {
      * @param url
      * @return
      */
-    private Node requestcap(Document doc, String requestName, List formatList, String methodName, String url) {
+    private Node requestcap(Document doc, String requestName, List<String> formatList, String methodName, String url) {
         Element onlineResourceElement = doc.createElement("OnlineResource");
         onlineResourceElement.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
         onlineResourceElement.setAttribute("xlink:type", "simple");
@@ -403,8 +412,8 @@ public class CapabilitiesSupport {
         dcpTypeNode.appendChild(httpNode);
         
         Element requestNameNode = doc.createElement(requestName);
-        for (int i = 0; i < formatList.size(); i++) {
-            requestNameNode.appendChild(textnode(doc, "Format", (String) formatList.get(i)));
+        for (String format : formatList) {
+            requestNameNode.appendChild(textnode(doc, "Format", format));
         }
         requestNameNode.appendChild(dcpTypeNode);
 
