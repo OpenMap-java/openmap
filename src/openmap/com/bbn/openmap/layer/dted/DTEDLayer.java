@@ -26,7 +26,6 @@ package com.bbn.openmap.layer.dted;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.io.Serializable;
 
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -39,54 +38,49 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.event.InfoDisplayEvent;
-import com.bbn.openmap.event.LayerStatusEvent;
-import com.bbn.openmap.event.MapMouseListener;
-import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.event.SelectMouseMode;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
+import com.bbn.openmap.omGraphics.event.StandardMapMouseInterpreter;
 import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.util.SwingWorker;
 
 /**
- * The DTEDLayer fills the screen with DTED data. To view the DTED
- * iamges, the projection has to be set in a Equal ARC projection,
- * which OpenMap calls the CADRG projection or the LLXY projection. In
- * Gesture mode, clicking on the map will cause the DTEDLayer to place
- * a point on the window and show the elevation of that point. The
- * Gesture response is not dependent on the scale or projection of the
- * screen.
+ * The DTEDLayer fills the screen with DTED data. To view the DTED iamges, the
+ * projection has to be set in a Equal ARC projection, which OpenMap calls the
+ * CADRG projection or the LLXY projection. In Gesture mode, clicking on the map
+ * will cause the DTEDLayer to place a point on the window and show the
+ * elevation of that point. The Gesture response is not dependent on the scale
+ * or projection of the screen.
  * <P>
  * 
- * The DTEDLayer uses the DTEDCacheManager to get the images it needs.
- * The DTEDLayer receives projection change events, and then asks the
- * cache manager for the images it needs based on the new projection.
+ * The DTEDLayer uses the DTEDCacheManager to get the images it needs. The
+ * DTEDLayer receives projection change events, and then asks the cache manager
+ * for the images it needs based on the new projection.
  * 
- * The DTEDLayer also relies on properties to set its variables, such
- * as the dted frame paths (there can be several at a time), the
- * opaqueness of the frame images, number of colors to use, and some
- * other display variables. The DTEDLayer properties look something
- * like this:
+ * The DTEDLayer also relies on properties to set its variables, such as the
+ * dted frame paths (there can be several at a time), the opaqueness of the
+ * frame images, number of colors to use, and some other display variables. The
+ * DTEDLayer properties look something like this:
  * <P>
  * 
- * NOTE: Make sure your DTED file and directory names are in lower
- * case. You can use the com.bbn.openmap.util.wanderer.ChangeCase
- * class to make modifications if necessary.
+ * NOTE: Make sure your DTED file and directory names are in lower case. You can
+ * use the com.bbn.openmap.util.wanderer.ChangeCase class to make modifications
+ * if necessary.
  * <P>
  * 
  * <pre>
  * 
- *  
- *   
- *    
+ * 
+ * 
+ * 
  *     #------------------------------
  *     # Properties for DTEDLayer
  *     #------------------------------
@@ -133,53 +127,40 @@ import com.bbn.openmap.util.SwingWorker;
  *     #-------------------------------------
  *     # End of properties for DTEDLayer
  *     #-------------------------------------
- *     
- *    
- *   
- *  
+ * 
+ * 
+ * 
+ * 
  * </pre>
  * 
  * @see com.bbn.openmap.layer.rpf.ChangeCase
  */
-public class DTEDLayer extends Layer implements ActionListener,
-        MapMouseListener, Serializable {
+public class DTEDLayer extends OMGraphicHandlerLayer {
 
     /** The cache manager. */
     protected transient DTEDCacheManager cache = null;
-    /** The graphics list used for display. */
-    protected OMGraphicList omGraphics;
     /**
-     * Set when the projection has changed while a swing worker is
-     * gathering graphics, and we want him to stop early.
+     * Set when the projection has changed while a swing worker is gathering
+     * graphics, and we want him to stop early.
      */
     protected boolean cancelled = false;
     /**
-     * The paths to the DTED Level 0, 1 directories, telling where the
-     * data is. Newer level 2 data, with the .dt2 file extensions,
-     * should be set in this path property.
+     * The paths to the DTED Level 0, 1 directories, telling where the data is.
+     * Newer level 2 data, with the .dt2 file extensions, should be set in this
+     * path property.
      */
     protected String[] paths;
     /**
-     * Because older DTED Level 2 data has the same name extension as
-     * Level 1 data, a separate array of pathnames is available for
-     * that old data. Level 0 and 1 data should be lumped together, or
-     * listed in the same array of paths. Newer level 2 data with the
-     * .dt2 extension should be listed in the regular dted path
-     * property with the level 0 and 1 data.
-     */
-    protected String[] paths2;
-    /**
-     * The level of DTED to use. Level 0 is 1km post spacing, Level 1
-     * is 100m post spacing. Level 2 is 30m post spacing
+     * The level of DTED to use. Level 0 is 1km post spacing, Level 1 is 100m
+     * post spacing. Level 2 is 30m post spacing
      */
     protected int dtedLevel = DTEDFrameSubframe.LEVEL_0;
     /**
-     * The display type for the dted images. Slope shading is
-     * greyscale terrain modeling with highlights and shading, with
-     * the 'sun' being in the NorthWest. Colored Elevation shading is
-     * the same thing, except colors are added to indicate the
-     * elevation. Band shading colors the pixels according to a range
-     * of elevations.
+     * The display type for the dted images. Slope shading is greyscale terrain
+     * modeling with highlights and shading, with the 'sun' being in the
+     * NorthWest. Colored Elevation shading is the same thing, except colors are
+     * added to indicate the elevation. Band shading colors the pixels according
+     * to a range of elevations.
      */
     protected int viewType = DTEDFrameSubframe.NOSHADING;
     /** The elevation range to use for each color in band shading. */
@@ -209,14 +190,11 @@ public class DTEDLayer extends Layer implements ActionListener,
     private String level1Command = "setLevelTo1";
     private String level2Command = "setLevelTo2";
 
-    /** The thread worker used to create the DTED images. */
-    DTEDWorker currentWorker;
     /** The elevation spot used in the gesture mode. */
     DTEDLocation location = null;
 
     /**
-     * Instances of this class are used to display elevation labels on
-     * the map.
+     * Instances of this class are used to display elevation labels on the map.
      */
     static class DTEDLocation {
         OMText text;
@@ -263,89 +241,36 @@ public class DTEDLayer extends Layer implements ActionListener,
         }
     }
 
-    class DTEDWorker extends SwingWorker {
-        /** Constructor used to create a worker thread. */
-        public DTEDWorker() {
-            super();
-        }
-
-        /**
-         * Compute the value to be returned by the <code>get</code>
-         * method.
-         */
-        public Object construct() {
-            Debug.message("dted", getName() + "|DTEDWorker.construct()");
-            fireStatusUpdate(LayerStatusEvent.START_WORKING);
-            try {
-                return prepare();
-            } catch (OutOfMemoryError e) {
-                String msg = getName() + "|DTEDLayer.DTEDWorker.construct(): "
-                        + e;
-                Debug.error(msg);
-                fireRequestMessage(new InfoDisplayEvent(this, msg));
-                fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-                cache = null;
-                return null;
-            }
-        }
-
-        /**
-         * Called on the event dispatching thread (not on the worker
-         * thread) after the <code>construct</code> method has
-         * returned.
-         */
-        public void finished() {
-            workerComplete(this);
-            fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
-        }
-    }
-
     /**
-     * The default constructor for the Layer. All of the attributes
-     * are set to their default values.
+     * The default constructor for the Layer. All of the attributes are set to
+     * their default values.
      */
     public DTEDLayer() {
-        this(null, null);
+        this(null);
     }
 
     /**
-     * The default constructor for the Layer. All of the attributes
-     * are set to their default values.
+     * The default constructor for the Layer. All of the attributes are set to
+     * their default values.
      * 
-     * @param pathsToDTEDDirs paths to the DTED directories that hold
-     *        level 0 and 1 data.
+     * @param pathsToDTEDDirs paths to the DTED directories that hold level 0, 1
+     *        and 2 data.
      */
     public DTEDLayer(String[] pathsToDTEDDirs) {
-        this(pathsToDTEDDirs, null);
-    }
-
-    /**
-     * The default constructor for the Layer. All of the attributes
-     * are set to their default values.
-     * 
-     * @param pathsToDTEDDirs paths to the DTED directories that hold
-     *        level 0 and 1 data.
-     * @param pathsToDTED2Dirs paths to the DTED directories that hold
-     *        level 2 data.
-     */
-    public DTEDLayer(String[] pathsToDTEDDirs, String[] pathsToDTED2Dirs) {
         setName("DTED");
         setDefaultValues();
-        paths = pathsToDTEDDirs;
-        paths2 = pathsToDTED2Dirs;
+        setPaths(pathsToDTEDDirs);
+        setMouseModeIDsForEvents(new String[] { "Gestures" });
     }
 
     /**
-     * Set the paths to the DTED directories. The DTED2 directories
-     * are for DTED Level 2 data files that end in .dt1. If NIMA
-     * changes the level 2 appendix, then the regular path will be
-     * changed back to look there for .dt2 files.
+     * Set the paths to the DTED directories.
      */
-    public void setPaths(String[] pathsToDTEDDirs, String[] pathsToDTED2Dirs) {
+    public void setPaths(String[] pathsToDTEDDirs) {
         paths = pathsToDTEDDirs;
-        paths2 = pathsToDTED2Dirs;
-        if (cache != null)
-            cache.setDtedDirPaths(pathsToDTEDDirs, pathsToDTED2Dirs);
+        if (cache != null) {
+            cache.setDtedDirPaths(pathsToDTEDDirs);
+        }
     }
 
     /**
@@ -355,50 +280,15 @@ public class DTEDLayer extends Layer implements ActionListener,
         return paths;
     }
 
-    /**
-     * Get the paths to the Level 2 DTED directories. This is a
-     * workaround for dted level 2 data that ends in .dt1. If NIMA
-     * changes the level 2 data to have the .dt2 appendix, then the
-     * level 2 data will be able to be listed in the regular dted
-     * path.
-     */
-    public String[] getLevel2Paths() {
-        return paths2;
-    }
-
     protected void setDefaultValues() {
         // defaults
         paths = null;
-        paths2 = null;
         setOpaqueness(DTEDFrameColorTable.DEFAULT_OPAQUENESS);
         setDtedLevel(DTEDFrameSubframe.LEVEL_0);
         setBandHeight(DTEDFrameSubframe.DEFAULT_BANDHEIGHT);
         setSlopeAdjust(DTEDFrameSubframe.DEFAULT_SLOPE_ADJUST);
         setViewType(DTEDFrameSubframe.COLOREDSHADING);
         setMaxScale(20000000);
-    }
-
-    /**
-     * Sets the current graphics list to the given list.
-     * 
-     * @param aList a list of OMGraphics
-     */
-    public synchronized void setGraphicList(OMGraphicList aList) {
-        omGraphics = aList;
-    }
-
-    /**
-     * Retrieves the current graphics list.
-     */
-    public synchronized OMGraphicList getGraphicList() {
-        return omGraphics;
-    }
-
-    /**
-     * Set all the DTED properties from a properties object.
-     */
-    public void setProperties(java.util.Properties properties) {
-        setProperties(null, properties);
     }
 
     /**
@@ -411,8 +301,6 @@ public class DTEDLayer extends Layer implements ActionListener,
 
         paths = PropUtils.initPathsFromProperties(properties, prefix
                 + DTEDPathsProperty, paths);
-        paths2 = PropUtils.initPathsFromProperties(properties, prefix
-                + DTED2PathsProperty, paths2);
         setOpaqueness(PropUtils.intFromProperties(properties, prefix
                 + OpaquenessProperty, getOpaqueness()));
 
@@ -431,7 +319,8 @@ public class DTEDLayer extends Layer implements ActionListener,
         setBandHeight(PropUtils.intFromProperties(properties, prefix
                 + DTEDBandHeightProperty, getBandHeight()));
 
-        // The Layer maxScale is talking the place of the DTEDLayer minScale property.
+        // The Layer maxScale is talking the place of the DTEDLayer minScale
+        // property.
         setMaxScale(PropUtils.floatFromProperties(properties, prefix
                 + DTEDMinScaleProperty, getMaxScale()));
 
@@ -444,8 +333,8 @@ public class DTEDLayer extends Layer implements ActionListener,
     }
 
     /**
-     * Called when the layer is no longer part of the map. In this
-     * case, we should disconnect from the server if we have a link.
+     * Called when the layer is no longer part of the map. In this case, we
+     * should disconnect from the server if we have a link.
      */
     public void removed(java.awt.Container cont) {
         if (killCache) {
@@ -455,102 +344,14 @@ public class DTEDLayer extends Layer implements ActionListener,
     }
 
     /**
-     * Used to set the cancelled flag in the layer. The swing worker
-     * checks this once in a while to see if the projection has
-     * changed since it started working. If this is set to true, the
-     * swing worker quits when it is safe.
-     */
-    public synchronized void setCancelled(boolean set) {
-        cancelled = set;
-    }
-
-    /** Check to see if the cancelled flag has been set. */
-    public synchronized boolean isCancelled() {
-        return cancelled;
-    }
-
-    /**
-     * Implementing the ProjectionPainter interface.
-     */
-    public synchronized void renderDataForProjection(Projection proj,
-                                                     java.awt.Graphics g) {
-        if (proj == null) {
-            Debug.error("DTEDLayer.renderDataForProjection: null projection!");
-            return;
-        } else if (!proj.equals(getProjection())) {
-            setProjection(proj.makeClone());
-            setGraphicList(prepare());
-        }
-        paint(g);
-    }
-
-    /**
-     * From the ProjectionListener interface.
-     */
-    public void projectionChanged(ProjectionEvent e) {
-        Debug.message("basic", getName() + "|DTEDLayer.projectionChanged()");
-
-        if (setProjection(e) == null) {
-            // Projection didn't change
-            repaint();
-            return;
-        }
-        setGraphicList(null);
-
-        doPrepare();
-    }
-
-    /**
-     * The DTEDWorker calls this method on the layer when it is done
-     * working. If the calling worker is not the same as the "current"
-     * worker, then a new worker is created.
-     * 
-     * @param worker the worker that has the graphics.
-     */
-    protected synchronized void workerComplete(DTEDWorker worker) {
-        if (!isCancelled()) {
-            currentWorker = null;
-            setGraphicList((OMGraphicList) worker.get());
-            repaint();
-        } else {
-            setCancelled(false);
-            currentWorker = new DTEDWorker();
-            currentWorker.execute();
-        }
-    }
-
-    /**
-     * Method to trigger the layer to recreate the graphics and paint
-     * them.
-     */
-    public void doPrepare() {
-        // If there isn't a worker thread working on this already,
-        // create a thread that will do the real work. If there is
-        // a thread working on this, then set the cancelled flag
-        // in the layer.
-        if (currentWorker == null) {
-            currentWorker = new DTEDWorker();
-            currentWorker.execute();
-        } else
-            setCancelled(true);
-        if (currentWorker == null) {
-            fireStatusUpdate(LayerStatusEvent.START_WORKING);
-            currentWorker = new DTEDWorker();
-            currentWorker.execute();
-        } else
-            setCancelled(true);
-    }
-
-    /**
-     * Prepares the graphics for the layer. This is where the
-     * getRectangle() method call is made on the dted.
+     * Prepares the graphics for the layer. This is where the getRectangle()
+     * method call is made on the dted.
      * <p>
-     * Occasionally it is necessary to abort a prepare call. When this
-     * happens, the map will set the cancel bit in the LayerThread,
-     * (the thread that is running the prepare). If this Layer needs
-     * to do any cleanups during the abort, it should do so, but
-     * return out of the prepare asap.
-     *  
+     * Occasionally it is necessary to abort a prepare call. When this happens,
+     * the map will set the cancel bit in the LayerThread, (the thread that is
+     * running the prepare). If this Layer needs to do any cleanups during the
+     * abort, it should do so, but return out of the prepare asap.
+     * 
      */
     public synchronized OMGraphicList prepare() {
 
@@ -568,7 +369,7 @@ public class DTEDLayer extends Layer implements ActionListener,
 
         if (cache == null) {
             Debug.output("DTEDLayer: Creating cache! (This is a one-time operation!)");
-            cache = new DTEDCacheManager(paths, paths2, numColors, opaqueness);
+            cache = new DTEDCacheManager(paths, numColors, opaqueness);
             cache.setCacheSize(cacheSize);
             DTEDFrameSubframeInfo dfsi = new DTEDFrameSubframeInfo(viewType, bandHeight, dtedLevel, slopeAdjust);
             cache.setSubframeInfo(dfsi);
@@ -608,7 +409,7 @@ public class DTEDLayer extends Layer implements ActionListener,
                     + ") is smaller than minimum (1:" + maxScale + ") allowed.");
             omGraphicList = new OMGraphicList();
         }
-        /////////////////////
+        // ///////////////////
         // safe quit
         int size = 0;
         if (omGraphicList != null) {
@@ -639,11 +440,7 @@ public class DTEDLayer extends Layer implements ActionListener,
     public void paint(java.awt.Graphics g) {
         Debug.message("dted", getName() + "|DTEDLayer.paint()");
 
-        OMGraphicList tmpGraphics = getGraphicList();
-
-        if (tmpGraphics != null) {
-            tmpGraphics.render(g);
-        }
+        super.paint(g);
 
         if (location != null)
             location.render(g);
@@ -656,18 +453,18 @@ public class DTEDLayer extends Layer implements ActionListener,
      * 
      * <pre>
      * 
-     *  
-     *   
-     *    
+     * 
+     * 
+     * 
      *     0: DTEDFrameSubframe.NOSHADING
      *     1: DTEDFrameSubframe.SLOPESHADING
      *     2: DTEDFrameSubframe.COLOREDSHADING
      *     3: DTEDFrameSubframe.METERSHADING
      *     4: DTEDFrameSubframe.FEETSHADING
-     *     
-     *    
-     *   
-     *  
+     * 
+     * 
+     * 
+     * 
      * </pre>
      */
     public int getViewType() {
@@ -689,13 +486,13 @@ public class DTEDLayer extends Layer implements ActionListener,
 
             break;
         default:
-        // unchanged
+            // unchanged
         }
     }
 
     /**
-     * Get the value for the interval between band colors for meter
-     * and feet shading view types.
+     * Get the value for the interval between band colors for meter and feet
+     * shading view types.
      */
     public int getBandHeight() {
         return bandHeight;
@@ -758,8 +555,8 @@ public class DTEDLayer extends Layer implements ActionListener,
     }
 
     /**
-     * Get whether the cache will be killed when the layer is removed
-     * from the map.
+     * Get whether the cache will be killed when the layer is removed from the
+     * map.
      */
     public boolean getKillCache() {
         return killCache;
@@ -803,9 +600,9 @@ public class DTEDLayer extends Layer implements ActionListener,
         }
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // GUI
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     /** The user interface palette for the DTED layer. */
     protected Box palette = null;
@@ -822,8 +619,8 @@ public class DTEDLayer extends Layer implements ActionListener,
             Box subbox2 = Box.createVerticalBox();
             Box subbox3 = Box.createHorizontalBox();
 
-            //          palette = new JPanel();
-            //          palette.setLayout(new GridLayout(0, 1));
+            // palette = new JPanel();
+            // palette.setLayout(new GridLayout(0, 1));
 
             // The DTED Level selector
             JPanel levelPanel = PaletteHelper.createPaletteJPanel("DTED Level");
@@ -842,7 +639,7 @@ public class DTEDLayer extends Layer implements ActionListener,
                             newLevel = DTEDFrameSubframe.LEVEL_0;
                         DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
                         dfsi.dtedLevel = newLevel;
-                        //                      cache.setSubframeInfo(dfsi);
+                        // cache.setSubframeInfo(dfsi);
                     }
                 }
             };
@@ -909,7 +706,7 @@ public class DTEDLayer extends Layer implements ActionListener,
                     if (cache != null) {
                         DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
                         dfsi.viewType = viewType;
-                        //                      cache.setSubframeInfo(dfsi);
+                        // cache.setSubframeInfo(dfsi);
                     }
 
                 }
@@ -938,14 +735,14 @@ public class DTEDLayer extends Layer implements ActionListener,
                         if (cache != null) {
                             DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
                             dfsi.viewType = newView;
-                            //                          cache.setSubframeInfo(dfsi);
+                            // cache.setSubframeInfo(dfsi);
                         }
                     }
                 });
                 selectedView = viewType;
                 break;
             case 5:
-                selectedView = 2; //DTEDFrameSubframe.COLOREDSHADING
+                selectedView = 2; // DTEDFrameSubframe.COLOREDSHADING
                 break;
             default:
                 selectedView = DTEDFrameSubframe.NOSHADING;
@@ -976,7 +773,7 @@ public class DTEDLayer extends Layer implements ActionListener,
                         if (cache != null) {
                             DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
                             dfsi.slopeAdjust = slopeAdjust;
-                            //                          cache.setSubframeInfo(dfsi);
+                            // cache.setSubframeInfo(dfsi);
                         }
                     }
                 }
@@ -1001,7 +798,7 @@ public class DTEDLayer extends Layer implements ActionListener,
                         if (cache != null) {
                             DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
                             dfsi.bandHeight = bandHeight;
-                            //                          cache.setSubframeInfo(dfsi);
+                            // cache.setSubframeInfo(dfsi);
                         }
                     }
                 }
@@ -1026,65 +823,48 @@ public class DTEDLayer extends Layer implements ActionListener,
         return palette;
     }
 
-    //----------------------------------------------------------------------
-    // ActionListener interface implementation
-    //----------------------------------------------------------------------
-
     /**
-     * Used just for the redraw button.
+     * Overridden to modify the MapMouseInterpreter used by the layer.
      */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
+    public synchronized MapMouseInterpreter getMouseEventInterpreter() {
+        if (getMouseModeIDsForEvents() != null && mouseEventInterpreter == null) {
+            setMouseEventInterpreter(new StandardMapMouseInterpreter(this) {
+                public boolean leftClick(MouseEvent me) {
+                    super.leftClick(me);
+                    determineLocation(me);
+                    return true;
+                }
 
-        if (e.getActionCommand() == RedrawCmd) {
-            doPrepare();
+                public boolean leftClick(OMGraphic omg, MouseEvent me) {
+                    super.leftClick(omg, me);
+                    determineLocation(me);
+                    return true;
+                }
+
+            });
         }
+
+        return mouseEventInterpreter;
     }
 
-    //----------------------------------------------------------------------
-    // MapMouseListener interface implementation
-    //----------------------------------------------------------------------
-
-    public MapMouseListener getMapMouseListener() {
-        return this;
-    }
-
-    public String[] getMouseModeServiceList() {
-        String[] services = { SelectMouseMode.modeID };
-        return services;
-    }
-
-    public boolean mousePressed(MouseEvent e) {
-        return false;
-    }
-
-    public boolean mouseReleased(MouseEvent e) {
+    public boolean determineLocation(MouseEvent e) {
         Projection projection = getProjection();
-        LatLonPoint ll = projection.inverse(e.getX(), e.getY(), new LatLonPoint.Double());
+        LatLonPoint ll = projection.inverse(e.getX(),
+                e.getY(),
+                new LatLonPoint.Double());
         location = new DTEDLocation(e.getX(), e.getY());
-        location.setElevation(cache.getElevation((float)ll.getY(),
-                (float)ll.getX()));
+        location.setElevation(cache.getElevation((float) ll.getY(),
+                (float) ll.getX()));
         location.generate(projection);
         repaint();
         return true;
     }
 
-    public boolean mouseClicked(MouseEvent e) {
+    /**
+     * Don't need DTEDFrames highlighting themselves.
+     */
+    public boolean isHighlightable(OMGraphic omg) {
         return false;
     }
-
-    public void mouseEntered(MouseEvent e) {}
-
-    public void mouseExited(MouseEvent e) {}
-
-    public boolean mouseDragged(MouseEvent e) {
-        return false;
-    }
-
-    public boolean mouseMoved(MouseEvent e) {
-        return false;
-    }
-
-    public void mouseMoved() {}
 
 }

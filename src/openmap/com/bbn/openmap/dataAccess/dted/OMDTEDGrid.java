@@ -43,7 +43,7 @@ public class OMDTEDGrid extends OMGrid {
      * columns, and to calculate the locations of the rows and
      * columns.
      */
-    protected float latitude1;
+    protected double latitude1;
     /**
      * The starting longitude point of the grid. Only relevant when
      * the data points are laid out in a lat/lon grid, or when an x/y
@@ -55,10 +55,10 @@ public class OMDTEDGrid extends OMGrid {
      * rows and columns, and to calculate the locations of the rows
      * and columns.
      */
-    protected float longitude1;
+    protected double longitude1;
 
-    public OMDTEDGrid(float lllat, float lllon, float urlat, float urlon,
-            float vResolution, float hResolution, GridData.Short data) {
+    public OMDTEDGrid(double lllat, double lllon, double urlat, double urlon,
+                      double vResolution, double hResolution, GridData.Short data) {
         super(lllat, lllon, vResolution, hResolution, data);
         latitude1 = urlat;
         longitude1 = urlon;
@@ -69,7 +69,7 @@ public class OMDTEDGrid extends OMGrid {
      * 
      * @param value latitude in decimal degrees.
      */
-    public void setLowerLat(float value) {
+    public void setLowerLat(double value) {
         setLatitude(value);
     }
 
@@ -78,7 +78,7 @@ public class OMDTEDGrid extends OMGrid {
      * 
      * @return the latitude in decimal degrees.
      */
-    public float getLowerLat() {
+    public double getLowerLat() {
         return getLatitude();
     }
 
@@ -87,7 +87,7 @@ public class OMDTEDGrid extends OMGrid {
      * 
      * @param value the longitude in decimal degrees.
      */
-    public void setLeftLon(float value) {
+    public void setLeftLon(double value) {
         setLongitude(value);
     }
 
@@ -96,7 +96,7 @@ public class OMDTEDGrid extends OMGrid {
      * 
      * @return longitude in decimal degrees.
      */
-    public float getLeftLon() {
+    public double getLeftLon() {
         return getLongitude();
     }
 
@@ -105,7 +105,7 @@ public class OMDTEDGrid extends OMGrid {
      * 
      * @param value latitude in decimal degrees.
      */
-    public void setUpperLat(float value) {
+    public void setUpperLat(double value) {
         if (latitude1 == value)
             return;
         latitude1 = value;
@@ -117,7 +117,7 @@ public class OMDTEDGrid extends OMGrid {
      * 
      * @return the latitude in decimal degrees.
      */
-    public float getUpperLat() {
+    public double getUpperLat() {
         return latitude1;
     }
 
@@ -126,7 +126,7 @@ public class OMDTEDGrid extends OMGrid {
      * 
      * @param value the longitude in decimal degrees.
      */
-    public void setRightLon(float value) {
+    public void setRightLon(double value) {
         if (longitude1 == value)
             return;
         longitude1 = value;
@@ -138,7 +138,7 @@ public class OMDTEDGrid extends OMGrid {
      * 
      * @return longitude in decimal degrees.
      */
-    public float getRightLon() {
+    public double getRightLon() {
         return longitude1;
     }
 

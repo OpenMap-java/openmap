@@ -24,8 +24,10 @@
 
 package com.bbn.openmap.omGraphics.event;
 
+import java.awt.Component;
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.swing.JMenuItem;
 
 import com.bbn.openmap.event.MapMouseEvent;
@@ -106,14 +108,14 @@ public class TestResponsePolicy implements GestureResponsePolicy {
         return "TextResponsePolicy ToolTipText";
     }
 
-    public List getItemsForMapMenu(MapMouseEvent me) {
+    public List<Component> getItemsForMapMenu(MapMouseEvent me) {
         Debug.output("getMenuForMap(MAP)");
         return null;
     }
 
-    public List getItemsForOMGraphicMenu(OMGraphic omg) {
+    public List<Component> getItemsForOMGraphicMenu(OMGraphic omg) {
         Debug.output("getMenuFor(" + omg.getClass().getName() + ")");
-        List list = new LinkedList();
+        List<Component> list = new LinkedList<Component>();
         list.add(new JMenuItem(omg.getClass().getName()));
         return list;
     }

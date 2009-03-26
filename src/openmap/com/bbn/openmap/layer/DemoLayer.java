@@ -24,6 +24,7 @@ package com.bbn.openmap.layer;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -1038,16 +1039,16 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         }
     }
 
-    public List getItemsForMapMenu(MapMouseEvent me) {
-        List l = new ArrayList();
+    public List<Component> getItemsForMapMenu(MapMouseEvent me) {
+        List<Component> l = new ArrayList<Component>();
         l.add(new JMenuItem("When"));
         l.add(new JMenuItem("Where"));
         l.add(new JMenuItem("How"));
         return l;
     }
 
-    public List getItemsForOMGraphicMenu(OMGraphic omg) {
-        List l = new ArrayList();
+    public List<Component> getItemsForOMGraphicMenu(OMGraphic omg) {
+        List<Component> l = new ArrayList<Component>();
         l.add(new JMenuItem("Which"));
         l.add(new JMenuItem("Why"));
         return l;

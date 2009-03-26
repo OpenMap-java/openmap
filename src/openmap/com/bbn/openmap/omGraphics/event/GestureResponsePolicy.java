@@ -22,6 +22,7 @@
 
 package com.bbn.openmap.omGraphics.event;
 
+import java.awt.Component;
 import java.util.List;
 
 import com.bbn.openmap.event.MapMouseEvent;
@@ -152,7 +153,7 @@ public interface GestureResponsePolicy {
      *         provided place on the map. Return null or empty List if
      *         no input required.
      */
-    public List getItemsForMapMenu(MapMouseEvent mme);
+    public List<Component> getItemsForMapMenu(MapMouseEvent mme);
 
     /**
      * Return a java.util.List containing input for a JMenu with
@@ -163,7 +164,7 @@ public interface GestureResponsePolicy {
      *         given OMGraphic. Return null or empty list if there are
      *         no options.
      */
-    public List getItemsForOMGraphicMenu(OMGraphic omg);
+    public List<Component> getItemsForOMGraphicMenu(OMGraphic omg);
 
     /**
      * A notification that the mouse cursor has been moved over the

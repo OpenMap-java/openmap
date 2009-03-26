@@ -1000,6 +1000,10 @@ public class OverviewMapHandler extends OMToolComponent implements
                 setSourceMap(null);
             }
         }
+        
+        if (someObj.equals(this)) {
+            dispose();
+        }
     }
 
     /**
@@ -1056,5 +1060,10 @@ public class OverviewMapHandler extends OMToolComponent implements
                 && backgroundSlave) {
             map.setBckgrnd((Paint) pce.getNewValue());
         }
+    }
+    
+    public void dispose() {
+        listener.dispose();
+        map.dispose();
     }
 }

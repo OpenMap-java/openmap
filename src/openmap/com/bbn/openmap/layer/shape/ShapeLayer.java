@@ -599,16 +599,6 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
         return box;
     }
 
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        String cmd = e.getActionCommand();
-        if (cmd == RedrawCmd) {
-            if (isVisible()) {
-                doPrepare();
-            }
-        }
-    }
-
     /**
      * DataBoundsInformer interface.
      */

@@ -50,7 +50,7 @@
 	   destdir="${j3d.classes}"
 	   debug="on"
 	   classpath="${openmap.home}/lib/openmap.jar;${openmap.home}"
-	   excludes="${javac.excludes}"/>
+	   excludes="${javac.excludes}" source="1.5" target="1.5" />
 
     <copy todir="${j3d.classes}/com/bbn/openmap"> 
       <fileset dir="${j3d.src}/com/bbn/openmap" 

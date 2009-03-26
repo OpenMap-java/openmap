@@ -67,7 +67,6 @@ public class ProjectionMenu extends AbstractOpenMapMenu implements
     public ProjectionMenu() {
         super();
         setText(i18n.get(this, "projectionMenu", defaultText));
-
     }
 
     public void configure(List<ProjectionLoader> loaders) {
@@ -231,6 +230,10 @@ public class ProjectionMenu extends AbstractOpenMapMenu implements
             projectionFactory.removePropertyChangeListener(this);
             projectionFactory = null;
         }
+        
+        if (someObj.equals(this)) {
+            dispose();
+        }
     }
 
     public ProjectionFactory getProjectionFactory() {
@@ -242,6 +245,10 @@ public class ProjectionMenu extends AbstractOpenMapMenu implements
 
     public void setProjectionFactory(ProjectionFactory projectionFactory) {
         this.projectionFactory = projectionFactory;
+    }
+    
+    public void dispose() {
+        projectionSupport.dispose();
     }
 
 }

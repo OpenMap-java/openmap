@@ -52,7 +52,7 @@
 	   destdir="${svg.classes}"
 	   classpath="${openmap.home}/lib/openmap.jar;${openmap.classes};${svg.jars}"
 	   debug="on"
-	   excludes="${javac.excludes}"/>
+	   excludes="${javac.excludes}" source="1.5" target="1.5" />
 
   </target>
 

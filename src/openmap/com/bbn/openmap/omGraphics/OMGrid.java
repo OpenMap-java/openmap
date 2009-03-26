@@ -61,7 +61,7 @@ public class OMGrid extends OMGraphicList {
     /**
      * The orientation angle of the grid, in radians. Up/North is zero.
      */
-    protected float orientation;
+    protected double orientation;
     /**
      * Number of rows in the data array. Gets set by the OMGrid depending on the
      * major of the grid.
@@ -81,7 +81,7 @@ public class OMGrid extends OMGraphicList {
      * defined by the lower left location. Makes it easier to deal with overlap
      * rows and columns, and to calculate the locations of the rows and columns.
      */
-    protected float latitude;
+    protected double latitude;
     /**
      * The starting longitude point of the grid. Only relevant when the data
      * points are laid out in a lat/lon grid, or when an x/y grid is anchored to
@@ -91,21 +91,21 @@ public class OMGrid extends OMGraphicList {
      * defined by the lower left location. Makes it easier to deal with overlap
      * rows and columns, and to calculate the locations of the rows and columns.
      */
-    protected float longitude;
+    protected double longitude;
     /**
      * The vertical/latitude interval, the distance between row data points in
      * the vertical direction. For x/y grids, this can server as a pixel
      * multiplier. For lat/lon grids, it represents the decimal degrees between
      * grid points.
      */
-    protected float verticalResolution;
+    protected double verticalResolution;
     /**
      * The horizontal/longitude interval, the distance between column data
      * points in the horizontal direction. For x/y grids, this can server as a
      * pixel mulitplier. For lat/lon grids, it represents the decimal degrees
      * between grid points.
      */
-    protected float horizontalResolution;
+    protected double horizontalResolution;
     /**
      * The Object holding the data for the OMGrid. The GridData abstracts the
      * type of data that is held by the OMGrid. Note: the 0 index of the array
@@ -196,8 +196,8 @@ public class OMGrid extends OMGraphicList {
      * @param data a double array of integers, representing the rows and columns
      *        of data.
      */
-    public OMGrid(float lat, float lon, float vResolution, float hResolution,
-            int[][] data) {
+    public OMGrid(double lat, double lon, double vResolution,
+            double hResolution, int[][] data) {
         setRenderType(RENDERTYPE_LATLON);
         set(lat, lon, 0, 0, vResolution, hResolution, data);
     }
@@ -218,7 +218,7 @@ public class OMGrid extends OMGraphicList {
      * @param data a double array of integers, representing the rows and columns
      *        of data.
      */
-    public OMGrid(int x, int y, float vResolution, float hResolution,
+    public OMGrid(int x, int y, double vResolution, double hResolution,
             int[][] data) {
         setRenderType(RENDERTYPE_XY);
         set(0.0f, 0.0f, x, y, vResolution, hResolution, data);
@@ -242,8 +242,8 @@ public class OMGrid extends OMGraphicList {
      * @param data a double array of integers, representing the rows and columns
      *        of data.
      */
-    public OMGrid(float lat, float lon, int x, int y, float vResolution,
-            float hResolution, int[][] data) {
+    public OMGrid(double lat, double lon, int x, int y, double vResolution,
+            double hResolution, int[][] data) {
         setRenderType(RENDERTYPE_OFFSET);
         set(lat, lon, x, y, vResolution, hResolution, data);
     }
@@ -262,8 +262,8 @@ public class OMGrid extends OMGraphicList {
      *        degrees per column.
      * @param data GridData object holding rows and columns of grid data.
      */
-    public OMGrid(float lat, float lon, float vResolution, float hResolution,
-            GridData data) {
+    public OMGrid(double lat, double lon, double vResolution,
+            double hResolution, GridData data) {
         setRenderType(RENDERTYPE_LATLON);
         set(lat, lon, 0, 0, vResolution, hResolution, data);
     }
@@ -283,7 +283,7 @@ public class OMGrid extends OMGraphicList {
      *        column.
      * @param data GridData object holding rows and columns of grid data.
      */
-    public OMGrid(int x, int y, float vResolution, float hResolution,
+    public OMGrid(int x, int y, double vResolution, double hResolution,
             GridData data) {
         setRenderType(RENDERTYPE_XY);
         set(0.0f, 0.0f, x, y, vResolution, hResolution, data);
@@ -306,8 +306,8 @@ public class OMGrid extends OMGraphicList {
      *        column.
      * @param data GridData object holding rows and columns of grid data.
      */
-    public OMGrid(float lat, float lon, int x, int y, float vResolution,
-            float hResolution, GridData data) {
+    public OMGrid(double lat, double lon, int x, int y, double vResolution,
+            double hResolution, GridData data) {
         setRenderType(RENDERTYPE_OFFSET);
         set(lat, lon, x, y, vResolution, hResolution, data);
     }
@@ -315,16 +315,16 @@ public class OMGrid extends OMGraphicList {
     /**
      * Set the parameters of the OMGrid after construction.
      */
-    protected void set(float lat, float lon, int x, int y, float vResolution,
-                       float hResolution, int[][] data) {
+    protected void set(double lat, double lon, int x, int y,
+                       double vResolution, double hResolution, int[][] data) {
         set(lat, lon, x, y, vResolution, hResolution, new OMGridData.Int(data));
     }
 
     /**
      * Set the parameters of the OMGrid after construction.
      */
-    protected void set(float lat, float lon, int x, int y, float vResolution,
-                       float hResolution, GridData data) {
+    protected void set(double lat, double lon, int x, int y,
+                       double vResolution, double hResolution, GridData data) {
         latitude = lat;
         longitude = lon;
         point = new Point(x, y);
@@ -355,7 +355,7 @@ public class OMGrid extends OMGraphicList {
         }
     }
 
-    public void setLatitude(float lat) {
+    public void setLatitude(double lat) {
         if (latitude == lat)
             return;
         latitude = lat;
@@ -366,11 +366,11 @@ public class OMGrid extends OMGraphicList {
      * Get the latitude of the lower left anchor point of the grid, in decimal
      * degrees.
      */
-    public float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLongitude(float lon) {
+    public void setLongitude(double lon) {
         if (longitude == lon)
             return;
         longitude = lon;
@@ -381,7 +381,7 @@ public class OMGrid extends OMGraphicList {
      * Get the latitude of the lower left anchor point of the grid, in decimal
      * degrees.
      */
-    public float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
@@ -445,7 +445,7 @@ public class OMGrid extends OMGraphicList {
      * 
      * @param orient is the angle of the grid, in radians. Up/North is zero.
      */
-    public void setOrientation(float orient) {
+    public void setOrientation(double orient) {
         orientation = orient;
     }
 
@@ -453,7 +453,7 @@ public class OMGrid extends OMGraphicList {
      * Get the angle that was set for the grid to be rotated. In radians,
      * up/north is zero.
      */
-    public float getOrientation() {
+    public double getOrientation() {
         return orientation;
     }
 
@@ -523,28 +523,28 @@ public class OMGrid extends OMGraphicList {
     /**
      * Set the number of decimal degrees between horizontal rows.
      */
-    public void setVerticalResolution(float vRes) {
+    public void setVerticalResolution(double vRes) {
         verticalResolution = vRes;
     }
 
     /**
      * Get the number of decimal degrees between horizontal rows.
      */
-    public float getVerticalResolution() {
+    public double getVerticalResolution() {
         return verticalResolution;
     }
 
     /**
      * Set the number of decimal degrees between vertical columns.
      */
-    public void setHorizontalResolution(float hRes) {
+    public void setHorizontalResolution(double hRes) {
         horizontalResolution = hRes;
     }
 
     /**
      * Get the number of decimal degrees between vertical columns.
      */
-    public float getHorizontalResolution() {
+    public double getHorizontalResolution() {
         return horizontalResolution;
     }
 
@@ -578,7 +578,7 @@ public class OMGrid extends OMGraphicList {
      */
     public synchronized boolean generate(Projection proj) {
 
-        float upLat;
+        double upLat;
         int columns = getColumns();
         int rows = getRows();
         // Clear out the OMGraphicList part
@@ -594,10 +594,10 @@ public class OMGrid extends OMGraphicList {
              * Means that the latitudeResolution and horizontalResolution refer
              * to degrees/datapoint.
              */
-            float rightLon;
+            double rightLon;
 
-            rightLon = longitude + ((float) columns) * horizontalResolution;
-            upLat = latitude + ((float) rows) * verticalResolution;
+            rightLon = longitude + columns * horizontalResolution;
+            upLat = latitude + rows * verticalResolution;
 
             point1 = (Point) proj.forward(upLat, longitude, new Point());
             point2 = (Point) proj.forward(latitude, rightLon, new Point());
@@ -614,8 +614,8 @@ public class OMGrid extends OMGraphicList {
         } else if (renderType == RENDERTYPE_XY
                 || renderType == RENDERTYPE_OFFSET) {
 
-            width = Math.round((float) columns * horizontalResolution);
-            height = Math.round((float) rows * verticalResolution);
+            width = (int) Math.round(columns * horizontalResolution);
+            height = (int) Math.round(rows * verticalResolution);
 
             if (renderType == RENDERTYPE_OFFSET) {
                 upLat = latitude + columns * verticalResolution;
@@ -758,15 +758,16 @@ public class OMGrid extends OMGraphicList {
      *         You can test if it's a java.lang.Number object to get different
      *         values out of it if it is.
      */
-    public Object valueAt(float lat, float lon, Projection proj) {
+    public Object valueAt(double lat, double lon, Projection proj) {
 
         int lat_index = -1;
         int lon_index = -1;
 
         if (renderType == RENDERTYPE_LATLON) {
 
-            lat_index = Math.round((lat - latitude) / verticalResolution);
-            lon_index = Math.round((lon - longitude) / horizontalResolution);
+            lat_index = (int) Math.round((lat - latitude) / verticalResolution);
+            lon_index = (int) Math.round((lon - longitude)
+                    / horizontalResolution);
 
         } else if (renderType == RENDERTYPE_XY
                 || renderType == RENDERTYPE_OFFSET) {
@@ -780,8 +781,9 @@ public class OMGrid extends OMGraphicList {
 
             Point pt = (Point) proj.forward(lat, lon, new Point());
 
-            lat_index = Math.round((pt.y - point1.y) / verticalResolution);
-            lon_index = Math.round((pt.x - point1.x) / horizontalResolution);
+            lat_index = (int) Math.round((pt.y - point1.y) / verticalResolution);
+            lon_index = (int) Math.round((pt.x - point1.x)
+                    / horizontalResolution);
         }
 
         GridData gd = getData();
@@ -811,9 +813,9 @@ public class OMGrid extends OMGraphicList {
      * @param proj map projection, which is needed for XY or OFFSET grids.
      * @return value at lat/lon
      */
-    public int interpValueAt(float lat, float lon, Projection proj) {
-        float lat_index = -1;
-        float lon_index = -1;
+    public int interpValueAt(double lat, double lon, Projection proj) {
+        double lat_index = -1;
+        double lon_index = -1;
 
         GridData gridData = getData();
 
@@ -890,13 +892,13 @@ public class OMGrid extends OMGraphicList {
                 lr = data[lclat_index][lclon_index];
             }
 
-            float answer = resolve_four_points(ul,
+            double answer = resolve_four_points(ul,
                     ur,
                     lr,
                     ll,
                     lat_index,
                     lon_index);
-            return Math.round(answer);
+            return (int) Math.round(answer);
         }
 
         return GRID_NULL; // Considered a null value
@@ -906,23 +908,23 @@ public class OMGrid extends OMGraphicList {
      * A try at interoplating the corners of the surrounding posts, given a lat
      * lon. Called from a function where the data for the lon has been read in.
      */
-    private float resolve_four_points(int ul, int ur, int lr, int ll,
-                                      float lat_index, float lon_index) {
-        float top_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (float) (ur - ul))
+    private double resolve_four_points(int ul, int ur, int lr, int ll,
+                                       double lat_index, double lon_index) {
+        double top_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (float) (ur - ul))
                 + ul;
-        float bottom_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (float) (lr - ll))
+        double bottom_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (float) (lr - ll))
                 + ll;
-        float right_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (float) (ur - lr))
+        double right_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (float) (ur - lr))
                 + lr;
-        float left_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (float) (ul - ll))
+        double left_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (float) (ul - ll))
                 / 100.0F + ll;
 
-        float lon_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (top_avg - bottom_avg))
+        double lon_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (top_avg - bottom_avg))
                 + bottom_avg;
-        float lat_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (right_avg - left_avg))
+        double lat_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (right_avg - left_avg))
                 + left_avg;
 
-        float result = (lon_avg + lat_avg) / 2.0F;
+        double result = (lon_avg + lat_avg) / 2.0;
         return result;
     }
 }

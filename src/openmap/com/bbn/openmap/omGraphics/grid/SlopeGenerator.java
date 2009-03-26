@@ -190,9 +190,9 @@ public class SlopeGenerator implements OMGridGenerator {
                 point.setLocation(screenx, screeny);
                 llp = proj.inverse(point.x, point.y, new LatLonPoint.Double());
 
-                int yc = Math.round((llp.getLatitude() - grid.getLatitude())
+                int yc = (int) Math.round((llp.getLatitude() - grid.getLatitude())
                         / grid.getVerticalResolution());
-                int xc = Math.round((llp.getLongitude() - grid.getLongitude())
+                int xc = (int) Math.round((llp.getLongitude() - grid.getLongitude())
                         / grid.getHorizontalResolution());
 
                 // If the calculated index is out of the data ranges,
@@ -303,16 +303,16 @@ public class SlopeGenerator implements OMGridGenerator {
         // values have been set up to provide that with an adjustment
         // of 5. 0 is very high contrast.
 
-        float vRes = grid.getVerticalResolution(); // Degrees per data
+        double vRes = grid.getVerticalResolution(); // Degrees per data
         // point
-        float hRes = grid.getHorizontalResolution();
+        double hRes = grid.getHorizontalResolution();
 
-        float vResRad = Length.DECIMAL_DEGREE.toRadians(vRes);
-        float hResRad = Length.DECIMAL_DEGREE.toRadians(hRes);
+        double vResRad = Length.DECIMAL_DEGREE.toRadians(vRes);
+        double hResRad = Length.DECIMAL_DEGREE.toRadians(hRes);
 
         Length units = grid.getUnits();
-        double vDist = Math.pow(2.0 * (double) units.fromRadians(vResRad), 2);
-        double hDist = Math.pow(2.0 * (double) units.fromRadians(hResRad), 2);
+        double vDist = Math.pow(2.0 * units.fromRadians(vResRad), 2);
+        double hDist = Math.pow(2.0 * units.fromRadians(hResRad), 2);
 
         return modifier * Math.sqrt(vDist + hDist);
     }

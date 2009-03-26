@@ -23,9 +23,11 @@
 package com.bbn.openmap.layer;
 
 import java.awt.AlphaComposite;
+import java.awt.Component;
 import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -50,6 +52,7 @@ import com.bbn.openmap.layer.policy.StandardPCPolicy;
 import com.bbn.openmap.layer.policy.StandardRenderPolicy;
 import com.bbn.openmap.omGraphics.FilterSupport;
 import com.bbn.openmap.omGraphics.OMAction;
+import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.event.GestureResponsePolicy;
@@ -137,9 +140,9 @@ import com.bbn.openmap.util.SwingWorker;
  * dictate important behavior:
  * 
  * <pre>
- *   
- *    
- *    
+ * 
+ * 
+ * 
  *     layer.projectionChangePolicy=pcp
  *     layer.pcp.class=com.bbn.openmap.layer.policy.StandardPCPolicy
  *    
@@ -153,8 +156,8 @@ import com.bbn.openmap.util.SwingWorker;
  *    
  *     layer.mouseModes=Gestures
  *     layer.consumeEvents=true
- *     
- *    
+ * 
+ * 
  * </pre>
  */
 public class OMGraphicHandlerLayer extends Layer implements
@@ -635,8 +638,8 @@ public class OMGraphicHandlerLayer extends Layer implements
             return layerWorker != null && layerWorker.isInterrupted();
         }
         /*
-         * boolean ret = false; synchronized (CANCELLED_LOCK) { ret = cancelled; }
-         * return ret;
+         * boolean ret = false; synchronized (CANCELLED_LOCK) { ret = cancelled;
+         * } return ret;
          */
     }
 
@@ -713,7 +716,8 @@ public class OMGraphicHandlerLayer extends Layer implements
                             + " layer ran out of memory, attempting to recover...");
                 }
             } catch (Exception e) {
-                msg = getName() + "|LayerWorker.construct(): " + e.getClass().getName() + ", " + e.getMessage();
+                msg = getName() + "|LayerWorker.construct(): "
+                        + e.getClass().getName() + ", " + e.getMessage();
                 Debug.output(msg);
                 if (Debug.debugging("layer")) {
                     e.printStackTrace();
@@ -1351,7 +1355,7 @@ public class OMGraphicHandlerLayer extends Layer implements
     public void paste(OMGraphicList omgl) {
         OMGraphicList list = getList();
         if (list != null && omgl != null) {
-            Iterator it = omgl.iterator();
+            Iterator<OMGeometry> it = omgl.iterator();
             while (it.hasNext()) {
                 list.add((OMGraphic) it.next());
             }
@@ -1386,7 +1390,7 @@ public class OMGraphicHandlerLayer extends Layer implements
      * @return a JMenu for the map. Return null or empty List if no input
      *         required.
      */
-    public List getItemsForMapMenu(MapMouseEvent mme) {
+    public List<Component> getItemsForMapMenu(MapMouseEvent mme) {
         return null;
     }
 
@@ -1397,7 +1401,7 @@ public class OMGraphicHandlerLayer extends Layer implements
      * @return a List containing options for the given OMGraphic. Return null or
      *         empty list if there are no options.
      */
-    public List getItemsForOMGraphicMenu(OMGraphic omg) {
+    public List<Component> getItemsForOMGraphicMenu(OMGraphic omg) {
         return null;
     }
 
@@ -1456,7 +1460,7 @@ public class OMGraphicHandlerLayer extends Layer implements
                                                  float initialValue) {
         JPanel opaquePanel = PaletteHelper.createPaletteJPanel(label);
         JSlider opaqueSlide = new JSlider(orientation, 0/* min */, 255/* max */, (int) (255f * initialValue)/* inital */);
-        java.util.Hashtable dict = new java.util.Hashtable();
+        java.util.Hashtable<Integer, JLabel> dict = new java.util.Hashtable<Integer, JLabel>();
         dict.put(new Integer(0),
                 new JLabel(i18n.get(OMGraphicHandlerLayer.class,
                         "clearSliderLabel",
@@ -1515,4 +1519,18 @@ public class OMGraphicHandlerLayer extends Layer implements
         return ret;
     }
 
+    /**
+     * Override of Layer's actionPerformed method, adds the capability that
+     * calls doPrepare() if the layer is visible and it receives a RedrawCmd
+     * command.  Also calls Layer.actionPerformed(ActionEvent).
+     */
+    public void actionPerformed(ActionEvent e) {
+        super.actionPerformed(e);
+        String cmd = e.getActionCommand();
+        if (cmd == RedrawCmd) {
+            if (isVisible()) {
+                doPrepare();
+            }
+        }
+    }
 }

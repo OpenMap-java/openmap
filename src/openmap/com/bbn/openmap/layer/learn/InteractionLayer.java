@@ -24,6 +24,7 @@ package com.bbn.openmap.layer.learn;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -226,8 +227,8 @@ public class InteractionLayer extends BasicLayer {
      * displayed in a popup menu. You have to do the wiring for making the list
      * components do something, though.
      */
-    public List getItemsForMapMenu(MapMouseEvent me) {
-        List l = new ArrayList();
+    public List<Component> getItemsForMapMenu(MapMouseEvent me) {
+        List<Component> l = new ArrayList<Component>();
         JMenuItem when = new JMenuItem("When");
         when.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -260,9 +261,9 @@ public class InteractionLayer extends BasicLayer {
      * popup menu. You have to do the wiring for making the list components do
      * something, though.
      */
-    public List getItemsForOMGraphicMenu(OMGraphic omg) {
+    public List<Component> getItemsForOMGraphicMenu(OMGraphic omg) {
         final OMGraphic chosen = omg;
-        List l = new ArrayList();
+        List<Component> l = new ArrayList<Component>();
         JMenuItem which = new JMenuItem("Which");
         which.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
