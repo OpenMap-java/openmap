@@ -250,15 +250,15 @@ public abstract class GeoProj extends Proj {
     /**
      * Get center point of projection.
      * 
-     * @return Point2D center of projection, created just for you.
+     * @return LatLonPoint center of projection, created just for you.
      */
     public LatLonPoint getCenter() {
         return new LatLonPoint.Double(centerY, centerX, true);
     }
 
     /**
-     * Returns a center Point2D that was provided, with the location filled into
-     * the Point2D object. Calls Point2D.setLocation(x, y).
+     * Returns a center LatLonPoint that was provided, with the location filled into
+     * the LatLonPoint object. Calls Point2D.setLocation(x, y).
      */
     public LatLonPoint getCenter(LatLonPoint center) {
         center.setLocation(Math.toDegrees(centerX), Math.toDegrees(centerY));
