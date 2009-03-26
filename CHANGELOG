@@ -1,3 +1,19 @@
+2009-03-26  Don Dietrick  <dietrick@dhcp89-073-115.bbn.com>
+
+	* Refined the DTED packages, removing duplicate classes in
+	com.bbn.openmap.layer.dted and having those classes refer to the
+	com.bbn.openmap.dataAccess.dted package contents.  The
+	com.bbn.openmap.layer.dted.DTEDFrame has been changed to
+	DTEDSubframedFrame, and now extends the DTEDFrame class in
+	dataAccess.dted.  The DTEDLayer is the main class in
+	com.bbn.openmap.layer.dted, and those classes use the
+	DTEDSubframedFrame.  The
+	com.bbn.openmap.layer.dted.DTEDFrameCacheLayer uses the classes in
+	the com.bbn.openmap.dataAccess.dted package.  The choice between
+	the two is memory usage (when DTED is used by other components it
+	can also be used by DTEDFrameCacheLayer) vs
+	speed (the DTEDLayer is faster).
+
 2009-03-24  Don Dietrick  <dietrick@dhcp89-073-115.bbn.com>
 
 	* Added com.bbn.openmap.omGraphics.util.ImageWarp, which takes an
