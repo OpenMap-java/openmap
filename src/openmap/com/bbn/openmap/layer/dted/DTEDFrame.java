@@ -37,11 +37,10 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The DTEDFrame is the representation of the DTED (Digital Terrain
- * Elevation Data) data from a single dted data file. It keeps track
- * of all the attribute information of it's data, and also maintains
- * an array of images (DTEDFrameSubframe) that represent views of the
- * elevation posts.
+ * The DTEDFrame is the representation of the DTED (Digital Terrain Elevation
+ * Data) data from a single dted data file. It keeps track of all the attribute
+ * information of it's data, and also maintains an array of images
+ * (DTEDFrameSubframe) that represent views of the elevation posts.
  */
 public class DTEDFrame implements Closable {
 
@@ -54,9 +53,9 @@ public class DTEDFrame implements Closable {
     /** The path to the frame, including the frame name. */
     protected String path;
     /**
-     * The array of elevation posts. Note: the 0 index of the array in
-     * both directions is in the lower left corner of the matrix. As
-     * you increase indexes in both dimensions, you go up-right.
+     * The array of elevation posts. Note: the 0 index of the array in both
+     * directions is in the lower left corner of the matrix. As you increase
+     * indexes in both dimensions, you go up-right.
      */
     protected short[][] elevations; // elevation posts
 
@@ -72,24 +71,22 @@ public class DTEDFrame implements Closable {
     public boolean frame_is_valid = false;
 
     /**
-     * The frame image is divided into 200x200 pixel subframes, with a
-     * leftover frame at the end. This is how many horizontal
-     * subframes there are.
+     * The frame image is divided into 200x200 pixel subframes, with a leftover
+     * frame at the end. This is how many horizontal subframes there are.
      */
     public int number_horiz_subframes;
     /**
-     * The frame image is divided into 200x200 pixel subframes, with a
-     * leftover frame at the end. This is how many vertical subframes
-     * there are.
+     * The frame image is divided into 200x200 pixel subframes, with a leftover
+     * frame at the end. This is how many vertical subframes there are.
      */
     public int number_vert_subframes;
 
     /** The image array for the subframes. */
     public DTEDFrameSubframe subframes[][];
 
-    //////////////////
+    // ////////////////
     // Administrative methods
-    //////////////////
+    // ////////////////
 
     /**
      * Simplest constructor.
@@ -116,10 +113,10 @@ public class DTEDFrame implements Closable {
      * Constructor with colortable and presentation information.
      * 
      * @param filePath complete path to the DTED frame.
-     * @param readWholeFile If true, all of the elevation data will be
-     *        read at load time. If false, elevation post data will be
-     *        read in per longitude column depending on the need.
-     *        False is recommended for DTEd level 1 and 2.
+     * @param readWholeFile If true, all of the elevation data will be read at
+     *        load time. If false, elevation post data will be read in per
+     *        longitude column depending on the need. False is recommended for
+     *        DTEd level 1 and 2.
      */
     public DTEDFrame(String filePath, boolean readWholeFile) {
         this(filePath, null, null, readWholeFile);
@@ -131,10 +128,10 @@ public class DTEDFrame implements Closable {
      * @param filePath complete path to the DTED frame.
      * @param cTable the colortable to use for the images.
      * @param info presentation parameters.
-     * @param readWholeFile If true, all of the elevation data will be
-     *        read at load time. If false, elevation post data will be
-     *        read in per longitude column depending on the need.
-     *        False is recommended for DTED level 1 and 2.
+     * @param readWholeFile If true, all of the elevation data will be read at
+     *        load time. If false, elevation post data will be read in per
+     *        longitude column depending on the need. False is recommended for
+     *        DTED level 1 and 2.
      */
     public DTEDFrame(String filePath, DTEDFrameColorTable cTable,
             DTEDFrameSubframeInfo info, boolean readWholeFile) {
@@ -168,20 +165,17 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * Reads the DTED frame file. Assumes that the File f is
-     * valid/exists.
+     * Reads the DTED frame file. Assumes that the File f is valid/exists.
      * 
-     * @param binFile the binary buffere file opened on the DTED frame
-     *        file
-     * @param readWholeFile flag controlling whether all the row data
-     *        is read at this time. Otherwise, the rows are read as
-     *        needed.
+     * @param binFile the binary buffere file opened on the DTED frame file
+     * @param readWholeFile flag controlling whether all the row data is read at
+     *        this time. Otherwise, the rows are read as needed.
      */
     protected void read(BinaryFile binFile, boolean readWholeFile) {
-        binFile.byteOrder(true); //boolean msbfirst
+        binFile.byteOrder(true); // boolean msbfirst
         dsi = new DTEDFrameDSI(binFile);
         uhl = new DTEDFrameUHL(binFile);
-        //  Allocate just the columns now - we'll do the rows as
+        // Allocate just the columns now - we'll do the rows as
         // needed...
         elevations = new short[uhl.num_lon_lines][];
         if (readWholeFile)
@@ -190,28 +184,30 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * This must get called to break a reference cycle that prevents
-     * the garbage collection of frames.
+     * This must get called to break a reference cycle that prevents the garbage
+     * collection of frames.
      */
     public void dispose() {
-        //System.out.println("DTED Frame Disposed " + me);
+        // System.out.println("DTED Frame Disposed " + me);
         this.close(true);
         BinaryFile.removeClosable(this);
     }
 
-    //     public void finalize() {
-    //         System.out.println("DTED Frame Finalized!" + me);
-    //     }
+    // public void finalize() {
+    // System.out.println("DTED Frame Finalized!" + me);
+    // }
 
     /**
-     * Part of the Closable interface. Closes the BinaryFile pointer,
-     * because someone else needs another file open, and the system
-     * needs a file pointer. Sets the binFile variable to null.
+     * Part of the Closable interface. Closes the BinaryFile pointer, because
+     * someone else needs another file open, and the system needs a file
+     * pointer. Sets the binFile variable to null.
      */
     public boolean close(boolean done) {
         try {
-            binFile.close();
-            binFile = null;
+            if (binFile != null) {
+                binFile.close();
+                binFile = null;
+            }
             return true;
         } catch (java.io.IOException e) {
             Debug.error("DTEDFrame close(): File IO Error!\n" + e.toString());
@@ -220,15 +216,14 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * If the BinaryBufferedFile was closed, this method attempts to
-     * reopen it.
+     * If the BinaryBufferedFile was closed, this method attempts to reopen it.
      * 
      * @return true if the opening was successful.
      */
     protected boolean reopen() {
         try {
             binFile = new BinaryBufferedFile(path);
-            //          binFile = new BinaryFile(path);
+            // binFile = new BinaryFile(path);
             return true;
         } catch (FileNotFoundException e) {
             Debug.error("DTEDFrame reopen(): file " + path + " not found");
@@ -239,14 +234,14 @@ public class DTEDFrame implements Closable {
         }
     }
 
-    //////////////////
+    // ////////////////
     // These functions can be called from the outside,
     // as queries about the data
-    //////////////////
+    // ////////////////
 
     /**
-     * The elevation at the closest SW post to the given lat/lon. This
-     * is just a go-to-the-closest-post solution.
+     * The elevation at the closest SW post to the given lat/lon. This is just a
+     * go-to-the-closest-post solution.
      * 
      * @param lat latitude in decimal degrees.
      * @param lon longitude in decimal degrees.
@@ -274,9 +269,8 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * Interpolated elevation at a given lat/lon - should be more
-     * precise than elevationAt(), but that depends on the resolution
-     * of the data.
+     * Interpolated elevation at a given lat/lon - should be more precise than
+     * elevationAt(), but that depends on the resolution of the data.
      * 
      * @param lat latitude in decimal degrees.
      * @param lon longitude in decimal degrees.
@@ -296,7 +290,7 @@ public class DTEDFrame implements Closable {
 
                 int lflon_index = (int) Math.floor(lon_index);
                 int lclon_index = (int) Math.ceil(lon_index);
-                /*int lflat_index = (int) Math.floor(lat_index);*/
+                /* int lflat_index = (int) Math.floor(lat_index); */
                 int lclat_index = (int) Math.ceil(lat_index);
 
                 if (elevations[lflon_index] == null)
@@ -304,21 +298,21 @@ public class DTEDFrame implements Closable {
                 if (elevations[lclon_index] == null)
                     read_data_record(lclon_index);
 
-                //////////////////////////////////////////////////////
+                // ////////////////////////////////////////////////////
                 // Print out grid of 20x20 elevations with
                 // the "asked for" point being in the middle
-                //          System.out.println("***Elevation Map***");
-                //          for(int l = lclat_index + 5; l > lflat_index - 5;
+                // System.out.println("***Elevation Map***");
+                // for(int l = lclat_index + 5; l > lflat_index - 5;
                 // l--) {
-                //              System.out.println();
-                //              for(int k = lflon_index - 5; k < lclon_index + 5;
+                // System.out.println();
+                // for(int k = lflon_index - 5; k < lclon_index + 5;
                 // k++) {
-                //                  if (elevations[k]==null) read_data_record(k);
-                //                  System.out.print(elevations[k][l] + " ");
-                //              }
-                //          }
-                //          System.out.println();System.out.println();
-                //////////////////////////////////////////////////////
+                // if (elevations[k]==null) read_data_record(k);
+                // System.out.print(elevations[k][l] + " ");
+                // }
+                // }
+                // System.out.println();System.out.println();
+                // ////////////////////////////////////////////////////
 
                 int ul = elevations[lflon_index][lclat_index];
                 int ur = elevations[lclon_index][lclat_index];
@@ -338,10 +332,9 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * Return an index of ints representing the starting x, y and
-     * ending x, y of elevation posts given a lat lon box. It does
-     * check to make sure that the upper lat is larger than the lower,
-     * and left lon is less than the right.
+     * Return an index of ints representing the starting x, y and ending x, y of
+     * elevation posts given a lat lon box. It does check to make sure that the
+     * upper lat is larger than the lower, and left lon is less than the right.
      * 
      * @param ullat upper latitude in decimal degrees.
      * @param ullon left longitude in decimal degrees.
@@ -411,8 +404,8 @@ public class DTEDFrame implements Closable {
      * @param ullon left longitude in decimal degrees.
      * @param lrlat lower latitude in decimal degrees.
      * @param lrlon right longitude in decimal degrees.
-     * @return array of elevations in meters. The spacing of the posts
-     *         depends on the DTED level.
+     * @return array of elevations in meters. The spacing of the posts depends
+     *         on the DTED level.
      */
     public short[][] getElevations(float ullat, float ullon, float lrlat,
                                    float lrlon) {
@@ -421,20 +414,20 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * Return a two dimensional array of posts between lat lons.
-     * Assumes that the indexes are checked to not exceed their bounds
-     * as defined in the file. getIndexesFromLatLons() checks this.
+     * Return a two dimensional array of posts between lat lons. Assumes that
+     * the indexes are checked to not exceed their bounds as defined in the
+     * file. getIndexesFromLatLons() checks this.
      * 
-     * @param startx starting index (left) of the greater matrix to
-     *        make the left side of the returned matrix.
-     * @param starty starting index (lower) of the greater matrix to
-     *        make the bottom side of the returned matrix.
-     * @param endx ending index (right) of the greater matrix to make
-     *        the left side of the returned matrix.
-     * @param endy ending index (top) of the greater matrix to make
-     *        the top side of the returned matrix.
-     * @return array of elevations in meters. The spacing of the posts
-     *         depends on the DTED level.
+     * @param startx starting index (left) of the greater matrix to make the
+     *        left side of the returned matrix.
+     * @param starty starting index (lower) of the greater matrix to make the
+     *        bottom side of the returned matrix.
+     * @param endx ending index (right) of the greater matrix to make the left
+     *        side of the returned matrix.
+     * @param endy ending index (top) of the greater matrix to make the top side
+     *        of the returned matrix.
+     * @return array of elevations in meters. The spacing of the posts depends
+     *         on the DTED level.
      */
     public short[][] getElevations(int startx, int starty, int endx, int endy) {
         int upper = endy;
@@ -470,14 +463,13 @@ public class DTEDFrame implements Closable {
         return matrix;
     }
 
-    //////////////////
+    // ////////////////
     // Internal methods
-    //////////////////
+    // ////////////////
 
     /**
-     * A try at interoplating the corners of the surrounding posts,
-     * given a lat lon. Called from a function where the data for the
-     * lon has been read in.
+     * A try at interoplating the corners of the surrounding posts, given a lat
+     * lon. Called from a function where the data for the lon has been read in.
      */
     private float resolve_four_points(int ul, int ur, int lr, int ll,
                                       float lat_index, float lon_index) {
@@ -500,8 +492,7 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * Reads one longitude line of posts. Assumes that the binFile is
-     * valid.
+     * Reads one longitude line of posts. Assumes that the binFile is valid.
      * 
      * @return true if the column of data was successfully read
      */
@@ -517,10 +508,10 @@ public class DTEDFrame implements Closable {
             // 2*uhl....size of elevation post space
             binFile.seek(UHL_SIZE + DSI_SIZE + ACC_SIZE
                     + (lon_index * (12 + (2 * uhl.num_lat_points))));
-            /*int sent = */binFile.read();
+            /* int sent = */binFile.read();
             binFile.skipBytes(3); // 3 byte data_block_count
-            /*short lon_count = */binFile.readShort();
-            /*short lat_count = */binFile.readShort();
+            /* short lon_count = */binFile.readShort();
+            /* short lat_count = */binFile.readShort();
             // Allocate the rows of the row
             elevations[lon_index] = new short[uhl.num_lat_points];
             for (int j = 0; j < uhl.num_lat_points; j++)
@@ -540,8 +531,8 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * Read all the elevation posts, at one time. Assumes that the
-     * file is open and ready.
+     * Read all the elevation posts, at one time. Assumes that the file is open
+     * and ready.
      * 
      * @return true if the elevation columns were read.
      */
@@ -555,8 +546,7 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * Sets the subframe array. Blows away any images that may already
-     * be there.
+     * Sets the subframe array. Blows away any images that may already be there.
      */
     public void initSubframes(int numHorizSubframes, int numVertSubframes) {
         number_horiz_subframes = numHorizSubframes;
@@ -569,12 +559,12 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * If you just want to get an image for the DTEDFrame, then call
-     * this. One OMRaster for the entire DTEDFrame will be returned,
-     * with the default rendering parameters (Colored shading) and the
-     * default colortable. Use the other getOMRaster method if you
-     * want something different. This method actually calls that other
-     * method, so read the documentation for that as well.
+     * If you just want to get an image for the DTEDFrame, then call this. One
+     * OMRaster for the entire DTEDFrame will be returned, with the default
+     * rendering parameters (Colored shading) and the default colortable. Use
+     * the other getOMRaster method if you want something different. This method
+     * actually calls that other method, so read the documentation for that as
+     * well.
      * 
      * @param proj EqualArc projection to use to create image.
      * @return raster image to display in OpenMap.
@@ -584,21 +574,19 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * If you just want to get an image for the DTEDFrame, then call
-     * this. One OMRaster for the entire DTEDFrame will be returned.
-     * In the DTEDFrameSubframeInfo, you need to set the color type
-     * and all the parameters that are assiociated with the rendering
-     * parameters. The projection parameters of the DFSI (image
-     * height, width, pixel intervals) will be set in this method
-     * based on the projection. If you want a different sized image,
-     * scale the thing you get back from this method, or change the
-     * scale of the projection that is passed in. Calling this method
-     * will cause the DTEDFrame subframe cache to reset itself to hold
-     * one subframe covering the entire frame. Just so you know.
+     * If you just want to get an image for the DTEDFrame, then call this. One
+     * OMRaster for the entire DTEDFrame will be returned. In the
+     * DTEDFrameSubframeInfo, you need to set the color type and all the
+     * parameters that are assiociated with the rendering parameters. The
+     * projection parameters of the DFSI (image height, width, pixel intervals)
+     * will be set in this method based on the projection. If you want a
+     * different sized image, scale the thing you get back from this method, or
+     * change the scale of the projection that is passed in. Calling this method
+     * will cause the DTEDFrame subframe cache to reset itself to hold one
+     * subframe covering the entire frame. Just so you know.
      * 
      * @param dfsi the DTEDFrameSubframeInfo describing the subframe.
-     * @param colortable the colortable to use when building the
-     *        image.
+     * @param colortable the colortable to use when building the image.
      * @return raster image to display in OpenMap.
      * @param proj EqualArc projection to use to create image.
      */
@@ -615,11 +603,11 @@ public class DTEDFrame implements Closable {
 
         if (dfsi == null) {
             dfsi = new DTEDFrameSubframeInfo(DTEDFrameSubframe.COLOREDSHADING, DTEDFrameSubframe.DEFAULT_BANDHEIGHT, DTEDFrameSubframe.LEVEL_1, // Doesn't
-                                                                                                                                                // matter
-                    DTEDFrameSubframe.DEFAULT_SLOPE_ADJUST);
+            // matter
+            DTEDFrameSubframe.DEFAULT_SLOPE_ADJUST);
         }
 
-        dfsi.xPixInterval = 360 / proj.getXPixConstant(); //degrees/pixel
+        dfsi.xPixInterval = 360 / proj.getXPixConstant(); // degrees/pixel
         dfsi.yPixInterval = 90 / proj.getYPixConstant();
         dfsi.height = (int) (1 / dfsi.yPixInterval);
         dfsi.width = (int) (1 / dfsi.xPixInterval);
@@ -631,15 +619,13 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * Return the subframe image as described in the
-     * DTEDFrameSubframeInfo. This is called by the DTEDCacheHandler,
-     * which has in turn set the DTEDFrameSubframeInfo parameters to
-     * match the projection parameters. This turns out to be kinda
-     * important.
+     * Return the subframe image as described in the DTEDFrameSubframeInfo. This
+     * is called by the DTEDCacheHandler, which has in turn set the
+     * DTEDFrameSubframeInfo parameters to match the projection parameters. This
+     * turns out to be kinda important.
      * 
      * @param dfsi the DTEDFrameSubframeInfo describing the subframe.
-     * @param colortable the colortable to use when building the
-     *        image.
+     * @param colortable the colortable to use when building the image.
      * @return raster image to display in OpenMap.
      */
     public OMRaster getSubframeOMRaster(DTEDFrameSubframeInfo dfsi,
@@ -710,9 +696,9 @@ public class DTEDFrame implements Closable {
                     subframe.image = new OMRaster(lat_origin, lon_origin, dfsi.width, dfsi.height, null, colortable.colors, 255);
             }
 
-            //  If there is an image, the types are different and it
+            // If there is an image, the types are different and it
             // needs to be
-            //  redrawn
+            // redrawn
             subframe.si = dfsi.makeClone();
 
         } else {
@@ -775,7 +761,7 @@ public class DTEDFrame implements Closable {
         double ys_offset = 0;
         int elevation = (int) 0;
 
-        //  Calculations needed once for slope shading
+        // Calculations needed once for slope shading
         if (dfsi.viewType == DTEDFrameSubframe.SLOPESHADING
                 || (dfsi.viewType == DTEDFrameSubframe.COLOREDSHADING && colortable.colors.length > DTEDFrameColorTable.NUM_ELEVATION_COLORS)) {
             // to get to the right part of the frame, kind of like a
@@ -787,13 +773,13 @@ public class DTEDFrame implements Closable {
             ys_offset = start_lat_index - Math.ceil(lat_interval);
 
             switch (dfsi.dtedLevel) {
-            //larger numbers make less contrast
+            // larger numbers make less contrast
             case 0:
                 modifier = (double) 4;
-                break;//1000 ideal
+                break;// 1000 ideal
             case 1:
                 modifier = (double) .02;
-                break;//2 ideal
+                break;// 2 ideal
             case 2:
                 modifier = (double) .0001;
                 break;
@@ -816,7 +802,7 @@ public class DTEDFrame implements Closable {
         }
         for (short x = 0; x < dfsi.width; x++) {
 
-            //used for both elevation banding and slope
+            // used for both elevation banding and slope
             xc = (short) (start_lon_index + ((x) * lon_interval));
             if (xc < 0)
                 xc = 0;
@@ -829,9 +815,9 @@ public class DTEDFrame implements Closable {
             }
             if (dfsi.viewType == DTEDFrameSubframe.SLOPESHADING
                     || (dfsi.viewType == DTEDFrameSubframe.COLOREDSHADING && colortable.colors.length > DTEDFrameColorTable.NUM_ELEVATION_COLORS)) {
-                //  This is actually finding the right x post for this
+                // This is actually finding the right x post for this
                 // pixel,
-                //  within the subframe measurements.
+                // within the subframe measurements.
                 xnw = (short) (xw_offset + Math.floor(x * lon_interval));
                 xse = (short) (xe_offset + Math.floor(x * lon_interval));
 
@@ -920,9 +906,9 @@ public class DTEDFrame implements Closable {
                     ynw = (short) (yn_offset - Math.floor(y * lat_interval));
                     yse = (short) (ys_offset - Math.floor(y * lat_interval));
 
-                    //  trying to smooth out the edge of the frame by
+                    // trying to smooth out the edge of the frame by
                     // handling the
-                    //  frame limits
+                    // frame limits
                     if (yse < 0)
                         yse = 0;
                     if (yc == dsi.num_lat_lines - 1
@@ -930,12 +916,12 @@ public class DTEDFrame implements Closable {
                         ynw = (short) (dsi.num_lat_lines - 1);
 
                     e2 = elevations[xse][yse]; // down & right
-                                               // elevation
+                    // elevation
                     e1 = elevations[xnw][ynw]; // up and left
-                                               // elevation
+                    // elevation
 
                     slope = (e2 - e1) / distance; // slope relative to
-                                                  // nw sun
+                    // nw sun
                     // colormap value darker for negative slopes,
                     // brighter for
                     // positive slopes
@@ -974,7 +960,7 @@ public class DTEDFrame implements Closable {
                             value = 0; // water?!?
                         if (value > (colortable.colors.length - 1))
                             value = colortable.colors.length - 1; // max
-                                                                  // bright
+                        // bright
 
                         assignment = (int) value;
                         if (dfsi.colorModel == OMRasterObject.COLORMODEL_DIRECT)
@@ -1052,19 +1038,19 @@ public class DTEDFrame implements Closable {
             System.out.println(df.uhl);
             System.out.println(df.dsi);
 
-            //          int startx = 5;
-            //          int starty = 6;
-            //          int endx = 10;
-            //          int endy = 30;
+            // int startx = 5;
+            // int starty = 6;
+            // int endx = 10;
+            // int endy = 30;
 
-            //          short[][] e = df.getElevations(startx, starty, endx,
+            // short[][] e = df.getElevations(startx, starty, endx,
             // endy);
-            //          for (int i = e[0].length-1; i >= 0; i--) {
-            //              for (int j = 0; j < e.length; j++) {
-            //                  System.out.print(e[j][i] + " ");
-            //              }
-            //              System.out.println("");
-            //          }
+            // for (int i = e[0].length-1; i >= 0; i--) {
+            // for (int j = 0; j < e.length; j++) {
+            // System.out.print(e[j][i] + " ");
+            // }
+            // System.out.println("");
+            // }
         }
         float lat = df.dsi.lat_origin + .5f;
         float lon = df.dsi.lon_origin + .5f;
@@ -1099,4 +1085,3 @@ public class DTEDFrame implements Closable {
         window.repaint();
     }
 }
-

@@ -40,12 +40,11 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The DTEDFrame is the representation of the DTED (Digital Terrain
- * Elevation Data) data from a single dted data file. It keeps track
- * of all the attribute information of its data. It can return an
- * OMGrid object that can be configured to create a visual
- * representation of the data, depending on what OMGridGenerators are
- * used on the OMGrid object.
+ * The DTEDFrame is the representation of the DTED (Digital Terrain Elevation
+ * Data) data from a single dted data file. It keeps track of all the attribute
+ * information of its data. It can return an OMGrid object that can be
+ * configured to create a visual representation of the data, depending on what
+ * OMGridGenerators are used on the OMGrid object.
  */
 public class DTEDFrame implements Closable {
 
@@ -58,9 +57,9 @@ public class DTEDFrame implements Closable {
     /** The path to the frame, including the frame name. */
     protected String path;
     /**
-     * The array of elevation posts. Note: the 0 index of the array in
-     * both directions is in the lower left corner of the matrix. As
-     * you increase indexes in both dimensions, you go up-right.
+     * The array of elevation posts. Note: the 0 index of the array in both
+     * directions is in the lower left corner of the matrix. As you increase
+     * indexes in both dimensions, you go up-right.
      */
     protected short[][] elevations; // elevation posts
 
@@ -90,10 +89,10 @@ public class DTEDFrame implements Closable {
      * Constructor with colortable and presentation information.
      * 
      * @param filePath complete path to the DTED frame.
-     * @param readWholeFile If true, all of the elevation data will be
-     *        read at load time. If false, elevation post data will be
-     *        read in per longitude column depending on the need.
-     *        False is recommended for DTEd level 1 and 2.
+     * @param readWholeFile If true, all of the elevation data will be read at
+     *        load time. If false, elevation post data will be read in per
+     *        longitude column depending on the need. False is recommended for
+     *        DTEd level 1 and 2.
      */
     public DTEDFrame(String filePath, boolean readWholeFile) {
         try {
@@ -115,14 +114,11 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * Reads the DTED frame file. Assumes that the File f is
-     * valid/exists.
+     * Reads the DTED frame file. Assumes that the File f is valid/exists.
      * 
-     * @param binFile the binary buffere file opened on the DTED frame
-     *        file
-     * @param readWholeFile flag controlling whether all the row data
-     *        is read at this time. Otherwise, the rows are read as
-     *        needed.
+     * @param binFile the binary buffere file opened on the DTED frame file
+     * @param readWholeFile flag controlling whether all the row data is read at
+     *        this time. Otherwise, the rows are read as needed.
      */
     protected void read(BinaryFile binFile, boolean readWholeFile) {
         binFile.byteOrder(true); // boolean msbfirst
@@ -138,8 +134,8 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * This must get called to break a reference cycle that prevents
-     * the garbage collection of frames.
+     * This must get called to break a reference cycle that prevents the garbage
+     * collection of frames.
      */
     public void dispose() {
         // System.out.println("DTED Frame Disposed " + me);
@@ -148,14 +144,16 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * Part of the Closable interface. Closes the BinaryFile pointer,
-     * because someone else needs another file open, and the system
-     * needs a file pointer. Sets the binFile variable to null.
+     * Part of the Closable interface. Closes the BinaryFile pointer, because
+     * someone else needs another file open, and the system needs a file
+     * pointer. Sets the binFile variable to null.
      */
     public boolean close(boolean done) {
         try {
-            binFile.close();
-            binFile = null;
+            if (binFile != null) {
+                binFile.close();
+                binFile = null;
+            }
             return true;
         } catch (IOException e) {
             Debug.error("DTEDFrame close(): File IO Error!\n" + e.toString());
@@ -164,8 +162,7 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * If the BinaryBufferedFile was closed, this method attempts to
-     * reopen it.
+     * If the BinaryBufferedFile was closed, this method attempts to reopen it.
      * 
      * @return true if the opening was successful.
      */
@@ -188,8 +185,8 @@ public class DTEDFrame implements Closable {
     // ////////////////
 
     /**
-     * The elevation at the closest SW post to the given lat/lon. This
-     * is just a go-to-the-closest-post solution.
+     * The elevation at the closest SW post to the given lat/lon. This is just a
+     * go-to-the-closest-post solution.
      * 
      * @param lat latitude in decimal degrees.
      * @param lon longitude in decimal degrees.
@@ -217,9 +214,8 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * Interpolated elevation at a given lat/lon - should be more
-     * precise than elevationAt(), but that depends on the resolution
-     * of the data.
+     * Interpolated elevation at a given lat/lon - should be more precise than
+     * elevationAt(), but that depends on the resolution of the data.
      * 
      * @param lat latitude in decimal degrees.
      * @param lon longitude in decimal degrees.
@@ -281,10 +277,9 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * Return an index of ints representing the starting x, y and
-     * ending x, y of elevation posts given a lat lon box. It does
-     * check to make sure that the upper lat is larger than the lower,
-     * and left lon is less than the right.
+     * Return an index of ints representing the starting x, y and ending x, y of
+     * elevation posts given a lat lon box. It does check to make sure that the
+     * upper lat is larger than the lower, and left lon is less than the right.
      * 
      * @param ullat upper latitude in decimal degrees.
      * @param ullon left longitude in decimal degrees.
@@ -354,8 +349,8 @@ public class DTEDFrame implements Closable {
      * @param ullon left longitude in decimal degrees.
      * @param lrlat lower latitude in decimal degrees.
      * @param lrlon right longitude in decimal degrees.
-     * @return array of elevations in meters. The spacing of the posts
-     *         depends on the DTED level.
+     * @return array of elevations in meters. The spacing of the posts depends
+     *         on the DTED level.
      */
     public short[][] getElevations(float ullat, float ullon, float lrlat,
                                    float lrlon) {
@@ -364,20 +359,20 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * Return a two dimensional array of posts between lat lons.
-     * Assumes that the indexes are checked to not exceed their bounds
-     * as defined in the file. getIndexesFromLatLons() checks this.
+     * Return a two dimensional array of posts between lat lons. Assumes that
+     * the indexes are checked to not exceed their bounds as defined in the
+     * file. getIndexesFromLatLons() checks this.
      * 
-     * @param startx starting index (left) of the greater matrix to
-     *        make the left side of the returned matrix.
-     * @param starty starting index (lower) of the greater matrix to
-     *        make the bottom side of the returned matrix.
-     * @param endx ending index (right) of the greater matrix to make
-     *        the left side of the returned matrix.
-     * @param endy ending index (top) of the greater matrix to make
-     *        the top side of the returned matrix.
-     * @return array of elevations in meters. The spacing of the posts
-     *         depends on the DTED level.
+     * @param startx starting index (left) of the greater matrix to make the
+     *        left side of the returned matrix.
+     * @param starty starting index (lower) of the greater matrix to make the
+     *        bottom side of the returned matrix.
+     * @param endx ending index (right) of the greater matrix to make the left
+     *        side of the returned matrix.
+     * @param endy ending index (top) of the greater matrix to make the top side
+     *        of the returned matrix.
+     * @return array of elevations in meters. The spacing of the posts depends
+     *         on the DTED level.
      */
     public short[][] getElevations(int startx, int starty, int endx, int endy) {
         int upper = endy;
@@ -418,9 +413,8 @@ public class DTEDFrame implements Closable {
     // ////////////////
 
     /**
-     * A try at interoplating the corners of the surrounding posts,
-     * given a lat lon. Called from a function where the data for the
-     * lon has been read in.
+     * A try at interoplating the corners of the surrounding posts, given a lat
+     * lon. Called from a function where the data for the lon has been read in.
      */
     private float resolveFourPoints(int ul, int ur, int lr, int ll,
                                     float lat_index, float lon_index) {
@@ -443,8 +437,7 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * Reads one longitude line of posts. Assumes that the binFile is
-     * valid.
+     * Reads one longitude line of posts. Assumes that the binFile is valid.
      * 
      * @return true if the column of data was successfully read
      */
@@ -486,8 +479,8 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * Read all the elevation posts, at one time. Assumes that the
-     * file is open and ready.
+     * Read all the elevation posts, at one time. Assumes that the file is open
+     * and ready.
      * 
      * @return true if the elevation columns were read.
      */
@@ -533,12 +526,12 @@ public class DTEDFrame implements Closable {
     }
 
     /**
-     * If you just want to get an image for the DTEDFrame, then call
-     * this. One OMRaster for the entire DTEDFrame will be returned,
-     * with the default rendering parameters (Colored shading) and the
-     * default colortable. Use the other getOMRaster method if you
-     * want something different. This method actually calls that other
-     * method, so read the documentation for that as well.
+     * If you just want to get an image for the DTEDFrame, then call this. One
+     * OMRaster for the entire DTEDFrame will be returned, with the default
+     * rendering parameters (Colored shading) and the default colortable. Use
+     * the other getOMRaster method if you want something different. This method
+     * actually calls that other method, so read the documentation for that as
+     * well.
      * 
      * @param proj EqualArc projection to use to create image.
      * @return raster image to display in OpenMap.
