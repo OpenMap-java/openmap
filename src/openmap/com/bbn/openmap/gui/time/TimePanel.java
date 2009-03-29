@@ -23,6 +23,7 @@
 package com.bbn.openmap.gui.time;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -236,6 +237,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
 
         timelinePanel = new TimelinePanel();
         timelinePanel.addMapComponent(new TimePanel.Wrapper(this));
+        timelinePanel.setBorder(BorderFactory.createLineBorder(Color.blue));
 
         c.fill = GridBagConstraints.BOTH;
         c.weighty = 1f;
@@ -246,6 +248,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         rightPanel.add(timelinePanel);
 
         timeSliderPanel = new TimeSliderPanel();
+        timeSliderPanel.setBorder(BorderFactory.createLineBorder(Color.red));
         // Slider needs to know about the timeline to set projection
         timeSliderPanel.addMapComponent(timelinePanel.getWrapper());
         c.fill = GridBagConstraints.HORIZONTAL;

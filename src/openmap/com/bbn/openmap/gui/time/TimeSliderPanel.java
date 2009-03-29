@@ -24,6 +24,7 @@
 
 package com.bbn.openmap.gui.time;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
@@ -40,7 +41,7 @@ public class TimeSliderPanel extends BasicMapPanel {
 
     public TimeSliderPanel() {
         super();
-
+        setLayout(new BorderLayout());
         Cartesian cartesian = new Cartesian(new Point2D.Double(), 300000f, 600, 20);
         MapBean mapBean = getMapBean();
         mapBean.setProjection(cartesian);

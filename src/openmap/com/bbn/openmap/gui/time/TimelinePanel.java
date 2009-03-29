@@ -24,6 +24,7 @@
 
 package com.bbn.openmap.gui.time;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 
@@ -39,14 +40,14 @@ public class TimelinePanel extends BasicMapPanel {
 
     public TimelinePanel() {
         super();
-
         Cartesian cartesian = new Cartesian(new Point2D.Double(), 300000f, 600, 20);
+        setLayout(new BorderLayout());
         MapBean mapBean = getMapBean();
         mapBean.setProjection(cartesian);
-//        mapBean.setPreferredSize(new Dimension(10, 70));
+        // mapBean.setPreferredSize(new Dimension(10, 70));
         mapBean.setBorder(BorderFactory.createLineBorder(TimelineLayer.tint));
         mapBean.setBckgrnd(Color.white);
-        
+
         MapHandler mh = getMapHandler();
         mh.add(new com.bbn.openmap.LayerHandler());
         mh.add(new com.bbn.openmap.MouseDelegator());
@@ -63,21 +64,20 @@ public class TimelinePanel extends BasicMapPanel {
     public void TimelineLayer(TimelineLayer timelineLayer) {
         this.timelineLayer = timelineLayer;
     }
-    
+
     public Wrapper getWrapper() {
         return new Wrapper(this);
     }
-    
+
     public static class Wrapper {
         TimelinePanel panel;
-        
+
         public Wrapper(TimelinePanel tlp) {
             panel = tlp;
         }
-        
+
         public TimelinePanel getTimelinePanel() {
             return panel;
         }
     }
-    
 }

@@ -76,7 +76,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
         PropertyChangeListener, MapMouseListener, ComponentListener,
         TimeBoundsListener, TimeEventListener {
 
-    protected static Logger logger = Logger.getLogger("com.bbn.hotwash.gui.TimeSliderLayer");
+    protected static Logger logger = Logger.getLogger("com.bbn.openmap.gui.time.TimeSliderLayer");
 
     protected I18n i18n = Environment.getI18n();
 
@@ -110,7 +110,6 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
 
     public static double magicScaleFactor = 100000000; // KMTODO (Don? I guess
     // this is to
-
     // address a precision issue?)
 
     Clock clock;
