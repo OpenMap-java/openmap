@@ -24,6 +24,10 @@ package com.bbn.openmap.time;
 
 /**
  * A component that can provide information about a time range it cares about.
+ * Looks for TimeBoundsHandlers and adds them to itself. The TimeBoundsHandler
+ * will also look for TimeBoundsProviders and add them to itself, two-way
+ * connection, because they both have to initial communication at different
+ * times.
  */
 public interface TimeBoundsProvider {
 
@@ -47,13 +51,15 @@ public interface TimeBoundsProvider {
 
     /**
      * The TimeBoundsProvider keep track of the handlers it needs to notify when
-     * the bounds or activeness changes.  Called when a new handler needs to know.
+     * the bounds or activeness changes. Called when a new handler needs to
+     * know.
      */
     public void addTimeBoundsHandler(TimeBoundsHandler tbh);
 
     /**
      * The TimeBoundsProvider keep track of the handlers it needs to notify when
-     * the bounds or activeness changes. Called when a handler doesn't need to know.
+     * the bounds or activeness changes. Called when a handler doesn't need to
+     * know.
      */
     public void removeTimeBoundsHandler(TimeBoundsHandler tbh);
 
