@@ -155,6 +155,62 @@ public class ImageWarp {
     }
 
     /**
+     * Create an image warp for an image assumed to be world wide coverage, with
+     * the top at 90 degrees, the bottom at -90, the left side at -180 and the
+     * right side at 180. Assumes the origin point is in the middle of the
+     * image.
+     * @param pix ARGB array of pixel values for image.
+     * @param width pixel width of image.
+     * @param height pixel height of image.
+     */
+    public ImageWarp(int[] pix, int width, int height) {
+        this(pix, width, height, LatLonGCT.INSTANCE, new DataBounds(-180.0, -90.0, 180.0, 90.0));
+    }
+
+    /**
+     * Create an image warp with some additional transform information.
+     * 
+     * @param pix ARGB array of pixel values for image.
+     * @param width pixel width of image.
+     * @param height pixel height of image.
+     * @param transform the GeoCoordTransformation for the projection of the
+     *        image.
+     * @param imageBounds the bounds of the image in the image's coordinate
+     *        system.
+     */
+    public ImageWarp(int[] pix, int width, int height, GeoCoordTransformation transform,
+            DataBounds imageBounds) {
+        if (pix != null) {
+            iwidth = width;
+            iheight = height;
+            setGeoTrans(transform);
+            setImageBounds(imageBounds);
+            pixels = pix;
+        }
+    }
+
+    /**
+     * Create an image warp with some additional transform information.
+     * 
+     * @param pix ARGB array of pixel values for image.
+     * @param width pixel width of image.
+     * @param height pixel height of image.
+     * @param transform the GeoCoordTransformation for the projection of the
+     *        image.
+     * @param worldFile the WorldFile describing the image's location.
+     */
+    public ImageWarp(int[] pix, int width, int height, GeoCoordTransformation transform,
+            WorldFile worldFile) {
+        if (pix != null) {
+            iwidth = width;
+            iheight = height;
+            setGeoTrans(transform);
+            setImageBounds(worldFile);
+            pixels = pix;
+        }
+    }
+    
+    /**
      * The pixels used in the OMRaster.
      */
     // int[] tmpPixels = new int[0];

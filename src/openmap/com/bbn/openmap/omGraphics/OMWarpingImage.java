@@ -159,7 +159,54 @@ public class OMWarpingImage extends OMGraphic {
     }
 
     /**
+     * Takes an array of ARGB integer values representing an image, assumed to
+     * be a world image in the LLXY projection (equal arc) covering -180, 180
+     * longitude to -90, 90 latitude.
+     * 
+     * @param pix int[] ARGB pixel array for image
+     * @param width pixel width of image
+     * @param height pixel height of image
+     */
+    public OMWarpingImage(int[] pix, int width, int height) {
+        setWarp(pix,
+                width,
+                height,
+                LatLonGCT.INSTANCE,
+                new DataBounds(-180, -90, 180, 90));
+    }
+
+    /**
+     * Create an OMWarpingImage from a BufferedImage.
+     * 
+     * @param pix int[] ARGB pixel array for image
+     * @param width pixel width of image
+     * @param height pixel height of image
+     * @param transform the transform describing the image's projection.
+     * @param imageBounds the bounds of the image, in its coordinate system.
+     */
+    public OMWarpingImage(int[] pix, int width, int height,
+            GeoCoordTransformation transform, DataBounds imageBounds) {
+        setWarp(pix, width, height, transform, imageBounds);
+    }
+
+    /**
+     * Create an OMWarpingImage from a BufferedImage.
+     * 
+     * @param pix int[] ARGB pixel array for image
+     * @param width pixel width of image
+     * @param height pixel height of image
+     * @param transform transform the transform describing the image's
+     *        projection.
+     * @param worldfile The WorldFile describing the image's location.
+     */
+    public OMWarpingImage(int[] pix, int width, int height,
+            GeoCoordTransformation transform, WorldFile worldfile) {
+        setWarp(pix, width, height, transform, worldfile);
+    }
+
+    /**
      * Set all the information needed.
+     * 
      * @param imagePath
      * @param transform
      * @param imageBounds
@@ -180,6 +227,34 @@ public class OMWarpingImage extends OMGraphic {
         URL imageURL = PropUtils.getResourceOrFileOrURL(imagePath);
         BufferedImage bi = BufferedImageHelper.getBufferedImage(imageURL);
         warp = new ImageWarp(bi, transform, worldfile);
+    }
+
+    /**
+     * Set all the information needed.
+     * 
+     * @param pix int[] ARGB pixel array for image
+     * @param width pixel width of image
+     * @param height pixel height of image
+     * @param transform
+     * @param imageBounds
+     */
+    public void setWarp(int[] pix, int width, int height,
+                        GeoCoordTransformation transform, DataBounds imageBounds) {
+        warp = new ImageWarp(pix, width, height, transform, imageBounds);
+    }
+
+    /**
+     * Set all the information needed.
+     * 
+     * @param pix int[] ARGB pixel array for image
+     * @param width pixel width of image
+     * @param height pixel height of image
+     * @param transform
+     * @param worldFile
+     */
+    public void setWarp(int[] pix, int width, int height,
+                        GeoCoordTransformation transform, WorldFile worldfile) {
+        warp = new ImageWarp(pix, width, height, transform, worldfile);
     }
 
     public void setWarp(BufferedImage bi, GeoCoordTransformation transform,
