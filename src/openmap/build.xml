@@ -34,7 +34,7 @@
 		<available classname="com.sun.media.jai.codec.ImageCodec" property="do.jai" />
 		<echo message="do.jai = ${do.jai}" />
 		
-		<echo message="${java.home}"/>
+		<echo message="Java Home: ${java.home}"/>
 	</target>
 
 	<!--  ############################
@@ -62,7 +62,7 @@
 	############################ -->
 	<target name="debug" depends="init.openmap">
 		<mkdir dir="${openmap.classes}" />
-		<javac srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="com/bbn/openmap/util/Debug.java" source="1.5" target="1.5" />
+		<javac srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="com/bbn/openmap/util/Debug.java" />
 	</target>
 
 	<!--  ############################
