@@ -23,7 +23,6 @@
 package com.bbn.openmap.gui.time;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -50,8 +49,10 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.AbstractBorder;
 
+import com.bbn.openmap.event.OMEventSelectionCoordinator;
 import com.bbn.openmap.gui.MapPanelChild;
 import com.bbn.openmap.gui.OMComponentPanel;
+import com.bbn.openmap.gui.event.EventPresenter;
 import com.bbn.openmap.time.Clock;
 import com.bbn.openmap.time.TimeEvent;
 import com.bbn.openmap.time.TimeEventListener;
@@ -181,7 +182,8 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         lgridbag.setConstraints(timerControl, c);
         leftPanel.add(timerControl);
 
-        clock.addPropertyChangeListener(Clock.TIMER_STATUS, timerControl);
+        clock.addTimeEventListener(timerControl);
+
         /*
          * Not Used, but strangely enough needs to be created in order to tell
          * the clock how fast to run, one second per clock tick.
@@ -237,7 +239,6 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
 
         timelinePanel = new TimelinePanel();
         timelinePanel.addMapComponent(new TimePanel.Wrapper(this));
-        timelinePanel.setBorder(BorderFactory.createLineBorder(Color.blue));
 
         c.fill = GridBagConstraints.BOTH;
         c.weighty = 1f;
@@ -248,7 +249,6 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         rightPanel.add(timelinePanel);
 
         timeSliderPanel = new TimeSliderPanel();
-        timeSliderPanel.setBorder(BorderFactory.createLineBorder(Color.red));
         // Slider needs to know about the timeline to set projection
         timeSliderPanel.addMapComponent(timelinePanel.getWrapper());
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -423,6 +423,19 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
                 timeSliderPanel.getMapHandler().add(someObj);
             }
         }
+        
+        if (someObj instanceof OMEventSelectionCoordinator) {
+            if (timelinePanel != null) {
+                timelinePanel.getMapHandler().add(someObj);
+            }
+        }
+        
+        if (someObj instanceof EventPresenter) {
+            if (timelinePanel != null) {
+                timelinePanel.getMapHandler().add(someObj);
+            }
+        }
+        
     }
 
     /**

@@ -25,10 +25,10 @@
 package com.bbn.openmap.time;
 
 /**
- * Describes a component that listeners to TimeBoundsProviders, for the purpose
+ * Describes a component that listens to TimeBoundsProviders, for the purpose
  * of figuring out the overall time bounds when contributions to the bounds will
  * be made from several other objects, some of which may or may not be active. A
- * TimeBoundsHander is the go-between object between TimeBoundsProviders and
+ * TimeBoundsHandler is the go-between object between TimeBoundsProviders and
  * TimeBoundsListeners. The TimeBoundsHandler will look for TimeBoundsListeners
  * in the MapHandler and will notify them when the overall time bounds change.
  * 
@@ -41,4 +41,6 @@ public interface TimeBoundsHandler {
     public void removeTimeBoundsProvider(TimeBoundsProvider tbp);
 
     public void clearTimeBoundsProviders();
+    
+    public void resetTimeBounds();
 }

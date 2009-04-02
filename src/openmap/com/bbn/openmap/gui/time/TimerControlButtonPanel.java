@@ -24,8 +24,6 @@ package com.bbn.openmap.gui.time;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -35,6 +33,8 @@ import javax.swing.JToolBar;
 
 import com.bbn.openmap.gui.OMComponentPanel;
 import com.bbn.openmap.time.RealTimeHandler;
+import com.bbn.openmap.time.TimeEvent;
+import com.bbn.openmap.time.TimeEventListener;
 import com.bbn.openmap.time.TimerStatus;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -46,7 +46,7 @@ import com.bbn.openmap.util.PropUtils;
  * forward and backward one interval.
  */
 public class TimerControlButtonPanel extends OMComponentPanel implements
-        PropertyChangeListener, ActionListener {
+        TimeEventListener, ActionListener {
 
     protected ImageIcon backwardStepIcon;
     protected ImageIcon backwardIcon;
@@ -155,16 +155,16 @@ public class TimerControlButtonPanel extends OMComponentPanel implements
      * value are the actual string objects defined in the TimeConstants
      * interface. It does ==, not equals().
      */
-    public void propertyChange(PropertyChangeEvent pce) {
-        String propName = pce.getPropertyName();
-        Object obj = pce.getNewValue();
-        if (propName == RealTimeHandler.TIMER_STATUS && obj instanceof String) {
-            update((String) obj);
-        }
-    }
+//    public void propertyChange(PropertyChangeEvent pce) {
+//        String propName = pce.getPropertyName();
+//        Object obj = pce.getNewValue();
+//        if (propName == RealTimeHandler.TIMER_STATUS && obj instanceof String) {
+//            update((String) obj);
+//        }
+//    }
 
-    protected void update(String newStatus) {
-        if (newStatus == TimerStatus.TIMER_FORWARD) {
+    protected void update(TimerStatus newStatus) {
+        if (newStatus == TimerStatus.FORWARD) {
             if (Debug.debugging("timedetail")) {
                 Debug.output("TimerControlButtonPanel: TIMER_FORWARD");
             }
@@ -172,7 +172,7 @@ public class TimerControlButtonPanel extends OMComponentPanel implements
             backwardButton.setActionCommand(TimerStatus.TIMER_BACKWARD);
             forwardButton.setIcon(pauseIcon);
             forwardButton.setActionCommand(TimerStatus.TIMER_STOPPED);
-        } else if (newStatus == TimerStatus.TIMER_BACKWARD) {
+        } else if (newStatus == TimerStatus.BACKWARD) {
             if (Debug.debugging("timedetail")) {
                 Debug.output("TimerControlButtonPanel: TIMER_BACKWARD");
             }
@@ -180,7 +180,7 @@ public class TimerControlButtonPanel extends OMComponentPanel implements
             forwardButton.setActionCommand(TimerStatus.TIMER_FORWARD);
             backwardButton.setIcon(pauseIcon);
             backwardButton.setActionCommand(TimerStatus.TIMER_STOPPED);
-        } else if (newStatus == TimerStatus.TIMER_STOPPED) {
+        } else if (newStatus == TimerStatus.STOPPED) {
             if (Debug.debugging("timedetail")) {
                 Debug.output("TimerControlButtonPanel: TIMER_STOPPED");
             }
@@ -211,5 +211,9 @@ public class TimerControlButtonPanel extends OMComponentPanel implements
         } else if (cmd == TimerStatus.TIMER_STOPPED) {
             timeHandler.stopClock();
         }
+    }
+
+    public void updateTime(TimeEvent te) {
+        update(te.getTimerStatus());
     }
 }

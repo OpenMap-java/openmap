@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -152,7 +153,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
     public void findAndInit(Object someObj) {
         if (someObj instanceof Clock) {
             clock = ((Clock) someObj);
-            clock.addPropertyChangeListener(Clock.TIMER_STATUS, this);
+            clock.addTimeEventListener(this);
             clock.addTimeBoundsListener(this);
 
             gameStartTime = ((Clock) someObj).getStartTime();
@@ -422,7 +423,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
             // out.
             double x = cartesian.getCenter().getX();
             if (x != nCenterLon) {
-                ((MapBean) ((MapHandler) getBeanContext()).get(com.bbn.openmap.MapBean.class)).setCenter(0,
+                ((MapBean) ((MapHandler) getBeanContext()).get(MapBean.class)).setCenter(0,
                         nCenterLon);
             }
 
@@ -453,6 +454,9 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
         if (timerStatus.equals(TimerStatus.FORWARD)
                 || timerStatus.equals(TimerStatus.BACKWARD)
                 || timerStatus.equals(TimerStatus.STOPPED)) {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("updated time: " + te);
+            }
             // Checking for a running clock prevents a time status
             // update after the clock is stopped. The
             // AudioFileHandlers don't care about the current time
@@ -703,6 +707,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
             setLayout(gridbag);
 
             timeStartLabel = new JLabel(NO_TIME_STRING);
+            timeStartLabel.setBorder(BorderFactory.createLineBorder(Color.orange));
             Font f = timeStartLabel.getFont();
             f = new Font(f.getFamily(), f.getStyle(), f.getSize() - 1);
             timeStartLabel.setFont(f);
@@ -718,6 +723,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
             c.fill = GridBagConstraints.NONE;
             c.weightx = 0f;
             timeEndLabel = new JLabel(NO_TIME_STRING, JLabel.RIGHT);
+            timeEndLabel.setBorder(BorderFactory.createLineBorder(Color.orange));
             timeEndLabel.setFont(f);
             gridbag.setConstraints(timeEndLabel, c);
             add(timeEndLabel);
@@ -787,7 +793,9 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
     }
 
     public void updateTimeBounds(TimeBoundsEvent tbe) {
-
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("updating time bounds: " + tbe);
+        }
         TimeBounds timeBounds = (TimeBounds) tbe.getNewTimeBounds();
 
         if (timeBounds != null) {

@@ -23,6 +23,9 @@
 package com.bbn.openmap.gui.event;
 
 import java.awt.Component;
+import java.util.Iterator;
+
+import com.bbn.openmap.event.OMEvent;
 
 /**
  * An EventPresenter is a empty interface that marks a component to be picked up
@@ -33,6 +36,16 @@ public interface EventPresenter extends FilterPresenter {
     /**
      * @return the main event display.
      */
-    public Component getComponent();
+    Component getComponent();
+    
+    /**
+     * Return a list of active events. 
+     */
+    Iterator<OMEvent> getActiveEvents();
+    
+    /**
+     * Return a list of all events. 
+     */
+    Iterator<OMEvent> getAllEvents();
 
 }

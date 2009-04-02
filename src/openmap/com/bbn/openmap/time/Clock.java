@@ -51,6 +51,8 @@ import com.bbn.openmap.util.PropUtils;
 public class Clock extends OMComponent implements RealTimeHandler,
         ActionListener, PropertyChangeListener, TimeBoundsHandler, Serializable {
 
+    public final static int DEFAULT_TIME_INTERVAL = 1000;
+    
     /**
      * timeFormat, used for the times listed in properties for rates/pace.
      */
@@ -70,7 +72,12 @@ public class Clock extends OMComponent implements RealTimeHandler,
 
     protected long time = 0;
 
-    protected int timeIncrement = 1;
+    /**
+     * The timeIncrement is the amount of time that passes for each clock tick.
+     * This sets up the ratio for slow and fast motion changes for a set clock
+     * update rate. Can be modified with the pace accessors.
+     */
+    protected int timeIncrement = DEFAULT_TIME_INTERVAL;
 
     protected boolean timeWrap = false;
 
@@ -85,7 +92,7 @@ public class Clock extends OMComponent implements RealTimeHandler,
     /**
      * The delay between timer pulses, in milliseconds.
      */
-    protected int updateInterval = 1000;
+    protected int updateInterval = DEFAULT_TIME_INTERVAL;
 
     public Clock() {
         // Created again with the peer not set, this allows the Clock to be
@@ -102,6 +109,9 @@ public class Clock extends OMComponent implements RealTimeHandler,
     // RealTimeHandler methods.
     // //////////////////////////
 
+    /**
+     * Set the real time clock interval between clock ticks, in milliseconds.
+     */
     public void setUpdateInterval(int delay) {
         updateInterval = delay;
         if (timer != null) {
@@ -112,14 +122,25 @@ public class Clock extends OMComponent implements RealTimeHandler,
         }
     }
 
+    /**
+     * Return the real time interval between clock ticks, in milliseconds.
+     */
     public int getUpdateInterval() {
         return updateInterval;
     }
 
+    /**
+     * Set the amount of simulation time that passes with each clock tick, in
+     * milliseconds.
+     */
     public void setPace(int pace) {
         timeIncrement = pace;
     }
 
+    /**
+     * Get the amount of simulation time that passes with each clock tick, in
+     * milliseconds.
+     */
     public int getPace() {
         return timeIncrement;
     }
@@ -242,14 +263,14 @@ public class Clock extends OMComponent implements RealTimeHandler,
     }
 
     /**
-     * Move the clock forward one clock interval.
+     * Move the clock forward one time increment.
      */
     public void stepForward() {
         changeTimeBy(timeIncrement, timeWrap, TimerStatus.STEP_FORWARD);
     }
 
     /**
-     * Move the clock back one clock interval.
+     * Move the clock back one time increment.
      */
     public void stepBackward() {
         changeTimeBy(-timeIncrement, timeWrap, TimerStatus.STEP_BACKWARD);
@@ -497,6 +518,10 @@ public class Clock extends OMComponent implements RealTimeHandler,
         // relative system time if it is important to them.
         systemTime = startTime;
 
+        /*
+         * First thing, let all the TimeBoundsProviders know what the overall
+         * TimeBounds is, in case they need to update their GUI or something.
+         */
         TimeBounds tb = new TimeBounds(startTime, endTime);
         for (Iterator<TimeBoundsProvider> it = timeBoundsProviders.iterator(); it.hasNext();) {
             it.next().handleTimeBounds(tb);
@@ -514,7 +539,10 @@ public class Clock extends OMComponent implements RealTimeHandler,
             setTime(endTime);
         }
 
-        fireUpdateTimeBounds(new TimeBoundsEvent(this, oldtb, tb));
+        /*
+         * Now, update the TimeBoundsListeners, so they can update their GUIs.
+         */
+        fireUpdateTimeBounds(new TimeBoundsEvent(this, tb, oldtb));
     }
 
     /**

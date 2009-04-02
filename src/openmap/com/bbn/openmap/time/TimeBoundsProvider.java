@@ -38,8 +38,10 @@ public interface TimeBoundsProvider {
     public TimeBounds getTimeBounds();
 
     /**
-     * A method called on the TimeBoundsProvider to inform it of some external
-     * time bounds, in case it wants to react to it in some way.
+     * A method called on the TimeBoundsProvider to inform it of the overall
+     * time bounds, in case some external time bounds values are being set by
+     * another component and this provider wants to react to those bounds in
+     * some way.
      */
     public void handleTimeBounds(TimeBounds tb);
 

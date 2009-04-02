@@ -33,7 +33,7 @@ import com.bbn.openmap.OMComponent;
 
 public class OMEventSelectionCoordinator extends OMComponent {
     
-    public static Logger logger = Logger.getLogger("com.bbn.hotwash.event.AAREventSelectionCoordinator");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.event.OMEventSelectionCoordinator");
     public final static String EventsSelectedProperty = "eventsSelected";
     
     protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
