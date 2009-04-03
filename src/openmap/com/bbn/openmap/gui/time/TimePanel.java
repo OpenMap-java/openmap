@@ -391,7 +391,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
     }
 
     public void setClock(Clock cl) {
-        logger.info("found and setting clock: " + cl);
+        logger.fine("found and setting clock: " + cl);
         if (clock != null) {
             clock.removeTimeEventListener(this);
         }
