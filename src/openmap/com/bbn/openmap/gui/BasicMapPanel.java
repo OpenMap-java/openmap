@@ -108,6 +108,9 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      *        programmer will call <code>create()</code>
      */
     public BasicMapPanel(PropertyHandler propertyHandler, boolean delayCreation) {
+        MapHandler mh = getMapHandler();
+        mh.add(this);
+        
         setPropertyHandler(propertyHandler);
         if (!delayCreation) {
             create();
@@ -176,7 +179,6 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
         // MapHandler.
         MapBean mb = getMapBean();
         MapHandler mh = getMapHandler();
-        mh.add(this);
         ph.createComponents(getMapHandler());
 
         // At this point, check the MapHandler to see if a

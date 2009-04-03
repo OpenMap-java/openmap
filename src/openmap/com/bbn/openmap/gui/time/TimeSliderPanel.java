@@ -77,4 +77,8 @@ public class TimeSliderPanel extends BasicMapPanel {
 
     }
 
+    public void findAndInit(Object someObj) {
+        super.findAndInit(someObj);
+    }
+    
 }

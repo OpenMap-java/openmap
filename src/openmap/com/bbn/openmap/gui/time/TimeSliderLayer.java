@@ -33,7 +33,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -707,7 +706,6 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
             setLayout(gridbag);
 
             timeStartLabel = new JLabel(NO_TIME_STRING);
-            timeStartLabel.setBorder(BorderFactory.createLineBorder(Color.orange));
             Font f = timeStartLabel.getFont();
             f = new Font(f.getFamily(), f.getStyle(), f.getSize() - 1);
             timeStartLabel.setFont(f);
@@ -723,7 +721,6 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
             c.fill = GridBagConstraints.NONE;
             c.weightx = 0f;
             timeEndLabel = new JLabel(NO_TIME_STRING, JLabel.RIGHT);
-            timeEndLabel.setBorder(BorderFactory.createLineBorder(Color.orange));
             timeEndLabel.setFont(f);
             gridbag.setConstraints(timeEndLabel, c);
             add(timeEndLabel);
