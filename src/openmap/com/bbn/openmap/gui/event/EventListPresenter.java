@@ -137,22 +137,14 @@ public class EventListPresenter extends AbstractEventPresenter implements
     public static final String SelectColorProperty = "selectColor";
     public static final String TimeWindowColorProperty = "timeWindowColor";
     public static final String BackgroundColorProperty = "color";
+
     /**
-     * A property string to use for PropertyChangeListeners listening for when
-     * the list contents have changed, either due to filtering or the
-     * availability of new EventHandlers.
+     * A drawing attributes object that holds the basic colors used for display.
+     * The font color is held as line paint, the select color is held as the
+     * select paint, the time window color is held as the matting paint, and the
+     * background color is held as the fill paint.
      */
-    public final static String ActiveEventsProperty = "activeEvents";
-    /**
-     * A property string to use for PropertyChangeListeners interested in
-     * knowing what events are currently selected by the user.
-     */
-    public final static String SelectedEventsProperty = "selectedEvents";
-    /**
-     * A property string used when event attributes (ratings, play filter
-     * settings) have been changed.
-     */
-    public final static String EventAttributesUpdatedProperty = "eventAttributesUpdated";
+    protected DrawingAttributes drawingAttributes = new DrawingAttributes();
 
     private OMEvent lastSelectedEvent;
 
@@ -187,6 +179,15 @@ public class EventListPresenter extends AbstractEventPresenter implements
         regularBackgroundColor = (Color) PropUtils.parseColorFromProperties(props,
                 prefix + BackgroundColorProperty,
                 regularBackgroundColor);
+
+        drawingAttributes.setFillPaint(regularBackgroundColor);
+        drawingAttributes.setSelectPaint(selectColor);
+        drawingAttributes.setLinePaint(fontColor);
+        drawingAttributes.setMattingPaint(timeWindowColor);
+    }
+
+    public DrawingAttributes getSelectionDrawingAttributes() {
+        return drawingAttributes;
     }
 
     public void addEventHandler(OMEventHandler aeh) {
@@ -315,8 +316,10 @@ public class EventListPresenter extends AbstractEventPresenter implements
                         if (me != null) {
                             activeEvents.add(me);
                         } else {
-                            logger.info("The " + aeh.getClass().getName()
-                                    + " is providing null events.");
+                            if (logger.isLoggable(Level.FINE)) {
+                                logger.fine("The " + aeh.getClass().getName()
+                                        + " is providing null events.");
+                            }
                         }
                     }
                 }
@@ -346,9 +349,10 @@ public class EventListPresenter extends AbstractEventPresenter implements
      *        the side effect of resetting the clock. You want this to be false
      *        when event handlers are being added.
      */
-    protected synchronized void initInterface(Iterator<OMEvent> it, boolean setSelected) {
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info("initing interface");
+    protected synchronized void initInterface(Iterator<OMEvent> it,
+                                              boolean setSelected) {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("initing interface");
         }
 
         DefaultListModel listModel = new DefaultListModel();
@@ -367,8 +371,8 @@ public class EventListPresenter extends AbstractEventPresenter implements
             curIndex++;
         }
 
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info("added " + curIndex + " events to list");
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("added " + curIndex + " events to list");
         }
 
         // This code below will cause the first visible event to be marked as

@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.util.Iterator;
 
 import com.bbn.openmap.event.OMEvent;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 
 /**
  * An EventPresenter is a empty interface that marks a component to be picked up
@@ -34,18 +35,43 @@ import com.bbn.openmap.event.OMEvent;
 public interface EventPresenter extends FilterPresenter {
 
     /**
+     * A property string to use for PropertyChangeListeners listening for when
+     * the presenter's contents have changed, either due to filtering or the
+     * availability of new EventHandlers.
+     */
+    public final static String ActiveEventsProperty = "activeEvents";
+    /**
+     * A property string to use for PropertyChangeListeners interested in
+     * knowing what events are currently selected by the user.
+     */
+    public final static String SelectedEventsProperty = "selectedEvents";
+    /**
+     * A property string used when event attributes (ratings, play filter
+     * settings) have been changed.
+     */
+    public final static String EventAttributesUpdatedProperty = "eventAttributesUpdated";
+
+    /**
      * @return the main event display.
      */
     Component getComponent();
-    
+
     /**
-     * Return a list of active events. 
+     * Return a list of active events.
      */
     Iterator<OMEvent> getActiveEvents();
-    
+
     /**
-     * Return a list of all events. 
+     * Return a list of all events.
      */
     Iterator<OMEvent> getAllEvents();
+
+    /**
+     * Return a set of drawing attributes that match what the presenter is using
+     * for selection;
+     * 
+     * @return
+     */
+    DrawingAttributes getSelectionDrawingAttributes();
 
 }

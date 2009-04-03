@@ -237,7 +237,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         rgridbag.setConstraints(eventDetailLabel, c);
         rightPanel.add(eventDetailLabel);
 
-        timelinePanel = new TimelinePanel();
+        TimelinePanel timelinePanel = getTimelinePanel();
         timelinePanel.addMapComponent(new TimePanel.Wrapper(this));
 
         c.fill = GridBagConstraints.BOTH;
@@ -248,7 +248,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         rgridbag.setConstraints(timelinePanel, c);
         rightPanel.add(timelinePanel);
 
-        timeSliderPanel = new TimeSliderPanel();
+        TimeSliderPanel timeSliderPanel = getTimeSliderPanel();
         // Slider needs to know about the timeline to set projection
         timeSliderPanel.addMapComponent(timelinePanel.getWrapper());
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -416,26 +416,17 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
     public void findAndInit(Object someObj) {
         if (someObj instanceof Clock) {
             setClock((Clock) someObj);
-            if (timelinePanel != null) {
-                timelinePanel.getMapHandler().add(someObj);
-            }
-            if (timeSliderPanel != null) {
-                timeSliderPanel.getMapHandler().add(someObj);
-            }
+            getTimelinePanel().getMapHandler().add(someObj);
+            getTimeSliderPanel().getMapHandler().add(someObj);
         }
-        
+
         if (someObj instanceof OMEventSelectionCoordinator) {
-            if (timelinePanel != null) {
-                timelinePanel.getMapHandler().add(someObj);
-            }
+            getTimelinePanel().getMapHandler().add(someObj);
         }
-        
+
         if (someObj instanceof EventPresenter) {
-            if (timelinePanel != null) {
-                timelinePanel.getMapHandler().add(someObj);
-            }
+            getTimelinePanel().getMapHandler().add(someObj);
         }
-        
     }
 
     /**
@@ -467,6 +458,20 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
 
     public void setParentName(String pName) {
         parentName = pName;
+    }
+
+    public TimelinePanel getTimelinePanel() {
+        if (timelinePanel == null) {
+            timelinePanel = new TimelinePanel();
+        }
+        return timelinePanel;
+    }
+
+    public TimeSliderPanel getTimeSliderPanel() {
+        if (timeSliderPanel == null) {
+            timeSliderPanel = new TimeSliderPanel();
+        }
+        return timeSliderPanel;
     }
 
 }

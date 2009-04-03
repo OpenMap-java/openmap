@@ -90,7 +90,7 @@ public class EventPanel extends OMComponentPanel implements MapPanelChild {
     }
 
     public void addEventPresenter(EventPresenter ep) {
-        logger.info("adding " + ep.getClass().getName());
+        logger.fine("adding " + ep.getClass().getName());
         eventPresenters.add(ep);
         initInterface();
     }
@@ -128,7 +128,7 @@ public class EventPanel extends OMComponentPanel implements MapPanelChild {
      * EventPresenter).
      */
     public void initInterface() {
-        logger.info("rebuilding interface");
+        logger.fine("rebuilding interface");
         removeAll();
 
         int numPresenters = eventPresenters.size();
@@ -160,8 +160,8 @@ public class EventPanel extends OMComponentPanel implements MapPanelChild {
             for (Iterator<EventPresenter> it = eventPresenters.iterator(); it.hasNext();) {
                 eventPresenter = it.next();
                 String name = eventPresenter.getName();
-                if (logger.isLoggable(Level.INFO)) {
-                    logger.info("\tEventPanel: adding presenter (" + name
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("\tEventPanel: adding presenter (" + name
                             + ") to tabbed pane");
                 }
                 presenterComponent = eventPresenter.getComponent();
@@ -181,7 +181,7 @@ public class EventPanel extends OMComponentPanel implements MapPanelChild {
 
         revalidate();
 
-        logger.info("\tEventPanel: Done");
+        logger.fine("--- EventPanel: Done");
 
     }
 

@@ -18,7 +18,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Polygon;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -47,7 +46,7 @@ import com.bbn.openmap.event.CenterSupport;
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.event.OMEvent;
 import com.bbn.openmap.event.OMEventSelectionCoordinator;
-import com.bbn.openmap.gui.event.EventListPresenter;
+import com.bbn.openmap.gui.event.EventPresenter;
 import com.bbn.openmap.gui.time.TimeSliderLayer.TimeDrape;
 import com.bbn.openmap.gui.time.TimelineLayer.SelectionArea.PlayFilterSection;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
@@ -122,7 +121,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     long gameStartTime = 0;
     long gameEndTime = 0;
 
-    protected EventListPresenter eventListPresenter;
+    protected EventPresenter eventPresenter;
     protected OMEventSelectionCoordinator aesc;
     protected static Color tint = new Color(0x99000000, true);
 
@@ -164,16 +163,11 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         if (someObj instanceof CenterListener) {
             centerDelegate.addCenterListener((CenterListener) someObj);
         }
-        if (someObj instanceof EventListPresenter) {
-            eventListPresenter = (EventListPresenter) someObj;
+        if (someObj instanceof EventPresenter) {
+            eventPresenter = (EventPresenter) someObj;
             selectionRect = null;
-            eventListPresenter.addPropertyChangeListener(this);
+            eventPresenter.addPropertyChangeListener(this);
         }
-        // if (someObj instanceof InformationDelegator) {
-        // ((InformationDelegator)
-        // someObj).setPreferredLocation(java.awt.BorderLayout.NORTH);
-        // }
-        //
         if (someObj instanceof OMEventSelectionCoordinator) {
             aesc = (OMEventSelectionCoordinator) someObj;
             aesc.addPropertyChangeListener(this);
@@ -195,9 +189,9 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         if (someObj instanceof CenterListener) {
             centerDelegate.removeCenterListener((CenterListener) someObj);
         }
-        if (someObj == eventListPresenter) {
-            eventListPresenter.removePropertyChangeListener(this);
-            eventListPresenter = null;
+        if (someObj == eventPresenter) {
+            eventPresenter.removePropertyChangeListener(this);
+            eventPresenter = null;
         }
         if (someObj == aesc) {
             aesc.removePropertyChangeListener(this);
@@ -218,19 +212,15 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         return (long) (timef * 60000f); // 60000 millis per minute
     }
 
-    // public void setProjection(Projection proj) {
-    // // Settin the list to null causes the list to rebuild every clock tick.
-    // // eventGraphicList = null;
-    // super.setProjection(proj);
-    // }
-
     /**
-     * Creates the OMGraphic list with graticule lines.
+     * Creates the OMGraphic list with the time and event markings.
      */
     public synchronized OMGraphicList prepare() {
-        
-        logger.fine("Updating projection");
+
         Projection proj = getProjection();
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer("Updating projection with " + proj);
+        }
 
         OMGraphicList graphicList = getList();
         if (getHeight() > 0) {
@@ -253,16 +243,25 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
             // if new events are fetched, new rating areas and play filters are
             // created here.
-            OMGraphicList eventList = getEventList(proj);
+            if (eventGraphicList == null || eventGraphicList.isEmpty()) {
+                eventGraphicList = getEventList(proj);
+            } else {
+                if (logger.isLoggable(Level.FINER)) {
+                    logger.finer("don't need to re-create event lines, haven't changed with ("
+                            + eventGraphicList.size() + ") events");
+                }
+                eventGraphicList.generate(proj);
+            }
 
             ratingAreas.generate(proj);
             playFilter.generate(proj);
 
             graphicList.add(playFilter);
-            graphicList.add(eventList);
+            graphicList.add(eventGraphicList);
             graphicList.add(getSelectionRectangle(proj));
             graphicList.add(ratingAreas);
         }
+
         return graphicList;
     }
 
@@ -281,7 +280,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             timeHashFactory = new TimeHashFactory();
         }
 
-        tll.add(timeHashFactory.getHastMarks(projection));
+        tll.add(timeHashFactory.getHashMarks(projection));
 
         if (preTime != null) {
             preTime.generate(projection);
@@ -301,8 +300,9 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     public SelectionArea getSelectionRectangle(Projection proj) {
         if (selectionRect == null) {
             selectionRect = new SelectionArea();
-            if (eventListPresenter != null) {
-                selectionRect.setFillPaint(EventListPresenter.selectColor);
+            if (eventPresenter != null) {
+                selectionRect.setFillPaint(eventPresenter.getSelectionDrawingAttributes()
+                        .getSelectPaint());
             }
         }
 
@@ -325,47 +325,44 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     protected final static String ATT_KEY_EVENT = "att_key_event";
 
     protected OMGraphicList getEventList(Projection projection) {
+        OMGraphicList eventGraphicList;
+        if (eventPresenter != null) {
+            eventGraphicList = getEventList(eventPresenter.getActiveEvents(),
+                    projection);
 
-        if (eventGraphicList == null) {
-            if (eventListPresenter != null) {
-                eventGraphicList = getEventList(eventListPresenter.getActiveEvents(),
-                        projection);
-
-                // As long as we feel the need to recreate the event markers,
-                // let's re-evaluate the annotations.
-                evaluateEventAttributes();
-            } else {
-                eventGraphicList = new OMGraphicList();
+            // As long as we feel the need to recreate the event markers,
+            // let's re-evaluate the annotations.
+            evaluateEventAttributes();
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Creating event lines with ("
+                        + eventGraphicList.size() + ") events");
             }
-            eventGraphicList = new OMGraphicList();
         } else {
-            eventGraphicList.generate(projection);
+            logger.fine("Can't create event list for timeline display, no event presenter");
+            eventGraphicList = new OMGraphicList();
         }
 
         return eventGraphicList;
     }
 
-    protected OMGraphicList getEventList(Iterator it, Projection projection) {
+    protected OMGraphicList getEventList(Iterator<OMEvent> it,
+                                         Projection projection) {
         OMGraphicList eventGraphicList = new OMGraphicList();
         if (projection != null) {
 
             BasicStroke symbolStroke = new BasicStroke(2);
 
             while (it.hasNext()) {
-                Object object = it.next();
+                OMEvent event = it.next();
 
-                if (object instanceof OMEvent) {
-                    OMEvent event = (OMEvent) object;
-
-                    long time = event.getTimeStamp() - gameStartTime;
-                    float lon = (float) forwardProjectMillis(time);
-                    EventMarkerLine currentLine = new EventMarkerLine(0f, lon, 6);
-                    currentLine.setLinePaint(Color.black);
-                    currentLine.setStroke(symbolStroke);
-                    currentLine.generate(projection);
-                    currentLine.putAttribute(ATT_KEY_EVENT, event);
-                    eventGraphicList.addOMGraphic(currentLine);
-                }
+                long time = event.getTimeStamp() - gameStartTime;
+                float lon = (float) forwardProjectMillis(time);
+                EventMarkerLine currentLine = new EventMarkerLine(0f, lon, 6);
+                currentLine.setLinePaint(Color.black);
+                currentLine.setStroke(symbolStroke);
+                currentLine.generate(projection);
+                currentLine.putAttribute(ATT_KEY_EVENT, event);
+                eventGraphicList.addOMGraphic(currentLine);
             }
         }
         return eventGraphicList;
@@ -442,21 +439,6 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
     // ActionListener interface implementation
     // ----------------------------------------------------------------------
-
-    /**
-     * Used just for the redraw button.
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        String command = e.getActionCommand();
-
-        if (command == RedrawCmd) {
-            // redrawbutton
-            if (isVisible()) {
-                doPrepare();
-            }
-        }
-    }
 
     public String getName() {
         return "TimelineLayer";
@@ -535,6 +517,8 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                             forwardProjectMillis(currentTime));
                 }
             }
+        } else {
+            logger.info("none of the above: " + timerStatus.toString());
         }
 
     }
@@ -546,23 +530,24 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     public void propertyChange(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
 
-        if (propertyName == EventListPresenter.ActiveEventsProperty) {
+        if (propertyName == EventPresenter.ActiveEventsProperty) {
             eventGraphicList = null;
-            logger.fine("EventListPresenter updated event list, calling doPrepare() "
+            logger.fine("EventPresenter updated event list, calling doPrepare() "
                     + evt.getNewValue());
             doPrepare();
         } else if (propertyName == OMEventSelectionCoordinator.EventsSelectedProperty) {
             setSelectionRectangleToEvents();
-        } else if (propertyName == EventListPresenter.EventAttributesUpdatedProperty) {
+        } else if (propertyName == EventPresenter.EventAttributesUpdatedProperty) {
             evaluateEventAttributes();
             doPrepare();
-        }
-        if (propertyName == TimePanel.PlayFilterProperty) {
+        } else if (propertyName == TimePanel.PlayFilterProperty) {
             boolean inUse = ((Boolean) evt.getNewValue()).booleanValue();
             playFilter.setInUse(inUse);
             firePropertyChange(PlayFilterProperty,
                     null,
                     new Boolean(playFilter.size() > 0 || !inUse));
+        } else {
+            logger.finer("AAGGH: " + propertyName);
         }
     }
 
@@ -581,23 +566,20 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         double retVal = lon;
         double minDiff = Double.MAX_VALUE;
 
-        if (eventListPresenter != null) {
+        if (eventPresenter != null) {
 
-            for (Iterator it = eventListPresenter.getAllEvents(); it.hasNext();) {
+            for (Iterator<OMEvent> it = eventPresenter.getAllEvents(); it.hasNext();) {
 
-                Object object = it.next();
+                OMEvent event = it.next();
 
-                if (object instanceof OMEvent) {
-                    OMEvent event = (OMEvent) object;
+                long time = event.getTimeStamp() - gameStartTime;
+                float timeMinutes = (float) forwardProjectMillis(time);
 
-                    long time = event.getTimeStamp() - gameStartTime;
-                    float timeMinutes = (float) forwardProjectMillis(time);
-
-                    if (Math.abs(timeMinutes - lon) < minDiff) {
-                        minDiff = Math.abs(timeMinutes - lon);
-                        retVal = timeMinutes;
-                    }
+                if (Math.abs(timeMinutes - lon) < minDiff) {
+                    minDiff = Math.abs(timeMinutes - lon);
+                    retVal = timeMinutes;
                 }
+
             }
         }
 
@@ -651,11 +633,11 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                     4);
 
             if (omg != null) {
-                 OMEvent sourceEvent = (OMEvent) omg.getAttribute(ATT_KEY_EVENT);
+                OMEvent sourceEvent = (OMEvent) omg.getAttribute(ATT_KEY_EVENT);
                 if (sourceEvent != null) {
                     sourceEvent.putAttribute(OMEvent.ATT_KEY_SELECTED,
                             OMEvent.ATT_VAL_SELECTED);
-                    Vector eventList = new Vector();
+                    Vector<OMEvent> eventList = new Vector<OMEvent>();
                     eventList.add(sourceEvent);
                     aesc.eventsSelected(eventList);
                 }
@@ -722,11 +704,10 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                     4);
 
             if (omg != null) {
-                // AAREvent sourceEvent = (AAREvent)
-                // omg.getAttribute(ATT_KEY_EVENT);
-                // if (sourceEvent != null) {
-                // details = sourceEvent.getDescription();
-                // }
+                OMEvent sourceEvent = (OMEvent) omg.getAttribute(ATT_KEY_EVENT);
+                if (sourceEvent != null) {
+                    details = sourceEvent.getDescription();
+                }
             }
         }
 
@@ -773,8 +754,8 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         updateEventDetails();
     }
 
-    protected List handleEventSelection() {
-        List eventList = null;
+    protected List<OMEvent> handleEventSelection() {
+        List<OMEvent> eventList = null;
         if (aesc != null && selectionRect != null) {
 
             // The thing to be careful about here is that the selection
@@ -797,9 +778,9 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             boolean labeledRangeStart = false;
             OMEvent lastEventLabeled = null;
 
-            for (Iterator it = eventListPresenter.getAllEvents(); it.hasNext();) {
+            for (Iterator<OMEvent> it = eventPresenter.getAllEvents(); it.hasNext();) {
                 if (eventList == null) {
-                    eventList = new Vector();
+                    eventList = new Vector<OMEvent>();
                 }
 
                 OMEvent event = (OMEvent) it.next();
@@ -856,9 +837,9 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         SelectionArea.RatingArea currentRatingArea = null;
         SelectionArea.PlayFilterSection currentPlayFilter = null;
 
-        if (eventListPresenter != null) {
-            for (Iterator it = eventListPresenter.getAllEvents(); it.hasNext();) {
-                OMEvent aare = (OMEvent) it.next();
+        if (eventPresenter != null) {
+            for (Iterator<OMEvent> it = eventPresenter.getAllEvents(); it.hasNext();) {
+                OMEvent aare = it.next();
                 String rating = (String) aare.getAttribute(OMEvent.ATT_KEY_RATING);
                 Object playFilterObj = aare.getAttribute(OMEvent.ATT_KEY_PLAY_FILTER);
                 long timeStamp = aare.getTimeStamp() - gameStartTime;
@@ -913,8 +894,8 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             double lowerTime = Double.POSITIVE_INFINITY;
             double upperTime = Double.NEGATIVE_INFINITY;
 
-            for (Iterator it = eventListPresenter.getAllEvents(); it.hasNext();) {
-                OMEvent event = (OMEvent) it.next();
+            for (Iterator<OMEvent> it = eventPresenter.getAllEvents(); it.hasNext();) {
+                OMEvent event = it.next();
 
                 if (event.getAttribute(OMEvent.ATT_KEY_SELECTED) != null) {
                     // Convert to minutes for selectRect bounds
@@ -1206,7 +1187,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             hashMarks.add(new TimeHashMarks.Years());
         }
 
-        public OMGraphicList getHastMarks(Projection proj) {
+        public OMGraphicList getHashMarks(Projection proj) {
 
             Point2D ul = proj.getUpperLeft();
             Point2D lr = proj.getLowerRight();
@@ -1328,8 +1309,8 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                 heightStepSize = 10;
             }
 
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine("figure on needing " + num + annotation + ", "
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer("figure on needing " + num + annotation + ", "
                         + stepSize + " stepsize for " + (minSpan / stepSize)
                         + " lines");
             }
