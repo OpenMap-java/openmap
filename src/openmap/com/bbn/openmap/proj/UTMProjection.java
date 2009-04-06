@@ -41,12 +41,7 @@ public class UTMProjection extends GeoProj {
 
     private Ellipsoid ellps;
 
-    /**
-     * The UTMType number. Just a random int not used by any other.
-     */
-    public final static transient int UTMType = 993387;
-
-    public UTMProjection(LatLonPoint center, float s, int w, int h, int type,
+    public UTMProjection(LatLonPoint center, float s, int w, int h,
             int zone_number, boolean isnorthern, Ellipsoid ellps) {
         super(center, s, w, h);
 
