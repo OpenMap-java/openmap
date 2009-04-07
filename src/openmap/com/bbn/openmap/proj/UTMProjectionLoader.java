@@ -10,12 +10,55 @@ import com.bbn.openmap.util.PropUtils;
 
 public class UTMProjectionLoader extends BasicProjectionLoader {
 
-    public static final String ZONE_NUMBER = "ZONE_NUMBER";
+    public static final String ZONE_NUMBER = "zoneNumber";
 
-    public static final String ZONE_LETTER = "ZONE_LETTER";
+    public static final String ZONE_LETTER = "zoneLetter";
+
+    protected int defaultZoneNumber = 0;
+    protected char defaultZoneLetter = 'N';
 
     public UTMProjectionLoader() {
         super(UTMProjection.class, "UTM Projection", "UTM Projection");
+    }
+
+    public void setProperties(String prefix, Properties props) {
+        super.setProperties(prefix, props);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+
+        defaultZoneNumber = PropUtils.intFromProperties(props, prefix
+                + ZONE_NUMBER, defaultZoneNumber);
+        defaultZoneLetter = PropUtils.charFromProperties(props, prefix
+                + ZONE_LETTER, defaultZoneLetter);
+    }
+
+    public Properties getProperties(Properties props) {
+        props = super.getProperties(props);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+
+        props.put(prefix + ZONE_LETTER, "" + defaultZoneLetter);
+        props.put(prefix + ZONE_NUMBER, Integer.toString(defaultZoneNumber));
+        return props;
+    }
+
+    public Properties getPropertyInfo(Properties props) {
+        props = super.getPropertyInfo(props);
+        PropUtils.setI18NPropertyInfo(i18n,
+                props,
+                UTMProjectionLoader.class,
+                ZONE_LETTER,
+                "Zone Letter",
+                "The UTM Zone Letter (N or S)",
+                null);
+
+        PropUtils.setI18NPropertyInfo(i18n,
+                props,
+                UTMProjectionLoader.class,
+                ZONE_NUMBER,
+                "Zone Number",
+                "The UTM Zone Number",
+                null);
+
+        return props;
     }
 
     public Projection create(Properties props) throws ProjectionException {
@@ -31,10 +74,20 @@ public class UTMProjectionLoader extends BasicProjectionLoader {
                     ProjectionFactory.WIDTH,
                     100);
 
-            int zone_number = PropUtils.intFromProperties(props, ZONE_NUMBER, 0);
-            char zone_letter = ((String) props.get(ZONE_LETTER)).charAt(0);
+            int zone_number = PropUtils.intFromProperties(props,
+                    ZONE_NUMBER,
+                    defaultZoneNumber);
+
+            char zone_letter = PropUtils.charFromProperties(props,
+                    ZONE_LETTER,
+                    defaultZoneLetter);
             boolean isnorthern = (zone_letter == 'N');
-            Ellipsoid ellps = (Ellipsoid) props.get(ProjectionFactory.DATUM);
+            String ellipsoidString = props.getProperty(ProjectionFactory.DATUM);
+            // Assume WGS84 if not specified.
+            Ellipsoid ellps = Ellipsoid.WGS_84;
+            if (ellipsoidString != null) {
+                ellps = Ellipsoid.getByName(ellipsoidString);
+            }
             GeoProj proj = new UTMProjection(center, scale, width, height, zone_number, isnorthern, ellps);
             if ((ellps != null) && (ellps != Ellipsoid.WGS_84)) {
                 proj = new DatumShiftProjection(proj, new DatumShiftGCT(ellps));
