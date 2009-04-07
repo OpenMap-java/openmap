@@ -382,6 +382,25 @@ public class PropUtils {
     }
 
     /**
+     * Return the first letter of the property specified by propName. If that
+     * value is null or has length of zero, the default char is returned.
+     * 
+     * @param p
+     * @param propName
+     * @param defaultValue
+     * @return first char from property, or default.
+     */
+    public static char charFromProperties(Properties p, String propName,
+                                          char defaultValue) {
+        char ret = defaultValue;
+        String charString = p.getProperty(propName);
+        if (charString != null && charString.length() > 0) {
+            return charString.charAt(0);
+        }
+        return ret;
+    }
+
+    /**
      * Gets an integer out of a properties object. Returns the default value if
      * something goes wrong.
      * 
@@ -593,8 +612,7 @@ public class PropUtils {
      * Convert a string representing a 24/32bit hex color value into a Color
      * value. NOTE:
      * <ul>
-     * <li>Only 24bit (RGB) java.awt.Color is supported on the JDK 1.1
-     * platform.
+     * <li>Only 24bit (RGB) java.awt.Color is supported on the JDK 1.1 platform.
      * <li>Both 24/32bit (ARGB) java.awt.Color is supported on the Java 2
      * platform.
      * </ul>
