@@ -46,7 +46,6 @@ import com.bbn.openmap.event.ProgressSupport;
 import com.bbn.openmap.gui.ProgressListenerGauge;
 import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.plugin.PlugIn;
-import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
