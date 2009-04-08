@@ -24,12 +24,12 @@ package com.bbn.openmap.omGraphics;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -60,14 +60,14 @@ import com.bbn.openmap.util.Debug;
 public class OMArc extends OMGraphic implements Serializable {
 
     /** Horizontal pixel location of the center. */
-    protected int x1 = 0;
+    protected double x1 = 0;
     /** Vertical pixel location of the center. */
-    protected int y1 = 0;
+    protected double y1 = 0;
 
     /** Horizontal pixel offset. */
-    protected int off_x = 0;
+    protected double off_x = 0;
     /** Vertical pixel offset. */
-    protected int off_y = 0;
+    protected double off_y = 0;
     /**
      * Center point.
      */
@@ -81,11 +81,11 @@ public class OMArc extends OMGraphic implements Serializable {
     /**
      * The pixel horizontal diameter of the arc. For XY and OFFSET arcs.
      */
-    protected int width = 0;
+    protected double width = 0;
     /**
      * The pixel vertical diameter of the arc. For XY and OFFSET arcs.
      */
-    protected int height = 0;
+    protected double height = 0;
 
     /**
      * The starting angle of the arc in decimal degrees. This is defined in
@@ -313,7 +313,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * @return x position of center.
      */
     public int getX() {
-        return x1;
+        return (int)x1;
     }
 
     /**
@@ -324,7 +324,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * @return y position of center.
      */
     public int getY() {
-        return y1;
+        return (int)y1;
     }
 
     /**
@@ -334,7 +334,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * @return x offset from center.
      */
     public int getOffX() {
-        return off_x;
+        return (int)off_x;
     }
 
     /**
@@ -344,7 +344,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * @return y offset from center.
      */
     public int getOffY() {
-        return off_y;
+        return (int)off_y;
     }
 
     /**
@@ -374,7 +374,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * @return the horizontal pixel diameter of the arc.
      */
     public int getWidth() {
-        return width;
+        return (int)width;
     }
 
     /**
@@ -384,7 +384,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * @return the vertical pixel diameter of the arc.
      */
     public int getHeight() {
-        return height;
+        return (int)height;
     }
 
     /**
@@ -709,31 +709,27 @@ public class OMArc extends OMGraphic implements Serializable {
                 return false;
             }
 
-            Point p1 = new Point();
+            Point2D p1 = new Point2D.Double();
             // if (proj instanceof GeoProj) {
             // ((GeoProj) proj).forward(center.getRadLat(),
             // center.getRadLon(),
             // p1,
             // true);
             // } else {
-            proj.forward(center.getY(), center.getX(), p1);
+            p1 = proj.forward(center, p1);
             // }
-            x1 = p1.x + off_x;
-            y1 = p1.y + off_y;
+            x1 = p1.getX() + off_x;
+            y1 = p1.getY() + off_y;
 
         case RENDERTYPE_XY:
-            float fwidth = (float) width;
-            float fheight = (float) height;
-            float transx = (float) x1;
-            float transy = (float) y1;
-            float x = transx - fwidth / 2f;
-            float y = transy - fheight / 2f;
+            double x = x1 - width / 2d;
+            double y = y1 - height / 2d;
 
-            Shape arcShape = createArcShape(x, y, fwidth, fheight);
+            Shape arcShape = createArcShape(x, y, width, height);
 
             if (rotationAngle != DEFAULT_ROTATIONANGLE) {
                 af = new AffineTransform();
-                af.rotate(rotationAngle, transx, transy);
+                af.rotate(rotationAngle, x1, y1);
             }
             pi = arcShape.getPathIterator(af);
             gp = new GeneralPath();
@@ -749,14 +745,14 @@ public class OMArc extends OMGraphic implements Serializable {
 
             if (proj instanceof GeoProj) {
 
-                Point p = (Point) proj.forward(center.getY(),
+                Point2D p = proj.forward(center.getY(),
                         center.getX(),
-                        new Point());
+                        new Point2D.Double());
 
-                x1 = p.x;
-                y1 = p.y;
+                x1 = p.getX();
+                y1 = p.getY();
 
-                ArrayList coordLists = getCoordLists(((GeoProj) proj),
+                ArrayList<int[]> coordLists = getCoordLists(((GeoProj) proj),
                         center,
                         radius,
                         nverts);
@@ -823,7 +819,7 @@ public class OMArc extends OMGraphic implements Serializable {
     /**
      * An internal method designed to fetch the Shape to be used for an XY or
      * OFFSET OMArc. This method is smart enough to take the calculated position
-     * information and make a call to Arc2D.Float with start, extent and arcType
+     * information and make a call to Arc2D.Double with start, extent and arcType
      * information.
      */
     protected Shape createArcShape(double x, double y, double fwidth,
@@ -837,7 +833,7 @@ public class OMArc extends OMGraphic implements Serializable {
      * and make a call to Projection.forwardArc() with start, extent and arcType
      * information.
      */
-    protected ArrayList getCoordLists(GeoProj proj, LatLonPoint center,
+    protected ArrayList<int[]> getCoordLists(GeoProj proj, LatLonPoint center,
                                       double radius, int nverts) {
 
         int at = (arcType == Arc2D.OPEN && !isClear(fillPaint) ? Arc2D.CHORD

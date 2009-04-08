@@ -161,8 +161,8 @@ public class LLXY extends Cylindrical implements EqualArc {
 
         double newLon = Math.toDegrees(wrapLongitude(Math.toRadians(lon - cLon)));
 
-        double x = wx + Math.round(newLon * ppd);
-        double y = hy - Math.round((lat - cLat) * ppd);
+        double x = wx + (newLon * ppd);
+        double y = hy - ((lat - cLat) * ppd);
 
         if (Debug.debugging("llxydetail")) {
             Debug.output("LLXY.forward(lon:" + ProjMath.radToDeg(lon)

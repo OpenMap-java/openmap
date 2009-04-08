@@ -563,14 +563,14 @@ public class PropertyHandler extends MapHandlerChild implements
      * @param props the properties that the markerList comes from, in order to
      *        get the marker.URL properties.
      * @return an allocated Properties object containing all the properties from
-     *         the inlude files. If no include files are listed, the Properties
+     *         the include files. If no include files are listed, the Properties
      *         object is empty, not null.
      */
     protected Properties getIncludeProperties(String markerList,
                                               Properties props) {
         Properties newProps = new Properties();
         Properties tmpProps = new Properties();
-        Vector includes = PropUtils.parseSpacedMarkers(markerList);
+        Vector<String> includes = PropUtils.parseSpacedMarkers(markerList);
         int size = includes.size();
         if (size > 0) {
 
@@ -582,8 +582,12 @@ public class PropertyHandler extends MapHandlerChild implements
             for (int i = 0; i < size; i++) {
                 String includeName = (String) includes.elementAt(i);
                 String includeProperty = includeName + ".URL";
-                String include = props.getProperty(includeProperty);
 
+                String include = props.getProperty(includeProperty);
+                if (Debug.debugging("propertiesdetail")) {
+                    Debug.output("checking " + includeProperty + ", getting: " + include);
+                }
+                
                 if (include == null) {
                     Debug.error("PropertyHandler.getIncludeProperties(): Failed to locate include file \""
                             + includeName
@@ -599,6 +603,7 @@ public class PropertyHandler extends MapHandlerChild implements
                             include);
 
                     if (tmpInclude == null) {
+                        Debug.output("Can't locate URL: " + include);
                         continue;
                     }
 

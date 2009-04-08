@@ -1261,8 +1261,8 @@ public abstract class GeoProj extends Proj {
 
         switch (arcType) {
         case Arc2D.PIE:
-            rawllpts[rawllpts.length - 4] = (float) c.getRadLat();
-            rawllpts[rawllpts.length - 3] = (float) c.getRadLon();
+            rawllpts[rawllpts.length - 4] = c.getRadLat();
+            rawllpts[rawllpts.length - 3] = c.getRadLon();
         case Arc2D.CHORD:
             rawllpts[rawllpts.length - 2] = rawllpts[0];
             rawllpts[rawllpts.length - 1] = rawllpts[1];
