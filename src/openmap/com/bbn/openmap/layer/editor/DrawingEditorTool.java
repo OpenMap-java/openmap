@@ -30,7 +30,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -76,8 +75,8 @@ import com.bbn.openmap.util.PropUtils;
  * Properties for an EditorLayer using the DrawingEditorTool:
  * 
  * <pre>
- *  
- *   
+ * 
+ * 
  *   # Layer declaration, dtlayer has to go in openmap.layers property
  *   dtlayer.class=com.bbn.openmap.layer.editor.EditorLayer
  *   # GUI name for layer, will also be the ID of the 'hidden' mouse mode used for tool.
@@ -102,7 +101,7 @@ import com.bbn.openmap.util.PropUtils;
  *   # EditToolLoader classes for points and lines, they get rendered
  *   # with whatever color was set last for the DrawingEditorTool.
  *   dtlayer.points.class=com.bbn.openmap.tools.drawing.OMPointLoader
- *   dtlayer.lines.class=com.bbn.openmap.tools.drawing.OMLineLoader
+ * dtlayer.lines.class=com.bbn.openmap.tools.drawing.OMLineLoader
  * 
  */
 public class DrawingEditorTool extends AbstractEditorTool implements
@@ -149,7 +148,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     /**
      * The ArrayList containing the EditToolLoaders for the drawing tool.
      */
-    protected ArrayList loaderList = new ArrayList();
+    protected ArrayList<EditToolLoader> loaderList = new ArrayList<EditToolLoader>();
 
     public final static String RESET_CMD = "RESET_CMD";
 
@@ -161,7 +160,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     /**
      * Hashtable that holds default DrawingAttributes for different loaders.
      */
-    protected Hashtable drawingAttributesTable;
+    protected Hashtable<String, DrawingAttributes> drawingAttributesTable;
 
     protected boolean showAttributes = true;
 
@@ -178,7 +177,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     public DrawingEditorTool(EditorLayer layer) {
         super(layer);
 
-        drawingAttributesTable = new Hashtable();
+        drawingAttributesTable = new Hashtable<String, DrawingAttributes>();
         initDrawingTool();
 
         // Ensures that the drawing tool used by super classes fits
@@ -335,7 +334,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
      * it.
      */
     public void resetForNewGraphic() {
-    	// if thingToCreate is null, then omdtmm will be set to null
+        // if thingToCreate is null, then omdtmm will be set to null
         // and the drawingTool deactivated. If thingToCreate is not
         // null, omdtmm will be ready to receive mouse events for
         // editing the new OMGraphic.
@@ -376,22 +375,18 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     public GraphicAttributes getGraphicAttributes() {
         return ga;
     }
-    
 
     public void setGraphicAttributes(GraphicAttributes ga) {
         this.ga = ga;
     }
-    
 
     public boolean isShowAttributes() {
         return showAttributes;
     }
-    
 
     public void setShowAttributes(boolean showAttributes) {
         this.showAttributes = showAttributes;
     }
-    
 
     /**
      * actionPerformed - Handle the mouse clicks on the button(s)
@@ -446,7 +441,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
             }
 
             drawingTool.setMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK);
-            
+
             if (drawingTool.create(ttc,
                     ga,
                     (DrawingToolRequestor) getLayer(),
@@ -483,14 +478,14 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     public boolean mousePressed(MouseEvent e) {
         if (wantsEvents()) {
             if (omdtmm != null) {
-            	
+
                 // if you only want one OMGraphic at a time:
-//                OMGraphicList omgl = layer.getList();
-//                if (omgl != null && omgl.size() > 0) {
-//                	omgl.clear();
-//                	layer.repaint();
-//                }
-            	
+                // OMGraphicList omgl = layer.getList();
+                // if (omgl != null && omgl.size() > 0) {
+                // omgl.clear();
+                // layer.repaint();
+                // }
+
                 omdtmm.mousePressed(e);
             }
             return consumeEvents;
@@ -672,9 +667,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
      * Fill the Face's toolbar with buttons
      */
     protected void fillFaceToolBar(JToolBar faceTB, ButtonGroup bg) {
-        Iterator it = loaderList.iterator();
-        while (it.hasNext()) {
-            EditToolLoader loader = (EditToolLoader) it.next();
+        for (EditToolLoader loader : loaderList) {
             String[] classnames = loader.getEditableClasses();
 
             for (int i = 0; i < classnames.length; i++) {
@@ -703,7 +696,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
         if (md == null) {
             return;
         }
-        
+
         EditorLayer el = (EditorLayer) getLayer();
         if (el != null) {
             mouseDelegator.addMouseMode(el.getMouseMode());
@@ -769,15 +762,14 @@ public class DrawingEditorTool extends AbstractEditorTool implements
         if (drawingTool != null) {
             drawingTool.setProperties(prefix, props);
         }
-        
+
         String loaderListString = props.getProperty(prefix + LoaderProperty);
 
         if (loaderListString != null) {
-            Vector loaderVector = PropUtils.parseSpacedMarkers(loaderListString);
-            Iterator it = loaderVector.iterator();
-            while (it.hasNext()) {
+            Vector<String> loaderVector = PropUtils.parseSpacedMarkers(loaderListString);
+            for (String loaderPrefix : loaderVector) {
                 String loaderPropertyPrefix = PropUtils.getScopedPropertyPrefix(prefix
-                        + (String) it.next());
+                        + loaderPrefix);
                 String loaderClassString = props.getProperty(loaderPropertyPrefix
                         + "class");
                 String loaderAttributeClass = props.getProperty(loaderPropertyPrefix
@@ -818,7 +810,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
                                 String[] classnames = loader.getEditableClasses();
                                 for (int i = 0; i < classnames.length; i++) {
                                     drawingAttributesTable.put(classnames[i],
-                                            daObject);
+                                            (DrawingAttributes) daObject);
                                 }
 
                             } else {
