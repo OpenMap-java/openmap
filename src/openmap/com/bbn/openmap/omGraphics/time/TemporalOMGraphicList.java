@@ -31,6 +31,12 @@ import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 
+/**
+ * A TemporalOMGeometryList object contains OMGeometries that change over time.
+ * The time is expected to be based on some offset from a time origin, like the
+ * starting time of some greater set of events. This list can also hold regular
+ * OMGeometries.
+ */
 public class TemporalOMGraphicList extends OMGraphicList implements
         TemporalOMGeometry {
     /**
@@ -62,8 +68,8 @@ public class TemporalOMGraphicList extends OMGraphicList implements
     }
 
     /**
-     * Calls generate(proj, time) on temporal geometries, regular
-     * generate(proj) on non-temporal OMGeometries.
+     * Calls generate(proj, time) on temporal geometries, regular generate(proj)
+     * on non-temporal OMGeometries.
      */
     public void generate(Projection proj, long time) {
         for (Iterator<OMGeometry> it = iterator(); it.hasNext();) {

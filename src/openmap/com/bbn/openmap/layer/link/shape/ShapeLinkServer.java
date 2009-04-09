@@ -245,11 +245,10 @@ public class ShapeLinkServer extends LinkServer implements
             }
         } else {
             // System.out.println("Relative!");
-            Vector dirs = Environment.getClasspathDirs();
+            Vector<String> dirs = Environment.getClasspathDirs();
             int nDirs = dirs.size();
             if (nDirs > 0) {
-                for (int i = 0; i < nDirs; i++) {
-                    String dir = (String) dirs.elementAt(i);
+                for (String dir : dirs) {
                     File sif = new File(dir, spatialIndexFileName);
                     if (sif.isFile()) {
                         File sf = new File(dir, shapeFileName);

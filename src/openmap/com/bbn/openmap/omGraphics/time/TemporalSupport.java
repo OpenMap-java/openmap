@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 
 /**
  * The TemporalSupport object is intended to provide rudimentary support for
- * choosing the right Temporal object for a given time. A list of TemporalRecord
+ * choosing the right temporal status for a given time. A list of TemporalRecord
  * objects are managed by this support object and given a time, it will return
  * the applicable TemporalRecord for that time. The updateForTemporalRecord
  * method allows this object to be extended to keep track of what happens to an
@@ -39,11 +39,11 @@ import java.util.logging.Logger;
  * calculated based on everything that might have changed in the TemporalRecord
  * list before a given time.
  */
-public class TemporalSupport {
+public abstract class TemporalSupport {
 
     public static Logger logger = Logger.getLogger("com.bbn.openmap.omGraphics.time.TemporalSupport");
 
-    protected TreeSet<TemporalRecord> temporals;
+    protected TreeSet<? extends TemporalRecord> temporals;
 
     /**
      * 
@@ -53,7 +53,7 @@ public class TemporalSupport {
      *        should be interpolated (in whatever way needed) if the time falls
      *        between Temporal objects.
      */
-    public TemporalRecord getPosition(long time, boolean interpolate) {
+    public <T extends TemporalRecord> T getPosition(long time, boolean interpolate) {
         TemporalRecord previous = null;
         TemporalRecord next = null;
 
@@ -79,7 +79,7 @@ public class TemporalSupport {
                 } else {
                     // Hit a time right at a position.
                     updateForTemporal(time, temporal);
-                    return temporal;
+                    return (T) temporal;
                 }
             }
         }
@@ -90,7 +90,7 @@ public class TemporalSupport {
         // interpolation is not wanted.
 
         if (previous != null && !interpolate) {
-            return previous;
+            return (T) previous;
         } else if (previous == null) {
             // time is before MissionFeature is placed.
             // Don't want to set pos here, should be null to set
@@ -130,7 +130,7 @@ public class TemporalSupport {
             pos = interpolate(time, previous, next);
         }
 
-        return pos;
+        return (T) pos;
     }
 
     /**
@@ -165,26 +165,24 @@ public class TemporalSupport {
         return next;
     }
 
-    public TreeSet<TemporalRecord> getTemporals() {
+    public <T extends TemporalRecord> TreeSet<T> getTemporals() {
         synchronized (temporals) {
             if (temporals == null) {
-                temporals = new TreeSet<TemporalRecord>(new TemporalRecordComparator());
+                temporals = createTemporalSet();
             }
-            return temporals;
+            return (TreeSet<T>) temporals;
         }
     }
 
-    public void setTemporals(TreeSet<TemporalRecord> temporals) {
+    public <T extends TemporalRecord> void setTemporals(TreeSet<T> temporals) {
         this.temporals = temporals;
     }
 
-    public Iterator<TemporalRecord> iterator() {
-        return temporals.iterator();
-    }
+    public abstract <T extends TemporalRecord> TreeSet<T> createTemporalSet();
+    
+    public abstract <T extends TemporalRecord> Iterator<T> iterator();
 
-    public void add(TemporalRecord tr) {
-        getTemporals().add(tr);
-    }
+    public abstract <T extends TemporalRecord> void add(T tr);
 
     /**
      * Return true if the TemporalRecord was contained in the list.

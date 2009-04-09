@@ -362,10 +362,10 @@ public class PropertyHandler extends MapHandlerChild implements
         String openmapConfigDirectory = systemProperties.getProperty(configDirProperty);
 
         if (openmapConfigDirectory == null) {
-            Vector cps = Environment.getClasspathDirs();
+            Vector<String> cps = Environment.getClasspathDirs();
             String defaultExtraDir = "share";
-            for (int searchCount = 0; searchCount < cps.size(); searchCount++) {
-                File shareDir = new File((String) cps.elementAt(searchCount), defaultExtraDir);
+            for (String searchLoc : cps) {
+                File shareDir = new File(searchLoc, defaultExtraDir);
                 if (shareDir.exists()) {
                     // Debug.output("Found share directory: " +
                     // shareDir.getPath());
@@ -807,11 +807,10 @@ public class PropertyHandler extends MapHandlerChild implements
             }
         }
 
-        Vector debugList = PropUtils.parseSpacedMarkers(properties.getProperty(Environment.DebugList));
+        Vector<String> debugList = PropUtils.parseSpacedMarkers(properties.getProperty(Environment.DebugList));
         int size = debugList.size();
 
-        for (i = 0; i < size; i++) {
-            String debugMarker = (String) debugList.elementAt(i);
+        for (String debugMarker : debugList) {
             Debug.put(debugMarker);
             if (DEBUG) {
                 logger.fine("adding " + debugMarker + " to Debug list.");
@@ -820,7 +819,7 @@ public class PropertyHandler extends MapHandlerChild implements
 
         String componentProperty = getPropertyPrefix()
                 + PropertyHandler.componentProperty;
-        Vector componentList = PropUtils.parseSpacedMarkers(properties.getProperty(componentProperty));
+        Vector<String> componentList = PropUtils.parseSpacedMarkers(properties.getProperty(componentProperty));
 
         if (logger.isLoggable(Level.FINER)) {
             logger.finer("creating components from " + componentList);

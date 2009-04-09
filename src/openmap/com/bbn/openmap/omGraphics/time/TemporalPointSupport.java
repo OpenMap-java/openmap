@@ -24,14 +24,27 @@
 
 package com.bbn.openmap.omGraphics.time;
 
-import com.bbn.openmap.omGraphics.OMGeometry;
-import com.bbn.openmap.proj.Projection;
+import java.util.Iterator;
+import java.util.TreeSet;
 
-/**
- * A TemporalOMGeometry object represents an OMGeometry that changes over time.
- * The time is expected to be based on some offset from a time origin, like the
- * starting time of some greater set of events.
- */
-public interface TemporalOMGeometry extends OMGeometry {
-    public void generate(Projection proj, long time);
+public class TemporalPointSupport extends TemporalSupport {
+
+    @Override
+    public <T extends TemporalRecord> void add(T tr) {
+        getTemporals().add(tr);
+    }
+
+    @Override
+    public <T extends TemporalRecord> TreeSet<T> createTemporalSet() {
+       if (temporals == null) {
+           temporals = new TreeSet<TemporalPoint>(new TemporalRecordComparator());
+       }
+        return null;
+    }
+
+    @Override
+    public Iterator<TemporalPoint> iterator() {
+        return (Iterator<TemporalPoint>) temporals.iterator();
+    }
+
 }

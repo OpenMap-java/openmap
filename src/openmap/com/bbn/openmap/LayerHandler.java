@@ -52,7 +52,7 @@ import com.bbn.openmap.util.PropUtils;
  * are defined within it. The key property is "layers", which may or may not
  * have a prefix for it. If that property does have a prefix (prefix.layers,
  * i.e. openmap.layers), then that prefix has to be known and passed in to the
- * contructor or init method. This layers property should fit the general
+ * constructor or init method. This layers property should fit the general
  * openmap marker list paradigm, where the marker names are listed in a space
  * separated list, and then each marker name is used as a prefix for the
  * properties for a particular layer. As a minimum, each layer needs to have the
@@ -116,11 +116,11 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      * Flag to set synchronous threading on the LayerHandler, telling it to
      * react to layer order changes and layer visibility requests within the
      * calling thread. By default, this action is true. Setting it to false may
-     * eliminate pauses in GUI reactions by offloading work done by layers being
-     * added to the MapBean, but there have been reports that the asynchronous
-     * nature of the threading queue may be causing an unexpected state in layer
-     * order and/or availability under certain intense layer management
-     * conditions (created by automated processes, for example).
+     * eliminate pauses in GUI reactions by off-loading work done by layers
+     * being added to the MapBean, but there have been reports that the
+     * asynchronous nature of the threading queue may be causing an unexpected
+     * state in layer order and/or availability under certain intense layer
+     * management conditions (created by automated processes, for example).
      */
     public static final String SynchronousThreadingProperty = "synchronousThreading";
     /**
@@ -159,7 +159,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      * 
      * @param prefix the prefix for the layers and startUpLayers properties, as
      *        if they are listed as prefix.layers, and prefix.startUpLayers.
-     * @param props properties as defined in an openmap.propertites file.
+     * @param props properties as defined in an openmap.properties file.
      */
     public LayerHandler(String prefix, Properties props) {
         init(prefix, props);
@@ -258,13 +258,15 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
 
         // OK, we need to check the allLayers array, because at this point it
         // could still be holding non-removable layers. If we just replace them,
-        // we've broken the contract of nonremoval. Move the nonremovable layers
+        // we've broken the contract of non-removal. Move the non-removable
+        // layers
         // to the bottom and put the new layers on top. We also need to check to
         // make sure that any duplicate layers on either list are parsed down to
         // one layer. We use the Vector.contains() method for that check.
         if (allLayers != null && allLayers.length > 0) {
             int lLength = (layers != null ? layers.length : 0);
-            Vector newLayers = new Vector(allLayers.length + lLength);
+            Vector<Layer> newLayers = new Vector<Layer>(allLayers.length
+                    + lLength);
             if (layers != null) {
                 for (int i = 0; i < lLength; i++) {
                     if (!newLayers.contains(layers[i])) {
@@ -326,18 +328,13 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      * 
      * @param prefix the prefix to use to use for the layer list (layers)
      *        property and the startUpLayers property. If it is not null, this
-     *        will cause the method to looke for prefix.layers and
+     *        will cause the method to look for prefix.layers and
      *        prefix.startUpLayers.
      * @param p the properties to build the layers from.
      * @return Layer[]
      */
     protected Layer[] getLayers(String prefix, Properties p) {
         logger.fine("Getting new layers from properties...");
-
-        // First, load the layer marker names into a vector for later
-        // use
-        Vector startuplayers;
-        Vector layersValue;
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
@@ -356,8 +353,8 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
                     + startUpLayersProperty);
         }
 
-        startuplayers = PropUtils.parseSpacedMarkers(startupLayersValueString);
-        layersValue = PropUtils.parseSpacedMarkers(layersValueString);
+        Vector<String> startuplayers = PropUtils.parseSpacedMarkers(startupLayersValueString);
+        Vector<String> layersValue = PropUtils.parseSpacedMarkers(layersValueString);
 
         if (startuplayers.isEmpty()) {
             logger.info("No layers on startup list");
@@ -405,14 +402,14 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      * @param p Properties object containing the layers properties.
      * @return Layer[]
      */
-    public static Layer[] getLayers(Vector layerList, Vector visibleLayerList,
+    public static Layer[] getLayers(Vector<String> layerList,
+                                    Vector<String> visibleLayerList,
                                     Properties p) {
 
         int nLayerNames = layerList.size();
-        Vector layers = new Vector(nLayerNames);
+        Vector<Layer> layers = new Vector<Layer>(nLayerNames);
 
-        for (int i = 0; i < nLayerNames; i++) {
-            String layerName = (String) layerList.elementAt(i);
+        for (String layerName : layerList) {
             String classProperty = layerName + ".class";
             String className = p.getProperty(classProperty);
             if (className == null) {
@@ -560,7 +557,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     /**
      * Does the check to see of foreground layers are below background layers,
      * and then iterates through the Layer[] switching layers around until they
-     * are in the approproate order.
+     * are in the appropriate order.
      * 
      * @param layers
      * @return
@@ -593,21 +590,11 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * If you are futzing with the layer visibility outside the perview of the
+     * If you are futzing with the layer visibility outside the purview of the
      * LayerHandler (not using the turnLayerOn() methods) then you can call this
      * to get all the listeners using the current set of visible layers.
      */
     public void setLayers() {
-        setLayers(allLayers);
-    }
-
-    /**
-     * Tell anyone interested in the layers to update the layer pretty names.
-     * Same as setLayers().
-     * 
-     * @deprecated Replaced by setLayers().
-     */
-    public void updateLayerLabels() {
         setLayers(allLayers);
     }
 
@@ -751,9 +738,9 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      * Add a layer to a certain position in the layer array. If the position is
      * 0 or less, the layer is put up front (on top). If the position is greater
      * than the length of the current array, the layer is put at the end, (on
-     * the bottom). The layer is placed on the map if it's visiblity is true. A
+     * the bottom). The layer is placed on the map if it's visibility is true. A
      * Layer can only be added once. If you add a layer that is already added to
-     * the LayerHandler, it will be moved to the requested postition.
+     * the LayerHandler, it will be moved to the requested position.
      * 
      * @param layer the layer to add.
      * @param position the array index to place it.
@@ -817,22 +804,6 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Add a layer to a certain position in the layer array. If the position is
-     * 0 or less, the layer is put up front (on top). If the position is greater
-     * thatn the length of the current array, the layer is put at the end, (on
-     * the bottom).
-     * 
-     * @param layer the layer to add.
-     * @param position the array index to place it.
-     * @param addedLayerTurnedOn turn the layer on.
-     * @deprecated the layer will be turned on if its visibility is true.
-     */
-    public void addLayer(Layer layer, int position, boolean addedLayerTurnedOn) {
-        layer.setVisible(addedLayerTurnedOn);
-        addLayer(layer, position);
-    }
-
-    /**
      * Remove a layer from the list of potentials.
      * 
      * @param layer to remove.
@@ -882,7 +853,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     }
 
     /**
-     * Remove all the layers (that are marked as removeable).
+     * Remove all the layers (that are marked as removable).
      */
     public void removeAll() {
         if (allLayers == null || allLayers.length == 0) {
@@ -891,7 +862,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
 
         BeanContext bc = getBeanContext();
         Layer[] oldLayers = allLayers;
-        Vector nonRemoveableLayers = null;
+        Vector<Layer> nonRemoveableLayers = null;
 
         for (int i = 0; i < oldLayers.length; i++) {
             Layer layer = oldLayers[i];
@@ -905,7 +876,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
                 oldLayers[i] = null;
             } else {
                 if (nonRemoveableLayers == null) {
-                    nonRemoveableLayers = new Vector(oldLayers.length);
+                    nonRemoveableLayers = new Vector<Layer>(oldLayers.length);
                 }
                 nonRemoveableLayers.add(layer);
             }

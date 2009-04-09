@@ -56,7 +56,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
 
     // The currently selected graphic.
     private OMGraphic selectedGraphic;
-    private Vector selectedGraphics = null;
+    private Vector<GLOBESite> selectedGraphics = null;
 
     // Where do we get the data from?
     // default to use GLOBE atmospheric temperature.
@@ -109,9 +109,9 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Search for the data in the directories listing in the
-     * CLASSPATH. We should also check to see if the datafile is
-     * specified as a URL so that we can load it as such.
+     * Search for the data in the directories listing in the CLASSPATH. We
+     * should also check to see if the datafile is specified as a URL so that we
+     * can load it as such.
      */
     private GLOBETempData getDataSource() {
 
@@ -120,17 +120,16 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
         }
 
         // load the data from the CLASSPATH
-        Vector dirs = Environment.getClasspathDirs();
+        Vector<String> dirs = Environment.getClasspathDirs();
         FileInputStream is = null;
         int nDirs = dirs.size();
         if (nDirs > 0) {
-            for (int i = 0; i < nDirs; i++) {
-                String dir = (String) dirs.elementAt(i);
+            for (String dir : dirs) {
                 File datafile = new File(dir, datasource);
                 if (datafile.isFile()) {
                     try {
                         is = new FileInputStream(datafile);
-                        //                      System.out.println("datafile="+datafile);
+                        // System.out.println("datafile="+datafile);
                         break;
                     } catch (java.io.IOException e) {
                         e.printStackTrace();
@@ -171,7 +170,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
         Enumeration site_enum = temperature_data.getAllSites();
         while (site_enum.hasMoreElements()) {
             GLOBESite site = (GLOBESite) site_enum.nextElement();
-            //Debug.message("basic", "Plotlayer adds " +
+            // Debug.message("basic", "Plotlayer adds " +
             // site.getName());
             graphics.addOMGraphic(site.getGraphic());
             num_graphics++;
@@ -186,7 +185,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
 
     /** Build and display the plot. */
     private OMGraphic generatePlot() {
-        //      System.out.println("Generating Plot ");
+        // System.out.println("Generating Plot ");
         if (graph != null) {
             graph.setDataPoints(selectedGraphics);
             graph.plotData();
@@ -202,7 +201,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
         OMGraphicList list = getList();
 
         if (plot != null) {
-            //          System.out.println("Making plot visible..");
+            // System.out.println("Making plot visible..");
             list.addOMGraphic(plot);
         }
         // generate the graphics for rendering.
@@ -211,7 +210,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
     }
 
     private void hidePlot() {
-        //      System.out.println("Making plot IN-visible..");
+        // System.out.println("Making plot IN-visible..");
         show_plot_ = false;
         if (graph != null) {
             OMGraphic plot = graph.getPlotGraphics();
@@ -225,8 +224,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Add the data from the clicked site to the list of things we are
-     * drawing.
+     * Add the data from the clicked site to the list of things we are drawing.
      */
     private void addSelectionToPlotList() {
         if (selectedGraphic != null) {
@@ -234,7 +232,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
             selectedGraphic.setLinePaint(Color.blue);
 
             if (selectedGraphics == null) {
-                selectedGraphics = new Vector();
+                selectedGraphics = new Vector<GLOBESite>();
             }
 
             Object app_obj = selectedGraphic.getAppObject();
@@ -259,14 +257,13 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Returns self as the <code>MapMouseListener</code> in order to
-     * receive <code>MapMouseEvent</code>s. If the implementation
-     * would prefer to delegate <code>MapMouseEvent</code>s, it
-     * could return the delegate from this method instead.
+     * Returns self as the <code>MapMouseListener</code> in order to receive
+     * <code>MapMouseEvent</code>s. If the implementation would prefer to
+     * delegate <code>MapMouseEvent</code>s, it could return the delegate from
+     * this method instead.
      * 
-     * @return The object to receive <code>MapMouseEvent</code> s or
-     *         null if this layer isn't interested in
-     *         <code>MapMouseEvent</code> s
+     * @return The object to receive <code>MapMouseEvent</code> s or null if
+     *         this layer isn't interested in <code>MapMouseEvent</code> s
      */
     public MapMouseListener getMapMouseListener() {
         return this;
@@ -297,13 +294,13 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
         return pal;
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // MapMouseListener interface implementation
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     /**
-     * Indicates which mouse modes should send events to this
-     * <code>Layer</code>.
+     * Indicates which mouse modes should send events to this <code>Layer</code>
+     * .
      * 
      * @return String[] of mouse mode names
      * 
@@ -314,13 +311,13 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
         return new String[] { SelectMouseMode.modeID };
     }
 
-    //graphic position variables when moving the plot graphic
+    // graphic position variables when moving the plot graphic
     private int prevX, prevY;
     private boolean grabbed_plot_graphics_ = false;
 
     /**
-     * Called whenever the mouse is pressed by the user and one of the
-     * requested mouse modes is active.
+     * Called whenever the mouse is pressed by the user and one of the requested
+     * mouse modes is active.
      * 
      * @param e the press event
      * @return true if event was consumed (handled), false otherwise
@@ -343,8 +340,8 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Called whenever the mouse is released by the user and one of
-     * the requested mouse modes is active.
+     * Called whenever the mouse is released by the user and one of the
+     * requested mouse modes is active.
      * 
      * @param e the release event
      * @return true if event was consumed (handled), false otherwise
@@ -356,21 +353,20 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Called whenever the mouse is clicked by the user and one of the
-     * requested mouse modes is active.
+     * Called whenever the mouse is clicked by the user and one of the requested
+     * mouse modes is active.
      * 
      * @param e the click event
      * @return true if event was consumed (handled), false otherwise
      * @see #getMouseModeServiceList
      */
     public boolean mouseClicked(MouseEvent e) {
-        //      System.out.println("XY: " + e.getX() + " " + e.getY() );
+        // System.out.println("XY: " + e.getX() + " " + e.getY() );
         if (selectedGraphic != null && !show_plot_) {
             switch (e.getClickCount()) {
             case 1:
                 /**
-                 * One click adds the site to our list of sites to
-                 * plot.
+                 * One click adds the site to our list of sites to plot.
                  */
                 addSelectionToPlotList();
                 generatePlot();
@@ -380,7 +376,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
                 /**
                  * Double click means generate the plot.
                  */
-                //              System.out.println("Saw DoubleClick!");
+                // System.out.println("Saw DoubleClick!");
                 repaint();
                 break;
             default:
@@ -393,8 +389,8 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Called whenever the mouse enters this layer and one of the
-     * requested mouse modes is active.
+     * Called whenever the mouse enters this layer and one of the requested
+     * mouse modes is active.
      * 
      * @param e the enter event
      * @see #getMouseModeServiceList
@@ -402,8 +398,8 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
     public void mouseEntered(MouseEvent e) {}
 
     /**
-     * Called whenever the mouse exits this layer and one of the
-     * requested mouse modes is active.
+     * Called whenever the mouse exits this layer and one of the requested mouse
+     * modes is active.
      * 
      * @param e the exit event
      * @see #getMouseModeServiceList
@@ -411,8 +407,8 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
     public void mouseExited(MouseEvent e) {}
 
     /**
-     * Called whenever the mouse is dragged on this layer and one of
-     * the requested mouse modes is active.
+     * Called whenever the mouse is dragged on this layer and one of the
+     * requested mouse modes is active.
      * 
      * @param e the drag event
      * @return true if event was consumed (handled), false otherwise
@@ -432,7 +428,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
 
             graph.resize(plotX, plotY, plotWidth, plotHeight);
             OMGraphicList plotGraphics = graph.getPlotGraphics();
-            //regenerate the plot graphics
+            // regenerate the plot graphics
             plotGraphics.generate(getProjection(), true);
             repaint();
         }
@@ -440,12 +436,11 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Called whenever the mouse is moved on this layer and one of the
-     * requested mouse modes is active.
+     * Called whenever the mouse is moved on this layer and one of the requested
+     * mouse modes is active.
      * <p>
-     * Tries to locate a graphic near the mouse, and if it is found,
-     * it is highlighted and the Layer is repainted to show the
-     * highlighting.
+     * Tries to locate a graphic near the mouse, and if it is found, it is
+     * highlighted and the Layer is repainted to show the highlighting.
      * 
      * @param e the move event
      * @return true if event was consumed (handled), false otherwise
@@ -478,7 +473,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
                 Debug.message("basic", "Making selection...");
 
                 selectedGraphic = newSelectedGraphic;
-                //selectedGraphic.setLineColor(Color.yellow);
+                // selectedGraphic.setLineColor(Color.yellow);
                 selectedGraphic.regenerate(getProjection());
 
                 // display site info on map
@@ -492,7 +487,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
 
                 // revert color of un-moused object.
                 Debug.message("basic", "Clearing selection...");
-                //selectedGraphic.setLineColor(Color.red);
+                // selectedGraphic.setLineColor(Color.red);
                 selectedGraphic.regenerate(getProjection());
                 fireRequestInfoLine("");
                 selectedGraphic = null;
@@ -503,10 +498,9 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Called whenever the mouse is moved on this layer and one of the
-     * requested mouse modes is active, and the gesture is consumed by
-     * another active layer. We need to deselect anything that may be
-     * selected.
+     * Called whenever the mouse is moved on this layer and one of the requested
+     * mouse modes is active, and the gesture is consumed by another active
+     * layer. We need to deselect anything that may be selected.
      * 
      * @see #getMouseModeServiceList
      */
@@ -518,8 +512,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
     /**
      * Initializes this layer from the given properties.
      * 
-     * @param props the <code>Properties</code> holding settings for
-     *        this layer
+     * @param props the <code>Properties</code> holding settings for this layer
      */
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);

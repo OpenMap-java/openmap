@@ -741,7 +741,7 @@ public class Environment extends Properties {
      * 
      * @return Vector of Strings
      */
-    public final static Vector getClasspathDirs() {
+    public final static Vector<String> getClasspathDirs() {
         Vector v = new Vector();
         try {
             String classPath = System.getProperty("java.class.path");
