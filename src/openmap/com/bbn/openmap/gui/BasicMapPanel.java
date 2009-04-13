@@ -76,7 +76,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * add components to.
      */
     public BasicMapPanel() {
-        this(new PropertyHandler(new Properties()), true);
+        this(new PropertyHandler(new Properties()), false);
     }
 
     /**
