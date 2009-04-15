@@ -40,7 +40,7 @@ public class TimeSliderPanel extends BasicMapPanel {
     protected TimeSliderLayer timeSliderLayer;
 
     public TimeSliderPanel() {
-        super();
+        super(true);
         setLayout(new BorderLayout());
         Cartesian cartesian = new Cartesian(new Point2D.Double(), 300000f, 600, 20);
         MapBean mapBean = getMapBean();

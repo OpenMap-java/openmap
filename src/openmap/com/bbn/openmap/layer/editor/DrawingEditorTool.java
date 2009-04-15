@@ -355,6 +355,12 @@ public class DrawingEditorTool extends AbstractEditorTool implements
             if (unpickBtn != null) {
                 unpickBtn.doClick();
             }
+            
+            if (mouseDelegator != null) {
+                MapMouseMode[] modes = mouseDelegator.getMouseModes();
+                if (modes != null && modes.length > 0)
+                mouseDelegator.setActiveMouseMode(modes[0]);
+            }
         }
     }
 

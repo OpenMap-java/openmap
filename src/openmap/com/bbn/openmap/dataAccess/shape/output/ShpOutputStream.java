@@ -22,6 +22,7 @@
 
 package com.bbn.openmap.dataAccess.shape.output;
 
+import java.awt.geom.Point2D;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -36,6 +37,7 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.proj.coords.GeoCoordTransformation;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
@@ -46,6 +48,12 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 public class ShpOutputStream {
 
     public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.shape.output.ShpOutputStream");
+
+    /**
+     * A GeoCoordTransform to use to convert Lat/Lon values in EsriGraphics to
+     * projected coordinates.
+     */
+    protected GeoCoordTransformation transform;
 
     /**
      * An outputstream that writes primitive data types in little endian or big
@@ -61,6 +69,27 @@ public class ShpOutputStream {
     public ShpOutputStream(OutputStream os) {
         BufferedOutputStream bos = new BufferedOutputStream(os);
         _leos = new LittleEndianOutputStream(bos);
+    }
+
+    /**
+     * Get the transform being used on the coordinates of the EsriGraphics as
+     * they are written to the stream.
+     * 
+     * @return
+     */
+    public GeoCoordTransformation getTransform() {
+        return transform;
+    }
+
+    /**
+     * Set the GeoCoordTransform for the stream, so that the EsriGraphics will
+     * have their coordinates transformed as they are written to the stream. If
+     * null, the coordinates will be unchanged.
+     * 
+     * @param transform
+     */
+    public void setTransform(GeoCoordTransformation transform) {
+        this.transform = transform;
     }
 
     /**
@@ -225,12 +254,21 @@ public class ShpOutputStream {
             _leos.writeLEDouble(90.0);
 
         } else {
-            _leos.writeLEDouble((float) extents[1]);
-            _leos.writeLEDouble((float) extents[0]);
-            _leos.writeLEDouble((float) extents[3]);
-            _leos.writeLEDouble((float) extents[2]);
+            if (transform == null) {
+                _leos.writeLEDouble(extents[1]);
+                _leos.writeLEDouble(extents[0]);
+                _leos.writeLEDouble(extents[3]);
+                _leos.writeLEDouble(extents[2]);
+            } else {
+                Point2D pnt = transform.forward(extents[0], extents[1]);
+                // extents are written out x, y
+                _leos.writeLEDouble(pnt.getX());
+                _leos.writeLEDouble(pnt.getY());
+                pnt = transform.forward(extents[2], extents[3], pnt);
+                _leos.writeLEDouble(pnt.getX());
+                _leos.writeLEDouble(pnt.getY());
+            }
         }
-
     }
 
     /**
@@ -271,6 +309,9 @@ public class ShpOutputStream {
         _leos.writeDouble(0.0); // Byte 76
         _leos.writeDouble(0.0); // Byte 84
         _leos.writeDouble(0.0); // Byte 92
+
+        // Temporary point used for transformations
+        Point2D pnt = new Point2D.Double();
 
         // Iterate through the list
         for (int i = 0; i < list.size(); i++) {
@@ -320,10 +361,16 @@ public class ShpOutputStream {
                     double[] data = poly.getLatLonArray();
                     int n = 0;
                     while (n < data.length) {
-                        Float lat = new Float(data[n++]);
-                        Float lon = new Float(data[n++]);
-                        _leos.writeLEDouble(Math.toDegrees(lon.doubleValue()));
-                        _leos.writeLEDouble(Math.toDegrees(lat.doubleValue()));
+                        double lat = Math.toDegrees(data[n++]);
+                        double lon = Math.toDegrees(data[n++]);
+                        if (transform == null) {
+                            _leos.writeLEDouble(lon);
+                            _leos.writeLEDouble(lat);
+                        } else {
+                            transform.forward(lat, lon, pnt);
+                            _leos.writeLEDouble(pnt.getX());
+                            _leos.writeLEDouble(pnt.getY());
+                        }
                     }
                 }
             } else {
@@ -344,10 +391,16 @@ public class ShpOutputStream {
 
                 int n = 0;
                 while (n < data.length) {
-                    Float lat = new Float(data[n++]);
-                    Float lon = new Float(data[n++]);
-                    _leos.writeLEDouble(Math.toDegrees(lon.doubleValue()));
-                    _leos.writeLEDouble(Math.toDegrees(lat.doubleValue()));
+                    double lat = Math.toDegrees(data[n++]);
+                    double lon = Math.toDegrees(data[n++]);
+                    if (transform == null) {
+                        _leos.writeLEDouble(lon);
+                        _leos.writeLEDouble(lat);
+                    } else {
+                        transform.forward(lat, lon, pnt);
+                        _leos.writeLEDouble(pnt.getX());
+                        _leos.writeLEDouble(pnt.getY());
+                    }
                 }
             }
         }
@@ -392,6 +445,9 @@ public class ShpOutputStream {
         _leos.writeDouble(0.0);
         _leos.writeDouble(0.0);
 
+        // For coordinate transformations
+        Point2D pnt = new Point2D.Double();
+
         for (int i = 0; i < list.size(); i++) {
             OMPoint point = (OMPoint) list.getOMGraphicAt(i);
             LatLonPoint pt = new LatLonPoint.Double(point.getLat(), point.getLon());
@@ -403,11 +459,17 @@ public class ShpOutputStream {
             // Beginning of Geometry data
             _leos.writeLEInt(list.getType());
 
-            Double lat = new Double(pt.getLatitude());
-            Double lon = new Double(pt.getLongitude());
+            double lat = pt.getLatitude();
+            double lon = pt.getLongitude();
 
-            _leos.writeLEDouble(lon.doubleValue());
-            _leos.writeLEDouble(lat.doubleValue());
+            if (transform == null) {
+                _leos.writeLEDouble(lon);
+                _leos.writeLEDouble(lat);
+            } else {
+                transform.forward(lat, lon, pnt);
+                _leos.writeLEDouble(pnt.getX());
+                _leos.writeLEDouble(pnt.getY());
+            }
         }
         _leos.flush();
         _leos.close();

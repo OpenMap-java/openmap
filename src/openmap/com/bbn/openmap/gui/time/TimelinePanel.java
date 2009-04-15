@@ -39,7 +39,7 @@ public class TimelinePanel extends BasicMapPanel {
     protected TimelineLayer timelineLayer;
 
     public TimelinePanel() {
-        super();
+        super(true);
         Cartesian cartesian = new Cartesian(new Point2D.Double(), 300000f, 600, 20);
         setLayout(new BorderLayout());
         MapBean mapBean = getMapBean();

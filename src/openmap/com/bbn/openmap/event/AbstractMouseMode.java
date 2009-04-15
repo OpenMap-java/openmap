@@ -48,15 +48,15 @@ import com.bbn.openmap.util.propertyEditor.OptionPropertyEditor;
  * 
  * <pre>
  * 
- *    
+ * 
  *    # Name that layers use to get events from this mode
  *    mousemode.id=ID
  *    # Tooltip and Menu name for mode
  *    mousemode.prettyName=Display Name
- *   
- *    
- *   
- *  
+ * 
+ * 
+ * 
+ * 
  * </pre>
  * 
  * This class delegates much of the work of managing its listeners to a
@@ -92,6 +92,8 @@ public class AbstractMouseMode extends OMComponent implements MapMouseMode,
     protected transient Icon guiIcon = null;
 
     protected transient boolean visible = true;
+
+    protected boolean mouseWheelListener = true;
 
     protected String prettyName;
 
@@ -138,6 +140,12 @@ public class AbstractMouseMode extends OMComponent implements MapMouseMode,
      * mouse wheel is rotated up. Appropriate values are ZOOM_IN or ZOOM_OUT.
      */
     public static final String MouseWheelZoomProperty = "mouseWheelUp";
+
+    /**
+     * A property that lets you turn off the mouse wheel listening
+     * functionality. If enabled, the mouse wheel changes the scale of the map.
+     */
+    public static final String MouseWheelListenerProperty = "mouseWheelListener";
 
     /**
      * Construct an AbstractMouseMode. Default constructor, allocates the mouse
@@ -423,16 +431,36 @@ public class AbstractMouseMode extends OMComponent implements MapMouseMode,
      * Invoked from the MouseWheelListener interface.
      */
     public void mouseWheelMoved(MouseWheelEvent e) {
-        int rot = e.getWheelRotation();
-        if (e.getSource() instanceof MapBean) {
-            MapBean mb = (MapBean) e.getSource();
-            if (rot > 0) {
-                // Positive, zoom out
-                mb.zoom(new ZoomEvent(mb, ZoomEvent.RELATIVE, 1.1f));
-            } else {
-                mb.zoom(new ZoomEvent(mb, ZoomEvent.RELATIVE, .9f));
+        if (mouseWheelListener) {
+            int rot = e.getWheelRotation();
+            if (e.getSource() instanceof MapBean) {
+                MapBean mb = (MapBean) e.getSource();
+                if (rot > 0) {
+                    // Positive, zoom out
+                    mb.zoom(new ZoomEvent(mb, ZoomEvent.RELATIVE, 1.1f));
+                } else {
+                    mb.zoom(new ZoomEvent(mb, ZoomEvent.RELATIVE, .9f));
+                }
             }
         }
+    }
+
+    /**
+     * Check setting for whether MouseMode responds to mouse wheel events.
+     * 
+     * @return
+     */
+    public boolean isMouseWheelListener() {
+        return mouseWheelListener;
+    }
+
+    /**
+     * Set whether MouseMode responds to mouse wheel events.
+     * 
+     * @param mouseWheelListener
+     */
+    public void setMouseWheelListener(boolean mouseWheelListener) {
+        this.mouseWheelListener = mouseWheelListener;
     }
 
     /**
@@ -564,6 +592,9 @@ public class AbstractMouseMode extends OMComponent implements MapMouseMode,
             setIconName(iconString);
         }
 
+        mouseWheelListener = PropUtils.booleanFromProperties(props, prefix
+                + MouseWheelListenerProperty, mouseWheelListener);
+
         zoomWhenMouseWheelUp = PropUtils.booleanFromProperties(props, prefix
                 + MouseWheelZoomProperty, zoomWhenMouseWheelUp);
 
@@ -614,8 +645,11 @@ public class AbstractMouseMode extends OMComponent implements MapMouseMode,
             props.put(prefix + MouseWheelZoomProperty, "ZOOM_OUT");
         }
 
-        props.put(prefix +IconProperty, PropUtils.unnull(getIconName()));
-        
+        props.put(prefix + MouseWheelListenerProperty,
+                Boolean.toString(mouseWheelListener));
+
+        props.put(prefix + IconProperty, PropUtils.unnull(getIconName()));
+
         return props;
     }
 
@@ -644,20 +678,28 @@ public class AbstractMouseMode extends OMComponent implements MapMouseMode,
                 thisClass,
                 IconProperty,
                 "Icon",
-                "Icon to use for mouse mode.", 
+                "Icon to use for mouse mode.",
                 null);
-        
+
         PropUtils.setI18NPropertyInfo(i18n,
                 props,
                 thisClass,
                 MouseWheelZoomProperty,
-                "Mouse Wheel Zoom",
+                "Mouse Wheel Zoom Direction",
                 "Action to take when the mouse wheel is rolled up.",
                 "com.bbn.openmap.util.propertyEditor.ComboBoxPropertyEditor");
         props.put(MouseWheelZoomProperty
                 + OptionPropertyEditor.ScopedOptionsProperty, "zoomin  zoomout");
         props.put(MouseWheelZoomProperty + ".zoomin", "ZOOM_IN");
         props.put(MouseWheelZoomProperty + ".zoomout", "ZOOM_OUT");
+
+        PropUtils.setI18NPropertyInfo(i18n,
+                props,
+                thisClass,
+                MouseWheelListenerProperty,
+                "Mouse Wheel Zoom",
+                "Setting for whether mouse wheel controls map zoom",
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         PropUtils.setI18NPropertyInfo(i18n,
                 props,
