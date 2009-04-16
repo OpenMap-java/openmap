@@ -22,23 +22,21 @@
 
 package com.bbn.openmap.layer.policy;
 
-import java.awt.RenderingHints;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.Iterator;
+import java.awt.RenderingHints;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The RenderingHintsRenderPolicy is a StandardRenderPolicy that lets
- * you set RenderingHints on the java.awt.Graphics object before the
- * layer is painted, and then simply paints the current graphic list.
- * No conditions or deviations are considered. This class can be set
- * with properties.
+ * The RenderingHintsRenderPolicy is a StandardRenderPolicy that lets you set
+ * RenderingHints on the java.awt.Graphics object before the layer is painted,
+ * and then simply paints the current graphic list. No conditions or deviations
+ * are considered. This class can be set with properties.
  * <P>
  * The properties have to look like:
  * 
@@ -49,26 +47,26 @@ import com.bbn.openmap.util.PropUtils;
  *  prefix.RENDERINGHINTS_KEY1=RENDERINGHINTS_VALUE1
  *  prefix.RENDERINGHINTS_KEY2=RENDERINGHINTS_VALUE2
  * 
- *  
+ * 
  * </pre>
  * 
- * For example, for a GraticuleLayer in the properties file with a
- * 'graticule' prefix:
+ * For example, for a GraticuleLayer in the properties file with a 'graticule'
+ * prefix:
  * 
  * <pre>
  * 
- *  
+ * 
  *  graticule.renderPolicy=textAliasing
  *  graticule.textAliasing.class=com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy
  *  graticule.textAliasing.renderingHints=KEY_TEXT_ANTIALIASING
  *  graticule.textAliasing.KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_ON
- *  
- *  
+ * 
+ * 
  * </pre>
  * 
- * The HintsMapBeanRepaintPolicy uses a RenderingHintsRenderPolicy
- * with properties that look like these, where 'repaintPolicy' is the
- * prefix for the RenderingHintsRenderPolicy:
+ * The HintsMapBeanRepaintPolicy uses a RenderingHintsRenderPolicy with
+ * properties that look like these, where 'repaintPolicy' is the prefix for the
+ * RenderingHintsRenderPolicy:
  * 
  * <pre>
  * 
@@ -77,13 +75,13 @@ import com.bbn.openmap.util.PropUtils;
  *  repaintPolicy.renderingHints=KEY_ANTIALIASING
  *  repaintPolicy.KEY_ANTIALIASING=VALUE_ANTIALIAS_ON
  *  repaintPolicy.KEY_RENDERING=VALUE_RENDER_SPEED
- *  
- *  
+ * 
+ * 
  * </pre>
  * 
- * See the java.awt.RenderingHints javadocs for the key-value pairs
- * that can be used.
- *  
+ * See the java.awt.RenderingHints javadocs for the key-value pairs that can be
+ * used.
+ * 
  */
 public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
 
@@ -105,31 +103,30 @@ public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
     }
 
     /**
-     * Set the RenderingHints Map that should be used on the MapBean.
-     * If null, no modifications will be set on the MapBean's Graphics
-     * object.
+     * Set the RenderingHints Map that should be used on the MapBean. If null,
+     * no modifications will be set on the MapBean's Graphics object.
      */
     public void setRenderingHints(RenderingHints rh) {
         renderingHints = rh;
     }
 
     /**
-     * Get the RenderingHints Map that should be used on the MapBean.
-     * May be null (default).
+     * Get the RenderingHints Map that should be used on the MapBean. May be
+     * null (default).
      */
     public RenderingHints getRenderingHints() {
         return renderingHints;
     }
 
     /**
-     * If you are going to change the Graphics object in this method,
-     * you should make a copy of it first using the Graphics.create()
-     * method so the changes won't affect other layers.
+     * If you are going to change the Graphics object in this method, you should
+     * make a copy of it first using the Graphics.create() method so the changes
+     * won't affect other layers.
      */
     public void paint(Graphics g) {
         g = g.create(); // Make a copy to use just for this layer.
         setRenderingHints(g);
-        setCompositeOnGraphics((Graphics2D)g);
+        setCompositeOnGraphics((Graphics2D) g);
         super.paint(g);
     }
 
@@ -146,17 +143,15 @@ public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
         String renderingHintsString = props.getProperty(prefix
                 + RenderingHintsProperty);
 
-        if (DEBUG) {
-            Debug.output("RHRP: decoding rendering hints: "
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("RHRP: decoding rendering hints: "
                     + renderingHintsString);
         }
 
-        Vector renderingHintsVector = PropUtils.parseSpacedMarkers(renderingHintsString);
+        Vector<String> renderingHintsVector = PropUtils.parseSpacedMarkers(renderingHintsString);
 
         if (renderingHintsVector != null) {
-            Iterator it = renderingHintsVector.iterator();
-            while (it.hasNext()) {
-                String renderingHintKeyString = (String) it.next();
+            for (String renderingHintKeyString : renderingHintsVector) {
                 if (renderingHintKeyString != null) {
                     String renderingHintValueString = props.getProperty(prefix
                             + renderingHintKeyString);
@@ -179,21 +174,21 @@ public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
                                 renderingHints = new RenderingHints(null);
                             }
                             renderingHints.put(key, value);
-                            if (DEBUG) {
-                                Debug.output("RHRP+++ adding "
+                            if (logger.isLoggable(Level.FINE)) {
+                                logger.fine("RHRP+++ adding "
                                         + renderingHintKeyString + " | "
                                         + renderingHintValueString);
                             }
                         } else {
-                            if (DEBUG) {
-                                Debug.output("RHRP--- NOT adding "
+                            if (logger.isLoggable(Level.FINE)) {
+                                logger.fine("RHRP--- NOT adding "
                                         + renderingHintKeyString + " (" + key
                                         + ") | " + renderingHintValueString
                                         + " (" + value + ")");
                             }
                         }
-                    } else if (DEBUG) {
-                        Debug.output("RHRP--- NOT adding "
+                    } else if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("RHRP--- NOT adding "
                                 + renderingHintKeyString);
                     }
                 }

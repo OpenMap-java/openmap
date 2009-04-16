@@ -25,6 +25,8 @@ package com.bbn.openmap.layer.policy;
 import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
@@ -33,23 +35,21 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The StandardRenderPolicy is a RenderPolicy that simply paints the
- * current graphic list. No conditions or deviations are considered.
+ * The StandardRenderPolicy is a RenderPolicy that simply paints the current
+ * graphic list. No conditions or deviations are considered.
  */
 public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
+
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.policy.RenderPolicy");
 
     /**
      * Don't let this be null, nothing will happen. At all.
      */
     protected OMGraphicHandlerLayer layer;
 
-    protected boolean DEBUG = false;
-
     protected Composite composite;
 
-    public StandardRenderPolicy() {
-        DEBUG = Debug.debugging("layer") || Debug.debugging("policy");
-    }
+    public StandardRenderPolicy() {}
 
     /**
      * Don't pass in a null layer.
@@ -72,8 +72,8 @@ public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
     }
 
     /**
-     * Can be used to set Composite objects (like AlphaComposite) on
-     * Graphics2D objects before the layer is painted.
+     * Can be used to set Composite objects (like AlphaComposite) on Graphics2D
+     * objects before the layer is painted.
      * 
      * @param composite
      */
@@ -82,9 +82,9 @@ public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
     }
 
     /**
-     * Call made by the policy from the paint(g) method in order to
-     * set the composite on the Graphics2D object. This method is
-     * meant to be overridden if needed.
+     * Call made by the policy from the paint(g) method in order to set the
+     * composite on the Graphics2D object. This method is meant to be overridden
+     * if needed.
      * 
      * @param g Graphics2D that the Composite will be set on.
      */
@@ -114,8 +114,8 @@ public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
                 setCompositeOnGraphics((Graphics2D) g);
 
                 list.render(g);
-            } else if (DEBUG) {
-                Debug.output(layer.getName()
+            } else if (logger.isLoggable(Level.FINE)) {
+                logger.fine(layer.getName()
                         + ".paint(): "
                         + (list == null ? "NULL list, skipping..."
                                 : " skipping due to projection."));

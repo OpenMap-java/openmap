@@ -25,11 +25,13 @@ package com.bbn.openmap.layer.policy;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
 
 /**
@@ -40,35 +42,53 @@ import com.bbn.openmap.proj.Projection;
  * projection change because we need the image buffer to be transparent for
  * parts of the map that are not used by the layer.
  */
-public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
-
-    public final static long bufferTriggerDelay = 150;
+public class PanningImageRenderPolicy extends RenderingHintsRenderPolicy {
 
     protected BufferedImage buffer = null;
 
-    protected boolean useImageBuffer = false;
+    protected Point2D offset = new Point2D.Double();
+    protected Point2D oldUL;
+    protected float oldScale;
+    protected Class<? extends Proj> oldProjType = null;
 
     /**
      * Set the layer at some point before use.
      */
-    public BufferedImageRenderPolicy() {
+    public PanningImageRenderPolicy() {
         super();
     }
 
     /**
      * Don't pass in a null layer.
      */
-    public BufferedImageRenderPolicy(OMGraphicHandlerLayer layer) {
+    public PanningImageRenderPolicy(OMGraphicHandlerLayer layer) {
         super(layer);
     }
 
     public OMGraphicList prepare() {
         if (layer != null) {
-            setBuffer(null);
-            OMGraphicList list = layer.prepare();
-            if (isUseImageBuffer()) {
-                setBuffer(createAndPaintImageBuffer(list));
+            // setBuffer(null);
+            Projection proj = layer.getProjection();
+            // set the offsets depending on how much the image moves
+            Point2D ul = proj.getUpperLeft();
+            if (oldUL != null && !oldUL.equals(ul)
+                    && oldScale == proj.getScale()
+                    && proj.getClass().equals(oldProjType)) {
+                Point2D currentPoint = proj.forward(ul);
+                Point2D oldPoint = proj.forward(oldUL);
+
+                offset.setLocation(oldPoint.getX() - currentPoint.getX(), oldPoint.getY() - currentPoint.getY());
+                
+                layer.repaint();
             }
+
+            oldUL = ul;
+            oldProjType = ((Proj) proj).getClass();
+            oldScale = proj.getScale();
+
+            OMGraphicList list = layer.prepare();
+            setBuffer(createAndPaintImageBuffer(list));
+
             return list;
         } else {
             logger.warning("NULL layer, can't do anything.");
@@ -85,10 +105,17 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
         OMGraphicList list = layer.getList();
         Projection proj = layer.getProjection();
         Graphics2D g2 = (Graphics2D) g;
-        if (list != null && layer.isProjectionOK(proj)) {
 
-            if (isUseImageBuffer() && getBuffer() == null) {
-                setBuffer(createAndPaintImageBuffer(list));
+        if (layer.isProjectionOK(proj)) {
+
+            if (getBuffer() == null) {
+                // Not sure how we get here, but it's here just in case so that
+                // the list might get painted if it exists and the buffered
+                // image wasn't created.
+                logger.fine("creating image buffer in paint");
+                if (list != null) {
+                    setBuffer(createAndPaintImageBuffer(list));
+                }
             }
 
             BufferedImage bufferedImage = getBuffer();
@@ -106,28 +133,20 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
                     g.setClip(0, 0, proj.getWidth(), proj.getHeight());
                 }
 
-                g2.drawRenderedImage((BufferedImage) bufferedImage,
-                        new AffineTransform());
+                AffineTransform af = new AffineTransform();
+                af.translate(offset.getX(), offset.getY());
+                g2.drawRenderedImage((BufferedImage) bufferedImage, af);
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.fine(layer.getName() + ": rendering buffer");
+                    logger.fine("RenderingPolicy:" + layer.getName()
+                            + ": rendering buffer");
                 }
 
-                if (!isUseImageBuffer()) {
-                    setBuffer(null);
-                }
-            } else {
+            } else if (list != null) {
                 super.setRenderingHints(g);
-                long startPaint = System.currentTimeMillis();
                 list.render(g);
-                long endPaint = System.currentTimeMillis();
-
-                if (endPaint - startPaint > bufferTriggerDelay) {
-                    setUseImageBuffer(true);
-                }
 
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.fine(layer.getName() + ": rendering list, buffer("
-                            + isUseImageBuffer() + ")");
+                    logger.fine(layer.getName() + ": rendering list directly");
                 }
             }
         } else if (logger.isLoggable(Level.FINE)) {
@@ -146,6 +165,7 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
 
     /** Set the BufferedImage for the layer. */
     protected void setBuffer(BufferedImage bi) {
+        offset.setLocation(0, 0);
         buffer = bi;
     }
 
@@ -157,28 +177,11 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
             bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
             super.setRenderingHints(g2d);
-            long startPaint = System.currentTimeMillis();
             list.render(g2d);
-            long endPaint = System.currentTimeMillis();
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine(layer.getName() + ": rendering list into buffer");
             }
-            if (endPaint - startPaint < bufferTriggerDelay) {
-                // OK, paint didn't take that long, don't use buffer
-                // on the next time around. Since we've gone through
-                // the effort of creating an image that's painted, use
-                // it.
-                setUseImageBuffer(false);
-            }
         }
         return bufferedImage;
-    }
-
-    public synchronized void setUseImageBuffer(boolean value) {
-        useImageBuffer = value;
-    }
-
-    public synchronized boolean isUseImageBuffer() {
-        return useImageBuffer;
     }
 }
