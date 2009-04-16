@@ -35,12 +35,19 @@ import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
 
 /**
- * The BufferedImageRenderPolicy is a RenderPolicy that creates and uses an
- * image buffer based on the painting times for the layer. If the time to paint
- * exceeds the bufferTiggerDelay, an image buffer for the layer is used for
- * paints as long as the projection doesn't change. A new buffer is used for a
- * projection change because we need the image buffer to be transparent for
- * parts of the map that are not used by the layer.
+ * The PanningImageRenderPolicy renders all OMGraphics into a buffering image,
+ * and responds to projection changes by immediately rendering a translated
+ * version of the image at a new projection location before calling prepare() on
+ * the layer to get the OMGraphics for the new projection and untranslated
+ * image. When the new image is ready, it will be painted. Using this policy on
+ * background layers eliminates the flashing effect seen when panning or zooming
+ * a map when a faster-responding layer is on top.
+ * <P>
+ * You can set this object on an OMGraphicHandlerLayer through the API, or set it in the properties:
+ * <pre>
+ * layer.renderPolicy=rp
+ * layer.rp.class=com.bbn.openmap.layer.policy.PanningImageRenderPolicy
+ * </pre> 
  */
 public class PanningImageRenderPolicy extends RenderingHintsRenderPolicy {
 
@@ -77,8 +84,9 @@ public class PanningImageRenderPolicy extends RenderingHintsRenderPolicy {
                 Point2D currentPoint = proj.forward(ul);
                 Point2D oldPoint = proj.forward(oldUL);
 
-                offset.setLocation(oldPoint.getX() - currentPoint.getX(), oldPoint.getY() - currentPoint.getY());
-                
+                offset.setLocation(oldPoint.getX() - currentPoint.getX(),
+                        oldPoint.getY() - currentPoint.getY());
+
                 layer.repaint();
             }
 
