@@ -33,8 +33,11 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.io.Serializable;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
@@ -47,7 +50,6 @@ import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
-import com.bbn.openmap.util.Debug;
 
 /**
  * A LayerPane is a single instance of how a layer represented in the
@@ -57,6 +59,8 @@ import com.bbn.openmap.util.Debug;
  */
 public class LayerPane extends JPanel implements Serializable, ActionListener,
         ComponentListener {
+
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.LayerPane");
 
     protected transient AbstractButton onoffButton;
     protected transient AbstractButton paletteButton;
@@ -119,6 +123,7 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
         layerName = new JToggleButton(layer.getName());
         layerName.setBorderPainted(false);
         layerName.addActionListener(this);
+
         offColor = layerName.getBackground();
         layerName.setToolTipText(i18n.get(LayerPane.class,
                 "layerName.tooltip",
@@ -264,10 +269,14 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
     }
 
     /**
-     * LayerPane disconnects from listeners, nulls out components.
+     * LayerPane disconnects from listeners, nulls out components, shuts down
+     * layer palette.
      */
     public void cleanup() {
+        layerName.setSelected(false);
+
         if (layer != null) {
+            this.layer.setPaletteVisible(false);
             this.layer.removeComponentListener(this);
         }
         if (onoffButton != null) {
@@ -326,17 +335,21 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
     }
 
     /**
-     * Highlights/unhighlights the layerName toggle button
+     * Highlights/de-highlights the panel border.
      */
     public void setSelected(boolean select) {
-        layerName.setSelected(select);
-
         String command = select ? LayersPanel.LayerSelectedCmd
                 : LayersPanel.LayerDeselectedCmd;
 
-        if (Debug.debugging("layercontrol")) {
-            Debug.output("LayerPane for " + getLayer().getName() + " "
-                    + command + ", firing event");
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("LayerPane for " + getLayer().getName() + " " + command
+                    + ", firing event");
+        }
+
+        if (select) {
+            setBorder(BorderFactory.createLoweredBevelBorder());
+        } else {
+            setBorder(null);
         }
 
         firePropertyChange(command, null, getLayer());
@@ -347,12 +360,6 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
      */
     public Layer getLayer() {
         return layer;
-    }
-
-    public void finalize() {
-        if (Debug.debugging("gc")) {
-            Debug.output("LayerPane getting GC'd");
-        }
     }
 
     /**
@@ -383,25 +390,24 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
     public void actionPerformed(java.awt.event.ActionEvent e) {
 
         if (e.getSource().equals(paletteButton)) {
-            setSelected(true);
+            layerName.doClick();
             showPalette();
         } else if (e.getSource().equals(onoffButton)) {
-            setSelected(true);
+            layerName.doClick();
             // layer is selected, add it to or remove it from map
             if (layerHandler != null) {
-                Debug.message("layerspanel",
-                        "LayerPane|actionPerformed calling layerHandler.turnLayerOn()");
+                logger.fine("LayerPane|actionPerformed calling layerHandler.turnLayerOn()");
                 layerHandler.turnLayerOn(onoffButton.isSelected(), layer);
             }
 
-            if (Debug.debugging("layerspanel")) {
-                Debug.output("LayerPane: Layer "
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Layer "
                         + layer.getName()
                         + (layer.isVisible() ? " is visible."
                                 : " is NOT visible"));
             }
         } else if (e.getSource().equals(layerName)) {
-            setSelected(true);
+            setSelected(layerName.isSelected());
         }
     }
 
@@ -419,8 +425,8 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
      * Invoked when component has been shown.
      */
     public void componentShown(ComponentEvent e) {
-        if (Debug.debugging("layerspanel")) {
-            Debug.output("LayerPane: layer pane for " + layer.getName()
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("layer pane for " + layer.getName()
                     + " receiving componentShown event");
         }
 
@@ -429,9 +435,8 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
         } else if (comp == layer) {
             if (isLayerOn() != true) {
                 setLayerOn(true);
-                if (Debug.debugging("layerspanel")) {
-                    Debug.output("LayerPane: layer " + layer.getName()
-                            + " is now visible.");
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("layer " + layer.getName() + " is now visible.");
                 }
             }
         } else if (comp == layer.getPalette()) {
@@ -443,8 +448,8 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
      * Invoked when component has been hidden.
      */
     public void componentHidden(ComponentEvent e) {
-        if (Debug.debugging("layerspanel")) {
-            Debug.output("LayerPane: layer pane for " + layer.getName()
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("layer pane for " + layer.getName()
                     + " receiving componentHidden event");
         }
         Component comp = e.getComponent();
@@ -452,17 +457,15 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
         if (comp == layer) {
             if (isLayerOn() != false) {
                 setLayerOn(false);
-                if (Debug.debugging("layerspanel")) {
-                    Debug.output("LayerPane: layer " + layer.getName()
-                            + " is now hidden.");
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("layer " + layer.getName() + " is now hidden.");
                 }
             }
         } else if (comp == layer.getPalette()) {
             setPaletteOn(false);
         } else if (comp == null) {
-            if (Debug.debugging("layerspanel")) {
-                Debug.output("LayerPane: layer " + layer.getName()
-                        + " is now hidden.");
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("layer " + layer.getName() + " is now hidden.");
             }
         }
     }
