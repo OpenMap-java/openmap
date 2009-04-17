@@ -22,6 +22,7 @@
 
 package com.bbn.openmap;
 
+import java.awt.Component;
 import java.beans.PropertyVetoException;
 import java.beans.beancontext.BeanContext;
 import java.io.Serializable;
@@ -1005,7 +1006,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      */
     public void findAndInit(Object someObj) {
 
-        if (someObj instanceof com.bbn.openmap.event.LayerListener) {
+        if (someObj instanceof LayerListener) {
             logger.fine("LayerHandler found a LayerListener.");
             addLayerListener((LayerListener) someObj);
         }
@@ -1017,6 +1018,15 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
             }
             if (!hasLayer((Layer) someObj)) {
                 addLayer((Layer) someObj, 0);
+            }
+        }
+
+        if (someObj instanceof PlugIn) {
+            PlugIn pi = (PlugIn) someObj;
+            if (pi.getComponent() == null) {
+                PlugInLayer pil = new PlugInLayer();
+                pil.setPlugIn(pi);
+                addLayer(pil, 0);
             }
         }
 
@@ -1036,13 +1046,21 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      */
     public void findAndUndo(Object someObj) {
 
-        if (someObj instanceof com.bbn.openmap.event.LayerListener) {
+        if (someObj instanceof LayerListener) {
             logger.fine("LayerListener object is being removed");
             removeLayerListener((LayerListener) someObj);
         }
 
         if (someObj instanceof Layer) {
             removeLayer((Layer) someObj);
+        }
+
+        if (someObj instanceof PlugIn) {
+            PlugIn pi = (PlugIn) someObj;
+            Component comp = pi.getComponent();
+            if (comp instanceof Layer && hasLayer((Layer) comp)) {
+                removeLayer((Layer) comp);
+            }
         }
 
         if (someObj instanceof PropertyHandler
