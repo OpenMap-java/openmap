@@ -269,6 +269,20 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
+     * Construct the LayersPanel.
+     * 
+     * @param lHandler the LayerHandler controlling the layers.
+     * @param addLayerControls if true, buttons that modify layer positions will
+     *        be added.
+     */
+    public LayersPanel(LayerHandler lHandler, boolean addLayerControls) {
+        this(lHandler);
+        if (addLayerControls) {
+            addLayerControls();
+        }
+    }
+
+    /**
      * Set the LayerHandler that the LayersPanel listens to. If the LayerHandler
      * passed in is not null, the LayersMenu will be added to the LayerHandler
      * LayerListener list, and the LayersMenu will receive a LayerEvent with the
@@ -682,12 +696,22 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     }
 
     /**
+     * Tell the LayersPanel to add layer control buttons. Does nothing if the
+     * controls are already set.
+     */
+    public void addLayerControls() {
+        if (getControls() == null) {
+            setControls(createControlButtons());
+        }
+    }
+
+    /**
      * Set up the buttons used to move layers up and down, or add/remove layers.
      * The button component should hook itself up to the LayersPanel, and assume
      * that the LayersPanel has a BorderLayout with the list in the center spot.
      */
-    protected void createControlButtons() {
-        controls = new LayerControlButtonPanel(this);
+    public LayerControlButtonPanel createControlButtons() {
+        return new LayerControlButtonPanel(this);
     }
 
     /**
@@ -1036,7 +1060,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
 
         if (controlString != NO_CONTROLS) {
             if (controlString == null) {
-                createControlButtons();
+                setControls(createControlButtons());
             } else {
                 Object obj = ComponentFactory.create(controlString, prefix
                         + ControlButtonsProperty, props);
