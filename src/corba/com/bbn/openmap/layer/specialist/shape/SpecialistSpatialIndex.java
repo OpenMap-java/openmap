@@ -24,6 +24,7 @@ package com.bbn.openmap.layer.specialist.shape;
 
 import java.io.*;
 
+import com.bbn.openmap.dataAccess.shape.ShapeUtils;
 import com.bbn.openmap.layer.shape.*;
 
 /**

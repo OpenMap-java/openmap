@@ -25,7 +25,6 @@ package com.bbn.openmap.layer.shape;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.io.IOException;
@@ -33,6 +32,8 @@ import java.io.InterruptedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -54,7 +55,6 @@ import com.bbn.openmap.proj.coords.GeoCoordTransformation;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.DataBoundsProvider;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -92,6 +92,8 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class ShapeLayer extends OMGraphicHandlerLayer implements
         ActionListener, DataBoundsProvider {
+
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.shape.ShapeLayer");
 
     /** The name of the property that holds the name of the shape file. */
     public final static String shapeFileProperty = "shapeFile";
@@ -204,14 +206,16 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                     spatialIndex.setDbf(dbfh);
                 }
             } catch (FormatException fe) {
-                if (Debug.debugging("shape")) {
-                    Debug.error("ShapeLayer: Couldn't create DBF handler for "
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.warning(getName()
+                            + ": Couldn't create DBF handler for "
                             + dbfFileName + ", FormatException: "
                             + fe.getMessage());
                 }
             } catch (IOException ioe) {
-                if (Debug.debugging("shape")) {
-                    Debug.error("ShapeLayer: Couldn't create DBF handler for "
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.warning(getName()
+                            + ": Couldn't create DBF handler for "
                             + dbfFileName + ", IOException: "
                             + ioe.getMessage());
                 }
@@ -228,7 +232,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                     spatialIndex.setPointIcon(imageIcon);
                 }
             } catch (MalformedURLException murle) {
-                Debug.error("ShapeLayer.setFileProperties: point image URL not so good: \n\t"
+                logger.warning(getName()
+                        + ": point image URL not so good: \n\t"
                         + imageURLString);
             } catch (NullPointerException npe) {
                 // May happen if not connected to the internet.
@@ -239,16 +244,15 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
             setSpatialIndex(spatialIndex);
 
         } else {
-            Debug.error("No Shape file was specified:");
-            Debug.error("\t" + realPrefix + shapeFileProperty);
+            logger.warning(getName() + ": No Shape file was specified:\n\t"
+                    + realPrefix + shapeFileProperty);
         }
     }
 
     /**
      * Initializes this layer from the given properties.
      * 
-     * @param props the <code>Properties</code> holding settings for this
-     *        layer
+     * @param props the <code>Properties</code> holding settings for this layer
      */
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
@@ -427,13 +431,12 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
         Projection projection = getProjection();
 
         if (projection == null) {
-            Debug.message("basic", "ShapeLayer|" + getName()
-                    + ": prepare called with null projection");
+            logger.fine(getName() + ": prepare called with null projection");
             return new OMGraphicList();
         }
 
         if (spatialIndex == null) {
-            Debug.message("shape", "ShapeLayer: spatialIndex is null!");
+            logger.fine(getName() + ": spatialIndex is null!");
 
             if (list != null) {
                 list.generate(projection, true);// all new graphics
@@ -462,8 +465,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
         // ulLon >= lrLon, but we need to be careful of the check for
         // equality because of floating point arguments...
         if (ProjMath.isCrossingDateline(ulLon, lrLon, projection.getScale())) {
-            if (Debug.debugging("shape")) {
-                Debug.output("ShapeLayer.computeGraphics(): Dateline is on screen");
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("ShapeLayer.computeGraphics(): Dateline is on screen");
             }
 
             double ymin = Math.min(ulLat, lrLat);
@@ -545,8 +548,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
             OMGraphicList omg = getList();
 
             if (omg != null) {
-                if (Debug.debugging("shape"))
-                    Debug.output("ShapeLayer.paint(): " + omg.size() + " omg"
+                if (logger.isLoggable(Level.FINE))
+                    logger.fine("ShapeLayer.paint(): " + omg.size() + " omg"
                             + " shadow=" + shadowX + "," + shadowY);
 
                 if (shadowX != 0 || shadowY != 0) {
@@ -557,8 +560,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
                     omg.render(g);
                 }
 
-                if (Debug.debugging("shape")) {
-                    Debug.output("ShapeLayer.paint(): done");
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("ShapeLayer.paint(): done");
                 }
             }
         }

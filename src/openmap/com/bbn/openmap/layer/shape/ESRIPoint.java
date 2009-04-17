@@ -24,6 +24,8 @@ package com.bbn.openmap.layer.shape;
 
 import java.text.NumberFormat;
 
+import com.bbn.openmap.dataAccess.shape.ShapeUtils;
+
 /**
  * A class representing an x,y coordinate.
  * 

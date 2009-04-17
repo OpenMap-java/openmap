@@ -22,6 +22,7 @@
 
 package com.bbn.openmap.layer.shape;
 
+import com.bbn.openmap.dataAccess.shape.ShapeUtils;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGeometryList;

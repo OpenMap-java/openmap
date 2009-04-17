@@ -28,8 +28,8 @@ import java.util.Properties;
 
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.dataAccess.shape.EsriShapeExport;
+import com.bbn.openmap.dataAccess.shape.ShapeUtils;
 import com.bbn.openmap.layer.shape.ShapeFile;
-import com.bbn.openmap.layer.shape.ShapeUtils;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMPoly;

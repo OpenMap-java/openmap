@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.logging.Level;
 
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.shape.SpatialIndex.Entry;
@@ -33,7 +34,6 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
 
 /**
  * An OpenMap Layer that displays shape files. This loads the data up front and
@@ -53,6 +53,15 @@ public class BufferedShapeLayer extends ShapeLayer {
     public BufferedShapeLayer() {
         super();
         setProjectionChangePolicy(new com.bbn.openmap.layer.policy.StandardPCPolicy(this));
+    }
+
+    /**
+     * Creates a ShapeLayer that reads the give shape file.
+     * 
+     * @param pathToShpFile
+     */
+    public BufferedShapeLayer(String pathToShpFile) {
+        super(pathToShpFile);
     }
 
     /**
@@ -91,10 +100,10 @@ public class BufferedShapeLayer extends ShapeLayer {
                 bufferedList = getWholePlanet();
             }
         } catch (FormatException fe) {
-            Debug.error(fe.getMessage());
+            logger.warning(fe.getMessage());
             return list;
         } catch (IOException ioe) {
-            Debug.error(ioe.getMessage());
+            logger.warning(ioe.getMessage());
             return list;
         }
 
@@ -112,8 +121,8 @@ public class BufferedShapeLayer extends ShapeLayer {
         // ulLon >= lrLon, but we need to be careful of the check for
         // equality because of floating point arguments...
         if (ProjMath.isCrossingDateline(ulLon, lrLon, proj.getScale())) {
-            if (Debug.debugging("shape")) {
-                Debug.output("ShapeLayer.computeGraphics(): Dateline is on screen");
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(getName() + ": Dateline is on screen");
             }
 
             double ymin = Math.min(ulLat, lrLat);
@@ -141,13 +150,13 @@ public class BufferedShapeLayer extends ShapeLayer {
         // There should be the same number of objects in both iterators.
         Iterator<?> entryIt = spatialIndex.entries.iterator();
         Iterator<?> omgIt = bufferedList.iterator();
-        
+
         OMGraphicList labels = null;
         if (spatialIndex.getDbf() != null) {
             labels = new OMGraphicList();
             retList.add(labels);
         }
-        
+
         while (entryIt.hasNext() && omgIt.hasNext()) {
             Entry entry = (Entry) entryIt.next();
             OMGraphic omg = (OMGraphic) omgIt.next();

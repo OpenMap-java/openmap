@@ -26,6 +26,8 @@ package com.bbn.openmap.layer.shape;
 
 import java.io.IOException;
 
+import com.bbn.openmap.dataAccess.shape.ShapeUtils;
+
 /**
  * Class that supports cropping of ESRI Shapefiles with a simple
  * bounding box. Does not yet update the .shx or .dbf files.

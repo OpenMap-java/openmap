@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Vector;
 
+import com.bbn.openmap.dataAccess.shape.ShapeUtils;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -403,7 +404,7 @@ public class ShapeFile extends ShapeUtils {
         raf.seek(100);
         ESRIRecord r;
         int nRecords = 0;
-        Vector v = new Vector();
+        Vector<ESRIRecord> v = new Vector<ESRIRecord>();
         ESRIBoundingBox bounds = new ESRIBoundingBox();
         long recStart = raf.getFilePointer();
         byte intBuf[] = new byte[4];

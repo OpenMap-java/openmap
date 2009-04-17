@@ -25,6 +25,7 @@ package com.bbn.openmap.layer.shape;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import com.bbn.openmap.dataAccess.shape.ShapeUtils;
 import com.bbn.openmap.util.Debug;
 
 /**

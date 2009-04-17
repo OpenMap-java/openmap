@@ -24,6 +24,7 @@ package com.bbn.openmap.layer.link.shape;
 
 import java.io.IOException;
 
+import com.bbn.openmap.dataAccess.shape.ShapeUtils;
 import com.bbn.openmap.layer.shape.*;
 
 /**

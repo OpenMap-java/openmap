@@ -20,13 +20,14 @@
 // 
 // **********************************************************************
 
-package com.bbn.openmap.layer.shape;
+package com.bbn.openmap.dataAccess.shape;
 
 import java.io.EOFException;
 import java.io.IOException;
 
-import com.bbn.openmap.dataAccess.shape.ShapeConstants;
 import com.bbn.openmap.io.BinaryBufferedFile;
+import com.bbn.openmap.layer.shape.ESRIBoundingBox;
+import com.bbn.openmap.layer.shape.ESRIPoint;
 
 /**
  * Utilities for reading and writing the components of shape files.
@@ -36,14 +37,8 @@ import com.bbn.openmap.io.BinaryBufferedFile;
  */
 public class ShapeUtils implements ShapeConstants {
 
-    //     /** A buffer for reading/writing big endian ints. */
-    //     private static byte beiBuffer[] = new byte[4];
-
     /** A buffer for reading/writing little endian ints. */
     private static byte leiBuffer[] = new byte[4];
-
-    //     /** A buffer for reading/writing little endian doubles. */
-    //     private static byte ledBuffer[] = new byte[8];
 
     /**
      * Reads a big endian integer.
@@ -58,34 +53,6 @@ public class ShapeUtils implements ShapeConstants {
     }
 
     /**
-     * Convenience routine to read a big endian integer. Reads a big
-     * endian int at offset zero of the given buffer.
-     * 
-     * @param b the raw data buffer
-     * @return the int read from the buffer at offset zero
-     */
-    //     public static int readBEInt(byte[] b) {
-    //      return readBEInt(b, 0);
-    //     }
-    //     public static int readBEInt(InputStream is) throws IOException
-    // {
-    //      int result = is.read(beiBuffer, 0, 4);
-    //      if (result < 4) {
-    //          throw new EOFException();
-    //      } else {
-    //          return readBEInt(beiBuffer, 0);
-    //      }
-    //     }
-    //     public static int readBEInt(RandomAccessFile in) throws
-    // IOException {
-    //      int result = in.read(beiBuffer, 0, 4);
-    //      if (result < 4) {
-    //          throw new EOFException();
-    //      } else {
-    //          return readBEInt(beiBuffer, 0);
-    //      }
-    //     }
-    /**
      * Reads a little endian integer.
      * 
      * @param b the raw data buffer
@@ -98,32 +65,12 @@ public class ShapeUtils implements ShapeConstants {
     }
 
     /**
-     * Convenience routine to read a little endian integer. Reads a
-     * little endian int at offset zero of the given buffer.
-     * 
-     * @param b the raw data buffer
-     * @return the int read from the buffer at offset zero
-     */
-    //     public static int readLEInt(byte[] b) {
-    //      return readLEInt(b, 0);
-    //     }
-    //     public static int readLEInt(InputStream is) throws IOException
-    // {
-    //      int result = is.read(leiBuffer, 0, 4);
-    //      if (result < 4) {
-    //          throw new EOFException();
-    //      } else {
-    //          return readLEInt(leiBuffer, 0);
-    //      }
-    //     }
-    /**
-     * Reads a little endian int from the current location of the
-     * given file. Synchronized for thread-safe access to leiBuffer.
+     * Reads a little endian int from the current location of the given file.
+     * Synchronized for thread-safe access to leiBuffer.
      * 
      * @param in an input file
      * @return the int read from the file
      */
-    //      public static synchronized int readLEInt(RandomAccessFile in)
     public static synchronized int readLEInt(BinaryBufferedFile in)
             throws IOException {
         int result = in.read(leiBuffer, 0, 4);
@@ -149,25 +96,6 @@ public class ShapeUtils implements ShapeConstants {
     }
 
     /**
-     * Convenience routine to read a little endian 8 byte integer.
-     * Reads a little endian long at offset zero of the given buffer.
-     * 
-     * @param b the raw data buffer
-     * @return the long read from the buffer at offset zero
-     */
-    //     public static long readLELong(byte[] b) {
-    //      return readLELong(b, 0);
-    //     }
-    //     public static long readLELong(InputStream is) throws
-    // IOException {
-    //      int result = is.read(leiBuffer, 0, 8);
-    //      if (result < 8) {
-    //          throw new EOFException();
-    //      } else {
-    //          return readLELong(beiBuffer, 0);
-    //      }
-    //     }
-    /**
      * Reads a little endian double.
      * 
      * @param b the raw data buffer
@@ -179,19 +107,9 @@ public class ShapeUtils implements ShapeConstants {
         return result;
     }
 
-    //     public static double readLEDouble(byte[] b) {
-    //      return readLEDouble(b, 0);
-    //     }
-
-    //     public static double readLEDouble(InputStream is) throws
-    // IOException {
-    //      double result = Double.longBitsToDouble(readLELong(is));
-    //      return result;
-    //     }
-
     /**
-     * Reads a point record. A point record is a double representing
-     * the x value and a double representing a y value.
+     * Reads a point record. A point record is a double representing the x value
+     * and a double representing a y value.
      * 
      * @param b the raw data buffer
      * @param off the offset into the buffer where the int resides
@@ -204,21 +122,9 @@ public class ShapeUtils implements ShapeConstants {
         return point;
     }
 
-    //     public static ESRIPoint readPoint(byte[] b) {
-    //      return readPoint(b, 0);
-    //     }
-
-    //     public static ESRIPoint readPoint(InputStream is) throws
-    // IOException {
-    //      ESRIPoint point = new ESRIPoint();
-    //      point.x = readLEDouble(is);
-    //      point.y = readLEDouble(is);
-    //      return point;
-    //     }
-
     /**
-     * Reads a bounding box record. A bounding box is four double
-     * representing, in order, xmin, ymin, xmax, ymax.
+     * Reads a bounding box record. A bounding box is four double representing,
+     * in order, xmin, ymin, xmax, ymax.
      * 
      * @param b the raw data buffer
      * @param off the offset into the buffer where the int resides
@@ -231,25 +137,12 @@ public class ShapeUtils implements ShapeConstants {
         return bb;
     }
 
-    //     public static ESRIBoundingBox readBox(byte[] b) {
-    //      return readBox(b, 0);
-    //     }
-
-    //     public static ESRIBoundingBox readBox(InputStream is) throws
-    // IOException {
-    //      ESRIBoundingBox bb = new ESRIBoundingBox();
-    //      bb.min = readPoint(is);
-    //      bb.max = readPoint(is);
-    //      return bb;
-    //     }
-
     /**
-     * Writes the given integer to the given buffer at the given
-     * location in big endian format.
+     * Writes the given integer to the given buffer at the given location in big
+     * endian format.
      * 
      * @param b the data buffer
-     * @param off the offset into the buffer where writing should
-     *        occur
+     * @param off the offset into the buffer where writing should occur
      * @param val the integer to write
      * @return the number of bytes written
      */
@@ -262,12 +155,11 @@ public class ShapeUtils implements ShapeConstants {
     }
 
     /**
-     * Writes the given integer to the given buffer at the given
-     * location in little endian format.
+     * Writes the given integer to the given buffer at the given location in
+     * little endian format.
      * 
      * @param b the data buffer
-     * @param off the offset into the buffer where writing should
-     *        occur
+     * @param off the offset into the buffer where writing should occur
      * @param val the integer to write
      * @return the number of bytes written
      */
@@ -280,12 +172,11 @@ public class ShapeUtils implements ShapeConstants {
     }
 
     /**
-     * Writes the given long to the given buffer at the given location
-     * in little endian format.
+     * Writes the given long to the given buffer at the given location in little
+     * endian format.
      * 
      * @param b the data buffer
-     * @param off the offset into the buffer where writing should
-     *        occur
+     * @param off the offset into the buffer where writing should occur
      * @param val the long to write
      * @return the number of bytes written
      */
@@ -302,12 +193,11 @@ public class ShapeUtils implements ShapeConstants {
     }
 
     /**
-     * Writes the given double to the given buffer at the given
-     * location in little endian format.
+     * Writes the given double to the given buffer at the given location in
+     * little endian format.
      * 
      * @param b the data buffer
-     * @param off the offset into the buffer where writing should
-     *        occur
+     * @param off the offset into the buffer where writing should occur
      * @param val the double to write
      * @return the number of bytes written
      */
@@ -316,13 +206,12 @@ public class ShapeUtils implements ShapeConstants {
     }
 
     /**
-     * Writes the given point to the given buffer at the given
-     * location. The point is written as a double representing x
-     * followed by a double representing y.
+     * Writes the given point to the given buffer at the given location. The
+     * point is written as a double representing x followed by a double
+     * representing y.
      * 
      * @param b the data buffer
-     * @param off the offset into the buffer where writing should
-     *        occur
+     * @param off the offset into the buffer where writing should occur
      * @param point the point to write
      * @return the number of bytes written
      */
@@ -333,13 +222,12 @@ public class ShapeUtils implements ShapeConstants {
     }
 
     /**
-     * Writes the given bounding box to the given buffer at the given
-     * location. The bounding box is written as four doubles
-     * representing, in order, xmin, ymin, xmax, ymax.
+     * Writes the given bounding box to the given buffer at the given location.
+     * The bounding box is written as four doubles representing, in order, xmin,
+     * ymin, xmax, ymax.
      * 
      * @param b the data buffer
-     * @param off the offset into the buffer where writing should
-     *        occur
+     * @param off the offset into the buffer where writing should occur
      * @param box the bounding box to write
      * @return the number of bytes written
      */

@@ -35,7 +35,6 @@ import javax.swing.ImageIcon;
 import com.bbn.openmap.dataAccess.shape.input.LittleEndianInputStream;
 import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.layer.shape.ShapeUtils;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.omGraphics.OMGraphic;

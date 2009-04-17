@@ -27,8 +27,8 @@ import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -40,7 +40,6 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.DataBounds;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -123,36 +122,30 @@ public class MultiShapeLayer extends ShapeLayer {
      */
     protected void setSpatialIndexes(String prefix, Properties p) {
 
-        String listValue = p.getProperty(prefix + ShapeFileListProperty);
+        String shapeFileList = p.getProperty(prefix + ShapeFileListProperty);
 
-        if (Debug.debugging("shape")) {
-            Debug.output(getName() + "| list = \"" + listValue + "\"");
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine(getName() + "| list = \"" + shapeFileList + "\"");
         }
+        
+        Vector<String> shapeFileStrings = PropUtils.parseSpacedMarkers(shapeFileList);
 
-        if (listValue == null) {
-            Debug.error("No property \"" + prefix + ShapeFileListProperty
-                    + "\" found in application properties.");
-            return;
-        }
+        if (shapeFileStrings != null) {
 
-        // Divide up the names ...
-        StringTokenizer tokens = new StringTokenizer(listValue, " ");
-        Collection<String> shapeFiles = new Vector<String>();
-        while (tokens.hasMoreTokens()) {
-            shapeFiles.add(tokens.nextToken());
-        }
+            spatialIndexes = new Vector<SpatialIndexHandler>(shapeFileStrings.size());
 
-        spatialIndexes = new Vector<SpatialIndexHandler>(shapeFiles.size());
-        Iterator<String> list = shapeFiles.iterator();
+            for (String listName : shapeFileStrings) {
+                SpatialIndexHandler sih = new SpatialIndexHandler(prefix
+                        + listName, p);
+                spatialIndexes.add(sih);
 
-        while (list.hasNext()) {
-            String listName = (String) list.next();
-            SpatialIndexHandler sih = new SpatialIndexHandler(prefix + listName, p);
-            spatialIndexes.add(sih);
-
-            if (Debug.debugging("shape")) {
-                Debug.output("MultiShapeLayer adding: " + sih);
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine(getName() + ": MultiShapeLayer adding: " + sih);
+                }
             }
+        } else {
+            logger.fine(getName() + ": " + prefix + ShapeFileListProperty
+                    + " not set in properties");
         }
     }
 
@@ -225,7 +218,7 @@ public class MultiShapeLayer extends ShapeLayer {
     public synchronized OMGraphicList prepare() {
 
         if (spatialIndexes == null || spatialIndexes.size() == 0) {
-            Debug.message("shape", "MultiShapeLayer: spatialIndexes is empty!");
+            logger.fine(getName() + ": spatialIndexes is empty!");
             return new OMGraphicList();
         }
 
@@ -237,8 +230,7 @@ public class MultiShapeLayer extends ShapeLayer {
             // is pressed before the ScaleFilterLayer gives it a
             // projection (which only happens if the layer is the
             // active one).
-            Debug.message("basic", "MultiShapeLayer|" + getName()
-                    + ": prepare called with null projection");
+            logger.fine(getName() + ": prepare called with null projection");
             return new OMGraphicList();
         }
 
@@ -256,8 +248,8 @@ public class MultiShapeLayer extends ShapeLayer {
         // ulLon >= lrLon, but we need to be careful of the check for
         // equality because of floating point arguments...
         if (ProjMath.isCrossingDateline(ulLon, lrLon, projection.getScale())) {
-            if (Debug.debugging("shape")) {
-                Debug.output("MultiShapeLayer.computeGraphics(): Dateline is on screen");
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(getName() + ": Dateline is on screen");
             }
 
             double ymin = Math.min(ulLat, lrLat);
@@ -304,9 +296,9 @@ public class MultiShapeLayer extends ShapeLayer {
                 if (!sih.enabled)
                     continue;
 
-                if (Debug.debugging("shape")) {
-                    Debug.output("  Getting graphics from " + sih.prettyName
-                            + " spatial index");
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine(getName() + ": Getting graphics from "
+                            + sih.prettyName + " spatial index");
                 }
                 try {
                     list = sih.getGraphics(xmin,
