@@ -146,7 +146,6 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements
     }
 
     public ShapeLayer(String shapeFileName) {
-        this();
         spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName);
     }
 
