@@ -69,8 +69,8 @@ public class UTMPoint {
      */
     public UTMPoint(double northing, double easting, int zone_number,
             char zone_letter) {
-        this.northing = Math.rint(northing);
-        this.easting = Math.rint(easting);
+        this.northing = northing;
+        this.easting = easting;
         this.zone_number = zone_number;
         this.zone_letter = checkZone(zone_letter);
     }
@@ -251,13 +251,13 @@ public class UTMPoint {
                         * eccSquared / 3072)
                         * Math.sin(6 * LatRad));
 
-        float UTMEasting = (float) (k0
+        double UTMEasting = (k0
                 * N
                 * (A + (1 - T + C) * A * A * A / 6.0d + (5 - 18 * T + T * T
                         + 72 * C - 58 * eccPrimeSquared)
                         * A * A * A * A * A / 120.0d) + 500000.0d);
 
-        float UTMNorthing = (float) (k0 * (M + N
+        double UTMNorthing = (k0 * (M + N
                 * Math.tan(LatRad)
                 * (A * A / 2 + (5 - T + 9 * C + 4 * C * C) * A * A * A * A
                         / 24.0d + (61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared)
@@ -271,8 +271,8 @@ public class UTMPoint {
             utmPoint = new UTMPoint();
         }
 
-        utmPoint.northing = Math.rint(UTMNorthing);
-        utmPoint.easting = Math.rint(UTMEasting);
+        utmPoint.northing = UTMNorthing;
+        utmPoint.easting = UTMEasting;
         utmPoint.zone_number = zoneNumber;
         utmPoint.zone_letter = isNorthern ? 'N' : 'S';
 

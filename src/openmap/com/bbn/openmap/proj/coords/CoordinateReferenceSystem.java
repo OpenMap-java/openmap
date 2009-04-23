@@ -48,11 +48,10 @@ public class CoordinateReferenceSystem {
         addCrs(new CoordinateReferenceSystem("EPSG:900913", new MercatorMeterGCT(Planet.wgs84_earthEquatorialRadiusMeters_D, Planet.wgs84_earthEquatorialRadiusMeters_D), MercatorLoader.class, Ellipsoid.WGS_84));
 
         addUtms();
-
+        
         // Estonian Coordinate System of 1997 - EPSG:3301
         // http://spatialreference.org/ref/epsg/3301/
-        // bounding box is needed by uDig. bounding box values from a national
-        // WMS from Estonian
+        // bounding box values from a national WMS from Estonian
         addLcc("EPSG:3301",
                 Ellipsoid.GRS_1980,
                 59.33333333333334,
@@ -62,6 +61,11 @@ public class CoordinateReferenceSystem {
                 500000,
                 6375000,
                 new BoundingBox(300000, 6.3e+06, 800000, 6.7e+06));
+        
+        // ETRS89 / ETRS-TM35FIN
+        // http://spatialreference.org/ref/epsg/3067/
+        addUtm("EPSG:3067", 35, 'N', Ellipsoid.GRS_1980, new BoundingBox(50199.4814d,
+                6582464.0358d, 761274.6247d, 7799839.8902d));
     }
 
     private static void addLcc(String code, Ellipsoid ellps, double sp1,
@@ -102,21 +106,27 @@ public class CoordinateReferenceSystem {
             }
 
             // wgs84 utm
-            addUtm("EPSG:326" + zoneCode, zone, 'N', Ellipsoid.WGS_84);
-            addUtm("EPSG:327" + zoneCode, zone, 'S', Ellipsoid.WGS_84);
+            addUtm("EPSG:326" + zoneCode, zone, 'N', Ellipsoid.WGS_84, null);
+            addUtm("EPSG:327" + zoneCode, zone, 'S', Ellipsoid.WGS_84, null);
 
             // ed50 utm
             if ((zone >= 28) && (zone <= 38)) {
                 addUtm("EPSG:230" + zoneCode,
                         zone,
                         'N',
-                        Ellipsoid.INTERNATIONAL);
+                        Ellipsoid.INTERNATIONAL, null);
             }
+            
+            // ETRS89 utm
+            if ((zone >= 28) && (zone <= 38)) {
+                addUtm("EPSG:258" + zoneCode, zone, 'N', Ellipsoid.GRS_1980, null);
+            }
+            
         }
     }
 
     private static void addUtm(String epsg, int zone_number, char zone_letter,
-                               Ellipsoid ellps) {
+                               Ellipsoid ellps, BoundingBox bbox) {
         // some properties for the projection loader
         Properties projProps = new Properties();
         projProps.put(UTMProjectionLoader.ZONE_NUMBER,
@@ -134,7 +144,7 @@ public class CoordinateReferenceSystem {
             gct = new MultiGCT(new GeoCoordTransformation[] { egct, utmgct });
         }
 
-        addCrs(new CoordinateReferenceSystem(epsg, gct, UTMProjectionLoader.class, ellps, projProps));
+        addCrs(new CoordinateReferenceSystem(epsg, gct, UTMProjectionLoader.class, ellps, projProps, bbox));
     }
 
     public CoordinateReferenceSystem(String code,
@@ -151,17 +161,6 @@ public class CoordinateReferenceSystem {
 
     public CoordinateReferenceSystem(String code,
             GeoCoordTransformation coordConverter, Class<?> projLoaderClass,
-            Ellipsoid ellipsoid, Properties projectionParameters) {
-        this(code,
-             coordConverter,
-             projLoaderClass,
-             ellipsoid,
-             projectionParameters,
-             null);
-    }
-
-    public CoordinateReferenceSystem(String code,
-            GeoCoordTransformation coordConverter, Class<?> projLoaderClass,
             Ellipsoid ellipsoid, Properties projectionParameters,
             BoundingBox boundingBox) {
         this(code, coordConverter, projLoaderClass, ellipsoid);
@@ -171,7 +170,7 @@ public class CoordinateReferenceSystem {
     }
 
     public static CoordinateReferenceSystem getForCode(String code) {
-        CoordinateReferenceSystem crs = (CoordinateReferenceSystem) crss.get(code);
+        CoordinateReferenceSystem crs = crss.get(code);
         // TODO: handle extra parameters like
         // AUTO2:42003,0.3048006096012192,-100,45. See ISO/DIS 19128 wms v1.3.0
         // chapter 6.7.3.4

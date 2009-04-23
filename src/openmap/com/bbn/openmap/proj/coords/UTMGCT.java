@@ -71,23 +71,14 @@ public class UTMGCT extends AbstractGCT implements GeoCoordTransformation {
     }
 
     public synchronized Point2D forward(double lat, double lon, Point2D ret) {
-        tmpLL.setLatLon((float) lat, (float) lon);
-        UTMPoint.LLtoUTM(tmpLL,
-                ellipsoid,
-                tmpUTM,
-                zone_number,
-                zone_letter == 'N');
+        tmpLL.setLatLon(lat, lon);
+        UTMPoint.LLtoUTM(tmpLL, ellipsoid, tmpUTM, zone_number, zone_letter == 'N');
         ret.setLocation(tmpUTM.easting, tmpUTM.northing);
         return ret;
     }
 
     public LatLonPoint inverse(double x, double y, LatLonPoint ret) {
-        UTMPoint.UTMtoLL(ellipsoid,
-                (float) y,
-                (float) x,
-                zone_number,
-                zone_letter,
-                ret);
+        UTMPoint.UTMtoLL(ellipsoid, y, x, zone_number, zone_letter, ret);
         return ret;
     }
 

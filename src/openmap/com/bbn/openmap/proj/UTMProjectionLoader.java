@@ -89,7 +89,8 @@ public class UTMProjectionLoader extends BasicProjectionLoader {
                 ellps = Ellipsoid.getByName(ellipsoidString);
             }
             GeoProj proj = new UTMProjection(center, scale, width, height, zone_number, isnorthern, ellps);
-            if ((ellps != null) && (ellps != Ellipsoid.WGS_84)) {
+            // handle GRS80 as WGS84 as they are almost the same
+            if ((ellps != null) && (!(ellps == Ellipsoid.WGS_84) || (ellps == Ellipsoid.GRS_1980))) {
                 proj = new DatumShiftProjection(proj, new DatumShiftGCT(ellps));
             }
             return proj;
