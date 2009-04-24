@@ -65,25 +65,56 @@ import com.bbn.openmap.util.PropUtils;
  * data in the .dbf file.
  * <p>
  * <code><pre>
- *    
- *     
- *      
  *       
- *        ############################
- *        # Properties for a shape layer
- *        shapeLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
- *        shapeLayer.prettyName=Name_for_Menu
- *        shapeLayer.shapeFile=&amp;ltpath to shapefile (.shp)&amp;gt
- *        shapeLayer.spatialIndex=&amp;ltpath to generated spatial index file (.ssx)&amp;gt
- *        shapeLayer.lineColor=ff000000
- *        shapeLayer.fillColor=ff000000
- *        # plus any other properties used by the DrawingAttributes object.
- *        shapeLayer.pointImageURL=&amp;ltURL for image to use for point objects&amp;gt
- *        ############################
+ * ############################
+ * # Properties for a shape layer
+ * shapeLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
+ * shapeLayer.prettyName=Name_for_Menu
+ * shapeLayer.shapeFile=&amp;ltpath to shapefile (.shp)&amp;gt
+ * shapeLayer.spatialIndex=&amp;ltpath to generated spatial index file (.ssx)&amp;gt
+ * shapeLayer.lineColor=ff000000
+ * shapeLayer.fillColor=ff000000
+ * # plus any other properties used by the DrawingAttributes object.
+ * shapeLayer.pointImageURL=&amp;ltURL for image to use for point objects&amp;gt
  *        
- *       
- *      
- *     
+ *        
+ * # Optionally, Rule marker names specified in space-separated list
+ * shapeLayer.rules=rule0 rule1
+ * # global scale settings can be used so work is only performed within scale range of minScale/maxScale
+ * shapeLayer.maxScale=1000000f
+ * 
+ * # rule0 definition:
+ * # CLASS_RTE is a DBF column name
+ * shapeLayer.rule0.key=CLASS_RTE
+ * # operation, if key value is less than 2
+ * shapeLayer.rule0.op=lt
+ * shapeLayer.rule0.val=2
+ * # If rule is met, then actions can be performed:
+ * # DBF Column names can be added together in a label by specifying them in a space-separated list
+ * shapeLayer.rule0.label=PREFIX PRETYPE NAME TYPE SUFFIX
+ * # Labels can have scale limits imposed, so they don't appear if map scale is 
+ * # greater than maxScale or less than minScale
+ * shapeLayer.rule0.label.maxScale=1000000
+ * # Visibility can be controlled with respect to scale as well
+ * shapeLayer.rule0.render=true
+ * shapeLayer.rule0.render.maxScale=1000000
+ * # Rendering attributes can be specified.
+ * shapeLayer.rule0.lineColor=FFFA73
+ * shapeLayer.rule0.lineWidth=4
+ * shapeLayer.rule0.mattingColor=55AAAAAA
+ * 
+ * # rule1 definition:
+ * shapeLayer.rule1.key=CLASS_RTE
+ * shapeLayer.rule1.op=all
+ * shapeLayer.rule1.label=PREFIX PRETYPE NAME TYPE SUFFIX
+ * shapeLayer.rule1.label.maxScale=200000
+ * shapeLayer.rule1.render=true
+ * shapeLayer.rule1.render.maxScale=500000
+ * shapeLayer.rule1.lineColor=FFFFFF
+ * shapeLayer.rule1.lineWidth=3
+ * shapeLayer.rule1.mattingColor=55AAAAAA
+ * ############################
+ *
  * </pre></code>
  * 
  * @author Tom Mitchell <tmitchell@bbn.com>
