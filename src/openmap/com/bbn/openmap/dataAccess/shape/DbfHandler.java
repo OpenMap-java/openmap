@@ -383,7 +383,7 @@ public class DbfHandler extends OMComponent {
     /**
      * Returns a String of concatenated record values.
      * 
-     * @param indicies column indexes of values to be contatenated in return
+     * @param indicies column indexes of values to be concatenated in return
      *        value
      * @param record List to use for return value
      * @return String
@@ -404,7 +404,7 @@ public class DbfHandler extends OMComponent {
         protected DbfFile dbf;
         /**
          * The column index where the testing value can be found for the rule to
-         * compare agains the val.
+         * compare against the value.
          */
         protected int keyIndex = -1;
         /**

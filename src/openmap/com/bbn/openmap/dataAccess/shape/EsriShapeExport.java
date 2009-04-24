@@ -17,6 +17,7 @@ import javax.swing.*;
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.dataAccess.shape.output.*;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.GeoCoordTransformation;
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
@@ -83,6 +84,12 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * contents of the DbfTableModel. False by default. Doesn't do anything yet.
      */
     protected boolean dbfHasRenderingInfo = false;
+
+    /**
+     * A GeoCoordTransform to use to convert Lat/Lon values in EsriGraphics to
+     * projected coordinates.
+     */
+    protected GeoCoordTransformation transform;
 
     /**
      * Create an EsriShapeExport object.
@@ -160,6 +167,14 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
 
     public String getFilePath() {
         return filePath;
+    }
+
+    public GeoCoordTransformation getTransform() {
+        return transform;
+    }
+
+    public void setTransform(GeoCoordTransformation transform) {
+        this.transform = transform;
     }
 
     protected EsriPolygonList polyList = null;
@@ -671,49 +686,49 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
         DbfTableModel _model = new DbfTableModel(7);
         // Setup table structure
         // column 0
-        // The first parameter, 0, respresents the first column
+        // The first parameter, 0, represents the first column
         _model.setLength(0, (byte) 50);
         _model.setColumnName(0, SHAPE_DBF_DESCRIPTION);
         _model.setType(0, (byte) DbfTableModel.TYPE_CHARACTER);
         _model.setDecimalCount(0, (byte) 0);
         // column 1
-        // The first parameter, 1, respresents the second column
+        // The first parameter, 1, represents the second column
         _model.setLength(1, (byte) 10);
         _model.setColumnName(1, SHAPE_DBF_LINECOLOR);
         _model.setType(1, (byte) DbfTableModel.TYPE_CHARACTER);
         _model.setDecimalCount(1, (byte) 0);
         // column2
-        // The first parameter, 2, respresents the third column
+        // The first parameter, 2, represents the third column
         _model.setLength(2, (byte) 10);
         _model.setColumnName(2, SHAPE_DBF_FILLCOLOR);
         _model.setType(2, (byte) DbfTableModel.TYPE_CHARACTER);
         _model.setDecimalCount(2, (byte) 0);
         // column3
-        // The first parameter, 3, respresents the fourth column
+        // The first parameter, 3, represents the fourth column
         _model.setLength(3, (byte) 10);
         _model.setColumnName(3, SHAPE_DBF_SELECTCOLOR);
         _model.setType(3, (byte) DbfTableModel.TYPE_CHARACTER);
         _model.setDecimalCount(3, (byte) 0);
         // column4
-        // The first parameter, 4, respresents the fifth column
+        // The first parameter, 4, represents the fifth column
         _model.setLength(4, (byte) 4);
         _model.setColumnName(4, SHAPE_DBF_LINEWIDTH);
         _model.setType(4, (byte) DbfTableModel.TYPE_NUMERIC);
         _model.setDecimalCount(4, (byte) 0);
         // column5
-        // The first parameter, 5, respresents the sixth column
+        // The first parameter, 5, represents the sixth column
         _model.setLength(5, (byte) 20);
         _model.setColumnName(5, SHAPE_DBF_DASHPATTERN);
         _model.setType(5, (byte) DbfTableModel.TYPE_CHARACTER);
         _model.setDecimalCount(5, (byte) 0);
         // column6
-        // The first parameter, 6, respresents the seventh column
+        // The first parameter, 6, represents the seventh column
         _model.setLength(6, (byte) 10);
         _model.setColumnName(6, SHAPE_DBF_DASHPHASE);
         _model.setType(6, (byte) DbfTableModel.TYPE_NUMERIC);
         _model.setDecimalCount(6, (byte) 4);
 
-        // At a later time, more stroke parameters can be addded, like
+        // At a later time, more stroke parameters can be added, like
         // dash phase, end cap, line joins, and dash pattern.
 
         Iterator iterator = list.iterator();
@@ -979,6 +994,11 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
                     Debug.output("ESE writing: " + list.size() + " elements");
 
                 ShpOutputStream pos = new ShpOutputStream(new FileOutputStream(shpFile));
+                    
+                if (transform != null) {
+                    pos.setTransform(transform);
+                }
+                
                 int[][] indexData = pos.writeGeometry(list);
 
                 ShxOutputStream xos = new ShxOutputStream(new FileOutputStream(shxFile));
