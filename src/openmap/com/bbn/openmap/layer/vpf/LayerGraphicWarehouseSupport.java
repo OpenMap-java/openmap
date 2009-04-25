@@ -21,6 +21,7 @@ import java.awt.Component;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -42,6 +43,8 @@ import com.bbn.openmap.util.PropUtils;
 public abstract class LayerGraphicWarehouseSupport implements
         VPFGraphicWarehouse {
 
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.vpf.VPFGraphicWarehouse");
+    
     protected DrawingAttributes drawingAttributes;
 
     /** HACK around antarctica display problem. */

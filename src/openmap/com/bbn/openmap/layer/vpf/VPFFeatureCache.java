@@ -22,17 +22,18 @@
 
 package com.bbn.openmap.layer.vpf;
 
+import java.util.logging.Level;
+
 import com.bbn.openmap.layer.util.cacheHandler.CacheHandler;
 import com.bbn.openmap.layer.util.cacheHandler.CacheObject;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.util.Debug;
 
 /**
- * The VPFFeatureCache is an extended CacheHandler that caches
- * OMGraphicLists representing a specific feature contained in a
- * CoverageTile. It's used by the VPFCachedFeatureGraphicWarehouse,
- * which in turn is used by the LibraryBean as a central warehouse.
+ * The VPFFeatureCache is an extended CacheHandler that caches OMGraphicLists
+ * representing a specific feature contained in a CoverageTile. It's used by the
+ * VPFCachedFeatureGraphicWarehouse, which in turn is used by the LibraryBean as
+ * a central warehouse.
  */
 public class VPFFeatureCache extends CacheHandler {
 
@@ -51,14 +52,12 @@ public class VPFFeatureCache extends CacheHandler {
     }
 
     /**
-     * Adds an OMGraphic to a list, signified by the feature type and
-     * the table. The PrimitiveTable provides an identifying tile
-     * path.
+     * Adds an OMGraphic to a list, signified by the feature type and the table.
+     * The PrimitiveTable provides an identifying tile path.
      * 
      * @param omg OMGraphic to add
      * @param featureType the feature code of the OMGraphic
-     * @param pt the PrimitiveTable containing the path to the
-     *        CoverageTile.
+     * @param pt the PrimitiveTable containing the path to the CoverageTile.
      */
     protected synchronized void addToCachedList(OMGraphic omg,
                                                 String featureType,
@@ -77,28 +76,31 @@ public class VPFFeatureCache extends CacheHandler {
     }
 
     /**
-     * Returns true if the features from a tile (as described by the
-     * key) existed and was added to the warehouse graphics list.
-     * Returns false if the list needs to be created and the contents
-     * read in from data files. In both cases the OMGraphicList for
-     * the tile/feature is loaded into the cache, the return value is
-     * a signal to the caller that the list must be populated or not.
+     * Returns true if the features from a tile (as described by the key)
+     * existed and was added to the warehouse graphics list. Returns false if
+     * the list needs to be created and the contents read in from data files. In
+     * both cases the OMGraphicList for the tile/feature is loaded into the
+     * cache, the return value is a signal to the caller that the list must be
+     * populated or not.
      * 
      * @param featureType the feature type code.
      * @param tilePath the relative path to the tile file.
-     * @param requestor the OMGraphicList used to contain cached
-     *        lists. The cached list will for the featureType/path
-     *        code will be added to this list, regardless of whether
-     *        it's been populated or not. The requestor list will be
-     *        returned when the warehouse is asked for the graphics
-     *        list.
-     * @return true if the list has already been loaded and the caller
-     *         doesn't need to read the data files to create list
-     *         contents.
+     * @param requestor the OMGraphicList used to contain cached lists. The
+     *        cached list will for the featureType/path code will be added to
+     *        this list, regardless of whether it's been populated or not. The
+     *        requestor list will be returned when the warehouse is asked for
+     *        the graphics list.
+     * @return OMGraphicList instead of returning a boolean, we should return
+     *         the empty cache OMGraphicList that needs to be loaded. A returned
+     *         list is the signal that the tile needs to be read. Also, the
+     *         cached list has just been added to the requestor list. If the
+     *         list is in the cache, it will not be returned from this method
+     *         but only added to the requestor list.
      */
-    public synchronized boolean loadCachedGraphicList(String featureType,
-                                                      String tilePath,
-                                                      OMGraphicList requestor) {
+    public synchronized FeatureCacheGraphicList loadCachedGraphicList(
+                                                                      String featureType,
+                                                                      String tilePath,
+                                                                      OMGraphicList requestor) {
 
         String key = createTableCacheKey(featureType, tilePath);
         boolean exists = (searchCache(key) != null);
@@ -115,47 +117,57 @@ public class VPFFeatureCache extends CacheHandler {
 
         // Might want to set the current attributes for the existing
         // contents of the list in case they were changed by the user.
-        return exists;
+
+        FeatureCacheGraphicList ret = null;
+        if (!exists) {
+            logger.fine("tile list didn't exist in cache, returning it to be loaded.");
+            ret = fcgl;
+        }
+        return ret;
     }
 
     /**
-     * Query that the CoverageTable makes to decide whether to read
-     * the file contents or to used the cached version.
+     * Query that the CoverageTable makes to decide whether to read the file
+     * contents or to used the cached version.
      * 
      * @param currentFeature the feature type
      * @param currentTile the tile directory
-     * @param requestor the OMGraphicList to add the cached list to.
-     *        If the CoverageTable reads the data files, the
-     *        OMGraphics created from the files will be added to the
-     *        list added to the requestor.
+     * @param requestor the OMGraphicList to add the cached list to. If the
+     *        CoverageTable reads the data files, the OMGraphics created from
+     *        the files will be added to the list added to the requestor.
      * @return true if the CoverageTable needs to read the data files.
      */
-    public synchronized boolean needToFetchTileContents(
-                                                        String currentFeature,
-                                                        TileDirectory currentTile,
-                                                        OMGraphicList requestor) {
-        if (loadCachedGraphicList(currentFeature,
+    public synchronized FeatureCacheGraphicList needToFetchTileContents(
+                                                                        String currentFeature,
+                                                                        TileDirectory currentTile,
+                                                                        OMGraphicList requestor) {
+
+        // TODO Instead of returning a boolean, loadCachedGraphicList is going
+        // to return a cache object (empty OMGraphicList) that has just been
+        // created and needs to be filled. This list should be returned so it
+        // can be loaded.
+        FeatureCacheGraphicList listThatNeedsToBeLoaded = loadCachedGraphicList(currentFeature,
                 currentTile.getPath(),
-                requestor)) {
-            if (Debug.debugging("vpf.cache")) {
-                Debug.output("VPFFeatureCache: Loaded Cached List: "
-                        + createTableCacheKey(currentFeature,
-                                currentTile.getPath()));
-            }
-            return false;
+                requestor);
+
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Loaded Cached List: "
+                    + createTableCacheKey(currentFeature, currentTile.getPath())
+                    + (listThatNeedsToBeLoaded == null ? ", cached"
+                            : ", not cached"));
         }
-        return true;
+
+        return listThatNeedsToBeLoaded;
     }
 
     /**
-     * Additional get method that will call a load() method that takes
-     * into account the featureType. The regular get() method will not
-     * be used, unless something else calls it, which is not advised.
+     * Additional get method that will call a load() method that takes into
+     * account the featureType. The regular get() method will not be used,
+     * unless something else calls it, which is not advised.
      * 
-     * @param key the created key for cached list, see
-     *        createTableCacheKey
-     * @param featureType the kind of feature, VPFUtil.Area,
-     *        VPFUtil.Edge, VPFUtil.Point or VPFUtil.Text.
+     * @param key the created key for cached list, see createTableCacheKey
+     * @param featureType the kind of feature, VPFUtil.Area, VPFUtil.Edge,
+     *        VPFUtil.Point or VPFUtil.Text.
      */
     public Object get(String key, String featureType) {
         CacheObject ret = searchCache(key);
@@ -173,8 +185,8 @@ public class VPFFeatureCache extends CacheHandler {
     /**
      * CacheHandler method to load the new OMGraphicLists
      * (FeatureCacheGraphicLists). Shouldn't be used because the
-     * FeatureCacheGraphicList type will be unknown. This method is
-     * only defined to implement the CacheHandler abstract method.
+     * FeatureCacheGraphicList type will be unknown. This method is only defined
+     * to implement the CacheHandler abstract method.
      */
     public CacheObject load(String key) {
         return load(key, null);
@@ -196,8 +208,7 @@ public class VPFFeatureCache extends CacheHandler {
      */
     public static class VPFListCacheObject extends CacheObject {
         /**
-         * Construct a VPFListCacheObject, just calls superclass
-         * constructor
+         * Construct a VPFListCacheObject, just calls superclass constructor
          * 
          * @param id passed to superclass
          * @param obj passed to superclass

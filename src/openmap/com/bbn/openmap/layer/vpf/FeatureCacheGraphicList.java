@@ -22,17 +22,20 @@
 
 package com.bbn.openmap.layer.vpf;
 
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.omGraphics.DrawingAttributes;
-
+import java.awt.Paint;
 import java.util.Iterator;
 
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMColor;
+import com.bbn.openmap.omGraphics.OMGeometry;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+
 /**
- * The FeatureCacheGraphicList is an extended OMGraphicList that knows
- * what types of VPF features it holds. This allows it to be able to
- * use a VPFFeatureGraphicWarehouse to set the proper
- * DrawingAttributes on its contents.
+ * The FeatureCacheGraphicList is an extended OMGraphicList that knows what
+ * types of VPF features it holds. This allows it to be able to use a
+ * VPFFeatureGraphicWarehouse to set the proper DrawingAttributes on its
+ * contents.
  */
 public abstract class FeatureCacheGraphicList extends OMGraphicList implements
         Cloneable {
@@ -65,13 +68,12 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList implements
     }
 
     /**
-     * A factory method for creating the proper
-     * FeatureCacheGraphicList for a particular feature type,
-     * VPFUtil.Edge, VPFUtil.Area, VPFUtil.Text, and/or VPFUtil.Point,
-     * with each list subclass tuned to help properly color features
-     * when they are set based on layer requirements. If featureType
-     * is null or isn't one of the types listed above, the DEFAULT
-     * version will be returned.
+     * A factory method for creating the proper FeatureCacheGraphicList for a
+     * particular feature type, VPFUtil.Edge, VPFUtil.Area, VPFUtil.Text, and/or
+     * VPFUtil.Point, with each list subclass tuned to help properly color
+     * features when they are set based on layer requirements. If featureType is
+     * null or isn't one of the types listed above, the DEFAULT version will be
+     * returned.
      */
     public static FeatureCacheGraphicList createForType(String featureType) {
 
@@ -100,6 +102,38 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList implements
     }
 
     /**
+     * @return a duplicate list full of shallow copies of each of the OMGraphics
+     *         contained on the list.
+     */
+    public synchronized Object clone() {
+        try {
+            FeatureCacheGraphicList omgl = getClass().newInstance();
+            omgl.setFeatureName(getFeatureName());
+            
+            for (Iterator<OMGeometry> it = iterator(); it.hasNext();) {
+                // If the OMGraphic doesn't provide a copy (providing a
+                // SinkGraphic instead), oh well.
+                OMGeometry omg = it.next();
+                if (omg instanceof OMGraphicList) {
+                    omgl.add((OMGraphic) ((OMGraphicList) omg).clone());
+                } else {
+                    omgl.graphics.add(omg);
+                }
+            }
+
+            return omgl;    
+        } catch (InstantiationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        return new DEFAULT();
+    }
+
+    /**
      * Different implementations depending on type.
      */
     public abstract void setDrawingAttributes(VPFFeatureGraphicWarehouse vfgw);
@@ -116,8 +150,9 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList implements
         public synchronized void setDrawingAttributes(
                                                       VPFFeatureGraphicWarehouse vfgw) {
             DrawingAttributes da = vfgw.getAttributesForFeature(featureName);
-            da.setLinePaint(com.bbn.openmap.omGraphics.OMColor.clear);
-            da.setSelectPaint(com.bbn.openmap.omGraphics.OMColor.clear);
+            Paint fillPaint = da.getFillPaint();
+            da.setLinePaint(fillPaint);
+            da.setSelectPaint(fillPaint);
             setTo(da);
         }
     }
@@ -134,7 +169,7 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList implements
         public synchronized void setDrawingAttributes(
                                                       VPFFeatureGraphicWarehouse vfgw) {
             DrawingAttributes da = vfgw.getAttributesForFeature(featureName);
-            da.setFillPaint(com.bbn.openmap.omGraphics.OMColor.clear);
+            da.setFillPaint(OMColor.clear);
             setTo(da);
         }
     }

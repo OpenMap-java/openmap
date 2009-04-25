@@ -434,7 +434,7 @@ public class CoverageTable {
 
         TableHolder tables = new TableHolder(this);
 
-        // First, find the list of features, and interate through
+        // First, find the list of features, and iterate through
         // them. Use each one to go through it's feature table, if it
         // exists. Then, from the feature table (perhaps check the
         // FACC code, too), get the tile number and feature ID.

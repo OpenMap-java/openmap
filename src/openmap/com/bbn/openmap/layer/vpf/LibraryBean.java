@@ -30,8 +30,8 @@ import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.PropertyConsumer;
 
 /**
- * A bean to be used for sharing LibrarySelectionTable objects between
- * instances of VPFLayer.
+ * A bean to be used for sharing LibrarySelectionTable objects between instances
+ * of VPFLayer.
  * 
  * <pre>
  * 
@@ -46,14 +46,13 @@ import com.bbn.openmap.PropertyConsumer;
  * VMAPData.name=VMAPLEVEL0
  * # Maximum number of tiles to cache.
  * VMAPData.cacheSize=25
- *  
+ * 
  * </pre>
  * 
- * The VMAPData maker name, or whatever other name you decide to name
- * it, has to be added to the openmap.components property list so the
- * LibraryBean will be created and added to the MapHandler. Of course,
- * you could add the LibraryBean to the MapHandler programmatically if
- * you wanted to.
+ * The VMAPData maker name, or whatever other name you decide to name it, has to
+ * be added to the openmap.components property list so the LibraryBean will be
+ * created and added to the MapHandler. Of course, you could add the LibraryBean
+ * to the MapHandler programmatically if you wanted to.
  */
 public class LibraryBean implements PropertyConsumer, Serializable {
 
@@ -61,8 +60,7 @@ public class LibraryBean implements PropertyConsumer, Serializable {
     public static final String nameProperty = "name";
 
     /**
-     * property extension used to set the VPF root directory
-     * (vpfPath).
+     * property extension used to set the VPF root directory (vpfPath).
      */
     public static final String pathProperty = "vpfPath";
 
@@ -131,8 +129,8 @@ public class LibraryBean implements PropertyConsumer, Serializable {
     }
 
     /**
-     * Gets the name of the component - if the name was explicitly
-     * set, then return that, otherwise return the property prefix.
+     * Gets the name of the component - if the name was explicitly set, then
+     * return that, otherwise return the property prefix.
      */
     public String getName() {
         return beanName;
@@ -170,9 +168,9 @@ public class LibraryBean implements PropertyConsumer, Serializable {
     }
 
     /**
-     * Set the property key prefix that should be used by the
-     * PropertyConsumer. The prefix, along with a '.', should be
-     * prepended to the property keys known by the PropertyConsumer.
+     * Set the property key prefix that should be used by the PropertyConsumer.
+     * The prefix, along with a '.', should be prepended to the property keys
+     * known by the PropertyConsumer.
      * 
      * @param prefix the prefix String.
      */
@@ -181,8 +179,8 @@ public class LibraryBean implements PropertyConsumer, Serializable {
     }
 
     /**
-     * Get the property key prefix that is being used to prepend to
-     * the property keys for Properties lookups.
+     * Get the property key prefix that is being used to prepend to the property
+     * keys for Properties lookups.
      * 
      * @return the property prefix
      */
@@ -199,6 +197,12 @@ public class LibraryBean implements PropertyConsumer, Serializable {
         return lst;
     }
 
+    /**
+     * Creates a new VPFFeatureWarehouse every time, with the shared
+     * featureCache.
+     * 
+     * @return
+     */
     public VPFCachedFeatureGraphicWarehouse getWarehouse() {
         if (Debug.debugging("vpf")) {
             Debug.output("LibraryBean.getWarehouse(): creating warehouse.");
