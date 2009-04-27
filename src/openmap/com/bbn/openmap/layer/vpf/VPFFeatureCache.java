@@ -150,8 +150,8 @@ public class VPFFeatureCache extends CacheHandler {
                 currentTile.getPath(),
                 requestor);
 
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info("Loaded Cached List: "
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Loaded Cached List: "
                     + createTableCacheKey(libraryName, currentFeature, currentTile.getPath())
                     + (listThatNeedsToBeLoaded == null ? ", cached"
                             : ", not cached"));
