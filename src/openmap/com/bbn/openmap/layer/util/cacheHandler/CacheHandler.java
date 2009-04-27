@@ -24,12 +24,16 @@
 
 package com.bbn.openmap.layer.util.cacheHandler;
 
+import java.util.logging.Logger;
+
 import com.bbn.openmap.util.Debug;
 
 public abstract class CacheHandler {
     protected CacheObject[] objs;
     protected int logicalClock;
 
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.util.cacheHandler.CacheHandler");
+    
     public static int DEFAULT_MAX_CACHE_SIZE = 25;
 
     /**
