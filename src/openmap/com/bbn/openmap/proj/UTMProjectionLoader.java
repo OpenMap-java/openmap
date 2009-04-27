@@ -74,6 +74,11 @@ public class UTMProjectionLoader extends BasicProjectionLoader {
                     ProjectionFactory.WIDTH,
                     100);
 
+            // TODO I'm thinking that if we have a center lat/lon for the
+            // projection we can figure out what the zone number and letter are.
+            // We don't need to pass properties for them. On second thought,
+            // maybe that should apply only if the defaults aren't set.
+
             int zone_number = PropUtils.intFromProperties(props,
                     ZONE_NUMBER,
                     defaultZoneNumber);
@@ -90,7 +95,8 @@ public class UTMProjectionLoader extends BasicProjectionLoader {
             }
             GeoProj proj = new UTMProjection(center, scale, width, height, zone_number, isnorthern, ellps);
             // handle GRS80 as WGS84 as they are almost the same
-            if ((ellps != null) && (!(ellps == Ellipsoid.WGS_84) || (ellps == Ellipsoid.GRS_1980))) {
+            if ((ellps != null)
+                    && (!(ellps == Ellipsoid.WGS_84) || (ellps == Ellipsoid.GRS_1980))) {
                 proj = new DatumShiftProjection(proj, new DatumShiftGCT(ellps));
             }
             return proj;
