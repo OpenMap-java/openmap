@@ -34,6 +34,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -103,13 +105,13 @@ public class PropUtils {
      * used by an Inspector can set several top-level properties.
      */
     public final static String DUMMY_MARKER_NAME = "DUMMY_MARKER_NAME";
-    /** Borrowed from Properites.java */
+    /** Borrowed from Properties.java */
     public static final String keyValueSeparators = "=: \t\r\n\f";
-    /** Borrowed from Properites.java */
+    /** Borrowed from Properties.java */
     public static final String strictKeyValueSeparators = "=:";
-    /** Borrowed from Properites.java */
+    /** Borrowed from Properties.java */
     public static final String whiteSpaceChars = " \t\r\n\f";
-    /** As defined in the OGC Web Mapping Testbed. */
+    /** As defined in the OGC Web Mapping Test bed. */
     public static final String propertySeparators = "&";
 
     /**
@@ -863,5 +865,53 @@ public class PropUtils {
             props.setProperty(markerName + Layer.DataPathPrefixProperty,
                     dataPrefix);
         }
+    }
+
+    /**
+     * Get a List of Objects defined by marker names listed in a property. If
+     * the objects are PropertyConsumers, they will be given the properties and
+     * their scoped property prefix so they can configure themselves.
+     * 
+     * <pre>
+     * 
+     * listProperty=markername1 markername2 markername3
+     * markername1.definingProperty=classname1
+     * markername2.definingProperty=classname2
+     * markername3.definingProperty=classname3
+     * 
+     * </pre>
+     * 
+     * @param p Properties object containing all properties
+     * @param markerListProperty listProperty in example above
+     * @param definingProperty definingProperty in example above, scoped
+     *        property when combined with marker name to define the class that
+     *        should be created for an object.
+     * @return
+     */
+    public static List objectsFromProperties(Properties p,
+                                             String markerListProperty,
+                                             String definingProperty) {
+        String markerList = p.getProperty(markerListProperty);
+        List ret = new LinkedList();
+
+        if (markerList != null) {
+            Vector<String> markerNames = parseSpacedMarkers(markerList);
+            for (String markerName : markerNames) {
+                String classname = p.getProperty(markerName + "."
+                        + definingProperty);
+                if (classname != null) {
+                    Object obj = ComponentFactory.create(classname,
+                            markerName,
+                            p);
+
+                    if (obj != null) {
+                        ret.add(obj);
+                    }
+                }
+            }
+
+        }
+
+        return ret;
     }
 }
