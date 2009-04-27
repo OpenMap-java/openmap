@@ -32,7 +32,7 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
  */
 public interface VPFFeatureWarehouse extends VPFWarehouse {
 
-    public boolean needToFetchTileContents(String currentFeature,
+    public boolean needToFetchTileContents(String libraryName, String currentFeature,
                                            TileDirectory currentTile);
 
     /**

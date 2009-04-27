@@ -308,7 +308,7 @@ public class VPFFeatureGraphicWarehouse extends VPFLayerGraphicWarehouse
         addPoint(pt);
     }
 
-    public boolean needToFetchTileContents(String currentFeature,
+    public boolean needToFetchTileContents(String libraryName, String currentFeature,
                                            TileDirectory currentTile) {
         return true;
     }

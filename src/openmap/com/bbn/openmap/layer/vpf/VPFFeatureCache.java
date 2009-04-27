@@ -59,10 +59,10 @@ public class VPFFeatureCache extends CacheHandler {
      * @param featureType the feature code of the OMGraphic
      * @param pt the PrimitiveTable containing the path to the CoverageTile.
      */
-    protected synchronized void addToCachedList(OMGraphic omg,
+    protected synchronized void addToCachedList(String libraryName, OMGraphic omg,
                                                 String featureType,
                                                 PrimitiveTable pt, String type) {
-        String key = createTableCacheKey(featureType, pt.getTileDirectory()
+        String key = createTableCacheKey(libraryName, featureType, pt.getTileDirectory()
                 .getPath());
         FeatureCacheGraphicList omgl = (FeatureCacheGraphicList) get(key);
         omgl.add(omg);
@@ -71,8 +71,8 @@ public class VPFFeatureCache extends CacheHandler {
     /**
      * Create an identifying key from the feature type and tile path.
      */
-    public static String createTableCacheKey(String featureType, String tilePath) {
-        return featureType + "-" + tilePath;
+    public static String createTableCacheKey(String libraryName, String featureType, String tilePath) {
+        return libraryName + "-" + featureType + "-" + tilePath;
     }
 
     /**
@@ -97,12 +97,12 @@ public class VPFFeatureCache extends CacheHandler {
      *         list is in the cache, it will not be returned from this method
      *         but only added to the requestor list.
      */
-    public synchronized FeatureCacheGraphicList loadCachedGraphicList(
+    public synchronized FeatureCacheGraphicList loadCachedGraphicList(String libraryName, 
                                                                       String featureType,
                                                                       String tilePath,
                                                                       OMGraphicList requestor) {
 
-        String key = createTableCacheKey(featureType, tilePath);
+        String key = createTableCacheKey(libraryName, featureType, tilePath);
         boolean exists = (searchCache(key) != null);
 
         // Will retrieve the old list if it exists, create a new one
@@ -137,22 +137,22 @@ public class VPFFeatureCache extends CacheHandler {
      *        the files will be added to the list added to the requestor.
      * @return true if the CoverageTable needs to read the data files.
      */
-    public synchronized FeatureCacheGraphicList needToFetchTileContents(
+    public synchronized FeatureCacheGraphicList needToFetchTileContents(String libraryName,
                                                                         String currentFeature,
                                                                         TileDirectory currentTile,
                                                                         OMGraphicList requestor) {
 
-        // TODO Instead of returning a boolean, loadCachedGraphicList is going
+        // Instead of returning a boolean, loadCachedGraphicList is going
         // to return a cache object (empty OMGraphicList) that has just been
         // created and needs to be filled. This list should be returned so it
         // can be loaded.
-        FeatureCacheGraphicList listThatNeedsToBeLoaded = loadCachedGraphicList(currentFeature,
+        FeatureCacheGraphicList listThatNeedsToBeLoaded = loadCachedGraphicList(libraryName, currentFeature,
                 currentTile.getPath(),
                 requestor);
 
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine("Loaded Cached List: "
-                    + createTableCacheKey(currentFeature, currentTile.getPath())
+        if (logger.isLoggable(Level.INFO)) {
+            logger.info("Loaded Cached List: "
+                    + createTableCacheKey(libraryName, currentFeature, currentTile.getPath())
                     + (listThatNeedsToBeLoaded == null ? ", cached"
                             : ", not cached"));
         }

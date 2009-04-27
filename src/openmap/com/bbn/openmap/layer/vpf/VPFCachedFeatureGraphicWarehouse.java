@@ -22,7 +22,6 @@
 
 package com.bbn.openmap.layer.vpf;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -189,7 +188,7 @@ public class VPFCachedFeatureGraphicWarehouse extends
     /**
      * Calls VPFFeatureCache.needToFetchTileContents().
      */
-    public boolean needToFetchTileContents(String currentFeature,
+    public boolean needToFetchTileContents(String libraryName, String currentFeature,
                                            TileDirectory currentTile) {
         if (featureCache != null) {
             // The cached graphics list will be added to the graphics
@@ -198,14 +197,14 @@ public class VPFCachedFeatureGraphicWarehouse extends
             // CoverageTable. We're going to hold on to it inside the warehouse
             // and just add OMGraphics to it while it is set.
 
-            cacheList = featureCache.needToFetchTileContents(currentFeature,
+            cacheList = featureCache.needToFetchTileContents(libraryName, currentFeature,
                     currentTile,
                     graphics);
             
             return cacheList != null;
             
         } else {
-            return super.needToFetchTileContents(currentFeature, currentTile);
+            return super.needToFetchTileContents(libraryName, currentFeature, currentTile);
         }
     }
 

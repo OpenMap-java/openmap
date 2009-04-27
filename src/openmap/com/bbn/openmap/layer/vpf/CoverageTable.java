@@ -560,7 +560,12 @@ public class CoverageTable {
                             // first group of features will be
                             // gathered because the tile will appear
                             // cached.
-                            if (!warehouse.needToFetchTileContents(currentFeature,
+                            String libraryname = "";
+                            if (cat != null) {
+                                libraryname = cat.libraryname;
+                            }
+                            
+                            if (!warehouse.needToFetchTileContents(libraryname, currentFeature,
                                     currentTile)) {
                                 if (Debug.debugging("vpf")) {
                                     Debug.output("CoverageTable: Loaded Cached List for "
@@ -699,7 +704,12 @@ public class CoverageTable {
                                 + currentTile);
                     }
 
-                    if (!warehouse.needToFetchTileContents(currentFeature,
+                    String libraryname = "";
+                    if (cat != null) {
+                        libraryname = cat.libraryname;
+                    }
+                    
+                    if (!warehouse.needToFetchTileContents(libraryname, currentFeature,
                             currentTile)) {
                         if (Debug.debugging("vpf")) {
                             Debug.output("Loaded Cached List for "
