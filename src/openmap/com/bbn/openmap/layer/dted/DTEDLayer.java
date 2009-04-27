@@ -280,6 +280,21 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
         return paths;
     }
 
+    public DTEDCacheManager getCache() {
+        if (cache == null) {
+//            Debug.output("DTEDLayer: Creating cache! (This is a one-time operation!)");
+            cache = new DTEDCacheManager(paths, numColors, opaqueness);
+            cache.setCacheSize(cacheSize);
+            DTEDFrameSubframeInfo dfsi = new DTEDFrameSubframeInfo(viewType, bandHeight, dtedLevel, slopeAdjust);
+            cache.setSubframeInfo(dfsi);
+        }
+        return cache;
+    }
+
+    public void setCache(DTEDCacheManager cache) {
+        this.cache = cache;
+    }
+
     protected void setDefaultValues() {
         // defaults
         paths = null;
@@ -367,13 +382,7 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
             return new OMGraphicList();
         }
 
-        if (cache == null) {
-            Debug.output("DTEDLayer: Creating cache! (This is a one-time operation!)");
-            cache = new DTEDCacheManager(paths, numColors, opaqueness);
-            cache.setCacheSize(cacheSize);
-            DTEDFrameSubframeInfo dfsi = new DTEDFrameSubframeInfo(viewType, bandHeight, dtedLevel, slopeAdjust);
-            cache.setSubframeInfo(dfsi);
-        }
+        DTEDCacheManager cache = getCache();
 
         // Check to make sure the projection is EqualArc
         if (!(projection instanceof EqualArc)) {
