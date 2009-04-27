@@ -32,18 +32,10 @@ import javax.swing.JSplitPane;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The HotwashPanel is a HotwashPanel and OMComponentPanel that is the heart of
- * the OpenMap application framework. It can be used in a application or applet.
- * The Panel has a BorderLayout. It creates a MapHandler to use to hold all of
- * its OpenMap components, and uses the PropertyHandler given to it in its
- * constructor to create and configure all of the application components. The
- * best way to add components to the HotwashPanel is to get the MapHandler from
- * it and add the component to that. The BasocAARPanel also adds itself to its
- * MapHandler, so when the PropertyHandler adds components to the MapHandler,
- * the HotwashPanel is able to find them via the findAndInit method. By default,
- * the HotwashPanel looks for MapPanelChildren and asks them for where they
- * would prefer to be located (BorderLayout.NORTH, BorderLayout.SOUTH,
- * BorderLayout.EAST, BorderLayout.WEST).
+ * The HotwashPanel is an OMComponentPanel that has a set of sliders built-in.
+ * By default, the HotwashPanel looks for MapPanelChildren and asks them for
+ * where they would prefer to be located (BorderLayout.NORTH,
+ * BorderLayout.SOUTH, BorderLayout.EAST, BorderLayout.WEST).
  */
 public class HotwashPanel extends OMComponentPanel {
     public static Logger logger = Logger.getLogger("HotwashPanel");
@@ -138,7 +130,7 @@ public class HotwashPanel extends OMComponentPanel {
 
             if (makeMyChild) {
 
-                logger.info("HotwashPanel: adding "
+                logger.fine("HotwashPanel: adding "
                         + someObj.getClass().getName() + " to "
                         + ((MapPanelChild) someObj).getPreferredLocation());
 
