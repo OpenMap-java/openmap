@@ -383,6 +383,13 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
                             + command + " event with no layer selected");
                 }
             }
+            
+            if (command == LayersPanel.LayerRemoveCmd) {
+                // We are going to be deleting the layer we've selected.
+                selected = null;
+                delete.setEnabled(false);
+            }
+            
         } else if (command.equals(LayersPanel.LayerAddCmd)) {
             if (layerAddPanel != null) {
                 layerAddPanel.showPanel();

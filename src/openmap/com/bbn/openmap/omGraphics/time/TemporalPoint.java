@@ -25,7 +25,7 @@ package com.bbn.openmap.omGraphics.time;
 import java.awt.geom.Point2D;
 
 /**
- * A TemporalPoint is a representation of something occuring at a location and
+ * A TemporalPoint is a representation of something occurring at a location and
  * time. The time is expected to be millisecond offsets from some starting time.
  */
 public class TemporalPoint implements TemporalRecord {

@@ -320,7 +320,6 @@ public class MapHandler extends BeanContextServicesSupport {
 
         for (kids = kidList.iterator(); kids.hasNext();) {
             Object obj = kids.next();
-            logger.fine("removing " + obj.getClass().getName());
             remove(obj);
         }
     }

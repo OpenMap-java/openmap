@@ -211,6 +211,13 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
             getMouseMode().findAndUndo(someObj);
         }
     }
+    
+    public void dispose() {
+        if (editorTool != null) {
+            editorTool.dispose();
+        }
+        super.dispose();
+    }
 
     public void setMouseModeIDsForEvents(String[] modes) {
         // creates the MouseMode if needed

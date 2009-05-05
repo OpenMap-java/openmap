@@ -25,143 +25,54 @@
 package com.bbn.openmap.event;
 
 import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
-import com.bbn.openmap.OMComponent;
-
 /**
- * AAREventHandler subclasses look for the things that create
- * AAREvents.
+ * An OMEventHandler manages OMEvents, creating them from TemporalRecords.
  * 
  * @author dietrick
  */
-public abstract class OMEventHandler extends OMComponent {
+public interface OMEventHandler {
 
-    protected LinkedList<OMEvent> events;
-    protected List filterList;
-    protected List macroFilters;
-    protected Hashtable filterStates;
-    
-    public final static String ShowEventsAtStartupProperty = "showEvents";
-
-    public OMEventHandler() {
-        events = new LinkedList<OMEvent>();
-        filterList = new LinkedList();
-        macroFilters = new LinkedList();
-        filterStates = new Hashtable();
-    }
-
-    public void addEvent(OMEvent me) {
-        events.add(me);
-    }
-
-    public void removeEvent(OMEvent me) {
-        events.remove(me);
-    }
-
-    public void clearEvents() {
-        events.clear();
-    }
-
-    public List<OMEvent> getEventList() {
-        return getEventList(null);
-    }
+    List<OMEvent> getEventList();
 
     /**
-     * This is the main call to return AAREvents based on filters set
-     * in the GUI. In subclasses, you can make the call to
-     * getMacroFilterList(Collection) from here to check against other
-     * filters that are being set accross all AAREventhandlers.
+     * This is the main call to return AAREvents based on filters set in the
+     * GUI. In subclasses, you can make the call to
+     * getMacroFilterList(Collection) from here to check against other filters
+     * that are being set accross all AAREventhandlers.
      * 
-     * @param filters A List of Strings. If your AAREventHandler
-     *        provides entries into the filterList, you should check
-     *        the entries on that list to see if they are in this
-     *        provided list. If they are, you should return the
-     *        AAREvents that fall under that filter String's
+     * @param filters A List of Strings. If your AAREventHandler provides
+     *        entries into the filterList, you should check the entries on that
+     *        list to see if they are in this provided list. If they are, you
+     *        should return the AAREvents that fall under that filter String's
      *        jurisdiction.
      * @return
      */
-    public List<OMEvent> getEventList(List filters) {
-        // At this level, we just want to return all events. Let
-        // subclasses worry about macro-filtered events...
-        // return getMacroFilteredList(events);
-        
-        return events;
-    }
+    List<OMEvent> getEventList(List filters);
 
-    public void addMacroFilter(OMEventMacroFilter mf) {
-        macroFilters.add(mf);
-    }
-
-    public void removeMacroFilter(OMEventMacroFilter mf) {
-        macroFilters.remove(mf);
-    }
-
-    public void clearMacroFilters() {
-        macroFilters.clear();
-    }
-
-    protected List<OMEvent> getMacroFilteredList(Collection eventCollection) {
-        List<OMEvent> ret = new LinkedList<OMEvent>();
-        // If there are no macro filters, return a list with all
-        // mission events.
-        ret.addAll(eventCollection);
-
-        if (macroFilters != null) {
-            for (Iterator it = macroFilters.iterator(); it.hasNext();) {
-                OMEventMacroFilter mf = (OMEventMacroFilter) it.next();
-                // Should get whittled down to a list passing macro
-                // filters.
-                ret = mf.getMacroFilteredList(ret);
-            }
-        }
-
-        return ret;
-    }
-
-    public void findAndInit(Object someObj) {
-        if (someObj instanceof OMEventMacroFilter) {
-            addMacroFilter((OMEventMacroFilter) someObj);
-        }
-    }
-
-    public void findAndUndo(Object someObj) {
-        if (someObj instanceof OMEventMacroFilter) {
-            removeMacroFilter((OMEventMacroFilter) someObj);
-        }
-    }
+    List<OMEvent> getMacroFilteredList(Collection eventCollection);
 
     /**
-     * @return List of Strings that serve as pretty names for the gui,
-     *         and as filters. OK to return null.
+     * @return List of Strings that serve as pretty names for the gui, and as
+     *         filters. OK to return null.
      */
-    public List getFilters() {
-        return filterList;
-    }
+    List getFilters();
 
     /**
-     * Query to find out if a filter should be enabled, based on
-     * EventHandler settings and history.
+     * Query to find out if a filter should be enabled, based on EventHandler
+     * settings and history.
      * 
      * @param filterName the filter string.
-     * @return Boolean.TRUE for things that should be display,
-     *         Boolean.FALSE for things that shouldn't be displayed,
-     *         and null for things that aren't known aboud.
+     * @return Boolean.TRUE for things that should be display, Boolean.FALSE for
+     *         things that shouldn't be displayed, and null for things that
+     *         aren't known aboud.
      */
-    public Boolean getFilterState(String filterName) {
-        return (Boolean) filterStates.get(filterName);
-    }
+    Boolean getFilterState(String filterName);
 
     /**
      * @param filterName
      * @param state
      */
-    public void setFilterState(String filterName, Boolean state) {
-        if (filterStates.get(filterName) != null) {
-            filterStates.put(filterName, state);
-        }
-    }
+    void setFilterState(String filterName, Boolean state);
 }

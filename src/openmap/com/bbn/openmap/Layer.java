@@ -313,8 +313,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * the Layers, the mouse events don't make it to the map. Ever.
      * <p>
      * Swing popup menus, like <code>JPopupMenu</code> grab the JComponent by
-     * adding themselves as <code>MouseListener</code> s. So this method
-     * allows instances of classes in the xxx.swing package to be added as
+     * adding themselves as <code>MouseListener</code> s. So this method allows
+     * instances of classes in the xxx.swing package to be added as
      * <code>MouseListener</code>s, and no one else.
      * 
      * @param l a mouse listener.
@@ -1056,6 +1056,14 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     public void removed(Container cont) {}
 
     /**
+     * Method called when layer detects that it has been removed from
+     * MapHandler, assumes it's being thrown away. Use this method to let go of
+     * everything and to make any calls necessary to remove from listener lists
+     * that might not get picked up via MapHandler calls.
+     */
+    public void dispose() {}
+
+    /**
      * Part of a layer hack to notify the component listener when the component
      * is hidden. These components don't receive the ComponentHidden
      * notification. Remove when it works.
@@ -1235,9 +1243,15 @@ public abstract class Layer extends JComponent implements ProjectionListener,
 
     /**
      * This is the method that does the opposite as the findAndInit(Object).
-     * Lets you call super classes with objects that need to be removed.
+     * Lets you call super classes with objects that need to be removed. At this
+     * level, if the layer detects that it is being removed from the MapHandler,
+     * it calls dispose on itself.
      */
-    public void findAndUndo(Object obj) {}
+    public void findAndUndo(Object obj) {
+        if (obj == this) {
+            this.dispose();
+        }
+    }
 
     /** Method for BeanContextChild interface. */
     public BeanContext getBeanContext() {
@@ -1267,6 +1281,21 @@ public abstract class Layer extends JComponent implements ProjectionListener,
         if (in_bc != null) {
             in_bc.addBeanContextMembershipListener(this);
             beanContextChildSupport.setBeanContext(in_bc);
+        }
+    }
+    
+    /**
+     * Layer method to just disconnect from the BeanContext, without grabbing the
+     * interator as in setBeanContext(). Good for protected sub-layers where you
+     * want to optimize the calling of the findAndUndo() method over them.
+     */
+    public void disconnectFromBeanContext()
+            throws PropertyVetoException {
+
+        BeanContext bc = getBeanContext();
+        if (bc != null) {
+            bc.removeBeanContextMembershipListener(this);
+            beanContextChildSupport.setBeanContext(null);
         }
     }
 

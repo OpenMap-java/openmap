@@ -32,6 +32,7 @@ import java.awt.Image;
 import java.awt.Paint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ContainerEvent;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -68,7 +69,7 @@ import com.bbn.openmap.util.PropUtils;
  * a BufferedMapBean (which it is by default), then the layers will get buffered
  * into an image.
  * <P>
-
+ * 
  * The BufferedLayer can be configured in the openmap.properties file:
  * 
  * <pre>
@@ -87,7 +88,6 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements
 
     public final static String LayersProperty = "layers";
     public final static String VisibleLayersProperty = "visibleLayers";
-
 
     /**
      * Used to tell the BufferedLayer that the background is transparent. Will
@@ -459,9 +459,9 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements
                                 : " off"));
             }
 
-//            if (mapBean instanceof BLMapBean && hasTransparentBackground) {
-//                ((BLMapBean) mapBean).wipeImage();
-//            }
+            // if (mapBean instanceof BLMapBean && hasTransparentBackground) {
+            // ((BLMapBean) mapBean).wipeImage();
+            // }
 
             layer.repaint();
         }
@@ -496,13 +496,13 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements
         if (mapBean != null) {
             mapBean.dispose();
         }
-        
+
         if (panel != null) {
             panel.removeAll();
             panel = null;
         }
     }
-    
+
     /**
      * An simple extension of the BufferedMapBean that calls a layer, presumably
      * its parent, to call repaint(). This is necessary in order to make sure
@@ -577,10 +577,21 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements
          * BufferedLayer.
          */
         public void paintBorder(Graphics g) {}
-        
+
         public void dispose() {
             layer = null;
             super.dispose();
+        }
+
+        /**
+         * We don't want the BLMapBean to be hanging on to removed layers,
+         * that'll be done at a higher level.
+         */
+        public void componentRemoved(ContainerEvent e) {
+            super.componentRemoved(e);
+            if (removedLayers != null) {
+                removedLayers.clear();
+            }
         }
     }
 }

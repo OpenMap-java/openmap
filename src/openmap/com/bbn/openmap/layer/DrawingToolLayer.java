@@ -305,8 +305,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
      * from the BeanContext of this object.
      */
     public void findAndUndo(Object someObj) {
+        super.findAndUndo(someObj);
         if (someObj instanceof DrawingTool && getDrawingTool() == someObj) {
-
             setDrawingTool(null);
         }
     }

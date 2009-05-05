@@ -45,6 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import com.bbn.openmap.Layer;
+import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.MouseDelegator;
 import com.bbn.openmap.event.InfoDisplayEvent;
 import com.bbn.openmap.event.InfoDisplayListener;
@@ -105,7 +106,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /**
      * The layers.
      */
-    protected Vector layers;
+    protected Vector<Layer> layers;
 
     /**
      * The transition scales.
@@ -143,9 +144,9 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * Get the Vector holding the Layers. If it hasn't been asked for yet, a
      * new, empty Vector will be returned, one that will be used internally.
      */
-    public Vector getLayers() {
+    public Vector<Layer> getLayers() {
         if (layers == null) {
-            layers = new Vector();
+            layers = new Vector<Layer>();
         }
         return layers;
     }
@@ -169,7 +170,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * @param list Vector of layers
      * @param scales Array of transition scales.
      */
-    public void setLayersAndScales(Vector list, float[] scales) {
+    public void setLayersAndScales(Vector<Layer> list, float[] scales) {
         layers = list;
         transitionScales = scales;
     }
@@ -177,8 +178,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /**
      * Initializes this layer from the given properties.
      * 
-     * @param props the <code>Properties</code> holding settings for this
-     *        layer
+     * @param props the <code>Properties</code> holding settings for this layer
      */
     public void setProperties(String prefix, Properties props) {
         // Clear out layer and scale state
@@ -212,8 +212,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
         props.put(prefix + transitionScalesProperty, tsBuffer.toString());
 
         StringBuffer layerBuffer = new StringBuffer();
-        for (Iterator it = getLayers().iterator(); it.hasNext();) {
-            Layer layer = (Layer) it.next();
+        for (Layer layer : getLayers()) {
             layerBuffer.append(layer.getPropertyPrefix() + " ");
             layer.getProperties(props);
         }
@@ -230,7 +229,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * @return Layer
      */
     public Layer getAppropriateLayer() {
-        Vector target = getLayers();
+        Vector<Layer> target = getLayers();
         if (target == null) {
             return SinkLayer.getSharedInstance();
         }
@@ -239,8 +238,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
             return SinkLayer.getSharedInstance();
         }
 
-        Layer l = (Layer) target.elementAt(targetIndex);
-        return l;
+        return target.elementAt(targetIndex);
     }
 
     /**
@@ -250,11 +248,10 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * @param props Properties
      */
     protected void parseLayers(String prefix, Properties props) {
-        PropUtils.putDataPrefixToLayerList(this, props, prefix
-                + layersProperty);
-        
+        PropUtils.putDataPrefixToLayerList(this, props, prefix + layersProperty);
+
         String layersString = props.getProperty(prefix + layersProperty);
-        Vector layers = getLayers();
+        Vector<Layer> layers = getLayers();
         if (layersString == null || layersString.equals("")) {
             Debug.error("ScaleFilterLayer(): null layersString!");
             return;
@@ -309,7 +306,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      */
     protected void parseScales(String prefix, Properties props) {
         StringTokenizer tok = null;
-        Vector layers = getLayers();
+        Vector<Layer> layers = getLayers();
         int size = layers.size();
         if (size > 0) {
             --size;
@@ -470,7 +467,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     public Component getGUI() {
         if (panel == null) {
 
-            Iterator it = getLayers().iterator();
+            Iterator<Layer> it = getLayers().iterator();
             panel = new JPanel();
             tabs = new JTabbedPane();
 
@@ -497,7 +494,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
             bfPanel.add(gotoButton);
 
             while (it.hasNext()) {
-                Layer layer = (Layer) it.next();
+                Layer layer = it.next();
                 Component layerGUI = layer.getGUI();
                 if (layerGUI != null) {
                     tabs.addTab(layer.getName(), layerGUI);
@@ -530,7 +527,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     }
 
     protected void setPaletteTab(int layerIndex) {
-        Vector layers = getLayers();
+        Vector<Layer> layers = getLayers();
         if (layers.size() > layerIndex && tabs != null
                 && layerIndex < tabs.getTabCount()) {
             // +1 because the first tab is the ScaleFilterLayer tab
@@ -684,14 +681,15 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * return new String[] { SelectMouseMode.modeID };
      * </pre>
      * <code>
+     * 
      * @return String[] of modeID's
      * @see NavMouseMode#modeID
      * @see SelectMouseMode#modeID
      * @see NullMouseMode#modeID
      */
     public String[] getMouseModeServiceList() {
-        HashSet mmsl = new HashSet();
-        Iterator it = getLayers().iterator();
+        HashSet<String> mmsl = new HashSet<String>();
+        Iterator<Layer> it = getLayers().iterator();
         while (it.hasNext()) {
             Layer l = (Layer) it.next();
             MapMouseListener mml = l.getMapMouseListener();
@@ -702,13 +700,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
                 }
             }
         }
-        Object[] objs = mmsl.toArray();
-        String[] rets = new String[objs.length];
-
-        for (int i = 0; i < rets.length; i++) {
-            rets[i] = (String) objs[i];
-        }
-        return rets;
+        String[] rets = new String[mmsl.size()];
+        return mmsl.toArray(rets);
     }
 
     // Mouse Listener events
@@ -745,10 +738,10 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /**
      * Invoked when the mouse has been clicked on a component. The listener will
      * receive this event if it successfully processed
-     * <code>mousePressed()</code>, or if no other listener processes the
-     * event. If the listener successfully processes <code>mouseClicked()</code>,
-     * then it will receive the next <code>mouseClicked()</code> notifications
-     * that have a click count greater than one.
+     * <code>mousePressed()</code>, or if no other listener processes the event.
+     * If the listener successfully processes <code>mouseClicked()</code>, then
+     * it will receive the next <code>mouseClicked()</code> notifications that
+     * have a click count greater than one.
      * <p>
      * 
      * @param e MouseEvent
@@ -837,24 +830,46 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /** Method for BeanContextChild interface. */
     public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
 
-        for (Iterator it = getLayers().iterator(); it.hasNext(); ((Layer) it.next()).connectToBeanContext(in_bc)) {
+        for (Layer layer : getLayers()) {
             // You don't actually want to add the layer to the
             // BeanContext, because then the LayerHandler will pick it
             // up and add it to the main list of layers.
+
+            layer.connectToBeanContext(in_bc);
         }
 
         super.setBeanContext(in_bc);
+    }
+
+    public void dispose() {
+        try {
+            for (Layer layer : getLayers()) {
+                layer.disconnectFromBeanContext();
+            }
+        } catch (PropertyVetoException pve) {
+
+        }
+
+        BeanContext bc = getBeanContext();
+        if (bc != null && bc instanceof MapHandler) {
+            MapHandler mh = (MapHandler) bc;
+            findAndUndo(mh.get(MouseDelegator.class));
+        }
+        super.dispose();
     }
 
     /**
      * MapHandler child methods, passing found objects to child layers.
      */
     public void findAndInit(Object obj) {
+        super.findAndInit(obj);
+        
         if (obj instanceof MouseDelegator) {
             ((MouseDelegator) obj).addPropertyChangeListener(this);
         }
 
-        for (Iterator it = getLayers().iterator(); it.hasNext(); ((Layer) it.next()).findAndInit(obj)) {
+        for (Layer layer : getLayers()) {
+            layer.findAndInit(obj);
         }
     }
 
@@ -862,11 +877,18 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * MapHandler child methods, passing removed objects to child layers.
      */
     public void findAndUndo(Object obj) {
+        super.findAndUndo(obj);
+        
+        if (obj == null) {
+            return;
+        }
+        
         if (obj instanceof MouseDelegator) {
             ((MouseDelegator) obj).removePropertyChangeListener(this);
         }
 
-        for (Iterator it = getLayers().iterator(); it.hasNext(); ((Layer) it.next()).findAndUndo(obj)) {
+        for (Layer layer : getLayers()) {
+            layer.findAndUndo(obj);
         }
     }
 

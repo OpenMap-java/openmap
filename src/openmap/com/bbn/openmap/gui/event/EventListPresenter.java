@@ -307,6 +307,9 @@ public class EventListPresenter extends AbstractEventPresenter implements
 
                 List<OMEvent> eventList = aeh.getEventList(activeFilters);
                 if (eventList != null) {
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("list from " + aeh.getClass().getName() + "has (" + eventList.size() + ") events");
+                    }
                     for (Iterator<OMEvent> it2 = eventList.iterator(); it2.hasNext();) {
                         if (logger.isLoggable(Level.FINER)) {
                             logger.finer("adding OM event");

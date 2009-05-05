@@ -53,7 +53,8 @@ public abstract class TemporalSupport {
      *        should be interpolated (in whatever way needed) if the time falls
      *        between Temporal objects.
      */
-    public <T extends TemporalRecord> T getPosition(long time, boolean interpolate) {
+    public <T extends TemporalRecord> T getPosition(long time,
+                                                    boolean interpolate) {
         TemporalRecord previous = null;
         TemporalRecord next = null;
 
@@ -166,12 +167,10 @@ public abstract class TemporalSupport {
     }
 
     public <T extends TemporalRecord> TreeSet<T> getTemporals() {
-        synchronized (temporals) {
-            if (temporals == null) {
-                temporals = createTemporalSet();
-            }
-            return (TreeSet<T>) temporals;
+        if (temporals == null) {
+            temporals = createTemporalSet();
         }
+        return (TreeSet<T>) temporals;
     }
 
     public <T extends TemporalRecord> void setTemporals(TreeSet<T> temporals) {
@@ -179,10 +178,12 @@ public abstract class TemporalSupport {
     }
 
     public abstract <T extends TemporalRecord> TreeSet<T> createTemporalSet();
-    
+
     public abstract <T extends TemporalRecord> Iterator<T> iterator();
 
-    public abstract <T extends TemporalRecord> void add(T tr);
+    public void add(TemporalRecord tr) {
+        getTemporals().add(tr);
+    }
 
     /**
      * Return true if the TemporalRecord was contained in the list.

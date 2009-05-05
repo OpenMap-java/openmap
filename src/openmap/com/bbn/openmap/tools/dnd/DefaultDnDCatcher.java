@@ -77,19 +77,17 @@ import com.bbn.openmap.util.Debug;
 /**
  * DefaultDnDCatcher manages Drag and Drop events on the map.
  * 
- * Drag: When a mouseDragged event occurs, DropListenerSupport
- * forwards it to the DefaultDnDCatcher (consume() method). If it's
- * the first mouseDragged event, dragGestureRecognized is fired and
- * drag starts.
+ * Drag: When a mouseDragged event occurs, DropListenerSupport forwards it to
+ * the DefaultDnDCatcher (consume() method). If it's the first mouseDragged
+ * event, dragGestureRecognized is fired and drag starts.
  * 
- * Drop: Each layer in the LayerHandler listens to the drop events.
- * When a drop occurs, a list of potential targets (layers) is shown
- * in the popup menu.
+ * Drop: Each layer in the LayerHandler listens to the drop events. When a drop
+ * occurs, a list of potential targets (layers) is shown in the popup menu.
  * 
  * DefaultDnDCatcher recognizes Location as the droppable object.
  * 
- * DefaultDnDCatcher recognizes OMGraphicHandlerLayer layers as
- * potential drop targets.
+ * DefaultDnDCatcher recognizes OMGraphicHandlerLayer layers as potential drop
+ * targets.
  */
 
 public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
@@ -143,8 +141,8 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
     }
 
     /**
-     * Construct a new DefaultDnDCatcher given the DragSource for the
-     * Component c, and the Component to observe.
+     * Construct a new DefaultDnDCatcher given the DragSource for the Component
+     * c, and the Component to observe.
      * 
      * @param ds the DragSource for the Component c
      * @param c the Component to observe
@@ -205,24 +203,24 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
     }
 
     /**
-     * BeanContextMembershipListener method. Called when new objects
-     * are added to the parent BeanContext.
+     * BeanContextMembershipListener method. Called when new objects are added
+     * to the parent BeanContext.
      * 
-     * @param bcme event that contains an iterator that can be used to
-     *        go through the new objects.
+     * @param bcme event that contains an iterator that can be used to go
+     *        through the new objects.
      */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
         findAndInit(bcme.iterator());
     }
 
     /**
-     * BeanContextMembershipListener method. Called when objects have
-     * been removed from the parent BeanContext. The DefaultDnDCatcher
-     * looks for the MapBean it is managing DnD and MouseEvents for,
-     * and any layers that may be removed.
+     * BeanContextMembershipListener method. Called when objects have been
+     * removed from the parent BeanContext. The DefaultDnDCatcher looks for the
+     * MapBean it is managing DnD and MouseEvents for, and any layers that may
+     * be removed.
      * 
-     * @param bcme event that contains an iterator that can be used to
-     *        go through the removed objects.
+     * @param bcme event that contains an iterator that can be used to go
+     *        through the removed objects.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
         Iterator it = bcme.iterator();
@@ -232,9 +230,8 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
     }
 
     /**
-     * The method is invoked on mousePressed, mouseReleased, and
-     * mouseDragged events that come from the MapBean through
-     * DropListenerSupport.
+     * The method is invoked on mousePressed, mouseReleased, and mouseDragged
+     * events that come from the MapBean through DropListenerSupport.
      * 
      * @return boolean
      * @param e java.awt.event.MouseEvent
@@ -253,32 +250,28 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
 
     /**
      * The drag operation has terminated with a drop on this
-     * <code>DropTarget</code>. This method is responsible for
-     * undertaking the transfer of the data associated with the
-     * gesture. The <code>DropTargetDropEvent</code> provides a
-     * means to obtain a <code>Transferable</code> object that
-     * represents the data object(s) to be transfered.
+     * <code>DropTarget</code>. This method is responsible for undertaking the
+     * transfer of the data associated with the gesture. The
+     * <code>DropTargetDropEvent</code> provides a means to obtain a
+     * <code>Transferable</code> object that represents the data object(s) to be
+     * transfered.
      * <P>
-     * From this method, the <code>DropTargetListener</code> shall
-     * accept or reject the drop via the acceptDrop(int dropAction) or
-     * rejectDrop() methods of the <code>DropTargetDropEvent</code>
-     * parameter.
+     * From this method, the <code>DropTargetListener</code> shall accept or
+     * reject the drop via the acceptDrop(int dropAction) or rejectDrop()
+     * methods of the <code>DropTargetDropEvent</code> parameter.
      * <P>
      * Subsequent to acceptDrop(), but not before,
-     * <code>DropTargetDropEvent</code>'s getTransferable() method
-     * may be invoked, and data transfer may be performed via the
-     * returned <code>Transferable</code>'s getTransferData()
-     * method.
+     * <code>DropTargetDropEvent</code>'s getTransferable() method may be
+     * invoked, and data transfer may be performed via the returned
+     * <code>Transferable</code>'s getTransferData() method.
      * <P>
-     * At the completion of a drop, an implementation of this method
-     * is required to signal the success/failure of the drop by
-     * passing an appropriate <code>boolean</code> to the
-     * <code>DropTargetDropEvent</code>'s dropComplete(boolean
-     * success) method.
+     * At the completion of a drop, an implementation of this method is required
+     * to signal the success/failure of the drop by passing an appropriate
+     * <code>boolean</code> to the <code>DropTargetDropEvent</code>'s
+     * dropComplete(boolean success) method.
      * <P>
-     * Note: The actual processing of the data transfer is not
-     * required to finish before this method returns. It may be
-     * deferred until later.
+     * Note: The actual processing of the data transfer is not required to
+     * finish before this method returns. It may be deferred until later.
      * <P>
      * 
      * @param dtde the <code>DropTargetDropEvent</code>
@@ -366,8 +359,7 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
     }
 
     /**
-     * Gets the object that is passed in transferable in
-     * DropTargetDropEvent.
+     * Gets the object that is passed in transferable in DropTargetDropEvent.
      */
 
     private Object extractTransferData(DropTargetDropEvent dtde) {
@@ -387,8 +379,8 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
     }
 
     /**
-     * Called when an object should be evaluated by the
-     * DefaultDnDCatcher to see if it is needed.
+     * Called when an object should be evaluated by the DefaultDnDCatcher to see
+     * if it is needed.
      */
     public void findAndInit(Object someObj) {
 
@@ -408,13 +400,12 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
     }
 
     /**
-     * Eventually gets called when the DefaultDnDCatcher is added to
-     * the BeanContext, and when other objects are added to the
-     * BeanContext anytime after that. The DefaultDnDCatcher looks for
-     * LayerHandler to get OMGraphicHandlerLayer layers to manage Drag
-     * and Drop events for. If a MapBean is added to the BeanContext
-     * while another already is in use, the second MapBean will take
-     * the place of the first.
+     * Eventually gets called when the DefaultDnDCatcher is added to the
+     * BeanContext, and when other objects are added to the BeanContext anytime
+     * after that. The DefaultDnDCatcher looks for LayerHandler to get
+     * OMGraphicHandlerLayer layers to manage Drag and Drop events for. If a
+     * MapBean is added to the BeanContext while another already is in use, the
+     * second MapBean will take the place of the first.
      * 
      * @param it iterator to use to go through the new objects in the
      *        BeanContext.
@@ -428,7 +419,23 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
     /**
      * Called by childrenRemoved.
      */
-    public void findAndUndo(Object someObj) {}
+    public void findAndUndo(Object someObj) {
+
+        if (someObj == md) {
+            md = null;
+        }
+
+        if (someObj instanceof MapBean) {
+            ((MapBean) someObj).removeProjectionListener(this);
+            setProjection((Projection) null);
+        }
+
+        if (someObj instanceof LayerHandler) {
+            LayerHandler lh = (LayerHandler) someObj;
+            lh.removeLayerListener(this);
+            setLayers((Layer[]) null);
+        }
+    }
 
     public void firePropertyChange(String property, Object oldObj, Object newObj) {
 
@@ -436,23 +443,21 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
     }
 
     /**
-     * Report a vetoable property update to any registered listeners.
-     * If anyone vetos the change, then fire a new event reverting
-     * everyone to the old value and then rethrow the
-     * PropertyVetoException.
+     * Report a vetoable property update to any registered listeners. If anyone
+     * vetos the change, then fire a new event reverting everyone to the old
+     * value and then rethrow the PropertyVetoException.
      * <P>
      * 
      * No event is fired if old and new are equal and non-null.
      * <P>
      * 
-     * @param name The programmatic name of the property that is about
-     *        to change
+     * @param name The programmatic name of the property that is about to change
      * 
      * @param oldValue The old value of the property
      * @param newValue - The new value of the property
      * 
-     * @throws PropertyVetoException if the recipient wishes the
-     *         property change to be rolled back.
+     * @throws PropertyVetoException if the recipient wishes the property change
+     *         to be rolled back.
      */
     public void fireVetoableChange(String name, Object oldValue, Object newValue)
             throws PropertyVetoException {
@@ -475,10 +480,10 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
     }
 
     /**
-     * The mouseDragged event gets interpreted as
-     * DragGestureRecognized when startDrag boolean is true. After the
-     * first mouseDragged event, set startDrag to false.
-     *  
+     * The mouseDragged event gets interpreted as DragGestureRecognized when
+     * startDrag boolean is true. After the first mouseDragged event, set
+     * startDrag to false.
+     * 
      */
     public void mouseDragged(MouseEvent e) {
         Debug.message("defaultdndcatcher", "mouseDragged, startDrag="
@@ -495,8 +500,7 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
     }
 
     /**
-     * On mouseReleased, set startDrag to true in order to enable
-     * dragging.
+     * On mouseReleased, set startDrag to true in order to enable dragging.
      */
 
     public void mouseReleased(MouseEvent e) {
@@ -506,8 +510,8 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
     /**
      * Invoked when there has been a fundamental change to the Map.
      * <p>
-     * Layers are expected to recompute their graphics (if this makes
-     * sense), and then <code>repaint()</code> themselves.
+     * Layers are expected to recompute their graphics (if this makes sense),
+     * and then <code>repaint()</code> themselves.
      * 
      * @param e ProjectionEvent
      */
@@ -518,8 +522,8 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
     /**
      * This method gets called when a bound property is changed.
      * 
-     * @param evt A PropertyChangeEvent object describing the event
-     *        source and the property that has changed.
+     * @param evt A PropertyChangeEvent object describing the event source and
+     *        the property that has changed.
      */
     public void propertyChange(java.beans.PropertyChangeEvent evt) {}
 
@@ -538,9 +542,8 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
                                              java.beans.VetoableChangeListener vcl) {}
 
     /**
-     * A change in the value of the nesting BeanContext property of
-     * this BeanContextChild may be vetoed by throwing the appropriate
-     * exception.
+     * A change in the value of the nesting BeanContext property of this
+     * BeanContextChild may be vetoed by throwing the appropriate exception.
      * 
      * @param in_bc the new BeanContext for this object
      */
@@ -553,28 +556,29 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
     }
 
     /**
-     * DefaultDnDCatcher adds itself to each layer as the
-     * DropTargetListener. This is needed in order to capture drop
-     * events from any layer on the map, and then apply the events to
-     * the applicable layers.
+     * DefaultDnDCatcher adds itself to each layer as the DropTargetListener.
+     * This is needed in order to capture drop events from any layer on the map,
+     * and then apply the events to the applicable layers.
      */
     public void setLayers(Layer[] allLayers) {
         // remove old layers list
         layers.clear();
-        for (int i = 0; i < allLayers.length; i++) {
-            // create a new drop target
-            /* dropTarget = */new DropTarget(allLayers[i], DnDConstants.ACTION_MOVE, this);
-            if (allLayers[i] instanceof OMGraphicHandlerLayer) {
-                Debug.message("DnDCatcher", "Layers changed");
-                // keep a reference to potential drop target
-                layers.put(allLayers[i].getName(), allLayers[i]);
+        if (allLayers != null) {
+            for (int i = 0; i < allLayers.length; i++) {
+                // create a new drop target
+                /* dropTarget = */new DropTarget(allLayers[i], DnDConstants.ACTION_MOVE, this);
+                if (allLayers[i] instanceof OMGraphicHandlerLayer) {
+                    Debug.message("DnDCatcher", "Layers changed");
+                    // keep a reference to potential drop target
+                    layers.put(allLayers[i].getName(), allLayers[i]);
+                }
             }
         }
     }
 
     /**
-     * The method is invoked when there is a change in layers property
-     * in the LayerHandler.
+     * The method is invoked when there is a change in layers property in the
+     * LayerHandler.
      */
 
     public void setLayers(LayerEvent evt) {
@@ -584,17 +588,16 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
     }
 
     /**
-     * This method lets you take the ProjectionEvent received from the
-     * MapBean, and lets you know if you should do something with it.
-     * MUST to be called in the projectionChanged() method of your
-     * layer, if you want to refer to the projection later. If this
-     * methods returns null, you probably just want to call repaint()
-     * if your layer.paint() method is ready to paint what it should.
+     * This method lets you take the ProjectionEvent received from the MapBean,
+     * and lets you know if you should do something with it. MUST to be called
+     * in the projectionChanged() method of your layer, if you want to refer to
+     * the projection later. If this methods returns null, you probably just
+     * want to call repaint() if your layer.paint() method is ready to paint
+     * what it should.
      * 
-     * @param projEvent the ProjectionEvent from the
-     *        ProjectionListener method.
-     * @return The new Projection if it is different from the one we
-     *         already have, null if is the same as the current one.
+     * @param projEvent the ProjectionEvent from the ProjectionListener method.
+     * @return The new Projection if it is different from the one we already
+     *         have, null if is the same as the current one.
      */
     public Projection setProjection(ProjectionEvent projEvent) {
         Projection newProjection = projEvent.getProjection();
@@ -617,9 +620,9 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
     }
 
     /**
-     * Invoked on dragGestureRecognized in the
-     * ComponentDragGestureListener class.
-     *  
+     * Invoked on dragGestureRecognized in the ComponentDragGestureListener
+     * class.
+     * 
      */
     public void startDragAction(DragGestureEvent dge, DragSourceListener dsl) {
 

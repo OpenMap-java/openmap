@@ -33,7 +33,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
@@ -72,10 +71,10 @@ import com.bbn.openmap.util.PropUtils;
  * There are two properties that can be set for the launcher:
  * 
  * <pre>
- *    
- *     
- *      
- *      
+ * 
+ * 
+ * 
+ * 
  *       # Number of launcher buttons to place in a row in that part of the
  *       # GUI. -1 (the default) is to keep them all on one line.
  *       omdtl.horizNumLoaderButtons=-1
@@ -83,9 +82,9 @@ import com.bbn.openmap.util.PropUtils;
  *       # If set to true, a text popup will be used for the OMGraphic
  *       # loaders instead of buttons (false is default).
  *       omdtl.useTextLabels=false
- *       
- *      
- *     
+ * 
+ * 
+ * 
  * </pre>
  */
 public class OMDrawingToolLauncher extends OMToolComponent implements
@@ -99,14 +98,14 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
 
     // Places buttons in alphabetical order
     // protected TreeMap loaders = new TreeMap();
-    protected Vector loaders = new Vector();
+    protected Vector<LoaderHolder> loaders = new Vector<LoaderHolder>();
 
-    protected Vector drawingToolRequestors = new Vector();
+    protected Vector<DrawingToolRequestor> drawingToolRequestors = new Vector<DrawingToolRequestor>();
 
     protected DrawingToolRequestor currentRequestor;
     protected String currentCreation;
     protected JComboBox requestors;
-
+    protected JButton createButton;
     protected JPanel panel3;
 
     /**
@@ -275,8 +274,8 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
             requestors.removeActionListener(actions[loop]);
         }
         requestors.removeAllItems();
-        for (Iterator it = drawingToolRequestors.iterator(); it.hasNext();) {
-            requestors.addItem(((DrawingToolRequestor) it.next()).getName());
+        for (DrawingToolRequestor requestor : drawingToolRequestors) {
+            requestors.addItem(requestor.getName());
         }
         if (oldChoice != null) {
             requestors.setSelectedItem(oldChoice);
@@ -285,6 +284,9 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
             requestors.addActionListener(actions[loop]);
         }
         setCurrentRequestor((String) requestors.getSelectedItem());
+        
+        createButton.setEnabled(drawingToolRequestors != null
+                && !drawingToolRequestors.isEmpty());
 
     }
 
@@ -403,7 +405,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
         panel.add(panel3);
         palette.add(panel);
 
-        JButton createButton = new JButton(i18n.get(OMDrawingToolLauncher.class,
+        createButton = new JButton(i18n.get(OMDrawingToolLauncher.class,
                 "createButton",
                 "Create Graphic"));
         createButton.setActionCommand(CreateCmd);
@@ -450,8 +452,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
         JToggleButton btn = null;
         boolean setFirstButtonSelected = true;
 
-        for (Iterator it = getLoaders(); it.hasNext();) {
-            LoaderHolder lh = (LoaderHolder) it.next();
+        for (LoaderHolder lh : loaders) {
             String pName = lh.prettyName;
             EditToolLoader etl = lh.loader;
             ImageIcon icon = etl.getIcon(getEditableClassName(pName));
@@ -479,10 +480,9 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
 
         if (useText) {
             // Set editables with all the pretty names.
-            Vector editables = new Vector();
+            Vector<String> editables = new Vector<String>();
 
-            for (Iterator it = getLoaders(); it.hasNext();) {
-                LoaderHolder lh = (LoaderHolder) it.next();
+            for (LoaderHolder lh : loaders) {
                 editables.add(lh.prettyName);
             }
 
@@ -492,10 +492,10 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
         }
     }
 
-    private JComboBox createToolOptionMenu(Vector editables) {
+    private JComboBox createToolOptionMenu(Vector<String> editables) {
         String[] toolNames = new String[editables.size()];
         for (int i = 0; i < toolNames.length; i++) {
-            toolNames[i] = (String) editables.elementAt(i);
+            toolNames[i] = editables.elementAt(i);
             if (Debug.debugging("omdtl")) {
                 Debug.output("Adding TOOL " + toolNames[i] + " to menu");
             }
@@ -537,7 +537,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
         JToggleButton btn;
         JToolBar iconBar = null;
         boolean activeSet = false;
-        for (Iterator it = getLoaders(); it.hasNext();) {
+        for (LoaderHolder lh : loaders) {
 
             if (toolbarCount == 0) {
                 iconBar = new JToolBar();
@@ -546,7 +546,6 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
                 panel.add(iconBar);
             }
 
-            LoaderHolder lh = (LoaderHolder) it.next();
             String pName = lh.prettyName;
             EditToolLoader etl = lh.loader;
             ImageIcon icon = etl.getIcon(getEditableClassName(pName));
@@ -588,9 +587,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
      * @param name GUI pretty name of requestor.
      */
     public void setCurrentRequestor(String name) {
-        Enumeration objs = drawingToolRequestors.elements();
-        while (objs.hasMoreElements()) {
-            DrawingToolRequestor dtr = (DrawingToolRequestor) objs.nextElement();
+        for (DrawingToolRequestor dtr : drawingToolRequestors) {
             if (name.equals(dtr.getName())) {
                 currentRequestor = dtr;
                 return;
@@ -618,8 +615,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
      *        one of the EditToolLoaders.
      */
     public String getEditableClassName(String prettyName) {
-        for (Iterator it = getLoaders(); it.hasNext();) {
-            LoaderHolder lh = (LoaderHolder) it.next();
+        for (LoaderHolder lh : loaders) {
             EditToolLoader etl = lh.loader;
             String[] ec = etl.getEditableClasses();
 
@@ -655,7 +651,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
                 Debug.output("OMDrawingToolLauncher found a DrawingToolRequestor - "
                         + ((DrawingToolRequestor) someObj).getName());
             }
-            drawingToolRequestors.add(someObj);
+            drawingToolRequestors.add((DrawingToolRequestor) someObj);
             // resetGUI();
             resetCombo();
         }
@@ -683,13 +679,13 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
                 Debug.output("OMDrawingToolLauncher removing a DrawingToolRequestor - "
                         + ((DrawingToolRequestor) someObj).getName());
             }
-            drawingToolRequestors.remove(someObj);
+            drawingToolRequestors.remove((DrawingToolRequestor) someObj);
             if (drawingToolRequestors.size() == 0) {// there is no
                 // Requestor, so
                 // lets remove the
                 // window.
                 getWindowSupport().killWindow();
-                return;
+                currentRequestor = null;
             }
             // resetGUI();
             resetCombo();
@@ -763,7 +759,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     /**
      * Set the loaders with an Iterator containing EditToolLoaders.
      */
-    public void setLoaders(Iterator iterator) {
+    public void setLoaders(Iterator<EditToolLoader> iterator) {
         loaders.clear();
         while (iterator.hasNext()) {
             addLoader((EditToolLoader) iterator.next());
@@ -773,7 +769,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     /**
      * Returns an iterator of LoaderHolders.
      */
-    public Iterator getLoaders() {
+    public Iterator<LoaderHolder> getLoaders() {
         return loaders.iterator();
     }
 
@@ -788,8 +784,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
 
     public void removeLoader(EditToolLoader etl) {
         if (etl != null) {
-            for (Iterator it = getLoaders(); it.hasNext();) {
-                LoaderHolder lh = (LoaderHolder) it.next();
+            for (LoaderHolder lh : loaders) {
                 if (lh.loader == etl) {
                     loaders.remove(lh);
                 }
@@ -803,8 +798,12 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
      */
     public void propertyChange(PropertyChangeEvent pce) {
         if (pce.getPropertyName() == OMDrawingTool.LoadersProperty) {
-            setLoaders(((Vector) pce.getNewValue()).iterator());
-            resetGUI();
+            Object obj = pce.getNewValue();
+            if (obj instanceof Vector) {
+                Vector<EditToolLoader> loaders = (Vector<EditToolLoader>) obj;
+                setLoaders(loaders.iterator());
+                resetGUI();
+            }
         }
     }
 

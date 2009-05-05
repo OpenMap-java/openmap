@@ -35,8 +35,7 @@ public class AbstractEditorTool extends StandardMapMouseInterpreter implements
         EditorTool {
 
     /**
-     * Flag to let it's layer know when it wants control over mouse
-     * events.
+     * Flag to let it's layer know when it wants control over mouse events.
      */
     protected boolean wantsEvents = false;
     /**
@@ -80,30 +79,28 @@ public class AbstractEditorTool extends StandardMapMouseInterpreter implements
     }
 
     /**
-     * Part of the interface where the EditorLayer can provide
-     * components that are available via the MapHandler/BeanContext.
-     * The object is something that has been added to the MapHandler.
+     * Part of the interface where the EditorLayer can provide components that
+     * are available via the MapHandler/BeanContext. The object is something
+     * that has been added to the MapHandler.
      */
     public void findAndInit(Object obj) {}
 
     /**
-     * Part of the interface where the EditorLayer can provide
-     * components that are available via the MapHandler/BeanContext.
-     * The object is something that has been removed from the
-     * MapHandler.
+     * Part of the interface where the EditorLayer can provide components that
+     * are available via the MapHandler/BeanContext. The object is something
+     * that has been removed from the MapHandler.
      */
     public void findAndUndo(Object obj) {}
 
     /**
-     * Method where the EditorLayer lets the tool know that the
-     * editing function has come full circle, so the user interface
-     * can be adjusted.
+     * Method where the EditorLayer lets the tool know that the editing function
+     * has come full circle, so the user interface can be adjusted.
      */
     public void drawingComplete(OMGraphic omg, OMAction action) {}
 
     /**
-     * A method that lets the EditorTool know whether its interface
-     * should be visible.
+     * A method that lets the EditorTool know whether its interface should be
+     * visible.
      */
     public void setVisible(boolean value) {
         if (face != null) {
@@ -113,8 +110,8 @@ public class AbstractEditorTool extends StandardMapMouseInterpreter implements
     }
 
     /**
-     * A method that lets the EditorTool respond to queries wondering
-     * whether its interface is visible.
+     * A method that lets the EditorTool respond to queries wondering whether
+     * its interface is visible.
      */
     public boolean isVisible() {
         if (face != null) {
@@ -124,9 +121,9 @@ public class AbstractEditorTool extends StandardMapMouseInterpreter implements
         }
     }
 
-    ///////////////////////////////
+    // /////////////////////////////
     // Tool interface methods
-    ///////////////////////////////
+    // /////////////////////////////
 
     protected Container face = null;
 
@@ -137,5 +134,13 @@ public class AbstractEditorTool extends StandardMapMouseInterpreter implements
      */
     public Container getFace() {
         return face;
+    }
+
+    /**
+     * Called when the parent layer detects that it has been removed from the
+     * application.
+     */
+    public void dispose() {
+
     }
 }

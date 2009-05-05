@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.beancontext.BeanContext;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Properties;
@@ -39,7 +40,9 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
 import com.bbn.openmap.InformationDelegator;
+import com.bbn.openmap.Layer;
 import com.bbn.openmap.MapBean;
+import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.MouseDelegator;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.MapMouseMode;
@@ -296,6 +299,28 @@ public class DrawingEditorTool extends AbstractEditorTool implements
 
     public void findAndUndo(Object someObj) {
         super.findAndUndo(someObj);
+        unhook(someObj);
+    }
+
+    public void dispose() {
+        Layer layer = getLayer();
+        if (layer != null) {
+            BeanContext bc = layer.getBeanContext();
+            if (bc instanceof MapHandler) {
+                MapHandler mh = (MapHandler) bc;
+
+                unhook(mh.get(MouseDelegator.class));
+                unhook(mh.get(MapBean.class));
+                unhook(mh.get(InformationDelegator.class));
+                unhook(mh.get(OMGraphicDeleteTool.class));
+            }
+        }
+    }
+
+    protected void unhook(Object someObj) {
+        if (someObj == null) {
+            return;
+        }
 
         if (someObj == mouseDelegator) {
             setMouseDelegator(null);
@@ -307,7 +332,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
         }
 
         if (someObj instanceof OMGraphicDeleteTool) {
-            ((OMGraphicDeleteTool) someObj).findAndUndo(getDrawingTool());
+            ((OMGraphicDeleteTool) someObj).findAndUndo(drawingTool);
         }
     }
 
@@ -355,11 +380,11 @@ public class DrawingEditorTool extends AbstractEditorTool implements
             if (unpickBtn != null) {
                 unpickBtn.doClick();
             }
-            
+
             if (mouseDelegator != null) {
                 MapMouseMode[] modes = mouseDelegator.getMouseModes();
                 if (modes != null && modes.length > 0)
-                mouseDelegator.setActiveMouseMode(modes[0]);
+                    mouseDelegator.setActiveMouseMode(modes[0]);
             }
         }
     }
@@ -693,23 +718,23 @@ public class DrawingEditorTool extends AbstractEditorTool implements
      * the map.
      */
     public void setMouseDelegator(MouseDelegator md) {
+        EditorLayer el = (EditorLayer) getLayer();
+
         if (mouseDelegator != null) {
+            if (el != null) {
+                mouseDelegator.removeMouseMode(el.getMouseMode());
+            }
             mouseDelegator.removePropertyChangeListener(this);
         }
 
         mouseDelegator = md;
 
-        if (md == null) {
-            return;
-        }
-
-        EditorLayer el = (EditorLayer) getLayer();
-        if (el != null) {
-            mouseDelegator.addMouseMode(el.getMouseMode());
-        }
-
         if (mouseDelegator == null) {
             return;
+        }
+
+        if (el != null) {
+            mouseDelegator.addMouseMode(el.getMouseMode());
         }
 
         mouseDelegator.addPropertyChangeListener(this);

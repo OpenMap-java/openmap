@@ -30,16 +30,11 @@ import java.util.TreeSet;
 public class TemporalPointSupport extends TemporalSupport {
 
     @Override
-    public <T extends TemporalRecord> void add(T tr) {
-        getTemporals().add(tr);
-    }
-
-    @Override
-    public <T extends TemporalRecord> TreeSet<T> createTemporalSet() {
+    public TreeSet<TemporalPoint> createTemporalSet() {
        if (temporals == null) {
            temporals = new TreeSet<TemporalPoint>(new TemporalRecordComparator());
        }
-        return null;
+        return (TreeSet<TemporalPoint>) temporals;
     }
 
     @Override

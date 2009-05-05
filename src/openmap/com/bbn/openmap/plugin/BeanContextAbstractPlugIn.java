@@ -113,11 +113,10 @@ public abstract class BeanContextAbstractPlugIn extends AbstractPlugIn
      */
     public void findAndUndo(Object obj) {
         // If we find that our PlugInLayer is being removed from MapHandler, we
-        // should remove ourselves to allow proper cleanup.
-        if (obj instanceof PlugInLayer
-                && ((PlugInLayer) obj).getPlugIn() == this) {
-            getBeanContext().remove(this);
-        }
+        // should remove ourselves to allow proper cleanup. DFD update - the
+        // layer how senses this and calls dispose on itself and on the plugin.
+        // The default action is that the plugin is removed from the bean
+        // context.
     }
 
     /** Method for BeanContextChild interface. */

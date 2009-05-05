@@ -474,5 +474,12 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer,
      * map, so the PlugIn can free up resources.
      */
     public void removed() {}
+    
+    /**
+     * Notification to the PlugIn that it has been removed from the application,
+     * so it can disconnect from all other objects that may be holding a
+     * reference to it.
+     */
+    public void dispose() {}
 
 }

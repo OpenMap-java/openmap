@@ -81,13 +81,18 @@ public class ProjectionSupport extends ListenerSupport {
         if (proj == null || size() == 0)
             return; // no event or no listeners
 
+        if (pcNotifier == null) {
+            pcNotifier = new ProjectionChangeNotifier();
+            pcNotifier.start();
+        }
         pcNotifier.fireProjectionEvent(new ProjectionEvent(getSource(), proj));
     }
 
     public void dispose() {
+        super.removeAll();
         pcNotifier.setTerminated(true);
         pcNotifier.interrupt();
-        super.removeAll();
+        pcNotifier = null;
     }
 
     /**
@@ -134,7 +139,6 @@ public class ProjectionSupport extends ListenerSupport {
         }
 
         public void run() {
-            Vector lstnrs = null;
             while (!terminated) { // run while parent mapbean exists
                 synchronized (lock) {
                     if (nextEvent != null) {
@@ -144,14 +148,7 @@ public class ProjectionSupport extends ListenerSupport {
                 }
 
                 if (projEvent != null && listeners != null) {
-                    if (lstnrs == null) {
-                        lstnrs = (Vector) listeners.clone();
-                    } else {
-                        lstnrs.clear();
-                    }
-                    lstnrs.addAll(listeners);
-                    for (Iterator it = lstnrs.iterator(); it.hasNext();) {
-                        Object o = it.next();
+                    for (Object o : (Vector) listeners.clone()) {
                         if (nextEvent != null) {
                             break; // new event has been posted, bail out
                         }
