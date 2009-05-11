@@ -61,7 +61,7 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList implements
 
     public synchronized void setTo(DrawingAttributes da) {
         if (da != null) {
-            for (Iterator it = iterator(); it.hasNext();) {
+            for (Iterator<OMGeometry> it = iterator(); it.hasNext();) {
                 da.setTo((OMGraphic) it.next());
             }
         }
@@ -77,24 +77,28 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList implements
      */
     public static FeatureCacheGraphicList createForType(String featureType) {
 
-        int lastCharIndex = featureType.length() - 1;
-        if (lastCharIndex >= 0) {
-            // char lastLetter = featureType.charAt(lastCharIndex);
+        if (featureType != null) {
 
-            if (featureType == VPFUtil.Edge) {
-                return new FeatureCacheGraphicList.EDGE();
-            }
+            int lastCharIndex = featureType.length() - 1;
+            if (lastCharIndex >= 0) {
+                // char lastLetter = featureType.charAt(lastCharIndex);
 
-            if (featureType == VPFUtil.Area) {
-                return new FeatureCacheGraphicList.AREA();
-            }
+                if (featureType == VPFUtil.Edge) {
+                    return new FeatureCacheGraphicList.EDGE();
+                }
 
-            if (featureType == VPFUtil.Text) {
-                return new FeatureCacheGraphicList.TEXT();
-            }
+                if (featureType == VPFUtil.Area) {
+                    return new FeatureCacheGraphicList.AREA();
+                }
 
-            if (featureType == VPFUtil.EPoint || featureType == VPFUtil.CPoint) {
-                return new FeatureCacheGraphicList.POINT();
+                if (featureType == VPFUtil.Text) {
+                    return new FeatureCacheGraphicList.TEXT();
+                }
+
+                if (featureType == VPFUtil.EPoint
+                        || featureType == VPFUtil.CPoint) {
+                    return new FeatureCacheGraphicList.POINT();
+                }
             }
         }
 
@@ -109,7 +113,7 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList implements
         try {
             FeatureCacheGraphicList omgl = getClass().newInstance();
             omgl.setFeatureName(getFeatureName());
-            
+
             for (Iterator<OMGeometry> it = iterator(); it.hasNext();) {
                 // If the OMGraphic doesn't provide a copy (providing a
                 // SinkGraphic instead), oh well.
@@ -121,7 +125,7 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList implements
                 }
             }
 
-            return omgl;    
+            return omgl;
         } catch (InstantiationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -129,7 +133,7 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList implements
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
+
         return new DEFAULT();
     }
 

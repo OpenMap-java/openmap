@@ -32,9 +32,9 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
- * Encapsulate a VPF coverage directory. This class handles requests
- * that happen for a particular coverage type (political boundary,
- * road, etc.) for a particular library (north america, browse, etc.).
+ * Encapsulate a VPF coverage directory. This class handles requests that happen
+ * for a particular coverage type (political boundary, road, etc.) for a
+ * particular library (north america, browse, etc.).
  */
 public class CoverageTable {
 
@@ -96,11 +96,10 @@ public class CoverageTable {
     public static final char SKIP_FEATURETYPE = 'S';
 
     /**
-     * Construct a CoverageTable object. Data is expected to be in a
-     * directory called path/covtype.
+     * Construct a CoverageTable object. Data is expected to be in a directory
+     * called path/covtype.
      * 
-     * @param path the path to the parent directory of where our data
-     *        resides
+     * @param path the path to the parent directory of where our data resides
      * @param covtype the subdirectory name for the coverage data
      */
     public CoverageTable(String path, String covtype) {
@@ -118,14 +117,13 @@ public class CoverageTable {
     }
 
     /**
-     * Construct a CoverageTable object. Data is expected to be in a
-     * directory called path/covtype.
+     * Construct a CoverageTable object. Data is expected to be in a directory
+     * called path/covtype.
      * 
-     * @param path the path to the parent directory of where our data
-     *        resides
+     * @param path the path to the parent directory of where our data resides
      * @param covtype the subdirectory name for the coverage data
-     * @param cat the CoverageAttributeTable reference, in case we
-     *        need to backtrack the tiles through the feature tables.
+     * @param cat the CoverageAttributeTable reference, in case we need to
+     *        backtrack the tiles through the feature tables.
      */
     public CoverageTable(String path, String covtype, CoverageAttributeTable cat) {
 
@@ -222,28 +220,26 @@ public class CoverageTable {
             Constants.FCS_TABLE2, Constants.DCW_FCS_TABLE2KEY };
 
     /**
-     * This method reads the feature class schema (fcs) file to
-     * discover the inter-table relations (joins, in database
-     * parlance). As a side effect, this method also sets the
-     * appendDot member.
+     * This method reads the feature class schema (fcs) file to discover the
+     * inter-table relations (joins, in database parlance). As a side effect,
+     * this method also sets the appendDot member.
      */
     private void internSchema() {
         internSchema(false);
     }
 
     /**
-     * This method reads the feature class schema (fcs) file to
-     * discover the inter-table relations (joins, in database
-     * parlance). As a side effect, this method also sets the
-     * appendDot member. The DCW option refers to if the DCW column
-     * names should be used, for DCW data. This is only true if a
+     * This method reads the feature class schema (fcs) file to discover the
+     * inter-table relations (joins, in database parlance). As a side effect,
+     * this method also sets the appendDot member. The DCW option refers to if
+     * the DCW column names should be used, for DCW data. This is only true if a
      * problem occurs, and then this method is called recursively.
      */
     private void internSchema(boolean DCW) {
 
         // Figure out how files names should be constructed...
         boolean addSlash = true;
-        //      if (tablepath.endsWith(File.separator)) {
+        // if (tablepath.endsWith(File.separator)) {
         if (tablepath.endsWith("/") || tablepath.endsWith(File.separator)) {
             addSlash = false;
         }
@@ -334,8 +330,8 @@ public class CoverageTable {
     }
 
     /**
-     * Returns the FeatureClassInfo object corresponding to the
-     * feature type. Returns null if the featureType doesn't exist.
+     * Returns the FeatureClassInfo object corresponding to the feature type.
+     * Returns null if the featureType doesn't exist.
      * 
      * @return the feature class object for the feature type
      * @param featureType the name of the feature to get
@@ -402,11 +398,10 @@ public class CoverageTable {
     }
 
     /**
-     * Given a tile directory, go through the entries in the
-     * edg/fac/txt files, and send those entries to the warehouse. The
-     * warehouse will check their feature names with the feature names
-     * given to it in its properties, and eliminate the ones that it
-     * shouldn't draw.
+     * Given a tile directory, go through the entries in the edg/fac/txt files,
+     * and send those entries to the warehouse. The warehouse will check their
+     * feature names with the feature names given to it in its properties, and
+     * eliminate the ones that it shouldn't draw.
      */
     public void drawTile(TileDirectory drawtd, VPFGraphicWarehouse warehouse,
                          LatLonPoint ll1, LatLonPoint ll2, float dpplat,
@@ -420,12 +415,12 @@ public class CoverageTable {
     }
 
     /**
-     * This function uses the warehouse to get a list of features, and
-     * then looks in the featureList to see what feature tables handle
-     * those features. Using the appropriate feature table, the
-     * function then tracks down the tile that contains that feature,
-     * and the feature index into that tile file, and then contacts
-     * the warehouse to get that feature created into a graphic.
+     * This function uses the warehouse to get a list of features, and then
+     * looks in the featureList to see what feature tables handle those
+     * features. Using the appropriate feature table, the function then tracks
+     * down the tile that contains that feature, and the feature index into that
+     * tile file, and then contacts the warehouse to get that feature created
+     * into a graphic.
      */
     public boolean drawFeatures(VPFFeatureWarehouse warehouse, LatLonPoint ll1,
                                 LatLonPoint ll2, float dpplat, float dpplon) {
@@ -472,11 +467,13 @@ public class CoverageTable {
             // Get the feature class for this feature type.
             FeatureClassInfo fci = getFeatureClassInfo(currentFeature);
 
-            if ((fci == null) || (cat == null)) {
-                continue; //don't have enough info to procede
-                //in an untiled coverage, we could probably work
+            // Don't know why currentFeature would be null, but reports from
+            // users demonstrate that it might be.
+            if ((fci == null) || (cat == null) || currentFeature == null) {
+                continue; // don't have enough info to proceed
+                // in an untiled coverage, we could probably work
                 // without
-                //the cat
+                // the cat
             }
 
             if (drawFeaturesFromThematicIndex(fci,
@@ -491,15 +488,15 @@ public class CoverageTable {
                 didSomething = true;
                 continue;
             }
-            //couldn't use the tile_id thematic index, so just parse
+            // couldn't use the tile_id thematic index, so just parse
             // the
-            //whole file
+            // whole file
 
             boolean needToFindOurselves = true;
 
             TilingAdapter fciTilingAdapter = fci.getTilingAdapter();
             if (fciTilingAdapter == null) {
-                //no way to find primitives
+                // no way to find primitives
                 continue;
             }
 
@@ -509,8 +506,8 @@ public class CoverageTable {
             // We're interested in the f_code, tile_id, and the
             // primitive id (fci independent depending on type).
 
-            int oldTileID = -2; //-1 is "untiled" tile_id
-            //          int faccIndex = fci.getFaccIndex()
+            int oldTileID = -2; // -1 is "untiled" tile_id
+            // int faccIndex = fci.getFaccIndex()
 
             // OK, now we are looking in the Feature class file.
             try {
@@ -523,7 +520,7 @@ public class CoverageTable {
 
                     int tileID = fciTilingAdapter.getTileId(fcirow);
 
-                    //                  String facc = (String)fcirow.get(faccIndex);
+                    // String facc = (String)fcirow.get(faccIndex);
 
                     // With tileID, find the tile and figure out if it
                     // is needed.
@@ -564,8 +561,9 @@ public class CoverageTable {
                             if (cat != null) {
                                 libraryname = cat.libraryname;
                             }
-                            
-                            if (!warehouse.needToFetchTileContents(libraryname, currentFeature,
+
+                            if (!warehouse.needToFetchTileContents(libraryname,
+                                    currentFeature,
                                     currentTile)) {
                                 if (Debug.debugging("vpf")) {
                                     Debug.output("CoverageTable: Loaded Cached List for "
@@ -632,24 +630,23 @@ public class CoverageTable {
     }
 
     /**
-     * This function gets the thematic index from the FeatureClassInfo
-     * object, and uses it to look up the tiles that contain the
-     * currentFeature. Then, that tile is checked to see if it is on
-     * the map. If it is, then that row in the thematic index is read
-     * to get the feature id numbers. The feature table is referenced
-     * for the feature ID number in the tile, and then the feature is
-     * drawn.
+     * This function gets the thematic index from the FeatureClassInfo object,
+     * and uses it to look up the tiles that contain the currentFeature. Then,
+     * that tile is checked to see if it is on the map. If it is, then that row
+     * in the thematic index is read to get the feature id numbers. The feature
+     * table is referenced for the feature ID number in the tile, and then the
+     * feature is drawn.
      * 
      * @param fci the FeatureClassInfo (feature table)
-     * @param warehouse the VPFFeatureGraphicWarehouse to use to draw
-     *        the graphics.
+     * @param warehouse the VPFFeatureGraphicWarehouse to use to draw the
+     *        graphics.
      * @param ll1 the upper left corner of the map.
      * @param ll2 the lower right corner of the map.
      * @param dpplat degrees per pixel latitude direction.
      * @param dpplon degrees per pixel longitude direction.
      * @param currentFeature the feature string (roadl)
-     * @param featureType the CoverageTable letter representation of
-     *        the feature type.
+     * @param featureType the CoverageTable letter representation of the feature
+     *        type.
      */
     protected boolean drawFeaturesFromThematicIndex(
                                                     FeatureClassInfo fci,
@@ -708,8 +705,9 @@ public class CoverageTable {
                     if (cat != null) {
                         libraryname = cat.libraryname;
                     }
-                    
-                    if (!warehouse.needToFetchTileContents(libraryname, currentFeature,
+
+                    if (!warehouse.needToFetchTileContents(libraryname,
+                            currentFeature,
                             currentTile)) {
                         if (Debug.debugging("vpf")) {
                             Debug.output("Loaded Cached List for "
@@ -722,7 +720,7 @@ public class CoverageTable {
                     for (int j = 0; j < featureID.length; j++) {
 
                         if (!fci.getRow(v, featureID[j])) {
-                            //couldn't get row for some reason
+                            // couldn't get row for some reason
                             continue;
                         }
 
@@ -758,12 +756,11 @@ public class CoverageTable {
     }
 
     /**
-     * Given a feature type name, figure out if the warehouse thinks
-     * it should *NOT* be drawn.
+     * Given a feature type name, figure out if the warehouse thinks it should
+     * *NOT* be drawn.
      * 
      * @param warehouse the warehouse to build the graphics.
-     * @param featureName the VPF name of the feature (polbndl, for
-     *        example).
+     * @param featureName the VPF name of the feature (polbndl, for example).
      * @return SKIP_FEATURETYPE if the feature should not be drawn.
      */
     protected char whatFeatureType(VPFWarehouse warehouse, String featureName) {
@@ -826,7 +823,7 @@ public class CoverageTable {
 
             String path = getDataPath();
             boolean addSlash = true;
-            //          if (path.endsWith(File.separator)) {
+            // if (path.endsWith(File.separator)) {
             if (path.endsWith("/") || path.endsWith(File.separator)) {
                 addSlash = false;
             }
@@ -852,7 +849,7 @@ public class CoverageTable {
                     }
                     fcadesc.close();
                 } catch (FormatException fe) {
-                    //nevermind, skip it
+                    // nevermind, skip it
                 }
             }
         }
@@ -876,9 +873,9 @@ public class CoverageTable {
 }
 
 /**
- * The TableHolder is a utility class that manages the EdgeTable,
- * TextTable and AreaTable that are needed by the CoverageTable to use
- * the warehouse to create graphics.
+ * The TableHolder is a utility class that manages the EdgeTable, TextTable and
+ * AreaTable that are needed by the CoverageTable to use the warehouse to create
+ * graphics.
  */
 
 class TableHolder {
@@ -894,21 +891,20 @@ class TableHolder {
     CoverageTable coverageTable;
 
     /**
-     * Construct the TableHandler with the CoverageTable it is
-     * helping.
+     * Construct the TableHandler with the CoverageTable it is helping.
      */
     protected TableHolder(CoverageTable ct) {
         coverageTable = ct;
     }
 
     /**
-     * When drawing features (CoverageTable.drawFeatures()), sets up
-     * the TableHolder tables so that the right types are used.
+     * When drawing features (CoverageTable.drawFeatures()), sets up the
+     * TableHolder tables so that the right types are used.
      * 
-     * @param featureType from the CoverageTable, either
-     *        AREA_FEATURETYPE, EDGE_FEATURETYPE or TEXT_FEATURETYPE.
-     * @param tile the tile directory that needs to be
-     *        used when fetching graphics from the appropriate files.
+     * @param featureType from the CoverageTable, either AREA_FEATURETYPE,
+     *        EDGE_FEATURETYPE or TEXT_FEATURETYPE.
+     * @param tile the tile directory that needs to be used when fetching
+     *        graphics from the appropriate files.
      */
     protected void setTables(char featureType, TileDirectory tile)
             throws FormatException {
@@ -932,9 +928,8 @@ class TableHolder {
     }
 
     /**
-     * Should be called once per FeatureClassInfo, after the tables
-     * have been set. Lets the tables figure out which columns to use
-     * as an index.
+     * Should be called once per FeatureClassInfo, after the tables have been
+     * set. Lets the tables figure out which columns to use as an index.
      */
     protected void findYourself(FeatureClassInfo fci) {
         if (aft != null) {
@@ -949,10 +944,9 @@ class TableHolder {
     }
 
     /**
-     * Should be called once per feature, after the tables have been
-     * set (setTables()), and findYourself() has been called. The
-     * appropriate table will use the warehouse to create proper
-     * OMGraphic.
+     * Should be called once per feature, after the tables have been set
+     * (setTables()), and findYourself() has been called. The appropriate table
+     * will use the warehouse to create proper OMGraphic.
      */
     protected boolean drawFeature(int primitiveID,
                                   VPFFeatureWarehouse warehouse,
@@ -1018,8 +1012,8 @@ class TableHolder {
     }
 
     /**
-     * Only call once per tile. It will parse all the needed data in
-     * the tile. Does not require setTables() or findYourself().
+     * Only call once per tile. It will parse all the needed data in the tile.
+     * Does not require setTables() or findYourself().
      */
     protected void drawTile(TileDirectory tile, VPFGraphicWarehouse warehouse,
                             LatLonPoint ll1, LatLonPoint ll2, float dpplat,
@@ -1117,16 +1111,16 @@ class TableHolder {
             }
             cnt.drawTile(warehouse, dpplat, dpplon, ll1, ll2);
         }
-        //      if (Debug.On && Debug.debugging("vpf.tile"))
-        //          Debug.output(drawtd.toString() + " " + edgecount[0] +
-        //                            " polys with " + edgecount[1] +
-        //                            " points (cumulative)\n" +
-        //                            drawtd.toString() + " " + textcount[0] +
-        //                            " texts with " + textcount[1] +
-        //                            " points (cumulative)\n" +
-        //                            drawtd.toString() + " " + areacount[0] +
-        //                            " areas with " + areacount[1] +
-        //                            " points (cumulative)");
+        // if (Debug.On && Debug.debugging("vpf.tile"))
+        // Debug.output(drawtd.toString() + " " + edgecount[0] +
+        // " polys with " + edgecount[1] +
+        // " points (cumulative)\n" +
+        // drawtd.toString() + " " + textcount[0] +
+        // " texts with " + textcount[1] +
+        // " points (cumulative)\n" +
+        // drawtd.toString() + " " + areacount[0] +
+        // " areas with " + areacount[1] +
+        // " points (cumulative)");
         close();
     }
 
@@ -1154,16 +1148,15 @@ class TableHolder {
 }
 
 /**
- * A utility class used to map information from a VPF feature table to
- * its associated value in an int.vdt file.
+ * A utility class used to map information from a VPF feature table to its
+ * associated value in an int.vdt file.
  */
 
 class CoverageIntVdt {
     /** the name of the table we are looking up (table is interned) */
     final String table;
     /**
-     * the name of the attribute we are looking up (attribute is
-     * interned)
+     * the name of the attribute we are looking up (attribute is interned)
      */
     final String attribute;
     /** the integer value we are looking up */
@@ -1183,15 +1176,14 @@ class CoverageIntVdt {
     }
 
     /**
-     * Override the equals method. Two CoverageIntVdts are equal if
-     * and only iff their respective table, attribute and value
-     * members are equal.
+     * Override the equals method. Two CoverageIntVdts are equal if and only iff
+     * their respective table, attribute and value members are equal.
      */
     public boolean equals(Object o) {
         if (o instanceof CoverageIntVdt) {
             CoverageIntVdt civ = (CoverageIntVdt) o;
-            //we can use == rather than String.equals(String) since
-            //table and attribute are interned.
+            // we can use == rather than String.equals(String) since
+            // table and attribute are interned.
             return ((table == civ.table) && (attribute == civ.attribute) && (value == civ.value));
         } else {
             return false;
@@ -1199,8 +1191,8 @@ class CoverageIntVdt {
     }
 
     /**
-     * Override hashcode. Compute a hashcode based on our member
-     * values, rather than our (base class) object identity.
+     * Override hashcode. Compute a hashcode based on our member values, rather
+     * than our (base class) object identity.
      */
     public int hashCode() {
         return ((table.hashCode() ^ attribute.hashCode()) ^ value);
@@ -1208,16 +1200,15 @@ class CoverageIntVdt {
 }
 
 /**
- * A utility class used to map information from a VPF feature table to
- * its associated value in an char.vdt file.
+ * A utility class used to map information from a VPF feature table to its
+ * associated value in an char.vdt file.
  */
 
 class CoverageCharVdt {
     /** the name of the table we are looking up (table is interned) */
     final String table;
     /**
-     * the name of the attribute we are looking up (attribute is
-     * interned)
+     * the name of the attribute we are looking up (attribute is interned)
      */
     final String attribute;
     /** the character value we are looking up (value is interned) */
@@ -1237,15 +1228,14 @@ class CoverageCharVdt {
     }
 
     /**
-     * Override the equals method. Two CoverageIntVdts are equal if
-     * and only iff their respective table, attribute and value
-     * members are equal.
+     * Override the equals method. Two CoverageIntVdts are equal if and only iff
+     * their respective table, attribute and value members are equal.
      */
     public boolean equals(Object o) {
         if (o instanceof CoverageCharVdt) {
             CoverageCharVdt civ = (CoverageCharVdt) o;
-            //we can use == rather than String.equals(String) since
-            //table, attribute, and value are interned.
+            // we can use == rather than String.equals(String) since
+            // table, attribute, and value are interned.
             return ((table == civ.table) && (attribute == civ.attribute) && (value == civ.value));
         } else {
             return false;
@@ -1253,8 +1243,8 @@ class CoverageCharVdt {
     }
 
     /**
-     * Override hashcode. Compute a hashcode based on our member
-     * values, rather than our (base class) object identity.
+     * Override hashcode. Compute a hashcode based on our member values, rather
+     * than our (base class) object identity.
      */
     public int hashCode() {
         return ((table.hashCode() ^ attribute.hashCode()) ^ value.hashCode());

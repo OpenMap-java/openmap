@@ -197,7 +197,7 @@ public class VPFFeatureCache extends CacheHandler {
      * (FeatureCacheGraphicLists).
      */
     public CacheObject load(String key, String featureType) {
-        if (key != null) {
+        if (key != null && featureType != null) {
             return new VPFListCacheObject(key, FeatureCacheGraphicList.createForType(featureType));
         }
         return null;
