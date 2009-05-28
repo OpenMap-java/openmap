@@ -916,8 +916,8 @@ public class Intersection {
      *                 .
      *                 poly[n-1] = latitude 1
      *                 poly[n] = longitude 1
-     *                                                                                                
-     * </pre>
+    *                                                                                                
+    * </pre>
      * 
      * @param x a geographic coordinate
      * @param poly an array of lat/lons describing a closed polygon
@@ -958,10 +958,64 @@ public class Intersection {
              */
             if ((p1.dot(ray) < 0.0) != (p2.dot(ray) < 0.0)
                     && p1.intersect(p2, ray, tmp).dot(side) > 0.0) {
-             
-                System.out.println(p1);
+                in = !in;
+			}
+            p1.initialize(p2);
+        }
+
+        // Check for unclosed polygons, if the polygon isn't closed,
+        // do the calculation for the last point to the starting
+        // point.
+        if (!poly.equals(0, p1)) {
+            poly.get(0, p2);
+            if ((p1.dot(ray) < 0.0) != (p2.dot(ray) < 0.0)
+                    && p1.intersect(p2, ray, tmp).dot(side) > 0.0) {
                 in = !in;
             }
+        }
+
+        return in;
+    }
+
+    public static boolean isPointInPolygon(Geo x, GeoArray poly, Geo internal) {
+        Geo c = Geo.makeGeo(internal);
+
+        // bail out if the point is more than 90 degrees off the
+        // centroid
+        double d = x.distance(c);
+        if (d >= (Math.PI / 2)) {
+            return false;
+        }
+
+        if (internal.equals(c))
+            return true;
+        // ray is normal to the great circle from c to x. reusing c to hold ray
+        // info
+        Geo ray = c.crossNormalize(x, c);
+
+        /*
+         * side is a point on the great circle between c and x. It is used to
+         * choose a direction.
+         */
+        Geo side = x.crossNormalize(ray, new Geo());
+        boolean in = false;
+        // Why do we need to allocate new Geos?
+        // Geo p1 = new Geo(poly[0]);
+        // Geo p2 = new Geo(poly[0]);
+        Geo p1 = poly.get(0, new Geo());
+        Geo p2 = poly.get(0, new Geo());
+        Geo tmp = new Geo();
+        int polySize = poly.getSize();
+        for (int i = 1; i < polySize; i++) {
+            // p2.initialize(poly[i]);
+            p2 = poly.get(i, p2);
+            /*
+             * p1 and p2 are on different sides of the ray, and the great
+             * acircle between p1 and p2 is on the side that counts;
+             */
+            if ((p1.dot(ray) < 0.0) != (p2.dot(ray) < 0.0)
+                    && p1.intersect(p2, ray, tmp).dot(side) > 0.0)
+                in = !in;
 
             p1.initialize(p2);
         }
@@ -1174,7 +1228,7 @@ public class Intersection {
     // double d222 = Geo.distance(lat4, lon4, ll[2], ll[3]);
     //
     // float[] llp = new float[] { Float.MAX_VALUE, Float.MAX_VALUE,
-    // Float.MAX_VALUE, .MAX_VALUE };
+    // Float.MAX_VALUE, Float.MAX_VALUE };
     //
     // // check if first point of intersection lies on both segments
     // if (d1 >= d111 && d1 >= d121 && d2 >= d211 && d2 >= d221) {
