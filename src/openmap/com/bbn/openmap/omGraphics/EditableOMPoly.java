@@ -1152,7 +1152,6 @@ public class EditableOMPoly extends EditableOMAbstractLine {
             for (GrabPoint gb : polyGrabPoints) {
                 if (gb != null) {
                     gb.setVisible(true);
-                    poly.render(graphics);
                     gb.render(graphics);
                     gb.setVisible(false);
                 }
