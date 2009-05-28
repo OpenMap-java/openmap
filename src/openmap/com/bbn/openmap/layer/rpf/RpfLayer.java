@@ -39,7 +39,6 @@ import javax.swing.JSlider;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.layer.util.cacheHandler.CacheHandler;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.proj.EqualArc;
@@ -47,6 +46,7 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
+import com.bbn.openmap.util.cacheHandler.CacheHandler;
 
 /**
  * The RpfLayer fills the screen with RPF data. There is also a tool available

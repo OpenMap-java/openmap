@@ -31,7 +31,6 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -40,8 +39,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.bbn.openmap.PropertyConsumer;
-import com.bbn.openmap.layer.util.cacheHandler.CacheHandler;
-import com.bbn.openmap.layer.util.cacheHandler.CacheObject;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMGrid;
@@ -52,6 +49,8 @@ import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
+import com.bbn.openmap.util.cacheHandler.CacheHandler;
+import com.bbn.openmap.util.cacheHandler.CacheObject;
 
 /**
  * The DTEDFrameCacheHandler is a cache for objects being rendered on the map as
@@ -114,7 +113,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
     /**
      * The list of GeneratorLoaders.
      */
-    protected ArrayList generatorLoaders = new ArrayList();
+    protected ArrayList<GeneratorLoader> generatorLoaders = new ArrayList<GeneratorLoader>();
 
     /**
      * The DTEDFrameCache must be set at some point.
@@ -135,6 +134,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
      */
     public void setFrameCache(DTEDFrameCache dfc) {
         frameCache = dfc;
+        resetCache();
     }
 
     /**
@@ -175,12 +175,11 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
      * loaders.
      */
     public void setActiveGeneratorLoader(String active) {
-        for (Iterator it = generatorLoaders.iterator(); it.hasNext();) {
-            GeneratorLoader gl = (GeneratorLoader) it.next();
+        for (GeneratorLoader gl : generatorLoaders) {
             if (active.equals(gl.getPrettyName())
                     && gl != activeGeneratorLoader) {
                 activeGeneratorLoader = gl;
-                clear();
+                resetCache();
             }
         }
     }
@@ -211,9 +210,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
         String comboBoxItems[] = new String[numLoaders];
         int count = 0;
 
-        for (Iterator it = generatorLoaders.iterator(); it.hasNext();) {
-
-            GeneratorLoader gl = (GeneratorLoader) it.next();
+        for (GeneratorLoader gl : generatorLoaders) {
             String prettyName = gl.getPrettyName();
             comboBoxItems[count++] = prettyName;
 
@@ -536,7 +533,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
         return null;
     }
 
-    public CacheObject load(String key) {
+    public CacheObject load(Object key) {
         // Do nothing, because this implementation doesn't use it.
         // The get() method has been overridden to c all the other
         // load method with addition needed information to better call
@@ -588,9 +585,9 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
         String generatorList = props.getProperty(realPrefix
                 + GeneratorLoadersProperty);
         if (generatorList != null) {
-            Vector generatorMarkers = PropUtils.parseSpacedMarkers(generatorList);
-            for (Iterator it = generatorMarkers.iterator(); it.hasNext();) {
-                String loaderPrefix = realPrefix + (String) it.next();
+            Vector<String> generatorMarkers = PropUtils.parseSpacedMarkers(generatorList);
+            for (String gmString: generatorMarkers) {
+                String loaderPrefix = realPrefix + gmString;
                 String loaderClassnameProperty = loaderPrefix + ".class";
                 String classname = props.getProperty(loaderClassnameProperty);
 
@@ -636,8 +633,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
         StringBuffer sb = new StringBuffer();
-        for (Iterator it = generatorLoaders.iterator(); it.hasNext();) {
-            GeneratorLoader gl = (GeneratorLoader) it.next();
+        for (GeneratorLoader gl : generatorLoaders) {
             String pref = gl.getPropertyPrefix();
             props.put(pref + ".class", gl.getClass().getName());
             gl.getProperties(props);
@@ -708,6 +704,14 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
      */
     public void propertyChange(PropertyChangeEvent pce) {
         clear();
+    }
+
+    public ArrayList<GeneratorLoader> getGeneratorLoaders() {
+        return generatorLoaders;
+    }
+
+    public void setGeneratorLoaders(ArrayList<GeneratorLoader> generatorLoaders) {
+        this.generatorLoaders = generatorLoaders;
     }
 
 }

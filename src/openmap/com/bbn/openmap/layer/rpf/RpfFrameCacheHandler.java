@@ -32,10 +32,10 @@ package com.bbn.openmap.layer.rpf;
 import java.util.List;
 import java.util.Vector;
 
-import com.bbn.openmap.layer.util.cacheHandler.CacheHandler;
-import com.bbn.openmap.layer.util.cacheHandler.CacheObject;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.cacheHandler.CacheHandler;
+import com.bbn.openmap.util.cacheHandler.CacheObject;
 
 /**
  * The RpfFrameCacheHandler does everything involved with handling RAW RPF
@@ -664,17 +664,6 @@ public class RpfFrameCacheHandler extends CacheHandler implements
         return tocs;
     }
 
-    /** Cachehandler method. */
-    public CacheObject load(String RpfFramePath) {
-
-        RpfFrame frame = new RpfFrame(RpfFramePath);
-        if (frame.isValid()) {
-            CacheObject obj = new CacheObject(RpfFramePath, frame);
-            return obj;
-        }
-        return null;
-    }
-
     /**
      * A customized way to retrieve a frame from the cache, using a
      * RpfFrameEntry. A RpfFrameEntry is the way to get the Dchum capability
@@ -699,32 +688,35 @@ public class RpfFrameCacheHandler extends CacheHandler implements
         return ret.obj;
     }
 
-    /** Cachehandler method. */
-    public CacheObject load(RpfFrameEntry rfe) {
+    public CacheObject load(Object key) {
 
-        if (!rfe.exists) {
+        if (key instanceof RpfFrameEntry) {
+
+            RpfFrameEntry rfe = (RpfFrameEntry) key;
+            if (!rfe.exists) {
+                if (Debug.debugging("rpf")) {
+                    System.out.println("RpfFrameCacheHandler: Frame doesn't exist!: "
+                            + rfe.framePath);
+                }
+                return null;
+            }
+
             if (Debug.debugging("rpf")) {
-                System.out.println("RpfFrameCacheHandler: Frame doesn't exist!: "
+                Debug.output("RpfFrameCacheHandler: Loading Frame "
                         + rfe.framePath);
             }
-            return null;
-        }
 
-        if (Debug.debugging("rpf")) {
-            Debug.output("RpfFrameCacheHandler: Loading Frame " + rfe.framePath);
-        }
-
-        RpfFrame frame = new RpfFrame(rfe);
-        if (frame.isValid()) {
-            CacheObject obj = new CacheObject(rfe.framePath, frame);
-            return obj;
-        } else {
-            if (Debug.debugging("rpf")) {
-                Debug.error("RpfFrameCacheHandler:  Couldn't find frame /"
-                        + rfe.framePath + "/ (" + rfe.framePath.length()
-                        + " chars)");
+            RpfFrame frame = new RpfFrame(rfe);
+            if (frame.isValid()) {
+                return new CacheObject(rfe.framePath, frame);
+            } else {
+                if (Debug.debugging("rpf")) {
+                    Debug.error("RpfFrameCacheHandler:  Couldn't find frame /"
+                            + rfe.framePath + "/ (" + rfe.framePath.length()
+                            + " chars)");
+                }
+                rfe.exists = false;
             }
-            rfe.exists = false;
         }
         return null;
     }
@@ -752,7 +744,7 @@ public class RpfFrameCacheHandler extends CacheHandler implements
     public RpfColortable getColortable() {
         return colortable;
     }
-    
+
     public void setColortable(RpfColortable colortable) {
         this.colortable = colortable;
     }

@@ -24,10 +24,10 @@ package com.bbn.openmap.layer.vpf;
 
 import java.util.logging.Level;
 
-import com.bbn.openmap.layer.util.cacheHandler.CacheHandler;
-import com.bbn.openmap.layer.util.cacheHandler.CacheObject;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.util.cacheHandler.CacheHandler;
+import com.bbn.openmap.util.cacheHandler.CacheObject;
 
 /**
  * The VPFFeatureCache is an extended CacheHandler that caches OMGraphicLists
@@ -188,8 +188,8 @@ public class VPFFeatureCache extends CacheHandler {
      * FeatureCacheGraphicList type will be unknown. This method is only defined
      * to implement the CacheHandler abstract method.
      */
-    public CacheObject load(String key) {
-        return load(key, null);
+    public CacheObject load(Object key) {
+        return load(key.toString(), null);
     }
 
     /**

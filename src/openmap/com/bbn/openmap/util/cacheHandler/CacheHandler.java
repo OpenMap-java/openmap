@@ -24,7 +24,8 @@
 
 package com.bbn.openmap.util.cacheHandler;
 
-import com.bbn.openmap.util.Debug;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A base cache support object. Based on the
@@ -36,6 +37,8 @@ import com.bbn.openmap.util.Debug;
 public abstract class CacheHandler {
     protected CacheObject[] objs;
     protected int logicalClock;
+
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.util.cacheHandler.CacheHandler");
 
     public static int DEFAULT_MAX_CACHE_SIZE = 25;
 
@@ -156,9 +159,8 @@ public abstract class CacheHandler {
                 if (i == 0) {
                     // there is nothing in the cache.
                     objs[0] = newObj;
-                    if (Debug.debugging("cache")) {
-                        Debug.output("CacheHandler: was empty - added "
-                                + newObj.id);
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("was empty - added " + newObj.id);
                     }
 
                     return;
@@ -173,9 +175,9 @@ public abstract class CacheHandler {
                 // We are at the index of the last taken spot, and the
                 // next place is available.
                 objs[i + 1] = newObj;
-                if (Debug.debugging("cache")) {
-                    Debug.output("CacheHandler: had room - added " + newObj.id
-                            + " to the " + i + " spot.");
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("had room - added " + newObj.id + " to the "
+                            + i + " spot.");
                 }
                 return;
             }
@@ -194,8 +196,8 @@ public abstract class CacheHandler {
         }
 
         if (LUIndex != -1) {
-            if (Debug.debugging("cache")) {
-                Debug.output("CacheHandler: Tossing " + objs[LUIndex].id
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Tossing " + objs[LUIndex].id
                         + " from cache to add " + newObj.id);
             }
             objs[LUIndex] = newObj;
@@ -206,7 +208,7 @@ public abstract class CacheHandler {
     /**
      * Return a ListIterator of the cache objects.
      */
-    public java.util.ListIterator listIterator() {
+    public java.util.ListIterator<CacheObject> listIterator() {
         return java.util.Arrays.asList(objs).listIterator();
     }
 }

@@ -51,35 +51,32 @@ import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The DTEDFrameCacheLayer fills the screen with DTED data. To view
- * the DTED iamges, the projection has to be set in an ARC projection,
- * which OpenMap calls the CADRG or LLXY projection. In Gesture mode,
- * clicking on the map will cause the DTEDFrameCacheLayer to place a
- * point on the window and show the elevation of that point. The
- * Gesture response is not dependent on the scale or projection of the
- * screen.
+ * The DTEDFrameCacheLayer fills the screen with DTED data. To view the DTED
+ * iamges, the projection has to be set in an ARC projection, which OpenMap
+ * calls the CADRG or LLXY projection. In Gesture mode, clicking on the map will
+ * cause the DTEDFrameCacheLayer to place a point on the window and show the
+ * elevation of that point. The Gesture response is not dependent on the scale
+ * or projection of the screen.
  * <P>
  * 
- * The DTEDFrameCacheLayer uses the DTEDCacheHandler to get the images
- * it needs. The DTEDFrameCacheLayer receives projection change
- * events, and then asks the cache handler for the images it needs
- * based on the new projection.
+ * The DTEDFrameCacheLayer uses the DTEDCacheHandler to get the images it needs.
+ * The DTEDFrameCacheLayer receives projection change events, and then asks the
+ * cache handler for the images it needs based on the new projection.
  * 
- * The DTEDFrameCacheLayer also relies on properties to set its
- * variables, such as the dted frame paths (there can be several at a
- * time), the opaqueness of the frame images, number of colors to use,
- * and some other display variables. The DTEDFrameCacheLayer
- * properties look something like this:
+ * The DTEDFrameCacheLayer also relies on properties to set its variables, such
+ * as the dted frame paths (there can be several at a time), the opaqueness of
+ * the frame images, number of colors to use, and some other display variables.
+ * The DTEDFrameCacheLayer properties look something like this:
  * <P>
  * 
- * NOTE: Make sure your DTED file and directory names are in lower
- * case. You can use the com.bbn.openmap.layer.rpf.ChangeCase class to
- * make modifications if necessary.
+ * NOTE: Make sure your DTED file and directory names are in lower case. You can
+ * use the com.bbn.openmap.layer.rpf.ChangeCase class to make modifications if
+ * necessary.
  * <P>
  * 
  * <pre>
- *  
- *   
+ * 
+ * 
  *    #------------------------------
  *    # Properties for DTEDFrameCacheLayer
  *    #------------------------------
@@ -110,8 +107,8 @@ import com.bbn.openmap.util.PropUtils;
  *    #-------------------------------------
  *    # End of properties for DTEDFrameCacheLayer
  *    #-------------------------------------
- *    
- *   
+ * 
+ * 
  * </pre>
  * 
  * @see com.bbn.openmap.layer.rpf.ChangeCase
@@ -137,8 +134,7 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
     DTEDLocation location = null;
 
     /**
-     * Instances of this class are used to display elevation labels on
-     * the map.
+     * Instances of this class are used to display elevation labels on the map.
      */
     static class DTEDLocation {
         OMText text;
@@ -186,19 +182,18 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * The default constructor for the Layer. All of the attributes
-     * are set to their default values.
+     * The default constructor for the Layer. All of the attributes are set to
+     * their default values.
      */
     public DTEDFrameCacheLayer() {
         setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
     }
 
     /**
-     * The default constructor for the Layer. All of the attributes
-     * are set to their default values.
+     * The default constructor for the Layer. All of the attributes are set to
+     * their default values.
      * 
-     * @param dfc paths to the DTED directories that hold level 0 and
-     *        1 data.
+     * @param dfc paths to the DTED directories that hold level 0 and 1 data.
      */
     public DTEDFrameCacheLayer(
             com.bbn.openmap.dataAccess.dted.DTEDFrameCache dfc) {
@@ -207,9 +202,8 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
     }
 
     public void setFrameCache(com.bbn.openmap.dataAccess.dted.DTEDFrameCache dfc) {
-        if (cache != null) {
-            cache.setFrameCache(dfc);
-        }
+        cache.setFrameCache(dfc);
+        cache.resetCache();
     }
 
     public com.bbn.openmap.dataAccess.dted.DTEDFrameCache getFrameCache() {
@@ -217,6 +211,14 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
             return cache.getFrameCache();
         } else
             return null;
+    }
+
+    public DTEDFrameCacheHandler getCache() {
+        return cache;
+    }
+
+    public void setCache(DTEDFrameCacheHandler cache) {
+        this.cache = cache;
     }
 
     protected void setDefaultValues() {
@@ -268,20 +270,19 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * A flag to keep track of when the first time a warning was put
-     * up if the projection isn't EquiArc.
+     * A flag to keep track of when the first time a warning was put up if the
+     * projection isn't EquiArc.
      */
     protected boolean firstProjectionWarningSent = false;
 
     /**
-     * Prepares the graphics for the layer. This is where the
-     * getRectangle() method call is made on the dted.
+     * Prepares the graphics for the layer. This is where the getRectangle()
+     * method call is made on the dted.
      * <p>
-     * Occasionally it is necessary to abort a prepare call. When this
-     * happens, the map will set the cancel bit in the LayerThread,
-     * (the thread that is running the prepare). If this Layer needs
-     * to do any cleanups during the abort, it should do so, but
-     * return out of the prepare asap.
+     * Occasionally it is necessary to abort a prepare call. When this happens,
+     * the map will set the cancel bit in the LayerThread, (the thread that is
+     * running the prepare). If this Layer needs to do any cleanups during the
+     * abort, it should do so, but return out of the prepare asap.
      * 
      */
     public synchronized OMGraphicList prepare() {
@@ -396,8 +397,8 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Get whether the cache will be killed when the layer is removed
-     * from the map.
+     * Get whether the cache will be killed when the layer is removed from the
+     * map.
      */
     public boolean getKillCache() {
         return killCache;

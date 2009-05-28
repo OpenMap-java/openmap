@@ -28,45 +28,42 @@ import java.util.Properties;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameUtil;
 import com.bbn.openmap.io.BinaryFile;
-import com.bbn.openmap.layer.util.cacheHandler.CacheHandler;
-import com.bbn.openmap.layer.util.cacheHandler.CacheObject;
 import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
+import com.bbn.openmap.util.cacheHandler.CacheHandler;
+import com.bbn.openmap.util.cacheHandler.CacheObject;
 
 /**
- * The DTEDFrameCache is an object that retrieves DTED paths, frames
- * or elevation values, given a latitude, logitude and dted level. It
- * maintains a collection of the frames it has already used for
- * quicker access later. The size of the cache is user-determined, and
- * the cache also relies on user provided paths to the dted directory,
- * which is the top level directory in a dted file structure. The
- * paths are provided in a String array, so you can have data in
- * different places on a system, including a CDROM drive. Because
- * older DTED Level 2 data has the same name extension as Level 1
- * data, a separate array of pathnames is available for that old data.
- * Level 0 and 1 data should be lumped together, or listed in the same
- * array of paths. Newer level 2 data with the .dt2 extension should
- * be listed in the regular dted path property with the level 0 and 1
- * data.
+ * The DTEDFrameCache is an object that retrieves DTED paths, frames or
+ * elevation values, given a latitude, logitude and dted level. It maintains a
+ * collection of the frames it has already used for quicker access later. The
+ * size of the cache is user-determined, and the cache also relies on user
+ * provided paths to the dted directory, which is the top level directory in a
+ * dted file structure. The paths are provided in a String array, so you can
+ * have data in different places on a system, including a CDROM drive. Because
+ * older DTED Level 2 data has the same name extension as Level 1 data, a
+ * separate array of pathnames is available for that old data. Level 0 and 1
+ * data should be lumped together, or listed in the same array of paths. Newer
+ * level 2 data with the .dt2 extension should be listed in the regular dted
+ * path property with the level 0 and 1 data.
  */
 public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
     /** The elevation value returned if there is no data at a lat/lon. */
     public final static int NO_DATA = -500;
     /**
-     * The maxumim DTED level to check for data, given a lat/lon and a
-     * path to a dted data directory.
+     * The maxumim DTED level to check for data, given a lat/lon and a path to a
+     * dted data directory.
      */
     public final static int MAX_DTED_LEVEL = 1;
     /** An array of strings representing data directory paths. */
     protected String[] dtedDirPaths;
     /**
-     * An array of strings available to represent old level 2 data
-     * directory paths. We have to do this because you couldn't tell
-     * the difference between level 1 and level 2 just by looking at
-     * it, which is done by looking at the data extension. Newer data
-     * is fixed, meaning that the new data meets the data
-     * specification.
+     * An array of strings available to represent old level 2 data directory
+     * paths. We have to do this because you couldn't tell the difference
+     * between level 1 and level 2 just by looking at it, which is done by
+     * looking at the data extension. Newer data is fixed, meaning that the new
+     * data meets the data specification.
      */
     protected String[] dted2DirPaths;
     /**
@@ -91,12 +88,11 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
     }
 
     /**
-     * Create the cache with paths to search for frames, and the
-     * maximum number of frames to keep on hand. Assumes the paths
-     * given are for level 0 and 1 data.
+     * Create the cache with paths to search for frames, and the maximum number
+     * of frames to keep on hand. Assumes the paths given are for level 0 and 1
+     * data.
      * 
-     * @param dtedPaths path to the level 0 and level 1 dted
-     *        directories
+     * @param dtedPaths path to the level 0 and level 1 dted directories
      * @param max_size max number of frames to keep in the cache..
      */
     public DTEDFrameCache(String[] dtedPaths, int max_size) {
@@ -105,11 +101,10 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
     }
 
     /**
-     * Create the cache with paths to search for frames, and the
-     * maximum number of frames to keep on hand.
+     * Create the cache with paths to search for frames, and the maximum number
+     * of frames to keep on hand.
      * 
-     * @param dtedPaths path to the level 0 and level 1 dted
-     *        directories
+     * @param dtedPaths path to the level 0 and level 1 dted directories
      * @param dted2Paths paths to the level 2 dted directories
      * @param max_size max number of frames to keep in the cache..
      */
@@ -140,9 +135,9 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
     }
 
     /**
-     * A utility to find the path to a dted file, given a lat, lon and
-     * a dted level. Assumes that paths have been given to the cache.
-     * Lat/lons in decimal degrees.
+     * A utility to find the path to a dted file, given a lat, lon and a dted
+     * level. Assumes that paths have been given to the cache. Lat/lons in
+     * decimal degrees.
      * 
      * @return complete path to file with lat/lon.
      * @param lat latitude of point
@@ -160,11 +155,11 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
         // HACK to handle old DTED level 2 data, not needed for new
         // data with .dt2 extension that should be included in the
         // first dted path.
-//        if (ret == null && level == 2) {
-//            latString = DTEDFrameUtil.latToFileString((float) lat, 1);
-//            partialFile = "/" + lonString + "/" + latString;
-//            ret = findFileName(dted2DirPaths, partialFile);
-//        }
+        // if (ret == null && level == 2) {
+        // latString = DTEDFrameUtil.latToFileString((float) lat, 1);
+        // partialFile = "/" + lonString + "/" + latString;
+        // ret = findFileName(dted2DirPaths, partialFile);
+        // }
 
         return ret;
     }
@@ -173,8 +168,8 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
      * Method to check the searchPaths for a file.
      * 
      * @param searchPaths an array of dted root directories
-     * @param partialFile the relative pathname of a dted frame file
-     *        from the dted root.
+     * @param partialFile the relative pathname of a dted frame file from the
+     *        dted root.
      * @return the name of the file, or null if not found.
      */
     protected String findFileName(String[] searchPaths, String partialFile) {
@@ -208,13 +203,11 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
     }
 
     /**
-     * A private class that makes sure that cached frames get disposed
-     * properly.
+     * A private class that makes sure that cached frames get disposed properly.
      */
     private static class DTEDCacheObject extends CacheObject {
         /**
-         * Construct a DTEDCacheObject, just calls superclass
-         * constructor
+         * Construct a DTEDCacheObject, just calls superclass constructor
          * 
          * @param id passed to superclass
          * @param obj passed to superclass
@@ -224,8 +217,8 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
         }
 
         /**
-         * Calls dispose() on the contained frame, to make it eligible
-         * for garbage collection.
+         * Calls dispose() on the contained frame, to make it eligible for
+         * garbage collection.
          */
         public void finalize() {
             ((DTEDSubframedFrame) obj).dispose();
@@ -233,14 +226,15 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
     }
 
     /**
-     * Load a dted frame into the cache, based on the path of the
-     * frame as a key.
+     * Load a dted frame into the cache, based on the path of the frame as a
+     * key.
      * 
      * @param dtedFramePath complete path to the frame.
      * @return DTED frame, hidden as a CacheObject.
      */
-    public CacheObject load(String dtedFramePath) {
-        if (dtedFramePath != null) {
+    public CacheObject load(Object key) {
+        if (key != null) {
+            String dtedFramePath = key.toString();
             // If it's a DTED level 0 frame, read it all in,
             // otherwise, read just what you need.
             DTEDSubframedFrame frame = new DTEDSubframedFrame(dtedFramePath, dtedFramePath.endsWith("dt0"));
@@ -254,21 +248,18 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
     }
 
     /**
-     * This version of resizeCache is for projection changes, where
-     * the post/pixel spacing of the images has changed, and the
-     * images need to be rebuilt. The cache size will change based on
-     * scale, because more frames are needed for smaller scales. If
-     * the number of subframes in either direction is zero, then the
-     * resize becomes non-destructive, which means that the frames
-     * will not delete their subframes. If the scale of the map
-     * changes, then the frame subframe sizes need to be recalculated,
-     * and a destructive resizing is necessary.
+     * This version of resizeCache is for projection changes, where the
+     * post/pixel spacing of the images has changed, and the images need to be
+     * rebuilt. The cache size will change based on scale, because more frames
+     * are needed for smaller scales. If the number of subframes in either
+     * direction is zero, then the resize becomes non-destructive, which means
+     * that the frames will not delete their subframes. If the scale of the map
+     * changes, then the frame subframe sizes need to be recalculated, and a
+     * destructive resizing is necessary.
      * 
      * @param max_size the maximum number of frames in the cache.
-     * @param num_x_subframes the number of horizontal subframes in
-     *        each frame.
-     * @param num_y_subframes the number of vertical subframes in each
-     *        frame.
+     * @param num_x_subframes the number of horizontal subframes in each frame.
+     * @param num_y_subframes the number of vertical subframes in each frame.
      */
     public void resizeCache(int max_size, int num_x_subframes,
                             int num_y_subframes) {
@@ -335,13 +326,12 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
     }
 
     /**
-     * This version of resizeCache is for screen size changes, where
-     * the number of frames kept on hand in the cache must change, but
-     * the images themselves don't have to because the pixel/posting
-     * spacing hasn't changed in the projection. The frames already in
-     * the cache are re-added to the new cache, if the cache size is
-     * increasing. If the cache size is shrinking, then as many as
-     * will fit are added to the new cache.
+     * This version of resizeCache is for screen size changes, where the number
+     * of frames kept on hand in the cache must change, but the images
+     * themselves don't have to because the pixel/posting spacing hasn't changed
+     * in the projection. The frames already in the cache are re-added to the
+     * new cache, if the cache size is increasing. If the cache size is
+     * shrinking, then as many as will fit are added to the new cache.
      * 
      * @param max_size the new size of the cache.
      */
@@ -372,41 +362,40 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
 
     /**
      * Return the two-dimensional matrix of elevation posts (heights)
-     * representing coverage of a given geographical rectangle. The
-     * matrix represents coverage in an Equal Arc projection, and
-     * that's why the rectangle is defined by the projection
-     * parameters.
+     * representing coverage of a given geographical rectangle. The matrix
+     * represents coverage in an Equal Arc projection, and that's why the
+     * rectangle is defined by the projection parameters.
      * 
      * @param proj the projection describing the wanted area
-     * @param dtedLevel the DTED level (0, 1, 2) to be used, which
-     *        describes the geographicsal spacing between the posts.
-     * @return array of elevations, in meters. Spacing depends on the
-     *         DTED level.
+     * @param dtedLevel the DTED level (0, 1, 2) to be used, which describes the
+     *        geographicsal spacing between the posts.
+     * @return array of elevations, in meters. Spacing depends on the DTED
+     *         level.
      */
     public short[][] getElevations(EqualArc proj, int dtedLevel) {
         Point2D ul = proj.getUpperLeft();
         Point2D lr = proj.getLowerRight();
 
-        return getElevations((float)ul.getY(),
-                (float)ul.getX(),
-                (float)lr.getY(),
-                (float)lr.getX(),
+        return getElevations((float) ul.getY(),
+                (float) ul.getX(),
+                (float) lr.getY(),
+                (float) lr.getX(),
                 dtedLevel);
     }
 
     /**
      * Return the two-dimensional matrix of elevation posts (heights)
-     * representing coverage of a given geographical rectangle. The
-     * matrix represents coverage in an Equal Arc projection. Doesn't
-     * handle projections which cross the dateline - You must handle
-     * that yourself by making two inquiries.
+     * representing coverage of a given geographical rectangle. The matrix
+     * represents coverage in an Equal Arc projection. Doesn't handle
+     * projections which cross the dateline - You must handle that yourself by
+     * making two inquiries.
      * 
      * @param ullat upper latitude, in decimal degrees
      * @param ullon left longitude, in decimal degrees
      * @param lrlat lower latitude, in decimal degrees
      * @param lrlon right longitude, in decimal degrees
-     * @param dtedLevel the DTED level (0, 1, 2) to be used, which
-     *        describes the geographicsal spacing between the posts.
+     * @param dtedLevel the DTED level (0, 1, 2) to be used, which describes the
+     *        geographicsal spacing between the posts.
      */
     public short[][] getElevations(float ullat, float ullon, float lrlat,
                                    float lrlon, int dtedLevel) {
@@ -415,30 +404,29 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
 
     /**
      * Return the two-dimensional matrix of elevation posts (heights)
-     * representing coverage of a given geographical rectangle. The
-     * matrix represents coverage in an Equal Arc projection. Doesn't
-     * handle projections which cross the dateline - You must handle
-     * that yourself by making two inquiries.
+     * representing coverage of a given geographical rectangle. The matrix
+     * represents coverage in an Equal Arc projection. Doesn't handle
+     * projections which cross the dateline - You must handle that yourself by
+     * making two inquiries.
      * <P>
-     * This method is slightly different that the one above, because
-     * it includes a input variable DTEDFrame. There is an inherent
-     * problem in the algorithm if some of the DTED frames are
-     * missing. It's too difficult to calculate the size of the return
-     * array if you don't know that any frames are available. So, you
-     * should always use the method above, which calls this method
-     * with a null refFrame. If some of the DTED frames are missing,
-     * then this method is called recursively, with a frame to use for
-     * calculating post spacings at the right time.
+     * This method is slightly different that the one above, because it includes
+     * a input variable DTEDFrame. There is an inherent problem in the algorithm
+     * if some of the DTED frames are missing. It's too difficult to calculate
+     * the size of the return array if you don't know that any frames are
+     * available. So, you should always use the method above, which calls this
+     * method with a null refFrame. If some of the DTED frames are missing, then
+     * this method is called recursively, with a frame to use for calculating
+     * post spacings at the right time.
      * 
      * @param ullat upper latitude, in decimal degrees
      * @param ullon left longitude, in decimal degrees
      * @param lrlat lower latitude, in decimal degrees
      * @param lrlon right longitude, in decimal degrees
-     * @param dtedLevel the DTED level (0, 1, 2) to be used, which
-     *        describes the geographicsal spacing between the posts.
+     * @param dtedLevel the DTED level (0, 1, 2) to be used, which describes the
+     *        geographicsal spacing between the posts.
      * @param refFrame DTEDFrame used to calculate measurements.
-     * @return array of elevations, in meters. Spacing depends on the
-     *         DTED level.
+     * @return array of elevations, in meters. Spacing depends on the DTED
+     *         level.
      */
     protected short[][] getElevations(float ullat, float ullon, float lrlat,
                                       float lrlon, int dtedLevel,
@@ -466,7 +454,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
             lower = ullat;
         }
 
-        //  These are the limits of the lat/lons per frame searched
+        // These are the limits of the lat/lons per frame searched
         float upperlat = 0;
         float upperlon = 0;
         float lowerlat = 0;
@@ -475,7 +463,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
         int xSize = (int) (Math.ceil(right) - Math.floor(left));
         int ySize = (int) (Math.ceil(upper) - Math.floor(lower));
 
-        //      System.out.println("Going with size = " + xSize + "x" +
+        // System.out.println("Going with size = " + xSize + "x" +
         // ySize);
 
         int[] xLengths = new int[xSize];
@@ -511,13 +499,15 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
                 else
                     upperlat = (float) Math.floor(lower) + (float) (y + 1);
 
-                DTEDSubframedFrame thisFrame = get(lowerlat, lowerlon, dtedLevel);
+                DTEDSubframedFrame thisFrame = get(lowerlat,
+                        lowerlon,
+                        dtedLevel);
 
                 if (thisFrame != null) {
-                    //                  System.out.println("Getting elev for " +
-                    //                                     upperlat + ", " +
-                    //                                     lowerlon + ", " +
-                    //                                     lowerlat+ ", " + upperlon);
+                    // System.out.println("Getting elev for " +
+                    // upperlat + ", " +
+                    // lowerlon + ", " +
+                    // lowerlat+ ", " + upperlon);
                     es[x][y] = thisFrame.getElevations(upperlat,
                             lowerlon,
                             lowerlat,
@@ -539,10 +529,10 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
 
                     } else {
                         if (frame != null) {
-                            //  Well, we have a frame to do
-                            //  calculations on, and we know we need
-                            //  to do at least one calculation, so
-                            //  might as well go and do this right...
+                            // Well, we have a frame to do
+                            // calculations on, and we know we need
+                            // to do at least one calculation, so
+                            // might as well go and do this right...
                             return getElevations(ullat,
                                     ullon,
                                     lrlat,
@@ -572,7 +562,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
         for (y = 0; y < yLengths.length; y++)
             yLength += yLengths[y];
 
-        //      System.out.println("Creating a matrix: " + xLength + "x" +
+        // System.out.println("Creating a matrix: " + xLength + "x" +
         // yLength);
         short[][] matrix = new short[xLength][yLength];
 
@@ -723,15 +713,15 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
         DTEDFrameCache dfc = new DTEDFrameCache(args, args, 10);
 
         // 35.965065 -121.198715
-        //35.998 36.002 lon -121.002 -120.998
+        // 35.998 36.002 lon -121.002 -120.998
         float ullat = 37.002f;
         float ullon = -121.002f;
         float lrlat = 35.998f;
         float lrlon = -119.998f;
 
-        //      System.out.println("Getting elevations for " +
-        //                         ullat + ", " + ullon + ", " +
-        //                         lrlat + ", " + lrlon);
+        // System.out.println("Getting elevations for " +
+        // ullat + ", " + ullon + ", " +
+        // lrlat + ", " + lrlon);
         short[][] e = dfc.getElevations(ullat, ullon, lrlat, lrlon, 0);
         if (e != null) {
             for (int i = e[0].length - 1; i >= 0; i--) {
@@ -747,4 +737,3 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
 
     }
 }
-

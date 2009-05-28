@@ -29,11 +29,11 @@ import java.util.Vector;
 
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.io.BinaryFile;
-import com.bbn.openmap.layer.util.cacheHandler.CacheHandler;
-import com.bbn.openmap.layer.util.cacheHandler.CacheObject;
 import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
+import com.bbn.openmap.util.cacheHandler.CacheHandler;
+import com.bbn.openmap.util.cacheHandler.CacheObject;
 
 /**
  * The DTEDFrameCache is an object that retrieves DTED paths, frames or
@@ -48,16 +48,16 @@ import com.bbn.openmap.util.PropUtils;
  * <P>
  * 
  * <pre>
- *        
- *        
+ * 
+ * 
  *         frameCache.cacheSize=40
  *         frameCache.directoryHandlers=dteddir1 dteddir2
  *         frameCache.dteddir1.translator=com.bbn.openmap.dataAccess.dted.StandardDTEDNameTranslator
  *         frameCache.dteddir1.path=/data/dted
  *         frameCache.dteddir2.translator=com.bbn.openmap.dataAccess.dted.StandardDTEDNameTranslator
  *         frameCache.dteddir2.path=/data/dted
- *         
- *         
+ * 
+ * 
  * </pre>
  * 
  * A DTEDDirectoryHandler needs to be specified for each DTED directory you want
@@ -216,8 +216,9 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
      * @param dtedFramePath complete path to the frame.
      * @return DTED frame, hidden as a CacheObject.
      */
-    public CacheObject load(String dtedFramePath) {
-        if (dtedFramePath != null) {
+    public CacheObject load(Object key) {
+        if (key != null) {
+            String dtedFramePath = key.toString();
             DTEDFrame frame = new DTEDFrame(dtedFramePath, true);
             if (frame.frame_is_valid) {
                 return new DTEDCacheObject(dtedFramePath, frame);
