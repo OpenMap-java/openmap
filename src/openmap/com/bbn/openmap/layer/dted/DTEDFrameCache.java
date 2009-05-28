@@ -160,11 +160,11 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
         // HACK to handle old DTED level 2 data, not needed for new
         // data with .dt2 extension that should be included in the
         // first dted path.
-        if (ret == null && level == 2) {
-            latString = DTEDFrameUtil.latToFileString((float) lat, 1);
-            partialFile = "/" + lonString + "/" + latString;
-            ret = findFileName(dted2DirPaths, partialFile);
-        }
+//        if (ret == null && level == 2) {
+//            latString = DTEDFrameUtil.latToFileString((float) lat, 1);
+//            partialFile = "/" + lonString + "/" + latString;
+//            ret = findFileName(dted2DirPaths, partialFile);
+//        }
 
         return ret;
     }
@@ -357,7 +357,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
      * @param lon in decimal degrees.
      */
     public int getElevation(float lat, float lon) {
-        for (int i = /* dted level */1; i >= /* dted level */0; i--) {
+        for (int i = /* dted level */2; i >= /* dted level */0; i--) {
             DTEDSubframedFrame frame = null;
             String dtedFileName = findFileName((double) lat, (double) lon, i);
 
