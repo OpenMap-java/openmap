@@ -116,4 +116,8 @@ class DefaultLayerAdapter implements IWmsLayer {
         // DO NOTHING
     }
 
+    public Legend getLegend() {
+        return null;
+    }
+
 }

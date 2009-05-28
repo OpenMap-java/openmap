@@ -35,6 +35,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -118,7 +119,7 @@ public class ImageServer implements
     /**
      * Hashtable of ImageFormatters available to be used.
      */
-    protected Hashtable imageFormatters;
+    protected Map<String, ImageFormatter> imageFormatters;
 
     /** The array of layers on the map. First is on top. */
     protected Layer[] layers;
@@ -190,7 +191,7 @@ public class ImageServer implements
      * The Hashtable is for reusing any layers that may already be instantiated.
      */
     public ImageServer(String prefix, Properties props,
-            Hashtable instantiatedLayers) {
+            Map<String, Layer> instantiatedLayers) {
         setProperties(prefix, props, instantiatedLayers);
     }
 
@@ -295,7 +296,7 @@ public class ImageServer implements
      * @return a byte[] representing the formatted image.
      */
     public byte[] createImage(Projection proj, int scaledWidth,
-                              int scaledHeight, List showLayers) {
+                              int scaledHeight, List<String> showLayers) {
         return createImage(proj,
                 scaledWidth,
                 scaledHeight,
@@ -322,7 +323,7 @@ public class ImageServer implements
      * @return a byte[] representing the formatted image.
      */
     public byte[] createImage(Projection proj, int scaledWidth,
-                              int scaledHeight, List showLayers,
+                              int scaledHeight, List<String> showLayers,
                               Paint background) {
 
         Debug.message("imageserver",
@@ -568,7 +569,7 @@ public class ImageServer implements
      * have a prefix in the file.
      */
     public void setProperties(String prefix, Properties props) {
-        setProperties(prefix, props, (Hashtable) null);
+        setProperties(prefix, props, (Map<String, Layer>) null);
     }
 
     /**
@@ -576,7 +577,7 @@ public class ImageServer implements
      * have a prefix in the file.
      */
     public void setProperties(String prefix, Properties props,
-                              Hashtable instantiatedLayers) {
+                              Map<String, Layer> instantiatedLayers) {
         setPropertyPrefix(prefix);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
@@ -680,7 +681,7 @@ public class ImageServer implements
         } else {
             // Use the vector as a growable array, and add the layers
             // to it that the mask says should be there.
-            Vector layerVector = new Vector(layers.length);
+            Vector<Layer> layerVector = new Vector<Layer>(layers.length);
             for (int i = 0; i < layers.length; i++) {
                 if ((layerMask & (0x00000001 << i)) != 0) {
                     layerVector.add(layers[i]);
@@ -736,7 +737,7 @@ public class ImageServer implements
      * 
      * @return Hashtable of ImageFormatters.
      */
-    public synchronized Hashtable getFormatters() {
+    public synchronized Map<String, ImageFormatter> getFormatters() {
         return imageFormatters;
     }
 
@@ -748,7 +749,7 @@ public class ImageServer implements
      * @param defaultFormatterKey the key label of the formatter to use for a
      *        default.
      */
-    public synchronized void setFormatters(Hashtable iFormatters,
+    public synchronized void setFormatters(Map<String, ImageFormatter> iFormatters,
                                            String defaultFormatterKey) {
         imageFormatters = iFormatters;
         formatter = (ImageFormatter) imageFormatters.get(defaultFormatterKey.intern());
@@ -770,13 +771,13 @@ public class ImageServer implements
         // First, look at the formatters string to get a marker list
         // of available formatters.
         if (formattersString != null) {
-            Vector markerNames = PropUtils.parseSpacedMarkers(formattersString);
-            Vector formatters = ComponentFactory.create(markerNames, p);
+            Vector<String> markerNames = PropUtils.parseSpacedMarkers(formattersString);
+            Vector<?> formatters = ComponentFactory.create(markerNames, p);
 
             int size = formatters.size();
 
             if (imageFormatters == null) {
-                imageFormatters = new Hashtable(size);
+                imageFormatters = new Hashtable<String, ImageFormatter>(size);
             }
 
             for (int i = 0; i < size; i++) {
@@ -800,7 +801,7 @@ public class ImageServer implements
      * Create an array of Layers from a properties object.
      */
     protected Layer[] getLayers(Properties p) {
-        return getLayers(p, (Hashtable) null);
+        return getLayers(p, (Map<String, Layer>) null);
     }
 
     /**
@@ -814,7 +815,7 @@ public class ImageServer implements
      * @param instantiatedLayers a hashtable containing layers, with the prefix
      *        layer name used as the key.
      */
-    protected Layer[] getLayers(Properties p, Hashtable instantiatedLayers) {
+    protected Layer[] getLayers(Properties p, Map<String, Layer> instantiatedLayers) {
 
         String layersValue;
         String prefix = PropUtils.getScopedPropertyPrefix(this);
@@ -833,14 +834,14 @@ public class ImageServer implements
             }
         }
 
-        Vector layerNames = PropUtils.parseSpacedMarkers(layersValue);
+        Vector<String> layerNames = PropUtils.parseSpacedMarkers(layersValue);
 
         if (Debug.debugging("imageserver")) {
             Debug.output("OpenMap.getLayers(): " + layerNames);
         }
 
         int nLayerNames = layerNames.size();
-        Vector layers = new Vector(nLayerNames);
+        Vector<Layer> layers = new Vector<Layer>(nLayerNames);
 
         for (int i = 0; i < nLayerNames; i++) {
             String layerName = (String) layerNames.elementAt(i);

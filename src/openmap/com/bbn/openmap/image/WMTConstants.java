@@ -52,6 +52,12 @@ public interface WMTConstants {
      * request
      */
     public final static String GETFEATUREINFO = "GetFeatureInfo";
+    
+    /**
+     * Use this request parameter to to get a image with legend
+     */
+    public final static String GETLEGENDGRAPHIC = "GetLegendGraphic";
+    
     /**
      * WMT Version (WMTVER), floating point industry. Required for WMT
      * requests.
@@ -59,11 +65,17 @@ public interface WMTConstants {
     public final static String WMTVER = "WMTVER";
     /** Request (REQUEST) type. Required for WMT requests. */
     public final static String REQUEST = "REQUEST";
+    
     /**
      * Layer list (LAYERS), comma separated layer names. Required for
-     * WMT requests.
+     * WMS GetMap and GetFeatureInfo request.
      */
     public final static String LAYERS = "LAYERS";
+    
+    /**
+     * Layer name (LAYER)Required for WMS GetLegendGraphic request.
+     */
+    public final static String LAYER = "LAYER";
     
     /**
      * Query Layer list (QUERY_LAYERS), comma separated layer names. Required for
@@ -76,6 +88,12 @@ public interface WMTConstants {
      * requested layer. Required for WMT requests.
      */
     public final static String STYLES = "STYLES";
+    
+    /**
+     * Style name (STYLE) parameter name. Used by WMS GetLegendGraphic
+     */
+    public final static String STYLE = "STYLE";
+    
     /**
      * Spatial Reference System identifier (SRS). Required for WMT
      * requests.

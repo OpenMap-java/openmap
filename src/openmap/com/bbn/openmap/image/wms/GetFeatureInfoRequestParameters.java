@@ -9,7 +9,7 @@ class GetFeatureInfoRequestParameters extends GetMapRequestParameters {
 
     public int y;
 
-    public final List queryLayerNames = new ArrayList();
+    public final List<String> queryLayerNames = new ArrayList<String>();
 
     public String infoFormat;
 

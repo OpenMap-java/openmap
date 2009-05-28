@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -55,19 +54,20 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
      */
     private CapabilitiesSupport capabilities;
 
-    private Map wmsLayerByName = new HashMap();
-    
-    private List wmsLayers = new ArrayList();
+    private Map<String, IWmsLayer> wmsLayerByName = new HashMap<String, IWmsLayer>();
+
+    private List<IWmsLayer> wmsLayers = new ArrayList<IWmsLayer>();
 
     private WmsLayerFactory wmsLayerFactory;
-    
-    private Map imageFormatterByContentType = new HashMap();
+
+    private Map<String, ImageFormatter> imageFormatterByContentType = new HashMap<String, ImageFormatter>();
 
     /**
      * Creates a new WmsRequestHandler object.
      * 
      * @param port
-     * @param props Properties from openmap.properties
+     * @param props
+     *            Properties from openmap.properties
      * @param mapLayerHandler
      * @param wmsLayersMap
      * @throws IOException
@@ -77,7 +77,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
 
         super(props);
         setProperties(null, props);
-        
+
         // separate antialias property for wms.
         boolean antialias = PropUtils.booleanFromProperties(props, "openmap.wms."
                 + AntiAliasingProperty, false);
@@ -89,17 +89,16 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         // WMS (e.g getCapabilities method)
         wmsLayerFactory = new WmsLayerFactory(props);
         createWmsLayers();
-        
+
         // create a Map of all formatters by their contentType
-        for (Iterator it = getFormatters().values().iterator(); it.hasNext();) {
-            ImageFormatter formatter = (ImageFormatter) it.next();
+        for (ImageFormatter formatter : getFormatters().values()) {
             imageFormatterByContentType.put(formatter.getContentType(), formatter);
         }
-        
+
         // read from configuration fixed part of Capabilities Document returned
         // in getCapabilities method
         capabilities = new CapabilitiesSupport(props, wmsScheme, wmsHostName, wmsPort, wmsUrlPath);
-        List formatsList = new ArrayList(imageFormatterByContentType.keySet());
+        List<String> formatsList = new ArrayList<String>(imageFormatterByContentType.keySet());
         capabilities.setFormats(CapabilitiesSupport.FMT_GETMAP, formatsList);
     }
 
@@ -108,7 +107,8 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
      * which contains additional information for WMS service about given openmap
      * layer.
      * 
-     * For Layers that already implement IWmsLayer, the instances will be the same.
+     * For Layers that already implement IWmsLayer, the instances will be the
+     * same.
      */
     protected void createWmsLayers() {
         wmsLayerByName.clear();
@@ -118,7 +118,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
             createWmsLayers(wmsLayerFactory.createWmsLayer(layer));
         }
     }
-    
+
     private void createWmsLayers(IWmsLayer layer) {
         wmsLayerByName.put(layer.getWmsName(), layer);
         wmsLayers.add(layer);
@@ -131,7 +131,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
             }
         }
     }
-    
+
     /**
      * Set the request parameters on all the layers
      * 
@@ -140,16 +140,16 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
      */
     protected void setRequestParametersOnLayers(Properties requestProperties) {
         // use a Set to make sure we only set it once for each layer
-        Set handledNames = new HashSet();
-        for (Iterator it = wmsLayers.iterator(); it.hasNext();) {
-            IWmsLayer wmsLayer = (IWmsLayer) it.next();
+        Set<String> handledNames = new HashSet<String>();
+        for (IWmsLayer wmsLayer : wmsLayers) {
             if (!handledNames.contains(wmsLayer.getWmsName())) {
                 wmsLayer.setRequestParameters(requestProperties);
                 handledNames.add(wmsLayer.getWmsName());
             }
             if (wmsLayer instanceof IWmsNestedLayer) {
                 IWmsNestedLayer nestedLayer = (IWmsNestedLayer) wmsLayer;
-                // make sure the top layer also get info about the request parameters
+                // make sure the top layer also get info about the request
+                // parameters
                 if (!handledNames.contains(nestedLayer.getTopLayer().getWmsName())) {
                     nestedLayer.getTopLayer().setRequestParameters(requestProperties);
                     handledNames.add(nestedLayer.getTopLayer().getWmsName());
@@ -157,13 +157,13 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
             }
         }
     }
-    
+
     protected IWmsLayer getLayerByName(String wmsName) {
         return (IWmsLayer) wmsLayerByName.get(wmsName);
     }
 
     /**
-     * Return the top OpenMap {@link Layer} for the given wms layer name. 
+     * Return the top OpenMap {@link Layer} for the given wms layer name.
      * 
      * @param name
      * @return
@@ -182,9 +182,10 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         if (layer instanceof Layer) {
             return (Layer) layer;
         }
-        throw new IllegalStateException("Top layer must be a OpenMap Layer, not " + layer.getClass());
+        throw new IllegalStateException("Top layer must be a OpenMap Layer, not "
+                + layer.getClass());
     }
-    
+
     /**
      * @param request
      * @param out
@@ -209,6 +210,9 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
             } else if (requestType.equalsIgnoreCase(GETFEATUREINFO)) {
                 Debug.message("ms", "OGCMRH: GetFeatureInfo request...");
                 handleGetFeatureInfoRequest(requestProperties, httpResponse);
+            } else if (requestType.equalsIgnoreCase(GETLEGENDGRAPHIC)) {
+                Debug.message("ms", "OGCMRH: GetFeatureInfo request...");
+                handleGetLegendGraphicRequest(requestProperties, httpResponse);
             } else {
                 throw new WMSException("Invalid REQUEST parameter: " + requestType,
                         WMSException.OPERATIONNOTSUPPORTED);
@@ -257,13 +261,50 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         Paint bgPaint = parameters.background;
 
         checkProjectionType(requestProperties, parameters);
+        checkWidthAndHeight(requestProperties, parameters);
         checkBoundingBox(requestProperties, parameters);
         Proj projection = createProjection(requestProperties, parameters);
-        
+
         checkLayersAndStyles(requestProperties, parameters);
 
-        Debug.message("ms", "handleGetMapRequest: createImage layers:" + parameters.topLayerNames.toString());
-        return createImage(projection, parameters.width, parameters.height, parameters.topLayerNames, bgPaint);
+        Debug.message("ms", "handleGetMapRequest: createImage layers:"
+                + parameters.topLayerNames.toString());
+        return createImage(projection, parameters.width, parameters.height,
+                parameters.topLayerNames, bgPaint);
+    }
+
+    public byte[] handleGetLegendGraphicRequest(Properties requestProperties) throws IOException,
+            MapRequestFormatException, WMSException {
+        GetLegendGraphicRequestParameters parameters = new GetLegendGraphicRequestParameters();
+
+        checkWidthAndHeight(requestProperties, parameters);
+        checkFormat(requestProperties, parameters);
+        setFormatter(parameters.getFormatter());
+        checkLayerAndStyle(requestProperties, parameters);
+
+        Debug.message("ms", "handleGetLegendGraphic: createImage layer:" + parameters.layerName);
+
+        IWmsLayer layer = wmsLayerByName.get(parameters.layerName);
+
+        ImageFormatter imageFormatter = formatter.makeClone();
+        java.awt.Graphics graphics = createGraphics(imageFormatter, parameters.getWidth(),
+                parameters.getHeight());
+
+        if (graphics == null) {
+            return new byte[0];
+        }
+
+        Legend legend = layer.getLegend();
+        if (legend != null) {
+            legend.setSize(parameters.getWidth(), parameters.getHeight());
+            legend.paint(graphics);
+        }
+        
+        byte[] formattedImage = getFormattedImage(imageFormatter, parameters.getWidth(), parameters
+                .getHeight());
+        graphics.dispose();
+        
+        return formattedImage;
     }
 
     /**
@@ -277,6 +318,17 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
             IHttpResponse httpResponse) throws IOException, MapRequestFormatException, WMSException {
         String response = handleGetCapabilitiesRequest(requestProperties);
         httpResponse.writeHttpResponse(HttpConnection.CONTENT_XML, response.getBytes("UTF-8"));
+    }
+
+    /**
+     * Get the {@link CapabilitiesSupport} object. The
+     * {@link CapabilitiesSupport} object can be modified and will be kept as
+     * long as the {@link WmsRequestHandler}.
+     * 
+     * @return
+     */
+    public CapabilitiesSupport getCapabilities() {
+        return capabilities;
     }
 
     /**
@@ -297,12 +349,12 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         Layer[] layers = getLayers();
         for (int i = 0; i < layers.length; i++) {
             if (layers[i].getPropertyPrefix() != null) {
-                capabilities.addLayer(wmsLayerFactory.createWmsLayer(layers[i]));
+                getCapabilities().addLayer(wmsLayerFactory.createWmsLayer(layers[i]));
             }
         }
-        
+
         try {
-            return capabilities.generateXMLString();
+            return getCapabilities().generateXMLString();
         } catch (Exception e) {
             e.printStackTrace();
             // nie ma takiego kodu b³êdu, ale s¹dzê, ¿e powinien byæ
@@ -320,13 +372,27 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
      */
     public void handleGetFeatureInfoRequest(Properties requestProperties, IHttpResponse httpResponse)
             throws IOException, MapRequestFormatException, WMSException {
-        
+
         String contentType = requestProperties.getProperty(INFO_FORMAT);
         String content = handleGetFeatureInfoRequest(requestProperties);
-        
+
         byte[] contentBytes = content.getBytes("UTF-8");
-        
+
         httpResponse.writeHttpResponse(contentType, contentBytes);
+    }
+
+    /**
+     * @param requestProperties
+     * @param out
+     * @throws IOException
+     * @throws MapRequestFormatException
+     * @throws WMSException
+     */
+    public void handleGetLegendGraphicRequest(Properties requestProperties,
+            IHttpResponse httpResponse) throws IOException, MapRequestFormatException, WMSException {
+        byte[] image = handleGetLegendGraphicRequest(requestProperties);
+        String contentType = getFormatter().getContentType();
+        httpResponse.writeHttpResponse(contentType, image);
     }
 
     /**
@@ -349,41 +415,40 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
      */
     public String handleGetFeatureInfoRequest(Properties requestProperties) throws IOException,
             MapRequestFormatException, WMSException {
-        
+
         GetFeatureInfoRequestParameters parameters = new GetFeatureInfoRequestParameters();
-        
+
         checkFormat(requestProperties, parameters);
         setFormatter(parameters.formatter);
         checkBackground(requestProperties, parameters);
         checkProjectionType(requestProperties, parameters);
+        checkWidthAndHeight(requestProperties, parameters);
         checkBoundingBox(requestProperties, parameters);
         checkFeatureInfoPoint(requestProperties, parameters);
-        
+
         checkLayersAndStyles(requestProperties, parameters);
         checkQueryLayers(requestProperties, parameters);
         checkInfoFormat(requestProperties, parameters);
 
         Proj projection = createProjection(requestProperties, parameters);
-        
+
         // TODO: get a user defined FeatureInfoResponse
         FeatureInfoResponse featureInfoResponse = null;
         if (featureInfoResponse == null) {
             // TODO: log that user defined was not found
             featureInfoResponse = new DefaultFeatureInfoResponse();
         }
-        
-        for(Iterator it = parameters.queryLayerNames.iterator(); it.hasNext();){
-            String queryLayerName = (String)it.next();
-            
+
+        for (String queryLayerName : parameters.queryLayerNames) {
             IWmsLayer wmslayer = (IWmsLayer) wmsLayerByName.get(queryLayerName);
             Layer layer = getTopLayerByName(queryLayerName);
-            
+
             layer.setProjection(new ProjectionEvent(this, projection));
-            
+
             LayerFeatureInfoResponse layerResponse = wmslayer.query(parameters.x, parameters.y);
             featureInfoResponse.add(layerResponse);
         }
-        
+
         StringBuffer out = new StringBuffer();
         featureInfoResponse.output(parameters.infoFormat, out);
         return out.toString();
@@ -399,6 +464,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
      * @param scaledHeight
      * @return
      */
+    @Override
     protected byte[] getFormattedImage(ImageFormatter formatter, int scaledWidth, int scaledHeight) {
         Debug.message("imageserver", "ImageServer: using full scale image (unscaled).");
         byte[] formattedImage = formatter.getImageBytes();
@@ -459,13 +525,45 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         if (strSRS == null) {
             throw new WMSException("Missing SRS parameter.");
         }
-        
+
         System.out.println("crs: " + strSRS);
         CoordinateReferenceSystem crs = CoordinateReferenceSystem.getForCode(strSRS);
         if (crs == null) {
             throw new WMSException("Invalid SRS/CRS parameter: " + strSRS, WMSException.INVALIDSRS);
         }
         parameters.crs = crs;
+    }
+
+    private void checkWidthAndHeight(Properties requestProperties,
+            WidthAndHeightRequestParameters parameters) throws WMSException {
+        String strWidth = requestProperties.getProperty(WIDTH);
+        if (strWidth == null) {
+            throw new WMSException("Missing WIDTH parameter.", WMSException.MISSINGDIMENSIONVALUE);
+        }
+        String strHeight = requestProperties.getProperty(HEIGHT);
+        if (strHeight == null) {
+            throw new WMSException("Missing HEIGHT parameter.", WMSException.MISSINGDIMENSIONVALUE);
+        }
+
+        parameters.setWidth(0);
+        try {
+            parameters.setWidth(Integer.parseInt(strWidth));
+            if (parameters.getWidth() <= 0) {
+                throw new WMSException("Invalid value encountered while parsing WIDTH parameter.");
+            }
+        } catch (NumberFormatException e) {
+            throw new WMSException("Invalid value encountered while parsing WIDTH parameter.");
+        }
+        parameters.setHeight(0);
+        try {
+            parameters.setHeight(Integer.parseInt(strHeight));
+            if (parameters.getHeight() <= 0) {
+                throw new WMSException("Invalid value encountered while parsing HEIGHT parameter.");
+            }
+        } catch (NumberFormatException e) {
+            throw new WMSException("Invalid value encountered while parsing HEIGHT parameter.");
+        }
+
     }
 
     /**
@@ -477,14 +575,6 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
      */
     private void checkBoundingBox(Properties requestProperties, GetMapRequestParameters parameters)
             throws WMSException {
-        String strWidth = requestProperties.getProperty(WIDTH);
-        if (strWidth == null) {
-            throw new WMSException("Missing WIDTH parameter.", WMSException.MISSINGDIMENSIONVALUE);
-        }
-        String strHeight = requestProperties.getProperty(HEIGHT);
-        if (strHeight == null) {
-            throw new WMSException("Missing HEIGHT parameter.", WMSException.MISSINGDIMENSIONVALUE);
-        }
         String strBBox = requestProperties.getProperty(BBOX);
         if (strBBox == null) {
             throw new WMSException("Missing BBOX parameter.", WMSException.MISSINGDIMENSIONVALUE);
@@ -518,30 +608,10 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
                             + " confirming to the selected SRS/CRS.",
                     WMSException.INVALIDDIMENSIONVALUE);
         }
-        parameters.width = 0;
-        try {
-            parameters.width = Integer.parseInt(strWidth);
-            if (parameters.width <= 0) {
-                throw new WMSException("Invalid values encountered while parsing WIDTH parameter.");
-            }
-            // Debug.output("intWidth = " + intWidth);
-        } catch (NumberFormatException e) {
-            throw new WMSException("Invalid values encountered while parsing WIDTH parameter.");
-        }
-        parameters.height = 0;
-        try {
-            parameters.height = Integer.parseInt(strHeight);
-            if (parameters.height <= 0) {
-                throw new WMSException("Invalid value encountered while parsing HEIGHT parameter.");
-            }
-            // Debug.output("intHeight = " + intHeight);
-        } catch (NumberFormatException e) {
-            throw new WMSException("Invalid value encountered while parsing HEIGHT parameter.");
-        }
     }
-    
-    private void checkLayersAndStyles(Properties requestProperties, GetMapRequestParameters parameters)
-            throws WMSException {
+
+    private void checkLayersAndStyles(Properties requestProperties,
+            GetMapRequestParameters parameters) throws WMSException {
         String strLayers = requestProperties.getProperty(LAYERS);
         if (strLayers == null) {
             throw new WMSException("LAYERS not specified.", WMSException.LAYERNOTDEFINED);
@@ -555,7 +625,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         String[] styles_in = null;
         if (strStyles != null) {
             styles_in = strStyles.replace('\"', '\0').split(",", -1);
-            
+
             // wms-1.1.1 7.2.3.4. "If all layers are
             // to be shown using the default style, either the form "STYLES=" or
             // "STYLES=,,," is valid."
@@ -563,29 +633,29 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
                 styles_in = new String[layers_in.length];
                 Arrays.fill(styles_in, "");
             }
-            
+
             if (styles_in.length != layers_in.length) {
                 throw new WMSException(
                         "Number of specified styles does not match the number of specified layers.");
             }
         }
-        
+
         parameters.topLayerNames.clear();
         parameters.layerNames.clear();
-        
+
         // odwróciæ kolejnoœæ warstw, bo WMS powinien renderowaæ pierwsz¹
         // warstwê na samym dole, drug¹ wy¿ej itd
         // imageserver renderuje w odwrotnej kolejnoœci
         // przy okazji sprawdziæ, czy podane warstwy istniej¹
         for (int i = layers_in.length - 1; i >= 0; i--) {
             String layerName = layers_in[i];
-            
+
             IWmsLayer wmsLayer = (IWmsLayer) wmsLayerByName.get(layerName);
             if (wmsLayer == null) {
                 throw new WMSException("Unknown layer specified (" + layerName + ").",
                         WMSException.LAYERNOTDEFINED);
             }
-            
+
             if (wmsLayer instanceof IWmsNestedLayer) {
                 IWmsNestedLayer nestedLayer = (IWmsNestedLayer) wmsLayer;
                 String topLayerName = nestedLayer.getTopLayer().getWmsName();
@@ -598,7 +668,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
                     parameters.topLayerNames.add(layerName);
                 }
             }
-            
+
             // apply style to layer
             if (styles_in == null) {
                 wmsLayer.setDefaultStyle();
@@ -620,7 +690,36 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
             throw new WMSException("LAYERS not specified.", WMSException.LAYERNOTDEFINED);
         }
     }
-    
+
+    private void checkLayerAndStyle(Properties requestProperties,
+            GetLegendGraphicRequestParameters parameters) throws WMSException {
+
+        String layerName = requestProperties.getProperty(LAYER);
+        if (layerName == null) {
+            throw new WMSException(LAYER + " not specified.", WMSException.LAYERNOTDEFINED);
+        }
+
+        IWmsLayer wmsLayer = wmsLayerByName.get(layerName);
+        if (wmsLayer == null) {
+            throw new WMSException("Unknown layer specified (" + layerName + ").",
+                    WMSException.LAYERNOTDEFINED);
+        }
+        parameters.layerName = layerName;
+
+        // apply style to layer
+        String styleName = requestProperties.getProperty(STYLE);
+        if (styleName == null) {
+            wmsLayer.setDefaultStyle();
+        } else if (styleName.equals("")) {
+            wmsLayer.setDefaultStyle();
+        } else if (wmsLayer.isStyleSupported(styleName)) {
+            wmsLayer.setStyle(styleName);
+        } else {
+            throw new WMSException("Unknown style specified (" + styleName + ").",
+                    WMSException.STYLENOTDEFINED);
+        }
+    }
+
     private void checkQueryLayers(Properties requestProperties,
             GetFeatureInfoRequestParameters parameters) throws WMSException {
 
@@ -637,29 +736,29 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
 
         for (int i = 0; i < layers_in.length; i++) {
             String layerName = layers_in[i];
-            
-            if(!parameters.layerNames.contains(layerName)){
+
+            if (!parameters.layerNames.contains(layerName)) {
                 throw new WMSException("Layers missing Query Layer " + layerName + ".",
                         WMSException.LAYERNOTDEFINED);
             }
 
-            IWmsLayer layer = (IWmsLayer)wmsLayerByName.get(layerName);
-            if(layer == null){
+            IWmsLayer layer = (IWmsLayer) wmsLayerByName.get(layerName);
+            if (layer == null) {
                 throw new WMSException("Could not find layer " + layerName);
             }
-            
-            if(!layer.isQueryable()){
+
+            if (!layer.isQueryable()) {
                 throw new WMSException("Layer " + layerName + " is not queryable");
             }
-            
+
             parameters.queryLayerNames.add(layerName);
         }
 
     }
-    
 
     /**
-     * Create and return a Projection object based on the wms request parameters. 
+     * Create and return a Projection object based on the wms request
+     * parameters.
      * 
      * @param requestProperties
      * @param parameters
@@ -668,35 +767,37 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
      */
     private Proj createProjection(Properties requestProperties, GetMapRequestParameters parameters)
             throws WMSException {
-        
+
         Properties projProps = new Properties();
         projProps.put(ProjectionFactory.CENTER, new LatLonPoint.Double(0f, 0f));
-        projProps.setProperty(ProjectionFactory.WIDTH,
-                Integer.toString(parameters.width));
-        projProps.setProperty(ProjectionFactory.HEIGHT,
-                Integer.toString(parameters.height));
-        
+        projProps.setProperty(ProjectionFactory.WIDTH, Integer.toString(parameters.width));
+        projProps.setProperty(ProjectionFactory.HEIGHT, Integer.toString(parameters.height));
+
         GeoProj projection = parameters.crs.createProjection(projProps);
         parameters.crs.prepareProjection(projection);
         projection.setScale(projection.getMinScale());
 
         LatLonPoint llp1 = parameters.bboxLatLonMinXY;
         LatLonPoint llp2 = parameters.bboxLatLonMaxXY;
-        System.out.println("bbox toLatLon: 1: " + llp1 + ", 2: " + llp2 + ", center: " + parameters.bboxLatLonCenter);
-        
+        System.out.println("bbox toLatLon: 1: " + llp1 + ", 2: " + llp2 + ", center: "
+                + parameters.bboxLatLonCenter);
+
         // guess a center value
-        // TODO: calculate this from bbox values instead of after latlon converting?
-        //float centerLat = ((llp2.getLatitude() - llp1.getLatitude()) / 2) + llp1.getLatitude();
-        //float centerLon = ((llp2.getLongitude() - llp1.getLongitude()) / 2) + llp1.getLongitude();
-        //projection.setCenter(centerLat, centerLon);
+        // TODO: calculate this from bbox values instead of after latlon
+        // converting?
+        // float centerLat = ((llp2.getLatitude() - llp1.getLatitude()) / 2) +
+        // llp1.getLatitude();
+        // float centerLon = ((llp2.getLongitude() - llp1.getLongitude()) / 2) +
+        // llp1.getLongitude();
+        // projection.setCenter(centerLat, centerLon);
         projection.setCenter(parameters.bboxLatLonCenter);
-        
+
         // Debug.output("L1: " + llp1.toString()+", L2: " + llp2.toString();
         // TODO: need to set projection.center before using the projection
 
         int intnewwidth = parameters.width;
         int intnewheight = parameters.height;
-        
+
         float newscale = projection.getScale(llp1, llp2, new Point(0, 0), new Point(intnewwidth,
                 intnewheight));
         projection.setScale(newscale);
@@ -709,8 +810,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         Point2D xyp2 = projection.forward(llp2);
         int w = (int) (xyp2.getX() - xyp1.getX());
         int h = (int) (xyp1.getY() - xyp2.getY());
-        if (Math.abs(w - parameters.width) > 2
-                || Math.abs(h - parameters.height) > 2) {
+        if (Math.abs(w - parameters.width) > 2 || Math.abs(h - parameters.height) > 2) {
             Debug.output("use aspect ratio fix");
             projection.setWidth(w);
             projection.setHeight(h);
@@ -722,7 +822,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
                     parameters.height);
             projection = p;
         }
-        
+
         return projection;
     }
 
@@ -731,35 +831,35 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
      * @param parameters
      * @throws WMSException
      */
-    private void checkFormat(Properties requestProperties, GetMapRequestParameters parameters)
+    private void checkFormat(Properties requestProperties, FormatRequestParameter parameters)
             throws WMSException {
         String format = requestProperties.getProperty(FORMAT);
 
         // hack to handle WMS clients like ArcGIS 9.2 that are issuing
         // GetFeatureInfo without FORMAT parameter
         if ((format == null) && (parameters instanceof GetFeatureInfoRequestParameters)) {
-            parameters.formatter = (ImageFormatter) getFormatters().values().iterator().next();
-            format = parameters.formatter.getContentType();
+            parameters.setFormatter(getFormatters().values().iterator().next());
+            format = parameters.getFormatter().getContentType();
         }
-        
+
         // tu zbadaæ podany format i ewentualnie rzuciæ WMSException
         if (format == null) {
             throw new WMSException("Missing FORMAT parameter.", WMSException.INVALIDFORMAT);
         }
-        
-        parameters.formatter = (ImageFormatter) imageFormatterByContentType.get(format);
-        if (parameters.formatter == null) {
+
+        parameters.setFormatter(imageFormatterByContentType.get(format));
+        if (parameters.getFormatter() == null) {
             throw new WMSException("Invalid FORMAT parameter: " + format,
                     WMSException.INVALIDFORMAT);
         }
     }
-    
+
     private void checkFeatureInfoPoint(Properties requestProperties,
             GetFeatureInfoRequestParameters parameters) throws WMSException {
 
         parameters.x = -1;
         parameters.y = -1;
-        
+
         try {
             parameters.x = Integer.parseInt(requestProperties.getProperty(X));
         } catch (NumberFormatException e) {
@@ -774,21 +874,20 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
                     WMSException.INVALIDPOINT);
         }
     }
-    
+
     private void checkInfoFormat(Properties requestProperties,
             GetFeatureInfoRequestParameters parameters) throws WMSException {
-        
-        
-        Collection okFormats = Arrays.asList(new String[] { HttpConnection.CONTENT_PLAIN,
+
+        Collection<String> okFormats = Arrays.asList(new String[] { HttpConnection.CONTENT_PLAIN,
                 HttpConnection.CONTENT_HTML });
-        
+
         String format = requestProperties.getProperty(INFO_FORMAT);
         if (!okFormats.contains(format)) {
             // TODO: use correct message!
             throw new WMSException("Invalid value for " + INFO_FORMAT + ": "
                     + requestProperties.getProperty(INFO_FORMAT));
         }
-        
+
         parameters.infoFormat = format;
     }
 

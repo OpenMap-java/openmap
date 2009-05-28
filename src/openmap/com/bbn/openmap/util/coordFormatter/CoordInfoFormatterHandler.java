@@ -78,12 +78,11 @@ public class CoordInfoFormatterHandler extends OMComponent {
         String markerList = props.getProperty(realPrefix + FORMATTER_PROPERTY);
         if (markerList != null) {
             Vector<String> formatterV = PropUtils.parseSpacedMarkers(markerList);
-            Vector<Object> formatters = ComponentFactory.create(formatterV,
+            Vector<?> formatters = ComponentFactory.create(formatterV,
                     prefix,
                     props);
 
-            for (Iterator<Object> it = formatters.iterator(); it.hasNext();) {
-                Object obj = it.next();
+            for (Object obj : formatters) {
                 if (obj instanceof CoordInfoFormatter) {
                     CoordInfoFormatter cif = (CoordInfoFormatter) obj;
                     if (activeFormatter == null) {

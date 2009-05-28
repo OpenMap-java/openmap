@@ -26,6 +26,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.bbn.openmap.BasicI18n;
 import com.bbn.openmap.PropertyConsumer;
@@ -33,22 +35,23 @@ import com.bbn.openmap.event.ProgressEvent;
 import com.bbn.openmap.event.ProgressSupport;
 
 /**
- * The OpenMap ComponentFactory is a class that can construct objects
- * from class names, with the added capability of passing the new
- * object a Properties object to initialize itself. The new object may
- * also receive a property prefix to use to scope its properties from
- * the Properties object. It is sensitive to the OpenMap paradigm of
- * marker names in a list: That a list of objects can be defined as a
- * space separated names (marker names) within a String. Those marker
- * names can serve as a prefix for other properties within a
- * Properties object, as well as the prefix for a '.class' property to
- * define the class name for the new object.
+ * The OpenMap ComponentFactory is a class that can construct objects from class
+ * names, with the added capability of passing the new object a Properties
+ * object to initialize itself. The new object may also receive a property
+ * prefix to use to scope its properties from the Properties object. It is
+ * sensitive to the OpenMap paradigm of marker names in a list: That a list of
+ * objects can be defined as a space separated names (marker names) within a
+ * String. Those marker names can serve as a prefix for other properties within
+ * a Properties object, as well as the prefix for a '.class' property to define
+ * the class name for the new object.
  */
 public class ComponentFactory {
 
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.util.ComponentFactory");
+
     /**
-     * The property to use for the class name of new objects -
-     * ".class". Expects that a prefix will be prepended to it.
+     * The property to use for the class name of new objects - ".class". Expects
+     * that a prefix will be prepended to it.
      */
     public static final String ClassNameProperty = ".class";
 
@@ -60,8 +63,7 @@ public class ComponentFactory {
     protected ComponentFactory() {}
 
     /**
-     * Method call to retrieve the singleton instance of the
-     * ComponentFactory.
+     * Method call to retrieve the singleton instance of the ComponentFactory.
      * 
      * @return ComponentFactory.
      */
@@ -82,37 +84,35 @@ public class ComponentFactory {
     }
 
     /**
-     * Given a Vector of marker name Strings, and a Properties object,
-     * look in the Properties object for the markerName.class property
-     * to get a class name to create each object. Then, if the new
-     * objects are PropertyConsumers, use the marker name as a
-     * property prefix to get properties for that object out of the
-     * Properties.
+     * Given a Vector of marker name Strings, and a Properties object, look in
+     * the Properties object for the markerName.class property to get a class
+     * name to create each object. Then, if the new objects are
+     * PropertyConsumers, use the marker name as a property prefix to get
+     * properties for that object out of the Properties.
      * 
      * @param markerNames String of space separated marker names.
      * @param properties Properties object containing the details.
      * @return Vector containing the new Objects.
      */
-    public static Vector create(Vector markerNames, Properties properties) {
+    public static Vector<?> create(Vector<String> markerNames,
+                                   Properties properties) {
         return getInstance()._create(markerNames, null, properties, null, false);
     }
 
     /**
-     * Given a Vector of marker name Strings, and a Properties object,
-     * look in the Properties object for the markerName.class property
-     * to get a class name to create each object. Then, if the new
-     * objects are PropertyConsumers, use the marker name as a
-     * property prefix to get properties for that object out of the
-     * Properties.
+     * Given a Vector of marker name Strings, and a Properties object, look in
+     * the Properties object for the markerName.class property to get a class
+     * name to create each object. Then, if the new objects are
+     * PropertyConsumers, use the marker name as a property prefix to get
+     * properties for that object out of the Properties.
      * 
      * @param markerNames String of space separated marker names.
-     * @param prefix The prefix that should be prepended to the marker
-     *        names.
+     * @param prefix The prefix that should be prepended to the marker names.
      * @param properties Properties object containing the details.
      * @return Vector containing the new Objects.
      */
-    public static Vector create(Vector markerNames, String prefix,
-                                Properties properties) {
+    public static Vector<?> create(Vector<String> markerNames, String prefix,
+                                   Properties properties) {
         return getInstance()._create(markerNames,
                 prefix,
                 properties,
@@ -121,25 +121,22 @@ public class ComponentFactory {
     }
 
     /**
-     * Given a Vector of marker name Strings, and a Properties object,
-     * look in the Properties object for the markerName.class property
-     * to get a class name to create each object. Then, if the new
-     * objects are PropertyConsumers, use the marker name as a
-     * property prefix to get properties for that object out of the
-     * Properties.
+     * Given a Vector of marker name Strings, and a Properties object, look in
+     * the Properties object for the markerName.class property to get a class
+     * name to create each object. Then, if the new objects are
+     * PropertyConsumers, use the marker name as a property prefix to get
+     * properties for that object out of the Properties.
      * 
      * @param markerNames String of space separated marker names.
-     * @param prefix The prefix that should be prepended to the marker
-     *        names.
+     * @param prefix The prefix that should be prepended to the marker names.
      * @param properties Properties object containing the details.
-     * @param progressSupport ProgressSupport object to provide
-     *        progress updates to. It's OK if this is null to not have
-     *        progress events sent.
+     * @param progressSupport ProgressSupport object to provide progress updates
+     *        to. It's OK if this is null to not have progress events sent.
      * @return Vector containing the new Objects.
      */
-    public static Vector create(Vector markerNames, String prefix,
-                                Properties properties,
-                                ProgressSupport progressSupport) {
+    public static Vector<?> create(Vector<String> markerNames, String prefix,
+                                   Properties properties,
+                                   ProgressSupport progressSupport) {
         return getInstance()._create(markerNames,
                 prefix,
                 properties,
@@ -148,22 +145,21 @@ public class ComponentFactory {
     }
 
     /**
-     * Given a Vector of marker name Strings, and a Properties object,
-     * look in the Properties object for the markerName.class property
-     * to get a class name to create each object. Then, if the new
-     * objects are PropertyConsumers, use the marker name as a
-     * property prefix to get properties for that object out of the
-     * Properties.
+     * Given a Vector of marker name Strings, and a Properties object, look in
+     * the Properties object for the markerName.class property to get a class
+     * name to create each object. Then, if the new objects are
+     * PropertyConsumers, use the marker name as a property prefix to get
+     * properties for that object out of the Properties.
      * 
      * @param markerNames String of space separated marker names.
      * @param properties Properties object containing the details.
-     * @param progressSupport ProgressSupport object to provide
-     *        progress updates to. It's OK if this is null to not have
-     *        progress events sent.
+     * @param progressSupport ProgressSupport object to provide progress updates
+     *        to. It's OK if this is null to not have progress events sent.
      * @return Vector containing the new Objects.
      */
-    public static Vector create(Vector markerNames, Properties properties,
-                                ProgressSupport progressSupport) {
+    public static Vector<?> create(Vector<String> markerNames,
+                                   Properties properties,
+                                   ProgressSupport progressSupport) {
         return getInstance()._create(markerNames,
                 null,
                 properties,
@@ -172,33 +168,31 @@ public class ComponentFactory {
     }
 
     /**
-     * Given a Vector of marker name Strings, and a Properties object,
-     * look in the Properties object for the markerName.class property
-     * to get a class name to create each object. Then, if the new
-     * objects are PropertyConsumers, use the marker name as a
-     * property prefix to get properties for that object out of the
-     * Properties.
+     * Given a Vector of marker name Strings, and a Properties object, look in
+     * the Properties object for the markerName.class property to get a class
+     * name to create each object. Then, if the new objects are
+     * PropertyConsumers, use the marker name as a property prefix to get
+     * properties for that object out of the Properties.
      * 
      * @param markerNames String of space separated marker names.
      * @param properties Properties object containing the details.
-     * @param progressSupport ProgressSupport object to provide
-     *        progress updates to. It's OK if this is null to not have
-     *        progress events sent.
-     * @param matchInOutVectorSize if true, then if there is any
-     *        trouble creating an object, it's marker name will be
-     *        placed in the returned vector instead of a component. If
-     *        false, only valid objects will be returned in the
-     *        vector.
-     * @return Vector containing the new Objects. If a component could
-     *         not be created, the markerName is returned in its
-     *         place, so you can figure out which one couldn't be
-     *         created. In any case, the size of the returned vector
-     *         is the same size as the markerNames vector, so you can
-     *         figure out which markerNames go with which objects.
+     * @param progressSupport ProgressSupport object to provide progress updates
+     *        to. It's OK if this is null to not have progress events sent.
+     * @param matchInOutVectorSize if true, then if there is any trouble
+     *        creating an object, it's marker name will be placed in the
+     *        returned vector instead of a component. If false, only valid
+     *        objects will be returned in the vector.
+     * @return Vector containing the new Objects. If a component could not be
+     *         created, the markerName is returned in its place, so you can
+     *         figure out which one couldn't be created. In any case, the size
+     *         of the returned vector is the same size as the markerNames
+     *         vector, so you can figure out which markerNames go with which
+     *         objects.
      */
-    public static Vector create(Vector markerNames, Properties properties,
-                                ProgressSupport progressSupport,
-                                boolean matchInOutVectorSize) {
+    public static Vector<?> create(Vector<String> markerNames,
+                                   Properties properties,
+                                   ProgressSupport progressSupport,
+                                   boolean matchInOutVectorSize) {
         return getInstance()._create(markerNames,
                 null,
                 properties,
@@ -207,36 +201,32 @@ public class ComponentFactory {
     }
 
     /**
-     * Given a Vector of marker name Strings, and a Properties object,
-     * look in the Properties object for the markerName.class property
-     * to get a class name to create each object. Then, if the new
-     * objects are PropertyConsumers, use the marker name as a
-     * property prefix to get properties for that object out of the
-     * Properties.
+     * Given a Vector of marker name Strings, and a Properties object, look in
+     * the Properties object for the markerName.class property to get a class
+     * name to create each object. Then, if the new objects are
+     * PropertyConsumers, use the marker name as a property prefix to get
+     * properties for that object out of the Properties.
      * 
      * @param markerNames String of space separated marker names.
-     * @param prefix The prefix that should be prepended to the marker
-     *        names.
+     * @param prefix The prefix that should be prepended to the marker names.
      * @param properties Properties object containing the details.
-     * @param progressSupport ProgressSupport object to provide
-     *        progress updates to. It's OK if this is null to not have
-     *        progress events sent.
-     * @param matchInOutVectorSize if true, then if there is any
-     *        trouble creating an object, it's marker name will be
-     *        placed in the returned vector instead of a component. If
-     *        false, only valid objects will be returned in the
-     *        vector.
-     * @return Vector containing the new Objects. If a component could
-     *         not be created, the markerName is returned in its
-     *         place, so you can figure out which one couldn't be
-     *         created. In any case, the size of the returned vector
-     *         is the same size as the markerNames vector, so you can
-     *         figure out which markerNames go with which objects.
+     * @param progressSupport ProgressSupport object to provide progress updates
+     *        to. It's OK if this is null to not have progress events sent.
+     * @param matchInOutVectorSize if true, then if there is any trouble
+     *        creating an object, it's marker name will be placed in the
+     *        returned vector instead of a component. If false, only valid
+     *        objects will be returned in the vector.
+     * @return Vector containing the new Objects. If a component could not be
+     *         created, the markerName is returned in its place, so you can
+     *         figure out which one couldn't be created. In any case, the size
+     *         of the returned vector is the same size as the markerNames
+     *         vector, so you can figure out which markerNames go with which
+     *         objects.
      */
-    public static Vector create(Vector markerNames, String prefix,
-                                Properties properties,
-                                ProgressSupport progressSupport,
-                                boolean matchInOutVectorSize) {
+    public static Vector<?> create(Vector<String> markerNames, String prefix,
+                                   Properties properties,
+                                   ProgressSupport progressSupport,
+                                   boolean matchInOutVectorSize) {
 
         return getInstance()._create(markerNames,
                 prefix,
@@ -246,39 +236,35 @@ public class ComponentFactory {
     }
 
     /**
-     * Given a Vector of marker name Strings, and a Properties object,
-     * look in the Properties object for the markerName.class property
-     * to get a class name to create each object. Then, if the new
-     * objects are PropertyConsumers, use the marker name as a
-     * property prefix to get properties for that object out of the
-     * Properties.
+     * Given a Vector of marker name Strings, and a Properties object, look in
+     * the Properties object for the markerName.class property to get a class
+     * name to create each object. Then, if the new objects are
+     * PropertyConsumers, use the marker name as a property prefix to get
+     * properties for that object out of the Properties.
      * 
      * @param markerNames String of space separated marker names.
-     * @param prefix The prefix that should be prepended to the marker
-     *        names.
+     * @param prefix The prefix that should be prepended to the marker names.
      * @param properties Properties object containing the details.
-     * @param progressSupport ProgressSupport object to provide
-     *        progress updates to. It's OK if this is null to not have
-     *        progress events sent.
-     * @param matchInOutVectorSize if true, then if there is any
-     *        trouble creating an object, it's marker name will be
-     *        placed in the returned vector instead of a component. If
-     *        false, only valid objects will be returned in the
-     *        vector.
-     * @return Vector containing the new Objects. If a component could
-     *         not be created, the markerName is returned in its
-     *         place, so you can figure out which one couldn't be
-     *         created. In any case, the size of the returned vector
-     *         is the same size as the markerNames vector, so you can
-     *         figure out which markerNames go with which objects.
+     * @param progressSupport ProgressSupport object to provide progress updates
+     *        to. It's OK if this is null to not have progress events sent.
+     * @param matchInOutVectorSize if true, then if there is any trouble
+     *        creating an object, it's marker name will be placed in the
+     *        returned vector instead of a component. If false, only valid
+     *        objects will be returned in the vector.
+     * @return Vector containing the new Objects. If a component could not be
+     *         created, the markerName is returned in its place, so you can
+     *         figure out which one couldn't be created. In any case, the size
+     *         of the returned vector is the same size as the markerNames
+     *         vector, so you can figure out which markerNames go with which
+     *         objects.
      */
-    protected Vector _create(Vector markerNames, String prefix,
-                             Properties properties,
-                             ProgressSupport progressSupport,
-                             boolean matchInOutVectorSize) {
+    protected Vector<?> _create(Vector<String> markerNames, String prefix,
+                                Properties properties,
+                                ProgressSupport progressSupport,
+                                boolean matchInOutVectorSize) {
 
         int size = markerNames.size();
-        Vector vector = new Vector(size);
+        Vector<Object> vector = new Vector<Object>(size);
 
         if (progressSupport != null) {
             progressSupport.fireUpdate(ProgressEvent.UPDATE,
@@ -289,16 +275,14 @@ public class ComponentFactory {
 
         for (int i = 0; i < size; i++) {
             String componentName = PropUtils.getScopedPropertyPrefix(prefix)
-                    + (String) markerNames.elementAt(i);
+                    + markerNames.elementAt(i);
 
             String classProperty = componentName + ClassNameProperty;
             String className = properties.getProperty(classProperty);
 
             if (className == null) {
-                Debug.error("ComponentFactory.create: Failed to locate property \""
-                        + componentName
-                        + "\" with class \""
-                        + classProperty
+                logger.warning("Failed to locate property \"" + componentName
+                        + "\" with class \"" + classProperty
                         + "\"\n  Skipping component \"" + componentName + "\"");
                 if (matchInOutVectorSize) {
                     vector.add(componentName);
@@ -317,17 +301,21 @@ public class ComponentFactory {
 
             if (component != null) {
                 vector.add(component);
-                if (Debug.debugging("componentfactory")) {
-                    Debug.output("ComponentFactory: [" + className + "(" + i
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("ComponentFactory: [" + className + "(" + i
                             + ")] created");
                 }
             } else {
                 if (matchInOutVectorSize) {
                     vector.add(componentName);
                 }
-                Debug.output("ComponentFactory: [" + componentName + " : "
-                        + className + "(" + i + ")] NOT created. -- "
-                        + "Set 'componentfactory' debug flag for details.");
+                logger.info("["
+                        + componentName
+                        + " : "
+                        + className
+                        + "("
+                        + i
+                        + ")] NOT created. -- Set logging flag to FINE for details.");
             }
         }
 
@@ -354,8 +342,8 @@ public class ComponentFactory {
      * Create a single object.
      * 
      * @param className Class name to instantiate.
-     * @param properties Properties to use to initalize the object, if
-     *        the object is a PropertyConsumer.
+     * @param properties Properties to use to initialize the object, if the
+     *        object is a PropertyConsumer.
      * @return object if all goes well, null if not.
      */
     public static Object create(String className, Properties properties) {
@@ -363,14 +351,14 @@ public class ComponentFactory {
     }
 
     /**
-     * Create a single object. If you want it to complain about
-     * classes it can't find, then set the 'basic' debug flag.
+     * Create a single object. If you want it to complain about classes it can't
+     * find, then set the 'basic' debug flag.
      * 
      * @param className Class name to instantiate.
-     * @param prefix Properties prefix to use by the object to scope
-     *        its properties.
-     * @param properties Properties to use to initalize the object, if
-     *        the object is a PropertyConsumer.
+     * @param prefix Properties prefix to use by the object to scope its
+     *        properties.
+     * @param properties Properties to use to initialize the object, if the
+     *        object is a PropertyConsumer.
      */
     public static Object create(String className, String prefix,
                                 Properties properties) {
@@ -379,12 +367,12 @@ public class ComponentFactory {
     }
 
     /**
-     * Create a single object. If you want it to complain about
-     * classes it can't find, then set the 'basic' debug flag.
+     * Create a single object. If you want it to complain about classes it can't
+     * find, then set the 'basic' debug flag.
      * 
      * @param className Class name to instantiate.
-     * @param constructorArgs an Object array of arguments to use in
-     *        the constructor of the component.
+     * @param constructorArgs an Object array of arguments to use in the
+     *        constructor of the component.
      * @return object if all goes well, null if anything bad happens.
      */
     public static Object create(String className, Object[] constructorArgs) {
@@ -392,33 +380,33 @@ public class ComponentFactory {
     }
 
     /**
-     * Create a single object. If you want it to complain about
-     * classes it can't find, then set the 'basic' debug flag.
+     * Create a single object. If you want it to complain about classes it can't
+     * find, then set the 'basic' debug flag.
      * 
      * @param className Class name to instantiate.
-     * @param constructorArgs an Object array of arguments to use in
-     *        the constructor of the component.
-     * @param argClasses an array of classes to use to scope which
-     *        constructor to use. If null, then an array will be built
-     *        from the constructorArgs.
+     * @param constructorArgs an Object array of arguments to use in the
+     *        constructor of the component.
+     * @param argClasses an array of classes to use to scope which constructor
+     *        to use. If null, then an array will be built from the
+     *        constructorArgs.
      * @return object if all goes well, null if anything bad happens.
      */
     public static Object create(String className, Object[] constructorArgs,
-                                Class[] argClasses) {
+                                Class<?>[] argClasses) {
         return create(className, constructorArgs, argClasses, null, null);
     }
 
     /**
-     * Create a single object. If you want it to complain about
-     * classes it can't find, then set the 'basic' debug flag.
+     * Create a single object. If you want it to complain about classes it can't
+     * find, then set the 'basic' debug flag.
      * 
      * @param className Class name to instantiate.
-     * @param constructorArgs an Object array of arguments to use in
-     *        the constructor of the component.
-     * @param prefix Properties prefix to use by the object to scope
-     *        its properties.
-     * @param properties Properties to use to initalize the object, if
-     *        the object is a PropertyConsumer.
+     * @param constructorArgs an Object array of arguments to use in the
+     *        constructor of the component.
+     * @param prefix Properties prefix to use by the object to scope its
+     *        properties.
+     * @param properties Properties to use to initialize the object, if the
+     *        object is a PropertyConsumer.
      * @return object if all goes well, null if anything bad happens.
      */
     public static Object create(String className, Object[] constructorArgs,
@@ -427,23 +415,23 @@ public class ComponentFactory {
     }
 
     /**
-     * Create a single object. If you want it to complain about
-     * classes it can't find, then set the 'basic' debug flag.
+     * Create a single object. If you want it to complain about classes it can't
+     * find, then set the 'basic' debug flag.
      * 
      * @param className Class name to instantiate.
-     * @param constructorArgs an Object array of arguments to use in
-     *        the constructor of the component.
-     * @param argClasses an array of classes to use to scope which
-     *        constructor to use. If null, then an array will be built
-     *        from the constructorArgs.
-     * @param prefix Properties prefix to use by the object to scope
-     *        its properties.
-     * @param properties Properties to use to initalize the object, if
-     *        the object is a PropertyConsumer.
+     * @param constructorArgs an Object array of arguments to use in the
+     *        constructor of the component.
+     * @param argClasses an array of classes to use to scope which constructor
+     *        to use. If null, then an array will be built from the
+     *        constructorArgs.
+     * @param prefix Properties prefix to use by the object to scope its
+     *        properties.
+     * @param properties Properties to use to initialize the object, if the
+     *        object is a PropertyConsumer.
      * @return object if all goes well, null if anything bad happens.
      */
     public static Object create(String className, Object[] constructorArgs,
-                                Class[] argClasses, String prefix,
+                                Class<?>[] argClasses, String prefix,
                                 Properties properties) {
         return getInstance()._create(className,
                 constructorArgs,
@@ -453,33 +441,32 @@ public class ComponentFactory {
     }
 
     /**
-     * Create a single object. If you want it to complain about
-     * classes it can't find, then set the 'basic' debug flag.
+     * Create a single object. If you want it to complain about classes it can't
+     * find, then set the 'basic' debug flag.
      * 
      * @param className Class name to instantiate.
-     * @param constructorArgs an Object array of arguments to use in
-     *        the constructor of the component.
-     * @param argClasses an array of classes to use to scope which
-     *        constructor to use. If null, then an array will be built
-     *        from the constructorArgs.
-     * @param prefix Properties prefix to use by the object to scope
-     *        its properties.
-     * @param properties Properties to use to initalize the object, if
-     *        the object is a PropertyConsumer.
+     * @param constructorArgs an Object array of arguments to use in the
+     *        constructor of the component.
+     * @param argClasses an array of classes to use to scope which constructor
+     *        to use. If null, then an array will be built from the
+     *        constructorArgs.
+     * @param prefix Properties prefix to use by the object to scope its
+     *        properties.
+     * @param properties Properties to use to initalize the object, if the
+     *        object is a PropertyConsumer.
      * @return object if all goes well, null if anything bad happens.
      */
     protected Object _create(String className, Object[] constructorArgs,
-                             Class[] argClasses, String prefix,
+                             Class<?>[] argClasses, String prefix,
                              Properties properties) {
         String errorMessage = null;
         boolean DEBUG = false;
         try {
 
-            if (Debug.debugging("componentfactorydetail")) {
+            if (logger.isLoggable(Level.FINER)) {
                 DEBUG = true;
-                Debug.output("ComponentFactory.create: " + className);
+                logger.finer("creating: " + className);
             }
-
 
             // Apparently, this fails in certain cases where OpenMap is being
             // used as a plugin in a NetBeans or Eclise architecture and the
@@ -493,10 +480,10 @@ public class ComponentFactory {
             if (cl == null) {
                 cl = this.getClass().getClassLoader();
             }
-            Class newObjClass = Class.forName(className.trim(), true, cl);
-            
+            Class<?> newObjClass = Class.forName(className.trim(), true, cl);
+
             if (DEBUG)
-                Debug.output(" - got class for " + className);
+                logger.finer(" - got class for " + className);
 
             if (argClasses == null) {
                 if (constructorArgs != null && constructorArgs.length > 0) {
@@ -522,57 +509,55 @@ public class ComponentFactory {
                             sb.append(", ");
                     }
                 }
-                Debug.output(" - created class arguments [" + sb.toString()
+                logger.finer(" - created class arguments [" + sb.toString()
                         + "]");
             }
 
-            Constructor constructor = null;
+            Constructor<?> constructor = null;
             Object obj = null;
 
             try {
                 constructor = newObjClass.getConstructor(argClasses);
 
                 if (DEBUG)
-                    Debug.output(" - got constructor");
+                    logger.finer(" - got constructor");
 
                 // Create component
                 obj = constructor.newInstance(constructorArgs);
                 if (DEBUG)
-                    Debug.output(" - got object");
+                    logger.finer(" - got object");
 
             } catch (NoSuchMethodException nsmei) {
                 /*
-                 * The argClasses may have subclasses of what the
-                 * desired constructor needs, so we need to check
-                 * explicitly.
+                 * The argClasses may have subclasses of what the desired
+                 * constructor needs, so we need to check explicitly.
                  */
                 obj = createWithSubclassConstructorArgs(newObjClass,
                         argClasses,
                         constructorArgs);
                 if (DEBUG && obj != null)
-                    Debug.output(" - got object on try #2");
+                    logger.finer(" - got object on try #2");
             }
 
             if (obj instanceof PropertyConsumer && properties != null) {
                 if (DEBUG) {
-                    Debug.output("  setting properties with prefix \"" + prefix
+                    logger.finer("  setting properties with prefix \"" + prefix
                             + "\"");
                 }
                 ((PropertyConsumer) obj).setProperties(prefix, properties);
 
                 if (Debug.debugging(BasicI18n.DEBUG_CREATE)) {
                     /*
-                     * If we're interested in creating resource bundle
-                     * files, we should cause these PropertyConsumers
-                     * to ask for their property info, since this is
-                     * where most of the elective GUI strings are
-                     * queried and found.
+                     * If we're interested in creating resource bundle files, we
+                     * should cause these PropertyConsumers to ask for their
+                     * property info, since this is where most of the elective
+                     * GUI strings are queried and found.
                      */
                     ((PropertyConsumer) obj).getPropertyInfo(null);
                 }
 
                 if (DEBUG)
-                    Debug.output(" - set properties");
+                    logger.finer(" - set properties");
             }
             return obj;
 
@@ -597,8 +582,8 @@ public class ComponentFactory {
             errorMessage = "ClassNotFoundException: " + cnfe.getMessage();
         }
 
-        if (Debug.debugging("componentfactory")) {
-            Debug.error("ComponentFactory.create: Failed to create \""
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Failed to create \""
                     + className
                     + (prefix != null ? "\" using component marker name \""
                             + prefix + "\"" : "") + " - error message: "
@@ -621,14 +606,14 @@ public class ComponentFactory {
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    protected Object createWithSubclassConstructorArgs(Class newObjClass,
-                                                       Class[] argClasses,
+    protected Object createWithSubclassConstructorArgs(Class<?> newObjClass,
+                                                       Class<?>[] argClasses,
                                                        Object[] constructorArgs)
             throws NoSuchMethodException, InstantiationException,
             IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
 
-        boolean DEBUG = Debug.debugging("componentfactorydetail");
+        boolean DEBUG = logger.isLoggable(Level.FINER);
 
         int numArgClasses = 0;
 
@@ -636,25 +621,25 @@ public class ComponentFactory {
             numArgClasses = argClasses.length;
         }
 
-        Constructor[] constructors = newObjClass.getConstructors();
+        Constructor<?>[] constructors = newObjClass.getConstructors();
         int numConstructors = constructors.length;
 
         if (DEBUG) {
-            Debug.output(" - searching " + numConstructors
+            logger.finer(" - searching " + numConstructors
                     + " possible constructor"
                     + (numConstructors == 1 ? "" : "s"));
         }
 
         for (int i = 0; i < numConstructors; i++) {
-            Constructor constructor = constructors[i];
+            Constructor<?> constructor = constructors[i];
 
-            Class[] arguments = constructor.getParameterTypes();
+            Class<?>[] arguments = constructor.getParameterTypes();
             int numArgs = arguments.length;
 
             // First, check the number of arguments for a match
             if (numArgs != numArgClasses) {
                 if (DEBUG) {
-                    Debug.output(" - constructor " + i + " with " + numArgs
+                    logger.finer(" - constructor " + i + " with " + numArgs
                             + " arguments not a match");
                 }
 
@@ -664,7 +649,7 @@ public class ComponentFactory {
             // OK, empty constructor desired, punch...
             if (numArgs == 0) {
                 if (DEBUG) {
-                    Debug.output(" - constructor " + i
+                    logger.finer(" - constructor " + i
                             + " with no arguments is a match");
                 }
                 return constructor;
@@ -677,33 +662,33 @@ public class ComponentFactory {
             for (int j = 0; j < numArgs; j++) {
                 if (arguments[j] == argClasses[j]) {
                     if (DEBUG) {
-                        Debug.output(" - direct arg class match, arg " + j);
+                        logger.finer(" - direct arg class match, arg " + j);
                     }
                     good = true; // Maintain true...
                 } else if (arguments[j].isAssignableFrom(argClasses[j])) {
 
-                    //  Doesn't work quite yet. May have to check for
-                    //  super-super class,etc, and we still get an
-                    //  IllegalArgumentException due to argument type
-                    //  mismatch.
+                    // Doesn't work quite yet. May have to check for
+                    // super-super class,etc, and we still get an
+                    // IllegalArgumentException due to argument type
+                    // mismatch.
 
                     // Is this even necessary? Don't think so...
                     argClasses[j] = argClasses[j].getSuperclass();
                     if (DEBUG) {
-                        Debug.output(" - superclass arg class match, arg " + j
+                        logger.finer(" - superclass arg class match, arg " + j
                                 + " reassigning to " + argClasses[j].toString());
                     }
                     good = true; // Maintain true...
-                    //              } else if (constructorArgs[j] instanceof
+                    // } else if (constructorArgs[j] instanceof
                     // Number) {
-                    //                  if (DEBUG) {
-                    //                      Debug.output(" - Number type match, arg " + j);
-                    //                  }
-                    //                  good = true; // Maintain true...
+                    // if (DEBUG) {
+                    // Debug.output(" - Number type match, arg " + j);
+                    // }
+                    // good = true; // Maintain true...
 
                 } else {
                     if (DEBUG) {
-                        Debug.output(" - arg class mismatch on arg " + j
+                        logger.finer(" - arg class mismatch on arg " + j
                                 + ", bailing (" + arguments[j].getName()
                                 + " vs. " + argClasses[j].getName() + ")");
                     }
@@ -714,11 +699,11 @@ public class ComponentFactory {
 
             if (good) {
                 if (DEBUG) {
-                    Debug.debugging(" - creating object");
+                    logger.finer(" - creating object");
                 }
                 Object obj = constructor.newInstance(constructorArgs);
                 if (DEBUG) {
-                    Debug.debugging(" - created object");
+                    logger.finer(" - created object");
                 }
                 return obj;
             }

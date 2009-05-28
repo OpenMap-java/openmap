@@ -6,6 +6,7 @@
  */
 package com.bbn.openmap.image.wms;
 
+import java.awt.geom.Dimension2D;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -86,7 +87,6 @@ public class CapabilitiesSupport {
      */
     public CapabilitiesSupport(Properties props, String scheme, String hostName, int port, String path)
             throws WMSException {
-
         
         wmsTitle = props.getProperty(WMSPrefix + "Title", "Sample Title");
         wmsAbstract = props.getProperty(WMSPrefix + "Abstract", "Sample Abstract");
@@ -95,11 +95,7 @@ public class CapabilitiesSupport {
         List<String> keywords = Arrays.asList(strKeywords);
         setKeywords(keywords);
 
-        String url = scheme + "://" + hostName + ":" + port + path;
-        setOnlineResource(FMT_MAIN, url);
-        setOnlineResource(FMT_GETMAP, url);
-        setOnlineResource(FMT_GETCAPS, url);
-        setOnlineResource(FMT_GETFEATUREINFO, url);
+        setUrl(scheme, hostName, port, path);
 
         List<String> al = new ArrayList<String>();
         setFormats(FMT_GETMAP, al);
@@ -118,6 +114,40 @@ public class CapabilitiesSupport {
         al.clear();
         al.add("application/vnd.ogc.se_xml");
         setFormats(FMT_EXCEPTIONS, al);
+    }
+    
+    
+    /**
+     * Set url to wms servlet. 
+     * 
+     * @param scheme
+     * @param hostName 
+     * @param port
+     * @param path a String like "/myproject/wms"
+     */
+    public void setUrl(String scheme, String hostName, int port, String path) {
+        StringBuilder url = new StringBuilder();
+        url.append(scheme);
+        url.append("://");
+        url.append(hostName);
+        if (!((scheme.equals("http") && (port == 80)) || (scheme.equals("https") && (port == 443)))) {
+            url.append(":");
+            url.append(port);
+        }
+        url.append(path);
+        setUrl(url.toString());
+    }
+
+    /**
+     * Set url to wms servlet like "http://myserver/myproject/wms"
+     * 
+     * @param url
+     */
+    public void setUrl(String url) {
+        setOnlineResource(FMT_MAIN, url);
+        setOnlineResource(FMT_GETMAP, url);
+        setOnlineResource(FMT_GETCAPS, url);
+        setOnlineResource(FMT_GETFEATUREINFO, url);
     }
 
     /**
@@ -155,11 +185,7 @@ public class CapabilitiesSupport {
             service.appendChild(keywordListElement);
         }
 
-        Element onlineResource = doc.createElement("OnlineResource");
-        onlineResource.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
-        onlineResource.setAttribute("xlink:type", "simple");
-        onlineResource.setAttribute("xlink:href", onlineResourcesList[FMT_MAIN]);
-        service.appendChild(onlineResource);
+        service.appendChild(onlineResource(doc, onlineResourcesList[FMT_MAIN]));
 
         service.appendChild(textnode(doc, "Fees", "none"));
         service.appendChild(textnode(doc, "AccessConstraints", "none"));
@@ -239,6 +265,43 @@ public class CapabilitiesSupport {
                 if (style.getAbstract() != null) {
                     styleElement.appendChild(textnode(doc, "Abstract", style.getAbstract()));
                 }
+                
+                // tell the layer about the style so the style can used legend graphics
+                wmsLayer.setStyle(style.getName());
+                Legend legend = wmsLayer.getLegend();
+                if (legend != null) {
+                    for (Dimension2D dimension : legend.getSizeHints()) {
+                        int width = (int) dimension.getWidth();
+                        int height = (int) dimension.getHeight();
+                        String format = "image/png";
+
+                        Element legendURLElement = (Element) node(doc, "LegendURL");
+                        legendURLElement.setAttribute("width", Integer.toString(width));
+                        legendURLElement.setAttribute("height", Integer.toString(height));
+                        legendURLElement.appendChild(textnode(doc, "Format", format));
+
+                        StringBuilder url = new StringBuilder();
+                        // would be nicer to use FMT_GETLEGENDGRAPHIC, but it
+                        // may not be listed
+                        url.append(onlineResourcesList[FMT_MAIN]);
+                        url.append("?").append(WMTConstants.SERVICE).append("=WMS");
+                        url.append("&").append(WMTConstants.VERSION).append("=1.1.1");
+                        url.append("&").append(WMTConstants.REQUEST).append("=");
+                        url.append(WMTConstants.GETLEGENDGRAPHIC);
+                        url.append("&").append(WMTConstants.LAYER).append("=");
+                        url.append(wmsLayer.getWmsName());
+                        url.append("&").append(WMTConstants.STYLE).append("=").append(
+                                style.getName());
+                        url.append("&").append(WMTConstants.FORMAT).append("=").append(format);
+                        url.append("&").append(WMTConstants.WIDTH).append("=").append(width);
+                        url.append("&").append(WMTConstants.HEIGHT).append("=").append(height);
+
+                        legendURLElement.appendChild(onlineResource(doc, url.toString()));
+
+                        styleElement.appendChild(legendURLElement);
+                    }
+                }
+                
                 layerElement.appendChild(styleElement);
             }
         }
@@ -389,6 +452,14 @@ public class CapabilitiesSupport {
     private Node node(Document doc, String Name) {
         return doc.createElement(Name);
     }
+    
+    private Node onlineResource(Document doc, String url) {
+        Element onlineResource = doc.createElement("OnlineResource");
+        onlineResource.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+        onlineResource.setAttribute("xlink:type", "simple");
+        onlineResource.setAttribute("xlink:href", url);
+        return onlineResource;
+    }
 
     /**
      * @param requestName like "GetMap"
@@ -398,12 +469,8 @@ public class CapabilitiesSupport {
      * @return
      */
     private Node requestcap(Document doc, String requestName, List<String> formatList, String methodName, String url) {
-        Element onlineResourceElement = doc.createElement("OnlineResource");
-        onlineResourceElement.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
-        onlineResourceElement.setAttribute("xlink:type", "simple");
-        onlineResourceElement.setAttribute("xlink:href", url);
         Element methodNode = doc.createElement(methodName);
-        methodNode.appendChild(onlineResourceElement);
+        methodNode.appendChild(onlineResource(doc, url));
 
         Element httpNode = doc.createElement("HTTP");
         httpNode.appendChild(methodNode);

@@ -8,6 +8,8 @@ package com.bbn.openmap.image.wms;
 
 import java.util.Properties;
 
+import com.bbn.openmap.Layer;
+
 /**
  * @version $Header:
  *          /cvs/openmap/openmap/src/openmap/com/bbn/openmap/image/wms/IWmsLayer.java,v
@@ -79,4 +81,12 @@ public interface IWmsLayer {
      */
     public void setRequestParameters(Properties requestParameters);
 
+    /**
+     * Return a {@link Legend} with legend information or null if legend can not
+     * be created.
+     * 
+     * @return
+     */
+    public Legend getLegend();
+    
 }
