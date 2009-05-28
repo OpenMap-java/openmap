@@ -873,8 +873,9 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
                 if (bc != null) {
                     // Remove the layer from the BeanContext
                     bc.remove(layer);
+                } else {
+                    oldLayers[i] = null;
                 }
-                oldLayers[i] = null;
             } else {
                 if (nonRemoveableLayers == null) {
                     nonRemoveableLayers = new Vector<Layer>(oldLayers.length);
