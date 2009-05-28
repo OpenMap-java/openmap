@@ -25,9 +25,12 @@
 package com.bbn.openmap.dataAccess.image;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -86,6 +89,15 @@ public class WorldFile {
     protected WorldFile() {
     // For subclasses.
     }
+    
+    public WorldFile(double xDim, double yDim, double rowRot, double colRot, double x, double y) {
+        this.xDim = xDim;
+        this.yDim = yDim;
+        this.rowRot = rowRot;
+        this.colRot =colRot;
+        this.x = x;
+        this.y = y;
+    }
 
     public WorldFile(URL fileURL) throws MalformedURLException, IOException {
         read(fileURL.openStream());
@@ -107,6 +119,18 @@ public class WorldFile {
         y = Double.parseDouble(br.readLine());
 
         logger.fine(this.toString());
+    }
+    
+    public void write(OutputStream os) throws IOException {
+        OutputStreamWriter osr = new OutputStreamWriter(os);
+        BufferedWriter bw = new BufferedWriter(osr);
+
+        bw.write(Double.toString(xDim) + "\n");
+        bw.write(Double.toString(rowRot) + "\n");
+        bw.write(Double.toString(colRot) + "\n");
+        bw.write(Double.toString(yDim) + "\n");
+        bw.write(Double.toString(x) + "\n");
+        bw.write(Double.toString(y) + "\n");
     }
 
     public String toString() {
