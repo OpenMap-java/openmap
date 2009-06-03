@@ -251,7 +251,7 @@ public class OMEllipse extends OMCircle {
             rawllpts = createLatLonPoints();
         }
 
-        ArrayList vector = null;
+        ArrayList<int[]> vector = null;
 
         // polygon/polyline project the polygon/polyline.
         // Vertices should already be in radians.ArrayList vector;
@@ -266,8 +266,8 @@ public class OMEllipse extends OMCircle {
             // We could call create shape, but this is more efficient.
             int i, j;
             for (i = 0, j = 0; i < size; i += 2, j++) {
-                GeneralPath gp = createShape((int[]) vector.get(i),
-                        (int[]) vector.get(i + 1),
+                GeneralPath gp = createShape(vector.get(i),
+                        vector.get(i + 1),
                         true);
 
                 if (shape == null) {

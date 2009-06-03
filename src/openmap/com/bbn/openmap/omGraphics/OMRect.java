@@ -25,7 +25,6 @@ package com.bbn.openmap.omGraphics;
 import java.awt.Point;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.bbn.openmap.proj.GeoProj;
@@ -51,7 +50,7 @@ import com.bbn.openmap.util.Debug;
  * @see OMPoly
  * 
  */
-public class OMRect extends OMGraphic implements Serializable {
+public class OMRect extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Horizontal window position of first corner, in pixels from left side of

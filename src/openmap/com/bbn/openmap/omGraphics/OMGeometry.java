@@ -151,12 +151,12 @@ public interface OMGeometry {
     /**
      * Set all attributes on the OMGeometry.
      */
-    public void setAttributes(Map attributes);
+    public void setAttributes(Map<?, ?> attributes);
 
     /**
      * Get all attributes from the OMGeometry.
      */
-    public Map getAttributes();
+    public Map<?, ?> getAttributes();
 
     // ////////////////////////////////////////////////////////////////////////
 
@@ -253,6 +253,17 @@ public interface OMGeometry {
      */
     public float distance(int x, int y);
 
+    /**
+     * Return the shortest distance from the edge of a geometry to an XY-point.
+     * <p>
+     * 
+     * @param x X coordinate of the point.
+     * @param y Y coordinate of the point.
+     * @return float distance, in pixels, from graphic to the point. Returns
+     *         Float.POSITIVE_INFINITY if the geometry isn't ready (ungenerated).
+     */
+    public float distanceToEdge(int x, int y);
+    
     /**
      * Answsers the question whether or not the OMGeometry contains the given
      * pixel point.

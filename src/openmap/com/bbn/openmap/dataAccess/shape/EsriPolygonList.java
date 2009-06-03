@@ -54,37 +54,40 @@ public class EsriPolygonList extends EsriGraphicList {
      * 
      * @param shape the non-null OMGraphic to add
      */
-    public void add(OMGraphic shape) {
+    public boolean add(OMGraphic shape) {
+        boolean ret = false;
         try {
 
             if (typeMatches(shape)) {
-                graphics.add(shape);
+                ret = graphics.add(shape);
                 addExtents(((EsriGraphic) shape).getExtents());
             } else if (shape instanceof OMPoly) {
                 EsriPolygon eg = convert((OMPoly) shape);
                 if (typeMatches(eg)) {
-                    graphics.add(eg);
+                    ret = graphics.add(eg);
                     addExtents(eg.getExtents());
                 }
             } else if (shape instanceof OMGraphicList
                     && !((OMGraphicList) shape).isVague()) {
-                for (Iterator it = ((OMGraphicList) shape).iterator(); it.hasNext();) {
+                for (Iterator<OMGraphic> it = ((OMGraphicList) shape).iterator(); it.hasNext();) {
                     add((OMGraphic) it.next());
                 }
+                ret = true;
             } else {
                 Debug.message("esri",
                         "EsriPolygonList.add()- graphic isn't a EsriPoly or OMPoly, can't add.");
             }
         } catch (ClassCastException cce) {
         }
+        return ret;
     }
 
     public EsriPolygon convert(OMPoly ompoly) {
         return EsriPolygon.convert(ompoly);
     }
-    
+
     public boolean typeMatches(OMGraphic omg) {
-       return  (omg instanceof EsriGraphic && ((EsriGraphic)omg).getType() == getType());
+        return (omg instanceof EsriGraphic && ((EsriGraphic) omg).getType() == getType());
     }
 
     /**
@@ -157,13 +160,13 @@ public class EsriPolygonList extends EsriGraphicList {
 
         // get the PathIterator that defines the outline of the circle
         PathIterator circle = shape.getPathIterator(null);
-        Vector initialPoints = new Vector();
+        Vector<Float> initialPoints = new Vector<Float>();
         double[] segPoints = new double[2];
 
         while (!circle.isDone()) {
             // by passing segpoints the array is filled with each x\y
             // point iterated by the circle
-//            int segType = circle.currentSegment(segPoints);
+            // int segType = circle.currentSegment(segPoints);
             initialPoints.add(new Float(segPoints[0]));
             initialPoints.add(new Float(segPoints[1]));
             circle.next();
@@ -179,7 +182,8 @@ public class EsriPolygonList extends EsriGraphicList {
         // convert the x/y points to lat/lon points
         for (int p = 0; p < initialPoints.size(); p += 2) {
             proj.inverse(((Float) initialPoints.elementAt(p)).doubleValue(),
-                    ((Float) initialPoints.elementAt(p + 1)).doubleValue(), llp);
+                    ((Float) initialPoints.elementAt(p + 1)).doubleValue(),
+                    llp);
 
             circlePoints[p] = (float) llp.getRadLat();
             circlePoints[p + 1] = (float) llp.getRadLon();
@@ -257,7 +261,7 @@ public class EsriPolygonList extends EsriGraphicList {
 
     public EsriGraphic shallowCopy() {
         EsriPolygonList ret = new EsriPolygonList(size());
-        for (Iterator iter = iterator(); iter.hasNext();) {
+        for (Iterator<OMGraphic> iter = iterator(); iter.hasNext();) {
             EsriGraphic g = (EsriGraphic) iter.next();
             ret.add((OMGraphic) g.shallowCopy());
         }

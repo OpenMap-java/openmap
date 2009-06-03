@@ -37,23 +37,20 @@ import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The NetMapGraphicLoader is a component that can listen to a
- * NetMapConnector, receive and interpret NetMapEvents, and draw the
- * resulting network on the map. The NetMapConnector does all the
- * heavy work, the NetMapGraphicLoader serves as an iterface to get
- * OMGraphics on the map.
+ * The NetMapGraphicLoader is a component that can listen to a NetMapConnector,
+ * receive and interpret NetMapEvents, and draw the resulting network on the
+ * map. The NetMapConnector does all the heavy work, the NetMapGraphicLoader
+ * serves as an iterface to get OMGraphics on the map.
  * <P>
  * 
- * The easiest way to use this class is to create it with the
- * NetMapConnector and add it to the LayerHandler or MapHandler. If
- * the NetMapConnector is going to be created by another object for
- * application design reasons, just create a NetMapConnectionHandler
- * and add it to the MapHandler, and then add the NetMapConnector to
- * the MapHandler, too. The NetMapConnectionHandler will create a
- * NetMapGraphicLoader for the NetMapConnector. Make sure a
- * GraphicLoaderConnector is also in the MapHandler, too, because it
- * will create a GraphicLoaderPlugIn/PlugInLayer for the
- * NetMapGraphicLoader.
+ * The easiest way to use this class is to create it with the NetMapConnector
+ * and add it to the LayerHandler or MapHandler. If the NetMapConnector is going
+ * to be created by another object for application design reasons, just create a
+ * NetMapConnectionHandler and add it to the MapHandler, and then add the
+ * NetMapConnector to the MapHandler, too. The NetMapConnectionHandler will
+ * create a NetMapGraphicLoader for the NetMapConnector. Make sure a
+ * GraphicLoaderConnector is also in the MapHandler, too, because it will create
+ * a GraphicLoaderPlugIn/PlugInLayer for the NetMapGraphicLoader.
  */
 public class NetMapGraphicLoader extends MMLGraphicLoader implements
         NetMapListener, NetMapConstants {
@@ -62,8 +59,8 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
     protected OMGraphicList omList = null;
 
     /**
-     * The component that provides controls to the NetMapReader, which
-     * in turn reads the server stream.
+     * The component that provides controls to the NetMapReader, which in turn
+     * reads the server stream.
      */
     private NetMapConnector connector = null;
 
@@ -83,8 +80,8 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
     protected String localhostIP = null;
 
     /**
-     * Constructor for the NetMapGraphicLoader, you still have to set
-     * the NetMapConnector.
+     * Constructor for the NetMapGraphicLoader, you still have to set the
+     * NetMapConnector.
      */
     public NetMapGraphicLoader() {
         DEBUG = Debug.debugging("netmap");
@@ -103,8 +100,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
     }
 
     /**
-     * Constructor for the NetMapGraphicLoader that sets the
-     * NetMapConnector.
+     * Constructor for the NetMapGraphicLoader that sets the NetMapConnector.
      * 
      * @param nmc the NetMapConnector to listen to.
      */
@@ -115,11 +111,10 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
 
     /**
      * Set the NetMapConnector to listen to. This method will add the
-     * NetMapGraphicLoader to the NetMapConnector as a NetMapListener.
-     * If there is already a NetMapConnector set in this
-     * NetMapGraphicLoader, then this method will disconnect from the
-     * current NetMapConnector, and reconnect with the new one if it
-     * isn't null.
+     * NetMapGraphicLoader to the NetMapConnector as a NetMapListener. If there
+     * is already a NetMapConnector set in this NetMapGraphicLoader, then this
+     * method will disconnect from the current NetMapConnector, and reconnect
+     * with the new one if it isn't null.
      */
     public void setNetMapConnector(NetMapConnector nmc) {
         if (connector != null) {
@@ -178,10 +173,9 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
     }
 
     /**
-     * Process a NetMapEvent Properties object, which means that a
-     * Properties object, representing an event from the NetMap
-     * server, is evaluated and used to modify the NodeCache and
-     * LineCache accordingly.
+     * Process a NetMapEvent Properties object, which means that a Properties
+     * object, representing an event from the NetMap server, is evaluated and
+     * used to modify the NodeCache and LineCache accordingly.
      * 
      * @param eventProps the properties from a NetMapEvent.
      */
@@ -244,12 +238,10 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
                  * int posY = LayerUtils.intFromProperties(eventProps,
                  * POSY_FIELD, ERROR_VALUE_INT);
                  * 
-                 * int width =
-                 * LayerUtils.intFromProperties(eventProps,
+                 * int width = LayerUtils.intFromProperties(eventProps,
                  * WIDTH_FIELD, ERROR_VALUE_INT);
                  * 
-                 * int height =
-                 * LayerUtils.intFromProperties(eventProps,
+                 * int height = LayerUtils.intFromProperties(eventProps,
                  * HEIGHT_FIELD, ERROR_VALUE_INT);
                  */
                 status = PropUtils.intFromProperties(eventProps,
@@ -259,8 +251,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
                         MENU_FIELD,
                         0);
                 /*
-                 * int joffset =
-                 * LayerUtils.intFromProperties(eventProps,
+                 * int joffset = LayerUtils.intFromProperties(eventProps,
                  * JOFFSET_FIELD, ERROR_VALUE_INT);
                  */
 
@@ -273,8 +264,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
                 String ip = eventProps.getProperty(IP_FIELD);
 
                 /*
-                 * float elevation =
-                 * LayerUtils.floatFromProperties(eventProps,
+                 * float elevation = LayerUtils.floatFromProperties(eventProps,
                  * ELEVATION_FIELD, 0f);
                  */
 
@@ -406,15 +396,15 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
     }
 
     /**
-     * Internal method used to create a single OMGraphicList from the
-     * NodeCache and the LineCache.
+     * Internal method used to create a single OMGraphicList from the NodeCache
+     * and the LineCache.
      */
     protected OMGraphicList getOMList() {
 
         /*
-         * By creating a new list, we avoid
-         * ConcurrentModificationExceptions within the PlugInLayer,
-         * and within the GraphicLoaderPlugIn during generate().
+         * By creating a new list, we avoid ConcurrentModificationExceptions
+         * within the PlugInLayer, and within the GraphicLoaderPlugIn during
+         * generate().
          */
         omList = new OMGraphicList();
 
@@ -462,17 +452,17 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
     }
 
     /**
-     * Needed to fill in a GUI with a receiver's name, to enable the
-     * user to send a graphic to a specific object. Should be a pretty
-     * name, suitable to let a user know what it is.
+     * Needed to fill in a GUI with a receiver's name, to enable the user to
+     * send a graphic to a specific object. Should be a pretty name, suitable to
+     * let a user know what it is.
      */
     public String getName() {
         return "NetMap";
     }
 
     /**
-     * The inherited AbstractGraphicLoader method, that sends the
-     * current OMGrapicList to the receiver.
+     * The inherited AbstractGraphicLoader method, that sends the current
+     * OMGrapicList to the receiver.
      */
     public void manageGraphics() {
         // receiver is inherited from
@@ -493,16 +483,15 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
     protected boolean toolTipUp = false;
 
     /**
-     * Invoked when the mouse button has been moved on a component
-     * (with no buttons down).
+     * Invoked when the mouse button has been moved on a component (with no
+     * buttons down).
      * 
      * @param e MouseEvent
      * @return true if the listener was able to process the event.
      */
     public boolean mouseMoved(java.awt.event.MouseEvent e) {
         if (receiver instanceof PlugIn && omList != null) {
-            OMGraphic graphic = omList.getOMGraphicThatContains(e.getX(),
-                    e.getY());
+            OMGraphic graphic = omList.getContains(e.getX(), e.getY());
             String label = null;
             if (graphic instanceof Node) {
                 label = ((Node) graphic).getLabel();

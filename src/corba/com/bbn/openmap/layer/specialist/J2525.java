@@ -31,10 +31,10 @@ import java.awt.image.ImageObserver;
 import javax.swing.ImageIcon;
 
 import com.bbn.openmap.corba.CSpecialist.U2525SymbolPackage.E2525Symbol;
-import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicAdapter;
 import com.bbn.openmap.proj.Projection;
 
-public class J2525 extends OMGraphic implements JObjectHolder {
+public class J2525 extends OMGraphicAdapter implements JObjectHolder {
 
     protected transient com.bbn.openmap.corba.CSpecialist.EComp object = null;
 

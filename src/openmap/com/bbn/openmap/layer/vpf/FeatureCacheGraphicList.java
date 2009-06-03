@@ -61,8 +61,8 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList implements
 
     public synchronized void setTo(DrawingAttributes da) {
         if (da != null) {
-            for (Iterator<OMGeometry> it = iterator(); it.hasNext();) {
-                da.setTo((OMGraphic) it.next());
+            for (OMGraphic omg : this) {
+                da.setTo(omg);
             }
         }
     }
@@ -114,10 +114,7 @@ public abstract class FeatureCacheGraphicList extends OMGraphicList implements
             FeatureCacheGraphicList omgl = getClass().newInstance();
             omgl.setFeatureName(getFeatureName());
 
-            for (Iterator<OMGeometry> it = iterator(); it.hasNext();) {
-                // If the OMGraphic doesn't provide a copy (providing a
-                // SinkGraphic instead), oh well.
-                OMGeometry omg = it.next();
+            for (OMGraphic omg : this) {
                 if (omg instanceof OMGraphicList) {
                     omgl.add((OMGraphic) ((OMGraphicList) omg).clone());
                 } else {

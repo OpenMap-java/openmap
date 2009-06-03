@@ -35,7 +35,7 @@ import java.util.*;
  * in order to create a hole Computationally this can be expensive to
  * do on a complex layout like a streetmap of city
  */
-public class OMSubtraction extends OMGraphic implements Serializable {
+public class OMSubtraction extends OMGraphicAdapter implements Serializable {
 
     Color fillcolor;
     SubArea outer; //The outer polygon of this region

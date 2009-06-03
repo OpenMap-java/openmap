@@ -279,7 +279,7 @@ public class OMDistance extends OMPoly {
     protected void renderPoints(Graphics g) {
         Paint pointPaint = getLabelPaint();
 
-        for (Iterator<OMGeometry> it = points.iterator(); it.hasNext();) {
+        for (Iterator<OMGraphic> it = points.iterator(); it.hasNext();) {
             OMGraphic point = (OMPoint) it.next();
             point.setLinePaint(pointPaint);
             point.setFillPaint(pointPaint);
@@ -295,7 +295,7 @@ public class OMDistance extends OMPoly {
         Paint labelPaint = getLabelPaint();
         Paint mattingPaint = getMattingPaint();
         boolean isMatted = isMatted();
-        for (Iterator<OMGeometry> it = labels.iterator(); it.hasNext();) {
+        for (Iterator<OMGraphic> it = labels.iterator(); it.hasNext();) {
             OMText text = (OMText) it.next();
             text.setFont(f);
             text.setLinePaint(labelPaint);

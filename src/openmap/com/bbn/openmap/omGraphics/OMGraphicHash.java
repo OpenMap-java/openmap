@@ -12,7 +12,6 @@ package com.bbn.openmap.omGraphics;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -31,9 +30,9 @@ import java.util.Map;
  * @see com.bbn.openmap.omGraphics.OMGraphicList
  * @author David J. Ward
  */
-public class OMGraphicHash extends OMGraphicList implements Map {
+public class OMGraphicHash extends OMGraphicList {
 
-    private HashMap graphicHash = new HashMap();
+    private HashMap<Object, OMGraphic> graphicHash = new HashMap<Object, OMGraphic>();
 
     /**
      * Creates a new instance of OMGraphicHash
@@ -53,18 +52,17 @@ public class OMGraphicHash extends OMGraphicList implements Map {
 
     /**
      * Returns the value to which this map maps the specified key. Returns
-     * <tt>null</tt> if the map contains no mapping for this key. A return
-     * value of <tt>null</tt> does not <i>necessarily</i> indicate that the
-     * map contains no mapping for the key; it's also possible that the map
+     * <tt>null</tt> if the map contains no mapping for this key. A return value
+     * of <tt>null</tt> does not <i>necessarily</i> indicate that the map
+     * contains no mapping for the key; it's also possible that the map
      * explicitly maps the key to <tt>null</tt>. The <tt>containsKey</tt>
      * operation may be used to distinguish these two cases.
      * 
      * <p>
-     * More formally, if this map contains a mapping from a key <tt>k</tt> to
-     * a value <tt>v</tt> such that <tt>(key==null ? k==null :
-     * key.equals(k))</tt>,
-     * then this method returns <tt>v</tt>; otherwise it returns
-     * <tt>null</tt>. (There can be at most one such mapping.)
+     * More formally, if this map contains a mapping from a key <tt>k</tt> to a
+     * value <tt>v</tt> such that <tt>(key==null ? k==null :
+     * key.equals(k))</tt>, then this method returns <tt>v</tt>; otherwise it
+     * returns <tt>null</tt>. (There can be at most one such mapping.)
      * 
      * @param key key whose associated value is to be returned.
      * @return the value to which this map maps the specified key, or
@@ -77,7 +75,7 @@ public class OMGraphicHash extends OMGraphicList implements Map {
      * 
      * @see #containsKey(Object)
      */
-    public Object get(Object obj) {
+    public OMGraphic get(Object obj) {
         return graphicHash.get(obj);
     }
 
@@ -85,8 +83,8 @@ public class OMGraphicHash extends OMGraphicList implements Map {
      * Returns <tt>true</tt> if this map contains a mapping for the specified
      * key. More formally, returns <tt>true</tt> if and only if this map
      * contains a mapping for a key <tt>k</tt> such that
-     * <tt>(key==null ? k==null : key.equals(k))</tt>. (There can be at most
-     * one such mapping.)
+     * <tt>(key==null ? k==null : key.equals(k))</tt>. (There can be at most one
+     * such mapping.)
      * 
      * @param key key whose presence in this map is to be tested.
      * @return <tt>true</tt> if this map contains a mapping for the specified
@@ -102,41 +100,41 @@ public class OMGraphicHash extends OMGraphicList implements Map {
     }
 
     /**
-     * Returns <tt>true</tt> if this map maps one or more keys to the
-     * specified value. More formally, returns <tt>true</tt> if and only if
-     * this map contains at least one mapping to a value <tt>v</tt> such that
-     * <tt>(value==null ? v==null : value.equals(v))</tt>. This operation
-     * will probably require time linear in the map size for most
-     * implementations of the <tt>Map</tt> interface.
+     * Returns <tt>true</tt> if this map maps one or more keys to the specified
+     * value. More formally, returns <tt>true</tt> if and only if this map
+     * contains at least one mapping to a value <tt>v</tt> such that
+     * <tt>(value==null ? v==null : value.equals(v))</tt>. This operation will
+     * probably require time linear in the map size for most implementations of
+     * the <tt>Map</tt> interface.
      * 
      * @param value value whose presence in this map is to be tested.
-     * @return <tt>true</tt> if this map maps one or more keys to the
-     *         specified value.
+     * @return <tt>true</tt> if this map maps one or more keys to the specified
+     *         value.
      * @throws ClassCastException if the value is of an inappropriate type for
      *         this map (optional).
      * @throws NullPointerException if the value is <tt>null</tt> and this map
      *         does not permit <tt>null</tt> values (optional).
      */
-    public boolean containsValue(Object obj) {
+    public boolean containsValue(OMGraphic obj) {
         return graphicHash.containsValue(obj);
     }
 
     /**
      * Returns a set view of the mappings contained in this map. Each element in
-     * the returned set is a {@link Map.Entry}. The set is backed by the map,
-     * so changes to the map are reflected in the set, and vice-versa. If the
-     * map is modified while an iteration over the set is in progress (except
+     * the returned set is a {@link Map.Entry}. The set is backed by the map, so
+     * changes to the map are reflected in the set, and vice-versa. If the map
+     * is modified while an iteration over the set is in progress (except
      * through the iterator's own <tt>remove</tt> operation, or through the
-     * <tt>setValue</tt> operation on a map entry returned by the iterator)
-     * the results of the iteration are undefined. The set supports element
-     * removal, which removes the corresponding mapping from the map, via the
+     * <tt>setValue</tt> operation on a map entry returned by the iterator) the
+     * results of the iteration are undefined. The set supports element removal,
+     * which removes the corresponding mapping from the map, via the
      * <tt>Iterator.remove</tt>, <tt>Set.remove</tt>, <tt>removeAll</tt>,
-     * <tt>retainAll</tt> and <tt>clear</tt> operations. It does not support
-     * the <tt>add</tt> or <tt>addAll</tt> operations.
+     * <tt>retainAll</tt> and <tt>clear</tt> operations. It does not support the
+     * <tt>add</tt> or <tt>addAll</tt> operations.
      * 
      * @return a set view of the mappings contained in this map.
      */
-    public java.util.Set entrySet() {
+    public java.util.Set<Map.Entry<Object, OMGraphic>> entrySet() {
         return graphicHash.entrySet();
     }
 
@@ -147,13 +145,13 @@ public class OMGraphicHash extends OMGraphicList implements Map {
      * progress (except through the iterator's own <tt>remove</tt> operation),
      * the results of the iteration are undefined. The set supports element
      * removal, which removes the corresponding mapping from the map, via the
-     * <tt>Iterator.remove</tt>, <tt>Set.remove</tt>,
-     * <tt>removeAll</tt> <tt>retainAll</tt>, and <tt>clear</tt>
-     * operations. It does not support the add or <tt>addAll</tt> operations.
+     * <tt>Iterator.remove</tt>, <tt>Set.remove</tt>, <tt>removeAll</tt>
+     * <tt>retainAll</tt>, and <tt>clear</tt> operations. It does not support
+     * the add or <tt>addAll</tt> operations.
      * 
      * @return a set view of the keys contained in this map.
      */
-    public java.util.Set keySet() {
+    public java.util.Set<Object> keySet() {
         return graphicHash.keySet();
     }
 
@@ -162,15 +160,16 @@ public class OMGraphicHash extends OMGraphicList implements Map {
      * (optional operation). If the map previously contained a mapping for this
      * key, the old value is replaced by the specified value. (A map <tt>m</tt>
      * is said to contain a mapping for a key <tt>k</tt> if and only if
-     * {@link #containsKey(Object) m.containsKey(k)} would return <tt>true</tt>.))
+     * {@link #containsKey(Object) m.containsKey(k)} would return <tt>true</tt>
+     * .))
      * 
      * @param key key with which the specified value is to be associated.
      * @param value value to be associated with the specified key.
-     * @return previous value associated with specified key, or <tt>null</tt>
-     *         if there was no mapping for key. A <tt>null</tt> return can
-     *         also indicate that the map previously associated <tt>null</tt>
-     *         with the specified key, if the implementation supports
-     *         <tt>null</tt> values.
+     * @return previous value associated with specified key, or <tt>null</tt> if
+     *         there was no mapping for key. A <tt>null</tt> return can also
+     *         indicate that the map previously associated <tt>null</tt> with
+     *         the specified key, if the implementation supports <tt>null</tt>
+     *         values.
      * 
      * @throws UnsupportedOperationException if the <tt>put</tt> operation is
      *         not supported by this map.
@@ -181,10 +180,7 @@ public class OMGraphicHash extends OMGraphicList implements Map {
      * @throws NullPointerException if this map does not permit <tt>null</tt>
      *         keys or values, and the specified key or value is <tt>null</tt>.
      */
-    public Object put(Object key, Object graphic) {
-        if (!(graphic instanceof OMGraphic)) {
-            throw new ClassCastException("Value is not an OMGraphic");
-        }
+    public Object put(Object key, OMGraphic graphic) {
 
         // first remove the OMGraphic from the list
         // Don't allow duplicate graphics in hash, that is multiple
@@ -193,25 +189,25 @@ public class OMGraphicHash extends OMGraphicList implements Map {
             // now we know that we have this graphic in the
             // hash, now lets find the associated key.
             // This requires walkin the keySet.
-            ArrayList keysToRemove = new ArrayList();
-            for (Iterator it = graphicHash.entrySet().iterator(); it.hasNext();) {
-                Map.Entry entry = (Map.Entry) it.next();
+            ArrayList<Object> keysToRemove = new ArrayList<Object>();
+            for (Map.Entry<Object, OMGraphic> entry : graphicHash.entrySet()) {
                 if (entry.getValue().equals(graphic)) {
-                    keysToRemove.add(entry.getKey());
+                    keysToRemove.add((Object) entry.getKey());
                 }
             }
-            for (Iterator it = keysToRemove.iterator(); it.hasNext();) {
-                graphicHash.remove(it.next());
+            for (Object obj : keysToRemove) {
+                graphicHash.remove(obj);
             }
 
             super.remove((OMGraphic) graphic);
         }
+
         if (graphicHash.containsKey(key)) {
             super.remove((OMGraphic) graphic);
         }
-        OMGraphic previous = (OMGraphic) graphicHash.put(key, graphic);
-        super.add((OMGraphic) graphic);
-        return previous;
+
+        super.add(graphic);
+        return graphicHash.put(key, graphic);
     }
 
     /**
@@ -232,11 +228,11 @@ public class OMGraphicHash extends OMGraphicList implements Map {
      * 
      * @throws IllegalArgumentException some aspect of a key or value in the
      *         specified map prevents it from being stored in this map.
-     * @throws NullPointerException if the specified map is <tt>null</tt>, or
-     *         if this map does not permit <tt>null</tt> keys or values, and
-     *         the specified map contains <tt>null</tt> keys or values.
+     * @throws NullPointerException if the specified map is <tt>null</tt>, or if
+     *         this map does not permit <tt>null</tt> keys or values, and the
+     *         specified map contains <tt>null</tt> keys or values.
      */
-    public void putAll(Map map) {
+    public void putAll(Map<Object, OMGraphic> map) {
         graphicHash.putAll(map);
     }
 
@@ -250,14 +246,14 @@ public class OMGraphicHash extends OMGraphicList implements Map {
      * <p>
      * Returns the value to which the map previously associated the key, or
      * <tt>null</tt> if the map contained no mapping for this key. (A
-     * <tt>null</tt> return can also indicate that the map previously
-     * associated <tt>null</tt> with the specified key if the implementation
-     * supports <tt>null</tt> values.) The map will not contain a mapping for
-     * the specified key once the call returns.
+     * <tt>null</tt> return can also indicate that the map previously associated
+     * <tt>null</tt> with the specified key if the implementation supports
+     * <tt>null</tt> values.) The map will not contain a mapping for the
+     * specified key once the call returns.
      * 
      * @param key key whose mapping is to be removed from the map.
-     * @return previous value associated with specified key, or <tt>null</tt>
-     *         if there was no mapping for key.
+     * @return previous value associated with specified key, or <tt>null</tt> if
+     *         there was no mapping for key.
      * 
      * @throws ClassCastException if the key is of an inappropriate type for
      *         this map (optional).
@@ -266,10 +262,10 @@ public class OMGraphicHash extends OMGraphicList implements Map {
      * @throws UnsupportedOperationException if the <tt>remove</tt> method is
      *         not supported by this map.
      */
-    public Object remove(Object obj) {
+    public boolean remove(Object obj) {
         OMGraphic graphic = (OMGraphic) graphicHash.get(obj);
-        super.remove(graphic);
-        return graphicHash.remove(obj);
+        graphicHash.remove(obj);
+        return super.remove(graphic);
     }
 
     /**
@@ -280,13 +276,13 @@ public class OMGraphicHash extends OMGraphicList implements Map {
      * <tt>remove</tt> operation), the results of the iteration are undefined.
      * The collection supports element removal, which removes the corresponding
      * mapping from the map, via the <tt>Iterator.remove</tt>,
-     * <tt>Collection.remove</tt>, <tt>removeAll</tt>, <tt>retainAll</tt>
-     * and <tt>clear</tt> operations. It does not support the add or
-     * <tt>addAll</tt> operations.
+     * <tt>Collection.remove</tt>, <tt>removeAll</tt>, <tt>retainAll</tt> and
+     * <tt>clear</tt> operations. It does not support the add or <tt>addAll</tt>
+     * operations.
      * 
      * @return a collection view of the values contained in this map.
      */
-    public java.util.Collection values() {
+    public java.util.Collection<OMGraphic> values() {
         return graphicHash.values();
     }
 
@@ -300,7 +296,7 @@ public class OMGraphicHash extends OMGraphicList implements Map {
     public synchronized Object clone() {
         cloningInProgress = true;
         OMGraphicHash omgl = (OMGraphicHash) super.clone();
-        omgl.graphicHash = (HashMap) graphicHash.clone();
+        omgl.graphicHash = (HashMap<Object, OMGraphic>) graphicHash.clone();
         cloningInProgress = false;
         return omgl;
     }
@@ -316,12 +312,11 @@ public class OMGraphicHash extends OMGraphicList implements Map {
      * @param g the non-null OMGraphic to add
      * @exception IllegalArgumentException if OMGraphic is null
      */
-    public void addOMGraphic(OMGraphic g) {
+    public boolean addOMGraphic(OMGraphic g) {
         // Prevent adding a graphic using the OMGraphic List.
         // OMGraphicHash entry must be added through the Map interface.
         if (cloningInProgress) {
-            super.addOMGraphic(g);
-            return;
+            return super.addOMGraphic(g);
         }
         throw new RuntimeException("addOMGraphic() not permitted for OMGraphicHash(). Use put(key, OMGraphic) instead.");
 
@@ -334,12 +329,11 @@ public class OMGraphicHash extends OMGraphicList implements Map {
      * <code>IllegalArgumentException</code> because adding a graphic must be
      * done through <code>put(key,value)</code>.
      */
-    public void add(OMGraphic g) {
+    public boolean add(OMGraphic g) {
         // Prevent adding a graphic using the OMGraphic List.
         // OMGraphicHash entry must be added through the Map interface.
         if (cloningInProgress) {
-            super.add(g);
-            return;
+            return super.add(g);
         }
         throw new RuntimeException("addOMGraphic() not permitted for OMGraphicHash(). Use put(key, OMGraphic) instead.");
     }
@@ -349,8 +343,8 @@ public class OMGraphicHash extends OMGraphicList implements Map {
      * 
      * <p>
      * For OMGraphicHash this method will throw an
-     * <code>IllegalArgumentException</code> because removing a graphic must
-     * be done through <code>remove(key)</code>.
+     * <code>IllegalArgumentException</code> because removing a graphic must be
+     * done through <code>remove(key)</code>.
      * 
      * @param location the location of the OMGraphic to remove.
      */
@@ -365,8 +359,8 @@ public class OMGraphicHash extends OMGraphicList implements Map {
      * 
      * <p>
      * For OMGraphicHash this method will throw an
-     * <code>IllegalArgumentException</code> because removing a graphic must
-     * be done through <code>remove(key)</code>.
+     * <code>IllegalArgumentException</code> because removing a graphic must be
+     * done through <code>remove(key)</code>.
      * 
      * @param graphic the OMGraphic object to remove.
      * @return true if graphic was on the list, false if otherwise.

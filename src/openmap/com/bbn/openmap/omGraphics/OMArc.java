@@ -30,7 +30,6 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.bbn.openmap.proj.Cylindrical;
@@ -57,7 +56,7 @@ import com.bbn.openmap.util.Debug;
  * 
  * @see OMPoly
  */
-public class OMArc extends OMGraphic implements Serializable {
+public class OMArc extends OMGraphicAdapter implements OMGraphic {
 
     /** Horizontal pixel location of the center. */
     protected double x1 = 0;

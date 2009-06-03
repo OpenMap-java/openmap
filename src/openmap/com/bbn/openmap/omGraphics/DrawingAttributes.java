@@ -858,7 +858,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
         // painted on top of the fillPaint. Makes for effects if the
         // fillPattern has some transparent spots.
         if (fillPattern != null
-                && (fillPaint == null || OMGraphic.isClear(fillPaint))) {
+                && (fillPaint == null || isClear(fillPaint))) {
             graphic.setFillPaint(fillPattern);
         } else {
             graphic.setFillPaint(fillPaint);
@@ -2012,7 +2012,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
             }
         }
 
-        if (!OMGraphic.isClear(fillPaint)) {
+        if (!isClear(fillPaint)) {
             g.setStroke(OMGraphicConstants.BASIC_STROKE);
 
             if (replaceColorWithGradient) {
@@ -2227,5 +2227,19 @@ public class DrawingAttributes implements ActionListener, Serializable,
 
     public void setOrientation(int orientation) {
         this.orientation = orientation;
+    }
+    
+    /**
+     * Checks if the Paint is clear.
+     * 
+     * @param paint Paint or null.
+     * @return true if Paint is null or is a Color with a 0 alpha value.
+     */
+    public static boolean isClear(Paint paint) {
+        if (paint instanceof Color) {
+            return ((((Color) paint).getRGB() & 0xff000000) == 0);
+        } else {
+            return false;
+        }
     }
 }

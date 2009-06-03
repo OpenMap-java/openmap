@@ -27,8 +27,6 @@ import java.awt.Paint;
 import java.lang.reflect.Field;
 import java.util.Properties;
 
-import com.bbn.openmap.omGraphics.OMColor;
-
 /**
  * ColorFactory creates instances of colors. This class has methods
  * which create <code>java.awt.Color</code> or
@@ -274,18 +272,7 @@ public class ColorFactory {
      * @return Color or OMColor that has an ARGB value
      */
     public static Color createColor(int value, boolean forceAlpha) {
-        if (!OMColor.nativeAlpha) {
-            return (forceAlpha) ? new OMColor(value) : new Color(value);
-        }
-        // alpha is supported by the Java VM.
-        try {
-            // we prefer the generic Java 2 solution (supports alpha)
-            return (Color) OMColor.alphaValueConstructor.newInstance(new Object[] {
-                    new Integer(value), new Boolean(true) });
-        } catch (Exception e) {
-            System.err.println("ColorFactory.parseColor(): internal error...");
-            return (forceAlpha) ? new OMColor(value) : new Color(value);
-        }
+        return new Color(value, forceAlpha);
     }
 
     public static String getHexColorString(Color color) {

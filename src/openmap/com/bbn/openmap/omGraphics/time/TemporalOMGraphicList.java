@@ -24,10 +24,9 @@
 
 package com.bbn.openmap.omGraphics.time;
 
-import java.util.Iterator;
 import java.util.List;
 
-import com.bbn.openmap.omGraphics.OMGeometry;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 
@@ -63,7 +62,7 @@ public class TemporalOMGraphicList extends OMGraphicList implements
      * 
      * @param list List of OMGraphics.
      */
-    public TemporalOMGraphicList(List<OMGeometry> list) {
+    public TemporalOMGraphicList(List<OMGraphic> list) {
         super(list);
     }
 
@@ -72,8 +71,7 @@ public class TemporalOMGraphicList extends OMGraphicList implements
      * on non-temporal OMGeometries.
      */
     public void generate(Projection proj, long time) {
-        for (Iterator<OMGeometry> it = iterator(); it.hasNext();) {
-            OMGeometry geom = it.next();
+        for (OMGraphic geom : this) {
             if (geom instanceof TemporalOMGeometry) {
                 ((TemporalOMGeometry) geom).generate(proj, time);
             } else {

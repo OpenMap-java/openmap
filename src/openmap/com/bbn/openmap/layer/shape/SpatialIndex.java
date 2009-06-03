@@ -45,7 +45,6 @@ import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
-import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
@@ -642,8 +641,7 @@ public class SpatialIndex extends ShapeUtils {
             retList.add(labels);
 
             OMGraphicList testList = new OMGraphicList();
-            for (Iterator<OMGeometry> it = retList.iterator(); it.hasNext();) {
-                OMGraphic omg = (OMGraphic) it.next();
+            for (OMGraphic omg : retList) {
 
                 if (omg != null) {
 

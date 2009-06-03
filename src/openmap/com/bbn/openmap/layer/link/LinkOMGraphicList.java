@@ -88,8 +88,8 @@ public class LinkOMGraphicList extends OMGraphicList implements
      * @param g the non-null OMGraphic to add
      * @exception IllegalArgumentException if OMGraphic is null
      */
-    public synchronized void _add(OMGeometry g) {
-        super._add(g);
+    public synchronized boolean add(OMGraphic g) {
+        boolean ret = super.add(g);
         String id = ((LinkProperties) g.getAppObject()).getProperty(LPC_GRAPHICID);
         if (Debug.debugging("linkdetail")) {
             Debug.output("LinkOMGraphicList: Adding graphic, id(" + id + ")");
@@ -97,6 +97,7 @@ public class LinkOMGraphicList extends OMGraphicList implements
         if (id != null) {
             hash.put(id.intern(), g);
         }
+        return ret;
     }
 
     /**
@@ -106,7 +107,7 @@ public class LinkOMGraphicList extends OMGraphicList implements
      * @return true if graphic was on the list, false if otherwise.
      */
     protected synchronized Object _remove(int location) {
-        Object ret = super._remove(location);
+        Object ret = super.remove(location);
         if (ret != null) {
             String id = ((LinkProperties) ((OMGeometry) ret).getAppObject()).getProperty(LPC_GRAPHICID);
             if (id != null) {
@@ -129,7 +130,7 @@ public class LinkOMGraphicList extends OMGraphicList implements
      * @return true if geometry was on the list, false if otherwise.
      */
     protected synchronized boolean _remove(OMGeometry geometry) {
-        boolean ret = super._remove(geometry);
+        boolean ret = super.remove(geometry);
         if (ret != false) {
             String id = ((LinkProperties) geometry.getAppObject()).getProperty(LPC_GRAPHICID);
             hash.remove(id.intern());
@@ -197,7 +198,7 @@ public class LinkOMGraphicList extends OMGraphicList implements
     public int getOMGraphicIndexWithId(String gid) {
         OMGraphic graphic = getOMGraphicWithId(gid);
         if (graphic != null) {
-            return super._indexOf(graphic);
+            return super.indexOf(graphic);
         } else {
             return Link.UNKNOWN;
         }
@@ -221,13 +222,11 @@ public class LinkOMGraphicList extends OMGraphicList implements
      * @param gr the AWT Graphics context
      */
     public synchronized void render(Graphics gr) {
-        OMGraphic graphic;
-        ListIterator iterator;
 
         if (traverseMode == FIRST_ADDED_ON_TOP) {
-            iterator = graphics.listIterator(graphics.size());
+            ListIterator<OMGraphic> iterator = listIterator(size());
             while (iterator.hasPrevious()) {
-                graphic = (OMGraphic) iterator.previous();
+                OMGraphic graphic = iterator.previous();
                 if (graphic.isVisible()) {
                     Object obj = graphic.getAppObject();
                     if (Debug.debugging("linkdetail")
@@ -241,10 +240,10 @@ public class LinkOMGraphicList extends OMGraphicList implements
             }
 
         } else {
-            iterator = graphics.listIterator();
+            ListIterator<OMGraphic> iterator = listIterator();
 
             while (iterator.hasNext()) {
-                graphic = (OMGraphic) iterator.next();
+                OMGraphic graphic = iterator.next();
                 if (graphic.isVisible()) {
                     Object obj = graphic.getAppObject();
                     if (Debug.debugging("linkdetail")

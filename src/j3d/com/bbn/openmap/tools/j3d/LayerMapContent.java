@@ -35,39 +35,37 @@ import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.layer.ScaleFilterLayer;
-import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicAdapter;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
- * Simple 3D world creation from OpenMap Layers that are
- * OMGraphicHandlerLayers. The Layer objects are not given height.
- * Although you can control that with the LayerSeparation variable.
- * This LayerMapContent will also create a simple plane colored the
- * background color of the map.
+ * Simple 3D world creation from OpenMap Layers that are OMGraphicHandlerLayers.
+ * The Layer objects are not given height. Although you can control that with
+ * the LayerSeparation variable. This LayerMapContent will also create a simple
+ * plane colored the background color of the map.
  * 
  * @author dietrick
  */
 public class LayerMapContent extends OrderedGroup {
 
     /**
-     * The default amount of separation to place between layer objects
-     * (.1), just to keep them from merging together.
+     * The default amount of separation to place between layer objects (.1),
+     * just to keep them from merging together.
      */
     public final static double DEFAULT_LAYER_SEPARATION = .1;
 
     /**
-     * The height spacer that is being placed between layers, in
-     * straight 3D coordinate space.
+     * The height spacer that is being placed between layers, in straight 3D
+     * coordinate space.
      */
     protected double layerSeparation = DEFAULT_LAYER_SEPARATION;
 
     /**
-     * Constructor that creates a Group from the OMGraphicHandler
-     * layers that are part of the map.
+     * Constructor that creates a Group from the OMGraphicHandler layers that
+     * are part of the map.
      * 
-     * @param mapHandler MapHandler to use to get
-     *        OMGraphicHandlerLayers.
+     * @param mapHandler MapHandler to use to get OMGraphicHandlerLayers.
      */
     public LayerMapContent(MapHandler mapHandler) {
         super();
@@ -75,8 +73,7 @@ public class LayerMapContent extends OrderedGroup {
     }
 
     /**
-     * Constructor that creates a Group from a single OMGraphicHandler
-     * layer.
+     * Constructor that creates a Group from a single OMGraphicHandler layer.
      * 
      * @param layer Description of the Parameter
      */
@@ -85,10 +82,9 @@ public class LayerMapContent extends OrderedGroup {
     }
 
     /**
-     * Add content to this Group. The OMGraphicHandler layers that are
-     * part of the map with have their graphics may be added with a
-     * small separation between the layers, depending on the value of
-     * layerSeparation.
+     * Add content to this Group. The OMGraphicHandler layers that are part of
+     * the map with have their graphics may be added with a small separation
+     * between the layers, depending on the value of layerSeparation.
      * 
      * @param mapHandler Description of the Parameter
      */
@@ -127,9 +123,8 @@ public class LayerMapContent extends OrderedGroup {
     }
 
     /**
-     * Add the projection background color to the base level of the
-     * Java 3D map. The MapHandler provides the MapBean and therefore
-     * the projection.
+     * Add the projection background color to the base level of the Java 3D map.
+     * The MapHandler provides the MapBean and therefore the projection.
      * 
      * @param bg The feature to be added to the Sea attribute
      * @param mh The feature to be added to the Sea attribute
@@ -149,7 +144,10 @@ public class LayerMapContent extends OrderedGroup {
 
             java.awt.geom.GeneralPath background =
             // OMGraphic.createBoxShape(0, 0, width, height);
-            OMGraphic.createBoxShape(-width, -height, width * 3, height * 3);
+            OMGraphicAdapter.createBoxShape(-width,
+                    -height,
+                    width * 3,
+                    height * 3);
 
             addTo(bg,
                     OMGraphicUtil.createShape3D(background, 0, seaColor, true));
@@ -171,8 +169,7 @@ public class LayerMapContent extends OrderedGroup {
      * 
      * @param bg The feature to be added to the Content attribute
      * @param layer The feature to be added to the Content attribute
-     * @param baselineHeight The feature to be added to the Content
-     *        attribute
+     * @param baselineHeight The feature to be added to the Content attribute
      */
     protected void addContent(Group bg, OMGraphicHandlerLayer layer,
                               double baselineHeight) {
@@ -203,8 +200,7 @@ public class LayerMapContent extends OrderedGroup {
      * Add the Shape3D objects from an iterator to a Group object.
      * 
      * @param bg The feature to be added to the To attribute
-     * @param shapeIterator The feature to be added to the To
-     *        attribute
+     * @param shapeIterator The feature to be added to the To attribute
      */
     protected void addTo(Group bg, Iterator shapeIterator) {
 

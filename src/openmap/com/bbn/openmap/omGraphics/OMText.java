@@ -41,7 +41,6 @@ import java.awt.geom.PathIterator;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
@@ -51,7 +50,7 @@ import com.bbn.openmap.util.Debug;
  * string is really the location of the lower left corner of the first letter of
  * the string.
  */
-public class OMText extends OMGraphic implements Serializable {
+public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     // ----------------------------------------------------------------------
     // Static constants
@@ -1330,7 +1329,7 @@ public class OMText extends OMGraphic implements Serializable {
         return _distance(x, y);
     }
 
-    protected boolean hasLineTypeChoice() {
+    public boolean hasLineTypeChoice() {
         return false;
     }
 

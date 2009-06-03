@@ -17,7 +17,7 @@ import java.awt.geom.GeneralPath;
  * 
  * @author Sebastien Rosset
  */
-public abstract class OMAbstractLine extends OMGraphic {
+public abstract class OMAbstractLine extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * X coordinate arrays of the projected points.

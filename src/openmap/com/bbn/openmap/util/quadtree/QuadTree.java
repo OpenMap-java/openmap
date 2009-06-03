@@ -27,9 +27,8 @@ import java.io.Serializable;
 import java.util.Vector;
 
 /**
- * The QuadTree lets you organize objects in a grid, that redefines
- * itself and focuses more gridding when more objects appear in a
- * certain area.
+ * The QuadTree lets you organize objects in a grid, that redefines itself and
+ * focuses more gridding when more objects appear in a certain area.
  */
 public class QuadTree implements DataOrganizer, Serializable {
 
@@ -103,10 +102,10 @@ public class QuadTree implements DataOrganizer, Serializable {
      * 
      * @param lat up-down location in QuadTree Grid (latitude, y)
      * @param lon left-right location in QuadTree Grid (longitude, x)
-     * @param withinDistance the maximum distance to get a hit, in
-     *        decimal degrees.
-     * @return the object that was found, null if nothing is within
-     *         the maximum distance.
+     * @param withinDistance the maximum distance to get a hit, in decimal
+     *        degrees.
+     * @return the object that was found, null if nothing is within the maximum
+     *         distance.
      */
     public Object get(float lat, float lon, double withinDistance) {
         return top.get(lat, lon, withinDistance);
@@ -126,8 +125,8 @@ public class QuadTree implements DataOrganizer, Serializable {
     }
 
     /**
-     * Get all the objects within a bounding box, and return the
-     * objects within a given Vector.
+     * Get all the objects within a bounding box, and return the objects within
+     * a given Vector.
      * 
      * @param north top location in QuadTree Grid (latitude, y)
      * @param west left location in QuadTree Grid (longitude, x)
@@ -140,7 +139,7 @@ public class QuadTree implements DataOrganizer, Serializable {
                       Vector vector) {
 
         if (vector == null) {
-            vector = new Vector();
+            vector = new Vector<Object>();
         }
         // crossing the dateline, right?? Or at least containing the
         // entire earth. Might be trouble for VERY LARGE scales. The

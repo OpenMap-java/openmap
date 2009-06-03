@@ -69,7 +69,7 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * @author dietrick
  */
-public class OMWarpingImage extends OMGraphic {
+public class OMWarpingImage extends OMGraphicAdapter implements OMGraphic {
 
     protected ImageWarp warp;
     protected OMRaster raster;

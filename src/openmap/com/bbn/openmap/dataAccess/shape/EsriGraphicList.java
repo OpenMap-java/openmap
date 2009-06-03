@@ -60,8 +60,8 @@ public abstract class EsriGraphicList extends OMGraphicList implements
      * 
      * @param shape the non-null OMGraphic to add
      */
-    public void add(OMGraphic shape) {
-        super.add(shape);
+    public boolean add(OMGraphic shape) {
+        return super.add(shape);
     }
 
     /**
@@ -70,8 +70,8 @@ public abstract class EsriGraphicList extends OMGraphicList implements
      * @param g the non-null OMGraphic to add
      * @exception IllegalArgumentException if OMGraphic is null
      */
-    public void addOMGraphic(OMGraphic g) {
-        add(g);
+    public boolean addOMGraphic(OMGraphic g) {
+        return add(g);
     }
 
     public void setType(int type) {
@@ -299,24 +299,27 @@ public abstract class EsriGraphicList extends OMGraphicList implements
                     ShxInputStream pis = new ShxInputStream(is);
                     int[][] index = pis.getIndex();
                     is.close();
-                    
+
                     RandomAccessFile raf = new RandomAccessFile(shape + ".shp", "rw");
                     raf.seek(24);
                     int contentLength = raf.readInt();
-                    
-                    int indexedContentLength = index[0][index[0].length - 1] + index[1][index[1].length - 1];
-                    
+
+                    int indexedContentLength = index[0][index[0].length - 1]
+                            + index[1][index[1].length - 1];
+
                     if (contentLength != indexedContentLength) {
-                        System.out.println(shape + " content length - shp: " + contentLength + ", shx: " + indexedContentLength);
+                        System.out.println(shape + " content length - shp: "
+                                + contentLength + ", shx: "
+                                + indexedContentLength);
                         raf.seek(24);
                         raf.writeInt(indexedContentLength);
                     }
                     raf.close();
-                    
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                
+
             } else {
                 System.out.println("Shape " + shape
                         + " doesn't look like a shape file");

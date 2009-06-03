@@ -719,9 +719,7 @@ public class OMGraphicHandlerLayer extends Layer implements
                 msg = getName() + "|LayerWorker.construct(): "
                         + e.getClass().getName() + ", " + e.getMessage();
                 Debug.output(msg);
-                if (Debug.debugging("layer")) {
-                    e.printStackTrace();
-                }
+                e.printStackTrace();
             }
 
             // This is only called if there is an error.
@@ -1293,7 +1291,7 @@ public class OMGraphicHandlerLayer extends Layer implements
      */
     public void select(OMGraphicList list) {
         if (list != null) {
-            Iterator it = list.iterator();
+            Iterator<OMGraphic> it = list.iterator();
             while (it.hasNext()) {
                 if (selectedList == null) {
                     selectedList = new OMGraphicList();
@@ -1315,7 +1313,7 @@ public class OMGraphicHandlerLayer extends Layer implements
      */
     public void deselect(OMGraphicList list) {
         if (list != null) {
-            Iterator it = list.iterator();
+            Iterator<OMGraphic> it = list.iterator();
             while (it.hasNext() && selectedList != null) {
                 OMGraphic omg = (OMGraphic) it.next();
                 if (omg instanceof OMGraphicList
@@ -1334,10 +1332,7 @@ public class OMGraphicHandlerLayer extends Layer implements
     public OMGraphicList cut(OMGraphicList omgl) {
         OMGraphicList list = getList();
         if (list != null && omgl != null) {
-            Iterator it = omgl.iterator();
-            while (it.hasNext()) {
-                list.remove((OMGraphic) it.next());
-            }
+            list.removeAll(omgl);
         }
         return omgl;
     }
@@ -1354,12 +1349,7 @@ public class OMGraphicHandlerLayer extends Layer implements
      */
     public void paste(OMGraphicList omgl) {
         OMGraphicList list = getList();
-        if (list != null && omgl != null) {
-            Iterator<OMGeometry> it = omgl.iterator();
-            while (it.hasNext()) {
-                list.add((OMGraphic) it.next());
-            }
-        }
+        list.addAll(omgl);
     }
 
     /**
@@ -1522,7 +1512,7 @@ public class OMGraphicHandlerLayer extends Layer implements
     /**
      * Override of Layer's actionPerformed method, adds the capability that
      * calls doPrepare() if the layer is visible and it receives a RedrawCmd
-     * command.  Also calls Layer.actionPerformed(ActionEvent).
+     * command. Also calls Layer.actionPerformed(ActionEvent).
      */
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);

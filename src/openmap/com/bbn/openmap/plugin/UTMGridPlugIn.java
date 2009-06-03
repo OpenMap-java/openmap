@@ -49,7 +49,6 @@ import com.bbn.openmap.omGraphics.OMGeometryList;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
-import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.omGraphics.geom.BasicGeometry;
 import com.bbn.openmap.omGraphics.geom.PolygonGeometry;
@@ -129,11 +128,11 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
     /**
      * The vertical list of OMLines used for UTM zones.
      */
-    protected OMGraphicList verticalList;
+    protected OMGeometryList verticalList;
     /**
      * The horizontal list of OMLines used for UTM zones.
      */
-    protected OMGraphicList horizontalList;
+    protected OMGeometryList horizontalList;
 
     public final static String ShowLabelsProperty = "showLabels";
     public final static String ShowZonesProperty = "showZones";

@@ -649,7 +649,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
         case RENDERTYPE_LATLON:
             // polygon/polyline project the polygon/polyline.
             // Vertices should already be in radians.
-            ArrayList vector;
+            ArrayList<int[]> vector;
             if (proj instanceof GeoProj) {
                 if (units == DECIMAL_DEGREES) {
                     ProjMath.arrayDegToRad(rawllpts);
@@ -673,8 +673,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
             ypoints = new int[xpoints.length][0];
 
             for (i = 0, j = 0; i < size; i += 2, j++) {
-                xpoints[j] = (int[]) vector.get(i);
-                ypoints[j] = (int[]) vector.get(i + 1);
+                xpoints[j] = vector.get(i);
+                ypoints[j] = vector.get(i + 1);
             }
 
             if (!doShapes) {

@@ -34,7 +34,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicAdapter;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Planet;
 import com.bbn.openmap.proj.Projection;
@@ -47,7 +47,7 @@ import com.bbn.openmap.util.Debug;
  * 
  * @author paricaud
  */
-public class TX7 extends OMGraphic {
+public class TX7 extends OMGraphicAdapter {
     double w = 1, angle = 0;
     LatLonPoint llp1 = new LatLonPoint.Double(), llp2 = new LatLonPoint.Double();
     Point pt1 = new Point(), pt2 = new Point();

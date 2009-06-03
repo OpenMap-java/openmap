@@ -30,6 +30,7 @@ import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGeometryList;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMList;
 import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.omGraphics.geom.PolygonGeometry;
 import com.bbn.openmap.omGraphics.geom.PolylineGeometry;
@@ -186,7 +187,7 @@ public class ESRIPolygonRecord extends ESRIRecord {
          * treat ESRIPolygonRecord with holes correctly (ESRIPolys
          * with counterclockwise order of vertices)
          */
-        OMGraphicList sublist = null;
+        OMList sublist = null;
 
         if (nPolys > 1) {
             // Only want the OMAreaList if the shape type is for

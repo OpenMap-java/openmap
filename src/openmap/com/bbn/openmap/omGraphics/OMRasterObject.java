@@ -41,7 +41,6 @@ import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 import com.bbn.openmap.image.ImageHelper;
 import com.bbn.openmap.proj.Projection;
@@ -66,7 +65,7 @@ import com.bbn.openmap.util.Debug;
  * selected(), however, this Shape will be rendered with the OMGraphic
  * parameters that are set in the OMGraphic.
  */
-public abstract class OMRasterObject extends OMGraphic implements Serializable,
+public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraphic,
         ImageObserver {
 
     /**
@@ -1033,7 +1032,7 @@ public abstract class OMRasterObject extends OMGraphic implements Serializable,
         }
     }
 
-    protected boolean hasLineTypeChoice() {
+    public boolean hasLineTypeChoice() {
         return false;
     }
 }

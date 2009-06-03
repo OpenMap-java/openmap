@@ -33,10 +33,10 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
- * A splined OMPoly. With RENDERTYPE_LATLON mode, spline is computed
- * on geographic locations, and then projected. Very few changes from
- * OMPoly source code, just needed to calculate the spline before
- * projecting in generate(). Look for HACK in source code ...
+ * A splined OMPoly. With RENDERTYPE_LATLON mode, spline is computed on
+ * geographic locations, and then projected. Very few changes from OMPoly source
+ * code, just needed to calculate the spline before projecting in generate().
+ * Look for HACK in source code ...
  * 
  * @author Eric LEPICIER
  * @version 15 juil. 2002
@@ -58,19 +58,17 @@ public class OMSpline extends OMPoly {
      * <p>
      * NOTES:
      * <ul>
-     * <li>llPoints array is converted into radians IN PLACE for more
-     * efficient handling internally if it's not already in radians!
-     * For even better performance, you should send us an array
-     * already in radians format!
-     * <li>If you want the curve to be connected (as a potato), you
-     * need to ensure that the first and last coordinate pairs are the
-     * same.
+     * <li>llPoints array is converted into radians IN PLACE for more efficient
+     * handling internally if it's not already in radians! For even better
+     * performance, you should send us an array already in radians format!
+     * <li>If you want the curve to be connected (as a potato), you need to
+     * ensure that the first and last coordinate pairs are the same.
      * </ul>
      * 
-     * @param llPoints array of lat/lon points, arranged lat, lon,
-     *        lat, lon, etc.
-     * @param units radians or decimal degrees. Use OMGraphic.RADIANS
-     *        or OMGraphic.DECIMAL_DEGREES
+     * @param llPoints array of lat/lon points, arranged lat, lon, lat, lon,
+     *        etc.
+     * @param units radians or decimal degrees. Use OMGraphic.RADIANS or
+     *        OMGraphic.DECIMAL_DEGREES
      * @param lType line type, from a list defined in OMGraphic.
      */
     public OMSpline(double[] llPoints, int units, int lType) {
@@ -82,32 +80,30 @@ public class OMSpline extends OMPoly {
      * <p>
      * NOTES:
      * <ul>
-     * <li>llPoints array is converted into radians IN PLACE for more
-     * efficient handling internally if it's not already in radians!
-     * For even better performance, you should send us an array
-     * already in radians format!
-     * <li>If you want the curve to be connected (as a potato), you
-     * need to ensure that the first and last coordinate pairs are the
-     * same.
+     * <li>llPoints array is converted into radians IN PLACE for more efficient
+     * handling internally if it's not already in radians! For even better
+     * performance, you should send us an array already in radians format!
+     * <li>If you want the curve to be connected (as a potato), you need to
+     * ensure that the first and last coordinate pairs are the same.
      * </ul>
      * 
-     * @param llPoints array of lat/lon points, arranged lat, lon,
-     *        lat, lon, etc.
-     * @param units radians or decimal degrees. Use OMGraphic.RADIANS
-     *        or OMGraphic.DECIMAL_DEGREES
+     * @param llPoints array of lat/lon points, arranged lat, lon, lat, lon,
+     *        etc.
+     * @param units radians or decimal degrees. Use OMGraphic.RADIANS or
+     *        OMGraphic.DECIMAL_DEGREES
      * @param lType line type, from a list defined in OMGraphic.
-     * @param nsegs number of segment points (only for
-     *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and
-     *        if &lt; 1, this value is generated internally)
+     * @param nsegs number of segment points (only for LINETYPE_GREATCIRCLE or
+     *        LINETYPE_RHUMB line types, and if &lt; 1, this value is generated
+     *        internally)
      */
     public OMSpline(double[] llPoints, int units, int lType, int nsegs) {
         super(llPoints, units, lType, nsegs);
     }
 
     /**
-     * Create an OMSpline from a list of xy pairs. If you want the
-     * curve to be connected, you need to ensure that the first and
-     * last coordinate pairs are the same.
+     * Create an OMSpline from a list of xy pairs. If you want the curve to be
+     * connected, you need to ensure that the first and last coordinate pairs
+     * are the same.
      * 
      * @param xypoints array of x/y points, arranged x, y, x, y, etc.
      */
@@ -116,9 +112,8 @@ public class OMSpline extends OMPoly {
     }
 
     /**
-     * Create an x/y OMSpline. If you want the curve to be connected,
-     * you need to ensure that the first and last coordinate pairs are
-     * the same.
+     * Create an x/y OMSpline. If you want the curve to be connected, you need
+     * to ensure that the first and last coordinate pairs are the same.
      * 
      * @param xPoints int[] of x coordinates
      * @param yPoints int[] of y coordinates
@@ -128,9 +123,9 @@ public class OMSpline extends OMPoly {
     }
 
     /**
-     * Create an x/y OMSpline at an offset from lat/lon. If you want
-     * the curve to be connected, you need to ensure that the first
-     * and last coordinate pairs are the same.
+     * Create an x/y OMSpline at an offset from lat/lon. If you want the curve
+     * to be connected, you need to ensure that the first and last coordinate
+     * pairs are the same.
      * 
      * @param latPoint latitude in decimal degrees
      * @param lonPoint longitude in decimal degrees
@@ -142,9 +137,9 @@ public class OMSpline extends OMPoly {
     }
 
     /**
-     * Create an x/y OMSpline at an offset from lat/lon. If you want
-     * the curve to be connected, you need to ensure that the first
-     * and last coordinate pairs are the same.
+     * Create an x/y OMSpline at an offset from lat/lon. If you want the curve
+     * to be connected, you need to ensure that the first and last coordinate
+     * pairs are the same.
      * 
      * @param latPoint latitude in decimal degrees
      * @param lonPoint longitude in decimal degrees
@@ -212,7 +207,7 @@ public class OMSpline extends OMPoly {
             // forward project the radian point
             Point origin = new Point();
             if (proj instanceof GeoProj) {
-                ((GeoProj)proj).forward(lat, lon, origin, true);// radians
+                ((GeoProj) proj).forward(lat, lon, origin, true);// radians
             } else {
                 proj.forward(Math.toDegrees(lat), Math.toDegrees(lon), origin);
             }
@@ -254,7 +249,7 @@ public class OMSpline extends OMPoly {
 
             // polygon/polyline project the polygon/polyline.
             // Vertices should already be in radians.
-            ArrayList vector;
+            ArrayList<int[]> vector;
             if (proj instanceof GeoProj) {
                 vector = ((GeoProj) proj).forwardPoly(splinellpts,
                         lineType,
@@ -269,8 +264,8 @@ public class OMSpline extends OMPoly {
             ypoints = new int[xpoints.length][0];
 
             for (i = 0, j = 0; i < size; i += 2, j++) {
-                xpoints[j] = (int[]) vector.get(i);
-                ypoints[j] = (int[]) vector.get(i + 1);
+                xpoints[j] = vector.get(i);
+                ypoints[j] = vector.get(i + 1);
             }
 
             if (!doShapes && size > 1) {

@@ -888,11 +888,11 @@ public class PropUtils {
      *        should be created for an object.
      * @return
      */
-    public static List objectsFromProperties(Properties p,
-                                             String markerListProperty,
-                                             String definingProperty) {
+    public static List<?> objectsFromProperties(Properties p,
+                                                String markerListProperty,
+                                                String definingProperty) {
         String markerList = p.getProperty(markerListProperty);
-        List ret = new LinkedList();
+        List<Object> ret = new LinkedList<Object>();
 
         if (markerList != null) {
             Vector<String> markerNames = parseSpacedMarkers(markerList);

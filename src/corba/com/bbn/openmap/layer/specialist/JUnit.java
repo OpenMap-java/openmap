@@ -36,10 +36,10 @@ import javax.swing.ImageIcon;
 import com.bbn.openmap.corba.CSpecialist.LLPoint;
 import com.bbn.openmap.corba.CSpecialist.XYPoint;
 import com.bbn.openmap.corba.CSpecialist.UnitSymbolPackage.EUnitSymbol;
-import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicAdapter;
 import com.bbn.openmap.proj.Projection;
 
-public class JUnit extends OMGraphic implements ImageObserver, JObjectHolder {
+public class JUnit extends OMGraphicAdapter implements ImageObserver, JObjectHolder {
 
     protected transient com.bbn.openmap.corba.CSpecialist.EComp object = null;
 

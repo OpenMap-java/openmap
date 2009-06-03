@@ -938,7 +938,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
 
     /**
      * If you need your OMDrawingToolMouseMode to do something a little
-     * different, you can substitude your subclass here. Don't set this to null.
+     * different, you can substitute your subclass here. Don't set this to null.
      */
     public void setMouseMode(OMDrawingToolMouseMode adtmm) {
         dtmm = adtmm;
@@ -1569,11 +1569,8 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
                 }
             }
 
-            ws.displayInWindow(frame, WindowSupport.Dlg.class,
-                    windowx + xoffset,
-                    windowy + yoffset,
-                    -1,
-                    -1);
+            ws.displayInWindow(frame, WindowSupport.Dlg.class, windowx
+                    + xoffset, windowy + yoffset, -1, -1);
         } else {
             Debug.output("OMDrawingTool.showPalette(): NOT showing palette, ws == null:"
                     + (ws == null) + ", used as tool:" + getUseAsTool());
@@ -1754,6 +1751,17 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
     }
 
     protected boolean doPopup(int x, int y, java.util.List additionalOptions) {
+        // TODO This prevents piggypacking and updating of menu. Eliminate the
+        // test, always create a new popup. Also, popup should be protected, not
+        // visible from subclasses.
+
+        // Also, DrawingToolRequestor should be modified to allow the
+        // OMDrawingTool to ask it for additionalOptions for a given
+        // EditableOMGraphic
+
+        // Also also, the OMGraphic should store the class name of the
+        // editableomgraphic it wants to have used on it in it's attributes.
+
         if (additionalOptions != null && additionalOptions.size() > 0) {
             popup = null;
         }
@@ -1930,6 +1938,6 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
         }
 
     }
-    
+
     // TODO need to override getProperties to include Behavior mask settings.
 }

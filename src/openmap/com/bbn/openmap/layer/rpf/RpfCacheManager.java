@@ -25,6 +25,7 @@ package com.bbn.openmap.layer.rpf;
 import java.io.Serializable;
 
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicAdapter;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.proj.Projection;
@@ -441,7 +442,7 @@ public class RpfCacheManager implements Serializable {
         return graphics;
     }
 
-    public class RpfMaps extends OMGraphic {
+    public class RpfMaps extends OMGraphicAdapter {
         public RpfViewAttributes atts;
         public OMGraphicList maps = new OMGraphicList();
         public OMGraphicList infos = new OMGraphicList();

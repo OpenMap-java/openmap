@@ -90,7 +90,7 @@ public class VMAP2Shape {
             ShapeFile s = new ShapeFile(shapeFileName);
             int nGraphics = graphics.size();
             if (nGraphics > 0) {
-                OMGraphic omg = graphics.getOMGraphicAt(0);
+                OMGraphic omg = graphics.get(0);
                 if ((omg instanceof OMPoly)
                         && (omg.getRenderType() == OMGraphic.RENDERTYPE_LATLON)) {
                     int shapeType = ((OMPoly) omg).isPolygon() ? ShapeUtils.SHAPE_TYPE_POLYGON
@@ -105,7 +105,7 @@ public class VMAP2Shape {
             if (doThinning) {
                 OMGraphicList saveGraphics = new OMGraphicList();
                 for (int i = 0; i < nGraphics; i++) {
-                    OMGraphic omg = graphics.getOMGraphicAt(i);
+                    OMGraphic omg = graphics.get(i);
                     if ((omg instanceof OMPoly)
                             && (omg.getRenderType() == OMGraphic.RENDERTYPE_LATLON)) {
                         OMPoly poly = (OMPoly) omg;
@@ -114,7 +114,7 @@ public class VMAP2Shape {
                             continue;
                         }
 
-                        saveGraphics.addOMGraphic(poly);
+                        saveGraphics.add(poly);
                     } else {
                         System.out.println("Skipping candidate: "
                                 + omg.getClass().toString() + ", "
@@ -187,9 +187,9 @@ public class VMAP2Shape {
         for (int i = 0; i < size; i++) {
             obj = list.getOMGraphicAt(i);
             if ((obj instanceof OMPoly) && !((OMPoly) obj).isPolygon()) {
-                plineGraphics.addOMGraphic(obj);
+                plineGraphics.add(obj);
             } else {
-                newGraphics.addOMGraphic(obj);
+                newGraphics.add(obj);
             }
         }
 
@@ -247,7 +247,7 @@ public class VMAP2Shape {
         for (int i = 0; i < size; i++) {
             obj = plineGraphics.getOMGraphicAt(i);
             if (obj instanceof OMPoly) {
-                newGraphics.addOMGraphic(obj);
+                newGraphics.add(obj);
             }
         }
         return newGraphics;

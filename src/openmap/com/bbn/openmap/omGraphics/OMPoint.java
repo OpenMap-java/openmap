@@ -39,7 +39,7 @@ import com.bbn.openmap.util.Debug;
  * adjusted radius. The radius is the pixel distance from the center of the
  * location to each edge of the marking rectangle or circle.
  */
-public class OMPoint extends OMGraphic implements Serializable {
+public class OMPoint extends OMGraphicAdapter implements OMGraphic, Serializable {
 
     public final static int DEFAULT_RADIUS = 2;
     public final static boolean DEFAULT_ISOVAL = false;
@@ -286,7 +286,7 @@ public class OMPoint extends OMGraphic implements Serializable {
         return true;
     }
 
-    protected boolean hasLineTypeChoice() {
+    public boolean hasLineTypeChoice() {
         return false;
     }
 

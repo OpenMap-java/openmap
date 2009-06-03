@@ -23,13 +23,12 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Color;
-import java.lang.reflect.*;
 
 /**
  * The OMColor exists to provide a way to make a color that can have
  * some degree of transparency. The class lets you set the alpha value
  * of the color which lets the color be invisible (0) to opaque (255).
- * At this time, the java.awt.Graphics class does not support
+ * A while ago, the java.awt.Graphics class did not support
  * transparency for drawing objects (OMLines, OMRects, OMCircles,
  * etc.) but the transparent colors work for OMBitmap and OMRaster
  * pixel values.
@@ -53,52 +52,52 @@ public class OMColor extends Color {
      * Does this Java version support alpha for java.awt.Colors?. This
      * is true if java.version &gt;= 1.2, and false otherwise.
      */
-    public final static transient boolean nativeAlpha;
+//    public final static transient boolean nativeAlpha;
 
     /**
      * Default transparent color. Clear is a standard color that has
      * all the bit values set to zero. This will give you a
      * transparent pixel for images, and black for situations where
-     * tranparency is not supported.
+     * transparency is not supported.
      */
-    public final static transient Color clear;
+    public final static transient Color clear = new Color(0, true);
 
     /**
      * A constructor object which can be used to create new
      * java.awt.Colors for <code>java.version &gt;= 1.2</code>.
      */
-    public final static transient Constructor alphaValueConstructor;
+//    public final static transient Constructor alphaValueConstructor;
 
     // check to see if alpha values are supported by the underlying
     // java.awt.Color class.
-    static {
-        Color c;
-        Constructor cons;
-        boolean b;
-        try {
-            // we prefer the Java 2 solution (java.awt.Color supports
-            // alpha)
-            cons = Color.class.getConstructor(new Class[] { Integer.TYPE,
-                    Boolean.TYPE });
-            if (com.bbn.openmap.util.Debug.debugging("env")) {
-                System.out.println("Alpha supported by java.awt.Color");
-            }
-            c = (Color) cons.newInstance(new Object[] { new Integer(0),
-                    new Boolean(true) });
-            b = true;
-        } catch (Exception e) {
-            // this means we need to hack alphas.
-            if (com.bbn.openmap.util.Debug.debugging("env")) {
-                System.out.println("Alpha NOT SUPPORTED by java.awt.Color");
-            }
-            cons = null;
-            c = new OMColor(0);
-            b = false;
-        }
-        clear = c;
-        alphaValueConstructor = cons;
-        nativeAlpha = b;
-    }
+//    static {
+//        Color c;
+//        Constructor cons;
+//        boolean b;
+//        try {
+//            // we prefer the Java 2 solution (java.awt.Color supports
+//            // alpha)
+//            cons = Color.class.getConstructor(new Class[] { Integer.TYPE,
+//                    Boolean.TYPE });
+//            if (com.bbn.openmap.util.Debug.debugging("env")) {
+//                System.out.println("Alpha supported by java.awt.Color");
+//            }
+//            c = (Color) cons.newInstance(new Object[] { new Integer(0),
+//                    new Boolean(true) });
+//            b = true;
+//        } catch (Exception e) {
+//            // this means we need to hack alphas.
+//            if (com.bbn.openmap.util.Debug.debugging("env")) {
+//                System.out.println("Alpha NOT SUPPORTED by java.awt.Color");
+//            }
+//            cons = null;
+//            c = new OMColor(0);
+//            b = false;
+//        }
+//        clear = c;
+//        alphaValueConstructor = cons;
+//        nativeAlpha = b;
+//    }
 
     /**
      * The 32bit ARGB value used.

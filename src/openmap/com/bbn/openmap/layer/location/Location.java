@@ -32,6 +32,7 @@ import java.awt.geom.Point2D;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.layer.DeclutterMatrix;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicAdapter;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.Projection;
@@ -49,7 +50,7 @@ import com.bbn.openmap.util.Debug;
  * text as desired.
  * <P>
  */
-public abstract class Location extends OMGraphic {
+public abstract class Location extends OMGraphicAdapter {
 
     /**
      * The main latitude of object, in decimal degrees, for

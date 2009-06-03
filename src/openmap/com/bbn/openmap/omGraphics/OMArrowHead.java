@@ -28,9 +28,9 @@ import java.awt.Point;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
-import java.util.Iterator;
 import java.util.Vector;
 
+import com.bbn.openmap.omGraphics.geom.BasicGeometry;
 import com.bbn.openmap.proj.DrawUtil;
 import com.bbn.openmap.util.Debug;
 
@@ -194,7 +194,7 @@ public class OMArrowHead {
         xpts[2] = (int) (to.x + (dy * (-wingTip) - dx * wingLength) / dd);
         ypts[2] = (int) (to.y + (dx * (wingTip) - dy * wingLength) / dd);
 
-        return OMGraphic.createShape(xpts, ypts, true);
+        return BasicGeometry.createShape(xpts, ypts, true);
     }
 
     /**
@@ -268,7 +268,7 @@ public class OMArrowHead {
             }
         }
 
-        Vector pointVec = new Vector();
+        Vector<Point> pointVec = new Vector<Point>();
         
         // The for loop is needed in case the projection library
         // created several projected versions of the line, those used
@@ -510,20 +510,20 @@ public class OMArrowHead {
                 break;
             } // end switch(drawingLinetype)
             
-            pointVec.add(sPoint1.clone());
-            pointVec.add(ePoint1.clone());
+            pointVec.add((Point) sPoint1.clone());
+            pointVec.add((Point) ePoint1.clone());
             
             if (numArrows > 1) {
-                pointVec.add(sPoint2.clone());
-                pointVec.add(ePoint2.clone());
+                pointVec.add((Point) sPoint2.clone());
+                pointVec.add((Point) ePoint2.clone());
             }
             
         }
 
         Point[] ret = new Point[pointVec.size()];
         int i = 0;
-        for (Iterator it = pointVec.iterator();it.hasNext(); i++) {
-            ret[i] = (Point)it.next();
+        for (Point point : pointVec) {
+            ret[i++] = point;
         }
         
         return ret;

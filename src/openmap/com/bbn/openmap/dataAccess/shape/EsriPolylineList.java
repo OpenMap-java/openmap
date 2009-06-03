@@ -47,15 +47,16 @@ public class EsriPolylineList extends EsriGraphicList {
      * 
      * @param shape the non-null OMGraphic to add
      */
-    public void add(OMGraphic shape) {
+    public boolean add(OMGraphic shape) {
+        boolean ret = false;
         try {
             if (typeMatches(shape)) {
-                graphics.add(shape);
+                ret = graphics.add(shape);
                 addExtents(((EsriGraphic) shape).getExtents());
             } else if (shape instanceof OMPoly) {
                 EsriPolyline eg = convert((OMPoly) shape);
                 if (typeMatches(eg)) {
-                    graphics.add(eg);
+                    ret = graphics.add(eg);
                     addExtents(eg.getExtents());
                 }
             } else if (shape instanceof OMLine) {
@@ -63,21 +64,24 @@ public class EsriPolylineList extends EsriGraphicList {
                 if (omp != null) {
                     EsriPolyline eg = convert(omp);
                     if (typeMatches(eg)) {
-                        graphics.add(eg);
+                        ret = graphics.add(eg);
                         addExtents(eg.getExtents());
                     }
                 }
             } else if (shape instanceof OMGraphicList
                     && !((OMGraphicList) shape).isVague()) {
-                for (Iterator it = ((OMGraphicList) shape).iterator(); it.hasNext();) {
+                for (Iterator<OMGraphic> it = ((OMGraphicList) shape).iterator(); it.hasNext();) {
                     add((OMGraphic) it.next());
                 }
+                ret = true;
             } else {
                 Debug.message("esri",
                         "EsriPolygonList.add()- graphic isn't a EsriPoly or OMPoly, can't add.");
             }
         } catch (ClassCastException cce) {
         }
+
+        return ret;
     }
 
     public EsriPolyline convert(OMPoly ompoly) {
@@ -138,7 +142,7 @@ public class EsriPolylineList extends EsriGraphicList {
     public EsriGraphic shallowCopy() {
         EsriPolylineList ret = new EsriPolylineList(size());
         ret.setAttributes(getAttributes());
-        for (Iterator iter = iterator(); iter.hasNext();) {
+        for (Iterator<OMGraphic> iter = iterator(); iter.hasNext();) {
             EsriGraphic g = (EsriGraphic) iter.next();
             ret.add((OMGraphic) g.shallowCopy());
         }

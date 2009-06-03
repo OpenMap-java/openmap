@@ -238,7 +238,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
         intersectionResultList.clear();
         ExtentIndex rIndex = getRegionIndex(true);
 
-        for (Iterator it = drawnList.iterator(); it.hasNext();) {
+        for (Iterator it = drawnList.iteratorCopy(); it.hasNext();) {
 
             OMGraphic omg = (OMGraphic) it.next();
 

@@ -24,7 +24,6 @@ package com.bbn.openmap.omGraphics;
 
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
-import java.io.Serializable;
 
 import com.bbn.openmap.proj.Projection;
 
@@ -38,7 +37,7 @@ import com.bbn.openmap.proj.Projection;
  * as OMGraphic.RENDERTYPE_LATLON with OMGraphic.LINETYPE_STRAIGHT settings.
  * Rendering can be unpredictable for large coordinate values.
  */
-public class OMShape extends OMGraphic implements Serializable {
+public class OMShape extends OMGraphicAdapter implements OMGraphic {
 
     protected Shape origShape = null;
 

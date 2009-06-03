@@ -23,41 +23,45 @@
 package com.bbn.openmap.layer.dted;
 
 /*  Java Core  */
-import java.awt.Color;
-import java.awt.Paint;
-import java.awt.geom.Point2D;
-import java.io.BufferedInputStream;
+import java.awt.Component;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.bbn.openmap.dataAccess.dted.DTEDFrameUtil;
-import com.bbn.openmap.event.ProgressEvent;
-import com.bbn.openmap.event.ProgressListener;
-import com.bbn.openmap.event.ProgressSupport;
-import com.bbn.openmap.io.BinaryBufferedFile;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRect;
-import com.bbn.openmap.proj.Cylindrical;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PaletteHelper;
+import com.bbn.openmap.util.PropUtils;
+import com.bbn.openmap.util.wanderer.Wanderer;
+import com.bbn.openmap.util.wanderer.WandererCallback;
 
 /**
- * A DTEDCoverageManager knows how to look at DTED data and figure out
- * what coverage is available. When it is constructed, it needs to
- * know where the data is located, and where it can look for a
- * coverage summary file. If a coverage summary file is not available,
- * it will create one after looking at the data. Using the file is
- * soooo much faster. The coverage manager also takes a URL of a
- * coverage file, but assumes that the file is there. If it isn't,
- * then it falls back on it's behavior of looking for a local summary
- * file, and then to the data itself, to come up with coverage.
+ * A DTEDCoverageManager knows how to look at DTED data and figure out what
+ * coverage is available.
  */
-public class DTEDCoverageManager {
+public class DTEDCoverageManager extends OMGraphicList implements
+        WandererCallback, PropertyConsumer {
+
+    protected I18n i18n = Environment.getI18n();
+
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.dted.DTEDCoverageManager");
+
+    protected String[] paths;
 
     /** The default line color for level 0. */
     public final static String defaultLevel0ColorString = "CE4F3F"; // redish
@@ -66,24 +70,6 @@ public class DTEDCoverageManager {
     /** The default line color for level 2. */
     public final static String defaultLevel2ColorString = "0C75D3"; // bluish
 
-    /** The color to outline the shapes for level 0. */
-    protected Paint level0Color = new Color(Integer.parseInt(defaultLevel0ColorString,
-            16));
-    /** The color to outline the shapes for level 1. */
-    protected Paint level1Color = new Color(Integer.parseInt(defaultLevel1ColorString,
-            16));
-    /** The color to outline the shapes for level 2. */
-    protected Paint level2Color = new Color(Integer.parseInt(defaultLevel2ColorString,
-            16));
-
-    /**
-     * A setting for how transparent to make the images. The default
-     * is 255, which is totally opaque.
-     */
-    protected int opaqueness = 255;
-    /** Flag to fill the coverage rectangles. */
-    protected boolean fillRects = false;
-
     /** The array of coverage for level 0 data. */
     protected boolean[][] level0Frames = null;
     /** The array of coverage for level 1 data. */
@@ -91,239 +77,196 @@ public class DTEDCoverageManager {
     /** The array of coverage for level 2 data. */
     protected boolean[][] level2Frames = null;
 
-    protected ProgressSupport progressSupport;
+    protected DrawingAttributes level0Attributes = DrawingAttributes.getDefaultClone();
+    protected DrawingAttributes level1Attributes = DrawingAttributes.getDefaultClone();
+    protected DrawingAttributes level2Attributes = DrawingAttributes.getDefaultClone();
 
-    public DTEDCoverageManager(String[] paths, String[] paths2,
-            String coverageURL, String coverageFile) {
+    protected OMGraphicList level0Rects = new OMGraphicList();
+    protected OMGraphicList level1Rects = new OMGraphicList();
+    protected OMGraphicList level2Rects = new OMGraphicList();
 
-        progressSupport = new ProgressSupport(this);
+    public DTEDCoverageManager(String[] paths) {
+        this.paths = paths;
+        level0Attributes.setLinePaint(PropUtils.parseColor(defaultLevel0ColorString));
+        level1Attributes.setLinePaint(PropUtils.parseColor(defaultLevel1ColorString));
+        level2Attributes.setLinePaint(PropUtils.parseColor(defaultLevel2ColorString));
 
-        if (!readCoverageFile(coverageURL, coverageFile)) {
-            // Swing issues with threading, this is trouble.
-            //             ProgressListenerGauge plg = new
-            // ProgressListenerGauge("Creating DTED Coverage File");
-            //             addProgressListener(plg);
-            fireProgressUpdate(ProgressEvent.START,
-                    "Building DTED Coverage file...",
-                    0,
-                    100);
+    }
 
-            level0Frames = new boolean[180][360];
-            level1Frames = new boolean[180][360];
-            level2Frames = new boolean[180][360];
-
-            if (paths != null || paths2 != null) {
-                Debug.output("DTEDCoverageManager: Scanning for frames - This could take several minutes!");
-                checkOutCoverage(paths, paths2);
-            } else {
-                Debug.message("dtedcov",
-                        "DTEDCoverageManader: No paths for DTED data given.");
-            }
-
-            //Write out the new coverage file.
-            if (coverageFile != null) {
-                fireProgressUpdate(ProgressEvent.UPDATE,
-                        "Writing DTED Coverage file...",
-                        100,
-                        100);
-
-                writeCoverageFile(coverageFile);
-            } else {
-                Debug.message("dtedcov",
-                        "DTEDCoverageManager: No file path specified to write coverage file!");
-            }
-
-            fireProgressUpdate(ProgressEvent.DONE,
-                    "Wrote DTED Coverage file",
-                    100,
-                    100);
-        }
+    public void reset() {
+        level0Frames = null;
+        level1Frames = null;
+        level2Frames = null;
+        clear();
     }
 
     /**
-     * Set the color arraignment for the rectangles. Opaqueness is not
-     * supported in JDK 1.1, so this doesn't really mean anything.
-     * It's a hook for later.
+     * The method that cycles through all the paths, looking for the frames.
+     * This takes time, so it's only done when a coverage file can't be found.
      * 
-     * @param lev0Color Paint for level 0 frame rectangles.
-     * @param lev1Color Paint for level 1 frame rectangles.
-     * @param lev2Color Paint for level 2 frame rectangles.
-     * @param opaque how transparent the frames should be if they are
-     *        filled.
-     * @param fillRectangles whether to fill the rectangles with
-     *        Paint.
+     * @param paths paths to the level 0, 1 and 2 dted root directory.
      */
-    public void setPaint(Paint lev0Color, Paint lev1Color, Paint lev2Color,
-                         int opaque, boolean fillRectangles) {
-        level0Color = lev0Color;
-        level1Color = lev1Color;
-        level2Color = lev2Color;
-        opaqueness = opaque;
-        fillRects = fillRectangles;
-    }
+    public void checkOutCoverage(String[] paths) {
 
-    /**
-     * The method that cycles through all the paths, looking for the
-     * frames. This takes time, so it's only done when a coverage file
-     * can't be found.
-     * 
-     * @param paths paths to the level 0 and 1 dted root directory.
-     * @param paths2 paths to the level 2 dted root directory.
-     */
-    public void checkOutCoverage(String[] paths, String[] paths2) {
-        int latindex, lonindex;
+        level0Frames = new boolean[180][360];
+        level1Frames = new boolean[180][360];
+        level2Frames = new boolean[180][360];
+
         int maxNumPaths = 0;
 
         if (paths != null)
             maxNumPaths = paths.length;
-        if ((paths2 != null) && (paths2.length > maxNumPaths))
-            maxNumPaths = paths2.length;
 
         if (maxNumPaths == 0) {
-            System.err.println("DTEDCoverageManader: No paths for DTED data given.");
+            logger.warning("No paths for DTED data given.");
             return;
         }
 
-        if (paths != null) {
-            Debug.message("dtedcov",
-                    "DTEDCoverageManager: checking out DTED level 0, 1 at paths:");
-            for (int d1 = 0; d1 < paths.length; d1++) {
-                if (Debug.debugging("dtedcov")) {
-                    Debug.output("       " + paths[d1]);
-                }
-                if (!BinaryFile.exists(paths[d1])) {
-                    paths[d1] = null;
-                    Debug.message("dtedcov", "       - path invalid, ignoring.");
-                }
+        logger.fine("checking out DTED at paths:");
+        for (int d1 = 0; d1 < paths.length; d1++) {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("       " + paths[d1]);
             }
-        } else {
-            Debug.message("dtedcov",
-                    "DTEDCoverageManager: No DTED level 0, 1 paths specified.");
+            if (!BinaryFile.exists(paths[d1])) {
+                paths[d1] = null;
+                logger.fine("       - path invalid, ignoring.");
+            }
         }
 
-        if (paths2 != null) {
-            Debug.message("dtedcov",
-                    "DTEDCoverageManager: checking out DTED level 2 at paths:");
-            for (int d1 = 0; d1 < paths2.length; d1++) {
-                if (Debug.debugging("dtedcov")) {
-                    Debug.output("       " + paths2[d1]);
-                }
-                if (!BinaryFile.exists(paths2[d1])) {
-                    paths2[d1] = null;
-                    Debug.message("dtedcov", "       - path invalid, ignoring.");
-                }
-            }
-        } else {
-            Debug.message("dtedcov",
-                    "DTEDCoverageManager: No DTED level 2 paths specified.");
-        }
+        Wanderer wanderer = new Wanderer(this);
 
         for (int pathNum = 0; pathNum < maxNumPaths; pathNum++) {
-            for (int lat = -90; lat < 90; lat++) {
-                for (int lon = -180; lon < 180; lon++) {
-                    latindex = lat + 90;
-                    lonindex = lon + 180;
+            wanderer.handleEntry(new File(paths[pathNum]));
+        }
+    }
 
-                    if (paths != null && pathNum < paths.length) {
-                        if (paths[pathNum] != null) {
-                            if (level0Frames[latindex][lonindex] == false) {
-                                level0Frames[latindex][lonindex] = BinaryFile.exists(paths[pathNum]
-                                        + File.separator
-                                        + DTEDFrameUtil.lonToFileString((float) lon)
-                                        + File.separator
-                                        + DTEDFrameUtil.latToFileString((float) lat,
-                                                0));
-                            }
+    protected int curLon = Integer.MAX_VALUE;
 
-                            if (level1Frames[latindex][lonindex] == false) {
-                                level1Frames[latindex][lonindex] = BinaryFile.exists(paths[pathNum]
-                                        + File.separator
-                                        + DTEDFrameUtil.lonToFileString((float) lon)
-                                        + File.separator
-                                        + DTEDFrameUtil.latToFileString((float) lat,
-                                                1));
+    public void handleDirectory(File directory) {
+        String name = directory.getName().toLowerCase();
+        char hemi = name.charAt(0);
+        if (name.length() == 4 && (hemi == 'e' || hemi == 'w')) {
+            try {
+                // Get the longitude index right, use hemi to set the +/-, and
+                // then add 180 to get indexy.
+                curLon = (hemi == 'w' ? -1 : 1)
+                        * Integer.parseInt(name.substring(1)) + 180;
 
-                            }
-                        }
-                    }
-
-                    if ((paths2 != null) && (pathNum < paths2.length)) {
-                        if (paths2[pathNum] != null) {
-                            if (level2Frames[latindex][lonindex] == false) {
-                                level2Frames[latindex][lonindex] = BinaryFile.exists(paths2[pathNum]
-                                        + File.separator
-                                        + DTEDFrameUtil.lonToFileString((float) lon)
-                                        + File.separator
-                                        + DTEDFrameUtil.latToFileString((float) lat,
-                                                1));
-                            }
-                        }
-                    }
-                }
-
-                float pathFactor = ((float) pathNum + 1f) / (float) maxNumPaths;
-                float latFactor = 100f * ((float) lat + 90f) / 180f;
-                int whereWeAre = (int) (pathFactor * latFactor);
-                if (Debug.debugging("dtedcov")) {
-                    Debug.output("Building DTED Coverage, " + whereWeAre
-                            + "% complete.");
-                }
-
-                fireProgressUpdate(ProgressEvent.UPDATE,
-                        "Finding DTED frames...",
-                        whereWeAre,
-                        100);
+            } catch (NumberFormatException nfe) {
+                curLon = Integer.MAX_VALUE;
+                logger.warning("Can't process " + name);
             }
+        }
+    }
+
+    public void handleFile(File file) {
+        if (curLon != Integer.MAX_VALUE) {
+            String name = file.getName().toLowerCase();
+            char hemi = name.charAt(0);
+            char level = name.charAt(name.length() - 1);
+            if (name.length() == 7 && name.charAt(name.length() - 4) == '.'
+                    && (hemi == 'n' || hemi == 's')) {
+
+                try {
+                    int curLat = (hemi == 's' ? -1 : 1)
+                            * Integer.parseInt(name.substring(1,
+                                    name.length() - 4)) + 90;
+
+                    if (level == '0') {
+                        level0Frames[curLat][curLon] = true;
+                    } else if (level == '1') {
+                        level1Frames[curLat][curLon] = true;
+                    } else if (level == '2') {
+                        level2Frames[curLat][curLon] = true;
+                    }
+
+                } catch (NumberFormatException nfe) {
+                    logger.warning("Can't process " + name);
+                }
+
+            }
+
         }
 
     }
 
     /**
-     * Method organizes the query based on the projection, and returns
-     * the applicable rectangles representing the frame coverages. If
-     * the coverage spans over the dateline, then two queries are
-     * performed, one for each side of the dateline.
+     * Method organizes the query based on the projection, and returns the
+     * applicable rectangles representing the frame coverage. If the coverage
+     * spans over the date line, then two queries are performed, one for each
+     * side of the date line.
      * 
      * @param proj the projection of the screen
      * @return an array of lists, one for each level of dted data.
      */
-    public OMGraphicList[] getCoverageRects(Projection proj) {
-        OMGraphicList[] ret1;
-        OMGraphicList[] ret2;
+    public OMGraphicList getCoverageRects(Projection proj) {
+        if (level0Frames == null) {
 
-        int LineType;
+            logger.fine("Scanning for frames - This could take several minutes!");
+            checkOutCoverage(paths);
+        }
 
-        Point2D ul = proj.getUpperLeft();
-        Point2D lr = proj.getLowerRight();
+        if (isEmpty()) {
+            getCoverageRects(-180, -90, 179, 89, OMGraphic.LINETYPE_RHUMB, proj);
+        } else {
+            generate(proj);
+        }
+        return this;
+    }
 
-        int startx = (int) Math.floor(ul.getX());
-        int endx = (int) Math.floor(lr.getX());
-        if (endx > 179)
-            endx = 179;
-        if (startx > 179)
-            startx = 179;
+    /**
+     * Get a percentage value of how much of the map is covered for a projection.
+     * @param proj
+     * @return float[] with percentages, float[0] is level 0 coverage, 1 is level 1, 2 is level 2.
+     */
+    public float[] getCoverage(Projection proj) {
+        float[] ret = new float[3];
+        if (level0Frames != null) {
+            Point pnt1 = new Point();
+            Point pnt2 = new Point();
+            int height = proj.getHeight();
+            int width = proj.getWidth();
+            // Number frames possible on map
+            int total = 0;
+            for (int x = -180; x < 180; x++) {
+                for (int y = -90; y < 89; y++) {
+                    proj.forward((float) y, (float) x, pnt1);
+                    proj.forward((float) (y + 1), (float) (x + 1), pnt2);
 
-        int starty = (int) Math.floor(lr.getY());
-        int endy = (int) Math.floor(ul.getY());
-        if (endy > 89)
-            endy = 89;
-        if (starty > 89)
-            starty = 89;
+                    double x1 = pnt1.getX();
+                    double y1 = pnt1.getY();
+                    double x2 = pnt2.getX();
+                    double y2 = pnt2.getY();
 
-        if (proj instanceof Cylindrical)
-            LineType = OMGraphic.LINETYPE_STRAIGHT;
-        else
-            LineType = OMGraphic.LINETYPE_RHUMB;
+                    boolean someX = (x1 >= 0 && x1 <= width)
+                            || (x2 >= 0 && x2 <= width);
+                    boolean someY = (y1 >= 0 && y1 <= height)
+                            || (y2 >= 0 && y2 <= height);
 
-        if (startx > endx) {
-            ret1 = getCoverageRects(startx, starty, 179, endy, LineType);
-            ret2 = getCoverageRects(-180, starty, endx, endy, LineType);
-            ret1[0].add(ret2[0]);
-            ret1[1].add(ret2[1]);
-            ret1[2].add(ret2[2]);
-            return ret1;
-        } else
-            return getCoverageRects(startx, starty, endx, endy, LineType);
+                    boolean onMap = someX && someY;
+
+                    if (onMap) {
+                        int xIndex = x + 180;
+                        int yIndex = y + 90;
+                        total++;
+                        if (level0Frames[yIndex][xIndex])
+                            ret[0] += 1f;
+                        if (level1Frames[yIndex][xIndex])
+                            ret[1] += 1f;
+                        if (level2Frames[yIndex][xIndex])
+                            ret[2] += 1f;
+                    }
+                }
+            }
+
+            logger.info("Total frames: " + total + " " + ret[0] + ", " + ret[1]
+                    + ", " + ret[2]);
+
+            ret[0] = ret[0] / total * 100f;
+            ret[1] = ret[1] / total * 100f;
+            ret[2] = ret[2] / total * 100f;
+        }
+        return ret;
     }
 
     /**
@@ -334,291 +277,153 @@ public class DTEDCoverageManager {
      * @param starty the southern-most latitude.
      * @param endx the eastern-most longitude.
      * @param endy the northern-most latitude.
-     * @param LineType the type of line to use on the rectangles -
-     *        Cylindrical projections can use straight lines, but
-     *        other projections should use Rhumb lines.
+     * @param LineType the type of line to use on the rectangles - Cylindrical
+     *        projections can use straight lines, but other projections should
+     *        use Rhumb lines.
      * @return an array of lists, one for each level of dted data.
      */
-    public OMGraphicList[] getCoverageRects(int startx, int starty, int endx,
-                                            int endy, int LineType) {
-        OMGraphicList gl0 = new OMGraphicList();
-        OMGraphicList gl1 = new OMGraphicList();
-        OMGraphicList gl2 = new OMGraphicList();
-        OMGraphicList[] ret = new OMGraphicList[3];
-
-        ret[0] = gl0;
-        ret[1] = gl1;
-        ret[2] = gl2;
-
+    public OMGraphicList getCoverageRects(int startx, int starty, int endx,
+                                          int endy, int LineType,
+                                          Projection proj) {
+        clear();
         OMRect rect;
+        level0Rects.clear();
+        level1Rects.clear();
+        level2Rects.clear();
+        level0Rects.setVague(true);
+        level1Rects.setVague(true);
+        level2Rects.setVague(true);
 
-        for (int lat = starty; lat <= endy; lat++) {
-            for (int lon = startx; lon <= endx; lon++) {
+        for (int lat = starty; lat <= endy && lat < 90; lat++) {
+            for (int lon = startx; lon <= endx && lon < 180; lon++) {
                 if (level0Frames[lat + 90][lon + 180]) {
-                    rect = new OMRect((float) lat, (float) lon, (float) lat + 1, (float) lon + 1, LineType);
-                    rect.setLinePaint(level0Color);
-                    if (fillRects)
-                        rect.setFillPaint(level0Color);
-                    gl0.add(rect);
+                    rect = new OMRect((double) lat, (double) lon, (double) lat + 1, (double) lon + 1, LineType);
+                    level0Attributes.setTo(rect);
+                    rect.generate(proj);
+                    level0Rects.add(rect);
                 }
 
                 if (level1Frames[lat + 90][lon + 180]) {
-                    rect = new OMRect((float) lat + .1f, (float) lon + .1f, (float) lat + .9f, (float) lon + .9f, LineType);
-                    rect.setLinePaint(level1Color);
-                    if (fillRects)
-                        rect.setFillPaint(level1Color);
-                    gl1.add(rect);
+                    rect = new OMRect((double) lat + .1f, (double) lon + .1f, (double) lat + .9f, (double) lon + .9f, LineType);
+                    level1Attributes.setTo(rect);
+                    rect.generate(proj);
+                    level1Rects.add(rect);
                 }
 
                 if (level2Frames[lat + 90][lon + 180]) {
-                    rect = new OMRect((float) lat + .2f, (float) lon + .2f, (float) lat + .8f, (float) lon + .8f, LineType);
-                    rect.setLinePaint(level2Color);
-                    if (fillRects)
-                        rect.setFillPaint(level2Color);
-                    gl2.add(rect);
+                    rect = new OMRect((double) lat + .2f, (double) lon + .2f, (double) lat + .8f, (double) lon + .8f, LineType);
+                    level2Attributes.setTo(rect);
+                    rect.generate(proj);
+                    level2Rects.add(rect);
                 }
             }
         }
-        return ret;
+
+        add(level0Rects);
+        add(level1Rects);
+        add(level2Rects);
+
+        return this;
     }
 
-    /**
-     * Read in the coverage file, which is basically three
-     * byte[180][360] written out to file. These are converted to
-     * booleans.
-     * 
-     * @param coverage the path to the file.
-     * @return whether the file was read! True means yes.
-     */
-    public boolean readCoverageFile(String coverage) {
-        try {
-            Debug.message("dtedcov",
-                    "DTEDCoverageManager: Reading coverage file - " + coverage);
-            BinaryBufferedFile binFile = new BinaryBufferedFile(coverage);
-            level0Frames = new boolean[180][];
-            level1Frames = new boolean[180][];
-            level2Frames = new boolean[180][];
+    protected String prefix;
 
-            byte[] row = new byte[360];
+    public Properties getProperties(Properties getList) {
+        if (getList == null) {
+            getList = new Properties();
+        }
 
-            for (int level = 0; level < 3; level++) {
-                for (int lat = 0; lat < 180; lat++) {
-                    binFile.read(row);
+        level0Attributes.getProperties(getList);
+        level1Attributes.getProperties(getList);
+        level2Attributes.getProperties(getList);
 
-                    if (level == 0)
-                        level0Frames[lat] = convertBytesToBooleans(row);
-                    else if (level == 1)
-                        level1Frames[lat] = convertBytesToBooleans(row);
-                    else
-                        level2Frames[lat] = convertBytesToBooleans(row);
+        return getList;
+    }
+
+    public Properties getPropertyInfo(Properties list) {
+        return list;
+    }
+
+    public String getPropertyPrefix() {
+        return prefix;
+    }
+
+    public void setProperties(Properties setList) {
+        setProperties(null, setList);
+    }
+
+    public void setProperties(String prefix, Properties setList) {
+        setPropertyPrefix(prefix);
+
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+
+        level0Attributes.setProperties(prefix + "0", setList);
+        level1Attributes.setProperties(prefix + "1", setList);
+        level2Attributes.setProperties(prefix + "2", setList);
+    }
+
+    public void setPropertyPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    protected JPanel panel;
+
+    public Component getGUI() {
+        if (panel == null) {
+
+            String interString = i18n.get(DTEDCoverageManager.class,
+                    "title",
+                    "DTED Coverage");
+
+            panel = PaletteHelper.createVerticalPanel(interString);
+            JPanel pane = new JPanel();
+            interString = i18n.get(DTEDCoverageManager.class,
+                    "level0title",
+                    "Level 0: ");
+            pane.add(new JLabel(interString));
+            String showString = i18n.get(DTEDCoverageManager.class,
+                    "show",
+                    "Show");
+            JCheckBox jcb = new JCheckBox(showString, level0Rects.isVisible());
+            jcb.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    level0Rects.setVisible(((JCheckBox) ae.getSource()).isSelected());
                 }
-            }
-            return true;
-
-        } catch (IOException ioe) {
-            Debug.message("dtedcov",
-                    "DTEDCoverageManager: No coverage file - will create one at "
-                            + coverage);
-            level0Frames = null;
-            level1Frames = null;
-            level2Frames = null;
-            return false;
-        }
-
-    }
-
-    /**
-     * Read in the coverage file, which is basically three
-     * byte[180][360] written out to file. These are converted to
-     * booleans.
-     * 
-     * @param urlCov an url to a coverage file, if available. Should
-     *        be null if not used.
-     * @param coverage the path to the file.
-     * @return whether the file was read! True means yes.
-     */
-    protected boolean readCoverageFile(String urlCov, String coverage) {
-        URL url = null;
-        BufferedInputStream bin = null;
-        BinaryBufferedFile binFile = null;
-
-        level0Frames = null;
-        level1Frames = null;
-        level2Frames = null;
-
-        if (urlCov != null) {
-            Debug.message("dtedcov",
-                    "DTEDCoverageManager: Reading coverage file from URL - "
-                            + urlCov);
-            try {
-                url = new URL(urlCov);
-                bin = new BufferedInputStream(url.openStream());
-            } catch (MalformedURLException mue) {
-                System.err.println("DTEDCoverageManager: Weird URL given : \""
-                        + urlCov + "\"");
-                bin = null;
-            } catch (java.io.IOException e) {
-                System.err.println("DTEDCoverageManager: Unable to read coverage file at \""
-                        + urlCov + "\"");
-                bin = null;
-            }
-        }
-
-        if (bin == null && coverage != null) {
-            try {
-                Debug.message("dtedcov",
-                        "DTEDCoverageManager: Reading coverage file - "
-                                + coverage);
-                binFile = new BinaryBufferedFile(coverage);
-            } catch (java.io.IOException e) {
-                System.err.println("DTEDCoverageManager: Unable to read coverage file at \""
-                        + coverage + "\"");
-            }
-        }
-
-        if (bin != null || binFile != null) {
-            try {
-                level0Frames = new boolean[180][];
-                level1Frames = new boolean[180][];
-                level2Frames = new boolean[180][];
-
-                byte[] row = new byte[360];
-
-                for (int level = 0; level < 3; level++) {
-                    for (int lat = 0; lat < 180; lat++) {
-
-                        if (bin != null) {
-                            for (int k = 0; k < row.length; k++) {
-                                row[k] = (byte) bin.read();
-                            }
-                        } else
-                            binFile.read(row);
-
-                        if (level == 0)
-                            level0Frames[lat] = convertBytesToBooleans(row);
-                        else if (level == 1)
-                            level1Frames[lat] = convertBytesToBooleans(row);
-                        else
-                            level2Frames[lat] = convertBytesToBooleans(row);
-                    }
+            });
+            pane.add(jcb);
+            pane.add(level0Attributes.getGUI());
+            panel.add(pane);
+            pane = new JPanel();
+            interString = i18n.get(DTEDCoverageManager.class,
+                    "level2title",
+                    "Level 1: ");
+            pane.add(new JLabel(interString));
+            jcb = new JCheckBox(showString, level1Rects.isVisible());
+            jcb.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    level1Rects.setVisible(((JCheckBox) ae.getSource()).isSelected());
                 }
-                return true;
-
-            } catch (IOException ioe) {
-                System.err.println("DTECoverageLayer: Error reading coverage.");
-
-                level0Frames = null;
-                level1Frames = null;
-                level2Frames = null;
-            }
-        }
-
-        if (level0Frames == null) {
-            System.err.println("DTEDCoverageManager: Error reading coverage file - will try to create a valid one at "
-                    + coverage);
-        }
-        return false;
-    }
-
-    /**
-     * Convert the bytes read in to the file to the booleans used in
-     * the coverage arrays.
-     * 
-     * @param row array of bytes
-     * @return array of booleans
-     */
-    protected boolean[] convertBytesToBooleans(byte[] row) {
-        boolean[] ret = new boolean[row.length];
-        for (int i = 0; i < row.length; i++)
-            ret[i] = (row[i] == 0) ? false : true;
-        return ret;
-    }
-
-    /**
-     * Convert the booleans to write out to bytes.
-     * 
-     * @param row the input array of booleans
-     * @return an array of bytes.
-     */
-    protected byte[] convertBooleansToBytes(boolean[] row) {
-        byte[] ret = new byte[row.length];
-        for (int i = 0; i < row.length; i++)
-            ret[i] = (row[i]) ? (byte) 1 : (byte) 0;
-        return ret;
-    }
-
-    /**
-     * Write the coverage summary to a file.
-     * 
-     * @param covFilename the file name to write the arrays into.
-     */
-    public void writeCoverageFile(String covFilename) {
-        try {
-            Debug.message("dtedcov",
-                    "DTEDCoverageManager: Writing coverage summary file...");
-
-            FileOutputStream binFile = new FileOutputStream(covFilename);
-
-            byte[] row;
-
-            for (int level = 0; level < 3; level++) {
-                if (Debug.debugging("dtedcov")) {
-                    Debug.output("-- level " + level);
+            });
+            pane.add(jcb);
+            pane.add(level1Attributes.getGUI());
+            panel.add(pane);
+            pane = new JPanel();
+            interString = i18n.get(DTEDCoverageManager.class,
+                    "level2title",
+                    "Level 2: ");
+            pane.add(new JLabel(interString));
+            jcb = new JCheckBox(showString, level2Rects.isVisible());
+            jcb.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    level2Rects.setVisible(((JCheckBox) ae.getSource()).isSelected());
                 }
-                for (int lat = 0; lat < 180; lat++) {
-
-                    if (level == 0) {
-                        row = convertBooleansToBytes(level0Frames[lat]);
-                    } else if (level == 1) {
-                        row = convertBooleansToBytes(level1Frames[lat]);
-                    } else {
-                        row = convertBooleansToBytes(level2Frames[lat]);
-                    }
-
-                    binFile.write(row);
-                    if (Debug.debugging("dtedcov")) {
-                        Debug.output("--- latitude " + lat);
-                    }
-                }
-            }
-
-            binFile.close();
-
-        } catch (IOException ioe) {
-            System.err.println("DTEDCoverageManager: Error writing coverage file!");
+            });
+            pane.add(jcb);
+            pane.add(level2Attributes.getGUI());
+            panel.add(pane);
         }
-    }
 
-    /**
-     * Add a ProgressListener that will display build progress.
-     */
-    public void addProgressListener(ProgressListener list) {
-        progressSupport.addProgressListener(list);
-    }
-
-    /**
-     * Remove a ProgressListener that displayed build progress.
-     */
-    public void removeProgressListener(ProgressListener list) {
-        progressSupport.removeProgressListener(list);
-    }
-
-    /**
-     * Clear all progress listeners.
-     */
-    public void clearProgressListeners() {
-        progressSupport.removeAll();
-    }
-
-    /**
-     * Fire an build update to progress listeners.
-     * 
-     * @param frameNumber the current frame count
-     * @param totalFrames the total number of frames.
-     */
-    protected void fireProgressUpdate(int type, String task, int frameNumber,
-                                      int totalFrames) {
-        progressSupport.fireUpdate(type, task, totalFrames, frameNumber);
+        return panel;
     }
 
 }

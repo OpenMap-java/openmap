@@ -33,7 +33,7 @@ import com.bbn.openmap.proj.Projection;
  * 
  * @see OMGraphic
  */
-public class SinkGraphic extends OMGraphic {
+public class SinkGraphic extends OMGraphicAdapter implements OMGraphic {
 
     // the shared instance
     private static transient SinkGraphic sharedInstance;

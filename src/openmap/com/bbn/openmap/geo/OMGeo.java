@@ -30,7 +30,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicAdapter;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
@@ -46,7 +46,7 @@ import com.bbn.openmap.util.Debug;
  * 
  * @author dietrick
  */
-public abstract class OMGeo extends OMGraphic implements GeoExtent {
+public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
 
     protected GeoExtent extent;
     protected Object id = OMGeo.this;
@@ -202,7 +202,7 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
 
             double[] latlons = getSegArray();
 
-            ArrayList lines = null;
+            ArrayList<int[]> lines = null;
             if (proj instanceof GeoProj) {
                 lines = ((GeoProj) proj).forwardLine(new LatLonPoint.Double(latlons[0], latlons[1]),
                         new LatLonPoint.Double(latlons[2], latlons[3]),
@@ -290,7 +290,7 @@ public abstract class OMGeo extends OMGraphic implements GeoExtent {
             // Vertices should already be in radians.
             
             // We might want to cache the latlon points retrieved from the GeoArray at some point.
-            ArrayList vector;
+            ArrayList<int[]> vector;
             if (proj instanceof GeoProj) {
                 vector = ((GeoProj) proj).forwardPoly(getPoints().toLLRadians(),
                         lineType,

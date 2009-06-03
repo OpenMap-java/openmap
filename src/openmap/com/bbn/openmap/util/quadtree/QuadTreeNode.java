@@ -27,10 +27,10 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 /**
- * The QuadTreeNode is the part of the QuadTree that either holds
- * children nodes, or objects as leaves. Currently, the nodes that
- * have children do not hold items that span across children
- * boundaries, since this was designed to handle point data.
+ * The QuadTreeNode is the part of the QuadTree that either holds children
+ * nodes, or objects as leaves. Currently, the nodes that have children do not
+ * hold items that span across children boundaries, since this was designed to
+ * handle point data.
  */
 
 public class QuadTreeNode implements Serializable {
@@ -44,30 +44,29 @@ public class QuadTreeNode implements Serializable {
     public final static float NO_MIN_SIZE = -1;
     public final static float DEFAULT_MIN_SIZE = 5;
 
-    protected Vector items;
+    protected Vector<QuadTreeLeaf> items;
     protected QuadTreeNode[] children;
     protected int maxItems;
     protected float minSize;
     public QuadTreeRect bounds;
     /**
-     * Added to avoid problems when a node is completely filled with a
-     * single point value.
+     * Added to avoid problems when a node is completely filled with a single
+     * point value.
      */
     protected boolean allTheSamePoint;
     protected float firstLat;
     protected float firstLon;
 
     /**
-     * Constructor to use if you are going to store the objects in
-     * lat/lon space, and there is really no smallest node size.
+     * Constructor to use if you are going to store the objects in lat/lon
+     * space, and there is really no smallest node size.
      * 
      * @param north northern border of node coverage.
      * @param west western border of node coverage.
      * @param south southern border of node coverage.
      * @param east eastern border of node coverage.
-     * @param maximumItems number of items to hold in a node before
-     *        splitting itself into four children and redispensing the
-     *        items into them.
+     * @param maximumItems number of items to hold in a node before splitting
+     *        itself into four children and redispensing the items into them.
      */
     public QuadTreeNode(float north, float west, float south, float east,
             int maximumItems) {
@@ -75,26 +74,25 @@ public class QuadTreeNode implements Serializable {
     }
 
     /**
-     * Constructor to use if you are going to store the objects in x/y
-     * space, and there is a smallest node size because you don't want
-     * the nodes to be smaller than a group of pixels.
+     * Constructor to use if you are going to store the objects in x/y space,
+     * and there is a smallest node size because you don't want the nodes to be
+     * smaller than a group of pixels.
      * 
      * @param north northern border of node coverage.
      * @param west western border of node coverage.
      * @param south southern border of node coverage.
      * @param east eastern border of node coverage.
-     * @param maximumItems number of items to hold in a node before
-     *        splitting itself into four children and redispensing the
-     *        items into them.
-     * @param minimumSize the minimum difference between the
-     *        boundaries of the node.
+     * @param maximumItems number of items to hold in a node before splitting
+     *        itself into four children and redispensing the items into them.
+     * @param minimumSize the minimum difference between the boundaries of the
+     *        node.
      */
     public QuadTreeNode(float north, float west, float south, float east,
             int maximumItems, float minimumSize) {
         bounds = new QuadTreeRect(north, west, south, east);
         maxItems = maximumItems;
         minSize = minimumSize;
-        items = new Vector();
+        items = new Vector<QuadTreeLeaf>();
     }
 
     /** Return true if the node has children. */
@@ -106,11 +104,10 @@ public class QuadTreeNode implements Serializable {
     }
 
     /**
-     * This method splits the node into four children, and disperses
-     * the items into the children. The split only happens if the
-     * boundary size of the node is larger than the minimum size (if
-     * we care). The items in this node are cleared after they are put
-     * into the children.
+     * This method splits the node into four children, and disperses the items
+     * into the children. The split only happens if the boundary size of the
+     * node is larger than the minimum size (if we care). The items in this node
+     * are cleared after they are put into the children.
      */
     protected void split() {
         // Make sure we're bigger than the minimum, if we care,
@@ -128,13 +125,13 @@ public class QuadTreeNode implements Serializable {
         children[NORTHEAST] = new QuadTreeNode(bounds.north, ewHalf, nsHalf, bounds.east, maxItems);
         children[SOUTHEAST] = new QuadTreeNode(nsHalf, ewHalf, bounds.south, bounds.east, maxItems);
         children[SOUTHWEST] = new QuadTreeNode(nsHalf, bounds.west, bounds.south, ewHalf, maxItems);
-        Vector temp = (Vector) items.clone();
+        Vector<QuadTreeLeaf> temp = (Vector<QuadTreeLeaf>) items.clone();
         items.removeAllElements();
-        Enumeration things = temp.elements();
+        Enumeration<QuadTreeLeaf> things = temp.elements();
         while (things.hasMoreElements()) {
-            put((QuadTreeLeaf) things.nextElement());
+            put(things.nextElement());
         }
-        //items.removeAllElements();
+        // items.removeAllElements();
     }
 
     /**
@@ -142,8 +139,8 @@ public class QuadTreeNode implements Serializable {
      * 
      * @param lat up-down location in QuadTree Grid (latitude, y)
      * @param lon left-right location in QuadTree Grid (longitude, x)
-     * @return node if child covers the point, null if the point is
-     *         out of range.
+     * @return node if child covers the point, null if the point is out of
+     *         range.
      */
     protected QuadTreeNode getChild(float lat, float lon) {
         if (bounds.pointWithinBounds(lat, lon)) {
@@ -254,49 +251,48 @@ public class QuadTreeNode implements Serializable {
      * 
      * @param lat up-down location in QuadTree Grid (latitude, y)
      * @param lon left-right location in QuadTree Grid (longitude, x)
-     * @return the object that matches the best distance, null if no
-     *         object was found.
+     * @return the object that matches the best distance, null if no object was
+     *         found.
      */
     public Object get(float lat, float lon) {
         return get(lat, lon, Double.POSITIVE_INFINITY);
     }
 
     /**
-     * Get an object closest to a lat/lon. If there are children at
-     * this node, then the children are searched. The children are
-     * checked first, to see if they are closer than the best distance
-     * already found. If a closer object is found, bestDistance will
-     * be updated with a new Double object that has the new distance.
+     * Get an object closest to a lat/lon. If there are children at this node,
+     * then the children are searched. The children are checked first, to see if
+     * they are closer than the best distance already found. If a closer object
+     * is found, bestDistance will be updated with a new Double object that has
+     * the new distance.
      * 
      * @param lat up-down location in QuadTree Grid (latitude, y)
      * @param lon left-right location in QuadTree Grid (longitude, x)
      * @param withinDistance maximum get distance.
-     * @return the object that matches the best distance, null if no
-     *         closer object was found.
+     * @return the object that matches the best distance, null if no closer
+     *         object was found.
      */
     public Object get(float lat, float lon, double withinDistance) {
         return get(lat, lon, new MutableDistance(withinDistance));
     }
 
     /**
-     * Get an object closest to a lat/lon. If there are children at
-     * this node, then the children are searched. The children are
-     * checked first, to see if they are closer than the best distance
-     * already found. If a closer object is found, bestDistance will
-     * be updated with a new Double object that has the new distance.
+     * Get an object closest to a lat/lon. If there are children at this node,
+     * then the children are searched. The children are checked first, to see if
+     * they are closer than the best distance already found. If a closer object
+     * is found, bestDistance will be updated with a new Double object that has
+     * the new distance.
      * 
      * @param lat up-down location in QuadTree Grid (latitude, y)
      * @param lon left-right location in QuadTree Grid (longitude, x)
-     * @param bestDistance the closest distance of the object found so
-     *        far.
-     * @return the object that matches the best distance, null if no
-     *         closer object was found.
+     * @param bestDistance the closest distance of the object found so far.
+     * @return the object that matches the best distance, null if no closer
+     *         object was found.
      */
     public Object get(float lat, float lon, MutableDistance bestDistance) {
         Object closest = null;
         if (children == null) {
             // This must be the node that has it...
-            Enumeration things = this.items.elements();
+            Enumeration<QuadTreeLeaf> things = this.items.elements();
             while (things.hasMoreElements()) {
                 QuadTreeLeaf qtl = (QuadTreeLeaf) things.nextElement();
                 double distance = Math.sqrt(Math.pow(Math.abs(lat
@@ -336,8 +332,9 @@ public class QuadTreeNode implements Serializable {
      * @param east right location in QuadTree Grid (longitude, x)
      * @return Vector of objects.
      */
-    public Vector get(float north, float west, float south, float east) {
-        return get(new QuadTreeRect(north, west, south, east), new Vector());
+    public Vector<?> get(float north, float west, float south, float east) {
+        return get(new QuadTreeRect(north, west, south, east),
+                new Vector<Object>());
     }
 
     /**
@@ -364,11 +361,11 @@ public class QuadTreeNode implements Serializable {
      */
     public Vector get(QuadTreeRect rect, Vector vector) {
         if (children == null) {
-            Enumeration things = this.items.elements();
+            Enumeration<QuadTreeLeaf> things = this.items.elements();
             while (things.hasMoreElements()) {
-                QuadTreeLeaf qtl = (QuadTreeLeaf) things.nextElement();
+                QuadTreeLeaf qtl = things.nextElement();
                 if (rect.pointWithinBounds(qtl.latitude, qtl.longitude)) {
-                    vector.addElement(qtl.object);
+                    vector.add(qtl.object);
                 }
             }
         } else {

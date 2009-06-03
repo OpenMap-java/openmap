@@ -50,6 +50,11 @@ public interface TimeBoundsProvider {
      * active, and if it's time bounds should be considered.
      */
     public boolean isActive();
+    
+    /**
+     * An accessor that switches the TimeBoundsProvider on/off.
+     */
+    public void setActive(boolean active);
 
     /**
      * The TimeBoundsProvider keep track of the handlers it needs to notify when

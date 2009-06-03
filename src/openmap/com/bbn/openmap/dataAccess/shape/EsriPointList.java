@@ -44,13 +44,12 @@ public class EsriPointList extends EsriGraphicList {
      * 
      * @param shape the non-null OMGraphic to add
      */
-    public void add(OMGraphic shape) {
+    public boolean add(OMGraphic shape) {
         try {
 
             if (typeMatches(shape)) {
-                graphics.add(shape);
                 addExtents(((EsriGraphic) shape).getExtents());
-                return;
+                return graphics.add(shape);
             } else if (shape instanceof OMPoint) {
                 shape = EsriPoint.convert((OMPoint) shape);
                 // test for null in next if statement.
@@ -60,16 +59,16 @@ public class EsriPointList extends EsriGraphicList {
                 shape = EsriIconPoint.convert((OMScalingIcon) shape);
             } else if (shape instanceof OMGraphicList
                     && !((OMGraphicList) shape).isVague()) {
-                for (Iterator it = ((OMGraphicList) shape).iterator(); it.hasNext();) {
+                for (Iterator<OMGraphic> it = ((OMGraphicList) shape).iterator(); it.hasNext();) {
                     add((OMGraphic) it.next());
                 }
                 
-                return;
+                return true;
                 
             } else {
                 Debug.message("esri",
                         "EsriPointList.add()- graphic isn't an EsriGraphic with matching type, can't add.");
-                return;
+                return false;
             }
             
             // Test for and add shapes for point, text and scaling icon instances.
@@ -80,6 +79,7 @@ public class EsriPointList extends EsriGraphicList {
             
         } catch (ClassCastException cce) {
         }
+        return false;
     }
 
     public boolean typeMatches(OMGraphic omg) {
@@ -119,7 +119,7 @@ public class EsriPointList extends EsriGraphicList {
     public EsriGraphic shallowCopy() {
         EsriPointList ret = new EsriPointList(size());
         ret.setAttributes(getAttributes());
-        for (Iterator iter = iterator(); iter.hasNext();) {
+        for (Iterator<OMGraphic> iter = iterator(); iter.hasNext();) {
             EsriGraphic g = (EsriGraphic) iter.next();
             ret.add((OMGraphic) g.shallowCopy());
         }

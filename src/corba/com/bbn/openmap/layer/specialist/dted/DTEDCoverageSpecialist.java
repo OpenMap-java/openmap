@@ -171,12 +171,7 @@ public class DTEDCoverageSpecialist extends Specialist {
         System.out.println("DTEDCoverageSpecialist: Figuring out which DTED frames exist! (This is a one-time operation!)");
         System.out.println("Scanning for frames - This could take over (2) minutes!");
 
-        coverageManager = new DTEDCoverageManager(paths, paths2, coverageURL, coverageFile);
-        coverageManager.setPaint(level0Color,
-                level1Color,
-                level2Color,
-                opaqueness,
-                fillRects);
+        coverageManager = new DTEDCoverageManager(paths);
     }
 
     /**
@@ -315,7 +310,7 @@ public class DTEDCoverageSpecialist extends Specialist {
 
         Projection proj = MakeProjection.getProjection(p);
 
-        OMGraphicList[] omGraphicLists = coverageManager.getCoverageRects(proj);
+        OMGraphicList omGraphicLists = coverageManager.getCoverageRects(proj);
 
         // ///////////////////
         // safe quit
@@ -325,14 +320,14 @@ public class DTEDCoverageSpecialist extends Specialist {
             UGraphic[] level1UGraphics = null;
             UGraphic[] level2UGraphics = null;
 
-            for (int i = 0; i < omGraphicLists.length; i++) {
-                if (i == 0 && showDTEDLevel0) {
-                    level0UGraphics = createUGraphics(omGraphicLists[i]);
-                } else if (i == 1 && showDTEDLevel1) {
-                    level1UGraphics = createUGraphics(omGraphicLists[i]);
-                } else if (i == 2 && showDTEDLevel2) {
-                    level2UGraphics = createUGraphics(omGraphicLists[i]);
-                }
+            if (showDTEDLevel0) {
+                level0UGraphics = createUGraphics((OMGraphicList) omGraphicLists.get(0));
+            }
+            if (showDTEDLevel1) {
+                level1UGraphics = createUGraphics((OMGraphicList) omGraphicLists.get(1));
+            }
+            if (showDTEDLevel2) {
+                level2UGraphics = createUGraphics((OMGraphicList) omGraphicLists.get(2));
             }
 
             UGraphic[] ugraphics = new UGraphic[level0UGraphics.length

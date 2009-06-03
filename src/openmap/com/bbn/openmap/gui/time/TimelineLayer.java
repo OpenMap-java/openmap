@@ -1230,7 +1230,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             if (inUse) {
                 // logger.info("checking " + size() + " sections");
 
-                for (Iterator<OMGeometry> it = iterator(); it.hasNext();) {
+                for (Iterator<OMGraphic> it = iterator(); it.hasNext();) {
                     PlayFilterSection pfs = (PlayFilterSection) it.next();
                     int where = pfs.isWithin(currentTime);
                     if (where == 0) {

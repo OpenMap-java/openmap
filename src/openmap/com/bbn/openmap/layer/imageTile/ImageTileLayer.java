@@ -45,7 +45,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -82,7 +81,6 @@ import com.bbn.openmap.gui.LayersPanel;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMColor;
-import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Proj;
@@ -180,8 +178,9 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         imageCache.resetCache(PropUtils.intFromProperties(props, prefix
                 + ImageCacheSizeProperty, imageCache.getCacheSize()));
 
-        imageCache.setCutoffScaleRatio(PropUtils.floatFromProperties(props, prefix
-                + ImageCutoffRatioProperty, imageCache.getCutoffScaleRatio()));
+        imageCache.setCutoffScaleRatio(PropUtils.floatFromProperties(props,
+                prefix + ImageCutoffRatioProperty,
+                imageCache.getCutoffScaleRatio()));
 
         String imageReaderLoaderString = props.getProperty(prefix
                 + ImageReaderLoadersProperty);
@@ -238,14 +237,14 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         OMGraphicList list = getList();
         if (list != null) {
             StringBuffer buf = null;
-            for (Iterator<OMGeometry> it = list.iterator(); it.hasNext();) {
+            for (OMGraphic omg : list) {
                 if (buf == null) {
                     buf = new StringBuffer();
                 } else {
                     buf.append(";");
                 }
 
-                ImageTile imageTile = (ImageTile) it.next();
+                ImageTile imageTile = (ImageTile) omg;
                 String filePath = (String) imageTile.getAttribute(FILE_PATH_ATTRIBUTE);
                 if (filePath != null) {
                     buf.append(filePath);
@@ -383,10 +382,10 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     }
 
     /**
-     * If filePath is a file, the ImageReaderLoaders are used to try to load
-     * and place the image. If filePath is a directory, this method is called
-     * for each file contained within. ImageTile objects are created from the
-     * image files.
+     * If filePath is a file, the ImageReaderLoaders are used to try to load and
+     * place the image. If filePath is a directory, this method is called for
+     * each file contained within. ImageTile objects are created from the image
+     * files.
      * 
      * @param filePath
      * @param ret The OMGraphicList to add any ImageTiles to.
@@ -662,9 +661,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     protected void setVisibilityOnAllTiles(boolean visible) {
         OMGraphicList list = getList();
         if (list != null) {
-            for (Iterator<OMGeometry> it = list.iterator(); it.hasNext();) {
-                it.next().setVisible(visible);
-            }
+            list.setVisible(visible);
             repaint();
         }
     }
@@ -792,7 +789,10 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                     Point2D anchor2 = new Point2D.Double(rec.getMaxX(), rec.getMinY());
 
                     Proj proj = (Proj) mapBean.getProjection();
-                    float scale = proj.getScale(anchor1, anchor2, proj.forward(anchor1), proj.forward(anchor2));
+                    float scale = proj.getScale(anchor1,
+                            anchor2,
+                            proj.forward(anchor1),
+                            proj.forward(anchor2));
                     if (logger.isLoggable(Level.FINE)) {
                         logger.fine("Images cover " + anchor1 + " to "
                                 + anchor2 + ", scale adjusted to " + scale);
@@ -835,9 +835,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     public void deselect() {
         OMGraphicList list = getList();
         if (list != null) {
-            for (Iterator<OMGeometry> it = list.iterator(); it.hasNext();) {
-                ((OMGraphic) it.next()).setSelected(false);
-            }
+            list.deselect();
             repaint();
         }
     }
@@ -849,8 +847,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     public void resetSelectAttributes() {
         OMGraphicList list = getList();
         if (list != null) {
-            for (Iterator<OMGeometry> it = list.iterator(); it.hasNext();) {
-                selectedDrawingAttributes.setTo((OMGraphic) it.next());
+            for (OMGraphic omg : list) {
+                selectedDrawingAttributes.setTo(omg);
             }
             repaint();
         }
@@ -1054,8 +1052,9 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             }
 
             int tileCount = 0;
-            for (Iterator<OMGeometry> it = list.iterator(); it.hasNext(); tileCount++) {
-                ImageTile imageTile = (ImageTile) it.next();
+            for (OMGraphic omg : list) {
+                tileCount++;
+                ImageTile imageTile = (ImageTile) omg;
 
                 if (checkForIndicies) {
                     for (int i = 0; i < selectedTiles.length; i++) {
@@ -1074,8 +1073,9 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             // and then set them again later.
             dlm.clear();
 
-            for (Iterator<OMGeometry> it = list.iterator(); it.hasNext(); tileCount++) {
-                dlm.addElement(it.next());
+            for (OMGraphic omg : list) {
+                tileCount++;
+                dlm.addElement(omg);
             }
         }
 

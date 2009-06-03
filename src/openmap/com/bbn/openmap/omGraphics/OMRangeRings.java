@@ -44,7 +44,7 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
  * 
  * @see OMCircle
  */
-public class OMRangeRings extends OMCircle implements Serializable {
+public class OMRangeRings extends OMCircle {
     /** The inner ring of circles. */
     protected transient OMCircle[] subCircles = null;
     /** The labels for the circles. */
