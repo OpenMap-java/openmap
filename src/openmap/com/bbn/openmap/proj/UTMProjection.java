@@ -35,18 +35,18 @@ public class UTMProjection extends GeoProj {
 
     protected int half_world; // world.x / 2
 
-    private int zone_number;
+    protected int zoneNumber;
 
-    private boolean isnorthern;
+    protected boolean northern;
 
-    private Ellipsoid ellps;
+    protected Ellipsoid ellps;
 
     public UTMProjection(LatLonPoint center, float s, int w, int h,
             int zone_number, boolean isnorthern, Ellipsoid ellps) {
         super(center, s, w, h);
 
-        this.zone_number = zone_number;
-        this.isnorthern = isnorthern;
+        this.zoneNumber = zone_number;
+        this.northern = isnorthern;
         this.ellps = ellps;
     }
 
@@ -60,8 +60,8 @@ public class UTMProjection extends GeoProj {
             UTMPoint c = UTMPoint.LLtoUTM(getCenter(),
                     ellps,
                     new UTMPoint(),
-                    zone_number,
-                    isnorthern);
+                    zoneNumber,
+                    northern);
             xycenter.setLocation(c.easting, c.northing);
         }
 
@@ -96,8 +96,8 @@ public class UTMProjection extends GeoProj {
         utmPoint = UTMPoint.LLtoUTM(llp,
                 ellps,
                 utmPoint,
-                zone_number,
-                isnorthern);
+                zoneNumber,
+                northern);
 
         pt.setLocation((wx + (ppu
                 * (utmPoint.easting - xycenter.getX()))), (hy - (ppu
@@ -118,8 +118,8 @@ public class UTMProjection extends GeoProj {
         llpt = (T) UTMPoint.UTMtoLL(ellps,
                 northing,
                 easting,
-                zone_number,
-                isnorthern,
+                zoneNumber,
+                northern,
                 (LatLonPoint) llpt);
 
         return llpt;
@@ -153,13 +153,13 @@ public class UTMProjection extends GeoProj {
         UTMPoint xx1 = UTMPoint.LLtoUTM((LatLonPoint)ll1,
                 ellps,
                 new UTMPoint(),
-                zone_number,
-                isnorthern);
+                zoneNumber,
+                northern);
         UTMPoint xx2 = UTMPoint.LLtoUTM((LatLonPoint)ll2,
                 ellps,
                 new UTMPoint(),
-                zone_number,
-                isnorthern);
+                zoneNumber,
+                northern);
 
         double widthMap = (xx2.easting - xx1.easting);
         float widthScale = (float) (((double) getPPM()) * (widthMap / widthPX));
@@ -417,7 +417,34 @@ public class UTMProjection extends GeoProj {
         return inverse(0, 0, new LatLonPoint.Double());
     }
 
-    /*
+    public int getZoneNumber() {
+		return zoneNumber;
+	}
+
+	public void setZoneNumber(int zoneNumber) {
+		this.zoneNumber = zoneNumber;
+		computeParameters();
+	}
+
+	public boolean isNorthern() {
+		return northern;
+	}
+
+	public void setNorthern(boolean northern) {
+		this.northern = northern;
+		computeParameters();
+	}
+
+	public Ellipsoid getEllps() {
+		return ellps;
+	}
+
+	public void setEllps(Ellipsoid ellps) {
+		this.ellps = ellps;
+		computeParameters();
+	}
+
+	/*
      * HACK epsilon: skirt the edge of the infinite. If this is too small then
      * we get too close to +-INFINITY when we forward project. Tweak this if you
      * start getting Infinity or NaN's for forward().
