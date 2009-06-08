@@ -302,27 +302,6 @@ public class OMGraphicHash extends OMGraphicList {
     }
 
     /**
-     * Add an OMGraphic to the GraphicList. The OMGraphic must not be null.
-     * <p>
-     * For OMGraphicHash this method will throw an
-     * <code>IllegalArgumentException</code> because adding a graphic must be
-     * done through <code>put(key,value)</code>.
-     * <p>
-     * 
-     * @param g the non-null OMGraphic to add
-     * @exception IllegalArgumentException if OMGraphic is null
-     */
-    public boolean addOMGraphic(OMGraphic g) {
-        // Prevent adding a graphic using the OMGraphic List.
-        // OMGraphicHash entry must be added through the Map interface.
-        if (cloningInProgress) {
-            return super.addOMGraphic(g);
-        }
-        throw new RuntimeException("addOMGraphic() not permitted for OMGraphicHash(). Use put(key, OMGraphic) instead.");
-
-    }
-
-    /**
      * Add an OMGraphic to the list.
      * <p>
      * For OMGraphicHash this method will throw an

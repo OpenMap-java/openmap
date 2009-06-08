@@ -880,7 +880,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 } else {
                     currentLine.setLinePaint(oneDegreeColor);
                 }
-                lines.addOMGraphic(currentLine);
+                lines.add(currentLine);
             }
 
             if (showRuler && (lat % 2) == 0) {
@@ -901,7 +901,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 // Move them up a little
                 (int) 2, (int) -2, Integer.toString((int) lat), font, OMText.JUSTIFY_LEFT);
                 currentText.setLinePaint(textColor);
-                lines.addOMGraphic(currentText);
+                lines.add(currentText);
             }
         }
 
@@ -931,7 +931,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 } else {
                     currentLine.setLinePaint(oneDegreeColor);
                 }
-                lines.addOMGraphic(currentLine);
+                lines.add(currentLine);
             }
 
             if (showRuler && (lon % 2) == 0) {
@@ -952,7 +952,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 // Move them up a little
                 (int) 2, (int) -5, Integer.toString((int) lon), font, OMText.JUSTIFY_CENTER);
                 currentText.setLinePaint(textColor);
-                lines.addOMGraphic(currentText);
+                lines.add(currentText);
 
             }
         }
@@ -983,7 +983,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 currentLine = new OMPoly(llp, OMGraphic.DECIMAL_DEGREES, boxy ? OMGraphic.LINETYPE_STRAIGHT
                         : OMGraphic.LINETYPE_RHUMB);
                 currentLine.setLinePaint(tenDegreeColor);
-                lines.addOMGraphic(currentLine);
+                lines.add(currentLine);
             }
         }
 
@@ -1000,7 +1000,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 currentLine = new OMPoly(llp, OMGraphic.DECIMAL_DEGREES, boxy ? OMGraphic.LINETYPE_STRAIGHT
                         : OMGraphic.LINETYPE_GREATCIRCLE);
                 currentLine.setLinePaint(tenDegreeColor);
-                lines.addOMGraphic(currentLine);
+                lines.add(currentLine);
             }
         }
 
@@ -1089,7 +1089,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                     // little
                     Integer.toString((int) lat), font, OMText.JUSTIFY_LEFT);
                     currentText.setLinePaint(textColor);
-                    labels.addOMGraphic(currentText);
+                    labels.add(currentText);
                 }
             }
         }
@@ -1116,7 +1116,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
                 // Move them up a little
                 (int) 2, (int) -5, Integer.toString((int) lon), font, OMText.JUSTIFY_CENTER);
                 currentText.setLinePaint(textColor);
-                labels.addOMGraphic(currentText);
+                labels.add(currentText);
 
             }
         }
@@ -1142,7 +1142,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
             currentLine = new OMPoly(llp, OMGraphic.DECIMAL_DEGREES, boxy ? OMGraphic.LINETYPE_STRAIGHT
                     : OMGraphic.LINETYPE_GREATCIRCLE);
             currentLine.setLinePaint(dateLineColor);
-            lines.addOMGraphic(currentLine);
+            lines.add(currentLine);
         }
 
         // equator
@@ -1151,7 +1151,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         currentLine = new OMPoly(llp, OMGraphic.DECIMAL_DEGREES, boxy ? OMGraphic.LINETYPE_STRAIGHT
                 : OMGraphic.LINETYPE_GREATCIRCLE);
         currentLine.setLinePaint(equatorColor);
-        lines.addOMGraphic(currentLine);
+        lines.add(currentLine);
 
         if (Debug.debugging("graticule")) {
             Debug.output("GraticuleLayer.constructMarkerLines(): "

@@ -587,47 +587,47 @@ public class CSpecLayer extends OMGraphicHandlerLayer implements
             case GraphicType._GT_Poly:
                 JPoly jpoly = new JPoly(uGraphics[i].epoly());
                 jpoly.generate(proj);
-                graphics.addOMGraphic(jpoly);
+                graphics.add(jpoly);
                 break;
             case GraphicType._GT_Raster:
                 JRaster jraster = new JRaster(uGraphics[i].eras());
                 jraster.generate(proj);
-                graphics.addOMGraphic(jraster);
+                graphics.add(jraster);
                 break;
             case GraphicType._GT_Bitmap:
                 JBitmap jbitmap = new JBitmap(uGraphics[i].ebit());
                 jbitmap.generate(proj);
-                graphics.addOMGraphic(jbitmap);
+                graphics.add(jbitmap);
                 break;
             case GraphicType._GT_Text:
                 JText jtext = new JText(uGraphics[i].etext());
                 jtext.generate(proj);
-                graphics.addOMGraphic(jtext);
+                graphics.add(jtext);
                 break;
             case GraphicType._GT_Line:
                 JLine jline = new JLine(uGraphics[i].eline());
                 jline.generate(proj);
-                graphics.addOMGraphic(jline);
+                graphics.add(jline);
                 break;
             case GraphicType._GT_UnitSymbol:
                 JUnit junit = new JUnit(uGraphics[i].eunit());
                 junit.generate(proj);
-                graphics.addOMGraphic(junit);
+                graphics.add(junit);
                 break;
             case GraphicType._GT_2525Symbol:
                 J2525 j2525 = new J2525(uGraphics[i].e2525());
                 j2525.generate(proj);
-                graphics.addOMGraphic(j2525);
+                graphics.add(j2525);
                 break;
             case GraphicType._GT_Rectangle:
                 JRect jrect = new JRect(uGraphics[i].erect());
                 jrect.generate(proj);
-                graphics.addOMGraphic(jrect);
+                graphics.add(jrect);
                 break;
             case GraphicType._GT_Circle:
                 JCircle jcircle = new JCircle(uGraphics[i].ecirc());
                 jcircle.generate(proj);
-                graphics.addOMGraphic(jcircle);
+                graphics.add(jcircle);
                 break;
             case GraphicType._GT_NewGraphic:
             case GraphicType._GT_ReorderGraphic:

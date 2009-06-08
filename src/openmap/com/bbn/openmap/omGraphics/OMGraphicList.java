@@ -118,16 +118,6 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
     }
 
     /**
-     * Add an OMGraphic to the GraphicList. The OMGraphic must not be null.
-     * 
-     * @param g the non-null OMGraphic to add
-     * @exception IllegalArgumentException if OMGraphic is null
-     */
-    public boolean addOMGraphic(OMGraphic g) {
-        return add(g);
-    }
-
-    /**
      * Add an OMGraphic to the list.
      */
     public synchronized boolean add(OMGraphic g) {
@@ -162,15 +152,6 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      */
     public synchronized OMGraphic get(int location) {
         return graphics.get(location);
-    }
-
-    /**
-     * Remove the graphic at the location number.
-     * 
-     * @param location the location of the OMGraphic to remove.
-     */
-    public void removeOMGraphicAt(int location) {
-        remove(location);
     }
 
     /**

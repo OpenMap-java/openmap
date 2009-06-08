@@ -172,7 +172,7 @@ public class NexradLayer extends OMGraphicHandlerLayer {
                     Color plotc = scaledColor(rain[x][y]);
                     poly.setFillPaint(plotc);
                     poly.setLinePaint(plotc);
-                    graphics.addOMGraphic(poly);
+                    graphics.add(poly);
                 }
             }
         }

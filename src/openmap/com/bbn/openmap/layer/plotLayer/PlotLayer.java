@@ -172,7 +172,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
             GLOBESite site = (GLOBESite) site_enum.nextElement();
             // Debug.message("basic", "Plotlayer adds " +
             // site.getName());
-            graphics.addOMGraphic(site.getGraphic());
+            graphics.add(site.getGraphic());
             num_graphics++;
         }
 
@@ -202,7 +202,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
 
         if (plot != null) {
             // System.out.println("Making plot visible..");
-            list.addOMGraphic(plot);
+            list.add(plot);
         }
         // generate the graphics for rendering.
         list.generate(getProjection(), false);

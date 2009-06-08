@@ -348,20 +348,20 @@ public class ScatterGraph {
         year_axis.setAppObject(this);
         temp_axis.setAppObject(this);
 
-        plot_background_.addOMGraphic(background);
+        plot_background_.add(background);
 
-        plot_background_.addOMGraphic(year_axis);
-        plot_background_.addOMGraphic(temp_axis);
-        plot_background_.addOMGraphic(temp_axis_label);
-        plot_background_.addOMGraphic(year_axis_label);
+        plot_background_.add(year_axis);
+        plot_background_.add(temp_axis);
+        plot_background_.add(temp_axis_label);
+        plot_background_.add(year_axis_label);
 
-        plot_background_.addOMGraphic(year_min_label);
-        plot_background_.addOMGraphic(year_max_label);
-        plot_background_.addOMGraphic(temp_min_label);
-        plot_background_.addOMGraphic(temp_max_label);
+        plot_background_.add(year_min_label);
+        plot_background_.add(year_max_label);
+        plot_background_.add(temp_min_label);
+        plot_background_.add(temp_max_label);
 
         // add the result to the plot
-        plot_graphics_.addOMGraphic(plot_background_);
+        plot_graphics_.add(plot_background_);
 
         axes_displayed_ = true;
     }
@@ -443,7 +443,7 @@ public class ScatterGraph {
                 float temp = site.getValueForYear(year);
                 OMGraphic point = plotPoint(year, temp);
 
-                plot_points_.addOMGraphic(point);
+                plot_points_.add(point);
 
                 if (!Float.isNaN(last_year)) {
                     // Connect all the rest with a line.
@@ -451,7 +451,7 @@ public class ScatterGraph {
                             last_temp,
                             year,
                             temp);
-                    plot_points_.addOMGraphic(line);
+                    plot_points_.add(line);
                 }
 
                 // remember the last point we looked at.
@@ -462,7 +462,7 @@ public class ScatterGraph {
                 num_elements++;
             }
         }
-        plot_graphics_.addOMGraphic(plot_points_);
+        plot_graphics_.add(plot_points_);
 
         //              System.out.println("Data plotted: " +
         //                         num_sites + " sites, " +

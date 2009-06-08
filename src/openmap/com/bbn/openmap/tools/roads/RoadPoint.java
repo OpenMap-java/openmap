@@ -64,7 +64,7 @@ public class RoadPoint extends Waypoint implements RoadObject {
             visual = new Graphic();
             setVisual(visual);
         }
-        gl.addOMGraphic((Graphic) visual);
+        gl.add((Graphic) visual);
     }
 
     public class Graphic extends Waypoint.Graphic {

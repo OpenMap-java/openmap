@@ -146,7 +146,7 @@ public class Intersection extends Waypoint implements RoadObject {
             visual = new Graphic(displayAsTerminal);
             setVisual(visual);
         }
-        gl.addOMGraphic((Graphic) visual);
+        gl.add((Graphic) visual);
     }
 
     /**

@@ -85,17 +85,17 @@ public class RouteLayer extends Layer {
 
         graphics.clear();
 
-        graphics.addOMGraphic(createLine(42.0f,
+        graphics.add(createLine(42.0f,
                 -71.0f,
                 35.5f,
                 -120.5f,
                 Color.red));
-        graphics.addOMGraphic(createLine(28.0f,
+        graphics.add(createLine(28.0f,
                 -81.0f,
                 47.0f,
                 -122.0f,
                 Color.green));
-        graphics.addOMGraphic(createLine(22.6f,
+        graphics.add(createLine(22.6f,
                 -101.0f,
                 44.0f,
                 -70.0f,

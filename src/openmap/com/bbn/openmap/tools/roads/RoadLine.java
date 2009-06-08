@@ -70,7 +70,7 @@ public class RoadLine extends Visual implements RoadObject {
             visual = new Graphic(p1, p2);
             setVisual(visual);
         }
-        gl.addOMGraphic((Graphic) visual);
+        gl.add((Graphic) visual);
     }
 
     public class Graphic extends OMLine implements RoadGraphic {

@@ -723,7 +723,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             // gets done on the graphic...
             if (LinkUtil.isMask(gu.action, MODIFY_DELETE_GRAPHIC_MASK)) {
                 Debug.message("link", "LinkLayer: deleting graphic");
-                graphics.removeOMGraphicAt(reactionGraphicIndex);
+                graphics.remove(reactionGraphicIndex);
             } else {
 
                 // For properties updating, or graphic replacement

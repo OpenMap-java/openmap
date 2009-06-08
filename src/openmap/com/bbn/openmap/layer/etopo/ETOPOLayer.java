@@ -703,7 +703,7 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 
         // build graphics list
         OMGraphicList omGraphicList = new OMGraphicList();
-        omGraphicList.addOMGraphic(buildRaster());
+        omGraphicList.add(buildRaster());
 
         // ///////////////////
         // safe quit

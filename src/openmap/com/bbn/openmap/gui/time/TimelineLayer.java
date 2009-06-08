@@ -362,7 +362,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                 currentLine.setStroke(symbolStroke);
                 currentLine.generate(projection);
                 currentLine.putAttribute(ATT_KEY_EVENT, event);
-                eventGraphicList.addOMGraphic(currentLine);
+                eventGraphicList.add(currentLine);
             }
         }
         return eventGraphicList;
