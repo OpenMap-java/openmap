@@ -113,9 +113,9 @@ public interface GeoPath extends GeoExtent {
          */
         public Impl(double[] lls, boolean isDegrees) {
             if (isDegrees) {
-                pts = GeoArray.Float.createFromLatLonDegrees(lls);
+                pts = GeoArray.Double.createFromLatLonDegrees(lls);
             } else {
-                pts = GeoArray.Float.createFromLatLonRadians(lls);
+                pts = GeoArray.Double.createFromLatLonRadians(lls);
             }
             length = pts.getSize();
         }
@@ -148,7 +148,7 @@ public interface GeoPath extends GeoExtent {
          * @param points
          */
         protected void setPoints(Geo[] points) {
-            pts = new GeoArray.Float(points);
+            pts = new GeoArray.Double(points);
             if (pts != null) {
                 length = pts.getSize();
             } else {
