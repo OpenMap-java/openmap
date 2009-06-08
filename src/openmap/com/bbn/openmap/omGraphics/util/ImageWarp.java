@@ -293,7 +293,7 @@ public class ImageWarp {
                         continue;
                     }
 
-                    p.inverse(i, j, ddll);
+                    ddll = p.inverse(i, j, ddll);
 
                     // If the llp calculated isn't on the map,
                     // don't bother drawing it. Could be a space
