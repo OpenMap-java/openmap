@@ -64,7 +64,8 @@ public class RpfFrameCacheHandler extends CacheHandler implements
     /**
      * The default constructor.
      * 
-     * @param RpfPaths the directory paths to the RPF directories.
+     * @param RpfPaths
+     *            the directory paths to the RPF directories.
      */
     public RpfFrameCacheHandler(String[] RpfPaths) {
         this(RpfPaths, FRAME_CACHE_SIZE);
@@ -74,7 +75,8 @@ public class RpfFrameCacheHandler extends CacheHandler implements
      * The constructor to use if you want to modify the number of frames held in
      * the cache..
      * 
-     * @param RpfPaths the directory paths to the RPF directories.
+     * @param RpfPaths
+     *            the directory paths to the RPF directories.
      */
     public RpfFrameCacheHandler(String[] RpfPaths, int max_size) {
         super(max_size);
@@ -121,12 +123,18 @@ public class RpfFrameCacheHandler extends CacheHandler implements
      * RpfFrameProvider interface method. Return all the RpfCoverageBoxes that
      * fall in the area of interest.
      * 
-     * @param ullat NW latitude.
-     * @param ullon NW longitude.
-     * @param lrlat SE latitude.
-     * @param lrlon SE longitude
-     * @param proj CADRG projection to use for zone decisions.
-     * @param chartSeries RpfProductInfo.seriesCode entry.
+     * @param ullat
+     *            NW latitude.
+     * @param ullon
+     *            NW longitude.
+     * @param lrlat
+     *            SE latitude.
+     * @param lrlon
+     *            SE longitude
+     * @param proj
+     *            CADRG projection to use for zone decisions.
+     * @param chartSeries
+     *            RpfProductInfo.seriesCode entry.
      * @return Vector of RpfCoverageBoxes.
      */
     public Vector getCatalogCoverage(float ullat, float ullon, float lrlat,
@@ -143,13 +151,8 @@ public class RpfFrameCacheHandler extends CacheHandler implements
             if (!tocs[i].isValid())
                 continue;
 
-            tocs[i].getCatalogCoverage(ullat,
-                    ullon,
-                    lrlat,
-                    lrlon,
-                    proj,
-                    chartSeries,
-                    coverages);
+            tocs[i].getCatalogCoverage(ullat, ullon, lrlat, lrlon, proj,
+                                       chartSeries, coverages);
         }
 
         return coverages;
@@ -161,12 +164,18 @@ public class RpfFrameCacheHandler extends CacheHandler implements
      * specific coverage information, use the getCatalogCoverage call. Don't
      * send a chart series code of ANY, since that doesn't make sense.
      * 
-     * @param ullat NW latitude.
-     * @param ullon NW longitude.
-     * @param lrlat SE latitude.
-     * @param lrlon SE longitude
-     * @param p projection to use for zone decisions.
-     * @param chartSeries RpfProductInfo.seriesCode entry.
+     * @param ullat
+     *            NW latitude.
+     * @param ullon
+     *            NW longitude.
+     * @param lrlat
+     *            SE latitude.
+     * @param lrlon
+     *            SE longitude
+     * @param p
+     *            projection to use for zone decisions.
+     * @param chartSeries
+     *            RpfProductInfo.seriesCode entry.
      * @return percentage of map covered by specific chart type.
      * @see #getCatalogCoverage
      */
@@ -177,12 +186,8 @@ public class RpfFrameCacheHandler extends CacheHandler implements
             return 0f;
         }
 
-        Vector results = getCatalogCoverage(ullat,
-                ullon,
-                lrlat,
-                lrlon,
-                p,
-                chartSeries);
+        Vector results = getCatalogCoverage(ullat, ullon, lrlat, lrlon, p,
+                                            chartSeries);
 
         int size = results.size();
 
@@ -272,11 +277,16 @@ public class RpfFrameCacheHandler extends CacheHandler implements
      * below. 4. Iterates thru list returned by RpcTocHandler since the return
      * type for getBestCoverageEntry changed from RpfTocEntry to List.
      * 
-     * @param ullat NW latitude.
-     * @param ullon NW longitude.
-     * @param lrlat SE latitude.
-     * @param lrlon SE longitude
-     * @param proj CADRG projection to use for zone decisions.
+     * @param ullat
+     *            NW latitude.
+     * @param ullon
+     *            NW longitude.
+     * @param lrlat
+     *            SE latitude.
+     * @param lrlon
+     *            SE longitude
+     * @param proj
+     *            CADRG projection to use for zone decisions.
      * @return Vector of RpfCoverageBoxes.
      */
     public Vector getCoverage(float ullat, float ullon, float lrlat,
@@ -301,12 +311,9 @@ public class RpfFrameCacheHandler extends CacheHandler implements
             // NOTE: returning a list of best coverage entries.
             // Added inner loop to deal with iterating over list of
             // results.
-            coverageEntries = tocs[i].getBestCoverageEntry(ullat,
-                    ullon,
-                    lrlat,
-                    lrlon,
-                    proj,
-                    viewAttributes);
+            coverageEntries = tocs[i].getBestCoverageEntry(ullat, ullon, lrlat,
+                                                           lrlon, proj,
+                                                           viewAttributes);
 
             for (int k = 0; k < coverageEntries.size(); k++) {
                 currentEntry = (RpfTocEntry) coverageEntries.get(k);
@@ -390,10 +397,12 @@ public class RpfFrameCacheHandler extends CacheHandler implements
                                     // had better coverage, it would
                                     // have gotten
                                     // discarded.
-                                    if (scaleDifference(proj, currentCoverage) <= scaleDifference(proj,
-                                            rcb)
+                                    if (scaleDifference(proj, currentCoverage) <= scaleDifference(
+                                                                                                  proj,
+                                                                                                  rcb)
                                             && currentCoverage.percentCoverage >= rcb.percentCoverage) {
-                                        coverageBoxes.addElement(currentCoverage);
+                                        coverageBoxes
+                                                .addElement(currentCoverage);
                                         addedCurrent = true;
                                         if (currentCoverage.scale == rcb.scale) {
                                             coverageBoxes.addElement(rcb);
@@ -410,7 +419,8 @@ public class RpfFrameCacheHandler extends CacheHandler implements
                                     }
                                 } else { // j!= 0
                                     if (currentCoverage.percentCoverage >= rcb.percentCoverage) {
-                                        if (((RpfCoverageBox) coverageBoxes.get(0)).scale == currentCoverage.scale) {
+                                        if (((RpfCoverageBox) coverageBoxes
+                                                .get(0)).scale == currentCoverage.scale) {
 
                                             coverageBoxes.add(currentCoverage);
                                             addedCurrent = true;
@@ -472,14 +482,18 @@ public class RpfFrameCacheHandler extends CacheHandler implements
      * entryNumber are given within the RpfCoverageBox received from a
      * getCoverage call.
      * 
-     * @param tocNumber the toc id for a RpfTocHandler for a particular frame
-     *        provider.
-     * @param entryNumber the RpfTocEntry id for a RpfTocHandler for a
-     *        particular frame provider.
-     * @param x the horizontal subframe index, from the left side of a boundary
-     *        rectangle of the entry.
-     * @param y the vertical subframe index, from the top side of a boundary
-     *        rectangle of the entry.
+     * @param tocNumber
+     *            the toc id for a RpfTocHandler for a particular frame
+     *            provider.
+     * @param entryNumber
+     *            the RpfTocEntry id for a RpfTocHandler for a particular frame
+     *            provider.
+     * @param x
+     *            the horizontal subframe index, from the left side of a
+     *            boundary rectangle of the entry.
+     * @param y
+     *            the vertical subframe index, from the top side of a boundary
+     *            rectangle of the entry.
      * @see #getCoverage
      * @return string.
      */
@@ -521,14 +535,18 @@ public class RpfFrameCacheHandler extends CacheHandler implements
      * tocNumber and entryNumber are given within the RpfCoverageBox received
      * from a getCoverage call.
      * 
-     * @param tocNumber the toc id for a RpfTocHandler for a particular frame
-     *        provider.
-     * @param entryNumber the RpfTocEntry id for a RpfTocHandler for a
-     *        particular frame provider.
-     * @param x the horizontal subframe index, from the left side of a boundary
-     *        rectangle of the entry.
-     * @param y the vertical subframe index, from the top side of a boundary
-     *        rectangle of the entry.
+     * @param tocNumber
+     *            the toc id for a RpfTocHandler for a particular frame
+     *            provider.
+     * @param entryNumber
+     *            the RpfTocEntry id for a RpfTocHandler for a particular frame
+     *            provider.
+     * @param x
+     *            the horizontal subframe index, from the left side of a
+     *            boundary rectangle of the entry.
+     * @param y
+     *            the vertical subframe index, from the top side of a boundary
+     *            rectangle of the entry.
      * @see #getCoverage
      * @return integer pixel data.
      */
@@ -651,15 +669,18 @@ public class RpfFrameCacheHandler extends CacheHandler implements
     /**
      * Set up the A.TOC files, to find out what coverage there is.
      * 
-     * @param RpfPaths the paths to the RPF directories.
+     * @param RpfPaths
+     *            the paths to the RPF directories.
      * @return the RpfTocHandlers for the A.TOCs.
      */
     public static RpfTocHandler[] createTocHandlers(String[] RpfPaths) {
 
         RpfTocHandler[] tocs = new RpfTocHandler[(RpfPaths != null ? RpfPaths.length
                 : 0)];
-        for (int i = 0; i < tocs.length; i++) {
-            tocs[i] = new RpfTocHandler(RpfPaths[i], i);
+        if (RpfPaths != null) {
+            for (int i = 0; i < tocs.length; i++) {
+                tocs[i] = new RpfTocHandler(RpfPaths[i], i);
+            }
         }
         return tocs;
     }
@@ -695,8 +716,9 @@ public class RpfFrameCacheHandler extends CacheHandler implements
             RpfFrameEntry rfe = (RpfFrameEntry) key;
             if (!rfe.exists) {
                 if (Debug.debugging("rpf")) {
-                    System.out.println("RpfFrameCacheHandler: Frame doesn't exist!: "
-                            + rfe.framePath);
+                    System.out
+                            .println("RpfFrameCacheHandler: Frame doesn't exist!: "
+                                    + rfe.framePath);
                 }
                 return null;
             }

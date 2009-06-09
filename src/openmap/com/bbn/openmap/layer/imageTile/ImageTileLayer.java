@@ -129,7 +129,8 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class ImageTileLayer extends OMGraphicHandlerLayer {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.imageTile.ImageTileLayer");
+    public static Logger logger = Logger
+            .getLogger("com.bbn.openmap.layer.imageTile.ImageTileLayer");
 
     public final static String ImageFilePathProperty = "imageFilePath";
     public final static String ImageReaderLoadersProperty = "imageReaderLoaders";
@@ -145,7 +146,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
 
     protected ImageTile.Cache imageCache;
 
-    protected DrawingAttributes selectedDrawingAttributes = DrawingAttributes.getDefaultClone();
+    protected DrawingAttributes selectedDrawingAttributes = DrawingAttributes
+            .getDefaultClone();
 
     /**
      * Default constructor for layer, initializes tile cache.
@@ -156,12 +158,10 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         configureImageReaderLoaders();
         imageCache = new ImageTile.Cache();
 
-        SHOW_TILES_TITLE = i18n.get(ImageTileLayer.class,
-                "showTilesButton",
-                "Show");
-        HIDE_TILES_TITLE = i18n.get(ImageTileLayer.class,
-                "hideTilesButton",
-                "Hide");
+        SHOW_TILES_TITLE = i18n.get(ImageTileLayer.class, "showTilesButton",
+                                    "Show");
+        HIDE_TILES_TITLE = i18n.get(ImageTileLayer.class, "hideTilesButton",
+                                    "Hide");
     }
 
     /**
@@ -178,9 +178,9 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         imageCache.resetCache(PropUtils.intFromProperties(props, prefix
                 + ImageCacheSizeProperty, imageCache.getCacheSize()));
 
-        imageCache.setCutoffScaleRatio(PropUtils.floatFromProperties(props,
-                prefix + ImageCutoffRatioProperty,
-                imageCache.getCutoffScaleRatio()));
+        imageCache.setCutoffScaleRatio(PropUtils
+                .floatFromProperties(props, prefix + ImageCutoffRatioProperty,
+                                     imageCache.getCutoffScaleRatio()));
 
         String imageReaderLoaderString = props.getProperty(prefix
                 + ImageReaderLoadersProperty);
@@ -191,7 +191,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
 
         if (imageReaderLoaderString != null) {
             imageReaderLoaders.clear();
-            Vector<String> idls = PropUtils.parseSpacedMarkers(imageReaderLoaderString);
+            Vector<String> idls = PropUtils
+                    .parseSpacedMarkers(imageReaderLoaderString);
             for (String idlMarkerName : idls) {
                 String idlClassName = props.getProperty(prefix + idlMarkerName);
 
@@ -211,19 +212,23 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     protected void configureImageReaderLoaders() {
         imageReaderLoaders = new Vector<ImageReaderLoader>();
 
-        ImageReaderLoader idl = (ImageReaderLoader) ComponentFactory.create("com.bbn.openmap.dataAccess.image.geotiff.GeoTIFFImageReaderLoader");
+        ImageReaderLoader idl = (ImageReaderLoader) ComponentFactory
+                .create("com.bbn.openmap.dataAccess.image.geotiff.GeoTIFFImageReaderLoader");
 
         if (idl != null) {
             imageReaderLoaders.add(idl);
         } else {
-            logger.warning("ImageTileLayer needs JAI installed in order to use GeoTIFF Image Reader.");
+            logger
+                    .warning("ImageTileLayer needs JAI installed in order to use GeoTIFF Image Reader.");
         }
 
-        idl = (ImageReaderLoader) ComponentFactory.create("com.bbn.openmap.dataAccess.image.WorldFileImageReaderLoader");
+        idl = (ImageReaderLoader) ComponentFactory
+                .create("com.bbn.openmap.dataAccess.image.WorldFileImageReaderLoader");
         if (idl != null) {
             imageReaderLoaders.add(idl);
         } else {
-            logger.warning("ImageTileLayer needs JAI installed in order to use World File Image Reader.");
+            logger
+                    .warning("ImageTileLayer needs JAI installed in order to use World File Image Reader.");
         }
     }
 
@@ -236,16 +241,15 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         String prefix = PropUtils.getScopedPropertyPrefix(this);
         OMGraphicList list = getList();
         if (list != null) {
-            StringBuffer buf = null;
+            StringBuffer buf = new StringBuffer();
             for (OMGraphic omg : list) {
-                if (buf == null) {
-                    buf = new StringBuffer();
-                } else {
+                if (buf.length() != 0) {
                     buf.append(";");
                 }
 
                 ImageTile imageTile = (ImageTile) omg;
-                String filePath = (String) imageTile.getAttribute(FILE_PATH_ATTRIBUTE);
+                String filePath = (String) imageTile
+                        .getAttribute(FILE_PATH_ATTRIBUTE);
                 if (filePath != null) {
                     buf.append(filePath);
                 }
@@ -272,10 +276,10 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             }
         }
 
-        props.put(prefix + ImageCacheSizeProperty,
-                Integer.toString(imageCache.getCacheSize()));
-        props.put(prefix + ImageCutoffRatioProperty,
-                Float.toString(imageCache.getCutoffScaleRatio()));
+        props.put(prefix + ImageCacheSizeProperty, Integer.toString(imageCache
+                .getCacheSize()));
+        props.put(prefix + ImageCutoffRatioProperty, Float.toString(imageCache
+                .getCutoffScaleRatio()));
 
         return props;
     }
@@ -288,40 +292,43 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
 
         selectedDrawingAttributes.getPropertyInfo(props);
 
-        PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                ImageTileLayer.class,
-                ImageFilePathProperty,
-                "Images",
-                "A list of images or directories to display (separated by ;).",
-                "com.bbn.openmap.util.propertyEditor.MultiDirFilePropertyEditor");
+        PropUtils
+                .setI18NPropertyInfo(
+                                     i18n,
+                                     props,
+                                     ImageTileLayer.class,
+                                     ImageFilePathProperty,
+                                     "Images",
+                                     "A list of images or directories to display (separated by ;).",
+                                     "com.bbn.openmap.util.propertyEditor.MultiDirFilePropertyEditor");
 
-        PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                ImageTileLayer.class,
-                ImageCacheSizeProperty,
-                "Cache Size",
-                "Number of images to keep in cache.",
-                null);
+        PropUtils.setI18NPropertyInfo(i18n, props, ImageTileLayer.class,
+                                      ImageCacheSizeProperty, "Cache Size",
+                                      "Number of images to keep in cache.",
+                                      null);
 
-        PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                ImageTileLayer.class,
-                ImageCutoffRatioProperty,
-                "Cutoff Scale",
-                "Projection scale where larger values won't cause images to be loaded and displayed.",
-                null);
+        PropUtils
+                .setI18NPropertyInfo(
+                                     i18n,
+                                     props,
+                                     ImageTileLayer.class,
+                                     ImageCutoffRatioProperty,
+                                     "Cutoff Scale",
+                                     "Projection scale where larger values won't cause images to be loaded and displayed.",
+                                     null);
 
-        String dummyMarker = PropUtils.getDummyMarkerForPropertyInfo(getPropertyPrefix(),
-                null);
+        String dummyMarker = PropUtils
+                .getDummyMarkerForPropertyInfo(getPropertyPrefix(), null);
 
-        PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                ImageTileLayer.class,
-                dummyMarker,
-                "Highlight Settings",
-                "Settings for annototations on highlighted images.",
-                "com.bbn.openmap.omGraphics.DrawingAttributesPropertyEditor");
+        PropUtils
+                .setI18NPropertyInfo(
+                                     i18n,
+                                     props,
+                                     ImageTileLayer.class,
+                                     dummyMarker,
+                                     "Highlight Settings",
+                                     "Settings for annototations on highlighted images.",
+                                     "com.bbn.openmap.omGraphics.DrawingAttributesPropertyEditor");
 
         props.put(initPropertiesProperty, ImageFilePathProperty + " "
                 + ImageCacheSizeProperty + " " + ImageCutoffRatioProperty + " "
@@ -388,7 +395,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
      * files.
      * 
      * @param filePath
-     * @param ret The OMGraphicList to add any ImageTiles to.
+     * @param ret
+     *            The OMGraphicList to add any ImageTiles to.
      */
     protected void loadImage(String filePath, OMGraphicList ret) {
 
@@ -410,7 +418,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                         for (ImageReaderLoader idl : imageReaderLoaders) {
                             if (idl.isLoadable(filePath)) {
                                 ImageReader id = idl.getImageReader(fileURL);
-                                ImageTile tmpImageTile = id.getImageTile(imageCache);
+                                ImageTile tmpImageTile = id
+                                        .getImageTile(imageCache);
 
                                 if (imageTile == null) {
                                     imageTile = tmpImageTile;
@@ -449,9 +458,12 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
      * A method to handle a newly created ImageTile object from the loadImage
      * method.
      * 
-     * @param imageTile The new ImageTile
-     * @param ret An OMGraphicList to add the ImageTile to.
-     * @param fileURL A URL describing the location of the source image file.
+     * @param imageTile
+     *            The new ImageTile
+     * @param ret
+     *            An OMGraphicList to add the ImageTile to.
+     * @param fileURL
+     *            A URL describing the location of the source image file.
      */
     protected void addImageToLists(ImageTile imageTile, OMGraphicList ret,
                                    URL fileURL) {
@@ -507,7 +519,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             itPanel.add(icbp);
 
             resultsList = new JList(getListModel());
-            resultsList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+            resultsList
+                    .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
             listManager = new ListManager();
             resultsList.addListSelectionListener(listManager);
             resultsList.addMouseListener(listManager);
@@ -515,8 +528,10 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             resultsList.setCellRenderer(new ImageListCellRenderer());
 
             JScrollPane listScrollPane = new JScrollPane(resultsList);
-            listScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            listScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            listScrollPane
+                    .setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            listScrollPane
+                    .setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             c.fill = GridBagConstraints.BOTH;
             c.weightx = 1.0f;
             c.weighty = 1.0f;
@@ -533,15 +548,14 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             showHideButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     showHideTiles(((JButton) ae.getSource()).getText(),
-                            getSelectedTiles());
+                                  getSelectedTiles());
                 }
             });
             bGridbag.setConstraints(showHideButton, bc);
             buttonPanel.add(showHideButton);
 
             gotoButton = new JButton(i18n.get(ImageTileLayer.class,
-                    "gotoButton",
-                    "Go To"));
+                                              "gotoButton", "Go To"));
             gotoButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     goTo(getSelectedTiles());
@@ -551,8 +565,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             buttonPanel.add(gotoButton);
 
             locateButton = new JToggleButton(i18n.get(ImageTileLayer.class,
-                    "locateButton",
-                    "Highlight"));
+                                                      "locateButton",
+                                                      "Highlight"));
             locateButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     JToggleButton jtb = (JToggleButton) ae.getSource();
@@ -588,34 +602,26 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
 
             add = new JButton(addgif);
             add.setActionCommand(LayersPanel.LayerAddCmd);
-            add.setToolTipText(i18n.get(ImageTileLayer.class,
-                    "addImage",
-                    I18n.TOOLTIP,
-                    "Add images(s)"));
+            add.setToolTipText(i18n.get(ImageTileLayer.class, "addImage",
+                                        I18n.TOOLTIP, "Add images(s)"));
             add.addActionListener(ImageControlButtonPanel.this);
             add(add);
 
             // Fix the tooltips:
-            delete.setToolTipText(i18n.get(ImageTileLayer.class,
-                    "deleteImage",
-                    I18n.TOOLTIP,
-                    "Remove image(s)"));
+            delete.setToolTipText(i18n.get(ImageTileLayer.class, "deleteImage",
+                                           I18n.TOOLTIP, "Remove image(s)"));
             delete.setEnabled(true);
-            top.setToolTipText(i18n.get(ImageTileLayer.class,
-                    "moveImageToTop",
-                    I18n.TOOLTIP,
-                    "Move selected image(s) to top"));
-            up.setToolTipText(i18n.get(ImageTileLayer.class,
-                    "moveImageUp",
-                    I18n.TOOLTIP,
-                    "Move selected image(s) up"));
-            down.setToolTipText(i18n.get(ImageTileLayer.class,
-                    "moveImageDown",
-                    "Move selected image(s) down"));
+            top.setToolTipText(i18n.get(ImageTileLayer.class, "moveImageToTop",
+                                        I18n.TOOLTIP,
+                                        "Move selected image(s) to top"));
+            up.setToolTipText(i18n.get(ImageTileLayer.class, "moveImageUp",
+                                       I18n.TOOLTIP,
+                                       "Move selected image(s) up"));
+            down.setToolTipText(i18n.get(ImageTileLayer.class, "moveImageDown",
+                                         "Move selected image(s) down"));
             bottom.setToolTipText(i18n.get(ImageTileLayer.class,
-                    "moveImageToBottom",
-                    I18n.TOOLTIP,
-                    "Move selected image(s) to bottom"));
+                                           "moveImageToBottom", I18n.TOOLTIP,
+                                           "Move selected image(s) to bottom"));
         }
 
         public void actionPerformed(ActionEvent ae) {
@@ -669,7 +675,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     /**
      * Action method called when the show/hide button is pressed.
      * 
-     * @param text if SHOW_TILES_TITLE, tiles made visible.
+     * @param text
+     *            if SHOW_TILES_TITLE, tiles made visible.
      * @param selectedTiles2
      */
     protected void showHideTiles(String text, ImageTile[] selectedTiles2) {
@@ -775,7 +782,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                     ImageTile tile = selectedTiles2[i];
 
                     if (rec == null) {
-                        rec = new Rectangle2D.Double(tile.getLRLon(), tile.getLRLat(), 0f, 0f);
+                        rec = new Rectangle2D.Double(tile.getLRLon(), tile
+                                .getLRLat(), 0f, 0f);
                         rec.add(tile.getULLon(), tile.getULLat());
                     } else {
                         rec.add(tile.getULLon(), tile.getULLat());
@@ -784,15 +792,16 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                 }
 
                 if (rec != null) {
-                    Point2D center = new Point2D.Double(rec.getCenterX(), rec.getCenterY());
-                    Point2D anchor1 = new Point2D.Double(rec.getMinX(), rec.getMaxY());
-                    Point2D anchor2 = new Point2D.Double(rec.getMaxX(), rec.getMinY());
+                    Point2D center = new Point2D.Double(rec.getCenterX(), rec
+                            .getCenterY());
+                    Point2D anchor1 = new Point2D.Double(rec.getMinX(), rec
+                            .getMaxY());
+                    Point2D anchor2 = new Point2D.Double(rec.getMaxX(), rec
+                            .getMinY());
 
                     Proj proj = (Proj) mapBean.getProjection();
-                    float scale = proj.getScale(anchor1,
-                            anchor2,
-                            proj.forward(anchor1),
-                            proj.forward(anchor2));
+                    float scale = proj.getScale(anchor1, anchor2, proj
+                            .forward(anchor1), proj.forward(anchor2));
                     if (logger.isLoggable(Level.FINE)) {
                         logger.fine("Images cover " + anchor1 + " to "
                                 + anchor2 + ", scale adjusted to " + scale);
@@ -863,27 +872,30 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     protected void removeImages(ImageTile[] selectedTiles2) {
         ImageTile[] selectedTiles = getSelectedTiles();
         if (selectedTiles != null && selectedTiles.length > 0) {
-            String confirmStringMulti = i18n.get(ImageTileLayer.class,
-                    "removeConfirmMultiple",
-                    "Are you sure you want to remove these images from the layer?");
-            String confirmStringSolo = i18n.get(ImageTileLayer.class,
-                    "removeConfirmSolo",
-                    "Are you sure you want to remove this image from the layer?");
+            String confirmStringMulti = i18n
+                    .get(ImageTileLayer.class, "removeConfirmMultiple",
+                         "Are you sure you want to remove these images from the layer?");
+            String confirmStringSolo = i18n
+                    .get(ImageTileLayer.class, "removeConfirmSolo",
+                         "Are you sure you want to remove this image from the layer?");
             String confirmTitleString = i18n.get(ImageTileLayer.class,
-                    "removeConfirmTitle",
-                    "Remove Images?");
-            int answer = JOptionPane.showConfirmDialog(this,
-                    (selectedTiles.length == 1 ? confirmStringSolo
-                            : confirmStringMulti),
-                    confirmTitleString,
-                    JOptionPane.YES_NO_OPTION);
+                                                 "removeConfirmTitle",
+                                                 "Remove Images?");
+            int answer = JOptionPane
+                    .showConfirmDialog(
+                                       this,
+                                       (selectedTiles.length == 1 ? confirmStringSolo
+                                               : confirmStringMulti),
+                                       confirmTitleString,
+                                       JOptionPane.YES_NO_OPTION);
             if (answer == JOptionPane.YES_OPTION) {
                 OMGraphicList list = getList();
                 if (list != null) {
                     for (int i = 0; i < selectedTiles.length; i++) {
                         ImageTile selectedTile = selectedTiles[i];
                         list.remove(selectedTile);
-                        ((DefaultListModel) getListModel()).removeElement(selectedTile);
+                        ((DefaultListModel) getListModel())
+                                .removeElement(selectedTile);
                     }
                     if (resultsList != null) {
                         resultsList.repaint();
@@ -907,19 +919,17 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         // window,
         // or we could simply select the new images and scroll the list to make
         // those images visible.
-        File startingPoint = new File(Environment.get("lastchosendirectory",
-                System.getProperty("user.home")));
+        File startingPoint = new File(Environment
+                .get("lastchosendirectory", System.getProperty("user.home")));
         JFileChooser chooser = new JFileChooser(startingPoint);
-        String title = i18n.get(ImageTileLayer.class,
-                "addImagesWindowTitle",
-                "Add Images");
+        String title = i18n.get(ImageTileLayer.class, "addImagesWindowTitle",
+                                "Add Images");
         chooser.setDialogTitle(title);
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
         chooser.setFileFilter(new ImageLoaderFileFilter(imageReaderLoaders));
         String acceptButtonText = i18n.get(ImageTileLayer.class,
-                "acceptButtonText",
-                "Add");
+                                           "acceptButtonText", "Add");
         int state = chooser.showDialog(null, acceptButtonText);
 
         try {
@@ -935,8 +945,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                 int dirIndex = newFile.lastIndexOf(File.separator);
                 if (dirIndex >= 0) {
                     // store the selected file for later
-                    Environment.set("lastchosendirectory", newFile.substring(0,
-                            dirIndex));
+                    Environment.set("lastchosendirectory", newFile
+                            .substring(0, dirIndex));
                 }
                 OMGraphicList list = getList();
                 if (list == null) {
@@ -948,10 +958,9 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                 lit.start();
             }
         } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(null,
-                    ioe.getMessage(),
-                    "Error picking file",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, ioe.getMessage(),
+                                          "Error picking file",
+                                          JOptionPane.ERROR_MESSAGE);
             ioe.printStackTrace();
         }
     }
@@ -981,7 +990,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
      * Set the GUI button state to be enabled or not based on something on the
      * list being selected.
      * 
-     * @param somethingSelected whether something is selected.
+     * @param somethingSelected
+     *            whether something is selected.
      */
     protected void setGUIButtonEnableState(boolean somethingSelected) {
         if (icbp != null) {
@@ -1056,7 +1066,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                 tileCount++;
                 ImageTile imageTile = (ImageTile) omg;
 
-                if (checkForIndicies) {
+                if (selectedIndicies != null && checkForIndicies) {
                     for (int i = 0; i < selectedTiles.length; i++) {
                         if (imageTile == selectedTiles[i]) {
                             for (int j = 0; j < selectedIndicies.length; j++) {
@@ -1177,7 +1187,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                 if (indicies.length > 0) {
                     ListModel listModel = getListModel();
                     for (int i = 0; i < indicies.length; i++) {
-                        selectedTiles[i] = (ImageTile) listModel.getElementAt(indicies[i]);
+                        selectedTiles[i] = (ImageTile) listModel
+                                .getElementAt(indicies[i]);
                     }
                 }
                 setSelectedTiles(selectedTiles);
@@ -1220,7 +1231,8 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
             if (selectedIndex >= 0) {
                 Object it = getListModel().getElementAt(selectedIndex);
                 if (it instanceof ErrImageTile) {
-                    resultsList.setToolTipText(((ErrImageTile) it).getProblemMessage());
+                    resultsList.setToolTipText(((ErrImageTile) it)
+                            .getProblemMessage());
                     return;
                 }
             }
@@ -1421,9 +1433,9 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         }
 
         public String getDescription() {
-            String description = i18n.get(ImageTileLayer.class,
-                    "fileFilterDescription",
-                    "Image File Formats Supported by Layer");
+            String description = i18n
+                    .get(ImageTileLayer.class, "fileFilterDescription",
+                         "Image File Formats Supported by Layer");
             return description;
         }
 

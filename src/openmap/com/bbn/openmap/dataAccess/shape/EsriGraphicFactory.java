@@ -48,13 +48,15 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public class EsriGraphicFactory implements ShapeConstants {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.EsriGraphicFactory");
+    public static Logger logger = Logger
+            .getLogger("com.bbn.openmap.dataAccess.EsriGraphicFactory");
 
     protected int lineType = OMGraphic.LINETYPE_STRAIGHT;
     protected GeoCoordTransformation dataTransformation = null;
     protected Class<?> precision = Float.TYPE;
 
-    public EsriGraphicFactory() {}
+    public EsriGraphicFactory() {
+    }
 
     public EsriGraphicFactory(int lineType,
             GeoCoordTransformation dataTransformation) {
@@ -85,27 +87,26 @@ public class EsriGraphicFactory implements ShapeConstants {
 
         EsriGraphicFactory.ReadByteTracker byteTracker = new EsriGraphicFactory.ReadByteTracker();
         try {
-            OMGraphic eg = makeEsriGraphicFromRecord(offset,
-                    shp,
-                    drawingAttributes,
-                    pointRepresentation,
-                    byteTracker);
+            OMGraphic eg = makeEsriGraphicFromRecord(offset, shp,
+                                                     drawingAttributes,
+                                                     pointRepresentation,
+                                                     byteTracker);
             // 8 for shape type and record length
             offset += byteTracker.currentCount + 8;
 
             while (offset != header.fileLength || ignoreFileLength) {
                 projGraphicAndAdd(eg, list, mapProj);
                 try {
-                    eg = makeEsriGraphicFromRecord(offset,
-                            shp,
-                            drawingAttributes,
-                            pointRepresentation,
-                            byteTracker);
+                    eg = makeEsriGraphicFromRecord(offset, shp,
+                                                   drawingAttributes,
+                                                   pointRepresentation,
+                                                   byteTracker);
                 } catch (EOFException eof) {
-                    logger.fine("File length ("
-                            + header.fileLength
-                            + " bytes) is incorrect, file was read as much as possible ("
-                            + offset + " bytes).");
+                    logger
+                            .fine("File length ("
+                                    + header.fileLength
+                                    + " bytes) is incorrect, file was read as much as possible ("
+                                    + offset + " bytes).");
                     eg = null;
                     break;
                 }
@@ -146,27 +147,26 @@ public class EsriGraphicFactory implements ShapeConstants {
 
         EsriGraphicFactory.ReadByteTracker byteTracker = new EsriGraphicFactory.ReadByteTracker();
         try {
-            OMGraphic eg = makeEsriGraphicFromRecord(offset,
-                    iStream,
-                    drawingAttributes,
-                    pointRepresentation,
-                    byteTracker);
+            OMGraphic eg = makeEsriGraphicFromRecord(offset, iStream,
+                                                     drawingAttributes,
+                                                     pointRepresentation,
+                                                     byteTracker);
             // 8 for shape type and record length
             offset += byteTracker.currentCount + 8;
 
             while (offset != header.fileLength || ignoreFileLength) {
                 projGraphicAndAdd(eg, list, mapProj);
                 try {
-                    eg = makeEsriGraphicFromRecord(offset,
-                            iStream,
-                            drawingAttributes,
-                            pointRepresentation,
-                            byteTracker);
+                    eg = makeEsriGraphicFromRecord(offset, iStream,
+                                                   drawingAttributes,
+                                                   pointRepresentation,
+                                                   byteTracker);
                 } catch (EOFException eof) {
-                    logger.fine("File length ("
-                            + header.fileLength
-                            + " bytes) is incorrect, file was read as much as possible ("
-                            + offset + " bytes).");
+                    logger
+                            .fine("File length ("
+                                    + header.fileLength
+                                    + " bytes) is incorrect, file was read as much as possible ("
+                                    + offset + " bytes).");
                     eg = null;
                     break;
                 }
@@ -210,10 +210,8 @@ public class EsriGraphicFactory implements ShapeConstants {
         int recordContentLength = shp.readInteger() * 2;
         byteTracker.reset(recordContentLength);
 
-        OMGraphic omg = makeEsriGraphic(shp,
-                drawingAttributes,
-                pointRepresentation,
-                byteTracker);
+        OMGraphic omg = makeEsriGraphic(shp, drawingAttributes,
+                                        pointRepresentation, byteTracker);
         if (omg != null) {
             omg.putAttribute(SHAPE_INDEX_ATTRIBUTE, new Integer(recordNumber));
         }
@@ -233,10 +231,8 @@ public class EsriGraphicFactory implements ShapeConstants {
         int recordContentLength = iStream.readInt() * 2;
         byteTracker.reset(recordContentLength);
 
-        OMGraphic omg = makeEsriGraphic(iStream,
-                drawingAttributes,
-                pointRepresentation,
-                byteTracker);
+        OMGraphic omg = makeEsriGraphic(iStream, drawingAttributes,
+                                        pointRepresentation, byteTracker);
         if (omg != null) {
             omg.putAttribute(SHAPE_INDEX_ATTRIBUTE, new Integer(recordNumber));
         }
@@ -247,11 +243,15 @@ public class EsriGraphicFactory implements ShapeConstants {
     /**
      * Creates a OMGraphic from the shape file data.
      * 
-     * @param shapeType the shape file's shape type, enumerated in
-     *        <code>ShapeUtils</code>
-     * @param b the buffer pointing to the raw record data
-     * @param off the offset of the data starting point in the buffer
-     * @exception IOException if something goes wrong reading the file
+     * @param shapeType
+     *            the shape file's shape type, enumerated in
+     *            <code>ShapeUtils</code>
+     * @param b
+     *            the buffer pointing to the raw record data
+     * @param off
+     *            the offset of the data starting point in the buffer
+     * @exception IOException
+     *                if something goes wrong reading the file
      * @see ShapeUtils
      */
     protected OMGraphic makeEsriGraphic(BinaryFile shpFile,
@@ -279,10 +279,8 @@ public class EsriGraphicFactory implements ShapeConstants {
         case SHAPE_TYPE_NULL:
             break;
         case SHAPE_TYPE_POINT:
-            eg = createPointGraphic(shpFile,
-                    pointRepresentation,
-                    drawingAttributes,
-                    byteTracker);
+            eg = createPointGraphic(shpFile, pointRepresentation,
+                                    drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_POLYLINE:
             eg = createPolylineGraphic(shpFile, drawingAttributes, byteTracker);
@@ -291,16 +289,12 @@ public class EsriGraphicFactory implements ShapeConstants {
             eg = createPolygonGraphic(shpFile, drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_MULTIPOINT:
-            eg = createMultiPointGraphic(shpFile,
-                    pointRepresentation,
-                    drawingAttributes,
-                    byteTracker);
+            eg = createMultiPointGraphic(shpFile, pointRepresentation,
+                                         drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_POINTZ:
-            eg = createPointZGraphic(shpFile,
-                    pointRepresentation,
-                    drawingAttributes,
-                    byteTracker);
+            eg = createPointZGraphic(shpFile, pointRepresentation,
+                                     drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_POLYLINEZ:
             eg = createPolylineZGraphic(shpFile, drawingAttributes, byteTracker);
@@ -309,16 +303,12 @@ public class EsriGraphicFactory implements ShapeConstants {
             eg = createPolygonZGraphic(shpFile, drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_MULTIPOINTZ:
-            eg = createMultiPointZGraphic(shpFile,
-                    pointRepresentation,
-                    drawingAttributes,
-                    byteTracker);
+            eg = createMultiPointZGraphic(shpFile, pointRepresentation,
+                                          drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_POINTM:
-            eg = createPointMGraphic(shpFile,
-                    pointRepresentation,
-                    drawingAttributes,
-                    byteTracker);
+            eg = createPointMGraphic(shpFile, pointRepresentation,
+                                     drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_POLYLINEM:
             eg = createPolylineMGraphic(shpFile, drawingAttributes, byteTracker);
@@ -327,10 +317,8 @@ public class EsriGraphicFactory implements ShapeConstants {
             eg = createPolygonMGraphic(shpFile, drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_MULTIPOINTM:
-            eg = createMultiPointMGraphic(shpFile,
-                    pointRepresentation,
-                    drawingAttributes,
-                    byteTracker);
+            eg = createMultiPointMGraphic(shpFile, pointRepresentation,
+                                          drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_MULTIPATCH:
 
@@ -345,11 +333,15 @@ public class EsriGraphicFactory implements ShapeConstants {
     /**
      * Creates a OMGraphic from the shape file data.
      * 
-     * @param shapeType the shape file's shape type, enumerated in
-     *        <code>ShapeUtils</code>
-     * @param b the buffer pointing to the raw record data
-     * @param off the offset of the data starting point in the buffer
-     * @exception IOException if something goes wrong reading the file
+     * @param shapeType
+     *            the shape file's shape type, enumerated in
+     *            <code>ShapeUtils</code>
+     * @param b
+     *            the buffer pointing to the raw record data
+     * @param off
+     *            the offset of the data starting point in the buffer
+     * @exception IOException
+     *                if something goes wrong reading the file
      * @see ShapeUtils
      */
     protected OMGraphic makeEsriGraphic(LittleEndianInputStream iStream,
@@ -376,10 +368,8 @@ public class EsriGraphicFactory implements ShapeConstants {
         case SHAPE_TYPE_NULL:
             break;
         case SHAPE_TYPE_POINT:
-            eg = createPointGraphic(iStream,
-                    pointRepresentation,
-                    drawingAttributes,
-                    byteTracker);
+            eg = createPointGraphic(iStream, pointRepresentation,
+                                    drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_POLYLINE:
             eg = createPolylineGraphic(iStream, drawingAttributes, byteTracker);
@@ -388,16 +378,12 @@ public class EsriGraphicFactory implements ShapeConstants {
             eg = createPolygonGraphic(iStream, drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_MULTIPOINT:
-            eg = createMultiPointGraphic(iStream,
-                    pointRepresentation,
-                    drawingAttributes,
-                    byteTracker);
+            eg = createMultiPointGraphic(iStream, pointRepresentation,
+                                         drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_POINTZ:
-            eg = createPointZGraphic(iStream,
-                    pointRepresentation,
-                    drawingAttributes,
-                    byteTracker);
+            eg = createPointZGraphic(iStream, pointRepresentation,
+                                     drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_POLYLINEZ:
             eg = createPolylineZGraphic(iStream, drawingAttributes, byteTracker);
@@ -406,16 +392,12 @@ public class EsriGraphicFactory implements ShapeConstants {
             eg = createPolygonZGraphic(iStream, drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_MULTIPOINTZ:
-            eg = createMultiPointZGraphic(iStream,
-                    pointRepresentation,
-                    drawingAttributes,
-                    byteTracker);
+            eg = createMultiPointZGraphic(iStream, pointRepresentation,
+                                          drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_POINTM:
-            eg = createPointMGraphic(iStream,
-                    pointRepresentation,
-                    drawingAttributes,
-                    byteTracker);
+            eg = createPointMGraphic(iStream, pointRepresentation,
+                                     drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_POLYLINEM:
             eg = createPolylineMGraphic(iStream, drawingAttributes, byteTracker);
@@ -424,10 +406,8 @@ public class EsriGraphicFactory implements ShapeConstants {
             eg = createPolygonMGraphic(iStream, drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_MULTIPOINTM:
-            eg = createMultiPointMGraphic(iStream,
-                    pointRepresentation,
-                    drawingAttributes,
-                    byteTracker);
+            eg = createMultiPointMGraphic(iStream, pointRepresentation,
+                                          drawingAttributes, byteTracker);
             break;
         case SHAPE_TYPE_MULTIPATCH:
 
@@ -456,9 +436,11 @@ public class EsriGraphicFactory implements ShapeConstants {
         if (representation == null) {
             ret = new EsriPoint((float) y, (float) x);
         } else if (representation instanceof ImageIcon) {
-            ret = new EsriIconPoint((float) y, (float) x, (ImageIcon) representation);
+            ret = new EsriIconPoint((float) y, (float) x,
+                    (ImageIcon) representation);
         } else if (representation instanceof String) {
-            ret = new EsriTextPoint((float) y, (float) x, (String) representation, OMText.JUSTIFY_CENTER);
+            ret = new EsriTextPoint((float) y, (float) x,
+                    (String) representation, OMText.JUSTIFY_CENTER);
         }
 
         if (drawingAttributes != null && ret != null) {
@@ -471,15 +453,19 @@ public class EsriGraphicFactory implements ShapeConstants {
      * Reads the ShapeFile and creates a OMPoint/OMRaster/OMText from the point
      * object.
      * 
-     * @param shpFile with the file pointer right after the shape record shape
-     *        type bytes. It's assumed that the shape type has been read to
-     *        determine that the shapeType for this record is a Point record.
-     * @param representation The object to use for representing the Point. If
-     *        the object is an ImageIcon, that image is used for a scaling icon
-     *        at this point. If it's a String, and OMText will be created for
-     *        that Point (center-justified). If it's null, the drawing
-     *        attributes values will be used for an OMPoint.
-     * @param drawingAttributes the attributes for the OMGraphic.
+     * @param shpFile
+     *            with the file pointer right after the shape record shape type
+     *            bytes. It's assumed that the shape type has been read to
+     *            determine that the shapeType for this record is a Point
+     *            record.
+     * @param representation
+     *            The object to use for representing the Point. If the object is
+     *            an ImageIcon, that image is used for a scaling icon at this
+     *            point. If it's a String, and OMText will be created for that
+     *            Point (center-justified). If it's null, the drawing attributes
+     *            values will be used for an OMPoint.
+     * @param drawingAttributes
+     *            the attributes for the OMGraphic.
      * @param byteTracker
      * @return OMPoint or OMScalingRaster or OMText
      * @throws IOException
@@ -524,10 +510,9 @@ public class EsriGraphicFactory implements ShapeConstants {
         multiPart.setVague(true);
 
         for (int i = 0; i < numParts; i++) {
-            EsriGraphic part = createPointGraphic(shpFile,
-                    representation,
-                    drawingAttributes,
-                    byteTracker);
+            EsriGraphic part = createPointGraphic(shpFile, representation,
+                                                  drawingAttributes,
+                                                  byteTracker);
             if (part != null) {
                 multiPart.add((OMGraphic) part);
             }
@@ -550,10 +535,9 @@ public class EsriGraphicFactory implements ShapeConstants {
         multiPart.setVague(true);
 
         for (int i = 0; i < numParts; i++) {
-            EsriGraphic part = createPointGraphic(iStream,
-                    representation,
-                    drawingAttributes,
-                    byteTracker);
+            EsriGraphic part = createPointGraphic(iStream, representation,
+                                                  drawingAttributes,
+                                                  byteTracker);
             if (part != null) {
                 multiPart.add((OMGraphic) part);
             }
@@ -574,15 +558,13 @@ public class EsriGraphicFactory implements ShapeConstants {
         double m = shpFile.readDouble();
         byteTracker.addRead(4 * 8);
 
-        EsriGraphic ret = createPointGraphic(x,
-                y,
-                representation,
-                drawingAttributes);
+        EsriGraphic ret = createPointGraphic(x, y, representation,
+                                             drawingAttributes);
         ret.setType(SHAPE_TYPE_POINTZ);
         ((OMGraphic) ret).putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE,
-                new Double(m));
+                                       new Double(m));
         ((OMGraphic) ret).putAttribute(ShapeConstants.SHAPE_Z_ATTRIBUTE,
-                new Double(z));
+                                       new Double(z));
         return ret;
     }
 
@@ -598,15 +580,13 @@ public class EsriGraphicFactory implements ShapeConstants {
         double m = iStream.readLEDouble();
         byteTracker.addRead(4 * 8);
 
-        EsriGraphic ret = createPointGraphic(x,
-                y,
-                representation,
-                drawingAttributes);
+        EsriGraphic ret = createPointGraphic(x, y, representation,
+                                             drawingAttributes);
         ret.setType(SHAPE_TYPE_POINTZ);
         ((OMGraphic) ret).putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE,
-                new Double(m));
+                                       new Double(m));
         ((OMGraphic) ret).putAttribute(ShapeConstants.SHAPE_Z_ATTRIBUTE,
-                new Double(z));
+                                       new Double(z));
         return ret;
     }
 
@@ -617,9 +597,9 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                    ReadByteTracker byteTracker)
             throws IOException, FormatException {
         EsriGraphic multiPart = createMultiPointGraphic(shpFile,
-                representation,
-                drawingAttributes,
-                byteTracker);
+                                                        representation,
+                                                        drawingAttributes,
+                                                        byteTracker);
 
         if (multiPart != null && multiPart instanceof EsriGraphicList) {
             ((EsriGraphicList) multiPart).setType(SHAPE_TYPE_MULTIPOINTZ);
@@ -632,12 +612,14 @@ public class EsriGraphicFactory implements ShapeConstants {
                 zs[i] = shpFile.readDouble();
             }
 
-            ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_MIN_Z_ATTRIBUTE,
-                    new Double(minZ));
-            ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_MAX_Z_ATTRIBUTE,
-                    new Double(maxZ));
-            ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_Z_ATTRIBUTE,
-                    zs);
+            ((OMGraphic) multiPart)
+                    .putAttribute(ShapeConstants.SHAPE_MIN_Z_ATTRIBUTE,
+                                  new Double(minZ));
+            ((OMGraphic) multiPart)
+                    .putAttribute(ShapeConstants.SHAPE_MAX_Z_ATTRIBUTE,
+                                  new Double(maxZ));
+            ((OMGraphic) multiPart)
+                    .putAttribute(ShapeConstants.SHAPE_Z_ATTRIBUTE, zs);
 
             byteTracker.addRead((2 + numPoints) * 8);
 
@@ -649,12 +631,17 @@ public class EsriGraphicFactory implements ShapeConstants {
                     ms[i] = shpFile.readDouble();
                 }
 
-                ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
-                        new Double(minM));
-                ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
-                        new Double(maxM));
-                ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE,
-                        ms);
+                ((OMGraphic) multiPart)
+                        .putAttribute(
+                                      ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
+                                      new Double(minM));
+                ((OMGraphic) multiPart)
+                        .putAttribute(
+                                      ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
+                                      new Double(maxM));
+                ((OMGraphic) multiPart)
+                        .putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE,
+                                      ms);
                 byteTracker.addRead((2 + numPoints) * 8);
             }
         }
@@ -669,9 +656,9 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                    ReadByteTracker byteTracker)
             throws IOException, FormatException {
         EsriGraphic multiPart = createMultiPointGraphic(iStream,
-                representation,
-                drawingAttributes,
-                byteTracker);
+                                                        representation,
+                                                        drawingAttributes,
+                                                        byteTracker);
 
         if (multiPart != null && multiPart instanceof EsriGraphicList) {
             ((EsriGraphicList) multiPart).setType(SHAPE_TYPE_MULTIPOINTZ);
@@ -684,12 +671,14 @@ public class EsriGraphicFactory implements ShapeConstants {
                 zs[i] = iStream.readLEDouble();
             }
 
-            ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_MIN_Z_ATTRIBUTE,
-                    new Double(minZ));
-            ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_MAX_Z_ATTRIBUTE,
-                    new Double(maxZ));
-            ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_Z_ATTRIBUTE,
-                    zs);
+            ((OMGraphic) multiPart)
+                    .putAttribute(ShapeConstants.SHAPE_MIN_Z_ATTRIBUTE,
+                                  new Double(minZ));
+            ((OMGraphic) multiPart)
+                    .putAttribute(ShapeConstants.SHAPE_MAX_Z_ATTRIBUTE,
+                                  new Double(maxZ));
+            ((OMGraphic) multiPart)
+                    .putAttribute(ShapeConstants.SHAPE_Z_ATTRIBUTE, zs);
 
             byteTracker.addRead((2 + numPoints) * 8);
 
@@ -701,12 +690,17 @@ public class EsriGraphicFactory implements ShapeConstants {
                     ms[i] = iStream.readLEDouble();
                 }
 
-                ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
-                        new Double(minM));
-                ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
-                        new Double(maxM));
-                ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE,
-                        ms);
+                ((OMGraphic) multiPart)
+                        .putAttribute(
+                                      ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
+                                      new Double(minM));
+                ((OMGraphic) multiPart)
+                        .putAttribute(
+                                      ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
+                                      new Double(maxM));
+                ((OMGraphic) multiPart)
+                        .putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE,
+                                      ms);
                 byteTracker.addRead((2 + numPoints) * 8);
             }
         }
@@ -725,13 +719,11 @@ public class EsriGraphicFactory implements ShapeConstants {
         double m = shpFile.readDouble();
         byteTracker.addRead(3 * 8);
 
-        EsriGraphic ret = createPointGraphic(x,
-                y,
-                representation,
-                drawingAttributes);
+        EsriGraphic ret = createPointGraphic(x, y, representation,
+                                             drawingAttributes);
         ret.setType(SHAPE_TYPE_POINTM);
         ((OMGraphic) ret).putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE,
-                new Double(m));
+                                       new Double(m));
         return ret;
     }
 
@@ -746,13 +738,11 @@ public class EsriGraphicFactory implements ShapeConstants {
         double m = iStream.readLEDouble();
         byteTracker.addRead(3 * 8);
 
-        EsriGraphic ret = createPointGraphic(x,
-                y,
-                representation,
-                drawingAttributes);
+        EsriGraphic ret = createPointGraphic(x, y, representation,
+                                             drawingAttributes);
         ret.setType(SHAPE_TYPE_POINTM);
         ((OMGraphic) ret).putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE,
-                new Double(m));
+                                       new Double(m));
         return ret;
     }
 
@@ -763,9 +753,9 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                    ReadByteTracker byteTracker)
             throws IOException, FormatException {
         EsriGraphic multiPart = createMultiPointGraphic(shpFile,
-                representation,
-                drawingAttributes,
-                byteTracker);
+                                                        representation,
+                                                        drawingAttributes,
+                                                        byteTracker);
 
         if (multiPart != null && multiPart instanceof EsriGraphicList) {
             ((EsriGraphicList) multiPart).setType(SHAPE_TYPE_MULTIPOINTM);
@@ -779,12 +769,17 @@ public class EsriGraphicFactory implements ShapeConstants {
                     ms[i] = shpFile.readDouble();
                 }
 
-                ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
-                        new Double(minM));
-                ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
-                        new Double(maxM));
-                ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE,
-                        ms);
+                ((OMGraphic) multiPart)
+                        .putAttribute(
+                                      ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
+                                      new Double(minM));
+                ((OMGraphic) multiPart)
+                        .putAttribute(
+                                      ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
+                                      new Double(maxM));
+                ((OMGraphic) multiPart)
+                        .putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE,
+                                      ms);
                 byteTracker.addRead((2 + numPoints) * 8);
             }
         }
@@ -799,9 +794,9 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                    ReadByteTracker byteTracker)
             throws IOException, FormatException {
         EsriGraphic multiPart = createMultiPointGraphic(iStream,
-                representation,
-                drawingAttributes,
-                byteTracker);
+                                                        representation,
+                                                        drawingAttributes,
+                                                        byteTracker);
 
         if (multiPart != null && multiPart instanceof EsriGraphicList) {
             ((EsriGraphicList) multiPart).setType(SHAPE_TYPE_MULTIPOINTM);
@@ -815,12 +810,17 @@ public class EsriGraphicFactory implements ShapeConstants {
                     ms[i] = iStream.readLEDouble();
                 }
 
-                ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
-                        new Double(minM));
-                ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
-                        new Double(maxM));
-                ((OMGraphic) multiPart).putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE,
-                        ms);
+                ((OMGraphic) multiPart)
+                        .putAttribute(
+                                      ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
+                                      new Double(minM));
+                ((OMGraphic) multiPart)
+                        .putAttribute(
+                                      ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
+                                      new Double(maxM));
+                ((OMGraphic) multiPart)
+                        .putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE,
+                                      ms);
                 byteTracker.addRead((2 + numPoints) * 8);
             }
         }
@@ -835,10 +835,8 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                DrawingAttributes drawingAttributes,
                                                ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        return createPolyGraphic(shpFile,
-                SHAPE_TYPE_POLYGON,
-                drawingAttributes,
-                byteTracker);
+        return createPolyGraphic(shpFile, SHAPE_TYPE_POLYGON,
+                                 drawingAttributes, byteTracker);
     }
 
     protected EsriGraphic createPolygonGraphic(
@@ -846,10 +844,8 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                DrawingAttributes drawingAttributes,
                                                ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        return createPolyGraphic(iStream,
-                SHAPE_TYPE_POLYGON,
-                drawingAttributes,
-                byteTracker);
+        return createPolyGraphic(iStream, SHAPE_TYPE_POLYGON,
+                                 drawingAttributes, byteTracker);
     }
 
     protected EsriGraphic createPolylineGraphic(
@@ -857,10 +853,8 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                 DrawingAttributes drawingAttributes,
                                                 ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        return createPolyGraphic(shpFile,
-                SHAPE_TYPE_POLYLINE,
-                drawingAttributes,
-                byteTracker);
+        return createPolyGraphic(shpFile, SHAPE_TYPE_POLYLINE,
+                                 drawingAttributes, byteTracker);
     }
 
     protected EsriGraphic createPolylineGraphic(
@@ -868,10 +862,8 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                 DrawingAttributes drawingAttributes,
                                                 ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        return createPolyGraphic(iStream,
-                SHAPE_TYPE_POLYLINE,
-                drawingAttributes,
-                byteTracker);
+        return createPolyGraphic(iStream, SHAPE_TYPE_POLYLINE,
+                                 drawingAttributes, byteTracker);
     }
 
     protected EsriGraphic createPolyGraphic(
@@ -891,12 +883,8 @@ public class EsriGraphicFactory implements ShapeConstants {
         byteTracker.addRead(2 * 4);
 
         if (numParts > 0) {
-            ret = getPolys(shpFile,
-                    numParts,
-                    numPoints,
-                    shapeType,
-                    drawingAttributes,
-                    byteTracker);
+            ret = getPolys(shpFile, numParts, numPoints, shapeType,
+                           drawingAttributes, byteTracker);
         }
         return ret;
     }
@@ -918,12 +906,8 @@ public class EsriGraphicFactory implements ShapeConstants {
         byteTracker.addRead(2 * 4);
 
         if (numParts > 0) {
-            ret = getPolys(iStream,
-                    numParts,
-                    numPoints,
-                    shapeType,
-                    drawingAttributes,
-                    byteTracker);
+            ret = getPolys(iStream, numParts, numPoints, shapeType,
+                           drawingAttributes, byteTracker);
         }
         return ret;
     }
@@ -933,10 +917,8 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                 DrawingAttributes drawingAttributes,
                                                 ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        return createPolyZGraphic(shpFile,
-                SHAPE_TYPE_POLYGONZ,
-                drawingAttributes,
-                byteTracker);
+        return createPolyZGraphic(shpFile, SHAPE_TYPE_POLYGONZ,
+                                  drawingAttributes, byteTracker);
     }
 
     protected EsriGraphic createPolygonZGraphic(
@@ -944,10 +926,8 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                 DrawingAttributes drawingAttributes,
                                                 ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        return createPolyZGraphic(iStream,
-                SHAPE_TYPE_POLYGONZ,
-                drawingAttributes,
-                byteTracker);
+        return createPolyZGraphic(iStream, SHAPE_TYPE_POLYGONZ,
+                                  drawingAttributes, byteTracker);
     }
 
     protected EsriGraphic createPolylineZGraphic(
@@ -955,10 +935,8 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                  DrawingAttributes drawingAttributes,
                                                  ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        return createPolyZGraphic(shpFile,
-                SHAPE_TYPE_POLYLINEZ,
-                drawingAttributes,
-                byteTracker);
+        return createPolyZGraphic(shpFile, SHAPE_TYPE_POLYLINEZ,
+                                  drawingAttributes, byteTracker);
     }
 
     protected EsriGraphic createPolylineZGraphic(
@@ -966,10 +944,8 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                  DrawingAttributes drawingAttributes,
                                                  ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        return createPolyZGraphic(iStream,
-                SHAPE_TYPE_POLYLINEZ,
-                drawingAttributes,
-                byteTracker);
+        return createPolyZGraphic(iStream, SHAPE_TYPE_POLYLINEZ,
+                                  drawingAttributes, byteTracker);
     }
 
     protected EsriGraphic createPolyZGraphic(
@@ -989,12 +965,8 @@ public class EsriGraphicFactory implements ShapeConstants {
         byteTracker.addRead(2 * 4);
 
         if (numParts > 0) {
-            ret = getPolys(shpFile,
-                    numParts,
-                    numPoints,
-                    shapeType,
-                    drawingAttributes,
-                    byteTracker);
+            ret = getPolys(shpFile, numParts, numPoints, shapeType,
+                           drawingAttributes, byteTracker);
         }
 
         double minZ = shpFile.readDouble();
@@ -1005,8 +977,12 @@ public class EsriGraphicFactory implements ShapeConstants {
         }
 
         OMGraphic omg = (OMGraphic) ret;
-        omg.putAttribute(ShapeConstants.SHAPE_MIN_Z_ATTRIBUTE, new Double(minZ));
-        omg.putAttribute(ShapeConstants.SHAPE_MAX_Z_ATTRIBUTE, new Double(maxZ));
+        omg
+                .putAttribute(ShapeConstants.SHAPE_MIN_Z_ATTRIBUTE, new Double(
+                        minZ));
+        omg
+                .putAttribute(ShapeConstants.SHAPE_MAX_Z_ATTRIBUTE, new Double(
+                        maxZ));
         omg.putAttribute(ShapeConstants.SHAPE_Z_ATTRIBUTE, zs);
         byteTracker.addRead((2 + numPoints) * 8);
 
@@ -1019,9 +995,9 @@ public class EsriGraphicFactory implements ShapeConstants {
             }
 
             omg.putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
-                    new Double(minM));
+                             new Double(minM));
             omg.putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
-                    new Double(maxM));
+                             new Double(maxM));
             omg.putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE, ms);
             byteTracker.addRead((2 + numPoints) * 8);
         }
@@ -1046,12 +1022,8 @@ public class EsriGraphicFactory implements ShapeConstants {
         byteTracker.addRead(2 * 4);
 
         if (numParts > 0) {
-            ret = getPolys(iStream,
-                    numParts,
-                    numPoints,
-                    shapeType,
-                    drawingAttributes,
-                    byteTracker);
+            ret = getPolys(iStream, numParts, numPoints, shapeType,
+                           drawingAttributes, byteTracker);
         }
 
         double minZ = iStream.readLEDouble();
@@ -1062,8 +1034,12 @@ public class EsriGraphicFactory implements ShapeConstants {
         }
 
         OMGraphic omg = (OMGraphic) ret;
-        omg.putAttribute(ShapeConstants.SHAPE_MIN_Z_ATTRIBUTE, new Double(minZ));
-        omg.putAttribute(ShapeConstants.SHAPE_MAX_Z_ATTRIBUTE, new Double(maxZ));
+        omg
+                .putAttribute(ShapeConstants.SHAPE_MIN_Z_ATTRIBUTE, new Double(
+                        minZ));
+        omg
+                .putAttribute(ShapeConstants.SHAPE_MAX_Z_ATTRIBUTE, new Double(
+                        maxZ));
         omg.putAttribute(ShapeConstants.SHAPE_Z_ATTRIBUTE, zs);
         byteTracker.addRead((2 + numPoints) * 8);
 
@@ -1076,9 +1052,9 @@ public class EsriGraphicFactory implements ShapeConstants {
             }
 
             omg.putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
-                    new Double(minM));
+                             new Double(minM));
             omg.putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
-                    new Double(maxM));
+                             new Double(maxM));
             omg.putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE, ms);
             byteTracker.addRead((2 + numPoints) * 8);
         }
@@ -1091,10 +1067,8 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                 DrawingAttributes drawingAttributes,
                                                 ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        return createPolyZGraphic(shpFile,
-                SHAPE_TYPE_POLYGONM,
-                drawingAttributes,
-                byteTracker);
+        return createPolyZGraphic(shpFile, SHAPE_TYPE_POLYGONM,
+                                  drawingAttributes, byteTracker);
     }
 
     protected EsriGraphic createPolygonMGraphic(
@@ -1102,10 +1076,8 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                 DrawingAttributes drawingAttributes,
                                                 ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        return createPolyZGraphic(iStream,
-                SHAPE_TYPE_POLYGONM,
-                drawingAttributes,
-                byteTracker);
+        return createPolyZGraphic(iStream, SHAPE_TYPE_POLYGONM,
+                                  drawingAttributes, byteTracker);
     }
 
     protected EsriGraphic createPolylineMGraphic(
@@ -1113,10 +1085,8 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                  DrawingAttributes drawingAttributes,
                                                  ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        return createPolyZGraphic(shpFile,
-                SHAPE_TYPE_POLYLINEM,
-                drawingAttributes,
-                byteTracker);
+        return createPolyZGraphic(shpFile, SHAPE_TYPE_POLYLINEM,
+                                  drawingAttributes, byteTracker);
     }
 
     protected EsriGraphic createPolylineMGraphic(
@@ -1124,10 +1094,8 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                  DrawingAttributes drawingAttributes,
                                                  ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        return createPolyZGraphic(iStream,
-                SHAPE_TYPE_POLYLINEM,
-                drawingAttributes,
-                byteTracker);
+        return createPolyZGraphic(iStream, SHAPE_TYPE_POLYLINEM,
+                                  drawingAttributes, byteTracker);
     }
 
     protected EsriGraphic createPolyMGraphic(
@@ -1147,12 +1115,8 @@ public class EsriGraphicFactory implements ShapeConstants {
         byteTracker.addRead(2 * 4);
 
         if (numParts > 0) {
-            ret = getPolys(shpFile,
-                    numParts,
-                    numPoints,
-                    shapeType,
-                    drawingAttributes,
-                    byteTracker);
+            ret = getPolys(shpFile, numParts, numPoints, shapeType,
+                           drawingAttributes, byteTracker);
         }
 
         if (byteTracker.numLeft() > 0) {
@@ -1165,16 +1129,17 @@ public class EsriGraphicFactory implements ShapeConstants {
 
             OMGraphic omg = (OMGraphic) ret;
             omg.putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
-                    new Double(minM));
+                             new Double(minM));
             omg.putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
-                    new Double(maxM));
+                             new Double(maxM));
             omg.putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE, ms);
             byteTracker.addRead((2 + numPoints) * 8);
         }
         return ret;
     }
 
-    protected EsriGraphic createPolyMGraphic(LittleEndianInputStream iStream,
+    protected EsriGraphic createPolyMGraphic(
+                                             LittleEndianInputStream iStream,
                                              int shapeType,
                                              DrawingAttributes drawingAttributes,
                                              ReadByteTracker byteTracker)
@@ -1190,12 +1155,8 @@ public class EsriGraphicFactory implements ShapeConstants {
         byteTracker.addRead(2 * 4);
 
         if (numParts > 0) {
-            ret = getPolys(iStream,
-                    numParts,
-                    numPoints,
-                    shapeType,
-                    drawingAttributes,
-                    byteTracker);
+            ret = getPolys(iStream, numParts, numPoints, shapeType,
+                           drawingAttributes, byteTracker);
         }
 
         if (byteTracker.numLeft() > 0) {
@@ -1208,9 +1169,9 @@ public class EsriGraphicFactory implements ShapeConstants {
 
             OMGraphic omg = (OMGraphic) ret;
             omg.putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
-                    new Double(minM));
+                             new Double(minM));
             omg.putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
-                    new Double(maxM));
+                             new Double(maxM));
             omg.putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE, ms);
             byteTracker.addRead((2 + numPoints) * 8);
         }
@@ -1244,33 +1205,25 @@ public class EsriGraphicFactory implements ShapeConstants {
             int nextOrigin = parts[i];
             length = nextOrigin - origin;
 
-            coords = getCoords(shpFile,
-                    length,
-                    isPolygon(shapeType),
-                    dataTransformation,
-                    byteTracker);
+            coords = getCoords(shpFile, length, isPolygon(shapeType),
+                               dataTransformation, byteTracker);
 
-            EsriGraphic omp = createEsriPoly(shapeType,
-                    coords,
-                    lineType,
-                    drawingAttributes);
-            ((EsriGraphicList) ret).add((OMGraphic) omp);
+            EsriGraphic omp = createEsriPoly(shapeType, coords, lineType,
+                                             drawingAttributes);
+            if (ret != null) {
+                ((EsriGraphicList) ret).add((OMGraphic) omp);
+            }
 
             origin = nextOrigin;
         }
 
         length = numPoints - origin;
 
-        coords = getCoords(shpFile,
-                length,
-                isPolygon(shapeType),
-                dataTransformation,
-                byteTracker);
+        coords = getCoords(shpFile, length, isPolygon(shapeType),
+                           dataTransformation, byteTracker);
 
-        EsriGraphic omp = createEsriPoly(shapeType,
-                coords,
-                lineType,
-                drawingAttributes);
+        EsriGraphic omp = createEsriPoly(shapeType, coords, lineType,
+                                         drawingAttributes);
 
         if (ret != null) {
             ((EsriGraphicList) ret).add((OMGraphic) omp);
@@ -1307,33 +1260,25 @@ public class EsriGraphicFactory implements ShapeConstants {
             int nextOrigin = parts[i];
             length = nextOrigin - origin;
 
-            coords = getCoords(iStream,
-                    length,
-                    isPolygon(shapeType),
-                    dataTransformation,
-                    byteTracker);
+            coords = getCoords(iStream, length, isPolygon(shapeType),
+                               dataTransformation, byteTracker);
 
-            EsriGraphic omp = createEsriPoly(shapeType,
-                    coords,
-                    lineType,
-                    drawingAttributes);
-            ((EsriGraphicList) ret).add((OMGraphic) omp);
+            EsriGraphic omp = createEsriPoly(shapeType, coords, lineType,
+                                             drawingAttributes);
+            if (ret != null) {
+                ((EsriGraphicList) ret).add((OMGraphic) omp);
+            }
 
             origin = nextOrigin;
         }
 
         length = numPoints - origin;
 
-        coords = getCoords(iStream,
-                length,
-                isPolygon(shapeType),
-                dataTransformation,
-                byteTracker);
+        coords = getCoords(iStream, length, isPolygon(shapeType),
+                           dataTransformation, byteTracker);
 
-        EsriGraphic omp = createEsriPoly(shapeType,
-                coords,
-                lineType,
-                drawingAttributes);
+        EsriGraphic omp = createEsriPoly(shapeType, coords, lineType,
+                                         drawingAttributes);
 
         if (ret != null) {
             ((EsriGraphicList) ret).add((OMGraphic) omp);
@@ -1364,7 +1309,7 @@ public class EsriGraphicFactory implements ShapeConstants {
             bitTracker.addRead(2 * 8);
 
             if (dataTrans != null) {
-                dataTrans.inverse(x, y, llp);
+                llp = dataTrans.inverse(x, y, llp);
                 x = llp.getRadLon();
                 y = llp.getRadLat();
             } else {
@@ -1404,7 +1349,7 @@ public class EsriGraphicFactory implements ShapeConstants {
             bitTracker.addRead(2 * 8);
 
             if (dataTrans != null) {
-                dataTrans.inverse(x, y, llp);
+                llp = dataTrans.inverse(x, y, llp);
                 x = llp.getRadLon();
                 y = llp.getRadLat();
             } else {
@@ -1444,7 +1389,7 @@ public class EsriGraphicFactory implements ShapeConstants {
             bitTracker.addRead(2 * 8);
 
             if (dataTrans != null) {
-                dataTrans.inverse(x, y, llp);
+                llp = dataTrans.inverse(x, y, llp);
                 x = llp.getRadLon();
                 y = llp.getRadLat();
             } else {
@@ -1484,7 +1429,7 @@ public class EsriGraphicFactory implements ShapeConstants {
             bitTracker.addRead(2 * 8);
 
             if (dataTrans != null) {
-                dataTrans.inverse(x, y, llp);
+                llp = dataTrans.inverse(x, y, llp);
                 x = llp.getRadLon();
                 y = llp.getRadLat();
             } else {

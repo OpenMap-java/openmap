@@ -25,16 +25,15 @@ package com.bbn.openmap.util;
 import java.util.Vector;
 
 /**
- * A simple class to manage the line arguments of a program. Takes the
- * String[] argv that is provided to the main method of a class, and
- * separates them out, depending on the options given to the
- * ArgParser. After you create the parser, add your options that you
- * want.
+ * A simple class to manage the line arguments of a program. Takes the String[]
+ * argv that is provided to the main method of a class, and separates them out,
+ * depending on the options given to the ArgParser. After you create the parser,
+ * add your options that you want.
  */
 public class ArgParser {
     /**
-     * The length to submit if you want a variable length list at the
-     * end of the command line, like all the arguments left over.
+     * The length to submit if you want a variable length list at the end of the
+     * command line, like all the arguments left over.
      */
     public final static int TO_END = -1;
     /** The program name that's using the parser. */
@@ -46,16 +45,17 @@ public class ArgParser {
     /** The character flag for an option. */
     protected char option = '-';
     /**
-     * Tells the Args to accept the first letter of their name for
-     * argv options specified with one letter.
+     * Tells the Args to accept the first letter of their name for argv options
+     * specified with one letter.
      */
     protected boolean allowAbbr = true;
 
     /**
-     * Create a parser for the named program. Automatically adds the
-     * -help option.
+     * Create a parser for the named program. Automatically adds the -help
+     * option.
      * 
-     * @param pName the program name.
+     * @param pName
+     *            the program name.
      */
     public ArgParser(String pName) {
         programName = pName;
@@ -64,45 +64,52 @@ public class ArgParser {
     }
 
     /**
-     * Add a argument to the parser. Don't include the '-' in the
-     * argName, that's added automatically. Assumes that the option
-     * expects no arguments.
+     * Add a argument to the parser. Don't include the '-' in the argName,
+     * that's added automatically. Assumes that the option expects no arguments.
      * 
-     * @param argName the command line option
-     * @param desc a help line description.
+     * @param argName
+     *            the command line option
+     * @param desc
+     *            a help line description.
      */
     public void add(String argName, String desc) {
         add(argName, desc, 0);
     }
 
     /**
-     * Add a argument to the parser. Don't include the '-' in the
-     * argName, that's added automatically.
+     * Add a argument to the parser. Don't include the '-' in the argName,
+     * that's added automatically.
      * 
-     * @param argName the command line option
-     * @param desc a help line description.
-     * @param expectedNumberOfArguments the number of option
-     *        parameters expected for this option.
+     * @param argName
+     *            the command line option
+     * @param desc
+     *            a help line description.
+     * @param expectedNumberOfArguments
+     *            the number of option parameters expected for this option.
      */
     public void add(String argName, String desc, int expectedNumberOfArguments) {
         add(argName, desc, expectedNumberOfArguments, false);
     }
 
     /**
-     * Add a argument to the parser. Don't include the '-' in the
-     * argName, that's added automatically.
+     * Add a argument to the parser. Don't include the '-' in the argName,
+     * that's added automatically.
      * 
-     * @param argName the command line option
-     * @param desc a help line description.
-     * @param expectedNumberOfArguments the number of option
-     *        parameters expected for this option.
-     * @param expectDashedArguments tell the parser that this option
-     *        may have arguments that may start with dashes, for
-     *        instance, a negative number. False by default.
+     * @param argName
+     *            the command line option
+     * @param desc
+     *            a help line description.
+     * @param expectedNumberOfArguments
+     *            the number of option parameters expected for this option.
+     * @param expectDashedArguments
+     *            tell the parser that this option may have arguments that may
+     *            start with dashes, for instance, a negative number. False by
+     *            default.
      */
     public void add(String argName, String desc, int expectedNumberOfArguments,
                     boolean expectDashedArguments) {
-        Arg newArg = new Arg(argName, desc, expectedNumberOfArguments, expectDashedArguments);
+        Arg newArg = new Arg(argName, desc, expectedNumberOfArguments,
+                expectDashedArguments);
         args.add(newArg);
         if (Debug.debugging("parse")) {
             Debug.output("ArgParser: adding " + argName);
@@ -110,8 +117,8 @@ public class ArgParser {
     }
 
     /**
-     * Parse and organize the array of Strings. If something goes
-     * wrong, bail() may be called.
+     * Parse and organize the array of Strings. If something goes wrong, bail()
+     * may be called.
      * 
      * @return true if everything goes well, false if not.
      */
@@ -134,9 +141,9 @@ public class ArgParser {
                             if (!curArg.readArgs(argv, ++i)) {
                                 // Something's wrong with the
                                 // arguments.
-                                bail("ArgParser: Unexpected arguments with option "
-                                        + curArg.name + ".",
-                                        true);
+                                bail(
+                                     "ArgParser: Unexpected arguments with option "
+                                             + curArg.name + ".", true);
                             }
                             hit = true;
                             if (curArg.numExpectedValues != TO_END) {
@@ -147,7 +154,7 @@ public class ArgParser {
                         }
                     }
                     if (hit == false) {
-                        //option flagged, but option unknown.
+                        // option flagged, but option unknown.
                         bail(programName + ": unknown option " + argv[i], false);
                     }
                 }
@@ -161,8 +168,9 @@ public class ArgParser {
                         for (int k = 0; k < diff; k++) {
                             rest[k] = argv[i + k];
                             if (rest[k].charAt(0) == option) {
-                                bail("ArgParser: Not expecting option in list of arguments.",
-                                        true);
+                                bail(
+                                     "ArgParser: Not expecting option in list of arguments.",
+                                     true);
                             }
                         }
                     }
@@ -183,12 +191,13 @@ public class ArgParser {
     }
 
     /**
-     * Called if something is messed up. Prints a message, and the
-     * usage statement, if desired.
+     * Called if something is messed up. Prints a message, and the usage
+     * statement, if desired.
      * 
-     * @param message a message to display.
-     * @param printUsageStatement true to display a list of available
-     *        options.
+     * @param message
+     *            a message to display.
+     * @param printUsageStatement
+     *            true to display a list of available options.
      */
     public void bail(String message, boolean printUsageStatement) {
         Debug.output(message);
@@ -198,16 +207,15 @@ public class ArgParser {
     }
 
     /**
-     * Tell the parser to accept first-letter representations of the
-     * options.
+     * Tell the parser to accept first-letter representations of the options.
      */
     public void setAllowAbbr(boolean set) {
         allowAbbr = set;
     }
 
     /**
-     * Tells whether the parser accepts first-letter representations
-     * of the options.
+     * Tells whether the parser accepts first-letter representations of the
+     * options.
      */
     public boolean getAllowAbbr() {
         return allowAbbr;
@@ -234,11 +242,10 @@ public class ArgParser {
     }
 
     /**
-     * Given an Arg name, return the values. Returns a zero length
-     * array (non-null) value for options that don't require
-     * arguments. Returns null if the option name wasn't found in the
-     * list, or if the option wasn't chosen in the parsed array of
-     * Strings.
+     * Given an Arg name, return the values. Returns a zero length array
+     * (non-null) value for options that don't require arguments. Returns null
+     * if the option name wasn't found in the list, or if the option wasn't
+     * chosen in the parsed array of Strings.
      */
     public String[] getArgValues(String name) {
         for (int i = 0; i < args.size(); i++) {
@@ -253,8 +260,8 @@ public class ArgParser {
     }
 
     /**
-     * Get the String[] that makes up the trailing Strings after the
-     * options were parsed.
+     * Get the String[] that makes up the trailing Strings after the options
+     * were parsed.
      */
     public String[] getRest() {
         return rest;
@@ -268,7 +275,7 @@ public class ArgParser {
         for (int i = 0; i < args.size(); i++) {
             ArgParser.Arg arg = (ArgParser.Arg) args.elementAt(i);
             StringBuffer sb = new StringBuffer();
-            String filler = arg.name.length() < 6?"\t\t":"\t";
+            String filler = arg.name.length() < 6 ? "\t\t" : "\t";
 
             sb.append("  -" + arg.name + filler + arg.description);
             if (arg.numExpectedValues == TO_END) {
@@ -276,7 +283,9 @@ public class ArgParser {
             } else if (arg.numExpectedValues == 1) {
                 sb.append(" (1 argument expected)");
             } else {
-                sb.append(" (" + arg.numExpectedValues + " arguments expected)");
+                sb
+                        .append(" (" + arg.numExpectedValues
+                                + " arguments expected)");
             }
             Debug.output(sb.toString());
         }
@@ -310,8 +319,8 @@ public class ArgParser {
     }
 
     /**
-     * A default version of the Arg class used to represent options
-     * for the ArgParser to use.
+     * A default version of the Arg class used to represent options for the
+     * ArgParser to use.
      */
     public class Arg {
         public String name;
@@ -330,19 +339,18 @@ public class ArgParser {
         }
 
         /**
-         * Create an Arg with a name and help line description, along
-         * with a number of expected arguments to follow this option.
+         * Create an Arg with a name and help line description, along with a
+         * number of expected arguments to follow this option.
          */
         public Arg(String aName, String desc, int expectedNumberOfArguments) {
             this(aName, desc, expectedNumberOfArguments, false);
         }
 
         /**
-         * Create an Arg with a name and help line description, along
-         * with a number of expected arguments to follow this option.
-         * Has an argument to not check for arguments that may start
-         * with dashes, in case one of the arguements may be a
-         * negative number.
+         * Create an Arg with a name and help line description, along with a
+         * number of expected arguments to follow this option. Has an argument
+         * to not check for arguments that may start with dashes, in case one of
+         * the arguements may be a negative number.
          */
         public Arg(String aName, String desc, int expectedNumberOfArguments,
                 boolean expectDashedArguments) {
@@ -354,9 +362,9 @@ public class ArgParser {
         }
 
         /**
-         * Returns true if the atg string matches the name of the Arg,
-         * or, if allowAbbr is true, returns true if the arg length is
-         * one and it matches the first letter of the arg name.
+         * Returns true if the atg string matches the name of the Arg, or, if
+         * allowAbbr is true, returns true if the arg length is one and it
+         * matches the first letter of the arg name.
          */
         public boolean is(String arg, boolean allowAbbr) {
             if (name.equalsIgnoreCase(arg)) {
@@ -372,14 +380,15 @@ public class ArgParser {
         }
 
         /**
-         * Runs through the array of Strings, starting at the
-         * argIndex, and creates the values array from it. Uses the
-         * expected number of arguments to tell when it's done.
-         * Returns true if everything happens as expected.
+         * Runs through the array of Strings, starting at the argIndex, and
+         * creates the values array from it. Uses the expected number of
+         * arguments to tell when it's done. Returns true if everything happens
+         * as expected.
          * 
-         * @param argv the entire array passed to the parser.
-         * @param argIndex the index of the first option argument
-         *        value.
+         * @param argv
+         *            the entire array passed to the parser.
+         * @param argIndex
+         *            the index of the first option argument value.
          * @return true if what was read was what was expected.
          */
         public boolean readArgs(String[] argv, int argIndex)
@@ -430,8 +439,8 @@ public class ArgParser {
     }
 
     /**
-     * A Arg class to spur off help messages. Gets added automatically
-     * to the parser.
+     * A Arg class to spur off help messages. Gets added automatically to the
+     * parser.
      */
     public class HelpArg extends ArgParser.Arg {
 

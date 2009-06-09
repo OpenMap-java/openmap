@@ -59,7 +59,8 @@ public class DTEDCoverageManager extends OMGraphicList implements
 
     protected I18n i18n = Environment.getI18n();
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.dted.DTEDCoverageManager");
+    public static Logger logger = Logger
+            .getLogger("com.bbn.openmap.layer.dted.DTEDCoverageManager");
 
     protected String[] paths;
 
@@ -77,9 +78,12 @@ public class DTEDCoverageManager extends OMGraphicList implements
     /** The array of coverage for level 2 data. */
     protected boolean[][] level2Frames = null;
 
-    protected DrawingAttributes level0Attributes = DrawingAttributes.getDefaultClone();
-    protected DrawingAttributes level1Attributes = DrawingAttributes.getDefaultClone();
-    protected DrawingAttributes level2Attributes = DrawingAttributes.getDefaultClone();
+    protected DrawingAttributes level0Attributes = DrawingAttributes
+            .getDefaultClone();
+    protected DrawingAttributes level1Attributes = DrawingAttributes
+            .getDefaultClone();
+    protected DrawingAttributes level2Attributes = DrawingAttributes
+            .getDefaultClone();
 
     protected OMGraphicList level0Rects = new OMGraphicList();
     protected OMGraphicList level1Rects = new OMGraphicList();
@@ -87,9 +91,12 @@ public class DTEDCoverageManager extends OMGraphicList implements
 
     public DTEDCoverageManager(String[] paths) {
         this.paths = paths;
-        level0Attributes.setLinePaint(PropUtils.parseColor(defaultLevel0ColorString));
-        level1Attributes.setLinePaint(PropUtils.parseColor(defaultLevel1ColorString));
-        level2Attributes.setLinePaint(PropUtils.parseColor(defaultLevel2ColorString));
+        level0Attributes.setLinePaint(PropUtils
+                .parseColor(defaultLevel0ColorString));
+        level1Attributes.setLinePaint(PropUtils
+                .parseColor(defaultLevel1ColorString));
+        level2Attributes.setLinePaint(PropUtils
+                .parseColor(defaultLevel2ColorString));
 
     }
 
@@ -104,7 +111,8 @@ public class DTEDCoverageManager extends OMGraphicList implements
      * The method that cycles through all the paths, looking for the frames.
      * This takes time, so it's only done when a coverage file can't be found.
      * 
-     * @param paths paths to the level 0, 1 and 2 dted root directory.
+     * @param paths
+     *            paths to the level 0, 1 and 2 dted root directory.
      */
     public void checkOutCoverage(String[] paths) {
 
@@ -117,7 +125,7 @@ public class DTEDCoverageManager extends OMGraphicList implements
         if (paths != null)
             maxNumPaths = paths.length;
 
-        if (maxNumPaths == 0) {
+        if (paths == null || maxNumPaths == 0) {
             logger.warning("No paths for DTED data given.");
             return;
         }
@@ -169,8 +177,8 @@ public class DTEDCoverageManager extends OMGraphicList implements
 
                 try {
                     int curLat = (hemi == 's' ? -1 : 1)
-                            * Integer.parseInt(name.substring(1,
-                                    name.length() - 4)) + 90;
+                            * Integer.parseInt(name
+                                    .substring(1, name.length() - 4)) + 90;
 
                     if (level == '0') {
                         level0Frames[curLat][curLon] = true;
@@ -196,13 +204,15 @@ public class DTEDCoverageManager extends OMGraphicList implements
      * spans over the date line, then two queries are performed, one for each
      * side of the date line.
      * 
-     * @param proj the projection of the screen
+     * @param proj
+     *            the projection of the screen
      * @return an array of lists, one for each level of dted data.
      */
     public OMGraphicList getCoverageRects(Projection proj) {
         if (level0Frames == null) {
 
-            logger.fine("Scanning for frames - This could take several minutes!");
+            logger
+                    .fine("Scanning for frames - This could take several minutes!");
             checkOutCoverage(paths);
         }
 
@@ -215,9 +225,12 @@ public class DTEDCoverageManager extends OMGraphicList implements
     }
 
     /**
-     * Get a percentage value of how much of the map is covered for a projection.
+     * Get a percentage value of how much of the map is covered for a
+     * projection.
+     * 
      * @param proj
-     * @return float[] with percentages, float[0] is level 0 coverage, 1 is level 1, 2 is level 2.
+     * @return float[] with percentages, float[0] is level 0 coverage, 1 is
+     *         level 1, 2 is level 2.
      */
     public float[] getCoverage(Projection proj) {
         float[] ret = new float[3];
@@ -273,13 +286,18 @@ public class DTEDCoverageManager extends OMGraphicList implements
      * Method looks at the coverage arrays, and returns the applicable
      * rectangles representing the frame coverages.
      * 
-     * @param startx the western-most longitude.
-     * @param starty the southern-most latitude.
-     * @param endx the eastern-most longitude.
-     * @param endy the northern-most latitude.
-     * @param LineType the type of line to use on the rectangles - Cylindrical
-     *        projections can use straight lines, but other projections should
-     *        use Rhumb lines.
+     * @param startx
+     *            the western-most longitude.
+     * @param starty
+     *            the southern-most latitude.
+     * @param endx
+     *            the eastern-most longitude.
+     * @param endy
+     *            the northern-most latitude.
+     * @param LineType
+     *            the type of line to use on the rectangles - Cylindrical
+     *            projections can use straight lines, but other projections
+     *            should use Rhumb lines.
      * @return an array of lists, one for each level of dted data.
      */
     public OMGraphicList getCoverageRects(int startx, int starty, int endx,
@@ -297,21 +315,24 @@ public class DTEDCoverageManager extends OMGraphicList implements
         for (int lat = starty; lat <= endy && lat < 90; lat++) {
             for (int lon = startx; lon <= endx && lon < 180; lon++) {
                 if (level0Frames[lat + 90][lon + 180]) {
-                    rect = new OMRect((double) lat, (double) lon, (double) lat + 1, (double) lon + 1, LineType);
+                    rect = new OMRect((double) lat, (double) lon,
+                            (double) lat + 1, (double) lon + 1, LineType);
                     level0Attributes.setTo(rect);
                     rect.generate(proj);
                     level0Rects.add(rect);
                 }
 
                 if (level1Frames[lat + 90][lon + 180]) {
-                    rect = new OMRect((double) lat + .1f, (double) lon + .1f, (double) lat + .9f, (double) lon + .9f, LineType);
+                    rect = new OMRect((double) lat + .1f, (double) lon + .1f,
+                            (double) lat + .9f, (double) lon + .9f, LineType);
                     level1Attributes.setTo(rect);
                     rect.generate(proj);
                     level1Rects.add(rect);
                 }
 
                 if (level2Frames[lat + 90][lon + 180]) {
-                    rect = new OMRect((double) lat + .2f, (double) lon + .2f, (double) lat + .8f, (double) lon + .8f, LineType);
+                    rect = new OMRect((double) lat + .2f, (double) lon + .2f,
+                            (double) lat + .8f, (double) lon + .8f, LineType);
                     level2Attributes.setTo(rect);
                     rect.generate(proj);
                     level2Rects.add(rect);
@@ -371,51 +392,49 @@ public class DTEDCoverageManager extends OMGraphicList implements
     public Component getGUI() {
         if (panel == null) {
 
-            String interString = i18n.get(DTEDCoverageManager.class,
-                    "title",
-                    "DTED Coverage");
+            String interString = i18n.get(DTEDCoverageManager.class, "title",
+                                          "DTED Coverage");
 
             panel = PaletteHelper.createVerticalPanel(interString);
             JPanel pane = new JPanel();
-            interString = i18n.get(DTEDCoverageManager.class,
-                    "level0title",
-                    "Level 0: ");
+            interString = i18n.get(DTEDCoverageManager.class, "level0title",
+                                   "Level 0: ");
             pane.add(new JLabel(interString));
-            String showString = i18n.get(DTEDCoverageManager.class,
-                    "show",
-                    "Show");
+            String showString = i18n.get(DTEDCoverageManager.class, "show",
+                                         "Show");
             JCheckBox jcb = new JCheckBox(showString, level0Rects.isVisible());
             jcb.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    level0Rects.setVisible(((JCheckBox) ae.getSource()).isSelected());
+                    level0Rects.setVisible(((JCheckBox) ae.getSource())
+                            .isSelected());
                 }
             });
             pane.add(jcb);
             pane.add(level0Attributes.getGUI());
             panel.add(pane);
             pane = new JPanel();
-            interString = i18n.get(DTEDCoverageManager.class,
-                    "level2title",
-                    "Level 1: ");
+            interString = i18n.get(DTEDCoverageManager.class, "level2title",
+                                   "Level 1: ");
             pane.add(new JLabel(interString));
             jcb = new JCheckBox(showString, level1Rects.isVisible());
             jcb.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    level1Rects.setVisible(((JCheckBox) ae.getSource()).isSelected());
+                    level1Rects.setVisible(((JCheckBox) ae.getSource())
+                            .isSelected());
                 }
             });
             pane.add(jcb);
             pane.add(level1Attributes.getGUI());
             panel.add(pane);
             pane = new JPanel();
-            interString = i18n.get(DTEDCoverageManager.class,
-                    "level2title",
-                    "Level 2: ");
+            interString = i18n.get(DTEDCoverageManager.class, "level2title",
+                                   "Level 2: ");
             pane.add(new JLabel(interString));
             jcb = new JCheckBox(showString, level2Rects.isVisible());
             jcb.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    level2Rects.setVisible(((JCheckBox) ae.getSource()).isSelected());
+                    level2Rects.setVisible(((JCheckBox) ae.getSource())
+                            .isSelected());
                 }
             });
             pane.add(jcb);

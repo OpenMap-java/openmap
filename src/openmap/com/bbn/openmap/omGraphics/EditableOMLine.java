@@ -73,7 +73,8 @@ public class EditableOMLine extends EditableOMAbstractLine implements
      * Create the EditableOMLine with an OMLine already defined, ready for
      * editing.
      * 
-     * @param oml OMLine that should be edited.
+     * @param oml
+     *            OMLine that should be edited.
      */
     public EditableOMLine(OMLine oml) {
         setGraphic(oml);
@@ -128,7 +129,8 @@ public class EditableOMLine extends EditableOMAbstractLine implements
 
         if (lineType == OMGraphic.LINETYPE_UNKNOWN) {
             lineType = OMGraphic.LINETYPE_GREATCIRCLE;
-            ga.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
+            if (ga != null)
+                ga.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
         }
 
         switch (renderType) {
@@ -242,8 +244,9 @@ public class EditableOMLine extends EditableOMAbstractLine implements
 
             } else {
                 // Grab the projected endpoints
-                Debug.message("eomg",
-                        "EditableOMLine: modifying x/y or offset standard line");
+                Debug
+                        .message("eomg",
+                                 "EditableOMLine: modifying x/y or offset standard line");
                 gp1.set(line.xpoints[0][0], line.ypoints[0][0]);
 
                 int last = line.xpoints[0].length - 1;
@@ -262,8 +265,9 @@ public class EditableOMLine extends EditableOMAbstractLine implements
                 gpo.updateOffsets();
             }
         } else {
-            Debug.message("eomg",
-                    "EditableOMLine.setGrabPoints: graphic needs to be regenerated");
+            Debug
+                    .message("eomg",
+                             "EditableOMLine.setGrabPoints: graphic needs to be regenerated");
         }
     }
 
@@ -278,9 +282,9 @@ public class EditableOMLine extends EditableOMAbstractLine implements
         if (renderType == OMGraphic.RENDERTYPE_LATLON) {
             if (projection != null) {
                 double[] coords = new double[4];
-                LatLonPoint llp = (LatLonPoint) projection.inverse(gp1.getX(),
-                        gp1.getY(),
-                        new LatLonPoint.Double());
+                LatLonPoint llp = (LatLonPoint) projection
+                        .inverse(gp1.getX(), gp1.getY(),
+                                 new LatLonPoint.Double());
 
                 coords[0] = llp.getY();
                 coords[1] = llp.getX();
@@ -290,16 +294,18 @@ public class EditableOMLine extends EditableOMAbstractLine implements
                 coords[3] = llp.getX();
                 line.setLL(coords);
             } else {
-                Debug.message("eomg",
-                        "EditableOMLine.setGrabPoints: projection is null, can't figure out LATLON points for line.");
+                Debug
+                        .message(
+                                 "eomg",
+                                 "EditableOMLine.setGrabPoints: projection is null, can't figure out LATLON points for line.");
             }
         } else if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
             // Do the offset point.
             if (projection != null) {
                 double[] coords = new double[4];
-                LatLonPoint llp = (LatLonPoint) projection.inverse(gpo.getX(),
-                        gpo.getY(),
-                        new LatLonPoint.Double());
+                LatLonPoint llp = (LatLonPoint) projection
+                        .inverse(gpo.getX(), gpo.getY(),
+                                 new LatLonPoint.Double());
 
                 coords[0] = llp.getY();
                 coords[1] = llp.getX();
@@ -307,8 +313,10 @@ public class EditableOMLine extends EditableOMAbstractLine implements
                 coords[3] = 0;// not used
                 line.setLL(coords);
             } else {
-                Debug.message("eomg",
-                        "EditableOMLine.setGrabPoints: projection is null, can't figure out LATLON points for line offset.");
+                Debug
+                        .message(
+                                 "eomg",
+                                 "EditableOMLine.setGrabPoints: projection is null, can't figure out LATLON points for line offset.");
             }
         }
 
@@ -366,7 +374,8 @@ public class EditableOMLine extends EditableOMAbstractLine implements
      * called to at least assure the graphics that they are ready for rendering.
      * Called when the graphic position changes.
      * 
-     * @param proj com.bbn.openmap.proj.Projection
+     * @param proj
+     *            com.bbn.openmap.proj.Projection
      * @return true
      */
     public boolean generate(Projection proj) {
@@ -381,8 +390,7 @@ public class EditableOMLine extends EditableOMAbstractLine implements
         if (gpo != null) {
             gpo.generate(proj);
             gpo.updateOffsets();
-        }
-        ;
+        };
         return true;
     }
 
@@ -411,7 +419,8 @@ public class EditableOMLine extends EditableOMAbstractLine implements
      * points are only rendered if the line machine state is
      * LineSelectedState.LINE_SELECTED.
      * 
-     * @param graphics java.awt.Graphics.
+     * @param graphics
+     *            java.awt.Graphics.
      */
     public void render(java.awt.Graphics graphics) {
         Debug.message("eomg", "EditableOMLine.render()");
@@ -442,9 +451,9 @@ public class EditableOMLine extends EditableOMAbstractLine implements
 
         if (state instanceof GraphicSelectedState
                 || state instanceof GraphicEditState /*
-                                                         * || state instanceof
-                                                         * LineSetOffsetState
-                                                         */) {
+                                                      * || state instanceof
+                                                      * LineSetOffsetState
+                                                      */) {
             if (gpo != null
                     && line.getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
                 gpo.setVisible(true);

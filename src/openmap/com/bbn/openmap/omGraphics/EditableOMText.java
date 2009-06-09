@@ -40,6 +40,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
@@ -96,7 +97,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * Create the EditableOMText with an OMText already defined, ready for
      * editing.
      * 
-     * @param omc OMText that should be edited.
+     * @param omc
+     *            OMText that should be edited.
      */
     public EditableOMText(OMText omc) {
         setGraphic(omc);
@@ -199,7 +201,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * Given a MouseEvent, find a GrabPoint that it is touching, and set the
      * moving point to that GrabPoint.
      * 
-     * @param e MouseEvent
+     * @param e
+     *            MouseEvent
      * @return GrabPoint that is touched by the MouseEvent, null if none are.
      */
     public GrabPoint getMovingPoint(MouseEvent e) {
@@ -308,7 +311,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
             }
 
         } else {
-            System.out.println("EditableOMText.setGrabPoint: graphic needs to be regenerated");
+            System.out
+                    .println("EditableOMText.setGrabPoint: graphic needs to be regenerated");
         }
     }
 
@@ -329,9 +333,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
 
             if (projection != null) {
                 // movingPoint == gpc
-                llp1 = projection.inverse(gpc.getX(),
-                        gpc.getY(),
-                        new LatLonPoint.Double());
+                llp1 = projection.inverse(gpc.getX(), gpc.getY(),
+                                          new LatLonPoint.Double());
                 text.setLat(llp1.getY());
                 text.setLon(llp1.getX());
                 // text.setNeedToRegenerate set
@@ -344,9 +347,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         // If the center point is moving, the offset distance changes
         if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
-            llp1 = projection.inverse(gpo.getX(),
-                    gpo.getY(),
-                    new LatLonPoint.Double());
+            llp1 = projection.inverse(gpo.getX(), gpo.getY(),
+                                      new LatLonPoint.Double());
 
             text.setLat(llp1.getY());
             text.setLon(llp1.getX());
@@ -403,14 +405,16 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * just be called, and the movingPoint will make the adjustments to the
      * graphic that are needed.
      */
-    public void move(java.awt.event.MouseEvent e) {}
+    public void move(java.awt.event.MouseEvent e) {
+    }
 
     /**
      * Use the current projection to place the graphics on the screen. Has to be
      * called to at least assure the graphics that they are ready for rendering.
      * Called when the graphic position changes.
      * 
-     * @param proj com.bbn.openmap.proj.Projection
+     * @param proj
+     *            com.bbn.openmap.proj.Projection
      * @return true
      */
     public boolean generate(Projection proj) {
@@ -442,7 +446,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * points are only rendered if the point machine state is
      * TextSelectedState.TEXT_SELECTED.
      * 
-     * @param graphics java.awt.Graphics.
+     * @param graphics
+     *            java.awt.Graphics.
      */
     public void render(java.awt.Graphics graphics) {
 
@@ -492,8 +497,9 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      * EditableOMGraphic implementation, and return a null Component from
      * getGUI.
      * 
-     * @param graphicAttributes the GraphicAttributes to use to get the GUI
-     *        widget from to control those parameters for this EOMG.
+     * @param graphicAttributes
+     *            the GraphicAttributes to use to get the GUI widget from to
+     *            control those parameters for this EOMG.
      * @return java.awt.Component to use to control parameters for this EOMG.
      */
     public java.awt.Component getGUI(GraphicAttributes graphicAttributes) {
@@ -503,7 +509,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
             // ((JComponent) gaGUI).add(getTextGUI());
 
             getTextGUI(graphicAttributes.getOrientation(),
-                    graphicAttributes.toolbar);
+                       graphicAttributes.toolbar);
 
             return gaGUI;
         } else {
@@ -529,13 +535,15 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
     /**
      * Get the GUI associated with changing the Text.
      * 
-     * @param orientation SwingConstants.HORIZONTAL/VERTICAL
-     * @param guiComp the JComponent to add stuff to. If the orientation is
-     *        HORIZONTAL, the components will be added directly to this
-     *        component, or to a new JComponent that is returned if null. If the
-     *        orientation is Vertical, a button will be added to the guiComp, or
-     *        returned. This button will call up a dialog box with the settings,
-     *        since they don't really lay out vertically.
+     * @param orientation
+     *            SwingConstants.HORIZONTAL/VERTICAL
+     * @param guiComp
+     *            the JComponent to add stuff to. If the orientation is
+     *            HORIZONTAL, the components will be added directly to this
+     *            component, or to a new JComponent that is returned if null. If
+     *            the orientation is Vertical, a button will be added to the
+     *            guiComp, or returned. This button will call up a dialog box
+     *            with the settings, since they don't really lay out vertically.
      * @return
      */
     protected JComponent getTextGUI(int orientation, JComponent guiComp) {
@@ -551,13 +559,18 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
             attributeBox = guiComp;
         }
 
+        if (guiComp == null) {
+            guiComp = new JPanel();
+        }
+
         guiComp.add(PaletteHelper.getToolBarFill(orientation));
 
         if (orientation == SwingConstants.VERTICAL) {
-            JButton launchButton = new JButton(getTextAccentToggleButtonImage(DrawingAttributes.icon_width,
-                    DrawingAttributes.icon_height,
-                    text.getFont(),
-                    "T"));
+            JButton launchButton = new JButton(
+                    getTextAccentToggleButtonImage(
+                                                   DrawingAttributes.icon_width,
+                                                   DrawingAttributes.icon_height,
+                                                   text.getFont(), "T"));
             launchButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     if (attributeBox != null) {
@@ -578,7 +591,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
             textString = text.getData();
         }
 
-        attributeBox.add(PaletteHelper.getToolBarFill(SwingConstants.HORIZONTAL));
+        attributeBox.add(PaletteHelper
+                .getToolBarFill(SwingConstants.HORIZONTAL));
 
         JTextField textField = new JTextField(textString, 25);
         textField.setActionCommand(TextFieldCommand);
@@ -587,16 +601,17 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         textField.setPreferredSize(new java.awt.Dimension(100, 20));
         attributeBox.add(textField);
 
-        attributeBox.add(PaletteHelper.getToolBarFill(SwingConstants.HORIZONTAL));
+        attributeBox.add(PaletteHelper
+                .getToolBarFill(SwingConstants.HORIZONTAL));
         // JPanel palette =
         // PaletteHelper.createHorizontalPanel("Rotation");
         javax.swing.Box palette = javax.swing.Box.createHorizontalBox();
-        textField = new JTextField(Integer.toString((int) (text.getRotationAngle() * 180 / Math.PI)), 5);
+        textField = new JTextField(Integer.toString((int) (text
+                .getRotationAngle() * 180 / Math.PI)), 5);
         textField.setActionCommand(TextRotationCommand);
-        textField.setToolTipText(i18n.get(EditableOMText.class,
-                "textField",
-                I18n.TOOLTIP,
-                "Text rotation in degrees"));
+        textField.setToolTipText(i18n.get(EditableOMText.class, "textField",
+                                          I18n.TOOLTIP,
+                                          "Text rotation in degrees"));
         textField.addActionListener(this);
         textField.setMinimumSize(new java.awt.Dimension(30, 20));
         textField.setPreferredSize(new java.awt.Dimension(30, 20));
@@ -607,10 +622,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         String[] sizesStrings = { "3", "5", "8", "10", "12", "14", "18", "20",
                 "24", "36", "48" };
         sizesFont = new JComboBox(sizesStrings);
-        sizesFont.setToolTipText(i18n.get(EditableOMText.class,
-                "sizesFont",
-                I18n.TOOLTIP,
-                "Font Size"));
+        sizesFont.setToolTipText(i18n.get(EditableOMText.class, "sizesFont",
+                                          I18n.TOOLTIP, "Font Size"));
         sizesFont.setSelectedItem("" + (text.getFont()).getSize());
         sizesFont.setActionCommand(TextFontCommand);
         sizesFont.addActionListener(this);
@@ -619,11 +632,19 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         int textButtonHeight = 15;
 
         boldFont = new JToggleButton();
-        boldFont.setIcon(getTextAccentToggleButtonImage(textButtonWidth,
-                textButtonHeight,
-                new Font(boldFont.getFont().getName(), Font.BOLD, boldFont.getFont()
-                        .getSize()),
-                "B"));
+        boldFont
+                .setIcon(getTextAccentToggleButtonImage(
+                                                        textButtonWidth,
+                                                        textButtonHeight,
+                                                        new Font(
+                                                                boldFont
+                                                                        .getFont()
+                                                                        .getName(),
+                                                                Font.BOLD,
+                                                                boldFont
+                                                                        .getFont()
+                                                                        .getSize()),
+                                                        "B"));
 
         // Too wide margins for 1 letter look unnatural
         Insets insets = boldFont.getInsets();
@@ -631,30 +652,35 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         insets.right = insets.right / 2;
         boldFont.setMargin(insets);
         boldFont.setSelected(text.getFont().isBold());
-        boldFont.setToolTipText(i18n.get(EditableOMText.class,
-                "boldFont",
-                I18n.TOOLTIP,
-                "Bold Font"));
+        boldFont.setToolTipText(i18n.get(EditableOMText.class, "boldFont",
+                                         I18n.TOOLTIP, "Bold Font"));
         boldFont.setActionCommand(TextFontCommand);
         boldFont.addActionListener(this);
 
         italicFont = new JToggleButton();
-        italicFont.setIcon(getTextAccentToggleButtonImage(textButtonWidth,
-                textButtonHeight,
-                new Font(italicFont.getFont().getName(), Font.ITALIC, italicFont.getFont()
-                        .getSize()),
-                "I"));
+        italicFont
+                .setIcon(getTextAccentToggleButtonImage(
+                                                        textButtonWidth,
+                                                        textButtonHeight,
+                                                        new Font(
+                                                                italicFont
+                                                                        .getFont()
+                                                                        .getName(),
+                                                                Font.ITALIC,
+                                                                italicFont
+                                                                        .getFont()
+                                                                        .getSize()),
+                                                        "I"));
         italicFont.setMargin(insets);
         italicFont.setSelected(text.getFont().isItalic());
-        italicFont.setToolTipText(i18n.get(EditableOMText.class,
-                "italicFont",
-                I18n.TOOLTIP,
-                "Italic Font"));
+        italicFont.setToolTipText(i18n.get(EditableOMText.class, "italicFont",
+                                           I18n.TOOLTIP, "Italic Font"));
         italicFont.setActionCommand(TextFontCommand);
         italicFont.addActionListener(this);
 
         attributeBox.add(sizesFont);
-        attributeBox.add(PaletteHelper.getToolBarFill(SwingConstants.HORIZONTAL));
+        attributeBox.add(PaletteHelper
+                .getToolBarFill(SwingConstants.HORIZONTAL));
         attributeBox.add(boldFont);
         attributeBox.add(italicFont);
 
@@ -663,7 +689,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
 
     private ImageIcon getTextAccentToggleButtonImage(int width, int height,
                                                      Font f, String s) {
-        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage bi = new BufferedImage(width, height,
+                BufferedImage.TYPE_INT_ARGB);
         Graphics g = bi.getGraphics();
         g.setFont(f);
         g.setColor(Color.black);

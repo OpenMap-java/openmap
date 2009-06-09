@@ -88,7 +88,8 @@ public class MultiShapeLayer extends ShapeLayer {
     /**
      * Initializes an empty shape layer.
      */
-    public MultiShapeLayer() {}
+    public MultiShapeLayer() {
+    }
 
     public void setSpatialIndexes(Collection<SpatialIndexHandler> siv) {
         spatialIndexes = siv;
@@ -101,11 +102,13 @@ public class MultiShapeLayer extends ShapeLayer {
     /**
      * This method gets called from setProperties.
      * 
-     * @param realPrefix This prefix has already been scoped, which means it is
-     *        an empty string if setProperties was called with a null prefix, or
-     *        it's a String ending with a period if it was defined with
-     *        characters.
-     * @param props Properties containing information about files and the layer.
+     * @param realPrefix
+     *            This prefix has already been scoped, which means it is an
+     *            empty string if setProperties was called with a null prefix,
+     *            or it's a String ending with a period if it was defined with
+     *            characters.
+     * @param props
+     *            Properties containing information about files and the layer.
      */
     protected void setFileProperties(String prefix, Properties props) {
         setSpatialIndexes(prefix, props);
@@ -114,11 +117,13 @@ public class MultiShapeLayer extends ShapeLayer {
     /**
      * This method gets called from setFileProperties.
      * 
-     * @param prefix This prefix has already been scoped, which means it is an
-     *        empty string if setProperties was called with a null prefix, or
-     *        it's a String ending with a period if it was defined with
-     *        characters.
-     * @param props Properties containing information about files and the layer.
+     * @param prefix
+     *            This prefix has already been scoped, which means it is an
+     *            empty string if setProperties was called with a null prefix,
+     *            or it's a String ending with a period if it was defined with
+     *            characters.
+     * @param props
+     *            Properties containing information about files and the layer.
      */
     protected void setSpatialIndexes(String prefix, Properties p) {
 
@@ -127,12 +132,14 @@ public class MultiShapeLayer extends ShapeLayer {
         if (logger.isLoggable(Level.FINE)) {
             logger.fine(getName() + "| list = \"" + shapeFileList + "\"");
         }
-        
-        Vector<String> shapeFileStrings = PropUtils.parseSpacedMarkers(shapeFileList);
+
+        Vector<String> shapeFileStrings = PropUtils
+                .parseSpacedMarkers(shapeFileList);
 
         if (shapeFileStrings != null) {
 
-            spatialIndexes = new Vector<SpatialIndexHandler>(shapeFileStrings.size());
+            spatialIndexes = new Vector<SpatialIndexHandler>(shapeFileStrings
+                    .size());
 
             for (String listName : shapeFileStrings) {
                 SpatialIndexHandler sih = new SpatialIndexHandler(prefix
@@ -183,9 +190,10 @@ public class MultiShapeLayer extends ShapeLayer {
      * with any other information about the property that would be helpful
      * (range, default value, etc.).
      * 
-     * @param props a Properties object to load the PropertyConsumer properties
-     *        into. If getList equals null, then a new Properties object should
-     *        be created.
+     * @param props
+     *            a Properties object to load the PropertyConsumer properties
+     *            into. If getList equals null, then a new Properties object
+     *            should be created.
      * @return Properties object containing PropertyConsumer property values. If
      *         getList was not null, this should equal getList. Otherwise, it
      *         should be the Properties object created by the PropertyConsumer.
@@ -203,7 +211,7 @@ public class MultiShapeLayer extends ShapeLayer {
         }
 
         props.put(ShapeFileListProperty,
-                "List of marker names for SpatialIndexHandlers");
+                  "List of marker names for SpatialIndexHandlers");
 
         return props;
     }
@@ -263,18 +271,10 @@ public class MultiShapeLayer extends ShapeLayer {
 
                 try {
 
-                    list = sih.getGraphics(ulLon,
-                            ymin,
-                            180.0d,
-                            ymax,
-                            list,
-                            projection);
-                    list = sih.getGraphics(-180.0d,
-                            ymin,
-                            lrLon,
-                            ymax,
-                            list,
-                            projection);
+                    list = sih.getGraphics(ulLon, ymin, 180.0d, ymax, list,
+                                           projection);
+                    list = sih.getGraphics(-180.0d, ymin, lrLon, ymax, list,
+                                           projection);
                 } catch (java.io.IOException ex) {
                     ex.printStackTrace();
                 } catch (FormatException fe) {
@@ -301,12 +301,8 @@ public class MultiShapeLayer extends ShapeLayer {
                             + sih.prettyName + " spatial index");
                 }
                 try {
-                    list = sih.getGraphics(xmin,
-                            ymin,
-                            xmax,
-                            ymax,
-                            list,
-                            projection);
+                    list = sih.getGraphics(xmin, ymin, xmax, ymax, list,
+                                           projection);
                 } catch (java.io.IOException ex) {
                     ex.printStackTrace();
                 } catch (FormatException fe) {
@@ -360,17 +356,19 @@ public class MultiShapeLayer extends ShapeLayer {
 
         ESRIBoundingBox bounds = new ESRIBoundingBox();
 
-        for (Iterator<SpatialIndexHandler> sii = spatialIndexes.iterator(); sii.hasNext();) {
+        for (Iterator<SpatialIndexHandler> sii = spatialIndexes.iterator(); sii
+                .hasNext();) {
             SpatialIndexHandler sih = sii.next();
             if (sih != null && sih.spatialIndex != null) {
                 ESRIBoundingBox boundingBox = sih.spatialIndex.getBounds();
-                if (bounds != null) {
+                if (boundingBox != null) {
                     bounds.addBounds(boundingBox);
                 }
             }
         }
 
-        return new DataBounds(bounds.min.x, bounds.min.y, bounds.max.x, bounds.max.y);
+        return new DataBounds(bounds.min.x, bounds.min.y, bounds.max.x,
+                bounds.max.y);
     }
 
 }

@@ -181,8 +181,8 @@ import com.bbn.openmap.util.PropUtils;
  * @author Lonnie Goad from OptiMetrics provided selection bug solution and GUI
  *         interaction.
  */
-public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConstants,
-        DataBoundsProvider {
+public class EsriPlugIn extends BeanContextAbstractPlugIn implements
+        ShapeConstants, DataBoundsProvider {
 
     private EsriGraphicList _list = null;
     private DbfTableModel _model = null;
@@ -203,7 +203,8 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
     /** The last projection. */
     protected Projection proj;
 
-    protected DrawingAttributes drawingAttributes = DrawingAttributes.getDefaultClone();
+    protected DrawingAttributes drawingAttributes = DrawingAttributes
+            .getDefaultClone();
 
     /**
      * Creates an EsriPlugIn that will be configured through the
@@ -216,9 +217,12 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
     /**
      * Creates an empty EsriPlugIn, useable for adding features at run-time.
      * 
-     * @param name The name of the layer
-     * @param type The type of layer
-     * @param columnCount The number of columns in the dbf model
+     * @param name
+     *            The name of the layer
+     * @param type
+     *            The type of layer
+     * @param columnCount
+     *            The number of columns in the dbf model
      */
     public EsriPlugIn(String name, int type, int columnCount) throws Exception {
 
@@ -243,10 +247,14 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
     /**
      * Creates an EsriPlugIn from a set of shape files
      * 
-     * @param name The name of the layer that may be used to reference the layer
-     * @param dbf The url referencing the dbf extension file
-     * @param shp The url referencing the shp extension file
-     * @param shx The url referencing the shx extension file
+     * @param name
+     *            The name of the layer that may be used to reference the layer
+     * @param dbf
+     *            The url referencing the dbf extension file
+     * @param shp
+     *            The url referencing the shp extension file
+     * @param shx
+     *            The url referencing the shx extension file
      */
     public EsriPlugIn(String name, URL dbf, URL shp, URL shx) {
 
@@ -281,8 +289,10 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
     /**
      * Handles adding records to the geometry list and the DbfTableModel.
      * 
-     * @param graphic An OMGraphic to add the graphics list
-     * @param record A record to add to the DbfTableModel
+     * @param graphic
+     *            An OMGraphic to add the graphics list
+     * @param record
+     *            A record to add to the DbfTableModel
      */
     public void addRecord(OMGraphic graphic, ArrayList record) {
         OMGraphicList list = getEsriGraphicList();
@@ -293,8 +303,8 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
         // If list == null, model will be too.
         if (list != null) {
             // Might as well set the index
-            graphic.putAttribute(SHAPE_INDEX_ATTRIBUTE,
-                    new Integer(list.size() + 1));
+            graphic.putAttribute(SHAPE_INDEX_ATTRIBUTE, new Integer(
+                    list.size() + 1));
             list.add(graphic);
             _model.addRecord(record);
         } else {
@@ -305,7 +315,8 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
     /**
      * Creates a DbfTableModel for a given .dbf file
      * 
-     * @param dbf The url of the file to retrieve.
+     * @param dbf
+     *            The url of the file to retrieve.
      * @return The DbfTableModel for this layer, null if something went badly.
      */
     private DbfTableModel getDbfTableModel(URL dbf) {
@@ -342,9 +353,9 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
                 _list = getGeometry(PropUtils.getResourceOrFileOrURL(shp));
 
                 if (_model != null) {
-                    DrawingAttributesUtility.setDrawingAttributes(_list,
-                            _model,
-                            getDrawingAttributes());
+                    DrawingAttributesUtility
+                            .setDrawingAttributes(_list, _model,
+                                                  getDrawingAttributes());
                 }
             } catch (MalformedURLException murle) {
                 Debug.error("EsriPlugIn|" + getName()
@@ -361,7 +372,8 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
 
     public static void main(String[] argv) {
         if (argv.length == 0) {
-            System.out.println("Give EsriPlugIn a path to a shape file, and it'll print out the graphics.");
+            System.out
+                    .println("Give EsriPlugIn a path to a shape file, and it'll print out the graphics.");
             System.exit(0);
         }
 
@@ -376,18 +388,19 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
 
         if (list != null) {
             Debug.output(list.getDescription());
+
         }
 
         String dbfFileName = argv[0].substring(0, argv[0].lastIndexOf('.') + 1)
                 + "dbf";
 
         try {
-            DbfTableModel dbf = epi.getDbfTableModel(PropUtils.getResourceOrFileOrURL(epi,
-                    dbfFileName));
-            list.putAttribute(DBF_ATTRIBUTE, dbf);
+            DbfTableModel dbf = epi.getDbfTableModel(PropUtils
+                    .getResourceOrFileOrURL(epi, dbfFileName));
+            if (list != null)
+                list.putAttribute(DBF_ATTRIBUTE, dbf);
             Debug.output("Set list in table");
             dbf.showGUI(dbfFileName, 0);
-
         } catch (Exception e) {
             Debug.error("Can't read .dbf file for .shp file: " + dbfFileName
                     + "\n" + e.getMessage());
@@ -407,9 +420,10 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
      * generate(projection) on the OMGraphics returned! If you don't call
      * generate on the OMGraphics, they will not be displayed on the map.
      * 
-     * @param p projection of the screen, holding scale, center coords, height,
-     *        width. May be null if the parent component hasn't been given a
-     *        projection.
+     * @param p
+     *            projection of the screen, holding scale, center coords,
+     *            height, width. May be null if the parent component hasn't been
+     *            given a projection.
      */
     public OMGraphicList getRectangle(Projection p) {
         OMGraphicList list = getEsriGraphicList();
@@ -437,29 +451,30 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
      * list of offsets, which the AbstractSupport.open method will use to
      * iterate through the contents of the SHP file.
      * 
-     * @param sho The url of the SHP file
-     * @param shx The url of the SHX file (not used, OK if null).
+     * @param sho
+     *            The url of the SHP file
+     * @param shx
+     *            The url of the SHX file (not used, OK if null).
      * @return A new EsriGraphicList, null if something went badly.
      * @deprecated Use getGeometry(URL) instead, the shx file isn't used.
      */
     public EsriGraphicList getGeometry(URL shp, URL shx) {
-        return EsriGraphicList.getEsriGraphicList(shp,
-                getDrawingAttributes(),
-                getModel());
+        return EsriGraphicList.getEsriGraphicList(shp, getDrawingAttributes(),
+                                                  getModel());
     }
 
     /**
      * Reads the contents of the SHP file.
      * 
-     * @param sho The url of the SHP file
+     * @param sho
+     *            The url of the SHP file
      * @return A new EsriGraphicList, null if something went badly.
      */
     public EsriGraphicList getGeometry(URL shp) {
-        return EsriGraphicList.getEsriGraphicList(shp,
-                getDrawingAttributes(),
-                getModel());
+        return EsriGraphicList.getEsriGraphicList(shp, getDrawingAttributes(),
+                                                  getModel());
     }
-    
+
     /**
      * Returns the associated table model for this layer
      * 
@@ -483,16 +498,18 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
     /**
      * Filters the DbfTableModel given a SQL like string
      * 
-     * @param query A SQL like string to filter the DbfTableModel
+     * @param query
+     *            A SQL like string to filter the DbfTableModel
      */
     public void query(String query) {
-    // to be implemented
+        // to be implemented
     }
 
     /**
      * Sets the DbfTableModel
      * 
-     * @param model The DbfModel to set for this layer
+     * @param model
+     *            The DbfModel to set for this layer
      */
     public void setModel(DbfTableModel model) {
         if (_model != null) {
@@ -504,8 +521,10 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
     /**
      * Sets the properties for the <code>Layer</code>.
      * 
-     * @param prefix the token to prefix the property names
-     * @param properties the <code>Properties</code> object
+     * @param prefix
+     *            the token to prefix the property names
+     * @param properties
+     *            the <code>Properties</code> object
      */
     public void setProperties(String prefix, Properties properties) {
         super.setProperties(prefix, properties);
@@ -517,9 +536,8 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
         // attributes later.
         if (_list != null) {
             if (_model != null) {
-                DrawingAttributesUtility.setDrawingAttributes(_list,
-                        _model,
-                        drawingAttributes);
+                DrawingAttributesUtility
+                        .setDrawingAttributes(_list, _model, drawingAttributes);
             } else {
                 drawingAttributes.setTo(_list);
             }
@@ -555,16 +573,18 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
                 + Layer.AddToBeanContextProperty);
 
         props.put(PARAM_SHP, "Location of a shape (.shp) file (path or URL)");
-        props.put(PARAM_SHX,
-                "Location of a index file (.shx) for the shape file (path or URL, optional)");
-        props.put(PARAM_DBF,
-                "Location of a database file (.dbf) for the shape file (path or URL, optional)");
+        props
+                .put(PARAM_SHX,
+                     "Location of a index file (.shx) for the shape file (path or URL, optional)");
+        props
+                .put(PARAM_DBF,
+                     "Location of a database file (.dbf) for the shape file (path or URL, optional)");
         props.put(PARAM_SHP + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.FDUPropertyEditor");
+                  "com.bbn.openmap.util.propertyEditor.FDUPropertyEditor");
         props.put(PARAM_DBF + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.FDUPropertyEditor");
+                  "com.bbn.openmap.util.propertyEditor.FDUPropertyEditor");
         props.put(PARAM_SHX + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.FDUPropertyEditor");
+                  "com.bbn.openmap.util.propertyEditor.FDUPropertyEditor");
 
         drawingAttributes.getPropertyInfo(props);
 
@@ -593,7 +613,8 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
         redrawSelected.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!(graphicIndex < 0)) {
-                    OMGraphic omg = getEsriGraphicList().getOMGraphicAt(graphicIndex);
+                    OMGraphic omg = getEsriGraphicList()
+                            .getOMGraphicAt(graphicIndex);
                     repaintGraphics(omg);
                 }
             }
@@ -626,7 +647,8 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
      * Repaints the currently selected OMGraphic or the OMGraphicList to the
      * current DrawingAttributes
      * 
-     * @param omg the OMGraphic to repaint
+     * @param omg
+     *            the OMGraphic to repaint
      */
     private void repaintGraphics(OMGraphic omg) {
         drawingAttributes.setTo(omg);
@@ -654,7 +676,8 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
                     if (e.getValueIsAdjusting()) {
                         return;
                     }
-                    ListSelectionModel lsm2 = (ListSelectionModel) e.getSource();
+                    ListSelectionModel lsm2 = (ListSelectionModel) e
+                            .getSource();
                     if (lsm2.isSelectionEmpty()) {
                         // no rows are selected
                     } else {
@@ -672,7 +695,8 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
     /**
      * Mark a graphic as selected on the map.
      * 
-     * @param index the index, from 0, of the graphic on the list.
+     * @param index
+     *            the index, from 0, of the graphic on the list.
      */
     public void selectGraphic(int index) {
         EsriGraphicList list = getEsriGraphicList();
@@ -706,9 +730,9 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
 
         lsm.setSelectionInterval(graphicIndex, graphicIndex);
         // scroll to the appropriate row in the table
-        getTable().scrollRectToVisible(getTable().getCellRect(graphicIndex,
-                0,
-                true));
+        getTable().scrollRectToVisible(
+                                       getTable().getCellRect(graphicIndex, 0,
+                                                              true));
     }
 
     /**
@@ -719,7 +743,9 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
             String tableTitle = (this.name != null) ? this.name : "";
             tableFrame = new JFrame(tableTitle + " Shape Data Attributes");
 
-            JScrollPane pane = new JScrollPane(getTable(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            JScrollPane pane = new JScrollPane(getTable(),
+                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
             tableFrame.getContentPane().add(pane, BorderLayout.CENTER);
 
@@ -802,7 +828,8 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
     /**
      * Builds a description in HTML for a tool tip for the specified OMGraphic
      * 
-     * @param index the index of the graphic in the table
+     * @param index
+     *            the index of the graphic in the table
      */
     public String getDescription(int index) {
         Vector v = new Vector();
@@ -844,7 +871,8 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
 
         if (_list != null) {
             double[] extents = _list.getExtents();
-            box = new DataBounds((double) extents[1], (double) extents[0], (double) extents[3], (double) extents[2]);
+            box = new DataBounds((double) extents[1], (double) extents[0],
+                    (double) extents[3], (double) extents[2]);
         }
         return box;
     }

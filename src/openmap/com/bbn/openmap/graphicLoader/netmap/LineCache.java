@@ -22,7 +22,8 @@
 
 package com.bbn.openmap.graphicLoader.netmap;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 /**
  * The holder for Lines on the map. This cache is smart enough to
@@ -84,7 +85,7 @@ public class LineCache {
             Line line = (Line) list.nextElement();
 
             if ((line.getNode1() == atNode) || (line.getNode2() == atNode)) {
-                if (count == 0)
+                if (lines == null)
                     lines = new Line[1];
                 else {
                     Line[] newLines = new Line[lines.length + 1];

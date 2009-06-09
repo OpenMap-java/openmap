@@ -29,19 +29,18 @@ import java.io.IOException;
 import com.bbn.openmap.dataAccess.shape.ShapeUtils;
 
 /**
- * Class that supports cropping of ESRI Shapefiles with a simple
- * bounding box. Does not yet update the .shx or .dbf files.
+ * Class that supports cropping of ESRI Shapefiles with a simple bounding box.
+ * Does not yet update the .shx or .dbf files.
  * 
  * <p>
  * <H2>Usage:</H2>
- * <DT>java com.bbn.openmap.layer.shape.ShapeFileCrop -ul lat,lon -lr
- * lat,lon -i srcShapeFile -o destShapeFile</DT>
- * <DD>Crops the srcShapeFile, dumps the output into destShapeFile.
- * </DD>
- * <DD>Note that this does simple rejection of entities based on
- * their bounding boxes.</DD>
- * <DD>A better scheme (unimplemented) would be to actually crop the
- * line segments.</DD>
+ * <DT>java com.bbn.openmap.layer.shape.ShapeFileCrop -ul lat,lon -lr lat,lon -i
+ * srcShapeFile -o destShapeFile</DT>
+ * <DD>Crops the srcShapeFile, dumps the output into destShapeFile.</DD>
+ * <DD>Note that this does simple rejection of entities based on their bounding
+ * boxes.</DD>
+ * <DD>A better scheme (unimplemented) would be to actually crop the line
+ * segments.</DD>
  * <p>
  * 
  * @author Eliot Lebsack <elebsack@mitre.org>
@@ -59,11 +58,10 @@ public class ShapeFileCrop {
     ESRIBoundingBox ebb = null;
 
     /**
-     * Construct a <code>ShapeFileCrop</code> object from a pair of
-     * file names.
+     * Construct a <code>ShapeFileCrop</code> object from a pair of file names.
      * 
-     * @exception IOException if something goes wrong opening or
-     *            reading the file.
+     * @exception IOException
+     *                if something goes wrong opening or reading the file.
      */
     public ShapeFileCrop(String namein, String nameout) throws IOException {
         sfin = new ShapeFile(namein);
@@ -71,14 +69,13 @@ public class ShapeFileCrop {
     }
 
     /**
-     * Read the input <code>ShapeFile</code> object, and apply
-     * cropping rules to the read entities. Writes the output
-     * <code>ShapeFile</code> object, and then invokes the
-     * <code>ShapeFile</code> .verify method to fix the output file
-     * header.
+     * Read the input <code>ShapeFile</code> object, and apply cropping rules to
+     * the read entities. Writes the output <code>ShapeFile</code> object, and
+     * then invokes the <code>ShapeFile</code> .verify method to fix the output
+     * file header.
      * 
-     * @exception IOException if something goes wrong opening or
-     *            reading the file.
+     * @exception IOException
+     *                if something goes wrong opening or reading the file.
      */
     public void cropShapeFile() throws IOException {
         ESRIPolygonRecord pr;
@@ -138,22 +135,26 @@ public class ShapeFileCrop {
     }
 
     public static void usage() {
-        System.out.println("Usage: java ShapeFileCrop [args] -i <infile.shp> -o <outfile.shp>");
+        System.out
+                .println("Usage: java ShapeFileCrop [args] -i <infile.shp> -o <outfile.shp>");
         System.out.println("Arguments:");
-        System.out.println("-ul lat,lon     Coordinates of upper-left corner of the bounding box to use for cropping");
-        System.out.println("-lr lat,lon     Coordinates of lower-right corner of the bounding box to use for cropping");
+        System.out
+                .println("-ul lat,lon     Coordinates of upper-left corner of the bounding box to use for cropping");
+        System.out
+                .println("-lr lat,lon     Coordinates of lower-right corner of the bounding box to use for cropping");
         System.exit(1);
     }
 
     /**
-     * The driver for the command line interface. Reads the command
-     * line arguments and executes appropriate calls.
+     * The driver for the command line interface. Reads the command line
+     * arguments and executes appropriate calls.
      * <p>
      * See the file documentation for usage.
      * 
-     * @param args the command line arguments
-     * @exception IOException if something goes wrong reading or
-     *            writing the file
+     * @param args
+     *            the command line arguments
+     * @exception IOException
+     *                if something goes wrong reading or writing the file
      */
 
     public static void main(String[] args) throws IOException {
@@ -175,27 +176,27 @@ public class ShapeFileCrop {
                 outpath = args[++i];
             } else if (args[i].equals("-ul")) {
                 sllp = args[++i];
-                //              sllpa = sllp.split(","); // jdk 1.4
+                // sllpa = sllp.split(","); // jdk 1.4
                 index = sllp.indexOf(",");
 
                 if (index != -1) {
                     sllpa = new String[2];
                     sllpa[0] = sllp.substring(0, index);
                     sllpa[1] = sllp.substring(index + 1);
-                    ul = new ESRIPoint(Double.valueOf(sllpa[1]).doubleValue(), Double.valueOf(sllpa[0])
-                            .doubleValue());
+                    ul = new ESRIPoint(Double.valueOf(sllpa[1]).doubleValue(),
+                            Double.valueOf(sllpa[0]).doubleValue());
                 }
 
             } else if (args[i].equals("-lr")) {
                 sllp = args[++i];
-                //              sllpa = sllp.split(","); // jdk 1.4
+                // sllpa = sllp.split(","); // jdk 1.4
                 index = sllp.indexOf(",");
                 if (index != -1) {
                     sllpa = new String[2];
                     sllpa[0] = sllp.substring(0, index);
                     sllpa[1] = sllp.substring(index + 1);
-                    lr = new ESRIPoint(Double.valueOf(sllpa[1]).doubleValue(), Double.valueOf(sllpa[0])
-                            .doubleValue());
+                    lr = new ESRIPoint(Double.valueOf(sllpa[1]).doubleValue(),
+                            Double.valueOf(sllpa[0]).doubleValue());
                 }
 
             } else {
@@ -211,6 +212,8 @@ public class ShapeFileCrop {
             sfc.ebb = new ESRIBoundingBox(ul, lr);
         }
 
-        sfc.cropShapeFile();
+        if (sfc != null) {
+            sfc.cropShapeFile();
+        }
     }
 }

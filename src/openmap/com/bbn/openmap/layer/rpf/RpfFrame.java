@@ -116,14 +116,17 @@ public class RpfFrame {
             // a complete file path (not a relative one) and should be
             // right.
 
-            String lowerCaseFramePath = rfe.framePath.substring(rfe.rpfdirIndex + 3);
+            String lowerCaseFramePath = rfe.framePath
+                    .substring(rfe.rpfdirIndex + 3);
             lowerCaseFramePath = lowerCaseFramePath.toLowerCase();
 
             String rpfDir = rfe.framePath.substring(0, rfe.rpfdirIndex + 3);
 
             if (DEBUG_RPFFRAME) {
-                Debug.output("RpfFrame " + rfe.framePath
-                        + " not found, checking " + rpfDir + lowerCaseFramePath);
+                Debug
+                        .output("RpfFrame " + rfe.framePath
+                                + " not found, checking " + rpfDir
+                                + lowerCaseFramePath);
             }
 
             if (initFile(rpfDir + lowerCaseFramePath)) {
@@ -169,15 +172,18 @@ public class RpfFrame {
     /**
      * Create the screen text used on a subframe. The internal string is set.
      * 
-     * @param Cib whether the frame is a Cib frame. The report is different if
-     *        it is.
+     * @param Cib
+     *            whether the frame is a Cib frame. The report is different if
+     *            it is.
      */
     protected void setReport(boolean Cib) {
         if (attributes != null) {
             StringBuffer s = new StringBuffer();
             s.append("\nRPF Currency Date: " + attributes.currencyDate);
             s.append("\nRPF Production Date: " + attributes.productionDate);
-            s.append("\nSource Significant Date: " + attributes.significantDate);
+            s
+                    .append("\nSource Significant Date: "
+                            + attributes.significantDate);
             if (Cib) {
                 s.append("\nMap Source: " + attributes.dataSource);
             } else {
@@ -193,10 +199,14 @@ public class RpfFrame {
      * Get the attribute text to display on the screen. This goes to the
      * RpfSubframe object. The RpfCacheHandler knows about the four variables.
      * 
-     * @param x subframe index within the array from the TocEntry.
-     * @param y subframe index within the array from the TocEntry
-     * @param entry the RpfFrameEntry describing the frame.
-     * @param Cib whether the frame is an imagery frame.
+     * @param x
+     *            subframe index within the array from the TocEntry.
+     * @param y
+     *            subframe index within the array from the TocEntry
+     * @param entry
+     *            the RpfFrameEntry describing the frame.
+     * @param Cib
+     *            whether the frame is an imagery frame.
      */
     public String getReport(int x, int y, RpfFrameEntry entry, boolean Cib) {
         StringBuffer s = new StringBuffer();
@@ -217,25 +227,27 @@ public class RpfFrame {
         if (report != null)
             s.append(report);
 
-        s.append("\nFrom Frame Dir: ");
+        if (entry != null) {
+            s.append("\nFrom Frame Dir: ");
 
-        String actualFilePath = entry.framePath.substring(0,
-                entry.filenameIndex);
+            String actualFilePath = entry.framePath
+                    .substring(0, entry.filenameIndex);
 
-        if (actualFilePath.length() > 20) {
-            int start = 0;
-            int index = actualFilePath.indexOf("/", 15);
-            while (index != -1) {
-                s.append(actualFilePath.substring(start, index));
-                s.append("/\n    ");
-                start = index + 1;
-                index = actualFilePath.indexOf("/", start + 15);
+            if (actualFilePath.length() > 20) {
+                int start = 0;
+                int index = actualFilePath.indexOf("/", 15);
+                while (index != -1) {
+                    s.append(actualFilePath.substring(start, index));
+                    s.append("/\n    ");
+                    start = index + 1;
+                    index = actualFilePath.indexOf("/", start + 15);
+                }
+                s.append(actualFilePath.substring(start));
             }
-            s.append(actualFilePath.substring(start));
-        }
 
-        else
-            s.append(actualFilePath);
+            else
+                s.append(actualFilePath);
+        }
         return s.toString().trim();
     }
 
@@ -389,7 +401,8 @@ public class RpfFrame {
             binFile.seek(header.locationSectionLocation);
             fileSections = new RpfFileSections(binFile);
 
-            RpfFileSections.RpfLocationRecord[] loc = fileSections.getLocations(RpfFileSections.FRAME_LOCATION_KEY);
+            RpfFileSections.RpfLocationRecord[] loc = fileSections
+                    .getLocations(RpfFileSections.FRAME_LOCATION_KEY);
 
             attributes = fileSections.parseAttributes(binFile);
             coverage = fileSections.parseCoverageSection(binFile);
@@ -410,7 +423,8 @@ public class RpfFrame {
                 Debug.output(compression.toString());
 
             if (loc[2] == null) {
-                Debug.output("Warning: Can't find compr. lookup subsection in FrameFile:");
+                Debug
+                        .output("Warning: Can't find compr. lookup subsection in FrameFile:");
                 Debug.output("   Using alternate computation");
                 /* length of compr. sect. subhdr = 10 */
                 binFile.seek(loc[0].componentLocation + 10);
@@ -420,8 +434,9 @@ public class RpfFrame {
                  * record
                  */
                 if (DEBUG_RPFDETAIL) {
-                    Debug.output("Comp lkup subsect: loc[2].componentLocation(264?): "
-                            + loc[2].componentLocation);
+                    Debug
+                            .output("Comp lkup subsect: loc[2].componentLocation(264?): "
+                                    + loc[2].componentLocation);
                 }
                 binFile.seek(loc[2].componentLocation);
             }
@@ -461,15 +476,16 @@ public class RpfFrame {
                 binFile.seek(loc[2].componentLocation + lookupTable[i].offset);
                 if (DEBUG_RPFDETAIL) {
                     currentPos = binFile.getFilePointer();
-                    Debug.output("Read compr. lookup table (4x4096) at position: "
-                            + currentPos);
+                    Debug
+                            .output("Read compr. lookup table (4x4096) at position: "
+                                    + currentPos);
                 }
                 for (j = 0; j < 4096; j++)
                     table[i][j] = binFile.readBytes(4, false);
 
             } /*
-                 * for i=1 to 4 (# compression tables, 1 for each pixel row)
-                 */
+               * for i=1 to 4 (# compression tables, 1 for each pixel row)
+               */
 
             /* seek to LOC_ATTRIB_SUBHEADER, ID=141 */
             if ((Dchum) && (chumVersion > 1)) { /*
@@ -477,7 +493,8 @@ public class RpfFrame {
                                                  * version > 1
                                                  */
                 if (loc[6] == null) {
-                    Debug.output("RpfFrame: Can't find ATTRIBUTE_SUBHEADER section!");
+                    Debug
+                            .output("RpfFrame: Can't find ATTRIBUTE_SUBHEADER section!");
                     return false;
                 }
                 if (DEBUG_RPFDETAIL)
@@ -493,7 +510,8 @@ public class RpfFrame {
 
                 /* Go to Attrib subsection */
                 if (loc[7] == null) {
-                    Debug.output("RpfFrame: Can't find ATTRIBUTE_SECTION in Frame file");
+                    Debug
+                            .output("RpfFrame: Can't find ATTRIBUTE_SECTION in Frame file");
                     return false;
                 }
 
@@ -549,7 +567,8 @@ public class RpfFrame {
                         binFile.seek(loc[7].componentLocation
                                 + attributeRecOffset);
                         /* read date */
-                        descriptorDates[descCount] = binFile.readFixedLengthString(8);
+                        descriptorDates[descCount] = binFile
+                                .readFixedLengthString(8);
 
                         if (DEBUG_RPFDETAIL)
                             Debug.output("descriptorDate: "
@@ -570,12 +589,14 @@ public class RpfFrame {
                         numCharsInDesc = (int) binFile.readShort();
 
                         if (DEBUG_RPFDETAIL) {
-                            Debug.output("Prepare to fread descriptors[descCount]");
+                            Debug
+                                    .output("Prepare to fread descriptors[descCount]");
                             Debug.output("RpfFrame.read: descCount: "
                                     + descCount);
                         }
 
-                        descriptors[descCount] = binFile.readFixedLengthString(numCharsInDesc);
+                        descriptors[descCount] = binFile
+                                .readFixedLengthString(numCharsInDesc);
 
                         /* Array of strings, not 2-d array !!!!???? */
                         if (DEBUG_RPFDETAIL) {
@@ -591,8 +612,9 @@ public class RpfFrame {
 
             /* READ THE IMAGE DATA */
             if (DEBUG_RPFDETAIL) {
-                Debug.output("Image descr. subheader location: loc[1].componentLocation(68576?): "
-                        + loc[1].componentLocation);
+                Debug
+                        .output("Image descr. subheader location: loc[1].componentLocation(68576?): "
+                                + loc[1].componentLocation);
             }
             binFile.seek(loc[1].componentLocation);
             image = new Image(binFile);
@@ -623,7 +645,8 @@ public class RpfFrame {
             if (!allSubframes) { /* Read mask data */
                 /* fseek to LOC_MASK_SUBSECTION, ID=138 */
                 if (loc[5] == null) {
-                    Debug.error("RpfFrame.read(): Can't find MASK_SUBSECTION section in Frame file");
+                    Debug
+                            .error("RpfFrame.read(): Can't find MASK_SUBSECTION section in Frame file");
                     return false;
                 }
                 if (DEBUG_RPFDETAIL) {
@@ -631,7 +654,9 @@ public class RpfFrame {
                             + loc[5].componentLocation);
                 }
 
-                binFile.seek(loc[5].componentLocation + subframeMaskTableOffset);
+                binFile
+                        .seek(loc[5].componentLocation
+                                + subframeMaskTableOffset);
 
                 for (i = 0; i < 6; i++) { /* y */
                     for (j = 0; j < 6; j++) {
@@ -657,7 +682,8 @@ public class RpfFrame {
             // Is this section needed??
             /* fseek to LOC_IMAGE_DISPLAY_PARAM_SUBHEADER, ID=137 */
             if (loc[4] == null) {
-                Debug.error("RpfFrame.read(): Can't find IMAGE_DISPLAY_PARAM_SUBHEADER section!");
+                Debug
+                        .error("RpfFrame.read(): Can't find IMAGE_DISPLAY_PARAM_SUBHEADER section!");
                 return false;
             }
 
@@ -670,7 +696,8 @@ public class RpfFrame {
 
             /* Go to start of image spatial data subsection */
             if (loc[3] == null) {
-                Debug.output("WARNING: Can't find Image spatial data subsection in FrameFile:");
+                Debug
+                        .output("WARNING: Can't find Image spatial data subsection in FrameFile:");
                 Debug.output("   Using alternate computation");
                 /*
                  * DKS. skip 14 bytes of image display parameters subheader
@@ -700,7 +727,7 @@ public class RpfFrame {
                     /* (256/4)=64. 64*64 * 12bits / 8bits = 6144 bytes */
                     if (!masked[i][j]) {
                         compressedSubframe[i][j] = binFile.readBytes(6144,
-                                false);
+                                                                     false);
                         if (DEBUG_RPFDETAIL)
                             Debug.output(" i:" + i + ", j:" + j
                                     + ", read image data. rc(6144):"
@@ -828,14 +855,19 @@ public class RpfFrame {
      * Decompress a subframe into a cache entry OMRaster (RpfSubframe). The
      * RpfSubframe is returned, too, to emphasize what's happening.
      * 
-     * @param x the x coord for the subframe
-     * @param y the y coord for the subframe
-     * @param subframe the subframe to create the image for. The resulting image
-     *        will be loaded into the RpfSubframe. If null, a new RpfSubframe
-     *        will be created.
-     * @param colortable the colortable to use with this image. If null, the
-     *        colortable from this RpfFrame will be used.
-     * @param viewAttributes our image generation parameters.
+     * @param x
+     *            the x coord for the subframe
+     * @param y
+     *            the y coord for the subframe
+     * @param subframe
+     *            the subframe to create the image for. The resulting image will
+     *            be loaded into the RpfSubframe. If null, a new RpfSubframe
+     *            will be created.
+     * @param colortable
+     *            the colortable to use with this image. If null, the colortable
+     *            from this RpfFrame will be used.
+     * @param viewAttributes
+     *            our image generation parameters.
      * @return RpfSubframe containing the image data.
      */
     public RpfSubframe decompressSubframe(int x, int y, RpfSubframe subframe,
@@ -876,8 +908,10 @@ public class RpfFrame {
      * Decompress a subframe into an array of bytes suitable for in indexed
      * color model image.
      * 
-     * @param x the x coord for the subframe
-     * @param y the y coord for the subframe
+     * @param x
+     *            the x coord for the subframe
+     * @param y
+     *            the y coord for the subframe
      */
     public byte[] decompressSubframe(int x, int y) {
         // Convert x,y to the subframe index in the frame - they come
@@ -942,10 +976,13 @@ public class RpfFrame {
      * Decompress a subframe into an array of ints suitable for a direct color
      * model image. (argb format)
      * 
-     * @param x the x coord for the subframe
-     * @param y the y coord for the subframe
-     * @param colortable the colortable to use with this image. If null, the
-     *        RpfColortable from the frame will be used.
+     * @param x
+     *            the x coord for the subframe
+     * @param y
+     *            the y coord for the subframe
+     * @param colortable
+     *            the colortable to use with this image. If null, the
+     *            RpfColortable from the frame will be used.
      */
     public int[] decompressSubframe(int x, int y, RpfColortable colortable) {
         // Convert x,y to the subframe index in the frame - they come
@@ -1000,8 +1037,10 @@ public class RpfFrame {
                                 tableVal2 = RpfColortable.CADRG_COLORS - 1;
                             }
                             int pixindex = (i + t) * 256 + j + e;
-                            pixels[pixindex] = colortable.colors[tableVal1].getRGB();
-                            pixels[pixindex + 4] = colortable.colors[tableVal2].getRGB();
+                            pixels[pixindex] = colortable.colors[tableVal1]
+                                    .getRGB();
+                            pixels[pixindex + 4] = colortable.colors[tableVal2]
+                                    .getRGB();
                         } // for e
                     } // for t
                 } /* for j */
@@ -1013,13 +1052,16 @@ public class RpfFrame {
     public static void main(String[] argv) {
         Debug.init();
 
-        com.bbn.openmap.util.ArgParser ap = new com.bbn.openmap.util.ArgParser("RpfFrame");
+        com.bbn.openmap.util.ArgParser ap = new com.bbn.openmap.util.ArgParser(
+                "RpfFrame");
 
         ap.add("attributes", "Only write out the attributes for this frame.");
         ap.add("view", "Only bring up a window with the frame image.");
-        ap.add("frame",
-                "Path to the frame to view. \"-frame\" only needed if other arguments are used.",
-                1);
+        ap
+                .add(
+                     "frame",
+                     "Path to the frame to view. \"-frame\" only needed if other arguments are used.",
+                     1);
 
         if (!ap.parse(argv)) {
             ap.printUsage();
@@ -1066,8 +1108,10 @@ public class RpfFrame {
         int height = 256;
         int width = 256;
 
-        BufferedImage bigImage = new BufferedImage(width * 6, height * 6, BufferedImage.TYPE_INT_RGB);
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        BufferedImage bigImage = new BufferedImage(width * 6, height * 6,
+                BufferedImage.TYPE_INT_RGB);
+        GraphicsEnvironment ge = GraphicsEnvironment
+                .getLocalGraphicsEnvironment();
         Graphics g = ge.createGraphics(bigImage);
         Toolkit tk = Toolkit.getDefaultToolkit();
 
@@ -1075,16 +1119,16 @@ public class RpfFrame {
             for (int y = 0; y < 6; y++) {
                 int[] pixels = decompressSubframe(x, y, colortable);
 
-                java.awt.Image bitmap = tk.createImage(new MemoryImageSource(width, height, pixels, 0, width));
+                java.awt.Image bitmap = tk.createImage(new MemoryImageSource(
+                        width, height, pixels, 0, width));
 
                 g.drawImage(bitmap, x * 256, y * 256, null);
             }
         }
 
         JLabel picture = new JLabel(new ImageIcon(bigImage));
-        JFrame frame = com.bbn.openmap.util.PaletteHelper.getPaletteWindow(picture,
-                "RPF Frame",
-                null);
+        JFrame frame = com.bbn.openmap.util.PaletteHelper
+                .getPaletteWindow(picture, "RPF Frame", null);
         frame.setSize(new Dimension(500, 500));
         frame.setVisible(true);
     }

@@ -27,12 +27,13 @@ import com.bbn.openmap.layer.vpf.MutableInt;
 import com.bbn.openmap.util.Debug;
 
 /**
- * Information from the DDR record describing one subfield of a
- * DDFFieldDefn. All subfields of a field will occur in each occurance
- * of that field (as a DDFField) in a DDFRecord. Subfield's actually
- * contain formatted data (as instances within a record).
+ * Information from the DDR record describing one subfield of a DDFFieldDefn.
+ * All subfields of a field will occur in each occurance of that field (as a
+ * DDFField) in a DDFRecord. Subfield's actually contain formatted data (as
+ * instances within a record).
  * 
- * @author Guillaume Pelletier provided fix for Big Endian support (important for S-57)
+ * @author Guillaume Pelletier provided fix for Big Endian support (important
+ *         for S-57)
  */
 public class DDFSubfieldDefinition implements DDFConstants {
 
@@ -42,8 +43,8 @@ public class DDFSubfieldDefinition implements DDFConstants {
     protected int eBinaryFormat;
 
     /**
-     * bIsVariable determines whether we using the chFormatDelimeter
-     * (true), or the fixed width (false).
+     * bIsVariable determines whether we using the chFormatDelimeter (true), or
+     * the fixed width (false).
      */
     protected boolean bIsVariable;
 
@@ -74,12 +75,12 @@ public class DDFSubfieldDefinition implements DDFConstants {
     }
 
     /**
-     * Get the general type of the subfield. This can be used to
-     * determine which of ExtractFloatData(), ExtractIntData() or
-     * ExtractStringData() should be used.
+     * Get the general type of the subfield. This can be used to determine which
+     * of ExtractFloatData(), ExtractIntData() or ExtractStringData() should be
+     * used.
      * 
-     * @return The subfield type. One of DDFInt, DDFFloat, DDFString
-     *         or DDFBinaryString.
+     * @return The subfield type. One of DDFInt, DDFFloat, DDFString or
+     *         DDFBinaryString.
      */
     public DDFDataType getType() {
         return eType;
@@ -167,16 +168,18 @@ public class DDFSubfieldDefinition implements DDFConstants {
 
                 int numEndIndex = 2;
                 for (; numEndIndex < pszFormatString.length()
-                        && Character.isDigit(pszFormatString.charAt(numEndIndex)); numEndIndex++) {
+                        && Character.isDigit(pszFormatString
+                                .charAt(numEndIndex)); numEndIndex++) {
                 }
 
                 String numberString = pszFormatString.substring(2, numEndIndex);
                 nFormatWidth = Integer.valueOf(numberString).intValue();
 
                 if (nFormatWidth % 8 != 0) {
-                    Debug.error("DDFSubfieldDefinition.setFormat() problem with "
-                            + pszFormatString.charAt(0)
-                            + " not being modded with 8 evenly");
+                    Debug
+                            .error("DDFSubfieldDefinition.setFormat() problem with "
+                                    + pszFormatString.charAt(0)
+                                    + " not being modded with 8 evenly");
                     return false;
                 }
 
@@ -199,11 +202,15 @@ public class DDFSubfieldDefinition implements DDFConstants {
 
                 int numEndIndex = 2;
                 for (; numEndIndex < pszFormatString.length()
-                        && Character.isDigit(pszFormatString.charAt(numEndIndex)); numEndIndex++) {
+                        && Character.isDigit(pszFormatString
+                                .charAt(numEndIndex)); numEndIndex++) {
                 }
 
-                nFormatWidth = Integer.valueOf(pszFormatString.substring(2,
-                        numEndIndex)).intValue();
+                nFormatWidth = Integer.valueOf(
+                                               pszFormatString
+                                                       .substring(2,
+                                                                  numEndIndex))
+                        .intValue();
 
                 if (eBinaryFormat == DDFBinaryFormat.SInt
                         || eBinaryFormat == DDFBinaryFormat.UInt) {
@@ -234,9 +241,8 @@ public class DDFSubfieldDefinition implements DDFConstants {
     }
 
     /**
-     * Write out subfield definition info. A variety of information
-     * about this field definition is written to the give debugging
-     * file handle.
+     * Write out subfield definition info. A variety of information about this
+     * field definition is written to the give debugging file handle.
      */
     public String toString() {
         StringBuffer buf = new StringBuffer("    DDFSubfieldDefn:\n");
@@ -246,30 +252,29 @@ public class DDFSubfieldDefinition implements DDFConstants {
     }
 
     /**
-     * Scan for the end of variable length data. Given a pointer to
-     * the data for this subfield (from within a DDFRecord) this
-     * method will return the number of bytes which are data for this
-     * subfield. The number of bytes consumed as part of this field
-     * can also be fetched. This number may be one longer than the
-     * length if there is a terminator character used.
+     * Scan for the end of variable length data. Given a pointer to the data for
+     * this subfield (from within a DDFRecord) this method will return the
+     * number of bytes which are data for this subfield. The number of bytes
+     * consumed as part of this field can also be fetched. This number may be
+     * one longer than the length if there is a terminator character used.
      * <p>
      * 
-     * This method is mainly for internal use, or for applications
-     * which want the raw binary data to interpret themselves.
-     * Otherwise use one of ExtractStringData(), ExtractIntData() or
-     * ExtractFloatData().
+     * This method is mainly for internal use, or for applications which want
+     * the raw binary data to interpret themselves. Otherwise use one of
+     * ExtractStringData(), ExtractIntData() or ExtractFloatData().
      * 
-     * @param pachSourceData The pointer to the raw data for this
-     *        field. This may have come from DDFRecord::GetData(),
-     *        taking into account skip factors over previous subfields
-     *        data.
-     * @param nMaxBytes The maximum number of bytes that are
-     *        accessable after pachSourceData.
-     * @param pnConsumedBytes the number of bytes used.
+     * @param pachSourceData
+     *            The pointer to the raw data for this field. This may have come
+     *            from DDFRecord::GetData(), taking into account skip factors
+     *            over previous subfields data.
+     * @param nMaxBytes
+     *            The maximum number of bytes that are accessable after
+     *            pachSourceData.
+     * @param pnConsumedBytes
+     *            the number of bytes used.
      * 
-     * @return The number of bytes at pachSourceData which are actual
-     *         data for this record (not including unit, or field
-     *         terminator).
+     * @return The number of bytes at pachSourceData which are actual data for
+     *         this record (not including unit, or field terminator).
      */
     public int getDataLength(byte[] pachSourceData, int nMaxBytes,
                              MutableInt pnConsumedBytes) {
@@ -300,13 +305,12 @@ public class DDFSubfieldDefinition implements DDFConstants {
             boolean bCheckFieldTerminator = true;
 
             /*
-             * We only check for the field terminator because of some
-             * buggy datasets with missing format terminators.
-             * However, we have found the field terminator is a legal
-             * character within the fields of some extended datasets
-             * (such as JP34NC94.000). So we don't check for the field
-             * terminator if the field appears to be multi-byte which
-             * we established by the first character being out of the
+             * We only check for the field terminator because of some buggy
+             * datasets with missing format terminators. However, we have found
+             * the field terminator is a legal character within the fields of
+             * some extended datasets (such as JP34NC94.000). So we don't check
+             * for the field terminator if the field appears to be multi-byte
+             * which we established by the first character being out of the
              * ASCII printable range (32-127).
              */
 
@@ -337,37 +341,36 @@ public class DDFSubfieldDefinition implements DDFConstants {
     }
 
     /**
-     * Extract a zero terminated string containing the data for this
-     * subfield. Given a pointer to the data for this subfield (from
-     * within a DDFRecord) this method will return the data for this
-     * subfield. The number of bytes consumed as part of this field
-     * can also be fetched. This number may be one longer than the
-     * string length if there is a terminator character used.
+     * Extract a zero terminated string containing the data for this subfield.
+     * Given a pointer to the data for this subfield (from within a DDFRecord)
+     * this method will return the data for this subfield. The number of bytes
+     * consumed as part of this field can also be fetched. This number may be
+     * one longer than the string length if there is a terminator character
+     * used.
      * <p>
      * 
-     * This function will return the raw binary data of a subfield for
-     * types other than DDFString, including data past zero chars.
-     * This is the standard way of extracting DDFBinaryString
-     * subfields for instance.
+     * This function will return the raw binary data of a subfield for types
+     * other than DDFString, including data past zero chars. This is the
+     * standard way of extracting DDFBinaryString subfields for instance.
      * <p>
      * 
-     * @param pachSourceData The pointer to the raw data for this
-     *        field. This may have come from DDFRecord::GetData(),
-     *        taking into account skip factors over previous subfields
-     *        data.
-     * @param nMaxBytes The maximum number of bytes that are
-     *        accessable after pachSourceData.
-     * @param pnConsumedBytes Pointer to an integer into which the
-     *        number of bytes consumed by this field should be
-     *        written. May be null to ignore. This is used as a skip
-     *        factor to increment pachSourceData to point to the next
-     *        subfields data.
+     * @param pachSourceData
+     *            The pointer to the raw data for this field. This may have come
+     *            from DDFRecord::GetData(), taking into account skip factors
+     *            over previous subfields data.
+     * @param nMaxBytes
+     *            The maximum number of bytes that are accessable after
+     *            pachSourceData.
+     * @param pnConsumedBytes
+     *            Pointer to an integer into which the number of bytes consumed
+     *            by this field should be written. May be null to ignore. This
+     *            is used as a skip factor to increment pachSourceData to point
+     *            to the next subfields data.
      * 
-     * @return A pointer to a buffer containing the data for this
-     *         field. The returned pointer is to an internal buffer
-     *         which is invalidated on the next ExtractStringData()
-     *         call on this DDFSubfieldDefn(). It should not be freed
-     *         by the application.
+     * @return A pointer to a buffer containing the data for this field. The
+     *         returned pointer is to an internal buffer which is invalidated on
+     *         the next ExtractStringData() call on this DDFSubfieldDefn(). It
+     *         should not be freed by the application.
      */
     String extractStringData(byte[] pachSourceData, int nMaxBytes,
                              MutableInt pnConsumedBytes) {
@@ -379,7 +382,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
         int nLength = getDataLength(pachSourceData, nMaxBytes, pnConsumedBytes);
         String ns = new String(pachSourceData, 0, nLength);
 
-        if (Debug.debugging("iso8211detail")) {
+        if (Debug.debugging("iso8211detail") && pnConsumedBytes != null) {
             Debug.output("        extracting string data from " + nLength
                     + " bytes of " + pachSourceData.length + ": " + ns
                     + ": consumed " + pnConsumedBytes.value + " vs. "
@@ -390,27 +393,26 @@ public class DDFSubfieldDefinition implements DDFConstants {
     }
 
     /**
-     * Extract a subfield value as a float. Given a pointer to the
-     * data for this subfield (from within a DDFRecord) this method
-     * will return the floating point data for this subfield. The
-     * number of bytes consumed as part of this field can also be
-     * fetched. This method may be called for any type of subfield,
-     * and will return zero if the subfield is not numeric.
+     * Extract a subfield value as a float. Given a pointer to the data for this
+     * subfield (from within a DDFRecord) this method will return the floating
+     * point data for this subfield. The number of bytes consumed as part of
+     * this field can also be fetched. This method may be called for any type of
+     * subfield, and will return zero if the subfield is not numeric.
      * 
-     * @param pachSourceData The pointer to the raw data for this
-     *        field. This may have come from DDFRecord::GetData(),
-     *        taking into account skip factors over previous subfields
-     *        data.
-     * @param nMaxBytes The maximum number of bytes that are
-     *        accessable after pachSourceData.
-     * @param pnConsumedBytes Pointer to an integer into which the
-     *        number of bytes consumed by this field should be
-     *        written. May be null to ignore. This is used as a skip
-     *        factor to increment pachSourceData to point to the next
-     *        subfields data.
+     * @param pachSourceData
+     *            The pointer to the raw data for this field. This may have come
+     *            from DDFRecord::GetData(), taking into account skip factors
+     *            over previous subfields data.
+     * @param nMaxBytes
+     *            The maximum number of bytes that are accessable after
+     *            pachSourceData.
+     * @param pnConsumedBytes
+     *            Pointer to an integer into which the number of bytes consumed
+     *            by this field should be written. May be null to ignore. This
+     *            is used as a skip factor to increment pachSourceData to point
+     *            to the next subfields data.
      * 
-     * @return The subfield's numeric value (or zero if it isn't
-     *         numeric).
+     * @return The subfield's numeric value (or zero if it isn't numeric).
      */
     public double extractFloatData(byte[] pachSourceData, int nMaxBytes,
                                    MutableInt pnConsumedBytes) {
@@ -421,9 +423,8 @@ public class DDFSubfieldDefinition implements DDFConstants {
         case 'R':
         case 'S':
         case 'C':
-            String dataString = extractStringData(pachSourceData,
-                    nMaxBytes,
-                    pnConsumedBytes);
+            String dataString = extractStringData(pachSourceData, nMaxBytes,
+                                                  pnConsumedBytes);
 
             if (dataString.equals("")) {
                 return 0;
@@ -433,8 +434,9 @@ public class DDFSubfieldDefinition implements DDFConstants {
                 return Double.parseDouble(dataString);
             } catch (NumberFormatException nfe) {
                 if (Debug.debugging("iso8211")) {
-                    Debug.output("DDFSubfieldDefinition.extractFloatData: number format problem: "
-                            + dataString);
+                    Debug
+                            .output("DDFSubfieldDefinition.extractFloatData: number format problem: "
+                                    + dataString);
                 }
                 return 0;
             }
@@ -448,7 +450,8 @@ public class DDFSubfieldDefinition implements DDFConstants {
             }
 
             if (nFormatWidth > nMaxBytes) {
-                Debug.error("DDFSubfieldDefinition: format width is greater than max bytes for float");
+                Debug
+                        .error("DDFSubfieldDefinition: format width is greater than max bytes for float");
                 return 0.0;
             }
 
@@ -465,7 +468,8 @@ public class DDFSubfieldDefinition implements DDFConstants {
             // abyData[nFormatWidth-i-1] = pachSourceData[i];
             // }
             // } else {
-//            System.arraycopy(pachSourceData, 0, abyData, 8-nFormatWidth, nFormatWidth);
+            // System.arraycopy(pachSourceData, 0, abyData, 8-nFormatWidth,
+            // nFormatWidth);
             System.arraycopy(pachSourceData, 0, abyData, 0, nFormatWidth);
             // }
 
@@ -474,37 +478,39 @@ public class DDFSubfieldDefinition implements DDFConstants {
             case DDFBinaryFormat.UInt:
             case DDFBinaryFormat.SInt:
             case DDFBinaryFormat.FloatReal:
-                return (int) pszFormatString.charAt(0) =='B' ? MoreMath.BuildIntegerBE(abyData): MoreMath.BuildIntegerLE(abyData);
+                return (int) pszFormatString.charAt(0) == 'B' ? MoreMath
+                        .BuildIntegerBE(abyData) : MoreMath
+                        .BuildIntegerLE(abyData);
 
-            // if (nFormatWidth == 1)
-            // return(abyData[0]);
-            // else if (nFormatWidth == 2)
-            // return(*((GUInt16 *) abyData));
-            // else if (nFormatWidth == 4)
-            // return(*((GUInt32 *) abyData));
-            // else {
-            // return 0.0;
-            // }
+                // if (nFormatWidth == 1)
+                // return(abyData[0]);
+                // else if (nFormatWidth == 2)
+                // return(*((GUInt16 *) abyData));
+                // else if (nFormatWidth == 4)
+                // return(*((GUInt32 *) abyData));
+                // else {
+                // return 0.0;
+                // }
 
-            // case DDFBinaryFormat.SInt:
-            // if (nFormatWidth == 1)
-            // return(*((signed char *) abyData));
-            // else if (nFormatWidth == 2)
-            // return(*((GInt16 *) abyData));
-            // else if (nFormatWidth == 4)
-            // return(*((GInt32 *) abyData));
-            // else {
-            // return 0.0;
-            // }
+                // case DDFBinaryFormat.SInt:
+                // if (nFormatWidth == 1)
+                // return(*((signed char *) abyData));
+                // else if (nFormatWidth == 2)
+                // return(*((GInt16 *) abyData));
+                // else if (nFormatWidth == 4)
+                // return(*((GInt32 *) abyData));
+                // else {
+                // return 0.0;
+                // }
 
-            // case DDFBinaryFormat.FloatReal:
-            // if (nFormatWidth == 4)
-            // return(*((float *) abyData));
-            // else if (nFormatWidth == 8)
-            // return(*((double *) abyData));
-            // else {
-            // return 0.0;
-            // }
+                // case DDFBinaryFormat.FloatReal:
+                // if (nFormatWidth == 4)
+                // return(*((float *) abyData));
+                // else if (nFormatWidth == 8)
+                // return(*((double *) abyData));
+                // else {
+                // return 0.0;
+                // }
 
             case DDFBinaryFormat.NotBinary:
             case DDFBinaryFormat.FPReal:
@@ -522,27 +528,26 @@ public class DDFSubfieldDefinition implements DDFConstants {
     }
 
     /**
-     * Extract a subfield value as an integer. Given a pointer to the
-     * data for this subfield (from within a DDFRecord) this method
-     * will return the int data for this subfield. The number of bytes
-     * consumed as part of this field can also be fetched. This method
-     * may be called for any type of subfield, and will return zero if
-     * the subfield is not numeric.
+     * Extract a subfield value as an integer. Given a pointer to the data for
+     * this subfield (from within a DDFRecord) this method will return the int
+     * data for this subfield. The number of bytes consumed as part of this
+     * field can also be fetched. This method may be called for any type of
+     * subfield, and will return zero if the subfield is not numeric.
      * 
-     * @param pachSourceData The pointer to the raw data for this
-     *        field. This may have come from DDFRecord::GetData(),
-     *        taking into account skip factors over previous subfields
-     *        data.
-     * @param nMaxBytes The maximum number of bytes that are
-     *        accessable after pachSourceData.
-     * @param pnConsumedBytes Pointer to an integer into which the
-     *        number of bytes consumed by this field should be
-     *        written. May be null to ignore. This is used as a skip
-     *        factor to increment pachSourceData to point to the next
-     *        subfields data.
+     * @param pachSourceData
+     *            The pointer to the raw data for this field. This may have come
+     *            from DDFRecord::GetData(), taking into account skip factors
+     *            over previous subfields data.
+     * @param nMaxBytes
+     *            The maximum number of bytes that are accessable after
+     *            pachSourceData.
+     * @param pnConsumedBytes
+     *            Pointer to an integer into which the number of bytes consumed
+     *            by this field should be written. May be null to ignore. This
+     *            is used as a skip factor to increment pachSourceData to point
+     *            to the next subfields data.
      * 
-     * @return The subfield's numeric value (or zero if it isn't
-     *         numeric).
+     * @return The subfield's numeric value (or zero if it isn't numeric).
      */
     public int extractIntData(byte[] pachSourceData, int nMaxBytes,
                               MutableInt pnConsumedBytes) {
@@ -553,9 +558,8 @@ public class DDFSubfieldDefinition implements DDFConstants {
         case 'R':
         case 'S':
         case 'C':
-            String dataString = extractStringData(pachSourceData,
-                    nMaxBytes,
-                    pnConsumedBytes);
+            String dataString = extractStringData(pachSourceData, nMaxBytes,
+                                                  pnConsumedBytes);
             if (dataString.equals("")) {
                 return 0;
             }
@@ -564,8 +568,9 @@ public class DDFSubfieldDefinition implements DDFConstants {
                 return Double.valueOf(dataString).intValue();
             } catch (NumberFormatException nfe) {
                 if (Debug.debugging("iso8211")) {
-                    Debug.output("DDFSubfieldDefinition.extractIntData: number format problem: "
-                            + dataString);
+                    Debug
+                            .output("DDFSubfieldDefinition.extractIntData: number format problem: "
+                                    + dataString);
                 }
                 return 0;
             }
@@ -574,7 +579,8 @@ public class DDFSubfieldDefinition implements DDFConstants {
         case 'b':
             byte[] abyData = new byte[4];
             if (nFormatWidth > nMaxBytes) {
-                Debug.error("DDFSubfieldDefinition: format width is greater than max bytes for int");
+                Debug
+                        .error("DDFSubfieldDefinition: format width is greater than max bytes for int");
                 return 0;
             }
 
@@ -582,7 +588,8 @@ public class DDFSubfieldDefinition implements DDFConstants {
                 pnConsumedBytes.value = nFormatWidth;
             }
 
-//           System.arraycopy(pachSourceData, 0, abyData, 4-nFormatWidth, nFormatWidth);
+            // System.arraycopy(pachSourceData, 0, abyData, 4-nFormatWidth,
+            // nFormatWidth);
             System.arraycopy(pachSourceData, 0, abyData, 0, nFormatWidth);
 
             // Interpret the bytes of data.
@@ -590,41 +597,43 @@ public class DDFSubfieldDefinition implements DDFConstants {
             case DDFBinaryFormat.UInt:
             case DDFBinaryFormat.SInt:
             case DDFBinaryFormat.FloatReal:
-                return (int) pszFormatString.charAt(0) =='B' ? MoreMath.BuildIntegerBE(abyData): MoreMath.BuildIntegerLE(abyData);
+                return (int) pszFormatString.charAt(0) == 'B' ? MoreMath
+                        .BuildIntegerBE(abyData) : MoreMath
+                        .BuildIntegerLE(abyData);
 
-            // case DDFBinaryFormat.UInt:
-            // if (nFormatWidth == 4)
-            // return((int) *((GUInt32 *) abyData));
-            // else if (nFormatWidth == 1)
-            // return(abyData[0]);
-            // else if (nFormatWidth == 2)
-            // return(*((GUInt16 *) abyData));
-            // else {
-            // CPLAssert(false);
-            // return 0;
-            // }
+                // case DDFBinaryFormat.UInt:
+                // if (nFormatWidth == 4)
+                // return((int) *((GUInt32 *) abyData));
+                // else if (nFormatWidth == 1)
+                // return(abyData[0]);
+                // else if (nFormatWidth == 2)
+                // return(*((GUInt16 *) abyData));
+                // else {
+                // CPLAssert(false);
+                // return 0;
+                // }
 
-            // case DDFBinaryFormat.SInt:
-            // if (nFormatWidth == 4)
-            // return(*((GInt32 *) abyData));
-            // else if (nFormatWidth == 1)
-            // return(*((signed char *) abyData));
-            // else if (nFormatWidth == 2)
-            // return(*((GInt16 *) abyData));
-            // else {
-            // CPLAssert(false);
-            // return 0;
-            // }
+                // case DDFBinaryFormat.SInt:
+                // if (nFormatWidth == 4)
+                // return(*((GInt32 *) abyData));
+                // else if (nFormatWidth == 1)
+                // return(*((signed char *) abyData));
+                // else if (nFormatWidth == 2)
+                // return(*((GInt16 *) abyData));
+                // else {
+                // CPLAssert(false);
+                // return 0;
+                // }
 
-            // case DDFBinaryFormat.FloatReal:
-            // if (nFormatWidth == 4)
-            // return((int) *((float *) abyData));
-            // else if (nFormatWidth == 8)
-            // return((int) *((double *) abyData));
-            // else {
-            // CPLAssert(false);
-            // return 0;
-            // }
+                // case DDFBinaryFormat.FloatReal:
+                // if (nFormatWidth == 4)
+                // return((int) *((float *) abyData));
+                // else if (nFormatWidth == 8)
+                // return((int) *((double *) abyData));
+                // else {
+                // CPLAssert(false);
+                // return 0;
+                // }
 
             case DDFBinaryFormat.NotBinary:
             case DDFBinaryFormat.FPReal:
@@ -644,8 +653,10 @@ public class DDFSubfieldDefinition implements DDFConstants {
     /**
      * Dump subfield value to debugging file.
      * 
-     * @param pachData Pointer to data for this subfield.
-     * @param nMaxBytes Maximum number of bytes available in pachData.
+     * @param pachData
+     *            Pointer to data for this subfield.
+     * @param nMaxBytes
+     *            Maximum number of bytes available in pachData.
      */
     public String dumpData(byte[] pachData, int nMaxBytes) {
         StringBuffer sb = new StringBuffer();

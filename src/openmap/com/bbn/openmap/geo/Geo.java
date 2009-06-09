@@ -110,13 +110,16 @@ public class Geo {
         return Length.NM.toRadians(nm);
     }
 
-    public Geo() {}
+    public Geo() {
+    }
 
     /**
      * Construct a Geo from its latitude and longitude.
      * 
-     * @param lat latitude in decimal degrees.
-     * @param lon longitude in decimal degrees.
+     * @param lat
+     *            latitude in decimal degrees.
+     * @param lon
+     *            longitude in decimal degrees.
      */
     public Geo(double lat, double lon) {
         initialize(lat, lon);
@@ -125,10 +128,13 @@ public class Geo {
     /**
      * Construct a Geo from its latitude and longitude.
      * 
-     * @param lat latitude.
-     * @param lon longitude.
-     * @param isDegrees should be true if the lat/lon are specified in decimal
-     *        degrees, false if they are radians.
+     * @param lat
+     *            latitude.
+     * @param lon
+     *            longitude.
+     * @param isDegrees
+     *            should be true if the lat/lon are specified in decimal
+     *            degrees, false if they are radians.
      */
     public Geo(double lat, double lon, boolean isDegrees) {
         if (isDegrees) {
@@ -195,8 +201,10 @@ public class Geo {
     /**
      * Initialize this Geo with to represent coordinates.
      * 
-     * @param lat latitude in decimal degrees.
-     * @param lon longitude in decimal degrees.
+     * @param lat
+     *            latitude in decimal degrees.
+     * @param lon
+     *            longitude in decimal degrees.
      */
     public void initialize(double lat, double lon) {
         initializeRadians(radians(lat), radians(lon));
@@ -205,8 +213,10 @@ public class Geo {
     /**
      * Initialize this Geo with to represent coordinates.
      * 
-     * @param lat latitude in radians.
-     * @param lon longitude in radians.
+     * @param lat
+     *            latitude in radians.
+     * @param lon
+     *            longitude in radians.
      */
     public void initializeRadians(double lat, double lon) {
         double rlat = geocentricLatitude(lat);
@@ -232,8 +242,9 @@ public class Geo {
      * between the two. The result is undefined of the two points are antipodes.
      * 
      * @param g2
-     * @param ret a Geo value to set returned values in. Do not pass in a null
-     *        value.
+     * @param ret
+     *            a Geo value to set returned values in. Do not pass in a null
+     *            value.
      * @return midpoint Geo.
      */
     public Geo midPoint(Geo g2, Geo ret) {
@@ -248,7 +259,8 @@ public class Geo {
      * 
      * @param g2
      * @param x
-     * @param ret Do not pass in a null value.
+     * @param ret
+     *            Do not pass in a null value.
      * @return
      */
     public Geo interpolate(Geo g2, double x, Geo ret) {
@@ -260,8 +272,8 @@ public class Geo {
     }
 
     public double getLatitude() {
-        return degrees(geographicLatitude(Math.atan2(z,
-                Math.sqrt(x * x + y * y))));
+        return degrees(geographicLatitude(Math.atan2(z, Math
+                .sqrt(x * x + y * y))));
     }
 
     public double getLongitude() {
@@ -624,9 +636,8 @@ public class Geo {
     public static boolean isInside(double lat1, double lon1, double lat2,
                                    double lon2, double radius, double lat3,
                                    double lon3) {
-        return (new Geo(lat1, lon1)).isInside(new Geo(lat2, lon2),
-                radius,
-                new Geo(lat3, lon3));
+        return (new Geo(lat1, lon1)).isInside(new Geo(lat2, lon2), radius,
+                                              new Geo(lat3, lon3));
     }
 
     /**
@@ -635,8 +646,7 @@ public class Geo {
      */
     public boolean inBubble(Geo v2, double forwardRadius, double backRadius,
                             Geo p) {
-        return distance(p) <= ((v2.subtract(this)
-                .normalize()
+        return distance(p) <= ((v2.subtract(this).normalize()
                 .dot(p.subtract(this)) > 0.0) ? forwardRadius : backRadius);
     }
 
@@ -662,7 +672,7 @@ public class Geo {
      * That is, find the point, y, lying between this and q such that
      * 
      * <pre>
-     *                              
+     * 
      *  y = [x*this + (1-x)*q]*c
      *  where c = 1/y.dot(y) is a factor for normalizing y.
      *  y.dot(r) = 0
@@ -672,7 +682,7 @@ public class Geo {
      *  x*this.dot(r) + (1-x)*q.dot(r) = 0
      *  x*a + (1-x)*b = 0
      *  x = -b/(a - b)
-     *                                        
+     * 
      * </pre>
      * 
      * We assume that this and q are less than 180 degrees appart. When this and
@@ -695,7 +705,7 @@ public class Geo {
      * That is, find the point, y, lying between this and q such that
      * 
      * <pre>
-     *                              
+     * 
      *  y = [x*this + (1-x)*q]*c
      *  where c = 1/y.dot(y) is a factor for normalizing y.
      *  y.dot(r) = 0
@@ -705,7 +715,7 @@ public class Geo {
      *  x*this.dot(r) + (1-x)*q.dot(r) = 0
      *  x*a + (1-x)*b = 0
      *  x = -b/(a - b)
-     *                                        
+     * 
      * </pre>
      * 
      * We assume that this and q are less than 180 degrees appart. When this and
@@ -735,12 +745,16 @@ public class Geo {
      * Wrap a fixed-distance corridor around an (open) path, as specified by an
      * array of Geo.
      * 
-     * @param path Open path, must not have repeated points or consecutive
-     *        antipodes.
-     * @param radius Distance from path to widen corridor, in angular radians.
-     * @param err maximum angle of rounded edges, in radians. If 0, will
-     *        directly cut outside bends.
-     * @param capp iff true, will round end caps
+     * @param path
+     *            Open path, must not have repeated points or consecutive
+     *            antipodes.
+     * @param radius
+     *            Distance from path to widen corridor, in angular radians.
+     * @param err
+     *            maximum angle of rounded edges, in radians. If 0, will
+     *            directly cut outside bends.
+     * @param capp
+     *            iff true, will round end caps
      * @return a closed polygon representing the specified corridor around the
      *         path.
      * 
@@ -777,7 +791,7 @@ public class Geo {
             Geo r1b = g1.add(n1);
             Geo l1b = g1.subtract(n1);
 
-            if (n0 == null) {
+            if (n0 == null || g0 == null) {
                 if (capp && err > 0) {
                     // start cap
                     Geo[] arc = approximateArc(g1, l1b, r1b, err);
@@ -813,10 +827,8 @@ public class Geo {
                     }
                     l0 = l1b;
 
-                    Geo ip = Intersection.segmentsIntersect(r0,
-                            r1a,
-                            r1b,
-                            g2.add(n1));
+                    Geo ip = Intersection.segmentsIntersect(r0, r1a, r1b, g2
+                            .add(n1));
                     // if they intersect, take the intersection, else use the
                     // points and punt
                     if (ip != null) {
@@ -827,10 +839,8 @@ public class Geo {
                     }
                     r0 = ip;
                 } else {
-                    Geo ip = Intersection.segmentsIntersect(l0,
-                            l1a,
-                            l1b,
-                            g2.subtract(n1));
+                    Geo ip = Intersection.segmentsIntersect(l0, l1a, l1b, g2
+                            .subtract(n1));
                     // if they intersect, take the intersection, else use the
                     // points and punt
                     if (ip != null) {
@@ -895,12 +905,16 @@ public class Geo {
      * compute a polygonal approximation of an arc centered at pc, beginning at
      * p0 and ending at p1, going clockwise and including the two end points.
      * 
-     * @param pc center point
-     * @param p0 starting point
-     * @param p1 ending point
-     * @param err The maximum angle between approximates allowed, in radians.
-     *        Smaller values will look better but will result in more returned
-     *        points.
+     * @param pc
+     *            center point
+     * @param p0
+     *            starting point
+     * @param p1
+     *            ending point
+     * @param err
+     *            The maximum angle between approximates allowed, in radians.
+     *            Smaller values will look better but will result in more
+     *            returned points.
      * @return
      */
     public static final Geo[] approximateArc(Geo pc, Geo p0, Geo p1, double err) {
@@ -943,9 +957,11 @@ public class Geo {
      * Returns a Geo that is distance (radians), and azimuth (radians) away from
      * this.
      * 
-     * @param distance distance of this to the target point in radians.
-     * @param azimuth Direction of target point from this, in radians, clockwise
-     *        from north.
+     * @param distance
+     *            distance of this to the target point in radians.
+     * @param azimuth
+     *            Direction of target point from this, in radians, clockwise
+     *            from north.
      * @note this is undefined at the north pole, at which point "azimuth" is
      *       undefined.
      */
@@ -957,9 +973,11 @@ public class Geo {
      * Returns a Geo that is distance (radians), and azimuth (radians) away from
      * this.
      * 
-     * @param distance distance of this to the target point in radians.
-     * @param azimuth Direction of target point from this, in radians, clockwise
-     *        from north.
+     * @param distance
+     *            distance of this to the target point in radians.
+     * @param azimuth
+     *            Direction of target point from this, in radians, clockwise
+     *            from north.
      * @note this is undefined at the north pole, at which point "azimuth" is
      *       undefined.
      * @return ret Do not pass in a null value.
@@ -997,11 +1015,12 @@ public class Geo {
      * getLatitudeRadians(); double lonr = getLongitudeRadians();
      * 
      * double coslat = Math.cos(latr); double sinlat = Math.sin(latr); double
-     * cosaz = Math.cos(azimuth); double sinaz = Math.sin(azimuth); double sind =
-     * Math.sin(distance); double cosd = Math.cos(distance);
+     * cosaz = Math.cos(azimuth); double sinaz = Math.sin(azimuth); double sind
+     * = Math.sin(distance); double cosd = Math.cos(distance);
      * 
      * return makeGeoRadians(Math.asin(sinlat * cosd + coslat * sind * cosaz),
-     * Math.atan2(sind * sinaz, coslat * cosd - sinlat * sind * cosaz) + lonr); }
+     * Math.atan2(sind * sinaz, coslat * cosd - sinlat * sind * cosaz) + lonr);
+     * }
      */
 
     //
@@ -1024,8 +1043,8 @@ public class Geo {
         Geo[] ga = new Geo[coords.length];
         for (int i = 0; i < coords.length; i++) {
             String[] ll = coords[i].split(",");
-            ga[i] = Geo.makeGeoDegrees(Double.parseDouble(ll[0]),
-                    Double.parseDouble(ll[1]));
+            ga[i] = Geo.makeGeoDegrees(Double.parseDouble(ll[0]), Double
+                    .parseDouble(ll[1]));
         }
         return ga;
     }

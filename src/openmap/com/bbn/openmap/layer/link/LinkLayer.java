@@ -182,7 +182,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             // the SwingWorker thread returns. The list has
             // already been nulled out, will be reset when the
             // asynchronous thread decides it is.
-            public void workerComplete(OMGraphicList list) {}
+            public void workerComplete(OMGraphicList list) {
+            }
         });
     }
 
@@ -190,10 +191,13 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
      * Constructor to use when LinkLayer is not being used with OpenMap
      * application.
      * 
-     * @param host the hostname of the server's computer.
-     * @param port the port number of the server.
-     * @param propertiesURL the URL of a properties file that contains
-     *        parameters for the server.
+     * @param host
+     *            the hostname of the server's computer.
+     * @param port
+     *            the port number of the server.
+     * @param propertiesURL
+     *            the URL of a properties file that contains parameters for the
+     *            server.
      */
     public LinkLayer(String host, int port, String propertiesURL) {
         this();
@@ -212,7 +216,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                         + propertiesURL);
                 System.err.println(mue);
             } catch (IOException ioe) {
-                System.err.println("LinkLayer: IOException reading properties file:");
+                System.err
+                        .println("LinkLayer: IOException reading properties file:");
                 System.err.println(ioe);
             }
         }
@@ -221,7 +226,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     /**
      * Sets the current graphics list to the given list.
      * 
-     * @param aList a list of OMGraphics
+     * @param aList
+     *            a list of OMGraphics
      */
     public synchronized void setGraphicList(LinkOMGraphicList aList) {
         super.setList(aList);
@@ -246,7 +252,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
      * Sets the masked integer which indicates what types of events get sent to
      * the server.
      * 
-     * @param descriptor masked int
+     * @param descriptor
+     *            masked int
      * @see LinkActionRequest
      */
     public synchronized void setGestureDescriptor(int descriptor) {
@@ -267,9 +274,11 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     /**
      * Set all the Link properties from a properties object.
      * 
-     * @param prefix the prefix to the properties tha might individualize it to
-     *        a particular layer.
-     * @param properties the properties for the layer.
+     * @param prefix
+     *            the prefix to the properties tha might individualize it to a
+     *            particular layer.
+     * @param properties
+     *            the properties for the layer.
      */
     public void setProperties(String prefix, Properties properties) {
 
@@ -289,11 +298,12 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
 
         linkManager = new LinkManager(host, port);
 
-        linkManager.setObeyCommandToExit(PropUtils.booleanFromProperties(properties,
-                realPrefix + ExitOnCommandProperty,
-                false));
+        linkManager.setObeyCommandToExit(PropUtils
+                .booleanFromProperties(properties, realPrefix
+                        + ExitOnCommandProperty, false));
 
-        String propertiesURL = properties.getProperty(realPrefix + ArgsProperty);
+        String propertiesURL = properties
+                .getProperty(realPrefix + ArgsProperty);
 
         args = new LinkProperties(); // Empty if not filled.
         if (propertiesURL != null) {
@@ -314,13 +324,15 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                         + realPrefix + ArgsProperty);
                 System.err.println(mue);
             } catch (IOException ioe) {
-                System.err.println("LinkLayer: IOException reading properties file:");
+                System.err
+                        .println("LinkLayer: IOException reading properties file:");
                 System.err.println(ioe);
             }
         }
 
-        currentGenerator = (OMGridGenerator) PropUtils.objectFromProperties(properties,
-                realPrefix + GridGeneratorProperty);
+        currentGenerator = (OMGridGenerator) PropUtils
+                .objectFromProperties(properties, realPrefix
+                        + GridGeneratorProperty);
 
         if (currentGenerator == null) {
             Debug.message("linkdetail", getName()
@@ -345,20 +357,16 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     public void checkAndReplaceOldPropertyNames(LinkProperties props) {
         checkAndReplaceOldPropertyName(props, LPC_OLD_LINECOLOR, LPC_LINECOLOR);
         checkAndReplaceOldPropertyName(props, LPC_OLD_LINESTYLE, LPC_LINESTYLE);
-        checkAndReplaceOldPropertyName(props,
-                LPC_OLD_HIGHLIGHTCOLOR,
-                LPC_HIGHLIGHTCOLOR);
+        checkAndReplaceOldPropertyName(props, LPC_OLD_HIGHLIGHTCOLOR,
+                                       LPC_HIGHLIGHTCOLOR);
         checkAndReplaceOldPropertyName(props, LPC_OLD_FILLCOLOR, LPC_FILLCOLOR);
-        checkAndReplaceOldPropertyName(props,
-                LPC_OLD_FILLPATTERN,
-                LPC_FILLPATTERN);
+        checkAndReplaceOldPropertyName(props, LPC_OLD_FILLPATTERN,
+                                       LPC_FILLPATTERN);
         checkAndReplaceOldPropertyName(props, LPC_OLD_LINEWIDTH, LPC_LINEWIDTH);
-        checkAndReplaceOldPropertyName(props,
-                LPC_OLD_LINKTEXTSTRING,
-                LPC_LINKTEXTSTRING);
-        checkAndReplaceOldPropertyName(props,
-                LPC_OLD_LINKTEXTFONT,
-                LPC_LINKTEXTFONT);
+        checkAndReplaceOldPropertyName(props, LPC_OLD_LINKTEXTSTRING,
+                                       LPC_LINKTEXTSTRING);
+        checkAndReplaceOldPropertyName(props, LPC_OLD_LINKTEXTFONT,
+                                       LPC_LINKTEXTFONT);
     }
 
     public void checkAndReplaceOldPropertyName(LinkProperties props,
@@ -419,7 +427,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
 
         Projection projection = getProjection();
         if (projection == null) {
-            Debug.error("Link Layer needs to be added to the MapBean before it can get graphics!");
+            Debug
+                    .error("Link Layer needs to be added to the MapBean before it can get graphics!");
             return currentList;
         } else if (currentList != null) {
             // If the list isn't empty, it isn't being cleared when a
@@ -455,7 +464,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             ClientLink l = linkManager.getLink(true);
 
             if (l == null) {
-                System.err.println("LinkLayer: unable to get link in prepare().");
+                System.err
+                        .println("LinkLayer: unable to get link in prepare().");
                 return currentList;
             }
 
@@ -470,7 +480,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             System.err.println("LinkLayer: unknown host!");
             // return currentList;
         } catch (java.io.IOException ioe) {
-            System.err.println("LinkLayer: IOException contacting server for map request!");
+            System.err
+                    .println("LinkLayer: IOException contacting server for map request!");
             System.err.println(ioe);
 
             linkManager.resetLink();
@@ -516,8 +527,10 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     /**
      * Creates the LinkMapRequest.
      * 
-     * @param link the link to communicate over.
-     * @param proj the projection to give to the graphics.
+     * @param link
+     *            the link to communicate over.
+     * @param proj
+     *            the projection to give to the graphics.
      * @return LinkOMGraphicList containing graphics from the server.
      * @throws IOException
      */
@@ -550,14 +563,9 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
         }
 
         Point2D center = proj.getCenter();
-        LinkMapRequest.write((float) center.getY(),
-                (float) center.getX(),
-                proj.getScale(),
-                proj.getHeight(),
-                proj.getWidth(),
-                boundingPolys,
-                args,
-                link);
+        LinkMapRequest.write((float) center.getY(), (float) center.getX(), proj
+                .getScale(), proj.getHeight(), proj.getWidth(), boundingPolys,
+                             args, link);
 
         // ///////////////////////////////////////////////////
         // With asynchronous behavior, we don't listen to the reply
@@ -619,8 +627,9 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
         Projection proj = getProjection();
 
         if (graphics == null) {
-            Debug.message("link",
-                    "LinkLayer.handleLinkActionList: null LinkOMGraphicList, making new one...");
+            Debug
+                    .message("link",
+                             "LinkLayer.handleLinkActionList: null LinkOMGraphicList, making new one...");
             // Why ignore what the server has to say, set the new
             // OMGraphicList and react accordingly.
             graphics = new LinkOMGraphicList();
@@ -633,8 +642,9 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
 
             // Take care of this first.....
             if (LinkUtil.isMask(gu.action, MODIFY_DESELECTALL_GRAPHIC_MASK)) {
-                Debug.message("link",
-                        "LinkLayer.handleLinkActionList: deselecting all graphics");
+                Debug
+                        .message("link",
+                                 "LinkLayer.handleLinkActionList: deselecting all graphics");
                 graphics.deselect();
             }
 
@@ -654,8 +664,9 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             // OMGraphic again...
 
             if (gu == null) {
-                Debug.message("link",
-                        "LinkLayer.handleLinkActionList: null GraphicUpdate, skipping...");
+                Debug
+                        .message("link",
+                                 "LinkLayer.handleLinkActionList: null GraphicUpdate, skipping...");
                 continue;
             }
 
@@ -665,8 +676,9 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
 
             if (LinkUtil.isMask(gu.action, UPDATE_ADD_GRAPHIC_MASK)) {
                 if (Debug.debugging("link")) {
-                    Debug.output("LinkLayer.handleLinkActionList: adding graphic, id:"
-                            + gu.id);
+                    Debug
+                            .output("LinkLayer.handleLinkActionList: adding graphic, id:"
+                                    + gu.id);
                 }
                 if (gug != null) {
                     gug.generate(proj);
@@ -674,8 +686,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                     reactionGraphic = gug;
                 } else {
                     Debug.message("link",
-                            "LinkLayer.handleLinkActionList: trying to add null OMGraphic, id: "
-                                    + gu.id);
+                                  "LinkLayer.handleLinkActionList: trying to add null OMGraphic, id: "
+                                          + gu.id);
                 }
             } else if (gu.id != null) {
                 reactionGraphicIndex = graphics.getOMGraphicIndexWithId(gu.id);
@@ -685,8 +697,9 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                         // If gu.graphic is null, this will throw an
                         // exception
                         if (Debug.debugging("link")) {
-                            Debug.output("LinkLayer.handleLinkActionList: adding graphic "
-                                    + gu.id);
+                            Debug
+                                    .output("LinkLayer.handleLinkActionList: adding graphic "
+                                            + gu.id);
                         }
                         if (gug != null) {
                             gug.generate(proj);
@@ -694,12 +707,13 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                             reactionGraphic = gug;
                         } else {
                             Debug.message("link",
-                                    "LinkLayer.handleLinkActionList: trying to add null OMGraphic, id: "
-                                            + gu.id);
+                                          "LinkLayer.handleLinkActionList: trying to add null OMGraphic, id: "
+                                                  + gu.id);
                         }
                     } else {
                         gu.action = 0; // No action...
-                        Debug.error("LinkLayer.handleLinkActionList: Gesture Response on an unknown graphic.");
+                        Debug
+                                .error("LinkLayer.handleLinkActionList: Gesture Response on an unknown graphic.");
                     }
                 } else if (LinkUtil.isMask(gu.action, UPDATE_GRAPHIC_MASK)) {
                     if (gug != null) {
@@ -707,14 +721,15 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                         reactionGraphic = gug;
                     } else {
                         Debug.message("link",
-                                "LinkLayer.handleLinkActionList: trying to update null OMGraphic, id: "
-                                        + gu.id);
+                                      "LinkLayer.handleLinkActionList: trying to update null OMGraphic, id: "
+                                              + gu.id);
                     }
                 } else {
                     reactionGraphic = graphics.getOMGraphicWithId(gu.id);
                 }
             } else {
-                Debug.error("LinkLayer.handleLinkActionList:  null ID for graphic");
+                Debug
+                        .error("LinkLayer.handleLinkActionList:  null ID for graphic");
             }
 
             // Now, perform the appropriate action on the graphic...
@@ -730,24 +745,27 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                 if (LinkUtil.isMask(gu.action, UPDATE_GRAPHIC_MASK)) {
                     Debug.message("link", "LinkLayer: updating graphic");
                     graphics.setOMGraphicAt(reactionGraphic,
-                            reactionGraphicIndex);
+                                            reactionGraphicIndex);
                 }
 
-                // For graphic selection and deselection
-                if (LinkUtil.isMask(gu.action, MODIFY_SELECT_GRAPHIC_MASK)) {
-                    Debug.message("link", "LinkLayer: selecting graphic");
-                    reactionGraphic.select();
-                } else if (LinkUtil.isMask(gu.action,
-                        MODIFY_DESELECT_GRAPHIC_MASK)) {
-                    Debug.message("link", "LinkLayer: deselecting graphic");
-                    reactionGraphic.deselect();
+                if (reactionGraphic != null) {
+                    // For graphic selection and deselection
+                    if (LinkUtil.isMask(gu.action, MODIFY_SELECT_GRAPHIC_MASK)) {
+                        Debug.message("link", "LinkLayer: selecting graphic");
+                        reactionGraphic.select();
+                    } else if (LinkUtil.isMask(gu.action,
+                                               MODIFY_DESELECT_GRAPHIC_MASK)) {
+                        Debug.message("link", "LinkLayer: deselecting graphic");
+                        reactionGraphic.deselect();
+                    }
                 }
 
                 // Now, raising or lowering the graphic...
                 if (LinkUtil.isMask(gu.action, MODIFY_RAISE_GRAPHIC_MASK)) {
                     Debug.message("link", "LinkLayer: raising graphic");
                     graphics.moveIndexedToTop(reactionGraphicIndex);
-                } else if (LinkUtil.isMask(gu.action, MODIFY_LOWER_GRAPHIC_MASK)) {
+                } else if (LinkUtil
+                        .isMask(gu.action, MODIFY_LOWER_GRAPHIC_MASK)) {
                     Debug.message("link", "LinkLayer: lowering graphic");
                     graphics.moveIndexedToBottom(reactionGraphicIndex);
                 }
@@ -778,7 +796,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
      * attributes. Then, the information delegator is called to handle their
      * display.
      * 
-     * @param props LinkProperties containing messages.
+     * @param props
+     *            LinkProperties containing messages.
      */
     public void handleMessages(LinkProperties props) {
         String value = props.getProperty(LPC_INFO);
@@ -876,9 +895,12 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
      * line, and also check the following, in this order: url and then html. If
      * there is a message property, the message is sent in a pop-up window.
      * 
-     * @param graphic the graphic to check out.
-     * @param descriptor the type of gesture.
-     * @param e mouse event, to get location.
+     * @param graphic
+     *            the graphic to check out.
+     * @param descriptor
+     *            the type of gesture.
+     * @param e
+     *            mouse event, to get location.
      * @return true if the server still needs to be told - per descriptor bit
      *         11.
      */
@@ -894,7 +916,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
         boolean mm = LinkUtil.isMask(descriptor, MOUSE_MOVED_MASK);
         // server inform
         boolean si = LinkUtil.isMask(getGestureDescriptor(),
-                SERVER_NOTIFICATION_MASK);
+                                     SERVER_NOTIFICATION_MASK);
 
         boolean ret = true;
 
@@ -902,8 +924,9 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             String url = props.getProperty(LPC_URL);
             if (url != null) {
                 if (Debug.debugging("link")) {
-                    System.out.println("LinkLayer:graphicGestureReaction: displaying url: "
-                            + url);
+                    System.out
+                            .println("LinkLayer:graphicGestureReaction: displaying url: "
+                                    + url);
                 }
                 fireRequestURL(url);
                 ret = si;
@@ -928,8 +951,9 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             String info = props.getProperty(LPC_INFO);
             if (info != null) {
                 if (Debug.debugging("link")) {
-                    System.out.println("LinkLayer:graphicGestureReaction: displaying info line: "
-                            + info);
+                    System.out
+                            .println("LinkLayer:graphicGestureReaction: displaying info line: "
+                                    + info);
                 }
                 fireRequestInfoLine(info);
                 ret = si;
@@ -945,8 +969,10 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
      * communication with the InformationDelegator. The GraphicUpdates are
      * handled in this method - the graphics list is modified.
      * 
-     * @param descriptor a masked integer telling the type of gesture.
-     * @param e the MouseEvent.
+     * @param descriptor
+     *            a masked integer telling the type of gesture.
+     * @param e
+     *            the MouseEvent.
      * @return true if the event was consumed.
      */
     protected boolean handleGesture(int descriptor, MouseEvent e) {
@@ -976,9 +1002,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                 // distanceLimit);
 
                 // We need to do this to deselect everything else too.
-                gesGraphic = graphics.selectClosest(e.getX(),
-                        e.getY(),
-                        distanceLimit);
+                gesGraphic = graphics.selectClosest(e.getX(), e.getY(),
+                                                    distanceLimit);
             }
 
             String id = null;
@@ -991,8 +1016,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             if (gesGraphic != null) {
 
                 boolean tellServer = graphicGestureReaction(gesGraphic,
-                        descriptor,
-                        e);
+                                                            descriptor, e);
 
                 if (!tellServer) {
                     repaint();
@@ -1005,7 +1029,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                 // back.
 
                 descriptor = LinkUtil.setMask(descriptor, GRAPHIC_ID_MASK);
-                id = ((LinkProperties) gesGraphic.getAppObject()).getProperty(LPC_GRAPHICID);
+                id = ((LinkProperties) gesGraphic.getAppObject())
+                        .getProperty(LPC_GRAPHICID);
             } else {
                 // clear out info line
                 fireRequestInfoLine("");
@@ -1013,7 +1038,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
 
             // server inform
             if (!LinkUtil.isMask(getGestureDescriptor(),
-                    SERVER_NOTIFICATION_MASK)) {
+                                 SERVER_NOTIFICATION_MASK)) {
                 return false;
             }
 
@@ -1031,8 +1056,9 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             // it is not available - it could be used for another
             // graphics or gui fetch.
             if (l == null) {
-                Debug.message("link",
-                        "LinkLayer: unable to get link in handleGesture().");
+                Debug
+                        .message("link",
+                                 "LinkLayer: unable to get link in handleGesture().");
                 return false;
             }
 
@@ -1048,12 +1074,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                 }
 
                 // Send the query
-                LinkActionRequest.write(descriptor,
-                        e,
-                        (float) llpoint.getY(),
-                        (float) llpoint.getX(),
-                        args,
-                        l);
+                LinkActionRequest.write(descriptor, e, (float) llpoint.getY(),
+                                        (float) llpoint.getX(), args, l);
 
                 // ///////////////////////////////////////////////////
                 // With asynchronous behavior, we don't listen to the
@@ -1103,7 +1125,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             return false;
 
         } catch (IOException ioe) {
-            System.err.println("LinkLayer: IOException contacting server during gesture handling!");
+            System.err
+                    .println("LinkLayer: IOException contacting server during gesture handling!");
             System.err.println(ioe);
             linkManager.resetLink();
             return false;
@@ -1136,7 +1159,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             ClientLink l = linkManager.getLink(true);
 
             if (l == null) {
-                System.err.println("LinkLayer.drawingComplete: unable to get link.");
+                System.err
+                        .println("LinkLayer.drawingComplete: unable to get link.");
                 return;
             }
 
@@ -1193,7 +1217,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
      * the graphics list is checked for a graphic that is closest to a mouse
      * event, this is the pixel limit within hits are considered.
      * 
-     * @param limit the pixel limit to consider something "closest".
+     * @param limit
+     *            the pixel limit to consider something "closest".
      */
     public void setDistanceLimit(int limit) {
         if (limit < 0) {
@@ -1213,50 +1238,47 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
     /**
      * Looks at a properties object, and checks for map updates.
      * 
-     * @param props LinkProperties containing map parameters.
+     * @param props
+     *            LinkProperties containing map parameters.
      */
     public void updateMap(LinkProperties props) {
 
         Proj projection = (Proj) getProjection();
         Point2D center = projection.getCenter();
-        float latitude = PropUtils.floatFromProperties(props,
-                LPC_CENTER_LAT,
-                (float) center.getY());
-        float longitude = PropUtils.floatFromProperties(props,
-                LPC_CENTER_LONG,
-                (float) center.getX());
-        float scale = PropUtils.floatFromProperties(props,
-                LPC_SCALE,
-                projection.getScale());
-        int width = PropUtils.intFromProperties(props,
-                LPC_WIDTH,
-                projection.getWidth());
-        int height = PropUtils.intFromProperties(props,
-                LPC_HEIGHT,
-                projection.getHeight());
+        float latitude = PropUtils.floatFromProperties(props, LPC_CENTER_LAT,
+                                                       (float) center.getY());
+        float longitude = PropUtils.floatFromProperties(props, LPC_CENTER_LONG,
+                                                        (float) center.getX());
+        float scale = PropUtils.floatFromProperties(props, LPC_SCALE,
+                                                    projection.getScale());
+        int width = PropUtils.intFromProperties(props, LPC_WIDTH, projection
+                .getWidth());
+        int height = PropUtils.intFromProperties(props, LPC_HEIGHT, projection
+                .getHeight());
 
         String projType = props.getProperty(LPC_PROJECTION);
 
-        float latmin = PropUtils.floatFromProperties(props, LPC_LATMIN, -1000.f);
-        float latmax = PropUtils.floatFromProperties(props, LPC_LATMAX, -1000.f);
-        float lonmin = PropUtils.floatFromProperties(props, LPC_LONMIN, -1000.f);
-        float lonmax = PropUtils.floatFromProperties(props, LPC_LONMAX, -1000.f);
+        float latmin = PropUtils
+                .floatFromProperties(props, LPC_LATMIN, -1000.f);
+        float latmax = PropUtils
+                .floatFromProperties(props, LPC_LATMAX, -1000.f);
+        float lonmin = PropUtils
+                .floatFromProperties(props, LPC_LONMIN, -1000.f);
+        float lonmax = PropUtils
+                .floatFromProperties(props, LPC_LONMAX, -1000.f);
 
         if (latmin >= -90.f && latmax <= 90.f && lonmin >= -180.f
                 && lonmax <= 180.f && latmin <= latmax && lonmin <= lonmax) {
             // Calculate center point
-            float dist = 0.5f * GreatCircle.sphericalDistance(ProjMath.degToRad(latmax),
-                    ProjMath.degToRad(lonmin),
-                    ProjMath.degToRad(latmin),
-                    ProjMath.degToRad(lonmax));
-            float azimuth = GreatCircle.sphericalAzimuth(ProjMath.degToRad(latmax),
-                    ProjMath.degToRad(lonmin),
-                    ProjMath.degToRad(latmin),
-                    ProjMath.degToRad(lonmax));
+            float dist = 0.5f * GreatCircle.sphericalDistance(ProjMath
+                    .degToRad(latmax), ProjMath.degToRad(lonmin), ProjMath
+                    .degToRad(latmin), ProjMath.degToRad(lonmax));
+            float azimuth = GreatCircle.sphericalAzimuth(ProjMath
+                    .degToRad(latmax), ProjMath.degToRad(lonmin), ProjMath
+                    .degToRad(latmin), ProjMath.degToRad(lonmax));
             center = GreatCircle.sphericalBetween(ProjMath.degToRad(latmax),
-                    ProjMath.degToRad(lonmin),
-                    dist,
-                    azimuth);
+                                                  ProjMath.degToRad(lonmin),
+                                                  dist, azimuth);
             latitude = (float) center.getY();
             longitude = (float) center.getX();
         }
@@ -1265,22 +1287,24 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
         if (mapHandler == null) {
             Debug.message("link", "Warning...mapHandler = null");
         } else {
-            MapBean mapBean = (MapBean) mapHandler.get("com.bbn.openmap.MapBean");
+            MapBean mapBean = (MapBean) mapHandler
+                    .get("com.bbn.openmap.MapBean");
             if (mapBean == null) {
                 Debug.message("link", "Warning...mapBean = null");
             } else {
                 center = new Point2D.Float(latitude, longitude);
                 ProjectionFactory projFactory = mapBean.getProjectionFactory();
                 if (projType != null) {
-                    Class<? extends Projection> projClass = projFactory.getProjClassForName(projType);
+                    Class<? extends Projection> projClass = projFactory
+                            .getProjClassForName(projType);
                     if (projClass == null) {
                         projClass = Mercator.class;
                     }
                     projection = (Proj) projFactory.makeProjection(projClass,
-                            center,
-                            scale,
-                            width,
-                            height);
+                                                                   center,
+                                                                   scale,
+                                                                   width,
+                                                                   height);
                 } else {
                     projection = (Proj) mapBean.getProjection();
                     projection.setCenter(center);
@@ -1294,7 +1318,8 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                         && lonmin <= lonmax) {
                     Point2D upperLeft = new Point2D.Float(latmax, lonmin);
                     Point2D lowerRight = new Point2D.Float(latmin, lonmax);
-                    scale = ProjMath.getScale(upperLeft, lowerRight, projection);
+                    scale = ProjMath
+                            .getScale(upperLeft, lowerRight, projection);
                     projection.setScale(scale);
                     Point2D ul = projection.getUpperLeft();
                     Point2D lr = projection.getLowerRight();

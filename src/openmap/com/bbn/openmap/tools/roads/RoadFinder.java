@@ -76,8 +76,8 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
     protected Vector removedRoads = new Vector();
 
     /**
-     * how far (in lat-lon space) from lat,lon point to look in quad
-     * tree for nearest road *
+     * how far (in lat-lon space) from lat,lon point to look in quad tree for
+     * nearest road *
      */
     protected float halo;
 
@@ -123,12 +123,11 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
     }
 
     /**
-     * Take the shape data on the layer and use it to populate our
-     * roads and intersections.
+     * Take the shape data on the layer and use it to populate our roads and
+     * intersections.
      * 
-     * Clears lists of roads and intersections first, and after
-     * calculating the roads, tells the RoadLayer what extra graphics
-     * to display, if any.
+     * Clears lists of roads and intersections first, and after calculating the
+     * roads, tells the RoadLayer what extra graphics to display, if any.
      */
     protected synchronized void getData() throws Exception {
         logger.info("get Data called.");
@@ -144,8 +143,8 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
     }
 
     /**
-     * Take the shape data on the layer and use it to populate our
-     * roads and intersections.
+     * Take the shape data on the layer and use it to populate our roads and
+     * intersections.
      * 
      */
     protected void getRoads() throws Exception {
@@ -181,7 +180,8 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
                 if (shape == null)
                     continue;
 
-                PathIterator path = shape.getPathIterator(new AffineTransform());
+                PathIterator path = shape
+                        .getPathIterator(new AffineTransform());
                 int segment = 0;
                 int itemsInPath = 0;
                 boolean pathValid = true;
@@ -220,21 +220,17 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
                                 // original entry
 
                                 if (doInterp) {
-                                    Point interpPt = interp(xPoints[segment - 1],
-                                            yPoints[segment - 1],
-                                            points[0],
-                                            points[1],
-                                            width,
-                                            height);
+                                    Point interpPt = interp(
+                                                            xPoints[segment - 1],
+                                                            yPoints[segment - 1],
+                                                            points[0],
+                                                            points[1], width,
+                                                            height);
                                     xPoints[segment] = interpPt.x;
                                     yPoints[segment++] = interpPt.y;
 
-                                    makeRoad(shape,
-                                            graphic,
-                                            made++,
-                                            xPoints,
-                                            yPoints,
-                                            segment);
+                                    makeRoad(shape, graphic, made++, xPoints,
+                                             yPoints, segment);
                                     lastXOff = 0;
                                     lastYOff = 0;
                                     segment = 0;
@@ -245,12 +241,9 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
                             }
                         } else { // onscreen
                             if (lastXOff != 0 || lastYOff != 0) {
-                                Point interpPt = interp(points[0],
-                                        points[1],
-                                        lastXOff,
-                                        lastYOff,
-                                        width,
-                                        height);
+                                Point interpPt = interp(points[0], points[1],
+                                                        lastXOff, lastYOff,
+                                                        width, height);
                                 xPoints[segment] = interpPt.x;
                                 yPoints[segment++] = interpPt.y;
                             }
@@ -317,11 +310,12 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
     }
 
     /**
-     * find a point between x1,y1 and x2, y2 that is within the
-     * visible map
+     * find a point between x1,y1 and x2, y2 that is within the visible map
      * 
-     * @param width of visible map
-     * @param height of visible map
+     * @param width
+     *            of visible map
+     * @param height
+     *            of visible map
      * @return Point between x1,y1 and x2, y2
      */
     protected Point interp(double x1, double y1, double x2, double y2,
@@ -377,8 +371,8 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
     }
 
     /**
-     * Makes a road object given the points on the shape that are
-     * within the visible box
+     * Makes a road object given the points on the shape that are within the
+     * visible box
      * 
      * Stores it in a quadTree
      */
@@ -388,10 +382,11 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
     }
 
     /**
-     * Makes a road object given the points on the shape that are
-     * within the visible box
+     * Makes a road object given the points on the shape that are within the
+     * visible box
      * 
-     * @param nPoints in the xpoints and ypoints arrays
+     * @param nPoints
+     *            in the xpoints and ypoints arrays
      */
     protected RoadObject createRoadFromPoints(int id, int[] xpoints,
                                               int[] ypoints, int nPoints) {
@@ -399,7 +394,7 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
         Intersection from = findIntersection(xpoints[0], ypoints[0]);
         int fromBefore = from.getRoadCount();
         Intersection to = findIntersection(xpoints[nPoints - 1],
-                ypoints[nPoints - 1]);
+                                           ypoints[nPoints - 1]);
         int toBefore = to.getRoadCount();
 
         if (from == null) {
@@ -433,11 +428,12 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
         }
 
         for (int i = 1; i < nPoints - 1; i++) {
-            roadPoints[i - 1] = new RoadPoint(road, createLatLonPoint(xpoints[i],
-                    ypoints[i]), this);
+            roadPoints[i - 1] = new RoadPoint(road,
+                    createLatLonPoint(xpoints[i], ypoints[i]), this);
             if (drawIntersections) {
                 if (showLines) {
-                    OMLine line = new YellowLine(xpoints[i - 1], ypoints[i - 1], xpoints[i], ypoints[i], width);
+                    OMLine line = new YellowLine(xpoints[i - 1],
+                            ypoints[i - 1], xpoints[i], ypoints[i], width);
                     toDraw.add(line);
                     toDraw.add(new OMText((xpoints[i - 1] - xpoints[i]) / 2
                             + xpoints[i - 1], (ypoints[i - 1] - ypoints[i]) / 2
@@ -451,14 +447,19 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
 
         if (drawIntersections) {
             if (showLines) {
-                OMLine line = new YellowLine(xpoints[nPoints - 2], ypoints[nPoints - 2], xpoints[nPoints - 1], ypoints[nPoints - 1], width);
+                OMLine line = new YellowLine(xpoints[nPoints - 2],
+                        ypoints[nPoints - 2], xpoints[nPoints - 1],
+                        ypoints[nPoints - 1], width);
                 toDraw.add(line);
-                toDraw.add(new OMText((xpoints[nPoints - 2] - xpoints[nPoints - 1])
-                        / 2 + xpoints[nPoints - 2], (ypoints[nPoints - 2] - ypoints[nPoints - 1])
-                        / 2 + ypoints[nPoints - 2] - 5, "" + roadsMade, 0));
+                toDraw.add(new OMText(
+                        (xpoints[nPoints - 2] - xpoints[nPoints - 1]) / 2
+                                + xpoints[nPoints - 2],
+                        (ypoints[nPoints - 2] - ypoints[nPoints - 1]) / 2
+                                + ypoints[nPoints - 2] - 5, "" + roadsMade, 0));
                 line.addArrowHead(true);
             } else {
-                OMPoint point = new YellowPoint(xpoints[nPoints - 1], ypoints[nPoints - 1], 10);
+                OMPoint point = new YellowPoint(xpoints[nPoints - 1],
+                        ypoints[nPoints - 1], 10);
                 toDraw.add(point);
             }
         }
@@ -517,7 +518,8 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
                 dash1[i] = 2.0f;
             }
 
-            BasicStroke dashed = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
+            BasicStroke dashed = new BasicStroke(5.0f, BasicStroke.CAP_BUTT,
+                    BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
             ((Graphics2D) g).setStroke(dashed);
             setGraphicsColor(g, Color.YELLOW);
             draw(g);
@@ -548,9 +550,8 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
         } else {
             intersection = new Intersection(loc, name, this);
             intersections.put(intersection);
-            interQuadTree.put(intersection.getLatitude(),
-                    intersection.getLongitude(),
-                    intersection);
+            interQuadTree.put(intersection.getLatitude(), intersection
+                    .getLongitude(), intersection);
         }
         return intersection;
     }
@@ -568,9 +569,8 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
             if (logger.isLoggable(Level.FINE))
                 logger.fine("making new intersection for " + loc);
             intersection = new Intersection(loc, name, this);
-            interQuadTree.put(intersection.getLatitude(),
-                    intersection.getLongitude(),
-                    intersection);
+            interQuadTree.put(intersection.getLatitude(), intersection
+                    .getLongitude(), intersection);
             intersections.put(intersection);
         } else {
             if (logger.isLoggable(Level.FINE))
@@ -583,7 +583,8 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
 
     protected void deleteIntersection(Intersection intersection) {
         if (intersection.getRoadCount() > 0)
-            throw new IllegalArgumentException("Attempt to delete connected intersection");
+            throw new IllegalArgumentException(
+                    "Attempt to delete connected intersection");
         intersections.remove(intersection);
     }
 
@@ -624,23 +625,22 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
         if (intersection2.getRoadCount() == 0)
             deleteIntersection(intersection2);
         if (intersection1.getRoadCount() == 2
-                && intersection1.getRoad(0).getRoadClass() == intersection1.getRoad(1)
-                        .getRoadClass())
+                && intersection1.getRoad(0).getRoadClass() == intersection1
+                        .getRoad(1).getRoadClass())
             joinRoads(intersection1);
         if (intersection2.getRoadCount() == 2
-                && intersection2.getRoad(0).getRoadClass() == intersection2.getRoad(1)
-                        .getRoadClass())
+                && intersection2.getRoad(0).getRoadClass() == intersection2
+                        .getRoad(1).getRoadClass())
             joinRoads(intersection2);
         removedRoads.addElement(road);
         roads.remove(road);
     }
 
     /**
-     * Split a road into two roads at one of its corners. An
-     * intersection is created where the corner was and the segments
-     * before the corner become the segments of the original road. The
-     * segments after the corner become the segments of a new road
-     * between the new intersection and the
+     * Split a road into two roads at one of its corners. An intersection is
+     * created where the corner was and the segments before the corner become
+     * the segments of the original road. The segments after the corner become
+     * the segments of a new road between the new intersection and the
      */
     public Intersection splitRoad(Road road, RoadPoint rp) {
         RoadPoint[] pointsBefore = road.getPointsBefore(rp);
@@ -652,33 +652,29 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
         road.setRoadPoints(pointsBefore);
         secondIntersection.removeRoad(road);
         newIntersection.addRoad(road);
-        Road newRoad = createRoad(-1,
-                null,
-                newIntersection,
-                secondIntersection,
-                road.getRoadClass());
+        Road newRoad = createRoad(-1, null, newIntersection,
+                                  secondIntersection, road.getRoadClass());
         newRoad.setRoadPoints(pointsAfter);
         return newIntersection;
     }
 
     /**
-     * Join two roads into one. The roads must be the only two roads
-     * at the intersection and must be of the same class. If the roads
-     * are not distinct, then we quietly delete the road and remove
-     * the intersection. The roads might not be distinct if they form
-     * an isolated loop (such as a racetrack). Thus situation is
-     * particularly problematic if the road has no inner points. The
-     * RoadPoints of both roads are concatenated with a new RoadPoint
-     * where the intersection was between them. This code is a little
-     * complicated because the RoadPoints must be assembled in a valid
-     * order. The order used is to start from the other intersection
-     * of the first road to the given intersection and from the given
-     * intersection of the second road to the other intersection of
-     * the second road.
+     * Join two roads into one. The roads must be the only two roads at the
+     * intersection and must be of the same class. If the roads are not
+     * distinct, then we quietly delete the road and remove the intersection.
+     * The roads might not be distinct if they form an isolated loop (such as a
+     * racetrack). Thus situation is particularly problematic if the road has no
+     * inner points. The RoadPoints of both roads are concatenated with a new
+     * RoadPoint where the intersection was between them. This code is a little
+     * complicated because the RoadPoints must be assembled in a valid order.
+     * The order used is to start from the other intersection of the first road
+     * to the given intersection and from the given intersection of the second
+     * road to the other intersection of the second road.
      */
     public void joinRoads(Intersection intersection) {
         if (intersection.getRoadCount() != 2)
-            throw new IllegalArgumentException("Illegal intersection conversion");
+            throw new IllegalArgumentException(
+                    "Illegal intersection conversion");
         Road road0 = intersection.getRoad(0);
         Road road1 = intersection.getRoad(1);
         if (road0 == road1) {
@@ -687,7 +683,8 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
             return;
         }
         if (road0.getRoadClass() != road1.getRoadClass())
-            throw new IllegalArgumentException("Illegal intersection conversion");
+            throw new IllegalArgumentException(
+                    "Illegal intersection conversion");
         intersections.remove(intersection);
         roads.remove(road1);
         RoadPoint[] road0Points = road0.getRoadPoints();
@@ -702,16 +699,22 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
                 innerPoints[j++] = road0Points[i];
         } else {
             firstIntersection = road0.getFirstIntersection();
-            System.arraycopy(road0Points, 0, innerPoints, j, road0Points.length);
+            System
+                    .arraycopy(road0Points, 0, innerPoints, j,
+                               road0Points.length);
             j += road0Points.length;
         }
-        Intersection otherIntersection = road1.getOtherIntersection(intersection);
+        Intersection otherIntersection = road1
+                .getOtherIntersection(intersection);
         otherIntersection.removeRoad(road1);
         road0.setIntersections(firstIntersection, otherIntersection);
         otherIntersection.addRoad(road0);
-        innerPoints[j++] = new RoadPoint(road0, intersection.getLocation(), this);
+        innerPoints[j++] = new RoadPoint(road0, intersection.getLocation(),
+                this);
         if (intersection == road1.getFirstIntersection()) {
-            System.arraycopy(road1Points, 0, innerPoints, j, road1Points.length);
+            System
+                    .arraycopy(road1Points, 0, innerPoints, j,
+                               road1Points.length);
             j += road1Points.length;
         } else {
             for (int i = road1Points.length; --i >= 0;)
@@ -740,11 +743,15 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
      * Displays a Route between two points on the map.
      * <p>
      * 
-     * @param start start from start point on map
-     * @param end to end point on map
-     * @param route the Route to travel from start to end
-     * @param segments as side effect, populated with PathSegments
-     *        between returned WayPoints
+     * @param start
+     *            start from start point on map
+     * @param end
+     *            to end point on map
+     * @param route
+     *            the Route to travel from start to end
+     * @param segments
+     *            as side effect, populated with PathSegments between returned
+     *            WayPoints
      * @return List of WayPoints
      */
     public List displayPathOnRoad(Point start, Point end, Route route,
@@ -784,11 +791,14 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
                     last = pt;
                 }
 
-                // draw line from start to beginning intersection
-                OMLine line = new YellowLine(start.x, start.y, first.x, first.y, 10);
-                toDraw.add(line);
-                line = new YellowLine(last.x, last.y, end.x, end.y, 10);
-                toDraw.add(line);
+                if (first != null && last != null) {
+                    // draw line from start to beginning intersection
+                    OMLine line = new YellowLine(start.x, start.y, first.x,
+                            first.y, 10);
+                    toDraw.add(line);
+                    line = new YellowLine(last.x, last.y, end.x, end.y, 10);
+                    toDraw.add(line);
+                }
             }
         } catch (Exception e) {
             logger.warning("Got exception " + e);
@@ -801,16 +811,19 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
     }
 
     /**
-     * Finds closest intersection to start and end find path from
-     * start intersection to end intersection
+     * Finds closest intersection to start and end find path from start
+     * intersection to end intersection
      * <p>
      * 
      * This method works on screen coordinates.
      * 
-     * @param start from start point on map
-     * @param end to end point on map
-     * @param segments as side effect, populated with PathSegments
-     *        between returned WayPoints
+     * @param start
+     *            from start point on map
+     * @param end
+     *            to end point on map
+     * @param segments
+     *            as side effect, populated with PathSegments between returned
+     *            WayPoints
      * @return List of WayPoints
      */
     public List getPathOnRoad(Point start, Point end, List segments) {
@@ -828,8 +841,7 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
     }
 
     /**
-     * a red point for displaying when we can't find a route between
-     * two points
+     * a red point for displaying when we can't find a route between two points
      */
     protected class RedPoint extends OMPoint {
         public RedPoint(int x, int y, int radius) {
@@ -859,7 +871,8 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
                 dash1[i] = 2.0f;
             }
 
-            BasicStroke dashed = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
+            BasicStroke dashed = new BasicStroke(5.0f, BasicStroke.CAP_BUTT,
+                    BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
             ((Graphics2D) g).setStroke(dashed);
             setGraphicsColor(g, Color.BLUE);
             draw(g);
@@ -885,10 +898,8 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
             if (roadClasses == null)
                 logger.warning("huh? road classes is null???");
 
-            bestRoute = Route.getBestRoute(startTemp,
-                    endTemp,
-                    roadClasses.getBestConvoySpeed(),
-                    roadClasses.getWorstConvoySpeed());
+            bestRoute = Route.getBestRoute(startTemp, endTemp, roadClasses
+                    .getBestConvoySpeed(), roadClasses.getWorstConvoySpeed());
         }
 
         if (bestRoute == null) {
@@ -926,12 +937,11 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
      */
     public Route getRouteBetweenPoints(Point start, Point end) {
         return getPathOnRoad(createLatLonPoint(start.x, start.y),
-                createLatLonPoint(end.x, end.y));
+                             createLatLonPoint(end.x, end.y));
     }
 
     /**
-     * Look in intersection Quad Tree for closest intersection to
-     * point x,y
+     * Look in intersection Quad Tree for closest intersection to point x,y
      * 
      * @return Intersection closest
      */
@@ -940,15 +950,15 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
     }
 
     /**
-     * Look in intersection Quad Tree for closest intersection to
-     * point at specified latitude and longitude.
+     * Look in intersection Quad Tree for closest intersection to point at
+     * specified latitude and longitude.
      * <p>
      * 
      * @return Intersection closest
      */
     protected Intersection findClosestIntersection(LatLonPoint latLon) {
-        Intersection inter = (Intersection) interQuadTree.get(latLon.getLatitude(),
-                latLon.getLongitude());
+        Intersection inter = (Intersection) interQuadTree.get(latLon
+                .getLatitude(), latLon.getLongitude());
         if (inter == null)
             logger.warning("no intersection at " + latLon);
 
@@ -956,14 +966,17 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
     }
 
     /**
-     * Iterates over route, populating points and segments lists.
-     * Worries about sequence order of from and to points, i.e. end of
-     * one road should be the start of the next. This is not
-     * guaranteed by the route, so we have to check.
+     * Iterates over route, populating points and segments lists. Worries about
+     * sequence order of from and to points, i.e. end of one road should be the
+     * start of the next. This is not guaranteed by the route, so we have to
+     * check.
      * 
-     * @param bestRoute route to iterate over.
-     * @param newPoints populated with points on the route.
-     * @param segments populated with Segments.
+     * @param bestRoute
+     *            route to iterate over.
+     * @param newPoints
+     *            populated with points on the route.
+     * @param segments
+     *            populated with Segments.
      */
     protected void populatePointsAndSegments(Route bestRoute, List newPoints,
                                              List segments) {
@@ -992,7 +1005,8 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
                         + " is not an intersection on road " + road);
             }
 
-            Point pt = createPoint((Point) proj.forward(from.getLocation(), new Point()));
+            Point pt = createPoint((Point) proj.forward(from.getLocation(),
+                                                        new Point()));
 
             if (doLoopCheck) {
                 if (ptSet.contains(pt)) {
@@ -1025,22 +1039,25 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
             from = to;
         }
 
-        Point pt = createPoint((Point) proj.forward(to.getLocation(), new Point()));
-        if (ptSet.contains(pt)) {
-            logger.warning("pt set has duplicate at " + pt);
+        if (to != null) {
+            Point pt = createPoint((Point) proj.forward(to.getLocation(),
+                                                        new Point()));
+            if (ptSet.contains(pt)) {
+                logger.warning("pt set has duplicate at " + pt);
+            }
+
+            newPoints.add(pt);
+
+            if (logger.isLoggable(Level.INFO))
+                logger.info(" now " + newPoints.size() + " points and "
+                        + segments.size() + " segments.");
         }
-
-        newPoints.add(pt);
-
-        if (logger.isLoggable(Level.INFO))
-            logger.info(" now " + newPoints.size() + " points and "
-                    + segments.size() + " segments.");
     }
 
     /**
-     * Converts a road into a path segment - reverse parameter
-     * guarantees the ordering of the points is consistent across
-     * multiple path segments in the whole route.
+     * Converts a road into a path segment - reverse parameter guarantees the
+     * ordering of the points is consistent across multiple path segments in the
+     * whole route.
      * 
      * @return PathSegment converted from a road
      */
@@ -1050,11 +1067,13 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
         List newPoints = new ArrayList();
         if (reverse) {
             for (int i = roadPoints.length - 1; i > 0; i--) {
-                newPoints.add(createPoint((Point) proj.forward(roadPoints[i].getLocation(), new Point())));
+                newPoints.add(createPoint((Point) proj.forward(roadPoints[i]
+                        .getLocation(), new Point())));
             }
         } else {
             for (int i = 0; i < roadPoints.length; i++) {
-                newPoints.add(createPoint((Point) proj.forward(roadPoints[i].getLocation(), new Point())));
+                newPoints.add(createPoint((Point) proj.forward(roadPoints[i]
+                        .getLocation(), new Point())));
             }
         }
 
@@ -1082,22 +1101,20 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
     /**
      * Check the integrity of our data structures.
      * 
-     * Scan the known intersections. Note intersections with no roads.
-     * Scan the roads of the intersection: Each road has two
-     * intersections. If the road has already been encountered, then
-     * we recorded its "other" intersection and that must match this
-     * intersection. If it doesn't match, record an error. If it does
-     * match reset its recorded other intersection to be a special
-     * marker indicating that both ends of the road have been
-     * accounted for. If the road has not already been encountered,
-     * then record its "other" intersection. Scan the known roads.
-     * Every road should accounted for in the "other" intersection
-     * table and should be marked as having both intersections
-     * accounted for. Note the roads which were not found in the first
-     * scan and the roads which were found, but for which both
-     * intersections were not found. Remark every road. Finally scan
-     * the other intersection table for entries which were not marked
-     * as being in the roads vector.
+     * Scan the known intersections. Note intersections with no roads. Scan the
+     * roads of the intersection: Each road has two intersections. If the road
+     * has already been encountered, then we recorded its "other" intersection
+     * and that must match this intersection. If it doesn't match, record an
+     * error. If it does match reset its recorded other intersection to be a
+     * special marker indicating that both ends of the road have been accounted
+     * for. If the road has not already been encountered, then record its
+     * "other" intersection. Scan the known roads. Every road should accounted
+     * for in the "other" intersection table and should be marked as having both
+     * intersections accounted for. Note the roads which were not found in the
+     * first scan and the roads which were found, but for which both
+     * intersections were not found. Remark every road. Finally scan the other
+     * intersection table for entries which were not marked as being in the
+     * roads vector.
      */
     protected void checkIntegrity() {
         // CharArrayWriter errorWriter = new CharArrayWriter();
@@ -1118,8 +1135,8 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
                 Road road = intersection.getRoad(i);
                 Object other = otherIntersections.get(road);
                 if (other == null) {
-                    otherIntersections.put(road,
-                            road.getOtherIntersection(intersection));
+                    otherIntersections.put(road, road
+                            .getOtherIntersection(intersection));
                 } else if (other == intersection) {
                     otherIntersections.put(road, bothIntersections);
                 } else {

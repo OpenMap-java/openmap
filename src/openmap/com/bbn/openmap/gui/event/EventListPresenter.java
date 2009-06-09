@@ -104,7 +104,8 @@ public class EventListPresenter extends AbstractEventPresenter implements
         MouseListener, MouseMotionListener, TimeBoundsListener,
         TimeEventListener {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.event.EventListPresenter");
+    public static Logger logger = Logger
+            .getLogger("com.bbn.openmap.gui.event.EventListPresenter");
 
     protected LinkedList<OMEventHandler> eventHandlers;
     protected LinkedList macroFilters;
@@ -173,12 +174,12 @@ public class EventListPresenter extends AbstractEventPresenter implements
                 + AltFontColorProperty, altFontColor);
         selectColor = (Color) PropUtils.parseColorFromProperties(props, prefix
                 + SelectColorProperty, selectColor);
-        timeWindowColor = (Color) PropUtils.parseColorFromProperties(props,
-                prefix + TimeWindowColorProperty,
-                timeWindowColor);
-        regularBackgroundColor = (Color) PropUtils.parseColorFromProperties(props,
-                prefix + BackgroundColorProperty,
-                regularBackgroundColor);
+        timeWindowColor = (Color) PropUtils
+                .parseColorFromProperties(props, prefix
+                        + TimeWindowColorProperty, timeWindowColor);
+        regularBackgroundColor = (Color) PropUtils
+                .parseColorFromProperties(props, prefix
+                        + BackgroundColorProperty, regularBackgroundColor);
 
         drawingAttributes.setFillPaint(regularBackgroundColor);
         drawingAttributes.setSelectPaint(selectColor);
@@ -253,7 +254,8 @@ public class EventListPresenter extends AbstractEventPresenter implements
             }
 
             allEvents = new TreeSet<OMEvent>(new OMEventComparator());
-            for (Iterator<OMEventHandler> it = eventHandlers.iterator(); it.hasNext();) {
+            for (Iterator<OMEventHandler> it = eventHandlers.iterator(); it
+                    .hasNext();) {
                 List<OMEvent> eventList = it.next().getEventList();
                 if (eventList != null) {
                     try {
@@ -291,7 +293,8 @@ public class EventListPresenter extends AbstractEventPresenter implements
 
             activeEvents = new TreeSet<OMEvent>(new OMEventComparator());
             List<OMEvent> activeFilters = getActiveFilters();
-            for (Iterator<OMEventHandler> it = eventHandlers.iterator(); it.hasNext();) {
+            for (Iterator<OMEventHandler> it = eventHandlers.iterator(); it
+                    .hasNext();) {
                 OMEventHandler aeh = (OMEventHandler) it.next();
 
                 if (logger.isLoggable(Level.FINE)) {
@@ -308,9 +311,11 @@ public class EventListPresenter extends AbstractEventPresenter implements
                 List<OMEvent> eventList = aeh.getEventList(activeFilters);
                 if (eventList != null) {
                     if (logger.isLoggable(Level.FINE)) {
-                        logger.fine("list from " + aeh.getClass().getName() + "has (" + eventList.size() + ") events");
+                        logger.fine("list from " + aeh.getClass().getName()
+                                + "has (" + eventList.size() + ") events");
                     }
-                    for (Iterator<OMEvent> it2 = eventList.iterator(); it2.hasNext();) {
+                    for (Iterator<OMEvent> it2 = eventList.iterator(); it2
+                            .hasNext();) {
                         if (logger.isLoggable(Level.FINER)) {
                             logger.finer("adding OM event");
                         }
@@ -330,7 +335,8 @@ public class EventListPresenter extends AbstractEventPresenter implements
 
             if (logger.isLoggable(Level.FINER)) {
                 logger.finer("--------");
-                for (Iterator<OMEvent> it = activeEvents.iterator(); it.hasNext();) {
+                for (Iterator<OMEvent> it = activeEvents.iterator(); it
+                        .hasNext();) {
                     OMEvent eve = (OMEvent) it.next();
                     logger.finer(eve.getTimeStamp() + " " + eve);
                 }
@@ -347,10 +353,12 @@ public class EventListPresenter extends AbstractEventPresenter implements
     /**
      * Resets the event list.
      * 
-     * @param it Iterator over all visible events (active)
-     * @param setSelected select the last currently selected on the list, has
-     *        the side effect of resetting the clock. You want this to be false
-     *        when event handlers are being added.
+     * @param it
+     *            Iterator over all visible events (active)
+     * @param setSelected
+     *            select the last currently selected on the list, has the side
+     *            effect of resetting the clock. You want this to be false when
+     *            event handlers are being added.
      */
     protected synchronized void initInterface(Iterator<OMEvent> it,
                                               boolean setSelected) {
@@ -412,7 +420,8 @@ public class EventListPresenter extends AbstractEventPresenter implements
             }
 
             displayList = new JList(listModel);
-            displayList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION/* SINGLE_SELECTION */);
+            displayList
+                    .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION/* SINGLE_SELECTION */);
             displayList.addListSelectionListener(this);
             displayList.addMouseListener(this);
             displayList.addMouseMotionListener(this);
@@ -421,8 +430,10 @@ public class EventListPresenter extends AbstractEventPresenter implements
             ttmanager.registerComponent(displayList);
 
             JScrollPane listScrollPane = new JScrollPane(displayList);
-            listScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-            listScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            listScrollPane
+                    .setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            listScrollPane
+                    .setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             gridbag.setConstraints(listScrollPane, c);
             wrapper.add(listScrollPane);
 
@@ -470,8 +481,9 @@ public class EventListPresenter extends AbstractEventPresenter implements
     }
 
     /**
-     * @param string adding a filter string to the list of presentable filters
-     *        available from one of the MissionEventHandler.
+     * @param string
+     *            adding a filter string to the list of presentable filters
+     *            available from one of the MissionEventHandler.
      */
     protected void addFilter(String string, Boolean value) {
         filters.put(string, value);
@@ -522,7 +534,8 @@ public class EventListPresenter extends AbstractEventPresenter implements
             Set keys = filters.keySet();
             for (Iterator it = keys.iterator(); it.hasNext();) {
                 String title = (String) it.next();
-                JCheckBox jcb = new JCheckBox(title, ((Boolean) filters.get(title)).booleanValue());
+                JCheckBox jcb = new JCheckBox(title, ((Boolean) filters
+                        .get(title)).booleanValue());
                 jcb.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent ae) {
                         JCheckBox jcb = (JCheckBox) ae.getSource();
@@ -537,12 +550,14 @@ public class EventListPresenter extends AbstractEventPresenter implements
             }
         } catch (ConcurrentModificationException cme) {
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine("ConcurrentModificationException caught while rebuilding the event list");
+                logger
+                        .fine("ConcurrentModificationException caught while rebuilding the event list");
             }
         } catch (ArrayIndexOutOfBoundsException aioobe) {
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine("ArrayIndexOutOfBoundsException caught while rebuilding the event list: "
-                        + aioobe.getMessage());
+                logger
+                        .fine("ArrayIndexOutOfBoundsException caught while rebuilding the event list: "
+                                + aioobe.getMessage());
             }
         }
 
@@ -551,14 +566,16 @@ public class EventListPresenter extends AbstractEventPresenter implements
         filterPanel.add(filterSubPanel);
 
         // Create the buttons to turn them all on or off
-        JButton allFiltersOnButton = new JButton(EventPanel.SHOW_ALL_EVENTS_STRING);
+        JButton allFiltersOnButton = new JButton(
+                EventPanel.SHOW_ALL_EVENTS_STRING);
         allFiltersOnButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 resetFilters(Boolean.TRUE);
             }
         });
 
-        JButton allFiltersOffButton = new JButton(EventPanel.HIDE_ALL_EVENTS_STRING);
+        JButton allFiltersOffButton = new JButton(
+                EventPanel.HIDE_ALL_EVENTS_STRING);
         allFiltersOffButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 resetFilters(Boolean.FALSE);
@@ -600,7 +617,8 @@ public class EventListPresenter extends AbstractEventPresenter implements
 
         // Tell all the OMEventHandlers that the setting has been
         // updated, let the one that cares update itself.
-        for (Iterator<OMEventHandler> it = eventHandlers.iterator(); it.hasNext();) {
+        for (Iterator<OMEventHandler> it = eventHandlers.iterator(); it
+                .hasNext();) {
             OMEventHandler eh = it.next();
             // EventHandlers should only let this be set if they
             // control the events described by the filter.
@@ -680,7 +698,8 @@ public class EventListPresenter extends AbstractEventPresenter implements
      */
     public void retrieveFiltersFromEventHandlers() {
         clearFilters();
-        for (Iterator<OMEventHandler> it = eventHandlers.iterator(); it.hasNext();) {
+        for (Iterator<OMEventHandler> it = eventHandlers.iterator(); it
+                .hasNext();) {
 
             OMEventHandler meh = it.next();
             if (logger.isLoggable(Level.FINE)) {
@@ -729,7 +748,8 @@ public class EventListPresenter extends AbstractEventPresenter implements
             int[] indicies = displayList.getSelectedIndices();
             if (indicies.length > 0) {
                 ListModel listModel = getListModel();
-                OMEvent selectedEvent = (OMEvent) listModel.getElementAt(indicies[0]);
+                OMEvent selectedEvent = (OMEvent) listModel
+                        .getElementAt(indicies[0]);
 
                 lastSelectedEvent = selectedEvent;
 
@@ -751,8 +771,8 @@ public class EventListPresenter extends AbstractEventPresenter implements
                 }
 
                 for (Iterator<OMEvent> it = getAllEvents(); it.hasNext();) {
-                    ((OMEvent) it.next()).putAttribute(OMEvent.ATT_KEY_SELECTED,
-                            null);
+                    ((OMEvent) it.next())
+                            .putAttribute(OMEvent.ATT_KEY_SELECTED, null);
                 }
 
                 Vector<OMEvent> v = new Vector<OMEvent>();
@@ -766,18 +786,22 @@ public class EventListPresenter extends AbstractEventPresenter implements
                     selectedEvent = (OMEvent) listModel.getElementAt(curIndex);
 
                     selectedEvent.putAttribute(OMEvent.ATT_KEY_SELECTED,
-                            OMEvent.ATT_VAL_SELECTED);
+                                               OMEvent.ATT_VAL_SELECTED);
 
                     if (curIndex == lastIndex + 1) {
                         inRange = true;
                         if (firstInRangeEvent == null) {
                             firstInRangeEvent = lastSelectedEvent;
-                            firstInRangeEvent.putAttribute(OMEvent.ATT_KEY_SELECTED,
-                                    OMEvent.ATT_VAL_SELECTED_START_RANGE);
+                            firstInRangeEvent
+                                    .putAttribute(
+                                                  OMEvent.ATT_KEY_SELECTED,
+                                                  OMEvent.ATT_VAL_SELECTED_START_RANGE);
                         }
-                    } else if (inRange) {
-                        lastSelectedEvent.putAttribute(OMEvent.ATT_KEY_SELECTED,
-                                OMEvent.ATT_VAL_SELECTED_END_RANGE);
+                    } else if (inRange && lastSelectedEvent != null) {
+                        lastSelectedEvent
+                                .putAttribute(
+                                              OMEvent.ATT_KEY_SELECTED,
+                                              OMEvent.ATT_VAL_SELECTED_END_RANGE);
                         inRange = false;
                     }
 
@@ -787,16 +811,18 @@ public class EventListPresenter extends AbstractEventPresenter implements
                     // if it cares.
                     Object src = selectedEvent.getSource();
                     if (src instanceof OMEventSelectionListener) {
-                        ((OMEventSelectionListener) src).selected(selectedEvent);
+                        ((OMEventSelectionListener) src)
+                                .selected(selectedEvent);
                     }
 
                     lastSelectedEvent = selectedEvent;
                     lastIndex = curIndex;
                 }
 
-                if (inRange) {
-                    lastSelectedEvent.putAttribute(OMEvent.ATT_KEY_SELECTED,
-                            OMEvent.ATT_VAL_SELECTED_END_RANGE);
+                if (inRange && lastSelectedEvent != null) {
+                    lastSelectedEvent
+                            .putAttribute(OMEvent.ATT_KEY_SELECTED,
+                                          OMEvent.ATT_VAL_SELECTED_END_RANGE);
                 }
 
                 if (aesc != null) {
@@ -913,7 +939,8 @@ public class EventListPresenter extends AbstractEventPresenter implements
     }
 
     /**
-     * @param displayTimeWindow The displayTimeWindow to set.
+     * @param displayTimeWindow
+     *            The displayTimeWindow to set.
      */
     public void setDisplayTimeWindow(long displayTimeWindow) {
         this.displayTimeWindow = displayTimeWindow;
@@ -959,11 +986,13 @@ public class EventListPresenter extends AbstractEventPresenter implements
         String eventPropertyName = evt.getPropertyName();
 
         if (eventPropertyName == FilterPresenter.FILTER_STATE) {
-            boolean rebuildFilters = ((Boolean) evt.getNewValue()).booleanValue();
+            boolean rebuildFilters = ((Boolean) evt.getNewValue())
+                    .booleanValue();
 
             if (rebuildFilters) {
-                logger.fine(eventPropertyName
-                        + " rebuilding filters and updating interface (list rebuild to follow)");
+                logger
+                        .fine(eventPropertyName
+                                + " rebuilding filters and updating interface (list rebuild to follow)");
                 retrieveFiltersFromEventHandlers();
                 updateInterface();
             } else {
@@ -1097,8 +1126,9 @@ public class EventListPresenter extends AbstractEventPresenter implements
                 OMEvent OMe = (OMEvent) value;
                 isSelected = OMe.getAttribute(OMEvent.ATT_KEY_SELECTED) != null;
 
-                timeMark.setIcon(OMe.getAttribute(OMEvent.ATT_KEY_PLAY_FILTER) == Boolean.TRUE ? clockImage
-                        : invisibleImage);
+                timeMark
+                        .setIcon(OMe.getAttribute(OMEvent.ATT_KEY_PLAY_FILTER) == Boolean.TRUE ? clockImage
+                                : invisibleImage);
 
                 Object rating = OMe.getAttribute(OMEvent.ATT_KEY_RATING);
                 if (rating == OMEvent.ATT_VAL_BAD_RATING) {
@@ -1131,46 +1161,51 @@ public class EventListPresenter extends AbstractEventPresenter implements
     }
 
     public void mouseClicked(MouseEvent e) {
-    // hideDetails();
-    //
-    // if (e.getButton() == MouseEvent.BUTTON3 && displayList != null) {
-    // // Right click
-    // int index = getDisplayListIndex(e);
-    // lastIndexOfCellDetail = index;
-    // ListModel model = displayList.getModel();
-    // Object obj = model.getElementAt(index);
-    //
-    // String labelContents = null;
-    //
-    // if (obj instanceof OMEvent) {
-    // OMEvent ae = (OMEvent) obj;
-    // labelContents = ae.getDetailedInformation();
-    // }
-    //
-    // if (labelContents == null) {
-    // labelContents = " No further information available. ";
-    // }
-    //
-    // showDetails(labelContents);
-    // }
+        // hideDetails();
+        //
+        // if (e.getButton() == MouseEvent.BUTTON3 && displayList != null) {
+        // // Right click
+        // int index = getDisplayListIndex(e);
+        // lastIndexOfCellDetail = index;
+        // ListModel model = displayList.getModel();
+        // Object obj = model.getElementAt(index);
+        //
+        // String labelContents = null;
+        //
+        // if (obj instanceof OMEvent) {
+        // OMEvent ae = (OMEvent) obj;
+        // labelContents = ae.getDetailedInformation();
+        // }
+        //
+        // if (labelContents == null) {
+        // labelContents = " No further information available. ";
+        // }
+        //
+        // showDetails(labelContents);
+        // }
 
     }
 
-    public void mousePressed(MouseEvent e) {}
+    public void mousePressed(MouseEvent e) {
+    }
 
-    public void mouseReleased(MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {
+    }
 
-    public void mouseEntered(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {
+    }
 
-    public void mouseExited(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {
+    }
 
-    public void mouseDragged(MouseEvent e) {}
+    public void mouseDragged(MouseEvent e) {
+    }
 
     public void mouseMoved(MouseEvent e) {
-    // if (lastIndexOfCellDetail != -1
-    // && lastIndexOfCellDetail != getDisplayListIndex(e)) {
-    // hideDetails();
-    // }
+        // if (lastIndexOfCellDetail != -1
+        // && lastIndexOfCellDetail != getDisplayListIndex(e)) {
+        // hideDetails();
+        // }
     }
 
     protected int lastIndexOfCellDetail = -1;
@@ -1178,8 +1213,9 @@ public class EventListPresenter extends AbstractEventPresenter implements
     public void showDetails(String contents) {
 
         if (contents != null) {
-            detailSpace.setText("<html><body bgcolor=\"#ffffcc\"> <font style=\"plain\">"
-                    + contents + "</html>");
+            detailSpace
+                    .setText("<html><body bgcolor=\"#ffffcc\"> <font style=\"plain\">"
+                            + contents + "</html>");
         }
 
         detailSpacePanel.setVisible(contents != null);
@@ -1251,19 +1287,20 @@ public class EventListPresenter extends AbstractEventPresenter implements
             clockButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     setSelectedEventsAttribute(OMEvent.ATT_KEY_PLAY_FILTER,
-                            Boolean.TRUE);
+                                               Boolean.TRUE);
                 }
             });
             timeFilterPanel.add(clockButton);
 
             JButton timeClearAllButton = new JButton(xImage);
             timeClearAllButton.setPreferredSize(buttonDim);
-            timeClearAllButton.setToolTipText("Clear selected events from play filtering.");
+            timeClearAllButton
+                    .setToolTipText("Clear selected events from play filtering.");
             timeClearAllButton.setBorderPainted(false);
             timeClearAllButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     setSelectedEventsAttribute(OMEvent.ATT_KEY_PLAY_FILTER,
-                            null);
+                                               null);
                 }
             });
             timeFilterPanel.add(timeClearAllButton);
@@ -1282,31 +1319,34 @@ public class EventListPresenter extends AbstractEventPresenter implements
 
             JButton thumbsUpButton = new JButton(thumbsUpImage);
             thumbsUpButton.setPreferredSize(buttonDim);
-            thumbsUpButton.setToolTipText("Flag selected event(s) as positive.");
+            thumbsUpButton
+                    .setToolTipText("Flag selected event(s) as positive.");
             thumbsUpButton.setBorderPainted(false);
             thumbsUpButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     setSelectedEventsAttribute(OMEvent.ATT_KEY_RATING,
-                            OMEvent.ATT_VAL_GOOD_RATING);
+                                               OMEvent.ATT_VAL_GOOD_RATING);
                 }
             });
             ratingsPanel.add(thumbsUpButton);
 
             JButton thumbsDownButton = new JButton(thumbsDownImage);
             thumbsDownButton.setPreferredSize(buttonDim);
-            thumbsDownButton.setToolTipText("Flag selected event(s) as negative.");
+            thumbsDownButton
+                    .setToolTipText("Flag selected event(s) as negative.");
             thumbsDownButton.setBorderPainted(false);
             thumbsDownButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     setSelectedEventsAttribute(OMEvent.ATT_KEY_RATING,
-                            OMEvent.ATT_VAL_BAD_RATING);
+                                               OMEvent.ATT_VAL_BAD_RATING);
                 }
             });
             ratingsPanel.add(thumbsDownButton);
 
             JButton clearAllRatingsButton = new JButton(xImage);
             clearAllRatingsButton.setPreferredSize(buttonDim);
-            clearAllRatingsButton.setToolTipText("Clear ratings of selected events.");
+            clearAllRatingsButton
+                    .setToolTipText("Clear ratings of selected events.");
             clearAllRatingsButton.setBorderPainted(false);
             clearAllRatingsButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
@@ -1400,7 +1440,8 @@ public class EventListPresenter extends AbstractEventPresenter implements
         timeDa.setLinePaint(OMColor.blue);
         timeDa.setFillPaint(OMColor.blue);
 
-        IconPart ip = new BasicIconPart(new Rectangle2D.Double(0, 0, 100, 100), invisDa);
+        IconPart ip = new BasicIconPart(new Rectangle2D.Double(0, 0, 100, 100),
+                invisDa);
         invisibleImage = OMIconFactory.getIcon(buttonSize, buttonSize, ip);
 
         IconPartList ipl = new IconPartList();
@@ -1410,7 +1451,9 @@ public class EventListPresenter extends AbstractEventPresenter implements
         xImage = OMIconFactory.getIcon(buttonSize, buttonSize, ipl);
 
         ipl = new IconPartList();
-        ipl.add(new BasicIconPart(new Ellipse2D.Double(10, 10, 80, 80), handsDa));
+        ipl
+                .add(new BasicIconPart(new Ellipse2D.Double(10, 10, 80, 80),
+                        handsDa));
         ipl.add(new BasicIconPart(new Line2D.Double(50, 50, 50, 15), handsDa));
         ipl.add(new BasicIconPart(new Line2D.Double(50, 50, 70, 50), handsDa));
         clockImage = OMIconFactory.getIcon(buttonSize, buttonSize, ipl);
@@ -1418,15 +1461,15 @@ public class EventListPresenter extends AbstractEventPresenter implements
         DrawingAttributes goodDa = new DrawingAttributes();
         goodDa.setFillPaint(Color.green);
         goodDa.setLinePaint(Color.green.darker().darker());
-        ip = new BasicIconPart(new Polygon(new int[] { 50, 90, 10, 50 }, new int[] {
-                10, 90, 90, 10 }, 4), goodDa);
+        ip = new BasicIconPart(new Polygon(new int[] { 50, 90, 10, 50 },
+                new int[] { 10, 90, 90, 10 }, 4), goodDa);
         thumbsUpImage = OMIconFactory.getIcon(buttonSize, buttonSize, ip);
 
         DrawingAttributes badDa = new DrawingAttributes();
         badDa.setFillPaint(Color.red);
         badDa.setLinePaint(Color.red.darker().darker());
-        ip = new BasicIconPart(new Polygon(new int[] { 10, 90, 50, 10 }, new int[] {
-                10, 10, 90, 10 }, 4), badDa);
+        ip = new BasicIconPart(new Polygon(new int[] { 10, 90, 50, 10 },
+                new int[] { 10, 10, 90, 10 }, 4), badDa);
         thumbsDownImage = OMIconFactory.getIcon(buttonSize, buttonSize, ip);
 
     }

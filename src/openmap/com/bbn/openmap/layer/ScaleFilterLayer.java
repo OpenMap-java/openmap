@@ -167,8 +167,10 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * the first layer will be displayed. As the scale number decreases, other
      * layers will be displayed.
      * 
-     * @param list Vector of layers
-     * @param scales Array of transition scales.
+     * @param list
+     *            Vector of layers
+     * @param scales
+     *            Array of transition scales.
      */
     public void setLayersAndScales(Vector<Layer> list, float[] scales) {
         layers = list;
@@ -178,7 +180,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /**
      * Initializes this layer from the given properties.
      * 
-     * @param props the <code>Properties</code> holding settings for this layer
+     * @param props
+     *            the <code>Properties</code> holding settings for this layer
      */
     public void setProperties(String prefix, Properties props) {
         // Clear out layer and scale state
@@ -192,9 +195,11 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
         // Update our target layer. If there is a current projection and this
         // layer is active, we need to pass it along.
         if (getProjection() != null) {
-            Layer currentLayer = configureAppropriateLayer(getProjection().getScale());
+            Layer currentLayer = configureAppropriateLayer(getProjection()
+                    .getScale());
             fireStatusUpdate(LayerStatusEvent.START_WORKING);
-            currentLayer.projectionChanged(new ProjectionEvent((Object) null, getProjection()));
+            currentLayer.projectionChanged(new ProjectionEvent((Object) null,
+                    getProjection()));
         }
     }
 
@@ -244,11 +249,14 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /**
      * Create the Layers from a property value string.
      * 
-     * @param prefix String
-     * @param props Properties
+     * @param prefix
+     *            String
+     * @param props
+     *            Properties
      */
     protected void parseLayers(String prefix, Properties props) {
-        PropUtils.putDataPrefixToLayerList(this, props, prefix + layersProperty);
+        PropUtils
+                .putDataPrefixToLayerList(this, props, prefix + layersProperty);
 
         String layersString = props.getProperty(prefix + layersProperty);
         Vector<Layer> layers = getLayers();
@@ -263,8 +271,9 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
             String classProperty = layerName + ".class";
             String className = props.getProperty(classProperty);
             if (className == null) {
-                Debug.error("ScaleFilterLayer.parseLayers(): Failed to locate property \""
-                        + classProperty + "\"");
+                Debug
+                        .error("ScaleFilterLayer.parseLayers(): Failed to locate property \""
+                                + classProperty + "\"");
                 Debug.error("ScaleFilterLayer.parseLayers(): Skipping layer \""
                         + layerName + "\"");
                 className = SinkLayer.class.getName();
@@ -277,12 +286,14 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
                     obj = Class.forName(className).newInstance();
                 }
                 if (Debug.debugging("scalefilterlayer")) {
-                    Debug.output("ScaleFilterLayer.parseLayers(): Instantiated "
-                            + className);
+                    Debug
+                            .output("ScaleFilterLayer.parseLayers(): Instantiated "
+                                    + className);
                 }
             } catch (Exception e) {
-                Debug.error("ScaleFilterLayer.parseLayers(): Failed to instantiate \""
-                        + className + "\": " + e);
+                Debug
+                        .error("ScaleFilterLayer.parseLayers(): Failed to instantiate \""
+                                + className + "\": " + e);
                 obj = SinkLayer.getSharedInstance();
             }
 
@@ -301,8 +312,10 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * Create the transition scales from a property value string. If there are N
      * layers, there should be N-1 transition scales.
      * 
-     * @param prefix String
-     * @param props Properties
+     * @param prefix
+     *            String
+     * @param props
+     *            Properties
      */
     protected void parseScales(String prefix, Properties props) {
         StringTokenizer tok = null;
@@ -315,8 +328,9 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
 
         String scales = props.getProperty(prefix + transitionScalesProperty);
         if (scales == null) {
-            Debug.error("ScaleFilterLayer.parseScales(): Failed to locate property \""
-                    + transitionScalesProperty + "\"");
+            Debug
+                    .error("ScaleFilterLayer.parseScales(): Failed to locate property \""
+                            + transitionScalesProperty + "\"");
             if (transitionScales.length > 0) {
                 transitionScales[0] = defaultTransitionScale;
             }
@@ -328,20 +342,23 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
 
         try {
             tok = new StringTokenizer(scales);
-            transitionScales[0] = (tok.hasMoreTokens()) ? new Float(tok.nextToken()).floatValue()
-                    : defaultTransitionScale;
+            transitionScales[0] = (tok.hasMoreTokens()) ? new Float(tok
+                    .nextToken()).floatValue() : defaultTransitionScale;
         } catch (NumberFormatException e) {
             Debug.error("ScaleFilterLayer.parseScales()1: " + e);
             transitionScales[0] = defaultTransitionScale;
         }
 
-        for (int i = 1; i < transitionScales.length; i++) {
-            try {
-                transitionScales[i] = (tok.hasMoreTokens()) ? new Float(tok.nextToken()).floatValue()
-                        : transitionScales[i - 1] / 3;
-            } catch (NumberFormatException e) {
-                Debug.error("ScaleFilterLayer.parseScales()2: " + e);
-                transitionScales[i] = transitionScales[i - 1] / 3;
+        if (tok != null) {
+            for (int i = 1; i < transitionScales.length; i++) {
+                try {
+                    transitionScales[i] = (tok.hasMoreTokens()) ? new Float(tok
+                            .nextToken()).floatValue()
+                            : transitionScales[i - 1] / 3;
+                } catch (NumberFormatException e) {
+                    Debug.error("ScaleFilterLayer.parseScales()2: " + e);
+                    transitionScales[i] = transitionScales[i - 1] / 3;
+                }
             }
         }
     }
@@ -352,7 +369,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     public synchronized void renderDataForProjection(Projection proj,
                                                      java.awt.Graphics g) {
         if (proj == null) {
-            Debug.error("ScaleFilterLayer.renderDataForProjection: null projection!");
+            Debug
+                    .error("ScaleFilterLayer.renderDataForProjection: null projection!");
             return;
         } else {
             setTargetIndex(proj.getScale());
@@ -366,7 +384,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * N-1 transitionScales. The ith layer is chosen if the scale is greater
      * than the ith transitionScale.
      * 
-     * @param scale the current map scale
+     * @param scale
+     *            the current map scale
      * @return true if the targetIndex has changed as a result of the new scale.
      */
     public boolean setTargetIndex(float scale) {
@@ -400,7 +419,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * and requests new graphics from the spatial index based on the bounding
      * rectangle of the new <code>Projection</code>.
      * 
-     * @param ev the new projection event
+     * @param ev
+     *            the new projection event
      */
     public void projectionChanged(ProjectionEvent ev) {
         // Lets the ScaleFilterLayer remember the projection, just in case.
@@ -438,7 +458,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /**
      * Renders the scale-appropriate layer on the map.
      * 
-     * @param g a graphics context
+     * @param g
+     *            a graphics context
      */
     public void paint(Graphics g) {
         getAppropriateLayer().paint(g);
@@ -450,7 +471,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * always work, depending on what thread sends/receives this event - usually
      * in the Swing thread, and the GUI can't always be updated as expected.
      * 
-     * @param evt LayerStatusEvent
+     * @param evt
+     *            LayerStatusEvent
      */
     public void updateLayerStatus(LayerStatusEvent evt) {
         fireStatusUpdate(evt);
@@ -542,7 +564,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /**
      * Request to have a URL displayed in a Browser.
      * 
-     * @param event InfoDisplayEvent
+     * @param event
+     *            InfoDisplayEvent
      */
     public void requestURL(InfoDisplayEvent event) {
         fireRequestURL(new InfoDisplayEvent(this, event.getInformation()));
@@ -551,7 +574,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /**
      * Request to have a message displayed in a dialog window.
      * 
-     * @param event InfoDisplayEvent
+     * @param event
+     *            InfoDisplayEvent
      */
     public void requestMessage(InfoDisplayEvent event) {
         fireRequestMessage(new InfoDisplayEvent(this, event.getInformation()));
@@ -561,7 +585,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * Request to have an information line displayed in an application status
      * window.
      * 
-     * @param event InfoDisplayEvent
+     * @param event
+     *            InfoDisplayEvent
      */
     public void requestInfoLine(InfoDisplayEvent event) {
         fireRequestInfoLine(new InfoDisplayEvent(this, event.getInformation()));
@@ -570,16 +595,19 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /**
      * Request that plain text or html text be displayed in a browser.
      * 
-     * @param event InfoDisplayEvent
+     * @param event
+     *            InfoDisplayEvent
      */
     public void requestBrowserContent(InfoDisplayEvent event) {
-        fireRequestBrowserContent(new InfoDisplayEvent(this, event.getInformation()));
+        fireRequestBrowserContent(new InfoDisplayEvent(this, event
+                .getInformation()));
     }
 
     /**
      * Request that the MapBean cursor be set to a certain type.
      * 
-     * @param cursor java.awt.Cursor to set over the MapBean.
+     * @param cursor
+     *            java.awt.Cursor to set over the MapBean.
      */
     public void requestCursor(java.awt.Cursor cursor) {
         fireRequestCursor(cursor);
@@ -588,7 +616,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /**
      * Request a tool tip be shown.
      * 
-     * @param event The InfoDisplayEvent containing the text and requestor.
+     * @param event
+     *            The InfoDisplayEvent containing the text and requestor.
      */
     public void requestShowToolTip(InfoDisplayEvent event) {
         fireRequestToolTip(new InfoDisplayEvent(this, event.getInformation()));
@@ -710,7 +739,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /**
      * Invoked when a mouse button has been pressed on a component.
      * 
-     * @param e MouseEvent
+     * @param e
+     *            MouseEvent
      * @return true if the listener was able to process the event.
      */
     public boolean mousePressed(MouseEvent e) {
@@ -724,7 +754,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /**
      * Invoked when a mouse button has been released on a component.
      * 
-     * @param e MouseEvent
+     * @param e
+     *            MouseEvent
      * @return true if the listener was able to process the event.
      */
     public boolean mouseReleased(MouseEvent e) {
@@ -744,7 +775,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * have a click count greater than one.
      * <p>
      * 
-     * @param e MouseEvent
+     * @param e
+     *            MouseEvent
      * @return true if the listener was able to process the event.
      */
     public boolean mouseClicked(MouseEvent e) {
@@ -759,7 +791,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /**
      * Invoked when the mouse enters a component.
      * 
-     * @param e MouseEvent
+     * @param e
+     *            MouseEvent
      */
     public void mouseEntered(MouseEvent e) {
         if (coolMM) {
@@ -771,7 +804,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
     /**
      * Invoked when the mouse exits a component.
      * 
-     * @param e MouseEvent
+     * @param e
+     *            MouseEvent
      */
     public void mouseExited(MouseEvent e) {
         if (coolMM) {
@@ -787,7 +821,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * The listener will receive these events if it successfully processes
      * mousePressed(), or if no other listener processes the event.
      * 
-     * @param e MouseEvent
+     * @param e
+     *            MouseEvent
      * @return true if the listener was able to process the event.
      */
     public boolean mouseDragged(MouseEvent e) {
@@ -802,7 +837,8 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      * Invoked when the mouse button has been moved on a component (with no
      * buttons down).
      * 
-     * @param e MouseEvent
+     * @param e
+     *            MouseEvent
      * @return true if the listener was able to process the event.
      */
     public boolean mouseMoved(MouseEvent e) {
@@ -863,7 +899,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      */
     public void findAndInit(Object obj) {
         super.findAndInit(obj);
-        
+
         if (obj instanceof MouseDelegator) {
             ((MouseDelegator) obj).addPropertyChangeListener(this);
         }
@@ -878,11 +914,11 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
      */
     public void findAndUndo(Object obj) {
         super.findAndUndo(obj);
-        
+
         if (obj == null) {
             return;
         }
-        
+
         if (obj instanceof MouseDelegator) {
             ((MouseDelegator) obj).removePropertyChangeListener(this);
         }

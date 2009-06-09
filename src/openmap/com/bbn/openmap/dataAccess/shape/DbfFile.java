@@ -77,7 +77,8 @@ public class DbfFile extends DbfTableModel {
     /**
      * Creates a blank DbfTableModel
      * 
-     * @param columnCount The number of columns this model will manage
+     * @param columnCount
+     *            The number of columns this model will manage
      */
     public DbfFile(int columnCount) {
         this();
@@ -134,7 +135,8 @@ public class DbfFile extends DbfTableModel {
             }
 
             if (DEBUG && _headerLength != bf.getFilePointer()) {
-                Debug.output("DbfFile: Header length specified in file doesn't match current pointer location");
+                Debug
+                        .output("DbfFile: Header length specified in file doesn't match current pointer location");
             }
 
         } catch (EOFException eofe) {
@@ -169,7 +171,8 @@ public class DbfFile extends DbfTableModel {
      * Read in a set of records from the dbf file, starting at the provided
      * index and continuing for the provided count.
      * 
-     * @param startingRecordIndex, 0 is the first record index.
+     * @param startingRecordIndex
+     *            , 0 is the first record index.
      * @param numRecordsToRead
      * @throws IOException
      * @throws FormatException
@@ -195,7 +198,8 @@ public class DbfFile extends DbfTableModel {
     /**
      * Fetches the record data for the given index.
      * 
-     * @param index the index of the data, starting at 0 for the first record.
+     * @param index
+     *            the index of the data, starting at 0 for the first record.
      * @return List containing Strings and Numbers for the dbf entry for the
      *         record.
      * @throws IOException
@@ -274,7 +278,8 @@ public class DbfFile extends DbfTableModel {
     /**
      * Creates a DbfTableModel for a given .dbf file
      * 
-     * @param dbf The url of the file to retrieve.
+     * @param dbf
+     *            The url of the file to retrieve.
      * @return The DbfTableModel, null if there is a problem.
      */
     public static DbfTableModel getDbfTableModel(URL dbf) {
@@ -284,7 +289,8 @@ public class DbfFile extends DbfTableModel {
     /**
      * Creates a DbfTableModel for a given .dbf file
      * 
-     * @param dbf The path of the file to retrieve.
+     * @param dbf
+     *            The path of the file to retrieve.
      * @return The DbfTableModel, null if there is a problem.
      */
     public static DbfTableModel getDbfTableModel(String dbf) {
@@ -295,7 +301,9 @@ public class DbfFile extends DbfTableModel {
             model.close();
         } catch (Exception exception) {
             if (Debug.debugging("shape")) {
-                Debug.error("problem loading DBF file" + exception.getMessage());
+                Debug
+                        .error("problem loading DBF file"
+                                + exception.getMessage());
             }
         }
         return model;
@@ -307,12 +315,16 @@ public class DbfFile extends DbfTableModel {
         ap.add("columns", "Print field header information.");
         ap.add("mask", "Only show listed columns", -1);
         ap.add("source", "The dbf file to read.", 1);
-        ap.add("target",
-                "The dbf file to write, use with mask to remove columns into new dbf file.",
-                1);
-        ap.add("num",
-                "Specify the number of records to read and display (handy for large dbf files)",
-                1);
+        ap
+                .add(
+                     "target",
+                     "The dbf file to write, use with mask to remove columns into new dbf file.",
+                     1);
+        ap
+                .add(
+                     "num",
+                     "Specify the number of records to read and display (handy for large dbf files)",
+                     1);
 
         if (!ap.parse(args)) {
             ap.printUsage();
@@ -362,23 +374,24 @@ public class DbfFile extends DbfTableModel {
             if (dtm == null) {
                 System.out.println("Problem reading " + source);
                 System.exit(-1);
-            }
-
-            if (columns != null) {
-                dtm.setColumnMask(columnMask);
-            }
-
-            dtm.readData(0, (int) num);
-
-            if (target != null) {
-                OutputStream os = new FileOutputStream(target);
-                DbfOutputStream dos = new DbfOutputStream(os);
-                dos.writeModel(dtm);
             } else {
-                dtm.setWritable(true);
-                dtm.exitOnClose = true;
-                dtm.showGUI(args[0], MODIFY_ROW_MASK | MODIFY_COLUMN_MASK
-                        | SAVE_MASK);
+
+                if (columns != null) {
+                    dtm.setColumnMask(columnMask);
+                }
+
+                dtm.readData(0, (int) num);
+
+                if (target != null) {
+                    OutputStream os = new FileOutputStream(target);
+                    DbfOutputStream dos = new DbfOutputStream(os);
+                    dos.writeModel(dtm);
+                } else {
+                    dtm.setWritable(true);
+                    dtm.exitOnClose = true;
+                    dtm.showGUI(args[0], MODIFY_ROW_MASK | MODIFY_COLUMN_MASK
+                            | SAVE_MASK);
+                }
             }
 
         } catch (Exception e) {

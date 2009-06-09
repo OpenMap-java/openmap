@@ -42,21 +42,22 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
- * Description of the Class that displays a String along a polygon or
- * a polyline defined by lat lon points.
+ * Description of the Class that displays a String along a polygon or a polyline
+ * defined by lat lon points.
  * 
  * @author paricaud
  */
 public class TX7 extends OMGraphicAdapter {
     double w = 1, angle = 0;
-    LatLonPoint llp1 = new LatLonPoint.Double(), llp2 = new LatLonPoint.Double();
+    LatLonPoint llp1 = new LatLonPoint.Double(),
+            llp2 = new LatLonPoint.Double();
     Point pt1 = new Point(), pt2 = new Point();
     AffineTransform at = new AffineTransform();
     double llpoints[];
     String str;
     Font font = defaultFont;
     GlyphVector gv;
-    //GeneralPath path;
+    // GeneralPath path;
     double distance;
     boolean badprojection;
     final static Font defaultFont = new Font("Arial", Font.PLAIN, 10);
@@ -64,9 +65,12 @@ public class TX7 extends OMGraphicAdapter {
     /**
      * Constructor for the TX7 object
      * 
-     * @param llpoints array on lat lon lat lon ...
-     * @param str Text
-     * @param isRadian true if lat lons given in radians
+     * @param llpoints
+     *            array on lat lon lat lon ...
+     * @param str
+     *            Text
+     * @param isRadian
+     *            true if lat lons given in radians
      * @since
      */
     public TX7(double llpoints[], String str, boolean isRadian) {
@@ -76,10 +80,14 @@ public class TX7 extends OMGraphicAdapter {
     /**
      * Constructor for the TX7 object
      * 
-     * @param llpoints array on lat lon lat lon ...
-     * @param str Text
-     * @param isRadian true if lat lons given in radians
-     * @param font font used to draw text
+     * @param llpoints
+     *            array on lat lon lat lon ...
+     * @param str
+     *            Text
+     * @param isRadian
+     *            true if lat lons given in radians
+     * @param font
+     *            font used to draw text
      * @since
      */
     public TX7(double llpoints[], String str, boolean isRadian, Font font) {
@@ -97,8 +105,10 @@ public class TX7 extends OMGraphicAdapter {
     /**
      * Constructor for the TX7 object
      * 
-     * @param llpoints array on lat lon lat lon ...
-     * @param str Text *
+     * @param llpoints
+     *            array on lat lon lat lon ...
+     * @param str
+     *            Text *
      * @since
      */
     public TX7(double llpoints[], String str) {
@@ -108,7 +118,8 @@ public class TX7 extends OMGraphicAdapter {
     /**
      * Sets the text attribute of the TX7 object
      * 
-     * @param S The new text value
+     * @param S
+     *            The new text value
      * @since
      */
     public void setText(String S) {
@@ -119,7 +130,8 @@ public class TX7 extends OMGraphicAdapter {
     /**
      * Sets the font attribute of the TX7 object
      * 
-     * @param f The new font value
+     * @param f
+     *            The new font value
      * @since
      */
     public void setFont(Font f) {
@@ -130,8 +142,10 @@ public class TX7 extends OMGraphicAdapter {
     /**
      * Sets the location attribute of the TX7 object
      * 
-     * @param llpoints array on lat lon lat lon ...
-     * @param isRadian true if lat lons given in radians
+     * @param llpoints
+     *            array on lat lon lat lon ...
+     * @param isRadian
+     *            true if lat lons given in radians
      * @since
      */
     public void setLocation(double[] llpoints, boolean isRadian) {
@@ -177,7 +191,8 @@ public class TX7 extends OMGraphicAdapter {
     /**
      * generate with a new projection
      * 
-     * @param proj new Projection
+     * @param proj
+     *            new Projection
      * @return Description of the Returned Value
      * @since
      */
@@ -202,7 +217,8 @@ public class TX7 extends OMGraphicAdapter {
     /**
      * render
      * 
-     * @param g Graphics
+     * @param g
+     *            Graphics
      * @since
      */
     public void render(Graphics g) {
@@ -223,9 +239,8 @@ public class TX7 extends OMGraphicAdapter {
         g2d.drawGlyphVector(gv, 0, 0);
         g.setColor(Color.blue);
         /*
-         * if (path != null) { Stroke st = g2d.getStroke();
-         * g2d.setStroke(new BasicStroke(.3f)); g2d.draw(path);
-         * g2d.setStroke(st); }
+         * if (path != null) { Stroke st = g2d.getStroke(); g2d.setStroke(new
+         * BasicStroke(.3f)); g2d.draw(path); g2d.setStroke(st); }
          */
         // Restore original transform
         g2d.setTransform(saveAT);
@@ -241,7 +256,8 @@ public class TX7 extends OMGraphicAdapter {
         double ln1;
         double lt2;
         double ln2;
-        FontRenderContext frc = new FontRenderContext(new AffineTransform(), true, true);
+        FontRenderContext frc = new FontRenderContext(new AffineTransform(),
+                true, true);
         gv = font.createGlyphVector(frc, str);
         Rectangle2D r = gv.getLogicalBounds();
         w = r.getWidth();
@@ -255,7 +271,7 @@ public class TX7 extends OMGraphicAdapter {
         llp2.setLatLon(lt2, ln2, true);
         distance = GreatCircle.sphericalDistance(lt1, ln1, lt2, ln2)
                 * Planet.wgs84_earthEquatorialRadiusMeters;
-        //System.out.println(nseg+" "+llp1+" "+llp2);
+        // System.out.println(nseg+" "+llp1+" "+llp2);
         setNeedToRegenerate(true);
         visible = false;
 
@@ -268,7 +284,7 @@ public class TX7 extends OMGraphicAdapter {
         double dz;
         double az0 = 0;
         for (int i = 0; i < nseg; i++) {
-            //if(j>llpoints.length-2){System.out.println(j+" "+i+"
+            // if(j>llpoints.length-2){System.out.println(j+" "+i+"
             // "+nseg);nseg=1;break;}
             lt2 = (float) llpoints[j++];
             ln2 = (float) llpoints[j++];
@@ -304,7 +320,7 @@ public class TX7 extends OMGraphicAdapter {
             return;
         }
         float h = (float) lm.getAscent();
-        //System.out.println("ascent:" + h + " w:" + w + " s:" + s +
+        // System.out.println("ascent:" + h + " w:" + w + " s:" + s +
         // " corr:" + corr + " wc:" + (w - corr * h) + " " + str);
         corr = 0f;
         w -= corr * h;
@@ -315,7 +331,7 @@ public class TX7 extends OMGraphicAdapter {
         float[] gp = gv.getGlyphPositions(0, m, null);
         if (gp == null)
             System.out.println("gp null");
-        //path = new GeneralPath();
+        // path = new GeneralPath();
         AffineTransform at;
         double dx;
         double dy;
@@ -338,7 +354,12 @@ public class TX7 extends OMGraphicAdapter {
         double sin2;
         j = 0;
         for (int i = 0; i < m; i++) {
-            s = (i == m - 1) ? (float) w : gp[2 * i + 2];
+            if (i == m - 1 || gp == null) {
+                s = (float) w;
+            } else {
+                s = gp[2 * i + 2];
+            }
+
             ps = s - s0;
             theta = az[j];
             cos1 = Math.cos(theta);
@@ -385,13 +406,12 @@ public class TX7 extends OMGraphicAdapter {
             }
             s0 = s;
             /*
-             * path.moveTo((float) xa, (float) ya); xa += ps *
-             * Math.cos(theta); ya += ps * Math.sin(theta);
-             * path.lineTo((float) xa, (float) ya); xa += h *
-             * Math.sin(theta); ya -= h * Math.cos(theta);
-             * path.lineTo((float) xa, (float) ya); xa -= ps *
-             * Math.cos(theta); ya -= ps * Math.sin(theta);
-             * path.lineTo((float) xa, (float) ya); path.closePath();
+             * path.moveTo((float) xa, (float) ya); xa += ps * Math.cos(theta);
+             * ya += ps * Math.sin(theta); path.lineTo((float) xa, (float) ya);
+             * xa += h * Math.sin(theta); ya -= h * Math.cos(theta);
+             * path.lineTo((float) xa, (float) ya); xa -= ps * Math.cos(theta);
+             * ya -= ps * Math.sin(theta); path.lineTo((float) xa, (float) ya);
+             * path.closePath();
              */
         }
         angle = Math.atan2(y, x);
@@ -399,4 +419,3 @@ public class TX7 extends OMGraphicAdapter {
 
     }
 }
-

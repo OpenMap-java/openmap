@@ -49,83 +49,77 @@ import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 
 /**
- * This is a class that will generate A.TOC files that the RpfLayer
- * requires. A.TOC files provide the RpfLayer with an idea of what
- * data is available to it, its geographic coverage, and chart type.
- * With the A.TOC contents, the RpfLayer is able to find which frames
- * are appropriate for a given projection location. It is very
- * important to have a valid A.TOC directory.
+ * This is a class that will generate A.TOC files that the RpfLayer requires.
+ * A.TOC files provide the RpfLayer with an idea of what data is available to
+ * it, its geographic coverage, and chart type. With the A.TOC contents, the
+ * RpfLayer is able to find which frames are appropriate for a given projection
+ * location. It is very important to have a valid A.TOC directory.
  * <P>
  * 
- * The RPF specification, MIL-STD-2411, has definitions for how frames
- * are to be laid out and found within a RPF directory. All RPF data
- * is supposed to lie under one RPF directory, and an A.TOC file,
- * describing all the files and their groupings, should be directly
- * within the RPF directory. That's why the RpfLayer needs a path to a
- * RPF directory - it's really looking for the A.TOC file, and knows
- * where to find it. It also needs a path to the RPF directory because
- * it needs to prepend that path to the paths to the files that the
+ * The RPF specification, MIL-STD-2411, has definitions for how frames are to be
+ * laid out and found within a RPF directory. All RPF data is supposed to lie
+ * under one RPF directory, and an A.TOC file, describing all the files and
+ * their groupings, should be directly within the RPF directory. That's why the
+ * RpfLayer needs a path to a RPF directory - it's really looking for the A.TOC
+ * file, and knows where to find it. It also needs a path to the RPF directory
+ * because it needs to prepend that path to the paths to the files that the
  * A.TOC file knows about.
  * <P>
  * 
- * The A.TOC files that can be created with this MakeToc class can be
- * created to contain absolute frame paths. The MakeToc class can take
- * the paths to several RPF directories, and create a single A.TOC
- * file that preserves all of their current file paths. You have to
- * use alot of caution with this capability, however. These A.TOCs
- * containing absolute file paths will not work if the data is moved
- * to another machine, or if referenced by a machine with a different
- * type file system (i.e. Windows). They may not work for other
- * implementations of code that display RPF data - the code in this
- * package has been modified to test for absolute file names.
+ * The A.TOC files that can be created with this MakeToc class can be created to
+ * contain absolute frame paths. The MakeToc class can take the paths to several
+ * RPF directories, and create a single A.TOC file that preserves all of their
+ * current file paths. You have to use alot of caution with this capability,
+ * however. These A.TOCs containing absolute file paths will not work if the
+ * data is moved to another machine, or if referenced by a machine with a
+ * different type file system (i.e. Windows). They may not work for other
+ * implementations of code that display RPF data - the code in this package has
+ * been modified to test for absolute file names.
  * <P>
  * 
- * That said, absolute file names should be used instead of giving the
- * RpfLayer several RPF directories. The RpfTocHandler does much less
- * work when it is allowed to group coverages together to make bigger
- * areas.
+ * That said, absolute file names should be used instead of giving the RpfLayer
+ * several RPF directories. The RpfTocHandler does much less work when it is
+ * allowed to group coverages together to make bigger areas.
  * <P>
  * 
- * This code was ported from C code provided in the original Mitre RPF
- * package that had limits to the number of frames that could make up
- * the areas. I'll be working to eliminate those limits, but I wanted
- * to get a working version of the code out there. I'm also planning
- * on modifying this class so that it can load the RpfTocHandler
- * directly, therefore eliminating the need for A.TOCs altogether when
- * there is more than one RPF directory.
+ * This code was ported from C code provided in the original Mitre RPF package
+ * that had limits to the number of frames that could make up the areas. I'll be
+ * working to eliminate those limits, but I wanted to get a working version of
+ * the code out there. I'm also planning on modifying this class so that it can
+ * load the RpfTocHandler directly, therefore eliminating the need for A.TOCs
+ * altogether when there is more than one RPF directory.
  * <P>
  * 
  * <pre>
  * 
- *  
+ * 
  *   Usage:  java com.bbn.openmap.layer.rpf.MakeToc (RPF dir path) (RPF dir path) ...
- *   
- *  
+ * 
+ * 
  * </pre>
  * 
- * This will create an A.TOC file in the current directory for the RPF
- * files in the RPF directory paths. Use:
+ * This will create an A.TOC file in the current directory for the RPF files in
+ * the RPF directory paths. Use:
  * 
  * <pre>
  * 
- *  
+ * 
  *   java com.bbn.openmap.layer.rpf.MakeToc -help
- *   
- *  
+ * 
+ * 
  * </pre>
  * 
  * for other options.
  * 
  * <P>
- * NOTE: Make sure that the RPF directories and their contents are in
- * upper case. It's a spec requirement, although with CD copies and
- * FTP downloads, the file name cases sometimes get switched. Use
- * com.bbn.openmap.layer.rpf.ChangeCase to modify the file name cases.
- * Also, if there is more than one RPF directory in the path to the
- * image frames, use the absolute path option. Otherwise, the code
- * will focus on making the top-most RPF directory the one to key the
- * internal relative paths off of, and that might not be what you
- * want.
+ * NOTE: Make sure that the RPF directories and their contents are in upper
+ * case. It's a spec requirement, although with CD copies and FTP downloads, the
+ * file name cases sometimes get switched. Use
+ * com.bbn.openmap.layer.rpf.ChangeCase to modify the file name cases. Also, if
+ * there is more than one RPF directory in the path to the image frames, use the
+ * absolute path option. Otherwise, the code will focus on making the top-most
+ * RPF directory the one to key the internal relative paths off of, and that
+ * might not be what you want.
  * </P>
  * 
  * @see com.bbn.openmap.layer.rpf.ChangeCase
@@ -133,11 +127,11 @@ import com.bbn.openmap.util.Debug;
 public class MakeToc {
 
     /**
-     * According to Dan Scholten's original code, this was 2 times the
-     * max - changed from 30 on 6/17/94 to 200 for 81 JNC's in zone 1.
-     * This might not be enough for world-wide coverage of larger
-     * scale maps that are now available. This number may have to be
-     * increased depending on how much data you need.
+     * According to Dan Scholten's original code, this was 2 times the max -
+     * changed from 30 on 6/17/94 to 200 for 81 JNC's in zone 1. This might not
+     * be enough for world-wide coverage of larger scale maps that are now
+     * available. This number may have to be increased depending on how much
+     * data you need.
      */
     public final static int DEFAULT_MAX_SIDE = 200;
 
@@ -248,33 +242,45 @@ public class MakeToc {
     /**
      * Create an A.TOC file.
      * 
-     * @param argv The arguments should at least include a path to a
-     *        RPF file root directory. Other options can be found by
-     *        using a -help option.
+     * @param argv
+     *            The arguments should at least include a path to a RPF file
+     *            root directory. Other options can be found by using a -help
+     *            option.
      */
     public static void main(String[] argv) {
         Debug.init();
         boolean Dchum = false;
 
         ArgParser ap = new ArgParser("MakeToc");
-        ap.add("absolute",
-                "Use absolute paths in A.TOC - Use for multiple RPF Directories");
-        ap.add("boundary", "Maximum frames on a boundary edge (Default 200)", 1);
+        ap
+                .add("absolute",
+                     "Use absolute paths in A.TOC - Use for multiple RPF Directories");
+        ap
+                .add("boundary",
+                     "Maximum frames on a boundary edge (Default 200)", 1);
         ap.add("dchum", "DCHUM files are included.");
         ap.add("log", "Pathname of log file to list A.TOC creation output.", 1);
-        ap.add("output",
-                "Path to directory to place A.TOC file. (Default is current directory)",
-                1);
-        ap.add("producer",
-                "The producer of the frames (Default DMAAC).  Five letter code.",
-                1);
+        ap
+                .add(
+                     "output",
+                     "Path to directory to place A.TOC file. (Default is current directory)",
+                     1);
+        ap
+                .add(
+                     "producer",
+                     "The producer of the frames (Default DMAAC).  Five letter code.",
+                     1);
         ap.add("verbose", "Print out progress");
         ap.add("extraverbose", "Print out ALL progress");
-        ap.add("nw",
-                "Don't put up swing progress window (Use this if you are getting weird exceptions)");
-        ap.add("paths",
-                "Space separated paths to RPF directory or directories.  Should be last.  If more than one directory is listed, then absolute paths are used in the A.TOC file.",
-                ArgParser.TO_END);
+        ap
+                .add(
+                     "nw",
+                     "Don't put up swing progress window (Use this if you are getting weird exceptions)");
+        ap
+                .add(
+                     "paths",
+                     "Space separated paths to RPF directory or directories.  Should be last.  If more than one directory is listed, then absolute paths are used in the A.TOC file.",
+                     ArgParser.TO_END);
 
         if (!ap.parse(argv)) {
             ap.printUsage();
@@ -324,7 +330,8 @@ public class MakeToc {
         }
 
         if (paths == null || paths.length == 0) {
-            Debug.output("MakeToc: need a path to start searching for RPF frames.");
+            Debug
+                    .output("MakeToc: need a path to start searching for RPF frames.");
             System.exit(0);
         }
 
@@ -334,7 +341,9 @@ public class MakeToc {
         arg = ap.getArgValues("nw");
         if (arg == null) {
             try {
-                mt.addProgressListener(new com.bbn.openmap.gui.ProgressListenerGauge("RPF A.TOC File Creation"));
+                mt
+                        .addProgressListener(new com.bbn.openmap.gui.ProgressListenerGauge(
+                                "RPF A.TOC File Creation"));
             } catch (RuntimeException re) {
 
             }
@@ -351,7 +360,7 @@ public class MakeToc {
             mt.setProducer(arg[0]);
         }
 
-        if (paths.length > 1 || argFlagged) {
+        if ((paths != null && paths.length > 1) || argFlagged) {
             Debug.output("MakeToc:  creating A.TOC with absolute path names.");
             mt.setRelativeFramePaths(false);
         }
@@ -375,10 +384,8 @@ public class MakeToc {
             }
         }
         mt.setMaxSide(max_side);
-        mt.fireProgressUpdate(ProgressEvent.START,
-                "Searching for RPF frames",
-                0,
-                100);
+        mt.fireProgressUpdate(ProgressEvent.START, "Searching for RPF frames",
+                              0, 100);
 
         paths = mt.searchForRpfFiles(paths);
 
@@ -395,15 +402,16 @@ public class MakeToc {
     }
 
     /**
-     * Create a A.TOC file specificed by the frame file list, at the
-     * location specified.
+     * Create a A.TOC file specificed by the frame file list, at the location
+     * specified.
      * 
-     * @param rpfFilePaths An array of all RPF Frame file paths. If
-     *        these paths are relative, the MakeToc class should be
-     *        set for that.
-     * @param outputFile the complete pathname to an A.TOC file to be
-     *        written.
-     * @exception MakeTocException if anything goes wrong.
+     * @param rpfFilePaths
+     *            An array of all RPF Frame file paths. If these paths are
+     *            relative, the MakeToc class should be set for that.
+     * @param outputFile
+     *            the complete pathname to an A.TOC file to be written.
+     * @exception MakeTocException
+     *                if anything goes wrong.
      */
     public void create(String[] rpfFilePaths, String outputFile)
             throws MakeTocException {
@@ -411,18 +419,19 @@ public class MakeToc {
     }
 
     /**
-     * Create a A.TOC file specificed by the frame file list, at the
-     * location specified.
+     * Create a A.TOC file specificed by the frame file list, at the location
+     * specified.
      * 
-     * @param rpfFilePaths An array of all RPF Frame file paths. If
-     *        these paths are relative, the MakeToc class should be
-     *        set for that.
-     * @param outputFile the complete pathname to an A.TOC file to be
-     *        written.
-     * @param dchum If dchum is present, all frames get placed in
-     *        their own group. False is default. Dchum are replacement
-     *        subframes.
-     * @exception MakeTocException if anything goes wrong.
+     * @param rpfFilePaths
+     *            An array of all RPF Frame file paths. If these paths are
+     *            relative, the MakeToc class should be set for that.
+     * @param outputFile
+     *            the complete pathname to an A.TOC file to be written.
+     * @param dchum
+     *            If dchum is present, all frames get placed in their own group.
+     *            False is default. Dchum are replacement subframes.
+     * @exception MakeTocException
+     *                if anything goes wrong.
      */
     public void create(String[] rpfFilePaths, String outputFile, boolean dchum)
             throws MakeTocException {
@@ -446,12 +455,12 @@ public class MakeToc {
     }
 
     /**
-     * Look for RPF frame files, given a bunch of places to start
-     * looking. The output of this can be passed to the create method.
+     * Look for RPF frame files, given a bunch of places to start looking. The
+     * output of this can be passed to the create method.
      * 
-     * @param startDirs Directory paths.
-     * @return an array of strings representing path names to RPF
-     *         frame files.
+     * @param startDirs
+     *            Directory paths.
+     * @return an array of strings representing path names to RPF frame files.
      */
     public String[] searchForRpfFiles(String[] startDirs) {
         RpfFileSearch search = new RpfFileSearch();
@@ -473,10 +482,9 @@ public class MakeToc {
     }
 
     /**
-     * Set the 5 letter producer code for the frames. If you didn't
-     * make the frames, they DMA probably did, so the default is
-     * applicable - DMAAC. There are a bunch of accepted codes in the
-     * MIL-STD-2411 for producers.
+     * Set the 5 letter producer code for the frames. If you didn't make the
+     * frames, they DMA probably did, so the default is applicable - DMAAC.
+     * There are a bunch of accepted codes in the MIL-STD-2411 for producers.
      */
     public void setProducer(String setting) {
         if (setting.length() != 5) {
@@ -496,8 +504,8 @@ public class MakeToc {
     }
 
     /**
-     * Set the Maximum number of frames along a group boundary edge.
-     * Don't change this after starting to group the frames.
+     * Set the Maximum number of frames along a group boundary edge. Don't
+     * change this after starting to group the frames.
      */
     protected void setMaxSide(int set) {
         maxSide = set;
@@ -516,14 +524,17 @@ public class MakeToc {
     }
 
     /**
-     * Get all the frame paths, and sort through them. This method
-     * sets up the frames vector and loads each Frame with it's
-     * attributes, so it can be grouped with its neighbors.
+     * Get all the frame paths, and sort through them. This method sets up the
+     * frames vector and loads each Frame with it's attributes, so it can be
+     * grouped with its neighbors.
      * 
-     * @param framePaths the array of RPF file paths.
-     * @param head an RpfHeader object to load with production
-     *        information, that will be put into the A.TOC file.
-     * @param frames the frame vector to load.
+     * @param framePaths
+     *            the array of RPF file paths.
+     * @param head
+     *            an RpfHeader object to load with production information, that
+     *            will be put into the A.TOC file.
+     * @param frames
+     *            the frame vector to load.
      */
     public void organizeFrames(String[] framePaths, RpfHeader head,
                                Vector frames) {
@@ -532,9 +543,8 @@ public class MakeToc {
         int i;
 
         /* New, DKS */
-//        boolean Cib = false; /* CIB data flag: 1:I1(10M); 2:I2(5M) */
-//        boolean Cdted = false; /* CDTED data flag: 1: DT1(100M) */
-
+        // boolean Cib = false; /* CIB data flag: 1:I1(10M); 2:I2(5M) */
+        // boolean Cdted = false; /* CDTED data flag: 1: DT1(100M) */
         boolean isoverview = false;
         boolean islegend = false;
 
@@ -543,7 +553,7 @@ public class MakeToc {
         RpfFileSections.RpfCoverageSection coverage;
 
         Debug.message("maketoc",
-                "MakeToc.organizeFrames: *** initial look at frames ***");
+                      "MakeToc.organizeFrames: *** initial look at frames ***");
 
         /* # of frames = # of pathname records = #files */
         int nFrames = framePaths.length;
@@ -586,7 +596,7 @@ public class MakeToc {
                 if (!head.read(binFile)) {
                     // Not a RPF Frame file
                     if (Debug.debugging("maketoc")) {
-                    Debug.error("MakeToc: " + framePath
+                        Debug.error("MakeToc: " + framePath
                                 + " is not a RPF image file - ignoring");
                     }
                     continue;
@@ -606,8 +616,9 @@ public class MakeToc {
                 }
 
                 if (Debug.debugging("maketocframedetail")) {
-                    Debug.output("MakeToc.organizeFrames: coverage section for "
-                            + framePath + ", " + coverage);
+                    Debug
+                            .output("MakeToc.organizeFrames: coverage section for "
+                                    + framePath + ", " + coverage);
                 }
 
                 binFile.close();
@@ -654,22 +665,22 @@ public class MakeToc {
             // as it acutally is. If they differ, rule in favor of
             // what the frame thinks it is.
 
-            //  Let's just be passive here, and name it to whatever it
-            //  is. If we found the frame, then we'll find it later,
-            //  too. -DFD
+            // Let's just be passive here, and name it to whatever it
+            // is. If we found the frame, then we'll find it later,
+            // too. -DFD
 
-            //          if (!framename.equals(head.filename)) { /* DKS */
-            //              File file = new File(frame.filename);
-            //              File newFile = new File(frame.filename.substring(0,
+            // if (!framename.equals(head.filename)) { /* DKS */
+            // File file = new File(frame.filename);
+            // File newFile = new File(frame.filename.substring(0,
             // tail),
-            //                                      head.filename);
-            //              file.renameTo(newFile);
-            //              framename = head.filename;
+            // head.filename);
+            // file.renameTo(newFile);
+            // framename = head.filename;
 
-            //              Debug.output("WARNING: File \"" + framename +
-            //                           "\" doesn't match internal name \"" + head.filename +
-            //                           "\" - Fixed.");
-            //          }
+            // Debug.output("WARNING: File \"" + framename +
+            // "\" doesn't match internal name \"" + head.filename +
+            // "\" - Fixed.");
+            // }
 
             isoverview = false;
             islegend = false;
@@ -710,7 +721,8 @@ public class MakeToc {
             // Set the string to length 12, was 15 for some reason.
             int scaleStringLength = 12;
             if (scaleString.length() < scaleStringLength) {
-                padding = createPadding(scaleStringLength - scaleString.length(), false);
+                padding = createPadding(scaleStringLength
+                        - scaleString.length(), false);
                 scaleString = scaleString + padding;
             } else if (scaleString.length() > scaleStringLength) {
                 scaleString = scaleString.substring(0, scaleStringLength);
@@ -730,13 +742,11 @@ public class MakeToc {
             }
 
             /*
-             * PBF 6-18-94 check for rectangular coverage or polar
-             * frame
+             * PBF 6-18-94 check for rectangular coverage or polar frame
              */
             if (frame.zone == '9' || frame.zone == 'J') {
                 /*
-                 * Polar. Convert boundary from lat-long degrees to
-                 * pixels
+                 * Polar. Convert boundary from lat-long degrees to pixels
                  */
                 /* DKS 1/95: North pole: "9" code */
                 if (frame.zone == '9') {
@@ -794,8 +804,7 @@ public class MakeToc {
                 frame.right = coverage.selon;
 
                 /*
-                 * NEW, DKS 6/94. Correct for frame straddling 180
-                 * deg.
+                 * NEW, DKS 6/94. Correct for frame straddling 180 deg.
                  */
                 if (coverage.selon < coverage.nwlon) {
                     frame.right = 180.0;
@@ -842,7 +851,8 @@ public class MakeToc {
             answer = bufr.readLine();
             return answer;
         } catch (IOException ioe) {
-            Debug.error("MakeToc: IOException trying to get an answer from you.  Dang.");
+            Debug
+                    .error("MakeToc: IOException trying to get an answer from you.  Dang.");
             return null;
         }
     }
@@ -850,10 +860,14 @@ public class MakeToc {
     /**
      * Create and write out an A.TOC file.
      * 
-     * @param filename the output filename.
-     * @param head the RpfHeader containing header information.
-     * @param frames the frame Vector.
-     * @param groups the file groups Vector.
+     * @param filename
+     *            the output filename.
+     * @param head
+     *            the RpfHeader containing header information.
+     * @param frames
+     *            the frame Vector.
+     * @param groups
+     *            the file groups Vector.
      */
     public void writeTOCFile(String filename, RpfHeader head, Vector frames,
                              Vector groups) throws MakeTocException {
@@ -862,23 +876,20 @@ public class MakeToc {
         int i, j, tail;
 
         /*
-         * DKS changed from left, right for polar zone: new
-         * left_bottom longit.
+         * DKS changed from left, right for polar zone: new left_bottom longit.
          */
         double left_b, left_t, right_b, right_t, top, bottom;
         double xleft, xright, ytop, ybottom;
 
         /* !! To be filled in later */
         int TOC_Nitf_hdr_size = 0; /*
-                                    * ?? Nitf header size for output
-                                    * TOC
+                                    * ?? Nitf header size for output TOC
                                     */
         int Loc_sec_len; /* Location section length */
         int Bound_tbl_len; /* Boundary rectangle table length */
         int Frame_hdr_len = 13; /* Frame index header length */
         int Frame_index_rec_len = 33; /*
-                                       * Frame index record length
-                                       * (was 37)
+                                       * Frame index record length (was 37)
                                        */
         int Frame_sec_len; /* Frame section length */
 
@@ -894,12 +905,12 @@ public class MakeToc {
 
         /* Allocations for uniq directories */
         int[] uniq_dir_ptr = new int[nFrames]; /*
-                                                * index from filename
-                                                * to uniq direct.
+                                                * index from filename to uniq
+                                                * direct.
                                                 */
         int[] uniq_dir_pos = new int[nFrames]; /*
-                                                * position of direct.
-                                                * name in file
+                                                * position of direct. name in
+                                                * file
                                                 */
 
         /* list of direct. names */
@@ -938,14 +949,15 @@ public class MakeToc {
 
             fout.writeBytes(head.standardNumber);
             if (head.standardNumber.length() < 15) {
-                fout.writeBytes(createPadding(15 - head.standardNumber.length(),
-                        false));
+                fout
+                        .writeBytes(createPadding(15 - head.standardNumber
+                                .length(), false));
             }
 
             fout.writeBytes(head.standardDate);
             if (head.standardDate.length() < 8) {
                 fout.writeBytes(createPadding(8 - head.standardDate.length(),
-                        false));
+                                              false));
             }
 
             // All this trouble just for a silly character.
@@ -961,13 +973,11 @@ public class MakeToc {
             fout.writeBytes(head.release);
 
             /*
-             * New, DKS. no longer head.loc_sec_phys_loc. Always write
-             * 48.
+             * New, DKS. no longer head.loc_sec_phys_loc. Always write 48.
              */
             /*
-             * DFD - This isn't true, but since we don't care about
-             * NITF formatting, it may be. Just write out where we
-             * are.
+             * DFD - This isn't true, but since we don't care about NITF
+             * formatting, it may be. Just write out where we are.
              */
             int location_section_location = (int) fout.getFilePointer() + 4;
             fout.writeInt(location_section_location);
@@ -984,8 +994,7 @@ public class MakeToc {
             /* LOCATION SECTION */
             int Loc_hdr_len = 14; /* Location section header length */
             int Loc_sec_comp_len = 10; /*
-                                        * Location section component
-                                        * length
+                                        * Location section component length
                                         */
 
             /* 14 + 4 * 10 = 54 */
@@ -1009,8 +1018,8 @@ public class MakeToc {
             }
 
             /*
-             * compon. aggregate len: unknown here. Fill in after
-             * doing all else.
+             * compon. aggregate len: unknown here. Fill in after doing all
+             * else.
              */
             /* location component aggregate length file location */
             long agg_loc = fout.getFilePointer(); /* save for later */
@@ -1032,8 +1041,7 @@ public class MakeToc {
             for (i = 0; i < nFrames; i++) { /* for each frame file */
 
                 /*
-                 * set tail to ptr to last occurrence of '/' in
-                 * filename
+                 * set tail to ptr to last occurrence of '/' in filename
                  */
                 /* frames[i].filename is full pathname */
                 frame = (Frame) frames.elementAt(i);
@@ -1071,8 +1079,10 @@ public class MakeToc {
                         tmpDir = "./" + direct[i].substring(rpfIndex);
                     } else {
                         if (Debug.debugging("maketoc")) {
-                            Debug.output("RPF directory not found in directory path "
-                                    + direct[i] + ", using absolute path");
+                            Debug
+                                    .output("RPF directory not found in directory path "
+                                            + direct[i]
+                                            + ", using absolute path");
                         }
                         tmpDir = direct[i];
                     }
@@ -1134,15 +1144,15 @@ public class MakeToc {
             } /* for i */
 
             /*
-             * frame file index record length: 9 + nFrames * 33 +
-             * path_table_len
+             * frame file index record length: 9 + nFrames * 33 + path_table_len
              */
             Frame_sec_len = Frame_hdr_len + nFrames * Frame_index_rec_len
                     + path_table_len;
 
             /* START LOCATION RECORD 1 */
             /* ID #: */
-            fout.writeShort((short) RpfFileSections.LOC_BOUNDARY_SECTION_SUBHEADER);
+            fout
+                    .writeShort((short) RpfFileSections.LOC_BOUNDARY_SECTION_SUBHEADER);
 
             // The boundary section subheader is the first part of the
             // bounfary rectangle section. The boundary section comes
@@ -1159,7 +1169,8 @@ public class MakeToc {
 
             /* START LOCATION RECORD 2 */
             /* ID #: */
-            fout.writeShort((short) RpfFileSections.LOC_BOUNDARY_RECTANGLE_TABLE);
+            fout
+                    .writeShort((short) RpfFileSections.LOC_BOUNDARY_RECTANGLE_TABLE);
 
             /* Boundary rectangle table length */
             Bound_tbl_len = groupCount * Bound_rec_len;
@@ -1174,7 +1185,8 @@ public class MakeToc {
 
             /* START LOCATION RECORD 3 */
             /* ID #: */
-            fout.writeShort((short) RpfFileSections.LOC_FRAME_FILE_INDEX_SUBHEADER);
+            fout
+                    .writeShort((short) RpfFileSections.LOC_FRAME_FILE_INDEX_SUBHEADER);
 
             /* length */
             fout.writeInt(Frame_hdr_len);
@@ -1185,7 +1197,8 @@ public class MakeToc {
 
             /* START LOCATION RECORD 4 */
             /* ID #: */
-            fout.writeShort((short) RpfFileSections.LOC_FRAME_FILE_INDEX_SUBSECTION);
+            fout
+                    .writeShort((short) RpfFileSections.LOC_FRAME_FILE_INDEX_SUBSECTION);
 
             /* length */
             /* Frame_sec_len computed above */
@@ -1221,8 +1234,8 @@ public class MakeToc {
                 group = (Group) groups.elementAt(i);
 
                 /*
-                 * Key off flag to write proper data to A.TOC for
-                 * browse menu later
+                 * Key off flag to write proper data to A.TOC for browse menu
+                 * later
                  */
                 if (group.cib) {
                     fout.writeBytes("CIB  ");
@@ -1230,8 +1243,7 @@ public class MakeToc {
                 } else if (group.cdted) {
                     fout.writeBytes("CDTED");
                     fout.writeBytes("6.5:1"); /*
-                                               * Compr. ratio:
-                                               * VARIABLE
+                                               * Compr. ratio: VARIABLE
                                                */
                 } else {
                     fout.writeBytes("CADRG");
@@ -1242,7 +1254,7 @@ public class MakeToc {
                 if (group.scale.length() < 12) {
                     fout.writeBytes(group.scale);
                     fout.writeBytes(createPadding(12 - group.scale.length(),
-                            false));
+                                                  false));
                 } else {
                     fout.writeBytes(group.scale.substring(0, 12)); // Already
                     // 12
@@ -1257,20 +1269,18 @@ public class MakeToc {
 
                 /* DKS changed from AFESC to DMAAC 8/2/94 */
                 /* Producer: */
-                //  Should be OpenMap BBN, I guess.
+                // Should be OpenMap BBN, I guess.
                 fout.writeBytes(producer);
 
                 /*
-                 * PBF - If group is polar, change boundaries from
-                 * rect coordinates to lat-lon -- 6-19-94
+                 * PBF - If group is polar, change boundaries from rect
+                 * coordinates to lat-lon -- 6-19-94
                  */
                 if (group.zone == '9' || group.zone == 'J') { /*
-                                                               * polar
-                                                               * zone
+                                                               * polar zone
                                                                */
                     /*
-                     * DKS: switched x,y to match spec: x increases
-                     * right, y up.
+                     * DKS: switched x,y to match spec: x increases right, y up.
                      */
                     ytop = group.horiz_pos[group.top];
                     ybottom = group.horiz_pos[group.bottom];
@@ -1284,8 +1294,7 @@ public class MakeToc {
                     }
                     /* see CADRG SPEC 89038, p. 50 */
                     /*
-                     * FIND LATITUDES from x,y. x increases right, y
-                     * up.
+                     * FIND LATITUDES from x,y. x increases right, y up.
                      */
 
                     /* DKS new 1/95 to handle South pole separately. */
@@ -1309,8 +1318,7 @@ public class MakeToc {
                                 + bottom);
 
                     /*
-                     * Cvt from x,y to LONGITUDE; from radians to
-                     * degrees
+                     * Cvt from x,y to LONGITUDE; from radians to degrees
                      */
 
                     /* DKS added South pole case 1/95 */
@@ -1367,16 +1375,14 @@ public class MakeToc {
 
                     /* For both poles: */
                     if (xleft < 0) { /*
-                                      * left half of earth has
-                                      * negative longits
+                                      * left half of earth has negative longits
                                       */
                         left_t = -left_t;
                         left_b = -left_b;
                     }
                     /* This will hardly ever happen: */
                     if (xright < 0) { /*
-                                       * left half of earth has
-                                       * negative longs
+                                       * left half of earth has negative longs
                                        */
                         right_t = -right_t;
                         right_b = -right_b;
@@ -1389,14 +1395,14 @@ public class MakeToc {
                         Debug.output("LONGS. left_b: " + left_b + ", right_b: "
                                 + right_b);
 
-                    //  #if 0
-                    //                  /* !!!!!!!!!!!!!!!!!!! Fix to getlat [80,90],
+                    // #if 0
+                    // /* !!!!!!!!!!!!!!!!!!! Fix to getlat [80,90],
                     // longit. [-180,180] */
-                    //                  bottom = 80.0 ;
-                    //                  top = 90.0 ;
-                    //                  left = -180.0 ;
-                    //                  right = 180.0 ;
-                    //  #endif
+                    // bottom = 80.0 ;
+                    // top = 90.0 ;
+                    // left = -180.0 ;
+                    // right = 180.0 ;
+                    // #endif
 
                 } /* if polar zone */
 
@@ -1414,10 +1420,10 @@ public class MakeToc {
 
                 } /* else */
 
-                //              Debug.output("For RpfTocEntry, writing: \n top = "
+                // Debug.output("For RpfTocEntry, writing: \n top = "
                 // + top +
-                //                           "\n bottom = " + bottom + "\n left = " + left_t +
-                //                           "\n right = " + right_t + "\n---------");
+                // "\n bottom = " + bottom + "\n left = " + left_t +
+                // "\n right = " + right_t + "\n---------");
 
                 // Writing all doubles
 
@@ -1473,7 +1479,7 @@ public class MakeToc {
 
                 if (!frame.marked) {
                     Debug.error(frame.filename + ": not in a boundary rect??");
-                    //              continue;
+                    // continue;
                 }
 
                 /* NEW, DKS: +1 removed so range is [0,n]: */
@@ -1481,25 +1487,23 @@ public class MakeToc {
 
                 /* Frame location ROW number */
                 /*
-                 * DKS. Changed from top to bottom to fix bug in
-                 * Theron's frame numbering
+                 * DKS. Changed from top to bottom to fix bug in Theron's frame
+                 * numbering
                  */
                 /*
-                 * Should start numbering at BOTTOM (southern-most
-                 * part) of group
+                 * Should start numbering at BOTTOM (southern-most part) of
+                 * group
                  */
                 /* !!! Changed back so row num is never <= 0 */
                 /* Alternative is bottom-y, not y-bottom. Try later */
                 /*
-                 * us = frames[i].y - groups[frames[i].group].bottom +
-                 * 1;
+                 * us = frames[i].y - groups[frames[i].group].bottom + 1;
                  */
                 /* NEW, DKS: START AT 0, NOT 1: REMOVE "+ 1": */
                 /* us = frames[i].y - groups[frames[i].group].top; */
 
                 /*
-                 * SMN The frames number are from the bottom left not
-                 * top left
+                 * SMN The frames number are from the bottom left not top left
                  */
                 us = (short) (group.bottom - frame.y - 1);
 
@@ -1519,15 +1523,15 @@ public class MakeToc {
 
                 /* pathname record offset: */
                 /*
-                 * DKS 11/10: Now w.r.t. frame file index table
-                 * subsection
+                 * DKS 11/10: Now w.r.t. frame file index table subsection
                  */
                 /*
-                 * ui = head.HEADER_SECTION_LENGTH + Loc_sec_len +
-                 * Bound_sec_len + Frame_hdr_len +
-                 * nFrames*Frame_index_rec_len + pathname_pos[i] ;
+                 * ui = head.HEADER_SECTION_LENGTH + Loc_sec_len + Bound_sec_len
+                 * + Frame_hdr_len + nFrames*Frame_index_rec_len +
+                 * pathname_pos[i] ;
                  */
-                fout.writeInt((int) (nFrames * Frame_index_rec_len + pathname_pos[i]));
+                fout
+                        .writeInt((int) (nFrames * Frame_index_rec_len + pathname_pos[i]));
 
                 String framename;
                 tail = frame.filename.lastIndexOf(File.separatorChar);
@@ -1537,8 +1541,9 @@ public class MakeToc {
                     framename = frame.filename.substring(++tail);
                 }
                 if (framename.length() > 12) {
-                    Debug.error("MakeToc: encountered a frame name that's too long!\n"
-                            + framename);
+                    Debug
+                            .error("MakeToc: encountered a frame name that's too long!\n"
+                                    + framename);
                     framename = framename.substring(0, 12);
                 }
 
@@ -1554,8 +1559,7 @@ public class MakeToc {
                     /* Not Overview or Lengend img */
                     /* DKS 8/1/94: handle polar zone separately */
                     if (frame.zone != '9' || frame.zone != 'J') { /*
-                                                                   * polar
-                                                                   * zone
+                                                                   * polar zone
                                                                    */
                         georef = latlong2GEOREF(frame.swlat, frame.swlon);
                     } else { /* not polar */
@@ -1579,7 +1583,7 @@ public class MakeToc {
             } /* for i (each frame file) */
 
             Debug.message("maketoc",
-                    "MakeToc: *** writing directory section ***");
+                          "MakeToc: *** writing directory section ***");
 
             /* Pathname table */
             /*
@@ -1589,8 +1593,8 @@ public class MakeToc {
             for (j = 0; j < uniq_dir_cnt; j++) {
                 /* DKS new */
                 /*
-                 * write pathname length. !!?? may be padded in front
-                 * to align on word bndary!!??
+                 * write pathname length. !!?? may be padded in front to align
+                 * on word bndary!!??
                  */
                 fout.writeShort((short) (uniq_dir[j].length()));
 
@@ -1601,8 +1605,8 @@ public class MakeToc {
             /* No color table index section */
 
             /*
-             * Go back and fill in component aggregate length in
-             * location section
+             * Go back and fill in component aggregate length in location
+             * section
              */
             fout.seek(agg_loc);
             fout.writeInt((int) (Bound_sec_len + Frame_sec_len));
@@ -1617,13 +1621,16 @@ public class MakeToc {
     } /* main */
 
     /**
-     * Take the Vector of frames, and group them into boundary
-     * rectangles, represented by groups. If Dchum is present, all
-     * frames get placed in their own group.
+     * Take the Vector of frames, and group them into boundary rectangles,
+     * represented by groups. If Dchum is present, all frames get placed in
+     * their own group.
      * 
-     * @param frames the frame Vector.
-     * @param groups the group Vector.
-     * @param isDchum flag to note if Dchum frames are present.
+     * @param frames
+     *            the frame Vector.
+     * @param groups
+     *            the group Vector.
+     * @param isDchum
+     *            flag to note if Dchum frames are present.
      */
     public void groupFrames(Vector frames, Vector groups, boolean isDchum)
             throws MakeTocException {
@@ -1638,7 +1645,7 @@ public class MakeToc {
         /* For each frame file */
         for (int i = 0; i < nFrames; i++) {
             Debug.message("maketocdetail",
-                    "MakeToc: group addition, starting outer loop");
+                          "MakeToc: group addition, starting outer loop");
 
             // Assuming that the vector objects are in the same order
             // as initally loaded.
@@ -1671,12 +1678,12 @@ public class MakeToc {
 
                 frame.x = group.left;
                 /*
-                 * DKS. Changed from top to bottom to fix bug in
-                 * Theron's frame numbering
+                 * DKS. Changed from top to bottom to fix bug in Theron's frame
+                 * numbering
                  */
                 /*
-                 * Should start numbering at BOTTOM (southern-most
-                 * part) of group
+                 * Should start numbering at BOTTOM (southern-most part) of
+                 * group
                  */
                 /* DKS. Switched back to fix row # <=0 bug */
                 frame.y = group.top;
@@ -1684,44 +1691,48 @@ public class MakeToc {
                 frame.marked = true;
 
                 Debug.message("maketocdetail",
-                        "Maketoc.groupFrames: created group " + groupCount
-                                + " for frame " + i + ", - " + frame.filename
-                                + " checking other frames for neighbors");
+                              "Maketoc.groupFrames: created group "
+                                      + groupCount + " for frame " + i + ", - "
+                                      + frame.filename
+                                      + " checking other frames for neighbors");
 
                 /*
-                 * If Dchum, create 1 group for each file. No need for
-                 * call to "add".
+                 * If Dchum, create 1 group for each file. No need for call to
+                 * "add".
                  */
                 if (!isDchum) {
                     for (int j = 0; j < nFrames; j++) {
                         if (i == j) {
-                            Debug.message("maketocdetail",
-                                    "Maketoc.groupFrames: inner loop, i = j = "
-                                            + i
-                                            + ", frame that created group added to group, expecting false return");
+                            Debug
+                                    .message(
+                                             "maketocdetail",
+                                             "Maketoc.groupFrames: inner loop, i = j = "
+                                                     + i
+                                                     + ", frame that created group added to group, expecting false return");
                             continue;
                         }
                         Frame f = (Frame) frames.elementAt(j);
                         if (addFrameToGroup(group, f, groupCount)) {
                             Debug.message("maketocdetail",
-                                    "Maketoc.groupFrames: added frame " + j
-                                            + " to group " + groupCount);
+                                          "Maketoc.groupFrames: added frame "
+                                                  + j + " to group "
+                                                  + groupCount);
                             continue;
                         }
                     }
                 }
 
-                Debug.message("maketocdetail",
-                        "Maketoc.groupFrames: adding another group - "
-                                + groupCount + " *******************\n\n");
+                Debug
+                        .message("maketocdetail",
+                                 "Maketoc.groupFrames: adding another group - "
+                                         + groupCount
+                                         + " *******************\n\n");
 
                 groups.add(group);
             } /* if !frame.marked */
 
-            fireProgressUpdate(ProgressEvent.UPDATE,
-                    "Organizing frames",
-                    i,
-                    nFrames);
+            fireProgressUpdate(ProgressEvent.UPDATE, "Organizing frames", i,
+                               nFrames);
 
         }/* for (i = 0; i < nFrames; i++) */
 
@@ -1732,16 +1743,19 @@ public class MakeToc {
     }
 
     /**
-     * Does the actual checking to see if the frame gets added to the
-     * group, by checking the frame's location with the group's
-     * current boundaries, and resizing the group boundary if the
-     * frame is touching it. Assumes everything has been allocated in
-     * the group and frame. Not prepared for either being null.
+     * Does the actual checking to see if the frame gets added to the group, by
+     * checking the frame's location with the group's current boundaries, and
+     * resizing the group boundary if the frame is touching it. Assumes
+     * everything has been allocated in the group and frame. Not prepared for
+     * either being null.
      * 
-     * @param grp the group
-     * @param frm the frame.
-     * @param index the group index, referring to it's position in the
-     *        Group Vector.
+     * @param grp
+     *            the group
+     * @param frm
+     *            the frame.
+     * @param index
+     *            the group index, referring to it's position in the Group
+     *            Vector.
      */
     protected boolean addFrameToGroup(Group grp, Frame frm, int index)
             throws MakeTocException {
@@ -1752,20 +1766,23 @@ public class MakeToc {
 
         if (frm.marked || !frm.scale.equalsIgnoreCase(grp.scale)
                 || frm.zone != grp.zone) {
-            Debug.message("maketocframedetail",
-                    "\nMakeToc.addFrameToGroup: no action needed for frame, returning.\n  frm.marked = "
-                            + frm.marked
-                            + "\n  frm.zone("
-                            + frm.zone
-                            + ") = grp.zone("
-                            + grp.zone
-                            + ")\n  frm.scale("
-                            + frm.scale + ") = grp.scale(" + grp.scale + ")\n");
+            Debug
+                    .message(
+                             "maketocframedetail",
+                             "\nMakeToc.addFrameToGroup: no action needed for frame, returning.\n  frm.marked = "
+                                     + frm.marked
+                                     + "\n  frm.zone("
+                                     + frm.zone
+                                     + ") = grp.zone("
+                                     + grp.zone
+                                     + ")\n  frm.scale("
+                                     + frm.scale
+                                     + ") = grp.scale(" + grp.scale + ")\n");
             return false;
         }
 
         Debug.message("maketocframedetail",
-                "MakeToc.addFrameToGroup: adding unmarked frame");
+                      "MakeToc.addFrameToGroup: adding unmarked frame");
 
         double eps = frm.EPS();
 
@@ -1789,8 +1806,9 @@ public class MakeToc {
             }
 
             if (grp.left == 0) {
-                throw new MakeTocException("Boundary rectangle too small - Increase the boudary size to be larger than "
-                        + maxSide);
+                throw new MakeTocException(
+                        "Boundary rectangle too small - Increase the boudary size to be larger than "
+                                + maxSide);
             }
 
             grp.left--; /* add to left side */
@@ -1805,8 +1823,9 @@ public class MakeToc {
             }
 
             if (grp.right == maxSide) {
-                throw new MakeTocException("Boundary rectangle too small - Increase the boudary size to be larger than "
-                        + maxSide);
+                throw new MakeTocException(
+                        "Boundary rectangle too small - Increase the boudary size to be larger than "
+                                + maxSide);
             }
 
             grp.vert_pos[grp.right] = frm.left;
@@ -1823,8 +1842,9 @@ public class MakeToc {
             }
 
             if (grp.top == 0) {
-                throw new MakeTocException("Boundary rectangle too small - Increase the boudary size to be larger than "
-                        + maxSide);
+                throw new MakeTocException(
+                        "Boundary rectangle too small - Increase the boudary size to be larger than "
+                                + maxSide);
             }
 
             grp.top--; /* add to top */
@@ -1839,24 +1859,25 @@ public class MakeToc {
             }
 
             if (grp.bottom == maxSide) {
-                throw new MakeTocException("Boundary rectangle too small - Increase the boudary size to be larger than "
-                        + maxSide);
+                throw new MakeTocException(
+                        "Boundary rectangle too small - Increase the boudary size to be larger than "
+                                + maxSide);
             }
 
             grp.horiz_pos[grp.bottom] = frm.top;
             grp.bottom++; /* add to bottom */
             grp.horiz_pos[grp.bottom] = frm.bottom;
         } else {
-            Debug.message("maketocframedetail",
-                    "MakeToc.add: frame not close enough to anything else, not adding to group.");
+            Debug
+                    .message("maketocframedetail",
+                             "MakeToc.add: frame not close enough to anything else, not adding to group.");
             return false;
         }
 
         x = y = -1;
         for (i = grp.left; i < grp.right; i++) {
             /*
-             * PBF - Change from (==) to near function for polar
-             * 6-19-94
+             * PBF - Change from (==) to near function for polar 6-19-94
              */
             if (near(frm.left, grp.vert_pos[i], eps)) {
                 x = i;
@@ -1866,8 +1887,7 @@ public class MakeToc {
 
         for (i = grp.top; i < grp.bottom; i++) {
             /*
-             * PBF - Change from (==) to near function for polar
-             * 6-19-94
+             * PBF - Change from (==) to near function for polar 6-19-94
              */
             if (near(frm.top, grp.horiz_pos[i], eps)) {
                 y = i;
@@ -1890,8 +1910,7 @@ public class MakeToc {
 
                 for (i = grp.left; i < grp.right; i++) {
                     /*
-                     * PBF - Change from (==) to near function for
-                     * polar 6-19-94
+                     * PBF - Change from (==) to near function for polar 6-19-94
                      */
                     Debug.output(" - Checking horizontal: " + frm.left
                             + " <-> " + grp.vert_pos[i]);
@@ -1907,8 +1926,7 @@ public class MakeToc {
 
                 for (i = grp.top; i < grp.bottom; i++) {
                     /*
-                     * PBF - Change from (==) to near function for
-                     * polar 6-19-94
+                     * PBF - Change from (==) to near function for polar 6-19-94
                      */
                     Debug.output(" - Checking vertical: " + frm.top + " <-> "
                             + grp.horiz_pos[i]);
@@ -1926,15 +1944,15 @@ public class MakeToc {
 
         /* DKS ABS, frm.EPS2 added */
         /*
-         * DKS 8/16/94: h_resolution (meters/pix) will vary from frame
-         * to frame NS
+         * DKS 8/16/94: h_resolution (meters/pix) will vary from frame to frame
+         * NS
          */
         /* Therefore don't check for a match here */
         if (Math.abs(frm.h_interval - grp.h_interval) > EPS2
                 || Math.abs(frm.v_interval - grp.v_interval) > EPS2) /* deg/pix */
         /*
-         * Math.abs (frm.h_resolution - grp.h_resolution) > EPS2 ||
-         * Math.abs (frm.v_resolution - grp.v_resolution) > EPS2)
+         * Math.abs (frm.h_resolution - grp.h_resolution) > EPS2 || Math.abs
+         * (frm.v_resolution - grp.v_resolution) > EPS2)
          */
         {
             Debug.error(frm.filename
@@ -1960,18 +1978,17 @@ public class MakeToc {
     } /* add */
 
     /**
-     * This program attempts to convert latitudes and longitudes given
-     * in a decimal format into a GEOREF alphanumeric designation
-     * code. The first letter of the code denotes the longitudinal 15
-     * degree grid that contains the area of interest. The second
-     * letter denotes the latitudinal 15 degree grid. The third letter
-     * denotes the one degree longitudinal grid within the 15 degree
-     * longitudinal grid. The fourth letter denotes the one degree
-     * latitudinal grid within the 15 degree latitudinal grid. The
-     * fifth character is a number denoting the minutes longitudinally
-     * to the nearest 10. The sixth number denotes the minutes
-     * latitudinally to the nearest 10. Wouldn't it just have been
-     * easier to use the decimal latitudes and longitudes?
+     * This program attempts to convert latitudes and longitudes given in a
+     * decimal format into a GEOREF alphanumeric designation code. The first
+     * letter of the code denotes the longitudinal 15 degree grid that contains
+     * the area of interest. The second letter denotes the latitudinal 15 degree
+     * grid. The third letter denotes the one degree longitudinal grid within
+     * the 15 degree longitudinal grid. The fourth letter denotes the one degree
+     * latitudinal grid within the 15 degree latitudinal grid. The fifth
+     * character is a number denoting the minutes longitudinally to the nearest
+     * 10. The sixth number denotes the minutes latitudinally to the nearest 10.
+     * Wouldn't it just have been easier to use the decimal latitudes and
+     * longitudes?
      */
     protected String latlong2GEOREF(double latitude, double longitude) {
         int i;
@@ -1983,12 +2000,10 @@ public class MakeToc {
         int tmpi, tmpi1, tmpi2;
 
         /*
-         * this portion of the code calculates the longitudinal part
-         * of the
+         * this portion of the code calculates the longitudinal part of the
          */
         /*
-         * GEOREF number. I can't explain the logic -- I don't
-         * understand
+         * GEOREF number. I can't explain the logic -- I don't understand
          */
         /* how it works. All that I know is that it seems to. */
         LatLonPoint llp = new LatLonPoint.Double(latitude, longitude);
@@ -2020,8 +2035,7 @@ public class MakeToc {
             tmp = (char) tmpi;
 
             // Setting i to a certain value, based on longitude.
-            for (i = 0; i * 15 < (int) (longitude + 0.9999); i++)
-                ;
+            for (i = 0; i * 15 < (int) (longitude + 0.9999); i++);
             tmpi1 = 15 * i - (int) (longitude);
             if ((tmpi1 >= 3) && (tmpi1 < 8)) {
                 tmpi1 += 1;
@@ -2054,8 +2068,7 @@ public class MakeToc {
             tmp = (char) tmpi;
 
             /* DKS changed from abs to fabs */
-            for (i = 0; i * 15 < (int) (Math.abs((longitude - 0.9999))); i++)
-                ;
+            for (i = 0; i * 15 < (int) (Math.abs((longitude - 0.9999))); i++);
             /* DKS changed from abs to fabs */
             tmpi1 = i * 15 - (int) (Math.abs((longitude - 0.9999)));
             if ((tmpi1 >= 8) && (tmpi1 < 13)) {
@@ -2082,12 +2095,10 @@ public class MakeToc {
         GEOSTRING[4] = tmp2;
 
         /*
-         * this portion of the code calculates the latitudinal part of
-         * the
+         * this portion of the code calculates the latitudinal part of the
          */
         /*
-         * GEOREF number. I can't explain the logic -- I don't
-         * understand
+         * GEOREF number. I can't explain the logic -- I don't understand
          */
         /* how it works. All that I know is that it seems to. */
 
@@ -2114,8 +2125,7 @@ public class MakeToc {
             }
             tmp = (char) tmpi;
 
-            for (i = 0; i * 15 < (int) (latitude + 0.9999); i++)
-                ;
+            for (i = 0; i * 15 < (int) (latitude + 0.9999); i++);
             tmpi1 = 15 * i - (int) (latitude);
             if ((tmpi1 >= 3) && (tmpi1 < 8)) {
                 tmpi1 += 1;
@@ -2143,8 +2153,7 @@ public class MakeToc {
                 tmpi = 65;
             }
             /* DKS changed from abs to fabs */
-            for (i = 0; i * 15 < (int) (Math.abs((latitude - 0.9999))); i++)
-                ;
+            for (i = 0; i * 15 < (int) (Math.abs((latitude - 0.9999))); i++);
             /* DKS changed from abs to fabs */
             tmpi1 = i * 15 - (int) (Math.abs((latitude - 0.9999)));
             if ((tmpi1 >= 8) && (tmpi1 < 13)) {
@@ -2211,8 +2220,10 @@ public class MakeToc {
     /**
      * Fire an build update to progress listeners.
      * 
-     * @param frameNumber the current frame count
-     * @param totalFrames the total number of frames.
+     * @param frameNumber
+     *            the current frame count
+     * @param totalFrames
+     *            the total number of frames.
      */
     protected void fireProgressUpdate(int type, String task, int frameNumber,
                                       int totalFrames) {

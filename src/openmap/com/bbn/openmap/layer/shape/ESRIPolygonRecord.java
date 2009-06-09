@@ -37,8 +37,8 @@ import com.bbn.openmap.omGraphics.geom.PolylineGeometry;
 import com.bbn.openmap.proj.ProjMath;
 
 /**
- * The Polygon record type. This class implements the ESRI Shapefile
- * polygon AND arc/polyline record types.
+ * The Polygon record type. This class implements the ESRI Shapefile polygon AND
+ * arc/polyline record types.
  * 
  * @author Ray Tomlinson
  * @author Tom Mitchell <tmitchell@bbn.com>
@@ -64,8 +64,10 @@ public class ESRIPolygonRecord extends ESRIRecord {
     /**
      * Initialize a polygon record from the given buffer.
      * 
-     * @param b the buffer
-     * @param off the offset into the buffer where the data starts
+     * @param b
+     *            the buffer
+     * @param off
+     *            the offset into the buffer where the data starts
      */
     public ESRIPolygonRecord(byte b[], int off) throws IOException {
         super(b, off);
@@ -106,14 +108,14 @@ public class ESRIPolygonRecord extends ESRIRecord {
             if (i > 0) {
                 _len = nextOrigin - origin;
                 if (ispolyg)
-                    ++_len;//connect pairs
+                    ++_len;// connect pairs
                 polygons[i - 1] = new ESRIPoly.ESRIFloatPoly(_len);
             }
             origin = nextOrigin;
         }
         _len = numPoints - origin;
         if (ispolyg)
-            ++_len;//connect pairs
+            ++_len;// connect pairs
         polygons[numParts - 1] = new ESRIPoly.ESRIFloatPoly(_len);
         for (int i = 0; i < numParts; i++) {
             ptr += polygons[i].read(b, ptr, ispolyg);
@@ -139,8 +141,8 @@ public class ESRIPolygonRecord extends ESRIRecord {
     /**
      * Add a poly to the record.
      * 
-     * @param radians coordinates: y,x,y,x,... (lat,lon) order in
-     *        RADIANS!
+     * @param radians
+     *            coordinates: y,x,y,x,... (lat,lon) order in RADIANS!
      */
     public void add(double radians[]) {
         ESRIPoly newPoly = new ESRIPoly.ESRIFloatPoly(radians);
@@ -157,21 +159,21 @@ public class ESRIPolygonRecord extends ESRIRecord {
         int len = radians.length;
         for (int i = 0; i < len; i += 2) {
             // REMEMBER: switch to x,y order
-            bounds.addPoint(ProjMath.radToDeg(radians[i + 1]),//x
-                    // (lon)
-                    ProjMath.radToDeg(radians[i]));//y (lat)
+            bounds.addPoint(ProjMath.radToDeg(radians[i + 1]),// x
+                            // (lon)
+                            ProjMath.radToDeg(radians[i]));// y (lat)
         }
     }
 
     /**
-     * Generates 2D OMGraphics and adds them to the given list. If you
-     * are using jdk1.1.X, you'll have to comment out this method,
-     * because jdk1.1.X doesn't know about the java.awt.Stroke and
-     * java.awt.Paint interfaces.
+     * Generates 2D OMGraphics and adds them to the given list. If you are using
+     * jdk1.1.X, you'll have to comment out this method, because jdk1.1.X
+     * doesn't know about the java.awt.Stroke and java.awt.Paint interfaces.
      * 
-     * @param list the graphics list
-     * @param drawingAttributes the drawingAttributes to paint the
-     *        poly.
+     * @param list
+     *            the graphics list
+     * @param drawingAttributes
+     *            the drawingAttributes to paint the poly.
      */
     public void addOMGraphics(OMGraphicList list,
                               DrawingAttributes drawingAttributes) {
@@ -183,9 +185,9 @@ public class ESRIPolygonRecord extends ESRIRecord {
         double[] pts;
         boolean ispolyg = isPolygon();
         /*
-         * modifications in the next 4 lines marked with as: allow to
-         * treat ESRIPolygonRecord with holes correctly (ESRIPolys
-         * with counterclockwise order of vertices)
+         * modifications in the next 4 lines marked with as: allow to treat
+         * ESRIPolygonRecord with holes correctly (ESRIPolys with
+         * counterclockwise order of vertices)
          */
         OMList sublist = null;
 
@@ -218,7 +220,9 @@ public class ESRIPolygonRecord extends ESRIRecord {
             pts = ((ESRIPoly.ESRIFloatPoly) polygons[i]).getRadians();
             p = new OMPoly(pts, OMGraphic.RADIANS, OMGraphic.LINETYPE_STRAIGHT);
 
-            drawingAttributes.setTo(p);
+            if (drawingAttributes != null) {
+                drawingAttributes.setTo(p);
+            }
             if (!ispolyg) {
                 p.setIsPolygon(false);
             }
@@ -236,7 +240,8 @@ public class ESRIPolygonRecord extends ESRIRecord {
     /**
      * Generates OMGeometry and adds them to the given list.
      * 
-     * @param list the geometry list
+     * @param list
+     *            the geometry list
      */
     public OMGeometry addOMGeometry(OMGeometryList list) {
 
@@ -253,9 +258,11 @@ public class ESRIPolygonRecord extends ESRIRecord {
             // these points are already in RADIAN lat,lon order!...
             pts = ((ESRIPoly.ESRIFloatPoly) polygons[i]).getRadians();
             if (ispolyg) {
-                geom = new PolygonGeometry.LL(pts, OMGraphic.RADIANS, OMGraphic.LINETYPE_STRAIGHT);
+                geom = new PolygonGeometry.LL(pts, OMGraphic.RADIANS,
+                        OMGraphic.LINETYPE_STRAIGHT);
             } else {
-                geom = new PolylineGeometry.LL(pts, OMGraphic.RADIANS, OMGraphic.LINETYPE_STRAIGHT);
+                geom = new PolylineGeometry.LL(pts, OMGraphic.RADIANS,
+                        OMGraphic.LINETYPE_STRAIGHT);
             }
             list.add(geom);
         }
@@ -272,8 +279,8 @@ public class ESRIPolygonRecord extends ESRIRecord {
     }
 
     /**
-     * Gets this record's shape type as an int. Shape types are
-     * enumerated on the ShapeUtils class.
+     * Gets this record's shape type as an int. Shape types are enumerated on
+     * the ShapeUtils class.
      * 
      * @return the shape type as an int (either SHAPE_TYPE_POLYGON or
      *         SHAPE_TYPE_ARC)
@@ -286,8 +293,7 @@ public class ESRIPolygonRecord extends ESRIRecord {
      * Yields the length of this record's data portion.
      * <p>
      * (44 + (numParts * 4) + (numPoints * 16)) <br>
-     * 3 Integers + 4 doubles == 3 * 4bytes + 4 * 8bytes == 12 + 32 ==
-     * 44.
+     * 3 Integers + 4 doubles == 3 * 4bytes + 4 * 8bytes == 12 + 32 == 44.
      * 
      * @return number of bytes equal to the size of this record's data
      */
@@ -303,8 +309,10 @@ public class ESRIPolygonRecord extends ESRIRecord {
     /**
      * Writes this polygon to the given buffer at the given offset.
      * 
-     * @param b the buffer
-     * @param off the offset
+     * @param b
+     *            the buffer
+     * @param off
+     *            the offset
      * @return the number of bytes written
      */
     public int write(byte[] b, int off) {
@@ -335,13 +343,11 @@ public class ESRIPolygonRecord extends ESRIRecord {
             double[] pts = ((ESRIPoly.ESRIFloatPoly) polygons[i]).getRadians();
             int nPts = pts.length;
             for (int j = 0; j < nPts; j += 2) {
-                nBytes += writeLEDouble(b,
-                        off + nBytes,
-                        (double) ProjMath.radToDeg(pts[j + 1]));//x
+                nBytes += writeLEDouble(b, off + nBytes, (double) ProjMath
+                        .radToDeg(pts[j + 1]));// x
                 // (lon)
-                nBytes += writeLEDouble(b,
-                        off + nBytes,
-                        (double) ProjMath.radToDeg(pts[j]));//y (lat)
+                nBytes += writeLEDouble(b, off + nBytes, (double) ProjMath
+                        .radToDeg(pts[j]));// y (lat)
             }
         }
 

@@ -39,8 +39,8 @@ import com.bbn.openmap.event.ProjectionListener;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The BeanBoxDnDCatcher class manages all Java Drag-and-Drop events
- * associated with openmap layers that implement the
+ * The BeanBoxDnDCatcher class manages all Java Drag-and-Drop events associated
+ * with openmap layers that implement the
  * {@link com.bbn.openmap.tools.beanbox.BeanBoxHandler}interface.
  */
 public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
@@ -67,14 +67,13 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
     protected Point selectedBeanLocation = null;
 
     /**
-     * holds the {@link com.bbn.openmap.tools.beanbox.BeanBox}that
-     * manages the currently selected bean
+     * holds the {@link com.bbn.openmap.tools.beanbox.BeanBox}that manages the
+     * currently selected bean
      */
     protected BeanBox selectedBeanBox = null;
 
     /**
-     * holds the openmap layer that contains the currently selected
-     * bean
+     * holds the openmap layer that contains the currently selected bean
      */
     protected Layer selectedBeanLayer = null;
 
@@ -82,62 +81,70 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
     Object cutBean = null;
 
     /**
-     * contains BeanInfo objects hashed by the class names of the
-     * associated bean classes
+     * contains BeanInfo objects hashed by the class names of the associated
+     * bean classes
      */
     protected HashMap beanInfoMap = null;
 
     /**
-     * Constructs a new {@link com.bbn.openmap.tools.dnd.DnDListener}
-     * object.
+     * Constructs a new {@link com.bbn.openmap.tools.dnd.DnDListener} object.
      */
     public BeanBoxDnDCatcher() {
         this(new DragSource());
     }
 
     /**
-     * Constructs a new MouseDragGestureRecognizer given the
-     * DragSource for the Component.
+     * Constructs a new MouseDragGestureRecognizer given the DragSource for the
+     * Component.
      * 
-     * @param ds the DragSource for the Component
+     * @param ds
+     *            the DragSource for the Component
      */
     public BeanBoxDnDCatcher(DragSource ds) {
         this(ds, null);
     }
 
     /**
-     * Construct a new MouseDragGestureRecognizer given the DragSource
-     * for the Component c, and the Component to observe.
+     * Construct a new MouseDragGestureRecognizer given the DragSource for the
+     * Component c, and the Component to observe.
      * 
-     * @param ds the DragSource for the Component c
-     * @param c the Component to observe
+     * @param ds
+     *            the DragSource for the Component c
+     * @param c
+     *            the Component to observe
      */
     public BeanBoxDnDCatcher(DragSource ds, Component c) {
         this(ds, c, DnDConstants.ACTION_MOVE);
     }
 
     /**
-     * Construct a new MouseDragGestureRecognizer given the DragSource
-     * for the Component c, and the Component to observe and the
-     * drag-and-drop action.
+     * Construct a new MouseDragGestureRecognizer given the DragSource for the
+     * Component c, and the Component to observe and the drag-and-drop action.
      * 
-     * @param ds the DragSource for the Component c
-     * @param c the Component to observe
-     * @param act the drag-and-drop action
+     * @param ds
+     *            the DragSource for the Component c
+     * @param c
+     *            the Component to observe
+     * @param act
+     *            the drag-and-drop action
      */
     public BeanBoxDnDCatcher(DragSource ds, Component c, int act) {
         this(ds, c, act, null);
     }
 
     /**
-     * Construct a new MouseDragGestureRecognizer given the DragSource
-     * for the Component c, and the Component to observe. the
-     * drag-and-drop action and a DragGestureListener
+     * Construct a new MouseDragGestureRecognizer given the DragSource for the
+     * Component c, and the Component to observe. the drag-and-drop action and a
+     * DragGestureListener
      * 
-     * @param ds the DragSource for the Component c
-     * @param c the Component to observe
-     * @param act the drag-and-drop action
-     * @param dgl the DragGestureListener
+     * @param ds
+     *            the DragSource for the Component c
+     * @param c
+     *            the Component to observe
+     * @param act
+     *            the drag-and-drop action
+     * @param dgl
+     *            the DragGestureListener
      */
     public BeanBoxDnDCatcher(DragSource ds, Component c, int act,
             DragGestureListener dgl) {
@@ -150,8 +157,8 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
     }
 
     /**
-     * Calls superclass method and then adds the KeyListener to
-     * someObj if someObj is of type OpenMapFrame.
+     * Calls superclass method and then adds the KeyListener to someObj if
+     * someObj is of type OpenMapFrame.
      */
     public void findAndInit(Object someObj) {
         super.findAndInit(someObj);
@@ -178,10 +185,10 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
     }
 
     /**
-     * This method is called when the user chooses to copy a bean by
-     * some means such by by pressing Ctrl-C. This method tries to
-     * serialize the selected bean. If no bean is selected or the bean
-     * is not serializable, this method is a no-op.
+     * This method is called when the user chooses to copy a bean by some means
+     * such by by pressing Ctrl-C. This method tries to serialize the selected
+     * bean. If no bean is selected or the bean is not serializable, this method
+     * is a no-op.
      */
     protected void copySelectedBean() {
         if (Debug.debugging("beanbox"))
@@ -201,8 +208,7 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
             oos.writeObject(selectedBean);
         } catch (Exception e) {
             e.printStackTrace();
-            clearSelection();
-            ;
+            clearSelection();;
             if (Debug.debugging("beanbox"))
                 Debug.output("Exit> copySelectedBean");
             return;
@@ -215,14 +221,13 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
     }
 
     /**
-     * This method is called when the user chooses to paste by some
-     * means (such by pressing Ctrl-V) a previously copied or cut
-     * bean. This method tries to deserialize the previously
-     * serialized bean. If the bean in question was cut, this method
-     * also removes it from from the source beanbox. The paste
-     * operation is treated the same as a drop operation. If no bean
-     * was previously copied or cut or if an error occurs during
-     * deserialization, this method is a no-op.
+     * This method is called when the user chooses to paste by some means (such
+     * by pressing Ctrl-V) a previously copied or cut bean. This method tries to
+     * deserialize the previously serialized bean. If the bean in question was
+     * cut, this method also removes it from from the source beanbox. The paste
+     * operation is treated the same as a drop operation. If no bean was
+     * previously copied or cut or if an error occurs during deserialization,
+     * this method is a no-op.
      */
     protected void pasteSelectedBean() {
         if (Debug.debugging("beanbox"))
@@ -252,13 +257,13 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
         Object deserBean = null;
 
         try {
-            ByteArrayInputStream bais = new ByteArrayInputStream(serBean.toByteArray());
+            ByteArrayInputStream bais = new ByteArrayInputStream(serBean
+                    .toByteArray());
             ObjectInputStream ois = new ObjectInputStream(bais);
             deserBean = ois.readObject();
         } catch (Exception e) {
             e.printStackTrace();
-            clearSelection();
-            ;
+            clearSelection();;
             if (Debug.debugging("beanbox"))
                 Debug.output("Exit> pasteSelectedBean");
             return;
@@ -281,10 +286,10 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
     }
 
     /**
-     * This method is called when the user chooses to cut a bean by
-     * some means such by by pressing Ctrl-X. This method tries to
-     * serialize the selected bean. If no bean is selected or the bean
-     * is not serializable, this method is a no-op.
+     * This method is called when the user chooses to cut a bean by some means
+     * such by by pressing Ctrl-X. This method tries to serialize the selected
+     * bean. If no bean is selected or the bean is not serializable, this method
+     * is a no-op.
      */
     protected void cutSelectedBean() {
         if (Debug.debugging("beanbox"))
@@ -305,8 +310,7 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
             oos.writeObject(selectedBean);
         } catch (Exception e) {
             e.printStackTrace();
-            clearSelection();
-            ;
+            clearSelection();;
             if (Debug.debugging("beanbox"))
                 Debug.output("Exit> copySelectedBean");
             return;
@@ -321,9 +325,9 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
     }
 
     /**
-     * This method is called when the user chooses to cancel a cut
-     * operation on a bean by some means such by by pressing ESC. If
-     * no bean was marked for cutting this method is a no-op.
+     * This method is called when the user chooses to cancel a cut operation on
+     * a bean by some means such by by pressing ESC. If no bean was marked for
+     * cutting this method is a no-op.
      */
     protected void unCutSelectedBean() {
         if (Debug.debugging("beanbox"))
@@ -356,10 +360,9 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
     }
 
     /**
-     * This method is called when the user chooses to delete a bean by
-     * some means such by by pressing DEL. This method removes the
-     * selected bean from its beanbox. If no bean is selected this
-     * method is a no-op.
+     * This method is called when the user chooses to delete a bean by some
+     * means such by by pressing DEL. This method removes the selected bean from
+     * its beanbox. If no bean is selected this method is a no-op.
      */
     protected void deleteSelectedBean() {
         if (Debug.debugging("beanbox"))
@@ -382,15 +385,16 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
 
     /**
      * The drag operation has terminated with a drop on this
-     * <code>DropTarget</code>. This method is responsible for
-     * undertaking the transfer of the data associated with the
-     * gesture. The <code>DropTargetDropEvent</code> provides a
-     * means to obtain a <code>Transferable</code> object that
-     * represents the data object(s) to be transfered.
+     * <code>DropTarget</code>. This method is responsible for undertaking the
+     * transfer of the data associated with the gesture. The
+     * <code>DropTargetDropEvent</code> provides a means to obtain a
+     * <code>Transferable</code> object that represents the data object(s) to be
+     * transfered.
      * <P>
      * <P>
      * 
-     * @param dtde the <code>DropTargetDropEvent</code>
+     * @param dtde
+     *            the <code>DropTargetDropEvent</code>
      */
     public void drop(DropTargetDropEvent dtde) {
         if (Debug.debugging("beanbox"))
@@ -416,14 +420,17 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
         if (Debug.debugging("beanbox"))
             Debug.output("Enter> showPopUp");
         JPopupMenu popup = new JPopupMenu();
-        TitledBorder titledBorder = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(),
-                "Available Drop Targets:");
+        TitledBorder titledBorder = BorderFactory
+                .createTitledBorder(BorderFactory.createEmptyBorder(),
+                                    "Available Drop Targets:");
 
         titledBorder.setTitleColor(Color.gray);
         popup.setBorder(titledBorder);
 
-        Border compoundborder = BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(),
-                BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        Border compoundborder = BorderFactory
+                .createCompoundBorder(BorderFactory.createEtchedBorder(),
+                                      BorderFactory.createEmptyBorder(2, 2, 2,
+                                                                      2));
 
         Enumeration keys = layers.keys();
         while (keys.hasMoreElements()) {
@@ -448,7 +455,8 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
 
         popup.add(menuItem);
 
-        popup.setPreferredSize(new Dimension(150, (popup.getComponentCount() + 1) * 25));
+        popup.setPreferredSize(new Dimension(150,
+                (popup.getComponentCount() + 1) * 25));
 
         if (Debug.debugging("beanbox"))
             Debug.output("showing popup");
@@ -459,11 +467,10 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
     }
 
     /**
-     * Displays a
-     * {@link com.bbn.openmap.tools.beanbox.GenericPropertySheet}if
-     * mouse click is on a bean in some layer. In case of overlapping
-     * beans, chooses the first bean found to be under the mouse,
-     * which is usually a bean in the top most visible layer.
+     * Displays a {@link com.bbn.openmap.tools.beanbox.GenericPropertySheet}if
+     * mouse click is on a bean in some layer. In case of overlapping beans,
+     * chooses the first bean found to be under the mouse, which is usually a
+     * bean in the top most visible layer.
      */
     public void mouseClicked(MouseEvent evt) {
         if (Debug.debugging("beanbox"))
@@ -499,7 +506,8 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
             Debug.output("selectedBean=" + selectedBean);
 
         if (evt.getModifiers() != InputEvent.BUTTON1_MASK) {
-            GenericPropertySheet propertySheet = new GenericPropertySheet(selectedBean, 575, 20, null, selectedBeanBox);
+            GenericPropertySheet propertySheet = new GenericPropertySheet(
+                    selectedBean, 575, 20, null, selectedBeanBox);
             propertySheet.setVisible(true);
         }
 
@@ -508,9 +516,9 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
     }
 
     /**
-     * This method is called whenever the user choose a layer to drop
-     * or move a bean to. This method adds the bean to the layer or
-     * moves the beans to or within the selected layer.
+     * This method is called whenever the user choose a layer to drop or move a
+     * bean to. This method adds the bean to the layer or moves the beans to or
+     * within the selected layer.
      */
     public void actionPerformed(ActionEvent evt) {
 
@@ -543,7 +551,8 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
                 targetBeanBox.relocateBean(bean, beanInfo, dropLocation);
             } else {
                 Layer sourceLayer = (Layer) layers.get(sourceLayerName);
-                BeanBox sourceBeanBox = ((BeanBoxHandler) sourceLayer).getBeanBox();
+                BeanBox sourceBeanBox = ((BeanBoxHandler) sourceLayer)
+                        .getBeanBox();
                 sourceBeanBox.removeBean(bean);
                 Vector object = new Vector();
                 object.add(bean);
@@ -561,8 +570,8 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
     }
 
     /**
-     * Asscoiates a DropTarget with each layer. Also caches all layers
-     * that implement the BeanBoxHandler interface.
+     * Asscoiates a DropTarget with each layer. Also caches all layers that
+     * implement the BeanBoxHandler interface.
      */
     public void setLayers(Layer[] allLayers) {
         layers.clear();
@@ -604,9 +613,11 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
         if (Debug.debugging("beanbox"))
             Debug.output("selectedBean=" + selectedBean);
 
-        if (selectedBean == null) {
+        if (selectedBean == null || selectedBeanBox == null
+                || selectedLayer == null) {
             if (Debug.debugging("beanbox"))
-                Debug.output("Exit> startDragAction");
+                Debug
+                        .output("Exit> startDragAction, selected bean/beanbox/layer is null");
             return;
         }
 
@@ -614,8 +625,8 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
 
         super.setCursor(dragImage, DragSource.DefaultMoveDrop);
 
-        BeanInfo beanInfo = selectedBeanBox.getBeanInfoForBean(selectedBean.getClass()
-                .getName());
+        BeanInfo beanInfo = selectedBeanBox.getBeanInfoForBean(selectedBean
+                .getClass().getName());
 
         Vector beanTransferData = new Vector();
         beanTransferData.add(selectedBean);
@@ -623,10 +634,9 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
         beanTransferData.add(new Boolean(true));
         beanTransferData.add(selectedLayer.getName());
 
-        dragSource.startDrag(dge,
-                super.getCursor(DragSource.DefaultMoveDrop),
-                new DefaultTransferableObject(beanTransferData),
-                dsl);
+        dragSource.startDrag(dge, super.getCursor(DragSource.DefaultMoveDrop),
+                             new DefaultTransferableObject(beanTransferData),
+                             dsl);
 
         if (Debug.debugging("beanbox"))
             Debug.output("Exit> startDragAction");
@@ -634,13 +644,15 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
 
     private void extractTransferData(DropTargetDropEvent dtde) {
         if (dtde == null) {
-            System.out.println("ERROR> BDnDC::getTransferData(): dropEvent is null");
+            System.out
+                    .println("ERROR> BDnDC::getTransferData(): dropEvent is null");
             return;
         }
 
         Transferable tr = dtde.getTransferable();
         try {
-            transferData = (Vector) tr.getTransferData(DefaultTransferableObject.OBJECT_FLAVOR);
+            transferData = (Vector) tr
+                    .getTransferData(DefaultTransferableObject.OBJECT_FLAVOR);
 
             // cache beanInfos
             if (transferData.size() >= 2) {
@@ -656,7 +668,8 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
 
     private void extractDropLocation(DropTargetDropEvent dtde) {
         if (dtde == null) {
-            System.out.println("ERROR> BDnDC::getTransferData(): dropEvent is null");
+            System.out
+                    .println("ERROR> BDnDC::getTransferData(): dropEvent is null");
             return;
         }
 
@@ -671,4 +684,3 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
         }
     }
 }
-

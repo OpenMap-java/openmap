@@ -55,12 +55,14 @@ public class ShpInputStream implements ShapeConstants {
      */
     private LittleEndianInputStream _leis = null;
 
-    protected DrawingAttributes drawingAttributes = DrawingAttributes.getDefaultClone();
+    protected DrawingAttributes drawingAttributes = DrawingAttributes
+            .getDefaultClone();
 
     /**
      * Constructor
      * 
-     * @param is An inputstream to chain with LittleEndianInputStream
+     * @param is
+     *            An inputstream to chain with LittleEndianInputStream
      */
     public ShpInputStream(InputStream is) {
         BufferedInputStream bis = new BufferedInputStream(is);
@@ -84,7 +86,8 @@ public class ShpInputStream implements ShapeConstants {
     /**
      * Reads geometry from a .shp file
      * 
-     * @param indexData The index data retreived from the .shx file
+     * @param indexData
+     *            The index data retreived from the .shx file
      * @return EsriGraphicList A list of geometry
      * @deprecated use getGeometry() instead, indexData isn't used.
      */
@@ -107,17 +110,18 @@ public class ShpInputStream implements ShapeConstants {
      * Reads geometry from a .shp file. This method will use the provided
      * EsriGraphicFactory.
      * 
-     * @param factory an EsriGraphicFactory to be used to read from the internal
-     *        stream.
+     * @param factory
+     *            an EsriGraphicFactory to be used to read from the internal
+     *            stream.
      * @return EsriGraphicList A list of geometry
      */
     public EsriGraphicList getGeometry(EsriGraphicFactory factory)
             throws Exception {
         return (EsriGraphicList) factory.getEsriGraphics(_leis,
-                drawingAttributes,
-                (Object) null,
-                (Projection) null,
-                (OMGraphicList) null);
+                                                         drawingAttributes,
+                                                         (Object) null,
+                                                         (Projection) null,
+                                                         (OMGraphicList) null);
     }
 
     /**
@@ -143,8 +147,9 @@ public class ShpInputStream implements ShapeConstants {
     /**
      * Iterates through the given input stream to contruct geometry objects
      * 
-     * @param indexData A list of offsets obtained by iterating through the
-     *        associated SHX file
+     * @param indexData
+     *            A list of offsets obtained by iterating through the associated
+     *            SHX file
      * @return list An OMGraphicList that contains the collection of objects
      *         created by iterating through this input stream *
      * @deprecated not used.
@@ -169,7 +174,7 @@ public class ShpInputStream implements ShapeConstants {
 
                 point = new EsriPoint(f2, f1);
                 point.putAttribute(SHAPE_INDEX_ATTRIBUTE,
-                        new Integer(shpRecord));
+                                   new Integer(shpRecord));
                 if (drawingAttributes != null) {
                     drawingAttributes.setTo(point);
                 } else {
@@ -184,7 +189,8 @@ public class ShpInputStream implements ShapeConstants {
     /**
      * Iterates through each part of shape to obtain the total number of points
      * 
-     * @param sublist A list that contains multiple parts
+     * @param sublist
+     *            A list that contains multiple parts
      * @return The total number of points for a given shape
      * @deprecated not used.
      */
@@ -202,9 +208,11 @@ public class ShpInputStream implements ShapeConstants {
     /**
      * Iterates through the given input stream to contruct geometry objects
      * 
-     * @param shapeType the type of shape to read
-     * @param indexData A list of offsets obtained by iterating through the
-     *        associated SHX file
+     * @param shapeType
+     *            the type of shape to read
+     * @param indexData
+     *            A list of offsets obtained by iterating through the associated
+     *            SHX file
      * @return list An OMGraphicList that contains the collection of objects
      *         created by iterating through this input stream *
      * @deprecated not used.
@@ -258,10 +266,12 @@ public class ShpInputStream implements ShapeConstants {
                         sublist = new EsriPolygonList();
                     }
 
-                    sublist.setVague(true); // Treat sublist as one
-                    // OMGraphic.
-                    sublist.putAttribute(SHAPE_INDEX_ATTRIBUTE,
-                            shpRecordIndex);
+                    if (sublist != null) {
+                        sublist.setVague(true); // Treat sublist as one
+                        // OMGraphic.
+                        sublist.putAttribute(SHAPE_INDEX_ATTRIBUTE,
+                                             shpRecordIndex);
+                    }
                 }
 
                 for (int j = 0; j < numParts; j++) {
@@ -282,9 +292,11 @@ public class ShpInputStream implements ShapeConstants {
                     }
 
                     if (shapeType == SHAPE_TYPE_POLYLINE) {
-                        poly = new EsriPolyline(points, OMGraphic.RADIANS, OMGraphic.LINETYPE_GREATCIRCLE);
+                        poly = new EsriPolyline(points, OMGraphic.RADIANS,
+                                OMGraphic.LINETYPE_GREATCIRCLE);
                     } else if (shapeType == SHAPE_TYPE_POLYGON) {
-                        poly = new EsriPolygon(points, OMGraphic.RADIANS, OMGraphic.LINETYPE_GREATCIRCLE);
+                        poly = new EsriPolygon(points, OMGraphic.RADIANS,
+                                OMGraphic.LINETYPE_GREATCIRCLE);
                     }
 
                     if (drawingAttributes != null) {
@@ -303,36 +315,41 @@ public class ShpInputStream implements ShapeConstants {
                     // sublist is null for non multi-part geometries.
                     if (sublist != null) {
                         sublist.addOMGraphic(poly);
-                    } else {
-                        poly.putAttribute(SHAPE_INDEX_ATTRIBUTE,
-                                shpRecordIndex);
+                    } else if (poly != null) {
+
+                        poly
+                                .putAttribute(SHAPE_INDEX_ATTRIBUTE,
+                                              shpRecordIndex);
                     }
                 }
 
                 // sublist is null for non multi-part geometries.
-                if (sublist != null) {
-                    list.add(sublist);
-                } else {
-                    list.add(poly);
-                }
-
-                if (Debug.debugging("esri")) {
-                    EsriGraphic eg = null;
-                    if (sublist == null) {
-                        eg = (EsriGraphic) poly;
+                if (list != null) {
+                    if (sublist != null) {
+                        list.add(sublist);
                     } else {
-                        eg = sublist;
+                        list.add(poly);
                     }
 
-                    double[] ex1 = eg.getExtents();
-                    Debug.output("extents of list: xmin=" + ex1[1] + ", ymin="
-                            + ex1[0] + ", xmax=" + ex1[3] + ", ymax=" + ex1[2]);
-                    Debug.output("list.size=" + list.size());
+                    if (Debug.debugging("esri")) {
+                        EsriGraphic eg = null;
+                        if (sublist == null) {
+                            eg = (EsriGraphic) poly;
+                        } else {
+                            eg = sublist;
+                        }
+
+                        double[] ex1 = eg.getExtents();
+                        Debug.output("extents of list: xmin=" + ex1[1]
+                                + ", ymin=" + ex1[0] + ", xmax=" + ex1[3]
+                                + ", ymax=" + ex1[2]);
+                        Debug.output("list.size=" + list.size());
+                    }
                 }
             }
         }
 
-        if (Debug.debugging("esri")) {
+        if (Debug.debugging("esri") && list != null) {
             double[] ex = list.getExtents();
             Debug.output("extents of list: xmin=" + ex[1] + ", ymin=" + ex[0]
                     + ", xmax=" + ex[3] + ", ymax=" + ex[2]);

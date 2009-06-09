@@ -28,16 +28,17 @@ import java.util.Vector;
 import com.bbn.openmap.util.Debug;
 
 /**
- * This class rummages through a file structure looking for RPF files.
- * If there isn't a RPF directory somewhere in the absolute path for a
- * file, it's not considered to be a RPF file.
+ * This class rummages through a file structure looking for RPF files. If there
+ * isn't a RPF directory somewhere in the absolute path for a file, it's not
+ * considered to be a RPF file.
  */
 public class RpfFileSearch {
 
     /** The list of RPF frame files. */
     protected Vector files = new Vector();
 
-    public RpfFileSearch() {}
+    public RpfFileSearch() {
+    }
 
     /** Construct and go, starting with the given directory pathname. */
     public RpfFileSearch(String startingDir) {
@@ -50,7 +51,7 @@ public class RpfFileSearch {
 
         // This line, if included, wipes out files received from
         // previous dirs. Yikes!
-        //      files.clear();
+        // files.clear();
 
         if (startingDir != null) {
             startingFile = new File(startingDir);
@@ -83,8 +84,8 @@ public class RpfFileSearch {
     }
 
     /**
-     * Search, given a file, plus a flag to let it know if the RPF
-     * directory is somewhere above the file in the file sytem.
+     * Search, given a file, plus a flag to let it know if the RPF directory is
+     * somewhere above the file in the file sytem.
      */
     public void handleEntry(File file, boolean RPFDirFound) {
         try {
@@ -95,8 +96,8 @@ public class RpfFileSearch {
 
             try {
                 java.lang.reflect.Method method = file.getClass()
-                        .getDeclaredMethod("isDirectory", (Class[])null);
-                Object obj = method.invoke(file, (Object[])null);
+                        .getDeclaredMethod("isDirectory", (Class[]) null);
+                Object obj = method.invoke(file, (Object[]) null);
                 if (obj instanceof Boolean) {
                     dirTest = ((Boolean) obj).booleanValue();
                 }
@@ -112,11 +113,7 @@ public class RpfFileSearch {
                 not14 = true;
             }
 
-            if (not14) {
-                dirTest = (filenames != null);
-            }
-
-            if (dirTest) {
+            if ((dirTest || not14) && filenames != null) {
                 if (Debug.debugging("maketocdetail")) {
                     Debug.output("RpfFileSearch.handleEntry(" + file + ", "
                             + RPFDirFound + "), file is a directory");
