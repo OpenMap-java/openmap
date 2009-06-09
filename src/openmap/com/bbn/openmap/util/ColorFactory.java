@@ -79,7 +79,7 @@ public class ColorFactory {
                                                  String dfault)
             throws NumberFormatException {
         String colorString = p.getProperty(propName, dfault);
-        return parseColor(colorString, false);
+        return parseColor(colorString, true);
     }
 
     /**
@@ -120,7 +120,7 @@ public class ColorFactory {
         try {
             String colorString = p.getProperty(propName);
             if (colorString != null) {
-                return parseColor(colorString, false);
+                return parseColor(colorString, true);
             }
         } catch (NumberFormatException nfe) {
         }
@@ -132,15 +132,14 @@ public class ColorFactory {
      * Color value.
      * 
      * @param colorString the 24/32bit hex string value (ARGB)
-     * @return java.awt.Color (24bit RGB on JDK 1.1, 24/32bit ARGB on
-     *         JDK1.2)
+     * @return java.awt.Color 24bit RGB, 24/32bit ARGB
      * @exception NumberFormatException if the specified string cannot
      *            be interpreted as a hexidecimal integer
      * @see #parseColor(String, boolean)
      */
     public static Color parseColor(String colorString)
             throws NumberFormatException {
-        return parseColor(colorString, false);
+        return parseColor(colorString, true);
     }
 
     /**
@@ -197,7 +196,7 @@ public class ColorFactory {
      */
     public static Color createColor(float red, float green, float blue,
                                     float alpha) {
-        return createColor(red, green, blue, alpha, false);
+        return createColor(red, green, blue, alpha, true);
     }
 
     /**
@@ -231,7 +230,7 @@ public class ColorFactory {
      * @see #createColor(int, boolean)
      */
     public static Color createColor(int red, int green, int blue, int alpha) {
-        return createColor(red, green, blue, alpha, false);
+        return createColor(red, green, blue, alpha, true);
     }
 
     /**
@@ -260,7 +259,7 @@ public class ColorFactory {
      * @see #createColor(int, boolean)
      */
     public static Color createColor(int value) {
-        return createColor(value, false);
+        return createColor(value, true);
     }
 
     /**
