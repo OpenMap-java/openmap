@@ -262,9 +262,9 @@ public class OMGraphicHash extends OMGraphicList {
      * @throws UnsupportedOperationException if the <tt>remove</tt> method is
      *         not supported by this map.
      */
-    public boolean remove(Object obj) {
-        OMGraphic graphic = (OMGraphic) graphicHash.get(obj);
-        graphicHash.remove(obj);
+    public boolean remove(Object key) {
+        OMGraphic graphic = (OMGraphic) graphicHash.get(key);
+        graphicHash.remove(key);
         return super.remove(graphic);
     }
 
@@ -286,7 +286,7 @@ public class OMGraphicHash extends OMGraphicList {
         return graphicHash.values();
     }
 
-    /** used to displable the IllegalArgumentException during cloning */
+    /** used to hold off the IllegalArgumentException during cloning */
     private boolean cloningInProgress;
 
     /**
@@ -327,7 +327,7 @@ public class OMGraphicHash extends OMGraphicList {
      * 
      * @param location the location of the OMGraphic to remove.
      */
-    public void removeOMGraphicAt(int location) {
+    public OMGraphic remove(int location) {
         // Prevent removing a specific graphic using the OMGraphic List.
         // OMGraphicHash entry must be remove using remove(Object).
         throw new RuntimeException("removeOMGraphicAt() not permitted for OMGraphicHash(). Use remove(key) instead.");
@@ -347,7 +347,7 @@ public class OMGraphicHash extends OMGraphicList {
     public boolean remove(OMGraphic graphic) {
         // Prevent removing a specific graphic using the OMGraphic List.
         // OMGraphicHash entry must be remove using remove(Object).
-        throw new RuntimeException("remove(OMGRaphic) not permitted for OMGraphicHash(). Use remove(key) instead.");
+        throw new RuntimeException("remove(OMGraphic) not permitted for OMGraphicHash(). Use remove(key) instead.");
     }
 
     /**
