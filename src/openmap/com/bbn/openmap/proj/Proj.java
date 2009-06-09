@@ -483,7 +483,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
     }
 
     /**
-     * Inverse project a Point2D from x,y space to LatLon space.
+     * Inverse project a Point2D from x,y space to coordinate space.
      * 
      * @param point x,y Point2D
      * @return LatLonPoint (new)
