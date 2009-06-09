@@ -28,14 +28,22 @@ import java.beans.PropertyChangeSupport;
 import java.net.MalformedURLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.SwingConstants;
 
+import com.bbn.openmap.event.OMEvent;
+import com.bbn.openmap.event.OMEventHandler;
 import com.bbn.openmap.graphicLoader.MMLGraphicLoader;
 import com.bbn.openmap.io.CSVFile;
 import com.bbn.openmap.layer.location.LocationHandler;
@@ -43,7 +51,9 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicHandler;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.time.TemporalPoint;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.time.TimeBounds;
 import com.bbn.openmap.time.TimeBoundsHandler;
 import com.bbn.openmap.time.TimeBoundsProvider;
@@ -51,7 +61,6 @@ import com.bbn.openmap.time.TimeEvent;
 import com.bbn.openmap.time.TimeEventListener;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.DataBoundsProvider;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -129,7 +138,9 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class ScenarioGraphicLoader extends MMLGraphicLoader implements
         ComponentListener, DataBoundsProvider, TimeBoundsProvider,
-        TimeEventListener {
+        TimeEventListener, OMEventHandler {
+
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.graphicLoader.scenario.ScenarioGraphicLoader");
 
     public final static String TOTAL_SCENARIO_MODE = "TOTAL_SCENARIO";
     public final static String SNAPSHOT_SCENARIO_MODE = "SNAPSHOT_SCENARIO";
@@ -181,6 +192,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
     protected boolean eastIsNeg = false;
     protected int orientation = SwingConstants.HORIZONTAL;
     protected String mode;
+    protected boolean active = true;
 
     /** Icon URL for points to use as default. May be null. */
     protected String defaultIconURL;
@@ -212,17 +224,17 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
     public synchronized void manageGraphics() {
         Projection p = getProjection();
         OMGraphicHandler receiver = getReceiver();
-        boolean DEBUG = Debug.debugging("scenario");
+        boolean DEBUG = logger.isLoggable(Level.FINE);
         if (receiver != null && p != null) {
             if (scenarioGraphics == null) {
                 scenarioGraphics = createData();
 
-                // TODO upate time Bounds
+                // TODO update time Bounds
             }
 
             long currentTime = getTime();
             if (DEBUG) {
-                Debug.output("ScenarioGraphicLoader (" + getName()
+                logger.fine("ScenarioGraphicLoader (" + getName()
                         + ") snapshot at " + currentTime);
             }
             scenarioGraphics.generate(p,
@@ -230,13 +242,13 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
                     getMode() == TOTAL_SCENARIO_MODE);
 
             if (DEBUG) {
-                Debug.output("ScenarioGraphicLoader (" + getName()
+                logger.fine("ScenarioGraphicLoader (" + getName()
                         + ") setting list of " + scenarioGraphics.size()
                         + " scenario graphics");
             }
             receiver.setList(scenarioGraphics);
         } else {
-            Debug.output("ScenarioGraphicLoader (" + getName()
+            logger.fine("ScenarioGraphicLoader (" + getName()
                     + ") doesn't have a connection to the map.");
         }
     }
@@ -249,7 +261,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
         Hashtable library = new Hashtable();
         // Create location data
         if (locationFile != null && nameIndex != -1) {
-            Debug.message("scenario", "Reading location file...");
+            logger.fine("Reading location file...");
             try {
                 CSVFile locations = new CSVFile(locationFile);
                 locations.loadData();
@@ -275,29 +287,29 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
                         library.put(name.intern(), location);
                         list.add(location);
                     } else {
-                        Debug.error("ScenaroGraphicLoader: no name to use to create location: "
+                        logger.warning("no name to use to create location: "
                                 + name);
                     }
                 }
             } catch (MalformedURLException murle) {
-                Debug.error("ScenarioGraphicLoader: problem finding the location file: "
+                logger.warning("problem finding the location file: "
                         + locationFile);
                 return list;
             } catch (ArrayIndexOutOfBoundsException aioobe) {
-                Debug.error("ScenarioGraphicLoader: problem with parsing location file: "
+                logger.warning("problem with parsing location file: "
                         + locationFile);
-                if (Debug.debugging("scenario")) {
-                    Debug.output("The problem is with one of the indexes into the file: \n"
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("The problem is with one of the indexes into the file: \n"
                             + aioobe.getMessage());
                     aioobe.printStackTrace();
                 }
             } catch (NullPointerException npe) {
-                Debug.error("ScenarioGraphicLoader ("
+                logger.warning("ScenarioGraphicLoader ("
                         + getName()
                         + ") null pointer exception, most likely a problem finding the organization data file");
             }
         } else {
-            Debug.error("ScenarioGraphicLoader(" + getName()
+            logger.warning("ScenarioGraphicLoader(" + getName()
                     + "): Location file (" + locationFile + ") not configured.");
             return list;
         }
@@ -307,7 +319,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
         // Create location data
         if (activityFile != null && activityNameIndex != -1 && latIndex != -1
                 && lonIndex != -1 && timeIndex != -1) {
-            Debug.message("scenario", "Reading activity file...");
+            logger.fine("Reading activity file...");
             timeBounds = new TimeBounds();
             try {
                 CSVFile activities = new CSVFile(activityFile);
@@ -343,14 +355,19 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
                         if (name != null) {
                             ScenarioPoint point = (ScenarioPoint) library.get(name);
                             if (point != null) {
-                                TimeStamp ts = new TimeStamp(lat, lon, time);
+                                LatLonPoint location = new LatLonPoint.Double(lat, lon);
+                                TemporalPoint ts = new TemporalPoint(location, time);
                                 point.addTimeStamp(ts);
+                                
+                                OMEvent event = new OMEvent(ts, name, time, location);
+                                events.add(event);
+                                                                
                             } else {
-                                Debug.error("SenaroGraphicLoader: ScenarioPoint not found for "
+                                logger.warning("ScenarioPoint not found for "
                                         + name + ", entry: " + record);
                             }
                         } else {
-                            Debug.error("SenaroGraphicLoader: no name to use to create activity point: "
+                            logger.warning("no name to use to create activity point: "
                                     + name);
                         }
 
@@ -361,7 +378,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
                         Object obj2 = record.elementAt(lonIndex);
                         Object obj3 = record.elementAt(timeIndex);
 
-                        Debug.error("ScenarioGraphicLoader("
+                        logger.warning("ScenarioGraphicLoader("
                                 + getName()
                                 + ") has problem with indexes in activity file for "
                                 + obj0 + " (" + obj0.getClass().getName() + ")"
@@ -374,31 +391,32 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
                                 + ", value = " + obj3 + " ("
                                 + obj3.getClass().getName() + ")");
                     } catch (ParseException pe) {
-                        Debug.output("ScenarioGraphicLoader(" + getName()
+                        logger.fine("ScenarioGraphicLoader(" + getName()
                                 + ") has problem with time format. "
                                 + pe.getMessage());
                     }
                 }
             } catch (MalformedURLException murle) {
-                Debug.error("ScenarioGraphicLoader: problem with activity file: "
+                logger.warning("problem with activity file: "
                         + activityFile);
                 return list;
             } catch (NullPointerException npe) {
-                Debug.error("ScenarioGraphicLoader ("
+                logger.warning("ScenarioGraphicLoader ("
                         + getName()
                         + ") null pointer exception, most likely a problem finding the activites data file");
             }
         } else {
-            Debug.error("ScenarioGraphicLoader(" + getName()
+            logger.warning("ScenarioGraphicLoader(" + getName()
                     + "): Activity file (" + activityFile + ") not configured.");
             return list;
         }
 
-        Debug.message("scenario", "Reading files OK");
+        logger.fine("Reading files OK");
 
         // Time will get updated automatically when the TimeEvent gets sent from
         // the clock.
-
+        callForTimeBoundsReset();
+        
         return list;
     }
 
@@ -446,8 +464,8 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
 
         timeFormat = new SimpleDateFormat(timeFormatString);
 
-        if (Debug.debugging("scenario")) {
-            Debug.output("ScenarioGraphicLoader indexes:"
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("ScenarioGraphicLoader indexes:"
                     + "\n\tlocation file: " + locationFile
                     + "\n\tlocation file has header: " + locationHeader
                     + "\n\tnameIndex = " + nameIndex + "\n\ticonIndex = "
@@ -569,7 +587,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
 
         return list;
     }
- 
+
     public String getMode() {
         return mode;
     }
@@ -647,39 +665,72 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
     }
 
     // TimeBoundsProvider methods.
+    protected List<TimeBoundsHandler> timeBoundsHandlers = new ArrayList<TimeBoundsHandler>();
 
     public void addTimeBoundsHandler(TimeBoundsHandler tbh) {
-    // TODO Auto-generated method stub
-
+        timeBoundsHandlers.add(tbh);
     }
 
     public TimeBounds getTimeBounds() {
-        // TODO Auto-generated method stub
-        return null;
+        return timeBounds;
     }
 
     public void handleTimeBounds(TimeBounds tb) {
-    // TODO Auto-generated method stub
-
+    // NoOp, we don't really care what the time bounds are
     }
 
     public boolean isActive() {
-        // TODO Auto-generated method stub
-        return false;
+        return active && getReceiver() != null;
+    }
+    
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public void removeTimeBoundsHandler(TimeBoundsHandler tbh) {
-    // TODO Auto-generated method stub
+        timeBoundsHandlers.remove(tbh);
 
     }
 
     public void updateTime(TimeEvent te) {
-    // TODO Auto-generated method stub
-
+        time = te.getSimTime();
+        manageGraphics();
     }
 
     public long getTime() {
         return time;
     }
 
+    protected LinkedList<OMEvent> events = new LinkedList<OMEvent>();
+    protected LinkedList<OMEvent> filters = new LinkedList<OMEvent>();
+    
+    public List<OMEvent> getEventList() {
+        return getEventList(null);
+    }
+
+    public List<OMEvent> getEventList(List filters) {
+        return events;
+    }
+
+    public Boolean getFilterState(String filterName) {
+        return Boolean.TRUE;
+    }
+
+    public List getFilters() {
+        return filters;
+    }
+
+    public List<OMEvent> getMacroFilteredList(Collection eventCollection) {
+        return events;
+    }
+
+    public void setFilterState(String filterName, Boolean state) {
+    }
+
+    public void callForTimeBoundsReset() {
+        for (TimeBoundsHandler tbh : timeBoundsHandlers) {
+            tbh.resetTimeBounds();
+        }
+    }
+    
 }

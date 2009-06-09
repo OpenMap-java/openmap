@@ -146,7 +146,7 @@ public class DrawLinkLayer extends LinkLayer {
         try {
 
             if (e == null) {
-                graphics.deselectAll();
+                graphics.deselect();
                 return false;
             }
 

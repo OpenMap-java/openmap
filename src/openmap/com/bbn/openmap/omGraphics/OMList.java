@@ -910,7 +910,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
      *        returned, in pixels.
      * @return OMGraphicList containing all of the OMGraphics within the limit.
      */
-    public OMList<? extends OMGeometry> findAll(int x, int y, float limit) {
+    public OMList<T> findAll(int x, int y, float limit) {
         return findAll(x, y, limit, false, null);
     }
 
@@ -928,12 +928,8 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
      * @return OMGraphicList containing all of the OMGraphics within the limit,
      *         empty if none are found.
      */
-    public synchronized OMList<? extends OMGeometry> findAll(
-                                                             int x,
-                                                             int y,
-                                                             float limit,
-                                                             boolean resetSelect,
-                                                             OMList<T> addTo) {
+    public synchronized OMList<T> findAll(int x, int y, float limit,
+                                          boolean resetSelect, OMList<T> addTo) {
         if (addTo == null) {
             addTo = create();
         }
@@ -1143,7 +1139,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
         if (isVague()) {
             omd = findClosest(x, y, limit, true);
             if (omd != null) {
-                selectAll();
+                select();
                 return (T) this;
             }
         }
@@ -1236,16 +1232,6 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
     }
 
     /**
-     * If you call select() on an OMGraphicList, it selects all the graphics it
-     * contains. This is really an OMGraphic method, but it makes OMGraphicLists
-     * embedded in other OMGraphicLists act correctly.
-     */
-    public void select() {
-        selectAll();
-        // super.select();
-    }
-
-    /**
      * Finds the first OMGraphic (the one on top) that is under this pixel. If
      * an OMGraphic is an OMGraphicList, its contents will be checked. If that
      * check is successful and OMGraphicList is not vague, its OMGraphic will be
@@ -1322,19 +1308,11 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
     }
 
     /**
-     * If you call deselect() on an OMGraphicList, it deselects all the graphics
-     * it contains. This is really an OMGraphic method, but it makes
-     * OMGraphicLists embedded in other OMGraphicLists act correctly.
+     * If you call deselect() on an OMGraphicList, it calls deselect() all the
+     * graphics it contains, as well as the deselect method on it's super class.
      */
     public void deselect() {
-        deselectAll();
-        // super.deselect();
-    }
-
-    /**
-     * Deselects all the items on the graphic list.
-     */
-    public void deselectAll() {
+        super.deselect();
         synchronized (graphics) {
             for (OMGeometry omg : graphics) {
                 omg.deselect();
@@ -1343,9 +1321,11 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
     }
 
     /**
-     * Selects all the items on the graphic list.
+     * Calls select() on all the items on the graphic list, as well as select()
+     * on the super class.
      */
-    public void selectAll() {
+    public void select() {
+        super.select();
         synchronized (graphics) {
             for (OMGeometry omg : graphics) {
                 omg.select();
@@ -1414,7 +1394,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
         if (action.isMask(DESELECTALL_GRAPHIC_MASK)) {
             Debug.message("omgl",
                     "OMGraphicList.doAction: deselecting all graphics.");
-            deselectAll();
+            deselect();
         }
 
         if (action.isMask(SORT_GRAPHICS_MASK)) {

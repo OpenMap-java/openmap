@@ -505,7 +505,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
      * @see #getMouseModeServiceList
      */
     public void mouseMoved() {
-        getList().deselectAll();
+        getList().deselect();
         repaint();
     }
 

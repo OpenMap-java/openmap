@@ -254,16 +254,6 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
     }
 
     /**
-     * If you call select() on an OMGraphicList, it selects all the graphics it
-     * contains. This is really an OMGraphic method, but it makes OMGraphicLists
-     * embedded in other OMGraphicLists act correctly.
-     */
-    public void select() {
-        selectAll();
-        super.select();
-    }
-
-    /**
      * Goes through the list, finds the OMGrid objects, and sets the generator
      * for all of them. If a projection is passed in, the generator will be used
      * to create a displayable graphic within the grid.

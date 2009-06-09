@@ -314,7 +314,7 @@ public class RouteLayer extends Layer implements MapMouseListener {
      * @see #getMouseModeServiceList
      */
     public void mouseMoved() {
-        omgraphics.deselectAll();
+        omgraphics.deselect();
         repaint();
     }
 

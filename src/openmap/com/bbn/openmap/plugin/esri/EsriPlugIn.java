@@ -676,7 +676,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
      */
     public void selectGraphic(int index) {
         EsriGraphicList list = getEsriGraphicList();
-        list.deselectAll();
+        list.deselect();
         // Clear out the selected graphics list
         selectedGraphics.clear();
         selectGraphic(list.getOMGraphicAt(index));

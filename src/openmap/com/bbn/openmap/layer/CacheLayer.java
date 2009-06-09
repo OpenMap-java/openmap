@@ -362,7 +362,7 @@ public class CacheLayer extends Layer implements ActionListener,
      * @see #getMouseModeServiceList
      */
     public void mouseMoved() {
-        omgraphics.deselectAll();
+        omgraphics.deselect();
         repaint();
     }
 

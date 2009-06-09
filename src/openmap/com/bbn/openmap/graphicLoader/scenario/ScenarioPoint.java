@@ -24,26 +24,29 @@ package com.bbn.openmap.graphicLoader.scenario;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.geom.Point2D;
 import java.net.URL;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 import com.bbn.openmap.layer.location.URLRasterLocation;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.GreatCircle;
-import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.omGraphics.OMArrowHead;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.omGraphics.time.TemporalPoint;
+import com.bbn.openmap.omGraphics.time.TemporalPointSupport;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
- * A ScenarioPoint is a ScenarioGraphic representing an object on the
- * map. It takes TimeStamps and works out its location for a specific
- * time, or it can also represent its plan for the entire scenario. If
- * the URL provided for the point is not available, it will describe
- * itself as an OMPoint. ScenarioPoint is a Location, however, so any
- * location marker OMGraphic can be used. Make sure
- * setGraphicLocations is updated if the marker OMGraphic is something
+ * A ScenarioPoint is a ScenarioGraphic representing an object on the map. It
+ * takes TimeStamps and works out its location for a specific time, or it can
+ * also represent its plan for the entire scenario. If the URL provided for the
+ * point is not available, it will describe itself as an OMPoint. ScenarioPoint
+ * is a Location, however, so any location marker OMGraphic can be used. Make
+ * sure setGraphicLocations is updated if the marker OMGraphic is something
  * other than OMPoint or OMRaster.
  */
 public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic {
@@ -51,11 +54,11 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
     /**
      * A list of points where this point should be.
      */
-    protected List timeStamps;
+    protected TemporalPointSupport timeStamps;
 
     /**
-     * A list of graphics to be used to render this point, and any
-     * other symbology it needs during the scenario.
+     * A list of graphics to be used to render this point, and any other
+     * symbology it needs during the scenario.
      */
     protected OMGraphicList renderList;
 
@@ -65,8 +68,8 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
     protected int radius = 5;
 
     /**
-     * The resolution of segments to use for interpolating between
-     * activity points. Default is 100.
+     * The resolution of segments to use for interpolating between activity
+     * points. Default is 100.
      */
     protected int pathStep = 100;
 
@@ -84,7 +87,7 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
     }
 
     /**
-     * Create a ScenarioLocation at a latitude/longtude location.
+     * Create a ScenarioLocation at a latitude/longitude location.
      * 
      * @param name the identifier for the location.
      * @param iconURL a URL for an image
@@ -97,7 +100,7 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
     }
 
     protected void init() {
-        timeStamps = new LinkedList();
+        timeStamps = new TemporalPointSupport();
         showName = false;
         renderList = new OMGraphicList();
     }
@@ -112,149 +115,41 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
     /**
      * Add a TimeStamp to the point.
      */
-    public void addTimeStamp(TimeStamp timeStamp) {
-        synchronized (timeStamps) {
-            int count = 0;
-
-            Iterator it = timeStamps.iterator();
-            while (it.hasNext()) {
-                TimeStamp ts = (TimeStamp) it.next();
-                if (timeStamp.time < ts.time) {
-                    break;
-                }
-                count++;
-            }
-            timeStamps.add(count, timeStamp);
-            if (DEBUG) {
-                Debug.output("ScenarioPoint (" + getName() + ") adding "
-                        + timeStamp);
-            }
-        }
+    public void addTimeStamp(TemporalPoint timeStamp) {
+        timeStamps.add(timeStamp);
         setNeedToRegenerate(true);
     }
 
-    public boolean removeTimeStamp(TimeStamp timeStamp) {
-        boolean result = false;
-        synchronized (timeStamps) {
-            result = timeStamps.remove(timeStamp);
-        }
-        return result;
+    public boolean removeTimeStamp(TemporalPoint timeStamp) {
+        return timeStamps.remove(timeStamp);
     }
 
     public void clearTimeStamps() {
-        synchronized (timeStamps) {
-            timeStamps.clear();
-        }
+        timeStamps.clear();
     }
 
     /**
-     * Given a time, figure out the location. If the time is before
-     * the earliest time or after the latest time, the location will
-     * be set to the first or last known location, but the marker will
-     * made invisible. If the time is in between the first and last
-     * time, the position will be interpolated.
+     * Given a time, figure out the location. If the time is before the earliest
+     * time or after the latest time, the location will be set to the first or
+     * last known location, but the marker will made invisible. If the time is
+     * in between the first and last time, the position will be interpolated.
      */
-    public void setPosition(long time) {
-        TimeStamp previous = null;
-        TimeStamp next = null;
-        boolean POSITION_DEBUG = DEBUG;
-
-        synchronized (timeStamps) {
-            Iterator it = timeStamps.iterator();
-            while (it.hasNext()) {
-                TimeStamp ts = (TimeStamp) it.next();
-
-                if (ts.time < time) {
-                    previous = ts;
-                } else if (ts.time > time) {
-                    next = ts;
-                    break;
-                } else {
-                    // Hit a time right at a position.
-
-                    if (POSITION_DEBUG) {
-                        Debug.output("ScenarioPoint (" + getName()
-                                + ").setPosition(): " + ts.latitude + ", "
-                                + ts.longitude + " at time " + time);
-                    }
-
-                    setLocation(ts.latitude, ts.longitude);
-                    setVisible(true);
-                    return;
-                }
-            }
-        }
-
-        if (previous == null) {
-            // time is before ScenarioPoint is placed.
-            setVisible(false);
-            if (next != null) {
-                // Just for fun, put location where it will be.
-                if (POSITION_DEBUG) {
-                    Debug.output("ScenarioPoint (" + getName()
-                            + ").setPosition(): premature time, invisible at "
-                            + next.latitude + ", " + next.longitude);
-                }
-                setLocation(next.latitude, next.longitude);
-            } else {
-                // no timestamps
-                if (POSITION_DEBUG) {
-                    Debug.output("ScenarioPoint (" + getName()
-                            + ").setPosition(): no TimeStamps ");
-                }
-
-                return;
-            }
-        } else if (next == null) {
-            // time is after last ScenarioPoint TimeStamp
-            setVisible(false);
-            // Just for fun, place location at last timestamp.
-            if (POSITION_DEBUG) {
-                Debug.output("ScenarioPoint (" + getName()
-                        + ").setPosition(): expired time, invisible at "
-                        + previous.latitude + ", " + previous.longitude);
-            }
-            setLocation(previous.latitude, previous.longitude);
-        } else {
-            // Need to interpolate between the two.
-            float[] points = GreatCircle.greatCircle(ProjMath.degToRad(previous.latitude),
-                    ProjMath.degToRad(previous.longitude),
-                    ProjMath.degToRad(next.latitude),
-                    ProjMath.degToRad(next.longitude),
-                    pathStep,
-                    true);
-            float numSegsCovered = (float) pathStep * (time - previous.time)
-                    / (float) (next.time - previous.time);
-            int index = Math.round(numSegsCovered) * 2;
-            float la = ProjMath.radToDeg(points[index]);
-            float lo = ProjMath.radToDeg(points[index + 1]);
-
-            if (POSITION_DEBUG) {
-                Debug.output("ScenarioPoint (" + getName()
-                        + ").setPosition(): good time, "
-                        + (100f * numSegsCovered / pathStep)
-                        + "% to the next location, visible at " + la + ", "
-                        + lo);
-            }
-
-            setLocation(la, lo);
-            points = null;
-            setVisible(true);
-        }
+    public TemporalPoint setPosition(long time) {
+        return timeStamps.getPosition(time, false);
     }
 
     /**
-     * Prepare the ScenarioPoint to be rendered in its position at a
-     * certain time.
+     * Prepare the ScenarioPoint to be rendered in its position at a certain
+     * time.
      */
     public void generate(Projection p, long time, boolean showScenario) {
-        
+
         if (renderList.isEmpty()) {
             generateTotalScenario(p);
         }
-        
+
         renderList.setVisible(showScenario);
-        
+
         if (DEBUG) {
             Debug.output("ScenarioPoint (" + getName()
                     + ") calculating snapshot location.");
@@ -267,8 +162,7 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
     }
 
     /**
-     * Given a new latitude/longitude, reposition the graphic and
-     * label.
+     * Given a new latitude/longitude, reposition the graphic and label.
      */
     public void setGraphicLocations(float latitude, float longitude) {
         if (location instanceof OMPoint) {
@@ -286,10 +180,9 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
             super.setGraphicLocations(latitude, longitude);
         }
     }
-    
+
     /**
-     * Prepare the ScenarioPoint to render its entire scenario
-     * performance.
+     * Prepare the ScenarioPoint to render its entire scenario performance.
      */
     public void generateTotalScenario(Projection p) {
         renderList.clear();
@@ -300,20 +193,21 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
             image = ((OMRaster) location).getImage();
         }
 
-        float lastLat = 0f;
-        float lastLon = 0f;
+        double lastLat = 0f;
+        double lastLon = 0f;
         boolean firstLine = true;
         synchronized (timeStamps) {
-            Iterator it = timeStamps.iterator();
+            Iterator<TemporalPoint> it = timeStamps.iterator();
             while (it.hasNext()) {
-                TimeStamp ts = (TimeStamp) it.next();
+                TemporalPoint ts = it.next();
+                Point2D pnt = ts.getLocation();
 
                 if (false && image != null) {
                     if (DEBUG) {
                         Debug.output("ScenarioPoint (" + getName()
                                 + ") represented by image");
                     }
-                    OMRaster icon = new OMRaster(ts.latitude, ts.longitude, -((OMRaster) location).getWidth() / 2, -((OMRaster) location).getHeight() / 2, image);
+                    OMRaster icon = new OMRaster(pnt.getY(), pnt.getX(), -((OMRaster) location).getWidth() / 2, -((OMRaster) location).getHeight() / 2, image);
                     icon.generate(p);
                     icons.add(icon);
                 } else {
@@ -321,7 +215,7 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
                         Debug.output("ScenarioPoint (" + getName()
                                 + ") represented by OMPoint");
                     }
-                    OMPoint point = new OMPoint(ts.latitude, ts.longitude, 2);
+                    OMPoint point = new OMPoint(pnt.getY(), pnt.getX(), 2);
                     point.setOval(true);
                     point.setFillPaint(getSelectPaint());
                     point.setLinePaint(getSelectPaint());
@@ -330,12 +224,12 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
                 }
 
                 if (firstLine) {
-                    lastLat = ts.latitude;
-                    lastLon = ts.longitude;
+                    lastLat = pnt.getY();
+                    lastLon = pnt.getX();
                     firstLine = false;
                 } else {
-                    float currentLat = ts.latitude;
-                    float currentLon = ts.longitude;
+                    double currentLat = pnt.getY();
+                    double currentLon = pnt.getX();
 
                     OMLine path = new OMLine(lastLat, lastLon, currentLat, currentLon, OMGraphic.LINETYPE_GREATCIRCLE);
                     path.addArrowHead(OMArrowHead.ARROWHEAD_DIRECTION_FORWARD,

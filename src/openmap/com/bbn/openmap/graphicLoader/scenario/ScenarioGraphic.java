@@ -22,6 +22,7 @@
 
 package com.bbn.openmap.graphicLoader.scenario;
 
+import com.bbn.openmap.omGraphics.time.TemporalPoint;
 import com.bbn.openmap.proj.Projection;
 
 /**
@@ -39,12 +40,12 @@ public interface ScenarioGraphic {
     /**
      * Add a location at a time.
      */
-    public void addTimeStamp(TimeStamp timeStamp);
+    public void addTimeStamp(TemporalPoint timeStamp);
 
     /**
      * Remove a location at a certain time.
      */
-    public boolean removeTimeStamp(TimeStamp timeStamp);
+    public boolean removeTimeStamp(TemporalPoint timeStamp);
 
     /**
      * Clear all time stamps.

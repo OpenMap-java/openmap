@@ -635,7 +635,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             if (LinkUtil.isMask(gu.action, MODIFY_DESELECTALL_GRAPHIC_MASK)) {
                 Debug.message("link",
                         "LinkLayer.handleLinkActionList: deselecting all graphics");
-                graphics.deselectAll();
+                graphics.deselect();
             }
 
             // Find the graphic that we are talking about - if the
@@ -966,7 +966,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                 Debug.message("link", "LinkLayer: null graphics list.");
             } else {
                 if (e == null) {
-                    graphics.deselectAll();
+                    graphics.deselect();
                     return false;
                 }
 
