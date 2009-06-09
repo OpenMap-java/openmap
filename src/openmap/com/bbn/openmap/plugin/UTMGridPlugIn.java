@@ -506,7 +506,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
         char zone_letter = mgrsBasePoint.zone_letter;
 
         LatLonPoint llp1 = new LatLonPoint.Double();
-        MGRSPoint.MGRStoLL(ellipsoid,
+        llp1 = MGRSPoint.MGRStoLL(ellipsoid,
                 northing,
                 easting,
                 zone_number,
@@ -588,7 +588,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
             list.add(horizontalList);
         }
 
-        LatLonPoint center = (LatLonPoint) p.getCenter(new LatLonPoint.Double());
+        LatLonPoint center = p.getCenter(new LatLonPoint.Double());
         UTMPoint utm = new UTMPoint(center);
 
         if (show100kGrid) {
