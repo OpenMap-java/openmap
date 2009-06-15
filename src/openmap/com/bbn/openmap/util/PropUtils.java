@@ -736,14 +736,15 @@ public class PropUtils {
                     .getContextClassLoader()
                     .getResource(name);
         }
-        if (retval == null && !Environment.isApplet()) {
-            // Check the classpath plus the share directory, which may
-            // be in the openmap.jar file or in the development
-            // environment.
-            if (DEBUG)
-                logger.fine("checking with ClassLoader");
-            retval = ClassLoader.getSystemResource("share/" + name);
-        }
+
+        // if (retval == null && !Environment.isApplet()) {
+        // // Check the classpath plus the share directory, which may
+        // // be in the openmap.jar file or in the development
+        // // environment.
+        // if (DEBUG)
+        // logger.fine("checking with ClassLoader");
+        // retval = ClassLoader.getSystemResource("share/" + name);
+        // }
 
         if (retval == null && Environment.isApplet()) {
             if (DEBUG)
@@ -762,7 +763,7 @@ public class PropUtils {
             try {
                 java.io.File file = new java.io.File(name);
                 if (file.exists()) {
-                    retval = file.toURL();
+                    retval = file.toURI().toURL();
                     if (DEBUG)
                         logger.fine("found as file :)");
                 } else {
