@@ -51,6 +51,10 @@ import com.bbn.openmap.proj.ProjMath;
 public abstract class LatLonPoint extends Point2D implements Cloneable,
         Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 4416029542303298672L;
     public final static double NORTH_POLE = 90.0;
     public final static double SOUTH_POLE = -NORTH_POLE;
     public final static double DATELINE = 180.0;
@@ -145,6 +149,10 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
      */
     public static class Float extends LatLonPoint {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -2447464428275551182L;
         protected float lat;
         protected float lon;
         protected transient float radLat;
@@ -435,6 +443,11 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
      * @author dietrick
      */
     public static class Double extends LatLonPoint {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -7463055211717523471L;
+        
         protected double lat;
         protected double lon;
         protected transient double radLat;
