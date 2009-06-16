@@ -19,9 +19,9 @@
     <property name="javac.excludes" value="${general.excludes}, 
 					   **/*.gif, **/*.png" />
 	  
-    <condition property="do.j3d">
+    <condition property="do.j3d" >
       <and>
-	<available classname="javax.media.j3d.Shape3D"/>
+	<available classname="javax.media.j3d.Shape3D" classpath="${ext_tools_classpath}" />
       </and>
     </condition> 
 
@@ -49,7 +49,7 @@
     <javac srcdir="${j3d.src}"
 	   destdir="${j3d.classes}"
 	   debug="on"
-	   classpath="${openmap.home}/lib/openmap.jar;${openmap.home}"
+	   classpath="${openmap.home}/lib/openmap.jar;${openmap.home};${ext_tools_classpath}"
 	   excludes="${javac.excludes}" source="1.5" target="1.5" />
 
     <copy todir="${j3d.classes}/com/bbn/openmap"> 
