@@ -31,10 +31,12 @@
 		<property name="jai.includes" value="**/jai/**, **/geotiff/**" />
 
 		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
-		<available classname="com.sun.media.jai.codec.ImageCodec" property="do.jai" classpath="${ext_tools_classpath}" />
+		<available classname="com.sun.media.jai.codec.ImageCodec" property="do.jai">
+			<classpath refid="ext_tools_classpath" />
+		</available>
 		<echo message="do.jai = ${do.jai}" />
-		
-		<echo message="Java Home: ${java.home}"/>
+
+		<echo message="Java Home: ${java.home}" />
 	</target>
 
 	<!--  ############################
@@ -62,7 +64,9 @@
 	############################ -->
 	<target name="debug" depends="init.openmap">
 		<mkdir dir="${openmap.classes}" />
-		<javac srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="com/bbn/openmap/util/Debug.java" />
+		<javac srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="com/bbn/openmap/util/Debug.java">
+			<classpath refid="ext_tools_classpath" />
+		</javac>
 	</target>
 
 	<!--  ############################
@@ -70,12 +74,18 @@
 	from other people.
 	############################ -->
 	<target name="ext" depends="debug" description="Compiles the ext classes that OpenMap needs.">
-		<javac srcdir="${openmap.src_ext}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes}" source="1.5" target="1.5" />
+		<javac srcdir="${openmap.src_ext}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes}" source="1.5" target="1.5">
+			<classpath refid="ext_tools_classpath" />
+		</javac>
 	</target>
 
 	<target name="jai" depends="ext" description="Compiles the ext classes that OpenMap needs that depend on JAI." if="do.jai">
-		<javac srcdir="${openmap.src_ext}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}" source="1.5" target="1.5" classpath="${ext_tools_classpath}" />
-		<javac srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}" source="1.5" target="1.5" classpath="${ext_tools_classpath}" />
+		<javac srcdir="${openmap.src_ext}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}" source="1.5" target="1.5">
+			<classpath refid="ext_tools_classpath" />
+		</javac>
+		<javac srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}" source="1.5" target="1.5">
+			<classpath refid="ext_tools_classpath" />
+		</javac>
 
 		<copy todir="${openmap.classes}">
 			<fileset dir="${openmap.src_ext}" includes="**/*.properties" />
@@ -87,7 +97,9 @@
 	Standard target, to build everything you can.
 	############################ -->
 	<target name="classes.openmap" depends="jai" description="Compiles the OpenMap classes.  Ext classes compiled if needed.">
-		<javac srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes}" source="1.5" target="1.5" classpath="${ext_tools_classpath}" />
+		<javac srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes}" source="1.5" target="1.5">
+			<classpath refid="ext_tools_classpath" />
+		</javac>
 
 		<!-- Copy the gifs and other resources to the new classpath. -->
 		<copy todir="${openmap.classes}" file="${openmap.home}/openmap.properties" />

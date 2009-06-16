@@ -11,7 +11,7 @@
 
 		<!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR TOMCAT INSTALLATION -->
 		<!--<property name="tomcat.home" value="/usr/local/java/jakarta-tomcat-4.0.1"/>-->
-		<property name="tomcat.home" value="/usr/local/java/jakarta-tomcat-5.0.18"/>
+		<property name="tomcat.home" value="/usr/local/apache-tomcat-5.5.26"/>
 
 		<property name="javac.excludes" value="**/*.in, **/Makefile, **/*.bat,
 		                                       **/ChangeLog, **/*.html, **/*.txt,
