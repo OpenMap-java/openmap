@@ -421,7 +421,7 @@ public class LibrarySelectionTable {
                 continue;
             }
 
-            if (scale < BROWSE_CUTOFF) {
+            if (cat.isTiledCoverage() && scale < BROWSE_CUTOFF) {
 
                 CoverageTable c = cat.getCoverageTable(covname);
                 if (c == null) {

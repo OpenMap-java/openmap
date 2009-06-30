@@ -29,10 +29,9 @@ import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.Debug;
 
 /**
- * Handle the library level VPF directory. "noamer" in DCW is an
- * example of the library level data. This class loads the associated
- * tiling information, and the coverage types, and make them available
- * to the client.
+ * Handle the library level VPF directory. "noamer" in DCW is an example of the
+ * library level data. This class loads the associated tiling information, and
+ * the coverage types, and make them available to the client.
  */
 public class CoverageAttributeTable {
 
@@ -45,9 +44,9 @@ public class CoverageAttributeTable {
     /** coverage name to CoverageEntry map */
     final private Map coverages = new HashMap();
     /**
-     * The tiles that compose our coverage area. The size of the array
-     * is going to be set to record count + 1, and the tiles will have
-     * their ID number as their index.
+     * The tiles that compose our coverage area. The size of the array is going
+     * to be set to record count + 1, and the tiles will have their ID number as
+     * their index.
      */
     private TileDirectory containedTiles[];
     /** the column names in the cat. file */
@@ -100,8 +99,7 @@ public class CoverageAttributeTable {
     /**
      * is this library tiled
      * 
-     * @return <code>true</code> for tiled coverage.
-     *         <code>false</code> else
+     * @return <code>true</code> for tiled coverage. <code>false</code> else
      */
     public final boolean isTiledCoverage() {
         return isTiled;
@@ -138,8 +136,8 @@ public class CoverageAttributeTable {
     }
 
     /**
-     * an internal function to load the tiling information, with an
-     * option to use DCW column names.
+     * an internal function to load the tiling information, with an option to
+     * use DCW column names.
      * 
      * @param pathname the path to the tile directory
      * @param DCW use DCW column names.
@@ -149,14 +147,14 @@ public class CoverageAttributeTable {
 
         // Figure out how files names should be constructed...
         boolean addSlash = true;
-        //      if (pathname.endsWith(File.separator)) {
+        // if (pathname.endsWith(File.separator)) {
         if (pathname.endsWith("/") || pathname.endsWith(File.separator)) {
             addSlash = false;
         }
 
-        //read fcs to figure out what column in tileref.aft we need
+        // read fcs to figure out what column in tileref.aft we need
         // to use to
-        //read the fbr (face bounding rectangle) table
+        // read the fbr (face bounding rectangle) table
         try {
 
             String fcsFile = pathname + (addSlash ? "/" : "") + "fcs";
@@ -180,10 +178,10 @@ public class CoverageAttributeTable {
                 String fclass = (String) fcsv.get(fcscols[0]);
                 String table1 = (String) fcsv.get(fcscols[1]);
                 String table1_key = (String) fcsv.get(fcscols[2]);
-                /* Not used
-                String table2 = (String) fcsv.get(fcscols[3]);
-                String table2_key = (String) fcsv.get(fcscols[4]);
-                */
+                /*
+                 * Not used String table2 = (String) fcsv.get(fcscols[3]);
+                 * String table2_key = (String) fcsv.get(fcscols[4]);
+                 */
                 if ("tileref".equalsIgnoreCase(fclass)
                         && "tileref.aft".equalsIgnoreCase(table1)) {
                     faceIDColumnName = table1_key.toLowerCase();
@@ -197,20 +195,20 @@ public class CoverageAttributeTable {
             if (!DCW)
                 doTileRefStuff(pathname, true);
             return;
-            //either way, return. The recursive call may have worked.
+            // either way, return. The recursive call may have worked.
 
         } catch (NullPointerException npe) {
             return; // file wasn't found...
         }
 
         if (faceIDColumnName == null) {
-            return; //won't be able to read the tiling info. abort
+            return; // won't be able to read the tiling info. abort
         }
 
         isTiled = true;
 
-        //Okay, we've got info on what column we use from tileref.aft
-        //to index into the fbr.
+        // Okay, we've got info on what column we use from tileref.aft
+        // to index into the fbr.
         try {
             DcwRecordFile aft = new DcwRecordFile(pathname
                     + (addSlash ? "/" : "") + "tileref.aft");
@@ -238,7 +236,7 @@ public class CoverageAttributeTable {
             // aft.getRecordCount() is not reliable if file is being
             // read with a network input stream. So, we have to
             // create the TileDirectory[] a different way.
-            //          containedTiles = new TileDirectory[aft.getRecordCount()
+            // containedTiles = new TileDirectory[aft.getRecordCount()
             // + 1];
             // This is part of that solution...
             ArrayList tileArrayList = new ArrayList(500);
@@ -246,7 +244,7 @@ public class CoverageAttributeTable {
 
             while (aft.parseRow(aftv)) {
                 int fac_num = ((Number) aftv.get(faceIDColumn)).intValue();
-                fbr.getRow(fbrv, fac_num); //mutates fbrv
+                fbr.getRow(fbrv, fac_num); // mutates fbrv
                 int tileid = ((Number) aftv.get(fbrIDColumn)).intValue();
                 String tilename = (String) aftv.get(tileNameColumn);
 
@@ -257,9 +255,9 @@ public class CoverageAttributeTable {
                         goodTile = true;
                     }
                     if (chs[i] == '\\') {
-                        //                      chs[i] = File.separatorChar;
+                        // chs[i] = File.separatorChar;
                         chs[i] = '/'; // we're using BinaryFile, in
-                                      // java land...
+                        // java land...
                     }
                 }
                 tilename = new String(chs);
@@ -279,7 +277,7 @@ public class CoverageAttributeTable {
                     // Commenting out line is part of the solution,
                     // the
                     // spot is already marked with a nullTile object.
-                    //                  containedTiles[tileid] = null;
+                    // containedTiles[tileid] = null;
                     continue;
                 }
 
@@ -288,11 +286,11 @@ public class CoverageAttributeTable {
                 float eastlon = ((Number) fbrv.get(fbrcols[2])).floatValue();
                 float northlat = ((Number) fbrv.get(fbrcols[3])).floatValue();
 
-                //  Again, URL solution...
-                //              containedTiles[tileid] = new
+                // Again, URL solution...
+                // containedTiles[tileid] = new
                 // TileDirectory(tilename, tileid,
-                //                                                         northlat, southlat,
-                //                                                         eastlon, westlon);
+                // northlat, southlat,
+                // eastlon, westlon);
 
                 tileArrayList.set(tileid,
                         new TileDirectory(tilename, tileid, northlat, southlat, eastlon, westlon));
@@ -317,7 +315,7 @@ public class CoverageAttributeTable {
             }
 
         } catch (FormatException f) {
-            //probably (hopefully?) untiled coverage...
+            // probably (hopefully?) untiled coverage...
             containedTiles = null;
         }
     }
@@ -326,8 +324,8 @@ public class CoverageAttributeTable {
      * Get the description of a coverage type
      * 
      * @param covname the name of the coverage type
-     * @return the coverage description from the VPF database. A null
-     *         return value indicates an unknown coverage type
+     * @return the coverage description from the VPF database. A null return
+     *         value indicates an unknown coverage type
      */
     public String getCoverageDescription(String covname) {
         CoverageEntry ce = (CoverageEntry) coverages.get(covname);
@@ -338,8 +336,7 @@ public class CoverageAttributeTable {
      * Get the topology level of a coverage.
      * 
      * @param covname the name of the coverage type
-     * @return the topology level of the coverage (-1 if not a valid
-     *         coverage)
+     * @return the topology level of the coverage (-1 if not a valid coverage)
      */
     public int getCoverageTopologyLevel(String covname) {
         CoverageEntry ce = (CoverageEntry) coverages.get(covname);
@@ -371,11 +368,11 @@ public class CoverageAttributeTable {
         }
         return null;
     }
-    
+
     public CoverageTable getCoverageTableForFeature(String featureName) {
         for (Iterator it = coverages.keySet().iterator(); it.hasNext();) {
-            String key = (String)it.next();
-            CoverageEntry ce = (CoverageEntry)coverages.get(key);
+            String key = (String) it.next();
+            CoverageEntry ce = (CoverageEntry) coverages.get(key);
             Debug.output("CoverageTable: got " + ce + " for " + key);
             CoverageTable ct = ce.getCoverageTable();
             if (ct != null) {
@@ -421,13 +418,15 @@ public class CoverageAttributeTable {
             return containedTiles[id];
         } catch (ArrayIndexOutOfBoundsException aioobe) {
             return null;
+        } catch (NullPointerException npe) {
+            return null;
         }
     }
 
     /**
-     * Know that the tile id are the integers used in the tileref.aft
-     * file. May return null if the format of the id is bad, or if the
-     * tile doesn't really exist (that really shouldn't happen).
+     * Know that the tile id are the integers used in the tileref.aft file. May
+     * return null if the format of the id is bad, or if the tile doesn't really
+     * exist (that really shouldn't happen).
      */
     public TileDirectory getTileWithID(String id) {
         try {
@@ -450,8 +449,8 @@ public class CoverageAttributeTable {
     /**
      * Return the list of coverages this library has
      * 
-     * @return the list of coverages (DCW would include "po", "dn";
-     *         VMAP would have "bnd", "tran", etc.)
+     * @return the list of coverages (DCW would include "po", "dn"; VMAP would
+     *         have "bnd", "tran", etc.)
      */
     public String[] getCoverageNames() {
         return (String[]) coverages.keySet()
@@ -459,9 +458,8 @@ public class CoverageAttributeTable {
     }
 
     /**
-     * A utility class to hold information about one coverage type.
-     * Only the associated coverage table may be modified after
-     * construction.
+     * A utility class to hold information about one coverage type. Only the
+     * associated coverage table may be modified after construction.
      */
     public static class CoverageEntry {
         /** the VPF topology level of this coverage type */
@@ -474,8 +472,7 @@ public class CoverageAttributeTable {
         /**
          * Create a coverage entry without a coverage table
          * 
-         * @param topologyLevel the topology level for this
-         *        coverageentry
+         * @param topologyLevel the topology level for this coverageentry
          * @param desc the description for this entry
          */
         public CoverageEntry(int topologyLevel, String desc) {
@@ -485,8 +482,7 @@ public class CoverageAttributeTable {
         /**
          * Create a coverage entry with an initial coverage table
          * 
-         * @param topologyLevel the topology level for this
-         *        coverageentry
+         * @param topologyLevel the topology level for this coverageentry
          * @param desc the description for this entry
          * @param covtable the coveragetable for this entry
          */
