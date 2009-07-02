@@ -52,7 +52,6 @@ import com.bbn.openmap.layer.policy.StandardPCPolicy;
 import com.bbn.openmap.layer.policy.StandardRenderPolicy;
 import com.bbn.openmap.omGraphics.FilterSupport;
 import com.bbn.openmap.omGraphics.OMAction;
-import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.event.GestureResponsePolicy;
@@ -163,6 +162,10 @@ import com.bbn.openmap.util.SwingWorker;
 public class OMGraphicHandlerLayer extends Layer implements
         GestureResponsePolicy {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     /**
      * The property that can be set for the ProjectionChangePolicy. This
      * property should be set with a scoping marker name used to define a policy
@@ -509,7 +512,7 @@ public class OMGraphicHandlerLayer extends Layer implements
             return;
         } else if (!proj.equals(getProjection())) {
             setProjection(proj.makeClone());
-            setList(prepare());
+            setList(getRenderPolicy().prepare());
         }
         paint(g);
     }
