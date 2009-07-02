@@ -102,6 +102,10 @@ public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
         }
     }
 
+    /**
+     * Assumes that the OMGraphicList to be rendered is set on the
+     * OMGraphicHandlerLayer, available via setList().
+     */
     public void paint(Graphics g) {
         if (layer != null) {
             OMGraphicList list = layer.getList();
