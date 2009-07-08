@@ -44,9 +44,8 @@ import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The MouseDelegator manages the MapMouseModes that handle
- * MouseEvents on the map. There should only be one MouseDelegator
- * within a MapHandler.
+ * The MouseDelegator manages the MapMouseModes that handle MouseEvents on the
+ * map. There should only be one MouseDelegator within a MapHandler.
  * 
  * @see com.bbn.openmap.event.MapMouseMode
  * @see com.bbn.openmap.event.AbstractMouseMode
@@ -68,7 +67,7 @@ public class MouseDelegator implements PropertyChangeListener,
     /**
      * The registered MapMouseModes.
      */
-    protected transient Vector mouseModes = new Vector(0);
+    protected transient Vector<MapMouseMode> mouseModes = new Vector<MapMouseMode>(0);
 
     /**
      * The MapBean.
@@ -76,12 +75,11 @@ public class MouseDelegator implements PropertyChangeListener,
     protected transient MapBean map;
 
     /**
-     * Need to keep a safe copy of the current layers that are part of
-     * the MapBean in case a MouseMode gets added before the MapBean
-     * is set in the MouseDelegator. Without this, you can get into a
-     * situation where new MapMouseModes don't know about layers until
-     * the MouseDelegator receives a property change event from the
-     * MapBean.
+     * Need to keep a safe copy of the current layers that are part of the
+     * MapBean in case a MouseMode gets added before the MapBean is set in the
+     * MouseDelegator. Without this, you can get into a situation where new
+     * MapMouseModes don't know about layers until the MouseDelegator receives a
+     * property change event from the MapBean.
      */
     protected Layer[] currentLayers = null;
 
@@ -106,8 +104,8 @@ public class MouseDelegator implements PropertyChangeListener,
     }
 
     /**
-     * Construct a MouseDelegator without an associated MapBean. You
-     * will need to set the MapBean via <code>setMap()</code>.
+     * Construct a MouseDelegator without an associated MapBean. You will need
+     * to set the MapBean via <code>setMap()</code>.
      * 
      * @see #setMap
      */
@@ -142,11 +140,11 @@ public class MouseDelegator implements PropertyChangeListener,
         return map;
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     //
     // Mouse Event handling support
     //
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     /**
      * Returns the ID string for the active Mouse Mode.
@@ -161,11 +159,10 @@ public class MouseDelegator implements PropertyChangeListener,
     }
 
     /**
-     * Sets the mouse mode to the mode with the same ID string. If
-     * none of the MouseEventDelagates have a matching ID string, the
-     * mode is not changed. <br>
-     * The map mouse cursor is set to the recommended cursor retrieved
-     * from the active mouseMode.
+     * Sets the mouse mode to the mode with the same ID string. If none of the
+     * MouseEventDelagates have a matching ID string, the mode is not changed. <br>
+     * The map mouse cursor is set to the recommended cursor retrieved from the
+     * active mouseMode.
      * 
      * @param MouseModeID the string ID of the mode to set active.
      */
@@ -178,13 +175,12 @@ public class MouseDelegator implements PropertyChangeListener,
         MapMouseMode oldActive = activeMouseMode;
         setInactive(activeMouseMode);
 
-        for (int i = 0; i < mouseModes.size(); i++) {
-            MapMouseMode med = (MapMouseMode) mouseModes.elementAt(i);
+        for (MapMouseMode med : mouseModes) {
             if (MouseModeID.equals(med.getID())) {
                 setActive(med);
                 if (Debug.debugging("mousemode")) {
                     Debug.output("MouseDelegator.setActiveMouseModeWithID() setting new mode to mode "
-                            + i + " " + med.getID());
+                            + med.getID());
                 }
                 break;
             }
@@ -203,10 +199,10 @@ public class MouseDelegator implements PropertyChangeListener,
     }
 
     /**
-     * Sets the active mouse mode. If the MapMouseMode is not a member
-     * of the current mouse modes, it is added to the list. <br>
-     * The map mouse cursor is set to the recommended cursor retrieved
-     * from the active mouseMode.
+     * Sets the active mouse mode. If the MapMouseMode is not a member of the
+     * current mouse modes, it is added to the list. <br>
+     * The map mouse cursor is set to the recommended cursor retrieved from the
+     * active mouseMode.
      * 
      * @param aMed a MapMouseMode to make active.
      */
@@ -218,8 +214,7 @@ public class MouseDelegator implements PropertyChangeListener,
         MapMouseMode oldActive = activeMouseMode;
         boolean isAlreadyAMode = false;
 
-        for (int i = 0; i < mouseModes.size(); i++) {
-            MapMouseMode med = (MapMouseMode) mouseModes.elementAt(i);
+        for (MapMouseMode med : mouseModes) {
             // Need to go through the modes, turn off the other active
             // mode, and turn on this one.
             if (aMed.getID().equals(med.getID())) {
@@ -237,8 +232,7 @@ public class MouseDelegator implements PropertyChangeListener,
     }
 
     /**
-     * Returns an array of MapMouseModes that are available to the
-     * MapBean.
+     * Returns an array of MapMouseModes that are available to the MapBean.
      * 
      * @return an array of MapMouseModes.
      */
@@ -254,21 +248,20 @@ public class MouseDelegator implements PropertyChangeListener,
     }
 
     /**
-     * Used to set the mouseModes available to the MapBean. The
-     * Delegator drops all references to any mouseModes it knew about
-     * previously. It also sets the index of the array to be the
-     * active mouse mode. <br>
-     * The map mouse cursor is set to the recommended cursor retrieved
-     * from the active mouseMode.
+     * Used to set the mouseModes available to the MapBean. The Delegator drops
+     * all references to any mouseModes it knew about previously. It also sets
+     * the index of the array to be the active mouse mode. <br>
+     * The map mouse cursor is set to the recommended cursor retrieved from the
+     * active mouseMode.
      * 
      * @param meds an array of MapMouseModes
      * @param activeIndex which mouse mode to make active
      */
     public void setMouseModes(MapMouseMode[] meds, int activeIndex) {
-        mouseModes.removeAllElements();
+        mouseModes.clear();
         MapMouseMode oldActive = activeMouseMode;
         for (int i = 0; i < meds.length; i++) {
-            mouseModes.addElement(meds[i]);
+            mouseModes.add(meds[i]);
 
             if (i == activeIndex) { // activate the right mode
                 setActive(meds[i]);
@@ -280,9 +273,9 @@ public class MouseDelegator implements PropertyChangeListener,
     }
 
     /**
-     * Used to set the mouseModes available to the MapBean. The
-     * MapBean drops all references to any mouseModes it knew about
-     * previously. The meds[0] mode is made active, by default.
+     * Used to set the mouseModes available to the MapBean. The MapBean drops
+     * all references to any mouseModes it knew about previously. The meds[0]
+     * mode is made active, by default.
      * 
      * @param meds an array of MapMouseModes
      */
@@ -291,8 +284,8 @@ public class MouseDelegator implements PropertyChangeListener,
     }
 
     /**
-     * Adds a MapMouseMode to the MouseMode list. Does not make it the
-     * active mode.
+     * Adds a MapMouseMode to the MouseMode list. Does not make it the active
+     * mode.
      * 
      * @param med the MouseEvent Delegate to add.
      */
@@ -300,9 +293,9 @@ public class MouseDelegator implements PropertyChangeListener,
 
         if (med != null) {
             mouseModes.addElement(med);
-            //  All of the MouseModes will think they are active, but
-            //  the Delegator will only pass events to the one it
-            //  thinks is...
+            // All of the MouseModes will think they are active, but
+            // the Delegator will only pass events to the one it
+            // thinks is...
             if (mouseModes.size() == 1) {
                 setActive(med);
             }
@@ -322,36 +315,42 @@ public class MouseDelegator implements PropertyChangeListener,
      */
     public void removeMouseMode(MapMouseMode med) {
         boolean needToAdjustActiveMode = false;
+        
+        if (med == null) {
+            return;
+        }
+        
         if (med.equals(activeMouseMode)) {
             needToAdjustActiveMode = true;
             setInactive(med);
         }
 
-        for (int i = 0; i < mouseModes.size(); i++) {
-            if (med.equals(mouseModes.elementAt(i))) {
+        for (MapMouseMode checkMM : mouseModes) {
+            if (med.equals(checkMM)) {
                 med.removeAllMapMouseListeners();
-                mouseModes.removeElementAt(i);
+               
             }
             // Set the first mode to the active one, if deleting the
             // active one.
             else if (needToAdjustActiveMode) {
-                setActive(med);
+                setActive(checkMM);
                 needToAdjustActiveMode = false;
             }
         }
+        
+        mouseModes.remove(med);
 
         firePropertyChange(MouseModesProperty, null, mouseModes);
     }
 
     /**
-     * Removes a particular MapMouseMode from the MouseMode list, with
-     * the ID given.
+     * Removes a particular MapMouseMode from the MouseMode list, with the ID
+     * given.
      * 
      * @param id the ID of the MapMouseMode that should be removed
      */
     public void removeMouseMode(String id) {
-        for (int i = 0; i < mouseModes.size(); i++) {
-            MapMouseMode med = (MapMouseMode) mouseModes.elementAt(i);
+        for (MapMouseMode med : mouseModes) {
             if (id.equals(med.getID())) {
                 removeMouseMode(med);
                 break;
@@ -360,9 +359,9 @@ public class MouseDelegator implements PropertyChangeListener,
     }
 
     /**
-     * Sets the three default OpenMap mouse modes. These modes are:
-     * NavMouseMode (Map Navigation), the SelectMouseMode (MouseEvents
-     * go to Layers), and NullMouseMode (MouseEvents are ignored).
+     * Sets the three default OpenMap mouse modes. These modes are: NavMouseMode
+     * (Map Navigation), the SelectMouseMode (MouseEvents go to Layers), and
+     * NullMouseMode (MouseEvents are ignored).
      */
     public void setDefaultMouseModes() {
         MapMouseMode[] modes = new MapMouseMode[3];
@@ -392,8 +391,8 @@ public class MouseDelegator implements PropertyChangeListener,
     }
 
     /**
-     * Does the work putting the layers given on each mouse mode's
-     * list of layers to notify if it becomes active.
+     * Does the work putting the layers given on each mouse mode's list of
+     * layers to notify if it becomes active.
      */
     public void setupMouseModesWithLayers(Layer[] layers) {
         for (int j = 0; j < mouseModes.size(); j++) {
@@ -404,10 +403,9 @@ public class MouseDelegator implements PropertyChangeListener,
     }
 
     /**
-     * Gives a MapMouseMode access to a Layer[], and it will find the
-     * layers that want to listen to it and will forward events to
-     * them if it is added to the MapBean as a MouseListener or a
-     * MouseMotionListener.
+     * Gives a MapMouseMode access to a Layer[], and it will find the layers
+     * that want to listen to it and will forward events to them if it is added
+     * to the MapBean as a MouseListener or a MouseMotionListener.
      * 
      * @param mmm MapMouseMode
      * @param layers Layer[]
@@ -444,8 +442,8 @@ public class MouseDelegator implements PropertyChangeListener,
     }
 
     /**
-     * Set the active MapMouseMode. This sets the MapMouseMode of the
-     * associated MapBean.
+     * Set the active MapMouseMode. This sets the MapMouseMode of the associated
+     * MapBean.
      * 
      * @param mm MapMouseMode
      */
@@ -498,25 +496,24 @@ public class MouseDelegator implements PropertyChangeListener,
 
     /**
      * Eventually gets called when the MouseDelegator is added to the
-     * BeanContext, and when other objects are added to the
-     * BeanContext anytime after that. The MouseDelegator looks for a
-     * MapBean to manage MouseEvents for, and MouseModes to use to
-     * manage those events. If a MapBean is added to the BeanContext
-     * while another already is in use, the second MapBean will take
-     * the place of the first.
+     * BeanContext, and when other objects are added to the BeanContext anytime
+     * after that. The MouseDelegator looks for a MapBean to manage MouseEvents
+     * for, and MouseModes to use to manage those events. If a MapBean is added
+     * to the BeanContext while another already is in use, the second MapBean
+     * will take the place of the first.
      * 
      * @param it iterator to use to go through the new objects in the
      *        BeanContext.
      */
-    public void findAndInit(Iterator it) {
+    public void findAndInit(Iterator<?> it) {
         while (it.hasNext()) {
             findAndInit(it.next());
         }
     }
 
     /**
-     * Called when an object should be evaluated by the MouseDelegator
-     * to see if it is needed.
+     * Called when an object should be evaluated by the MouseDelegator to see if
+     * it is needed.
      */
     public void findAndInit(Object someObj) {
         if (someObj instanceof MapBean) {
@@ -531,27 +528,27 @@ public class MouseDelegator implements PropertyChangeListener,
     }
 
     /**
-     * BeanContextMembershipListener method. Called when new objects
-     * are added to the parent BeanContext.
+     * BeanContextMembershipListener method. Called when new objects are added
+     * to the parent BeanContext.
      * 
-     * @param bcme event that contains an iterator that can be used to
-     *        go through the new objects.
+     * @param bcme event that contains an iterator that can be used to go
+     *        through the new objects.
      */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
         findAndInit(bcme.iterator());
     }
 
     /**
-     * BeanContextMembershipListener method. Called when objects have
-     * been removed from the parent BeanContext. The MouseDelegator
-     * looks for the MapBean it is managing MouseEvents for, and any
-     * MouseModes that may be removed.
+     * BeanContextMembershipListener method. Called when objects have been
+     * removed from the parent BeanContext. The MouseDelegator looks for the
+     * MapBean it is managing MouseEvents for, and any MouseModes that may be
+     * removed.
      * 
-     * @param bcme event that contains an iterator that can be used to
-     *        go through the removed objects.
+     * @param bcme event that contains an iterator that can be used to go
+     *        through the removed objects.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-        Iterator it = bcme.iterator();
+        Iterator<?> it = bcme.iterator();
         while (it.hasNext()) {
             findAndUndo(it.next());
         }
@@ -573,6 +570,17 @@ public class MouseDelegator implements PropertyChangeListener,
                     "MouseDelegator: removing a MapMouseMode.");
             removeMouseMode((MapMouseMode) someObj);
         }
+
+        if (someObj == this) {
+            dispose();
+        }
+    }
+
+    public void dispose() {
+        if (mouseModes != null) {
+            mouseModes.clear();
+        }
+        currentLayers = null;
     }
 
     /** Method for BeanContextChild interface. */
@@ -632,23 +640,21 @@ public class MouseDelegator implements PropertyChangeListener,
     }
 
     /**
-     * Report a vetoable property update to any registered listeners.
-     * If anyone vetos the change, then fire a new event reverting
-     * everyone to the old value and then rethrow the
-     * PropertyVetoException.
+     * Report a vetoable property update to any registered listeners. If anyone
+     * vetos the change, then fire a new event reverting everyone to the old
+     * value and then rethrow the PropertyVetoException.
      * <P>
      * 
      * No event is fired if old and new are equal and non-null.
      * <P>
      * 
-     * @param name The programmatic name of the property that is about
-     *        to change
+     * @param name The programmatic name of the property that is about to change
      * 
      * @param oldValue The old value of the property
      * @param newValue - The new value of the property
      * 
-     * @throws PropertyVetoException if the recipient wishes the
-     *         property change to be rolled back.
+     * @throws PropertyVetoException if the recipient wishes the property change
+     *         to be rolled back.
      */
     public void fireVetoableChange(String name, Object oldValue, Object newValue)
             throws PropertyVetoException {
@@ -656,4 +662,3 @@ public class MouseDelegator implements PropertyChangeListener,
     }
 
 }
-

@@ -500,7 +500,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      */
     public void addLayerListener(LayerListener ll) {
         logger.fine("adding layer listener");
-        listeners.addLayerListener(ll);
+        listeners.add(ll);
         // Usually, the listeners are interested in one type of event
         // or the other. So fire both, and let the listener hash it
         // out.
@@ -518,7 +518,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      */
     public void removeLayerListener(LayerListener ll) {
         if (listeners != null) {
-            listeners.removeLayerListener(ll);
+            listeners.remove(ll);
         }
     }
 

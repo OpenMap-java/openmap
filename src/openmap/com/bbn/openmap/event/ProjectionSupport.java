@@ -23,7 +23,6 @@
 package com.bbn.openmap.event;
 
 import java.util.Iterator;
-import java.util.Vector;
 
 import com.bbn.openmap.proj.Projection;
 
@@ -33,15 +32,16 @@ import com.bbn.openmap.proj.Projection;
  * instance of this class as a member field of your bean and delegate work to
  * it.
  */
-public class ProjectionSupport extends ListenerSupport {
+public class ProjectionSupport extends ListenerSupport<ProjectionListener> {
 
-    protected ProjectionChangeNotifier pcNotifier = new ProjectionChangeNotifier();
+    protected ProjectionChangeNotifier pcNotifier;
+    protected boolean useNotifier;
 
     /**
      * Construct a ProjectionSupport.
      */
-    public ProjectionSupport() {
-        this(null);
+    public ProjectionSupport(boolean useNotifier) {
+        this(null, useNotifier);
     }
 
     /**
@@ -49,27 +49,10 @@ public class ProjectionSupport extends ListenerSupport {
      * 
      * @param aSource source Object
      */
-    public ProjectionSupport(Object aSource) {
+    public ProjectionSupport(Object aSource, boolean useNotifier) {
         super(aSource);
-        pcNotifier.start();
-    }
-
-    /**
-     * Add a ProjectionListener.
-     * 
-     * @param l ProjectionListener
-     */
-    public void addProjectionListener(ProjectionListener l) {
-        addListener(l);
-    }
-
-    /**
-     * Remove a ProjectionListener.
-     * 
-     * @param l ProjectionListener
-     */
-    public void removeProjectionListener(ProjectionListener l) {
-        removeListener(l);
+        this.useNotifier = useNotifier;
+        // pcNotifier.start();
     }
 
     /**
@@ -81,18 +64,34 @@ public class ProjectionSupport extends ListenerSupport {
         if (proj == null || size() == 0)
             return; // no event or no listeners
 
-        if (pcNotifier == null) {
+        if (useNotifier && pcNotifier == null) {
             pcNotifier = new ProjectionChangeNotifier();
             pcNotifier.start();
         }
-        pcNotifier.fireProjectionEvent(new ProjectionEvent(getSource(), proj));
+
+        ProjectionEvent event = new ProjectionEvent(getSource(), proj);
+
+        if (pcNotifier != null) {
+            pcNotifier.fireProjectionEvent(event);
+        } else {
+            for (ProjectionListener listener : this) {
+                listener.projectionChanged(event);
+            }
+        }
     }
 
+    /**
+     * Call when getting rid of the ProjectionSupport, it kills the
+     * ProjectionSupport thread. // <-- CJS
+     */
     public void dispose() {
-        super.removeAll();
-        pcNotifier.setTerminated(true);
-        pcNotifier.interrupt();
-        pcNotifier = null;
+        super.clear();
+        if (pcNotifier != null) {
+            pcNotifier.setTerminated(true);
+            pcNotifier.fireProjectionEvent(null);
+            pcNotifier.interrupt();
+            pcNotifier = null;
+        }
     }
 
     /**
@@ -114,7 +113,7 @@ public class ProjectionSupport extends ListenerSupport {
         protected boolean terminated = false;
 
         public ProjectionChangeNotifier() {
-            setName("ProjectionSupportThread");
+            setName("ProjectionSupportThread " + getName());
         }
 
         public boolean isTerminated() {
@@ -147,14 +146,15 @@ public class ProjectionSupport extends ListenerSupport {
                     }
                 }
 
-                if (projEvent != null && listeners != null) {
-                    for (Object o : (Vector) listeners.clone()) {
+                if (projEvent != null && size() > 0) {
+                    Iterator<ProjectionListener> it = iterator();
+                    while (it.hasNext()) {
                         if (nextEvent != null) {
                             break; // new event has been posted, bail out
                         }
-                        if (o instanceof ProjectionListener) {
-                            ((ProjectionListener) o).projectionChanged(projEvent);
-                        }
+
+                        ProjectionListener listener = it.next();
+                        listener.projectionChanged(projEvent);
                     }
                     // notification is complete
                     synchronized (lock) {
@@ -171,6 +171,7 @@ public class ProjectionSupport extends ListenerSupport {
                     }
                 }
             }
+            System.out.println("PCN done running");
         }
     }
 

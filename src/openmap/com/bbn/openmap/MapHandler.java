@@ -330,6 +330,7 @@ public class MapHandler extends BeanContextServicesSupport {
             Object obj = kids.next();
             remove(obj);
         }
+        
     }
 
 }

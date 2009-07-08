@@ -45,7 +45,7 @@ public class FileMenu extends AbstractOpenMapMenu {
     public FileMenu() {
         super();
         setText(defaultText);
-        setMnemonic(defaultMnemonic);
+//        setMnemonic(defaultMnemonic);
 
         add(new AboutMenuItem());
 

@@ -22,7 +22,6 @@
 
 package com.bbn.openmap.event;
 
-import java.util.Iterator;
 
 /**
  * This is a utility class that can be used by beans that need support
@@ -30,7 +29,7 @@ import java.util.Iterator;
  * instance of this class as a member field of your bean and delegate
  * work to it.
  */
-public class PanSupport extends ListenerSupport {
+public class PanSupport extends ListenerSupport<PanListener> {
 
     /**
      * Construct a PanSupport.
@@ -40,24 +39,6 @@ public class PanSupport extends ListenerSupport {
      */
     public PanSupport(Object sourceBean) {
         super(sourceBean);
-    }
-
-    /**
-     * Add a PanListener to the listener list.
-     * 
-     * @param listener The PanListener to be added
-     */
-    public void addPanListener(PanListener listener) {
-        addListener(listener);
-    }
-
-    /**
-     * Remove a PanListener from the listener list.
-     * 
-     * @param listener The PanListener to be removed
-     */
-    public void removePanListener(PanListener listener) {
-        removeListener(listener);
     }
 
     /**
@@ -102,15 +83,14 @@ public class PanSupport extends ListenerSupport {
      * @param c arc distance in decimal degrees.
      */
     public synchronized void firePan(float az, float c) {
-        Iterator it = iterator();
 
         if (size() == 0)
             return;
 
         PanEvent evt = new PanEvent(source, az, c);
 
-        while (it.hasNext()) {
-            ((PanListener) it.next()).pan(evt);
+        for (PanListener listener : this) {
+            listener.pan(evt);
         }
     }
 }

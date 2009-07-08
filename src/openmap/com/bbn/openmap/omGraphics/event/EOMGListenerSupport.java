@@ -26,15 +26,13 @@ import com.bbn.openmap.event.ListenerSupport;
 import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.util.Debug;
 
-import java.util.Iterator;
-
 /**
  * This is a utility class that can be used by beans that need support
  * for handling EOMGListeners and calling the EOMGListener method. You
  * can use an instance of this class as a member field of your bean
  * and delegate work to it.
  */
-public class EOMGListenerSupport extends ListenerSupport {
+public class EOMGListenerSupport extends ListenerSupport<EOMGListener> {
 
     /**
      * Construct a EOMGListenerSupport.
@@ -71,36 +69,16 @@ public class EOMGListenerSupport extends ListenerSupport {
     }
 
     /**
-     * Add a EOMGListener.
-     * 
-     * @param l EOMGListener
-     */
-    public synchronized void addEOMGListener(EOMGListener l) {
-        addListener(l);
-    }
-
-    /**
-     * Remove a EOMGListener.
-     * 
-     * @param l EOMGListener
-     */
-    public synchronized void removeEOMGListener(EOMGListener l) {
-        removeListener(l);
-    }
-
-    /**
      * Send a eomgChanged event to all registered listeners.
      * 
      * @param event EOMGEvent
      */
     public synchronized void fireEvent(EOMGEvent event) {
-        Iterator it = iterator();
 
         if (size() == 0)
             return;
 
-        while (it.hasNext()) {
-            EOMGListener target = (EOMGListener) it.next();
+        for (EOMGListener target : this) {
             target.eomgChanged(event);
 
             if (Debug.debugging("eomgdetail")) {

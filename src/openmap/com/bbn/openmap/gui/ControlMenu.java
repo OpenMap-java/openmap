@@ -39,7 +39,7 @@ public class ControlMenu extends AbstractOpenMapMenu {
     public ControlMenu() {
         super();
         setText(defaultText);
-        setMnemonic(defaultMnemonic);
+//        setMnemonic(defaultMnemonic);
 
         add(new MouseModeMenu());
         add(new BackgroundColorMenuItem());

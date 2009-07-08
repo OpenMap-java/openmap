@@ -192,7 +192,7 @@ public class ZoomPanel extends OMToolComponent implements ActionListener,
      * @param listener The ZoomListener to be added
      */
     public synchronized void addZoomListener(ZoomListener listener) {
-        zoomDelegate.addZoomListener(listener);
+        zoomDelegate.add(listener);
     }
 
     /**
@@ -201,7 +201,7 @@ public class ZoomPanel extends OMToolComponent implements ActionListener,
      * @param listener The ZoomListener to be removed
      */
     public synchronized void removeZoomListener(ZoomListener listener) {
-        zoomDelegate.removeZoomListener(listener);
+        zoomDelegate.remove(listener);
     }
 
     /**

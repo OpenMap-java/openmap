@@ -45,6 +45,14 @@ public class BufferedMapBean extends MapBean {
 
     protected boolean bufferDirty = true;
     protected java.awt.Image drawingBuffer = null;
+    
+    public BufferedMapBean() {
+        super();
+    }
+    
+    public BufferedMapBean(boolean useThreadedNotification) {
+        super(useThreadedNotification);
+    }
 
     /**
      * Set the layers of the MapBean.

@@ -22,9 +22,9 @@
 
 package com.bbn.openmap.event;
 
-import com.bbn.openmap.util.Debug;
 import java.awt.Graphics;
-import java.util.Iterator;
+
+import com.bbn.openmap.util.Debug;
 
 /**
  * This is a utility class that can be used by beans that need support
@@ -32,7 +32,7 @@ import java.util.Iterator;
  * method. You can use an instance of this class as a member field of
  * your bean and delegate work to it.
  */
-public class PaintListenerSupport extends ListenerSupport {
+public class PaintListenerSupport extends ListenerSupport<PaintListener> {
 
     /**
      * Construct a PaintListenerSupport.
@@ -51,24 +51,6 @@ public class PaintListenerSupport extends ListenerSupport {
     }
 
     /**
-     * Add a PaintListener.
-     * 
-     * @param l PaintListener
-     */
-    public void addPaintListener(PaintListener l) {
-        addListener(l);
-    }
-
-    /**
-     * Remove a PaintListener.
-     * 
-     * @param l PaintListener
-     */
-    public void removePaintListener(PaintListener l) {
-        removeListener(l);
-    }
-
-    /**
      * Send a Paint event to all registered listeners.
      * 
      * @param graphics PaintEvent
@@ -77,10 +59,8 @@ public class PaintListenerSupport extends ListenerSupport {
 
         if (size() == 0)
             return;
-        Iterator it = iterator();
 
-        while (it.hasNext()) {
-            PaintListener target = (PaintListener) it.next();
+        for (PaintListener target : this) {
             if (Debug.debugging("paint")) {
                 Debug.output("PaintListenerSupport.paint(): target is: "
                         + target);

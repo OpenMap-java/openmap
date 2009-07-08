@@ -517,7 +517,7 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements
          * @param parent the parent layer of this MapBean.
          */
         public BLMapBean(Layer parent) {
-            super();
+            super(false);
             background = OMColor.clear;
             layer = parent;
         }

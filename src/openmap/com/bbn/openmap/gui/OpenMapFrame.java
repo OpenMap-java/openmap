@@ -321,7 +321,11 @@ public class OpenMapFrame extends JFrame implements
 
     /** Method for BeanContextChild interface. */
     public BeanContext getBeanContext() {
-        return beanContextChildSupport.getBeanContext();
+        if (beanContextChildSupport != null) {
+            return beanContextChildSupport.getBeanContext();
+        }
+        
+        return null;
     }
 
     /**
@@ -505,7 +509,13 @@ public class OpenMapFrame extends JFrame implements
             mh.dispose();
         }
 
+        beanContextChildSupport = null;
+
         getContentPane().removeAll();
+        JMenuBar jmb = getJMenuBar();
+        if (jmb != null) {
+            jmb.removeAll();
+        }
         setJMenuBar(null);
         getRootPane().remove(this);
         super.dispose();

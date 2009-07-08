@@ -120,7 +120,7 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
         super();
         this.menuType = menuType;
         setText(menuName);
-        setMnemonic('L');// HMMMM
+//        setMnemonic('L');// HMMMM
 
         layerHandler = lHandler;
 

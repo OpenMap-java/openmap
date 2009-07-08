@@ -572,21 +572,21 @@ public class LOSGenerator implements TerrainTool {
      * Add a ProgressListener that will display build progress.
      */
     public void addProgressListener(ProgressListener list) {
-        progressSupport.addProgressListener(list);
+        progressSupport.add(list);
     }
 
     /**
      * Remove a ProgressListener that displayed build progress.
      */
     public void removeProgressListener(ProgressListener list) {
-        progressSupport.removeProgressListener(list);
+        progressSupport.remove(list);
     }
 
     /**
      * Clear all progress listeners.
      */
     public void clearProgressListeners() {
-        progressSupport.removeAll();
+        progressSupport.clear();
     }
 
     /**

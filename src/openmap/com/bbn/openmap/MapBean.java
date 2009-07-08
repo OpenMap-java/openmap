@@ -232,6 +232,10 @@ public class MapBean extends JComponent implements ComponentListener,
      * Construct a MapBean.
      */
     public MapBean() {
+        this(true);
+    }
+    
+    public MapBean(boolean useThreadedNotification) {
         if (Debug.debugging("mapbean")) {
             debugmsg("MapBean()");
         }
@@ -245,7 +249,7 @@ public class MapBean extends JComponent implements ComponentListener,
         suppressCopyright = true;
 
         super.setLayout(new OverlayLayout(this));
-        projectionSupport = new ProjectionSupport(this);
+        projectionSupport = new ProjectionSupport(this, useThreadedNotification);
         addComponentListener(this);
         addContainerListener(this);
 
@@ -290,7 +294,7 @@ public class MapBean extends JComponent implements ComponentListener,
         }
 
         if (painters != null) {
-            painters.removeAll();
+            painters.clear();
             painters = null;
         }
 
@@ -301,7 +305,7 @@ public class MapBean extends JComponent implements ComponentListener,
 
         currentLayers = null;
         projectionFactory = null;
-        
+
         removeComponentListener(this);
         removeContainerListener(this);
         removeAll();
@@ -428,7 +432,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * @param l ProjectionListener
      */
     public synchronized void addProjectionListener(ProjectionListener l) {
-        projectionSupport.addProjectionListener(l);
+        projectionSupport.add(l);
         // Assume that it wants the current projection
         l.projectionChanged(new ProjectionEvent(this, getProjection()));
     }
@@ -443,7 +447,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * @param l ProjectionListener
      */
     public synchronized void removeProjectionListener(ProjectionListener l) {
-        projectionSupport.removeProjectionListener(l);
+        projectionSupport.remove(l);
     }
 
     /**
@@ -451,6 +455,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * about a projection change.
      */
     protected void fireProjectionChanged() {
+        
         // Fire the property change, so the messages get cleared out.
         // Then, if any of the layers have a problem with their new
         // projection, their messages will be displayed.
@@ -968,7 +973,7 @@ public class MapBean extends JComponent implements ComponentListener,
         if (painters == null) {
             painters = new PaintListenerSupport(this);
         }
-        painters.addPaintListener(l);
+        painters.add(l);
     }
 
     /**
@@ -980,7 +985,7 @@ public class MapBean extends JComponent implements ComponentListener,
         if (painters == null) {
             return;
         }
-        painters.removePaintListener(l);
+        painters.remove(l);
 
         // Should we get rid of the support if there are no painters?
         // The support will get created when a listener is added.
@@ -1219,7 +1224,7 @@ public class MapBean extends JComponent implements ComponentListener,
         if (projectionFactory == null) {
             projectionFactory = ProjectionFactory.loadDefaultProjections();
         }
-        
+
         return projectionFactory;
     }
 

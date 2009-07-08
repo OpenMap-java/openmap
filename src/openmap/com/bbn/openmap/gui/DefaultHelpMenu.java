@@ -42,7 +42,7 @@ public class DefaultHelpMenu extends AbstractOpenMapMenu implements HelpMenu {
 
     public DefaultHelpMenu() {
         setText(defaultText);
-        setMnemonic(defaultMnemonic);
+//        setMnemonic(defaultMnemonic);
     }
 
     public DefaultHelpMenu(String in_text) {

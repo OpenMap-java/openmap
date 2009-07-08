@@ -709,7 +709,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
         if (listeners == null) {
             listeners = new EOMGListenerSupport(this);
         }
-        listeners.addEOMGListener(l);
+        listeners.add(l);
     }
 
     /**
@@ -721,7 +721,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
         if (listeners == null) {
             return;
         }
-        listeners.removeEOMGListener(l);
+        listeners.remove(l);
     }
 
     /**

@@ -25,7 +25,6 @@ package com.bbn.openmap.event;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.Iterator;
 
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.proj.ProjectionStack;
@@ -51,12 +50,12 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener implements
 
     protected PanSupport panners;
     protected ZoomSupport zoomers;
-    protected ListenerSupport projListeners;
+    protected ListenerSupport<ActionListener> projListeners;
 
     public ProjMapBeanKeyListener() {
         panners = new PanSupport(this);
         zoomers = new ZoomSupport(this);
-        projListeners = new ListenerSupport(this);
+        projListeners = new ListenerSupport<ActionListener>(this);
     }
 
     public void keyReleased(KeyEvent e) {
@@ -114,15 +113,15 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener implements
      */
     public void setMapBean(MapBean map) {
         if (mapBean != null) {
-            panners.removePanListener(map);
-            zoomers.removeZoomListener(map);
+            panners.remove(map);
+            zoomers.remove(map);
         }
 
         super.setMapBean(map);
 
         if (mapBean != null) {
-            panners.addPanListener(map);
-            zoomers.addZoomListener(map);
+            panners.add(map);
+            zoomers.add(map);
         }
     }
 
@@ -135,9 +134,8 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener implements
         }
 
         ActionEvent event = new ActionEvent(this, 0, command);
-        Iterator it = projListeners.iterator();
-        while (it.hasNext()) {
-            ((ActionListener) it.next()).actionPerformed(event);
+        for (ActionListener listener : projListeners) {
+            listener.actionPerformed(event);
         }
 
     }
@@ -147,7 +145,7 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener implements
      * the Projection stack.
      */
     public void addActionListener(ActionListener al) {
-        projListeners.addListener(al);
+        projListeners.add(al);
     }
 
     /**
@@ -155,7 +153,7 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener implements
      * events to shift the Projection stack.
      */
     public void removeActionListener(ActionListener al) {
-        projListeners.removeListener(al);
+        projListeners.remove(al);
     }
 
     /**

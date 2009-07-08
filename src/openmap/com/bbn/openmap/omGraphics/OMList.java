@@ -164,7 +164,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
 
             for (OMGeometry omg : graphics) {
                 String description = "";
-                if (omg instanceof OMList) {
+                if (omg instanceof OMList<?>) {
                     description = ((OMList<? extends OMGeometry>) omg).getDescription(level + 1);
                 } else {
                     description = levelHeader + omg.getDescription();
@@ -256,7 +256,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
                 for (T omg : graphics) {
 
                     if (o == omg
-                            || (omg instanceof OMList && ((OMList<? extends OMGeometry>) omg).contains(o))) {
+                            || (omg instanceof OMList<?> && ((OMList<? extends OMGeometry>) omg).contains(o))) {
 
                         ret = true;
                         break;
@@ -372,7 +372,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
 
             if (!found && !isVague()) {
                 for (OMGeometry graphic : graphics) {
-                    if (graphic instanceof OMList) {
+                    if (graphic instanceof OMList<?>) {
                         found = ((OMList<? extends OMGeometry>) graphic).remove(geometry);
                     }
                 }
@@ -854,7 +854,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
             return current;
         }
 
-        if (graphic instanceof OMList) {
+        if (graphic instanceof OMList<?>) {
             omgl = (OMList<T>) graphic;
             OMDist<T> dist = (OMDist<T>) omgl.findClosest(x,
                     y,
@@ -1001,7 +1001,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
                                   boolean resetSelect, OMList<T> addTo,
                                   OMGeometry geometry, OMDist<T> omd) {
 
-        if (geometry instanceof OMList) {
+        if (geometry instanceof OMList<?>) {
             int oldSize = addTo.size();
             ((OMList<T>) geometry).findAll(x, y, limit, resetSelect, addTo);
             int newSize = addTo.size();
@@ -1260,7 +1260,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
                         if (!shouldProcess(graphic))
                             continue;
 
-                        if (graphic instanceof OMList) {
+                        if (graphic instanceof OMList<?>) {
                             OMList<? extends OMGeometry> tomgl = (OMList<? extends OMGeometry>) graphic;
                             ret = (T) tomgl.getContains(x, y);
                             if (ret != null) {
@@ -1283,7 +1283,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
                         if (!shouldProcess(graphic))
                             continue;
 
-                        if (graphic instanceof OMList) {
+                        if (graphic instanceof OMList<?>) {
                             OMList<? extends OMGeometry> tomgl = (OMList<? extends OMGeometry>) graphic;
                             ret = (T) tomgl.getContains(x, y);
                             if (ret != null) {
@@ -1493,7 +1493,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
             synchronized (graphics) {
                 for (OMGeometry omg : graphics) {
                     if (g == omg
-                            || (omg instanceof OMList && ((OMList<? extends OMGeometry>) omg).contains(g))) {
+                            || (omg instanceof OMList<?> && ((OMList<? extends OMGeometry>) omg).contains(g))) {
 
                         return true;
                     }

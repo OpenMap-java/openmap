@@ -22,7 +22,6 @@
 
 package com.bbn.openmap.event;
 
-import java.util.Iterator;
 
 /**
  * This is a utility class that can be used by beans that need support
@@ -30,7 +29,7 @@ import java.util.Iterator;
  * instance of this class as a member field of your bean and delegate
  * work to it.
  */
-public class ZoomSupport extends ListenerSupport {
+public class ZoomSupport extends ListenerSupport<ZoomListener> {
 
     /**
      * Construct a ZoomSupport.
@@ -40,24 +39,6 @@ public class ZoomSupport extends ListenerSupport {
      */
     public ZoomSupport(Object sourceBean) {
         super(sourceBean);
-    }
-
-    /**
-     * Add a ZoomListener to the listener list.
-     * 
-     * @param listener The ZoomListener to be added
-     */
-    public synchronized void addZoomListener(ZoomListener listener) {
-        addListener(listener);
-    }
-
-    /**
-     * Remove a ZoomListener from the listener list.
-     * 
-     * @param listener The ZoomListener to be removed
-     */
-    public synchronized void removeZoomListener(ZoomListener listener) {
-        removeListener(listener);
     }
 
     /**
@@ -78,10 +59,9 @@ public class ZoomSupport extends ListenerSupport {
             return;
 
         ZoomEvent evt = new ZoomEvent(source, zoomType, amount);
-        Iterator it = iterator();
 
-        while (it.hasNext()) {
-            ((ZoomListener) it.next()).zoom(evt);
+        for (ZoomListener listener : this) {
+            listener.zoom(evt);
         }
     }
 

@@ -64,7 +64,7 @@ import com.bbn.openmap.util.Debug;
  * a consistent feel across the application). The default setting for this
  * variable is to use the Frm type.
  */
-public class WindowSupport extends ListenerSupport implements
+public class WindowSupport extends ListenerSupport<ComponentListener> implements
         ComponentListener, ActionListener {
 
     protected Component content;
@@ -543,7 +543,7 @@ public class WindowSupport extends ListenerSupport implements
      * to the window.
      */
     public void addComponentListener(ComponentListener l) {
-        addListener(l);
+        add(l);
     }
 
     /**
@@ -551,7 +551,7 @@ public class WindowSupport extends ListenerSupport implements
      * happens to the window.
      */
     public void removeComponentListener(ComponentListener l) {
-        removeListener(l);
+        remove(l);
     }
 
     /**

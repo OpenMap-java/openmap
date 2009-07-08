@@ -336,7 +336,7 @@ public class AbstractMouseMode extends OMComponent implements MapMouseMode,
      * @param l the MapMouseListener to add.
      */
     public void addMapMouseListener(MapMouseListener l) {
-        mouseSupport.addMapMouseListener(l);
+        mouseSupport.add(l);
     }
 
     /**
@@ -345,14 +345,14 @@ public class AbstractMouseMode extends OMComponent implements MapMouseMode,
      * @param l the MapMouseListener to remove.
      */
     public void removeMapMouseListener(MapMouseListener l) {
-        mouseSupport.removeMapMouseListener(l);
+        mouseSupport.remove(l);
     }
 
     /**
      * Remove all MapMouseListeners from the mode.
      */
     public void removeAllMapMouseListeners() {
-        mouseSupport.removeAllMapMouseListeners();
+        mouseSupport.clear();
     }
 
     /**

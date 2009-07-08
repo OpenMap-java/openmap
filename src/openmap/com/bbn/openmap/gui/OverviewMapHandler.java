@@ -38,7 +38,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -54,11 +53,11 @@ import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.DefaultOverviewMouseMode;
 import com.bbn.openmap.event.LayerEvent;
+import com.bbn.openmap.event.ListenerSupport;
 import com.bbn.openmap.event.MapMouseMode;
 import com.bbn.openmap.event.OverviewMapStatusListener;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.event.ProjectionListener;
-import com.bbn.openmap.event.ProjectionSupport;
 import com.bbn.openmap.layer.OverviewMapAreaLayer;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Mercator;
@@ -195,7 +194,7 @@ public class OverviewMapHandler extends OMToolComponent implements
      * The support to send the source MapBean setCenter and setScale commands if
      * a controlled map is added - usually the source map bean.
      */
-    protected transient ControlledMapSupport listener;
+    protected transient ControlledMapSupport controlledMaps;
     /** The mouse mode to use for the overview map. */
     protected MapMouseMode mmm;
     /**
@@ -330,9 +329,7 @@ public class OverviewMapHandler extends OMToolComponent implements
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        Vector overviewLayers;
-
-        overviewLayers = PropUtils.parseSpacedMarkers(props.getProperty(prefix
+        Vector<String> overviewLayers = PropUtils.parseSpacedMarkers(props.getProperty(prefix
                 + OverviewMapHandlerLayerProperty));
 
         if (overviewLayers.size() == 0) {
@@ -724,14 +721,14 @@ public class OverviewMapHandler extends OMToolComponent implements
      */
     public void addControlledMap(MapBean l) {
         if (l != null) {
-            if (listener == null) {
-                listener = new ControlledMapSupport(map);
+            if (controlledMaps == null) {
+                controlledMaps = new ControlledMapSupport(map);
                 // If nobody has been listening don't draw anything.
                 // Since someone is now being controlled, we'll do the
                 // drawing.
                 activateMouseMode();
             }
-            listener.addProjectionListener(l);
+            controlledMaps.add(l);
         }
     }
 
@@ -741,10 +738,10 @@ public class OverviewMapHandler extends OMToolComponent implements
      * @param l a MapBean.
      */
     public void removeControlledMap(MapBean l) {
-        if (listener != null) {
-            listener.removeProjectionListener(l);
+        if (controlledMaps != null) {
+            controlledMaps.remove(l);
 
-            if (listener.size() == 0) {
+            if (controlledMaps.size() == 0) {
                 deactivateMouseMode();
             }
         }
@@ -776,14 +773,14 @@ public class OverviewMapHandler extends OMToolComponent implements
      * Get the ControlledMapSupport, which usually contains the source map.
      */
     public ControlledMapSupport getControlledMapListeners() {
-        return listener;
+        return controlledMaps;
     }
 
     /**
      * Set the ControlledMapSupport, which usually contains the source map.
      */
     public void setControlledMapListeners(ControlledMapSupport list) {
-        listener = list;
+        controlledMaps = list;
     }
 
     /**
@@ -878,7 +875,7 @@ public class OverviewMapHandler extends OMToolComponent implements
             float radius = uom.toRadians(width) / 2;
 
             Point2D center = p.getCenter();
-            Point2D left =  new Point2D.Double(center.getX(), center.getY());
+            Point2D left = new Point2D.Double(center.getX(), center.getY());
             Point2D right = new Point2D.Double(center.getX(), center.getY());
 
             double newLeftX = projUom.fromRadians(projUom.toRadians(left.getX())
@@ -1001,7 +998,7 @@ public class OverviewMapHandler extends OMToolComponent implements
                 setSourceMap(null);
             }
         }
-        
+
         if (someObj.equals(this)) {
             dispose();
         }
@@ -1011,14 +1008,7 @@ public class OverviewMapHandler extends OMToolComponent implements
      * Support for directing the setCenter and setScale calls to any MapBeans
      * that care to be listening.
      */
-    public class ControlledMapSupport extends ProjectionSupport {
-
-        /**
-         * Construct a ControlledMapSupport.
-         */
-        public ControlledMapSupport() {
-            super();
-        }
+    public class ControlledMapSupport extends ListenerSupport<MapBean> {
 
         /**
          * Construct a ControlledMapSupport.
@@ -1032,11 +1022,11 @@ public class OverviewMapHandler extends OMToolComponent implements
         /**
          * Set the center coordinates on all registered listeners.
          * 
-         * @param llp the new centerpoint
+         * @param llp the new center point
          */
         public void setCenter(Point2D llp) {
-            for (Iterator it = iterator(); it.hasNext();) {
-                ((MapBean) it.next()).setCenter(llp);
+            for (MapBean mapBean : this) {
+                mapBean.setCenter(llp);
             }
         }
 
@@ -1046,8 +1036,8 @@ public class OverviewMapHandler extends OMToolComponent implements
          * @param scale the new scale
          */
         public void setScale(float scale) {
-            for (Iterator it = iterator(); it.hasNext();) {
-                ((MapBean) it.next()).setScale(scale);
+            for (MapBean mapBean : this) {
+                mapBean.setScale(scale);
             }
         }
     }
@@ -1062,9 +1052,9 @@ public class OverviewMapHandler extends OMToolComponent implements
             map.setBckgrnd((Paint) pce.getNewValue());
         }
     }
-    
+
     public void dispose() {
-        listener.dispose();
+        controlledMaps.clear();
         map.dispose();
     }
 }

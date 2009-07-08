@@ -178,7 +178,7 @@ public class CoordPanel extends JPanel implements Serializable {
      * @param listener The CenterListener to be added
      */
     public void addCenterListener(CenterListener listener) {
-        centerDelegate.addCenterListener(listener);
+        centerDelegate.add(listener);
     }
 
     /**
@@ -187,6 +187,6 @@ public class CoordPanel extends JPanel implements Serializable {
      * @param listener The CenterListener to be removed
      */
     public void removeCenterListener(CenterListener listener) {
-        centerDelegate.removeCenterListener(listener);
+        centerDelegate.remove(listener);
     }
 }

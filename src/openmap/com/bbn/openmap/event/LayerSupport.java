@@ -22,49 +22,28 @@
 
 package com.bbn.openmap.event;
 
-import java.util.Iterator;
 import java.util.Vector;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.util.Debug;
 
 /**
- * This is a utility class that can be used by beans that need support
- * for handling LayerListeners and firing LayerEvents. You can use an
- * instance of this class as a member field of your bean and delegate
- * work to it.
+ * This is a utility class that can be used by beans that need support for
+ * handling LayerListeners and firing LayerEvents. You can use an instance of
+ * this class as a member field of your bean and delegate work to it.
  */
-public class LayerSupport extends ListenerSupport {
+public class LayerSupport extends ListenerSupport<LayerListener> {
 
     protected boolean synchronous = true;
 
     /**
      * Construct a LayerSupport.
      * 
-     * @param sourceBean The bean to be given as the source for any
-     *        events.
+     * @param sourceBean The bean to be given as the source for any events.
      */
     public LayerSupport(Object sourceBean) {
         super(sourceBean);
         Debug.message("layersupport", "LayerSupport | LayerSupport");
-    }
-
-    /**
-     * Add a LayerListener to the listener list.
-     * 
-     * @param listener The LayerListener to be added
-     */
-    public synchronized void addLayerListener(LayerListener listener) {
-        addListener(listener);
-    }
-
-    /**
-     * Remove a LayerListener from the listener list.
-     * 
-     * @param listener The LayerListener to be removed
-     */
-    public synchronized void removeLayerListener(LayerListener listener) {
-        removeListener(listener);
     }
 
     /**
@@ -77,7 +56,6 @@ public class LayerSupport extends ListenerSupport {
     public void fireLayer(int type, Layer[] layers) {
         Debug.message("layersupport", "LayerSupport | fireLayer");
 
-        Iterator<?> it = iterator();
         if (Debug.debugging("layersupport")) {
             Debug.output("LayerSupport calling setLayers on " + size()
                     + " objects");
@@ -87,8 +65,8 @@ public class LayerSupport extends ListenerSupport {
             return;
 
         LayerEvent evt = new LayerEvent(source, type, layers);
-        while (it.hasNext()) {
-            ((LayerListener) it.next()).setLayers(evt);
+        for (LayerListener listener : this) {
+            listener.setLayers(evt);
         }
     }
     /**
@@ -101,11 +79,10 @@ public class LayerSupport extends ListenerSupport {
     protected Vector<SetLayerRunnable> events = new Vector<SetLayerRunnable>();
 
     /**
-     * Pushed the information onto a Vector stack to get executed by a
-     * separate thread. Any thread launched is held on to, and if that
-     * thread is is null or not active, a new thread is kicked off.
-     * The dying thread checks the Vector stack and fires another
-     * event if it can.
+     * Pushed the information onto a Vector stack to get executed by a separate
+     * thread. Any thread launched is held on to, and if that thread is is null
+     * or not active, a new thread is kicked off. The dying thread checks the
+     * Vector stack and fires another event if it can.
      * 
      * @param layerEventType
      * @param layers
@@ -129,8 +106,8 @@ public class LayerSupport extends ListenerSupport {
     }
 
     /**
-     * Return the first event on the stack, may be null if there is
-     * nothing to do.
+     * Return the first event on the stack, may be null if there is nothing to
+     * do.
      */
     public synchronized SetLayerRunnable popLayerEvent() {
         try {
@@ -141,8 +118,8 @@ public class LayerSupport extends ListenerSupport {
     }
 
     /**
-     * A reusable Runnable used by a thread to notify listeners when
-     * layers are turned on/off or shuffled.
+     * A reusable Runnable used by a thread to notify listeners when layers are
+     * turned on/off or shuffled.
      */
     protected class SetLayerRunnable implements Runnable {
         protected int layerEventType;

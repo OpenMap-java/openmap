@@ -470,12 +470,7 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
         }
     }
 
-    protected static LayerPane backgroundLayerSeparator;
-
     public static LayerPane getBackgroundLayerSeparator(String title) {
-        if (backgroundLayerSeparator == null) {
-            backgroundLayerSeparator = new LayerPane(title);
-        }
-        return backgroundLayerSeparator;
+        return new LayerPane(title);
     }
 }

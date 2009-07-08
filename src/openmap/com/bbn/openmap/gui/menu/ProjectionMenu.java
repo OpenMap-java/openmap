@@ -51,13 +51,11 @@ import com.bbn.openmap.proj.ProjectionLoader;
 public class ProjectionMenu extends AbstractOpenMapMenu implements
         ActionListener, ProjectionListener, PropertyChangeListener {
 
-    public static Logger logger = Logger
-            .getLogger("com.bbn.openmap.gui.menu.ProjectionMenu");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.menu.ProjectionMenu");
 
     public static final String defaultText = "Projection";
 
-    protected transient ProjectionSupport projectionSupport = new ProjectionSupport(
-            this);
+    protected transient ProjectionSupport projectionSupport = new ProjectionSupport(this, false);
     protected transient Projection projection;
     protected transient Component projComponent;
     public final static transient String projCmd = "setProj";
@@ -100,8 +98,8 @@ public class ProjectionMenu extends AbstractOpenMapMenu implements
             String projclassname = rb.getName();
             logger.fine("ProjectionMenu new proj name: " + projclassname);
             try {
-                Projection newProj = getProjectionFactory()
-                        .makeProjection(projclassname, projection);
+                Projection newProj = getProjectionFactory().makeProjection(projclassname,
+                        projection);
                 fireProjectionChanged(newProj);
             } catch (ProjectionException pe) {
                 logger.warning(pe.getMessage());
@@ -124,8 +122,7 @@ public class ProjectionMenu extends AbstractOpenMapMenu implements
      * The Map projection has changed, in order to baseline new changes as a
      * result of menu options being selected.
      * 
-     * @param e
-     *            ProjectionEvent
+     * @param e ProjectionEvent
      */
     public void projectionChanged(ProjectionEvent e) {
 
@@ -149,8 +146,7 @@ public class ProjectionMenu extends AbstractOpenMapMenu implements
      * Set the projection. This changes the setting of the projection radio
      * button menu.
      * 
-     * @param aProjection
-     *            Projection
+     * @param aProjection Projection
      */
     protected synchronized void setProjection(Projection aProjection) {
         projection = aProjection;
@@ -199,14 +195,14 @@ public class ProjectionMenu extends AbstractOpenMapMenu implements
      * Add a ProjectionListener to this menu and its components.
      */
     protected synchronized void addProjectionListener(ProjectionListener l) {
-        projectionSupport.addProjectionListener(l);
+        projectionSupport.add(l);
     }
 
     /**
      * Remove a ProjectionListener from this menu and its components.
      */
     protected synchronized void removeProjectionListener(ProjectionListener l) {
-        projectionSupport.removeProjectionListener(l);
+        projectionSupport.remove(l);
     }
 
     /**

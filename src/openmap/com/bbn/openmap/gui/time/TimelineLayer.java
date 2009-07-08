@@ -161,7 +161,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             setTimeBounds(clock.getStartTime(), clock.getEndTime());
         }
         if (someObj instanceof CenterListener) {
-            centerDelegate.addCenterListener((CenterListener) someObj);
+            centerDelegate.add((CenterListener) someObj);
         }
         if (someObj instanceof EventPresenter) {
             eventPresenter = (EventPresenter) someObj;
@@ -187,7 +187,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             clock.removeTimeBoundsListener(this);
         }
         if (someObj instanceof CenterListener) {
-            centerDelegate.removeCenterListener((CenterListener) someObj);
+            centerDelegate.remove((CenterListener) someObj);
         }
         if (someObj == eventPresenter) {
             eventPresenter.removePropertyChangeListener(this);

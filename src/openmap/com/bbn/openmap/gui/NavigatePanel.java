@@ -208,7 +208,7 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
      * @param listener CenterListener
      */
     public synchronized void addCenterListener(CenterListener listener) {
-        centerDelegate.addCenterListener(listener);
+        centerDelegate.add(listener);
     }
 
     /**
@@ -217,7 +217,7 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
      * @param listener CenterListener
      */
     public synchronized void removeCenterListener(CenterListener listener) {
-        centerDelegate.removeCenterListener(listener);
+        centerDelegate.remove(listener);
     }
 
     /**
@@ -226,7 +226,7 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
      * @param listener PanListener
      */
     public synchronized void addPanListener(PanListener listener) {
-        panDelegate.addPanListener(listener);
+        panDelegate.add(listener);
     }
 
     /**
@@ -235,7 +235,7 @@ public class NavigatePanel extends OMToolComponent implements Serializable,
      * @param listener PanListener
      */
     public synchronized void removePanListener(PanListener listener) {
-        panDelegate.removePanListener(listener);
+        panDelegate.remove(listener);
     }
 
     /**

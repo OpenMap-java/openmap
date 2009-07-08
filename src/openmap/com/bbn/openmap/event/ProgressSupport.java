@@ -23,7 +23,6 @@
 package com.bbn.openmap.event;
 
 import com.bbn.openmap.util.Debug;
-import java.util.Iterator;
 
 /**
  * This is a utility class that can be used by beans that need support
@@ -31,7 +30,7 @@ import java.util.Iterator;
  * use an instance of this class as a member field of your bean and
  * delegate work to it.
  */
-public class ProgressSupport extends ListenerSupport {
+public class ProgressSupport extends ListenerSupport<ProgressListener> {
 
     /**
      * Construct a ProgressSupport.
@@ -42,24 +41,6 @@ public class ProgressSupport extends ListenerSupport {
     public ProgressSupport(Object sourceBean) {
         super(sourceBean);
         Debug.message("progresssupport", "ProgressSupport | ProgressSupport");
-    }
-
-    /**
-     * Add a ProgressListener to the listener list.
-     * 
-     * @param listener The ProgressListener to be added
-     */
-    public void addProgressListener(ProgressListener listener) {
-        addListener(listener);
-    }
-
-    /**
-     * Remove a ProgressListener from the listener list.
-     * 
-     * @param listener The ProgressListener to be removed
-     */
-    public void removeProgressListener(ProgressListener listener) {
-        removeListener(listener);
     }
 
     /**
@@ -85,9 +66,8 @@ public class ProgressSupport extends ListenerSupport {
 
         ProgressEvent evt = new ProgressEvent(source, type, taskname, finishedValue, currentValue);
 
-        Iterator it = iterator();
-        while (it.hasNext()) {
-            ((ProgressListener) it.next()).updateProgress(evt);
+        for (ProgressListener listener : this) {
+            listener.updateProgress(evt);
         }
     }
 }

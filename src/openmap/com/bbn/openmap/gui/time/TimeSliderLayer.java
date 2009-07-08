@@ -159,10 +159,10 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
             gameEndTime = ((Clock) someObj).getEndTime();
         }
         if (someObj instanceof CenterListener) {
-            centerDelegate.addCenterListener((CenterListener) someObj);
+            centerDelegate.add((CenterListener) someObj);
         }
         if (someObj instanceof ZoomListener) {
-            zoomDelegate.addZoomListener((ZoomListener) someObj);
+            zoomDelegate.add((ZoomListener) someObj);
         }
         if (someObj instanceof TimelinePanel.Wrapper) {
             timelinePanel = ((TimelinePanel.Wrapper) someObj).getTimelinePanel();

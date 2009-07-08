@@ -193,12 +193,12 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * The listeners to the Layer that respond to requests for information
      * displays, like messages, requests for URL displays, etc.
      */
-    protected ListenerSupport IDListeners = null;
+    protected ListenerSupport<InfoDisplayListener> IDListeners = null;
 
     /**
      * List of LayerStatusListeners.
      */
-    protected ListenerSupport lsListeners = null;
+    protected ListenerSupport<LayerStatusListener> lsListeners = null;
 
     /**
      * Token uniquely identifying this layer in the application properties.
@@ -713,9 +713,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     public synchronized void addInfoDisplayListener(
                                                     InfoDisplayListener aInfoDisplayListener) {
         if (IDListeners == null) {
-            IDListeners = new ListenerSupport(this);
+            IDListeners = new ListenerSupport<InfoDisplayListener>(this);
         }
-        IDListeners.addListener(aInfoDisplayListener);
+        IDListeners.add(aInfoDisplayListener);
     }
 
     /**
@@ -727,7 +727,7 @@ public abstract class Layer extends JComponent implements ProjectionListener,
                                                        InfoDisplayListener aInfoDisplayListener) {
 
         if (IDListeners != null) {
-            IDListeners.removeListener(aInfoDisplayListener);
+            IDListeners.remove(aInfoDisplayListener);
         }
     }
 
@@ -739,8 +739,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      */
     public void fireRequestInfoLine(InfoDisplayEvent evt) {
         if (IDListeners != null) {
-            for (Iterator it = IDListeners.iterator(); it.hasNext();) {
-                ((InfoDisplayListener) it.next()).requestInfoLine(evt);
+            for (InfoDisplayListener listener : IDListeners) {
+                listener.requestInfoLine(evt);
             }
         } else if (Debug.debugging("layer")) {
             Debug.output(getName()
@@ -780,8 +780,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      */
     public void fireRequestBrowserContent(InfoDisplayEvent evt) {
         if (IDListeners != null) {
-            for (Iterator it = IDListeners.iterator(); it.hasNext();) {
-                ((InfoDisplayListener) it.next()).requestBrowserContent(evt);
+            for (InfoDisplayListener listener : IDListeners) {
+                listener.requestBrowserContent(evt);
             }
         } else if (Debug.debugging("layer")) {
             Debug.output(getName()
@@ -809,8 +809,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      */
     public void fireRequestURL(InfoDisplayEvent evt) {
         if (IDListeners != null) {
-            for (Iterator it = IDListeners.iterator(); it.hasNext();) {
-                ((InfoDisplayListener) it.next()).requestURL(evt);
+            for (InfoDisplayListener listener : IDListeners) {
+                listener.requestURL(evt);
             }
         } else if (Debug.debugging("layer")) {
             Debug.output(getName()
@@ -837,8 +837,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      */
     public void fireRequestCursor(java.awt.Cursor cursor) {
         if (IDListeners != null) {
-            for (Iterator it = IDListeners.iterator(); it.hasNext();) {
-                ((InfoDisplayListener) it.next()).requestCursor(cursor);
+            for (InfoDisplayListener listener : IDListeners) {
+                listener.requestCursor(cursor);
             }
         } else if (Debug.debugging("layer")) {
             Debug.output(getName()
@@ -855,8 +855,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      */
     public void fireRequestMessage(InfoDisplayEvent evt) {
         if (IDListeners != null) {
-            for (Iterator it = IDListeners.iterator(); it.hasNext();) {
-                ((InfoDisplayListener) it.next()).requestMessage(evt);
+            for (InfoDisplayListener listener : IDListeners) {
+                listener.requestMessage(evt);
             }
         } else if (Debug.debugging("layer")) {
             Debug.output(getName()
@@ -897,11 +897,11 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      */
     public void fireRequestToolTip(InfoDisplayEvent event) {
         if (IDListeners != null) {
-            for (Iterator it = IDListeners.iterator(); it.hasNext();) {
+            for (InfoDisplayListener listener : IDListeners) {
                 if (event != null) {
-                    ((InfoDisplayListener) it.next()).requestShowToolTip(event);
+                    listener.requestShowToolTip(event);
                 } else {
-                    ((InfoDisplayListener) it.next()).requestHideToolTip();
+                    listener.requestHideToolTip();
                 }
             }
         } else if (Debug.debugging("layer")) {
@@ -922,9 +922,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
                                                     LayerStatusListener aLayerStatusListener) {
 
         if (lsListeners == null) {
-            lsListeners = new ListenerSupport(this);
+            lsListeners = new ListenerSupport<LayerStatusListener>(this);
         }
-        lsListeners.addListener(aLayerStatusListener);
+        lsListeners.add(aLayerStatusListener);
     }
 
     /**
@@ -934,9 +934,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      */
     public synchronized void removeLayerStatusListener(
                                                        LayerStatusListener aLayerStatusListener) {
-
         if (lsListeners != null) {
-            lsListeners.removeListener(aLayerStatusListener);
+            lsListeners.remove(aLayerStatusListener);
         }
     }
 
@@ -948,8 +947,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     public void fireStatusUpdate(LayerStatusEvent evt) {
         // AWTAvailable conditional removed, not used, not useful.
         if (lsListeners != null) {
-            for (Iterator it = lsListeners.iterator(); it.hasNext();) {
-                ((LayerStatusListener) it.next()).updateLayerStatus(evt);
+            for (LayerStatusListener listener : lsListeners) {
+                listener.updateLayerStatus(evt);
             }
         } else if (Debug.debugging("layer")) {
             Debug.output(getName()
@@ -1061,14 +1060,19 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * everything and to make any calls necessary to remove from listener lists
      * that might not get picked up via MapHandler calls.
      */
-    public void dispose() {}
+    public void dispose() {
+        clearListeners();
+        if (attributes != null) {
+            attributes.clear();
+        }
+    }
 
     /**
      * Part of a layer hack to notify the component listener when the component
      * is hidden. These components don't receive the ComponentHidden
      * notification. Remove when it works.
      */
-    protected ListenerSupport localHackList;
+    protected ListenerSupport<ComponentListener> localHackList;
 
     /**
      * Part of a layer hack to notify the component listener when the component
@@ -1097,9 +1101,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     public void addComponentListener(ComponentListener cl) {
         super.addComponentListener(cl);
         if (localHackList == null) {
-            localHackList = new ListenerSupport(this);
+            localHackList = new ListenerSupport<ComponentListener>(this);
         }
-        localHackList.addListener(cl);
+        localHackList.add(cl);
     }
 
     /**
@@ -1110,7 +1114,7 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     public void removeComponentListener(ComponentListener cl) {
         super.removeComponentListener(cl);
         if (localHackList != null) {
-            localHackList.removeListener(cl);
+            localHackList.remove(cl);
         }
     }
 
@@ -1126,8 +1130,8 @@ public abstract class Layer extends JComponent implements ProjectionListener,
 
         ComponentEvent ce = new ComponentEvent(this, ComponentEvent.COMPONENT_HIDDEN);
 
-        for (Iterator it = localHackList.iterator(); it.hasNext();) {
-            ((ComponentListener) it.next()).componentHidden(ce);
+        for (ComponentListener listener : localHackList) {
+            listener.componentHidden(ce);
         }
     }
 
@@ -1203,7 +1207,7 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * layer to get ahold of another object, then you can use the Iterator to go
      * through the objects to look for the one you need.
      */
-    public void findAndInit(Iterator it) {
+    public void findAndInit(Iterator<?> it) {
         while (it.hasNext()) {
             findAndInit(it.next());
         }
@@ -1235,7 +1239,7 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * from the object used in those methods.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-        Iterator it = bcme.iterator();
+        Iterator<?> it = bcme.iterator();
         while (it.hasNext()) {
             findAndUndo(it.next());
         }
@@ -1272,7 +1276,7 @@ public abstract class Layer extends JComponent implements ProjectionListener,
 
     /**
      * Layer method to just connect to the BeanContext, without grabbing the
-     * interator as in setBeanContext(). Good for protected sub-layers where you
+     * iterator as in setBeanContext(). Good for protected sub-layers where you
      * want to optimize the calling of the findAndInit() method over them.
      */
     public void connectToBeanContext(BeanContext in_bc)
@@ -1283,14 +1287,13 @@ public abstract class Layer extends JComponent implements ProjectionListener,
             beanContextChildSupport.setBeanContext(in_bc);
         }
     }
-    
+
     /**
-     * Layer method to just disconnect from the BeanContext, without grabbing the
-     * interator as in setBeanContext(). Good for protected sub-layers where you
-     * want to optimize the calling of the findAndUndo() method over them.
+     * Layer method to just disconnect from the BeanContext, without grabbing
+     * the interator as in setBeanContext(). Good for protected sub-layers where
+     * you want to optimize the calling of the findAndUndo() method over them.
      */
-    public void disconnectFromBeanContext()
-            throws PropertyVetoException {
+    public void disconnectFromBeanContext() throws PropertyVetoException {
 
         BeanContext bc = getBeanContext();
         if (bc != null) {
@@ -1345,13 +1348,13 @@ public abstract class Layer extends JComponent implements ProjectionListener,
 
     public void clearListeners() {
         if (localHackList != null) {
-            localHackList.removeAll();
+            localHackList.clear();
         }
         if (IDListeners != null) {
-            IDListeners.removeAll();
+            IDListeners.clear();
         }
         if (lsListeners != null) {
-            lsListeners.removeAll();
+            lsListeners.clear();
         }
 
         BeanContext bc = getBeanContext();
@@ -1377,12 +1380,11 @@ public abstract class Layer extends JComponent implements ProjectionListener,
 
         palette = (Container) event.getSource();
         int eventType = event.getID();
-        for (Iterator it = localHackList.iterator(); it.hasNext();) {
-            ComponentListener target = (ComponentListener) it.next();
+        for (ComponentListener listener : localHackList) {
             if (eventType == ComponentEvent.COMPONENT_HIDDEN) {
-                target.componentHidden(event);
+                listener.componentHidden(event);
             } else if (eventType == ComponentEvent.COMPONENT_SHOWN) {
-                target.componentShown(event);
+                listener.componentShown(event);
             }
         }
 

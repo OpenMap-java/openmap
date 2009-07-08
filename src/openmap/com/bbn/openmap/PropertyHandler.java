@@ -1413,21 +1413,21 @@ public class PropertyHandler extends MapHandlerChild implements
      * Add a ProgressListener that will display build progress.
      */
     public void addProgressListener(ProgressListener list) {
-        getProgressSupport().addProgressListener(list);
+        getProgressSupport().add(list);
     }
 
     /**
      * Remove a ProgressListener that displayed build progress.
      */
     public void removeProgressListener(ProgressListener list) {
-        getProgressSupport().removeProgressListener(list);
+        getProgressSupport().remove(list);
     }
 
     /**
      * Clear all progress listeners.
      */
     public void clearProgressListeners() {
-        getProgressSupport().removeAll();
+        getProgressSupport().clear();
     }
 
     /**
@@ -1634,6 +1634,21 @@ public class PropertyHandler extends MapHandlerChild implements
             if (prefix != null) {
                 getPrefixLibrarian().remove(prefix);
             }
+        }
+        if (obj == this) {
+            dispose();
+        }
+    }
+
+    public void dispose() {
+        if (prefixLibrarian != null) {
+            prefixLibrarian.clear();
+        }
+        if (properties != null) {
+            properties.clear();
+        }
+        if (usedPrefixes != null) {
+            usedPrefixes.clear();
         }
     }
 }

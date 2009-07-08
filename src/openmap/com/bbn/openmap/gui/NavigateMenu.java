@@ -59,8 +59,8 @@ public class NavigateMenu extends AbstractOpenMapMenu implements ActionListener 
     public NavigateMenu() {
         super();
         setText(i18n.get(this, "navigate", defaultText));
-        setMnemonic(i18n.get(this, "navigate", I18n.MNEMONIC, defaultMnemonic)
-                .charAt(0));
+//        setMnemonic(i18n.get(this, "navigate", I18n.MNEMONIC, defaultMnemonic)
+//                .charAt(0));
         add(new CoordsMenuItem());
 
         JMenuItem mi;
@@ -123,14 +123,14 @@ public class NavigateMenu extends AbstractOpenMapMenu implements ActionListener 
      *  
      */
     public synchronized void addZoomListener(ZoomListener l) {
-        zoomSupport.addZoomListener(l);
+        zoomSupport.add(l);
     }
 
     /**
      *  
      */
     public synchronized void removeZoomListener(ZoomListener l) {
-        zoomSupport.removeZoomListener(l);
+        zoomSupport.remove(l);
     }
 
     /**

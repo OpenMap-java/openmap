@@ -22,7 +22,6 @@
 
 package com.bbn.openmap.event;
 
-import java.util.Iterator;
 
 /**
  * This is a utility class that can be used by beans that need support
@@ -33,7 +32,7 @@ import java.util.Iterator;
  * A center event is one that sets the center of a map by specifying
  * latitude and longitude.
  */
-public class CenterSupport extends ListenerSupport {
+public class CenterSupport extends ListenerSupport<CenterListener> {
 
     /**
      * @param sourceBean The bean to be given as the source for any
@@ -44,24 +43,6 @@ public class CenterSupport extends ListenerSupport {
     }
 
     /**
-     * Add a CenterListener to the listener list.
-     * 
-     * @param listener The CenterListener to be added
-     */
-    public synchronized void addCenterListener(CenterListener listener) {
-        addListener(listener);
-    }
-
-    /**
-     * Remove a CenterListener from the listener list.
-     * 
-     * @param listener The CenterListener to be removed
-     */
-    public synchronized void removeCenterListener(CenterListener listener) {
-        removeListener(listener);
-    }
-
-    /**
      * Send a center event to all registered listeners.
      * 
      * @param latitude the latitude
@@ -69,14 +50,13 @@ public class CenterSupport extends ListenerSupport {
      * @see CenterEvent
      */
     public synchronized void fireCenter(double latitude, double longitude) {
-        Iterator<?> it = iterator();
         if (size() == 0)
             return;
 
         CenterEvent evt = new CenterEvent(source, latitude, longitude);
 
-        while (it.hasNext()) {
-            ((CenterListener) it.next()).center(evt);
+        for (CenterListener listener : this) {
+            listener.center(evt);
         }
     }
 }
