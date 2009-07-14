@@ -32,6 +32,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -159,8 +161,9 @@ import com.bbn.openmap.util.SwingWorker;
  * 
  * </pre>
  */
-public class OMGraphicHandlerLayer extends Layer implements
-        GestureResponsePolicy {
+public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolicy {
+
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.OMGraphicHandlerLayer");
 
     /**
      * 
@@ -249,27 +252,26 @@ public class OMGraphicHandlerLayer extends Layer implements
      * receives. If set to true, it will consume events so that other layers
      * will not receive the events. If false, lower layers will also receive
      * events, which will let them react too. Intended to let other layers
-     * provide information about what the mouse is over when editing is
-     * occuring.
+     * provide information about what the mouse is over when editing.
      */
     protected boolean consumeEvents = false;
 
     /**
-     * Flag used to avoid the SwingWorker to be interrupted. Usefull for layers
+     * Flag used to avoid the SwingWorker to be interrupted. Useful for layers
      * that load an image from a server such as the WMSPlugin to avoid an ugly
      * java output "Interrupted while loading image".
      */
     protected boolean interruptable = true;
 
     /**
-     * Sets the interruptable flag
+     * Sets the interruptible flag
      */
     public void setInterruptable(boolean b) {
         interruptable = b;
     }
 
     /**
-     * Queries for the interruptable flag.
+     * Queries for the interruptible flag.
      * 
      * @return
      */
@@ -396,8 +398,8 @@ public class OMGraphicHandlerLayer extends Layer implements
      * @see com.bbn.openmap.layer.policy.ListResetPCPolicy
      */
     public void projectionChanged(ProjectionEvent pe) {
-        if (Debug.debugging("layer")) {
-            Debug.output("OMGraphicHandlerLayer " + getName()
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("OMGraphicHandlerLayer " + getName()
                     + " projection changed, calling "
                     + getProjectionChangePolicy().getClass().getName());
         }
@@ -447,12 +449,12 @@ public class OMGraphicHandlerLayer extends Layer implements
     protected void interrupt() {
         try {
             synchronized (LAYERWORKER_LOCK) {
-                if (layerWorker != null && interruptable) {
+                if (layerWorker != null && interruptable && !layerWorker.isInterrupted()) {
                     layerWorker.interrupt();
                 }
             }
         } catch (SecurityException se) {
-            Debug.output(getName()
+            logger.warning(getName()
                     + " layer caught a SecurityException when something tried to stop work on the worker thread");
         }
     }
@@ -461,8 +463,9 @@ public class OMGraphicHandlerLayer extends Layer implements
      * Sets the SwingWorker off to call prepare(). If the SwingWorker passed in
      * is not null, start() is called on it.
      * 
-     * @param worker null to reset the layerWorker variable, or a SwingWorker to
-     *        start up.
+     * @param worker
+     *            null to reset the layerWorker variable, or a SwingWorker to
+     *            start up.
      */
     protected void setLayerWorker(SwingWorker worker) {
         synchronized (LAYERWORKER_LOCK) {
@@ -502,12 +505,14 @@ public class OMGraphicHandlerLayer extends Layer implements
      * If the layer doesn't override this method, then the paint(Graphics)
      * method will be called.
      * 
-     * @param proj Projection of the map.
-     * @param g java.awt.Graphics to draw into.
+     * @param proj
+     *            Projection of the map.
+     * @param g
+     *            java.awt.Graphics to draw into.
      */
     public synchronized void renderDataForProjection(Projection proj, Graphics g) {
         if (proj == null) {
-            Debug.error("Layer(" + getName()
+            logger.warning("Layer(" + getName()
                     + ").renderDataForProjection: null projection!");
             return;
         } else if (!proj.equals(getProjection())) {
@@ -520,7 +525,8 @@ public class OMGraphicHandlerLayer extends Layer implements
     /**
      * The default action is to get the OMGraphicList and render it.
      * 
-     * @param g java.awt.Graphics object to render OMGraphics into.
+     * @param g
+     *            java.awt.Graphics object to render OMGraphics into.
      */
     public void paint(Graphics g) {
         getRenderPolicy().paint(g);
@@ -538,11 +544,17 @@ public class OMGraphicHandlerLayer extends Layer implements
      */
     public void doPrepare() {
         synchronized (LAYERWORKER_LOCK) {
+
             if (isWorking()) {
-                if (Debug.debugging("layer")) {
-                    Debug.output(getName()
-                            + " layer already working in prepare(), cancelling");
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine(getName()
+                            + " layer already working in prepare(), canceling");
                 }
+                // This won't do anything if the layer knows it's already been
+                // canceled, but we need to call this the first time. We never
+                // want to go on and launch another worker if there's already
+                // one, even if it's been canceled. The worker will launch
+                // another one.
                 setCancelled(true);
                 return;
             }
@@ -559,7 +571,14 @@ public class OMGraphicHandlerLayer extends Layer implements
      */
     public boolean isWorking() {
         synchronized (LAYERWORKER_LOCK) {
-            return (layerWorker != null && !layerWorker.isInterrupted());
+            // We don't care if it hasn't been interrupted - since the
+            // LayerWorker will launch a new thread when things settle out, we
+            // just want to know if there is a LayerWorker in place. If multiple
+            // doPrepare() calls come in, we need to ignore all of the requests
+            // that have come it after the first one that canceled the
+            // LayerWorker in the first place.
+            return (layerWorker != null/** && !layerWorker.isInterrupted() **/
+            );
         }
     }
 
@@ -577,8 +596,9 @@ public class OMGraphicHandlerLayer extends Layer implements
      * <P>
      * 
      * Note that the default action of this method is to get the OMGraphicList
-     * as it is currently set in the layer, reprojects the list with the current
-     * projection (calls generate() on them), and then returns the current list.
+     * as it is currently set in the layer, re-projects the list with the
+     * current projection (calls generate() on them), and then returns the
+     * current list.
      * <P>
      * 
      * If your layer needs to change what is on the list based on what the
@@ -611,39 +631,26 @@ public class OMGraphicHandlerLayer extends Layer implements
         return currentList;
     }
 
-    /**
-     * Set when the something has changed while a swing worker is gathering
-     * graphics, and we want it to stop early.
-     */
-    // protected boolean cancelled = false;
-    // protected Object CANCELLED_LOCK = new Object();
     protected final Object LAYERWORKER_LOCK = new Object();
 
     /**
-     * Used to set the cancelled flag in the layer. The swing worker checks this
+     * Used to set the canceled flag in the layer. The swing worker checks this
      * once in a while to see if the projection has changed since it started
      * working. If this is set to true, the swing worker quits when it is safe.
      */
     public void setCancelled(boolean set) {
-        // synchronized (CANCELLED_LOCK) {
         synchronized (LAYERWORKER_LOCK) {
-            // cancelled = set;
             if (set) {
                 interrupt();// if the layerWorker is busy, stop it.
-                // System.out.println(">>Interrupting (setCancelled)");
             }
         }
     }
 
-    /** Check to see if the cancelled flag has been set. */
+    /** Check to see if the canceled flag has been set. */
     public boolean isCancelled() {
         synchronized (LAYERWORKER_LOCK) {
             return layerWorker != null && layerWorker.isInterrupted();
         }
-        /*
-         * boolean ret = false; synchronized (CANCELLED_LOCK) { ret = cancelled;
-         * } return ret;
-         */
     }
 
     /**
@@ -651,17 +658,18 @@ public class OMGraphicHandlerLayer extends Layer implements
      * If the calling worker is not the same as the "current" worker, then a new
      * worker is created.
      * 
-     * @param worker the worker that has the graphics.
+     * @param worker
+     *            the worker that has the graphics.
      */
     protected void workerComplete(LayerWorker worker) {
         synchronized (LAYERWORKER_LOCK) {
             if (layerWorker != worker) {
-                return; //
+                return;
             }
             if (layerWorker.isInterrupted()) {
-                setCancelled(false); // reset
-                setLayerWorker(createLayerWorker()); // try again with
-                // current proj
+                logger.fine("one SW launching another because of interruption");
+                // try again with current proj held by layer
+                setLayerWorker(createLayerWorker());
                 return;
             }
             // success!
@@ -669,12 +677,6 @@ public class OMGraphicHandlerLayer extends Layer implements
             getProjectionChangePolicy().workerComplete((OMGraphicList) worker.get());
         }
         repaint();
-        /*
-         * if (!isCancelled()) { setLayerWorker(null);
-         * getProjectionChangePolicy().workerComplete((OMGraphicList)
-         * worker.get()); repaint(); } else { setCancelled(false);
-         * setLayerWorker(createLayerWorker()); }
-         */
     }
 
     /**
@@ -691,7 +693,7 @@ public class OMGraphicHandlerLayer extends Layer implements
          * Compute the value to be returned by the <code>get</code> method.
          */
         public Object construct() {
-            Debug.message("layer", getName() + "|LayerWorker.construct()");
+            logger.fine(getName() + "|LayerWorker.construct()");
             fireStatusUpdate(LayerStatusEvent.START_WORKING);
             String msg;
 
@@ -700,28 +702,27 @@ public class OMGraphicHandlerLayer extends Layer implements
                 long start = System.currentTimeMillis();
                 OMGraphicList list = getRenderPolicy().prepare();
                 long stop = System.currentTimeMillis();
-                if (Debug.debugging("layer")) {
-                    Debug.output(getName()
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine(getName()
                             + "|LayerWorker.construct(): fetched "
-                            + (list == null ? "null list "
-                                    : (list.size() + " graphics ")) + "in "
-                            + (double) ((stop - start) / 1000d) + " seconds");
+                            + (list == null ? "null list " : (list.size() + " graphics "))
+                            + "in " + (double) ((stop - start) / 1000d) + " seconds");
                 }
                 return list;
 
             } catch (OutOfMemoryError e) {
                 msg = getName() + "|LayerWorker.construct(): " + e.getMessage();
-                if (Debug.debugging("layer")) {
-                    Debug.output(msg);
+                if (logger.isLoggable(Level.FINER)) {
+                    logger.fine(msg);
                     e.printStackTrace();
                 } else {
-                    Debug.output(getName()
+                    logger.fine(getName()
                             + " layer ran out of memory, attempting to recover...");
                 }
             } catch (Exception e) {
-                msg = getName() + "|LayerWorker.construct(): "
-                        + e.getClass().getName() + ", " + e.getMessage();
-                Debug.output(msg);
+                msg = getName() + "|LayerWorker.construct(): " + e.getClass().getName()
+                        + ", " + e.getMessage();
+                logger.info(msg);
                 e.printStackTrace();
             }
 
@@ -759,8 +760,10 @@ public class OMGraphicHandlerLayer extends Layer implements
      * prefix being prefix + . + PropertyChangePolicyProperty and prefix + . +
      * RenderPolicyProperty.
      * 
-     * @param prefix the token to prefix the property names
-     * @param props the <code>Properties</code> object
+     * @param prefix
+     *            the token to prefix the property names
+     * @param props
+     *            the <code>Properties</code> object
      */
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
@@ -769,8 +772,7 @@ public class OMGraphicHandlerLayer extends Layer implements
 
         // Check to see if the layer wants to set its own projection
         // change policy.
-        String pcpString = props.getProperty(realPrefix
-                + ProjectionChangePolicyProperty);
+        String pcpString = props.getProperty(realPrefix + ProjectionChangePolicyProperty);
         String policyPrefix;
         if (pcpString != null) {
             policyPrefix = realPrefix + pcpString;
@@ -780,20 +782,18 @@ public class OMGraphicHandlerLayer extends Layer implements
             if (projectionChangePolicy == null) {
                 String pcpClass = props.getProperty(policyPrefix + ".class");
                 if (pcpClass == null) {
-                    Debug.error("Layer "
+                    logger.warning("Layer "
                             + getName()
                             + " has "
                             + policyPrefix
                             + " property defined in properties for PropertyChangePolicy, but "
                             + policyPrefix + ".class property is undefined.");
                 } else {
-                    Object obj = ComponentFactory.create(pcpClass,
-                            policyPrefix,
-                            props);
+                    Object obj = ComponentFactory.create(pcpClass, policyPrefix, props);
                     if (obj != null) {
 
-                        if (Debug.debugging("layer")) {
-                            Debug.output("Layer " + getName()
+                        if (logger.isLoggable(Level.FINE)) {
+                            logger.fine("Layer " + getName()
                                     + " setting ProjectionChangePolicy ["
                                     + obj.getClass().getName() + "]");
                         }
@@ -801,7 +801,7 @@ public class OMGraphicHandlerLayer extends Layer implements
                         try {
                             setProjectionChangePolicy((ProjectionChangePolicy) obj);
                         } catch (ClassCastException cce) {
-                            Debug.error("Layer "
+                            logger.warning("Layer "
                                     + getName()
                                     + " has "
                                     + policyPrefix
@@ -810,12 +810,11 @@ public class OMGraphicHandlerLayer extends Layer implements
                                     + ".class property ("
                                     + pcpClass
                                     + ") does not define a valid ProjectionChangePolicy. A "
-                                    + obj.getClass().getName()
-                                    + " was created instead.");
+                                    + obj.getClass().getName() + " was created instead.");
                         }
 
                     } else {
-                        Debug.error("Layer "
+                        logger.warning("Layer "
                                 + getName()
                                 + " has "
                                 + policyPrefix
@@ -833,14 +832,14 @@ public class OMGraphicHandlerLayer extends Layer implements
                 // ProjectionChangePolicyProperty
 
                 if (projectionChangePolicy instanceof PropertyConsumer) {
-                    ((PropertyConsumer) projectionChangePolicy).setProperties(policyPrefix,
-                            props);
+                    ((PropertyConsumer) projectionChangePolicy).setProperties(
+                                                                              policyPrefix,
+                                                                              props);
                 }
             }
 
-        } else if (Debug.debugging("layer")) {
-            Debug.output("Layer " + getName()
-                    + " using default ProjectionChangePolicy ["
+        } else if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Layer " + getName() + " using default ProjectionChangePolicy ["
                     + getProjectionChangePolicy().getClass().getName() + "]");
         }
 
@@ -852,42 +851,34 @@ public class OMGraphicHandlerLayer extends Layer implements
             if (renderPolicy == null) {
                 String rpClass = props.getProperty(policyPrefix + ".class");
                 if (rpClass == null) {
-                    Debug.error("Layer "
-                            + getName()
-                            + " has "
-                            + policyPrefix
+                    logger.warning("Layer " + getName() + " has " + policyPrefix
                             + " property defined in properties for RenderPolicy, but "
                             + policyPrefix + ".class property is undefined.");
                 } else {
 
-                    Object rpObj = ComponentFactory.create(rpClass,
-                            policyPrefix,
-                            props);
+                    Object rpObj = ComponentFactory.create(rpClass, policyPrefix, props);
 
                     if (rpObj != null) {
-                        if (Debug.debugging("layer")) {
-                            Debug.output("Layer " + getName()
-                                    + " setting RenderPolicy ["
+                        if (logger.isLoggable(Level.FINE)) {
+                            logger.fine("Layer " + getName() + " setting RenderPolicy ["
                                     + rpObj.getClass().getName() + "]");
                         }
 
                         try {
                             setRenderPolicy((RenderPolicy) rpObj);
                         } catch (ClassCastException cce) {
-                            Debug.error("Layer "
+                            logger.warning("Layer "
                                     + getName()
                                     + " has "
                                     + policyPrefix
                                     + " property defined in properties for RenderPolicy, but "
-                                    + policyPrefix
-                                    + ".class property ("
-                                    + rpClass
+                                    + policyPrefix + ".class property (" + rpClass
                                     + ") does not define a valid RenderPolicy. A "
                                     + rpObj.getClass().getName()
                                     + " was created instead.");
                         }
                     } else {
-                        Debug.error("Layer "
+                        logger.warning("Layer "
                                 + getName()
                                 + " has "
                                 + policyPrefix
@@ -900,13 +891,12 @@ public class OMGraphicHandlerLayer extends Layer implements
                 // Same thing with renderPolicy as with projection
                 // change policy.
                 if (renderPolicy instanceof PropertyConsumer) {
-                    ((PropertyConsumer) renderPolicy).setProperties(policyPrefix,
-                            props);
+                    ((PropertyConsumer) renderPolicy).setProperties(policyPrefix, props);
                 }
             }
 
-        } else if (Debug.debugging("layer")) {
-            Debug.output("Layer " + getName() + " using default RenderPolicy ["
+        } else if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Layer " + getName() + " using default RenderPolicy ["
                     + getRenderPolicy().getClass().getName() + "]");
         }
 
@@ -961,7 +951,7 @@ public class OMGraphicHandlerLayer extends Layer implements
         // applicable). Same for RenderPolicy
 
         props.put(prefix + ProjectionChangePolicyProperty,
-                policyPrefix.substring(prefix.length()));
+                  policyPrefix.substring(prefix.length()));
         // This has to come after the above line, or the above
         // property will have a trailing period.
         policyPrefix = PropUtils.getScopedPropertyPrefix(policyPrefix);
@@ -979,15 +969,13 @@ public class OMGraphicHandlerLayer extends Layer implements
             policyPrefix = prefix + "rp";
         }
 
-        props.put(prefix + RenderPolicyProperty,
-                policyPrefix.substring(prefix.length()));
+        props.put(prefix + RenderPolicyProperty, policyPrefix.substring(prefix.length()));
         // This has to come after the above line, or the above
         // property will have a trailing period.
         policyPrefix = PropUtils.getScopedPropertyPrefix(policyPrefix);
         props.put(policyPrefix + "class", rp.getClass().getName());
 
-        props.put(prefix + ConsumeEventsProperty,
-                new Boolean(consumeEvents).toString());
+        props.put(prefix + ConsumeEventsProperty, new Boolean(consumeEvents).toString());
 
         String[] mm = getMouseModeIDsForEvents();
         if (mm != null && mm.length > 0) {
@@ -1003,11 +991,9 @@ public class OMGraphicHandlerLayer extends Layer implements
             props.put(prefix + MouseModesProperty, sb.toString());
         }
 
-        props.put(prefix + TransparencyProperty,
-                Float.toString(getTransparency()));
+        props.put(prefix + TransparencyProperty, Float.toString(getTransparency()));
 
-        props.put(prefix + InterruptableProperty,
-                Boolean.toString(isInterruptable()));
+        props.put(prefix + InterruptableProperty, Boolean.toString(isInterruptable()));
 
         return props;
     }
@@ -1039,13 +1025,11 @@ public class OMGraphicHandlerLayer extends Layer implements
             policyPrefix = "pcp";
         }
 
-        PropUtils.setI18NPropertyInfo(i18n,
-                list,
-                OMGraphicHandlerLayer.class,
-                policyPrefix + ".class",
-                "Projection Change Policy",
-                "Class name of ProjectionChangePolicy (optional)",
-                null);
+        PropUtils.setI18NPropertyInfo(i18n, list, OMGraphicHandlerLayer.class,
+                                      policyPrefix + ".class",
+                                      "Projection Change Policy",
+                                      "Class name of ProjectionChangePolicy (optional)",
+                                      null);
 
         RenderPolicy rp = getRenderPolicy();
         if (rp instanceof PropertyConsumer) {
@@ -1066,52 +1050,52 @@ public class OMGraphicHandlerLayer extends Layer implements
             policyPrefix = "rp";
         }
 
-        PropUtils.setI18NPropertyInfo(i18n,
-                list,
-                OMGraphicHandlerLayer.class,
-                policyPrefix + ".class",
-                "Rendering Policy",
-                "Class name of RenderPolicy (optional)",
-                null);
+        PropUtils.setI18NPropertyInfo(i18n, list, OMGraphicHandlerLayer.class,
+                                      policyPrefix + ".class", "Rendering Policy",
+                                      "Class name of RenderPolicy (optional)", null);
 
-        PropUtils.setI18NPropertyInfo(i18n,
-                list,
-                OMGraphicHandlerLayer.class,
-                ConsumeEventsProperty,
-                "Consume mouse events",
-                "Flag that tells the layer to consume mouse events, or let other layers use them as well.",
-                "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
+        PropUtils.setI18NPropertyInfo(
+                                      i18n,
+                                      list,
+                                      OMGraphicHandlerLayer.class,
+                                      ConsumeEventsProperty,
+                                      "Consume mouse events",
+                                      "Flag that tells the layer to consume mouse events, or let other layers use them as well.",
+                                      "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
 
-        PropUtils.setI18NPropertyInfo(i18n,
-                list,
-                OMGraphicHandlerLayer.class,
-                MouseModesProperty,
-                "Mouse modes",
-                "Space-separated list of MouseMode IDs to receive events from.",
-                null);
+        PropUtils.setI18NPropertyInfo(
+                                      i18n,
+                                      list,
+                                      OMGraphicHandlerLayer.class,
+                                      MouseModesProperty,
+                                      "Mouse modes",
+                                      "Space-separated list of MouseMode IDs to receive events from.",
+                                      null);
 
-        PropUtils.setI18NPropertyInfo(i18n,
-                list,
-                OMGraphicHandlerLayer.class,
-                TransparencyProperty,
-                "Transparency",
-                "Transparency setting for layer, between 0 (clear) and 1",
-                null);
+        PropUtils.setI18NPropertyInfo(
+                                      i18n,
+                                      list,
+                                      OMGraphicHandlerLayer.class,
+                                      TransparencyProperty,
+                                      "Transparency",
+                                      "Transparency setting for layer, between 0 (clear) and 1",
+                                      null);
 
-        PropUtils.setI18NPropertyInfo(i18n,
-                list,
-                OMGraphicHandlerLayer.class,
-                InterruptableProperty,
-                "Interruptable",
-                "Flat to set whether the layer should immediately stop performing current work when the projection changes.",
-                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        PropUtils.setI18NPropertyInfo(
+                                      i18n,
+                                      list,
+                                      OMGraphicHandlerLayer.class,
+                                      InterruptableProperty,
+                                      "Interruptable",
+                                      "Flat to set whether the layer should immediately stop performing current work when the projection changes.",
+                                      "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         return list;
     }
 
     /**
      * The MapMouseInterpreter used to catch the MapMouseEvents and direct them
-     * to layer as referencing certain OMGraphics. Mananges how the layer
+     * to layer as referencing certain OMGraphics. Manages how the layer
      * responds to mouse events.
      */
     protected MapMouseInterpreter mouseEventInterpreter = null;
@@ -1162,7 +1146,7 @@ public class OMGraphicHandlerLayer extends Layer implements
         MapMouseListener mml = getMouseEventInterpreter();
 
         if (mml != null) {
-            if (Debug.debugging("layer")) {
+            if (logger.isLoggable(Level.FINE)) {
 
                 String[] modes = mml.getMouseModeServiceList();
                 StringBuffer sb = new StringBuffer();
@@ -1170,10 +1154,9 @@ public class OMGraphicHandlerLayer extends Layer implements
                     sb.append(modes[i] + ", ");
                 }
 
-                Debug.output("Layer " + getName() + " returning "
+                logger.fine("Layer " + getName() + " returning "
                         + mml.getClass().getName()
-                        + " as map mouse listener that listens to: "
-                        + sb.toString());
+                        + " as map mouse listener that listens to: " + sb.toString());
             }
         }
 
@@ -1185,8 +1168,7 @@ public class OMGraphicHandlerLayer extends Layer implements
      * receives. If set to true, it will consume events so that other layers
      * will not receive the events. If false, lower layers will also receive
      * events, which will let them react too. Intended to let other layers
-     * provide information about what the mouse is over when editing is
-     * occuring.
+     * provide information about what the mouse is over when editing.
      */
     public void setConsumeEvents(boolean consume) {
         consumeEvents = consume;
@@ -1218,13 +1200,13 @@ public class OMGraphicHandlerLayer extends Layer implements
      */
     public void setMouseModeIDsForEvents(String[] mm) {
 
-        if (Debug.debugging("layer")) {
+        if (logger.isLoggable(Level.FINE)) {
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < mm.length; i++) {
                 sb.append(mm[i] + " ");
             }
 
-            Debug.output("For layer " + getName() + ", setting mouse modes to "
+            logger.fine("For layer " + getName() + ", setting mouse modes to "
                     + sb.toString());
         }
 
@@ -1236,19 +1218,19 @@ public class OMGraphicHandlerLayer extends Layer implements
     }
 
     /**
-     * Query asking if OMGraphic is highlightable, which means that something in
-     * the GUI should change when the mouse is moved or dragged over the given
-     * OMGraphic. Highlighting shows that something could happen, or provides
-     * cursory information about the OMGraphic. Responding true to this method
-     * may cause getInfoText() and getToolTipTextFor() methods to be called
-     * (depends on the MapMouseInterpetor).
+     * Query asking if OMGraphic is highlight-able, which means that something
+     * in the GUI should change when the mouse is moved or dragged over the
+     * given OMGraphic. Highlighting shows that something could happen, or
+     * provides cursory information about the OMGraphic. Responding true to this
+     * method may cause getInfoText() and getToolTipTextFor() methods to be
+     * called (depends on the MapMouseInterpetor).
      */
     public boolean isHighlightable(OMGraphic omg) {
         return true;
     }
 
     /**
-     * Query asking if an OMGraphic is selectable, or able to be moved, deleted
+     * Query asking if an OMGraphic is select-able, or able to be moved, deleted
      * or otherwise modified. Responding true to this method may cause select()
      * to be called (depends on the MapMouseInterpertor) so the meaning depends
      * on what the layer does in select.
@@ -1301,8 +1283,7 @@ public class OMGraphicHandlerLayer extends Layer implements
                 }
 
                 OMGraphic omg = (OMGraphic) it.next();
-                if (omg instanceof OMGraphicList
-                        && !((OMGraphicList) omg).isVague()) {
+                if (omg instanceof OMGraphicList && !((OMGraphicList) omg).isVague()) {
                     select((OMGraphicList) omg);
                 } else {
                     selectedList.add(omg);
@@ -1312,15 +1293,14 @@ public class OMGraphicHandlerLayer extends Layer implements
     }
 
     /**
-     * Designate a list of OMGraphics as deselected.
+     * Designate a list of OMGraphics as de-selected.
      */
     public void deselect(OMGraphicList list) {
         if (list != null) {
             Iterator<OMGraphic> it = list.iterator();
             while (it.hasNext() && selectedList != null) {
                 OMGraphic omg = (OMGraphic) it.next();
-                if (omg instanceof OMGraphicList
-                        && !((OMGraphicList) omg).isVague()) {
+                if (omg instanceof OMGraphicList && !((OMGraphicList) omg).isVague()) {
                     deselect((OMGraphicList) omg);
                 } else {
                     selectedList.remove(omg);
@@ -1373,13 +1353,14 @@ public class OMGraphicHandlerLayer extends Layer implements
     }
 
     /**
-     * Return a JMenu with contents applicable to a popup menu for a location
-     * over the map. The popup doesn't concern any OMGraphics, and should be
+     * Return a JMenu with contents applicable to a pop-up menu for a location
+     * over the map. The pop-up doesn't concern any OMGraphics, and should be
      * presented for a click on the map background.
      * 
-     * @param mme a MapMouseEvent describing the location over where the menu
-     *        items should apply, in case different options are appropriate for
-     *        different places.
+     * @param mme
+     *            a MapMouseEvent describing the location over where the menu
+     *            items should apply, in case different options are appropriate
+     *            for different places.
      * @return a JMenu for the map. Return null or empty List if no input
      *         required.
      */
@@ -1389,7 +1370,7 @@ public class OMGraphicHandlerLayer extends Layer implements
 
     /**
      * Return a java.util.List containing input for a JMenu with contents
-     * applicable to a popup menu for a location over an OMGraphic.
+     * applicable to a pop-up menu for a location over an OMGraphic.
      * 
      * @return a List containing options for the given OMGraphic. Return null or
      *         empty list if there are no options.
@@ -1416,7 +1397,8 @@ public class OMGraphicHandlerLayer extends Layer implements
      * over any of the OMGraphics on the GestureResponsePolicy. This only gets
      * called if the response to receiveMapEvents is true.
      * 
-     * @param mme MapMouseEvent describing the location of the mouse.
+     * @param mme
+     *            MapMouseEvent describing the location of the mouse.
      * @return true of this information is to be considered consumed and should
      *         not be passed to anybody else.
      */
@@ -1430,7 +1412,8 @@ public class OMGraphicHandlerLayer extends Layer implements
      * the response to receiveMapEvents is true. Right clicks on the map are
      * always reported to the getItemsForMapMenu method.
      * 
-     * @param mme MapMouseEvent describing the location of the mouse.
+     * @param mme
+     *            MapMouseEvent describing the location of the mouse.
      * @return true of this information is to be considered consumed and should
      *         not be passed to anybody else.
      */
@@ -1443,25 +1426,24 @@ public class OMGraphicHandlerLayer extends Layer implements
      * action listener that calls layer repaint() when the value changes will be
      * added to the slider.
      * 
-     * @param label the label for the panel around the slider.
-     * @param orientation JSlider.HORIZONTAL/JSlider.VERTICAL
-     * @param initialValue an initial transparency value between 0-1, 0 being
-     *        clear.
+     * @param label
+     *            the label for the panel around the slider.
+     * @param orientation
+     *            JSlider.HORIZONTAL/JSlider.VERTICAL
+     * @param initialValue
+     *            an initial transparency value between 0-1, 0 being clear.
      * @return
      */
     public JPanel getTransparencyAdjustmentPanel(String label, int orientation,
                                                  float initialValue) {
         JPanel opaquePanel = PaletteHelper.createPaletteJPanel(label);
-        JSlider opaqueSlide = new JSlider(orientation, 0/* min */, 255/* max */, (int) (255f * initialValue)/* inital */);
+        JSlider opaqueSlide = new JSlider(orientation, 0/* min */, 255/* max */,
+                (int) (255f * initialValue)/* inital */);
         java.util.Hashtable<Integer, JLabel> dict = new java.util.Hashtable<Integer, JLabel>();
-        dict.put(new Integer(0),
-                new JLabel(i18n.get(OMGraphicHandlerLayer.class,
-                        "clearSliderLabel",
-                        "clear")));
-        dict.put(new Integer(255),
-                new JLabel(i18n.get(OMGraphicHandlerLayer.class,
-                        "opqueSliderLabel",
-                        "opaque")));
+        dict.put(new Integer(0), new JLabel(i18n.get(OMGraphicHandlerLayer.class,
+                                                     "clearSliderLabel", "clear")));
+        dict.put(new Integer(255), new JLabel(i18n.get(OMGraphicHandlerLayer.class,
+                                                       "opqueSliderLabel", "opaque")));
         opaqueSlide.setLabelTable(dict);
         opaqueSlide.setPaintLabels(true);
         opaqueSlide.setMajorTickSpacing(50);
@@ -1483,7 +1465,8 @@ public class OMGraphicHandlerLayer extends Layer implements
      * Set the transparency of the layer. This transparency is applied during
      * rendering.
      * 
-     * @param value 0f for clear, 1f for opaque.
+     * @param value
+     *            0f for clear, 1f for opaque.
      */
     public void setTransparency(float value) {
         AlphaComposite ac = null;
