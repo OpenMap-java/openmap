@@ -193,7 +193,7 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
                 same = same && paths[i].equals(pathsToRPFDirs[i]);
             }
 
-            if (same) {
+            if (same && frameProvider != null) {
                 return;
             }
         }
