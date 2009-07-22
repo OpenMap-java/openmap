@@ -379,7 +379,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
                 EsriGraphicList shapeList = EsriGraphicList.getEsriGraphicList(shpFile.toURL(),
                         da,
                         DbfTableModel.getDbfTableModel(new File(shpFilePath.replaceAll(".shp",
-                                ".dbf")).toURL()));
+                                ".dbf")).toURL()), coordTransform);
 
                 if (DEBUG)
                     Debug.output("GeoIntersectLayer(" + getName()
