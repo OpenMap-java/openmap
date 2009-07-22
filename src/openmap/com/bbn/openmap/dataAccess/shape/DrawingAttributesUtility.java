@@ -24,9 +24,8 @@ package com.bbn.openmap.dataAccess.shape;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.List;
 
 import com.bbn.openmap.omGraphics.BasicStrokeEditor;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
@@ -58,7 +57,7 @@ public class DrawingAttributesUtility implements ShapeConstants {
 
         this.model = model;
 
-        Hashtable columnNames = new Hashtable();
+        Hashtable<String, Integer> columnNames = new Hashtable<String, Integer>();
         int numColumns = model.getColumnCount();
         for (int i = 0; i < numColumns; i++) {
             String colName = model.getColumnName(i);
@@ -115,7 +114,7 @@ public class DrawingAttributesUtility implements ShapeConstants {
         return defaultDA;
     }
 
-    protected void configureForRecord(OMGraphic graphic, ArrayList record) {
+    protected void configureForRecord(OMGraphic graphic, List<Object> record) {
         if (desColumn != -1) {
             String ret = (String) record.get(desColumn);
             if (graphic.getAppObject() == null) {
@@ -127,17 +126,17 @@ public class DrawingAttributesUtility implements ShapeConstants {
 
         if (lineColorColumn != -1) {
             da.setLinePaint(parseColor((String) record.get(lineColorColumn),
-                    (Color) defaultDA.getLinePaint()));
+                                       (Color) defaultDA.getLinePaint()));
         }
 
         if (fillColorColumn != -1) {
             da.setFillPaint(parseColor((String) record.get(fillColorColumn),
-                    (Color) defaultDA.getFillPaint()));
+                                       (Color) defaultDA.getFillPaint()));
         }
 
         if (selectColorColumn != -1) {
             da.setSelectPaint(parseColor((String) record.get(selectColorColumn),
-                    (Color) defaultDA.getSelectPaint()));
+                                         (Color) defaultDA.getSelectPaint()));
         }
 
         int lineWidth = 1;
@@ -160,14 +159,22 @@ public class DrawingAttributesUtility implements ShapeConstants {
             dashPhase = ((Double) record.get(lineWidthColumn)).floatValue();
         }
 
-        da.setStroke(new BasicStroke(lineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dashPattern, dashPhase));
+        da.setStroke(new BasicStroke(lineWidth, BasicStroke.CAP_BUTT,
+                BasicStroke.JOIN_MITER, 10.0f, dashPattern, dashPhase));
         da.setTo(graphic);
     }
 
+    /**
+     * Sets the drawing attributes on the record index provided. Remember, the
+     * index starts at 1 for the list when you refer to record indexes.
+     * 
+     * @param graphic
+     * @param index
+     */
     protected void setDrawingAttributes(OMGraphic graphic, int index) {
 
         if (model != null) {
-            ArrayList record = (ArrayList) model.getRecord(index);
+            List<Object> record = model.getRecord(index);
             if (record != null) {
                 configureForRecord(graphic, record);
             }
@@ -180,8 +187,7 @@ public class DrawingAttributesUtility implements ShapeConstants {
      * contents with anything found in the DBF file. Otherwise, use the
      * DrawingAttributes.DEFAULT settings if no attribute parameters found.
      */
-    public static void setDrawingAttributes(EsriGraphicList list,
-                                            DbfTableModel model) {
+    public static void setDrawingAttributes(EsriGraphicList list, DbfTableModel model) {
         setDrawingAttributes(list, model, DrawingAttributes.DEFAULT);
     }
 
@@ -191,8 +197,7 @@ public class DrawingAttributesUtility implements ShapeConstants {
      * contents with anything found in the DBF file. Otherwise, use the default
      * DrawingAttributes settings if no attribute parameters found.
      */
-    public static void setDrawingAttributes(EsriGraphicList list,
-                                            DbfTableModel model,
+    public static void setDrawingAttributes(EsriGraphicList list, DbfTableModel model,
                                             DrawingAttributes defaultDA) {
         // Set it up;
         if (list == null || model == null) {
@@ -200,10 +205,8 @@ public class DrawingAttributesUtility implements ShapeConstants {
         }
         DrawingAttributesUtility dau = new DrawingAttributesUtility(model);
         dau.setDefaultAttributes(defaultDA);
-        Iterator graphics = list.iterator();
-        int index = 0;
-        while (graphics.hasNext()) {
-            OMGraphic graphic = (OMGraphic) graphics.next();
+        int index = 1;
+        for (OMGraphic graphic : list) {
             dau.setDrawingAttributes(graphic, index++);
         }
     }

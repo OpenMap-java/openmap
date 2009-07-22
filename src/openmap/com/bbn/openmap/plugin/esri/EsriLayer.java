@@ -115,6 +115,11 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    
     protected DbfTableModel _model = null;
     protected String dbf;
     protected String shx;
@@ -204,7 +209,7 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
         setModel(DbfTableModel.getDbfTableModel(dbf));
         setList(EsriGraphicList.getEsriGraphicList(shp,
                 drawingAttributes,
-                getModel()));
+                getModel(), coordTransform));
     }
 
     /**
@@ -214,7 +219,7 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
      * @param graphic An OMGraphic to add the graphics list
      * @param record A record to add to the DbfTableModel
      */
-    public void addRecord(OMGraphic graphic, ArrayList record) {
+    public void addRecord(OMGraphic graphic, ArrayList<Object> record) {
         OMGraphicList _list = getList();
         
         // Associate the record directly in the OMGraphic
@@ -310,7 +315,7 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
                 setModel(DbfTableModel.getDbfTableModel(PropUtils.getResourceOrFileOrURL(dbf)));
                 setList(EsriGraphicList.getEsriGraphicList(PropUtils.getResourceOrFileOrURL(shp),
                         drawingAttributes,
-                        getModel()));
+                        getModel(), coordTransform));
             } catch (Exception exception) {
                 Debug.error("EsriLayer(" + getName()
                         + ") exception reading Shape files:\n "

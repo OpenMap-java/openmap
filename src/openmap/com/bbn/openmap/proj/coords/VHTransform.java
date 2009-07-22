@@ -97,7 +97,8 @@ public class VHTransform implements GeoCoordTransformation {
     public static final double K9 = RADIUS * ROTC;
     public static final double K10 = RADIUS * ROTS;
 
-    public VHTransform() {}
+    public VHTransform() {
+    }
 
     /** Return the V corresponding to the most recent toVH(). * */
     public double getV() {
@@ -211,10 +212,9 @@ public class VHTransform implements GeoCoordTransformation {
 
         lat = Math.toRadians(lat);
         lon = Math.toRadians(lon);
-
+        
         /* Translate east by 52 degrees */
         double lon1 = lon + Math.toRadians(52.0);
-
         /* Convert latitude to geocentric latitude using Horner's rule */
         double latsq = lat * lat;
         double lat1 = lat
@@ -393,8 +393,7 @@ public class VHTransform implements GeoCoordTransformation {
                                 * (bi[2] + lat2
                                         * (bi[3] + lat2
                                                 * (bi[4] + lat2
-                                                        * (bi[5] + lat2
-                                                                * (bi[6])))))));
+                                                        * (bi[5] + lat2 * (bi[6])))))));
         earthlat = Math.toDegrees(earthlat);
 
         /*
@@ -413,14 +412,14 @@ public class VHTransform implements GeoCoordTransformation {
     }
 
     public Point2D forward(double lat, double lon) {
-       return forward(lat, lon, null);
+        return forward(lat, lon, null);
     }
 
     public Point2D forward(double lat, double lon, Point2D ret) {
         if (ret == null) {
             ret = new Point2D.Double();
         }
-        
+
         toVH(lat, lon);
         ret.setLocation(getV(), getH());
         return ret;
@@ -437,5 +436,24 @@ public class VHTransform implements GeoCoordTransformation {
         toLatLon(v, h);
         ret.setLocation(getLat(), getLon());
         return ret;
+    }
+
+    public static void main(String[] args) {
+        if (args.length < 2) {
+            System.out.println("Usage: VHTransform lat lon");
+            System.exit(0);
+        }
+
+        try {
+            double lat = Double.parseDouble(args[0]);
+            double lon = Double.parseDouble(args[1]);
+
+            VHTransform vh = new VHTransform();
+            Point2D vhpnts = vh.forward(lat, lon);
+
+            System.out.println(vhpnts);
+        } catch (NumberFormatException nfe) {
+            System.out.println("can't parse numbers, should be lat, lon");
+        }
     }
 }

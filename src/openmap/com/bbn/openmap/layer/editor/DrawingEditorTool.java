@@ -48,6 +48,7 @@ import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.MapMouseMode;
 import com.bbn.openmap.gui.GridBagToolBar;
 import com.bbn.openmap.gui.OMGraphicDeleteTool;
+import com.bbn.openmap.layer.DrawingToolLayer;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
 import com.bbn.openmap.omGraphics.OMAction;
@@ -107,8 +108,8 @@ import com.bbn.openmap.util.PropUtils;
  * dtlayer.lines.class=com.bbn.openmap.tools.drawing.OMLineLoader
  * 
  */
-public class DrawingEditorTool extends AbstractEditorTool implements
-        ActionListener, PropertyChangeListener, PropertyConsumer {
+public class DrawingEditorTool extends AbstractEditorTool implements ActionListener,
+        PropertyChangeListener, PropertyConsumer {
 
     /**
      * OMDrawingTool handling OMGraphic modifications and creations.
@@ -277,8 +278,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     public void findAndInit(Object someObj) {
         super.findAndInit(someObj);
 
-        if (someObj instanceof MapBean
-                || someObj instanceof InformationDelegator) {
+        if (someObj instanceof MapBean || someObj instanceof InformationDelegator) {
             drawingTool.findAndInit(someObj);
         }
 
@@ -326,8 +326,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
             setMouseDelegator(null);
         }
 
-        if (someObj instanceof MapBean
-                || someObj instanceof InformationDelegator) {
+        if (someObj instanceof MapBean || someObj instanceof InformationDelegator) {
             drawingTool.findAndUndo(someObj);
         }
 
@@ -436,8 +435,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
             elayer.releaseProxyMouseMode();
 
             if (thingToCreate == null && mouseDelegator != null) {
-                mouseDelegator.setActiveMouseModeWithID(elayer.getMouseMode()
-                        .getID());
+                mouseDelegator.setActiveMouseModeWithID(elayer.getMouseMode().getID());
             }
 
             // Calling with command will set 'thingToCreate' and
@@ -451,7 +449,8 @@ public class DrawingEditorTool extends AbstractEditorTool implements
      * create a new OMGraphic. Will try to deactivate the OMDrawingTool if it
      * thinks it's busy.
      * 
-     * @param ttc thingToCreate, classname of thing to create
+     * @param ttc
+     *            thingToCreate, classname of thing to create
      * @return OMDrawingToolMouseMode of DrawingTool if all goes well, null if
      *         the drawing tool can't create the new thingy.
      */
@@ -467,16 +466,12 @@ public class DrawingEditorTool extends AbstractEditorTool implements
             }
 
             if (Debug.debugging("editortool")) {
-                Debug.output("DrawingEditorTool.activateDrawingTool(" + ttc
-                        + ")");
+                Debug.output("DrawingEditorTool.activateDrawingTool(" + ttc + ")");
             }
 
             drawingTool.setMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK);
 
-            if (drawingTool.create(ttc,
-                    ga,
-                    (DrawingToolRequestor) getLayer(),
-                    true) == null) {
+            if (drawingTool.create(ttc, ga, (DrawingToolRequestor) getLayer(), true) == null) {
                 // Something bad happened, might as well try to clean
                 // up.
                 if (Debug.debugging("editortool")) {
@@ -503,7 +498,8 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     /**
      * Invoked when a mouse button has been pressed on a component.
      * 
-     * @param e MouseEvent
+     * @param e
+     *            MouseEvent
      * @return false
      */
     public boolean mousePressed(MouseEvent e) {
@@ -528,7 +524,8 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     /**
      * Invoked when a mouse button has been released on a component.
      * 
-     * @param e MouseEvent
+     * @param e
+     *            MouseEvent
      * @return false
      */
     public boolean mouseReleased(MouseEvent e) {
@@ -547,7 +544,8 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     /**
      * Invoked when the mouse has been clicked on a component.
      * 
-     * @param e MouseEvent
+     * @param e
+     *            MouseEvent
      * @return false
      */
     public boolean mouseClicked(MouseEvent e) {
@@ -566,7 +564,8 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     /**
      * Invoked when the mouse enters a component.
      * 
-     * @param e MouseEvent
+     * @param e
+     *            MouseEvent
      */
     public void mouseEntered(MouseEvent e) {
         if (wantsEvents()) {
@@ -581,7 +580,8 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     /**
      * Invoked when the mouse exits a component.
      * 
-     * @param e MouseEvent
+     * @param e
+     *            MouseEvent
      */
     public void mouseExited(MouseEvent e) {
         if (wantsEvents()) {
@@ -601,7 +601,8 @@ public class DrawingEditorTool extends AbstractEditorTool implements
      * Invoked when a mouse button is pressed on a component and then dragged.
      * The listener will receive these events if it
      * 
-     * @param e MouseEvent
+     * @param e
+     *            MouseEvent
      * @return false
      */
     public boolean mouseDragged(MouseEvent e) {
@@ -621,7 +622,8 @@ public class DrawingEditorTool extends AbstractEditorTool implements
      * Invoked when the mouse button has been moved on a component (with no
      * buttons down).
      * 
-     * @param e MouseEvent
+     * @param e
+     *            MouseEvent
      * @return false
      */
     public boolean mouseMoved(MouseEvent e) {
@@ -807,15 +809,13 @@ public class DrawingEditorTool extends AbstractEditorTool implements
                         + AttributesClassProperty);
                 if (loaderClassString != null) {
                     Object obj = ComponentFactory.create(loaderClassString,
-                            loaderPropertyPrefix,
-                            props);
+                                                         loaderPropertyPrefix, props);
 
                     if (obj != null && obj instanceof EditToolLoader) {
                         EditToolLoader loader = (EditToolLoader) obj;
 
                         if (Debug.debugging("editortool")) {
-                            Debug.output("DrawingEditorTool: adding "
-                                    + loaderClassString);
+                            Debug.output("DrawingEditorTool: adding " + loaderClassString);
                         }
 
                         addEditToolLoader(loader);
@@ -827,12 +827,12 @@ public class DrawingEditorTool extends AbstractEditorTool implements
                                         + loaderAttributeClass);
                             }
 
-                            Object daObject = ComponentFactory.create(loaderAttributeClass,
-                                    loaderPropertyPrefix,
-                                    props);
+                            Object daObject = ComponentFactory.create(
+                                                                      loaderAttributeClass,
+                                                                      loaderPropertyPrefix,
+                                                                      props);
 
-                            if (daObject != null
-                                    && daObject instanceof DrawingAttributes) {
+                            if (daObject != null && daObject instanceof DrawingAttributes) {
                                 if (Debug.debugging("editortool")) {
                                     Debug.output("DrawingEditorTool: attributes from "
                                             + loaderAttributeClass);
@@ -840,8 +840,9 @@ public class DrawingEditorTool extends AbstractEditorTool implements
 
                                 String[] classnames = loader.getEditableClasses();
                                 for (int i = 0; i < classnames.length; i++) {
-                                    drawingAttributesTable.put(classnames[i],
-                                            (DrawingAttributes) daObject);
+                                    drawingAttributesTable.put(
+                                                               classnames[i],
+                                                               (DrawingAttributes) daObject);
                                 }
 
                             } else {
@@ -863,6 +864,12 @@ public class DrawingEditorTool extends AbstractEditorTool implements
                     Debug.output("DrawingEditorTool.setProperties:  no loader class provided for "
                             + loaderPropertyPrefix);
                 }
+            }
+
+            // Pick up initial settings from properties from the layer, if it's
+            // an editor layer.
+            if (layer instanceof DrawingToolLayer && ga != null) {
+                ((DrawingToolLayer) layer).getDrawingAttributes().setTo(ga);
             }
 
         } else {

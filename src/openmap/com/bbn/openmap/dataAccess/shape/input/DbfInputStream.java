@@ -29,6 +29,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import com.bbn.openmap.dataAccess.shape.DbfTableModel;
@@ -81,13 +82,13 @@ public class DbfInputStream {
      * An ArrayList with each element representing a record, which itself is an
      * ArrayList
      */
-    private ArrayList _records = null;
+    private List<List<Object>> _records = null;
 
     /**
      * Creates a LittleEndianInputStream then uses it to read the contents of
      * the DBF file
      * 
-     * @param is An inputstream used to create a LittleEndianInputStream
+     * @param is An InputStream used to create a LittleEndianInputStream
      */
     public DbfInputStream(InputStream is) throws Exception {
         BufferedInputStream bis = new BufferedInputStream(is);
@@ -136,16 +137,16 @@ public class DbfInputStream {
     /**
      * Returns an ArrayList of records
      * 
-     * @return An ArrayList of recrods
+     * @return An ArrayList of records
      */
-    public ArrayList getRecords() {
+    public List<List<Object>> getRecords() {
         return _records;
     }
 
     /**
      * Returns the number of columns
      * 
-     * @return The nunber of columns
+     * @return The number of columns
      */
     public int getColumnCount() {
         return _columnCount;
@@ -217,9 +218,9 @@ public class DbfInputStream {
         df.setDecimalFormatSymbols(dfs);
 
         _leis.skipBytes(2);
-        _records = new ArrayList(_rowCount);
+        _records = new ArrayList<List<Object>>(_rowCount);
         for (int r = 0; r <= _rowCount - 1; r++) {
-            ArrayList record = new ArrayList(_columnCount);
+            ArrayList<Object> record = new ArrayList<Object>(_columnCount);
             for (int c = 0; c <= _columnCount - 1; c++) {
                 int length = _lengths[c];
                 if (length == -1)

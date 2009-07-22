@@ -149,7 +149,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
             sb.append("|--> ");
         }
 
-        sb.append("OMList with " + size() + " objects"
+        sb.append("OMList with " + size() + " object"
                 + (size() == 1 ? "\n" : "s\n"));
 
         synchronized (graphics) {

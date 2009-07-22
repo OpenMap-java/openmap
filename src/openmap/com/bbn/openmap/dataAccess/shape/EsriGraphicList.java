@@ -24,15 +24,18 @@ package com.bbn.openmap.dataAccess.shape;
 
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.bbn.openmap.dataAccess.shape.input.ShpInputStream;
 import com.bbn.openmap.dataAccess.shape.input.ShxInputStream;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.coords.GeoCoordTransformation;
 import com.bbn.openmap.util.ArgParser;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -46,9 +49,10 @@ import com.bbn.openmap.util.PropUtils;
  * @author Doug Van Auken
  * @author Don Dietrick
  */
-public abstract class EsriGraphicList extends OMGraphicList implements
-        ShapeConstants, EsriGraphic {
+public abstract class EsriGraphicList extends OMGraphicList implements ShapeConstants,
+        EsriGraphic {
 
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.shape.EsriGraphicList");
     protected double[] extents;
     protected int type;
 
@@ -58,7 +62,8 @@ public abstract class EsriGraphicList extends OMGraphicList implements
      * sub-list containing multiple geometry parts. Only add another list to a
      * top level EsriGraphicList.
      * 
-     * @param shape the non-null OMGraphic to add
+     * @param shape
+     *            the non-null OMGraphic to add
      */
     public boolean add(OMGraphic shape) {
         return super.add(shape);
@@ -67,8 +72,10 @@ public abstract class EsriGraphicList extends OMGraphicList implements
     /**
      * Add an OMGraphic to the GraphicList. The OMGraphic must not be null.
      * 
-     * @param g the non-null OMGraphic to add
-     * @exception IllegalArgumentException if OMGraphic is null
+     * @param g
+     *            the non-null OMGraphic to add
+     * @exception IllegalArgumentException
+     *                if OMGraphic is null
      */
     public boolean addOMGraphic(OMGraphic g) {
         return add(g);
@@ -95,7 +102,8 @@ public abstract class EsriGraphicList extends OMGraphicList implements
     /**
      * Construct an EsriGraphicList with an initial capacity.
      * 
-     * @param initialCapacity the initial capacity of the list
+     * @param initialCapacity
+     *            the initial capacity of the list
      */
     public EsriGraphicList(int initialCapacity) {
         super(initialCapacity);
@@ -105,8 +113,10 @@ public abstract class EsriGraphicList extends OMGraphicList implements
      * Construct an EsriGraphicList with an initial capacity and a standard
      * increment value.
      * 
-     * @param initialCapacity the initial capacity of the list
-     * @param capacityIncrement the capacityIncrement for resizing
+     * @param initialCapacity
+     *            the initial capacity of the list
+     * @param capacityIncrement
+     *            the capacityIncrement for resizing
      * @deprecated capacityIncrement doesn't do anything.
      */
     public EsriGraphicList(int initialCapacity, int capacityIncrement) {
@@ -206,63 +216,74 @@ public abstract class EsriGraphicList extends OMGraphicList implements
      * list of offsets, which the AbstractSupport.open method will use to
      * iterate through the contents of the SHP file.
      * 
-     * @param shp The url of the SHP file
-     * @param shx The url of the SHX file
-     * @param drawingAttributes a DrawingAttributes object containing the
-     *        rendering parameters you might want on the OMGraphics. The
-     *        OMGraphic default (black edge, clear fill) will be used if this is
-     *        null.
-     * @param dbf a DbfTableModel, if you want each row of objects from the
-     *        table (an array), inserted into their associated OMGraphic's
-     *        appObject. The dbf will be added to the list appObject, so you can
-     *        ask it questions later. If null, no problem. If the number of
-     *        records doesn't match the OMGraphic list length, nothing will be
-     *        done.
+     * @param shp
+     *            The url of the SHP file
+     * @param shx
+     *            The url of the SHX file
+     * @param drawingAttributes
+     *            a DrawingAttributes object containing the rendering parameters
+     *            you might want on the OMGraphics. The OMGraphic default (black
+     *            edge, clear fill) will be used if this is null.
+     * @param dbf
+     *            a DbfTableModel, if you want each row of objects from the
+     *            table (an array), inserted into their associated OMGraphic's
+     *            appObject. The dbf will be added to the list appObject, so you
+     *            can ask it questions later. If null, no problem. If the number
+     *            of records doesn't match the OMGraphic list length, nothing
+     *            will be done.
      * @return A new EsriGraphicList, null if there is a problem.
      * 
      * @deprecated use getGraphicList(URL, DrawingAttributes, DbfTableModel)
      */
-    public static EsriGraphicList getEsriGraphicList(
-                                                     URL shp,
-                                                     URL shx,
+    public static EsriGraphicList getEsriGraphicList(URL shp, URL shx,
                                                      DrawingAttributes drawingAttributes,
                                                      DbfTableModel dbf) {
-        return getEsriGraphicList(shp, drawingAttributes, dbf);
+        return getEsriGraphicList(shp, drawingAttributes, dbf, null);
     }
 
     /**
      * Reads the contents of the SHP files.
      * 
-     * @param shp The url of the SHP file
-     * @param shx The url of the SHX file
-     * @param drawingAttributes a DrawingAttributes object containing the
-     *        rendering parameters you might want on the OMGraphics. The
-     *        OMGraphic default (black edge, clear fill) will be used if this is
-     *        null.
-     * @param dbf a DbfTableModel. The dbf will be added to the list appObject,
-     *        so you can ask it questions later. If null, no problem. If the
-     *        number of records doesn't match the OMGraphic list length, nothing
-     *        will be done.
+     * @param shp
+     *            The url of the SHP file
+     * @param shx
+     *            The url of the SHX file
+     * @param drawingAttributes
+     *            a DrawingAttributes object containing the rendering parameters
+     *            you might want on the OMGraphics. The OMGraphic default (black
+     *            edge, clear fill) will be used if this is null.
+     * @param dbf
+     *            a DbfTableModel. The dbf will be added to the list appObject,
+     *            so you can ask it questions later. If null, no problem. If the
+     *            number of records doesn't match the OMGraphic list length,
+     *            nothing will be done.
+     * @param coordTranslator
+     *            a GeoCoordTransformation to use to convert coordinates to
+     *            decimal degree lat/lon data.
      * @return A new EsriGraphicList, null if there is a problem.
      */
     public static EsriGraphicList getEsriGraphicList(
                                                      URL shp,
                                                      DrawingAttributes drawingAttributes,
-                                                     DbfTableModel dbf) {
+                                                     DbfTableModel dbf,
+                                                     GeoCoordTransformation coordTranslator) {
         EsriGraphicList list = null;
 
         // Open and stream shp file
         try {
             InputStream is = shp.openStream();
+            
+
             ShpInputStream pis = new ShpInputStream(is);
             if (drawingAttributes != null) {
                 pis.setDrawingAttributes(drawingAttributes);
             }
-            list = pis.getGeometry();
+            EsriGraphicFactory egf = new EsriGraphicFactory(OMGraphic.LINETYPE_GREATCIRCLE, coordTranslator);
+            list = pis.getGeometry(egf);
             is.close();
         } catch (Exception e) {
-            Debug.error("EsriGraphicList: Not able to stream SHP file");
-            if (Debug.debugging("shape") || true) {
+            logger.warning("Not able to stream SHP file");
+            if (logger.isLoggable(Level.FINE)) {
                 e.printStackTrace();
             }
             return null;
@@ -275,8 +296,49 @@ public abstract class EsriGraphicList extends OMGraphicList implements
         return list;
     }
 
+    /**
+     * Reads the contents of the SHP files, including the DBF file, based on the
+     * location of the shape file. The dbf will be added to the list appObject,
+     * so you can ask it questions later. If null, no problem. If the number of
+     * records doesn't match the OMGraphic list length, the dbf information
+     * won't be added to the list.
+     * 
+     * @param shp
+     *            The url of the SHP file
+     * @param drawingAttributes
+     *            a DrawingAttributes object containing the rendering parameters
+     *            you might want on the OMGraphics. The OMGraphic default (black
+     *            edge, clear fill) will be used if this is null.
+     * @return A new EsriGraphicList, null if there is a problem.
+     */
+    public static EsriGraphicList getEsriGraphicList(
+                                                     URL shp,
+                                                     DrawingAttributes drawingAttributes,
+                                                     GeoCoordTransformation coordTranslator) {
+        DbfTableModel dbf = null;
+
+        if (shp != null) {
+            String shpPath = shp.getFile();
+            String protocol = shp.getProtocol();
+            String host = shp.getHost();
+            logger.info(shpPath);
+            if (shpPath != null && shpPath.endsWith(".shp")) {
+                String dbfPath = shpPath.replace(".shp", ".dbf");
+                URL dbfURL;
+                try {
+                    dbfURL = new URL(protocol, host, dbfPath);
+                    dbf = DbfTableModel.getDbfTableModel(dbfURL);
+                    dbfURL = null;
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return getEsriGraphicList(shp, drawingAttributes, dbf, coordTranslator);
+    }
+
     public static void main(String[] args) {
-        Debug.init();
 
         ArgParser ap = new ArgParser("EsriGraphicList");
         ap.add("fixcl", "Check and fix content length of Shape file", 1);
@@ -309,8 +371,7 @@ public abstract class EsriGraphicList extends OMGraphicList implements
 
                     if (contentLength != indexedContentLength) {
                         System.out.println(shape + " content length - shp: "
-                                + contentLength + ", shx: "
-                                + indexedContentLength);
+                                + contentLength + ", shx: " + indexedContentLength);
                         raf.seek(24);
                         raf.writeInt(indexedContentLength);
                     }
@@ -321,8 +382,7 @@ public abstract class EsriGraphicList extends OMGraphicList implements
                 }
 
             } else {
-                System.out.println("Shape " + shape
-                        + " doesn't look like a shape file");
+                System.out.println("Shape " + shape + " doesn't look like a shape file");
             }
         }
 
@@ -331,15 +391,14 @@ public abstract class EsriGraphicList extends OMGraphicList implements
             try {
 
                 URL eglURL = PropUtils.getResourceOrFileOrURL(printit[0]);
-                EsriGraphicList egl = EsriGraphicList.getEsriGraphicList(eglURL,
-                        null,
-                        null);
+                EsriGraphicList egl = EsriGraphicList.getEsriGraphicList(eglURL, null,
+                                                                         null);
                 if (egl != null) {
                     System.out.println(egl.getDescription());
                 }
 
             } catch (Exception e) {
-                Debug.error(e.getMessage());
+                logger.warning(e.getMessage());
                 e.printStackTrace();
             }
         }

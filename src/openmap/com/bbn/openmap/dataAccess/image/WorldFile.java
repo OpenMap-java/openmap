@@ -123,14 +123,13 @@ public class WorldFile {
     
     public void write(OutputStream os) throws IOException {
         OutputStreamWriter osr = new OutputStreamWriter(os);
-        BufferedWriter bw = new BufferedWriter(osr);
-
-        bw.write(Double.toString(xDim) + "\n");
-        bw.write(Double.toString(rowRot) + "\n");
-        bw.write(Double.toString(colRot) + "\n");
-        bw.write(Double.toString(yDim) + "\n");
-        bw.write(Double.toString(x) + "\n");
-        bw.write(Double.toString(y) + "\n");
+        osr.write(Double.toString(xDim) + "\n");
+        osr.write(Double.toString(rowRot) + "\n");
+        osr.write(Double.toString(colRot) + "\n");
+        osr.write(Double.toString(yDim) + "\n");
+        osr.write(Double.toString(x) + "\n");
+        osr.write(Double.toString(y) + "\n");
+        osr.close();
     }
 
     public String toString() {

@@ -188,9 +188,9 @@ public class DbfFile extends DbfTableModel {
             numRecordsToRead = _rowCount - startingRecordIndex;
         }
 
-        _records = new ArrayList(numRecordsToRead);
+        _records = new ArrayList<List<Object>>(numRecordsToRead);
         for (int r = startingRecordIndex; r <= numRecordsToRead - 1; r++) {
-            List record = getRecordData(r);
+            List<Object> record = getRecordData(r);
             _records.add(record);
         }
     }
@@ -205,7 +205,7 @@ public class DbfFile extends DbfTableModel {
      * @throws IOException
      * @throws FormatException
      */
-    public List getRecordData(int index) throws IOException, FormatException {
+    public List<Object> getRecordData(int index) throws IOException, FormatException {
         if (bf == null) {
             throw new IOException("DbfFile not set with valid BinaryFile.");
         }
@@ -222,7 +222,7 @@ public class DbfFile extends DbfTableModel {
         // of columns to be stored out of the dbf file. The _columnMask.length
         // is the number of columns actually in the file (if that array is not
         // null).
-        ArrayList record = new ArrayList(_columnCount);
+        ArrayList<Object> record = new ArrayList<Object>(_columnCount);
         int targetColumnIndex = 0;
         for (int c = 0; c <= columnCount - 1; c++) {
 

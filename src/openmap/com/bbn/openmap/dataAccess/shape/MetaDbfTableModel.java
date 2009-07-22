@@ -29,6 +29,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -45,6 +46,7 @@ import com.bbn.openmap.util.Debug;
  */
 public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
 
+    private static final long serialVersionUID = 1L;
     public final static int META_RECORDNAME_COLUMN_NUMBER = 0;
     public final static int META_TYPE_COLUMN_NUMBER = 1;
     public final static int META_LENGTH_COLUMN_NUMBER = 2;
@@ -73,7 +75,7 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
         originalColumnNumber = numColumnCount;
 
         for (int i = 0; i < numColumnCount; i++) {
-            ArrayList record = new ArrayList();
+            List<Object> record = new ArrayList<Object>();
             record.add(source.getColumnName(i));
             record.add(new Byte(source.getType(i)));
             record.add(new Integer(source.getLength(i)));
@@ -114,8 +116,8 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
      * Remove the record at the index. This extension decreases the
      * originalColumnNumber which controls which rows[0] can be edited.
      */
-    public ArrayList remove(int columnIndex) {
-        ArrayList ret = super.remove(columnIndex);
+    public List<Object> remove(int columnIndex) {
+        List<Object> ret = super.remove(columnIndex);
         if (columnIndex < originalColumnNumber) {
             originalColumnNumber--;
         }
@@ -226,7 +228,7 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
      * DbfTableModel. Filled in with standard things that can be edited.
      */
     public void addBlankRecord() {
-        ArrayList record = new ArrayList();
+        List<Object> record = new ArrayList<Object>();
         record.add("New Column");
         record.add(DBF_TYPE_CHARACTER);
         record.add(new Integer(12));

@@ -475,6 +475,7 @@ public class SpatialIndex extends ShapeUtils {
     public EsriGraphicFactory getFactory() {
         if (factory == null) {
             factory = new EsriGraphicFactory();
+            factory.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
         }
         return factory;
     }

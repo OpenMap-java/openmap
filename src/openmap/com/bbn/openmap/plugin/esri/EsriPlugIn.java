@@ -32,7 +32,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Properties;
-import java.util.Vector;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
@@ -181,8 +180,8 @@ import com.bbn.openmap.util.PropUtils;
  * @author Lonnie Goad from OptiMetrics provided selection bug solution and GUI
  *         interaction.
  */
-public class EsriPlugIn extends BeanContextAbstractPlugIn implements
-        ShapeConstants, DataBoundsProvider {
+public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConstants,
+        DataBoundsProvider {
 
     private EsriGraphicList _list = null;
     private DbfTableModel _model = null;
@@ -203,8 +202,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
     /** The last projection. */
     protected Projection proj;
 
-    protected DrawingAttributes drawingAttributes = DrawingAttributes
-            .getDefaultClone();
+    protected DrawingAttributes drawingAttributes = DrawingAttributes.getDefaultClone();
 
     /**
      * Creates an EsriPlugIn that will be configured through the
@@ -294,7 +292,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
      * @param record
      *            A record to add to the DbfTableModel
      */
-    public void addRecord(OMGraphic graphic, ArrayList record) {
+    public void addRecord(OMGraphic graphic, ArrayList<Object> record) {
         OMGraphicList list = getEsriGraphicList();
 
         // Associate the record directly in the OMGraphic
@@ -303,8 +301,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
         // If list == null, model will be too.
         if (list != null) {
             // Might as well set the index
-            graphic.putAttribute(SHAPE_INDEX_ATTRIBUTE, new Integer(
-                    list.size() + 1));
+            graphic.putAttribute(SHAPE_INDEX_ATTRIBUTE, new Integer(list.size() + 1));
             list.add(graphic);
             _model.addRecord(record);
         } else {
@@ -340,26 +337,23 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
                 // to the shape file. - DFD
 
                 if ((shx == null || shx.equals("")) && shp != null) {
-                    shx = shp.substring(0, shp.lastIndexOf('.') + 1)
-                            + PARAM_SHX;
+                    shx = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_SHX;
                 }
 
                 if ((dbf == null || dbf.equals("")) && shp != null) {
-                    dbf = shp.substring(0, shp.lastIndexOf('.') + 1)
-                            + PARAM_DBF;
+                    dbf = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_DBF;
                 }
 
                 _model = getDbfTableModel(PropUtils.getResourceOrFileOrURL(dbf));
                 _list = getGeometry(PropUtils.getResourceOrFileOrURL(shp));
 
                 if (_model != null) {
-                    DrawingAttributesUtility
-                            .setDrawingAttributes(_list, _model,
-                                                  getDrawingAttributes());
+                    DrawingAttributesUtility.setDrawingAttributes(_list, _model,
+                                                                  getDrawingAttributes());
                 }
             } catch (MalformedURLException murle) {
-                Debug.error("EsriPlugIn|" + getName()
-                        + " Malformed URL Exception\n" + murle.getMessage());
+                Debug.error("EsriPlugIn|" + getName() + " Malformed URL Exception\n"
+                        + murle.getMessage());
             } catch (Exception exception) {
                 Debug.error("EsriPlugIn|" + getName() + " Exception\n"
                         + exception.getMessage());
@@ -372,8 +366,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
 
     public static void main(String[] argv) {
         if (argv.length == 0) {
-            System.out
-                    .println("Give EsriPlugIn a path to a shape file, and it'll print out the graphics.");
+            System.out.println("Give EsriPlugIn a path to a shape file, and it'll print out the graphics.");
             System.exit(0);
         }
 
@@ -391,19 +384,19 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
 
         }
 
-        String dbfFileName = argv[0].substring(0, argv[0].lastIndexOf('.') + 1)
-                + "dbf";
+        String dbfFileName = argv[0].substring(0, argv[0].lastIndexOf('.') + 1) + "dbf";
 
         try {
-            DbfTableModel dbf = epi.getDbfTableModel(PropUtils
-                    .getResourceOrFileOrURL(epi, dbfFileName));
+            DbfTableModel dbf = epi.getDbfTableModel(PropUtils.getResourceOrFileOrURL(
+                                                                                      epi,
+                                                                                      dbfFileName));
             if (list != null)
                 list.putAttribute(DBF_ATTRIBUTE, dbf);
             Debug.output("Set list in table");
             dbf.showGUI(dbfFileName, 0);
         } catch (Exception e) {
-            Debug.error("Can't read .dbf file for .shp file: " + dbfFileName
-                    + "\n" + e.getMessage());
+            Debug.error("Can't read .dbf file for .shp file: " + dbfFileName + "\n"
+                    + e.getMessage());
             System.exit(0);
         }
 
@@ -460,7 +453,8 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
      */
     public EsriGraphicList getGeometry(URL shp, URL shx) {
         return EsriGraphicList.getEsriGraphicList(shp, getDrawingAttributes(),
-                                                  getModel());
+                                                  getModel(),
+                                                  parentLayer.getCoordTransform());
     }
 
     /**
@@ -472,7 +466,8 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
      */
     public EsriGraphicList getGeometry(URL shp) {
         return EsriGraphicList.getEsriGraphicList(shp, getDrawingAttributes(),
-                                                  getModel());
+                                                  getModel(),
+                                                  parentLayer.getCoordTransform());
     }
 
     /**
@@ -536,8 +531,8 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
         // attributes later.
         if (_list != null) {
             if (_model != null) {
-                DrawingAttributesUtility
-                        .setDrawingAttributes(_list, _model, drawingAttributes);
+                DrawingAttributesUtility.setDrawingAttributes(_list, _model,
+                                                              drawingAttributes);
             } else {
                 drawingAttributes.setTo(_list);
             }
@@ -568,17 +563,15 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
 
-        props.put(initPropertiesProperty, PARAM_SHP + " " + PARAM_DBF + " "
-                + PARAM_SHX + drawingAttributes.getInitPropertiesOrder() + " "
+        props.put(initPropertiesProperty, PARAM_SHP + " " + PARAM_DBF + " " + PARAM_SHX
+                + drawingAttributes.getInitPropertiesOrder() + " "
                 + Layer.AddToBeanContextProperty);
 
         props.put(PARAM_SHP, "Location of a shape (.shp) file (path or URL)");
-        props
-                .put(PARAM_SHX,
-                     "Location of a index file (.shx) for the shape file (path or URL, optional)");
-        props
-                .put(PARAM_DBF,
-                     "Location of a database file (.dbf) for the shape file (path or URL, optional)");
+        props.put(PARAM_SHX,
+                  "Location of a index file (.shx) for the shape file (path or URL, optional)");
+        props.put(PARAM_DBF,
+                  "Location of a database file (.dbf) for the shape file (path or URL, optional)");
         props.put(PARAM_SHP + ScopedEditorProperty,
                   "com.bbn.openmap.util.propertyEditor.FDUPropertyEditor");
         props.put(PARAM_DBF + ScopedEditorProperty,
@@ -613,8 +606,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
         redrawSelected.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!(graphicIndex < 0)) {
-                    OMGraphic omg = getEsriGraphicList()
-                            .getOMGraphicAt(graphicIndex);
+                    OMGraphic omg = getEsriGraphicList().getOMGraphicAt(graphicIndex);
                     repaintGraphics(omg);
                 }
             }
@@ -676,8 +668,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
                     if (e.getValueIsAdjusting()) {
                         return;
                     }
-                    ListSelectionModel lsm2 = (ListSelectionModel) e
-                            .getSource();
+                    ListSelectionModel lsm2 = (ListSelectionModel) e.getSource();
                     if (lsm2.isSelectionEmpty()) {
                         // no rows are selected
                     } else {
@@ -730,9 +721,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
 
         lsm.setSelectionInterval(graphicIndex, graphicIndex);
         // scroll to the appropriate row in the table
-        getTable().scrollRectToVisible(
-                                       getTable().getCellRect(graphicIndex, 0,
-                                                              true));
+        getTable().scrollRectToVisible(getTable().getCellRect(graphicIndex, 0, true));
     }
 
     /**
@@ -832,27 +821,22 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
      *            the index of the graphic in the table
      */
     public String getDescription(int index) {
-        Vector v = new Vector();
-        String description = "";
+        StringBuffer v = new StringBuffer();
 
-        v.add("<HTML><BODY>");
+        v.append("<HTML><BODY>");
         for (int i = 0; i < getTable().getColumnCount(); i++) {
             try {
                 String column = getTable().getColumnName(i);
                 String value = (String) (getTable().getValueAt(index, i) + "");
-                v.add((i == 0 ? "<b>" : "<BR><b>") + column + ":</b> " + value);
+                v.append((i == 0 ? "<b>" : "<BR><b>") + column + ":</b> " + value);
             } catch (NullPointerException npe) {
             } catch (IndexOutOfBoundsException obe) {
             }
         }
 
-        v.add("</BODY></HTML>");
+        v.append("</BODY></HTML>");
 
-        for (int i = 0; i < v.size(); i++) {
-            description += (String) (v.elementAt(i));
-        }
-
-        return description;
+        return v.toString();
     }
 
     protected JPanel daGUI = null;
