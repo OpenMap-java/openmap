@@ -179,12 +179,10 @@ public class GeoIntersectionLayer extends EditorLayer implements
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
         shapeDASelected.setProperties(prefix + "selected", props);
 
-        Vector v = PropUtils.parseSpacedMarkers(props.getProperty(prefix
+        Vector<String> v = PropUtils.parseSpacedMarkers(props.getProperty(prefix
                 + ShapeFileListProperty));
 
-        for (Iterator it = v.iterator(); it.hasNext();) {
-            String markerName = (String) it.next();
-
+        for (String markerName : v) {
             String shapeFileName = props.getProperty(prefix + markerName);
             if (shapeFileName != null) {
                 File sf = new File(shapeFileName);
@@ -238,9 +236,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
         intersectionResultList.clear();
         ExtentIndex rIndex = getRegionIndex(true);
 
-        for (Iterator it = drawnList.iteratorCopy(); it.hasNext();) {
-
-            OMGraphic omg = (OMGraphic) it.next();
+        for (OMGraphic omg : drawnList) {
 
             if (omg instanceof OMLine
                     || (omg instanceof OMPoly && !((OMPoly) omg).isPolygon())) {
@@ -441,13 +437,12 @@ public class GeoIntersectionLayer extends EditorLayer implements
     }
 
     protected void setShapeListVisibilityForCheckbox() {
-        for (Iterator it = fileDataList.iterator(); it.hasNext();) {
-            Object obj = it.next();
+        for (OMGraphic obj : fileDataList) {
             if (obj instanceof OMGraphicList) {
                 OMGraphicList omgl = (OMGraphicList) obj;
-                obj = omgl.getAttribute(SHAPE_VISIBILITY_CONTROL_ATTRIBUTE);
-                if (obj != null) {
-                    omgl.setVisible(((JCheckBox) obj).isSelected());
+                JCheckBox jcb = (JCheckBox) omgl.getAttribute(SHAPE_VISIBILITY_CONTROL_ATTRIBUTE);
+                if (jcb != null) {
+                    omgl.setVisible(jcb.isSelected());
                 }
             }
 
@@ -564,9 +559,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
     }
 
     public void select(OMGraphicList omgl) {
-        for (Iterator it = omgl.iterator(); it.hasNext();) {
-
-            OMGraphic omg = (OMGraphic) it.next();
+        for (OMGraphic omg : omgl) {
             if (drawnList != null && drawnList.contains(omg)) {
                 super.select(omgl);
             } else if (createPointCheck) {
@@ -651,8 +644,8 @@ public class GeoIntersectionLayer extends EditorLayer implements
         c.weightx = 1.0;
 
         getRegionIndex(false).clear();
-        for (Iterator it = fileDataList.iterator(); it.hasNext();) {
-            Object obj = it.next();
+        for (OMGraphic obj : fileDataList) {
+
             if (obj instanceof EsriGraphicList) {
                 EsriGraphicList shapeList = (EsriGraphicList) obj;
                 JPanel control = (JPanel) shapeList.getAttribute(SHAPE_CONTROL_ATTRIBUTE);
