@@ -40,10 +40,9 @@ public class GraphicSelectedState extends State implements EOMGSelectedState {
     }
 
     /**
-     * In this state, we need to change states only if the graphic, or
-     * anyplace off the graphic is pressed down on. If the end points
-     * are clicked on, then we do nothing except set the moving point
-     * and go to edit mode.
+     * In this state, we need to change states only if the graphic, or anyplace
+     * off the graphic is pressed down on. If the end points are clicked on,
+     * then we do nothing except set the moving point and go to edit mode.
      */
     public boolean mousePressed(MouseEvent e) {
         Debug.message("eomg", "GraphicStateMachine|selected state|mousePressed");
@@ -54,8 +53,7 @@ public class GraphicSelectedState extends State implements EOMGSelectedState {
         // selected
         // mode.
         if (mp == null) {
-            float distance = graphic.getGraphic().distance(e.getX(), e.getY());
-            if (distance <= 2) {
+            if (graphic.isMouseEventTouching(e)) {
                 if (graphic.getCanGrabGraphic()) {
 
                     // No point was selected, but the graphic was. Get
@@ -73,8 +71,7 @@ public class GraphicSelectedState extends State implements EOMGSelectedState {
                 graphic.fireEvent(EOMGCursors.DEFAULT, "");
             } else {
                 Debug.message("eomg",
-                        "GraphicStateMachine|selected state|mousePressed - click off graphic, "
-                                + distance + " away");
+                        "GraphicStateMachine|selected state|mousePressed - click off graphic");
                 graphic.fireEvent(EOMGCursors.DEFAULT, "");
                 // Preparing for deactivation, why bother
                 // repainting...
@@ -102,7 +99,7 @@ public class GraphicSelectedState extends State implements EOMGSelectedState {
         // selected
         // mode.
         if (mp == null) {
-            if (graphic.getGraphic().distance(e.getX(), e.getY()) <= 2) {
+            if (graphic.isMouseEventTouching(e)) {
                 if (graphic.getCanGrabGraphic()) {
 
                     graphic.fireEvent(EOMGCursors.EDIT, "", e);
@@ -137,7 +134,7 @@ public class GraphicSelectedState extends State implements EOMGSelectedState {
         // selected
         // mode.
         if (mp == null) {
-            if (graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
+            if (graphic.isMouseEventTouching(e)) {
                 graphic.fireEvent(EOMGCursors.EDIT,
                         i18n.get(GraphicSelectedState.class,
                                 "Click_and_Drag_to_move_the_graphic.",

@@ -37,10 +37,15 @@ import java.awt.event.ComponentListener;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JComponent;
 import javax.swing.OverlayLayout;
@@ -120,6 +125,8 @@ public class MapBean extends JComponent implements ComponentListener,
         ContainerListener, ProjectionListener, PanListener, ZoomListener,
         LayerListener, CenterListener, SoloMapComponent {
 
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.MapBean");
+
     public static final String LayersProperty = "MapBean.layers";
 
     public static final String CursorProperty = "MapBean.cursor";
@@ -146,9 +153,9 @@ public class MapBean extends JComponent implements ComponentListener,
      */
     public static boolean suppressCopyright = false;
 
-    private static final boolean DEBUG_TIMESTAMP = false;
+    private static boolean DEBUG_TIMESTAMP = false;
 
-    private static final boolean DEBUG_THREAD = true;
+    private static boolean DEBUG_THREAD = true;
 
     private static final String copyrightNotice = "OpenMap(tm) Version "
             + version + "\r\n"
@@ -234,7 +241,7 @@ public class MapBean extends JComponent implements ComponentListener,
     public MapBean() {
         this(true);
     }
-    
+
     public MapBean(boolean useThreadedNotification) {
         if (Debug.debugging("mapbean")) {
             debugmsg("MapBean()");
@@ -270,6 +277,9 @@ public class MapBean extends JComponent implements ComponentListener,
         }
 
         setPreferredSize(new Dimension(projection.getWidth(), projection.getHeight()));
+
+        DEBUG_TIMESTAMP = logger.isLoggable(Level.FINER);
+        DEBUG_THREAD = logger.isLoggable(Level.FINER);
     }
 
     /**
@@ -387,8 +397,8 @@ public class MapBean extends JComponent implements ComponentListener,
      * @param e ComponentEvent
      */
     public void componentResized(ComponentEvent e) {
-        if (Debug.debugging("mapbean")) {
-            debugmsg("Size changed: " + getWidth() + " x " + getHeight());
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Size changed: " + getWidth() + " x " + getHeight());
         }
         projection.setWidth(getWidth());
         projection.setHeight(getHeight());
@@ -455,12 +465,12 @@ public class MapBean extends JComponent implements ComponentListener,
      * about a projection change.
      */
     protected void fireProjectionChanged() {
-        
+
         // Fire the property change, so the messages get cleared out.
         // Then, if any of the layers have a problem with their new
         // projection, their messages will be displayed.
-        if (Debug.debugging("proj")) {
-            Debug.output("MapBean firing projection: " + getProjection());
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("MapBean firing projection: " + getProjection());
         }
         try {
             firePropertyChange(ProjectionProperty, null, getProjection());
@@ -690,7 +700,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * @param evt the incoming pan event
      */
     public void pan(PanEvent evt) {
-        if (Debug.debugging("mapbean")) {
+        if (logger.isLoggable(Level.FINE)) {
             debugmsg("PanEvent: " + evt);
         }
         float az = evt.getAzimuth();
@@ -825,8 +835,9 @@ public class MapBean extends JComponent implements ComponentListener,
         int ncomponents = comps.length;
         Layer[] newLayers = new Layer[ncomponents];
         System.arraycopy(comps, 0, newLayers, 0, ncomponents);
-        if (Debug.debugging("mapbean"))
+        if (logger.isLoggable(Level.FINE)) {
             debugmsg("changeLayers() - firing change");
+        }
         firePropertyChange(LayersProperty, currentLayers, newLayers);
 
         // Tell the new layers that they have been added
@@ -878,7 +889,7 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     protected final void debugmsg(String msg) {
-        Debug.output(this.toString()
+        logger.fine(this.toString()
                 + (DEBUG_TIMESTAMP ? (" [" + System.currentTimeMillis() + "]")
                         : "")
                 + (DEBUG_THREAD ? (" [" + Thread.currentThread() + "]") : "")
@@ -939,15 +950,56 @@ public class MapBean extends JComponent implements ComponentListener,
         }
 
         drawProjectionBackground(g);
-        super.paintChildren(g);
 
-        // Take care of the PaintListeners...
-        if (painters != null) {
-            painters.paint(g);
+        if (rot != null) {
+
+            int w = getWidth();
+            int h = getHeight();
+            java.awt.Image daImage = createVolatileImage(w, h);
+            Graphics2D g2 = (Graphics2D) daImage.getGraphics();
+            g2.setColor(Color.black);
+            g2.fillRect(0, 0, w, h);
+
+            // This Ellipse can be set to get a circular map area.
+            // double dim = Math.min(w, h);
+            // g2.setClip(new Ellipse2D.Double((w - dim) / 2, 0, dim, dim));
+            g2.setTransform(rot);
+
+            // This just lets the map be drawn according to the standard
+            // rectangle clip area.
+            g2.setClip(clip);
+            super.paintChildren(g2);
+
+            // Take care of the PaintListeners...
+            if (painters != null) {
+                painters.paint(g2);
+            }
+
+            g2.dispose();
+
+        } else {
+            // Normal painting
+            super.paintChildren(g);
+
+            // Take care of the PaintListeners...
+            if (painters != null) {
+                painters.paint(g);
+            }
         }
 
         // border gets overwritten accidentally, so redraw it now
         paintBorder(g);
+    }
+
+    public Graphics getGraphics() {
+        if (rot == null) {
+            return super.getGraphics();
+        } else {
+            Graphics2D g = (Graphics2D) super.getGraphics().create();
+            g.setTransform(rot);
+            g.setClip(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
+            return g;
+        }
     }
 
     /**
@@ -1026,7 +1078,7 @@ public class MapBean extends JComponent implements ComponentListener,
         // layers
         // add a new set
         if (type == LayerEvent.REPLACE) {
-            if (Debug.debugging("mapbean")) {
+            if (logger.isLoggable(Level.FINE)) {
                 debugmsg("Replacing all layers");
             }
             removeAll();
@@ -1039,7 +1091,7 @@ public class MapBean extends JComponent implements ComponentListener,
                     continue;
                 }
 
-                if (Debug.debugging("mapbean")) {
+                if (logger.isLoggable(Level.FINE)) {
                     debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
                 }
                 add(layers[i]);
@@ -1050,11 +1102,11 @@ public class MapBean extends JComponent implements ComponentListener,
 
         // use LayerEvent.ADD when adding and/or reshuffling layers
         else if (type == LayerEvent.ADD) {
-            if (Debug.debugging("mapbean")) {
+            if (logger.isLoggable(Level.FINE)) {
                 debugmsg("Adding new layers");
             }
             for (int i = 0; i < layers.length; i++) {
-                if (Debug.debugging("mapbean")) {
+                if (logger.isLoggable(Level.FINE)) {
                     debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
                 }
                 add(layers[i]);
@@ -1065,11 +1117,11 @@ public class MapBean extends JComponent implements ComponentListener,
         // use LayerEvent.REMOVE when you want to delete layers from
         // the map
         else if (type == LayerEvent.REMOVE) {
-            if (Debug.debugging("mapbean")) {
+            if (logger.isLoggable(Level.FINE)) {
                 debugmsg("Removing layers");
             }
             for (int i = 0; i < layers.length; i++) {
-                if (Debug.debugging("mapbean")) {
+                if (logger.isLoggable(Level.FINE)) {
                     debugmsg("Removing layer[" + i + "]= "
                             + layers[i].getName());
                 }
@@ -1122,7 +1174,7 @@ public class MapBean extends JComponent implements ComponentListener,
      * Convenience function to get the LatLonPoint representing a screen
      * location from a MouseEvent. Returns null if the event is null, or if the
      * projection is not set in the MapBean. Allocates new LatLonPoint with
-     * coordinates.
+     * coordinates. Takes rotation set on MapBean into account.
      */
     public Point2D getCoordinates(MouseEvent event) {
         return getCoordinates(event, null);
@@ -1132,19 +1184,84 @@ public class MapBean extends JComponent implements ComponentListener,
      * Convenience function to get the LatLonPoint representing a screen
      * location from a MouseEvent. Returns null if the event is null, or if the
      * projection is not set in the MapBean. Save on memory allocation by
-     * sending in the LatLonPoint to fill.
+     * sending in the LatLonPoint to fill. Takes rotation set on MapBean into
+     * account.
      */
-    public Point2D getCoordinates(MouseEvent event, Point2D llp) {
+    public <T extends Point2D> T getCoordinates(MouseEvent event, T llp) {
         Projection proj = getProjection();
         if (proj == null || event == null) {
             return null;
         }
 
-        if (llp == null) {
-            return proj.inverse(event.getX(), event.getY());
-        } else {
-            return proj.inverse(event.getX(), event.getY(), llp);
+        return inverse(event.getX(), event.getY(), llp);
+    }
+
+    /**
+     * Convenience function to get the pixel Point2D representing a screen
+     * location from a MouseEvent in the projection space (as if there is no
+     * rotation set). Returns null if the event is null. This is used to talk to
+     * the OMGraphics, since they don't know about the map rotation.
+     */
+    public Point2D getNonRotatedLocation(MouseEvent event) {
+        return getNonRotatedLocation(event, null);
+    }
+
+    /**
+     * Convenience function to get the pixel Point2D representing a screen
+     * location from a MouseEvent in the projection space (as if there is no
+     * rotation set). Returns null if the event is null. This is used to talk to
+     * the OMGraphics, since they don't know about the map rotation.
+     */
+    public Point2D getNonRotatedLocation(MouseEvent event, Point2D pnt) {
+        if (event == null) {
+            return null;
         }
+
+        if (pnt == null) {
+            pnt = new Point2D.Double(event.getX(), event.getY());
+        } else {
+            pnt.setLocation(event.getX(), event.getY());
+        }
+
+        if (rot != null) {
+            try {
+                rot.inverseTransform(pnt, pnt);
+            } catch (NoninvertibleTransformException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        return pnt;
+    }
+
+    /**
+     * Checks the rotation set on the MapBean and accounts for it before calling
+     * inverse on the projection.
+     * 
+     * @param <T>
+     * @param x horizontal window pixel from left side
+     * @param y vertical window pixel from top
+     * @param ret Point2D object returned with coordinates suitable for
+     *        projection where mouse event is.
+     * @return ret, or new Point2D object from projection if ret is null.
+     */
+    public <T extends Point2D> T inverse(double x, double y, T ret) {
+        if (rot == null) {
+            ret = getProjection().inverse(x, y, ret);
+        } else {
+            Point2D pnt = new Point2D.Double(x, y);
+
+            try {
+                pnt = rot.inverseTransform(pnt, pnt);
+                ret = getProjection().inverse(pnt, ret);
+            } catch (NoninvertibleTransformException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        return ret;
     }
 
     /**
@@ -1230,6 +1347,35 @@ public class MapBean extends JComponent implements ComponentListener,
 
     public void setProjectionFactory(ProjectionFactory projFactory) {
         projectionFactory = projFactory;
+    }
+
+    protected double angle;
+    protected AffineTransform rot;
+
+    /**
+     * Set the rotation of the map in RADIANS
+     * @param angle
+     */
+    public void setRotation(double angle) {
+
+        this.angle = angle;
+        if (angle != 0) {
+            this.rot = AffineTransform.getRotateInstance(angle,
+                    getWidth() / 2.0,
+                    getHeight() / 2.0);
+        } else {
+            rot = null;
+        }
+
+        repaint();
+    }
+
+    /**
+     * Get the rotation of the map in RADIANS.
+     * @return
+     */
+    public double getRotation() {
+        return angle;
     }
 
 }

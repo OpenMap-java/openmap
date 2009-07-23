@@ -251,7 +251,7 @@ public interface OMGeometry {
      * @return float distance, in pixels, from graphic to the point. Returns
      *         Float.POSITIVE_INFINITY if the graphic isn't ready (ungenerated).
      */
-    public float distance(int x, int y);
+    public float distance(double x, double y);
 
     /**
      * Return the shortest distance from the edge of a geometry to an XY-point.
@@ -262,7 +262,7 @@ public interface OMGeometry {
      * @return float distance, in pixels, from graphic to the point. Returns
      *         Float.POSITIVE_INFINITY if the geometry isn't ready (ungenerated).
      */
-    public float distanceToEdge(int x, int y);
+    public float distanceToEdge(double x, double y);
     
     /**
      * Answsers the question whether or not the OMGeometry contains the given
@@ -284,7 +284,7 @@ public interface OMGeometry {
      * @return getShape().contains(x, y), false if the OMGraphic hasn't been
      *         generated yet.
      */
-    public boolean contains(int x, int y);
+    public boolean contains(double x, double y);
 
     /**
      * Invoke this to regenerate a "dirty" graphic. This method is a wrapper

@@ -23,7 +23,6 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Graphics;
-import java.io.Serializable;
 
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;

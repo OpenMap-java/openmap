@@ -22,42 +22,54 @@
 
 package com.bbn.openmap.gui.menu;
 
-import com.bbn.openmap.LightMapHandlerChild;
-import com.bbn.openmap.gui.ToolPanel;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.JMenuItem;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.gui.ToolPanel;
+
 /**
- * Menu item that holds onto the tool panel, and hides/displays it
- * when selected. Since the ToolPanel will make itself invisible if
- * all of its components are invisible, this menu item will disable
- * itself when the ToolPanel has set itself to be invisible, and
- * vice-versa.
+ * Menu item that holds onto the tool panel, and hides/displays it when
+ * selected. Since the ToolPanel will make itself invisible if all of its
+ * components are invisible, this menu item will disable itself when the
+ * ToolPanel has set itself to be invisible, and vice-versa.
  */
 public class ToolPanelToggleMenuItem extends JMenuItem implements
-        ActionListener, LightMapHandlerChild, ComponentListener {
+        ActionListener, ComponentListener, PropertyChangeListener {
 
     protected ToolPanel toolPanel = null;
-    protected final static String hideLabel = "Hide Tool Panel";
-    protected final static String displayLabel = "Display Tool Panel";
+
+    public final static String HideLabelProperty = "hide";
+    public final static String DisplayLabelProperty = "display";
+
+    protected final static String DefaultHideLabel = "Hide";
+    protected final static String DefaultDisplayLabel = "Display";
+    protected final static String DefaultToolPanelName = "Tool Panel";
+
+    protected String hideLabel = DefaultHideLabel;
+    protected String displayLabel = DefaultDisplayLabel;
 
     public ToolPanelToggleMenuItem() {
         // assume that the tool panel isn't there.
         // Won't be visible if it isn't.
-        super(hideLabel);
+        super(DefaultHideLabel);
         init(null);
     }
 
     public ToolPanelToggleMenuItem(ToolPanel tp) {
-        super(tp.isVisible() ? hideLabel : displayLabel);
+        super(tp.isVisible() ? DefaultHideLabel : DefaultDisplayLabel);
         init(tp);
     }
 
     public void init(ToolPanel tp) {
+        setI18NLabels(tp);
         setToolPanel(tp);
         addActionListener(this);
     }
@@ -65,6 +77,7 @@ public class ToolPanelToggleMenuItem extends JMenuItem implements
     public void setToolPanel(ToolPanel tp) {
         if (toolPanel != null) {
             toolPanel.removeComponentListener(this);
+            toolPanel.removePropertyChangeListener(this);
         }
 
         toolPanel = tp;
@@ -72,6 +85,7 @@ public class ToolPanelToggleMenuItem extends JMenuItem implements
 
         if (toolPanel != null) {
             toolPanel.addComponentListener(this);
+            toolPanel.addPropertyChangeListener(this);
             stateCheck();
         }
     }
@@ -92,17 +106,8 @@ public class ToolPanelToggleMenuItem extends JMenuItem implements
         }
     }
 
-    public void findAndInit(Object someObj) {
-        if (someObj instanceof ToolPanel) {
-            setToolPanel((ToolPanel) someObj);
-        }
-    }
-
-    public void findAndUndo(Object someObj) {
-        if (someObj instanceof ToolPanel
-                && getToolPanel() == (ToolPanel) someObj) {
-            setToolPanel(null);
-        }
+    public void dispose() {
+        setToolPanel(null);
     }
 
     /**
@@ -126,5 +131,36 @@ public class ToolPanelToggleMenuItem extends JMenuItem implements
 
     public void componentShown(ComponentEvent ce) {
         stateCheck();
+    }
+
+    public void propertyChange(PropertyChangeEvent evt) {
+        String propertyName = evt.getPropertyName();
+        if (propertyName.equals(ToolPanel.MembershipProperty)) {
+            stateCheck();
+        }
+
+    }
+
+    protected void setI18NLabels(ToolPanel tp) {
+
+        I18n i18n = Environment.getI18n();
+        String name = DefaultToolPanelName;
+        if (tp != null) {
+            name = tp.getName();
+        }
+
+        String interString = i18n.get(ToolPanelToggleMenuItem.class,
+                HideLabelProperty,
+                I18n.TOOLTIP,
+                hideLabel);
+
+        hideLabel = interString + " " + name;
+
+        interString = i18n.get(ToolPanelToggleMenuItem.class,
+                DisplayLabelProperty,
+                I18n.TOOLTIP,
+                displayLabel);
+
+        displayLabel = interString + " " + name;
     }
 }

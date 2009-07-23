@@ -514,7 +514,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * @return float distance, in pixels, from graphic to the point. Returns
      *         Float.POSITIVE_INFINITY if the graphic isn't ready (ungenerated).
      */
-    public float distanceToEdge(int x, int y) {
+    public float distanceToEdge(double x, double y) {
         float distance = Float.POSITIVE_INFINITY;
 
         if (getNeedToRegenerate() || shape == null) {
@@ -593,7 +593,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * @return float distance, in pixels, from graphic to the point. Returns
      *         Float.POSITIVE_INFINITY if the graphic isn't ready (ungenerated).
      */
-    public float distance(int x, int y) {
+    public float distance(double x, double y) {
         return _distance(x, y);
     }
 
@@ -612,14 +612,14 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * @return float distance, in pixels, from graphic to the point. Returns
      *         Float.POSITIVE_INFINITY if the graphic isn't ready (ungenerated).
      */
-    protected float _distance(int x, int y) {
+    protected float _distance(double x, double y) {
         float distance = Float.POSITIVE_INFINITY;
 
         if (getNeedToRegenerate() || shape == null) {
             return distance;
         }
 
-        if (shape.contains((double) x, (double) y)) {
+        if (shape.contains(x, y)) {
             // if (Debug.debugging("omgraphicdetail")) {
             // Debug.output(" contains " + x + ", " + y);
             // }
@@ -649,12 +649,12 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * @return getShape().contains(x, y), false if the OMGraphic hasn't been
      *         generated yet.
      */
-    public boolean contains(int x, int y) {
+    public boolean contains(double x, double y) {
         Shape shape = getShape();
         boolean ret = false;
 
         if (shape != null) {
-            ret = shape.contains((double) x, (double) y);
+            ret = shape.contains(x, y);
         }
 
         return ret;

@@ -53,7 +53,7 @@ public interface OMLabeler {
      * @param y pixel distance from top of map window.
      * @return distance in pixels from label text to given point.
      */
-    public float distance(int x, int y);
+    public float distance(double x, double y);
 
     /**
      * The OMLabeler should be able to determine its pixel location

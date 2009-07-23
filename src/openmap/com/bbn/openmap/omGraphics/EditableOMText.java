@@ -209,16 +209,18 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
 
         movingPoint = null;
         GrabPoint[] gb = getGrabPoints();
-        int x = e.getX();
-        int y = e.getY();
-
+        
+        Point2D pnt = getProjectionPoint(e);
+        double x = pnt.getX();
+        double y = pnt.getY();
+        
         for (int i = gb.length - 1; i >= 0; i--) {
 
             if (gb[i] != null && gb[i].distance(x, y) == 0) {
 
                 setMovingPoint(gb[i]);
                 // in case the points are on top of each other, the
-                // last point in the array will take precidence.
+                // last point in the array will take precedence.
                 break;
             }
         }

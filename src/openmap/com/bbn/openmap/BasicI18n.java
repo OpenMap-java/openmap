@@ -605,7 +605,7 @@ public class BasicI18n implements I18n, Serializable {
         }
     }
 
-    private static String shortClassName(Class c) {
+    public static String shortClassName(Class c) {
         String name = c.getName();
         return name.substring(name.lastIndexOf(".") + 1);
     }

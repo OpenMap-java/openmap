@@ -146,7 +146,7 @@ public abstract class CoordMouseMode extends AbstractMouseMode implements
 
         if (infoDelegator != null) {
             if (e.getSource() instanceof MapBean) {
-                llp = ((MapBean) e.getSource()).getProjection().inverse(x, y);
+                llp = ((MapBean) e.getSource()).getCoordinates(e);
             }
             String infoLine;
             infoLine = coordFormatter.createCoordinateInformationLine(x,

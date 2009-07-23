@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.util.List;
 
 import javax.swing.JPopupMenu;
@@ -296,7 +297,15 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
         if (layer != null) {
             list = layer.getList();
             if (list != null) {
-                omg = list.findClosest(me.getX(), me.getY(), 4);
+                int x = me.getX();
+                int y = me.getY();
+                if (me instanceof MapMouseEvent) {
+                    Point2D pnt = ((MapMouseEvent) me).getProjectedLocation();
+                    x = (int) pnt.getX();
+                    y = (int) pnt.getY();
+                }
+
+                omg = list.findClosest(x, y, 4);
             } else {
                 if (DEBUG) {
                     Debug.output("SMMI: no layer to evaluate mouse event");

@@ -22,7 +22,10 @@
 
 package com.bbn.openmap;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
 
@@ -44,12 +47,12 @@ import com.bbn.openmap.util.Debug;
 public class BufferedMapBean extends MapBean {
 
     protected boolean bufferDirty = true;
-    protected java.awt.Image drawingBuffer = null;
-    
+    protected Image drawingBuffer = null;
+
     public BufferedMapBean() {
         super();
     }
-    
+
     public BufferedMapBean(boolean useThreadedNotification) {
         super(useThreadedNotification);
     }
@@ -130,7 +133,7 @@ public class BufferedMapBean extends MapBean {
             int h = getHeight();
 
             if (drawingBuffer == null) {
-                drawingBuffer = createImage(w, h);
+                drawingBuffer = createVolatileImage(w, h);
             }
 
             // draw the old image
@@ -155,19 +158,47 @@ public class BufferedMapBean extends MapBean {
             Debug.output("BufferedMapBean.rendering buffer.");
         }
 
+        Image daImage = drawingBuffer;
+
         // Should be be clipping the graphics here? I'm not sure.
         // Think so.
         if (clip != null) {
             g.setClip(clip);
         }
 
-        // draw the buffer to the screen
-        g.drawImage(drawingBuffer, 0, 0, null);
+        if (rot != null) {
+            int w = getWidth();
+            int h = getHeight();
+            daImage = createVolatileImage(w, h);
+            Graphics2D g2 = (Graphics2D) daImage.getGraphics();
+            g2.setColor(Color.black);
+            g2.fillRect(0, 0, w, h);
 
-        // Take care of the PaintListeners
-        if (painters != null) {
+            // This Ellipse can be set to get a circular map area.
+//            double dim = Math.min(w, h);
+//            g2.setClip(new Ellipse2D.Double((w - dim) / 2, 0, dim, dim));
+            g2.setTransform(rot);
+            
+            // This just lets the map be drawn according to the standard rectangle clip area. 
+            g2.setClip(clip);
+            g2.drawImage(drawingBuffer, 0, 0, null);
+
+            // Take care of the PaintListeners
+            if (painters != null) {
+                painters.paint(g2);
+            }
+            
+            g2.dispose();
+        }
+
+        // draw the buffer to the screen, daImage will be drawingBuffer without rotation
+        g.drawImage(daImage, 0, 0, null);
+
+        // Take care of the PaintListeners for no rotation
+        if (rot == null && painters != null) {
             painters.paint(g);
         }
+        
         // border gets overwritten accidentally, so redraw it now
         paintBorder(g);
     }

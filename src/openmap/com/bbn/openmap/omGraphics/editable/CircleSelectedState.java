@@ -51,9 +51,8 @@ public class CircleSelectedState extends GraphicSelectedState {
         // selected
         // mode.
         if (mp == null) {
-            if ((graphic.getGraphic().getRenderType() != OMGraphic.RENDERTYPE_LATLON && graphic.getGraphic()
-                    .distance(e.getX(), e.getY()) <= 2)
-                    || graphic.getGraphic().distanceToEdge(e.getX(), e.getY()) <= 2) {
+            if ((graphic.getGraphic().getRenderType() != OMGraphic.RENDERTYPE_LATLON && graphic.isMouseEventTouching(e))
+                    || graphic.isMouseEventTouchingTheEdge(e)) {
 
                 if (graphic.getCanGrabGraphic()) {
                     // No point was selected, but the graphic was. Get
@@ -93,7 +92,7 @@ public class CircleSelectedState extends GraphicSelectedState {
 
         if (mp == null) {
             if (graphic.getCanGrabGraphic()
-                    && graphic.getGraphic().distanceToEdge(e.getX(), e.getY()) < 2) {
+                    && graphic.isMouseEventTouchingTheEdge(e)) {
 
                 graphic.fireEvent(EOMGCursors.EDIT,
                         i18n.get(CircleSelectedState.class,

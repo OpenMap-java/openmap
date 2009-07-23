@@ -27,6 +27,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -1025,13 +1026,18 @@ public class EditableOMPoly extends EditableOMAbstractLine {
         // Need to check to see if the OffsetGrabPoint is currently
         // being used. If not, just use it, otherwise, will need to
         // create a special one for the move.
+        
+        Point2D pnt = getProjectionPoint(e);
+        int x = (int) pnt.getX();
+        int y = (int) pnt.getY();
+        
         if (poly.getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
-            gpm = new OffsetGrabPoint(e.getX(), e.getY());
+            gpm = new OffsetGrabPoint(x, y);
             gpm.clear();
         } else {
             gpm = gpo;
             gpm.clear();
-            gpm.set(e.getX(), e.getY());
+            gpm.set(x, y);
         }
 
         // Move all the other points along with the offset point...

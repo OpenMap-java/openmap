@@ -71,7 +71,7 @@ import com.bbn.openmap.util.PropUtils;
  * <pre>
  * 
  *      prefix.units= &amp;lt name for Length.java (km, miles, meters, nm, all) &amp;gt
- *  
+ * 
  * </pre>
  * 
  * Note that "all" will display nm, km, and miles.
@@ -273,9 +273,9 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param e mouse event.
      */
     public void mouseClicked(MouseEvent e) {
-        
+
         mouseSupport.fireMapMouseClicked(e);
-        
+
         if (e.getSource() instanceof MapBean) {
             // if double (or more) mouse clicked
             if (e.getClickCount() >= 2) {
@@ -318,7 +318,9 @@ public class DistanceMouseMode extends CoordMouseMode {
             }
 
             // anchor the new first point of the line
-            rPoint1 = theMap.getProjection().inverse(e.getPoint());
+            rPoint1 = theMap.getCoordinates(e);
+            Debug.output("anchoring at : " + rPoint1);
+            
             // ensure the second point is not yet set.
             rPoint2 = null;
             // add the anchor point to the list of line segments
@@ -340,13 +342,13 @@ public class DistanceMouseMode extends CoordMouseMode {
         if (e.getSource() instanceof MapBean) {
             // only when the mouse has already been pressed
             if (mousePressed) {
-                float lat1, lat2, long1, long2;
+                double lat1, lat2, long1, long2;
                 // set the map bean
                 theMap = (MapBean) (e.getSource());
                 // erase the old line and circle first
                 paintRubberband(rPoint1, rPoint2);
                 // get the current mouse location in latlon
-                rPoint2 = theMap.getProjection().inverse(e.getPoint());
+                rPoint2 = theMap.getCoordinates(e);
                 // paint the new line and circle up to the current
                 // mouse location
                 paintRubberband(rPoint1, rPoint2);
@@ -355,21 +357,21 @@ public class DistanceMouseMode extends CoordMouseMode {
                     Debug.message("mousemodedetail",
                             "DistanceMouseMode: firing mouse location");
                     // lat, lon of anchor point
-                    lat1 = (float) rPoint1.getY();
-                    long1 = (float) rPoint1.getX();
+                    lat1 = rPoint1.getY();
+                    long1 = rPoint1.getX();
                     // lat, lon of current mouse position
-                    lat2 = (float) rPoint2.getY();
-                    long2 = (float) rPoint2.getX();
+                    lat2 = rPoint2.getY();
+                    long2 = rPoint2.getX();
                     // calculate great circle distance in nm
                     // distance = getGreatCircleDist(lat1, long1,
                     // lat2, long2, Length.NM);
-                    distance = (double) GreatCircle.sphericalDistance(ProjMath.degToRad(lat1),
+                    distance = GreatCircle.sphericalDistance(ProjMath.degToRad(lat1),
                             ProjMath.degToRad(long1),
                             ProjMath.degToRad(lat2),
                             ProjMath.degToRad(long2));
 
                     // calculate azimuth angle dec deg
-                    float azimuth = getSphericalAzimuth(lat1,
+                    double azimuth = getSphericalAzimuth(lat1,
                             long1,
                             lat2,
                             long2);
@@ -479,7 +481,7 @@ public class DistanceMouseMode extends CoordMouseMode {
         g.setColor(java.awt.Color.darkGray);
         if (pt1 != null && pt2 != null) {
             // the line connecting the segments
-            OMLine cLine = new OMLine((float) pt1.getY(), (float) pt1.getX(), (float) pt2.getY(), (float) pt2.getX(), lineType);
+            OMLine cLine = new OMLine(pt1.getY(), pt1.getX(), pt2.getY(), pt2.getX(), lineType);
             // get the map projection
             Projection proj = theMap.getProjection();
             // prepare the line for rendering
@@ -516,19 +518,19 @@ public class DistanceMouseMode extends CoordMouseMode {
             g.setColor(java.awt.Color.darkGray);
             if (pt1 != null && pt2 != null) {
                 // first convert degrees to radians
-                float radphi1 = (float) ProjMath.degToRad(pt1.getY());
-                float radlambda0 = (float) ProjMath.degToRad(pt1.getX());
-                float radphi = (float) ProjMath.degToRad(pt2.getY());
-                float radlambda = (float) ProjMath.degToRad(pt2.getX());
+                double radphi1 = ProjMath.degToRad(pt1.getY());
+                double radlambda0 = ProjMath.degToRad(pt1.getX());
+                double radphi = ProjMath.degToRad(pt2.getY());
+                double radlambda = ProjMath.degToRad(pt2.getX());
                 // calculate the circle radius
                 double dRad = GreatCircle.sphericalDistance(radphi1,
                         radlambda0,
                         radphi,
                         radlambda);
                 // convert into decimal degrees
-                float rad = (float) ProjMath.radToDeg(dRad);
+                double rad = ProjMath.radToDeg(dRad);
                 // make the circle
-                OMCircle circle = new OMCircle((float) pt1.getY(), (float) pt1.getX(), rad);
+                OMCircle circle = new OMCircle(pt1.getY(), pt1.getX(), rad);
                 // get the map projection
                 Projection proj = theMap.getProjection();
                 // prepare the circle for rendering
@@ -604,14 +606,14 @@ public class DistanceMouseMode extends CoordMouseMode {
      *        DISTANCE_MILE or all 3 types DISTANCE_ALL
      * @return double distance in chosen unit
      */
-    public double getGreatCircleDist(float phi1, float lambda0, float phi,
-                                     float lambda, int units) {
+    public double getGreatCircleDist(double phi1, double lambda0, double phi,
+                                     double lambda, int units) {
         double dist = 0;
         // convert arguments to radians
-        float radphi1 = ProjMath.degToRad(phi1);
-        float radlambda0 = ProjMath.degToRad(lambda0);
-        float radphi = ProjMath.degToRad(phi);
-        float radlambda = ProjMath.degToRad(lambda);
+        double radphi1 = ProjMath.degToRad(phi1);
+        double radlambda0 = ProjMath.degToRad(lambda0);
+        double radphi = ProjMath.degToRad(phi);
+        double radlambda = ProjMath.degToRad(lambda);
         // get the spherical distance in radians between the two
         // points
         double distRad = (double) GreatCircle.sphericalDistance(radphi1,
@@ -642,15 +644,15 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param lambda longitude in decimal degrees of end point
      * @return float azimuth angle in degrees
      */
-    public float getSphericalAzimuth(float phi1, float lambda0, float phi,
-                                     float lambda) {
+    public double getSphericalAzimuth(double phi1, double lambda0, double phi,
+                                      double lambda) {
         // convert arguments to radians
-        float radphi1 = ProjMath.degToRad(phi1);
-        float radlambda0 = ProjMath.degToRad(lambda0);
-        float radphi = ProjMath.degToRad(phi);
-        float radlambda = ProjMath.degToRad(lambda);
+        double radphi1 = ProjMath.degToRad(phi1);
+        double radlambda0 = ProjMath.degToRad(lambda0);
+        double radphi = ProjMath.degToRad(phi);
+        double radlambda = ProjMath.degToRad(lambda);
         // get the spherical azimuth in radians between the two points
-        float az = GreatCircle.sphericalAzimuth(radphi1,
+        double az = GreatCircle.sphericalAzimuth(radphi1,
                 radlambda0,
                 radphi,
                 radlambda);
@@ -783,7 +785,8 @@ public class DistanceMouseMode extends CoordMouseMode {
 
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-        String unitValue = (unit != null ? unit.toString() : AllUnitsPropertyValue);
+        String unitValue = (unit != null ? unit.toString()
+                : AllUnitsPropertyValue);
         getList.put(prefix + UnitProperty, unitValue);
         getList.put(prefix + ShowCircleProperty,
                 new Boolean(getShowCircle()).toString());

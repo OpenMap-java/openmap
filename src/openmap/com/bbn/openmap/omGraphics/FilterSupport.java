@@ -25,7 +25,6 @@ package com.bbn.openmap.omGraphics;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.io.Serializable;
-import java.util.Iterator;
 
 import com.bbn.openmap.util.Debug;
 
@@ -126,10 +125,8 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
         int count = 0; // for debugging
 
         if (area != null && omgl != null) { // just checking
-            Iterator it = omgl.iterator();
-
-            while (it.hasNext()) {
-                OMGraphic omg = (OMGraphic) it.next();
+            
+            for (OMGraphic omg : omgl) {
 
                 if (DEBUG) {
                     Debug.output("FilterSupport.filterList evaluating "

@@ -22,18 +22,33 @@
 
 package com.bbn.openmap.gui;
 
-import javax.swing.*;
-import java.awt.event.*;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
+import java.beans.beancontext.BeanContext;
+import java.beans.beancontext.BeanContextChild;
+import java.beans.beancontext.BeanContextChildSupport;
+import java.beans.beancontext.BeanContextMembershipEvent;
+import java.beans.beancontext.BeanContextMembershipListener;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Properties;
 import java.util.List;
-import java.awt.*;
-import java.beans.*;
-import java.beans.beancontext.*;
+import java.util.Properties;
 
+import javax.swing.JLabel;
+import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.gui.menu.ToolPanelToggleMenuItem;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -60,7 +75,7 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
         ComponentListener {
 
     /** The set of tools contained on the toolbar. */
-    protected Hashtable items = new Hashtable();
+    protected Hashtable<String, Tool> items = new Hashtable<String, Tool>();
     /**
      * A flag to note whether the ToolPanel inserts spaces between tools.
      */
@@ -90,15 +105,19 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
      */
     public final static String AvoidComponentsProperty = "avoid";
 
+    public final static String MembershipProperty = "membership";
+
+    public final static String NameProperty = "name";
+
     /**
      * A filter list of components to look for and add.
      */
-    protected List componentList = null;
+    protected List<String> componentList = null;
 
     /**
      * A filter list of components to avoid.
      */
-    protected List avoidList = null;
+    protected List<String> avoidList = null;
 
     protected GridBagLayout gridbag = new GridBagLayout();
     protected GridBagConstraints c = new GridBagConstraints();
@@ -108,6 +127,7 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
      * left side of the toolpanel.
      */
     protected JLabel filler = null;
+    
 
     /**
      * Constructor
@@ -116,6 +136,7 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
         setLayout(gridbag);
         setFloatable(false);
         setVisible(false);
+        setName("Tool Panel");
     }
 
     /**
@@ -181,7 +202,7 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
         int orientation = getOrientation();
         boolean hOrient = orientation == SwingConstants.HORIZONTAL;
         item.setOrientation(orientation);
-        
+
         Container face = item.getFace();
 
         if (face != null) {
@@ -231,6 +252,7 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
         }
 
         setVisibility();
+        firePropertyChange(MembershipProperty, null, items);
     }
 
     /**
@@ -280,6 +302,7 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
         if (tool != null) {
             remove(tool.getFace());
             tool.getFace().removeComponentListener(this);
+            firePropertyChange(MembershipProperty, null, items);
         }
     }
 
@@ -319,7 +342,7 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
      * Set the list of strings used by the ToolPanel to figure out which Tools
      * should be added (in the findAndInit()) method and where they should go.
      */
-    public void setComponentList(List list) {
+    public void setComponentList(List<String> list) {
         componentList = list;
     }
 
@@ -327,7 +350,7 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
      * Get the list of strings used by the ToolPanel to figure out which Tools
      * should be added (in the findAndInit()) method and where they should go.
      */
-    public List getComponentList() {
+    public List<String> getComponentList() {
         return componentList;
     }
 
@@ -335,7 +358,7 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
      * Set the list of strings used by the ToolPanel to figure out which Tools
      * should not be added (in the findAndInit()) method.
      */
-    public void setAvoidList(List list) {
+    public void setAvoidList(List<String> list) {
         avoidList = list;
     }
 
@@ -343,7 +366,7 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
      * Get the list of strings used by the ToolPanel to figure out which Tools
      * should not be added (in the findAndInit()) method.
      */
-    public List getAvoidList() {
+    public List<String> getAvoidList() {
         return avoidList;
     }
 
@@ -354,7 +377,7 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
      * 
      * @param it iterator to use to go through the new objects.
      */
-    public void findAndInit(Iterator it) {
+    public void findAndInit(Iterator<Object> it) {
         while (it.hasNext()) {
             findAndInit(it.next());
         }
@@ -368,13 +391,11 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
      * @param list the list of keys to check.
      * @return -1 if not on the list, the index starting at 0 if it is.
      */
-    protected int keyOnList(String key, List list) {
+    protected int keyOnList(String key, List<String> list) {
         int ret = -1;
         int index = 0;
         if (list != null) {
-            Iterator it = list.iterator();
-            while (it.hasNext()) {
-                String listKey = (String) it.next();
+            for (String listKey : list) {
                 if (listKey.equalsIgnoreCase(key)) {
                     ret = index;
                     break;
@@ -388,7 +409,7 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     public void findAndInit(Object someObj) {
         if (someObj instanceof Tool) {
             String key = ((Tool) someObj).getKey();
-            List list = getComponentList();
+            List<String> list = getComponentList();
             int index;
             if (list != null) {
                 index = keyOnList(key, list);
@@ -413,6 +434,25 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     }
 
     /**
+     * Get a menu item that controls the visibility of this ToolPanel.
+     * 
+     * @return ToolPanelToggleMenuItem
+     */
+    public ToolPanelToggleMenuItem getToggleMenu() {
+        return new ToolPanelToggleMenuItem(this);
+    }
+
+    /**
+     * Checks to see if the menu item controls this ToolPanel.
+     * 
+     * @param mi
+     * @return
+     */
+    public boolean checkToolPanelToggleMenuItem(ToolPanelToggleMenuItem mi) {
+        return (mi != null && mi.getToolPanel().equals(this));
+    }
+
+    /**
      * BeanContextMembershipListener method. Called when objects have been added
      * to the parent BeanContext.
      * 
@@ -430,7 +470,7 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
      * @param bcme the event containing the iterator with removed objects.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-        Iterator it = bcme.iterator();
+        Iterator<Object> it = bcme.iterator();
         Object someObj;
         while (it.hasNext()) {
             someObj = it.next();
@@ -538,19 +578,20 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
                 }
             }
         }
+        
+        setName(props.getProperty(prefix + NameProperty, getName()));
     }
 
     /**
      * Take a List of strings, and return a space-separated version. Return null
      * if the List is null.
      */
-    protected StringBuffer rebuildListProperty(List aList) {
+    protected StringBuffer rebuildListProperty(List<String> aList) {
         StringBuffer list = null;
         if (aList != null) {
             list = new StringBuffer();
-            Iterator it = aList.iterator();
-            while (it.hasNext()) {
-                list.append((String) it.next() + " ");
+            for (String toolKey : aList) {
+                list.append(toolKey + " ");
             }
         }
         return list;
@@ -574,6 +615,8 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
         }
 
         props.put(prefix + PreferredLocationProperty, getPreferredLocation());
+        
+        props.put(prefix + NameProperty, getName());
 
         return props;
     }
@@ -583,7 +626,12 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
             props = new Properties();
         }
 
-        props.put(ComponentsProperty, "List of Names of Tools to Add");
+        I18n i18n = Environment.getI18n();
+        
+        PropUtils.setI18NPropertyInfo(i18n, props, ToolPanel.class, ComponentsProperty, "Tool Names", "List of Names of Tools to Add", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, ToolPanel.class, AvoidComponentsProperty, "Avoid Tool Names", "List of Names of Tools to Not Add", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, ToolPanel.class, PreferredLocationProperty, "Location", "Preferred Location of Tool Panel", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, ToolPanel.class, NameProperty, "Tool Name", "Name of This Tool Panel", null);
 
         return props;
     }
@@ -597,9 +645,9 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     }
 
     public boolean areComponentsVisible() {
-        Enumeration enumeration = items.elements();
+        Enumeration<Tool> enumeration = items.elements();
         while (enumeration.hasMoreElements()) {
-            Tool tool = (Tool) enumeration.nextElement();
+            Tool tool = enumeration.nextElement();
             Container face = tool.getFace();
             if (tool != filler && face != null && face.isVisible()) {
                 return true;
@@ -625,7 +673,6 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
     }
 
     public String getParentName() {
-        // TODO Auto-generated method stub
         return null;
     }
 

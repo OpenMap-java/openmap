@@ -111,7 +111,7 @@ public class NavMouseMode extends CoordMouseMode {
         Projection projection = map.getProjection();
         Proj p = (Proj) projection;
         
-        Point2D llp = projection.inverse(e.getPoint());
+        Point2D llp = map.getCoordinates(e);
 
         boolean shift = e.isShiftDown();
         boolean control = e.isControlDown();
@@ -176,7 +176,7 @@ public class NavMouseMode extends CoordMouseMode {
                 // If rectangle is too small in both x and y then
                 // recenter the map
                 if ((dx < 5) && (dy < 5)) {
-                    Point2D llp = projection.inverse(e.getPoint());
+                    Point2D llp = map.getCoordinates(e);
 
                     boolean shift = e.isShiftDown();
                     boolean control = e.isControlDown();
@@ -208,7 +208,7 @@ public class NavMouseMode extends CoordMouseMode {
             // Figure out the center of the rectangle
             int centerx = Math.min(point1.x, point2.x) + dx / 2;
             int centery = Math.min(point1.y, point2.y) + dy / 2;
-            Point2D center = projection.inverse(centerx, centery);
+            Point2D center = map.inverse(centerx, centery, null);
 
             // Fire events on main map to change view to match rect1
             // Debug.output("point1: " +point1);

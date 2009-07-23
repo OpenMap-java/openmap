@@ -926,7 +926,7 @@ public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphi
      * @return float distance, in pixels, from graphic to the point. Returns
      *         Float.POSITIVE_INFINITY if the graphic isn't ready (ungenerated).
      */
-    public float distance(int x, int y) {
+    public float distance(double x, double y) {
         float distance = Float.POSITIVE_INFINITY;
         if (shouldRenderFill()) {
             distance = super.distance(x, y);

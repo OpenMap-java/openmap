@@ -469,7 +469,7 @@ public class LambertConformal extends GeoProj {
      */
     public <T extends Point2D> T inverse(double x, double y, T llp) {
         if (llp == null) {
-            llp = (T) new LatLonPoint.Float();
+            llp = (T) new LatLonPoint.Double();
         }
         // convert from screen to world coordinates
         pixelToLL(x, y, llp);

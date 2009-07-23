@@ -771,7 +771,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     public double getRotationAngle() {
         return rotationAngle;
     }
-
+    
     /**
      * Prepares the text for rendering. Determines the location based on the
      * renderType and possibly the projection. Sets the field <code>pt</code>.
@@ -791,7 +791,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
             Debug.message("omgraphic", "OMText: null projection in generate!");
             return false;
         }
-
+        
         // flush the cached information about the bounding box.
         polyBounds = null;
 

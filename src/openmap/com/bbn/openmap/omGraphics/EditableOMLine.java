@@ -355,15 +355,20 @@ public class EditableOMLine extends EditableOMAbstractLine implements
         // Need to check to see if the OffsetGrabPoint is currently
         // being used. If not, just use it, otherwise, will need to
         // create a special one for the move.
+        
+        Point2D pnt = getProjectionPoint(e);
+        double x = pnt.getX();
+        double y = pnt.getY();
+        
         if (line.getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
-            gpm = new OffsetGrabPoint(e.getX(), e.getY());
+            gpm = new OffsetGrabPoint((int) x, (int) y);
 
             gpm.addGrabPoint(gp1);
             gpm.addGrabPoint(gp2);
 
         } else {
             gpm = gpo;
-            gpm.set(e.getX(), e.getY());
+            gpm.set(x, y);
             gpm.updateOffsets();
         }
         movingPoint = gpm;

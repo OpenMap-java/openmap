@@ -224,8 +224,10 @@ public class EditableOMCircle extends EditableOMGraphic {
         movingPoint = null;
 
         GrabPoint[] gb = getGrabPoints();
-        int x = e.getX();
-        int y = e.getY();
+        
+        Point2D pnt = getProjectionPoint(e);
+        double x = pnt.getX();
+        double y = pnt.getY();
 
         for (int i = gb.length - 1; i >= 0; i--) {
 
@@ -597,9 +599,9 @@ public class EditableOMCircle extends EditableOMGraphic {
      * just be called, and the movingPoint will make the adjustments to the
      * graphic that are needed.
      */
-    public void move(java.awt.event.MouseEvent e) {
+    public void move(MouseEvent e) {
         if (getGraphic().getRenderType() == OMGraphic.RENDERTYPE_LATLON
-                && getGraphic().distanceToEdge(e.getX(), e.getY()) < 2) {
+                && isMouseEventTouchingTheEdge(e)) {
             if (gpr == null) {
                 gpr = new GrabPoint(-1, -1);
             }

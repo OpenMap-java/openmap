@@ -40,10 +40,9 @@ public class GraphicUnselectedState extends State implements EOMGDefinedState {
     }
 
     /**
-     * In this state, we need to change states only if the graphic, or
-     * it's grab points are clicked on. If a point is clicked on, then
-     * it should become the moving point, and the graphic should be
-     * changed to edit mode.
+     * In this state, we need to change states only if the graphic, or it's grab
+     * points are clicked on. If a point is clicked on, then it should become
+     * the moving point, and the graphic should be changed to edit mode.
      */
     public boolean mousePressed(MouseEvent e) {
         Debug.message("eomg",
@@ -54,7 +53,7 @@ public class GraphicUnselectedState extends State implements EOMGDefinedState {
         // selected
         // mode.
         if (mp == null) {
-            if (graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
+            if (graphic.isMouseEventTouching(e)) {
                 if (graphic.getCanGrabGraphic()) {
                     // OK, so a grab point has not been selected, but
                     // the graphic has been, and the button is down.
@@ -98,7 +97,7 @@ public class GraphicUnselectedState extends State implements EOMGDefinedState {
         // selected
         // mode.
         if (mp == null) {
-            if (graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
+            if (graphic.isMouseEventTouching(e)) {
                 graphic.getStateMachine().setSelected();
                 graphic.fireEvent(EOMGCursors.EDIT, "");
             } else {
@@ -121,7 +120,7 @@ public class GraphicUnselectedState extends State implements EOMGDefinedState {
         Debug.message("eomgdetail",
                 "GraphicStateMachine|unselected state|mouseMoved");
 
-        if (graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
+        if (graphic.isMouseEventTouching(e)) {
             graphic.fireEvent(EOMGCursors.EDIT,
                     i18n.get(GraphicUnselectedState.class,
                             "Click_to_select_the_graphic.",

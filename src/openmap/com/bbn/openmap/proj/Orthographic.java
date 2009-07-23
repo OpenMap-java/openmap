@@ -223,6 +223,11 @@ public class Orthographic extends Azimuth {
      * @see Proj#inverse(Point2D)
      */
     public <T extends Point2D> T inverse(double x, double y, T llp) {
+        
+        if (llp == null) {
+            llp = (T) new LatLonPoint.Double();
+        }
+        
         // convert from screen to world coordinates
         x = x - wx;
         y = hy - y;

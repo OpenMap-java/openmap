@@ -23,11 +23,10 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.event.MouseEvent;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.bbn.openmap.omGraphics.editable.*;
+import com.bbn.openmap.omGraphics.editable.ListStateMachine;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.tools.drawing.OMDrawingTool;
 import com.bbn.openmap.util.Debug;
@@ -51,7 +50,7 @@ public class EditableOMGraphicList extends EditableOMGraphic {
     /**
      * The list of editables wrapping the list contents.
      */
-    protected List editables;
+    protected List<EditableOMGraphic> editables;
 
     /**
      * Create an empty EditableOMGraphicList, ready to have OMGraphics
@@ -71,9 +70,9 @@ public class EditableOMGraphicList extends EditableOMGraphic {
         setGraphic(oml);
     }
 
-    public List getEditables() {
+    public List<EditableOMGraphic> getEditables() {
         if (editables == null) {
-            editables = new LinkedList();
+            editables = new LinkedList<EditableOMGraphic>();
         }
         return editables;
     }
@@ -104,8 +103,7 @@ public class EditableOMGraphicList extends EditableOMGraphic {
      */
     public void init(OMDrawingTool drawingTool) {
         if (list != null) {
-            for (Iterator it = list.iterator(); it.hasNext();) {
-                OMGraphic omg = (OMGraphic) it.next();
+            for (OMGraphic omg: list) {
                 // Do we need to handle OMGraphicLists in a special
                 // way?
                 if (omg.isVisible()) {
@@ -162,8 +160,8 @@ public class EditableOMGraphicList extends EditableOMGraphic {
     }
 
     public void add(OMGraphicList list, OMDrawingTool drawingTool) {
-        for (Iterator it = list.iterator(); it.hasNext();) {
-            add((OMGraphic) it.next(), drawingTool);
+        for (OMGraphic omg : list) {
+            add(omg, drawingTool);
         }
     }
 
@@ -243,8 +241,8 @@ public class EditableOMGraphicList extends EditableOMGraphic {
      */
     public void remove(OMGraphic omg) {
         EditableOMGraphic eomg = null;
-        for (Iterator it = getEditables().iterator(); it.hasNext();) {
-            eomg = (EditableOMGraphic) it.next();
+        for (EditableOMGraphic eomgraphic : getEditables()) {
+            eomg = eomgraphic;
             if (eomg.getGraphic() == omg) {
                 break;
             }
@@ -300,8 +298,8 @@ public class EditableOMGraphicList extends EditableOMGraphic {
             Debug.output("EOMGL: setProjection(" + proj + ")");
         }
         super.setProjection(proj);
-        for (Iterator it = getEditables().iterator(); it.hasNext();) {
-            ((EditableOMGraphic) it.next()).setProjection(proj);
+        for (EditableOMGraphic eomg : getEditables()) {
+            eomg.setProjection(proj);
         }
     }
 
@@ -311,9 +309,8 @@ public class EditableOMGraphicList extends EditableOMGraphic {
      * want the graphic to change according to the grab points.
      */
     public void setGrabPoints() {
-        for (Iterator it = getEditables().iterator(); it.hasNext();) {
-            EditableOMGraphic editable = (EditableOMGraphic) it.next();
-            editable.setGrabPoints();
+        for (EditableOMGraphic eomg : getEditables()) {
+            eomg.setGrabPoints();
             //          if (Debug.debugging("eomg")) {
             //              Debug.output(" -- setting GrabPoints on " +
             // editable.getClass().getName());
@@ -379,8 +376,8 @@ public class EditableOMGraphicList extends EditableOMGraphic {
     public boolean generate(Projection proj) {
         Debug.message("eomg", "EditableOMGraphicList.generate()");
 
-        for (Iterator it = getEditables().iterator(); it.hasNext();) {
-            ((EditableOMGraphic) it.next()).generate(proj);
+        for (EditableOMGraphic eomg : getEditables()) {
+            eomg.generate(proj);
         }
 
         if (gpm != null)
@@ -397,8 +394,8 @@ public class EditableOMGraphicList extends EditableOMGraphic {
     public void regenerate(Projection proj) {
         Debug.message("eomg", "EditableOMGraphicList.regenerate()");
 
-        for (Iterator it = getEditables().iterator(); it.hasNext();) {
-            ((EditableOMGraphic) it.next()).regenerate(proj);
+        for (EditableOMGraphic eomg : getEditables()) {
+            eomg.regenerate(proj);
         }
 
         if (gpm != null)
@@ -413,8 +410,8 @@ public class EditableOMGraphicList extends EditableOMGraphic {
      * @param graphics java.awt.Graphics.
      */
     public void render(java.awt.Graphics graphics) {
-        for (Iterator it = getEditables().iterator(); it.hasNext();) {
-            ((EditableOMGraphic) it.next()).render(graphics);
+        for (EditableOMGraphic eomg : getEditables()) {
+            eomg.render(graphics);
         }
     }
 }

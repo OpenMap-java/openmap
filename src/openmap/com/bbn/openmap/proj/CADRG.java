@@ -419,6 +419,10 @@ public class CADRG extends Cylindrical implements EqualArc {
     public <T extends Point2D> T inverse(double x, double y, T ret_val) {
         // Debug.output("CADRG.inverse");
 
+        if (ret_val == null) {
+            ret_val = (T) new LatLonPoint.Double();
+        }
+        
         /* offset back into pixel space from Drawable space */
         double px = x + ul.x/* - ox */;
         double py = -y + ul.y + oy;

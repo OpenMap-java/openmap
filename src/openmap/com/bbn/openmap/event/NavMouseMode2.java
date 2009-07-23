@@ -110,7 +110,7 @@ public class NavMouseMode2 extends NavMouseMode {
                     // If rectangle is too small in both x and y then
                     // recenter the map
                     if ((dx < 5) && (dy < 5)) {
-                        Point2D llp = projection.inverse(e.getPoint());
+                        Point2D llp = map.getCoordinates(e);
 
                         boolean shift = e.isShiftDown();
                         boolean control = e.isControlDown();
@@ -149,7 +149,7 @@ public class NavMouseMode2 extends NavMouseMode {
                         projection);
 
                 // Figure out the center of the rectangle
-                Point2D center = projection.inverse(point1.x, point1.y);
+                Point2D center = map.inverse(point1.x, point1.y, null);
 
                 // Set the parameters of the projection and then set
                 // the projection of the map. This way we save having
