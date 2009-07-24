@@ -319,8 +319,6 @@ public class DistanceMouseMode extends CoordMouseMode {
 
             // anchor the new first point of the line
             rPoint1 = theMap.getCoordinates(e);
-            Debug.output("anchoring at : " + rPoint1);
-            
             // ensure the second point is not yet set.
             rPoint2 = null;
             // add the anchor point to the list of line segments
