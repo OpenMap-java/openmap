@@ -22,9 +22,7 @@
 
 package com.bbn.openmap;
 
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
@@ -166,36 +164,15 @@ public class BufferedMapBean extends MapBean {
             g.setClip(clip);
         }
 
-        if (rot != null) {
-            int w = getWidth();
-            int h = getHeight();
-            daImage = createVolatileImage(w, h);
-            Graphics2D g2 = (Graphics2D) daImage.getGraphics();
-            g2.setColor(Color.black);
-            g2.fillRect(0, 0, w, h);
-
-            // This Ellipse can be set to get a circular map area.
-//            double dim = Math.min(w, h);
-//            g2.setClip(new Ellipse2D.Double((w - dim) / 2, 0, dim, dim));
-            g2.setTransform(rot);
-            
-            // This just lets the map be drawn according to the standard rectangle clip area. 
-            g2.setClip(clip);
-            g2.drawImage(drawingBuffer, 0, 0, null);
-
-            // Take care of the PaintListeners
-            if (painters != null) {
-                painters.paint(g2);
-            }
-            
-            g2.dispose();
+        if (rotHelper != null) {
+            daImage = rotHelper.paintChildren(g, clip);
         }
 
         // draw the buffer to the screen, daImage will be drawingBuffer without rotation
         g.drawImage(daImage, 0, 0, null);
 
         // Take care of the PaintListeners for no rotation
-        if (rot == null && painters != null) {
+        if (rotHelper == null && painters != null) {
             painters.paint(g);
         }
         

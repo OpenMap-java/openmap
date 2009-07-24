@@ -464,7 +464,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      */
     public void paintLine(Point2D pt1, Point2D pt2) {
         if (theMap != null) {
-            paintLine(pt1, pt2, theMap.getGraphics());
+            paintLine(pt1, pt2, theMap.getGraphics(true));
         }
     }
 
@@ -499,7 +499,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      */
     public void paintCircle(Point2D pt1, Point2D pt2) {
         if (theMap != null) {
-            paintCircle(pt1, pt2, theMap.getGraphics());
+            paintCircle(pt1, pt2, theMap.getGraphics(true));
         }
     }
 
@@ -549,7 +549,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      */
     public void paintRubberband(Point2D pt1, Point2D pt2) {
         if (theMap != null) {
-            paintRubberband(pt1, pt2, theMap.getGraphics());
+            paintRubberband(pt1, pt2, theMap.getGraphics(true));
         }
     }
 

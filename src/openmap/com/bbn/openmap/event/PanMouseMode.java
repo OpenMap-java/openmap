@@ -252,7 +252,7 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
                         opaqueness));
                 gr2d.drawImage(bufferedMapImage, x - oX, y - oY, null);
 
-                ((Graphics2D) mb.getGraphics()).drawImage(bufferedRenderingImage,
+                ((Graphics2D) mb.getGraphics(true)).drawImage(bufferedRenderingImage,
                         0,
                         0,
                         null);

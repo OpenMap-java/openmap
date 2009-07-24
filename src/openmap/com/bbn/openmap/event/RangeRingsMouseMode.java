@@ -251,7 +251,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
     protected void paintOrigin() {
         MapBean mb = getMapBean();
         if (mb != null) {
-            Graphics g = mb.getGraphics();
+            Graphics g = mb.getGraphics(true);
             paintOrigin(g);
         }
     }
@@ -332,7 +332,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
     protected void paintRangeRings(LatLonPoint dest) {
         MapBean mb = getMapBean();
         if (mb != null) {
-            Graphics g = mb.getGraphics();
+            Graphics g = mb.getGraphics(true);
             paintRangeRings(dest, g);
         }
     }
@@ -375,7 +375,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
     protected void paintCircle(LatLonPoint dest) {
         MapBean mb = getMapBean();
         if (mb != null) {
-            Graphics g = mb.getGraphics();
+            Graphics g = mb.getGraphics(true);
             paintCircle(dest, g);
         }
     }
@@ -426,7 +426,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
     protected void paintLabel(LatLonPoint dest) {
         MapBean mb = getMapBean();
         if (mb != null) {
-            Graphics g = mb.getGraphics();
+            Graphics g = mb.getGraphics(true);
             paintLabel(dest, g);
         }
     }

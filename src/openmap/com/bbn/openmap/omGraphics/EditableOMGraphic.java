@@ -421,7 +421,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
         MapBean map = (MapBean) obj;
         // Gets the buffer cleaned out.
         map.setBufferDirty(true);
-        map.paintChildren(map.getGraphics());
+        map.paintChildren(map.getGraphics(true));
     }
 
     /** Same as redraw(e, false) */
@@ -471,7 +471,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
         }
 
         MapBean map = (MapBean) obj;
-        Graphics g = map.getGraphics();
+        Graphics g = map.getGraphics(true);
 
         OMGraphic graphic = getGraphic();
 

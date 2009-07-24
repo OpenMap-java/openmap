@@ -28,6 +28,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.Paint;
@@ -949,35 +950,10 @@ public class MapBean extends JComponent implements ComponentListener,
             g.setClip(0, 0, getWidth(), getHeight());
         }
 
-        drawProjectionBackground(g);
-
-        if (rot != null) {
-
-            int w = getWidth();
-            int h = getHeight();
-            java.awt.Image daImage = createVolatileImage(w, h);
-            Graphics2D g2 = (Graphics2D) daImage.getGraphics();
-            g2.setColor(Color.black);
-            g2.fillRect(0, 0, w, h);
-
-            // This Ellipse can be set to get a circular map area.
-            // double dim = Math.min(w, h);
-            // g2.setClip(new Ellipse2D.Double((w - dim) / 2, 0, dim, dim));
-            g2.setTransform(rot);
-
-            // This just lets the map be drawn according to the standard
-            // rectangle clip area.
-            g2.setClip(clip);
-            super.paintChildren(g2);
-
-            // Take care of the PaintListeners...
-            if (painters != null) {
-                painters.paint(g2);
-            }
-
-            g2.dispose();
-
+        if (rotHelper != null) {
+            g.drawImage(rotHelper.paintChildren(g, clip), 0, 0, null);
         } else {
+            drawProjectionBackground(g);
             // Normal painting
             super.paintChildren(g);
 
@@ -992,14 +968,15 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     public Graphics getGraphics() {
-        if (rot == null) {
-            return super.getGraphics();
-        } else {
-            Graphics2D g = (Graphics2D) super.getGraphics().create();
-            g.setTransform(rot);
-            g.setClip(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
-            return g;
+        return getGraphics(false);
+    }
+    
+    public Graphics getGraphics(boolean rotateIfSet) {
+        if (rotateIfSet && rotHelper != null) {
+            return rotHelper.getGraphics();
         }
+
+        return super.getGraphics();
     }
 
     /**
@@ -1223,13 +1200,8 @@ public class MapBean extends JComponent implements ComponentListener,
             pnt.setLocation(event.getX(), event.getY());
         }
 
-        if (rot != null) {
-            try {
-                rot.inverseTransform(pnt, pnt);
-            } catch (NoninvertibleTransformException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+        if (rotHelper != null) {
+            pnt = rotHelper.inverseTransform(pnt, pnt);
         }
 
         return pnt;
@@ -1247,18 +1219,10 @@ public class MapBean extends JComponent implements ComponentListener,
      * @return ret, or new Point2D object from projection if ret is null.
      */
     public <T extends Point2D> T inverse(double x, double y, T ret) {
-        if (rot == null) {
+        if (rotHelper == null) {
             ret = getProjection().inverse(x, y, ret);
         } else {
-            Point2D pnt = new Point2D.Double(x, y);
-
-            try {
-                pnt = rot.inverseTransform(pnt, pnt);
-                ret = getProjection().inverse(pnt, ret);
-            } catch (NoninvertibleTransformException e) {
-                e.printStackTrace();
-            }
-
+            ret = rotHelper.inverse(x, y, ret);
         }
 
         return ret;
@@ -1349,22 +1313,19 @@ public class MapBean extends JComponent implements ComponentListener,
         projectionFactory = projFactory;
     }
 
-    protected double angle;
-    protected AffineTransform rot;
+    protected RotationHelper rotHelper;
 
     /**
      * Set the rotation of the map in RADIANS
+     * 
      * @param angle
      */
     public void setRotation(double angle) {
 
-        this.angle = angle;
         if (angle != 0) {
-            this.rot = AffineTransform.getRotateInstance(angle,
-                    getWidth() / 2.0,
-                    getHeight() / 2.0);
+            rotHelper = new RotationHelper(angle);
         } else {
-            rot = null;
+            rotHelper = null;
         }
 
         repaint();
@@ -1372,10 +1333,97 @@ public class MapBean extends JComponent implements ComponentListener,
 
     /**
      * Get the rotation of the map in RADIANS.
+     * 
      * @return
      */
     public double getRotation() {
-        return angle;
+        if (rotHelper != null) {
+            return rotHelper.angle;
+        }
+        return 0;
+    }
+
+    protected class RotationHelper {
+
+        protected Image rotImage;
+        protected AffineTransform rot;
+        protected double angle;
+
+        public RotationHelper(double angle) {
+            this.angle = angle;
+
+            this.rot = AffineTransform.getRotateInstance(angle,
+                    getWidth() / 2.0,
+                    getHeight() / 2.0);
+        }
+
+        public Image paintChildren(Graphics g, Rectangle clip) {
+
+            int w = getWidth();
+            int h = getHeight();
+            if (rotImage == null) {
+                rotImage = createVolatileImage(w, h);
+            }
+            Graphics2D g2 = (Graphics2D) rotImage.getGraphics();
+            g2.setColor(Color.black);
+            g2.fillRect(0, 0, w, h);
+
+            // This Ellipse can be set to get a circular map area.
+            // double dim = Math.min(w, h);
+            // g2.setClip(new Ellipse2D.Double((w - dim) / 2, 0, dim, dim));
+            g2.setTransform(rot);
+
+            // This just lets the map be drawn according to the standard
+            // rectangle clip area.
+            g2.setClip(clip);
+            drawProjectionBackground(g2);
+            MapBean.super.paintChildren(g2);
+
+            // Take care of the PaintListeners...
+            if (painters != null) {
+                painters.paint(g2);
+            }
+
+            g2.dispose();
+            return rotImage;
+        }
+
+        public Graphics getGraphics() {
+            Graphics2D g = (Graphics2D) MapBean.super.getGraphics().create();
+            g.setTransform(rot);
+            g.setClip(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
+            return g;
+        }
+
+        public <T extends Point2D> T inverse(double x, double y, T ret) {
+
+            Point2D pnt = new Point2D.Double(x, y);
+
+            try {
+                pnt = rotHelper.rot.inverseTransform(pnt, pnt);
+                ret = getProjection().inverse(pnt, ret);
+            } catch (NoninvertibleTransformException e) {
+                e.printStackTrace();
+            }
+
+            return ret;
+        }
+
+        public Point2D inverseTransform(Point2D src, Point2D dst) {
+            try {
+                dst = rot.inverseTransform(src, dst);
+            } catch (NoninvertibleTransformException e) {
+                e.printStackTrace();
+            }
+            return dst;
+        }
+
+        public void dispose() {
+            if (rotImage != null) {
+                rotImage.flush();
+            }
+        }
+
     }
 
 }

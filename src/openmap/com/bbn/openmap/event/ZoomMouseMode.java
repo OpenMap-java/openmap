@@ -132,7 +132,7 @@ public class ZoomMouseMode extends CoordMouseMode {
                     double upInc = squareUpperLeftY / iterations;
 
                     for (int i = 0; i < iterations + 1; i++) {
-                        theMap.getGraphics().drawImage(square,
+                        theMap.getGraphics(true).drawImage(square,
                                 squareUpperLeftX - (int) (leftInc * i),
                                 squareUpperLeftY - (int) (upInc * i),
                                 (int) squareWidth + (int) (widthInc * i),
