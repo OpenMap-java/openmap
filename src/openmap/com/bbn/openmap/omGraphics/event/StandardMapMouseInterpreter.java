@@ -49,7 +49,7 @@ import com.bbn.openmap.util.Debug;
  * gestures.
  * <p>
  * 
- * The StandardMapMouseInterpreter uses highlighing to indicate that mouse
+ * The StandardMapMouseInterpreter uses highlighting to indicate that mouse
  * movement is occurring over an OMGraphic, and gives the layer three ways to
  * react to that movement. After finding out if the OMGraphic is highlightable,
  * the SMMI will tell the layer to highlight the OMGraphic (which usually means
@@ -288,7 +288,7 @@ public class StandardMapMouseInterpreter implements MapMouseInterpreter {
     }
 
     /**
-     * Return the OMGraphic object that is under a mouse event occurrance on the
+     * Return the OMGraphic object that is under a mouse event occurrence on the
      * map, null if nothing applies.
      */
     public OMGraphic getGeometryUnder(MouseEvent me) {

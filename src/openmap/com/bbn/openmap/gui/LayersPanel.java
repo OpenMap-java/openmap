@@ -231,11 +231,11 @@ public class LayersPanel extends OMToolComponent implements Serializable,
      * commands instructing a layer to the top or bottom of the list should
      * honor the virtual boundary between buffered and unbuffered layers. That
      * is, if a layer is on the bottom of the buffered list and is instructed to
-     * go to the top of the overal list, it will only first travel to the top of
-     * the buffered layers. On a subsequent top command, it will go to the top
-     * of the list. The same behavior applies for going down. True is default.
-     * If set to false, these commands will just send the selected layer to the
-     * top and bottom of the entire list.
+     * go to the top of the overall list, it will only first travel to the top
+     * of the buffered layers. On a subsequent top command, it will go to the
+     * top of the list. The same behavior applies for going down. True is
+     * default. If set to false, these commands will just send the selected
+     * layer to the top and bottom of the entire list.
      */
     protected boolean bufferedBoundary = true;
 

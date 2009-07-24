@@ -135,7 +135,7 @@ public class NavMouseMode extends CoordMouseMode {
 
     /**
      * Handle a mouseReleased MouseListener event. If there was no drag events,
-     * or if there was only a small amount of dragging between the occurence of
+     * or if there was only a small amount of dragging between the occurrence of
      * the mousePressed and this event, then recenter the map. Otherwise we get
      * the second corner of the navigation rectangle and try to figure out the
      * best scale and location to zoom in to based on that rectangle.

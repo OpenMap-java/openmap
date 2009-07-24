@@ -183,7 +183,7 @@ public class BufferedMapBean extends MapBean {
     /**
      * Interface-like method to query if the MapBean is buffered, so you can
      * control behavior better. Allows the removal of specific instance-like
-     * quieries for, say, BufferedMapBean, when all you really want to know is
+     * queries for, say, BufferedMapBean, when all you really want to know is
      * if you have the data is buffered, and if so, should be buffer be cleared.
      * For the BufferedMapBean, always true.
      */

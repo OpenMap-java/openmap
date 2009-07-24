@@ -91,7 +91,7 @@ public class EditableOMRect extends EditableOMGraphic {
 
     /**
      * Create and initialize the state machine that interprets the modifying
-     * gestures/commands, as well as ititialize the grab points. Also allocates
+     * gestures/commands, as well as initialize the grab points. Also allocates
      * the grab point array needed by the EditableOMRect.
      */
     public void init() {
@@ -194,9 +194,9 @@ public class EditableOMRect extends EditableOMGraphic {
      * Set the GrabPoint that is in the middle of being modified, as a result of
      * a mouseDragged event, or other selection process.
      */
-    public void setMovingPoint(GrabPoint gp) {
-        super.setMovingPoint(gp);
-    }
+//    public void setMovingPoint(GrabPoint gp) {
+//        super.setMovingPoint(gp);
+//    }
 
     double diffx;
     double diffy;

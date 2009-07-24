@@ -31,7 +31,7 @@ import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
 
 /**
  * An EditorTool is a component that provides specific functionality to the
- * EditorLayer. The EditorTool is reponsible for modifying or creating a set of
+ * EditorLayer. The EditorTool is responsible for modifying or creating a set of
  * OMGraphics in a certain way, where the OMGraphics actually represent a
  * specific set of objects on the map, and the actions on the OMGraphics need to
  * be controlled.

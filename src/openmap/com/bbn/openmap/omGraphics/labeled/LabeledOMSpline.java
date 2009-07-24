@@ -6,7 +6,6 @@ import java.awt.Point;
 
 import com.bbn.openmap.omGraphics.OMSpline;
 import com.bbn.openmap.omGraphics.OMText;
-import com.bbn.openmap.omGraphics.labeled.LabeledOMGraphic;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;

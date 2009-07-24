@@ -43,7 +43,7 @@ import com.bbn.openmap.util.Debug;
 public class ChangeCase {
 
     /**
-     * Given a file, change it's name, and everthing below it (if it's
+     * Given a file, change it's name, and everything below it (if it's
      * a directory) to the case specified by toUpper.
      * 
      * @param file file to start at.

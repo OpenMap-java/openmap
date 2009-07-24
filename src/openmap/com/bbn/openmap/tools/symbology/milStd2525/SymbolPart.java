@@ -99,8 +99,8 @@ public class SymbolPart {
 
     protected static boolean DEBUG = false;
 
-    public final char UNUSED = '-';
-    public final char WILD = '*';
+    public final static char UNUSED = '-';
+    public final static char WILD = '*';
 
     protected SymbolPart() {
         DEBUG = Debug.debugging("symbolpart");

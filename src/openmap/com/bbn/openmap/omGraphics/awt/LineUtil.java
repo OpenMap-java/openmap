@@ -73,7 +73,6 @@ public class LineUtil {
 
         // first point
         Point2D point = (Point2D) points.removeFirst();
-        ;
         polysegment.add(point);
 
         double consumedLength = 0.0;

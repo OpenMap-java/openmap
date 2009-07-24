@@ -129,7 +129,7 @@ public class DDFFieldDefinition implements DDFConstants {
      * Initialize the field definition from the information in the DDR
      * record. This is called by DDFModule.open().
      * 
-     * @param poModuleIn DDFModule reprsenting file being read.
+     * @param poModuleIn DDFModule representing file being read.
      * @param pszTagIn the name of this field.
      * @param pachFieldArea the data bytes in the file representing
      *        the field from the header.
@@ -320,7 +320,7 @@ public class DDFFieldDefinition implements DDFConstants {
         while (iSrc < pszSrc.length()) {
             /*
              * This is presumably an extra level of brackets around
-             * some binary stuff related to rescaning which we don't
+             * some binary stuff related to rescanning which we don't
              * care to do (see 6.4.3.3 of the standard. We just strip
              * off the extra layer of brackets
              */

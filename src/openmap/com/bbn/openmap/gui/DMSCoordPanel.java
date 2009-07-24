@@ -72,7 +72,7 @@ public class DMSCoordPanel extends CoordPanel implements Serializable {
         setLayout(gridbag);
         locText = i18n.get(DMSCoordPanel.class,
                 "border",
-                "Degress|Minutes|Seconds");
+                "Degrees|Minutes|Seconds");
         setBorder(new TitledBorder(new EtchedBorder(), locText));
 
         locText = i18n.get(DMSCoordPanel.class, "latlabel", "Latitude DMS: ");

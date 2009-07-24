@@ -28,7 +28,7 @@ import com.bbn.openmap.util.Debug;
 
 /**
  * Length is a convenience class used for a couple of things. It can be used to
- * specifiy unit type, and can be used for conversion from radians to/from
+ * specify unit type, and can be used for conversion from radians to/from
  * whatever units are represented by the implemented class.
  */
 public class Length {

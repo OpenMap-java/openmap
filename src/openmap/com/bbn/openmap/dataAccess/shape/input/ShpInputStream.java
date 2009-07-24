@@ -145,7 +145,7 @@ public class ShpInputStream implements ShapeConstants {
     }
 
     /**
-     * Iterates through the given input stream to contruct geometry objects
+     * Iterates through the given input stream to construct geometry objects
      * 
      * @param indexData
      *            A list of offsets obtained by iterating through the associated
@@ -206,7 +206,7 @@ public class ShpInputStream implements ShapeConstants {
     }
 
     /**
-     * Iterates through the given input stream to contruct geometry objects
+     * Iterates through the given input stream to construct geometry objects
      * 
      * @param shapeType
      *            the type of shape to read

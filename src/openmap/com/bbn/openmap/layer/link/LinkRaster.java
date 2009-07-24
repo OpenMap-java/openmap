@@ -51,7 +51,7 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param h height of the image, in pixels.
      * @param pix color values for the pixels.
      * @param properties description of drawing attributes. Not used, but
-     *        included to be consistant with the protocol graphics format.
+     *        included to be consistent with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -84,7 +84,7 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param h height of the image, in pixels.
      * @param pix color values for the pixels.
      * @param properties description of drawing attributes. Not used, but
-     *        included to be consistant with the protocol graphics format.
+     *        included to be consistent with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -120,7 +120,7 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param h height of the image, in pixels.
      * @param pix color values for the pixels.
      * @param properties description of drawing attributes. Not used, but
-     *        included to be consistant with the protocol graphics format.
+     *        included to be consistent with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -156,7 +156,7 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param image_width width of image in pixels.
      * @param image_height height of image in pixels.
      * @param properties description of drawing attributes. Not used, but
-     *        included to be consistant with the protocol graphics format.
+     *        included to be consistent with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -188,7 +188,7 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param image_width width of image in pixels.
      * @param image_height height of image in pixels.
      * @param properties description of drawing attributes. Not used, but
-     *        included to be consistant with the protocol graphics format.
+     *        included to be consistent with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -221,7 +221,7 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param image_width width of image in pixels.
      * @param image_height height of image in pixels.
      * @param properties description of drawing attributes. Not used, but
-     *        included to be consistant with the protocol graphics format.
+     *        included to be consistent with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -252,7 +252,7 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param ln longitude of the left side of the image.
      * @param ii ImageIcon to use for image.
      * @param properties description of drawing attributes. Not used, but
-     *        included to be consistant with the protocol graphics format.
+     *        included to be consistent with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -282,7 +282,7 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param y1 window location of the top of the image.
      * @param ii ImageIcon to use for image.
      * @param properties description of drawing attributes. Not used, but
-     *        included to be consistant with the protocol graphics format.
+     *        included to be consistent with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -314,7 +314,7 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param offset_y1 number of pixels to move image down.
      * @param ii ImageIcon to use for image.
      * @param properties description of drawing attributes. Not used, but
-     *        included to be consistant with the protocol graphics format.
+     *        included to be consistent with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -351,7 +351,7 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param ln longitude of the left side of the image.
      * @param url URL to download the image from.
      * @param properties description of drawing attributes. Not used, but
-     *        included to be consistant with the protocol graphics format.
+     *        included to be consistent with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -376,7 +376,7 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param y1 window location of the top of the image.
      * @param url URL to download the image from.
      * @param properties description of drawing attributes. Not used, but
-     *        included to be consistant with the protocol graphics format.
+     *        included to be consistent with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -403,7 +403,7 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param offset_y1 number of pixels to move image down.
      * @param url URL to download the image from.
      * @param properties description of drawing attributes. Not used, but
-     *        included to be consistant with the protocol graphics format.
+     *        included to be consistent with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -428,7 +428,7 @@ public class LinkRaster implements LinkGraphicConstants,
 
     /**
      * Lat/Lon placement with a indexed colormodel, which is using a colortable
-     * and a byte array to contruct the int[] pixels.
+     * and a byte array to construct the int[] pixels.
      * 
      * @param lt latitude of the top of the image.
      * @param ln longitude of the left side of the image.
@@ -438,7 +438,7 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param colorTable color array corresponding to bytes
      * @param trans transparency of image.
      * @param properties description of drawing attributes. Not used, but
-     *        included to be consistant with the protocol graphics format.
+     *        included to be consistent with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -470,7 +470,7 @@ public class LinkRaster implements LinkGraphicConstants,
 
     /**
      * XY placement with a indexed colormodel, which is using a colortable and a
-     * byte array to contruct the int[] pixels.
+     * byte array to construct the int[] pixels.
      * 
      * @param x1 window location of the left side of the image.
      * @param y1 window location of the top of the image.
@@ -480,7 +480,7 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param colorTable color array corresponding to bytes
      * @param trans transparency of image.
      * @param properties description of drawing attributes. Not used, but
-     *        included to be consistant with the protocol graphics format.
+     *        included to be consistent with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */
@@ -524,7 +524,7 @@ public class LinkRaster implements LinkGraphicConstants,
      * @param colorTable color array corresponding to bytes
      * @param trans transparency of image.
      * @param properties description of drawing attributes. Not used, but
-     *        included to be consistant with the protocol graphics format.
+     *        included to be consistent with the protocol graphics format.
      * @param dos DataOutputStream
      * @throws IOException
      */

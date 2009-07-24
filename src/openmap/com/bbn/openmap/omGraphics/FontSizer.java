@@ -66,7 +66,7 @@ public class FontSizer implements Serializable {
     }
 
     /**
-     * Contructor that uses the OMText DEFAULT_FONT as the base font.
+     * Constructor that uses the OMText DEFAULT_FONT as the base font.
      * 
      * @param baseScale the scale where the base font is shown at its
      *        natural size.

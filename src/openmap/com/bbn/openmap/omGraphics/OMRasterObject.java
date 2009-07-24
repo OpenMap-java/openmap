@@ -210,7 +210,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
     protected boolean DEBUG = false;
 
     /**
-     * A Contructor that sets the graphic type to raster, render type
+     * A Constructor that sets the graphic type to raster, render type
      * to unknown, line type to unknown, and the declutter type to
      * none.
      */
@@ -220,7 +220,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
     }
 
     /**
-     * A Contructor that sets the graphic type, render type, line type
+     * A Constructor that sets the graphic type, render type, line type
      * and the declutter type to the values you pass in. See OMGraphic
      * for the definitions of these attributes.
      * 
@@ -235,7 +235,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * The color model is set based on the constructor. This setting
-     * controls what parameter changes are posiible for different
+     * controls what parameter changes are possible for different
      * models of images.
      * 
      * @param cm the colormode that describes how the colors are being
@@ -304,7 +304,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
      * on the provided Graphics2D object, setting the rotation angle
      * and the rotation point. By default, the rotation angle is
      * whatever is set in the OMRasterObject, and the rotation point
-     * is the offset point plus half the image width in the horizonal
+     * is the offset point plus half the image width in the horizontal
      * direction, and half the image in the vertical direction.
      */
     protected void rotate(Graphics2D g) {
@@ -729,7 +729,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
      * Set a filter to be used on the constructed image. Applied at
      * generate().
      * 
-     * @param filter Image filter to apply to contructed raster.
+     * @param filter Image filter to apply to constructed raster.
      */
     public void setImageFilter(ImageFilter filter) {
         imageFilter = filter;
@@ -925,7 +925,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
             //  Figure out the pixels of the old image being used in
             // the new image. Figure out the proj location of the
             // upper
-            // left pixel of the new image. We want to subsitute this
+            // left pixel of the new image. We want to substitute this
             // proj location for the projection location already
             // calculated. This should get overwritten later for any
             // projection changes.
@@ -971,7 +971,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
                 return null;
             }
 
-            // Set the filter to the demisnsions. Need to remember to
+            // Set the filter to the dimensions. Need to remember to
             // ask for this!!!
             actualFilter = new TrimScaleFilter((int) ((endXPixelInSource - startXPixelInSource) * widthScale), (int) ((endYPixelInSource - startYPixelInSource) * heightScale), algorithmType);
 

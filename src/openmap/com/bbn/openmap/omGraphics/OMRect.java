@@ -390,7 +390,7 @@ public class OMRect extends OMGraphicAdapter implements OMGraphic {
             }
             int size = rects.size();
 
-            for (int i = 0, j = 0; i < size; i += 2, j++) {
+            for (int i = 0; i < size; i += 2) {
                 GeneralPath gp = createShape(rects.get(i),
                         rects.get(i + 1),
                         true);

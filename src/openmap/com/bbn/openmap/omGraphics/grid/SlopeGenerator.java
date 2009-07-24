@@ -282,7 +282,7 @@ public class SlopeGenerator implements OMGridGenerator {
 
     /**
      * Method to calculate the run part of the slope (rise over run,
-     * right?). The rise is calcuated with the elevations of the
+     * right?). The rise is calculated with the elevations of the
      * points to the northwest and southeast of the point of concern,
      * the run is some factor of the distance between those two posts.
      * 

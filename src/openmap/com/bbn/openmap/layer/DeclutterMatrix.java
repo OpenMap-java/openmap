@@ -80,7 +80,7 @@
  *
  *  Revision 1.6  1999/10/07 16:08:51  dietrick
  *  Added a static getGraphics() call, which returns a fake graphics to
- *  use to figure out the demensions of font metrics at projection time,
+ *  use to figure out the dimensions of font metrics at projection time,
  *  as opposed to render time.
  *
  *  Revision 1.5  1999/10/05 17:33:50  gkeith
@@ -560,7 +560,7 @@ public class DeclutterMatrix {
                 }
             }
 
-            // This will prevent the second loop from occuring if it's
+            // This will prevent the second loop from occurring if it's
             // not supposed to - the caller just wanted to check the
             // spaces, rather than check and mark.
             if (!markAsTaken) {

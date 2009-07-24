@@ -54,7 +54,7 @@ import com.bbn.openmap.util.SwingWorker;
 public class LOSGenerator implements TerrainTool {
 
     // These are used to control the algorithm type. Right now, the
-    // first two are eliminated, since the azimuth alogorithm is
+    // first two are eliminated, since the azimuth algorithm is
     // faster
     // and more precise.
     final static int PRECISE = 0;

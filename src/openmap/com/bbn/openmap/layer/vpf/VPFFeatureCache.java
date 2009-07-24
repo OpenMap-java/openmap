@@ -219,7 +219,7 @@ public class VPFFeatureCache extends CacheHandler {
 
         /**
          */
-        public void finalize() {
+        protected void finalize() {
             ((OMGraphicList) obj).clear();
         }
     }

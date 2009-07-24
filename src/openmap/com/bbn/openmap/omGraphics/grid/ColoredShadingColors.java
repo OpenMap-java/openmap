@@ -57,7 +57,7 @@ public class ColoredShadingColors implements ElevationColors {
     }
 
     /**
-     * Constructor to provide unique evevation cutoffs and colors.
+     * Constructor to provide unique elevation cutoffs and colors.
      */
     public ColoredShadingColors(ColorHelper[] colors) {
         this.colors = colors;

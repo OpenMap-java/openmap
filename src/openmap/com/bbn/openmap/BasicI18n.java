@@ -325,7 +325,7 @@ public class BasicI18n implements I18n, Serializable {
         try {
             f.setAccessible(true);
         } catch (SecurityException e) {
-            Debug.message(DEBUG, "Coudn't set field " + field + " accessible");
+            Debug.message(DEBUG, "Couldn't set field " + field + " accessible");
         }
         // Ok, now try to get the data:
         Class type = f.getType();
@@ -367,7 +367,7 @@ public class BasicI18n implements I18n, Serializable {
     }
 
     // //
-    // // Implemenation Methods:
+    // // Implementation Methods:
     // /////////////////////////
     // /////////////////////////
 

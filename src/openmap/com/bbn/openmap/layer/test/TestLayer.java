@@ -593,7 +593,7 @@ public class TestLayer extends OMGraphicHandlerLayer implements
      */
     protected abstract class GraphicBase {
         // ll data
-        protected float[] llpts = new float[4];
+        protected double[] llpts = new double[4];
         protected float radius = 4000f;
         protected int type = OMGraphic.LINETYPE_GREATCIRCLE;
         protected int nsegs = 360;
@@ -622,7 +622,7 @@ public class TestLayer extends OMGraphicHandlerLayer implements
 
         protected void setLLCoordinate(JTextField jtf, int i) {
             try {
-                llpts[i] = Float.valueOf(jtf.getText().trim()).floatValue();
+                llpts[i] = Double.valueOf(jtf.getText().trim()).doubleValue();
             } catch (NumberFormatException ex) {
                 return;
             }
@@ -704,10 +704,10 @@ public class TestLayer extends OMGraphicHandlerLayer implements
         protected boolean arrowhead = false;
 
         public Line() {
-            llpts[0] = 45f;
-            llpts[1] = -90f;
-            llpts[2] = 0f;
-            llpts[3] = -180f;
+            llpts[0] = 45.0;
+            llpts[1] = -90.0;
+            llpts[2] = 0.0;
+            llpts[3] = -180.0;
             xypts[0] = 45;
             xypts[1] = 90;
             xypts[2] = 0;
@@ -868,10 +868,10 @@ public class TestLayer extends OMGraphicHandlerLayer implements
 
     protected class Rect extends Line {
         public Rect() {
-            llpts[0] = -80f;
-            llpts[1] = 0f;
-            llpts[2] = 10f;
-            llpts[3] = 45f;
+            llpts[0] = -80.0;
+            llpts[1] = 0.0;
+            llpts[2] = 10.0;
+            llpts[3] = 45.0;
             xypts[0] = 250;
             xypts[1] = 100;
             xypts[2] = 150;
@@ -1013,16 +1013,16 @@ public class TestLayer extends OMGraphicHandlerLayer implements
         protected int cMode = OMPoly.COORDMODE_ORIGIN;
 
         public Poly() {
-            llpts = new float[8];
+            llpts = new double[8];
             xypts = new int[6];
-            llpts[0] = 10f;
-            llpts[1] = -20f;
-            llpts[2] = 45f;
-            llpts[3] = -70f;
-            llpts[4] = 0f;
-            llpts[5] = -90f;
-            llpts[6] = -15f;
-            llpts[7] = -40f;
+            llpts[0] = 10.0;
+            llpts[1] = -20.0;
+            llpts[2] = 45.0;
+            llpts[3] = -70.0;
+            llpts[4] = 0.0;
+            llpts[5] = -90.0;
+            llpts[6] = -15.0;
+            llpts[7] = -40.0;
             xypts[0] = 145;
             xypts[1] = 190;
             xypts[2] = 160;
@@ -1053,14 +1053,14 @@ public class TestLayer extends OMGraphicHandlerLayer implements
                 tok = new StringTokenizer(verts);
                 int size = tok.countTokens();
                 System.out.println("ll size=" + size);
-                llpts = new float[size];
+                llpts = new double[size];
                 for (int i = 0; i < size; i += 2) {
                     str = tok.nextToken();
                     System.out.print("lat=" + str);
-                    llpts[i] = Float.valueOf(str).floatValue();
+                    llpts[i] = Double.valueOf(str).doubleValue();
                     str = tok.nextToken();
                     System.out.println(" lon=" + str);
-                    llpts[i + 1] = Float.valueOf(str).floatValue();
+                    llpts[i + 1] = Double.valueOf(str).doubleValue();
                 }
             } catch (NumberFormatException ex) {
                 return;
@@ -1185,8 +1185,8 @@ public class TestLayer extends OMGraphicHandlerLayer implements
         protected int just = OMText.JUSTIFY_CENTER;
 
         public Text() {
-            llpts[0] = 42.35f;
-            llpts[1] = -70.5f;
+            llpts[0] = 42.35;
+            llpts[1] = -70.5;
             xypts[0] = 20;
             xypts[1] = 10;
             lineColor = 10;

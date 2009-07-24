@@ -26,7 +26,6 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.plaf.*;
 import javax.swing.plaf.metal.MetalButtonUI;
-import javax.swing.BorderFactory;
 
 /**
  * A subclass of the metal UI that draws a semi-transparent button on

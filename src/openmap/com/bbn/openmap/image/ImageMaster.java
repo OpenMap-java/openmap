@@ -457,7 +457,7 @@ public class ImageMaster {
 
             Properties uniqueProps;
             // if there isn't a unique properties file designated for
-            // the imageerver layers, assume that the layer properties
+            // the imageserver layers, assume that the layer properties
             // reside in the ImageMaster properties file.
 
             if (uniquePropsURL != null) {

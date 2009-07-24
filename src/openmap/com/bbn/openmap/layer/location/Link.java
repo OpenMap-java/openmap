@@ -73,7 +73,7 @@ public class Link extends Location {
     public static float DEFAULT_THICKNESS = 1.0f;
 
     /**
-     * A plain contructor if you are planning on setting everything
+     * A plain constructor if you are planning on setting everything
      * yourself.
      */
     public Link() {}

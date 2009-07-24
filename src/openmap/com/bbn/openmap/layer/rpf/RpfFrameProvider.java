@@ -37,13 +37,13 @@ public interface RpfFrameProvider {
      * change at the RpfCacheHandler/RpfCacheManager. If the source of
      * the data is a server, this should return yes. If the source is
      * local, the view attributes will be a shared object and updates
-     * are not nessary.
+     * are not necessary.
      */
     public boolean needViewAttributeUpdates();
 
     /**
      * Set the RpfViewAttribute object parameters, which describes
-     * alot about what you'll be asking for later.
+     * a lot about what you'll be asking for later.
      */
     public void setViewAttributes(RpfViewAttributes rva);
 

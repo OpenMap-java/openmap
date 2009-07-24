@@ -89,7 +89,7 @@ public interface DrawingTool {
     /**
      * Same as create(String, GraphicAttributes,
      * DrawingToolRequestor), except that you have to option of
-     * supressing the GUI that could be available from the
+     * suppressing the GUI that could be available from the
      * EditableOMGraphic.
      * 
      * @param classname the classname of the OMGraphic to create.
@@ -126,7 +126,7 @@ public interface DrawingTool {
 
     /**
      * Same as edit(omGraphic, DrawingToolRequestor), except that you
-     * have to option of supressing the GUI that could be available
+     * have to option of suppressing the GUI that could be available
      * from the EditableOMGraphic.
      * 
      * @param g the OMGraphic to wrap in an EditableOMGraphic, and

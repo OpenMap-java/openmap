@@ -26,7 +26,7 @@ import javax.swing.JFileChooser;
 
 /**
  * A PropertyEditor that brings up a JFileChooser panel to select a
- * directory. A single directpry choice can be made, and only choices
+ * directory. A single directory choice can be made, and only choices
  * that reside on the local file system.
  */
 public class DirectoryPropertyEditor extends FilePropertyEditor {

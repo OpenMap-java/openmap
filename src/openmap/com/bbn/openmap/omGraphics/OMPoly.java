@@ -582,7 +582,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
             return false;
         }
 
-        // answer the question now, saving calcuation for future
+        // answer the question now, saving calculation for future
         // calculations. The set method forces the calculation for
         // the query.
 

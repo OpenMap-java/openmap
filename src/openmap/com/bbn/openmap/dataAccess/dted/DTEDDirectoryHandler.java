@@ -163,7 +163,7 @@ public class DTEDDirectoryHandler implements PropertyConsumer {
             props = new Properties();
         }
 
-        props.put(PathProperty, "Path to DTED direcotory");
+        props.put(PathProperty, "Path to DTED directory");
         props.put(TranslatorClassProperty,
                 "Class name of DTEDNameTranslator to use for directory");
         if (translator instanceof PropertyConsumer) {

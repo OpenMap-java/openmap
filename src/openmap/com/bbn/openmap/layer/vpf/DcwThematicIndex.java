@@ -189,7 +189,7 @@ public class DcwThematicIndex {
                 } else if ((typeOfIndex == 'B') || (typeOfIndex == 'G')) {
                     Debug.output("Scary Bitmap Index Format");
                 } else {
-                    throw new FormatException("Unidentied TMI format");
+                    throw new FormatException("Unidentified TMI format");
                 }
 
                 Object[] indexes = getValueIndexes();
@@ -295,7 +295,7 @@ public class DcwThematicIndex {
                     System.out.println(prt);
 
                 } else {
-                    throw new FormatException("Unidentied TMI format");
+                    throw new FormatException("Unidentified TMI format");
                 }
             }
         } catch (EOFException e) {

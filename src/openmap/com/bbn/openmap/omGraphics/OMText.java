@@ -535,7 +535,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     }
 
     /**
-     * Returns the color used to matte the actuall text of this class.
+     * Returns the color used to matte the actual text of this class.
      * 
      * @return the text matte color, null if not used
      */
@@ -795,7 +795,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
         // flush the cached information about the bounding box.
         polyBounds = null;
 
-        // Although it most definately has bounds, OMText is
+        // Although it most definitely has bounds, OMText is
         // considered a
         // point object by the projection code. We need to check to
         // make
@@ -928,11 +928,11 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     }
 
     /**
-     * Counts occurences of a character in a string.
+     * Counts occurrences of a character in a string.
      * 
      * @param str the String
      * @param ch the character to count
-     * @return the number of occurences
+     * @return the number of occurrences
      */
     protected int countChar(String str, int ch) {
         int fromIndex = 0;

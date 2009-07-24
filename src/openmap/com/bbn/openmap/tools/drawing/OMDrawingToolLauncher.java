@@ -743,14 +743,14 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
     }
 
     /**
-     * Get the attributes that initalize the graphic.
+     * Get the attributes that initialize the graphic.
      */
     public GraphicAttributes getDefaultGraphicAttributes() {
         return defaultGraphicAttributes;
     }
 
     /**
-     * Set the attributes that initalize the graphic.
+     * Set the attributes that initialize the graphic.
      */
     public void setDefaultGraphicAttributes(GraphicAttributes ga) {
         defaultGraphicAttributes = ga;

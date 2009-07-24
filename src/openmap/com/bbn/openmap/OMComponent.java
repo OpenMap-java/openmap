@@ -76,7 +76,7 @@ public class OMComponent extends MapHandlerChild implements PropertyConsumer {
      * reflecting the current values of the OMComponent. If the
      * component has a propertyPrefix set, the property keys should
      * have that prefix plus a separating '.' prepended to each
-     * propery key it uses for configuration.
+     * property key it uses for configuration.
      * 
      * @param props a Properties object to load the PropertyConsumer
      *        properties into. If props equals null, then a new

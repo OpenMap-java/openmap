@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This is an OMGraphicsList cub-class with a Map interface. Access is backed by
+ * This is an OMGraphicsList sub-class with a Map interface. Access is backed by
  * a HashMap. Insertion and removal of OMGraphics is through the Map interface.
  * <p>
  * The add(OMGraphic), addOMGraphic(OMGraphic), remove(OMGraphic), and

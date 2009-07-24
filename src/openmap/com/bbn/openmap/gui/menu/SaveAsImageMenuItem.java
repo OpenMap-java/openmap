@@ -111,7 +111,6 @@ public class SaveAsImageMenuItem extends MapHandlerMenuItem implements
                 Debug.error("SaveAsImageMenuItem: " + e);
             }
         }
-        return;
     }
 
     /**

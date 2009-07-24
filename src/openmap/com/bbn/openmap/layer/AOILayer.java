@@ -29,7 +29,6 @@ import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;

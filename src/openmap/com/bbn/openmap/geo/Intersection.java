@@ -107,7 +107,7 @@ public class Intersection {
     }
 
     /**
-     * Asks the Intersection class to calcuate the relationships between object
+     * Asks the Intersection class to calculate the relationships between object
      * a and b. Calls the other consider methods, depending on what a and b are.
      * Consult the MatchCollector for the results.
      * 
@@ -135,7 +135,7 @@ public class Intersection {
     }
 
     /**
-     * Loads the collector with regions from the Collection that intesect with
+     * Loads the collector with regions from the Collection that intersect with
      * r.
      * 
      * @param r the region in question
@@ -393,7 +393,7 @@ public class Intersection {
     //
 
     /**
-     * Returns the two antipodal points of interection of two great circles
+     * Returns the two antipodal points of intersection of two great circles
      * defined by the arcs (lat1, lon1) to (lat2, lon2) and (lat2, lon2) to
      * (lat4, lon4). All lat-lon values are in degrees.
      * 
@@ -415,7 +415,7 @@ public class Intersection {
     }
 
     /**
-     * Returns the two antipodal points of interection of two great circles
+     * Returns the two antipodal points of intersection of two great circles
      * defined by the arcs (lat1, lon1) to (lat2, lon2) and (lat2, lon2) to
      * (lat4, lon4). All lat-lon values are in degrees.
      * 
@@ -437,7 +437,7 @@ public class Intersection {
     }
 
     /**
-     * Returns a Geo representing the interection of two great circles defined
+     * Returns a Geo representing the intersection of two great circles defined
      * by the arcs (lat1, lon1) to (lat2, lon2) and (lat2, lon2) to (lat4,
      * lon4). All lat-lon values are in degrees.
      * 
@@ -1178,7 +1178,7 @@ public class Intersection {
     }
 
     // /**
-    // * returns the point of interection of two great circle segments
+    // * returns the point of intersection of two great circle segments
     // * defined by the segments. (lat1, lon1) to (lat2, lon2) and
     // * (lat2, lon2) to (lat4, lon4). All lat-lon values are in
     // * degrees.

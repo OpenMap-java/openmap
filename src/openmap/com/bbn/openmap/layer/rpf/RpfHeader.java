@@ -239,7 +239,7 @@ public class RpfHeader {
         if (header.read(binFile))
             System.out.println(header);
         else
-            System.out.println("RpfHeader: NOT read sucessfully!");
+            System.out.println("RpfHeader: NOT read successfully!");
 
     }
 }

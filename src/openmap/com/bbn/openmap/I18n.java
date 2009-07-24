@@ -22,8 +22,6 @@
 
 package com.bbn.openmap;
 
-import java.util.MissingResourceException;
-
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -34,7 +32,7 @@ import javax.swing.JMenuItem;
 
 /**
  * Interface for Internationalization support in Openamp. The I18n
- * implmentation will define where the resources for the given class
+ * implementation will define where the resources for the given class
  * are stored.
  * <P>
  * <B>Intended Usage: </B>
@@ -136,7 +134,7 @@ import javax.swing.JMenuItem;
  * <code>myButton</code> and <code>myLabel</code>.
  * </UL>
  * <P>
- * <SMALL>In case you were wondering, the oft used I18n abreviation
+ * <SMALL>In case you were wondering, the oft used I18n abbreviation
  * comes from the 18 characters between the 'I' and the 'n' in the
  * word Internationalization. </SMALL>
  * 
@@ -167,7 +165,7 @@ public interface I18n {
      * @param requestor object containing the code requesting the
      *        String (typically <code>this</code).
      * @param field the field the String belongs to.  Typically this will
-     * be the variable name refering to the String or the Swing object that
+     * be the variable name referring to the String or the Swing object that
      * uses the String (like a button or a label).
      * @param defaultString what to use if the resource can't be found.
      */
@@ -179,7 +177,7 @@ public interface I18n {
      * @param requestor object containing the code requesting the
      *        String (typically <code>this</code).
      * @param field the field the String belongs to.  Typically this will
-     * be the variable name refering to the Swing object that uses the String 
+     * be the variable name referring to the Swing object that uses the String
      * (like a button or a label).
      * @param type which specific slot in the Swing object the string
      * pertains to.  One of TEXT, TOOLTIP or MNEMONIC.
@@ -195,7 +193,7 @@ public interface I18n {
      * @param requestor the class of the object containing the code
      *        requesting the String (typically <code>Foo.class</code).
      * @param field the field the String belongs to.  Typically this will
-     * be the variable name refering to the String or the Swing object that
+     * be the variable name referring to the String or the Swing object that
      * uses the String (like a button or a label).
      * @param defaultString what to use if the resource can't be found.
      */
@@ -207,7 +205,7 @@ public interface I18n {
      * @param requestor the classof the object containing the code
      *        requesting the String (typically <code>Foo.class</code).
      * @param field the field the String belongs to.  Typically this will
-     * be the variable name refering to the Swing object that uses the String 
+     * be the variable name referring to the Swing object that uses the String
      * (like a button or a label).
      * @param type which specific slot in the Swing object the string
      * pertains to.  One of TEXT, TOOLTIP or MNEMONIC.
@@ -326,7 +324,7 @@ public interface I18n {
      * @param requestor object containing the code requesting the
      *        String (typically <code>this</code).
      * @param field the field the String belongs to.  Typically this will
-     * be the variable name refering to the <code>comp</code> parameter.
+     * be the variable name referring to the <code>comp</code> parameter.
      * @param comp the component whose properties are being set.
      * @throws MissingResourceException if the data can't be found.
      */
@@ -339,7 +337,7 @@ public interface I18n {
      * @param requestor object containing the code requesting the
      *        String (typically <code>this</code).
      * @param field the field the String belongs to.  Typically this will
-     * be the variable name refering to the <code>comp</code> parameter.
+     * be the variable name referring to the <code>comp</code> parameter.
      * @param comp the component whose properties are being set.
      * @throws MissingResourceException if the data can't be found.
      */
@@ -352,7 +350,7 @@ public interface I18n {
      * @param requestor object containing the code requesting the
      *        String (typically <code>this</code).
      * @param field the field the String belongs to.  Typically this will
-     * be the variable name refering to the <code>comp</code> parameter.
+     * be the variable name referring to the <code>comp</code> parameter.
      * @param comp the component whose properties are being set.
      * @throws MissingResourceException if the data can't be found.
      */
@@ -365,7 +363,7 @@ public interface I18n {
      * @param requestor object containing the code requesting the
      *        String (typically <code>this</code).
      * @param field the field the String belongs to.  Typically this will
-     * be the variable name refering to the <code>comp</code> parameter.
+     * be the variable name referring to the <code>comp</code> parameter.
      * @param comp the component whose properties are being set.
      * @throws MissingResourceException if the data can't be found.
      */
@@ -378,7 +376,7 @@ public interface I18n {
      * @param requestor object containing the code requesting the
      *        String (typically <code>this</code).
      * @param field the field the String belongs to.  Typically this will
-     * be the variable name refering to the <code>comp</code> parameter.
+     * be the variable name referring to the <code>comp</code> parameter.
      * @param comp the component whose properties are being set.
      * @throws MissingResourceException if the data can't be found.
      */
@@ -391,7 +389,7 @@ public interface I18n {
      * @param requestor object containing the code requesting the
      *        String (typically <code>this</code).
      * @param field the field the String belongs to.  Typically this will
-     * be the variable name refering to the <code>comp</code> parameter.
+     * be the variable name referring to the <code>comp</code> parameter.
      * @param comp the component whose properties are being set.
      * @throws MissingResourceException if the data can't be found.
      */
@@ -407,7 +405,7 @@ public interface I18n {
      * @param requestor object containing the code requesting the
      *        String (typically <code>this</code).
      * @param field the field the String belongs to.  Typically this will
-     * be the variable name refering to the <code>comp</code> parameter.
+     * be the variable name referring to the <code>comp</code> parameter.
      * @param comp the component whose properties are being set.
      * @throws MissingResourceException if the data can't be found.
      */

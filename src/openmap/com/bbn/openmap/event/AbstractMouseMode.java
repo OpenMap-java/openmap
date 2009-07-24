@@ -75,7 +75,7 @@ public class AbstractMouseMode extends OMComponent implements MapMouseMode,
 
     /**
      * The object used to handle the listeners and to pass out the event to the
-     * layers interesed in it.
+     * layers interested in it.
      */
     protected MapMouseSupport mouseSupport;
 
@@ -315,7 +315,7 @@ public class AbstractMouseMode extends OMComponent implements MapMouseMode,
      * Returns how the delegate (and it's mouse support) is set up to distribute
      * events.
      * 
-     * @return true if only one listner gets to act on an event.
+     * @return true if only one listener gets to act on an event.
      */
     public boolean isConsumeEvents() {
         return mouseSupport.isConsumeEvents();

@@ -139,7 +139,7 @@ public class BoundaryCrossing {
 
             // We need to get all the BorderCrossings from the current
             // segment all together, across regions and place them in
-            // order. So if the segments matche with the previous
+            // order. So if the segments matches with the previous
             // segment, we need to hold off add them to the crossings
             // list until a segment is complete.
 

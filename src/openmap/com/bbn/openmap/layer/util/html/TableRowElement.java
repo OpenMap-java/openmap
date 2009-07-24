@@ -25,7 +25,7 @@ package com.bbn.openmap.layer.util.html;
 /** This class implements an entire row of an html table */
 public class TableRowElement extends WrapElement implements ContainerElement {
 
-    /** Constuct an empty row */
+    /** Construct an empty row */
     public TableRowElement() {
         super("tr", new ListElement());
     }

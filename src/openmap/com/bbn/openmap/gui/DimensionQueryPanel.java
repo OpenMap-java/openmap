@@ -165,7 +165,7 @@ public class DimensionQueryPanel extends JPanel {
      * Customized text field that sends an action event when focus is lost (in
      * addition to when the user hits "enter"). Fixes situations where listeners
      * were not getting dimension updates when user failed to hit enter (a
-     * common occurance).
+     * common occurrence).
      */
     private class DimensionQueryField extends JTextField implements FocusListener {
 

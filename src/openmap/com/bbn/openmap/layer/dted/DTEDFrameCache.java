@@ -36,7 +36,7 @@ import com.bbn.openmap.util.cacheHandler.CacheObject;
 
 /**
  * The DTEDFrameCache is an object that retrieves DTED paths, frames or
- * elevation values, given a latitude, logitude and dted level. It maintains a
+ * elevation values, given a latitude, longitude and dted level. It maintains a
  * collection of the frames it has already used for quicker access later. The
  * size of the cache is user-determined, and the cache also relies on user
  * provided paths to the dted directory, which is the top level directory in a
@@ -52,7 +52,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
     /** The elevation value returned if there is no data at a lat/lon. */
     public final static int NO_DATA = -500;
     /**
-     * The maxumim DTED level to check for data, given a lat/lon and a path to a
+     * The maximum DTED level to check for data, given a lat/lon and a path to a
      * dted data directory.
      */
     public final static int MAX_DTED_LEVEL = 1;
@@ -220,7 +220,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
          * Calls dispose() on the contained frame, to make it eligible for
          * garbage collection.
          */
-        public void finalize() {
+        protected void finalize() {
             ((DTEDSubframedFrame) obj).dispose();
         }
     }

@@ -37,6 +37,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
 
@@ -765,8 +766,8 @@ public class VPFConfig extends JPanel implements ActionListener {
         }
         
         if (features.size() > 0) {
-            for (String key : features.keySet()) {
-                System.out.println(key + ": " + features.get(key));
+            for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+                System.out.println(entry.getKey() + ": " + entry.getValue());
             }
         }
         

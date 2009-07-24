@@ -30,7 +30,7 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
  * A ProjectionChangePolicy is a policy object that determines how an
  * OMGraphicHandler layer reacts to a projectionChanged() method call.
  * The OMGraphicHandlerLayer has been written to consult this object
- * to contral that activity. The reaction could include clearing out
+ * to control that activity. The reaction could include clearing out
  * the current OMGraphicList or keeping it, or launching a SwingWorker
  * with a doPrepare() call on the layer to have the layer's prepare()
  * method called.

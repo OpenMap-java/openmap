@@ -483,7 +483,7 @@ public class MapRequestHandler extends ImageServer implements
                 defaultProjection);
 
         String contentType = HttpConnection.CONTENT_PLAIN;
-        ;
+
         String response;
 
         try {

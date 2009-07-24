@@ -37,7 +37,7 @@ import com.bbn.openmap.util.Debug;
  * <p>
  * 
  * The visibility of the graphics is affected when a filter is
- * applied, and visiblity is used as the test if whether a graphic is
+ * applied, and visibility is used as the test if whether a graphic is
  * added to a returned list. Use resetFiltering() to turn visibility
  * back on for all the OMGraphics. If a graphic is not visible when a
  * filter is applied, then the filter test will automatically fail.
@@ -50,7 +50,7 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
     protected OMGraphicList list = null;
 
     /**
-     * A flag to use the Area.intersets(Area) test, which may be a
+     * A flag to use the Area.intersect(Area) test, which may be a
      * performance hit.
      */
     protected boolean precise = true;
@@ -113,7 +113,6 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
      */
     protected OMGraphicList filterList(OMGraphicList omgl, Area area,
                                        boolean getInsideArea) {
-
         OMGraphicList ret = new OMGraphicList();
         boolean DEBUG_DETAIL = Debug.debugging("filtersupportdetail");
         boolean DEBUG = Debug.debugging("filtersupport") || DEBUG_DETAIL;
@@ -144,7 +143,6 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
                 }
 
                 if (omg instanceof OMGraphicList) {
-
                     if (omg == omgl) {
                         Debug.output("   OMGraphic is parent list (points to itself), ignoring...");
                         continue;
@@ -165,11 +163,15 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
                                     + ") pass filter, adding...");
                         }
 
-                        passedFilter(subList);
-                        ret.add(subList);
-
+                        if (((OMGraphicList)omg).isVague()) {
+                            passedFilter(omg);
+                            omg.setVisible(true);
+                            ret.add(omg);
+                        } else {
+                            passedFilter(subList);
+                            ret.add(subList);
+                        }
                     } else {
-
                         if (DEBUG) {
                             Debug.output("  --- OMGraphicList's contents fail filter, ignoring...");
                         }
@@ -179,27 +181,41 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
                     continue;
                 } else {
                     Shape omgShape = omg.getShape();
-                    if (omgShape != null
-                            && area.intersects(omgShape.getBounds2D())) {
+                    if (omgShape != null) {
+                        if (omgShape.getBounds2D().getWidth() == 0 && omgShape.getBounds2D().getHeight() == 0) {
+                            if (area.contains(omgShape.getBounds2D().getX(), omgShape.getBounds2D().getY())) {
+                                if (DEBUG_DETAIL) {
+                                    Debug.output("   +++ omg contains position");
+                                }
 
-                        if (DEBUG_DETAIL) {
-                            Debug.output("   +++ omg intersects bounds");
-                        }
-
-                        // The area.interects() method above is a
-                        // general case. If you care about
-                        // preciseness, set the precise flag.
-                        // Depending on the performance cost, we might
-                        // want to make it permanent.
-
-                        if (precise) {
-                            Area clone = (Area) area.clone();
-                            clone.intersect(new Area(omgShape));
-                            if (!clone.isEmpty()) {
                                 outsideFilter = false;
                             }
-                        } else {
-                            outsideFilter = false;
+                        }
+                        else if (area.intersects(omgShape.getBounds2D())) {
+                            if (DEBUG_DETAIL) {
+                                Debug.output("   +++ omg intersects bounds");
+                            }
+
+                            // The area.interects() method above is a
+                            // general case. If you care about
+                            // preciseness, set the precise flag.
+                            // Depending on the performance cost, we might
+                            // want to make it permanent.
+
+                            if (precise) {
+                                Area omgArea = new Area(omgShape);
+                                if (!omgArea.isSingular()) {
+                                    Area clone = (Area) area.clone();
+                                    clone.intersect(omgArea);
+                                    if (!clone.isEmpty()) {
+                                        outsideFilter = false;
+                                    }
+                                } else {
+                                    outsideFilter = false;
+                                }
+                            } else {
+                                outsideFilter = false;
+                            }
                         }
                     }
 
@@ -221,7 +237,6 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
 
                         failedFilter(omg);
                     }
-
                 }
             }
         }
@@ -246,7 +261,7 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
      * 
      * @param SQLQuery a SELECT SQL statement
      * @return OMGraphicList containing OMGraphics that meet the
-     *         SELECT statemenet criteria.
+     *         SELECT statement criteria.
      */
     public OMGraphicList filter(String SQLQuery) {
         return new OMGraphicList();

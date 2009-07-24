@@ -119,7 +119,7 @@ public class ArcCalc implements Serializable {
      * two points. The arcAngle is the number of radians of a circle
      * that the arc should represent. Math.PI is the Max. The
      * setArcAngle should be called before this method is called, so
-     * that the method knoes what to create.
+     * that the method knows what to create.
      */
     public void generate(int x1, int y1, int x2, int y2) {
 
@@ -233,7 +233,7 @@ public class ArcCalc implements Serializable {
                     + "\n                    Distance to point 2 from arc focus = "
                     + dist2);
 
-            // Let's hightlight the end points.
+            // Let's highlight the end points.
             OMRect point1 = new OMRect(x1 - 1, y1 - 1, x1 + 1, y1 + 1);
             OMRect point2 = new OMRect(x2 - 1, y2 - 1, x2 + 1, y2 + 1);
             OMRect arcPoint = new OMRect(arcCenter.x - 1, arcCenter.y - 1, arcCenter.x + 1, arcCenter.y + 1);
@@ -280,7 +280,7 @@ public class ArcCalc implements Serializable {
             largeSlope = tmpSlope;
         }
 
-        // Experienced some trouble with vertical and horizonal half
+        // Experienced some trouble with vertical and horizontal half
         // circles. This took care of that.
         if (arcAngle == Math.PI && arcUp) {
             Debug.message("arc",

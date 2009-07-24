@@ -44,7 +44,7 @@ import com.bbn.openmap.util.Debug;
  * link.port=3031
  * # host name of server
  * link.host=host.com
- * # URL of proerties file for server attributes
+ * # URL of properties file for server attributes
  * link.propertiesURL=http://location.of.properties.file.com
  * </code>
  */

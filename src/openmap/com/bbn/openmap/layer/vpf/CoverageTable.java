@@ -83,7 +83,7 @@ public class CoverageTable {
      */
     protected CoverageAttributeTable cat;
 
-    /** hackage for the antactica polygon in DCW browse coverage */
+    /** hackage for the antarctica polygon in DCW browse coverage */
     final public boolean doAntarcticaWorkaround;
 
     public static final char EDGE_FEATURETYPE = 'L';

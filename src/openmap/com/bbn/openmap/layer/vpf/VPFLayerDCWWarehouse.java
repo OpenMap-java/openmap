@@ -33,7 +33,7 @@ import com.bbn.openmap.util.PropUtils;
 
 /**
  * Implement a graphic factory that builds OMGraphics. This one handles DCW
- * dtabases. It has some properties that can be added to the VPFLayer property
+ * databases. It has some properties that can be added to the VPFLayer property
  * list that further control which types of features will not be displayed for a
  * coverage type.
  * <P>

@@ -55,7 +55,7 @@ public class NatCubicClosedSpline extends NatCubicSpline {
          * 4] [D[n]] [3(x[0] - x[n-1])]
          * 
          * by decomposing the matrix into upper triangular and lower
-         * matrices and then back sustitution. See Spath "Spline
+         * matrices and then back substitution. See Spath "Spline
          * Algorithms for Curves and Surfaces" pp 19--21. The D[i] are
          * the derivatives at the knots.
          */

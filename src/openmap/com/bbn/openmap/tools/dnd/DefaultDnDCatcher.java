@@ -347,7 +347,7 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
     }
 
     /**
-     * Gets the location where the drop action occured.
+     * Gets the location where the drop action occurred.
      */
     private Point extractDropLocation(DropTargetDropEvent dtde) {
         if (dtde == null) {

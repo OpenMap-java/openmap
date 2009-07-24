@@ -134,7 +134,7 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
     public EsriLayer() {}
 
     /**
-     * Creates an empty EsriLayer, useable for adding features at
+     * Creates an empty EsriLayer, usable for adding features at
      * run-time
      * 
      * @param name The name of the layer

@@ -229,7 +229,7 @@ public class DTEDSubframedFrame extends DTEDFrame {
             // isn't being used to set up the subframe information in
             // the dfsi.
             initSubframes(1, 1);
-            // NOTE!! The algorithm uses the cordinates of the top
+            // NOTE!! The algorithm uses the coordinates of the top
             // left corner as a reference!!!!!!!!
             lat_origin = dsi.lat_origin + 1;
             lon_origin = dsi.lon_origin;

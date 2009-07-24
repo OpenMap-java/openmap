@@ -277,7 +277,7 @@ public interface OMGeometry {
      * wrapped around it. If you have other queries for the internal Shape
      * object, just ask for it and then ask it directly. This method is provided
      * because it is the most useful, used when determining if a mouse event is
-     * occuring over an object on the map.
+     * occurring over an object on the map.
      * 
      * @param x X pixel coordinate of the point.
      * @param y Y pixel coordinate of the point.

@@ -101,7 +101,7 @@ public interface DockPanel {
 
     /**
      * Set that the child component can be tabbed up, if docked in the
-     * same location as othe tab-able components.
+     * same location as other tab-able components.
      */
     public void setCanTab(JComponent child, boolean b);
 

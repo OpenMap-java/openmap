@@ -161,7 +161,7 @@ public interface OMGraphic extends OMGeometry, OMGraphicConstants {
     /**
      * Set the line Paint. The line Paint is the normal display edge paint of
      * the graphic. This Paint is used as the display Paint when the object is
-     * NOT selected (hightlighted). The display Paint is set to the select Paint
+     * NOT selected (highlighted). The display Paint is set to the select Paint
      * in this method if <code>selected</code> boolean attribute is false.
      * 
      * @param paint the real line Paint
@@ -187,7 +187,7 @@ public interface OMGraphic extends OMGeometry, OMGraphicConstants {
     /**
      * Set the select Paint. The select Paint is the display edge paint of the
      * graphic. This Paint is used as the display Paint when the object IS
-     * selected (hightlighted). The display Paint is set to the select Paint in
+     * selected (highlighted). The display Paint is set to the select Paint in
      * this method if <code>selected</code> boolean attribute is true.
      * 
      * @param paint the real select Paint

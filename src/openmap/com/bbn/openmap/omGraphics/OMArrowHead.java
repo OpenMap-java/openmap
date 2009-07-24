@@ -311,7 +311,7 @@ public class OMArrowHead {
                             newEndX = xpoints[origEnd];
                             // calculate the percentage from start of line
                             offset = (int) ((float) dy * (arrowLocation / 100.0f));
-                            // set the end at the begining...
+                            // set the end at the beginning...
                             newEndY = ypoints[origEnd] + offset;
 
                         } else {
@@ -399,7 +399,7 @@ public class OMArrowHead {
                             // calculate the percentage from start of
                             // line
                             offset = (int) ((float) dy * (arrowLocation / 100.0f));
-                            // set the end at the begining...
+                            // set the end at the beginning...
                             newEndY = ypoints[origStart] + offset;
 
                         } else {

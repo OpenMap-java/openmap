@@ -348,7 +348,7 @@ public class ProjectionStack extends OMComponent implements ActionListener,
             // out what the coordinate of the center pixel of the
             // projection it created was. Doing this projection hack
             // seems to accurately determine what projections are
-            // acutally identical visually, which is what you want to
+            // actually identical visually, which is what you want to
             // know anyway.
             Point2D tmpPoint1 = proj.forward(proj.getCenter());
             Point2D tmpPoint2 = proj.forward(center);

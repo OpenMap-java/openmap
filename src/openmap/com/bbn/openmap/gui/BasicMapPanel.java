@@ -39,7 +39,6 @@ import com.bbn.openmap.BufferedLayerMapBean;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
-import com.bbn.openmap.MultipleSoloMapComponentException;
 import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.gui.menu.MenuList;
 import com.bbn.openmap.proj.Projection;
@@ -500,8 +499,8 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     }
 
     /**
-     * Add in the properties from the given source, which can be a resorce, file
-     * or URL. Any existing properties will be overwritten except for
+     * Add in the properties from the given source, which can be a resource,
+     * file or URL. Any existing properties will be overwritten except for
      * openmap.components, openmap.layers and openmap.startUpLayers which will
      * be appended.
      * 
@@ -513,7 +512,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     }
 
     /**
-     * remove a marker from a space delimated set of properties.
+     * remove a marker from a space delimited set of properties.
      */
     public void removeMarker(String property, String marker) {
         getPropertyHandler().removeMarker(property, marker);

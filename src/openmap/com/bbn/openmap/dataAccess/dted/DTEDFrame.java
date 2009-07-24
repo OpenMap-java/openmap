@@ -63,7 +63,7 @@ public class DTEDFrame implements Closable {
      */
     protected short[][] elevations; // elevation posts
 
-    /** Data set indentification section of the file. */
+    /** Data set identification section of the file. */
     public DTEDFrameDSI dsi;
     /** User header label section of the file. */
     public DTEDFrameUHL uhl;
@@ -116,7 +116,7 @@ public class DTEDFrame implements Closable {
     /**
      * Reads the DTED frame file. Assumes that the File f is valid/exists.
      * 
-     * @param binFile the binary buffere file opened on the DTED frame file
+     * @param binFile the binary buffered file opened on the DTED frame file
      * @param readWholeFile flag controlling whether all the row data is read at
      *        this time. Otherwise, the rows are read as needed.
      */
@@ -413,7 +413,7 @@ public class DTEDFrame implements Closable {
     // ////////////////
 
     /**
-     * A try at interoplating the corners of the surrounding posts, given a lat
+     * A try at interpolating the corners of the surrounding posts, given a lat
      * lon. Called from a function where the data for the lon has been read in.
      */
     private float resolveFourPoints(int ul, int ur, int lr, int ll,

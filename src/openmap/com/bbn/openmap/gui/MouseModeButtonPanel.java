@@ -44,7 +44,7 @@ import com.bbn.openmap.event.MapMouseMode;
 public class MouseModeButtonPanel extends MouseModePanel {
 
     private JToolBar toolBar = null;
-    /** for intialization, false */
+    /** for initialization, false */
     protected boolean floatable = false;
     /**
      * to turn a button on when the active mouse mode changes behind the scenes.

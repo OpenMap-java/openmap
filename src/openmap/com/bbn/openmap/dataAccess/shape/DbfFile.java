@@ -43,7 +43,7 @@ import com.bbn.openmap.util.FileUtils;
 
 /**
  * An extension to DbfTableModel that handles reading only certain records when
- * needed, in conjuction with some spatial indexing mechanism. Can be told to
+ * needed, in conjunction with some spatial indexing mechanism. Can be told to
  * which columns to read and which to skip, so unnecessary/unused information
  * isn't held in memory.
  * 
@@ -57,7 +57,7 @@ public class DbfFile extends DbfTableModel {
     /**
      * This _columnMask variable is an array that either contains a Boolean.TRUE
      * for the indexes for columns that should be read, or a Integer object that
-     * contans the byte length of the column entry, so the reader will know how
+     * contains the byte length of the column entry, so the reader will know how
      * many bytes to skip for columns being ignored. The _length array contents
      * were modified to reflect the lengths of only the columns being read when
      * the column mask was set, as was the _names, _types, and _decimalCount

@@ -102,7 +102,7 @@ public interface ExtentIndex extends java.util.Collection {
          * speed, less than 180 makes it slower. The sweet spot on current
          * datasets is somewhere in between.
          * 
-         * If unspecifed, defaults to #D_NBUCKETS
+         * If unspecified, defaults to #D_NBUCKETS
          */
         public final int nbuckets;
 
@@ -112,7 +112,7 @@ public interface ExtentIndex extends java.util.Collection {
          * by route (currently 50nmiles) - the larger this value, the larger the
          * average entries/bucket and so, the slower the search.
          * 
-         * If unspecfied, defaults to #D_MARGIN
+         * If unspecified, defaults to #D_MARGIN
          */
         public final double margin;
 

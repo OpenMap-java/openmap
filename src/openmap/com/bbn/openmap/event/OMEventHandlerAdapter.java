@@ -74,7 +74,7 @@ public abstract class OMEventHandlerAdapter extends OMComponent implements
      * This is the main call to return AAREvents based on filters set in the
      * GUI. In subclasses, you can make the call to
      * getMacroFilterList(Collection) from here to check against other filters
-     * that are being set accross all AAREventhandlers.
+     * that are being set across all AAREventhandlers.
      * 
      * @param filters A List of Strings. If your AAREventHandler provides
      *        entries into the filterList, you should check the entries on that

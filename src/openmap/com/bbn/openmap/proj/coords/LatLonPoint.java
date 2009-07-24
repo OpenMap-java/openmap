@@ -37,11 +37,11 @@ import com.bbn.openmap.proj.ProjMath;
 /**
  * A Point2D representation of LatLonPoints, used integrate with the
  * Projections. These LatLonPoints wrap their internal decimal degree values so
- * the latitude are betwee -90 and 90 and the longitudes are between -180 and
+ * the latitude are between -90 and 90 and the longitudes are between -180 and
  * 180. Radian values are precalculated and held within the object.
  * <P>
  * 
- * The LatLonPoint is an abstract class and can't be instatiated directly. You
+ * The LatLonPoint is an abstract class and can't be instantiated directly. You
  * need to create a Float or Double version of a LatLonPoint, much like the
  * Point2D object.
  * <P>
@@ -604,7 +604,7 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
 
         /**
          * Find a LatLonPoint a distance and direction away from this point,
-         * based on the sphercal earth model.
+         * based on the spherical earth model.
          * 
          * @param dist distance, in radians.
          * @param az radians of azimuth (direction) east of north (-PI &lt;= Az

@@ -79,7 +79,6 @@ public class GLOBETempData extends GLOBEData {
                 tokenizer.nextToken();
             /*int site_number = */dec_format.parse(tokenizer.nextToken())
                     .intValue();
-            ;
 
             for (int i = 0; i < 2; i++)
                 tokenizer.nextToken();

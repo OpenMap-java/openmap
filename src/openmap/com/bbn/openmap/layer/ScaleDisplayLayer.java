@@ -21,7 +21,6 @@
 
 package com.bbn.openmap.layer;
 
-import java.beans.PropertyVetoException;
 import java.util.Properties;
 
 import javax.swing.JPanel;
@@ -63,8 +62,8 @@ import com.bbn.openmap.util.PropUtils;
  * left edge, negative from right edge <br>
  * locationYoffset - offset in pixels from top/bottom, positive from
  * top edge, negative from bottom edge <br>
- * width - width of scale indidator bar in pixels <br>
- * height - height of scale indidator bar in pixels <br>
+ * width - width of scale indicator bar in pixels <br>
+ * height - height of scale indicator bar in pixels <br>
  * <br>
  */
 public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
@@ -185,9 +184,19 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
                 loc2.getRadLon());
         dist = uom.fromRadians(dist);
 
-        if (dist > 1)
-            dist = (int) dist;
-        String outtext = dist + " " + uomAbbr;
+        String outtext;
+        if (dist < 1.0f) {
+            outtext = String.format("%.3f %s", dist, uomAbbr);
+        }
+        else if (dist < 10.0f) {
+            outtext = String.format("%.2f %s", dist, uomAbbr);
+        }
+        else if (dist < 100.0f) {
+            outtext = String.format("%.1f %s", dist, uomAbbr);
+        }
+        else {
+            outtext = String.format("%.0f %s", dist, uomAbbr);
+        }
 
         OMText text = new OMText((left_x + right_x) / 2, lower_y - 3, ""
                 + outtext, OMText.JUSTIFY_CENTER);
@@ -249,8 +258,10 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
     javax.swing.Box palette;
     JRadioButton meterRadioButton;
     JRadioButton kmRadioButton;
+    JRadioButton dmRadioButton;
     JRadioButton nmRadioButton;
     JRadioButton mileRadioButton;
+    JRadioButton degRadioButton;
     javax.swing.ButtonGroup uomButtonGroup;
 
     private JPanel jPanel3;
@@ -271,8 +282,10 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
             jPanel3 = new JPanel();
             kmRadioButton = new JRadioButton();
             meterRadioButton = new JRadioButton();
+            dmRadioButton = new JRadioButton();
             nmRadioButton = new JRadioButton();
             mileRadioButton = new JRadioButton();
+            degRadioButton = new JRadioButton();
 
             jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
 
@@ -287,6 +300,11 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
             uomButtonGroup.add(meterRadioButton);
             jPanel3.add(meterRadioButton);
 
+            dmRadioButton.setText("DM");
+            dmRadioButton.setToolTipText("Data Miles");
+            uomButtonGroup.add(dmRadioButton);
+            jPanel3.add(dmRadioButton);
+
             nmRadioButton.setText("NM");
             nmRadioButton.setToolTipText("Nautical Miles");
             uomButtonGroup.add(nmRadioButton);
@@ -296,6 +314,11 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
             mileRadioButton.setToolTipText("Statute Miles");
             uomButtonGroup.add(mileRadioButton);
             jPanel3.add(mileRadioButton);
+
+            degRadioButton.setText("Deg");
+            degRadioButton.setToolTipText("Decimal Degrees");
+            uomButtonGroup.add(degRadioButton);
+            jPanel3.add(degRadioButton);
 
             jPanel2.add(jPanel3);
 
@@ -323,20 +346,27 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
             kmRadioButton.setActionCommand(UnitOfMeasureProperty);
             meterRadioButton.addActionListener(al);
             meterRadioButton.setActionCommand(UnitOfMeasureProperty);
+            dmRadioButton.addActionListener(al);
+            dmRadioButton.setActionCommand(UnitOfMeasureProperty);
             nmRadioButton.addActionListener(al);
             nmRadioButton.setActionCommand(UnitOfMeasureProperty);
             mileRadioButton.addActionListener(al);
             mileRadioButton.setActionCommand(UnitOfMeasureProperty);
-
+            degRadioButton.addActionListener(al);
+            degRadioButton.setActionCommand(UnitOfMeasureProperty);
         }
         if (unitOfMeasure.equalsIgnoreCase("km")) {
             kmRadioButton.setSelected(true);
         } else if (unitOfMeasure.equalsIgnoreCase("m")) {
             meterRadioButton.setSelected(true);
+        } else if (unitOfMeasure.equalsIgnoreCase("dm")) {
+            dmRadioButton.setSelected(true);
         } else if (unitOfMeasure.equalsIgnoreCase("nm")) {
             nmRadioButton.setSelected(true);
         } else if (unitOfMeasure.equalsIgnoreCase("mile")) {
             mileRadioButton.setSelected(true);
+        } else if (unitOfMeasure.equalsIgnoreCase("deg")) {
+            degRadioButton.setSelected(true);
         }
         return palette;
     }

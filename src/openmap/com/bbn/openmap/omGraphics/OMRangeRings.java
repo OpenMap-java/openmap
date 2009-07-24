@@ -194,7 +194,7 @@ public class OMRangeRings extends OMCircle {
     }
 
     /**
-     * Set the format for the number labels. If null, the defaule will be used.
+     * Set the format for the number labels. If null, the default will be used.
      * This only applies to the labels with units.
      */
     public void setFormat(java.text.NumberFormat nf) {

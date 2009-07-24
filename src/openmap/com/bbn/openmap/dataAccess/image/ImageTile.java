@@ -37,13 +37,13 @@ import com.bbn.openmap.util.cacheHandler.CacheHandler;
 import com.bbn.openmap.util.cacheHandler.CacheObject;
 
 /**
- * This is an extension to OMRaster that automatically scales itelf to match the
- * current projection. It is only lat/lon based, and takes the coordinates of
- * the upper left and lower right corners of the image. It does straight scaling -
- * it does not force the image projection to match the map projection! So, your
- * mileage may vary - you have to understand the projection of the image, and
- * know how it fits the projection type of the map. Of course, at larger scales,
- * it might not matter so much.
+ * This is an extension to OMRaster that automatically scales itself to match
+ * the current projection. It is only lat/lon based, and takes the coordinates
+ * of the upper left and lower right corners of the image. It does straight
+ * scaling - it does not force the image projection to match the map projection!
+ * So, your mileage may vary - you have to understand the projection of the
+ * image, and know how it fits the projection type of the map. Of course, at
+ * larger scales, it might not matter so much.
  * 
  * This class was inspired by, and created from parts of the ImageLayer
  * submission from Adrian Lumsden@sss, on 25-Jan-2002. Used the scaling and
@@ -59,7 +59,7 @@ public class ImageTile extends OMScalingRaster implements Serializable {
     protected CacheHandler cache;
 
     /**
-     * Constuct a blank OMRaster, to be filled in with set calls. Make sure you
+     * Construct a blank OMRaster, to be filled in with set calls. Make sure you
      * set either a source image or ImageDecoder that knows how to get the
      * image.
      */

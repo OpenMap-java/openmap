@@ -174,7 +174,7 @@ public class LinkArc implements LinkGraphicConstants, LinkPropertiesConstants {
     /**
      * Write an arc with a certain radius at a Lat/Lon location, and
      * allows you to specify units of the radius, as well as the
-     * number of verticies to use to approximate the arc.
+     * number of vertices to use to approximate the arc.
      * 
      * @param latPoint latitude of center of arc in decimal degrees
      * @param lonPoint longitude of center of arc in decimal degrees

@@ -50,7 +50,7 @@ public class LinkActionRequest implements LinkActionConstants,
     protected int clickCount = 0;
     /**
      * The modifier of the event, that describes any keys that may
-     * have been pressed while the event occured.
+     * have been pressed while the event occurred.
      */
     protected int modifiers = 0;
     /** The character of the key that was pressed in a key event. */
@@ -180,7 +180,7 @@ public class LinkActionRequest implements LinkActionConstants,
         float ver = link.dis.readFloat();
 
         if (ver != version) {
-            if (ver == .1) {// Big differece....
+            if (ver == .1) {// Big difference....
                 throw new IOException("LinkActionRequest: Versions do not match! DANGER!");
             } else {
                 Debug.message("link",
@@ -254,7 +254,7 @@ public class LinkActionRequest implements LinkActionConstants,
     }
 
     /**
-     * If this is null, it means that the gesture occured on the map
+     * If this is null, it means that the gesture occurred on the map
      * background and is not affiliated with a particular graphic.
      * Otherwise, the graphic ID string is returned for the affiliated
      * graphic.
@@ -284,7 +284,7 @@ public class LinkActionRequest implements LinkActionConstants,
         return ((descriptor & CLIENT_NOTIFICATION_MASK) != 0);
     }
 
-    /** Returns true if the query is represeting a key event. */
+    /** Returns true if the query is representing a key event. */
     protected boolean isKeyEvent() {
         return ((descriptor & KEY_RELEASED_MASK) != 0)
                 || ((descriptor & KEY_PRESSED_MASK) != 0);

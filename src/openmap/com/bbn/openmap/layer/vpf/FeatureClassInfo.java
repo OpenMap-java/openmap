@@ -44,7 +44,7 @@ public class FeatureClassInfo extends DcwRecordFile implements
      * The name of our column from the primitive table (e.g.
      * potext.tft_id). This is the name of the column that will let
      * you know, in the primitive file (like edg), what type of
-     * primitive (featurewise) is being reprensented on that row. This
+     * primitive (featurewise) is being represented on that row. This
      * field does not always exist! If it doesn't, all the features in
      * the file are rendered.
      */
@@ -193,7 +193,7 @@ public class FeatureClassInfo extends DcwRecordFile implements
 
     /**
      * Causes the thematic index for the tile_id column to be
-     * initilized.
+     * initialized.
      * 
      * @param path the path to the directory where the index lives
      * @return true if a thematic index is available, false if not

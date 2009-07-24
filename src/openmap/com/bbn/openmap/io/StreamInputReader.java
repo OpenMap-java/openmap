@@ -269,7 +269,7 @@ public abstract class StreamInputReader implements InputReader {
     /**
      * Read from the file.
      * 
-     * @param b the byte array to read into. Equivelent to
+     * @param b the byte array to read into. Equivalent to
      *        <code>read(b, 0, b.length)</code>
      * @return the number of bytes read
      * @exception IOException Any IO errors encountered in reading

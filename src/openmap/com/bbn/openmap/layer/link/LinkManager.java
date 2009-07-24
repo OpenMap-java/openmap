@@ -63,7 +63,7 @@ public class LinkManager {
      * This should be the only method a multi-threaded object uses to
      * gain use of the thread, i.e., on the client side where a GUI
      * can start a lot of requests. If the link was not able to be
-     * reatined for the requestor, then null will be returned. Null
+     * retained for the requestor, then null will be returned. Null
      * should be tested for by the callers, so that they can handle
      * the rejection properly.
      * 
@@ -168,7 +168,7 @@ public class LinkManager {
     /**
      * When a getLink() is called, and the link is reserved for that
      * caller, finLink() MUST be called to release the link for
-     * others. If it is not called, noone else will be able to use it.
+     * others. If it is not called, no one else will be able to use it.
      */
     public void finLink() throws IOException {
         if (link.isCloseLink()) {

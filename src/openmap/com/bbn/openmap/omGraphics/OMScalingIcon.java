@@ -49,7 +49,7 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
     protected float minScale = 0f;
 
     /**
-     * Constuct a blank OMRaster, to be filled in with set calls.
+     * Construct a blank OMRaster, to be filled in with set calls.
      */
     public OMScalingIcon() {
         super();
@@ -164,7 +164,7 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
 
     /**
      * Lat/Lon placement with a indexed colormodel, which is using a
-     * colortable and a byte array to contruct the int[] pixels.
+     * colortable and a byte array to construct the int[] pixels.
      * 
      * @param centerLat latitude of the top of the image.
      * @param centerLon longitude of the left side of the image.

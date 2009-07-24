@@ -82,7 +82,7 @@ public interface OMGraphicHandler {
      * 
      * @param SQLQuery a SELECT SQL statement
      * @return OMGraphicList containing OMGraphics that meet the
-     *         SELECT statemenet criteria.
+     *         SELECT statement criteria.
      */
     public OMGraphicList filter(String SQLQuery);
 

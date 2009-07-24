@@ -24,7 +24,7 @@ package com.bbn.openmap;
 
 /**
  * The LightMapHandlerChild is an interface for an object that can be
- * mananged by a MapHandlerChild, and notified of changes in the
+ * managed by a MapHandlerChild, and notified of changes in the
  * MapHandler via that managing object. The two methods are intended
  * to called when the LightMapHandlerChild should be given an
  * opportunity to connect to an object or disconnect from an object.

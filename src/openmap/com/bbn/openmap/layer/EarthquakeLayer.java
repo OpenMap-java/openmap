@@ -631,7 +631,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
     /**
      * Supplies the propertiesInfo object associated with this
      * EarthquakeLayer object. Contains the human readable
-     * describtions of the properties and the
+     * descriptions of the properties and the
      * <code>initPropertiesProperty</code> (see Inspector class.)
      */
     public Properties getPropertyInfo(Properties info) {

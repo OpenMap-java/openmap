@@ -340,7 +340,7 @@ public class DrawUtil {
 
     /**
      * Calculate the "pixel distance" between two points (squaring not
-     * envolved).
+     * involved).
      * <p>
      * 
      * @param x1 x coord

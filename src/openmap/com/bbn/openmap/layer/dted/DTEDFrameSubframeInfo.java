@@ -120,7 +120,7 @@ public class DTEDFrameSubframeInfo {
     }
 
     /**
-     * A comparision test to test the drawing parameters, to figure
+     * A comparison test to test the drawing parameters, to figure
      * out if the presentation configuration has changed, and that the
      * pixel color values need to be recalculated.
      */

@@ -152,7 +152,7 @@ public class ESRIPointRecord extends ESRIRecord {
      * Generates Points and adds them to the given list.
      * 
      * @param list the graphics list
-     * @param drawingAttributes DrawingAttributes to decribe how to
+     * @param drawingAttributes DrawingAttributes to describe how to
      *        represent the points, if an ImageIcon is not defined.
      */
     public void addOMGraphics(OMGraphicList list,

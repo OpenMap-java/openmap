@@ -93,10 +93,6 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
 
             BufferedImage bufferedImage = getBuffer();
 
-            if (composite != null) {
-                g2.setComposite(composite);
-            }
-
             setCompositeOnGraphics(g2);
 
             if (bufferedImage != null) {

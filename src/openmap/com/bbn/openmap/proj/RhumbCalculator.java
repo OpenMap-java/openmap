@@ -7,7 +7,6 @@
 
 package com.bbn.openmap.proj;
 
-import java.lang.Math;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**

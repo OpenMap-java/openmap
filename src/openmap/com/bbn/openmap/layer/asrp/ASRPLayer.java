@@ -98,7 +98,7 @@ public class ASRPLayer extends OMGraphicHandlerLayer implements
      * directories containing GEN, GER, SOU, QAL and IMG files. This
      * property is only checked if the THFProperty is not set
      * (asrpDir). Should contain a list of semi-colon separated paths
-     * to ASRP directories containing the files specifed above.
+     * to ASRP directories containing the files specified above.
      */
     public final static String ASRPDirectoryProperty = "asrpDirs";
     /**

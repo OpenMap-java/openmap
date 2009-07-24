@@ -136,7 +136,7 @@ public class CoordPanel extends JPanel implements Serializable {
     /**
      * Sets the contents of the latitude and longitude entry boxes.
      * 
-     * @param llpoint the object containt the coordinates that should
+     * @param llpoint the object contains the coordinates that should
      *        go in the boxes. If null, text boxes will be cleared.
      */
     public void setLatLon(LatLonPoint llpoint) {
@@ -150,7 +150,7 @@ public class CoordPanel extends JPanel implements Serializable {
 
     /**
      * Sets the center of the map to be the coordinates in the
-     * latitude and logitude entry boxes
+     * latitude and longitude entry boxes
      */
     public boolean setCenter() {
 

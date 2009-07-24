@@ -106,7 +106,7 @@ public class EditableOMCircle extends EditableOMGraphic {
 
     /**
      * Create and initialize the state machine that interprets the modifying
-     * gestures/commands, as well as ititialize the grab points. Also allocates
+     * gestures/commands, as well as initialize the grab points. Also allocates
      * the grab point array needed by the EditableOMCircle.
      */
     public void init() {
@@ -236,7 +236,7 @@ public class EditableOMCircle extends EditableOMGraphic {
 
                 setMovingPoint(gb[i]);
                 // in case the points are on top of each other, the
-                // last point in the array will take precidence.
+                // last point in the array will take precedence.
                 break;
             }
         }

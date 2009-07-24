@@ -164,7 +164,7 @@ public class OffsetGrabPoint extends GrabPoint {
         offsetPoints.clear();
     }
 
-    public void finalize() {
+    protected void finalize() {
         offsetPoints.clear();
     }
 

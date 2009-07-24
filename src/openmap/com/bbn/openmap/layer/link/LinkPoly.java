@@ -38,7 +38,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
      * Write a poly, with an array of alternating lat/lon points. Lat/lons in
      * decimal degrees.
      * 
-     * @param llPoints alternating latitude and logitude points of poly.
+     * @param llPoints alternating latitude and longitude points of poly.
      * @param units degrees or radians.
      * @param lType straight, rhumb, great circle.
      * @param properties description of drawing attributes.
@@ -57,7 +57,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param llpoints alternating latitude and longitude points of poly.
      * @param units degrees or radians.
      * @param lType straight, rhumb, great circle.
-     * @param nsegs number of segments to use to approimate curved poly lines..
+     * @param nsegs number of segments to use to approximate curved poly lines..
      * @param properties description of drawing attributes.
      * @param dos DataOutputStream
      * @throws IOException
@@ -89,7 +89,7 @@ public class LinkPoly implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param lonpoints longitude points of poly.
      * @param units degrees or radians.
      * @param lType straight, rhumb, great circle.
-     * @param nsegs number of segments to use to approimate curved poly lines..
+     * @param nsegs number of segments to use to approximate curved poly lines..
      * @param properties description of drawing attributes.
      * @param dos DataOutputStream
      * @throws IOException

@@ -110,7 +110,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         ActionListener {
 
     protected I18n i18n = Environment.getI18n();
-    // default to not showing the ruler (mimicing older
+    // default to not showing the ruler (mimicking older
     // GraticuleLayer)
     protected boolean defaultShowRuler = true;
     protected boolean defaultShowOneAndFiveLines = true;
@@ -203,30 +203,30 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         tenDegreeColor = PropUtils.parseColorFromProperties(properties, prefix
-                + TenDegreeColorProperty, defaultTenDegreeColorString);
+                + TenDegreeColorProperty, defaultTenDegreeColorString, true);
 
         fiveDegreeColor = PropUtils.parseColorFromProperties(properties, prefix
-                + FiveDegreeColorProperty, defaultFiveDegreeColorString);
+                + FiveDegreeColorProperty, defaultFiveDegreeColorString, true);
 
         oneDegreeColor = PropUtils.parseColorFromProperties(properties, prefix
-                + OneDegreeColorProperty, defaultOneDegreeColorString);
+                + OneDegreeColorProperty, defaultOneDegreeColorString, true);
 
         belowOneDegreeColor = PropUtils.parseColorFromProperties(properties,
                 prefix + BelowOneDegreeColorProperty,
-                defaultBelowOneDegreeColorString);
+                defaultBelowOneDegreeColorString, true);
 
         equatorColor = PropUtils.parseColorFromProperties(properties, prefix
-                + EquatorColorProperty, defaultEquatorColorString);
+                + EquatorColorProperty, defaultEquatorColorString, true);
 
         dateLineColor = PropUtils.parseColorFromProperties(properties, prefix
-                + DateLineColorProperty, defaultDateLineColorString);
+                + DateLineColorProperty, defaultDateLineColorString, true);
 
         specialLineColor = PropUtils.parseColorFromProperties(properties,
                 prefix + SpecialLineColorProperty,
-                defaultSpecialLineColorString);
+                defaultSpecialLineColorString, true);
 
         textColor = PropUtils.parseColorFromProperties(properties, prefix
-                + TextColorProperty, defaultTextColorString);
+                + TextColorProperty, defaultTextColorString, true);
 
         threshold = PropUtils.intFromProperties(properties, prefix
                 + ThresholdProperty, defaultThreshold);
@@ -752,7 +752,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
      * shouldn't give anything above 90 degrees, and we limit the lines to less
      * than 80..
      * 
-     * @param up northern latitude corrdinate, in decimal degrees,
+     * @param up northern latitude coordinate, in decimal degrees,
      * @param down southern latitude coordinate, in decimal degrees.
      * @param left western longitude coordinate, in decimal degrees,
      * @param right eastern longitude coordinate, in decimal degrees.
@@ -801,7 +801,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
      * cross the dateline, and that the up is not greater than 80 and that the
      * south is not less than -80.
      * 
-     * @param up northern latitude corrdinate, in decimal degrees,
+     * @param up northern latitude coordinate, in decimal degrees,
      * @param down southern latitude coordinate, in decimal degrees.
      * @param left western longitude coordinate, in decimal degrees,
      * @param right eastern longitude coordinate, in decimal degrees.
@@ -1166,7 +1166,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
      * specified, and project them into the current projection.
      * 
      * @param list the list containing the lines to change.
-     * @param lineType the line type to cahnge the lines to.
+     * @param lineType the line type to change the lines to.
      */
     protected void setLineTypeAndProject(OMGraphicList list, int lineType) {
         int size = list.size();
@@ -1182,7 +1182,7 @@ public class GraticuleLayer extends OMGraphicHandlerLayer implements
     // GUI
     // ----------------------------------------------------------------------
 
-    /** The user interface palette for the DTED layer. */
+    /** The user interface palette for the Graticule layer. */
     protected Box palette = null;
 
     /** Creates the interface palette. */

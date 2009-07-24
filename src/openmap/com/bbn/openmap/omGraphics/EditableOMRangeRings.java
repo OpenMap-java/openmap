@@ -201,7 +201,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
         //
         // // JSlider intervalSlide = new JSlider(
         // // JSlider.HORIZONTAL, 1/*min*/, 200/*max*/,
-        // // ((OMRangeRings)circle).getInterval()/*inital*/);
+        // // ((OMRangeRings)circle).getInterval()/*initial*/);
         // // java.util.Hashtable dict = new java.util.Hashtable();
         // // dict.put(new Integer(1), new JLabel("1"));
         // // dict.put(new Integer(50), new JLabel("50"));

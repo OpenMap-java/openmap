@@ -44,7 +44,7 @@ import com.bbn.openmap.util.Debug;
  * To use it to write to the link, create the LinkGraphicList with the
  * constructor that takes a link as its only argument, and then use the write
  * methods to add graphics. When all the graphics are written to the link, close
- * the section by calling end() with the approproate symbol.
+ * the section by calling end() with the appropriate symbol.
  * <P>
  * 
  * To use it to read from a link, use the constructor that takes a link and a
@@ -407,7 +407,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
 
     /**
      * Write an arc with a certain radius at a Lat/Lon location, and allows you
-     * to specify units of the radius, as well as the number of verticies to use
+     * to specify units of the radius, as well as the number of vertices to use
      * to approximate the arc.
      * 
      * @param latPoint latitude of center of arc in decimal degrees
@@ -1396,7 +1396,7 @@ public class LinkGraphicList implements LinkGraphicConstants {
     /**
      * Write a poly in the response.
      * 
-     * @param llPoints alternating latitude and logitude points of poly.
+     * @param llPoints alternating latitude and longitude points of poly.
      * @param units degrees or radians.
      * @param lType straight, rhumb, great circle.
      * @param properties Properties containing attributes.
@@ -1411,10 +1411,10 @@ public class LinkGraphicList implements LinkGraphicConstants {
     /**
      * Write a poly in the response.
      * 
-     * @param llpoints alternating latitude and logitude points of poly.
+     * @param llpoints alternating latitude and longitude points of poly.
      * @param units degrees or radians.
      * @param lType straight, rhumb, great circle.
-     * @param nsegs number of segments to use to approimate curved poly lines..
+     * @param nsegs number of segments to use to approximate curved poly lines..
      * @param properties Properties containing attributes.
      * @throws IOException
      * @see com.bbn.openmap.layer.link.LinkPoly

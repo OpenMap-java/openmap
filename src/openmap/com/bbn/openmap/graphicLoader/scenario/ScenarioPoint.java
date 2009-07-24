@@ -76,7 +76,7 @@ public class ScenarioPoint extends URLRasterLocation implements ScenarioGraphic 
     protected boolean DEBUG = Debug.debugging("scenariopoint");
 
     /**
-     * Create a ScenarioLocation at a latitude/longtude location.
+     * Create a ScenarioPoint at a latitude/longitude location.
      * 
      * @param name the identifier for the location.
      * @param iconURL a string to a URL for an image

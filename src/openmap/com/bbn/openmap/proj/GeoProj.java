@@ -1226,11 +1226,11 @@ public abstract class GeoProj extends Proj {
      *            radius in radians or decimal degrees
      * @param start
      *            the starting angle of the arc, zero being North up. Units are
-     *            dependent on radians parameter - the start paramter is in
+     *            dependent on radians parameter - the start parameter is in
      *            radians if radians equals true, decimal degrees if not.
      * @param extent
      *            the angular extent angle of the arc, zero being no length.
-     *            Units are dependent on radians parameter - the extent paramter
+     *            Units are dependent on radians parameter - the extent parameter
      *            is in radians if radians equals true, decimal degrees if not.
      */
     public ArrayList<int[]> forwardArc(LatLonPoint c, boolean radians,
@@ -1263,11 +1263,11 @@ public abstract class GeoProj extends Proj {
      *            number of vertices of the circle poly.
      * @param start
      *            the starting angle of the arc, zero being North up. Units are
-     *            dependent on radians parameter - the start paramter is in
+     *            dependent on radians parameter - the start parameter is in
      *            radians if radians equals true, decimal degrees if not.
      * @param extent
      *            the angular extent angle of the arc, zero being no length.
-     *            Units are dependent on radians parameter - the extent paramter
+     *            Units are dependent on radians parameter - the extent parameter
      *            is in radians if radians equals true, decimal degrees if not.
      * @param arcType
      *            type of arc to create - see java.awt.geom.Arc2D for (OPEN,

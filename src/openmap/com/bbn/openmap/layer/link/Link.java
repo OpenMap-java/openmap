@@ -99,7 +99,7 @@ public class Link implements LinkConstants {
     /** The socket used for the link. Kept for convenience. */
     protected Socket socket = null;
     /**
-     * The lock. This should only be changed within a syhchronized
+     * The lock. This should only be changed within a synchronized
      * block of code, synchronized on the link object.!! Otherwise,
      * race conditions can result.
      */

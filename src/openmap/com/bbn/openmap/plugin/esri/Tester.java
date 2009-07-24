@@ -274,7 +274,7 @@ public class Tester extends JFrame implements ShapeConstants {
         tabularData.add(0, "third value");
         tabularData.add(1, new Double(20.1578));
 
-        //Add gemoetry and tabular data
+        //Add geometry and tabular data
         layer.addRecord(shapeData, tabularData);
     }
 

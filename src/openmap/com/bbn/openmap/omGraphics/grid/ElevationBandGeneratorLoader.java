@@ -109,7 +109,7 @@ public class ElevationBandGeneratorLoader extends ColorGeneratorLoader {
 
         // The DTED Bandheight Adjuster
         JPanel contrastPanel = PaletteHelper.createPaletteJPanel(getValueAdjustmentTitle());
-        JSlider contrastSlide = new JSlider(JSlider.HORIZONTAL, 1/* min */, 500/* max */, getBandHeight()/* inital */);
+        JSlider contrastSlide = new JSlider(JSlider.HORIZONTAL, 1/* min */, 500/* max */, getBandHeight()/* initial */);
         java.util.Hashtable dict = new java.util.Hashtable();
         dict.put(new Integer(1), new JLabel("1"));
         dict.put(new Integer(500), new JLabel("500"));

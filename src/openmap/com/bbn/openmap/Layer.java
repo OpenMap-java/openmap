@@ -1330,9 +1330,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
     }
 
     /**
-     * Layer method to just disconnect from the BeanContext, without grabbing
-     * the interator as in setBeanContext(). Good for protected sub-layers where
-     * you want to optimize the calling of the findAndUndo() method over them.
+     * Layer method to just disconnect from the BeanContext, without grabbing the
+     * iterator as in setBeanContext(). Good for protected sub-layers where you
+     * want to optimize the calling of the findAndUndo() method over them.
      */
     public void disconnectFromBeanContext() throws PropertyVetoException {
 
@@ -1407,7 +1407,7 @@ public abstract class Layer extends JComponent implements ProjectionListener,
         }
     }
 
-    public void finalize() {
+    protected void finalize() {
         if (Debug.debugging("gc")) {
             Debug.output("Layer |" + getName() + " |: getting GC'd");
         }

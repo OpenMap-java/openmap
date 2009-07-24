@@ -52,7 +52,6 @@ import com.bbn.openmap.gui.time.TimelineLayer.SelectionArea.PlayFilterSection;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMAction;
-import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;

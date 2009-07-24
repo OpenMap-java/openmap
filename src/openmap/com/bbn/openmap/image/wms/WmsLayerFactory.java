@@ -31,7 +31,7 @@ public class WmsLayerFactory {
             for (Iterator it = PropUtils.parseSpacedMarkers(wmsLayers)
                     .iterator(); it.hasNext();) {
                 Object key = it.next();
-                // TODO: looks like layerClass is supposed to be the IWmsLayer. realy messy
+                // TODO: looks like layerClass is supposed to be the IWmsLayer. really messy
                 Class layerClass = Class.forName(props.getProperty((String) key
                         + ".layerClass"));
                 Class clazz = Class.forName(props.getProperty((String) key

@@ -93,7 +93,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
 
     /**
      * The thread listener used to communicate asynchronously. The LinkLayer
-     * sends out requsts and notifications to the server, and the LinkListener
+     * sends out requests and notifications to the server, and the LinkListener
      * reads any input from the server, making calls on the LinkLayer as
      * appropriate.
      */
@@ -116,7 +116,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
      * a coordinateed basis.
      */
     protected LinkManager linkManager = null;
-    /** The flag to supress pop-up messages. */
+    /** The flag to suppress pop-up messages. */
     protected boolean quiet = false;
     /** The generator to use with LinkGrid objects. */
     protected OMGridGenerator currentGenerator = null;
@@ -275,7 +275,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
      * Set all the Link properties from a properties object.
      * 
      * @param prefix
-     *            the prefix to the properties tha might individualize it to a
+     *            the prefix to the properties that might individualize it to a
      *            particular layer.
      * @param properties
      *            the properties for the layer.
@@ -287,7 +287,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         String quietString = properties.getProperty(realPrefix + QuietProperty);
-        if (quietString != null && quietString.intern() == "true") {
+        if (quietString != null && quietString.intern().equals("true")) {
             quiet = true;
         }
 
@@ -1012,7 +1012,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             // and keep track of the graphic and the list index of the
             // graphic for the response. If a graphic modify command
             // comes back without an ID, then we'll assume the server
-            // was refering to this graphic.
+            // was referring to this graphic.
             if (gesGraphic != null) {
 
                 boolean tellServer = graphicGestureReaction(gesGraphic,
@@ -1148,7 +1148,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
 
         if (id == null) {
             // Doesn't look like it was a modified graphic already
-            // recieved from the server, so we should tell the server
+            // received from the server, so we should tell the server
             // to add it to its list.
             action.setMask(OMAction.ADD_GRAPHIC_MASK);
         }

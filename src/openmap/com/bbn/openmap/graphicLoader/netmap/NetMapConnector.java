@@ -37,7 +37,7 @@ import com.bbn.openmap.util.PropUtils;
 /**
  * The NetMapConnector is the bridge between the parser from the
  * output of the NetMap server (NetMapReader), and whoever wants the
- * OMGraphicList that is being mananged. It forwards the list on to
+ * OMGraphicList that is being managed. It forwards the list on to
  * the NetMapListReceiver that wants the list. The NetMapConnector
  * will create it's NetMapReader to control and use. If you have a
  * component that wants to receive updates from the reader, then you

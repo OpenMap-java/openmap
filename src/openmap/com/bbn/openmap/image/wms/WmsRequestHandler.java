@@ -84,7 +84,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         setDoAntiAliasing(antialias);
 
         // for each Openmap Layer created by ImageServer (defined in properties)
-        // create corresponding IWmsLayer which contains all neccesary
+        // create corresponding IWmsLayer which contains all necessary
         // information required by
         // WMS (e.g getCapabilities method)
         wmsLayerFactory = new WmsLayerFactory(props);

@@ -175,7 +175,7 @@ class ColorTracker implements ActionListener, ChangeListener, Serializable {
         JPanel slidePanel = new JPanel();
         Box slideBox = Box.createHorizontalBox();
 
-        JSlider opaqueSlide = new JSlider(JSlider.HORIZONTAL, 0/* min */, 255/* max */, initialValue/* inital */);
+        JSlider opaqueSlide = new JSlider(JSlider.HORIZONTAL, 0/* min */, 255/* max */, initialValue/* initial */);
         java.util.Hashtable dict = new java.util.Hashtable();
         String opaqueLabel = i18n.get(ColorTracker.class, "opaque", "opaque");
         String clearLabel = i18n.get(ColorTracker.class, "clear", "clear");

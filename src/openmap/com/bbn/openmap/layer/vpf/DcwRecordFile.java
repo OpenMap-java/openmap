@@ -134,7 +134,7 @@ public class DcwRecordFile {
     /**
      * Complete initialization of this object. This function should
      * only be called once, and only if the object was constructed
-     * with defered initialization.
+     * with deferred initialization.
      * 
      * @exception FormatException some problem was encountered dealing
      *            with the file
@@ -665,7 +665,7 @@ public class DcwRecordFile {
     }
 
     /** releases associated resources */
-    public void finalize() {
+    protected void finalize() {
         close();
     }
 

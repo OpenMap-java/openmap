@@ -172,7 +172,7 @@ public class VPFLayer extends OMGraphicHandlerLayer implements
     public static final String pathProperty = "vpfPath";
     /**
      * property extension used to set the desired coverage type. Examples of
-     * coverage types inclue "po" for DCW and "hyd" for VMAP Level 0.
+     * coverage types include "po" for DCW and "hyd" for VMAP Level 0.
      */
     public static final String coverageTypeProperty = "coverageType";
     /**

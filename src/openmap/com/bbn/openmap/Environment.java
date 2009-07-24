@@ -75,7 +75,7 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * 
  *    # metanames of the names of the variables used in the OpenMap
- *    # system to configure the Enivironment class from the properties.
+ *    # system to configure the Environment class from the properties.
  *    openmap.Title - String for title of application window.
  *    openmap.Version - Version number of application.
  *    openmap.BuildDate - Build data of code base.

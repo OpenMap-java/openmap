@@ -3,7 +3,6 @@ package com.bbn.openmap.proj.coords;
 import java.awt.geom.Point2D;
 import java.util.Properties;
 
-import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.proj.LambertConformal;
 import com.bbn.openmap.proj.LambertConformalLoader;
 

@@ -48,7 +48,7 @@ import com.bbn.openmap.util.Debug;
  * way, the OMGrid becomes a placeholder for other graphics, and will manage the
  * generate() function calls to those objects that are on the screen.
  * <P>
- * The OMGridGenerator object will take precidence over the OMGridObjects - If
+ * The OMGridGenerator object will take precedence over the OMGridObjects - If
  * the OMGridGenerator is set within the grid, the OMGridGenerator will create
  * the OMGraphics to be displayed for the grid, as opposed the OMGridObjects
  * getting a chance to generate themselves. The OMGrid extends OMGraphicList,
@@ -102,7 +102,7 @@ public class OMGrid extends OMGraphicList {
     /**
      * The horizontal/longitude interval, the distance between column data
      * points in the horizontal direction. For x/y grids, this can server as a
-     * pixel mulitplier. For lat/lon grids, it represents the decimal degrees
+     * pixel multiplier. For lat/lon grids, it represents the decimal degrees
      * between grid points.
      */
     protected double horizontalResolution;
@@ -695,7 +695,7 @@ public class OMGrid extends OMGraphicList {
         /**
          * There could be some way to optimize the search for objects in the
          * grid that are actually visible, but that would require knowledge of
-         * the specifices of projections. Keeping this as generic as possible at
+         * the specifics of projections. Keeping this as generic as possible at
          * this point.
          */
 
@@ -905,7 +905,7 @@ public class OMGrid extends OMGraphicList {
     }
 
     /**
-     * A try at interoplating the corners of the surrounding posts, given a lat
+     * A try at interpolating the corners of the surrounding posts, given a lat
      * lon. Called from a function where the data for the lon has been read in.
      */
     private double resolve_four_points(int ul, int ur, int lr, int ll,

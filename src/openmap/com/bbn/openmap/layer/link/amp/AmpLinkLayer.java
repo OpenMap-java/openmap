@@ -69,7 +69,7 @@ import com.bbn.openmap.util.Debug;
  *    link.port=3031
  *    # host name of server
  *    link.host=host.com
- *    # URL of proerties file for server attributes
+ *    # URL of properties file for server attributes
  *    link.propertiesURL=http://location.of.properties.file.com
  *    
  *   
@@ -108,7 +108,7 @@ public class AmpLinkLayer extends LinkLayer implements Tool {
     /**
      * Set all the Link properties from a properties object.
      * 
-     * @param prefix the prefix to the properties tha might
+     * @param prefix the prefix to the properties that might
      *        individualize it to a particular layer.
      * @param properties the properties for the layer.
      */
@@ -210,7 +210,7 @@ public class AmpLinkLayer extends LinkLayer implements Tool {
 
         if (id == null) {
             // Doesn't look like it was a modified graphic already
-            // recieved from the server, so we should tell the server
+            // received from the server, so we should tell the server
             // to add it to its list.
             action.setMask(OMAction.ADD_GRAPHIC_MASK);
         } else {

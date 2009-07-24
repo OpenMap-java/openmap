@@ -241,7 +241,7 @@ public class DockConstraint {
     }
 
     /**
-     * True iff this clase can be docked in the given direction
+     * True iff this class can be docked in the given direction
      */
     public boolean canDockNorth() {
         return canDockNorth;
@@ -266,7 +266,7 @@ public class DockConstraint {
     }
 
     /**
-     * True iff this clase can be docked in the given direction
+     * True iff this class can be docked in the given direction
      */
     public boolean canDockSouth() {
         return canDockSouth;
@@ -291,7 +291,7 @@ public class DockConstraint {
     }
 
     /**
-     * True iff this clase can be docked in the given direction
+     * True iff this class can be docked in the given direction
      */
     public boolean canDockEast() {
         return canDockEast;
@@ -316,7 +316,7 @@ public class DockConstraint {
     }
 
     /**
-     * True iff this clase can be docked in the given direction
+     * True iff this class can be docked in the given direction
      */
     public boolean canDockWest() {
         return canDockWest;

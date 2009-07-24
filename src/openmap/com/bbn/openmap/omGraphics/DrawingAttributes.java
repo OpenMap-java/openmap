@@ -111,7 +111,7 @@ import com.bbn.openmap.util.propertyEditor.OptionPropertyEditor;
  *     The phase for the dash pattern,
  *     dashPhase=0.0f (0 is the default)
  *     # The scale to use for certain measurements, so that fill patterns
- *     # can be scaled depending on the map scale compaired to the
+ *     # can be scaled depending on the map scale compared to the
  *     # baseScale.
  *     baseScale=XXXXXX (where 1:XXXXXX is the scale to use.  N/A for the default).
  *     # Set whether any OMPoints that are given to the DrawingAttributes object are oval or rectangle.
@@ -220,7 +220,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
     public final static float defaultLineWidth = 1f;
     /** The default dash phase, which is zero. */
     public final static float defaultDashPhase = 0f;
-    /** The defaule dash length, for opaque and transparent parts. */
+    /** The default dash length, for opaque and transparent parts. */
     public final static float defaultDashLength = 5f;
 
     /** The paint to outline the shapes. */
@@ -525,7 +525,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
     }
 
     /**
-     * Get the Paint for these attributes, and scale it for the scale compaired
+     * Get the Paint for these attributes, and scale it for the scale compared
      * to the base scale set if the fill Paint is a TexturePattern. If the base
      * scale equals NONE, or if the Paint is not a TexturePaint, it's the same
      * as getFillPaint().
@@ -945,7 +945,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
     /**
      * Set all the attributes for the graphic that are contained within this
      * DrawingAttributes class. Get the TexturePaint for these attributes, and
-     * scale it for the scale compaired to the base scale set. If the base scale
+     * scale it for the scale compared to the base scale set. If the base scale
      * equals NONE, the fill pattern is not changed with relation to scale.
      * 
      * @param graphic
@@ -1090,7 +1090,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
      *            the color to give to the JColorChooser to start with. Returned
      *            if the cancel button is pressed.
      * @return Color chosen from the JColorChooser, null if lock for chooser
-     *         can't be sequired.
+     *         can't be acquired.
      */
     protected Color getNewPaint(Component source, String title,
                                 Color startingColor) {
@@ -1668,7 +1668,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
      * PropertyConsumer method, to fill in a Properties object, reflecting the
      * current values of the layer. If the layer has a propertyPrefix set, the
      * property keys should have that prefix plus a separating '.' prepended to
-     * each propery key it uses for configuration.
+     * each property key it uses for configuration.
      * 
      * @param props
      *            a Properties object to load the PropertyConsumer properties

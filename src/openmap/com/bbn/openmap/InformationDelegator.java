@@ -532,7 +532,7 @@ public class InformationDelegator extends OMComponentPanel implements
     }
 
     /**
-     * This method should be called to intialize the tooltip status so that an
+     * This method should be called to initialize the tooltip status so that an
      * old tooltip doesn't remain when a layer starts listening to mouse events.
      */
     public void initToolTip() {
@@ -554,8 +554,8 @@ public class InformationDelegator extends OMComponentPanel implements
      * Change the cursor for the MapBean. If the MapBean hasn't been set, then
      * nothing will happen on the screen. If a null value is passed in, the
      * cursor is reset to the MouseMode value. If the InformationDelegator is
-     * alowed to show the wait cursor, and the layers are busy, the wait cursor
-     * will take precidence. The requested cursor from a layer will be set if
+     * allowed to show the wait cursor, and the layers are busy, the wait cursor
+     * will take precedence. The requested cursor from a layer will be set if
      * the layers finish.
      * 
      * @param cursor java.awt.Cursor to change the cursor to.

@@ -69,7 +69,7 @@ import com.bbn.openmap.util.Debug;
  * The A.TOC files that can be created with this MakeToc class can be created to
  * contain absolute frame paths. The MakeToc class can take the paths to several
  * RPF directories, and create a single A.TOC file that preserves all of their
- * current file paths. You have to use alot of caution with this capability,
+ * current file paths. You have to use a lot of caution with this capability,
  * however. These A.TOCs containing absolute file paths will not work if the
  * data is moved to another machine, or if referenced by a machine with a
  * different type file system (i.e. Windows). They may not work for other
@@ -662,7 +662,7 @@ public class MakeToc {
             }
 
             // Check and see of the file thinks it's name is the same
-            // as it acutally is. If they differ, rule in favor of
+            // as it actually is. If they differ, rule in favor of
             // what the frame thinks it is.
 
             // Let's just be passive here, and name it to whatever it
@@ -1155,7 +1155,7 @@ public class MakeToc {
                     .writeShort((short) RpfFileSections.LOC_BOUNDARY_SECTION_SUBHEADER);
 
             // The boundary section subheader is the first part of the
-            // bounfary rectangle section. The boundary section comes
+            // boundary rectangle section. The boundary section comes
             // right after the header (in this program - the spec will
             // allow it to be anywhere).
 
@@ -1594,7 +1594,7 @@ public class MakeToc {
                 /* DKS new */
                 /*
                  * write pathname length. !!?? may be padded in front to align
-                 * on word bndary!!??
+                 * on word boundary!!??
                  */
                 fout.writeShort((short) (uniq_dir[j].length()));
 
@@ -1648,7 +1648,7 @@ public class MakeToc {
                           "MakeToc: group addition, starting outer loop");
 
             // Assuming that the vector objects are in the same order
-            // as initally loaded.
+            // as initially loaded.
             frame = (Frame) frames.elementAt(i);
 
             if (!frame.marked) {
@@ -1807,7 +1807,7 @@ public class MakeToc {
 
             if (grp.left == 0) {
                 throw new MakeTocException(
-                        "Boundary rectangle too small - Increase the boudary size to be larger than "
+                        "Boundary rectangle too small - Increase the boundary size to be larger than "
                                 + maxSide);
             }
 
@@ -1824,7 +1824,7 @@ public class MakeToc {
 
             if (grp.right == maxSide) {
                 throw new MakeTocException(
-                        "Boundary rectangle too small - Increase the boudary size to be larger than "
+                        "Boundary rectangle too small - Increase the boundary size to be larger than "
                                 + maxSide);
             }
 
@@ -1843,7 +1843,7 @@ public class MakeToc {
 
             if (grp.top == 0) {
                 throw new MakeTocException(
-                        "Boundary rectangle too small - Increase the boudary size to be larger than "
+                        "Boundary rectangle too small - Increase the boundary size to be larger than "
                                 + maxSide);
             }
 
@@ -1860,7 +1860,7 @@ public class MakeToc {
 
             if (grp.bottom == maxSide) {
                 throw new MakeTocException(
-                        "Boundary rectangle too small - Increase the boudary size to be larger than "
+                        "Boundary rectangle too small - Increase the boundary size to be larger than "
                                 + maxSide);
             }
 

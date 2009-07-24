@@ -925,7 +925,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
 
     /**
      * Called when a component that is needed, and not available with an
-     * appropriate interator from the BeanContext. This lets this object hook up
+     * appropriate iterator from the BeanContext. This lets this object hook up
      * with what it needs. For Layers, this method doesn't do anything by
      * default. If you need your layer to get ahold of another object, then you
      * can use the Iterator to go through the objects to look for the one you

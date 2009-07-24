@@ -48,7 +48,7 @@ public interface CoordTupleString {
      * Accessor to retrieve a tuple
      * 
      * @param tuple the tuple to retrieve (the first tuple is index 0)
-     * @return the tuple at index <code>tuple</code>, coereced into
+     * @return the tuple at index <code>tuple</code>, coerced into
      *         a float[]
      */
     public abstract float[] getasFloat(int tuple);
@@ -57,7 +57,7 @@ public interface CoordTupleString {
      * Accessor to retrieve a tuple
      * 
      * @param tuple the tuple to retrieve (the first tuple is index 0)
-     * @return the tuple at index <code>tuple</code>, coereced into
+     * @return the tuple at index <code>tuple</code>, coerced into
      *         a double[]
      */
     public abstract double[] getasDouble(int tuple);
@@ -68,7 +68,7 @@ public interface CoordTupleString {
      * @param tuple the tuple to retrieve (the first tuple is index 0)
      * @param val the index of the value in the tuple (the first val
      *        is index 0)
-     * @return the tuple at index <code>tuple</code>, coereced into
+     * @return the tuple at index <code>tuple</code>, coerced into
      *         a float
      */
     public abstract float getasFloat(int tuple, int val);
@@ -79,7 +79,7 @@ public interface CoordTupleString {
      * @param tuple the tuple to retrieve (the first tuple is index 0)
      * @param val the index of the value in the tuple (the first val
      *        is index 0)
-     * @return the tuple at index <code>tuple</code>, coereced into
+     * @return the tuple at index <code>tuple</code>, coerced into
      *         a double
      */
     public abstract double getasDouble(int tuple, int val);

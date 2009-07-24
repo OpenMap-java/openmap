@@ -16,7 +16,7 @@ package com.bbn.openmap.layer.mysql;
  * This class represents the encapsulation of a MySQL Point Geometry.
  * Coordinate values are stored as values of double precision in
  * arrays as a sequence of Latitude/Longitude pairs. This differs from
- * tha database where values are stored as X/Y or Easting/Northing
+ * the database where values are stored as X/Y or Easting/Northing
  * pairs.
  * 
  * <p>

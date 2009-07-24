@@ -498,7 +498,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Returns the String to be used as a labeller for the origin point of the
+     * Returns the String to be used as a labeler for the origin point of the
      * range rings.
      * 
      * @return label String.
@@ -509,7 +509,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Returns the String to be used as a labeller for the circle drawn using
+     * Returns the String to be used as a labeler for the circle drawn using
      * <code>dest</code>.
      * 
      * @param dest A point on a circle.

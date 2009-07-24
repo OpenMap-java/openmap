@@ -133,7 +133,7 @@ public class EditorLayer extends DrawingToolLayer implements Tool {
      * create one with this layer's name as the mouse mode ID. If the layer's
      * name hasn't been set, a temporary mouse mode will be returned, but with a
      * somewhat random name that may not really work as expected. Once the
-     * layer's name gets set, however, a good, useable mouse mode will get
+     * layer's name gets set, however, a good, usable mouse mode will get
      * picked up and used.
      */
     public EditorLayerMouseMode getMouseMode() {

@@ -245,7 +245,7 @@ public class BinaryFile {
 
                 // If the jar doesn't exist, should return something
                 // that indicates this. Should check the performance
-                // impllications of this call, though, at some point.
+                // implications of this call, though, at some point.
 
                 // DGK added
                 File f = new File(jarFileName);
@@ -359,7 +359,7 @@ public class BinaryFile {
     }
 
     /**
-     * Get the inputReader used for accessing the file, for quering purposes.
+     * Get the inputReader used for accessing the file, for querying purposes.
      * Don't use it to get data, or the file pointers may get messed up.
      */
     public InputReader getInputReader() {
@@ -367,7 +367,7 @@ public class BinaryFile {
     }
 
     /**
-     * Set the input reader used by the BinaryFile. Make sure it's intialized
+     * Set the input reader used by the BinaryFile. Make sure it's initialized
      * properly.
      */
     public void setInputReader(InputReader reader) {
@@ -497,7 +497,7 @@ public class BinaryFile {
     /**
      * Read from the file.
      * 
-     * @param b the byte array to read into. Equivelent to
+     * @param b the byte array to read into. Equivalent to
      *        <code>read(b, 0, b.length)</code>
      * @return the number of bytes read
      * @exception IOException Any IO errors encountered in reading from the file
@@ -760,7 +760,7 @@ public class BinaryFile {
      * 
      * @exception Throwable what it throws.
      */
-    public void finalize() throws Throwable {
+    protected void finalize() throws Throwable {
         close();
         classCount--;
     }

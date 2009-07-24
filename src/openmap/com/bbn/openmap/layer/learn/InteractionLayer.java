@@ -112,7 +112,7 @@ public class InteractionLayer extends BasicLayer {
 
         /*
          * Note that the OMGraphics have their select paint set in order to
-         * react to hightlight calls, and an OMGraphicConstants.TOOLTIP
+         * react to highlight calls, and an OMGraphicConstants.TOOLTIP
          * attribute set to provide tooltip text when needed.
          */
 

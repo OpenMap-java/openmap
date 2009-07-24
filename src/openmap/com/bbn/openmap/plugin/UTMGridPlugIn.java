@@ -843,7 +843,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
      * @param startingColor the color to give to the JColorChooser to start
      *        with. Returned if the cancel button is pressed.
      * @return Color chosen from the JColorChooser, null if lock for chooser
-     *         can't be sequired.
+     *         can't be acquired.
      */
     protected Color getNewPaint(Component source, String title,
                                 Color startingColor) {

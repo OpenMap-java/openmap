@@ -146,7 +146,7 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer,
 
     /**
      * Set the MapMouseListener for this PlugIn. The MapMouseListener is
-     * responsible for handling the MouseEvents that are occuring over the layer
+     * responsible for handling the MouseEvents that are occurring over the layer
      * using the PlugIn, as well as being able to let others know which
      * MouseModes are of interest to receive MouseEvents from.
      * 
@@ -235,7 +235,7 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer,
      * Method to set the properties in the PropertyConsumer. The prefix is a
      * string that should be prepended to each property key (in addition to a
      * separating '.') in order for the PropertyConsumer to uniquely identify
-     * properies meant for it, in the midst of of Properties meant for several
+     * properties meant for it, in the midst of of Properties meant for several
      * objects.
      * 
      * @param prefix a String used by the PropertyConsumer to prepend to each
@@ -262,7 +262,7 @@ public abstract class AbstractPlugIn implements PlugIn, PropertyConsumer,
      * Method to fill in a Properties object, reflecting the current values of
      * the PropertyConsumer. If the PropertyConsumer has a prefix set, the
      * property keys should have that prefix plus a separating '.' prepended to
-     * each propery key it uses for configuration.
+     * each property key it uses for configuration.
      * 
      * @param getList a Properties object to load the PropertyConsumer
      *        properties into. If getList equals null, then a new Properties

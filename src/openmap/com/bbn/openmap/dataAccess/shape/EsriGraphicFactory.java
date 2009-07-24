@@ -977,13 +977,13 @@ public class EsriGraphicFactory implements ShapeConstants {
         }
 
         OMGraphic omg = (OMGraphic) ret;
-        omg
-                .putAttribute(ShapeConstants.SHAPE_MIN_Z_ATTRIBUTE, new Double(
-                        minZ));
-        omg
-                .putAttribute(ShapeConstants.SHAPE_MAX_Z_ATTRIBUTE, new Double(
-                        maxZ));
-        omg.putAttribute(ShapeConstants.SHAPE_Z_ATTRIBUTE, zs);
+        if (omg != null) {
+            omg.putAttribute(ShapeConstants.SHAPE_MIN_Z_ATTRIBUTE, new Double(
+                            minZ));
+            omg.putAttribute(ShapeConstants.SHAPE_MAX_Z_ATTRIBUTE, new Double(
+                            maxZ));
+            omg.putAttribute(ShapeConstants.SHAPE_Z_ATTRIBUTE, zs);
+        }
         byteTracker.addRead((2 + numPoints) * 8);
 
         if (byteTracker.numLeft() > 0) {
@@ -994,12 +994,14 @@ public class EsriGraphicFactory implements ShapeConstants {
                 ms[i] = shpFile.readDouble();
             }
 
-            omg.putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
-                             new Double(minM));
-            omg.putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
-                             new Double(maxM));
-            omg.putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE, ms);
-            byteTracker.addRead((2 + numPoints) * 8);
+            if (omg != null) {
+                omg.putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
+                                 new Double(minM));
+                omg.putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
+                                 new Double(maxM));
+                omg.putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE, ms);
+                byteTracker.addRead((2 + numPoints) * 8);
+            }
         }
 
         return ret;
@@ -1034,13 +1036,13 @@ public class EsriGraphicFactory implements ShapeConstants {
         }
 
         OMGraphic omg = (OMGraphic) ret;
-        omg
-                .putAttribute(ShapeConstants.SHAPE_MIN_Z_ATTRIBUTE, new Double(
+        if (omg != null) {
+            omg.putAttribute(ShapeConstants.SHAPE_MIN_Z_ATTRIBUTE, new Double(
                         minZ));
-        omg
-                .putAttribute(ShapeConstants.SHAPE_MAX_Z_ATTRIBUTE, new Double(
+            omg.putAttribute(ShapeConstants.SHAPE_MAX_Z_ATTRIBUTE, new Double(
                         maxZ));
-        omg.putAttribute(ShapeConstants.SHAPE_Z_ATTRIBUTE, zs);
+            omg.putAttribute(ShapeConstants.SHAPE_Z_ATTRIBUTE, zs);
+        }
         byteTracker.addRead((2 + numPoints) * 8);
 
         if (byteTracker.numLeft() > 0) {
@@ -1051,11 +1053,13 @@ public class EsriGraphicFactory implements ShapeConstants {
                 ms[i] = iStream.readLEDouble();
             }
 
-            omg.putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
-                             new Double(minM));
-            omg.putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
-                             new Double(maxM));
-            omg.putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE, ms);
+            if (omg != null) {
+                omg.putAttribute(ShapeConstants.SHAPE_MIN_MEASURE_ATTRIBUTE,
+                                 new Double(minM));
+                omg.putAttribute(ShapeConstants.SHAPE_MAX_MEASURE_ATTRIBUTE,
+                                 new Double(maxM));
+                omg.putAttribute(ShapeConstants.SHAPE_MEASURE_ATTRIBUTE, ms);
+            }
             byteTracker.addRead((2 + numPoints) * 8);
         }
 

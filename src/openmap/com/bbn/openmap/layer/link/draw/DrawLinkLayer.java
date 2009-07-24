@@ -57,7 +57,7 @@ import com.bbn.openmap.util.Debug;
  *      link.port=3031
  *      # host name of server
  *      link.host=host.com
- *      # URL of proerties file for server attributes
+ *      # URL of properties file for server attributes
  *      link.propertiesURL=http://location.of.properties.file.com
  *      
  *     
@@ -93,7 +93,7 @@ public class DrawLinkLayer extends LinkLayer {
     /**
      * Set all the Link properties from a properties object.
      * 
-     * @param prefix the prefix to the properties tha might individualize it to
+     * @param prefix the prefix to the properties that might individualize it to
      *        a particular layer.
      * @param properties the properties for the layer.
      */
@@ -156,7 +156,7 @@ public class DrawLinkLayer extends LinkLayer {
             // and keep track of the graphic and the list index of the
             // graphic for the response. If a graphic modify command
             // comes back without an ID, then we'll assume the server
-            // was refering to this graphic.
+            // was referring to this graphic.
             if (gesGraphic != null) {
                 Debug.message("link", "LinkLayer: found gesture graphic");
 

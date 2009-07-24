@@ -199,7 +199,6 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
         } catch (Exception e) {
             e.printStackTrace();
             clearSelection();
-            ;
             if (Debug.debugging("beanbox"))
                 Debug.output("Exit> copySelectedBean");
             return;
@@ -254,7 +253,6 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
         } catch (Exception e) {
             e.printStackTrace();
             clearSelection();
-            ;
             if (Debug.debugging("beanbox"))
                 Debug.output("Exit> pasteSelectedBean");
             return;
@@ -302,7 +300,6 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
         } catch (Exception e) {
             e.printStackTrace();
             clearSelection();
-            ;
             if (Debug.debugging("beanbox"))
                 Debug.output("Exit> copySelectedBean");
             return;

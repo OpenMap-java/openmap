@@ -116,7 +116,7 @@ public class CodePosition {
     }
 
     /**
-     * Get the current list of CodePosition possibilies. Only returns
+     * Get the current list of CodePosition possibilities. Only returns
      * a list for the CodePositions used to parse the position
      * properties.
      */
@@ -147,7 +147,7 @@ public class CodePosition {
      * Method to add a position to the choices for this particular
      * code position.
      * 
-     * @param index the hierarhical index for this position choice.
+     * @param index the hierarchical index for this position choice.
      *        This really only becomes important for those
      *        CodePositions which are used for interpreting the
      *        hierarchy properties. Other positions can use them for

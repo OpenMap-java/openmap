@@ -31,7 +31,7 @@ import javax.swing.JMenuItem;
 /**
  * This is an item that sits on the popup menu. It knows how to get
  * information it needs from the menu, and recenters the map, or
- * brings up more information about the locaiton.
+ * brings up more information about the location.
  */
 public class LocationMenuItem extends JMenuItem implements ActionListener {
     /** the location popup menu for the item */

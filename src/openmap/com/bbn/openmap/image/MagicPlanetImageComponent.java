@@ -135,7 +135,7 @@ import com.bbn.openmap.util.PropUtils;
  *               # %FILENAME_WITHOUT_EXTENSION% gets replaced with the file name without a '.' or anything after that.
  *               #
  *               # The default is no value being set for the script, which means nothing will happen.  Here is an example for
- *               # creating a .dds file from the current image, using nvidiea's nvdxt script.
+ *               # creating a .dds file from the current image, using nvidia's nvdxt script.
  *               postProcessingScript=&quot;c:/Program Files/NVIDIA Corporation/NVIDIA DDS Utilities/nvdxt.exe&quot; -swap -dxt1c -file %FILEPATH% -output c:/%FILENAME_WITHOUT_EXTENSION%.dds
  * </pre>
  * 

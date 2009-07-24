@@ -26,7 +26,6 @@ package com.bbn.openmap.layer.test;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.util.Iterator;
 
 import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.geo.Intersection;
@@ -48,7 +47,7 @@ import com.bbn.openmap.util.Debug;
  * of the line to the previous one drawn.
  * <P>
  * 
- * This layer will interate through the list if drawn lines, looking for the
+ * This layer will iterate through the list if drawn lines, looking for the
  * intersection point between consecutive lines. For each line, a point will be
  * drawn in that line's color representing the cross-normalized point for the
  * line's enpoints - that is, it's the point perpendicular to the great circle
@@ -58,7 +57,7 @@ import com.bbn.openmap.util.Debug;
  * crossNormalized point. Lastly, the cross-normalization of the end points of
  * the dashed line will result in the point where the original lines would
  * intersect if they are close enough. Depending on the direction that the lines
- * were drawn, that point may actually be the anitpode (on the other side of the
+ * were drawn, that point may actually be the antipode (on the other side of the
  * sphere) of the point you are interested in, but this layer doesn't bother to
  * investigate that yet.
  * <P>

@@ -28,7 +28,7 @@ import com.bbn.openmap.util.Debug;
 
 /**
  * Information from the DDR record describing one subfield of a DDFFieldDefn.
- * All subfields of a field will occur in each occurance of that field (as a
+ * All subfields of a field will occur in each occurrence of that field (as a
  * DDFField) in a DDFRecord. Subfield's actually contain formatted data (as
  * instances within a record).
  * 
@@ -268,7 +268,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
      *            from DDFRecord::GetData(), taking into account skip factors
      *            over previous subfields data.
      * @param nMaxBytes
-     *            The maximum number of bytes that are accessable after
+     *            The maximum number of bytes that are accessible after
      *            pachSourceData.
      * @param pnConsumedBytes
      *            the number of bytes used.
@@ -359,7 +359,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
      *            from DDFRecord::GetData(), taking into account skip factors
      *            over previous subfields data.
      * @param nMaxBytes
-     *            The maximum number of bytes that are accessable after
+     *            The maximum number of bytes that are accessible after
      *            pachSourceData.
      * @param pnConsumedBytes
      *            Pointer to an integer into which the number of bytes consumed
@@ -404,7 +404,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
      *            from DDFRecord::GetData(), taking into account skip factors
      *            over previous subfields data.
      * @param nMaxBytes
-     *            The maximum number of bytes that are accessable after
+     *            The maximum number of bytes that are accessible after
      *            pachSourceData.
      * @param pnConsumedBytes
      *            Pointer to an integer into which the number of bytes consumed
@@ -539,7 +539,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
      *            from DDFRecord::GetData(), taking into account skip factors
      *            over previous subfields data.
      * @param nMaxBytes
-     *            The maximum number of bytes that are accessable after
+     *            The maximum number of bytes that are accessible after
      *            pachSourceData.
      * @param pnConsumedBytes
      *            Pointer to an integer into which the number of bytes consumed

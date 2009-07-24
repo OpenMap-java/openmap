@@ -160,7 +160,7 @@ public class LinkMapRequest {
         float ver = link.dis.readFloat();
 
         if (ver != version) {
-            if (ver == .1) {// Big differece....
+            if (ver == .1) {// Big difference....
                 throw new IOException("LinkMapRequest: Versions do not match! DANGER!");
             } else {
                 Debug.message("link", "LinkMapRequest: Versions do not match");

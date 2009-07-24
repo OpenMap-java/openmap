@@ -348,7 +348,7 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
     }
 
     /**
-     * returns the straight line seperation in pixels between the
+     * returns the straight line separation in pixels between the
      * specified points if separation is equal to or less than the
      * specified tolerance amount, else returns Double.MAX_VALUE
      */

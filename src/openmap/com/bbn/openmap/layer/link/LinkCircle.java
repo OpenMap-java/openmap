@@ -149,7 +149,7 @@ public class LinkCircle implements LinkGraphicConstants,
 
     /**
      * Write a circle with a certain radius at a Lat/Lon location, and allows
-     * you to specify units of the radius, as well as the number of verticies to
+     * you to specify units of the radius, as well as the number of vertices to
      * use to approximate the circle.
      * 
      * @param latPoint latitude of center of circle in decimal degrees

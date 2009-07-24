@@ -70,7 +70,7 @@ public class NavMouseMode2 extends NavMouseMode {
 
     /**
      * Handle a mouseReleased MouseListener event. If there was no drag events,
-     * or if there was only a small amount of dragging between the occurence of
+     * or if there was only a small amount of dragging between the occurrence of
      * the mousePressed and this event, then recenter the map. Otherwise we get
      * the second corner of the navigation rectangle and try to figure out the
      * best scale and location to zoom in to based on that rectangle.
@@ -101,7 +101,7 @@ public class NavMouseMode2 extends NavMouseMode {
                 int dx = Math.abs(point2.x - point1.x);
                 int dy = Math.abs(point2.y - point1.y);
 
-                // Dont bother redrawing if the rectangle is too small
+                // Don't bother redrawing if the rectangle is too small
                 if ((dx < 5) || (dy < 5)) {
                     // clean up the rectangle, since point2 has the
                     // old value.

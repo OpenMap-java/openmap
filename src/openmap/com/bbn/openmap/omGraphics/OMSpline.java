@@ -305,7 +305,7 @@ public class OMSpline extends OMPoly {
             throws ClassNotFoundException, IOException {
         ois.defaultReadObject();
 
-        // Instatiate the objects that are transient
+        // Instantiate the objects that are transient
         // These are not creating on the deserialization
         // candidate object.
         natCubic = new NatCubicSpline();

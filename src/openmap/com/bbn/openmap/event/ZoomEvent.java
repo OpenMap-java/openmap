@@ -53,7 +53,7 @@ public class ZoomEvent extends java.util.EventObject implements
      * Construct a ZoomEvent.
      * 
      * @param source the creator of the ZoomEvent.
-     * @param type the type of the event, refering to how to use the
+     * @param type the type of the event, referring to how to use the
      *        amount.
      * @param amount the value of the ZoomEvent.
      */

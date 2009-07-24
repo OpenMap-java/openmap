@@ -202,7 +202,7 @@ public class MouseModePanel extends OMToolComponent
 
     /**
      * Called when a component that is needed, and not available with
-     * an appropriate interator from the BeanContext.  This lets this
+     * an appropriate iterator from the BeanContext.  This lets this
      * object hook up with what it needs.  
      */
     public void findAndInit(Object someObj) {

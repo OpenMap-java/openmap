@@ -22,10 +22,6 @@
 
 package com.bbn.openmap.omGraphics;
 
-import com.bbn.openmap.omGraphics.EditableOMPoly;
-import com.bbn.openmap.omGraphics.GraphicAttributes;
-import com.bbn.openmap.omGraphics.OMGraphic;
-
 /**
  * EditableOMSpline. Nothing created, code adapted from EditableOMPoly
  * We just need to edit the generating points as an OMPoly

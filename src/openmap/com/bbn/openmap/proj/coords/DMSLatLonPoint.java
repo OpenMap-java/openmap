@@ -309,10 +309,11 @@ public class DMSLatLonPoint implements Cloneable {
             return (pt.lat_isnegative == lat_isnegative
                     && pt.lat_degrees == lat_degrees
                     && pt.lat_minutes == lat_degrees
-                    && pt.lat_seconds == pt.lat_seconds
+                    && pt.lat_seconds == lat_seconds
                     && pt.lon_isnegative == lon_isnegative
                     && pt.lon_degrees == lon_degrees
-                    && pt.lon_minutes == pt.lon_minutes && pt.lon_seconds == lon_seconds);
+                    && pt.lon_minutes == lon_minutes
+                    && pt.lon_seconds == lon_seconds);
         }
         return false;
     }

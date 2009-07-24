@@ -56,7 +56,7 @@ public class NatCubicSpline {
          * 2] [D[n]] [3(x[n] - x[n-1])]
          * 
          * by using row operations to convert the matrix to upper
-         * triangular and then back sustitution. The D[i] are the
+         * triangular and then back substitution. The D[i] are the
          * derivatives at the knots.
          */
 

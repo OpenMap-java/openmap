@@ -53,7 +53,7 @@ public class QuadTreeRect implements Serializable {
         // will contain points that exactly match those borders.
 
         // Thanks to Paul Tomblin for pointing out that the old code
-        // wasn't entirely coorect, and supplied the better algorithm.
+        // wasn't entirely correct, and supplied the better algorithm.
 
         if (s >= north)
             return false;

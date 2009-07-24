@@ -546,7 +546,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
     public synchronized void setLayers(Layer[] layers) {
         allLayers = organizeBackgroundLayers(layers);
 
-        logger.fine("settine layers: " + layers);
+        logger.fine("setting layers: " + layers);
 
         // The setLayers needs to push a new runnable into a fifo
         // stack. A copy of the layers should be made, and then passed
@@ -805,7 +805,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
 
         if (propertyHandler != null) {
             String pre = layer.getPropertyPrefix();
-            if (pre != null && pre != "") {
+            if (pre != null && pre.length() != 0) {
                 propertyHandler.addUsedPrefix(layer.getPropertyPrefix());
             }
         }

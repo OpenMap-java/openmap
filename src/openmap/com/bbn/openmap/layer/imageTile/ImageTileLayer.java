@@ -327,7 +327,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                                      ImageTileLayer.class,
                                      dummyMarker,
                                      "Highlight Settings",
-                                     "Settings for annototations on highlighted images.",
+                                     "Settings for annotations on highlighted images.",
                                      "com.bbn.openmap.omGraphics.DrawingAttributesPropertyEditor");
 
         props.put(initPropertiesProperty, ImageFilePathProperty + " "
@@ -338,7 +338,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
 
     /**
      * OMGraphicHandlerLayer method called when projection changes or when
-     * doPrepare() is called. If the interal OMGraphicList is null the image
+     * doPrepare() is called. If the internal OMGraphicList is null the image
      * file paths will be used to read image files.
      */
     public synchronized OMGraphicList prepare() {

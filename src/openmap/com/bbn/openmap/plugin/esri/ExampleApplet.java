@@ -82,7 +82,7 @@ public class ExampleApplet extends JApplet {
     private JCheckBox _runningLocally = null;
 
     /*
-     * Contructor.
+     * Constructor.
      */
     public ExampleApplet() {
         _mapBean = new MapBean();

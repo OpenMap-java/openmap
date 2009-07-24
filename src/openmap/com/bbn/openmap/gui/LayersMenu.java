@@ -199,7 +199,7 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
     }
 
     /**
-     * Set the edit menu item that tiggers the LayersPanel action listener.
+     * Set the edit menu item that triggers the LayersPanel action listener.
      * Assumes that it's already wired up.
      */
     public void setEdit(JMenuItem e) {
@@ -223,7 +223,7 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
     }
 
     /**
-     * Get the edit menu item that tiggers the LayersPanel action listener.
+     * Get the edit menu item that triggers the LayersPanel action listener.
      */
     public JMenuItem getEdit() {
         return edit;
@@ -441,7 +441,7 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
      * @param lp the LayersPanel to ask for an ActionListener from.
      */
     public void setupEditLayersButton(LayersPanel lp) {
-        // initalize the Edit Layers... button.
+        // initialize the Edit Layers... button.
         JMenuItem button = new JMenuItem(i18n.get(LayersMenu.class,
                 "editLayersButtonTitle",
                 editLayersButtonTitle));

@@ -34,7 +34,7 @@ public class GenericPropertySheet extends JDialog implements
         PropertyChangeListener {
 
     /**
-     * contains a referrence to an internal panel that displays the
+     * contains a reference to an internal panel that displays the
      * bean's properties.
      */
     protected PropertySheetPanel panel;
@@ -204,7 +204,7 @@ public class GenericPropertySheet extends JDialog implements
     }
 
     /**
-     * Sets the frame size in order to accomodate all property
+     * Sets the frame size in order to accommodate all property
      * editors.
      */
     protected void setFrameSize() {
@@ -292,7 +292,7 @@ class PropertySheetPanel extends JPanel {
 
     private GenericPropertySheet _frame;
 
-    // We need to cache the targets' wrapper so we can annoate it with
+    // We need to cache the targets' wrapper so we can annotate it with
     // information about what target properties have changed during
     // design
     // time.
@@ -370,7 +370,7 @@ class PropertySheetPanel extends JPanel {
                         editor = (PropertyEditor) pec.newInstance();
                     } catch (Exception ex) {
                         // Drop through.
-                        System.out.println("Cannot instanciate editor class: "
+                        System.out.println("Cannot instantiate editor class: "
                                 + pec);
                         System.out.println("Will try to find editor using "
                                 + "PropertyEditorManager");
@@ -491,7 +491,7 @@ class PropertySheetPanel extends JPanel {
                             //warning("Vetoed; reason is: "
                             //        +
                             // ex.getTargetException().getMessage());
-                            // temp dealock fix...I need to remove the
+                            // temp deadlock fix...I need to remove the
                             // deadlock.
                             System.err.println("WARNING: Vetoed; reason is: "
                                     + ex.getTargetException().getMessage());

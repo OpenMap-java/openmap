@@ -298,7 +298,7 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand() == configureActionCommand) {
-            // instanciate a default instance of the chosen layer
+            // instantiate a default instance of the chosen layer
             // and bring up the Inspector to configure it
             String prettyName = (String) list.getSelectedItem();
             String prefix = prefixTextField.getText().trim();

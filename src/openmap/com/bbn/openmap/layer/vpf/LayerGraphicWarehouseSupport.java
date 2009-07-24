@@ -72,7 +72,7 @@ public abstract class LayerGraphicWarehouseSupport implements
     private static double fan_eps = 0.01f;
 
     /**
-     * Construct an object, initialiazes graphiclist
+     * Construct an object, initializes graphiclist
      */
     public LayerGraphicWarehouseSupport() {
         initDrawingAttributes();
@@ -373,7 +373,7 @@ public abstract class LayerGraphicWarehouseSupport implements
      * set drawing attribute properties
      * 
      * @param prefix the prefix for our properties
-     * @param props the Properties object we use to look up valuse
+     * @param props the Properties object we use to look up values
      */
     public void setProperties(String prefix, Properties props) {
         String features;

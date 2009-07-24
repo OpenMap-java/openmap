@@ -36,7 +36,7 @@ public class QuitMenuItem extends JMenuItem {
             public void actionPerformed(ActionEvent e) {
                 // HACK - need to call shutdown() on mapbean
                 // actually we should broadcast a shutdown
-                // event so thato ther gui components can
+                // event so that the gui components can
                 // clean up, and maybe only one can call exit.
                 System.exit(0);
             }

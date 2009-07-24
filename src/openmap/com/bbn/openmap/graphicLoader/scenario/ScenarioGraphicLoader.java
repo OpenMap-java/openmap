@@ -480,7 +480,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
      * PropertyConsumer method, to fill in a Properties object, reflecting the
      * current values of the layer. If the layer has a propertyPrefix set, the
      * property keys should have that prefix plus a separating '.' prepended to
-     * each propery key it uses for configuration.
+     * each property key it uses for configuration.
      * 
      * @param props a Properties object to load the PropertyConsumer properties
      *        into.

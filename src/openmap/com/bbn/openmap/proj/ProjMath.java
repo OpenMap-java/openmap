@@ -538,7 +538,7 @@ public final class ProjMath {
      */
     public static boolean isCrossingDateline(double leftLon, double rightLon,
                                              float projScale) {
-        // if the left longiude is greater than the right, we're obviously
+        // if the left longitude is greater than the right, we're obviously
         // crossing the dateline. If they are approximately equal, we could be
         // showing the whole earth, but only if the scale is significantly
         // large. If the scale is small, we could be really zoomed in.

@@ -22,9 +22,6 @@
 
 package com.bbn.openmap.omGraphics;
 
-import com.bbn.openmap.omGraphics.GraphicAttributes;
-import com.bbn.openmap.omGraphics.OMGraphic;
-
 /**
  * EditableOMDecoratedSpline. Nothing created, code adapted from
  * EditableOMPoly We just need to edit the generating points as an

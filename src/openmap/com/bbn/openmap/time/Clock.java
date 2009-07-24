@@ -162,7 +162,7 @@ public class Clock extends OMComponent implements RealTimeHandler,
      */
     protected void setTime(long t, TimerStatus timeStatus) {
 
-        // Catch interative cycles and other duplications that may be
+        // Catch interactive cycles and other duplications that may be
         // triggered from other gui components.
         if (t == time)
             return;
@@ -315,7 +315,7 @@ public class Clock extends OMComponent implements RealTimeHandler,
      * 
      * @param amount to change the current time by, in milliseconds.
      * @param wrapAroundTimeLimits if true, the time will be set as if the start
-     *        and end times ofthe scenario are connected, so that moving the
+     *        and end times of the scenario are connected, so that moving the
      *        time past the time scale in either direction will put the time at
      *        the other end of the scale.
      * @param timeStatus the string given to the TimeEvent to let everyone know

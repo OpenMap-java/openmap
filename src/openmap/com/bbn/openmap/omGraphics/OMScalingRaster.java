@@ -81,7 +81,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     protected Rectangle clipRect;
 
     /**
-     * Constuct a blank OMRaster, to be filled in with set calls.
+     * Construct a blank OMRaster, to be filled in with set calls.
      */
     public OMScalingRaster() {
         super();
@@ -153,7 +153,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
     /**
      * Lat/Lon placement with a indexed colormodel, which is using a colortable
-     * and a byte array to contruct the int[] pixels.
+     * and a byte array to construct the int[] pixels.
      * 
      * @param ullat latitude of the top of the image.
      * @param ullon longitude of the left side of the image.

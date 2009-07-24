@@ -116,7 +116,7 @@ public abstract class ESRIRecord extends ShapeUtils {
      * @return number of bytes equal to the size of this record
      */
     public int getBinaryStoreSize() {
-        return getRecordLength() + 8; // Costant for record headers
+        return getRecordLength() + 8; // Constant for record headers
     }
 
     /**

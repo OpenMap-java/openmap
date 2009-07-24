@@ -120,7 +120,7 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 	public static final int SLOPESHADING = 0;
 
 	/**
-	 * Colorized slope shading. Color basnds are based on elevation, and are
+	 * Colorized slope shading. Color bands are based on elevation, and are
 	 * accented by shaded indications.
 	 */
 	public static final int COLOREDSHADING = 1;
@@ -156,7 +156,7 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 	protected final static int[] etopoHeights = { 5400, 2160, 1080, 720 }; // ep-g
 
 	/**
-	 * Spacings (in meters) between adjacent lon points at the equater. The
+	 * Spacings (in meters) between adjacent lon points at the equator. The
 	 * values here were aesthetically defined (they are not the actual spacings)
 	 */
 	protected final static double[] etopoSpacings = { 1800., 3500., 7000.,
@@ -352,7 +352,7 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 	/**
 	 * Builds the slope index map. This method is called when the ETOPO
 	 * resolution changes and when the slope contrast changes. The slope of the
-	 * terrain is cliped; slopes are between the range of +/- 45 deg. The
+	 * terrain is clipped; slopes are between the range of +/- 45 deg. The
 	 * calculated slope value is then linearly scaled to the range +/- 127.
 	 */
 	protected void buildSlopeMap() {
@@ -378,7 +378,7 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 		// process dataBuffer to create slope
 		for (int y = 0; y < bufferHeight; y++) {
 
-			// compute the lattitude of this
+			// compute the latitude of this
 			double lat = 90. - 180. * (double) y / (double) bufferHeight;
 
 			// get cosine of the latitude. This is used because the
@@ -389,16 +389,15 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 			// for scaling the slope
 			double slopeScaler = (double) slopeAdjust * coslat / deltaX;
 
-			// indexcies
+			// indeces
 			int idx0 = y * bufferWidth;
 
 			// do each row
 			for (int x = 0; x < bufferWidth; x++) {
 
-				// indexcies
+				// indeces
 				int idx1 = idx0 + x;
 				int idx2 = idx1 + bufferWidth;
-				;
 
 				// special case at end
 				if (y == bufferHeight - 1)
@@ -500,7 +499,7 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 
 	/*
 	 * Builds the raster image that has the dimensions of the current
-	 * projection. The alogorithm is is follows: <P><pre> allocate storage the
+	 * projection. The algorithm is is follows: <P><pre> allocate storage the
 	 * size of the projection (use ints for RGBA)
 	 * 
 	 * for each screen point
@@ -728,7 +727,7 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 		}
 
 		// Don't forget to project them. Since they are only being
-		// recalled if the projection hase changed, then we need to
+		// recalled if the projection has changed, then we need to
 		// force a reprojection of all of them because the screen
 		// position has changed.
 		omGraphicList.project(projection, true);
@@ -820,7 +819,7 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 			JPanel contrastPanel = PaletteHelper
 					.createPaletteJPanel("Contrast Adjustment");
 			JSlider contrastSlide = new JSlider(JSlider.HORIZONTAL, 1/* min */,
-					5/* max */, 3/* inital */);
+					5/* max */, 3/* initial */);
 			java.util.Hashtable<Integer, JLabel> dict = new java.util.Hashtable<Integer, JLabel>();
 			dict.put(new Integer(1), new JLabel("min"));
 			dict.put(new Integer(5), new JLabel("max"));
@@ -844,7 +843,7 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 			JPanel opaquenessPanel = PaletteHelper
 					.createPaletteJPanel("Opaqueness");
 			JSlider opaquenessSlide = new JSlider(JSlider.HORIZONTAL,
-					0/* min */, 255/* max */, opaqueness/* inital */);
+					0/* min */, 255/* max */, opaqueness/* initial */);
 			opaquenessSlide.addChangeListener(new ChangeListener() {
 				public void stateChanged(ChangeEvent ce) {
 					JSlider slider = (JSlider) ce.getSource();

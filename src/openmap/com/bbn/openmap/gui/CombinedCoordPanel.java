@@ -154,7 +154,7 @@ public class CombinedCoordPanel extends OMComponentPanel implements
      * Sets the contents of the latitude and longitude entry boxes in
      * CoordPanel.
      * 
-     * @param llpoint the object containt the coordinates that should
+     * @param llpoint the object contains the coordinates that should
      *        go in the boxes.
      */
     public void setLatLon(LatLonPoint llpoint) {

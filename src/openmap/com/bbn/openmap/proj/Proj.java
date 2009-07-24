@@ -370,7 +370,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * Called when some fundamental parameters change.
      * <p>
      * Each projection will decide how to respond to this change. For instance,
-     * they may need to recalculate "constant" paramters used in the forward()
+     * they may need to recalculate "constant" parameters used in the forward()
      * and inverse() calls.
      */
     protected abstract void computeParameters();
@@ -570,7 +570,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * 
      * @param rawllpts array of y, x world coordinates.
      * @param rawoff offset into rawllpts.
-     * @param xcoords x projected horzontal map coordinates.
+     * @param xcoords x projected horizontal map coordinates.
      * @param ycoords y projected vertical map coordinates.
      * @param visible coordinates visible?
      * @param copyoff offset into x,y visible arrays.
@@ -604,7 +604,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * 
      * @param rawllpts array of y, x world coordinates.
      * @param rawoff offset into rawllpts.
-     * @param xcoords x projected horzontal map coordinates.
+     * @param xcoords x projected horizontal map coordinates.
      * @param ycoords y projected vertical map coordinates.
      * @param visible coordinates visible?
      * @param copyoff offset into x,y visible arrays.

@@ -88,7 +88,7 @@ public class TimeEvent implements Serializable {
      * @param time the current time of the clock, millis from the epoch.
      * @param systemTime the time of the start of the media, in millis from
      *        epoch. Subtracted from the time, it should give the offset time
-     *        from the start of the misison or media.
+     *        from the start of the mission or media.
      * @param simTime the starting time within the simulation of the currently
      *        active mission or media, in millis. When the offset time (time -
      *        system time) is added to this time, you should have the current

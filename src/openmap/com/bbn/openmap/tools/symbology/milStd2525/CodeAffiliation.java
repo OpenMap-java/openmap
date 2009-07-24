@@ -26,7 +26,7 @@ package com.bbn.openmap.tools.symbology.milStd2525;
  * The CodeAffiliation CodePosition presents options for symbols,
  * noting that the symbol represents a friend, foe or unknown. This
  * notation is made in the second character of some symbol code
- * strings (those that allow affilications).
+ * strings (those that allow affiliations).
  */
 public class CodeAffiliation extends CodePosition {
 

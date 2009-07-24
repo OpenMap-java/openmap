@@ -246,7 +246,7 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * Method to set the properties in the PropertyConsumer. The
      * prefix is a string that should be prepended to each property
      * key (in addition to a separating '.') in order for the
-     * PropertyConsumer to uniquely identify properies meant for it,
+     * PropertyConsumer to uniquely identify properties meant for it,
      * in the midst of of Properties meant for several objects.
      * 
      * @param prefix a String used by the PropertyConsumer to prepend
@@ -284,7 +284,7 @@ public class OMToolSet extends OMComponentPanel implements Serializable, Tool {
      * Method to fill in a Properties object, reflecting the current
      * values of the PropertyConsumer. If the PropertyConsumer has a
      * prefix set, the property keys should have that prefix plus a
-     * separating '.' prepended to each propery key it uses for
+     * separating '.' prepended to each property key it uses for
      * configuration.
      * 
      * @param getList a Properties object to load the PropertyConsumer

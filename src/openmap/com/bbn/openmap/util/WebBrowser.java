@@ -32,7 +32,6 @@ import java.net.URL;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.event.InfoDisplayEvent;
 import com.bbn.openmap.event.InfoDisplayListener;
-import com.bbn.openmap.util.Debug;
 
 /** WebBrower - handles the WebBrowser process on behalf of OM. */
 public class WebBrowser {

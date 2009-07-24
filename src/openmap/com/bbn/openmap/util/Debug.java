@@ -298,12 +298,12 @@ public abstract class Debug {
 
     /**
      * Provide a file to log output. This can be in conjunction with
-     * the ouput stream, or instead of it. Will overwrite the file, if
+     * the output stream, or instead of it. Will overwrite the file, if
      * it exists.
      * 
      * @param file the file to use for the error log.
      * @param alsoToOutStream true if the out stream should still
-     *        provide output, in addition to logging the ouput.
+     *        provide output, in addition to logging the output.
      */
     public static void directOutput(File file, boolean alsoToOutStream) {
         try {
@@ -320,13 +320,13 @@ public abstract class Debug {
 
     /**
      * Provide a file to log output. This can be in conjunction with
-     * the ouput stream, or instead of it.
+     * the output stream, or instead of it.
      * 
      * @param filename the file to use for the error log.
      * @param append if true, log the output at the end of the file,
      *        instead of the beginning.
      * @param alsoToOutStream true if the out stream should still
-     *        provide output, in addition to logging the ouput.
+     *        provide output, in addition to logging the output.
      */
     public static void directOutput(String filename, boolean append,
                                     boolean alsoToOutStream) {
@@ -346,11 +346,11 @@ public abstract class Debug {
 
     /**
      * Provide a DataOutputStream to log output. This can be in
-     * conjunction with the ouput stream, or instead of it.
+     * conjunction with the output stream, or instead of it.
      * 
      * @param os the OutputStream that's handling outputlogging.
      * @param alsoToOutStream true if the out stream should still
-     *        provide output, in addition to logging the ouput.
+     *        provide output, in addition to logging the output.
      */
     public static void directOutput(OutputStream os, boolean alsoToOutStream) {
         outputLog = new DataOutputStream(os);

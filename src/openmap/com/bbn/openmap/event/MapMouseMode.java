@@ -111,7 +111,7 @@ public interface MapMouseMode extends MouseListener, MouseMotionListener,
      * Request to have the MapMouseMode act as a proxy for a
      * MapMouseMode that wants to remain hidden. Can be useful for
      * directing events to one object. With this call, no events will
-     * be forwared to the proxy's target.
+     * be forwarded to the proxy's target.
      * 
      * @param mmm the hidden MapMouseMode for this MapMouseMode to
      *        send events to.

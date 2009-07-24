@@ -70,7 +70,7 @@ public class UPSPoint {
     }
 
     /**
-     * Static method to create a UPSPoint object from lat/lon coordiantes.
+     * Static method to create a UPSPoint object from lat/lon coordinates.
      * Method avoids conflict with (double, double) constructor.
      * 
      * @param lat latitude in decimal degrees

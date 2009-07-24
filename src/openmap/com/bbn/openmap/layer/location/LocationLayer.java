@@ -112,7 +112,7 @@ public class LocationLayer extends Layer implements MapMouseListener {
     protected boolean useDeclutterMatrix = false;
     /**
      * Flag to let objects appear partially off the edges of the map, when
-     * decluttering through the decluterr matrix.
+     * decluttering through the declutter matrix.
      */
     protected boolean allowPartials = true;
     /** The graphic list of objects to draw. */
@@ -461,7 +461,7 @@ public class LocationLayer extends Layer implements MapMouseListener {
             }
 
             // Don't forget to project them. Since they are only
-            // being recalled if the projection hase changed, then
+            // being recalled if the projection has changed, then
             // we need to force a reprojection of all of them
             // because the screen position has changed.
             Enumeration things = omGraphicList.elements();
@@ -637,7 +637,7 @@ public class LocationLayer extends Layer implements MapMouseListener {
 
     /**
      * Set the LocationHandlers for the layer. Make sure you update the
-     * LocationHandler names, too, so the names coorespond to these.
+     * LocationHandler names, too, so the names correspond to these.
      * 
      * @param handlers an array of LocationHandlers.
      */
@@ -659,7 +659,7 @@ public class LocationLayer extends Layer implements MapMouseListener {
 
     /**
      * Set the LocationHandler names suitable for a GUI. Make sure these end up
-     * cooresponding to the LocationHandlers.
+     * corresponding to the LocationHandlers.
      * 
      * @param handlerNames an array of Strings.
      */
@@ -904,7 +904,7 @@ public class LocationLayer extends Layer implements MapMouseListener {
      * PropertyConsumer method, to fill in a Properties object, reflecting the
      * current values of the layer. If the layer has a propertyPrefix set, the
      * property keys should have that prefix plus a separating '.' prepended to
-     * each propery key it uses for configuration.
+     * each property key it uses for configuration.
      * 
      * @param props a Properties object to load the PropertyConsumer properties
      *        into. If props equals null, then a new Properties object should be

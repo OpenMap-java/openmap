@@ -50,7 +50,7 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
 
     public final static String UseCursorProperty = "useCursor";
 
-    public final float DEFAULT_OPAQUENESS = 0.5f;
+    public final static float DEFAULT_OPAQUENESS = 0.5f;
 
     public final static transient String modeID = "Pan";
 
@@ -234,7 +234,7 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
             if (bufferedMapImage != null && bufferedRenderingImage != null) {
                 Graphics2D gr2d = (Graphics2D) bufferedRenderingImage.getGraphics();
                 /*
-                 * Drawing original image whithout transparence and in the
+                 * Drawing original image without transparence and in the
                  * initial position
                  */
                 if (leaveShadow) {
@@ -323,7 +323,7 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
     }
 
     /**
-     * Instanciates new image buffers if needed.<br>
+     * Instantiates new image buffers if needed.<br>
      * This method is synchronized to avoid creating the images multiple times
      * if width and height doesn't change.
      * 
@@ -339,7 +339,7 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
     }
 
     /**
-     * Instanciates new image buffers.
+     * Instantiates new image buffers.
      * 
      * @param w Non-zero mapBean's width.
      * @param h Non-zero mapBean's height.

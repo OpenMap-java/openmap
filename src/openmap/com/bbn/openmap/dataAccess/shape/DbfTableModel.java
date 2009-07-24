@@ -68,8 +68,8 @@ import com.bbn.openmap.util.FileUtils;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * An implemention of TableModel that manages tabular data read from a dbf file
- * and enables the user to stored data store herein to be saved to a file
+ * An implementation of TableModel that manages tabular data read from a dbf
+ * file and enables the user to stored data store herein to be saved to a file
  * conforming to the DBF III file format specification.
  * 
  * To create a three one column model:

@@ -289,7 +289,7 @@ public class CSVTiledImagePlugIn extends OMGraphicHandlerPlugIn {
      * Method to fill in a Properties object, reflecting the current values of
      * the PropertyConsumer. If the PropertyConsumer has a prefix set, the
      * property keys should have that prefix plus a separating '.' prepended to
-     * each propery key it uses for configuration.
+     * each property key it uses for configuration.
      * 
      * @param getList a Properties object to load the PropertyConsumer
      *        properties into. If getList equals null, then a new Properties

@@ -74,7 +74,7 @@ public class ShapeLinkServer extends LinkServer implements
         locateAndSetShapeData(shapeFile);
     }
 
-    public void finalize() {
+    protected void finalize() {
         if (Debug.debugging("gc")) {
             Debug.output("ShapeLinkServer instance gc'd - client gone");
         }

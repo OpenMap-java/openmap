@@ -2,7 +2,7 @@
  * This layer is for the reading and display of any spatial data retrieved
  * from a MySQL Database (Version 4.1). At this time MySQL 4.1 is available
  * only as alfa release, and represents the first version with support for 
- * the Datatype Geometry. Therefore be carefull expecting to much.
+ * the Datatype Geometry. Therefore be careful expecting to much.
  * Usefull information can be found in the chapter 9 of the MySQL Reference 
  * (Spatial Extensions in MySQL) 
  * http://www.mysql.com/documentation/mysql/bychapter/index.html#GIS_spatial_extensions_in_MySQL
@@ -56,11 +56,11 @@ import com.bbn.openmap.util.PropUtils;
  * <p>
  * 
  * MysqlGeometryLayer uses at this stage a set of Classes which wraps
- * the Geometries retrieved from the database. They are thougth to be
+ * the Geometries retrieved from the database. They are thought to be
  * a provisorium until a nice MySQL Geometry API is available.
  * Coordinate values are stored as values of double precision in
  * arrays as a sequence of Latitude/Longitude pairs. This differs from
- * tha database where values are stored as X/Y or Easting/Northing
+ * the database where values are stored as X/Y or Easting/Northing
  * pairs.
  * 
  * <p>
@@ -109,7 +109,7 @@ public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
     protected String dbClass = null;
 
     /**
-     * The property to use for specifing the driver: <b>dbClass </b>
+     * The property to use for specifying the driver: <b>dbClass </b>
      */
     public static final String dbClassProperty = "dbClass";
 
@@ -367,7 +367,7 @@ public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
     /**
      * Method DoubleToFloat. Used to cast arrays of double precision
      * to float, precision which is internally used by OpenMap. This
-     * is ugly, but I prefered to keep the precision of values in the
+     * is ugly, but I preferred to keep the precision of values in the
      * Geometry Classes the same as they are in MySQL Database.
      * 
      * @param d

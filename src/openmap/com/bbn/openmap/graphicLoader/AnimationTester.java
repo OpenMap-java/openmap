@@ -103,7 +103,7 @@ public class AnimationTester extends AbstractGraphicLoader {
 
             JLabel label = new JLabel("Timer interval in seconds:");
             panel.add(label);
-            JSlider slider = new JSlider(JSlider.HORIZONTAL, 0/* min */, 50/* max */, 20/* inital */);
+            JSlider slider = new JSlider(JSlider.HORIZONTAL, 0/* min */, 50/* max */, 20/* initial */);
             java.util.Hashtable dict = new java.util.Hashtable();
             dict.put(new Integer(10), new JLabel("1"));
             dict.put(new Integer(20), new JLabel("2"));

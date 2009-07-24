@@ -350,7 +350,7 @@ public class ArgParser {
          * Create an Arg with a name and help line description, along with a
          * number of expected arguments to follow this option. Has an argument
          * to not check for arguments that may start with dashes, in case one of
-         * the arguements may be a negative number.
+         * the arguments may be a negative number.
          */
         public Arg(String aName, String desc, int expectedNumberOfArguments,
                 boolean expectDashedArguments) {

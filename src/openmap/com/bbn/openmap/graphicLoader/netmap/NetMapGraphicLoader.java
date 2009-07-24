@@ -40,7 +40,7 @@ import com.bbn.openmap.util.PropUtils;
  * The NetMapGraphicLoader is a component that can listen to a NetMapConnector,
  * receive and interpret NetMapEvents, and draw the resulting network on the
  * map. The NetMapConnector does all the heavy work, the NetMapGraphicLoader
- * serves as an iterface to get OMGraphics on the map.
+ * serves as an interface to get OMGraphics on the map.
  * <P>
  * 
  * The easiest way to use this class is to create it with the NetMapConnector

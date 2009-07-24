@@ -76,7 +76,7 @@ public class UTMPoint {
     }
 
     /**
-     * Contructs a new UTMPoint instance from values in another UTMPoint.
+     * Constructs a new UTMPoint instance from values in another UTMPoint.
      */
     public UTMPoint(UTMPoint point) {
         this(point.northing,
@@ -86,7 +86,7 @@ public class UTMPoint {
     }
 
     /**
-     * Contruct a UTMPoint from a LatLonPoint, assuming a WGS_84 ellipsoid.
+     * Construct a UTMPoint from a LatLonPoint, assuming a WGS_84 ellipsoid.
      */
     public UTMPoint(LatLonPoint llpoint) {
         this(llpoint, Ellipsoid.WGS_84);
@@ -118,7 +118,7 @@ public class UTMPoint {
     }
 
     /**
-     * Convert this UTMPoint to a LatLonPoint, and assume a WGS_84 ellisoid.
+     * Convert this UTMPoint to a LatLonPoint, and assume a WGS_84 ellipsoid.
      */
     public LatLonPoint toLatLonPoint() {
         return UTMtoLL(this, Ellipsoid.WGS_84, new LatLonPoint.Double());
@@ -204,7 +204,7 @@ public class UTMPoint {
      * @param utmPoint A UTMPoint instance to put the results in. If null, a new
      *        UTMPoint will be allocated.
      * @param zoneNumber the number of the zone
-     * @param isNorthern true if zone is in norhering hemispehere
+     * @param isNorthern true if zone is in northern hemispehere
      * @return A UTM class instance containing the value of <code>null</code>
      *         if conversion failed. If you pass in a UTMPoint, it will be
      *         returned as well if successful.

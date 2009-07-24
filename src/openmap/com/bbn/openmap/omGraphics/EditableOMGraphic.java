@@ -227,9 +227,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
             return false;
         }
 
-        for (int i = 0; i < points.length && i < gPoints.length; i++) {
-            gPoints[i] = points[i];
-        }
+        System.arraycopy(points, 0, gPoints, 0, Math.min(points.length, gPoints.length));
 
         return (points.length == gPoints.length);
     }
@@ -555,7 +553,7 @@ public abstract class EditableOMGraphic extends MapMouseAdapter {
         }
     }
 
-    public void finalize() {
+    protected void finalize() {
         if (getGraphic() != null) {
             getGraphic().setVisible(true);
         }

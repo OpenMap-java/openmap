@@ -406,7 +406,7 @@ public class DDFRecord implements DDFConstants {
     }
 
     /**
-     * Get an interator over the fields.
+     * Get an iterator over the fields.
      */
     public Iterator iterator() {
         if (paoFields != null) {

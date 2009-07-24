@@ -536,7 +536,7 @@ public class LinkActionList implements LinkActionConstants,
 
     /**
      * Update an arc with a certain radius at a Lat/Lon location, and allows you
-     * to specify units of the radius, as well as the number of verticies to use
+     * to specify units of the radius, as well as the number of vertices to use
      * to approximate the arc.
      * 
      * @param latPoint latitude of center of arc in decimal degrees
@@ -1596,7 +1596,7 @@ public class LinkActionList implements LinkActionConstants,
     /**
      * Write a point in the response.
      * 
-     * @param x1 the horizonal screen pixel location of the point.
+     * @param x1 the horizontal screen pixel location of the point.
      * @param y1 the vertical screen pixel location of the point.
      * @param radius the pixel radius size of the point.
      * @param properties description of drawing attributes.
@@ -1634,7 +1634,7 @@ public class LinkActionList implements LinkActionConstants,
     /**
      * Write a poly in the response.
      * 
-     * @param llPoints alternating latitude and logitude points of poly.
+     * @param llPoints alternating latitude and longitude points of poly.
      * @param units degrees or radians.
      * @param lType straight, rhumb, great circle.
      * @param properties description of drawing attributes.
@@ -1652,10 +1652,10 @@ public class LinkActionList implements LinkActionConstants,
     /**
      * Write a poly in the response.
      * 
-     * @param llpoints alternating latitude and logitude points of poly.
+     * @param llpoints alternating latitude and longitude points of poly.
      * @param units degrees or radians.
      * @param lType straight, rhumb, great circle.
-     * @param nsegs number of segments to use to approimate curved poly lines..
+     * @param nsegs number of segments to use to approximate curved poly lines..
      * @param properties description of drawing attributes.
      * @param graphicUpdateMask the mask describing the graphic update.
      * @throws IOException

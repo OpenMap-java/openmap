@@ -60,7 +60,7 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
 
     protected boolean isPolyline = false;
 
-    /** latlons is a array of 4 floats - lat1, lon1, lat2, lon2. */
+    /** latlons is a array of 4 doubles - lat1, lon1, lat2, lon2. */
     protected double[] latlons = null;
 
     /** pts is an array of 4 ints - px1, py1, px2, py2. */
@@ -180,12 +180,12 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
 
     /**
      * Set the lat lon values of the end points of the line from an
-     * array of floats - lat1, lon1, lat2, lon2. This does not look at
+     * array of doubles - lat1, lon1, lat2, lon2. This does not look at
      * the line render type, so it acts accordingly. LL1 is only used
      * in RENDERTYPE_LATLON, RENDERTYPE_OFFSET, and LL2 is only used
      * in RENDERTYPE_LATLON.
      * 
-     * @param lls array of floats - lat1, lon1, lat2, lon2
+     * @param lls array of doubles - lat1, lon1, lat2, lon2
      */
     public void setLL(double[] lls) {
         latlons = lls;
@@ -194,7 +194,7 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
 
     /**
      * Get the lat lon values of the end points of the line in an
-     * array of floats - lat1, lon1, lat2, lon2. Again, this does not
+     * array of doubles - lat1, lon1, lat2, lon2. Again, this does not
      * look at the line render type, so it acts accordingly. LL1 is
      * only used in RENDERTYPE_LATLON, RENDERTYPE_OFFSET, and LL2 is
      * only used in RENDERTYPE_LATLON.

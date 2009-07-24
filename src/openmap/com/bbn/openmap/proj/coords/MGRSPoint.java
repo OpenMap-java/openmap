@@ -38,7 +38,7 @@ import com.bbn.openmap.util.Debug;
 /**
  * A class representing a MGRS coordinate that has the ability to provide the
  * decimal degree lat/lon equivalent, as well as the UTM equivalent. This class
- * does not do checks to see if the MGRS coordiantes provided actually make
+ * does not do checks to see if the MGRS coordinates provided actually make
  * sense. It assumes that the values are valid.
  */
 public class MGRSPoint extends ZonedUTMPoint {
@@ -139,7 +139,7 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Contructs a new MGRSPoint instance from values in another MGRSPoint.
+     * Constructs a new MGRSPoint instance from values in another MGRSPoint.
      */
     public MGRSPoint(MGRSPoint point) {
         this();
@@ -160,7 +160,7 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Contruct a MGRSPoint from a LatLonPoint, assuming a WGS_84 ellipsoid.
+     * Construct a MGRSPoint from a LatLonPoint, assuming a WGS_84 ellipsoid.
      */
     public MGRSPoint(LatLonPoint llpoint) {
         this(llpoint, Ellipsoid.WGS_84);
@@ -202,7 +202,7 @@ public class MGRSPoint extends ZonedUTMPoint {
     }
 
     /**
-     * Convert this MGRSPoint to a LatLonPoint, and assume a WGS_84 ellisoid.
+     * Convert this MGRSPoint to a LatLonPoint, and assume a WGS_84 ellipsoid.
      */
     public LatLonPoint toLatLonPoint() {
         return toLatLonPoint(Ellipsoid.WGS_84, new LatLonPoint.Double());
@@ -831,7 +831,7 @@ public class MGRSPoint extends ZonedUTMPoint {
      * The function getMinNorthing returns the minimum northing value of a MGRS
      * zone.
      * 
-     * portted from Geotrans' c Lattitude_Band_Value strucure table. zoneLetter :
+     * portted from Geotrans' c Latitude_Band_Value structure table. zoneLetter :
      * MGRS zone (input)
      */
 
@@ -946,7 +946,7 @@ public class MGRSPoint extends ZonedUTMPoint {
                 if (inType.equalsIgnoreCase("MGRS")) {
                     try {
                         MGRSPoint mgrsp = new MGRSPoint(record);
-                        record.trim();
+                        record = record.trim();
                         mgrsp.decode(record);
 
                         outStr1.append(record + " is " + mgrsp.toLatLonPoint()
@@ -965,7 +965,7 @@ public class MGRSPoint extends ZonedUTMPoint {
                     int z;
                     char zl;
                     String tmp;
-                    record.trim();
+                    record = record.trim();
                     tmp = record.substring(0, 2);
                     z = Integer.parseInt(tmp);
                     tmp = record.substring(5, 11);
@@ -983,7 +983,7 @@ public class MGRSPoint extends ZonedUTMPoint {
                     float lat, lon;
                     int index;
                     String tmp;
-                    record.trim();
+                    record = record.trim();
                     index = record.indexOf("\040");
                     if (index < 0) {
                         index = record.indexOf("\011");

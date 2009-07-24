@@ -204,7 +204,7 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      * handler. This implementation returns a JPanel with a "No Palette"
      * message.
      * 
-     * @return a JPanel with text, No Pallette
+     * @return a JPanel with text, No Palette
      */
     public java.awt.Component getGUI() {
         // LocationLayer.java chokes if we return null
@@ -274,10 +274,10 @@ public abstract class AbstractLocationHandler implements LocationHandler {
      * PropertyConsumer method, to fill in a Properties object, reflecting the
      * current values of the layer. If the layer has a propertyPrefix set, the
      * property keys should have that prefix plus a separating '.' prepended to
-     * each propery key it uses for configuration. This method takes care of the
-     * basic LocationHandler parameters, so any LocationHandlers that extend the
-     * AbstractLocationHandler should call this method, too, before adding any
-     * specific properties.
+     * each property key it uses for configuration. This method takes care of
+     * the basic LocationHandler parameters, so any LocationHandlers that extend
+     * the AbstractLocationHandler should call this method, too, before adding
+     * any specific properties.
      * 
      * @param props a Properties object to load the PropertyConsumer properties
      *        into. If props equals null, then a new Properties object should be

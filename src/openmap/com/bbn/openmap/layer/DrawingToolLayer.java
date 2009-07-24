@@ -79,7 +79,7 @@ import com.bbn.openmap.util.propertyEditor.Inspector;
  * <P>
  * 
  * This class responds to all the properties that the OMGraphicHandlerLayer
- * repsonds to, including the mouseModes property. If the mouseModes property
+ * responds to, including the mouseModes property. If the mouseModes property
  * isn't set, the SelectMouseMode.modeID mode ID is set. When the
  * MapMouseInterpreter calls select(OMGraphic), the OMGraphic is passed to the
  * DrawingTool. This class also responds to the showHints property (true by

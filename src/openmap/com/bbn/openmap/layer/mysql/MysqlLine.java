@@ -17,7 +17,7 @@ package com.bbn.openmap.layer.mysql;
  * This class represents the encapsulation of a MySQL
  * GeometryLineString. Coordinate values are stored as values of
  * double precision in arrays as a sequence of Latitude/Longitude
- * pairs. This differs from tha database where values are stored as
+ * pairs. This differs from the database where values are stored as
  * X/Y or Easting/Northing pairs.
  * 
  * Copyright 2003 by the Author <br>

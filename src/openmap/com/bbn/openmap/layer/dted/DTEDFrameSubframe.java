@@ -39,7 +39,7 @@ public class DTEDFrameSubframe {
     /** Test markings, for the boundary of the subframe. */
     public static final int BOUNDARYSHADING = 4;
     /**
-     * Colorized slope shading. Color basnds are based on elevation,
+     * Colorized slope shading. Color bands are based on elevation,
      * and are accented by shaded indications.
      */
     public static final int COLOREDSHADING = 5;

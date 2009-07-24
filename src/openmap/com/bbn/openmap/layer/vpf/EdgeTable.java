@@ -226,7 +226,7 @@ public class EdgeTable extends PrimitiveTable {
 
     /**
      * Use the warehouse to create a graphic from the edge feature, if you
-     * aleady have the line from the edgetable.
+     * already have the line from the edgetable.
      * 
      * @param warehouse the warehouse used for createEdge calls (must not be
      *        null)

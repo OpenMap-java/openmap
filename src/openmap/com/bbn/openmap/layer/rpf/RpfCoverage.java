@@ -336,7 +336,7 @@ public class RpfCoverage implements ActionListener, RpfConstants,
      * PropertyConsumer method, to fill in a Properties object,
      * reflecting the current values of the layer. If the layer has a
      * propertyPrefix set, the property keys should have that prefix
-     * plus a separating '.' prepended to each propery key it uses for
+     * plus a separating '.' prepended to each property key it uses for
      * configuration.
      * 
      * @param props a Properties object to load the PropertyConsumer
@@ -713,7 +713,7 @@ public class RpfCoverage implements ActionListener, RpfConstants,
                     + " lists");
             for (int k = length - 1; k >= 0; k--) {
                 // HACK - this order is nicely arranged with the order
-                // that lists are arrainged by the
+                // that lists are arranged by the
                 // RpfCoverageManager!!!!
                 if (k == 0 && showCG)
                     ((OMGraphicList) tmpGraphics.elementAt(k)).render(g);

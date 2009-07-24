@@ -406,7 +406,7 @@ public class DDFField {
         }
 
         /* -------------------------------------------------------------------- */
-        /* The occurance count depends on how many copies of this */
+        /* The occurrence count depends on how many copies of this */
         /* field's list of subfields can fit into the data space. */
         /* -------------------------------------------------------------------- */
         if (poDefn.getFixedWidth() != 0) {

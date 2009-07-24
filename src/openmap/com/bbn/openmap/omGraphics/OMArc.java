@@ -107,7 +107,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
     protected int arcType = Arc2D.OPEN;
 
     /**
-     * Used to render arc in Cylindrical projections when the arc encompases a
+     * Used to render arc in Cylindrical projections when the arc encompasses a
      * pole.
      */
     private transient GeneralPath polarShapeLine = null;
@@ -532,7 +532,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      * Set the horizontal pixel diameter of the arc. This is meaningful only if
      * the render type is RENDERTYPE_XY or RENDERTYPE_OFFSET.
      * 
-     * @param value the horizontial pixel diamter of the arc.
+     * @param value the horizontal pixel diameter of the arc.
      */
     public void setWidth(int value) {
         if (width == value)
@@ -849,7 +849,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Return the java.awt.Shape (GeneralPath) that reflects a arc that
-     * encompases a pole. Used when the projection is Cylindrical.
+     * encompasses a pole. Used when the projection is Cylindrical.
      * 
      * @return a GeneralPath object, or null if it's not needed (which is
      *         probably most of the time, if the arc doesn't include a pole or

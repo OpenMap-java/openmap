@@ -45,7 +45,7 @@ public class AcmeGifHelper {
      * Return a byte array that contains the GIF encoded image.
      * 
      * @param image the image to encode
-     * @exception IOException an error occured in encoding the image
+     * @exception IOException an error occurred in encoding the image
      */
     public static byte[] encodeGif(BufferedImage image) throws IOException {
 
@@ -73,7 +73,7 @@ public class AcmeGifHelper {
      * @param w the width of the image
      * @param h the height of the image
      * @param pixels the array of pixels in RGB directcolor
-     * @exception IOException an error occured in encoding the image
+     * @exception IOException an error occurred in encoding the image
      */
     public static byte[] encodeGif(int w, int h, int[] pixels)
             throws IOException {

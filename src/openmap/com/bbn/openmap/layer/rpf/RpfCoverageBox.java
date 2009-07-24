@@ -314,7 +314,7 @@ public class RpfCoverageBox {
         }
     }
 
-    /** Reset the coverage precentage and scale difference. */
+    /** Reset the coverage percentage and scale difference. */
     public void reset() {
         percentCoverage = 0f;
         scale = 0;

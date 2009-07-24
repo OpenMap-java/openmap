@@ -28,7 +28,6 @@ import java.io.*;
 /*  OpenMap  */
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.SwingWorker;
-import com.bbn.openmap.layer.link.LinkLayer;
 import com.bbn.openmap.omGraphics.grid.*;
 
 /**

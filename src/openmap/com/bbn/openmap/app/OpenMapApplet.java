@@ -53,7 +53,7 @@ import com.bbn.openmap.util.Debug;
  * PROPERTIES
  * </pre>
  * 
- * applet parameter is specifed with a different properties file, that
+ * applet parameter is specified with a different properties file, that
  * file will be used instead.
  */
 public class OpenMapApplet extends JApplet implements

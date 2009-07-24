@@ -46,7 +46,7 @@ public class JPEGHelper {
      * 
      * @param image the image to encode
      * @param quality the JPEG quality factor to use in encoding
-     * @exception IOException an error occured in encoding the image
+     * @exception IOException an error occurred in encoding the image
      */
     public static byte[] encodeJPEG(BufferedImage image, float quality)
             throws IOException {
@@ -82,7 +82,7 @@ public class JPEGHelper {
      * @param h the height of the image
      * @param pixels the array of pixels in RGB directcolor
      * @param quality the JPEG quality factor to use in encoding
-     * @exception IOException an error occured in encoding the image
+     * @exception IOException an error occurred in encoding the image
      */
     public static byte[] encodeJPEG(int w, int h, int[] pixels, float quality)
             throws IOException {

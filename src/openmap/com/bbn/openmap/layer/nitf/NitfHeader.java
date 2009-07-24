@@ -294,7 +294,7 @@ public class NitfHeader {
         if (header.read(binFile)) {
             System.out.println(header);
         } else
-            System.out.println("NitfHeader: NOT read sucessfully!");
+            System.out.println("NitfHeader: NOT read successfully!");
 
     }
 }

@@ -97,7 +97,7 @@ import com.bbn.openmap.util.PropUtils;
  * in the toolbar, use the itTool property for the OMDrawingTool in the
  * properties file. If you are using your own OMDrawingTool, in your
  * EditorLayerTool for instance, you should set useAsTool(true) programmatically
- * to get the visiblity of the tool to appear. There is a property to tell the
+ * to get the visibility of the tool to appear. There is a property to tell the
  * OMDrawingTool to be visible when it is inactive, and that flag is true by
  * default. You can set that property (visibleWhenInactive) to change this
  * behavior.
@@ -132,7 +132,7 @@ import com.bbn.openmap.util.PropUtils;
  * GraphicsAttributes object, which is an extension of the GraphicAttributes
  * object. The GraphicAttributes GUI within the tool lets you change the colors,
  * line width and line dash pattern of the current OMGraphic. The
- * GraphicAttributes conttribution to the GUI is not yet implemented, but will
+ * GraphicAttributes contribution to the GUI is not yet implemented, but will
  * let you change the render type and line type of the OMGraphic. Finally, the
  * EditableOMGraphic is given an opportunity to change and set parameters of the
  * OMGraphic that is knows about - for instance, the EditableOMLine object will
@@ -379,7 +379,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
      * Create a new OMGraphic, encased in a new EditableOMGraphic that can
      * modify it. If a loader cannot be found that can handle a graphic with the
      * given classname, this method will return a null object. This method gives
-     * you the option of supressing the GUI for the EditableOMGraphic. If you
+     * you the option of suppressing the GUI for the EditableOMGraphic. If you
      * aren't sure of the behavior mask set in the tool, and you want a
      * particular behavior, set it before calling this method.
      * 
@@ -454,10 +454,10 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
     /**
      * Given an OMGraphic, wrap it in the applicable EditableOMGraphic, allow
      * the user to make modifications, and then call
-     * requestor.drawingComplete(). This methods gives you the option to supress
-     * the GUI from the EditableOMGraphic. If you aren't sure of the behavior
-     * mask set in the tool, and you want a particular behavior, set it before
-     * calling this method.
+     * requestor.drawingComplete(). This methods gives you the option to
+     * suppress the GUI from the EditableOMGraphic. If you aren't sure of the
+     * behavior mask set in the tool, and you want a particular behavior, set
+     * it before calling this method.
      * 
      * @param g OMGraphic to modify
      * @param requestor the Component that is requesting the OMGraphic. The
@@ -1121,7 +1121,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
     }
 
     /**
-     * Turn the OMDrawingTool on with the caveaut that the OMDrawingTool may be
+     * Turn the OMDrawingTool on with the caveat that the OMDrawingTool may be
      * active already, and that a complete hookup may not be needed. If a
      * complete hookup is needed, this methid will attach the OMDrawingTool to
      * the MouseDelegator or the canvas component it is assigned to and display
@@ -1442,9 +1442,9 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
      * should either remove all components from its face, or make its face
      * invisible if this is set to false.
      */
-    public void setUseAsTool(boolean value) {
-        super.setUseAsTool(value);
-    }
+//    public void setUseAsTool(boolean value) {
+//        super.setUseAsTool(value);
+//    }
 
     /**
      * Called from the findAndInit(Iterator) method, when objects are added to
@@ -1751,7 +1751,7 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
     }
 
     protected boolean doPopup(int x, int y, java.util.List additionalOptions) {
-        // TODO This prevents piggypacking and updating of menu. Eliminate the
+        // TODO This prevents piggybacking and updating of menu. Eliminate the
         // test, always create a new popup. Also, popup should be protected, not
         // visible from subclasses.
 

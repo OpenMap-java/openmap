@@ -41,7 +41,7 @@ import com.bbn.openmap.LightMapHandlerChild;
 import com.bbn.openmap.PropertyConsumer;
 
 /**
- * The OMComponentPanel is a convienent super class intended to provide an easy
+ * The OMComponentPanel is a convenient super class intended to provide an easy
  * way to extend JPanel while also implementing the common functions of an
  * OMComponent (PropertyConsumer, BeanContextMembershipListener and
  * BeanContextChild). The PropertyListener methods in the BeanContextChild
@@ -84,7 +84,7 @@ public abstract class OMComponentPanel extends JPanel implements
     // /////////////////////////////////////////////////////////////////////////
 
     /**
-     * Token uniquely identifying this compoentns in the application properties.
+     * Token uniquely identifying this components in the application properties.
      */
     protected String propertyPrefix = null;
 
@@ -114,7 +114,7 @@ public abstract class OMComponentPanel extends JPanel implements
      * PropertyConsumer method, to fill in a Properties object, reflecting the
      * current values of the OMComponent. If the component has a propertyPrefix
      * set, the property keys should have that prefix plus a separating '.'
-     * prepended to each propery key it uses for configuration.
+     * prepended to each property key it uses for configuration.
      * 
      * @param props a Properties object to load the PropertyConsumer properties
      *        into. If props equals null, then a new Properties object should be

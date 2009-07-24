@@ -264,7 +264,7 @@ public class CodeScheme extends CodePosition {
     public CodeOptions getCodeOptions(SymbolPart sp) {
         // Check with the symbol part first to see of there are any
         // options for the particular positions established and
-        // limiting for the particular symbol, and then subsitute
+        // limiting for the particular symbol, and then substitute
         // defaults for any other positions.
 
         return options;

@@ -30,7 +30,7 @@ import java.util.Properties;
  * The line is parsed, with each token interpreted by the NetMapReader
  * and put into a Properties object. The NetMapEvent can be examined
  * to get fields - the field names are listed in the NetMapConstants
- * interface, you can quiery for a field and use it if it's there.
+ * interface, you can query for a field and use it if it's there.
  */
 public class NetMapEvent {
 

@@ -29,14 +29,14 @@ package com.bbn.openmap;
 public class MultipleSoloMapComponentException extends RuntimeException {
 
     /**
-     * Constuct an exception without a reason.
+     * Construct an exception without a reason.
      */
     public MultipleSoloMapComponentException() {
         super();
     }
 
     /**
-     * Constuct an exception with a reason string.
+     * Construct an exception with a reason string.
      * 
      * @param s the reason for the exception
      */

@@ -28,9 +28,6 @@ import com.bbn.openmap.omGraphics.GraphicAttributes;
 import com.bbn.openmap.omGraphics.OMDecoratedSpline;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMSpline;
-import com.bbn.openmap.tools.drawing.AbstractToolLoader;
-import com.bbn.openmap.tools.drawing.EditClassWrapper;
-import com.bbn.openmap.tools.drawing.EditToolLoader;
 
 /**
  * OMDecoratedSplineLoader

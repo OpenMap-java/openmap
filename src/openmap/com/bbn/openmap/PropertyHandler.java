@@ -409,7 +409,7 @@ public class PropertyHandler extends MapHandlerChild implements
         // Clear out the tmp
         tmpProperties.clear();
 
-        // Let system properties take precidence over resource and
+        // Let system properties take precedence over resource and
         // config dir properties.
         merge(systemProperties, "system properties", "system");
 
@@ -458,7 +458,7 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Load the localized properties that will take precidence over all other
+     * Load the localized properties that will take precedence over all other
      * properties. If the localizedPropertyFile is null, a localized version of
      * the openmap.properties file will be searched for in the classpath and in
      * the user home directory (if that isn't null as well).
@@ -548,7 +548,7 @@ public class PropertyHandler extends MapHandlerChild implements
 
     /**
      * Take a marker name list (space separated names), and open the properties
-     * files listed in the propertu with keys of marker.URL.
+     * files listed in the property with keys of marker.URL.
      * 
      * @param markerList space separated marker names in a single string that
      *        needs to be parsed.
@@ -1084,10 +1084,15 @@ public class PropertyHandler extends MapHandlerChild implements
         Object someObj;
         int numComponents = 0;
         String markerName;
-        String componentProperty = ph.getPropertyPrefix()
-                + PropertyHandler.componentProperty;
+        String componentProperty = PropertyHandler.componentProperty;
         StringBuffer componentMarkerString = new StringBuffer(componentProperty
                 + "=");
+        if (ph != null) {
+            componentProperty = ph.getPropertyPrefix()
+                    + PropertyHandler.componentProperty;
+            componentMarkerString = new StringBuffer(componentProperty
+                    + "=");
+        }
 
         StringBuffer componentPropsString = new StringBuffer();
 
@@ -1503,8 +1508,8 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * Add in the properties from the given source, which can be a resorce, file
-     * or URL. Any existing properties will be overwritten except for
+     * Add in the properties from the given source, which can be a resource,
+     * file or URL. Any existing properties will be overwritten except for
      * openmap.components, openmap.layers and openmap.startUpLayers which will
      * be appended.
      * 
@@ -1538,7 +1543,7 @@ public class PropertyHandler extends MapHandlerChild implements
     }
 
     /**
-     * remove a marker from a space delimated set of properties.
+     * remove a marker from a space delimited set of properties.
      */
     public void removeMarker(String property, String marker) {
         // Requires jdk 1.4

@@ -409,7 +409,7 @@ public class OverviewMapHandler extends OMToolComponent implements
      * PropertyConsumer method, to fill in a Properties object, reflecting the
      * current values of the layer. If the layer has a propertyPrefix set, the
      * property keys should have that prefix plus a separating '.' prepended to
-     * each propery key it uses for configuration.
+     * each property key it uses for configuration.
      * 
      * @param props a Properties object to load the PropertyConsumer properties
      *        into. If props equals null, then a new Properties object should be
@@ -572,7 +572,7 @@ public class OverviewMapHandler extends OMToolComponent implements
      * Set whether the map's background mimics changes to the source map's
      * background.
      * 
-     * @param set true to enable mimicing.
+     * @param set true to enable mimicking.
      */
     public void setBackgroundSlave(boolean set) {
         backgroundSlave = set;

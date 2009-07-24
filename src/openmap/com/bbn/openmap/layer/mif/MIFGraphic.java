@@ -24,14 +24,14 @@ package com.bbn.openmap.layer.mif;
 
 /**
  * Interface that defines behavior specific to OMGraphics that are
- * specific to primitves created from MapInfo MIF files
+ * specific to primitives created from MapInfo MIF files
  * 
  * @author Simon Bowen
  */
 public interface MIFGraphic {
     /**
      * sets the scale at which the graphic becomes visible, if set to
-     * -1 the graphic is viaible at all scale levels.
+     * -1 the graphic is visible at all scale levels.
      * 
      * @param visibleScale
      */

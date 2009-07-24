@@ -264,8 +264,7 @@ public class OMEllipse extends OMCircle {
             int size = vector.size();
 
             // We could call create shape, but this is more efficient.
-            int i, j;
-            for (i = 0, j = 0; i < size; i += 2, j++) {
+            for (int i = 0; i < size; i += 2) {
                 GeneralPath gp = createShape(vector.get(i),
                         vector.get(i + 1),
                         true);

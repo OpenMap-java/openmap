@@ -281,7 +281,7 @@ public class LambertConformal extends GeoProj {
      *--------------------------------------------------------------------------*/
     public Point2D LLToWorld(double lat, double lon, Point2D lp) {
 
-        // projectie
+        // projection
         double phi_deg = lat;
         double phi = phi_deg / 180.0 * Math.PI;
         double lamba_deg = lon;

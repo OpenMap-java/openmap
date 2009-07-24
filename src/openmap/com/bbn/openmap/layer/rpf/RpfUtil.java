@@ -48,7 +48,7 @@ import com.bbn.openmap.util.FileUtils;
  * those frames that match the scale, do not match the scale, are
  * greater or less than the scale. Greater than or less than refers to
  * the scale number of the chart being greater or less than the scale
- * number provided, NOT whether the resuting scale ratio is greater or
+ * number provided, NOT whether the resulting scale ratio is greater or
  * less than. These things are opposite if each other, and we're just
  * working with the numbers.
  * <p>

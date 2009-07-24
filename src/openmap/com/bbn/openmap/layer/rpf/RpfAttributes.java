@@ -306,7 +306,7 @@ public class RpfAttributes {
         s.append(" vertical relative units = " + vertRelUnits + "\n");
         s.append(" horizontal relative accuracy = " + horRelAccuracy + "\n");
         s.append(" horizontal relative units = " + horRelUnits + "\n");
-        s.append(" ellipoid code = " + ellipsoidCode + "\n");
+        s.append(" ellipsoid code = " + ellipsoidCode + "\n");
         s.append(" sounding datum code = " + soundingDatumCode + "\n");
         s.append(" nav system code = " + navSystemCode + "\n");
         s.append(" grid code = " + gridCode + "\n");

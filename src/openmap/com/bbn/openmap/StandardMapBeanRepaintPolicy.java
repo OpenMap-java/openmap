@@ -35,7 +35,7 @@ import com.bbn.openmap.util.Debug;
  * <P>
  * A StandardMapBeanRepaintPolicy is automatically set in the MapBean,
  * so you don't have to add one of these to the MapHandler. The
- * OMComponent inheritence is here to make it easier for subclasses to
+ * OMComponent inheritance is here to make it easier for subclasses to
  * be added and for properties to be set.
  */
 public class StandardMapBeanRepaintPolicy extends OMComponent implements

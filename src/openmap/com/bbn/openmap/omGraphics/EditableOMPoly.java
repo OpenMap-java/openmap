@@ -106,7 +106,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
     /**
      * Create and initialize the state machine that interprets the
      * 
-     * modifying gestures/commands, as well as ititialize the grab points. Also
+     * modifying gestures/commands, as well as initialize the grab points. Also
      * allocates the grab point array needed by the EditableOMPoly.
      */
     public void init() {
@@ -364,7 +364,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
      */
     public void assertGrabPoints() {
 
-        // This gets called alot. Usually, for EditableOMGraphics
+        // This gets called a lot. Usually, for EditableOMGraphics
         // that have the same number of GrabPoints, they can just be
         // allocated here. I think we'll have to look at the OMPoly,
         // find out how many points have been defined for it (since
@@ -1158,7 +1158,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
             }
         }
 
-        // In certain condiditions, render the offset grab point.
+        // In certain conditions, render the offset grab point.
 
         if (state instanceof GraphicSelectedState
                 || state instanceof GraphicEditState /*

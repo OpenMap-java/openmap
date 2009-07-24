@@ -25,7 +25,7 @@ import java.io.EOFException;
 /**
  * Encapsulate the information about a particular column in a vpf
  * table. This class can read both VPF V1 (MIL-STD-600006, dated 1992)
- * and VPF V2 (MIL-STD-2407, dated 1996, supercedees V1)
+ * and VPF V2 (MIL-STD-2407, dated 1996, supercedes V1)
  */
 public class DcwColumnInfo {
     /** the name of the column */

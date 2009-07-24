@@ -51,7 +51,7 @@ public interface PlugIn extends PropertyConsumer {
 
     /**
      * Set the MapMouseListener for this PlugIn. The MapMouseListener is
-     * responsible for handling the MouseEvents that are occuring over the map.
+     * responsible for handling the MouseEvents that are occurring over the map.
      * 
      * @param mml MapMouseListener.
      * @see com.bbn.openmap.event.MapMouseListener

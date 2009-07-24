@@ -28,7 +28,9 @@ import java.beans.PropertyEditor;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -48,11 +50,11 @@ import com.bbn.openmap.util.PropUtils;
  * Class to inspect a PropertyConsumer. Used by the LayerAddPanel class to
  * interactively configure a Layer object before it gets added to the map. This
  * class should suffice to "inspect" any PropertyConsumer on a very basic level,
- * handling is more convinient if property editor classes are available. The
+ * handling is more convenient if property editor classes are available. The
  * behavior of the Inspector is configured through properties; the
  * propertiesInfo object of a PropertyConsumer may contain a
  * initPropertiesProperty which determines which properties are to be shown and
- * in which order, in a space seperated list, i.e.
+ * in which order, in a space separated list, i.e.
  * 
  * <code>
  * initPropertiesProperty=class prettyName shapeFile
@@ -61,7 +63,7 @@ import com.bbn.openmap.util.PropUtils;
  * displayed, in alphabetical order.
  * 
  * For each property there may be a editorProperty entry giving a PropertyEditor
- * class to instanciate as an editor for the property, i.e. <code>
+ * class to instantiate as an editor for the property, i.e. <code>
  * shapeFile.editor=com.bbn.openmap.util.propertyEditor.FilePropertyEditor
  * </code>.
  */
@@ -443,11 +445,12 @@ public class Inspector implements ActionListener {
 					actionListener.actionPerformed(e);
 				}
 			} else {
-				Collection keys = props.keySet();
-				Iterator it = keys.iterator();
+				Set<Entry<Object, Object>> entrySet = props.entrySet();
+				Iterator<Entry<Object, Object>> it = entrySet.iterator();
 				while (it.hasNext()) {
-					String next = (String) it.next();
-					System.out.println(next + "=" + props.get(next));
+					Entry<Object, Object> next = it.next();
+					String val = (String) next.getValue();
+					System.out.println(val + "=" + next.getKey());
 				}
 			}
 

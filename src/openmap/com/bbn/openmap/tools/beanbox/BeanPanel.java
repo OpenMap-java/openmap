@@ -26,9 +26,9 @@ import java.io.*;
 import java.util.*;
 import java.net.*;
 
-import com.bbn.openmap.*;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.LayerHandler;
+import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.gui.OMToolComponent;
 import com.bbn.openmap.tools.dnd.DefaultTransferableObject;
 
@@ -104,7 +104,7 @@ import com.bbn.openmap.tools.dnd.DefaultTransferableObject;
  */
 public class BeanPanel extends OMToolComponent implements Serializable {
 
-    /** Default icon for representating a bean */
+    /** Default icon for representing a bean */
     public static ImageIcon defaultBeanIcon;
 
     static {

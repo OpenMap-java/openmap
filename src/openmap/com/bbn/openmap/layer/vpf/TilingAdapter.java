@@ -47,7 +47,7 @@ public interface TilingAdapter {
      * Get the primitive identifier in the alternate tile
      * 
      * @param l a row of the table this adapter was created for
-     * @return the primitve id in the alternate tile
+     * @return the primitive id in the alternate tile
      */
     public int getTilePrimId(List l);
 

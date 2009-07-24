@@ -43,7 +43,7 @@ public class ByteRasterLocation extends Location {
     public int SPACING = 0;
 
     /**
-     * Create a ByteRasterLocation at a latitude/longtude location.
+     * Create a ByteRasterLocation at a latitude/longitude location.
      * 
      * @param latitude latitide in decimal degrees
      * @param longitude longitude in decimal degrees.
@@ -208,7 +208,7 @@ public class ByteRasterLocation extends Location {
             if (location instanceof OMRasterObject) {
                 Point lp = ((OMRasterObject) location).getMapLocation();
                 // This location is the upper left location of the
-                // declutter matrix. The decutter matrix works from
+                // declutter matrix. The declutter matrix works from
                 // lower left to upper right.
                 if (lp != null) {
                     int locHeight = ((OMRasterObject) location).getHeight();

@@ -62,7 +62,7 @@ public class TileDirectory {
     }
 
     /**
-     * Contruct an untiled TileDirectory. Since this object does not
+     * Construct an untiled TileDirectory. Since this object does not
      * have valid boundaries, it is an error to call inRegion on it
      * 
      * @see #inRegion(float, float, float, float)

@@ -141,11 +141,11 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Set all the TerrainLayer properties from a proerties object
+     * Set all the TerrainLayer properties from a properties object
      * 
-     * @param prefix a string that gets set to indiviualize the
+     * @param prefix a string that gets set to individualize the
      *        properties to a specific layer.
-     * @param properties the proerties object
+     * @param properties the properties object
      */
     public void setProperties(String prefix, java.util.Properties properties) {
 
@@ -268,7 +268,7 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements
 
             // The LOS Height Adjuster
             JPanel centerHeightPanel = PaletteHelper.createPaletteJPanel("LOS Center Object Height");
-            JSlider centerHeightSlide = new JSlider(JSlider.HORIZONTAL, 0/* min */, 500/* max */, 0/* inital */);
+            JSlider centerHeightSlide = new JSlider(JSlider.HORIZONTAL, 0/* min */, 500/* max */, 0/* initial */);
             java.util.Hashtable dict = new java.util.Hashtable();
             dict.put(new Integer(0), new JLabel("0 ft"));
             dict.put(new Integer(500), new JLabel("500 ft"));

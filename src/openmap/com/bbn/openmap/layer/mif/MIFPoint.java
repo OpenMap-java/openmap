@@ -63,7 +63,7 @@ public class MIFPoint extends OMPoint implements MIFGraphic,
 
     /**
      * sets the scale at which the graphic becomes visible, if set to
-     * -1 the graphic is viaible at all scale levels.
+     * -1 the graphic is visible at all scale levels.
      * 
      * @param visibleScale
      */
@@ -78,7 +78,7 @@ public class MIFPoint extends OMPoint implements MIFGraphic,
     /**
      * Overriden from OMPoint so that we can handle a flag
      * <code>renderPoint</code> to signal to the render method if
-     * the scale is appropiate to render the point or not.
+     * the scale is appropriate to render the point or not.
      */
     public synchronized boolean generate(Projection proj) {
         if ((proj.getScale() <= getVisibleScale()) || (getVisibleScale() == -1)) {

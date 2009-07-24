@@ -150,10 +150,7 @@ public class ESRIPolygonRecord extends ESRIRecord {
         int numParts = polygons.length;
         ESRIPoly oldPolys[] = polygons;
         polygons = new ESRIPoly[numParts + 1];
-        for (int i = 0; i < numParts; i++) {
-            polygons[i] = oldPolys[i];
-        }
-
+        System.arraycopy(oldPolys, 0, polygons, 0, numParts);
         polygons[numParts] = newPoly;
 
         int len = radians.length;

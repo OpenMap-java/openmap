@@ -65,7 +65,7 @@ public class MIFText extends OMText implements MIFGraphic, java.io.Serializable 
 
     /**
      * Sets the scale at which the graphic becomes visible, if set to
-     * -1 the graphic is viaible at all scale levels.
+     * -1 the graphic is visible at all scale levels.
      * 
      * @param visibleScale
      */
@@ -80,7 +80,7 @@ public class MIFText extends OMText implements MIFGraphic, java.io.Serializable 
     /**
      * Overriden from OMText so that we can handle a flag
      * <code>renderText</code> to signal to the render method if the
-     * scale is appropiate to render the text or not.
+     * scale is appropriate to render the text or not.
      */
     public synchronized boolean generate(Projection proj) {
         if ((proj.getScale() <= getVisibleScale()) || (getVisibleScale() == -1)) {

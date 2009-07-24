@@ -266,7 +266,7 @@ public class HelloWorld extends JFrame {
                 if (obj instanceof Layer) {
                     Layer l = (Layer) obj;
                     // All layers have a setProperties method, and
-                    // should intialize themselves with proper
+                    // should initialize themselves with proper
                     // settings here. If a property is not set, a
                     // default should be used, or a big, graceful
                     // complaint should be issued.

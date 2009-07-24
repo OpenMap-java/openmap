@@ -131,7 +131,7 @@ public class ImageServer implements
     public static final String OpenMapPrefix = "openmap.";
 
     /**
-     * Property for the image formatter list of available formats. This propery
+     * Property for the image formatter list of available formats. This property
      * should contain a space separated list of marker names.
      */
     public static final String ImageFormattersProperty = "formatters";

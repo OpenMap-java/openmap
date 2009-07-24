@@ -391,7 +391,7 @@ public class RpfCacheHandler {
     /**
      * Resets the indicators in the subframe cache, so that none of the current
      * contents will be used - they'll have to be loaded with data first. The
-     * cache mananagement is also set for the current main RpfCoverageBox.
+     * cache management is also set for the current main RpfCoverageBox.
      */
     protected void resetSubframeIndex(int vertFrames, int horizFrames) {
 
@@ -465,7 +465,7 @@ public class RpfCacheHandler {
 
                     subframeCacheSize = i;
                     if (DEBUG_RPF) {
-                        Debug.output("RpfCacheHandler: reseting cache size to "
+                        Debug.output("RpfCacheHandler: resetting cache size to "
                                 + subframeCacheSize);
                     }
                     initCache(true);

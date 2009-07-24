@@ -77,7 +77,7 @@ public class RecordSet {
      * queryString is not null, the database is fed the query
      * statement. The result is, hopefully, that the rset (ResultSet)
      * will be full of responses. The caller should then call next()
-     * to interate through the results and fetch the data.
+     * to iterate through the results and fetch the data.
      * 
      * @exception throws SQLException if something goes wrong with the
      *            query.

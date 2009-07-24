@@ -23,7 +23,7 @@
 package com.bbn.openmap.io;
 
 /**
- * An invalid character occured on in input stream.
+ * An invalid character occurred on in input stream.
  */
 public class InvalidCharException extends FormatException {
 

@@ -353,7 +353,7 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
                     + " graphics");
 
             // Don't forget to project them. Since they are only
-            // being recalled if the projection hase changed, then we
+            // being recalled if the projection has changed, then we
             // need to force a reprojection of all of them because the
             // screen position has changed.
             omGraphicList.project(projection, true);

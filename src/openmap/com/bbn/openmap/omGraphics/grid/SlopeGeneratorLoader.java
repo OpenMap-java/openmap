@@ -59,7 +59,7 @@ public class SlopeGeneratorLoader extends ColorGeneratorLoader {
         JPanel panel = new JPanel();
         // The DTED Contrast Adjuster
         JPanel contrastPanel = PaletteHelper.createPaletteJPanel("Contrast Adjustment");
-        JSlider contrastSlide = new JSlider(JSlider.HORIZONTAL, 1/* min */, 10/* max */, getContrast()/* inital */);
+        JSlider contrastSlide = new JSlider(JSlider.HORIZONTAL, 1/* min */, 10/* max */, getContrast()/* initial */);
         java.util.Hashtable dict = new java.util.Hashtable();
         dict.put(new Integer(1), new JLabel("min"));
         dict.put(new Integer(10), new JLabel("max"));

@@ -33,13 +33,13 @@ public class Document implements ContainerElement {
     /** the body of the document */
     protected ListElement body;
 
-    /** Constuct a document with no title and an empty body */
+    /** Construct a document with no title and an empty body */
     public Document() {
         body = new ListElement();
     }
 
     /**
-     * Constuct a document with a title but an empty body
+     * Construct a document with a title but an empty body
      * 
      * @param title the title of the document
      */
@@ -88,7 +88,7 @@ public class Document implements ContainerElement {
      * Write the header to the output
      * 
      * @param out the Writer to dump output to
-     * @exception java.io.IOException an IO error occured accessing
+     * @exception java.io.IOException an IO error occurred accessing
      *            out
      */
     public void generateHeader(Writer out) throws java.io.IOException {

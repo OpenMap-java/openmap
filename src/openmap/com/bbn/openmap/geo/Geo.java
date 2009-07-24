@@ -299,7 +299,7 @@ public class Geo {
     }
 
     /**
-     * Reader for y in internal axis reprensentation (positive into screen).
+     * Reader for y in internal axis representation (positive into screen).
      * 
      * @return
      */
@@ -395,7 +395,7 @@ public class Geo {
         return ret;
     }
 
-    /** Eqvivalent to this.cross(b).length(). */
+    /** Equivalent to this.cross(b).length(). */
     public double crossLength(Geo b) {
         double x = this.y() * b.z() - this.z() * b.y();
         double y = this.z() * b.x() - this.x() * b.z();
@@ -403,13 +403,13 @@ public class Geo {
         return Math.sqrt(x * x + y * y + z * z);
     }
 
-    /** Eqvivalent to <code>this.cross(b).normalize()</code>. */
+    /** Equivalent to <code>this.cross(b).normalize()</code>. */
     public Geo crossNormalize(Geo b) {
         return crossNormalize(b, new Geo());
     }
 
     /**
-     * Eqvivalent to <code>this.cross(b).normalize()</code>.
+     * Equivalent to <code>this.cross(b).normalize()</code>.
      * 
      * @return ret Do not pass in a null value.
      */
@@ -424,7 +424,7 @@ public class Geo {
     }
 
     /**
-     * Eqvivalent to <code>this.cross(b).normalize()</code>.
+     * Equivalent to <code>this.cross(b).normalize()</code>.
      * 
      * @return ret Do not pass in a null value.
      */
@@ -1173,9 +1173,7 @@ public class Geo {
             return lla;
         } else {
             float[] llx = new float[l + 2];
-            for (int i = 0; i < l; i++) {
-                llx[i] = lla[i];
-            }
+            System.arraycopy(lla, 0, llx, 0, l);
             llx[l] = lla[0];
             llx[l + 1] = lla[1];
             return llx;

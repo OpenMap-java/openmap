@@ -156,7 +156,7 @@ public class OMColor extends Color {
      * Get the ARGB (alpha, red, green and blue) value representing
      * the color in the default RGB ColorModel. The alpha, red, green,
      * and blue components of the color are each scaled to be a value
-     * between 0 (abscence of the color) and 255 (complete
+     * between 0 (absence of the color) and 255 (complete
      * saturation). Bits 24-31 of the returned integer are the alpha
      * value, bits 16-23 are the red value, bit 8-15 are the green
      * value, and bits 0-7 are the blue value.
@@ -272,7 +272,7 @@ public class OMColor extends Color {
      * to a percentage value between 0.0 and 1.0.
      * 
      * @param colorValue the RGB value of a color to be changed.
-     * @param transValue the percentange of opaqueness (0-1) of the
+     * @param transValue the percentage of opaqueness (0-1) of the
      *        return value. 0 is transparent, 1 is opaque.
      * @return the integer color value with the transparency value.
      */

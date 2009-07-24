@@ -67,7 +67,7 @@ import com.bbn.openmap.util.cacheHandler.CacheHandler;
  * and creates a OMGraphicList with the new image frames and attribute text.
  * <P>
  * 
- * The RpfLayer gets its intial settings from properties. This should be done
+ * The RpfLayer gets its initial settings from properties. This should be done
  * right after the RpfLayer is created. The properties list contains the
  * location of the RPF directories, the opaqueness of the images, the number of
  * colors to use, and whether to show the images and/or attributes by default.
@@ -278,7 +278,7 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
      * PropertyConsumer method, to fill in a Properties object, reflecting the
      * current values of the layer. If the layer has a propertyPrefix set, the
      * property keys should have that prefix plus a separating '.' prepended to
-     * each propery key it uses for configuration.
+     * each property key it uses for configuration.
      * 
      * @param props a Properties object to load the PropertyConsumer properties
      *        into. If props equals null, then a new Properties object should be
@@ -707,7 +707,7 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
             }
 
             // Don't forget to project them. Since they are only
-            // being recalled if the projection hase changed, then we
+            // being recalled if the projection has changed, then we
             // need to force a reprojection of all of them because the
             // screen position has changed.
             omGraphicList.project(projection, true);

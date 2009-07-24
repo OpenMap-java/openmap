@@ -42,7 +42,7 @@ import com.bbn.openmap.util.Debug;
 
 /**
  * This subclass of ETOPOLayer reads data from jar files and * interpolates
- * elevations to provide more smoothe color transitions using * low resolution
+ * elevations to provide more smooth color transitions using * low resolution
  * data.
  */
 public class ETOPOJarLayer extends ETOPOLayer {
@@ -159,7 +159,7 @@ public class ETOPOJarLayer extends ETOPOLayer {
 
 	/*
 	 * Builds the raster image that has the dimensions of the current
-	 * projection. The alogorithm is is follows:
+	 * projection. The algorithm is is follows:
 	 * 
 	 * allocate storage the size of the projection (use ints for RGBA)
 	 * 

@@ -42,7 +42,7 @@ import com.bbn.openmap.util.Debug;
  * A Location is a place. It can be thought of as a lat/lon place,
  * with or without an pixel offset, or a place on the screen. A
  * location is basically thought of as having a name, which get
- * represented as a label, and some graphical represenation. It is
+ * represented as a label, and some graphical representation. It is
  * abstract because it doesn't really know what kind of markers or
  * labels are being used or how they are being positioned around the
  * particular point. Therefore, it should be extended, and the
@@ -115,7 +115,7 @@ public abstract class Location extends OMGraphicAdapter {
      */
     public final static int DEFAULT_SPACING = 6;
     /**
-     * The pixel limit where the delcutter matrix won't draw the name,
+     * The pixel limit where the declutter matrix won't draw the name,
      * if it can't put the name at least this close to the original
      * place. DECLUTTER_LOCALLY keeps the limit to twice the height of
      * the label. DECLUTTER_ANYWHERE will place the thing anywhere it
@@ -131,7 +131,7 @@ public abstract class Location extends OMGraphicAdapter {
     protected int horizontalLabelBuffer = 0;
 
     /**
-     * A plain contructor if you are planning on setting everything
+     * A plain constructor if you are planning on setting everything
      * yourself.
      */
     public Location() {}
@@ -521,7 +521,7 @@ public abstract class Location extends OMGraphicAdapter {
     /**
      * Set the pixel distance that us used by the declutter matrix in
      * trying to find a place for the label. If it can't find a place
-     * within this pixel limit, it woun't draw it.
+     * within this pixel limit, it wouldn't draw it.
      */
     public void setDeclutterLimit(int value) {
         if (value < 0 && value != DECLUTTER_LOCALLY) {
@@ -706,9 +706,9 @@ public abstract class Location extends OMGraphicAdapter {
             Debug.output("\nLocation::RepositionText => " + label.getData());
         }
 
-        // Right now, I think this method takes some presumptutous
+        // Right now, I think this method takes some presumptuous
         // actions, assuming that you want the graphics to take up
-        // space in the declutter mattrix. We might want to delete
+        // space in the declutter matrix. We might want to delete
         // this showLocation code, and let people create their own
         // location subclasses that define how the graphic should be
         // handled in the declutter matrix.
@@ -722,7 +722,7 @@ public abstract class Location extends OMGraphicAdapter {
         //          if (location instanceof OMRasterObject) {
         //              lp = ((OMRasterObject)location).getMapLocation();
         //              // This location is the upper left location of the
-        //              // declutter matrix. The decutter matrix works from
+        //              // declutter matrix. The declutter matrix works from
         //              // lower left to upper right.
         //              if (lp != null) {
         //                  int locHeight = ((OMRasterObject)location).getHeight();
@@ -783,7 +783,7 @@ public abstract class Location extends OMGraphicAdapter {
     }
 
     /**
-     * A simple conversion method for the common String represention
+     * A simple conversion method for the common String representation
      * of decimal degree coordinates, which is a letter denoting the
      * globle hemisphere (N or S for latitudes, W or E for longitudes,
      * and then a number string. For latitudes, the first two numbers

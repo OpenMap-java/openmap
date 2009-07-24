@@ -36,7 +36,7 @@ import javax.swing.Box;
 public class BasicLocationHandler implements LocationHandler, ActionListener {
     /** The parent layer. */
     protected LocationLayer layer;
-    /** PropertyConsumer propery prefix. */
+    /** PropertyConsumer property prefix. */
     protected String propertyPrefix = null;
 
     /**
@@ -172,7 +172,7 @@ public class BasicLocationHandler implements LocationHandler, ActionListener {
      * PropertyConsumer method, to fill in a Properties object,
      * reflecting the current values of the layer. If the layer has a
      * propertyPrefix set, the property keys should have that prefix
-     * plus a separating '.' prepended to each propery key it uses for
+     * plus a separating '.' prepended to each property key it uses for
      * configuration. This method takes care of the basic
      * LocationHandler parameters, so any LocationHandlers that extend
      * the AbstractLocationHandler should call this method, too,

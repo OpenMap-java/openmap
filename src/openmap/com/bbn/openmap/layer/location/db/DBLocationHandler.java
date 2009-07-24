@@ -106,13 +106,13 @@ public class DBLocationHandler extends AbstractLocationHandler implements
     public static final String jdbcStringProperty = "jdbcString";
     /**
      * This String would be used to load the driver. If this string is
-     * null, jdbc Connection Manager would try to load the approriate
+     * null, jdbc Connection Manager would try to load the appropriate
      * driver.
      */
     protected String jdbcDriver = null;
     /** Property to specify jdbc driver to loaded. */
     public static final String jdbcDriverProperty = "jdbcDriver";
-    /** User name to be used for connecing to DB. */
+    /** User name to be used for connecting to DB. */
     protected String userName = null;
     /** Password to be used with for connecting to DB. */
     protected String userPassword = null;
@@ -171,7 +171,7 @@ public class DBLocationHandler extends AbstractLocationHandler implements
      * PropertyConsumer method, to fill in a Properties object,
      * reflecting the current values of the layer. If the layer has a
      * propertyPrefix set, the property keys should have that prefix
-     * plus a separating '.' prepended to each propery key it uses for
+     * plus a separating '.' prepended to each property key it uses for
      * configuration.
      * 
      * @param props a Properties object to load the PropertyConsumer

@@ -266,7 +266,7 @@ public class PropUtils {
      * It seems like every PropertyConsumer wrestles with having a prefix or
      * not. This method lets you just get the prefix with a period on the end
      * (for scoping purposes), or just returns an empty String. Either way, you
-     * get a String you can slap on the beginning of your defined propery names
+     * get a String you can slap on the beginning of your defined property names
      * to get a valid property based on what the prefix is.
      */
     public static String getScopedPropertyPrefix(PropertyConsumer pc) {
@@ -468,7 +468,7 @@ public class PropUtils {
         boolean ret = defaultValue;
         String booleanString = p.getProperty(propName);
         if (booleanString != null) {
-            ret = booleanString.trim().toLowerCase().equals("true");
+            ret = booleanString.trim().equalsIgnoreCase("true");
         }
 
         return ret;
@@ -598,6 +598,26 @@ public class PropUtils {
     /**
      * Take a string from a properties file, representing the 24bit RGB or 32bit
      * ARGB hex values for a color, and convert it to a java.awt.Color.
+     *
+     * @param p properties
+     * @param propName the name of the property
+     * @param dfault color to use if the property value doesn't work
+     * @param forceAlpha force using alpha value
+     * @return java.awt.Color
+     * @exception NumberFormatException if the specified string cannot be
+     *            interpreted as a hexidecimal integer
+     * @see ColorFactory#parseColorFromProperties(Properties, String, String,
+     *      boolean)
+     */
+    public static Color parseColorFromProperties(Properties p, String propName,
+                                                 String dfault, boolean forceAlpha)
+            throws NumberFormatException {
+        return ColorFactory.parseColorFromProperties(p, propName, dfault, forceAlpha);
+    }
+
+    /**
+     * Take a string from a properties file, representing the 24bit RGB or 32bit
+     * ARGB hex values for a color, and convert it to a java.awt.Color.
      * 
      * @param p properties
      * @param propName the name of the property
@@ -609,6 +629,27 @@ public class PropUtils {
     public static Paint parseColorFromProperties(Properties p, String propName,
                                                  Paint dfault) {
         return ColorFactory.parseColorFromProperties(p, propName, dfault);
+    }
+
+    /**
+     * Convert a string representing a 24/32bit hex color value into a Color
+     * value. NOTE:
+     * <ul>
+     * <li>Only 24bit (RGB) java.awt.Color is supported on the JDK 1.1 platform.
+     * <li>Both 24/32bit (ARGB) java.awt.Color is supported on the Java 2
+     * platform.
+     * </ul>
+     *
+     * @param colorString the 24/32bit hex string value (ARGB)
+     * @param forceAlpha force using alpha value
+     * @return java.awt.Color (24bit RGB on JDK 1.1, 24/32bit ARGB on JDK1.2)
+     * @exception NumberFormatException if the specified string cannot be
+     *            interpreted as a hexidecimal integer
+     * @see ColorFactory#parseColor(String, boolean)
+     */
+    public static Color parseColor(String colorString, boolean forceAlpha)
+            throws NumberFormatException {
+        return ColorFactory.parseColor(colorString, forceAlpha);
     }
 
     /**

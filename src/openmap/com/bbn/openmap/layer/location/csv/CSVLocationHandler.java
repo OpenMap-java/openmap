@@ -119,7 +119,7 @@ import com.bbn.openmap.util.quadtree.QuadTree;
  *      csvlocationhandler.location.fillColor=FFaaaaaa
  *      csvlocationhandler.location.pointRadius=3
  *      csvlocationhandler.location.pointOval=true
- *      # The old nameColor and locationColor properties will still work, and will take precidence over these DrawingAttribtues properties.
+ *      # The old nameColor and locationColor properties will still work, and will take precedence over these DrawingAttribtues properties.
  * 
  * </pre>
  */
@@ -183,7 +183,7 @@ public class CSVLocationHandler extends AbstractLocationHandler implements
 
     /** Index of column in CSV to use as latitude of location. */
     protected int latIndex = -1;
-    /** Index of column in CSV to use as logitude of location. */
+    /** Index of column in CSV to use as longitude of location. */
     protected int lonIndex = -1;
     /** Index of column in CSV to use as URL of the icon. */
     protected int iconIndex = -1;
@@ -225,7 +225,7 @@ public class CSVLocationHandler extends AbstractLocationHandler implements
                 + eastIsNegProperty, false);
         defaultIconURL = properties
                 .getProperty(prefix + DefaultIconURLProperty);
-        if (defaultIconURL != null && defaultIconURL.trim() == "") {
+        if (defaultIconURL != null && defaultIconURL.trim().length() == 0) {
             // If it's empty, it should be null, otherwise it causes
             // confusion later when the empty string can't be
             // interpreted as a valid URL to an image file.
@@ -247,7 +247,7 @@ public class CSVLocationHandler extends AbstractLocationHandler implements
      * PropertyConsumer method, to fill in a Properties object, reflecting the
      * current values of the layer. If the layer has a propertyPrefix set, the
      * property keys should have that prefix plus a separating '.' prepended to
-     * each propery key it uses for configuration.
+     * each property key it uses for configuration.
      * 
      * @param props
      *            a Properties object to load the PropertyConsumer properties
@@ -514,7 +514,7 @@ public class CSVLocationHandler extends AbstractLocationHandler implements
 
     /**
      * @param ranFile
-     *            the file to be read. The file pointer shoutd be set to the
+     *            the file to be read. The file pointer should be set to the
      *            line you want read.
      * @return Array of strings representing the values between the commas.
      */

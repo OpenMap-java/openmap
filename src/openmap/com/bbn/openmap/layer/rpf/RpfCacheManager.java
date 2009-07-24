@@ -376,7 +376,7 @@ public class RpfCacheManager implements Serializable {
 
     /**
      * Creates the OMGraphicList by cycling through the caches,
-     * getting the images and attribute infomation.
+     * getting the images and attribute information.
      */
     protected OMGraphic getSubframes() {
 

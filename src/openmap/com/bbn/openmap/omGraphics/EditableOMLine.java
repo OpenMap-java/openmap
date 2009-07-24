@@ -44,7 +44,7 @@ public class EditableOMLine extends EditableOMAbstractLine implements
     protected GrabPoint gp1;
     protected GrabPoint gp2;
     protected OffsetGrabPoint gpo; // offset
-    protected OffsetGrabPoint gpm; // for grabing the line and moving
+    protected OffsetGrabPoint gpm; // for grabbing the line and moving
     // it.
 
     protected OMLine line;
@@ -82,7 +82,7 @@ public class EditableOMLine extends EditableOMAbstractLine implements
 
     /**
      * Create and initialize the state machine that interprets the modifying
-     * gestures/commands, as well as ititialize the grab points. Also allocates
+     * gestures/commands, as well as initialize the grab points. Also allocates
      * the grab point array needed by the EditableOMLine.
      */
     public void init() {
@@ -227,7 +227,7 @@ public class EditableOMLine extends EditableOMAbstractLine implements
 
                 // Complicated lines!!!! Need to grab the end points
                 // that are on the map! See, for very large lines
-                // that go around the earth, they are acutally drawn
+                // that go around the earth, they are actually drawn
                 // in OpenMap as an array of lines that are clipped as
                 // they go offscreen. Eventually, one of the points
                 // should appear on the map somewhere. If they don't,
@@ -395,7 +395,7 @@ public class EditableOMLine extends EditableOMAbstractLine implements
         if (gpo != null) {
             gpo.generate(proj);
             gpo.updateOffsets();
-        };
+        }
         return true;
     }
 

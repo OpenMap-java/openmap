@@ -24,7 +24,7 @@ package com.bbn.openmap.layer.link;
 
 /**
  * The LinkGraphicConstants is an interface that defines the constants
- * associated with link graphic objects. These contants are defined in
+ * associated with link graphic objects. These constants are defined in
  * the Link Protocol.
  */
 public interface LinkGraphicConstants {

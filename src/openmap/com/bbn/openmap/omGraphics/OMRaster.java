@@ -111,7 +111,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
     protected int transparent = 255;
 
     /**
-     * Constuct a blank OMRaster, to be filled in with setX calls.
+     * Construct a blank OMRaster, to be filled in with setX calls.
      */
     public OMRaster() {
         super(RENDERTYPE_UNKNOWN, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
@@ -303,7 +303,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
 
     /**
      * Lat/Lon placement with a indexed colormodel, which is using a
-     * colortable and a byte array to contruct the int[] pixels.
+     * colortable and a byte array to construct the int[] pixels.
      * 
      * @param lt latitude of the top of the image.
      * @param ln longitude of the left side of the image.
@@ -340,7 +340,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
 
     /**
      * XY placement with a indexed colormodel, which is using a
-     * colortable and a byte array to contruct the int[] pixels.
+     * colortable and a byte array to construct the int[] pixels.
      * 
      * @param x1 window location of the left side of the image.
      * @param y1 window location of the top of the image.
@@ -462,7 +462,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
     }
 
     /**
-     * Get the image pixel value at a locaiton.
+     * Get the image pixel value at a location.
      * 
      * @param x Horizontal location of pixel from left.
      * @param y Vertical location of pixel from top.

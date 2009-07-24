@@ -200,8 +200,8 @@ public interface OMGraphicConstants {
     /**
      * A string that can be used for a keyword into the OMGraphic attribute
      * hashtable. If the value exists and is false it means graphic change
-     * appereance can't be changed (there won't be menu item "Change
-     * appereance")
+     * appearance can't be changed (there won't be menu item "Change
+     * appearance")
      */
     public static final String CHANGE_APPEARANCE = "ChangeAppearance";
 }

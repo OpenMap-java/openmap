@@ -218,7 +218,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * @param id the calling object's info delegator.
      * @param units the unit of distance that will be displayed, such as
      *        Length.NM, Length.KM or Length.MILE. If null, display all of them.
-     * @param lType the line type that will be dispalyed such as
+     * @param lType the line type that will be displayed such as
      *        LINETYPE_GREATCIRCLE, LINETYPE_RHUMB, LINETYPE_STRAIGHT
      */
     public DistanceMouseMode(boolean consumeEvents, InformationDelegator id,

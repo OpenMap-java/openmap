@@ -401,7 +401,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
     /**
      * This method is intended to allow embedded OMGraphicLists to be handled.
      * The record should be set if the list is an embedded list, reusing a
-     * record from the top level interation. Set the record to null at the top
+     * record from the top level iteration. Set the record to null at the top
      * level iteration to cause the method to fetch the record from the
      * masterDBF, if it exists.
      * 
@@ -421,7 +421,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
     /**
      * This method is intended to allow embedded OMGraphicLists to be handled.
      * The record should be set if the list is an embedded list, reusing a
-     * record from the top level interation. Set the record to null at the top
+     * record from the top level iteration. Set the record to null at the top
      * level iteration to cause the method to fetch the record from the
      * masterDBF, if it exists. If the list is an EsriGraphicList, then the
      * export for EsriGraphicLists will be called. The DbfTableModel for the

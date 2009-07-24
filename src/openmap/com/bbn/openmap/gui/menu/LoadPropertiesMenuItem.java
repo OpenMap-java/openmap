@@ -109,10 +109,10 @@ public class LoadPropertiesMenuItem extends MapHandlerMenuItem implements
 
             if (id != null) {
                 id.displayMessage("Error loading file...",
-                        "Error occured loading " + file.getAbsolutePath()
+                        "Error occurred loading " + file.getAbsolutePath()
                                 + "\n" + ioe.getMessage());
             }
-            Debug.error("Error occured loading " + file.getAbsolutePath());
+            Debug.error("Error occurred loading " + file.getAbsolutePath());
         }
     }
 }

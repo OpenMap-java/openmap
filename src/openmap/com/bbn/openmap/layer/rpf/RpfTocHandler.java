@@ -64,7 +64,7 @@ import com.bbn.openmap.util.Debug;
  * downloading quirks, the paths and file names, as stored on the hard drive,
  * are actually transferred to lower-case letters. This RpfTocHandler will check
  * for lower case letter paths, but only for all the letters to be lower case.
- * The frame will be marked as non-existant if some of the directories or
+ * The frame will be marked as non-existent if some of the directories or
  * filenames have be transformed to uppercase.
  */
 public class RpfTocHandler {
@@ -1157,9 +1157,7 @@ public class RpfTocHandler {
             }
         }
         char[] returnZones = new char[size];
-        for (int j = 0; j < size; j++) {
-            returnZones[j] = okZones[j];
-        }
+        System.arraycopy(okZones, 0, returnZones, 0, size);
         return returnZones;
     }
 
@@ -1273,7 +1271,7 @@ public class RpfTocHandler {
 
         RpfTocHandler toc = new RpfTocHandler();
         if (!toc.loadFile(args[0]))
-            Debug.output("RpfTocHandler: NOT read sucessfully!");
+            Debug.output("RpfTocHandler: NOT read successfully!");
         else {
             RpfTocEntry[] e = toc.getEntries();
             Debug.output("For A.TOC: " + args[0]);

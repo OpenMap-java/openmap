@@ -41,7 +41,7 @@ import com.bbn.openmap.util.Debug;
  * BufferedImage. It will check to see if the Java Advanced Image
  * package is available and use it if it can.
  * 
- * @author dietrick - original implemenation and reflection mods.
+ * @author dietrick - original implementation and reflection mods.
  * @author Fredrik Lyden - JAI inspiration and initial code.
  */
 public class BufferedImageHelper {

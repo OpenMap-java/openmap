@@ -32,7 +32,7 @@ import com.bbn.openmap.*;
 /**
  * This class provides MenuItems that get added under HelpMenu. This
  * object needs an instance of InformationDelegator, which can be set
- * programatically. If this objects environment is capable of
+ * programmatically. If this objects environment is capable of
  * providing BeanContextServices, it will look for
  * InformationDelegator as a service.
  */

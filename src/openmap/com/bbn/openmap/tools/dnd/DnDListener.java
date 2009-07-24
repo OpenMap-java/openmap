@@ -23,7 +23,6 @@ package com.bbn.openmap.tools.dnd;
 
 import java.awt.*;
 import java.awt.dnd.*;
-import java.awt.Component;
 import java.util.Hashtable;
 import com.bbn.openmap.util.Debug;
 

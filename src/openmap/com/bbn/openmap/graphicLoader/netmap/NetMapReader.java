@@ -48,7 +48,7 @@ import com.bbn.openmap.util.Debug;
  * NetMapEventListener is free to peruse the Properties object in the
  * event, and get information it needs from each one by asking for
  * specific field values. Some fields may not be present in all
- * Properties objects, but the fields should be consistant for the
+ * Properties objects, but the fields should be consistent for the
  * same event type. At some point, we'll include a description of the
  * events and the fields that can be expected.
  * 
@@ -57,7 +57,7 @@ import com.bbn.openmap.util.Debug;
  * get a list of possible views. The NetMapReader will disconnect
  * itself after that request. Second, you can create a NetMapReader
  * with a specific view (or set the view later), and then call start()
- * on it to begin receivng events about that view. Call disconnect()
+ * on it to begin receiving events about that view. Call disconnect()
  * when you want it to stop.
  * <P>
  */
@@ -244,7 +244,6 @@ public class NetMapReader extends Thread implements NetMapConstants {
      */
     public void shutdown() {
         this.shutdown = true;
-        return;
     }
 
     /**
@@ -265,7 +264,7 @@ public class NetMapReader extends Thread implements NetMapConstants {
 
         while (!this.shutdown) {
             if (DEBUG)
-                Debug.output("NetMapReader attemping connection");
+                Debug.output("NetMapReader attempting connection");
 
             try {
                 tdin = new BufferedReader(new InputStreamReader(s.getInputStream()));
@@ -468,7 +467,7 @@ public class NetMapReader extends Thread implements NetMapConstants {
     /**
      * Given a line, break it up into a Vector representing the String
      * parts, and the int[] containing the number parts. The Vector
-     * will contain String represenations of the numbers. Should be
+     * will contain String representations of the numbers. Should be
      * called before procline() is called, and in fact is called from
      * within procline().
      */

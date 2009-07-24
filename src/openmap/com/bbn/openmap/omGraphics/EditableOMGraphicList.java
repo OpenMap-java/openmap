@@ -38,7 +38,7 @@ import com.bbn.openmap.util.Debug;
 public class EditableOMGraphicList extends EditableOMGraphic {
 
     /**
-     * For grabing the list objects and moving them.
+     * For grabbing the list objects and moving them.
      */
     protected OffsetGrabPoint gpm;
 
@@ -79,7 +79,7 @@ public class EditableOMGraphicList extends EditableOMGraphic {
 
     /**
      * Create and initialize the state machine that interprets the
-     * modifying gestures/commands, as well as ititialize the grab
+     * modifying gestures/commands, as well as initialize the grab
      * points. Also allocates the grab point array needed by the
      * EditableOMGraphicList.
      */

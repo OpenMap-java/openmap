@@ -51,7 +51,7 @@ import com.bbn.openmap.util.Debug;
  * 
  * The BasicGeometry can hold attributes. Traditionally, there has been an
  * appObject (Application Object) that could be set in the OMGeometry/OMGraphic
- * to maintain a pointer for additional infomration about the shape. This has
+ * to maintain a pointer for additional information about the shape. This has
  * been modified so that an attribute Map can be maintained for the
  * BasicGeometry to let it hold on to a bunch of organized attributes. To
  * maintain backward compatibility, the setAppObject() and getAppObject()
@@ -257,7 +257,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
     }
 
     /**
-     * A call used by the BasicGeometry to replace a current appication object
+     * A call used by the BasicGeometry to replace a current application object
      * with an Object Map while also adding that application object to the Map
      * under the APP_OBJECT_KEY key value.
      */
@@ -642,7 +642,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * wrapped around it. If you have other queries for the internal Shape
      * object, just ask for it and then ask it directly. This method is provided
      * because it is the most useful, used when determining if a mouse event is
-     * occuring over an object on the map.
+     * occurring over an object on the map.
      * 
      * @param x X pixel coordinate of the point.
      * @param y Y pixel coordinate of the point.
@@ -823,8 +823,8 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * need to close the path yourself if you want it to be a polygon.
      * 
      * @param toShape the GeneralPath Shape object to add the coordinates to.
-     * @param xpoints horizontal pixel coordiantes.
-     * @param ypoints vertical pixel coordiantes.
+     * @param xpoints horizontal pixel coordinates.
+     * @param ypoints vertical pixel coordinates.
      * @return toShape, with coordinates appended.
      */
     public static GeneralPath appendShapeEdge(GeneralPath toShape,
@@ -837,8 +837,8 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * need to close the path yourself if you want it to be a polygon.
      * 
      * @param toShape the GeneralPath Shape object to add the coordinates to.
-     * @param xpoints horizontal pixel coordiantes.
-     * @param ypoints vertical pixel coordiantes.
+     * @param xpoints horizontal pixel coordinates.
+     * @param ypoints vertical pixel coordinates.
      * @param startIndex the index into pixel coordinate array to start reading
      *        from.
      * @param length the number of coordinates to add.

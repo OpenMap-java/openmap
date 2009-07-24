@@ -213,7 +213,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements ShapeConsta
     }
 
     /**
-     * Creates an empty EsriPlugIn, useable for adding features at run-time.
+     * Creates an empty EsriPlugIn, usable for adding features at run-time.
      * 
      * @param name
      *            The name of the layer

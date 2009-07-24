@@ -85,7 +85,7 @@ public class Mercator extends Cylindrical {
      * Called when some fundamental parameters change.
      * <p>
      * Each projection will decide how to respond to this change. For instance,
-     * they may need to recalculate "constant" paramters used in the forward()
+     * they may need to recalculate "constant" parameters used in the forward()
      * and inverse() calls.
      * <p>
      * 

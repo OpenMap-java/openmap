@@ -83,7 +83,7 @@ public class RawDataRecordSet {
                 + rawDataKeyColumnNameProperty));
     }
 
-    /** Returns a byte[] array if successfull, null otherwise */
+    /** Returns a byte[] array if successful, null otherwise */
     public byte[] getRawData(String lookUpKey) throws SQLException {
 
         byte[] foundit = (byte[]) byteCache.get(lookUpKey.toLowerCase()
@@ -107,7 +107,6 @@ public class RawDataRecordSet {
             int chunksize = 4096;
             byte barr[] = new byte[chunksize];
             int imagelength = 0;
-            ;
 
             try {
                 imagelength = dbis.read(barr);

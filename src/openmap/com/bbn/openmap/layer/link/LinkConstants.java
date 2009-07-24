@@ -26,7 +26,7 @@ package com.bbn.openmap.layer.link;
  * The LinkConstants object is an interface that describes all the
  * constants that relate directly to the Link object, and that are
  * defined by the Link Protocol. They are kept here in the
- * LinkContants interface to keep the Link object less cluttered.
+ * LinkConstants interface to keep the Link object less cluttered.
  */
 public interface LinkConstants {
     /** The value used for an unknown or invalid setting. */

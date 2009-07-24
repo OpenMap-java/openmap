@@ -31,14 +31,14 @@ public interface EqualArc extends Projection {
 
     /**
      * Returns the x pixel constant of the projection. This was
-     * calcuated when the projection was created. Represents the
+     * calculated when the projection was created. Represents the
      * number of pixels around the earth (360 degrees).
      */
     public double getXPixConstant();
 
     /**
      * Returns the y pixel constant of the projection. This was
-     * calcuated when the projection was created. Represents the
+     * calculated when the projection was created. Represents the
      * number of pixels from 0 to 90 degrees.
      */
     public double getYPixConstant();

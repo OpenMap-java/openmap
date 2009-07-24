@@ -238,7 +238,7 @@ public class RpfColortable {
             Debug.output("RpfColortable:  creating new colors for colortable.");
         }
 
-        // change this to the proper color structur
+        // change this to the proper color structure
         Color[] rgb = new Color[CADRG_COLORS]; /* DKS NEW: 216 */
         int i, j;
 
@@ -763,7 +763,7 @@ public class RpfColortable {
         Color[] colors = rfs.parseColorSection(binFile, tbl);
 
         if (colors == null)
-            Debug.output("RpfColortable: NOT read sucessfully!");
+            Debug.output("RpfColortable: NOT read successfully!");
 
     }
 }

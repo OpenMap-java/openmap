@@ -433,7 +433,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
         }
 
         /**
-         * Gets called when the NameFetcher sucessfully retrieves a name for the
+         * Gets called when the NameFetcher successfully retrieves a name for the
          * view.
          * 
          * @param name new name for the button.

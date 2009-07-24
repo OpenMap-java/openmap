@@ -60,7 +60,7 @@ public class ColorReducer {
         byte[] b = new byte[colors];
         byte[] a = new byte[colors];
 
-        // need to have full(256) size array to get rid of ugly rare erros msg
+        // need to have full(256) size array to get rid of ugly rare errors msg
         // from GIFImageWriter. We also need the *first* entry to be
         // transparent.
         Arrays.fill(r, (byte) OMColor.clear.getRed());

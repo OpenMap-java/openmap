@@ -56,7 +56,7 @@ public class DDFModule implements DDFConstants {
     protected DDFRecord poRecord;
 
     /**
-     * The constructor. Need to call open() if this constuctor is
+     * The constructor. Need to call open() if this constructor is
      * used.
      */
     public DDFModule() {
@@ -346,7 +346,7 @@ public class DDFModule implements DDFConstants {
      *         a read error, or end of file occurs. The returned
      *         record is owned by the module, and should not be
      *         deleted by the application. The record is only valid
-     *         untill the next ReadRecord() at which point it is
+     *         until the next ReadRecord() at which point it is
      *         overwritten.
      */
     public DDFRecord readRecord() {

@@ -119,7 +119,7 @@ public class BinaryBufferedFile extends BinaryFile {
     }
 
     /**
-     * Set the input reader used by the BinaryFile. Make sure it's intialized
+     * Set the input reader used by the BinaryFile. Make sure it's initialized
      * properly. Assumes that the pointer is at the beginning of the file.
      */
     public void setInputReader(InputReader reader) {
@@ -223,9 +223,9 @@ public class BinaryBufferedFile extends BinaryFile {
         }
     }
 
-    public long length() throws IOException {
-        return super.length();
-    }
+//    public long length() throws IOException {
+//        return super.length();
+//    }
 
     public long available() throws IOException {
         return (length() - firstbyteoffset - curptr);
@@ -236,7 +236,7 @@ public class BinaryBufferedFile extends BinaryFile {
      * class. Calling any other members after this one will return bogus
      * results.
      * 
-     * @exception IOException IO errors envountered in closing the file
+     * @exception IOException IO errors encountered in closing the file
      */
     public void dispose() throws IOException {
         buffer = null;

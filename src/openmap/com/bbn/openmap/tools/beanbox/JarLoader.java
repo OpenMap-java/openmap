@@ -198,7 +198,7 @@ public class JarLoader {
         Hashtable headersTable = new Hashtable();
         if (mf == null) {
             // Beans are only identified through a manifest entry.
-            // If we don't have a manfiest, the beans hashtable
+            // If we don't have a manifest, the beans hashtable
             // should remain empty.
             beans = new Hashtable();
         } else {

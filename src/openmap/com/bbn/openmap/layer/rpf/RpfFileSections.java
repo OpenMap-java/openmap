@@ -266,7 +266,7 @@ public class RpfFileSections {
 
     /**
      * This kicks back an array of OMColors, representing the
-     * colortable. By going through the RpfFileSections fuction, the
+     * colortable. By going through the RpfFileSections function, the
      * file locations for the color sections are taken care of, and
      * the RpfColortable.parseColorLookUpTable function is called
      * correctly.

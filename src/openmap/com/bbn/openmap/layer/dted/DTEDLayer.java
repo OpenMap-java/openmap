@@ -428,7 +428,7 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
                     + " graphics");
 
             // Don't forget to project them. Since they are only
-            // being recalled if the projection hase changed, then we
+            // being recalled if the projection has changed, then we
             // need to force a reprojection of all of them because the
             // screen position has changed.
             omGraphicList.project(projection, true);
@@ -791,7 +791,7 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
 
             // The DTED Band Height Adjuster
             JPanel bandPanel = PaletteHelper.createPaletteJPanel("Band Elevation Spacing");
-            JSlider bandSlide = new JSlider(JSlider.HORIZONTAL, 0/* min */, 1000/* max */, bandHeight/* inital */);
+            JSlider bandSlide = new JSlider(JSlider.HORIZONTAL, 0/* min */, 1000/* max */, bandHeight/* initial */);
             bandSlide.setLabelTable(bandSlide.createStandardLabels(250));
             bandSlide.setPaintLabels(true);
             bandSlide.setMajorTickSpacing(250);

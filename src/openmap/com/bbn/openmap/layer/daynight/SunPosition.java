@@ -246,7 +246,7 @@ public class SunPosition {
 
     /**
      * Given a date from a gregorian calendar, give back a julian
-     * date. From Duffet-Smith, chapter 4.
+     * date. From Duffett-Smith, chapter 4.
      * 
      * @param cal Gregorian calendar for requested date.
      * @return julian date of request.
@@ -312,7 +312,7 @@ public class SunPosition {
     /**
      * Given the number of milliseconds since the unix epoch, compute
      * position on the earth (lat, lon) such that sun is directly
-     * overhead. From Duffet-Smith, chapter 46-47.
+     * overhead. From Duffett-Smith, chapter 46-47.
      * 
      * @param mssue milliseconds since unix epoch
      * @return LatLonPoint of the point on the earth that is closest.
@@ -355,7 +355,7 @@ public class SunPosition {
     /**
      * Given the number of milliseconds since the unix epoch, compute
      * position on the earth (lat, lon) such that moon is directly
-     * overhead. From Duffet-Smith, chapter 65. Note: This is acting
+     * overhead. From Duffett-Smith, chapter 65. Note: This is acting
      * like it works, but I don't have anything to test it against. No
      * promises.
      * 

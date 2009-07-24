@@ -97,8 +97,8 @@ public class BasicLayer extends OMGraphicHandlerLayer {
          * list as an else clause to the (list == null) check above, and call
          * generate(Projection) on all the OMGraphics in the init() method below
          * as you create them. This will prevent the
-         * OMGraphicList.generate(Projection) call from making an addional loop
-         * through all of the OMGraphics before they are returned.
+         * OMGraphicList.generate(Projection) call from making an additional
+         * loop through all of the OMGraphics before they are returned.
          */
         list.generate(getProjection());
 

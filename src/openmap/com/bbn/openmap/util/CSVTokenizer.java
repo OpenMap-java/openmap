@@ -164,7 +164,7 @@ public class CSVTokenizer extends Tokenizer {
         // All delimiters are handled equally now. We used to not put back
         // commas and EOF because it was more efficient to just return, but now
         // we putback and catch them in the token() call, in order to better
-        // field empty fields, especially the ellusive comman newline combo.
+        // field empty fields, especially the ellusive common newline combo.
         if (c == ',' || c == -1 || c == '\n') {
             putback(c); // Wait for next token().
             return true;

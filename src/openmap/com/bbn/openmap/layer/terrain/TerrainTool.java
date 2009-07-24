@@ -27,7 +27,7 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.layer.util.stateMachine.State;
 
 /**
- * This is a interface that defines common functionality amoung tools
+ * This is a interface that defines common functionality among tools
  * (generators) used by the TerrainLayer.
  */
 public interface TerrainTool {

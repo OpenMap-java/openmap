@@ -213,7 +213,7 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
     }
 
     /**
-     * Assumes that the projection checks have occured, have passed, and just
+     * Assumes that the projection checks have occurred, have passed, and just
      * fetches the image tiles.
      */
     public OMGraphicList getTiledImages(Projection proj) throws IOException {
@@ -433,7 +433,7 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
      * @param dirPath path to the ASRP directory.
      * @param root name of all of the files, usually the same as the ASRP
      *        directory itself.
-     * @param DD the occurance number, usually '01' of the files.
+     * @param DD the occurrence number, usually '01' of the files.
      */
     protected void initialize(String dirPath, String root, String DD)
             throws IOException {
@@ -543,7 +543,7 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
          * Calls dispose() on the contained frame, to make it eligible for
          * garbage collection.
          */
-        public void finalize() {}
+        //protected void finalize() {}
     }
 
     /**

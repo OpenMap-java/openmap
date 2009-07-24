@@ -34,8 +34,8 @@ public interface PropertyConsumer {
     /**
      * Key in the associated propertyInfo object. Holds a list of
      * property names, which should be displayed and editable when
-     * configuring a PropertyConsumer object interatively. List is
-     * space seperated and the order is the order in which the
+     * configuring a PropertyConsumer object interactively. List is
+     * space separated and the order is the order in which the
      * properties will appear (initProperties).
      */
     public static final String initPropertiesProperty = "initProperties";

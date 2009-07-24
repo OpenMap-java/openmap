@@ -480,7 +480,7 @@ public class ComponentFactory {
      *            Properties prefix to use by the object to scope its
      *            properties.
      * @param properties
-     *            Properties to use to initalize the object, if the object is a
+     *            Properties to use to initialize the object, if the object is a
      *            PropertyConsumer.
      * @return object if all goes well, null if anything bad happens.
      */
@@ -497,7 +497,7 @@ public class ComponentFactory {
             }
 
             // Apparently, this fails in certain cases where OpenMap is being
-            // used as a plugin in a NetBeans or Eclise architecture and the
+            // used as a plugin in a NetBeans or Eclipse architecture and the
             // application classloader isn't aware of the plugins classes. It
             // limits the creation of the object to classes in the caller's
             // classloader.

@@ -47,7 +47,7 @@ public class URLRasterLocation extends Location {
     public URLRasterLocation() {}
     
     /**
-     * Create a ByteRasterLocation at a latitude/longtude location.
+     * Create a URLRasterLocation at a latitude/longitude location.
      * 
      * @param latitude latitide in decimal degrees
      * @param longitude longitude in decimal degrees.
@@ -68,7 +68,7 @@ public class URLRasterLocation extends Location {
     }
 
     /**
-     * Create a ByteRasterLocation at a latitude/longtude location.
+     * Create a URLRasterLocation at a latitude/longitude location.
      * 
      * @param latitude latitide in decimal degrees
      * @param longitude longitude in decimal degrees.

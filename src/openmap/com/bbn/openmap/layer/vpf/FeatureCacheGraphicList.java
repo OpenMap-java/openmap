@@ -23,11 +23,9 @@
 package com.bbn.openmap.layer.vpf;
 
 import java.awt.Paint;
-import java.util.Iterator;
 
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMColor;
-import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 

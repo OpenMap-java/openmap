@@ -156,7 +156,7 @@ public interface WMTConstants {
     public final static String MAP = "map";
 
     /**
-     * Keyword (capabilites) for a map server capabilities request.
+     * Keyword (capabilities) for a map server capabilities request.
      */
     public final static String CAPABILITIES = "capabilities";
 

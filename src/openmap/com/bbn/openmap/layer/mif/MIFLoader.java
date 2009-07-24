@@ -80,7 +80,7 @@ public class MIFLoader {
     // if true we do a much faster line only rendering of the regions
     boolean accurate;
 
-    // MIF CoordSys value for a Latitude Longitude coodinate system
+    // MIF CoordSys value for a Latitude Longitude coordinate system
     private static final String LATLONG_COORDSYS_DEF = "Earth Projection 1";
 
     private float pointVisible = -1; // default is -1
@@ -571,7 +571,7 @@ public class MIFLoader {
      * Within a MIF file size will always be 0, it's up to the renderer to
      * determine the size. Background color is optional
      * 
-     * style is detemined as follows, to specify 2 or more style attributes, add
+     * style is determined as follows, to specify 2 or more style attributes, add
      * the values from each style, e.g. BOLD ALLCAPS = 513
      * 
      * value style =================== 0 PLAIN 1 BOLD 2 ITALIC 4 UNDERLINE 16
@@ -635,7 +635,7 @@ public class MIFLoader {
     }
 
     /*
-     * Utility for doing case independant string comparisons... it's neater this
+     * Utility for doing case independent string comparisons... it's neater this
      * way
      */
     private boolean isSame(String str1, String str2) {

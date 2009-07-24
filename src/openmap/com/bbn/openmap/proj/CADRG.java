@@ -239,7 +239,7 @@ public class CADRG extends Cylindrical implements EqualArc {
 
     /**
      * Returns the x pixel constant of the projection. This was
-     * calcuated when the projection was created. Represents the
+     * calculated when the projection was created. Represents the
      * number of pixels around the earth (360 degrees).
      */
     public double getXPixConstant() {
@@ -248,7 +248,7 @@ public class CADRG extends Cylindrical implements EqualArc {
 
     /**
      * Returns the y pixel constant of the projection. This was
-     * calcuated when the projection was created. Represents the
+     * calculated when the projection was created. Represents the
      * number of pixels from 0 to 90 degrees.
      */
     public double getYPixConstant() {
@@ -287,7 +287,7 @@ public class CADRG extends Cylindrical implements EqualArc {
      * the projection is at the same scale as the chart data you are
      * interested in.
      * 
-     * @return number of frame columes in the current zone, to go
+     * @return number of frame columns in the current zone, to go
      *         around the world.
      */
     public int numHorizontalFrames() {
@@ -451,7 +451,7 @@ public class CADRG extends Cylindrical implements EqualArc {
      * Called when some fundamental parameters change.
      * <p>
      * Each projection will decide how to respond to this change. For
-     * instance, they may need to recalculate "constant" paramters
+     * instance, they may need to recalculate "constant" parameters
      * used in the forward() and inverse() calls.
      * <p>
      * 
