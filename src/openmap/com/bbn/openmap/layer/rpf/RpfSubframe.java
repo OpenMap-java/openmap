@@ -123,7 +123,7 @@ public class RpfSubframe {
      * @deprecated use the other setLocation, with upper left and lower right
      *             coordinates.
      */
-    public void setLocation(float lat, float lon) {
+    public void setLocation(double lat, double lon) {
         image.setLat(lat);
         image.setLon(lon);
         information.setLat(lat);
@@ -144,7 +144,7 @@ public class RpfSubframe {
      * @param llat latitude of lower right point, in decimal degrees.
      * @param elon longitude of lower right point, in decimal degrees.
      */
-    public void setLocation(float ulat, float wlon, float llat, float elon) {
+    public void setLocation(double ulat, double wlon, double llat, double elon) {
         image.setULLat(ulat);
         image.setULLon(wlon);
         image.setLRLat(llat);

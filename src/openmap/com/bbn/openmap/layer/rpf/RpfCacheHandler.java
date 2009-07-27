@@ -255,8 +255,7 @@ public class RpfCacheHandler {
      * @param proj
      *            CADRG projection to use for zone decisions.
      */
-    public void setCache(float ullat, float ullon, float lrlat, float lrlon,
-                         CADRG proj) {
+    public void setCache(float ullat, float ullon, float lrlat, float lrlon, CADRG proj) {
 
         boolean needNewCoverage = true;
         String oldID = null;
@@ -273,18 +272,14 @@ public class RpfCacheHandler {
             float currentPercentCoverage = currentBox.getPercentCoverage();
 
             if (DEBUG_RPF) {
-                Debug
-                        .output("RpfCachehandler: checking current coverage before re-query:");
+                Debug.output("RpfCachehandler: checking current coverage before re-query:");
             }
 
-            float currentScaleDifference = RpfFrameCacheHandler
-                    .scaleDifference(proj, currentBox);
-            if (currentPercentCoverage <= currentBox.setPercentCoverage(ullat,
-                                                                        ullon,
-                                                                        lrlat,
-                                                                        lrlon,
-                                                                        start,
-                                                                        end)
+            float currentScaleDifference = RpfFrameCacheHandler.scaleDifference(proj,
+                                                                                currentBox);
+            if (currentPercentCoverage <= currentBox.setPercentCoverage(ullat, ullon,
+                                                                        lrlat, lrlon,
+                                                                        start, end)
                     && lastScaleDifference == currentScaleDifference) {
                 needNewCoverage = false;
                 goodData = true;
@@ -305,8 +300,8 @@ public class RpfCacheHandler {
             }
 
             if (frameProvider != null) {
-                coverageBoxes = frameProvider.getCoverage(ullat, ullon, lrlat,
-                                                          lrlon, proj);
+                coverageBoxes = frameProvider.getCoverage(ullat, ullon, lrlat, lrlon,
+                                                          proj);
             } else {
                 coverageBoxes = null;
             }
@@ -326,8 +321,8 @@ public class RpfCacheHandler {
             currentBox = (RpfCoverageBox) coverageBoxes.elementAt(0);
 
             if (!currentBox.getID().equals(oldID)) {
-                resetSubframeIndex(currentBox.verticalSubframes(), currentBox
-                        .horizontalSubframes());
+                resetSubframeIndex(currentBox.verticalSubframes(),
+                                   currentBox.horizontalSubframes());
                 initCache(false);
             }
 
@@ -338,8 +333,9 @@ public class RpfCacheHandler {
 
         // Set the backup indexes, just in case.
         for (i = 1; i < coverageBoxes.size(); i++) {
-            ((RpfCoverageBox) coverageBoxes.elementAt(i))
-                    .setPercentCoverage(ullat, ullon, lrlat, lrlon);
+            ((RpfCoverageBox) coverageBoxes.elementAt(i)).setPercentCoverage(ullat,
+                                                                             ullon,
+                                                                             lrlat, lrlon);
         }
 
         if (DEBUG_RPF) {
@@ -358,15 +354,13 @@ public class RpfCacheHandler {
             // Need to figure how much this will change for this scale
             // chart at this screen scale
             // Reference at 0, 0
-            LatLonPoint refllpt = (LatLonPoint) viewAttributes.proj
-                    .getUpperLeft();
+            LatLonPoint refllpt = (LatLonPoint) viewAttributes.proj.getUpperLeft();
             refllpt.setLongitude(refllpt.getLongitude()
                     + (float) currentBox.subframeLonInterval);
             refllpt.setLatitude(refllpt.getLatitude()
                     - (float) currentBox.subframeLatInterval);
 
-            Point refpt = (Point) viewAttributes.proj.forward(refllpt,
-                                                              new Point());
+            Point refpt = (Point) viewAttributes.proj.forward(refllpt, new Point());
 
             scalingWidth = refpt.x;
             scalingHeight = refpt.y;
@@ -455,11 +449,9 @@ public class RpfCacheHandler {
         for (i = 0; i < subframeCacheSize; i++) {
             if (newCache) {
                 try {
-                    cache.subframe[i] = new RpfSubframe(
-                            getViewAttributes().colorModel);
+                    cache.subframe[i] = new RpfSubframe(getViewAttributes().colorModel);
                 } catch (java.lang.OutOfMemoryError oome) {
-                    Debug
-                            .error("RpfCacheHandler: \n\tRan out of memory allocating the image cache.\tConsider increasing the java memory heap using the -Xmx option.");
+                    Debug.error("RpfCacheHandler: \n\tRan out of memory allocating the image cache.\tConsider increasing the java memory heap using the -Xmx option.");
 
                     cache = null;
 
@@ -610,8 +602,7 @@ public class RpfCacheHandler {
      *            the number of subframes needed for the map is greater than the
      *            size of the subframe.
      */
-    protected RpfSubframe getSubframeFromOtherTOC(int x, int y,
-                                                  int subframeCount) {
+    protected RpfSubframe getSubframeFromOtherTOC(int x, int y, int subframeCount) {
         int size = coverageBoxes.size();
         RpfCoverageBox currentBox = null;
 
@@ -630,10 +621,8 @@ public class RpfCacheHandler {
         } else {
 
             /* If beyond the cache boundary, don't cache it. */
-            if (subframeIndex == null || y < 0 || x < 0
-                    || y >= subframeIndex.length
-                    || x >= subframeIndex[0].length
-                    || subframeCount >= subframeCacheSize) {
+            if (subframeIndex == null || y < 0 || x < 0 || y >= subframeIndex.length
+                    || x >= subframeIndex[0].length || subframeCount >= subframeCacheSize) {
                 cacheIt = false;
             }
 
@@ -687,8 +676,7 @@ public class RpfCacheHandler {
                         // See NOTE below on setScalingTo
                         ret.setScalingTo(scalingWidth, scalingHeight);
                     } catch (java.lang.OutOfMemoryError oome) {
-                        Debug
-                                .error("RpfCacheHandler: Out of memory!  No subframe for you!  Next up!");
+                        Debug.error("RpfCacheHandler: Out of memory!  No subframe for you!  Next up!");
                         return null;
                     }
                 }
@@ -756,8 +744,8 @@ public class RpfCacheHandler {
 
         /* If beyond the image boundary, forget it */
         if (subframeIndex != null
-                && (coverageBoxes == null || coverageBoxes.size() == 0 || y < 0
-                        || x < 0 || y >= subframeIndex.length || x >= subframeIndex[0].length)) {
+                && (coverageBoxes == null || coverageBoxes.size() == 0 || y < 0 || x < 0
+                        || y >= subframeIndex.length || x >= subframeIndex[0].length)) {
             return null;
         }
 
@@ -815,13 +803,14 @@ public class RpfCacheHandler {
             // needs to be, get it.
             if (frameProvider != null
                     && viewAttributes.showInfo
-                    && (ret.getAttributeText() == null || ret
-                            .getAttributeText().equals(""))) {
+                    && (ret.getAttributeText() == null || ret.getAttributeText().equals(
+                                                                                        ""))) {
 
                 // It's needed but not here.
-                ret.setAttributeText(frameProvider
-                        .getSubframeAttributes(currentBox.tocNumber,
-                                               currentBox.entryNumber, x, y));
+                ret.setAttributeText(frameProvider.getSubframeAttributes(
+                                                                         currentBox.tocNumber,
+                                                                         currentBox.entryNumber,
+                                                                         x, y));
                 // NOTE on setScalingTo
                 // Doesn't do what you might think. setScalingTo
                 // doesn't set the scaling filter on the OMRasters,
@@ -847,12 +836,10 @@ public class RpfCacheHandler {
                 try {
                     ret = new RpfSubframe(viewAttributes.colorModel);
                     if (DEBUG_RPF) {
-                        Debug
-                                .output("RpfCacheHandler: using uncached subframe.");
+                        Debug.output("RpfCacheHandler: using uncached subframe.");
                     }
                 } catch (java.lang.OutOfMemoryError oome) {
-                    Debug
-                            .error("RpfCacheHandler: Out of memory!  No subframe for you!  Next up!");
+                    Debug.error("RpfCacheHandler: Out of memory!  No subframe for you!  Next up!");
                     return null;
                 }
             } else { // or set the cache for the new subframe
@@ -894,15 +881,13 @@ public class RpfCacheHandler {
      *            the coveragebox y index for the subframe.
      * @return true if successful.
      */
-    protected boolean loadSubframe(RpfSubframe subframe,
-                                   RpfCoverageBox coverageBox, int x, int y) {
+    protected boolean loadSubframe(RpfSubframe subframe, RpfCoverageBox coverageBox,
+                                   int x, int y) {
         boolean good = false;
         int[] pixels = null;
 
         if (frameProvider == null) {
-            Debug
-                    .message("rpf",
-                             "RpfCacheHandler.loadSubframes(): null frameProvider");
+            Debug.message("rpf", "RpfCacheHandler.loadSubframes(): null frameProvider");
             return false;
         }
 
@@ -912,19 +897,18 @@ public class RpfCacheHandler {
 
         if (viewAttributes.colorModel == OMRasterObject.COLORMODEL_DIRECT) {
             pixels = frameProvider.getSubframeData(coverageBox.tocNumber,
-                                                   coverageBox.entryNumber, x,
-                                                   y);
+                                                   coverageBox.entryNumber, x, y);
             if (pixels != null) {
                 subframe.image.setPixels(pixels);
                 good = true;
             }
         } else if (viewAttributes.colorModel == OMRasterObject.COLORMODEL_INDEXED) {
-            RpfIndexedImageData riid = frameProvider
-                    .getRawSubframeData(coverageBox.tocNumber,
-                                        coverageBox.entryNumber, x, y);
+            RpfIndexedImageData riid = frameProvider.getRawSubframeData(
+                                                                        coverageBox.tocNumber,
+                                                                        coverageBox.entryNumber,
+                                                                        x, y);
 
-            if (riid != null && riid.imageData != null
-                    && riid.colortable != null) {
+            if (riid != null && riid.imageData != null && riid.colortable != null) {
                 subframe.image.setBits(riid.imageData);
                 subframe.image.setColors(riid.colortable);
                 subframe.image.setTransparent(viewAttributes.opaqueness);
@@ -932,37 +916,34 @@ public class RpfCacheHandler {
             }
 
         } else {
-            Debug
-                    .error("RpfCacheHandler: Frame Provider colormodel not handled.");
+            Debug.error("RpfCacheHandler: Frame Provider colormodel not handled.");
             return false;
         }
 
         if (good) {
             // LOAD UP the geographic stuff into
             // cache.subframe[index].image
-            float lat, lon, lat2, lon2;
+            double lat, lon, lat2, lon2;
             double xlloffset, ylloffset;
 
             ylloffset = (double) (y * coverageBox.subframeLatInterval);
             xlloffset = (double) (x * coverageBox.subframeLonInterval);
-            lat = (float) ((coverageBox.nw_lat) - ylloffset);
-            lon = (float) ((coverageBox.nw_lon) + xlloffset);
-            lat2 = (float) (lat - coverageBox.subframeLatInterval);
-            lon2 = (float) (lon + coverageBox.subframeLonInterval);
+            lat = coverageBox.nw_lat - ylloffset;
+            lon = coverageBox.nw_lon + xlloffset;
+            lat2 = lat - coverageBox.subframeLatInterval;
+            lon2 = lon + coverageBox.subframeLonInterval;
 
             String data;
             if (viewAttributes != null
                     && (viewAttributes.autofetchAttributes || viewAttributes.showInfo)) {
-                data = frameProvider
-                        .getSubframeAttributes(coverageBox.tocNumber,
-                                               coverageBox.entryNumber, x, y);
+                data = frameProvider.getSubframeAttributes(coverageBox.tocNumber,
+                                                           coverageBox.entryNumber, x, y);
             } else {
                 data = "";
             }
 
             if (DEBUG_RPFDETAIL) {
-                Debug.output("Attribute data for subframe " + x + ", " + y
-                        + ":\n" + data);
+                Debug.output("Attribute data for subframe " + x + ", " + y + ":\n" + data);
             }
 
             // fill in the information for the subframe.
