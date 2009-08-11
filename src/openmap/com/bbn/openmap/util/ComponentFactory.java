@@ -326,7 +326,7 @@ public class ComponentFactory {
                                 + className
                                 + "("
                                 + i
-                                + ")] NOT created. -- Set logging flag to FINE for details.");
+                                + ")] NOT created. -- Set logging flag to FINE/FINER for details.");
             }
         }
 
