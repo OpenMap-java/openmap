@@ -22,6 +22,7 @@
 
 package com.bbn.openmap.layer.shape;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -50,6 +52,7 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.GeoCoordTransformation;
 import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * A Spatial Index is a variation on a Shape Index, adding the bounding box of
@@ -145,8 +148,7 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
  */
 public class SpatialIndex extends ShapeUtils {
 
-    public static Logger logger = Logger
-            .getLogger("com.bbn.openmap.layer.shape.SpatialIndex");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.shape.SpatialIndex");
 
     /** Size of a shape file header in bytes. */
     public final static int SHAPE_FILE_HEADER_LENGTH = 100;
@@ -196,10 +198,8 @@ public class SpatialIndex extends ShapeUtils {
      * Opens a spatial index file for reading based on the location of the
      * provided shp file.
      * 
-     * @param ssxFilename
-     *            the name of the spatial index file
-     * @exception IOException
-     *                if something goes wrong opening the file
+     * @param ssxFilename the name of the spatial index file
+     * @exception IOException if something goes wrong opening the file
      */
     public SpatialIndex(String shpFilename) throws IOException {
         this.shpFileName = shpFilename;
@@ -211,12 +211,9 @@ public class SpatialIndex extends ShapeUtils {
     /**
      * Opens a spatial index file and it's associated shape file.
      * 
-     * @param ssxFilename
-     *            the name of the spatial index file
-     * @param shpFilename
-     *            the name of the shape file
-     * @exception IOException
-     *                if something goes wrong opening the files
+     * @param ssxFilename the name of the spatial index file
+     * @param shpFilename the name of the shape file
+     * @exception IOException if something goes wrong opening the files
      * @deprecated ssx file is figured based on the shp file path
      */
     public SpatialIndex(String ssxFilename, String shpFilename)
@@ -283,15 +280,11 @@ public class SpatialIndex extends ShapeUtils {
      * record constructor based on the shapeType, and passes the buffer and
      * offset to that constructor.
      * 
-     * @param shapeType
-     *            the shape file's shape type, enumerated in
-     *            <code>ShapeUtils</code>
-     * @param b
-     *            the buffer pointing to the raw record data
-     * @param off
-     *            the offset of the data starting point in the buffer
-     * @exception IOException
-     *                if something goes wrong reading the file
+     * @param shapeType the shape file's shape type, enumerated in
+     *        <code>ShapeUtils</code>
+     * @param b the buffer pointing to the raw record data
+     * @param off the offset of the data starting point in the buffer
+     * @exception IOException if something goes wrong reading the file
      * @see ShapeUtils
      */
     public ESRIRecord makeESRIRecord(int shapeType, byte[] b, int off)
@@ -320,17 +313,12 @@ public class SpatialIndex extends ShapeUtils {
      * rectangle. The spatial index is searched for intersections and the
      * appropriate records are read from the shape file.
      * 
-     * @param xmin
-     *            the smaller of the x coordinates
-     * @param ymin
-     *            the smaller of the y coordinates
-     * @param xmax
-     *            the larger of the x coordinates
-     * @param ymax
-     *            the larger of the y coordinates
+     * @param xmin the smaller of the x coordinates
+     * @param ymin the smaller of the y coordinates
+     * @param xmax the larger of the x coordinates
+     * @param ymax the larger of the y coordinates
      * @return an array of records that intersect the given rectangle
-     * @exception IOException
-     *                if something goes wrong reading the files
+     * @exception IOException if something goes wrong reading the files
      */
     public ESRIRecord[] locateRecords(double xmin, double ymin, double xmax,
                                       double ymax) throws IOException,
@@ -395,8 +383,14 @@ public class SpatialIndex extends ShapeUtils {
                     bounds.addPoint(xmax2, ymax2);
                 }
 
-                if (intersects(xmin, ymin, xmax, ymax, xmin2, ymin2, xmax2,
-                               ymax2)) {
+                if (intersects(xmin,
+                        ymin,
+                        xmax,
+                        ymax,
+                        xmin2,
+                        ymin2,
+                        xmax2,
+                        ymax2)) {
 
                     int offset = readBEInt(ixRecord, 0);
                     int byteOffset = offset * 2;
@@ -406,9 +400,8 @@ public class SpatialIndex extends ShapeUtils {
                     // System.out.flush();
 
                     if (recordSize < 0) {
-                        logger
-                                .warning("SpatialIndex: supposed to read record size of "
-                                        + recordSize);
+                        logger.warning("SpatialIndex: supposed to read record size of "
+                                + recordSize);
                         break;
                     }
 
@@ -437,12 +430,12 @@ public class SpatialIndex extends ShapeUtils {
                                     + " bytes instead.");
                         }
 
-                        ESRIRecord record = makeESRIRecord(shapeType, sRecord,
-                                                           0);
+                        ESRIRecord record = makeESRIRecord(shapeType,
+                                sRecord,
+                                0);
                         v.addElement(record);
                     } catch (IOException ioe) {
-                        logger
-                                .warning("SpatialIndex.locateRecords: IOException. ");
+                        logger.warning("SpatialIndex.locateRecords: IOException. ");
                         ioe.printStackTrace();
                         break;
                     }
@@ -489,31 +482,21 @@ public class SpatialIndex extends ShapeUtils {
      * rectangle. The spatial index is searched for intersections and the
      * appropriate OMGraphics are created from the shape file.
      * 
-     * @param xmin
-     *            the smaller of the x coordinates
-     * @param ymin
-     *            the smaller of the y coordinates
-     * @param xmax
-     *            the larger of the x coordinates
-     * @param ymax
-     *            the larger of the y coordinates
-     * @param list
-     *            OMGraphicList to add OMGraphics to and return, if null one
-     *            will be created.
-     * @param drawingAttributes
-     *            DrawingAttributes to set on the OMGraphics.
-     * @param mapProj
-     *            the Map Projection for the OMGraphics so they can be generated
-     *            right after creation.
-     * @param dataProj
-     *            for pre-projected data, a coordinate translator for the data's
-     *            projection to use to translate the coordinates to decimal
-     *            degree lat/lon. Can be null to leave the coordinates
-     *            untouched.
+     * @param xmin the smaller of the x coordinates
+     * @param ymin the smaller of the y coordinates
+     * @param xmax the larger of the x coordinates
+     * @param ymax the larger of the y coordinates
+     * @param list OMGraphicList to add OMGraphics to and return, if null one
+     *        will be created.
+     * @param drawingAttributes DrawingAttributes to set on the OMGraphics.
+     * @param mapProj the Map Projection for the OMGraphics so they can be
+     *        generated right after creation.
+     * @param dataProj for pre-projected data, a coordinate translator for the
+     *        data's projection to use to translate the coordinates to decimal
+     *        degree lat/lon. Can be null to leave the coordinates untouched.
      * @return an OMGraphicList containing OMGraphics that intersect the given
      *         rectangle
-     * @exception IOException
-     *                if something goes wrong reading the files
+     * @exception IOException if something goes wrong reading the files
      */
     public OMGraphicList getOMGraphics(double xmin, double ymin, double xmax,
                                        double ymax, OMGraphicList list,
@@ -553,10 +536,11 @@ public class SpatialIndex extends ShapeUtils {
 
                 try {
 
-                    OMGraphic omg = (OMGraphic) factory
-                            .makeEsriGraphicFromRecord(entry.getByteOffset(),
-                                                       shp, drawingAttributes,
-                                                       pointIcon, byteTracker);
+                    OMGraphic omg = (OMGraphic) factory.makeEsriGraphicFromRecord(entry.getByteOffset(),
+                            shp,
+                            drawingAttributes,
+                            pointIcon,
+                            byteTracker);
 
                     if (omg != null) {
 
@@ -599,25 +583,19 @@ public class SpatialIndex extends ShapeUtils {
     /**
      * Retrieves all OMGraphics in the shape file.
      * 
-     * @param retList
-     *            OMGraphicList to add OMGraphics to and return, if null one
-     *            will be created.
-     * @param drawingAttributes
-     *            DrawingAttributes to set on the OMGraphics.
-     * @param mapProj
-     *            the Map Projection for the OMGraphics so they can be generated
-     *            right after creation. This will also be used by the
-     *            DbfHandler, to determine if some OMGraphics should not be
-     *            returned based on attribute settings.
-     * @param dataProj
-     *            for preprojected data, a coordinate translator for the data's
-     *            projection to use to translate the coordinates to decimal
-     *            degree lat/lon. Can be null to leave the coordinates
-     *            untouched.
+     * @param retList OMGraphicList to add OMGraphics to and return, if null one
+     *        will be created.
+     * @param drawingAttributes DrawingAttributes to set on the OMGraphics.
+     * @param mapProj the Map Projection for the OMGraphics so they can be
+     *        generated right after creation. This will also be used by the
+     *        DbfHandler, to determine if some OMGraphics should not be returned
+     *        based on attribute settings.
+     * @param dataProj for preprojected data, a coordinate translator for the
+     *        data's projection to use to translate the coordinates to decimal
+     *        degree lat/lon. Can be null to leave the coordinates untouched.
      * @return an OMGraphicList containing OMGraphics that intersect the given
      *         rectangle
-     * @exception IOException
-     *                if something goes wrong reading the files
+     * @exception IOException if something goes wrong reading the files
      */
     public OMGraphicList getAllOMGraphics(OMGraphicList retList,
                                           DrawingAttributes drawingAttributes,
@@ -639,8 +617,11 @@ public class SpatialIndex extends ShapeUtils {
 
         EsriGraphicFactory factory = getFactory();
         factory.setDataCoordTransformation(dataProj);
-        factory.getEsriGraphics(shp, drawingAttributes, pointIcon, mapProj,
-                                retList);
+        factory.getEsriGraphics(shp,
+                drawingAttributes,
+                pointIcon,
+                mapProj,
+                retList);
 
         shp.close();
 
@@ -651,11 +632,9 @@ public class SpatialIndex extends ShapeUtils {
      * Takes the contents of the list and evaluates them against the information
      * contained in the DbfHandler set in this SpatialIndex class.
      * 
-     * @param retList
-     *            the list of OMGraphics to evaluate.
-     * @param mapProj
-     *            the current map projection to be used by the DbfHandler to
-     *            determine if some OMGraphics should be visible.
+     * @param retList the list of OMGraphics to evaluate.
+     * @param mapProj the current map projection to be used by the DbfHandler to
+     *        determine if some OMGraphics should be visible.
      * @return OMGraphicList containing OMGraphics modified/passing evaluations
      *         rules in the DbfHandler.
      */
@@ -687,13 +666,10 @@ public class SpatialIndex extends ShapeUtils {
     /**
      * Evaluates the OMGraphic against the DbfHandler rules.
      * 
-     * @param omg
-     *            the OMGraphic to evaluate.
-     * @param labels
-     *            for DbfHandler label rules. Assumes that you are managing
-     *            display of the labels list.
-     * @param mapProj
-     *            for DbfHandler scale rules.
+     * @param omg the OMGraphic to evaluate.
+     * @param labels for DbfHandler label rules. Assumes that you are managing
+     *        display of the labels list.
+     * @param mapProj for DbfHandler scale rules.
      * @return OMGraphic if it passes the rules.
      */
     public OMGraphic evaluate(OMGraphic omg, OMGraphicList labels,
@@ -709,8 +685,7 @@ public class SpatialIndex extends ShapeUtils {
      * Skips the BinaryFile for the shp data to the offset and reads the record
      * data there, creating an OMGraphic from that data.
      * 
-     * @param byteOffset
-     *            , usually gotten from an Entry object.
+     * @param byteOffset , usually gotten from an Entry object.
      * @param drawingAttributes
      * @return
      * @throws IOException
@@ -719,13 +694,11 @@ public class SpatialIndex extends ShapeUtils {
     public OMGraphic getOMGraphicAtOffset(int byteOffset,
                                           DrawingAttributes drawingAttributes)
             throws IOException, FormatException {
-        return (OMGraphic) getFactory()
-                .makeEsriGraphicFromRecord(
-                                           byteOffset,
-                                           shp,
-                                           drawingAttributes,
-                                           pointIcon,
-                                           new EsriGraphicFactory.ReadByteTracker());
+        return (OMGraphic) getFactory().makeEsriGraphicFromRecord(byteOffset,
+                shp,
+                drawingAttributes,
+                pointIcon,
+                new EsriGraphicFactory.ReadByteTracker());
     }
 
     /**
@@ -742,8 +715,7 @@ public class SpatialIndex extends ShapeUtils {
     /**
      * Provides an iterator over the SpatialIndex entries.
      * 
-     * @param dataTransform
-     *            GeoCoordTransform for pre-projected data.
+     * @param dataTransform GeoCoordTransform for pre-projected data.
      * @return
      * @throws IOException
      * @throws FormatException
@@ -765,8 +737,7 @@ public class SpatialIndex extends ShapeUtils {
 
     /**
      * 
-     * @param bounds
-     *            if not null, add min/max values to them.
+     * @param bounds if not null, add min/max values to them.
      * @return
      * @throws IOException
      * @throws FormatException
@@ -778,10 +749,8 @@ public class SpatialIndex extends ShapeUtils {
 
     /**
      * 
-     * @param bounds
-     *            if not null, add min/max values to them.
-     * @param dataTransform
-     *            GeoCoordTransform for pre-projected data.
+     * @param bounds if not null, add min/max values to them.
+     * @param dataTransform GeoCoordTransform for pre-projected data.
      * @return
      * @throws IOException
      * @throws FormatException
@@ -862,22 +831,14 @@ public class SpatialIndex extends ShapeUtils {
      * if two rectangles don't intersect, and then returns a negation of that
      * result. But the bottom line is the same.
      * 
-     * @param xmin1
-     *            the small x of rectangle 1
-     * @param ymin1
-     *            the small y of rectangle 1
-     * @param xmax1
-     *            the big x of rectangle 1
-     * @param ymax1
-     *            the big y of rectangle 1
-     * @param xmin2
-     *            the small x of rectangle 2
-     * @param ymin2
-     *            the small y of rectangle 2
-     * @param xmax2
-     *            the big x of rectangle 2
-     * @param ymax2
-     *            the big y of rectangle 2
+     * @param xmin1 the small x of rectangle 1
+     * @param ymin1 the small y of rectangle 1
+     * @param xmax1 the big x of rectangle 1
+     * @param ymax1 the big y of rectangle 1
+     * @param xmin2 the small x of rectangle 2
+     * @param ymin2 the small y of rectangle 2
+     * @param xmax2 the big x of rectangle 2
+     * @param ymax2 the big y of rectangle 2
      * @return <code>true</code> if the rectangles intersect, <code>false</code>
      *         if they do not
      */
@@ -891,10 +852,8 @@ public class SpatialIndex extends ShapeUtils {
     /**
      * Displays the contents of this index.
      * 
-     * @param showBounds
-     *            true to show bounding box, false to skip it
-     * @exception IOException
-     *                if something goes wrong reading the file
+     * @param showBounds true to show bounding box, false to skip it
+     * @exception IOException if something goes wrong reading the file
      */
     public void dumpIndex(boolean showBounds) throws IOException {
         byte ixRecord[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
@@ -917,20 +876,17 @@ public class SpatialIndex extends ShapeUtils {
                 int offset = readBEInt(ixRecord, 0);
                 int length = readBEInt(ixRecord, 4);
                 if (logger.isLoggable(Level.FINE)) {
-                    logger
-                            .fine("Record "
-                                    + recNum
-                                    + ": "
-                                    + offset
-                                    + ", "
-                                    + length
-                                    + (showBounds ? ("; "
-                                            + readLEDouble(ixRecord, 8) + ", "
-                                            + readLEDouble(ixRecord, 16) + ", "
-                                            + readLEDouble(ixRecord, 24) + ", " + readLEDouble(
-                                                                                               ixRecord,
-                                                                                               32))
-                                            : ""));
+                    logger.fine("Record "
+                            + recNum
+                            + ": "
+                            + offset
+                            + ", "
+                            + length
+                            + (showBounds ? ("; " + readLEDouble(ixRecord, 8)
+                                    + ", " + readLEDouble(ixRecord, 16) + ", "
+                                    + readLEDouble(ixRecord, 24) + ", " + readLEDouble(ixRecord,
+                                    32))
+                                    : ""));
                 }
             }
         }
@@ -941,8 +897,7 @@ public class SpatialIndex extends ShapeUtils {
      * Prints a usage statement describing how to use this class from the
      * command line.
      * 
-     * @param out
-     *            The output stream to use for output
+     * @param out The output stream to use for output
      */
     public static void printUsage(PrintStream out) {
         String className = SpatialIndex.class.getName();
@@ -1050,10 +1005,9 @@ public class SpatialIndex extends ShapeUtils {
      * <p>
      * See the file documentation for usage.
      * 
-     * @param argv
-     *            the command line arguments
-     * @exception IOException
-     *                if something goes wrong reading or writing the file
+     * @param argv the command line arguments
+     * @exception IOException if something goes wrong reading or writing the
+     *            file
      */
     public static void main(String argv[]) throws IOException {
         int argc = argv.length;
@@ -1089,8 +1043,7 @@ public class SpatialIndex extends ShapeUtils {
     /**
      * Set the icon to use for point objects, in general.
      * 
-     * @param ii
-     *            ImageIcon to use for icon.
+     * @param ii ImageIcon to use for icon.
      */
     public synchronized void setPointIcon(ImageIcon ii) {
         pointIcon = ii;
@@ -1148,8 +1101,14 @@ public class SpatialIndex extends ShapeUtils {
 
         public boolean intersects(double xmin, double ymin, double xmax,
                                   double ymax) {
-            return SpatialIndex.intersects(xmin, ymin, xmax, ymax, xMin, yMin,
-                                           xMax, yMax);
+            return SpatialIndex.intersects(xmin,
+                    ymin,
+                    xmax,
+                    ymax,
+                    xMin,
+                    yMin,
+                    xMax,
+                    yMax);
         }
 
         public int getByteOffset() {
@@ -1173,8 +1132,7 @@ public class SpatialIndex extends ShapeUtils {
 
     public static class FileIndex {
 
-        protected FileIndex() {
-        }
+        protected FileIndex() {}
 
         public static void create(String shpFile) {
             FileIndex fi = new FileIndex();
@@ -1184,12 +1142,9 @@ public class SpatialIndex extends ShapeUtils {
         /**
          * Writes the spatial index for a polygon shape file.
          * 
-         * @param is
-         *            the shape file input stream
-         * @param ptr
-         *            the current position in the file
-         * @param os
-         *            the spatial index file output stream
+         * @param is the shape file input stream
+         * @param ptr the current position in the file
+         * @param os the spatial index file output stream
          */
         protected void indexPolygons(InputStream is, long ptr, OutputStream os) {
             boolean moreRecords = true;
@@ -1222,9 +1177,8 @@ public class SpatialIndex extends ShapeUtils {
 
                         if (recLengthBytes > recBufSize) {
                             if (logger.isLoggable(Level.FINE)) {
-                                logger
-                                        .fine("Shapefile SpatialIndex increasing recBufSize to "
-                                                + recLengthBytes);
+                                logger.fine("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
                             }
                             recBufSize = recLengthBytes;
                             recBuf = new byte[recBufSize];
@@ -1263,12 +1217,9 @@ public class SpatialIndex extends ShapeUtils {
         /**
          * Writes the spatial index for a point shape file.
          * 
-         * @param is
-         *            the shape file input stream
-         * @param ptr
-         *            the current position in the file
-         * @param os
-         *            the spatial index file output stream
+         * @param is the shape file input stream
+         * @param ptr the current position in the file
+         * @param os the spatial index file output stream
          */
         protected void indexPoints(InputStream is, long ptr, OutputStream os) {
             boolean moreRecords = true;
@@ -1302,9 +1253,8 @@ public class SpatialIndex extends ShapeUtils {
 
                         if (recLengthBytes > recBufSize) {
                             if (logger.isLoggable(Level.FINE)) {
-                                logger
-                                        .fine("Shapefile SpatialIndex increasing recBufSize to "
-                                                + recLengthBytes);
+                                logger.fine("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
                             }
                             recBufSize = recLengthBytes;
                             recBuf = new byte[recBufSize];
@@ -1342,12 +1292,9 @@ public class SpatialIndex extends ShapeUtils {
         /**
          * Writes the spatial index for a null shape file.
          * 
-         * @param is
-         *            the shape file input stream
-         * @param ptr
-         *            the current position in the file
-         * @param os
-         *            the spatial index file output stream
+         * @param is the shape file input stream
+         * @param ptr the current position in the file
+         * @param os the spatial index file output stream
          */
         protected void indexNulls(InputStream is, long ptr, OutputStream os) {
             boolean moreRecords = true;
@@ -1380,9 +1327,8 @@ public class SpatialIndex extends ShapeUtils {
 
                         if (recLengthBytes > recBufSize) {
                             if (logger.isLoggable(Level.FINE)) {
-                                logger
-                                        .fine("Shapefile SpatialIndex increasing recBufSize to "
-                                                + recLengthBytes);
+                                logger.fine("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
                             }
                             recBufSize = recLengthBytes;
                             recBuf = new byte[recBufSize];
@@ -1417,9 +1363,8 @@ public class SpatialIndex extends ShapeUtils {
          * shape file, writing appropriate index records to the spatial index
          * file.
          * 
-         * @param inFile
-         *            the shape file or spatial index file, the method will
-         *            figure it out based on the file name extension.
+         * @param inFile the shape file or spatial index file, the method will
+         *        figure it out based on the file name extension.
          */
         public void createIndex(String inFile) {
             String ssxFile = null;
@@ -1486,8 +1431,7 @@ public class SpatialIndex extends ShapeUtils {
 
     public static class MemoryIndex {
 
-        protected MemoryIndex() {
-        }
+        protected MemoryIndex() {}
 
         public static List<Entry> create(String shpFile) {
             MemoryIndex mi = new MemoryIndex();
@@ -1497,12 +1441,9 @@ public class SpatialIndex extends ShapeUtils {
         /**
          * Writes the spatial index for a polygon shape file.
          * 
-         * @param is
-         *            the shape file input stream
-         * @param ptr
-         *            the current position in the file
-         * @param entries
-         *            a List of Entries to add to
+         * @param is the shape file input stream
+         * @param ptr the current position in the file
+         * @param entries a List of Entries to add to
          */
         protected void indexPolygons(InputStream is, long ptr,
                                      List<Entry> entries) {
@@ -1537,9 +1478,8 @@ public class SpatialIndex extends ShapeUtils {
 
                         if (recLengthBytes > recBufSize) {
                             if (logger.isLoggable(Level.FINE)) {
-                                logger
-                                        .fine("Shapefile SpatialIndex increasing recBufSize to "
-                                                + recLengthBytes);
+                                logger.fine("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
                             }
                             recBufSize = recLengthBytes;
                             recBuf = new byte[recBufSize];
@@ -1556,9 +1496,7 @@ public class SpatialIndex extends ShapeUtils {
                         }
                         ptr += recLengthBytes + 8;
 
-                        Entry entry = new Entry(polyBounds.min.x,
-                                polyBounds.min.y, polyBounds.max.x,
-                                polyBounds.max.y, (int) recOffset);
+                        Entry entry = new Entry(polyBounds.min.x, polyBounds.min.y, polyBounds.max.x, polyBounds.max.y, (int) recOffset);
                         entries.add(entry);
                     }
                 }
@@ -1575,12 +1513,9 @@ public class SpatialIndex extends ShapeUtils {
         /**
          * Writes the spatial index for a point shape file.
          * 
-         * @param is
-         *            the shape file input stream
-         * @param ptr
-         *            the current position in the file
-         * @param entries
-         *            a List of Entries to add to
+         * @param is the shape file input stream
+         * @param ptr the current position in the file
+         * @param entries a List of Entries to add to
          */
         protected void indexPoints(InputStream is, long ptr, List<Entry> entries) {
             boolean moreRecords = true;
@@ -1613,9 +1548,8 @@ public class SpatialIndex extends ShapeUtils {
 
                         if (recLengthBytes > recBufSize) {
                             if (logger.isLoggable(Level.FINE)) {
-                                logger
-                                        .fine("Shapefile SpatialIndex increasing recBufSize to "
-                                                + recLengthBytes);
+                                logger.fine("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
                             }
                             recBufSize = recLengthBytes;
                             recBuf = new byte[recBufSize];
@@ -1648,12 +1582,9 @@ public class SpatialIndex extends ShapeUtils {
         /**
          * Writes the spatial index for a null shape file.
          * 
-         * @param is
-         *            the shape file input stream
-         * @param ptr
-         *            the current position in the file
-         * @param entries
-         *            a List of Entries to add to
+         * @param is the shape file input stream
+         * @param ptr the current position in the file
+         * @param entries a List of Entries to add to
          */
         protected void indexNulls(InputStream is, long ptr, List<Entry> entries) {
             boolean moreRecords = true;
@@ -1685,9 +1616,8 @@ public class SpatialIndex extends ShapeUtils {
 
                         if (recLengthBytes > recBufSize) {
                             if (logger.isLoggable(Level.FINE)) {
-                                logger
-                                        .fine("Shapefile SpatialIndex increasing recBufSize to "
-                                                + recLengthBytes);
+                                logger.fine("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
                             }
                             recBufSize = recLengthBytes;
                             recBuf = new byte[recBufSize];
@@ -1717,8 +1647,7 @@ public class SpatialIndex extends ShapeUtils {
          * shape file, writing appropriate index records to the spatial index
          * file.
          * 
-         * @param inFile
-         *            the shape file.
+         * @param inFile the shape file.
          */
         public List<Entry> createIndex(String inFile) {
             String shpFile = null;
@@ -1726,14 +1655,23 @@ public class SpatialIndex extends ShapeUtils {
             if (inFile.endsWith(".shp")) {
                 shpFile = inFile;
             } else {
+                logger.warning("can't create spatial index entries from non-shape file: "
+                        + inFile);
                 return entries;
             }
 
             byte fileHeader[] = new byte[SHAPE_FILE_HEADER_LENGTH];
-            FileInputStream shp = null;
+            BufferedInputStream shp = null;
             int shapeType;
             try {
-                shp = new FileInputStream(shpFile);
+                URL shpURL = PropUtils.getResourceOrFileOrURL(shpFile);
+                if (shpURL == null) {
+                    return entries;
+                }
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("creating spatial index entries for " + inFile);
+                }
+                shp = new BufferedInputStream(shpURL.openStream());
                 shp.read(fileHeader, 0, SHAPE_FILE_HEADER_LENGTH);
                 shapeType = readLEInt(fileHeader, 32);
                 switch (shapeType) {
