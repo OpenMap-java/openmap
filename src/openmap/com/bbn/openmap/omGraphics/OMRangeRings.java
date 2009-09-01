@@ -358,7 +358,7 @@ public class OMRangeRings extends OMCircle {
      * @param y Y coordinate fo the point.
      * @return float distance from circle to the point
      */
-    public float distance(int x, int y) {
+    public float distance(double x, double y) {
         float dist = normalizeDistanceForLineWidth(super.distance(x, y));
 
         // Not sure whether the inner circles should be queried for

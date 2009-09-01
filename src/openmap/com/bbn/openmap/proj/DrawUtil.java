@@ -188,8 +188,8 @@ public class DrawUtil {
      * @param pty vertical pixel window points of location.
      * @return boolean
      */
-    public final static boolean inside_polygon(int[] xpts, int[] ypts, int ptx,
-                                               int pty) {
+    public final static boolean inside_polygon(int[] xpts, int[] ypts,
+                                               double ptx, double pty) {
 
         int j, inside_flag = 0;
         int numverts = xpts.length;
@@ -248,18 +248,18 @@ public class DrawUtil {
      * @param connected polyline or polygon
      */
     public final static float closestPolyDistance(int[] xpts, int[] ypts,
-                                                  int ptx, int pty,
+                                                  double ptx, double pty,
                                                   boolean connected) {
         if (xpts.length == 0)
             return Float.POSITIVE_INFINITY;
         if (xpts.length == 1)
-            return distance(xpts[0], ypts[0], ptx, pty);
+            return (float) distance(xpts[0], ypts[0], ptx, pty);
 
         float temp, distance = Float.POSITIVE_INFINITY;
         int i, j;
 
         for (i = 0, j = 1; j < xpts.length; i++, j++) {
-            temp = distance_to_line(xpts[i],
+            temp = (float) distance_to_line(xpts[i],
                     ypts[i],
                     xpts[j],
                     ypts[j],
@@ -277,7 +277,7 @@ public class DrawUtil {
 
         // connect
         if (connected) {
-            temp = distance_to_line(xpts[i],
+            temp = (float) distance_to_line(xpts[i],
                     ypts[i],
                     xpts[0],
                     ypts[0],
@@ -522,25 +522,26 @@ public class DrawUtil {
      * @return float distance to line segment
      * 
      */
-    public final static float distance_to_line(int x1, int y1, int x2, int y2,
-                                               int x3, int y3) {
+    public final static double distance_to_line(double x1, double y1,
+                                                double x2, double y2,
+                                                double x3, double y3) {
 
         // algorithm courtesy of Ray 1/16/98
-        float x12 = x2 - x1;
-        float y12 = y2 - y1;
-        float x13 = x3 - x1;
-        float y13 = y3 - y1;
-        float D12 = (float) Math.sqrt(x12 * x12 + y12 * y12);
-        float pp = (x12 * x13 + y12 * y13) / D12;
+        double x12 = x2 - x1;
+        double y12 = y2 - y1;
+        double x13 = x3 - x1;
+        double y13 = y3 - y1;
+        double D12 = Math.sqrt(x12 * x12 + y12 * y12);
+        double pp = (x12 * x13 + y12 * y13) / D12;
         if (pp < 0.0) {
             return (float) Math.sqrt(x13 * x13 + y13 * y13);
         }
         if (pp > D12) {
-            float x23 = x3 - x2;
-            float y23 = y3 - y2;
-            return (float) Math.sqrt(x23 * x23 + y23 * y23);
+            double x23 = x3 - x2;
+            double y23 = y3 - y2;
+            return Math.sqrt(x23 * x23 + y23 * y23);
         }
-        return (float) Math.abs(((x12 * y13 - y12 * x13) / D12));
+        return Math.abs(((x12 * y13 - y12 * x13) / D12));
     }
 
     /**

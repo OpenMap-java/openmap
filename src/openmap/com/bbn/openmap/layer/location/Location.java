@@ -679,7 +679,7 @@ public abstract class Location extends OMGraphicAdapter {
      * @param y Y coordinate of the point.
      * @return float distance from graphic to the point
      */
-    public float distance(int x, int y) {
+    public float distance(double x, double y) {
         float labelDist = Float.MAX_VALUE;
         float locationDist = Float.MAX_VALUE;
 
