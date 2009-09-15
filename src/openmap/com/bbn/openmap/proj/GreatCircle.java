@@ -26,15 +26,15 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.MoreMath;
 
 /**
- * Methods for calculating great circle and other distances on the
- * sphere and ellipsoid. Note that as of OpenMap 4.7, all the method
- * calls with a '_' in them have been deprecated, replaced by method
- * names that conform to Java conventions.
+ * Methods for calculating great circle and other distances on the sphere and
+ * ellipsoid. Note that as of OpenMap 4.7, all the method calls with a '_' in
+ * them have been deprecated, replaced by method names that conform to Java
+ * conventions.
  * <p>
- * Spherical equations taken from John Synder's <i>Map Projections --A
- * Working Manual </i>, pp29-31. <br>
- * Latitude/longitude arguments must be in valid radians:
- * -PI&lt;=lambda&lt;PI, -PI/2&lt;=phi&lt;=PI/2
+ * Spherical equations taken from John Synder's <i>Map Projections --A Working
+ * Manual </i>, pp29-31. <br>
+ * Latitude/longitude arguments must be in valid radians: -PI&lt;=lambda&lt;PI,
+ * -PI/2&lt;=phi&lt;=PI/2
  */
 public class GreatCircle {
 
@@ -52,8 +52,8 @@ public class GreatCircle {
      * @param glon2 Longitude of to station
      * @param ret_val AziDist struct
      * @return AziDist ret_val struct with azimuth and distance
-     * @deprecated this has been yanked until we have a more stable
-     *             and documented algorithm
+     * @deprecated this has been yanked until we have a more stable and
+     *             documented algorithm
      */
     public final static AziDist ellipsoidalAziDist(double a, double finv,
                                                    double glat1, double glon1,
@@ -65,8 +65,8 @@ public class GreatCircle {
     /**
      * Calculate spherical arc distance between two points.
      * <p>
-     * Computes arc distance `c' on the sphere. equation (5-3a). (0
-     * &lt;= c &lt;= PI)
+     * Computes arc distance `c' on the sphere. equation (5-3a). (0 &lt;= c
+     * &lt;= PI)
      * <p>
      * 
      * @param phi1 latitude in radians of start point
@@ -96,8 +96,8 @@ public class GreatCircle {
      * Calculate spherical arc distance between two points with double
      * precision.
      * <p>
-     * Computes arc distance `c' on the sphere. equation (5-3a). (0
-     * &lt;= c &lt;= PI)
+     * Computes arc distance `c' on the sphere. equation (5-3a). (0 &lt;= c
+     * &lt;= PI)
      * <p>
      * 
      * @param phi1 latitude in radians of start point
@@ -127,8 +127,8 @@ public class GreatCircle {
     /**
      * Calculate spherical azimuth between two points.
      * <p>
-     * Computes the azimuth `Az' east of north from phi1, lambda0
-     * bearing toward phi and lambda. (5-4b). (-PI &lt;= Az &lt;= PI).
+     * Computes the azimuth `Az' east of north from phi1, lambda0 bearing toward
+     * phi and lambda. (5-4b). (-PI &lt;= Az &lt;= PI).
      * <p>
      * 
      * @param phi1 latitude in radians of start point
@@ -155,11 +155,10 @@ public class GreatCircle {
     }
 
     /**
-     * Calculate spherical azimuth between two points with double
-     * precision.
+     * Calculate spherical azimuth between two points with double precision.
      * <p>
-     * Computes the azimuth `Az' east of north from phi1, lambda0
-     * bearing toward phi and lambda. (5-4b). (-PI &lt;= Az &lt;= PI).
+     * Computes the azimuth `Az' east of north from phi1, lambda0 bearing toward
+     * phi and lambda. (5-4b). (-PI &lt;= Az &lt;= PI).
      * <p>
      * 
      * @param phi1 latitude in radians of start point
@@ -189,15 +188,14 @@ public class GreatCircle {
     /**
      * Calculate point at azimuth and distance from another point.
      * <p>
-     * Returns a LatLonPoint.Float at arc distance `c' in direction
-     * `Az' from start point.
+     * Returns a LatLonPoint.Float at arc distance `c' in direction `Az' from
+     * start point.
      * <p>
      * 
      * @param phi1 latitude in radians of start point
      * @param lambda0 longitude in radians of start point
      * @param c arc radius in radians (0 &lt; c &lt;= PI)
-     * @param Az azimuth (direction) east of north (-PI &lt;= Az &lt;
-     *        PI)
+     * @param Az azimuth (direction) east of north (-PI &lt;= Az &lt; PI)
      * @return LatLonPoint
      * 
      */
@@ -227,18 +225,17 @@ public class GreatCircle {
     }
 
     /**
-     * Calculate point at azimuth and distance from another point,
-     * with double precision.
+     * Calculate point at azimuth and distance from another point, with double
+     * precision.
      * <p>
-     * Returns a LatLonPoint.Double at arc distance `c' in direction
-     * `Az' from start point.
+     * Returns a LatLonPoint.Double at arc distance `c' in direction `Az' from
+     * start point.
      * <p>
      * 
      * @param phi1 latitude in radians of start point
      * @param lambda0 longitude in radians of start point
      * @param c arc radius in radians (0 &lt; c &lt;= PI)
-     * @param Az azimuth (direction) east of north (-PI &lt;= Az &lt;
-     *        PI)
+     * @param Az azimuth (direction) east of north (-PI &lt;= Az &lt; PI)
      * @return LatLonPoint
      * 
      */
@@ -271,15 +268,14 @@ public class GreatCircle {
     /**
      * Calculate point between two points.
      * <p>
-     * Same as spherical_between() above except it calculates n equal
-     * segments along the length of c.
+     * Same as spherical_between() above except it calculates n equal segments
+     * along the length of c.
      * <p>
      * 
      * @param phi1 latitude in radians of start point
      * @param lambda0 longitude in radians of start point
      * @param c arc radius in radians (0 &lt; c &lt;= PI)
-     * @param Az azimuth (direction) east of north (-PI &lt;= Az &lt;
-     *        PI)
+     * @param Az azimuth (direction) east of north (-PI &lt;= Az &lt; PI)
      * @param n number of points along great circle edge to calculate
      * @return float[n+1] radian lat,lon pairs
      * 
@@ -328,15 +324,14 @@ public class GreatCircle {
     /**
      * Calculate point between two points with double precision.
      * <p>
-     * Same as spherical_between() above except it calculates n equal
-     * segments along the length of c.
+     * Same as spherical_between() above except it calculates n equal segments
+     * along the length of c.
      * <p>
      * 
      * @param phi1 latitude in radians of start point
      * @param lambda0 longitude in radians of start point
      * @param c arc radius in radians (0 &lt; c &lt;= PI)
-     * @param Az azimuth (direction) east of north (-PI &lt;= Az &lt;
-     *        PI)
+     * @param Az azimuth (direction) east of north (-PI &lt;= Az &lt; PI)
      * @param n number of points along great circle edge to calculate
      * @return double[n+1] radian lat,lon pairs
      * 
@@ -384,9 +379,9 @@ public class GreatCircle {
     /**
      * Calculate great circle between two points on the sphere.
      * <p>
-     * Folds all computation (distance, azimuth, points between) into
-     * one function for optimization. returns n or n+1 pairs of
-     * lat,lon on great circle between lat-lon pairs.
+     * Folds all computation (distance, azimuth, points between) into one
+     * function for optimization. returns n or n+1 pairs of lat,lon on great
+     * circle between lat-lon pairs.
      * <p>
      * 
      * @param phi1 latitude in radians of start point
@@ -458,12 +453,12 @@ public class GreatCircle {
     }
 
     /**
-     * Calculate great circle between two points on the sphere with
-     * double precision.
+     * Calculate great circle between two points on the sphere with double
+     * precision.
      * <p>
-     * Folds all computation (distance, azimuth, points between) into
-     * one function for optimization. returns n or n+1 pairs of
-     * lat,lon on great circle between lat-lon pairs.
+     * Folds all computation (distance, azimuth, points between) into one
+     * function for optimization. returns n or n+1 pairs of lat,lon on great
+     * circle between lat-lon pairs.
      * <p>
      * 
      * @param phi1 latitude in radians of start point
@@ -525,6 +520,53 @@ public class GreatCircle {
     }
 
     /**
+     * Return a point that is approximately a certain distance along the great
+     * circle line between two points. Returns the nearest coordinate along a
+     * set of calculated segments (as dictated by n) that fits the desired
+     * distance.
+     * 
+     * @param phi1 latitude of point 1 in radians.
+     * @param lambda0 longitude of point 1 in radians.
+     * @param phi latitude of point 2 in radians.
+     * @param lambda longitude of point 2 in radians.
+     * @param distance in radians.
+     * @param n number of segments to divide path into. The more segments, the
+     *        more accurate. If n <= 0, the OpenMap default of 512 is used.
+     * @return LatLonPoint if distance is less than distance between points,
+     *         null if it is greater.
+     */
+    public static LatLonPoint pointAtDistanceBetweenPoints(double phi1,
+                                                           double lambda0,
+                                                           double phi,
+                                                           double lambda,
+                                                           double distance,
+                                                           int n) {
+        LatLonPoint ret = null;
+
+        double pntDist = sphericalDistance(phi1, lambda0, phi, lambda);
+
+        if (pntDist > distance) {
+            if (n <= 0) {
+                n = GeoProj.NUM_DEFAULT_GREAT_SEGS;
+            }
+
+            double[] gcpoints = greatCircle(phi1, lambda0, phi, lambda, n, true);
+
+            // Ratio of desired distance to total distance between points - how
+            // far down the line we need to go.
+            double distRatio = distance / pntDist;
+            // all lat, lon points, get number of vertices, find index of the
+            // one that fits the ratio of the desired distance to the overall
+            // distance between points, and then multiply by 2 to get the actual
+            // index of the matching latitude.
+            int index = (int) ((int) (gcpoints.length / 2) * distRatio) * 2;
+            ret = new LatLonPoint.Double(gcpoints[index], gcpoints[index + 1], true);
+        }
+
+        return ret;
+    }
+
+    /**
      * @deprecated use greatCircle instead.
      */
     final public static double[] great_circle(double phi1, double lambda0,
@@ -544,8 +586,7 @@ public class GreatCircle {
      * @param lambda0 longitude in radians of center point
      * @param c arc radius in radians (0 &lt; c &lt; PI)
      * @param s starting angle in radians. North up is zero.
-     * @param e angular extent in radians, clockwise right from
-     *        starting angle.
+     * @param e angular extent in radians, clockwise right from starting angle.
      * @param n number of points along circle edge to calculate
      * @return float[n] radian lat,lon pairs along earth circle
      * 
@@ -607,8 +648,8 @@ public class GreatCircle {
      * @param lambda0 longitude in radians of center point
      * @param c arc radius in radians (0 &lt; c &lt; PI)
      * @param n number of points along circle edge to calculate
-     * @param ret_val float[] ret_val array of n*2 number of points
-     *        along circle edge to calculate
+     * @param ret_val float[] ret_val array of n*2 number of points along circle
+     *        edge to calculate
      * @return float[n] radian lat,lon pairs along earth circle
      * 
      */
@@ -636,11 +677,10 @@ public class GreatCircle {
      * @param lambda0 longitude in radians of center point.
      * @param c arc radius in radians (0 &lt; c &lt; PI).
      * @param s starting angle in radians. North up is zero.
-     * @param e angular extent in radians, clockwise right from
-     *        starting angle.
+     * @param e angular extent in radians, clockwise right from starting angle.
      * @param n number of points along circle edge to calculate.
-     * @param ret_val float[] ret_val array of n*2 number of points
-     *        along circle edge to calculate.
+     * @param ret_val float[] ret_val array of n*2 number of points along circle
+     *        edge to calculate.
      * @return float[n] radian lat,lon pairs along earth circle.
      * 
      */
@@ -692,8 +732,7 @@ public class GreatCircle {
     }
 
     /**
-     * Calculate partial earth circle on the sphere with double
-     * precision.
+     * Calculate partial earth circle on the sphere with double precision.
      * <p>
      * Returns n double lat,lon pairs at arc distance c from point at
      * phi1,lambda0.
@@ -703,8 +742,7 @@ public class GreatCircle {
      * @param lambda0 longitude in radians of center point
      * @param c arc radius in radians (0 &lt; c &lt; PI)
      * @param s starting angle in radians. North up is zero.
-     * @param e angular extent in radians, clockwise right from
-     *        starting angle.
+     * @param e angular extent in radians, clockwise right from starting angle.
      * @param n number of points along circle edge to calculate
      * @return double[n] radian lat,lon pairs along earth circle
      * 
@@ -767,8 +805,8 @@ public class GreatCircle {
      * @param lambda0 longitude in radians of center point
      * @param c arc radius in radians (0 &lt; c &lt; PI)
      * @param n number of points along circle edge to calculate
-     * @param ret_val double[] ret_val array of n*2 number of points
-     *        along circle edge to calculate
+     * @param ret_val double[] ret_val array of n*2 number of points along
+     *        circle edge to calculate
      * @return double[n] radian lat,lon pairs along earth circle
      * 
      */
@@ -802,11 +840,10 @@ public class GreatCircle {
      * @param lambda0 longitude in radians of center point.
      * @param c arc radius in radians (0 &lt; c &lt; PI).
      * @param s starting angle in radians. North up is zero.
-     * @param e angular extent in radians, clockwise right from
-     *        starting angle.
+     * @param e angular extent in radians, clockwise right from starting angle.
      * @param n number of points along circle edge to calculate.
-     * @param ret_val double[] ret_val array of n*2 number of points
-     *        along circle edge to calculate.
+     * @param ret_val double[] ret_val array of n*2 number of points along
+     *        circle edge to calculate.
      * @return double[n] radian lat,lon pairs along earth circle.
      * 
      */
@@ -857,26 +894,23 @@ public class GreatCircle {
     }
 
     /*
-     * testing public final static void main (String[] args) { double
-     * phi1 = 34.3; double lambda0 = 130.299; double phi = -24; double
-     * lambda = 33.23;
+     * testing public final static void main (String[] args) { double phi1 =
+     * 34.3; double lambda0 = 130.299; double phi = -24; double lambda = 33.23;
      * 
-     * float dist_sphere = spherical_distance (
-     * ProjMath.degToRad((float)phi1),
-     * ProjMath.degToRad((float)lambda0),
-     * ProjMath.degToRad((float)phi), ProjMath.degToRad((float)lambda) ); //
-     * meters dist_sphere =
-     * Planet.wgs84_earthEquatorialCircumferenceMeters*(dist_sphere/MoreMath.TWO_PI);
+     * float dist_sphere = spherical_distance ( ProjMath.degToRad((float)phi1),
+     * ProjMath.degToRad((float)lambda0), ProjMath.degToRad((float)phi),
+     * ProjMath.degToRad((float)lambda) ); // meters dist_sphere =
+     * Planet.wgs84_earthEquatorialCircumferenceMeters
+     * *(dist_sphere/MoreMath.TWO_PI);
      * Debug.output("sphere distance="+dist_sphere/1000f+" km");
      * 
      * AziDist invVar = ellipsoidalAziDist (
      * Planet.wgs84_earthEquatorialRadiusMeters,//major in meters
      * Planet.wgs84_earthFlat, //
-     * Planet.international1974_earthEquatorialRadiusMeters,//major in
-     * meters // Planet.international1974_earthFlat,
-     * ProjMath.degToRad(phi1), ProjMath.degToRad(lambda0),
-     * ProjMath.degToRad(phi), ProjMath.degToRad(lambda), new
-     * AziDist() ); Debug.output("ellipsoid
+     * Planet.international1974_earthEquatorialRadiusMeters,//major in meters //
+     * Planet.international1974_earthFlat, ProjMath.degToRad(phi1),
+     * ProjMath.degToRad(lambda0), ProjMath.degToRad(phi),
+     * ProjMath.degToRad(lambda), new AziDist() ); Debug.output("ellipsoid
      * distance="+invVar.distance/1000d+" km"); }
      */
 }
