@@ -166,7 +166,9 @@ public class DrawingAttributesUtility implements ShapeConstants {
 
     /**
      * Sets the drawing attributes on the record index provided. Remember, the
-     * index starts at 1 for the list when you refer to record indexes.
+     * index starts at 0 for the list when you refer to record indexes when you
+     * are dealing with OpenMap code. The Shape files start their indexes at 1,
+     * it's converted at import to match java convention.
      * 
      * @param graphic
      * @param index
@@ -205,7 +207,7 @@ public class DrawingAttributesUtility implements ShapeConstants {
         }
         DrawingAttributesUtility dau = new DrawingAttributesUtility(model);
         dau.setDefaultAttributes(defaultDA);
-        int index = 1;
+        int index = 0;
         for (OMGraphic graphic : list) {
             dau.setDrawingAttributes(graphic, index++);
         }

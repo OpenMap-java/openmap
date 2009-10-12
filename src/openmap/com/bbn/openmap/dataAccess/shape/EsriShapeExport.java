@@ -347,7 +347,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * Gets the DbfTableModel record at the index. Used when the OMGraphicList
      * contents are being split up into different type EsriGraphicLists, and the
      * records are being split into different tables, too. Remember, the index
-     * array starts at 1 for the first row.
+     * array starts at 0 for the first row.
      */
     protected List<Object> getMasterDBFRecord(int index) {
         try {
@@ -451,7 +451,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
             return;
         }
 
-        int dbfIndex = 1;
+        int dbfIndex = 0;
 
         // parse the graphic list and fill the individual lists with
         // the appropriate shape types

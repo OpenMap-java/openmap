@@ -213,7 +213,7 @@ public class EsriGraphicFactory implements ShapeConstants {
         OMGraphic omg = makeEsriGraphic(shp, drawingAttributes,
                                         pointRepresentation, byteTracker);
         if (omg != null) {
-            omg.putAttribute(SHAPE_INDEX_ATTRIBUTE, new Integer(recordNumber));
+            omg.putAttribute(SHAPE_INDEX_ATTRIBUTE, new Integer(recordNumber - 1));
         }
 
         return omg;
@@ -234,7 +234,7 @@ public class EsriGraphicFactory implements ShapeConstants {
         OMGraphic omg = makeEsriGraphic(iStream, drawingAttributes,
                                         pointRepresentation, byteTracker);
         if (omg != null) {
-            omg.putAttribute(SHAPE_INDEX_ATTRIBUTE, new Integer(recordNumber));
+            omg.putAttribute(SHAPE_INDEX_ATTRIBUTE, new Integer(recordNumber - 1));
         }
 
         return omg;

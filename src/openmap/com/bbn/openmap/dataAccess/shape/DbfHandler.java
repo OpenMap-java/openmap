@@ -285,9 +285,7 @@ public class DbfHandler extends OMComponent {
 
         if (obj instanceof Integer) {
             Integer index = (Integer) obj;
-            // Off by one, the index in the shp file starts at 1,
-            // the dbf starts at 0
-            return evaluate(index.intValue() - 1, omg, labelList, proj);
+            return evaluate(index.intValue(), omg, labelList, proj);
         }
 
         return omg;

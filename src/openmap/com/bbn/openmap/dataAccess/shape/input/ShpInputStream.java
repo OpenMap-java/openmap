@@ -173,8 +173,9 @@ public class ShpInputStream implements ShapeConstants {
                 float f2 = (float) phi;
 
                 point = new EsriPoint(f2, f1);
+                // We reset the index to be based at 0 instead of 1, following Java convention.
                 point.putAttribute(SHAPE_INDEX_ATTRIBUTE,
-                                   new Integer(shpRecord));
+                                   new Integer(shpRecord - 1));
                 if (drawingAttributes != null) {
                     drawingAttributes.setTo(point);
                 } else {
@@ -232,7 +233,8 @@ public class ShpInputStream implements ShapeConstants {
         int numShapes = indexData[1].length;
 
         for (int t = 0; t < numShapes; t++) {
-            Integer shpRecordIndex = new Integer(_leis.readInt());
+            // Resetting the index to be based on 0 instead of 1, following Java convention.
+            Integer shpRecordIndex = new Integer(_leis.readInt() - 1);
             /* int shpContentLength = */_leis.readInt();
             int shpType = _leis.readLEInt();
 

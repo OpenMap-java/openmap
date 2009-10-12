@@ -332,9 +332,11 @@ public class DbfTableModel extends AbstractTableModel implements ShapeConstants,
     }
 
     /**
-     * Retrieves the record array list for the passed record number. Off by one,
-     * Shape file records start their indexes at 1. This is the number attribute
-     * stored in the EsriGraphic.
+     * Retrieves the record array list for the passed record number. In OpenMap,
+     * Shape file records start their indexes at 0. This is the number attribute
+     * stored in the EsriGraphic. Note: The Shape Specification and Shape files
+     * contain indexes starting at 0. Make sure you don't get bit by an
+     * off-by-one situation.
      * 
      * @param recordnumber
      *            The record number
@@ -342,7 +344,7 @@ public class DbfTableModel extends AbstractTableModel implements ShapeConstants,
      */
     public List<Object> getRecord(int recordnumber) {
         try {
-            return _records.get(recordnumber - 1);
+            return _records.get(recordnumber);
         } catch (ArrayIndexOutOfBoundsException aioobe) {
             return null;
         }
@@ -1194,7 +1196,7 @@ public class DbfTableModel extends AbstractTableModel implements ShapeConstants,
         // Take the contents (rows) of the DbfTableModel, store them in the
         // OMGraphics, do the action on the list, then reset the DbfTableModel.
         // Reset the indexes in the OMGraphics.
-        int indexCount = 1;
+        int indexCount = 0;
         for (OMGraphic omg : list) {
             Integer index = (Integer) omg.getAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE);
             if (index != null) {
@@ -1218,7 +1220,7 @@ public class DbfTableModel extends AbstractTableModel implements ShapeConstants,
 
         _records.clear();
 
-        indexCount = 1;
+        indexCount = 0;
         for (OMGraphic omg : list) {
             _records.add((List<Object>) omg.getAttribute(SHAPE_DBF_INFO_ATTRIBUTE));
             omg.putAttribute(SHAPE_DBF_INFO_ATTRIBUTE, null);

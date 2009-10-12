@@ -293,8 +293,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
         // If list == null, model will be too.
         if (list != null) {
             // Might as well set the index
-            graphic.putAttribute(SHAPE_INDEX_ATTRIBUTE,
-                    new Integer(list.size() + 1));
+            graphic.putAttribute(SHAPE_INDEX_ATTRIBUTE, new Integer(list.size()));
             list.add(graphic);
             _model.addRecord(record);
         } else {
@@ -791,7 +790,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
 
                 Integer I = ((Integer) omg.getAttribute(SHAPE_INDEX_ATTRIBUTE));
                 if (I != null) {
-                    index = I.intValue() - 1;
+                    index = I.intValue();
                 } else {
                     index = list.indexOf(omg);
                 }

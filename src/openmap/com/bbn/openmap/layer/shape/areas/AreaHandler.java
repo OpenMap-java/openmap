@@ -468,8 +468,7 @@ public class AreaHandler implements PropertyConsumer {
 
     protected void updateDrawingParameters(OMGraphicList omgl) {
         if (omgl != null) {
-            for (Iterator it = omgl.iterator(); it.hasNext();) {
-                OMGraphic omg = (OMGraphic) it.next();
+            for (OMGraphic omg : omgl) {
                 Integer recNum = (Integer) omg.getAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE);
                 if (recNum != null) {
                     getDrawParams(recNum.intValue()).setTo(omg);
@@ -695,10 +694,6 @@ public class AreaHandler implements PropertyConsumer {
             return drawingAttributes;
         }
 
-        // OFF BY ONE!!! The shape record numbers
-        // assigned to the records start with 1, while
-        // everything else we do starts with 0...
-        // Vector info = infoFile.getRecord(recordNumber-1);
         if (dbfModel == null || dbfModel.getRowCount() < recordNumber) {
             if (Debug.debugging("areas")) {
                 Debug.output("AreaHandler.getDrawParameters: record " + recordNumber
@@ -707,7 +702,7 @@ public class AreaHandler implements PropertyConsumer {
             return drawingAttributes;
         }
 
-        Object keyObj = dbfModel.getValueAt(recordNumber - 1, keyIndex);
+        Object keyObj = dbfModel.getValueAt(recordNumber, keyIndex);
         String key = null;
         PoliticalArea pa = null;
 
@@ -802,10 +797,10 @@ public class AreaHandler implements PropertyConsumer {
                     OMGraphic omg = list.getOMGraphicAt(i);
                     Integer recnum = (Integer) (omg.getAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE));
                     // OFF BY ONE!!! The shape record numbers
-                    // assigned to the records start with 1, while
+                    // assigned to the records start with 0, while
                     // everything else we do starts with 0. The DbfTableModel
-                    // knows this and starts at 1. The integer stored in the OMG
-                    // should know it too.
+                    // follows java convention and starts at 0. The integer
+                    // stored in the OMG should know it too.
                     Object inforec = dbfModel.getRecord(recnum.intValue());
                     omg.putAttribute(ShapeConstants.SHAPE_DBF_INFO_ATTRIBUTE, inforec);
                 } catch (ClassCastException cce) {
