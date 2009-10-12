@@ -170,11 +170,13 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * ensure that the first and last coordinate pairs are the same.
      * </ul>
      * 
-     * @param llPoints array of lat/lon points, arranged lat, lon, lat, lon,
-     *        etc.
-     * @param units radians or decimal degrees. Use OMGraphic.RADIANS or
-     *        OMGraphic.DECIMAL_DEGREES
-     * @param lType line type, from a list defined in OMGraphic.
+     * @param llPoints
+     *            array of lat/lon points, arranged lat, lon, lat, lon, etc.
+     * @param units
+     *            radians or decimal degrees. Use OMGraphic.RADIANS or
+     *            OMGraphic.DECIMAL_DEGREES
+     * @param lType
+     *            line type, from a list defined in OMGraphic.
      */
     public OMPoly(double[] llPoints, int units, int lType) {
         this(llPoints, units, lType, -1);
@@ -192,14 +194,17 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * ensure that the first and last coordinate pairs are the same.
      * </ul>
      * 
-     * @param llPoints array of lat/lon points, arranged lat, lon, lat, lon,
-     *        etc.
-     * @param units radians or decimal degrees. Use OMGraphic.RADIANS or
-     *        OMGraphic.DECIMAL_DEGREES
-     * @param lType line type, from a list defined in OMGraphic.
-     * @param nsegs number of segment points (only for LINETYPE_GREATCIRCLE or
-     *        LINETYPE_RHUMB line types, and if &lt; 1, this value is generated
-     *        internally)
+     * @param llPoints
+     *            array of lat/lon points, arranged lat, lon, lat, lon, etc.
+     * @param units
+     *            radians or decimal degrees. Use OMGraphic.RADIANS or
+     *            OMGraphic.DECIMAL_DEGREES
+     * @param lType
+     *            line type, from a list defined in OMGraphic.
+     * @param nsegs
+     *            number of segment points (only for LINETYPE_GREATCIRCLE or
+     *            LINETYPE_RHUMB line types, and if &lt; 1, this value is
+     *            generated internally)
      */
     public OMPoly(double[] llPoints, int units, int lType, int nsegs) {
         super(RENDERTYPE_LATLON, lType, DECLUTTERTYPE_NONE);
@@ -212,7 +217,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * connected, you need to ensure that the first and last coordinate pairs
      * are the same.
      * 
-     * @param xypoints array of x/y points, arranged x, y, x, y, etc.
+     * @param xypoints
+     *            array of x/y points, arranged x, y, x, y, etc.
      */
     public OMPoly(int[] xypoints) {
         super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
@@ -223,8 +229,10 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * Create an x/y OMPoly. If you want the poly to be connected, you need to
      * ensure that the first and last coordinate pairs are the same.
      * 
-     * @param xPoints int[] of x coordinates
-     * @param yPoints int[] of y coordinates
+     * @param xPoints
+     *            int[] of x coordinates
+     * @param yPoints
+     *            int[] of y coordinates
      */
     public OMPoly(int[] xPoints, int[] yPoints) {
         super(RENDERTYPE_XY, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
@@ -237,10 +245,14 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * be connected, you need to ensure that the first and last coordinate pairs
      * are the same.
      * 
-     * @param latPoint latitude in decimal degrees
-     * @param lonPoint longitude in decimal degrees
-     * @param xypoints int[] of x,y pairs
-     * @param cMode offset coordinate mode
+     * @param latPoint
+     *            latitude in decimal degrees
+     * @param lonPoint
+     *            longitude in decimal degrees
+     * @param xypoints
+     *            int[] of x,y pairs
+     * @param cMode
+     *            offset coordinate mode
      */
     public OMPoly(double latPoint, double lonPoint, int[] xypoints, int cMode) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
@@ -254,21 +266,22 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * be connected, you need to ensure that the first and last coordinate pairs
      * are the same.
      * 
-     * @param latPoint latitude in decimal degrees
-     * @param lonPoint longitude in decimal degrees
-     * @param xPoints int[] of x coordinates
-     * @param yPoints int[] of y coordinates
-     * @param cMode offset coordinate mode
+     * @param latPoint
+     *            latitude in decimal degrees
+     * @param lonPoint
+     *            longitude in decimal degrees
+     * @param xPoints
+     *            int[] of x coordinates
+     * @param yPoints
+     *            int[] of y coordinates
+     * @param cMode
+     *            offset coordinate mode
      */
     public OMPoly(double latPoint, double lonPoint, int[] xPoints, int[] yPoints,
             int cMode) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
-        setLocation(latPoint,
-                lonPoint,
-                OMGraphic.DECIMAL_DEGREES,
-                xPoints,
-                yPoints);
+        setLocation(latPoint, lonPoint, OMGraphic.DECIMAL_DEGREES, xPoints, yPoints);
         coordMode = cMode;
     }
 
@@ -285,10 +298,11 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * </ul>
      * This is for RENDERTYPE_LATLON polys.
      * 
-     * @param llPoints array of lat/lon points, arranged lat, lon, lat, lon,
-     *        etc.
-     * @param units radians or decimal degrees. Use OMGraphic.RADIANS or
-     *        OMGraphic.DECIMAL_DEGREES
+     * @param llPoints
+     *            array of lat/lon points, arranged lat, lon, lat, lon, etc.
+     * @param units
+     *            radians or decimal degrees. Use OMGraphic.RADIANS or
+     *            OMGraphic.DECIMAL_DEGREES
      */
     public void setLocation(double[] llPoints, int units) {
         this.units = OMGraphic.RADIANS;
@@ -305,7 +319,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * connected, you need to ensure that the first and last coordinate pairs
      * are the same. This is for RENDERTYPE_XY polys.
      * 
-     * @param xypoints array of x/y points, arranged x, y, x, y, etc.
+     * @param xypoints
+     *            array of x/y points, arranged x, y, x, y, etc.
      */
     public void setLocation(int[] xypoints) {
         int end = xypoints.length >> 1;
@@ -324,8 +339,10 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * connected, you need to ensure that the first and last coordinate pairs
      * are the same. This is for RENDERTYPE_XY polys.
      * 
-     * @param xPoints int[] of x coordinates
-     * @param yPoints int[] of y coordinates
+     * @param xPoints
+     *            int[] of x coordinates
+     * @param yPoints
+     *            int[] of y coordinates
      */
     public void setLocation(int[] xPoints, int[] yPoints) {
         xs = xPoints;
@@ -339,14 +356,17 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * coordinate mode and the polygon setting are the same as in the
      * constructor used. This is for RENDERTYPE_OFFSET polys.
      * 
-     * @param latPoint latitude in decimal degrees
-     * @param lonPoint longitude in decimal degrees
-     * @param units radians or decimal degrees. Use OMGraphic.RADIANS or
-     *        OMGraphic.DECIMAL_DEGREES
-     * @param xypoints array of x/y points, arranged x, y, x, y, etc.
+     * @param latPoint
+     *            latitude in decimal degrees
+     * @param lonPoint
+     *            longitude in decimal degrees
+     * @param units
+     *            radians or decimal degrees. Use OMGraphic.RADIANS or
+     *            OMGraphic.DECIMAL_DEGREES
+     * @param xypoints
+     *            array of x/y points, arranged x, y, x, y, etc.
      */
-    public void setLocation(double latPoint, double lonPoint, int units,
-                            int[] xypoints) {
+    public void setLocation(double latPoint, double lonPoint, int units, int[] xypoints) {
         this.units = OMGraphic.RADIANS;
         if (units == OMGraphic.DECIMAL_DEGREES) {
             lat = ProjMath.degToRad(latPoint);
@@ -371,15 +391,20 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * coordinate mode and the polygon setting are the same as in the
      * constructor used. This is for RENDERTYPE_OFFSET polys.
      * 
-     * @param latPoint latitude in decimal degrees
-     * @param lonPoint longitude in decimal degrees
-     * @param units radians or decimal degrees. Use OMGraphic.RADIANS or
-     *        OMGraphic.DECIMAL_DEGREES
-     * @param xPoints int[] of x coordinates
-     * @param yPoints int[] of y coordinates
+     * @param latPoint
+     *            latitude in decimal degrees
+     * @param lonPoint
+     *            longitude in decimal degrees
+     * @param units
+     *            radians or decimal degrees. Use OMGraphic.RADIANS or
+     *            OMGraphic.DECIMAL_DEGREES
+     * @param xPoints
+     *            int[] of x coordinates
+     * @param yPoints
+     *            int[] of y coordinates
      */
-    public void setLocation(double latPoint, double lonPoint, int units,
-                            int[] xPoints, int[] yPoints) {
+    public void setLocation(double latPoint, double lonPoint, int units, int[] xPoints,
+                            int[] yPoints) {
         this.units = OMGraphic.RADIANS;
         if (units == OMGraphic.DECIMAL_DEGREES) {
             lat = ProjMath.degToRad(latPoint);
@@ -481,7 +506,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * poly is a polygon (connected and filled), otherwise it's a polyline
      * (non-filled).
      * 
-     * @param paint value Color
+     * @param paint
+     *            value Color
      */
     public void setFillPaint(Paint paint) {
         super.setFillPaint(paint);
@@ -522,7 +548,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and if &lt; 1,
      * this value is generated internally).
      * 
-     * @param nsegs number of segment points
+     * @param nsegs
+     *            number of segment points
      */
     public void setNumSegs(int nsegs) {
         this.nsegs = nsegs;
@@ -569,7 +596,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     /**
      * Prepare the poly for rendering.
      * 
-     * @param proj Projection
+     * @param proj
+     *            Projection
      * @return true if generate was successful
      */
     public boolean generate(Projection proj) {
@@ -592,8 +620,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
 
         case RENDERTYPE_XY:
             if (xs == null) {
-                Debug.message("omgraphic",
-                        "OMPoly x/y rendertype null coordinates");
+                Debug.message("omgraphic", "OMPoly x/y rendertype null coordinates");
                 return false;
             }
 
@@ -607,8 +634,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
 
         case RENDERTYPE_OFFSET:
             if (xs == null) {
-                Debug.message("omgraphic",
-                        "OMPoly offset rendertype null coordinates");
+                Debug.message("omgraphic", "OMPoly offset rendertype null coordinates");
                 return false;
             }
 
@@ -655,10 +681,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                     ProjMath.arrayDegToRad(rawllpts);
                     units = RADIANS;
                 }
-                vector = ((GeoProj) proj).forwardPoly(rawllpts,
-                        lineType,
-                        nsegs,
-                        isPolygon);
+                vector = ((GeoProj) proj).forwardPoly(rawllpts, lineType, nsegs,
+                                                      isPolygon);
             } else {
                 if (units == RADIANS) {
                     ProjMath.arrayRadToDeg(rawllpts);
@@ -734,7 +758,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     /**
      * Paint the poly. This works if generate() has been successful.
      * 
-     * @param g java.awt.Graphics to paint the poly onto.
+     * @param g
+     *            java.awt.Graphics to paint the poly onto.
      */
     public void render(Graphics g) {
         if (shape != null) {
@@ -803,9 +828,9 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                     if (matted || !isLineClear || !edgeMatchesFill) {
 
                         if (matted) {
-                            if (g instanceof Graphics2D
-                                    && stroke instanceof BasicStroke) {
-                                ((Graphics2D) g).setStroke(new BasicStroke(((BasicStroke) stroke).getLineWidth() + 2f));
+                            if (g instanceof Graphics2D && stroke instanceof BasicStroke) {
+                                ((Graphics2D) g).setStroke(new BasicStroke(
+                                        ((BasicStroke) stroke).getLineWidth() + 2f));
                                 setGraphicsColor(g, mattingPaint);
                                 g.drawPolyline(_x, _y, _x.length);
                             }
@@ -822,9 +847,9 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                 else {
 
                     if (matted) {
-                        if (g instanceof Graphics2D
-                                && stroke instanceof BasicStroke) {
-                            ((Graphics2D) g).setStroke(new BasicStroke(((BasicStroke) stroke).getLineWidth() + 2f));
+                        if (g instanceof Graphics2D && stroke instanceof BasicStroke) {
+                            ((Graphics2D) g).setStroke(new BasicStroke(
+                                    ((BasicStroke) stroke).getLineWidth() + 2f));
                             // Just to draw the matting for the
                             // arrowhead.
                             if (arrowhead != null) {
@@ -850,8 +875,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
 
         } catch (Exception e) {
             // Trying to catch any clipping problems from within a JRE
-            Debug.output("OMPoly: caught Java rendering exception\n"
-                    + e.getMessage());
+            Debug.output("OMPoly: caught Java rendering exception\n" + e.getMessage());
             if (Debug.debugging("ompoly")) {
                 e.printStackTrace();
             }
@@ -862,8 +886,10 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * Return the shortest distance from the graphic to an XY-point. This works
      * if generate() has been successful.
      * 
-     * @param x horizontal pixel location.
-     * @param y vertical pixel location.
+     * @param x
+     *            horizontal pixel location.
+     * @param y
+     *            vertical pixel location.
      * @return the distance of the object to the location given.
      */
     public float distance(double x, double y) {
@@ -1008,4 +1034,132 @@ public class OMPoly extends OMAbstractLine implements Serializable {
         return this.units;
     }
 
+    /**
+     * Convenience function for adding some coordinates to the polygon, for
+     * lat/lon polygons. Might be tricky for closed polygons, you might want to
+     * consider the index and not make them the starting or end point to
+     * preserve closed property.
+     * 
+     * @param latlons
+     *            the set of coordinates to add, in radians. Use
+     *            ProjMath.arrayDegToRad() if you need to convert decimal
+     *            degrees.
+     * @param coordPairIndex
+     *            index of the coordinate pair to insert coordinates. 0 is the
+     *            start of the polygon, 1 means the latlons will be inserted
+     *            after the first original coordinate pair, etc.
+     * @param replaceEndsOfInsertedAtJoin
+     *            flad to indicate whether the coordinates at the end of the
+     *            inserted latlons array should be removed before insertion. If
+     *            the coordinate list is being added to the start or end of the
+     *            polygon, only the coordinate pair connecting to the original
+     *            poly will be removed.
+     */
+    public void insertRadians(double[] latlons, int coordPairIndex,
+                              boolean replaceEndsOfInsertedAtJoin) {
+        int minPntsNeededForInsertion = 2;
+        boolean atEnd = false;
+        // Test for closed polygon to adjust the insertion point a little to preserve closedness.
+        boolean isClosed = isGeometryClosed();
+
+        int insertionPoint = coordPairIndex * 2;
+        if (insertionPoint >= rawllpts.length) {
+            if (isClosed) {
+                insertionPoint = rawllpts.length - 2;
+            } else {
+                insertionPoint = rawllpts.length;
+                atEnd = true;
+            }
+        } else if (insertionPoint <= 0) {
+            if (isClosed) {
+                insertionPoint = 2;
+            } else {
+                insertionPoint = 0;
+                atEnd = true;
+            }
+        }
+
+        int newCoordStart = 0;
+        int newCoordLength = latlons.length;
+
+        if (replaceEndsOfInsertedAtJoin) {
+            newCoordStart = 2;
+            minPntsNeededForInsertion = 6;
+
+            if (atEnd) {
+                minPntsNeededForInsertion -= 2;
+                newCoordLength -= 2;
+
+                if (insertionPoint == 0) {
+                    newCoordStart = 0;
+                }
+
+            } else {
+                newCoordLength -= 4;
+            }
+
+        }
+
+        if (renderType == OMGraphic.RENDERTYPE_LATLON && latlons != null
+                && latlons.length >= minPntsNeededForInsertion && latlons.length % 2 == 0) {
+            double[] oldrawllpnts = rawllpts;
+            int oldCoordsRemaining = oldrawllpnts.length - insertionPoint;
+
+            rawllpts = new double[oldrawllpnts.length + newCoordLength];
+
+            System.arraycopy(oldrawllpnts, 0, rawllpts, 0, insertionPoint);
+            System.arraycopy(latlons, newCoordStart, rawllpts, insertionPoint,
+                             newCoordLength);
+            System.arraycopy(oldrawllpnts, insertionPoint, rawllpts, insertionPoint
+                    + newCoordLength, oldCoordsRemaining);
+
+            setNeedToRegenerate(true);
+        }
+    }
+
+    public static void main(String[] argv) {
+        double[] origPoints = new double[] { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0 };
+        double[] insertionPoints = new double[] { 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8 };
+        OMPoly poly = new OMPoly(origPoints, OMGraphic.RADIANS,
+                OMGraphic.LINETYPE_GREATCIRCLE);
+        poly.insertRadians(insertionPoints, 2, true);
+        double[] pnts = poly.getLatLonArray();
+        System.out.println("--------- in middle, replacing join points");
+        for (int i = 0; i < pnts.length; i++) {
+            System.out.println("pnt[" + i + "]: " + pnts[i]);
+        }
+
+        poly.setLocation(origPoints, OMGraphic.RADIANS);
+        poly.insertRadians(insertionPoints, 0, true);
+        pnts = poly.getLatLonArray();
+        System.out.println("--------- at start, replacing join points");
+        for (int i = 0; i < pnts.length; i++) {
+            System.out.println("pnt[" + i + "]: " + pnts[i]);
+        }
+
+        poly.setLocation(origPoints, OMGraphic.RADIANS);
+        poly.insertRadians(insertionPoints, origPoints.length / 2, true);
+        pnts = poly.getLatLonArray();
+        System.out.println("--------- at end, replacing join points");
+        for (int i = 0; i < pnts.length; i++) {
+            System.out.println("pnt[" + i + "]: " + pnts[i]);
+        }
+
+        poly.setLocation(origPoints, OMGraphic.RADIANS);
+        poly.insertRadians(insertionPoints, 6, false);
+        pnts = poly.getLatLonArray();
+        System.out.println("--------- overrun end, not replacing join points");
+        for (int i = 0; i < pnts.length; i++) {
+            System.out.println("pnt[" + i + "]: " + pnts[i]);
+        }
+
+        poly.setLocation(origPoints, OMGraphic.RADIANS);
+        poly.insertRadians(insertionPoints, -2, false);
+        pnts = poly.getLatLonArray();
+        System.out.println("--------- overrun start, not replacing join points");
+        for (int i = 0; i < pnts.length; i++) {
+            System.out.println("pnt[" + i + "]: " + pnts[i]);
+        }
+
+    }
 }
