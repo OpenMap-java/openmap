@@ -26,6 +26,7 @@ import com.bbn.openmap.layer.util.http.HttpConnection;
 import com.bbn.openmap.util.Debug;
 
 import java.util.*;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 /**
@@ -83,5 +84,15 @@ public class AcmeGifFormatter extends AbstractImageFormatter {
     public String getContentType() {
         return HttpConnection.CONTENT_GIF;
     }
+
+	@Override
+	protected boolean imageFormatSupportAlphaChannel() {
+		return false;
+	}
+
+	@Override
+	protected boolean imageFormatSupportTransparentPixel() {
+		return true;
+	}
 
 }

@@ -77,6 +77,8 @@ public interface ImageFormatter {
      */
     public java.awt.Graphics getGraphics(int width, int height);
 
+    public java.awt.Graphics getGraphics(int width, int height, boolean alpha);
+    
     /**
      * Return the BufferedImage contained within the formatter.
      * 
@@ -130,5 +132,5 @@ public interface ImageFormatter {
      * Get the Mime Content Type created by the ImageFormatter.
      */
     public String getContentType();
-
+    
 }

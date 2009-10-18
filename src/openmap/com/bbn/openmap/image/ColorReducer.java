@@ -21,7 +21,7 @@ public class ColorReducer {
 
     private ColorReducer() {
     }
-
+    
     /**
      * Reduce a 24 bit image to the given number of colors. Support fully
      * transparent pixels, but not partially transparent pixels.
@@ -37,19 +37,23 @@ public class ColorReducer {
         boolean[][] transparent = new boolean[width][height];
 
         WritableRaster r1 = bi.getRaster();
+        boolean inputHasAlpha = bi.getColorModel().hasAlpha();
         int[] argb = new int[4];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 // this is easier than bi.getRGB, but still heavy
                 argb = r1.getPixel(x, y, argb);
-                int a = argb[3];
                 int r = argb[0];
                 int g = argb[1];
                 int b = argb[2];
-                pixels[x][y] = (a << 24) | (r << 16) | (g << 8) | (b);
+                pixels[x][y] = /*(a << 24) |*/ (r << 16) | (g << 8) | (b);
 
-                // decide if pixel is transparent or not
-                transparent[x][y] = (a < 128) ? true : false;
+                if (inputHasAlpha) {
+					int a = argb[3];
+					pixels[x][y] = pixels[x][y] | (a << 24);
+					// decide if pixel is transparent or not
+					transparent[x][y] = (a < 128) ? true : false;
+				}
             }
         }
 

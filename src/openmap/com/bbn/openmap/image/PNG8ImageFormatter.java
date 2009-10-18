@@ -15,7 +15,12 @@ public class PNG8ImageFormatter extends ImageIOFormatter {
     }
 
     public byte[] formatImage(BufferedImage bi) {
-        BufferedImage reducedImage = ColorReducer.reduce32(bi, 256);
+        BufferedImage reducedImage = null;
+        if (bi.getColorModel().hasAlpha()) {
+			reducedImage = ColorReducer.reduce32(bi, 256);
+		} else {
+			reducedImage = ColorReducer.reduce24(bi, 256);
+		}
         try {
             ByteArrayOutputStream byo = new ByteArrayOutputStream();
             ImageIO.write(reducedImage, getFormatName(), byo);
@@ -41,5 +46,15 @@ public class PNG8ImageFormatter extends ImageIOFormatter {
     public String getFormatLabel() {
         return WMTConstants.IMAGEFORMAT_PNG + "8";
     }
+
+	@Override
+	protected boolean imageFormatSupportAlphaChannel() {
+		return true;
+	}
+
+	@Override
+	protected boolean imageFormatSupportTransparentPixel() {
+		return true;
+	}
 
 }

@@ -5,62 +5,74 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bbn.openmap.image.ImageFormatter;
+import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.proj.coords.CoordinateReferenceSystem;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
-class GetMapRequestParameters implements FormatRequestParameter, WidthAndHeightRequestParameters {
+class GetMapRequestParameters implements FormatRequestParameter,
+		WidthAndHeightRequestParameters {
 
-    public int width;
+	public int width;
 
-    public int height;
+	public int height;
 
-    public CoordinateReferenceSystem crs;
+	public CoordinateReferenceSystem crs;
 
-    public LatLonPoint bboxLatLonMinXY;
+	public LatLonPoint bboxLatLonMinXY;
 
-    public LatLonPoint bboxLatLonMaxXY;
+	public LatLonPoint bboxLatLonMaxXY;
 
-    public LatLonPoint bboxLatLonCenter;
+	public LatLonPoint bboxLatLonCenter;
 
-    public ImageFormatter formatter;
+	public ImageFormatter formatter;
 
-    public Paint background;
-    
-    /**
-     * All wms layer names as they appear in the LAYERS-element of the request.
-     * Some of the layer names may be to a nested layer.
-     */
-    public final List<String> layerNames = new ArrayList<String>();
+	private boolean transparent = true;
 
-    /**
-     * All top level layer names for each of the layer names. So, if the request
-     * has two sub level layer names with the same top level layer name, this
-     * list will only have that single top level layer name.
-     */
-    public final List<String> topLayerNames = new ArrayList<String>();
+	public Paint background = OMColor.clear;
 
-    public ImageFormatter getFormatter() {
-        return formatter;
-    }
+	/**
+	 * All wms layer names as they appear in the LAYERS-element of the request.
+	 * Some of the layer names may be to a nested layer.
+	 */
+	public final List<String> layerNames = new ArrayList<String>();
 
-    public void setFormatter(ImageFormatter formatter) {
-        this.formatter = formatter;
-    }
+	/**
+	 * All top level layer names for each of the layer names. So, if the request
+	 * has two sub level layer names with the same top level layer name, this
+	 * list will only have that single top level layer name.
+	 */
+	public final List<String> topLayerNames = new ArrayList<String>();
 
-    public int getHeight() {
-        return height;
-    }
+	public ImageFormatter getFormatter() {
+		return formatter;
+	}
 
-    public int getWidth() {
-        return width;
-    }
+	public void setFormatter(ImageFormatter formatter) {
+		this.formatter = formatter;
+	}
 
-    public void setHeight(int height) {
-        this.height = height;
-    }
+	public int getHeight() {
+		return height;
+	}
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
-    
+	public int getWidth() {
+		return width;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public void setTransparent(boolean transparent) {
+		this.transparent = transparent;
+	}
+
+	public boolean getTransparent() {
+		return transparent;
+	}
+
 }

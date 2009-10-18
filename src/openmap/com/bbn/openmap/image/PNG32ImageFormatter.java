@@ -19,5 +19,16 @@ public class PNG32ImageFormatter extends ImageIOFormatter {
     public String getFormatLabel() {
         return WMTConstants.IMAGEFORMAT_PNG + "32";
     }
+    
+	@Override
+	protected boolean imageFormatSupportAlphaChannel() {
+		return true;
+	}
+
+	@Override
+	protected boolean imageFormatSupportTransparentPixel() {
+		return true;
+	}
+
 
 }

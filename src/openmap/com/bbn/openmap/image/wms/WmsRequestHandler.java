@@ -6,6 +6,7 @@
  */
 package com.bbn.openmap.image.wms;
 
+import java.awt.Color;
 import java.awt.Paint;
 import java.awt.Point;
 import java.awt.geom.Point2D;
@@ -26,11 +27,9 @@ import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.image.ImageFormatter;
 import com.bbn.openmap.image.ImageServer;
 import com.bbn.openmap.image.ImageServerConstants;
-import com.bbn.openmap.image.ImageServerUtils;
 import com.bbn.openmap.image.MapRequestFormatException;
 import com.bbn.openmap.layer.util.http.HttpConnection;
 import com.bbn.openmap.layer.util.http.IHttpResponse;
-import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.proj.AspectRatioProjection;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Proj;
@@ -899,18 +898,35 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
     private void checkBackground(Properties requestProperties, GetMapRequestParameters parameters)
             throws WMSException {
         String test = requestProperties.getProperty(TRANSPARENT);
-        if ((test != null)
-                && (test.equals("0") && test.equals("1") && test.equalsIgnoreCase("TRUE") && test
-                        .equalsIgnoreCase("FALSE"))) {
-            throw new WMSException(
-                    "Invalid TRANSPARENT format. Please specify a boolean value (0,1,FALSE,TRUE)");
-        }
+        if (test != null) {
+			if (test.equals("1") || test.equalsIgnoreCase("TRUE")) {
+				parameters.setTransparent(true);
+			} else if (test.equals("0") || test.equalsIgnoreCase("FALSE")) {
+				parameters.setTransparent(false);
+			} else {
+				throw new WMSException("Invalid TRANSPARENT format '" + test
+						+ "'. Please specify a boolean value (0,1,FALSE,TRUE)");
+			}
+		}
         test = requestProperties.getProperty(BGCOLOR);
-        if ((test != null) && !Pattern.matches("0x[0-9a-fA-F]{6}", test)) {
-            throw new WMSException("Invalid BGCOLOR format. Please specify an hexadecimal"
-                    + " number in the form 0xXXXXXX, where X is a hexadecimal digit (0..9,A-F)");
-        }
-        parameters.background = ImageServerUtils.getBackground(requestProperties, OMColor.clear);
+        if (test != null) {
+			if (Pattern.matches("0x[0-9a-fA-F]{6}", test)) {
+				// for some reason, ColorFactory.parseColor(test) always return black..
+				parameters.background = Color.decode(test);
+				
+				// wms only allow for 24 bit BGCOLOR without transparency, so if
+				// there is a BGCOLOR, the image will not be transparent
+				parameters.setTransparent(false);
+			} else {
+				throw new WMSException(
+						"Invalid BGCOLOR format. Please specify an hexadecimal"
+								+ " number in the form 0xXXXXXX, where X is a hexadecimal digit (0..9,A-F)");
+			}
+		}
+        
+        // hint to the ImageServer
+        setTransparent(parameters.getTransparent());
+        setBackground(parameters.background);
     }
 
 }

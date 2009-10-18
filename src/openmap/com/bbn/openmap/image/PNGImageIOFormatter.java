@@ -40,5 +40,15 @@ public class PNGImageIOFormatter extends ImageIOFormatter {
         return HttpConnection.CONTENT_PNG;
     }
 
+	@Override
+	protected boolean imageFormatSupportAlphaChannel() {
+		return true;
+	}
+
+	@Override
+	protected boolean imageFormatSupportTransparentPixel() {
+		return true;
+	}
+
 }
 

@@ -14,6 +14,7 @@
 package com.bbn.openmap.wmsservlet;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Properties;
 
 import javax.servlet.ServletException;
@@ -48,25 +49,44 @@ public class OgcWmsServlet extends HttpServlet {
             String key = (String) keys.nextElement();
             String value = request.getParameter(key);
             if (value != null) {
-                // A wms client can send lowercase request parameters. like
-                // Metacarta TileCache
+                // A wms client can send lowercase request parameters.
                 key = key.toUpperCase();
                 props.put(key, value);
             }
         }
         return props;
     }
+    
+    /**
+	 * Get a {@link Properties} object with the content of openmap.properties.
+	 * No request specific properties are included.
+	 * 
+	 * @return
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	protected Properties getProperties() throws MalformedURLException,
+			IOException {
+
+		// use context parameter "mapDefinition" for path to openmap.properties.
+		// default to "openmap.properties".
+		String mapDefinition = getServletContext().getInitParameter(
+				"mapDefinition");
+		if (mapDefinition == null) {
+			mapDefinition = "openmap.properties";
+		}
+		Debug.message("wms", "Using map definition:" + mapDefinition);
+
+		PropertyHandler propHandler = new PropertyHandler(mapDefinition);
+		Properties props = propHandler.getProperties();
+
+		return props;
+	}
 
     protected WmsRequestHandler createRequestHandler(HttpServletRequest request) throws ServletException,
             IOException {
         Debug.message("wms", "OgcWmsServlet.createRequestHandler : ");
 
-        // use context parameter "mapDefinition" for path to openmap.properties.
-        // default to "openmap.properties".
-        String mapDefinition = getServletContext().getInitParameter("mapDefinition");
-        if (mapDefinition == null) {
-            mapDefinition = "openmap.properties";
-        }
         
         String schema = request.getScheme();
         if (schema == null) {
@@ -97,12 +117,9 @@ public class OgcWmsServlet extends HttpServlet {
             servletPathInfo = "";
         }
 
-        Debug.message("wms", "Using map definition:" + mapDefinition);
         try {
-            PropertyHandler propHandler = new PropertyHandler(mapDefinition);
-            Properties props = propHandler.getProperties();
             WmsRequestHandler wmsRequestHandler = new WmsRequestHandler(schema, hostName,
-                    serverPort, contextPath + servletPath + servletPathInfo, props);
+                    serverPort, contextPath + servletPath + servletPathInfo, getProperties());
             return wmsRequestHandler;
         } catch (java.net.MalformedURLException me) {
             Debug.message("wms", "MS: caught MalformedURLException - \n" + me.getMessage());

@@ -79,6 +79,24 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
      *         properties set.
      */
     public abstract ImageFormatter makeClone();
+    
+    /**
+	 * Return true if the image format support fully transparent pixels. The
+	 * returned value represent the capability of the image format, not the
+	 * current color model.
+	 * 
+	 * @return
+	 */
+	protected abstract boolean imageFormatSupportTransparentPixel();
+
+	/**
+	 * Return true if the image format support alpha channel. The returned value
+	 * represent the capability of the image format, not the current color
+	 * model.
+	 * 
+	 * @return
+	 */
+	protected abstract boolean imageFormatSupportAlphaChannel();
 
     /**
      * Take a MapBean, and get the image bytes that represent the current state.
@@ -238,6 +256,15 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
     public Graphics getGraphics(int width, int height) {
         return getGraphics(width, height, BufferedImage.TYPE_INT_RGB);
     }
+    
+    public java.awt.Graphics getGraphics(int width, int height, boolean alpha) {
+		int imageFormat = BufferedImage.TYPE_INT_RGB;
+		if (alpha
+				&& (imageFormatSupportAlphaChannel() || imageFormatSupportTransparentPixel())) {
+			imageFormat = BufferedImage.TYPE_INT_ARGB;
+		}
+		return getGraphics(width, height, imageFormat);
+	}
 
     /**
      * Return the applicable Graphics to use to paint the layers into. If the

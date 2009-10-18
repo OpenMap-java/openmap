@@ -58,4 +58,14 @@ public class GIFImageIOFormatter extends ImageIOFormatter {
         return HttpConnection.CONTENT_GIF;
     }
 
+	@Override
+	protected boolean imageFormatSupportAlphaChannel() {
+		return false;
+	}
+
+	@Override
+	protected boolean imageFormatSupportTransparentPixel() {
+		return true;
+	}
+
 }

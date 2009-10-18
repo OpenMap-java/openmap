@@ -158,6 +158,8 @@ public class ImageServer implements
      * default projection set will be used.
      */
     protected ProjectionFactory projectionFactory;
+    
+    private boolean transparent = true;
 
     /**
      * Empty constructor that expects to be configured later.
@@ -504,13 +506,13 @@ public class ImageServer implements
 
         java.awt.Graphics graphics = null;
 
-        if (formatter != null) {
-            graphics = formatter.getGraphics(width, height);
-        } else {
+        if (formatter == null) {
             Debug.error("ImageServer.createGraphics: Formatter is null, returning null graphics.");
             return null;
         }
 
+		graphics = formatter.getGraphics(width, height, getTransparent());
+        
         if (graphics == null) {
             Debug.error("ImageServer.createGraphics: NOT able to create Graphics!");
             return null;
@@ -1057,6 +1059,28 @@ public class ImageServer implements
     public Paint getBackground() {
         return background;
     }
+        
+    /**
+	 * Set the transparent flag. Even if this flag is true, the image still may
+	 * not end up transparent if the {@link ImageFormatter} does not support
+	 * transparency or the image is completely filled.
+	 * 
+	 * @param transparent
+	 */
+    public void setTransparent(boolean transparent) {
+		this.transparent = transparent;
+	}
+
+    /**
+	 * Get the transparent flag. Even if this flag is true, the image still may
+	 * not end up transparent if the {@link ImageFormatter} does not support
+	 * transparency or the image is completely filled.
+	 * 
+	 * @param transparent
+	 */
+	public boolean getTransparent() {
+		return transparent;
+	}
 
     /**
      * The ImageServer class main function will create a map image from a

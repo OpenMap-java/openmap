@@ -153,5 +153,18 @@ public class PPMFormatter extends AbstractImageFormatter {
     public String getContentType() {
         return HttpConnection.CONTENT_PPM;
     }
+    
+	@Override
+	protected boolean imageFormatSupportAlphaChannel() {
+		// TODO: Is this correct?
+		return false;
+	}
+
+	@Override
+	protected boolean imageFormatSupportTransparentPixel() {
+		// TODO: Is this correct?
+		return false;
+	}
+
 
 }

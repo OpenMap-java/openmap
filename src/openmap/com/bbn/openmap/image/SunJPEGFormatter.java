@@ -86,4 +86,14 @@ public class SunJPEGFormatter extends AbstractImageFormatter {
         return HttpConnection.CONTENT_JPEG;
     }
 
+	@Override
+	protected boolean imageFormatSupportAlphaChannel() {
+		return false;
+	}
+
+	@Override
+	protected boolean imageFormatSupportTransparentPixel() {
+		return false;
+	}
+
 }
