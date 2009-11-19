@@ -72,6 +72,7 @@ import com.bbn.openmap.omGraphics.labeled.LabeledOMSpline;
 import com.bbn.openmap.omGraphics.meteo.IceAreaShapeDecoration;
 import com.bbn.openmap.omGraphics.meteo.OMHotSurfaceFront;
 import com.bbn.openmap.omGraphics.meteo.OMOcclusion;
+import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.tools.drawing.DrawingTool;
@@ -413,6 +414,37 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         oms.setFillPaint(Color.orange);
 
         omList.add(oms);
+        
+        OMGraphicList geoTest = new OMGraphicList();
+        LatLonPoint pnt1 = new LatLonPoint.Double(42.0, -71.0);
+        LatLonPoint pnt2 = new LatLonPoint.Double(42.3, -70.678);
+        double gspacing = Length.MILE.toRadians(5);
+
+        OMCircle ompoint1 = new OMCircle(pnt1.getLatitude(), pnt1.getLongitude(), gspacing, Length.RADIAN);
+        OMCircle ompoint2 = new OMCircle(pnt2.getLatitude(), pnt2.getLongitude(), gspacing, Length.RADIAN);
+
+        LatLonPoint int1 = GreatCircle.pointAtDistanceBetweenPoints(pnt1.getRadLat(),
+                pnt1.getRadLon(),
+                pnt2.getRadLat(),
+                pnt2.getRadLon(),
+                gspacing,
+                -1);
+        LatLonPoint int2 = GreatCircle.pointAtDistanceBetweenPoints(pnt2.getRadLat(),
+                pnt2.getRadLon(),
+                pnt1.getRadLat(),
+                pnt1.getRadLon(),
+                gspacing,
+                -1);
+
+        OMLine geoline = new OMLine(int1.getLatitude(), int1.getLongitude(), int2.getLatitude(), int2.getLongitude(), OMGraphic.LINETYPE_GREATCIRCLE);
+        ompoint1.setLinePaint(Color.red);
+        ompoint2.setLinePaint(Color.red);
+        geoline.setLinePaint(Color.red);
+        geoTest.add(ompoint1);
+        geoTest.add(ompoint2);
+        geoTest.add(geoline);
+
+        omList.add(geoTest);
 
         return omList;
     }
