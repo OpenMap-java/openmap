@@ -163,12 +163,12 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
 
     public Properties getPropertyInfo(Properties props) {
         PlugIn pi = getPlugIn();
-        props = super.getProperties(props);
+        props = super.getPropertyInfo(props);
 
         if (plugInClass != null || pi == null) {
             // If plugInClass is not defined, then we want the
             // PlugInLayer to be invisible - the PlugIn should be
-            // the only thing in the properties, and ther other
+            // the only thing in the properties, and the other
             // components should be OK with that.
 
             props.put(PlugInProperty, "Class name of PlugIn");

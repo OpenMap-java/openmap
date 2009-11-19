@@ -640,6 +640,13 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             needRepaint = true; // We do!
             GraphicUpdate gu = (GraphicUpdate) items.nextElement();
 
+            if (gu == null) {
+                Debug
+                        .message("link",
+                                 "LinkLayer.handleLinkActionList: null GraphicUpdate, skipping...");
+                continue;
+            }
+
             // Take care of this first.....
             if (LinkUtil.isMask(gu.action, MODIFY_DESELECTALL_GRAPHIC_MASK)) {
                 Debug
@@ -662,13 +669,6 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
             // method is being called from a different thread, we
             // don't have that luxury - we have to look up the
             // OMGraphic again...
-
-            if (gu == null) {
-                Debug
-                        .message("link",
-                                 "LinkLayer.handleLinkActionList: null GraphicUpdate, skipping...");
-                continue;
-            }
 
             OMGraphic gug = gu.graphic;
             OMGraphic reactionGraphic = null;

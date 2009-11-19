@@ -194,7 +194,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
 
     }
 
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
         OMGraphicList list = getList();
 
         if (list == null) {
@@ -372,10 +372,10 @@ public class GeoIntersectionLayer extends EditorLayer implements
                 DrawingAttributes da = new DrawingAttributes();
                 da.setSelectPaint(new Color(200, 100, 100, 200));
 
-                EsriGraphicList shapeList = EsriGraphicList.getEsriGraphicList(shpFile.toURL(),
+                EsriGraphicList shapeList = EsriGraphicList.getEsriGraphicList(shpFile.toURI().toURL(),
                         da,
                         DbfTableModel.getDbfTableModel(new File(shpFilePath.replaceAll(".shp",
-                                ".dbf")).toURL()), coordTransform);
+                                ".dbf")).toURI().toURL()), coordTransform);
 
                 if (DEBUG)
                     Debug.output("GeoIntersectLayer(" + getName()

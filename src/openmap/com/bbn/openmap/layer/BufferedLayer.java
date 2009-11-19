@@ -354,7 +354,7 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements
 
     protected OMRaster raster;
 
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
         OMGraphicList list = new OMGraphicList();
         Projection proj = getProjection();
         if (raster != null && proj != null) {

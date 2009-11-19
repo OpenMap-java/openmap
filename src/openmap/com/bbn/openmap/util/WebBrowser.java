@@ -82,7 +82,7 @@ public class WebBrowser {
             out.println(text);
             out.close(); // close the streams
 
-            String urlString = tmpFile.toURL().toString();
+            String urlString = tmpFile.toURI().toURL().toString();
             Debug.output("WebBrowser: created " + urlString);
             return urlString;
 

@@ -113,6 +113,7 @@ public class SimpleHttpImageServer implements HttpRequestListener {
             throws IOException {
         httpd = new HttpServer(port, asDeamon);
         httpd.addHttpRequestListener(this);
+        httpd.start();
 
         iServer = new MapRequestHandler(props);
     }

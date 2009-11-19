@@ -721,7 +721,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
      * @return float distance
      * @see #findClosest(int, int, float)
      */
-    public float distance(int x, int y) {
+    public float distance(double x, double y) {
         return findClosest(x, y, Float.MAX_VALUE, false).d;
     }
 
@@ -754,7 +754,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
      * @param resetSelect deselect any OMGraphic touched.
      * @return OMDist
      */
-    public OMDist<T> findClosest(int x, int y, float limit, boolean resetSelect) {
+    public OMDist<T> findClosest(double x, double y, float limit, boolean resetSelect) {
         OMDist<T> omd = new OMDist<T>();
         OMDist<T> tomd;
         int i;
@@ -839,7 +839,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
      *         Infinity.
      */
     protected OMDist<T> findClosestTest(OMDist<T> current, int index,
-                                        OMGeometry graphic, int x, int y,
+                                        OMGeometry graphic, double x, double y,
                                         float limit, boolean resetSelect) {
 
         if (current == null) {
@@ -896,7 +896,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
      * @return OMGraphic the closest on the list within the limit, or null if
      *         not found.
      */
-    public T findClosest(int x, int y, float limit) {
+    public T findClosest(double x, double y, float limit) {
         return findClosest(x, y, limit, false).omg;
     }
 

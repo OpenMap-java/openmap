@@ -80,7 +80,6 @@ public class HttpServer extends Thread {
         listeners = new Vector();
         listen_socket = new ServerSocket(port);
         this.setDaemon(asDaemon);
-        this.start();
     }
 
     /**
@@ -106,7 +105,8 @@ public class HttpServer extends Thread {
         try {
             while (true) {
                 Socket client_socket = listen_socket.accept();
-                new HttpConnection(client_socket, this);
+                HttpConnection httpConnection = new HttpConnection(client_socket, this);
+                httpConnection.start();
             }
         } catch (IOException e) {
             System.err.println("Exception while listening for connections");
@@ -221,6 +221,7 @@ public class HttpServer extends Thread {
             server.addHttpRequestListener(new SeparatorListener());
             server.addHttpRequestListener(new ReverseListener());
             server.addHttpRequestListener(new SeparatorListener());
+            server.start();
             System.out.println("Server listening on port " + server.getPort());
         } catch (IOException e) {
             System.err.println("Unable to start http server:");

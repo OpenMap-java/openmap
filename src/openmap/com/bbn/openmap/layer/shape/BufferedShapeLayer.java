@@ -62,6 +62,7 @@ public class BufferedShapeLayer extends ShapeLayer {
      */
     public BufferedShapeLayer(String pathToShpFile) {
         super(pathToShpFile);
+        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.StandardPCPolicy(this));
     }
 
     /**

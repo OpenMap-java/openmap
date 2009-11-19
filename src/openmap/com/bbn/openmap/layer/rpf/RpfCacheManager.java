@@ -479,7 +479,7 @@ public class RpfCacheManager implements Serializable {
             }
         }
 
-        public float distance(int x, int y) {
+        public float distance(double x, double y) {
             return Float.MAX_VALUE;
         }
     }

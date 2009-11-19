@@ -137,7 +137,7 @@ public class OMAreaList extends OMGeometryList implements Serializable {
      * @param resetSelect deselect any OMGraphic touched.
      * @return OMDist
      */
-    public synchronized OMDist<OMGeometry> findClosest(int x, int y,
+    public synchronized OMDist<OMGeometry> findClosest(double x, double y,
                                                        float limit,
                                                        boolean resetSelect) {
 

@@ -245,7 +245,7 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
                 }
 
                 /*
-                 * Drawing image whith transparence and in the mouse position
+                 * Drawing image with transparence and in the mouse position
                  * minus origianl mouse click position
                  */
                 gr2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,

@@ -135,7 +135,7 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
      * OMGraphicHandlerLayer method, get the OMGraphics from the data
      * in the file.
      */
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
         OMGraphicList g = getList();
 
         if (g == null) {

@@ -25,7 +25,6 @@ package com.bbn.openmap.gui;
 import javax.swing.*;
 import java.awt.event.*;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.gui.menu.CoordsMenuItem;
 import com.bbn.openmap.gui.menu.ProjectionMenu;

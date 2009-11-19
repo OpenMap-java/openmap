@@ -39,7 +39,7 @@ public class SLayer extends OMGraphicHandlerLayer {
         super();
     }
 
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
         OMGraphicList list = getList();
 
         if (list == null) {

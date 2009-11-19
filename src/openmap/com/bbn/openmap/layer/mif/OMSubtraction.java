@@ -104,7 +104,7 @@ public class OMSubtraction extends OMGraphicAdapter implements Serializable {
      * @param y Y coordinate fo the point.
      * @return float always zero
      */
-    public float distance(int x, int y) { //return zero
+    public float distance(double x, double y) { //return zero
         return 0.0f;
     }
 

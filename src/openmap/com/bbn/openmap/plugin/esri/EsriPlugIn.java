@@ -84,7 +84,7 @@ import com.bbn.openmap.util.PropUtils;
  * File dbf = new File(&quot;c:/data/file.dbf&quot;);
  * File shp = new File(&quot;c:/data/file.shp&quot;);
  * File shx = new File(&quot;c:/data/file.shx&quot;);
- * EsriPlugIn epi = new EsriPlugIn(&quot;name&quot;, dbf.toURL(), shp.toURL(), shx.toURL());
+ * EsriPlugIn epi = new EsriPlugIn(&quot;name&quot;, dbf.toURI().toURL(), shp.toURI().toURL(), shx.toURI().toURL());
  * PlugInLayer pil = new PlugInLayer();
  * pil.setPlugIn(epi);
  * 

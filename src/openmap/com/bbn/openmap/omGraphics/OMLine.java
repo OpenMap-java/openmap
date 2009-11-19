@@ -467,7 +467,7 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
      * is curved. Otherwise, it returns true if the point is on the
      * line.
      */
-    public boolean contains(int x, int y) {
+    public boolean contains(double x, double y) {
         if (shouldRenderFill()) {
             return super.contains(x, y);
         } else {

@@ -1329,6 +1329,7 @@ public class EditableOMPoly extends EditableOMAbstractLine {
     }
 
     JToggleButton polygonButton = null;
+    JButton extButton = null;
     JButton addButton = null;
     JButton deleteButton = null;
 
@@ -1339,6 +1340,9 @@ public class EditableOMPoly extends EditableOMAbstractLine {
     }
 
     public void enablePolygonEditButtons(boolean enable) {
+        if (extButton != null) {
+            extButton.setEnabled(enable);
+        }
         if (addButton != null) {
             addButton.setEnabled(enable);
         }
@@ -1348,22 +1352,23 @@ public class EditableOMPoly extends EditableOMAbstractLine {
     }
 
     public JComponent getPolyGUI() {
-        return getPolyGUI(true, true, true, SwingConstants.HORIZONTAL);
+        return getPolyGUI(true, true, true, true, SwingConstants.HORIZONTAL);
     }
 
     public JComponent getPolyGUI(int orientation, JComponent toolbar) {
-        return getPolyGUI(true, true, true, orientation, toolbar);
+        return getPolyGUI(true, true, true, true, orientation, toolbar);
     }
 
-    public JComponent getPolyGUI(boolean includeEnclose, boolean includeAdd,
-                                 boolean includeDelete, int orientation) {
-        return getPolyGUI(includeEnclose, includeAdd, includeDelete,
+    public JComponent getPolyGUI(boolean includeEnclose, boolean includeExt,
+                                 boolean includeAdd, boolean includeDelete,
+                                 int orientation) {
+        return getPolyGUI(includeEnclose, includeExt, includeAdd, includeDelete,
                           orientation, null);
     }
 
-    public JComponent getPolyGUI(boolean includeEnclose, boolean includeAdd,
-                                 boolean includeDelete, int orientation,
-                                 JComponent buttonBox) {
+    public JComponent getPolyGUI(boolean includeEnclose, boolean includeExt,
+                                 boolean includeAdd, boolean includeDelete,
+                                 int orientation, JComponent buttonBox) {
 
         if (buttonBox == null) {
             buttonBox = new GridBagToolBar();
@@ -1397,8 +1402,27 @@ public class EditableOMPoly extends EditableOMAbstractLine {
             buttonBox.add(polygonButton);
         }
 
-        if (addButton == null) {
+        if (extButton == null) {
             url = getImageURL("addpoint.gif");
+            imageIcon = new ImageIcon(url);
+            extButton = new JButton(imageIcon);
+            extButton.setToolTipText(i18n.get(EditableOMPoly.class,
+                                              "extButton.tooltip",
+                                              "Add a point to the polygon"));
+        }
+        extButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ((PolyStateMachine) stateMachine).setAddPoint();
+                enablePolygonEditButtons(false);
+            }
+        });
+        extButton.setEnabled(false);
+        if (includeExt) {
+            buttonBox.add(extButton);
+        }
+
+        if (addButton == null) {
+            url = getImageURL("addnode.gif");
             imageIcon = new ImageIcon(url);
             addButton = new JButton(imageIcon);
             addButton.setToolTipText(i18n.get(EditableOMPoly.class,

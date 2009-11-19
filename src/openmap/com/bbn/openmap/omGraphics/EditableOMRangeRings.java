@@ -360,7 +360,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
 
         for (int i = 0; i < available.length; i++) {
             unitStrings[i] = available[i].toString();
-            if (current != null && unitStrings[i].equals(current)) {
+            if (unitStrings[i] != null && unitStrings[i].equals(current)) {
                 currentIndex = i;
             }
         }

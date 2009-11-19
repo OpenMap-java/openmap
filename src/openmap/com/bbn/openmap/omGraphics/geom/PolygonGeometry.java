@@ -126,7 +126,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
      * @param y vertical pixel location.
      * @return the distance of the object to the location given.
      */
-    public float distance(int x, int y) {
+    public float distance(double x, double y) {
         if (shape != null) {
             return super.distance(x, y);
         }

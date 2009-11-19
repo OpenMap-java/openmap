@@ -649,7 +649,8 @@ public class ToolPanel extends JToolBar implements BeanContextChild,
         while (enumeration.hasMoreElements()) {
             Tool tool = enumeration.nextElement();
             Container face = tool.getFace();
-            if (tool != filler && face != null && face.isVisible()) {
+            //if (tool != filler && face != null && face.isVisible()) {
+            if (!filler.equals(tool) && face != null && face.isVisible()) {
                 return true;
             }
         }

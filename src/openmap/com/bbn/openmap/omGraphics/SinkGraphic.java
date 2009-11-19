@@ -92,7 +92,7 @@ public class SinkGraphic extends OMGraphicAdapter implements OMGraphic {
      * @param y IGNORED
      * @return Float.POSITIVE_INFINITY
      */
-    public float distance(int x, int y) {
+    public float distance(double x, double y) {
         return Float.POSITIVE_INFINITY;
     }
 }

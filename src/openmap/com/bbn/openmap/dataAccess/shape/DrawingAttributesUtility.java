@@ -149,7 +149,7 @@ public class DrawingAttributesUtility implements ShapeConstants {
 
         if (dashPatternColumn != -1) {
             String dp = (String) record.get(dashPatternColumn);
-            if (dp.intern() == "") {
+            if (dp == null || dp.intern().isEmpty()) {
                 dp = BasicStrokeEditor.NONE;
             }
             dashPattern = BasicStrokeEditor.stringToDashArray(dp);

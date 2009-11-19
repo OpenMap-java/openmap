@@ -346,9 +346,9 @@ public class ImageServer implements
         }
 
         ((Proj) proj).drawBackground((Graphics2D) graphics, background);
-        int size = showLayers.size();
 
         if (showLayers != null) {
+            int size = showLayers.size();
             for (int j = size - 1; j >= 0; j--) {
                 for (int i = layers.length - 1; i >= 0; i--) {
                     String layerName = (String) showLayers.get(j);

@@ -87,7 +87,7 @@ public class ShpInputStream implements ShapeConstants {
      * Reads geometry from a .shp file
      * 
      * @param indexData
-     *            The index data retreived from the .shx file
+     *            The index data retrieved from the .shx file
      * @return EsriGraphicList A list of geometry
      * @deprecated use getGeometry() instead, indexData isn't used.
      */

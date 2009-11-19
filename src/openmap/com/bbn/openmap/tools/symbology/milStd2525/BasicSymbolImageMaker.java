@@ -82,7 +82,7 @@ public class BasicSymbolImageMaker extends OMComponent implements
      */
     protected URL getFileURL(String code) throws MalformedURLException {
         code = massageCode(code);
-        code = dataPath + ((dataPath != null && dataPath.length() == 0) ? "/" : "")
+        code = dataPath + ((dataPath != null && !dataPath.isEmpty()) ? "/" : "")
                 + code + getFileExtension();
         if (Debug.debugging("symbology")) {
             Debug.output("AbstractSymbolImageMaker: code massaged to " + code);

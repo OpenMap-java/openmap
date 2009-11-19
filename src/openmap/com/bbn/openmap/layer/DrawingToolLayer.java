@@ -159,7 +159,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         }
 
         String fileName = props.getProperty(realPrefix + SerializedURLNameProperty);
-        if (fileName != null && fileName.trim().length() > 0) {
+        if (fileName != null && !fileName.trim().isEmpty()) {
             this.fileName = fileName;
             setList(load());
         }
@@ -216,7 +216,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         return props;
     }
 
-    public OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
         OMGraphicList list = getList();
         Projection proj = getProjection();
         if (list == null) {

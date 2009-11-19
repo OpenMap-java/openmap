@@ -1325,7 +1325,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * @return float distance, in pixels, from graphic to the point. Returns
      *         Float.POSITIVE_INFINITY if the graphic isn't ready (ungenerated).
      */
-    public float distance(int x, int y) {
+    public float distance(double x, double y) {
         return _distance(x, y);
     }
 

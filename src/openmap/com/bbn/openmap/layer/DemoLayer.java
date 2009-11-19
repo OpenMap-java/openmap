@@ -465,7 +465,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
      * need to clear out the OMGraphicList and add the OMGraphics you want for
      * the current projection.
      */
-    public OMGraphicList prepare() {
+    public synchronized  OMGraphicList prepare() {
         OMGraphicList list = getList();
         if (list == null) {
             list = init();

@@ -121,28 +121,30 @@ public class ExampleApplication extends JFrame {
     }
 
     /**
-     * Presents a JOptionPane to the user to enable them to specify which file
-     * to retreive
+     * Presents a JOptionPane to the user to enable them to specify
+     * which file to retrieve
      * 
-     * @return A string denoting the location of the file to retreive
+     * @return A string denoting the location of the file to retrieve
      */
     public String getRemoteFile() {
-        Object urls[] = { "http://www.somewebserver.com/omdemo/resources/cities",
+        Object urls[] = {
+                "http://www.somewebserver.com/omdemo/resources/cities",
                 "http://www.somewebserver.com/omdemo/resources/rivers",
                 "http://www.somewebserver.com/omdemo/resources/southwest",
                 "http://www.somewebserver.com/omdemo/resources/states" };
-        String url = (String) JOptionPane.showInputDialog(
-                                                          null,
-                                                          "Select a url",
-                                                          "Input",
-                                                          JOptionPane.INFORMATION_MESSAGE,
-                                                          null, urls, urls[0]);
+        String url = (String) JOptionPane.showInputDialog(null,
+                "Select a url",
+                "Input",
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                urls,
+                urls[0]);
         return url;
     }
 
     /**
-     * Presents a JOptionPane to the user to enable them to pick which layer
-     * should be persisted to file.
+     * Presents a JOptionPane to the user to enable them to pick which
+     * layer should be persisted to file.
      * 
      * @return The layer the user selected
      */
@@ -157,13 +159,13 @@ public class ExampleApplication extends JFrame {
         }
         Object[] objects = vector.toArray();
         if (objects.length > 0) {
-            String selected = (String) JOptionPane.showInputDialog(
-                                                                   null,
-                                                                   "Choose one",
-                                                                   "Input",
-                                                                   JOptionPane.INFORMATION_MESSAGE,
-                                                                   null, objects,
-                                                                   objects[0]);
+            String selected = (String) JOptionPane.showInputDialog(null,
+                    "Choose one",
+                    "Input",
+                    JOptionPane.INFORMATION_MESSAGE,
+                    null,
+                    objects,
+                    objects[0]);
             for (int n = 0; n <= layers.length - 1; n++) {
                 String name = layers[n].getName();
                 if (name.equalsIgnoreCase(selected)) {
@@ -200,7 +202,7 @@ public class ExampleApplication extends JFrame {
         graticule.setProperties(props);
         _layers[0] = graticule;
 
-        // Finish setting up the GUI.
+        //Finish setting up the GUI.
         _layerHandler = new LayerHandler(_layers);
         _layerHandler.addLayerListener(_mapBean);
         _layersMenu = new LayersMenu(_layerHandler);
@@ -235,10 +237,10 @@ public class ExampleApplication extends JFrame {
         _setModel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 try {
-                    _drawableLayer = new EsriLayer("Drawable Layer", 3, 1); // Create
-                    // a
-                    // polyline
-                    // layer
+                    _drawableLayer = new EsriLayer("Drawable Layer", 3, 1); //Create
+                                                                            // a
+                                                                            // polyline
+                                                                            // layer
                     _drawableLayer.setName("Drawable Layer");
                     _layerHandler.addLayer(_drawableLayer);
                     DbfTableModel model = new DbfTableModel(1);
@@ -263,16 +265,14 @@ public class ExampleApplication extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 EsriPolylineList shapeData = new EsriPolylineList();
                 ArrayList<Object> tabularData = new ArrayList<Object>();
-                double[] part0 = new double[] { 35.0f, -120.0f, -25.0f, -95.0f, 56.0f,
-                        -30.0f };
-                double[] part1 = new double[] { -15.0f, -110.0f, 13.0f, -80.0f, -25.0f,
-                        10.0f };
-                EsriPolyline poly0 = new EsriPolyline(part0, OMGraphic.DECIMAL_DEGREES,
-                        OMGraphic.LINETYPE_RHUMB);
-                EsriPolyline poly1 = new EsriPolyline(part1, OMGraphic.DECIMAL_DEGREES,
-                        OMGraphic.LINETYPE_RHUMB);
-                shapeData.add(poly0); // part 1
-                shapeData.add(poly1); // part 2
+                double[] part0 = new double[] { 35.0f, -120.0f, -25.0f, -95.0f,
+                        56.0f, -30.0f };
+                double[] part1 = new double[] { -15.0f, -110.0f, 13.0f, -80.0f,
+                        -25.0f, 10.0f };
+                EsriPolyline poly0 = new EsriPolyline(part0, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB);
+                EsriPolyline poly1 = new EsriPolyline(part1, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_RHUMB);
+                shapeData.add(poly0); //part 1
+                shapeData.add(poly1); //part 2
                 shapeData.generate(_mapBean.getProjection());
                 tabularData.add(0, "a value");
                 _drawableLayer.addRecord(shapeData, tabularData);
@@ -294,8 +294,7 @@ public class ExampleApplication extends JFrame {
                         String name = s.substring(0, pos1);
                         File shx = new File(s.substring(0, pos1) + ".shx");
                         File dbf = new File(s.substring(0, pos1) + ".dbf");
-                        EsriLayer layer = new EsriLayer(name, dbf.toURI().toURL(),
-                                shp.toURI().toURL(), shx.toURI().toURL());
+                        EsriLayer layer = new EsriLayer(name, dbf.toURI().toURL(), shp.toURI().toURL(), shx.toURI().toURL());
                         _layerHandler.addLayer(layer);
                     } catch (Exception exception) {
                         System.out.println(exception);
@@ -325,16 +324,18 @@ public class ExampleApplication extends JFrame {
                             String path = file.getCanonicalPath();
                             EsriGraphicList list = layer.getEsriGraphicList();
 
-                            ShpOutputStream pos = new ShpOutputStream(
-                                    new FileOutputStream(path + ".shp"));
+                            ShpOutputStream pos = new ShpOutputStream(new FileOutputStream(path
+                                    + ".shp"));
                             int[][] indexData = pos.writeGeometry(list);
 
-                            ShxOutputStream xos = new ShxOutputStream(
-                                    new FileOutputStream(path + ".shx"));
-                            xos.writeIndex(indexData, list.getType(), list.getExtents());
+                            ShxOutputStream xos = new ShxOutputStream(new FileOutputStream(path
+                                    + ".shx"));
+                            xos.writeIndex(indexData,
+                                    list.getType(),
+                                    list.getExtents());
 
-                            DbfOutputStream dos = new DbfOutputStream(
-                                    new FileOutputStream(path + ".dbf"));
+                            DbfOutputStream dos = new DbfOutputStream(new FileOutputStream(path
+                                    + ".dbf"));
                             dos.writeModel(layer.getModel());
                         } catch (Exception exception) {
                             System.out.println(exception);
@@ -353,9 +354,9 @@ public class ExampleApplication extends JFrame {
         _fileMenu.add(_httpExample);
         _fileMenu.add(new JSeparator());
         _fileMenu.add(_setModel);
-        _addShape.setEnabled(false); // Disable ability for user to
-        // add a shape until they
-        // initialize the DbfTableModel
+        _addShape.setEnabled(false); //Disable ability for user to
+                                     // add a shape until they
+                                     // initialize the DbfTableModel
         _fileMenu.add(_addShape);
         _fileMenu.add(new JSeparator());
         _fileMenu.add(_exit);
@@ -366,7 +367,8 @@ public class ExampleApplication extends JFrame {
         _menuBar.add(_layersMenu);
         _menuBar.add(_defaultHelpMenu);
 
-        _omts.add(_mouseModePanel);;
+        _omts.add(_mouseModePanel);
+
         _toolPanel.add((Tool) _omts);
 
         setJMenuBar(_menuBar);
@@ -376,10 +378,10 @@ public class ExampleApplication extends JFrame {
     }
 
     /**
-     * Displays a new window containing the tabular data for the passed-in layer
+     * Displays a new window containing the tabular data for the
+     * passed-in layer
      * 
-     * @param layer
-     *            The layer whose data is to be displayed
+     * @param layer The layer whose data is to be displayed
      */
     public void showTable(final EsriLayer layer) {
         JFrame frame = new JFrame("Table");
@@ -391,13 +393,13 @@ public class ExampleApplication extends JFrame {
         ListSelectionModel lsm = table.getSelectionModel();
         lsm.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
-                // Ignore extra messages.
+                //Ignore extra messages.
                 if (e.getValueIsAdjusting()) {
                     return;
                 }
                 ListSelectionModel lsm2 = (ListSelectionModel) e.getSource();
                 if (lsm2.isSelectionEmpty()) {
-                    // no rows are selected
+                    //no rows are selected
                 } else {
                     int index = lsm2.getMinSelectionIndex();
                     EsriGraphicList list = layer.getEsriGraphicList();
@@ -415,10 +417,10 @@ public class ExampleApplication extends JFrame {
     /**
      * Strips file extension from a string that represents a file
      * 
-     * @param file
-     *            The file reference from which to strip file extensions
-     * @param extension
-     *            The extension to check for and to strip if it exists
+     * @param file The file reference from which to strip file
+     *        extensions
+     * @param extension The extension to check for and to strip if it
+     *        exists
      * @return A string less the respective extension
      */
     private String stripExtension(String file, String extension) {
@@ -431,7 +433,8 @@ public class ExampleApplication extends JFrame {
     }
 
     /**
-     * Main method to facilitate testing and to run as stand alone application.
+     * Main method to facilitate testing and to run as stand alone
+     * application.
      */
     public static void main(String args[]) {
         com.bbn.openmap.util.Debug.init();
@@ -440,8 +443,8 @@ public class ExampleApplication extends JFrame {
     }
 
     /**
-     * Used by the JFileChooser component to list only files whose extension
-     * ends in '.shp'.
+     * Used by the JFileChooser component to list only files whose
+     * extension ends in '.shp'.
      */
     private class EsriFilter extends javax.swing.filechooser.FileFilter {
         public boolean accept(File f) {
@@ -463,8 +466,7 @@ public class ExampleApplication extends JFrame {
         /**
          * Extracts the extension from the given file
          * 
-         * @param f
-         *            The file from whose extension to extract
+         * @param f The file from whose extension to extract
          */
         private String getExtension(File f) {
             String ext = null;
@@ -478,8 +480,8 @@ public class ExampleApplication extends JFrame {
         }
 
         /**
-         * Sets the description string that will appear on the JFileChooser
-         * component as its initialized
+         * Sets the description string that will appear on the
+         * JFileChooser component as its initialized
          */
         public String getDescription() {
             return "Feature Data Source";

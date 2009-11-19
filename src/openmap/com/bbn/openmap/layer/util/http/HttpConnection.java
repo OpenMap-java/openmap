@@ -92,7 +92,6 @@ public class HttpConnection extends Thread {
             System.err.println("Exception while getting socket streams: " + e);
             return;
         }
-        this.start();
     }
 
     public static String[] getAllContentTypes() {
