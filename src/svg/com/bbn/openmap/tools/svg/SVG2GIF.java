@@ -66,7 +66,7 @@ public class SVG2GIF implements WandererCallback {
 
         try {
             SVGRasterizer svgr;
-            svgr = new SVGRasterizer(file.toURL());
+            svgr = new SVGRasterizer(file.toURI().toURL());
             svgr.setBackgroundColor(new Color(128, 128, 128, 0));
             BufferedImage bi = svgr.createBufferedImage(imageDimension);
             byte[] imageBytes = formatter.formatImage(bi);

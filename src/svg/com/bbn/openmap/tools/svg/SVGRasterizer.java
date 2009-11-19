@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -72,7 +71,7 @@ public class SVGRasterizer {
     public SVGRasterizer(String filename) {
         File f = new File(filename);
         try {
-            this.input = new TranscoderInput(f.toURL().toString());
+            this.input = new TranscoderInput(f.toURI().toURL().toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -91,8 +90,7 @@ public class SVGRasterizer {
     /**
      * Constructs a new SVGRasterizer converter.
      * 
-     * @param reader the reader that represents the SVG document to
-     *        rasterize
+     * @param reader the reader that represents the SVG document.
      */
     public SVGRasterizer(Reader reader) {
         this.input = new TranscoderInput(reader);
@@ -105,7 +103,7 @@ public class SVGRasterizer {
     /**
      * Constructs a new SVGRasterizer converter.
      * 
-     * @param document the SVG document to rasterize
+     * @param document the SVG document
      */
     public SVGRasterizer(SVGDocument document) {
         this.input = new TranscoderInput(document);
@@ -117,7 +115,7 @@ public class SVGRasterizer {
     public BufferedImage createBufferedImage() throws TranscoderException,
             IOException {
         Rasterizer r = new Rasterizer();
-        r.setTranscodingHints((Map) hints);
+        r.setTranscodingHints(hints);
         r.transcode(input, null);
         return img;
     }
@@ -127,7 +125,7 @@ public class SVGRasterizer {
         if (input != null) {
             this.setImageDimension(d);
             Rasterizer r = new Rasterizer();
-            r.setTranscodingHints((Map) hints);
+            r.setTranscodingHints(hints);
             r.transcode(input, null);
             r = null; //for garbage collection
         }
@@ -141,7 +139,7 @@ public class SVGRasterizer {
             this.setImageDimension(d);
         }
         Rasterizer r = new Rasterizer();
-        r.setTranscodingHints((Map) hints);
+        r.setTranscodingHints(hints);
         r.transcode(input, null);
         r = null;
         return img;
@@ -151,12 +149,12 @@ public class SVGRasterizer {
             IOException {
         Rasterizer r = new Rasterizer();
         JPEGTranscoder jpeg = new JPEGTranscoder();
-        r.setTranscodingHints((Map) hints);
+        r.setTranscodingHints(hints);
         File file = new File("image.jpg");
         FileWriter fw = new FileWriter(file);
         TranscoderOutput output = new TranscoderOutput(fw);
         r.transcode(input, output);
-        r.setTranscodingHints((Map) hints);
+        r.setTranscodingHints(hints);
         jpeg.transcode(input, output);
         return img;
     }
