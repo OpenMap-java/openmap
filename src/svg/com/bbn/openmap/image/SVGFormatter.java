@@ -221,4 +221,14 @@ public class SVGFormatter extends AbstractImageFormatter {
     public String getContentType() {
         return "image/svg+xml";
     }
+
+    @Override
+    protected boolean imageFormatSupportAlphaChannel() {
+        return false;
+    }
+
+    @Override
+    protected boolean imageFormatSupportTransparentPixel() {
+        return false;
+    }
 }
