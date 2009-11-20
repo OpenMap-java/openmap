@@ -24,6 +24,7 @@ package com.bbn.openmap.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.Serializable;
 
 import javax.swing.JLabel;
@@ -69,7 +70,10 @@ public class UTMCoordPanel extends CoordPanel implements Serializable {
         String locText;
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
-
+        Insets leftInsets = new Insets(0, 10, 0, 10);
+        Insets centerInsets = new Insets(0, 0, 0, 0);
+        Insets rightInsets = new Insets(0, 0, 0, 10);
+        
         setLayout(gridbag);
         locText = i18n.get(UTMCoordPanel.class,
                 "border",
@@ -79,6 +83,10 @@ public class UTMCoordPanel extends CoordPanel implements Serializable {
         locText = i18n.get(UTMCoordPanel.class, "utmLabel", "UTM: ");
         JLabel utmLabel = new JLabel(locText);
         c.gridx = 0;
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 0f;
+        c.insets = leftInsets;
+        c.anchor = GridBagConstraints.EAST;
         gridbag.setConstraints(utmLabel, c);
         add(utmLabel);
 
@@ -88,6 +96,7 @@ public class UTMCoordPanel extends CoordPanel implements Serializable {
                 "zone",
                 I18n.TOOLTIP,
                 "Zone Number: 1-60"));
+        c.insets = centerInsets;
         gridbag.setConstraints(zoneNumber, c);
         add(zoneNumber);
 
@@ -100,10 +109,13 @@ public class UTMCoordPanel extends CoordPanel implements Serializable {
         add(zoneLetter);
 
         easting = new JTextField(8);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = .5f;
         gridbag.setConstraints(easting, c);
         add(easting);
 
         northing = new JTextField(8);
+        c.insets = rightInsets;
         gridbag.setConstraints(northing, c);
         add(northing);
     }

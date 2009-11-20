@@ -24,6 +24,7 @@ package com.bbn.openmap.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.Serializable;
 
 import javax.swing.JLabel;
@@ -65,7 +66,9 @@ public class MGRSCoordPanel extends CoordPanel implements Serializable {
         String locText;
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
-
+        Insets leftInsets = new Insets(0, 10, 0, 10);
+        Insets rightInsets = new Insets(0, 0, 0, 10);
+        
         setLayout(gridbag);
         locText = i18n.get(MGRSCoordPanel.class, "border", "MGRS Coordinate");
         setBorder(new TitledBorder(new EtchedBorder(), locText));
@@ -73,11 +76,17 @@ public class MGRSCoordPanel extends CoordPanel implements Serializable {
         locText = i18n.get(MGRSCoordPanel.class, "mgrsLabel", "MGRS: ");
         JLabel mgrsLabel = new JLabel(locText);
         c.gridx = 0;
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 0f;
+        c.insets = leftInsets;
         gridbag.setConstraints(mgrsLabel, c);
         add(mgrsLabel);
 
         mgrs = new JTextField(20);
         c.gridx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1.0f;
+        c.insets = rightInsets;
         gridbag.setConstraints(mgrs, c);
         add(mgrs);
     }

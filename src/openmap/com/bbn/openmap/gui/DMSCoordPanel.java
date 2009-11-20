@@ -24,6 +24,7 @@ package com.bbn.openmap.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.Serializable;
 
 import javax.swing.JLabel;
@@ -68,7 +69,10 @@ public class DMSCoordPanel extends CoordPanel implements Serializable {
         String locText;
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
-
+        Insets leftInsets = new Insets(0, 10, 0, 10);
+        Insets centerInsets = new Insets(0, 0, 0, 0);
+        Insets rightInsets = new Insets(0, 0, 0, 10);
+        
         setLayout(gridbag);
         locText = i18n.get(DMSCoordPanel.class,
                 "border",
@@ -78,11 +82,18 @@ public class DMSCoordPanel extends CoordPanel implements Serializable {
         locText = i18n.get(DMSCoordPanel.class, "latlabel", "Latitude DMS: ");
         JLabel latlabel = new JLabel(locText);
         c.gridx = 0;
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 0f;
+        c.insets = leftInsets;
+        c.anchor = GridBagConstraints.EAST;
         gridbag.setConstraints(latlabel, c);
         add(latlabel);
 
         c.gridx = GridBagConstraints.RELATIVE;
         degLat = new JTextField(4);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = .33f;
+        c.insets = centerInsets;
         gridbag.setConstraints(degLat, c);
         add(degLat);
 
@@ -91,6 +102,7 @@ public class DMSCoordPanel extends CoordPanel implements Serializable {
         add(minLat);
 
         secLat = new JTextField(4);
+        c.insets = rightInsets;
         gridbag.setConstraints(secLat, c);
         add(secLat);
 
@@ -98,11 +110,18 @@ public class DMSCoordPanel extends CoordPanel implements Serializable {
         JLabel lonlabel = new JLabel(locText);
         c.gridx = 0;
         c.gridy = 1;
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 0f;
+        c.insets = leftInsets;
+        c.anchor = GridBagConstraints.EAST;
         gridbag.setConstraints(lonlabel, c);
         add(lonlabel);
 
         c.gridx = GridBagConstraints.RELATIVE;
         degLon = new JTextField(4);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = .33f;
+        c.insets = centerInsets;
         gridbag.setConstraints(degLon, c);
         add(degLon);
 
@@ -111,6 +130,7 @@ public class DMSCoordPanel extends CoordPanel implements Serializable {
         add(minLon);
 
         secLon = new JTextField(4);
+        c.insets = rightInsets;
         gridbag.setConstraints(secLon, c);
         add(secLon);
     }

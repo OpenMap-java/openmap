@@ -24,6 +24,7 @@ package com.bbn.openmap.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 
@@ -83,16 +84,26 @@ public class CoordPanel extends JPanel implements Serializable {
         locText = i18n.get(CoordPanel.class, "border", "Decimal Degrees");
         setBorder(new TitledBorder(new EtchedBorder(), locText));
 
+        Insets leftInsets = new Insets(0, 10, 0, 10);
+        Insets rightInsets = new Insets(0, 0, 0, 10);
+        
         locText = i18n.get(CoordPanel.class, "latlabel", "Latitude: ");
         JLabel latlabel = new JLabel(locText);
         c.gridx = 0;
         c.gridy = 0;
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 0f;
+        c.insets = leftInsets;
+        c.anchor = GridBagConstraints.EAST;
         gridbag.setConstraints(latlabel, c);
         add(latlabel);
 
         latitude = new JTextField(10);
         c.gridx = 1;
         c.gridy = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1.0f;
+        c.insets = rightInsets;
         gridbag.setConstraints(latitude, c);
         add(latitude);
 
@@ -100,12 +111,18 @@ public class CoordPanel extends JPanel implements Serializable {
         JLabel lonlabel = new JLabel(locText);
         c.gridx = 0;
         c.gridy = 1;
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 0f;
+        c.insets = leftInsets;
         gridbag.setConstraints(lonlabel, c);
         add(lonlabel);
 
         longitude = new JTextField(10);
         c.gridx = 1;
         c.gridy = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1.0f;
+        c.insets = rightInsets;
         gridbag.setConstraints(longitude, c);
         add(longitude);
     }
