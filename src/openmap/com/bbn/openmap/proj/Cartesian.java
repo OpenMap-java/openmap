@@ -370,10 +370,10 @@ public class Cartesian extends Proj implements Projection, java.io.Serializable 
 
             if (dx <= dy) {
                 worldCoords = dx;
-                deltaPix = getWidth();
+                deltaPix = Math.abs(point2.getX() - point1.getX());
             } else {
                 worldCoords = dy;
-                deltaPix = getHeight();
+                deltaPix = Math.abs(point2.getY() - point1.getY());;
             }
 
             // The new scale...

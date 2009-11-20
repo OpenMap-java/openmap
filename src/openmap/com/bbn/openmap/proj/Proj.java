@@ -886,10 +886,13 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * @param ll2 the lower right coordinates of the bounding box.
      * @param point1 a java.awt.geom.Point2D reflecting a pixel spot on the
      *        projection that matches the ll1 coordinate, the upper left corner
-     *        of the area of interest.
+     *        of the area of interest. Note that this is the location where you
+     *        want ll1 to go in the new projection scale, not where it is now.
      * @param point2 a java.awt.geom.Point2D reflecting a pixel spot on the
      *        projection that matches the ll2 coordinate, usually the lower
-     *        right corner of the area of interest.
+     *        right corner of the area of interest. Note that this is the
+     *        location where you want ll2 to go in the new projection, not where
+     *        it is now.
      */
     public abstract float getScale(Point2D ll1, Point2D ll2, Point2D point1,
                                    Point2D point2);

@@ -40,8 +40,8 @@ import java.util.ArrayList;
  * 
  * <h4>Projection Notes/Assumptions:</h4>
  * <ul>
- * <li>At the center point of the projection, North is to the top of the
- * screen. <br>
+ * <li>At the center point of the projection, North is to the top of the screen.
+ * <br>
  * <li><a href="#poly_restrictions">LatLon Polygon Restrictions. </a> <br>
  * <li><a href="#line_restrictions">LatLon Line Restrictions. </a> <br>
  * </ul>
@@ -159,8 +159,8 @@ public interface Projection extends java.io.Serializable {
      * Checks if a point is plot-able.
      * <p>
      * Call this to check and see if a point can be plotted. This is meant to be
-     * used for checking before projecting and rendering Point2D objects (bitmaps
-     * or text objects tacked at a specific location, for instance).
+     * used for checking before projecting and rendering Point2D objects
+     * (bitmaps or text objects tacked at a specific location, for instance).
      * 
      * @param point Point2D
      * @return boolean
@@ -209,10 +209,10 @@ public interface Projection extends java.io.Serializable {
      * Forward projects a world coordinate into XY space and return a Point2D.
      * 
      * @param llp Point2D containing coordinates to be projected
-     * @param pt A Point2D object to load the result into, a new Point2D object will
-     *        be created if this is null.
-     * @return Point2D The Point2D object provided (for convenience) or created with
-     *         the result.
+     * @param pt A Point2D object to load the result into, a new Point2D object
+     *        will be created if this is null.
+     * @return Point2D The Point2D object provided (for convenience) or created
+     *         with the result.
      */
     public Point2D forward(Point2D llp, Point2D pt);
 
@@ -246,10 +246,10 @@ public interface Projection extends java.io.Serializable {
      *        implementation).
      * @param lon float horizontal location component (units depend on
      *        projection implementation).
-     * @param pt A Point2D object to load the result into, a new Point2D object will
-     *        be created if this is null.
-     * @return Point2D The Point2D object provided (for convenience) or created with
-     *         the result.
+     * @param pt A Point2D object to load the result into, a new Point2D object
+     *        will be created if this is null.
+     * @return Point2D The Point2D object provided (for convenience) or created
+     *         with the result.
      */
     public Point2D forward(float lat, float lon, Point2D pt);
 
@@ -261,10 +261,10 @@ public interface Projection extends java.io.Serializable {
      *        implementation).
      * @param lon double horizontal location component (units depend on
      *        projection implementation).
-     * @param pt A Point2D object to load the result into, a new Point2D object will
-     *        be created if this is null.
-     * @return Point2D The Point2D object provided (for convenience) or created with
-     *         the result.
+     * @param pt A Point2D object to load the result into, a new Point2D object
+     *        will be created if this is null.
+     * @return Point2D The Point2D object provided (for convenience) or created
+     *         with the result.
      */
     public Point2D forward(double lat, double lon, Point2D pt);
 
@@ -348,8 +348,8 @@ public interface Projection extends java.io.Serializable {
     /**
      * Forward project a line defined by two coordinate end points.
      * <p>
-     * Returns a ArrayList<int[]> of (x[], y[]) coordinate pair(s) of the projected
-     * line(s).
+     * Returns a ArrayList<int[]> of (x[], y[]) coordinate pair(s) of the
+     * projected line(s).
      */
     public ArrayList<int[]> forwardLine(Point2D ll1, Point2D ll2);
 
@@ -357,8 +357,8 @@ public interface Projection extends java.io.Serializable {
      * Forward project a rectangle defined by an upper left point and a lower
      * right point.
      * <p>
-     * Returns a ArrayList<int[]> of (x[], y[]) coordinate pairs of the projected
-     * points.
+     * Returns a ArrayList<int[]> of (x[], y[]) coordinate pairs of the
+     * projected points.
      * 
      * @param ll1 Point2D of northwest corner
      * @param ll2 Point2D of southeast corner
@@ -457,16 +457,20 @@ public interface Projection extends java.io.Serializable {
      * @param ll2 the lower right coordinates of the bounding box.
      * @param point1 a java.awt.geom.Point2D reflecting a pixel spot on the
      *        projection that matches the ll1 coordinate, the upper left corner
-     *        of the area of interest.
+     *        of the area of interest. Note that this is where ll1 is going to
+     *        go in the new projection, not where it is now.
      * @param point2 a java.awt.geom.Point2D reflecting a pixel spot on the
      *        projection that matches the ll2 coordinate, usually the lower
-     *        right corner of the area of interest.
+     *        right corner of the area of interest. Note that this is where ll2
+     *        is going to go in the new projection, not where it is now.
      */
-    public <T extends Point2D> float getScale(T ll1, T ll2, Point2D point1, Point2D point2);
-    
+    public <T extends Point2D> float getScale(T ll1, T ll2, Point2D point1,
+                                              Point2D point2);
+
     /**
      * Get the unprojected coordinates units of measure.
-     * @return Length.  May be null if unknown.
+     * 
+     * @return Length. May be null if unknown.
      */
     public Length getUcuom();
 

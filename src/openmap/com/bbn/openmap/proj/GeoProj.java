@@ -981,14 +981,14 @@ public abstract class GeoProj extends Proj {
 
             double deltaDegrees;
             double pixPerDegree;
-            int deltaPix;
+            double deltaPix;
             double dx = Math.abs(point2.getX() - point1.getX());
             double dy = Math.abs(point2.getY() - point1.getY());
 
             if (dx < dy) {
                 double dlat = Math.abs(ll1.getY() - ll2.getY());
                 deltaDegrees = dlat;
-                deltaPix = getHeight();
+                deltaPix = dy;
 
                 // This might not be correct for all projection types
                 pixPerDegree = getPlanetPixelCircumference() / 360.0;
@@ -1016,7 +1016,7 @@ public abstract class GeoProj extends Proj {
                 }
 
                 deltaDegrees = dlon;
-                deltaPix = getWidth();
+                deltaPix = dx;
 
                 // This might not be correct for all projection types
                 pixPerDegree = getPlanetPixelCircumference() / 360.0;

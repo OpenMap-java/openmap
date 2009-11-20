@@ -386,8 +386,8 @@ public final class ProjMath {
      * "The geographic or geodetic latitude is the angle which a line
      * perpendicular to the surface of the ellipsoid at the given point makes
      * with the plane of the equator. ...The geocentric latitude is the angle
-     * made by a line to the center of the ellipsoid with the equatorial plane". (
-     * <i>Map Projections --A Working Manual </i>, p 13)
+     * made by a line to the center of the ellipsoid with the equatorial plane".
+     * ( <i>Map Projections --A Working Manual </i>, p 13)
      * <p>
      * Translated from Ken Anderson's lisp code <i>Freeing the Essence of
      * Computation </i>
@@ -466,7 +466,8 @@ public final class ProjMath {
     /**
      * Given a couple of points representing a bounding box of projected
      * coordinates, find out what the scale should be in order to make those
-     * points appear at the corners of the projection.
+     * points appear at the corners of the projection, with the intention that
+     * the bounding box will then fill the projected space.
      * 
      * @param point1 a java.awt.Point reflecting a pixel spot on the projection,
      *        usually the upper left corner of the area of interest.
@@ -484,6 +485,9 @@ public final class ProjMath {
         Point2D ll1 = projection.inverse(point1);
         Point2D ll2 = projection.inverse(point2);
 
+        point1 = new Point2D.Double();
+        point2 = new Point2D.Double(projection.getWidth(), projection.getHeight());
+
         return getScale(ll1, ll2, point1, point2, projection);
     }
 
@@ -495,11 +499,13 @@ public final class ProjMath {
      * @param ll1 the upper left coordinates of the bounding box.
      * @param ll2 the lower right coordinates of the bounding box.
      * @param point1 a java.awt.Point reflecting a pixel spot on the projection
-     *        that matches the ll1 coordinate, the upper left corner of the area
-     *        of interest.
+     *        that matches the ll1 coordinate in the new space, the upper left
+     *        corner of the area of interest. Where the ll1 is going to go in
+     *        the new projection.
      * @param point2 a java.awt.Point reflecting a pixel spot on the projection
-     *        that matches the ll2 coordinate, usually the lower right corner of
-     *        the area of interest.
+     *        that matches the ll2 coordinate in the new space, usually the
+     *        lower right corner of the area of interest. Where the ll2 is going
+     *        to go in the new projection.
      * @param projection the projection to use to query to get the scale for,
      *        for projection type and height and width.
      */
@@ -518,9 +524,9 @@ public final class ProjMath {
      * com.bbn.openmap.LatLonPoint.normalize_latitude(
      * (float)Math.random()*LAT_DEC_RANGE); lon =
      * com.bbn.openmap.LatLonPoint.wrap_longitude(
-     * (float)Math.random()*LON_DEC_RANGE); Debug.output( "(" + lat + "," + lon + ") : (" +
-     * degToRad(lat) + "," + degToRad(lon) + ") : (" + radToDeg(degToRad(lat)) +
-     * "," + radToDeg(degToRad(lon)) + ")"); } }
+     * (float)Math.random()*LON_DEC_RANGE); Debug.output( "(" + lat + "," + lon
+     * + ") : (" + degToRad(lat) + "," + degToRad(lon) + ") : (" +
+     * radToDeg(degToRad(lat)) + "," + radToDeg(degToRad(lon)) + ")"); } }
      */
 
     /**
