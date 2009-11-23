@@ -54,7 +54,11 @@ public class ComponentFactory {
      * The property to use for the class name of new objects - ".class". Expects
      * that a prefix will be prepended to it.
      */
-    public static final String ClassNameProperty = ".class";
+    public static final String DotClassNameProperty = ".class";
+    /**
+     * The property to use for the class name of new objects - "class".
+     */
+    public static final String ClassNameProperty = "class";
 
     /**
      * The singleton instance of the ComponentFactory.
@@ -289,7 +293,7 @@ public class ComponentFactory {
             String componentName = PropUtils.getScopedPropertyPrefix(prefix)
                     + markerNames.elementAt(i);
 
-            String classProperty = componentName + ClassNameProperty;
+            String classProperty = componentName + DotClassNameProperty;
             String className = properties.getProperty(classProperty);
 
             if (className == null) {
