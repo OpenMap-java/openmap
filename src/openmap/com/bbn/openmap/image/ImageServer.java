@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.Layer;
@@ -52,15 +54,14 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.ComponentFactory;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The image server is the class you want to deal with when creating images from
- * the ImageGenerator. It takes a properties file and sets up the image
- * generator based on those properties. It also has this queuing thing going so
- * that requests can stack up while the image generator is working on requests,
- * and it will notify the requestor when the image is ready.
+ * The image server is the class you want to deal with when creating images. It
+ * takes a properties file and creates images based on those properties. It also
+ * has this queuing thing going so that requests can stack up while the image
+ * generator is working on requests, and it will notify the requestor when the
+ * image is ready.
  * <P>
  * 
  * The ImageServer generally has the layers on the map predefined at
@@ -113,6 +114,8 @@ import com.bbn.openmap.util.PropUtils;
 public class ImageServer implements
 /* ImageReadyListener, ImageReceiver, */PropertyConsumer {
 
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.image.ImageServer");
+
     /** The Image formatter for the output image. */
     protected ImageFormatter formatter;
 
@@ -158,7 +161,7 @@ public class ImageServer implements
      * default projection set will be used.
      */
     protected ProjectionFactory projectionFactory;
-    
+
     private boolean transparent = true;
 
     /**
@@ -328,11 +331,10 @@ public class ImageServer implements
                               int scaledHeight, List<String> showLayers,
                               Paint background) {
 
-        Debug.message("imageserver",
-                "ImageServer: using the new ProjectionPainter interface!  createImage with layer string array. ");
+        logger.info("using the new ProjectionPainter interface!  createImage with layer string array.");
 
         if (formatter == null) {
-            Debug.error("ImageServer.createImage: no formatter set! Can't create image.");
+            logger.warning("no formatter set! Can't create image.");
             return new byte[0];
         }
 
@@ -355,15 +357,15 @@ public class ImageServer implements
                     Layer layer = layers[i];
                     if (layerName.equals(layer.getPropertyPrefix())) {
                         layer.renderDataForProjection(proj, graphics);
-                        if (Debug.debugging("imageserver")) {
-                            Debug.output("ImageServer: image request adding layer graphics from : "
+                        if (logger.isLoggable(Level.FINE)) {
+                            logger.fine("image request adding layer graphics from : "
                                     + layer.getName());
                         }
                     }
                 }
             }
-        } else if (Debug.debugging("imageserver")) {
-            Debug.output("ImageServer: no layers available for image");
+        } else if (logger.isLoggable(Level.FINE)) {
+            logger.fine("no layers available for image");
         }
 
         byte[] formattedImage = getFormattedImage(imageFormatter,
@@ -439,11 +441,10 @@ public class ImageServer implements
                               int scaledHeight, int includedLayerMask,
                               Paint background) {
 
-        Debug.message("imageserver",
-                "ImageServer: using the new ProjectionPainter interface!  createImage with layer mask.");
+        logger.info("using the new ProjectionPainter interface!  createImage with layer mask.");
 
         if (formatter == null) {
-            Debug.error("ImageServer.createImage: no formatter set! Can't create image.");
+            logger.warning("no formatter set! Can't create image.");
             return new byte[0];
         }
 
@@ -459,30 +460,29 @@ public class ImageServer implements
 
         ((Proj) proj).drawBackground((Graphics2D) graphics, background);
 
-        if (Debug.debugging("imageserver")) {
-            Debug.output("ImageServer: considering " + layers.length
-                    + " for image...");
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("considering " + layers.length + " for image...");
         }
 
         if (layers != null) {
             for (int i = layers.length - 1; i >= 0; i--) {
                 if ((includedLayerMask & (0x00000001 << i)) != 0) {
-                    if (Debug.debugging("imageserver")) {
-                        Debug.output("ImageServer: image request adding layer graphics from : "
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("image request adding layer graphics from : "
                                 + layers[i].getName());
                     }
 
                     layers[i].renderDataForProjection(proj, graphics);
                 } else {
-                    if (Debug.debugging("imageserver")) {
-                        Debug.output("ImageServer: skipping layer graphics from : "
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("skipping layer graphics from : "
                                 + layers[i].getName());
                     }
                 }
             }
         } else {
-            if (Debug.debugging("imageserver")) {
-                Debug.output("ImageServer: no layers available");
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("no layers available");
             }
         }
 
@@ -507,19 +507,19 @@ public class ImageServer implements
         java.awt.Graphics graphics = null;
 
         if (formatter == null) {
-            Debug.error("ImageServer.createGraphics: Formatter is null, returning null graphics.");
+            logger.warning("ImageServer.createGraphics: Formatter is null, returning null graphics.");
             return null;
         }
 
-		graphics = formatter.getGraphics(width, height, getTransparent());
-        
+        graphics = formatter.getGraphics(width, height, getTransparent());
+
         if (graphics == null) {
-            Debug.error("ImageServer.createGraphics: NOT able to create Graphics!");
+            logger.warning("ImageServer.createGraphics: NOT able to create Graphics!");
             return null;
         }
 
-        if (Debug.debugging("imageserver")) {
-            Debug.output("ImageServer.createGraphics: graphics is cool");
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("graphics is cool");
         }
 
         if (doAntiAliasing && graphics instanceof java.awt.Graphics2D) {
@@ -540,8 +540,8 @@ public class ImageServer implements
     protected byte[] getFormattedImage(ImageFormatter formatter,
                                        int scaledWidth, int scaledHeight) {
 
-        if (Debug.debugging("imageserver")) {
-            Debug.output("ImageServer: ready to create formatted image.");
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("ready to create formatted image.");
         }
         byte[] formattedImage = null;
 
@@ -552,8 +552,7 @@ public class ImageServer implements
                     scaledHeight);
 
         } else {
-            Debug.message("imageserver",
-                    "ImageServer: using full scale image (unscaled).");
+            logger.fine("ImageServer: using full scale image (unscaled).");
             formattedImage = formatter.getImageBytes();
         }
         return formattedImage;
@@ -629,6 +628,43 @@ public class ImageServer implements
         if (props == null) {
             props = new Properties();
         }
+
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+
+        StringBuffer buf = new StringBuffer();
+        for (Layer layer : getLayers()) {
+            buf.append(layer.getPropertyPrefix() + " ");
+            layer.getProperties(props);
+        }
+
+        props.put(prefix + ImageServerLayersProperty, buf.toString().trim());
+
+        buf = new StringBuffer();
+        if (imageFormatters != null) {
+            for (ImageFormatter formatter : imageFormatters.values()) {
+                if (formatter instanceof PropertyConsumer) {
+                    PropertyConsumer pc = (PropertyConsumer) formatter;
+                    buf.append(pc.getPropertyPrefix() + " ");
+                    pc.getProperties(props);
+                } else {
+                    String className = formatter.getClass().getName();
+                    buf.append(className + " ");
+                    props.put(className + ComponentFactory.DotClassNameProperty,
+                            className);
+                }
+            }
+        }
+
+        props.put(prefix + ImageFormattersProperty, buf.toString().trim());
+
+        props.put(prefix + AntiAliasingProperty,
+                Boolean.toString(doAntiAliasing));
+
+        if (background instanceof Color) {
+            String colorString = Integer.toHexString(((Color) background).getRGB());
+            props.put(Environment.BackgroundColor, colorString);
+        }
+
         return props;
     }
 
@@ -676,9 +712,10 @@ public class ImageServer implements
     protected synchronized Layer[] getMaskedLayers(int layerMask) {
         if (layerMask == 0xFFFFFFFF || layers == null) {
             // They all want to be there
-            Debug.message("imageserver",
-                    (layers != null ? "ImageServer: image request adding all layers."
-                            : "ImageServer.getMaskedLayers() null layers"));
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine((layers != null ? "ImageServer: image request adding all layers."
+                        : "ImageServer.getMaskedLayers() null layers"));
+            }
             return layers;
         } else {
             // Use the vector as a growable array, and add the layers
@@ -687,8 +724,8 @@ public class ImageServer implements
             for (int i = 0; i < layers.length; i++) {
                 if ((layerMask & (0x00000001 << i)) != 0) {
                     layerVector.add(layers[i]);
-                    if (Debug.debugging("imageserver")) {
-                        Debug.output("ImageServer: image request adding layer: "
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("image request adding layer: "
                                 + layers[i].getName());
                     }
                 }
@@ -751,7 +788,8 @@ public class ImageServer implements
      * @param defaultFormatterKey the key label of the formatter to use for a
      *        default.
      */
-    public synchronized void setFormatters(Map<String, ImageFormatter> iFormatters,
+    public synchronized void setFormatters(
+                                           Map<String, ImageFormatter> iFormatters,
                                            String defaultFormatterKey) {
         imageFormatters = iFormatters;
         formatter = (ImageFormatter) imageFormatters.get(defaultFormatterKey.intern());
@@ -792,8 +830,7 @@ public class ImageServer implements
             }
 
         } else {
-            Debug.message("imageserver",
-                    "ImageServer.getFormatters: no formatters specified");
+            logger.fine("no formatters specified");
         }
 
         return iFormatter;
@@ -817,7 +854,8 @@ public class ImageServer implements
      * @param instantiatedLayers a hashtable containing layers, with the prefix
      *        layer name used as the key.
      */
-    protected Layer[] getLayers(Properties p, Map<String, Layer> instantiatedLayers) {
+    protected Layer[] getLayers(Properties p,
+                                Map<String, Layer> instantiatedLayers) {
 
         String layersValue;
         String prefix = PropUtils.getScopedPropertyPrefix(this);
@@ -829,8 +867,7 @@ public class ImageServer implements
                     + ImageServerLayersProperty);
 
             if (layersValue == null) {
-                Debug.error("ImageServer: No property \""
-                        + ImageServerLayersProperty
+                logger.warning("No property \"" + ImageServerLayersProperty
                         + "\" found in ImageServer properties.");
                 return new Layer[0];
             }
@@ -838,8 +875,8 @@ public class ImageServer implements
 
         Vector<String> layerNames = PropUtils.parseSpacedMarkers(layersValue);
 
-        if (Debug.debugging("imageserver")) {
-            Debug.output("OpenMap.getLayers(): " + layerNames);
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("OpenMap.getLayers(): " + layerNames);
         }
 
         int nLayerNames = layerNames.size();
@@ -858,9 +895,9 @@ public class ImageServer implements
                     // iLayer.setProperties(layerName, p);
 
                     layers.add(iLayer);
-                    if (Debug.debugging("imageserver")) {
-                        Debug.output("ImageServer: adding instantiated layer /"
-                                + layerName + "/");
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("adding instantiated layer /" + layerName
+                                + "/");
                     }
                     continue;
                 }
@@ -870,9 +907,9 @@ public class ImageServer implements
             String classProperty = layerName + ".class";
             String className = p.getProperty(classProperty);
             if (className == null) {
-                Debug.error("Failed to locate property \"" + classProperty
+                logger.warning("Failed to locate property \"" + classProperty
                         + "\"");
-                Debug.error("Skipping layer \"" + layerName + "\"");
+                logger.warning("Skipping layer \"" + layerName + "\"");
                 continue;
             }
 
@@ -895,8 +932,8 @@ public class ImageServer implements
 
                 if (instantiatedLayers != null) {
                     instantiatedLayers.put(layerName, l);
-                    if (Debug.debugging("imageserver")) {
-                        Debug.output("ImageServer: Saving /" + layerName
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("Saving /" + layerName
                                 + "/ to instantiated layers hashtable.");
                     }
                 }
@@ -913,12 +950,6 @@ public class ImageServer implements
         }
     }
 
-    // protected void finalize() {
-    // if (Debug.debugging("gc")) {
-    // Debug.output("ImageServer: GC'd.");
-    // }
-    // }
-
     public ProjectionFactory getProjectionFactory() {
         if (projectionFactory == null) {
             projectionFactory = ProjectionFactory.loadDefaultProjections();
@@ -928,6 +959,54 @@ public class ImageServer implements
 
     public void setProjectionFactory(ProjectionFactory projFactory) {
         projectionFactory = projFactory;
+    }
+
+    /**
+     * Takes a byte array and writes it out to a file path.
+     * 
+     * @param imageBytes the formatted bytes of the image.
+     * @param outputPath the path of the image file.
+     * @param checkFormatterForExtension if true, will check the current active
+     *        formatter for extension that will be added to the path if it
+     *        doesn't end with the image type.
+     * @return the final file path used, with any extensions added.
+     * @throws IOException
+     */
+    public String writeImageFile(byte[] imageBytes, String outputPath,
+                                 boolean checkFormatterForExtension)
+            throws IOException {
+        String appendix = "";
+
+        if (checkFormatterForExtension) {
+            ImageFormatter formatter = getFormatter();
+            if (formatter == null) {
+                appendix = ".jpg";
+            } else {
+                String fileType = formatter.getFormatLabel();
+                if (fileType.equals(WMTConstants.IMAGEFORMAT_JPEG)) {
+                    appendix = ".jpg";
+                } else {
+                    appendix = "." + fileType.toLowerCase();
+                }
+            }
+
+            // If the file output path already ends properly, don't bother
+            // changing
+            // it.
+            if (outputPath.endsWith(appendix)) {
+                appendix = "";
+            }
+        }
+
+        String finalOutputPath = outputPath + appendix;
+
+        FileOutputStream fos = new FileOutputStream(finalOutputPath);
+
+        fos.write(imageBytes);
+        fos.flush();
+        fos.close();
+
+        return finalOutputPath;
     }
 
     /**
@@ -1026,8 +1105,8 @@ public class ImageServer implements
                             MapBean.DEFAULT_HEIGHT));
         }
 
-        if (Debug.debugging("imageserver")) {
-            Debug.output("ImageServer: creating image with projection " + proj);
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("creating image with projection " + proj);
         }
 
         byte[] imageBytes = is.createImage(proj);
@@ -1059,28 +1138,28 @@ public class ImageServer implements
     public Paint getBackground() {
         return background;
     }
-        
-    /**
-	 * Set the transparent flag. Even if this flag is true, the image still may
-	 * not end up transparent if the {@link ImageFormatter} does not support
-	 * transparency or the image is completely filled.
-	 * 
-	 * @param transparent
-	 */
-    public void setTransparent(boolean transparent) {
-		this.transparent = transparent;
-	}
 
     /**
-	 * Get the transparent flag. Even if this flag is true, the image still may
-	 * not end up transparent if the {@link ImageFormatter} does not support
-	 * transparency or the image is completely filled.
-	 * 
-	 * @param transparent
-	 */
-	public boolean getTransparent() {
-		return transparent;
-	}
+     * Set the transparent flag. Even if this flag is true, the image still may
+     * not end up transparent if the {@link ImageFormatter} does not support
+     * transparency or the image is completely filled.
+     * 
+     * @param transparent
+     */
+    public void setTransparent(boolean transparent) {
+        this.transparent = transparent;
+    }
+
+    /**
+     * Get the transparent flag. Even if this flag is true, the image still may
+     * not end up transparent if the {@link ImageFormatter} does not support
+     * transparency or the image is completely filled.
+     * 
+     * @param transparent
+     */
+    public boolean getTransparent() {
+        return transparent;
+    }
 
     /**
      * The ImageServer class main function will create a map image from a
@@ -1100,10 +1179,6 @@ public class ImageServer implements
      * get assigned depending on what image format is used.
      */
     public static void main(String[] argv) {
-
-        Debug.init();
-        Debug.put("imageserver");
-        Debug.put("image");
 
         com.bbn.openmap.util.ArgParser ap = new com.bbn.openmap.util.ArgParser("ImageServer");
 
@@ -1144,14 +1219,15 @@ public class ImageServer implements
                         proj,
                         imagefile);
 
-                if (Debug.debugging("imageserver")) {
-                    Debug.output("Writing image file to: " + finalOutputPath);
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Writing image file to: " + finalOutputPath);
                 }
 
             } catch (MalformedURLException murle) {
-                Debug.error("ImageServer can't find properties file: " + arg[0]);
+                logger.warning("ImageServer can't find properties file: "
+                        + arg[0]);
             } catch (IOException ioe) {
-                Debug.error("ImageServer can't write output image: IOException");
+                logger.warning("ImageServer can't write output image: IOException");
             }
         }
 
