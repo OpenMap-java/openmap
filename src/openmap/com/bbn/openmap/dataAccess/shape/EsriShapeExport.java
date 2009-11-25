@@ -474,8 +474,8 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
             if (record == null) {
                 record = getMasterDBFRecord(recIndex);
             }
-            dbfIndex++;  // increment for the next round.
-            
+            dbfIndex++; // increment for the next round.
+
             // If we have an OMGraphicList, iterate through that one
             // as well. We're not handling multi-part geometries yet.
             if (dtlGraphic instanceof OMGraphicList) {
@@ -776,8 +776,16 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
 
         // At a later time, more stroke parameters can be added, like
         // dash phase, end cap, line joins, and dash pattern.
-
+        // While we're here, add index attribute into OMGraphics if they don't
+        // have them.
+        int count = 0;
         for (OMGraphic omg : list) {
+            Object index = omg.getAttribute(SHAPE_INDEX_ATTRIBUTE);
+            if (index == null) {
+                index = new Integer(count);
+                omg.putAttribute(SHAPE_INDEX_ATTRIBUTE, index);
+            }
+            count++;
 
             List<Object> record = new ArrayList<Object>();
 
@@ -806,6 +814,66 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
         }
 
         return _model;
+    }
+
+    public static void syncDrawingAttributesToTableModel(DbfTableModel model,
+                                                         OMGraphicList list,
+                                                         boolean clearUpdatedStatus) {
+
+        int count = 0;
+
+        for (OMGraphic omg : list) {
+            Object indexObj = omg.getAttribute(SHAPE_INDEX_ATTRIBUTE);
+            if (indexObj == null || !(indexObj instanceof Integer)) {
+                indexObj = new Integer(count);
+                omg.putAttribute(SHAPE_INDEX_ATTRIBUTE, indexObj);
+            }
+            count++;
+            int index = ((Integer) indexObj).intValue();
+            Object updatedStatus = omg.getAttribute(OMGraphicConstants.UPDATED);
+            if (updatedStatus == Boolean.TRUE) {
+                List<Object> record = model.getRecord(index);
+
+                index = model.getColumnIndexForName(SHAPE_DBF_LINECOLOR);
+                if (index >= 0) {
+                    record.set(index, ColorFactory.getHexColorString(omg.getLineColor()));
+                }
+                index = model.getColumnIndexForName(SHAPE_DBF_FILLCOLOR);
+                if (index >= 0) {
+                    record.set(index, ColorFactory.getHexColorString(omg.getFillColor()));
+                }
+                index = model.getColumnIndexForName(SHAPE_DBF_SELECTCOLOR);
+                if (index >= 0) {
+                    record.set(index,
+                               ColorFactory.getHexColorString(omg.getSelectColor()));
+                }
+
+                BasicStroke bs = (BasicStroke) omg.getStroke();
+                index = model.getColumnIndexForName(SHAPE_DBF_LINEWIDTH);
+                if (index >= 0) {
+                    record.set(index, new Double(bs.getLineWidth()));
+                }
+                String dp = BasicStrokeEditor.dashArrayToString(bs.getDashArray());
+                if (dp == BasicStrokeEditor.NONE) {
+                    dp = "";
+                }
+                index = model.getColumnIndexForName(SHAPE_DBF_DASHPATTERN);
+                if (index >= 0) {
+                    record.set(index, dp);
+                }
+                index = model.getColumnIndexForName(SHAPE_DBF_DASHPHASE);
+                if (index >= 0) {
+                    record.set(index, new Double(bs.getDashPhase()));
+                }
+
+                if (logger.isLoggable(Level.FINER))
+                    logger.finer("ESE: updating record for OMGraphic: " + indexObj);
+
+                if (clearUpdatedStatus) {
+                    omg.removeAttribute(OMGraphicConstants.UPDATED);
+                }
+            }
+        }
     }
 
     /**
@@ -1003,6 +1071,8 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
 
             if (model == null) {
                 model = createDefaultModel(list);
+            } else {
+                syncDrawingAttributesToTableModel(model, list, true);
             }
             model.setWritable(true);
 

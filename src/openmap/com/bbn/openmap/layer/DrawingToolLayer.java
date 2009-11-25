@@ -57,6 +57,7 @@ import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMAction;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
 import com.bbn.openmap.proj.Projection;
@@ -176,7 +177,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
 
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
-        
+
         drawingAttributes.getProperties(props);
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
@@ -190,7 +191,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         props = super.getPropertyInfo(props);
 
         drawingAttributes.getPropertyInfo(props);
-        
+
         String interString;
 
         interString = i18n.get(DrawingToolLayer.class, ShowHintsProperty, I18n.TOOLTIP,
@@ -257,6 +258,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
 
         // GRP, assuming that selection is off.
         OMGraphicList omgl = new OMGraphicList();
+        omg.putAttribute(OMGraphicConstants.UPDATED, Boolean.TRUE);
         omgl.add(omg);
         deselect(omgl);
 
@@ -489,7 +491,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
 
             actions.add(new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
-                    saveOMGraphics();
+                    saveOMGraphics(getProjection());
                 }
 
                 public String toString() {
@@ -557,7 +559,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
      * class. If that's null, the user will be asked for one.
      * 
      */
-    public void saveOMGraphics() {
+    public void saveOMGraphics(Projection proj) {
         if (fileName == null) {
             fileName = FileUtils.getFilePathToSaveFromUser(i18n.get(
                                                                     DrawingToolLayer.class,
@@ -568,17 +570,24 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         if (fileName != null) {
             OMGraphicList list = getList();
 
-            if (list != null) {
-                try {
-                    FileOutputStream fos = new FileOutputStream(new File(fileName));
-                    ObjectOutputStream oos = new ObjectOutputStream(fos);
-                    oos.writeObject(list);
-                    oos.close();
+            if (fileName.toLowerCase().endsWith(".shp")) {
+                EsriShapeExport ese = new EsriShapeExport(list, proj, fileName);
+                ese.setTransform(getCoordTransform());
+                ese.export();
+            } else {
 
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (list != null) {
+                    try {
+                        FileOutputStream fos = new FileOutputStream(new File(fileName));
+                        ObjectOutputStream oos = new ObjectOutputStream(fos);
+                        oos.writeObject(list);
+                        oos.close();
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -591,13 +600,16 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
      */
     public OMGraphicList load() {
         OMGraphicList graphicList = new OMGraphicList();
+        boolean err = false;
+
         if (fileName != null) {
             try {
                 OMGraphicList list = null;
                 URL url = PropUtils.getResourceOrFileOrURL(fileName);
                 if (url != null) {
                     if (fileName.endsWith(".shp")) {
-                        list = EsriShapeExport.read(url, drawingAttributes, getCoordTransform());
+                        list = EsriShapeExport.read(url, drawingAttributes,
+                                                    getCoordTransform());
                     } else {
                         ObjectInputStream ois = new ObjectInputStream(url.openStream());
                         list = (OMGraphicList) ois.readObject();
@@ -613,28 +625,35 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                 if (DTL_DEBUG) {
                     e.printStackTrace();
                 }
+                err = true;
             } catch (StreamCorruptedException sce) {
                 sce.printStackTrace();
                 fireRequestMessage(i18n.get(DrawingToolLayer.class, "LOAD_ERROR",
                                             "The file doesn't appear to be a valid map file"));
+                err = true;
             } catch (IOException e) {
                 if (DTL_DEBUG) {
                     e.printStackTrace();
                 }
+                err = true;
             } catch (ClassNotFoundException e) {
                 if (DTL_DEBUG) {
                     e.printStackTrace();
                 }
+                err = true;
             } catch (ClassCastException cce) {
                 if (DTL_DEBUG) {
                     cce.printStackTrace();
                 }
+                err = true;
             }
         }
         // Something went wrong, we don't want to overwrite something
         // that might potentially be something else if a save is
         // called for later.
-        fileName = null;
+        if (err) {
+            fileName = null;
+        }
         return graphicList;
     }
 

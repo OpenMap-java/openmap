@@ -121,7 +121,7 @@ public interface OMGraphicConstants {
 
     /** A transparent color. */
     public final static Color clear = com.bbn.openmap.util.ColorFactory.createColor(0,
-            true);
+                                                                                    true);
 
     /** A Basic Stroke. */
     public final static java.awt.Stroke BASIC_STROKE = new java.awt.BasicStroke();
@@ -204,4 +204,10 @@ public interface OMGraphicConstants {
      * appearance")
      */
     public static final String CHANGE_APPEARANCE = "ChangeAppearance";
+
+    /**
+     * A string that can be used in the attributes to make a note that the
+     * OMGraphic has changed, and its state should be updated somewhere.
+     */
+    public static final String UPDATED = "Updated";
 }

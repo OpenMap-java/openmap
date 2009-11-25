@@ -7,6 +7,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.proj.coords.UTMGCT;
 import com.bbn.openmap.proj.coords.UTMPoint;
 
 /**
@@ -41,8 +42,8 @@ public class UTMProjection extends GeoProj {
 
     protected Ellipsoid ellps;
 
-    public UTMProjection(LatLonPoint center, float s, int w, int h,
-            int zone_number, boolean isnorthern, Ellipsoid ellps) {
+    public UTMProjection(LatLonPoint center, float s, int w, int h, int zone_number,
+            boolean isnorthern, Ellipsoid ellps) {
         super(center, s, w, h);
 
         this.zoneNumber = zone_number;
@@ -57,11 +58,8 @@ public class UTMProjection extends GeoProj {
         wx = width / 2;
 
         if (xycenter != null) {
-            UTMPoint c = UTMPoint.LLtoUTM(getCenter(),
-                    ellps,
-                    new UTMPoint(),
-                    zoneNumber,
-                    northern);
+            UTMPoint c = UTMPoint.LLtoUTM(getCenter(), ellps, new UTMPoint(), zoneNumber,
+                                          northern);
             xycenter.setLocation(c.easting, c.northing);
         }
 
@@ -86,22 +84,17 @@ public class UTMProjection extends GeoProj {
         return forward(llp, pt, new UTMPoint());
     }
 
-    public Point2D forward(double lat, double lon, Point2D pt,
-                           boolean isRadian, UTMPoint utmPoint) {
+    public Point2D forward(double lat, double lon, Point2D pt, boolean isRadian,
+                           UTMPoint utmPoint) {
         LatLonPoint llp = new LatLonPoint.Double(lat, lon, isRadian);
         return forward(llp, pt, utmPoint);
     }
 
     private Point2D forward(LatLonPoint llp, Point2D pt, UTMPoint utmPoint) {
-        utmPoint = UTMPoint.LLtoUTM(llp,
-                ellps,
-                utmPoint,
-                zoneNumber,
-                northern);
+        utmPoint = UTMPoint.LLtoUTM(llp, ellps, utmPoint, zoneNumber, northern);
 
-        pt.setLocation((wx + (ppu
-                * (utmPoint.easting - xycenter.getX()))), (hy - (ppu
-                * (utmPoint.northing - xycenter.getY()))));
+        pt.setLocation((wx + (ppu * (utmPoint.easting - xycenter.getX()))),
+                       (hy - (ppu * (utmPoint.northing - xycenter.getY()))));
 
         return pt;
     }
@@ -115,12 +108,8 @@ public class UTMProjection extends GeoProj {
             llpt = (T) new LatLonPoint.Double();
         }
 
-        llpt = (T) UTMPoint.UTMtoLL(ellps,
-                northing,
-                easting,
-                zoneNumber,
-                northern,
-                (LatLonPoint) llpt);
+        llpt = (T) UTMPoint.UTMtoLL(ellps, northing, easting, zoneNumber, northern,
+                                    (LatLonPoint) llpt);
 
         return llpt;
     }
@@ -130,18 +119,21 @@ public class UTMProjection extends GeoProj {
      * scale should be in order to make those points appear at the corners of
      * the projection.
      * 
-     * @param ll1 the upper left coordinates of the bounding box.
-     * @param ll2 the lower right coordinates of the bounding box.
-     * @param point1 a java.awt.Point reflecting a pixel spot on the projection
-     *        that matches the ll1 coordinate, the upper left corner of the area
-     *        of interest.
-     * @param point2 a java.awt.Point reflecting a pixel spot on the projection
-     *        that matches the ll2 coordinate, usually the lower right corner of
-     *        the area of interest.
+     * @param ll1
+     *            the upper left coordinates of the bounding box.
+     * @param ll2
+     *            the lower right coordinates of the bounding box.
+     * @param point1
+     *            a java.awt.Point reflecting a pixel spot on the projection
+     *            that matches the ll1 coordinate, the upper left corner of the
+     *            area of interest.
+     * @param point2
+     *            a java.awt.Point reflecting a pixel spot on the projection
+     *            that matches the ll2 coordinate, usually the lower right
+     *            corner of the area of interest.
      */
     @Override
-    public float getScale(Point2D ll1, Point2D ll2, Point2D point1,
-                          Point2D point2) {
+    public float getScale(Point2D ll1, Point2D ll2, Point2D point1, Point2D point2) {
 
         // super does not calculate scale correct for projections that does use
         // the same earth radius up north..
@@ -150,16 +142,10 @@ public class UTMProjection extends GeoProj {
 
         // float heightPX = point2.y - point1.y;
 
-        UTMPoint xx1 = UTMPoint.LLtoUTM((LatLonPoint)ll1,
-                ellps,
-                new UTMPoint(),
-                zoneNumber,
-                northern);
-        UTMPoint xx2 = UTMPoint.LLtoUTM((LatLonPoint)ll2,
-                ellps,
-                new UTMPoint(),
-                zoneNumber,
-                northern);
+        UTMPoint xx1 = UTMPoint.LLtoUTM((LatLonPoint) ll1, ellps, new UTMPoint(),
+                                        zoneNumber, northern);
+        UTMPoint xx2 = UTMPoint.LLtoUTM((LatLonPoint) ll2, ellps, new UTMPoint(),
+                                        zoneNumber, northern);
 
         double widthMap = (xx2.easting - xx1.easting);
         float widthScale = (float) (((double) getPPM()) * (widthMap / widthPX));
@@ -175,8 +161,8 @@ public class UTMProjection extends GeoProj {
         return widthScale;
     }
 
-    protected ArrayList<int[]> _forwardPoly(float[] rawllpts, int ltype,
-                                            int nsegs, boolean isFilled) {
+    protected ArrayList<int[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs,
+                                            boolean isFilled) {
         // TODO: copied from Cylindrical. may need to change.
         int n, k, flag = 0, min = 0, max = 0, xp, xadj = 0;
 
@@ -273,8 +259,8 @@ public class UTMProjection extends GeoProj {
     }// _forwardPoly()
 
     @Override
-    protected ArrayList<int[]> _forwardPoly(double[] rawllpts, int ltype,
-                                            int nsegs, boolean isFilled) {
+    protected ArrayList<int[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs,
+                                            boolean isFilled) {
         // TODO: copied from Cylindrical. may need to change.
         int n, k, flag = 0, min = 0, max = 0, xp, xadj = 0;
 
@@ -373,8 +359,10 @@ public class UTMProjection extends GeoProj {
     /**
      * Draw the background for the projection.
      * 
-     * @param g Graphics2D
-     * @param paint java.awt.Paint to use for the background
+     * @param g
+     *            Graphics2D
+     * @param paint
+     *            java.awt.Paint to use for the background
      */
     public void drawBackground(Graphics2D g, java.awt.Paint paint) {
         g.setPaint(paint);
@@ -389,9 +377,8 @@ public class UTMProjection extends GeoProj {
         g.fillRect(0, 0, getWidth(), getHeight());
     }
 
-    public boolean forwardRaw(float[] rawllpts, int rawoff, int[] xcoords,
-                              int[] ycoords, boolean[] visible, int copyoff,
-                              int copylen) {
+    public boolean forwardRaw(float[] rawllpts, int rawoff, int[] xcoords, int[] ycoords,
+                              boolean[] visible, int copyoff, int copylen) {
         // TODO: copied from Cylindrical. may need a change
         Point temp = new Point();
         UTMPoint tempUtm = new UTMPoint();
@@ -418,33 +405,33 @@ public class UTMProjection extends GeoProj {
     }
 
     public int getZoneNumber() {
-		return zoneNumber;
-	}
+        return zoneNumber;
+    }
 
-	public void setZoneNumber(int zoneNumber) {
-		this.zoneNumber = zoneNumber;
-		computeParameters();
-	}
+    public void setZoneNumber(int zoneNumber) {
+        this.zoneNumber = zoneNumber;
+        computeParameters();
+    }
 
-	public boolean isNorthern() {
-		return northern;
-	}
+    public boolean isNorthern() {
+        return northern;
+    }
 
-	public void setNorthern(boolean northern) {
-		this.northern = northern;
-		computeParameters();
-	}
+    public void setNorthern(boolean northern) {
+        this.northern = northern;
+        computeParameters();
+    }
 
-	public Ellipsoid getEllps() {
-		return ellps;
-	}
+    public Ellipsoid getEllps() {
+        return ellps;
+    }
 
-	public void setEllps(Ellipsoid ellps) {
-		this.ellps = ellps;
-		computeParameters();
-	}
+    public void setEllps(Ellipsoid ellps) {
+        this.ellps = ellps;
+        computeParameters();
+    }
 
-	/*
+    /*
      * HACK epsilon: skirt the edge of the infinite. If this is too small then
      * we get too close to +-INFINITY when we forward project. Tweak this if you
      * start getting Infinity or NaN's for forward().
@@ -455,7 +442,8 @@ public class UTMProjection extends GeoProj {
      * Sets radian latitude to something sane. This is an abstract function
      * since some projections don't deal well with extreme latitudes.
      * 
-     * @param lat float latitude in radians
+     * @param lat
+     *            float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
      */
     public double normalizeLatitude(double lat) {
@@ -472,4 +460,16 @@ public class UTMProjection extends GeoProj {
         return true;
     }
 
+    /**
+     * Convenience method to create a GCT for this projection. For projections
+     * that start with lat/lon coordinates, this will return a LatLonGCT. For
+     * projections that have world coordinates in meters, the GCT will provide a
+     * way to get to those meter coordinates. For instance, a UTMProjection will
+     * return a UTMGCT.
+     * 
+     * @return
+     */
+    public UTMGCT getGCTForProjection() {
+        return new UTMGCT(getZoneNumber(), isNorthern() ? 'N' : 'S');
+    }
 }
