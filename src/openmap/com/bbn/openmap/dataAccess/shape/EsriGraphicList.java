@@ -272,8 +272,6 @@ public abstract class EsriGraphicList extends OMGraphicList implements ShapeCons
         // Open and stream shp file
         try {
             InputStream is = shp.openStream();
-            
-
             ShpInputStream pis = new ShpInputStream(is);
             if (drawingAttributes != null) {
                 pis.setDrawingAttributes(drawingAttributes);
@@ -389,7 +387,8 @@ public abstract class EsriGraphicList extends OMGraphicList implements ShapeCons
         String[] printit = ap.getArgValues("print");
         if (printit != null) {
             try {
-
+                EsriGraphicList.logger.setLevel(Level.FINER);
+                EsriGraphicFactory.logger.setLevel(Level.FINER);
                 URL eglURL = PropUtils.getResourceOrFileOrURL(printit[0]);
                 EsriGraphicList egl = EsriGraphicList.getEsriGraphicList(eglURL, null,
                                                                          null);

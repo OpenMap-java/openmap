@@ -236,4 +236,45 @@ public class ShapeUtils implements ShapeConstants {
         nBytes += writePoint(b, off + nBytes, box.max);
         return nBytes;
     }
+    
+    /**
+     * Return a readable string for a shape int type.
+     * @param shapeType
+     * @return String
+     */
+    public static String getStringForType(int shapeType) {
+        switch (shapeType) {
+
+        case SHAPE_TYPE_NULL:
+            return "NULL";
+        case SHAPE_TYPE_POINT:
+            return "POINT";
+        case SHAPE_TYPE_POLYLINE:
+            return "POLYLINE";
+        case SHAPE_TYPE_POLYGON:
+            return "POLYGON";
+        case SHAPE_TYPE_MULTIPOINT:
+            return "MULTIPOINT";
+        case SHAPE_TYPE_POINTZ:
+            return "POINTZ";
+        case SHAPE_TYPE_POLYLINEZ:
+            return "POLYLINEZ";
+        case SHAPE_TYPE_POLYGONZ:
+            return "POLYGONZ";
+        case SHAPE_TYPE_MULTIPOINTZ:
+            return "MULTIPOINTZ";
+        case SHAPE_TYPE_POINTM:
+            return "POINTM";
+        case SHAPE_TYPE_POLYLINEM:
+            return "POLYLINEM";
+        case SHAPE_TYPE_POLYGONM:
+            return "POLYGONM";
+        case SHAPE_TYPE_MULTIPOINTM:
+            return "MULTIPOINTM";
+        case SHAPE_TYPE_MULTIPATCH:
+            return "MULTIPATCH";
+        default:
+            return "UNKNOWN";
+        }
+    }
 }
