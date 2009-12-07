@@ -331,7 +331,7 @@ public class ImageServer implements
                               int scaledHeight, List<String> showLayers,
                               Paint background) {
 
-        logger.info("using the new ProjectionPainter interface!  createImage with layer string array.");
+        logger.fine("using the new ProjectionPainter interface!  createImage with layer string array.");
 
         if (formatter == null) {
             logger.warning("no formatter set! Can't create image.");
