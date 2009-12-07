@@ -142,7 +142,6 @@ public class ImageTile extends OMScalingRaster implements Serializable {
     }
 
     /**
-     * No op for this class, can be use to manage image use for subclasses.
      * Called from within generate.
      * 
      * @param proj current projection.
