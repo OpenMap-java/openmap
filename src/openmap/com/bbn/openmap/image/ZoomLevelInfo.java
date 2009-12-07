@@ -79,7 +79,22 @@ public class ZoomLevelInfo extends OMComponent {
     protected float scale = -1f;
     protected List<Rectangle2D> bounds = new LinkedList<Rectangle2D>();
 
+    /**
+     * 
+     */
     public ZoomLevelInfo() {}
+    
+    /**
+     * 
+     * @param name
+     * @param desc
+     * @param zoomLevel
+     */
+    public ZoomLevelInfo(String name, String desc, int zoomLevel) {
+       this.name = name;
+       this.description = desc;
+       this.zoomLevel = zoomLevel;
+    }
 
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);

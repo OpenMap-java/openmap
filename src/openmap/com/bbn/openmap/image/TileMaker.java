@@ -190,7 +190,7 @@ public class TileMaker extends ImageServer {
 
         List<ZoomLevelInfo> zoomLevels = getZoomLevels();
         for (ZoomLevelInfo zfi : zoomLevels) {
-            logger.info("writing zoom level " + zfi.getName() + " tiles..."); 
+            logger.info("writing zoom level " + zfi.getName() + " tiles...");
             for (Rectangle2D bounds : zfi.getUVBounds()) {
                 if (logger.isLoggable(Level.FINE)) {
                     logger.fine(" creating tiles " + bounds);
@@ -274,7 +274,6 @@ public class TileMaker extends ImageServer {
             zfi.setName("ZoomLayerInfo " + i);
             zfi.setDescription("Tiles for zoom level " + i);
             zfi.setPropertyPrefix("zoom" + i);
-            // zfi.addBounds(zfi.createProperBounds(45, 45, -45, -45));
             zoomLevels.add(zfi);
         }
     }
@@ -290,11 +289,19 @@ public class TileMaker extends ImageServer {
      *         at zoom level 0.
      */
     public static Point2D latLonToTileUV(Point2D latlon, int zoom) {
-        return new Point2D.Double(((latlon.getX() + 180) / 360.0 * Math.pow(2,
-                zoom)), ((1.0 - Math.log(Math.tan(latlon.getY() * Math.PI
-                / 180.0)
-                + (1.0 / Math.cos(latlon.getX() * Math.PI / 180.0)))
-                / Math.PI) / 2.0 * (Math.pow(2, zoom))));
+        return latLonToTileUV(latlon, zoom, null);
+    }
+
+    public static Point2D latLonToTileUV(Point2D latlon, int zoom, Point2D ret) {
+        if (ret == null) {
+            ret = new Point2D.Double();
+        }
+
+        ret.setLocation(((latlon.getX() + 180) / 360.0 * Math.pow(2, zoom)),
+                ((1.0 - Math.log(Math.tan(latlon.getY() * Math.PI / 180.0)
+                        + (1.0 / Math.cos(latlon.getY() * Math.PI / 180.0)))
+                        / Math.PI) / 2.0 * (Math.pow(2, zoom))));
+        return ret;
     }
 
     /**
@@ -306,12 +313,21 @@ public class TileMaker extends ImageServer {
      *         the latitude
      */
     public static Point2D tileUVToLatLon(Point2D tileUV, int zoom) {
-        return new LatLonPoint.Double(-90
+        return tileUVToLatLon(tileUV, zoom, null);
+    }
+
+    public static <T extends Point2D> T tileUVToLatLon(Point2D tileUV,
+                                                       int zoom, T ret) {
+        if (ret == null) {
+            ret = (T) new LatLonPoint.Double();
+        }
+
+        ret.setLocation(360 / Math.pow(2, zoom) * tileUV.getX() - 180, -90
                 + 360
                 / Math.PI
                 * Math.atan(Math.exp((-2 * Math.PI * tileUV.getY())
-                        / Math.pow(2, zoom) + Math.PI)), 360
-                / Math.pow(2, zoom) * tileUV.getX() - 180);
+                        / Math.pow(2, zoom) + Math.PI)));
+        return ret;
     }
 
     public final static int TILE_SIZE = 256;
@@ -322,6 +338,14 @@ public class TileMaker extends ImageServer {
         Point2D originLLUL = tileUVToLatLon(new Point2D.Double(0.0, 0.0), zoom);
         Point2D originLLLR = tileUVToLatLon(new Point2D.Double(1.0, 1.0), zoom);
         return proj.getScale(originLLUL, originLLLR, UVUL, UVLR);
+    }
+    
+    public static float[] getScalesForZoomLevels(Projection proj, int lowZoomLevel, int highZoomLevel) {
+        float[] ret = new float[highZoomLevel - lowZoomLevel + 1];
+        for (int i = lowZoomLevel; i <= highZoomLevel; i++) {
+            ret[i] = getScaleForZoomAndProjection(proj, i);
+        }
+        return ret;
     }
 
     public static void main(String[] args) {
