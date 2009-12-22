@@ -160,6 +160,12 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         }
 
         String fileName = props.getProperty(realPrefix + SerializedURLNameProperty);
+
+        String dataPathPrefix = (String) getAttribute(DataPathPrefixProperty);
+        if (dataPathPrefix != null) {
+            fileName = dataPathPrefix + "/" + fileName;
+        }
+        
         if (fileName != null && !fileName.trim().isEmpty()) {
             this.fileName = fileName;
             setList(load());
