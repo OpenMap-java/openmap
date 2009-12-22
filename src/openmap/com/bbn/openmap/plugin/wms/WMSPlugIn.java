@@ -198,9 +198,14 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
             buf.append("&" + WMTConstants.LAYERS + "=" + layers);
         }
 
-        if (styles != null) {
-            buf.append("&" + WMTConstants.STYLES + "=" + styles);
+        String cStyles = styles;
+        if (cStyles == null) {
+            cStyles = "";
         }
+        
+//        if (styles != null) {
+            buf.append("&" + WMTConstants.STYLES + "=" + cStyles);
+//        }
 
         if (Debug.debugging("wms")) {
             Debug.output("query string: " + buf);
