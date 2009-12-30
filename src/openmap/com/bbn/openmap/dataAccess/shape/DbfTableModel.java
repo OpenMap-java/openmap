@@ -1182,7 +1182,7 @@ public class DbfTableModel extends AbstractTableModel implements ShapeConstants,
     /**
      * 
      */
-    public void doAction(OMGraphicList list, OMGraphic graphic, OMAction action) {
+    public void doAction(OMGraphicList list, OMGraphic graphic, OMAction action, DbfTableModelFactory dbfFactory) {
 
         if (list == null || graphic == null) {
             return;
@@ -1213,7 +1213,12 @@ public class DbfTableModel extends AbstractTableModel implements ShapeConstants,
         }
 
         if (graphic.getAttribute(SHAPE_DBF_INFO_ATTRIBUTE) == null) {
-            graphic.putAttribute(SHAPE_DBF_INFO_ATTRIBUTE, getBlankRecord());
+            
+            if (dbfFactory != null) {
+                graphic.putAttribute(SHAPE_DBF_INFO_ATTRIBUTE, dbfFactory.getNewDefaultRow());
+            } else {
+                graphic.putAttribute(SHAPE_DBF_INFO_ATTRIBUTE, getBlankRecord());
+            }
         }
 
         list.doAction(graphic, action);

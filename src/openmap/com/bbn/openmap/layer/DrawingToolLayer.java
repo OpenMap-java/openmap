@@ -284,7 +284,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             }
 
             if (dbf != null) {
-                dbf.doAction(list, omg, action);
+                dbf.doAction(list, omg, action, dbfFactory);
             } else {
                 doAction(omg, action);
             }
