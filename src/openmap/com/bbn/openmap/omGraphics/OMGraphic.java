@@ -25,10 +25,10 @@ package com.bbn.openmap.omGraphics;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Paint;
-import java.awt.Point;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 
 import com.bbn.openmap.proj.Projection;
 
@@ -360,7 +360,7 @@ public interface OMGraphic extends OMGeometry, OMGraphicConstants {
      * 
      * @param p
      */
-    void setLabelLocation(Point p);
+    void setLabelLocation(Point2D p);
 
     /**
      * Sets the label location at the center of the bounding box of the path. If

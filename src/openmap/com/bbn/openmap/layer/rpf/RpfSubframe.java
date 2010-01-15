@@ -132,8 +132,8 @@ public class RpfSubframe {
                 lon,
                 0,
                 0,
-                rectangle.getRight(),
-                rectangle.getBottom());
+                (int)rectangle.getRight(),
+                (int)rectangle.getBottom());
     }
 
     /**

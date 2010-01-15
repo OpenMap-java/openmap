@@ -161,7 +161,7 @@ public class UTMProjection extends GeoProj {
         return widthScale;
     }
 
-    protected ArrayList<int[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs,
+    protected ArrayList<float[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs,
                                             boolean isFilled) {
         // TODO: copied from Cylindrical. may need to change.
         int n, k, flag = 0, min = 0, max = 0, xp, xadj = 0;
@@ -169,7 +169,7 @@ public class UTMProjection extends GeoProj {
         // determine length of pairs list
         int len = rawllpts.length >> 1; // len/2, chop off extra
         if (len < 2)
-            return new ArrayList<int[]>(0);
+            return new ArrayList<float[]>(0);
 
         // handle complicated line in specific routines
         if (isComplicatedLineType(ltype)) {
@@ -178,8 +178,8 @@ public class UTMProjection extends GeoProj {
 
         // determine when to stop
         Point temp = new Point(0, 0);
-        int[] xs = new int[len];
-        int[] ys = new int[len];
+        float[] xs = new float[len];
+        float[] ys = new float[len];
 
         // more temp objects to limit number of new objects that needs to be
         // created
@@ -217,11 +217,11 @@ public class UTMProjection extends GeoProj {
         min *= -1;// positive magnitude
 
         // now create the return list
-        ArrayList<int[]> ret_val = null;
-        ret_val = new ArrayList<int[]>(2 + 2 * (max + min));
+        ArrayList<float[]> ret_val = null;
+        ret_val = new ArrayList<float[]>(2 + 2 * (max + min));
         ret_val.add(xs);
         ret_val.add(ys);
-        int[] altx = null;
+        float[] altx = null;
 
         /*
          * if (Debug.debugging("proj")) { dumpPoly(rawllpts, xs, ys); }
@@ -229,7 +229,7 @@ public class UTMProjection extends GeoProj {
 
         // add the extra left-wrap polys
         for (int i = 1; i <= min; i++) {
-            altx = new int[xs.length];
+            altx = new float[xs.length];
             xadj = i * world.x;// shift opposite
             for (int j = 0; j < altx.length; j++) {
                 altx[j] = xs[j] + xadj;
@@ -243,7 +243,7 @@ public class UTMProjection extends GeoProj {
 
         // add the extra right-wrap polys
         for (int i = 1; i <= max; i++) {
-            altx = new int[xs.length];
+            altx = new float[xs.length];
             xadj = -i * world.x;// shift opposite
             for (int j = 0; j < altx.length; j++) {
                 altx[j] = xs[j] + xadj;
@@ -259,7 +259,7 @@ public class UTMProjection extends GeoProj {
     }// _forwardPoly()
 
     @Override
-    protected ArrayList<int[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs,
+    protected ArrayList<float[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs,
                                             boolean isFilled) {
         // TODO: copied from Cylindrical. may need to change.
         int n, k, flag = 0, min = 0, max = 0, xp, xadj = 0;
@@ -267,7 +267,7 @@ public class UTMProjection extends GeoProj {
         // determine length of pairs list
         int len = rawllpts.length >> 1; // len/2, chop off extra
         if (len < 2)
-            return new ArrayList<int[]>(0);
+            return new ArrayList<float[]>(0);
 
         // handle complicated line in specific routines
         if (isComplicatedLineType(ltype)) {
@@ -276,8 +276,8 @@ public class UTMProjection extends GeoProj {
 
         // determine when to stop
         Point temp = new Point(0, 0);
-        int[] xs = new int[len];
-        int[] ys = new int[len];
+        float[] xs = new float[len];
+        float[] ys = new float[len];
 
         // more temp objects to limit number of new objects that needs to be
         // created
@@ -315,11 +315,11 @@ public class UTMProjection extends GeoProj {
         min *= -1;// positive magnitude
 
         // now create the return list
-        ArrayList<int[]> ret_val = null;
-        ret_val = new ArrayList<int[]>(2 + 2 * (max + min));
+        ArrayList<float[]> ret_val = null;
+        ret_val = new ArrayList<float[]>(2 + 2 * (max + min));
         ret_val.add(xs);
         ret_val.add(ys);
-        int[] altx = null;
+        float[] altx = null;
 
         /*
          * if (Debug.debugging("proj")) { dumpPoly(rawllpts, xs, ys); }
@@ -327,7 +327,7 @@ public class UTMProjection extends GeoProj {
 
         // add the extra left-wrap polys
         for (int i = 1; i <= min; i++) {
-            altx = new int[xs.length];
+            altx = new float[xs.length];
             xadj = i * world.x;// shift opposite
             for (int j = 0; j < altx.length; j++) {
                 altx[j] = xs[j] + xadj;
@@ -341,7 +341,7 @@ public class UTMProjection extends GeoProj {
 
         // add the extra right-wrap polys
         for (int i = 1; i <= max; i++) {
-            altx = new int[xs.length];
+            altx = new float[xs.length];
             xadj = -i * world.x;// shift opposite
             for (int j = 0; j < altx.length; j++) {
                 altx[j] = xs[j] + xadj;

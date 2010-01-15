@@ -23,6 +23,7 @@
 package com.bbn.openmap.proj;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import com.bbn.openmap.MoreMath;
 
@@ -188,32 +189,29 @@ public class DrawUtil {
      * @param pty vertical pixel window points of location.
      * @return boolean
      */
-    public final static boolean inside_polygon(int[] xpts, int[] ypts,
+    public final static boolean inside_polygon(float[] xpts, float[] ypts,
                                                double ptx, double pty) {
 
         int j, inside_flag = 0;
         int numverts = xpts.length;
         if (numverts <= 2)
             return false;
-        Point vtx0 = new Point(0, 0), vtx1 = new Point(0, 0);
+        Point2D vtx0 = new Point2D.Float(), vtx1 = new Point2D.Float();
         double dv0; // prevents OVERFLOW!!
         int crossings = 0;
         boolean xflag0 = false, yflag0 = false, yflag1 = false;
 
-        vtx0.x = xpts[numverts - 1];
-        vtx0.y = ypts[numverts - 1];
+        vtx0.setLocation(xpts[numverts - 1], ypts[numverts - 1]);
         // get test bit for above/below Y axis
-        yflag0 = ((dv0 = vtx0.y - pty) >= 0);
+        yflag0 = ((dv0 = vtx0.getY() - pty) >= 0);
 
         for (j = 0; j < numverts; j++) {
             if ((j & 0x1) != 0) { // HACK - slightly changed
-                vtx0.x = xpts[j];
-                vtx0.y = ypts[j];
-                yflag0 = ((dv0 = vtx0.y - pty) >= 0);
+                vtx0.setLocation(xpts[j], ypts[j]);
+                yflag0 = ((dv0 = vtx0.getY() - pty) >= 0);
             } else {
-                vtx1.x = xpts[j];
-                vtx1.y = ypts[j];
-                yflag1 = (vtx1.y >= pty);
+                vtx1.setLocation(xpts[j], ypts[j]);
+                yflag1 = (vtx1.getY() >= pty);
             }
 
             /*
@@ -221,12 +219,12 @@ public class DrawUtil {
              */
             if (yflag0 != yflag1) {
                 /* check if points on same side of Y axis */
-                if ((xflag0 = (vtx0.x >= ptx)) == (vtx1.x >= ptx)) {
+                if ((xflag0 = (vtx0.getX() >= ptx)) == (vtx1.getX() >= ptx)) {
                     if (xflag0)
                         crossings++;
                 } else {
-                    crossings += ((vtx0.x - dv0 * (vtx1.x - vtx0.x)
-                            / (vtx1.y - vtx0.y)) >= ptx) ? 1 : 0;
+                    crossings += ((vtx0.getX() - dv0 * (vtx1.getX() - vtx0.getX())
+                            / (vtx1.getY() - vtx0.getY())) >= ptx) ? 1 : 0;
                 }
             }
             inside_flag = crossings & 0x01;
@@ -247,7 +245,7 @@ public class DrawUtil {
      * @param pty y location of the point
      * @param connected polyline or polygon
      */
-    public final static float closestPolyDistance(int[] xpts, int[] ypts,
+    public final static float closestPolyDistance(float[] xpts, float[] ypts,
                                                   double ptx, double pty,
                                                   boolean connected) {
         if (xpts.length == 0)

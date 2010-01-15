@@ -165,7 +165,7 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
      * @param y2 the y location of the second point, in pixels from
      *        the latitude point.
      */
-    public OMLine(float lat_1, float lon_1, int x1, int y1, int x2, int y2) {
+    public OMLine(double lat_1, double lon_1, int x1, int y1, int x2, int y2) {
 
         super(RENDERTYPE_OFFSET, LINETYPE_STRAIGHT, DECLUTTERTYPE_NONE);
         latlons = new double[4];
@@ -301,14 +301,14 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
         switch (renderType) {
         case RENDERTYPE_XY:
             if (arc != null) {
-                xpoints = new int[1][];
-                ypoints = new int[1][];
+                xpoints = new float[1][];
+                ypoints = new float[1][];
                 arc.generate(pts[0], pts[1], pts[2], pts[3]);
                 xpoints[0] = arc.getXPoints();
                 ypoints[0] = arc.getYPoints();
             } else {
-                xpoints = new int[1][2];
-                ypoints = new int[1][2];
+                xpoints = new float[1][2];
+                ypoints = new float[1][2];
 
                 if (pts == null)
                     return false;
@@ -327,16 +327,16 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
             }
             Point p1 = (Point) proj.forward(latlons[0], latlons[1], new Point());
             if (arc != null) {
-                xpoints = new int[1][];
-                ypoints = new int[1][];
+                xpoints = new float[1][];
+                ypoints = new float[1][];
                 arc.generate(p1.x + pts[0], p1.y + pts[1], p1.x + pts[2], p1.y
                         + pts[3]);
 
                 xpoints[0] = arc.getXPoints();
                 ypoints[0] = arc.getYPoints();
             } else {
-                xpoints = new int[1][2];
-                ypoints = new int[1][2];
+                xpoints = new float[1][2];
+                ypoints = new float[1][2];
 
                 xpoints[0][0] = p1.x + pts[0];
                 ypoints[0][0] = p1.y + pts[1];
@@ -349,8 +349,8 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
             if (arc != null) {
                 p1 = (Point) proj.forward(latlons[0], latlons[1], new Point());
                 Point p2 = (Point) proj.forward(latlons[2], latlons[3], new Point());
-                xpoints = new int[1][];
-                ypoints = new int[1][];
+                xpoints = new float[1][];
+                ypoints = new float[1][];
                 arc.generate(p1.x, p1.y, p2.x, p2.y);
 
                 xpoints[0] = arc.getXPoints();
@@ -361,7 +361,7 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
                 isPolyline = true;
 
             } else {
-                ArrayList<int[]> lines = null;
+                ArrayList<float[]> lines = null;
                 if (proj instanceof GeoProj) {
                     lines = ((GeoProj) proj).forwardLine(new LatLonPoint.Double(latlons[0], latlons[1]),
                         new LatLonPoint.Double(latlons[2], latlons[3]),
@@ -374,12 +374,12 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
 
                 int size = lines.size();
 
-                xpoints = new int[(int) (size / 2)][0];
-                ypoints = new int[xpoints.length][0];
+                xpoints = new float[(int) (size / 2)][0];
+                ypoints = new float[xpoints.length][0];
 
                 for (int i = 0, j = 0; i < size; i += 2, j++) {
-                    int[] xps = (int[]) lines.get(i);
-                    int[] yps = (int[]) lines.get(i + 1);
+                	float[] xps = (float[]) lines.get(i);
+                	float[] yps = (float[]) lines.get(i + 1);
 
                     xpoints[j] = xps;
                     ypoints[j] = yps;

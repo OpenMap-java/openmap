@@ -75,10 +75,10 @@ public abstract class PolygonGeometry extends BasicGeometry implements
         Serializable, OMGeometry {
 
     /** Internal array of projected x coordinate arrays. */
-    protected int[][] xpoints = new int[0][0];
+    protected float[][] xpoints = new float[0][0];
 
     /** Internal array of projected y coordinate arrays. */
-    protected int[][] ypoints = new int[0][0];
+    protected float[][] ypoints = new float[0][0];
 
     /**
      * Whether it is a polygon, as opposed to a polyline. Should be a
@@ -140,9 +140,9 @@ public abstract class PolygonGeometry extends BasicGeometry implements
         }
 
         // safety: grab local reference of projected points
-        int[][] xpts = xpoints;
-        int[][] ypts = ypoints;
-        int[] _x, _y;
+        float[][] xpts = xpoints;
+        float[][] ypts = ypoints;
+        float[] _x, _y;
         int len = xpts.length;
 
         for (int i = 0; i < len; i++) {
@@ -337,16 +337,16 @@ public abstract class PolygonGeometry extends BasicGeometry implements
             int size = vector.size();
 
             if (!doShapes) {
-                xpoints = new int[(int) (size / 2)][0];
-                ypoints = new int[xpoints.length][0];
+                xpoints = new float[(int) (size / 2)][0];
+                ypoints = new float[xpoints.length][0];
             }
 
             // We could call create shape, but this is more efficient.
 
             for (i = 0, j = 0; i < size; i += 2, j++) {
                 if (doShapes) {
-                    GeneralPath gp = BasicGeometry.createShape((int[]) vector.get(i),
-                            (int[]) vector.get(i + 1),
+                    GeneralPath gp = BasicGeometry.createShape((float[]) vector.get(i),
+                            (float[]) vector.get(i + 1),
                             isPolygon);
                     if (shape == null) {
                         shape = gp;
@@ -354,8 +354,8 @@ public abstract class PolygonGeometry extends BasicGeometry implements
                         ((GeneralPath) shape).append(gp, false);
                     }
                 } else {
-                    xpoints[j] = (int[]) vector.get(i);
-                    ypoints[j] = (int[]) vector.get(i + 1);
+                    xpoints[j] = (float[]) vector.get(i);
+                    ypoints[j] = (float[]) vector.get(i + 1);
                 }
             }
 
@@ -392,10 +392,10 @@ public abstract class PolygonGeometry extends BasicGeometry implements
     public static class XY extends PolygonGeometry {
 
         /** The array of x pixel coordinates. */
-        protected int[] xs = null;
+        protected float[] xs = null;
 
         /** The array of y pixel coordinates. */
-        protected int[] ys = null;
+        protected float[] ys = null;
 
         /**
          * To satify the Offset constructor complaint.
@@ -410,7 +410,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          * @param xypoints array of x/y points, arranged x, y, x, y,
          *        etc.
          */
-        public XY(int[] xypoints) {
+        public XY(float[] xypoints) {
             setLocation(xypoints);
         }
 
@@ -419,10 +419,10 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          * you need to ensure that the first and last coordinate pairs
          * are the same.
          * 
-         * @param xPoints int[] of x coordinates
-         * @param yPoints int[] of y coordinates
+         * @param xPoints float[] of x coordinates
+         * @param yPoints float[] of y coordinates
          */
-        public XY(int[] xPoints, int[] yPoints) {
+        public XY(float[] xPoints, float[] yPoints) {
             setLocation(xPoints, yPoints);
         }
 
@@ -435,10 +435,10 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          * @param xypoints array of x/y points, arranged x, y, x, y,
          *        etc.
          */
-        public void setLocation(int[] xypoints) {
+        public void setLocation(float[] xypoints) {
             int end = xypoints.length >> 1;
-            xs = new int[end];
-            ys = new int[end];
+            xs = new float[end];
+            ys = new float[end];
             for (int i = 0, j = 0; i < end; i++, j += 2) {
                 xs[i] = xypoints[j];
                 ys[i] = xypoints[j + 1];
@@ -452,10 +452,10 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          * coordinate pairs are the same. This is for RENDERTYPE_XY
          * polys.
          * 
-         * @param xPoints int[] of x coordinates
-         * @param yPoints int[] of y coordinates
+         * @param xPoints float[] of x coordinates
+         * @param yPoints float[] of y coordinates
          */
-        public void setLocation(int[] xPoints, int[] yPoints) {
+        public void setLocation(float[] xPoints, float[] yPoints) {
             xs = xPoints;
             ys = yPoints;
             setNeedToRegenerate(true);
@@ -464,7 +464,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
         /**
          * Set the array of x points.
          */
-        public void setXs(int[] x) {
+        public void setXs(float[] x) {
             xs = x;
             setNeedToRegenerate(true);
         }
@@ -472,14 +472,14 @@ public abstract class PolygonGeometry extends BasicGeometry implements
         /**
          * Get the array of x points.
          */
-        public int[] getXs() {
+        public float[] getXs() {
             return xs;
         }
 
         /**
          * Set the array of y points.
          */
-        public void setYs(int[] y) {
+        public void setYs(float[] y) {
             ys = y;
             setNeedToRegenerate(true);
         }
@@ -487,7 +487,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
         /**
          * Get the array of y points.
          */
-        public int[] getYs() {
+        public float[] getYs() {
             return ys;
         }
 
@@ -507,9 +507,9 @@ public abstract class PolygonGeometry extends BasicGeometry implements
             }
 
             // Need to keep these around for the LabeledOMPoly
-            xpoints = new int[1][0];
+            xpoints = new float[1][0];
             xpoints[0] = xs;
-            ypoints = new int[1][0];
+            ypoints = new float[1][0];
             ypoints[0] = ys;
 
             if (doShapes) {
@@ -575,10 +575,10 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          * 
          * @param latPoint latitude in decimal degrees
          * @param lonPoint longitude in decimal degrees
-         * @param xypoints int[] of x,y pairs
+         * @param xypoints float[] of x,y pairs
          * @param cMode offset coordinate mode
          */
-        public Offset(double latPoint, double lonPoint, int[] xypoints, int cMode) {
+        public Offset(double latPoint, double lonPoint, float[] xypoints, int cMode) {
             setLocation(latPoint, lonPoint, OMGraphic.DECIMAL_DEGREES, xypoints);
             setCoordMode(cMode);
         }
@@ -590,12 +590,12 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          * 
          * @param latPoint latitude in decimal degrees
          * @param lonPoint longitude in decimal degrees
-         * @param xPoints int[] of x coordinates
-         * @param yPoints int[] of y coordinates
+         * @param xPoints float[] of x coordinates
+         * @param yPoints float[] of y coordinates
          * @param cMode offset coordinate mode
          */
-        public Offset(double latPoint, double lonPoint, int[] xPoints,
-                int[] yPoints, int cMode) {
+        public Offset(double latPoint, double lonPoint, float[] xPoints,
+                float[] yPoints, int cMode) {
 
             setLocation(latPoint,
                     lonPoint,
@@ -618,7 +618,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          *        etc.
          */
         public void setLocation(double latPoint, double lonPoint, int units,
-                                int[] xypoints) {
+                                float[] xypoints) {
             if (units == OMGraphic.DECIMAL_DEGREES) {
                 lat = ProjMath.degToRad(latPoint);
                 lon = ProjMath.degToRad(lonPoint);
@@ -627,8 +627,8 @@ public abstract class PolygonGeometry extends BasicGeometry implements
                 lon = lonPoint;
             }
             int end = xypoints.length >> 1;
-            xs = new int[end];
-            ys = new int[end];
+            xs = new float[end];
+            ys = new float[end];
             for (int i = 0, j = 0; i < end; i++, j += 2) {
                 xs[i] = xypoints[j];
                 ys[i] = xypoints[j + 1];
@@ -645,11 +645,11 @@ public abstract class PolygonGeometry extends BasicGeometry implements
          * @param lonPoint longitude in decimal degrees
          * @param units radians or decimal degrees. Use
          *        OMGraphic.RADIANS or OMGraphic.DECIMAL_DEGREES
-         * @param xPoints int[] of x coordinates
-         * @param yPoints int[] of y coordinates
+         * @param xPoints float[] of x coordinates
+         * @param yPoints float[] of y coordinates
          */
         public void setLocation(double latPoint, double lonPoint, int units,
-                                int[] xPoints, int[] yPoints) {
+                                float[] xPoints, float[] yPoints) {
             if (units == OMGraphic.DECIMAL_DEGREES) {
                 lat = ProjMath.degToRad(latPoint);
                 lon = ProjMath.degToRad(lonPoint);
@@ -729,8 +729,8 @@ public abstract class PolygonGeometry extends BasicGeometry implements
             }
 
             npts = xs.length;
-            int[] _x = new int[npts];
-            int[] _y = new int[npts];
+            float[] _x = new float[npts];
+            float[] _y = new float[npts];
 
             // forward project the radian point
             Point origin = new Point();
@@ -755,9 +755,9 @@ public abstract class PolygonGeometry extends BasicGeometry implements
                 }
             }
             // Need to keep these around for the LabeledOMPoly
-            xpoints = new int[1][0];
+            xpoints = new float[1][0];
             xpoints[0] = _x;
-            ypoints = new int[1][0];
+            ypoints = new float[1][0];
             ypoints[0] = _y;
 
             if (doShapes) {

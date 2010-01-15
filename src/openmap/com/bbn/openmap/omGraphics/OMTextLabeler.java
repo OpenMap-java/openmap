@@ -28,6 +28,7 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 
 /**
  * A default implementation of OMLabeler that extends from OMText.
@@ -114,9 +115,9 @@ public class OMTextLabeler extends OMText implements OMLabeler {
     /*
      * (non-Javadoc)
      * 
-     * @see com.bbn.openmap.omGraphics.OMLabeler#setLocation(java.awt.Point)
+     * @see com.bbn.openmap.omGraphics.OMLabeler#setLocation(java.awt.geom.Point2D)
      */
-    public void setLocation(Point p) {
+    public void setLocation(Point2D p) {
         polyBounds = null;
         setX((int) p.getX());
         setY((int) p.getY());

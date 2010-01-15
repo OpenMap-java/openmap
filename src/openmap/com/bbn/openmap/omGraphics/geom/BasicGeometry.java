@@ -733,7 +733,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      *        Shape returned is a GeneralPath object.
      * @return The Shape object for the points.
      */
-    public static GeneralPath createShape(int xpoints[], int ypoints[],
+    public static GeneralPath createShape(float[] xpoints, float[] ypoints,
                                           boolean isPolygon) {
         return createShape(xpoints, ypoints, 0, xpoints.length, isPolygon);
     }
@@ -753,7 +753,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      *        Shape returned is a GeneralPath object.
      * @return The Shape object for the points.
      */
-    public static GeneralPath createShape(int xpoints[], int ypoints[],
+    public static GeneralPath createShape(float[] xpoints, float[] ypoints,
                                           int startIndex, int length,
                                           boolean isPolygon) {
         // used to return a Shape
@@ -828,7 +828,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * @return toShape, with coordinates appended.
      */
     public static GeneralPath appendShapeEdge(GeneralPath toShape,
-                                              int xpoints[], int ypoints[]) {
+                                              float[] xpoints, float[] ypoints) {
         return appendShapeEdge(toShape, xpoints, ypoints, 0, xpoints.length);
     }
 
@@ -845,7 +845,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * @return toShape, with coordinates appended.
      */
     public static GeneralPath appendShapeEdge(GeneralPath toShape,
-                                              int xpoints[], int ypoints[],
+                                              float[] xpoints, float[] ypoints,
                                               int startIndex, int length) {
         return appendShapeEdge(toShape, createShape(xpoints,
                 ypoints,
@@ -934,9 +934,9 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
     /**
      * Create a general path from a point plus a height and width;
      */
-    public static GeneralPath createBoxShape(int x, int y, int width, int height) {
-        int[] xs = new int[4];
-        int[] ys = new int[4];
+    public static GeneralPath createBoxShape(float x, float y, int width, int height) {
+        float[] xs = new float[4];
+        float[] ys = new float[4];
 
         xs[0] = x;
         ys[0] = y;

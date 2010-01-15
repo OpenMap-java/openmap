@@ -25,8 +25,8 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 
 /**
  * An OMLabeler is used by OMGraphics to handle their labels. It can
@@ -81,6 +81,6 @@ public interface OMLabeler {
      * 
      * @param p
      */
-    public void setLocation(Point p);
+    public void setLocation(Point2D p);
 
 }

@@ -185,7 +185,7 @@ public class OMCircle extends OMArc implements Serializable {
      * This method is smart enough to take the calculated position information
      * and make a call to Projection.forwardCircle.
      */
-    protected ArrayList<int[]> getCoordLists(GeoProj proj, LatLonPoint center,
+    protected ArrayList<float[]> getCoordLists(GeoProj proj, LatLonPoint center,
                                              float radius, int nverts) {
         return proj.forwardCircle(center, /* radians */
         true, radius, nverts, !isClear(fillPaint));

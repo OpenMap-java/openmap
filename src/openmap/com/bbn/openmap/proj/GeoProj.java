@@ -152,8 +152,7 @@ public abstract class GeoProj extends Proj {
     /**
      * Set the pixels per meter constant.
      * 
-     * @param ppm
-     *            int Pixels Per Meter scale-factor constant
+     * @param ppm int Pixels Per Meter scale-factor constant
      */
     public void setPPM(double ppm) {
         pixelsPerMeter = ppm;
@@ -175,8 +174,7 @@ public abstract class GeoProj extends Proj {
     /**
      * Set the planet radius.
      * 
-     * @param radius
-     *            float planet radius in meters
+     * @param radius float planet radius in meters
      */
     public void setPlanetRadius(double radius) {
         planetRadius = radius;
@@ -216,10 +214,8 @@ public abstract class GeoProj extends Proj {
     /**
      * Set center point of projection.
      * 
-     * @param lat
-     *            float latitude in decimal degrees
-     * @param lon
-     *            float longitude in decimal degrees
+     * @param lat float latitude in decimal degrees
+     * @param lon float longitude in decimal degrees
      */
     public void setCenter(float lat, float lon) {
         setCenter((double) lat, (double) lon, false);
@@ -228,10 +224,8 @@ public abstract class GeoProj extends Proj {
     /**
      * Set center point of projection.
      * 
-     * @param lat
-     *            double latitude in decimal degrees
-     * @param lon
-     *            double longitude in decimal degrees
+     * @param lat double latitude in decimal degrees
+     * @param lon double longitude in decimal degrees
      */
     public void setCenter(double lat, double lon) {
         setCenter(lat, lon, false);
@@ -240,10 +234,8 @@ public abstract class GeoProj extends Proj {
     /**
      * Set center point of projection.
      * 
-     * @param lat
-     *            double latitude in decimal degrees
-     * @param lon
-     *            double longitude in decimal degrees
+     * @param lat double latitude in decimal degrees
+     * @param lon double longitude in decimal degrees
      */
     public void setCenter(double lat, double lon, boolean isRadians) {
         if (!isRadians) {
@@ -280,8 +272,7 @@ public abstract class GeoProj extends Proj {
      * <p>
      * Normalizes the latitude according to the particular projection.
      * 
-     * @param lat
-     *            float latitude in radians
+     * @param lat float latitude in radians
      * @return float latitude (-PI/2 &lt;= y &lt;= PI/2)
      * @see ProjMath#normalizeLatitude(float, float)
      * @see LatLonPoint#normalizeLatitude(float)
@@ -295,8 +286,7 @@ public abstract class GeoProj extends Proj {
     /**
      * Sets radian longitude to something sane.
      * 
-     * @param lon
-     *            float longitude in radians
+     * @param lon float longitude in radians
      * @return float longitude (-PI &lt;= x &lt; PI)
      * @see ProjMath#wrapLongitude(float)
      * @see LatLonPoint#wrapLongitude(float)
@@ -334,15 +324,15 @@ public abstract class GeoProj extends Proj {
      * <li><code>pan(90, c)</code> pan east `c' degrees
      * </ul>
      * 
-     * @param Az
-     *            azimuth "east of north" in decimal degrees:
-     *            <code>-180 &lt;= Az &lt;= 180</code>
-     * @param c
-     *            arc distance in decimal degrees
+     * @param Az azimuth "east of north" in decimal degrees:
+     *        <code>-180 &lt;= Az &lt;= 180</code>
+     * @param c arc distance in decimal degrees
      */
     public void pan(float Az, float c) {
-        setCenter(GreatCircle.sphericalBetween(centerY, centerX, ProjMath.degToRad(c),
-                                               ProjMath.degToRad(Az)));
+        setCenter(GreatCircle.sphericalBetween(centerY,
+                centerX,
+                ProjMath.degToRad(c),
+                ProjMath.degToRad(Az)));
     }
 
     /**
@@ -352,9 +342,10 @@ public abstract class GeoProj extends Proj {
      * @see #getProjectionID
      */
     public String toString() {
-        return (" radius=" + planetRadius + " ppm=" + pixelsPerMeter + " center("
-                + centerY + ":" + centerX + ") scale=" + scale + " maxscale=" + maxscale
-                + " minscale=" + minscale + " width=" + width + " height=" + height + "]");
+        return (" radius=" + planetRadius + " ppm=" + pixelsPerMeter
+                + " center(" + centerY + ":" + centerX + ") scale=" + scale
+                + " maxscale=" + maxscale + " minscale=" + minscale + " width="
+                + width + " height=" + height + "]");
     }
 
     /**
@@ -385,18 +376,15 @@ public abstract class GeoProj extends Proj {
      * Draws rhumb lines between vertices of poly. Remember to specify vertices
      * in radians! Check in-code comments for details about the algorithm.
      * 
-     * @param rawllpts
-     *            float[] of lat,lon,lat,lon,... in RADIANS!
-     * @param nsegs
-     *            number of segments to draw for greatcircle or rhumb lines (if
-     *            &lt; 1, this value is generated internally).
-     * @param isFilled
-     *            filled poly?
-     * @return ArrayList<int[]> of x[], y[], x[], y[], ... projected poly
+     * @param rawllpts float[] of lat,lon,lat,lon,... in RADIANS!
+     * @param nsegs number of segments to draw for greatcircle or rhumb lines
+     *        (if &lt; 1, this value is generated internally).
+     * @param isFilled filled poly?
+     * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
      * @see Projection#forwardPoly(float[], int, int, boolean)
      */
-    protected ArrayList<int[]> forwardRhumbPoly(float[] rawllpts, int nsegs,
-                                                boolean isFilled) {
+    protected ArrayList<float[]> forwardRhumbPoly(float[] rawllpts, int nsegs,
+                                                  boolean isFilled) {
 
         // IDEA:
         // Rhumblines are straight in the Mercator projection.
@@ -506,18 +494,15 @@ public abstract class GeoProj extends Proj {
      * Draws rhumb lines between vertices of poly. Remember to specify vertices
      * in radians! Check in-code comments for details about the algorithm.
      * 
-     * @param rawllpts
-     *            double[] of lat,lon,lat,lon,... in RADIANS!
-     * @param nsegs
-     *            number of segments to draw for greatcircle or rhumb lines (if
-     *            &lt; 1, this value is generated internally).
-     * @param isFilled
-     *            filled poly?
-     * @return ArrayList<int[]> of x[], y[], x[], y[], ... projected poly
+     * @param rawllpts double[] of lat,lon,lat,lon,... in RADIANS!
+     * @param nsegs number of segments to draw for greatcircle or rhumb lines
+     *        (if &lt; 1, this value is generated internally).
+     * @param isFilled filled poly?
+     * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
      * @see Projection#forwardPoly(float[], int, int, boolean)
      */
-    protected ArrayList<int[]> forwardRhumbPoly(double[] rawllpts, int nsegs,
-                                                boolean isFilled) {
+    protected ArrayList<float[]> forwardRhumbPoly(double[] rawllpts, int nsegs,
+                                                  boolean isFilled) {
 
         // IDEA:
         // Rhumblines are straight in the Mercator projection.
@@ -627,18 +612,15 @@ public abstract class GeoProj extends Proj {
      * Draws great circle lines between vertices of poly. Remember to specify
      * vertices in radians!
      * 
-     * @param rawllpts
-     *            float[] of lat,lon,lat,lon,... in RADIANS!
-     * @param nsegs
-     *            number of segments to draw for greatcircle or rhumb lines (if
-     *            &lt; 1, this value is generated internally).
-     * @param isFilled
-     *            filled poly?
-     * @return ArrayList<int[]> of x[], y[], x[], y[], ... projected poly
+     * @param rawllpts float[] of lat,lon,lat,lon,... in RADIANS!
+     * @param nsegs number of segments to draw for greatcircle or rhumb lines
+     *        (if &lt; 1, this value is generated internally).
+     * @param isFilled filled poly?
+     * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
      * @see Projection#forwardPoly(float[], int, int, boolean)
      */
-    protected ArrayList<int[]> forwardGreatPoly(float[] rawllpts, int nsegs,
-                                                boolean isFilled) {
+    protected ArrayList<float[]> forwardGreatPoly(float[] rawllpts, int nsegs,
+                                                  boolean isFilled) {
         int i, j, k, totalpts = 0;
 
         Point from = new Point();
@@ -652,8 +634,14 @@ public abstract class GeoProj extends Proj {
         forward(rawllpts[0], rawllpts[1], from, true);
         for (i = 0, j = 0, k = 2; i < end; i++, j += 2, k += 2) {
             forward(rawllpts[k], rawllpts[k + 1], to, true);
-            augllpts[i] = getGreatVertices(rawllpts[j], rawllpts[j + 1], rawllpts[k],
-                                           rawllpts[k + 1], from, to, false, nsegs);
+            augllpts[i] = getGreatVertices(rawllpts[j],
+                    rawllpts[j + 1],
+                    rawllpts[k],
+                    rawllpts[k + 1],
+                    from,
+                    to,
+                    false,
+                    nsegs);
             from.x = to.x;
             from.y = to.y;
             totalpts += augllpts[i].length;
@@ -686,18 +674,15 @@ public abstract class GeoProj extends Proj {
      * Draws great circle lines between vertices of poly. Remember to specify
      * vertices in radians!
      * 
-     * @param rawllpts
-     *            float[] of lat,lon,lat,lon,... in RADIANS!
-     * @param nsegs
-     *            number of segments to draw for greatcircle or rhumb lines (if
-     *            &lt; 1, this value is generated internally).
-     * @param isFilled
-     *            filled poly?
-     * @return ArrayList<int[]> of x[], y[], x[], y[], ... projected poly
+     * @param rawllpts float[] of lat,lon,lat,lon,... in RADIANS!
+     * @param nsegs number of segments to draw for greatcircle or rhumb lines
+     *        (if &lt; 1, this value is generated internally).
+     * @param isFilled filled poly?
+     * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
      * @see Projection#forwardPoly(float[], int, int, boolean)
      */
-    protected ArrayList<int[]> forwardGreatPoly(double[] rawllpts, int nsegs,
-                                                boolean isFilled) {
+    protected ArrayList<float[]> forwardGreatPoly(double[] rawllpts, int nsegs,
+                                                  boolean isFilled) {
         int i, j, k, totalpts = 0;
 
         Point from = new Point();
@@ -711,8 +696,14 @@ public abstract class GeoProj extends Proj {
         forward(rawllpts[0], rawllpts[1], from, true);
         for (i = 0, j = 0, k = 2; i < end; i++, j += 2, k += 2) {
             forward(rawllpts[k], rawllpts[k + 1], to, true);
-            augllpts[i] = getGreatVertices(rawllpts[j], rawllpts[j + 1], rawllpts[k],
-                                           rawllpts[k + 1], from, to, false, nsegs);
+            augllpts[i] = getGreatVertices(rawllpts[j],
+                    rawllpts[j + 1],
+                    rawllpts[k],
+                    rawllpts[k + 1],
+                    from,
+                    to,
+                    false,
+                    nsegs);
             from.x = to.x;
             from.y = to.y;
             totalpts += augllpts[i].length;
@@ -742,25 +733,19 @@ public abstract class GeoProj extends Proj {
     /**
      * Get the vertices along the great circle between two points.
      * 
-     * @param latp
-     *            previous float latitude
-     * @param lonp
-     *            previous float longitude
-     * @param latn
-     *            next float latitude
-     * @param lonn
-     *            next float longitude
-     * @param from
-     *            Point
-     * @param to
-     *            Point
-     * @param include_last
-     *            include n or n+1 points of the n segments?
+     * @param latp previous float latitude
+     * @param lonp previous float longitude
+     * @param latn next float latitude
+     * @param lonn next float longitude
+     * @param from Point
+     * @param to Point
+     * @param include_last include n or n+1 points of the n segments?
      * @return float[] lat/lon points in RADIANS!
      * 
      */
-    private float[] getGreatVertices(float latp, float lonp, float latn, float lonn,
-                                     Point from, Point to, boolean include_last, int nsegs) {
+    private float[] getGreatVertices(float latp, float lonp, float latn,
+                                     float lonn, Point from, Point to,
+                                     boolean include_last, int nsegs) {
         if (nsegs < 1) {
             // calculate pixel distance
             int dist = DrawUtil.pixel_distance(from.x, from.y, to.x, to.y);
@@ -784,32 +769,30 @@ public abstract class GeoProj extends Proj {
         }
 
         // both of these return float[] radian coordinates!
-        return GreatCircle.greatCircle(latp, lonp, latn, lonn, nsegs, include_last);
+        return GreatCircle.greatCircle(latp,
+                lonp,
+                latn,
+                lonn,
+                nsegs,
+                include_last);
     }
 
     /**
      * Get the vertices along the great circle between two points.
      * 
-     * @param latp
-     *            previous double latitude
-     * @param lonp
-     *            previous double longitude
-     * @param latn
-     *            next double latitude
-     * @param lonn
-     *            next double longitude
-     * @param from
-     *            Point
-     * @param to
-     *            Point
-     * @param include_last
-     *            include n or n+1 points of the n segments?
+     * @param latp previous double latitude
+     * @param lonp previous double longitude
+     * @param latn next double latitude
+     * @param lonn next double longitude
+     * @param from Point
+     * @param to Point
+     * @param include_last include n or n+1 points of the n segments?
      * @return double[] lat/lon points in RADIANS!
      * 
      */
-    private double[] getGreatVertices(double latp, double lonp, double latn, double lonn,
-                                      Point from, Point to, boolean include_last,
-                                      int nsegs) {
+    private double[] getGreatVertices(double latp, double lonp, double latn,
+                                      double lonn, Point from, Point to,
+                                      boolean include_last, int nsegs) {
         if (nsegs < 1) {
             // calculate pixel distance
             int dist = DrawUtil.pixel_distance(from.x, from.y, to.x, to.y);
@@ -833,7 +816,12 @@ public abstract class GeoProj extends Proj {
         }
 
         // both of these return float[] radian coordinates!
-        return GreatCircle.greatCircle(latp, lonp, latn, lonn, nsegs, include_last);
+        return GreatCircle.greatCircle(latp,
+                lonp,
+                latn,
+                lonn,
+                nsegs,
+                include_last);
     }
 
     /**
@@ -841,8 +829,7 @@ public abstract class GeoProj extends Proj {
      * <p>
      * This depends on the line and this projection.
      * 
-     * @param ltype
-     *            int LineType
+     * @param ltype int LineType
      * @return boolean
      */
     public boolean isComplicatedLineType(int ltype) {
@@ -865,20 +852,16 @@ public abstract class GeoProj extends Proj {
     /**
      * Generates a complicated poly.
      * 
-     * @param rawllpts
-     *            LatLonPoint[]
-     * @param ltype
-     *            line type
-     * @param nsegs
-     *            number of segments to draw for greatcircle or rhumb lines (if
-     *            &lt; 1, this value is generated internally).
-     * @param isFilled
-     *            filled poly?
+     * @param rawllpts LatLonPofloat[]
+     * @param ltype line type
+     * @param nsegs number of segments to draw for greatcircle or rhumb lines
+     *        (if &lt; 1, this value is generated internally).
+     * @param isFilled filled poly?
      * @return ArrayList
      * @see Projection#forwardPoly
      */
-    protected ArrayList<int[]> doPolyDispatch(float[] rawllpts, int ltype, int nsegs,
-                                              boolean isFilled) {
+    protected ArrayList<float[]> doPolyDispatch(float[] rawllpts, int ltype,
+                                                int nsegs, boolean isFilled) {
         switch (ltype) {
         case LineType.Rhumb:
             return forwardRhumbPoly(rawllpts, nsegs, isFilled);
@@ -886,30 +869,26 @@ public abstract class GeoProj extends Proj {
             return forwardGreatPoly(rawllpts, nsegs, isFilled);
         case LineType.Straight:
             Debug.error("Proj.doPolyDispatch: Bad Dispatch!\n");
-            return new ArrayList<int[]>(0);
+            return new ArrayList<float[]>(0);
         default:
             Debug.error("Proj.doPolyDispatch: Invalid LType!\n");
-            return new ArrayList<int[]>(0);
+            return new ArrayList<float[]>(0);
         }
     }
 
     /**
      * Generates a complicated poly.
      * 
-     * @param rawllpts
-     *            LatLonPoint[]
-     * @param ltype
-     *            line type
-     * @param nsegs
-     *            number of segments to draw for greatcircle or rhumb lines (if
-     *            &lt; 1, this value is generated internally).
-     * @param isFilled
-     *            filled poly?
+     * @param rawllpts LatLonPofloat[]
+     * @param ltype line type
+     * @param nsegs number of segments to draw for greatcircle or rhumb lines
+     *        (if &lt; 1, this value is generated internally).
+     * @param isFilled filled poly?
      * @return ArrayList<int[]>
      * @see Projection#forwardPoly
      */
-    protected ArrayList<int[]> doPolyDispatch(double[] rawllpts, int ltype, int nsegs,
-                                              boolean isFilled) {
+    protected ArrayList<float[]> doPolyDispatch(double[] rawllpts, int ltype,
+                                                int nsegs, boolean isFilled) {
         switch (ltype) {
         case LineType.Rhumb:
             return forwardRhumbPoly(rawllpts, nsegs, isFilled);
@@ -917,10 +896,10 @@ public abstract class GeoProj extends Proj {
             return forwardGreatPoly(rawllpts, nsegs, isFilled);
         case LineType.Straight:
             Debug.error("Proj.doPolyDispatch: Bad Dispatch!\n");
-            return new ArrayList<int[]>(0);
+            return new ArrayList<float[]>(0);
         default:
             Debug.error("Proj.doPolyDispatch: Invalid LType!\n");
-            return new ArrayList<int[]>(0);
+            return new ArrayList<float[]>(0);
         }
     }
 
@@ -957,20 +936,17 @@ public abstract class GeoProj extends Proj {
      * scale should be in order to make those points appear at the corners of
      * the projection.
      * 
-     * @param ll1
-     *            the upper left coordinates of the bounding box.
-     * @param ll2
-     *            the lower right coordinates of the bounding box.
-     * @param point1
-     *            a java.awt.Point reflecting a pixel spot on the projection
-     *            that matches the ll1 coordinate, the upper left corner of the
-     *            area of interest.
-     * @param point2
-     *            a java.awt.Point reflecting a pixel spot on the projection
-     *            that matches the ll2 coordinate, usually the lower right
-     *            corner of the area of interest.
+     * @param ll1 the upper left coordinates of the bounding box.
+     * @param ll2 the lower right coordinates of the bounding box.
+     * @param point1 a java.awt.Point reflecting a pixel spot on the projection
+     *        that matches the ll1 coordinate, the upper left corner of the area
+     *        of interest.
+     * @param point2 a java.awt.Point reflecting a pixel spot on the projection
+     *        that matches the ll2 coordinate, usually the lower right corner of
+     *        the area of interest.
      */
-    public float getScale(Point2D ll1, Point2D ll2, Point2D point1, Point2D point2) {
+    public float getScale(Point2D ll1, Point2D ll2, Point2D point1,
+                          Point2D point2) {
 
         try {
 
@@ -1037,8 +1013,7 @@ public abstract class GeoProj extends Proj {
      * <p>
      * Forward projects a LatLon point into XY space. Returns a Point.
      * 
-     * @param llp
-     *            LatLonPoint to be projected
+     * @param llp LatLonPoint to be projected
      * @return Point (new)
      */
     public Point2D forward(Point2D llp) {
@@ -1053,13 +1028,13 @@ public abstract class GeoProj extends Proj {
         return forward((double) lat, (double) lon, pt, isRadian);
     }
 
-    abstract public Point2D forward(double lat, double lon, Point2D pt, boolean isRadian);
+    abstract public Point2D forward(double lat, double lon, Point2D pt,
+                                    boolean isRadian);
 
     /**
      * Inverse project a Point from x,y space to LatLon space.
      * 
-     * @param point
-     *            x,y Point
+     * @param point x,y Point
      * @return LatLonPoint (new)
      */
     public LatLonPoint inverse(Point2D point) {
@@ -1069,10 +1044,8 @@ public abstract class GeoProj extends Proj {
     /**
      * Inverse project x,y coordinates.
      * 
-     * @param x
-     *            integer x coordinate
-     * @param y
-     *            integer y coordinate
+     * @param x integer x coordinate
+     * @param y integer y coordinate
      * @return LatLonPoint (new)
      * @see #inverse(Point2D)
      */
@@ -1115,25 +1088,21 @@ public abstract class GeoProj extends Proj {
      * Same as above: if you need a long line, you must break it into several
      * segments.
      * 
-     * @param ll1
-     *            LatLonPoint
-     * @param ll2
-     *            LatLonPoint
-     * @param ltype
-     *            line type (straight, rhumbline, greatcircle)
-     * @param nsegs
-     *            number of segment points (only for greatcircle or rhumbline
-     *            line types, and if &lt; 1, this value is generated internally)
+     * @param ll1 LatLonPoint
+     * @param ll2 LatLonPoint
+     * @param ltype line type (straight, rhumbline, greatcircle)
+     * @param nsegs number of segment points (only for greatcircle or rhumbline
+     *        line types, and if &lt; 1, this value is generated internally)
      * @return ArrayList<int[]>
      * @see LineType#Straight
      * @see LineType#Rhumb
      * @see LineType#GreatCircle
      * 
      */
-    public ArrayList<int[]> forwardLine(LatLonPoint ll1, LatLonPoint ll2, int ltype,
-                                        int nsegs) {
-        double[] rawllpts = { ll1.getRadLat(), ll1.getRadLon(), ll2.getRadLat(),
-                ll2.getRadLon() };
+    public ArrayList<float[]> forwardLine(LatLonPoint ll1, LatLonPoint ll2,
+                                          int ltype, int nsegs) {
+        double[] rawllpts = { ll1.getRadLat(), ll1.getRadLon(),
+                ll2.getRadLat(), ll2.getRadLon() };
         return forwardPoly(rawllpts, ltype, nsegs, false);
     }
 
@@ -1142,7 +1111,8 @@ public abstract class GeoProj extends Proj {
      * 
      * @see #forwardLine(LatLonPoint, LatLonPoint, int, int)
      */
-    public ArrayList<int[]> forwardLine(LatLonPoint ll1, LatLonPoint ll2, int ltype) {
+    public ArrayList<float[]> forwardLine(LatLonPoint ll1, LatLonPoint ll2,
+                                          int ltype) {
         return forwardLine(ll1, ll2, ltype, -1);
     }
 
@@ -1156,23 +1126,19 @@ public abstract class GeoProj extends Proj {
      * Rects have the same restrictions as <a href="#poly_restrictions"> polys
      * <a>and <a href="#line_restrictions">lines </a>.
      * 
-     * @param ll1
-     *            LatLonPoint of northwest corner
-     * @param ll2
-     *            LatLonPoint of southeast corner
-     * @param ltype
-     *            line type (straight, rhumbline, greatcircle)
-     * @param nsegs
-     *            number of segment points (only for greatcircle or rhumbline
-     *            line types, and if &lt; 1, this value is generated internally)
+     * @param ll1 LatLonPoint of northwest corner
+     * @param ll2 LatLonPoint of southeast corner
+     * @param ltype line type (straight, rhumbline, greatcircle)
+     * @param nsegs number of segment points (only for greatcircle or rhumbline
+     *        line types, and if &lt; 1, this value is generated internally)
      * @see #forwardPoly
      * @return ArrayList<int[]>
      */
-    public ArrayList<int[]> forwardRect(LatLonPoint ll1, LatLonPoint ll2, int ltype,
-                                        int nsegs, boolean isFilled) {
-        double[] rawllpts = { ll1.getRadLat(), ll1.getRadLon(), ll1.getRadLat(),
-                ll2.getRadLon(), ll2.getRadLat(), ll2.getRadLon(), ll2.getRadLat(),
-                ll1.getRadLon(),
+    public ArrayList<float[]> forwardRect(LatLonPoint ll1, LatLonPoint ll2,
+                                          int ltype, int nsegs, boolean isFilled) {
+        double[] rawllpts = { ll1.getRadLat(), ll1.getRadLon(),
+                ll1.getRadLat(), ll2.getRadLon(), ll2.getRadLat(),
+                ll2.getRadLon(), ll2.getRadLat(), ll1.getRadLon(),
                 // connect:
                 ll1.getRadLat(), ll1.getRadLon() };
         return forwardPoly(rawllpts, ltype, nsegs, isFilled);
@@ -1183,57 +1149,61 @@ public abstract class GeoProj extends Proj {
      * 
      * @see #forwardRect(LatLonPoint, LatLonPoint, int, int)
      */
-    public ArrayList<int[]> forwardRect(LatLonPoint ll1, LatLonPoint ll2, int ltype) {
+    public ArrayList<float[]> forwardRect(LatLonPoint ll1, LatLonPoint ll2,
+                                          int ltype) {
         return forwardRect(ll1, ll2, ltype, -1, false);
     }
 
     /**
      * Forward project a lat/lon Rectangle. *
      * 
-     * @param ll1
-     *            LatLonPoint of northwest corner
-     * @param ll2
-     *            LatLonPoint of southeast corner
-     * @param ltype
-     *            line type (straight, rhumbline, greatcircle)
-     * @param nsegs
-     *            number of segment points (only for greatcircle or rhumbline
-     *            line types, and if &lt; 1, this value is generated internally)
+     * @param ll1 LatLonPoint of northwest corner
+     * @param ll2 LatLonPoint of southeast corner
+     * @param ltype line type (straight, rhumbline, greatcircle)
+     * @param nsegs number of segment points (only for greatcircle or rhumbline
+     *        line types, and if &lt; 1, this value is generated internally)
      * @see #forwardRect(LatLonPoint, LatLonPoint, int, int)
      */
-    public ArrayList<int[]> forwardRect(LatLonPoint ll1, LatLonPoint ll2, int ltype,
-                                        int nsegs) {
+    public ArrayList<float[]> forwardRect(LatLonPoint ll1, LatLonPoint ll2,
+                                          int ltype, int nsegs) {
         return forwardRect(ll1, ll2, ltype, nsegs, false);
     }
 
     /**
      * Forward project an arc.
      * 
-     * @param c
-     *            LatLonPoint center
-     * @param radians
-     *            boolean radius in radians?
-     * @param radius
-     *            radius in radians or decimal degrees
-     * @param start
-     *            the starting angle of the arc, zero being North up. Units are
-     *            dependent on radians parameter - the start parameter is in
-     *            radians if radians equals true, decimal degrees if not.
-     * @param extent
-     *            the angular extent angle of the arc, zero being no length.
-     *            Units are dependent on radians parameter - the extent
-     *            parameter is in radians if radians equals true, decimal
-     *            degrees if not.
+     * @param c LatLonPoint center
+     * @param radians boolean radius in radians?
+     * @param radius radius in radians or decimal degrees
+     * @param start the starting angle of the arc, zero being North up. Units
+     *        are dependent on radians parameter - the start parameter is in
+     *        radians if radians equals true, decimal degrees if not.
+     * @param extent the angular extent angle of the arc, zero being no length.
+     *        Units are dependent on radians parameter - the extent parameter is
+     *        in radians if radians equals true, decimal degrees if not.
      */
-    public ArrayList<int[]> forwardArc(LatLonPoint c, boolean radians, double radius,
-                                       double start, double extent) {
-        return forwardArc(c, radians, radius, -1, start, extent, java.awt.geom.Arc2D.OPEN);
+    public ArrayList<float[]> forwardArc(LatLonPoint c, boolean radians,
+                                         double radius, double start,
+                                         double extent) {
+        return forwardArc(c,
+                radians,
+                radius,
+                -1,
+                start,
+                extent,
+                java.awt.geom.Arc2D.OPEN);
     }
 
-    public ArrayList<int[]> forwardArc(LatLonPoint c, boolean radians, double radius,
-                                       int nverts, double start, double extent) {
-        return forwardArc(c, radians, radius, nverts, start, extent,
-                          java.awt.geom.Arc2D.OPEN);
+    public ArrayList<float[]> forwardArc(LatLonPoint c, boolean radians,
+                                         double radius, int nverts,
+                                         double start, double extent) {
+        return forwardArc(c,
+                radians,
+                radius,
+                nverts,
+                start,
+                extent,
+                java.awt.geom.Arc2D.OPEN);
     }
 
     /**
@@ -1242,34 +1212,27 @@ public abstract class GeoProj extends Proj {
      * Arcs have the same restrictions as <a href="#poly_restrictions"> polys
      * </a>.
      * 
-     * @param c
-     *            LatLonPoint center of circle
-     * @param radians
-     *            radius in radians or decimal degrees?
-     * @param radius
-     *            radius of circle (0 &lt; radius &lt; 180)
-     * @param nverts
-     *            number of vertices of the circle poly.
-     * @param start
-     *            the starting angle of the arc, zero being North up. Units are
-     *            dependent on radians parameter - the start parameter is in
-     *            radians if radians equals true, decimal degrees if not.
-     * @param extent
-     *            the angular extent angle of the arc, zero being no length.
-     *            Units are dependent on radians parameter - the extent
-     *            parameter is in radians if radians equals true, decimal
-     *            degrees if not.
-     * @param arcType
-     *            type of arc to create - see java.awt.geom.Arc2D for (OPEN,
-     *            CHORD, PIE). Arc2D.OPEN means that the just the points for the
-     *            curved edge will be provided. Arc2D.PIE means that addition
-     *            lines from the edge of the curve to the center point will be
-     *            added. Arc2D.CHORD means a single line from each end of the
-     *            curve will be drawn.
+     * @param c LatLonPoint center of circle
+     * @param radians radius in radians or decimal degrees?
+     * @param radius radius of circle (0 &lt; radius &lt; 180)
+     * @param nverts number of vertices of the circle poly.
+     * @param start the starting angle of the arc, zero being North up. Units
+     *        are dependent on radians parameter - the start parameter is in
+     *        radians if radians equals true, decimal degrees if not.
+     * @param extent the angular extent angle of the arc, zero being no length.
+     *        Units are dependent on radians parameter - the extent parameter is
+     *        in radians if radians equals true, decimal degrees if not.
+     * @param arcType type of arc to create - see java.awt.geom.Arc2D for (OPEN,
+     *        CHORD, PIE). Arc2D.OPEN means that the just the points for the
+     *        curved edge will be provided. Arc2D.PIE means that addition lines
+     *        from the edge of the curve to the center point will be added.
+     *        Arc2D.CHORD means a single line from each end of the curve will be
+     *        drawn.
      */
-    public ArrayList<int[]> forwardArc(LatLonPoint c, boolean radians, double radius,
-                                       int nverts, double start, double extent,
-                                       int arcType) {
+    public ArrayList<float[]> forwardArc(LatLonPoint c, boolean radians,
+                                         double radius, int nverts,
+                                         double start, double extent,
+                                         int arcType) {
         // HACK-need better decision for number of vertices.
         if (nverts < 3)
             nverts = NUM_DEFAULT_CIRCLE_VERTS;
@@ -1290,11 +1253,13 @@ public abstract class GeoProj extends Proj {
             // connect
         }
 
-        GreatCircle.earthCircle(c.getRadLat(), c.getRadLon(), (radians) ? radius
-                : ProjMath.degToRad(radius),
-                                (radians) ? start : ProjMath.degToRad(start),
-                                (radians) ? extent : ProjMath.degToRad(extent), nverts,
-                                rawllpts);
+        GreatCircle.earthCircle(c.getRadLat(),
+                c.getRadLon(),
+                (radians) ? radius : ProjMath.degToRad(radius),
+                (radians) ? start : ProjMath.degToRad(start),
+                (radians) ? extent : ProjMath.degToRad(extent),
+                nverts,
+                rawllpts);
 
         int linetype = LineType.Straight;
         boolean isFilled = false;
@@ -1321,14 +1286,12 @@ public abstract class GeoProj extends Proj {
     /**
      * Forward project a circle.
      * 
-     * @param c
-     *            LatLonPoint center
-     * @param radians
-     *            boolean radius in radians?
-     * @param radius
-     *            radius in radians or decimal degrees
+     * @param c LatLonPoint center
+     * @param radians boolean radius in radians?
+     * @param radius radius in radians or decimal degrees
      */
-    public ArrayList<int[]> forwardCircle(LatLonPoint c, boolean radians, double radius) {
+    public ArrayList<float[]> forwardCircle(LatLonPoint c, boolean radians,
+                                            double radius) {
         return forwardCircle(c, radians, radius, -1, false);
     }
 
@@ -1338,17 +1301,13 @@ public abstract class GeoProj extends Proj {
      * Circles have the same restrictions as <a href="#poly_restrictions">
      * polys. </a>.
      * 
-     * @param c
-     *            LatLonPoint center of circle
-     * @param radians
-     *            radius in radians or decimal degrees?
-     * @param radius
-     *            radius of circle (0 &lt; radius &lt; 180)
-     * @param nverts
-     *            number of vertices of the circle poly.
+     * @param c LatLonPoint center of circle
+     * @param radians radius in radians or decimal degrees?
+     * @param radius radius of circle (0 &lt; radius &lt; 180)
+     * @param nverts number of vertices of the circle poly.
      */
-    public ArrayList<int[]> forwardCircle(LatLonPoint c, boolean radians, double radius,
-                                          int nverts) {
+    public ArrayList<float[]> forwardCircle(LatLonPoint c, boolean radians,
+                                            double radius, int nverts) {
         return forwardCircle(c, radians, radius, nverts, false);
     }
 
@@ -1358,19 +1317,15 @@ public abstract class GeoProj extends Proj {
      * Circles have the same restrictions as <a href="#poly_restrictions">
      * polys. </a>.
      * 
-     * @param c
-     *            LatLonPoint center of circle
-     * @param radians
-     *            radius in radians or decimal degrees?
-     * @param radius
-     *            radius of circle (0 &lt; radius &lt; 180)
-     * @param nverts
-     *            number of vertices of the circle poly.
-     * @param isFilled
-     *            filled poly?
+     * @param c LatLonPoint center of circle
+     * @param radians radius in radians or decimal degrees?
+     * @param radius radius of circle (0 &lt; radius &lt; 180)
+     * @param nverts number of vertices of the circle poly.
+     * @param isFilled filled poly?
      */
-    public ArrayList<int[]> forwardCircle(LatLonPoint c, boolean radians, double radius,
-                                          int nverts, boolean isFilled) {
+    public ArrayList<float[]> forwardCircle(LatLonPoint c, boolean radians,
+                                            double radius, int nverts,
+                                            boolean isFilled) {
         // HACK-need better decision for number of vertices.
         if (nverts < 3)
             nverts = NUM_DEFAULT_CIRCLE_VERTS;
@@ -1378,8 +1333,11 @@ public abstract class GeoProj extends Proj {
         double[] rawllpts = new double[(nverts << 1) + 2];// *2 for
         // pairs +2
         // connect
-        GreatCircle.earthCircle(c.getRadLat(), c.getRadLon(), (radians) ? radius
-                : ProjMath.degToRad(radius), nverts, rawllpts);
+        GreatCircle.earthCircle(c.getRadLat(),
+                c.getRadLon(),
+                (radians) ? radius : ProjMath.degToRad(radius),
+                nverts,
+                rawllpts);
         // connect the vertices.
         rawllpts[rawllpts.length - 2] = rawllpts[0];
         rawllpts[rawllpts.length - 1] = rawllpts[1];
@@ -1450,32 +1408,31 @@ public abstract class GeoProj extends Proj {
      * For no-frills, no-assumptions, fast and efficient projecting, see <a
      * href="#forwardRaw">forwardRaw() </a>.
      * 
-     * @param rawllpts
-     *            float[] of lat,lon,lat,lon,... in RADIANS!
-     * @param ltype
-     *            line type (straight, rhumbline, greatcircle)
-     * @param nsegs
-     *            number of segment points (only for greatcircle or rhumbline
-     *            line types, and if &lt; 1, this value is generated internally)
-     * @param isFilled
-     *            poly is filled? or not
+     * @param rawllpts float[] of lat,lon,lat,lon,... in RADIANS!
+     * @param ltype line type (straight, rhumbline, greatcircle)
+     * @param nsegs number of segment points (only for greatcircle or rhumbline
+     *        line types, and if &lt; 1, this value is generated internally)
+     * @param isFilled poly is filled? or not
      * @return ArrayList of x[], y[], x[], y[], ... projected poly
      * @see #forwardRaw
      * @see LineType#Straight
      * @see LineType#Rhumb
      * @see LineType#GreatCircle
      */
-    public ArrayList<int[]> forwardPoly(float[] rawllpts, int ltype, int nsegs,
-                                        boolean isFilled) {
-        ArrayList<int[]> stuff = _forwardPoly(rawllpts, ltype, nsegs, isFilled);
+    public ArrayList<float[]> forwardPoly(float[] rawllpts, int ltype,
+                                          int nsegs, boolean isFilled) {
+        ArrayList<float[]> stuff = _forwardPoly(rawllpts,
+                ltype,
+                nsegs,
+                isFilled);
         // @HACK: workaround XWindows bug. simple clip to a boundary.
         // this is ugly.
         if (Environment.doingXWindowsWorkaround && (scale <= XSCALE_THRESHOLD)) {
             int i, j, size = stuff.size();
-            int[] xpts, ypts;
+            float[] xpts, ypts;
             for (i = 0; i < size; i += 2) {
-                xpts = (int[]) stuff.get(i);
-                ypts = (int[]) stuff.get(i + 1);
+                xpts = (float[]) stuff.get(i);
+                ypts = (float[]) stuff.get(i + 1);
                 for (j = 0; j < xpts.length; j++) {
                     if (xpts[j] <= -XTHRESHOLD) {
                         xpts[j] = -XTHRESHOLD;
@@ -1501,32 +1458,31 @@ public abstract class GeoProj extends Proj {
      * Delegates to _forwardPoly(), and may do additional clipping for Java
      * XWindows problem. Remember to specify vertices in radians!
      * 
-     * @param rawllpts
-     *            double[] of lat,lon,lat,lon,... in RADIANS!
-     * @param ltype
-     *            line type (straight, rhumbline, greatcircle)
-     * @param nsegs
-     *            number of segment points (only for greatcircle or rhumbline
-     *            line types, and if &lt; 1, this value is generated internally)
-     * @param isFilled
-     *            filled poly?
+     * @param rawllpts double[] of lat,lon,lat,lon,... in RADIANS!
+     * @param ltype line type (straight, rhumbline, greatcircle)
+     * @param nsegs number of segment points (only for greatcircle or rhumbline
+     *        line types, and if &lt; 1, this value is generated internally)
+     * @param isFilled filled poly?
      * @return ArrayList of x[], y[], x[], y[], ... projected poly
      * @see #forwardRaw
      * @see LineType#Straight
      * @see LineType#Rhumb
      * @see LineType#GreatCircle
      */
-    public ArrayList<int[]> forwardPoly(double[] rawllpts, int ltype, int nsegs,
-                                        boolean isFilled) {
-        ArrayList<int[]> stuff = _forwardPoly(rawllpts, ltype, nsegs, isFilled);
+    public ArrayList<float[]> forwardPoly(double[] rawllpts, int ltype,
+                                          int nsegs, boolean isFilled) {
+        ArrayList<float[]> stuff = _forwardPoly(rawllpts,
+                ltype,
+                nsegs,
+                isFilled);
         // @HACK: workaround XWindows bug. simple clip to a boundary.
         // this is ugly.
         if (Environment.doingXWindowsWorkaround && (scale <= XSCALE_THRESHOLD)) {
             int i, j, size = stuff.size();
-            int[] xpts, ypts;
+            float[] xpts, ypts;
             for (i = 0; i < size; i += 2) {
-                xpts = (int[]) stuff.get(i);
-                ypts = (int[]) stuff.get(i + 1);
+                xpts = stuff.get(i);
+                ypts = stuff.get(i + 1);
                 for (j = 0; j < xpts.length; j++) {
                     if (xpts[j] <= -XTHRESHOLD) {
                         xpts[j] = -XTHRESHOLD;
@@ -1549,36 +1505,30 @@ public abstract class GeoProj extends Proj {
     /**
      * Forward project a lat/lon Poly. Remember to specify vertices in radians!
      * 
-     * @param rawllpts
-     *            float[] of lat,lon,lat,lon,... in RADIANS!
-     * @param ltype
-     *            line type (straight, rhumbline, greatcircle)
-     * @param nsegs
-     *            number of segment points (only for greatcircle or rhumbline
-     *            line types, and if &lt; 1, this value is generated internally)
-     * @param isFilled
-     *            filled poly?
+     * @param rawllpts float[] of lat,lon,lat,lon,... in RADIANS!
+     * @param ltype line type (straight, rhumbline, greatcircle)
+     * @param nsegs number of segment points (only for greatcircle or rhumbline
+     *        line types, and if &lt; 1, this value is generated internally)
+     * @param isFilled filled poly?
      * @return ArrayList of x[], y[], x[], y[], ... projected poly
      */
-    protected abstract ArrayList<int[]> _forwardPoly(float[] rawllpts, int ltype,
-                                                     int nsegs, boolean isFilled);
+    protected abstract ArrayList<float[]> _forwardPoly(float[] rawllpts,
+                                                       int ltype, int nsegs,
+                                                       boolean isFilled);
 
     /**
      * Forward project a lat/lon Poly. Remember to specify vertices in radians!
      * 
-     * @param rawllpts
-     *            double[] of lat,lon,lat,lon,... in RADIANS!
-     * @param ltype
-     *            line type (straight, rhumbline, greatcircle)
-     * @param nsegs
-     *            number of segment points (only for greatcircle or rhumbline
-     *            line types, and if &lt; 1, this value is generated internally)
-     * @param isFilled
-     *            filled poly?
+     * @param rawllpts double[] of lat,lon,lat,lon,... in RADIANS!
+     * @param ltype line type (straight, rhumbline, greatcircle)
+     * @param nsegs number of segment points (only for greatcircle or rhumbline
+     *        line types, and if &lt; 1, this value is generated internally)
+     * @param isFilled filled poly?
      * @return ArrayList of x[], y[], x[], y[], ... projected poly
      */
-    protected abstract ArrayList<int[]> _forwardPoly(double[] rawllpts, int ltype,
-                                                     int nsegs, boolean isFilled);
+    protected abstract ArrayList<float[]> _forwardPoly(double[] rawllpts,
+                                                       int ltype, int nsegs,
+                                                       boolean isFilled);
 
     /**
      * Get the unprojected coordinates units of measure.
@@ -1596,7 +1546,7 @@ public abstract class GeoProj extends Proj {
      * @param ucuom
      */
     public void setUcuom(Length ucuom) {
-        // no-op
+    // no-op
     }
 
     /**

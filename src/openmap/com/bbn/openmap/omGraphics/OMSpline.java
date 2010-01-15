@@ -172,7 +172,7 @@ public class OMSpline extends OMPoly {
         // HACK : should use something else than nsegs
         spline.setSteps(nsegs);
 
-        int[][] splinePoints;
+        float[][] splinePoints;
 
         switch (renderType) {
 
@@ -185,9 +185,9 @@ public class OMSpline extends OMPoly {
             }
 
             splinePoints = spline.calc(xs, ys);
-            xpoints = new int[1][0];
+            xpoints = new float[1][0];
             xpoints[0] = splinePoints[0];
-            ypoints = new int[1][0];
+            ypoints = new float[1][0];
             ypoints[0] = splinePoints[1];
 
             break;
@@ -201,8 +201,8 @@ public class OMSpline extends OMPoly {
             }
 
             npts = xs.length;
-            int[] _x = new int[npts];
-            int[] _y = new int[npts];
+            float[] _x = new float[npts];
+            float[] _y = new float[npts];
 
             // forward project the radian point
             Point origin = new Point();
@@ -214,8 +214,8 @@ public class OMSpline extends OMPoly {
 
             if (coordMode == COORDMODE_ORIGIN) {
                 for (i = 0; i < npts; i++) {
-                    _x[i] = xs[i] + origin.x;
-                    _y[i] = ys[i] + origin.y;
+                    _x[i] = (float) (xs[i] + origin.getX());
+                    _y[i] = (float) (ys[i] + origin.getY());
                 }
             } else { // CModePrevious offset deltas
                 _x[0] = xs[0] + origin.x;
@@ -229,9 +229,9 @@ public class OMSpline extends OMPoly {
 
             splinePoints = spline.calc(_x, _y);
 
-            xpoints = new int[1][0];
+            xpoints = new float[1][0];
             xpoints[0] = splinePoints[0];
-            ypoints = new int[1][0];
+            ypoints = new float[1][0];
             ypoints[0] = splinePoints[1];
 
             break;
@@ -249,7 +249,7 @@ public class OMSpline extends OMPoly {
 
             // polygon/polyline project the polygon/polyline.
             // Vertices should already be in radians.
-            ArrayList<int[]> vector;
+            ArrayList<float[]> vector;
             if (proj instanceof GeoProj) {
                 vector = ((GeoProj) proj).forwardPoly(splinellpts,
                         lineType,
@@ -260,8 +260,8 @@ public class OMSpline extends OMPoly {
             }
             int size = vector.size();
 
-            xpoints = new int[(int) (size / 2)][0];
-            ypoints = new int[xpoints.length][0];
+            xpoints = new float[(int) (size / 2)][0];
+            ypoints = new float[xpoints.length][0];
 
             for (i = 0, j = 0; i < size; i += 2, j++) {
                 xpoints[j] = vector.get(i);

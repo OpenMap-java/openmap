@@ -326,11 +326,19 @@ public class GeoIntersectionLayer extends EditorLayer implements
     }
 
     protected GeoPath getPath(OMLine oml) {
-        return new GeoPath.Impl(oml.getLL());
+        GeoPath ret = null;
+        if (oml.getRenderType() == OMGraphic.RENDERTYPE_LATLON) {
+            ret = new GeoPath.Impl(oml.getLL());
+        }
+        return ret;
     }
 
     protected GeoPath getPath(OMPoly omp) {
-        return new GeoPath.Impl(omp.getLatLonArray(), false);
+        GeoPath ret = null;
+        if (omp.getRenderType() == OMGraphic.RENDERTYPE_LATLON) {
+            ret = new GeoPath.Impl(omp.getLatLonArray(), false);
+        }
+        return ret;
     }
 
     /**
@@ -372,10 +380,12 @@ public class GeoIntersectionLayer extends EditorLayer implements
                 DrawingAttributes da = new DrawingAttributes();
                 da.setSelectPaint(new Color(200, 100, 100, 200));
 
-                EsriGraphicList shapeList = EsriGraphicList.getEsriGraphicList(shpFile.toURI().toURL(),
+                EsriGraphicList shapeList = EsriGraphicList.getEsriGraphicList(shpFile.toURI()
+                        .toURL(),
                         da,
                         DbfTableModel.getDbfTableModel(new File(shpFilePath.replaceAll(".shp",
-                                ".dbf")).toURI().toURL()), coordTransform);
+                                ".dbf")).toURI().toURL()),
+                        coordTransform);
 
                 if (DEBUG)
                     Debug.output("GeoIntersectLayer(" + getName()
@@ -874,7 +884,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
     public void setCreatePointCheck(boolean createPointCheck) {
         this.createPointCheck = createPointCheck;
     }
-    
+
     public void runGeoTests(int numIterations, int numToSkipAtStart) {
         Projection proj = new Mercator(new LatLonPoint.Float(35f, -90f), 100000000, 800, 800);
 
@@ -951,7 +961,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
 
             System.out.print(".");
             System.out.flush();
-            
+
         }
 
         double numIterationsCounted = numIterations - numToSkipAtStart;
@@ -993,7 +1003,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
             Debug.output(" time to load file: " + (endTime - startTime) + " ms");
 
             gil.runGeoTests(25, 3);
-            
+
         } else {
             argp.printUsage();
             System.exit(0);

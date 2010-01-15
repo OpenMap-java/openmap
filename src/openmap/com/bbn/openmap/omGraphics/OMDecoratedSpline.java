@@ -23,7 +23,9 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.geom.GeneralPath;
 
 import com.bbn.openmap.util.Debug;
 
@@ -121,7 +123,7 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
      * @param cMode
      */
     public OMDecoratedSpline(double latPoint, double lonPoint, int[] xPoints,
-            int[] yPoints, int cMode) {
+                             int[] yPoints, int cMode) {
         super(latPoint, lonPoint, xPoints, yPoints, cMode);
         initDecorations();
     }
@@ -148,9 +150,9 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
             return;
 
         // safety: grab local reference of projected points
-        int[][] xpts = xpoints;
-        int[][] ypts = ypoints;
-        int[] _x, _y;
+        float[][] xpts = xpoints;
+        float[][] ypts = ypoints;
+        float[] _x, _y;
         int i;
         int len = xpts.length;
 
@@ -172,7 +174,16 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
                     if (!isFillClear) {
                         // set the interior coloring parameters
                         setGraphicsForFill(g);
-                        g.fillPolygon(_x, _y, _x.length);
+                        GeneralPath poly = new GeneralPath();
+                        for(int j = 0; j < _x.length; j++){
+                        	if(j==0){
+                        		poly.moveTo(_x[0], _y[0]);
+                        	} else {
+                        		poly.lineTo(_x[j], _y[j]);
+                        	}
+                        }
+                        ((Graphics2D) g).fill(poly);
+                        //g.fillPolygon(_x, _y, _x.length);
                     }
 
                     // only draw outline if different color

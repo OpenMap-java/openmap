@@ -31,7 +31,8 @@
  *  Modification history:
  *  $Log: DeclutterMatrix.java,v $
  *  Revision 1.6  2005/12/09 21:09:08  dietrick
- *  Projection and LatLonPoint Paradigm shift!  Handling preprojected data.  Proj based on Point2D objects, new com.bbn.openmap.proj.coords.LatLonPoint to support that for Projection subclasses.  New Cartesian projection.  All other components seem to be updated and working with the changes.There will be incompatibilities with OpenMap 4.6 and previous versions of OpenMap, this is a new minor revision.
+ *  Projection and LatLonPoint Paradigm shift!  Handling preprojected data.  Proj based on Point2D objects, new com.bbn.openmap.proj.coords.LatLonPoint to support that for Projection subclasses.  New Cartesian projection.  All other components seem to be updated and working with the changes.
+ There will be incompatibilities with OpenMap 4.6 and previous versions of OpenMap, this is a new minor revision.
  *
  *  Revision 1.5  2004/10/14 18:05:52  dietrick
  *  Copyright updates, removed extemporaneous import statements, cleaned up deprecations
@@ -107,29 +108,28 @@ package com.bbn.openmap.layer;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 import com.bbn.openmap.util.Debug;
 
 /**
- * This class represents the screen divided up into sections, and
- * tracks the sections that are marked, for any reason. The
- * pix_intervals are the height and width of the sections. isClear()
- * returns 1 if the space is clear, and setTaken returns true if the
- * space was clear and the space is now marked taken.
+ * This class represents the screen divided up into sections, and tracks the
+ * sections that are marked, for any reason. The pix_intervals are the height
+ * and width of the sections. isClear() returns 1 if the space is clear, and
+ * setTaken returns true if the space was clear and the space is now marked
+ * taken.
  */
 public class DeclutterMatrix {
 
     /**
-     * The height of the screen to be covered by the matrix, in
-     * pixels. The number of vertical matrix cell is the
-     * height/y_pix_interval.
+     * The height of the screen to be covered by the matrix, in pixels. The
+     * number of vertical matrix cell is the height/y_pix_interval.
      */
     protected int height = 0;
     /**
-     * The width of the screen to be covered by the matrix, in pixels.
-     * The number of horizontal matrix cell is the
-     * width/x_pix_interval.
+     * The width of the screen to be covered by the matrix, in pixels. The
+     * number of horizontal matrix cell is the width/x_pix_interval.
      */
     protected int width = 0;
     /** The number of horizontal pixels per matrix cell */
@@ -139,8 +139,7 @@ public class DeclutterMatrix {
     /** The matrix itself, width x height. */
     protected boolean[][] matrix = new boolean[0][0];
     /**
-     * The maximum index for the horizontal locations within the
-     * matrix.
+     * The maximum index for the horizontal locations within the matrix.
      */
     protected int maxx;
     /**
@@ -148,38 +147,34 @@ public class DeclutterMatrix {
      */
     protected int maxy;
     /**
-     * Whether or not objects are allowed to appear partially off the
-     * matrix. If true, cells off the matrix will be automatically
-     * counted as clear. The default is true.
+     * Whether or not objects are allowed to appear partially off the matrix. If
+     * true, cells off the matrix will be automatically counted as clear. The
+     * default is true.
      */
     protected boolean allowPartials = true;
     /**
-     * A set of matrix indexes that get set for a particular object
-     * for a search. This is to limit the number of off matrix indexes
-     * used.
+     * A set of matrix indexes that get set for a particular object for a
+     * search. This is to limit the number of off matrix indexes used.
      */
     protected MatrixIndexes indexes = new MatrixIndexes();
     /**
-     * A flag to force a recreation of the matrix if the dimensions
-     * change.
+     * A flag to force a recreation of the matrix if the dimensions change.
      */
     protected boolean needToRecreate = false;
 
     /*
-     * These are all magic numbers that don't need to be anything in
-     * particular, apart from sequential. They are used to calculate
-     * where to next search for an opening in the matrix. The order
-     * reflects the pattern in which openings are searched for from
-     * the original position. In general, the original position is
-     * checked, and then alternatives are sought, checking the areas
-     * around the original in a search pattern. The search pattern is
-     * continued, but the distance from the original location is
-     * increased until a clear position is/is not found. As stated in
-     * the setNextOpen comments, the search pattern is a square, but
-     * the order of these notations let you control which
-     * sides/corners of the square are looked at first, in terms of
-     * finding an open space. The square expands outward until a place
-     * is found, or until no place is found, given some desired limit.
+     * These are all magic numbers that don't need to be anything in particular,
+     * apart from sequential. They are used to calculate where to next search
+     * for an opening in the matrix. The order reflects the pattern in which
+     * openings are searched for from the original position. In general, the
+     * original position is checked, and then alternatives are sought, checking
+     * the areas around the original in a search pattern. The search pattern is
+     * continued, but the distance from the original location is increased until
+     * a clear position is/is not found. As stated in the setNextOpen comments,
+     * the search pattern is a square, but the order of these notations let you
+     * control which sides/corners of the square are looked at first, in terms
+     * of finding an open space. The square expands outward until a place is
+     * found, or until no place is found, given some desired limit.
      */
     public final static int DCP_MIDDLE = 20875;
     public final static int DCP_EAST = 20876;
@@ -192,13 +187,12 @@ public class DeclutterMatrix {
     public final static int DCP_NWEST = 20883;
 
     /*
-     * The Declutter direction variables are general notations for the
-     * declutter positions. Within the search square, some positions,
-     * like along the side, present an opportunity to check in
-     * different places - for instance, if we are on the top part of
-     * the square, the search must travers East to West, hence, the
-     * direction is noted as DCD_EW. Corners have no search direction,
-     * and the left and right sides have North-South search traversal
+     * The Declutter direction variables are general notations for the declutter
+     * positions. Within the search square, some positions, like along the side,
+     * present an opportunity to check in different places - for instance, if we
+     * are on the top part of the square, the search must travers East to West,
+     * hence, the direction is noted as DCD_EW. Corners have no search
+     * direction, and the left and right sides have North-South search traversal
      * directions.
      */
     public final static int DCD_NS = 20884;
@@ -206,8 +200,8 @@ public class DeclutterMatrix {
     public final static int DCD_NONE = 20886;
 
     /**
-     * This Denotes the parameters of one of the 8 possible positions
-     * around a decluttermatrix tile.
+     * This Denotes the parameters of one of the 8 possible positions around a
+     * decluttermatrix tile.
      */
     public static class PositionParameters {
         public int position; // should be one of the DCP variables
@@ -224,8 +218,7 @@ public class DeclutterMatrix {
     }
 
     /**
-     * This is an ordering of the possible positions around a matrix
-     * tile.
+     * This is an ordering of the possible positions around a matrix tile.
      */
     public final static PositionParameters dcPos[] = new PositionParameters[9];
 
@@ -348,8 +341,8 @@ public class DeclutterMatrix {
         }
 
         /**
-         * Test to see if the object is on the matrix. Assumes that
-         * the matrix is not null.
+         * Test to see if the object is on the matrix. Assumes that the matrix
+         * is not null.
          * 
          * @return true if object is on matrix.
          */
@@ -366,18 +359,16 @@ public class DeclutterMatrix {
     }
 
     /**
-     * Set whether names can appear partially on/off the map. True
-     * means they can, i.e., the spaces off the map are by default,
-     * clear.
+     * Set whether names can appear partially on/off the map. True means they
+     * can, i.e., the spaces off the map are by default, clear.
      */
     public void setAllowPartials(boolean value) {
         allowPartials = value;
     }
 
     /**
-     * Find out whether the spaces off the map are counted as clear
-     * and available. If they are, then objects can appear partially
-     * on the map.
+     * Find out whether the spaces off the map are counted as clear and
+     * available. If they are, then objects can appear partially on the map.
      */
     public boolean isAllowPartials() {
         return allowPartials;
@@ -386,8 +377,8 @@ public class DeclutterMatrix {
     /** ******************************************************************* */
 
     /**
-     * Construct a new DeclutterMatrix, given the screen dimensions
-     * and the size of the matrix cells
+     * Construct a new DeclutterMatrix, given the screen dimensions and the size
+     * of the matrix cells
      */
     public DeclutterMatrix(int width, int height, int x_pix_interval,
             int y_pix_interval) {
@@ -415,8 +406,8 @@ public class DeclutterMatrix {
     }
 
     /**
-     * Construct a new matrix, given the screen dimensions, and using
-     * the default matrix cell size
+     * Construct a new matrix, given the screen dimensions, and using the
+     * default matrix cell size
      */
     public DeclutterMatrix(int width, int height) {
         this(width, height, 1, 1);
@@ -428,9 +419,9 @@ public class DeclutterMatrix {
     }
 
     /*
-     * Any of these delete the current matrix if it exists and resets
-     * the variable. create() needs to be called to recreate a new
-     * matrix after all the changes.
+     * Any of these delete the current matrix if it exists and resets the
+     * variable. create() needs to be called to recreate a new matrix after all
+     * the changes.
      */
 
     public void setXInterval(int x_pix_interval) {
@@ -480,8 +471,8 @@ public class DeclutterMatrix {
     /**
      * Allocate the matrix.
      * 
-     * @return true if successful, and if the height and width
-     *         settings were valid (>0).
+     * @return true if successful, and if the height and width settings were
+     *         valid (>0).
      */
     public boolean create() {
         if ((height > 0) && (width > 0)) {
@@ -497,8 +488,7 @@ public class DeclutterMatrix {
      * Query whether the matrix is clear, given a set of indexes.
      * 
      * @param indexes the set of indexes
-     * @param markAsTaken mark the spaces as used if they are
-     *        previously clear.
+     * @param markAsTaken mark the spaces as used if they are previously clear.
      * @return true if they were clear previously.
      */
     protected boolean isClear(MatrixIndexes indexes, boolean markAsTaken) {
@@ -517,7 +507,7 @@ public class DeclutterMatrix {
             // the answer should be yes, all the time, because you
             // don't have to declutter what you can't see...
 
-            //          return allowPartials;
+            // return allowPartials;
             return true;
         }
 
@@ -571,16 +561,12 @@ public class DeclutterMatrix {
     }
 
     /**
-     * Check a vertical portion of the matrix, to see if it has
-     * already been taken. If a query occurs that is outside the
-     * matrix, this returns false.
+     * Check a vertical portion of the matrix, to see if it has already been
+     * taken. If a query occurs that is outside the matrix, this returns false.
      * 
-     * @param horizontalIndex the horizontal index of the matrix to
-     *        check.
-     * @param verticalIndex the vertical starting index of the matrix
-     *        to check.
-     * @param numCellsToCheck the number of matrix cells to check for
-     *        taken.
+     * @param horizontalIndex the horizontal index of the matrix to check.
+     * @param verticalIndex the vertical starting index of the matrix to check.
+     * @param numCellsToCheck the number of matrix cells to check for taken.
      * @return true if taken, false if available.
      */
     protected boolean isMatrixLocationTaken(int horizontalIndex,
@@ -601,12 +587,9 @@ public class DeclutterMatrix {
     /**
      * Mark a vertical portion of the matrix as taken.
      * 
-     * @param horizontalIndex the horizontal index of the matrix to
-     *        mark.
-     * @param verticalIndex the vertical starting index of the matrix
-     *        to mark.
-     * @param numCellsToMark the number of matrix cells to mark as
-     *        taken.
+     * @param horizontalIndex the horizontal index of the matrix to mark.
+     * @param verticalIndex the vertical starting index of the matrix to mark.
+     * @param numCellsToMark the number of matrix cells to mark as taken.
      */
     protected void setTaken(int horizontalIndex, int verticalIndex,
                             int numCellsToMark) {
@@ -619,10 +602,9 @@ public class DeclutterMatrix {
     }
 
     /**
-     * SetTaken returns true if the space was clear before the it was
-     * taken, false if it was not. Either way, the spaces are marked.
-     * Except if the matrix is not built, in which case false is
-     * returned anyway.
+     * SetTaken returns true if the space was clear before the it was taken,
+     * false if it was not. Either way, the spaces are marked. Except if the
+     * matrix is not built, in which case false is returned anyway.
      * 
      * @param indexes the start and end matrix indexes for an object.
      * @return true if successful.
@@ -643,17 +625,17 @@ public class DeclutterMatrix {
     }
 
     /**
-     * Set an area as taken, given a point and a length of pixels. The
-     * length is checked from left to right.
+     * Set an area as taken, given a point and a length of pixels. The length is
+     * checked from left to right.
      */
     public boolean setTaken(Point point, int pixelLength) {
         return setTaken(point, pixelLength, y_pix_interval);
     }
 
     /**
-     * Set an area as taken, given a point, a length of pixels and a
-     * height of pixels. The length is from left to right, the height
-     * from the bottom to top (NOT like screen coordinates)
+     * Set an area as taken, given a point, a length of pixels and a height of
+     * pixels. The length is from left to right, the height from the bottom to
+     * top (NOT like screen coordinates)
      */
     public boolean setTaken(Point point, int pixelLength, int pixelHeight) {
         if (needToRecreate)
@@ -664,36 +646,33 @@ public class DeclutterMatrix {
     }
 
     /**
-     * The method to call if you are trying to set something in an
-     * open place, anywhere on the map.
+     * The method to call if you are trying to set something in an open place,
+     * anywhere on the map.
      * 
      * @param point the window point
-     * @param pixelLength the pixel length of space from left to
-     *        right.
+     * @param pixelLength the pixel length of space from left to right.
      * @param pixelHeight the pixel height from bottom to top.
      * @return Point of closest open space.
      */
-    public Point setNextOpen(Point point, int pixelLength, int pixelHeight) {
+    public Point2D setNextOpen(Point2D point, int pixelLength, int pixelHeight) {
         return setNextOpen(point, pixelLength, pixelHeight, -1);
     }
 
     /**
-     * The method to call if you are trying to set something in an
-     * open place, but want to limit how far away the object could be
-     * placed.
+     * The method to call if you are trying to set something in an open place,
+     * but want to limit how far away the object could be placed.
      * 
      * @param point the window point
-     * @param pixelLength the pixel length of space from left to
-     *        right.
+     * @param pixelLength the pixel length of space from left to right.
      * @param pixelHeight the pixel height from bottom to top.
-     * @param pixelAwayLimit the pixel distance away from the original
-     *        location that where an object will be discarded if it's
-     *        not at least that close. -1 means find anywhere on the
-     *        map where the object will fit.
+     * @param pixelAwayLimit the pixel distance away from the original location
+     *        that where an object will be discarded if it's not at least that
+     *        close. -1 means find anywhere on the map where the object will
+     *        fit.
      * @return Point of closest open space.
      */
-    public Point setNextOpen(Point point, int pixelLength, int pixelHeight,
-                             int pixelAwayLimit) {
+    public Point2D setNextOpen(Point2D point, int pixelLength, int pixelHeight,
+                               int pixelAwayLimit) {
 
         Debug.message("declutterdetail",
                 "DeclutterMatrix: Trying to find an open space.");
@@ -701,11 +680,13 @@ public class DeclutterMatrix {
         if (needToRecreate)
             create();
 
+        int pointx = (int) point.getX();
+        int pointy = (int) point.getY();
         boolean set = false;
 
         // mark the original spot. These are indexes, not pixels.
-        int windex = point.x / x_pix_interval;
-        int hindex = point.y / y_pix_interval;
+        int windex = pointx / x_pix_interval;
+        int hindex = pointy / y_pix_interval;
 
         // intermediate values used for ew/ns spanning. This are not
         // pixels, they are indexes into the matrix
@@ -728,7 +709,7 @@ public class DeclutterMatrix {
         int pos, i;
 
         // Set up the indexes for the original spot.
-        indexes.setFromPixels(point.x, point.y, pixelLength, pixelHeight);
+        indexes.setFromPixels(pointx, pointy, pixelLength, pixelHeight);
 
         // Make sure the graphic is on the visible screen
         if (matrix == null || !indexes.withinMatrix) {
@@ -786,17 +767,17 @@ public class DeclutterMatrix {
                             // be added to the matrix before the name.
                             // Then it won't be covered.
 
-                            //                          // Don't look both ways if directly to
+                            // // Don't look both ways if directly to
                             // the
-                            //                          // east, you'll write over the icon
-                            //                          if(dcPos[pos].position == DCP_EAST &&
-                            //                             i <= pixelHeight) {
-                            //                              ret = isAreaClearR(xpoint,
-                            //                                                 ypoint+i,
-                            //                                                 testPoint);
-                            //                          } else {
+                            // // east, you'll write over the icon
+                            // if(dcPos[pos].position == DCP_EAST &&
+                            // i <= pixelHeight) {
+                            // ret = isAreaClearR(xpoint,
+                            // ypoint+i,
+                            // testPoint);
+                            // } else {
                             ret = isAreaClearBW(xpoint, ypoint + i, testPoint);
-                            //                          }
+                            // }
 
                             // If we've found a clear spot, jump out.
                             if (ret != null)
@@ -837,7 +818,7 @@ public class DeclutterMatrix {
             if (round > round_limit) {
                 break;
             }
-        } //while (ret == null)
+        } // while (ret == null)
 
         if (ret != null) {
             if (Debug.debugging("declutter")) {
@@ -860,8 +841,7 @@ public class DeclutterMatrix {
      ****************************************************************/
 
     /**
-     * Check to see if there is space to the right of the desired
-     * place.
+     * Check to see if there is space to the right of the desired place.
      * 
      * @return point for a good clear space, null if not.
      */
@@ -884,9 +864,8 @@ public class DeclutterMatrix {
     }
 
     /**
-     * Check to see if there is space to the left and right. This just
-     * checks for all the way to the right, and all the way to the
-     * left.
+     * Check to see if there is space to the left and right. This just checks
+     * for all the way to the right, and all the way to the left.
      * 
      * @return Point for a good space, null if not.
      */
@@ -923,10 +902,9 @@ public class DeclutterMatrix {
     }
 
     /**
-     * Looks both ways for a clear space BW = Both ways = look both
-     * ways = check left and right. This method will look all the way
-     * to the rigth, and then check incrementally to the left until
-     * it's looking all the way there.
+     * Looks both ways for a clear space BW = Both ways = look both ways = check
+     * left and right. This method will look all the way to the rigth, and then
+     * check incrementally to the left until it's looking all the way there.
      * 
      * @return point of some good place is found, null if not.
      */
@@ -1009,9 +987,9 @@ public class DeclutterMatrix {
     private static java.awt.Graphics2D workingGraphics = null;
 
     /**
-     * This is a graphics that is only available to fiddle around with
-     * text and fonts, in order to get pre-measurements. DO NOT write
-     * anything into this thing.
+     * This is a graphics that is only available to fiddle around with text and
+     * fonts, in order to get pre-measurements. DO NOT write anything into this
+     * thing.
      * 
      * @return java.awt.Graphics2D
      */

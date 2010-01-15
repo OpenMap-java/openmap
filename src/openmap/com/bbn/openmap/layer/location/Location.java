@@ -25,7 +25,6 @@ package com.bbn.openmap.layer.location;
 /*  Java Core  */
 import java.awt.Graphics;
 import java.awt.Paint;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 
@@ -757,10 +756,10 @@ public abstract class Location extends OMGraphicAdapter {
             int height = (int) ((float) (bounds.getHeight() - currentFontDescent / 2));
             int width = (int) bounds.getWidth();
             // Projected location of label on the screen
-            Point p = label.getMapLocation();
+            Point2D p = label.getMapLocation();
 
             if (Debug.debugging("locationdetail")) {
-                Debug.output("old point X Y =>" + p.x + " " + p.y
+                Debug.output("old point X Y =>" + p.getX() + " " + p.getY()
                         + "    height = " + height + " width = " + width);
             }
 
@@ -772,10 +771,10 @@ public abstract class Location extends OMGraphicAdapter {
             }
 
             // newpoint is the new place on the map to put the label
-            Point newpoint = declutter.setNextOpen(p, width, height, limit);
+            Point2D newpoint = declutter.setNextOpen(p, width, height, limit);
 
             if (Debug.debugging("locationdetail")) {
-                Debug.output("new point X Y =>" + newpoint.x + " " + newpoint.y);
+                Debug.output("new point X Y =>" + newpoint.getX() + " " + newpoint.getY());
             }
 
             label.setMapLocation(newpoint);

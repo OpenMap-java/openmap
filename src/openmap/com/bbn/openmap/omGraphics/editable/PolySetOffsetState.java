@@ -34,7 +34,7 @@ public class PolySetOffsetState extends GraphicSetOffsetState {
     public PolySetOffsetState(EditableOMPoly eomp) {
         super(eomp);
     }
-
+    
     protected void setGrabPoint(MouseEvent e) {
         OffsetGrabPoint ogb = (OffsetGrabPoint) graphic.getGrabPoint(EditableOMPoly.OFFSET_POINT_INDEX);
         ogb.set(e.getX(), e.getY());

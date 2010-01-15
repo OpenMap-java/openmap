@@ -27,10 +27,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
-import java.awt.Point;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -849,12 +849,25 @@ public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphi
     }
 
     /**
+     * @see #setLabelLocation(int[], int[])
+     */
+    public void setLabelLocation(float[] xpoints, float[] ypoints) {
+		int[] xs = new int[xpoints.length];
+		int[] ys = new int[ypoints.length];
+		for (int i = 0; i < xpoints.length; i++) {
+			xs[i] = (int) xpoints[i];
+			ys[i] = (int) ypoints[i];
+		}
+		setLabelLocation(xs, ys);
+	}
+    
+    /**
      * Sets the label location at the given point. If the hasLabel variable
      * hasn't been set, it no-ops.
      * 
      * @param p
      */
-    public void setLabelLocation(Point p) {
+    public void setLabelLocation(Point2D p) {
         if (hasLabel) {
             OMLabeler oml = (OMLabeler) getAttribute(LABEL);
             if (oml != null) {

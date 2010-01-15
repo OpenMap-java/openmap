@@ -371,7 +371,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         protected int heightRatioSetting;
         protected byte symbolHeight;
 
-        public EventMarkerLine(float lat, float lon, int heightRatioSetting) {
+        public EventMarkerLine(double lat, double lon, int heightRatioSetting) {
             super(lat, lon, 0, 1, 0, -1);
             this.heightRatioSetting = heightRatioSetting;
         }
@@ -379,7 +379,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         public boolean generate(Projection proj) {
             byte testSH = (byte) (proj.getHeight() * 2 / heightRatioSetting);
             if (testSH != symbolHeight) {
-                int[] pts = getPts();
+            	int[] pts = getPts();
                 int symbolHeight = proj.getHeight() / heightRatioSetting;
                 pts[1] = symbolHeight;
                 pts[3] = -symbolHeight;
@@ -1343,7 +1343,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                     doLabel = false;
                 }
 
-                OMLine currentLine = new OMLine((float) anchory, (float) anchorx, 0, 0, 0, -thisHeight);
+                OMLine currentLine = new OMLine(anchory, anchorx, 0, 0, 0, -thisHeight);
                 currentLine.setLinePaint(tint);
                 currentLine.setStroke(new BasicStroke(2));
                 add(currentLine);

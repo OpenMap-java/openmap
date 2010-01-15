@@ -537,8 +537,8 @@ public class LambertConformal extends GeoProj {
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(float[] rawllpts, int rawoff, int[] xcoords,
-                              int[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords,
+                              float[] ycoords, boolean[] visible, int copyoff,
                               int copylen) {
         boolean visibleTotal = false;
         // HACK grabbed from Cylindrical. Might need fixing.
@@ -561,8 +561,8 @@ public class LambertConformal extends GeoProj {
         return visibleTotal;
     }
 
-    public boolean forwardRaw(double[] rawllpts, int rawoff, int[] xcoords,
-                              int[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords,
+                              float[] ycoords, boolean[] visible, int copyoff,
                               int copylen) {
         boolean visibleTotal = false;
         // HACK grabbed from Cylindrical. Might need fixing.
@@ -594,9 +594,9 @@ public class LambertConformal extends GeoProj {
      *        line types, and if &lt; 1, this value is generated internally)
      * @param isFilled filled poly? this is currently ignored for cylindrical
      *        projections.
-     * @return ArrayList<int[]> of x[], y[], x[], y[], ... projected poly
+     * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
      */
-    protected ArrayList<int[]> _forwardPoly(float[] rawllpts, int ltype,
+    protected ArrayList<float[]> _forwardPoly(float[] rawllpts, int ltype,
                                             int nsegs, boolean isFilled) {
 
         int i, j;
@@ -604,7 +604,7 @@ public class LambertConformal extends GeoProj {
         // determine length of pairs
         int len = rawllpts.length >> 1; // len/2, chop off extra
         if (len < 2)
-            return new ArrayList<int[]>(0);
+            return new ArrayList<float[]>(0);
 
         // Not concerned with any polygons that are completely below
         // 60S
@@ -620,7 +620,7 @@ public class LambertConformal extends GeoProj {
             }
         }
         if (allBelowMinLat) {
-            return new ArrayList<int[]>(0);
+            return new ArrayList<float[]>(0);
         }
 
         // handle complicated line in specific routines
@@ -628,8 +628,8 @@ public class LambertConformal extends GeoProj {
             return doPolyDispatch(rawllpts, ltype, nsegs, isFilled);
 
         Point temp = new Point();
-        int[] xs = new int[len];
-        int[] ys = new int[len];
+        float[] xs = new float[len];
+        float[] ys = new float[len];
 
         // forward project the points
         for (i = 0, j = 0; i < len; i++, j += 2) {
@@ -639,14 +639,14 @@ public class LambertConformal extends GeoProj {
             ys[i] = temp.y;
         }
 
-        ArrayList<int[]> ret_val = new ArrayList<int[]>(2);
+        ArrayList<float[]> ret_val = new ArrayList<float[]>(2);
         ret_val.add(xs);
         ret_val.add(ys);
 
         return ret_val;
     }
 
-    public ArrayList<int[]> _forwardPoly(double[] rawllpts, int ltype,
+    public ArrayList<float[]> _forwardPoly(double[] rawllpts, int ltype,
                                          int nsegs, boolean isFilled) {
 
         int i, j;
@@ -654,7 +654,7 @@ public class LambertConformal extends GeoProj {
         // determine length of pairs
         int len = rawllpts.length >> 1; // len/2, chop off extra
         if (len < 2)
-            return new ArrayList<int[]>(0);
+            return new ArrayList<float[]>(0);
 
         // Not concerned with any polygons that are completely below
         // 60S
@@ -670,7 +670,7 @@ public class LambertConformal extends GeoProj {
             }
         }
         if (allBelowMinLat) {
-            return new ArrayList<int[]>(0);
+            return new ArrayList<float[]>(0);
         }
 
         // handle complicated line in specific routines
@@ -678,8 +678,8 @@ public class LambertConformal extends GeoProj {
             return doPolyDispatch(rawllpts, ltype, nsegs, isFilled);
 
         Point temp = new Point();
-        int[] xs = new int[len];
-        int[] ys = new int[len];
+        float[] xs = new float[len];
+        float[] ys = new float[len];
 
         // forward project the points
         for (i = 0, j = 0; i < len; i++, j += 2) {
@@ -689,7 +689,7 @@ public class LambertConformal extends GeoProj {
             ys[i] = temp.y;
         }
 
-        ArrayList<int[]> ret_val = new ArrayList<int[]>(2);
+        ArrayList<float[]> ret_val = new ArrayList<float[]>(2);
         ret_val.add(xs);
         ret_val.add(ys);
 

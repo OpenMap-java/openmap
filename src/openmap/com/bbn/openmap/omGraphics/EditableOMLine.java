@@ -138,7 +138,7 @@ public class EditableOMLine extends EditableOMAbstractLine implements
             line = new OMLine(90f, -180f, 90f, -180f, lineType);
             break;
         case (OMGraphic.RENDERTYPE_OFFSET):
-            line = new OMLine(90f, -180f, 0, 0, 0, 0);
+            line = new OMLine(90d, -180d, 0, 0, 0, 0);
             break;
         default:
             line = new OMLine(-1, -1, -1, -1);
@@ -323,7 +323,7 @@ public class EditableOMLine extends EditableOMAbstractLine implements
         if (renderType == OMGraphic.RENDERTYPE_XY
                 || renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
-            int[] ints = new int[4];
+        	int[] ints = new int[4];
             if (renderType == OMGraphic.RENDERTYPE_OFFSET && gpo != null) {
                 // If offset rendertype, the x-y have to be offset
                 // distances, not screen pixel locations.
@@ -357,11 +357,11 @@ public class EditableOMLine extends EditableOMAbstractLine implements
         // create a special one for the move.
         
         Point2D pnt = getProjectionPoint(e);
-        double x = pnt.getX();
-        double y = pnt.getY();
+        int x = (int) pnt.getX();
+        int y = (int) pnt.getY();
         
         if (line.getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
-            gpm = new OffsetGrabPoint((int) x, (int) y);
+            gpm = new OffsetGrabPoint(x, y);
 
             gpm.addGrabPoint(gp1);
             gpm.addGrabPoint(gp2);

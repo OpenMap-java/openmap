@@ -72,6 +72,7 @@ import com.bbn.openmap.omGraphics.labeled.LabeledOMSpline;
 import com.bbn.openmap.omGraphics.meteo.IceAreaShapeDecoration;
 import com.bbn.openmap.omGraphics.meteo.OMHotSurfaceFront;
 import com.bbn.openmap.omGraphics.meteo.OMOcclusion;
+import com.bbn.openmap.omGraphics.util.ArcCalc;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.coords.LatLonPoint;
@@ -283,6 +284,11 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
                 new OMTextLabeler("Line Label"));
 
         omList.add(line);
+        
+        OMLine arcLine = new OMLine(0d, 0d, -20d, 30d, OMGraphic.LINETYPE_GREATCIRCLE);
+        arcLine.setLinePaint(Color.green);
+        arcLine.setArc(new ArcCalc(Math.PI, true));
+        omList.add(arcLine);
 
         OMGraphicList pointList = new OMGraphicList();
         for (int i = 0; i < 100; i++) {

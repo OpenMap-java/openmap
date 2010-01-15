@@ -352,10 +352,10 @@ public class EditableOMRect extends EditableOMGraphic {
                         .message("eomg",
                                  "EditableOMRect: drawing straight line rectangle");
 
-                top = rect.getTop() + latoffset;
-                bottom = rect.getBottom() + latoffset;
-                right = rect.getRight() + lonoffset;
-                left = rect.getLeft() + lonoffset;
+                top = (int) (rect.getTop() + latoffset);
+                bottom = (int) (rect.getBottom() + latoffset);
+                right = (int) (rect.getRight() + lonoffset);
+                left = (int) (rect.getLeft() + lonoffset);
 
                 // We have to do some fancy point wrangling to keep
                 // from messing up the next setGrabPoints().
@@ -486,7 +486,7 @@ public class EditableOMRect extends EditableOMGraphic {
                             - gpo.getY(), gpse.getX() - gpo.getX(), gpse.getY()
                             - gpo.getY());
                 } else if (movingPoint == gpne || movingPoint == gpsw) {
-                    rect.setLocation(rect.x1 = gpsw.getX() - gpo.getX(), gpne
+                    rect.setLocation((int) (rect.x1 = gpsw.getX() - gpo.getX()), gpne
                             .getY()
                             - gpo.getY(), gpne.getX() - gpo.getX(), gpsw.getY()
                             - gpo.getY());

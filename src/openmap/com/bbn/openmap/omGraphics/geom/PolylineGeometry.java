@@ -87,9 +87,9 @@ public abstract class PolylineGeometry extends PolygonGeometry implements
         }
 
         // safety: grab local reference of projected points
-        int[][] xpts = xpoints;
-        int[][] ypts = ypoints;
-        int[] _x, _y;
+        float[][] xpts = xpoints;
+        float[][] ypts = ypoints;
+        float[] _x, _y;
         int len = xpts.length;
 
         for (int i = 0; i < len; i++) {
@@ -171,7 +171,7 @@ public abstract class PolylineGeometry extends PolygonGeometry implements
          * @param xypoints array of x/y points, arranged x, y, x, y,
          *        etc.
          */
-        public XY(int[] xypoints) {
+        public XY(float[] xypoints) {
             super(xypoints);
             setIsPolygon(false);
         }
@@ -181,10 +181,10 @@ public abstract class PolylineGeometry extends PolygonGeometry implements
          * you need to ensure that the first and last coordinate pairs
          * are the same.
          * 
-         * @param xPoints int[] of x coordinates
-         * @param yPoints int[] of y coordinates
+         * @param xPoints float[] of x coordinates
+         * @param yPoints float[] of y coordinates
          */
-        public XY(int[] xPoints, int[] yPoints) {
+        public XY(float[] xPoints, float[] yPoints) {
             super(xPoints, yPoints);
             setIsPolygon(false);
         }
@@ -199,10 +199,10 @@ public abstract class PolylineGeometry extends PolygonGeometry implements
          * 
          * @param latPoint latitude in decimal degrees
          * @param lonPoint longitude in decimal degrees
-         * @param xypoints int[] of x,y pairs
+         * @param xypoints float[] of x,y pairs
          * @param cMode offset coordinate mode
          */
-        public Offset(double latPoint, double lonPoint, int[] xypoints, int cMode) {
+        public Offset(double latPoint, double lonPoint, float[] xypoints, int cMode) {
             super(latPoint, lonPoint, xypoints, cMode);
             setIsPolygon(false);
         }
@@ -214,12 +214,12 @@ public abstract class PolylineGeometry extends PolygonGeometry implements
          * 
          * @param latPoint latitude in decimal degrees
          * @param lonPoint longitude in decimal degrees
-         * @param xPoints int[] of x coordinates
-         * @param yPoints int[] of y coordinates
+         * @param xPoints float[] of x coordinates
+         * @param yPoints float[] of y coordinates
          * @param cMode offset coordinate mode
          */
-        public Offset(double latPoint, double lonPoint, int[] xPoints,
-                int[] yPoints, int cMode) {
+        public Offset(double latPoint, double lonPoint, float[] xPoints,
+                float[] yPoints, int cMode) {
 
             super(latPoint, lonPoint, xPoints, yPoints, cMode);
             setIsPolygon(false);

@@ -97,10 +97,10 @@ public class NatCubicClosedSpline extends NatCubicSpline {
      * @see com.bbn.openmap.omGraphics.NatCubicSpline#calc(int[],
      *      int[])
      */
-    public int[][] calc(int[] xpoints, int[] ypoints) {
+    public float[][] calc(int[] xpoints, int[] ypoints) {
 
-        int[] xpts = xpoints;
-        int[] ypts = ypoints;
+    	int[] xpts = xpoints;
+    	int[] ypts = ypoints;
         int l = xpoints.length;
         if (xpoints.length > 2) {
             if (xpoints[0] == xpoints[l - 1] && ypoints[0] == ypoints[l - 1]) {

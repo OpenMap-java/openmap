@@ -24,6 +24,7 @@ package com.bbn.openmap.omGraphics.util;
 
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.io.Serializable;
 
 import com.bbn.openmap.MoreMath;
@@ -45,8 +46,8 @@ public class ArcCalc implements Serializable {
     /** Debugging list showing algorithm points. */
     protected transient OMGraphicList arcGraphics = null;
 
-    protected transient int[] xpoints;
-    protected transient int[] ypoints;
+    protected transient float[] xpoints;
+    protected transient float[] ypoints;
 
     /**
      * This setting is the amount of an angle, limited to a
@@ -62,7 +63,7 @@ public class ArcCalc implements Serializable {
      * For x-y and offset lines that have an arc drawn between them,
      * tell which way the arc should be drawn, toward the Equator, or
      * away from it, generally. Default is true, to make it look like
-     * great circle line for northern hemishere lines.
+     * great circle line for northern hemisphere lines.
      */
     protected boolean arcUp = true;
 
@@ -144,7 +145,7 @@ public class ArcCalc implements Serializable {
 
         Point midPoint = new Point();
         Point arcCenter = new Point();
-        Point peakPoint = new Point();
+        Point2D peakPoint = new Point2D.Float();
 
         // pixel distance between points.
         double distance = Math.sqrt(Math.pow(Math.abs(y2 - y1), 2.0)
@@ -163,8 +164,7 @@ public class ArcCalc implements Serializable {
         }
 
         // centerX/Y is the midpoint between the two points.
-        midPoint.x = x1 + ((x2 - x1) / 2);
-        midPoint.y = y1 + ((y2 - y1) / 2);
+        midPoint.setLocation(x1 + ((x2 - x1) / 2), y1 + ((y2 - y1) / 2));
 
         if (Debug.debugging("arc")) {
             Debug.output("ArcCalc.generate: Center point for (" + x1 + ", "
@@ -256,8 +256,8 @@ public class ArcCalc implements Serializable {
         // Figure out the arc extents for each endpoint. I think
         // it's easier to keep track of the angles if they are always
         // positive, and we always go from smaller to larger.
-        double startSlope = getRealAngle(arcCenter.x, arcCenter.y, x1, y1);
-        double endSlope = getRealAngle(arcCenter.x, arcCenter.y, x2, y2);
+        double startSlope = getRealAngle((float)arcCenter.getX(), (float)arcCenter.getY(), x1, y1);
+        double endSlope = getRealAngle((float)arcCenter.getX(), (float)arcCenter.getY(), x2, y2);
 
         double smallSlope, largeSlope;
         double angleIncrement;
@@ -300,8 +300,8 @@ public class ArcCalc implements Serializable {
 
         int numPoints = (int) (Math.abs(smallSlope - largeSlope)
                 / angleIncrement + 2);
-        int[] xPoints = new int[numPoints];
-        int[] yPoints = new int[numPoints];
+        float[] xPoints = new float[numPoints];
+        float[] yPoints = new float[numPoints];
 
         if (Debug.debugging("arc")) {
             Debug.output("ArcCalc.generate: angle to x1, y1 is " + startSlope
@@ -332,7 +332,7 @@ public class ArcCalc implements Serializable {
             }
 
             if (Debug.debugging("arc") && realCount == 0) {
-                OMLine startLine = new OMLine(arcCenter.x, arcCenter.y, xPoints[0], yPoints[0]);
+                OMLine startLine = new OMLine(arcCenter.x, arcCenter.y, (int) xPoints[0], (int) yPoints[0]);
                 startLine.setLinePaint(OMColor.white);
                 arcGraphics.add(startLine);
             } else if (Debug.debugging("arcdetail")) {
@@ -343,8 +343,7 @@ public class ArcCalc implements Serializable {
 
             if (Math.abs(largeSlope - smallSlope - (arcAngle / 2.0)) < angleIncrement) {
                 // Found the halfway point, mark it...
-                peakPoint.x = xPoints[realCount];
-                peakPoint.y = yPoints[realCount];
+                peakPoint.setLocation(xPoints[realCount], yPoints[realCount]);
                 Debug.message("arc", "ArcCalc: Found a midpoint.");
             }
 
@@ -353,9 +352,10 @@ public class ArcCalc implements Serializable {
         }
 
         // Give the coordinates to the OMLine.
-        xpoints = new int[realCount];
-        ypoints = new int[realCount];
+        xpoints = new float[realCount];
+        ypoints = new float[realCount];
 
+                
         System.arraycopy(xPoints, 0, xpoints, 0, realCount);
         System.arraycopy(yPoints, 0, ypoints, 0, realCount);
     }
@@ -366,7 +366,7 @@ public class ArcCalc implements Serializable {
      * system on the screen. Always returns a positive value, and the
      * angle is from point 1 to point 2.
      */
-    protected double getRealAngle(int x1, int y1, int x2, int y2) {
+    protected double getRealAngle(float x1, float y1, float x2, float y2) {
         double angle = 0;
 
         double horDiff = (double) (x2 - x1);
@@ -396,11 +396,11 @@ public class ArcCalc implements Serializable {
         return angle;
     }
 
-    public int[] getXPoints() {
+    public float[] getXPoints() {
         return xpoints;
     }
 
-    public int[] getYPoints() {
+    public float[] getYPoints() {
         return ypoints;
     }
 

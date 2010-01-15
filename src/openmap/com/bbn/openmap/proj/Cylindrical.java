@@ -209,8 +209,8 @@ public abstract class Cylindrical extends GeoProj {
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(float[] rawllpts, int rawoff, int[] xcoords,
-                              int[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords,
+                              float[] ycoords, boolean[] visible, int copyoff,
                               int copylen) {
         Point temp = new Point();
         int end = copylen + copyoff;
@@ -245,8 +245,8 @@ public abstract class Cylindrical extends GeoProj {
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(double[] rawllpts, int rawoff, int[] xcoords,
-                              int[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords,
+                              float[] ycoords, boolean[] visible, int copyoff,
                               int copylen) {
         Point temp = new Point();
         int end = copylen + copyoff;
@@ -291,14 +291,14 @@ public abstract class Cylindrical extends GeoProj {
      *        projections.
      * @return ArrayList of x[], y[], x[], y[], ... the projected poly
      */
-    protected ArrayList<int[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs,
+    protected ArrayList<float[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs,
                                      boolean isFilled) {
         int n, k, flag = 0, min = 0, max = 0, xp, xadj = 0;
 
         // determine length of pairs list
         int len = rawllpts.length >> 1; // len/2, chop off extra
         if (len < 2)
-            return new ArrayList<int[]>(0);
+            return new ArrayList<float[]>(0);
 
         // handle complicated line in specific routines
         if (isComplicatedLineType(ltype)) {
@@ -307,8 +307,8 @@ public abstract class Cylindrical extends GeoProj {
 
         // determine when to stop
         Point temp = new Point(0, 0);
-        int[] xs = new int[len];
-        int[] ys = new int[len];
+        float[] xs = new float[len];
+        float[] ys = new float[len];
 
         // forward project the first point
         forward(rawllpts[0], rawllpts[1], temp, true);
@@ -337,11 +337,11 @@ public abstract class Cylindrical extends GeoProj {
         min *= -1;// positive magnitude
 
         // now create the return list
-        ArrayList<int[]> ret_val = null;
-        ret_val = new ArrayList<int[]>(2 + 2 * (max + min));
+        ArrayList<float[]> ret_val = null;
+        ret_val = new ArrayList<float[]>(2 + 2 * (max + min));
         ret_val.add(xs);
         ret_val.add(ys);
-        int[] altx = null;
+        float[] altx = null;
 
         /*
          * if (Debug.debugging("proj")) { dumpPoly(rawllpts, xs, ys); }
@@ -349,7 +349,7 @@ public abstract class Cylindrical extends GeoProj {
 
         // add the extra left-wrap polys
         for (int i = 1; i <= min; i++) {
-            altx = new int[xs.length];
+            altx = new float[xs.length];
             xadj = i * world.x;// shift opposite
             for (int j = 0; j < altx.length; j++) {
                 altx[j] = xs[j] + xadj;
@@ -363,7 +363,7 @@ public abstract class Cylindrical extends GeoProj {
 
         // add the extra right-wrap polys
         for (int i = 1; i <= max; i++) {
-            altx = new int[xs.length];
+            altx = new float[xs.length];
             xadj = -i * world.x;// shift opposite
             for (int j = 0; j < altx.length; j++) {
                 altx[j] = xs[j] + xadj;
@@ -408,14 +408,14 @@ public abstract class Cylindrical extends GeoProj {
      *        projections.
      * @return ArrayList of x[], y[], x[], y[], ... the projected poly
      */
-    protected ArrayList<int[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs,
+    protected ArrayList<float[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs,
                                      boolean isFilled) {
         int n, k, flag = 0, min = 0, max = 0, xp, xadj = 0;
 
         // determine length of pairs list
         int len = rawllpts.length >> 1; // len/2, chop off extra
         if (len < 2)
-            return new ArrayList<int[]>(0);
+            return new ArrayList<float[]>(0);
 
         // handle complicated line in specific routines
         if (isComplicatedLineType(ltype)) {
@@ -424,8 +424,8 @@ public abstract class Cylindrical extends GeoProj {
 
         // determine when to stop
         Point temp = new Point(0, 0);
-        int[] xs = new int[len];
-        int[] ys = new int[len];
+        float[] xs = new float[len];
+        float[] ys = new float[len];
 
         // forward project the first point
         forward(rawllpts[0], rawllpts[1], temp, true);
@@ -454,11 +454,11 @@ public abstract class Cylindrical extends GeoProj {
         min *= -1;// positive magnitude
 
         // now create the return list
-        ArrayList<int[]> ret_val = null;
-        ret_val = new ArrayList<int[]>(2 + 2 * (max + min));
+        ArrayList<float[]> ret_val = null;
+        ret_val = new ArrayList<float[]>(2 + 2 * (max + min));
         ret_val.add(xs);
         ret_val.add(ys);
-        int[] altx = null;
+        float[] altx = null;
 
         /*
          * if (Debug.debugging("proj")) { dumpPoly(rawllpts, xs, ys); }
@@ -466,7 +466,7 @@ public abstract class Cylindrical extends GeoProj {
 
         // add the extra left-wrap polys
         for (int i = 1; i <= min; i++) {
-            altx = new int[xs.length];
+            altx = new float[xs.length];
             xadj = i * world.x;// shift opposite
             for (int j = 0; j < altx.length; j++) {
                 altx[j] = xs[j] + xadj;
@@ -480,7 +480,7 @@ public abstract class Cylindrical extends GeoProj {
 
         // add the extra right-wrap polys
         for (int i = 1; i <= max; i++) {
-            altx = new int[xs.length];
+            altx = new float[xs.length];
             xadj = -i * world.x;// shift opposite
             for (int j = 0; j < altx.length; j++) {
                 altx[j] = xs[j] + xadj;
@@ -496,7 +496,7 @@ public abstract class Cylindrical extends GeoProj {
     }// _forwardPoly()
 
     // print out polygon
-    public static final void dumpPoly(float[] rawllpts, int[] xs, int[] ys) {
+    public static final void dumpPoly(float[] rawllpts, float[] xs, float[] ys) {
         Debug.output("poly:");
         for (int i = 0, j = 0; j < xs.length; i += 2, j++) {
             System.out.print("[" + ProjMath.radToDeg(rawllpts[i]) + ","
@@ -507,7 +507,7 @@ public abstract class Cylindrical extends GeoProj {
     }
 
     // print out polygon
-    public static final void dumpPoly(double[] rawllpts, int[] xs, int[] ys) {
+    public static final void dumpPoly(double[] rawllpts, float[] xs, float[] ys) {
         Debug.output("poly:");
         for (int i = 0, j = 0; j < xs.length; i += 2, j++) {
             System.out.print("[" + ProjMath.radToDeg(rawllpts[i]) + ","

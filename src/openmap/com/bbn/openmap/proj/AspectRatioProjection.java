@@ -61,45 +61,45 @@ public class AspectRatioProjection extends GeoProj {
         return pt;
     }
 
-    private int xFromWrapped(int x) {
+    private float xFromWrapped(float x) {
         if (!xHasFactor)
             return x;
-        return (int) (((float) x - halfWrappedWidth) * xFactor + halfWidth);
+        return (((float) x - halfWrappedWidth) * xFactor + halfWidth);
     }
 
-    private int yFromWrapped(int y) {
+    private float yFromWrapped(float y) {
         if (!yHasFactor)
             return y;
-        return (int) (((float) y - halfWrappedHeight) * yFactor + halfHeight);
+        return (((float) y - halfWrappedHeight) * yFactor + halfHeight);
     }
 
-    private int xToWrapped(int x) {
+    private float xToWrapped(float x) {
         if (!xHasFactor)
             return x;
-        return (int) (((float) x - halfWidth) / xFactor + halfWrappedWidth);
+        return (((float) x - halfWidth) / xFactor + halfWrappedWidth);
     }
 
-    private int yToWrapped(int y) {
+    private float yToWrapped(float y) {
         if (!yHasFactor)
             return y;
-        return (int) (((float) y - halfHeight) / yFactor + halfWrappedHeight);
+        return (((float) y - halfHeight) / yFactor + halfWrappedHeight);
     }
 
-    protected ArrayList<int[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs,
+    protected ArrayList<float[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs,
                                      boolean isFilled) {
-        ArrayList<int[]> stuff = wrappedProjection._forwardPoly(rawllpts,
+        ArrayList<float[]> stuff = wrappedProjection._forwardPoly(rawllpts,
                 ltype,
                 nsegs,
                 isFilled);
         int size = stuff.size();
         for (int i = 0; i < size; i += 2) {
-            int[] xpts = (int[]) stuff.get(i);
+            float[] xpts = (float[]) stuff.get(i);
             if (xHasFactor) {
                 for (int j = 0; j < xpts.length; j++)
                     xpts[j] = xFromWrapped(xpts[j]);
             }
             if (yHasFactor) {
-                int[] ypts = (int[]) stuff.get(i + 1);
+                float[] ypts = (float[]) stuff.get(i + 1);
                 for (int j = 0; j < ypts.length; j++)
                     ypts[j] = yFromWrapped(ypts[j]);
             }
@@ -149,8 +149,8 @@ public class AspectRatioProjection extends GeoProj {
         return fromWrapped(wrappedProjection.forward(lat, lon, pt));
     }
 
-    public boolean forwardRaw(float[] rawllpts, int rawoff, int[] xcoords,
-                              int[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords,
+                              float[] ycoords, boolean[] visible, int copyoff,
                               int copylen) {
         boolean r = wrappedProjection.forwardRaw(rawllpts,
                 rawoff,
@@ -188,21 +188,21 @@ public class AspectRatioProjection extends GeoProj {
     }
 
     @Override
-    protected ArrayList<int[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs,
+    protected ArrayList<float[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs,
                                      boolean isFilled) {
-        ArrayList<int[]> stuff = wrappedProjection._forwardPoly(rawllpts,
+        ArrayList<float[]> stuff = wrappedProjection._forwardPoly(rawllpts,
                 ltype,
                 nsegs,
                 isFilled);
         int size = stuff.size();
         for (int i = 0; i < size; i += 2) {
-            int[] xpts = (int[]) stuff.get(i);
+            float[] xpts = (float[]) stuff.get(i);
             if (xHasFactor) {
                 for (int j = 0; j < xpts.length; j++)
                     xpts[j] = xFromWrapped(xpts[j]);
             }
             if (yHasFactor) {
-                int[] ypts = (int[]) stuff.get(i + 1);
+                float[] ypts = (float[]) stuff.get(i + 1);
                 for (int j = 0; j < ypts.length; j++)
                     ypts[j] = yFromWrapped(ypts[j]);
             }

@@ -226,8 +226,8 @@ public class EditableOMCircle extends EditableOMGraphic {
         GrabPoint[] gb = getGrabPoints();
         
         Point2D pnt = getProjectionPoint(e);
-        double x = pnt.getX();
-        double y = pnt.getY();
+        int x = (int) pnt.getX();
+        int y = (int) pnt.getY();
 
         for (int i = gb.length - 1; i >= 0; i--) {
 

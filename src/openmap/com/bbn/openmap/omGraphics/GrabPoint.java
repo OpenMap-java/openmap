@@ -25,9 +25,9 @@ package com.bbn.openmap.omGraphics;
 import java.awt.Color;
 
 /**
- * A GrabPoint is used by editable graphics to show a location that
- * can be adjusted. Some GrabPoints are limited in the direction that
- * they are able to move.
+ * A GrabPoint is used by editable graphics to show a location that can be
+ * adjusted. Some GrabPoints are limited in the direction that they are able to
+ * move.
  */
 public class GrabPoint extends OMPoint {
 
@@ -45,5 +45,9 @@ public class GrabPoint extends OMPoint {
         setLinePaint(Color.black);
         setFillPaint(Color.white);
         setVisible(false);
+    }
+
+    public void set(double x, double y) {
+        set((int) x, (int) y);
     }
 }

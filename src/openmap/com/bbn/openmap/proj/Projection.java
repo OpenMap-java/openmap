@@ -351,7 +351,7 @@ public interface Projection extends java.io.Serializable {
      * Returns a ArrayList<int[]> of (x[], y[]) coordinate pair(s) of the
      * projected line(s).
      */
-    public ArrayList<int[]> forwardLine(Point2D ll1, Point2D ll2);
+    public ArrayList<float[]> forwardLine(Point2D ll1, Point2D ll2);
 
     /**
      * Forward project a rectangle defined by an upper left point and a lower
@@ -364,7 +364,7 @@ public interface Projection extends java.io.Serializable {
      * @param ll2 Point2D of southeast corner
      * @return ArrayList
      */
-    public ArrayList<int[]> forwardRect(Point2D ll1, Point2D ll2);
+    public ArrayList<float[]> forwardRect(Point2D ll1, Point2D ll2);
 
     /**
      * Forward project a polygon defined by the coordinates. The isFilled flag
@@ -374,9 +374,9 @@ public interface Projection extends java.io.Serializable {
      * @param rawllpts a set of y, x coordinates.
      * @param isFilled true of is important to note the area of the poly,
      *        instead of just the edge.
-     * @return ArrayList<int[]> contains sets of int[]x, int[] y arrays.
+     * @return ArrayList<float[]> contains sets of float[]x, float[] y arrays.
      */
-    public ArrayList<int[]> forwardPoly(float[] rawllpts, boolean isFilled);
+    public ArrayList<float[]> forwardPoly(float[] rawllpts, boolean isFilled);
 
     /**
      * Forward project a polygon defined by the coordinates. The isFilled flag
@@ -386,9 +386,9 @@ public interface Projection extends java.io.Serializable {
      * @param rawllpts a set of y, x coordinates.
      * @param isFilled true of is important to note the area of the poly,
      *        instead of just the edge.
-     * @return ArrayList<int[]> contains sets of int[]x, int[] y arrays.
+     * @return ArrayList<float[]> contains sets of float[]x, float[] y arrays.
      */
-    public ArrayList<int[]> forwardPoly(double[] rawllpts, boolean isFilled);
+    public ArrayList<float[]> forwardPoly(double[] rawllpts, boolean isFilled);
 
     /**
      * Forward project a raw array of world coordinates. This assumes nothing
@@ -409,8 +409,8 @@ public interface Projection extends java.io.Serializable {
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(float[] rawllpts, int rawoff, int[] xcoords,
-                              int[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords,
+                              float[] ycoords, boolean[] visible, int copyoff,
                               int copylen);
 
     /**
@@ -432,8 +432,8 @@ public interface Projection extends java.io.Serializable {
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(double[] rawllpts, int rawoff, int[] xcoords,
-                              int[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords,
+                              float[] ycoords, boolean[] visible, int copyoff,
                               int copylen);
 
     /**

@@ -202,7 +202,7 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
 
             double[] latlons = getSegArray();
 
-            ArrayList<int[]> lines = null;
+            ArrayList<float[]> lines = null;
             if (proj instanceof GeoProj) {
                 lines = ((GeoProj) proj).forwardLine(new LatLonPoint.Double(latlons[0], latlons[1]),
                         new LatLonPoint.Double(latlons[2], latlons[3]),
@@ -215,12 +215,12 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
 
             int size = lines.size();
 
-            int[][] xpoints = new int[(int) (size / 2)][0];
-            int[][] ypoints = new int[xpoints.length][0];
+            float[][] xpoints = new float[(int) (size / 2)][0];
+            float[][] ypoints = new float[xpoints.length][0];
 
             for (int i = 0, j = 0; i < size; i += 2, j++) {
-                int[] xps = (int[]) lines.get(i);
-                int[] yps = (int[]) lines.get(i + 1);
+                float[] xps = (float[]) lines.get(i);
+                float[] yps = (float[]) lines.get(i + 1);
 
                 xpoints[j] = xps;
                 ypoints[j] = yps;
@@ -290,7 +290,7 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
             // Vertices should already be in radians.
             
             // We might want to cache the latlon points retrieved from the GeoArray at some point.
-            ArrayList<int[]> vector;
+            ArrayList<float[]> vector;
             if (proj instanceof GeoProj) {
                 vector = ((GeoProj) proj).forwardPoly(getPoints().toLLRadians(),
                         lineType,
@@ -302,12 +302,12 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
 
             int size = vector.size();
 
-            int[][] xpoints = new int[(int) (size / 2)][0];
-            int[][] ypoints = new int[xpoints.length][0];
+            float[][] xpoints = new float[(int) (size / 2)][0];
+            float[][] ypoints = new float[xpoints.length][0];
 
             for (i = 0, j = 0; i < size; i += 2, j++) {
-                xpoints[j] = (int[]) vector.get(i);
-                ypoints[j] = (int[]) vector.get(i + 1);
+                xpoints[j] = (float[]) vector.get(i);
+                ypoints[j] = (float[]) vector.get(i + 1);
             }
 
             initLabelingDuringGenerate();

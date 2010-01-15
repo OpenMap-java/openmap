@@ -49,8 +49,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     /**
      * Create an LabeledOMPoly from a list of float lat/lon pairs.
      * 
-     * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(float[], int,
-     *      int)
+     * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(float[], int, int)
      */
     public LabeledOMPoly(double[] llPoints, int units, int lType) {
         super(llPoints, units, lType);
@@ -59,8 +58,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     /**
      * Create an LabeledOMPoly from a list of float lat/lon pairs.
      * 
-     * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(float[], int,
-     *      int, int)
+     * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(float[], int, int, int)
      */
     public LabeledOMPoly(double[] llPoints, int units, int lType, int nsegs) {
         super(llPoints, units, lType, nsegs);
@@ -87,8 +85,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     /**
      * Create an x/y LabeledOMPoly at an offset from lat/lon.
      * 
-     * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(float, float,
-     *      int[], int)
+     * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(float, float, int[], int)
      */
     public LabeledOMPoly(float latPoint, float lonPoint, int[] xypoints,
             int cMode) {
@@ -98,8 +95,8 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     /**
      * Create an x/y LabeledOMPoly at an offset from lat/lon.
      * 
-     * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(float, float,
-     *      int[], int[], int)
+     * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(float, float, int[], int[],
+     *      int)
      */
     public LabeledOMPoly(float latPoint, float lonPoint, int[] xPoints,
             int[] yPoints, int cMode) {
@@ -164,8 +161,8 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     }
 
     /**
-     * Tell the LabeledOMGraphic to calculate the location of the
-     * String that would put it in the middle of the OMGraphic.
+     * Tell the LabeledOMGraphic to calculate the location of the String that
+     * would put it in the middle of the OMGraphic.
      */
     public void setLocateAtCenter(boolean set) {
         locateAtCenter = set;
@@ -176,23 +173,23 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     }
 
     /**
-     * Get whether the LabeledOMGraphic is placing the label String in
-     * the center of the OMGraphic.
+     * Get whether the LabeledOMGraphic is placing the label String in the
+     * center of the OMGraphic.
      */
     public boolean isLocateAtCenter() {
         return locateAtCenter;
     }
 
     /**
-     * Calculate the projected area of the poly. Algorithm used is
-     * from some australian astronomy website =)
+     * Calculate the projected area of the poly. Algorithm used is from some
+     * australian astronomy website =)
      * http://astronomy.swin.edu.au/~pbourke/geometry/polyarea
      */
     protected double calculateProjectedArea() {
         int j = 0;
         double area = 0.0;
-        int[] xpts = xpoints[0];
-        int[] ypts = ypoints[0];
+        float[] xpts = xpoints[0];
+        float[] ypts = ypoints[0];
         int npoints = xpts.length;
 
         for (int i = 0; i < npoints; ++i) {
@@ -203,13 +200,13 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
 
         return area / 2.0;
 
-        //      area = area / 2.0;
-        //      return (area < 0.0 ? -area : area);
+        // area = area / 2.0;
+        // return (area < 0.0 ? -area : area);
     }
 
     /**
-     * Get the calculated center where the label string is drawn.
-     * Algorithm used is from some australian astronomy website =)
+     * Get the calculated center where the label string is drawn. Algorithm used
+     * is from some australian astronomy website =)
      * http://astronomy.swin.edu.au/~pbourke/geometry/polyarea
      */
     public Point getCenter() {
@@ -225,8 +222,8 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
         int j = 0;
         float factor = 0;
 
-        int[] xpts = xpoints[0];
-        int[] ypts = ypoints[0];
+        float[] xpts = xpoints[0];
+        float[] ypts = ypoints[0];
         int npoints = xpts.length;
 
         for (int i = 0; i < npoints; ++i) {
@@ -242,9 +239,9 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
 
         // bbenyo: take the absolute value cause I was getting
         // negative values
-        //         for polys with all positive vertices
-        //      cx = Math.abs(cx * factor);
-        //      cy = Math.abs(cy * factor);
+        // for polys with all positive vertices
+        // cx = Math.abs(cx * factor);
+        // cy = Math.abs(cy * factor);
 
         // DFD and RS - let the area calculation return negative
         // values, and don't do this absolute value calculation.
@@ -260,28 +257,26 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     }
 
     /**
-     * Set the index of the OMGraphic coordinates where the drawing
-     * point of the label should be attached. The meaning of the point
-     * differs between OMGraphic types.
+     * Set the index of the OMGraphic coordinates where the drawing point of the
+     * label should be attached. The meaning of the point differs between
+     * OMGraphic types.
      */
     public void setIndex(int index) {
         this.index = index;
     }
 
     /**
-     * Get the index of the OMGraphic where the String will be
-     * rendered. The meaning of the index differs from OMGraphic type
-     * to OMGraphic type.
+     * Get the index of the OMGraphic where the String will be rendered. The
+     * meaning of the index differs from OMGraphic type to OMGraphic type.
      */
     public int getIndex() {
         return index;
     }
 
     /**
-     * Set the x, y pixel offsets where the String should be rendered,
-     * from the location determined from the index point, or from the
-     * calculated center point. Point.x is the horizontal offset,
-     * Point.y is the vertical offset.
+     * Set the x, y pixel offsets where the String should be rendered, from the
+     * location determined from the index point, or from the calculated center
+     * point. Point.x is the horizontal offset, Point.y is the vertical offset.
      */
     public void setOffset(Point p) {
         offset = p;
@@ -300,9 +295,9 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     /**
      * Set the angle by which the text is to rotated.
      * 
-     * @param angle the number of radians the text is to be rotated.
-     *        Measured clockwise from horizontal. Positive numbers
-     *        move the positive x axis toward the positive y axis.
+     * @param angle the number of radians the text is to be rotated. Measured
+     *        clockwise from horizontal. Positive numbers move the positive x
+     *        axis toward the positive y axis.
      */
     public void setRotationAngle(double angle) {
         getLabel().setRotationAngle(angle);
@@ -320,9 +315,8 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     boolean matchPolyPaint = true;
 
     /**
-     * Set the line paint for the polygon. If the text paint hasn't
-     * been explicitly set, then the text paint will be set to this
-     * paint, too.
+     * Set the line paint for the polygon. If the text paint hasn't been
+     * explicitly set, then the text paint will be set to this paint, too.
      */
     public void setLinePaint(Paint paint) {
         super.setLinePaint(paint);
@@ -332,9 +326,8 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     }
 
     /**
-     * If not set to null, the text will be painted in a different
-     * color. If set to null, the text paint will match the poly edge
-     * paint.
+     * If not set to null, the text will be painted in a different color. If set
+     * to null, the text paint will match the poly edge paint.
      * 
      * @param paint the Paint object for the text
      */
@@ -367,29 +360,29 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
                 handyPoint = getCenter();
 
                 // New getCenter algorithm works better.
-                //              for (i = 0; i < rawllpts.length; i+=2) {
-                //                  proj.forward(rawllpts[i], rawllpts[i+1],
-                //                               handyPoint, true);
+                // for (i = 0; i < rawllpts.length; i+=2) {
+                // proj.forward(rawllpts[i], rawllpts[i+1],
+                // handyPoint, true);
 
-                //                  avgy += handyPoint.getY();
-                //                  avgx += handyPoint.getX();
-                //              }
-                //              avgy = avgy/numPoints;
-                //              avgx = avgx/numPoints;
-                //              handyPoint.setLocation(avgx, avgy);
+                // avgy += handyPoint.getY();
+                // avgx += handyPoint.getX();
+                // }
+                // avgy = avgy/numPoints;
+                // avgx = avgx/numPoints;
+                // handyPoint.setLocation(avgx, avgy);
             } else {
                 if (index < 0)
                     index = 0;
                 if (index > numPoints)
                     index = numPoints - 1;
-                ((GeoProj)proj).forward(rawllpts[2 * index],
+                ((GeoProj) proj).forward(rawllpts[2 * index],
                         rawllpts[2 * index + 1],
                         handyPoint,
                         true);
             }
         } else {
-            int[][] x = xpoints;
-            int[][] y = ypoints;
+            float[][] x = xpoints;
+            float[][] y = ypoints;
 
             if (x[0].length < 2) {
                 // off screen...
@@ -401,11 +394,11 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
                 handyPoint = getCenter();
 
                 // New getCenter algorithm works better.
-                //              for (i = 0; i < x[0].length; i++) {
-                //                  avgx += x[0][i];
-                //                  avgy += y[0][i];
-                //              }
-                //              handyPoint.setLocation(avgx/x[0].length,
+                // for (i = 0; i < x[0].length; i++) {
+                // avgx += x[0][i];
+                // avgy += y[0][i];
+                // }
+                // handyPoint.setLocation(avgx/x[0].length,
                 // avgy/x[0].length);
             } else {
                 if (index < 0)

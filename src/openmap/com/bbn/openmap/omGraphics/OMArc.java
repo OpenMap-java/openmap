@@ -751,15 +751,15 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
                 x1 = p.getX();
                 y1 = p.getY();
 
-                ArrayList<int[]> coordLists = getCoordLists(((GeoProj) proj),
+                ArrayList<float[]> coordLists = getCoordLists(((GeoProj) proj),
                         center,
                         radius,
                         nverts);
                 int size = coordLists.size();
 
                 for (int i = 0; i < size; i += 2) {
-                    int[] xpoints = (int[]) coordLists.get(i);
-                    int[] ypoints = (int[]) coordLists.get(i + 1);
+                	float[] xpoints = (float[]) coordLists.get(i);
+                    float[] ypoints = (float[]) coordLists.get(i + 1);
 
                     gp = createShape(xpoints,
                             ypoints,
@@ -776,7 +776,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
                                     y1)) || correctPolar);
 
                     if (correctFill) {
-                        int[][] alts = doPolarFillCorrection(xpoints,
+                    	float[][] alts = doPolarFillCorrection(xpoints,
                                 ypoints,
                                 (center.getRadLat() > 0f) ? -1
                                         : proj.getWidth() + 1);
@@ -832,7 +832,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      * and make a call to Projection.forwardArc() with start, extent and arcType
      * information.
      */
-    protected ArrayList<int[]> getCoordLists(GeoProj proj, LatLonPoint center,
+    protected ArrayList<float[]> getCoordLists(GeoProj proj, LatLonPoint center,
                                       double radius, int nverts) {
 
         int at = (arcType == Arc2D.OPEN && !isClear(fillPaint) ? Arc2D.CHORD
@@ -866,12 +866,12 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      * @return a two dimensional array of points. The [0] array is the x points,
      *         the [1] is the y points.
      */
-    private int[][] doPolarFillCorrection(int[] xpoints, int[] ypoints, int y1) {
-        int[][] ret = new int[2][];
+    private float[][] doPolarFillCorrection(float[] xpoints, float[] ypoints, int y1) {
+    	float[][] ret = new float[2][];
 
         int len = xpoints.length;
-        int[] alt_xpts = new int[len + 2];
-        int[] alt_ypts = new int[len + 2];
+        float[] alt_xpts = new float[len + 2];
+        float[] alt_ypts = new float[len + 2];
         System.arraycopy(xpoints, 0, alt_xpts, 0, len);
         System.arraycopy(ypoints, 0, alt_ypts, 0, len);
         alt_xpts[len] = alt_xpts[len - 1];

@@ -24,10 +24,11 @@ package com.bbn.openmap.omGraphics;
 
 import java.awt.BasicStroke;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
+import java.util.List;
 import java.util.Vector;
 
 import com.bbn.openmap.omGraphics.geom.BasicGeometry;
@@ -136,7 +137,9 @@ public class OMArrowHead {
                                                OMAbstractLine line,
                                                int wingTip, int wingLength) {
 
-        Point[] locPoints = locateArrowHeads(arrowDirectionType, location, line);
+        Point2D[] locPoints = locateArrowHeads(arrowDirectionType,
+                location,
+                line);
 
         if (locPoints == null) {
             return null;
@@ -175,24 +178,27 @@ public class OMArrowHead {
         }
     }
 
-    protected static GeneralPath createArrowHead(Point from, Point to,
+    protected static GeneralPath createArrowHead(Point2D from, Point2D to,
                                                  int wingTip, int wingLength) {
-        int dx = to.x - from.x;
-        int dy = to.y - from.y;
+        double dx = to.getX() - from.getX();
+        double dy = to.getY() - from.getY();
 
-        int dd = (int) DrawUtil.distance(to.x, to.y, from.x, from.y);
+        int dd = (int) DrawUtil.distance(to.getX(),
+                to.getY(),
+                from.getX(),
+                from.getY());
 
         if (dd < 6)
             dd = 6;
 
-        int[] xpts = new int[3];
-        int[] ypts = new int[3];
-        xpts[0] = (int) (to.x + (dy * (wingTip) - dx * wingLength) / dd);
-        ypts[0] = (int) (to.y + (dx * (-wingTip) - dy * wingLength) / dd);
-        xpts[1] = (int) (to.x);
-        ypts[1] = (int) (to.y);
-        xpts[2] = (int) (to.x + (dy * (-wingTip) - dx * wingLength) / dd);
-        ypts[2] = (int) (to.y + (dx * (wingTip) - dy * wingLength) / dd);
+        float[] xpts = new float[3];
+        float[] ypts = new float[3];
+        xpts[0] = (int) (to.getX() + (dy * (wingTip) - dx * wingLength) / dd);
+        ypts[0] = (int) (to.getY() + (dx * (-wingTip) - dy * wingLength) / dd);
+        xpts[1] = (int) (to.getX());
+        ypts[1] = (int) (to.getY());
+        xpts[2] = (int) (to.getX() + (dy * (-wingTip) - dx * wingLength) / dd);
+        ypts[2] = (int) (to.getY() + (dx * (wingTip) - dy * wingLength) / dd);
 
         return BasicGeometry.createShape(xpts, ypts, true);
     }
@@ -204,9 +210,9 @@ public class OMArrowHead {
      * (or is being called) on the OMLine. It adds the ArrowHeads to the
      * GeneralPath Shape object.
      */
-    protected static Point[] locateArrowHeads(int arrowDirection,
-                                              int arrowLocation,
-                                              OMAbstractLine line) {
+    protected static Point2D[] locateArrowHeads(int arrowDirection,
+                                                int arrowLocation,
+                                                OMAbstractLine line) {
 
         // NOTE: xpoints[0] refers to the original copy of the
         // xpoints, as opposed to the [1] copy, which gets used when the line
@@ -250,10 +256,10 @@ public class OMArrowHead {
 
         // one for the start and end of each arrowhead (there could be
         // two)
-        Point sPoint1 = new Point();
-        Point ePoint1 = new Point();
-        Point sPoint2 = new Point();
-        Point ePoint2 = new Point();
+        Point2D sPoint1 = new Point2D.Float();
+        Point2D ePoint1 = new Point2D.Float();
+        Point2D sPoint2 = new Point2D.Float();
+        Point2D ePoint2 = new Point2D.Float();
 
         // do we have to reverse the arrows?
 
@@ -268,24 +274,24 @@ public class OMArrowHead {
             }
         }
 
-        Vector<Point> pointVec = new Vector<Point>();
-        
+        List<Point2D> pointVec = new Vector<Point2D>();
+
         // The for loop is needed in case the projection library
         // created several projected versions of the line, those used
         // for wrapping around to the other side of the map.
         for (int lineNum = 0; lineNum < line.xpoints.length; lineNum++) {
-            int[] xpoints = line.xpoints[lineNum];
-            int[] ypoints = line.ypoints[lineNum];
+            float[] xpoints = line.xpoints[lineNum];
+            float[] ypoints = line.ypoints[lineNum];
 
             switch (drawingLinetype) {
 
             case OMLine.STRAIGHT_LINE:
                 Debug.message("arrowheads",
                         "createArrowHeads(): Inside x-y space");
-                int newEndX;
-                int newEndY;
-                int dx;
-                int dy;
+                float newEndX;
+                float newEndY;
+                float dx;
+                float dy;
                 float dd;
 
                 // backwards arrow
@@ -364,19 +370,15 @@ public class OMArrowHead {
                         // we copy the backwards arrow to
                         // sPoint2/ePoint2
 
-                        sPoint2.x = xpoints[origEnd];
-                        sPoint2.y = ypoints[origEnd];
-                        ePoint2.x = newEndX;
-                        ePoint2.y = newEndY;
+                        sPoint2.setLocation(xpoints[origEnd], ypoints[origEnd]);
+                        ePoint2.setLocation(newEndX, newEndY);
 
                     } else {
                         // we copy the backwards arrow to
                         // sPoint1/ePoint1
 
-                        sPoint1.x = xpoints[origEnd];
-                        sPoint1.y = ypoints[origEnd];
-                        ePoint1.x = newEndX;
-                        ePoint1.y = newEndY;
+                        sPoint1.setLocation(xpoints[origEnd], ypoints[origEnd]);
+                        ePoint1.setLocation(newEndX, newEndY);
 
                     }
 
@@ -450,10 +452,8 @@ public class OMArrowHead {
                     // = 0;
                     // }
 
-                    sPoint1.x = xpoints[origStart];
-                    sPoint1.y = ypoints[origStart];
-                    ePoint1.x = newEndX;
-                    ePoint1.y = newEndY;
+                    sPoint1.setLocation(xpoints[origStart], ypoints[origStart]);
+                    ePoint1.setLocation(newEndX, newEndY);
 
                 }
 
@@ -477,17 +477,15 @@ public class OMArrowHead {
                     if (numArrows == 2) {
                         // copy it to s/ePoint2
 
-                        sPoint2.x = xpoints[bindex];
-                        sPoint2.y = ypoints[bindex];
-                        ePoint2.x = xpoints[bindex - 1];
-                        ePoint2.y = ypoints[bindex - 1];
+                        sPoint2.setLocation(xpoints[bindex], ypoints[bindex]);
+                        ePoint2.setLocation(xpoints[bindex - 1],
+                                ypoints[bindex - 1]);
                     } else {
                         // copy it to s/ePoint1
 
-                        sPoint1.x = xpoints[bindex];
-                        sPoint1.y = ypoints[bindex];
-                        ePoint1.x = xpoints[bindex - 1];
-                        ePoint1.y = ypoints[bindex - 1];
+                        sPoint1.setLocation(xpoints[bindex], ypoints[bindex]);
+                        ePoint1.setLocation(xpoints[bindex - 1],
+                                ypoints[bindex - 1]);
 
                     }
 
@@ -500,32 +498,31 @@ public class OMArrowHead {
                         findex = findex - 1;
                     }
 
-                    sPoint1.x = xpoints[findex];
-                    sPoint1.y = ypoints[findex];
-                    ePoint1.x = xpoints[findex + 1];
-                    ePoint1.y = ypoints[findex + 1];
+                    sPoint1.setLocation(xpoints[findex], ypoints[findex]);
+                    ePoint1.setLocation(xpoints[findex + 1],
+                            ypoints[findex + 1]);
 
                 } // end if (needForwardArrow(arrowDirection))
 
                 break;
             } // end switch(drawingLinetype)
-            
-            pointVec.add((Point) sPoint1.clone());
-            pointVec.add((Point) ePoint1.clone());
-            
+
+            pointVec.add((Point2D) sPoint1.clone());
+            pointVec.add((Point2D) ePoint1.clone());
+
             if (numArrows > 1) {
-                pointVec.add((Point) sPoint2.clone());
-                pointVec.add((Point) ePoint2.clone());
+                pointVec.add((Point2D) sPoint2.clone());
+                pointVec.add((Point2D) ePoint2.clone());
             }
-            
+
         }
 
-        Point[] ret = new Point[pointVec.size()];
+        Point2D[] ret = new Point2D[pointVec.size()];
         int i = 0;
-        for (Point point : pointVec) {
+        for (Point2D point : pointVec) {
             ret[i++] = point;
         }
-        
+
         return ret;
     }
 

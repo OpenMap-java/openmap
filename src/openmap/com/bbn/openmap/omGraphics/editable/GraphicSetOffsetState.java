@@ -44,14 +44,24 @@ public class GraphicSetOffsetState extends State implements EOMGAuxState {
         setGrabPoint(e);
         return getMapMouseListenerResponse();
     }
-
+    
     public boolean mouseMoved(MouseEvent e) {
-        Debug.message("eomg", "GraphicStateMachine|set offset state|mouseMoved");
+        graphic.fireEvent(EOMGCursors.PUTNODE,
+                i18n.get(CircleSetOffsetState.class,
+                        "Click_to_place_offset_point.",
+                        "Click to place offset point."));
+        return getMapMouseListenerResponse();
+    }
+    
+    public boolean mousePressed(MouseEvent e) {
+        Debug.message("eomg", "GraphicStateMachine|set offset state|mousePressed");
         setGrabPoint(e);
         return getMapMouseListenerResponse();
     }
 
     protected void setGrabPoint(MouseEvent e) {
+        // Each editable omgraphic should handle this.
+        
     //      OffsetGrabPoint ogb =
     // (OffsetGrabPoint)graphic.getGrabPoint(EditableOMGraphic.OFFSET_POINT_INDEX);
     //      ogb.set(e.getX(), e.getY());

@@ -376,7 +376,7 @@ public class OMRect extends OMGraphicAdapter implements OMGraphic {
                     (int) Math.abs(y2 - y1)));
             break;
         case RENDERTYPE_LATLON:
-            ArrayList<int[]> rects;
+            ArrayList<float[]> rects;
 
             if (proj instanceof GeoProj) {
                 rects = ((GeoProj) proj).forwardRect(new LatLonPoint.Double(lat1, lon1), // NW

@@ -31,7 +31,7 @@ public class Clip {
     private Clip() {}
 
     /**
-     * Calculate the int[] x,y buffer length for nverts.
+     * Calculate the float[] x,y buffer length for nverts.
      * <p>
      * 
      * @param nverts number of verts
@@ -51,7 +51,7 @@ public class Clip {
      * Viewport: xleft &lt; xright, ybottom &lt; ytop
      * <p>
      * Set up with: <code>
-     * int[] ret_val = new int[n*2*2];
+     * float[] ret_val = new float[n*2*2];
      * ret_val = liang_clip(,...,ret_val);
      * </code>
      * <p>
@@ -61,16 +61,16 @@ public class Clip {
      * @param xright right side of viewport
      * @param ytop top of viewport
      * @param ybottom bottom of viewport
-     * @param x int[] x coords
-     * @param y int[] y coords
+     * @param x float[] x coords
+     * @param y float[] y coords
      * @param n numcoords
-     * @param ret_val int[] clipped polygon
+     * @param ret_val float[] clipped polygon
      * @see #liang_get_buflen
      *  
      */
-    public static final int[] liang_clip(int xleft, int xright, int ytop,
-                                         int ybottom, int[] x, int[] y, int n,
-                                         int[] ret_val) {
+    public static final float[] liang_clip(int xleft, int xright, int ytop,
+                                         int ybottom, float[] x, float[] y, int n,
+                                         float[] ret_val) {
         int i, num = 0;
         double dx, dy, xin, xout, yin, yout, tinx, tiny, tin1, tin2, toutx, touty, tout1;
 
@@ -261,13 +261,13 @@ public class Clip {
 
     /*
      * public static void main(String[] args) { int xleft = 0; int
-     * xright = 1024; int ytop = 0; int ybottom = 1024; int[] ret_val =
-     * null; int[] xs = null, ys = null;
+     * xright = 1024; int ytop = 0; int ybottom = 1024; float[] ret_val =
+     * null; float[] xs = null, ys = null;
      * 
-     * int n = 4; xs = new int[n+1]; ys = new int[n+1]; xs[0] = -100;
+     * int n = 4; xs = new float[n+1]; ys = new float[n+1]; xs[0] = -100;
      * ys[0] = 400; xs[1] = 700; ys[1] = -100; xs[2] = 1100; ys[2] =
      * 400; xs[3] = 700; ys[3] = 1100; xs[4] = -100; ys[4] = 400;
-     * ret_val = new int[liang_get_buflen(n)];
+     * ret_val = new float[liang_get_buflen(n)];
      * 
      * ret_val = liang_clip( xleft, xright, ybottom, ytop, xs, ys, n,
      * ret_val); n = ret_val[ret_val.length-1]-2;// unclosed length

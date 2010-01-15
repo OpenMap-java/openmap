@@ -579,8 +579,8 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(float[] rawllpts, int rawoff, int[] xcoords,
-                              int[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords,
+                              float[] ycoords, boolean[] visible, int copyoff,
                               int copylen) {
         Point temp = new Point();
         int end = copylen + copyoff;
@@ -613,8 +613,8 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(double[] rawllpts, int rawoff, int[] xcoords,
-                              int[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords,
+                              float[] ycoords, boolean[] visible, int copyoff,
                               int copylen) {
         Point temp = new Point();
         int end = copylen + copyoff;
@@ -627,7 +627,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         return true;
     }
 
-    public ArrayList<int[]> forwardLine(Point2D ll1, Point2D ll2) {
+    public ArrayList<float[]> forwardLine(Point2D ll1, Point2D ll2) {
         double[] rawllpts = { ll1.getY(), ll1.getX(), ll2.getY(), ll2.getX() };
         return forwardPoly(rawllpts, false);
     }
@@ -637,9 +637,9 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * 
      * @param ll1 LatLonPoint
      * @param ll2 LatLonPoint
-     * @return ArrayList<int[]>
+     * @return ArrayList<float[]>
      */
-    public ArrayList<int[]> forwardRect(Point2D ll1, Point2D ll2) {
+    public ArrayList<float[]> forwardRect(Point2D ll1, Point2D ll2) {
         double[] rawllpts = { ll1.getY(), ll1.getX(), ll1.getY(), ll2.getX(),
                 ll2.getY(), ll2.getX(), ll2.getY(), ll1.getX(),
                 // connect:
@@ -647,7 +647,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         return forwardPoly(rawllpts, true);
     }
 
-    public ArrayList<int[]> forwardPoly(float[] rawllpts, boolean isFilled) {
+    public ArrayList<float[]> forwardPoly(float[] rawllpts, boolean isFilled) {
         // For regular OMGraphics, some of the rawllpts are in radians and must
         // be translated into decimal degrees before they really are able to be
         // displayed here, i.e.:
@@ -659,12 +659,12 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         // determine length of pairs list
         int len = rawllpts.length >> 1; // len/2, chop off extra
         if (len < 2)
-            return new ArrayList<int[]>(0);
+            return new ArrayList<float[]>(0);
 
         // determine when to stop
         Point temp = new Point(0, 0);
-        int[] xs = new int[len];
-        int[] ys = new int[len];
+        float[] xs = new float[len];
+        float[] ys = new float[len];
 
         // forward project the first point
         forward(rawllpts[0], rawllpts[1], temp);
@@ -678,26 +678,26 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         }
 
         // now create the return list
-        ArrayList<int[]> ret_val = null;
-        ret_val = new ArrayList<int[]>(2);
+        ArrayList<float[]> ret_val = null;
+        ret_val = new ArrayList<float[]>(2);
         ret_val.add(xs);
         ret_val.add(ys);
 
         return ret_val;
     }
 
-    public ArrayList<int[]> forwardPoly(double[] rawllpts, boolean isFilled) {
+    public ArrayList<float[]> forwardPoly(double[] rawllpts, boolean isFilled) {
         int n, k;
 
         // determine length of pairs list
         int len = rawllpts.length >> 1; // len/2, chop off extra
         if (len < 2)
-            return new ArrayList<int[]>(0);
+            return new ArrayList<float[]>(0);
 
         // determine when to stop
         Point temp = new Point(0, 0);
-        int[] xs = new int[len];
-        int[] ys = new int[len];
+        float[] xs = new float[len];
+        float[] ys = new float[len];
 
         // forward project the first point
         forward(rawllpts[0], rawllpts[1], temp);
@@ -711,8 +711,8 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         }
 
         // now create the return list
-        ArrayList<int[]> ret_val = null;
-        ret_val = new ArrayList<int[]>(2);
+        ArrayList<float[]> ret_val = null;
+        ret_val = new ArrayList<float[]>(2);
         ret_val.add(xs);
         ret_val.add(ys);
         return ret_val;

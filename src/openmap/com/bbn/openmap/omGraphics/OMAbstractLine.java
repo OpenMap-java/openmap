@@ -22,12 +22,12 @@ public abstract class OMAbstractLine extends OMGraphicAdapter implements OMGraph
     /**
      * X coordinate arrays of the projected points.
      */
-    protected int[][] xpoints = new int[0][0];
+    protected float[][] xpoints = new float[0][0];
 
     /**
      * Y coordinate arrays of the projected points.
      */
-    protected int[][] ypoints = new int[0][0];
+    protected float[][] ypoints = new float[0][0];
 
     /**
      * Number of segments to draw (used only for LINETYPE_GREATCIRCLE

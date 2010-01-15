@@ -71,7 +71,7 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
      * Create an x/y LabeledOMSpline at an offset from lat/lon.
      */
     public LabeledOMSpline(float latPoint, float lonPoint, int[] xPoints,
-            int[] yPoints, int cMode) {
+                           int[] yPoints, int cMode) {
         super(latPoint, lonPoint, xPoints, yPoints, cMode);
     }
 
@@ -284,8 +284,8 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
                         true);
             }
         } else {
-            int[][] x = xpoints;
-            int[][] y = ypoints;
+        	float[][] x = xpoints;
+        	float[][] y = ypoints;
 
             if (x[0].length < 2) {
                 // off screen...

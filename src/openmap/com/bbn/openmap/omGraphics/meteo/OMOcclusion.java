@@ -129,4 +129,3 @@ public class OMOcclusion extends OMDecoratedSpline {
     }
 
 }
-

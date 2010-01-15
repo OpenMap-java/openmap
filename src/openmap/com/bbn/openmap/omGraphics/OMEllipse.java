@@ -251,7 +251,7 @@ public class OMEllipse extends OMCircle {
             rawllpts = createLatLonPoints();
         }
 
-        ArrayList<int[]> vector = null;
+        ArrayList<float[]> vector = null;
 
         // polygon/polyline project the polygon/polyline.
         // Vertices should already be in radians.ArrayList vector;

@@ -38,6 +38,7 @@ import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -131,7 +132,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * The projected xy window location of the bottom left corner of the first
      * letter of the text string.
      */
-    protected Point pt;
+    protected Point2D pt;
 
     /** The X/Y point or the offset amount depending on render type. */
     protected Point point;
@@ -305,7 +306,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * @param aString the string to be displayed.
      * @param just the justification of the string
      */
-    public OMText(double lt, double ln, int offX, int offY, String aString,
+    public OMText(double lt, double ln, float offX, float offY, String aString,
             int just) {
         this(lt, ln, offX, offY, aString, DEFAULT_FONT, just);
     }
@@ -321,12 +322,12 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * @param font the Font description for the string.
      * @param just the justification of the string
      */
-    public OMText(double lt, double ln, int offX, int offY, String aString,
+    public OMText(double lt, double ln, float offX, float offY, String aString,
             Font font, int just) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         lat = lt;
         lon = ln;
-        point = new Point(offX, offY);
+        point = new Point((int)offX, (int)offY);
         setData(aString);
         f = font;
         justify = just;
@@ -518,7 +519,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * 
      * @return Point on the map where the text has been projected to go.
      */
-    public Point getMapLocation() {
+    public Point2D getMapLocation() {
         return pt;
     }
 
@@ -529,7 +530,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * 
      * @param point the point on the map where the text being placed.
      */
-    public void setMapLocation(Point point) {
+    public void setMapLocation(Point2D point) {
         pt = point;
         polyBounds = null;
     }
@@ -815,8 +816,8 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
                 setNeedToRegenerate(true);// so we don't render it!
                 return false;
             }
-            pt = (Point) proj.forward(lat, lon, new Point());
-            pt.translate(point.x, point.y);
+            pt = proj.forward(lat, lon, new Point2D.Double());
+            pt.setLocation(pt.getX() + point.x, pt.getY() + point.y);
             break;
         case RENDERTYPE_LATLON:
             if (!proj.isPlotable(lat, lon)) {
@@ -825,7 +826,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
                 setNeedToRegenerate(true);// so we don't render it!
                 return false;
             }
-            pt = (Point) proj.forward(lat, lon, new Point());
+            pt = proj.forward(lat, lon, new Point2D.Double());
             break;
         case RENDERTYPE_UNKNOWN:
             System.err.println("OMText.render.generate(): invalid RenderType");
@@ -1089,7 +1090,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
                 woffset = rw;
             }
             // rotate about our text anchor point
-            ((Graphics2D) g).rotate(rotationAngle, rx + woffset, pt.y);
+            ((Graphics2D) g).rotate(rotationAngle, rx + woffset, pt.getY());
         }
 
         setGraphicsForEdge(g);
@@ -1105,7 +1106,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
             height = fm.getAscent();
         }
 
-        int baselineLocation = pt.y; // baseline ==
+        int baselineLocation = (int) pt.getY(); // baseline ==
         // BASELINE_BOTTOM,
         // normal.
 
@@ -1119,7 +1120,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
         case JUSTIFY_LEFT:
             // Easy case, just draw them.
             for (int i = 0; i < parsedData.length; i++) {
-                renderString(g, parsedData[i], pt.x, baselineLocation
+                renderString(g, parsedData[i], pt.getX(), baselineLocation
                         + (height * i));
             }
             break;
@@ -1128,7 +1129,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
             for (int i = 0; i < parsedData.length; i++) {
                 renderString(g,
                         parsedData[i],
-                        pt.x - (widths[i] / 2),
+                        pt.getX() - (widths[i] / 2),
                         baselineLocation + (height * i));
             }
             break;
@@ -1137,14 +1138,14 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
             for (int i = 0; i < parsedData.length; i++) {
                 renderString(g,
                         parsedData[i],
-                        pt.x - widths[i],
+                        pt.getX() - widths[i],
                         baselineLocation + (height * i));
             }
             break;
         }
     }
 
-    protected void renderString(Graphics g, String string, int x, int y) {
+    protected void renderString(Graphics g, String string, double x, double y) {
         if (g instanceof Graphics2D) {
             Graphics2D g2 = (Graphics2D) g;
             if (getTextMatteColor() != null) {
@@ -1161,7 +1162,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
                 g2.setColor(getLineColor());
             }
         }
-        g.drawString(string, x, y);
+        g.drawString(string, (int) x, (int) y);
     }
 
     /**
@@ -1220,7 +1221,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
              * pt.y is bottom of first line, currenty is initialized to top of
              * first line, minus any offset introduced by baseline adjustments.
              */
-            int currenty = pt.y + descent - height - baselineOffset;
+            int currenty = (int) pt.getY() + descent - height - baselineOffset;
 
             // First, all the line endpoints.
             for (i = 0; i < nLines; i++) {
@@ -1238,10 +1239,10 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
                 }
 
                 // top of line
-                polyBounds.addPoint(pt.x + xoffset, currenty);
+                polyBounds.addPoint((int) pt.getX() + xoffset, currenty);
                 currenty += height;
                 // bottom of line
-                polyBounds.addPoint(pt.x + xoffset, currenty);
+                polyBounds.addPoint((int) pt.getX() + xoffset, currenty);
             }
 
             // Next, all line startpoints (the left side)
@@ -1257,9 +1258,9 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
                     xoffset = -widths[i];
                     break;
                 }
-                polyBounds.addPoint(pt.x + xoffset, currenty);
+                polyBounds.addPoint((int) pt.getX() + xoffset, currenty);
                 currenty -= height;
-                polyBounds.addPoint(pt.x + xoffset, currenty);
+                polyBounds.addPoint((int) pt.getX() + xoffset, currenty);
             }
 
             if (polyBounds != null) {
@@ -1292,7 +1293,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
                     }
 
                     AffineTransform at = new AffineTransform();
-                    at.rotate(rotationAngle, rx + woffset, pt.y);
+                    at.rotate(rotationAngle, rx + woffset, pt.getY());
                     PathIterator pi = shape.getPathIterator(at);
                     GeneralPath gp = new GeneralPath();
                     gp.append(pi, false);
