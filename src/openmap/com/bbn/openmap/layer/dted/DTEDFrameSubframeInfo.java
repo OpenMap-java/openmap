@@ -124,7 +124,14 @@ public class DTEDFrameSubframeInfo {
      * out if the presentation configuration has changed, and that the
      * pixel color values need to be recalculated.
      */
-    public boolean equals(DTEDFrameSubframeInfo newInfo) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final DTEDFrameSubframeInfo newInfo = (DTEDFrameSubframeInfo)obj;
         boolean result = true;
         if (viewType != newInfo.viewType)
             result = false;

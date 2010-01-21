@@ -460,7 +460,14 @@ public class Geo {
         return ret;
     }
 
-    public boolean equals(Geo v2) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Geo v2 = (Geo)obj;
         return this.x == v2.x && this.y == v2.y && this.z == v2.z;
     }
 

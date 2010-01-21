@@ -254,11 +254,14 @@ public class CoordinateReferenceSystem {
     }
 
     public boolean equals(Object obj) {
-        if (obj instanceof CoordinateReferenceSystem) {
-            CoordinateReferenceSystem o = (CoordinateReferenceSystem) obj;
-            return getCode().equals(o.getCode());
+        if (obj == null) {
+            return false;
         }
-        return false;
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        CoordinateReferenceSystem o = (CoordinateReferenceSystem) obj;
+        return getCode().equals(o.getCode());
     }
 
 }

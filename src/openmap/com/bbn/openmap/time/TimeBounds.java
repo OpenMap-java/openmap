@@ -94,10 +94,16 @@ public class TimeBounds implements Serializable {
         addTimeToBounds(timeBounds.getEndTime());
     }
 
-    public boolean equals(TimeBounds timeBounds) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TimeBounds timeBounds = (TimeBounds)obj;
         return (startTime == timeBounds.getStartTime() && endTime == timeBounds.getEndTime());
     }
-
     public boolean isUnset() {
         return startTime == Long.MAX_VALUE && endTime == Long.MIN_VALUE;
     }

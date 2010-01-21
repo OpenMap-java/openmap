@@ -396,7 +396,14 @@ public class DrawingAttributes implements ActionListener, Serializable,
         clone.enableFillPaintChoice = enableFillPaintChoice;
     }
 
-    public boolean equals(DrawingAttributes da) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final DrawingAttributes da = (DrawingAttributes)obj;
         return (da.linePaint == linePaint
                 &&
                 // da.textPaint == textPaint &&

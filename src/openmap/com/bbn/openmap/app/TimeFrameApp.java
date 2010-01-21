@@ -4,7 +4,6 @@ import java.awt.Component;
 import javax.swing.JMenuBar;
 
 import com.bbn.openmap.PropertyHandler;
-import com.bbn.openmap.app.OpenMap;
 import com.bbn.openmap.gui.BasicMapPanel;
 import com.bbn.openmap.gui.HotwashPanel;
 import com.bbn.openmap.gui.OpenMapFrame;

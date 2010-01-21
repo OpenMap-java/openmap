@@ -1180,14 +1180,16 @@ class CoverageIntVdt {
      * their respective table, attribute and value members are equal.
      */
     public boolean equals(Object o) {
-        if (o instanceof CoverageIntVdt) {
-            CoverageIntVdt civ = (CoverageIntVdt) o;
-            // we can use == rather than String.equals(String) since
-            // table and attribute are interned.
-            return ((table == civ.table) && (attribute == civ.attribute) && (value == civ.value));
-        } else {
+        if (o == null) {
             return false;
         }
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        final CoverageIntVdt civ = (CoverageIntVdt) o;
+        // we can use == rather than String.equals(String) since
+        // table and attribute are interned.
+        return ((table == civ.table) && (attribute == civ.attribute) && (value == civ.value));
     }
 
     /**
@@ -1232,14 +1234,16 @@ class CoverageCharVdt {
      * their respective table, attribute and value members are equal.
      */
     public boolean equals(Object o) {
-        if (o instanceof CoverageCharVdt) {
-            CoverageCharVdt civ = (CoverageCharVdt) o;
-            // we can use == rather than String.equals(String) since
-            // table, attribute, and value are interned.
-            return ((table == civ.table) && (attribute == civ.attribute) && (value == civ.value));
-        } else {
+        if (o == null) {
             return false;
         }
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        final CoverageCharVdt civ = (CoverageCharVdt) o;
+        // we can use == rather than String.equals(String) since
+        // table, attribute, and value are interned.
+        return ((table == civ.table) && (attribute == civ.attribute) && (value == civ.value));
     }
 
     /**

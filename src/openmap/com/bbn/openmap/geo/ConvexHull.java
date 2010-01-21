@@ -227,6 +227,12 @@ public class ConvexHull {
         }
 
         public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
             if (obj instanceof PivotAngleComparator) {
                 return pivot.equals(((PivotAngleComparator) obj).pivot);
             } else {

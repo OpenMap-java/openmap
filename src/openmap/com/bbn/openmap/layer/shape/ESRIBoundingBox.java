@@ -149,10 +149,13 @@ public class ESRIBoundingBox {
      *         <code>false</code> otherwise.
      */
     public boolean equals(Object obj) {
-        if (obj instanceof ESRIBoundingBox) {
-            ESRIBoundingBox bb = (ESRIBoundingBox) obj;
-            return (min.equals(bb.min) && max.equals(bb.max));
+        if (obj == null) {
+            return false;
         }
-        return false;
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ESRIBoundingBox bb = (ESRIBoundingBox) obj;
+        return (min.equals(bb.min) && max.equals(bb.max));
     }
 }

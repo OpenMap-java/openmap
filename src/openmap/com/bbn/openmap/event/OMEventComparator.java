@@ -101,6 +101,12 @@ public class OMEventComparator implements Comparator<OMEvent> {
     }
 
     public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         return obj.hashCode() == this.hashCode();
     }
 

@@ -769,15 +769,18 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
      *         </sup> degrees in latitude and longitude.
      */
     public boolean equals(Object obj) {
-        if (obj instanceof LatLonPoint) {
-            LatLonPoint pt = (LatLonPoint) obj;
-            return (MoreMath.approximately_equal(getY(),
-                    pt.getY(),
-                    EQUIVALENT_TOLERANCE) && MoreMath.approximately_equal(getX(),
-                    pt.getX(),
-                    EQUIVALENT_TOLERANCE));
+        if (obj == null) {
+            return false;
         }
-        return false;
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final LatLonPoint pt = (LatLonPoint)obj;
+        return (MoreMath.approximately_equal(getY(),
+                pt.getY(),
+                EQUIVALENT_TOLERANCE) && MoreMath.approximately_equal(getX(),
+                pt.getX(),
+                EQUIVALENT_TOLERANCE));
     }
 
     /**

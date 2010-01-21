@@ -67,7 +67,13 @@ public class TemporalPoint implements TemporalRecord {
      * fields.
      */
     public boolean equals(Object obj) {
-        return (obj instanceof TemporalPoint && ((TemporalPoint) obj).time == time);
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TemporalPoint other = (TemporalPoint)obj;
+        return other.time == time;
     }
-
 }

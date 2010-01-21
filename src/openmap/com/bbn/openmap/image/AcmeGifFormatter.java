@@ -26,7 +26,6 @@ import com.bbn.openmap.layer.util.http.HttpConnection;
 import com.bbn.openmap.util.Debug;
 
 import java.util.*;
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 /**

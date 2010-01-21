@@ -189,18 +189,21 @@ public class ECEFPoint {
      * @return Whether the two points are equal
      */
     public boolean equals(Object obj) {
-        if (obj instanceof ECEFPoint) {
-            ECEFPoint pt = (ECEFPoint) obj;
-            return (MoreMath.approximately_equal(x_,
-                    pt.x_,
-                    EQUIVALENT_TOLERANCE)
-                    && MoreMath.approximately_equal(y_,
-                            pt.y_,
-                            EQUIVALENT_TOLERANCE) && MoreMath.approximately_equal(z_,
-                    pt.z_,
-                    EQUIVALENT_TOLERANCE));
+        if (obj == null) {
+            return false;
         }
-        return false;
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ECEFPoint pt = (ECEFPoint) obj;
+        return (MoreMath.approximately_equal(x_,
+                pt.x_,
+                EQUIVALENT_TOLERANCE)
+                && MoreMath.approximately_equal(y_,
+                        pt.y_,
+                        EQUIVALENT_TOLERANCE) && MoreMath.approximately_equal(z_,
+                pt.z_,
+                EQUIVALENT_TOLERANCE));
     }
 
     /**

@@ -343,13 +343,13 @@ public class Cartesian extends Proj implements Projection, java.io.Serializable 
      * Takes a java.awt.Shape object and re-projects it for a the current view.
      * Returns a GeneralPath.
      */
-    public Shape forwardShape(Shape shape) {
-        return super.forwardShape(shape);
-        // return
-        // transform4.createTransformedShape(transform2.createTransformedShape(transform1.createTransformedShape(shape)));
-
-        // Set Proj.java for the iterator way of doing this.
-    }
+//    public Shape forwardShape(Shape shape) {
+//        return super.forwardShape(shape);
+//        // return
+//        // transform4.createTransformedShape(transform2.createTransformedShape(transform1.createTransformedShape(shape)));
+//
+//        // Set Proj.java for the iterator way of doing this.
+//    }
 
     /**
      */
@@ -373,7 +373,7 @@ public class Cartesian extends Proj implements Projection, java.io.Serializable 
                 deltaPix = Math.abs(point2.getX() - point1.getX());
             } else {
                 worldCoords = dy;
-                deltaPix = Math.abs(point2.getY() - point1.getY());;
+                deltaPix = Math.abs(point2.getY() - point1.getY());
             }
 
             // The new scale...

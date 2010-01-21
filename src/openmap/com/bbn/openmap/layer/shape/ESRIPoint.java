@@ -128,10 +128,13 @@ public class ESRIPoint {
      * @return true if equal, false otherwise
      */
     public boolean equals(Object obj) {
-        if (obj instanceof ESRIPoint) {
-            ESRIPoint pt = (ESRIPoint) obj;
-            return (x == pt.x && y == pt.y);
+        if (obj == null) {
+            return false;
         }
-        return false;
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ESRIPoint pt = (ESRIPoint) obj;
+        return (x == pt.x && y == pt.y);
     }
 }

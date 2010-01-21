@@ -109,7 +109,14 @@ public class TimerStatus {
         return description;
     }
 
-    public boolean equals(TimerStatus ts) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TimerStatus ts = (TimerStatus)obj;
         return ts == this;
     }
 }

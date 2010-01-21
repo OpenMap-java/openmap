@@ -164,11 +164,15 @@ public class Intersection extends Waypoint implements RoadObject {
      * Override equals so that two Intersections at the same location
      * are the same Intersection.
      */
-    public boolean equals(Object other) {
-        if (other instanceof Intersection) {
-            return ((Intersection) other).getLocation().equals(getLocation());
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
         }
-        return false;
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Intersection other = (Intersection)obj;
+        return other.getLocation().equals(getLocation());
     }
 
     /**
