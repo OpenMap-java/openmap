@@ -118,4 +118,16 @@ public interface RealTimeHandler {
      * Move the clock back one clock interval.
      */
     public void stepBackward();
+    
+    /**
+     * Add a listener for TimeEvents describing what the handler is up to.
+     * @param listener
+     */
+    public void addTimeEventListener(TimeEventListener listener);
+    
+    /**
+     * Remove a listener so it stops receiving TimeEvents.
+     * @param listener
+     */
+    public void removeTimeEventListener(TimeEventListener listener);
 }

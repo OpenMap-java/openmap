@@ -31,6 +31,12 @@ import java.util.logging.Logger;
 
 import com.bbn.openmap.util.Attributable;
 
+/**
+ * An OMEvent represents an event that occurs at a certain time. The time is
+ * maintained as an offset from the UNIX epoch marker.
+ * 
+ * @author dietrick
+ */
 public class OMEvent implements Attributable {
 
     public static Logger logger = Logger.getLogger("com.bbn.hotwash.event.AAREvent");

@@ -49,6 +49,7 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.AbstractBorder;
 
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.event.OMEventSelectionCoordinator;
 import com.bbn.openmap.gui.MapPanelChild;
 import com.bbn.openmap.gui.OMComponentPanel;
@@ -135,8 +136,12 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
     public void createInterface() {
         removeAll();
 
+        String internString = i18n.get(this.getClass(),
+                "timeline_controls",
+                "  Timeline Controls  ");
+
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-                "  Timeline Controls  "));
+                internString));
 
         if (clock == null) {
             logger.info("No clock, not putting anything in interface.");
@@ -155,8 +160,15 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         c.gridx = GridBagConstraints.REMAINDER;
         c.insets = insets;
 
-        playFilter = new JCheckBox("Play selected");
-        playFilter.setToolTipText("Jump clock to events with play filter markings.");
+        internString = i18n.get(this.getClass(),
+                "play_selected",
+                "Play Filter");
+        playFilter = new JCheckBox(internString);
+        internString = i18n.get(this.getClass(),
+                "play_selected",
+                I18n.TOOLTIP,
+                "Jump clock to events with play filter markings.");
+        playFilter.setToolTipText(internString);
         playFilter.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 JCheckBox jcb = (JCheckBox) ae.getSource();
@@ -166,6 +178,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
             }
         });
         lgridbag.setConstraints(playFilter, c);
+        playFilter.setVisible(false);
         leftPanel.add(playFilter);
 
         c.fill = GridBagConstraints.NONE;
@@ -174,7 +187,8 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         timeLabel = new JLabel(NO_TIME_STRING, SwingConstants.CENTER);
         Font defaultFont = timeLabel.getFont();
         timeLabel.setFont(new java.awt.Font(defaultFont.getName(), defaultFont.getStyle(), 12));
-        timeLabel.setToolTipText("Time");
+        internString = i18n.get(this.getClass(), "time", I18n.TOOLTIP, "Time");
+        timeLabel.setToolTipText(internString);
         lgridbag.setConstraints(timeLabel, c);
         leftPanel.add(timeLabel);
 
@@ -189,7 +203,11 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
          * the clock how fast to run, one second per clock tick.
          */
         timerRateControl = new TimerRateComboBox(clock);
-        timerRateControl.setToolTipText("Change Clock Rate For Timeline");
+        internString = i18n.get(this.getClass(),
+                "timer_rate_control",
+                I18n.TOOLTIP,
+                "Change Clock Rate For Timeline");
+        timerRateControl.setToolTipText(internString);
 
         List<TimerRateHolder> timerRates = clock.getTimerRates();
 
@@ -221,7 +239,8 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         c.weightx = 0.0;
         c.gridy = 0;
         c.anchor = GridBagConstraints.WEST;
-        JLabel mouseTime = new JLabel("Mouse Time:");
+        internString = i18n.get(this.getClass(), "mouse_time", "Mouse Time:");
+        JLabel mouseTime = new JLabel(internString);
         rgridbag.setConstraints(mouseTime, c);
         rightPanel.add(mouseTime);
 
@@ -402,6 +421,16 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
             clock.addTimeEventListener(this);
         }
 
+    }
+    
+    public void setPlayFilterVisible(boolean visible) {
+        if (playFilter != null) {
+            playFilter.setVisible(visible);
+        }
+    }
+    
+    public boolean isPlayFilterVisible() {
+        return playFilter != null && playFilter.isVisible();
     }
 
     public Clock getClock() {

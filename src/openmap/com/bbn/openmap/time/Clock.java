@@ -52,7 +52,7 @@ public class Clock extends OMComponent implements RealTimeHandler,
         ActionListener, PropertyChangeListener, TimeBoundsHandler, Serializable {
 
     public final static int DEFAULT_TIME_INTERVAL = 1000;
-    
+
     /**
      * timeFormat, used for the times listed in properties for rates/pace.
      */
@@ -348,11 +348,12 @@ public class Clock extends OMComponent implements RealTimeHandler,
                     + ") : " + timeStatus);
         }
 
+        // Should set the new time before telling everyone the clock is stopped.
+        setTime(newTime, timeStatus);
+
         if (stopClock) {
             stopClock();
         }
-
-        setTime(newTime, timeStatus);
     }
 
     // ///////////////////////
@@ -497,14 +498,15 @@ public class Clock extends OMComponent implements RealTimeHandler,
             if (tbp.isActive()) {
                 activeTimeBoundsProviderCount++;
                 TimeBounds bounds = tbp.getTimeBounds();
-                if (bounds != null) {
+                if (bounds != null && !bounds.isUnset()) {
                     addTime(bounds.getStartTime());
                     addTime(bounds.getEndTime());
-                }
 
-                if (Debug.debugging("clock")) {
-                    Debug.output("Clock.resetTimeBounds("
-                            + tbp.getClass().getName() + ") adding " + bounds);
+                    if (Debug.debugging("clock")) {
+                        Debug.output("Clock.resetTimeBounds("
+                                + tbp.getClass().getName() + ") adding "
+                                + bounds);
+                    }
                 }
             } else {
                 if (Debug.debugging("clock")) {
@@ -543,6 +545,11 @@ public class Clock extends OMComponent implements RealTimeHandler,
          * Now, update the TimeBoundsListeners, so they can update their GUIs.
          */
         fireUpdateTimeBounds(new TimeBoundsEvent(this, tb, oldtb));
+        
+        if (tb.isUnset()) {
+            fireUpdateTime(TimeEvent.NO_TIME);
+        }
+
     }
 
     /**

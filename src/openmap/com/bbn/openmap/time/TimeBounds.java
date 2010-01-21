@@ -33,10 +33,10 @@ public class TimeBounds implements Serializable {
     protected long endTime;
 
     /**
-     * Creates a TimeBounds object ready for times to be added to it.
-     * The starting time is set to Long.MAX_VALUE, the end time is set
-     * to Long.MIN_VALUE, so any time addition will cause start and
-     * end times to be replaced.
+     * Creates a TimeBounds object ready for times to be added to it. The
+     * starting time is set to Long.MAX_VALUE, the end time is set to
+     * Long.MIN_VALUE, so any time addition will cause start and end times to be
+     * replaced.
      */
     public TimeBounds() {
         setTimes(Long.MAX_VALUE, Long.MIN_VALUE);
@@ -65,8 +65,7 @@ public class TimeBounds implements Serializable {
     }
 
     /**
-     * Add a time to the bounds, resetting the start and end time as
-     * necessary.
+     * Add a time to the bounds, resetting the start and end time as necessary.
      * 
      * @param timeStamp in milliseconds
      */
@@ -86,8 +85,7 @@ public class TimeBounds implements Serializable {
     }
 
     /**
-     * Add the start and end times of provided TimeBounds to this
-     * TimeBounds.
+     * Add the start and end times of provided TimeBounds to this TimeBounds.
      * 
      * @param timeBounds
      */
@@ -97,8 +95,11 @@ public class TimeBounds implements Serializable {
     }
 
     public boolean equals(TimeBounds timeBounds) {
-        return (startTime == timeBounds.getStartTime() &&
-                endTime == timeBounds.getEndTime());
+        return (startTime == timeBounds.getStartTime() && endTime == timeBounds.getEndTime());
+    }
+
+    public boolean isUnset() {
+        return startTime == Long.MAX_VALUE && endTime == Long.MIN_VALUE;
     }
 
 }

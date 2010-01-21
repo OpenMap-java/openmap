@@ -45,6 +45,9 @@ public class HotwashTimerControlButtonPanel extends TimerControlButtonPanel {
     JButton forwardStepButton;
     JButton backwardStepButton;
     
+    public HotwashTimerControlButtonPanel() {
+    }
+    
     public HotwashTimerControlButtonPanel(RealTimeHandler rth) {
         super(rth);
     }
@@ -114,17 +117,16 @@ public class HotwashTimerControlButtonPanel extends TimerControlButtonPanel {
     }
 
     public void enableForwardButton(boolean set) {
-        forwardButton.setEnabled(set);
+        forwardButton.setEnabled(set && clockEnabled);
     }
 
     public void enableBackwardButton(boolean set) {
-        backwardButton.setEnabled(set);
+        backwardButton.setEnabled(set && clockEnabled);
     }
     
     public void setEnableState(boolean set) {
-        forwardButton.setEnabled(set);
+        super.setEnableState(set);
         forwardStepButton.setEnabled(set);
         backwardStepButton.setEnabled(set);
-        backwardButton.setEnabled(set);
     }
 }

@@ -70,20 +70,36 @@ public class TimerControlButtonPanel extends OMComponentPanel implements
     protected JButton forwardButton;
     protected JButton backwardButton;
 
+    protected boolean clockEnabled = false;
+    
     public final static String BackwardStepIconProperty = "backwardStepIcon";
     public final static String BackwardIconProperty = "backwardIcon";
     public final static String ForwardStepIconProperty = "forwardStepIcon";
     public final static String ForwardIconProperty = "forwardIcon";
     public final static String PauseIconProperty = "pauseIcon";
 
+    /**
+     * Make sure the RealTimeHandler gets set at some point.
+     */
+    public TimerControlButtonPanel() {}
+
     public TimerControlButtonPanel(RealTimeHandler rth) {
         super();
         setTimeHandler(rth);
-        initGUI();
     }
 
     public void setTimeHandler(RealTimeHandler rth) {
+        if (timeHandler != null) {
+            timeHandler.removeTimeEventListener(this);
+        }
+
         timeHandler = rth;
+
+        if (timeHandler != null) {
+            timeHandler.addTimeEventListener(this);
+        }
+
+        initGUI();
     }
 
     public RealTimeHandler getTimeHandler() {
@@ -155,13 +171,13 @@ public class TimerControlButtonPanel extends OMComponentPanel implements
      * value are the actual string objects defined in the TimeConstants
      * interface. It does ==, not equals().
      */
-//    public void propertyChange(PropertyChangeEvent pce) {
-//        String propName = pce.getPropertyName();
-//        Object obj = pce.getNewValue();
-//        if (propName == RealTimeHandler.TIMER_STATUS && obj instanceof String) {
-//            update((String) obj);
-//        }
-//    }
+    // public void propertyChange(PropertyChangeEvent pce) {
+    // String propName = pce.getPropertyName();
+    // Object obj = pce.getNewValue();
+    // if (propName == RealTimeHandler.TIMER_STATUS && obj instanceof String) {
+    // update((String) obj);
+    // }
+    // }
 
     protected void update(TimerStatus newStatus) {
         if (newStatus == TimerStatus.FORWARD) {
@@ -189,6 +205,16 @@ public class TimerControlButtonPanel extends OMComponentPanel implements
             backwardButton.setIcon(backwardIcon);
             backwardButton.setActionCommand(TimerStatus.TIMER_BACKWARD);
         }
+        
+        checkClock(newStatus);
+    }
+    
+    protected void checkClock(TimerStatus newStatus) {
+        boolean clockState = newStatus != TimerStatus.INACTIVE;
+        if (clockState != clockEnabled) {
+            clockEnabled = clockState;
+            setEnableState(clockEnabled);
+        }
     }
 
     /**
@@ -215,5 +241,10 @@ public class TimerControlButtonPanel extends OMComponentPanel implements
 
     public void updateTime(TimeEvent te) {
         update(te.getTimerStatus());
+    }
+
+    public void setEnableState(boolean set) {
+        forwardButton.setEnabled(set);
+        backwardButton.setEnabled(set);
     }
 }
