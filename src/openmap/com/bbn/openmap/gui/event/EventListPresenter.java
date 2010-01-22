@@ -138,6 +138,7 @@ public class EventListPresenter extends AbstractEventPresenter implements
      * filter controls are display in the NORTH.
      */
     public EventListPresenter() {
+        setIsolated(true);
         eventHandlers = new LinkedList<OMEventHandler>();
         macroFilters = new LinkedList();
         setLayout(new BorderLayout());
@@ -846,7 +847,8 @@ public class EventListPresenter extends AbstractEventPresenter implements
             ListCellRenderer lcr = getEventCellRenderer();
             if (lcr instanceof EventListCellRenderer) {
                 EventListCellRenderer elcr = (EventListCellRenderer) lcr;
-                ((TimePanel) someObj).setPlayFilterVisible(elcr.getIconPackage().isShowPlayFilter());
+                ((TimePanel) someObj).setPlayFilterVisible(elcr.getIconPackage()
+                        .isShowPlayFilter());
             }
         }
     }

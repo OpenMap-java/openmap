@@ -60,6 +60,13 @@ public abstract class OMComponentPanel extends JPanel implements
     protected int orientation = SwingConstants.HORIZONTAL;
 
     /**
+     * A boolean that prevents the BeanContextChild from looking at events from
+     * BeanContext other than the one it was originally added to. Set to false
+     * by default.
+     */
+    protected boolean isolated = false;
+
+    /**
      * BeanContextChildSupport object provides helper functions for
      * BeanContextChild interface.
      */
@@ -207,7 +214,9 @@ public abstract class OMComponentPanel extends JPanel implements
      * to the BeanContext of this object.
      */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
-        findAndInit(bcme.iterator());
+        if (!isolated || bcme.getBeanContext().equals(getBeanContext())) {
+            findAndInit(bcme.iterator());
+        }
     }
 
     /**
@@ -238,9 +247,11 @@ public abstract class OMComponentPanel extends JPanel implements
     public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
 
         if (in_bc != null) {
-            in_bc.addBeanContextMembershipListener(this);
-            beanContextChildSupport.setBeanContext(in_bc);
-            findAndInit(in_bc.iterator());
+            if (!isolated || beanContextChildSupport.getBeanContext() == null) {
+                in_bc.addBeanContextMembershipListener(this);
+                beanContextChildSupport.setBeanContext(in_bc);
+                findAndInit(in_bc.iterator());
+            }
         }
     }
 
@@ -294,5 +305,13 @@ public abstract class OMComponentPanel extends JPanel implements
 
     public void setOrientation(int orientation) {
         this.orientation = orientation;
+    }
+
+    public boolean isIsolated() {
+        return isolated;
+    }
+
+    public void setIsolated(boolean isolated) {
+        this.isolated = isolated;
     }
 }

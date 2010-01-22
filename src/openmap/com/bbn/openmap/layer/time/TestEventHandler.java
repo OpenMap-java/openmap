@@ -97,6 +97,7 @@ public class TestEventHandler extends OMEventHandlerAdapter implements
 
     public void setActive(boolean active) {
         this.active = active;
+        callForTimeBoundsReset();
     }
 
     public void removeTimeBoundsHandler(TimeBoundsHandler tbh) {

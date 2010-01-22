@@ -68,8 +68,7 @@ import java.util.logging.Logger;
  */
 public class MapHandler extends BeanContextServicesSupport {
 
-    public static Logger logger = Logger
-            .getLogger("com.bbn.openmap.MapHandler");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.MapHandler");
 
     protected SoloMapComponentPolicy policy;
     protected boolean DEBUG = false;
@@ -158,8 +157,7 @@ public class MapHandler extends BeanContextServicesSupport {
      * SoloMapComponentRejectPolicy and the SoloMapComponent is a duplicate type
      * of another component already added.
      * 
-     * @param obj
-     *            the map component to nest within this BeanContext.
+     * @param obj the map component to nest within this BeanContext.
      * @return true if addition is successful, false if not.
      * @throws MultipleSoloMapComponentException.
      */
@@ -174,10 +172,8 @@ public class MapHandler extends BeanContextServicesSupport {
 
                 if (isAddInProgress()) {
                     if (DEBUG) {
-                        logger
-                                .fine("MapHandler: Attempting to add while add in progress, adding ["
-                                        + obj.getClass().getName()
-                                        + "]object to list");
+                        logger.fine("MapHandler: Attempting to add while add in progress, adding ["
+                                + obj.getClass().getName() + "]object to list");
                     }
                     addLater(obj);
                 } else {
@@ -190,10 +186,9 @@ public class MapHandler extends BeanContextServicesSupport {
             }
         } catch (java.util.ConcurrentModificationException cme) {
             if (obj != null) {
-                logger
-                        .warning("MapHandler caught ConcurrentModificationException when adding ["
-                                + obj.getClass().getName()
-                                + "]. The addition of this component to the MapHandler is causing some other component to attempt to be added as well, and the coping mechanism in the MapHandler is not handling it well.");
+                logger.warning("MapHandler caught ConcurrentModificationException when adding ["
+                        + obj.getClass().getName()
+                        + "]. The addition of this component to the MapHandler is causing some other component to attempt to be added as well, and the coping mechanism in the MapHandler is not handling it well.");
                 if (DEBUG) {
                     cme.printStackTrace();
                 }
@@ -284,10 +279,23 @@ public class MapHandler extends BeanContextServicesSupport {
     public boolean remove(Object obj) {
         boolean ret = super.remove(obj);
         if (obj instanceof BeanContextMembershipListener) {
-            super
-                    .removeBeanContextMembershipListener((BeanContextMembershipListener) obj);
+            super.removeBeanContextMembershipListener((BeanContextMembershipListener) obj);
         }
         return ret;
+    }
+
+    /**
+     * Method to call with an object you don't want to add to this MapHandler,
+     * but you want to make it available to all the MapHandlerChildren in it.
+     * 
+     * @param obj
+     */
+    public void present(Object obj) {
+        for (Object someObj : this) {
+            if (someObj instanceof MapHandlerChild) {
+                ((MapHandlerChild)someObj).findAndInit(obj);
+            }
+        }
     }
 
     /**
@@ -330,7 +338,7 @@ public class MapHandler extends BeanContextServicesSupport {
             Object obj = kids.next();
             remove(obj);
         }
-        
+
     }
 
 }

@@ -81,6 +81,13 @@ public class MapHandlerChild implements BeanContextChild,
         BeanContextMembershipListener, LightMapHandlerChild {
 
     /**
+     * A boolean that prevents the BeanContextChild from looking at events from
+     * BeanContext other than the one it was originally added to. Set to false
+     * by default.
+     */
+    protected boolean isolated = false;
+
+    /**
      * BeanContextChildSupport object provides helper functions for
      * BeanContextChild interface.
      */
@@ -95,7 +102,7 @@ public class MapHandlerChild implements BeanContextChild,
      * @param it Iterator to use to go through a list of objects. Find the ones
      *        you need, and hook yourself up.
      */
-    public void findAndInit(Iterator it) {
+    public void findAndInit(Iterator<?> it) {
         while (it.hasNext()) {
             findAndInit(it.next());
         }
@@ -114,7 +121,9 @@ public class MapHandlerChild implements BeanContextChild,
      * to the BeanContext of this object.
      */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
-        findAndInit(bcme.iterator());
+        if (!isolated || bcme.getBeanContext().equals(getBeanContext())) {
+            findAndInit(bcme.iterator());
+        }
     }
 
     /**
@@ -125,7 +134,7 @@ public class MapHandlerChild implements BeanContextChild,
      * from the object used in those methods.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
-        Iterator it = bcme.iterator();
+        Iterator<?> it = bcme.iterator();
         while (it.hasNext()) {
             findAndUndo(it.next());
         }
@@ -153,9 +162,11 @@ public class MapHandlerChild implements BeanContextChild,
     public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
 
         if (in_bc != null) {
-            in_bc.addBeanContextMembershipListener(this);
-            beanContextChildSupport.setBeanContext(in_bc);
-            findAndInit(in_bc.iterator());
+            if (!isolated || beanContextChildSupport.getBeanContext() == null) {
+                in_bc.addBeanContextMembershipListener(this);
+                beanContextChildSupport.setBeanContext(in_bc);
+                findAndInit(in_bc.iterator());
+            }
         }
     }
 
@@ -230,5 +241,13 @@ public class MapHandlerChild implements BeanContextChild,
     public void fireVetoableChange(String name, Object oldValue, Object newValue)
             throws PropertyVetoException {
         beanContextChildSupport.fireVetoableChange(name, oldValue, newValue);
+    }
+
+    public boolean isIsolated() {
+        return isolated;
+    }
+
+    public void setIsolated(boolean isolated) {
+        this.isolated = isolated;
     }
 }
