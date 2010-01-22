@@ -151,12 +151,12 @@ public interface OMGeometry {
     /**
      * Set all attributes on the OMGeometry.
      */
-    public void setAttributes(Map<?, ?> attributes);
+    public void setAttributes(Map<Object, Object> attributes);
 
     /**
      * Get all attributes from the OMGeometry.
      */
-    public Map<?, ?> getAttributes();
+    public Map<Object, Object> getAttributes();
 
     // ////////////////////////////////////////////////////////////////////////
 

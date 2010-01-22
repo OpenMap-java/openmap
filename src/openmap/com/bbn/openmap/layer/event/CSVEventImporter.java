@@ -1,153 +1,89 @@
-// **********************************************************************
-// 
-// <copyright>
-// 
-//  BBN Technologies
-//  10 Moulton Street
-//  Cambridge, MA 02138
-//  (617) 873-8000
-// 
-//  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
-// </copyright>
-// **********************************************************************
-// 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/graphicLoader/scenario/ScenarioGraphicLoader.java,v $
-// $RCSfile: ScenarioGraphicLoader.java,v $
-// $Revision: 1.9 $
-// $Date: 2006/03/06 16:13:59 $
-// $Author: dietrick $
-// 
-// **********************************************************************
+//**********************************************************************
+//
+//<copyright>
+//
+//BBN Technologies
+//10 Moulton Street
+//Cambridge, MA 02138
+//(617) 873-8000
+//
+//Copyright (C) BBNT Solutions LLC. All rights reserved.
+//
+//</copyright>
+//**********************************************************************
+//
+//$Source:
+///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
+//$
+//$RCSfile: MissionHandler.java,v $
+//$Revision: 1.10 $
+//$Date: 2004/10/21 20:08:31 $
+//$Author: dietrick $
+//
+//**********************************************************************
 
-package com.bbn.openmap.graphicLoader.scenario;
+package com.bbn.openmap.layer.event;
 
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.beans.PropertyChangeSupport;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 
+import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.event.OMEvent;
-import com.bbn.openmap.event.OMEventHandler;
-import com.bbn.openmap.graphicLoader.MMLGraphicLoader;
 import com.bbn.openmap.io.CSVFile;
 import com.bbn.openmap.layer.location.LocationHandler;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMGraphicHandler;
-import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.time.TemporalOMGraphic;
+import com.bbn.openmap.omGraphics.time.TemporalOMGraphicList;
+import com.bbn.openmap.omGraphics.time.TemporalOMPoint;
+import com.bbn.openmap.omGraphics.time.TemporalOMScalingIcon;
 import com.bbn.openmap.omGraphics.time.TemporalPoint;
-import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.time.TimeBounds;
-import com.bbn.openmap.time.TimeBoundsHandler;
-import com.bbn.openmap.time.TimeBoundsProvider;
-import com.bbn.openmap.time.TimeEvent;
-import com.bbn.openmap.time.TimeEventListener;
 import com.bbn.openmap.util.DataBounds;
-import com.bbn.openmap.util.DataBoundsProvider;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The ScenarioGraphicLoader contains all the ScenarioGraphics and manages the
- * time for the scenario. The different organization objects are represented in
- * a location file that lists a name and an icon URL. An activities file lists
- * the different steps for the organizations - where they are (lat/lon) and
- * when. A timer in the loader positions the organizations for that time,
- * interpolating location for times between time/location definitions. If an
- * organization stops to wait in a position, two activity locations should be
- * defined for that stop, for when the organization arrived to that spot and
- * when then left. Different properties need to be set for the
- * ScenarioGraphicLoader to let it know how the files, Comma Separated Value
- * (CSV) files, should be interpreted.
- * <p>
- * 
- * The ScenarioGraphicLoader also lets you define different steps for how to
- * control the time, i.e. the timer rate. The clock interval for the timer rate
- * is measured in milliseconds, specifying how often the map should be updated.
- * Note that the more often the map is updated, the more unresponsive the map
- * can become. The pace for the timer rate is how much 'senario time' passes for
- * each time the clock updates. You can define those steps in different formats,
- * but the default format for the pace is hh:mm:ss for hours:minutes:seconds.
- * <p>
- * 
  * Sample properties:
  * 
  * <pre>
- * 
- * 
- *    scenario.class=com.bbn.openmap.graphicLoader.scenario.ScenarioGraphicLoader
- *    scenario.prettyName=Test Scenario
- *    scenario.locationFile=org-list.csv
- *    scenario.locationFileHasHeader=true
- *    scenario.nameIndex=0
- *    scenario.iconIndex=5
- *    scenario.activityFile=org-activities.csv
- *    scenario.activityFileHasHeader=true
- *    scenario.activityNameIndex=1
- *    scenario.latIndex=9
- *    scenario.lonIndex=10
- *    scenario.timeFormat=d-MMM-yyyy HH:mm
- *    scenario.timeIndex=7
- *    # If no icon defined, used for org. location markers edge.
- *    scenario.lineColor=aaaaaa33
- *    # If no icon defined, used for org. location markers fill.
- *    scenario.fillColor=aaaaaa33
- *    # Used for lines for total scenario paths
- *    scenario.selectColor=aaaa0000
- *    
- *    scenario.timerRates=vs s m a q f vf
- *    scenario.vs.prettyName=Very Slow
- *    scenario.vs.clockIntervalMillis=2000
- *    scenario.vs.pace=00:06:00
- *    scenario.s.prettyName=Slow
- *    scenario.s.clockIntervalMillis=1000
- *    scenario.s.pace=00:06:00
- *    scenario.m.prettyName=Moderate
- *    scenario.m.clockIntervalMillis=400
- *    scenario.m.pace=00:06:00
- *    scenario.a.prettyName=Average
- *    scenario.a.clockIntervalMillis=200
- *    scenario.a.pace=00:06:00
- *    scenario.q.prettyName=Quick
- *    scenario.q.clockIntervalMillis=100
- *    scenario.q.pace=00:06:00
- *    scenario.f.prettyName=Fast
- *    scenario.f.clockIntervalMillis=40
- *    scenario.f.pace=00:06:00
- *    scenario.vf.prettyName=Very Fast
- *    scenario.vf.clockIntervalMillis=10
- *    scenario.vf.pace=01:00:00
- * 
+ *    eventLayer.class=com.bbn.openmap.layer.time.EventLayer
+ *    eventLayer.importer=com.bbn.openmap.layer.time.CSVEventImporter
+ *    eventLayer.prettyName=Test Event
+ *    eventLayer.locationFile=org-list.csv
+ *    eventLayer.locationFileHasHeader=true
+ *    eventLayer.nameIndex=0
+ *    eventLayer.iconIndex=5
+ *    eventLayer.activityFile=org-activities.csv
+ *    eventLayer.activityFileHasHeader=true
+ *    eventLayer.activityNameIndex=1
+ *    eventLayer.latIndex=9
+ *    eventLayer.lonIndex=10
+ *    eventLayer.timeFormat=d-MMM-yyyy HH:mm
+ *    eventLayer.timeIndex=7
+ *    # If no icon defined, used for location markers edge.
+ *    eventLayer.lineColor=aaaaaa33
+ *    # If no icon defined, used for location markers fill.
+ *    eventLayer.fillColor=aaaaaa33
  * </pre>
+ * 
+ * @author dietrick
  */
-public class ScenarioGraphicLoader extends MMLGraphicLoader implements
-        ComponentListener, DataBoundsProvider, TimeBoundsProvider,
-        TimeEventListener, OMEventHandler {
+public class CSVEventImporter extends OMComponent implements EventImporter {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.graphicLoader.scenario.ScenarioGraphicLoader");
-
-    public final static String TOTAL_SCENARIO_MODE = "TOTAL_SCENARIO";
-    public final static String SNAPSHOT_SCENARIO_MODE = "SNAPSHOT_SCENARIO";
-    public final static String SCENARIO_MODE_CMD = "SCENARIO_MODE_CMD";
-
-    protected String totalScenarioIconName = "totalScenarioTime.png";
-    protected String snapshotIconName = "snapshotScenarioTime.png";
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.time.CSVEventImporter");
 
     /** locationFile */
     public final static String LocationFileProperty = "locationFile";
@@ -178,6 +114,12 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
     public final static String DefaultIconURLProperty = "defaultURL";
     /** timeFormat */
     public final static String TimeFormatProperty = "timeFormat";
+    /**
+     * TimeFormat default is similar to IETF standard date syntax:
+     * "Sat, 12 Aug 1995 13:30:00 GMT" represented by (EEE, d MMM yyyy HH:mm:ss
+     * z), except for the local timezone.
+     */
+    protected SimpleDateFormat timeFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
 
     protected String locationFile;
     protected boolean locationHeader = true;
@@ -191,85 +133,57 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
     protected int timeIndex;
     protected boolean eastIsNeg = false;
     protected int orientation = SwingConstants.HORIZONTAL;
-    protected String mode;
-    protected boolean active = true;
 
     /** Icon URL for points to use as default. May be null. */
     protected String defaultIconURL;
     protected boolean showNames = false;
-    protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    protected ScenarioGraphicList scenarioGraphics = null;
-    protected DrawingAttributes drawingAttributes = null;
-    protected DataBounds dataBounds = null;
-    /**
-     * TimeFormat default is similar to IETF standard date syntax:
-     * "Sat, 12 Aug 1995 13:30:00 GMT" represented by (EEE, d MMM yyyy HH:mm:ss
-     * z), except for the local timezone.
-     */
-    protected SimpleDateFormat timeFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
+    protected DrawingAttributes drawingAttributes = DrawingAttributes.getDefaultClone();
 
-    protected TimeBounds timeBounds;
-    protected long time;
+    public CSVEventImporter() {
 
-    public ScenarioGraphicLoader() {
-        drawingAttributes = new DrawingAttributes();
-        dataBounds = new DataBounds();
-        setUpdateInterval(500); // Default 1/2 second.
     }
 
     /**
-     * The main method call in the ScenarioGraphicLoader that actually modifies
-     * the OMGraphics and updates the map.
+     * Read the data files and construct the TemporalOMGraphics. You also need
+     * to create TimeBounds, keep track of the time stamps from the data source,
+     * and set the new TimeBounds on the EventLayer before returning from this
+     * method. If you want to set the DataBounds on the layer, in order for the
+     * view menu to have a selection for the area of interest, fetch the
+     * DataBounds object and set it accordingly while you are in this method.
+     * <p>
+     * Read the data files and construct the TemporalOMGraphics. There are four
+     * things you need to do in this method.
+     * <ul>
+     * <li>Create an TemporalOMGraphicList, add TemporalOMGraphics, return it.
+     * <li>Set a new TimeBounds object on the callback EventLayer when all the
+     * timestamp range is known.
+     * <li>Add OMEvents to the callback.events list, one for each TemporalPoint
+     * created.
+     * <li>Add locations to callback's DataBounds (callback.getDataBounds()).
+     * </ul>
      */
-    public synchronized void manageGraphics() {
-        Projection p = getProjection();
-        OMGraphicHandler receiver = getReceiver();
-        boolean DEBUG = logger.isLoggable(Level.FINE);
-        if (receiver != null && p != null) {
-            if (scenarioGraphics == null) {
-                scenarioGraphics = createData();
+    public synchronized TemporalOMGraphicList createData(EventLayer callback) {
+        TemporalOMGraphicList list = new TemporalOMGraphicList();
+        Hashtable<String, TemporalOMGraphic> library = new Hashtable<String, TemporalOMGraphic>();
+        Hashtable<String, ImageIcon> iconLibrary = new Hashtable<String, ImageIcon>();
 
-                // TODO update time Bounds
-            }
+        
+        // BOTH IMPORTANT
+        DataBounds dataBounds = callback.getDataBounds();
+        TimeBounds timeBounds = new TimeBounds();
 
-            long currentTime = getTime();
-            if (DEBUG) {
-                logger.fine("ScenarioGraphicLoader (" + getName()
-                        + ") snapshot at " + currentTime);
-            }
-            scenarioGraphics.generate(p,
-                    currentTime,
-                    getMode() == TOTAL_SCENARIO_MODE);
-
-            if (DEBUG) {
-                logger.fine("ScenarioGraphicLoader (" + getName()
-                        + ") setting list of " + scenarioGraphics.size()
-                        + " scenario graphics");
-            }
-            receiver.setList(scenarioGraphics);
-        } else {
-            logger.fine("ScenarioGraphicLoader (" + getName()
-                    + ") doesn't have a connection to the map.");
-        }
-    }
-
-    /**
-     * Read the data files and construct the ScenarioPoints.
-     */
-    public synchronized ScenarioGraphicList createData() {
-        ScenarioGraphicList list = new ScenarioGraphicList();
-        Hashtable library = new Hashtable();
-        // Create location data
+        // Create TemporalOMGraphics, to associate events to
         if (locationFile != null && nameIndex != -1) {
             logger.fine("Reading location file...");
             try {
                 CSVFile locations = new CSVFile(locationFile);
                 locations.loadData();
-                Iterator records = locations.iterator();
+                Iterator<Vector<?>> records = locations.iterator();
                 while (records.hasNext()) {
                     String name = null;
-                    String icon = null;
-                    Vector record = (Vector) records.next();
+                    String iconName = null;
+                    ImageIcon icon = null;
+                    Vector<?> record = records.next();
 
                     if (record.size() == 0)
                         continue;
@@ -277,12 +191,29 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
                     name = (String) record.elementAt(nameIndex);
 
                     if (iconIndex != -1) {
-                        icon = (String) record.elementAt(iconIndex);
+                        iconName = (String) record.elementAt(iconIndex);
+
+                        icon = iconLibrary.get(iconName);
+
+                        if (icon == null) {
+                            URL icURL = PropUtils.getResourceOrFileOrURL(iconName);
+                            if (icURL != null) {
+                                icon = new ImageIcon(icURL);
+                                if (icon != null) {
+                                    iconLibrary.put(iconName, icon);
+                                }
+                            }
+                        }
                     }
 
                     if (name != null) {
-                        ScenarioPoint location = new ScenarioPoint(name, icon);
-                        location.setShowName(showNames);
+                        TemporalOMGraphic location;
+                        if (icon == null) {
+                            location = new TemporalOMPoint(name, OMGraphic.RENDERTYPE_LATLON, true);
+                        } else {
+                            location = new TemporalOMScalingIcon(name, OMGraphic.RENDERTYPE_LATLON, true, icon, 4000000);
+                        }
+                        // location.setShowName(showNames);
                         drawingAttributes.setTo(location);
                         library.put(name.intern(), location);
                         list.add(location);
@@ -304,33 +235,31 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
                     aioobe.printStackTrace();
                 }
             } catch (NullPointerException npe) {
-                logger.warning("ScenarioGraphicLoader ("
-                        + getName()
-                        + ") null pointer exception, most likely a problem finding the organization data file");
+                logger.warning("null pointer exception, most likely a problem finding the organization data file");
             }
         } else {
-            logger.warning("ScenarioGraphicLoader(" + getName()
-                    + "): Location file (" + locationFile + ") not configured.");
+            logger.warning("Location file (" + locationFile
+                    + ") not configured.");
             return list;
         }
 
-        // OK, got the locations built up, need to fill up the
-        // scenario
-        // Create location data
+        // OK, got the TemporalOMGraphics built up, need to fill up the
+        // events
+        // 
         if (activityFile != null && activityNameIndex != -1 && latIndex != -1
                 && lonIndex != -1 && timeIndex != -1) {
             logger.fine("Reading activity file...");
-            timeBounds = new TimeBounds();
+
             try {
                 CSVFile activities = new CSVFile(activityFile);
                 activities.loadData(); // numbers as strings == false
-                Iterator records = activities.iterator();
+                Iterator<Vector<?>> records = activities.iterator();
                 while (records.hasNext()) {
                     String name = null;
                     float lat;
                     float lon;
 
-                    Vector record = (Vector) records.next();
+                    Vector<?> record = records.next();
 
                     if (record.size() == 0)
                         continue;
@@ -349,19 +278,23 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
                         Date timeDate = timeFormat.parse(timeString);
                         long time = timeDate.getTime();
 
+                        // BOTH IMPORTANT
                         timeBounds.addTimeToBounds(time);
                         dataBounds.add((double) lon, (double) lat);
 
                         if (name != null) {
-                            ScenarioPoint point = (ScenarioPoint) library.get(name);
+                            TemporalOMGraphic point = library.get(name);
                             if (point != null) {
                                 LatLonPoint location = new LatLonPoint.Double(lat, lon);
                                 TemporalPoint ts = new TemporalPoint(location, time);
                                 point.addTimeStamp(ts);
-                                
-                                OMEvent event = new OMEvent(ts, name, time, location);
-                                events.add(event);
-                                                                
+
+                                OMEvent event = new OMEvent(ts, name
+                                        + " moving", time, location);
+
+                                // IMPORTANT
+                                callback.events.add(event);
+
                             } else {
                                 logger.warning("ScenarioPoint not found for "
                                         + name + ", entry: " + record);
@@ -378,59 +311,65 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
                         Object obj2 = record.elementAt(lonIndex);
                         Object obj3 = record.elementAt(timeIndex);
 
-                        logger.warning("ScenarioGraphicLoader("
-                                + getName()
-                                + ") has problem with indexes in activity file for "
-                                + obj0 + " (" + obj0.getClass().getName() + ")"
-                                + ":\n\tlat index = " + latIndex + ", value = "
-                                + obj1 + " (" + obj1.getClass().getName()
-                                + ")\n\t lon index = " + lonIndex
-                                + ", value = " + obj2 + " ("
+                        logger.warning("Problem with indexes in activity file for "
+                                + obj0
+                                + " ("
+                                + obj0.getClass().getName()
+                                + ")"
+                                + ":\n\tlat index = "
+                                + latIndex
+                                + ", value = "
+                                + obj1
+                                + " ("
+                                + obj1.getClass().getName()
+                                + ")\n\t lon index = "
+                                + lonIndex
+                                + ", value = "
+                                + obj2
+                                + " ("
                                 + obj2.getClass().getName()
-                                + ")\n\t time index = " + timeIndex
-                                + ", value = " + obj3 + " ("
+                                + ")\n\t time index = "
+                                + timeIndex
+                                + ", value = "
+                                + obj3
+                                + " ("
                                 + obj3.getClass().getName() + ")");
                     } catch (ParseException pe) {
-                        logger.fine("ScenarioGraphicLoader(" + getName()
-                                + ") has problem with time format. "
+                        logger.fine("Problem with time format. "
                                 + pe.getMessage());
                     }
                 }
             } catch (MalformedURLException murle) {
-                logger.warning("problem with activity file: "
-                        + activityFile);
+                logger.warning("problem with activity file: " + activityFile);
                 return list;
             } catch (NullPointerException npe) {
-                logger.warning("ScenarioGraphicLoader ("
-                        + getName()
-                        + ") null pointer exception, most likely a problem finding the activites data file");
+                logger.warning("null pointer exception, most likely a problem finding the activites data file");
             }
         } else {
-            logger.warning("ScenarioGraphicLoader(" + getName()
-                    + "): Activity file (" + activityFile + ") not configured.");
+            logger.warning("Activity file (" + activityFile
+                    + ") not configured.");
             return list;
         }
 
         logger.fine("Reading files OK");
 
+        // IMPORTANT!
+        callback.setTimeBounds(timeBounds);
+
         // Time will get updated automatically when the TimeEvent gets sent from
         // the clock.
-        callForTimeBoundsReset();
-        
         return list;
     }
 
     /**
      * The properties and prefix are managed and decoded here, for the standard
-     * uses of the ScenarioGraphicLoader.
+     * uses of the EventLayer.
      * 
      * @param prefix string prefix used in the properties file for this layer.
      * @param properties the properties set in the properties file.
      */
     public void setProperties(String prefix, Properties properties) {
         super.setProperties(prefix, properties);
-
-        drawingAttributes.setProperties(prefix, properties);
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
@@ -465,14 +404,14 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
         timeFormat = new SimpleDateFormat(timeFormatString);
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("ScenarioGraphicLoader indexes:"
-                    + "\n\tlocation file: " + locationFile
-                    + "\n\tlocation file has header: " + locationHeader
-                    + "\n\tnameIndex = " + nameIndex + "\n\ticonIndex = "
-                    + iconIndex + "\n\tactivity file: " + activityFile
-                    + "\n\tactivity file has header: " + activityHeader
-                    + "\n\tlatIndex = " + latIndex + "\n\tlonIndex = "
-                    + lonIndex + "\n\ttimeIndex = " + timeIndex);
+            logger.fine("EventLayer indexes:" + "\n\tlocation file: "
+                    + locationFile + "\n\tlocation file has header: "
+                    + locationHeader + "\n\tnameIndex = " + nameIndex
+                    + "\n\ticonIndex = " + iconIndex + "\n\tactivity file: "
+                    + activityFile + "\n\tactivity file has header: "
+                    + activityHeader + "\n\tlatIndex = " + latIndex
+                    + "\n\tlonIndex = " + lonIndex + "\n\ttimeIndex = "
+                    + timeIndex);
         }
     }
 
@@ -517,7 +456,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
                 (iconIndex != -1 ? Integer.toString(iconIndex) : ""));
         props.put(prefix + DefaultIconURLProperty,
                 PropUtils.unnull(defaultIconURL));
-        drawingAttributes.getProperties(props);
+
         return props;
     }
 
@@ -583,154 +522,7 @@ public class ScenarioGraphicLoader extends MMLGraphicLoader implements
         list.put(DefaultIconURLProperty,
                 "The URL of an image file to use as a default for the location markers (optional).");
 
-        drawingAttributes.getPropertyInfo(list);
-
         return list;
     }
 
-    public String getMode() {
-        return mode;
-    }
-
-    public void setMode(String mode) {
-        this.mode = mode;
-    }
-
-    /**
-     * Tool Method. The retrieval key for this tool.
-     * 
-     * @return String The key for this tool.
-     */
-    public String getKey() {
-        return getName();
-    }
-
-    /**
-     * Tool Method. Set the retrieval key for this tool.
-     * 
-     * @param aKey The key for this tool.
-     */
-    public void setKey(String aKey) {
-        setName(aKey);
-    }
-
-    /**
-     * DataBoundsProvider method.
-     */
-    public DataBounds getDataBounds() {
-        return dataBounds;
-    }
-
-    public void componentResized(ComponentEvent ce) {}
-
-    public void componentMoved(ComponentEvent ce) {}
-
-    public void componentHidden(ComponentEvent ce) {}
-
-    public void componentShown(ComponentEvent ce) {}
-
-    /**
-     * An OMGraphicList that knows what a ScenarioGraphic is, and knows when to
-     * tell it to draw itself at a particular time, or if it should draw its
-     * entire scenario path.
-     */
-    public class ScenarioGraphicList extends OMGraphicList {
-        public ScenarioGraphicList() {
-            super();
-        }
-
-        public void generate(Projection p, long time, boolean showScenario) {
-            synchronized (graphics) {
-                Iterator it = iterator();
-                while (it.hasNext()) {
-                    OMGraphic graphic = (OMGraphic) it.next();
-                    if (graphic instanceof ScenarioGraphic) {
-                        ((ScenarioGraphic) graphic).generate(p,
-                                time,
-                                showScenario);
-                    } else {
-                        graphic.generate(p);
-                    }
-                }
-            }
-        }
-    }
-
-    public int getOrientation() {
-        return orientation;
-    }
-
-    public void setOrientation(int orientation) {
-        this.orientation = orientation;
-    }
-
-    // TimeBoundsProvider methods.
-    protected List<TimeBoundsHandler> timeBoundsHandlers = new ArrayList<TimeBoundsHandler>();
-
-    public void addTimeBoundsHandler(TimeBoundsHandler tbh) {
-        timeBoundsHandlers.add(tbh);
-    }
-
-    public TimeBounds getTimeBounds() {
-        return timeBounds;
-    }
-
-    public void handleTimeBounds(TimeBounds tb) {
-    // NoOp, we don't really care what the time bounds are
-    }
-
-    public boolean isActive() {
-        return active && getReceiver() != null;
-    }
-    
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public void removeTimeBoundsHandler(TimeBoundsHandler tbh) {
-        timeBoundsHandlers.remove(tbh);
-
-    }
-
-    public void updateTime(TimeEvent te) {
-        time = te.getSimTime();
-        manageGraphics();
-    }
-
-    public long getTime() {
-        return time;
-    }
-
-    protected LinkedList<OMEvent> events = new LinkedList<OMEvent>();
-    protected LinkedList<OMEvent> filters = new LinkedList<OMEvent>();
-    
-    public List<OMEvent> getEventList() {
-        return getEventList(null);
-    }
-
-    public List<OMEvent> getEventList(List filters) {
-        return events;
-    }
-
-    public Boolean getFilterState(String filterName) {
-        return Boolean.TRUE;
-    }
-
-    public List getFilters() {
-        return filters;
-    }
-
-    public List<OMEvent> getMacroFilteredList(Collection eventCollection) {
-        return events;
-    }
-
-    public void setFilterState(String filterName, Boolean state) {
-    }
-
-    public void callForTimeBoundsReset() {
-        for (TimeBoundsHandler tbh : timeBoundsHandlers) {
-            tbh.resetTimeBounds();
-        }
-    }
-    
 }

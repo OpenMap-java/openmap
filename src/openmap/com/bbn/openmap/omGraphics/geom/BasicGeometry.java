@@ -271,7 +271,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
             // Create the new Map, set a pointer to itself so we know
             // it's the attribute Map (and not just replacing a Map
             // that someone else was using before
-            Map attributes = createAttributeMap();
+            Map<Object, Object> attributes = createAttributeMap();
             attributes.put(ATT_MAP_KEY, attributes);
             setAppObject(attributes, false);
 
@@ -295,7 +295,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * under the ATT_MAP_KEY.
      */
     protected boolean checkAttributeMap(Object obj) {
-        return (obj instanceof Map && ((Map) obj).get(ATT_MAP_KEY) == obj);
+        return (obj instanceof Map<?, ?> && ((Map<Object, Object>) obj).get(ATT_MAP_KEY) == obj);
     }
 
     /**
@@ -305,18 +305,18 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * APP_OBJECT_KEY. Regardless, the attribute map will be returned from this
      * method call.
      */
-    protected Map getAttributeMap() {
+    protected Map<Object, Object> getAttributeMap() {
         // replaceAppObjectWithAttributeMap will do nothing if
         // attribute map is already set.
         replaceAppObjectWithAttributeMap();
-        return (Map) getAppObject(false);
+        return (Map<Object, Object>) getAppObject(false);
     }
 
     /**
      * Method to extend if you don't like Hashtables used for attribute table.
      */
-    protected Map createAttributeMap() {
-        return new Hashtable();
+    protected Map<Object, Object> createAttributeMap() {
+        return new Hashtable<Object, Object>();
     }
 
     /**
@@ -337,8 +337,8 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
     public Object getAttribute(Object key) {
         if (key != null) {
             Object appObj = getAppObject(false);
-            if (appObj instanceof Map) {
-                return ((Map) appObj).get(key);
+            if (appObj instanceof Map<?, ?>) {
+                return ((Map<Object, Object>) appObj).get(key);
             }
         }
         return null;
@@ -352,8 +352,8 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      */
     public Object removeAttribute(Object key) {
         Object appObj = getAppObject(false);
-        if (appObj instanceof Map) {
-            return ((Map) appObj).remove(key);
+        if (appObj instanceof Map<?, ?>) {
+            return ((Map<Object, Object>) appObj).remove(key);
         }
         // else
         return null;
@@ -366,21 +366,21 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      */
     public void clearAttributes() {
         Object appObj = getAppObject(false);
-        if (appObj instanceof Map) {
-            ((Map) appObj).clear();
+        if (appObj instanceof Map<?, ?>) {
+            ((Map<Object, Object>) appObj).clear();
         }
     }
 
     /**
      * Returns the 'official' attribute Map, null if it hasn't been set.
      */
-    public Map getAttributes() {
+    public Map<Object, Object> getAttributes() {
         Object appObj = getAppObject(false);
         if (checkAttributeMap(appObj)) {
             // Only returns the attribute Map if it's the official
             // version, which is marked by having a pointer to itself
             // under the ATT_MAP_KEY
-            return (Map) appObj;
+            return (Map<Object, Object>) appObj;
         }
         // else
         return null;
@@ -391,7 +391,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * currently the 'official' attribute Map into the map under the
      * APP_OBJECT_KEY.
      */
-    public void setAttributes(Map atts) {
+    public void setAttributes(Map<Object, Object> atts) {
 
         if (atts == null) {
             return;
@@ -934,7 +934,8 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
     /**
      * Create a general path from a point plus a height and width;
      */
-    public static GeneralPath createBoxShape(float x, float y, int width, int height) {
+    public static GeneralPath createBoxShape(float x, float y, int width,
+                                             int height) {
         float[] xs = new float[4];
         float[] ys = new float[4];
 

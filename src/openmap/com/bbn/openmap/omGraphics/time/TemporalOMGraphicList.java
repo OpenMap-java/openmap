@@ -32,12 +32,11 @@ import com.bbn.openmap.proj.Projection;
 
 /**
  * A TemporalOMGeometryList object contains OMGeometries that change over time.
- * The time is expected to be based on some offset from a time origin, like the
- * starting time of some greater set of events. This list can also hold regular
+ * The time is milliseconds, generally from the unix epoch. This list can also hold regular
  * OMGeometries.
  */
 public class TemporalOMGraphicList extends OMGraphicList implements
-        TemporalOMGeometry {
+        TemporalOMGraphic {
     /**
      * Construct an TemporalOMGraphicList.
      */
@@ -72,10 +71,44 @@ public class TemporalOMGraphicList extends OMGraphicList implements
      */
     public void generate(Projection proj, long time) {
         for (OMGraphic geom : this) {
-            if (geom instanceof TemporalOMGeometry) {
-                ((TemporalOMGeometry) geom).generate(proj, time);
+            if (geom instanceof TemporalOMGraphic) {
+                ((TemporalOMGraphic) geom).generate(proj, time);
             } else {
                 geom.generate(proj);
+            }
+        }
+    }
+    
+    /**
+     * Add a location at a time to every TemporalGeometry contained within.
+     */
+    public void addTimeStamp(TemporalRecord timeStamp) {
+        for (OMGraphic geom: this) {
+            if (geom instanceof TemporalOMGraphic) {
+                ((TemporalOMGraphic)geom).addTimeStamp(timeStamp);
+            }
+        }
+    }
+
+    /**
+     * Remove a location at a certain time.
+     */
+    public boolean removeTimeStamp(TemporalRecord timeStamp) {
+        for (OMGraphic geom: this) {
+            if (geom instanceof TemporalOMGraphic) {
+                ((TemporalOMGraphic)geom).removeTimeStamp(timeStamp);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Clear all time stamps.
+     */
+    public void clearTimeStamps() {
+        for (OMGraphic geom: this) {
+            if (geom instanceof TemporalOMGraphic) {
+                ((TemporalOMGraphic)geom).clearTimeStamps();
             }
         }
     }

@@ -22,7 +22,7 @@
 //
 //**********************************************************************
 
-package com.bbn.openmap.layer.time;
+package com.bbn.openmap.layer.event;
 
 import java.util.ArrayList;
 import java.util.List;

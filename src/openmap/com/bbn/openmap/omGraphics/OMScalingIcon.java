@@ -36,9 +36,9 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
- * This is an extension to OMScalingRaster that scales an icon. The
- * icon is automatically centered over the lat/lon location. The
- * offsets push the icon away from the lat/lon.
+ * This is an extension to OMScalingRaster that scales an icon. The icon is
+ * automatically centered over the lat/lon location. The offsets push the icon
+ * away from the lat/lon.
  * 
  * @see OMScalingRaster
  */
@@ -55,24 +55,21 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
         super();
     }
 
-    ///////////////////////////////////// INT PIXELS - DIRECT
+    // /////////////////////////////////// INT PIXELS - DIRECT
     // COLORMODEL
 
     /**
-     * Creates an OMRaster images, Lat/Lon placement with a direct
-     * colormodel image.
+     * Creates an OMRaster images, Lat/Lon placement with a direct colormodel
+     * image.
      * 
      * @param centerLat latitude of the top of the image.
      * @param centerLon longitude of the left side of the image.
-     * @param offsetX horizontal pixel offset of icon (positive pushes
-     *        east).
-     * @param offsetY vertical pixel offset of icon (positive pushes
-     *        south).
+     * @param offsetX horizontal pixel offset of icon (positive pushes east).
+     * @param offsetY vertical pixel offset of icon (positive pushes south).
      * @param w width of the image, in pixels.
      * @param h height of the image, in pixels.
      * @param pix color values for the pixels.
-     * @param baseScale the scale where the icon will be show regular
-     *        size.
+     * @param baseScale the scale where the icon will be show regular size.
      * @see #setPixel
      */
     public OMScalingIcon(double centerLat, double centerLon, int offsetX,
@@ -84,20 +81,17 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
         this.baseScale = baseScale;
     }
 
-    ////////////////////////////////////// IMAGEICON
+    // //////////////////////////////////// IMAGEICON
 
     /**
      * Create an OMRaster, Lat/Lon placement with an ImageIcon.
      * 
      * @param centerLat latitude of the top of the image.
      * @param centerLon longitude of the left side of the image.
-     * @param offsetX horizontal pixel offset of icon (positive pushes
-     *        east).
-     * @param offsetY vertical pixel offset of icon (positive pushes
-     *        south).
+     * @param offsetX horizontal pixel offset of icon (positive pushes east).
+     * @param offsetY vertical pixel offset of icon (positive pushes south).
      * @param ii ImageIcon used for the image.
-     * @param baseScale the scale where the icon will be show regular
-     *        size.
+     * @param baseScale the scale where the icon will be show regular size.
      */
     public OMScalingIcon(double centerLat, double centerLon, int offsetX,
             int offsetY, ImageIcon ii, float baseScale) {
@@ -105,9 +99,9 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
     }
 
     /**
-     * Create an OMRaster, Lat/Lon placement with an ImageIcon.
-     * Doesn't scale, because baseScale, minScale and maxScale are all
-     * set to the same number (4000000).
+     * Create an OMRaster, Lat/Lon placement with an ImageIcon. Doesn't scale,
+     * because baseScale, minScale and maxScale are all set to the same number
+     * (4000000).
      * 
      * @param centerLat latitude of the top of the image.
      * @param centerLon longitude of the left side of the image.
@@ -122,13 +116,10 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      * 
      * @param centerLat latitude of the top of the image.
      * @param centerLon longitude of the left side of the image.
-     * @param offsetX horizontal pixel offset of icon (positive pushes
-     *        east).
-     * @param offsetY vertical pixel offset of icon (positive pushes
-     *        south).
+     * @param offsetX horizontal pixel offset of icon (positive pushes east).
+     * @param offsetY vertical pixel offset of icon (positive pushes south).
      * @param ii Image used for the image.
-     * @param baseScale the scale where the icon will be show regular
-     *        size.
+     * @param baseScale the scale where the icon will be show regular size.
      */
     public OMScalingIcon(double centerLat, double centerLon, int offsetX,
             int offsetY, Image ii, float baseScale) {
@@ -145,9 +136,9 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
     }
 
     /**
-     * Create an OMRaster, Lat/Lon placement with an ImageIcon.
-     * Doesn't scale, because baseScale, minScale and maxScale are all
-     * set to the same number (4000000).
+     * Create an OMRaster, Lat/Lon placement with an ImageIcon. Doesn't scale,
+     * because baseScale, minScale and maxScale are all set to the same number
+     * (4000000).
      * 
      * @param centerLat latitude of the top of the image.
      * @param centerLon longitude of the left side of the image.
@@ -159,26 +150,23 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
         setMinScale(4000000);
     }
 
-    ////////////////////////////////////// BYTE PIXELS with
+    // //////////////////////////////////// BYTE PIXELS with
     // COLORTABLE
 
     /**
-     * Lat/Lon placement with a indexed colormodel, which is using a
-     * colortable and a byte array to construct the int[] pixels.
+     * Lat/Lon placement with a indexed colormodel, which is using a colortable
+     * and a byte array to construct the int[] pixels.
      * 
      * @param centerLat latitude of the top of the image.
      * @param centerLon longitude of the left side of the image.
-     * @param offsetX horizontal pixel offset of icon (positive pushes
-     *        east).
-     * @param offsetY vertical pixel offset of icon (positive pushes
-     *        south).
+     * @param offsetX horizontal pixel offset of icon (positive pushes east).
+     * @param offsetY vertical pixel offset of icon (positive pushes south).
      * @param w width of the image, in pixels.
      * @param h height of the image, in pixels.
      * @param bytes colortable index values for the pixels.
      * @param colorTable color array corresponding to bytes
      * @param trans transparency of image.
-     * @param baseScale the scale where the icon will be show regular
-     *        size.
+     * @param baseScale the scale where the icon will be show regular size.
      * @see #setPixel
      */
     public OMScalingIcon(float centerLat, float centerLon, int offsetX,
@@ -192,12 +180,11 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
     }
 
     /**
-     * Since the image doesn't necessarily need to be regenerated when
-     * it is merely moved, raster objects have this function, called
-     * from generate() and when a placement attribute is changed.
+     * Since the image doesn't necessarily need to be regenerated when it is
+     * merely moved, raster objects have this function, called from generate()
+     * and when a placement attribute is changed.
      * 
-     * @return true if enough information is in the object for proper
-     *         placement.
+     * @return true if enough information is in the object for proper placement.
      * @param proj projection of window.
      */
     protected boolean position(Projection proj) {
@@ -258,9 +245,9 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
     }
 
     /**
-     * Set the scale that limits how small an icon will shrink. Should
-     * be a number larger than the base scale. If the map scale gets
-     * larger than this number, the icon will stop shrinking.
+     * Set the scale that limits how small an icon will shrink. Should be a
+     * number larger than the base scale. If the map scale gets larger than this
+     * number, the icon will stop shrinking.
      */
     public void setMaxScale(float ms) {
         maxScale = ms;
@@ -271,9 +258,9 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
     }
 
     /**
-     * Set the scale that limits how big an icon should grow. Should
-     * be a number smaller than the base scale. If the map scale gets
-     * smaller than this number, the icon will stop growing.
+     * Set the scale that limits how big an icon should grow. Should be a number
+     * smaller than the base scale. If the map scale gets smaller than this
+     * number, the icon will stop growing.
      */
     public void setMinScale(float ms) {
         minScale = ms;
@@ -284,4 +271,3 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
     }
 
 }
-

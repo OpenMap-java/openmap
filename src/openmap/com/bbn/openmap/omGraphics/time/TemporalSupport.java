@@ -47,24 +47,23 @@ public abstract class TemporalSupport {
 
     /**
      * 
-     * @param time in milliseconds, offset from beginning time of all other
-     *        temporal objects.
+     * @param time in milliseconds
      * @param interpolate flag to signal that the returned Temporal object
      *        should be interpolated (in whatever way needed) if the time falls
      *        between Temporal objects.
      */
     public <T extends TemporalRecord> T getPosition(long time,
                                                     boolean interpolate) {
-        TemporalRecord previous = null;
-        TemporalRecord next = null;
+        T previous = null;
+        T next = null;
 
         // Find out where the timestamp is in relation to the reported
         // positions
         synchronized (temporals) {
 
-            Iterator<TemporalRecord> it = iterator();
+            Iterator<T> it = iterator();
             while (it.hasNext()) {
-                TemporalRecord temporal = it.next();
+                T temporal = it.next();
                 long recTimeStamp = temporal.getTime();
 
                 if (logger.isLoggable(Level.FINER)) {
@@ -80,18 +79,18 @@ public abstract class TemporalSupport {
                 } else {
                     // Hit a time right at a position.
                     updateForTemporal(time, temporal);
-                    return (T) temporal;
+                    return temporal;
                 }
             }
         }
 
-        TemporalRecord pos = null;
+        T pos = null;
 
         // OK, now's the opportunity to leave if
         // interpolation is not wanted.
 
         if (previous != null && !interpolate) {
-            return (T) previous;
+            return previous;
         } else if (previous == null) {
             // time is before MissionFeature is placed.
             // Don't want to set pos here, should be null to set
@@ -128,17 +127,17 @@ public abstract class TemporalSupport {
             // Need to interpolate between the two, previous and next.
             // This may not be exact, but it's close.
 
-            pos = interpolate(time, previous, next);
+            pos = (T) interpolate(time, previous, next);
         }
 
-        return (T) pos;
+        return pos;
     }
 
     /**
      * Override this method to use the TemporalRecord's contents to affect the
      * status of whatever you like.
      * 
-     * @param time millisecond offset, the current time.
+     * @param time milliseconds reflecting the current time.
      * @param temporal record that reflects something that has happened.
      */
     protected void updateForTemporal(long time, TemporalRecord temporal) {

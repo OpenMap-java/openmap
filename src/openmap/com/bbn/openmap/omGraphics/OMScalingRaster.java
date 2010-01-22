@@ -185,6 +185,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
         if (DEBUG) {
             Debug.output("OMScalingRaster.setImage: " + image);
         }
+        
+        setColorModel(COLORMODEL_IMAGEICON);
 
         if (image == null) {
             bitmap = null;
@@ -247,7 +249,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
         // Position sets the position for the OMRaster!!!!
         if (!position(proj)) {
             if (DEBUG) {
-                Debug.error("OMRaster.generate(): positioning failed!");
+                logger.fine("OMRaster.generate(): positioning failed!");
             }
             return false;
         }
