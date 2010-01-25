@@ -105,7 +105,9 @@ public class EventLayer extends OMGraphicHandlerLayer implements
                     // Don't do anything
                     return null;
                 }
-                callForTimeBoundsReset();
+                // The data importer should have set the time bounds, and that
+                // should be calling this then.
+                // callForTimeBoundsReset();
             } else {
                 scenarioGraphics = new TemporalOMGraphicList(list);
             }
@@ -281,7 +283,9 @@ public class EventLayer extends OMGraphicHandlerLayer implements
 
     public void setActive(boolean active) {
         this.active = active;
-        callForTimeBoundsReset();
+        if (timeBounds != null) {
+            callForTimeBoundsReset();
+        }
     }
 
     public void removeTimeBoundsHandler(TimeBoundsHandler tbh) {
@@ -291,7 +295,8 @@ public class EventLayer extends OMGraphicHandlerLayer implements
     public void updateTime(TimeEvent te) {
         time = te.getSystemTime();
         if (active) {
-           doPrepare();
+            setList(prepare());
+            repaint();
         }
     }
 
