@@ -86,6 +86,8 @@ public class TemporalOMScalingIcon extends OMScalingIcon implements TemporalOMGr
     public TemporalOMScalingIcon(Object id, int renderType,
             boolean interpolate, ImageIcon ii, float baseScale) {
         this(id, renderType, interpolate);
+        setWidth(ii.getIconWidth());
+        setHeight(ii.getIconHeight());
         setImage(ii.getImage());
         setBaseScale(baseScale);
     }

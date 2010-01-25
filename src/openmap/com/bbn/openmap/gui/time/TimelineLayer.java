@@ -220,7 +220,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         if (logger.isLoggable(Level.FINER)) {
             logger.finer("Updating projection with " + proj);
         }
-
+        
         OMGraphicList graphicList = getList();
         if (getHeight() > 0) {
             if (graphicList == null) {
@@ -239,11 +239,14 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
             graphicList.add(constructTimeLines(proj));
             graphicList.add(getCurrentTimeMarker(proj));
+            
+            OMGraphicList eventGraphicList = getEventGraphicList();
 
             // if new events are fetched, new rating areas and play filters are
             // created here.
             if (eventGraphicList == null || eventGraphicList.isEmpty()) {
                 eventGraphicList = getEventList(proj);
+                setEventGraphicList(eventGraphicList);
             } else {
                 if (logger.isLoggable(Level.FINER)) {
                     logger.finer("don't need to re-create event lines, haven't changed with ("
@@ -262,6 +265,14 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         }
 
         return graphicList;
+    }
+
+    public synchronized OMGraphicList getEventGraphicList() {
+        return eventGraphicList;
+    }
+
+    public synchronized void setEventGraphicList(OMGraphicList eventGraphicList) {
+        this.eventGraphicList = eventGraphicList;
     }
 
     protected TimeHashFactory timeHashFactory;
@@ -465,7 +476,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         if (tb != null) {
             setTimeBounds(tb.getStartTime(), tb.getEndTime());
         } else {
-            // TODO set for null, which means there are no bounds.
+            checkAndSetForNoTime(TimeEvent.NO_TIME);
         }
 
     }
@@ -530,7 +541,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         String propertyName = evt.getPropertyName();
 
         if (propertyName == EventPresenter.ActiveEventsProperty) {
-            eventGraphicList = null;
+            setEventGraphicList(null);
             logger.fine("EventPresenter updated event list, calling doPrepare() "
                     + evt.getNewValue());
             doPrepare();
@@ -626,6 +637,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
     protected void selectEventForMouseEvent(MouseEvent e) {
         // Handle a single click, select event if close
+        OMGraphicList eventGraphicList = getEventGraphicList();
         if (e != null && eventGraphicList != null) {
             OMGraphic omg = eventGraphicList.findClosest((int) e.getX(),
                     (int) e.getY(),
@@ -697,6 +709,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
     protected void updateEventDetails(MouseEvent e) {
         String details = "";
+        OMGraphicList eventGraphicList = getEventGraphicList();
         if (e != null && eventGraphicList != null) {
             OMGraphic omg = eventGraphicList.findClosest((int) e.getX(),
                     (int) e.getY(),

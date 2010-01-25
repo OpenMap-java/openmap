@@ -291,8 +291,7 @@ public class EventLayer extends OMGraphicHandlerLayer implements
     public void updateTime(TimeEvent te) {
         time = te.getSystemTime();
         if (active) {
-            setList(prepare());
-            repaint();
+           doPrepare();
         }
     }
 

@@ -41,11 +41,11 @@ import com.bbn.openmap.util.Debug;
 /**
  * This is an extension to OMRaster that automatically scales itelf to match the
  * current projection. It is only lat/lon based, and takes the coordinates of
- * the upper left and lower right corners of the image. It does straight scaling -
- * it does not force the image projection to match the map projection! So, your
- * mileage may vary - you have to understand the projection of the image, and
- * know how it fits the projection type of the map. Of course, at larger scales,
- * it might not matter so much.
+ * the upper left and lower right corners of the image. It does straight scaling
+ * - it does not force the image projection to match the map projection! So,
+ * your mileage may vary - you have to understand the projection of the image,
+ * and know how it fits the projection type of the map. Of course, at larger
+ * scales, it might not matter so much.
  * 
  * This class was inspired by, and created from parts of the ImageLayer
  * submission from Adrian Lumsden@sss, on 25-Jan-2002. Used the scaling and
@@ -102,8 +102,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @param h height of the image, in pixels.
      * @param pix color values for the pixels.
      */
-    public OMScalingRaster(double ullat, double ullon, double lrlat, double lrlon,
-            int w, int h, int[] pix) {
+    public OMScalingRaster(double ullat, double ullon, double lrlat,
+            double lrlon, int w, int h, int[] pix) {
 
         super(ullat, ullon, w, h, pix);
         lat2 = lrlat;
@@ -121,8 +121,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @param lrlon longitude of the right side of the image.
      * @param ii ImageIcon used for the image.
      */
-    public OMScalingRaster(double ullat, double ullon, double lrlat, double lrlon,
-            ImageIcon ii) {
+    public OMScalingRaster(double ullat, double ullon, double lrlat,
+            double lrlon, ImageIcon ii) {
         this(ullat, ullon, lrlat, lrlon, ii.getImage());
     }
 
@@ -135,8 +135,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @param lrlon longitude of the right side of the image.
      * @param ii Image used for the image.
      */
-    public OMScalingRaster(double ullat, double ullon, double lrlat, double lrlon,
-            Image ii) {
+    public OMScalingRaster(double ullat, double ullon, double lrlat,
+            double lrlon, Image ii) {
         super();
         setRenderType(OMGraphic.RENDERTYPE_LATLON);
         setColorModel(COLORMODEL_IMAGEICON);
@@ -165,8 +165,9 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * @param colorTable color array corresponding to bytes
      * @param trans transparency of image.
      */
-    public OMScalingRaster(double ullat, double ullon, double lrlat, double lrlon,
-            int w, int h, byte[] bytes, Color[] colorTable, int trans) {
+    public OMScalingRaster(double ullat, double ullon, double lrlat,
+            double lrlon, int w, int h, byte[] bytes, Color[] colorTable,
+            int trans) {
 
         super(ullat, ullon, w, h, bytes, colorTable, trans);
         lat2 = lrlat;
@@ -185,7 +186,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
         if (DEBUG) {
             Debug.output("OMScalingRaster.setImage: " + image);
         }
-        
+
         setColorModel(COLORMODEL_IMAGEICON);
 
         if (image == null) {
@@ -195,7 +196,16 @@ public class OMScalingRaster extends OMRaster implements Serializable {
         }
 
         if (!(image instanceof BufferedImage)) {
-            sourceImage = new BufferedImage(image.getWidth(this), image.getHeight(this), BufferedImage.TYPE_INT_ARGB);
+            int w = image.getWidth(this);
+            int h = image.getHeight(this);
+            if (w <= 0) {
+                w = width;
+            }
+            if (h <= 0) {
+                h = height;
+            }
+
+            sourceImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2D = sourceImage.createGraphics();
             g2D.drawImage(image, 0, 0, this);
         } else {
