@@ -163,7 +163,7 @@ public abstract class OMComponentPanel extends JPanel implements
         }
         return list;
     }
-
+    
     /**
      * Set the property key prefix that should be used by the PropertyConsumer.
      * The prefix, along with a '.', should be prepended to the property keys

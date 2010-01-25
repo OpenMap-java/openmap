@@ -38,7 +38,7 @@ import com.bbn.openmap.util.Debug;
  * BorderLayout.SOUTH, BorderLayout.EAST, BorderLayout.WEST).
  */
 public class HotwashPanel extends OMComponentPanel {
-    public static Logger logger = Logger.getLogger("HotwashPanel");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.HotwashPanel");
     protected JSplitPane leftSlider;
     protected JSplitPane rightSlider;
     protected JSplitPane bottomSlider;

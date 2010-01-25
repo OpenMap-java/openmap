@@ -56,7 +56,10 @@ import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * Sample properties:
+ * A data importer for the EventLayer. The location file should contain
+ * information about objects that will be moving on the map. The activity file
+ * will contain information about where and when the objects moved. Sample
+ * properties:
  * 
  * <pre>
  *    eventLayer.class=com.bbn.openmap.layer.time.EventLayer
@@ -167,7 +170,6 @@ public class CSVEventImporter extends OMComponent implements EventImporter {
         Hashtable<String, TemporalOMGraphic> library = new Hashtable<String, TemporalOMGraphic>();
         Hashtable<String, ImageIcon> iconLibrary = new Hashtable<String, ImageIcon>();
 
-        
         // BOTH IMPORTANT
         DataBounds dataBounds = callback.getDataBounds();
         TimeBounds timeBounds = new TimeBounds();

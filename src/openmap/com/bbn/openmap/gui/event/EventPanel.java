@@ -53,6 +53,20 @@ import com.bbn.openmap.gui.OpenMapFrame;
 import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.util.PropUtils;
 
+/**
+ * The EventPanel holds EventPresenters, which are components that will display
+ * events. Also contains a GUI framework for holding filtering controls, but
+ * that part hasn't been worked out yet. Finds EventPresenters in the
+ * MapHandler. If you add EventPresenters programmatically, make sure the
+ * EventPresenter has access to all of the other components it needs, too.
+ * 
+ * <pre>
+ * eventPanel.class=com.bbn.openmap.gui.event.EventPanel
+ * eventPanel.parent=hotwashPanel
+ * </pre>
+ * 
+ * @author dietrick
+ */
 public class EventPanel extends OMComponentPanel implements MapPanelChild {
 
     public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.event.EventPanel");
@@ -66,7 +80,7 @@ public class EventPanel extends OMComponentPanel implements MapPanelChild {
     protected List<MacroFilter> macroFilters;
     protected String preferredLocation = BorderLayout.WEST;
     protected JPanel filterPanel;
-    protected Hashtable eventPresenterComponentLookup;
+    protected Hashtable<Object, EventPresenter> eventPresenterComponentLookup;
     // Used to intellegently determine if filter callup buttons should
     // be displayed.
     protected boolean hasFilters = false;
@@ -78,7 +92,7 @@ public class EventPanel extends OMComponentPanel implements MapPanelChild {
                 "  Events  "));
         eventPresenters = new LinkedList<EventPresenter>();
         macroFilters = new LinkedList<MacroFilter>();
-        eventPresenterComponentLookup = new Hashtable();
+        eventPresenterComponentLookup = new Hashtable<Object, EventPresenter>();
     }
 
     public void setProperties(String prefix, Properties props) {
@@ -154,7 +168,7 @@ public class EventPanel extends OMComponentPanel implements MapPanelChild {
                     JTabbedPane jtb = (JTabbedPane) ce.getSource();
                     // Find out which EventPresenter panel is active,
                     // and set that interface in the filter window.
-                    setActiveEventPresenter((EventPresenter) eventPresenterComponentLookup.get(jtb.getSelectedComponent()));
+                    setActiveEventPresenter(eventPresenterComponentLookup.get(jtb.getSelectedComponent()));
                 }
             });
             for (Iterator<EventPresenter> it = eventPresenters.iterator(); it.hasNext();) {

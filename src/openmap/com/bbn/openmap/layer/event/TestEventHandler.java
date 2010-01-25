@@ -33,6 +33,11 @@ import com.bbn.openmap.time.TimeBounds;
 import com.bbn.openmap.time.TimeBoundsHandler;
 import com.bbn.openmap.time.TimeBoundsProvider;
 
+/**
+ * Sample OMEventHandler to demonstrate being a TimeBoundsProvider and TimeBoundsHandler.
+ * 
+ * @author dietrick
+ */
 public class TestEventHandler extends OMEventHandlerAdapter implements
         TimeBoundsProvider {
 

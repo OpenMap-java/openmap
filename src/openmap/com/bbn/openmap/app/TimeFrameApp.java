@@ -1,12 +1,19 @@
 package com.bbn.openmap.app;
+
 import java.awt.Component;
 
 import javax.swing.JMenuBar;
 
+import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.PropertyHandler;
+import com.bbn.openmap.event.OMEventSelectionCoordinator;
 import com.bbn.openmap.gui.BasicMapPanel;
 import com.bbn.openmap.gui.HotwashPanel;
 import com.bbn.openmap.gui.OpenMapFrame;
+import com.bbn.openmap.gui.event.EventListPresenter;
+import com.bbn.openmap.gui.event.EventPanel;
+import com.bbn.openmap.gui.time.TimePanel;
+import com.bbn.openmap.time.Clock;
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 
@@ -34,12 +41,55 @@ import com.bbn.openmap.util.Debug;
 //
 //**********************************************************************
 
+/**
+ * An application that demonstrates the use of temporal GUI widgets and
+ * infrastructure components. The OpenMapFrame contains a HotwashPanel, which
+ * itself contains slider panes for various components. The standard OpenMap
+ * MapPanel is in the center of the application. The TimePanel, for controlling
+ * the current time displayed, goes on the bottom, and the event panel showing a
+ * list of events goes to the west.
+ */
 public class TimeFrameApp extends OpenMap {
 
     public TimeFrameApp() {}
 
     public TimeFrameApp(PropertyHandler propertyHandler) {
         super(propertyHandler);
+    }
+
+    /**
+     * A method that lets you control what gets added to the application
+     * programmatically. These components are required for handling an
+     * OMEventHandler, which would be added to the MapHandler. If you wanted to
+     * use the standard OpenMap application, you could add these components to
+     * the MapHandler, instead.
+     */
+    protected void configureMapPanel(PropertyHandler propertyHandler) {
+        super.configureMapPanel(propertyHandler);
+        MapHandler mapHandler = mapPanel.getMapHandler();
+
+        HotwashPanel hotwashPanel = new HotwashPanel();
+        String hotwash = "hotwash";
+        // This is important - the property prefix is checked against parent
+        // names of MapPanelChildren, so the HotwashPanel can figure out what
+        // goes to itself vs. the BasicMapPanel holding the map.
+        hotwashPanel.setPropertyPrefix(hotwash);
+        mapHandler.add(hotwashPanel);
+
+        mapHandler.add(new OMEventSelectionCoordinator());
+
+        TimePanel timePanel = new TimePanel();
+        timePanel.setParentName(hotwash);
+        mapHandler.add(timePanel);
+
+        EventPanel eventPanel = new EventPanel();
+        eventPanel.setParentName(hotwash);
+        mapHandler.add(eventPanel);
+
+        EventListPresenter eventListPresenter = new EventListPresenter();
+        mapHandler.add(eventListPresenter);
+
+        mapHandler.add(new Clock());
     }
 
     protected void showInFrame() {
@@ -53,7 +103,7 @@ public class TimeFrameApp extends OpenMap {
                     }
 
                     if (someObj instanceof BasicMapPanel) {
-                        JMenuBar jmb = ((BasicMapPanel)someObj).getMapMenuBar();
+                        JMenuBar jmb = ((BasicMapPanel) someObj).getMapMenuBar();
                         if (jmb != null) {
                             getRootPane().setJMenuBar(jmb);
                         }

@@ -49,16 +49,12 @@ import com.bbn.openmap.util.DataBoundsProvider;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The EventLayer contains all the EventGraphics and manages the time for the
- * Event. The different organization objects are represented in a location file
- * that lists a name and an icon URL. An activities file lists the different
- * steps for the organizations - where they are (lat/lon) and when. A timer in
- * the loader positions the organizations for that time, interpolating location
- * for times between time/location definitions. If an organization stops to wait
- * in a position, two activity locations should be defined for that stop, for
- * when the organization arrived to that spot and when then left. Different
- * properties need to be set for the EventLayer to let it know how the files,
- * Comma Separated Value (CSV) files, should be interpreted.
+ * The EventLayer contains all the TemporalOMGraphics and manages the time for
+ * the graphics and how they should be displayed. This layer works as a
+ * TimeBoundsProvider (an object that provides an active range of time, a
+ * OMEventHandler (an object that provides OMEvents to the
+ * EventPanel/EventPresenter), and a TimeEventListener (an object that changes
+ * when the cloc changes).
  * <p>
  * 
  * Sample properties:
@@ -67,21 +63,8 @@ import com.bbn.openmap.util.PropUtils;
  *    eventLayer.class=com.bbn.openmap.layer.time.EventLayer
  *    eventLayer.importer=com.bbn.openmap.layer.time.CSVEventImporter
  *    eventLayer.prettyName=Test Event
- *    eventLayer.locationFile=org-list.csv
- *    eventLayer.locationFileHasHeader=true
- *    eventLayer.nameIndex=0
- *    eventLayer.iconIndex=5
- *    eventLayer.activityFile=org-activities.csv
- *    eventLayer.activityFileHasHeader=true
- *    eventLayer.activityNameIndex=1
- *    eventLayer.latIndex=9
- *    eventLayer.lonIndex=10
- *    eventLayer.timeFormat=d-MMM-yyyy HH:mm
- *    eventLayer.timeIndex=7
- *    # If no icon defined, used for location markers edge.
- *    eventLayer.lineColor=aaaaaa33
- *    # If no icon defined, used for location markers fill.
- *    eventLayer.fillColor=aaaaaa33
+ *    
+ *    ... see CSVEventImporter for its properties, other importers can be specified here.
  * </pre>
  */
 public class EventLayer extends OMGraphicHandlerLayer implements

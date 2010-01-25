@@ -67,6 +67,13 @@ import com.bbn.openmap.util.PropUtils;
  * <P>
  * A Clock is needed to create an interface. If there is no clock, an empty
  * panel with a title will be displayed.
+ * <P>
+ * If you are using the openmap.properties file to configure your application
+ * and want to control the parent component of the TimePanel, use the "parent"
+ * property to specify the marker name of the parent component. The
+ * BasicMapPanel asks MapPanelChildren for their parent's names when deciding
+ * whether to add them or not, when it finds potential children in the
+ * findAndInit method.
  */
 public class TimePanel extends OMComponentPanel implements MapPanelChild,
         PropertyChangeListener, TimeEventListener {
@@ -160,9 +167,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         c.gridx = GridBagConstraints.REMAINDER;
         c.insets = insets;
 
-        internString = i18n.get(this.getClass(),
-                "play_selected",
-                "Play Filter");
+        internString = i18n.get(this.getClass(), "play_selected", "Play Filter");
         playFilter = new JCheckBox(internString);
         internString = i18n.get(this.getClass(),
                 "play_selected",
@@ -290,7 +295,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         c.insets = new Insets(0, 0, 4, 0);
         gridbag.setConstraints(rightPanel, c);
         add(rightPanel);
-
+        
         revalidate();
     }
 
@@ -422,13 +427,13 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         }
 
     }
-    
+
     public void setPlayFilterVisible(boolean visible) {
         if (playFilter != null) {
             playFilter.setVisible(visible);
         }
     }
-    
+
     public boolean isPlayFilterVisible() {
         return playFilter != null && playFilter.isVisible();
     }

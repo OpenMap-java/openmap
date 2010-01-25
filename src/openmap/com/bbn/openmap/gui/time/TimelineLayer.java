@@ -232,7 +232,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             if (drape == null) {
                 drape = new TimeDrape(0, 0, -1, -1);
                 drape.setFillPaint(Color.gray);
-                drape.setVisible(false);
+                drape.setVisible(true);
             }
             drape.generate(proj);
             graphicList.add(drape);

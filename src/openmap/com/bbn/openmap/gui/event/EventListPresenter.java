@@ -85,8 +85,26 @@ import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * The EventListPresenter looks for OMEventHandlers, and creates a presentable
- * list of the events listed in them.
+ * The EventListPresenter presents OMEvents as a list. It will find
+ * OMEventHandlers in the MapHandler and display the events of the active ones.
+ * Clicking on the list will set the current time to the event time, and also
+ * move the map to the event location. You can also use the filter and rating
+ * controls to group events. The TimePanel will limit playback over events that
+ * have been marked with the play filter, and the TimelineLayer will display the
+ * rating colors over the range of events designated with those ratings.
+ * 
+ * <pre>
+ * eventListPresenter.class=com.bbn.openmap.gui.event.EventListPresenter
+ * eventListPresenter.prettyName=List
+ * eventListPresenter.cellRendererClass=com.bbn.openmap.gui.event.EventListCellRenderer
+ * eventListPresenter.selectColor=0xAA006699
+ * eventListPresenter.timeWindowColor=0x55666666
+ * # can override if you want to change what the icons look like
+ * eventListPresenter.iconPackageClass=com.bbn.openmap.gui.event.EventListIconPackage
+ * # optional, if you want to turn these off at the bottom of the presenter.
+ * eventListPresenter.showRatings=false
+ * eventListPresenter.showPlayFilter=false
+ * </pre>
  */
 public class EventListPresenter extends AbstractEventPresenter implements
         EventPresenter, ListSelectionListener, PropertyChangeListener,
@@ -151,9 +169,9 @@ public class EventListPresenter extends AbstractEventPresenter implements
 
         String crc = props.getProperty(prefix + CellRendererClassProperty);
         if (crc != null) {
-            cellRenderer = (EventListCellRenderer) ComponentFactory.create(crc,
+            setEventCellRenderer((EventListCellRenderer) ComponentFactory.create(crc,
                     prefix,
-                    props);
+                    props));
         }
 
         displayTimeWindow = PropUtils.longFromProperties(props, prefix
@@ -164,9 +182,6 @@ public class EventListPresenter extends AbstractEventPresenter implements
         prefHeight = PropUtils.intFromProperties(props, prefix
                 + PreferredHeightProperty, prefHeight);
 
-        if (cellRenderer != null) {
-            drawingAttributes = cellRenderer.setRenderingAttributes(drawingAttributes);
-        }
     }
 
     public DrawingAttributes getSelectionDrawingAttributes() {
@@ -445,7 +460,7 @@ public class EventListPresenter extends AbstractEventPresenter implements
 
         if (selectedIndex >= 0 && setSelected) {
             // only select the event if it's there. Otherwise, the list and
-            // timeline jump inexplicitly to the top.
+            // timeline jump inexplicably to the top.
 
             displayList.setSelectedIndex(selectedIndex);
         } else {
@@ -454,11 +469,18 @@ public class EventListPresenter extends AbstractEventPresenter implements
 
     }
 
-    protected ListCellRenderer getEventCellRenderer() {
+    public ListCellRenderer getEventCellRenderer() {
         if (cellRenderer == null) {
-            cellRenderer = new EventListCellRenderer();
+            setEventCellRenderer(new EventListCellRenderer());
         }
         return cellRenderer;
+    }
+
+    public void setEventCellRenderer(EventListCellRenderer lcr) {
+        cellRenderer = lcr;
+        if (cellRenderer != null) {
+            drawingAttributes = cellRenderer.setRenderingAttributes(drawingAttributes);
+        }
     }
 
     /**
