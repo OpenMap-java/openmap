@@ -187,7 +187,12 @@ public class OMScalingRaster extends OMRaster implements Serializable {
             Debug.output("OMScalingRaster.setImage: " + image);
         }
 
-        setColorModel(COLORMODEL_IMAGEICON);
+        /**
+         * Oh, don't do this. The image is created from the colortable and pixel
+         * version, too, and setting the color model to IMAGEICON will cause any
+         * updates to not take hold.
+         */
+        // setColorModel(COLORMODEL_IMAGEICON);
 
         if (image == null) {
             bitmap = null;

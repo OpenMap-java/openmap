@@ -30,6 +30,7 @@ import java.awt.geom.Point2D;
 
 import javax.swing.ImageIcon;
 
+import com.bbn.openmap.omGraphics.OMRasterObject;
 import com.bbn.openmap.omGraphics.OMScalingIcon;
 import com.bbn.openmap.proj.Projection;
 
@@ -65,6 +66,7 @@ public class TemporalOMScalingIcon extends OMScalingIcon implements TemporalOMGr
     public TemporalOMScalingIcon(Object id, int renderType,
             boolean interpolate, int w, int h, int[] pix, float baseScale) {
         this(id, renderType, interpolate);
+        setColorModel(OMRasterObject.COLORMODEL_DIRECT);
         setWidth(w);
         setHeight(h);
         setPixels(pix);
@@ -88,6 +90,7 @@ public class TemporalOMScalingIcon extends OMScalingIcon implements TemporalOMGr
         this(id, renderType, interpolate);
         setWidth(ii.getIconWidth());
         setHeight(ii.getIconHeight());
+        setColorModel(OMRasterObject.COLORMODEL_IMAGEICON);
         setImage(ii.getImage());
         setBaseScale(baseScale);
     }
@@ -125,6 +128,7 @@ public class TemporalOMScalingIcon extends OMScalingIcon implements TemporalOMGr
     public TemporalOMScalingIcon(Object id, int renderType,
             boolean interpolate, Image ii, float baseScale) {
         this(id, renderType, interpolate);
+        setColorModel(OMRasterObject.COLORMODEL_IMAGEICON);
         setImage(ii);
         setBaseScale(baseScale);
     }
@@ -145,6 +149,7 @@ public class TemporalOMScalingIcon extends OMScalingIcon implements TemporalOMGr
     public TemporalOMScalingIcon(Object id, int renderType,
             boolean interpolate, Image image) {
         this(id, renderType, interpolate);
+        setColorModel(OMRasterObject.COLORMODEL_IMAGEICON);
         setImage(image);
         setBaseScale(40000000);
         setMaxScale(4000000);
@@ -175,6 +180,7 @@ public class TemporalOMScalingIcon extends OMScalingIcon implements TemporalOMGr
             Color[] colorTable, int trans, float baseScale) {
 
         this(id, renderType, interpolate);
+        setColorModel(OMRasterObject.COLORMODEL_INDEXED);
         setBaseScale(baseScale);
         setWidth(w);
         setHeight(h);
