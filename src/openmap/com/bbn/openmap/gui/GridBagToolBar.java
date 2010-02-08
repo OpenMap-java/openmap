@@ -41,6 +41,7 @@ public class GridBagToolBar extends javax.swing.JToolBar {
 
     public GridBagToolBar() {
         gridbag = new GridBagLayout();
+        c = new GridBagConstraints();
         setOrientation(SwingConstants.HORIZONTAL);
         setLayout(gridbag);
         setFloatable(false);
@@ -59,14 +60,22 @@ public class GridBagToolBar extends javax.swing.JToolBar {
         Component[] currentComps = getComponents();
         removeAll();
 
-        c = new GridBagConstraints();
+        if (c == null) {
+            c = new GridBagConstraints();
+        }
+        
         if (getOrientation() == SwingConstants.HORIZONTAL) {
             c.gridy = 0;
             c.weightx = 0;
+            c.weighty = 1.0f;
+            c.fill = GridBagConstraints.VERTICAL;
             c.anchor = GridBagConstraints.WEST;
         } else {
             c.gridwidth = GridBagConstraints.REMAINDER;
             c.anchor = GridBagConstraints.NORTH;
+            c.weightx = 1.0f;
+            c.weighty = 0f;
+            c.fill = GridBagConstraints.HORIZONTAL;
         }
 
         for (int i = 0; i < currentComps.length; i++) {
@@ -75,6 +84,10 @@ public class GridBagToolBar extends javax.swing.JToolBar {
 
     }
 
+    public GridBagConstraints getConstraints() {
+        return c;
+    }
+    
     public Component add(Component comp) {
         gridbag.setConstraints(comp, c);
         return super.add(comp);
