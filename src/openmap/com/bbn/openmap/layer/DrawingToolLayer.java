@@ -134,7 +134,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
 
     protected boolean DTL_DEBUG = false;
 
-    protected DbfTableModelFactory dbfFactory = new DbfTableModelFactory();
+    protected DbfTableModelFactory dbfFactory = null;
 
     protected DrawingAttributes drawingAttributes = DrawingAttributes.getDefaultClone();
 
@@ -151,21 +151,21 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         drawingAttributes.setProperties(prefix, props);
 
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
-        showHints = PropUtils.booleanFromProperties(props,
-                                                    realPrefix + ShowHintsProperty,
-                                                    showHints);
+        showHints = PropUtils.booleanFromProperties(props, realPrefix
+                + ShowHintsProperty, showHints);
 
         if (getMouseModeIDsForEvents() == null) {
             setMouseModeIDsForEvents(new String[] { SelectMouseMode.modeID });
         }
 
-        String fileName = props.getProperty(realPrefix + SerializedURLNameProperty);
+        String fileName = props.getProperty(realPrefix
+                + SerializedURLNameProperty);
 
         String dataPathPrefix = (String) getAttribute(DataPathPrefixProperty);
         if (dataPathPrefix != null) {
             fileName = dataPathPrefix + "/" + fileName;
         }
-        
+
         if (fileName != null && !fileName.trim().isEmpty()) {
             this.fileName = fileName;
             setList(load());
@@ -175,7 +175,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             dbfFactory.setProperties(prefix, props);
 
             OMGraphicList list = getList();
-            if (list != null && list.getAttribute(ShapeConstants.DBF_ATTRIBUTE) == null) {
+            if (list != null
+                    && list.getAttribute(ShapeConstants.DBF_ATTRIBUTE) == null) {
                 dbfFactory.createDbf(list);
             }
         }
@@ -188,7 +189,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
         props.put(prefix + ShowHintsProperty, new Boolean(showHints).toString());
-        props.put(prefix + SerializedURLNameProperty, PropUtils.unnull(fileName));
+        props.put(prefix + SerializedURLNameProperty,
+                PropUtils.unnull(fileName));
 
         return props;
     }
@@ -200,22 +202,28 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
 
         String interString;
 
-        interString = i18n.get(DrawingToolLayer.class, ShowHintsProperty, I18n.TOOLTIP,
-                               "Display tooltips over layer's map objects.");
+        interString = i18n.get(DrawingToolLayer.class,
+                ShowHintsProperty,
+                I18n.TOOLTIP,
+                "Display tooltips over layer's map objects.");
         props.put(ShowHintsProperty, interString);
         props.put(ShowHintsProperty + ScopedEditorProperty,
-                  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-        interString = i18n.get(DrawingToolLayer.class, ShowHintsProperty, "Show Hints");
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        interString = i18n.get(DrawingToolLayer.class,
+                ShowHintsProperty,
+                "Show Hints");
         props.put(ShowHintsProperty + LabelEditorProperty, interString);
 
-        interString = i18n.get(DrawingToolLayer.class, SerializedURLNameProperty,
-                               I18n.TOOLTIP,
-                               "File to use for reading and saving map objects.");
+        interString = i18n.get(DrawingToolLayer.class,
+                SerializedURLNameProperty,
+                I18n.TOOLTIP,
+                "File to use for reading and saving map objects.");
         props.put(SerializedURLNameProperty, interString);
         props.put(SerializedURLNameProperty + ScopedEditorProperty,
-                  "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-        interString = i18n.get(DrawingToolLayer.class, ShowHintsProperty,
-                               "File Name for Saving");
+                "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        interString = i18n.get(DrawingToolLayer.class,
+                ShowHintsProperty,
+                "File Name for Saving");
         props.put(SerializedURLNameProperty + LabelEditorProperty, interString);
 
         props.put(initPropertiesProperty, SerializedURLNameProperty + " "
@@ -255,8 +263,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             if (lastPeriod != -1) {
                 cname = cname.substring(lastPeriod + 1);
             }
-            Debug.output("DrawingToolLayer: DrawingTool complete for " + cname + " > "
-                    + action);
+            Debug.output("DrawingToolLayer: DrawingTool complete for " + cname
+                    + " > " + action);
         }
         // First thing, release the proxy MapMouseMode, if there is
         // one.
@@ -290,8 +298,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             }
             repaint();
         } else {
-            Debug.error("Layer " + getName() + " received " + omg + " and " + action
-                    + " with no list ready");
+            Debug.error("Layer " + getName() + " received " + omg + " and "
+                    + action + " with no list ready");
         }
     }
 
@@ -382,8 +390,9 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
     public Component getGUI() {
         if (box == null) {
 
-            String interString = i18n.get(DrawingToolLayer.class, "QUERY_HEADER",
-                                          "What would you like to do?");
+            String interString = i18n.get(DrawingToolLayer.class,
+                    "QUERY_HEADER",
+                    "What would you like to do?");
 
             box = PaletteHelper.createVerticalPanel(interString);
 
@@ -402,8 +411,10 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
 
             interString = i18n.get(DrawingToolLayer.class, "OK", "OK");
             JButton button = new JButton(interString);
-            interString = i18n.get(DrawingToolLayer.class, "OK", I18n.TOOLTIP,
-                                   "Do action and dismiss window.");
+            interString = i18n.get(DrawingToolLayer.class,
+                    "OK",
+                    I18n.TOOLTIP,
+                    "Do action and dismiss window.");
             button.setToolTipText(interString);
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
@@ -415,8 +426,10 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
 
             interString = i18n.get(DrawingToolLayer.class, "Apply", "Apply");
             button = new JButton(interString);
-            interString = i18n.get(DrawingToolLayer.class, "Apply", I18n.TOOLTIP,
-                                   "Do action and leave window up.");
+            interString = i18n.get(DrawingToolLayer.class,
+                    "Apply",
+                    I18n.TOOLTIP,
+                    "Do action and leave window up.");
             button.setToolTipText(interString);
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
@@ -427,8 +440,10 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
 
             interString = i18n.get(DrawingToolLayer.class, "Cancel", "Cancel");
             button = new JButton(interString);
-            interString = i18n.get(DrawingToolLayer.class, "Cancel", I18n.TOOLTIP,
-                                   "Do nothing and dismiss window.");
+            interString = i18n.get(DrawingToolLayer.class,
+                    "Cancel",
+                    I18n.TOOLTIP,
+                    "Do nothing and dismiss window.");
             button.setToolTipText(interString);
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
@@ -483,15 +498,16 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                     dbf.setExitOnClose(false);
                     dbf.setWritable(true);
                     dbf.showGUI(getName() + " Attributes",
-                                DbfTableModel.MODIFY_COLUMN_MASK
-                                        | DbfTableModel.MODIFY_ROW_MASK
-                                        | DbfTableModel.SAVE_MASK
-                                        | DbfTableModel.DONE_MASK);
+                            DbfTableModel.MODIFY_COLUMN_MASK
+                                    | DbfTableModel.MODIFY_ROW_MASK
+                                    | DbfTableModel.SAVE_MASK
+                                    | DbfTableModel.DONE_MASK);
                 }
 
                 public String toString() {
-                    return i18n.get(DrawingToolLayer.class, "UPDATE_ATTRIBUTES",
-                                    "Update feature attributes");
+                    return i18n.get(DrawingToolLayer.class,
+                            "UPDATE_ATTRIBUTES",
+                            "Update feature attributes");
                 }
             });
 
@@ -501,7 +517,9 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                 }
 
                 public String toString() {
-                    return i18n.get(DrawingToolLayer.class, "SAVE_MAP", "Save map");
+                    return i18n.get(DrawingToolLayer.class,
+                            "SAVE_MAP",
+                            "Save map");
                 }
             });
             actions.add(new AbstractAction() {
@@ -515,21 +533,21 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                             // DbfTableModelFactory has been configured.
                             dbfFactory.createDbf(list);
                         }
-                        EsriShapeExport ese = new EsriShapeExport(list, getProjection(),
-                                null);
+                        EsriShapeExport ese = new EsriShapeExport(list, getProjection(), null);
                         ese.setTransform(coordTransform);
                         ese.export();
                     } else {
                         String message = i18n.get(DrawingToolLayer.class,
-                                                  "SHAPE_ERROR_MESSAGE",
-                                                  "There's nothing on the map for this layer to save.");
+                                "SHAPE_ERROR_MESSAGE",
+                                "There's nothing on the map for this layer to save.");
                         fireRequestMessage(message);
                     }
                 }
 
                 public String toString() {
-                    return i18n.get(DrawingToolLayer.class, "SHAPE_SAVE_MAP",
-                                    "Save map as Shape file(s)");
+                    return i18n.get(DrawingToolLayer.class,
+                            "SHAPE_SAVE_MAP",
+                            "Save map as Shape file(s)");
                 }
             });
             actions.add(new AbstractAction() {
@@ -540,8 +558,9 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                 }
 
                 public String toString() {
-                    return i18n.get(DrawingToolLayer.class, "RELOAD",
-                                    "Re-load map from file");
+                    return i18n.get(DrawingToolLayer.class,
+                            "RELOAD",
+                            "Re-load map from file");
                 }
             });
             actions.add(new AbstractAction() {
@@ -552,8 +571,9 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                 }
 
                 public String toString() {
-                    return i18n.get(DrawingToolLayer.class, "PREFERENCES",
-                                    "Change preferences");
+                    return i18n.get(DrawingToolLayer.class,
+                            "PREFERENCES",
+                            "Change preferences");
                 }
             });
         }
@@ -567,10 +587,9 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
      */
     public void saveOMGraphics(Projection proj) {
         if (fileName == null) {
-            fileName = FileUtils.getFilePathToSaveFromUser(i18n.get(
-                                                                    DrawingToolLayer.class,
-                                                                    "CHOOSE_SAVE",
-                                                                    "Choose file to use to save layer:"));
+            fileName = FileUtils.getFilePathToSaveFromUser(i18n.get(DrawingToolLayer.class,
+                    "CHOOSE_SAVE",
+                    "Choose file to use to save layer:"));
         }
 
         if (fileName != null) {
@@ -614,8 +633,14 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                 URL url = PropUtils.getResourceOrFileOrURL(fileName);
                 if (url != null) {
                     if (fileName.endsWith(".shp")) {
-                        list = EsriShapeExport.read(url, drawingAttributes,
-                                                    getCoordTransform());
+                        list = EsriShapeExport.read(url,
+                                drawingAttributes,
+                                getCoordTransform());
+                        // Now that we've established that we are working (or
+                        // want to work with) with a
+                        // shape file, create a dbfFactory for the layer to help
+                        // out with editing.
+                        dbfFactory = new DbfTableModelFactory();
                     } else {
                         ObjectInputStream ois = new ObjectInputStream(url.openStream());
                         list = (OMGraphicList) ois.readObject();
@@ -634,8 +659,9 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                 err = true;
             } catch (StreamCorruptedException sce) {
                 sce.printStackTrace();
-                fireRequestMessage(i18n.get(DrawingToolLayer.class, "LOAD_ERROR",
-                                            "The file doesn't appear to be a valid map file"));
+                fireRequestMessage(i18n.get(DrawingToolLayer.class,
+                        "LOAD_ERROR",
+                        "The file doesn't appear to be a valid map file"));
                 err = true;
             } catch (IOException e) {
                 if (DTL_DEBUG) {
@@ -691,8 +717,9 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
         return (shouldEdit(omg) && dt != null && dt.canEdit(omg.getClass()));
     }
 
-    String editInstruction = i18n.get(DrawingToolLayer.class, "CLICK_TO_EDIT",
-                                      "Click to edit.");
+    String editInstruction = i18n.get(DrawingToolLayer.class,
+            "CLICK_TO_EDIT",
+            "Click to edit.");
 
     /**
      * Query for what text should be placed over the information bar when the
@@ -713,7 +740,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
      */
     public String getToolTipTextFor(OMGraphic omgr) {
         OMDrawingTool dt = getDrawingTool();
-        if (shouldEdit(omgr) && dt.canEdit(omgr.getClass()) && !dt.isActivated()) {
+        if (shouldEdit(omgr) && dt.canEdit(omgr.getClass())
+                && !dt.isActivated()) {
             return editInstruction;
         } else {
             return null;
@@ -775,10 +803,9 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                 // active MouseMode to be the proxy for it...
                 if (!omdtmm.isVisible() && mevent instanceof MapMouseEvent) {
                     MapMouseMode mmm = ((MapMouseEvent) mevent).getMapMouseMode();
-                    if (mmm.actAsProxyFor(
-                                          omdtmm,
-                                          MapMouseSupport.PROXY_DISTRIB_MOUSE_MOVED
-                                                  & MapMouseSupport.PROXY_DISTRIB_MOUSE_DRAGGED)) {
+                    if (mmm.actAsProxyFor(omdtmm,
+                            MapMouseSupport.PROXY_DISTRIB_MOUSE_MOVED
+                                    & MapMouseSupport.PROXY_DISTRIB_MOUSE_DRAGGED)) {
                         if (DTL_DEBUG) {
                             Debug.output("DTL: Setting " + mmm.getID()
                                     + " as proxy for drawing tool");
@@ -787,7 +814,8 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
                     } else {
                         // WHOA, couldn't get proxy lock - bail
                         if (DTL_DEBUG) {
-                            Debug.output("DTL: couldn't get proxy lock on " + mmm.getID()
+                            Debug.output("DTL: couldn't get proxy lock on "
+                                    + mmm.getID()
                                     + " deactivating internal drawing tool");
                         }
                         dt.deactivate();
