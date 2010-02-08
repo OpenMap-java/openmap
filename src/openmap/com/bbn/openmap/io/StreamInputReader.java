@@ -99,6 +99,10 @@ public abstract class StreamInputReader implements InputReader {
 
         long count = 0;
         long gotsofar = 0;
+        
+        if (inputStream == null) {
+            throw new IOException("Stream closed");
+        }
 
         while (count < n) {
             gotsofar = inputStream.skip(n - count);
@@ -179,6 +183,11 @@ public abstract class StreamInputReader implements InputReader {
      *            the file
      */
     public long length() throws IOException {
+        
+        if (inputStream == null) {
+            throw new IOException("Stream closed");
+        }
+        
         return inputStreamCount + inputStream.available();
     }
 
@@ -191,6 +200,11 @@ public abstract class StreamInputReader implements InputReader {
      *            the file
      */
     public long available() throws IOException {
+        
+        if (inputStream == null) {
+            throw new IOException("Stream closed");
+        }
+        
         return inputStream.available();
     }
 
@@ -231,6 +245,11 @@ public abstract class StreamInputReader implements InputReader {
      *            from the file
      */
     public int read() throws IOException {
+        
+        if (inputStream == null) {
+            reopen();
+        }
+        
         count(1);
         return inputStream.read();
     }
@@ -246,7 +265,11 @@ public abstract class StreamInputReader implements InputReader {
      *            from the file
      */
     public int read(byte b[], int off, int len) throws IOException {
-
+        
+        if (inputStream == null) {
+            throw new IOException("Stream closed");
+        }
+        
         int gotsofar = 0;
         while (gotsofar < len) {
             int read = inputStream.read(b, off + gotsofar, len - gotsofar);
@@ -277,6 +300,9 @@ public abstract class StreamInputReader implements InputReader {
      * @see java.io.RandomAccessFile#read(byte[])
      */
     public int read(byte b[]) throws IOException {
+        if (inputStream == null) {
+            throw new IOException("Stream closed");
+        }
         return inputStream.read(b, 0, b.length);
     }
 
