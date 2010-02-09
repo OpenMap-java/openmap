@@ -23,6 +23,7 @@
 package com.bbn.openmap.proj;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import com.bbn.openmap.MoreMath;
@@ -212,12 +213,12 @@ public abstract class Cylindrical extends GeoProj {
     public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords,
                               float[] ycoords, boolean[] visible, int copyoff,
                               int copylen) {
-        Point temp = new Point();
+        Point2D temp = new Point2D.Float();
         int end = copylen + copyoff;
         for (int i = copyoff, j = rawoff; i < end; i++, j += 2) {
             forward(rawllpts[j], rawllpts[j + 1], temp, true);
-            xcoords[i] = temp.x;
-            ycoords[i] = temp.y;
+            xcoords[i] = (float) temp.getX();
+            ycoords[i] = (float) temp.getY();
             visible[i] = true;// should always be visible in
             // cylindrical family
         }
@@ -248,12 +249,12 @@ public abstract class Cylindrical extends GeoProj {
     public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords,
                               float[] ycoords, boolean[] visible, int copyoff,
                               int copylen) {
-        Point temp = new Point();
+        Point2D temp = new Point2D.Float();
         int end = copylen + copyoff;
         for (int i = copyoff, j = rawoff; i < end; i++, j += 2) {
             forward(rawllpts[j], rawllpts[j + 1], temp, true);
-            xcoords[i] = temp.x;
-            ycoords[i] = temp.y;
+            xcoords[i] = (float) temp.getX();
+            ycoords[i] = (float) temp.getY();
             visible[i] = true;// should always be visible in
             // cylindrical family
         }
@@ -293,7 +294,8 @@ public abstract class Cylindrical extends GeoProj {
      */
     protected ArrayList<float[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs,
                                      boolean isFilled) {
-        int n, k, flag = 0, min = 0, max = 0, xp, xadj = 0;
+        int n, k, flag = 0, min = 0, max = 0;
+        float xp, xadj = 0;
 
         // determine length of pairs list
         int len = rawllpts.length >> 1; // len/2, chop off extra
@@ -306,20 +308,20 @@ public abstract class Cylindrical extends GeoProj {
         }
 
         // determine when to stop
-        Point temp = new Point(0, 0);
+        Point2D temp = new Point2D.Float(0, 0);
         float[] xs = new float[len];
         float[] ys = new float[len];
 
         // forward project the first point
         forward(rawllpts[0], rawllpts[1], temp, true);
-        xp = temp.x;
-        xs[0] = temp.x;
-        ys[0] = temp.y;
+        xp = (float) temp.getX();
+        xs[0] = (float) temp.getX();
+        ys[0] = (float) temp.getY();
         // forward project the other points
         for (n = 1, k = 2; n < len; n++, k += 2) {
             forward(rawllpts[k], rawllpts[k + 1], temp, true);
-            xs[n] = temp.x;
-            ys[n] = temp.y;
+            xs[n] = (float) temp.getX();
+            ys[n] = (float) temp.getY();
             // segment crosses longitude along screen edge
             if (Math.abs(xp - xs[n]) >= half_world) {
                 flag += (xp < xs[n]) ? -1 : 1;// inc/dec the wrap
@@ -329,7 +331,7 @@ public abstract class Cylindrical extends GeoProj {
                 xadj = flag * world.x;// adjustment to x coordinates
                 // Debug.output("flag=" + flag + " xadj=" + xadj);
             }
-            xp = temp.x;// save previous unshifted x coordinate
+            xp = (float) temp.getX();// save previous unshifted x coordinate
             if (flag != 0) {
                 xs[n] += xadj;// adjust x coordinates
             }
@@ -410,7 +412,8 @@ public abstract class Cylindrical extends GeoProj {
      */
     protected ArrayList<float[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs,
                                      boolean isFilled) {
-        int n, k, flag = 0, min = 0, max = 0, xp, xadj = 0;
+        int n, k, flag = 0, min = 0, max = 0;
+        float xp, xadj = 0;
 
         // determine length of pairs list
         int len = rawllpts.length >> 1; // len/2, chop off extra
@@ -423,20 +426,20 @@ public abstract class Cylindrical extends GeoProj {
         }
 
         // determine when to stop
-        Point temp = new Point(0, 0);
+        Point2D temp = new Point2D.Float(0, 0);
         float[] xs = new float[len];
         float[] ys = new float[len];
 
         // forward project the first point
         forward(rawllpts[0], rawllpts[1], temp, true);
-        xp = temp.x;
-        xs[0] = temp.x;
-        ys[0] = temp.y;
+        xp = (float) temp.getX();
+        xs[0] = (float) temp.getX();
+        ys[0] = (float) temp.getY();
         // forward project the other points
         for (n = 1, k = 2; n < len; n++, k += 2) {
             forward(rawllpts[k], rawllpts[k + 1], temp, true);
-            xs[n] = temp.x;
-            ys[n] = temp.y;
+            xs[n] = (float) temp.getX();
+            ys[n] = (float) temp.getY();
             // segment crosses longitude along screen edge
             if (Math.abs(xp - xs[n]) >= half_world) {
                 flag += (xp < xs[n]) ? -1 : 1;// inc/dec the wrap
@@ -446,7 +449,7 @@ public abstract class Cylindrical extends GeoProj {
                 xadj = flag * world.x;// adjustment to x coordinates
                 // Debug.output("flag=" + flag + " xadj=" + xadj);
             }
-            xp = temp.x;// save previous unshifted x coordinate
+            xp = (float) temp.getX();// save previous unshifted x coordinate
             if (flag != 0) {
                 xs[n] += xadj;// adjust x coordinates
             }

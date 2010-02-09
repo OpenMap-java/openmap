@@ -6,18 +6,11 @@
 	<property name="omwms.src_dir" value="./WEB-INF/src" />
 	<property name="omwms.classes" value="./WEB-INF/classes" />
 
-	<!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR TOMCAT INSTALLATION -->
-	<!--<property name="tomcat.home" value="/usr/local/java/jakarta-tomcat-4.0.1"/>-->
-	<property name="tomcat.home" value="/Users/halset/projects/ext/tomcat/apache-tomcat-5.5.20/" />
-
 	<property name="openmap.jar" value="${openmap.home}/lib/openmap.jar" />
 
 	<path id="project.class.path">
 		<fileset dir="${openmap.home}/lib">
 			<include name="**/*.jar" />
-		</fileset>
-		<fileset dir="${tomcat.home}/common/lib/">
-			<include name="servlet-api.jar" />
 		</fileset>
 	</path>
 

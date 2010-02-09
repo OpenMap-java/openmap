@@ -56,33 +56,33 @@ public class AspectRatioProjection extends GeoProj {
     }
 
     private Point2D fromWrapped(Point2D pt) {
-        pt.setLocation(xFromWrapped((int) pt.getX()),
-                yFromWrapped((int) pt.getY()));
+        pt.setLocation(xFromWrapped((float) pt.getX()),
+                yFromWrapped((float) pt.getY()));
         return pt;
     }
 
     private float xFromWrapped(float x) {
         if (!xHasFactor)
             return x;
-        return (((float) x - halfWrappedWidth) * xFactor + halfWidth);
+        return ((x - halfWrappedWidth) * xFactor + halfWidth);
     }
 
     private float yFromWrapped(float y) {
         if (!yHasFactor)
             return y;
-        return (((float) y - halfWrappedHeight) * yFactor + halfHeight);
+        return ((y - halfWrappedHeight) * yFactor + halfHeight);
     }
 
     private float xToWrapped(float x) {
         if (!xHasFactor)
             return x;
-        return (((float) x - halfWidth) / xFactor + halfWrappedWidth);
+        return ((x - halfWidth) / xFactor + halfWrappedWidth);
     }
 
     private float yToWrapped(float y) {
         if (!yHasFactor)
             return y;
-        return (((float) y - halfHeight) / yFactor + halfWrappedHeight);
+        return ((y - halfHeight) / yFactor + halfWrappedHeight);
     }
 
     protected ArrayList<float[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs,
@@ -93,13 +93,13 @@ public class AspectRatioProjection extends GeoProj {
                 isFilled);
         int size = stuff.size();
         for (int i = 0; i < size; i += 2) {
-            float[] xpts = (float[]) stuff.get(i);
+            float[] xpts = stuff.get(i);
             if (xHasFactor) {
                 for (int j = 0; j < xpts.length; j++)
                     xpts[j] = xFromWrapped(xpts[j]);
             }
             if (yHasFactor) {
-                float[] ypts = (float[]) stuff.get(i + 1);
+                float[] ypts = stuff.get(i + 1);
                 for (int j = 0; j < ypts.length; j++)
                     ypts[j] = yFromWrapped(ypts[j]);
             }
@@ -196,13 +196,13 @@ public class AspectRatioProjection extends GeoProj {
                 isFilled);
         int size = stuff.size();
         for (int i = 0; i < size; i += 2) {
-            float[] xpts = (float[]) stuff.get(i);
+            float[] xpts = stuff.get(i);
             if (xHasFactor) {
                 for (int j = 0; j < xpts.length; j++)
                     xpts[j] = xFromWrapped(xpts[j]);
             }
             if (yHasFactor) {
-                float[] ypts = (float[]) stuff.get(i + 1);
+                float[] ypts = stuff.get(i + 1);
                 for (int j = 0; j < ypts.length; j++)
                     ypts[j] = yFromWrapped(ypts[j]);
             }
@@ -217,8 +217,8 @@ public class AspectRatioProjection extends GeoProj {
 
     @Override
     public Point2D inverse(double x, double y, Point2D llpt) {
-        return wrappedProjection.inverse(xToWrapped((int) x),
-                yToWrapped((int) y),
+        return wrappedProjection.inverse(xToWrapped((float) x),
+                yToWrapped((float) y),
                 llpt);
     }
 
