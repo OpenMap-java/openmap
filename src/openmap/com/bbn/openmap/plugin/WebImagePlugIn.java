@@ -1,8 +1,10 @@
+// Bart 20060831 -> i18n
+
 /* **********************************************************************
- * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/WebImagePlugIn.java,v $
- * $Revision: 1.6 $ 
- * $Date: 2006/01/13 21:05:22 $ 
- * $Author: dietrick $
+ * $Source: /home/cvs/nodus/src/com/bbn/openmap/plugin/WebImagePlugIn.java,v $
+ * $Revision: 1.2 $ 
+ * $Date: 2006-10-25 12:21:54 $ 
+ * $Author: jourquin $
  *
  * Code provided by Raj Singh from Syncline, rs@syncline.com
  * Updates provided by Holger Kohler, Holger.Kohler@dsto.defence.gov.au
@@ -25,6 +27,8 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.image.ImageServerConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;
@@ -50,6 +54,9 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
      * Create the query to be sent to the server, based on current settings.
      */
     public abstract String createQueryString(Projection p);
+    
+    // I18N mechanism
+    static I18n i18n = Environment.getI18n();
 
     /**
      * The getRectangle call is the main call into the PlugIn module. The module
@@ -59,6 +66,7 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
      * @param p projection of the screen, holding scale, center coords, height,
      *        width.
      */
+    @Override
     public OMGraphicList getRectangle(Projection p) {
         OMGraphicList list = new OMGraphicList();
 
@@ -172,29 +180,32 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
 
     public abstract String getServerName();
 
+    @Override
     public java.awt.Component getGUI() {
         JPanel panel = new JPanel(new GridLayout(0, 1));
-        JButton parameterButton = new JButton("Adjust Parameters");
+        JButton parameterButton = new JButton(i18n.get(WebImagePlugIn.class, "Adjust_Parameters", "Adjust Parameters"));
+        
         parameterButton.setActionCommand(Layer.DisplayPropertiesCmd);
 
         if (layer != null) {
             parameterButton.addActionListener(layer);
         }
 
-        JButton viewQueryButton = new JButton("View Current Query");
+        JButton viewQueryButton = new JButton(i18n.get(WebImagePlugIn.class, "View_Current_Query", "View Current Query"));
+        
         viewQueryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 if (layer != null) {
                     String query = createQueryString(currentProjection);
-                    Vector queryStrings = PropUtils.parseMarkers(query, "&");
+                    Vector<String> queryStrings = PropUtils.parseMarkers(query, "&");
                     StringBuffer updatedQuery = new StringBuffer();
-                    Iterator it = queryStrings.iterator();
+                    Iterator<String> it = queryStrings.iterator();
                     if (it.hasNext()) {
-                        updatedQuery.append((String) it.next());
+                        updatedQuery.append(it.next());
                     }
                     while (it.hasNext()) {
                         updatedQuery.append("&\n   ");
-                        updatedQuery.append((String) it.next());
+                        updatedQuery.append(it.next());
                     }
 
                     JOptionPane.showMessageDialog(null,
@@ -221,12 +232,14 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
         return panel;
     }
 
-    protected JButton redrawButton = new JButton("Query Server");
+    protected JButton redrawButton = new JButton(i18n.get(WebImagePlugIn.class, "Query_Server", "Query Server"));
+    
     protected JOptionPane messageWindow = new JOptionPane();
 
     /**
      * Set the component that this PlugIn uses as a grip to the map.
      */
+    @Override
     public void setComponent(Component comp) {
         super.setComponent(comp);
         if (comp instanceof PlugInLayer) {
