@@ -1,3 +1,5 @@
+// Bart 20060831 -> i18n
+
 // **********************************************************************
 //
 //<copyright>
@@ -16,22 +18,37 @@
 ///cvs/darwars/ambush/aar/src/com/bbn/ambush/mission/MissionHandler.java,v
 //$
 //$RCSfile: DimensionQueryPanel.java,v $
-//$Revision: 1.3 $
-//$Date: 2006/11/14 22:41:05 $
-//$Author: kratkiew $
+//$Revision: 1.6 $
+//$Date: 2006-10-25 12:21:51 $
+//$Author: jourquin $
 //
 //**********************************************************************
 
 package com.bbn.openmap.gui;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.text.MessageFormat;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 
 public class DimensionQueryPanel extends JPanel {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 9129280747489252728L;
     private JTextField hfield;
     private JTextField vfield;
     private JLabel htext;
@@ -40,6 +57,8 @@ public class DimensionQueryPanel extends JPanel {
     private JLabel ptext2;
     public static final String HEIGHT_CMD = "DQP_HEIGHT_CMD";
     public static final String WIDTH_CMD = "DQP_WIDTH_CMD";
+    //  I18N mechanism
+    static I18n i18n = Environment.getI18n();
 
     public DimensionQueryPanel() {
         this(0, 0);
@@ -51,16 +70,16 @@ public class DimensionQueryPanel extends JPanel {
     
     public DimensionQueryPanel(int width, int height) {
 
-        htext = new JLabel("Width: ");
+        htext = new JLabel(MessageFormat.format("{0}:",i18n.get(DimensionQueryPanel.class, "Width", "Width")));        
         htext.setHorizontalAlignment(SwingConstants.RIGHT);
-        vtext = new JLabel("Height: ");
+        vtext = new JLabel(MessageFormat.format("{0}:",i18n.get(DimensionQueryPanel.class, "Height", "Height")));        
         vtext.setHorizontalAlignment(SwingConstants.RIGHT);
         hfield = new DimensionQueryField(Integer.toString(width), 5);
         hfield.setActionCommand(WIDTH_CMD);
         vfield = new DimensionQueryField(Integer.toString(height), 5);
         vfield.setActionCommand(HEIGHT_CMD);
-        ptext1 = new JLabel(" pixels");
-        ptext2 = new JLabel(" pixels");
+        ptext1 = new JLabel(MessageFormat.format(" {0}", i18n.get(DimensionQueryPanel.class, "pixels", "pixels")));        
+        ptext2 = new JLabel(MessageFormat.format(" {0}", i18n.get(DimensionQueryPanel.class, "pixels", "pixels")));
         layoutPanel();
     }
 
@@ -169,7 +188,12 @@ public class DimensionQueryPanel extends JPanel {
      */
     private class DimensionQueryField extends JTextField implements FocusListener {
 
-        private DimensionQueryField(String text, int columns) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		private DimensionQueryField(String text, int columns) {
             super(text, columns);
             this.addFocusListener(this);
         }
