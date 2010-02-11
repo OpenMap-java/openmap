@@ -1,3 +1,5 @@
+// Bart 20060831 -> i18n
+
 // **********************************************************************
 // 
 // <copyright>
@@ -12,11 +14,11 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/FilePropertyEditor.java,v $
+// $Source: /home/cvs/nodus/src/com/bbn/openmap/util/propertyEditor/FilePropertyEditor.java,v $
 // $RCSfile: FilePropertyEditor.java,v $
-// $Revision: 1.7 $
-// $Date: 2005/05/24 17:55:51 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2006-10-25 12:21:51 $
+// $Author: jourquin $
 // 
 // **********************************************************************
 
@@ -34,6 +36,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
+
 /**
  * A PropertyEditor that brings up a JFileChooser panel to select a
  * file. A single file choice can be made, and only choices that
@@ -45,6 +50,9 @@ public class FilePropertyEditor extends PropertyEditorSupport implements
     /** The Component returned by getCustomEditor(). */
     protected JButton button;
     protected JTextField textField = new JTextField(15);
+    
+    //  I18N mechanism
+    static I18n i18n = Environment.getI18n();
 
     /** Create FilePropertyEditor. */
     public FilePropertyEditor() {
@@ -58,7 +66,7 @@ public class FilePropertyEditor extends PropertyEditorSupport implements
      * @return "Set" for FilePropertyEditor.
      */
     public String getButtonTitle() {
-        return "Set";
+        return i18n.get(FilePropertyEditor.class, "Set", "Set");
     }
 
     /**
@@ -97,6 +105,7 @@ public class FilePropertyEditor extends PropertyEditorSupport implements
      * 
      * @return true
      */
+    @Override
     public boolean supportsCustomEditor() {
         return true;
     }
@@ -127,6 +136,7 @@ public class FilePropertyEditor extends PropertyEditorSupport implements
      * 
      * @return JButton button
      */
+    @Override
     public Component getCustomEditor() {
         button.addActionListener(this);
 
@@ -156,6 +166,7 @@ public class FilePropertyEditor extends PropertyEditorSupport implements
     }
 
     /** Implement PropertyEditor interface. */
+    @Override
     public void setValue(Object someObj) {
         if (someObj instanceof String) {
             textField.setText((String) someObj);
@@ -163,6 +174,7 @@ public class FilePropertyEditor extends PropertyEditorSupport implements
     }
 
     /** Implement PropertyEditor interface. */
+    @Override
     public String getAsText() {
         return textField.getText();
     }

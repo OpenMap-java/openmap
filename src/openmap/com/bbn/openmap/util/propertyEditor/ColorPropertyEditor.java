@@ -1,3 +1,5 @@
+// Bart 20060831 -> i18n
+
 // **********************************************************************
 // 
 // <copyright>
@@ -12,11 +14,11 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/ColorPropertyEditor.java,v $
+// $Source: /home/cvs/nodus/src/com/bbn/openmap/util/propertyEditor/ColorPropertyEditor.java,v $
 // $RCSfile: ColorPropertyEditor.java,v $
-// $Revision: 1.8 $
-// $Date: 2007/03/06 22:42:33 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2006-10-25 12:21:51 $
+// $Author: jourquin $
 // 
 // **********************************************************************
 
@@ -36,6 +38,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.omGraphics.OMColorChooser;
@@ -54,7 +58,10 @@ public class ColorPropertyEditor extends PropertyEditorSupport {
     /** The Component returned by getCustomEditor(). */
     JButton button;
 
-    public final static String title = "Select color...";
+    static I18n i18n = Environment.getI18n();
+    
+    public final static String title = i18n.get(ColorPropertyEditor.class, "Select_color","Select color...");
+    
     protected int icon_width = 20;
     protected int icon_height = 20;
 
@@ -72,6 +79,7 @@ public class ColorPropertyEditor extends PropertyEditorSupport {
      * 
      * @return true
      */
+    @Override
     public boolean supportsCustomEditor() {
         return true;
     }
@@ -81,6 +89,7 @@ public class ColorPropertyEditor extends PropertyEditorSupport {
      * 
      * @return JButton button
      */
+    @Override
     public Component getCustomEditor() {
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -97,7 +106,7 @@ public class ColorPropertyEditor extends PropertyEditorSupport {
                         startingColor);
 
                 if (color == null) {
-                    // Cancelled.
+                    // Canceled.
                     color = startingColor;
                 }
                 
@@ -119,8 +128,9 @@ public class ColorPropertyEditor extends PropertyEditorSupport {
 
     public ImageIcon getIconForPaint(Paint paint, boolean fill) {
 
-        if (paint == null)
+        if (paint == null) {
             paint = Color.black;
+        }
 
         DrawingAttributes da = new DrawingAttributes();
         da.setLinePaint(paint);
@@ -153,6 +163,7 @@ public class ColorPropertyEditor extends PropertyEditorSupport {
     }
 
     /** Implement PropertyEditor interface. */
+    @Override
     public void setValue(Object someObj) {
 
         if (someObj == null) {
@@ -183,6 +194,7 @@ public class ColorPropertyEditor extends PropertyEditorSupport {
     }
 
     /** Implement PropertyEditor interface. */
+    @Override
     public String getAsText() {
         return button.getText();
     }

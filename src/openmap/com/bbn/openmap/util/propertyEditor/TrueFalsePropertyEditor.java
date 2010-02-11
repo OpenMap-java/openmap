@@ -1,3 +1,5 @@
+// Bart 20060831 -> i18n
+
 // **********************************************************************
 // 
 // <copyright>
@@ -12,11 +14,11 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/TrueFalsePropertyEditor.java,v $
+// $Source: /home/cvs/nodus/src/com/bbn/openmap/util/propertyEditor/TrueFalsePropertyEditor.java,v $
 // $RCSfile: TrueFalsePropertyEditor.java,v $
-// $Revision: 1.5 $
-// $Date: 2005/05/24 17:55:51 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2006-10-25 12:21:52 $
+// $Author: jourquin $
 // 
 // **********************************************************************
 
@@ -34,6 +36,9 @@ import java.beans.PropertyEditorSupport;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 
 /**
  * A PropertyEditor that displays an either/or option. The widget
@@ -53,15 +58,19 @@ public class TrueFalsePropertyEditor extends PropertyEditorSupport implements
     protected JRadioButton trueButton;
     protected JRadioButton falseButton;
     protected boolean useAltCommandStrings = false;
+    
+    //  I18N mechanism
+    static I18n i18n = Environment.getI18n();
 
     public final static String TrueString = "true";
     public final static String FalseString = "false";
 
     public TrueFalsePropertyEditor() {
-        trueButton = new JRadioButton(TrueString);
-        falseButton = new JRadioButton(FalseString);
+        trueButton = new JRadioButton(i18n.get(TrueFalsePropertyEditor.class, "True", "True"));
+        falseButton = new JRadioButton(i18n.get(TrueFalsePropertyEditor.class, "False", "False"));
     }
 
+    @Override
     public boolean supportsCustomEditor() {
         return true;
     }
@@ -75,6 +84,7 @@ public class TrueFalsePropertyEditor extends PropertyEditorSupport implements
     }
 
     /** Returns the editor GUI, ie a JTextField. */
+    @Override
     public Component getCustomEditor() {
         JPanel panel = new JPanel();
 
@@ -126,6 +136,7 @@ public class TrueFalsePropertyEditor extends PropertyEditorSupport implements
     }
 
     /** Sets String in JTextField. */
+    @Override
     public void setValue(Object string) {
         if (!(string instanceof String)) {
             return;
@@ -135,6 +146,7 @@ public class TrueFalsePropertyEditor extends PropertyEditorSupport implements
     }
 
     /** Returns String from ButtonGroup. */
+    @Override
     public String getAsText() {
         if (option) {
             return trueButton.getActionCommand();

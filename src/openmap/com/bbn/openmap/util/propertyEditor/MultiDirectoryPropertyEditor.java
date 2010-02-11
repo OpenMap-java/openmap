@@ -1,3 +1,4 @@
+// Bart 20060831 -> i18n
 // **********************************************************************
 // 
 // <copyright>
@@ -12,11 +13,11 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/util/propertyEditor/MultiDirectoryPropertyEditor.java,v $
+// $Source: /home/cvs/nodus/src/com/bbn/openmap/util/propertyEditor/MultiDirectoryPropertyEditor.java,v $
 // $RCSfile: MultiDirectoryPropertyEditor.java,v $
-// $Revision: 1.8 $
-// $Date: 2005/05/24 17:55:51 $
-// $Author: dietrick $
+// $Revision: 1.2 $
+// $Date: 2006-10-25 12:21:51 $
+// $Author: jourquin $
 // 
 // **********************************************************************
 
@@ -28,6 +29,9 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
+
 /**
  * A PropertyEditor that brings up a JFileChooser panel that allows
  * the user to choose one or more directories. The user can also enter
@@ -38,14 +42,18 @@ import javax.swing.JFileChooser;
 public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
 
     protected char pathSeparator;
+    
+    //  I18N mechanism
+    static I18n i18n = Environment.getI18n();
 
     /** Create MultiDirectoryPropertyEditor. */
     public MultiDirectoryPropertyEditor() {
         setPathSeparator(';');
     }
 
+    @Override
     public String getButtonTitle() {
-        return "Add";
+        return i18n.get(MultiDirectoryPropertyEditor.class, "Add", "Add");
     }
 
     /**
@@ -53,6 +61,7 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
      * 
      * @return true for MultiDirectoryPropertyEditor.
      */
+    @Override
     public boolean isTextFieldEditable() {
         return true;
     }
@@ -62,6 +71,7 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
      * 
      * @return JFileChooser.DIRECTORIES_ONLY for MultiDirectoryPropertyEditor.
      */
+    @Override
     public int getFileSelectionMode() {
         return JFileChooser.DIRECTORIES_ONLY;
     }
@@ -71,6 +81,7 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
      * 
      * @return true for MultiDirectoryPropertyEditor.
      */
+    @Override
     public boolean isMultiSelectEnabled() {
         return true;
     }
@@ -86,14 +97,15 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
         return pathSeparator;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         JFileChooser chooser = getFileChooser();
         int returnVal = chooser.showOpenDialog((Component) null);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
 
             File[] choices = chooser.getSelectedFiles();
-            for (int i = 0; i < choices.length; i++) {
-                String newFilename = choices[i].getAbsolutePath();
+            for (File element : choices) {
+                String newFilename = element.getAbsolutePath();
                 newFilename = cleanUpName(newFilename);
                 append(newFilename);
             }
