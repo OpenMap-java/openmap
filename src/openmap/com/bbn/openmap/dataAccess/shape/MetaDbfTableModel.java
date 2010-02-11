@@ -1,3 +1,5 @@
+// Bart 20060831 -> i18n
+
 // **********************************************************************
 // 
 // <copyright>
@@ -12,11 +14,11 @@
 // </copyright>
 // **********************************************************************
 // 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/dataAccess/shape/MetaDbfTableModel.java,v $
+// $Source: /home/cvs/nodus/src/com/bbn/openmap/dataAccess/shape/MetaDbfTableModel.java,v $
 // $RCSfile: MetaDbfTableModel.java,v $
-// $Revision: 1.7 $
-// $Date: 2009/02/05 18:46:11 $
-// $Author: dietrick $
+// $Revision: 1.3 $
+// $Date: 2007-06-27 16:29:06 $
+// $Author: jourquin $
 // 
 // **********************************************************************
 
@@ -35,6 +37,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.dataAccess.shape.input.DbfInputStream;
 import com.bbn.openmap.util.Debug;
 
@@ -46,7 +50,10 @@ import com.bbn.openmap.util.Debug;
  */
 public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
 
-    private static final long serialVersionUID = 1L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -8408741750134029139L;
     public final static int META_RECORDNAME_COLUMN_NUMBER = 0;
     public final static int META_TYPE_COLUMN_NUMBER = 1;
     public final static int META_LENGTH_COLUMN_NUMBER = 2;
@@ -58,12 +65,16 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
      * deleted in all the records.
      */
     protected int originalColumnNumber = 0;
+    
+    //  I18N mechanism
+    static I18n i18n = Environment.getI18n();
 
     /**
      * Creates a blank DbfTableModel from the source DbfTableModel.
      * 
      * @param source the DbfTableModel to be modified.
      */
+    @SuppressWarnings("unchecked")
     public MetaDbfTableModel(DbfTableModel source) {
         super(4); // these are the number of columns for Metadata
         init();
@@ -91,10 +102,11 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
      * header rows are listed.
      */
     protected void init() {
-        _names[META_RECORDNAME_COLUMN_NUMBER] = "Column Name";
-        _names[META_TYPE_COLUMN_NUMBER] = "Type of Data";
-        _names[META_LENGTH_COLUMN_NUMBER] = "Length of Field";
-        _names[META_PLACES_COLUMN_NUMBER] = "# of Decimal Places";
+        _names[META_RECORDNAME_COLUMN_NUMBER] = i18n.get(MetaDbfTableModel.class, "Column_Name", "Column Name");        
+        _names[META_TYPE_COLUMN_NUMBER] = i18n.get(MetaDbfTableModel.class, "Type_of_Data", "Type of Data");        
+        _names[META_LENGTH_COLUMN_NUMBER] = i18n.get(MetaDbfTableModel.class, "Length_of_Field", "Length of Field");        
+        _names[META_PLACES_COLUMN_NUMBER] = i18n.get(MetaDbfTableModel.class, "Decimal_Places", "Decimal Places");
+        
 
         for (int i = 0; i < 4; i++) {
 
@@ -116,6 +128,7 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
      * Remove the record at the index. This extension decreases the
      * originalColumnNumber which controls which rows[0] can be edited.
      */
+    @Override
     public List<Object> remove(int columnIndex) {
         List<Object> ret = super.remove(columnIndex);
         if (columnIndex < originalColumnNumber) {
@@ -124,6 +137,7 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
         return ret;
     }
 
+    @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         if (columnIndex == 0 && rowIndex < originalColumnNumber) {
             return false;
@@ -136,6 +150,7 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
      * Sets an object at a certain location. The type is translated from integer
      * values to names for easier use.
      */
+    @Override
     public void setValueAt(Object object, int row, int column) {
 
         if (column == META_TYPE_COLUMN_NUMBER) {
@@ -177,8 +192,9 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
                 return;
             }
 
-            if (DEBUG)
+            if (DEBUG) {
                 Debug.output("New value set to " + object);
+            }
         }
 
         super.setValueAt(object, row, column);
@@ -189,6 +205,7 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
      * 
      * @return Object A value for a specific column and row index
      */
+    @Override
     public Object getValueAt(int row, int column) {
         Object cell = super.getValueAt(row, column);
 
@@ -227,26 +244,32 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
      * Create a new record, corresponding to a new column in the source
      * DbfTableModel. Filled in with standard things that can be edited.
      */
+    @SuppressWarnings("unchecked")
+    @Override
     public void addBlankRecord() {
         List<Object> record = new ArrayList<Object>();
-        record.add("New Column");
+        record.add(i18n.get(MetaDbfTableModel.class, "New_Column", "New Column"));        
         record.add(DBF_TYPE_CHARACTER);
         record.add(new Integer(12));
         record.add(new Integer(0));
         addRecord(record);
-        if (DEBUG)
+        if (DEBUG) {
             Debug.output("Adding record: " + record);
+        }
     }
 
     /**
      * Decide what to do when the window closes.
      */
+    @Override
     public void exitWindowClosed() {
         if (source != null && source.dirty) {
             int check = JOptionPane.showConfirmDialog(null,
-                    "Do you want to save your changes?",
-                    "Confirm Close",
+                    i18n.get(MetaDbfTableModel.class, "Do_you_want_to_save_your_changes", "Do you want to save your changes?"),
+                    i18n.get(MetaDbfTableModel.class, "Confirm_Close", "Confirm Close"),
                     JOptionPane.YES_NO_OPTION);
+           
+            
             if (check == JOptionPane.YES_OPTION) {
                 fireTableStructureChanged();
             } else {
@@ -259,20 +282,21 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
 
     public void showGUI(String filename) {
         if (frame == null) {
-            frame = new JFrame("Editing Attribute File Structure");
+            frame = new JFrame(i18n.get(MetaDbfTableModel.class, "Editing_Attribute_File_Structure", "Editing Attribute File Structure"));            
 
             frame.getContentPane().add(getGUI(filename, MODIFY_ROW_MASK
                     | DONE_MASK),
                     BorderLayout.CENTER);
 
-            JButton saveButton = new JButton("Save Changes");
+            JButton saveButton = new JButton(i18n.get(MetaDbfTableModel.class, "Save Changes", "Save Changes"));            
             saveButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     int check = JOptionPane.showConfirmDialog(null,
-                            "Are you sure you want to modify the table format?",
-                            "Confirm Save",
+                            i18n.get(MetaDbfTableModel.class, "Are_you_sure_you_want_to_modify_the_table_format", 
+                                     "Are you sure you want to modify the table format?"),
+                            i18n.get(MetaDbfTableModel.class, "Confirm_Save", "Confirm Save"),
                             JOptionPane.OK_CANCEL_OPTION);
-
+                                      
                     if (check == JOptionPane.YES_OPTION) {
                         fireTableStructureChanged();
                     }
@@ -284,6 +308,7 @@ public class MetaDbfTableModel extends DbfTableModel implements ShapeConstants {
 
             frame.setSize(500, 300);
             frame.addWindowListener(new WindowAdapter() {
+                @Override
                 public void windowClosing(WindowEvent e) {
                     // need a shutdown event to notify other gui beans
                     // and
