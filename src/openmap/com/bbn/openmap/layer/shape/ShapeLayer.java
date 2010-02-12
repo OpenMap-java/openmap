@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.bbn.openmap.dataAccess.shape.DbfHandler;
@@ -555,6 +556,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
             box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             JPanel stuff = new JPanel();
+            JLabel label  = new JLabel(i18n.get(ShapeLayer.class, "rendering_attributes", "Rendering Attributes: "));
+            stuff.add(label);
             // stuff.setLayout(new BoxLayout(stuff,
             // BoxLayout.X_AXIS));
             // stuff.setAlignmentX(Component.LEFT_ALIGNMENT);
