@@ -23,8 +23,12 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.FocusEvent;
 import java.util.Properties;
+
+import javax.swing.JPanel;
 
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.propertyEditor.PropertyConsumerPropertyEditor;
@@ -49,7 +53,24 @@ public class DrawingAttributesPropertyEditor extends
 
     /** Returns the editor GUI. */
     public Component getCustomEditor() {
-        return getDrawingAttributes().getGUI();
+        JPanel panel = new JPanel();
+        GridBagLayout layout = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        
+        c.anchor = GridBagConstraints.WEST;
+        
+        panel.setLayout(layout);
+        Component comp = getDrawingAttributes().getGUI();
+        layout.setConstraints(comp, c);
+        panel.add(comp);
+        
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1.0f;
+        JPanel filler = new JPanel();
+        layout.setConstraints(filler, c);
+        panel.add(filler);
+        
+        return panel;
     }
 
     public DrawingAttributes getDrawingAttributes() {
