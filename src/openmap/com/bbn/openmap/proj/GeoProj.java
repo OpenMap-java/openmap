@@ -1049,14 +1049,48 @@ public abstract class GeoProj extends Proj {
 		return forward(llp.getY(), llp.getX(), new Point2D.Double(), false);
 	}
 
+	/**
+	 * Project the point into view space.
+	 * 
+	 * @param lat
+	 *            latitude in decimal degrees.
+	 * @param lon
+	 *            longitue in decimal degrees.
+	 */
 	public Point2D forward(double lat, double lon, Point2D pt) {
 		return forward(lat, lon, pt, false);
 	}
 
+	/**
+	 * Project the point into view space.
+	 * 
+	 * @param lat
+	 *            latitude
+	 * @param lon
+	 *            longitude
+	 * @param pt
+	 *            return point
+	 * @param isRadian
+	 *            true if lat/lon are radians instead of decimal degrees
+	 * @return
+	 */
 	public Point2D forward(float lat, float lon, Point2D pt, boolean isRadian) {
 		return forward((double) lat, (double) lon, pt, isRadian);
 	}
 
+	/**
+	 * Project the point into view space.
+	 * 
+	 * @param lat
+	 *            latitude
+	 * @param lon
+	 *            longitude
+	 * @param pt
+	 *            return point
+	 * @param isRadian
+	 *            true if lat/lon are radians instead of decimal degrees
+	 * @return
+	 */
 	abstract public Point2D forward(double lat, double lon, Point2D pt,
 			boolean isRadian);
 
