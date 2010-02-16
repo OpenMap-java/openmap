@@ -27,6 +27,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import com.bbn.openmap.Environment;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.gui.BasicMapPanel;
@@ -93,7 +94,7 @@ public class OpenMap {
         OpenMapFrame omf = (OpenMapFrame) getMapHandler().get(com.bbn.openmap.gui.OpenMapFrame.class);
 
         if (omf == null) {
-            omf = new OpenMapFrame("OpenMap");
+            omf = new OpenMapFrame(Environment.get(Environment.Title));
             getMapHandler().add(omf);
         }
 
