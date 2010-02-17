@@ -21,11 +21,15 @@
 
 package com.bbn.openmap.layer;
 
+import java.awt.Color;
+import java.beans.PropertyVetoException;
 import java.util.Properties;
 
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.omGraphics.OMText;
@@ -87,8 +91,6 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
     protected int defaultHeight = 10;
 
     // property text values
-    public static final String LineColorProperty = "lineColor";
-    public static final String TextColorProperty = "textColor";
     public static final String UnitOfMeasureProperty = "unitOfMeasure";
     public static final String LocationXOffsetProperty = "locationXoffset";
     public static final String LocationYOffsetProperty = "locationYoffset";
@@ -103,6 +105,8 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
     protected int width = defaultWidth;
     protected int height = defaultHeight;
 
+    protected DrawingAttributes dAttributes = DrawingAttributes.getDefaultClone();
+    
     /**
      * Sets the properties for the <code>Layer</code>. This allows
      * <code>Layer</code> s to get a richer set of parameters than
@@ -115,12 +119,8 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
         super.setProperties(prefix, properties);
         prefix = com.bbn.openmap.util.PropUtils.getScopedPropertyPrefix(prefix);
 
-        lineColor = PropUtils.parseColorFromProperties(properties, prefix
-                + LineColorProperty, defaultLineColorString);
-
-        textColor = PropUtils.parseColorFromProperties(properties, prefix
-                + TextColorProperty, defaultTextColorString);
-
+        dAttributes.setProperties(prefix, properties);
+        
         String unitOfMeasure = properties.getProperty(prefix
                 + UnitOfMeasureProperty);
         setUnitOfMeasure(unitOfMeasure);
@@ -164,15 +164,15 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
         graphics.clear();
 
         OMLine line = new OMLine(left_x, lower_y, right_x, lower_y);
-        line.setLinePaint(lineColor);
+        dAttributes.setTo(line);
         graphics.add(line);
 
         line = new OMLine(left_x, lower_y, left_x, upper_y);
-        line.setLinePaint(lineColor);
+        dAttributes.setTo(line);
         graphics.add(line);
 
         line = new OMLine(right_x, lower_y, right_x, upper_y);
-        line.setLinePaint(lineColor);
+        dAttributes.setTo(line);
         graphics.add(line);
 
         LatLonPoint loc1 = projection.inverse(left_x, lower_y, new LatLonPoint.Double());
@@ -200,7 +200,9 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
 
         OMText text = new OMText((left_x + right_x) / 2, lower_y - 3, ""
                 + outtext, OMText.JUSTIFY_CENTER);
-        text.setLinePaint(textColor);
+        dAttributes.setTo(text);
+        text.setTextMatteColor((Color) dAttributes.getMattingPaint());
+        text.setMattingPaint(OMColor.clear);
         graphics.add(text);
         graphics.generate(projection);
 
