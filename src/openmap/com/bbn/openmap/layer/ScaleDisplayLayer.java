@@ -21,7 +21,9 @@
 
 package com.bbn.openmap.layer;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.beans.PropertyVetoException;
 import java.util.Properties;
 
@@ -200,8 +202,13 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
 
         OMText text = new OMText((left_x + right_x) / 2, lower_y - 3, ""
                 + outtext, OMText.JUSTIFY_CENTER);
+        
+        Font font = text.getFont();
+        text.setFont(font.deriveFont(font.getStyle(), font.getSize() + 4));
+
         dAttributes.setTo(text);
         text.setTextMatteColor((Color) dAttributes.getMattingPaint());
+        text.setTextMatteStroke(new BasicStroke(5));
         text.setMattingPaint(OMColor.clear);
         graphics.add(text);
         graphics.generate(projection);
