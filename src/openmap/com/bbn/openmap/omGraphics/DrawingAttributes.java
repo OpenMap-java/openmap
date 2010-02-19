@@ -123,8 +123,8 @@ import com.bbn.openmap.util.propertyEditor.OptionPropertyEditor;
  * 
  * 
  */
-public class DrawingAttributes implements ActionListener, Serializable,
-        Cloneable, PropertyConsumer, PropertyChangeListener, ShapeRenderer {
+public class DrawingAttributes implements ActionListener, Serializable, Cloneable,
+        PropertyConsumer, PropertyChangeListener, ShapeRenderer {
 
     /**
      * 
@@ -370,9 +370,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
     public Stroke cloneBasicStroke() {
         if (stroke instanceof BasicStroke) {
             BasicStroke bs = (BasicStroke) stroke;
-            return new BasicStroke(bs.getLineWidth(), bs.getEndCap(), bs
-                    .getLineJoin(), bs.getMiterLimit(), bs.getDashArray(), bs
-                    .getDashPhase());
+            return new BasicStroke(bs.getLineWidth(), bs.getEndCap(), bs.getLineJoin(),
+                    bs.getMiterLimit(), bs.getDashArray(), bs.getDashPhase());
         } else {
             return new BasicStroke(1);
         }
@@ -403,14 +402,13 @@ public class DrawingAttributes implements ActionListener, Serializable,
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final DrawingAttributes da = (DrawingAttributes)obj;
+        final DrawingAttributes da = (DrawingAttributes) obj;
         return (da.linePaint == linePaint
                 &&
                 // da.textPaint == textPaint &&
                 da.selectPaint == selectPaint && da.fillPaint == fillPaint
-                && da.mattingPaint == mattingPaint
-                && da.fillPattern == fillPattern && da.stroke == stroke
-                && da.baseScale == baseScale && da.matted == matted);
+                && da.mattingPaint == mattingPaint && da.fillPattern == fillPattern
+                && da.stroke == stroke && da.baseScale == baseScale && da.matted == matted);
     }
 
     /**
@@ -491,8 +489,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
         }
 
         if (propertyChangeSupport != null) {
-            propertyChangeSupport.firePropertyChange("stroke", oldStroke,
-                                                     stroke);
+            propertyChangeSupport.firePropertyChange("stroke", oldStroke, stroke);
         }
     }
 
@@ -525,8 +522,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
                 dash[i] *= scaleFactor;
             }
 
-            return new BasicStroke(lineWidth, endCaps, lineJoins, miterLimit,
-                    dash, bs.getDashPhase());
+            return new BasicStroke(lineWidth, endCaps, lineJoins, miterLimit, dash,
+                    bs.getDashPhase());
         }
         return stroke;
     }
@@ -546,20 +543,16 @@ public class DrawingAttributes implements ActionListener, Serializable,
             if (baseScale != NONE) {
                 BufferedImage bi = fillPattern.getImage();
                 float scaleFactor = scale / baseScale;
-                Image image = bi
-                        .getScaledInstance(
-                                           (int) (bi.getWidth() * scaleFactor),
-                                           (int) (bi.getHeight() * scaleFactor),
-                                           Image.SCALE_SMOOTH);
+                Image image = bi.getScaledInstance((int) (bi.getWidth() * scaleFactor),
+                                                   (int) (bi.getHeight() * scaleFactor),
+                                                   Image.SCALE_SMOOTH);
                 try {
-                    bi = BufferedImageHelper.getBufferedImage(image, 0, 0, -1,
-                                                              -1);
+                    bi = BufferedImageHelper.getBufferedImage(image, 0, 0, -1, -1);
 
-                    return new TexturePaint(bi, new Rectangle(0, 0, bi
-                            .getWidth(), bi.getHeight()));
+                    return new TexturePaint(bi, new Rectangle(0, 0, bi.getWidth(),
+                            bi.getHeight()));
                 } catch (InterruptedException ie) {
-                    Debug
-                            .error("DrawingAttributes: Interrupted Exception scaling texture paint");
+                    Debug.error("DrawingAttributes: Interrupted Exception scaling texture paint");
                 }
             }
             return fillPattern;
@@ -589,8 +582,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
             mattedCheckBox.setIcon(getMattedIcon(mattingPaint, linePaint));
         }
 
-        propertyChangeSupport.firePropertyChange("linePaint", oldPaint,
-                                                 linePaint);
+        propertyChangeSupport.firePropertyChange("linePaint", oldPaint, linePaint);
     }
 
     /**
@@ -620,8 +612,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
             selectColorButton.setIcon(getIconForPaint(selectPaint, false));
         }
 
-        propertyChangeSupport.firePropertyChange("selectPaint", oldPaint,
-                                                 selectPaint);
+        propertyChangeSupport.firePropertyChange("selectPaint", oldPaint, selectPaint);
     }
 
     /**
@@ -650,8 +641,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
             fillColorButton.setIcon(getIconForPaint(fillPaint, true));
         }
 
-        propertyChangeSupport.firePropertyChange("fillPaint", oldPaint,
-                                                 fillPaint);
+        propertyChangeSupport.firePropertyChange("fillPaint", oldPaint, fillPaint);
     }
 
     /**
@@ -689,8 +679,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
             mattedCheckBox.setIcon(getMattedIcon(mattingPaint, linePaint));
         }
 
-        propertyChangeSupport.firePropertyChange("mattingPaint", oldPaint,
-                                                 mattingPaint);
+        propertyChangeSupport.firePropertyChange("mattingPaint", oldPaint, mattingPaint);
     }
 
     /**
@@ -718,8 +707,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
             // GUI doesn't handle fill patterns yet.
         }
 
-        propertyChangeSupport.firePropertyChange("fillPattern", oldPattern,
-                                                 fillPattern);
+        propertyChangeSupport.firePropertyChange("fillPattern", oldPattern, fillPattern);
     }
 
     /**
@@ -896,6 +884,15 @@ public class DrawingAttributes implements ActionListener, Serializable,
         if (graphic == null)
             return;
 
+        // More efficient to touch each OMGraphic once if this is a list,
+        // instead of cycling through for each parameter.
+        if (graphic instanceof OMGraphicList) {
+            for (OMGraphic omg : ((OMGraphicList) graphic)) {
+                setTo(omg, resetGUI);
+            }
+            return;
+        }
+
         setOMGraphicEdgeAttributes(graphic);
 
         // If the fillPattern is set to a TexturePaint, and the
@@ -977,8 +974,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
      * @param scale
      *            scale to compare to the base scale.
      */
-    public void setOMGraphicEdgeAttributesForScale(OMGraphic graphic,
-                                                   float scale) {
+    public void setOMGraphicEdgeAttributesForScale(OMGraphic graphic, float scale) {
 
         graphic.setLinePaint(linePaint);
         graphic.setSelectPaint(selectPaint);
@@ -1027,8 +1023,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
         if (command == LineColorCommand && linePaint instanceof Color) {
             interString = i18n.get(DrawingAttributes.class, "chooseLineColor",
                                    "Choose Line Color");
-            tmpPaint = getNewPaint((Component) source, interString,
-                                   (Color) linePaint);
+            tmpPaint = getNewPaint((Component) source, interString, (Color) linePaint);
             if (tmpPaint != null) {
                 setLinePaint(tmpPaint);
 
@@ -1039,8 +1034,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
         } else if (command == FillColorCommand && fillPaint instanceof Color) {
             interString = i18n.get(DrawingAttributes.class, "chooseFillColor",
                                    "Choose Fill Color");
-            tmpPaint = getNewPaint((Component) source, interString,
-                                   (Color) fillPaint);
+            tmpPaint = getNewPaint((Component) source, interString, (Color) fillPaint);
             if (tmpPaint != null) {
                 setFillPaint(tmpPaint);
 
@@ -1048,22 +1042,17 @@ public class DrawingAttributes implements ActionListener, Serializable,
                                                             icon_height, true));
             }
 
-        } else if (command == SelectColorCommand
-                && selectPaint instanceof Color) {
-            interString = i18n.get(DrawingAttributes.class,
-                                   "chooseSelectColor", "Choose Select Color");
-            tmpPaint = getNewPaint((Component) source, interString,
-                                   (Color) selectPaint);
+        } else if (command == SelectColorCommand && selectPaint instanceof Color) {
+            interString = i18n.get(DrawingAttributes.class, "chooseSelectColor",
+                                   "Choose Select Color");
+            tmpPaint = getNewPaint((Component) source, interString, (Color) selectPaint);
             if (tmpPaint != null) {
                 setSelectPaint(tmpPaint);
             }
-        } else if (command == MattingColorCommand
-                && mattingPaint instanceof Color) {
-            interString = i18n
-                    .get(DrawingAttributes.class, "chooseMattingColor",
-                         "Choose Matting Color");
-            tmpPaint = getNewPaint((Component) source, interString,
-                                   (Color) mattingPaint);
+        } else if (command == MattingColorCommand && mattingPaint instanceof Color) {
+            interString = i18n.get(DrawingAttributes.class, "chooseMattingColor",
+                                   "Choose Matting Color");
+            tmpPaint = getNewPaint((Component) source, interString, (Color) mattingPaint);
             if (tmpPaint != null) {
                 setMattingPaint(tmpPaint);
 
@@ -1073,13 +1062,12 @@ public class DrawingAttributes implements ActionListener, Serializable,
         } else if (command == MattedCommand) {
             setMatted(mattedEnabledItem.getState());
 
-            lineButton.setIcon(getDrawingAttributesIcon(this, icon_width,
-                                                        icon_height, true));
+            lineButton.setIcon(getDrawingAttributesIcon(this, icon_width, icon_height,
+                                                        true));
         } else {
             if (Debug.debugging("drawingattributes")) {
-                Debug
-                        .output("DrawingAttributes.actionPerformed: unrecognized command > "
-                                + command);
+                Debug.output("DrawingAttributes.actionPerformed: unrecognized command > "
+                        + command);
             }
         }
     }
@@ -1099,8 +1087,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
      * @return Color chosen from the JColorChooser, null if lock for chooser
      *         can't be acquired.
      */
-    protected Color getNewPaint(Component source, String title,
-                                Color startingColor) {
+    protected Color getNewPaint(Component source, String title, Color startingColor) {
         Color newPaint = null;
         if (getLock()) {
             newPaint = OMColorChooser.showDialog(source, title, startingColor);
@@ -1166,12 +1153,11 @@ public class DrawingAttributes implements ActionListener, Serializable,
         // toolbar.add(new JLabel(" "));
         // toolbar.add(mattedCheckBox);
 
-        lineButton = new JButton(getDrawingAttributesIcon(this, icon_width,
-                                                          icon_height, true));
+        lineButton = new JButton(getDrawingAttributesIcon(this, icon_width, icon_height,
+                                                          true));
 
         lineButton.setToolTipText(i18n.get(DrawingAttributes.class,
-                                           "drawingAttributesButton",
-                                           I18n.TOOLTIP,
+                                           "drawingAttributesButton", I18n.TOOLTIP,
                                            "Modify Drawing Parameters"));
 
         lineButton.addActionListener(new ActionListener() {
@@ -1252,8 +1238,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
      */
     public JMenu getColorMenu() {
         JMenu colorMenu = null;
-        colorMenu = new JMenu(i18n.get(GraphicAttributes.class, "Color",
-                                       "Color"));
+        colorMenu = new JMenu(i18n.get(GraphicAttributes.class, "Color", "Color"));
         colorMenu.add(lineColorItem);
         colorMenu.add(fillColorItem);
         colorMenu.add(selectColorItem);
@@ -1295,8 +1280,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
             lineColorItem.setActionCommand(LineColorCommand);
             lineColorItem.addActionListener(this);
             interString = i18n.get(DrawingAttributes.class, "lineColorItem",
-                                   I18n.TOOLTIP,
-                                   "Change edge color for rendering.");
+                                   I18n.TOOLTIP, "Change edge color for rendering.");
             lineColorItem.setToolTipText(interString);
         }
 
@@ -1311,8 +1295,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
             fillColorItem.setActionCommand(FillColorCommand);
             fillColorItem.addActionListener(this);
             interString = i18n.get(DrawingAttributes.class, "fillColorItem",
-                                   I18n.TOOLTIP,
-                                   "Change fill color for rendering.");
+                                   I18n.TOOLTIP, "Change fill color for rendering.");
             fillColorItem.setToolTipText(interString);
         }
 
@@ -1327,10 +1310,9 @@ public class DrawingAttributes implements ActionListener, Serializable,
             selectColorItem = new JMenuItem(interString);
             selectColorItem.setActionCommand(SelectColorCommand);
             selectColorItem.addActionListener(this);
-            interString = i18n
-                    .get(DrawingAttributes.class, "selectColorItem",
-                         I18n.TOOLTIP,
-                         "Change highlight edge color rendered during selection.");
+            interString = i18n.get(DrawingAttributes.class, "selectColorItem",
+                                   I18n.TOOLTIP,
+                                   "Change highlight edge color rendered during selection.");
             selectColorItem.setToolTipText(interString);
         }
 
@@ -1343,10 +1325,9 @@ public class DrawingAttributes implements ActionListener, Serializable,
             mattingColorItem = new JMenuItem(interString);
             mattingColorItem.setActionCommand(MattingColorCommand);
             mattingColorItem.addActionListener(this);
-            interString = i18n
-                    .get(DrawingAttributes.class, "mattingColorItem",
-                         I18n.TOOLTIP,
-                         "Change the color of the border around the edge.");
+            interString = i18n.get(DrawingAttributes.class, "mattingColorItem",
+                                   I18n.TOOLTIP,
+                                   "Change the color of the border around the edge.");
             mattingColorItem.setToolTipText(interString);
         }
 
@@ -1362,8 +1343,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
             mattedEnabledItem.setActionCommand(MattedCommand);
             mattedEnabledItem.addActionListener(this);
             interString = i18n.get(DrawingAttributes.class, "mattedEnableItem",
-                                   I18n.TOOLTIP,
-                                   "Enable/Disable matting on edge.");
+                                   I18n.TOOLTIP, "Enable/Disable matting on edge.");
             mattedEnabledItem.setToolTipText(interString);
         }
 
@@ -1512,13 +1492,15 @@ public class DrawingAttributes implements ActionListener, Serializable,
         fillPaint = PropUtils.parseColorFromProperties(props, realPrefix
                 + fillPaintProperty, fillPaint);
 
-        matted = PropUtils.booleanFromProperties(props, realPrefix
-                + mattedProperty, matted);
+        matted = PropUtils.booleanFromProperties(props, realPrefix + mattedProperty,
+                                                 matted);
 
-        pointRadius = PropUtils.intFromProperties(props, realPrefix
-                + PointRadiusProperty, pointRadius);
-        pointOval = PropUtils.booleanFromProperties(props, realPrefix
-                + PointOvalProperty, pointOval);
+        pointRadius = PropUtils.intFromProperties(props,
+                                                  realPrefix + PointRadiusProperty,
+                                                  pointRadius);
+        pointOval = PropUtils.booleanFromProperties(props,
+                                                    realPrefix + PointOvalProperty,
+                                                    pointOval);
 
         float lineWidth;
         boolean basicStrokeDefined = false;
@@ -1527,16 +1509,14 @@ public class DrawingAttributes implements ActionListener, Serializable,
             basicStrokeDefined = true;
         }
 
-        lineWidth = PropUtils
-                .floatFromProperties(
-                                     props,
-                                     realPrefix + lineWidthProperty,
-                                     (basicStrokeDefined ? ((BasicStroke) stroke)
-                                             .getLineWidth()
-                                             : defaultLineWidth));
+        lineWidth = PropUtils.floatFromProperties(
+                                                  props,
+                                                  realPrefix + lineWidthProperty,
+                                                  (basicStrokeDefined ? ((BasicStroke) stroke).getLineWidth()
+                                                          : defaultLineWidth));
 
-        baseScale = PropUtils.floatFromProperties(props, realPrefix
-                + baseScaleProperty, baseScale);
+        baseScale = PropUtils.floatFromProperties(props, realPrefix + baseScaleProperty,
+                                                  baseScale);
 
         // Look for a dash pattern properties to come up with a stroke
         String dPattern = props.getProperty(realPrefix + dashPatternProperty);
@@ -1559,16 +1539,13 @@ public class DrawingAttributes implements ActionListener, Serializable,
                 }
 
             } catch (NoSuchElementException nsee) {
-                Debug
-                        .error("DrawingAttributes.init: dash pattern attributes wrong - should be dashPattern=(number pixels on) (number pixels off)");
+                Debug.error("DrawingAttributes.init: dash pattern attributes wrong - should be dashPattern=(number pixels on) (number pixels off)");
                 lineDash = null;
             } catch (NumberFormatException nfe) {
-                Debug
-                        .error("DrawingAttributes.init: Number format exception for dashPattern");
+                Debug.error("DrawingAttributes.init: Number format exception for dashPattern");
                 lineDash = null;
             } catch (NullPointerException npe) {
-                Debug
-                        .error("DrawingAttributes.init: Caught null pointer exception - probably resulting from non-float number format exception for dashPattern");
+                Debug.error("DrawingAttributes.init: Caught null pointer exception - probably resulting from non-float number format exception for dashPattern");
                 lineDash = null;
             }
 
@@ -1595,8 +1572,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
                 try {
                     dashPhase = Float.valueOf(dPhase).floatValue();
                 } catch (NumberFormatException nfe) {
-                    Debug
-                            .error("DrawingAttributes.init: Number format exception for dashPhase");
+                    Debug.error("DrawingAttributes.init: Number format exception for dashPhase");
                     dashPhase = defaultDashPhase;
                 }
             } else {
@@ -1607,25 +1583,23 @@ public class DrawingAttributes implements ActionListener, Serializable,
                 }
             }
 
-            String capPropertyString = props.getProperty(realPrefix
-                    + capProperty);
+            String capPropertyString = props.getProperty(realPrefix + capProperty);
             int cap = BasicStroke.CAP_BUTT;
             if (capPropertyString != null) {
                 try {
-                    cap = java.awt.BasicStroke.class
-                            .getField(capPropertyString).getInt(null);
+                    cap = java.awt.BasicStroke.class.getField(capPropertyString).getInt(
+                                                                                        null);
                 } catch (NoSuchFieldException nsfe) {
                 } catch (IllegalAccessException iae) {
                 }
             }
 
-            String joinPropertyString = props.getProperty(realPrefix
-                    + capProperty);
+            String joinPropertyString = props.getProperty(realPrefix + capProperty);
             int join = BasicStroke.JOIN_MITER;
             if (joinPropertyString != null) {
                 try {
-                    join = java.awt.BasicStroke.class
-                            .getField(joinPropertyString).getInt(null);
+                    join = java.awt.BasicStroke.class.getField(joinPropertyString).getInt(
+                                                                                          null);
                 } catch (NoSuchFieldException nsfe) {
                 } catch (IllegalAccessException iae) {
                 }
@@ -1634,8 +1608,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
             float miterLimit = PropUtils.floatFromProperties(props, realPrefix
                     + miterLimitProperty, 10.0f);
 
-            setStroke(new BasicStroke(lineWidth, cap, join, miterLimit,
-                    lineDash, dashPhase));
+            setStroke(new BasicStroke(lineWidth, cap, join, miterLimit, lineDash,
+                    dashPhase));
 
         } else if (basicStrokeDefined) {
             setStroke(new BasicStroke(lineWidth));
@@ -1647,25 +1621,24 @@ public class DrawingAttributes implements ActionListener, Serializable,
 
             try {
 
-                URL textureImageURL = PropUtils
-                        .getResourceOrFileOrURL(this, fPattern);
+                URL textureImageURL = PropUtils.getResourceOrFileOrURL(this, fPattern);
 
                 if (textureImageURL != null) {
 
-                    BufferedImage bi = BufferedImageHelper
-                            .getBufferedImage(textureImageURL, 0, 0, -1, -1);
+                    BufferedImage bi = BufferedImageHelper.getBufferedImage(
+                                                                            textureImageURL,
+                                                                            0, 0, -1, -1);
 
-                    fillPattern = new TexturePaint(bi, new Rectangle(0, 0, bi
-                            .getWidth(), bi.getHeight()));
+                    fillPattern = new TexturePaint(bi, new Rectangle(0, 0, bi.getWidth(),
+                            bi.getHeight()));
                 }
             } catch (MalformedURLException murle) {
                 Debug.error("DrawingAttributes.init: bad texture URL - \n     "
                         + realPrefix + fillPatternProperty);
                 fillPattern = null;
             } catch (InterruptedException ie) {
-                Debug
-                        .error("DrawingAttributes.init: bad problems getting texture URL - \n"
-                                + ie);
+                Debug.error("DrawingAttributes.init: bad problems getting texture URL - \n"
+                        + ie);
                 fillPattern = null;
             }
         }
@@ -1693,33 +1666,30 @@ public class DrawingAttributes implements ActionListener, Serializable,
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
         if (linePaint instanceof Color) {
-            props.put(prefix + linePaintProperty, PropUtils
-                    .getProperty((Color) linePaint));
+            props.put(prefix + linePaintProperty,
+                      PropUtils.getProperty((Color) linePaint));
         }
         // if (textPaint instanceof Color) {
         // props.put(prefix + textPaintProperty,
         // PropUtils.getProperty((Color)textPaint));
         // }
         if (fillPaint instanceof Color) {
-            props.put(prefix + fillPaintProperty, PropUtils
-                    .getProperty((Color) fillPaint));
+            props.put(prefix + fillPaintProperty,
+                      PropUtils.getProperty((Color) fillPaint));
         }
         if (selectPaint instanceof Color) {
-            props.put(prefix + selectPaintProperty, PropUtils
-                    .getProperty((Color) selectPaint));
+            props.put(prefix + selectPaintProperty,
+                      PropUtils.getProperty((Color) selectPaint));
         }
         if (mattingPaint instanceof Color) {
-            props.put(prefix + mattingPaintProperty, PropUtils
-                    .getProperty((Color) mattingPaint));
+            props.put(prefix + mattingPaintProperty,
+                      PropUtils.getProperty((Color) mattingPaint));
         }
 
         props.put(prefix + PointRadiusProperty, Integer.toString(pointRadius));
-        props
-                .put(prefix + PointOvalProperty, new Boolean(pointOval)
-                        .toString());
+        props.put(prefix + PointOvalProperty, new Boolean(pointOval).toString());
 
-        props.put(prefix + fillPatternProperty, (fPattern == null ? ""
-                : fPattern));
+        props.put(prefix + fillPatternProperty, (fPattern == null ? "" : fPattern));
 
         Stroke bs = getStroke();
 
@@ -1728,8 +1698,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
         }
 
         if (bs instanceof BasicStroke) {
-            props.put(prefix + lineWidthProperty, Float
-                    .toString(((BasicStroke) bs).getLineWidth()));
+            props.put(prefix + lineWidthProperty,
+                      Float.toString(((BasicStroke) bs).getLineWidth()));
 
             float[] fa = ((BasicStroke) bs).getDashArray();
             if (fa != null) {
@@ -1738,19 +1708,19 @@ public class DrawingAttributes implements ActionListener, Serializable,
                     dp.append(" " + Float.toString(fa[i]));
                 }
                 props.put(prefix + dashPatternProperty, dp.toString());
-                props.put(prefix + dashPhaseProperty, Float
-                        .toString(((BasicStroke) bs).getDashPhase()));
+                props.put(prefix + dashPhaseProperty,
+                          Float.toString(((BasicStroke) bs).getDashPhase()));
             } else {
                 props.put(prefix + dashPatternProperty, "");
                 props.put(prefix + dashPhaseProperty, "");
             }
 
-            props.put(prefix + capProperty, Integer.toString(((BasicStroke) bs)
-                    .getEndCap()));
-            props.put(prefix + joinProperty, Integer
-                    .toString(((BasicStroke) bs).getLineJoin()));
-            props.put(prefix + miterLimitProperty, Float
-                    .toString(((BasicStroke) bs).getMiterLimit()));
+            props.put(prefix + capProperty,
+                      Integer.toString(((BasicStroke) bs).getEndCap()));
+            props.put(prefix + joinProperty,
+                      Integer.toString(((BasicStroke) bs).getLineJoin()));
+            props.put(prefix + miterLimitProperty,
+                      Float.toString(((BasicStroke) bs).getMiterLimit()));
 
         }
 
@@ -1785,8 +1755,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
         }
         String interString;
 
-        interString = i18n.get(DrawingAttributes.class, linePaintProperty,
-                               I18n.TOOLTIP, "Edge color for graphics.");
+        interString = i18n.get(DrawingAttributes.class, linePaintProperty, I18n.TOOLTIP,
+                               "Edge color for graphics.");
         list.put(linePaintProperty, interString);
         interString = i18n.get(DrawingAttributes.class, linePaintProperty,
                                linePaintProperty);
@@ -1798,8 +1768,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
         // list.put(textPaintProperty + ScopedEditorProperty,
         // "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        interString = i18n.get(DrawingAttributes.class, fillPaintProperty,
-                               I18n.TOOLTIP, "Fill color for graphics.");
+        interString = i18n.get(DrawingAttributes.class, fillPaintProperty, I18n.TOOLTIP,
+                               "Fill color for graphics.");
         list.put(fillPaintProperty, interString);
         interString = i18n.get(DrawingAttributes.class, fillPaintProperty,
                                fillPaintProperty);
@@ -1808,8 +1778,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
                  "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
         interString = i18n.get(DrawingAttributes.class, selectPaintProperty,
-                               I18n.TOOLTIP,
-                               "Selected edge color for graphics.");
+                               I18n.TOOLTIP, "Selected edge color for graphics.");
         list.put(selectPaintProperty, interString);
         interString = i18n.get(DrawingAttributes.class, selectPaintProperty,
                                selectPaintProperty);
@@ -1817,9 +1786,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
         list.put(selectPaintProperty + ScopedEditorProperty,
                  "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        interString = i18n
-                .get(DrawingAttributes.class, mattingPaintProperty,
-                     I18n.TOOLTIP, "Matting edge color for graphics.");
+        interString = i18n.get(DrawingAttributes.class, mattingPaintProperty,
+                               I18n.TOOLTIP, "Matting edge color for graphics.");
         list.put(mattingPaintProperty, interString);
         interString = i18n.get(DrawingAttributes.class, mattingPaintProperty,
                                mattingPaintProperty);
@@ -1827,10 +1795,9 @@ public class DrawingAttributes implements ActionListener, Serializable,
         list.put(mattingPaintProperty + ScopedEditorProperty,
                  "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
 
-        interString = i18n
-                .get(DrawingAttributes.class, fillPatternProperty,
-                     I18n.TOOLTIP,
-                     "Image file to use for fill pattern for graphics (optional).");
+        interString = i18n.get(DrawingAttributes.class, fillPatternProperty,
+                               I18n.TOOLTIP,
+                               "Image file to use for fill pattern for graphics (optional).");
         list.put(fillPatternProperty, interString);
         interString = i18n.get(DrawingAttributes.class, fillPatternProperty,
                                fillPatternProperty);
@@ -1838,9 +1805,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
         list.put(fillPatternProperty + ScopedEditorProperty,
                  "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
-        interString = i18n
-                .get(DrawingAttributes.class, lineWidthProperty, I18n.TOOLTIP,
-                     "Line width for edges of graphics");
+        interString = i18n.get(DrawingAttributes.class, lineWidthProperty, I18n.TOOLTIP,
+                               "Line width for edges of graphics");
         list.put(lineWidthProperty, interString);
         interString = i18n.get(DrawingAttributes.class, lineWidthProperty,
                                lineWidthProperty);
@@ -1849,40 +1815,35 @@ public class DrawingAttributes implements ActionListener, Serializable,
         // list.put(dashPatternProperty, "<HTML><BODY>Line dash
         // pattern, represented by<br>space separated numbers<br> (on
         // off on ...)</BODY></HTML>");
-        interString = i18n
-                .get(DrawingAttributes.class, dashPatternProperty,
-                     I18n.TOOLTIP,
-                     "Line dash pattern, represented by space separated numbers (on off on ...)");
+        interString = i18n.get(DrawingAttributes.class, dashPatternProperty,
+                               I18n.TOOLTIP,
+                               "Line dash pattern, represented by space separated numbers (on off on ...)");
         list.put(dashPatternProperty, interString);
         interString = i18n.get(DrawingAttributes.class, dashPatternProperty,
                                dashPatternProperty);
         list.put(dashPatternProperty + LabelEditorProperty, interString);
 
-        interString = i18n.get(DrawingAttributes.class, dashPhaseProperty,
-                               I18n.TOOLTIP,
+        interString = i18n.get(DrawingAttributes.class, dashPhaseProperty, I18n.TOOLTIP,
                                "Phase for dash pattern (Default is 0)");
         list.put(dashPhaseProperty, interString);
         interString = i18n.get(DrawingAttributes.class, dashPhaseProperty,
                                dashPhaseProperty);
         list.put(dashPhaseProperty + LabelEditorProperty, interString);
 
-        interString = i18n
-                .get(
-                     DrawingAttributes.class,
-                     baseScaleProperty,
-                     I18n.TOOLTIP,
-                     "<HTML><BODY>Scale which should be used as the base scale for the <br>patterns and line width. If set, size of pattern and <br>widths will be adjusted to the map scale</BODY></HTML>");
+        interString = i18n.get(
+                               DrawingAttributes.class,
+                               baseScaleProperty,
+                               I18n.TOOLTIP,
+                               "<HTML><BODY>Scale which should be used as the base scale for the <br>patterns and line width. If set, size of pattern and <br>widths will be adjusted to the map scale</BODY></HTML>");
         list.put(baseScaleProperty, interString);
         interString = i18n.get(DrawingAttributes.class, baseScaleProperty,
                                baseScaleProperty);
         list.put(baseScaleProperty + LabelEditorProperty, interString);
 
-        interString = i18n
-                .get(DrawingAttributes.class, mattedProperty, I18n.TOOLTIP,
-                     "Flag to enable a thin black matting to be drawn around graphics.");
+        interString = i18n.get(DrawingAttributes.class, mattedProperty, I18n.TOOLTIP,
+                               "Flag to enable a thin black matting to be drawn around graphics.");
         list.put(mattedProperty, interString);
-        interString = i18n.get(DrawingAttributes.class, mattedProperty,
-                               mattedProperty);
+        interString = i18n.get(DrawingAttributes.class, mattedProperty, mattedProperty);
         list.put(mattedProperty + LabelEditorProperty, interString);
         list.put(mattedProperty + ScopedEditorProperty,
                  "com.bbn.openmap.util.propertyEditor.OnOffPropertyEditor");
@@ -1894,8 +1855,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
                                "Point pixel radius");
         list.put(PointRadiusProperty + LabelEditorProperty, interString);
 
-        interString = i18n.get(DrawingAttributes.class, PointOvalProperty,
-                               I18n.TOOLTIP,
+        interString = i18n.get(DrawingAttributes.class, PointOvalProperty, I18n.TOOLTIP,
                                "Set points to be oval or rectangular.");
         list.put(PointOvalProperty, interString);
         interString = i18n.get(DrawingAttributes.class, PointOvalProperty,
@@ -1904,11 +1864,9 @@ public class DrawingAttributes implements ActionListener, Serializable,
         list.put(PointOvalProperty + ScopedEditorProperty,
                  "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-        PropUtils
-                .setI18NPropertyInfo(i18n, list, DrawingAttributes.class,
-                                     capProperty, "Line Cap",
-                                     "Type of cap to use on end of lines.",
-                                     "com.bbn.openmap.util.propertyEditor.ComboBoxPropertyEditor");
+        PropUtils.setI18NPropertyInfo(i18n, list, DrawingAttributes.class, capProperty,
+                                      "Line Cap", "Type of cap to use on end of lines.",
+                                      "com.bbn.openmap.util.propertyEditor.ComboBoxPropertyEditor");
 
         list.put(capProperty + OptionPropertyEditor.ScopedOptionsProperty,
                  "butt round square");
@@ -1916,15 +1874,10 @@ public class DrawingAttributes implements ActionListener, Serializable,
         list.put(capProperty + ".round", "CAP_ROUND");
         list.put(capProperty + ".square", "CAP_SQUARE");
 
-        PropUtils
-                .setI18NPropertyInfo(
-                                     i18n,
-                                     list,
-                                     DrawingAttributes.class,
-                                     joinProperty,
-                                     "Line Join",
-                                     "Type of joint to use on corner of line joins.",
-                                     "com.bbn.openmap.util.propertyEditor.ComboBoxPropertyEditor");
+        PropUtils.setI18NPropertyInfo(i18n, list, DrawingAttributes.class, joinProperty,
+                                      "Line Join",
+                                      "Type of joint to use on corner of line joins.",
+                                      "com.bbn.openmap.util.propertyEditor.ComboBoxPropertyEditor");
 
         list.put(joinProperty + OptionPropertyEditor.ScopedOptionsProperty,
                  "miter round bevel");
@@ -1932,15 +1885,9 @@ public class DrawingAttributes implements ActionListener, Serializable,
         list.put(joinProperty + ".round", "JOIN_ROUND");
         list.put(joinProperty + ".bevel", "JOIN_BEVEL");
 
-        PropUtils
-                .setI18NPropertyInfo(
-                                     i18n,
-                                     list,
-                                     DrawingAttributes.class,
-                                     miterLimitProperty,
-                                     "Miter Limit",
-                                     "Number of pixels to use for line joints.",
-                                     null);
+        PropUtils.setI18NPropertyInfo(i18n, list, DrawingAttributes.class,
+                                      miterLimitProperty, "Miter Limit",
+                                      "Number of pixels to use for line joints.", null);
 
         // This line messes order up when called by classes using
         // DrawingAttributes.
@@ -1953,11 +1900,10 @@ public class DrawingAttributes implements ActionListener, Serializable,
         return " " + linePaintProperty + " " + selectPaintProperty + " "
                 + fillPaintProperty + " "
                 + /* textPaintProperty + " " + */mattingPaintProperty + " "
-                + fillPatternProperty + " " + mattedProperty + " "
-                + lineWidthProperty + " " + dashPatternProperty + " "
-                + dashPhaseProperty + " " + capProperty + " " + joinProperty
-                + " " + miterLimitProperty + " " + PointRadiusProperty + " "
-                + PointOvalProperty;
+                + fillPatternProperty + " " + mattedProperty + " " + lineWidthProperty
+                + " " + dashPatternProperty + " " + dashPhaseProperty + " " + capProperty
+                + " " + joinProperty + " " + miterLimitProperty + " "
+                + PointRadiusProperty + " " + PointOvalProperty;
     }
 
     /**
@@ -1986,8 +1932,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
         if (pce.getSource() instanceof BasicStrokeEditorMenu) {
             setStroke((BasicStroke) pce.getNewValue());
 
-            lineButton.setIcon(getDrawingAttributesIcon(this, icon_width,
-                                                        icon_height, true));
+            lineButton.setIcon(getDrawingAttributesIcon(this, icon_width, icon_height,
+                                                        true));
 
         }
     }
@@ -2032,13 +1978,11 @@ public class DrawingAttributes implements ActionListener, Serializable,
      *            let the DrawingAttributes object take a shot at creating one
      *            for a Color that fits the shape given.
      */
-    public void render(Graphics2D g, Shape shape,
-                       boolean replaceColorWithGradient) {
+    public void render(Graphics2D g, Shape shape, boolean replaceColorWithGradient) {
 
         if (matted) {
             if (stroke instanceof BasicStroke) {
-                g.setStroke(new BasicStroke(((BasicStroke) stroke)
-                        .getLineWidth() + 2f));
+                g.setStroke(new BasicStroke(((BasicStroke) stroke).getLineWidth() + 2f));
                 g.setPaint(mattingPaint);
                 g.draw(shape);
             }
@@ -2092,9 +2036,9 @@ public class DrawingAttributes implements ActionListener, Serializable,
             Color color = (Color) paint;
             Rectangle rect = shape.getBounds();
             paint = new GradientPaint((float) rect.getWidth() * .3f,
-                    (float) rect.getHeight() * .3f,
-                    color.brighter().brighter(), (float) rect.getWidth() * .7f,
-                    (float) rect.getHeight() * .7f, color.darker().darker());
+                    (float) rect.getHeight() * .3f, color.brighter().brighter(),
+                    (float) rect.getWidth() * .7f, (float) rect.getHeight() * .7f,
+                    color.darker().darker());
         }
         return paint;
     }
@@ -2115,8 +2059,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
         innerda.setLinePaint(Color.white);
         innerda.setStroke(new BasicStroke(1));
 
-        OpenMapAppPartCollection collection = OpenMapAppPartCollection
-                .getInstance();
+        OpenMapAppPartCollection collection = OpenMapAppPartCollection.getInstance();
         IconPartList parts = new IconPartList();
 
         if (paint instanceof Color) {
@@ -2160,8 +2103,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
             da.setFillPaint(paint);
         }
 
-        OpenMapAppPartCollection collection = OpenMapAppPartCollection
-                .getInstance();
+        OpenMapAppPartCollection collection = OpenMapAppPartCollection.getInstance();
         IconPartList parts = new IconPartList();
 
         if (paint instanceof Color || paint == OMColor.clear) {
@@ -2201,8 +2143,7 @@ public class DrawingAttributes implements ActionListener, Serializable,
         fillda.setFillPaint(linePaint);
         da.setStroke(new BasicStroke(2));
 
-        OpenMapAppPartCollection collection = OpenMapAppPartCollection
-                .getInstance();
+        OpenMapAppPartCollection collection = OpenMapAppPartCollection.getInstance();
 
         IconPartList parts = new IconPartList();
         parts.add(collection.get("FILL_BOX", fillda));
@@ -2225,10 +2166,8 @@ public class DrawingAttributes implements ActionListener, Serializable,
      *            if true, draw line on the icon horizontally, else draw it
      *            vertically.
      */
-    public static ImageIcon getDrawingAttributesIcon(
-                                                     DrawingAttributes attributes,
-                                                     int width,
-                                                     int height,
+    public static ImageIcon getDrawingAttributesIcon(DrawingAttributes attributes,
+                                                     int width, int height,
                                                      boolean horizontalOrientation) {
 
         BufferedImage bigImage = new BufferedImage(width, height,
