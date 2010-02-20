@@ -1612,7 +1612,9 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
                     dashPhase));
 
         } else if (basicStrokeDefined) {
-            setStroke(new BasicStroke(lineWidth));
+            BasicStroke currentStroke = (BasicStroke) getStroke();
+            setStroke(new BasicStroke(lineWidth, currentStroke.getEndCap(), currentStroke.getLineJoin(), currentStroke.getMiterLimit(),
+                                      currentStroke.getDashArray(), currentStroke.getDashPhase()));
         }
 
         // OK, Fill pattern next...
@@ -1707,7 +1709,7 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
                 for (int i = 0; i < fa.length; i++) {
                     dp.append(" " + Float.toString(fa[i]));
                 }
-                props.put(prefix + dashPatternProperty, dp.toString());
+                props.put(prefix + dashPatternProperty, dp.toString().trim());
                 props.put(prefix + dashPhaseProperty,
                           Float.toString(((BasicStroke) bs).getDashPhase()));
             } else {
