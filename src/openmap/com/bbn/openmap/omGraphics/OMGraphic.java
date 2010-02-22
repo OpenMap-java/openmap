@@ -77,7 +77,7 @@ import com.bbn.openmap.proj.Projection;
  * @see OMGraphicList
  * @see Projection
  */
-public interface OMGraphic extends OMGeometry, OMGraphicConstants {
+public interface OMGraphic extends OMGeometry, OMGraphicConstants, Cloneable {
 
     /**
      * Set the render type of the graphic. Accepts RENDERTYPE_LATLON,
@@ -408,5 +408,11 @@ public interface OMGraphic extends OMGeometry, OMGraphicConstants {
      * line type choice can be changed.
      */
     boolean hasLineTypeChoice();
+    
+    /**
+     * To support clone operations.  Might not be implemented to the depth desired.
+     * @return
+     */
+    Object clone();
 
 }
