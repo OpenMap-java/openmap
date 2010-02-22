@@ -22,19 +22,20 @@
 
 package com.bbn.openmap.gui;
 
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JToolBar;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.bbn.openmap.Layer;
@@ -42,7 +43,6 @@ import com.bbn.openmap.MapBean;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.LayerStatusEvent;
 import com.bbn.openmap.event.LayerStatusListener;
-import com.bbn.openmap.gui.LayersPanel.MyWorker;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -54,8 +54,8 @@ public class StatusLightPanel extends OMComponentPanel implements
     protected int numlayers = 0;
     protected MapBean map;
     protected Layer[] layers;
-    protected Hashtable statusLights = new Hashtable();
-    protected JToolBar container = null;
+    protected Hashtable<Layer, JButton> statusLights = new Hashtable<Layer, JButton>();
+    protected JComponent container = null;
 
     protected final static transient URL greyURL = StatusLightPanel.class.getResource("grey.gif");
     public final static transient ImageIcon greyIcon = new ImageIcon(greyURL, "unknown");
@@ -181,7 +181,7 @@ public class StatusLightPanel extends OMComponentPanel implements
             return null;
         }
 
-        JButton newLight = (JButton) statusLights.get(layer);
+        JButton newLight = statusLights.get(layer);
 
         if (newLight == null) {
             //          newLight = new JButton(greyIcon);
@@ -212,10 +212,16 @@ public class StatusLightPanel extends OMComponentPanel implements
         }
 
         if (lightTriggers) {
+//            if (container == null) {
+//                container = new JToolBar();
+//                container.setFloatable(false);
+//            }
+            
             if (container == null) {
-                container = new JToolBar();
-                container.setFloatable(false);
+                container = new JPanel();
+                container.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
             }
+            
             add(container);
         } else {
             container = null;
@@ -246,7 +252,7 @@ public class StatusLightPanel extends OMComponentPanel implements
      * @param icon the icon light representing the status.
      */
     protected void setLayerStatus(Layer layer, Icon icon) {
-        JButton statusgif = (JButton) statusLights.get(layer);
+        JButton statusgif = statusLights.get(layer);
         if (statusgif != null) {
             statusgif.setIcon(icon);
 
@@ -255,10 +261,8 @@ public class StatusLightPanel extends OMComponentPanel implements
                     //                  this.map.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     waitingForLayers = true;
                 } else if (icon == greenIcon) {
-                    Enumeration lights = statusLights.elements();
                     waitingForLayers = false;
-                    while (lights.hasMoreElements()) {
-                        JButton light = (JButton) lights.nextElement();
+                    for (JButton light : statusLights.values()) {
                         if (light.getIcon() == redIcon) {
                             waitingForLayers = true;
                         }
