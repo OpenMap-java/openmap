@@ -812,5 +812,15 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
                 toPoint.getRadLat(),
                 toPoint.getRadLon());
     }
+    
+    /**
+     * Get a new LatLonPoint a distance and azimuth from another point, based on the spherical earth model.
+     * @param distance radians
+     * @param azimuth radians
+     * @return
+     */
+    public LatLonPoint getPoint(double distance, double azimuth) {
+        return GreatCircle.sphericalBetween(getRadLat(), getRadLon(), distance, azimuth);
+    }
 
 }
