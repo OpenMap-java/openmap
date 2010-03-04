@@ -211,6 +211,7 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
         case RENDERTYPE_OFFSET:
             lat = dis.readFloat();
             lon = dis.readFloat();
+            // Fall through...
         case RENDERTYPE_XY:
             x = dis.readInt();
             y = dis.readInt();

@@ -869,25 +869,23 @@ public class SpatialIndex extends ShapeUtils {
             int result = ssx.read(ixRecord, 0, SPATIAL_INDEX_RECORD_LENGTH);
             // if (result == -1) {
             if (result <= 0) {
-                logger.finer("Processed " + recNum + " records");
+                logger.info("Processed " + recNum + " records");
                 break;// EOF
             } else {
                 recNum++;
                 int offset = readBEInt(ixRecord, 0);
                 int length = readBEInt(ixRecord, 4);
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("Record "
-                            + recNum
-                            + ": "
-                            + offset
-                            + ", "
-                            + length
-                            + (showBounds ? ("; " + readLEDouble(ixRecord, 8)
-                                    + ", " + readLEDouble(ixRecord, 16) + ", "
-                                    + readLEDouble(ixRecord, 24) + ", " + readLEDouble(ixRecord,
-                                    32))
-                                    : ""));
-                }
+                logger.info("Record "
+                        + recNum
+                        + ": "
+                        + offset
+                        + ", "
+                        + length
+                        + (showBounds ? ("; " + readLEDouble(ixRecord, 8)
+                                + ", " + readLEDouble(ixRecord, 16) + ", "
+                                + readLEDouble(ixRecord, 24) + ", " + readLEDouble(ixRecord,
+                                32))
+                                : ""));
             }
         }
         ssx.close();
@@ -908,12 +906,12 @@ public class SpatialIndex extends ShapeUtils {
         out.println("Creates spatial index <file.ssx> from "
                 + "shape file <file.shp>.");
         out.println();
-        out.println("java " + className + " -d file.ssx");
+        out.println("java " + className + " -d file.shp");
         out.println("Dumps spatial index information, excluding "
                 + "bounding boxes to stdout.  Useful for "
                 + "comparing to a shape index.");
         out.println();
-        out.println("java " + className + " -d -b file.ssx");
+        out.println("java " + className + " -d -b file.shp");
         out.println("Dumps spatial index information including "
                 + "bounding boxes to stdout.");
         out.println();
@@ -1018,6 +1016,8 @@ public class SpatialIndex extends ShapeUtils {
             System.exit(0);
         }
 
+        logger.setLevel(Level.FINER);
+
         if (argv[0].equals("-d")) {
             if (argc == 2) {
                 String name = argv[1];
@@ -1031,7 +1031,7 @@ public class SpatialIndex extends ShapeUtils {
                 printUsage(System.err);
                 System.exit(1);
             }
-        } else if ((argc == 3) && argv[0].equals("-c")) {
+        } else if ((argc == 2) && argv[0].equals("-c")) {
             String shapeFile = argv[1];
             SpatialIndex.FileIndex.create(shapeFile);
         } else {

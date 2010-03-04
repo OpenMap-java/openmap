@@ -31,13 +31,17 @@ public class CoordinateReferenceSystem {
 
     private Ellipsoid ellipsoid = Ellipsoid.WGS_84;
 
-    private Properties defaultProjectionParameters;
-
+    private Properties defaultProjectionParameters = new Properties();
+    
+    private AxisOrder axisOrder;
+    
     protected static final Map<String, CoordinateReferenceSystem> crss = Collections.synchronizedMap(new TreeMap<String, CoordinateReferenceSystem>());
 
     static {
         // unprojected wgs84
-        addCrs(new CoordinateReferenceSystem("EPSG:4326", LatLonGCT.INSTANCE, LLXYLoader.class, Ellipsoid.WGS_84));
+        addCrs(new CoordinateReferenceSystem("EPSG:4326", LatLonGCT.INSTANCE,
+                LLXYLoader.class, Ellipsoid.WGS_84, null, null,
+                AxisOrder.northBeforeEast));
         addCrs(new CoordinateReferenceSystem("CRS:84", LatLonGCT.INSTANCE, LLXYLoader.class, Ellipsoid.WGS_84));
 
         // unprojected ED50
@@ -52,15 +56,10 @@ public class CoordinateReferenceSystem {
         // Estonian Coordinate System of 1997 - EPSG:3301
         // http://spatialreference.org/ref/epsg/3301/
         // bounding box values from a national WMS from Estonian
-        addLcc("EPSG:3301",
-                Ellipsoid.GRS_1980,
-                59.33333333333334,
-                58d,
-                57.51755393055556d,
-                24d,
-                500000,
-                6375000,
-                new BoundingBox(300000, 6.3e+06, 800000, 6.7e+06));
+        addLcc("EPSG:3301", Ellipsoid.GRS_1980, 59.33333333333334, 58d,
+                57.51755393055556d, 24d, 500000, 6375000, new BoundingBox(
+                        300000, 6.3e+06, 800000, 6.7e+06),
+                AxisOrder.northBeforeEast);
         
         // ETRS89 / ETRS-TM35FIN
         // http://spatialreference.org/ref/epsg/3067/
@@ -71,7 +70,7 @@ public class CoordinateReferenceSystem {
     private static void addLcc(String code, Ellipsoid ellps, double sp1,
                                double sp2, double refLat, double centMeri,
                                double falseEast, double falseNorth,
-                               BoundingBox bbox) {
+                               BoundingBox bbox, AxisOrder axisOrder) {
 
         Properties props = new Properties();
         props.put(LambertConformalLoader.StandardParallelOneProperty,
@@ -90,7 +89,7 @@ public class CoordinateReferenceSystem {
         props.put(ProjectionFactory.CENTER,
                 new LatLonPoint.Double(refLat, centMeri));
 
-        addCrs(new CoordinateReferenceSystem(code, new LambertConformalGCT(props), LambertConformalLoader.class, ellps, props, bbox));
+        addCrs(new CoordinateReferenceSystem(code, new LambertConformalGCT(props), LambertConformalLoader.class, ellps, props, bbox, axisOrder));
     }
 
     private static void addCrs(CoordinateReferenceSystem crs) {
@@ -144,7 +143,9 @@ public class CoordinateReferenceSystem {
             gct = new MultiGCT(new GeoCoordTransformation[] { egct, utmgct });
         }
 
-        addCrs(new CoordinateReferenceSystem(epsg, gct, UTMProjectionLoader.class, ellps, projProps, bbox));
+        addCrs(new CoordinateReferenceSystem(epsg, gct,
+                UTMProjectionLoader.class, ellps, projProps, bbox,
+                AxisOrder.eastBeforeNorth));
     }
 
     public CoordinateReferenceSystem(String code,
@@ -154,21 +155,24 @@ public class CoordinateReferenceSystem {
         this.coordTransform = coordConverter;
         this.projLoaderClassName = projLoaderClass.getName();
         this.ellipsoid = ellipsoid;
+        this.axisOrder = AxisOrder.eastBeforeNorth;
 
-        defaultProjectionParameters = new Properties();
         defaultProjectionParameters.put(ProjectionFactory.DATUM, ellipsoid);
     }
 
     public CoordinateReferenceSystem(String code,
             GeoCoordTransformation coordConverter, Class<?> projLoaderClass,
             Ellipsoid ellipsoid, Properties projectionParameters,
-            BoundingBox boundingBox) {
+            BoundingBox boundingBox, AxisOrder axisOrder) {
         this(code, coordConverter, projLoaderClass, ellipsoid);
 
-        defaultProjectionParameters.putAll(projectionParameters);
+        if (projectionParameters != null) {
+            defaultProjectionParameters.putAll(projectionParameters);
+        }
         this.boundingBox = boundingBox;
+        this.axisOrder = axisOrder;
     }
-
+    
     public static CoordinateReferenceSystem getForCode(String code) {
         CoordinateReferenceSystem crs = crss.get(code);
         // TODO: handle extra parameters like
@@ -226,6 +230,10 @@ public class CoordinateReferenceSystem {
     public BoundingBox getBoundingBox() {
         return boundingBox;
     }
+    
+    public AxisOrder getAxisOrder() {
+        return axisOrder;
+    }
 
     public void prepareProjection(GeoProj proj) {
         // TODO: do we need this??
@@ -233,9 +241,7 @@ public class CoordinateReferenceSystem {
     }
 
     /**
-     * Convert the given (projected) coordinate in the CRS to a LatLonPoint.
-     * 
-     * TODO: should we return null or throw if not possible?
+     * Convert the given (projected) coordinate in the CRS to a LatLonPoint without respect for axis order.
      * 
      * @param x
      * @param y
@@ -244,11 +250,36 @@ public class CoordinateReferenceSystem {
     public LatLonPoint inverse(double x, double y) {
         return coordTransform.inverse(x, y);
     }
+    
+    /**
+     * Convert the given (projected) coordinate in the CRS to a LatLonPoint. If the useAxisOrder parameter
+     * is true, then the {@link CoordinateReferenceSystem}s {@link AxisOrder} will be used.
+     * 
+     * @param x
+     * @param y
+     * @return
+     */
+    public LatLonPoint inverse(double x, double y, boolean useAxisOrder) {
+        if (useAxisOrder && (getAxisOrder() == AxisOrder.northBeforeEast)) {
+            return coordTransform.inverse(y, x);
+        }
+        return coordTransform.inverse(x, y);
+    }
 
     public Point2D forward(double lat, double lon) {
         return coordTransform.forward(lat, lon);
     }
 
+    public Point2D forward(double lat, double lon, boolean useAxisOrder) {
+        Point2D p = coordTransform.forward(lat, lon);
+        if (useAxisOrder && (getAxisOrder() == AxisOrder.northBeforeEast)) {
+            double x = p.getX();
+            double y = p.getY();
+            p.setLocation(y, x);
+        }
+        return p;
+    }
+    
     public int hashCode() {
         return getCode().hashCode();
     }

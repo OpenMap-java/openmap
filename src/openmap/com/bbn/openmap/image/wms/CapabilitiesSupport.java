@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -29,9 +27,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
-import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -85,7 +81,7 @@ public class CapabilitiesSupport {
      * @param requestHandler
      * @param requestProperties
      */
-    public CapabilitiesSupport(Properties props, String scheme, String hostName, int port, String path)
+    CapabilitiesSupport(Properties props, String scheme, String hostName, int port, String path)
             throws WMSException {
         
         wmsTitle = props.getProperty(WMSPrefix + "Title", "Sample Title");
@@ -153,27 +149,16 @@ public class CapabilitiesSupport {
     /**
      * @return
      */
-    private Document generateCapabilitiesDocument() {
+    private Document generateCapabilitiesDocument(Version version) {
         
-        Document doc;
-        
-        try {
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            
-            DOMImplementation impl = builder.getDOMImplementation();
-            DocumentType doctype = impl.createDocumentType("wms", "WMT_MS_Capabilities",
-                    "http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd");
-            doc = impl.createDocument(null, "WMT_MS_Capabilities", doctype);
-        } catch (javax.xml.parsers.ParserConfigurationException ex) {
-            throw new RuntimeException("Cannot create new Xml Document:" + ex.getMessage());
-        }
+        Document doc = version.createCapabilitiesDocumentStart();
         
         Element root = doc.getDocumentElement();
-        root.setAttribute("version", "1.1.1");
+        root.setAttribute("version", version.getVersionString());
         root.setAttribute("updateSequence", Integer.toString(updateSequence));
 
         Element service = doc.createElement("Service");
-        service.appendChild(textnode(doc, "Name", "OGC:WMS"));
+        service.appendChild(textnode(doc, "Name", version.getServiceName()));
         service.appendChild(textnode(doc, "Title", wmsTitle));
         service.appendChild(textnode(doc, "Abstract", wmsAbstract));
 
@@ -208,23 +193,23 @@ public class CapabilitiesSupport {
         }
         capability.appendChild(exceptionElement);
 
-        capability.appendChild(createLayersElement(doc));
+        capability.appendChild(createLayersElement(doc, version));
         root.appendChild(capability);
 
         return doc;
     }
     
-    private Element createLayersElement(Document doc) {
+    private Element createLayersElement(Document doc, Version version) {
         Element layers = doc.createElement("Layer");
         layers.appendChild(textnode(doc, "Title", layersTitle));
         for (Iterator<String> it = crsCodes.iterator(); it.hasNext();) {
-            layers.appendChild(textnode(doc, "SRS", it.next()));
+            layers.appendChild(textnode(doc, version.getCoordinateReferenceSystemAcronym(), it.next()));
         }
         
         // append bounding boxes
-        appendLatLonBoundingBox(doc, layers);
+        layers.appendChild(version.createLatLonBoundingBox(doc));
         for (Iterator<String> it = crsCodes.iterator(); it.hasNext();) {
-            appendSRSBoundingBox(doc, layers, it.next());
+            appendSRSBoundingBox(doc, layers, it.next(), version);
         }
         
         // append layers
@@ -233,12 +218,12 @@ public class CapabilitiesSupport {
         List<IWmsLayer> reverseLayers = new ArrayList<IWmsLayer>(wmslayers);
         Collections.reverse(reverseLayers);
         for (IWmsLayer wmsLayer : reverseLayers) {
-            createLayerElement(doc, layers, wmsLayer);
+            createLayerElement(doc, layers, wmsLayer, version);
         }
         return layers;
     }
     
-    private void createLayerElement(Document doc, Element layers, IWmsLayer wmsLayer){
+    private void createLayerElement(Document doc, Element layers, IWmsLayer wmsLayer, Version version) {
         org.w3c.dom.Element layerElement = (org.w3c.dom.Element) node(doc, "Layer");
         layerElement.setAttribute("queryable", wmsLayer.isQueryable() ? "1" : "0");
         // implied layerElement.setAttribute("cascaded", "0");
@@ -285,7 +270,8 @@ public class CapabilitiesSupport {
                         // may not be listed
                         url.append(onlineResourcesList[FMT_MAIN]);
                         url.append("?").append(WMTConstants.SERVICE).append("=WMS");
-                        url.append("&").append(WMTConstants.VERSION).append("=1.1.1");
+                        url.append("&").append(WMTConstants.VERSION).append("=");
+                        url.append(version.getVersionString());
                         url.append("&").append(WMTConstants.REQUEST).append("=");
                         url.append(WMTConstants.GETLEGENDGRAPHIC);
                         url.append("&").append(WMTConstants.LAYER).append("=");
@@ -311,7 +297,7 @@ public class CapabilitiesSupport {
             IWmsLayer[] nestedLayers = ((IWmsNestedLayer) wmsLayer).getNestedLayers();
             if (nestedLayers != null) {
                 for (int i = 0; i < nestedLayers.length; i++) {
-                    createLayerElement(doc, layerElement, nestedLayers[i]);
+                    createLayerElement(doc, layerElement, nestedLayers[i], version);
                 }
             }
         }
@@ -380,23 +366,14 @@ public class CapabilitiesSupport {
         this.layersTitle = title;
     }
 
-    private void appendLatLonBoundingBox(Document doc, Element layers) {
-        org.w3c.dom.Element e1 = (org.w3c.dom.Element) node(doc, "LatLonBoundingBox");
-        e1.setAttribute("minx", "-180");
-        e1.setAttribute("miny", "-90");
-        e1.setAttribute("maxx", "180");
-        e1.setAttribute("maxy", "90");
-        layers.appendChild(e1);
-    }
-
-    private void appendSRSBoundingBox(Document doc, Element layers, String crsCode) {
+    private void appendSRSBoundingBox(Document doc, Element layers, String crsCode, Version version) {
         CoordinateReferenceSystem crs = CoordinateReferenceSystem.getForCode(crsCode);
         BoundingBox bbox = crs.getBoundingBox();
         if (bbox == null) {
             return;
         }
         org.w3c.dom.Element e1 = (org.w3c.dom.Element) node(doc, "BoundingBox");
-        e1.setAttribute("SRS", crs.getCode());
+        e1.setAttribute(version.getCoordinateReferenceSystemAcronym(), crs.getCode());
         e1.setAttribute("minx", Double.toString(bbox.getMinX()));
         e1.setAttribute("miny", Double.toString(bbox.getMinY()));
         e1.setAttribute("maxx", Double.toString(bbox.getMaxX()));
@@ -409,7 +386,7 @@ public class CapabilitiesSupport {
      * 
      * @throws IOException, TransformerException, TransformerConfigurationException
      */
-    public String generateXMLString() throws IOException, TransformerConfigurationException,
+    String generateXMLString(Version version) throws IOException, TransformerConfigurationException,
                     TransformerException {
         
         StringWriter strWriter = new StringWriter();
@@ -420,10 +397,13 @@ public class CapabilitiesSupport {
         tr.setOutputProperty(OutputKeys.VERSION, "1.0");
         tr.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
-        Document document = generateCapabilitiesDocument();
+        Document document = generateCapabilitiesDocument(version);
         
         // system id not transformed by default transformer
-        tr.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, document.getDoctype().getSystemId());
+        if (document.getDoctype() != null) {
+            tr.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, document
+                    .getDoctype().getSystemId());
+        }
         
         // Serialize XML Document
         tr.transform(new DOMSource(document), new StreamResult(strWriter));

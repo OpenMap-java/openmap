@@ -9,7 +9,7 @@ import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.proj.coords.CoordinateReferenceSystem;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
-class GetMapRequestParameters implements FormatRequestParameter,
+class GetMapRequestParameters extends WmsRequestParameters implements FormatRequestParameter,
 		WidthAndHeightRequestParameters {
 
 	public int width;
@@ -18,9 +18,9 @@ class GetMapRequestParameters implements FormatRequestParameter,
 
 	public CoordinateReferenceSystem crs;
 
-	public LatLonPoint bboxLatLonMinXY;
+	public LatLonPoint bboxLatLonLowerLeft;
 
-	public LatLonPoint bboxLatLonMaxXY;
+	public LatLonPoint bboxLatLonUpperRight;
 
 	public LatLonPoint bboxLatLonCenter;
 

@@ -216,7 +216,6 @@ public class EventLayer extends OMGraphicHandlerLayer implements
                 "Class name of data importer",
                 null);
 
-        ;
         if (importer != null && importer instanceof PropertyConsumer) {
             ((PropertyConsumer) importer).getPropertyInfo(list);
         }

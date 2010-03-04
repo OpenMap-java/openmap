@@ -22,7 +22,6 @@
 
 package com.bbn.openmap.proj;
 
-import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 

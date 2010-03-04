@@ -2,7 +2,7 @@ package com.bbn.openmap.image.wms;
 
 import com.bbn.openmap.image.ImageFormatter;
 
-class GetLegendGraphicRequestParameters implements FormatRequestParameter,
+class GetLegendGraphicRequestParameters extends WmsRequestParameters implements FormatRequestParameter,
         WidthAndHeightRequestParameters {
 
     private int width;

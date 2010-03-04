@@ -1,21 +1,28 @@
-/*
- * 
- * Copyright (C) SISDEF Ltda. All rights reserved.
- * 
- * Created on 25-feb-2005
- */
+// **********************************************************************
+// 
+// <copyright>
+// 
+//  BBN Technologies
+//  10 Moulton Street
+//  Cambridge, MA 02138
+//  (617) 873-8000
+// 
+//  Copyright (C) BBNT Solutions LLC. All rights reserved.
+// 
+// </copyright>
+// **********************************************************************
+
 package com.bbn.openmap.event;
 
-import java.awt.AlphaComposite;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
@@ -24,8 +31,8 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
 
+import com.bbn.openmap.BufferedMapBean;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapBeanRepaintPolicy;
 import com.bbn.openmap.PanDelayMapBeanRepaintPolicy;
@@ -45,7 +52,7 @@ import com.bbn.openmap.util.PropUtils;
  * SelectMouseMode and DistanceMouseMode. Press and drag to pan. Double click to
  * recenter, CTRL double click to recenter and zoom. Shift-CTRL-Double click to
  * center and zoom out. Double click to select OMGraphics. Right press and drag
- * to measure.  Right click for popup menu.
+ * to measure. Right click for popup menu.
  */
 public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
 
@@ -57,7 +64,7 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
     public final static String ShowAngleProperty = "showAngle";
     public final static String RepaintToCleanProperty = "repaintToClean";
 
-    public final static float DEFAULT_OPAQUENESS = 0.5f;
+    public final static float DEFAULT_OPAQUENESS = 1.0f;
 
     public final static transient String modeID = "Gestures";
 
@@ -67,8 +74,8 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
     private int beanBufferWidth = 0;
     private int beanBufferHeight = 0;
     private int oX, oY;
-    private float opaqueness;
-    private boolean leaveShadow;
+    private float opaqueness = DEFAULT_OPAQUENESS;
+    private boolean leaveShadow = false;
     private boolean useCursor;
     public transient DecimalFormat df = new DecimalFormat("0.###");
     // The unit type, default mile
@@ -143,8 +150,7 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
     }
 
     /**
-     * @param useCursor
-     *            The useCursor to set.
+     * @param useCursor The useCursor to set.
      */
     public void setUseCursor(boolean useCursor) {
         this.useCursor = useCursor;
@@ -156,12 +162,13 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
                 Toolkit tk = Toolkit.getDefaultToolkit();
                 ImageIcon pointer = new ImageIcon(getClass().getResource("Gestures.gif"));
                 Dimension bestSize = tk.getBestCursorSize(pointer.getIconWidth(),
-                                                          pointer.getIconHeight());
-                Image pointerImage = ImageScaler.getOptimalScalingImage(
-                                                                        pointer.getImage(),
-                                                                        (int) bestSize.getWidth(),
-                                                                        (int) bestSize.getHeight());
-                Cursor cursor = tk.createCustomCursor(pointerImage, new Point(0, 0), "PP");
+                        pointer.getIconHeight());
+                Image pointerImage = ImageScaler.getOptimalScalingImage(pointer.getImage(),
+                        (int) bestSize.getWidth(),
+                        (int) bestSize.getHeight());
+                Cursor cursor = tk.createCustomCursor(pointerImage,
+                        new Point(0, 0),
+                        "PP");
                 setModeCursor(cursor);
                 return;
             } catch (Exception e) {
@@ -176,14 +183,13 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
         super.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        opaqueness = PropUtils.floatFromProperties(props, prefix + OpaquenessProperty,
-                                                   opaqueness);
-        leaveShadow = PropUtils.booleanFromProperties(props,
-                                                      prefix + LeaveShadowProperty,
-                                                      leaveShadow);
+        opaqueness = PropUtils.floatFromProperties(props, prefix
+                + OpaquenessProperty, opaqueness);
+        leaveShadow = PropUtils.booleanFromProperties(props, prefix
+                + LeaveShadowProperty, leaveShadow);
 
-        setUseCursor(PropUtils.booleanFromProperties(props, prefix + UseCursorProperty,
-                                                     isUseCursor()));
+        setUseCursor(PropUtils.booleanFromProperties(props, prefix
+                + UseCursorProperty, isUseCursor()));
 
         String name = props.getProperty(prefix + UnitProperty);
         if (name != null) {
@@ -197,8 +203,8 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
 
         setDisplayCircle(PropUtils.booleanFromProperties(props, prefix
                 + ShowCircleProperty, isDisplayCircle()));
-        setShowAngle(PropUtils.booleanFromProperties(props, prefix + ShowAngleProperty,
-                                                     isShowAngle()));
+        setShowAngle(PropUtils.booleanFromProperties(props, prefix
+                + ShowAngleProperty, isShowAngle()));
         setRepaintToClean(PropUtils.booleanFromProperties(props, prefix
                 + RepaintToCleanProperty, isRepaintToClean()));
 
@@ -208,30 +214,78 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
         props = super.getProperties(props);
         String prefix = PropUtils.getScopedPropertyPrefix(this);
         props.put(prefix + OpaquenessProperty, Float.toString(getOpaqueness()));
-        props.put(prefix + LeaveShadowProperty, Boolean.toString(isLeaveShadow()));
+        props.put(prefix + LeaveShadowProperty,
+                Boolean.toString(isLeaveShadow()));
         props.put(prefix + UseCursorProperty, Boolean.toString(isUseCursor()));
+        String unitValue = (unit != null ? unit.toString()
+                : AllUnitsPropertyValue);
+        props.put(prefix + UnitProperty, unitValue);
+        props.put(prefix + ShowCircleProperty,
+                new Boolean(isDisplayCircle()).toString());
+        props.put(prefix + ShowAngleProperty,
+                new Boolean(isShowAngle()).toString());
+        props.put(prefix + RepaintToCleanProperty,
+                new Boolean(isRepaintToClean()).toString());
         return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
 
-        PropUtils.setI18NPropertyInfo(
-                                      i18n,
-                                      props,
-                                      OMMouseMode.class,
-                                      OpaquenessProperty,
-                                      "Transparency",
-                                      "Transparency level for moving map, between 0 (clear) and 1 (opaque).",
-                                      null);
-        PropUtils.setI18NPropertyInfo(i18n, props, OMMouseMode.class,
-                                      LeaveShadowProperty, "Leave Shadow",
-                                      "Display current map in background while panning.",
-                                      "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        PropUtils.setI18NPropertyInfo(i18n,
+                props,
+                OMMouseMode.class,
+                OpaquenessProperty,
+                "Transparency",
+                "Transparency level for moving map, between 0 (clear) and 1 (opaque).",
+                null);
+        PropUtils.setI18NPropertyInfo(i18n,
+                props,
+                OMMouseMode.class,
+                LeaveShadowProperty,
+                "Leave Shadow",
+                "Display current map in background while panning.",
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-        PropUtils.setI18NPropertyInfo(i18n, props, OMMouseMode.class, UseCursorProperty,
-                                      "Use Cursor", "Use hand cursor for mouse mode.",
-                                      "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        PropUtils.setI18NPropertyInfo(i18n,
+                props,
+                OMMouseMode.class,
+                UseCursorProperty,
+                "Use Cursor",
+                "Use hand cursor for mouse mode.",
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+
+        PropUtils.setI18NPropertyInfo(i18n,
+                props,
+                OMMouseMode.class,
+                UnitProperty,
+                "Units",
+                "Units to use for measurements, from Length.name possibilities.",
+                null);
+
+        PropUtils.setI18NPropertyInfo(i18n,
+                props,
+                OMMouseMode.class,
+                ShowCircleProperty,
+                "Show Distance Circle",
+                "Flag to set whether the range circle is drawn at the end of the line (true/false).",
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+
+        PropUtils.setI18NPropertyInfo(i18n,
+                props,
+                OMMouseMode.class,
+                ShowAngleProperty,
+                "Show Angle",
+                "Flag to note the azimuth angle of the line in the information line (true/false).",
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+
+        PropUtils.setI18NPropertyInfo(i18n,
+                props,
+                OMMouseMode.class,
+                RepaintToCleanProperty,
+                "Paint to Clean",
+                "Flag to tell the map to repaint to clean up on a double click (true/false).",
+                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         return props;
     }
@@ -244,46 +298,20 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
      */
     public void mouseDragged(MouseEvent arg0) {
 
-        MapBean mb = ((MapBean) arg0.getSource());
-
-        MapBeanRepaintPolicy mbrp = mb.getMapBeanRepaintPolicy();
-        if (mbrp instanceof PanDelayMapBeanRepaintPolicy) {
-            ((PanDelayMapBeanRepaintPolicy) mbrp).setPanning(true);
-        }
-
         // Left mouse click, pan
         if (SwingUtilities.isLeftMouseButton(arg0)) {
+            MapBean mb = ((MapBean) arg0.getSource());
+
+            MapBeanRepaintPolicy mbrp = mb.getMapBeanRepaintPolicy();
+            if (mbrp instanceof PanDelayMapBeanRepaintPolicy) {
+                ((PanDelayMapBeanRepaintPolicy) mbrp).setPanning(true);
+            }
 
             Point2D pnt = mb.getNonRotatedLocation(arg0);
             int x = (int) pnt.getX();
             int y = (int) pnt.getY();
 
             if (!isPanning) {
-                int w = mb.getWidth();
-                int h = mb.getHeight();
-
-                /*
-                 * Making the image
-                 */
-
-                if (bufferedMapImage == null || bufferedRenderingImage == null) {
-                    createBuffers(w, h);
-                }
-
-                GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-                Graphics2D g = (Graphics2D) ge.createGraphics(bufferedMapImage);
-                g.setClip(0, 0, w, h);
-                Border border = mb.getBorder();
-                mb.setBorder(null);
-                if (mb.getRotation() != 0.0) {
-                    double angle = mb.getRotation();
-                    mb.setRotation(0.0);
-                    mb.paintAll(g);
-                    mb.setRotation(angle);
-                } else {
-                    mb.paintAll(g);
-                }
-                mb.setBorder(border);
 
                 oX = x;
                 oY = y;
@@ -291,61 +319,50 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
                 isPanning = true;
 
             } else {
-                if (bufferedMapImage != null && bufferedRenderingImage != null) {
-                    Graphics2D gr2d = (Graphics2D) bufferedRenderingImage.getGraphics();
-                    /*
-                     * Drawing original image without transparence and in the
-                     * initial position
-                     */
-                    if (leaveShadow) {
-                        gr2d.drawImage(bufferedMapImage, 0, 0, null);
-                    } else {
-                        gr2d.setPaint(mb.getBckgrnd());
-                        gr2d.fillRect(0, 0, mb.getWidth(), mb.getHeight());
-                    }
 
-                    /*
-                     * Drawing image with transparence and in the mouse position
-                     * minus origianl mouse click position
-                     */
-                    gr2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-                                                                 opaqueness));
-                    gr2d.drawImage(bufferedMapImage, x - oX, y - oY, null);
-
-                    ((Graphics2D) mb.getGraphics(true)).drawImage(bufferedRenderingImage,
-                                                                  0, 0, null);
-                }
+                ((BufferedMapBean) mb).panningTransform = AffineTransform.getTranslateInstance(x
+                        - oX,
+                        y - oY);
+                mb.repaint();
             }
         } else {
-            // right mouse click, measure
-            double lat1, lat2, long1, long2;
-            // set the map bean
-            theMap = (MapBean) (arg0.getSource());
-            // erase the old line and circle first
-            paintRubberband(rPoint1, rPoint2, coordString);
-            // get the current mouse location in latlon
-            rPoint2 = theMap.getCoordinates(arg0);
 
-            lat1 = rPoint1.getY();
-            long1 = rPoint1.getX();
-            // lat, lon of current mouse position
-            lat2 = rPoint2.getY();
-            long2 = rPoint2.getX();
-            // calculate great circle distance in nm
-            // distance = getGreatCircleDist(lat1, long1,
-            // lat2, long2, Length.NM);
-            distance = GreatCircle.sphericalDistance(ProjMath.degToRad(lat1),
-                                                     ProjMath.degToRad(long1),
-                                                     ProjMath.degToRad(lat2),
-                                                     ProjMath.degToRad(long2));
+            if (rPoint1 == null) {
+                rPoint1 = theMap.getCoordinates(arg0);
 
-            // calculate azimuth angle dec deg
-            double azimuth = getSphericalAzimuth(lat1, long1, lat2, long2);
-            coordString = createDistanceInformationLine(rPoint2, distance, azimuth);
+            } else {
+                // right mouse click, measure
+                double lat1, lat2, long1, long2;
+                // set the map bean
+                theMap = (MapBean) (arg0.getSource());
+                // erase the old line and circle first
+                paintRubberband(rPoint1, rPoint2, coordString);
+                // get the current mouse location in latlon
+                rPoint2 = theMap.getCoordinates(arg0);
 
-            // paint the new line and circle up to the current
-            // mouse location
-            paintRubberband(rPoint1, rPoint2, coordString);
+                lat1 = rPoint1.getY();
+                long1 = rPoint1.getX();
+                // lat, lon of current mouse position
+                lat2 = rPoint2.getY();
+                long2 = rPoint2.getX();
+                // calculate great circle distance in nm
+                // distance = getGreatCircleDist(lat1, long1,
+                // lat2, long2, Length.NM);
+                distance = GreatCircle.sphericalDistance(ProjMath.degToRad(lat1),
+                        ProjMath.degToRad(long1),
+                        ProjMath.degToRad(lat2),
+                        ProjMath.degToRad(long2));
+
+                // calculate azimuth angle dec deg
+                double azimuth = getSphericalAzimuth(lat1, long1, lat2, long2);
+                coordString = createDistanceInformationLine(rPoint2,
+                        distance,
+                        azimuth);
+
+                // paint the new line and circle up to the current
+                // mouse location
+                paintRubberband(rPoint1, rPoint2, coordString);
+            }
         }
         super.mouseDragged(arg0);
     }
@@ -354,8 +371,7 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
      * Process a mouse pressed event. Add the mouse location to the segment
      * vector. Calculate the cumulative total distance.
      * 
-     * @param e
-     *            mouse event.
+     * @param e mouse event.
      */
     public void mousePressed(MouseEvent e) {
         mouseSupport.fireMapMousePressed(e);
@@ -396,14 +412,11 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
         Point2D llp = map.getCoordinates(e);
 
         boolean shift = e.isShiftDown();
-        boolean control = e.isControlDown();
 
-        if (control) {
-            if (shift) {
-                p.setScale(p.getScale() * 2.0f);
-            } else {
-                p.setScale(p.getScale() / 2.0f);
-            }
+        if (shift) {
+            p.setScale(p.getScale() * 2.0f);
+        } else {
+            p.setScale(p.getScale() / 2.0f);
         }
 
         p.setCenter(llp);
@@ -415,19 +428,20 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
      *      Make Pan event for the map.
      */
     public void mouseReleased(MouseEvent arg0) {
-        Object obj = arg0.getSource();
-        if (!(obj instanceof MapBean)) {
-            return;
-        }
-
-        MapBean mb = (MapBean) obj;
-
-        MapBeanRepaintPolicy mbrp = mb.getMapBeanRepaintPolicy();
-        if (mbrp instanceof PanDelayMapBeanRepaintPolicy) {
-            ((PanDelayMapBeanRepaintPolicy) mbrp).setPanning(false);
-        }
-
         if (isPanning) {
+
+            Object obj = arg0.getSource();
+            if (!(obj instanceof MapBean)) {
+                return;
+            }
+
+            MapBean mb = (MapBean) obj;
+
+            MapBeanRepaintPolicy mbrp = mb.getMapBeanRepaintPolicy();
+            if (mbrp instanceof PanDelayMapBeanRepaintPolicy) {
+                ((PanDelayMapBeanRepaintPolicy) mbrp).setPanning(false);
+            }
+
             Projection proj = mb.getProjection();
             Point2D center = proj.forward(proj.getCenter());
 
@@ -435,8 +449,11 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
             int x = (int) pnt.getX();
             int y = (int) pnt.getY();
 
+            ((BufferedMapBean) mb).panningTransform = null;
+
             center.setLocation(center.getX() - x + oX, center.getY() - y + oY);
             mb.setCenter(proj.inverse(center));
+
             isPanning = false;
             // bufferedMapImage = null; //clean up when not active...
         } else {
@@ -501,10 +518,8 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
      * This method is synchronized to avoid creating the images multiple times
      * if width and height doesn't change.
      * 
-     * @param w
-     *            mapBean's width.
-     * @param h
-     *            mapBean's height.
+     * @param w mapBean's width.
+     * @param h mapBean's height.
      */
     public synchronized void createBuffers(int w, int h) {
         if (w > 0 && h > 0 && (w != beanBufferWidth || h != beanBufferHeight)) {
@@ -517,10 +532,8 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
     /**
      * Instantiates new image buffers.
      * 
-     * @param w
-     *            Non-zero mapBean's width.
-     * @param h
-     *            Non-zero mapBean's height.
+     * @param w Non-zero mapBean's width.
+     * @param h Non-zero mapBean's height.
      */
     protected void createBuffersImpl(int w, int h) {
         // Release system resources used by previous images...
@@ -538,10 +551,8 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
     /**
      * Draw a rubberband line and circle between two points
      * 
-     * @param pt1
-     *            the anchor point.
-     * @param pt2
-     *            the current (mouse) position.
+     * @param pt1 the anchor point.
+     * @param pt2 the current (mouse) position.
      */
     public void paintRubberband(Point2D pt1, Point2D pt2, String coordString) {
         if (theMap != null) {
@@ -552,14 +563,12 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
     /**
      * Draw a rubberband line and circle between two points
      * 
-     * @param pt1
-     *            the anchor point.
-     * @param pt2
-     *            the current (mouse) position.
-     * @param g
-     *            a java.awt.Graphics object to render into.
+     * @param pt1 the anchor point.
+     * @param pt2 the current (mouse) position.
+     * @param g a java.awt.Graphics object to render into.
      */
-    public void paintRubberband(Point2D pt1, Point2D pt2, String coordString, Graphics g) {
+    public void paintRubberband(Point2D pt1, Point2D pt2, String coordString,
+                                Graphics g) {
         paintLine(pt1, pt2, g);
         paintCircle(pt1, pt2, g);
         paintText(pt1, pt2, coordString, g);
@@ -568,10 +577,8 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
     /**
      * Draw a rubberband line between two points
      * 
-     * @param pt1
-     *            the anchor point.
-     * @param pt2
-     *            the current (mouse) position.
+     * @param pt1 the anchor point.
+     * @param pt2 the current (mouse) position.
      */
     public void paintLine(Point2D pt1, Point2D pt2) {
         if (theMap != null) {
@@ -582,12 +589,9 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
     /**
      * Draw a rubberband line between two points into the Graphics object.
      * 
-     * @param pt1
-     *            the anchor point.
-     * @param pt2
-     *            the current (mouse) position.
-     * @param graphics
-     *            a java.awt.Graphics object to render into.
+     * @param pt1 the anchor point.
+     * @param pt2 the current (mouse) position.
+     * @param graphics a java.awt.Graphics object to render into.
      */
     public void paintLine(Point2D pt1, Point2D pt2, Graphics graphics) {
         Graphics2D g = (Graphics2D) graphics;
@@ -595,8 +599,7 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
         g.setColor(java.awt.Color.darkGray);
         if (pt1 != null && pt2 != null) {
             // the line connecting the segments
-            OMLine cLine = new OMLine(pt1.getY(), pt1.getX(), pt2.getY(), pt2.getX(),
-                    OMGraphic.LINETYPE_GREATCIRCLE);
+            OMLine cLine = new OMLine(pt1.getY(), pt1.getX(), pt2.getY(), pt2.getX(), OMGraphic.LINETYPE_GREATCIRCLE);
             // get the map projection
             Projection proj = theMap.getProjection();
             // prepare the line for rendering
@@ -606,7 +609,8 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
         }
     }
 
-    public void paintText(Point2D base, Point2D pt1, String coordString, Graphics graphics) {
+    public void paintText(Point2D base, Point2D pt1, String coordString,
+                          Graphics graphics) {
         if (coordString != null) {
             Graphics2D g = (Graphics2D) graphics;
             g.setXORMode(java.awt.Color.lightGray);
@@ -615,7 +619,9 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
             pt1 = theMap.getProjection().forward(pt1);
 
             if (base.distance(pt1) > 3) {
-                g.drawString(coordString, (int) pt1.getX() + 5, (int) pt1.getY() - 5);
+                g.drawString(coordString,
+                        (int) pt1.getX() + 5,
+                        (int) pt1.getY() - 5);
             }
         }
     }
@@ -623,10 +629,8 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
     /**
      * Draw a rubberband circle between two points
      * 
-     * @param pt1
-     *            the anchor point.
-     * @param pt2
-     *            the current (mouse) position.
+     * @param pt1 the anchor point.
+     * @param pt2 the current (mouse) position.
      */
     public void paintCircle(Point2D pt1, Point2D pt2) {
         if (theMap != null) {
@@ -637,12 +641,9 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
     /**
      * Draw a rubberband circle between two points
      * 
-     * @param pt1
-     *            the anchor point.
-     * @param pt2
-     *            the current (mouse) position.
-     * @param graphics
-     *            a java.awt.Graphics object to render into.
+     * @param pt1 the anchor point.
+     * @param pt2 the current (mouse) position.
+     * @param graphics a java.awt.Graphics object to render into.
      */
     public void paintCircle(Point2D pt1, Point2D pt2, Graphics graphics) {
         // do all this only if want to display the rubberband circle
@@ -657,8 +658,10 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
                 double radphi = ProjMath.degToRad(pt2.getY());
                 double radlambda = ProjMath.degToRad(pt2.getX());
                 // calculate the circle radius
-                double dRad = GreatCircle.sphericalDistance(radphi1, radlambda0, radphi,
-                                                            radlambda);
+                double dRad = GreatCircle.sphericalDistance(radphi1,
+                        radlambda0,
+                        radphi,
+                        radlambda);
                 // convert into decimal degrees
                 double rad = ProjMath.radToDeg(dRad);
                 // make the circle
@@ -679,7 +682,7 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
     public void eraseLines() {
         for (int i = 0; i < segments.size() - 1; i++) {
             paintLine((Point2D) (segments.elementAt(i)),
-                      (Point2D) (segments.elementAt(i + 1)));
+                    (Point2D) (segments.elementAt(i + 1)));
         }
     }
 
@@ -706,14 +709,10 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
      * Return the azimuth angle in decimal degrees from north. Based on
      * spherical_azimuth. See class GreatCircle.java
      * 
-     * @param phi1
-     *            latitude in decimal degrees of start point
-     * @param lambda0
-     *            longitude in decimal degrees of start point
-     * @param phi
-     *            latitude in decimal degrees of end point
-     * @param lambda
-     *            longitude in decimal degrees of end point
+     * @param phi1 latitude in decimal degrees of start point
+     * @param lambda0 longitude in decimal degrees of start point
+     * @param phi latitude in decimal degrees of end point
+     * @param lambda longitude in decimal degrees of end point
      * @return float azimuth angle in degrees
      */
     public double getSphericalAzimuth(double phi1, double lambda0, double phi,
@@ -724,11 +723,15 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
         double radphi = ProjMath.degToRad(phi);
         double radlambda = ProjMath.degToRad(lambda);
         // get the spherical azimuth in radians between the two points
-        double az = GreatCircle.sphericalAzimuth(radphi1, radlambda0, radphi, radlambda);
+        double az = GreatCircle.sphericalAzimuth(radphi1,
+                radlambda0,
+                radphi,
+                radlambda);
         return ProjMath.radToDeg(az);
     }
 
-    protected String createDistanceInformationLine(Point2D llp, double distance,
+    protected String createDistanceInformationLine(Point2D llp,
+                                                   double distance,
                                                    double azimuth) {
         // setup the distance info to be displayed
         String unitInfo = null;
@@ -741,7 +744,8 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
                     + df.format(Length.MILE.fromRadians((float) distance))
                     + Length.MILE.getAbbr() + "  ";
         } else {
-            unitInfo = df.format(unit.fromRadians(distance)) + " " + unit.getAbbr();
+            unitInfo = df.format(unit.fromRadians(distance)) + " "
+                    + unit.getAbbr();
         }
 
         return unitInfo;
@@ -786,4 +790,5 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
     public Length getUnit() {
         return unit;
     }
+    
 }

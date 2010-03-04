@@ -396,9 +396,10 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
     public boolean equals(Object o) {
         if (o == null)
             return false;
-        if (o instanceof Projection)
-            return getProjectionID() == ((Projection) o).getProjectionID();
-        return false;
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        return (getProjectionID() == ((Projection) o).getProjectionID());
     }
 
     /**

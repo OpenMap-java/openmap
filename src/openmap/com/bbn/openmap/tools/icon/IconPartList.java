@@ -39,22 +39,22 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
  * DrawingAttributes to render that combined shape. The IconPartList
  * is itself an IconPart, so the recursive possibilities are endless.
  */
-public class IconPartList implements IconPart {
+public class IconPartList implements IconPart, Iterable<IconPart> {
 
-    protected List parts;
+    protected List<IconPart> parts;
     protected DrawingAttributes renderingAttributes = null;
     protected Shape clip = null;
 
     public IconPartList() {}
 
-    protected List getList() {
+    protected List<IconPart> getList() {
         if (parts == null) {
-            parts = new LinkedList();
+            parts = new LinkedList<IconPart>();
         }
         return parts;
     }
 
-    public Iterator iterator() {
+    public Iterator<IconPart> iterator() {
         return parts.iterator();
     }
 
@@ -94,9 +94,7 @@ public class IconPartList implements IconPart {
         DrawingAttributes da = getRenderingAttributes();
         DrawingAttributes tmpDA = null;
 
-        Iterator it = iterator();
-        while (it.hasNext()) {
-            IconPart part = (IconPart) it.next();
+        for (IconPart part : this) {
 
             if (da != null) {
                 tmpDA = part.getRenderingAttributes();
@@ -124,7 +122,7 @@ public class IconPartList implements IconPart {
 
     public void setGeometry(Shape shape) {
         // dump the list, create a generic IconPart to hold the shape.
-        List list = getList();
+        List<IconPart> list = getList();
         list.clear();
         list.add(new BasicIconPart(shape));
     }
@@ -138,9 +136,7 @@ public class IconPartList implements IconPart {
      */
     public Shape getGeometry() {
         GeneralPath geometry = null;
-        Iterator it = iterator();
-        while (it.hasNext()) {
-            IconPart part = (IconPart) it.next();
+        for (IconPart part : this) {
 
             Shape shp = part.getGeometry();
 
@@ -167,10 +163,8 @@ public class IconPartList implements IconPart {
 
     public Object clone() {
         IconPartList clone = new IconPartList();
-        Iterator it = iterator();
-        while (it.hasNext()) {
-            IconPart ip = (IconPart) it.next();
-            clone.add((IconPart) ip.clone());
+        for (IconPart part : this) {
+            clone.add((IconPart)part.clone());
         }
 
         clone.setRenderingAttributes(getRenderingAttributes());

@@ -23,9 +23,11 @@
 package com.bbn.openmap;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
+import java.awt.geom.AffineTransform;
 
 import com.bbn.openmap.util.Debug;
 
@@ -124,7 +126,7 @@ public class BufferedMapBean extends MapBean {
         // if a layer has requested a render, then we render all of
         // them into
         // a drawing buffer
-        if (bufferDirty) {
+        if (panningTransform == null && bufferDirty) {
             bufferDirty = false;
 
             int w = getWidth();
@@ -158,33 +160,47 @@ public class BufferedMapBean extends MapBean {
 
         Image daImage = drawingBuffer;
 
+        g = g.create();
+
         // Should be be clipping the graphics here? I'm not sure.
         // Think so.
         if (clip != null) {
             g.setClip(clip);
         }
 
+        if (panningTransform != null) {
+            drawProjectionBackground(g);
+            ((Graphics2D)g).setTransform(panningTransform);
+        }
+
         if (rotHelper != null) {
             daImage = rotHelper.paintChildren(g, clip);
         }
 
-        // draw the buffer to the screen, daImage will be drawingBuffer without rotation
+        // draw the buffer to the screen, daImage will be drawingBuffer without
+        // rotation
         g.drawImage(daImage, 0, 0, null);
 
         // Take care of the PaintListeners for no rotation
         if (rotHelper == null && painters != null) {
             painters.paint(g);
         }
-        
+
         // border gets overwritten accidentally, so redraw it now
-        paintBorder(g);
+        if (panningTransform == null) {
+            paintBorder(g);
+        }
+
+        g.dispose();
     }
+
+    public AffineTransform panningTransform = null;
 
     /**
      * Interface-like method to query if the MapBean is buffered, so you can
      * control behavior better. Allows the removal of specific instance-like
-     * queries for, say, BufferedMapBean, when all you really want to know is
-     * if you have the data is buffered, and if so, should be buffer be cleared.
+     * queries for, say, BufferedMapBean, when all you really want to know is if
+     * you have the data is buffered, and if so, should be buffer be cleared.
      * For the BufferedMapBean, always true.
      */
     public boolean isBuffered() {

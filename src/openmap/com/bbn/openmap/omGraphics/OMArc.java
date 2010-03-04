@@ -719,7 +719,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
             // }
             x1 = p1.getX() + off_x;
             y1 = p1.getY() + off_y;
-
+            // Fall through...
         case RENDERTYPE_XY:
             double x = x1 - width / 2d;
             double y = y1 - height / 2d;

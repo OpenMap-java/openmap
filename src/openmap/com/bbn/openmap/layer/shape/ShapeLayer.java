@@ -151,7 +151,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
     /**
      * The DrawingAttributes object to describe the rendering of graphics.
      */
-    protected DrawingAttributes drawingAttributes;
+    protected DrawingAttributes drawingAttributes = DrawingAttributes.getDefaultClone();
 
     // For writing out to properties file later.
     String shapeFileName = null;
@@ -263,12 +263,11 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
 
+        drawingAttributes.setProperties(prefix, props);
+
         String realPrefix = PropUtils.getScopedPropertyPrefix(this);
-
         setFileProperties(realPrefix, props);
-
-        drawingAttributes = new DrawingAttributes(prefix, props);
-
+        
         shadowX = PropUtils.intFromProperties(props, realPrefix + shadowXProperty, 0);
         shadowY = PropUtils.intFromProperties(props, realPrefix + shadowYProperty, 0);
     }

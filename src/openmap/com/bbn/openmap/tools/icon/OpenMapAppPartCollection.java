@@ -53,6 +53,12 @@ public class OpenMapAppPartCollection extends IconPartCollection {
         add(LR_TRI);
         add(LL_UR_LINE);
         add(UL_LR_LINE);
+        add(BIG_ARROW);
+        add(MED_ARROW);
+        add(SMALL_ARROW);
+        add(CORNER_TRI);
+        add(OPP_CORNER_TRI);
+        add(CIRCLE);
     }
 
     public final static OpenMapAppPart BIG_BOX = new OpenMapAppPart.Poly("BIG_BOX", "BIG_BOX", new int[] {
@@ -70,7 +76,16 @@ public class OpenMapAppPartCollection extends IconPartCollection {
             10, 90 }, new int[] { 90, 10 });
     public final static OpenMapAppPart UL_LR_LINE = new OpenMapAppPart.Poly("UL_LR_LINE", "UL_LR_LINE", new int[] {
             10, 90 }, new int[] { 10, 90 });
-
+    public final static OpenMapAppPart BIG_ARROW = new OpenMapAppPart.Poly("BIG_ARROW", "BIG_ARROW", new int[] {50,90,80,80,20,20,10,50}, new int[] {10,40,40,90,90,40,40,10});
+    public final static OpenMapAppPart MED_ARROW = new OpenMapAppPart.Poly("MED_ARROW", "MED_ARROW", new int[] {50,90,70,70,30,30,10,50}, new int[] {10,50,50,90,90,50,50,10});
+    public final static OpenMapAppPart SMALL_ARROW = new OpenMapAppPart.Poly("SMALL_ARROW", "SMALL_ARROW", new int[] {50,80,60,60,40,40,20,50}, new int[] {10,50,50,90,90,50,50,10});
+    public final static OpenMapAppPart CORNER_TRI = new OpenMapAppPart.Poly("CORNER_TRI", "CORNER_TRI", new int[] {10,50,10}, new int[] {10,10,50});
+    public final static OpenMapAppPart OPP_CORNER_TRI = new OpenMapAppPart.Poly("OPP_CORNER_TRI", "OPP_CORNER_TRI", new int[] {50,90,50}, new int[] {50,50,90});
+    public final static OpenMapAppPart CIRCLE = new OpenMapAppPart.Circle("CIRCLE", "CIRCLE", 50, 50, 46);
+    public final static OpenMapAppPart DOT = new OpenMapAppPart.Circle("DOT", "DOT", 50, 50, 6);
+    public final static OpenMapAppPart PLUS = new OpenMapAppPart.Poly("PLUS", "PLUS", new int[] {25,50,50,50,50,75,75,50,50,50,50,25,25}, new int[] {50,50,25,25,50,50,50,50,75,75,50,50,50});
+    public final static OpenMapAppPart MINUS = new OpenMapAppPart.Poly("MINUS", "MINUS", new int[] {25,75}, new int[] {50,50});
+    
     public static class OpenMapAppPart extends IconPartCollectionEntry {
 
         public OpenMapAppPart(String n, String d, Shape shape) {
@@ -102,7 +117,7 @@ public class OpenMapAppPartCollection extends IconPartCollection {
                     double radius, AffineTransform af) {
                 super(n,
                       d,
-                      new Ellipse2D.Double(x - radius / 2, y - radius / 2, radius * 2, radius * 2),
+                      new Ellipse2D.Double(x - radius, y - radius, radius * 2, radius * 2),
                       af);
             }
         }

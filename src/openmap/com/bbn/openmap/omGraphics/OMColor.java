@@ -312,8 +312,13 @@ public class OMColor extends Color {
      * @return true if the objects are the same, false otherwise.
      */
     public boolean equals(Object obj) {
-        return (obj instanceof Color)
-                && (((Color) obj).getRGB() == this.getRGB());
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        return (((Color) obj).getRGB() == this.getRGB());
     }
 
     /**

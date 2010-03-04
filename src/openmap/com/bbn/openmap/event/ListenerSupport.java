@@ -80,7 +80,7 @@ public class ListenerSupport<E> extends ArrayList<E> implements
     /**
      * Write the listeners to a stream.
      */
-    public void writeObject(ObjectOutputStream s) throws IOException {
+    private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
 
         for (E e : this) {
@@ -95,7 +95,7 @@ public class ListenerSupport<E> extends ArrayList<E> implements
     /**
      * Read the listeners from a stream.
      */
-    public void readObject(ObjectInputStream s) throws ClassNotFoundException,
+    private void readObject(ObjectInputStream s) throws ClassNotFoundException,
             IOException {
 
         s.defaultReadObject();

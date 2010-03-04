@@ -22,20 +22,21 @@
 
 package com.bbn.openmap.tools.icon;
 
-import java.util.Map;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 
 /**
  * A collection of IconParts, available by name.
  */
 public class IconPartCollection extends IconPartCollectionEntry {
 
-    protected Map entryMap;
-    protected List collections;
+    protected Map<String, IconPartCollectionEntry> entryMap;
+    protected List<IconPartCollection> collections;
 
     protected IconPartCollection() {}
 
@@ -58,7 +59,7 @@ public class IconPartCollection extends IconPartCollectionEntry {
             }
 
             if (entry instanceof IconPartCollection) {
-                getCollections().add(entry);
+                getCollections().add((IconPartCollection)entry);
             }
         }
     }
@@ -80,16 +81,15 @@ public class IconPartCollection extends IconPartCollectionEntry {
     /**
      * Get the set of names for the entries of this collection.
      */
-    public Set keySet() {
+    public Set<String> keySet() {
         return getEntryMap().keySet();
     }
 
     /**
-     * Get an icon part for the given name set with the given
-     * rendering attributes. Calls get(name);
+     * Get an icon part for the given name set with the given rendering
+     * attributes. Calls get(name);
      */
-    public IconPart get(String name,
-                        com.bbn.openmap.omGraphics.DrawingAttributes da) {
+    public IconPart get(String name, DrawingAttributes da) {
         IconPart ip = get(name);
         if (ip != null) {
             ip.setRenderingAttributes(da);
@@ -99,24 +99,22 @@ public class IconPartCollection extends IconPartCollectionEntry {
 
     /**
      * Get an icon part for the given name. The top level
-     * IconPartCollectionEntries are checked for the name. Will return
-     * null if no IconPart exists for the name. If the name is a
-     * collection name, null will be returned. However, before
-     * returning null, any IconPartCollection added to this collection
-     * will be checked, too, and any hits will be returned.
+     * IconPartCollectionEntries are checked for the name. Will return null if
+     * no IconPart exists for the name. If the name is a collection name, null
+     * will be returned. However, before returning null, any IconPartCollection
+     * added to this collection will be checked, too, and any hits will be
+     * returned.
      */
     public IconPart get(String name) {
-        Object entry = getEntryMap().get(name.intern());
+        IconPartCollectionEntry entry = getEntryMap().get(name.intern());
         IconPart part = null;
 
         if (entry != null) {
-            part = (IconPart) ((IconPart) ((IconPartCollectionEntry) entry).getIconPart()).clone();
+            part = (IconPart) entry.getIconPart().clone();
         }
 
         if (part == null) {
-            Iterator it = collections.iterator();
-            while (it.hasNext()) {
-                IconPartCollection ipc = (IconPartCollection) it.next();
+            for (IconPartCollection ipc : collections) {
                 part = ipc.get(name);
                 if (part != null) {
                     break;
@@ -129,25 +127,22 @@ public class IconPartCollection extends IconPartCollectionEntry {
 
     /**
      * Get a description for the given name. The top level
-     * IconPartCollectionEntries are checked for the name. Will return
-     * null if no entry exists for the name. If the name is a
-     * collection name, the description of the collection will be
-     * returned. Before returning null, any IconPartCollection added
-     * to this collection will be checked, too, and any hits will be
-     * returned.
+     * IconPartCollectionEntries are checked for the name. Will return null if
+     * no entry exists for the name. If the name is a collection name, the
+     * description of the collection will be returned. Before returning null,
+     * any IconPartCollection added to this collection will be checked, too, and
+     * any hits will be returned.
      */
     public String getDescription(String name) {
-        Object entry = getEntryMap().get(name.intern());
+        IconPartCollectionEntry entry = getEntryMap().get(name.intern());
         String desc = null;
 
         if (entry != null) {
-            desc = ((IconPartCollectionEntry) entry).getDescription();
+            desc = entry.getDescription();
         }
 
         if (desc == null) {
-            Iterator it = collections.iterator();
-            while (it.hasNext()) {
-                IconPartCollection ipc = (IconPartCollection) it.next();
+            for (IconPartCollection ipc : collections) {
                 desc = ipc.getDescription(name);
                 if (desc != null) {
                     break;
@@ -161,44 +156,36 @@ public class IconPartCollection extends IconPartCollectionEntry {
     /**
      * Create an IconPart from the list of entry names.
      * 
-     * @param list a List of Strings, with the strings being names of
-     *        entries into this collection.
+     * @param list a List of Strings, with the strings being names of entries
+     *        into this collection.
      */
-    public IconPart compose(List list) {
+    public IconPart compose(List<String> list) {
         IconPartList ipl = new IconPartList();
 
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            Object obj = it.next();
-            if (obj instanceof String) {
-                IconPart part = get((String) obj);
-                if (part != null) {
-                    ipl.add(part);
-                }
+        for (String partName : list) {
+            IconPart part = get(partName);
+            if (part != null) {
+                ipl.add(part);
             }
         }
+
         return ipl;
     }
 
     /**
      * Get a list of description Strings from a list of entry names.
      * 
-     * @param list a List of Strings, with the strings being names of
-     *        entries into this collection.
-     * @return a List of description Strings for the given list of
-     *         names.
+     * @param list a List of Strings, with the strings being names of entries
+     *        into this collection.
+     * @return a List of description Strings for the given list of names.
      */
-    public List composeDescription(List list) {
-        LinkedList ll = new LinkedList();
+    public List<String> composeDescription(List<String> list) {
+        LinkedList<String> ll = new LinkedList<String>();
 
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            Object obj = it.next();
-            if (obj instanceof String) {
-                String des = getDescription((String) obj);
-                if (des != null) {
-                    ll.add(des);
-                }
+        for (String entry : list) {
+            String des = getDescription(entry);
+            if (des != null) {
+                ll.add(des);
             }
         }
         return ll;
@@ -207,34 +194,34 @@ public class IconPartCollection extends IconPartCollectionEntry {
     /**
      * Set the entry Map.
      */
-    protected void setEntryMap(Map map) {
+    protected void setEntryMap(Map<String, IconPartCollectionEntry> map) {
         entryMap = map;
     }
 
     /**
      * Get the entry Map.
      */
-    protected Map getEntryMap() {
+    protected Map<String, IconPartCollectionEntry> getEntryMap() {
         if (entryMap == null) {
-            entryMap = new Hashtable();
+            entryMap = new Hashtable<String, IconPartCollectionEntry>();
         }
         return entryMap;
     }
 
     /**
-     * Set the List to be used for holding IconPartCollections added
-     * to this collection.
+     * Set the List to be used for holding IconPartCollections added to this
+     * collection.
      */
-    protected void setCollections(List list) {
+    protected void setCollections(List<IconPartCollection> list) {
         collections = list;
     }
 
     /**
      * Get the List of IconPartCollections that have been added.
      */
-    protected List getCollections() {
+    protected List<IconPartCollection> getCollections() {
         if (collections == null) {
-            collections = new LinkedList();
+            collections = new LinkedList<IconPartCollection>();
         }
         return collections;
     }
@@ -247,4 +234,3 @@ public class IconPartCollection extends IconPartCollectionEntry {
         return part;
     }
 }
-

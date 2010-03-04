@@ -60,7 +60,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
     private WmsLayerFactory wmsLayerFactory;
 
     private Map<String, ImageFormatter> imageFormatterByContentType = new HashMap<String, ImageFormatter>();
-
+    
     /**
      * Creates a new WmsRequestHandler object.
      * 
@@ -75,7 +75,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
             Properties props) throws IOException, WMSException {
 
         super(props);
-        setProperties(null, props);
+        setProperties(props);
 
         // separate antialias property for wms.
         boolean antialias = PropUtils.booleanFromProperties(props, "openmap.wms."
@@ -253,6 +253,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
             MapRequestFormatException, WMSException {
         GetMapRequestParameters parameters = new GetMapRequestParameters();
 
+        checkVersion(requestProperties, parameters);
         checkFormat(requestProperties, parameters);
         setFormatter(parameters.formatter);
 
@@ -276,6 +277,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
             MapRequestFormatException, WMSException {
         GetLegendGraphicRequestParameters parameters = new GetLegendGraphicRequestParameters();
 
+        checkVersion(requestProperties, parameters);
         checkWidthAndHeight(requestProperties, parameters);
         checkFormat(requestProperties, parameters);
         setFormatter(parameters.getFormatter());
@@ -340,6 +342,8 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
     public String handleGetCapabilitiesRequest(Properties requestProperties) throws IOException,
             MapRequestFormatException, WMSException {
 
+    	GetCapabilitiesRequestParameters parameters = new GetCapabilitiesRequestParameters();
+        checkVersion(requestProperties, parameters);
         String format = requestProperties.getProperty(FORMAT);
         if (format != null && !format.equals("application/vnd.ogc.wms_xml")) {
             throw new WMSException("Invalid FORMAT parameter.", WMSException.INVALIDFORMAT);
@@ -353,7 +357,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         }
 
         try {
-            return getCapabilities().generateXMLString();
+            return getCapabilities().generateXMLString(parameters.getVersion());
         } catch (Exception e) {
             e.printStackTrace();
             // nie ma takiego kodu b³êdu, ale s¹dzê, ¿e powinien byæ
@@ -417,6 +421,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
 
         GetFeatureInfoRequestParameters parameters = new GetFeatureInfoRequestParameters();
 
+        checkVersion(requestProperties, parameters);
         checkFormat(requestProperties, parameters);
         setFormatter(parameters.formatter);
         checkBackground(requestProperties, parameters);
@@ -475,22 +480,11 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
      * @throws WMSException
      */
     private void checkRequest(Properties requestProperties) throws WMSException {
-        String version = requestProperties.getProperty(VERSION);
         String service = requestProperties.getProperty(SERVICE);
         String requestType = requestProperties.getProperty(REQUEST);
 
         boolean getcaps = ((requestType != null) && requestType.equals(GETCAPABILITIES));
         if (!getcaps) {
-            // check version string - use a default for clients that does not
-            // specify
-            if (version == null) {
-                version = "1.1.1";
-                Debug.message("wms", "missing version string. use " + version);
-            }
-            // TODO: handle other versions?
-            if (!version.equals("1.1.1")) {
-                throw new WMSException("Unsupported protocol version: " + version);
-            }
             String ex = requestProperties.getProperty(EXCEPTIONS);
             // if ((ex != null) && !ex.equals("application/vnd.ogc.se_xml")) {
             // Poprawka wacha
@@ -525,7 +519,6 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
             throw new WMSException("Missing SRS parameter.");
         }
 
-        System.out.println("crs: " + strSRS);
         CoordinateReferenceSystem crs = CoordinateReferenceSystem.getForCode(strSRS);
         if (crs == null) {
             throw new WMSException("Invalid SRS/CRS parameter: " + strSRS, WMSException.INVALIDSRS);
@@ -596,9 +589,9 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
 
             // use CRS to convert BBOX to latlon values
             CoordinateReferenceSystem crs = parameters.crs;
-            parameters.bboxLatLonMinXY = crs.inverse(minX, minY);
-            parameters.bboxLatLonMaxXY = crs.inverse(maxX, maxY);
-            parameters.bboxLatLonCenter = crs.inverse(medX, medY);
+            parameters.bboxLatLonLowerLeft = crs.inverse(minX, minY, parameters.getVersion().usesAxisOrder());
+            parameters.bboxLatLonUpperRight = crs.inverse(maxX, maxY, parameters.getVersion().usesAxisOrder());
+            parameters.bboxLatLonCenter = crs.inverse(medX, medY, parameters.getVersion().usesAxisOrder());
 
             // TODO: use CRS to check value validity?
         } catch (NumberFormatException e) {
@@ -776,10 +769,10 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         parameters.crs.prepareProjection(projection);
         projection.setScale(projection.getMinScale());
 
-        LatLonPoint llp1 = parameters.bboxLatLonMinXY;
-        LatLonPoint llp2 = parameters.bboxLatLonMaxXY;
-        System.out.println("bbox toLatLon: 1: " + llp1 + ", 2: " + llp2 + ", center: "
-                + parameters.bboxLatLonCenter);
+        LatLonPoint llp1 = parameters.bboxLatLonLowerLeft;
+        LatLonPoint llp2 = parameters.bboxLatLonUpperRight;
+        Debug.message("wms", "bbox toLatLon: 1: " + llp1 + ", 2: " + llp2
+                + ", center: " + parameters.bboxLatLonCenter);
 
         // guess a center value
         // TODO: calculate this from bbox values instead of after latlon
@@ -810,7 +803,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         int w = (int) (xyp2.getX() - xyp1.getX());
         int h = (int) (xyp1.getY() - xyp2.getY());
         if (Math.abs(w - parameters.width) > 2 || Math.abs(h - parameters.height) > 2) {
-            Debug.output("use aspect ratio fix");
+            Debug.message("wms", "use aspect ratio fix");
             projection.setWidth(w);
             projection.setHeight(h);
             projection.setCenter(parameters.bboxLatLonCenter);
@@ -850,6 +843,23 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         if (parameters.getFormatter() == null) {
             throw new WMSException("Invalid FORMAT parameter: " + format,
                     WMSException.INVALIDFORMAT);
+        }
+    }
+    
+    private void checkVersion(Properties requestProperties,
+            WmsRequestParameters parameters)
+            throws WMSException {
+        String versionString = requestProperties.getProperty(VERSION);
+        if (versionString == null) {
+            parameters.setVersion(Version.getDefault());
+            Debug.message("wms", "missing version string. default to "
+                    + parameters.getVersion());
+        } else {
+            parameters.setVersion(Version.getVersion(versionString));
+            if (parameters.getVersion() == null) {
+                throw new WMSException("Unsupported protocol version: "
+                        + versionString);
+            }
         }
     }
 

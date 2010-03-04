@@ -983,6 +983,10 @@ public abstract class GeoProj extends Proj {
 			double dx = Math.abs(point2.getX() - point1.getX());
 			double dy = Math.abs(point2.getY() - point1.getY());
 
+			// TODO: mercator getScale is wrong for screens in portrait mode,
+			// that is dx<dy. why does this handle portrait different than
+			// landscape?
+/*			
 			if (dx < dy) {
 				double dlat = Math.abs(ll1.getY() - ll2.getY());
 				deltaDegrees = dlat;
@@ -991,6 +995,7 @@ public abstract class GeoProj extends Proj {
 				// This might not be correct for all projection types
 				pixPerDegree = getPlanetPixelCircumference() / 360.0;
 			} else {
+			*/
 				double dlon;
 				double lat1, lon1, lon2;
 
@@ -1018,7 +1023,7 @@ public abstract class GeoProj extends Proj {
 
 				// This might not be correct for all projection types
 				pixPerDegree = getPlanetPixelCircumference() / 360.0;
-			}
+			//}
 
 			// The new scale...
 			return (float) (pixPerDegree / (deltaPix / deltaDegrees));
@@ -1342,17 +1347,18 @@ public abstract class GeoProj extends Proj {
 
 		switch (arcType) {
 		case Arc2D.PIE:
-			rawllpts[rawllpts.length - 4] = c.getRadLat();
-			rawllpts[rawllpts.length - 3] = c.getRadLon();
+				rawllpts[rawllpts.length - 4] = c.getRadLat();
+				rawllpts[rawllpts.length - 3] = c.getRadLon();
+				// Fall through...
 		case Arc2D.CHORD:
-			rawllpts[rawllpts.length - 2] = rawllpts[0];
-			rawllpts[rawllpts.length - 1] = rawllpts[1];
-			// Need to do this for the sides, not the arc part.
-			linetype = LineType.GreatCircle;
-			isFilled = true;
-			break;
+				rawllpts[rawllpts.length - 2] = rawllpts[0];
+				rawllpts[rawllpts.length - 1] = rawllpts[1];
+				// Need to do this for the sides, not the arc part.
+				linetype = LineType.GreatCircle;
+				isFilled = true;
+				break;
 		default:
-			// Don't need to do anything, defaults are already set.
+				// Don't need to do anything, defaults are already set.
 		}
 
 		// forward project the arc-poly.
