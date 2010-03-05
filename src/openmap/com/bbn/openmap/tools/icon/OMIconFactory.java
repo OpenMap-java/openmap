@@ -89,7 +89,9 @@ public class OMIconFactory {
                                     DrawingAttributes appDA, AffineTransform af) {
         ImageIcon icon = createImageIcon(width, height);
         Graphics2D g = (Graphics2D) icon.getImage().getGraphics();
-        g.setTransform(af);
+		if (af != null) {
+			g.setTransform(af);
+		}
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
