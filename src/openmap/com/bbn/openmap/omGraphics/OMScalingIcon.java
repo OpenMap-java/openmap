@@ -193,6 +193,12 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
             Debug.error("OMScalingIcon: null projection in position!");
             return false;
         }
+        
+        if (sourceImage == null) {
+           Debug.error("OMScalingIcon: null sourceImage in position!");
+           return false;
+       }
+
 
         float shrinkScale = proj.getScale();
 
