@@ -208,11 +208,22 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
         point1 = (Point) proj.forward(lat, lon, new Point());
         point2 = (Point) proj.forward(lat, lon, new Point());
 
-        point1.setLocation((int) (point1.getX() + (scaleFactor * (getX() - sourceImage.getWidth() / 2))),
-                (int) (point1.getY() + (scaleFactor * (getY() - sourceImage.getHeight() / 2))));
+      int halfImageWidth = sourceImage.getWidth() / 2;
+      int halfImageHeight = sourceImage.getHeight() / 2;
+      int myX = getX();
+      int myY = getY();
+        
+      double p1x = point1.getX();
+      double p1y = point1.getY();
+      double newP1x = p1x + (scaleFactor * (myX - halfImageWidth));
+      double newP1y = p1y + (scaleFactor * (myY - halfImageHeight));
+      point1.setLocation((int) newP1x, (int) newP1y);
 
-        point2.setLocation((int) (point2.getX() + (scaleFactor * (getX() + sourceImage.getWidth() / 2))),
-                (int) (point2.getY() + (scaleFactor * (getY() + sourceImage.getHeight() / 2))));
+      double p2x = point2.getX();
+      double p2y = point2.getY();
+      double newP2x = p2x + (scaleFactor * (myX + halfImageWidth));
+      double newP2y = p2y + (scaleFactor * (myY + halfImageHeight));
+      point2.setLocation((int) newP2x, (int) newP2y);
 
         setNeedToReposition(false);
         return true;
