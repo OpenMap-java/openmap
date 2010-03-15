@@ -195,7 +195,8 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
         }
         
         if (sourceImage == null) {
-           Debug.error("OMScalingIcon: null sourceImage in position!");
+           // Debug.error("OMScalingIcon: null sourceImage in position!");
+           // XXX: For now fail silently.
            return false;
        }
 
