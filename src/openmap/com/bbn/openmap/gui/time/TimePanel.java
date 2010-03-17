@@ -87,8 +87,8 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
     public final static String NO_TIME_STRING = "--:--:-- (--:--:--)";
     public final static String PanelTitleProperty = "panelTitle";
     private String defaultPanelTitle = "  Timeline Controls  ";
-    
-    // KM911 propertyize, and make false by default!
+
+    public final static String RealTimeModeProperty = "realTimeMode";
     private boolean realTimeMode = false;
 
     /**
@@ -144,7 +144,8 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
                 + PanelTitleProperty,
                 defaultPanelTitle);
 
-
+        realTimeMode = PropUtils.booleanFromProperties(props, prefix
+                + RealTimeModeProperty, realTimeMode);
     }
 
     /**
