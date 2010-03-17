@@ -72,7 +72,7 @@ import com.bbn.openmap.util.PropUtils;
  * and want to control the parent component of the TimePanel, use the "parent"
  * property to specify the marker name of the parent component. The
  * BasicMapPanel asks MapPanelChildren for their parent's names when deciding
- * whether to add them or not, when it finds potential children in the
+ * whether to add them or not, when it finds potential children in the 
  * findAndInit method.
  */
 public class TimePanel extends OMComponentPanel implements MapPanelChild,
@@ -85,6 +85,8 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
      */
     public final static String PlayFilterProperty = "playfilter";
     public final static String NO_TIME_STRING = "--:--:-- (--:--:--)";
+    public final static String PanelTitleProperty = "panelTitle";
+    private String defaultPanelTitle = "  Timeline Controls  ";
 
     /**
      * The Clock object used by the TimePanel.
@@ -134,6 +136,12 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
         parentName = props.getProperty(prefix
                 + MapPanelChild.ParentNameProperty);
+        
+        defaultPanelTitle = props.getProperty(prefix
+                + PanelTitleProperty,
+                defaultPanelTitle);
+
+
     }
 
     /**
@@ -145,7 +153,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
 
         String internString = i18n.get(this.getClass(),
                 "timeline_controls",
-                "  Timeline Controls  ");
+                defaultPanelTitle);
 
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 internString));
