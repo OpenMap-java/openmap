@@ -123,6 +123,8 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
     LabelPanel labelPanel;
 
     TimeDrape drape;
+    
+    private boolean realTimeMode = false;
 
     /**
      * Construct the TimelineLayer.
@@ -666,7 +668,11 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
         }
 
         long offsetMillis = TimelineLayer.inverseProjectMillis(lon);
-
+        
+        if(realTimeMode) {
+            offsetMillis = offsetMillis - (gameEndTime - gameStartTime);
+        }
+        
         timelineLayer.updateMouseTimeDisplay(new Long(offsetMillis));
 
         return lon;
@@ -829,6 +835,10 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
             // bounds providers are active.
         }
 
+    }
+
+    public void setRealTimeMode(boolean realTimeMode) {
+        this.realTimeMode = realTimeMode;
     }
 
 }

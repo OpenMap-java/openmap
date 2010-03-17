@@ -87,6 +87,9 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
     public final static String NO_TIME_STRING = "--:--:-- (--:--:--)";
     public final static String PanelTitleProperty = "panelTitle";
     private String defaultPanelTitle = "  Timeline Controls  ";
+    
+    // KM911 propertyize, and make false by default!
+    private boolean realTimeMode = false;
 
     /**
      * The Clock object used by the TimePanel.
@@ -322,9 +325,16 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
      */
     public void updateMouseTimeDisplay(long mouseOffsetTime) {
 
-        if (mouseOffsetTime < 0) {
-            mouseOffsetTime = 0;
+        if (realTimeMode) {
+            if (mouseOffsetTime > 0) {
+                mouseOffsetTime = 0;
+            }
+        } else {
+            if (mouseOffsetTime < 0) {
+                mouseOffsetTime = 0;
+            }
         }
+
         String mtds = convertOffsetTimeToText(mouseOffsetTime);
 
         if (mouseTimeLabel != null) {
@@ -333,12 +343,17 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
     }
 
     public String convertOffsetTimeToText(long offsetTime) {
+        String sign = "";
+        if(offsetTime < 0) {
+            sign = "-";
+            offsetTime = -offsetTime;
+        }
         int hours = (int) (offsetTime / (60 * 60 * 1000));
         int minutes = (int) Math.abs((offsetTime % (60 * 60 * 1000))
                 / (60 * 1000));
         int seconds = (int) Math.abs((offsetTime % (60 * 1000)) / 1000);
 
-        return df.format(hours) + ":" + df.format(minutes) + ":"
+        return sign + df.format(hours) + ":" + df.format(minutes) + ":"
                 + df.format(seconds);
     }
 
@@ -505,6 +520,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
     public TimelinePanel getTimelinePanel() {
         if (timelinePanel == null) {
             timelinePanel = new TimelinePanel();
+            timelinePanel.setRealTimeMode(realTimeMode);
         }
         return timelinePanel;
     }
@@ -512,6 +528,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
     public TimeSliderPanel getTimeSliderPanel() {
         if (timeSliderPanel == null) {
             timeSliderPanel = new TimeSliderPanel();
+            timeSliderPanel.setRealTimeMode(realTimeMode);
         }
         return timeSliderPanel;
     }

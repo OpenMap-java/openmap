@@ -77,6 +77,10 @@ public class TimeSliderPanel extends BasicMapPanel {
 
     }
 
+    public void setRealTimeMode(boolean realTimeMode) {
+        timeSliderLayer.setRealTimeMode(realTimeMode);
+    }
+
 //    public void findAndInit(Object someObj) {
 //        super.findAndInit(someObj);
 //    }

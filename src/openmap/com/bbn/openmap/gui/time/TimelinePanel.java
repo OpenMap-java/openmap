@@ -80,4 +80,8 @@ public class TimelinePanel extends BasicMapPanel {
             return panel;
         }
     }
+
+    public void setRealTimeMode(boolean realTimeMode) {
+        timelineLayer.setRealTimeMode(realTimeMode);
+    }
 }

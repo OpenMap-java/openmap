@@ -125,6 +125,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     protected static Color tint = new Color(0x99000000, true);
 
     protected Clock clock;
+    private boolean realTimeMode;
 
     /**
      * Construct the TimelineLayer.
@@ -290,7 +291,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             timeHashFactory = new TimeHashFactory();
         }
 
-        tll.add(timeHashFactory.getHashMarks(projection));
+        tll.add(timeHashFactory.getHashMarks(projection, realTimeMode, gameEndTime - gameStartTime));
 
         if (preTime != null) {
             preTime.generate(projection);
@@ -697,6 +698,10 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         }
 
         long offsetMillis = inverseProjectMillis(lon);
+        
+        if(realTimeMode) {
+            offsetMillis = offsetMillis - (gameEndTime - gameStartTime);
+        }
 
         updateMouseTimeDisplay(new Long(offsetMillis));
 
@@ -1199,7 +1204,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             hashMarks.add(new TimeHashMarks.Years());
         }
 
-        public OMGraphicList getHashMarks(Projection proj) {
+        public OMGraphicList getHashMarks(Projection proj, boolean realTimeMode, long gameDuration) {
 
             Point2D ul = proj.getUpperLeft();
             Point2D lr = proj.getLowerRight();
@@ -1224,7 +1229,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                 current = thm;
             }
 
-            current.generate(proj, timeSpan);
+            current.generate(proj, timeSpan, realTimeMode, gameDuration);
 
             return current;
         }
@@ -1300,7 +1305,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
         public abstract boolean passesThreshold(double minVisibleOnTimeLine);
 
-        public boolean generate(Projection proj, double minSpan) {
+        public boolean generate(Projection proj, double minSpan, boolean realTimeMode, long gameDuration) {
             Point2D ul = proj.getUpperLeft();
             Point2D lr = proj.getLowerRight();
             double left = ul.getX() * unitPerMinute;
@@ -1330,45 +1335,89 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             int height = (int) (proj.getHeight() * .2);
             double anchory = lr.getY();
 
-            // Now, we need to baseline marks on 0, not on the left most value.
-            double start = 0;
-            // need to do negative times.
-            if (left < 0) {
-                while (start > left) {
+            if(realTimeMode) {
+                // Now, we need to baseline marks on gameEndTime (i.e. 'now'), not on the right most value.
+                double durationUnits = gameDuration * (1.0 / (1000.0*60.0)) * unitPerMinute;
+                double start = durationUnits;
+                // need to do future times.
+                if (right > start) {
+                    while (start < right) {
+                        start += stepSize;
+                    }
+                }
+    
+                while (start > right) {
                     start -= stepSize;
                 }
-            }
-
-            while (start < left) {
-                start += stepSize;
-            }
-
-            double stepStart = Math.floor(start);
-            double stepEnd = Math.ceil(right);
-
-            for (double i = stepStart; i < stepEnd; i += stepSize) {
-                double anchorx = i / unitPerMinute;
-
-                int thisHeight = height;
-                boolean doLabel = true;
-                if (i % heightStepSize != 0) {
-                    thisHeight /= 2;
-                    doLabel = false;
+    
+                double stepStart = start;
+                double stepEnd = Math.floor(left);
+    
+                for (double i = stepStart; i > stepEnd; i -= stepSize) {
+                    double anchorx = i / unitPerMinute;
+    
+                    int thisHeight = height;
+                    boolean doLabel = true;
+                    
+                    // KM TODO fix this up
+//                    if (i % heightStepSize != 0) {
+//                        thisHeight /= 2;
+//                        doLabel = false;
+//                    }
+    
+                    OMLine currentLine = new OMLine(anchory, anchorx, 0, 0, 0, -thisHeight);
+                    currentLine.setLinePaint(tint);
+                    currentLine.setStroke(new BasicStroke(2));
+                    add(currentLine);
+    
+                    if (doLabel) {
+                        OMText label = new OMText((float) anchory, (float) anchorx, 2, -5, (int) (i-durationUnits)
+                                + annotation, OMText.JUSTIFY_LEFT);
+                        label.setLinePaint(tint);
+                        add(label);
+                    }
                 }
-
-                OMLine currentLine = new OMLine(anchory, anchorx, 0, 0, 0, -thisHeight);
-                currentLine.setLinePaint(tint);
-                currentLine.setStroke(new BasicStroke(2));
-                add(currentLine);
-
-                if (doLabel) {
-                    OMText label = new OMText((float) anchory, (float) anchorx, 2, -5, (int) i
-                            + annotation, OMText.JUSTIFY_LEFT);
-                    label.setLinePaint(tint);
-                    add(label);
+            } else {
+                // Now, we need to baseline marks on 0, not on the left most value.
+                double start = 0;
+                // need to do negative times.
+                if (left < 0) {
+                    while (start > left) {
+                        start -= stepSize;
+                    }
+                }
+    
+                while (start < left) {
+                    start += stepSize;
+                }
+    
+                double stepStart = Math.floor(start);
+                double stepEnd = Math.ceil(right);
+    
+                for (double i = stepStart; i < stepEnd; i += stepSize) {
+                    double anchorx = i / unitPerMinute;
+    
+                    int thisHeight = height;
+                    boolean doLabel = true;
+                    if (i % heightStepSize != 0) {
+                        thisHeight /= 2;
+                        doLabel = false;
+                    }
+    
+                    OMLine currentLine = new OMLine(anchory, anchorx, 0, 0, 0, -thisHeight);
+                    currentLine.setLinePaint(tint);
+                    currentLine.setStroke(new BasicStroke(2));
+                    add(currentLine);
+    
+                    if (doLabel) {
+                        OMText label = new OMText((float) anchory, (float) anchorx, 2, -5, (int) i
+                                + annotation, OMText.JUSTIFY_LEFT);
+                        label.setLinePaint(tint);
+                        add(label);
+                    }
                 }
             }
-
+            
             return super.generate(proj);
         }
 
@@ -1459,6 +1508,10 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                 e.printStackTrace();
             }
         }
+    }
+
+    public void setRealTimeMode(boolean realTimeMode) {
+        this.realTimeMode = realTimeMode;
     }
 
 }
