@@ -46,6 +46,7 @@ import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.layer.policy.BufferedImageRenderPolicy;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
@@ -162,9 +163,11 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
      */
     public ShapeLayer() {
         setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+        setRenderPolicy(new BufferedImageRenderPolicy(this));
     }
 
     public ShapeLayer(String shapeFileName) {
+    	this();
         spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName);
     }
 
@@ -518,8 +521,10 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
      */
     public void paint(Graphics g) {
         if (shadowX == 0 && shadowY == 0) {
+        	logger.fine("painting shape layer");
             // Enabling buffer...
             super.paint(g);
+        	logger.fine("DONE painting shape layer");
         } else {
             // grab local for thread safety
             OMGraphicList omg = getList();

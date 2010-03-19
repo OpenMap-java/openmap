@@ -22,8 +22,6 @@
 
 package com.bbn.openmap.event;
 
-import java.util.Iterator;
-
 import com.bbn.openmap.proj.Projection;
 
 /**
@@ -147,13 +145,11 @@ public class ProjectionSupport extends ListenerSupport<ProjectionListener> {
                 }
 
                 if (projEvent != null && size() > 0) {
-                    Iterator<ProjectionListener> it = iterator();
-                    while (it.hasNext()) {
+                    for  (ProjectionListener listener : ProjectionSupport.this) {
                         if (nextEvent != null) {
                             break; // new event has been posted, bail out
                         }
 
-                        ProjectionListener listener = it.next();
                         listener.projectionChanged(projEvent);
                     }
                     // notification is complete

@@ -109,15 +109,22 @@ public class OverlayMapPanel extends BasicMapPanel {
         Dimension minimumSize = new Dimension(MapBean.DEFAULT_WIDTH, MapBean.DEFAULT_HEIGHT);
 
         JPanel centerContainer = new JPanel();
+        
+        JPanel hackPanel = new JPanel();
+        hackPanel.setLayout(new BorderLayout());
+        hackPanel.setOpaque(false);
+        hackPanel.add(map, BorderLayout.CENTER);
+        
         centerContainer.setLayout(new OverlayLayout(centerContainer));
 
         EmbeddedNavPanel navPanel = new EmbeddedNavPanel();
-        addMapComponent(navPanel);
-        addMapComponent(new ProjectionStack());
         navPanel.setBounds(12,
                 12,
                 navPanel.getMinimumSize().width,
                 navPanel.getMinimumSize().height);
+
+        addMapComponent(navPanel);
+        addMapComponent(new ProjectionStack());
 
         widgets = new JPanel();
         widgets.setLayout(new BorderLayout());
@@ -130,7 +137,7 @@ public class OverlayMapPanel extends BasicMapPanel {
         setBorders(map, widgets);
 
         centerContainer.add(widgets);
-        centerContainer.add(map);
+        centerContainer.add(hackPanel);
 
         add(centerContainer, BorderLayout.CENTER);
     }

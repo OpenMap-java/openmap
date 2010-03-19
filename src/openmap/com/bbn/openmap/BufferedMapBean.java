@@ -28,8 +28,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
-
-import com.bbn.openmap.util.Debug;
+import java.util.logging.Level;
 
 /**
  * The BufferedMapBean extends the MapBean by adding (you guessed it) buffering.
@@ -46,192 +45,263 @@ import com.bbn.openmap.util.Debug;
  */
 public class BufferedMapBean extends MapBean {
 
-    protected boolean bufferDirty = true;
-    protected Image drawingBuffer = null;
+	protected boolean bufferDirty = true;
+	protected Image drawingBuffer = null;
 
-    public BufferedMapBean() {
-        super();
-    }
+	public BufferedMapBean() {
+		super();
+	}
 
-    public BufferedMapBean(boolean useThreadedNotification) {
-        super(useThreadedNotification);
-    }
+	public BufferedMapBean(boolean useThreadedNotification) {
+		super(useThreadedNotification);
+	}
 
-    /**
-     * Set the layers of the MapBean.
-     * 
-     * @param evt LayerEvent
-     */
-    public void setLayers(com.bbn.openmap.event.LayerEvent evt) {
+	/**
+	 * Set the layers of the MapBean.
+	 * 
+	 * @param evt
+	 *            LayerEvent
+	 */
+	public void setLayers(com.bbn.openmap.event.LayerEvent evt) {
 
-        bufferDirty = true;
-        super.setLayers(evt);
-    }
+		bufferDirty = true;
+		super.setLayers(evt);
+	}
 
-    /**
-     * Invoked when component has been resized. Layer buffer is nullified. and
-     * super.componentResized(e) is called.
-     * 
-     * @param e ComponentEvent
-     */
-    public void componentResized(ComponentEvent e) {
-        // reset drawingBuffer
-        boolean bad = false;
-        try {
-            if (drawingBuffer != null) {
-                drawingBuffer.flush();
-            }
-            drawingBuffer = createImage(getWidth(), getHeight());
-        } catch (java.lang.NegativeArraySizeException nae) {
-            bad = true;
-        } catch (java.lang.IllegalArgumentException iae) {
-            bad = true;
-        }
+	/**
+	 * Invoked when component has been resized. Layer buffer is nullified. and
+	 * super.componentResized(e) is called.
+	 * 
+	 * @param e
+	 *            ComponentEvent
+	 */
+	public void componentResized(ComponentEvent e) {
+		// reset drawingBuffer
+		boolean bad = false;
+		try {
+			if (drawingBuffer != null) {
+				drawingBuffer.flush();
+			}
+			drawingBuffer = createImage(getWidth(), getHeight());
+		} catch (java.lang.NegativeArraySizeException nae) {
+			bad = true;
+		} catch (java.lang.IllegalArgumentException iae) {
+			bad = true;
+		}
 
-        if (bad) {
-            Debug.message("mapbean",
-                    "BufferedMapBean: component resizing is not valid for buffer.");
-            drawingBuffer = createImage(1, 1);
-        }
+		if (bad) {
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("component resizing is not valid for buffer.");
+			}
+			drawingBuffer = createImage(1, 1);
+		}
 
-        super.componentResized(e);
-    }
+		super.componentResized(e);
+	}
 
-    /**
-     * Paint the child components of this component.
-     * <p>
-     * WE STRONGLY RECOMMEND THAT YOU DO NOT OVERRIDE THIS METHOD The map layers
-     * are buffered in an Image which is drawn to the screen. The buffer is
-     * refreshed after repaint() is called on a layer.
-     * <p>
-     * In our view, paint() is called on the MapBean excessively, such as when
-     * tool tips are displayed and removed on the LayerPanel, or on when menu
-     * items are highlighted. This method should greatly reduce the number of
-     * times Layers are rendered.
-     * 
-     * @param g Graphics
-     */
-    public void paintChildren(Graphics g) {
-        paintChildren(g, null);
-    }
+	/**
+	 * Paint the child components of this component.
+	 * <p>
+	 * WE STRONGLY RECOMMEND THAT YOU DO NOT OVERRIDE THIS METHOD The map layers
+	 * are buffered in an Image which is drawn to the screen. The buffer is
+	 * refreshed after repaint() is called on a layer.
+	 * <p>
+	 * In our view, paint() is called on the MapBean excessively, such as when
+	 * tool tips are displayed and removed on the LayerPanel, or on when menu
+	 * items are highlighted. This method should greatly reduce the number of
+	 * times Layers are rendered.
+	 * 
+	 * @param g
+	 *            Graphics
+	 */
+	public void paintChildren(Graphics g) {
+		paintChildren(g, null);
+	}
 
-    /**
-     * Same as paintChildren, but allows you to set a clipping area to paint. Be
-     * careful with this, because if the clipping area is set while some layer
-     * decides to paint itself, that layer may not have all it's objects
-     * painted. Same warnings apply.
-     */
-    public void paintChildren(Graphics g, Rectangle clip) {
+	/**
+	 * Same as paintChildren, but allows you to set a clipping area to paint. Be
+	 * careful with this, because if the clipping area is set while some layer
+	 * decides to paint itself, that layer may not have all it's objects
+	 * painted. Same warnings apply.
+	 */
+	public void paintChildren(Graphics g, Rectangle clip) {
 
-        // if a layer has requested a render, then we render all of
-        // them into
-        // a drawing buffer
-        if (panningTransform == null && bufferDirty) {
-            bufferDirty = false;
+		// if a layer has requested a render, then we render all of
+		// them into
+		// a drawing buffer
+		if (panningTransform == null && bufferDirty) {
+			if (this instanceof com.bbn.openmap.layer.BufferedLayer.BLMapBean) {
+				logger.info("********** creating new buffered image " + projection);
+			}
+			bufferDirty = false;
 
-            int w = getWidth();
-            int h = getHeight();
+			int w = getWidth();
+			int h = getHeight();
+			
+			if (drawingBuffer == null) {
+				drawingBuffer = createVolatileImage(w, h);
+			}
 
-            if (drawingBuffer == null) {
-                drawingBuffer = createVolatileImage(w, h);
-            }
+			// draw the old image
+			Graphics gr = getMapBeanRepaintPolicy().modifyGraphicsForPainting(
+					drawingBuffer.getGraphics());
 
-            // draw the old image
-            Graphics gr = getMapBeanRepaintPolicy().modifyGraphicsForPainting(drawingBuffer.getGraphics());
+			if (clip == null) {
+				gr.setClip(0, 0, w, h);
+			} else {
+				gr.setClip(clip);
+			}
+			// gr.drawImage(drawingBuffer,0,0,null);
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("BufferedMapBean rendering layers to buffer.");
+			}
 
-            if (clip == null) {
-                gr.setClip(0, 0, w, h);
-            } else {
-                gr.setClip(clip);
-            }
-            // gr.drawImage(drawingBuffer,0,0,null);
-            if (Debug.debugging("mapbean")) {
-                Debug.output("BufferedMapBean.rendering layers to buffer.");
-            }
+			paintChildrenWithBorder(gr, false);
 
-            paintChildrenWithBorder(gr, false);
+			// reset the clip to full map
+			// gr.setClip(0, 0, w, h);
+			gr.dispose();
+		} else if (logger.isLoggable(Level.FINE)) {
+			logger.fine("BufferedMapBean rendering buffer.");
+		}
 
-            // reset the clip to full map
-            // gr.setClip(0, 0, w, h);
-            gr.dispose();
-        } else if (Debug.debugging("mapbean")) {
-            Debug.output("BufferedMapBean.rendering buffer.");
-        }
+		g = g.create();
 
-        Image daImage = drawingBuffer;
+		// Should be be clipping the graphics here? I'm not sure.
+		// Think so.
+		if (clip != null) {
+			g.setClip(clip);
+		}
 
-        g = g.create();
+		if (panningTransform != null) {
 
-        // Should be be clipping the graphics here? I'm not sure.
-        // Think so.
-        if (clip != null) {
-            g.setClip(clip);
-        }
+			panningTransform.render((Graphics2D) g);
+			return;
 
-        if (panningTransform != null) {
-            drawProjectionBackground(g);
-            ((Graphics2D)g).setTransform(panningTransform);
-        }
+		} else if (drawingBuffer != null) {
 
-        if (rotHelper != null) {
-            daImage = rotHelper.paintChildren(g, clip);
-        }
+			// Not panning
+			Image daImage = drawingBuffer;
 
-        // draw the buffer to the screen, daImage will be drawingBuffer without
-        // rotation
-        g.drawImage(daImage, 0, 0, null);
+			if (rotHelper != null) {
+				daImage = rotHelper.paintChildren(g, clip);
+			}
 
-        // Take care of the PaintListeners for no rotation
-        if (rotHelper == null && painters != null) {
-            painters.paint(g);
-        }
+			// draw the buffer to the screen, daImage will be drawingBuffer
+			// without
+			// rotation
+			g.drawImage(daImage, 0, 0, null);
 
-        // border gets overwritten accidentally, so redraw it now
-        if (panningTransform == null) {
-            paintBorder(g);
-        }
+			// Take care of the PaintListeners for no rotation
+			if (rotHelper == null && painters != null) {
+				painters.paint(g);
+			}
 
-        g.dispose();
-    }
+			// border gets overwritten accidentally, so redraw it now
+			paintBorder(g);
+		}
+		g.dispose();
+	}
 
-    public AffineTransform panningTransform = null;
+	public PanHelper panningTransform = null;
 
-    /**
-     * Interface-like method to query if the MapBean is buffered, so you can
-     * control behavior better. Allows the removal of specific instance-like
-     * queries for, say, BufferedMapBean, when all you really want to know is if
-     * you have the data is buffered, and if so, should be buffer be cleared.
-     * For the BufferedMapBean, always true.
-     */
-    public boolean isBuffered() {
-        return true;
-    }
+	/**
+	 * Interface-like method to query if the MapBean is buffered, so you can
+	 * control behavior better. Allows the removal of specific instance-like
+	 * queries for, say, BufferedMapBean, when all you really want to know is if
+	 * you have the data is buffered, and if so, should be buffer be cleared.
+	 * For the BufferedMapBean, always true.
+	 */
+	public boolean isBuffered() {
+		return true;
+	}
 
-    /**
-     * Marks the image buffer as dirty if value is false. On the next
-     * <code>paintChildren()</code>, we will call <code>paint()</code> on all
-     * Layer components.
-     * 
-     * @param value boolean
-     */
-    public void setBufferDirty(boolean value) {
-        bufferDirty = value;
-    }
+	/**
+	 * Marks the image buffer as dirty if value is true. On the next
+	 * <code>paintChildren()</code>, we will call <code>paint()</code> on all
+	 * Layer components.
+	 * 
+	 * @param value
+	 *            boolean
+	 */
+	public void setBufferDirty(boolean value) {
+		bufferDirty = value;
+	}
 
-    /**
-     * Checks whether the image buffer should be repainted.
-     * 
-     * @return boolean whether the layer buffer is dirty
-     */
-    public boolean isBufferDirty() {
-        return bufferDirty;
-    }
+	/**
+	 * Checks whether the image buffer should be repainted.
+	 * 
+	 * @return boolean whether the layer buffer is dirty
+	 */
+	public boolean isBufferDirty() {
+		return bufferDirty;
+	}
 
-    public void dispose() {
-        if (drawingBuffer != null) {
-            drawingBuffer.flush();
-        }
-        drawingBuffer = null;
-        super.dispose();
-    }
+	public void dispose() {
+		if (drawingBuffer != null) {
+			drawingBuffer.flush();
+		}
+		drawingBuffer = null;
+		super.dispose();
+	}
+
+	public AffineTransform getPanningTransform() {
+		return panningTransform;
+	}
+
+	/**
+	 * Set a panning transform on the buffer for rendering in a different place,
+	 * quickly. Sets the buffer to be dirty, so when the panning transform is
+	 * removed, it will be recreated.
+	 * 
+	 * @param transform
+	 */
+	public void setPanningTransform(AffineTransform transform) {
+		if (transform != null) {
+			if (this.panningTransform == null) {
+				this.panningTransform = new PanHelper(transform,
+						drawingBuffer);
+				drawingBuffer = null;
+			} else {
+				this.panningTransform.update(transform);
+			}
+		} else {
+			this.panningTransform.dispose();
+			this.panningTransform = null;
+		}
+		setBufferDirty(transform != null || isBufferDirty());
+	}
+
+	protected class PanHelper extends AffineTransform {
+		protected Image buffer;
+
+		protected PanHelper(AffineTransform aft, Image buffer) {
+			super(aft);
+			this.buffer = buffer;
+		}
+
+		protected void update(AffineTransform aft) {
+			super.setTransform(aft);
+		}
+
+		protected void render(Graphics2D g) {
+			drawProjectionBackground(g);
+			((Graphics2D) g).setTransform(this);
+			if (buffer != null) {
+				g.drawImage(buffer, 0, 0, null);
+			}
+
+			if (rotHelper == null && painters != null) {
+				painters.paint(g);
+			}
+		}
+		
+		protected void dispose() {
+			if (buffer != null) {
+				buffer.flush();
+				buffer = null;
+			}
+		}
+
+	}
 }

@@ -244,11 +244,11 @@ public class MapBean extends JComponent implements ComponentListener,
     }
 
     public MapBean(boolean useThreadedNotification) {
-        if (Debug.debugging("mapbean")) {
+        if (logger.isLoggable(Level.FINE)) {
             debugmsg("MapBean()");
         }
         if (!suppressCopyright) {
-            Debug.output(copyrightNotice);
+        	Debug.output(copyrightNotice);
         }
 
         background = DEFAULT_BACKGROUND_COLOR;

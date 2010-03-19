@@ -89,6 +89,7 @@ public class MultiShapeLayer extends ShapeLayer {
      * Initializes an empty shape layer.
      */
     public MultiShapeLayer() {
+    	super();
     }
 
     public void setSpatialIndexes(Collection<SpatialIndexHandler> siv) {

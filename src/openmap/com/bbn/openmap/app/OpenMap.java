@@ -33,6 +33,7 @@ import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.gui.BasicMapPanel;
 import com.bbn.openmap.gui.MapPanel;
 import com.bbn.openmap.gui.OpenMapFrame;
+import com.bbn.openmap.gui.OverlayMapPanel;
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 
@@ -81,7 +82,7 @@ public class OpenMap {
     }
     
     protected void configureMapPanel(PropertyHandler propertyHandler) {
-        BasicMapPanel basicMapPanel = new BasicMapPanel(propertyHandler, true);
+        OverlayMapPanel basicMapPanel = new OverlayMapPanel(propertyHandler, true);
         // Creates the components in the main application thread. If any of
         // these components need to update their GUI, they should hand a
         // Runnable object to the SwingUtilities.invokeLater(Runnable) method,
