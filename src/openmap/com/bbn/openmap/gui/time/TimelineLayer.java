@@ -115,6 +115,8 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     protected SelectionArea selectionRect;
     protected TimeSliderLayer.TimeDrape drape;
     protected CenterSupport centerDelegate;
+    
+    private TimeSliderLayer timeSliderLayer;
 
     long currentTime = 0;
     long gameStartTime = 0;
@@ -176,6 +178,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             TimePanel tp = ((TimePanel.Wrapper) someObj).getTimePanel();
             tp.addPropertyChangeListener(this);
             addPropertyChangeListener(tp);
+            timeSliderLayer = tp.getTimeSliderPanel().getTimeSliderLayer();
         }
     }
 
@@ -468,7 +471,9 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                         + ", bounds of " + postTime);
             }
 
-            setMapBeanMaxScale(true);
+            if(!realTimeMode || !timeSliderLayer.getUserHasChangedScale()) {
+                setMapBeanMaxScale(true);
+            }
         }
     }
 

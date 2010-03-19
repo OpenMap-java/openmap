@@ -124,7 +124,11 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
 
     TimeDrape drape;
     
+    // In realTimeMode, gameEndTime is the origin, rather than gameStartTime
     private boolean realTimeMode = false;
+    
+    // Used to refrain from re-scaling every TimeBoundsUpdate (in realTimeMode only)
+    private boolean userHasChangedScale = false;
 
     /**
      * Construct the TimelineLayer.
@@ -487,9 +491,11 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
             logger.fine(propertyName + " from " + evt.getSource());
             Projection timeLineProj = (Projection) evt.getNewValue();
             // Need to solve for selectionWidthMinutes
-            selectionWidthMinutes = timeLineProj.getScale()
-                    * getProjection().getWidth() / magicScaleFactor;
-
+            if(!realTimeMode || !userHasChangedScale) {
+                selectionWidthMinutes = timeLineProj.getScale()
+                        * getProjection().getWidth() / magicScaleFactor;
+            }
+            
             if (selectionWidthMinutes > maxSelectionWidthMinutes + .0001
             /* || selectionWidthMinutes < .0001 */) {
                 if (logger.isLoggable(Level.FINE)) {
@@ -504,6 +510,14 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
             resetControlWidgets();
             repaint();
         }
+    }
+
+    public boolean getUserHasChangedScale() {
+        return userHasChangedScale;
+    }
+
+    public void setUserHasChangedScale(boolean userHasChangedScale) {
+        this.userHasChangedScale = userHasChangedScale;
     }
 
     protected boolean checkAndSetForNoTime(TimeEvent te) {
@@ -537,8 +551,10 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
 
         if (boundsRectLeftHandle.contains(x, y)) {
             dragState = DragState.LEFT_HANDLE;
+            userHasChangedScale = true;
         } else if (boundsRectRightHandle.contains(x, y)) {
             dragState = DragState.RIGHT_HANDLE;
+            userHasChangedScale = true;
         } else {
             dragState = DragState.PRIMARY_HANDLE;
             Projection projection = getProjection();
