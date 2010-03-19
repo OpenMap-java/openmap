@@ -6,5 +6,43 @@
 	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" output="classes/j3d" path="src/j3d"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/extensions/batik-rasterizer-ext.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/extensions/batik-squiggle-ext.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-anim.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-awt-util.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-bridge.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-codec.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-css.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-dom.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-ext.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-extension.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-gui-util.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-gvt.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-parser.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-script.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-svg-dom.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-svggen.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-swing.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-transcoder.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-util.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/batik-xml.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/js.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/pdf-transcoder.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/xalan-2.6.0.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/xerces_2_5_0.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/xml-apis-ext.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/lib/xml-apis.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/batik-rasterizer.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/batik-slideshow.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/batik-squiggle.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/batik-svgpp.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/batik-ttf2svg.jar"/>
+	<classpathentry kind="lib" path="ext/batik-1.7/batik.jar"/>
+	<classpathentry kind="lib" path="ext/j3d-1_5_2/lib/ext/j3dcore.jar"/>
+	<classpathentry kind="lib" path="ext/j3d-1_5_2/lib/ext/j3dutils.jar"/>
+	<classpathentry kind="lib" path="ext/j3d-1_5_2/lib/ext/vecmath.jar"/>
+	<classpathentry kind="lib" path="ext/jai-1_1_3/lib/jai_codec.jar"/>
+	<classpathentry kind="lib" path="ext/jai-1_1_3/lib/jai_core.jar"/>
+	<classpathentry kind="lib" path="ext/junit-4.6.jar"/>
 	<classpathentry kind="output" path="classes/openmap"/>
 </classpath>
