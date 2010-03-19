@@ -1364,11 +1364,11 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                     int thisHeight = height;
                     boolean doLabel = true;
                     
-                    // KM TODO fix this up
-//                    if (i % heightStepSize != 0) {
-//                        thisHeight /= 2;
-//                        doLabel = false;
-//                    }
+                    // As always in real-time mode, the origin is at 'durationUnits' (in local time space)
+                    if ((durationUnits-i) % heightStepSize != 0) {
+                        thisHeight /= 2;
+                        doLabel = false;
+                    }
     
                     OMLine currentLine = new OMLine(anchory, anchorx, 0, 0, 0, -thisHeight);
                     currentLine.setLinePaint(tint);
