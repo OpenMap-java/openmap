@@ -265,7 +265,7 @@ public class BufferedMapBean extends MapBean {
 			} else {
 				this.panningTransform.update(transform);
 			}
-		} else {
+		} else if (this.panningTransform != null) {
 			this.panningTransform.dispose();
 			this.panningTransform = null;
 		}
