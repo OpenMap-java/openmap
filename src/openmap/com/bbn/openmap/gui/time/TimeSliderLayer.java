@@ -129,7 +129,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
     
     // Used to refrain from re-scaling every TimeBoundsUpdate (in realTimeMode only)
     private boolean userHasChangedScale = false;
-
+    
     /**
      * Construct the TimelineLayer.
      */
@@ -163,6 +163,9 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
 
             gameStartTime = ((Clock) someObj).getStartTime();
             gameEndTime = ((Clock) someObj).getEndTime();
+
+            // Just in case we missed an early TimeBoundEvent
+            updateTimeBounds(gameStartTime, gameEndTime);            
         }
         if (someObj instanceof CenterListener) {
             centerDelegate.add((CenterListener) someObj);
@@ -685,10 +688,6 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
 
         long offsetMillis = TimelineLayer.inverseProjectMillis(lon);
         
-        if(realTimeMode) {
-            offsetMillis = offsetMillis - (gameEndTime - gameStartTime);
-        }
-        
         timelineLayer.updateMouseTimeDisplay(new Long(offsetMillis));
 
         return lon;
@@ -759,13 +758,11 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
             timeEndLabel.setText(getLabelStringForTime(endTime));
         }
 
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy (HH:mm:ss)");
-
         public String getLabelStringForTime(long time) {
             String ret = NO_TIME_STRING;
             if (time != Long.MAX_VALUE && time != Long.MIN_VALUE) {
                 Date date = new Date(time);
-                ret = dateFormat.format(date);
+                ret = TimePanel.dateFormat.format(date);
             }
             return ret;
 
@@ -818,39 +815,42 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
         TimeBounds timeBounds = (TimeBounds) tbe.getNewTimeBounds();
 
         if (timeBounds != null) {
-
-            gameStartTime = timeBounds.getStartTime();
-            gameEndTime = timeBounds.getEndTime();
-
-            updateTimeLabels(gameStartTime, gameEndTime);
-
-            // DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy
-            // HH:mm:ss");
-            // Date date = new Date(gameStartTime);
-            // String sts = dateFormat.format(date);
-            // date.setTime(gameEndTime);
-            // String ets = dateFormat.format(date);
-
-            maxSelectionWidthMinutes = TimelineLayer.forwardProjectMillis(gameEndTime
-                    - gameStartTime);
-            if (selectionWidthMinutes > maxSelectionWidthMinutes
-                    || selectionWidthMinutes < .0001) {
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("resetting selectionWidthMinutes to max (time bounds property change), was "
-                            + selectionWidthMinutes
-                            + ", now "
-                            + maxSelectionWidthMinutes);
-                }
-                selectionWidthMinutes = maxSelectionWidthMinutes;
-            }
-
-            finalizeProjection();
-            doPrepare();
+            updateTimeBounds(timeBounds.getStartTime(), timeBounds.getEndTime());
         } else {
             // TODO handle when time bounds are null, meaning when no time
             // bounds providers are active.
         }
+    }
+    
+    public void updateTimeBounds(long start, long end) {
 
+        gameStartTime = start;
+        gameEndTime = end;
+
+        updateTimeLabels(gameStartTime, gameEndTime);
+
+        // DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy
+        // HH:mm:ss");
+        // Date date = new Date(gameStartTime);
+        // String sts = dateFormat.format(date);
+        // date.setTime(gameEndTime);
+        // String ets = dateFormat.format(date);
+
+        maxSelectionWidthMinutes = TimelineLayer.forwardProjectMillis(gameEndTime
+                - gameStartTime);
+        if (selectionWidthMinutes > maxSelectionWidthMinutes
+                || selectionWidthMinutes < .0001) {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("resetting selectionWidthMinutes to max (time bounds property change), was "
+                        + selectionWidthMinutes
+                        + ", now "
+                        + maxSelectionWidthMinutes);
+            }
+            selectionWidthMinutes = maxSelectionWidthMinutes;
+        }
+
+        finalizeProjection();
+        doPrepare();
     }
 
     public void setRealTimeMode(boolean realTimeMode) {
