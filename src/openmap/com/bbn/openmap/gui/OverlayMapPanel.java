@@ -33,6 +33,7 @@ import com.bbn.openmap.MouseDelegator;
 import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.event.OMMouseMode;
 import com.bbn.openmap.layer.shape.ShapeLayer;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphicConstants;
 import com.bbn.openmap.proj.ProjectionStack;
 
@@ -46,7 +47,19 @@ import com.bbn.openmap.proj.ProjectionStack;
 public class OverlayMapPanel extends BasicMapPanel {
 
     public static Logger logger = Logger.getLogger(OverlayMapPanel.class.getName());
-
+    /**
+     * May be null, in which case the widgets should decide.
+     */
+    protected DrawingAttributes activeWidgetColors;
+    /**
+     * May be null, in which case the widgets should decide.
+     */
+    protected DrawingAttributes inactiveWidgetColors; 
+    /**
+     * Defaults to 15;
+     */
+    protected int widgetButtonSize = 15;
+    
     /**
      * A transparent JPanel with a border layout, residing on top of the
      * MapBean.
@@ -100,7 +113,31 @@ public class OverlayMapPanel extends BasicMapPanel {
         layoutPanel(map);
     }
 
-    /**
+    public DrawingAttributes getActiveWidgetColors() {
+		return activeWidgetColors;
+	}
+
+	public void setActiveWidgetColors(DrawingAttributes activeWidgetColors) {
+		this.activeWidgetColors = activeWidgetColors;
+	}
+
+	public DrawingAttributes getInactiveWidgetColors() {
+		return inactiveWidgetColors;
+	}
+
+	public void setInactiveWidgetColors(DrawingAttributes inactiveWidgetColors) {
+		this.inactiveWidgetColors = inactiveWidgetColors;
+	}
+
+	public int getWidgetButtonSize() {
+		return widgetButtonSize;
+	}
+
+	public void setWidgetButtonSize(int widgetButtonSize) {
+		this.widgetButtonSize = widgetButtonSize;
+	}
+
+	/**
      * New method added, called from addMapBeanToPanel(MapBean).
      * 
      * @param map
@@ -117,7 +154,7 @@ public class OverlayMapPanel extends BasicMapPanel {
         
         centerContainer.setLayout(new OverlayLayout(centerContainer));
 
-        EmbeddedNavPanel navPanel = new EmbeddedNavPanel();
+        EmbeddedNavPanel navPanel = new EmbeddedNavPanel(activeWidgetColors, inactiveWidgetColors, widgetButtonSize);
         navPanel.setBounds(12,
                 12,
                 navPanel.getMinimumSize().width,
@@ -126,6 +163,9 @@ public class OverlayMapPanel extends BasicMapPanel {
         addMapComponent(navPanel);
         addMapComponent(new ProjectionStack());
 
+        EmbeddedScaleDisplayPanel scaleDisplay = new EmbeddedScaleDisplayPanel();
+        addMapComponent(scaleDisplay);
+        
         widgets = new JPanel();
         widgets.setLayout(new BorderLayout());
         widgets.setBackground(OMGraphicConstants.clear);
@@ -133,7 +173,8 @@ public class OverlayMapPanel extends BasicMapPanel {
         widgets.setBounds(0, 0, map.getWidth(), map.getHeight());
         widgets.setMinimumSize(minimumSize);
         widgets.add(navPanel, BorderLayout.WEST);
-
+        widgets.add(scaleDisplay, BorderLayout.EAST);
+        
         setBorders(map, widgets);
 
         centerContainer.add(widgets);

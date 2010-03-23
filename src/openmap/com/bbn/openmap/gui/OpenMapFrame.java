@@ -264,6 +264,7 @@ public class OpenMapFrame extends JFrame implements
 
         setPosition(width, height);
         invalidate();
+        pack();
         setVisible(true);
     }
 

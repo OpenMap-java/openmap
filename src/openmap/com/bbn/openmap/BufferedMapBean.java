@@ -127,17 +127,14 @@ public class BufferedMapBean extends MapBean {
 	public void paintChildren(Graphics g, Rectangle clip) {
 
 		// if a layer has requested a render, then we render all of
-		// them into
-		// a drawing buffer
+		// them into a drawing buffer
 		if (panningTransform == null && bufferDirty) {
-			if (this instanceof com.bbn.openmap.layer.BufferedLayer.BLMapBean) {
-				logger.info("********** creating new buffered image " + projection);
-			}
+
 			bufferDirty = false;
 
 			int w = getWidth();
 			int h = getHeight();
-			
+
 			if (drawingBuffer == null) {
 				drawingBuffer = createVolatileImage(w, h);
 			}
@@ -258,16 +255,17 @@ public class BufferedMapBean extends MapBean {
 	 */
 	public void setPanningTransform(AffineTransform transform) {
 		if (transform != null) {
-			if (this.panningTransform == null) {
-				this.panningTransform = new PanHelper(transform,
-						drawingBuffer);
+			if (panningTransform == null) {
+				panningTransform = new PanHelper(transform, drawingBuffer);
 				drawingBuffer = null;
 			} else {
-				this.panningTransform.update(transform);
+				panningTransform.update(transform);
 			}
-		} else if (this.panningTransform != null) {
-			this.panningTransform.dispose();
-			this.panningTransform = null;
+		} else {
+			if (panningTransform != null) {
+				panningTransform.dispose();
+			}
+			panningTransform = null;
 		}
 		setBufferDirty(transform != null || isBufferDirty());
 	}
@@ -295,7 +293,7 @@ public class BufferedMapBean extends MapBean {
 				painters.paint(g);
 			}
 		}
-		
+
 		protected void dispose() {
 			if (buffer != null) {
 				buffer.flush();

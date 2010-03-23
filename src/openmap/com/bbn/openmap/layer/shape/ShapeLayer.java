@@ -521,10 +521,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
      */
     public void paint(Graphics g) {
         if (shadowX == 0 && shadowY == 0) {
-        	logger.fine("painting shape layer");
             // Enabling buffer...
             super.paint(g);
-        	logger.fine("DONE painting shape layer");
         } else {
             // grab local for thread safety
             OMGraphicList omg = getList();
