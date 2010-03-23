@@ -25,7 +25,10 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -294,7 +297,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             timeHashFactory = new TimeHashFactory();
         }
 
-        tll.add(timeHashFactory.getHashMarks(projection, realTimeMode, gameEndTime - gameStartTime));
+        tll.add(timeHashFactory.getHashMarks(projection, realTimeMode, gameStartTime));
 
         if (preTime != null) {
             preTime.generate(projection);
@@ -704,10 +707,6 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
         long offsetMillis = inverseProjectMillis(lon);
         
-        if(realTimeMode) {
-            offsetMillis = offsetMillis - (gameEndTime - gameStartTime);
-        }
-
         updateMouseTimeDisplay(new Long(offsetMillis));
 
         return lon;
@@ -1209,7 +1208,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             hashMarks.add(new TimeHashMarks.Years());
         }
 
-        public OMGraphicList getHashMarks(Projection proj, boolean realTimeMode, long gameDuration) {
+        public OMGraphicList getHashMarks(Projection proj, boolean realTimeMode, long gameStartTimeMillis) {
 
             Point2D ul = proj.getUpperLeft();
             Point2D lr = proj.getLowerRight();
@@ -1234,7 +1233,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                 current = thm;
             }
 
-            current.generate(proj, timeSpan, realTimeMode, gameDuration);
+            current.generate(proj, realTimeMode, timeSpan, gameStartTimeMillis);
 
             return current;
         }
@@ -1302,22 +1301,24 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     public abstract static class TimeHashMarks extends OMGraphicList {
         protected String annotation;
         protected double unitPerMinute;
+        protected DateFormat dateFormat;
 
-        protected TimeHashMarks(String annotation, double unitPerMinute) {
+        protected TimeHashMarks(String annotation, double unitPerMinute, DateFormat dateFormat) {
             this.annotation = annotation;
             this.unitPerMinute = unitPerMinute;
+            this.dateFormat = dateFormat;
         }
 
         public abstract boolean passesThreshold(double minVisibleOnTimeLine);
 
-        public boolean generate(Projection proj, double minSpan, boolean realTimeMode, long gameDuration) {
+        public boolean generate(Projection proj, boolean realTimeMode, double timeSpanMinutes, long gameStartTimeMillis) {
             Point2D ul = proj.getUpperLeft();
             Point2D lr = proj.getLowerRight();
             double left = ul.getX() * unitPerMinute;
             double right = lr.getX() * unitPerMinute;
-            minSpan = minSpan * unitPerMinute;
+            double timeSpan = timeSpanMinutes * unitPerMinute;
 
-            double num = Math.floor(minSpan);
+            double num = Math.floor(timeSpan);
             double heightStepSize = 1;
             double stepSize = 1;
             if (num < 2) {
@@ -1333,7 +1334,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
             if (logger.isLoggable(Level.FINER)) {
                 logger.finer("figure on needing " + num + annotation + ", "
-                        + stepSize + " stepsize for " + (minSpan / stepSize)
+                        + stepSize + " stepsize for " + (timeSpan / stepSize)
                         + " lines");
             }
 
@@ -1341,31 +1342,37 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             double anchory = lr.getY();
 
             if(realTimeMode) {
-                // Now, we need to baseline marks on gameEndTime (i.e. 'now'), not on the right most value.
-                double durationUnits = gameDuration * (1.0 / (1000.0*60.0)) * unitPerMinute;
-                double start = durationUnits;
-                // need to do future times.
-                if (right > start) {
-                    while (start < right) {
-                        start += stepSize;
+                // Different approach here, since we're concerned with absolute time
+                // -So all of the above setup still applies, but we're going to convert
+                // once we have the start time set
+                double millisPerUnit = (long)(60.0 * 1000.0 / unitPerMinute);
+                double gameStartTimeUnits = (double)gameStartTimeMillis / millisPerUnit;
+                double firstMarkerOffsetMillis = (gameStartTimeMillis % millisPerUnit);
+                double firstMarkerOffsetUnits = (double)firstMarkerOffsetMillis / millisPerUnit;
+                
+                // need to do negative times.
+                if (left < 0) {
+                    while (firstMarkerOffsetUnits > left) {
+                        firstMarkerOffsetUnits -= stepSize;
                     }
                 }
     
-                while (start > right) {
-                    start -= stepSize;
+                while (firstMarkerOffsetUnits < left) {
+                    firstMarkerOffsetUnits += stepSize;
                 }
     
-                double stepStart = start;
-                double stepEnd = Math.floor(left);
+                double stepStart = Math.floor(firstMarkerOffsetUnits + gameStartTimeUnits);
+                double stepEnd = Math.ceil(right + gameStartTimeUnits);
+
+                int count = 0;
     
-                for (double i = stepStart; i > stepEnd; i -= stepSize) {
-                    double anchorx = i / unitPerMinute;
+                // i is in 'units'
+                for (double i = stepStart; i < stepEnd; i += stepSize, count++) {
+                    double anchorx = (i - gameStartTimeUnits) / unitPerMinute;
     
                     int thisHeight = height;
                     boolean doLabel = true;
-                    
-                    // As always in real-time mode, the origin is at 'durationUnits' (in local time space)
-                    if ((durationUnits-i) % heightStepSize != 0) {
+                    if (count % heightStepSize != 0) {
                         thisHeight /= 2;
                         doLabel = false;
                     }
@@ -1376,8 +1383,9 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                     add(currentLine);
     
                     if (doLabel) {
-                        OMText label = new OMText((float) anchory, (float) anchorx, 2, -5, (int) (i-durationUnits)
-                                + annotation, OMText.JUSTIFY_LEFT);
+                        Date date = new Date((long) (i*millisPerUnit));
+                        String labelString = dateFormat.format(date);
+                        OMText label = new OMText((float) anchory, (float) anchorx, 2, -5, labelString, OMText.JUSTIFY_LEFT);
                         label.setLinePaint(tint);
                         add(label);
                     }
@@ -1428,7 +1436,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
         public static class Seconds extends TimeHashMarks {
             public Seconds() {
-                super("s", 60);
+                super("s", 60, new SimpleDateFormat("HH:mm:ss"));
             }
 
             public boolean passesThreshold(double minVisibleOnTimeLine) {
@@ -1439,7 +1447,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
         public static class Minutes extends TimeHashMarks {
             public Minutes() {
-                super("m", 1);
+                super("m", 1, new SimpleDateFormat("HH:mm:ss"));
             }
 
             public boolean passesThreshold(double minVisibleOnTimeLine) {
@@ -1450,7 +1458,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
         public static class Hours extends TimeHashMarks {
             public Hours() {
-                super("h", (1d / 60d));
+                super("h", (1d / 60d), new SimpleDateFormat("HH:mm:ss"));
             }
 
             public boolean passesThreshold(double minVisibleOnTimeLine) {
@@ -1460,7 +1468,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
         public static class Days extends TimeHashMarks {
             public Days() {
-                super("d", (1d / 60d / 24d));
+                super("d", (1d / 60d / 24d), TimePanel.dayFormat);
             }
 
             public boolean passesThreshold(double minVisibleOnTimeLine) {
@@ -1471,7 +1479,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
         public static class Years extends TimeHashMarks {
             public Years() {
-                super("y", (1d / 60d / 24d / 365d));
+                super("y", (1d / 60d / 24d / 365d), TimePanel.dayFormat);
             }
 
             public boolean passesThreshold(double minVisibleOnTimeLine) {
@@ -1517,6 +1525,14 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
     public void setRealTimeMode(boolean realTimeMode) {
         this.realTimeMode = realTimeMode;
+    }
+
+    public long getDuration() {
+        return gameEndTime - gameStartTime;
+    }
+
+    public long getEndTime() {
+        return gameEndTime;
     }
 
 }

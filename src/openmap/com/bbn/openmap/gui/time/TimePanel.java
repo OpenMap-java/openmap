@@ -91,6 +91,9 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
     public final static String RealTimeModeProperty = "realTimeMode";
     private boolean realTimeMode = false;
 
+    public final static String ShowPlayFilterProperty = "showPlayFilter";
+    private boolean showPlayFilter = true;
+    
     /**
      * The Clock object used by the TimePanel.
      */
@@ -124,6 +127,11 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
     TimeSliderPanel timeSliderPanel;
 
     protected String parentName;
+    
+    // Isolating formats that have anything to do with months+days, for International audiences
+    final public static DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy (HH:mm:ss)");
+    final public static DateFormat dateFormat_realTime = new SimpleDateFormat("MM/dd/yyyy  HH:mm:ss");
+    final public static DateFormat dayFormat = new SimpleDateFormat("MM/dd/yyyy");
 
     public TimePanel() {
     // Needs Clock to create interface.
@@ -146,6 +154,9 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
 
         realTimeMode = PropUtils.booleanFromProperties(props, prefix
                 + RealTimeModeProperty, realTimeMode);
+        
+        showPlayFilter = PropUtils.booleanFromProperties(props, prefix
+                + ShowPlayFilterProperty, showPlayFilter);
     }
 
     /**
@@ -180,24 +191,26 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         c.insets = insets;
 
         internString = i18n.get(this.getClass(), "play_selected", "Play Filter");
-        playFilter = new JCheckBox(internString);
-        internString = i18n.get(this.getClass(),
-                "play_selected",
-                I18n.TOOLTIP,
-                "Jump clock to events with play filter markings.");
-        playFilter.setToolTipText(internString);
-        playFilter.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                JCheckBox jcb = (JCheckBox) ae.getSource();
-                firePropertyChange(PlayFilterProperty,
-                        new Boolean(!jcb.isSelected()),
-                        new Boolean(jcb.isSelected()));
-            }
-        });
-        lgridbag.setConstraints(playFilter, c);
-        playFilter.setVisible(false);
-        leftPanel.add(playFilter);
-
+        if(showPlayFilter) {
+            playFilter = new JCheckBox(internString);
+            internString = i18n.get(this.getClass(),
+                    "play_selected",
+                    I18n.TOOLTIP,
+                    "Jump clock to events with play filter markings.");
+            playFilter.setToolTipText(internString);
+            playFilter.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    JCheckBox jcb = (JCheckBox) ae.getSource();
+                    firePropertyChange(PlayFilterProperty,
+                            new Boolean(!jcb.isSelected()),
+                            new Boolean(jcb.isSelected()));
+                }
+            });
+            lgridbag.setConstraints(playFilter, c);
+            playFilter.setVisible(false);
+            leftPanel.add(playFilter);
+        }
+        
         c.fill = GridBagConstraints.NONE;
         c.weighty = 0f;
 
@@ -327,8 +340,8 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
     public void updateMouseTimeDisplay(long mouseOffsetTime) {
 
         if (realTimeMode) {
-            if (mouseOffsetTime > 0) {
-                mouseOffsetTime = 0;
+            if (mouseOffsetTime > timelinePanel.getTimelineLayer().getEndTime()) {
+                mouseOffsetTime = timelinePanel.getTimelineLayer().getEndTime();
             }
         } else {
             if (mouseOffsetTime < 0) {
@@ -343,7 +356,14 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         }
     }
 
-    public String convertOffsetTimeToText(long offsetTime) {
+    public String convertOffsetTimeToText(long offsetTimeFromLeft) {
+        
+        long offsetTime = offsetTimeFromLeft;
+        
+        if(realTimeMode) {
+            offsetTime = offsetTime - timelinePanel.getTimelineLayer().getDuration();
+        }
+                
         String sign = "";
         if(offsetTime < 0) {
             sign = "-";
@@ -354,8 +374,14 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
                 / (60 * 1000));
         int seconds = (int) Math.abs((offsetTime % (60 * 1000)) / 1000);
 
-        return sign + df.format(hours) + ":" + df.format(minutes) + ":"
-                + df.format(seconds);
+        String relativeTime = sign + df.format(hours) + ":" + df.format(minutes) + ":" + df.format(seconds);
+        
+        if(realTimeMode) {
+            Date date = new Date(offsetTimeFromLeft + timeSliderPanel.getTimeSliderLayer().gameStartTime);
+            return TimePanel.dateFormat_realTime.format(date) + "   (" + relativeTime + ")";            
+        } else {
+            return relativeTime;
+        }
     }
 
     public void setPreferredLocation(String loc) {
@@ -426,12 +452,18 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
 
             if (sysTime != Long.MAX_VALUE) {
 
-                Date date = new Date(sysTime);
-                DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-                String sts = dateFormat.format(date);
-
-                timeLabel.setText(sts + " ("
-                        + convertOffsetTimeToText(offsetTime) + ")");
+                if(realTimeMode) {
+                    Date date = new Date(sysTime);
+                    String timeText = TimePanel.dateFormat_realTime.format(date);            
+                    timeLabel.setText(timeText);
+                } else {
+                    Date date = new Date(sysTime);
+                    DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                    String sts = dateFormat.format(date);
+    
+                    timeLabel.setText(sts + " ("
+                            + convertOffsetTimeToText(offsetTime) + ")");
+                }
             } else {
                 timeLabel.setText(NO_TIME_STRING);
             }
