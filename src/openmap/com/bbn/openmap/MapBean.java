@@ -42,6 +42,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Vector;
@@ -1362,7 +1363,8 @@ public class MapBean extends JComponent implements ComponentListener,
             int w = getWidth();
             int h = getHeight();
             if (rotImage == null) {
-                rotImage = createVolatileImage(w, h);
+//                rotImage = createVolatileImage(w, h);
+                rotImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
             }
             Graphics2D g2 = (Graphics2D) rotImage.getGraphics();
             g2.setColor(Color.black);

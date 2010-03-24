@@ -72,6 +72,7 @@ public class EmbeddedScaleDisplayPanel extends OMComponentPanel implements
 
 		dAttributes.setMattingPaint(new Color(0xffcccccc));
 		dAttributes.setMatted(true);
+
 	}
 
 	public EmbeddedScaleDisplayPanel(DrawingAttributes dAtts, Length units) {

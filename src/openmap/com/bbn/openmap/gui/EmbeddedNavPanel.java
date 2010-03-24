@@ -32,8 +32,12 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -43,9 +47,12 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.plaf.basic.BasicSliderUI;
 
+import com.bbn.openmap.Environment;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.SoloMapComponent;
 import com.bbn.openmap.event.CenterListener;
@@ -54,6 +61,7 @@ import com.bbn.openmap.event.PanListener;
 import com.bbn.openmap.event.PanSupport;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.event.ProjectionListener;
+import com.bbn.openmap.event.ZoomEvent;
 import com.bbn.openmap.event.ZoomListener;
 import com.bbn.openmap.event.ZoomSupport;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
@@ -81,6 +89,9 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 	public static Logger logger = Logger
 			.getLogger("com.bbn.openmap.gui.EmbeddedNavPanel");
 
+	private static final long serialVersionUID = 1L;
+
+	public static final int SLIDER_MAX = 17;
 	public final static String FADE_ATTRIBUTES_PROPERTY = "fade";
 	public final static String LIVE_ATTRIBUTES_PROPERTY = "live";
 
@@ -95,8 +106,6 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 	protected ImageIcon forwardIcon;
 	protected ImageIcon forwardDimIcon;
 
-	final static int SLIDER_MAX = 17;
-
 	protected MapBean map;
 	protected CenterSupport centerDelegate;
 	protected PanSupport panDelegate;
@@ -109,13 +118,25 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 	protected float MAX_TRANSPARENCY = 1.0f;
 	protected boolean fade = false;
 
-	AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP,
-			MAX_TRANSPARENCY);
+	protected Point2D recenterPoint;
+
+	protected AlphaComposite ac = AlphaComposite.getInstance(
+			AlphaComposite.SRC_ATOP, MAX_TRANSPARENCY);
 
 	public EmbeddedNavPanel() {
 		this(null, null, DEFAULT_BUTTON_SIZE);
 	}
 
+	/**
+	 * Make one.
+	 * 
+	 * @param buttonColors
+	 *            The live button colors when active.
+	 * @param fadeColors
+	 *            The faded button colors, when inactive.
+	 * @param buttonSize
+	 *            The relative pixel button sizes.
+	 */
 	public EmbeddedNavPanel(DrawingAttributes buttonColors,
 			DrawingAttributes fadeColors, int buttonSize) {
 		super();
@@ -127,6 +148,12 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 		setOpaque(false);
 
 		initColors(buttonColors, fadeColors, buttonSize);
+
+		// Checks the openmap.Latitude and openmap.Longitude properties, and
+		// initializes the re-center point to that.
+		float lat = Environment.getFloat(Environment.Latitude, 0f);
+		float lon = Environment.getFloat(Environment.Longitude, 0f);
+		setRecenterPoint(new Point2D.Float(lon, lat));
 
 		layoutPanel();
 	}
@@ -183,7 +210,7 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 		return props;
 	}
 
-	public void layoutPanel() {
+	protected void layoutPanel() {
 
 		removeAll();
 		int projStackButtonSize = (int) (buttonSize * 1.25);
@@ -284,7 +311,13 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 		rosette.add(makeButton(ipl, liveAttributes, rosetteButtonSize, 0.0,
 				"Center Map", new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						centerDelegate.fireCenter(0, 0);
+						Point2D centerPnt = getRecenterPoint();
+						if (centerPnt == null) {
+							centerDelegate.fireCenter(0, 0);
+						} else {
+							centerDelegate.fireCenter(centerPnt.getY(),
+									centerPnt.getX());
+						}
 					}
 				}), c2);
 		c2.gridx = 2;
@@ -330,12 +363,12 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 		layoutConstraints.gridy = baseY++;
 		layoutConstraints.insets = new Insets(6, 0, 6, 0);
 		ipl = new IconPartList();
-		ipl.add(OpenMapAppPartCollection.CIRCLE.getIconPart());
+		// ipl.add(OpenMapAppPartCollection.CIRCLE.getIconPart());
 		ipl.add(OpenMapAppPartCollection.PLUS.getIconPart());
 		add(makeButton(ipl, liveAttributes, zoomButtonSize, 0.0, "Zoom In",
 				new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						slider.setValue(slider.getValue() - 1);
+						zoomDelegate.fireZoom(ZoomEvent.RELATIVE, .5f);
 					}
 				}), layoutConstraints);
 
@@ -346,15 +379,17 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 		layoutConstraints.gridy = baseY++;
 		layoutConstraints.insets = new Insets(6, 0, 6, 0);
 		ipl = new IconPartList();
-		ipl.add(OpenMapAppPartCollection.CIRCLE.getIconPart());
+		// ipl.add(OpenMapAppPartCollection.CIRCLE.getIconPart());
 		ipl.add(OpenMapAppPartCollection.MINUS.getIconPart());
 		add(makeButton(ipl, liveAttributes, zoomButtonSize, 0.0, "Zoom Out",
 				new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						slider.setValue(slider.getValue() + 1);
+						zoomDelegate.fireZoom(ZoomEvent.RELATIVE, 2.0f);
 					}
 				}), layoutConstraints);
 
+		// We could drop this, but I think it's needed to play well with other
+		// containers when needed.
 		layoutConstraints.fill = GridBagConstraints.VERTICAL;
 		layoutConstraints.gridy = baseY++;
 		layoutConstraints.weighty = 1;
@@ -365,6 +400,14 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 
 		setMinimumSize(new Dimension(75, (projStackButtonSize + 3
 				* rosetteButtonSize + 2 * zoomButtonSize + 24 + 200)));
+	}
+
+	public Point2D getRecenterPoint() {
+		return recenterPoint;
+	}
+
+	public void setRecenterPoint(Point2D recenterPoint) {
+		this.recenterPoint = recenterPoint;
 	}
 
 	protected JButton makeButton(IconPart iconPart, DrawingAttributes da,
@@ -378,6 +421,9 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 			ActionListener listener) {
 		JButton button = makeButton(icon, toolTip);
 		button.addActionListener(listener);
+		// KNOX -- don't let buttons get focus and add transparency listener
+		button.setFocusable(false);
+		button.addMouseListener(new NavPanelMouseListener());
 		return button;
 	}
 
@@ -393,29 +439,41 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 		button.setPreferredSize(new Dimension(icon.getIconWidth(), icon
 				.getIconHeight()));
 		button.setToolTipText(toolTip);
+		// KNOX -- don't let buttons get focus and add transparency listener
+		button.setFocusable(false);
+		button.addMouseListener(new NavPanelMouseListener());
 		return button;
 	}
 
 	protected JComponent makeScaleSlider(DrawingAttributes da) {
-		slider = new JSlider(JSlider.VERTICAL, 0, SLIDER_MAX, SLIDER_MAX);
+		slider = new JSlider(SwingConstants.VERTICAL, 0, SLIDER_MAX, SLIDER_MAX);
+		slider.setUI(new NavPanelSliderUI(slider, (Color) da.getFillPaint()));
 		// MAGIC: required to make background transparent!
-		slider.setBackground(CONTROL_BACKGROUND);
+		slider.setBackground((Color) da.getFillPaint());
 		slider.setBorder(BorderFactory.createLineBorder((Color) da
 				.getFillPaint(), 1));
-		slider.setForeground(CONTROL_BACKGROUND);
+		slider.setForeground((Color) da.getFillPaint());
 		slider.setInverted(true);
 		slider.setMinorTickSpacing(1);
 		// No surprise: also required to make background transparent.
 		slider.setOpaque(false);
 		slider.setPaintTicks(true);
-		slider.setSnapToTicks(false);
+		slider.setSnapToTicks(true);
 		slider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent event) {
+				// Need the check to avoid resetting the map scale if the window
+				// is
+				// resized. Only want this to happen of someone is moving the
+				// slider
+				// lever.
 				if (slider.getValueIsAdjusting()) {
 					changeMapScale(slider.getValue());
 				}
 			}
 		});
+		// KNOX -- don't let slider get focus and add transparency listener
+		slider.setFocusable(false);
+		slider.addMouseListener(new NavPanelMouseListener());
 		return slider;
 	}
 
@@ -440,7 +498,7 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 				(SLIDER_MAX - sliderValue)));
 	}
 
-	final int scaleToSlider(float mapScale) {
+	protected int scaleToSlider(float mapScale) {
 		return (SLIDER_MAX - logBase2(getMapMaxScale() / mapScale));
 	}
 
@@ -627,4 +685,41 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 		return map;
 	}
 
+	// KNOX -- using this to paint ticks on slider
+	private class NavPanelSliderUI extends BasicSliderUI {
+		Color sliderTickColor = Color.white;
+
+		public NavPanelSliderUI(JSlider slider, Color tickColor) {
+			super(slider);
+			sliderTickColor = tickColor;
+		}
+
+		@Override
+		protected void paintMinorTickForVertSlider(Graphics g,
+				Rectangle tickBounds, int y) {
+			g.setColor(sliderTickColor);
+			super.paintMinorTickForVertSlider(g, tickBounds, y);
+		}
+
+	}
+
+	// KNOX -- using this to change level of transparency when mousing over
+	// buttons/slider
+	private class NavPanelMouseListener extends MouseAdapter {
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			if (ac.getAlpha() < 0.65f) {
+				setTransparency(0.65f);
+				getTopLevelAncestor().repaint();
+			}
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			if (ac.getAlpha() > 0.25f) {
+				setTransparency(0.25f);
+				getTopLevelAncestor().repaint();
+			}
+		}
+	}
 }

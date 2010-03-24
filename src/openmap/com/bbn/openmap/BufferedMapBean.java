@@ -28,6 +28,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 
 /**
@@ -81,8 +82,9 @@ public class BufferedMapBean extends MapBean {
 		try {
 			if (drawingBuffer != null) {
 				drawingBuffer.flush();
+				drawingBuffer = null;
 			}
-			drawingBuffer = createImage(getWidth(), getHeight());
+			drawingBuffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
 		} catch (java.lang.NegativeArraySizeException nae) {
 			bad = true;
 		} catch (java.lang.IllegalArgumentException iae) {
@@ -93,7 +95,7 @@ public class BufferedMapBean extends MapBean {
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("component resizing is not valid for buffer.");
 			}
-			drawingBuffer = createImage(1, 1);
+			drawingBuffer = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		}
 
 		super.componentResized(e);
@@ -136,7 +138,8 @@ public class BufferedMapBean extends MapBean {
 			int h = getHeight();
 
 			if (drawingBuffer == null) {
-				drawingBuffer = createVolatileImage(w, h);
+//				drawingBuffer = createVolatileImage(w, h);
+				drawingBuffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 			}
 
 			// draw the old image

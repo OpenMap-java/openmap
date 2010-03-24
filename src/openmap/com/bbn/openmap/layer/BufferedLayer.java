@@ -553,9 +553,16 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements
 
 				if (drawingBuffer != null) {
 					drawingBuffer.flush();
+					drawingBuffer = null;
 				}
 
-				drawingBuffer = createVolatileImage(w, h);
+				// Assumes you have confidence in your access to memory
+				// allocation on the video board. This call has been a little
+				// flakey lately, going back to BufferedImage.
+				
+				// drawingBuffer = createVolatileImage(w, h);
+				drawingBuffer = new BufferedImage(w, h,
+						BufferedImage.TYPE_INT_ARGB);
 
 				// draw the old image
 				Graphics gr = getMapBeanRepaintPolicy()
