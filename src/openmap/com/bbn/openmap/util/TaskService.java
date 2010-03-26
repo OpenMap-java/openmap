@@ -18,14 +18,9 @@ import com.bbn.openmap.PropertyHandler;
 
 /**
  * Reuse threads instead of making new ones over and over.
- * Use this if you don't need access to the Thread itself.
- * If you do need the Thread, for instance to invoke join,
- * use ThreadPool.
  */
 public final class TaskService {
-   /**
-    * 
-    */
+   
    private static final int DEFAULT_POOL_SIZE = 50;
    private static TaskService singleton;
    
