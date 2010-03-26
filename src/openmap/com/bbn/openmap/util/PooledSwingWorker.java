@@ -1,8 +1,5 @@
 package com.bbn.openmap.util;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 /**
  * @param <T> The type of value computed by the task.
@@ -12,12 +9,11 @@ import java.util.concurrent.Future;
  */
 public abstract class PooledSwingWorker<T> 
       implements ISwingWorker<T> {
-
    private T value;
-   private boolean interrupted = false;
-   private Callable<T> task;
-   private Future<T> future;
+   private boolean interrupted;
+   private boolean completed;
    private Exception executionException;
+   private final Runnable task;
    private final Object lock = new Object();
 
    /**
@@ -31,12 +27,12 @@ public abstract class PooledSwingWorker<T>
          }
       };
       synchronized (lock) {
-         task = new Callable<T>() {
+         task = new Runnable() {
             @Override
-            public T call() {
-               T value = construct();
+            public void run() {
+               value = construct();
+               completed = true;
                TaskService.singleton().spawn(doFinished);
-               return value;
             }
          };
       }
@@ -59,8 +55,8 @@ public abstract class PooledSwingWorker<T>
     */
    public void start() {
       synchronized (lock) {
-         if (task != null) {
-            future = TaskService.singleton().spawn(task);
+         if (!interrupted) {
+            TaskService.singleton().spawn(task);
          }
       }
    }
@@ -68,7 +64,7 @@ public abstract class PooledSwingWorker<T>
    public Exception getExecutionException() {
       return executionException;
    }
-
+   
    /**
     * Return the value created by the <code>construct</code> method. Returns
     * null if either the constructing thread or the current thread was
@@ -77,29 +73,16 @@ public abstract class PooledSwingWorker<T>
     * @return the value created by the <code>construct</code> method
     */
    public T get() {
-      while (!interrupted) {
-         synchronized (lock) {
-            if (future.isDone()) {
-               try {
-                  value = future.get();
-                  break;
-               } catch (InterruptedException e) {
-                  break;
-               } catch (ExecutionException e) {
-                  // execution got an exception.
-                  executionException = e;
-                  break;
-               }
-            } else {
-               try {
-                  wait(100);
-               } catch (InterruptedException e) {
-                  // don't care.
-               }
+      synchronized (lock) {
+         while (!interrupted && !completed) {
+            try {
+               lock.wait(100);
+            } catch (InterruptedException e) {
+               // don't care.
             }
          }
+         return value;
       }
-      return value;
    }
 
    /**
@@ -109,10 +92,6 @@ public abstract class PooledSwingWorker<T>
    public void interrupt() {
       synchronized (lock) {
          interrupted = true;
-         task = null;
-         if (future != null) {
-            future.cancel(true);
-         }
          lock.notify();
       }
    }
@@ -127,12 +106,5 @@ public abstract class PooledSwingWorker<T>
     */
    public void finished() {
    }
-
-   /**
-    * Get the value produced by the worker thread, or null if it hasn't been
-    * constructed yet.
-    */
-   protected T getValue() {
-      return value;
-   }
+  
 }
