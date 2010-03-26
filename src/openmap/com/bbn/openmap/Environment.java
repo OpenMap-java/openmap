@@ -154,6 +154,8 @@ public class Environment extends Properties {
             + MapBean.version;
     // autobuild should set this.
     public final static transient String build = "$$BuildDate=";
+    
+    public final static transient String ThreadPool  = OpenMapPrefix + ".ThreadPool";
 
     /**
      * Hardcoded default properties.
