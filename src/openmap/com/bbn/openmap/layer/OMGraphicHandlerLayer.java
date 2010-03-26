@@ -64,6 +64,7 @@ import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.ISwingWorker;
 import com.bbn.openmap.util.PaletteHelper;
+import com.bbn.openmap.util.PooledSwingWorker;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.SwingWorker;
 
@@ -244,7 +245,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * A SwingWorker that can be used for gathering OMGraphics or doing other
      * work in a different thread.
      */
-    protected ISwingWorker layerWorker;
+    protected ISwingWorker<OMGraphicList> layerWorker;
 
     protected String[] mouseModeIDs = null;
 
@@ -468,7 +469,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      *            null to reset the layerWorker variable, or a SwingWorker to
      *            start up.
      */
-    protected void setLayerWorker(ISwingWorker worker) {
+    protected void setLayerWorker(ISwingWorker<OMGraphicList> worker) {
         synchronized (LAYERWORKER_LOCK) {
             layerWorker = worker;
 
@@ -478,7 +479,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         }
     }
 
-    protected ISwingWorker getLayerWorker() {
+    protected ISwingWorker<OMGraphicList> getLayerWorker() {
         return layerWorker;
     }
 
@@ -490,7 +491,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * 
      * @return SwingWorker/LayerWorker
      */
-    protected ISwingWorker createLayerWorker() {
+    protected ISwingWorker<OMGraphicList> createLayerWorker() {
         return new LayerWorker();
     }
 
@@ -675,7 +676,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
             }
             // success!
             setLayerWorker(null);
-            getProjectionChangePolicy().workerComplete((OMGraphicList) worker.get());
+            getProjectionChangePolicy().workerComplete(worker.get());
         }
         repaint();
     }
@@ -684,7 +685,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * Since we can't have the main thread taking up the time to do the work to
      * create OMGraphics, we use this worker thread to do it.
      */
-    class LayerWorker extends SwingWorker {
+    class LayerWorker extends PooledSwingWorker<OMGraphicList> {
         /** Constructor used to create a worker thread. */
         public LayerWorker() {
             super();
@@ -693,7 +694,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         /**
          * Compute the value to be returned by the <code>get</code> method.
          */
-        public Object construct() {
+        public OMGraphicList construct() {
             logger.fine(getName() + "|LayerWorker.construct()");
             fireStatusUpdate(LayerStatusEvent.START_WORKING);
             String msg;
@@ -1283,7 +1284,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
                     selectedList = new OMGraphicList();
                 }
 
-                OMGraphic omg = (OMGraphic) it.next();
+                OMGraphic omg = it.next();
                 if (omg instanceof OMGraphicList && !((OMGraphicList) omg).isVague()) {
                     select((OMGraphicList) omg);
                 } else {
@@ -1300,7 +1301,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         if (list != null) {
             Iterator<OMGraphic> it = list.iterator();
             while (it.hasNext() && selectedList != null) {
-                OMGraphic omg = (OMGraphic) it.next();
+                OMGraphic omg = it.next();
                 if (omg instanceof OMGraphicList && !((OMGraphicList) omg).isVague()) {
                     deselect((OMGraphicList) omg);
                 } else {
