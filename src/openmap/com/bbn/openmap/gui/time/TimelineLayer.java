@@ -259,6 +259,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                     logger.finer("don't need to re-create event lines, haven't changed with ("
                             + eventGraphicList.size() + ") events");
                 }
+                // TODO Don, why does this not seem to place event markers properly if time is advancing?
                 eventGraphicList.generate(proj);
             }
 
@@ -473,9 +474,17 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                 logger.fine("gst: " + gameStartTime + ", get: " + gameEndTime
                         + ", bounds of " + postTime);
             }
+            
+            if(realTimeMode) {
+                // TODO Don (see above) why is this necessary? Seems like the
+                // regenerate ought to reproject the event markers properly?
+                eventGraphicList = null;
+            }
 
             if(!realTimeMode || !timeSliderLayer.getUserHasChangedScale()) {
                 setMapBeanMaxScale(true);
+            } else {
+                doPrepare();
             }
         }
     }
