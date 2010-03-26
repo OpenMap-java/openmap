@@ -10,7 +10,8 @@ import java.util.concurrent.Future;
  * Use thread pool to run tasks that compute a value.
  * 
  */
-public abstract class PooledSwingWorker<T> {
+public abstract class PooledSwingWorker<T> 
+      implements ISwingWorker<T> {
 
    private T value;
    private boolean interrupted = false;

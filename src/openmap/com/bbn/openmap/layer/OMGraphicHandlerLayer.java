@@ -62,6 +62,7 @@ import com.bbn.openmap.omGraphics.event.StandardMapMouseInterpreter;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.ISwingWorker;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.SwingWorker;
@@ -243,7 +244,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * A SwingWorker that can be used for gathering OMGraphics or doing other
      * work in a different thread.
      */
-    protected SwingWorker layerWorker;
+    protected ISwingWorker layerWorker;
 
     protected String[] mouseModeIDs = null;
 
@@ -467,7 +468,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      *            null to reset the layerWorker variable, or a SwingWorker to
      *            start up.
      */
-    protected void setLayerWorker(SwingWorker worker) {
+    protected void setLayerWorker(ISwingWorker worker) {
         synchronized (LAYERWORKER_LOCK) {
             layerWorker = worker;
 
@@ -477,7 +478,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         }
     }
 
-    protected SwingWorker getLayerWorker() {
+    protected ISwingWorker getLayerWorker() {
         return layerWorker;
     }
 
@@ -489,7 +490,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * 
      * @return SwingWorker/LayerWorker
      */
-    protected SwingWorker createLayerWorker() {
+    protected ISwingWorker createLayerWorker() {
         return new LayerWorker();
     }
 

@@ -27,6 +27,7 @@ import java.io.*;
 
 /*  OpenMap  */
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.ISwingWorker;
 import com.bbn.openmap.util.SwingWorker;
 import com.bbn.openmap.omGraphics.grid.*;
 
@@ -92,7 +93,7 @@ public class LinkListener extends Thread implements LinkPropertiesConstants {
     public void startUp() {
         // Have to use a swing worker so that the calling thread
         // doesn't get hung up on launching the runnable.
-        SwingWorker sw = new SwingWorker() {
+        ISwingWorker sw = new SwingWorker() {
             public Object construct() {
                 if (Debug.debugging("link")) {
                     Debug.output("LinkListener self-starting...");

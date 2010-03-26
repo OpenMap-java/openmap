@@ -10,7 +10,7 @@ package com.bbn.openmap.util;
  * Note that the API changed slightly in the 3rd version: You must now invoke
  * start() on the SwingWorker after creating it.
  */
-public abstract class SwingWorker {
+public abstract class SwingWorker<T> implements ISwingWorker<T> {
 
     private Object value; // see getValue(), setValue()
 
@@ -56,7 +56,7 @@ public abstract class SwingWorker {
     /**
      * Compute the value to be returned by the <code>get</code> method.
      */
-    public abstract Object construct();
+    public abstract T construct();
 
     /**
      * Called on the event dispatching thread (not on the worker thread) after
@@ -88,11 +88,11 @@ public abstract class SwingWorker {
      * 
      * @return the value created by the <code>construct</code> method
      */
-    public Object get() {
+    public T get() {
         while (true) {
             Thread t = threadVar.get();
             if (t == null) {
-                return getValue();
+                return (T) getValue();
             }
             try {
                 t.join();
