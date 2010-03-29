@@ -857,4 +857,46 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
         this.realTimeMode = realTimeMode;
     }
 
+    /**
+     * Treat mouse wheel rotations like slider-handle drags.
+     * @param rot The number of rotation clicks (positive for zoom in, negative for zoom out).
+     */
+    public void adjustZoomFromMouseWheel(int rot) {
+        Projection projection = getProjection();
+
+        if (projection == null) {
+            return; // Huhn?
+        }
+        
+        setUserHasChangedScale(true);
+
+        // Determine the effect of growing / shrinking the slider scale by 'rot' pixels
+        // So given current selection width (in minutes) and minutes-per-pixel, just
+        // apply rot as a delta
+        
+        Point2D minutesPnt0 = projection.inverse(0, 0);
+        Point2D minutesPnt1 = projection.inverse(1, 0);
+
+        double minutesPerPixel = minutesPnt1.getX() - minutesPnt0.getX();
+        double minSelectionWidthMinutes = minutesPerPixel * sliderPointHalfWidth * 2;
+        double selectionWidthPixels = selectionWidthMinutes / minutesPerPixel;
+        double multiplier = selectionWidthPixels / 40;
+        
+        // Use a multiplier 
+        selectionWidthMinutes += rot * minutesPerPixel * multiplier;
+
+        if (selectionWidthMinutes < minSelectionWidthMinutes) {
+            selectionWidthMinutes = minSelectionWidthMinutes;
+        }
+
+        if (selectionWidthMinutes > maxSelectionWidthMinutes) {
+            selectionWidthMinutes = maxSelectionWidthMinutes;
+        }
+        
+        resetControlWidgets();
+        updateTimeline();
+
+        doPrepare();
+    }
+
 }

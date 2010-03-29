@@ -26,6 +26,7 @@ package com.bbn.openmap.gui.time;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
 
 import javax.swing.BorderFactory;
@@ -36,6 +37,8 @@ import com.bbn.openmap.gui.BasicMapPanel;
 import com.bbn.openmap.proj.Cartesian;
 
 public class TimelinePanel extends BasicMapPanel {
+
+    private static final long serialVersionUID = 1L;
     protected TimelineLayer timelineLayer;
 
     public TimelinePanel() {
@@ -51,7 +54,21 @@ public class TimelinePanel extends BasicMapPanel {
         MapHandler mh = getMapHandler();
         mh.add(new com.bbn.openmap.LayerHandler());
         mh.add(new com.bbn.openmap.MouseDelegator());
-        mh.add(new com.bbn.openmap.event.SelectMouseMode());
+        mh.add(new com.bbn.openmap.event.SelectMouseMode() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = 1L;
+
+            /**
+             * Invoked from the MouseWheelListener interface.
+             */
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                int rot = e.getWheelRotation();
+                timelineLayer.adjustZoomFromMouseWheel(rot);
+            }
+
+        });
 
         timelineLayer = new TimelineLayer();
         mh.add(timelineLayer);

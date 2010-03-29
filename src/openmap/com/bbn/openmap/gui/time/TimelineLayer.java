@@ -1544,4 +1544,12 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         return gameEndTime;
     }
 
+    public void setUserHasChangedScale(boolean userHasChangedScale) {
+        timeSliderLayer.setUserHasChangedScale(userHasChangedScale);
+    }
+
+    public void adjustZoomFromMouseWheel(int rot) {
+        timeSliderLayer.adjustZoomFromMouseWheel(rot);
+    }
+
 }
