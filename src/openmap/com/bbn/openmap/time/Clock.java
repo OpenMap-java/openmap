@@ -29,6 +29,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.beancontext.BeanContextChildSupport;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -472,7 +473,11 @@ public class Clock extends OMComponent implements RealTimeHandler,
 
     public void fireUpdateTime(TimeEvent te) {
         if (timeEventListeners != null) {
-            for (Iterator<TimeEventListener> it = timeEventListeners.iterator(); it.hasNext();) {
+            List<TimeEventListener> copy;
+            synchronized(timeEventListeners) {
+                copy = new ArrayList<TimeEventListener>(timeEventListeners);                
+            }
+            for (Iterator<TimeEventListener> it = copy.iterator(); it.hasNext();) {
                 it.next().updateTime(te);
             }
         }
