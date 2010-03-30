@@ -443,7 +443,11 @@ public class Clock extends OMComponent implements RealTimeHandler,
 
     public void fireUpdateTimeBounds(TimeBoundsEvent tbe) {
         if (timeBoundsListeners != null) {
-            for (Iterator<TimeBoundsListener> it = timeBoundsListeners.iterator(); it.hasNext();) {
+            List<TimeBoundsListener> copy;
+            synchronized(timeBoundsListeners) {
+                copy = new ArrayList<TimeBoundsListener>(timeBoundsListeners);                
+            }
+            for (Iterator<TimeBoundsListener> it = copy.iterator(); it.hasNext();) {
                 it.next().updateTimeBounds(tbe);
             }
         }
@@ -498,7 +502,11 @@ public class Clock extends OMComponent implements RealTimeHandler,
         endTime = Long.MIN_VALUE;
         int activeTimeBoundsProviderCount = 0;
 
-        for (Iterator<TimeBoundsProvider> it = timeBoundsProviders.iterator(); it.hasNext();) {
+        List<TimeBoundsProvider> copy;
+        synchronized(timeBoundsProviders) {
+            copy = new ArrayList<TimeBoundsProvider>(timeBoundsProviders);                
+        }
+        for (Iterator<TimeBoundsProvider> it = copy.iterator(); it.hasNext();) {
             TimeBoundsProvider tbp = it.next();
             if (tbp.isActive()) {
                 activeTimeBoundsProviderCount++;
@@ -530,7 +538,7 @@ public class Clock extends OMComponent implements RealTimeHandler,
          * TimeBounds is, in case they need to update their GUI or something.
          */
         TimeBounds tb = new TimeBounds(startTime, endTime);
-        for (Iterator<TimeBoundsProvider> it = timeBoundsProviders.iterator(); it.hasNext();) {
+        for (Iterator<TimeBoundsProvider> it = copy.iterator(); it.hasNext();) {
             it.next().handleTimeBounds(tb);
         }
 
