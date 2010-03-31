@@ -66,7 +66,6 @@ import com.bbn.openmap.util.ISwingWorker;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PooledSwingWorker;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.util.SwingWorker;
 
 /**
  * The OMGraphicHandlerLayer is a layer that provides OMGraphicHandler support.
