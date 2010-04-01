@@ -214,12 +214,20 @@ public class OMScalingRaster extends OMRaster implements Serializable {
             Graphics2D g2D = sourceImage.createGraphics();
             g2D.drawImage(image, 0, 0, this);
         } else {
+        	
+        	// null check above
+        	if (image.equals(sourceImage)) {
+        		// Nothing needs to be done.
+        		return;
+        	}
+        	
             sourceImage = (BufferedImage) image;
         }
 
         width = sourceImage.getWidth();
         height = sourceImage.getHeight();
 
+        setNeedToRegenerate(true);
         // Just in case rendering tries to happen.
         bitmap = sourceImage;
     }
