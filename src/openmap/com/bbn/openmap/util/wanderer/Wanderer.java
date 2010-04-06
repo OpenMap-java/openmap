@@ -96,6 +96,7 @@ public class Wanderer {
                 callback.handleFile(file);
             }
         } catch (NullPointerException npe) {
+        	System.out.println("null pointer exception");
         } catch (SecurityException se) {
         }
     }
