@@ -560,8 +560,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
 
     public TimeSliderPanel getTimeSliderPanel() {
         if (timeSliderPanel == null) {
-            timeSliderPanel = new TimeSliderPanel();
-            timeSliderPanel.setRealTimeMode(realTimeMode);
+            timeSliderPanel = new TimeSliderPanel(realTimeMode);
         }
         return timeSliderPanel;
     }

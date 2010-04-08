@@ -34,6 +34,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -125,16 +127,17 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
     TimeDrape drape;
     
     // In realTimeMode, gameEndTime is the origin, rather than gameStartTime
-    private boolean realTimeMode = false;
+    private final boolean realTimeMode;
     
     // Used to refrain from re-scaling every TimeBoundsUpdate (in realTimeMode only)
     private boolean userHasChangedScale = false;
     
     /**
      * Construct the TimelineLayer.
+     * @param realTimeMode TODO
      */
-    public TimeSliderLayer() {
-
+    public TimeSliderLayer(boolean realTimeMode) {
+        this.realTimeMode = realTimeMode;
         setName("TimeSlider");
 
         // This is how to set the ProjectionChangePolicy, which
@@ -715,10 +718,10 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
         lp.updateTimeLabels(startTime, endTime);
     }
 
-    public static class LabelPanel extends JPanel implements
+    class LabelPanel extends JPanel implements
             com.bbn.openmap.gui.MapPanelChild {
-        protected JLabel timeStartLabel;
-        protected JLabel timeEndLabel;
+        protected JComponent timeStartLabel;
+        protected JComponent timeEndLabel;
         public final static String NO_TIME_STRING = "--/--/-- (--:--:--)";
 
         public LabelPanel() {
@@ -726,25 +729,71 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
             GridBagConstraints c = new GridBagConstraints();
             setLayout(gridbag);
 
-            timeStartLabel = new JLabel(NO_TIME_STRING);
-            Font f = timeStartLabel.getFont();
-            f = new Font(f.getFamily(), f.getStyle(), f.getSize() - 1);
-            timeStartLabel.setFont(f);
-            gridbag.setConstraints(timeStartLabel, c);
-            add(timeStartLabel);
-
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.weightx = 1.0f;
-            JLabel buffer = new JLabel();
-            gridbag.setConstraints(buffer, c);
-            add(buffer);
-
-            c.fill = GridBagConstraints.NONE;
-            c.weightx = 0f;
-            timeEndLabel = new JLabel(NO_TIME_STRING, JLabel.RIGHT);
-            timeEndLabel.setFont(f);
-            gridbag.setConstraints(timeEndLabel, c);
-            add(timeEndLabel);
+            if(realTimeMode) {
+                timeStartLabel = new JButton(NO_TIME_STRING);
+                Font f = timeStartLabel.getFont();
+                f = new Font(f.getFamily(), f.getStyle(), f.getSize() - 1);
+                timeStartLabel.setFont(f);
+                gridbag.setConstraints(timeStartLabel, c);
+                add(timeStartLabel);
+    
+                c.fill = GridBagConstraints.HORIZONTAL;
+                c.weightx = 1.0f;
+                JLabel buffer = new JLabel();
+                gridbag.setConstraints(buffer, c);
+                add(buffer);
+    
+                JButton zoomToSelection = new JButton("Zoom to Selection");
+                zoomToSelection.setFont(f);
+                c.weightx = 0f;
+                gridbag.setConstraints(zoomToSelection, c);
+                add(zoomToSelection);
+    
+                c.fill = GridBagConstraints.HORIZONTAL;
+                c.weightx = 1.0f;
+                buffer = new JLabel();
+                gridbag.setConstraints(buffer, c);
+                add(buffer);
+    
+                JButton jumpToRealTime = new JButton("Jump to Real Time");
+                jumpToRealTime.setFont(f);
+                c.weightx = 0f;
+                gridbag.setConstraints(jumpToRealTime, c);
+                add(jumpToRealTime);    
+    
+                c.fill = GridBagConstraints.HORIZONTAL;
+                c.weightx = 1.0f;
+                buffer = new JLabel();
+                gridbag.setConstraints(buffer, c);
+                add(buffer);
+    
+                c.fill = GridBagConstraints.NONE;
+                c.weightx = 0f;
+                timeEndLabel = new JButton(NO_TIME_STRING);
+                timeEndLabel.setFont(f);
+                gridbag.setConstraints(timeEndLabel, c);
+                add(timeEndLabel);
+            } else {
+                timeStartLabel = new JLabel(NO_TIME_STRING);
+                Font f = timeStartLabel.getFont();
+                f = new Font(f.getFamily(), f.getStyle(), f.getSize() - 1);
+                timeStartLabel.setFont(f);
+                gridbag.setConstraints(timeStartLabel, c);
+                add(timeStartLabel);
+    
+                c.fill = GridBagConstraints.HORIZONTAL;
+                c.weightx = 1.0f;
+                JLabel buffer = new JLabel();
+                gridbag.setConstraints(buffer, c);
+                add(buffer);
+    
+                c.fill = GridBagConstraints.NONE;
+                c.weightx = 0f;
+                timeEndLabel = new JLabel(NO_TIME_STRING, JLabel.RIGHT);
+                timeEndLabel.setFont(f);
+                gridbag.setConstraints(timeEndLabel, c);
+                add(timeEndLabel);
+            }
         }
 
         public String getPreferredLocation() {
@@ -754,8 +803,13 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
         public void setPreferredLocation(String string) {}
 
         public void updateTimeLabels(long startTime, long endTime) {
-            timeStartLabel.setText(getLabelStringForTime(startTime));
-            timeEndLabel.setText(getLabelStringForTime(endTime));
+            if(realTimeMode) {
+                ((JButton)timeStartLabel).setText(getLabelStringForTime(startTime));
+                ((JButton)timeEndLabel).setText(getLabelStringForTime(endTime));
+            } else {
+                ((JLabel)timeStartLabel).setText(getLabelStringForTime(startTime));
+                ((JLabel)timeEndLabel).setText(getLabelStringForTime(endTime));
+            }
         }
 
         public String getLabelStringForTime(long time) {
@@ -851,10 +905,6 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
 
         finalizeProjection();
         doPrepare();
-    }
-
-    public void setRealTimeMode(boolean realTimeMode) {
-        this.realTimeMode = realTimeMode;
     }
 
     /**

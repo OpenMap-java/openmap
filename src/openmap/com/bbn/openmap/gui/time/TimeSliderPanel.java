@@ -39,7 +39,7 @@ import com.bbn.openmap.proj.Cartesian;
 public class TimeSliderPanel extends BasicMapPanel {
     protected TimeSliderLayer timeSliderLayer;
 
-    public TimeSliderPanel() {
+    public TimeSliderPanel(boolean realTimeMode) {
         super(true);
         setLayout(new BorderLayout());
         Cartesian cartesian = new Cartesian(new Point2D.Double(), 300000f, 600, 20);
@@ -54,7 +54,7 @@ public class TimeSliderPanel extends BasicMapPanel {
         mh.add(new com.bbn.openmap.MouseDelegator());
         mh.add(new TimeSliderMouseMode());
 
-        timeSliderLayer = new TimeSliderLayer();
+        timeSliderLayer = new TimeSliderLayer(realTimeMode);
         mh.add(timeSliderLayer);
         mh.add(timeSliderLayer.getTimeLabels());
     }
@@ -76,13 +76,4 @@ public class TimeSliderPanel extends BasicMapPanel {
         public void mouseWheelMoved(MouseWheelEvent e) {}
 
     }
-
-    public void setRealTimeMode(boolean realTimeMode) {
-        timeSliderLayer.setRealTimeMode(realTimeMode);
-    }
-
-//    public void findAndInit(Object someObj) {
-//        super.findAndInit(someObj);
-//    }
-    
 }
