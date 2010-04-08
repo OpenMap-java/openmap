@@ -95,11 +95,11 @@ public class TimerControlButtonPanel extends OMComponentPanel implements
 
         timeHandler = rth;
 
+        initGUI();
+
         if (timeHandler != null) {
             timeHandler.addTimeEventListener(this);
         }
-
-        initGUI();
     }
 
     public RealTimeHandler getTimeHandler() {
