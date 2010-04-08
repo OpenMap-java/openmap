@@ -666,9 +666,11 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                 if (sourceEvent != null) {
                     sourceEvent.putAttribute(OMEvent.ATT_KEY_SELECTED,
                             OMEvent.ATT_VAL_SELECTED);
-                    Vector<OMEvent> eventList = new Vector<OMEvent>();
-                    eventList.add(sourceEvent);
-                    aesc.eventsSelected(eventList);
+                    if(aesc != null) {
+                        Vector<OMEvent> eventList = new Vector<OMEvent>();
+                        eventList.add(sourceEvent);
+                        aesc.eventsSelected(eventList);
+                    }
                 }
             }
         }
