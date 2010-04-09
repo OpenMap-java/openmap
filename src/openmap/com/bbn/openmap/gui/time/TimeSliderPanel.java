@@ -76,4 +76,14 @@ public class TimeSliderPanel extends BasicMapPanel {
         public void mouseWheelMoved(MouseWheelEvent e) {}
 
     }
+
+    public void addTimeBoundsUserActionsListener(
+            ITimeBoundsUserActionsListener timeBoundsUserActionsListener) {
+        timeSliderLayer.addTimeBoundsUserActionsListener(timeBoundsUserActionsListener);
+    }
+    
+    public void removeTimeBoundsUserActionsListener(
+            ITimeBoundsUserActionsListener timeBoundsUserActionsListener) {
+        timeSliderLayer.removeTimeBoundsUserActionsListener(timeBoundsUserActionsListener);
+    }
 }

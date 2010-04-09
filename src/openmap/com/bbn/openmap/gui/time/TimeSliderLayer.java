@@ -21,6 +21,8 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Polygon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -29,7 +31,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -131,6 +135,8 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
     
     // Used to refrain from re-scaling every TimeBoundsUpdate (in realTimeMode only)
     private boolean userHasChangedScale = false;
+    
+    private final List<ITimeBoundsUserActionsListener> timeBoundsUserActionsListeners = new ArrayList<ITimeBoundsUserActionsListener>();    
     
     /**
      * Construct the TimelineLayer.
@@ -730,7 +736,18 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
             setLayout(gridbag);
 
             if(realTimeMode) {
-                timeStartLabel = new JButton(NO_TIME_STRING);
+                JButton timeStartLabelButton = new JButton(NO_TIME_STRING);
+                timeStartLabelButton.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        for(ITimeBoundsUserActionsListener listener : timeBoundsUserActionsListeners) {
+                            listener.invokeDateSelectionGUI();
+                        }
+                    }
+                    
+                });
+                timeStartLabel = timeStartLabelButton;
                 Font f = timeStartLabel.getFont();
                 f = new Font(f.getFamily(), f.getStyle(), f.getSize() - 1);
                 timeStartLabel.setFont(f);
@@ -744,6 +761,17 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
                 add(buffer);
     
                 JButton zoomToSelection = new JButton("Zoom to Selection");
+                zoomToSelection.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        for(ITimeBoundsUserActionsListener listener : timeBoundsUserActionsListeners) {
+                            // TODO
+//                            listener.setTimeBounds(start, end);
+                        }
+                    }
+                    
+                });
                 zoomToSelection.setFont(f);
                 c.weightx = 0f;
                 gridbag.setConstraints(zoomToSelection, c);
@@ -756,6 +784,16 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
                 add(buffer);
     
                 JButton jumpToRealTime = new JButton("Jump to Real Time");
+                jumpToRealTime.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        for(ITimeBoundsUserActionsListener listener : timeBoundsUserActionsListeners) {
+                            listener.jumpToRealTime();
+                        }
+                    }
+                    
+                });
                 jumpToRealTime.setFont(f);
                 c.weightx = 0f;
                 gridbag.setConstraints(jumpToRealTime, c);
@@ -769,7 +807,18 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
     
                 c.fill = GridBagConstraints.NONE;
                 c.weightx = 0f;
-                timeEndLabel = new JButton(NO_TIME_STRING);
+                JButton timeEndLabelButton = new JButton(NO_TIME_STRING);
+                timeEndLabelButton.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        for(ITimeBoundsUserActionsListener listener : timeBoundsUserActionsListeners) {
+                            listener.invokeDateSelectionGUI();
+                        }
+                    }
+                    
+                });
+                timeEndLabel = timeEndLabelButton;                
                 timeEndLabel.setFont(f);
                 gridbag.setConstraints(timeEndLabel, c);
                 add(timeEndLabel);
@@ -949,4 +998,13 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
         doPrepare();
     }
 
+    public void addTimeBoundsUserActionsListener(
+            ITimeBoundsUserActionsListener timeBoundsUserActionsListener) {
+        timeBoundsUserActionsListeners.add(timeBoundsUserActionsListener);
+    }
+    
+    public void removeTimeBoundsUserActionsListener(
+            ITimeBoundsUserActionsListener timeBoundsUserActionsListener) {
+        timeBoundsUserActionsListeners.remove(timeBoundsUserActionsListener);
+    }
 }

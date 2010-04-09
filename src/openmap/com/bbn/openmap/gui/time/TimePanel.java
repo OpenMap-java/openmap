@@ -23,6 +23,7 @@
 package com.bbn.openmap.gui.time;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -34,6 +35,7 @@ import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -127,7 +129,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
     TimeSliderPanel timeSliderPanel;
 
     protected String parentName;
-    
+
     // Isolating formats that have anything to do with months+days, for International audiences
     final public static DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy (HH:mm:ss)");
     final public static DateFormat dateFormat_realTime = new SimpleDateFormat("MM/dd/yyyy  HH:mm:ss");
@@ -157,6 +159,11 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         
         showPlayFilter = PropUtils.booleanFromProperties(props, prefix
                 + ShowPlayFilterProperty, showPlayFilter);
+        
+        if(realTimeMode) {
+            // At this point, we know we're going to need a TimeSliderPanel
+            getTimeSliderPanel();
+        }
     }
 
     /**
@@ -563,6 +570,16 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
             timeSliderPanel = new TimeSliderPanel(realTimeMode);
         }
         return timeSliderPanel;
+    }
+
+    public void addTimeBoundsUserActionsListener(
+            ITimeBoundsUserActionsListener timeBoundsUserActionsListener) {
+        timeSliderPanel.addTimeBoundsUserActionsListener(timeBoundsUserActionsListener);
+    }
+    
+    public void removeTimeBoundsUserActionsListener(
+            ITimeBoundsUserActionsListener timeBoundsUserActionsListener) {
+        timeSliderPanel.removeTimeBoundsUserActionsListener(timeBoundsUserActionsListener);
     }
 
 }
