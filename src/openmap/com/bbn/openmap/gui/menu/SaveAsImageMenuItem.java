@@ -22,134 +22,153 @@
 
 package com.bbn.openmap.gui.menu;
 
-import javax.swing.*;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-import com.bbn.openmap.*;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.image.AbstractImageFormatter;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.image.*;
 
 /**
- * A MenuItem that is capable of looking at MapBean and saving it as
- * an Image
+ * A MenuItem that is capable of looking at MapBean and saving it as an Image
  */
 public class SaveAsImageMenuItem extends MapHandlerMenuItem implements
-        ActionListener {
+		ActionListener {
 
-    AbstractImageFormatter formatter = null;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	AbstractImageFormatter formatter = null;
 
-    /**
-     * @param display A String that will be displayed when this
-     *        menuitem is shown in GUI
-     * @param in_formatter A formatter that knows how to generate an
-     *        image from MapBean.
-     */
-    public SaveAsImageMenuItem(String display,
-            AbstractImageFormatter in_formatter) {
-        super(display);
-        formatter = in_formatter;
-        addActionListener(this);
-    }
+	public AbstractImageFormatter getFormatter() {
+		return formatter;
+	}
 
-    public void actionPerformed(ActionEvent ae) {
-        Debug.message("saveimage", "SaveAsImageMenuItem: actionPerformed");
+	public void setFormatter(AbstractImageFormatter formatter) {
+		this.formatter = formatter;
+	}
 
-        if (mapHandler == null) {
-            Debug.output("SaveAsImageMenuItem: mapHandler = null, returning");
-            return;
-        }
+	/**
+	 * @param display
+	 *            A String that will be displayed when this menuitem is shown in
+	 *            GUI
+	 * @param in_formatter
+	 *            A formatter that knows how to generate an image from MapBean.
+	 */
+	public SaveAsImageMenuItem(String display,
+			AbstractImageFormatter in_formatter) {
+		super(display);
+		formatter = in_formatter;
+		addActionListener(this);
+	}
 
-        MapBean mb = (MapBean) mapHandler.get("com.bbn.openmap.MapBean");
+	public void actionPerformed(ActionEvent ae) {
+		Debug.message("saveimage", "SaveAsImageMenuItem: actionPerformed");
 
-        if (mb != null) {
-            Debug.message("saveimage", "MapBean found, creating image");
-            try {
+		if (mapHandler == null) {
+			Debug.output("SaveAsImageMenuItem: mapHandler = null, returning");
+			return;
+		}
 
-                while (true) {
-                    SaveAsImageFileChooser chooser = new SaveAsImageFileChooser(mb.getWidth(), mb.getHeight());
+		MapBean mb = (MapBean) mapHandler.get("com.bbn.openmap.MapBean");
 
-                    int returnVal = chooser.showSaveDialog(getParent());
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        String filename = chooser.getSelectedFile()
-                                .getAbsolutePath();
-                        if (formatter == null) {
-                            break;
-                        }
+		if (mb != null) {
+			Debug.message("saveimage", "MapBean found, creating image");
+			try {
 
-                        filename = checkFileName(filename,
-                                formatter.getFormatLabel().toLowerCase());
-                        if (filename == null) {
-                            // This is the reason for the while
-                            // loop, the name didn't really pass
-                            // muster, so we'll try again.
-                            continue;
-                        }
+				while (true) {
+					SaveAsImageFileChooser chooser = new SaveAsImageFileChooser(
+							mb.getWidth(), mb.getHeight());
 
-                        int imageHeight = chooser.getImageHeight();
-                        int imageWidth = chooser.getImageWidth();
+					int returnVal = chooser.showSaveDialog(getParent());
+					if (returnVal == JFileChooser.APPROVE_OPTION) {
+						String filename = chooser.getSelectedFile()
+								.getAbsolutePath();
+						if (formatter == null) {
+							break;
+						}
 
-                        byte[] imageBytes = formatter.getImageFromMapBean(mb,
-                                imageWidth,
-                                imageHeight);
-                        FileOutputStream binFile = new FileOutputStream(filename);
-                        binFile.write(imageBytes);
-                        binFile.close();
-                        if (Debug.debugging("saveimage")) {
-                            com.bbn.openmap.proj.Projection proj = mb.getProjection();
-                            Debug.output("Created image at " + filename
-                                    + "where projection covers "
-                                    + proj.getUpperLeft() + " to "
-                                    + proj.getLowerRight());
-                        }
-                        break;
-                    } else if (returnVal == JFileChooser.CANCEL_OPTION) {
-                        break;
-                    }
-                }
-            } catch (IOException e) {
-                Debug.error("SaveAsImageMenuItem: " + e);
-            }
-        }
-    }
+						filename = checkFileName(filename, formatter
+								.getFormatLabel().toLowerCase());
+						if (filename == null) {
+							// This is the reason for the while
+							// loop, the name didn't really pass
+							// muster, so we'll try again.
+							continue;
+						}
 
-    /**
-     * A little method that checks the file path to see if it exists,
-     * and modifies it with the imageSuffix if it doesn't have one
-     * specified by the user. Asks the user if it's OK to overwrite if
-     * the file exists.
-     * 
-     * @param filePath absolute file path to check.
-     * @param imageSuffix suffix to append to filePath if it doesn't
-     *        already have one. This word should not contain a
-     *        starting '.'.
-     * @return null if name is no good, a String to use if good.
-     */
-    protected String checkFileName(String filePath, String imageSuffix) {
+						int imageHeight = chooser.getImageHeight();
+						int imageWidth = chooser.getImageWidth();
 
-        String fileName = filePath.substring(filePath.lastIndexOf(File.separator));
-        String newFilePath;
+						byte[] imageBytes = formatter.getImageFromMapBean(mb,
+								imageWidth, imageHeight);
+						FileOutputStream binFile = new FileOutputStream(
+								filename);
+						binFile.write(imageBytes);
+						binFile.close();
+						if (Debug.debugging("saveimage")) {
+							com.bbn.openmap.proj.Projection proj = mb
+									.getProjection();
+							Debug.output("Created image at " + filename
+									+ "where projection covers "
+									+ proj.getUpperLeft() + " to "
+									+ proj.getLowerRight());
+						}
+						break;
+					} else if (returnVal == JFileChooser.CANCEL_OPTION) {
+						break;
+					}
+				}
+			} catch (IOException e) {
+				Debug.error("SaveAsImageMenuItem: " + e);
+			}
+		}
+	}
 
-        if (fileName.indexOf('.') == -1) {
-            newFilePath = filePath + "." + imageSuffix;
-        } else {
-            // else leave it alone, user specified suffix
-            newFilePath = filePath;
-        }
+	/**
+	 * A little method that checks the file path to see if it exists, and
+	 * modifies it with the imageSuffix if it doesn't have one specified by the
+	 * user. Asks the user if it's OK to overwrite if the file exists.
+	 * 
+	 * @param filePath
+	 *            absolute file path to check.
+	 * @param imageSuffix
+	 *            suffix to append to filePath if it doesn't already have one.
+	 *            This word should not contain a starting '.'.
+	 * @return null if name is no good, a String to use if good.
+	 */
+	protected String checkFileName(String filePath, String imageSuffix) {
 
-        File file = new File(newFilePath);
-        if (file.exists()) {
-            // Check to see if it is alright to overwrite.
-            int choice = JOptionPane.showConfirmDialog(null,
-                    "The file " + newFilePath + " exists, replace?",
-                    "Confirm File Replacement",
-                    JOptionPane.YES_NO_OPTION);
-            if (choice != JOptionPane.YES_OPTION) {
-                newFilePath = null;
-            }
-        }
+		String fileName = filePath.substring(filePath
+				.lastIndexOf(File.separator));
+		String newFilePath;
 
-        return newFilePath;
-    }
+		if (fileName.indexOf('.') == -1) {
+			newFilePath = filePath + "." + imageSuffix;
+		} else {
+			// else leave it alone, user specified suffix
+			newFilePath = filePath;
+		}
+
+		File file = new File(newFilePath);
+		if (file.exists()) {
+			// Check to see if it is alright to overwrite.
+			int choice = JOptionPane.showConfirmDialog(null, "The file "
+					+ newFilePath + " exists, replace?",
+					"Confirm File Replacement", JOptionPane.YES_NO_OPTION);
+			if (choice != JOptionPane.YES_OPTION) {
+				newFilePath = null;
+			}
+		}
+
+		return newFilePath;
+	}
 
 }
