@@ -18,6 +18,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -49,6 +50,7 @@ import com.bbn.openmap.event.CenterSupport;
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.event.OMEvent;
 import com.bbn.openmap.event.OMEventSelectionCoordinator;
+import com.bbn.openmap.gui.event.AbstractEventPresenter;
 import com.bbn.openmap.gui.event.EventPresenter;
 import com.bbn.openmap.gui.time.TimeSliderLayer.TimeDrape;
 import com.bbn.openmap.gui.time.TimelineLayer.SelectionArea.PlayFilterSection;
@@ -345,9 +347,29 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     protected OMGraphicList getEventList(Projection projection) {
         OMGraphicList eventGraphicList;
         if (eventPresenter != null) {
-            eventGraphicList = getEventList(eventPresenter.getActiveEvents(),
-                    projection);
 
+            // Hack to use optimized method if available
+            if(eventPresenter instanceof AbstractEventPresenter) {
+                Rectangle bounds = getBounds(null);
+                
+                Point2D minutesPnt0 = projection.inverse(0, 0);
+                Point2D minutesPnt1 = projection.inverse(1, 0);
+                double leftX = bounds.getMinX();
+                double rightX = bounds.getMaxX();
+                Point2D minutesPntLeft = projection.inverse(leftX, 0);
+                Point2D minutesPntRight = projection.inverse(rightX, 0);
+                
+                double minutesPerPixel = minutesPnt1.getX() - minutesPnt0.getX();
+                long step = (long)(minutesPerPixel * 60 * 1000);
+                long start = gameStartTime + (long)(minutesPntLeft.getX() * 60 * 1000);
+                long end = gameStartTime + (long)(minutesPntRight.getX() * 60 * 1000);
+                eventGraphicList = getEventList(((AbstractEventPresenter)eventPresenter).getActiveEvents(start, end, step),
+                        projection);
+            } else {
+                eventGraphicList = getEventList(eventPresenter.getActiveEvents(),
+                        projection);
+            }
+            
             // As long as we feel the need to recreate the event markers,
             // let's re-evaluate the annotations.
             evaluateEventAttributes();
@@ -591,6 +613,10 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
     double snapToEvent(double lon) {
 
+        if(realTimeMode) {
+            return lon;
+        }
+        
         double retVal = lon;
         double minDiff = Double.MAX_VALUE;
 
@@ -864,6 +890,9 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     }
 
     protected void evaluateEventAttributes() {
+        if(realTimeMode) {
+            return;  // Never mind; we're not doing anything with attributes
+        }
         ratingAreas.clear();
         playFilter.clear();
         SelectionArea.RatingArea currentRatingArea = null;

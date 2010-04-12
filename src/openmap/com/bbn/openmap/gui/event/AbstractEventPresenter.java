@@ -25,9 +25,11 @@
 package com.bbn.openmap.gui.event;
 
 import java.awt.Component;
+import java.util.Iterator;
 import java.util.Properties;
 
 import com.bbn.openmap.Layer;
+import com.bbn.openmap.event.OMEvent;
 import com.bbn.openmap.gui.OMComponentPanel;
 import com.bbn.openmap.util.PropUtils;
 
@@ -62,6 +64,17 @@ public abstract class AbstractEventPresenter extends OMComponentPanel implements
 
     public Component getComponent() {
         return this;
+    }
+
+    /**
+     * Optional optimized form.  Passes through to the simpler form by default.
+     * @param start Start time (leftmost edge of timeline).
+     * @param end End time (rightmost edge of timeline).
+     * @param step Time span represented by a single pixel width.
+     * @return iterator of events appropriate for display given parameters provided.
+     */
+    public Iterator<OMEvent> getActiveEvents(long start, long end, long step) {
+        return getActiveEvents();
     }
 
 }
