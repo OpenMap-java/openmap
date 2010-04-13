@@ -14,10 +14,10 @@
 
 package com.bbn.openmap.event;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -36,7 +36,9 @@ import com.bbn.openmap.MapBean;
 import com.bbn.openmap.image.ImageScaler;
 import com.bbn.openmap.omGraphics.OMCircle;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Proj;
@@ -51,7 +53,12 @@ import com.bbn.openmap.util.PropUtils;
  * center and zoom out. Double click to select OMGraphics. Right press and drag
  * to measure. Right click for popup menu.
  */
-public class OMMouseMode extends CoordMouseMode {
+public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public final static String OpaquenessProperty = "opaqueness";
 	public final static String LeaveShadowProperty = "leaveShadow";
@@ -59,7 +66,6 @@ public class OMMouseMode extends CoordMouseMode {
 	public final static String UnitProperty = "units";
 	public final static String ShowCircleProperty = "showCircle";
 	public final static String ShowAngleProperty = "showAngle";
-	public final static String RepaintToCleanProperty = "repaintToClean";
 
 	public final static float DEFAULT_OPAQUENESS = 1.0f;
 
@@ -75,8 +81,7 @@ public class OMMouseMode extends CoordMouseMode {
 	private Length unit = Length.MILE;
 	// Flag to display the azimuth angle. Default true
 	boolean showAngle = true;
-	// Flag to repaint the map to clean up
-	boolean repaintToClean = false;
+
 	/**
 	 * rPoint1 is the anchor point of a line segment
 	 */
@@ -112,6 +117,8 @@ public class OMMouseMode extends CoordMouseMode {
 	public final static String AllUnitsPropertyValue = "all";
 	protected BufferedMapBean theMap = null;
 	protected String coordString = null;
+
+	protected OMGraphicList distanceList;
 
 	public OMMouseMode() {
 		super(modeID, true);
@@ -184,8 +191,6 @@ public class OMMouseMode extends CoordMouseMode {
 				+ ShowCircleProperty, isDisplayCircle()));
 		setShowAngle(PropUtils.booleanFromProperties(props, prefix
 				+ ShowAngleProperty, isShowAngle()));
-		setRepaintToClean(PropUtils.booleanFromProperties(props, prefix
-				+ RepaintToCleanProperty, isRepaintToClean()));
 
 	}
 
@@ -203,8 +208,6 @@ public class OMMouseMode extends CoordMouseMode {
 				.toString());
 		props.put(prefix + ShowAngleProperty, new Boolean(isShowAngle())
 				.toString());
-		props.put(prefix + RepaintToCleanProperty, new Boolean(
-				isRepaintToClean()).toString());
 		return props;
 	}
 
@@ -258,16 +261,6 @@ public class OMMouseMode extends CoordMouseMode {
 						ShowAngleProperty,
 						"Show Angle",
 						"Flag to note the azimuth angle of the line in the information line (true/false).",
-						"com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-
-		PropUtils
-				.setI18NPropertyInfo(
-						i18n,
-						props,
-						OMMouseMode.class,
-						RepaintToCleanProperty,
-						"Paint to Clean",
-						"Flag to tell the map to repaint to clean up on a double click (true/false).",
 						"com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
 		return props;
@@ -341,7 +334,7 @@ public class OMMouseMode extends CoordMouseMode {
 				// right mouse click, measure
 				double lat1, lat2, long1, long2;
 				// erase the old line and circle first
-				paintRubberband(rPoint1, rPoint2, coordString);
+//				paintRubberband(rPoint1, rPoint2, coordString);
 				// get the current mouse location in latlon
 				rPoint2 = theMap.getCoordinates(arg0);
 
@@ -365,6 +358,7 @@ public class OMMouseMode extends CoordMouseMode {
 				// paint the new line and circle up to the current
 				// mouse location
 				paintRubberband(rPoint1, rPoint2, coordString);
+				theMap.repaint();
 			}
 		}
 		super.mouseDragged(arg0);
@@ -384,8 +378,6 @@ public class OMMouseMode extends CoordMouseMode {
 		if (SwingUtilities.isRightMouseButton(e)) {
 			// mouse has now been pressed
 			mousePressed = true;
-			// erase the old circle if any
-			eraseCircle();
 
 			MapBean mb = theMap;
 			if (mb == null && e.getSource() instanceof MapBean) {
@@ -449,7 +441,6 @@ public class OMMouseMode extends CoordMouseMode {
 			int x = (int) pnt.getX();
 			int y = (int) pnt.getY();
 
-
 			center.setLocation(center.getX() - x + oX, center.getY() - y + oY);
 			mb.setCenter(proj.inverse(center));
 
@@ -459,14 +450,7 @@ public class OMMouseMode extends CoordMouseMode {
 			// bufferedMapImage = null; //clean up when not active...
 		} else {
 			if (theMap != null) {
-				if (!repaintToClean) {
-					// erase all line segments
-					eraseLines();
-					// erase the last circle
-					eraseCircle();
-				} else {
-					theMap.repaint();
-				}
+				distanceList = null;
 				// cleanup
 				cleanUp();
 				theMap = null;
@@ -505,16 +489,23 @@ public class OMMouseMode extends CoordMouseMode {
 	}
 
 	/**
-	 * Draw a rubberband line and circle between two points
-	 * 
-	 * @param pt1
-	 *            the anchor point.
-	 * @param pt2
-	 *            the current (mouse) position.
+	 * PaintListener interface, notifying the MouseMode that the MapBean has
+	 * repainted itself. Useful if the MouseMode is drawing stuff.
 	 */
-	public void paintRubberband(Point2D pt1, Point2D pt2, String coordString) {
-		if (theMap != null) {
-			paintRubberband(pt1, pt2, coordString, theMap.getGraphics(true));
+	public void listenerPaint(java.awt.Graphics g) {
+		if (distanceList != null) {
+			g = g.create();
+			g.setXORMode(java.awt.Color.lightGray);
+			distanceList.render(g);
+			g.dispose();
+		}
+	}
+
+	@Override
+	public void projectionChanged(ProjectionEvent e) {
+		Projection p = e.getProjection();
+		if (p != null && distanceList != null) {
+			distanceList.generate(p);
 		}
 	}
 
@@ -525,14 +516,17 @@ public class OMMouseMode extends CoordMouseMode {
 	 *            the anchor point.
 	 * @param pt2
 	 *            the current (mouse) position.
-	 * @param g
-	 *            a java.awt.Graphics object to render into.
 	 */
-	public void paintRubberband(Point2D pt1, Point2D pt2, String coordString,
-			Graphics g) {
-		paintLine(pt1, pt2, g);
-		paintCircle(pt1, pt2, g);
-		paintText(pt1, pt2, coordString, g);
+	public void paintRubberband(Point2D pt1, Point2D pt2, String coordString) {
+		if (distanceList == null) {
+			distanceList = new OMGraphicList();
+		}
+
+		distanceList.clear();
+
+		paintLine(pt1, pt2);
+		paintCircle(pt1, pt2);
+		paintText(pt1, pt2, coordString);
 	}
 
 	/**
@@ -544,25 +538,6 @@ public class OMMouseMode extends CoordMouseMode {
 	 *            the current (mouse) position.
 	 */
 	public void paintLine(Point2D pt1, Point2D pt2) {
-		if (theMap != null) {
-			paintLine(pt1, pt2, theMap.getGraphics(true));
-		}
-	}
-
-	/**
-	 * Draw a rubberband line between two points into the Graphics object.
-	 * 
-	 * @param pt1
-	 *            the anchor point.
-	 * @param pt2
-	 *            the current (mouse) position.
-	 * @param graphics
-	 *            a java.awt.Graphics object to render into.
-	 */
-	public void paintLine(Point2D pt1, Point2D pt2, Graphics graphics) {
-		Graphics2D g = (Graphics2D) graphics;
-		g.setXORMode(java.awt.Color.lightGray);
-		g.setColor(java.awt.Color.darkGray);
 		if (pt1 != null && pt2 != null) {
 			// the line connecting the segments
 			OMLine cLine = new OMLine(pt1.getY(), pt1.getX(), pt2.getY(), pt2
@@ -571,24 +546,32 @@ public class OMMouseMode extends CoordMouseMode {
 			Projection proj = theMap.getProjection();
 			// prepare the line for rendering
 			cLine.generate(proj);
-			// render the line graphic
-			cLine.render(g);
+
+			distanceList.add(cLine);
 		}
 	}
 
-	public void paintText(Point2D base, Point2D pt1, String coordString,
-			Graphics graphics) {
+	public void paintText(Point2D base, Point2D pt1, String coordString) {
 		if (coordString != null) {
-			Graphics2D g = (Graphics2D) graphics;
-			g.setXORMode(java.awt.Color.lightGray);
-			g.setColor(java.awt.Color.darkGray);
+
 			base = theMap.getProjection().forward(base);
 			pt1 = theMap.getProjection().forward(pt1);
 
 			if (base.distance(pt1) > 3) {
-				g.drawString(coordString, (int) pt1.getX() + 5, (int) pt1
-						.getY() - 5);
+				// g.drawString(coordString, (int) pt1.getX() + 5, (int) pt1
+				// .getY() - 5);
+
+				OMText text = new OMText((int) pt1.getX() + 5,
+						(int) pt1.getY() - 5, coordString, OMText.JUSTIFY_LEFT);
+
+				Font font = text.getFont();
+				text.setFont(font.deriveFont(font.getStyle(), font.getSize() + 4));
+
+				text.setLinePaint(Color.DARK_GRAY);
+				text.generate(theMap.getProjection());
+				distanceList.add(text);
 			}
+
 		}
 	}
 
@@ -601,27 +584,8 @@ public class OMMouseMode extends CoordMouseMode {
 	 *            the current (mouse) position.
 	 */
 	public void paintCircle(Point2D pt1, Point2D pt2) {
-		if (theMap != null) {
-			paintCircle(pt1, pt2, theMap.getGraphics(true));
-		}
-	}
-
-	/**
-	 * Draw a rubberband circle between two points
-	 * 
-	 * @param pt1
-	 *            the anchor point.
-	 * @param pt2
-	 *            the current (mouse) position.
-	 * @param graphics
-	 *            a java.awt.Graphics object to render into.
-	 */
-	public void paintCircle(Point2D pt1, Point2D pt2, Graphics graphics) {
 		// do all this only if want to display the rubberband circle
 		if (displayCircle) {
-			Graphics2D g = (Graphics2D) graphics;
-			g.setXORMode(java.awt.Color.lightGray);
-			g.setColor(java.awt.Color.darkGray);
 			if (pt1 != null && pt2 != null) {
 				// first convert degrees to radians
 				double radphi1 = ProjMath.degToRad(pt1.getY());
@@ -639,27 +603,9 @@ public class OMMouseMode extends CoordMouseMode {
 				Projection proj = theMap.getProjection();
 				// prepare the circle for rendering
 				circle.generate(proj);
-				// render the circle graphic
-				circle.render(g);
+				distanceList.add(circle);
 			}
 		} // end if(displayCircle)
-	}
-
-	/**
-	 * Erase all line segments.
-	 */
-	public void eraseLines() {
-		for (int i = 0; i < segments.size() - 1; i++) {
-			paintLine((Point2D) (segments.elementAt(i)), (Point2D) (segments
-					.elementAt(i + 1)));
-		}
-	}
-
-	/**
-	 * Erase the current segment circle.
-	 */
-	public void eraseCircle() {
-		paintCircle(rPoint1, rPoint2);
 	}
 
 	/**
@@ -735,14 +681,6 @@ public class OMMouseMode extends CoordMouseMode {
 
 	public void setShowAngle(boolean showAngle) {
 		this.showAngle = showAngle;
-	}
-
-	public boolean isRepaintToClean() {
-		return repaintToClean;
-	}
-
-	public void setRepaintToClean(boolean repaintToClean) {
-		this.repaintToClean = repaintToClean;
 	}
 
 	public boolean isDisplayCircle() {
