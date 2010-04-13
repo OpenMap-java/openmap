@@ -249,7 +249,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             graphicList.add(constructTimeLines(proj));
             graphicList.add(getCurrentTimeMarker(proj));
             
-            OMGraphicList eventGraphicList = getEventGraphicList();
+            OMGraphicList eventGraphicList = realTimeMode ? null : getEventGraphicList();
 
             // if new events are fetched, new rating areas and play filters are
             // created here.
@@ -515,8 +515,18 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         TimeBounds tb = tbe.getNewTimeBounds();
         if (tb != null) {
             setTimeBounds(tb.getStartTime(), tb.getEndTime());
+            // Update selection (this only deals with time translation for now; no scaling)
+            if(realTimeMode && selectionRect != null && selectionRect.isVisible()) {
+                long boundsWestDelta = tbe.getNewTimeBounds().getStartTime() - tbe.getOldTimeBounds().getStartTime();
+                double selectionDelta = (double)boundsWestDelta / 60000.0;
+                double newWest = selectionRect.getWestLon() - selectionDelta;
+                double newEast = selectionRect.getEastLon() - selectionDelta;
+                selectionRect.setLocation(newWest, newEast);
+                getSelectionRectangle(getProjection());
+            }
         } else {
             checkAndSetForNoTime(TimeEvent.NO_TIME);
+            timeSliderLayer.setSelectionValid(false);
         }
 
     }
@@ -672,6 +682,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                 (float) lon,
                 OMGraphic.LINETYPE_STRAIGHT);
         selectionRect.generate(projection);
+        timeSliderLayer.setSelectionValid(false);
 
         downLon = lon;
 
@@ -727,6 +738,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
         selectionRect.setLocation(lon, lon);
         selectionRect.setVisible(false);
+        timeSliderLayer.setSelectionValid(false);
 
         return true;
     }
@@ -798,6 +810,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         selectionRect.setVisible(true);
         selectionRect.setLocation(west, east);
         selectionRect.generate(proj);
+        timeSliderLayer.setSelectionValid(east != west);
         repaint();
         return true;
     }
@@ -1581,6 +1594,40 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
     public void adjustZoomFromMouseWheel(int rot) {
         timeSliderLayer.adjustZoomFromMouseWheel(rot);
+    }
+
+    long getSelectionStart() {
+        boolean goodDrag = selectionRect.isVisible();
+        double lowerTime = selectionRect.getWestLon();
+        double upperTime = selectionRect.getEastLon();
+        // Convert to millis
+        long lowerTimeStamp = inverseProjectMillis((float) lowerTime);
+        long upperTimeStamp = inverseProjectMillis((float) upperTime);
+
+        boolean sameTime = lowerTimeStamp == upperTimeStamp;
+        goodDrag = goodDrag && !sameTime;
+        
+        return goodDrag ? lowerTimeStamp + gameStartTime : -1;
+    }
+
+    long getSelectionEnd() {
+        boolean goodDrag = selectionRect.isVisible();
+        double lowerTime = selectionRect.getWestLon();
+        double upperTime = selectionRect.getEastLon();
+        // Convert to millis
+        long lowerTimeStamp = inverseProjectMillis((float) lowerTime);
+        long upperTimeStamp = inverseProjectMillis((float) upperTime);
+
+        boolean sameTime = lowerTimeStamp == upperTimeStamp;
+        goodDrag = goodDrag && !sameTime;
+        
+        return goodDrag ? upperTimeStamp + gameStartTime : -1;
+    }
+
+    public void clearSelection() {
+        selectionRect.setLocation(0, 0);
+        selectionRect.setVisible(false);
+        timeSliderLayer.setSelectionValid(false);
     }
 
 }

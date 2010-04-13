@@ -136,7 +136,9 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
     // Used to refrain from re-scaling every TimeBoundsUpdate (in realTimeMode only)
     private boolean userHasChangedScale = false;
     
-    private final List<ITimeBoundsUserActionsListener> timeBoundsUserActionsListeners = new ArrayList<ITimeBoundsUserActionsListener>();    
+    private final List<ITimeBoundsUserActionsListener> timeBoundsUserActionsListeners = new ArrayList<ITimeBoundsUserActionsListener>();
+    
+    private final JButton zoomToSelection = new JButton("Zoom to Selection");
     
     /**
      * Construct the TimelineLayer.
@@ -760,18 +762,26 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
                 gridbag.setConstraints(buffer, c);
                 add(buffer);
     
-                JButton zoomToSelection = new JButton("Zoom to Selection");
                 zoomToSelection.addActionListener(new ActionListener() {
 
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        for(ITimeBoundsUserActionsListener listener : timeBoundsUserActionsListeners) {
-                            // TODO
-//                            listener.setTimeBounds(start, end);
+                        long selectionStart = timelineLayer.getSelectionStart();
+                        long selectionEnd = timelineLayer.getSelectionEnd();
+                        if(selectionStart > 0 && selectionEnd > 0) {
+                            timelineLayer.clearSelection();
+                            userHasChangedScale = false;
+                            for(ITimeBoundsUserActionsListener listener : timeBoundsUserActionsListeners) {
+                                listener.setTimeBounds(selectionStart, selectionEnd);
+                            }
+                            updateTimeBounds(selectionStart, selectionEnd);
+                            resetControlWidgets();
+                            updateTimeline();
                         }
                     }
                     
                 });
+                zoomToSelection.setEnabled(false);
                 zoomToSelection.setFont(f);
                 c.weightx = 0f;
                 gridbag.setConstraints(zoomToSelection, c);
@@ -788,9 +798,12 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
 
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        userHasChangedScale = false;
                         for(ITimeBoundsUserActionsListener listener : timeBoundsUserActionsListeners) {
                             listener.jumpToRealTime();
                         }
+                        resetControlWidgets();
+                        updateTimeline();
                     }
                     
                 });
@@ -1006,5 +1019,9 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
     public void removeTimeBoundsUserActionsListener(
             ITimeBoundsUserActionsListener timeBoundsUserActionsListener) {
         timeBoundsUserActionsListeners.remove(timeBoundsUserActionsListener);
+    }
+    
+    void setSelectionValid(boolean valid) {
+        zoomToSelection.setEnabled(valid);
     }
 }
