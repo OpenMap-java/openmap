@@ -20,5 +20,5 @@ public interface ITimeBoundsUserActionsListener {
     /**
      * Bring up the GUI that allows time bounds to be set manually.
      */
-    void invokeDateSelectionGUI();
+    void invokeDateSelectionGUI(boolean endFocus);
 }

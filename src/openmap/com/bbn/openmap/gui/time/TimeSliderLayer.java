@@ -744,7 +744,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         for(ITimeBoundsUserActionsListener listener : timeBoundsUserActionsListeners) {
-                            listener.invokeDateSelectionGUI();
+                            listener.invokeDateSelectionGUI(false);
                         }
                     }
                     
@@ -826,7 +826,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         for(ITimeBoundsUserActionsListener listener : timeBoundsUserActionsListeners) {
-                            listener.invokeDateSelectionGUI();
+                            listener.invokeDateSelectionGUI(true);
                         }
                     }
                     
