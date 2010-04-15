@@ -1,24 +1,16 @@
-/* **********************************************************************
- *
- *  ROLANDS & ASSOCIATES Corporation
- *  500 Sloat Avenue
- *  Monterey, CA 93940
- *  (831) 373-2025
- *
- *  Copyright (C) 2002, 2003 ROLANDS & ASSOCIATES Corporation. All rights reserved.
- *  Openmap is a trademark of BBN Technologies, A Verizon Company
- *
- *
- * **********************************************************************
- *
- * $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/ScaleDisplayLayer.java,v $
- * $Revision: 1.9 $
- * $Date: 2005/12/09 21:09:08 $
- * $Author: dietrick $
- *
- * **********************************************************************
- */
-
+// **********************************************************************
+// 
+// <copyright>
+// 
+//  BBN Technologies
+//  10 Moulton Street
+//  Cambridge, MA 02138
+//  (617) 873-8000
+// 
+//  Copyright (C) BBNT Solutions LLC. All rights reserved.
+// 
+// </copyright>
+// **********************************************************************
 package com.bbn.openmap.gui;
 
 import java.awt.BasicStroke;
@@ -456,7 +448,7 @@ public class EmbeddedScaleDisplayPanel extends OMComponentPanel implements
 				OMText.JUSTIFY_RIGHT);
 
 		Font font = text.getFont();
-		text.setFont(font.deriveFont(font.getStyle(), font.getSize() + 4));
+		text.setFont(font.deriveFont(Font.BOLD, font.getSize() + 4));
 
 		dAttributes.setTo(text);
 		text.setTextMatteColor((Color) dAttributes.getMattingPaint());

@@ -14,10 +14,12 @@
 
 package com.bbn.openmap.event;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -35,6 +37,7 @@ import com.bbn.openmap.BufferedMapBean;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.image.ImageScaler;
 import com.bbn.openmap.omGraphics.OMCircle;
+import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
@@ -76,7 +79,7 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
 	private float opaqueness = DEFAULT_OPAQUENESS;
 	private boolean leaveShadow = false;
 	private boolean useCursor;
-	public transient DecimalFormat df = new DecimalFormat("0.###");
+	public transient DecimalFormat df = new DecimalFormat("0");
 	// The unit type, default mile
 	private Length unit = Length.MILE;
 	// Flag to display the azimuth angle. Default true
@@ -494,10 +497,7 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
 	 */
 	public void listenerPaint(java.awt.Graphics g) {
 		if (distanceList != null) {
-			g = g.create();
-			g.setXORMode(java.awt.Color.lightGray);
 			distanceList.render(g);
-			g.dispose();
 		}
 	}
 
@@ -517,9 +517,25 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
 	 * @param pt2
 	 *            the current (mouse) position.
 	 */
-	public void paintRubberband(Point2D pt1, Point2D pt2, String coordString) {
+	@SuppressWarnings("serial")
+	public void paintRubberband(Point2D pt1, Point2D pt2, String coordString) {		
 		if (distanceList == null) {
-			distanceList = new OMGraphicList();
+			distanceList = new OMGraphicList() {
+				public void render(Graphics g) {
+					Graphics g2 = g.create();
+					g2.setXORMode(java.awt.Color.lightGray);
+
+					for (OMGraphic omg : this) {
+						if (omg instanceof OMText) {
+							omg.render(g);
+						} else {
+							omg.render(g2);
+						}
+					}
+
+					g2.dispose();
+				}
+			};
 		}
 
 		distanceList.clear();
@@ -565,9 +581,14 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
 						(int) pt1.getY() - 5, coordString, OMText.JUSTIFY_LEFT);
 
 				Font font = text.getFont();
-				text.setFont(font.deriveFont(font.getStyle(), font.getSize() + 4));
+				text.setFont(font.deriveFont(Font.BOLD, font.getSize() + 4));
 
-				text.setLinePaint(Color.DARK_GRAY);
+				text.setLinePaint(Color.BLACK);
+				
+				text.setTextMatteColor(Color.WHITE);
+				text.setTextMatteStroke(new BasicStroke(5));
+				text.setMattingPaint(OMColor.clear);				
+				
 				text.generate(theMap.getProjection());
 				distanceList.add(text);
 			}
