@@ -632,6 +632,8 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 				: forwardDimIcon);
 		backProjectionButton.setIcon(haveBackProjections ? backIcon
 				: backDimIcon);
+		forwardProjectionButton.setEnabled(haveForwardProjections);
+		backProjectionButton.setEnabled(haveBackProjections);
 	}
 
 	public void paint(Graphics g) {
