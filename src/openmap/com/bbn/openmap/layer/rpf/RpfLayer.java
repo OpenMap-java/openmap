@@ -611,6 +611,13 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
             return null;
         }
 
+        Projection projection = getProjection();
+
+		// Check the current minScale and maxScale set on the layer, ignore if projection scale is out of range.
+		if (!isProjectionOK(projection)) {
+			return null;
+		}
+        
         if (frameProvider == null) {
             // Assuming running locally - otherwise the
             // frameProvider should be set before we get here,
@@ -628,8 +635,6 @@ public class RpfLayer extends OMGraphicHandlerLayer implements ActionListener,
             Debug.message("rpf", getName() + "|RpfLayer: Creating cache!");
             this.cache = new RpfCacheManager(frameProvider, viewAttributes, subframeCacheSize, auxSubframeCacheSize);
         }
-
-        Projection projection = getProjection();
 
         if (coverage != null && coverage.isInUse()) {
             coverage.prepare(frameProvider,
