@@ -27,7 +27,8 @@ public final class TaskService {
    public static void initialize(PropertyHandler properties) {
       synchronized (TaskService.class) {
          if (singleton != null) {
-            throw new RuntimeException("Thread pool has already been initialized.");
+            // already initialized
+             return;
          }
          Properties openmapProperties = properties.getProperties(Environment.OpenMapPrefix);
          String poolSizeString = openmapProperties.getProperty(Environment.ThreadPool);
