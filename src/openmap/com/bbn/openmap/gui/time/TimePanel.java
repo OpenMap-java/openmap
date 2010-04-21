@@ -571,6 +571,10 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         }
         return timeSliderPanel;
     }
+    
+    public void setUserHasChangedScale(boolean userHasChangedScale) {
+        timeSliderPanel.setUserHasChangedScale(userHasChangedScale);
+    }
 
     public void addTimeBoundsUserActionsListener(
             ITimeBoundsUserActionsListener timeBoundsUserActionsListener) {

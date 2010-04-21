@@ -86,4 +86,8 @@ public class TimeSliderPanel extends BasicMapPanel {
             ITimeBoundsUserActionsListener timeBoundsUserActionsListener) {
         timeSliderLayer.removeTimeBoundsUserActionsListener(timeBoundsUserActionsListener);
     }
+
+    public void setUserHasChangedScale(boolean userHasChangedScale) {
+        timeSliderLayer.setUserHasChangedScale(userHasChangedScale);
+    }
 }

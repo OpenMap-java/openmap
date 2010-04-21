@@ -954,18 +954,24 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
 
         maxSelectionWidthMinutes = TimelineLayer.forwardProjectMillis(gameEndTime
                 - gameStartTime);
-        if (selectionWidthMinutes > maxSelectionWidthMinutes
-                || selectionWidthMinutes < .0001) {
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine("resetting selectionWidthMinutes to max (time bounds property change), was "
-                        + selectionWidthMinutes
-                        + ", now "
-                        + maxSelectionWidthMinutes);
+        if(realTimeMode && !userHasChangedScale) {
+            selectionWidthMinutes = maxSelectionWidthMinutes;            
+        } else {
+            if (selectionWidthMinutes > maxSelectionWidthMinutes
+                    || selectionWidthMinutes < .0001) {
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("resetting selectionWidthMinutes to max (time bounds property change), was "
+                            + selectionWidthMinutes
+                            + ", now "
+                            + maxSelectionWidthMinutes);
+                }
+                selectionWidthMinutes = maxSelectionWidthMinutes;
             }
-            selectionWidthMinutes = maxSelectionWidthMinutes;
         }
-
+        
         finalizeProjection();
+        resetControlWidgets();
+        updateTimeline();
         doPrepare();
     }
 
