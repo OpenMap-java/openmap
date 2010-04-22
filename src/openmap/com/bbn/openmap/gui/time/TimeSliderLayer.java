@@ -223,7 +223,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
      * widgets, and generate them with the projection for the new position.
      * After this call, the widgets are ready to paint.
      */
-    protected void resetControlWidgets() {
+    protected synchronized void resetControlWidgets() {
 
         Projection projection = getProjection();
 
@@ -340,7 +340,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
         }
     }
 
-    public OMGraphicList getControlWidgetList(Projection proj) {
+    public synchronized OMGraphicList getControlWidgetList(Projection proj) {
         if (controlWidgetList == null) {
             controlWidgetList = createControlWidgets();
         }
