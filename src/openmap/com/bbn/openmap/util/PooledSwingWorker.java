@@ -28,7 +28,6 @@ public abstract class PooledSwingWorker<T>
       };
       synchronized (lock) {
          task = new Runnable() {
-            @Override
             public void run() {
                value = construct();
                completed = true;

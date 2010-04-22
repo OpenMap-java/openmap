@@ -545,10 +545,6 @@ public class PropertyHandler extends MapHandlerChild implements
         if (DEBUG) {
             logger.fine("loaded properties");
         }
-        
-        // Configure the thread pool.
-        // XXX: Is there a better place to do this?
-        TaskService.initialize(this);
     }
 
     /**

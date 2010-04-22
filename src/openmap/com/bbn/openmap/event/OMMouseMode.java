@@ -501,7 +501,6 @@ public class OMMouseMode extends CoordMouseMode implements ProjectionListener {
 		}
 	}
 
-	@Override
 	public void projectionChanged(ProjectionEvent e) {
 		Projection p = e.getProjection();
 		if (p != null && distanceList != null) {

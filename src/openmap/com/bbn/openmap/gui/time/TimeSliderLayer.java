@@ -29,8 +29,6 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -741,7 +739,6 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
                 JButton timeStartLabelButton = new JButton(NO_TIME_STRING);
                 timeStartLabelButton.addActionListener(new ActionListener() {
 
-                    @Override
                     public void actionPerformed(ActionEvent e) {
                         for(ITimeBoundsUserActionsListener listener : timeBoundsUserActionsListeners) {
                             listener.invokeDateSelectionGUI(false);
@@ -764,7 +761,6 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
     
                 zoomToSelection.addActionListener(new ActionListener() {
 
-                    @Override
                     public void actionPerformed(ActionEvent e) {
                         long selectionStart = timelineLayer.getSelectionStart();
                         long selectionEnd = timelineLayer.getSelectionEnd();
@@ -796,7 +792,6 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
                 JButton jumpToRealTime = new JButton("Jump to Real Time");
                 jumpToRealTime.addActionListener(new ActionListener() {
 
-                    @Override
                     public void actionPerformed(ActionEvent e) {
                         userHasChangedScale = false;
                         for(ITimeBoundsUserActionsListener listener : timeBoundsUserActionsListeners) {
@@ -823,8 +818,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
                 JButton timeEndLabelButton = new JButton(NO_TIME_STRING);
                 timeEndLabelButton.addActionListener(new ActionListener() {
 
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
+                	public void actionPerformed(ActionEvent e) {
                         for(ITimeBoundsUserActionsListener listener : timeBoundsUserActionsListeners) {
                             listener.invokeDateSelectionGUI(true);
                         }

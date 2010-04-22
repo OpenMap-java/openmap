@@ -18,13 +18,10 @@ public class RpfDataPathWanderer extends DataPathWanderer {
 		return RpfLayer.class;
 	}
 	
-	@Override
 	public void handleDirectory(File directory) {
-		// TODO Auto-generated method stub
-
+		// NO-OP
 	}
 
-	@Override
 	public void handleFile(File file) {
 		if (file.getName().equalsIgnoreCase("A.TOC")) {
 			File parent = file.getParentFile();
