@@ -749,7 +749,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         double lon = latLong.getX();
         double endTime = forwardProjectMillis(gameEndTime - gameStartTime);
         if (lon < 0) {
-            lon = 0;
+            lon = -1;
         } else if (lon > endTime) {
             lon = endTime;
         }

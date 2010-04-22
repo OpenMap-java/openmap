@@ -346,6 +346,8 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
      */
     public void updateMouseTimeDisplay(long mouseOffsetTime) {
 
+        String mtds = "--";
+        
         if (realTimeMode) {
             if (mouseOffsetTime > timelinePanel.getTimelineLayer().getEndTime()) {
                 mouseOffsetTime = timelinePanel.getTimelineLayer().getEndTime();
@@ -356,7 +358,9 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
             }
         }
 
-        String mtds = convertOffsetTimeToText(mouseOffsetTime);
+        if (mouseOffsetTime >= 0) {
+            mtds = convertOffsetTimeToText(mouseOffsetTime);
+        }
 
         if (mouseTimeLabel != null) {
             mouseTimeLabel.setText(mtds);
