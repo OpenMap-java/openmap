@@ -41,6 +41,7 @@ public class LLXY extends Cylindrical implements EqualArc {
     // world<->screen coordinate offsets
     protected double hy, wx;
     protected double cLon;
+    protected double cLonRad;
     protected double cLat;
     /** Pixel per degree */
     protected double ppd;
@@ -103,6 +104,8 @@ public class LLXY extends Cylindrical implements EqualArc {
             cLat = -latLimit;
             centerY = ProjMath.degToRad(cLat);
         }
+        
+        cLonRad = Math.toRadians(cLon);
 
         if (Debug.debugging("llxy")) {
             Debug.output("LLXY.computeParameters: with center lat:" + cLat
@@ -128,6 +131,15 @@ public class LLXY extends Cylindrical implements EqualArc {
         return lat;
     }
 
+    public double normalizeLatitudeDeg(double lat) {
+        if (lat > ProjMath.NORTH_POLE_DEG_D) {
+            return ProjMath.NORTH_POLE_DEG_D;
+        } else if (lat < ProjMath.SOUTH_POLE_DEG_D) {
+            return ProjMath.SOUTH_POLE_DEG_D;
+        }
+        return lat;
+    }
+    
     /**
      * Checks if a LatLonPoint is plot-able.
      * 
@@ -154,23 +166,14 @@ public class LLXY extends Cylindrical implements EqualArc {
     public Point2D forward(double lat, double lon, Point2D p, boolean isRadian) {
         if (isRadian) {
             lat = Math.toDegrees(normalizeLatitude(lat));
-            lon = Math.toDegrees(lon);
+            lon = Math.toDegrees(ProjMath.wrapLongitude(lon - cLonRad));
         } else {
-            lat = Math.toDegrees(normalizeLatitude(Math.toRadians(lat)));
+            lat = normalizeLatitudeDeg(lat);
+            lon = wrapLongitudeDeg(lon - cLon);
         }
 
-        double newLon = Math.toDegrees(wrapLongitude(Math.toRadians(lon - cLon)));
-
-        double x = wx + (newLon * ppd);
+        double x = wx + (lon * ppd);
         double y = hy - ((lat - cLat) * ppd);
-
-        if (Debug.debugging("llxydetail")) {
-            Debug.output("LLXY.forward(lon:" + ProjMath.radToDeg(lon)
-                    + ", lat:" + ProjMath.radToDeg(lat) + " isRadian:"
-                    + isRadian + ")");
-            Debug.output("LLXY.forward   x:" + x + ", y:" + y + " scale: "
-                    + (float) scale);
-        }
         
         p.setLocation(x, y);
         return p;

@@ -47,496 +47,485 @@ import com.bbn.openmap.util.Debug;
  */
 public class ImageWarp {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.omGraphics.util.ImageWarp");
+   public static Logger logger = Logger.getLogger("com.bbn.openmap.omGraphics.util.ImageWarp");
 
-    /**
-     * Source image pixels.
-     */
-    protected int[] pixels = null;
+   /**
+    * Source image pixels.
+    */
+   protected int[] pixels = null;
 
-    /** Image width, */
-    protected int iwidth;
-    /** Image height, */
-    protected int iheight;
-    /**
-     * Horizontal units/pixel in the source BufferedImage projection. Assumed to
-     * be constant across the image.
-     */
-    protected double hor_upp;
-    /**
-     * Vertical units/pixel in the source BufferedImage projection. Assumed to
-     * be constant across the image.
-     */
-    protected double ver_upp;
-    /**
-     * The vertical origin pixel location in the source image for the coordinate
-     * system origin.
-     */
-    protected double verOrigin;
-    /**
-     * The horizontal origin pixel location in the source image for the
-     * coordinate system origin.
-     */
-    protected double horOrigin;
+   /** Image width, */
+   protected int iwidth;
+   /** Image height, */
+   protected int iheight;
+   /**
+    * Horizontal units/pixel in the source BufferedImage projection. Assumed to
+    * be constant across the image.
+    */
+   protected double hor_upp;
+   /**
+    * Vertical units/pixel in the source BufferedImage projection. Assumed to be
+    * constant across the image.
+    */
+   protected double ver_upp;
+   /**
+    * The vertical origin pixel location in the source image for the coordinate
+    * system origin.
+    */
+   protected double verOrigin;
+   /**
+    * The horizontal origin pixel location in the source image for the
+    * coordinate system origin.
+    */
+   protected double horOrigin;
 
-    /**
-     * A transformation for the projection of the source image. If not set, the
-     * image is assumed to be equal arc projection.
-     */
-    protected GeoCoordTransformation geoTrans = new LatLonGCT();
+   /**
+    * A transformation for the projection of the source image. If not set, the
+    * image is assumed to be equal arc projection.
+    */
+   protected GeoCoordTransformation geoTrans = new LatLonGCT();
 
-    /**
-     * The coordinate bounds of the image, represented in the coordinate system
-     * of the image.
-     */
-    protected DataBounds sourceImageBounds;
+   /**
+    * The coordinate bounds of the image, represented in the coordinate system
+    * of the image.
+    */
+   protected DataBounds sourceImageBounds;
 
-    /**
-     * The coordinate image bounds of the projected image on the map window.
-     */
-    protected DataBounds projectedImageBounds;
+   /**
+    * The coordinate image bounds of the projected image on the map window.
+    */
+   protected DataBounds projectedImageBounds;
 
-    /**
-     * Create an image warp for an image assumed to be world wide coverage, with
-     * the top at 90 degrees, the bottom at -90, the left side at -180 and the
-     * right side at 180. Assumes the origin point is in the middle of the
-     * image.
-     */
-    public ImageWarp(BufferedImage bi) {
-        this(bi, LatLonGCT.INSTANCE, new DataBounds(-180.0, -90.0, 180.0, 90.0));
-    }
+   /**
+    * Create an image warp for an image assumed to be world wide coverage, with
+    * the top at 90 degrees, the bottom at -90, the left side at -180 and the
+    * right side at 180. Assumes the origin point is in the middle of the image.
+    */
+   public ImageWarp(BufferedImage bi) {
+      this(bi, LatLonGCT.INSTANCE, new DataBounds(-180.0, -90.0, 180.0, 90.0));
+   }
 
-    /**
-     * Create an image warp with some additional transform information.
-     * 
-     * @param bi BufferedImage of the source
-     * @param transform the GeoCoordTransformation for the projection of the
-     *        image.
-     * @param imageBounds the bounds of the image in the image's coordinate
-     *        system.
-     */
-    public ImageWarp(BufferedImage bi, GeoCoordTransformation transform,
-            DataBounds imageBounds) {
-        if (bi != null) {
-            iwidth = bi.getWidth();
-            iheight = bi.getHeight();
-            setGeoTrans(transform);
-            setImageBounds(imageBounds);
+   /**
+    * Create an image warp with some additional transform information.
+    * 
+    * @param bi BufferedImage of the source
+    * @param transform the GeoCoordTransformation for the projection of the
+    *        image.
+    * @param imageBounds the bounds of the image in the image's coordinate
+    *        system.
+    */
+   public ImageWarp(BufferedImage bi, GeoCoordTransformation transform, DataBounds imageBounds) {
+      if (bi != null) {
+         iwidth = bi.getWidth();
+         iheight = bi.getHeight();
+         setGeoTrans(transform);
+         setImageBounds(imageBounds);
 
-            pixels = getPixels(bi, 0, 0, iwidth, iheight);
+         pixels = getPixels(bi, 0, 0, iwidth, iheight);
 
-            // See if this saves on memory. Seems to.
-            bi = null;
-        }
-    }
+         // See if this saves on memory. Seems to.
+         bi = null;
+      }
+   }
 
-    /**
-     * Create an image warp with some additional transform information.
-     * 
-     * @param bi BufferedImage of the source
-     * @param transform the GeoCoordTransformation for the projection of the
-     *        image.
-     * @param worldFile the WorldFile describing the image's location.
-     */
-    public ImageWarp(BufferedImage bi, GeoCoordTransformation transform,
-            WorldFile worldFile) {
-        if (bi != null) {
-            iwidth = bi.getWidth();
-            iheight = bi.getHeight();
-            setGeoTrans(transform);
+   /**
+    * Create an image warp with some additional transform information.
+    * 
+    * @param bi BufferedImage of the source
+    * @param transform the GeoCoordTransformation for the projection of the
+    *        image.
+    * @param worldFile the WorldFile describing the image's location.
+    */
+   public ImageWarp(BufferedImage bi, GeoCoordTransformation transform, WorldFile worldFile) {
+      if (bi != null) {
+         iwidth = bi.getWidth();
+         iheight = bi.getHeight();
+         setGeoTrans(transform);
 
-            setImageBounds(worldFile);
+         setImageBounds(worldFile);
 
-            pixels = getPixels(bi, 0, 0, iwidth, iheight);
+         pixels = getPixels(bi, 0, 0, iwidth, iheight);
 
-            // See if this saves on memory. Seems to.
-            bi = null;
-        }
-    }
+         // See if this saves on memory. Seems to.
+         bi = null;
+      }
+   }
 
-    /**
-     * Create an image warp for an image assumed to be world wide coverage, with
-     * the top at 90 degrees, the bottom at -90, the left side at -180 and the
-     * right side at 180. Assumes the origin point is in the middle of the
-     * image.
-     * @param pix ARGB array of pixel values for image.
-     * @param width pixel width of image.
-     * @param height pixel height of image.
-     */
-    public ImageWarp(int[] pix, int width, int height) {
-        this(pix, width, height, LatLonGCT.INSTANCE, new DataBounds(-180.0, -90.0, 180.0, 90.0));
-    }
+   /**
+    * Create an image warp for an image assumed to be world wide coverage, with
+    * the top at 90 degrees, the bottom at -90, the left side at -180 and the
+    * right side at 180. Assumes the origin point is in the middle of the image.
+    * 
+    * @param pix ARGB array of pixel values for image.
+    * @param width pixel width of image.
+    * @param height pixel height of image.
+    */
+   public ImageWarp(int[] pix, int width, int height) {
+      this(pix, width, height, LatLonGCT.INSTANCE, new DataBounds(-180.0, -90.0, 180.0, 90.0));
+   }
 
-    /**
-     * Create an image warp with some additional transform information.
-     * 
-     * @param pix ARGB array of pixel values for image.
-     * @param width pixel width of image.
-     * @param height pixel height of image.
-     * @param transform the GeoCoordTransformation for the projection of the
-     *        image.
-     * @param imageBounds the bounds of the image in the image's coordinate
-     *        system.
-     */
-    public ImageWarp(int[] pix, int width, int height, GeoCoordTransformation transform,
-            DataBounds imageBounds) {
-        if (pix != null) {
-            iwidth = width;
-            iheight = height;
-            setGeoTrans(transform);
-            setImageBounds(imageBounds);
-            pixels = pix;
-        }
-    }
+   /**
+    * Create an image warp with some additional transform information.
+    * 
+    * @param pix ARGB array of pixel values for image.
+    * @param width pixel width of image.
+    * @param height pixel height of image.
+    * @param transform the GeoCoordTransformation for the projection of the
+    *        image.
+    * @param imageBounds the bounds of the image in the image's coordinate
+    *        system.
+    */
+   public ImageWarp(int[] pix, int width, int height, GeoCoordTransformation transform, DataBounds imageBounds) {
+      if (pix != null) {
+         iwidth = width;
+         iheight = height;
+         setGeoTrans(transform);
+         setImageBounds(imageBounds);
+         pixels = pix;
+      }
+   }
 
-    /**
-     * Create an image warp with some additional transform information.
-     * 
-     * @param pix ARGB array of pixel values for image.
-     * @param width pixel width of image.
-     * @param height pixel height of image.
-     * @param transform the GeoCoordTransformation for the projection of the
-     *        image.
-     * @param worldFile the WorldFile describing the image's location.
-     */
-    public ImageWarp(int[] pix, int width, int height, GeoCoordTransformation transform,
-            WorldFile worldFile) {
-        if (pix != null) {
-            iwidth = width;
-            iheight = height;
-            setGeoTrans(transform);
-            setImageBounds(worldFile);
-            pixels = pix;
-        }
-    }
-    
-    /**
-     * The pixels used in the OMRaster.
-     */
-    // int[] tmpPixels = new int[0];
-    /**
-     * Return an OMRaster that covers the given projection, with the image
-     * warped for the projection.
-     * 
-     * @param p map projection
-     * @return OMRaster or null if the image isn't within the current
-     *         projection.
-     */
-    public OMRaster getOMRaster(Projection p) {
-        int[] pixels = getImagePixels(p);
-        if (pixels != null && projectedImageBounds != null) {
-            int width = (int) projectedImageBounds.getWidth();
-            int height = (int) projectedImageBounds.getHeight();
-            int x = (int) projectedImageBounds.getMin().getX();
-            int y = (int) projectedImageBounds.getMin().getY();
-            OMRaster raster = new OMRaster(x, y, width, height, pixels);
-            raster.generate(p);
-            return raster;
-        }
+   /**
+    * Create an image warp with some additional transform information.
+    * 
+    * @param pix ARGB array of pixel values for image.
+    * @param width pixel width of image.
+    * @param height pixel height of image.
+    * @param transform the GeoCoordTransformation for the projection of the
+    *        image.
+    * @param worldFile the WorldFile describing the image's location.
+    */
+   public ImageWarp(int[] pix, int width, int height, GeoCoordTransformation transform, WorldFile worldFile) {
+      if (pix != null) {
+         iwidth = width;
+         iheight = height;
+         setGeoTrans(transform);
+         setImageBounds(worldFile);
+         pixels = pix;
+      }
+   }
 
-        return null;
-    }
+   /**
+    * The pixels used in the OMRaster.
+    */
+   // int[] tmpPixels = new int[0];
+   /**
+    * Return an OMRaster that covers the given projection, with the image warped
+    * for the projection.
+    * 
+    * @param p map projection
+    * @return OMRaster or null if the image isn't within the current projection.
+    */
+   public OMRaster getOMRaster(Projection p) {
+      int[] pixels = getImagePixels(p);
+      if (pixels != null && projectedImageBounds != null) {
+         int width = (int) projectedImageBounds.getWidth();
+         int height = (int) projectedImageBounds.getHeight();
+         int x = (int) projectedImageBounds.getMin().getX();
+         int y = (int) projectedImageBounds.getMin().getY();
+         OMRaster raster = new OMRaster(x, y, width, height, pixels);
+         raster.generate(p);
+         return raster;
+      }
 
-    /**
-     * Given a projection, return the pixels for an image that will cover the
-     * projection area.
-     * 
-     * @param p map projection
-     * @return int[] of ARGB pixels for an image covering the given projection.
-     */
-    public int[] getImagePixels(Projection p) {
-        if (pixels != null && p != null) {
+      return null;
+   }
 
-            projectedImageBounds = calculateProjectedImageBounds(p);
+   /**
+    * Given a projection, return the pixels for an image that will cover the
+    * projection area.
+    * 
+    * @param p map projection
+    * @return int[] of ARGB pixels for an image covering the given projection.
+    */
+   public int[] getImagePixels(Projection p) {
+      if (pixels != null && p != null) {
 
-            if (projectedImageBounds == null) {
-                // image isn't on the map.
-                return null;
+         projectedImageBounds = calculateProjectedImageBounds(p);
+
+         if (projectedImageBounds == null) {
+            // image isn't on the map.
+            return null;
+         }
+
+         int projHeight = (int) projectedImageBounds.getHeight();
+         int projWidth = (int) projectedImageBounds.getWidth();
+
+         // See if we can reuse the pixel array we have.
+
+         int[] tmpPixels = new int[projWidth * projHeight];
+         int numTmpPixels = tmpPixels.length;
+         logger.fine("tmpPixels[" + numTmpPixels + "]");
+         int clear = 0x00000000;
+
+         Point2D ctp = new Point2D.Double();
+         Point2D ddll = new Point2D.Double();
+         Point2D imageCoord = new Point2D.Double();
+         Point2D center = p.getCenter();
+
+         if (logger.isLoggable(Level.FINE)) {
+            logger.fine(projectedImageBounds.toString());
+         }
+
+         int minx = (int) Math.floor(projectedImageBounds.getMin().getX());
+         int miny = (int) Math.floor(projectedImageBounds.getMin().getY());
+         int maxx = (int) Math.ceil(projectedImageBounds.getMax().getX());
+         int maxy = (int) Math.ceil(projectedImageBounds.getMax().getY());
+
+         // i and j are map window pixel values.
+         for (int i = minx; i < maxx; i++) {
+            for (int j = miny; j < maxy; j++) {
+
+               // ix and iy are pixel coordinates of the destination image.
+               int ix = i - minx;
+               int iy = j - miny;
+
+               // index into the OMRaster pixel array
+               int tmpIndex = (ix + (iy * projWidth));
+
+               if (tmpIndex >= numTmpPixels) {
+                  continue;
+               }
+
+               ddll = p.inverse(i, j, ddll);
+
+               // If the llp calculated isn't on the map,
+               // don't bother drawing it. Could be a space
+               // point in Orthographic projection, for
+               // instance.
+               if (ddll.equals(center)) {
+                  p.forward(ddll, ctp);
+                  if (ctp.getX() != i || ctp.getY() != j) {
+                     tmpPixels[tmpIndex] = clear;
+                     continue;
+                  }
+               }
+
+               if (geoTrans != null) {
+                  geoTrans.forward(ddll.getY(), ddll.getX(), imageCoord);
+               } else {
+                  imageCoord = ddll;
+               }
+
+               if (!sourceImageBounds.contains(imageCoord)) {
+                  tmpPixels[tmpIndex] = clear;
+                  continue;
+               }
+
+               // Find the corresponding pixel location in
+               // the source image.
+               int horIndex = (int) (horOrigin + (imageCoord.getX() / hor_upp));
+               int verIndex = (int) (verOrigin + (imageCoord.getY() / ver_upp));
+
+               if (horIndex < 0 || horIndex >= iwidth || verIndex < 0 || verIndex >= iheight) {
+                  // pixel not on the source image. This
+                  // happens if the image doesn't cover the
+                  // entire earth.
+                  continue;
+               }
+
+               int imageIndex = horIndex + (verIndex * iwidth);
+
+               if (imageIndex >= 0 && imageIndex < pixels.length) {
+                  tmpPixels[tmpIndex] = pixels[imageIndex];
+               }
             }
+         }
 
-            int projHeight = (int) projectedImageBounds.getHeight();
-            int projWidth = (int) projectedImageBounds.getWidth();
+         logger.fine("finished creating image");
+         return tmpPixels;
+      }
 
-            // See if we can reuse the pixel array we have.
+      logger.warning("problem creating image, no pixels: " + (pixels == null ? "true" : "false") + ", no projection:"
+            + (p == null ? "true" : "false"));
 
-            int[] tmpPixels = new int[projWidth * projHeight];
-            int numTmpPixels = tmpPixels.length;
-            logger.fine("tmpPixels[" + numTmpPixels + "]");
-            int clear = 0x00000000;
+      // If you get here, something's not right.
+      return null;
+   }
 
-            Point2D ctp = new Point2D.Double();
-            Point2D ddll = new Point2D.Double();
-            Point2D imageCoord = new Point2D.Double();
-            Point2D center = p.getCenter();
+   protected DataBounds calculateProjectedImageBounds(Projection p) {
 
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine(projectedImageBounds.toString());
-            }
+      if (geoTrans.equals(LatLonGCT.INSTANCE)) {
+         // whole earth
+         logger.fine("just using whole screen image");
+         return new DataBounds(0, 0, p.getWidth(), p.getHeight());
+      }
 
-            int minx = (int) Math.floor(projectedImageBounds.getMin().getX());
-            int miny = (int) Math.floor(projectedImageBounds.getMin().getY());
-            int maxx = (int) Math.ceil(projectedImageBounds.getMax().getX());
-            int maxy = (int) Math.ceil(projectedImageBounds.getMax().getY());
+      DataBounds db = null;
+      if (sourceImageBounds != null) {
+         int pw = p.getWidth();
+         int ph = p.getHeight();
+         Point2D min = sourceImageBounds.getMin();
+         Point2D max = sourceImageBounds.getMax();
+         double x1 = min.getX();
+         double y1 = min.getY();
+         double x2 = max.getX();
+         double y2 = max.getY();
+         double width = sourceImageBounds.getWidth();
+         double height = sourceImageBounds.getHeight();
 
-            // i and j are map window pixel values.
-            for (int i = minx; i < maxx; i++) {
-                for (int j = miny; j < maxy; j++) {
+         LatLonPoint tmpG = new LatLonPoint.Double();
+         Point2D tmpP = new Point2D.Double();
 
-                    // ix and iy are pixel coordinates of the destination image.
-                    int ix = i - minx;
-                    int iy = j - miny;
+         db = new DataBounds();
+         db.setHardLimits(new DataBounds(0, 0, pw, ph));
+         db.add(p.forward(geoTrans.inverse(x1, y1, tmpG), tmpP));
 
-                    // index into the OMRaster pixel array
-                    int tmpIndex = (ix + (iy * projWidth));
+         double numSplits = 4;
 
-                    if (tmpIndex >= numTmpPixels) {
-                        continue;
-                    }
+         double xSpacer = width / numSplits;
+         double ySpacer = height / numSplits;
 
-                    ddll = p.inverse(i, j, ddll);
+         for (int i = 1; i < numSplits; i++) {
+            db.add(p.forward(geoTrans.inverse(x1 + xSpacer * i, y1, tmpG), tmpP));
+            db.add(p.forward(geoTrans.inverse(x1, y1 + ySpacer * i, tmpG), tmpP));
+            db.add(p.forward(geoTrans.inverse(x1 + xSpacer * i, y2, tmpG), tmpP));
+            db.add(p.forward(geoTrans.inverse(x2, y1 + ySpacer * i, tmpG), tmpP));
+         }
 
-                    // If the llp calculated isn't on the map,
-                    // don't bother drawing it. Could be a space
-                    // point in Orthographic projection, for
-                    // instance.
-                    if (ddll.equals(center)) {
-                        p.forward(ddll, ctp);
-                        if (ctp.getX() != i || ctp.getY() != j) {
-                            tmpPixels[tmpIndex] = clear;
-                            continue;
-                        }
-                    }
+         if (db.getWidth() <= 0 || db.getHeight() <= 0) {
+            logger.fine("dimensions of data bounds bad, returning null " + db);
+            return null;
+         }
 
-                    if (geoTrans != null) {
-                        geoTrans.forward(ddll.getY(), ddll.getX(), imageCoord);
-                    } else {
-                        imageCoord = ddll;
-                    }
+      }
+      return db;
 
-                    if (!sourceImageBounds.contains(imageCoord)) {
-                        tmpPixels[tmpIndex] = clear;
-                        continue;
-                    }
+   }
 
-                    // Find the corresponding pixel location in
-                    // the source image.
-                    int horIndex = (int) (horOrigin + (imageCoord.getX() / hor_upp));
-                    int verIndex = (int) (verOrigin + (imageCoord.getY() / ver_upp));
+   /**
+    * Get the pixels from the BufferedImage. If anything goes wrong, returns a
+    * int[0].
+    */
+   protected int[] getPixels(Image img, int x, int y, int w, int h) {
+      int[] pixels = new int[w * h];
+      PixelGrabber pg = new PixelGrabber(img, x, y, w, h, pixels, 0, w);
+      try {
+         pg.grabPixels();
+      } catch (InterruptedException e) {
+         Debug.error("ImageTranslator: interrupted waiting for pixels!");
+         return new int[0];
+      }
 
-                    if (horIndex < 0 || horIndex >= iwidth || verIndex < 0
-                            || verIndex >= iheight) {
-                        // pixel not on the source image. This
-                        // happens if the image doesn't cover the
-                        // entire earth.
-                        continue;
-                    }
+      if ((pg.getStatus() & ImageObserver.ABORT) != 0) {
+         System.err.println("ImageTranslator: image fetch aborted or errored");
+         return new int[0];
+      }
 
-                    int imageIndex = horIndex + (verIndex * iwidth);
+      return pixels;
+   }
 
-                    if (imageIndex >= 0 && imageIndex < pixels.length) {
-                        tmpPixels[tmpIndex] = pixels[imageIndex];
-                    }
-                }
-            }
+   public int getIwidth() {
+      return iwidth;
+   }
 
-            logger.fine("finished creating image");
-            return tmpPixels;
-        }
+   public void setIwidth(int iwidth) {
+      this.iwidth = iwidth;
+   }
 
-        logger.warning("problem creating image, no pixels: "
-                + (pixels == null ? "true" : "false") + ", no projection:"
-                + (p == null ? "true" : "false"));
+   public int getIheight() {
+      return iheight;
+   }
 
-        // If you get here, something's not right.
-        return null;
-    }
+   public void setIheight(int iheight) {
+      this.iheight = iheight;
+   }
 
-    protected DataBounds calculateProjectedImageBounds(Projection p) {
+   public double getHor_dpp() {
+      return hor_upp;
+   }
 
-        if (geoTrans.equals(LatLonGCT.INSTANCE)) {
-            // whole earth
-            logger.fine("just using whole screen image");
-            return new DataBounds(0, 0, p.getWidth(), p.getHeight());
-        }
+   public void setHor_dpp(double hor_dpp) {
+      this.hor_upp = hor_dpp;
+   }
 
-        DataBounds db = null;
-        if (sourceImageBounds != null) {
-            int pw = p.getWidth();
-            int ph = p.getHeight();
-            Point2D min = sourceImageBounds.getMin();
-            Point2D max = sourceImageBounds.getMax();
-            double x1 = min.getX();
-            double y1 = min.getY();
-            double x2 = max.getX();
-            double y2 = max.getY();
-            double width = sourceImageBounds.getWidth();
-            double height = sourceImageBounds.getHeight();
+   public double getVer_dpp() {
+      return ver_upp;
+   }
 
-            LatLonPoint tmpG = new LatLonPoint.Double();
-            Point2D tmpP = new Point2D.Double();
+   public void setVer_dpp(double ver_dpp) {
+      this.ver_upp = ver_dpp;
+   }
 
-            db = new DataBounds();
-            db.setHardLimits(new DataBounds(0, 0, pw, ph));
-            db.add(p.forward(geoTrans.inverse(x1, y1, tmpG), tmpP));
+   public double getVerOrigin() {
+      return verOrigin;
+   }
 
-            double numSplits = 4;
+   public void setVerOrigin(double verOrigin) {
+      this.verOrigin = verOrigin;
+   }
 
-            double xSpacer = width / numSplits;
-            double ySpacer = height / numSplits;
+   public double getHorOrigin() {
+      return horOrigin;
+   }
 
-            for (int i = 1; i < numSplits; i++) {
-                db.add(p.forward(geoTrans.inverse(x1 + xSpacer * i, y1, tmpG),
-                        tmpP));
-                db.add(p.forward(geoTrans.inverse(x1, y1 + ySpacer * i, tmpG),
-                        tmpP));
-                db.add(p.forward(geoTrans.inverse(x1 + xSpacer * i, y2, tmpG),
-                        tmpP));
-                db.add(p.forward(geoTrans.inverse(x2, y1 + ySpacer * i, tmpG),
-                        tmpP));
-            }
+   public void setHorOrigin(double horOrigin) {
+      this.horOrigin = horOrigin;
+   }
 
-            if (db.getWidth() <= 0 || db.getHeight() <= 0) {
-                logger.fine("dimensions of data bounds bad, returning null "
-                        + db);
-                return null;
-            }
+   public GeoCoordTransformation getGeoTrans() {
+      return geoTrans;
+   }
 
-        }
-        return db;
+   public void setGeoTrans(GeoCoordTransformation geoTrans) {
+      this.geoTrans = geoTrans;
+   }
 
-    }
+   public DataBounds getImageBounds() {
+      return sourceImageBounds;
+   }
 
-    /**
-     * Get the pixels from the BufferedImage. If anything goes wrong, returns a
-     * int[0].
-     */
-    protected int[] getPixels(Image img, int x, int y, int w, int h) {
-        int[] pixels = new int[w * h];
-        PixelGrabber pg = new PixelGrabber(img, x, y, w, h, pixels, 0, w);
-        try {
-            pg.grabPixels();
-        } catch (InterruptedException e) {
-            Debug.error("ImageTranslator: interrupted waiting for pixels!");
-            return new int[0];
-        }
+   public void setImageBounds(DataBounds imageBounds) {
+      this.sourceImageBounds = imageBounds;
 
-        if ((pg.getStatus() & ImageObserver.ABORT) != 0) {
-            System.err.println("ImageTranslator: image fetch aborted or errored");
-            return new int[0];
-        }
+      hor_upp = imageBounds.getWidth() / iwidth;
+      // need the negative sign because latitudes increase in the opposite
+      // direction as y pixel values.
+      boolean yDirUp = imageBounds.isyDirUp();
 
-        return pixels;
-    }
+      ver_upp = imageBounds.getHeight() / iheight;
+      if (yDirUp) {
+         ver_upp *= -1;
+      }
 
-    public int getIwidth() {
-        return iwidth;
-    }
+      // We should be able to just go from the lower left corner of the image
+      // and find zero from there, the min of both bounds values.
 
-    public void setIwidth(int iwidth) {
-        this.iwidth = iwidth;
-    }
+      double leftX = imageBounds.getMin().getX();
+      double upperY = yDirUp ? imageBounds.getMax().getY() : imageBounds.getMin().getY();
 
-    public int getIheight() {
-        return iheight;
-    }
+      verOrigin = -upperY / ver_upp; // number of Y pixels to origin.
+      horOrigin = -leftX / hor_upp; // number of X pixels to origin.
 
-    public void setIheight(int iheight) {
-        this.iheight = iheight;
-    }
+      if (logger.isLoggable(Level.FINE)) {
+         logger.fine("getting image pixels w:" + iwidth + ", h:" + iheight + ", hor upp:" + hor_upp + ", ver upp:" + ver_upp
+               + ", verOrigin:" + verOrigin + ", horOrigin:" + horOrigin);
+         logger.fine(imageBounds.toString());
+      }
+   }
 
-    public double getHor_dpp() {
-        return hor_upp;
-    }
+   public void setImageBounds(WorldFile worldFile) {
+      hor_upp = worldFile.getXDim();
+      // world file dimensions have direction, negative for going down
+      ver_upp = worldFile.getYDim();
 
-    public void setHor_dpp(double hor_dpp) {
-        this.hor_upp = hor_dpp;
-    }
+      double leftX = worldFile.getX();
+      double upperY = worldFile.getY();
 
-    public double getVer_dpp() {
-        return ver_upp;
-    }
+      verOrigin = -worldFile.getY() / ver_upp; // number of Y pixels to
+      // origin.
+      horOrigin = -leftX / hor_upp; // number of X pixels to origin.
 
-    public void setVer_dpp(double ver_dpp) {
-        this.ver_upp = ver_dpp;
-    }
+      sourceImageBounds = new DataBounds(leftX, worldFile.getY() + ver_upp * iheight, leftX + hor_upp * iwidth, upperY);
 
-    public double getVerOrigin() {
-        return verOrigin;
-    }
+      if (logger.isLoggable(Level.FINE)) {
+         logger.fine("getting image pixels w:" + iwidth + ", h:" + iheight + ", hor upp:" + hor_upp + ", ver upp:" + ver_upp
+               + ", verOrigin:" + verOrigin + ", horOrigin:" + horOrigin);
+         logger.fine(sourceImageBounds.toString());
+      }
+   }
 
-    public void setVerOrigin(double verOrigin) {
-        this.verOrigin = verOrigin;
-    }
-
-    public double getHorOrigin() {
-        return horOrigin;
-    }
-
-    public void setHorOrigin(double horOrigin) {
-        this.horOrigin = horOrigin;
-    }
-
-    public GeoCoordTransformation getGeoTrans() {
-        return geoTrans;
-    }
-
-    public void setGeoTrans(GeoCoordTransformation geoTrans) {
-        this.geoTrans = geoTrans;
-    }
-
-    public DataBounds getImageBounds() {
-        return sourceImageBounds;
-    }
-
-    public void setImageBounds(DataBounds imageBounds) {
-        this.sourceImageBounds = imageBounds;
-
-        hor_upp = imageBounds.getWidth() / iwidth;
-        // need the negative sign because latitudes increase in the opposite
-        // direction as y pixel values.
-        ver_upp = -imageBounds.getHeight() / iheight;
-
-        // We should be able to just go from the lower left corner of the image
-        // and find zero from there, the min of both bounds values.
-
-        double leftX = imageBounds.getMin().getX();
-        double upperY = imageBounds.getMax().getY();
-
-        verOrigin = -upperY / ver_upp; // number of Y pixels to origin.
-        horOrigin = -leftX / hor_upp; // number of X pixels to origin.
-
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine("getting image pixels w:" + iwidth + ", h:" + iheight
-                    + ", hor upp:" + hor_upp + ", ver upp:" + ver_upp
-                    + ", verOrigin:" + verOrigin + ", horOrigin:" + horOrigin);
-            logger.fine(imageBounds.toString());
-        }
-    }
-
-    public void setImageBounds(WorldFile worldFile) {
-        hor_upp = worldFile.getXDim();
-        // world file dimensions have direction, negative for going down
-        ver_upp = worldFile.getYDim();
-
-        double leftX = worldFile.getX();
-        double upperY = worldFile.getY();
-
-        verOrigin = -worldFile.getY() / ver_upp; // number of Y pixels to
-        // origin.
-        horOrigin = -leftX / hor_upp; // number of X pixels to origin.
-
-        sourceImageBounds = new DataBounds(leftX, worldFile.getY() + ver_upp
-                * iheight, leftX + hor_upp * iwidth, upperY);
-
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine("getting image pixels w:" + iwidth + ", h:" + iheight
-                    + ", hor upp:" + hor_upp + ", ver upp:" + ver_upp
-                    + ", verOrigin:" + verOrigin + ", horOrigin:" + horOrigin);
-            logger.fine(sourceImageBounds.toString());
-        }
-    }
-
-    public static void main(String[] args) {
-        new ImageWarp(new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB), LatLonGCT.INSTANCE, new DataBounds(25, -90, 180, 90));
-    }
+   public static void main(String[] args) {
+      new ImageWarp(new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB), LatLonGCT.INSTANCE, new DataBounds(25, -90, 180, 90));
+   }
 }

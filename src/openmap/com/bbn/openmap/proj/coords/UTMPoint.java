@@ -214,41 +214,40 @@ public class UTMPoint {
                                    boolean isNorthern) {
 
         double a = ellip.radius;
-        double eccSquared = ellip.eccsq;
         double k0 = 0.9996;
+        
+        double eccSquared = ellip.eccsq;
+        double eccPrimeSquared = (eccSquared) / (1 - eccSquared);
+        double eccSquared2 = eccSquared * eccSquared;
+        double eccSquared3 = eccSquared2 * eccSquared;
 
-        double LongOrigin;
-        double eccPrimeSquared;
         double N, T, C, A, M;
 
         double LatRad = llpoint.getRadLat();
         double LongRad = llpoint.getRadLon();
-        double LongOriginRad;
 
-        LongOrigin = (zoneNumber - 1) * 6 - 180 + 3; // +3 puts origin
-        // in middle of
-        // zone
-        LongOriginRad = ProjMath.degToRad(LongOrigin);
+        // in middle of zone
+        double LongOrigin = (zoneNumber - 1) * 6 - 180 + 3; // +3 puts origin
+        double LongOriginRad = Math.toRadians(LongOrigin);
+        
+        double tanLatRad = Math.tan(LatRad);
+        double sinLatRad = Math.sin(LatRad);
+        double cosLatRad = Math.cos(LatRad);
 
-        eccPrimeSquared = (eccSquared) / (1 - eccSquared);
-
-        N = a / Math.sqrt(1 - eccSquared * Math.sin(LatRad) * Math.sin(LatRad));
-        T = Math.tan(LatRad) * Math.tan(LatRad);
-        C = eccPrimeSquared * Math.cos(LatRad) * Math.cos(LatRad);
-        A = Math.cos(LatRad) * (LongRad - LongOriginRad);
+        N = a / Math.sqrt(1 - eccSquared * sinLatRad * sinLatRad);
+        T = tanLatRad * tanLatRad;
+        C = eccPrimeSquared * cosLatRad * cosLatRad;
+        A = cosLatRad * (LongRad - LongOriginRad);
 
         M = a
-                * ((1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5
-                        * eccSquared * eccSquared * eccSquared / 256)
+                * ((1 - eccSquared / 4 - 3 * eccSquared2 / 64 - 5
+                        * eccSquared3 / 256)
                         * LatRad
-                        - (3 * eccSquared / 8 + 3 * eccSquared * eccSquared
-                                / 32 + 45 * eccSquared * eccSquared
-                                * eccSquared / 1024)
+                        - (3 * eccSquared / 8 + 3 * eccSquared2
+                                / 32 + 45 * eccSquared3 / 1024)
                         * Math.sin(2 * LatRad)
-                        + (15 * eccSquared * eccSquared / 256 + 45 * eccSquared
-                                * eccSquared * eccSquared / 1024)
-                        * Math.sin(4 * LatRad) - (35 * eccSquared * eccSquared
-                        * eccSquared / 3072)
+                        + (15 * eccSquared2 / 256 + 45 * eccSquared3 / 1024)
+                        * Math.sin(4 * LatRad) - (35 * eccSquared3 / 3072)
                         * Math.sin(6 * LatRad));
 
         double UTMEasting = (k0

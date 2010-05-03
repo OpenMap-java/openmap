@@ -33,7 +33,6 @@ import org.w3c.dom.Node;
 
 import com.bbn.openmap.image.ImageServer;
 import com.bbn.openmap.image.WMTConstants;
-import com.bbn.openmap.layer.util.http.HttpConnection;
 import com.bbn.openmap.proj.coords.BoundingBox;
 import com.bbn.openmap.proj.coords.CoordinateReferenceSystem;
 
@@ -90,22 +89,16 @@ public class CapabilitiesSupport {
         String[] strKeywords = props.getProperty(WMSPrefix + "Keyword", "").split(" ");
         List<String> keywords = Arrays.asList(strKeywords);
         setKeywords(keywords);
-
+        
         setUrl(scheme, hostName, port, path);
 
         List<String> al = new ArrayList<String>();
         setFormats(FMT_GETMAP, al);
+        setFormats(FMT_GETFEATUREINFO, al);
         
         al.clear();
         al.add("application/vnd.ogc.wms_xml");
         setFormats(FMT_GETCAPS, al);
-
-        al.clear();
-        al.add(HttpConnection.CONTENT_PLAIN);
-        al.add(HttpConnection.CONTENT_HTML);
-        // TODO: support other formats like application/vnd.ogc.gml and text/xml?
-        // TODO: configurable or perhaps gettable from the FeatureInfoResponse
-        setFormats(FMT_GETFEATUREINFO, al);
 
         al.clear();
         al.add("application/vnd.ogc.se_xml");
@@ -316,7 +309,7 @@ public class CapabilitiesSupport {
      * @param formats
      * @return
      */
-    public boolean setFormats(int request, List<String> formats) {
+    public boolean setFormats(int request, Collection<String> formats) {
         switch (request) {
         case FMT_GETMAP:
         case FMT_GETCAPS:
@@ -329,7 +322,7 @@ public class CapabilitiesSupport {
         }
         return true;
     }
-
+    
     /**
      * @param which
      * @param url

@@ -7,8 +7,8 @@ import javax.swing.JMenuBar;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.event.OMEventSelectionCoordinator;
-import com.bbn.openmap.gui.BasicMapPanel;
 import com.bbn.openmap.gui.HotwashPanel;
+import com.bbn.openmap.gui.MapPanel;
 import com.bbn.openmap.gui.OpenMapFrame;
 import com.bbn.openmap.gui.event.EventListPresenter;
 import com.bbn.openmap.gui.event.EventPanel;
@@ -49,7 +49,7 @@ import com.bbn.openmap.util.Debug;
  * the current time displayed, goes on the bottom, and the event panel showing a
  * list of events goes to the west.
  */
-public class TimeFrameApp extends OpenMap {
+public class TimeFrameApp extends Main {
 
     public TimeFrameApp() {}
 
@@ -92,7 +92,8 @@ public class TimeFrameApp extends OpenMap {
         mapHandler.add(new Clock());
     }
 
-    protected void showInFrame() {
+    @SuppressWarnings("serial")
+   protected void showInFrame() {
         OpenMapFrame omf = (OpenMapFrame) getMapHandler().get(OpenMapFrame.class);
 
         if (omf == null) {
@@ -102,8 +103,8 @@ public class TimeFrameApp extends OpenMap {
                         setContent((Component) someObj);
                     }
 
-                    if (someObj instanceof BasicMapPanel) {
-                        JMenuBar jmb = ((BasicMapPanel) someObj).getMapMenuBar();
+                    if (someObj instanceof MapPanel) {
+                        JMenuBar jmb = ((MapPanel) someObj).getMapMenuBar();
                         if (jmb != null) {
                             getRootPane().setJMenuBar(jmb);
                         }

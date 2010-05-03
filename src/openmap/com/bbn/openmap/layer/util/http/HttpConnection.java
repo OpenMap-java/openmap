@@ -63,6 +63,7 @@ public class HttpConnection extends Thread {
     public final static String CONTENT_MOV = "video/quicktime";
     public final static String CONTENT_PLAIN = "text/plain";
     public final static String CONTENT_XML = "text/xml";
+    public final static String CONTENT_JSON = "application/json";
 
     /**
      * Initialize the input <code>Reader</code> and output

@@ -29,119 +29,135 @@ import java.awt.geom.Point2D;
  */
 public class DataBounds {
 
-    protected Point2D min;
-    protected Point2D max;
-    
-    protected DataBounds hardLimits;
+   protected Point2D min;
+   protected Point2D max;
 
-    public DataBounds() {}
+   protected DataBounds hardLimits;
 
-    public DataBounds(double minx, double miny, double maxx, double maxy) {
-        add(minx, miny);
-        add(maxx, maxy);
-    }
+   /**
+    * True if the direction of the y coordinates increase in the up direction.
+    * Should be set to false if larger y values are actually lower pixel values
+    * on the map.
+    */
+   boolean yDirUp = true;
 
-    public DataBounds(Point2D minP, Point2D maxP) {
-        add(minP);
-        add(maxP);
-    }
+   public DataBounds() {
+   }
 
-    /**
-     * Returns a point set to the average of the min and max values.
-     * May return null if no points have been added.
-     */
-    public Point2D getCenter() {
-        if (min != null) {
-            double minx = min.getX();
-            double miny = min.getY();
-            double maxx = max.getX();
-            double maxy = max.getY();
-            return new Point2D.Double((minx + maxx) / 2, (miny + maxy) / 2);
-        } else
-            return null;
-    }
+   public DataBounds(double minx, double miny, double maxx, double maxy) {
+      add(minx, miny);
+      add(maxx, maxy);
+   }
 
-    public String toString() {
-        return "DataBounds| min:" + min + " max:" + max;
-    }
+   public DataBounds(Point2D minP, Point2D maxP) {
+      add(minP);
+      add(maxP);
+   }
 
-    /**
-     * Upper right point.
-     */
-    public Point2D getMax() {
-        return max;
-    }
+   /**
+    * Returns a point set to the average of the min and max values. May return
+    * null if no points have been added.
+    */
+   public Point2D getCenter() {
+      if (min != null) {
+         double minx = min.getX();
+         double miny = min.getY();
+         double maxx = max.getX();
+         double maxy = max.getY();
+         return new Point2D.Double((minx + maxx) / 2, (miny + maxy) / 2);
+      } else
+         return null;
+   }
 
-    /**
-     * Lower left point.
-     */
-    public Point2D getMin() {
-        return min;
-    }
+   public String toString() {
+      return "DataBounds| min:" + min + " max:" + max;
+   }
 
-    public void add(double x, double y) {
-        if (min == null) {
-            min = new Point2D.Double(x, y);
-            max = new Point2D.Double(x, y);
-        } else {
-            double minx = min.getX();
-            double miny = min.getY();
-            double maxx = max.getX();
-            double maxy = max.getY();
+   /**
+    * Upper right point.
+    */
+   public Point2D getMax() {
+      return max;
+   }
 
-            if (minx > x)
-                minx = x;
-            if (miny > y)
-                miny = y;
-            if (maxx < x)
-                maxx = x;
-            if (maxy < y)
-                maxy = y;
-            
-            if (hardLimits != null) {
-                double hlminx = hardLimits.min.getX();
-                double hlminy = hardLimits.min.getY();
-                double hlmaxx = hardLimits.max.getX();
-                double hlmaxy = hardLimits.max.getY();
-                
-                if (hlminx > minx)
-                    minx = hlminx;
-                if (hlminy > miny)
-                    miny = hlminy;
-                if (hlmaxx < maxx)
-                    maxx = hlmaxx;
-                if (hlmaxy < maxy)
-                    maxy = hlmaxy;
-            }
+   /**
+    * Lower left point.
+    */
+   public Point2D getMin() {
+      return min;
+   }
 
-            min.setLocation(minx, miny);
-            max.setLocation(maxx, maxy);
-        }
-    }
+   public void add(double x, double y) {
+      if (min == null) {
+         min = new Point2D.Double(x, y);
+         max = new Point2D.Double(x, y);
+      } else {
+         double minx = min.getX();
+         double miny = min.getY();
+         double maxx = max.getX();
+         double maxy = max.getY();
 
-    public void add(Point2D point) {
-        add((double) point.getX(), (double) point.getY());
-    }
-    
-    public boolean contains(Point2D query) {
-        double x = query.getX();
-        double y = query.getY();
-        return x >= min.getX() && x < max.getX() && y >= min.getY() && y <= max.getY();
-    }
-    
-    public double getWidth() {
-        return max.getX() - min.getX();
-    }
-    
-    public double getHeight() {
-        return max.getY() - min.getY();
-    }
+         if (minx > x)
+            minx = x;
+         if (miny > y)
+            miny = y;
+         if (maxx < x)
+            maxx = x;
+         if (maxy < y)
+            maxy = y;
 
-    public DataBounds getHardLimits() {
-        return hardLimits;
-    }
+         if (hardLimits != null) {
+            double hlminx = hardLimits.min.getX();
+            double hlminy = hardLimits.min.getY();
+            double hlmaxx = hardLimits.max.getX();
+            double hlmaxy = hardLimits.max.getY();
 
-    public void setHardLimits(DataBounds hardLimits) {
-        this.hardLimits = hardLimits;
-    }
+            if (hlminx > minx)
+               minx = hlminx;
+            if (hlminy > miny)
+               miny = hlminy;
+            if (hlmaxx < maxx)
+               maxx = hlmaxx;
+            if (hlmaxy < maxy)
+               maxy = hlmaxy;
+         }
+
+         min.setLocation(minx, miny);
+         max.setLocation(maxx, maxy);
+      }
+   }
+
+   public void add(Point2D point) {
+      add((double) point.getX(), (double) point.getY());
+   }
+
+   public boolean contains(Point2D query) {
+      double x = query.getX();
+      double y = query.getY();
+      return x >= min.getX() && x < max.getX() && y >= min.getY() && y <= max.getY();
+   }
+
+   public double getWidth() {
+      return max.getX() - min.getX();
+   }
+
+   public double getHeight() {
+      return max.getY() - min.getY();
+   }
+
+   public DataBounds getHardLimits() {
+      return hardLimits;
+   }
+
+   public void setHardLimits(DataBounds hardLimits) {
+      this.hardLimits = hardLimits;
+   }
+
+   public boolean isyDirUp() {
+      return yDirUp;
+   }
+
+   public void setyDirUp(boolean yDirUp) {
+      this.yDirUp = yDirUp;
+   }
 }

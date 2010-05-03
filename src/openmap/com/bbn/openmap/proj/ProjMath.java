@@ -48,10 +48,20 @@ public final class ProjMath {
     public final static transient double NORTH_POLE_D = MoreMath.HALF_PI_D;
 
     /**
+     * North pole latitude in degrees.
+     */
+    public final static transient double NORTH_POLE_DEG_D = 90d;
+    
+    /**
      * South pole latitude in radians.
      */
     public final static transient double SOUTH_POLE_D = -NORTH_POLE_D;
 
+    /**
+     * South pole latitude in degrees.
+     */
+    public final static transient double SOUTH_POLE_DEG_D = -NORTH_POLE_DEG_D;
+    
     /**
      * Dateline longitude in radians.
      */
@@ -63,6 +73,11 @@ public final class ProjMath {
     public final static transient double DATELINE_D = Math.PI;
 
     /**
+     * Dateline longitude in degrees.
+     */
+    public final static transient double DATELINE_DEG_D = 180d;
+    
+    /**
      * Longitude range in radians.
      */
     public final static transient float LON_RANGE_F = (float) MoreMath.TWO_PI;
@@ -72,6 +87,11 @@ public final class ProjMath {
      */
     public final static transient double LON_RANGE_D = MoreMath.TWO_PI_D;
 
+    /**
+     * Longitude range in degrees.
+     */
+    public final static transient double LON_RANGE_DEG_D = 360d;
+    
     // cannot construct
     private ProjMath() {}
 
@@ -347,6 +367,21 @@ public final class ProjMath {
         return lon;
     }
 
+    /**
+     * Sets degree longitude to something sane.
+     * 
+     * @param lon double longitude in degrees
+     * @return double longitude (-180 &lt;= lambda &lt; 180)
+     */
+    public final static double wrapLongitudeDeg(double lon) {
+        if ((lon < -DATELINE_DEG_D) || (lon > DATELINE_DEG_D)) {
+            lon += DATELINE_DEG_D;
+            lon = (lon % LON_RANGE_DEG_D);
+            lon += (lon < 0) ? DATELINE_DEG_D : -DATELINE_DEG_D;
+        }
+        return lon;
+    }
+    
     /**
      * Converts units (km, nm, miles, etc) to decimal degrees for a spherical
      * planet. This does not check for arc distances &gt; 1/2 planet

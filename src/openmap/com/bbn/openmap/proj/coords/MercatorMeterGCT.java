@@ -32,18 +32,14 @@ public class MercatorMeterGCT extends AbstractGCT implements
 
     public Point2D forward(double lat, double lon, Point2D ret) {
 
-        if (!((lat >= -90d) && (lat <= 90d))) {
-            lat = LatLonPoint.normalizeLatitude((float) lat);
-        }
-        if (!((lon >= -180d) && (lon <= 180d))) {
-            lon = LatLonPoint.wrapLongitude((float) lon);
-        }
+    	lat = LatLonPoint.normalizeLatitude(lat);
+    	lon = LatLonPoint.wrapLongitude(lon);
 
         double latrad = Math.toRadians(lat);
         double lonrad = Math.toRadians(lon);
 
         double lat_m = latfac
-                * Math.log(Math.tan(((latrad + MoreMath.HALF_PI_D) / 2)));
+                * Math.log(Math.tan(((latrad + MoreMath.HALF_PI_D) / 2d)));
         double lon_m = lonfac * lonrad;
 
         ret.setLocation(lon_m, lat_m);
@@ -52,19 +48,15 @@ public class MercatorMeterGCT extends AbstractGCT implements
     }
 
     public LatLonPoint inverse(double lon_m, double lat_m, LatLonPoint ret) {
-        double latrad = (2 * Math.atan(Math.exp(lat_m / latfac)))
+        double latrad = (2d * Math.atan(Math.exp(lat_m / latfac)))
                 - MoreMath.HALF_PI_D;
         double lonrad = lon_m / lonfac;
 
-        float lat = (float) Math.toDegrees(latrad);
-        float lon = (float) Math.toDegrees(lonrad);
+        double lat = Math.toDegrees(latrad);
+        double lon = Math.toDegrees(lonrad);
 
-        if (!((lat >= -90d) && (lat <= 90d))) {
-            lat = LatLonPoint.normalizeLatitude(lat);
-        }
-        if (!((lon >= -180d) && (lon <= 180d))) {
-            lon = LatLonPoint.wrapLongitude(lon);
-        }
+        lat = LatLonPoint.normalizeLatitude(lat);
+        lon = LatLonPoint.wrapLongitude(lon);
 
         ret.setLatLon(lat, lon);
 

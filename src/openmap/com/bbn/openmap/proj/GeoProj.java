@@ -309,6 +309,10 @@ public abstract class GeoProj extends Proj {
 		return ProjMath.wrapLongitude(lon);
 	}
 
+	public final static double wrapLongitudeDeg(double lon) {
+		return ProjMath.wrapLongitudeDeg(lon);
+	}
+	
 	/**
 	 * @deprecated use normalizeLatitude() instead.
 	 */

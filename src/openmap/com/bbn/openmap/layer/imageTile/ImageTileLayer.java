@@ -129,7 +129,12 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class ImageTileLayer extends OMGraphicHandlerLayer {
 
-    public static Logger logger = Logger
+    /**
+    * 
+    */
+   private static final long serialVersionUID = 1L;
+
+   public static Logger logger = Logger
             .getLogger("com.bbn.openmap.layer.imageTile.ImageTileLayer");
 
     public final static String ImageFilePathProperty = "imageFilePath";
@@ -597,7 +602,10 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
      * @author dietrick
      */
     class ImageControlButtonPanel extends LayerControlButtonPanel {
-        public ImageControlButtonPanel() {
+
+      private static final long serialVersionUID = 1L;
+
+      public ImageControlButtonPanel() {
             super();
 
             add = new JButton(addgif);
@@ -1340,7 +1348,9 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
      */
     public static class ImageListCellRenderer extends JPanel implements
             ListCellRenderer {
-        protected int buttonSize = 16;
+
+      private static final long serialVersionUID = 1L;
+      protected int buttonSize = 16;
         protected JLabel label = new JLabel();
         protected JLabel statusMark = new JLabel();
 

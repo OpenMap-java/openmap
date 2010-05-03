@@ -1,11 +1,28 @@
 package com.bbn.openmap.image.wms;
 
-
+import java.util.Collection;
 
 public interface FeatureInfoResponse {
-    
-    public void add(LayerFeatureInfoResponse layerFeatureInfoResponse);
-    
-    public void output(String contentType, StringBuffer out);
+
+	/**
+	 * Return a {@link Collection} of the supported INFO_FORMAT supported by
+	 * this {@link FeatureInfoResponse}
+	 * 
+	 * @return
+	 */
+	public Collection<String> getInfoFormats();
+
+	/**
+	 * Initiate a new feature info response output with the given content type
+	 * and output buffer
+	 * 
+	 * @param contentType
+	 * @param out
+	 */
+	public void setOutput(String contentType, StringBuffer out);
+
+	public void flush();
+
+	public void output(LayerFeatureInfoResponse layerFeatureInfoResponse);
 
 }

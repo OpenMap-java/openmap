@@ -13,7 +13,6 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -61,6 +60,12 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
 
     private Map<String, ImageFormatter> imageFormatterByContentType = new HashMap<String, ImageFormatter>();
     
+    private FeatureInfoResponse featureInfoResponse;
+    
+    public static final String WMSPrefix = CapabilitiesSupport.WMSPrefix;
+    
+    private static final String FeatureInfoResponseClassNameProperty = "featureInfoResponse.class";
+    
     /**
      * Creates a new WmsRequestHandler object.
      * 
@@ -78,7 +83,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         setProperties(props);
 
         // separate antialias property for wms.
-        boolean antialias = PropUtils.booleanFromProperties(props, "openmap.wms."
+        boolean antialias = PropUtils.booleanFromProperties(props, WMSPrefix
                 + AntiAliasingProperty, false);
         setDoAntiAliasing(antialias);
 
@@ -93,12 +98,19 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         for (ImageFormatter formatter : getFormatters().values()) {
             imageFormatterByContentType.put(formatter.getContentType(), formatter);
         }
+        
+        // create FeatureInfoResponse from properties. 
+        featureInfoResponse = (FeatureInfoResponse) PropUtils.objectFromProperties(props, WMSPrefix + FeatureInfoResponseClassNameProperty);
+        if (featureInfoResponse == null) {
+            featureInfoResponse = new DefaultFeatureInfoResponse();
+        }
 
         // read from configuration fixed part of Capabilities Document returned
         // in getCapabilities method
         capabilities = new CapabilitiesSupport(props, wmsScheme, wmsHostName, wmsPort, wmsUrlPath);
         List<String> formatsList = new ArrayList<String>(imageFormatterByContentType.keySet());
         capabilities.setFormats(CapabilitiesSupport.FMT_GETMAP, formatsList);
+        capabilities.setFormats(CapabilitiesSupport.FMT_GETFEATUREINFO, getFeatureInfoResponse().getInfoFormats());
     }
 
     /**
@@ -436,26 +448,26 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
 
         Proj projection = createProjection(requestProperties, parameters);
 
-        // TODO: get a user defined FeatureInfoResponse
-        FeatureInfoResponse featureInfoResponse = null;
-        if (featureInfoResponse == null) {
-            // TODO: log that user defined was not found
-            featureInfoResponse = new DefaultFeatureInfoResponse();
-        }
+        FeatureInfoResponse featureInfoResponse = getFeatureInfoResponse();
+        StringBuffer out = new StringBuffer();
+        featureInfoResponse.setOutput(parameters.infoFormat, out);
 
         for (String queryLayerName : parameters.queryLayerNames) {
-            IWmsLayer wmslayer = (IWmsLayer) wmsLayerByName.get(queryLayerName);
+            IWmsLayer wmslayer = wmsLayerByName.get(queryLayerName);
             Layer layer = getTopLayerByName(queryLayerName);
 
             layer.setProjection(new ProjectionEvent(this, projection));
 
             LayerFeatureInfoResponse layerResponse = wmslayer.query(parameters.x, parameters.y);
-            featureInfoResponse.add(layerResponse);
+            featureInfoResponse.output(layerResponse);
         }
 
-        StringBuffer out = new StringBuffer();
-        featureInfoResponse.output(parameters.infoFormat, out);
+        featureInfoResponse.flush();
         return out.toString();
+    }
+    
+    private FeatureInfoResponse getFeatureInfoResponse() {
+        return featureInfoResponse;
     }
 
     /**
@@ -887,14 +899,10 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
     private void checkInfoFormat(Properties requestProperties,
             GetFeatureInfoRequestParameters parameters) throws WMSException {
 
-        Collection<String> okFormats = Arrays.asList(new String[] { HttpConnection.CONTENT_PLAIN,
-                HttpConnection.CONTENT_HTML });
-
         String format = requestProperties.getProperty(INFO_FORMAT);
-        if (!okFormats.contains(format)) {
-            // TODO: use correct message!
+        if (!getFeatureInfoResponse().getInfoFormats().contains(format)) {
             throw new WMSException("Invalid value for " + INFO_FORMAT + ": "
-                    + requestProperties.getProperty(INFO_FORMAT));
+                    + format, WMSException.INVALIDFORMAT);
         }
 
         parameters.infoFormat = format;

@@ -50,7 +50,8 @@ public class CoordinateReferenceSystem {
         // Spherical Mercator for overlaying with Google Maps
         // http://trac.openlayers.org/wiki/SphericalMercator
         addCrs(new CoordinateReferenceSystem("EPSG:900913", new MercatorMeterGCT(Planet.wgs84_earthEquatorialRadiusMeters_D, Planet.wgs84_earthEquatorialRadiusMeters_D), MercatorLoader.class, Ellipsoid.WGS_84));
-
+        addCrs(new CoordinateReferenceSystem("EPSG:3857", new MercatorMeterGCT(Planet.wgs84_earthEquatorialRadiusMeters_D, Planet.wgs84_earthEquatorialRadiusMeters_D), MercatorLoader.class, Ellipsoid.WGS_84));
+        
         addUtms();
         
         // Estonian Coordinate System of 1997 - EPSG:3301

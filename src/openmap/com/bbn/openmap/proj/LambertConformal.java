@@ -281,17 +281,16 @@ public class LambertConformal extends GeoProj {
      *--------------------------------------------------------------------------*/
     public Point2D LLToWorld(double lat, double lon, Point2D lp) {
 
-        // projection
-        double phi_deg = lat;
-        double phi = phi_deg / 180.0 * Math.PI;
-        double lamba_deg = lon;
-        double lamba = lamba_deg / 180.0 * Math.PI;
+        double phi = Math.toRadians(lat);
+        double lamba = Math.toRadians(lon);
+        
+        double sinphi = Math.sin(phi);
 
         double e = ellps.ecc;
 
         double t = Math.tan(Math.PI / 4.0 - phi / 2.0)
-                / Math.pow((1.0 - e * Math.sin(phi))
-                        / (1.0 + e * Math.sin(phi)), e / 2.0);
+                / Math.pow((1.0 - e * sinphi)
+                        / (1.0 + e * sinphi), e / 2.0);
         double r = ellps.radius * F * Math.pow(t, n);
         double theta = n * (lamba - lamdaf);
 
@@ -312,12 +311,15 @@ public class LambertConformal extends GeoProj {
      *--------------------------------------------------------------------------*/
 
     public Point2D LLToPixel(double lat, double lon, Point2D p) {
-        Point2D lp = new Point2D.Double();
 
-        LLToWorld(lat, lon, lp);
+        if (p == null) {
+        	p = new Point2D.Double();
+        }
+        
+        LLToWorld(lat, lon, p);
 
-        double xrel = lp.getX() - locationCenterXLambert;
-        double yrel = lp.getY() - locationCenterYLambert;
+        double xrel = p.getX() - locationCenterXLambert;
+        double yrel = p.getY() - locationCenterYLambert;
 
         xrel = (xrel * locationPixelsPerLambert);
         yrel = (yrel * locationPixelsPerLambert);
@@ -325,9 +327,6 @@ public class LambertConformal extends GeoProj {
         xrel = locationCenterXPixel + xrel;
         yrel = locationCenterYPixel - yrel;
 
-        if (p == null) {
-            p = new Point2D.Double();
-        }
 
         p.setLocation(xrel, yrel);
 
