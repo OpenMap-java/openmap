@@ -1396,7 +1396,15 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
      * Set the MouseDelegator used to receive mouse events.
      */
     public void setMouseDelegator(MouseDelegator md) {
-        mouseDelegator = md;
+       if (mouseDelegator != null) {
+          mouseDelegator.removePropertyChangeListener(this);
+       }
+       
+       mouseDelegator = md;
+       
+       if (mouseDelegator != null) {
+          mouseDelegator.addPropertyChangeListener(this);
+       }
     }
 
     /**
@@ -1650,6 +1658,11 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool,
             if (canvas != null) {
                 canvas.repaint();
             }
+        } else if (source.equals(mouseDelegator)) {
+           Object oldValue = pce.getOldValue();
+           if (this.equals(oldValue)) {
+              deactivate();
+           }
         }
     }
 

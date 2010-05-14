@@ -715,6 +715,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
                 ImageIcon icon = loader.getIcon(classnames[i]);
                 JToggleButton btn = new JToggleButton(icon, false);
                 btn.setToolTipText(loader.getPrettyName(classnames[i]));
+                btn.setFocusable(false);
                 btn.setActionCommand(classnames[i]);
                 btn.addActionListener(this);
                 bg.add(btn);

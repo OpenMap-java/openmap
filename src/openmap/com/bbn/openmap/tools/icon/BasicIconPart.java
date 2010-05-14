@@ -133,8 +133,8 @@ public class BasicIconPart implements IconPart {
     public void render(Graphics g, int width, int height,
                        DrawingAttributes appDA) {
 
-        AffineTransform transform = AffineTransform.getScaleInstance((double) width / 100,
-                (double) height / 100);
+        AffineTransform transform = AffineTransform.getScaleInstance((double) width / 100.0,
+                (double) height / 100.0);
         transform.concatenate(baseTransform);
 
         // Handle clip area in Graphics, first

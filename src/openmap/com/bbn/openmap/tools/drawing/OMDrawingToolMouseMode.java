@@ -25,153 +25,155 @@ import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The OMDrawingToolMouseMode is the MapMouseMode that handles the
- * events for the OMDrawingTool.
+ * The OMDrawingToolMouseMode is the MapMouseMode that handles the events for
+ * the OMDrawingTool.
  */
-public class OMDrawingToolMouseMode extends CoordMouseMode {
+public class OMDrawingToolMouseMode
+      extends CoordMouseMode {
 
-    /**
-     * Mouse Mode identifier, which is "Drawing Tool".
-     */
-    public final static transient String modeID = "Drawing";
+   private static final long serialVersionUID = 1L;
 
-    protected OMDrawingTool drawingTool = null;
+   /**
+    * Mouse Mode identifier, which is "Drawing Tool".
+    */
+   public final static transient String modeID = "Drawing";
 
-    /**
-     * Construct an OMDrawingToolMouseMode. Sets the ID of the mode to
-     * the modeID, the consume mode to true.
-     */
-    public OMDrawingToolMouseMode() {
-        super(modeID, true);
-    }
+   protected OMDrawingTool drawingTool = null;
 
-    /**
-     * Construct a OMDrawingToolMouseMode. Lets you set the consume
-     * mode. If the events are consumed, then a MouseEvent is sent
-     * only to the first MapMouseListener that successfully processes
-     * the event. If they are not consumed, then all of the listeners
-     * get a chance to act on the event.
-     * 
-     * @param omdt the drawing tool for this mousemode
-     */
-    public OMDrawingToolMouseMode(OMDrawingTool omdt) {
-        this();
-        drawingTool = omdt;
-        setModeCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-    }
+   /**
+    * Construct an OMDrawingToolMouseMode. Sets the ID of the mode to the
+    * modeID, the consume mode to true.
+    */
+   public OMDrawingToolMouseMode() {
+      super(modeID, true);
+   }
 
-    /**
-     * Set the DrawingTool for the mouse mode. Expected to be
-     * self-called by the mouse mode using the BeanContext.
-     */
-    protected void setDrawingTool(OMDrawingTool omdt) {
-        drawingTool = omdt;
-    }
+   /**
+    * Construct a OMDrawingToolMouseMode. Lets you set the consume mode. If the
+    * events are consumed, then a MouseEvent is sent only to the first
+    * MapMouseListener that successfully processes the event. If they are not
+    * consumed, then all of the listeners get a chance to act on the event.
+    * 
+    * @param omdt the drawing tool for this mousemode
+    */
+   public OMDrawingToolMouseMode(OMDrawingTool omdt) {
+      this();
+      drawingTool = omdt;
+      setModeCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+   }
 
-    /**
-     * Get the drawing tool for the mouse mode.
-     */
-    protected OMDrawingTool getDrawingTool() {
-        return drawingTool;
-    }
+   /**
+    * Set the DrawingTool for the mouse mode. Expected to be self-called by the
+    * mouse mode using the BeanContext.
+    */
+   protected void setDrawingTool(OMDrawingTool omdt) {
+      drawingTool = omdt;
+   }
 
-    /**
-     * Get the EditableOMGraphic from the OMDrawingTool. Returns null
-     * if anything isn't set up correctly.
-     */
-    protected EditableOMGraphic getCurrentGraphic() {
-        if (drawingTool == null) {
-            return null;
-        }
-        return drawingTool.getCurrentEditable();
-    }
+   /**
+    * Get the drawing tool for the mouse mode.
+    */
+   protected OMDrawingTool getDrawingTool() {
+      return drawingTool;
+   }
 
-    // MouseListener and MouseMotionListener interface methods
+   /**
+    * Get the EditableOMGraphic from the OMDrawingTool. Returns null if anything
+    * isn't set up correctly.
+    */
+   protected EditableOMGraphic getCurrentGraphic() {
+      if (drawingTool == null) {
+         return null;
+      }
+      return drawingTool.getCurrentEditable();
+   }
 
-    /**
+   // MouseListener and MouseMotionListener interface methods
+
+   /**
      *  
      */
-    public void mousePressed(MouseEvent e) {
-        Debug.message("drawingtooldetail", "DrawingTool.mousePressed");
-        EditableOMGraphic graphic = getCurrentGraphic();
-        if (graphic != null) {
-            graphic.mousePressed(e);
-        }
-        fireMouseLocation(e);
-    }
+   public void mousePressed(MouseEvent e) {
+      Debug.message("drawingtooldetail", "DrawingTool.mousePressed");
+      EditableOMGraphic graphic = getCurrentGraphic();
+      if (graphic != null) {
+         graphic.mousePressed(e);
+      }
+      fireMouseLocation(e);
+   }
 
-    /**
+   /**
      *  
      */
-    public void mouseReleased(MouseEvent e) {
-        Debug.message("drawingtooldetail", "DrawingTool.mousePressed");
-        EditableOMGraphic graphic = getCurrentGraphic();
-        if (graphic != null) {
-            graphic.mouseReleased(e);
-        }
-        fireMouseLocation(e);
-        if (drawingTool != null) {
-            if (drawingTool.isMask(OMDrawingTool.DEACTIVATE_ASAP_BEHAVIOR_MASK)) {
-                drawingTool.deactivate();
-            }
-        }
-    }
+   public void mouseReleased(MouseEvent e) {
+      Debug.message("drawingtooldetail", "DrawingTool.mousePressed");
+      EditableOMGraphic graphic = getCurrentGraphic();
+      if (graphic != null) {
+         graphic.mouseReleased(e);
+      }
+      fireMouseLocation(e);
+      if (drawingTool != null) {
+         if (drawingTool.isMask(OMDrawingTool.DEACTIVATE_ASAP_BEHAVIOR_MASK)) {
+            drawingTool.deactivate();
+         }
+      }
+   }
 
-    /**
+   /**
      *  
      */
-    public void mouseClicked(MouseEvent e) {
-        Debug.message("drawingtooldetail", "DrawingTool.mouseClicked");
-        EditableOMGraphic graphic = getCurrentGraphic();
-        if (graphic != null) {
-            graphic.mouseClicked(e);
-        }
-    }
+   public void mouseClicked(MouseEvent e) {
+      Debug.message("drawingtooldetail", "DrawingTool.mouseClicked");
+      EditableOMGraphic graphic = getCurrentGraphic();
+      if (graphic != null) {
+         graphic.mouseClicked(e);
+      }
+   }
 
-    /**
+   /**
      *  
      */
-    public void mouseEntered(MouseEvent e) {
-        Debug.message("drawingtooldetail", "DrawingTool.mouseEntered");
-        EditableOMGraphic graphic = getCurrentGraphic();
-        if (graphic != null) {
-            graphic.mouseEntered(e);
-        }
-    }
+   public void mouseEntered(MouseEvent e) {
+      Debug.message("drawingtooldetail", "DrawingTool.mouseEntered");
+      EditableOMGraphic graphic = getCurrentGraphic();
+      if (graphic != null) {
+         graphic.mouseEntered(e);
+      }
+   }
 
-    /**
+   /**
      *  
      */
-    public void mouseExited(MouseEvent e) {
-        Debug.message("drawingtooldetail", "DrawingTool.mouseExited");
-        EditableOMGraphic graphic = getCurrentGraphic();
-        if (graphic != null) {
-            graphic.mouseExited(e);
-        }
-    }
+   public void mouseExited(MouseEvent e) {
+      Debug.message("drawingtooldetail", "DrawingTool.mouseExited");
+      EditableOMGraphic graphic = getCurrentGraphic();
+      if (graphic != null) {
+         graphic.mouseExited(e);
+      }
+   }
 
-    /**
+   /**
      *  
      */
-    public void mouseDragged(MouseEvent e) {
-        Debug.message("drawingtooldetail", "DrawingTool.mouseDragged");
-        EditableOMGraphic graphic = getCurrentGraphic();
-        if (graphic != null) {
-            graphic.mouseDragged(e);
-        }
-        fireMouseLocation(e);
-    }
+   public void mouseDragged(MouseEvent e) {
+      Debug.message("drawingtooldetail", "DrawingTool.mouseDragged");
+      EditableOMGraphic graphic = getCurrentGraphic();
+      if (graphic != null) {
+         graphic.mouseDragged(e);
+      }
+      fireMouseLocation(e);
+   }
 
-    /**
+   /**
      *  
      */
-    public void mouseMoved(MouseEvent e) {
-        Debug.message("drawingtooldetail", "DrawingTool.mouseMoved");
-        EditableOMGraphic graphic = getCurrentGraphic();
-        if (graphic != null) {
-            graphic.mouseMoved(e);
-        }
-        fireMouseLocation(e);
-    }
+   public void mouseMoved(MouseEvent e) {
+      Debug.message("drawingtooldetail", "DrawingTool.mouseMoved");
+      EditableOMGraphic graphic = getCurrentGraphic();
+      if (graphic != null) {
+         graphic.mouseMoved(e);
+      }
+      fireMouseLocation(e);
+   }
 
 }

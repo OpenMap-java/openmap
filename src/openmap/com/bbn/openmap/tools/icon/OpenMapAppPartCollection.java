@@ -84,7 +84,10 @@ public class OpenMapAppPartCollection extends IconPartCollection {
     public final static OpenMapAppPart CIRCLE = new OpenMapAppPart.Circle("CIRCLE", "CIRCLE", 50, 50, 46);
     public final static OpenMapAppPart DOT = new OpenMapAppPart.Circle("DOT", "DOT", 50, 50, 6);
     public final static OpenMapAppPart PLUS = new OpenMapAppPart.Poly("PLUS", "PLUS", new int[] {25,50,50,50,50,75,75,50,50,50,50,25,25}, new int[] {50,50,25,25,50,50,50,50,75,75,50,50,50});
+    public final static OpenMapAppPart ADD_PLUS = new OpenMapAppPart.Poly("ADD_PLUS", "ADD_PLUS", new int[] {70,80,80,80,80,90}, new int[] {20,20,10,30,20,20});
     public final static OpenMapAppPart MINUS = new OpenMapAppPart.Poly("MINUS", "MINUS", new int[] {25,75}, new int[] {50,50});
+    public final static OpenMapAppPart MAP_PIN_HEAD = new OpenMapAppPart.Circle("MAP_PIN_HEAD", "MAP_PIN_HEAD", 50, 33, 30);
+    public final static OpenMapAppPart MAP_PIN_BOTTOM = new OpenMapAppPart.Poly("MAP_PIN_BOTTOM", "MAP_PIN_BOTTOM", new int[] {50,30,70,50}, new int[] {90,50,50,90});
     
     public static class OpenMapAppPart extends IconPartCollectionEntry {
 

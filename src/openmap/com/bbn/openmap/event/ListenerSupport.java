@@ -38,71 +38,75 @@ import com.bbn.openmap.util.Debug;
  * for a listener support subclass managing the Vector of listeners. It knows
  * nothing about firing events to the listeners.
  */
-public class ListenerSupport<E> extends ArrayList<E> implements
-        java.io.Serializable {
+public class ListenerSupport<E>
+      extends ArrayList<E>
+      implements java.io.Serializable {
 
-    // transient protected Vector<Object> listeners;
+   // transient protected Vector<Object> listeners;
 
-    protected Object source;
+   private static final long serialVersionUID = 1L;
+   protected Object source;
 
-    /**
-     * Construct a ListenerSupport object.
-     * 
-     * @param sourceBean The bean to be given as the source for any events.
-     */
-    public ListenerSupport(Object sourceBean) {
-        setSource(sourceBean);
-        Debug.message("listenersupport", "ListenerSupport()");
-    }
+   /**
+    * Construct a ListenerSupport object.
+    * 
+    * @param sourceBean The bean to be given as the source for any events.
+    */
+   public ListenerSupport(Object sourceBean) {
+      setSource(sourceBean);
+      Debug.message("listenersupport", "ListenerSupport()");
+   }
 
-    /**
-     * Set the source of the events.
-     */
-    protected void setSource(Object src) {
-        source = src;
-    }
+   /**
+    * Set the source of the events.
+    */
+   protected void setSource(Object src) {
+      source = src;
+   }
 
-    /**
-     * Get the source of the events.
-     */
-    protected Object getSource() {
-        return source;
-    }
+   /**
+    * Get the source of the events.
+    */
+   protected Object getSource() {
+      return source;
+   }
 
-    /**
-     * Return an iterator over a clone of the listeners.
-     */
-    public synchronized Iterator<E> iterator() {
-        ArrayList<E> v = new ArrayList<E>(this);
-        return v.iterator();
-    }
+   /**
+    * Return an iterator over a clone of the listeners.
+    */
+   public synchronized Iterator<E> iterator() {
+      ArrayList<E> v = new ArrayList<E>(this);
+      return v.iterator();
+   }
 
-    /**
-     * Write the listeners to a stream.
-     */
-    private void writeObject(ObjectOutputStream s) throws IOException {
-        s.defaultWriteObject();
+   /**
+    * Write the listeners to a stream.
+    */
+   private void writeObject(ObjectOutputStream s)
+         throws IOException {
+      s.defaultWriteObject();
 
-        for (E e : this) {
-            if (e instanceof Serializable) {
-                s.writeObject(e);
-            }
-        }
+      for (E e : this) {
+         if (e instanceof Serializable) {
+            s.writeObject(e);
+         }
+      }
 
-        s.writeObject(null);
-    }
+      s.writeObject(null);
+   }
 
-    /**
-     * Read the listeners from a stream.
-     */
-    private void readObject(ObjectInputStream s) throws ClassNotFoundException,
-            IOException {
+   /**
+    * Read the listeners from a stream.
+    */
+   @SuppressWarnings("unchecked")
+   private void readObject(ObjectInputStream s)
+         throws ClassNotFoundException, IOException {
 
-        s.defaultReadObject();
+      s.defaultReadObject();
 
-        Object listenerOrNull;
-        while (null != (listenerOrNull = s.readObject())) {
-            add((E) listenerOrNull);
-        }
-    }
+      Object listenerOrNull;
+      while (null != (listenerOrNull = s.readObject())) {
+         add((E) listenerOrNull);
+      }
+   }
 }

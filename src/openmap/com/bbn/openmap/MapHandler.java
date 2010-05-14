@@ -68,12 +68,14 @@ import java.util.logging.Logger;
  */
 public class MapHandler extends BeanContextServicesSupport {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.MapHandler");
+   private static final long serialVersionUID = 1L;
+
+   public static Logger logger = Logger.getLogger("com.bbn.openmap.MapHandler");
 
     protected SoloMapComponentPolicy policy;
     protected boolean DEBUG = false;
     protected boolean addInProgress = false;
-    protected Vector addLaterVector = null;
+    protected Vector<Object> addLaterVector = null;
 
     public MapHandler() {
         DEBUG = logger.isLoggable(Level.FINE);
@@ -109,7 +111,7 @@ public class MapHandler extends BeanContextServicesSupport {
      */
     protected synchronized void addLater(Object obj) {
         if (addLaterVector == null) {
-            addLaterVector = new Vector();
+            addLaterVector = new Vector<Object>();
         }
         if (DEBUG) {
             logger.fine("=== Adding " + obj.getClass().getName()
@@ -125,11 +127,11 @@ public class MapHandler extends BeanContextServicesSupport {
      * the coping mechanism.
      */
     protected synchronized void purgeLaterList() {
-        Vector tmpList = addLaterVector;
+        Vector<Object> tmpList = addLaterVector;
         addLaterVector = null;
 
         if (tmpList != null) {
-            Iterator it = tmpList.iterator();
+            Iterator<Object> it = tmpList.iterator();
             while (it.hasNext()) {
                 Object obj = it.next();
                 if (DEBUG) {
@@ -208,7 +210,8 @@ public class MapHandler extends BeanContextServicesSupport {
      * not a SoloMapComponent and there are more than one of them in the
      * MapHandler, you will get the first one found.
      */
-    public Object get(String classname) {
+    @SuppressWarnings("unchecked")
+   public Object get(String classname) {
         Class someClass = null;
         try {
             someClass = Class.forName(classname);
@@ -223,10 +226,10 @@ public class MapHandler extends BeanContextServicesSupport {
      * SoloMapComponent and there are more than one of them in the MapHandler,
      * you will get the first one found.
      */
-    public Object get(Class someClass) {
-        Collection collection = getAll(someClass);
+    public <T> T get(Class<T> someClass) {
+        Collection<T> collection = getAll(someClass);
 
-        Iterator it = collection.iterator();
+        Iterator<T> it = collection.iterator();
         while (it.hasNext()) {
             return it.next();
         }
@@ -239,7 +242,8 @@ public class MapHandler extends BeanContextServicesSupport {
      * assignment-compatible object of that Class. A Collection is always
      * returned, although it may be empty.
      */
-    public Collection getAll(String classname) {
+    @SuppressWarnings("unchecked")
+   public Collection getAll(String classname) {
         Class someClass = null;
         try {
             someClass = Class.forName(classname);
@@ -254,15 +258,15 @@ public class MapHandler extends BeanContextServicesSupport {
      * assignment-compatible with that Class. A Collection is always returned,
      * although it may be empty.
      */
-    public Collection getAll(Class someClass) {
-        Collection collection = new LinkedList();
+    public <T> Collection<T> getAll(Class<T> someClass) {
+        Collection<T> collection = new LinkedList<T>();
 
         if (someClass != null) {
-            Iterator it = iterator();
+            Iterator<?> it = iterator();
             while (it.hasNext()) {
                 Object someObj = it.next();
                 if (someClass.isInstance(someObj)) {
-                    collection.add(someObj);
+                    collection.add(someClass.cast(someObj));
                 }
             }
         }
@@ -303,7 +307,8 @@ public class MapHandler extends BeanContextServicesSupport {
      * MapHandler if one of the components wants to add more components when the
      * MapHandler is set as the BeanContext on them.
      */
-    public Iterator iterator() {
+    @SuppressWarnings("unchecked")
+   public Iterator iterator() {
         Iterator it = super.iterator();
         LinkedList list = new LinkedList();
         while (it.hasNext()) {
@@ -317,7 +322,8 @@ public class MapHandler extends BeanContextServicesSupport {
      * Calls dispose() on the contained MapBean and removes all objects from
      * BeanContext.
      */
-    public void dispose() {
+    @SuppressWarnings("unchecked")
+   public void dispose() {
         addLaterVector = null;
 
         MapBean mb = (MapBean) get(com.bbn.openmap.MapBean.class);
