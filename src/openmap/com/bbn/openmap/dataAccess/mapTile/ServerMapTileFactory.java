@@ -83,6 +83,48 @@ public class ServerMapTileFactory
       verbose = logger.isLoggable(Level.FINE);
    }
 
+   /**
+    * An auxiliary call to retrieve something from the cache, modified to allow
+    * load method to do some projection calculations to initialize tile
+    * parameters. If the object is not found in the cache, null is returned.
+    */
+   public Object getFromCache(Object key, int x, int y, int zoomLevel) {
+      String localLoc = null;
+
+      if (localCacheDir != null && zoomLevelInfo != null) {
+         localLoc = zoomLevelInfo.formatImageFilePath(localCacheDir, x, y) + fileExt;
+         /**
+          * If a local cache is defined, then the cache will always use the
+          * string for the local file as the key.
+          */
+         CacheObject ret = searchCache(localLoc);
+         if (ret != null) {
+            if (logger.isLoggable(Level.FINE)) {
+               logger.fine("found tile (" + x + ", " + y + ") in cache");
+            }
+            return ret.obj;
+         }
+         /**
+          * Return null if the localized version isn't found in cache when local
+          * version is defined.
+          */
+         return null;
+      }
+
+      // Assuming that the localCacheDir is not defined, so the cache objects
+      // will be using the server location as key
+
+      CacheObject ret = searchCache(key);
+      if (ret != null) {
+         if (logger.isLoggable(Level.FINE)) {
+            logger.fine("found tile (" + x + ", " + y + ") in cache");
+         }
+         return ret.obj;
+      }
+
+      return null;
+   }
+
    public CacheObject load(Object key, int x, int y, int zoomLevel, Projection proj) {
       if (key instanceof String) {
          String imagePath = (String) key;
@@ -187,6 +229,13 @@ public class ServerMapTileFactory
                if (logger.isLoggable(Level.FINER)) {
                   raster.setSelected(true);
                }
+
+               // Again, create a CacheObject based on the local name if the
+               // local dir is defined.
+               if (localLoc != null) {
+                  key = localLoc;
+               }
+
                return new CacheObject(key, raster);
             }
          }

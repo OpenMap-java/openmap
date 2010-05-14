@@ -123,7 +123,9 @@ import com.bbn.openmap.util.PropUtils;
 public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
         DataBoundsProvider {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.shape.ShapeLayer");
+   private static final long serialVersionUID = 1L;
+
+   public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.shape.ShapeLayer");
 
     /** The name of the property that holds the name of the shape file. */
     public final static String shapeFileProperty = "shapeFile";

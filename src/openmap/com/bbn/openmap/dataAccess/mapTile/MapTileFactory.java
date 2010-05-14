@@ -24,8 +24,7 @@
 
 package com.bbn.openmap.dataAccess.mapTile;
 
-import java.awt.Component;
-
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 
@@ -42,12 +41,14 @@ public interface MapTileFactory {
     * 
     * @param proj
     * @return OMGraphicList that was created.
+    * @throws InterruptedException 
     */
    public OMGraphicList getTiles(Projection proj);
 
    /**
     * Create an OMGraphicList that covers the projection with tiles that suit
     * the specified zoom level.
+    * @throws InterruptedException 
     */
    public OMGraphicList getTiles(Projection proj, int zoomLevel);
 
@@ -57,6 +58,7 @@ public interface MapTileFactory {
     * @param proj
     * @param list
     * @return the OMGraphicList provided.
+    * @throws InterruptedException 
     */
    public OMGraphicList getTiles(Projection proj, int zoomLevel, OMGraphicList list);
 
@@ -69,6 +71,6 @@ public interface MapTileFactory {
     * 
     * @param callback java.awt.Component to call repaint on.
     */
-   public void setRepaintCallback(Component callback);
+   public void setRepaintCallback(OMGraphicHandlerLayer callback);
 
 }

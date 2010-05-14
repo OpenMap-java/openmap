@@ -608,7 +608,7 @@ public class ImageServer implements
         Paint ret = null;
         if (paintString != null) {
             try {
-                ret = PropUtils.parseColor(paintString);
+                ret = PropUtils.parseColor(paintString, transparent);
             } catch (NumberFormatException nfe) {
                 // Color set to white below...
             }

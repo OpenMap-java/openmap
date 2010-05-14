@@ -40,9 +40,9 @@ import javax.swing.ImageIcon;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.image.BufferedImageHelper;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMScalingRaster;
@@ -66,6 +66,7 @@ import com.bbn.openmap.util.cacheHandler.CacheObject;
  * 
  * This component can be configured using properties:
  * <p>
+ * 
  * <pre>
  * rootDir=the path to the parent directory of the tiles. The factory will construct specific file paths that are appended to this value. 
  * fileExt=the file extension to append to the tile names, should have a period.
@@ -91,14 +92,15 @@ public class StandardMapTileFactory
 
    protected boolean verbose = false;
 
-   protected Component repaintCallback;
+   protected OMGraphicHandlerLayer repaintCallback;
+   private boolean doExtraTiles = false;
 
    public StandardMapTileFactory() {
       super(100);
       verbose = logger.isLoggable(Level.FINE);
    }
 
-   public StandardMapTileFactory(Layer layer, String rootDir, String tileFileExt) {
+   public StandardMapTileFactory(OMGraphicHandlerLayer layer, String rootDir, String tileFileExt) {
       super(100);
       this.rootDir = rootDir;
       this.fileExt = tileFileExt;
@@ -148,7 +150,7 @@ public class StandardMapTileFactory
       Point2D tileUL = MapTileMaker.tileUVToLatLon(pnt, zoomLevel);
       pnt.setLocation(x + 1, y + 1);
       Point2D tileLR = MapTileMaker.tileUVToLatLon(pnt, zoomLevel);
-      if (logger.isLoggable(Level.FINE)) {
+      if (verbose) {
          logger.fine("tile coords: " + tileUL + ", " + tileLR);
       }
 
@@ -238,6 +240,7 @@ public class StandardMapTileFactory
     * 
     * @param proj the projection to fetch tiles for.
     * @return OMGraphicList containing projected OMGraphics.
+    * @throws InterruptedException
     */
    public OMGraphicList getTiles(Projection proj) {
       return getTiles(proj, -1, new OMGraphicList());
@@ -250,6 +253,7 @@ public class StandardMapTileFactory
     * @param zoomLevel zoom level 1-20 for tiles to be returned, -1 for code to
     *        figure out appropriate zoom level.
     * @return OMGraphicList with tiles.
+    * @throws InterruptedException
     */
    public OMGraphicList getTiles(Projection proj, int zoomLevel) {
       return getTiles(proj, zoomLevel, new OMGraphicList());
@@ -266,6 +270,7 @@ public class StandardMapTileFactory
     * @param list OMGraphicList that is returned, that will also have tiles
     *        added to it.
     * @return OMGraphicList with tiles.
+    * @throws InterruptedException
     */
    public OMGraphicList getTiles(Projection proj, int zoomLevel, OMGraphicList list) {
 
@@ -384,6 +389,12 @@ public class StandardMapTileFactory
       for (int x = uvleft; x < uvright; x++) {
          for (int y = uvup; y < uvbottom; y++) {
 
+            // Try to help doing unnecessary work
+            if (Thread.currentThread().isInterrupted()) {
+               logger.fine("Detected interruption in standard loop, thread " + Thread.currentThread().getName());
+               return;
+            }
+
             String imagePath = zoomLevelInfo.formatImageFilePath(rootDir, x, y) + fileExt;
 
             /**
@@ -412,31 +423,153 @@ public class StandardMapTileFactory
          }
       }
 
+      if (verbose)
+         logger.fine("found " + list.size() + " frames in cache, loading " + reloads.size() + " others now...");
+
       if (repaintCallback != null) {
          repaintCallback.repaint();
       }
 
+      /*
+       * Load the tiles that we're already in the cache, that need to be fetched
+       * from the source.
+       */
       for (LoadObj reload : reloads) {
-
-         // OMGraphic raster = (OMGraphic) get(reload.imagePath, reload.x,
-         // reload.y, reload.zoomLevel, proj);
-
-         CacheObject ret = load(reload.imagePath, reload.x, reload.y, reload.zoomLevel, proj);
-         if (ret != null) {
-            replaceLeastUsed(ret);
-            OMGraphic raster = (OMGraphic) ret.obj;
-
-            if (raster != null) {
-               raster.generate(proj);
-               list.add(raster);
-               if (repaintCallback != null) {
-                  repaintCallback.repaint();
-               }
-            }
-         }
-
+         handleLoad(reload.imagePath, reload.x, reload.y, reload.zoomLevel, proj, list);
       }
 
+      if (verbose) {
+         logger.fine("finished loading " + reloads.size() + " frames from source for screen"
+               + (doExtraTiles ? ", moving to off-screen frames..." : ""));
+      }
+
+      if (!doExtraTiles)
+         return;
+
+      // Just for giggles, lets go ahead and walk around the edge of the area
+      // and prefetch tiles to load them into memory...
+
+      // int uvleft, int uvright, int uvup, int uvbottom
+      int x1 = uvleft;
+      int y1 = uvup;
+      int x2 = uvright;
+      int y2 = uvbottom;
+      boolean top = false;
+      boolean left = false;
+      boolean right = false;
+      boolean bottom = false;
+      if (x1 > 0) {
+         x1--;
+         left = true;
+      }
+      if (y1 > 0) {
+         y1--;
+         top = true;
+      }
+      int edgeTileCount = zoomLevelInfo.getEdgeTileCount();
+      if (x2 < edgeTileCount - 1) {
+         x2++;
+         right = true;
+      }
+      if (y2 < edgeTileCount - 1) {
+         y2++;
+         bottom = true;
+      }
+
+      // Get the corners
+      if (top && left) {
+         handleLoad(x1, y1, zoomLevel, proj, list);
+      }
+      if (bottom && left) {
+         handleLoad(x1, y2, zoomLevel, proj, list);
+      }
+      if (bottom && right) {
+         handleLoad(x2, y2, zoomLevel, proj, list);
+      }
+      if (top && right) {
+         handleLoad(x2, y1, zoomLevel, proj, list);
+      }
+      // Now go along the sides
+      if (top) {
+         for (int x = uvleft; x < uvright; x++) {
+            handleLoad(x, y1, zoomLevel, proj, list);
+         }
+      }
+
+      if (bottom) {
+         for (int x = uvleft; x < uvright; x++) {
+            handleLoad(x, y2, zoomLevel, proj, list);
+         }
+      }
+
+      if (right) {
+         for (int y = uvup; y < uvbottom; y++) {
+            handleLoad(x2, y, zoomLevel, proj, list);
+         }
+      }
+
+      if (left) {
+         for (int y = uvup; y < uvbottom; y++) {
+            handleLoad(x1, y, zoomLevel, proj, list);
+         }
+      }
+
+      if (verbose) {
+         logger.fine("finished loading all tiles (" + list.size() + ")");
+      }
+   }
+
+   /**
+    * Handles going to the cache, getting the cache to load the tile, and then
+    * manage the resulting OMRaster tile. Adds the tile to the list after
+    * generating it with the projection, and calls the repaintCallback if there
+    * is one.
+    * 
+    * @param imagePath the image path for the tile
+    * @param x the x uv coordinate of the tile
+    * @param y the y uv coordinate of the tile
+    * @param zoomLevel the zoomLevel of the tile
+    * @param proj the current projection.
+    * @param list the OMGraphicList to add the tile to.
+    * @throws InterruptedException
+    */
+   private void handleLoad(String imagePath, int x, int y, int zoomLevel, Projection proj, OMGraphicList list) {
+
+      if (Thread.currentThread().isInterrupted()) {
+         return;
+      }
+
+      CacheObject ret = load(imagePath, x, y, zoomLevel, proj);
+      if (ret != null) {
+         replaceLeastUsed(ret);
+         OMGraphic raster = (OMGraphic) ret.obj;
+
+         if (raster != null) {
+            raster.generate(proj);
+            list.add(raster);
+            if (repaintCallback != null) {
+               repaintCallback.repaint();
+            }
+         }
+      }
+   }
+
+   /**
+    * Handles going to the cache, getting the cache to load the tile, and then
+    * manage the resulting OMRaster tile. Adds the tile to the list after
+    * generating it with the projection, and calls the repaintCallback if there
+    * is one. Handles creating the image file path given the other info.
+    * 
+    * @param x the x uv coordinate of the tile
+    * @param y the y uv coordinate of the tile
+    * @param zoomLevel the zoomLevel of the tile
+    * @param proj the current projection.
+    * @param list the OMGraphicList to add the tile to.
+    * @throws InterruptedException
+    */
+   private void handleLoad(int x, int y, int zoomLevel, Projection proj, OMGraphicList list) {
+      String imagePath = zoomLevelInfo.formatImageFilePath(rootDir, x, y) + fileExt;
+      handleLoad(imagePath, x, y, zoomLevel, proj, list);
    }
 
    protected float[] scales;
@@ -477,7 +610,7 @@ public class StandardMapTileFactory
       return repaintCallback;
    }
 
-   public void setRepaintCallback(Component callback) {
+   public void setRepaintCallback(OMGraphicHandlerLayer callback) {
       this.repaintCallback = callback;
    }
 

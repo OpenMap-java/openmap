@@ -36,8 +36,7 @@ import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * A Layer that uses a MapTileFactory to display information (tiles) on the
- * map.
+ * A Layer that uses a MapTileFactory to display information (tiles) on the map.
  * 
  * @author dietrick
  */
@@ -73,9 +72,8 @@ public class MapTileLayer
          OMGraphicList newList = new OMGraphicList();
          setList(newList);
          return tileFactory.getTiles(projection, -1, newList);
-      } else {
-         return null;
       }
+      return null;
    }
 
    public void setProperties(String prefix, Properties props) {
