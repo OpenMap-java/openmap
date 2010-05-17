@@ -1,5 +1,6 @@
 package com.bbn.openmap.gui.time;
 
+
 /**
  * Interface that allows TimePanel to reach back into application when user clicks certain buttons.
  */
@@ -21,4 +22,16 @@ public interface ITimeBoundsUserActionsListener {
      * Bring up the GUI that allows time bounds to be set manually.
      */
     void invokeDateSelectionGUI(boolean endFocus);
+
+    /**
+     * Set a fixed window over which all events should be rendered.
+     * @param start The window's start time.
+     * @param end The window's end tim.
+     */
+    void setFixedRenderRange(long start, long end);
+
+    /**
+     * Clear any previously-set fixed render window.
+     */
+    void clearFixedRenderRange();
 }

@@ -137,6 +137,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
     private final List<ITimeBoundsUserActionsListener> timeBoundsUserActionsListeners = new ArrayList<ITimeBoundsUserActionsListener>();
     
     private final JButton zoomToSelection = new JButton("Zoom to Selection");
+    private final JButton renderFixedSelection = new JButton("Render Selection");
     
     /**
      * Construct the TimelineLayer.
@@ -558,6 +559,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
 
     public boolean mousePressed(MouseEvent e) {
         updateMouseTimeDisplay(e);
+        clearFixedRenderRange();
         int x = e.getPoint().x;
         int y = e.getPoint().y;
 
@@ -756,6 +758,32 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
                 c.fill = GridBagConstraints.HORIZONTAL;
                 c.weightx = 1.0f;
                 JLabel buffer = new JLabel();
+                gridbag.setConstraints(buffer, c);
+                add(buffer);
+                
+                renderFixedSelection.addActionListener(new ActionListener() {
+
+                   public void actionPerformed(ActionEvent e) {
+                       long selectionStart = timelineLayer.getSelectionStart();
+                       long selectionEnd = timelineLayer.getSelectionEnd();
+                       if(selectionStart > 0 && selectionEnd > 0) {
+                          for(ITimeBoundsUserActionsListener listener : timeBoundsUserActionsListeners) {
+                             listener.setFixedRenderRange(selectionStart, selectionEnd);
+                         }
+                       }
+                   }
+                   
+               });
+
+                renderFixedSelection.setEnabled(false);
+                renderFixedSelection.setFont(f);
+                c.weightx = 0f;
+                gridbag.setConstraints(renderFixedSelection, c);
+                add(renderFixedSelection);
+    
+                c.fill = GridBagConstraints.HORIZONTAL;
+                c.weightx = 1.0f;
+                buffer = new JLabel();
                 gridbag.setConstraints(buffer, c);
                 add(buffer);
     
@@ -1021,7 +1049,14 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
         timeBoundsUserActionsListeners.remove(timeBoundsUserActionsListener);
     }
     
+    public void clearFixedRenderRange() {
+       for(ITimeBoundsUserActionsListener listener : timeBoundsUserActionsListeners) {
+          listener.clearFixedRenderRange();
+      }       
+    }
+    
     void setSelectionValid(boolean valid) {
         zoomToSelection.setEnabled(valid);
+        renderFixedSelection.setEnabled(valid);
     }
 }

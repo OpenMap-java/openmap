@@ -736,6 +736,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             clock.setTime(gameStartTime + inverseProjectMillis(lon));
         }
 
+        timeSliderLayer.clearFixedRenderRange();
         selectionRect.setLocation(lon, lon);
         selectionRect.setVisible(false);
         timeSliderLayer.setSelectionValid(false);
@@ -799,6 +800,8 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     public boolean mouseDragged(MouseEvent e) {
         updateMouseTimeDisplay(e);
         updateEventDetails(e);
+        timeSliderLayer.clearFixedRenderRange();
+
         // Get latLong from mouse, and set E side of current select rect...
         Projection proj = getProjection();
         Point2D latLong = proj.inverse(e.getPoint());
@@ -1628,6 +1631,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         selectionRect.setLocation(0, 0);
         selectionRect.setVisible(false);
         timeSliderLayer.setSelectionValid(false);
+        timeSliderLayer.clearFixedRenderRange();
     }
 
 }
