@@ -137,7 +137,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
     private final List<ITimeBoundsUserActionsListener> timeBoundsUserActionsListeners = new ArrayList<ITimeBoundsUserActionsListener>();
     
     private final JButton zoomToSelection = new JButton("Zoom to Selection");
-    private final JButton renderFixedSelection = new JButton("Render Selection");
+    private final JButton renderFixedSelection = new JButton("Show Entire Selection");
     
     /**
      * Construct the TimelineLayer.
