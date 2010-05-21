@@ -454,11 +454,7 @@ public class ExampleApplication extends JFrame {
 
             String extension = getExtension(f);
             if (extension != null) {
-                if (extension.equalsIgnoreCase("shp")) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return extension.equalsIgnoreCase("shp");
             }
             return false;
         }

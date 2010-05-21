@@ -27,7 +27,6 @@ import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 
 import com.bbn.openmap.proj.GeoProj;
-import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
@@ -223,10 +222,7 @@ public class OMEllipse extends OMCircle {
 
         for (i = 0; i < nMax + 1; i++) {
 
-            LatLonPoint llPt = GreatCircle.sphericalBetween((float) center.getRadLat(),
-                    (float) center.getRadLon(),
-                    (float) distance[i],
-                    azimuth[i]);
+            LatLonPoint llPt = center.getPoint((float) distance[i], azimuth[i]);
             llPoints[nCounter++] = llPt.getRadLat();
             llPoints[nCounter++] = llPt.getRadLon();
         }

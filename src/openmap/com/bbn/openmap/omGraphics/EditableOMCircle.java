@@ -32,7 +32,6 @@ import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
 import com.bbn.openmap.omGraphics.editable.GraphicSetOffsetState;
 import com.bbn.openmap.proj.DrawUtil;
 import com.bbn.openmap.proj.GeoProj;
-import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
@@ -509,10 +508,7 @@ public class EditableOMCircle extends EditableOMGraphic {
                     double radius;
 
                     if (projection instanceof GeoProj) {
-                        radius = Length.DECIMAL_DEGREE.fromRadians(GreatCircle.sphericalDistance(llpm.getRadLat(),
-                                llpm.getRadLon(),
-                                llp.getRadLat(),
-                                llp.getRadLon()));
+                        radius = Length.DECIMAL_DEGREE.fromRadians(llpm.distance(llp));
                     } else {
                         radius = DrawUtil.distance(llpm.getX(),
                                 llpm.getY(),

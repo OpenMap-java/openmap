@@ -95,8 +95,7 @@ public class WallFormationLayout extends BeanLayoutManager {
             float angle2Rad = (float) (angle2Deg * Math.PI / 180);
             int numBeans = contents.size();
             float spanNM = (numBeans - 1) * separationInNM;
-            LatLonPoint cornerllp1 = GreatCircle.sphericalBetween(midllp.getRadLat(),
-                    midllp.getRadLon(),
+            LatLonPoint cornerllp1 = midllp.getPoint(
                     Length.NM.toRadians(spanNM / 2),
                     angle1Rad);
             llps[0] = cornerllp1;

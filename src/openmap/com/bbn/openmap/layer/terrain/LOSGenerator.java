@@ -37,7 +37,6 @@ import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.OMCircle;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRaster;
-import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Planet;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
@@ -417,20 +416,11 @@ public class LOSGenerator implements TerrainTool {
             return;
         }
 
-        double centerRadLat = LOScenterLLP.getRadLat();
-        double centerRadLon = LOScenterLLP.getRadLon();
-
-        double arc_dist = GreatCircle.sphericalDistance(centerRadLat,
-                centerRadLon,
-                cord.getRadLat(),
-                cord.getRadLon());
+        double arc_dist = LOScenterLLP.distance(cord);
+        double arc_angle = LOScenterLLP.azimuth(cord);
 
         double slope = calculateLOSslope(cord, arc_dist);
 
-        double arc_angle = GreatCircle.sphericalAzimuth(centerRadLat,
-                centerRadLon,
-                cord.getRadLat(),
-                cord.getRadLon());
         int index = (int) Math.round(arc_angle / pix_arc_interval);
         int maxIndex = (LOSedge * 4) - 4; // 4 corners out for
         // redundancy

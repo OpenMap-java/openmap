@@ -645,7 +645,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
      */
     private void repaintGraphics(OMGraphic omg) {
         drawingAttributes.setTo(omg);
-        repaint();
+        doPrepare();
     }
 
     protected JTable table = null;

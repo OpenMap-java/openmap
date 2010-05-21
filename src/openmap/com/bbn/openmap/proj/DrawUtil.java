@@ -298,8 +298,8 @@ public class DrawUtil {
      * @return float distance
      */
     public final static float distance(float x1, float y1, float x2, float y2) {
-        float xdiff = x2 - x1;
-        float ydiff = y2 - y1;
+        double xdiff = x2 - x1;
+        double ydiff = y2 - y1;
         return (float) Math.sqrt((xdiff * xdiff + ydiff * ydiff));
     }
 
@@ -314,9 +314,9 @@ public class DrawUtil {
      * @return float distance
      */
     public final static float distance(int x1, int y1, int x2, int y2) {
-        int xdiff = x2 - x1;
-        int ydiff = y2 - y1;
-        return (float) Math.sqrt((float) (xdiff * xdiff + ydiff * ydiff));
+        double xdiff = x2 - x1;
+        double ydiff = y2 - y1;
+        return (float) Math.sqrt((xdiff * xdiff + ydiff * ydiff));
     }
 
     /**

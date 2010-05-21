@@ -210,4 +210,9 @@ public interface OMGraphicConstants {
      * OMGraphic has changed, and its state should be updated somewhere.
      */
     public static final String UPDATED = "Updated";
+    
+    public static final String OMGRAPHIC_ELT = "omgraphic";
+    
+    public static final String OMGRAPHIC_TYPE_ATTR = "type";
+    
 }

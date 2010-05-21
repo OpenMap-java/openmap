@@ -307,11 +307,7 @@ public class RpfCoverageBox {
     public boolean within(float lat, float lon) {
         double y = (double) lat;
         double x = (double) lon;
-        if (y < nw_lat && y > se_lat && x < se_lon && x > nw_lon) {
-            return true;
-        } else {
-            return false;
-        }
+        return (y < nw_lat && y > se_lat && x < se_lon && x > nw_lon);
     }
 
     /** Reset the coverage percentage and scale difference. */

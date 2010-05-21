@@ -199,8 +199,8 @@ public class TX7 extends OMGraphicAdapter {
     public boolean generate(Projection proj) {
         proj.forward(llp1, pt1);
         proj.forward(llp2, pt2);
-        int dx = pt2.x - pt1.x;
-        int dy = pt2.y - pt1.y;
+        double dx = pt2.x - pt1.x;
+        double dy = pt2.y - pt1.y;
         at.setToTranslation(pt1.x, pt1.y);
         at.rotate(Math.atan2(dy, dx) - angle, 0, 0);
         double sc = Math.sqrt(dx * dx + dy * dy);

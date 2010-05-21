@@ -107,10 +107,7 @@ public class QuadTreeNode implements Serializable {
 
 	/** Return true if the node has children. */
 	public boolean hasChildren() {
-		if (children != null)
-			return true;
-		else
-			return false;
+		return (children != null);
 	}
 
 	/**

@@ -512,7 +512,7 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements
 		 * Set the buffer dirty, and call repaint on the layer.
 		 */
 		public void repaint(Layer layer) {
-			setBufferDirty(true);
+			super.setBufferDirty(true);
 			BufferedLayer.this.repaint();
 		}
 

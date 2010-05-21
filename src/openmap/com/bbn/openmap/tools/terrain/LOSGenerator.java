@@ -192,10 +192,7 @@ public class LOSGenerator {
             return 0;
         }
 
-        double arc_dist = GreatCircle.sphericalDistance(startLLP.getY(),
-                startLLP.getX(),
-                endLLP.getY(),
-                endLLP.getX());
+        double arc_dist = startLLP.distance(endLLP);
 
         int endTotalHeight = endObjHeight
                 + dtedCache.getElevation((float)endLLP.getLatitude(),

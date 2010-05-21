@@ -51,7 +51,6 @@ import com.bbn.openmap.plugin.PlugIn;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.util.TaskService;
 
 /**
  * The PropertyHandler object is the organizer of properties, looking for

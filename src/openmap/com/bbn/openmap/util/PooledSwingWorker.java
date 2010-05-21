@@ -63,7 +63,7 @@ public abstract class PooledSwingWorker<T>
                      interrupted = true;
                   } catch (CancellationException ce) {
                      interrupted = true;
-                  }
+            }
                }
                finished();
             }
@@ -135,7 +135,7 @@ public abstract class PooledSwingWorker<T>
          // if (future != null) {
          // future.cancel(true);
          // }
-         lock.notify();
+         lock.notifyAll();
       }
    }
 

@@ -35,7 +35,6 @@ import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.omGraphics.OMText;
-import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
@@ -180,11 +179,7 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
         LatLonPoint loc1 = projection.inverse(left_x, lower_y, new LatLonPoint.Double());
         LatLonPoint loc2 = projection.inverse(right_x, lower_y, new LatLonPoint.Double());
 
-        double dist = GreatCircle.sphericalDistance(loc1.getRadLat(),
-                loc1.getRadLon(),
-                loc2.getRadLat(),
-                loc2.getRadLon());
-        dist = uom.fromRadians(dist);
+        double dist = uom.fromRadians(loc1.distance(loc2));
 
         String outtext;
         if (dist < 1.0f) {
