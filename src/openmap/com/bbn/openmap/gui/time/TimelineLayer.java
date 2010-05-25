@@ -1492,7 +1492,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
         public static class Seconds extends TimeHashMarks {
             public Seconds() {
-                super("s", 60, new SimpleDateFormat("HH:mm:ss"));
+                super("s", 60, new SimpleDateFormat("HH:mm:ss.SS"));
             }
 
             public boolean passesThreshold(double minVisibleOnTimeLine) {
