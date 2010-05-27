@@ -42,7 +42,6 @@ import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.image.BufferedImageHelper;
-import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMScalingRaster;
@@ -92,7 +91,7 @@ public class StandardMapTileFactory
 
    protected boolean verbose = false;
 
-   protected OMGraphicHandlerLayer repaintCallback;
+   protected Component repaintCallback;
    private boolean doExtraTiles = false;
 
    public StandardMapTileFactory() {
@@ -100,7 +99,7 @@ public class StandardMapTileFactory
       verbose = logger.isLoggable(Level.FINE);
    }
 
-   public StandardMapTileFactory(OMGraphicHandlerLayer layer, String rootDir, String tileFileExt) {
+   public StandardMapTileFactory(Component layer, String rootDir, String tileFileExt) {
       super(100);
       this.rootDir = rootDir;
       this.fileExt = tileFileExt;
@@ -610,7 +609,7 @@ public class StandardMapTileFactory
       return repaintCallback;
    }
 
-   public void setRepaintCallback(OMGraphicHandlerLayer callback) {
+   public void setRepaintCallback(Component callback) {
       this.repaintCallback = callback;
    }
 

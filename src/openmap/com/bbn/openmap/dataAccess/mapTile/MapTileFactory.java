@@ -24,7 +24,8 @@
 
 package com.bbn.openmap.dataAccess.mapTile;
 
-import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import java.awt.Component;
+
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 
@@ -71,6 +72,6 @@ public interface MapTileFactory {
     * 
     * @param callback java.awt.Component to call repaint on.
     */
-   public void setRepaintCallback(OMGraphicHandlerLayer callback);
+   public void setRepaintCallback(Component callback);
 
 }
