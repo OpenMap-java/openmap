@@ -32,6 +32,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -211,7 +212,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
         drape.generate(getProjection());
         list.add(drape);
 
-        resetControlWidgets();
+       resetControlWidgets();
         list.add(getControlWidgetList(getProjection()));
 
         return list;
@@ -236,14 +237,15 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
                         - gameStartTime) / screenWidth);
         Point2D projCenter = projection.getCenter();
 
-        if (projCenter.getX() > selectionWidthMinutes
-                || scale != projection.getScale()) {
+       // TODO reconsider proper test here - for the moment, just brute-force reproject always
+//        if (projCenter.getX() > selectionWidthMinutes
+//                || scale != projection.getScale()) {
             double nCenterLon = TimelineLayer.forwardProjectMillis(gameEndTime
                     - gameStartTime) / 2f;
             projCenter.setLocation(nCenterLon, 0);
             projection = new Cartesian(projCenter, scale, projection.getWidth(), projection.getHeight());
             setProjection(projection);
-        }
+//        }
 
         // Ensure they are constructed
         getControlWidgetList((Projection) null);
@@ -251,7 +253,7 @@ public class TimeSliderLayer extends OMGraphicHandlerLayer implements
         // Reset primary handle
         int contextBuffer = (int) (projection.getHeight() * .4);
 
-        if (selectionCenter > (gameEndTime - gameStartTime)
+        if (selectionCenter*TimeUnit.MINUTES.toMillis(1) > (gameEndTime - gameStartTime)
                 || selectionCenter < 0) {
             selectionCenter = 0;
         }
