@@ -30,7 +30,7 @@ public class SimpleBeanObjectBeanInfo extends SimpleBeanInfo {
 
     public PropertyDescriptor[] getPropertyDescriptors() {
 
-        ArrayList list = new ArrayList(4);
+        ArrayList<PropertyDescriptor> list = new ArrayList<PropertyDescriptor>(4);
 
         try {
             list.add(new PropertyDescriptor("id", SimpleBeanObject.class));
@@ -40,7 +40,8 @@ public class SimpleBeanObjectBeanInfo extends SimpleBeanInfo {
         } catch (IntrospectionException e) {
             e.printStackTrace();
         }
-        return (PropertyDescriptor[]) list.toArray(new PropertyDescriptor[0]);
+
+        return list.toArray(new PropertyDescriptor[list.size()]);
     }
 
     public Image getIcon(int iconKind) {

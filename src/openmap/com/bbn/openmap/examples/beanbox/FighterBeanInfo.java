@@ -30,7 +30,7 @@ public class FighterBeanInfo extends SimpleBeanObjectBeanInfo {
 
     public PropertyDescriptor[] getPropertyDescriptors() {
 
-        ArrayList list = new ArrayList(7);
+        ArrayList<PropertyDescriptor> list = new ArrayList<PropertyDescriptor>(7);
 
         PropertyDescriptor[] pds = super.getPropertyDescriptors();
         list.addAll(Arrays.asList(pds));
@@ -42,7 +42,7 @@ public class FighterBeanInfo extends SimpleBeanObjectBeanInfo {
             e.printStackTrace();
         }
 
-        return (PropertyDescriptor[]) list.toArray(new PropertyDescriptor[0]);
+        return list.toArray(new PropertyDescriptor[list.size()]);
     }
 
     public Image getIcon(int iconKind) {

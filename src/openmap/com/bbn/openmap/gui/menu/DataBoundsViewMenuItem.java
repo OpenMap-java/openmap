@@ -65,9 +65,19 @@ public class DataBoundsViewMenuItem extends MapHandlerMenuItem implements
                     LatLonPoint llp2 = new LatLonPoint.Double(bounds.getMin().getY(), bounds.getMax()
                             .getX());
 
+                    float scale = ProjMath.getScale(llp1, llp2, proj);
+                    proj.setScale(scale);
+                    java.awt.geom.Point2D ul = proj.getUpperLeft();
+                    java.awt.geom.Point2D lr = proj.getLowerRight();
+                    double factor1 = (bounds.getMax().getY() - bounds.getMin().getY())
+                            / (ul.getY() - lr.getY());
+                    double factor2 = (bounds.getMax().getX() - bounds.getMin().getX())
+                            / (lr.getX() - ul.getX());
+
                     // 1.1 buffers the edges for viewing a little, a
-                    // little zommed out.
-                    proj.setScale(ProjMath.getScale(llp1, llp2, proj) * 1.1f);
+                    // little zoomed out.
+                    scale *= Math.max(factor1, factor2);
+                    proj.setScale(scale * 1.1f);
                     map.setProjection(proj);
                 }
             } else {

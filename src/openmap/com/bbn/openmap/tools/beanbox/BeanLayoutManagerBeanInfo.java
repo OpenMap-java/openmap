@@ -46,9 +46,9 @@ public class BeanLayoutManagerBeanInfo extends SimpleBeanInfo {
      * properties.
      */
     public PropertyDescriptor[] getPropertyDescriptors() {
-        ArrayList list = new ArrayList(10);
+        ArrayList<PropertyDescriptor> list = new ArrayList<PropertyDescriptor>(10);
         localProperties(list);
-        return (PropertyDescriptor[]) list.toArray(new PropertyDescriptor[0]);
+        return list.toArray(new PropertyDescriptor[list.size()]);
     }
 
     /**

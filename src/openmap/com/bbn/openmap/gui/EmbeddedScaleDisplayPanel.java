@@ -130,8 +130,8 @@ public class EmbeddedScaleDisplayPanel extends OMComponentPanel implements
 		locationYoffset = PropUtils.intFromProperties(properties, prefix
 				+ LocationYOffsetProperty, defaultLocationYoffset);
 
-		width = PropUtils.intFromProperties(properties, prefix + WidthProperty,
-				defaultWidth);
+		width = PropUtils.intFromProperties(properties, prefix
+				+ WidthProperty, defaultWidth);
 
 		height = PropUtils.intFromProperties(properties, prefix
 				+ HeightProperty, defaultHeight);
@@ -345,7 +345,8 @@ public class EmbeddedScaleDisplayPanel extends OMComponentPanel implements
 
 		// If the length of the distance line is longer than the width of the
 		// panel, divide it in half.
-		if (lineLength > getWidth() - Math.abs(locationXoffset) * 2) {
+		int maxWidth = Math.max(getWidth() - Math.abs(locationXoffset) * 2, 50);
+		while (lineLength > maxWidth) {
 
 			lineLength /= 3;
 			new_dist /= 3.0;

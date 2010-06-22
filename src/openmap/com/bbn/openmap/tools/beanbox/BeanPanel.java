@@ -821,7 +821,7 @@ public class BeanPanel extends OMToolComponent implements Serializable {
             newPath.add(path);
         }
 
-        java.beans.Introspector.setBeanInfoSearchPath((String[]) newPath.toArray(new String[0]));
+        java.beans.Introspector.setBeanInfoSearchPath((String[]) newPath.toArray(new String[newPath.size()]));
 
         if (Debug.debugging("beanpanel"))
             Debug.output("UPDATED> beanInfo search path to: " + newPath);

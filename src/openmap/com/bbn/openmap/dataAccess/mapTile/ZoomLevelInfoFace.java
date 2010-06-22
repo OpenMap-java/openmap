@@ -40,6 +40,7 @@ import com.bbn.openmap.Layer;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.gui.OMComponentPanel;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMAction;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
@@ -77,13 +78,14 @@ public class ZoomLevelInfoFace
    protected JButton deleteBoundaryButton;
 
    public ZoomLevelInfoFace(ZoomLevelInfo zfi, MapTileMakerComponent mtmc) {
+
       this.zfi = zfi;
       this.organizer = mtmc;
       setLayout(new GridBagLayout());
       GridBagConstraints c = new GridBagConstraints();
       int zl = zfi.getZoomLevel();
       int etc = zfi.getEdgeTileCount();
-      String title = "Zoom Level " + zl;
+      String title = i18n.get(ZoomLevelInfoFace.class, "zoom_level", "Zoom Level") + " " + zl;
       String tileString = etc != 1 ? "tiles" : "tile";
       DecimalFormat df = new DecimalFormat("000,000");
       String scale = "1:" + df.format(zfi.getScale());
@@ -99,7 +101,9 @@ public class ZoomLevelInfoFace
 
       JButton scaleButton = new JButton(scale);
       scaleButton.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-      scaleButton.setToolTipText("Set map scale to " + scale);
+
+      scaleButton.setToolTipText(i18n.get(ZoomLevelInfoFace.class, "set_map_scale_to", TOOL_TIP_TEXT_KEY, "Set map scale to") + " "
+            + scale);
       scaleButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent ae) {
             MapHandler mHandler = (MapHandler) organizer.getBeanContext();
@@ -111,7 +115,10 @@ public class ZoomLevelInfoFace
       introPanel.add(scaleButton, c);
       add(introPanel, c);
 
-      includeButton = new JCheckBox("Include this zoom level when making tiles", false);
+      includeButton =
+            new JCheckBox(
+                          i18n.get(ZoomLevelInfoFace.class, "include_this_zoom_level", "Include this zoom level when making tiles"),
+                          false);
       includeButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent ae) {
             include = ((JToggleButton) ae.getSource()).isSelected();
@@ -127,12 +134,14 @@ public class ZoomLevelInfoFace
       c.weighty = .1f;
 
       layerPanel = new JPanel(new GridBagLayout());
-      layerPanel.setBorder(BorderFactory.createTitledBorder("Layers for " + title + " "));
+      String layers_for_title = i18n.get(ZoomLevelInfoFace.class, "layers_for_title", "Layers for");
+      layerPanel.setBorder(BorderFactory.createTitledBorder(layers_for_title + " " + title + " "));
       setLayers(layerList);
       add(layerPanel, c);
 
       JPanel boundsPanel = new JPanel(new BorderLayout());
-      boundsPanel.setBorder(BorderFactory.createTitledBorder("Boundaries for " + title + " "));
+      String boundaries_for_title = i18n.get(ZoomLevelInfoFace.class, "boundaries_for_title", "Boundaries for");
+      boundsPanel.setBorder(BorderFactory.createTitledBorder(boundaries_for_title + " " + title + " "));
       boundsObjectList = new ArrayList<BoundsObject>();
       boundsModel = new BoundsListModel();
       boundsList = new JList(boundsModel);
@@ -150,7 +159,9 @@ public class ZoomLevelInfoFace
 
       ImageIcon ii = createImageIcon("add_16x16.png");
       createBoundaryButton = new JButton(ii);
-      createBoundaryButton.setToolTipText("Create a boundary rectangle");
+      String create_a_boundary_rectangle =
+            i18n.get(ZoomLevelInfoFace.class, "create_a_boundary_rectangle", "Create a boundary rectangle");
+      createBoundaryButton.setToolTipText(create_a_boundary_rectangle);
       createBoundaryButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent ae) {
             organizer.createRectangle();
@@ -160,7 +171,9 @@ public class ZoomLevelInfoFace
 
       ii = createImageIcon("edit_16x16.png");
       editBoundaryButton = new JButton(ii);
-      editBoundaryButton.setToolTipText("Edit a selected boundary rectangle");
+      String edit_a_selected_boundary_rectangle =
+            i18n.get(ZoomLevelInfoFace.class, "edit_a_selected_boundary_rectangle", "Edit a selected boundary rectangle");
+      editBoundaryButton.setToolTipText(edit_a_selected_boundary_rectangle);
       editBoundaryButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent ae) {
             if (boundsList.getSelectedIndex() != -1) {
@@ -173,7 +186,9 @@ public class ZoomLevelInfoFace
 
       ii = createImageIcon("remov_16x16.png");
       deleteBoundaryButton = new JButton(ii);
-      deleteBoundaryButton.setToolTipText("Delete a selected boundary rectangle");
+      String delete_a_selected_boundary_rectangle =
+            i18n.get(ZoomLevelInfoFace.class, "delete_a_selected_boundary_rectangle", "Delete a selected boundary rectangle");
+      deleteBoundaryButton.setToolTipText(delete_a_selected_boundary_rectangle);
       deleteBoundaryButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent ae) {
             if (boundsList.getSelectedIndex() != -1) {
@@ -194,10 +209,12 @@ public class ZoomLevelInfoFace
 
       ii = createImageIcon("push_16x16.png");
       JButton applyToAllZooms = new JButton(ii);
-      applyToAllZooms.setToolTipText("Apply Boundaries to All Zoom Levels");
+      String apply_boundaries_to_all_zoom_levels =
+            i18n.get(ZoomLevelInfoFace.class, "apply_boundaries_to_all_zoom_levels", "Apply boundaries to all zoom levels");
+      applyToAllZooms.setToolTipText(apply_boundaries_to_all_zoom_levels);
       applyToAllZooms.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent ae) {
-            // TODO
+            organizer.pushBoundarySettingsToAll(boundsObjectList);
          }
       });
       boundsButtonPanel.add(applyToAllZooms);
@@ -283,7 +300,9 @@ public class ZoomLevelInfoFace
 
       ImageIcon ii = createImageIcon("push_16x16.png");
       JButton applyToAllZooms = new JButton(ii);
-      applyToAllZooms.setToolTipText("Apply Level Settings to All Zoom Levels");
+      String apply_level_settings_to_all_zoom_levels =
+            i18n.get(ZoomLevelInfoFace.class, "apply_level_settings_to_all_zoom_levels", "Apply level settings to all zoom levels");
+      applyToAllZooms.setToolTipText(apply_level_settings_to_all_zoom_levels);
       applyToAllZooms.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent ae) {
             organizer.pushLayerSettingsToAll(layerList);
@@ -298,7 +317,7 @@ public class ZoomLevelInfoFace
     * 
     * @param layerObjects
     */
-   protected void match(List<LayerObject> layerObjects) {
+   protected void matchObjects(List<LayerObject> layerObjects) {
 
       for (LayerObject lo : layerList) {
          for (LayerObject toMatch : layerObjects) {
@@ -321,6 +340,17 @@ public class ZoomLevelInfoFace
          }
 
          setInclude(zfi.getLayers().size() > 0);
+      }
+   }
+
+   public void matchBounds(List<BoundsObject> bounds) {
+      boundsModel.clear();
+      boundaries.clear();
+
+      for (BoundsObject bo : bounds) {
+         BoundsObject copy = bo.clone();
+         boundsModel.addElement(copy);
+         boundaries.add(bo.bounds);
       }
    }
 
@@ -384,7 +414,8 @@ public class ZoomLevelInfoFace
       int count = 1;
       for (OMGraphic omr : boundaries) {
          if (omr instanceof OMRect) {
-            boundsModel.addElement(new BoundsObject((OMRect) omr, "Bounding Rectangle " + (count++)));
+            String bounding_rectangle = i18n.get(ZoomLevelInfoFace.class, "bounding_rectangle", "Bounding Rectangle");
+            boundsModel.addElement(new BoundsObject((OMRect) omr, bounding_rectangle + " " + (count++)));
          }
       }
 
@@ -469,7 +500,8 @@ public class ZoomLevelInfoFace
     * 
     * @author dietrick
     */
-   public class BoundsObject {
+   public class BoundsObject
+         implements Cloneable {
       protected OMRect bounds;
       protected String name;
 
@@ -480,6 +512,16 @@ public class ZoomLevelInfoFace
 
       public String toString() {
          return name;
+      }
+
+      public BoundsObject clone() {
+         OMRect copy =
+               new OMRect(bounds.getNorthLat(), bounds.getWestLon(), bounds.getSouthLat(), bounds.getEastLon(),
+                          OMGraphic.LINETYPE_RHUMB);
+         DrawingAttributes atts = DrawingAttributes.getDefaultClone();
+         atts.setFrom(bounds);
+         atts.setTo(copy);
+         return new BoundsObject(bounds, name);
       }
    }
 

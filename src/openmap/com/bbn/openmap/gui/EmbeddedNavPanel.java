@@ -94,8 +94,13 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 	public static final int SLIDER_MAX = 17;
 	public final static String FADE_ATTRIBUTES_PROPERTY = "fade";
 	public final static String LIVE_ATTRIBUTES_PROPERTY = "live";
+	public static final String PanDistanceProperty = "panDistance";
+	public static final String ZoomFactorProperty = "zoomFactor";
 
 	public final static int DEFAULT_BUTTON_SIZE = 15;
+
+	protected final static float defaultPanDistance = Float.NaN;
+	protected final static float defaultZoomFactor = 2.0f;
 
 	protected static Color CONTROL_BACKGROUND = OMGraphicConstants.clear;
 	protected DrawingAttributes fadeAttributes;
@@ -113,6 +118,9 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 	protected JButton forwardProjectionButton;
 	protected JButton backProjectionButton;
 	protected JSlider slider;
+
+	private float panDistance = defaultPanDistance;
+	private float zoomFactor = defaultZoomFactor;
 
 	protected float MIN_TRANSPARENCY = .25f;
 	protected float MAX_TRANSPARENCY = 1.0f;
@@ -190,12 +198,24 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 
 		fadeAttributes.setProperties(prefix + FADE_ATTRIBUTES_PROPERTY, props);
 		liveAttributes.setProperties(prefix + LIVE_ATTRIBUTES_PROPERTY, props);
+
+		panDistance = PropUtils.floatFromProperties(props, prefix
+				+ PanDistanceProperty, defaultPanDistance);
+
+		zoomFactor = PropUtils.floatFromProperties(props, prefix
+				+ ZoomFactorProperty, defaultZoomFactor);
 	}
 
 	public Properties getProperties(Properties props) {
 		props = super.getProperties(props);
+
 		fadeAttributes.getProperties(props);
 		liveAttributes.getProperties(props);
+
+		String prefix = PropUtils.getScopedPropertyPrefix(this);
+		props.put(prefix + PanDistanceProperty, String.valueOf(panDistance));
+		props.put(prefix + ZoomFactorProperty, String.valueOf(zoomFactor));
+
 		return props;
 	}
 
@@ -207,6 +227,37 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 		props = super.getPropertyInfo(props);
 		// fadeAttributes.getPropertyInfo(props);
 		// liveAttributes.getPropertyInfo(props);
+
+		String interString;
+		props.put(initPropertiesProperty,
+			PanDistanceProperty + " " + ZoomFactorProperty);
+
+		interString = i18n.get(EmbeddedNavPanel.class,
+			PanDistanceProperty,
+			com.bbn.openmap.I18n.TOOLTIP,
+			"Panning Distance.");
+		props.put(PanDistanceProperty, interString);
+		interString = i18n.get(EmbeddedNavPanel.class,
+			PanDistanceProperty,
+			"Panning Distance");
+		props.put(PanDistanceProperty + LabelEditorProperty,
+			interString);
+		props.put(PanDistanceProperty + ScopedEditorProperty,
+			"com.bbn.openmap.util.propertyEditor.TextPropertyEditor");
+
+		interString = i18n.get(EmbeddedNavPanel.class,
+			ZoomFactorProperty,
+			com.bbn.openmap.I18n.TOOLTIP,
+			"Zoom Factor.");
+		props.put(ZoomFactorProperty, interString);
+		interString = i18n.get(EmbeddedNavPanel.class,
+			ZoomFactorProperty,
+			"Zoom Factor");
+		props.put(ZoomFactorProperty + LabelEditorProperty,
+			interString);
+		props.put(ZoomFactorProperty + ScopedEditorProperty,
+			"com.bbn.openmap.util.propertyEditor.TextPropertyEditor");
+
 		return props;
 	}
 
@@ -273,7 +324,7 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 				.getIconPart(), liveAttributes, rosetteButtonSize, 0.0,
 				"Pan Northwest", new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						panDelegate.firePan(-45f);
+						panDelegate.firePan(-45f, panDistance);
 					}
 				}), c2);
 		c2.gridx = 1;
@@ -282,7 +333,7 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 				liveAttributes, rosetteButtonSize, 0.0, "Pan North",
 				new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						panDelegate.firePan(0f);
+						panDelegate.firePan(0f, panDistance);
 					}
 				}));
 		c2.gridx = 2;
@@ -290,7 +341,7 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 				.getIconPart(), liveAttributes, rosetteButtonSize, 90.0,
 				"Pan Northeast", new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						panDelegate.firePan(45f);
+						panDelegate.firePan(45f, panDistance);
 					}
 				}), c2);
 
@@ -301,7 +352,7 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 				liveAttributes, rosetteButtonSize, 270.0, "Pan West",
 				new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						panDelegate.firePan(-90f);
+						panDelegate.firePan(-90f, panDistance);
 					}
 				}), c2);
 		c2.gridx = 1;
@@ -326,7 +377,7 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 				liveAttributes, rosetteButtonSize, 90.0, "Pan East",
 				new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						panDelegate.firePan(90f);
+						panDelegate.firePan(90f, panDistance);
 					}
 				}), c2);
 
@@ -336,7 +387,7 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 				.getIconPart(), liveAttributes, rosetteButtonSize, 270.0,
 				"Pan Southwest", new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						panDelegate.firePan(-135f);
+						panDelegate.firePan(-135f, panDistance);
 					}
 				}), c2);
 		c2.gridx = 1;
@@ -345,7 +396,7 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 				liveAttributes, rosetteButtonSize, 180.0, "Pan South",
 				new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						panDelegate.firePan(180f);
+						panDelegate.firePan(180f, panDistance);
 					}
 				}), c2);
 		c2.gridx = 2;
@@ -353,7 +404,7 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 				.getIconPart(), liveAttributes, rosetteButtonSize, 180.0,
 				"Pan Southeast", new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						panDelegate.firePan(135f);
+						panDelegate.firePan(135f, panDistance);
 					}
 				}), c2);
 
@@ -368,7 +419,7 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 		add(makeButton(ipl, liveAttributes, zoomButtonSize, 0.0, "Zoom In",
 				new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						zoomDelegate.fireZoom(ZoomEvent.RELATIVE, .5f);
+						zoomDelegate.fireZoom(ZoomEvent.RELATIVE, 1.0f / zoomFactor);
 					}
 				}), layoutConstraints);
 
@@ -384,7 +435,7 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 		add(makeButton(ipl, liveAttributes, zoomButtonSize, 0.0, "Zoom Out",
 				new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						zoomDelegate.fireZoom(ZoomEvent.RELATIVE, 2.0f);
+						zoomDelegate.fireZoom(ZoomEvent.RELATIVE, zoomFactor);
 					}
 				}), layoutConstraints);
 
@@ -408,6 +459,22 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 
 	public void setRecenterPoint(Point2D recenterPoint) {
 		this.recenterPoint = recenterPoint;
+	}
+
+	public float getPanDistance() {
+		return panDistance;
+	}
+
+	public void setPanDistance(float panDistance) {
+		this.panDistance = panDistance;
+	}
+
+	public float getZoomFactor() {
+		return zoomFactor;
+	}
+
+	public void setZoomFactor(float zoomFactor) {
+		this.zoomFactor = zoomFactor;
 	}
 
 	protected JButton makeButton(IconPart iconPart, DrawingAttributes da,

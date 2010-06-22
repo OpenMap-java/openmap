@@ -610,6 +610,10 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
             list.clear();
             list = null;
         }
+        
+        if (spatialIndex != null) {
+           spatialIndex.close(true);
+        }
 
     }
 }

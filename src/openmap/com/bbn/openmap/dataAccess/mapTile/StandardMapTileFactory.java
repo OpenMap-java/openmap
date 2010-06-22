@@ -153,10 +153,21 @@ public class StandardMapTileFactory
          logger.fine("tile coords: " + tileUL + ", " + tileLR);
       }
 
-      ImageIcon ii = new ImageIcon(imagePath);
-      if (ii.getIconWidth() > 0) {
-         OMScalingRaster raster = new OMScalingRaster(tileUL.getY(), tileUL.getX(), tileLR.getY(), tileLR.getX(), ii.getImage());
-         return new CacheObject(imagePath, raster);
+      URL imageURL;
+      try {
+         imageURL = PropUtils.getResourceOrFileOrURL(imagePath);
+         if (imageURL != null) {
+            ImageIcon ii = new ImageIcon(imageURL);
+            if (ii.getIconWidth() > 0) {
+               OMScalingRaster raster =
+                     new OMScalingRaster(tileUL.getY(), tileUL.getX(), tileLR.getY(), tileLR.getX(), ii.getImage());
+               return new CacheObject(imagePath, raster);
+            }
+         } else {
+            logger.fine("Can't find resource located at " + imagePath);
+         }
+      } catch (MalformedURLException e) {
+         logger.fine("Can't find resource located at " + imagePath);
       }
       return null;
    }
@@ -165,28 +176,29 @@ public class StandardMapTileFactory
       URL imageURL;
       try {
          imageURL = PropUtils.getResourceOrFileOrURL(imagePath);
-         BufferedImage bi = BufferedImageHelper.getBufferedImage(imageURL);
+         if (imageURL != null) {
+            BufferedImage bi = BufferedImageHelper.getBufferedImage(imageURL);
 
-         if (bi != null) {
+            if (bi != null) {
 
-            DataBounds dataBounds = new DataBounds(new Point(x, y), new Point(x + 1, y + 1));
-            dataBounds.setyDirUp(false);
+               DataBounds dataBounds = new DataBounds(new Point(x, y), new Point(x + 1, y + 1));
+               dataBounds.setyDirUp(false);
 
-            transform.setZoomLevel(zoomLevel);
-            OMWarpingImage raster = new OMWarpingImage(bi, transform, dataBounds);
+               transform.setZoomLevel(zoomLevel);
+               OMWarpingImage raster = new OMWarpingImage(bi, transform, dataBounds);
 
-            if (logger.isLoggable(Level.FINER)) {
-               raster.setSelected(true);
+               if (logger.isLoggable(Level.FINER)) {
+                  raster.setSelected(true);
+               }
+               return new CacheObject(imagePath, raster);
             }
-            return new CacheObject(imagePath, raster);
          }
 
       } catch (InterruptedException e) {
          logger.warning(e.getMessage());
          e.printStackTrace();
       } catch (MalformedURLException e1) {
-         logger.warning(e1.getMessage());
-         e1.printStackTrace();
+         logger.fine("can't find resource located at: " + imagePath);
       }
       return null;
    }

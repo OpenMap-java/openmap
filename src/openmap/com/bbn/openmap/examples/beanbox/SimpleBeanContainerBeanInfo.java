@@ -32,7 +32,7 @@ public class SimpleBeanContainerBeanInfo extends SimpleBeanObjectBeanInfo {
 
     public PropertyDescriptor[] getPropertyDescriptors() {
 
-        ArrayList list = new ArrayList(8);
+        ArrayList<PropertyDescriptor> list = new ArrayList<PropertyDescriptor>(8);
 
         PropertyDescriptor[] pds = super.getPropertyDescriptors();
         list.addAll(Arrays.asList(pds));
@@ -58,7 +58,7 @@ public class SimpleBeanContainerBeanInfo extends SimpleBeanObjectBeanInfo {
             e.printStackTrace();
         }
 
-        return (PropertyDescriptor[]) list.toArray(new PropertyDescriptor[0]);
+        return list.toArray(new PropertyDescriptor[list.size()]);
     }
 
     public Image getIcon(int iconKind) {

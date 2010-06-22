@@ -147,7 +147,8 @@ public class MapTileMakerComponent
       setLayout(selfLayout);
       GridBagLayout outerLayout = new GridBagLayout();
       JPanel mainPanel = new JPanel(outerLayout);
-      mainPanel.setBorder(BorderFactory.createTitledBorder("Map Tile Maker"));
+      String map_tile_maker = i18n.get(MapTileMakerComponent.class, "map_tile_maker", "Map Tile Maker");
+      mainPanel.setBorder(BorderFactory.createTitledBorder(map_tile_maker));
       GridBagConstraints outerC = new GridBagConstraints();
       outerC.insets = new Insets(5, 5, 5, 5);
       outerC.gridx = GridBagConstraints.REMAINDER;
@@ -157,8 +158,10 @@ public class MapTileMakerComponent
 
       JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
 
+      String zoom_level = i18n.get(MapTileMakerComponent.class, "zoom_level", "Zoom Level");
+
       for (int i = 0; i < 21; i++) {
-         ZoomLevelInfoFace zlif = new ZoomLevelInfoFace(new ZoomLevelInfo("Zoom Level " + i, "", i), this);
+         ZoomLevelInfoFace zlif = new ZoomLevelInfoFace(new ZoomLevelInfo(zoom_level + " " + i, "", i), this);
          faces.add(zlif);
          tabbedPane.add(zlif, outerC, i);
          tabbedPane.setTitleAt(i, Integer.toString(i));
@@ -174,8 +177,9 @@ public class MapTileMakerComponent
       mainPanel.add(tabbedPane, outerC);
 
       JPanel masterOptions = new JPanel(new GridBagLayout());
-
-      JCheckBox transparentButton = new JCheckBox("Use transparent background for tiles", transparentTiles);
+      String use_transparent_background =
+            i18n.get(MapTileMakerComponent.class, "use_transparent_background", "Use transparent background for tiles");
+      JCheckBox transparentButton = new JCheckBox(use_transparent_background, transparentTiles);
       transparentButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent ae) {
             transparentTiles = ((JCheckBox) ae.getSource()).isSelected();
@@ -192,7 +196,8 @@ public class MapTileMakerComponent
       outerC.weighty = 0f;
       mainPanel.add(masterOptions, outerC);
 
-      JButton launchButton = new JButton("Make Tiles");
+      String make_tiles = i18n.get(MapTileMakerComponent.class, "make_tiles", "Make Tiles");
+      JButton launchButton = new JButton(make_tiles);
       launchButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent ae) {
             confirmLaunchTileMaker();
@@ -226,7 +231,8 @@ public class MapTileMakerComponent
     */
    protected void confirmLaunchTileMaker() {
       Frame frame = JOptionPane.getFrameForComponent(this);
-      JDialog dialog = new ConfirmationDialog(frame, null, "Confirm Configuration", this);
+      String confirm_configuration = i18n.get(MapTileMakerComponent.class, "confirm_configuration", "Confirm Configuration");
+      JDialog dialog = new ConfirmationDialog(frame, null, confirm_configuration, this);
       dialog.setVisible(true);
    }
 
@@ -244,7 +250,7 @@ public class MapTileMakerComponent
             bWriter.flush();
             bWriter.close();
          } catch (IOException e) {
-            // TODO Auto-generated catch block
+            logger.warning("caught exception writing out properties file");
             e.printStackTrace();
          }
       }
@@ -264,9 +270,9 @@ public class MapTileMakerComponent
       });
 
       buttons[0] = button1;
+      String creating_map_tiles = i18n.get(MapTileMakerComponent.class, "creating_map_tiles", "Creating Map Tiles...");
       JOptionPane pane =
-            new JOptionPane("Creating Map Tiles...", JOptionPane.INFORMATION_MESSAGE, JOptionPane.CANCEL_OPTION, null, buttons,
-                            button1);
+            new JOptionPane(creating_map_tiles, JOptionPane.INFORMATION_MESSAGE, JOptionPane.CANCEL_OPTION, null, buttons, button1);
 
       cancelDialog = pane.createDialog(frame, "MapTileMaker Running");
       cancelDialog.setModalityType(ModalityType.APPLICATION_MODAL);
@@ -364,7 +370,7 @@ public class MapTileMakerComponent
     * @see
     * com.bbn.openmap.gui.MapPanelChild#setPreferredLocation(java.lang.String)
     */
-   public void setPreferredLocation(String string) {
+  public void setPreferredLocation(String string) {
       this.preferredLocation = string;
    }
 
@@ -390,7 +396,19 @@ public class MapTileMakerComponent
     */
    protected void pushLayerSettingsToAll(List<LayerObject> layerObjects) {
       for (ZoomLevelInfoFace zlif : faces) {
-         zlif.match(layerObjects);
+         zlif.matchObjects(layerObjects);
+      }
+   }
+
+   /**
+    * @param boundsList
+    */
+   protected void pushBoundarySettingsToAll(List<BoundsObject> boundsList) {
+      List<BoundsObject> copy = new ArrayList<BoundsObject>();
+      copy.addAll(boundsList);
+
+      for (ZoomLevelInfoFace zlif : faces) {
+         zlif.matchBounds(copy);
       }
    }
 
@@ -643,7 +661,8 @@ public class MapTileMakerComponent
          }
 
          if (faceCount == 0) {
-            content.append("<html><body><p>No zoom levels were included for tile creation.<p></body></html>");
+            String no_zoom_levels_were_included = i18n.get(MapTileMakerComponent.class, "no_zoom_levels_were_included", "No zoom levels were included for tile creation");
+            content.append("<html><body><p>" + no_zoom_levels_were_included + ".<p></body></html>");
             // Don't need scroll pane for this message.
             contentPane.add(info);
          } else {
@@ -656,7 +675,8 @@ public class MapTileMakerComponent
             contentPane.add(scrollPane, BorderLayout.CENTER);
 
             content.append("<html><body>");
-            content.append("<h3>Launching MapTileMaker with these settings:</h3>");
+            String launching_maptilemaker = i18n.get(MapTileMakerComponent.class, "launching_maptilemaker", "Launching MapTileMaker with these settings");
+            content.append("<h3>" + launching_maptilemaker + ":</h3>");
             StringBuffer zoomLevelList = new StringBuffer();
             StringBuffer totalLayers = null;
 
@@ -666,15 +686,18 @@ public class MapTileMakerComponent
 
                   zli.setPropertyPrefix("zoom" + zli.getZoomLevel());
                   zoomLevelList.append(" " + zli.getPropertyPrefix());
-                  zli.name = "Zoom Level " + zli.getZoomLevel();
-                  zli.description = "Configuration for " + zli.name;
+                  String zoom_level = i18n.get(MapTileMakerComponent.class, "zoom_level", "Zoom Level");
+                  zli.name = zoom_level + " " + zli.getZoomLevel();
+                  String configuration_for = i18n.get(MapTileMakerComponent.class, "configuration_for", "Configuration for");
+                  zli.description = configuration_for + " " + zli.name;
                   zli.layers = new ArrayList<String>();
                   zli.bounds = new ArrayList<Rectangle2D>();
 
                   boolean buildLayerList = false;
 
-                  content.append("<p><hr><b>Zoom Level " + face.getZoomLevelInfo().getZoomLevel() + "</b>");
-                  content.append("<ul><b>Layers:</b>");
+                  content.append("<p><hr><b>" + zoom_level + " " + face.getZoomLevelInfo().getZoomLevel() + "</b>");
+                  String layers_string = i18n.get(MapTileMakerComponent.class, "layers_string", "Layers");
+                  content.append("<ul><b>" + layers_string + ":</b>");
                   for (LayerObject lo : face.layerList) {
 
                      if (totalLayers == null) {
@@ -693,11 +716,13 @@ public class MapTileMakerComponent
                      }
                   }
                   content.append("</ul>");
-                  content.append("<ul><b>Coverage:</b>");
+                  String coverage_string = i18n.get(MapTileMakerComponent.class, "coverage_string", "Coverage");
+                  content.append("<ul><b>" + coverage_string + ":</b>");
 
                   if (face.boundsObjectList == null || face.boundsObjectList.size() == 0) {
                      int edgeTileCount = face.zfi.getEdgeTileCount();
-                     content.append("<li>Entire Earth (" + edgeTileCount + "x" + edgeTileCount + " tiles)");
+                     String entire_earth = i18n.get(MapTileMakerComponent.class, "entire_earth", "Entire Earth");
+                     content.append("<li>" + entire_earth + " (" + edgeTileCount + "x" + edgeTileCount + " tiles)");
                   } else {
                      for (BoundsObject bo : face.boundsObjectList) {
                         OMRect rect = bo.bounds;
@@ -740,7 +765,8 @@ public class MapTileMakerComponent
 
          JPanel buttonPanel = new JPanel();
 
-         JButton confirm = new JButton("Create Map Tiles");
+         String create_map_tiles = i18n.get(MapTileMakerComponent.class, "create_map_tiles", "Create Map Tiles");
+         JButton confirm = new JButton(create_map_tiles);
          confirm.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                ConfirmationDialog.this.setVisible(false);
@@ -752,7 +778,8 @@ public class MapTileMakerComponent
             buttonPanel.add(confirm);
          }
 
-         JButton cancel = new JButton("Cancel");
+         String cancel_string = i18n.get(MapTileMakerComponent.class, "cancel_string", "Cancel");
+         JButton cancel = new JButton(cancel_string);
          cancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                ConfirmationDialog.this.setVisible(false);

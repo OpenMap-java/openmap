@@ -193,7 +193,7 @@ public class DynamicWmsRequestHandler extends WmsRequestHandler {
                     tmpLayers.add(newLayers[i]);
                 }
             }
-            Layer[] newArrLayers = (Layer[]) tmpLayers.toArray(new Layer[0]);
+            Layer[] newArrLayers = (Layer[]) tmpLayers.toArray(new Layer[tmpLayers.size()]);
             layers = newArrLayers;
             for (int j = 0; j < layers.length; j++) { // dodaj stare warstwy
                                                         // (statyczne, podk³ad

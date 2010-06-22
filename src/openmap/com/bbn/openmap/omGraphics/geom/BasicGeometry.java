@@ -445,7 +445,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
     /**
      *  
      */
-    public boolean isRenderable() {
+    public synchronized boolean isRenderable() {
         return (!getNeedToRegenerate() && isVisible() && shape != null);
     }
 
@@ -466,7 +466,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * 
      * @param g Graphics2D context to render into.
      */
-    public void fill(Graphics g) {
+    public synchronized void fill(Graphics g) {
         if (isRenderable()) {
             ((Graphics2D) g).fill(shape);
         }
@@ -489,7 +489,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      * 
      * @param g Graphics2D context to render into.
      */
-    public void draw(Graphics g) {
+    public synchronized void draw(Graphics g) {
         if (isRenderable()) {
             ((Graphics2D) g).draw(shape);
         }
@@ -716,7 +716,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
      *        generated with the current map projection or to clear out the
      *        object being held by the OMGeometry.
      */
-    public void setShape(GeneralPath gp) {
+    public synchronized void setShape(GeneralPath gp) {
         shape = gp;
     }
 

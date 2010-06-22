@@ -85,15 +85,15 @@ public class OMScalingRaster
     * This the original version of the image, which we keep around for rescaling
     * later.
     */
-   protected BufferedImage sourceImage = null;
+   protected transient BufferedImage sourceImage = null;
 
    /**
     * The rectangle in screen co-ordinates that the scaled image projects to
     * after clipping.
     */
-   protected Rectangle clipRect;
+   protected transient Rectangle clipRect;
 
-   protected ArrayList<float[]> corners;
+   protected transient ArrayList<float[]> corners;
 
    protected int scaleTransformType = AffineTransformOp.TYPE_BILINEAR;
 

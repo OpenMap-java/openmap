@@ -332,7 +332,6 @@ public class GoToMenu extends AbstractOpenMapMenu {
         }
 
         try {
-
             float lat = new Float(latString).floatValue();
             float lon = new Float(lonString).floatValue();
             float scale = new Float(scaleString).floatValue();
@@ -348,10 +347,12 @@ public class GoToMenu extends AbstractOpenMapMenu {
     }
 
     public void addDataBoundsProvider(DataBoundsProvider provider) {
-        DataBoundsViewMenuItem dbvmi = new DataBoundsViewMenuItem(provider);
-        dataBoundsProviders.put(provider, dbvmi);
-        dbvmi.findAndInit(getBeanContext());
-        dataBoundsMenu.add(dbvmi);
+        if (!dataBoundsProviders.containsKey(provider)) {
+            DataBoundsViewMenuItem dbvmi = new DataBoundsViewMenuItem(provider);
+            dataBoundsProviders.put(provider, dbvmi);
+            dbvmi.findAndInit(getBeanContext());
+            dataBoundsMenu.add(dbvmi);
+        }
     }
 
     public void removeDataBoundsProvider(DataBoundsProvider provider) {
