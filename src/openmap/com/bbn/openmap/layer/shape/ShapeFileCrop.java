@@ -204,8 +204,8 @@ public class ShapeFileCrop {
             }
         }
 
-        if ((ul == null) || (lr == null) || (inpath.equals(""))
-                || (outpath.equals(""))) {
+        if ((ul == null) || (lr == null) || (inpath.isEmpty())
+                || (outpath.isEmpty())) {
             usage();
         } else {
             sfc = new ShapeFileCrop(inpath, outpath);

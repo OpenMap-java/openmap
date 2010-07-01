@@ -246,8 +246,8 @@ public class DDFSubfieldDefinition implements DDFConstants {
      */
     public String toString() {
         StringBuffer buf = new StringBuffer("    DDFSubfieldDefn:\n");
-        buf.append("        Label = " + pszName + "\n");
-        buf.append("        FormatString = " + pszFormatString + "\n");
+        buf.append("        Label = ").append(pszName).append("\n");
+        buf.append("        FormatString = ").append(pszFormatString).append("\n");
         return buf.toString();
     }
 
@@ -426,7 +426,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
             String dataString = extractStringData(pachSourceData, nMaxBytes,
                                                   pnConsumedBytes);
 
-            if (dataString.equals("")) {
+            if (dataString.isEmpty()) {
                 return 0;
             }
 
@@ -560,7 +560,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
         case 'C':
             String dataString = extractStringData(pachSourceData, nMaxBytes,
                                                   pnConsumedBytes);
-            if (dataString.equals("")) {
+            if (dataString.isEmpty()) {
                 return 0;
             }
 
@@ -661,17 +661,17 @@ public class DDFSubfieldDefinition implements DDFConstants {
     public String dumpData(byte[] pachData, int nMaxBytes) {
         StringBuffer sb = new StringBuffer();
         if (eType == DDFDataType.DDFFloat) {
-            sb.append("      Subfield " + pszName + "="
-                    + extractFloatData(pachData, nMaxBytes, null) + "\n");
+            sb.append("      Subfield ").append(pszName).append("=")
+                   .append(extractFloatData(pachData, nMaxBytes, null)).append("\n");
         } else if (eType == DDFDataType.DDFInt) {
-            sb.append("      Subfield " + pszName + "="
-                    + extractIntData(pachData, nMaxBytes, null) + "\n");
+            sb.append("      Subfield ").append(pszName).append("=")
+                   .append(extractIntData(pachData, nMaxBytes, null)).append("\n");
         } else if (eType == DDFDataType.DDFBinaryString) {
-            sb.append("      Subfield " + pszName + "="
-                    + extractStringData(pachData, nMaxBytes, null) + "\n");
+            sb.append("      Subfield ").append(pszName).append("=")
+                   .append(extractStringData(pachData, nMaxBytes, null)).append("\n");
         } else {
-            sb.append("      Subfield " + pszName + "="
-                    + extractStringData(pachData, nMaxBytes, null) + "\n");
+            sb.append("      Subfield ").append(pszName).append("=")
+                   .append(extractStringData(pachData, nMaxBytes, null)).append("\n");
         }
         return sb.toString();
     }

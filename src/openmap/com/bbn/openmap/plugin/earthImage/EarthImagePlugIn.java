@@ -37,6 +37,7 @@ import com.bbn.openmap.image.ImageServerConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.plugin.AbstractPlugIn;
+import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
@@ -129,7 +130,7 @@ public class EarthImagePlugIn
 
       imageString = setList.getProperty(realPrefix + ImageProperty);
 
-      if (imageString == null || imageString.equals("")) {
+      if (imageString == null || imageString.isEmpty()) {
          Debug.error("EarthImagePlugIn needs an image.");
          Debug.output(setList.toString());
          return;
@@ -289,7 +290,7 @@ public class EarthImagePlugIn
                   // don't bother drawing it. Could be a space
                   // point in Orthographic projection, for
                   // instance.
-                  if (llp.equals(center)) {
+                  if (llp.equals(center) || !((GeoProj)p).isPlotable(llp.getLatitude(), llp.getLongitude())) {
                      p.forward(llp, ctp);
                      if (ctp.x != i || ctp.y != j) {
                         tmpPixels[tmpIndex] = clear;

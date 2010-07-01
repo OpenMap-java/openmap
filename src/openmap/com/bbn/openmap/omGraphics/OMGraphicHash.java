@@ -263,8 +263,7 @@ public class OMGraphicHash extends OMGraphicList {
      *         not supported by this map.
      */
     public boolean remove(Object key) {
-        OMGraphic graphic = (OMGraphic) graphicHash.get(key);
-        graphicHash.remove(key);
+        OMGraphic graphic = graphicHash.remove(key);
         return super.remove(graphic);
     }
 

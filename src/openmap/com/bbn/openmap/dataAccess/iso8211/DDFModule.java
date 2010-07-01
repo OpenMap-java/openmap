@@ -271,19 +271,19 @@ public class DDFModule implements DDFConstants {
      */
     public String toString() {
         StringBuffer buf = new StringBuffer("DDFModule:\n");
-        buf.append("    _recLength = " + _recLength + "\n");
-        buf.append("    _interchangeLevel = " + _interchangeLevel + "\n");
-        buf.append("    _leaderIden = " + (char) _leaderIden + "\n");
-        buf.append("    _inlineCodeExtensionIndicator = "
-                + _inlineCodeExtensionIndicator + "\n");
-        buf.append("    _versionNumber = " + _versionNumber + "\n");
-        buf.append("    _appIndicator = " + _appIndicator + "\n");
-        buf.append("    _extendedCharSet = " + _extendedCharSet + "\n");
-        buf.append("    _fieldControlLength = " + _fieldControlLength + "\n");
-        buf.append("    _fieldAreaStart = " + _fieldAreaStart + "\n");
-        buf.append("    _sizeFieldLength = " + _sizeFieldLength + "\n");
-        buf.append("    _sizeFieldPos = " + _sizeFieldPos + "\n");
-        buf.append("    _sizeFieldTag = " + _sizeFieldTag + "\n");
+        buf.append("    _recLength = ").append(_recLength).append("\n");
+        buf.append("    _interchangeLevel = ").append(_interchangeLevel).append("\n");
+        buf.append("    _leaderIden = ").append((char) _leaderIden).append("\n");
+        buf.append("    _inlineCodeExtensionIndicator = ")
+               .append(_inlineCodeExtensionIndicator).append("\n");
+        buf.append("    _versionNumber = ").append(_versionNumber).append("\n");
+        buf.append("    _appIndicator = ").append(_appIndicator).append("\n");
+        buf.append("    _extendedCharSet = ").append(_extendedCharSet).append("\n");
+        buf.append("    _fieldControlLength = ").append(_fieldControlLength).append("\n");
+        buf.append("    _fieldAreaStart = ").append(_fieldAreaStart).append("\n");
+        buf.append("    _sizeFieldLength = ").append(_sizeFieldLength).append("\n");
+        buf.append("    _sizeFieldPos = ").append(_sizeFieldPos).append("\n");
+        buf.append("    _sizeFieldTag = ").append(_sizeFieldTag).append("\n");
         return buf.toString();
     }
 
@@ -293,8 +293,8 @@ public class DDFModule implements DDFConstants {
         DDFRecord poRecord;
         int iRecord = 0;
         while ((poRecord = readRecord()) != null) {
-            buf.append("  Record " + (iRecord++) + "(" + poRecord.getDataSize()
-                    + " bytes)\n");
+            buf.append("  Record ").append((iRecord++)).append("(")
+                    .append(poRecord.getDataSize()).append(" bytes)\n");
 
             for (Iterator it = poRecord.iterator(); it.hasNext(); buf.append(((DDFField) it.next()).toString())) {
             }

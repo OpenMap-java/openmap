@@ -98,7 +98,7 @@ public class SimpleBeanContainer extends SimpleBeanObject implements
 
     public void removeAll() {
 
-        if (contents.size() > 0) {
+        if (!contents.isEmpty()) {
 
             contents.clear();
 
@@ -145,7 +145,7 @@ public class SimpleBeanContainer extends SimpleBeanObject implements
         layoutClass = lc;
 
         if ((layoutClass == null)
-                || ((layoutClass = layoutClass.trim()).length() == 0)) {
+                || ((layoutClass = layoutClass.trim()).isEmpty())) {
             System.out.println("loading null layout!");
             this.setLayout(new NullLayout());
         } else {

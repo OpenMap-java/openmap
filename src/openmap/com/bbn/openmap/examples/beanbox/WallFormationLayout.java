@@ -79,7 +79,7 @@ public class WallFormationLayout extends BeanLayoutManager {
 
         Vector contents = super._container.getContents();
 
-        if (contents == null || contents.size() == 0)
+        if (contents == null || contents.isEmpty())
             return;
 
         LatLonPoint midllp = new LatLonPoint.Float(container.getLatitude(), container.getLongitude());

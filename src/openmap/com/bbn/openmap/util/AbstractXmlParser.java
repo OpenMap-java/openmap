@@ -28,7 +28,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 abstract public class AbstractXmlParser
       extends DefaultHandler {
-   private final Logger logger = Logger.getLogger("com.bbn.bsa.util.AbstractXmlParser");
+   private final Logger logger = Logger.getLogger("com.bbn.openmap.util.AbstractXmlParser");
 
    private final StringBuilder charactersCollector = new StringBuilder();
    private String collectCharactersForElement;

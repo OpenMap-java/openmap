@@ -401,7 +401,7 @@ public class DcwRecordFile {
             throw new FormatException("DcwRecordFile: parserow on table "
                     + filename + ": " + f.getMessage());
         } catch (EOFException e) {
-            if (retval.size() > 0) {
+            if (!retval.isEmpty()) {
                 throw new FormatException("DcwRecordFile: hit EOF when list = "
                         + VPFUtil.listToString(retval));
             }

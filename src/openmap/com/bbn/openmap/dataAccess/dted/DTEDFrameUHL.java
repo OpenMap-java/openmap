@@ -107,16 +107,16 @@ public class DTEDFrameUHL {
     public String toString() {
         StringBuffer s = new StringBuffer();
 
-        s.append("***UHL***" + "\n");
-        s.append("  lon_origin: " + lon_origin + "\n");
-        s.append("  lat_origin: " + lat_origin + "\n");
-        s.append("  lon_post_interval: " + lon_post_interval + "\n");
-        s.append("  lat_post_interval: " + lat_post_interval + "\n");
-        s.append("  abs_vert_acc: " + abs_vert_acc + "\n");
-        s.append("  sec_code: " + sec_code + "\n");
-        s.append("  u_ref: " + u_ref + "\n");
-        s.append("  num_lon_lines: " + num_lon_lines + "\n");
-        s.append("  num_lat_points: " + num_lat_points + "\n");
+        s.append("***UHL***").append("\n");
+        s.append("  lon_origin: ").append(lon_origin).append("\n");
+        s.append("  lat_origin: ").append(lat_origin).append("\n");
+        s.append("  lon_post_interval: ").append(lon_post_interval).append("\n");
+        s.append("  lat_post_interval: ").append(lat_post_interval).append("\n");
+        s.append("  abs_vert_acc: ").append(abs_vert_acc).append("\n");
+        s.append("  sec_code: ").append(sec_code).append("\n");
+        s.append("  u_ref: ").append(u_ref).append("\n");
+        s.append("  num_lon_lines: ").append(num_lon_lines).append("\n");
+        s.append("  num_lat_points: ").append(num_lat_points).append("\n");
         return s.toString();
     }
 

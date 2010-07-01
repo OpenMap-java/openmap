@@ -48,7 +48,7 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public class EsriGraphicFactory implements ShapeConstants {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.EsriGraphicFactory");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.shape.EsriGraphicFactory");
 
     protected int lineType = OMGraphic.LINETYPE_STRAIGHT;
     protected GeoCoordTransformation dataTransformation = null;
@@ -1184,7 +1184,8 @@ public class EsriGraphicFactory implements ShapeConstants {
     protected String getCoordString(double[] coords) {
         StringBuffer coordString = new StringBuffer();
         for (int j = 0; j < coords.length; j += 2) {
-            coordString.append((j > 0 ? ":" : "") + coords[j] + "," + coords[j + 1]);
+            coordString.append((j > 0 ? ":" : ""))
+                    .append(coords[j]).append(",").append(coords[j + 1]);
         }
         return coordString.toString();
     }

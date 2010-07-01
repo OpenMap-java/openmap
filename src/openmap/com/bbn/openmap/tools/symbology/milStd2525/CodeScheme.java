@@ -161,7 +161,7 @@ public class CodeScheme extends CodePosition {
             codePositionList = nextPosition.getPositionChoices();
         }
 
-        if (codePositionList == null || codePositionList.size() == 0) {
+        if (codePositionList == null || codePositionList.isEmpty()) {
             Debug.output(prettyName
                     + ".parseHierarchy(): codePositionList.size = 0");
             return;

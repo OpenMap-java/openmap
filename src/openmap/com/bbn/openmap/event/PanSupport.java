@@ -84,7 +84,7 @@ public class PanSupport extends ListenerSupport<PanListener> {
      */
     public synchronized void firePan(float az, float c) {
 
-        if (size() == 0)
+        if (isEmpty())
             return;
 
         PanEvent evt = new PanEvent(source, az, c);

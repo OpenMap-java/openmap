@@ -221,15 +221,15 @@ public class LinkMapRequest {
         StringBuffer s = new StringBuffer();
         s.append("LinkMapRequest:\n");
         s.append("LinkMapRequest wrote:\n");
-        s.append(" version = " + version + "\n");
-        s.append(" center = " + center + "\n");
-        s.append(" scale = " + scale + "\n");
-        s.append(" height = " + height + "\n");
-        s.append(" width = " + width + "\n");
-        s.append(" " + boundingPolys.length + " bounding polys:");
+        s.append(" version = ").append(version).append("\n");
+        s.append(" center = ").append(center).append("\n");
+        s.append(" scale = ").append(scale).append("\n");
+        s.append(" height = ").append(height).append("\n");
+        s.append(" width = ").append(width).append("\n");
+        s.append(" ").append(boundingPolys.length).append(" bounding polys:");
         int i;
         for (i = 0; i < boundingPolys.length; i++) {
-            s.append("\n" + boundingPolys[i]);
+            s.append("\n").append(boundingPolys[i]);
         }
         return s.toString();
     }

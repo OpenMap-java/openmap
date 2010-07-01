@@ -220,22 +220,22 @@ public interface GeoArray {
             Geo p2 = new Geo();
             int size = getSize();
             for (int i = 2; i < size; i++) {
-                count = count + 1;
+                count++;
                 get(i, p2);
-                area = area + Geo.angle(p0, p1, p2);
+                area += Geo.angle(p0, p1, p2);
                 p0.initialize(p1);
                 p1.initialize(p2);
             }
 
-            count = count + 1;
+            count++;
             p2.initialize(v0);
-            area = area + Geo.angle(p0, p1, p2);
+            area += Geo.angle(p0, p1, p2);
             p0.initialize(p1);
             p1.initialize(p2);
 
-            count = count + 1;
+            count++;
             p2.initialize(v1);
-            area = area + Geo.angle(p0, p1, p2);
+            area += Geo.angle(p0, p1, p2);
 
             return area - (count - 2) * Math.PI;
         }

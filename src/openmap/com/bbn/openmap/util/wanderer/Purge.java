@@ -64,7 +64,7 @@ public class Purge extends Wanderer implements WandererCallback {
             if (startsWith != null && startsWith.length > 0) {
                 sb.append("start with ");
                 for (int i = 0; i < startsWith.length; i++) {
-                    sb.append(startsWith[i] + " ");
+                    sb.append(startsWith[i]).append(" ");
                 }
                 sw = true;
             }
@@ -74,7 +74,7 @@ public class Purge extends Wanderer implements WandererCallback {
                     sb.append("and ");
                 sb.append("end with ");
                 for (int i = 0; i < endsWith.length; i++) {
-                    sb.append(endsWith[i] + " ");
+                    sb.append(endsWith[i]).append(" ");
                 }
             }
             Debug.output(sb.toString());

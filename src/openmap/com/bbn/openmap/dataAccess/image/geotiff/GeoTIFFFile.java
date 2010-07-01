@@ -60,7 +60,7 @@ import com.sun.media.jai.codec.SeekableStream;
  */
 public class GeoTIFFFile {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.geotiff.GeoTIFFFile");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.image.geotiff.GeoTIFFFile");
 
     protected GeoTIFFDirectory gtfDirectory;
     protected XTIFFField[] geoKeys;
@@ -365,8 +365,10 @@ public class GeoTIFFFile {
 
             int type = xtff.getType();
             int tag = xtff.getTag();
-            buf.append("\n\tfield (" + i + ") - " + tag + " ("
-                    + KeyRegistry.getKey(KeyRegistry.GEOKEY, tag) + "): [");
+            buf.append("\n\tfield (").append(i).append(") - ").append(tag)
+                    .append(" (")
+                    .append(KeyRegistry.getKey(KeyRegistry.GEOKEY, tag))
+                    .append("): [");
 
             switch (type) {
             case XTIFFField.TIFF_ASCII:
@@ -469,7 +471,7 @@ public class GeoTIFFFile {
                 break;
             default:
                 // TIFF_UNDEFINED
-                buf.append("Can't handle " + type + " type.]");
+                buf.append("Can't handle ").append(type).append(" type.]");
             }
         }
         logger.info(buf.toString());

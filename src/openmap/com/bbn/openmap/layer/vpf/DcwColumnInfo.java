@@ -575,11 +575,11 @@ public class DcwColumnInfo {
      */
     public String toString() {
         StringBuffer output = new StringBuffer();
-        output.append(columnName + " " + fieldType + " ");
+        output.append(columnName).append(" ").append(fieldType).append(" ");
         output.append(numberOfElements).append(" ");
         output.append(keyType).append(" ");
-        output.append(columnDescription + " " + valueDescriptionTable + " ");
-        output.append(thematicIndexName + " " + narrativeTable);
+        output.append(columnDescription).append(" ").append(valueDescriptionTable).append(" ");
+        output.append(thematicIndexName).append(" ").append(narrativeTable);
         return output.toString();
     }
 }

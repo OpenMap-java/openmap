@@ -25,6 +25,8 @@ package com.bbn.openmap.layer.policy;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.RenderingHints.Key;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -132,7 +134,11 @@ public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
 
     public void setRenderingHints(Graphics g) {
         if (renderingHints != null && g instanceof Graphics2D) {
-            ((Graphics2D) g).setRenderingHints(renderingHints);
+            Graphics2D g2 = (Graphics2D) g;
+            for (Map.Entry<Object, Object> entry : renderingHints.entrySet()) {
+               Key key = (Key) entry.getKey();
+               g2.setRenderingHint(key, entry.getValue());
+            }
         }
     }
 

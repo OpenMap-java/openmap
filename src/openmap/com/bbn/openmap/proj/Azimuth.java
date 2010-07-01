@@ -1028,7 +1028,7 @@ public abstract class Azimuth extends GeoProj {
         int vertexCount = 0;
 
         // iterate over the sections
-        while (sections.size() > 0) {
+        while (!sections.isEmpty()) {
             beginAz = (AzimuthVar) sections.get(bg);// out->in begin
             // section
             ioAz = (AzimuthVar) sections.get(io);// in->out end

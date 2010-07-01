@@ -650,8 +650,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
 
         // Too wide margins for 1 letter look unnatural
         Insets insets = boldFont.getInsets();
-        insets.left = insets.left / 2;
-        insets.right = insets.right / 2;
+        insets.left /= 2;
+        insets.right /= 2;
         boldFont.setMargin(insets);
         boldFont.setSelected(text.getFont().isBold());
         boldFont.setToolTipText(i18n.get(EditableOMText.class, "boldFont",
@@ -722,7 +722,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
             else
                 ret.append("-o");
             ret.append("-normal");
-            ret.append("--" + sizesFont.getSelectedItem());
+            ret.append("--").append(sizesFont.getSelectedItem());
             ret.append("-*-*-*-*-*-*");
             ret.toString();
             text.setFont(OMText.rebuildFont(ret.toString()));

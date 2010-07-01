@@ -492,7 +492,7 @@ public class MapBean extends JComponent implements ComponentListener,
     public void purgeAndNotifyRemovedLayers() {
         // Tell any layers that have been removed that they have
         // been removed
-        if (removedLayers.size() == 0) {
+        if (removedLayers.isEmpty()) {
             return;
         }
         for (int i = 0; i < removedLayers.size(); i++) {
@@ -1019,7 +1019,7 @@ public class MapBean extends JComponent implements ComponentListener,
 
         // Should we get rid of the support if there are no painters?
         // The support will get created when a listener is added.
-        if (painters.size() == 0) {
+        if (painters.isEmpty()) {
             painters = null;
         }
     }

@@ -168,34 +168,34 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         }
 
         StringBuffer buf = new StringBuffer(queryHeader);
-        buf.append("?" + WMTConstants.VERSION + "=" + wmsVersion + "&"
-                + WMTConstants.REQUEST + "=" + mapRequestName + "&"
-                + WMTConstants.SRS + "=" + "EPSG:4326" + "&"
-                + WMTConstants.BBOX + "=" + bbox + "&" + WMTConstants.HEIGHT
-                + "=" + height + "&" + WMTConstants.WIDTH + "=" + width + "&"
-                + WMTConstants.EXCEPTIONS + "=" + errorHandling);
+        buf.append("?").append(WMTConstants.VERSION).append("=").append(wmsVersion).append("&"
+               ).append(WMTConstants.REQUEST).append("=").append(mapRequestName).append("&"
+               ).append(WMTConstants.SRS).append("=").append("EPSG:4326").append("&"
+               ).append(WMTConstants.BBOX).append("=").append(bbox).append("&").append(WMTConstants.HEIGHT
+               ).append("=").append(height).append("&").append(WMTConstants.WIDTH).append("=").append(width).append("&"
+               ).append(WMTConstants.EXCEPTIONS).append("=").append(errorHandling);
 
         if (imageFormat != null) {
-            buf.append("&" + WMTConstants.FORMAT + "=" + imageFormat);
+            buf.append("&").append(WMTConstants.FORMAT).append("=").append(imageFormat);
 
             String baseImageFormat = imageFormat;
             if (baseImageFormat.indexOf('/') > 0)
                 baseImageFormat = baseImageFormat.substring(baseImageFormat.indexOf('/'));
             if (baseImageFormat.equals(WMTConstants.IMAGEFORMAT_JPEG)) {
-                buf.append("&quality=" + imageQuality);
+                buf.append("&quality=").append(imageQuality);
             }
         }
 
         if (transparent != null) {
-            buf.append("&" + WMTConstants.TRANSPARENT + "=" + transparent);
+            buf.append("&").append(WMTConstants.TRANSPARENT).append("=").append(transparent);
         }
 
         if (backgroundColor != null) {
-            buf.append("&" + WMTConstants.BGCOLOR + "=" + backgroundColor);
+            buf.append("&").append(WMTConstants.BGCOLOR).append("=").append(backgroundColor);
         }
 
         if (layers != null) {
-            buf.append("&" + WMTConstants.LAYERS + "=" + layers);
+            buf.append("&").append(WMTConstants.LAYERS).append("=").append(layers);
         }
 
         String cStyles = styles;
@@ -204,7 +204,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         }
         
 //        if (styles != null) {
-            buf.append("&" + WMTConstants.STYLES + "=" + cStyles);
+            buf.append("&").append(WMTConstants.STYLES).append("=").append(cStyles);
 //        }
 
         if (Debug.debugging("wms")) {
@@ -225,7 +225,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
                     try {
                         paramName = nameTokenizer.nextToken();
                         paramValue = valueTokenizer.nextToken();
-                        buf.append("&" + paramName + "=" + paramValue);
+                        buf.append("&").append(paramName).append("=").append(paramValue);
                     } catch (NoSuchElementException e) {
                         if (Debug.debugging("wms")) {
                             Debug.output("WMSPlugIn.getRectangle(): "
@@ -477,7 +477,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
      * @param wmsVer
      */
     public void setWmsVersion(String wmsVer) {
-        if (wmsVer == null || wmsVer.length() == 0) {
+        if (wmsVer == null || wmsVer.isEmpty()) {
             wmsVer = "1.1.1";
             Debug.output("WMSPlugin: wmsVersion was null, now set to 1.1.1");
         }

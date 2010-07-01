@@ -1023,7 +1023,7 @@ public class DbfTableModel extends AbstractTableModel implements
 			DecimalFormat df, int columnLength) throws java.text.ParseException {
 		Object ret = cellContents;
 		if (isNumericalType((byte) type)) {
-			if (cellContents.length() > 0) {
+			if (!cellContents.isEmpty()) {
 				try {
 					ret = new Double(cellContents);
 				} catch (NumberFormatException nfe) {

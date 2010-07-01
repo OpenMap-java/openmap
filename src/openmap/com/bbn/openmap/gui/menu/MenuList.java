@@ -185,7 +185,7 @@ public class MenuList extends OMComponent {
                     ps.setPropertyPrefix(prefix);
                 }
 
-                itemList.append(prefix + " ");
+                itemList.append(prefix).append(" ");
                 ps.getProperties(props);
             }
         }

@@ -185,7 +185,7 @@ public class DbfHandler extends OMComponent {
                 }
             }
 
-            ruleList.append(rulePrefix + " ");
+            ruleList.append(rulePrefix).append(" ");
 
             rule.getProperties(props);
         }
@@ -308,7 +308,7 @@ public class DbfHandler extends OMComponent {
                               OMGraphicList labelList, Projection proj) {
 
         List<Rule> rules = getRules();
-        if (rules.size() == 0) {
+        if (rules.isEmpty()) {
             return omg;
         }
 
@@ -392,7 +392,7 @@ public class DbfHandler extends OMComponent {
         for (int i = 0; i < numIndicies; i++) {
             int val = indicies[i];
             if (val != -1) {
-                buf.append((String) record.get(val) + " ");
+                buf.append((String) record.get(val)).append(" ");
             }
         }
         return buf.toString().trim();
@@ -581,7 +581,7 @@ public class DbfHandler extends OMComponent {
             StringBuffer buf = new StringBuffer();
             int numCols = indicies.length;
             for (int i = 0; i < numCols; i++) {
-                buf.append(dbf.getColumnName(indicies[i]) + " ");
+                buf.append(dbf.getColumnName(indicies[i])).append(" ");
             }
 
             return buf.toString().trim();

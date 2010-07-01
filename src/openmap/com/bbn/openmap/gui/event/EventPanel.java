@@ -261,7 +261,7 @@ public class EventPanel extends OMComponentPanel implements MapPanelChild {
         }
 
         getFilterPanel().add(macroPanel, BorderLayout.NORTH);
-        macroPanel.setVisible(macroFilters.size() > 0);
+        macroPanel.setVisible(!macroFilters.isEmpty());
         getFilterPanel().revalidate();
 
     }

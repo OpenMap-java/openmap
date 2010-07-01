@@ -62,7 +62,7 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class AOILayer extends OMGraphicHandlerLayer {
 
-    public static Logger logger = Logger.getLogger("com.bbn.hotwash.map.AOILayer");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.AOILayer");
 
     public final static String AOIProperty = "aoi";
     public final static String AOICoordsProperty = "coords";

@@ -56,14 +56,14 @@ public class AboutMenuItem extends JMenuItem implements ActionListener {
     }
 
     protected JComponent createCopyrightViewer() {
-        StringBuffer sb = new StringBuffer(MapBean.getCopyrightMessage()
-                + Environment.get("line.separator")
-                + Environment.get("line.separator") + "Version "
-                + Environment.get(Environment.Version));
+        StringBuffer sb = new StringBuffer(MapBean.getCopyrightMessage())
+                .append(Environment.get("line.separator"))
+                .append(Environment.get("line.separator")).append("Version ")
+                .append(Environment.get(Environment.Version));
 
         String buildDate = Environment.get(Environment.BuildDate);
         if (buildDate != null) {
-            sb.append(Environment.get("line.separator") + "Build " + buildDate);
+            sb.append(Environment.get("line.separator")).append("Build ").append(buildDate);
         }
 
         JTextArea viewer = new JTextArea(sb.toString());

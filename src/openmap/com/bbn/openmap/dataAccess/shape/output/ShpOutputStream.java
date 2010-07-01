@@ -293,7 +293,7 @@ public class ShpOutputStream {
         int[][] indexData = createPolyIndex(list);
         int contentLength = 50;
 
-        if (list.size() > 0) {
+        if (!list.isEmpty()) {
             contentLength = indexData[0][indexData[0].length - 1]
                     + indexData[1][indexData[0].length - 1]
                     + ESRI_RECORD_HEADER_LENGTH;
@@ -429,7 +429,7 @@ public class ShpOutputStream {
         int[][] indexData = createPointIndex(list);
         int contentLength = 50;
 
-        if (list.size() > 0) {
+        if (!list.isEmpty()) {
             contentLength = indexData[0][indexData[0].length - 1]
                     + indexData[1][indexData[0].length - 1]
                     + ESRI_RECORD_HEADER_LENGTH;

@@ -212,7 +212,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
         shapeFileName = props.getProperty(realPrefix + shapeFileProperty);
         shapeFileName = prependDataPathPrefix(shapeFileName);
 
-        if (shapeFileName != null && !shapeFileName.equals("")) {
+        if (shapeFileName != null && !shapeFileName.isEmpty()) {
 
             spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName);
             String dbfFileName = SpatialIndex.dbf(shapeFileName);
@@ -238,7 +238,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
             imageURLString = props.getProperty(realPrefix + pointImageURLProperty);
 
             try {
-                if (imageURLString != null && !imageURLString.equals("")) {
+                if (imageURLString != null && !imageURLString.isEmpty()) {
                     URL imageURL = PropUtils.getResourceOrFileOrURL(this, imageURLString);
                     ImageIcon imageIcon = new ImageIcon(imageURL);
                     spatialIndex.setPointIcon(imageIcon);

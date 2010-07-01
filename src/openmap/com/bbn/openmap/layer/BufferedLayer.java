@@ -154,10 +154,10 @@ public class BufferedLayer
             layer.setPropertyPrefix(lPrefix);
             unsetPrefix = true;
          }
-         layersListProperty.append(" " + lPrefix);
+         layersListProperty.append(" ").append(lPrefix);
 
          if (layer.isVisible()) {
-            startupLayersListProperty.append(" " + lPrefix);
+            startupLayersListProperty.append(" ").append(lPrefix);
          }
 
          if (logger.isLoggable(Level.FINE)) {

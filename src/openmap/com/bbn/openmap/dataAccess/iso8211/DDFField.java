@@ -153,22 +153,22 @@ public class DDFField {
      */
     public String toString() {
         StringBuffer buf = new StringBuffer("  DDFField:\n");
-        buf.append("\tTag = " + poDefn.getName() + "\n");
-        buf.append("\tDescription = " + poDefn.getDescription() + "\n");
+        buf.append("\tTag = ").append(poDefn.getName()).append("\n");
+        buf.append("\tDescription = ").append(poDefn.getDescription()).append("\n");
         int size = getDataSize();
-        buf.append("\tDataSize = " + size + "\n");
+        buf.append("\tDataSize = ").append(size).append("\n");
 
         if (pachData == null) {
-            buf.append("\tHeader offset = " + headerOffset + "\n");
-            buf.append("\tData position = " + dataPosition + "\n");
-            buf.append("\tData length = " + dataLength + "\n");
+            buf.append("\tHeader offset = ").append(headerOffset).append("\n");
+            buf.append("\tData position = ").append(dataPosition).append("\n");
+            buf.append("\tData length = ").append(dataLength).append("\n");
             return buf.toString();
         }
 
         buf.append("\tData = ");
         for (int i = 0; i < Math.min(size, 40); i++) {
             if (pachData[i] < 32 || pachData[i] > 126) {
-                buf.append(" | " + (char) pachData[i]);
+                buf.append(" | ").append((char) pachData[i]);
             } else {
                 buf.append(pachData[i]);
             }
@@ -217,10 +217,10 @@ public class DDFField {
                 if (obj instanceof List) {
                     for (Iterator it = ((List) obj).iterator(); it.hasNext();) {
                         DDFSubfield ddfs = (DDFSubfield) it.next();
-                        buf.append("        " + ddfs.toString() + "\n");
+                        buf.append("        ").append(ddfs.toString()).append("\n");
                     }
                 } else {
-                    buf.append("        " + obj.toString() + "\n");
+                    buf.append("        ").append(obj.toString()).append("\n");
                 }
             }
         }

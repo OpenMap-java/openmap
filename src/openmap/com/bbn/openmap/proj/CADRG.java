@@ -37,6 +37,8 @@ public class CADRG
       extends Cylindrical
       implements EqualArc {
 
+   private static final long serialVersionUID = 1L;
+
    /**
     * The CADRG name.
     */
@@ -327,7 +329,7 @@ public class CADRG
 
       // Increase, if necessary, to the next highest integer value
       x_pix = Math.ceil(x_pix);
-      x_pix = x_pix * 1.33333;// (512*100)/(150*256);
+      x_pix *= 1.33333;// (512*100)/(150*256);
 
       // Round the final result.
       x_pix = Math.round(x_pix);
@@ -363,7 +365,7 @@ public class CADRG
       // Increase, if necessary, to the next highest integer value
       y_pix = Math.ceil(y_pix);
 
-      y_pix = y_pix * 0.33333;// (512*100)/(4*150*256);
+      y_pix *= 0.33333;// (512*100)/(4*150*256);
 
       // Round the final result.
       y_pix = Math.round(y_pix);
@@ -390,7 +392,7 @@ public class CADRG
        * valid before answering. Duh.  So, no normalizingLatitude before the check.
        */
       lat = ProjMath.degToRad(lat);
-      return ((lat - epsilon < NORTH_LIMIT) && (lat + epsilon > SOUTH_LIMIT));
+      return ((lat < NORTH_LIMIT) && (lat > SOUTH_LIMIT));
    }
 
    /**
@@ -427,6 +429,7 @@ public class CADRG
     * @see Proj#inverse(Point2D)
     * 
     */
+   @SuppressWarnings("unchecked")
    public <T extends Point2D> T inverse(double x, double y, T ret_val) {
       // Debug.output("CADRG.inverse");
 

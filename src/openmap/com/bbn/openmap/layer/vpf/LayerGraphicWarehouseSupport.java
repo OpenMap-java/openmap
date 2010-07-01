@@ -357,15 +357,15 @@ public abstract class LayerGraphicWarehouseSupport implements
         StringBuffer features = new StringBuffer();
 
         if (drawAreaFeatures)
-            features.append(VPFUtil.Area.toLowerCase() + " ");
+            features.append(VPFUtil.Area.toLowerCase()).append(" ");
         if (drawEdgeFeatures)
-            features.append(VPFUtil.Edge.toLowerCase() + " ");
+            features.append(VPFUtil.Edge.toLowerCase()).append(" ");
         if (drawEPointFeatures)
-            features.append(VPFUtil.EPoint.toLowerCase() + " ");
+            features.append(VPFUtil.EPoint.toLowerCase()).append(" ");
         if (drawCPointFeatures)
-            features.append(VPFUtil.CPoint.toLowerCase() + " ");
+            features.append(VPFUtil.CPoint.toLowerCase()).append(" ");
         if (drawTextFeatures)
-            features.append(VPFUtil.Text.toLowerCase() + " ");
+            features.append(VPFUtil.Text.toLowerCase()).append(" ");
         return features.toString();
     }
 

@@ -179,7 +179,7 @@ class ColorTracker implements ActionListener, ChangeListener, Serializable {
         java.util.Hashtable<Integer, JLabel> dict = new java.util.Hashtable<Integer, JLabel>();
         String opaqueLabel = i18n.get(ColorTracker.class, "opaque", "opaque");
         String clearLabel = i18n.get(ColorTracker.class, "clear", "clear");
-        if (opaqueLabel == null || opaqueLabel.length() == 0) {
+        if (opaqueLabel == null || opaqueLabel.isEmpty()) {
             // translations are too long :(
             dict.put(new Integer(126), new JLabel(clearLabel));            
         } else {        

@@ -90,7 +90,7 @@ public class Route implements Cloneable, Serializable {
             toDo.addElement(from);
             marks.clear();
             marks.put(from, new NodeInfo(from, null, 0.0f, 0.0f));
-            while (toDo.size() > 0) {
+            while (!toDo.isEmpty()) {
                 Vector newToDo = new Vector();
                 for (Enumeration e = toDo.elements(); e.hasMoreElements();) {
                     Intersection thisIntersection = (Intersection) e.nextElement();

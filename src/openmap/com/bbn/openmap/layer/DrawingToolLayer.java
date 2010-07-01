@@ -526,7 +526,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
 
                 public void actionPerformed(ActionEvent e) {
                     OMGraphicList list = getList();
-                    if (list != null && list.size() > 0) {
+                    if (list != null && !list.isEmpty()) {
                         if (!(list.getAttribute(ShapeConstants.DBF_ATTRIBUTE) instanceof DbfTableModel)) {
                             // If there isn't a dbf table model, create one if
                             // the
@@ -753,7 +753,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
      */
     public void select(OMGraphicList omgl) {
         super.select(omgl);
-        if (omgl != null && omgl.size() > 0) {
+        if (omgl != null && !omgl.isEmpty()) {
             if (omgl.size() == 1) {
                 edit(omgl.getOMGraphicAt(0));
             } else {

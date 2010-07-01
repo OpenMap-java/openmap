@@ -191,7 +191,7 @@ public class SimpleBeanBox extends BeanBox implements MapMouseListener {
         Vector containers = new Vector();
         Vector list = layer.getObjects();
 
-        if ((list == null) || (list.size() == 0))
+        if (list == null || list.isEmpty())
             return containers;
 
         for (int i = 0; i < list.size(); i++) {

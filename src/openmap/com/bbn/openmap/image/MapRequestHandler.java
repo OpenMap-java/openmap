@@ -227,7 +227,7 @@ public class MapRequestHandler extends ImageServer implements
         Layer[] layers = getLayers();
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < layers.length; i++) {
-            sb.append((i > 0 ? " " : "") + layers[i].getPropertyPrefix());
+            sb.append((i > 0 ? " " : "")).append(layers[i].getPropertyPrefix());
         }
         return sb.toString();
     }

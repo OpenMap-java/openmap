@@ -47,7 +47,7 @@ public abstract class GLOBEData {
                 break;
             line = line.trim();
             // ignore comments
-            if (line.equals("") || line.startsWith("#")) {
+            if (line.isEmpty() || line.startsWith("#")) {
                 continue;
             }
             parseDataFromStream(line);

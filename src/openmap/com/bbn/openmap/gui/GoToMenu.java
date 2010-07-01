@@ -231,7 +231,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
             GoToButton gtb = (GoToButton) it.next();
 
             String sanitizedName = gtb.getText().replace(' ', '_');
-            viewList.append(" " + sanitizedName);
+            viewList.append(" ").append(sanitizedName);
 
             sanitizedName = PropUtils.getScopedPropertyPrefix(sanitizedName);
 
@@ -356,9 +356,8 @@ public class GoToMenu extends AbstractOpenMapMenu {
     }
 
     public void removeDataBoundsProvider(DataBoundsProvider provider) {
-        JMenuItem item = (DataBoundsViewMenuItem) dataBoundsProviders.get(provider);
+        JMenuItem item = (DataBoundsViewMenuItem) dataBoundsProviders.remove(provider);
         if (item != null) {
-            dataBoundsProviders.remove(provider);
             dataBoundsMenu.remove(item);
         }
     }
@@ -524,7 +523,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
         public void actionPerformed(ActionEvent event) {
             if (event.getSource() == applybutton) {
                 String newName = nameField.getText();
-                if (newName != null && !(newName.equals(""))) {
+                if (newName != null && !(newName.isEmpty())) {
                     notifyThis.setNameAndAdd(newName);
                 }
             }

@@ -332,7 +332,7 @@ public class OverviewMapHandler extends OMToolComponent implements
         Vector<String> overviewLayers = PropUtils.parseSpacedMarkers(props.getProperty(prefix
                 + OverviewMapHandlerLayerProperty));
 
-        if (overviewLayers.size() == 0) {
+        if (overviewLayers.isEmpty()) {
             Debug.message("overview",
                     "OverviewMapHandler:  created without layers!");
         }
@@ -433,7 +433,7 @@ public class OverviewMapHandler extends OMToolComponent implements
             Layer layer = (Layer) comps[i];
             if (layer != statusLayer) { // Take care of the
                 // statusLayer later.
-                layerList.append(" " + layer.getPropertyPrefix());
+                layerList.append(" ").append(layer.getPropertyPrefix());
                 layer.getProperties(props);
             }
         }
@@ -741,7 +741,7 @@ public class OverviewMapHandler extends OMToolComponent implements
         if (controlledMaps != null) {
             controlledMaps.remove(l);
 
-            if (controlledMaps.size() == 0) {
+            if (controlledMaps.isEmpty()) {
                 deactivateMouseMode();
             }
         }

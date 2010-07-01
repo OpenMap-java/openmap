@@ -185,7 +185,7 @@ public class FilePropertyEditor extends PropertyEditorSupport implements
         int lastSepIndex = currentLocation.lastIndexOf(sepChar);
         //      System.out.println(currentLocation + ", index of " +
         // sepChar + " is at " + lastSepIndex);
-        if (currentLocation.equals("") || lastSepIndex == -1) {
+        if (currentLocation.isEmpty() || lastSepIndex == -1) {
             currentLocation = null;
         } else {
             String substring = currentLocation.substring(0, lastSepIndex);

@@ -303,11 +303,11 @@ public class EsriLayer extends OMGraphicHandlerLayer implements ShapeConstants {
         dbf = properties.getProperty(prefix + PARAM_DBF);
 
         if (shp != null) {
-            if ((shx == null || shx.equals(""))) {
+            if ((shx == null || shx.isEmpty())) {
                 shx = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_SHX;
             }
 
-            if ((dbf == null || dbf.equals(""))) {
+            if ((dbf == null || dbf.isEmpty())) {
                 dbf = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_DBF;
             }
 

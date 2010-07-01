@@ -215,7 +215,7 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
                 String className = (String) layerClasses.get(prettyName);
 
                 String markerName = "l" + (layerNumber++);
-                layerList.append(markerName + " ");
+                layerList.append(markerName).append(" ");
                 props.put(markerName + ".prettyName", prettyName);
                 props.put(markerName + ".class", className);
             }

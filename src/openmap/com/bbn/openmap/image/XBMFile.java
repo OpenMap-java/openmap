@@ -141,7 +141,7 @@ public class XBMFile {
 
             bits[j] = new Integer(first + second).byteValue();
             j++;
-            i = i + 4;
+            i += 4;
         }
     }
 

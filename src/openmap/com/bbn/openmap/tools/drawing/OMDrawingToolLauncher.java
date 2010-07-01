@@ -254,7 +254,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
             if (aName != null) {
                 requestors.setSelectedItem(aName);
             } else {
-                if (drawingToolRequestors.size() > 0) {
+                if (!drawingToolRequestors.isEmpty()) {
                     setRequestor(((DrawingToolRequestor) drawingToolRequestors.elementAt(0)).getName());
                 }
             }
@@ -680,7 +680,7 @@ public class OMDrawingToolLauncher extends OMToolComponent implements
                         + ((DrawingToolRequestor) someObj).getName());
             }
             drawingToolRequestors.remove((DrawingToolRequestor) someObj);
-            if (drawingToolRequestors.size() == 0) {// there is no
+            if (drawingToolRequestors.isEmpty()) {// there is no
                 // Requestor, so
                 // lets remove the
                 // window.

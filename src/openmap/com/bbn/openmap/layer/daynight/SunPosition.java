@@ -185,7 +185,7 @@ public class SunPosition {
     protected static double sunMeanAnomaly(double daysSinceEpoch) {
 
         double N = ORBIT_RADS_PER_DAY * daysSinceEpoch;
-        N = N % MoreMath.TWO_PI;
+        N %= MoreMath.TWO_PI;
         if (N < 0)
             N += MoreMath.TWO_PI;
 
@@ -290,9 +290,9 @@ public class SunPosition {
         double T = (julianDate - 2451545.0) / 36525.0;
         double T0 = 6.697374558 + (T * (2400.051336 + (T + 2.5862E-5)));
 
-        T0 = T0 % 24.0;
+        T0 %= 24.0;
         if (T0 < 0) {
-            T0 += 24;
+            T0 += 24.0;
         }
 
         double UT = time.get(Calendar.HOUR_OF_DAY)
@@ -301,7 +301,7 @@ public class SunPosition {
 
         T0 += UT * 1.002737909;
 
-        T0 = T0 % 24.0;
+        T0 %= 24.0;
         if (T0 < 0) {
             T0 += 24.0;
         }

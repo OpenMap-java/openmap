@@ -236,12 +236,12 @@ public class DDFFieldDefinition implements DDFConstants {
      */
     public String toString() {
         StringBuffer buf = new StringBuffer("  DDFFieldDefn:\n");
-        buf.append("      Tag = " + pszTag + "\n");
-        buf.append("      _fieldName = " + _fieldName + "\n");
-        buf.append("      _arrayDescr = " + _arrayDescr + "\n");
-        buf.append("      _formatControls = " + _formatControls + "\n");
-        buf.append("      _data_struct_code = " + _data_struct_code + "\n");
-        buf.append("      _data_type_code = " + _data_type_code + "\n");
+        buf.append("      Tag = ").append(pszTag).append("\n");
+        buf.append("      _fieldName = ").append(_fieldName).append("\n");
+        buf.append("      _arrayDescr = ").append(_arrayDescr).append("\n");
+        buf.append("      _formatControls = ").append(_formatControls).append("\n");
+        buf.append("      _data_struct_code = ").append(_data_struct_code).append("\n");
+        buf.append("      _data_type_code = ").append(_data_type_code).append("\n");
 
         if (paoSubfieldDefns != null) {
             for (Iterator it = paoSubfieldDefns.iterator(); it.hasNext();) {

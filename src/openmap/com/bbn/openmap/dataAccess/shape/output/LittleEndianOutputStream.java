@@ -33,8 +33,6 @@ import java.io.*;
  */
 public class LittleEndianOutputStream extends DataOutputStream {
 
-    protected int written;
-
     public void writeString(String string, int length) throws IOException {
         if (string.length() < length) {
             String newstring = zeroFill(string, length);

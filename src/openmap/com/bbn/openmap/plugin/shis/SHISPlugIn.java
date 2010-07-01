@@ -91,37 +91,40 @@ public class SHISPlugIn extends WebImagePlugIn implements ImageServerConstants {
         }
 
         StringBuffer buf = new StringBuffer(queryHeader);
-        buf.append(REQUEST + "=" + MAP + "&");
+        buf.append(REQUEST).append("=").append(MAP).append("&");
 
         if (p != null) {
             Point2D center = p.getCenter();
-            buf.append(PROJTYPE + "=" + p.getName() + "&" + SCALE + "="
-                    + p.getScale() + "&" + LAT + "="
-                    + center.getY() + "&" + LON + "="
-                    + center.getX() + "&" + HEIGHT + "="
-                    + p.getHeight() + "&" + WIDTH + "=" + p.getWidth());
+            buf.append(PROJTYPE).append("=").append(p.getName()).append("&")
+                    .append(SCALE).append("=").append(p.getScale()).append("&")
+                    .append(LAT).append("=").append(center.getY()).append("&")
+                    .append(LON).append("=").append(center.getX()).append("&")
+                    .append(HEIGHT).append("=").append(p.getHeight()).append("&")
+                    .append(WIDTH).append("=").append(p.getWidth());
         } else {
-            buf.append(PROJTYPE + "=name_undefined&" + SCALE
-                    + "=scale_undefined&" + LAT + "=center_lat_undefined&"
-                    + LON + "=center_lon_undefined&" + HEIGHT
-                    + "=height_undefined&" + WIDTH + "=width_undefined");
+            buf.append(PROJTYPE).append("=name_undefined&")
+                    .append(SCALE).append("=scale_undefined&")
+                    .append(LAT).append("=center_lat_undefined&")
+                    .append(LON).append("=center_lon_undefined&")
+                    .append(HEIGHT).append("=height_undefined&")
+                    .append(WIDTH).append("=width_undefined");
         }
 
         if (imageFormat != null) {
-            buf.append("&" + FORMAT + "=" + imageFormat);
+            buf.append("&").append(FORMAT).append("=").append(imageFormat);
         }
 
         if (transparent != null) {
-            buf.append("&" + TRANSPARENT + "=true");
+            buf.append("&").append(TRANSPARENT).append("=true");
         }
 
         if (backgroundColor != null) {
-            buf.append("&" + BGCOLOR + "=" + backgroundColor);
+            buf.append("&").append(BGCOLOR).append("=").append(backgroundColor);
         }
 
         String layers = getLayerMarkers();
         if (layers != null) {
-            buf.append("&" + layers);
+            buf.append("&").append(layers);
         }
 
         return buf.toString();

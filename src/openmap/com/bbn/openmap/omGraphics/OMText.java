@@ -856,7 +856,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * @param fontString the X font description.
      */
     public static Font rebuildFont(String fontString) {
-        if (fontString.equals(""))
+        if (fontString.isEmpty())
             return DEFAULT_FONT;
         int fontStyle = Font.PLAIN;
         int fontSize = 12;
@@ -897,7 +897,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
         // -foundry(who made it)
         StringBuffer ret = new StringBuffer("-*");
         // -font family(name)
-        ret.append("-" + font.getName());
+        ret.append("-").append(font.getName());
         // -weight(bold, medium)
         if (font.isBold())
             ret.append("-bold");
@@ -911,7 +911,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
         // -set width(normal, condensed, narrow, double width)
         ret.append("-normal");
         // --pixels(height)
-        ret.append("--" + font.getSize());
+        ret.append("--").append(font.getSize());
         // -points(in tenths of a point, related to screen)
         ret.append("-*");
         // -horizontal resolution in dpi

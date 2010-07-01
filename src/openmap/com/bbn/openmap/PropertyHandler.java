@@ -1085,13 +1085,11 @@ public class PropertyHandler extends MapHandlerChild implements
         int numComponents = 0;
         String markerName;
         String componentProperty = PropertyHandler.componentProperty;
-        StringBuffer componentMarkerString = new StringBuffer(componentProperty
-                + "=");
+        StringBuffer componentMarkerString = new StringBuffer(componentProperty).append("=");
         if (ph != null) {
             componentProperty = ph.getPropertyPrefix()
                     + PropertyHandler.componentProperty;
-            componentMarkerString = new StringBuffer(componentProperty
-                    + "=");
+            componentMarkerString = new StringBuffer(componentProperty).append("=");
         }
 
         StringBuffer componentPropsString = new StringBuffer();
@@ -1108,8 +1106,8 @@ public class PropertyHandler extends MapHandlerChild implements
             for (int i = 0; i < componentList.size(); i++) {
                 String markerNameClass = (String) componentList.elementAt(i)
                         + ".class";
-                componentPropsString.append(markerNameClass + "="
-                        + phProps.get(markerNameClass) + "\n");
+                componentPropsString.append(markerNameClass).append("=")
+                        .append(phProps.get(markerNameClass)).append("\n");
                 if (createdProperties != null) {
                     createdProperties.put(markerNameClass,
                             phProps.get(markerNameClass));
@@ -1153,15 +1151,15 @@ public class PropertyHandler extends MapHandlerChild implements
 
                 if (!componentListBuilt) {
                     if (markerName != null) {
-                        componentMarkerString.append(" " + markerName);
+                        componentMarkerString.append(" ").append(markerName);
                     } else {
                         markerName = "component" + (numComponents++);
-                        componentMarkerString.append(" " + markerName);
+                        componentMarkerString.append(" ").append(markerName);
                         pc.setPropertyPrefix(markerName);
                     }
 
-                    componentPropsString.append(markerName + ".class="
-                            + someObj.getClass().getName() + "\n");
+                    componentPropsString.append(markerName).append(".class=")
+                            .append(someObj.getClass().getName()).append("\n");
 
                     if (createdProperties != null) {
                         createdProperties.put(markerName, someObj.getClass()
@@ -1180,8 +1178,8 @@ public class PropertyHandler extends MapHandlerChild implements
                         String value = componentProperties.getProperty(key);
 
                         if (value != null) {
-                            componentPropsString.append(key + "=" + value
-                                    + "\n");
+                            componentPropsString.append(key).append("=")
+                                    .append(value).append("\n");
                         }
 
                         if (createdProperties != null && value != null) {
@@ -1191,9 +1189,9 @@ public class PropertyHandler extends MapHandlerChild implements
                 }
             } else if (!componentListBuilt) {
                 markerName = "component" + (numComponents++);
-                componentMarkerString.append(" " + markerName);
-                componentPropsString.append(markerName + ".class="
-                        + someObj.getClass().getName() + "\n");
+                componentMarkerString.append(" ").append(markerName);
+                componentPropsString.append(markerName).append(".class=")
+                       .append(someObj.getClass().getName()).append("\n");
                 if (createdProperties != null) {
                     createdProperties.put(markerName, someObj.getClass()
                             .getName());
@@ -1248,14 +1246,12 @@ public class PropertyHandler extends MapHandlerChild implements
         String layerMarkerStringKey = Environment.OpenMapPrefix + "."
                 + LayerHandler.layersProperty;
 
-        StringBuffer layerMarkerString = new StringBuffer(layerMarkerStringKey
-                + "=");
+        StringBuffer layerMarkerString = new StringBuffer(layerMarkerStringKey).append("=");
 
         String startUpLayerMarkerStringKey = Environment.OpenMapPrefix + "."
                 + LayerHandler.startUpLayersProperty;
 
-        StringBuffer startUpLayerMarkerString = new StringBuffer(startUpLayerMarkerStringKey
-                + "=");
+        StringBuffer startUpLayerMarkerString = new StringBuffer(startUpLayerMarkerStringKey).append("=");
 
         StringBuffer layerPropertiesString = new StringBuffer();
 
@@ -1283,15 +1279,15 @@ public class PropertyHandler extends MapHandlerChild implements
                 layerProperties.clear();
             }
 
-            layerMarkerString.append(" " + markerName);
+            layerMarkerString.append(" ").append(markerName);
 
             if (layers[i].isVisible()) {
-                startUpLayerMarkerString.append(" " + markerName);
+                startUpLayerMarkerString.append(" ").append(markerName);
             }
 
             layers[i].getProperties(layerProperties);
-            layerPropertiesString.append("### -" + markerName
-                    + "- layer properties\n");
+            layerPropertiesString.append("### -").append(markerName)
+                    .append("- layer properties\n");
 
             TreeMap orderedProperties = new TreeMap(layerProperties);
             for (Iterator keys = orderedProperties.keySet().iterator(); keys.hasNext();) {
@@ -1302,7 +1298,8 @@ public class PropertyHandler extends MapHandlerChild implements
                 String value = layerProperties.getProperty(key);
 
                 if (value != null) {
-                    layerPropertiesString.append(key + "=" + value + "\n");
+                    layerPropertiesString.append(key).append("=")
+                            .append(value).append("\n");
                 }
 
                 if (createdProperties != null && value != null) {
@@ -1310,8 +1307,8 @@ public class PropertyHandler extends MapHandlerChild implements
                 }
             }
 
-            layerPropertiesString.append("### end of -" + markerName
-                    + "- properties\n\n");
+            layerPropertiesString.append("### end of -").append(markerName)
+                    .append("- properties\n\n");
         }
 
         if (ps != null) {

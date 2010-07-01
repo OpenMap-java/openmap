@@ -176,10 +176,11 @@ public class LinkBoundingPoly {
 
     public String toString() {
         StringBuffer s = new StringBuffer();
-        s.append("  LinkBoundingPoly has " + points.length / 2 + " points.");
+        s.append("  LinkBoundingPoly has ")
+                .append(points.length / 2).append(" points.");
         for (int i = 0; i < points.length; i += 2) {
-            s.append("\n    |Lat = " + points[i] + ", Lon = " + points[i + 1]
-                    + "|");
+            s.append("\n    |Lat = ").append(points[i])
+                    .append(", Lon = ").append(points[i + 1]).append("|");
         }
         return s.toString();
     }

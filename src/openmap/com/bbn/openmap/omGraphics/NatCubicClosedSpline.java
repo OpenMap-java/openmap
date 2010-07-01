@@ -68,11 +68,11 @@ public class NatCubicClosedSpline extends NatCubicSpline {
             v[k + 1] = z = 1 / (4 - v[k]);
             w[k + 1] = -z * w[k];
             y[k] = z * (3 * (x[k + 1] - x[k - 1]) - y[k - 1]);
-            H = H - G * w[k];
-            F = F - G * y[k - 1];
+            H -= G * w[k];
+            F -= G * y[k - 1];
             G = -v[k] * G;
         }
-        H = H - (G + 1) * (v[n] + w[n]);
+        H -= (G + 1) * (v[n] + w[n]);
         y[n] = F - (G + 1) * y[n - 1];
 
         D[n] = y[n] / H;

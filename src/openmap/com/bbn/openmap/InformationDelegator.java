@@ -410,7 +410,7 @@ public class InformationDelegator extends OMComponentPanel implements
      */
     public void displayInfoLine(String infoLine, int labelDesignator) {
         if (infoLineHolder != null) {
-            setLabel((infoLine != null && infoLine.length() > 0) ? infoLine
+            setLabel((infoLine != null && !infoLine.isEmpty()) ? infoLine
                     : fudgeString, labelDesignator);
         }
     }

@@ -142,7 +142,7 @@ public class ZoomLevelInfo
 
       StringBuffer buf = new StringBuffer();
       for (String layerMarkerName : layers) {
-         buf.append(layerMarkerName + " ");
+         buf.append(layerMarkerName).append(" ");
       }
       props.put(prefix + LAYERS_PROPERTY, buf.toString().trim());
 
@@ -150,7 +150,9 @@ public class ZoomLevelInfo
       for (Rectangle2D bound : getBounds()) {
          double x = bound.getX();
          double y = bound.getY();
-         buf.append(y + " " + x + " " + (y + bound.getHeight()) + " " + (x + bound.getWidth()) + " ");
+         buf.append(y).append(" ").append(x).append(" ")
+                 .append((y + bound.getHeight())).append(" ")
+                 .append((x + bound.getWidth())).append(" ");
       }
       props.put(prefix + BOUNDS_PROPERTY, buf.toString().trim());
 
@@ -327,7 +329,7 @@ public class ZoomLevelInfo
 
       }
 
-      if (ret.size() == 0) {
+      if (ret.isEmpty()) {
          int etc = getEdgeTileCount();
          ret.add(new Rectangle2D.Double(0, 0, etc, etc));
       }

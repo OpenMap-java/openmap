@@ -111,7 +111,7 @@ public class BufferedLinkLayer extends LinkLayer {
 
         OMGraphicList omGraphics = getList();
 
-        if (omGraphics == null || omGraphics.size() == 0) {
+        if (omGraphics == null || omGraphics.isEmpty()) {
 
             ////////////// Call getRectangle for server....
             try {

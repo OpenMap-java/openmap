@@ -327,12 +327,12 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
                 // and shx file are not provided, look for them next
                 // to the shape file. - DFD
 
-                if ((shx == null || shx.equals("")) && shp != null) {
+                if ((shx == null || shx.isEmpty()) && shp != null) {
                     shx = shp.substring(0, shp.lastIndexOf('.') + 1)
                             + PARAM_SHX;
                 }
 
-                if ((dbf == null || dbf.equals("")) && shp != null) {
+                if ((dbf == null || dbf.isEmpty()) && shp != null) {
                     dbf = shp.substring(0, shp.lastIndexOf('.') + 1)
                             + PARAM_DBF;
                 }
@@ -827,8 +827,8 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
             try {
                 String column = getTable().getColumnName(i);
                 String value = (String) (getTable().getValueAt(index, i) + "");
-                v.append((i == 0 ? "<b>" : "<BR><b>") + column + ":</b> "
-                        + value);
+                v.append((i == 0 ? "<b>" : "<BR><b>")).append(column)
+                        .append(":</b> ").append(value);
             } catch (NullPointerException npe) {
             } catch (IndexOutOfBoundsException obe) {
             }

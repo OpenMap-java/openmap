@@ -225,7 +225,7 @@ public class TextShapeDecoration extends AbstractShapeDecoration {
         for (int i = 0; i < text.length(); i++) {
             c = text.substring(i, i + 1);
             l = metrics.stringWidth(c);
-            if (points.size() == 0)
+            if (points.isEmpty())
                 break;
             LineUtil.retrievePoints(l, points, polysegment);
 

@@ -1763,7 +1763,7 @@ public class OMDrawingTool
       // Also also, the OMGraphic should store the class name of the
       // editableomgraphic it wants to have used on it in it's attributes.
 
-      if (additionalOptions != null && additionalOptions.size() > 0) {
+      if (additionalOptions != null && !additionalOptions.isEmpty()) {
          popup = null;
       }
 
@@ -1772,7 +1772,7 @@ public class OMDrawingTool
       if (popup == null && !getUseAsTool()) {
          popup = createPopupMenu();
 
-         if (additionalOptions != null && additionalOptions.size() > 0 && popup != null) {
+         if (additionalOptions != null && !additionalOptions.isEmpty() && popup != null) {
             for (Iterator it = additionalOptions.iterator(); it.hasNext();) {
                Object obj = it.next();
                if (obj instanceof JMenuItem) {

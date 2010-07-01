@@ -149,8 +149,8 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
             sb.append("|--> ");
         }
 
-        sb.append("OMList with " + size() + " object"
-                + (size() == 1 ? "\n" : "s\n"));
+        sb.append("OMList with ").append(size()).append(" object"
+               ).append((size() == 1 ? "\n" : "s\n"));
 
         synchronized (graphics) {
             StringBuffer sb1 = new StringBuffer();
@@ -170,7 +170,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
                     description = levelHeader + omg.getDescription();
                 }
 
-                sb.append(spacer + description + "\n");
+                sb.append(spacer).append(description).append("\n");
             }
         }
         return sb.toString();
@@ -760,7 +760,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
         int i;
 
         synchronized (graphics) {
-            if (size() != 0) {
+            if (!isEmpty()) {
                 if (traverseMode == FIRST_ADDED_ON_TOP) {
                     i = 0;
                     ListIterator<T> iterator = graphics.listIterator();
@@ -935,7 +935,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
         }
 
         OMDist<T> omd = createDist();
-        if (size() != 0) {
+        if (!isEmpty()) {
             synchronized (graphics) {
 
                 if (traverseMode == FIRST_ADDED_ON_TOP) {
@@ -1145,7 +1145,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
         }
 
         synchronized (graphics) {
-            if (size() != 0) {
+            if (!isEmpty()) {
                 if (traverseMode == FIRST_ADDED_ON_TOP) {
                     ListIterator<? extends OMGeometry> iterator = graphics.listIterator();
                     while (iterator.hasNext()) {
@@ -1250,7 +1250,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
 
         synchronized (graphics) {
 
-            if (size() != 0) {
+            if (!isEmpty()) {
                 if (traverseMode == FIRST_ADDED_ON_TOP) {
                     ListIterator<? extends OMGeometry> iterator = graphics.listIterator();
                     while (iterator.hasNext()) {

@@ -113,7 +113,7 @@ public class MapTileMakerComponent
       extends OMComponentPanel
       implements MapPanelChild, LayerListener, DrawingToolRequestor, PaintListener, ProjectionListener {
 
-   protected Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.MapTileMakerComponent");
+   protected Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.mapTile.MapTileMakerComponent");
 
    public final static String TILE_MAKER_PROPERTIES_FILE = "file";
 
@@ -370,7 +370,7 @@ public class MapTileMakerComponent
     * @see
     * com.bbn.openmap.gui.MapPanelChild#setPreferredLocation(java.lang.String)
     */
-  public void setPreferredLocation(String string) {
+   public void setPreferredLocation(String string) {
       this.preferredLocation = string;
    }
 
@@ -662,7 +662,7 @@ public class MapTileMakerComponent
 
          if (faceCount == 0) {
             String no_zoom_levels_were_included = i18n.get(MapTileMakerComponent.class, "no_zoom_levels_were_included", "No zoom levels were included for tile creation");
-            content.append("<html><body><p>" + no_zoom_levels_were_included + ".<p></body></html>");
+            content.append("<html><body><p>").append(no_zoom_levels_were_included).append(".<p></body></html>");
             // Don't need scroll pane for this message.
             contentPane.add(info);
          } else {
@@ -676,7 +676,7 @@ public class MapTileMakerComponent
 
             content.append("<html><body>");
             String launching_maptilemaker = i18n.get(MapTileMakerComponent.class, "launching_maptilemaker", "Launching MapTileMaker with these settings");
-            content.append("<h3>" + launching_maptilemaker + ":</h3>");
+            content.append("<h3>").append(launching_maptilemaker).append(":</h3>");
             StringBuffer zoomLevelList = new StringBuffer();
             StringBuffer totalLayers = null;
 
@@ -685,7 +685,7 @@ public class MapTileMakerComponent
                   ZoomLevelInfo zli = face.getZoomLevelInfo();
 
                   zli.setPropertyPrefix("zoom" + zli.getZoomLevel());
-                  zoomLevelList.append(" " + zli.getPropertyPrefix());
+                  zoomLevelList.append(" ").append(zli.getPropertyPrefix());
                   String zoom_level = i18n.get(MapTileMakerComponent.class, "zoom_level", "Zoom Level");
                   zli.name = zoom_level + " " + zli.getZoomLevel();
                   String configuration_for = i18n.get(MapTileMakerComponent.class, "configuration_for", "Configuration for");
@@ -695,9 +695,9 @@ public class MapTileMakerComponent
 
                   boolean buildLayerList = false;
 
-                  content.append("<p><hr><b>" + zoom_level + " " + face.getZoomLevelInfo().getZoomLevel() + "</b>");
+                  content.append("<p><hr><b>").append(zoom_level).append(" ").append(face.getZoomLevelInfo().getZoomLevel()).append("</b>");
                   String layers_string = i18n.get(MapTileMakerComponent.class, "layers_string", "Layers");
-                  content.append("<ul><b>" + layers_string + ":</b>");
+                  content.append("<ul><b>").append(layers_string).append(":</b>");
                   for (LayerObject lo : face.layerList) {
 
                      if (totalLayers == null) {
@@ -706,28 +706,30 @@ public class MapTileMakerComponent
                      }
 
                      if (lo.isSelected()) {
-                        content.append("<li>" + lo.layer.getName());
+                        content.append("<li>").append(lo.layer.getName());
                         zli.layers.add(lo.layer.getPropertyPrefix());
                      }
 
                      if (buildLayerList) {
-                        totalLayers.append(lo.layer.getPropertyPrefix() + " ");
+                        totalLayers.append(lo.layer.getPropertyPrefix()).append(" ");
                         lo.layer.getProperties(launchProps);
                      }
                   }
                   content.append("</ul>");
                   String coverage_string = i18n.get(MapTileMakerComponent.class, "coverage_string", "Coverage");
-                  content.append("<ul><b>" + coverage_string + ":</b>");
+                  content.append("<ul><b>").append(coverage_string).append(":</b>");
 
-                  if (face.boundsObjectList == null || face.boundsObjectList.size() == 0) {
+                  if (face.boundsObjectList == null || face.boundsObjectList.isEmpty()) {
                      int edgeTileCount = face.zfi.getEdgeTileCount();
                      String entire_earth = i18n.get(MapTileMakerComponent.class, "entire_earth", "Entire Earth");
-                     content.append("<li>" + entire_earth + " (" + edgeTileCount + "x" + edgeTileCount + " tiles)");
+                     content.append("<li>").append(entire_earth).append(" (").append(edgeTileCount).append("x").append(edgeTileCount).append(" tiles)");
                   } else {
                      for (BoundsObject bo : face.boundsObjectList) {
                         OMRect rect = bo.bounds;
-                        content.append("<li>(" + rect.getNorthLat() + ", " + rect.getWestLon() + ", " + rect.getSouthLat() + ", "
-                              + rect.getEastLon() + ")");
+                        content.append("<li>(").append(rect.getNorthLat())
+                                .append(", ").append(rect.getWestLon())
+                                .append(", ").append(rect.getSouthLat())
+                                .append(", ").append(rect.getEastLon()).append(")");
 
                         zli.bounds.add(zli.createProperBounds(rect.getWestLon(), rect.getNorthLat(), rect.getEastLon(),
                                                               rect.getSouthLat()));

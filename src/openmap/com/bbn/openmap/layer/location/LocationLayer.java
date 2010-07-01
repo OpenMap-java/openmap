@@ -936,7 +936,7 @@ public class LocationLayer extends Layer implements MapMouseListener {
         if (dataHandlers != null) {
             for (int i = 0; i < dataHandlers.length; i++) {
                 String pp = dataHandlers[i].getPropertyPrefix();
-                handlerList.append(" " + pp);
+                handlerList.append(" ").append(pp);
                 props.put(pp + ".prettyName", dataHandlerNames[i]);
                 dataHandlers[i].getProperties(props);
             }

@@ -101,7 +101,7 @@ public class CoordInfoFormatterHandler extends OMComponent {
         for (Iterator<CoordInfoFormatter> it = formatters.iterator(); it.hasNext();) {
             CoordInfoFormatter cif = it.next();
             cif.getProperties(props);
-            markerList.append(cif.getPropertyPrefix() + " ");
+            markerList.append(cif.getPropertyPrefix()).append(" ");
             props.put(PropUtils.getScopedPropertyPrefix(cif), cif.getClass()
                     .getName());
         }

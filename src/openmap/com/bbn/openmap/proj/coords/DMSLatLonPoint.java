@@ -162,13 +162,13 @@ public class DMSLatLonPoint implements Cloneable {
             if (rem >= MINUTE) { // get the minutes
                 int min = (int) (rem * 60);
                 dllp.lat_minutes = min;
-                rem = rem - (min * MINUTE);
+                rem -= (min * MINUTE);
             }
             // Any seconds left?
             if (rem >= SECOND) { // get the seconds
                 double sec = (rem * 3600.0);
                 dllp.lat_seconds = sec;
-                rem = rem - (sec * SECOND);
+                rem -= (sec * SECOND);
             }
         } else {
             dllp.lat_isnegative = false; // we don't want a negative
@@ -191,12 +191,12 @@ public class DMSLatLonPoint implements Cloneable {
             if (rem >= MINUTE) {
                 int min = (int) (rem * 60.0);
                 dllp.lon_minutes = min;
-                rem = rem - (min * MINUTE);
+                rem -= (min * MINUTE);
             }
             if (rem >= SECOND) {
                 double sec = rem * 3600.0;
                 dllp.lon_seconds = sec;
-                rem = rem - (sec * SECOND);
+                rem -= (sec * SECOND);
             }
         } else {
             dllp.lon_isnegative = false;
@@ -328,7 +328,7 @@ public class DMSLatLonPoint implements Cloneable {
      * @return int value normalized
      */
     final public static int normalize_value(int val) {
-        val = val % 60;
+        val %= 60;
         if (val < 0) {
             val += 60;
         }
@@ -342,7 +342,7 @@ public class DMSLatLonPoint implements Cloneable {
      * @return float value normalized
      */
     final public static double normalize_value(double val) {
-        val = val % 60f;
+        val %= 60f;
         if (val < 0f) {
             val += 60f;
         }

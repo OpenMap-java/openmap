@@ -112,7 +112,7 @@ public class Tokenizer extends java.io.PushbackReader {
                 }
             }
             if (c == '\n')
-                this.lineCount = this.lineCount + 1;
+                this.lineCount++;
             //_ System.out.print((char) c + "_");
             return c;
         } catch (java.io.IOException e) {

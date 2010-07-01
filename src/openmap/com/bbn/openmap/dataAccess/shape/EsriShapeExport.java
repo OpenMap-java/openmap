@@ -916,7 +916,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
         // System.out.println(e);
         StringBuffer sb = new StringBuffer("ShapeFile Export Error:");
         sb.append("\nProblem with creating the shapefile set.");
-        sb.append("\n" + e.toString());
+        sb.append("\n").append(e.toString());
 
         JOptionPane.showMessageDialog(null, sb.toString(), "ESRI Shape Export to File",
                                       JOptionPane.ERROR_MESSAGE);

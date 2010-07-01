@@ -88,9 +88,9 @@ public class DcwSpatialIndex {
                     if ((baseOffset + nodeinfo[i][0]) != inputFile.getFilePointer()) {
                         throw new FormatException("SI Input appears to be out-of-sync");
                     }
-                    StringBuffer pr = new StringBuffer("i=" + (i + 1));
-                    pr.append(" offset=" + nodeinfo[i][0]);
-                    pr.append(" count=" + nodeinfo[i][1]);
+                    StringBuffer pr = new StringBuffer("i=").append(i + 1);
+                    pr.append(" offset=").append(nodeinfo[i][0]);
+                    pr.append(" count=").append(nodeinfo[i][1]);
                     for (int j = 0; j < nodeinfo[i][1]; j++) {
                         actprimcnt++;
                         PrimitiveRecord prim = new PrimitiveRecord(inputFile);

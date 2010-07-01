@@ -264,7 +264,7 @@ public class SymbolReferenceLibrary extends OMComponent {
                                                         String code) {
         List sublist = node.getSubs();
 
-        if (sublist == null || sublist.size() == 0) {
+        if (sublist == null || sublist.isEmpty()) {
             // Last on the line of the tree, this is the closest match...
             return node;
         }

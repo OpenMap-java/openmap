@@ -706,7 +706,7 @@ public class EventListPresenter extends AbstractEventPresenter implements
             // filter interface.
             List filters = meh.getFilters();
 
-            if (filters != null && filters.size() != 0) {
+            if (filters != null && !filters.isEmpty()) {
                 for (Iterator it2 = filters.iterator(); it2.hasNext();) {
                     Object filterObj = it2.next();
                     if (filterObj instanceof String) {
@@ -1005,7 +1005,7 @@ public class EventListPresenter extends AbstractEventPresenter implements
     }
 
     protected void scrollToSelected(List<OMEvent> selectedEvents) {
-        if (selectedEvents != null && selectedEvents.size() > 0) {
+        if (selectedEvents != null && !selectedEvents.isEmpty()) {
             OMEvent event = selectedEvents.get(0);
             lastSelectedEvent = event;
             // need to check timestamps because the first selected event might

@@ -115,11 +115,11 @@ public class LocationData {
     public String toString() {
         StringBuffer s = new StringBuffer();
         s.append("Location Data values:\n");
-        s.append(" City Name = " + cityName + "\n");
-        s.append(" State Name = " + stateName + "\n");
-        s.append(" Graphic = " + graphicName + "\n");
-        s.append(" Latitude = " + latitude + "\n");
-        s.append(" Longitude = " + longitude + "\n");
+        s.append(" City Name = ").append(cityName).append("\n");
+        s.append(" State Name = ").append(stateName).append("\n");
+        s.append(" Graphic = ").append(graphicName).append("\n");
+        s.append(" Latitude = ").append(latitude).append("\n");
+        s.append(" Longitude = ").append(longitude).append("\n");
         return s.toString();
     }
 

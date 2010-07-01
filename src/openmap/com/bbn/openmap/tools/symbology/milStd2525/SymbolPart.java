@@ -283,8 +283,8 @@ public class SymbolPart {
 
         sb.append(toString());
         if (subSize > 0) {
-            sb.append(" with " + subSize + " subcategor"
-                    + (subSize == 1 ? "y\n" : "ies\n"));
+            sb.append(" with ").append(subSize).append(" subcategor"
+                   ).append((subSize == 1 ? "y\n" : "ies\n"));
         } else {
             sb.append("\n");
         }
@@ -300,8 +300,8 @@ public class SymbolPart {
                 String spacer = sb1.toString();
 
                 for (Iterator it = subs.iterator(); it.hasNext();) {
-                    sb.append(spacer
-                            + ((SymbolPart) it.next()).getDescription(level + 1));
+                    sb.append(spacer)
+                            .append(((SymbolPart) it.next()).getDescription(level + 1));
                 }
             }
         }

@@ -132,7 +132,7 @@ public class OMAction implements OMGraphicConstants {
      * Provide a String that describes what the Action is all about.
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer("OMAction (" + value + ") [ ");
+        StringBuffer sb = new StringBuffer("OMAction (").append(value).append(") [ ");
 
         if (value == 0) {
             sb.append("add ");

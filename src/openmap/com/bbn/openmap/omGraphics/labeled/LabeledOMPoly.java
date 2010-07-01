@@ -234,7 +234,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
             cy += (ypts[i] + ypts[j]) * factor;
         }
 
-        A = A * 6.0f;
+        A *= 6.0f;
         factor = 1 / A;
 
         // bbenyo: take the absolute value cause I was getting

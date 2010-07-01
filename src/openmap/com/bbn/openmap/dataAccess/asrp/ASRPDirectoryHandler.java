@@ -127,7 +127,7 @@ public class ASRPDirectoryHandler {
 
             OMGraphicList subList = current.getTiledImages(proj);
 
-            if (subList.size() > 0) {
+            if (!subList.isEmpty()) {
                 ret.add(subList);
             } else {
                 if (Debug.debugging("asrp")) {
@@ -137,7 +137,7 @@ public class ASRPDirectoryHandler {
             }
         }
 
-        if (ret.size() == 0)
+        if (ret.isEmpty())
             ret = null;
 
         return ret;

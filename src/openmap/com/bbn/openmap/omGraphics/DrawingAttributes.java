@@ -1520,7 +1520,7 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
 
         // Look for a dash pattern properties to come up with a stroke
         String dPattern = props.getProperty(realPrefix + dashPatternProperty);
-        if (basicStrokeDefined && dPattern != null && !dPattern.equals("")) {
+        if (basicStrokeDefined && dPattern != null && !dPattern.isEmpty()) {
             float dashPhase;
             float[] lineDash;
             // OK, it exists, come up with a stroke.
@@ -1568,7 +1568,7 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
             }
 
             String dPhase = props.getProperty(realPrefix + dashPhaseProperty);
-            if (dPhase != null && !dPhase.equals("")) {
+            if (dPhase != null && !dPhase.isEmpty()) {
                 try {
                     dashPhase = Float.valueOf(dPhase).floatValue();
                 } catch (NumberFormatException nfe) {
@@ -1619,7 +1619,7 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
 
         // OK, Fill pattern next...
         fPattern = props.getProperty(realPrefix + fillPatternProperty);
-        if (fPattern != null && !fPattern.equals("")) {
+        if (fPattern != null && !fPattern.isEmpty()) {
 
             try {
 
@@ -1707,7 +1707,7 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
             if (fa != null) {
                 StringBuffer dp = new StringBuffer();
                 for (int i = 0; i < fa.length; i++) {
-                    dp.append(" " + Float.toString(fa[i]));
+                    dp.append(" ").append(Float.toString(fa[i]));
                 }
                 props.put(prefix + dashPatternProperty, dp.toString().trim());
                 props.put(prefix + dashPhaseProperty,
@@ -1942,15 +1942,15 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
 
     public String toString() {
         StringBuffer sb = new StringBuffer("DrawingAttributes[");
-        sb.append("linePaint(" + linePaint + "), ");
-        sb.append("selectPaint(" + selectPaint + "), ");
-        // sb.append("textPaint(" + textPaint + "), ");
-        sb.append("mattingPaint(" + mattingPaint + "), ");
-        sb.append("fillPaint(" + fillPaint + "), ");
-        sb.append("fillPattern(" + fillPattern + "), ");
-        sb.append("stroke(" + stroke + "), ");
-        sb.append("baseScale(" + baseScale + "), ");
-        sb.append("matted(" + new Boolean(matted).toString() + ")]");
+        sb.append("linePaint(").append(linePaint).append("), ");
+        sb.append("selectPaint(").append(selectPaint).append("), ");
+        // sb.append("textPaint(").append(textPaint).append("), ");
+        sb.append("mattingPaint(").append(mattingPaint).append("), ");
+        sb.append("fillPaint(").append(fillPaint).append("), ");
+        sb.append("fillPattern(").append(fillPattern).append("), ");
+        sb.append("stroke(").append(stroke).append("), ");
+        sb.append("baseScale(").append(baseScale).append("), ");
+        sb.append("matted(").append(new Boolean(matted).toString()).append(")]");
         return sb.toString();
     }
 

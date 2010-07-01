@@ -88,7 +88,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         TimeEventListener {
 
     /**
-     * This property is used to signify whether any AAREvents have been
+     * This property is used to signify whether any OMEvents have been
      * designated as play filterable, so GUI controls for the play filter can be
      * enabled/disabled.
      */
@@ -605,7 +605,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             playFilter.setInUse(inUse);
             firePropertyChange(PlayFilterProperty,
                     null,
-                    new Boolean(playFilter.size() > 0 || !inUse));
+                    new Boolean(!inUse || !playFilter.isEmpty()));
         } else {
             logger.finer("AAGGH: " + propertyName);
         }
@@ -885,8 +885,8 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
                     // This code just returns the closest visible snapped time
                     // event.
-                    // event.putAttribute(AAREvent.ATT_KEY_SELECTED,
-                    // AAREvent.ATT_VAL_SELECTED);
+                    // event.putAttribute(OMEvent.ATT_KEY_SELECTED,
+                    // OMEvent.ATT_VAL_SELECTED);
                     // eventList.add(event);
 
                     // I guess this is OK when a visible event is clicked on,
@@ -958,7 +958,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                 firePropertyChange(PlayFilterProperty,
                         null,
                         new Boolean(!playFilter.isInUse()
-                                || playFilter.size() > 0));
+                                || !playFilter.isEmpty()));
             }
 
         }

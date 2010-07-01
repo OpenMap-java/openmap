@@ -265,13 +265,13 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
         }
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < da.length; i++) {
-            sb.append(Float.toString(da[i]) + " ");
+            sb.append(Float.toString(da[i])).append(" ");
         }
         return sb.toString().trim();
     }
 
     public static float[] stringToDashArray(String das) {
-        if (das == null || das.equals(NONE) || das.equals("")) {
+        if (das == null || das.equals(NONE) || das.isEmpty()) {
             return null;
         }
 

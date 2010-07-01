@@ -92,12 +92,12 @@ public class SpatialIndexHandler implements PropertyConsumer {
 
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        sb.append("For " + prettyName + ":\n");
-        sb.append("  Shape file name: " + shapeFileName + "\n");
-        sb.append("  Spatal index file name: "
-                + SpatialIndex.ssx(shapeFileName) + "\n");
-        sb.append("  image URL: " + imageURLString + "\n");
-        sb.append("  drawing attributes: " + drawingAttributes + "\n");
+        sb.append("For ").append(prettyName).append(":\n");
+        sb.append("  Shape file name: ").append(shapeFileName).append("\n");
+        sb.append("  Spatal index file name: ")
+                .append(SpatialIndex.ssx(shapeFileName)).append("\n");
+        sb.append("  image URL: ").append(imageURLString).append("\n");
+        sb.append("  drawing attributes: ").append(drawingAttributes).append("\n");
         return sb.toString();
     }
 
@@ -162,7 +162,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
         String dataPathPrefix = props.getProperty(prefix
                 + Layer.DataPathPrefixProperty);
 
-        if (dataPathPrefix != null && dataPathPrefix.length() > 0) {
+        if (dataPathPrefix != null && !dataPathPrefix.isEmpty()) {
             dataPathPrefix += "/";
         } else {
             dataPathPrefix = "";
@@ -201,7 +201,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
                     + ShapeLayer.pointImageURLProperty);
 
             try {
-                if (imageURLString != null && !imageURLString.equals("")) {
+                if (imageURLString != null && !imageURLString.isEmpty()) {
                     URL imageURL = PropUtils.getResourceOrFileOrURL(this,
                             imageURLString);
                     ImageIcon imageIcon = new ImageIcon(imageURL);

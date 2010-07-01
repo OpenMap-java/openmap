@@ -57,7 +57,7 @@ public class PaintListenerSupport extends ListenerSupport<PaintListener> {
      */
     public void paint(Graphics graphics) {
 
-        if (size() == 0)
+        if (isEmpty())
             return;
 
         for (PaintListener target : this) {

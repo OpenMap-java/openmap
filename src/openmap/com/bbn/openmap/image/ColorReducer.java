@@ -50,7 +50,7 @@ public class ColorReducer {
 
                 if (inputHasAlpha) {
 					int a = argb[3];
-					pixels[x][y] = pixels[x][y] | (a << 24);
+					pixels[x][y] |= (a << 24);
 					// decide if pixel is transparent or not
 					transparent[x][y] = (a < 128) ? true : false;
 				}

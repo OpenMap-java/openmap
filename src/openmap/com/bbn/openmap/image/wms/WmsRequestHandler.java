@@ -633,7 +633,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
             // wms-1.1.1 7.2.3.4. "If all layers are
             // to be shown using the default style, either the form "STYLES=" or
             // "STYLES=,,," is valid."
-            if (strStyles.equals("")) {
+            if (strStyles.isEmpty()) {
                 styles_in = new String[layers_in.length];
                 Arrays.fill(styles_in, "");
             }
@@ -678,7 +678,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
                 wmsLayer.setDefaultStyle();
             } else {
                 String styleName = styles_in[i];
-                if (styleName.equals("")) {
+                if (styleName.isEmpty()) {
                     wmsLayer.setDefaultStyle();
                 } else if (wmsLayer.isStyleSupported(styleName)) {
                     wmsLayer.setStyle(styleName);
@@ -714,7 +714,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         String styleName = requestProperties.getProperty(STYLE);
         if (styleName == null) {
             wmsLayer.setDefaultStyle();
-        } else if (styleName.equals("")) {
+        } else if (styleName.isEmpty()) {
             wmsLayer.setDefaultStyle();
         } else if (wmsLayer.isStyleSupported(styleName)) {
             wmsLayer.setStyle(styleName);
@@ -867,7 +867,11 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
             Debug.message("wms", "missing version string. default to "
                     + parameters.getVersion());
         } else {
-            parameters.setVersion(Version.getVersion(versionString));
+            if (parameters instanceof GetCapabilitiesRequestParameters) {
+                parameters.setVersion(Version.getVersionBestMatch(versionString));
+            } else {
+                parameters.setVersion(Version.getVersion(versionString));
+            }
             if (parameters.getVersion() == null) {
                 throw new WMSException("Unsupported protocol version: "
                         + versionString);

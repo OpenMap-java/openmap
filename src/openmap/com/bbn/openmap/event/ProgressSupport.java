@@ -61,7 +61,7 @@ public class ProgressSupport extends ListenerSupport<ProgressListener> {
                     + " listeners");
         }
 
-        if (size() == 0)
+        if (isEmpty())
             return;
 
         ProgressEvent evt = new ProgressEvent(source, type, taskname, finishedValue, currentValue);

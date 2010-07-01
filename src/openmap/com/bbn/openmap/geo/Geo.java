@@ -557,22 +557,22 @@ public class Geo {
         Geo p1 = v1;
         Geo p2 = null;
         while (vs.hasMoreElements()) {
-            count = count + 1;
+            count++;
             p2 = (Geo) vs.nextElement();
-            area = area + angle(p0, p1, p2);
+            area += angle(p0, p1, p2);
             p0 = p1;
             p1 = p2;
         }
 
-        count = count + 1;
+        count++;
         p2 = v0;
-        area = area + angle(p0, p1, p2);
+        area += angle(p0, p1, p2);
         p0 = p1;
         p1 = p2;
 
-        count = count + 1;
+        count++;
         p2 = v1;
-        area = area + angle(p0, p1, p2);
+        area += angle(p0, p1, p2);
 
         return area - (count - 2) * Math.PI;
     }

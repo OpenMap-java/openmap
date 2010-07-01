@@ -123,7 +123,7 @@ public class ETOPOJarLayer extends ETOPOLayer {
 			bis.close();
 
 			// don't know why I have to do this, but...
-			bufferWidth = bufferWidth + spacer;
+			bufferWidth += spacer;
 
 		} catch (FileNotFoundException e) {
 			Debug.error("ETOPOLayer loadBuffer(): file " + fileName

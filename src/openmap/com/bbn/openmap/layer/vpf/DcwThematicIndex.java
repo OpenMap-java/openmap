@@ -163,10 +163,10 @@ public class DcwThematicIndex {
                         numberOfDataElement), inputFile.readInteger(), inputFile.readInteger());
 
                 if (Debug.debugging("vpfserver")) {
-                    pr = new StringBuffer("i = " + i);
-                    pr.append("; val = " + indexData[i].index.toString());
-                    pr.append("; offset = " + indexData[i].offset);
-                    pr.append("; number of elts = " + indexData[i].numvals);
+                    pr = new StringBuffer("i = ").append(i);
+                    pr.append("; val = ").append(indexData[i].index.toString());
+                    pr.append("; offset = ").append(indexData[i].offset);
+                    pr.append("; number of elts = ").append(indexData[i].numvals);
                     if (i < 40) {
                         System.out.println(pr.toString());
                     }
@@ -289,7 +289,7 @@ public class DcwThematicIndex {
                     StringBuffer prt = new StringBuffer();
                     for (int j = 1; j <= bits.size(); j++) {
                         if (bits.get(j)) {
-                            prt.append(", " + j);
+                            prt.append(", ").append(j);
                         }
                     }
                     System.out.println(prt);

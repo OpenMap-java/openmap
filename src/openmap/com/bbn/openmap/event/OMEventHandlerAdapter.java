@@ -33,7 +33,7 @@ import java.util.List;
 import com.bbn.openmap.OMComponent;
 
 /**
- * AAREventHandler subclasses look for the things that create AAREvents.
+ * OMEventHandler subclasses look for the things that create OMEvents.
  * 
  * @author dietrick
  */
@@ -71,15 +71,15 @@ public abstract class OMEventHandlerAdapter extends OMComponent implements
     }
 
     /**
-     * This is the main call to return AAREvents based on filters set in the
+     * This is the main call to return OMEvents based on filters set in the
      * GUI. In subclasses, you can make the call to
      * getMacroFilterList(Collection) from here to check against other filters
-     * that are being set across all AAREventhandlers.
+     * that are being set across all OMEventhandlers.
      * 
-     * @param filters A List of Strings. If your AAREventHandler provides
+     * @param filters A List of Strings. If your OMEventHandler provides
      *        entries into the filterList, you should check the entries on that
      *        list to see if they are in this provided list. If they are, you
-     *        should return the AAREvents that fall under that filter String's
+     *        should return the OMEvents that fall under that filter String's
      *        jurisdiction.
      * @return
      */

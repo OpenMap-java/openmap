@@ -263,7 +263,7 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
 
                         subDirs = filePath.substring(lonSlash + 1, latSlash);
                         String dd = filePath.substring(0, lonSlash + 1);
-                        if (dd.length() > 0) {
+                        if (!dd.isEmpty()) {
                             dtedDir = dd;
                         }
 
@@ -296,15 +296,16 @@ public class StandardDTEDNameTranslator implements DTEDNameTranslator {
 
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        sb.append("For file: " + filename + "\n");
-        sb.append("  lat = " + lat + "\n");
-        sb.append("  lon = " + lon + "\n");
-        sb.append("  level = " + level + "\n");
+        sb.append("For file: ").append(filename).append("\n");
+        sb.append("  lat = ").append(lat).append("\n");
+        sb.append("  lon = ").append(lon).append("\n");
+        sb.append("  level = ").append(level).append("\n");
         String dd = getDTEDDir();
-        if (dd.length() > 0) {
+        if (!dd.isEmpty()) {
             dd += "/";
         }
-        sb.append("  path = " + dd + getSubDirs() + "/" + getName() + "\n");
+        sb.append("  path = ").append(dd).append(getSubDirs())
+                .append("/").append(getName()).append("\n");
         return sb.toString();
     }
 

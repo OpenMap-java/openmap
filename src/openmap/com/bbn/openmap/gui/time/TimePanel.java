@@ -370,7 +370,7 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         long offsetTime = offsetTimeFromLeft;
         
         if(realTimeMode) {
-            offsetTime = offsetTime - timelinePanel.getTimelineLayer().getDuration();
+            offsetTime -= timelinePanel.getTimelineLayer().getDuration();
         }
                 
         String sign = "";

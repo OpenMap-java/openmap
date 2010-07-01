@@ -74,7 +74,7 @@ public class DockLayout implements LayoutManager2 {
     protected int getHeightAtLeft(DockWrapper dw) {
         int ret = dw.getPreferredSize().height;
         java.util.List l = dw.getDockedWrappers();
-        if (l.size() > 0) {
+        if (!l.isEmpty()) {
             ret += getHeightAtLeft((DockWrapper) l.get(0));
         }
         return ret;
@@ -87,7 +87,7 @@ public class DockLayout implements LayoutManager2 {
     protected int getHeightAtRight(DockWrapper dw) {
         int ret = dw.getPreferredSize().height;
         java.util.List l = dw.getDockedWrappers();
-        if (l.size() > 0) {
+        if (!l.isEmpty()) {
             ret += getHeightAtRight((DockWrapper) l.get(l.size() - 1));
         }
         return ret;

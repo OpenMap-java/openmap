@@ -103,7 +103,12 @@ public abstract class StreamInputReader
       long gotsofar = 0;
 
       if (inputStream == null) {
-         throw new IOException("Stream closed");
+         reopen();
+
+         if (inputStream == null) {
+            reopen();
+            throw new IOException("Stream closed, can't be reopened");
+         }
       }
 
       while (count < n) {

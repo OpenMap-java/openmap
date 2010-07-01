@@ -55,7 +55,7 @@ public class ZoomSupport extends ListenerSupport<ZoomListener> {
                     + " for zoomType in " + "ZoomSupport.fireZoom()");
         }
 
-        if (size() == 0)
+        if (isEmpty())
             return;
 
         ZoomEvent evt = new ZoomEvent(source, zoomType, amount);

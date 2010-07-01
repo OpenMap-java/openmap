@@ -28,6 +28,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 import com.bbn.openmap.util.Debug;
 
@@ -77,6 +78,15 @@ public class ListenerSupport<E>
    public synchronized Iterator<E> iterator() {
       ArrayList<E> v = new ArrayList<E>(this);
       return v.iterator();
+   }
+
+   /**
+    * Return an ListIterator over a clone of the listeners, initialized to the
+    * end of the list.
+    */
+   public synchronized ListIterator<E> listIterator() {
+      ArrayList<E> v = new ArrayList<E>(this);
+      return v.listIterator(this.size());
    }
 
    /**

@@ -647,7 +647,7 @@ public class E00Parser {
             String S = r.getStringField(iname).trim();
             if (bl == null)
                 continue;
-            if (S.length() != 0) {
+            if (!S.isEmpty()) {
                 Debug.message("e00", S);
                 bl.setName(S);
                 bl.setShowName(true);

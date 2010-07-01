@@ -582,7 +582,7 @@ public class ToolPanel
       if (aList != null) {
          list = new StringBuffer();
          for (String toolKey : aList) {
-            list.append(toolKey + " ");
+            list.append(toolKey).append(" ");
          }
       }
       return list;

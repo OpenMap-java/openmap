@@ -137,7 +137,7 @@ public class MapTileMaker
 
       StringBuffer buf = new StringBuffer();
       for (ZoomLevelInfo zfi : getZoomLevels()) {
-         buf.append(zfi.getPropertyPrefix() + " ");
+         buf.append(zfi.getPropertyPrefix()).append(" ");
          zfi.getProperties(props);
       }
 

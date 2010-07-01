@@ -223,7 +223,7 @@ public interface ExtentIndex extends java.util.Collection {
                             int lb = bucketFor(lons[0]);
                             int rb = bucketFor(lons[1]);
                             if (rb < lb)
-                                rb = rb + nbuckets;
+                                rb += nbuckets;
                             for (int i = lb; i <= rb; i++) {
                                 int x = i % nbuckets;
                                 Collection b = buckets[x];
@@ -307,7 +307,7 @@ public interface ExtentIndex extends java.util.Collection {
             int lb = bucketFor(left);
             int rb = bucketFor(right);
             if (rb < lb)
-                rb = rb + nbuckets;
+                rb += nbuckets;
             for (int i = lb; i <= rb; i++) {
                 Collection b = buckets[i % nbuckets];
                 if (b != null) {
@@ -382,7 +382,7 @@ public interface ExtentIndex extends java.util.Collection {
                         int lb = bucketFor(lons[0]);
                         int rb = bucketFor(lons[1]);
                         if (rb < lb)
-                            rb = rb + nbuckets;
+                            rb += nbuckets;
                         for (int i = lb; i <= rb; i++) {
                             int x = i % nbuckets;
                             Collection b = buckets[x];

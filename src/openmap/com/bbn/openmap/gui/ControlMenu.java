@@ -73,7 +73,7 @@ public class ControlMenu extends AbstractOpenMapMenu {
                 }
             }
 
-            if (removedItems.size() > 0) {
+            if (!removedItems.isEmpty()) {
                 for (ToolPanelToggleMenuItem jmi : removedItems) {
                     remove(jmi);
                     jmi.dispose();

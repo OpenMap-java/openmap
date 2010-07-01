@@ -371,10 +371,10 @@ public class DTEDSubframedFrame extends DTEDFrame {
             // for the
             // default - brighten it up more
             if (colortable.colors.length > 215)
-                modifier = modifier / 10;
+                modifier /= 10;
 
             for (int h = dfsi.slopeAdjust; h < 5; h++)
-                modifier = modifier * 10;
+                modifier *= 10;
             distance = Math.sqrt((modifier * lon_interval * lon_interval)
                     + (modifier * lat_interval * lat_interval));
         }

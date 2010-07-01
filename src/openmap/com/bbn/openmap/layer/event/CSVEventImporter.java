@@ -86,7 +86,7 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class CSVEventImporter extends OMComponent implements EventImporter {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.time.CSVEventImporter");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.event.CSVEventImporter");
 
     /** locationFile */
     public final static String LocationFileProperty = "locationFile";
@@ -187,7 +187,7 @@ public class CSVEventImporter extends OMComponent implements EventImporter {
                     ImageIcon icon = null;
                     Vector<?> record = records.next();
 
-                    if (record.size() == 0)
+                    if (record.isEmpty())
                         continue;
 
                     name = (String) record.elementAt(nameIndex);
@@ -263,7 +263,7 @@ public class CSVEventImporter extends OMComponent implements EventImporter {
 
                     Vector<?> record = records.next();
 
-                    if (record.size() == 0)
+                    if (record.isEmpty())
                         continue;
 
                     name = record.elementAt(activityNameIndex)

@@ -201,7 +201,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
             list = new OMGraphicList();
             // If there isn't any data loaded, ask the user for a
             // file.
-            if (fileDataList.size() == 0) {
+            if (fileDataList.isEmpty()) {
                 addShapeFileFromUser();
             }
         } else {
@@ -677,7 +677,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
             }
         }
 
-        if (fileDataList.size() == 0) {
+        if (fileDataList.isEmpty()) {
             JLabel label = new JLabel("No Shape Files Loaded", JButton.CENTER);
             c.anchor = GridBagConstraints.CENTER;
             gridbag.setConstraints(label, c);

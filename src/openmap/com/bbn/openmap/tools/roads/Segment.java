@@ -42,7 +42,7 @@ public class Segment {
             str.append("=>");
 
             Point pt = (Point) allTravelPoints.get(i);
-            str.append("{" + pt.x + "," + pt.y + "}");
+            str.append("{").append(pt.x).append(",").append(pt.y).append("}");
         }
         str.append("=>");
 

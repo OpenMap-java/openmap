@@ -176,7 +176,7 @@ public class MultiShapeLayer extends ShapeLayer {
             String pp = sih.getPropertyPrefix();
             // Can't be null, if they are part of this layer...
             pp = pp.substring(pp.lastIndexOf('.') + 1);
-            list.append(" " + pp);
+            list.append(" ").append(pp);
         }
 
         props.put(prefix + ShapeFileListProperty, list.toString());
@@ -226,7 +226,7 @@ public class MultiShapeLayer extends ShapeLayer {
      */
     public synchronized OMGraphicList prepare() {
 
-        if (spatialIndexes == null || spatialIndexes.size() == 0) {
+        if (spatialIndexes == null || spatialIndexes.isEmpty()) {
             logger.fine(getName() + ": spatialIndexes is empty!");
             return new OMGraphicList();
         }

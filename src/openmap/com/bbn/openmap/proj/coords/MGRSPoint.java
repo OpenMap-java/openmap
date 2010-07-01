@@ -382,7 +382,7 @@ public class MGRSPoint extends ZonedUTMPoint {
 	 */
 	protected void decode(String mgrsString) throws NumberFormatException {
 
-		if (mgrsString == null || mgrsString.length() == 0) {
+		if (mgrsString == null || mgrsString.isEmpty()) {
 			throw new NumberFormatException("MGRSPoint coverting from nothing");
 		}
 
@@ -522,9 +522,9 @@ public class MGRSPoint extends ZonedUTMPoint {
 		if (zone_letter == 'Z') {
 			mgrs = "Latitude limit exceeded";
 		} else {
-			StringBuffer sb = new StringBuffer(zone_number + ""
-					+ (char) zone_letter
-					+ get100kID(easting, northing, zone_number));
+			StringBuffer sb = new StringBuffer(Integer.toString(zone_number))
+					.append(zone_letter)
+					.append(get100kID(easting, northing, zone_number));
 			StringBuffer seasting = new StringBuffer(Integer
 					.toString((int) easting));
 			StringBuffer snorthing = new StringBuffer(Integer
@@ -558,8 +558,8 @@ public class MGRSPoint extends ZonedUTMPoint {
 			}
 
 			try {
-				sb.append(seasting.substring(1, accuracy + 1)
-						+ snorthing.substring(1, accuracy + 1));
+				sb.append(seasting.substring(1, accuracy + 1))
+                                        .append(snorthing.substring(1, accuracy + 1));
 
 				mgrs = sb.toString();
 			} catch (IndexOutOfBoundsException ioobe) {
@@ -852,10 +852,10 @@ public class MGRSPoint extends ZonedUTMPoint {
 			System.out.println("-------------\nFor 100K Set " + set
 					+ ":\n-------------\n");
 			for (int i = 19; i >= 0; i -= 1) {
-				sb = new StringBuffer((i * 100000) + "\t| ");
+				sb = new StringBuffer(Integer.toString(i * 100000)).append("\t| ");
 
 				for (int j = 1; j <= 8; j++) {
-					sb.append(" " + get100kID(j, i, set));
+					sb.append(" ").append(get100kID(j, i, set));
 				}
 
 				sb.append(" |");
@@ -994,11 +994,11 @@ public class MGRSPoint extends ZonedUTMPoint {
 						record = record.trim();
 						mgrsp.decode(record);
 
-						outStr1.append(record + " is " + mgrsp.toLatLonPoint()
-								+ "\n");
-						outStr2.append(record + " to UTM: " + mgrsp.zone_number
-								+ " " + mgrsp.easting + " " + mgrsp.northing
-								+ "\n");
+						outStr1.append(record).append(" is ").append(mgrsp.toLatLonPoint())
+								.append("\n");
+						outStr2.append(record).append(" to UTM: ").append(mgrsp.zone_number).append(" ")
+								.append(mgrsp.easting).append(" ")
+								.append(mgrsp.northing).append("\n");
 					} catch (NumberFormatException nfe) {
 						logger.warning(nfe.getMessage());
 					}
@@ -1021,9 +1021,9 @@ public class MGRSPoint extends ZonedUTMPoint {
 					utmp = new UTMPoint(n, e, z, zl);
 					LatLonPoint llp = utmp.toLatLonPoint();
 					mgrsp = LLtoMGRS(llp);
-					outStr1.append(record + " is " + llp + " back to "
-							+ LLtoUTM(llp) + "\n");
-					outStr2.append(record + " is " + mgrsp + "\n");
+					outStr1.append(record).append(" is ").append(llp).append(" back to ")
+							.append(LLtoUTM(llp)).append("\n");
+					outStr2.append(record).append(" is ").append(mgrsp).append("\n");
 				} else if (inType.equalsIgnoreCase("LatLon")) {
 					float lat, lon;
 					int index;
@@ -1041,10 +1041,10 @@ public class MGRSPoint extends ZonedUTMPoint {
 					// UTMPoint utmp = LLtoUTM(llp);
 					MGRSPoint mgrsp = LLtoMGRS(llp);
 					outStr1
-							.append(record + " to UTM: " + mgrsp.zone_number
-									+ " " + mgrsp.easting + " "
-									+ mgrsp.northing + "\n");
-					outStr2.append(record + "    ->    " + mgrsp.mgrs + "\n");
+							.append(record).append(" to UTM: ").append(mgrsp.zone_number).append(" ")
+									.append(mgrsp.easting).append(" ")
+									.append(mgrsp.northing).append("\n");
+					outStr2.append(record).append("    ->    ").append(mgrsp.mgrs).append("\n");
 				}
 
 			}

@@ -874,7 +874,7 @@ public class OMGraphicHandlerLayer
       String mmString = props.getProperty(realPrefix + MouseModesProperty);
       if (mmString != null) {
          Vector<String> mmv = PropUtils.parseSpacedMarkers(mmString);
-         if (mmv.size() > 0) {
+         if (!mmv.isEmpty()) {
             String[] mm = new String[mmv.size()];
             int i = 0;
             for (String it : mmv) {
@@ -953,7 +953,7 @@ public class OMGraphicHandlerLayer
             if (mm[i].equals(getName())) {
                continue;
             }
-            sb.append(mm[i] + " ");
+            sb.append(mm[i]).append(" ");
          }
          props.put(prefix + MouseModesProperty, sb.toString());
       }
@@ -1098,7 +1098,7 @@ public class OMGraphicHandlerLayer
             String[] modes = mml.getMouseModeServiceList();
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < modes.length; i++) {
-               sb.append(modes[i] + ", ");
+               sb.append(modes[i]).append(", ");
             }
 
             logger.fine("Layer " + getName() + " returning " + mml.getClass().getName()
@@ -1149,7 +1149,7 @@ public class OMGraphicHandlerLayer
       if (logger.isLoggable(Level.FINE)) {
          StringBuffer sb = new StringBuffer();
          for (int i = 0; i < mm.length; i++) {
-            sb.append(mm[i] + " ");
+            sb.append(mm[i]).append(" ");
          }
 
          logger.fine("For layer " + getName() + ", setting mouse modes to " + sb.toString());

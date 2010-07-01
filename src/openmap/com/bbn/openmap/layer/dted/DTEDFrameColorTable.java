@@ -289,10 +289,10 @@ public class DTEDFrameColorTable {
         StringBuffer s = new StringBuffer();
         s.append("DTEDFrameColortable: \n");
         for (int i = 0; i < colors.length; i++) {
-            s.append("OMColor " + i + ": alpha = " + colors[i].getAlpha());
-            s.append(", red = " + colors[i].getRed());
-            s.append(", green = " + colors[i].getGreen());
-            s.append(", blue = " + colors[i].getBlue() + "\n");
+            s.append("OMColor ").append(i).append(": alpha = ").append(colors[i].getAlpha());
+            s.append(", red = ").append(colors[i].getRed());
+            s.append(", green = ").append(colors[i].getGreen());
+            s.append(", blue = ").append(colors[i].getBlue()).append("\n");
         }
         return s.toString();
     }

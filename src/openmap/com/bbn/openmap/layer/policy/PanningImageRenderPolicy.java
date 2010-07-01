@@ -76,28 +76,32 @@ public class PanningImageRenderPolicy extends RenderingHintsRenderPolicy {
         if (layer != null) {
             // setBuffer(null);
             Projection proj = layer.getProjection();
-            // set the offsets depending on how much the image moves
-            Point2D ul = proj.getUpperLeft();
-            if (oldUL != null && !oldUL.equals(ul)
-                    && oldScale == proj.getScale()
-                    && proj.getClass().equals(oldProjType)) {
-                Point2D currentPoint = proj.forward(ul);
-                Point2D oldPoint = proj.forward(oldUL);
+            if (layer.isProjectionOK(proj)) {
+                // set the offsets depending on how much the image moves
+                Point2D ul = proj.getUpperLeft();
+                if (oldUL != null && !oldUL.equals(ul)
+                        && oldScale == proj.getScale()
+                        && proj.getClass().equals(oldProjType)) {
+                    Point2D currentPoint = proj.forward(ul);
+                    Point2D oldPoint = proj.forward(oldUL);
 
-                offset.setLocation(oldPoint.getX() - currentPoint.getX(),
-                        oldPoint.getY() - currentPoint.getY());
+                    offset.setLocation(oldPoint.getX() - currentPoint.getX(),
+                            oldPoint.getY() - currentPoint.getY());
 
-                layer.repaint();
+                    layer.repaint();
+                }
+
+                oldUL = ul;
+                oldProjType = ((Proj) proj).getClass();
+                oldScale = proj.getScale();
+
+                OMGraphicList list = layer.prepare();
+                setBuffer(createAndPaintImageBuffer(list));
+
+                return list;
+            } else {
+                logger.warning("NULL projection, can't do anything.");
             }
-
-            oldUL = ul;
-            oldProjType = ((Proj) proj).getClass();
-            oldScale = proj.getScale();
-
-            OMGraphicList list = layer.prepare();
-            setBuffer(createAndPaintImageBuffer(list));
-
-            return list;
         } else {
             logger.warning("NULL layer, can't do anything.");
         }

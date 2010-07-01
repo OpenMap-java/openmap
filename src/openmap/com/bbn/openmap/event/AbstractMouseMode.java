@@ -715,7 +715,7 @@ public class AbstractMouseMode
          if (name.endsWith("_CURSOR")) {
             String cName = f.getName();
             props.put(CursorIDProperty + "." + cName, cName);
-            cOptions.append(" " + cName);
+            cOptions.append(" ").append(cName);
          }
       }
 

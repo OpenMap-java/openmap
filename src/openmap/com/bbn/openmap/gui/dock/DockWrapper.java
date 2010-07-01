@@ -133,9 +133,7 @@ public class DockWrapper extends JPanel {
      * tabbed, there may be more than one child...
      */
     public JComponent getChild() {
-        if (children.size() == 0)
-            return null;
-        return (JComponent) children.get(0);
+        return (children.isEmpty() ? null : (JComponent) children.get(0));
     }
 
     //Tabbing Methods:
@@ -555,7 +553,7 @@ public class DockWrapper extends JPanel {
     }
 
     public boolean hasDockedWrappers() {
-        return getDockedWrappers().size() >= 0;
+        return !getDockedWrappers().isEmpty();
     }
 
     public List getDockedWrappers() {

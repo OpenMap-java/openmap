@@ -40,6 +40,23 @@ abstract class Version {
         return byVersionString.get(versionString);
     }
     
+   public static Version getVersionBestMatch(String versionString) {
+      Version version = getVersion(versionString);
+      if (version != null) {
+         return version;
+      }
+      if (versionString == null) {
+         return getDefault();
+      }
+      if (versionString.startsWith("1.1")) {
+         return V111;
+      }
+      if (versionString.startsWith("1.3")) {
+         return V130;
+      }
+      return getDefault();
+   }
+    
     public static Version getDefault() {
         return V111;
     }

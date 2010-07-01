@@ -93,7 +93,7 @@ public class CoordinateReferenceSystem {
         addCrs(new CoordinateReferenceSystem(code, new LambertConformalGCT(props), LambertConformalLoader.class, ellps, props, bbox, axisOrder));
     }
 
-    private static void addCrs(CoordinateReferenceSystem crs) {
+    public static void addCrs(CoordinateReferenceSystem crs) {
         crss.put(crs.getCode(), crs);
     }
 

@@ -75,7 +75,7 @@ public class EOMGListenerSupport extends ListenerSupport<EOMGListener> {
      */
     public synchronized void fireEvent(EOMGEvent event) {
 
-        if (size() == 0)
+        if (isEmpty())
             return;
 
         for (EOMGListener target : this) {

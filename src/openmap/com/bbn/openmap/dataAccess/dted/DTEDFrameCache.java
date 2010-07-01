@@ -644,8 +644,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
                     int index = dhPrefix.indexOf(prefix);
                     if (index != -1) {
                         dhPrefixes.append(dhPrefix.substring(index
-                                + prefix.length())
-                                + " ");
+                                + prefix.length())).append(" ");
                     }
                     ddh.getProperties(props);
                 }

@@ -97,11 +97,11 @@ public class DTEDFrameACC {
     public String toString() {
         StringBuffer s = new StringBuffer();
 
-        s.append("***ACC***" + "\n");
-        s.append("  abs_horz_acc: " + abs_horz_acc + "\n");
-        s.append("  abs_vert_acc: " + abs_vert_acc + "\n");
-        s.append("  rel_horz_acc: " + rel_horz_acc + "\n");
-        s.append("  rel_vert_acc: " + rel_vert_acc + "\n");
+        s.append("***ACC***").append("\n");
+        s.append("  abs_horz_acc: ").append(abs_horz_acc).append("\n");
+        s.append("  abs_vert_acc: ").append(abs_vert_acc).append("\n");
+        s.append("  rel_horz_acc: ").append(rel_horz_acc).append("\n");
+        s.append("  rel_vert_acc: ").append(rel_vert_acc).append("\n");
         return s.toString();
     }
 

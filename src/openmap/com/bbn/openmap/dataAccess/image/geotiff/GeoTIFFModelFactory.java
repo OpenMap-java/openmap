@@ -37,7 +37,7 @@ import com.bbn.openmap.dataAccess.image.ImageTile;
 
 public class GeoTIFFModelFactory {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.geotiff.GeoTIFFModelFactory");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.image.geotiff.GeoTIFFModelFactory");
 
     protected GeoTIFFFile gtfFile;
 

@@ -326,7 +326,7 @@ public class Gnomonic extends Azimuth {
         }
         
         // convert from screen to world coordinates
-        x = x - wx;
+        x -= wx;
         y = hy - y;
 
         // Debug.output("Gnomonic.inverse: x,y=" + x + "," + y);

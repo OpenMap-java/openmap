@@ -277,15 +277,16 @@ public class ArgParser {
             StringBuffer sb = new StringBuffer();
             String filler = arg.name.length() < 6 ? "\t\t" : "\t";
 
-            sb.append("  -" + arg.name + filler + arg.description);
+            sb.append("  -").append(arg.name).append(filler)
+                    .append(arg.description);
             if (arg.numExpectedValues == TO_END) {
                 sb.append(" (Variable number of arguments expected)");
             } else if (arg.numExpectedValues == 1) {
                 sb.append(" (1 argument expected)");
             } else {
                 sb
-                        .append(" (" + arg.numExpectedValues
-                                + " arguments expected)");
+                        .append(" (").append(arg.numExpectedValues)
+                                .append(" arguments expected)");
             }
             Debug.output(sb.toString());
         }
@@ -425,12 +426,13 @@ public class ArgParser {
 
         public String toString() {
             StringBuffer sb = new StringBuffer();
-            sb.append("Arg: " + name + " expects " + numExpectedValues
-                    + (numExpectedValues == 1 ? " value.\n" : " values.\n"));
+            sb.append("Arg: ").append(name).append(" expects ")
+                    .append(numExpectedValues)
+                    .append((numExpectedValues == 1 ? " value.\n" : " values.\n"));
             if (values != null) {
                 sb.append("Values: ");
                 for (int i = 0; i < values.length; i++) {
-                    sb.append("[" + values[i] + "]");
+                    sb.append("[").append(values[i]).append("]");
                 }
                 sb.append("\n");
             }

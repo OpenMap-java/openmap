@@ -383,7 +383,7 @@ public class ImageServer implements
         int ret = 0; // Initialize all the layer bits to zero.
         for (int i = layers.length - 1; i >= 0; i--) {
             if (layers[i].isVisible()) {
-                ret = ret | (0x00000001 << i);
+                ret |= (0x00000001 << i);
             }
         }
         return ret;
@@ -633,7 +633,7 @@ public class ImageServer implements
 
         StringBuffer buf = new StringBuffer();
         for (Layer layer : getLayers()) {
-            buf.append(layer.getPropertyPrefix() + " ");
+            buf.append(layer.getPropertyPrefix()).append(" ");
             layer.getProperties(props);
         }
 
@@ -644,11 +644,11 @@ public class ImageServer implements
             for (ImageFormatter formatter : imageFormatters.values()) {
                 if (formatter instanceof PropertyConsumer) {
                     PropertyConsumer pc = (PropertyConsumer) formatter;
-                    buf.append(pc.getPropertyPrefix() + " ");
+                    buf.append(pc.getPropertyPrefix()).append(" ");
                     pc.getProperties(props);
                 } else {
                     String className = formatter.getClass().getName();
-                    buf.append(className + " ");
+                    buf.append(className).append(" ");
                     props.put(className + ComponentFactory.DotClassNameProperty,
                             className);
                 }

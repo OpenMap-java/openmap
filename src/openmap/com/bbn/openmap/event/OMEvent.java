@@ -39,7 +39,7 @@ import com.bbn.openmap.util.Attributable;
  */
 public class OMEvent implements Attributable {
 
-    public static Logger logger = Logger.getLogger("com.bbn.hotwash.event.AAREvent");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.event.OMEvent");
 
     public final static String ATT_KEY_DETAILED_INFORMATION = "DETAILS";
     public final static String ATT_KEY_SELECTED = "SELECTED";
@@ -56,7 +56,7 @@ public class OMEvent implements Attributable {
     /** Absolute time, milliseconds from the UNIX epoch. */
     protected long timeStamp;
     /**
-     * Value to assist the AAREventComparator to order AAREvents with the same
+     * Value to assist the OMEventComparator to order OMEvents with the same
      * timeStamp.
      */
     protected short timeStampComparator = 0;
@@ -213,7 +213,7 @@ public class OMEvent implements Attributable {
 
     /**
      * Doesn't set the attribute map on the source, if the source if
-     * Attributable. Just sets the attribute Map on the AAREvent.
+     * Attributable. Just sets the attribute Map on the OMEvent.
      */
     public void setAttributes(Map map) {
         attributes = map;

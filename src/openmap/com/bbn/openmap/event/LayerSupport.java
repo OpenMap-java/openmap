@@ -61,7 +61,7 @@ public class LayerSupport extends ListenerSupport<LayerListener> {
                     + " objects");
         }
 
-        if (size() == 0)
+        if (isEmpty())
             return;
 
         LayerEvent evt = new LayerEvent(source, type, layers);

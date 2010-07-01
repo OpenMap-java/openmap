@@ -642,7 +642,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
             if (index != -1) {
                 pref = pref.substring(index + prefix.length());
             }
-            sb.append(pref + " ");
+            sb.append(pref).append(" ");
         }
 
         props.put(prefix + GeneratorLoadersProperty, sb.toString());

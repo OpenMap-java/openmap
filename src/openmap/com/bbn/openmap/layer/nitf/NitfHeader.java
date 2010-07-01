@@ -252,22 +252,22 @@ public class NitfHeader {
 
     public String toString() {
         StringBuffer s = new StringBuffer();
-        s.append("\n\nNITF Information about " + FTITLE + "\n");
+        s.append("\n\nNITF Information about ").append(FTITLE).append("\n");
         s.append("-------------------\n");
-        s.append("File Type: " + FHDR + "\n");
-        s.append("Compliance Level: " + CLEVEL + "\n");
-        s.append("System Type: " + STYPE + "\n");
-        s.append("Originating Station: " + OSTAID + "\n");
-        s.append("File Date and Time: " + FDT + "\n");
-        s.append("Originator's Name: " + ONAME + "\n");
-        s.append("File Length: " + FL + "\n\n");
+        s.append("File Type: ").append(FHDR).append("\n");
+        s.append("Compliance Level: ").append(CLEVEL).append("\n");
+        s.append("System Type: ").append(STYPE).append("\n");
+        s.append("Originating Station: ").append(OSTAID).append("\n");
+        s.append("File Date and Time: ").append(FDT).append("\n");
+        s.append("Originator's Name: ").append(ONAME).append("\n");
+        s.append("File Length: ").append(FL).append("\n\n");
 
-        s.append(nha.NUMI + " image\n");
-        s.append(nha.NUMS + " symbol\n");
-        s.append(nha.NUML + " label\n");
-        s.append(nha.NUMT + " text\n");
-        s.append(nha.NUMDES + " dataext\n");
-        s.append(nha.NUMRES + " resext\n");
+        s.append(nha.NUMI).append(" image\n");
+        s.append(nha.NUMS).append(" symbol\n");
+        s.append(nha.NUML).append(" label\n");
+        s.append(nha.NUMT).append(" text\n");
+        s.append(nha.NUMDES).append(" dataext\n");
+        s.append(nha.NUMRES).append(" resext\n");
         return s.toString();
     }
 

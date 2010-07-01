@@ -1063,7 +1063,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
      * more than one OMGraphic being selected at a time.
      */
     public void select(OMGraphicList list) {
-        if (list != null && list.size() > 0) {
+        if (list != null && !list.isEmpty()) {
             OMGraphic omg = list.getOMGraphicAt(0);
             DrawingTool dt = getDrawingTool();
 

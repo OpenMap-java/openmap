@@ -625,7 +625,7 @@ public class MIFLoader {
         String line;
         WHILE: while ((line = br.readLine()) != null) {
 
-            if (line.equals(""))
+            if (line.isEmpty())
                 continue WHILE; // skip blank lines
 
             // should return the tokenizer as soon as we have a line
@@ -652,11 +652,11 @@ public class MIFLoader {
         int rem = val;
         if (rem >= 65536) {
             red = rem / 65536;
-            rem = rem - red * 65536;
+            rem -= red * 65536;
         }
         if (rem >= 255) {
             green = rem / 256;
-            rem = rem - green * 256;
+            rem -= green * 256;
         }
         if (rem > 0)
             blue = rem;

@@ -35,8 +35,6 @@ import com.bbn.openmap.omGraphics.OMPoly;
  */
 public class EsriPolygonZ extends EsriPolygon implements Cloneable, EsriGraphic {
 
-    protected float[] extents;
-
     public EsriPolygonZ(double[] points, int units, int lineType) {
         super(points, units, lineType);
     }

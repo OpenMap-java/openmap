@@ -179,7 +179,7 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
 
                 }
 
-                markerlist.append(" " + markerName);
+                markerlist.append(" ").append(markerName);
             }
 
             props.put(prefix + ProjectionLoadersProperty, markerlist.toString());
@@ -464,7 +464,7 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
     }
 
     public void clearProjectionLoaders() {
-        if (projLoaders.size() > 0) {
+        if (!projLoaders.isEmpty()) {
             projLoaders.clear();
             fireLoadersChanged();
         }

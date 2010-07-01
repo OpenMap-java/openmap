@@ -1173,7 +1173,7 @@ public class RoadFinder implements RoadServices, ProjectionListener, RoadLayer {
             }
         }
         // String errString = errorWriter.toString();
-        // if (errString.equals(""))
+        // if (errString.isEmpty())
         // return;
         // JTextArea text = new JTextArea(errString);
         // JScrollPane scrollPane = new JScrollPane(text);

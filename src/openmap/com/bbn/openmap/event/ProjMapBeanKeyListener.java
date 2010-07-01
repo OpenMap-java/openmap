@@ -129,7 +129,7 @@ public class ProjMapBeanKeyListener extends MapBeanKeyListener implements
      * Called by keyReleased when the period/comma keys are pressed.
      */
     protected void fireProjectionStackEvent(String command) {
-        if (projListeners.size() == 0) {
+        if (projListeners.isEmpty()) {
             return;
         }
 

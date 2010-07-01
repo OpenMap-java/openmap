@@ -79,7 +79,7 @@ public class LineUtil {
         double norm = 0.0;
         Point2D nextPoint = null;
 
-        while (consumedLength < length && points.size() > 0) {
+        while (consumedLength < length && !points.isEmpty()) {
             // consume points while distance is not reached
             nextPoint = (Point2D) points.removeFirst();
             polysegment.add(nextPoint);

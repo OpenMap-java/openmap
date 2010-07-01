@@ -113,9 +113,9 @@ public class HelmertTransformation {
 		double y = coord.y_;
 		double z = coord.z_;
 
-		x = x * m;
-		y = y * m;
-		z = z * m;
+		x *= m;
+		y *= m;
+		z *= m;
 
 		switch (type) {
 		case TYPE_POSITION_VECTOR:
@@ -130,9 +130,9 @@ public class HelmertTransformation {
 			break;
 		}
 
-		x = x + dX;
-		y = y + dY;
-		z = z + dZ;
+		x += dX;
+		y += dY;
+		z += dZ;
 
 		coord.setECEF(x, y, z);
 	}

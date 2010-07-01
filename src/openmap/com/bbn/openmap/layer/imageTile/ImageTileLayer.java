@@ -269,10 +269,10 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                 props.put(prefix + "idl" + count, idl.getClass().getName());
 
                 if (sbuf == null) {
-                    sbuf = new StringBuffer("idl" + count);
+                    sbuf = new StringBuffer("idl").append(count);
                 } else {
                     // Space separated for parsing on input
-                    sbuf.append(" idl" + count);
+                    sbuf.append(" idl").append(count);
                 }
             }
 

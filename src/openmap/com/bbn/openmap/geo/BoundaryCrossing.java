@@ -232,7 +232,7 @@ public class BoundaryCrossing {
          */
         protected void compact() {
             if (lastSegmentCrossingList != null
-                    && lastSegmentCrossingList.size() > 0) {
+                    && !lastSegmentCrossingList.isEmpty()) {
                 crossings.addAll(lastSegmentCrossingList);
                 lastSegmentCrossingList.clear();
                 lastSegmentCrossingList = null;

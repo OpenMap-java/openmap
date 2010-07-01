@@ -211,14 +211,14 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
         StringBuffer tsBuffer = new StringBuffer();
         if (ts != null) {
             for (int i = 0; i < ts.length; i++) {
-                tsBuffer.append(Float.toString(ts[i]) + " ");
+                tsBuffer.append(Float.toString(ts[i])).append(" ");
             }
         }
         props.put(prefix + transitionScalesProperty, tsBuffer.toString());
 
         StringBuffer layerBuffer = new StringBuffer();
         for (Layer layer : getLayers()) {
-            layerBuffer.append(layer.getPropertyPrefix() + " ");
+            layerBuffer.append(layer.getPropertyPrefix()).append(" ");
             layer.getProperties(props);
         }
         props.put(prefix + layersProperty, layerBuffer.toString());
@@ -260,7 +260,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
 
         String layersString = props.getProperty(prefix + layersProperty);
         Vector<Layer> layers = getLayers();
-        if (layersString == null || layersString.equals("")) {
+        if (layersString == null || layersString.isEmpty()) {
             Debug.error("ScaleFilterLayer(): null layersString!");
             return;
         }

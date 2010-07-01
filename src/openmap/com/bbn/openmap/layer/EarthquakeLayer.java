@@ -304,7 +304,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
                         Debug.output("EarthquakeLayer.getEarthQuakeData(): "
                                 + line);
                     }
-                    if (line.length() == 0)
+                    if (line.isEmpty())
                         continue;
                     if (!Character.isDigit(line.charAt(0)))
                         continue;

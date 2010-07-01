@@ -200,8 +200,9 @@ public class LLXY
 
       // convert from screen to world coordinates, and then
       // basically undo the math from the forward method.
-
-      llp.setLocation(((x - wx) / ppd) + cLon, ((hy - y) / ppd) + cLat);
+      double lon = ((x - wx) / ppd) + cLon;
+      double lat = ((hy - y) / ppd) + cLat;
+      llp.setLocation(lon, lat);
 
       return llp;
    }

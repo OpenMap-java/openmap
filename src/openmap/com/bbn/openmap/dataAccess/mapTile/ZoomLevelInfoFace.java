@@ -56,7 +56,7 @@ import com.bbn.openmap.proj.Projection;
 public class ZoomLevelInfoFace
       extends OMComponentPanel {
 
-   protected static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.ZoomLevelInfoFace");
+   protected static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.mapTile.ZoomLevelInfoFace");
 
    private static final long serialVersionUID = 1L;
    protected ZoomLevelInfo zfi;
@@ -339,7 +339,7 @@ public class ZoomLevelInfoFace
             }
          }
 
-         setInclude(zfi.getLayers().size() > 0);
+         setInclude(!zfi.getLayers().isEmpty());
       }
    }
 
@@ -551,7 +551,7 @@ public class ZoomLevelInfoFace
 
                if (active /* duh */&& organizer != null) {
                   organizer.shuffleLayers(ZoomLevelInfoFace.this);
-                  setInclude(zfi.getLayers() != null && zfi.getLayers().size() > 0);
+                  setInclude(zfi.getLayers() != null && !zfi.getLayers().isEmpty());
                }
             }
          });

@@ -295,15 +295,15 @@ public class LinkActionRequest implements LinkActionConstants,
         s.append("LinkActionRequest:\n");
         if (isKeyEvent()) {
             s.append(" Key Event\n");
-            s.append(" Key: " + key + "\n");
+            s.append(" Key: ").append(key).append("\n");
         } else {
             s.append(" Mouse Event\n");
-            s.append(" X: " + x + "\n");
-            s.append(" Y: " + y + "\n");
-            s.append(" Lat: " + lat + "\n");
-            s.append(" Lon: " + lon + "\n");
+            s.append(" X: ").append(x).append("\n");
+            s.append(" Y: ").append(y).append("\n");
+            s.append(" Lat: ").append(lat).append("\n");
+            s.append(" Lon: ").append(lon).append("\n");
         }
-        s.append(" Modifiers: " + modifiers + "\n");
+        s.append(" Modifiers: ").append(modifiers).append("\n");
 
         return s.toString();
     }

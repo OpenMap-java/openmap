@@ -338,7 +338,7 @@ public class UTMPoint {
                                       LatLonPoint llpoint) {
 
         // without the zone we can't calculate the Lat and Long
-        if (UTMZone == null || UTMZone.equals("")) {
+        if (UTMZone == null || UTMZone.isEmpty()) {
             return null;
         }
 

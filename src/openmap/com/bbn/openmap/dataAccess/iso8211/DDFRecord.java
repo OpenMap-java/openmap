@@ -95,8 +95,8 @@ public class DDFRecord implements DDFConstants {
      */
     public String toString() {
         StringBuffer buf = new StringBuffer("DDFRecord:\n");
-        buf.append("    ReuseHeader = " + nReuseHeader + "\n");
-        buf.append("    DataSize = " + nDataSize + "\n");
+        buf.append("    ReuseHeader = ").append(nReuseHeader).append("\n");
+        buf.append("    DataSize = ").append(nDataSize).append("\n");
 
         if (paoFields != null) {
             for (Iterator it = paoFields.iterator(); it.hasNext();) {

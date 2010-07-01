@@ -71,7 +71,7 @@ public class EventLayer extends OMGraphicHandlerLayer implements
         DataBoundsProvider, TimeBoundsProvider, TimeEventListener,
         OMEventHandler {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.time.EventLayer");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.event.EventLayer");
 
     public final static String ImporterProperty = "importer";
     protected EventImporter importer = null;

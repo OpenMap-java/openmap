@@ -41,7 +41,7 @@ public class CodeOptions {
         StringBuffer sb = new StringBuffer("CodeOptions:\n");
         if (options != null) {
             for (Iterator it = options.iterator(); it.hasNext();) {
-                sb.append(((CodePosition) it.next()).toString() + "\n");
+                sb.append(((CodePosition) it.next()).toString()).append("\n");
             }
         }
         return sb.toString();

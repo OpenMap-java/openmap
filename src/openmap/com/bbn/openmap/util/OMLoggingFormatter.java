@@ -51,7 +51,7 @@ public class OMLoggingFormatter extends Formatter {
         }
         if (record.getSourceMethodName() != null) {
             sb.append(".");
-            sb.append(record.getSourceMethodName() + "() ");
+            sb.append(record.getSourceMethodName()).append("() ");
         }
         String message = formatMessage(record);
         sb.append(record.getLevel().getLocalizedName());

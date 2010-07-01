@@ -168,7 +168,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
                 intervalStr = intervalStr
                         .substring(0, intervalStr.length() - 1);
                 value = df.parse(intervalStr).intValue() * 1000;
-            } else if (intervalStr.trim().equals("")) {
+            } else if (intervalStr.trim().isEmpty()) {
                 // do nothing
             } else {
                 value = df.parse(intervalStr).intValue();

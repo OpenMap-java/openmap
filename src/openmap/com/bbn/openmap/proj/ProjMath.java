@@ -338,7 +338,7 @@ public final class ProjMath {
     public final static float wrapLongitude(float lon) {
         if ((lon < -DATELINE_F) || (lon > DATELINE_F)) {
             lon += DATELINE_F;
-            lon = (lon % LON_RANGE_F);
+            lon %= LON_RANGE_F;
             lon += (lon < 0) ? DATELINE_F : -DATELINE_F;
         }
         return lon;
@@ -361,7 +361,7 @@ public final class ProjMath {
     public final static double wrapLongitude(double lon) {
         if ((lon < -DATELINE_D) || (lon > DATELINE_D)) {
             lon += DATELINE_D;
-            lon = (lon % LON_RANGE_D);
+            lon %= LON_RANGE_D;
             lon += (lon < 0) ? DATELINE_D : -DATELINE_D;
         }
         return lon;
@@ -376,7 +376,7 @@ public final class ProjMath {
     public final static double wrapLongitudeDeg(double lon) {
         if ((lon < -DATELINE_DEG_D) || (lon > DATELINE_DEG_D)) {
             lon += DATELINE_DEG_D;
-            lon = (lon % LON_RANGE_DEG_D);
+            lon %= LON_RANGE_DEG_D;
             lon += (lon < 0) ? DATELINE_DEG_D : -DATELINE_DEG_D;
         }
         return lon;

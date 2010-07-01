@@ -270,8 +270,8 @@ public class LabeledOMSpline extends OMSpline implements LabeledOMGraphic {
                     avgy += handyPoint.getY();
                     avgx += handyPoint.getX();
                 }
-                avgy = avgy / numPoints;
-                avgx = avgx / numPoints;
+                avgy /= numPoints;
+                avgx /= numPoints;
                 handyPoint.setLocation(avgx, avgy);
             } else {
                 if (index < 0)

@@ -25,9 +25,12 @@
 package com.bbn.openmap.layer.imageTile;
 
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.bbn.openmap.dataAccess.mapTile.MapTileFactory;
+import com.bbn.openmap.event.LayerStatusEvent;
+import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.layer.policy.ListResetPCPolicy;
 import com.bbn.openmap.omGraphics.OMGraphicList;
@@ -52,7 +55,7 @@ public class MapTileLayer
    protected MapTileFactory tileFactory;
 
    public MapTileLayer() {
-      setProjectionChangePolicy(new ListResetPCPolicy(this));
+      setProjectionChangePolicy(new ProjectionChangePolicy(this));
    }
 
    public MapTileLayer(MapTileFactory tileFactory) {
@@ -97,6 +100,27 @@ public class MapTileLayer
       logger.fine("setting tile factory to: " + tileFactory.getClass().getName());
       tileFactory.setRepaintCallback(this);
       this.tileFactory = tileFactory;
+   }
+
+   protected class ProjectionChangePolicy
+         extends ListResetPCPolicy {
+
+      public ProjectionChangePolicy(MapTileLayer mtl) {
+         super(mtl);
+      }
+
+      public void projectionChanged(ProjectionEvent pe) {
+         Projection proj = layer.setProjection(pe);
+
+         if (proj != null) {
+            // Check to see if the projection is worth reacting to.
+            if (layer.isProjectionOK(proj)) {
+               layer.fireStatusUpdate(LayerStatusEvent.START_WORKING);
+               layer.setList(layer.prepare());
+               repaint();
+            }
+         }
+      }
    }
 
 }

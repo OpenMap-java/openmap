@@ -435,7 +435,7 @@ public abstract class Layer extends JComponent implements ProjectionListener,
                                                   getMaxScale()));
 
         String dataPathPrefix = props.getProperty(realPrefix + DataPathPrefixProperty, "");
-        if (dataPathPrefix.length() > 0) {
+        if (!dataPathPrefix.isEmpty()) {
             putAttribute(DataPathPrefixProperty, dataPathPrefix);
         }
 
@@ -1674,7 +1674,7 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      */
     protected String prependDataPathPrefix(String fileName) {
         String dataPathPrefix = (String) getAttribute(Layer.DataPathPrefixProperty);
-        if (dataPathPrefix != null && dataPathPrefix.length() > 0) {
+        if (dataPathPrefix != null && !dataPathPrefix.isEmpty()) {
             fileName = dataPathPrefix + "/" + fileName;
         }
         return fileName;

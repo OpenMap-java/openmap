@@ -197,7 +197,7 @@ public class OMTextLabeler extends OMText implements OMLabeler {
         }
 
         double A = calculateProjectedArea(xpts, ypts);
-        A = A * 6.0;
+        A *= 6.0;
         factor = 1.0 / A;
 
         // bbenyo: take the absolute value cause I was getting

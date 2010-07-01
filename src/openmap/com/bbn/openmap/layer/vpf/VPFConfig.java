@@ -143,7 +143,7 @@ public class VPFConfig extends JPanel implements ActionListener {
 
         paths = formatPaths(dataPaths);
 
-        if (paths != null && paths.length() > 0) {
+        if (paths != null && !paths.isEmpty()) {
             // Create the nodes.
             DefaultMutableTreeNode top = new DefaultMutableTreeNode(
                     "VPF Data Libraries");
@@ -452,7 +452,7 @@ public class VPFConfig extends JPanel implements ActionListener {
             clearFeaturesButton.setEnabled(false);
             currentFeatureList.setText(EMPTY_FEATURE_LIST);
         } else if (command == CreateLayerCmd) {
-            if (featureList.size() == 0) {
+            if (featureList.isEmpty()) {
                 Debug.error("No features selected for new VPFLayer");
                 createLayerButton.setEnabled(false);
                 clearFeaturesButton.setEnabled(false);
@@ -593,7 +593,7 @@ public class VPFConfig extends JPanel implements ActionListener {
             if (buf == null) {
                 buf = new StringBuffer(val);
             } else {
-                buf.append(" " + val);
+                buf.append(" ").append(val);
             }
         }
 

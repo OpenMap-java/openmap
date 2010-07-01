@@ -26,5 +26,5 @@ package com.bbn.openmap.event;
 
 
 public interface OMEventSelectionListener {
-    public void selected(OMEvent aarEvent);
+    public void selected(OMEvent omEvent);
 }

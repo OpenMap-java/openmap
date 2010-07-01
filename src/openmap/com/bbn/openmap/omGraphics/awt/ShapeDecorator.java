@@ -123,7 +123,7 @@ public class ShapeDecorator implements Revertable {
                 if (firstPoint == null)
                     firstPoint = point;
 
-                if (points.size() > 0) {
+                if (!points.isEmpty()) {
                     // draw decorations for the previous polyline
                     draw(g, points);
                 }
@@ -142,7 +142,7 @@ public class ShapeDecorator implements Revertable {
         } while (!pi.isDone());
 
         // draw decorations for the last poly
-        if (points.size() > 0) {
+        if (!points.isEmpty()) {
             draw(g, points);
         }
     }
@@ -198,14 +198,14 @@ public class ShapeDecorator implements Revertable {
      */
     protected void draw(Graphics g, LinkedList points) {
 
-        if (decorations.size() == 0)
+        if (decorations.isEmpty())
             throw new NullPointerException("No decorations");
 
         Iterator decorationIterator = decorations.listIterator();
         LinkedList polysegment = new LinkedList();
         Point2D[] point2DArrayType = new Point2D.Double[1];
 
-        while (points.size() > 0) {
+        while (!points.isEmpty()) {
             if (!decorationIterator.hasNext())
                 decorationIterator = decorations.listIterator();
             ShapeDecoration decor = (ShapeDecoration) decorationIterator.next();

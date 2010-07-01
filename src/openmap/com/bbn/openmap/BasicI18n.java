@@ -511,7 +511,7 @@ public class BasicI18n implements I18n, Serializable {
         // Scope the desired resource bundle property file if the
         // default isn't wanted.
         if (!Debug.debugging(DEBUG_CREATE_DEFAULT)) {
-            sbuf.append("_" + loc.toString());
+            sbuf.append("_").append(loc.toString());
         }
         sbuf.append(".properties");
         propertyFileNameKey = sbuf.toString().intern();

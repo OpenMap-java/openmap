@@ -115,7 +115,7 @@ public class GenerateVPFProperties extends DescribeDB {
                     cat,
                     coverages[i]);
             if (printedlayername != null) {
-                printedlayers.append(" " + printedlayername);
+                printedlayers.append(" ").append(printedlayername);
             }
         }
         println("# Summary:" + printedlayers);

@@ -612,7 +612,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
             }
         }
 
-        if (backgroundPanes.size() != 0) {
+        if (!backgroundPanes.isEmpty()) {
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("Adding BackgroundLayerSeparator");
             }
