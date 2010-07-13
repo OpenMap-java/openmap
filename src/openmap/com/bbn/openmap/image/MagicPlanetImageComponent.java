@@ -1081,7 +1081,7 @@ public class MagicPlanetImageComponent extends OMComponent implements
     protected String checkTrimAndNull(String s) {
         if (s != null) {
             s = s.trim();
-            if (s.isEmpty()) {
+            if (s.length() == 0) {
                 s = null;
             }
         }

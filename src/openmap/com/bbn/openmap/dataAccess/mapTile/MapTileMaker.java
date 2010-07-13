@@ -141,7 +141,7 @@ public class MapTileMaker
          zfi.getProperties(props);
       }
 
-      if (buf.length() != 0) {
+      if (buf.length() > 0) {
          props.put(prefix + ZOOM_LEVELS_PROPERTY, buf.toString().trim());
       }
 

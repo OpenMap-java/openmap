@@ -28,7 +28,9 @@ package com.bbn.openmap.layer.rpf;
  */
 public class MakeTocException extends Exception {
 
-    public MakeTocException() {
+   private static final long serialVersionUID = 1L;
+
+   public MakeTocException() {
         super();
     }
 

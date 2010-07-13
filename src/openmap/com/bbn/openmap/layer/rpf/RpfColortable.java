@@ -690,18 +690,18 @@ public class RpfColortable {
 
         public String toString() {
             StringBuffer s = new StringBuffer();
-            s.append("RpfColortable: tableId 2:CADRG; 3:CIB): " + tableId
-                    + "\n");
-            s.append("RpfColortable: numColorRecords: " + numColorRecords
-                    + "\n");
-            s.append("RpfColortable: colorElementLength: " + colorElementLength
-                    + "\n");
-            s.append("RpfColortable: histogramRecordLength: "
-                    + histogramRecordLength + "\n");
-            s.append("RpfColortable: colorTableOffset: " + colorTableOffset
-                    + "\n");
-            s.append("RpfColortable: histogramTableOffset: "
-                    + histogramTableOffset);
+            s.append("RpfColortable: tableId 2:CADRG; 3:CIB): ").append(tableId)
+                    .append("\n");
+            s.append("RpfColortable: numColorRecords: ").append(numColorRecords)
+                    .append("\n");
+            s.append("RpfColortable: colorElementLength: ")
+                    .append(colorElementLength).append("\n");
+            s.append("RpfColortable: histogramRecordLength: ")
+                    .append(histogramRecordLength).append("\n");
+            s.append("RpfColortable: colorTableOffset: ")
+                    .append(colorTableOffset).append("\n");
+            s.append("RpfColortable: histogramTableOffset: ")
+                    .append(histogramTableOffset);
             return s.toString();
         }
     }
@@ -718,16 +718,16 @@ public class RpfColortable {
 
         public String toString() {
             StringBuffer s = new StringBuffer();
-            s.append("RpfColortable: colorConvTableId: " + colorConvTableId
-                    + "\n");
-            s.append("RpfColortable: colorConvNumRecs: " + colorConvNumRecs
-                    + "\n");
-            s.append("RpfColortable: colorConvTableOffset: "
-                    + colorConvTableOffset + "\n");
-            s.append("RpfColortable: colorConvSourceTableOffset: "
-                    + colorConvSourceTableOffset + "\n");
-            s.append("RpfColortable: colorConvTargetTableOffset: "
-                    + colorConvTargetTableOffset);
+            s.append("RpfColortable: colorConvTableId: ")
+                    .append(colorConvTableId).append("\n");
+            s.append("RpfColortable: colorConvNumRecs: ")
+                    .append(colorConvNumRecs).append("\n");
+            s.append("RpfColortable: colorConvTableOffset: ")
+                    .append(colorConvTableOffset).append("\n");
+            s.append("RpfColortable: colorConvSourceTableOffset: ")
+                    .append(colorConvSourceTableOffset).append("\n");
+            s.append("RpfColortable: colorConvTargetTableOffset: ")
+                    .append(colorConvTargetTableOffset);
             return s.toString();
         }
     }

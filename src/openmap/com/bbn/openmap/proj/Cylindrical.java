@@ -99,7 +99,7 @@ public abstract class Cylindrical extends GeoProj {
 
         // maxscale = scale at which world circumference fits in
         // window
-        maxscale = planetPixelCircumference / width;
+        maxscale = Math.floor(planetPixelCircumference / width);
         if (maxscale < minscale) {
             maxscale = minscale;
         }

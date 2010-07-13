@@ -1520,7 +1520,7 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
 
         // Look for a dash pattern properties to come up with a stroke
         String dPattern = props.getProperty(realPrefix + dashPatternProperty);
-        if (basicStrokeDefined && dPattern != null && !dPattern.isEmpty()) {
+        if (basicStrokeDefined && dPattern != null && dPattern.length() > 0) {
             float dashPhase;
             float[] lineDash;
             // OK, it exists, come up with a stroke.
@@ -1568,7 +1568,7 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
             }
 
             String dPhase = props.getProperty(realPrefix + dashPhaseProperty);
-            if (dPhase != null && !dPhase.isEmpty()) {
+            if (dPhase != null && dPhase.length() > 0) {
                 try {
                     dashPhase = Float.valueOf(dPhase).floatValue();
                 } catch (NumberFormatException nfe) {
@@ -1619,7 +1619,7 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
 
         // OK, Fill pattern next...
         fPattern = props.getProperty(realPrefix + fillPatternProperty);
-        if (fPattern != null && !fPattern.isEmpty()) {
+        if (fPattern != null && fPattern.length() > 0) {
 
             try {
 

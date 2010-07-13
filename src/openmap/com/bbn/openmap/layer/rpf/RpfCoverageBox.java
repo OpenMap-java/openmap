@@ -89,13 +89,13 @@ public class RpfCoverageBox {
 
     public String toString() {
         StringBuffer s = new StringBuffer();
-        s.append(" nw_lat " + nw_lat + ", nw_lon " + nw_lon + "\n");
-        s.append(" se_lat " + se_lat + ", se_lon " + se_lon + "\n");
-        s.append(" chart code " + chartCode + "\n");
-        s.append(" scale (parsed and decoded) " + scale + "\n");
-        s.append(" vertical subframes " + verticalSubframes() + "\n");
-        s.append(" horizontal subframes " + horizontalSubframes() + "\n");
-        s.append(" percent coverage " + percentCoverage);
+        s.append(" nw_lat ").append(nw_lat).append(", nw_lon ").append(nw_lon).append("\n");
+        s.append(" se_lat ").append(se_lat).append(", se_lon ").append(se_lon).append("\n");
+        s.append(" chart code ").append(chartCode).append("\n");
+        s.append(" scale (parsed and decoded) ").append(scale).append("\n");
+        s.append(" vertical subframes ").append(verticalSubframes()).append("\n");
+        s.append(" horizontal subframes ").append(horizontalSubframes()).append("\n");
+        s.append(" percent coverage ").append(percentCoverage);
         return s.toString();
     }
 

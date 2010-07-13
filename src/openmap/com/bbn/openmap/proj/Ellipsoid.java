@@ -160,7 +160,7 @@ public class Ellipsoid {
      */
     public static Ellipsoid getByName(String name) {
         Ellipsoid[] all = getAllEllipsoids();
-        if (name != null && !name.isEmpty()) {
+        if (name != null && name.length() > 0) {
             name = name.replace('_', ' ');
 
             for (int i = 0; i < all.length; i++) {

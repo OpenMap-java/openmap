@@ -248,7 +248,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
         if (list != null) {
             StringBuffer buf = new StringBuffer();
             for (OMGraphic omg : list) {
-                if (buf.length() != 0) {
+                if (buf.length() > 0) {
                     buf.append(";");
                 }
 

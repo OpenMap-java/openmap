@@ -157,8 +157,8 @@ public class EventPanel extends OMComponentPanel implements MapPanelChild {
             eventPresenterComponentLookup.put(presenterComponent,
                     eventPresenter);
             hasFilters = hasFilters
-                    || (eventPresenter.getFilters() != null && eventPresenter.getFilters()
-                            .size() > 0);
+                    || (eventPresenter.getFilters() != null &&
+                            !eventPresenter.getFilters().isEmpty());
             setActiveEventPresenter(eventPresenter);
         } else if (numPresenters > 1) {
 
@@ -183,8 +183,8 @@ public class EventPanel extends OMComponentPanel implements MapPanelChild {
                 eventPresenterComponentLookup.put(presenterComponent,
                         eventPresenter);
                 hasFilters = hasFilters
-                        || (eventPresenter.getFilters() != null && eventPresenter.getFilters()
-                                .size() > 0);
+                        || (eventPresenter.getFilters() != null &&
+                                !eventPresenter.getFilters().isEmpty());
             }
             add(jtb, BorderLayout.CENTER);
         }

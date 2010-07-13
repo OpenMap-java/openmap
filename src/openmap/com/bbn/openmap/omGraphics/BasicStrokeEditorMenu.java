@@ -271,7 +271,7 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
     }
 
     public static float[] stringToDashArray(String das) {
-        if (das == null || das.equals(NONE) || das.isEmpty()) {
+        if (das == null || das.equals(NONE) || das.length() == 0) {
             return null;
         }
 

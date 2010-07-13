@@ -307,7 +307,7 @@ public class NetMapReader extends Thread implements NetMapConstants {
                     Properties eventProps = procline(line);
                     if (DEBUG_VERBOSE)
                         Debug.output("  processed...");
-                    if (eventProps.size() > 0) {
+                    if (!eventProps.isEmpty()) {
                         netmapConn.distributeEvent(eventProps);
                         if (DEBUG_VERBOSE)
                             Debug.output("  distributed...");

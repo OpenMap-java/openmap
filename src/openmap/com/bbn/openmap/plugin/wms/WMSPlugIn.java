@@ -477,7 +477,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
      * @param wmsVer
      */
     public void setWmsVersion(String wmsVer) {
-        if (wmsVer == null || wmsVer.isEmpty()) {
+        if (wmsVer == null || wmsVer.length() == 0) {
             wmsVer = "1.1.1";
             Debug.output("WMSPlugin: wmsVersion was null, now set to 1.1.1");
         }

@@ -260,7 +260,7 @@ public class ScaleFilterLayer extends Layer implements InfoDisplayListener,
 
         String layersString = props.getProperty(prefix + layersProperty);
         Vector<Layer> layers = getLayers();
-        if (layersString == null || layersString.isEmpty()) {
+        if (layersString == null || layersString.length() == 0) {
             Debug.error("ScaleFilterLayer(): null layersString!");
             return;
         }

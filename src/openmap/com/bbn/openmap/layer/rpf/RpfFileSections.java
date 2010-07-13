@@ -324,18 +324,18 @@ public class RpfFileSections {
         public String toString() {
             StringBuffer s = new StringBuffer();
             s.append("Coverage Section:\n");
-            s.append(" nwlat = " + nwlat + "\n");
-            s.append(" nwlon = " + nwlon + "\n");
-            s.append(" swlat = " + swlat + "\n");
-            s.append(" swlon = " + swlon + "\n");
-            s.append(" nelat = " + nelat + "\n");
-            s.append(" nelon = " + nelon + "\n");
-            s.append(" selat = " + selat + "\n");
-            s.append(" selon = " + selon + "\n");
-            s.append(" ns vertical resolution = " + nsVertRes + "\n");
-            s.append(" ew horizontal resolution = " + ewHorRes + "\n");
-            s.append(" lat interval = " + latInterval + "\n");
-            s.append(" lon interval = " + lonInterval + "\n");
+            s.append(" nwlat = ").append(nwlat).append("\n");
+            s.append(" nwlon = ").append(nwlon).append("\n");
+            s.append(" swlat = ").append(swlat).append("\n");
+            s.append(" swlon = ").append(swlon).append("\n");
+            s.append(" nelat = ").append(nelat).append("\n");
+            s.append(" nelon = ").append(nelon).append("\n");
+            s.append(" selat = ").append(selat).append("\n");
+            s.append(" selon = ").append(selon).append("\n");
+            s.append(" ns vertical resolution = ").append(nsVertRes).append("\n");
+            s.append(" ew horizontal resolution = ").append(ewHorRes).append("\n");
+            s.append(" lat interval = ").append(latInterval).append("\n");
+            s.append(" lon interval = ").append(lonInterval).append("\n");
             return s.toString();
         }
     }
@@ -350,11 +350,11 @@ public class RpfFileSections {
         public String toString() {
             StringBuffer s = new StringBuffer();
             s.append("RpfLocationSection:\n");
-            s.append(" length = " + length + "\n");
-            s.append(" table offset = " + tableOffset + "\n");
-            s.append(" number of records = " + numberRecords + "\n");
-            s.append(" record length = " + recordLength + "\n");
-            s.append(" aggregate length = " + aggregateLength + "\n");
+            s.append(" length = ").append(length).append("\n");
+            s.append(" table offset = ").append(tableOffset).append("\n");
+            s.append(" number of records = ").append(numberRecords).append("\n");
+            s.append(" record length = ").append(recordLength).append("\n");
+            s.append(" aggregate length = ").append(aggregateLength).append("\n");
             return s.toString();
         }
     }
@@ -367,9 +367,9 @@ public class RpfFileSections {
         public String toString() {
             StringBuffer s = new StringBuffer();
             s.append("RpfLocationRecord:\n");
-            s.append(" id = " + id + "\n");
-            s.append(" component length  = " + componentLength + "\n");
-            s.append(" component location = " + componentLocation + "\n");
+            s.append(" id = ").append(id).append("\n");
+            s.append(" component length  = ").append(componentLength).append("\n");
+            s.append(" component location = ").append(componentLocation).append("\n");
             return s.toString();
         }
     }

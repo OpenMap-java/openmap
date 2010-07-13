@@ -52,9 +52,9 @@ public class RpfSubframe {
     /** The subframe image. */
     public OMScalingRaster image;
     /** The attribute text. */
-    public OMText information;
-    /** The subframe outline. */
-    public OMRect rectangle;
+//    public OMText information;
+//    /** The subframe outline. */
+//    public OMRect rectangle;
     /** The pointers to the surrounding subframes in the cache. */
     public int nextSubframe, prevSubframe;
     /** The original pixel size of RPF Subframes. */
@@ -91,12 +91,13 @@ public class RpfSubframe {
         else {
             image = new OMScalingRaster(0f, 0f, 0f, 0f, PIXEL_EDGE_SIZE, PIXEL_EDGE_SIZE, (byte[]) null, (Color[]) null, opaqueness);
         }
-        information = new OMText(0f, 0f, 10, 20, "***", new java.awt.Font("Helvetica", java.awt.Font.PLAIN, 10), OMText.JUSTIFY_LEFT);
-        information.setLinePaint(Color.yellow);
-        information.setFillPaint(new Color(100, 100, 100, 200));
-        rectangle = new OMRect(0f, 0f, 0f, 0f, OMGraphic.LINETYPE_STRAIGHT);
-        rectangle.setLinePaint(Color.yellow);
-        rectangle.setLineType(OMGraphic.LINETYPE_STRAIGHT);
+        image.setSelectPaint(Color.yellow);
+//        information = new OMText(0f, 0f, 10, 20, "***", new java.awt.Font("Helvetica", java.awt.Font.PLAIN, 10), OMText.JUSTIFY_LEFT);
+//        information.setLinePaint(Color.yellow);
+//        information.setFillPaint(new Color(100, 100, 100, 200));
+//        rectangle = new OMRect(0f, 0f, 0f, 0f, OMGraphic.LINETYPE_STRAIGHT);
+//        rectangle.setLinePaint(Color.yellow);
+//        rectangle.setLineType(OMGraphic.LINETYPE_STRAIGHT);
     }
 
     public int getColorModel() {
@@ -108,11 +109,11 @@ public class RpfSubframe {
     }
 
     public void setScalingTo(int width, int height) {
-        if (width >= PIXEL_EDGE_SIZE && height >= PIXEL_EDGE_SIZE) {
-            information.setData(data);
-        } else {
-            information.setData("");
-        }
+//        if (width >= PIXEL_EDGE_SIZE && height >= PIXEL_EDGE_SIZE) {
+//            information.setData(data);
+//        } else {
+//            information.setData("");
+//        }
     }
 
     /**
@@ -126,14 +127,14 @@ public class RpfSubframe {
     public void setLocation(double lat, double lon) {
         image.setLat(lat);
         image.setLon(lon);
-        information.setLat(lat);
-        information.setLon(lon);
-        rectangle.setLocation(lat,
-                lon,
-                0,
-                0,
-                (int)rectangle.getRight(),
-                (int)rectangle.getBottom());
+//        information.setLat(lat);
+//        information.setLon(lon);
+//        rectangle.setLocation(lat,
+//                lon,
+//                0,
+//                0,
+//                (int)rectangle.getRight(),
+//                (int)rectangle.getBottom());
     }
 
     /**
@@ -149,13 +150,13 @@ public class RpfSubframe {
         image.setULLon(wlon);
         image.setLRLat(llat);
         image.setLRLon(elon);
-        information.setLat(ulat);
-        information.setLon(wlon);
-        rectangle.setLocation(ulat,
-                wlon,
-                llat,
-                elon,
-                OMGraphic.LINETYPE_STRAIGHT);
+//        information.setLat(ulat);
+//        information.setLon(wlon);
+//        rectangle.setLocation(ulat,
+//                wlon,
+//                llat,
+//                elon,
+//                OMGraphic.LINETYPE_STRAIGHT);
     }
 
     /**
@@ -164,6 +165,7 @@ public class RpfSubframe {
      */
     public void setAttributeText(String text) {
         data = text;
+        image.putAttribute(OMGraphic.TOOLTIP, data);
     }
 
     /**

@@ -625,7 +625,7 @@ public class MIFLoader {
         String line;
         WHILE: while ((line = br.readLine()) != null) {
 
-            if (line.isEmpty())
+            if (line.length() == 0)
                 continue WHILE; // skip blank lines
 
             // should return the tokenizer as soon as we have a line

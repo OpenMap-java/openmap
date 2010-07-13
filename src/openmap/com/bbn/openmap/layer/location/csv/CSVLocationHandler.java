@@ -225,7 +225,7 @@ public class CSVLocationHandler extends AbstractLocationHandler implements
                 + eastIsNegProperty, false);
         defaultIconURL = properties
                 .getProperty(prefix + DefaultIconURLProperty);
-        if (defaultIconURL != null && defaultIconURL.trim().isEmpty()) {
+        if (defaultIconURL != null && defaultIconURL.trim().length() == 0) {
             // If it's empty, it should be null, otherwise it causes
             // confusion later when the empty string can't be
             // interpreted as a valid URL to an image file.

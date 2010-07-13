@@ -134,11 +134,11 @@ public class UTMCoordPanel extends CoordPanel implements Serializable {
             iZoneNumber = Float.valueOf(zoneNumber.getText()).intValue();
             cZoneLetter = zoneLetter.getText().charAt(0);
 
-            float minEasting = easting.getText().isEmpty() ? 0f
+            float minEasting = easting.getText().length() == 0 ? 0f
                     : Float.valueOf(easting.getText()).floatValue();
             easting.setText(Float.toString(Math.abs(minEasting)));
 
-            float minNorthing = northing.getText().isEmpty() ? 0
+            float minNorthing = northing.getText().length() == 0 ? 0
                     : Float.valueOf(northing.getText()).floatValue();
             northing.setText(Float.toString(Math.abs(minNorthing)));
 

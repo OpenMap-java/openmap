@@ -327,12 +327,12 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
                 // and shx file are not provided, look for them next
                 // to the shape file. - DFD
 
-                if ((shx == null || shx.isEmpty()) && shp != null) {
+                if ((shx == null || shx.length() == 0) && shp != null) {
                     shx = shp.substring(0, shp.lastIndexOf('.') + 1)
                             + PARAM_SHX;
                 }
 
-                if ((dbf == null || dbf.isEmpty()) && shp != null) {
+                if ((dbf == null || dbf.length() == 0) && shp != null) {
                     dbf = shp.substring(0, shp.lastIndexOf('.') + 1)
                             + PARAM_DBF;
                 }

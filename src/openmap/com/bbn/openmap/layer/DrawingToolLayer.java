@@ -166,7 +166,7 @@ public class DrawingToolLayer extends OMGraphicHandlerLayer implements
             fileName = dataPathPrefix + "/" + fileName;
         }
 
-        if (fileName != null && !fileName.trim().isEmpty()) {
+        if (fileName != null && fileName.trim().length() > 0) {
             this.fileName = fileName;
             setList(load());
         }

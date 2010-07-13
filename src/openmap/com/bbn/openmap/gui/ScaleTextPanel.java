@@ -221,7 +221,7 @@ public class ScaleTextPanel extends OMToolComponent implements Serializable,
                     System.err.println("ScaleTextPanel.applyScale(): problem");
                 else
                     fireScaleChange(scale);
-            } else if (strscale.trim().isEmpty()) {
+            } else if (strscale.trim().length() == 0) {
                 return; // ignore empty string
             } else {
                 scale = df.parse(strscale).floatValue();

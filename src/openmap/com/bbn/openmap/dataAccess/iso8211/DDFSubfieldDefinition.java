@@ -426,7 +426,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
             String dataString = extractStringData(pachSourceData, nMaxBytes,
                                                   pnConsumedBytes);
 
-            if (dataString.isEmpty()) {
+            if (dataString.length() == 0) {
                 return 0;
             }
 
@@ -560,7 +560,7 @@ public class DDFSubfieldDefinition implements DDFConstants {
         case 'C':
             String dataString = extractStringData(pachSourceData, nMaxBytes,
                                                   pnConsumedBytes);
-            if (dataString.isEmpty()) {
+            if (dataString.length() == 0) {
                 return 0;
             }
 

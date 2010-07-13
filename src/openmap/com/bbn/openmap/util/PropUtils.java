@@ -298,7 +298,7 @@ public class PropUtils {
 	 * returned string should be good for prepending to other properties.
 	 */
 	public static String getScopedPropertyPrefix(String pre) {
-		if (pre == null || pre.isEmpty()) {
+		if (pre == null || pre.length() == 0) {
 			return "";
 		} else if (pre.endsWith(".")) {
 			return pre;
@@ -420,7 +420,7 @@ public class PropUtils {
 			char defaultValue) {
 		char ret = defaultValue;
 		String charString = p.getProperty(propName);
-		if (charString != null && !charString.isEmpty()) {
+		if (charString != null && charString.length() > 0) {
 			return charString.charAt(0);
 		}
 		return ret;
@@ -545,7 +545,7 @@ public class PropUtils {
 		String[] ret = null;
 		String raw = p.getProperty(propName);
 
-		if (raw != null && !raw.isEmpty()) {
+		if (raw != null && raw.length() > 0) {
 
 			try {
 				StringTokenizer token = new StringTokenizer(raw, tok);
@@ -955,7 +955,7 @@ public class PropUtils {
 			String layerListProperty) {
 		String dataPrefix = (String) layer
 				.getAttribute(Layer.DataPathPrefixProperty);
-		if (dataPrefix != null && !dataPrefix.isEmpty()) {
+		if (dataPrefix != null && dataPrefix.length() > 0) {
 			putDataPrefixToLayerList(dataPrefix, props, layerListProperty);
 		}
 	}

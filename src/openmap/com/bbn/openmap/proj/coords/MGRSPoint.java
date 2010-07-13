@@ -382,7 +382,7 @@ public class MGRSPoint extends ZonedUTMPoint {
 	 */
 	protected void decode(String mgrsString) throws NumberFormatException {
 
-		if (mgrsString == null || mgrsString.isEmpty()) {
+		if (mgrsString == null || mgrsString.length() == 0) {
 			throw new NumberFormatException("MGRSPoint coverting from nothing");
 		}
 

@@ -168,7 +168,7 @@ public class HttpConnection extends Thread {
                                     + contentLength);
                 }
 
-                if (line.isEmpty()) {
+                if (line.length() == 0) {
                     readContent(contentLength);
                 }
             }

@@ -119,7 +119,7 @@ public class MultiDirectoryPropertyEditor extends FilePropertyEditor {
      */
     public void append(String addPath) {
         String currentPath = textField.getText();
-        if (currentPath.isEmpty()) {
+        if (currentPath.length() == 0) {
             setValue(addPath);
         } else {
             setValue(currentPath.concat(";" + addPath));

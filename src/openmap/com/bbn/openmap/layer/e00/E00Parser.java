@@ -568,7 +568,7 @@ public class E00Parser {
             //System.out.println(" "+S);
             parseString(S, I, 14);
             BasicLocation bl = (BasicLocation) labs.getOMGraphicAt(i);
-            if (S.length() != 0)
+            if (S.length() > 0)
                 bl.setName(name);
             else
                 bl.setLabel(null);
@@ -647,7 +647,7 @@ public class E00Parser {
             String S = r.getStringField(iname).trim();
             if (bl == null)
                 continue;
-            if (!S.isEmpty()) {
+            if (S.length() > 0) {
                 Debug.message("e00", S);
                 bl.setName(S);
                 bl.setShowName(true);

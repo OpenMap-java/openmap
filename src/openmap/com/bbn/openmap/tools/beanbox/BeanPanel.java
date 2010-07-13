@@ -455,7 +455,7 @@ public class BeanPanel extends OMToolComponent implements Serializable {
         String beanPathsStr = props.getProperty("beanpanel.beans.path");
 
         if ((beanPathsStr != null)
-                && !((beanPathsStr = beanPathsStr.trim()).isEmpty())) {
+                && !((beanPathsStr = beanPathsStr.trim()).length() == 0)) {
             StringTokenizer st = new StringTokenizer(beanPathsStr, " ");
 
             while (st.hasMoreTokens())
@@ -474,7 +474,7 @@ public class BeanPanel extends OMToolComponent implements Serializable {
 
         String tabsStr = props.getProperty("beanpanel.tabs");
 
-        if ((tabsStr != null) && !((tabsStr = tabsStr.trim()).isEmpty())) {
+        if ((tabsStr != null) && !((tabsStr = tabsStr.trim()).length() == 0)) {
             StringTokenizer st = new StringTokenizer(tabsStr, " ");
 
             while (st.hasMoreTokens()) {
@@ -484,7 +484,7 @@ public class BeanPanel extends OMToolComponent implements Serializable {
                         + ".beans");
 
                 if ((beanClassesStr != null)
-                        && !((beanClassesStr = beanClassesStr.trim()).isEmpty())) {
+                        && !((beanClassesStr = beanClassesStr.trim()).length() == 0)) {
                     StringTokenizer st2 = new StringTokenizer(beanClassesStr, " ");
                     Vector beanClassNames = new Vector();
 
@@ -797,7 +797,7 @@ public class BeanPanel extends OMToolComponent implements Serializable {
             Debug.output("beanInfoPath=" + beanInfoPath);
 
         if (beanInfoPath == null
-                || (beanInfoPath = beanInfoPath.trim()).isEmpty())
+                || (beanInfoPath = beanInfoPath.trim()).length() == 0)
             return;
 
         String[] oldPath = java.beans.Introspector.getBeanInfoSearchPath();

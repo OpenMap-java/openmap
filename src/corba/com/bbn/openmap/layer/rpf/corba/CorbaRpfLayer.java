@@ -35,7 +35,6 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.layer.rpf.RpfFrameProvider;
 import com.bbn.openmap.layer.rpf.RpfLayer;
 import com.bbn.openmap.layer.rpf.RpfViewAttributes;
@@ -59,7 +58,9 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class CorbaRpfLayer extends RpfLayer {
 
-    /** Property to change the quickRedraw setting. T/F */
+   private static final long serialVersionUID = 1L;
+
+   /** Property to change the quickRedraw setting. T/F */
     public static final String QuickRedrawProperty = ".quickRedraw";
 
     /**
@@ -151,25 +152,13 @@ public class CorbaRpfLayer extends RpfLayer {
 
         setFrameProvider((RpfFrameProvider) new CRFPClient());
 
-        if (props != null && frameProvider != null) {
+        if (props != null) {
             // Set default settings...
             ((CRFPClient) frameProvider).setProperties(getPropertyPrefix(),
                     props);
         }
 
         this.cache = null;
-    }
-
-    /**
-     * The projectionListener interface method that lets the Layer
-     * know when the projection has changes, and therefore new
-     * graphics have to created /supplied for the screen.
-     * 
-     * @param e The projection event, most likely fired from a map
-     *        bean.
-     */
-    public void projectionChanged(ProjectionEvent e) {
-        projectionChanged(e, false);
     }
 
     /**

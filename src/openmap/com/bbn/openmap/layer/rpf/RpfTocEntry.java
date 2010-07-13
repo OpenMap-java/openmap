@@ -147,19 +147,19 @@ public class RpfTocEntry {
 
     public String toString() {
         StringBuffer s = new StringBuffer();
-        s.append("RpfTocEntry ##################" + "\n");
-        s.append(" vertInterval " + vertInterval + ", horizInterval "
-                + horizInterval + "\n");
-        s.append(" vertResolution " + vertResolution + ", horizResolution "
-                + horizResolution + "\n");
-        s.append(" horizFrames " + horizFrames + ", vertFrames " + vertFrames
-                + "\n");
-        s.append(" zone " + zone + "\n");
-        s.append(" scale " + scale + "\n");
-        s.append(" version " + version + "\n");
-        s.append(" Cib " + Cib + "\n");
-        s.append(" compressionRatio " + compressionRatio + "\n");
-        s.append(" producer " + producer + "\n");
+        s.append("RpfTocEntry ##################").append("\n");
+        s.append(" vertInterval ").append(vertInterval)
+                .append(", horizInterval ").append(horizInterval).append("\n");
+        s.append(" vertResolution ").append(vertResolution)
+                .append(", horizResolution ").append(horizResolution).append("\n");
+        s.append(" horizFrames ").append(horizFrames)
+                .append(", vertFrames ").append(vertFrames).append("\n");
+        s.append(" zone ").append(zone).append("\n");
+        s.append(" scale ").append(scale).append("\n");
+        s.append(" version ").append(version).append("\n");
+        s.append(" Cib ").append(Cib).append("\n");
+        s.append(" compressionRatio ").append(compressionRatio).append("\n");
+        s.append(" producer ").append(producer).append("\n");
         s.append(coverage);
         return s.toString();
     }

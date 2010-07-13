@@ -523,7 +523,7 @@ public class GoToMenu extends AbstractOpenMapMenu {
         public void actionPerformed(ActionEvent event) {
             if (event.getSource() == applybutton) {
                 String newName = nameField.getText();
-                if (newName != null && !(newName.isEmpty())) {
+                if (newName != null && !(newName.length() == 0)) {
                     notifyThis.setNameAndAdd(newName);
                 }
             }

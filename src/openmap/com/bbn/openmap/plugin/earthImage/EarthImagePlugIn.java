@@ -130,7 +130,7 @@ public class EarthImagePlugIn
 
       imageString = setList.getProperty(realPrefix + ImageProperty);
 
-      if (imageString == null || imageString.isEmpty()) {
+      if (imageString == null || imageString.length() == 0) {
          Debug.error("EarthImagePlugIn needs an image.");
          Debug.output(setList.toString());
          return;

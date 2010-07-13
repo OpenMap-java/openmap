@@ -35,7 +35,7 @@ import com.bbn.openmap.util.Debug;
 public class RpfFileSearch {
 
     /** The list of RPF frame files. */
-    protected Vector files = new Vector();
+    protected Vector<String> files = new Vector<String>();
 
     public RpfFileSearch() {
     }
@@ -165,7 +165,7 @@ public class RpfFileSearch {
         StringBuffer s = new StringBuffer();
         s.append("RpfFileSearch:\n");
         for (int i = 0; i < files.size(); i++) {
-            s.append("  file " + i + ": " + files.elementAt(i) + "\n");
+            s.append("  file ").append(i).append(": ").append(files.elementAt(i)).append("\n");
         }
         return s.toString();
     }

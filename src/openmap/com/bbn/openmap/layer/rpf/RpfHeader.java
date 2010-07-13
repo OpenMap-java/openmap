@@ -147,18 +147,21 @@ public class RpfHeader {
 
     public String toString() {
         StringBuffer s = new StringBuffer();
-        s.append("RpfHeader: endian is " + endian + "\n");
-        s.append("RpfHeader: header section length = " + headerSectionLength
-                + "\n");
-        s.append("RpfHeader: filename = " + filename + "\n");
-        s.append("RpfHeader: neww = " + neww + "\n");
-        s.append("RpfHeader: standard number = " + standardNumber + "\n");
-        s.append("RpfHeader: standard date = " + standardDate + "\n");
-        s.append("RpfHeader: classification = " + classification + "\n");
-        s.append("RpfHeader: country = " + country + "\n");
-        s.append("RpfHeader: release = " + release + "\n");
-        s.append("RpfHeader: location section location = "
-                + locationSectionLocation + "\n");
+        s.append("RpfHeader: endian is ").append(endian).append("\n");
+        s.append("RpfHeader: header section length = ")
+                .append(headerSectionLength).append("\n");
+        s.append("RpfHeader: filename = ").append(filename).append("\n");
+        s.append("RpfHeader: neww = ").append(neww).append("\n");
+        s.append("RpfHeader: standard number = ")
+                .append(standardNumber).append("\n");
+        s.append("RpfHeader: standard date = ")
+                .append(standardDate).append("\n");
+        s.append("RpfHeader: classification = ")
+                .append(classification).append("\n");
+        s.append("RpfHeader: country = ").append(country).append("\n");
+        s.append("RpfHeader: release = ").append(release).append("\n");
+        s.append("RpfHeader: location section location = ")
+                .append(locationSectionLocation).append("\n");
         return s.toString();
     }
 

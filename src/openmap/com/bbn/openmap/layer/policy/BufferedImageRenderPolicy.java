@@ -24,12 +24,15 @@ package com.bbn.openmap.layer.policy;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.omGraphics.OMScalingRaster;
+import com.bbn.openmap.proj.Cylindrical;
 import com.bbn.openmap.proj.Projection;
 
 /**
@@ -40,141 +43,134 @@ import com.bbn.openmap.proj.Projection;
  * projection change because we need the image buffer to be transparent for
  * parts of the map that are not used by the layer.
  */
-public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
+public class BufferedImageRenderPolicy
+      extends RenderingHintsRenderPolicy {
 
-    public final static long bufferTriggerDelay = 150;
+   protected OMRaster buffer = null;
 
-    protected BufferedImage buffer = null;
+   /**
+    * Set the layer at some point before use.
+    */
+   public BufferedImageRenderPolicy() {
+      super();
+   }
 
-    protected boolean useImageBuffer = false;
+   /**
+    * Don't pass in a null layer.
+    */
+   public BufferedImageRenderPolicy(OMGraphicHandlerLayer layer) {
+      super(layer);
+   }
 
-    /**
-     * Set the layer at some point before use.
-     */
-    public BufferedImageRenderPolicy() {
-        super();
-    }
+   public OMGraphicList prepare() {
+      if (layer != null) {
 
-    /**
-     * Don't pass in a null layer.
-     */
-    public BufferedImageRenderPolicy(OMGraphicHandlerLayer layer) {
-        super(layer);
-    }
+         // Instead of setting the buffer to null here, we want to re-project an
+         // OMRaster that is positioning the buffer instead, and then prepare it
+         // to be painted in the new location. When the prepare() method
+         // returns, we create a new OMRaster buffer at the map location.
 
-    public OMGraphicList prepare() {
-        if (layer != null) {
+         OMRaster buffer = getBuffer();
+         Projection proj = layer.getProjection();
+         if (proj instanceof Cylindrical && buffer != null) {
+            buffer.generate(layer.getProjection());
+         } else {
             setBuffer(null);
-            OMGraphicList list = layer.prepare();
-            if (isUseImageBuffer()) {
-                setBuffer(createAndPaintImageBuffer(list));
-            }
-            return list;
-        } else {
-            logger.warning("NULL layer, can't do anything.");
-        }
-        return null;
-    }
+         }
+         
+         OMGraphicList list = layer.prepare();
+         setBuffer(createAndPaintImageBuffer(list));
 
-    public void paint(Graphics g) {
-        if (layer == null) {
-            logger.warning("NULL layer, skipping...");
-            return;
-        }
+         return list;
+      } else {
+         logger.warning("NULL layer, can't do anything.");
+      }
+      return null;
+   }
 
-        OMGraphicList list = layer.getList();
-        Projection proj = layer.getProjection();
-        Graphics2D g2 = (Graphics2D) g;
-        if (list != null && layer.isProjectionOK(proj)) {
+   public void paint(Graphics g) {
+      if (layer == null) {
+         logger.warning("NULL layer, skipping...");
+         return;
+      }
 
-            if (isUseImageBuffer() && getBuffer() == null) {
-                setBuffer(createAndPaintImageBuffer(list));
-            }
+      OMGraphicList list = layer.getList();
+      Projection proj = layer.getProjection();
+      Graphics2D g2 = (Graphics2D) g.create();
+      OMRaster bufferedImage = getBuffer();
 
-            BufferedImage bufferedImage = getBuffer();
+      if (bufferedImage == null && list != null && layer.isProjectionOK(proj)) {
 
-            setCompositeOnGraphics(g2);
+         bufferedImage = createAndPaintImageBuffer(list);
+         setBuffer(bufferedImage);
+         setCompositeOnGraphics(g2);
 
-            if (bufferedImage != null) {
+         if (bufferedImage != null) {
 
-                if (proj != null) {
-                    // Gets reset by JComponent
-                    g.setClip(0, 0, proj.getWidth(), proj.getHeight());
-                }
-
-                g2.drawRenderedImage((BufferedImage) bufferedImage,
-                        new AffineTransform());
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine(layer.getName() + ": rendering buffer");
-                }
-
-                if (!isUseImageBuffer()) {
-                    setBuffer(null);
-                }
-            } else {
-                super.setRenderingHints(g);
-                long startPaint = System.currentTimeMillis();
-                list.render(g);
-                long endPaint = System.currentTimeMillis();
-
-                if (endPaint - startPaint > bufferTriggerDelay) {
-                    setUseImageBuffer(true);
-                }
-
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine(layer.getName() + ": rendering list, buffer("
-                            + isUseImageBuffer() + ")");
-                }
-            }
-        } else if (logger.isLoggable(Level.FINE)) {
-            logger.fine(layer.getName()
-                    + ".paint(): "
-                    + (list == null ? "NULL list, skipping..."
-                            : " skipping due to projection."));
-        }
-
-    }
-
-    /** Get the BufferedImage for the layer. */
-    protected BufferedImage getBuffer() {
-        return buffer;
-    }
-
-    /** Set the BufferedImage for the layer. */
-    protected void setBuffer(BufferedImage bi) {
-        buffer = bi;
-    }
-
-    protected BufferedImage createAndPaintImageBuffer(OMGraphicList list) {
-        BufferedImage bufferedImage = null;
-        if (list != null && layer != null) {
-            int w = layer.getProjection().getWidth();
-            int h = layer.getProjection().getHeight();
-            bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
-            super.setRenderingHints(g2d);
-            long startPaint = System.currentTimeMillis();
-            list.render(g2d);
-            long endPaint = System.currentTimeMillis();
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine(layer.getName() + ": rendering list into buffer");
+               logger.fine(layer.getName() + ": rendering buffer in paint after creating it from list");
             }
-            if (endPaint - startPaint < bufferTriggerDelay) {
-                // OK, paint didn't take that long, don't use buffer
-                // on the next time around. Since we've gone through
-                // the effort of creating an image that's painted, use
-                // it.
-                setUseImageBuffer(false);
-            }
-        }
-        return bufferedImage;
-    }
 
-    public synchronized void setUseImageBuffer(boolean value) {
-        useImageBuffer = value;
-    }
+            // g2.drawRenderedImage((BufferedImage) bufferedImage, new
+            // AffineTransform());
+            bufferedImage.render(g2);
 
-    public synchronized boolean isUseImageBuffer() {
-        return useImageBuffer;
-    }
+         } else {
+            // Not sure why we'd get here...
+            super.setRenderingHints(g2);
+            list.render(g2);
+         }
+      } else if (bufferedImage != null && layer.isProjectionOK(proj)) {
+         if (logger.isLoggable(Level.FINE)) {
+            logger.fine(layer.getName() + ": rendering buffer in paint........");
+         }
+         setCompositeOnGraphics(g2);
+         bufferedImage.render(g2);
+      } else if (logger.isLoggable(Level.FINE)) {
+         logger.fine(layer.getName() + ".paint(): " + (list == null ? "NULL list, skipping..." : " skipping due to projection."));
+      }
+
+      g2.dispose();
+
+   }
+
+   /** Get the BufferedImage for the layer. */
+   protected OMRaster getBuffer() {
+      return buffer;
+   }
+
+   /** Set the BufferedImage for the layer. */
+   protected void setBuffer(OMRaster bi) {
+      buffer = bi;
+   }
+
+   protected OMRaster createAndPaintImageBuffer(OMGraphicList list) {
+
+      OMRaster omr = null;
+
+      if (list != null && layer != null) {
+         Projection proj = layer.getProjection();
+         int w = proj.getWidth();
+         int h = proj.getHeight();
+         BufferedImage bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+         Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
+         super.setRenderingHints(g2d);
+         list.render(g2d);
+         if (logger.isLoggable(Level.FINE)) {
+            logger.fine(layer.getName() + ": $$$$$$$$$$ rendering list into buffer");
+         }
+
+         Point2D llp1 = proj.getUpperLeft();
+         Point2D llp2 = proj.getLowerRight();
+
+         if (proj instanceof Cylindrical) {
+            omr = new OMScalingRaster(llp1.getY(), llp1.getX(), llp2.getY(), llp2.getX(), bufferedImage);
+         } else {
+            omr = new OMRaster((int)0, (int)0, bufferedImage);
+         }
+         omr.generate(proj);
+      }
+
+      return omr;
+   }
 }

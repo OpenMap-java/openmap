@@ -143,7 +143,7 @@ public class VPFConfig extends JPanel implements ActionListener {
 
         paths = formatPaths(dataPaths);
 
-        if (paths != null && !paths.isEmpty()) {
+        if (paths != null && paths.length() > 0) {
             // Create the nodes.
             DefaultMutableTreeNode top = new DefaultMutableTreeNode(
                     "VPF Data Libraries");
@@ -765,7 +765,7 @@ public class VPFConfig extends JPanel implements ActionListener {
             }
         }
         
-        if (features.size() > 0) {
+        if (!features.isEmpty()) {
             for (Entry<String, FeatureInfo> entry : features.entrySet()) {
                 System.out.println(entry.getKey() + ": " + entry.getValue());
             }

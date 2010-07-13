@@ -688,7 +688,7 @@ public class PropertyHandler extends MapHandlerChild implements
      */
     protected void merge(Properties from, Properties to, String what,
                          String where) {
-        if (from.size() > 0) {
+        if (!from.isEmpty()) {
 
             if (to == null) {
                 to = getProperties();
@@ -1171,7 +1171,7 @@ public class PropertyHandler extends MapHandlerChild implements
 
                 TreeMap orderedProperties = new TreeMap(componentProperties);
 
-                if (componentProperties.size() > 0) {
+                if (!componentProperties.isEmpty()) {
                     componentPropsString.append("####\n");
                     for (Iterator keys = orderedProperties.keySet().iterator(); keys.hasNext();) {
                         String key = (String) keys.next();

@@ -26,7 +26,7 @@ import java.awt.Color;
 
 public class CGM implements Cloneable {
     protected Vector V;
-    public boolean changeCGMFill = false;
+    public boolean changeCGMFill = true;
 
     public void setChangeFill(boolean custom) {
         changeCGMFill = custom;

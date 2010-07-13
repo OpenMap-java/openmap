@@ -61,8 +61,8 @@ public class RpfFrameEntry {
 
     public String toString() {
         StringBuffer s = new StringBuffer();
-        s.append("Is Located At: " + framePath + "\n");
-        s.append("Exists: " + exists + "\n");
+        s.append("Is Located At: ").append(framePath).append("\n");
+        s.append("Exists: ").append(exists).append("\n");
         return s.toString();
     }
 }

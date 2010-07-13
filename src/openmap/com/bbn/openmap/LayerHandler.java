@@ -805,7 +805,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
 
         if (propertyHandler != null) {
             String pre = layer.getPropertyPrefix();
-            if (pre != null && !pre.isEmpty()) {
+            if (pre != null && pre.length() > 0) {
                 propertyHandler.addUsedPrefix(layer.getPropertyPrefix());
             }
         }

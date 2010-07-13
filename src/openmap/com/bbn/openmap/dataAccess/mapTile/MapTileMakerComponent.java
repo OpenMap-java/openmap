@@ -17,7 +17,6 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -275,7 +274,8 @@ public class MapTileMakerComponent
             new JOptionPane(creating_map_tiles, JOptionPane.INFORMATION_MESSAGE, JOptionPane.CANCEL_OPTION, null, buttons, button1);
 
       cancelDialog = pane.createDialog(frame, "MapTileMaker Running");
-      cancelDialog.setModalityType(ModalityType.APPLICATION_MODAL);
+//      cancelDialog.setModalityType(ModalityType.APPLICATION_MODAL);
+      cancelDialog.setModal(true);
       cancelDialog.setVisible(true);
    }
 

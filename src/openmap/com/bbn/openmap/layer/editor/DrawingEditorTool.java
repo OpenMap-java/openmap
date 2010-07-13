@@ -522,9 +522,9 @@ public class DrawingEditorTool extends AbstractEditorTool implements
 
                 // if you only want one OMGraphic at a time:
                 // OMGraphicList omgl = layer.getList();
-                // if (omgl != null && omgl.size() > 0) {
-                // omgl.clear();
-                // layer.repaint();
+                // if (omgl != null && !omgl.isEmpty()) {
+                //     omgl.clear();
+                //     layer.repaint();
                 // }
 
                 omdtmm.mousePressed(e);

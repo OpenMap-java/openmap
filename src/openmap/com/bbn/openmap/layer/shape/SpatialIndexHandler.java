@@ -162,7 +162,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
         String dataPathPrefix = props.getProperty(prefix
                 + Layer.DataPathPrefixProperty);
 
-        if (dataPathPrefix != null && !dataPathPrefix.isEmpty()) {
+        if (dataPathPrefix != null && dataPathPrefix.length() > 0) {
             dataPathPrefix += "/";
         } else {
             dataPathPrefix = "";
@@ -201,7 +201,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
                     + ShapeLayer.pointImageURLProperty);
 
             try {
-                if (imageURLString != null && !imageURLString.isEmpty()) {
+                if (imageURLString != null && imageURLString.length() > 0) {
                     URL imageURL = PropUtils.getResourceOrFileOrURL(this,
                             imageURLString);
                     ImageIcon imageIcon = new ImageIcon(imageURL);

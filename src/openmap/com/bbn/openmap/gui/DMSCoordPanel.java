@@ -151,20 +151,20 @@ public class DMSCoordPanel extends CoordPanel implements Serializable {
             // up a little. Also lets the user know what we think we
             // read.
 
-            minlat = minLat.getText().isEmpty() ? 0
+            minlat = minLat.getText().length() == 0 ? 0
                     : Float.valueOf(minLat.getText()).intValue();
             minLat.setText(Integer.toString(Math.abs(minlat)));
-            seclat = secLat.getText().isEmpty() ? 0.0f
+            seclat = secLat.getText().length() == 0 ? 0.0f
                     : Float.valueOf(secLat.getText()).floatValue();
             secLat.setText(Float.toString(Math.abs(seclat)));
 
             deglon = Float.valueOf(degLon.getText()).intValue();
 
-            minlon = minLon.getText().isEmpty() ? 0
+            minlon = minLon.getText().length() == 0 ? 0
                     : Float.valueOf(minLon.getText()).intValue();
             minLon.setText(Integer.toString(Math.abs(minlon)));
 
-            seclon = secLon.getText().isEmpty() ? 0.0f
+            seclon = secLon.getText().length() == 0 ? 0.0f
                     : Float.valueOf(secLon.getText()).floatValue();
             secLon.setText(Float.toString(Math.abs(seclon)));
 

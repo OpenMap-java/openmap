@@ -303,7 +303,7 @@ public class DTEDAdmin {
                 dnt.set(file.getAbsolutePath());
 
                 String dsd = dnt.getSubDirs();
-                if (dsd != null && !dsd.isEmpty()) {
+                if (dsd != null && dsd.length() > 0) {
                     dsd = "/" + dsd;
                 }
 

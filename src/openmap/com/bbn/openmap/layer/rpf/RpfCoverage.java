@@ -28,7 +28,6 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Properties;
-import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -95,7 +94,7 @@ public class RpfCoverage implements ActionListener, RpfConstants,
         PropertyConsumer {
 
     /** The graphic list of objects to draw. */
-    protected Vector omGraphics;
+    protected OMGraphicList omGraphics;
 
     /**
      * Set when the projection has changed while a swing worker is
@@ -688,11 +687,11 @@ public class RpfCoverage implements ActionListener, RpfConstants,
         }
     }
 
-    public synchronized void setGraphicLists(Vector lists) {
+    public synchronized void setGraphicLists(OMGraphicList lists) {
         omGraphics = lists;
     }
 
-    public synchronized Vector getGraphicLists() {
+    public synchronized OMGraphicList getGraphicLists() {
         return omGraphics;
     }
 
@@ -705,7 +704,7 @@ public class RpfCoverage implements ActionListener, RpfConstants,
     public void paint(java.awt.Graphics g) {
         Debug.message("rpfcov", "RpfCoverage.paint()");
 
-        Vector tmpGraphics = getGraphicLists();
+        OMGraphicList tmpGraphics = getGraphicLists();
 
         if (tmpGraphics != null) {
             int length = tmpGraphics.size();
@@ -716,25 +715,25 @@ public class RpfCoverage implements ActionListener, RpfConstants,
                 // that lists are arranged by the
                 // RpfCoverageManager!!!!
                 if (k == 0 && showCG)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).render(g);
+                    ((OMGraphicList) tmpGraphics.get(k)).render(g);
                 if (k == 1 && showCIB5)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).render(g);
+                    ((OMGraphicList) tmpGraphics.get(k)).render(g);
                 if (k == 2 && showTLM)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).render(g);
+                    ((OMGraphicList) tmpGraphics.get(k)).render(g);
                 if (k == 3 && showCIB10)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).render(g);
+                    ((OMGraphicList) tmpGraphics.get(k)).render(g);
                 if (k == 4 && showJOG)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).render(g);
+                    ((OMGraphicList) tmpGraphics.get(k)).render(g);
                 if (k == 5 && showMISC)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).render(g);
+                    ((OMGraphicList) tmpGraphics.get(k)).render(g);
                 if (k == 6 && showTPC)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).render(g);
+                    ((OMGraphicList) tmpGraphics.get(k)).render(g);
                 if (k == 7 && showONC)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).render(g);
+                    ((OMGraphicList) tmpGraphics.get(k)).render(g);
                 if (k == 8 && showJNC)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).render(g);
+                    ((OMGraphicList) tmpGraphics.get(k)).render(g);
                 if (k == 9 && showGNC)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).render(g);
+                    ((OMGraphicList) tmpGraphics.get(k)).render(g);
             }
         } else {
             Debug.message("rpfcov", "RpfCoverage.paint(): null graphics list");
@@ -750,35 +749,10 @@ public class RpfCoverage implements ActionListener, RpfConstants,
     public void generate(Projection proj) {
         Debug.message("rpfcov", "RpfCoverage.generate()");
 
-        Vector tmpGraphics = getGraphicLists();
+        OMGraphicList tmpGraphics = getGraphicLists();
 
         if (tmpGraphics != null) {
-            int length = tmpGraphics.size();
-            for (int k = length - 1; k >= 0; k--) {
-                // HACK - this order is nicely arranged with the order
-                // that lists are arranged by the
-                // RpfCoverageManager!!!!
-                if (k == 0)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).generate(proj);
-                if (k == 1)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).generate(proj);
-                if (k == 2)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).generate(proj);
-                if (k == 3)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).generate(proj);
-                if (k == 4)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).generate(proj);
-                if (k == 5)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).generate(proj);
-                if (k == 6)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).generate(proj);
-                if (k == 7)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).generate(proj);
-                if (k == 8)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).generate(proj);
-                if (k == 9)
-                    ((OMGraphicList) tmpGraphics.elementAt(k)).generate(proj);
-            }
+           tmpGraphics.generate(proj);
         }
     }
 

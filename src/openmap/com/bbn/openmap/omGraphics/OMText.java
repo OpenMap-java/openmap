@@ -856,7 +856,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * @param fontString the X font description.
      */
     public static Font rebuildFont(String fontString) {
-        if (fontString.isEmpty())
+        if (fontString.length() == 0)
             return DEFAULT_FONT;
         int fontStyle = Font.PLAIN;
         int fontSize = 12;

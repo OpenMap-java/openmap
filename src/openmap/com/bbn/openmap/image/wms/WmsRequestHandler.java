@@ -633,7 +633,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
             // wms-1.1.1 7.2.3.4. "If all layers are
             // to be shown using the default style, either the form "STYLES=" or
             // "STYLES=,,," is valid."
-            if (strStyles.isEmpty()) {
+            if (strStyles.length() == 0) {
                 styles_in = new String[layers_in.length];
                 Arrays.fill(styles_in, "");
             }
@@ -678,7 +678,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
                 wmsLayer.setDefaultStyle();
             } else {
                 String styleName = styles_in[i];
-                if (styleName.isEmpty()) {
+                if (styleName.length() == 0) {
                     wmsLayer.setDefaultStyle();
                 } else if (wmsLayer.isStyleSupported(styleName)) {
                     wmsLayer.setStyle(styleName);
@@ -714,7 +714,7 @@ public class WmsRequestHandler extends ImageServer implements ImageServerConstan
         String styleName = requestProperties.getProperty(STYLE);
         if (styleName == null) {
             wmsLayer.setDefaultStyle();
-        } else if (styleName.isEmpty()) {
+        } else if (styleName.length() == 0) {
             wmsLayer.setDefaultStyle();
         } else if (wmsLayer.isStyleSupported(styleName)) {
             wmsLayer.setStyle(styleName);

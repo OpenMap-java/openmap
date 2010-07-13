@@ -122,7 +122,7 @@ public class GeoTIFFDirectory extends XTIFFDirectory implements
                 keys);
 
         // Add the Ascii tag if needed
-        if (!strings.isEmpty()) {
+        if (strings.length() > 0) {
             char zero = 0;
             strings = strings + zero;
             addField(XTIFF.TIFFTAG_GEO_ASCII_PARAMS,

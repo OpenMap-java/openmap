@@ -145,7 +145,7 @@ public class SimpleBeanContainer extends SimpleBeanObject implements
         layoutClass = lc;
 
         if ((layoutClass == null)
-                || ((layoutClass = layoutClass.trim()).isEmpty())) {
+                || ((layoutClass = layoutClass.trim()).length() == 0)) {
             System.out.println("loading null layout!");
             this.setLayout(new NullLayout());
         } else {

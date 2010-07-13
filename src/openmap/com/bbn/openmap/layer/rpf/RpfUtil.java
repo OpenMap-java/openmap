@@ -88,7 +88,7 @@ public class RpfUtil {
 
     protected boolean verbose = false;
 
-    protected List frameList;
+    protected List<String> frameList;
 
     /**
      * Create a default RpfUtil considering all data.
@@ -158,9 +158,9 @@ public class RpfUtil {
      * @param rpfDir
      * @return List of relative path names to frames.
      */
-    protected List organizeFrames(String rpfDir) {
+    protected List<String> organizeFrames(String rpfDir) {
         RpfTocHandler toc = new RpfTocHandler(rpfDir);
-        List frameList = new LinkedList();
+        List<String> frameList = new LinkedList<String>();
 
         if (toc.isValid()) {
             RpfTocEntry[] entries = toc.getEntries();
@@ -234,11 +234,11 @@ public class RpfUtil {
      * @param rlinterval right to left decimal degree interval for
      *        entry.
      * @param udinterval up to down decimal degree interval for entry
-     * @return List of frames that pass current settings.
+     * @return List of frame strings that pass current settings.
      */
-    protected List getFrameList(RpfTocEntry entry, double rlinterval,
+    protected List<String> getFrameList(RpfTocEntry entry, double rlinterval,
                                 double udinterval) {
-        List frameList = new LinkedList();
+        List<String> frameList = new LinkedList<String>();
         
         for (int hor = 0; hor < entry.horizFrames; hor++) {
             for (int ver = 0; ver < entry.vertFrames; ver++) {
@@ -314,8 +314,8 @@ public class RpfUtil {
             if (verbose) {
                 Debug.output("From " + sourceRpfDir + " to " + toRpfDir + ":");
             }
-            for (Iterator it = frameList.iterator(); it.hasNext();) {
-                String relativeFilePath = "/" + (String) it.next();
+            for (Iterator<String> it = frameList.iterator(); it.hasNext();) {
+                String relativeFilePath = "/" + it.next();
                 File fromFile = new File(sourceRpfDir + relativeFilePath);
                 File toFile = new File(toRpfDir + relativeFilePath);
                 File toParent = toFile.getParentFile();
@@ -378,10 +378,10 @@ public class RpfUtil {
     public boolean delete(String rpfDir) {
         boolean ret = false;
 
-        List frameList = organizeFrames(rpfDir);
+        List<String> frameList = organizeFrames(rpfDir);
         if (frameList != null) {
-            for (Iterator it = frameList.iterator(); it.hasNext();) {
-                String relativeFilePath = "/" + (String) it.next();
+            for (Iterator<String> it = frameList.iterator(); it.hasNext();) {
+                String relativeFilePath = "/" + it.next();
                 File fromFile = new File(rpfDir + relativeFilePath);
                 if (fromFile.exists() && fromFile.delete() && verbose) {
                     Debug.output("Deleting " + fromFile.getPath());
@@ -431,9 +431,9 @@ public class RpfUtil {
      * @param rpfDir
      */
     public void query(String rpfDir) {
-        List frameList = organizeFrames(rpfDir);
+        List<String> frameList = organizeFrames(rpfDir);
         if (frameList != null) {
-            for (Iterator it = frameList.iterator(); it.hasNext();) {
+            for (Iterator<String> it = frameList.iterator(); it.hasNext();) {
                 Debug.output(it.next().toString());
             }
         }
@@ -585,11 +585,11 @@ public class RpfUtil {
         this.boundaryLimits = boundaryLimits;
     }
 
-    public List getFrameList() {
+    public List<String> getFrameList() {
         return frameList;
     }
 
-    public void setFrameList(List frameList) {
+    public void setFrameList(List<String> frameList) {
         this.frameList = frameList;
     }
 
