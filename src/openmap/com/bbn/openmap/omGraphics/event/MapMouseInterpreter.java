@@ -111,4 +111,17 @@ public interface MapMouseInterpreter extends MapMouseListener {
      * been interpreted.
      */
     public GestureResponsePolicy getGRP();
+    
+    /**
+     * Check whether the MapMouseInterpreter is responding to events.
+     * @return true if willing to respond to MouseEvents.
+     */
+    public boolean isActive();
+
+    /**
+     * Set whether the MapMouseInterpreter responds to mouse events.
+     * @param active true if it should respond to mouse events.
+     */
+    public void setActive(boolean active);
+
 }

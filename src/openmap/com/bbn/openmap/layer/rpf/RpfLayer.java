@@ -42,6 +42,7 @@ import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.proj.Projection;
@@ -172,6 +173,8 @@ public class RpfLayer
       setMouseModeIDsForEvents(new String[] {
          SelectMouseMode.modeID
       });
+      
+      showSubframes(false);
    }
 
    /**
@@ -260,6 +263,7 @@ public class RpfLayer
       setPaths(PropUtils.initPathsFromProperties(properties, prefix + RpfPathsProperty, paths));
 
       viewAttributes.setProperties(prefix, properties);
+      showSubframes(viewAttributes.showInfo);
 
       subframeCacheSize = PropUtils.intFromProperties(properties, prefix + CacheSizeProperty, subframeCacheSize);
 
@@ -751,8 +755,9 @@ public class RpfLayer
          repaint();
       } else if (cmd == showInfoCommand) {
          JCheckBox infoCheck = (JCheckBox) e.getSource();
-         viewAttributes.showInfo = infoCheck.isSelected();
-         showSubframes(viewAttributes.showInfo);
+         boolean showInfo = infoCheck.isSelected();
+         viewAttributes.showInfo = showInfo;
+         showSubframes(showInfo);
          doPrepare();
       } else if (cmd == lockSeriesCommand) {
          JCheckBox lockCheck = (JCheckBox) e.getSource();
@@ -806,6 +811,11 @@ public class RpfLayer
       OMGraphicList list = getList();
       if (list != null) {
          list.setSelected(show);
+      }
+
+      MapMouseInterpreter mmi = getMouseEventInterpreter();
+      if (mmi != null) {
+         mmi.setActive(show);
       }
    }
 

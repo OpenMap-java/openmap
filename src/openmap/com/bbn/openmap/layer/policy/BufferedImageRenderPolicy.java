@@ -24,6 +24,7 @@ package com.bbn.openmap.layer.policy;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.logging.Level;
@@ -77,7 +78,7 @@ public class BufferedImageRenderPolicy
          } else {
             setBuffer(null);
          }
-         
+
          OMGraphicList list = layer.prepare();
          setBuffer(createAndPaintImageBuffer(list));
 
@@ -152,21 +153,40 @@ public class BufferedImageRenderPolicy
          Projection proj = layer.getProjection();
          int w = proj.getWidth();
          int h = proj.getHeight();
+
+         Point2D llp1 = proj.getUpperLeft();
+         Point2D llp2 = proj.getLowerRight();
+
+         // Make sure the projected area of the image is actually the entire
+         // image - otherwise, the image gets shrunk down and doesn't line up
+         // with the projection.
+
+         Point2D pnt1 = proj.forward(llp1);
+         Point2D pnt2 = proj.forward(llp2);
+
+         // Need the offset for rendering the top of the drawing OMGraphics at
+         // the top of the projected space of the image.
+         double offset = 0;
+         if (pnt1.getY() > 0 || pnt2.getY() < h) {
+            h = (int) Math.floor(pnt2.getY() - pnt1.getY());
+            offset = pnt1.getY();
+         }
+
          BufferedImage bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
          Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
          super.setRenderingHints(g2d);
+         if (offset > 0) {
+            g2d.setTransform(AffineTransform.getTranslateInstance(0, -offset));
+         }
          list.render(g2d);
          if (logger.isLoggable(Level.FINE)) {
             logger.fine(layer.getName() + ": $$$$$$$$$$ rendering list into buffer");
          }
 
-         Point2D llp1 = proj.getUpperLeft();
-         Point2D llp2 = proj.getLowerRight();
-
          if (proj instanceof Cylindrical) {
             omr = new OMScalingRaster(llp1.getY(), llp1.getX(), llp2.getY(), llp2.getX(), bufferedImage);
          } else {
-            omr = new OMRaster((int)0, (int)0, bufferedImage);
+            omr = new OMRaster((int) 0, (int) 0, bufferedImage);
          }
          omr.generate(proj);
       }

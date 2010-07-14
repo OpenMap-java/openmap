@@ -346,7 +346,7 @@ public class CADRG
     */
    private float CADRG_calc_maxscale() {
       // Why 1.5? It was 150/100? Why?
-      return (1000000 * (float) CADRG_ARC_A[0]) / (width * 1.5f);
+      return (float) Math.floor((1000000 * (float) CADRG_ARC_A[0]) / (width * 1.5f));
    }
 
    /**
@@ -389,7 +389,8 @@ public class CADRG
        * I don't think what we are doing here with the latitude is right,
        * normalizing the latitude. We're trying to answer a question about
        * whether given values are valid, and we're changing those values to be
-       * valid before answering. Duh.  So, no normalizingLatitude before the check.
+       * valid before answering. Duh. So, no normalizingLatitude before the
+       * check.
        */
       lat = ProjMath.degToRad(lat);
       return ((lat < NORTH_LIMIT) && (lat > SOUTH_LIMIT));
@@ -495,14 +496,29 @@ public class CADRG
       if (Debug.debugging("proj")) {
          Debug.output("Y pix constant = " + y_pix_constant);
       }
-      // What zone are we in?
-      zone = getZone(ProjMath.radToDeg(centerY), y_pix_constant);
+
+      // What zone are we in? To try to reduce pixel spacing jumping when zoomed
+      // out, just set the zone level to one when zoomed out past 1:60M. There
+      // aren't any charts available at those scales in this projection type.
+      if (scale > 60000000) {
+         zone = 1;
+      } else {
+         zone = getZone(ProjMath.radToDeg(centerY), y_pix_constant);
+      }
       if (Debug.debugging("proj")) {
          Debug.output("Zone = " + zone);
       }
 
       // Compute the x pixel constant, based on scale and zone.
       x_pix_constant = CADRG_x_pix_constant(adrgscale, zone);
+
+      // If the x_pix_constant, or number of pixels around the earth is less
+      // than or equal to the width of the map window, then the corner
+      // coordinates become equal or inverted (ul vs lr).
+      if (width >= x_pix_constant) {
+         x_pix_constant = width + 1;
+      }
+
       if (Debug.debugging("proj")) {
          Debug.output("x_pix_constant = " + x_pix_constant);
       }
@@ -564,6 +580,7 @@ public class CADRG
       // parameters
       // maxscale = (CADRG_ARC_A[0] * (1000000/width));// HACK!!!
       half_world = world.x / 2;
+
       if (scale > maxscale) {
          scale = maxscale;
       }
