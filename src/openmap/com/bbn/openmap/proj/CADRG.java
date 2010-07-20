@@ -471,7 +471,7 @@ public class CADRG
     * <p>
     * 
     */
-   protected void computeParameters() {
+   protected synchronized void computeParameters() {
       int w, h;
 
       if (ul == null)
@@ -501,7 +501,7 @@ public class CADRG
       // out, just set the zone level to one when zoomed out past 1:60M. There
       // aren't any charts available at those scales in this projection type.
       if (scale > 60000000) {
-         zone = 1;
+         zone = getZone(0, y_pix_constant);
       } else {
          zone = getZone(ProjMath.radToDeg(centerY), y_pix_constant);
       }
