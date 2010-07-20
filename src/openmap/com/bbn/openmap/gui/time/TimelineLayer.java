@@ -514,7 +514,16 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     public void updateTimeBounds(TimeBoundsEvent tbe) {
         TimeBounds tb = tbe.getNewTimeBounds();
         if (tb != null) {
+            long oldStartTime = gameStartTime;
             setTimeBounds(tb.getStartTime(), tb.getEndTime());
+            if(realTimeMode) {
+               long boundsStartOffset = tb.getStartTime() - oldStartTime;
+               currentTime -= boundsStartOffset;
+               centerDelegate.fireCenter(0, forwardProjectMillis(currentTime));
+               timeLinesList = null;
+               doPrepare();
+            }
+
             // Update selection (this only deals with time translation for now; no scaling)
             if(realTimeMode && selectionRect != null && selectionRect.isVisible()) {
                 long boundsWestDelta = tbe.getNewTimeBounds().getStartTime() - tbe.getOldTimeBounds().getStartTime();
@@ -759,7 +768,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         
         updateMouseTimeDisplay(new Long(offsetMillis));
 
-        return lon;
+        return lon < 0 ? 0 : lon;
     }
 
     public void updateMouseTimeDisplay(Long offsetMillis) {

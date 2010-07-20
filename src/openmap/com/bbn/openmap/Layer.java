@@ -201,12 +201,12 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * The listeners to the Layer that respond to requests for information
      * displays, like messages, requests for URL displays, etc.
      */
-    protected ListenerSupport<InfoDisplayListener> IDListeners = null;
+    private final ListenerSupport<InfoDisplayListener> IDListeners = new ListenerSupport<InfoDisplayListener>(this);
 
     /**
      * List of LayerStatusListeners.
      */
-    protected ListenerSupport<LayerStatusListener> lsListeners = null;
+    private final ListenerSupport<LayerStatusListener> lsListeners = new ListenerSupport<LayerStatusListener>(this);
 
     /**
      * Token uniquely identifying this layer in the application properties.
@@ -731,12 +731,10 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * @param aInfoDisplayListener
      *            the listener to add
      */
-    public synchronized void addInfoDisplayListener(
-                                                    InfoDisplayListener aInfoDisplayListener) {
-        if (IDListeners == null) {
-            IDListeners = new ListenerSupport<InfoDisplayListener>(this);
-        }
-        IDListeners.add(aInfoDisplayListener);
+    public void addInfoDisplayListener(InfoDisplayListener aInfoDisplayListener) {
+        synchronized (IDListeners) {
+         IDListeners.add(aInfoDisplayListener);
+      }
     }
 
     /**
@@ -745,12 +743,11 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * @param aInfoDisplayListener
      *            the listener to remove
      */
-    public synchronized void removeInfoDisplayListener(
-                                                       InfoDisplayListener aInfoDisplayListener) {
+    public void removeInfoDisplayListener(InfoDisplayListener aInfoDisplayListener) {
 
-        if (IDListeners != null) {
-            IDListeners.remove(aInfoDisplayListener);
-        }
+       synchronized (IDListeners) {
+         IDListeners.remove(aInfoDisplayListener);
+      }
     }
 
     /**
@@ -761,14 +758,11 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      *            the InfoDisplay event carrying the string.
      */
     public void fireRequestInfoLine(InfoDisplayEvent evt) {
-        if (IDListeners != null) {
-            for (InfoDisplayListener listener : IDListeners) {
-                listener.requestInfoLine(evt);
-            }
-        } else if (Debug.debugging("layer")) {
-            Debug.output(getName()
-                    + "|Layer.fireRequestInfoLine(): no info request listener!");
-        }
+       synchronized (IDListeners) {
+         for (InfoDisplayListener listener : IDListeners) {
+            listener.requestInfoLine(evt);
+         }
+      }
     }
 
     /**
@@ -806,14 +800,11 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      *            Browser.
      */
     public void fireRequestBrowserContent(InfoDisplayEvent evt) {
-        if (IDListeners != null) {
-            for (InfoDisplayListener listener : IDListeners) {
-                listener.requestBrowserContent(evt);
-            }
-        } else if (Debug.debugging("layer")) {
-            Debug.output(getName()
-                    + "|Layer.fireRequestBrowserContent(): no info request listener!");
-        }
+       synchronized (IDListeners) {
+         for (InfoDisplayListener listener : IDListeners) {
+            listener.requestBrowserContent(evt);
+         }
+      }
     }
 
     /**
@@ -837,13 +828,11 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      *            Browser.
      */
     public void fireRequestURL(InfoDisplayEvent evt) {
-        if (IDListeners != null) {
-            for (InfoDisplayListener listener : IDListeners) {
-                listener.requestURL(evt);
-            }
-        } else if (Debug.debugging("layer")) {
-            Debug.output(getName() + "|Layer.fireRequestURL(): no info request listener!");
-        }
+       synchronized (IDListeners) {
+         for (InfoDisplayListener listener : IDListeners) {
+            listener.requestURL(evt);
+         }
+      }
     }
 
     /**
@@ -866,14 +855,11 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      *            the cursor to use.
      */
     public void fireRequestCursor(java.awt.Cursor cursor) {
-        if (IDListeners != null) {
-            for (InfoDisplayListener listener : IDListeners) {
-                listener.requestCursor(cursor);
-            }
-        } else if (Debug.debugging("layer")) {
-            Debug.output(getName()
-                    + "|Layer.fireRequestCursor(): no info request listener!");
-        }
+       synchronized (IDListeners) {
+         for (InfoDisplayListener listener : IDListeners) {
+            listener.requestCursor(cursor);
+         }
+      }
     }
 
     /**
@@ -885,14 +871,11 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      *            dialog window.
      */
     public void fireRequestMessage(InfoDisplayEvent evt) {
-        if (IDListeners != null) {
-            for (InfoDisplayListener listener : IDListeners) {
-                listener.requestMessage(evt);
-            }
-        } else if (Debug.debugging("layer")) {
-            Debug.output(getName()
-                    + "|Layer.fireRequestMessage(): no info request listener!");
-        }
+       synchronized (IDListeners) {
+         for (InfoDisplayListener listener : IDListeners) {
+            listener.requestMessage(evt);
+         }
+      }
     }
 
     /**
@@ -929,18 +912,15 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * InfoDisplayEvent is null, then a requestHideToolTip will be fired.
      */
     public void fireRequestToolTip(InfoDisplayEvent event) {
-        if (IDListeners != null) {
-            for (InfoDisplayListener listener : IDListeners) {
-                if (event != null) {
-                    listener.requestShowToolTip(event);
-                } else {
-                    listener.requestHideToolTip();
-                }
+       synchronized (IDListeners) {
+         for (InfoDisplayListener listener : IDListeners) {
+            if (event != null) {
+               listener.requestShowToolTip(event);
+            } else {
+               listener.requestHideToolTip();
             }
-        } else if (Debug.debugging("layer")) {
-            Debug.output(getName()
-                    + "|Layer.fireRequestShowToolTip(): no info request listener!");
-        }
+         }
+      }
     }
 
     // /////////////////////////////////////////////////
@@ -952,13 +932,10 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * @param aLayerStatusListener
      *            LayerStatusListener
      */
-    public synchronized void addLayerStatusListener(
-                                                    LayerStatusListener aLayerStatusListener) {
-
-        if (lsListeners == null) {
-            lsListeners = new ListenerSupport<LayerStatusListener>(this);
-        }
-        lsListeners.add(aLayerStatusListener);
+    public void addLayerStatusListener(LayerStatusListener aLayerStatusListener) {
+       synchronized (lsListeners) {
+         lsListeners.add(aLayerStatusListener);
+      }
     }
 
     /**
@@ -967,11 +944,10 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * @param aLayerStatusListener
      *            the listener to remove
      */
-    public synchronized void removeLayerStatusListener(
-                                                       LayerStatusListener aLayerStatusListener) {
-        if (lsListeners != null) {
-            lsListeners.remove(aLayerStatusListener);
-        }
+    public void removeLayerStatusListener(LayerStatusListener aLayerStatusListener) {
+       synchronized (lsListeners) {
+         lsListeners.remove(aLayerStatusListener);
+      }
     }
 
     /**
@@ -981,15 +957,12 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      *            LayerStatusEvent
      */
     public void fireStatusUpdate(LayerStatusEvent evt) {
-        // AWTAvailable conditional removed, not used, not useful.
-        if (lsListeners != null) {
-            for (LayerStatusListener listener : lsListeners) {
-                listener.updateLayerStatus(evt);
-            }
-        } else if (Debug.debugging("layer")) {
-            Debug.output(getName()
-                    + "|Layer.fireStatusUpdate(): no LayerStatusListeners!");
-        }
+        synchronized (lsListeners) {
+         // AWTAvailable conditional removed, not used, not useful.
+         for (LayerStatusListener listener : lsListeners) {
+            listener.updateLayerStatus(evt);
+         }
+      }
     }
 
     /**
@@ -1396,13 +1369,12 @@ public abstract class Layer extends JComponent implements ProjectionListener,
         if (localHackList != null) {
             localHackList.clear();
         }
-        if (IDListeners != null) {
-            IDListeners.clear();
+        synchronized (IDListeners) {
+           IDListeners.clear();
         }
-        if (lsListeners != null) {
-            lsListeners.clear();
-        }
-
+        synchronized (lsListeners) {
+           lsListeners.clear();
+      }
         BeanContext bc = getBeanContext();
         if (bc != null) {
             bc.removeBeanContextMembershipListener(this);
