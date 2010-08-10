@@ -123,6 +123,7 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 	private float zoomFactor = defaultZoomFactor;
 
 	protected float MIN_TRANSPARENCY = .25f;
+	protected float SEMI_TRANSPARENCY = .65f;
 	protected float MAX_TRANSPARENCY = 1.0f;
 	protected boolean fade = false;
 
@@ -777,16 +778,16 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 	private class NavPanelMouseListener extends MouseAdapter {
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			if (ac.getAlpha() < 0.65f) {
-				setTransparency(0.65f);
+			if (ac.getAlpha() < SEMI_TRANSPARENCY) {
+				setTransparency(SEMI_TRANSPARENCY);
 				getTopLevelAncestor().repaint();
 			}
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
-			if (ac.getAlpha() > 0.25f) {
-				setTransparency(0.25f);
+			if (ac.getAlpha() > MIN_TRANSPARENCY) {
+				setTransparency(MIN_TRANSPARENCY);
 				getTopLevelAncestor().repaint();
 			}
 		}
