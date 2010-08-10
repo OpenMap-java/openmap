@@ -42,7 +42,7 @@ public class CoverageAttributeTable {
     /** are we tiled or untiled coverage */
     private boolean isTiled = false;
     /** coverage name to CoverageEntry map */
-    final private Map coverages = new HashMap();
+    final private Map<String, CoverageEntry> coverages = new HashMap<String, CoverageEntry>();
     /**
      * The tiles that compose our coverage area. The size of the array is going
      * to be set to record count + 1, and the tiles will have their ID number as
@@ -82,7 +82,7 @@ public class CoverageAttributeTable {
                 CATschemalength,
                 false);
 
-        List l = new ArrayList(rf.getColumnCount());
+        List<Object> l = new ArrayList<Object>(rf.getColumnCount());
         while (rf.parseRow(l)) {
             int topL = ((Number) l.get(catcols[2])).intValue();
             String desc = (String) l.get(catcols[1]);
@@ -164,7 +164,7 @@ public class CoverageAttributeTable {
             }
 
             DcwRecordFile fcs = new DcwRecordFile(fcsFile);
-            List fcsv = new ArrayList(fcs.getColumnCount());
+            List<Object> fcsv = new ArrayList<Object>(fcs.getColumnCount());
 
             int fcscols[];
 
@@ -226,8 +226,8 @@ public class CoverageAttributeTable {
             DcwRecordFile fbr = new DcwRecordFile(fbrFile);
             int fbrIDColumn = fbr.whatColumn(Constants.ID);
 
-            List aftv = new ArrayList(aft.getColumnCount());
-            List fbrv = new ArrayList(fbr.getColumnCount());
+            List<Object> aftv = new ArrayList<Object>(aft.getColumnCount());
+            List<Object> fbrv = new ArrayList<Object>(fbr.getColumnCount());
             int fbrcols[] = fbr.lookupSchema(fbrColumns, true);
 
             // set the array size to record count + 1, to be able to
@@ -239,7 +239,7 @@ public class CoverageAttributeTable {
             // containedTiles = new TileDirectory[aft.getRecordCount()
             // + 1];
             // This is part of that solution...
-            ArrayList tileArrayList = new ArrayList(500);
+            ArrayList<Object> tileArrayList = new ArrayList<Object>(500);
             Object nullTile = new Object();
 
             while (aft.parseRow(aftv)) {
@@ -303,7 +303,7 @@ public class CoverageAttributeTable {
             // the ArrayList and converting it to a TileDirectory
             // array.
             containedTiles = new TileDirectory[tileArrayList.size()];
-            Iterator it = tileArrayList.iterator();
+            Iterator<Object> it = tileArrayList.iterator();
             int cnt = 0;
             while (it.hasNext()) {
                 Object obj = it.next();
@@ -370,9 +370,8 @@ public class CoverageAttributeTable {
     }
 
     public CoverageTable getCoverageTableForFeature(String featureName) {
-        for (Iterator it = coverages.keySet().iterator(); it.hasNext();) {
-            String key = (String) it.next();
-            CoverageEntry ce = (CoverageEntry) coverages.get(key);
+        for (String key : coverages.keySet()) {
+            CoverageEntry ce = coverages.get(key);
             Debug.output("CoverageTable: got " + ce + " for " + key);
             CoverageTable ct = ce.getCoverageTable();
             if (ct != null) {
@@ -395,11 +394,11 @@ public class CoverageAttributeTable {
      * @param w wheat bread
      * @return a vector of TileDirectories
      */
-    public List tilesInRegion(float n, float s, float e, float w) {
+    public List<TileDirectory> tilesInRegion(float n, float s, float e, float w) {
         if (containedTiles == null) {
             return null;
         }
-        List retval = new ArrayList();
+        List<TileDirectory> retval = new ArrayList<TileDirectory>();
         int numTiles = containedTiles.length;
         for (int i = 0; i < numTiles; i++) {
             TileDirectory tile = containedTiles[i];

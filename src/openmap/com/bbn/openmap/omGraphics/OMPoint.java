@@ -299,14 +299,14 @@ public class OMPoint extends OMGraphicAdapter implements OMGraphic, Serializable
         /**
          * Create an OMPoint at a lat/lon position, with the default radius.
          */
-        public Image(float lat, float lon) {
+        public Image(double lat, double lon) {
             super(lat, lon);
         }
 
         /**
          * Create an OMPoint at a lat/lon position, with the specified radius.
          */
-        public Image(float lat, float lon, int radius) {
+        public Image(double lat, double lon, int radius) {
             super(lat, lon, radius);
         }
 
@@ -314,7 +314,7 @@ public class OMPoint extends OMGraphicAdapter implements OMGraphic, Serializable
          * Create an OMPoint at a lat/lon position with a screen X/Y pixel
          * offset, with the default radius.
          */
-        public Image(float lat, float lon, int offsetx, int offsety) {
+        public Image(double lat, double lon, int offsetx, int offsety) {
             this(lat, lon, offsetx, offsety, DEFAULT_RADIUS);
         }
 
@@ -322,7 +322,7 @@ public class OMPoint extends OMGraphicAdapter implements OMGraphic, Serializable
          * Create an OMPoint at a lat/lon position with a screen X/Y pixel
          * offset, with the specified radius.
          */
-        public Image(float lat, float lon, int offsetx, int offsety, int radius) {
+        public Image(double lat, double lon, int offsetx, int offsety, int radius) {
             super(lat, lon, offsetx, offsety, radius);
         }
 

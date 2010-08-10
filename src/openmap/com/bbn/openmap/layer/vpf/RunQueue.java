@@ -38,7 +38,7 @@ import java.util.*;
  */
 public class RunQueue extends java.lang.Thread {
     /** the queue of objects to run */
-    final private List queue = new ArrayList(); //fixed, unique
+    final private List<Runnable> queue = new ArrayList<Runnable>(); //fixed, unique
     /** used to give threads unique names */
     static private int tcount = 0;
 
@@ -113,7 +113,7 @@ public class RunQueue extends java.lang.Thread {
                         e.printStackTrace();
                     }
                 }
-                r = (Runnable) queue.remove(queue.size() - 1);
+                r = queue.remove(queue.size() - 1);
 
             }
             try {

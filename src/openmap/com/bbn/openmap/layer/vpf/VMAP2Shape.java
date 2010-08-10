@@ -64,6 +64,8 @@ public class VMAP2Shape {
 
     protected LibrarySelectionTable lst;
     protected transient LayerGraphicWarehouseSupport warehouse;
+    
+    protected boolean joinPolylines = false;
 
     public VMAP2Shape() {}
 
@@ -124,8 +126,7 @@ public class VMAP2Shape {
 
                 graphics = saveGraphics;
 
-                // join polylines
-                if (false) {
+                if (joinPolylines) {
                     nGraphics = graphics.size();
                     System.out.println("Joining " + nGraphics
                             + " polyline candidates.");

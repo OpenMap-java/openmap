@@ -112,19 +112,36 @@ public class DataBounds {
             double hlmaxx = hardLimits.max.getX();
             double hlmaxy = hardLimits.max.getY();
 
-            if (hlminx > minx)
-               minx = hlminx;
-            if (hlminy > miny)
-               miny = hlminy;
-            if (hlmaxx < maxx)
-               maxx = hlmaxx;
-            if (hlmaxy < maxy)
-               maxy = hlmaxy;
+            minx = setInRange(hlmaxx, hlminx, minx);
+            maxx = setInRange(hlmaxx, hlminx, maxx);
+            miny = setInRange(hlmaxy, hlminy, miny);
+            maxy = setInRange(hlmaxy, hlminy, maxy);
+
          }
 
          min.setLocation(minx, miny);
          max.setLocation(maxx, maxy);
       }
+   }
+
+   /**
+    * Make sure the value is within the range.
+    * 
+    * @param hi high range value
+    * @param lo low range value
+    * @param val testing value
+    * @return the value, adjusted if necessary.
+    */
+   protected double setInRange(double hi, double lo, double val) {
+      if (val > hi) {
+         val = hi;
+      }
+
+      if (val < lo) {
+         val = lo;
+      }
+
+      return val;
    }
 
    public void add(Point2D point) {

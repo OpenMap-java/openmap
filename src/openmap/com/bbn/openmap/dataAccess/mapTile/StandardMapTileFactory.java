@@ -49,7 +49,7 @@ import com.bbn.openmap.omGraphics.OMWarpingImage;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
-import com.bbn.openmap.proj.coords.MercatorUVGCT;
+import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.cacheHandler.CacheHandler;
@@ -70,6 +70,8 @@ import com.bbn.openmap.util.cacheHandler.CacheObject;
  * rootDir=the path to the parent directory of the tiles. The factory will construct specific file paths that are appended to this value. 
  * fileExt=the file extension to append to the tile names, should have a period.
  * cacheSize=the number of mapTiles the factory should hold on to. The default is 100.
+ * # default is OSMMapTileCoordinateTransform, but it depends on the source of tiles.  GDAL is TSMMapTileCoordinateTransform
+ * mapTileTransform=com.bbn.openmap.dataAccess.mapTile.OSMMapTileCoordinateTransform, or com.bbn.openmap.dataAccess.mapTile.TSMMapTileCoordinateTransform
  * </pre>
  * 
  * @author dietrick
@@ -84,6 +86,7 @@ public class StandardMapTileFactory
    public final static String ROOT_DIR_PROPERTY = "rootDir";
    public final static String FILE_EXT_PROPERTY = "fileExt";
    public final static String CACHE_SIZE_PROPERTY = "cacheSize";
+   public final static String MTCTRANSFORM_PROPERTY = "mapTileTransform";
 
    protected ZoomLevelInfo zoomLevelInfo = new ZoomLevelInfo();
    protected String rootDir;
@@ -93,6 +96,7 @@ public class StandardMapTileFactory
 
    protected Component repaintCallback;
    private boolean doExtraTiles = false;
+   protected MapTileCoordinateTransform mtcTransform = new OSMMapTileCoordinateTransform();
 
    public StandardMapTileFactory() {
       super(100);
@@ -111,8 +115,6 @@ public class StandardMapTileFactory
    public CacheObject load(Object key) {
       return null;
    }
-
-   MercatorUVGCT transform = new MercatorUVGCT(0);
 
    /**
     * Called to load cache object from data source, when not found in cache.
@@ -146,9 +148,9 @@ public class StandardMapTileFactory
 
       Point2D pnt = new Point2D.Double();
       pnt.setLocation(x, y);
-      Point2D tileUL = MapTileMaker.tileUVToLatLon(pnt, zoomLevel);
+      Point2D tileUL = mtcTransform.tileUVToLatLon(pnt, zoomLevel);
       pnt.setLocation(x + 1, y + 1);
-      Point2D tileLR = MapTileMaker.tileUVToLatLon(pnt, zoomLevel);
+      Point2D tileLR = mtcTransform.tileUVToLatLon(pnt, zoomLevel);
       if (verbose) {
          logger.fine("tile coords: " + tileUL + ", " + tileLR);
       }
@@ -159,8 +161,13 @@ public class StandardMapTileFactory
          if (imageURL != null) {
             ImageIcon ii = new ImageIcon(imageURL);
             if (ii.getIconWidth() > 0) {
-               OMScalingRaster raster =
-                     new OMScalingRaster(tileUL.getY(), tileUL.getX(), tileLR.getY(), tileLR.getX(), ii.getImage());
+
+               double x1 = Math.min(tileUL.getX(), tileLR.getX());
+               double x2 = Math.max(tileUL.getX(), tileLR.getX());
+               double y1 = Math.min(tileUL.getY(), tileLR.getY());
+               double y2 = Math.max(tileUL.getY(), tileLR.getY());
+
+               OMScalingRaster raster = new OMScalingRaster(y2, x1, y1, x2, ii.getImage());
                return new CacheObject(imagePath, raster);
             }
          } else {
@@ -182,10 +189,9 @@ public class StandardMapTileFactory
             if (bi != null) {
 
                DataBounds dataBounds = new DataBounds(new Point(x, y), new Point(x + 1, y + 1));
-               dataBounds.setyDirUp(false);
+               dataBounds.setyDirUp(mtcTransform.isYDirectionUp());
 
-               transform.setZoomLevel(zoomLevel);
-               OMWarpingImage raster = new OMWarpingImage(bi, transform, dataBounds);
+               OMWarpingImage raster = new OMWarpingImage(bi, mtcTransform.getTransform(zoomLevel), dataBounds);
 
                if (logger.isLoggable(Level.FINER)) {
                   raster.setSelected(true);
@@ -323,16 +329,22 @@ public class StandardMapTileFactory
          Point2D upperLeft = proj.getUpperLeft();
          Point2D lowerRight = proj.getLowerRight();
 
-         Point2D uvul = MapTileMaker.latLonToTileUV(upperLeft, zoomLevel);
-         Point2D uvlr = MapTileMaker.latLonToTileUV(lowerRight, zoomLevel);
+         // Point2D uvul = mtcTransform.latLonToTileUV(upperLeft, zoomLevel);
+         // Point2D uvlr = mtcTransform.latLonToTileUV(lowerRight, zoomLevel);
+         //
+         // int uvleft = (int) Math.floor(uvul.getX());
+         // int uvright = (int) Math.ceil(uvlr.getX());
+         // int uvup = (int) Math.floor(uvul.getY());
+         // if (uvup < 0) {
+         // uvup = 0;
+         // }
+         // int uvbottom = (int) Math.ceil(uvlr.getY());
 
-         int uvleft = (int) Math.floor(uvul.getX());
-         int uvright = (int) Math.ceil(uvlr.getX());
-         int uvup = (int) Math.floor(uvul.getY());
-         if (uvup < 0) {
-            uvup = 0;
-         }
-         int uvbottom = (int) Math.ceil(uvlr.getY());
+         int[] uvBounds = mtcTransform.getTileBoundsForProjection(upperLeft, lowerRight, zoomLevel);
+         int uvup = uvBounds[0];
+         int uvleft = uvBounds[1];
+         int uvbottom = uvBounds[2];
+         int uvright = uvBounds[3];
 
          if (verbose) {
             logger.fine("for " + proj + ", fetching tiles between x(" + uvleft + ", " + uvright + ") y(" + uvup + ", " + uvbottom
@@ -397,8 +409,13 @@ public class StandardMapTileFactory
 
       boolean isMercator = proj instanceof Mercator;
 
-      for (int x = uvleft; x < uvright; x++) {
-         for (int y = uvup; y < uvbottom; y++) {
+      int uvleftM = (int) Math.min(uvleft, uvright);
+      int uvrightM = (int) Math.max(uvleft, uvright);
+      int uvupM = (int) Math.min(uvbottom, uvup);
+      int uvbottomM = (int) Math.max(uvbottom, uvup);
+
+      for (int x = uvleftM; x < uvrightM; x++) {
+         for (int y = uvupM; y < uvbottomM; y++) {
 
             // Try to help doing unnecessary work
             if (Thread.currentThread().isInterrupted()) {
@@ -630,6 +647,7 @@ public class StandardMapTileFactory
       getList.put(prefix + ROOT_DIR_PROPERTY, PropUtils.unnull(rootDir));
       getList.put(prefix + FILE_EXT_PROPERTY, PropUtils.unnull(fileExt));
       getList.put(prefix + CACHE_SIZE_PROPERTY, Integer.toString(getCacheSize()));
+      getList.put(prefix + MTCTRANSFORM_PROPERTY, mtcTransform.getClass().toString());
       return getList;
    }
 
@@ -659,6 +677,16 @@ public class StandardMapTileFactory
 
       rootDir = setList.getProperty(prefix + ROOT_DIR_PROPERTY, rootDir);
       fileExt = setList.getProperty(prefix + FILE_EXT_PROPERTY, fileExt);
+
+      String mapTileCoordinateTransform = setList.getProperty(prefix + MTCTRANSFORM_PROPERTY);
+      if (mapTileCoordinateTransform != null) {
+         Object obj = ComponentFactory.create(mapTileCoordinateTransform);
+
+         if (obj instanceof MapTileCoordinateTransform) {
+            setMtcTransform((MapTileCoordinateTransform) obj);
+         }
+      }
+
       super.resetCache(PropUtils.intFromProperties(setList, prefix + CACHE_SIZE_PROPERTY, getCacheSize()));
    }
 
@@ -681,4 +709,23 @@ public class StandardMapTileFactory
    public void setFileExt(String fileExt) {
       this.fileExt = (fileExt != null && fileExt.startsWith(".")) ? fileExt : "." + fileExt;
    }
+
+   public MapTileCoordinateTransform getMtcTransform() {
+      return mtcTransform;
+   }
+
+   /**
+    * Set the map tile coordinate transformed used to figure out lat/lon to tile
+    * coordinates. Can't be null, if you set it to null an
+    * OSMMapTileCoordTransform will be created instead.
+    * 
+    * @param mtcTransform
+    */
+   public void setMtcTransform(MapTileCoordinateTransform mtcTransform) {
+      if (mtcTransform == null) {
+         mtcTransform = new OSMMapTileCoordinateTransform();
+      }
+      this.mtcTransform = mtcTransform;
+   }
+
 }

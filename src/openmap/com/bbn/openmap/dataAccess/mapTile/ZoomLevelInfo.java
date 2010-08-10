@@ -308,7 +308,7 @@ public class ZoomLevelInfo
     * 
     * @return
     */
-   public List<Rectangle2D> getUVBounds() {
+   public List<Rectangle2D> getUVBounds(MapTileCoordinateTransform mtct) {
       List<Rectangle2D> ret = new LinkedList<Rectangle2D>();
       for (Rectangle2D bounds : getBounds()) {
 
@@ -318,8 +318,8 @@ public class ZoomLevelInfo
          double w = bounds.getWidth();
          Point2D point1 = new Point2D.Double(x, y + h);
          Point2D point2 = new Point2D.Double(x + w, y);
-         Point2D uluv = MapTileMaker.latLonToTileUV(point1, getZoomLevel());
-         Point2D lruv = MapTileMaker.latLonToTileUV(point2, getZoomLevel());
+         Point2D uluv = mtct.latLonToTileUV(point1, getZoomLevel());
+         Point2D lruv = mtct.latLonToTileUV(point2, getZoomLevel());
          x = Math.floor(uluv.getX());
          y = Math.floor(uluv.getY());
          w = Math.ceil(lruv.getX() - x);

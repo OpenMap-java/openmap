@@ -20,102 +20,176 @@
  */
 package com.bbn.openmap.dataAccess.cgm;
 
-import java.io.*;
-import java.util.*;
 import java.awt.Color;
+import java.awt.Graphics;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Vector;
+import java.util.logging.Logger;
 
-public class CGM implements Cloneable {
-    protected Vector V;
-    public boolean changeCGMFill = true;
+public class CGM
+      implements Cloneable {
+   protected Vector<Command> commandList;
 
-    public void setChangeFill(boolean custom) {
-        changeCGMFill = custom;
-    }
+   protected static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.cgm.CGM");
 
-    public void read(DataInputStream in) throws IOException {
-        V = new Vector();
-        while (true) {
-            Command c = Command.read(in);
-            if (c == null)
-                break;
-            V.addElement(c);
-        }
-    }
+   public CGM() {
 
-    public void paint(CGMDisplay d) {
-        Enumeration e = V.elements();
-        while (e.hasMoreElements()) {
-            Command c = (Command) e.nextElement();
-            if (!((c instanceof FillColor || c instanceof ColorCommand) && changeCGMFill)) {
-                // FillColor.paint changes the fill color of d
-                c.paint(d);
-            } else {
-                /*
-                 * System.out.println("Command not painted: " +
-                 * c.toString());
-                 */
+   }
+
+   public CGM(String path)
+         throws IOException {
+      DataInputStream in = new DataInputStream(new FileInputStream(path));
+      read(in);
+      in.close();
+   }
+
+   public void read(DataInputStream in)
+         throws IOException {
+      commandList = new Vector<Command>();
+      while (true) {
+         Command c = Command.read(in);
+         if (c == null)
+            break;
+         commandList.addElement(c);
+      }
+
+      sortColors();
+   }
+
+   /**
+    * The paint call managed by the CGMDisplay object, which holds changes to
+    * the Graphics object based on different Commands held by this CGM.
+    * 
+    * @param d
+    */
+   protected void paint(CGMDisplay d) {
+      for (Command c : commandList) {
+         c.paint(d);
+      }
+   }
+
+   /**
+    * A direct call to paint on the CGM file, creates a CGMDisplay that marches
+    * through the CGM commands and renders into the provided Graphics object.
+    * 
+    * @param g java Graphics object
+    * @param width the pixel width of image to render into.
+    * @param height the pixel height of image to render info.
+    */
+   public void paint(Graphics g, int width, int height) {
+      CGMDisplay cgmDisplay = new CGMDisplay(this);
+      cgmDisplay.scale(width, height);
+      cgmDisplay.paint(g);
+   }
+
+   /**
+    * Allows color commands to look up indexes in ColorTable to find real
+    * values.
+    */
+   protected void sortColors() {
+      ColorTable ct = null;
+      boolean indexed = false;
+      for (Command c : commandList) {
+         if (c instanceof ColorSelectionMode) {
+            if (((ColorSelectionMode) c).X == 0) {
+               // indexed
+               indexed = true;
             }
-        }
-    }
+         } else if (c instanceof ColorTable) {
+            ct = (ColorTable) c;
+         } else if (c instanceof ColorModel) {
+            logger.fine("Not handling other colormodels than rgb (indexed and direct)");
+         }
+      }
 
-    public void scale(CGMDisplay d) {
-        Enumeration e = V.elements();
-        while (e.hasMoreElements()) {
-            Command c = (Command) e.nextElement();
-            c.scale(d);
-        }
-    }
-
-    public int[] extent() {
-        Enumeration e = V.elements();
-        while (e.hasMoreElements()) {
-            Command c = (Command) e.nextElement();
-            if (c instanceof VDCExtent)
-                return ((VDCExtent) c).extent();
-        }
-        return null;
-    }
-
-    public static void main(String args[]) throws IOException {
-        DataInputStream in = new DataInputStream(new FileInputStream(args[0]));
-        CGM cgm = new CGM();
-        cgm.read(in);
-        in.close();
-    }
-
-    public Object clone() {
-        CGM newOne = new CGM();
-        //System.out.println("in cgm.clone");
-        newOne.V = new Vector();
-        for (int i = 0; i < this.V.size(); i++) {
-            newOne.V.addElement(((Command) this.V.elementAt(i)).clone());
-            //System.out.println("Command: " +
-            // (Command)newOne.V.elementAt(i));
-        }
-        return newOne;
-    }
-
-    public void showCGMCommands() {
-        for (int i = 0; i < V.size(); i++)
-            System.out.println("Command: " + (Command) V.elementAt(i));
-    }
-
-    public void changeColor(Color oldc, Color newc) {
-        // actually changes the color in the cgm commands having this
-        // oldc, replacing it with newc find each color command whose
-        // color matches oldc, and substitute newc
-        Command temp;
-        Color currcolor;
-
-        for (int i = 0; i < V.size(); i++) {
-            temp = (Command) V.elementAt(i);
-            if (temp instanceof ColorCommand) {// compare color to
-                                               // oldc
-                currcolor = ((ColorCommand) temp).C;
-                if (currcolor.equals(oldc)) {
-                    ((ColorCommand) temp).C = new Color(newc.getRed(), newc.getGreen(), newc.getBlue());
-                }
+      if (indexed && ct != null) {
+         for (Command c : commandList) {
+            if (c instanceof ColorCommand) {
+               ((ColorCommand) c).setColorFromColorTable(ct);
             }
-        }
-    }
+         }
+      }
+   }
+
+   public void scale(CGMDisplay d) {
+      for (Command c : commandList) {
+         c.scale(d);
+      }
+   }
+
+   public int[] extent() {
+      for (Command c : commandList) {
+         if (c instanceof VDCExtent)
+            return ((VDCExtent) c).extent();
+      }
+      return null;
+   }
+
+   public ColorTable getColorTable() {
+      for (Command c : commandList) {
+         if (c instanceof ColorTable)
+            return (ColorTable) c;
+      }
+      return null;
+   }
+
+   public static void main(String args[])
+         throws IOException {
+      DataInputStream in = new DataInputStream(new FileInputStream(args[0]));
+      CGM cgm = new CGM();
+      cgm.read(in);
+      in.close();
+   }
+
+   public Object clone() {
+      CGM newOne = new CGM();
+      // System.out.println("in cgm.clone");
+      newOne.commandList = new Vector<Command>();
+      for (int i = 0; i < this.commandList.size(); i++) {
+         newOne.commandList.addElement((Command) (this.commandList.elementAt(i)).clone());
+         // System.out.println("Command: " +
+         // (Command)newOne.V.elementAt(i));
+      }
+      return newOne;
+   }
+
+   public void showCGMCommands() {
+      for (Command c : commandList) {
+         System.out.println("Command: " + c);
+      }
+   }
+
+   public void changeColor(Color oldc, Color newc) {
+      // actually changes the color in the cgm commands having this
+      // oldc, replacing it with newc find each color command whose
+      // color matches oldc, and substitute newc
+      Command temp;
+      Color currcolor;
+
+      for (int i = 0; i < commandList.size(); i++) {
+         temp = (Command) commandList.elementAt(i);
+         if (temp instanceof ColorCommand) {// compare color to
+                                            // oldc
+            currcolor = ((ColorCommand) temp).C;
+            if (currcolor.equals(oldc)) {
+               ((ColorCommand) temp).C = new Color(newc.getRed(), newc.getGreen(), newc.getBlue());
+            }
+         }
+      }
+   }
+   
+   public String toString() {
+      if (commandList != null) {
+         StringBuffer buf = new StringBuffer();
+         int count = 0;
+         for (Command c : commandList) {
+            buf.append("Command " + (count++) + ": " + c.toString() + "\n");
+         }
+         return buf.toString();
+      } else {
+         return "CGM: not read yet?";
+      }
+   }
 }

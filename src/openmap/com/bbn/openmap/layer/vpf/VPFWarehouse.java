@@ -48,7 +48,7 @@ public interface VPFWarehouse {
 
     /**
      * To let the warehouse know that a new CoverageAttributeTable
-     * will be using the warehouse. Some wharehouses need to reset
+     * will be using the warehouse. Some warehouses need to reset
      * some tables for this situation.
      */
     public void resetForCAT();
@@ -76,7 +76,7 @@ public interface VPFWarehouse {
      * Returned with the area features first, then text features, then
      * line features, then point features.
      */
-    public List getFeatures();
+    public List<String> getFeatures();
 
     /**
      * Get a library name to limit selections from. Used by the

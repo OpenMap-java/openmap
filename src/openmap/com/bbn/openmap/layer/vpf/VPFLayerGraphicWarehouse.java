@@ -144,8 +144,8 @@ public class VPFLayerGraphicWarehouse extends LayerGraphicWarehouseSupport {
      * Returned with the area features first, then text features, then
      * line features, then point features.
      */
-    public List getFeatures() {
-        List retval = new ArrayList();
+    public List<String> getFeatures() {
+        List<String> retval = new ArrayList<String>();
 
         StringTokenizer t;
         if (areaFeatures != null) {
@@ -194,7 +194,7 @@ public class VPFLayerGraphicWarehouse extends LayerGraphicWarehouseSupport {
      */
     protected int[] getSkipArray(String featureString, DcwRecordFile table,
                                  String colAppend) {
-        List tmpvec = new ArrayList();
+        List<Integer> tmpvec = new ArrayList<Integer>();
         if (featureString != null) {
             StringTokenizer t = new StringTokenizer(featureString);
             while (t.hasMoreTokens()) {
@@ -211,7 +211,7 @@ public class VPFLayerGraphicWarehouse extends LayerGraphicWarehouseSupport {
 
         int[] retval = new int[tmpvec.size()];
         for (int i = 0; i < retval.length; i++) {
-            retval[i] = ((Integer) tmpvec.get(i)).intValue();
+            retval[i] = tmpvec.get(i).intValue();
         }
         return retval;
     }
@@ -236,7 +236,7 @@ public class VPFLayerGraphicWarehouse extends LayerGraphicWarehouseSupport {
      * @return true if any of the columns listed in skipArray is
      *         non-null.
      */
-    protected boolean createFeature(List prim, int[] skipArray) {
+    protected boolean createFeature(List<Object> prim, int[] skipArray) {
         //length==0 --> user wants everything
         if (skipArray.length == 0) {
             return true;
@@ -256,7 +256,7 @@ public class VPFLayerGraphicWarehouse extends LayerGraphicWarehouseSupport {
      *  
      */
     public void createArea(CoverageTable covtable, AreaTable areatable,
-                           List facevec, LatLonPoint ll1, LatLonPoint ll2,
+                           List<Object> facevec, LatLonPoint ll1, LatLonPoint ll2,
                            double dpplat, double dpplon) {
         if (areaSkipFeatures == null) {
             areaSkipFeatures = getSkipArray(areaFeatures, areatable, ".aft_id");
@@ -266,7 +266,7 @@ public class VPFLayerGraphicWarehouse extends LayerGraphicWarehouseSupport {
             return;
         }
 
-        List ipts = new ArrayList();
+        List<CoordFloatString> ipts = new ArrayList<CoordFloatString>();
 
         int totalSize = 0;
         try {
@@ -309,7 +309,7 @@ public class VPFLayerGraphicWarehouse extends LayerGraphicWarehouseSupport {
     /**
      *  
      */
-    public void createEdge(CoverageTable c, EdgeTable edgetable, List edgevec,
+    public void createEdge(CoverageTable c, EdgeTable edgetable, List<Object> edgevec,
                            LatLonPoint ll1, LatLonPoint ll2, double dpplat,
                            double dpplon, CoordFloatString coords) {
 
@@ -360,7 +360,7 @@ public class VPFLayerGraphicWarehouse extends LayerGraphicWarehouseSupport {
     /**
      *  
      */
-    public void createText(CoverageTable c, TextTable texttable, List textvec,
+    public void createText(CoverageTable c, TextTable texttable, List<Object> textvec,
                            double latitude, double longitude, String text) {
 
         if (textSkipFeatures == null) {
@@ -377,7 +377,7 @@ public class VPFLayerGraphicWarehouse extends LayerGraphicWarehouseSupport {
         addText(txt);
     }
 
-    public void createNode(CoverageTable c, NodeTable nt, List nodeprim,
+    public void createNode(CoverageTable c, NodeTable nt, List<Object> nodeprim,
                            double latitude, double longitude, boolean isEntityNode) {
         int[] skipFeatures = null;
         if (isEntityNode) {

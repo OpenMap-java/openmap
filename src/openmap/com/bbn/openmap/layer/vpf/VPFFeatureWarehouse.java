@@ -24,44 +24,38 @@ package com.bbn.openmap.layer.vpf;
 
 import java.util.List;
 
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
- * Define an interface for a Graphic Factory for graphics read from
- * VPF.
+ * Define an interface for a Graphic Factory for graphics read from VPF.
  */
-public interface VPFFeatureWarehouse extends VPFWarehouse {
+public interface VPFFeatureWarehouse
+      extends VPFWarehouse {
 
-    public boolean needToFetchTileContents(String libraryName, String currentFeature,
-                                           TileDirectory currentTile);
+   public boolean needToFetchTileContents(String libraryName, String currentFeature, TileDirectory currentTile);
 
-    /**
+   /**
      *  
      */
-    public void createArea(CoverageTable covtable, AreaTable areatable,
-                           List facevec, LatLonPoint ll1, LatLonPoint ll2,
-                           double dpplat, double dpplon, String featureType);
+   public OMGraphic createArea(CoverageTable covtable, AreaTable areatable, List<Object> facevec, LatLonPoint ll1, LatLonPoint ll2,
+                               double dpplat, double dpplon, String featureType);
 
-    /**
+   /**
      *  
      */
-    public void createEdge(CoverageTable c, EdgeTable edgetable, List edgevec,
-                           LatLonPoint ll1, LatLonPoint ll2, double dpplat,
-                           double dpplon, CoordFloatString coords,
-                           String featureType);
+   public OMGraphic createEdge(CoverageTable c, EdgeTable edgetable, List<Object> edgevec, LatLonPoint ll1, LatLonPoint ll2,
+                               double dpplat, double dpplon, CoordFloatString coords, String featureType);
 
-    /**
+   /**
      *  
      */
-    public void createText(CoverageTable c, TextTable texttable, List textvec,
-                           double latitude, double longitude, String text,
-                           String featureType);
+   public OMGraphic createText(CoverageTable c, TextTable texttable, List<Object> textvec, double latitude, double longitude,
+                               String text, String featureType);
 
-    /**
-     * Method called by the VPF reader code to construct a node
-     * feature.
-     */
-    public void createNode(CoverageTable c, NodeTable t, List nodeprim,
-                           double latitude, double longitude,
-                           boolean isEntityNode, String featureType);
+   /**
+    * Method called by the VPF reader code to construct a node feature.
+    */
+   public OMGraphic createNode(CoverageTable c, NodeTable t, List<Object> nodeprim, double latitude, double longitude,
+                               boolean isEntityNode, String featureType);
 }

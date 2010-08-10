@@ -45,7 +45,7 @@ public interface VPFGraphicWarehouse extends VPFWarehouse {
      * @param ll1 upperleft of selection region (passed to warehouse)
      * @param ll2 lowerright of selection region (passed to warehouse)
      */
-    public void createArea(CoverageTable c, AreaTable a, List l,
+    public void createArea(CoverageTable c, AreaTable a, List<Object> l,
                            LatLonPoint ll1, LatLonPoint ll2, double dpplat,
                            double dpplon);
 
@@ -63,7 +63,7 @@ public interface VPFGraphicWarehouse extends VPFWarehouse {
      * @param ll1 upperleft of selection region (passed to warehouse)
      * @param ll2 lowerright of selection region (passed to warehouse)
      */
-    public void createEdge(CoverageTable c, EdgeTable e, List l,
+    public void createEdge(CoverageTable c, EdgeTable e, List<Object> l,
                            LatLonPoint ll1, LatLonPoint ll2, double dpplat,
                            double dpplon, CoordFloatString coords);
 
@@ -78,7 +78,7 @@ public interface VPFGraphicWarehouse extends VPFWarehouse {
      * @param longitude the longitude of the text
      * @param text the text string
      */
-    public void createText(CoverageTable c, TextTable t, List textprim,
+    public void createText(CoverageTable c, TextTable t, List<Object> textprim,
                            double latitude, double longitude, String text);
 
     /**
@@ -93,6 +93,6 @@ public interface VPFGraphicWarehouse extends VPFWarehouse {
      * @param isEntityNode true if we are reading entity notes, false
      *        if we are reading connected nodes
      */
-    public void createNode(CoverageTable c, NodeTable t, List nodeprim,
+    public void createNode(CoverageTable c, NodeTable t, List<Object> nodeprim,
                            double latitude, double longitude, boolean isEntityNode);
 }

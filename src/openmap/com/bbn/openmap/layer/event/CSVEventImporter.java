@@ -180,7 +180,7 @@ public class CSVEventImporter extends OMComponent implements EventImporter {
             try {
                 CSVFile locations = new CSVFile(locationFile);
                 locations.loadData();
-                Iterator<Vector<?>> records = locations.iterator();
+                Iterator<Vector<Object>> records = locations.iterator();
                 while (records.hasNext()) {
                     String name = null;
                     String iconName = null;
@@ -255,7 +255,7 @@ public class CSVEventImporter extends OMComponent implements EventImporter {
             try {
                 CSVFile activities = new CSVFile(activityFile);
                 activities.loadData(); // numbers as strings == false
-                Iterator<Vector<?>> records = activities.iterator();
+                Iterator<Vector<Object>> records = activities.iterator();
                 while (records.hasNext()) {
                     String name = null;
                     float lat;

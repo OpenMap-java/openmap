@@ -23,35 +23,75 @@ package com.bbn.openmap.dataAccess.cgm;
 import java.awt.*;
 import java.io.*;
 
-public class ColorCommand extends Command {
-    int R, G, B;
-    Color C;
-    Color Colors[] = { Color.black, Color.white, Color.green, Color.yellow,
-            Color.blue, Color.magenta, Color.cyan, Color.red,
-            Color.black.brighter(), Color.white.darker(), Color.green.darker(),
-            Color.yellow.darker(), Color.blue.darker(), Color.magenta.darker(),
-            Color.cyan.darker(), Color.red.darker(), };
+import com.bbn.openmap.omGraphics.OMColor;
 
-    public ColorCommand(int ec, int eid, int l, DataInputStream in)
-            throws IOException {
-        super(ec, eid, l, in);
-        if (args.length >= 3) {
-            R = args[0];
-            G = args[1];
-            B = args[2];
-            C = new Color(R, G, B);
-        } else if (args.length > 0 && args[0] >= 1 && args[0] <= Colors.length) {
-            C = Colors[args[0] - 1];
-        } else {
-            C = new Color(128, 128, 128);
-        }
-    }
+public class ColorCommand
+      extends Command {
+   int R, G, B;
+   Color C;
+   Color Colors[] = {
+      Color.black,
+      Color.white,
+      Color.green,
+      Color.yellow,
+      Color.blue,
+      Color.magenta,
+      Color.cyan,
+      Color.red,
+      Color.black.brighter(),
+      Color.white.darker(),
+      Color.green.darker(),
+      Color.yellow.darker(),
+      Color.blue.darker(),
+      Color.magenta.darker(),
+      Color.cyan.darker(),
+      Color.red.darker(),
+   };
+   int index = -1;
 
-    public String toString() {
-        return "Fill Color Input " + R + "," + G + "," + B;
-    }
+   public ColorCommand(int ec, int eid, int l, DataInputStream in)
+         throws IOException {
+      super(ec, eid, l, in);
 
-    public void paint(CGMDisplay d) {
-        d.setFillColor(C);
-    }
+      if (args.length >= 3) {
+         R = args[0];
+         G = args[1];
+         B = args[2];
+         C = new Color(R, G, B);
+      } else if (args.length > 0 && args[0] >= 1 && args[0] <= Colors.length) {
+         C = Colors[args[0] - 1];
+      } else if (args.length == 1) {
+         index = args[0];
+         logger.fine("index set for color: " + index);
+      } else {
+         C = new Color(128, 128, 128);
+      }
+   }
+
+   public String toString() {
+      return "Fill Color Input " + R + "," + G + "," + B;
+   }
+
+   public void paint(CGMDisplay d) {
+      d.setFillColor(C);
+   }
+
+   /**
+    * @param ct
+    */
+   public void setColorFromColorTable(ColorTable ct) {
+      if (index != -1) {
+         C = ct.get(index);
+         if (C != null) {
+            R = C.getRed();
+            G = C.getGreen();
+            B = C.getBlue();
+         } else {
+            C = OMColor.clear;
+            R = 0;
+            G = 0;
+            B = 0;
+         }
+      }
+   }
 }

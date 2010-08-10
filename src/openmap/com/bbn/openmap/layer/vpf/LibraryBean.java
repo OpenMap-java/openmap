@@ -23,11 +23,11 @@
 package com.bbn.openmap.layer.vpf;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Properties;
 
+import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.bbn.openmap.PropertyConsumer;
 
 /**
  * A bean to be used for sharing LibrarySelectionTable objects between instances
@@ -54,160 +54,155 @@ import com.bbn.openmap.PropertyConsumer;
  * created and added to the MapHandler. Of course, you could add the LibraryBean
  * to the MapHandler programmatically if you wanted to.
  */
-public class LibraryBean implements PropertyConsumer, Serializable {
+public class LibraryBean
+      implements PropertyConsumer, Serializable {
 
-    /** used for explicitly naming a library bean (name). */
-    public static final String nameProperty = "name";
+   private static final long serialVersionUID = 1L;
 
-    /**
-     * property extension used to set the VPF root directory (vpfPath).
+   /** used for explicitly naming a library bean (name). */
+   public static final String nameProperty = "name";
+
+   /**
+    * property extension used to set the VPF root directory (vpfPath).
+    */
+   public static final String pathProperty = "vpfPath";
+
+   /** Maximum size of tile cache (cacheSize). */
+   public static final String cacheSizeProperty = "cacheSize";
+
+   /** the lst for the path */
+   private transient LibrarySelectionTable lst = null;
+
+   /** the name of the bean set in properties, or the marker name */
+   String beanName;
+
+   /** used by set/getPropertyPrefix */
+   private String propertyPrefix = null;
+
+   /** the paths used in constructing the lst */
+   private String[] paths;
+
+   /**
+    * The VPFFeatureCache to use for cached features.
+    */
+   protected VPFFeatureCache featureCache;
+
+   /**
+    * Construct an empty bean.
+    */
+   public LibraryBean() {
+      featureCache = new VPFFeatureCache();
+   }
+
+   public void setProperties(Properties setList) {
+      setProperties(getPropertyPrefix(), setList);
+   }
+
+   public void setProperties(String prefix, Properties setList) {
+      setPropertyPrefix(prefix);
+      String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+
+      paths = PropUtils.initPathsFromProperties(setList, realPrefix + pathProperty, paths);
+
+      String beanName = setList.getProperty(realPrefix + nameProperty);
+      this.beanName = (beanName == null) ? prefix : beanName;
+
+      if (Debug.debugging("vpf")) {
+         Debug.output("LibraryBean.setProperties(): " + prefix + " " + this.beanName + " initialized");
+      }
+      try {
+         if (paths == null) {
+            Debug.output("VPF LibraryBean: path not set - expected " + realPrefix + pathProperty + " property");
+         } else {
+            lst = new LibrarySelectionTable(paths);
+         }
+      } catch (com.bbn.openmap.io.FormatException f) {
+         Debug.output(f.getMessage());
+      } catch (NullPointerException npe) {
+         Debug.output("LibraryBean.setProperties:" + prefix + ": path name not valid");
+      }
+
+      int cacheSize = PropUtils.intFromProperties(setList, realPrefix + cacheSizeProperty, featureCache.getCacheSize());
+      featureCache.resetCache(cacheSize);
+   }
+
+   /**
+    * Gets the name of the component - if the name was explicitly set, then
+    * return that, otherwise return the property prefix.
+    */
+   public String getName() {
+      return beanName;
+   }
+
+   /**
+    * Not a good PropertyConsumer yet, doesn't return values.
+    */
+   public Properties getProperties(Properties getList) {
+      if (getList == null) {
+         getList = new Properties();
+      }
+      String prefix = PropUtils.getScopedPropertyPrefix(this);
+      getList.put(prefix + nameProperty, beanName);
+      getList.put(prefix + cacheSizeProperty, Integer.toString(featureCache.getCacheSize()));
+      return getList;
+   }
+
+   /**
      */
-    public static final String pathProperty = "vpfPath";
+   public Properties getPropertyInfo(Properties list) {
+      if (list == null) {
+         list = new Properties();
+      }
 
-    /** Maximum size of tile cache (cacheSize). */
-    public static final String cacheSizeProperty = "cacheSize";
+      list.put(nameProperty, "Name of Library Bean.");
+      list.put(pathProperty, "List of VPF directories.");
+      list.put(pathProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.MultiDirectoryPropertyEditor");
+      list.put(cacheSizeProperty, "Maximun number of tiles to cache (25 is default).");
 
-    /** the lst for the path */
-    private transient LibrarySelectionTable lst = null;
+      return list;
+   }
 
-    /** the name of the bean set in properties, or the marker name */
-    String beanName;
+   /**
+    * Set the property key prefix that should be used by the PropertyConsumer.
+    * The prefix, along with a '.', should be prepended to the property keys
+    * known by the PropertyConsumer.
+    * 
+    * @param prefix the prefix String.
+    */
+   public void setPropertyPrefix(String prefix) {
+      propertyPrefix = prefix;
+   }
 
-    /** used by set/getPropertyPrefix */
-    private String propertyPrefix = null;
+   /**
+    * Get the property key prefix that is being used to prepend to the property
+    * keys for Properties lookups.
+    * 
+    * @return the property prefix
+    */
+   public String getPropertyPrefix() {
+      return propertyPrefix;
+   }
 
-    /** the paths used in constructing the lst */
-    private String[] paths;
+   /**
+    * Returns the LST for the path of this object.
+    * 
+    * @return an LST, null if the object didn't construct properly
+    */
+   public LibrarySelectionTable getLibrarySelectionTable() {
+      return lst;
+   }
 
-    /**
-     * The VPFFeatureCache to use for cached features.
-     */
-    protected VPFFeatureCache featureCache;
+   /**
+    * Creates a new VPFFeatureWarehouse every time, with the shared
+    * featureCache.
+    * 
+    * @return
+    */
+   public VPFCachedFeatureGraphicWarehouse getWarehouse() {
+      if (Debug.debugging("vpf")) {
+         Debug.output("LibraryBean.getWarehouse(): creating warehouse.");
+      }
 
-    /**
-     * Construct an empty bean.
-     */
-    public LibraryBean() {
-        featureCache = new VPFFeatureCache();
-    }
-
-    public void setProperties(Properties setList) {
-        setProperties(getPropertyPrefix(), setList);
-    }
-
-    public void setProperties(String prefix, Properties setList) {
-        setPropertyPrefix(prefix);
-        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
-
-        paths = PropUtils.initPathsFromProperties(setList, realPrefix
-                + pathProperty, paths);
-
-        String beanName = setList.getProperty(realPrefix + nameProperty);
-        this.beanName = (beanName == null) ? prefix : beanName;
-
-        if (Debug.debugging("vpf")) {
-            Debug.output("LibraryBean.setProperties(): " + prefix + " "
-                    + this.beanName + " initialized");
-        }
-        try {
-            if (paths == null) {
-                Debug.output("VPF LibraryBean: path not set - expected "
-                        + realPrefix + pathProperty + " property");
-            } else {
-                lst = new LibrarySelectionTable(paths);
-            }
-        } catch (com.bbn.openmap.io.FormatException f) {
-            Debug.output(f.getMessage());
-        } catch (NullPointerException npe) {
-            Debug.output("LibraryBean.setProperties:" + prefix
-                    + ": path name not valid");
-        }
-
-        int cacheSize = PropUtils.intFromProperties(setList, realPrefix
-                + cacheSizeProperty, featureCache.getCacheSize());
-        featureCache.resetCache(cacheSize);
-    }
-
-    /**
-     * Gets the name of the component - if the name was explicitly set, then
-     * return that, otherwise return the property prefix.
-     */
-    public String getName() {
-        return beanName;
-    }
-
-    /**
-     * Not a good PropertyConsumer yet, doesn't return values.
-     */
-    public Properties getProperties(Properties getList) {
-        if (getList == null) {
-            getList = new Properties();
-        }
-        String prefix = PropUtils.getScopedPropertyPrefix(this);
-        getList.put(prefix + nameProperty, beanName);
-        getList.put(prefix + cacheSizeProperty,
-                Integer.toString(featureCache.getCacheSize()));
-        return getList;
-    }
-
-    /**
-     */
-    public Properties getPropertyInfo(Properties list) {
-        if (list == null) {
-            list = new Properties();
-        }
-
-        list.put(nameProperty, "Name of Library Bean.");
-        list.put(pathProperty, "List of VPF directories.");
-        list.put(pathProperty + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.MultiDirectoryPropertyEditor");
-        list.put(cacheSizeProperty,
-                "Maximun number of tiles to cache (25 is default).");
-
-        return list;
-    }
-
-    /**
-     * Set the property key prefix that should be used by the PropertyConsumer.
-     * The prefix, along with a '.', should be prepended to the property keys
-     * known by the PropertyConsumer.
-     * 
-     * @param prefix the prefix String.
-     */
-    public void setPropertyPrefix(String prefix) {
-        propertyPrefix = prefix;
-    }
-
-    /**
-     * Get the property key prefix that is being used to prepend to the property
-     * keys for Properties lookups.
-     * 
-     * @return the property prefix
-     */
-    public String getPropertyPrefix() {
-        return propertyPrefix;
-    }
-
-    /**
-     * Returns the LST for the path of this object.
-     * 
-     * @return an LST, null if the object didn't construct properly
-     */
-    public LibrarySelectionTable getLibrarySelectionTable() {
-        return lst;
-    }
-
-    /**
-     * Creates a new VPFFeatureWarehouse every time, with the shared
-     * featureCache.
-     * 
-     * @return
-     */
-    public VPFCachedFeatureGraphicWarehouse getWarehouse() {
-        if (Debug.debugging("vpf")) {
-            Debug.output("LibraryBean.getWarehouse(): creating warehouse.");
-        }
-
-        return new VPFCachedFeatureGraphicWarehouse(featureCache);
-    }
+      return new VPFCachedFeatureGraphicWarehouse(featureCache);
+   }
 }

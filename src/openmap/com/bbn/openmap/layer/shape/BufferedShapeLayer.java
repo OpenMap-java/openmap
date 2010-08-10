@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import com.bbn.openmap.io.FormatException;
@@ -45,7 +46,8 @@ import com.bbn.openmap.proj.Projection;
  */
 public class BufferedShapeLayer extends ShapeLayer {
 
-    protected OMGraphicList bufferedList = null;
+   private static final long serialVersionUID = 1L;
+   protected OMGraphicList bufferedList = null;
 
     /**
      * Initializes an empty shape layer.
@@ -185,5 +187,25 @@ public class BufferedShapeLayer extends ShapeLayer {
         }
         super.actionPerformed(e);
     }
-
+    
+    /**
+     * This method gets called from setProperties.
+     * 
+     * @param realPrefix
+     *            This prefix has already been scoped, which means it is an
+     *            empty string if setProperties was called with a null prefix,
+     *            or it's a String ending with a period if it was defined with
+     *            characters.
+     * @param props
+     *            Properties containing information about files and the layer.
+     */
+    protected void setFileProperties(String realPrefix, Properties props) {
+       bufferedList = null;
+       super.setFileProperties(realPrefix, props);
+    }
+    
+    public void setSpatialIndex(SpatialIndex si) {
+       bufferedList = null;
+       super.setSpatialIndex(si);
+   }
 }

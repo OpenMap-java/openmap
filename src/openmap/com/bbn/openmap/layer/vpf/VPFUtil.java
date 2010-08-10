@@ -22,7 +22,8 @@
 
 package com.bbn.openmap.layer.vpf;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Miscellaneous utility functions in dealing with VPF data.
@@ -40,20 +41,20 @@ public class VPFUtil {
      * @return the string version of the list
      * @deprecated use listToString(List) instead
      */
-    public static final String vectorToString(List l) {
+    public static final String vectorToString(List<Object> l) {
         return listToString(l);
     }
 
     /**
      * returns a string with the elements of l separated by spaces
      * 
-     * @param l the list to stringize
+     * @param l the list to convert to string
      * @return the string version of the list
      */
-    public static final String listToString(List l) {
+    public static final String listToString(List<Object> l) {
         StringBuffer row = new StringBuffer();
-        for (Iterator i = l.iterator(); i.hasNext();) {
-            row.append(i.next().toString()).append(" ");
+        for (Object obj : l) {
+            row.append(obj.toString()).append(" ");
         }
         return (row.toString());
     }
@@ -96,8 +97,8 @@ public class VPFUtil {
      * <code>Hashtable</code> is returned as a unified holder of all
      * dynamic arguments.
      */
-    public static Hashtable parseDynamicArgs(String args) {
-        Hashtable dynArgs = new Hashtable();
+    public static Hashtable<String, Boolean> parseDynamicArgs(String args) {
+        Hashtable<String, Boolean> dynArgs = new Hashtable<String, Boolean>();
         if (args != null) {
             String lowerArgs = args.toLowerCase();
 
@@ -118,7 +119,7 @@ public class VPFUtil {
      * @param dynArgs the Hashtable to look in
      * @param arg the argument to return
      */
-    public static boolean getHashedValueAsBoolean(Hashtable dynArgs, String arg) {
+    public static boolean getHashedValueAsBoolean(Hashtable<String, Boolean> dynArgs, String arg) {
         Object obj = dynArgs.get(arg);
         if (obj == null) {
             return false;

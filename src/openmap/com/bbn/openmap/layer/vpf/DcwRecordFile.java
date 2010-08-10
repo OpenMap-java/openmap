@@ -178,7 +178,7 @@ public class DcwRecordFile {
                 documentationFileName = null;
             }
 
-            ArrayList tmpcols = new ArrayList();
+            ArrayList<Object> tmpcols = new ArrayList<Object>();
             try {
                 while (true) {
                     DcwColumnInfo dci = new DcwColumnInfo(inputFile);
@@ -322,7 +322,7 @@ public class DcwRecordFile {
         int row_id_column = whatColumn(ID_COLUMN_NAME);
         String vectorString = null;
         int rowcount = 0;
-        for (List l = new ArrayList(getColumnCount()); parseRow(l);) {
+        for (List<Object> l = new ArrayList<Object>(getColumnCount()); parseRow(l);) {
             int cnt = ((Number) (l.get(row_id_column))).intValue();
             if (cnt != ++rowcount) {
                 System.out.println("Non-consecutive row number.  Expected "
@@ -353,7 +353,7 @@ public class DcwRecordFile {
                 continue;
             }
             seekToRow(i);
-            List l = parseRow();
+            List<Object> l = parseRow();
             int cnt = ((Integer) (l.get(row_id_column))).intValue();
             if (cnt != i) {
                 System.out.println("Possible incorrect seek for row number "
@@ -371,8 +371,8 @@ public class DcwRecordFile {
      * @exception FormatException an error was encountered reading the
      *            row
      */
-    public List parseRow() throws FormatException {
-        List retval = new ArrayList(getColumnCount());
+    public List<Object> parseRow() throws FormatException {
+        List<Object> retval = new ArrayList<Object>(getColumnCount());
         return parseRow(retval) ? retval : null;
     }
 
@@ -388,7 +388,7 @@ public class DcwRecordFile {
      *            row
      * @see java.util.List#clear()
      */
-    public synchronized boolean parseRow(List retval) throws FormatException {
+    public synchronized boolean parseRow(List<Object> retval) throws FormatException {
         retval.clear();
         try {
             for (int i = 0; i < columnInfo.length; i++) {
@@ -505,8 +505,8 @@ public class DcwRecordFile {
      * @return the values contained in the row
      * @exception FormatException data format errors
      */
-    public List getRow(int rownumber) throws FormatException {
-        List l = new ArrayList(getColumnCount());
+    public List<Object> getRow(int rownumber) throws FormatException {
+        List<Object> l = new ArrayList<Object>(getColumnCount());
         return getRow(l, rownumber) ? l : null;
     }
 
@@ -519,7 +519,7 @@ public class DcwRecordFile {
      * @exception FormatException data format errors
      * @see #parseRow()
      */
-    public synchronized boolean getRow(List retval, int rownumber)
+    public synchronized boolean getRow(List<Object> retval, int rownumber)
             throws FormatException {
         if (inputFile == null) {
             reopen(rownumber);
@@ -682,7 +682,7 @@ public class DcwRecordFile {
                 foo.printSchema();
                 foo.close();
                 foo.reopen(1);
-                for (List l = new ArrayList(); foo.parseRow(l);) {
+                for (List<Object> l = new ArrayList<Object>(); foo.parseRow(l);) {
                     System.out.println(VPFUtil.listToString(l));
                 }
                 foo.close();

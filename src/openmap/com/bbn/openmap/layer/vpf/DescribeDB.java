@@ -22,8 +22,9 @@
 
 package com.bbn.openmap.layer.vpf;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
+
 import com.bbn.openmap.io.FormatException;
 
 /**
@@ -94,16 +95,16 @@ public class DescribeDB {
             println("Path to database: " + rootpath);
             println("Database Name: " + lst.getDatabaseName());
             println("Database Description: " + lst.getDatabaseDescription());
-            String[] libraries = lst.getLibraryNames();
+            List<String> libraries = lst.getLibraryNames();
             print("Database Libraries: ");
-            for (int i = 0; i < libraries.length; i++) {
-                print(libraries[i], " ");
+            for (String libraryName : libraries) {
+                print(libraryName, " ");
             }
             println("");
             println("");
-            for (int i = 0; i < libraries.length; i++) {
-                String prefix = libraries[i] + ":";
-                printLibrary(prefix, lst.getCAT(libraries[i]));
+            for (String libraryName : libraries) {
+                String prefix = libraryName + ":";
+                printLibrary(prefix, lst.getCAT(libraryName));
                 println("");
             }
         }
@@ -151,9 +152,8 @@ public class DescribeDB {
         CoverageTable ct = cat.getCoverageTable(covname);
         print(prefix, "FeatureClassNames: ");
         println("");
-        Hashtable info = ct.getFeatureTypeInfo();
-        for (Enumeration enumerator = info.elements(); enumerator.hasMoreElements();) {
-            CoverageTable.FeatureClassRec fcr = (CoverageTable.FeatureClassRec) enumerator.nextElement();
+        Hashtable<String, CoverageTable.FeatureClassRec> info = ct.getFeatureTypeInfo();
+        for (CoverageTable.FeatureClassRec fcr : info.values()) {
 
             String tstring = "[unknown] ";
             if (fcr.type == CoverageTable.TEXT_FEATURETYPE) {

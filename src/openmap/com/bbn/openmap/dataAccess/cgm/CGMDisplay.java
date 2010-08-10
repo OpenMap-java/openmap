@@ -20,166 +20,330 @@
  */
 package com.bbn.openmap.dataAccess.cgm;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+
+import com.bbn.openmap.omGraphics.OMColor;
 
 public class CGMDisplay {
-    Graphics G;
+   Graphics G;
 
-    protected double X = 0, Y = 0;
-    protected double DX = 1, DY = 1;
-    protected int W, H;
-    protected CGM Cgm;
-    Color FillColor = Color.black, EdgeColor = Color.black,
-            LineColor = Color.black, TextColor = Color.black;
-    boolean Filled = true, Edge = true;
-    int TextSize = 10;
-    protected int Extent[] = { -30000, -30000, 30000, 30000 };
+   protected double X = 0, Y = 0;
+   protected double DX = 1, DY = 1;
+   protected int W, H;
+   protected CGM Cgm;
+   Color FillColor = OMColor.clear, EdgeColor = Color.black, LineColor = Color.black, TextColor = Color.black;
+   boolean Filled = true, Edge = true;
+   int TextSize = 10;
+   protected int Extent[] = {
+      -30000,
+      -30000,
+      30000,
+      30000
+   };
 
-    public CGMDisplay(CGM cgm) {
-        int extent[] = cgm.extent();
-        if (extent != null)
-            Extent = extent;
-        Cgm = cgm;
-    }
+   public CGMDisplay(CGM cgm) {
+      load(cgm);
+   }
 
-    public void paint(Graphics g) {
-        G = g;
-        Cgm.paint(this);
-    }
+   public void load(CGM cgm) {
+      Cgm = cgm;
+      int extent[] = cgm.extent();
+      if (extent != null)
+         Extent = extent;
+   }
 
-    public int x(int x) {
-        return W + (int) (X + x * DX);
-    }
+   public void paint(Graphics g) {
+      G = g;
+      Cgm.paint(this);
+   }
 
-    public int y(int y) {
-        return H - (int) (Y + y * DY);
-    }
+   public int x(int x) {
+      return W + (int) (X + x * DX);
+   }
 
-    public Graphics graphics() {
-        return G;
-    }
+   public int y(int y) {
+      return H - (int) (Y + y * DY);
+   }
 
-    public void setFillColor(Color c) {
-        FillColor = c;
-    }
+   public Graphics graphics() {
+      return G;
+   }
 
-    public Color getFillColor() {
-        return FillColor;
-    }
+   public void setFillColor(Color c) {
+      FillColor = c;
+   }
 
-    public void setFilled(boolean flag) {
-        Filled = flag;
-    }
+   public Color getFillColor() {
+      return FillColor;
+   }
 
-    public boolean getFilled() {
-        return Filled;
-    }
+   public void setFilled(boolean flag) {
+      Filled = flag;
+   }
 
-    public void setEdgeColor(Color c) {
-        EdgeColor = c;
-    }
+   public boolean getFilled() {
+      return Filled;
+   }
 
-    public Color getEdgeColor() {
-        return EdgeColor;
-    }
+   public void setEdgeColor(Color c) {
+      EdgeColor = c;
+   }
 
-    public void setEdge(boolean flag) {
-        Edge = flag;
-    }
+   public Color getEdgeColor() {
+      return EdgeColor;
+   }
 
-    public boolean getEdge() {
-        return Edge;
-    }
+   public void setEdge(boolean flag) {
+      Edge = flag;
+   }
 
-    public void setLineColor(Color c) {
-        LineColor = c;
-    }
+   public boolean getEdge() {
+      return Edge;
+   }
 
-    public Color getLineColor() {
-        return LineColor;
-    }
+   public void setLineColor(Color c) {
+      LineColor = c;
+   }
 
-    public void setTextColor(Color c) {
-        TextColor = c;
-    }
+   public Color getLineColor() {
+      return LineColor;
+   }
 
-    public Color getTextColor() {
-        return TextColor;
-    }
+   public void setTextColor(Color c) {
+      TextColor = c;
+   }
 
-    public void setTextSize(int h) {
-        TextSize = h;
-    }
+   public Color getTextColor() {
+      return TextColor;
+   }
 
-    public int getTextSize() {
-        return TextSize;
-    }
+   public void setTextSize(int h) {
+      TextSize = h;
+   }
 
-    public double factorX() {
-        return DX;
-    }
+   public int getTextSize() {
+      return TextSize;
+   }
 
-    public double factorY() {
-        return DY;
-    }
+   public double factorX() {
+      return DX;
+   }
 
-    public void scale(int w, int h) {
-        if (Extent == null)
-            return;
-        double fx = (double) w / (Extent[2] - Extent[0]);
-        if (fx * (Extent[3] - Extent[1]) > h) {
-            fx = (double) h / (Extent[3] - Extent[1]);
-        }
-        fx *= 1.0; //0.9;
-        DX = fx;
-        DY = fx;
-        X = -Extent[0] * fx;
-        Y = -Extent[1] * fx;
-        W = (int) (w - fx * (Extent[2] - Extent[0])) / 2;
-        H = (int) (h - (h - fx * (Extent[3] - Extent[1])) / 2);
-        Cgm.scale(this);
-    }
+   public double factorY() {
+      return DY;
+   }
 
-    public void frame(Graphics g) {
-        if (Extent == null)
-            return;
-        g.setColor(Color.black);
-        g.drawRect(x(Extent[0]) - 1,
-                y(Extent[3]) - 1,
-                (int) Math.abs((Extent[2] - Extent[0]) * DX) + 1,
-                (int) Math.abs((Extent[3] - Extent[1]) * DY) + 1);
-    }
+   public void scale(int w, int h) {
+      if (Extent == null)
+         return;
+      double fx = (double) w / (Extent[2] - Extent[0]);
+      if (fx * (Extent[3] - Extent[1]) > h) {
+         fx = (double) h / (Extent[3] - Extent[1]);
+      }
+      fx *= 1.0; // 0.9;
+      DX = fx;
+      DY = fx;
+      X = -Extent[0] * fx;
+      Y = -Extent[1] * fx;
+      W = (int) (w - fx * (Extent[2] - Extent[0])) / 2;
+      H = (int) (h - (h - fx * (Extent[3] - Extent[1])) / 2);
+      Cgm.scale(this);
+   }
+   
+   public BufferedImage getBufferedImage(int w, int h) {
+      BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+      Graphics g = image.getGraphics();
+      scale(w, h);
+      paint(g);
+      return image;
+   }
 
-    public static void main(String args[]) throws IOException {
-        DataInputStream in = new DataInputStream(new FileInputStream(args[0]));
-        CGM cgm = new CGM();
-        cgm.read(in);
-        in.close();
-        CGMDisplay d = new CGMDisplay(cgm);
-        CGMPanel p = new CGMPanel(d);
-        Frame f = new Frame();
-        f.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                System.exit(0);
+   public void frame(Graphics g) {
+      if (Extent == null)
+         return;
+      g.setColor(Color.black);
+      g.drawRect(x(Extent[0]) - 1, y(Extent[3]) - 1, (int) Math.abs((Extent[2] - Extent[0]) * DX) + 1,
+                 (int) Math.abs((Extent[3] - Extent[1]) * DY) + 1);
+   }
+
+   public static void main(String args[])
+         throws IOException {
+      if (args.length == 0) {
+         System.out.println("Need a path to a cgm file or directory containing cgm files.");
+         System.exit(-1);
+      }
+
+      File file = new File(args[0]);
+      File cgmFile;
+      if (!file.exists()) {
+         System.out.println("Can't find file: " + args[0]);
+      }
+
+      JPanel choicePanel = null;
+      JComboBox comboBox = null;
+      JButton nextButton = null;
+      JButton prevButton = null;
+
+      String[] files = null;
+      if (file.isDirectory()) {
+
+         files = file.list();
+         cgmFile = new File(file, files[0]);
+         choicePanel = new JPanel();
+         comboBox = new JComboBox(files);
+         nextButton = new JButton("Next");
+         nextButton.setName("Next");
+         prevButton = new JButton("Previous");
+         prevButton.setName("Previous");
+         choicePanel.add(prevButton);
+         choicePanel.add(comboBox);
+         choicePanel.add(nextButton);
+
+      } else {
+         cgmFile = file;
+      }
+
+      DataInputStream in = new DataInputStream(new FileInputStream(cgmFile));
+      CGM cgm = new CGM();
+      cgm.read(in);
+      in.close();
+      CGMDisplay d = new CGMDisplay(cgm);
+      CGMPanel p = new CGMPanel(d);
+      Frame f = new Frame();
+      f.addWindowListener(new WindowAdapter() {
+         public void windowClosing(WindowEvent e) {
+            System.exit(0);
+         }
+      });
+      f.setSize(600, 450);
+      f.setLayout(new BorderLayout());
+      f.add("Center", p);
+
+      if (choicePanel != null) {
+         f.add("North", choicePanel);
+      }
+
+      if (comboBox != null && nextButton != null && prevButton != null) {
+         ServeChoice sc = new ServeChoice(file, comboBox, d);
+         comboBox.addActionListener(sc);
+         nextButton.addActionListener(sc);
+         prevButton.addActionListener(sc);
+         sc.setRepainter(p);
+      }
+      
+      f.setVisible(true);
+   }
+
+   protected static class ServeChoice
+         implements ActionListener {
+
+      JButton label;
+      File parent;
+      CGMDisplay d;
+      JComboBox jcb;
+      
+      Component repainter;
+      
+      public ServeChoice(File parent, JComboBox jcb, CGMDisplay d) {
+         this.parent = parent;
+         this.d = d;
+         this.jcb = jcb;
+      }
+
+      /*
+       * (non-Javadoc)
+       * 
+       * @see
+       * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent
+       * )
+       */
+      public void actionPerformed(ActionEvent e) {
+         Object source = e.getSource();
+         if (source instanceof JButton) {
+            String name = ((JButton) source).getName();
+            if (name.equals("Next")) {
+               if (jcb != null) {
+                  int index = jcb.getSelectedIndex();
+                  if (index < jcb.getItemCount() - 1) {
+                     jcb.setSelectedIndex(index + 1);
+                  }
+               }
+            } else if (name.equals("Previous")) {
+               if (jcb != null) {
+                  int index = jcb.getSelectedIndex();
+                  if (index > 1) {
+                     jcb.setSelectedIndex(index - 1);
+                  }
+               }
             }
-        });
-        f.setSize(600, 450);
-        f.setLayout(new BorderLayout());
-        f.add("Center", p);
-        f.setVisible(true);
-    }
+         } else if (source instanceof JComboBox) {
+            JComboBox jcb = (JComboBox) source;
 
-    public void changeColor(Color oldc, Color newc) {// actually
-                                                     // changes the
-                                                     // color in the
-                                                     // cgm commands
-                                                     // having this
-                                                     // oldc,
-                                                     // replacing
-        // it with newc
-        Cgm.changeColor(oldc, newc);
-    }
+            String newName = (String) jcb.getSelectedItem();
+            File cgmFile = new File(parent, newName);
+            DataInputStream in;
+            try {
+               in = new DataInputStream(new FileInputStream(cgmFile));
+               CGM cgm = new CGM();
+               cgm.read(in);
+               in.close();
+
+               System.out.println("*********************");
+               System.out.println(cgm.toString());
+               System.out.println("*********************");
+
+               d.load(cgm);
+               
+               Component repainter = getRepainter();
+               if (repainter != null) {
+                  repainter.repaint();
+               }
+               
+            } catch (FileNotFoundException e1) {
+               e1.printStackTrace();
+            } catch (IOException ioe) {
+               ioe.printStackTrace();
+            }
+         }
+      }
+
+      public Component getRepainter() {
+         return repainter;
+      }
+
+      public void setRepainter(Component repainter) {
+         this.repainter = repainter;
+      }
+      
+   }
+
+   public void changeColor(Color oldc, Color newc) {// actually
+                                                    // changes the
+                                                    // color in the
+                                                    // cgm commands
+                                                    // having this
+                                                    // oldc,
+                                                    // replacing
+      // it with newc
+      Cgm.changeColor(oldc, newc);
+   }
 
 }

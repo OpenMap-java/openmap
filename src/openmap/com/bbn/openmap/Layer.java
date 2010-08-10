@@ -113,7 +113,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
         ProjectionPainter, BeanContextChild, BeanContextMembershipListener,
         PropertyConsumer, ActionListener {
 
-    /**
+   private static final long serialVersionUID = 1L;
+
+   /**
      * Pre-caches the swing package. Computed based on the package of
      * <code>JComponent</code>.
      */

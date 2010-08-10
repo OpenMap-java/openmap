@@ -35,6 +35,7 @@ public class LLXY
       extends Cylindrical
       implements EqualArc {
 
+   private static final long serialVersionUID = 1L;
    /**
     * The LLXY name.
     */
@@ -154,7 +155,7 @@ public class LLXY
     * @return boolean if lat is between 90 and -90, lon between 180 and -180;
     */
    public boolean isPlotable(double lat, double lon) {
-      return lat < 90.0 && lat > -90.0 && lon <= 180 && lon >= 180;
+      return lat < 90.0 && lat > -90.0 && lon <= 180 && lon >= -180;
    }
 
    /**

@@ -420,12 +420,10 @@ public abstract class LayerGraphicWarehouseSupport implements
      * @param doAntarcticaWorkaround hack for funny DCW antarctica
      *        data (passed to warehouse)
      */
-    public static OMPoly createAreaOMPoly(List ipts, int totalSize,
+    public static OMPoly createAreaOMPoly(List<CoordFloatString> ipts, int totalSize,
                                           LatLonPoint ll1, LatLonPoint ll2,
                                           double dpplat, double dpplon,
                                           boolean doAntarcticaWorkaround) {
-        int i, j, size = ipts.size();
-        int npts = 0;
 
         // thin the data
         //      if (doThinning) {
@@ -440,19 +438,19 @@ public abstract class LayerGraphicWarehouseSupport implements
             doAntarcticaWorkaround = (ll2.getLatitude() < -62f);
         }
 
-        for (j = 0; j < size; j++) {
-            CoordFloatString cfs = (CoordFloatString) ipts.get(j);
+        int npts = 0;
+        for (CoordFloatString cfs : ipts) {
             int cfscnt = cfs.tcount;
             int cfssz = cfs.tsize;
             double cfsvals[] = cfs.vals;
             if (cfscnt > 0) { // normal
-                for (i = 0; i < cfscnt; i++) {
+                for (int i = 0; i < cfscnt; i++) {
                     llpts[npts++] = ProjMath.degToRad(cfsvals[i * cfssz + 1]);//lat
                     llpts[npts++] = ProjMath.degToRad(cfsvals[i * cfssz]);//lon
                 }
             } else { // reverse
                 cfscnt *= -1;
-                for (i = cfscnt - 1; i >= 0; i--) {
+                for (int i = cfscnt - 1; i >= 0; i--) {
                     llpts[npts++] = ProjMath.degToRad(cfsvals[i * cfssz + 1]);//lat
                     llpts[npts++] = ProjMath.degToRad(cfsvals[i * cfssz]);//lon
                 }
@@ -466,7 +464,7 @@ public abstract class LayerGraphicWarehouseSupport implements
         // latitude
         if (doAntarcticaWorkaround) {
             double[] newllpts = new double[llpts.length];
-            for (i = 0; i < newllpts.length; i += 2) {
+            for (int i = 0; i < newllpts.length; i += 2) {
                 newllpts[i] = llpts[i];
                 newllpts[i + 1] = llpts[i + 1];
 
@@ -598,7 +596,7 @@ public abstract class LayerGraphicWarehouseSupport implements
     /**
      * do fan compression of raw edge points
      */
-    protected static int doThinning(List ipts) {
+    protected static int doThinning(List<Object> ipts) {
         int size = ipts.size();
         int totalSize = 0;
         for (int j = 0; j < size; j++) {

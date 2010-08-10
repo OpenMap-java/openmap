@@ -59,7 +59,7 @@ public class FeatureClassInfo extends DcwRecordFile implements
     // private static RunQueue tq = new RunQueue(true, Thread.MIN_PRIORITY, true);
 
     /** temporary list for use in getDescription() */
-    final private List tmpVec = new ArrayList();
+    final private List<Object> tmpVec = new ArrayList<Object>();
 
     // Feature Classes cross reference each other. For any feature
     // class name, you can have:
@@ -325,7 +325,7 @@ public class FeatureClassInfo extends DcwRecordFile implements
      * @param type the first integral type
      * @return the description string for the list
      */
-    public synchronized String getDescription(List l, MutableInt type) {
+    public synchronized String getDescription(List<Object> l, MutableInt type) {
         checkInit();
         if (mycolumn == -1) {
             return null;
@@ -485,5 +485,16 @@ public class FeatureClassInfo extends DcwRecordFile implements
 
         return s;
     }
+
+   /**
+    * @return space separated list of column names, used mostly for debugging feature attribute lookups.
+    */
+   public String columnNameString() {
+      StringBuffer sBuf = new StringBuffer();
+      for (DcwColumnInfo dci : getColumnInfo()) {
+         sBuf.append(dci.getColumnName() + " ");
+      }
+      return sBuf.toString().trim();
+   }
 
 }

@@ -54,11 +54,11 @@ import com.bbn.openmap.util.PropUtils;
 
 /**
  * The MapTileMaker is an ImageServer extension that knows how to create image
- * tile sets, like the kind of tiles used by Google Maps and OpenStreetMap. It
- * uses ZoomLayerInfo objects to define how tiles are created for different zoom
- * levels. You can run this class as an application. With the -create option, it
- * will create a sample properties file to demonstrate what properties are
- * needed to run it.
+ * tile sets, like the kind of tiles used by Google Maps and OpenStreetMap, Tile
+ * Map Service (TMS). It uses ZoomLayerInfo objects to define how tiles are
+ * created for different zoom levels. You can run this class as an application.
+ * With the -create option, it will create a sample properties file to
+ * demonstrate what properties are needed to run it.
  * 
  * @author dietrick
  */
@@ -70,6 +70,7 @@ public class MapTileMaker
 
    protected String rootDir;
    protected List<ZoomLevelInfo> zoomLevels;
+   protected MapTileCoordinateTransform mtcTransform = new OSMMapTileCoordinateTransform();
 
    /**
     * Empty constructor that expects to be configured later.
@@ -157,7 +158,7 @@ public class MapTileMaker
    }
 
    public byte[] makeTile(double uvx, double uvy, ZoomLevelInfo zoomInfo, Proj proj) {
-      Point2D center = MapTileMaker.tileUVToLatLon(new Point2D.Double(uvx + .5, uvy + .5), zoomInfo.getZoomLevel());
+      Point2D center = tileUVToLatLon(new Point2D.Double(uvx + .5, uvy + .5), zoomInfo.getZoomLevel());
       proj.setScale(zoomInfo.getScale());
       proj.setCenter(center);
       proj.setHeight(TILE_SIZE);
@@ -188,7 +189,7 @@ public class MapTileMaker
       List<ZoomLevelInfo> zoomLevels = getZoomLevels();
       for (ZoomLevelInfo zfi : zoomLevels) {
          logger.info("writing zoom level " + zfi.getName() + " tiles...");
-         for (Rectangle2D bounds : zfi.getUVBounds()) {
+         for (Rectangle2D bounds : zfi.getUVBounds(mtcTransform)) {
             if (logger.isLoggable(Level.FINE)) {
                logger.fine(" creating tiles " + bounds);
             }
@@ -276,50 +277,35 @@ public class MapTileMaker
    /**
     * @param latlon a Point2D whose x component is the longitude and y component
     *        is the latitude
-    * @param zoom GoogleMap style zoom level (0-19 usually)
+    * @param zoom Tile Map Service (TMS) style zoom level (0-19 usually)
     * @return The "tile number" whose x and y components each are floating point
     *         numbers that represent the distance in number of tiles from the
     *         origin of the whole map at this zoom level. At zoom=0, the lat,lon
     *         point of 0,0 maps to 0.5,0.5 since there is only one tile at zoom
     *         level 0.
     */
-   public static Point2D latLonToTileUV(Point2D latlon, int zoom) {
-      return latLonToTileUV(latlon, zoom, null);
+   public Point2D latLonToTileUV(Point2D latlon, int zoom) {
+      return mtcTransform.latLonToTileUV(latlon, zoom, null);
    }
 
-   public static Point2D latLonToTileUV(Point2D latlon, int zoom, Point2D ret) {
-      if (ret == null) {
-         ret = new Point2D.Double();
-      }
-
-      ret.setLocation(((latlon.getX() + 180) / 360.0 * Math.pow(2, zoom)), ((1.0 - Math.log(Math.tan(latlon.getY() * Math.PI
-            / 180.0)
-            + (1.0 / Math.cos(latlon.getY() * Math.PI / 180.0)))
-            / Math.PI) / 2.0 * (Math.pow(2, zoom))));
-      return ret;
+   public Point2D latLonToTileUV(Point2D latlon, int zoom, Point2D ret) {
+      return mtcTransform.latLonToTileUV(latlon, zoom, ret);
    }
 
    /**
     * @param tileUV a Point2D whose x,y coordinates represent the distance in
     *        number of tiles (each 256x256) from the origin (where the origin is
     *        90lat,-180lon)
-    * @param zoom GoogleMap style zoom level (0-19 usually)
-    * @return a Point2D whose x coordinate is the longitude and y coordinate is
-    *         the latitude
+    * @param zoom Tile Map Service (TMS) style zoom level (0-19 usually)
+    * @return a LatLonPoint whose x coordinate is the longitude and y coordinate is
+    *         the latitude, decimal degrees.
     */
-   public static Point2D tileUVToLatLon(Point2D tileUV, int zoom) {
-      return tileUVToLatLon(tileUV, zoom, null);
+   public LatLonPoint tileUVToLatLon(Point2D tileUV, int zoom) {
+      return mtcTransform.tileUVToLatLon(tileUV, zoom, null);
    }
 
-   @SuppressWarnings("unchecked")
-   public static <T extends Point2D> T tileUVToLatLon(Point2D tileUV, int zoom, T ret) {
-      if (ret == null) {
-         ret = (T) new LatLonPoint.Double();
-      }
-
-      ret.setLocation(360 / Math.pow(2, zoom) * tileUV.getX() - 180, -90 + 360 / Math.PI
-            * Math.atan(Math.exp((-2 * Math.PI * tileUV.getY()) / Math.pow(2, zoom) + Math.PI)));
-      return ret;
+   public LatLonPoint tileUVToLatLon(Point2D tileUV, int zoom, LatLonPoint ret) {
+      return mtcTransform.tileUVToLatLon(tileUV, zoom, ret);
    }
 
    public final static int TILE_SIZE = 256;
@@ -327,8 +313,9 @@ public class MapTileMaker
    public final static Point2D UVLR = new Point2D.Double(TILE_SIZE, TILE_SIZE);
 
    public static float getScaleForZoomAndProjection(Projection proj, int zoom) {
-      Point2D originLLUL = tileUVToLatLon(new Point2D.Double(0.0, 0.0), zoom);
-      Point2D originLLLR = tileUVToLatLon(new Point2D.Double(1.0, 1.0), zoom);
+      MapTileCoordinateTransform mtct = new OSMMapTileCoordinateTransform();
+      Point2D originLLUL = mtct.tileUVToLatLon(new Point2D.Double(0.0, 0.0), zoom);
+      Point2D originLLLR = mtct.tileUVToLatLon(new Point2D.Double(1.0, 1.0), zoom);
       return proj.getScale(originLLUL, originLLLR, UVUL, UVLR);
    }
 

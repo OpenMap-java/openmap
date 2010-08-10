@@ -20,24 +20,34 @@
  */
 package com.bbn.openmap.dataAccess.cgm;
 
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Panel;
 
-public class CGMPanel extends Panel {
-    CGMDisplay D;
-    int W = 0, H = 0;
+/**
+ * A simple Panel that manages and renders a CGMDisplay object (which contains a
+ * CGM).
+ * 
+ * @author dietrick
+ */
+public class CGMPanel
+      extends Panel {
 
-    public CGMPanel(CGMDisplay d) {
-        D = d;
-    }
+   private static final long serialVersionUID = 1L;
+   CGMDisplay D;
+   int W = 0, H = 0;
 
-    public void paint(Graphics g) {
-        int W0 = getSize().width, H0 = getSize().height;
-        if (W0 != W || H0 != H) {
-            W = W0;
-            H = H0;
-            D.scale(W, H);
-        }
-        D.frame(g);
-        D.paint(g);
-    }
+   public CGMPanel(CGMDisplay d) {
+      D = d;
+   }
+
+   public void paint(Graphics g) {
+      int W0 = getSize().width, H0 = getSize().height;
+//      if (W0 != W || H0 != H) {
+         W = W0;
+         H = H0;
+         D.scale(W, H);
+//      }
+      D.frame(g);
+      D.paint(g);
+   }
 }

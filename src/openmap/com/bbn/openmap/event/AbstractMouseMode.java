@@ -23,6 +23,8 @@
 package com.bbn.openmap.event;
 
 import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.beans.PropertyChangeListener;
@@ -31,9 +33,11 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.Timer;
 
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
@@ -73,6 +77,8 @@ public class AbstractMouseMode
 
    private static final long serialVersionUID = 1L;
 
+   protected static Logger logger = Logger.getLogger("com.bbn.openmap.event.MapMouseMode");
+   
    /**
     * The identifier for the mode, which is also the name that will be used in a
     * used interface describing the mode to a user.
@@ -105,7 +111,7 @@ public class AbstractMouseMode
 
    protected String iconName;
 
-   protected boolean zoomWhenMouseWheelUp = ZOOM_IN;
+   protected boolean zoomWhenMouseWheelUp = ZOOM_OUT;
 
    protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
@@ -443,13 +449,38 @@ public class AbstractMouseMode
          int rot = e.getWheelRotation();
          if (e.getSource() instanceof MapBean) {
             MapBean mb = (MapBean) e.getSource();
-            if (rot > 0) {
-               // Positive, zoom out
-               mb.zoom(new ZoomEvent(mb, ZoomEvent.RELATIVE, 1.1f));
+            boolean direction = isZoomWhenMouseWheelUp();
+            
+            float zoomIn = 1.1f;
+            float zoomOut = .9f;
+
+            float amount = zoomIn;
+            
+            if ((direction && rot < 0) || (!direction && rot > 0)) {
+               amount = zoomOut;
+            }
+
+            if (noMouseWheelListenerTimer) {
+               updateMouseWheelMoved(mb, mb.getScale() * amount);
             } else {
-               mb.zoom(new ZoomEvent(mb, ZoomEvent.RELATIVE, .9f));
+               if (mouseTimer == null) {
+                  mouseTimer = new Timer(mouseWheelTimerInterval, mouseWheelTimerListener);
+                  mouseTimer.setRepeats(false);
+               }
+
+               mouseWheelTimerListener.addAmount(mb, amount);
+               mouseTimer.restart();
             }
          }
+      }
+   }
+
+   /**
+    * Invoked from the MouseWheelListener interface.
+    */
+   public void updateMouseWheelMoved(MapBean mb, float value) {
+      if (mb != null) {
+         mb.zoom(new ZoomEvent(mb, ZoomEvent.ABSOLUTE, value));
       }
    }
 
@@ -739,9 +770,85 @@ public class AbstractMouseMode
    public void listenerPaint(java.awt.Graphics g) {
    }
 
-   public static class MouseWheelZoomEditor {
-      public MouseWheelZoomEditor() {
+   protected boolean noMouseWheelListenerTimer = false;
 
+   /**
+    * Set whether to ignore the timer when movement is occurring over an
+    * OMGraphic. Sometimes unhighlight can be inappropriately delayed when timer
+    * is enabled.
+    */
+   public void setNoMouseWheelListener(boolean val) {
+      noMouseWheelListenerTimer = val;
+   }
+
+   /**
+    * Get whether the timer should be ignored when movement is occurring over an
+    * OMGraphic.
+    */
+   public boolean getNoMouseWheelListener() {
+      return noMouseWheelListenerTimer;
+   }
+
+   /**
+    * The wait interval before a mouse wheel event gets triggered.
+    */
+   protected int mouseWheelTimerInterval = 60;
+
+   /**
+    * Set the time interval that the mouse timer waits before calling
+    * upateMouseMoved. A negative number or zero will disable the timer.
+    */
+   public void setMouseWheelTimerInterval(int interval) {
+      mouseWheelTimerInterval = interval;
+   }
+
+   public int getMouseWheelTimerInterval() {
+      return mouseWheelTimerInterval;
+   }
+
+   /**
+    * The timer used to track the wait interval.
+    */
+   protected Timer mouseTimer = null;
+
+   /**
+    * The timer listener that calls updateMouseMoved.
+    */
+   protected MouseWheelTimerListener mouseWheelTimerListener = new MouseWheelTimerListener();
+
+   /**
+    * The definition of the listener that calls updateMouseMoved when the timer
+    * goes off.
+    */
+   protected class MouseWheelTimerListener
+         implements ActionListener {
+
+      float newScale = 0f;
+      MapBean mapBean;
+      
+      public synchronized void addAmount(MapBean map, float amount) {
+         mapBean = map;
+        
+         if (newScale == 0f) {
+            newScale = map.getScale() * amount;
+         } else {
+            newScale *= amount;
+         }
       }
+
+      public synchronized void actionPerformed(ActionEvent ae) {
+         if (newScale != 0f) {
+            updateMouseWheelMoved(mapBean, newScale);
+            newScale = 0f;
+         }
+      }
+   }
+
+   public boolean isNoMouseWheelListenerTimer() {
+      return noMouseWheelListenerTimer;
+   }
+
+   public void setNoMouseWheelListenerTimer(boolean noMouseWheelListenerTimer) {
+      this.noMouseWheelListenerTimer = noMouseWheelListenerTimer;
    }
 }

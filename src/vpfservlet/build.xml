@@ -11,7 +11,7 @@
 
 		<!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR TOMCAT INSTALLATION -->
 		<!--<property name="tomcat.home" value="/usr/local/java/jakarta-tomcat-4.0.1"/>-->
-		<property name="tomcat.home" value="/usr/local/apache-tomcat-5.5.26"/>
+		<property name="tomcat.home" value="/usr/local/apache-tomcat-6.0.26"/>
 
 		<property name="javac.excludes" value="**/*.in, **/Makefile, **/*.bat,
 		                                       **/ChangeLog, **/*.html, **/*.txt,
@@ -21,7 +21,7 @@
                      (servlet.jar), the second is the tomcat 5 version (servlet-api.jar).
                      Use the one that fits what you have.  -->
 		<!--<property name="tomcat.jar" value="${tomcat.home}/common/lib/servlet.jar"/>-->
-		<property name="tomcat.jar" value="${tomcat.home}/common/lib/servlet-api.jar"/>
+		<property name="tomcat.jar" value="${tomcat.home}/lib/servlet-api.jar"/>
 		<property name="openmap.jar" value="${openmap.home}/lib/openmap.jar"/>
                 <property name="vpf.jar" value="${vpf.lib_dir}/openmap.jar"/>
 	</target>

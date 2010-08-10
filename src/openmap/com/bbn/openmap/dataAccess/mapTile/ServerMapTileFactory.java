@@ -215,9 +215,9 @@ public class ServerMapTileFactory
 
             Point2D pnt = new Point2D.Double();
             pnt.setLocation(x, y);
-            Point2D tileUL = MapTileMaker.tileUVToLatLon(pnt, zoomLevel);
+            Point2D tileUL = mtcTransform.tileUVToLatLon(pnt, zoomLevel);
             pnt.setLocation(x + 1, y + 1);
-            Point2D tileLR = MapTileMaker.tileUVToLatLon(pnt, zoomLevel);
+            Point2D tileLR = mtcTransform.tileUVToLatLon(pnt, zoomLevel);
             if (logger.isLoggable(Level.FINE)) {
                logger.fine("tile coords: " + tileUL + ", " + tileLR);
             }

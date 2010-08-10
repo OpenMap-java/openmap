@@ -219,10 +219,10 @@ public class ImageWarp {
    public OMRaster getOMRaster(Projection p) {
       int[] pixels = getImagePixels(p);
       if (pixels != null && projectedImageBounds != null) {
-         int width = (int) projectedImageBounds.getWidth();
-         int height = (int) projectedImageBounds.getHeight();
-         int x = (int) projectedImageBounds.getMin().getX();
-         int y = (int) projectedImageBounds.getMin().getY();
+         int width = (int) Math.ceil(projectedImageBounds.getWidth());
+         int height = (int) Math.ceil(projectedImageBounds.getHeight());
+         int x = (int) Math.floor(projectedImageBounds.getMin().getX());
+         int y = (int) Math.floor(projectedImageBounds.getMin().getY());
          OMRaster raster = new OMRaster(x, y, width, height, pixels);
          raster.generate(p);
          return raster;
@@ -248,8 +248,8 @@ public class ImageWarp {
             return null;
          }
 
-         int projHeight = (int) projectedImageBounds.getHeight();
-         int projWidth = (int) projectedImageBounds.getWidth();
+         int projHeight = (int) Math.ceil(projectedImageBounds.getHeight());
+         int projWidth = (int) Math.ceil(projectedImageBounds.getWidth());
 
          // See if we can reuse the pixel array we have.
 
@@ -314,8 +314,8 @@ public class ImageWarp {
 
                // Find the corresponding pixel location in
                // the source image.
-               int horIndex = (int) (horOrigin + (imageCoord.getX() / hor_upp));
-               int verIndex = (int) (verOrigin + (imageCoord.getY() / ver_upp));
+               int horIndex = (int) Math.round(horOrigin + (imageCoord.getX() / hor_upp));
+               int verIndex = (int) Math.round(verOrigin + (imageCoord.getY() / ver_upp));
 
                if (horIndex < 0 || horIndex >= iwidth || verIndex < 0 || verIndex >= iheight) {
                   // pixel not on the source image. This
@@ -357,13 +357,14 @@ public class ImageWarp {
          int ph = p.getHeight();
          Point2D min = sourceImageBounds.getMin();
          Point2D max = sourceImageBounds.getMax();
-         double x1 = min.getX();
-         double y1 = min.getY();
-         double x2 = max.getX();
-         double y2 = max.getY();
+         double x1 = Math.floor(min.getX());
+         double y1 = Math.floor(min.getY());
+         double x2 = Math.ceil(max.getX());
+         double y2 = Math.ceil(max.getY());
          double width = sourceImageBounds.getWidth();
          double height = sourceImageBounds.getHeight();
 
+         // These are just memory savers, reused for every calculation.
          LatLonPoint tmpG = new LatLonPoint.Double();
          Point2D tmpP = new Point2D.Double();
 
@@ -377,10 +378,10 @@ public class ImageWarp {
          double ySpacer = height / numSplits;
 
          for (int i = 1; i < numSplits; i++) {
-            db.add(p.forward(geoTrans.inverse(x1 + xSpacer * i, y1, tmpG), tmpP));
-            db.add(p.forward(geoTrans.inverse(x1, y1 + ySpacer * i, tmpG), tmpP));
-            db.add(p.forward(geoTrans.inverse(x1 + xSpacer * i, y2, tmpG), tmpP));
-            db.add(p.forward(geoTrans.inverse(x2, y1 + ySpacer * i, tmpG), tmpP));
+            db.add(p.forward(geoTrans.inverse(Math.ceil(x1 + xSpacer * i), y1, tmpG), tmpP));
+            db.add(p.forward(geoTrans.inverse(x1, Math.ceil(y1 + ySpacer * i), tmpG), tmpP));
+            db.add(p.forward(geoTrans.inverse(Math.ceil(x1 + xSpacer * i), y2, tmpG), tmpP));
+            db.add(p.forward(geoTrans.inverse(x2, Math.ceil(y1 + ySpacer * i), tmpG), tmpP));
          }
 
          if (db.getWidth() <= 0 || db.getHeight() <= 0) {

@@ -25,6 +25,7 @@ package com.bbn.openmap.layer.vpf;
 import java.util.List;
 
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
@@ -68,8 +69,8 @@ public abstract class PrimitiveTable extends DcwRecordFile {
     /**
      * Gets the id column value for the row.
      */
-    public int getID(List l) {
-        return ((Number) l.get(idColumn)).intValue();
+    public int getID(List<Number> l) {
+        return l.get(idColumn).intValue();
     }
 
     /**
@@ -92,8 +93,8 @@ public abstract class PrimitiveTable extends DcwRecordFile {
      *        to warehouse)
      * @see VPFGraphicWarehouse
      */
-    abstract public void drawTile(VPFGraphicWarehouse warehouse, float dpplat,
-                                  float dpplon, LatLonPoint ll1, LatLonPoint ll2);
+    abstract public void drawTile(VPFGraphicWarehouse warehouse, double dpplat,
+                                  double dpplon, LatLonPoint ll1, LatLonPoint ll2);
 
     /**
      * Use the warehouse to create a graphic from a feature in the AreaTable.
@@ -109,8 +110,8 @@ public abstract class PrimitiveTable extends DcwRecordFile {
      *        warehouse wants to do some intelligent rendering.
      * @see VPFGraphicWarehouse#createEdge
      */
-    abstract public void drawFeature(VPFFeatureWarehouse warehouse,
-                                     float dpplat, float dpplon,
+    abstract public OMGraphic drawFeature(VPFFeatureWarehouse warehouse,
+                                     double dpplat, double dpplon,
                                      LatLonPoint ll1, LatLonPoint ll2,
-                                     List area, String featureType);
+                                     List<Object> area, String featureType);
 }
