@@ -24,7 +24,11 @@ package com.bbn.openmap.layer.vpf;
 
 import java.awt.BasicStroke;
 import java.awt.Component;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ImageObserver;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -36,6 +40,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.cgm.CGM;
 import com.bbn.openmap.dataAccess.cgm.CGMDisplay;
@@ -105,11 +111,18 @@ public class VPFAutoFeatureGraphicWarehouse
    public final static String PRIORITY_FILE_PROPERTY = "priorityFile";
    public final static String FACC_DEBUG_PROPERTY = "debug";
 
-   protected List<PriorityHolder> priorities;
-   protected Hashtable<String, List<PriorityHolder>> faccLookup;
+   protected List<FeaturePriorityHolder> priorities;
+   protected Hashtable<String, List<FeaturePriorityHolder>> faccLookup;
    protected String priorityFilePath;
    protected String faccLookupFilePath;
    protected String geoSymDirectory;
+
+   protected String[] compositeFeatureFaccs = new String[] {
+      "BC010",
+      "BC020",
+      "BC040",
+      "BC070"
+   };
 
    /**
     * If set, the warehouse will limit visibility to specified facc and print
@@ -204,10 +217,10 @@ public class VPFAutoFeatureGraphicWarehouse
          priorityFile.setHeadersExist(true);
          priorityFile.loadData(true);
 
-         faccLookup = new Hashtable<String, List<PriorityHolder>>();
+         faccLookup = new Hashtable<String, List<FeaturePriorityHolder>>();
 
          int numPriorities = priorityFile.getNumberOfRecords();
-         priorities = new ArrayList<PriorityHolder>();
+         priorities = new ArrayList<FeaturePriorityHolder>();
          for (Vector<Object> row : priorityFile) {
             String type = row.get(1).toString();
             String facc = row.get(2).toString();
@@ -217,14 +230,28 @@ public class VPFAutoFeatureGraphicWarehouse
             if (debugFacc != null && !debugFacc.equals(facc)) {
                continue;
             }
+            
+            boolean composite = false;
+            for (String compFacc : compositeFeatureFaccs) {
+               if (compFacc.equals(facc)) {
+                  composite = true;
+                  break;
+               }
+            }
+            
+            FeaturePriorityHolder.Basic ph = new FeaturePriorityHolder.Basic(type, facc, conditions, this);
+            ph.setCGMPath(geoSymDirectory, ".cgm");
 
-            PriorityHolder ph = new PriorityHolder(type, facc, conditions, this);
+            if (composite) {
+               
+            }
+            
             priorities.add(ph);
 
-            List<PriorityHolder> list = faccLookup.get(ph.facc);
+            List<FeaturePriorityHolder> list = faccLookup.get(ph.getFacc());
             if (list == null) {
-               list = new ArrayList<PriorityHolder>();
-               faccLookup.put(ph.facc, list);
+               list = new ArrayList<FeaturePriorityHolder>();
+               faccLookup.put(ph.getFacc(), list);
             }
             list.add(ph);
          }
@@ -248,12 +275,11 @@ public class VPFAutoFeatureGraphicWarehouse
                conditions = conditions.replace(" ", "");
             }
 
-            List<PriorityHolder> faccList = faccLookup.get(facc);
+            List<FeaturePriorityHolder> faccList = faccLookup.get(facc);
             if (faccList != null) {
                boolean found = false;
-               for (PriorityHolder ph : faccList) {
-                  if (ph.matches(facc, type, conditions)) {
-                     ph.setCGMPath(geoSymDirectory, symbolCode, ".cgm");
+               for (FeaturePriorityHolder ph : faccList) {
+                  if (ph.matches(facc, type, conditions, symbolCode)) {
                      found = true;
                      foundRecords++;
                      break;
@@ -293,15 +319,16 @@ public class VPFAutoFeatureGraphicWarehouse
    public static char getType(String type) {
       if (type == null) {
          logger.warning("unknown type!");
-      }
-      switch (type.charAt(0)) {
-         case 'P':
-            return CoverageTable.UPOINT_FEATURETYPE;
-         case 'A':
-            return CoverageTable.AREA_FEATURETYPE;
-         case 'L':
-            return CoverageTable.EDGE_FEATURETYPE;
-         default:
+      } else {
+         switch (type.charAt(0)) {
+            case 'P':
+               return CoverageTable.UPOINT_FEATURETYPE;
+            case 'A':
+               return CoverageTable.AREA_FEATURETYPE;
+            case 'L':
+               return CoverageTable.EDGE_FEATURETYPE;
+            default:
+         }
       }
       return CoverageTable.SKIP_FEATURETYPE;
    }
@@ -427,8 +454,13 @@ public class VPFAutoFeatureGraphicWarehouse
 
       for (String libraryName : lst.getLibraryNames()) {
 
-         for (PriorityHolder ph : priorities) {
-            ph.resetList();
+         if (useLibrary != null && !useLibrary.equalsIgnoreCase(libraryName)) {
+            continue;
+         }
+
+         if (logger.isLoggable(Level.FINE)) {
+            logger.fine("reading library: " + libraryName);
+
          }
 
          CoverageAttributeTable cat = lst.getCAT(libraryName);
@@ -450,21 +482,26 @@ public class VPFAutoFeatureGraphicWarehouse
             coverageTable.getFeatures(this, ll1, ll2, dpplat, dpplon, omgList);
 
          }
+      }
 
-         // Go through PriorityHolders and build up OMGraphicList, in order for
-         // rendering to map.
-
-         for (PriorityHolder ph : priorities) {
-            OMGraphicList list = ph.getList();
-            if (list != null) {
-               if (logger.isLoggable(Level.FINE)) {
-                  logger.fine("Adding features from " + ph.facc + ", (" + ph.conditions + ") " + list.size() + " features");
-               }
-               list.generate(proj);
-               omgList.addAll(list);
-
-               list.setVisible(debugFacc == null || ph.debugFacc != null);
+      // Go through PriorityHolders and build up OMGraphicList, in order for
+      // rendering to map. Moved this from inside the for loop above, so that
+      // feature order is preserved across libraries.
+      for (FeaturePriorityHolder ph : priorities) {
+         OMGraphicList list = ph.getList();
+         if (list != null) {
+            if (logger.isLoggable(Level.FINE)) {
+               logger.fine("Adding features from " + ph.toString() + ": " + list.size() + " features");
             }
+            list.generate(proj);
+            omgList.addAll(list);
+
+            list.setVisible(debugFacc == null || ph.getDebugFacc() != null);
+
+            // Now that the OMGraphics are part of the main list, clean them
+            // out for the next request. Doing it here saves from having to
+            // do another loop through at the beginning of getFeatures.
+            ph.resetList();
          }
       }
 
@@ -573,6 +610,22 @@ public class VPFAutoFeatureGraphicWarehouse
          getList = new Properties();
       }
 
+      String prefix = PropUtils.getScopedPropertyPrefix(this);
+
+      getList.put(prefix + SYMBOL_LOOKUP_FILE_PROPERTY, faccLookupFilePath);
+      getList.put(prefix + PRIORITY_FILE_PROPERTY, priorityFilePath);
+      getList.put(prefix + CGM_DIR_PROPERTY, geoSymDirectory);
+
+      if (debugFacc != null && debugFacc.length() > 0) {
+         getList.put(prefix + FACC_DEBUG_PROPERTY, debugFacc);
+      }
+
+      getList.put(prefix + EV_ISDM, Double.toString(isdm));
+      getList.put(prefix + EV_IDSM, Double.toString(idsm));
+      getList.put(prefix + EV_MSDC, Double.toString(msdc));
+      getList.put(prefix + EV_MSSC, Double.toString(mssc));
+      getList.put(prefix + EV_SSDC, Double.toString(ssdc));
+
       return getList;
    }
 
@@ -586,6 +639,18 @@ public class VPFAutoFeatureGraphicWarehouse
       if (list == null) {
          list = new Properties();
       }
+      I18n i18n = Environment.getI18n();
+      PropUtils.setI18NPropertyInfo(i18n, list, VPFAutoFeatureGraphicWarehouse.class, SYMBOL_LOOKUP_FILE_PROPERTY,
+                                    "Symbol Lookup File", "The path to the file containing symbol lookup information",
+                                    "com.bbn.openmap.util.propertyEditor.FilePropertyEditor");
+      PropUtils.setI18NPropertyInfo(i18n, list, VPFAutoFeatureGraphicWarehouse.class, PRIORITY_FILE_PROPERTY, "Priority File",
+                                    "The path to the file containing feature type and order to use for display",
+                                    "com.bbn.openmap.util.propertyEditor.FilePropertyEditor");
+      PropUtils.setI18NPropertyInfo(i18n, list, VPFAutoFeatureGraphicWarehouse.class, CGM_DIR_PROPERTY, "CGM Directory Path",
+                                    "The path to the directory containing GeoSym CGM files",
+                                    "com.bbn.openmap.util.propertyEditor.DirectoryPropertyEditor");
+      PropUtils.setI18NPropertyInfo(i18n, list, VPFAutoFeatureGraphicWarehouse.class, FACC_DEBUG_PROPERTY, "FACC Debug",
+                                    "A FACC code to use to debug problems with data set", null);
 
       return list;
    }
@@ -638,155 +703,47 @@ public class VPFAutoFeatureGraphicWarehouse
       return Collections.emptyList();
    }
 
-   protected static class PriorityHolder {
+   /**
+    * 
+    * A FeaturePriorityHolder represents a rendering order slot in a list of
+    * feature types to be rendered. It is responsible for evaluating attributes
+    * of a VPF feature and determining if a particular feature matches what this
+    * priority holder represents. It can then provide an OMGraphicList for those
+    * features that match its attribute conditions.
+    * 
+    * @author dietrick
+    */
+   protected static abstract class FeaturePriorityHolder {
+      /**
+       * The type of the feature, i.e. point, line, area
+       */
       protected char type;
+      /**
+       * The feature code FACC for this kind of feature.
+       */
       protected String facc;
-      protected GeoSymAttExpression expression;
-      protected String conditions;
+      /**
+       * The OMGraphicList containing all the matching feature OMGraphics.
+       */
       protected OMGraphicList list;
-      protected String[] cgmTitle;
-      protected CGMDisplay[] cgmDisplay;
-      protected BufferedImage icon;
+      /**
+       * The dimension of icons created for point OMGraphics.
+       */
       protected int dim = 10;
 
+      /**
+       * A handle to any debug FACC code listed by the warehouse, so that a
+       * specific type of feature can be singled out for debugging.
+       */
       protected String debugFacc = null;
 
-      protected PriorityHolder(String type, String facc, String cond, VPFAutoFeatureGraphicWarehouse warehouse) {
+      protected FeaturePriorityHolder(String type, String facc, VPFAutoFeatureGraphicWarehouse warehouse) {
          this.type = getType(type);
          this.facc = facc;
-
-         if (cond != null && cond.trim().length() > 0) {
-            this.conditions = cond.replace(" ", "");
-            expression = new GeoSymAttExpression(this.conditions, warehouse);
-         }
 
          if (warehouse.debugFacc != null && warehouse.debugFacc.equals(facc)) {
             debugFacc = warehouse.debugFacc;
          }
-      }
-
-      public String toString() {
-         return type + "|" + facc + "|" + conditions;
-      }
-
-      public void resetList() {
-         if (list != null) {
-            list.clear();
-         }
-      }
-
-      public void setCGMPath(String parent, String fileName, String append) {
-         Vector<String> names = PropUtils.parseSpacedMarkers(fileName);
-         cgmTitle = new String[names.size()];
-         for (int i = 0; i < names.size(); i++) {
-            cgmTitle[i] = parent + "/" + names.get(i) + append;
-         }
-      }
-
-      /**
-       * Used to match features with PriorityHolder.
-       * 
-       * @param facc
-       * @param fci
-       * @param row
-       * @return
-       */
-      public boolean matches(String facc, FeatureClassInfo fci, List<Object> row) {
-         boolean ret = false;
-         char type = fci.getFeatureType();
-         if (type == CoverageTable.EPOINT_FEATURETYPE || type == CoverageTable.CPOINT_FEATURETYPE) {
-            type = CoverageTable.UPOINT_FEATURETYPE;
-         }
-         if (facc.equals(this.facc) && this.type == type) {
-            if (expression != null) {
-               if (this.facc.equals(debugFacc)) {
-                  logger.info("testing for " + this.facc);
-               }
-               ret = expression.evaluate(fci, row);
-            } else {
-               ret = true;
-            }
-         }
-         return ret;
-      }
-
-      /**
-       * Used to match symbol codes with PriorityHolder.
-       * 
-       * @param facc
-       * @param type
-       * @param conditions
-       * @return
-       */
-      public boolean matches(String facc, char type, String conditions) {
-         boolean basicMatch = this.facc.equals(facc) && type == this.type;
-
-         boolean conditionMatch =
-               ((this.conditions == null || this.conditions.trim().length() == 0) && (conditions == null || conditions.trim()
-                                                                                                                      .length() == 0))
-                     || (this.conditions != null && this.conditions.equals(conditions));
-
-         return basicMatch && conditionMatch;
-      }
-
-      public void add(OMGraphic omg) {
-         if (list == null) {
-            list = new OMGraphicList();
-         }
-
-         if (cgmDisplay == null) {
-
-            try {
-               if (debugFacc != null) {
-                  logger.info("initializing cgm for " + toString());
-               }
-
-               if (cgmTitle == null) {
-                  logger.warning("no title for " + toString());
-               } else {
-
-                  cgmDisplay = new CGMDisplay[cgmTitle.length];
-                  for (int i = 0; i < cgmTitle.length; i++) {
-                     CGM cgm = new CGM(cgmTitle[i]);
-                     if (debugFacc != null) {
-                        logger.info("  using " + cgmTitle[i]);
-                     }
-                     cgmDisplay[i] = new CGMDisplay(cgm);
-                     // Rendering the icon will load cgmDisplay with cgm
-                     // parameters
-                     // (fill paint, line paint, etc);
-                     icon = cgmDisplay[i].getBufferedImage(dim, dim);
-                  }
-               }
-            } catch (IOException ioe) {
-               logger.warning("Couldn't load CGM files: " + cgmTitle[0] + "; first of " + cgmTitle.length);
-            }
-         }
-
-         if (cgmDisplay != null) {
-            if (omg instanceof OMPoint.Image) {
-               ((OMPoint.Image) omg).setImage(icon);
-            } else if (omg instanceof OMPoly) {
-               OMPoly omp = (OMPoly) omg;
-               if (!omp.isPolygon()) {
-                  omp.setLinePaint(cgmDisplay[0].getLineColor());
-                  omp.setStroke(new BasicStroke(1));
-                  omp.setFillPaint(OMColor.clear);
-               } else {
-
-                  if (cgmDisplay.length == 1) {
-                     omp.setFillPaint(cgmDisplay[0].getFillColor());
-                     omp.setLinePaint(cgmDisplay[0].getFillColor());
-                  } else {
-                     omp.setFillPaint(cgmDisplay[1].getFillColor());
-                     omp.setLinePaint(cgmDisplay[1].getFillColor());
-                  }
-
-               }
-            }
-         }
-
-         list.add(omg);
       }
 
       public OMGraphicList getList() {
@@ -796,6 +753,326 @@ public class VPFAutoFeatureGraphicWarehouse
             }
          }
          return list;
+      }
+
+      public String getFacc() {
+         return facc;
+      }
+
+      String getDebugFacc() {
+         return debugFacc;
+      }
+
+      public void resetList() {
+         if (list != null) {
+            list.clear();
+         }
+      }
+
+      /**
+       * Used to match feature entries with PriorityHolder.
+       * 
+       * @param facc
+       * @param fci
+       * @param row
+       * @return
+       */
+      public abstract boolean matches(String facc, FeatureClassInfo fci, List<Object> row);
+
+      /**
+       * Used to match symbol codes with PriorityHolder during initialization of
+       * PriorityHolders.
+       * 
+       * @param facc
+       * @param type
+       * @param conditions
+       * @return
+       */
+      public abstract boolean matches(String facc, char type, String conditions, String symbolFileName);
+
+      protected abstract void add(OMGraphic omg);
+
+      protected static class Basic
+            extends FeaturePriorityHolder {
+
+         protected GeoSymAttExpression expression;
+         protected String conditions;
+         protected String symbolParentDir;
+         protected String symbolExt;
+
+         protected String[] cgmTitle;
+         protected CGMDisplay[] cgmDisplay;
+         protected BufferedImage icon;
+
+         protected Basic(String type, String facc, String cond, VPFAutoFeatureGraphicWarehouse warehouse) {
+            super(type, facc, warehouse);
+
+            if (cond != null && cond.trim().length() > 0) {
+               this.conditions = cond.replace(" ", "");
+               expression = new GeoSymAttExpression(this.conditions, warehouse);
+            }
+
+         }
+
+         public String toString() {
+            return type + "|" + facc + "|" + conditions;
+         }
+
+         /**
+          * Needs to be called before matches is called in init().
+          */
+         public void setCGMPath(String parent, String append) {
+            symbolParentDir = parent;
+            symbolExt = append;
+         }
+
+         public Image getIcon() {
+            if (icon == null) {
+               try {
+                  if (debugFacc != null) {
+                     logger.info("initializing cgm for " + toString());
+                  }
+
+                  if (cgmTitle == null) {
+                     logger.warning("no title for " + toString());
+                  } else {
+
+                     cgmDisplay = new CGMDisplay[cgmTitle.length];
+                     for (int i = 0; i < cgmTitle.length; i++) {
+                        CGM cgm = new CGM(cgmTitle[i]);
+                        if (debugFacc != null) {
+                           logger.info("  using " + cgmTitle[i]);
+                        }
+                        cgmDisplay[i] = new CGMDisplay(cgm);
+                        // Rendering the icon will load cgmDisplay with cgm
+                        // parameters
+                        // (fill paint, line paint, etc);
+                        icon = cgmDisplay[i].getBufferedImage(dim, dim);
+                     }
+                  }
+               } catch (IOException ioe) {
+                  logger.warning("Couldn't load CGM files: " + cgmTitle[0] + "; first of " + cgmTitle.length);
+               }
+            }
+
+            return icon;
+         }
+
+         /**
+          * Used to match feature entries with PriorityHolder.
+          * 
+          * @param facc
+          * @param fci
+          * @param row
+          * @return
+          */
+         public boolean matches(String facc, FeatureClassInfo fci, List<Object> row) {
+            boolean ret = false;
+            char type = fci.getFeatureType();
+            if (type == CoverageTable.EPOINT_FEATURETYPE || type == CoverageTable.CPOINT_FEATURETYPE) {
+               type = CoverageTable.UPOINT_FEATURETYPE;
+            }
+            if (facc.equals(this.facc) && this.type == type) {
+               if (expression != null) {
+                  if (this.facc.equals(debugFacc)) {
+                     logger.info("testing for " + this.facc);
+                  }
+                  ret = expression.evaluate(fci, row);
+               } else {
+                  ret = true;
+               }
+            }
+            return ret;
+         }
+
+         /**
+          * Used to match symbol codes with PriorityHolder.
+          * 
+          * @param facc
+          * @param type
+          * @param conditions
+          * @return
+          */
+         public boolean matches(String facc, char type, String conditions, String symbolFileName) {
+            boolean basicMatch = this.facc.equals(facc) && type == this.type;
+
+            boolean conditionMatch =
+                  ((this.conditions == null || this.conditions.trim().length() == 0) && (conditions == null || conditions.trim()
+                                                                                                                         .length() == 0))
+                        || (this.conditions != null && this.conditions.equals(conditions));
+
+            boolean ret = basicMatch && conditionMatch;
+
+            if (ret) {
+               Vector<String> names = PropUtils.parseSpacedMarkers(symbolFileName);
+               cgmTitle = new String[names.size()];
+               for (int i = 0; i < names.size(); i++) {
+                  cgmTitle[i] = symbolParentDir + "/" + names.get(i) + symbolExt;
+               }
+            }
+
+            return ret;
+         }
+
+         public void add(OMGraphic omg) {
+            if (list == null) {
+               list = new OMGraphicList();
+            }
+
+            // Also makes sure cgmDisplay is initialized
+            Image icon = getIcon();
+
+            if (cgmDisplay != null) {
+               if (omg instanceof OMPoint.Image) {
+                  ((OMPoint.Image) omg).setImage(icon);
+               } else if (omg instanceof OMPoly) {
+                  OMPoly omp = (OMPoly) omg;
+                  if (!omp.isPolygon()) {
+                     omp.setLinePaint(cgmDisplay[0].getLineColor());
+                     omp.setStroke(new BasicStroke(1));
+                     omp.setFillPaint(OMColor.clear);
+                  } else {
+
+                     if (cgmDisplay.length == 1 && cgmDisplay[0] != null) {
+                        omp.setFillPaint(cgmDisplay[0].getFillColor());
+                        omp.setLinePaint(cgmDisplay[0].getFillColor());
+                     } else if (cgmDisplay.length > 1 && cgmDisplay[1] != null) {
+                        omp.setFillPaint(cgmDisplay[1].getFillColor());
+                        omp.setLinePaint(cgmDisplay[1].getFillColor());
+                     }
+                  }
+               }
+            }
+
+            list.add(omg);
+         }
+
+         /*
+          * (non-Javadoc)
+          * 
+          * @see
+          * com.bbn.openmap.layer.vpf.VPFAutoFeatureGraphicWarehouse.PriorityHolder
+          * #getConditions()
+          */
+         public String getConditions() {
+            return conditions;
+         }
+      }
+
+      /**
+       * A Compound FeaturePriorityHolder is used for buoys and other features
+       * that have parts added to their representation based on their feature
+       * attributes. It contains a list of Basic FeaturePriorityHolders, and
+       * each one adds its touch to the resulting OMGraphic as needed.
+       * 
+       * @author dietrick
+       */
+      protected static class Compound
+            extends FeaturePriorityHolder
+            implements ImageObserver {
+
+         protected List<FeaturePriorityHolder.Basic> parts = new ArrayList<FeaturePriorityHolder.Basic>();
+
+         protected Compound(String type, String facc, VPFAutoFeatureGraphicWarehouse warehouse) {
+            super(type, facc, warehouse);
+
+         }
+
+         public String toString() {
+            return "Compound: " + type + "|" + facc;
+         }
+
+         /**
+          * Used to match features with PriorityHolder. We need to do a little
+          * more work here, to build up an image that matches the all of the
+          * attributes set on this feature. So if the feature matches at the
+          * first level, walk through the parts and draw on top of it.
+          * 
+          * @param facc
+          * @param fci
+          * @param row
+          * @return
+          */
+         public boolean matches(String facc, FeatureClassInfo fci, List<Object> row) {
+            boolean ret = false;
+            char type = fci.getFeatureType();
+            if (type == CoverageTable.EPOINT_FEATURETYPE || type == CoverageTable.CPOINT_FEATURETYPE) {
+               type = CoverageTable.UPOINT_FEATURETYPE;
+            }
+
+            if (facc.equals(this.facc) && this.type == type) {
+
+               BufferedImage image = new BufferedImage(dim, dim, BufferedImage.TYPE_INT_ARGB);
+               Graphics2D g = (Graphics2D) image.getGraphics();
+
+               for (FeaturePriorityHolder.Basic part : parts) {
+
+                  if (part.expression != null) {
+                     if (this.facc.equals(debugFacc)) {
+                        logger.info("testing for " + this.facc);
+                     }
+                     ret = part.expression.evaluate(fci, row);
+
+                     if (ret) {
+                        Image im = part.getIcon();
+                        g.drawImage(im, 0, 0, this);
+                     }
+
+                  } else {
+                     ret = true;
+                  }
+
+               }
+            }
+            return ret;
+         }
+
+         /**
+          * Used to match symbol codes with PriorityHolder.
+          * 
+          * @param facc
+          * @param type
+          * @param conditions
+          * @return
+          */
+         public boolean matches(String facc, char type, String conditions, String symbolFileName) {
+            boolean basicMatch = this.facc.equals(facc) && type == this.type;
+
+            boolean conditionMatch = false;
+
+            for (FeaturePriorityHolder.Basic part : parts) {
+
+               conditionMatch =
+                     ((part.conditions == null || part.conditions.trim().length() == 0) && (conditions == null || conditions.trim()
+                                                                                                                            .length() == 0))
+                           || (part.conditions != null && part.conditions.equals(conditions));
+
+               if (conditionMatch) {
+                  break;
+               }
+            }
+
+            return basicMatch && conditionMatch;
+         }
+
+         public void add(OMGraphic omg) {
+            if (list == null) {
+               list = new OMGraphicList();
+            }
+
+            list.add(omg);
+
+         }
+
+         /*
+          * (non-Javadoc)
+          * 
+          * @see java.awt.image.ImageObserver#imageUpdate(java.awt.Image, int,
+          * int, int, int, int)
+          */
+         public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
+            return false;// all set
+         }
       }
    }
 }

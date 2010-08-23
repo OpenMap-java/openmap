@@ -105,7 +105,7 @@ public class DefaultOverviewMouseMode extends NavMouseMode2 {
                 dy = Math.abs(point2.y - point1.y);
 
                 if (dx < dy) {
-                    float dlat = (float) Math.abs(ll1.getY() - ll2.getX());
+                    float dlat = (float) Math.abs(ll1.getY() - ll2.getY());
                     deltaDegrees = dlat * 2;
                     deltaPix = overviewMapHandler.getSourceMap()
                             .getProjection()

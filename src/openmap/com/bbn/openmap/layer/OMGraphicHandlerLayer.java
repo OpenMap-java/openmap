@@ -546,6 +546,10 @@ public class OMGraphicHandlerLayer
    public void doPrepare() {
       synchronized (LAYERWORKER_LOCK) {
 
+         // Tell the rendering policy to do any display buffer changes that are
+         // necessary, regardless of whether a new thread is kicked off or not.
+         getRenderPolicy().prePrepare();
+
          if (isWorking()) {
             if (logger.isLoggable(Level.FINE)) {
                logger.fine(getName() + " layer already working in prepare(), canceling");
@@ -560,6 +564,7 @@ public class OMGraphicHandlerLayer
             } else {
                logger.finer("skipping swing worker creation, already queued");
             }
+
             return;
          }
          // If there isn't a worker thread working on a projection
@@ -676,9 +681,13 @@ public class OMGraphicHandlerLayer
             layerWorkerQueue = null;
          } else {
             // success!
-            getProjectionChangePolicy().workerComplete(worker.get());
+            OMGraphicList list = worker.get();
             setLayerWorker(null);
-            repaint();
+
+            if (!worker.isInterrupted()) {
+               getProjectionChangePolicy().workerComplete(list);
+               repaint();
+            }
          }
       }
    }
@@ -756,11 +765,13 @@ public class OMGraphicHandlerLayer
    /**
     * Overrides the Layer setProperties method. Also calls Layer's version. If
     * the ProjectionChangePolicy and RenderPolicy objects are set
-    * programmatically and are PropertyConsumers, they will still have access to
-    * properties if this method is called. Their property prefix will be scoped
-    * as if the OMGraphicHandlerLayer had them created, with their prefix being
-    * prefix + . + PropertyChangePolicyProperty and prefix + . +
-    * RenderPolicyProperty.
+    * programmatically, are PropertyConsumers and the .class property is not
+    * set, they will still have access to properties if this method is called.
+    * Their property prefix will be scoped as if the OMGraphicHandlerLayer had
+    * them created, with their prefix being prefix + . +
+    * PropertyChangePolicyProperty and prefix + . + RenderPolicyProperty. If the
+    * .class property is set, then a new policy object will be created and
+    * replace the one set before this method is called.
     * 
     * @param prefix the token to prefix the property names
     * @param props the <code>Properties</code> object
@@ -779,37 +790,33 @@ public class OMGraphicHandlerLayer
 
          // If the projection change policy is null, try to create
          // it.
-         if (projectionChangePolicy == null) {
-            String pcpClass = props.getProperty(policyPrefix + ".class");
-            if (pcpClass == null) {
+         String pcpClass = props.getProperty(policyPrefix + ".class");
+         if (pcpClass != null) {
+
+            Object obj = ComponentFactory.create(pcpClass, policyPrefix, props);
+            if (obj != null) {
+
+               if (logger.isLoggable(Level.FINE)) {
+                  logger.fine("Layer " + getName() + " setting ProjectionChangePolicy [" + obj.getClass().getName() + "]");
+               }
+
+               try {
+                  setProjectionChangePolicy((ProjectionChangePolicy) obj);
+               } catch (ClassCastException cce) {
+                  logger.warning("Layer " + getName() + " has " + policyPrefix
+                        + " property defined in properties for ProjectionChangePolicy, but " + policyPrefix + ".class property ("
+                        + pcpClass + ") does not define a valid ProjectionChangePolicy. A " + obj.getClass().getName()
+                        + " was created instead.");
+               }
+
+            } else {
                logger.warning("Layer " + getName() + " has " + policyPrefix
                      + " property defined in properties for PropertyChangePolicy, but " + policyPrefix
-                     + ".class property is undefined.");
-            } else {
-               Object obj = ComponentFactory.create(pcpClass, policyPrefix, props);
-               if (obj != null) {
-
-                  if (logger.isLoggable(Level.FINE)) {
-                     logger.fine("Layer " + getName() + " setting ProjectionChangePolicy [" + obj.getClass().getName() + "]");
-                  }
-
-                  try {
-                     setProjectionChangePolicy((ProjectionChangePolicy) obj);
-                  } catch (ClassCastException cce) {
-                     logger.warning("Layer " + getName() + " has " + policyPrefix
-                           + " property defined in properties for ProjectionChangePolicy, but " + policyPrefix
-                           + ".class property (" + pcpClass + ") does not define a valid ProjectionChangePolicy. A "
-                           + obj.getClass().getName() + " was created instead.");
-                  }
-
-               } else {
-                  logger.warning("Layer " + getName() + " has " + policyPrefix
-                        + " property defined in properties for PropertyChangePolicy, but " + policyPrefix
-                        + ".class property does not define a valid PropertyChangePolicy.");
-               }
+                     + ".class property does not define a valid PropertyChangePolicy.");
             }
 
-         } else { // ProjectionChangePolicy is not null...
+         } else if (projectionChangePolicy != null) { // ProjectionChangePolicy
+                                                      // is not null...
             // If the projection change policy is not null and the
             // policy is a PropertyConsumer, pass the properties
             // to the policy. Note that the property prefix for
@@ -819,6 +826,10 @@ public class OMGraphicHandlerLayer
             if (projectionChangePolicy instanceof PropertyConsumer) {
                ((PropertyConsumer) projectionChangePolicy).setProperties(policyPrefix, props);
             }
+         } else {
+            logger.warning("Layer " + getName() + " has " + policyPrefix
+                  + " property defined in properties for PropertyChangePolicy, but " + policyPrefix
+                  + ".class property is undefined.");
          }
 
       } else if (logger.isLoggable(Level.FINE)) {
@@ -831,40 +842,39 @@ public class OMGraphicHandlerLayer
       String rpString = props.getProperty(realPrefix + RenderPolicyProperty);
       if (rpString != null) {
          policyPrefix = realPrefix + rpString;
-         if (renderPolicy == null) {
-            String rpClass = props.getProperty(policyPrefix + ".class");
-            if (rpClass == null) {
-               logger.warning("Layer " + getName() + " has " + policyPrefix
-                     + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property is undefined.");
-            } else {
+         String rpClass = props.getProperty(policyPrefix + ".class");
 
-               Object rpObj = ComponentFactory.create(rpClass, policyPrefix, props);
+         if (rpClass != null) {
 
-               if (rpObj != null) {
-                  if (logger.isLoggable(Level.FINE)) {
-                     logger.fine("Layer " + getName() + " setting RenderPolicy [" + rpObj.getClass().getName() + "]");
-                  }
+            Object rpObj = ComponentFactory.create(rpClass, policyPrefix, props);
 
-                  try {
-                     setRenderPolicy((RenderPolicy) rpObj);
-                  } catch (ClassCastException cce) {
-                     logger.warning("Layer " + getName() + " has " + policyPrefix
-                           + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property ("
-                           + rpClass + ") does not define a valid RenderPolicy. A " + rpObj.getClass().getName()
-                           + " was created instead.");
-                  }
-               } else {
+            if (rpObj != null) {
+               if (logger.isLoggable(Level.FINE)) {
+                  logger.fine("Layer " + getName() + " setting RenderPolicy [" + rpObj.getClass().getName() + "]");
+               }
+
+               try {
+                  setRenderPolicy((RenderPolicy) rpObj);
+               } catch (ClassCastException cce) {
                   logger.warning("Layer " + getName() + " has " + policyPrefix
                         + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property (" + rpClass
-                        + ") isn't being created.");
+                        + ") does not define a valid RenderPolicy. A " + rpObj.getClass().getName() + " was created instead.");
                }
+            } else {
+               logger.warning("Layer " + getName() + " has " + policyPrefix
+                     + " property defined in properties for RenderPolicy, but " + policyPrefix + ".class property (" + rpClass
+                     + ") isn't being created.");
             }
-         } else { // RenderPolicy is not null...
+
+         } else if (renderPolicy != null) { // RenderPolicy is not null...
             // Same thing with renderPolicy as with projection
             // change policy.
             if (renderPolicy instanceof PropertyConsumer) {
                ((PropertyConsumer) renderPolicy).setProperties(policyPrefix, props);
             }
+         } else {
+            logger.warning("Layer " + getName() + " has " + policyPrefix + " property defined in properties for RenderPolicy, but "
+                  + policyPrefix + ".class property is undefined.");
          }
 
       } else if (logger.isLoggable(Level.FINE)) {
@@ -1027,9 +1037,7 @@ public class OMGraphicHandlerLayer
       PropUtils.setI18NPropertyInfo(i18n, list, OMGraphicHandlerLayer.class, TransparencyProperty, "Transparency",
                                     "Transparency setting for layer, between 0 (clear) and 1", null);
 
-      PropUtils
-               .setI18NPropertyInfo(
-                                    i18n,
+      PropUtils.setI18NPropertyInfo(i18n,
                                     list,
                                     OMGraphicHandlerLayer.class,
                                     InterruptableProperty,

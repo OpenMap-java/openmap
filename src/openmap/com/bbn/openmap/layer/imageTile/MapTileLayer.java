@@ -27,6 +27,7 @@ package com.bbn.openmap.layer.imageTile;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.mapTile.MapTileFactory;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
@@ -47,8 +48,10 @@ public class MapTileLayer
    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.imageTile.TileLayer");
 
    public final static String TILE_FACTORY_CLASS_PROPERTY = "tileFactory";
+   public final static String INCREMENTAL_UPDATES_PROPERTY = "incrementalUpdates";
 
    protected MapTileFactory tileFactory;
+   protected boolean incrementalUpdates = false;
 
    public MapTileLayer() {
       setRenderPolicy(new com.bbn.openmap.layer.policy.BufferedImageRenderPolicy(this));
@@ -59,6 +62,13 @@ public class MapTileLayer
       this.tileFactory = tileFactory;
    }
 
+   /**
+    * OMGraphicHandlerLayer method, called with projection changes or whenever
+    * else doPrepare() is called.
+    * 
+    * @return OMGraphicList that contains tiles to be displayed for the current
+    *         projection.
+    */
    public synchronized OMGraphicList prepare() {
 
       Projection projection = getProjection();
@@ -86,6 +96,24 @@ public class MapTileLayer
             setTileFactory(itf);
          }
       }
+
+      incrementalUpdates = PropUtils.booleanFromProperties(props, prefix + INCREMENTAL_UPDATES_PROPERTY, incrementalUpdates);
+   }
+
+   public Properties getProperties(Properties props) {
+      props = super.getProperties(props);
+
+      String prefix = PropUtils.getScopedPropertyPrefix(this);
+      if (tileFactory != null) {
+         props.put(prefix + TILE_FACTORY_CLASS_PROPERTY, tileFactory.getClass().getName());
+         if (tileFactory instanceof PropertyConsumer) {
+            ((PropertyConsumer) tileFactory).getProperties(props);
+         }
+      }
+
+      props.put(prefix + INCREMENTAL_UPDATES_PROPERTY, Boolean.toString(incrementalUpdates));
+
+      return props;
    }
 
    public MapTileFactory getTileFactory() {
@@ -94,8 +122,33 @@ public class MapTileLayer
 
    public void setTileFactory(MapTileFactory tileFactory) {
       logger.fine("setting tile factory to: " + tileFactory.getClass().getName());
-      tileFactory.setRepaintCallback(this);
+      // This allows for general faster response, but causes the map to jump
+      // around a little bit when used with the BufferedImageRenderPolicy and
+      // when the projection changes occur rapidly, like when zooming and
+      // panning several times in a second. The generation/positioning can't
+      // keep up. It'll settle out, but it might be better to be slower and
+      // less confusing to the user.
+
+      if (incrementalUpdates) {
+         tileFactory.setRepaintCallback(this);
+      }
+
       this.tileFactory = tileFactory;
+   }
+
+   public boolean isIncrementalUpdates() {
+      return incrementalUpdates;
+   }
+
+   public void setIncrementalUpdates(boolean incrementalUpdates) {
+      this.incrementalUpdates = incrementalUpdates;
+      if (tileFactory != null) {
+         if (!incrementalUpdates) {
+            tileFactory.setRepaintCallback(null);
+         } else {
+            tileFactory.setRepaintCallback(this);
+         }
+      }
    }
 
 }

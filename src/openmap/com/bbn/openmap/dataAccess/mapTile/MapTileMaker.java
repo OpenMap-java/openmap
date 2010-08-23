@@ -227,6 +227,8 @@ public class MapTileMaker
             }
          }
       }
+      
+      logger.info("done writing tiles");
    }
 
    public String getRootDir() {

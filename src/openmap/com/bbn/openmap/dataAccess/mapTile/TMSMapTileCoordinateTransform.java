@@ -40,11 +40,11 @@ public class TMSMapTileCoordinateTransform
          ret = new Point2D.Double();
       }
 
-      ret.setLocation(((latlon.getX() + 180) / 360.0 * Math.pow(2, zoom)),
-                      Math.pow(2, zoom)
+      ret.setLocation(((latlon.getX() + 180.0) / 360.0 * Math.pow(2.0, zoom)),
+                      Math.pow(2.0, zoom)
                             - ((1.0 - Math.log(Math.tan(latlon.getY() * Math.PI / 180.0)
                                   + (1.0 / Math.cos(latlon.getY() * Math.PI / 180.0)))
-                                  / Math.PI) / 2.0 * (Math.pow(2, zoom))));
+                                  / Math.PI) / 2.0 * (Math.pow(2.0, zoom))));
 
       return ret;
       // Much slower!
@@ -69,11 +69,11 @@ public class TMSMapTileCoordinateTransform
          ret = new LatLonPoint.Double();
       }
 
-      ret.setLocation(360 / Math.pow(2, zoom) * tileUV.getX() - 180,
-                      -90
-                            + 360
+      ret.setLocation(360.0 / Math.pow(2.0, zoom) * tileUV.getX() - 180.0,
+                      -90.0
+                            + 360.0
                             / Math.PI
-                            * Math.atan(Math.exp((-2 * Math.PI * (-(tileUV.getY() - Math.pow(2, zoom)))) / Math.pow(2, zoom)
+                            * Math.atan(Math.exp((-2.0 * Math.PI * (-(tileUV.getY() - Math.pow(2.0, zoom)))) / Math.pow(2.0, zoom)
                                   + Math.PI)));
 
       return ret;

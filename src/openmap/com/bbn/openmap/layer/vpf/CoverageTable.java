@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 
 import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.layer.vpf.VPFAutoFeatureGraphicWarehouse.PriorityHolder;
+import com.bbn.openmap.layer.vpf.VPFAutoFeatureGraphicWarehouse.FeaturePriorityHolder;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;
@@ -757,10 +757,10 @@ public class CoverageTable {
 
             String facc = (String) fcirow.get(faccIndex);
 
-            List<PriorityHolder> list = warehouse.faccLookup.get(facc);
+            List<FeaturePriorityHolder> list = warehouse.faccLookup.get(facc);
             if (list != null) {
                boolean foundMatch = false;
-               for (PriorityHolder ph : list) {
+               for (FeaturePriorityHolder ph : list) {
                   if (ph.matches(facc, fci, fcirow)) {
                      foundMatch = true;
                      if (logger.isLoggable(Level.FINE)) {

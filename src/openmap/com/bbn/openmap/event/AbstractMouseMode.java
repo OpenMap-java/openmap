@@ -107,6 +107,8 @@ public class AbstractMouseMode
 
    protected boolean mouseWheelListener = true;
 
+   protected boolean noMouseWheelListenerTimer = false;
+
    protected String prettyName;
 
    protected String iconName;
@@ -770,20 +772,13 @@ public class AbstractMouseMode
    public void listenerPaint(java.awt.Graphics g) {
    }
 
-   protected boolean noMouseWheelListenerTimer = false;
 
-   /**
-    * Set whether to ignore the timer when movement is occurring over an
-    * OMGraphic. Sometimes unhighlight can be inappropriately delayed when timer
-    * is enabled.
-    */
    public void setNoMouseWheelListener(boolean val) {
       noMouseWheelListenerTimer = val;
    }
 
    /**
-    * Get whether the timer should be ignored when movement is occurring over an
-    * OMGraphic.
+    * 
     */
    public boolean getNoMouseWheelListener() {
       return noMouseWheelListenerTimer;

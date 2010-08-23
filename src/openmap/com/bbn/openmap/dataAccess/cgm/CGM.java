@@ -93,7 +93,7 @@ public class CGM
       boolean indexed = false;
       for (Command c : commandList) {
          if (c instanceof ColorSelectionMode) {
-            if (((ColorSelectionMode) c).X == 0) {
+            if (((ColorSelectionMode) c).selectionMode == 0) {
                // indexed
                indexed = true;
             }

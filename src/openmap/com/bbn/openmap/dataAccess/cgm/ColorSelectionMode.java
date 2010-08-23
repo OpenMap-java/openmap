@@ -23,15 +23,15 @@ package com.bbn.openmap.dataAccess.cgm;
 import java.io.*;
 
 public class ColorSelectionMode extends Command {
-    int X;
+    int selectionMode;
 
     public ColorSelectionMode(int ec, int eid, int l, DataInputStream in)
             throws IOException {
         super(ec, eid, l, in);
-        X = makeInt(0);
+        selectionMode = makeInt(0);
     }
 
     public String toString() {
-        return "Color Selection Mode " + X;
+        return "Color Selection Mode " + selectionMode;
     }
 }

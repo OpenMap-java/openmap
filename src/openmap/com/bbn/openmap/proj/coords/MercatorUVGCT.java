@@ -41,8 +41,8 @@ public abstract class MercatorUVGCT
             ret = new Point2D.Double();
          }
 
-         ret.setLocation(((lon + 180) / 360.0 * Math.pow(2, zoomLevel)),
-                         ((1.0 - Math.log(Math.tan(lat * Math.PI / 180.0) + (1.0 / Math.cos(lat * Math.PI / 180.0))) / Math.PI) / 2.0 * (Math.pow(2,
+         ret.setLocation(((lon + 180.0) / 360.0 * Math.pow(2.0, zoomLevel)),
+                         ((1.0 - Math.log(Math.tan(lat * Math.PI / 180.0) + (1.0 / Math.cos(lat * Math.PI / 180.0))) / Math.PI) / 2.0 * (Math.pow(2.0,
                                                                                                                                                   zoomLevel))));
          return ret;
       }
@@ -52,8 +52,8 @@ public abstract class MercatorUVGCT
             ret = new LatLonPoint.Double();
          }
 
-         ret.setLocation(360 / Math.pow(2, zoomLevel) * uvx - 180,
-                         -90 + 360 / Math.PI * Math.atan(Math.exp((-2 * Math.PI * uvy) / Math.pow(2, zoomLevel) + Math.PI)));
+         ret.setLocation(360.0 / Math.pow(2.0, zoomLevel) * uvx - 180.0,
+                         -90.0 + 360.0 / Math.PI * Math.atan(Math.exp((-2.0 * Math.PI * uvy) / Math.pow(2.0, zoomLevel) + Math.PI)));
          return ret;
       }
 
@@ -71,10 +71,10 @@ public abstract class MercatorUVGCT
             ret = new Point2D.Double();
          }
 
-         ret.setLocation(((lon + 180) / 360.0 * Math.pow(2, zoomLevel)),
-                         Math.pow(2, zoomLevel)
+         ret.setLocation(((lon + 180.0) / 360.0 * Math.pow(2, zoomLevel)),
+                         Math.pow(2.0, zoomLevel)
                                - ((1.0 - Math.log(Math.tan(lat * Math.PI / 180.0) + (1.0 / Math.cos(lat * Math.PI / 180.0)))
-                                     / Math.PI) / 2.0 * (Math.pow(2, zoomLevel))));
+                                     / Math.PI) / 2.0 * (Math.pow(2.0, zoomLevel))));
          return ret;
       }
 
@@ -83,12 +83,12 @@ public abstract class MercatorUVGCT
             ret = new LatLonPoint.Double();
          }
 
-         ret.setLocation(360 / Math.pow(2, zoomLevel) * uvx - 180,
-                         -90
-                               + 360
+         ret.setLocation(360 / Math.pow(2, zoomLevel) * uvx - 180.0,
+                         -90.0
+                               + 360.0
                                / Math.PI
-                               * Math.atan(Math.exp((-2 * Math.PI * (-(uvy - Math.pow(2, zoomLevel)))) / Math.pow(2, zoomLevel)
-                                     + Math.PI)));
+                               * Math.atan(Math.exp((-2.0 * Math.PI * (-(uvy - Math.pow(2.0, zoomLevel))))
+                                     / Math.pow(2.0, zoomLevel) + Math.PI)));
 
          return ret;
       }
