@@ -158,22 +158,35 @@ public class BufferedImageRenderPolicy
          int w = proj.getWidth();
          int h = proj.getHeight();
 
-         if (proj instanceof Cylindrical) {
+         Point2D llp1 = proj.getUpperLeft();
+         // The lower right point is w-1, h-1, the actual pixel index,
+         // starting at 0. The size of the image is one pixel more. Using
+         // getLowerRight() leaves one pixel on the bottom and right blank in
+         // the resulting image.
+         Point2D llp2 = proj.inverse(w, h);
 
-            Point2D llp1 = proj.getUpperLeft();
-            // The lower right point is w-1, h-1, the actual pixel index,
-            // starting at 0. The size of the image is one pixel more. Using
-            // getLowerRight() leaves one pixel on the bottom and right blank in
-            // the
-            // resulting image.
-            Point2D llp2 = proj.inverse(w, h);
+         // We're running into a problem here for the OMScalingRaster where the
+         // projection is providing a bad coordinate situation for
+         // OMScalingRasters when zoomed way out. The left pixel coordinate of
+         // the map, at some point in the OMScalingRaster calculations, is being
+         // placed to the right of the right pixel coordinate of the map. It's a
+         // 360 degree precision thing, and ever so slight. We're going to test
+         // for that here, and if that x test fails, we're just going to use a
+         // standard OMRaster for the Buffer.
 
-            // Make sure the projected area of the image is actually the entire
+         // The OMScalingRaster is cool because it can respond to the projection
+         // change immediately, and display what was there before while the
+         // layers are working.
+
+         Point2D pnt1 = proj.forward(llp1);
+         Point2D pnt2 = proj.forward(llp2);
+
+         if (pnt1.getX() < pnt2.getX() && proj instanceof Cylindrical) {
+
+            // Now make sure the projected area of the image is actually the
+            // entire
             // image - otherwise, the image gets shrunk down and doesn't line up
             // with the projection.
-
-            Point2D pnt1 = proj.forward(llp1);
-            Point2D pnt2 = proj.forward(llp2);
 
             // Need the offset for rendering the top of the drawing OMGraphics
             // at the top of the projected space of the image.

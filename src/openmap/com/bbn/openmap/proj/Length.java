@@ -36,7 +36,9 @@ public class Length {
     /** Miles, in WGS 84 spherical earth model units. */
     public final static Length MILE = new Length("mile", "miles", Planet.wgs84_earthEquatorialCircumferenceMiles_D);
     /** Feet, in WGS 84 spherical earth model units. */
-    public final static Length FEET = new Length("feet", "feet", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0);
+    public final static Length FEET = new Length("feet", "ft", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0);
+    /** Feet, in WGS 84 spherical earth model units. */
+    public final static Length YARD = new Length("yards", "yd", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0 * 3.0);
     /** Meters, in WGS 84 Spherical earth model units. */
     public final static Length METER = new Length("meter", "m", Planet.wgs84_earthEquatorialCircumferenceMeters_D);
     /** Kilometers, in WGS 84 Spherical earth model units. */
@@ -151,7 +153,7 @@ public class Length {
      * this class.
      */
     public static Length[] getAvailable() {
-        return new Length[] { METER, KM, FEET, MILE, DM, NM, DECIMAL_DEGREE };
+        return new Length[] { METER, KM, FEET, YARD, MILE, DM, NM, DECIMAL_DEGREE };
     }
 
     /**

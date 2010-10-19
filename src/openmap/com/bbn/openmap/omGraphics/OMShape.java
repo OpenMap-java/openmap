@@ -60,7 +60,7 @@ public class OMShape extends OMGraphicAdapter implements OMGraphic {
         setNeedToRegenerate(true);
 
         if (origShape != null) {
-            shape = new GeneralPath(proj.forwardShape(origShape));
+            setShape(new GeneralPath(proj.forwardShape(origShape)));
             setNeedToRegenerate(false);
             return true;
         }

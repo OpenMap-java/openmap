@@ -23,6 +23,7 @@
 package com.bbn.openmap.event;
 
 import java.util.ListIterator;
+import java.util.logging.Logger;
 
 import com.bbn.openmap.proj.Projection;
 
@@ -35,6 +36,7 @@ import com.bbn.openmap.proj.Projection;
 public class ProjectionSupport
       extends ListenerSupport<ProjectionListener> {
 
+   static Logger logger = Logger.getLogger("com.bbn.openmap.event.ProjectionSupport");
    private static final long serialVersionUID = 1L;
    protected ProjectionChangeNotifier pcNotifier;
    protected boolean useNotifier;
@@ -54,7 +56,6 @@ public class ProjectionSupport
    public ProjectionSupport(Object aSource, boolean useNotifier) {
       super(aSource);
       this.useNotifier = useNotifier;
-      // pcNotifier.start();
    }
 
    /**
@@ -155,9 +156,11 @@ public class ProjectionSupport
                ListIterator<ProjectionListener> li = ProjectionSupport.this.listIterator();
                while (li.hasPrevious()) {
                   ProjectionListener listener = li.previous();
-//               for (ProjectionListener listener : ProjectionSupport.this) {
-                  
-                  
+
+                  // This is going from top to bottom
+                  // for (ProjectionListener listener : ProjectionSupport.this)
+                  // {
+
                   if (nextEvent != null) {
                      break; // new event has been posted, bail out
                   }
@@ -179,7 +182,8 @@ public class ProjectionSupport
                }
             }
          }
-         System.out.println("PCN done running");
+
+         logger.fine("Projection notifier thread " + getName() + " done running");
       }
    }
 

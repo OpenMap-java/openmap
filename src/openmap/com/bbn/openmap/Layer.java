@@ -1033,10 +1033,9 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      *            java.awt.Graphics to draw into.
      */
     public void renderDataForProjection(Projection proj, Graphics g) {
-        if (!isProjectionOK(proj)) {
-            return;
+        if (isProjectionOK(proj)) {
+            paint(g);
         }
-        paint(g);
     }
 
     /**
@@ -1049,7 +1048,7 @@ public abstract class Layer extends JComponent implements ProjectionListener,
      * @return true if OK.
      */
     public boolean isProjectionOK(Projection proj) {
-        return !(proj == null || proj.getScale() < minScale || proj.getScale() > maxScale);
+        return (proj != null && proj.getScale() >= minScale && proj.getScale() <= maxScale);
     }
 
     /**

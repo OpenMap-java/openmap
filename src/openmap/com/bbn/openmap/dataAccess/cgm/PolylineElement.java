@@ -39,10 +39,10 @@ public class PolylineElement extends Command {
     }
 
     public String toString() {
-        String s = "Polyline";
+        StringBuffer s = new StringBuffer("Polyline");
         for (int i = 0; i < X.length; i++)
-            s = s + " [" + X[i] + "," + Y[i] + "]";
-        return s;
+            s.append(" [").append(X[i]).append(",").append(Y[i]).append("]");
+        return s.toString();
     }
 
     public void scale(CGMDisplay d) {

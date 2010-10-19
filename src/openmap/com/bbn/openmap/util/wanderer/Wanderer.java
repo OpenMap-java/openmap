@@ -34,109 +34,146 @@ import com.bbn.openmap.util.Debug;
  */
 public class Wanderer {
 
-    WandererCallback callback = null;
+   WandererCallback callback = null;
+   protected boolean exhaustiveSearch = false;
 
-    public Wanderer() {
+   public Wanderer() {
 
-    }
+   }
 
-    public Wanderer(WandererCallback callback) {
-        this();
-        this.callback = callback;
-    }
+   public Wanderer(WandererCallback callback) {
+      this();
+      this.callback = callback;
+   }
 
-    public void setCallback(WandererCallback cb) {
-        callback = cb;
-    }
+   public void setCallback(WandererCallback cb) {
+      callback = cb;
+   }
 
-    public WandererCallback getCallback() {
-        return callback;
-    }
+   public WandererCallback getCallback() {
+      return callback;
+   }
 
-    /**
-     * Given a file representing a top-level directory, start wandering the tree
-     * and call handleDirectory or handleFile on the WandererCallback.
-     * 
-     * @param file File (directory) to start at.
-     */
-    public void handleEntry(File file) {
-        try {
-            String[] filenames = file.list();
-            boolean dirTest = false;
-            boolean not14 = false;
+   /**
+    * Given a file representing a top-level directory, start wandering the tree
+    * and call handleDirectory or handleFile on the WandererCallback.
+    * 
+    * @param file File (directory) to start at.
+    * @return true if the wandering should continue.
+    */
+   public boolean handleEntry(File file) {
+      boolean continueWandering = true;
+      try {
+         String[] filenames = file.list();
+         boolean dirTest = false;
+         boolean not14 = false;
 
-            try {
-                java.lang.reflect.Method method = file.getClass()
-                        .getDeclaredMethod("isDirectory", (Class[]) null);
-                Object obj = method.invoke(file, (Object[]) null);
-                if (obj instanceof Boolean) {
-                    dirTest = ((Boolean) obj).booleanValue();
-                }
-            } catch (NoSuchMethodException nsme) {
-                not14 = true;
-            } catch (SecurityException se) {
-                not14 = true;
-            } catch (IllegalAccessException iae) {
-                not14 = true;
-            } catch (IllegalArgumentException iae2) {
-                not14 = true;
-            } catch (java.lang.reflect.InvocationTargetException ite) {
-                not14 = true;
+         try {
+            java.lang.reflect.Method method = file.getClass().getDeclaredMethod("isDirectory", (Class[]) null);
+            Object obj = method.invoke(file, (Object[]) null);
+            if (obj instanceof Boolean) {
+               dirTest = ((Boolean) obj).booleanValue();
+            }
+         } catch (NoSuchMethodException nsme) {
+            not14 = true;
+         } catch (SecurityException se) {
+            not14 = true;
+         } catch (IllegalAccessException iae) {
+            not14 = true;
+         } catch (IllegalArgumentException iae2) {
+            not14 = true;
+         } catch (java.lang.reflect.InvocationTargetException ite) {
+            not14 = true;
+         }
+
+         if (not14) {
+            dirTest = (filenames != null);
+         }
+
+         if (dirTest) {
+            // It's a directory...
+            continueWandering = callback.handleDirectory(file);
+
+            if (continueWandering) {
+               continueWandering = handleDirectory(file, filenames);
             }
 
-            if (not14) {
-                dirTest = (filenames != null);
+         } else {
+            continueWandering = callback.handleFile(file);
+         }
+      } catch (NullPointerException npe) {
+         System.out.println("null pointer exception");
+      } catch (SecurityException se) {
+      }
+
+      return continueWandering;
+   }
+
+   /**
+    * Management method for the wanderer, that steps through the children of the
+    * directory and calls handleEntry for them.
+    * 
+    * @param directory the directory to handle
+    * @param contentNames an array of Strings representing children of the
+    *        directory
+    * @return true if the wandering should continue.
+    * @throws SecurityException
+    */
+   protected boolean handleDirectory(File directory, String[] contentNames)
+         throws SecurityException {
+
+      boolean continueWandering = true;
+
+      for (String child : contentNames) {
+         boolean keepGoing = handleEntry(new File(directory.getAbsolutePath() + File.separator, child));
+         if (!keepGoing) {
+            continueWandering = exhaustiveSearch;
+
+            if (!continueWandering) {
+               break;
             }
+         }
+      }
 
-            if (dirTest) {
-                // It's a directory...
-                handleDirectory(file, filenames);
-                callback.handleDirectory(file);
-            } else {
-                callback.handleFile(file);
-            }
-        } catch (NullPointerException npe) {
-        	System.out.println("null pointer exception");
-        } catch (SecurityException se) {
-        }
-    }
+      return continueWandering;
+   }
 
-    public void handleDirectory(File directory, String[] contentNames)
-            throws SecurityException {
+   public boolean isExhaustiveSearch() {
+      return exhaustiveSearch;
+   }
 
-        File[] contents = new File[contentNames.length]; // file.listFiles();
-        for (int i = 0; i < contents.length; i++)
-            contents[i] = new File(directory.getAbsolutePath() + File.separator, contentNames[i]);
+   /**
+    * @param exhaustiveSearch set to true if you want to ignore the
+    *        handleDirectory and handleFile return values.
+    */
+   public void setExhaustiveSearch(boolean exhaustiveSearch) {
+      this.exhaustiveSearch = exhaustiveSearch;
+   }
 
-        for (int i = 0; i < contents.length; i++) {
-            handleEntry(contents[i]);
-        }
-    }
+   /**
+    * Given a set of files or directories, parade through them to change their
+    * case.
+    * 
+    * @param argv paths to files or directories, use -h to get a usage
+    *        statement.
+    */
+   public static void main(String[] argv) {
+      Debug.init();
 
-    /**
-     * Given a set of files or directories, parade through them to change their
-     * case.
-     * 
-     * @param argv paths to files or directories, use -h to get a usage
-     *        statement.
-     */
-    public static void main(String[] argv) {
-        Debug.init();
+      ArgParser ap = new ArgParser("Wanderer");
 
-        ArgParser ap = new ArgParser("Wanderer");
+      if (argv.length == 0) {
+         ap.bail("", true);
+      }
 
-        if (argv.length == 0) {
-            ap.bail("", true);
-        }
+      String[] dirs = argv;
 
-        String[] dirs = argv;
+      Wanderer wanderer = new Wanderer(new TestWandererCallback());
 
-        Wanderer wanderer = new Wanderer(new TestWandererCallback());
-
-        // Assume that the arguments are paths to directories or
-        // files.
-        for (int i = 0; i < dirs.length; i++) {
-            wanderer.handleEntry(new File(dirs[i]));
-        }
-    }
+      // Assume that the arguments are paths to directories or
+      // files.
+      for (int i = 0; i < dirs.length; i++) {
+         wanderer.handleEntry(new File(dirs[i]));
+      }
+   }
 }

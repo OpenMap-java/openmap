@@ -26,8 +26,8 @@ import java.awt.BasicStroke;
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
 import java.awt.image.ImageObserver;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -45,16 +45,22 @@ import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.cgm.CGM;
 import com.bbn.openmap.dataAccess.cgm.CGMDisplay;
+import com.bbn.openmap.geo.BoundingCircle;
+import com.bbn.openmap.geo.Geo;
+import com.bbn.openmap.geo.GeoSegment;
 import com.bbn.openmap.io.CSVFile;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.ComponentFactory;
+import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -109,6 +115,7 @@ public class VPFAutoFeatureGraphicWarehouse
    public final static String CGM_DIR_PROPERTY = "cgmDirectory";
    public final static String SYMBOL_LOOKUP_FILE_PROPERTY = "faccLookupFile";
    public final static String PRIORITY_FILE_PROPERTY = "priorityFile";
+   public final static String FEATURE_INFO_HANDLER_PROPERTY = "featureInfoHandler";
    public final static String FACC_DEBUG_PROPERTY = "debug";
 
    protected List<FeaturePriorityHolder> priorities;
@@ -116,6 +123,7 @@ public class VPFAutoFeatureGraphicWarehouse
    protected String priorityFilePath;
    protected String faccLookupFilePath;
    protected String geoSymDirectory;
+   protected VPFFeatureInfoHandler featInfoHandler;
 
    protected String[] compositeFeatureFaccs = new String[] {
       "BC010",
@@ -134,7 +142,7 @@ public class VPFAutoFeatureGraphicWarehouse
     * Set which library to use. If null, all applicable libraries in database
     * will be searched.
     */
-   private String useLibrary = null;
+   private List<String> useLibrary = null;
    /**
     * The property prefix for scoping properties.
     */
@@ -218,43 +226,93 @@ public class VPFAutoFeatureGraphicWarehouse
          priorityFile.loadData(true);
 
          faccLookup = new Hashtable<String, List<FeaturePriorityHolder>>();
+         Hashtable<String, FeaturePriorityHolder.Compound> composites = new Hashtable<String, FeaturePriorityHolder.Compound>();
+
+         // Build up the priority holder list - this keeps the features in
+         // proper rendering order, according to the priority csv file.
+         // composite features are just held once at the first location they are
+         // found.
 
          int numPriorities = priorityFile.getNumberOfRecords();
          priorities = new ArrayList<FeaturePriorityHolder>();
          for (Vector<Object> row : priorityFile) {
-            String type = row.get(1).toString();
-            String facc = row.get(2).toString();
-            String conditions = row.get(3).toString();
+            String lineCheck = null;
+            String type = null;
+            String facc = null;
+            String conditions = null;
+
+            try {
+               lineCheck = row.get(0).toString();
+
+               if (lineCheck.startsWith("#")) {
+                  continue;
+               }
+
+               type = row.get(1).toString();
+               facc = row.get(2).toString();
+               conditions = row.get(3).toString();
+
+            } catch (ArrayIndexOutOfBoundsException aioobe) {
+               logger.warning("Bad entry in priority file: " + lineCheck + "," + type + "," + facc + "," + conditions);
+               continue;
+            }
 
             // If the debugFacc is defined, just add that particular facc type
             if (debugFacc != null && !debugFacc.equals(facc)) {
                continue;
             }
-            
+
+            // Now we need to check if the facc is a composite symbol, like a
+            // buoy.
             boolean composite = false;
-            for (String compFacc : compositeFeatureFaccs) {
-               if (compFacc.equals(facc)) {
-                  composite = true;
-                  break;
+            if (type.charAt(0) == CoverageTable.UPOINT_FEATURETYPE) {
+               for (String compFacc : compositeFeatureFaccs) {
+                  if (compFacc.equals(facc)) {
+                     composite = true;
+                     break;
+                  }
                }
             }
-            
+
             FeaturePriorityHolder.Basic ph = new FeaturePriorityHolder.Basic(type, facc, conditions, this);
             ph.setCGMPath(geoSymDirectory, ".cgm");
 
+            // If it is a composite, we need to add it to a
+            // FeaturePriorityHolder.Compound object, so that all the little
+            // parts will be added to any symbols, based on how the parts
+            // conditions match up to the feature entry in the attribute table.
             if (composite) {
-               
-            }
-            
-            priorities.add(ph);
 
-            List<FeaturePriorityHolder> list = faccLookup.get(ph.getFacc());
-            if (list == null) {
-               list = new ArrayList<FeaturePriorityHolder>();
-               faccLookup.put(ph.getFacc(), list);
+               FeaturePriorityHolder.Compound compound = composites.get(facc);
+               if (compound == null) {
+                  compound = new FeaturePriorityHolder.Compound(type, facc, this);
+                  composites.put(facc, compound);
+                  priorities.add(compound);
+
+                  // faccLookup doesn't have this facc if we're here...
+                  List<FeaturePriorityHolder> list = new ArrayList<FeaturePriorityHolder>();
+                  faccLookup.put(facc, list);
+                  list.add(compound);
+               }
+
+               compound.addPart(ph);
+
+            } else {
+               priorities.add(ph);
+
+               List<FeaturePriorityHolder> list = faccLookup.get(facc);
+               if (list == null) {
+                  list = new ArrayList<FeaturePriorityHolder>();
+                  faccLookup.put(facc, list);
+               }
+               list.add(ph);
             }
-            list.add(ph);
          }
+
+         // The priority file doesn't know anything about the symbol that is
+         // going to be used for the different conditions in the feature
+         // holders. Need to disperse the symbol information to the feature
+         // holders.
 
          // OK, time killer - loop through
          int numSymbols = symbolLookupFile.getNumberOfRecords();
@@ -262,14 +320,17 @@ public class VPFAutoFeatureGraphicWarehouse
          for (Vector<Object> row : symbolLookupFile) {
             int numArgs = row.size();
             String facc = row.get(0).toString();
-            if (numArgs != 4) {
-               logger.warning("Problem with :" + facc);
+            if (numArgs != 7) {
+               logger.warning("Problem with facc entry, not correct number of args in csv file:" + facc);
                continue;
             }
 
             char type = getType(row.get(1).toString());
             String symbolCode = row.get(2).toString();
             String conditions = row.get(3).toString().trim();
+            String size = row.get(4).toString().trim();
+            String xoff = row.get(5).toString().trim();
+            String yoff = row.get(6).toString().trim();
 
             if (conditions.length() > 0) {
                conditions = conditions.replace(" ", "");
@@ -279,7 +340,7 @@ public class VPFAutoFeatureGraphicWarehouse
             if (faccList != null) {
                boolean found = false;
                for (FeaturePriorityHolder ph : faccList) {
-                  if (ph.matches(facc, type, conditions, symbolCode)) {
+                  if (ph.matches(facc, type, conditions, symbolCode, size, xoff, yoff)) {
                      found = true;
                      foundRecords++;
                      break;
@@ -287,6 +348,9 @@ public class VPFAutoFeatureGraphicWarehouse
                }
 
                if (!found) {
+                  // This really shouldn't be triggered, if it is, something
+                  // happened to the data files. But that might be intentional,
+                  // to keep some feature types off the map.
                   if (logger.isLoggable(Level.FINE)) {
                      logger.fine("didn't find matching PriorityHolder for " + facc + "|" + type + "|" + symbolCode + "|"
                            + conditions);
@@ -334,17 +398,42 @@ public class VPFAutoFeatureGraphicWarehouse
    }
 
    /**
-    * Set the VPF library to use. If null, all libraries will be searched. Null
-    * is default.
+    * Set the VPF libraries to use, by name. If null, all libraries will be
+    * searched. Null is default.
     */
-   public void setUseLibrary(String lib) {
-      useLibrary = lib;
+   public void setUseLibraries(List<String> libNames) {
+      useLibrary = libNames;
    }
 
    /**
-    * Get the VPF library to use.
+    * Get a list of VPF library names that should be used, specified at
+    * configuration.
     */
-   public String getUseLibrary() {
+   public List<String> getUseLibraries() {
+      return useLibrary;
+   }
+
+   /**
+    * Utility method to check if the specified library name has been set by the
+    * configuration as one to use.
+    * 
+    * @param libName the library name to test
+    * @return true if the useLibrary list has not been set, is empty, or if the
+    *         provided name starts with the specified string entry (Good for
+    *         specifying sets of like-libraries).
+    */
+   public boolean checkLibraryForUsage(String libName) {
+      boolean useLibrary = true;
+      List<String> libraryNames = getUseLibraries();
+      if (libraryNames != null && libraryNames.size() > 0) {
+         useLibrary = false;
+         for (String libraryName : libraryNames) {
+            if (libName.startsWith(libraryName)) {
+               useLibrary = true;
+               break;
+            }
+         }
+      }
       return useLibrary;
    }
 
@@ -452,9 +541,14 @@ public class VPFAutoFeatureGraphicWarehouse
       double dpplat = Math.abs((ll1.getY() - ll2.getY()) / screenheight);
       double dpplon = Math.abs((ll1.getX() - ll2.getX()) / screenwidth);
 
+      BoundingCircle screenBounds = new GeoSegment.Impl(new Geo[] {
+         new Geo(ll1.getLatitude(), ll1.getLongitude()),
+         new Geo(ll2.getLatitude(), ll2.getLongitude())
+      }).getBoundingCircle();
+
       for (String libraryName : lst.getLibraryNames()) {
 
-         if (useLibrary != null && !useLibrary.equalsIgnoreCase(libraryName)) {
+         if (!checkLibraryForUsage(libraryName)) {
             continue;
          }
 
@@ -470,6 +564,23 @@ public class VPFAutoFeatureGraphicWarehouse
                logger.fine("no CoverageAttributeTable for " + libraryName + ", skipping...");
             }
             continue;
+         }
+
+         // Do a quick bounds check, so we can just skip the tiles for this CAT
+         // if nothing is on the map.
+         DataBounds bounds = cat.getBounds();
+         if (bounds != null) {
+            Point2D min = bounds.getMin();
+            Point2D max = bounds.getMax();
+            BoundingCircle catCircle = new GeoSegment.Impl(new Geo[] {
+               new Geo(min.getY(), min.getX()),
+               new Geo(max.getY(), max.getX())
+            }).getBoundingCircle();
+
+            if (!screenBounds.intersects(catCircle)) {
+               logger.fine("CoverageAttributeTable for " + libraryName + " not on map, skipping...");
+               continue;
+            }
          }
 
          for (String covname : cat.getCoverageNames()) {
@@ -569,6 +680,21 @@ public class VPFAutoFeatureGraphicWarehouse
       return ret;
    }
 
+   /**
+    * Given an OMGraphic that is going to be added to the map, use the
+    * FeatureClassInfo to gather attribute information from the fcirow contents.
+    * 
+    * @param omg The OMGraphic representing a feature.
+    * @param fci The Desription of the columns of the fcirow.
+    * @param fcirow The attributes for the feature.
+    */
+   public void handleInformationForOMGraphic(OMGraphic omg, FeatureClassInfo fci, List<Object> fcirow) {
+
+      if (featInfoHandler != null) {
+         featInfoHandler.updateInfoForOMGraphic(omg, fci, fcirow);
+      }
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -593,6 +719,14 @@ public class VPFAutoFeatureGraphicWarehouse
       debugFacc = props.getProperty(prefix + FACC_DEBUG_PROPERTY, debugFacc);
       geoSymDirectory = props.getProperty(prefix + CGM_DIR_PROPERTY, geoSymDirectory);
 
+      String fihString = props.getProperty(prefix + FEATURE_INFO_HANDLER_PROPERTY);
+      if (fihString != null) {
+         Object obj = ComponentFactory.create(fihString, prefix, props);
+         if (obj instanceof VPFFeatureInfoHandler) {
+            featInfoHandler = (VPFFeatureInfoHandler) obj;
+         }
+      }
+
       isdm = PropUtils.doubleFromProperties(props, prefix + EV_ISDM, isdm);
       idsm = PropUtils.doubleFromProperties(props, prefix + EV_IDSM, idsm);
       msdc = PropUtils.doubleFromProperties(props, prefix + EV_MSDC, msdc);
@@ -615,6 +749,13 @@ public class VPFAutoFeatureGraphicWarehouse
       getList.put(prefix + SYMBOL_LOOKUP_FILE_PROPERTY, faccLookupFilePath);
       getList.put(prefix + PRIORITY_FILE_PROPERTY, priorityFilePath);
       getList.put(prefix + CGM_DIR_PROPERTY, geoSymDirectory);
+      if (featInfoHandler != null) {
+         getList.put(prefix + FEATURE_INFO_HANDLER_PROPERTY, featInfoHandler.getClass().getName());
+
+         if (featInfoHandler instanceof PropertyConsumer) {
+            ((PropertyConsumer) featInfoHandler).getProperties(getList);
+         }
+      }
 
       if (debugFacc != null && debugFacc.length() > 0) {
          getList.put(prefix + FACC_DEBUG_PROPERTY, debugFacc);
@@ -704,6 +845,20 @@ public class VPFAutoFeatureGraphicWarehouse
    }
 
    /**
+    * Set the object used to manage attribute formatting and display for
+    * features on the map.
+    * 
+    * @return VPFFeatureInfoHandler being used.
+    */
+   public VPFFeatureInfoHandler getFeatInfoHandler() {
+      return featInfoHandler;
+   }
+
+   public void setFeatInfoHandler(VPFFeatureInfoHandler featInfoHandler) {
+      this.featInfoHandler = featInfoHandler;
+   }
+
+   /**
     * 
     * A FeaturePriorityHolder represents a rendering order slot in a list of
     * feature types to be rendered. It is responsible for evaluating attributes
@@ -729,7 +884,11 @@ public class VPFAutoFeatureGraphicWarehouse
       /**
        * The dimension of icons created for point OMGraphics.
        */
-      protected int dim = 10;
+      protected int dim = 30;
+
+      protected float sizePercent = 1f;
+      protected float xoffPercent = 0f;
+      protected float yoffPercent = 0f;
 
       /**
        * A handle to any debug FACC code listed by the warehouse, so that a
@@ -769,6 +928,23 @@ public class VPFAutoFeatureGraphicWarehouse
          }
       }
 
+      public void updateLocation(String size, String xoff, String yoff) {
+         sizePercent = getValue(size, 1f);
+         xoffPercent = getValue(xoff, 0f);
+         yoffPercent = getValue(yoff, 0f);
+      }
+
+      protected float getValue(String s, float def) {
+         float ret = def;
+         if (s != null) {
+            try {
+               ret = Float.parseFloat(s);
+            } catch (NumberFormatException nfe) {
+            }
+         }
+         return ret;
+      }
+
       /**
        * Used to match feature entries with PriorityHolder.
        * 
@@ -786,9 +962,15 @@ public class VPFAutoFeatureGraphicWarehouse
        * @param facc
        * @param type
        * @param conditions
+       * @param size percent of dim setting to use for size of symbol (0-1f)
+       * @param xoff percent off center of dim setting to use for x origin of
+       *        symbol (0 is centered, positive is right)
+       * @param yoff percent off center of dim setting to use for x origin of
+       *        symbol (0 is centered, positive is down)
        * @return
        */
-      public abstract boolean matches(String facc, char type, String conditions, String symbolFileName);
+      public abstract boolean matches(String facc, char type, String conditions, String symbolFileName, String size, String xoff,
+                                      String yoff);
 
       protected abstract void add(OMGraphic omg);
 
@@ -834,7 +1016,7 @@ public class VPFAutoFeatureGraphicWarehouse
                   }
 
                   if (cgmTitle == null) {
-                     logger.warning("no title for " + toString());
+                     logger.fine("no title for " + toString());
                   } else {
 
                      cgmDisplay = new CGMDisplay[cgmTitle.length];
@@ -847,11 +1029,11 @@ public class VPFAutoFeatureGraphicWarehouse
                         // Rendering the icon will load cgmDisplay with cgm
                         // parameters
                         // (fill paint, line paint, etc);
-                        icon = cgmDisplay[i].getBufferedImage(dim, dim);
+                        icon = cgmDisplay[i].getBufferedImage((int) (dim * sizePercent), (int) (dim * sizePercent));
                      }
                   }
                } catch (IOException ioe) {
-                  logger.warning("Couldn't load CGM files: " + cgmTitle[0] + "; first of " + cgmTitle.length);
+                  logger.fine("Couldn't load CGM files: " + cgmTitle[0] + "; first of " + cgmTitle.length);
                }
             }
 
@@ -874,9 +1056,6 @@ public class VPFAutoFeatureGraphicWarehouse
             }
             if (facc.equals(this.facc) && this.type == type) {
                if (expression != null) {
-                  if (this.facc.equals(debugFacc)) {
-                     logger.info("testing for " + this.facc);
-                  }
                   ret = expression.evaluate(fci, row);
                } else {
                   ret = true;
@@ -893,7 +1072,8 @@ public class VPFAutoFeatureGraphicWarehouse
           * @param conditions
           * @return
           */
-         public boolean matches(String facc, char type, String conditions, String symbolFileName) {
+         public boolean matches(String facc, char type, String conditions, String symbolFileName, String size, String xoff,
+                                String yoff) {
             boolean basicMatch = this.facc.equals(facc) && type == this.type;
 
             boolean conditionMatch =
@@ -908,6 +1088,7 @@ public class VPFAutoFeatureGraphicWarehouse
                cgmTitle = new String[names.size()];
                for (int i = 0; i < names.size(); i++) {
                   cgmTitle[i] = symbolParentDir + "/" + names.get(i) + symbolExt;
+                  updateLocation(size, xoff, yoff);
                }
             }
 
@@ -972,6 +1153,7 @@ public class VPFAutoFeatureGraphicWarehouse
             implements ImageObserver {
 
          protected List<FeaturePriorityHolder.Basic> parts = new ArrayList<FeaturePriorityHolder.Basic>();
+         protected BufferedImage icon;
 
          protected Compound(String type, String facc, VPFAutoFeatureGraphicWarehouse warehouse) {
             super(type, facc, warehouse);
@@ -980,6 +1162,10 @@ public class VPFAutoFeatureGraphicWarehouse
 
          public String toString() {
             return "Compound: " + type + "|" + facc;
+         }
+
+         public void addPart(FeaturePriorityHolder.Basic part) {
+            parts.add(part);
          }
 
          /**
@@ -995,35 +1181,46 @@ public class VPFAutoFeatureGraphicWarehouse
           */
          public boolean matches(String facc, FeatureClassInfo fci, List<Object> row) {
             boolean ret = false;
+            int partCount = 0;
+
             char type = fci.getFeatureType();
             if (type == CoverageTable.EPOINT_FEATURETYPE || type == CoverageTable.CPOINT_FEATURETYPE) {
                type = CoverageTable.UPOINT_FEATURETYPE;
             }
 
+            /**
+             * Building up the current image based on the attributes. Give each
+             * part a chance to evaluate whether it should be rendered into the
+             * image or not.
+             */
             if (facc.equals(this.facc) && this.type == type) {
 
                BufferedImage image = new BufferedImage(dim, dim, BufferedImage.TYPE_INT_ARGB);
                Graphics2D g = (Graphics2D) image.getGraphics();
-
                for (FeaturePriorityHolder.Basic part : parts) {
 
                   if (part.expression != null) {
-                     if (this.facc.equals(debugFacc)) {
-                        logger.info("testing for " + this.facc);
-                     }
-                     ret = part.expression.evaluate(fci, row);
+                     boolean partRet = part.expression.evaluate(fci, row);
 
-                     if (ret) {
+                     if (partRet) {
                         Image im = part.getIcon();
-                        g.drawImage(im, 0, 0, this);
+                        g.drawImage(im, (int) (part.xoffPercent * dim), (int) (part.yoffPercent * dim), this);
+                        ret = true;
+                        partCount++;
                      }
 
                   } else {
+                     Image im = part.getIcon();
+                     g.drawImage(im, (int) (part.xoffPercent * dim), (int) (part.yoffPercent * dim), this);
                      ret = true;
+                     partCount++;
                   }
 
                }
+
+               icon = image;
             }
+
             return ret;
          }
 
@@ -1035,17 +1232,19 @@ public class VPFAutoFeatureGraphicWarehouse
           * @param conditions
           * @return
           */
-         public boolean matches(String facc, char type, String conditions, String symbolFileName) {
+         public boolean matches(String facc, char type, String conditions, String symbolFileName, String size, String xoff,
+                                String yoff) {
             boolean basicMatch = this.facc.equals(facc) && type == this.type;
 
             boolean conditionMatch = false;
 
+            /**
+             * We need to step through each part so that each part can find it's
+             * symbol.
+             */
             for (FeaturePriorityHolder.Basic part : parts) {
 
-               conditionMatch =
-                     ((part.conditions == null || part.conditions.trim().length() == 0) && (conditions == null || conditions.trim()
-                                                                                                                            .length() == 0))
-                           || (part.conditions != null && part.conditions.equals(conditions));
+               conditionMatch = part.matches(facc, type, conditions, symbolFileName, size, xoff, yoff);
 
                if (conditionMatch) {
                   break;
@@ -1056,12 +1255,15 @@ public class VPFAutoFeatureGraphicWarehouse
          }
 
          public void add(OMGraphic omg) {
+
             if (list == null) {
                list = new OMGraphicList();
             }
 
-            list.add(omg);
-
+            if (icon != null && omg instanceof OMPoint.Image) {
+               ((OMPoint.Image) omg).setImage(icon);
+               list.add(omg);
+            }
          }
 
          /*
@@ -1075,4 +1277,5 @@ public class VPFAutoFeatureGraphicWarehouse
          }
       }
    }
+
 }

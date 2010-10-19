@@ -299,7 +299,7 @@ public class VPFLayer
       checkWarehouse(searchByFeatures);
       if (warehouse != null) {
          warehouse.setProperties(prefix, props);
-         warehouse.setUseLibrary(libraryName);
+         warehouse.setUseLibraries(PropUtils.parseSpacedMarkers(libraryName));
 
          box = null;
          resetPalette();
@@ -339,7 +339,7 @@ public class VPFLayer
       }
 
       // For the library in a vpf package
-      libraryName = props.getProperty(realPrefix + LibraryNameProperty, libraryName);
+      props.put(realPrefix + LibraryNameProperty, PropUtils.unnull(libraryName));
 
       props.put(realPrefix + coverageTypeProperty, getDataTypes());
       props.put(realPrefix + searchByFeatureProperty, Boolean.toString(searchByFeatures));

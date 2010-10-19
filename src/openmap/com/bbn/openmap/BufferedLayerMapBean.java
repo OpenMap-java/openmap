@@ -63,6 +63,11 @@ public class BufferedLayerMapBean extends BufferedMapBean {
 		DEBUG = logger.isLoggable(Level.FINE);
 	}
 
+	public BufferedLayerMapBean(boolean useThreadedNotification) {
+		super(useThreadedNotification);
+		DEBUG = logger.isLoggable(Level.FINE);
+	}
+
 	/**
 	 * Set the background color of the map. Actually sets the background color
 	 * of the projection, and calls repaint().

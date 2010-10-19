@@ -86,7 +86,7 @@ public interface VPFWarehouse {
      * LST is shared among layers, since the warehouse is specific to
      * a particular layer.
      */
-    public String getUseLibrary();
+    public List<String> getUseLibraries();
 
     /**
      * Set a library name to limit selections from. Used by the
@@ -97,5 +97,15 @@ public interface VPFWarehouse {
      * a particular layer. If null the warehouse should use all
      * libraries available to it to gather features.
      */
-    public void setUseLibrary(String lib);
+    public void setUseLibraries(List<String> lib);
+    
+    /**
+     * Utility method to check if the specified library name has been set by the
+     * configuration as one to use.
+     * 
+     * @param libName the library name to test
+     * @return true if the useLibrary list has not been set, is empty, or if the
+     *         provided name matches an entry on it.
+     */
+    public boolean checkLibraryForUsage(String libName);
 }

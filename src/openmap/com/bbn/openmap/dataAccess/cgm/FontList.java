@@ -47,10 +47,10 @@ public class FontList extends Command {
     }
 
     public String toString() {
-        String s = "Font List: ";
+        StringBuffer s = new StringBuffer("Font List: ");
         for (int i = 0; i < S.length - 1; i++)
-            s = s + S[i] + ", ";
-        s = s + S[S.length - 1];
-        return s;
+            s.append(S[i]).append(", ");
+        s.append(S[S.length - 1]);
+        return s.toString();
     }
 }

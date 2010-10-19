@@ -14,56 +14,66 @@ import com.bbn.openmap.util.wanderer.WandererCallback;
  * 
  * @author dfdietrick
  */
-public abstract class DataPathWanderer extends Wanderer implements
-		WandererCallback {
+public abstract class DataPathWanderer
+      extends Wanderer
+      implements WandererCallback {
 
-	protected List<String> dataPaths;
+   protected List<String> dataPaths;
 
-	public abstract Class<?> getDataUserClass();
+   /**
+    * Which component class, like a specific layer type, will be using the data
+    * path.
+    * 
+    * @return Class of using component.
+    */
+   public abstract Class<?> getDataUserClass();
 
-	public abstract String getPrettyName();
+   /**
+    * @return pretty name of the using component.x
+    */
+   public abstract String getPrettyName();
 
-	public DataPathWanderer() {
+   public DataPathWanderer() {
 
-	}
+   }
 
-	/**
-	 * Returns a list of file/directory paths.
-	 * 
-	 * @return a list of file/directory paths. If null, no required data paths
-	 *         were found and the layer is indicating that it needs paths. If a
-	 *         list is returned and its empty, then the layer doesn't require a
-	 *         data file.
-	 */
-	public List<String> getDataPaths() {
-		return dataPaths;
-	}
+   /**
+    * Returns a list of file/directory paths.
+    * 
+    * @return a list of file/directory paths. If null, no required data paths
+    *         were found and the layer is indicating that it needs paths. If a
+    *         list is returned and its empty, then the layer doesn't require a
+    *         data file.
+    */
+   public List<String> getDataPaths() {
+      return dataPaths;
+   }
 
-	/**
-	 * Adds a data path to the path repository. Creates the repository list if
-	 * it doesn't yet exist. A call with a null path will get the repository
-	 * list created.
-	 * 
-	 * @param path
-	 */
-	protected void addDataPath(String path) {
-		if (dataPaths == null) {
-			dataPaths = new ArrayList<String>();
-		}
+   /**
+    * Adds a data path to the path repository. Creates the repository list if it
+    * doesn't yet exist. A call with a null path will get the repository list
+    * created.
+    * 
+    * @param path
+    */
+   protected void addDataPath(String path) {
+      if (dataPaths == null) {
+         dataPaths = new ArrayList<String>();
+      }
 
-		if (path != null) {
-			dataPaths.add(path);
-		}
-	}
+      if (path != null) {
+         dataPaths.add(path);
+      }
+   }
 
-	/**
-	 * True if layer being described can handle more than one data path, i.e.
-	 * all the data paths found can be added to a single layer.
-	 * 
-	 * @return false by default
-	 */
-	public boolean isMultiPathLayer() {
-		return false;
-	}
+   /**
+    * True if layer being described can handle more than one data path, i.e. all
+    * the data paths found can be added to a single layer.
+    * 
+    * @return false by default
+    */
+   public boolean isMultiPathLayer() {
+      return false;
+   }
 
 }

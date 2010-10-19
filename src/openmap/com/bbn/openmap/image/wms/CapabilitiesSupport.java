@@ -33,6 +33,7 @@ import org.w3c.dom.Node;
 
 import com.bbn.openmap.image.ImageServer;
 import com.bbn.openmap.image.WMTConstants;
+import com.bbn.openmap.proj.coords.AxisOrder;
 import com.bbn.openmap.proj.coords.BoundingBox;
 import com.bbn.openmap.proj.coords.CoordinateReferenceSystem;
 
@@ -367,10 +368,24 @@ public class CapabilitiesSupport {
         }
         org.w3c.dom.Element e1 = (org.w3c.dom.Element) node(doc, "BoundingBox");
         e1.setAttribute(version.getCoordinateReferenceSystemAcronym(), crs.getCode());
-        e1.setAttribute("minx", Double.toString(bbox.getMinX()));
-        e1.setAttribute("miny", Double.toString(bbox.getMinY()));
-        e1.setAttribute("maxx", Double.toString(bbox.getMaxX()));
-        e1.setAttribute("maxy", Double.toString(bbox.getMaxY()));
+        
+        if (version.usesAxisOrder() && (crs.getAxisOrder() == AxisOrder.northBeforeEast)) {
+           // wms 1.3.0. 6.7.4 EXAMPLE 2
+           // "A <BoundingBox> representing the entire Earth in the EPSG:4326
+           // Layer CRS would be written as <BoundingBox CRS="EPSG:4326"
+           // minx="-90" miny="-180" maxx="90" maxy="180">. A BBOX parameter
+           // requesting a map of the entire Earth would be written in this CRS as
+           // BBOX=-90,-180,90,180."
+           e1.setAttribute("minx", Double.toString(bbox.getMinY()));
+           e1.setAttribute("miny", Double.toString(bbox.getMinX()));
+           e1.setAttribute("maxx", Double.toString(bbox.getMaxY()));
+           e1.setAttribute("maxy", Double.toString(bbox.getMaxX()));
+        } else {
+           e1.setAttribute("minx", Double.toString(bbox.getMinX()));
+           e1.setAttribute("miny", Double.toString(bbox.getMinY()));
+           e1.setAttribute("maxx", Double.toString(bbox.getMaxX()));
+           e1.setAttribute("maxy", Double.toString(bbox.getMaxY()));
+        }
         layers.appendChild(e1);
     }
     

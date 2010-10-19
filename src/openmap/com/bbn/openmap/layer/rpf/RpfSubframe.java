@@ -36,9 +36,7 @@ import java.awt.Color;
 
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMRasterObject;
-import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.omGraphics.OMScalingRaster;
-import com.bbn.openmap.omGraphics.OMText;
 
 /**
  * The RpfSubframe is a holder for images and attributes within the cache.

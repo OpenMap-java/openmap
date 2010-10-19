@@ -41,6 +41,28 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.PropUtils;
 
+/**
+ * The VPFFeaureLayer renders VPF data with features being rendered in the order
+ * and style specified by the GeoSym specification. It uses the
+ * VPFAutoFeatureWarehouse, which knows how to use GeoSym data files to manage
+ * desired features. These data files can be modified to adjust which features
+ * are displayed.
+ * 
+ * The properties for this layer are:
+ * 
+ * <pre>
+ * vpfPath=path to vpf library directory, parent of DHT/LAT file.  Multiple paths can be specified, separated by ;
+ * libraryName=name of library to use, since multiple libraries can be specified in a top level vpf directory.  Wildcards accepted.
+ * 
+ * # VFPAutoFeatureGraphicWarehouse options:
+ * cgmDirectory=parent directory of cgm files used for symbology
+ * faccLookupFile=path to csv file that ties FACC codes to symbol file names
+ * # The priority file is the file to adjust to customize display...
+ * priorityFile=path to csv file specifying which FACC codes, types should be rendered and in what order.
+ * </pre>
+ * 
+ * @author dietrick
+ */
 public class VPFFeatureLayer
       extends OMGraphicHandlerLayer
       implements ProjectionListener, ActionListener, Serializable {
@@ -51,9 +73,6 @@ public class VPFFeatureLayer
 
    /** property extension used to set the VPF root directory */
    public static final String pathProperty = "vpfPath";
-
-   /** Property method for setting VPF data path */
-   public static final String libraryProperty = "libraryBean";
    /** Property for setting VPF cutoff scale */
    public static final String cutoffScaleProperty = "cutoffScale";
    /** Property for setting VPF library name to use */
@@ -82,7 +101,6 @@ public class VPFFeatureLayer
     */
    public VPFFeatureLayer() {
       setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
-      setRenderPolicy(new com.bbn.openmap.layer.policy.BufferedImageRenderPolicy(this));
       setMouseModeIDsForEvents(new String[] {
          "Gestures"
       });
@@ -130,7 +148,7 @@ public class VPFFeatureLayer
 
       if (warehouse != null) {
          warehouse.setProperties(prefix, props);
-         warehouse.setUseLibrary(libraryName);
+         warehouse.setUseLibraries(PropUtils.parseSpacedMarkers(libraryName));
       }
    }
 
@@ -153,7 +171,7 @@ public class VPFFeatureLayer
       props.put(realPrefix + pathProperty, paths.toString());
 
       // For the library in a vpf package
-      libraryName = props.getProperty(realPrefix + LibraryNameProperty, libraryName);
+      props.put(realPrefix + LibraryNameProperty, PropUtils.unnull(libraryName));
 
       if (warehouse != null) {
          warehouse.getProperties(props);
@@ -323,7 +341,7 @@ public class VPFFeatureLayer
          logger.fine("calling draw with boundaries: " + upperleft + " " + lowerright);
       }
       long start = System.currentTimeMillis();
-      
+
       OMGraphicList omgList = new OMGraphicList();
       try {
          omgList = warehouse.getFeatures(lst, ll1, ll2, p, omgList);
@@ -349,7 +367,32 @@ public class VPFFeatureLayer
    }
 
    public boolean isHighlightable(OMGraphic omg) {
-      return true;
+      VPFFeatureInfoHandler vfih = warehouse.getFeatInfoHandler();
+      if (vfih != null) {
+         return vfih.isHighlightable(omg);
+      }
+
+      return false;
+   }
+   
+   /**
+    * Fleeting change of appearance for mouse movements over an OMGraphic.
+    */
+   public void highlight(OMGraphic omg) {
+      VPFFeatureInfoHandler vfih = warehouse.getFeatInfoHandler();
+      if (vfih != null && vfih.shouldPaintHighlight(omg)) {
+         super.highlight(omg);
+      }
+   }
+
+   /**
+    * Notification to set OMGraphic to normal appearance.
+    */
+   public void unhighlight(OMGraphic omg) {
+      VPFFeatureInfoHandler vfih = warehouse.getFeatInfoHandler();
+      if (vfih != null && vfih.shouldPaintHighlight(omg)) {
+         super.unhighlight(omg);
+      }
    }
 
 }

@@ -69,7 +69,7 @@ public class OMGeometryList extends OMList<OMGeometry> implements Serializable {
     /**
      * Construct an OMGeometryList.
      */
-    public OMGeometryList() {};
+    public OMGeometryList() {}
 
     /**
      * Construct an OMGeometryList with an initial capacity.
@@ -78,7 +78,7 @@ public class OMGeometryList extends OMList<OMGeometry> implements Serializable {
      */
     public OMGeometryList(int initialCapacity) {
         super(initialCapacity);
-    };
+    }
 
     public OMGeometryList(Collection<OMGeometry> c) {
         graphics.addAll(c);
@@ -194,6 +194,8 @@ public class OMGeometryList extends OMList<OMGeometry> implements Serializable {
                 }
             }
         }
+
+        renderLabel(gr);
     }
 
     protected void renderGeometry(OMGeometry geometry, Graphics gr) {
@@ -291,7 +293,7 @@ public class OMGeometryList extends OMList<OMGeometry> implements Serializable {
             }
 
             if (shape == null) {
-                shape = gp;
+                setShape(gp);
             } else {
                 ((GeneralPath) shape).append(gp, connectParts);
             }

@@ -164,15 +164,15 @@ public class ServerMapTileFactory
             if (urlc.getContentType().startsWith("text")) {
                java.io.BufferedReader bin = new java.io.BufferedReader(new java.io.InputStreamReader(urlc.getInputStream()));
                String st;
-               String message = "";
+               StringBuffer message = new StringBuffer();
                while ((st = bin.readLine()) != null) {
-                  message += st;
+                  message.append(st);
                }
 
-               // Debug.error(message);
+               // Debug.error(message.toString());
                // How about we toss the message out to the user
                // instead?
-               logger.warning(message);
+               logger.warning(message.toString());
 
                // image
             } else if (urlc.getContentType().startsWith("image")) {

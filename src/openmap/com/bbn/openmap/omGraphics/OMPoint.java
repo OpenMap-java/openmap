@@ -272,11 +272,11 @@ public class OMPoint extends OMGraphicAdapter implements OMGraphic, Serializable
         }
 
         if (oval) {
-            shape = new GeneralPath(new Ellipse2D.Float((float) Math.min(x2, x1), (float) Math.min(y2,
-                    y1), (float) Math.abs(x2 - x1), (float) Math.abs(y2 - y1)));
+            setShape(new GeneralPath(new Ellipse2D.Float((float) Math.min(x2, x1), (float) Math.min(y2,
+                    y1), (float) Math.abs(x2 - x1), (float) Math.abs(y2 - y1))));
         } else {
-            shape = createBoxShape((int) Math.min(x2, x1), (int) Math.min(y2,
-                    y1), (int) Math.abs(x2 - x1), (int) Math.abs(y2 - y1));
+            setShape(createBoxShape((int) Math.min(x2, x1), (int) Math.min(y2,
+                    y1), (int) Math.abs(x2 - x1), (int) Math.abs(y2 - y1)));
         }
 
         initLabelingDuringGenerate();
@@ -404,7 +404,7 @@ public class OMPoint extends OMGraphicAdapter implements OMGraphic, Serializable
                 return false;
             }
 
-            shape = createBoxShape(imageX, imageY, imageWidth, imageHeight);
+            setShape(createBoxShape(imageX, imageY, imageWidth, imageHeight));
 
             initLabelingDuringGenerate();
             setLabelLocation(new Point(imageX + imageWidth, imageY

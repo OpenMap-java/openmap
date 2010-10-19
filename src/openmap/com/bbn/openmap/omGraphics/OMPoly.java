@@ -1000,7 +1000,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
 
         case RENDERTYPE_XY:
         case RENDERTYPE_OFFSET:
-            shape = createShape(xpoints[0], ypoints[0], isPolygon);
+            setShape(createShape(xpoints[0], ypoints[0], isPolygon));
             break;
         case RENDERTYPE_LATLON:
             int size = xpoints.length;
@@ -1009,7 +1009,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                 GeneralPath gp = createShape(xpoints[i], ypoints[i], isPolygon);
 
                 if (shape == null) {
-                    shape = gp;
+                    setShape(gp);
                 } else {
                     ((GeneralPath) shape).append(gp, false);
                 }

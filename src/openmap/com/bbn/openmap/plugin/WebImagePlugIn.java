@@ -108,16 +108,16 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
             if (urlc.getContentType().startsWith("text")) {
                 java.io.BufferedReader bin = new java.io.BufferedReader(new java.io.InputStreamReader(urlc.getInputStream()));
                 String st;
-                String message = "";
+                StringBuffer message = new StringBuffer();
                 while ((st = bin.readLine()) != null) {
-                    message += st;
+                    message.append(st);
                 }
 
-                // Debug.error(message);
+                // Debug.error(message.toString());
                 // How about we toss the message out to the user
                 // instead?
                 if (layer != null) {
-                    layer.fireRequestMessage(message);
+                    layer.fireRequestMessage(message.toString());
                 }
 
                 // image

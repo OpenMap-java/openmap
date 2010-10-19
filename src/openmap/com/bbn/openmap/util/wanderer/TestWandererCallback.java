@@ -31,13 +31,15 @@ import java.io.File;
  */
 public class TestWandererCallback implements WandererCallback {
 
-    public void handleDirectory(File directory) {
+    public boolean handleDirectory(File directory) {
         System.out.println("Directory - " + directory.getName() + " has "
                 + directory.list().length + " item(s)");
+        return true;
     }
 
-    public void handleFile(File file) {
+    public boolean handleFile(File file) {
         System.out.println("File - " + file.getName());
+        return true;
     }
 
 }

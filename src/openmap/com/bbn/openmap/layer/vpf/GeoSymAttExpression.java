@@ -551,7 +551,7 @@ public class GeoSymAttExpression {
                   if (reasoning != null) {
                      reasoning.append("\n  col " + colName + " not found in FCI[" + fci.columnNameString() + "]");
                   }
-
+                  logger.info("col " + colName + " not found in FCI[" + fci.columnNameString() + "]");
                   return false;
                }
 

@@ -297,7 +297,6 @@ public class LibrarySelectionTable {
 
       int inArea = 0;
       CoverageTable redrawUntiled = null;
-      String useLibrary = warehouse.getUseLibrary();
 
       for (CoverageAttributeTable cat : CATs.values()) {
 
@@ -305,7 +304,7 @@ public class LibrarySelectionTable {
             VPFLayer.logger.fine("LST: checking library: " + cat.getLibraryName());
          }
 
-         if (useLibrary != null && !useLibrary.equalsIgnoreCase(cat.getLibraryName())) {
+         if (!warehouse.checkLibraryForUsage(cat.getLibraryName())) {
             continue;
          }
 
@@ -379,11 +378,10 @@ public class LibrarySelectionTable {
 
       int inArea = 0;
       CoverageTable redrawUntiled = null;
-      String useLibrary = warehouse.getUseLibrary();
 
       for (CoverageAttributeTable cat : CATs.values()) {
 
-         if (useLibrary != null && !useLibrary.equalsIgnoreCase(cat.getLibraryName())) {
+         if (!warehouse.checkLibraryForUsage(cat.getLibraryName())) {
             continue;
          }
 

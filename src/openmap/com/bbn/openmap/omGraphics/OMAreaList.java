@@ -47,7 +47,7 @@ public class OMAreaList extends OMGeometryList implements Serializable {
     public OMAreaList() {
         super(10);
         init();
-    };
+    }
 
     /**
      * Construct an OMAreaList with a capacity to be combined from an initial
@@ -58,7 +58,7 @@ public class OMAreaList extends OMGeometryList implements Serializable {
     public OMAreaList(int initialCapacity) {
         super(initialCapacity);
         init();
-    };
+    }
 
     /**
      * Construct an OMAreaList around a List of OMGeometries. The OMAreaList
@@ -119,7 +119,7 @@ public class OMAreaList extends OMGeometryList implements Serializable {
                 return;
             }
 
-            shape = appendShapeEdge(shape, gp, connectParts);
+            setShape(appendShapeEdge(shape, gp, connectParts));
             // save memory?? by deleting the shape in each part, since
             // they are each contributing to the whole.
             geometry.setShape((GeneralPath) null);

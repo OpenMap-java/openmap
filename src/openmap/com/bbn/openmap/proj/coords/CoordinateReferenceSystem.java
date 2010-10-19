@@ -62,6 +62,11 @@ public class CoordinateReferenceSystem {
                         300000, 6.3e+06, 800000, 6.7e+06),
                 AxisOrder.northBeforeEast);
         
+        // SWEREF 99 TM (EPSG:3006)
+        // http://spatialreference.org/ref/epsg/3006/
+        addUtm("EPSG:3006", 33, 'N', Ellipsoid.GRS_1980, new BoundingBox(218128.7031d, 6126002.9379d, 1083427.2970d, 7692850.9468d),
+             AxisOrder.northBeforeEast);
+
         // ETRS89 / ETRS-TM35FIN
         // http://spatialreference.org/ref/epsg/3067/
         addUtm("EPSG:3067", 35, 'N', Ellipsoid.GRS_1980, new BoundingBox(50199.4814d,
@@ -127,6 +132,11 @@ public class CoordinateReferenceSystem {
 
     private static void addUtm(String epsg, int zone_number, char zone_letter,
                                Ellipsoid ellps, BoundingBox bbox) {
+       addUtm(epsg, zone_number, zone_letter, ellps, bbox, AxisOrder.eastBeforeNorth);
+    }
+    
+    private static void addUtm(String epsg, int zone_number, char zone_letter,
+                               Ellipsoid ellps, BoundingBox bbox, AxisOrder axisOrder) {
         // some properties for the projection loader
         Properties projProps = new Properties();
         projProps.put(UTMProjectionLoader.ZONE_NUMBER,
@@ -146,7 +156,7 @@ public class CoordinateReferenceSystem {
 
         addCrs(new CoordinateReferenceSystem(epsg, gct,
                 UTMProjectionLoader.class, ellps, projProps, bbox,
-                AxisOrder.eastBeforeNorth));
+                axisOrder));
     }
 
     public CoordinateReferenceSystem(String code,

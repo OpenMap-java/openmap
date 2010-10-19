@@ -70,7 +70,7 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      */
     public OMGraphicList() {
         this(10);
-    };
+    }
 
     /**
      * Construct an OMGraphicList with an initial capacity.
@@ -79,7 +79,7 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      */
     public OMGraphicList(int initialCapacity) {
         graphics = Collections.synchronizedList(new ArrayList<OMGraphic>(initialCapacity));
-    };
+    }
 
     /**
      * Construct an OMGraphicList to include a Collection of OMGraphics.

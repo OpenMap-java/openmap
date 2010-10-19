@@ -711,13 +711,29 @@ public class CoverageTable {
       }
    }
 
+   /**
+    * This is a method specifically designed for the
+    * VPFAutoFeatureGraphicWarehouse, and the CoverageTable knows to check with
+    * the warehouse and use the PriorityHolders to fetch features.
+    * 
+    * @param warehouse VPFAutoFeatureGraphicWarehouse
+    * @param ll1 upper left of coverage area
+    * @param ll2 lower right of coverage area
+    * @param dpplat degrees/pixel vertically
+    * @param dpplon degrees/pixel horizontally
+    * @param omgList The OMGraphicList to add OMGraphics, representing features.
+    * @throws FormatException if something goes wrong reading files, this
+    *         exception will be thrown.
+    */
    public void getFeatures(VPFAutoFeatureGraphicWarehouse warehouse, LatLonPoint ll1, LatLonPoint ll2, double dpplat,
                            double dpplon, OMGraphicList omgList)
          throws FormatException {
 
+      // The map of feature names versus their table information
       Map<String, FeatureClassInfo> featureInfo = getFeatureClasses();
       TableHolder tables = new TableHolder(this);
 
+      // Loop through the features, one by one.
       for (String featureName : featureInfo.keySet()) {
 
          FeatureClassInfo fci = featureInfo.get(featureName);
@@ -727,8 +743,16 @@ public class CoverageTable {
          }
 
          fci.checkInit();
-         logger.fine(" for " + featureName + ": " + fci.getDescription());
+         if (logger.isLoggable(Level.FINE)) {
+            logger.fine(" for " + featureName + ": " + fci.getDescription());
+         }
 
+         /**
+          * The features are made up of various FACC codes, that more precisely
+          * categorize what each feature is. We're going to look at each entry
+          * of this particular feature type, and use the PriorityHolders from
+          * the warehouse to determine when it gets drawn.
+          */
          int faccIndex = fci.getFaccIndex();
 
          if (faccIndex < 0) {
@@ -753,14 +777,28 @@ public class CoverageTable {
          // primitive id (fci independent depending on type).
          int oldTileID = -2; // -1 is "untiled" tile_id
          int getrow = 1;
+
+         /**
+          * fcirow holds all the information for a particular feature. The fci
+          * lets you know what each column represents.
+          */
          for (List<Object> fcirow = new ArrayList<Object>(); fci.getRow(fcirow, getrow++);) {
 
             String facc = (String) fcirow.get(faccIndex);
 
+            /**
+             * Get the list of FeaturePriorityHolders that correspond to this
+             * particlar facc. This list is just an organizational tool so we
+             * don't have to run through all of the FPHs.
+             */
             List<FeaturePriorityHolder> list = warehouse.faccLookup.get(facc);
             if (list != null) {
                boolean foundMatch = false;
                for (FeaturePriorityHolder ph : list) {
+                  /**
+                   * Checking to see if the attributes for a particular feature
+                   * match this particular FPH.
+                   */
                   if (ph.matches(facc, fci, fcirow)) {
                      foundMatch = true;
                      if (logger.isLoggable(Level.FINE)) {
@@ -773,8 +811,8 @@ public class CoverageTable {
                      // Use the CoverageTable to create it via the
                      // warehouse,
 
-                     if (Debug.debugging("vpfdetail")) {
-                        Debug.output("CoverageTable new feature " + fcirow);
+                     if (logger.isLoggable(Level.FINER)) {
+                        logger.finer("CoverageTable new feature " + fcirow);
                      }
 
                      int tileID = fciTilingAdapter.getTileId(fcirow);
@@ -851,9 +889,24 @@ public class CoverageTable {
                      OMGraphic omg = tables.drawFeature(primitiveID, warehouse, ll1, ll2, dpplat, dpplon, featureName);
 
                      if (omg != null) {
-                        omg.putAttribute(OMGraphicConstants.INFOLINE, facc + ", " + fci.getFeatureType() + ", PH:" + ph.toString());
+                           
+                        warehouse.handleInformationForOMGraphic(omg, fci, fcirow);
                         ph.add(omg);
+
+                        if (false) {
+                           StringBuffer pout = new StringBuffer();
+                           for (Object obj : fcirow) {
+                              pout.append(obj.toString() + ",");
+                           }
+                           System.out.println(pout);
+                        }
                      }
+                  } else {
+                     // NOTE, this else statement is just for checking buoys.
+                     // if (ph.facc.equals(facc)) {
+                     // logger.info("something is getting blown off");
+                     // ph.matches(facc, fci, fcirow);
+                     // }
                   }
 
                   // And add it to the ph omgraphic list for
@@ -863,8 +916,8 @@ public class CoverageTable {
 
                if (!foundMatch) {
                   if (logger.isLoggable(Level.FINE)) {
-                     logger.fine("--- NO MATCH FOUND for " + facc + " tileid:" + fcirow.get(tileIDIndex) + ", primID:"
-                           + fcirow.get(primitiveIDIndex));
+                     logger.fine("--- NO MATCH FOUND for " + facc + ", type:" + featureType + ", tileid:" + fcirow.get(tileIDIndex)
+                           + ", primID:" + fcirow.get(primitiveIDIndex));
                   }
                }
             } else if (warehouse.debugFacc == null) {

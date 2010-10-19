@@ -48,7 +48,7 @@ public class OMGraphicHash extends OMGraphicList {
      */
     public OMGraphicHash(int initialCapacity) {
         super(initialCapacity);
-    };
+    }
 
     /**
      * Returns the value to which this map maps the specified key. Returns

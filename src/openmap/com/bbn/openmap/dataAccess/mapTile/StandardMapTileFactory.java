@@ -68,7 +68,7 @@ import com.bbn.openmap.util.cacheHandler.CacheObject;
  * 
  * <pre>
  * rootDir=the path to the parent directory of the tiles. The factory will construct specific file paths that are appended to this value. 
- * fileExt=the file extension to append to the tile names, should have a period.
+ * fileExt=the file extension to append to the tile names
  * cacheSize=the number of mapTiles the factory should hold on to. The default is 100.
  * # default is OSMMapTileCoordinateTransform, but it depends on the source of tiles.  GDAL is TSMMapTileCoordinateTransform
  * mapTileTransform=com.bbn.openmap.dataAccess.mapTile.OSMMapTileCoordinateTransform, or com.bbn.openmap.dataAccess.mapTile.TSMMapTileCoordinateTransform
@@ -575,6 +575,11 @@ public class StandardMapTileFactory
          if (raster != null) {
             raster.generate(proj);
             list.add(raster);
+            
+            if (logger.isLoggable(Level.FINE)) {
+               raster.putAttribute(OMGraphic.TOOLTIP, imagePath);
+            }
+            
             if (repaintCallback != null) {
                repaintCallback.repaint();
             }
@@ -625,7 +630,7 @@ public class StandardMapTileFactory
       int ret = low;
       for (int i = low; i <= high; i++) {
          float diff = currentScale - scales[i];
-         if (diff < 0 && diff > currentDiff) {
+         if (diff <= 0 && diff > currentDiff) {
             ret = i;
             currentDiff = diff;
          }
@@ -676,7 +681,12 @@ public class StandardMapTileFactory
       prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
       rootDir = setList.getProperty(prefix + ROOT_DIR_PROPERTY, rootDir);
-      fileExt = setList.getProperty(prefix + FILE_EXT_PROPERTY, fileExt);
+      String fileExt = setList.getProperty(prefix + FILE_EXT_PROPERTY);
+
+      // Add a period if it doesn't exist.
+      if (fileExt != null) {
+         setFileExt(fileExt);
+      }
 
       String mapTileCoordinateTransform = setList.getProperty(prefix + MTCTRANSFORM_PROPERTY);
       if (mapTileCoordinateTransform != null) {

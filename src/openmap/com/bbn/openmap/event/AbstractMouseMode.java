@@ -113,7 +113,7 @@ public class AbstractMouseMode
 
    protected String iconName;
 
-   protected boolean zoomWhenMouseWheelUp = ZOOM_OUT;
+   protected boolean zoomWhenMouseWheelUp = ZOOM_IN;
 
    protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
@@ -162,6 +162,18 @@ public class AbstractMouseMode
     * If enabled, the mouse wheel changes the scale of the map.
     */
    public static final String MouseWheelListenerProperty = "mouseWheelListener";
+
+   /**
+    * A property that lets you turn off the mouse wheel timer.
+    * If disabled, a timer is used for dealing with the mouse wheel changes.
+    */
+   public static final String NoMouseWheelListenerTimerProperty = "noMouseWheelListenerTimer";
+
+   /**
+    * A property that lets you set the wait interval before a mouse wheel event
+    * gets triggered.
+    */
+   public static final String MouseWheelTimerIntervalProperty = "mouseWheelTimerInterval";
 
    /**
     * Construct an AbstractMouseMode. Default constructor, allocates the mouse
@@ -664,6 +676,9 @@ public class AbstractMouseMode
          } catch (IllegalAccessException iae) {
          }
       }
+
+      noMouseWheelListenerTimer = PropUtils.booleanFromProperties(props, prefix + NoMouseWheelListenerTimerProperty, noMouseWheelListenerTimer);
+      mouseWheelTimerInterval = PropUtils.intFromProperties(props, prefix + MouseWheelTimerIntervalProperty, mouseWheelTimerInterval);
    }
 
    public Properties getProperties(Properties props) {
@@ -706,6 +721,9 @@ public class AbstractMouseMode
 
       props.put(prefix + IconProperty, PropUtils.unnull(getIconName()));
 
+      props.put(prefix + NoMouseWheelListenerTimerProperty, Boolean.toString(noMouseWheelListenerTimer));
+      props.put(prefix + MouseWheelTimerIntervalProperty, Integer.toString(mouseWheelTimerInterval));
+
       return props;
    }
 
@@ -738,6 +756,14 @@ public class AbstractMouseMode
 
       PropUtils.setI18NPropertyInfo(i18n, props, thisClass, CursorIDProperty, "Cursor", "Cursor to use for this mouse mode.",
                                     "com.bbn.openmap.util.propertyEditor.ComboBoxPropertyEditor");
+
+      PropUtils.setI18NPropertyInfo(i18n, props, thisClass, NoMouseWheelListenerTimerProperty, "No Mouse Wheel Listener Timer",
+                                    "Setting for whether a timer is used with the mouse wheel controller",
+                                    "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+
+      PropUtils.setI18NPropertyInfo(i18n, props, thisClass, MouseWheelTimerIntervalProperty, "Mouse Wheel Timer Interval",
+                                    "Setting for the wait interval for the mouse wheel timer",
+                                    null);
 
       StringBuffer cOptions = new StringBuffer();
       Field[] cFields = Cursor.class.getFields();
@@ -795,6 +821,9 @@ public class AbstractMouseMode
     */
    public void setMouseWheelTimerInterval(int interval) {
       mouseWheelTimerInterval = interval;
+      if (mouseTimer != null) {
+          mouseTimer.setInitialDelay(mouseWheelTimerInterval);
+      }
    }
 
    public int getMouseWheelTimerInterval() {

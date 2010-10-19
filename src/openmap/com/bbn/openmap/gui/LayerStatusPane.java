@@ -22,7 +22,6 @@
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
 import java.net.URL;
 
 import javax.swing.ButtonGroup;
@@ -42,9 +41,6 @@ public class LayerStatusPane extends LayerPane implements LayerStatusListener {
     // the icons
     protected static transient ImageIcon layerWorking;
     protected static transient ImageIcon layerDone;
-
-    protected Color offColor;
-    protected Color onColor = new Color(0xFF0066CC);
 
     // default initializations, extended from LayerPane...
     static {

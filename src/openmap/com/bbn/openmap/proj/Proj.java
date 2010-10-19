@@ -131,10 +131,8 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         scale = s;
         if (scale < minscale) {
             scale = minscale;
-            computeParameters();
         } else if (scale > maxscale) {
             scale = maxscale;
-            computeParameters();
         }
         computeParameters();
         projID = null;
@@ -332,6 +330,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         }
 
         computeParameters();
+        projID = null;
     }
 
     /**
@@ -910,6 +909,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
             ClassNotFoundException {
         in.defaultReadObject();
         computeParameters();
+        projID = null;
     }
 
     /**

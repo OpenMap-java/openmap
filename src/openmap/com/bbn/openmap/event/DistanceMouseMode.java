@@ -410,16 +410,17 @@ public class DistanceMouseMode extends CoordMouseMode {
         }
 
         // add the mouse lat, lon
-        String infoLine = "Lat, Lon (" + df.format(llp.getY()) + ", "
-                + df.format(llp.getX()) + "), distance (";
+        StringBuffer infoLine = new StringBuffer();
+        infoLine.append("Lat, Lon (").append(df.format(llp.getY())).append(", ")
+                .append(df.format(llp.getX())).append("), distance (");
 
         // add the units
-        infoLine = infoLine + unitInfo + ")";
+        infoLine.append(unitInfo).append(")");
         // add the azimuth angle if need be
         if (showAngle) {
-            infoLine = infoLine + ", angle (" + df.format(azimuth) + ")";
+            infoLine.append(", angle (").append(df.format(azimuth)).append(")");
         }
-        return infoLine;
+        return infoLine.toString();
     }
 
     /**

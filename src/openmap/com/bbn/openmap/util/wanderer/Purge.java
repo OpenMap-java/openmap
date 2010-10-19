@@ -82,11 +82,12 @@ public class Purge extends Wanderer implements WandererCallback {
 
     }
 
-    public void handleDirectory(File directory) {
+    public boolean handleDirectory(File directory) {
     // Do nothing to directories
+       return true;
     }
 
-    public void handleFile(File file) {
+    public boolean handleFile(File file) {
         String fileName = file.getName();
         int i;
 
@@ -95,7 +96,7 @@ public class Purge extends Wanderer implements WandererCallback {
                 if (DETAIL)
                     Debug.output("Deleting " + fileName);
                 file.delete();
-                return;
+                return true;
             }
         }
 
@@ -104,9 +105,11 @@ public class Purge extends Wanderer implements WandererCallback {
                 if (DETAIL)
                     Debug.output("Deleting " + fileName);
                 file.delete();
-                return;
+                return true;
             }
         }
+        
+        return true;
     }
 
     /**

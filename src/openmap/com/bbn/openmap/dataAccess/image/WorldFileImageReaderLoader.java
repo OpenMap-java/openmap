@@ -35,33 +35,35 @@ import java.net.URL;
  * 
  * @author dietrick
  */
-public class WorldFileImageReaderLoader implements ImageReaderLoader {
-    public WorldFileImageReaderLoader() {}
+public class WorldFileImageReaderLoader
+      implements ImageReaderLoader {
+   public WorldFileImageReaderLoader() {
+   }
 
-    public ImageReader getImageReader(URL fileURL) {
-        WorldFileImageReader wfid = null;
-        try {
-            wfid = new WorldFileImageReader(fileURL);
-        } catch (MalformedURLException murle) {
+   public ImageReader getImageReader(URL fileURL) {
+      WorldFileImageReader wfid = null;
+      try {
+         wfid = new WorldFileImageReader(fileURL);
+      } catch (MalformedURLException murle) {
 
-        } catch (IOException ioe) {
+      } catch (IOException ioe) {
 
-        }
-        return wfid;
-    }
+      }
+      return wfid;
+   }
 
-    public boolean isLoadable(String fileName) {
-        if (fileName != null) {
-            fileName = fileName.toLowerCase();
-            return (fileName.endsWith(".tif") || fileName.endsWith(".png")
-                    || fileName.endsWith(".jpeg") || fileName.endsWith(".jpg") || fileName.endsWith(".gif"));
-        }
+   public boolean isLoadable(String fileName) {
+      if (fileName != null) {
+         fileName = fileName.toLowerCase();
+         return (fileName.endsWith(".tif") || fileName.endsWith(".png") || fileName.endsWith(".jpeg") || fileName.endsWith(".jpg")
+               || fileName.endsWith(".gif") || fileName.endsWith(".bmp"));
+      }
 
-        return false;
-    }
+      return false;
+   }
 
-    public boolean isLoadable(URL fileURL) {
-        return isLoadable(fileURL.getPath());
-    }
-    
+   public boolean isLoadable(URL fileURL) {
+      return isLoadable(fileURL.getPath());
+   }
+
 }

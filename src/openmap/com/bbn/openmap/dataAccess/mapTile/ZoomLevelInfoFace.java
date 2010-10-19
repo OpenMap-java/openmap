@@ -464,12 +464,10 @@ public class ZoomLevelInfoFace
          return boundsObjectList.get(index);
       }
 
-      @SuppressWarnings("unused")
       public void editElement(int index) {
          fireContentsChanged(this, index, index);
       }
 
-      @SuppressWarnings("unused")
       public void insertElement(BoundsObject obj, int index) {
          boundsObjectList.add(index, obj);
          fireIntervalAdded(this, index, index);
@@ -481,7 +479,6 @@ public class ZoomLevelInfoFace
          fireIntervalAdded(this, index, index);
       }
 
-      @SuppressWarnings("unused")
       public BoundsObject removeElementAt(int index) {
          BoundsObject obj = boundsObjectList.remove(index);
          fireIntervalRemoved(this, index, index);

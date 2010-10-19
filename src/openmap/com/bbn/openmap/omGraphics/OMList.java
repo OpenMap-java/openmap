@@ -106,12 +106,6 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
     protected boolean allowDuplicates = true;
 
     /**
-     * Flag used to specify whether the list is visible or not. Depending on
-     * desired behavior, subclasses may push this value onto their children.
-     */
-    protected boolean visible = true;
-
-    /**
      * The List that actually contains the the OMGeometry/OMGraphic objects.
      */
     protected List<T> graphics;
@@ -121,7 +115,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
      */
     public OMList() {
         graphics = Collections.synchronizedList(new ArrayList<T>());
-    };
+    }
 
     public OMList(int initialCapacity) {
         graphics = Collections.synchronizedList(new ArrayList<T>(initialCapacity));
@@ -640,6 +634,8 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
                 }
             }
         }
+
+        renderLabel(gr);
     }
 
     /**
@@ -1422,7 +1418,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
      * @param visible boolean
      */
     public void setVisible(boolean visible) {
-        this.visible = visible;
+        super.setVisible(visible);
         if (!isVague()) {
             synchronized (graphics) {
                 for (Iterator<? extends OMGeometry> it = iterator(); it.hasNext();) {
@@ -1449,7 +1445,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
             }
             return false;
         } else {
-            return visible;
+            return super.isVisible();
         }
     }
 

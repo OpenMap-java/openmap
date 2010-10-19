@@ -284,10 +284,10 @@ public class MessageHeader {
     }
 
     public String toString() {
-        String result = super.toString();
+        StringBuffer result = new StringBuffer(super.toString());
         for (int i = 0; i < keys.length; i++) {
-            result += "{" + keys[i] + ": " + values[i] + "}";
+            result.append("{").append(keys[i]).append(": ").append(values[i]).append("}");
         }
-        return result;
+        return result.toString();
     }
 }

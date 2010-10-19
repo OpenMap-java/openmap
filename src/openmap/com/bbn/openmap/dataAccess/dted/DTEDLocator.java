@@ -22,192 +22,192 @@
 
 package com.bbn.openmap.dataAccess.dted;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.ArgParser;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.wanderer.Wanderer;
 import com.bbn.openmap.util.wanderer.WandererCallback;
 
 /**
- * DTEDLocator finds DTED frame files, and organizes them by level,
- * longitude and latitude.
+ * DTEDLocator finds DTED frame files, and organizes them by level, longitude
+ * and latitude.
  * <P>
  * 
  * <pre>
  * 
  *  Usage: java com.bbn.openmap.dataAccess.dted.DTEDLocator (dir path) ...
- *  
+ * 
  * </pre>
  */
-public class DTEDLocator extends Wanderer implements WandererCallback {
+public class DTEDLocator
+      extends Wanderer
+      implements WandererCallback {
 
-    boolean DEBUG = false;
+   static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.dted.DTEDLocator");
 
-    protected DTEDNameTranslator translator;
+   boolean DEBUG = false;
 
-    protected LinkedList filenames = new LinkedList();
+   protected DTEDNameTranslator translator;
 
-    protected File[][][] files = null;
-    protected int numLevels = 3;
+   protected LinkedList filenames = new LinkedList();
 
-    /**
-     * Create a DTEDLocator, expect to set the top level DTED
-     * directory later.
-     */
-    public DTEDLocator() {
-        super();
-        if (Debug.debugging("dted")) {
-            DEBUG = true;
-        }
-        setCallback(this);
-    }
+   protected File[][][] files = null;
+   protected int numLevels = 3;
 
-    /**
-     * Create the DTEDLocator and start searching from the directory
-     * specificed.
-     */
-    public DTEDLocator(String directory) {
-        this(new File(directory));
-    }
+   /**
+    * Create a DTEDLocator, expect to set the top level DTED directory later.
+    */
+   public DTEDLocator() {
+      super();
+      if (logger.isLoggable(Level.FINE)) {
+         DEBUG = true;
+      }
+      setCallback(this);
+   }
 
-    /**
-     * Create the DTEDLocator and start searching from the directory
-     * specificed.
-     */
-    public DTEDLocator(File dtedDir) {
-        this();
-        handleEntry(dtedDir);
-    }
+   /**
+    * Create the DTEDLocator and start searching from the directory specificed.
+    */
+   public DTEDLocator(String directory) {
+      this(new File(directory));
+   }
 
-    /**
-     * Initialize the holding arrays.
-     */
-    protected void initFileHolder() {
-        files = new File[numLevels][180][360]; // level,lat, lon
-    }
+   /**
+    * Create the DTEDLocator and start searching from the directory specificed.
+    */
+   public DTEDLocator(File dtedDir) {
+      this();
+      handleEntry(dtedDir);
+   }
 
-    /**
-     * Does nothing, nothing is done for directories.
-     */
-    public void handleDirectory(File directory) {
-        if (DEBUG) {
-            Debug.output("DTEDLocator: skipping: "
-                    + directory.getAbsolutePath());
-        }
-        // Do nothing to directories
-    }
+   /**
+    * Initialize the holding arrays.
+    */
+   protected void initFileHolder() {
+      files = new File[numLevels][180][360]; // level,lat, lon
+   }
 
-    /**
-     * When a file is found, add it.
-     */
-    public void handleFile(File file) {
-        if (DEBUG) {
-            Debug.output("DTEDLocator: searching finds: "
-                    + file.getAbsolutePath());
-        }
-        filenames.add(file);
-    }
+   /**
+    * Does nothing, nothing is done for directories.
+    */
+   public boolean handleDirectory(File directory) {
+      if (DEBUG) {
+         logger.fine("skipping: " + directory.getAbsolutePath());
+      }
+      // Do nothing to directories
+      return true;
+   }
 
-    /**
-     * Get the DTEDNameTranslator that knows how to interpret where a
-     * DTED file covers based on its name.
-     */
-    public DTEDNameTranslator getTranslator() {
-        if (translator == null) {
-            translator = new StandardDTEDNameTranslator();
-        }
+   /**
+    * When a file is found, add it.
+    */
+   public boolean handleFile(File file) {
+      if (DEBUG) {
+         logger.fine("searching finds: " + file.getAbsolutePath());
+      }
+      filenames.add(file);
+      return true;
+   }
 
-        return translator;
-    }
+   /**
+    * Get the DTEDNameTranslator that knows how to interpret where a DTED file
+    * covers based on its name.
+    */
+   public DTEDNameTranslator getTranslator() {
+      if (translator == null) {
+         translator = new StandardDTEDNameTranslator();
+      }
 
-    /**
-     * Set the DTEDNameTranslator that knows how to interpret where a
-     * DTED file covers based on its name.
-     */
-    public void setTranslator(DTEDNameTranslator dnt) {
-        translator = dnt;
-    }
+      return translator;
+   }
 
-    /**
-     * After all the files have been located, organized them spatially
-     * in the 3D array.
-     */
-    public void organize() {
-        if (DEBUG) {
-            Debug.output("DTEDLocator: organizing frames...");
-        }
-        initFileHolder();
-        Iterator it = filenames.iterator();
-        DTEDNameTranslator dnt = getTranslator();
+   /**
+    * Set the DTEDNameTranslator that knows how to interpret where a DTED file
+    * covers based on its name.
+    */
+   public void setTranslator(DTEDNameTranslator dnt) {
+      translator = dnt;
+   }
 
-        while (it.hasNext()) {
-            File file = (File) it.next();
-            String filename = file.getAbsolutePath();
-            try {
-                dnt.set(filename);
+   /**
+    * After all the files have been located, organized them spatially in the 3D
+    * array.
+    */
+   public void organize() {
+      if (DEBUG) {
+         logger.fine("organizing frames...");
+      }
+      initFileHolder();
+      Iterator it = filenames.iterator();
+      DTEDNameTranslator dnt = getTranslator();
 
-                int l = dnt.getLevel();
-                int lt = (int) (dnt.getLat() + 90);
-                int ln = (int) (dnt.getLon() + 180);
+      while (it.hasNext()) {
+         File file = (File) it.next();
+         String filename = file.getAbsolutePath();
+         try {
+            dnt.set(filename);
 
-                if (DEBUG) {
-                    Debug.output("  placing " + filename + " at files[" + l
-                            + "][" + lt + "][" + ln + "]");
-                }
+            int l = dnt.getLevel();
+            int lt = (int) (dnt.getLat() + 90);
+            int ln = (int) (dnt.getLon() + 180);
 
-                files[l][lt][ln] = file;
-
-            } catch (FormatException fe) {
-                continue;
-            } catch (ArrayIndexOutOfBoundsException aioobe) {
-                continue;
+            if (DEBUG) {
+               logger.fine("  placing " + filename + " at files[" + l + "][" + lt + "][" + ln + "]");
             }
-        }
-    }
 
-    /**
-     * Get the File object for a latitude, longitude and level.
-     */
-    public File get(float lat, float lon, int level) {
-        // Need to offset lat/lon to indexes.
+            files[l][lt][ln] = file;
 
-        try {
-            return files[level][(int) (lat + 90)][(int) (lon + 180)];
-        } catch (NullPointerException npe) {
-            organize();
-            return get(lat, lon, level);
-        } catch (ArrayIndexOutOfBoundsException aioobe) {
+         } catch (FormatException fe) {
+            continue;
+         } catch (ArrayIndexOutOfBoundsException aioobe) {
+            continue;
+         }
+      }
+   }
 
-        }
-        return null;
-    }
+   /**
+    * Get the File object for a latitude, longitude and level.
+    */
+   public File get(float lat, float lon, int level) {
+      // Need to offset lat/lon to indexes.
 
-    /**
-     * Given a set of files or directories, parade through them to
-     * find files that end with '`', or files that start with '.#',
-     * and delete them.
-     * 
-     * @param argv paths to files or directories, use -h to get a
-     *        usage statement.
-     */
-    public static void main(String[] argv) {
-        Debug.init();
+      try {
+         return files[level][(int) (lat + 90)][(int) (lon + 180)];
+      } catch (NullPointerException npe) {
+         organize();
+         return get(lat, lon, level);
+      } catch (ArrayIndexOutOfBoundsException aioobe) {
 
-        ArgParser ap = new ArgParser("DTEDLocator");
+      }
+      return null;
+   }
 
-        if (argv.length == 0) {
-            ap.bail("", true);
-        }
+   /**
+    * Given a set of files or directories, parade through them to find files
+    * that end with '`', or files that start with '.#', and delete them.
+    * 
+    * @param argv paths to files or directories, use -h to get a usage
+    *        statement.
+    */
+   public static void main(String[] argv) {
 
-        DTEDLocator locator = new DTEDLocator();
+      ArgParser ap = new ArgParser("DTEDLocator");
 
-        // Assume that the arguments are paths to directories or
-        // files.
-        for (int i = 0; i < argv.length; i++) {
-            locator.handleEntry(new File(argv[i]));
-        }
-    }
+      if (argv.length == 0) {
+         ap.bail("", true);
+      }
+
+      DTEDLocator locator = new DTEDLocator();
+
+      // Assume that the arguments are paths to directories or
+      // files.
+      for (int i = 0; i < argv.length; i++) {
+         locator.handleEntry(new File(argv[i]));
+      }
+   }
 }

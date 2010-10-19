@@ -1297,7 +1297,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
                     PathIterator pi = shape.getPathIterator(at);
                     GeneralPath gp = new GeneralPath();
                     gp.append(pi, false);
-                    shape = gp;
+                    setShape(gp);
                 }
             }
 

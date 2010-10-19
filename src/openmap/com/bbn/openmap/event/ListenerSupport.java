@@ -55,7 +55,6 @@ public class ListenerSupport<E>
     */
    public ListenerSupport(Object sourceBean) {
       setSource(sourceBean);
-      Debug.message("listenersupport", "ListenerSupport()");
    }
 
    /**

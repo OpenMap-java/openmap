@@ -132,14 +132,14 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
             double y2 = p1.getY() + radius;
 
             if (isOval) {
-                shape = new GeneralPath(new Ellipse2D.Float((float) Math.min(x2,
+                setShape(new GeneralPath(new Ellipse2D.Float((float) Math.min(x2,
                         x1), (float) Math.min(y2, y1), (float) Math.abs(x2 - x1), (float) Math.abs(y2
-                        - y1)));
+                        - y1))));
             } else {
-                shape = createBoxShape((int) Math.min(x2, x1),
+                setShape(createBoxShape((int) Math.min(x2, x1),
                         (int) Math.min(y2, y1),
                         (int) Math.abs(x2 - x1),
-                        (int) Math.abs(y2 - y1));
+                        (int) Math.abs(y2 - y1)));
             }
 
             initLabelingDuringGenerate();
@@ -227,7 +227,7 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
 
                 GeneralPath gp = createShape(xps, yps, false);
                 if (shape == null) {
-                    shape = gp;
+                    setShape(gp);
                 } else {
                     ((GeneralPath) shape).append(gp, false);
                 }
@@ -318,7 +318,7 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
                 GeneralPath gp = createShape(xpoints[i], ypoints[i], isPolygon);
 
                 if (shape == null) {
-                    shape = gp;
+                    setShape(gp);
                 } else {
                     ((GeneralPath) shape).append(gp, false);
                 }

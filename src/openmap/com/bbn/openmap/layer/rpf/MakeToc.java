@@ -173,7 +173,7 @@ public class MakeToc {
 
       public double EPS() {
          return (Math.abs(right - left) * MakeToc.EPS);
-      };
+      }
 
       public String toString() {
          StringBuffer s = new StringBuffer();
@@ -1805,7 +1805,8 @@ public class MakeToc {
          tmp = (char) tmpi;
 
          // Setting i to a certain value, based on longitude.
-         for (i = 0; i * 15 < (int) (longitude + 0.9999); i++);
+         for (i = 0; i * 15 < (int) (longitude + 0.9999); i++) {
+         }
          tmpi1 = 15 * i - (int) (longitude);
          if ((tmpi1 >= 3) && (tmpi1 < 8)) {
             tmpi1 += 1;
@@ -1838,7 +1839,8 @@ public class MakeToc {
          tmp = (char) tmpi;
 
          /* DKS changed from abs to fabs */
-         for (i = 0; i * 15 < (int) (Math.abs((longitude - 0.9999))); i++);
+         for (i = 0; i * 15 < (int) (Math.abs((longitude - 0.9999))); i++) {
+         }
          /* DKS changed from abs to fabs */
          tmpi1 = i * 15 - (int) (Math.abs((longitude - 0.9999)));
          if ((tmpi1 >= 8) && (tmpi1 < 13)) {
@@ -1895,7 +1897,8 @@ public class MakeToc {
          }
          tmp = (char) tmpi;
 
-         for (i = 0; i * 15 < (int) (latitude + 0.9999); i++);
+         for (i = 0; i * 15 < (int) (latitude + 0.9999); i++) {
+         }
          tmpi1 = 15 * i - (int) (latitude);
          if ((tmpi1 >= 3) && (tmpi1 < 8)) {
             tmpi1 += 1;
@@ -1923,7 +1926,8 @@ public class MakeToc {
             tmpi = 65;
          }
          /* DKS changed from abs to fabs */
-         for (i = 0; i * 15 < (int) (Math.abs((latitude - 0.9999))); i++);
+         for (i = 0; i * 15 < (int) (Math.abs((latitude - 0.9999))); i++) {
+         }
          /* DKS changed from abs to fabs */
          tmpi1 = i * 15 - (int) (Math.abs((latitude - 0.9999)));
          if ((tmpi1 >= 8) && (tmpi1 < 13)) {

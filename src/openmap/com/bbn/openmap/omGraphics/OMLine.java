@@ -318,7 +318,7 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
                 xpoints[0][1] = pts[2];
                 ypoints[0][1] = pts[3];
             }
-            shape = createShape(xpoints[0], ypoints[0], false);
+            setShape(createShape(xpoints[0], ypoints[0], false));
             break;
         case RENDERTYPE_OFFSET:
             if (!proj.isPlotable(latlons[0], latlons[1])) {
@@ -343,7 +343,7 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
                 xpoints[0][1] = p1.x + pts[2];
                 ypoints[0][1] = p1.y + pts[3];
             }
-            shape = createShape(xpoints[0], ypoints[0], false);
+            setShape(createShape(xpoints[0], ypoints[0], false));
             break;
         case RENDERTYPE_LATLON:
             if (arc != null) {
@@ -356,7 +356,7 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
                 xpoints[0] = arc.getXPoints();
                 ypoints[0] = arc.getYPoints();
 
-                shape = createShape(xpoints[0], ypoints[0], false);
+                setShape(createShape(xpoints[0], ypoints[0], false));
 
                 isPolyline = true;
 
@@ -386,7 +386,7 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
 
                     GeneralPath gp = createShape(xps, yps, false);
                     if (shape == null) {
-                        shape = gp;
+                        setShape(gp);
                     } else {
                         ((GeneralPath) shape).append(gp, false);
                     }
