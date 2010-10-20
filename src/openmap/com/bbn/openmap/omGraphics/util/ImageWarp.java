@@ -345,11 +345,12 @@ public class ImageWarp {
 
    protected DataBounds calculateProjectedImageBounds(Projection p) {
 
-      if (geoTrans.equals(LatLonGCT.INSTANCE)) {
-         // whole earth
-         logger.fine("just using whole screen image");
-         return new DataBounds(0, 0, p.getWidth(), p.getHeight());
-      }
+      // This doesn't seem to do anything but slow things down.
+      // if (geoTrans.equals(LatLonGCT.INSTANCE)) {
+      // // whole earth
+      // logger.fine("just using whole screen image");
+      // return new DataBounds(0, 0, p.getWidth(), p.getHeight());
+      // }
 
       DataBounds db = null;
       if (sourceImageBounds != null) {
