@@ -40,8 +40,7 @@ import com.bbn.openmap.util.wanderer.Wanderer;
 import com.bbn.openmap.util.wanderer.WandererCallback;
 
 /**
- * Count the source lines of code but going through the directory and
- * counting ; and }.
+ * Wanders through a directory structure converting svg files to gifs.
  */
 public class SVG2GIF implements WandererCallback {
 
@@ -56,12 +55,14 @@ public class SVG2GIF implements WandererCallback {
     }
 
     // do nothing on directories
-    public void handleDirectory(File directory) {}
+    public boolean handleDirectory(File directory) {
+       return true;
+    }
 
     // count the ; and } in each file.
-    public void handleFile(File file) {
+    public boolean handleFile(File file) {
         if (!file.getName().endsWith(".svg")) {
-            return;
+            return true;
         }
 
         try {
@@ -86,7 +87,7 @@ public class SVG2GIF implements WandererCallback {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        return true;
     }
 
     /**
