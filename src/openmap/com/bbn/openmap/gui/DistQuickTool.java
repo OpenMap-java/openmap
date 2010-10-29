@@ -75,7 +75,7 @@ public class DistQuickTool
    protected boolean ommmActive = false;
 
    public DistQuickTool() {
-      mouseMode = new MouseMode();
+      mouseMode = getMouseMode();
       try {
          setOpaque(false);
          URL url = PropUtils.getResourceOrFileOrURL("com/bbn/openmap/tools/drawing/distance.png");
@@ -143,8 +143,15 @@ public class DistQuickTool
          ((MouseDelegator) someObj).removePropertyChangeListener(this);
       }
    }
+   
+   public MouseMode getMouseMode() {
+      if (mouseMode == null) {
+         mouseMode = new MouseMode();
+      }
+      return mouseMode;
+   }
 
-   protected class MouseMode
+   public class MouseMode
          extends CoordMouseMode
          implements ProjectionListener {
 

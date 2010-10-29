@@ -538,6 +538,49 @@ public class Intersection {
         return false;
     }
 
+   /**
+    * Checks if the two polygonal areas intersect. The two polygonal regions are
+    * represented by two lat-lon arrays in the lat1, lon1, lat2, lon2,...
+    * format. For closed polygons the last pair of points in the array should be
+    * the same as the first pair. All lat-lon values are in degrees. KM
+    * optimized to create each Geo only once. (TODO consider optimizing the
+    * other paths.)
+    */
+    public static boolean polyIntersect_optimized(double[] polyPoints1,
+                                        double[] polyPoints2) {
+
+        // go through each side of poly1 and test to see if it
+        // intersects with any side of poly2
+       
+       Geo geos1[] = new Geo[polyPoints1.length / 2];
+       Geo geos2[] = new Geo[polyPoints2.length / 2];
+       
+       for (int i = 0; i < geos1.length; i++) {
+          geos1[i] = new Geo(polyPoints1[2*i], polyPoints1[2*i + 1]);
+       }
+       for (int i = 0; i < geos2.length; i++) {
+          geos2[i] = new Geo(polyPoints2[2*i], polyPoints2[2*i + 1]);
+       }
+
+        for (int i = 0; i < geos1.length - 1; i++) {
+
+            for (int j = 0; j < geos2.length - 1; j++) {
+               Geo p1 = geos1[i];
+               Geo p2 = geos1[i+1];
+               Geo p3 = geos2[j];
+               Geo p4 = geos2[j+1];
+               
+               Geo[] results = getSegIntersection(p1, p2, p3, p4);
+               
+               if(results[0] != null || results[1] != null) {
+                  return true;
+               }
+            }
+        }
+        
+        return false;
+    }
+
     /**
      * checks if the polygon or polyline represented by the polypoints contains
      * any lines that intersect each other. All lat-lon values are in degrees.
