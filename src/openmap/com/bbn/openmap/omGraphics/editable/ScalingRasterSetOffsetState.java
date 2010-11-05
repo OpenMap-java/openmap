@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import com.bbn.openmap.omGraphics.EditableOMRect;
 import com.bbn.openmap.omGraphics.EditableOMScalingRaster;
 import com.bbn.openmap.omGraphics.OffsetGrabPoint;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 
 public class ScalingRasterSetOffsetState extends GraphicSetOffsetState {
 
@@ -46,6 +47,6 @@ public class ScalingRasterSetOffsetState extends GraphicSetOffsetState {
         graphic.fireEvent(EOMGCursors.PUTNODE,
                 i18n.get(ScalingRasterSetOffsetState.class,
                         "Click_to_place_offset_point.",
-                        "Click to place offset point."));
+                        "Click to place offset point."), EOMGEvent.EOMG_UNCHANGED);
     }
 }

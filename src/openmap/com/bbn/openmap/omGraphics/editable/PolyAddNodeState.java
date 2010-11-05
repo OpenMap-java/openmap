@@ -33,6 +33,7 @@ import com.bbn.openmap.omGraphics.EditableOMPoly;
 import com.bbn.openmap.omGraphics.GrabPoint;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
 public class PolyAddNodeState extends State {
@@ -78,6 +79,8 @@ public class PolyAddNodeState extends State {
                     ((EditableOMPoly) graphic).addPoint(e.getX(),
                             e.getY(),
                             index + 1);
+
+                    graphic.fireEvent(EOMGEvent.EOMG_SELECTED);
                 }
             }
         }
@@ -95,12 +98,12 @@ public class PolyAddNodeState extends State {
             graphic.fireEvent(EOMGCursors.EDIT,
                     i18n.get(PolyAddNodeState.class,
                             "Click_between_nodes_to_add_another_node.",
-                            "Click between nodes to add another node."), e);
+                            "Click between nodes to add another node."), e, EOMGEvent.EOMG_UNCHANGED);
         } else {
             graphic.fireEvent(EOMGCursors.DEFAULT,
                     i18n.get(PolyAddNodeState.class,
                             "Click_between_nodes_to_add_another_node.",
-                            "Click between nodes to add another node."), e);
+                            "Click between nodes to add another node."), e, EOMGEvent.EOMG_UNCHANGED);
         }
 
         // graphic.redraw(e);
@@ -115,12 +118,12 @@ public class PolyAddNodeState extends State {
             graphic.fireEvent(EOMGCursors.EDIT,
                     i18n.get(PolyAddNodeState.class,
                             "Release_between_nodes_to_add_a_node.",
-                            "Release between nodes to add a node."), e);
+                            "Release between nodes to add a node."), e, EOMGEvent.EOMG_UNCHANGED);
         } else {
             graphic.fireEvent(EOMGCursors.DEFAULT,
                     i18n.get(PolyAddNodeState.class,
                             "Release_between_nodes_to_add_a_node.",
-                            "Release between nodes to add a node."), e);
+                            "Release between nodes to add a node."), e, EOMGEvent.EOMG_UNCHANGED);
         }
 
         // graphic.redraw(e);

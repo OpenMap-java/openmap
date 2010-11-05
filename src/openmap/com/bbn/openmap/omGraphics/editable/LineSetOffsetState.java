@@ -28,6 +28,7 @@ import java.awt.event.MouseEvent;
 
 import com.bbn.openmap.omGraphics.EditableOMLine;
 import com.bbn.openmap.omGraphics.OffsetGrabPoint;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 
 public class LineSetOffsetState extends GraphicSetOffsetState {
 
@@ -45,6 +46,6 @@ public class LineSetOffsetState extends GraphicSetOffsetState {
         graphic.fireEvent(EOMGCursors.PUTNODE,
                 i18n.get(LineSetOffsetState.class,
                         "Click_to_place_offset_point_for_line.",
-                        "Click to place offset point for line."));
+                        "Click to place offset point for line."), EOMGEvent.EOMG_UNCHANGED);
     }
 }

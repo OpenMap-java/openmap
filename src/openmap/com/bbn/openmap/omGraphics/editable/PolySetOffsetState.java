@@ -28,6 +28,7 @@ import java.awt.event.MouseEvent;
 
 import com.bbn.openmap.omGraphics.EditableOMPoly;
 import com.bbn.openmap.omGraphics.OffsetGrabPoint;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 
 public class PolySetOffsetState extends GraphicSetOffsetState {
 
@@ -45,6 +46,6 @@ public class PolySetOffsetState extends GraphicSetOffsetState {
         graphic.fireEvent(EOMGCursors.PUTNODE,
                 i18n.get(PolySetOffsetState.class,
                         "Click_to_place_offset_point_for_poly.",
-                        "Click to place offset point for poly."));
+                        "Click to place offset point for poly."), EOMGEvent.EOMG_UNCHANGED);
     }
 }

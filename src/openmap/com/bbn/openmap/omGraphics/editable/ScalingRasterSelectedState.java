@@ -28,6 +28,7 @@ import java.awt.event.MouseEvent;
 
 import com.bbn.openmap.omGraphics.EditableOMScalingRaster;
 import com.bbn.openmap.omGraphics.GrabPoint;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
 public class ScalingRasterSelectedState extends GraphicSelectedState {
@@ -56,12 +57,12 @@ public class ScalingRasterSelectedState extends GraphicSelectedState {
 
         GrabPoint mp = graphic.getMovingPoint(e);
         if (mp == null) {
-            graphic.fireEvent(EOMGCursors.DEFAULT, "");
+            graphic.fireEvent(EOMGCursors.DEFAULT, "", EOMGEvent.EOMG_UNCHANGED);
         } else {
             graphic.fireEvent(EOMGCursors.EDIT,
                     i18n.get(ScalingRasterSelectedState.class,
                             "Click_and_Drag_to_change_the_graphic.",
-                            "Click and Drag to change the graphic."));
+                            "Click and Drag to change the graphic."), EOMGEvent.EOMG_UNCHANGED);
         }
         return false;
     }

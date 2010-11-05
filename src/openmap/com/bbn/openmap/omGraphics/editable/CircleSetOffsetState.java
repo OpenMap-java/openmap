@@ -28,6 +28,7 @@ import java.awt.event.MouseEvent;
 
 import com.bbn.openmap.omGraphics.EditableOMCircle;
 import com.bbn.openmap.omGraphics.OffsetGrabPoint;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 
 public class CircleSetOffsetState extends GraphicSetOffsetState {
 
@@ -45,6 +46,6 @@ public class CircleSetOffsetState extends GraphicSetOffsetState {
         graphic.fireEvent(EOMGCursors.PUTNODE,
                 i18n.get(CircleSetOffsetState.class,
                         "Click_to_place_offset_point_for_circle.",
-                        "Click to place offset point for circle."));
+                        "Click to place offset point for circle."), EOMGEvent.EOMG_UNCHANGED);
     }
 }

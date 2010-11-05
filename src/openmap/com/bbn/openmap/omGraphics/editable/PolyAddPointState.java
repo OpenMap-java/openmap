@@ -28,6 +28,7 @@ import java.awt.event.*;
 
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.layer.util.stateMachine.*;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
 public class PolyAddPointState extends State {
@@ -63,7 +64,7 @@ public class PolyAddPointState extends State {
         // then change state to the selected state because we are done
         // drawing the poly.
         ((EditableOMPoly) graphic).addMovingPoint(e.getX(), e.getY());
-
+        graphic.fireEvent(EOMGEvent.EOMG_SELECTED);
         return false;
     }
 

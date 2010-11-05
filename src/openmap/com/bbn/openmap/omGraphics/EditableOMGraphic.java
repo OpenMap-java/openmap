@@ -756,9 +756,10 @@ public abstract class EditableOMGraphic
     * 
     * @param cursor Cursor to be used.
     * @param message an instruction/error to be displayed to the user.
+    * @param status the current status of the EditableOMGraphic.
     */
-   public void fireEvent(Cursor cursor, String message) {
-      fireEvent(cursor, message, null);
+   public void fireEvent(Cursor cursor, String message, int status) {
+      fireEvent(cursor, message, null, status);
    }
 
    /**
@@ -767,11 +768,12 @@ public abstract class EditableOMGraphic
     * @param cursor Cursor to be used.
     * @param message an instruction/error to be displayed to the user.
     * @param mouseEvent where that caused the EOMGEvent. May be null.
+    * @param status the current status of the EditableOMGraphic.
     */
-   public void fireEvent(Cursor cursor, String message, MouseEvent mouseEvent) {
+   public void fireEvent(Cursor cursor, String message, MouseEvent mouseEvent, int status) {
       if (listeners != null) {
          EditableOMGraphic theSource = listeners.getEOMG();
-         EOMGEvent event = new EOMGEvent(theSource, cursor, message, mouseEvent);
+         EOMGEvent event = new EOMGEvent(theSource, cursor, message, mouseEvent, status);
          fireEvent(event);
       }
    }
@@ -779,8 +781,8 @@ public abstract class EditableOMGraphic
    /**
     * Create the event with no cursor change or message to be displayed.
     */
-   public void fireEvent() {
-      fireEvent(null, null);
+   public void fireEvent(int status) {
+      fireEvent(null, null, null, status);
    }
 
    /**

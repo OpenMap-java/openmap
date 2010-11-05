@@ -28,6 +28,7 @@ import java.awt.event.MouseEvent;
 
 import com.bbn.openmap.omGraphics.EditableOMRect;
 import com.bbn.openmap.omGraphics.OffsetGrabPoint;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 
 public class RectSetOffsetState extends GraphicSetOffsetState {
 
@@ -45,6 +46,6 @@ public class RectSetOffsetState extends GraphicSetOffsetState {
         graphic.fireEvent(EOMGCursors.PUTNODE,
                 i18n.get(RectSetOffsetState.class,
                         "Click_to_place_offset_point.",
-                        "Click to place offset point."));
+                        "Click to place offset point."), EOMGEvent.EOMG_UNCHANGED);
     }
 }

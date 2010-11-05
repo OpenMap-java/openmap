@@ -28,6 +28,7 @@ import java.awt.event.MouseEvent;
 
 import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.omGraphics.GrabPoint;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
 public class ListSelectedState extends GraphicSelectedState {
@@ -59,13 +60,13 @@ public class ListSelectedState extends GraphicSelectedState {
                 Debug.output("ListStateMachine|selected state|mousePressed - click off list, "
                         + distance + " away");
             }
-            graphic.fireEvent(EOMGCursors.DEFAULT, "");
+            graphic.fireEvent(EOMGCursors.DEFAULT, "", EOMGEvent.EOMG_UNCHANGED);
         } else {
             // else, if the moving point is set, go to edit mode. If
             // the mouse is released, we'll consider ourselves
             // unselected agin.
             graphic.getStateMachine().setEdit();
-            graphic.fireEvent(EOMGCursors.EDIT, "");
+            graphic.fireEvent(EOMGCursors.EDIT, "", EOMGEvent.EOMG_UNCHANGED);
         }
         return getMapMouseListenerResponse();
     }
@@ -81,11 +82,11 @@ public class ListSelectedState extends GraphicSelectedState {
             Debug.message("eomg", " deactivating with fired event");
             // If the graphic isn't picked, then need to
             // deactivate with a deactivation event.
-            graphic.fireEvent(new com.bbn.openmap.omGraphics.event.EOMGEvent());
+            graphic.fireEvent(new EOMGEvent());
         } else {
             // If the moving point was valid, just stay in selected
             // mode.
-            graphic.fireEvent(EOMGCursors.EDIT, "", e);
+            graphic.fireEvent(EOMGCursors.EDIT, "", e, EOMGEvent.EOMG_UNCHANGED);
             graphic.redraw(e, true);
         }
 
@@ -100,12 +101,12 @@ public class ListSelectedState extends GraphicSelectedState {
         GrabPoint mp = graphic.getMovingPoint(e);
 
         if (mp == null) {
-            graphic.fireEvent(EOMGCursors.DEFAULT, "");
+            graphic.fireEvent(EOMGCursors.DEFAULT, "", EOMGEvent.EOMG_UNCHANGED);
         } else {
             graphic.fireEvent(EOMGCursors.EDIT,
                     i18n.get(ListSelectedState.class,
                             "Click_and_Drag_to_change_the_graphic.",
-                            "Click and Drag to change the graphic."));
+                            "Click and Drag to change the graphic."), EOMGEvent.EOMG_UNCHANGED);
         }
         return false;
     }

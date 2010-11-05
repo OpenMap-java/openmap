@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.omGraphics.GrabPoint;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
 public class GraphicUnselectedState extends State implements EOMGDefinedState {
@@ -67,12 +68,12 @@ public class GraphicUnselectedState extends State implements EOMGDefinedState {
                     Debug.message("eomg",
                             "GraphicStateMachine|unselected state|mousePressed - graphic held");
                     graphic.getStateMachine().setEdit();
-                    graphic.fireEvent(EOMGCursors.EDIT, "");
+                    graphic.fireEvent(EOMGCursors.EDIT, "", EOMGEvent.EOMG_EDIT);
                     // Prepare the graphic to move
                     graphic.move(e);
                 } else {
                     graphic.getStateMachine().setSelected();
-                    graphic.fireEvent(EOMGCursors.DEFAULT, "");
+                    graphic.fireEvent(EOMGCursors.DEFAULT, "", EOMGEvent.EOMG_SELECTED);
                 }
                 // Clean up the map and redraw.
                 graphic.redraw(e, true);
@@ -82,7 +83,7 @@ public class GraphicUnselectedState extends State implements EOMGDefinedState {
             // the mouse is released, we'll consider ourselves
             // unselected again.
             graphic.getStateMachine().setEdit();
-            graphic.fireEvent(EOMGCursors.EDIT, "");
+            graphic.fireEvent(EOMGCursors.EDIT, "", EOMGEvent.EOMG_EDIT);
             graphic.redraw(e, true);
         }
         return getMapMouseListenerResponse();
@@ -99,14 +100,14 @@ public class GraphicUnselectedState extends State implements EOMGDefinedState {
         if (mp == null) {
             if (graphic.isMouseEventTouching(e)) {
                 graphic.getStateMachine().setSelected();
-                graphic.fireEvent(EOMGCursors.EDIT, "");
+                graphic.fireEvent(EOMGCursors.EDIT, "", EOMGEvent.EOMG_SELECTED);
             } else {
                 graphic.setMovingPoint(new GrabPoint(e.getX(), e.getY()));
                 // OK, we're done, or at a crossroad. Give the
                 // listeners
                 // the MouseEvent so they can determine what to do, to
                 // end, or provide options...
-                graphic.fireEvent(EOMGCursors.DEFAULT, "", e);
+                graphic.fireEvent(EOMGCursors.DEFAULT, "", e, EOMGEvent.EOMG_UNCHANGED);
                 graphic.setMovingPoint(null);
             }
             graphic.redraw(e, true);
@@ -124,9 +125,9 @@ public class GraphicUnselectedState extends State implements EOMGDefinedState {
             graphic.fireEvent(EOMGCursors.EDIT,
                     i18n.get(GraphicUnselectedState.class,
                             "Click_to_select_the_graphic.",
-                            "Click to select the graphic."));
+                            "Click to select the graphic."), EOMGEvent.EOMG_UNCHANGED);
         } else {
-            graphic.fireEvent(EOMGCursors.DEFAULT, "");
+            graphic.fireEvent(EOMGCursors.DEFAULT, "", EOMGEvent.EOMG_UNCHANGED);
         }
         return false;
     }

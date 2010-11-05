@@ -27,6 +27,7 @@ package com.bbn.openmap.omGraphics.editable;
 import java.awt.event.*;
 
 import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
 public class CircleUndefinedState extends GraphicUndefinedState {
@@ -65,6 +66,7 @@ public class CircleUndefinedState extends GraphicUndefinedState {
                     "CircleStateMachine|undefined state| *offset needed*");
         }
         graphic.getStateMachine().setEdit();
+        graphic.fireEvent(EOMGEvent.EOMG_EDIT);
         return getMapMouseListenerResponse();
     }
 

@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import com.bbn.openmap.omGraphics.EditableOMText;
 import com.bbn.openmap.omGraphics.GrabPoint;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 
 public class TextUndefinedState extends GraphicUndefinedState {
 
@@ -64,7 +65,7 @@ public class TextUndefinedState extends GraphicUndefinedState {
         }
 
         graphic.getStateMachine().setEdit();
-
+        graphic.fireEvent(EOMGEvent.EOMG_EDIT);
         return getMapMouseListenerResponse();
     }
 
@@ -73,7 +74,7 @@ public class TextUndefinedState extends GraphicUndefinedState {
     public boolean mouseMoved(MouseEvent e) {
         graphic.fireEvent(EOMGCursors.EDIT, i18n.get(TextUndefinedState.class,
                 "Click_to_define_the_text_location.",
-                "Click to define the text location."));
+                "Click to define the text location."), EOMGEvent.EOMG_UNCHANGED);
         return false;
     }
 } // end class TextUndefinedState

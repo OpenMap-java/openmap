@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
 public class GraphicUndefinedState extends State implements EOMGUndefinedState {
@@ -71,7 +72,7 @@ public class GraphicUndefinedState extends State implements EOMGUndefinedState {
         graphic.fireEvent(EOMGCursors.EDIT,
                 i18n.get(GraphicUndefinedState.class,
                         "Click_and_Drag_to_define_graphic.",
-                        "Click and Drag to define graphic."));
+                        "Click and Drag to define graphic."), EOMGEvent.EOMG_UNCHANGED);
         return false;
     }
 

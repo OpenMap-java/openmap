@@ -27,6 +27,7 @@ package com.bbn.openmap.omGraphics.editable;
 import java.awt.event.*;
 
 import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
 public class PolyUndefinedState extends GraphicUndefinedState {
@@ -60,7 +61,7 @@ public class PolyUndefinedState extends GraphicUndefinedState {
         initY = e.getY();
 
         ((EditableOMPoly) graphic).addPoint(initX, initY);
-
+        graphic.fireEvent(EOMGEvent.EOMG_SELECTED);
         return getMapMouseListenerResponse();
     }
 
@@ -76,7 +77,7 @@ public class PolyUndefinedState extends GraphicUndefinedState {
 
         ((EditableOMPoly) graphic).addMovingPoint(e.getX(), e.getY());
         ((PolyStateMachine) graphic.getStateMachine()).setAddPoint();
-
+        graphic.fireEvent(EOMGEvent.EOMG_AUX);
         graphic.redraw(e);
         return false;
     }

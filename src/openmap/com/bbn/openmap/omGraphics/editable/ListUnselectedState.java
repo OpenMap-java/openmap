@@ -28,6 +28,7 @@ import java.awt.event.MouseEvent;
 
 import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.omGraphics.GrabPoint;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
 public class ListUnselectedState extends GraphicUnselectedState {
@@ -51,7 +52,7 @@ public class ListUnselectedState extends GraphicUnselectedState {
             // the mouse is released, we'll consider ourselves
             // unselected again.
             graphic.getStateMachine().setEdit();
-            graphic.fireEvent(EOMGCursors.EDIT, "");
+            graphic.fireEvent(EOMGCursors.EDIT, "", EOMGEvent.EOMG_EDIT);
             graphic.redraw(e, true);
         }
         return getMapMouseListenerResponse();
@@ -63,7 +64,7 @@ public class ListUnselectedState extends GraphicUnselectedState {
 
         if (mp != null) {
             graphic.getStateMachine().setSelected();
-            graphic.fireEvent(EOMGCursors.EDIT, "");
+            graphic.fireEvent(EOMGCursors.EDIT, "", EOMGEvent.EOMG_SELECTED);
             graphic.setMovingPoint(null);
         }
         return getMapMouseListenerResponse();
@@ -78,9 +79,9 @@ public class ListUnselectedState extends GraphicUnselectedState {
             graphic.fireEvent(EOMGCursors.EDIT,
                     i18n.get(ListUnselectedState.class,
                             "Click_to_select_the_graphic.",
-                            "Click to select the graphic."));
+                            "Click to select the graphic."), EOMGEvent.EOMG_UNCHANGED);
         } else {
-            graphic.fireEvent(EOMGCursors.DEFAULT, "");
+            graphic.fireEvent(EOMGCursors.DEFAULT, "", EOMGEvent.EOMG_UNCHANGED);
         }
         return false;
     }

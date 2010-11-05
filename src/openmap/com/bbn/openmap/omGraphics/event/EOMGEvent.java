@@ -31,6 +31,10 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
 public class EOMGEvent {
+    /**
+     * The status of the EditableOMGraphic hasn't changed.
+     */
+    public final static int EOMG_UNCHANGED = -1;
     /** Nothing about the graphic is known or defined. */
     public final static int EOMG_UNDEFINED = 0;
     /**
@@ -40,7 +44,9 @@ public class EOMGEvent {
     public final static int EOMG_DEFINED = 1;
     /**
      * The Graphic is defined, in a stable state with the grab points
-     * active.
+     * active.  Receiving an event with this status means that the EditableOMGraphic
+     * has returned to the stable state, and can be used as a trigger for
+     * other GUI updates.
      */
     public final static int EOMG_SELECTED = 2;
     /**
@@ -54,9 +60,13 @@ public class EOMGEvent {
      * done. Grab point being added/defined, some other parameter of
      * the graphic being modified where an extra state warrants it.
      * There may be other auxillary states defined, and they should be
-     * defined to be greater than EOMG_AUX.
+     * defined to be greater than EOMG_COMPLETE.
      */
     public final static int EOMG_AUX = 4;
+    /**
+     * The state where the editing is complete.
+     */
+    public final static int EOMG_COMPLETE = 5;
 
     /** The EOMG in question. */
     protected EditableOMGraphic source;
@@ -79,14 +89,21 @@ public class EOMGEvent {
     protected MouseEvent mouseEvent = null;
 
     /**
+     * The status of the EOMG as this event is sent.  Will be EOMG_UNDEFINED,
+     * EOMG_DEFINED, EOMG_SELECTED, EOMG_EDIT or EOMG_COMPLETE.
+     */
+    protected int status = EOMG_UNDEFINED;
+
+    /**
      * Create an Event.
      */
     public EOMGEvent(EditableOMGraphic source, Cursor cursor, String message,
-            MouseEvent me) {
+            MouseEvent me, int status) {
         this.source = source;
         this.cursor = cursor;
         this.message = message;
         this.mouseEvent = me;
+        this.status = status;
     }
 
     /**
@@ -97,6 +114,7 @@ public class EOMGEvent {
         this.cursor = null;
         this.message = null;
         this.mouseEvent = null;
+        this.status = EOMG_COMPLETE;
     }
 
     public void setSource(EditableOMGraphic eomg) {
@@ -143,9 +161,15 @@ public class EOMGEvent {
     }
 
     public boolean shouldDeactivate() {
-        return this.source == null && this.cursor == null
-                && this.message == null && this.mouseEvent == null;
+        return this.status == EOMG_COMPLETE;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 }
 

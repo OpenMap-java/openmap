@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import com.bbn.openmap.omGraphics.EditableOMPoint;
 import com.bbn.openmap.omGraphics.GrabPoint;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
 public class PointUndefinedState extends GraphicUndefinedState {
@@ -66,7 +67,7 @@ public class PointUndefinedState extends GraphicUndefinedState {
     public boolean mouseMoved(MouseEvent e) {
         graphic.fireEvent(EOMGCursors.EDIT, i18n.get(PointUndefinedState.class,
                 "Click_to_define_the_point_location.",
-                "Click to define the point location."));
+                "Click to define the point location."), EOMGEvent.EOMG_UNCHANGED);
         return false;
     }
 }

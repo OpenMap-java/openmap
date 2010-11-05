@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import com.bbn.openmap.omGraphics.EditableOMCircle;
 import com.bbn.openmap.omGraphics.GrabPoint;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
 public class CircleSelectedState extends GraphicSelectedState {
@@ -65,13 +66,13 @@ public class CircleSelectedState extends GraphicSelectedState {
                     // This is the only difference in this method from
                     // the
                     // GraphicSelectedState.mousePressed method.
-                    graphic.fireEvent(EOMGCursors.EDIT, "");
+                    graphic.fireEvent(EOMGCursors.EDIT, "", EOMGEvent.EOMG_EDIT);
                     // //////
 
                     graphic.move(e);
                 }
             } else {
-                graphic.fireEvent(EOMGCursors.DEFAULT, "");
+                graphic.fireEvent(EOMGCursors.DEFAULT, "", EOMGEvent.EOMG_UNCHANGED);
                 graphic.redraw(e, true);
             }
         } else {
@@ -79,7 +80,7 @@ public class CircleSelectedState extends GraphicSelectedState {
             // the mouse is released, we'll consider ourselves
             // unselected agin.
             graphic.getStateMachine().setEdit();
-            graphic.fireEvent(EOMGCursors.EDIT, "");
+            graphic.fireEvent(EOMGCursors.EDIT, "", EOMGEvent.EOMG_EDIT);
         }
         return getMapMouseListenerResponse();
     }
@@ -97,16 +98,16 @@ public class CircleSelectedState extends GraphicSelectedState {
                 graphic.fireEvent(EOMGCursors.EDIT,
                         i18n.get(CircleSelectedState.class,
                                 "Click_and_Drag_edge_to_resize.",
-                                "Click and Drag edge to resize."));
+                                "Click and Drag edge to resize."), EOMGEvent.EOMG_UNCHANGED);
             } else {
-                graphic.fireEvent(EOMGCursors.DEFAULT, "");
+                graphic.fireEvent(EOMGCursors.DEFAULT, "", EOMGEvent.EOMG_UNCHANGED);
             }
 
         } else {
             graphic.fireEvent(EOMGCursors.EDIT,
                     i18n.get(CircleSelectedState.class,
                             "Click_and_Drag_to_change_the_graphic.",
-                            "Click and Drag to change the graphic."));
+                            "Click and Drag to change the graphic."), EOMGEvent.EOMG_UNCHANGED);
         }
         return false;
     }

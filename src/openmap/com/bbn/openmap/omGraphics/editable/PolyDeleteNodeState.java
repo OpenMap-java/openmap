@@ -30,6 +30,7 @@ import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.omGraphics.EditableOMPoly;
 import com.bbn.openmap.omGraphics.GrabPoint;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
 public class PolyDeleteNodeState extends State {
@@ -58,6 +59,7 @@ public class PolyDeleteNodeState extends State {
             int index = ((EditableOMPoly) graphic).whichGrabPoint(mp);
             if (index != EditableOMPoly.OFFSET_POINT_INDEX) {
                 ((EditableOMPoly) graphic).deletePoint(index);
+                graphic.fireEvent(EOMGEvent.EOMG_SELECTED);
             }
         }
 
@@ -79,12 +81,12 @@ public class PolyDeleteNodeState extends State {
             graphic.fireEvent(EOMGCursors.EDIT,
                     i18n.get(PolyDeleteNodeState.class,
                             "Click_a_node_to_delete_it.",
-                            "Click a node to delete it."));
+                            "Click a node to delete it."), EOMGEvent.EOMG_UNCHANGED);
         } else {
             graphic.fireEvent(EOMGCursors.DEFAULT,
                     i18n.get(PolyDeleteNodeState.class,
                             "Click_a_node_to_delete_it.",
-                            "Click a node to delete it."));
+                            "Click a node to delete it."), EOMGEvent.EOMG_UNCHANGED);
         }
         return false;
     }
@@ -96,12 +98,12 @@ public class PolyDeleteNodeState extends State {
             graphic.fireEvent(EOMGCursors.EDIT,
                     i18n.get(PolyDeleteNodeState.class,
                             "Release_over_a_node_to_delete_it.",
-                            "Release over a node to delete it."));
+                            "Release over a node to delete it."), EOMGEvent.EOMG_UNCHANGED);
         } else {
             graphic.fireEvent(EOMGCursors.DEFAULT,
                     i18n.get(PolyDeleteNodeState.class,
                             "Release_over_a_node_to_delete_it.",
-                            "Release over a node to delete it."));
+                            "Release over a node to delete it."), EOMGEvent.EOMG_UNCHANGED);
         }
         return false;
     }

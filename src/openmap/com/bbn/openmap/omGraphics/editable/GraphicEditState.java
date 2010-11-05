@@ -28,6 +28,7 @@ import java.awt.event.*;
 
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.layer.util.stateMachine.*;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
 public class GraphicEditState extends State implements EOMGEditState {
@@ -58,9 +59,9 @@ public class GraphicEditState extends State implements EOMGEditState {
             graphic.getStateMachine().setSelected();
             GrabPoint mp = graphic.getMovingPoint();
             if (mp == null && !graphic.getCanGrabGraphic()) {
-                graphic.fireEvent(EOMGCursors.DEFAULT, "", e);
+                graphic.fireEvent(EOMGCursors.DEFAULT, "", e, EOMGEvent.EOMG_SELECTED);
             } else {
-                graphic.fireEvent(EOMGCursors.EDIT, "", e);
+                graphic.fireEvent(EOMGCursors.EDIT, "", e, EOMGEvent.EOMG_SELECTED);
             }
         }
 

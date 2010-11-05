@@ -28,6 +28,7 @@ import java.awt.event.*;
 
 import com.bbn.openmap.omGraphics.*;
 import com.bbn.openmap.layer.util.stateMachine.*;
+import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
 public class GraphicSetOffsetState extends State implements EOMGAuxState {
@@ -49,7 +50,7 @@ public class GraphicSetOffsetState extends State implements EOMGAuxState {
         graphic.fireEvent(EOMGCursors.PUTNODE,
                 i18n.get(CircleSetOffsetState.class,
                         "Click_to_place_offset_point.",
-                        "Click to place offset point."));
+                        "Click to place offset point."), EOMGEvent.EOMG_UNCHANGED);
         return getMapMouseListenerResponse();
     }
     
@@ -79,7 +80,7 @@ public class GraphicSetOffsetState extends State implements EOMGAuxState {
         graphic.getStateMachine().setSelected();
         graphic.redraw(e, true);
         graphic.setMovingPoint(null);
-        graphic.fireEvent(EOMGCursors.DEFAULT, "");
+        graphic.fireEvent(EOMGCursors.DEFAULT, "", EOMGEvent.EOMG_SELECTED);
         return getMapMouseListenerResponse();
     }
 }
