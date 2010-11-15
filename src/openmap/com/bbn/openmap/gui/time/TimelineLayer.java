@@ -133,6 +133,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
     protected Clock clock;
     private boolean realTimeMode;
+    private boolean isNoTime = true;
 
     /**
      * Construct the TimelineLayer.
@@ -224,7 +225,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
      * Creates the OMGraphic list with the time and event markings.
      */
     public synchronized OMGraphicList prepare() {
-
+       
         Projection proj = getProjection();
         if (logger.isLoggable(Level.FINER)) {
             logger.finer("Updating projection with " + proj);
@@ -238,11 +239,9 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                 graphicList.clear();
             }
 
-            if (drape == null) {
-                drape = new TimeDrape(0, 0, -1, -1);
-                drape.setFillPaint(Color.gray);
-                drape.setVisible(true);
-            }
+            drape = new TimeDrape(0, 0, -1, -1);
+            drape.setFillPaint(Color.gray);
+            drape.setVisible(isNoTime);
             drape.generate(proj);
             graphicList.add(drape);
 
@@ -291,40 +290,36 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
      * 
      * @return OMGraphicList new graphic list
      */
-    protected OMGraphicList constructTimeLines(Projection projection) {
+   protected OMGraphicList constructTimeLines(Projection projection) {
 
         // if (timeLinesList == null) {
         OMGraphicList tll = new OMGraphicList();
 
-        if (timeHashFactory == null) {
-            timeHashFactory = new TimeHashFactory();
-        }
+        timeHashFactory = new TimeHashFactory();
 
         tll.add(timeHashFactory.getHashMarks(projection, realTimeMode, gameStartTime));
 
-        if (preTime != null) {
-            preTime.generate(projection);
-            tll.add(preTime);
+        if(!isNoTime) {
+           preTime = new SelectionArea.PreTime(0);
+           preTime.generate(projection);
+           tll.add(preTime);
+   
+           postTime = new SelectionArea.PostTime(gameEndTime - gameStartTime);
+           postTime.generate(projection);
+           tll.add(postTime);
         }
-
-        if (postTime != null) {
-            postTime.generate(projection);
-            tll.add(postTime);
-        }
-
+        
         timeLinesList = tll;
 
         return tll;
     }
 
     public SelectionArea getSelectionRectangle(Projection proj) {
-        if (selectionRect == null) {
-            selectionRect = new SelectionArea();
-            if (eventPresenter != null) {
-                selectionRect.setFillPaint(eventPresenter.getSelectionDrawingAttributes()
-                        .getSelectPaint());
-            }
-        }
+         selectionRect = new SelectionArea();
+         if (eventPresenter != null) {
+             selectionRect.setFillPaint(eventPresenter.getSelectionDrawingAttributes()
+                     .getSelectPaint());
+         }
 
         selectionRect.generate(proj);
         return selectionRect;
@@ -335,11 +330,9 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     protected SelectionArea.PostTime postTime;
 
     protected OMGraphic getCurrentTimeMarker(Projection proj) {
-        if (currentTimeMarker == null) {
-            currentTimeMarker = new CurrentTimeMarker();
-        }
-        currentTimeMarker.generate(proj);
-        return currentTimeMarker;
+       currentTimeMarker = new CurrentTimeMarker();
+       currentTimeMarker.generate(proj);
+       return currentTimeMarker;
     }
 
     protected final static String ATT_KEY_EVENT = "att_key_event";
@@ -489,9 +482,6 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             gameStartTime = start;
             gameEndTime = end;
 
-            preTime = new SelectionArea.PreTime(0);
-            postTime = new SelectionArea.PostTime(end - start);
-
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("gst: " + gameStartTime + ", get: " + gameEndTime
                         + ", bounds of " + postTime);
@@ -621,7 +611,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     }
 
     protected boolean checkAndSetForNoTime(TimeEvent te) {
-        boolean isNoTime = te == TimeEvent.NO_TIME;
+        isNoTime = te == TimeEvent.NO_TIME;
         if (drape != null) {
             drape.setVisible(isNoTime);
             repaint();
