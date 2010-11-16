@@ -314,16 +314,23 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         return tll;
     }
 
-    public SelectionArea getSelectionRectangle(Projection proj) {
+   public SelectionArea getSelectionRectangle(Projection proj) {
+      if (selectionRect == null) {
          selectionRect = new SelectionArea();
          if (eventPresenter != null) {
-             selectionRect.setFillPaint(eventPresenter.getSelectionDrawingAttributes()
-                     .getSelectPaint());
+            selectionRect.setFillPaint(eventPresenter.getSelectionDrawingAttributes().getSelectPaint());
          }
+      }
 
-        selectionRect.generate(proj);
-        return selectionRect;
-    }
+      // Make a temp copy, just for painting during this render frame
+      SelectionArea selectionRectToRender = new SelectionArea();
+      if (eventPresenter != null) {
+         selectionRectToRender.setFillPaint(eventPresenter.getSelectionDrawingAttributes().getSelectPaint());
+      }
+      selectionRectToRender.setLocation(selectionRect.getWestLon(), selectionRect.getEastLon());
+      selectionRectToRender.generate(proj);
+      return selectionRectToRender;
+   }
 
     protected OMGraphicList currentTimeMarker;
     protected SelectionArea.PreTime preTime;
@@ -813,7 +820,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         selectionRect.setLocation(west, east);
         selectionRect.generate(proj);
         timeSliderLayer.setSelectionValid(east != west);
-        repaint();
+        doPrepare();
         return true;
     }
 
