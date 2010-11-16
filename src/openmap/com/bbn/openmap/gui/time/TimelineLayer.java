@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -134,6 +136,9 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     protected Clock clock;
     private boolean realTimeMode;
     private boolean isNoTime = true;
+
+    private Timer scrollTimer = new Timer();    
+    private ScrollTask scrollTask = null;
 
     /**
      * Construct the TimelineLayer.
@@ -723,6 +728,10 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     public boolean mouseReleased(MouseEvent e) {
         updateMouseTimeDisplay(e);
         handleEventSelection();
+        if(scrollTask != null) {
+           scrollTask.cancel();
+           scrollTask = null;
+        }
         return true;
     }
 
@@ -802,27 +811,84 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         firePropertyChange(MouseTimeProperty, null, new Long(-1));
         updateEventDetails();
     }
+    
+    class ScrollTask extends TimerTask {
 
-    public boolean mouseDragged(MouseEvent e) {
-        updateMouseTimeDisplay(e);
-        updateEventDetails(e);
-        timeSliderLayer.clearFixedRenderRange();
+      private long delta;
+      private MouseEvent mouseEvent;
+      
+      ScrollTask(long delta, MouseEvent mouseEvent) {
+         this.delta = delta;
+         this.mouseEvent = mouseEvent;
+      }
 
-        // Get latLong from mouse, and set E side of current select rect...
-        Projection proj = getProjection();
-        Point2D latLong = proj.inverse(e.getPoint());
-        double lon = snapToEvent(latLong.getX());
-
-        float west = (float) Math.min(downLon, lon);
-        float east = (float) Math.max(downLon, lon);
-
-        selectionRect.setVisible(true);
-        selectionRect.setLocation(west, east);
-        selectionRect.generate(proj);
-        timeSliderLayer.setSelectionValid(east != west);
-        doPrepare();
-        return true;
+      @Override
+      public void run() {
+         if (clock != null) {
+            long newTime = clock.getTime() + delta;
+            newTime = Math.max(gameStartTime, newTime);
+            newTime = Math.min(gameEndTime, newTime);
+            clock.setTime(newTime);
+            adjustSelection(mouseEvent);
+            doPrepare();
+         }
+      }
+       
     }
+    
+    private void adjustSelection(MouseEvent e) {
+       updateMouseTimeDisplay(e);
+       updateEventDetails(e);
+       timeSliderLayer.clearFixedRenderRange();
+
+       // Get latLong from mouse, and set E side of current select rect...
+       Projection proj = getProjection();
+       Point2D latLong = proj.inverse(e.getPoint());
+       double lon = snapToEvent(latLong.getX());
+
+       float west = (float) Math.min(downLon, lon);
+       float east = (float) Math.max(downLon, lon);
+
+       selectionRect.setVisible(true);
+       selectionRect.setLocation(west, east);
+       selectionRect.generate(proj);
+       timeSliderLayer.setSelectionValid(east != west);       
+    }
+    
+   public boolean mouseDragged(MouseEvent e) {
+      
+      // First the actual selection adjustment
+      adjustSelection(e);
+
+      // Now reset the scroll timer as necessary
+      Projection proj = getProjection();
+      final long scrollPeriod = 50;
+      float baseScrollMultiplier = 0.001f;
+      int x = e.getPoint().x;
+      if(scrollTask != null) {
+         scrollTask.cancel();
+         scrollTask = null;
+      }
+      float scale = proj.getScale();
+      if (x < 0) {
+         if (clock != null) {
+            final float multiplier = baseScrollMultiplier * x;
+            long delta = (long) (multiplier * scale);
+            scrollTask = new ScrollTask(delta, e);
+            scrollTimer.schedule(scrollTask, 0, scrollPeriod);
+         }
+      } else if(x > getWidth()) {
+         if (clock != null) {
+            final float multiplier = baseScrollMultiplier * (x - getWidth());
+            long delta = (long) (multiplier * scale);
+            scrollTask = new ScrollTask(delta, e);
+            scrollTimer.schedule(scrollTask, 0, scrollPeriod);
+         }         
+      }
+
+      doPrepare();
+      return true;
+   }
 
     public boolean mouseMoved(MouseEvent e) {
         updateMouseTimeDisplay(e);
