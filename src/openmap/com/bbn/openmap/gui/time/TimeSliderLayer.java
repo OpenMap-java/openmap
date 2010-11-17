@@ -85,8 +85,6 @@ public class TimeSliderLayer
 
    protected I18n i18n = Environment.getI18n();
 
-   protected OMGraphicList controlWidgetList = null;
-
    protected CenterSupport centerDelegate;
 
    protected ZoomSupport zoomDelegate;
@@ -108,7 +106,7 @@ public class TimeSliderLayer
 
    OMRect boundsRectRightHandle;
 
-   int sliderPointHalfWidth = 3;
+   int sliderPointHalfWidth = 5;
 
    TimelinePanel timelinePanel;
    TimelineLayer timelineLayer;
@@ -127,7 +125,7 @@ public class TimeSliderLayer
 
    LabelPanel labelPanel;
 
-   TimeDrape drape;
+   private boolean isNoTime = true;
 
    // In realTimeMode, gameEndTime is the origin, rather than gameStartTime
    private final boolean realTimeMode;
@@ -165,10 +163,6 @@ public class TimeSliderLayer
       centerDelegate = new CenterSupport(this);
       zoomDelegate = new ZoomSupport(this);
       addComponentListener(this);
-
-      drape = new TimeDrape(0, 0, -1, -1);
-      drape.setFillPaint(Color.gray);
-      drape.setVisible(true);
    }
 
    public void findAndInit(Object someObj) {
@@ -209,15 +203,12 @@ public class TimeSliderLayer
          list.clear();
       }
 
-      if (drape == null) {
-         drape = new TimeDrape(0, 0, -1, -1);
-         drape.setFillPaint(Color.gray);
-         drape.setVisible(false);
-      }
+      TimeDrape drape = new TimeDrape(0, 0, -1, -1);
+      drape.setVisible(isNoTime);
+      drape.setFillPaint(Color.gray);
       drape.generate(getProjection());
       list.add(drape);
 
-      resetControlWidgets();
       list.add(getControlWidgetList(getProjection()));
 
       return list;
@@ -228,12 +219,16 @@ public class TimeSliderLayer
     * widgets, and generate them with the projection for the new position. After
     * this call, the widgets are ready to paint.
     */
-   protected synchronized void resetControlWidgets() {
+   public synchronized OMGraphicList getControlWidgetList(Projection proj) {
+
+      OMGraphicList controlWidgetList = null;
 
       Projection projection = getProjection();
 
+      controlWidgetList = createControlWidgets();
+      
       if (projection == null) {
-         return; // Huhn?
+         return controlWidgetList; // Huhn?
       }
 
       double screenWidth = projection.getWidth();
@@ -249,9 +244,6 @@ public class TimeSliderLayer
          projection = new Cartesian(projCenter, scale, projection.getWidth(), projection.getHeight());
          setProjection(projection);
       }
-
-      // Ensure they are constructed
-      getControlWidgetList((Projection) null);
 
       // Reset primary handle
       int contextBuffer = (int) (projection.getHeight() * .4);
@@ -300,14 +292,16 @@ public class TimeSliderLayer
 
       int handleWest = west - sliderPointHalfWidth;
       int handleEast = west + sliderPointHalfWidth;
+      
+      final int sliderPointHalfHeight = 2;
 
-      boundsRectLeftHandle.setLocation(handleWest, north + 2, handleEast, south - 2);
+      boundsRectLeftHandle.setLocation(handleWest, north + sliderPointHalfHeight, handleEast, south - sliderPointHalfHeight);
       boundsRectLeftHandle.generate(projection);
 
       handleWest = east - sliderPointHalfWidth;
       handleEast = east + sliderPointHalfWidth;
 
-      boundsRectRightHandle.setLocation(handleWest, north + 2, handleEast, south - 2);
+      boundsRectRightHandle.setLocation(handleWest, north + sliderPointHalfHeight, handleEast, south - sliderPointHalfHeight);
       boundsRectRightHandle.generate(projection);
 
       // and the context lines, that show how the current selection maps to
@@ -342,6 +336,10 @@ public class TimeSliderLayer
       });
       baseLine.generate(projection);
 
+      if (proj != null) {
+         controlWidgetList.generate(proj);
+      }
+      return controlWidgetList;
    }
 
    protected void updateTimeline() {
@@ -352,21 +350,6 @@ public class TimeSliderLayer
          }
          timelinePanel.getMapBean().setScale(scale);
       }
-   }
-
-   public synchronized OMGraphicList getControlWidgetList(Projection proj) {
-      if (controlWidgetList == null) {
-         controlWidgetList = createControlWidgets();
-      }
-
-      if (proj != null) {
-         controlWidgetList.generate(proj);
-      }
-      return controlWidgetList;
-   }
-
-   public void setControlWidgetList(OMGraphicList controlWigetList) {
-      this.controlWidgetList = controlWigetList;
    }
 
    /**
@@ -483,8 +466,7 @@ public class TimeSliderLayer
          currentTime -= gameStartTime;
 
          selectionCenter = TimelineLayer.forwardProjectMillis(currentTime);
-         resetControlWidgets();
-         repaint();
+         doPrepare();
       }
 
       if (timerStatus.equals(TimerStatus.FORWARD) || timerStatus.equals(TimerStatus.BACKWARD)
@@ -502,8 +484,7 @@ public class TimeSliderLayer
             currentTime -= gameStartTime;
 
             selectionCenter = TimelineLayer.forwardProjectMillis(currentTime);
-            resetControlWidgets();
-            repaint();
+            doPrepare();
          }
       }
 
@@ -534,8 +515,7 @@ public class TimeSliderLayer
             selectionWidthMinutes = maxSelectionWidthMinutes;
          }
 
-         resetControlWidgets();
-         repaint();
+         doPrepare();
       }
    }
 
@@ -548,12 +528,7 @@ public class TimeSliderLayer
    }
 
    protected boolean checkAndSetForNoTime(TimeEvent te) {
-      boolean isNoTime = te == TimeEvent.NO_TIME;
-      if (drape != null) {
-         drape.setVisible(isNoTime);
-         repaint();
-      }
-
+      isNoTime = te == TimeEvent.NO_TIME;
       return isNoTime;
    }
 
@@ -590,7 +565,6 @@ public class TimeSliderLayer
          if (projection != null) {
             Point2D invPnt = projection.inverse(x, y);
             setSelectionCenter(invPnt.getX());
-            resetControlWidgets();
             updateTimeline();
          }
       }
@@ -683,7 +657,6 @@ public class TimeSliderLayer
          selectionWidthMinutes = maxSelectionWidthMinutes;
       }
 
-      resetControlWidgets();
       updateTimeline();
 
       doPrepare();
@@ -816,7 +789,6 @@ public class TimeSliderLayer
                         listener.setTimeBounds(selectionStart, selectionEnd);
                      }
                      updateTimeBounds(selectionStart, selectionEnd);
-                     resetControlWidgets();
                      updateTimeline();
                   }
                }
@@ -842,7 +814,6 @@ public class TimeSliderLayer
                   for (ITimeBoundsUserActionsListener listener : timeBoundsUserActionsListeners) {
                      listener.jumpToRealTime();
                   }
-                  resetControlWidgets();
                   updateTimeline();
                }
 
@@ -1010,7 +981,6 @@ public class TimeSliderLayer
       }
 
       finalizeProjection();
-      resetControlWidgets();
       updateTimeline();
       doPrepare();
       repaint();
@@ -1056,7 +1026,6 @@ public class TimeSliderLayer
          selectionWidthMinutes = maxSelectionWidthMinutes;
       }
 
-      resetControlWidgets();
       updateTimeline();
 
       doPrepare();
