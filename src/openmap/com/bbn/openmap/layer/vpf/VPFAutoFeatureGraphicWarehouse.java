@@ -117,6 +117,9 @@ public class VPFAutoFeatureGraphicWarehouse
    public final static String PRIORITY_FILE_PROPERTY = "priorityFile";
    public final static String FEATURE_INFO_HANDLER_PROPERTY = "featureInfoHandler";
    public final static String FACC_DEBUG_PROPERTY = "debug";
+   public final static String ICON_SIZE_PROPERTY = "iconSize";
+
+   public final static int DEFAULT_ICON_SIZE = 20;
 
    protected List<FeaturePriorityHolder> priorities;
    protected Hashtable<String, List<FeaturePriorityHolder>> faccLookup;
@@ -124,6 +127,7 @@ public class VPFAutoFeatureGraphicWarehouse
    protected String faccLookupFilePath;
    protected String geoSymDirectory;
    protected VPFFeatureInfoHandler featInfoHandler;
+   protected int iconSize = DEFAULT_ICON_SIZE;
 
    protected String[] compositeFeatureFaccs = new String[] {
       "BC010",
@@ -719,6 +723,8 @@ public class VPFAutoFeatureGraphicWarehouse
       debugFacc = props.getProperty(prefix + FACC_DEBUG_PROPERTY, debugFacc);
       geoSymDirectory = props.getProperty(prefix + CGM_DIR_PROPERTY, geoSymDirectory);
 
+      iconSize = PropUtils.intFromProperties(props, prefix + ICON_SIZE_PROPERTY, iconSize);
+
       String fihString = props.getProperty(prefix + FEATURE_INFO_HANDLER_PROPERTY);
       if (fihString != null) {
          Object obj = ComponentFactory.create(fihString, prefix, props);
@@ -757,6 +763,8 @@ public class VPFAutoFeatureGraphicWarehouse
          }
       }
 
+      getList.put(prefix + ICON_SIZE_PROPERTY, Integer.toString(iconSize));
+
       if (debugFacc != null && debugFacc.length() > 0) {
          getList.put(prefix + FACC_DEBUG_PROPERTY, debugFacc);
       }
@@ -792,7 +800,8 @@ public class VPFAutoFeatureGraphicWarehouse
                                     "com.bbn.openmap.util.propertyEditor.DirectoryPropertyEditor");
       PropUtils.setI18NPropertyInfo(i18n, list, VPFAutoFeatureGraphicWarehouse.class, FACC_DEBUG_PROPERTY, "FACC Debug",
                                     "A FACC code to use to debug problems with data set", null);
-
+      PropUtils.setI18NPropertyInfo(i18n, list, VPFAutoFeatureGraphicWarehouse.class, ICON_SIZE_PROPERTY, "Icon Size",
+                                    "The pixel size of icons for point features", null);
       return list;
    }
 
@@ -821,6 +830,14 @@ public class VPFAutoFeatureGraphicWarehouse
     */
    public void resetForCAT() {
       // NOOP
+   }
+
+   public int getIconSize() {
+      return iconSize;
+   }
+
+   public void setIconSize(int iconSize) {
+      this.iconSize = iconSize;
    }
 
    /*
@@ -884,7 +901,7 @@ public class VPFAutoFeatureGraphicWarehouse
       /**
        * The dimension of icons created for point OMGraphics.
        */
-      protected int dim = 30;
+      protected int dim = DEFAULT_ICON_SIZE;
 
       protected float sizePercent = 1f;
       protected float xoffPercent = 0f;
@@ -899,6 +916,7 @@ public class VPFAutoFeatureGraphicWarehouse
       protected FeaturePriorityHolder(String type, String facc, VPFAutoFeatureGraphicWarehouse warehouse) {
          this.type = getType(type);
          this.facc = facc;
+         this.dim = warehouse.getIconSize();
 
          if (warehouse.debugFacc != null && warehouse.debugFacc.equals(facc)) {
             debugFacc = warehouse.debugFacc;

@@ -426,7 +426,7 @@ public class OneWaySync
             ".properties",
             ".txt",
             ".c",
-            ".h"
+            ".h", ".png"
          });
          cc.start();
          if (report) {

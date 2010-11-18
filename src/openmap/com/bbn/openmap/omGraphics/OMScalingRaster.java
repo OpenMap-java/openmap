@@ -43,7 +43,6 @@ import javax.swing.ImageIcon;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
 
 /**
  * This is an extension to OMRaster that automatically scales itelf to match the
@@ -197,7 +196,7 @@ public class OMScalingRaster
     */
    public void setImage(Image image) {
       if (DEBUG) {
-         Debug.output("OMScalingRaster.setImage: " + image);
+         logger.fine("OMScalingRaster.setImage: " + image);
       }
 
       /**
@@ -257,7 +256,7 @@ public class OMScalingRaster
 
       if (proj == null) {
          if (DEBUG) {
-            Debug.error("OMScalingRaster: null projection in position!");
+            logger.fine("OMScalingRaster: null projection in position!");
          }
          return false;
       }
@@ -326,7 +325,7 @@ public class OMScalingRaster
          // be, then just do what we normally do in OMRaster.
          if (sourceImage == null || getNeedToRegenerate()) {
             if (DEBUG) {
-               Debug.output("OMScalingRaster: generating image");
+               logger.fine("OMScalingRaster: generating image");
             }
             super.generate(proj);
             // bitmap is set to a BufferedImage
@@ -415,11 +414,11 @@ public class OMScalingRaster
    protected void scaleTo(Projection thisProj) {
 
       if (DEBUG)
-         Debug.output("OMScalingRaster: scaleTo()");
+         logger.fine("OMScalingRaster: scaleTo()");
 
       if (sourceImage == null) {
          if (DEBUG) {
-            Debug.output("OMScalingRaster.scaleTo() sourceImage is null");
+            logger.fine("OMScalingRaster.scaleTo() sourceImage is null");
          }
          return;
       }
@@ -525,12 +524,18 @@ public class OMScalingRaster
             AffineTransformOp xformOp = new AffineTransformOp(xform, AffineTransformOp.TYPE_BILINEAR);
             // Scale clip area -> newImage
             // extract sub-image
-            BufferedImage newImage =
-                  xformOp.filter(sourceImage.getSubimage(clipRect.x, clipRect.y, clipRect.width, clipRect.height), null);
+            try {
+               BufferedImage newImage =
+                     xformOp.filter(sourceImage.getSubimage(clipRect.x, clipRect.y, clipRect.width, clipRect.height), null);
 
-            bitmap = newImage;
-            point1.setLocation(iRect.x, iRect.y);
-            // setVisible(currentVisibility);
+               bitmap = newImage;
+               point1.setLocation(iRect.x, iRect.y);
+               // setVisible(currentVisibility);
+            } catch (IllegalArgumentException iae) {
+               // This has been kicked off when the dimensions of the filter get too big.  Treat it like the height and width being set to -1.
+               logger.fine("Caught IllegalArgumentException: " + iae.getMessage());
+               bitmap = null;
+            }
          }
       } else {
          bitmap = null;
@@ -571,7 +576,7 @@ public class OMScalingRaster
          if (logger.isLoggable(Level.FINE)) {
             logger.fine("OMRasterObject.render() | drawing " + width + "x" + height + " image at " + point1.x + ", " + point1.y);
          }
-         
+
          if (g instanceof Graphics2D && bitmap instanceof RenderedImage) {
             // Affine translation for placement...
             ((Graphics2D) g).drawRenderedImage((RenderedImage) bitmap, new AffineTransform(1f, 0f, 0f, 1f, point1.x, point1.y));
