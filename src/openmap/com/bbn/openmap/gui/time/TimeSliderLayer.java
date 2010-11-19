@@ -619,6 +619,7 @@ public class TimeSliderLayer
       int x = e.getPoint().x;
       int y = e.getPoint().y;
       int selectionCenterX = (int) projection.forward(0, selectionCenter).getX();
+      boolean scaleChange = false;
 
       switch (dragState) {
 
@@ -636,6 +637,7 @@ public class TimeSliderLayer
             invPnt = projection.inverse(x, y);
             worldMouse = invPnt.getX();
             selectionWidthMinutes = 2 * (selectionCenter - worldMouse);
+            scaleChange = true;
             break;
 
          case RIGHT_HANDLE:
@@ -646,21 +648,24 @@ public class TimeSliderLayer
             invPnt = projection.inverse(x, y);
             worldMouse = invPnt.getX();
             selectionWidthMinutes = 2 * (worldMouse - selectionCenter);
+            scaleChange = true;
             break;
       }
 
-      if (selectionWidthMinutes > maxSelectionWidthMinutes) {
-         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("resetting selectionWidthMinutes to max, was " + selectionWidthMinutes + ", now "
-                  + maxSelectionWidthMinutes);
+      if(scaleChange) {
+         if (selectionWidthMinutes > maxSelectionWidthMinutes) {
+            if (logger.isLoggable(Level.FINE)) {
+               logger.fine("resetting selectionWidthMinutes to max, was " + selectionWidthMinutes + ", now "
+                     + maxSelectionWidthMinutes);
+            }
+            selectionWidthMinutes = maxSelectionWidthMinutes;
          }
-         selectionWidthMinutes = maxSelectionWidthMinutes;
+         updateTimeline();
+         timelineLayer.doPrepare();
       }
-
-      updateTimeline();
-
+      
       doPrepare();
-
+      
       return true;
    }
 
