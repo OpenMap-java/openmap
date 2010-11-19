@@ -57,6 +57,7 @@ import com.bbn.openmap.gui.event.EventPresenter;
 import com.bbn.openmap.gui.time.TimeSliderLayer.TimeDrape;
 import com.bbn.openmap.gui.time.TimelineLayer.SelectionArea.PlayFilterSection;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.layer.policy.NullProjectionChangePolicy;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMAction;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -149,7 +150,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
         // This is how to set the ProjectionChangePolicy, which
         // dictates how the layer behaves when a new projection is
         // received.
-        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.StandardPCPolicy(this, false));
+        setProjectionChangePolicy(new NullProjectionChangePolicy());
         // Making the setting so this layer receives events from the
         // SelectMouseMode, which has a modeID of "Gestures". Other
         // IDs can be added as needed.
@@ -274,7 +275,10 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
             graphicList.add(playFilter);
             graphicList.add(eventGraphicList);
-            graphicList.add(getSelectionRectangle(proj));
+            SelectionArea selectionRenderRect = getSelectionRectangle(proj);
+            if(selectionRenderRect != null) {
+               graphicList.add(selectionRenderRect);
+            }
             graphicList.add(ratingAreas);
         }
 
@@ -327,14 +331,19 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
          }
       }
 
-      // Make a temp copy, just for painting during this render frame
-      SelectionArea selectionRectToRender = new SelectionArea();
-      if (eventPresenter != null) {
-         selectionRectToRender.setFillPaint(eventPresenter.getSelectionDrawingAttributes().getSelectPaint());
+      if(selectionRect.isVisible()) {
+         // Make a temp copy, just for painting during this render frame
+         SelectionArea selectionRectToRender = new SelectionArea();
+         if (eventPresenter != null) {
+            selectionRectToRender.setFillPaint(eventPresenter.getSelectionDrawingAttributes().getSelectPaint());
+         }
+         selectionRectToRender.setLocation(selectionRect.getWestLon(), selectionRect.getEastLon());
+         selectionRectToRender.generate(proj);
+         return selectionRectToRender;
+      } else {
+         // Not visible, so don't bother sticking it on the list
+         return null;
       }
-      selectionRectToRender.setLocation(selectionRect.getWestLon(), selectionRect.getEastLon());
-      selectionRectToRender.generate(proj);
-      return selectionRectToRender;
    }
 
     protected OMGraphicList currentTimeMarker;
@@ -507,8 +516,6 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
             if(!realTimeMode || !timeSliderLayer.getUserHasChangedScale()) {
                 setMapBeanMaxScale(true);
-            } else {
-                doPrepare();
             }
         }
     }
@@ -523,7 +530,6 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                currentTime -= boundsStartOffset;
                centerDelegate.fireCenter(0, forwardProjectMillis(currentTime));
                timeLinesList = null;
-               doPrepare();
             }
 
             // Update selection (this only deals with time translation for now; no scaling)
@@ -624,11 +630,6 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
     protected boolean checkAndSetForNoTime(TimeEvent te) {
         isNoTime = te == TimeEvent.NO_TIME;
-        if (drape != null) {
-            drape.setVisible(isNoTime);
-            repaint();
-        }
-
         return isNoTime;
     }
 
@@ -1669,6 +1670,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
     public void adjustZoomFromMouseWheel(int rot) {
         timeSliderLayer.adjustZoomFromMouseWheel(rot);
+        doPrepare();
     }
 
     long getSelectionStart() {
