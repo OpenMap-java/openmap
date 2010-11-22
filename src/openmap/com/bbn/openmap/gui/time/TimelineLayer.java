@@ -67,6 +67,7 @@ import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.Cartesian;
+import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.time.Clock;
 import com.bbn.openmap.time.TimeBounds;
@@ -528,6 +529,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             if(realTimeMode) {
                long boundsStartOffset = tb.getStartTime() - oldStartTime;
                currentTime -= boundsStartOffset;
+               ((Proj)getProjection()).setCenter(0, forwardProjectMillis(currentTime));
                centerDelegate.fireCenter(0, forwardProjectMillis(currentTime));
                timeLinesList = null;
             }
@@ -549,7 +551,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     }
 
     public void updateTime(TimeEvent te) {
-
+       
         if (checkAndSetForNoTime(te)) {
             return;
         }
@@ -566,6 +568,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             // specifically set to a value, as opposed to the clock running
             // normally.
             currentTime = te.getSystemTime() - gameStartTime;
+            ((Proj)getProjection()).setCenter(0, forwardProjectMillis(currentTime));
             centerDelegate.fireCenter(0, forwardProjectMillis(currentTime));
             timeLinesList = null;
             doPrepare();
@@ -698,7 +701,6 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
 
         downLon = lon;
 
-        repaint();
         return true;
     }
 
@@ -1069,7 +1071,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                 selectionRect.setVisible(false);
             }
         }
-        repaint();
+        doPrepare();
     }
 
     public static class SelectionArea extends com.bbn.openmap.omGraphics.OMRect {
