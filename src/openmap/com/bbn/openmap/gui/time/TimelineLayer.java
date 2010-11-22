@@ -548,6 +548,9 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             timeSliderLayer.setSelectionValid(false);
         }
 
+        if(tbe.isInduceGraphicalUpdate()) {
+           doPrepare();
+        }
     }
 
     public void updateTime(TimeEvent te) {

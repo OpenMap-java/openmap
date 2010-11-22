@@ -37,12 +37,14 @@ public class TimeBoundsEvent {
     protected TimeBoundsHandler source;
     protected TimeBounds newTimeBounds;
     protected TimeBounds oldTimeBounds;
+    protected boolean induceGraphicalUpdate;
 
     public TimeBoundsEvent(TimeBoundsHandler source, TimeBounds ntb,
             TimeBounds otb) {
         this.source = source;
         this.newTimeBounds = ntb;
         this.oldTimeBounds = otb;
+        this.induceGraphicalUpdate = true;
     }
 
     /**
@@ -71,5 +73,25 @@ public class TimeBoundsEvent {
     public TimeBounds getOldTimeBounds() {
         return oldTimeBounds;
     }
+
+   /**
+    * @return whether this event should cause any graphical changes.  (Set to
+    *         false if you're firing multiple events and you want only one of
+    *         them - generally the last one, naturally - to begin the work of
+    *         updating the display.)
+    */
+   public boolean isInduceGraphicalUpdate() {
+      return induceGraphicalUpdate;
+   }
+
+   /**
+    * @param induceGraphicalUpdate Whether this event should cause any graphical changes.  (Set to
+    *         false if you're firing multiple events and you want only one of
+    *         them - generally the last one, naturally - to begin the work of
+    *         updating the display.)
+    */
+   public void setInduceGraphicalUpdate(boolean induceGraphicalUpdate) {
+      this.induceGraphicalUpdate = induceGraphicalUpdate;
+   }
 
 }
