@@ -205,7 +205,7 @@ public class OMEllipse extends OMCircle {
                 Debug.output(" "
                         + i
                         + " "
-                        + (azimuth[i] * 180 / Math.PI)
+                        + Math.toDegrees(azimuth[i])
                         + " ( "
                         + distance[i]
                         + " ) "

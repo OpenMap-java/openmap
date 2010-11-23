@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import com.bbn.openmap.proj.coords.LatLonPoint;
-import com.bbn.openmap.util.ArgParser;
 
 /**
  * A utility class to help manage tile trees. Use the builders to configure and

@@ -73,7 +73,7 @@ public class EllipseElement
       // Angle (Trigonometric ratios in right triangles)
       double angle;
       if (x1 != 0) {
-         angle = (180 / Math.PI) * Math.tan(x2 / x1);
+         angle = Math.toDegrees(Math.tan(x2 / x1));
       } else {
          angle = MoreMath.HALF_PI_D;
       }

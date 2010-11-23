@@ -52,7 +52,6 @@ import com.bbn.openmap.io.CSVFile;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMGraphicConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.omGraphics.OMPoly;
@@ -429,7 +428,7 @@ public class VPFAutoFeatureGraphicWarehouse
    public boolean checkLibraryForUsage(String libName) {
       boolean useLibrary = true;
       List<String> libraryNames = getUseLibraries();
-      if (libraryNames != null && libraryNames.size() > 0) {
+      if (libraryNames != null && !libraryNames.isEmpty()) {
          useLibrary = false;
          for (String libraryName : libraryNames) {
             if (libName.startsWith(libraryName)) {

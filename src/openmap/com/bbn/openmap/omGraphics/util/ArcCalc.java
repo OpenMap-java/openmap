@@ -159,7 +159,7 @@ public class ArcCalc implements Serializable {
 
         if (Debug.debugging("arc")) {
             Debug.output("ArcCalc.generate: Slope is "
-                    + (straightLineSlope * 180.0 / Math.PI)
+                    + Math.toDegrees(straightLineSlope)
                     + " degrees, distance = " + distance + " pixels.");
         }
 
@@ -227,7 +227,7 @@ public class ArcCalc implements Serializable {
             Debug.output("ArcCalc.generate: Center focus for arc is ("
                     + arcCenter.x + ", " + arcCenter.y
                     + ") along slope line of "
-                    + (inverseSlope * 180.0 / Math.PI) + " degrees).");
+                    + Math.toDegrees(inverseSlope) + " degrees).");
             Debug.output("ArcCalc.generate: Distance to point 1 from arc focus = "
                     + dist1
                     + "\n                    Distance to point 2 from arc focus = "
@@ -305,16 +305,16 @@ public class ArcCalc implements Serializable {
 
         if (Debug.debugging("arc")) {
             Debug.output("ArcCalc.generate: angle to x1, y1 is " + startSlope
-                    + " (" + (startSlope * 180.0 / Math.PI)
+                    + " (" + Math.toDegrees(startSlope)
                     + " degrees), angle to x2, y2 is " + endSlope + " ("
-                    + (endSlope * 180.0 / Math.PI) + " degrees)");
+                    + Math.toDegrees(endSlope) + " degrees)");
 
             Debug.output("ArcCalc.generate: Starting angle is " + smallSlope
-                    + "(" + (smallSlope * 180.0 / Math.PI)
+                    + "(" + Math.toDegrees(smallSlope)
                     + " degrees), end angle is " + largeSlope + " ("
-                    + (largeSlope * 180.0 / Math.PI)
+                    + Math.toDegrees(largeSlope)
                     + " degrees), incrementing by " + angleIncrement + " ("
-                    + (angleIncrement * 180.0 / Math.PI) + " degrees)");
+                    + Math.toDegrees(angleIncrement) + " degrees)");
         }
 
         reversed = false;

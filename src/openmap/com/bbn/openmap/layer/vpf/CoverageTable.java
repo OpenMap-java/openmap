@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,7 +32,6 @@ import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.vpf.VPFAutoFeatureGraphicWarehouse.FeaturePriorityHolder;
 import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMGraphicConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
@@ -734,9 +734,10 @@ public class CoverageTable {
       TableHolder tables = new TableHolder(this);
 
       // Loop through the features, one by one.
-      for (String featureName : featureInfo.keySet()) {
+      for (Entry<String, FeatureClassInfo> entry : featureInfo.entrySet()) {
 
-         FeatureClassInfo fci = featureInfo.get(featureName);
+         String featureName = entry.getKey();
+         FeatureClassInfo fci = entry.getValue();
          char featureType = whatFeatureType(warehouse, featureName);
          if (fci == null) {
             continue;

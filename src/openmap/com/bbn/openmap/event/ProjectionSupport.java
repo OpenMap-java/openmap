@@ -23,6 +23,7 @@
 package com.bbn.openmap.event;
 
 import java.util.ListIterator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.bbn.openmap.proj.Projection;
@@ -153,20 +154,41 @@ public class ProjectionSupport
             if (projEvent != null && !isEmpty()) {
 
                // Instead of going top of map to bottom, go bottom to top:
-               ListIterator<ProjectionListener> li = ProjectionSupport.this.listIterator();
-               while (li.hasPrevious()) {
-                  ProjectionListener listener = li.previous();
 
-                  // This is going from top to bottom
-                  // for (ProjectionListener listener : ProjectionSupport.this)
-                  // {
+               // Use this try/catch to deal with any problems getting clone of
+               // listeners, in case listener list is being changed while clone
+               // is being made, etc.
+               try {
+                  ListIterator<ProjectionListener> li = ProjectionSupport.this.listIterator();
+                  while (li.hasPrevious()) {
+                     ProjectionListener listener = li.previous();
 
-                  if (nextEvent != null) {
-                     break; // new event has been posted, bail out
+                     // This is going from top to bottom
+                     // for (ProjectionListener listener :
+                     // ProjectionSupport.this)
+                     // {
+
+                     if (nextEvent != null) {
+                        break; // new event has been posted, bail out
+                     }
+
+                     // Use this try/catch to eliminate problems from individual
+                     // layers - just blow them off.
+                     try {
+                        listener.projectionChanged(projEvent);
+                     } catch (Exception e) {
+                        if (logger.isLoggable(Level.FINE)) {
+                           logger.info("ProjectionListener not handling projection well: " + listener.getClass().getName() + " : "
+                                 + e.getClass().getName() + " : " + e.getMessage());
+                           e.printStackTrace();
+                        }
+                     }
                   }
 
-                  listener.projectionChanged(projEvent);
+               } catch (Exception e) {
+                  logger.fine("caught exception: " + e.getClass().getName() + " : " + e.getMessage());
                }
+
                // notification is complete
                synchronized (lock) {
                   projEvent = null;

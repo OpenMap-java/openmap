@@ -20,19 +20,13 @@ public class OMEventComparator implements Comparator<OMEvent> {
     }
 
     public int compare(OMEvent obj1, OMEvent obj2) {
-        long ts1 = Long.MAX_VALUE, ts2 = Long.MAX_VALUE;
-        short tsc1 = 0, tsc2 = 0;
         int ret = 0;
 
-        if (obj1 instanceof OMEvent) {
-            ts1 = ((OMEvent) obj1).getTimeStamp();
-            tsc1 = ((OMEvent) obj1).getTimeStampComparator();
-        }
+        long ts1 = obj1.getTimeStamp();
+        short tsc1 = obj1.getTimeStampComparator();
 
-        if (obj2 instanceof OMEvent) {
-            ts2 = ((OMEvent) obj2).getTimeStamp();
-            tsc2 = ((OMEvent) obj2).getTimeStampComparator();
-        }
+        long ts2 = obj2.getTimeStamp();
+        short tsc2 = obj2.getTimeStampComparator();
 
         // ts1 is the one being tested/added to the TreeSet, so we
         // want later items with the same time being added after
@@ -40,7 +34,7 @@ public class OMEventComparator implements Comparator<OMEvent> {
 
         if (ts1 < ts2) {
             ret = -1;
-            ((OMEvent) obj1).setSorted(true);
+            obj1.setSorted(true);
         } else if (ts1 > ts2) {
             ret = 1;
         } else {
@@ -49,8 +43,8 @@ public class OMEventComparator implements Comparator<OMEvent> {
             String id1 = null, id2 = null;
 
             if (logger.isLoggable(Level.FINE)) {
-                id1 = ((OMEvent) obj1).getDescription();
-                id2 = ((OMEvent) obj2).getDescription();
+                id1 = obj1.getDescription();
+                id2 = obj2.getDescription();
 
                 logging = true;
             }
@@ -61,7 +55,7 @@ public class OMEventComparator implements Comparator<OMEvent> {
                     logger.info("new event..." + id1);
                 }
             } else {
-                ((OMEvent) obj1).setSorted(true);
+                obj1.setSorted(true);
             }
             
 
@@ -72,7 +66,7 @@ public class OMEventComparator implements Comparator<OMEvent> {
 
             // Since time stamps are equal, go to the time stamp comparator
             // settings.
-            if (tsc1 < tsc2 && ((OMEvent) obj1).isSorted()) {
+            if (tsc1 < tsc2 && obj1.isSorted()) {
                 ret = -1;
                 if (logging) {
                     logger.info("-----");
@@ -88,7 +82,7 @@ public class OMEventComparator implements Comparator<OMEvent> {
                 // than one record with the same time, then this should keep
                 // happening until the last one in has the highest tsc value;
                 tsc1 = (short) (tsc2 + 1);
-                ((OMEvent) obj2).setTimeStampComparator(tsc1);
+                obj2.setTimeStampComparator(tsc1);
                 ret = 1;
                 if (logging) {
                     logger.info("^^^^^ " + ts1 + ", upping [" + id1 + "] to "

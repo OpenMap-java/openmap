@@ -687,7 +687,7 @@ public class LambertConformal
       double[] drawllpts = new double[rawllpts.length];
       System.arraycopy(drawllpts, 0, rawllpts, 0, rawllpts.length);
 
-      return _forwardPoly(rawllpts, ltype, nsegs, isFilled);
+      return _forwardPoly(drawllpts, ltype, nsegs, isFilled);
    }
 
    public ArrayList<float[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs, boolean isFilled) {

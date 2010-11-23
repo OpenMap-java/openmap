@@ -451,6 +451,12 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         geoTest.add(geoline);
 
         omList.add(geoTest);
+        
+        OMText omtest = new OMText(42.0, -71.0, "Testing how this looks\nwhen doing multiple lines", OMText.JUSTIFY_LEFT);
+        omtest.setBaseline(OMText.BASELINE_TOP);
+        omtest.setFillPaint(Color.red);
+        
+        omList.add(omtest);
 
         return omList;
     }

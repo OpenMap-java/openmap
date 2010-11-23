@@ -146,9 +146,7 @@ public class SimpleBeanLayer extends Layer implements BeanBoxHandler {
             } else if (graphic instanceof OMRasterObject) {
                 ((OMRasterObject) graphic).setLat(bean.getLatitude());
                 ((OMRasterObject) graphic).setLon(bean.getLongitude());
-                ((OMRasterObject) graphic).setRotationAngle(bean.getBearingInDeg()
-                        * Math.PI / 180);
-
+                ((OMRasterObject) graphic).setRotationAngle(Math.toRadians(bean.getBearingInDeg()));
             }
 
             graphic.setNeedToRegenerate(true);
@@ -179,8 +177,7 @@ public class SimpleBeanLayer extends Layer implements BeanBoxHandler {
             int height = icon.getIconHeight();
             graphic = new OMRaster(object.getLatitude(), object.getLongitude(), -width / 2, -height / 2, icon);
 
-            ((OMRaster) graphic).setRotationAngle(object.getBearingInDeg()
-                    * Math.PI / 180);
+            ((OMRaster) graphic).setRotationAngle(Math.toRadians(object.getBearingInDeg()));
 
             graphic.setRenderType(OMGraphicConstants.RENDERTYPE_OFFSET);
 

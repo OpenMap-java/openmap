@@ -171,7 +171,7 @@ public abstract class LayerGraphicWarehouseSupport
    public boolean checkLibraryForUsage(String libName) {
       boolean useLibrary = true;
       List<String> libraryNames = getUseLibraries();
-      if (libraryNames != null && libraryNames.size() > 0) {
+      if (libraryNames != null && !libraryNames.isEmpty()) {
          useLibrary = false;
          for (String libraryName : libraryNames) {
             if (libName.startsWith(libraryName)) {

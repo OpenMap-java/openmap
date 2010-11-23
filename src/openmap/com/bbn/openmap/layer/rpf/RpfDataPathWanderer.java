@@ -5,8 +5,6 @@ import java.io.File;
 import com.bbn.openmap.layer.util.DataPathWanderer;
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.wanderer.TestWandererCallback;
-import com.bbn.openmap.util.wanderer.Wanderer;
 
 /**
  * Adds RPF directories with a A.TOC file inside them to the data paths.

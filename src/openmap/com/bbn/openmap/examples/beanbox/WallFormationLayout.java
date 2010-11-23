@@ -90,9 +90,9 @@ public class WallFormationLayout extends BeanLayoutManager {
             llps[0] = midllp;
         else {
             float angle1Deg = bearingInDeg - 90;
-            float angle1Rad = (float) (angle1Deg * Math.PI / 180);
+            float angle1Rad = (float) Math.toRadians(angle1Deg);
             float angle2Deg = bearingInDeg + 90;
-            float angle2Rad = (float) (angle2Deg * Math.PI / 180);
+            float angle2Rad = (float) Math.toRadians(angle2Deg);
             int numBeans = contents.size();
             float spanNM = (numBeans - 1) * separationInNM;
             LatLonPoint cornerllp1 = midllp.getPoint(

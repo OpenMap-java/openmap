@@ -65,7 +65,7 @@ public class Geo {
      * Calculation from NIMA: http://pollux.nss.nima.mil/calc/degree.html
      */
     public final static double npdAtLat(double latdeg) {
-        double lat = (latdeg * Math.PI) / 180.0;
+        double lat = Math.toRadians(latdeg);
         return (NPD_LTERM1 * Math.cos(lat) + NPD_LTERM2 * Math.cos(3 * lat) + NPD_LTERM3
                 * Math.cos(5 * lat));
     }

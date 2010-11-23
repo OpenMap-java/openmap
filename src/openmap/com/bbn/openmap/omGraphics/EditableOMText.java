@@ -608,8 +608,8 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
         // JPanel palette =
         // PaletteHelper.createHorizontalPanel("Rotation");
         javax.swing.Box palette = javax.swing.Box.createHorizontalBox();
-        textField = new JTextField(Integer.toString((int) (text
-                .getRotationAngle() * 180 / Math.PI)), 5);
+        textField = new JTextField(Integer.toString((int) Math.toDegrees(text
+                .getRotationAngle()), 5));
         textField.setActionCommand(TextRotationCommand);
         textField.setToolTipText(i18n.get(EditableOMText.class, "textField",
                                           I18n.TOOLTIP,
@@ -733,7 +733,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
             repaint();
         } else if (command == TextRotationCommand) {
             Integer rotation = new Integer(((JTextField) source).getText());
-            text.setRotationAngle(Math.PI / 180 * (rotation.intValue() % 360));
+            text.setRotationAngle(Math.toDegrees(rotation.intValue() % 360));
             text.regenerate(projection);
             repaint();
         }

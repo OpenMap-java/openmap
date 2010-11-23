@@ -27,10 +27,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.ListIterator;
-
-import com.bbn.openmap.util.Debug;
 
 /**
  * This is an utility class that can be used by beans that need support for
@@ -42,8 +41,6 @@ import com.bbn.openmap.util.Debug;
 public class ListenerSupport<E>
       extends ArrayList<E>
       implements java.io.Serializable {
-
-   // transient protected Vector<Object> listeners;
 
    private static final long serialVersionUID = 1L;
    protected Object source;
@@ -117,5 +114,41 @@ public class ListenerSupport<E>
       while (null != (listenerOrNull = s.readObject())) {
          add((E) listenerOrNull);
       }
+   }
+   
+   /**
+    * Wrapper functions to make the iterator methods' synchronization work.
+    */
+
+   public synchronized boolean add(E o) {
+      return super.add(o);
+   }
+
+   public synchronized void add(int i, E o) {
+      super.add(i, o);
+   }
+
+   public synchronized boolean addAll(int index, Collection<? extends E> c) {
+      return addAll(index, c);
+   }
+
+   public synchronized void clear() {
+      super.clear();
+   }
+
+   public synchronized E remove(int index) {
+      return remove(index);
+   }
+
+   public synchronized boolean remove(Object o) {
+      return super.remove(o);
+   }
+   
+   public synchronized E set(int index, E element) {
+      return super.set(index, element);
+   }
+   
+   public synchronized int size() {
+      return super.size();
    }
 }

@@ -721,8 +721,8 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
             E00Data data = (E00Data) oj.getAppObject();
             if (data == null)
                 continue;
-            lt = oj.lat / 180 * Math.PI;
-            ln = oj.lon / 180 * Math.PI;
+            lt = Math.toRadians(oj.lat);
+            ln = Math.toRadians(oj.lon);
             z = data.valeur * 0.304;
             System.out.println("c " + ln + " " + lt + " " + z);
         }

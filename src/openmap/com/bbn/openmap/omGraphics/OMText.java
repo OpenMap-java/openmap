@@ -1208,9 +1208,9 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
             // normal.
 
             if (baseline == BASELINE_MIDDLE) {
-                baselineOffset = descent / 2;
+                baselineOffset = (fm.getAscent() - fm.getDescent())/ 2;
             } else if (baseline == BASELINE_TOP) {
-                baselineOffset = descent;
+                baselineOffset = fm.getAscent() - fm.getDescent();
             }
 
             // or, baselineOffset = height - (baseline * height /2);
@@ -1221,7 +1221,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
              * pt.y is bottom of first line, currenty is initialized to top of
              * first line, minus any offset introduced by baseline adjustments.
              */
-            int currenty = (int) pt.getY() + descent - height - baselineOffset;
+            int currenty = (int) pt.getY() + descent - height + baselineOffset;
 
             // First, all the line endpoints.
             for (i = 0; i < nLines; i++) {
