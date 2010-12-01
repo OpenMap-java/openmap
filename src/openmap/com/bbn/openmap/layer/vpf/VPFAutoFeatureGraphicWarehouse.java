@@ -55,6 +55,8 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.OMRasterObject;
+import com.bbn.openmap.omGraphics.OMScalingIcon;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
@@ -495,7 +497,12 @@ public class VPFAutoFeatureGraphicWarehouse
     */
    public OMGraphic createNode(CoverageTable c, NodeTable t, List<Object> nodeprim, double latitude, double longitude,
                                boolean isEntityNode, String featureType) {
-      OMPoint pt = new OMPoint.Image(latitude, longitude);
+//      OMPoint pt = new OMPoint.Image(latitude, longitude);
+      
+      OMScalingIcon pt = new OMScalingIcon(latitude, longitude, (Image)null);
+      pt.setBaseScale(500000);
+      pt.setMinScale(500000);
+      pt.setMaxScale(2000000);
       return pt;
    }
 
@@ -1123,6 +1130,8 @@ public class VPFAutoFeatureGraphicWarehouse
             if (cgmDisplay != null) {
                if (omg instanceof OMPoint.Image) {
                   ((OMPoint.Image) omg).setImage(icon);
+               } else if (omg instanceof OMRasterObject) {
+                  ((OMRasterObject) omg).setImage(icon);
                } else if (omg instanceof OMPoly) {
                   OMPoly omp = (OMPoly) omg;
                   if (!omp.isPolygon()) {
@@ -1277,9 +1286,14 @@ public class VPFAutoFeatureGraphicWarehouse
                list = new OMGraphicList();
             }
 
-            if (icon != null && omg instanceof OMPoint.Image) {
-               ((OMPoint.Image) omg).setImage(icon);
-               list.add(omg);
+            if (icon != null) {
+               if (omg instanceof OMPoint.Image) {
+                  ((OMPoint.Image) omg).setImage(icon);
+                  list.add(omg);
+               } else if (omg instanceof OMRasterObject) {
+                  ((OMRasterObject) omg).setImage(icon);
+                  list.add(omg);
+               }
             }
          }
 

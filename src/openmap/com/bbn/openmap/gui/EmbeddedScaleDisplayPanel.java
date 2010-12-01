@@ -18,12 +18,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
-import java.beans.PropertyVetoException;
 import java.util.Properties;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
@@ -173,118 +176,51 @@ public class EmbeddedScaleDisplayPanel
          uom = Length.KM;
    }
 
-   javax.swing.Box palette;
-   JRadioButton meterRadioButton;
-   JRadioButton kmRadioButton;
-   JRadioButton dmRadioButton;
-   JRadioButton nmRadioButton;
-   JRadioButton mileRadioButton;
-   JRadioButton degRadioButton;
-   javax.swing.ButtonGroup uomButtonGroup;
-
-   private JPanel jPanel3;
-   private JPanel jPanel2;
-   private JPanel jPanel1;
+   JPanel palette;
+   Vector<JRadioButton> buttons = new Vector<JRadioButton>();
+   ButtonGroup uomButtonGroup;
 
    /** Creates the interface palette. */
    public java.awt.Component getGUI() {
-
       if (palette == null) {
 
-         logger.fine("creating palette");
+         logger.fine("creating palette.");
 
-         palette = javax.swing.Box.createVerticalBox();
-         uomButtonGroup = new javax.swing.ButtonGroup();
-         jPanel1 = new JPanel();
-         jPanel2 = new JPanel();
-         jPanel3 = new JPanel();
-         kmRadioButton = new JRadioButton();
-         meterRadioButton = new JRadioButton();
-         dmRadioButton = new JRadioButton();
-         nmRadioButton = new JRadioButton();
-         mileRadioButton = new JRadioButton();
-         degRadioButton = new JRadioButton();
+         palette = new JPanel();
+         uomButtonGroup = new ButtonGroup();
 
-         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
+         palette.setLayout(new javax.swing.BoxLayout(palette, javax.swing.BoxLayout.Y_AXIS));
+         palette.setBorder(new javax.swing.border.TitledBorder("Unit Of Measure"));
 
-         jPanel2.setBorder(new javax.swing.border.TitledBorder("Unit Of Measure"));
-         kmRadioButton.setText("KM");
-         kmRadioButton.setToolTipText("Kilometers");
-         uomButtonGroup.add(kmRadioButton);
-         jPanel3.add(kmRadioButton);
-
-         meterRadioButton.setText("M");
-         meterRadioButton.setToolTipText("Meters");
-         uomButtonGroup.add(meterRadioButton);
-         jPanel3.add(meterRadioButton);
-
-         dmRadioButton.setText("DM");
-         dmRadioButton.setToolTipText("Data Miles");
-         uomButtonGroup.add(dmRadioButton);
-         jPanel3.add(dmRadioButton);
-
-         nmRadioButton.setText("NM");
-         nmRadioButton.setToolTipText("Nautical Miles");
-         uomButtonGroup.add(nmRadioButton);
-         jPanel3.add(nmRadioButton);
-
-         mileRadioButton.setText("Mile");
-         mileRadioButton.setToolTipText("Statute Miles");
-         uomButtonGroup.add(mileRadioButton);
-         jPanel3.add(mileRadioButton);
-
-         degRadioButton.setText("Deg");
-         degRadioButton.setToolTipText("Decimal Degrees");
-         uomButtonGroup.add(degRadioButton);
-         jPanel3.add(degRadioButton);
-
-         jPanel2.add(jPanel3);
-
-         jPanel1.add(jPanel2);
-
-         palette.add(jPanel1);
-
-         java.awt.event.ActionListener al = new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-               String ac = e.getActionCommand();
-
-               if (ac.equalsIgnoreCase(UnitOfMeasureProperty)) {
-                  JRadioButton jrb = (JRadioButton) e.getSource();
-
-                  // Update the length of the line, too.
-                  setUnitOfMeasure(jrb.getText());
-               } else {
-                  logger.fine("Unknown action command \"" + ac + "\" in ESDP.actionPerformed().");
-               }
+         ActionListener al = new ActionListener() {
+            // We don't have to check for action commands or anything like that.
+            // We know this listener is going to be added to JRadioButtons that
+            // are labeled with abbreviations for length.
+            public void actionPerformed(ActionEvent e) {
+               JRadioButton jrb = (JRadioButton) e.getSource();
+               setUnitOfMeasure(jrb.getText());
             }
          };
 
-         kmRadioButton.addActionListener(al);
-         kmRadioButton.setActionCommand(UnitOfMeasureProperty);
-         meterRadioButton.addActionListener(al);
-         meterRadioButton.setActionCommand(UnitOfMeasureProperty);
-         dmRadioButton.addActionListener(al);
-         dmRadioButton.setActionCommand(UnitOfMeasureProperty);
-         nmRadioButton.addActionListener(al);
-         nmRadioButton.setActionCommand(UnitOfMeasureProperty);
-         mileRadioButton.addActionListener(al);
-         mileRadioButton.setActionCommand(UnitOfMeasureProperty);
-         degRadioButton.addActionListener(al);
-         degRadioButton.setActionCommand(UnitOfMeasureProperty);
+         for (Length lengthType : Length.getAvailable()) {
+            JRadioButton jrb = new JRadioButton();
+            jrb.setText(lengthType.getAbbr());
+            jrb.setToolTipText(lengthType.toString());
+            uomButtonGroup.add(jrb);
+            palette.add(jrb);
+
+            jrb.addActionListener(al);
+
+            jrb.setSelected(uom.getAbbr().equalsIgnoreCase(lengthType.getAbbr()));
+            buttons.add(jrb);
+         }
+
+      } else {
+         for (JRadioButton button : buttons) {
+            button.setSelected(uom.getAbbr().equalsIgnoreCase(button.getText()));
+         }
       }
-      if (uom.equals(Length.KM)) {
-         kmRadioButton.setSelected(true);
-      } else if (uom.equals(Length.METER)) {
-         meterRadioButton.setSelected(true);
-      } else if (uom.equals(Length.DM)) {
-         dmRadioButton.setSelected(true);
-      } else if (uom.equals(Length.NM)) {
-         nmRadioButton.setSelected(true);
-      } else if (uom.equals(Length.MILE)) {
-         mileRadioButton.setSelected(true);
-      } else if (uom.equals(Length.DECIMAL_DEGREE)) {
-         degRadioButton.setSelected(true);
-      }
+
       return palette;
    }
 

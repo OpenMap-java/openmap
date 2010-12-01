@@ -24,9 +24,13 @@ package com.bbn.openmap.layer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.beans.PropertyVetoException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Properties;
+import java.util.Vector;
+import java.util.logging.Logger;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
@@ -41,17 +45,14 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * Layer objects are components which can be added to the MapBean to
- * make a map.
+ * Layer objects are components which can be added to the MapBean to make a map.
  * <p>
  * Layers implement the ProjectionListener interface to listen for
- * ProjectionEvents. When the projection changes, they may need to
- * refetch, regenerate their graphics, and then repaint themselves
- * into the new view.
+ * ProjectionEvents. When the projection changes, they may need to refetch,
+ * regenerate their graphics, and then repaint themselves into the new view.
  * <p>
  * ### Layer used by the overview handler <br>
- * scaleLayer.class=com.rolands.jtlsweb.map.layer.ScaleDisplayLayer
- * <br>
+ * scaleLayer.class=com.rolands.jtlsweb.map.layer.ScaleDisplayLayer <br>
  * scaleLayer.prettyName=Scale <br>
  * scaleLayer.lineColor=ff777777 <br>
  * scaleLayer.textColor=ff000000 <br>
@@ -61,319 +62,271 @@ import com.bbn.openmap.util.PropUtils;
  * scaleLayer.width=150 <br>
  * scaleLayer.height=10 <br>
  * <br>
- * unitOfMeasure - any com.bbn.openmap.proj.Length instance returned
- * by Length.get(string). <br>
- * locationXoffset - offset in pixels from left/right, positive from
- * left edge, negative from right edge <br>
- * locationYoffset - offset in pixels from top/bottom, positive from
- * top edge, negative from bottom edge <br>
+ * unitOfMeasure - any com.bbn.openmap.proj.Length instance returned by
+ * Length.get(string). <br>
+ * locationXoffset - offset in pixels from left/right, positive from left edge,
+ * negative from right edge <br>
+ * locationYoffset - offset in pixels from top/bottom, positive from top edge,
+ * negative from bottom edge <br>
  * width - width of scale indicator bar in pixels <br>
  * height - height of scale indicator bar in pixels <br>
  * <br>
  */
-public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
+public class ScaleDisplayLayer
+      extends OMGraphicHandlerLayer {
 
-    public ScaleDisplayLayer() {
-        super();
-        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
-    }
+   public ScaleDisplayLayer() {
+      super();
+      setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+      setUnitOfMeasure(Length.KM.toString());
+   }
 
-    // Color variables for different line types
-    protected java.awt.Color lineColor = null;
-    protected java.awt.Color textColor = null;
+   protected Logger logger = Logger.getLogger("com.bbn.openmap.layer.ScaleDisplayLayer");
 
-    // Default colors to use, if not specified in the properties.
-    protected String defaultLineColorString = "FFFFFF";
-    protected String defaultTextColorString = "FFFFFF";
-    protected String defaultUnitOfMeasureString = "km";
-    protected int defaultLocationXoffset = -10;
-    protected int defaultLocationYoffset = -10;
-    protected int defaultWidth = 150;
-    protected int defaultHeight = 10;
+   // Color variables for different line types
+   protected java.awt.Color lineColor = null;
+   protected java.awt.Color textColor = null;
 
-    // property text values
-    public static final String UnitOfMeasureProperty = "unitOfMeasure";
-    public static final String LocationXOffsetProperty = "locationXoffset";
-    public static final String LocationYOffsetProperty = "locationYoffset";
-    public static final String WidthProperty = "width";
-    public static final String HeightProperty = "height";
+   // Default colors to use, if not specified in the properties.
+   protected String defaultLineColorString = "FFFFFF";
+   protected String defaultTextColorString = "FFFFFF";
+   protected String defaultUnitOfMeasureString = "km";
+   protected int defaultLocationXoffset = -10;
+   protected int defaultLocationYoffset = -10;
+   protected int defaultWidth = 150;
+   protected int defaultHeight = 10;
 
-    protected String unitOfMeasure = null;
-    protected Length uom = Length.get(defaultUnitOfMeasureString);
-    protected String uomAbbr = uom.getAbbr();
-    protected int locationXoffset = defaultLocationXoffset;
-    protected int locationYoffset = defaultLocationYoffset;
-    protected int width = defaultWidth;
-    protected int height = defaultHeight;
+   // property text values
+   public static final String UnitOfMeasureProperty = "unitOfMeasure";
+   public static final String LocationXOffsetProperty = "locationXoffset";
+   public static final String LocationYOffsetProperty = "locationYoffset";
+   public static final String WidthProperty = "width";
+   public static final String HeightProperty = "height";
 
-    protected DrawingAttributes dAttributes = DrawingAttributes.getDefaultClone();
-    
-    /**
-     * Sets the properties for the <code>Layer</code>. This allows
-     * <code>Layer</code> s to get a richer set of parameters than
-     * the <code>setArgs</code> method.
-     * 
-     * @param prefix the token to prefix the property names
-     * @param properties the <code>Properties</code> object
-     */
-    public void setProperties(String prefix, Properties properties) {
-        super.setProperties(prefix, properties);
-        prefix = com.bbn.openmap.util.PropUtils.getScopedPropertyPrefix(prefix);
+   protected String unitOfMeasure = null;
+   protected Length uom = Length.get(defaultUnitOfMeasureString);
+   protected String uomAbbr = uom.getAbbr();
+   protected int locationXoffset = defaultLocationXoffset;
+   protected int locationYoffset = defaultLocationYoffset;
+   protected int width = defaultWidth;
+   protected int height = defaultHeight;
 
-        dAttributes.setProperties(prefix, properties);
-        
-        String unitOfMeasure = properties.getProperty(prefix
-                + UnitOfMeasureProperty);
-        setUnitOfMeasure(unitOfMeasure);
+   protected DrawingAttributes dAttributes = DrawingAttributes.getDefaultClone();
 
-        locationXoffset = PropUtils.intFromProperties(properties, prefix
-                + LocationXOffsetProperty, defaultLocationXoffset);
+   /**
+    * Sets the properties for the <code>Layer</code>. This allows
+    * <code>Layer</code> s to get a richer set of parameters than the
+    * <code>setArgs</code> method.
+    * 
+    * @param prefix the token to prefix the property names
+    * @param properties the <code>Properties</code> object
+    */
+   public void setProperties(String prefix, Properties properties) {
+      super.setProperties(prefix, properties);
+      prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        locationYoffset = PropUtils.intFromProperties(properties, prefix
-                + LocationYOffsetProperty, defaultLocationYoffset);
+      dAttributes.setProperties(prefix, properties);
 
-        width = PropUtils.intFromProperties(properties,
-                prefix + WidthProperty,
-                defaultWidth);
+      String unitOfMeasureString = properties.getProperty(prefix + UnitOfMeasureProperty);
+      if (unitOfMeasureString != null) {
+         setUnitOfMeasure(unitOfMeasureString);
+      }
 
-        height = PropUtils.intFromProperties(properties, prefix
-                + HeightProperty, defaultHeight);
-    }
+      locationXoffset = PropUtils.intFromProperties(properties, prefix + LocationXOffsetProperty, defaultLocationXoffset);
 
-    public synchronized OMGraphicList prepare() {
-        int w, h, left_x = 0, right_x = 0, lower_y = 0, upper_y = 0;
-        Projection projection = getProjection();
-        OMGraphicList graphics = new OMGraphicList();
+      locationYoffset = PropUtils.intFromProperties(properties, prefix + LocationYOffsetProperty, defaultLocationYoffset);
 
-        w = projection.getWidth();
-        h = projection.getHeight();
-        if (locationXoffset < 0) {
-            left_x = w + locationXoffset - width;
-            right_x = w + locationXoffset;
-        } else if (locationXoffset >= 0) {
-            left_x = locationXoffset;
-            right_x = locationXoffset + width;
-        }
-        if (locationYoffset < 0) {
-            upper_y = h + locationYoffset - height;
-            lower_y = h + locationYoffset;
-        } else if (locationYoffset >= 0) {
-            upper_y = locationYoffset;
-            lower_y = locationYoffset + height;
-        }
+      width = PropUtils.intFromProperties(properties, prefix + WidthProperty, defaultWidth);
 
-        graphics.clear();
+      height = PropUtils.intFromProperties(properties, prefix + HeightProperty, defaultHeight);
+   }
 
-        OMLine line = new OMLine(left_x, lower_y, right_x, lower_y);
-        dAttributes.setTo(line);
-        graphics.add(line);
+   public Properties getProperties(Properties props) {
+      props = super.getProperties(props);
+      String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-        line = new OMLine(left_x, lower_y, left_x, upper_y);
-        dAttributes.setTo(line);
-        graphics.add(line);
+      dAttributes.setProperties(props);
 
-        line = new OMLine(right_x, lower_y, right_x, upper_y);
-        dAttributes.setTo(line);
-        graphics.add(line);
+      props.put(prefix + LocationXOffsetProperty, Integer.toString(locationXoffset));
+      props.put(prefix + LocationYOffsetProperty, Integer.toString(locationYoffset));
+      props.put(prefix + WidthProperty, Integer.toString(width));
+      props.put(prefix + HeightProperty, Integer.toString(height));
 
-        LatLonPoint loc1 = projection.inverse(left_x, lower_y, new LatLonPoint.Double());
-        LatLonPoint loc2 = projection.inverse(right_x, lower_y, new LatLonPoint.Double());
+      props.put(prefix + UnitOfMeasureProperty, unitOfMeasure);
 
-        double dist = uom.fromRadians(loc1.distance(loc2));
+      return props;
+   }
 
-        String outtext;
-        if (dist < 1.0f) {
-            outtext = String.format("%.3f %s", dist, uomAbbr);
-        }
-        else if (dist < 10.0f) {
-            outtext = String.format("%.2f %s", dist, uomAbbr);
-        }
-        else if (dist < 100.0f) {
-            outtext = String.format("%.1f %s", dist, uomAbbr);
-        }
-        else {
-            outtext = String.format("%.0f %s", dist, uomAbbr);
-        }
+   public synchronized OMGraphicList prepare() {
+      int w, h, left_x = 0, right_x = 0, lower_y = 0, upper_y = 0;
+      Projection projection = getProjection();
+      OMGraphicList graphics = new OMGraphicList();
 
-        OMText text = new OMText((left_x + right_x) / 2, lower_y - 3, ""
-                + outtext, OMText.JUSTIFY_CENTER);
-        
-        Font font = text.getFont();
-        text.setFont(font.deriveFont(font.getStyle(), font.getSize() + 4));
+      w = projection.getWidth();
+      h = projection.getHeight();
+      if (locationXoffset < 0) {
+         left_x = w + locationXoffset - width;
+         right_x = w + locationXoffset;
+      } else if (locationXoffset >= 0) {
+         left_x = locationXoffset;
+         right_x = locationXoffset + width;
+      }
+      if (locationYoffset < 0) {
+         upper_y = h + locationYoffset - height;
+         lower_y = h + locationYoffset;
+      } else if (locationYoffset >= 0) {
+         upper_y = locationYoffset;
+         lower_y = locationYoffset + height;
+      }
 
-        dAttributes.setTo(text);
-        text.setTextMatteColor((Color) dAttributes.getMattingPaint());
-        text.setTextMatteStroke(new BasicStroke(5));
-        text.setMattingPaint(OMColor.clear);
-        graphics.add(text);
-        graphics.generate(projection);
+      graphics.clear();
 
-        return graphics;
-    }
+      OMLine line = new OMLine(left_x, lower_y, right_x, lower_y);
+      dAttributes.setTo(line);
+      graphics.add(line);
 
-    /**
-     * Getter for property unitOfMeasure.
-     * 
-     * @return Value of property unitOfMeasure.
-     */
-    public String getUnitOfMeasure() {
-        return this.unitOfMeasure;
-    }
+      line = new OMLine(left_x, lower_y, left_x, upper_y);
+      dAttributes.setTo(line);
+      graphics.add(line);
 
-    /**
-     * Setter for property unitOfMeasure.
-     * 
-     * @param unitOfMeasure New value of property unitOfMeasure.
-     * 
-     * @throws PropertyVetoException
-     */
-    public void setUnitOfMeasure(String unitOfMeasure) {
-        if (unitOfMeasure == null)
-            unitOfMeasure = Length.KM.toString();
-        this.unitOfMeasure = unitOfMeasure;
+      line = new OMLine(right_x, lower_y, right_x, upper_y);
+      dAttributes.setTo(line);
+      graphics.add(line);
 
-        //There is a bug in the Length.get() method that will not
-        // return
-        //the correct (or any value) for a requested uom.
-        //This does not work:
-        //uom = com.bbn.openmap.proj.Length.get(unitOfMeasure);
+      /*
+       * We need to use better coordinates to measure distance, like the same
+       * pixel distance at the center of the map. There's a problem using the
+       * lower right location, in that those distances decrease as you zoom out.
+       */
 
-        //Therefore, The following code correctly obtains the proper
-        // Length object.
+      int y = h / 2;
+      int x = w / 2;
+      int xSide = (right_x - left_x) / 2;
 
-        Length[] choices = Length.getAvailable();
-        uom = null;
-        for (int i = 0; i < choices.length; i++) {
-            if (unitOfMeasure.equalsIgnoreCase(choices[i].toString())
-                    || unitOfMeasure.equalsIgnoreCase(choices[i].getAbbr())) {
-                uom = choices[i];
-                break;
+      LatLonPoint loc1 = projection.inverse(x - xSide, y, new LatLonPoint.Double());
+      LatLonPoint loc2 = projection.inverse(x + xSide, y, new LatLonPoint.Double());
+
+      double dist = uom.fromRadians(loc1.distance(loc2));
+
+      String outtext;
+      if (dist < 1.0f) {
+         outtext = String.format("%.3f %s", dist, uomAbbr);
+      } else if (dist < 10.0f) {
+         outtext = String.format("%.2f %s", dist, uomAbbr);
+      } else if (dist < 100.0f) {
+         outtext = String.format("%.1f %s", dist, uomAbbr);
+      } else {
+         outtext = String.format("%.0f %s", dist, uomAbbr);
+      }
+
+      OMText text = new OMText((left_x + right_x) / 2, lower_y - 3, "" + outtext, OMText.JUSTIFY_CENTER);
+
+      Font font = text.getFont();
+      text.setFont(font.deriveFont(font.getStyle(), font.getSize() + 4));
+
+      dAttributes.setTo(text);
+      text.setTextMatteColor((Color) dAttributes.getMattingPaint());
+      text.setTextMatteStroke(new BasicStroke(5));
+      text.setMattingPaint(OMColor.clear);
+      graphics.add(text);
+      graphics.generate(projection);
+
+      return graphics;
+   }
+
+   /**
+    * Getter for property unitOfMeasure.
+    * 
+    * @return Value of property unitOfMeasure.
+    */
+   public String getUnitOfMeasure() {
+      return this.unitOfMeasure;
+   }
+
+   /**
+    * Setter for property unitOfMeasure.
+    * 
+    * @param unitOfMeasure New value of property unitOfMeasure.
+    * 
+    * @throws PropertyVetoException
+    */
+   public void setUnitOfMeasure(String unitOfMeasure) {
+      if (unitOfMeasure == null)
+         unitOfMeasure = Length.KM.toString();
+      this.unitOfMeasure = unitOfMeasure;
+
+      // There is a bug in the Length.get() method that will not
+      // return
+      // the correct (or any value) for a requested uom.
+      // This does not work:
+      // uom = com.bbn.openmap.proj.Length.get(unitOfMeasure);
+
+      // Therefore, The following code correctly obtains the proper
+      // Length object.
+
+      Length[] choices = Length.getAvailable();
+      uom = null;
+      for (int i = 0; i < choices.length; i++) {
+         if (unitOfMeasure.equalsIgnoreCase(choices[i].toString()) || unitOfMeasure.equalsIgnoreCase(choices[i].getAbbr())) {
+            uom = choices[i];
+            break;
+         }
+      }
+
+      // of no uom is found assign Kilometers as the default.
+      if (uom == null)
+         uom = Length.KM;
+
+      uomAbbr = uom.getAbbr();
+
+   }
+
+   JPanel palette;
+   ButtonGroup uomButtonGroup;
+   Vector<JRadioButton> buttons = new Vector<JRadioButton>();
+
+   /** Creates the interface palette. */
+   public java.awt.Component getGUI() {
+
+      if (palette == null) {
+
+         logger.fine("creating palette.");
+
+         palette = new JPanel();
+         uomButtonGroup = new ButtonGroup();
+
+         palette.setLayout(new javax.swing.BoxLayout(palette, javax.swing.BoxLayout.Y_AXIS));
+         palette.setBorder(new javax.swing.border.TitledBorder("Unit Of Measure"));
+
+         java.awt.event.ActionListener al = new ActionListener() {
+            // We don't have to check for action commands or anything like that.
+            // We know this listener is going to be added to JRadioButtons that
+            // are labeled with abbreviations for length.
+            public void actionPerformed(ActionEvent e) {
+               JRadioButton jrb = (JRadioButton) e.getSource();
+               setUnitOfMeasure(jrb.getText());
             }
-        }
+         };
 
-        // of no uom is found assign Kilometers as the default.
-        if (uom == null)
-            uom = Length.KM;
+         for (Length lengthType : Length.getAvailable()) {
+            JRadioButton jrb = new JRadioButton();
+            jrb.setText(lengthType.getAbbr());
+            jrb.setToolTipText(lengthType.toString());
+            uomButtonGroup.add(jrb);
+            palette.add(jrb);
 
-        uomAbbr = uom.getAbbr();
+            jrb.addActionListener(al);
 
-    }
+            jrb.setSelected(unitOfMeasure.equalsIgnoreCase(lengthType.getAbbr()));
+            buttons.add(jrb);
+         }
 
-    javax.swing.Box palette;
-    JRadioButton meterRadioButton;
-    JRadioButton kmRadioButton;
-    JRadioButton dmRadioButton;
-    JRadioButton nmRadioButton;
-    JRadioButton mileRadioButton;
-    JRadioButton degRadioButton;
-    javax.swing.ButtonGroup uomButtonGroup;
+      } else {
+         for (JRadioButton button : buttons) {
+            button.setSelected(uom.getAbbr().equalsIgnoreCase(button.getText()));
+         }
+      }
 
-    private JPanel jPanel3;
-    private JPanel jPanel2;
-    private JPanel jPanel1;
-
-    /** Creates the interface palette. */
-    public java.awt.Component getGUI() {
-
-        if (palette == null) {
-            if (com.bbn.openmap.util.Debug.debugging("graticule"))
-                com.bbn.openmap.util.Debug.output("GraticuleLayer: creating Graticule Palette.");
-
-            palette = javax.swing.Box.createVerticalBox();
-            uomButtonGroup = new javax.swing.ButtonGroup();
-            jPanel1 = new JPanel();
-            jPanel2 = new JPanel();
-            jPanel3 = new JPanel();
-            kmRadioButton = new JRadioButton();
-            meterRadioButton = new JRadioButton();
-            dmRadioButton = new JRadioButton();
-            nmRadioButton = new JRadioButton();
-            mileRadioButton = new JRadioButton();
-            degRadioButton = new JRadioButton();
-
-            jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
-
-            jPanel2.setBorder(new javax.swing.border.TitledBorder("Unit Of Measure"));
-            kmRadioButton.setText("KM");
-            kmRadioButton.setToolTipText("Kilometers");
-            uomButtonGroup.add(kmRadioButton);
-            jPanel3.add(kmRadioButton);
-
-            meterRadioButton.setText("M");
-            meterRadioButton.setToolTipText("Meters");
-            uomButtonGroup.add(meterRadioButton);
-            jPanel3.add(meterRadioButton);
-
-            dmRadioButton.setText("DM");
-            dmRadioButton.setToolTipText("Data Miles");
-            uomButtonGroup.add(dmRadioButton);
-            jPanel3.add(dmRadioButton);
-
-            nmRadioButton.setText("NM");
-            nmRadioButton.setToolTipText("Nautical Miles");
-            uomButtonGroup.add(nmRadioButton);
-            jPanel3.add(nmRadioButton);
-
-            mileRadioButton.setText("Mile");
-            mileRadioButton.setToolTipText("Statute Miles");
-            uomButtonGroup.add(mileRadioButton);
-            jPanel3.add(mileRadioButton);
-
-            degRadioButton.setText("Deg");
-            degRadioButton.setToolTipText("Decimal Degrees");
-            uomButtonGroup.add(degRadioButton);
-            jPanel3.add(degRadioButton);
-
-            jPanel2.add(jPanel3);
-
-            jPanel1.add(jPanel2);
-
-            palette.add(jPanel1);
-
-            java.awt.event.ActionListener al = new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    String ac = e.getActionCommand();
-
-                    if (ac.equalsIgnoreCase(UnitOfMeasureProperty)) {
-                        JRadioButton jrb = (JRadioButton) e.getSource();
-                        setUnitOfMeasure(jrb.getText());
-                        doPrepare();
-                    } else {
-                        com.bbn.openmap.util.Debug.error("Unknown action command \""
-                                + ac
-                                + "\" in GraticuleLayer.actionPerformed().");
-                    }
-                }
-            };
-
-            kmRadioButton.addActionListener(al);
-            kmRadioButton.setActionCommand(UnitOfMeasureProperty);
-            meterRadioButton.addActionListener(al);
-            meterRadioButton.setActionCommand(UnitOfMeasureProperty);
-            dmRadioButton.addActionListener(al);
-            dmRadioButton.setActionCommand(UnitOfMeasureProperty);
-            nmRadioButton.addActionListener(al);
-            nmRadioButton.setActionCommand(UnitOfMeasureProperty);
-            mileRadioButton.addActionListener(al);
-            mileRadioButton.setActionCommand(UnitOfMeasureProperty);
-            degRadioButton.addActionListener(al);
-            degRadioButton.setActionCommand(UnitOfMeasureProperty);
-        }
-        if (unitOfMeasure.equalsIgnoreCase("km")) {
-            kmRadioButton.setSelected(true);
-        } else if (unitOfMeasure.equalsIgnoreCase("m")) {
-            meterRadioButton.setSelected(true);
-        } else if (unitOfMeasure.equalsIgnoreCase("dm")) {
-            dmRadioButton.setSelected(true);
-        } else if (unitOfMeasure.equalsIgnoreCase("nm")) {
-            nmRadioButton.setSelected(true);
-        } else if (unitOfMeasure.equalsIgnoreCase("mile")) {
-            mileRadioButton.setSelected(true);
-        } else if (unitOfMeasure.equalsIgnoreCase("deg")) {
-            degRadioButton.setSelected(true);
-        }
-        return palette;
-    }
-
+      return palette;
+   }
 }
-
