@@ -598,6 +598,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
                     timeLinesList = null;
                     centerDelegate.fireCenter(0,
                             forwardProjectMillis(currentTime));
+                    doPrepare();
                 }
             }
         } else {
