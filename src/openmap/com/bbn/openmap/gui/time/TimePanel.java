@@ -218,6 +218,10 @@ public class TimePanel extends OMComponentPanel implements MapPanelChild,
         
         c.fill = GridBagConstraints.NONE;
         c.weighty = 0f;
+        
+        JLabel dateTimeLabel = new JLabel("Date (Local Time)", SwingConstants.CENTER);
+        lgridbag.setConstraints(dateTimeLabel, c);
+        leftPanel.add(dateTimeLabel);
 
         timeLabel = new JLabel(NO_TIME_STRING, SwingConstants.CENTER);
         Font defaultFont = timeLabel.getFont();
