@@ -106,6 +106,10 @@ public class TimeSliderLayer
 
    OMRect boundsRectRightHandle;
 
+   OMLine baseLine; // thick line along middle
+
+   OMPoly contextPoly; // lines that relate time slider to timeline above.
+
    int sliderPointHalfWidth = 5;
 
    TimelinePanel timelinePanel;
@@ -116,12 +120,6 @@ public class TimeSliderLayer
    // address a precision issue?)
 
    Clock clock;
-
-   OMRaster selectionPoint; // triangle indicating center of selection
-
-   OMLine baseLine; // thick line along middle
-
-   OMPoly contextPoly; // lines that relate time slider to timeline above.
 
    LabelPanel labelPanel;
 
@@ -139,7 +137,7 @@ public class TimeSliderLayer
 
    private final JButton zoomToSelection = new JButton("Zoom to Selection");
    private final JButton renderFixedSelection = new JButton("Show Entire Selection");
-
+   
    /**
     * Construct the TimelineLayer.
     * 
@@ -221,11 +219,50 @@ public class TimeSliderLayer
     */
    public synchronized OMGraphicList getControlWidgetList(Projection proj) {
 
-      OMGraphicList controlWidgetList = null;
-
       Projection projection = getProjection();
 
-      controlWidgetList = createControlWidgets();
+      OMGraphicList controlWidgetList = new OMGraphicList();
+
+      // triangle indicating center of selection
+      ImageIcon selectionPointImage;
+
+      DrawingAttributes da = new DrawingAttributes();
+
+      da.setFillPaint(TimelineLayer.tint);
+      da.setLinePaint(TimelineLayer.tint);
+      IconPart ip = new BasicIconPart(new Polygon(new int[] {
+         50,
+         90,
+         10,
+         50
+      }, new int[] {
+         10,
+         90,
+         90,
+         10
+      }, 4), da);
+      selectionPointImage = OMIconFactory.getIcon(10, 10, ip);
+      OMRaster selectionPoint = new OMRaster(0f, 0f, -5, 0, selectionPointImage);
+      controlWidgetList.add(selectionPoint);
+
+      boundsRectLeftHandle = new OMRect(0, 0, 0, 0);
+      boundsRectLeftHandle.setFillPaint(Color.black);
+      controlWidgetList.add(boundsRectLeftHandle);
+
+      boundsRectRightHandle = new OMRect(0, 0, 0, 0);
+      boundsRectRightHandle.setFillPaint(Color.black);
+      controlWidgetList.add(boundsRectRightHandle);
+
+      int[] xs = new int[8];
+      int[] ys = new int[8];
+      contextPoly = new OMPoly(xs, ys);
+      contextPoly.setFillPaint(Color.white);
+      controlWidgetList.add(contextPoly);
+
+      baseLine = new OMLine(0, 0, 0, 0);
+      baseLine.setLinePaint(Color.BLACK);
+      baseLine.setStroke(new BasicStroke(2));
+      controlWidgetList.add(baseLine);
       
       if (projection == null) {
          return controlWidgetList; // Huhn?
@@ -287,7 +324,7 @@ public class TimeSliderLayer
 
       selectionPoint.setLon((float) selectionCenter);
       selectionPoint.generate(projection);
-
+      
       // and the two handles for the bounds
 
       int handleWest = west - sliderPointHalfWidth;
@@ -307,8 +344,8 @@ public class TimeSliderLayer
       // and the context lines, that show how the current selection maps to
       // the timeline above
 
-      int[] xs = contextPoly.getXs();
-      int[] ys = contextPoly.getYs();
+      xs = contextPoly.getXs();
+      ys = contextPoly.getYs();
 
       xs[0] = 0;
       ys[0] = -1;
@@ -336,9 +373,6 @@ public class TimeSliderLayer
       });
       baseLine.generate(projection);
 
-      if (proj != null) {
-         controlWidgetList.generate(proj);
-      }
       return controlWidgetList;
    }
 
@@ -350,59 +384,6 @@ public class TimeSliderLayer
          }
          timelinePanel.getMapBean().setScale(scale);
       }
-   }
-
-   /**
-    * Creates the time control widgets if they haven't been made yet. This
-    * method should be used to create the control widget list, which can then be
-    * used for generating and painting the widgets. The widgets are repositioned
-    * for time settings in the resetControlWidgets method.
-    * 
-    * @return new OMGraphicList containing widgets.
-    */
-   protected OMGraphicList createControlWidgets() {
-      OMGraphicList graphicList = new OMGraphicList();
-
-      DrawingAttributes da = new DrawingAttributes();
-
-      da.setFillPaint(TimelineLayer.tint);
-      da.setLinePaint(TimelineLayer.tint);
-      IconPart ip = new BasicIconPart(new Polygon(new int[] {
-         50,
-         90,
-         10,
-         50
-      }, new int[] {
-         10,
-         90,
-         90,
-         10
-      }, 4), da);
-      ImageIcon thumbsUpImage = OMIconFactory.getIcon(10, 10, ip);
-
-      selectionPoint = new OMRaster(0f, 0f, -5, 0, thumbsUpImage);
-      graphicList.add(selectionPoint);
-
-      boundsRectLeftHandle = new OMRect(0, 0, 0, 0);
-      boundsRectLeftHandle.setFillPaint(Color.black);
-      graphicList.add(boundsRectLeftHandle);
-
-      boundsRectRightHandle = new OMRect(0, 0, 0, 0);
-      boundsRectRightHandle.setFillPaint(Color.black);
-      graphicList.add(boundsRectRightHandle);
-
-      int[] xs = new int[8];
-      int[] ys = new int[8];
-      contextPoly = new OMPoly(xs, ys);
-      contextPoly.setFillPaint(Color.white);
-      graphicList.add(contextPoly);
-
-      baseLine = new OMLine(0, 0, 0, 0);
-      baseLine.setLinePaint(Color.BLACK);
-      baseLine.setStroke(new BasicStroke(2));
-      graphicList.add(baseLine);
-
-      return graphicList;
    }
 
    public String getName() {
