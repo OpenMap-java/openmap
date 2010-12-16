@@ -57,8 +57,8 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.omGraphics.OMPoly;
-import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.OMRect;
+import com.bbn.openmap.omGraphics.OMScalingIcon;
 import com.bbn.openmap.proj.Cartesian;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.time.Clock;
@@ -241,8 +241,12 @@ public class TimeSliderLayer
          90,
          10
       }, 4), da);
-      selectionPointImage = OMIconFactory.getIcon(10, 10, ip);
-      OMRaster selectionPoint = new OMRaster(0f, 0f, -5, 0, selectionPointImage);
+      
+      selectionPointImage = OMIconFactory.getIcon(32, 32, ip);
+      OMScalingIcon selectionPoint = new OMScalingIcon(0f, 0f, -5, 6, selectionPointImage, 1.0f);
+      final float selectionPointScale = 1.8f;
+      selectionPoint.setMaxScale(selectionPointScale);
+      selectionPoint.setMinScale(selectionPointScale);
       controlWidgetList.add(selectionPoint);
 
       boundsRectLeftHandle = new OMRect(0, 0, 0, 0);
