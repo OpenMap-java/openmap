@@ -45,7 +45,7 @@ import com.bbn.openmap.proj.Projection;
  * parts of the map that are not used by the layer.
  */
 public class BufferedImageRenderPolicy
-      extends RenderingHintsRenderPolicy {
+extends RenderingHintsRenderPolicy {
 
    protected OMRaster buffer = null;
 
@@ -194,21 +194,26 @@ public class BufferedImageRenderPolicy
             double pnt1y = Math.round(pnt1.getY());
             double pnt2y = Math.round(pnt2.getY());
             if (pnt1y > 0 || pnt2y < (h - 1)) {
+               // There are cases where pnt2y = pnt1y causing h = 0
+               // and this causes problems below where we have to bail!
+
                h = (int) Math.floor(pnt2y - pnt1y);
                yOffset = pnt1y;
             }
 
-            BufferedImage bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
-            super.setRenderingHints(g2d);
-            if (yOffset != 0) {
-               g2d.setTransform(AffineTransform.getTranslateInstance(0, -yOffset));
-            }
-            list.generate(proj);
-            list.render(g2d);
 
-            omr = new OMScalingRaster(llp1.getY(), llp1.getX(), llp2.getY(), llp2.getX(), bufferedImage);
+            if (h > 0 && w > 0) {
+               BufferedImage bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+               Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
+               super.setRenderingHints(g2d);
+               if (yOffset != 0) {
+                  g2d.setTransform(AffineTransform.getTranslateInstance(0, -yOffset));
+               }
+               list.generate(proj);
+               list.render(g2d);
 
+               omr = new OMScalingRaster(llp1.getY(), llp1.getX(), llp2.getY(), llp2.getX(), bufferedImage);
+            }   
          } else {
             // For anything other than a cylindrical image, we just want to
             // paint what we would have drawn in an image that covers the map.
@@ -219,7 +224,10 @@ public class BufferedImageRenderPolicy
             omr = new OMRaster((int) 0, (int) 0, bufferedImage);
 
          }
-         omr.generate(proj);
+
+         if (omr != null) {
+            omr.generate(proj);
+         }
       }
 
       return omr;
