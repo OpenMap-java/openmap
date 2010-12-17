@@ -243,7 +243,7 @@ public class TimeSliderLayer
       }, 4), da);
       
       selectionPointImage = OMIconFactory.getIcon(32, 32, ip);
-      OMScalingIcon selectionPoint = new OMScalingIcon(0f, 0f, -5, 6, selectionPointImage, 1.0f);
+      OMScalingIcon selectionPoint = new OMScalingIcon(0f, 0f, 0, 6, selectionPointImage, 1.0f);
       final float selectionPointScale = 1.8f;
       selectionPoint.setMaxScale(selectionPointScale);
       selectionPoint.setMinScale(selectionPointScale);
