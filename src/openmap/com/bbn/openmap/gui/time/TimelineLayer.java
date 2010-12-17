@@ -512,7 +512,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             if(realTimeMode) {
                 // TODO Don (see above) why is this necessary? Seems like the
                 // regenerate ought to reproject the event markers properly?
-                eventGraphicList = null;
+                setEventGraphicList(null);
             }
 
             if(!realTimeMode || !timeSliderLayer.getUserHasChangedScale()) {
