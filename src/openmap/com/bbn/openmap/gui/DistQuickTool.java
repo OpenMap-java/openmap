@@ -289,15 +289,10 @@ public class DistQuickTool
        */
       public void mouseDragged(MouseEvent arg0) {
 
-         BufferedMapBean mb = getBufferedMapBean(arg0);
-         if (mb == null) {
+         if (theMap == null) {
             // OMMouseMode needs a BufferedMapBean
             return;
          }
-
-         // Left mouse click, pan
-
-         theMap = mb;
 
          if (rPoint1 == null) {
             rPoint1 = theMap.getCoordinates(arg0);
@@ -344,15 +339,18 @@ public class DistQuickTool
 
          mousePressed = true;
 
-         MapBean mb = theMap;
-         if (mb == null && e.getSource() instanceof MapBean) {
-            mb = (MapBean) e.getSource();
-            mb.addPaintListener(this);
+         BufferedMapBean mb = getBufferedMapBean(e);
+         if (mb == null) {
+            // OMMouseMode needs a BufferedMapBean
+            return;
          }
+
+         theMap = mb;
+         theMap.addPaintListener(this);
 
          if (mb != null) {
             // anchor the new first point of the line
-            rPoint1 = mb.getCoordinates(e);
+            rPoint1 = theMap.getCoordinates(e);
             // ensure the second point is not yet set.
             rPoint2 = null;
             // add the distance to the total distance
