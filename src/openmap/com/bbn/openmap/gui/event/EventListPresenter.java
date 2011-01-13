@@ -656,8 +656,8 @@ public class EventListPresenter extends AbstractEventPresenter implements
         activeFilters = null;
         rebuildFilterInterface();
         rebuildEventList(resetSelected);
-        if (parentPanel instanceof EventPanel) {
-            ((EventPanel) parentPanel).initInterface();
+        if (parentPanel != null) {
+            parentPanel.initInterface();
         }
 
         // Tell everyone interested in the event list to check the events.

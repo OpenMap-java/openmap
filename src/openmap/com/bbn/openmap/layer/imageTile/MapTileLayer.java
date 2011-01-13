@@ -27,11 +27,11 @@ package com.bbn.openmap.layer.imageTile;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.mapTile.MapTileFactory;
+import com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
@@ -51,6 +51,7 @@ import com.bbn.openmap.util.PropUtils;
  * tiles.tileFactory=com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory
  * tiles.jar=mapTilesInJar.jar (optional, for runtime jar loading)
  * tiles.rootDir=root_directory_of_tiles
+ * #optional, .png is default
  * tiles.fileExt=.png
  * tiles.cacheSize=the number of mapTiles the factory should hold on to. The default is 100.
  * # transform for naming convention of tiles default is OSMMapTileCoordinateTransform, but it depends on the source of tiles.  GDAL is TSMMapTileCoordinateTransform
@@ -73,9 +74,28 @@ import com.bbn.openmap.util.PropUtils;
  * tiles.fileExt=.png
  * tiles.cacheSize=the number of mapTiles the factory should hold on to. The default is 100.
  * # transform for naming convention of tiles default is OSMMapTileCoordinateTransform, but it depends on the source of tiles.  GDAL is TSMMapTileCoordinateTransform
- * mapTileTransform=com.bbn.openmap.dataAccess.mapTile.OSMMapTileCoordinateTransform, or com.bbn.openmap.dataAccess.mapTile.TSMMapTileCoordinateTransform
+ * mapTileTransform=com.bbn.openmap.dataAccess.mapTile.OSMMapTileCoordinateTransform, or com.bbn.openmap.dataAccess.mapTile.TMSMapTileCoordinateTransform
  * 
  * </pre>
+ * 
+ * To make things simpler, you can define a tiles.omp file that sits under the
+ * tile root directory or at the top level of the jar file, and let it specify
+ * the properties for the tile set. The properties in that file should be
+ * unscoped:
+ * 
+ * <pre>
+ * 
+ * fileExt=.png
+ * #for instance, for GDAL processed stuff need this transform
+ * mapTileTransform=com.bbn.openmap.dataAccess.mapTile.TMSMapTileCoordinateTransform
+ * #in jar file, should specify rootDir inside jar to tiles (don't need this for file system rootDirs):
+ * rootDir=mytiles
+ * 
+ * </pre>
+ * 
+ * If you do this last configuration, all you need to define is rootDir (and
+ * prettyName, class) property for layer, and then define all other props with
+ * data.
  * 
  * @author dietrick
  */
@@ -97,11 +117,12 @@ public class MapTileLayer
     * layer to be used with an ImageServer (renderDataForProjection won't work).
     */
    public final static String INCREMENTAL_UPDATES_PROPERTY = "incrementalUpdates";
+
    /**
-    * Property to allow jar files to be dynamically added to the classpath at
-    * runtime. Each path to a jar file should be separated by a semi-colon.
+    * A property to set if you want to force the layer to use tiles of a certain
+    * zoom level.
     */
-   public final static String MAP_DATA_JAR_PROPERTY = "jar";
+   public final static String ZOOM_LEVEL_PROPERTY = "zoomLevel";
 
    /**
     * The MapTileFactory that knows how to fetch image files and create
@@ -114,17 +135,16 @@ public class MapTileLayer
     */
    protected boolean incrementalUpdates = false;
    /**
-    * The path to jar files as set in the properties. The jar files, if valid,
-    * will be added to the classpath at runtime. If a jar file is set, then any
-    * path to image tiles should be specified from the top-level directory
-    * inside the jar file as a relative path. We only keep track of this if we
-    * write the properties back out again, so it's basically whatever the
-    * property was set to when the layer was configured.
+    * The zoomLevel to use when requesting tiles from the MapTileFactory. Is -1
+    * for default, which lets the factory choose the zoom level based on the
+    * current scale setting. You can choose 1-20 if you want to force the layer
+    * to use something else.
     */
-   protected String jarFileNames = null;
+   protected int zoomLevel = -1;
 
    public MapTileLayer() {
       setRenderPolicy(new com.bbn.openmap.layer.policy.BufferedImageRenderPolicy(this));
+      setTileFactory(new StandardMapTileFactory());
    }
 
    public MapTileLayer(MapTileFactory tileFactory) {
@@ -150,11 +170,11 @@ public class MapTileLayer
       if (tileFactory != null) {
          OMGraphicList newList = new OMGraphicList();
          setList(newList);
-         return tileFactory.getTiles(projection, -1, newList);
+         return tileFactory.getTiles(projection, zoomLevel, newList);
       }
       return null;
    }
-   
+
    public String getToolTipTextFor(OMGraphic omg) {
       return (String) omg.getAttribute(OMGraphic.TOOLTIP);
    }
@@ -169,25 +189,13 @@ public class MapTileLayer
          if (itf != null) {
             setTileFactory(itf);
          }
+      } else if (tileFactory != null && tileFactory instanceof PropertyConsumer) {
+         ((PropertyConsumer) tileFactory).setProperties(prefix, props);
       }
 
       incrementalUpdates = PropUtils.booleanFromProperties(props, prefix + INCREMENTAL_UPDATES_PROPERTY, incrementalUpdates);
 
-      String jarString = props.getProperty(prefix + MAP_DATA_JAR_PROPERTY);
-      if (jarString != null) {
-         jarFileNames = jarString;
-
-         Vector<String> jarNames = PropUtils.parseMarkers(jarFileNames, ";");
-         for (String jarName : jarNames) {
-            try {
-               logger.fine("adding " + jarName + " to classpath");
-               ClasspathHacker.addFile(jarName);
-            } catch (IOException ioe) {
-               logger.warning("couldn't add map data jar file: " + jarName);
-            }
-         }
-      }
-
+      setZoomLevel(PropUtils.intFromProperties(props, prefix + ZOOM_LEVEL_PROPERTY, zoomLevel));
    }
 
    public Properties getProperties(Properties props) {
@@ -202,9 +210,7 @@ public class MapTileLayer
       }
 
       props.put(prefix + INCREMENTAL_UPDATES_PROPERTY, Boolean.toString(incrementalUpdates));
-      if (jarFileNames != null) {
-         props.put(prefix + MAP_DATA_JAR_PROPERTY, jarFileNames);
-      }
+      props.put(prefix + ZOOM_LEVEL_PROPERTY, Integer.toString(zoomLevel));
 
       return props;
    }
@@ -242,6 +248,14 @@ public class MapTileLayer
             tileFactory.setRepaintCallback(this);
          }
       }
+   }
+
+   public int getZoomLevel() {
+      return zoomLevel;
+   }
+
+   public void setZoomLevel(int zoomLevel) {
+      this.zoomLevel = zoomLevel;
    }
 
 }

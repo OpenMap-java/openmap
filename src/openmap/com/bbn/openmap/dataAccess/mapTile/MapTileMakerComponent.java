@@ -50,8 +50,8 @@ import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.MouseDelegator;
-import com.bbn.openmap.dataAccess.mapTile.ZoomLevelInfoFace.BoundsObject;
-import com.bbn.openmap.dataAccess.mapTile.ZoomLevelInfoFace.LayerObject;
+import com.bbn.openmap.dataAccess.mapTile.ZoomLevelMakerFace.BoundsObject;
+import com.bbn.openmap.dataAccess.mapTile.ZoomLevelMakerFace.LayerObject;
 import com.bbn.openmap.event.LayerEvent;
 import com.bbn.openmap.event.LayerListener;
 import com.bbn.openmap.event.MapMouseMode;
@@ -125,8 +125,8 @@ public class MapTileMakerComponent
 
    protected LayerHandler layerHandler;
 
-   protected List<ZoomLevelInfoFace> faces = new ArrayList<ZoomLevelInfoFace>();
-   protected ZoomLevelInfoFace activeFace;
+   protected List<ZoomLevelMakerFace> faces = new ArrayList<ZoomLevelMakerFace>();
+   protected ZoomLevelMakerFace activeFace;
 
    protected OMDrawingTool drawingTool;
    protected DrawingAttributes rectDA = DrawingAttributes.getDefaultClone();
@@ -155,25 +155,27 @@ public class MapTileMakerComponent
       outerC.weightx = 1.0f;
       outerC.weighty = 1.0f;
 
-      JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
-
+//      JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
+//
       String zoom_level = i18n.get(MapTileMakerComponent.class, "zoom_level", "Zoom Level");
+//
+//      for (int i = 0; i < 21; i++) {
+//         ZoomLevelMakerFace zlif = new ZoomLevelMakerFace(new ZoomLevelMaker(zoom_level + " " + i, "", i), this);
+//         faces.add(zlif);
+//         tabbedPane.add(zlif, outerC, i);
+//         tabbedPane.setTitleAt(i, Integer.toString(i));
+//      }
+//
+//      tabbedPane.addChangeListener(new ChangeListener() {
+//         public void stateChanged(ChangeEvent e) {
+//            ZoomLevelMakerFace zlif = (ZoomLevelMakerFace) ((JTabbedPane) e.getSource()).getSelectedComponent();
+//            resetActive(zlif);
+//         }
+//      });
 
-      for (int i = 0; i < 21; i++) {
-         ZoomLevelInfoFace zlif = new ZoomLevelInfoFace(new ZoomLevelInfo(zoom_level + " " + i, "", i), this);
-         faces.add(zlif);
-         tabbedPane.add(zlif, outerC, i);
-         tabbedPane.setTitleAt(i, Integer.toString(i));
-      }
-
-      tabbedPane.addChangeListener(new ChangeListener() {
-         public void stateChanged(ChangeEvent e) {
-            ZoomLevelInfoFace zlif = (ZoomLevelInfoFace) ((JTabbedPane) e.getSource()).getSelectedComponent();
-            resetActive(zlif);
-         }
-      });
-
-      mainPanel.add(tabbedPane, outerC);
+      ZoomLevelMakerFace zlif = new ZoomLevelMakerFace(new ZoomLevelMaker(zoom_level + " " + 0, "", 0), this);
+      faces.add(zlif);
+      mainPanel.add(zlif, outerC);
 
       JPanel masterOptions = new JPanel(new GridBagLayout());
       String use_transparent_background =
@@ -286,9 +288,9 @@ public class MapTileMakerComponent
     * 
     * @param activeZlif
     */
-   protected void resetActive(ZoomLevelInfoFace activeZlif) {
+   protected void resetActive(ZoomLevelMakerFace activeZlif) {
       activeFace = activeZlif;
-      for (ZoomLevelInfoFace zlif : faces) {
+      for (ZoomLevelMakerFace zlif : faces) {
          zlif.setActive(zlif.equals(activeZlif));
       }
 
@@ -303,7 +305,7 @@ public class MapTileMakerComponent
       }
    }
 
-   protected void shuffleLayers(ZoomLevelInfoFace activeZlif) {
+   protected void shuffleLayers(ZoomLevelMakerFace activeZlif) {
       if (layerHandler != null) {
          Layer[] layers = layerHandler.getLayers();
          for (Layer layer : layers) {
@@ -385,7 +387,7 @@ public class MapTileMakerComponent
       if (evt.getType() == LayerEvent.ALL) {
          Layer[] layers = evt.getLayers();
 
-         for (ZoomLevelInfoFace zlif : faces) {
+         for (ZoomLevelMakerFace zlif : faces) {
             zlif.setLayers(layers);
          }
       }
@@ -395,7 +397,7 @@ public class MapTileMakerComponent
     * @param layerObjects
     */
    protected void pushLayerSettingsToAll(List<LayerObject> layerObjects) {
-      for (ZoomLevelInfoFace zlif : faces) {
+      for (ZoomLevelMakerFace zlif : faces) {
          zlif.matchObjects(layerObjects);
       }
    }
@@ -407,7 +409,7 @@ public class MapTileMakerComponent
       List<BoundsObject> copy = new ArrayList<BoundsObject>();
       copy.addAll(boundsList);
 
-      for (ZoomLevelInfoFace zlif : faces) {
+      for (ZoomLevelMakerFace zlif : faces) {
          zlif.matchBounds(copy);
       }
    }
@@ -629,7 +631,7 @@ public class MapTileMakerComponent
    public void projectionChanged(ProjectionEvent e) {
       proj = e.getProjection();
 
-      for (ZoomLevelInfoFace face : faces) {
+      for (ZoomLevelMakerFace face : faces) {
          face.generate(proj);
       }
    }
@@ -654,7 +656,7 @@ public class MapTileMakerComponent
          StringBuffer content = new StringBuffer();
 
          int faceCount = 0;
-         for (ZoomLevelInfoFace face : faces) {
+         for (ZoomLevelMakerFace face : faces) {
             if (face.isInclude()) {
                faceCount++;
             }
@@ -683,14 +685,20 @@ public class MapTileMakerComponent
             StringBuffer zoomLevelList = new StringBuffer();
             StringBuffer totalLayers = null;
 
-            for (ZoomLevelInfoFace face : faces) {
+            for (ZoomLevelMakerFace face : faces) {
                if (face.isInclude()) {
-                  ZoomLevelInfo zli = face.getZoomLevelInfo();
+                  ZoomLevelMaker zli = face.getZoomLevelMaker();
 
                   zli.setPropertyPrefix("zoom" + zli.getZoomLevel());
                   zoomLevelList.append(" ").append(zli.getPropertyPrefix());
                   String zoom_level = i18n.get(MapTileMakerComponent.class, "zoom_level", "Zoom Level");
                   zli.name = zoom_level + " " + zli.getZoomLevel();
+                  
+                  int rangeVal = zli.getRange();
+                  if (rangeVal < zli.getZoomLevel()) {
+                     zli.name += " to " + rangeVal;
+                  }
+                  
                   String configuration_for = i18n.get(MapTileMakerComponent.class, "configuration_for", "Configuration for");
                   zli.description = configuration_for + " " + zli.name;
                   zli.layers = new ArrayList<String>();
@@ -698,7 +706,7 @@ public class MapTileMakerComponent
 
                   boolean buildLayerList = false;
 
-                  content.append("<p><hr><b>").append(zoom_level).append(" ").append(face.getZoomLevelInfo().getZoomLevel())
+                  content.append("<p><hr><b>").append(zoom_level).append(" ").append(zli.name)
                          .append("</b>");
                   String layers_string = i18n.get(MapTileMakerComponent.class, "layers_string", "Layers");
                   content.append("<ul><b>").append(layers_string).append(":</b>");

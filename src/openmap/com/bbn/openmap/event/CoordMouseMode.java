@@ -231,9 +231,7 @@ public abstract class CoordMouseMode extends AbstractMouseMode implements
             String prefix = PropUtils.getScopedPropertyPrefix(this);
             props.put(prefix + CoordFormatterProperty,
                     coordFormatter.getClass().getName());
-            if (coordFormatter instanceof PropertyConsumer) {
-                ((PropertyConsumer) coordFormatter).getProperties(props);
-            }
+            coordFormatter.getProperties(props);
         }
 
         return props;
@@ -247,9 +245,8 @@ public abstract class CoordMouseMode extends AbstractMouseMode implements
          * CoordInfoFormatterHandler. If there is, that object will take care of
          * the formatter's properties.
          */
-        if (coordFormatter instanceof PropertyConsumer
-                && coordFormatterHandler == null) {
-            ((PropertyConsumer) coordFormatter).getPropertyInfo(props);
+        if (coordFormatter != null && coordFormatterHandler == null) {
+            coordFormatter.getPropertyInfo(props);
         }
 
         return props;

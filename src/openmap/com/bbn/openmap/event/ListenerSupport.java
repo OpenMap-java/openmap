@@ -129,7 +129,7 @@ public class ListenerSupport<E>
    }
 
    public synchronized boolean addAll(int index, Collection<? extends E> c) {
-      return addAll(index, c);
+      return super.addAll(index, c);
    }
 
    public synchronized void clear() {
@@ -137,7 +137,7 @@ public class ListenerSupport<E>
    }
 
    public synchronized E remove(int index) {
-      return remove(index);
+      return super.remove(index);
    }
 
    public synchronized boolean remove(Object o) {

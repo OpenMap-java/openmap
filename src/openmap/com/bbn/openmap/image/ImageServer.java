@@ -348,7 +348,8 @@ public class ImageServer
                Layer layer = layers[i];
                String prefix = layer.getPropertyPrefix();
                if (prefix == null) {
-                  // Just in case the PlugInLayer prefix didn't get set to the same as the plugins'
+                  // Just in case the PlugInLayer prefix didn't get set to the
+                  // same as the plugins'
                   if (layer instanceof PlugInLayer) {
                      prefix = ((PlugInLayer) layer).getPlugIn().getPropertyPrefix();
                   }
@@ -362,6 +363,58 @@ public class ImageServer
                }
             }
          }
+      } else if (logger.isLoggable(Level.FINE)) {
+         logger.fine("no layers available for image");
+      }
+
+      byte[] formattedImage = getFormattedImage(imageFormatter, scaledWidth, scaledHeight);
+      graphics.dispose();
+      return formattedImage;
+   }
+
+   /**
+    * Create an image from a set of layers.
+    * 
+    * @param proj projection of map.
+    * @param scaledWidth scaled pixel width of final image. If you don't want it
+    *        scaled, use -1.
+    * @param scaledHeight scaled pixel height of final image. If you don't want
+    *        it scaled, use -1.
+    * @param layers A set of layers to paint into the image.
+    * @param background the Paint to be used for the background of this image.
+    * @return a byte[] representing the formatted image.
+    */
+   public byte[] createImageFromLayers(Projection proj, int scaledWidth, int scaledHeight, List<Layer> layers, Paint background) {
+
+      logger.fine("using the new ProjectionPainter interface!  createImage with layer list.");
+
+      if (formatter == null) {
+         logger.warning("no formatter set! Can't create image.");
+         return new byte[0];
+      }
+
+      ImageFormatter imageFormatter = formatter.makeClone();
+      java.awt.Graphics graphics = createGraphics(imageFormatter, proj.getWidth(), proj.getHeight());
+
+      if (graphics == null) {
+         return new byte[0];
+      }
+
+      ((Proj) proj).drawBackground((Graphics2D) graphics, background);
+
+      if (layers != null && !layers.isEmpty()) {
+         for (int i = layers.size() - 1; i >= 0; i--) {
+            Layer layer = layers.get(i);
+
+            if (layer != null) {
+               layer.renderDataForProjection(proj, graphics);
+
+               if (logger.isLoggable(Level.FINE)) {
+                  logger.fine("image request adding layer graphics from : " + layer.getName());
+               }
+            }
+         }
+
       } else if (logger.isLoggable(Level.FINE)) {
          logger.fine("no layers available for image");
       }

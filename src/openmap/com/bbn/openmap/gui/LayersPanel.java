@@ -1018,8 +1018,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
 
         // Don't want to forward ourselves on to controls, supposedly
         // they already know.
-        if (controls instanceof LightMapHandlerChild && someObj != this) {
-            ((LightMapHandlerChild) controls).findAndInit(someObj);
+        if (controls != null && someObj != this) {
+            controls.findAndInit(someObj);
         }
     }
 
@@ -1042,8 +1042,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
 
         // Don't want to forward ourselves on to controls, supposedly
         // they already know.
-        if (controls instanceof LightMapHandlerChild && someObj != this) {
-            ((LightMapHandlerChild) controls).findAndUndo(someObj);
+        if (controls != null && someObj != this) {
+            controls.findAndUndo(someObj);
         }
 
         if (someObj instanceof Layer) {

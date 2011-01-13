@@ -28,11 +28,17 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,6 +55,7 @@ import com.bbn.openmap.omGraphics.OMWarpingImage;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.ClasspathHacker;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.PropUtils;
@@ -87,15 +94,36 @@ public class StandardMapTileFactory
    public final static String FILE_EXT_PROPERTY = "fileExt";
    public final static String CACHE_SIZE_PROPERTY = "cacheSize";
    public final static String MTCTRANSFORM_PROPERTY = "mapTileTransform";
+   public final static String EMPTY_TILE_PROPERTY = "emtpyTilePath";
+
+   public final static String TILE_PROPERTIES = "tiles.omp";
+
+   public final static String DEFAULT_EMPTY_TILE_NAME = "EMPTY_TILE";
 
    protected ZoomLevelInfo zoomLevelInfo = new ZoomLevelInfo();
    protected String rootDir;
-   protected String fileExt;
+   protected String fileExt = ".png";
+   protected String rootDirProperty; // For writing out later, if necessary
 
    protected boolean verbose = false;
 
+   /**
+    * A component that is painting the tiles to the screen. If this component is
+    * set on this tile factory, it will be told to repaint the OMGraphicList it
+    * provides with the current contents. If you want the map to update as tiles
+    * are created by the factory, they will pop up on the map when they are
+    * ready.
+    */
    protected Component repaintCallback;
+   /**
+    * Flag to tell the factory to create the extra tiles off-map. Tends to cause
+    * the layer to do more work than necessary, so it's not used.
+    */
    private boolean doExtraTiles = false;
+   /**
+    * Coordinate transform for the uv coordinates of the tiles. Different
+    * sources have different origins for tile coordinates.
+    */
    protected MapTileCoordinateTransform mtcTransform = new OSMMapTileCoordinateTransform();
 
    public StandardMapTileFactory() {
@@ -105,8 +133,8 @@ public class StandardMapTileFactory
 
    public StandardMapTileFactory(Component layer, String rootDir, String tileFileExt) {
       super(100);
-      this.rootDir = rootDir;
-      this.fileExt = tileFileExt;
+      setRootDir(rootDir);
+      setFileExt(tileFileExt);
       verbose = logger.isLoggable(Level.FINE);
       this.repaintCallback = layer;
    }
@@ -328,17 +356,6 @@ public class StandardMapTileFactory
 
          Point2D upperLeft = proj.getUpperLeft();
          Point2D lowerRight = proj.getLowerRight();
-
-         // Point2D uvul = mtcTransform.latLonToTileUV(upperLeft, zoomLevel);
-         // Point2D uvlr = mtcTransform.latLonToTileUV(lowerRight, zoomLevel);
-         //
-         // int uvleft = (int) Math.floor(uvul.getX());
-         // int uvright = (int) Math.ceil(uvlr.getX());
-         // int uvup = (int) Math.floor(uvul.getY());
-         // if (uvup < 0) {
-         // uvup = 0;
-         // }
-         // int uvbottom = (int) Math.ceil(uvlr.getY());
 
          int[] uvBounds = mtcTransform.getTileBoundsForProjection(upperLeft, lowerRight, zoomLevel);
          int uvup = uvBounds[0];
@@ -575,11 +592,11 @@ public class StandardMapTileFactory
          if (raster != null) {
             raster.generate(proj);
             list.add(raster);
-            
+
             if (logger.isLoggable(Level.FINE)) {
                raster.putAttribute(OMGraphic.TOOLTIP, imagePath);
             }
-            
+
             if (repaintCallback != null) {
                repaintCallback.repaint();
             }
@@ -649,7 +666,7 @@ public class StandardMapTileFactory
 
    public Properties getProperties(Properties getList) {
       String prefix = PropUtils.getScopedPropertyPrefix(this);
-      getList.put(prefix + ROOT_DIR_PROPERTY, PropUtils.unnull(rootDir));
+      getList.put(prefix + ROOT_DIR_PROPERTY, PropUtils.unnull(rootDirProperty));
       getList.put(prefix + FILE_EXT_PROPERTY, PropUtils.unnull(fileExt));
       getList.put(prefix + CACHE_SIZE_PROPERTY, Integer.toString(getCacheSize()));
       getList.put(prefix + MTCTRANSFORM_PROPERTY, mtcTransform.getClass().toString());
@@ -680,7 +697,11 @@ public class StandardMapTileFactory
       setPropertyPrefix(prefix);
       prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-      rootDir = setList.getProperty(prefix + ROOT_DIR_PROPERTY, rootDir);
+      String rootDirectory = setList.getProperty(prefix + ROOT_DIR_PROPERTY);
+      if (rootDirectory != null) {
+         setRootDir(rootDirectory);
+      }
+
       String fileExt = setList.getProperty(prefix + FILE_EXT_PROPERTY);
 
       // Add a period if it doesn't exist.
@@ -708,8 +729,79 @@ public class StandardMapTileFactory
       return rootDir;
    }
 
-   public void setRootDir(String rootDir) {
-      this.rootDir = rootDir;
+   public void setRootDir(String rootDirectory) {
+
+      if (rootDirectory != null) {
+         if (rootDirectory.endsWith("jar")) {
+
+            rootDirProperty = rootDirectory;
+            String jarFileNames = rootDirectory;
+
+            Vector<String> jarNames = PropUtils.parseMarkers(jarFileNames, ";");
+            for (String jarName : jarNames) {
+               try {
+                  logger.fine("adding " + jarName + " to classpath");
+                  ClasspathHacker.addFile(jarName);
+
+                  JarFile jarFile = new JarFile(jarName);
+                  JarEntry jarPropertyFile = (JarEntry) jarFile.getEntry(TILE_PROPERTIES);
+                  if (jarPropertyFile != null) {
+                     InputStream is = jarFile.getInputStream(jarPropertyFile);
+                     configure(is);
+                  }
+
+               } catch (IOException ioe) {
+                  logger.warning("couldn't add map data jar file: " + jarName);
+               }
+            }
+
+            // You might notice that we didn't set the rootDir here if a jar
+            // file
+            // is being used. That's because we just want to use whatever the
+            // tile
+            // file says, and this method will be called again if needed when
+            // the
+            // properties get written.
+
+         } else {
+            // check for tile.omp file that may describe how to read tiles.
+            File tileProps = new File(rootDirectory, TILE_PROPERTIES);
+            if (tileProps.exists()) {
+               try {
+                  // Do this in case other properties are set for the tile set, file ext, transform.
+                  configure(tileProps.toURI().toURL().openStream());
+               } catch (MalformedURLException murle) {
+                  logger.warning("tile file for " + rootDirectory + " couldn't be read: " + tileProps.getAbsolutePath());
+               } catch (IOException ioe) {
+                  logger.warning("tile file for " + rootDirectory + " couldn't be read");
+               }
+            }
+
+            this.rootDir = rootDirectory;
+
+            if (rootDirProperty == null) {
+               // Assuming a file path being set, not as a result of a jar file
+               rootDirProperty = rootDirectory;
+            }
+         }
+         
+      } else {
+         // nulled out
+         this.rootDir = rootDirectory;
+         rootDirProperty = rootDirectory;
+      }
+
+   }
+
+   protected void configure(InputStream is)
+         throws IOException {
+
+      Properties props = new Properties();
+      props.load(is);
+
+      String oldPrefix = getPropertyPrefix();
+      setProperties(null, props);
+      setPropertyPrefix(oldPrefix);
    }
 
    public String getFileExt() {

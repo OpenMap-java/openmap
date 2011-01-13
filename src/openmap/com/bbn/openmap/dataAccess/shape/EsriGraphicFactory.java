@@ -1126,7 +1126,7 @@ public class EsriGraphicFactory implements ShapeConstants {
         }
         if (numParts > 1) {
             ret = createEsriGraphicList(shapeType);
-            if (ret instanceof EsriGraphicList) {
+            if (ret != null) {
                 ((EsriGraphicList) ret).setVague(true);
             }
         }
@@ -1199,7 +1199,7 @@ public class EsriGraphicFactory implements ShapeConstants {
 
         if (numParts > 1) {
             ret = createEsriGraphicList(shapeType);
-            if (ret instanceof EsriGraphicList) {
+            if (ret != null) {
                 ((EsriGraphicList) ret).setVague(true);
             }
         }
