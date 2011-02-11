@@ -804,7 +804,7 @@ public class RpfLayer
             if (coverage.isInUse()) {
                coverage.prepare(frameProvider, getProjection(), viewAttributes.chartSeries);
             }
-            repaint();
+            doPrepare();
          }
       } else {
          // Debug.error("RpfLayer: Unknown action command \"" + cmd
