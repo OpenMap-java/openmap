@@ -726,6 +726,14 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 			repaint();
 		}
 	}
+	
+	public void setMinimumTransparency(float minTransparency) {
+	   MIN_TRANSPARENCY = minTransparency;
+	}
+	
+	public void setSemiTransparency(float semiTransparency) {
+           SEMI_TRANSPARENCY = semiTransparency;
+        }
 
 	public DrawingAttributes getFadeAttributes() {
 		return fadeAttributes;
