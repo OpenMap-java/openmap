@@ -105,6 +105,11 @@ public class TimeSliderLayer
    OMRect boundsRectLeftHandle; // handles for scaling selection
 
    OMRect boundsRectRightHandle;
+   
+   Color selectionPointLineColor = TimelineLayer.tint;
+   Color selectionPointFillColor = TimelineLayer.tint;
+   Color leftHandleFillColor = Color.black;
+   Color rightHandleFillColor = Color.black;
 
    OMLine baseLine; // thick line along middle
 
@@ -228,8 +233,8 @@ public class TimeSliderLayer
 
       DrawingAttributes da = new DrawingAttributes();
 
-      da.setFillPaint(TimelineLayer.tint);
-      da.setLinePaint(TimelineLayer.tint);
+      da.setFillPaint(selectionPointFillColor);
+      da.setLinePaint(selectionPointLineColor);
       IconPart ip = new BasicIconPart(new Polygon(new int[] {
          50,
          90,
@@ -250,11 +255,11 @@ public class TimeSliderLayer
       controlWidgetList.add(selectionPoint);
 
       boundsRectLeftHandle = new OMRect(0, 0, 0, 0);
-      boundsRectLeftHandle.setFillPaint(Color.black);
+      boundsRectLeftHandle.setFillPaint(leftHandleFillColor);
       controlWidgetList.add(boundsRectLeftHandle);
 
       boundsRectRightHandle = new OMRect(0, 0, 0, 0);
-      boundsRectRightHandle.setFillPaint(Color.black);
+      boundsRectRightHandle.setFillPaint(rightHandleFillColor);
       controlWidgetList.add(boundsRectRightHandle);
 
       int[] xs = new int[8];
@@ -264,7 +269,7 @@ public class TimeSliderLayer
       controlWidgetList.add(contextPoly);
 
       baseLine = new OMLine(0, 0, 0, 0);
-      baseLine.setLinePaint(Color.BLACK);
+      baseLine.setLinePaint(Color.black);
       baseLine.setStroke(new BasicStroke(2));
       controlWidgetList.add(baseLine);
       
@@ -392,6 +397,22 @@ public class TimeSliderLayer
 
    public String getName() {
       return "TimelineLayer";
+   }
+   
+   public void setSelectionPointFillColor(Color color) {
+      selectionPointFillColor = color;
+   }
+   
+   public void setSelectionPointLineColor(Color color) {
+      selectionPointLineColor = color;
+   }
+   
+   public void setLeftHandleFillColor(Color color) {
+      leftHandleFillColor = color;
+   }
+   
+   public void setRightHandleFillColor(Color color) {
+      rightHandleFillColor = color;
    }
 
    /**
