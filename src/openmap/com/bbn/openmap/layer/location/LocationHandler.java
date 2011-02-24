@@ -118,7 +118,7 @@ public interface LocationHandler
      * to add options to the menu that can bring up further information about
      * the location, or to change the appearance of the location.
      * 
-     * @param lpm LocationPopupMenu to add buttons to.
+     * @param loc Location that items should be provided for.
      */
     public List<Component> getItemsForPopupMenu(Location loc);
 

@@ -301,7 +301,7 @@ public class PropertyHandler
      * directory, and in the user's home directory, in that order. If any
      * property is duplicated in any version, last one wins.
      * 
-     * @param props to search for
+     * @param propsFileName to search for
      */
     protected void searchForAndLoadProperties(String propsFileName) {
 
@@ -1639,8 +1639,8 @@ public class PropertyHandler
          * in configuration of application. If not set "openmap" will be used as
          * the default.
          * 
-         * @param prefix
-         * @return
+         * @param prefix Set the property prefix for the PropertyHandler
+         * @return this builder for stacking
          */
         public Builder setPropertyPrefix(String prefix) {
             this.propertyPrefix = prefix;
@@ -1649,8 +1649,8 @@ public class PropertyHandler
 
         /**
          * 
-         * @param update
-         * @return
+         * @param update flag for providing progress updates
+         * @return This builder for stacking
          */
         public Builder setProgressUpdates(boolean update) {
             this.update = update;
