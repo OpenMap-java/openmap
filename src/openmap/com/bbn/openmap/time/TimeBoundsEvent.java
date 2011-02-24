@@ -39,8 +39,7 @@ public class TimeBoundsEvent {
     protected TimeBounds oldTimeBounds;
     protected boolean induceGraphicalUpdate;
 
-    public TimeBoundsEvent(TimeBoundsHandler source, TimeBounds ntb,
-            TimeBounds otb) {
+    public TimeBoundsEvent(TimeBoundsHandler source, TimeBounds ntb, TimeBounds otb) {
         this.source = source;
         this.newTimeBounds = ntb;
         this.oldTimeBounds = otb;
@@ -50,7 +49,7 @@ public class TimeBoundsEvent {
     /**
      * The TimeBoundsHandler that is sending the message.
      * 
-     * @return
+     * @return source of time bounds message
      */
     public TimeBoundsHandler getSource() {
         return source;
@@ -68,30 +67,30 @@ public class TimeBoundsEvent {
      * Only really used to indicate when a TimeBoundsHandler has gone active, if
      * this is null and the new TimeBounds isn't.
      * 
-     * @return
+     * @return old time bounds
      */
     public TimeBounds getOldTimeBounds() {
         return oldTimeBounds;
     }
 
-   /**
-    * @return whether this event should cause any graphical changes.  (Set to
-    *         false if you're firing multiple events and you want only one of
-    *         them - generally the last one, naturally - to begin the work of
-    *         updating the display.)
-    */
-   public boolean isInduceGraphicalUpdate() {
-      return induceGraphicalUpdate;
-   }
+    /**
+     * @return whether this event should cause any graphical changes. (Set to
+     *         false if you're firing multiple events and you want only one of
+     *         them - generally the last one, naturally - to begin the work of
+     *         updating the display.)
+     */
+    public boolean isInduceGraphicalUpdate() {
+        return induceGraphicalUpdate;
+    }
 
-   /**
-    * @param induceGraphicalUpdate Whether this event should cause any graphical changes.  (Set to
-    *         false if you're firing multiple events and you want only one of
-    *         them - generally the last one, naturally - to begin the work of
-    *         updating the display.)
-    */
-   public void setInduceGraphicalUpdate(boolean induceGraphicalUpdate) {
-      this.induceGraphicalUpdate = induceGraphicalUpdate;
-   }
+    /**
+     * @param induceGraphicalUpdate Whether this event should cause any
+     *        graphical changes. (Set to false if you're firing multiple events
+     *        and you want only one of them - generally the last one, naturally
+     *        - to begin the work of updating the display.)
+     */
+    public void setInduceGraphicalUpdate(boolean induceGraphicalUpdate) {
+        this.induceGraphicalUpdate = induceGraphicalUpdate;
+    }
 
 }

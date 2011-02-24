@@ -22,20 +22,22 @@
 
 package com.bbn.openmap.layer.location.db;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
- * This class is responsible for retrieving Latitude and Longitude
- * Data from a table in a Database given a City/Town name, State. Also
- * it retrieves identifier of the object that would be used to
- * represent this City/Town on Map. For instance, identifier can be
- * either a url or a name that can be looked up somewhere else.
+ * This class is responsible for retrieving Latitude and Longitude Data from a
+ * table in a Database given a City/Town name, State. Also it retrieves
+ * identifier of the object that would be used to represent this City/Town on
+ * Map. For instance, identifier can be either a url or a name that can be
+ * looked up somewhere else.
  * <P>
- * This class needs the RecordSet to be called with the following
- * query: <BR>
- * select CITY (string), STATE (string), GRAPHIC (string, url or
- * graphic name), LATITUDE (float), LONGITUDE (float) from
- * LOCATION_TABLE (tablename where data is stored) <BR>
+ * This class needs the RecordSet to be called with the following query: <BR>
+ * select CITY (string), STATE (string), GRAPHIC (string, url or graphic name),
+ * LATITUDE (float), LONGITUDE (float) from LOCATION_TABLE (tablename where data
+ * is stored) <BR>
  * The class is expecting the results in this order.
  */
 public class LocationData {
@@ -51,13 +53,15 @@ public class LocationData {
     private Statement stmt;
     private ResultSet rset;
 
-    public LocationData() {}
+    public LocationData() {
+    }
 
     public LocationData(Connection inConnection) {
         connection = inConnection;
     }
 
-    public LocationData(RecordSet drs) throws SQLException {
+    public LocationData(RecordSet drs)
+            throws SQLException {
 
         ResultSet rset = drs.getResultSet();
 
@@ -68,7 +72,8 @@ public class LocationData {
         longitude = rset.getFloat(5);
     }
 
-    public void close() throws SQLException {
+    public void close()
+            throws SQLException {
         rset.close();
         stmt.close();
     }

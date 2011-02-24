@@ -975,7 +975,7 @@ public class VPFAutoFeatureGraphicWarehouse
        * @param facc
        * @param fci
        * @param row
-       * @return
+       * @return true if feature entry matches PriorityHolder conditions.
        */
       public abstract boolean matches(String facc, FeatureClassInfo fci, List<Object> row);
 
@@ -991,7 +991,7 @@ public class VPFAutoFeatureGraphicWarehouse
        *        symbol (0 is centered, positive is right)
        * @param yoff percent off center of dim setting to use for x origin of
        *        symbol (0 is centered, positive is down)
-       * @return
+       * @return true of feature entry matches PriorityHolder conditions.
        */
       public abstract boolean matches(String facc, char type, String conditions, String symbolFileName, String size, String xoff,
                                       String yoff);
@@ -1070,7 +1070,7 @@ public class VPFAutoFeatureGraphicWarehouse
           * @param facc
           * @param fci
           * @param row
-          * @return
+          * @return true of feature matches conditions of PriorityHolder.
           */
          public boolean matches(String facc, FeatureClassInfo fci, List<Object> row) {
             boolean ret = false;
@@ -1094,7 +1094,7 @@ public class VPFAutoFeatureGraphicWarehouse
           * @param facc
           * @param type
           * @param conditions
-          * @return
+          * @return true if feature matches conditions of PriorityHolder.
           */
          public boolean matches(String facc, char type, String conditions, String symbolFileName, String size, String xoff,
                                 String yoff) {
@@ -1203,7 +1203,7 @@ public class VPFAutoFeatureGraphicWarehouse
           * @param facc
           * @param fci
           * @param row
-          * @return
+          * @return true if feature matches conditions of PriorityHolder.
           */
          public boolean matches(String facc, FeatureClassInfo fci, List<Object> row) {
             boolean ret = false;
@@ -1256,7 +1256,7 @@ public class VPFAutoFeatureGraphicWarehouse
           * @param facc
           * @param type
           * @param conditions
-          * @return
+          * @return true if feature matches conditions of PriorityHolder.
           */
          public boolean matches(String facc, char type, String conditions, String symbolFileName, String size, String xoff,
                                 String yoff) {

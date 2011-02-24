@@ -198,7 +198,7 @@ public abstract class CacheHandler {
         if (LUIndex != -1) {
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("Tossing " + objs[LUIndex].id
-                        + " from cache to add " + newObj.id);
+                        + " from cache[" + LUIndex + "] to add " + newObj.id);
             }
             objs[LUIndex] = newObj;
             newObj.cachedTime = logicalClock++;

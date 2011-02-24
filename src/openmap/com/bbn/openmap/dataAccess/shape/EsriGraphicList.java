@@ -49,8 +49,9 @@ import com.bbn.openmap.util.PropUtils;
  * @author Doug Van Auken
  * @author Don Dietrick
  */
-public abstract class EsriGraphicList extends OMGraphicList implements ShapeConstants,
-        EsriGraphic {
+public abstract class EsriGraphicList
+        extends OMGraphicList
+        implements ShapeConstants, EsriGraphic {
 
     public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.shape.EsriGraphicList");
     protected double[] extents;
@@ -62,8 +63,7 @@ public abstract class EsriGraphicList extends OMGraphicList implements ShapeCons
      * sub-list containing multiple geometry parts. Only add another list to a
      * top level EsriGraphicList.
      * 
-     * @param shape
-     *            the non-null OMGraphic to add
+     * @param shape the non-null OMGraphic to add
      */
     public boolean add(OMGraphic shape) {
         return super.add(shape);
@@ -72,10 +72,9 @@ public abstract class EsriGraphicList extends OMGraphicList implements ShapeCons
     /**
      * Add an OMGraphic to the GraphicList. The OMGraphic must not be null.
      * 
-     * @param g
-     *            the non-null OMGraphic to add
-     * @exception IllegalArgumentException
-     *                if OMGraphic is null
+     * @param g the non-null OMGraphic to add
+     * @return true if addition is successful.
+     * @exception IllegalArgumentException if OMGraphic is null
      */
     public boolean addOMGraphic(OMGraphic g) {
         return add(g);
@@ -102,8 +101,7 @@ public abstract class EsriGraphicList extends OMGraphicList implements ShapeCons
     /**
      * Construct an EsriGraphicList with an initial capacity.
      * 
-     * @param initialCapacity
-     *            the initial capacity of the list
+     * @param initialCapacity the initial capacity of the list
      */
     public EsriGraphicList(int initialCapacity) {
         super(initialCapacity);
@@ -113,10 +111,8 @@ public abstract class EsriGraphicList extends OMGraphicList implements ShapeCons
      * Construct an EsriGraphicList with an initial capacity and a standard
      * increment value.
      * 
-     * @param initialCapacity
-     *            the initial capacity of the list
-     * @param capacityIncrement
-     *            the capacityIncrement for resizing
+     * @param initialCapacity the initial capacity of the list
+     * @param capacityIncrement the capacityIncrement for resizing
      * @deprecated capacityIncrement doesn't do anything.
      */
     public EsriGraphicList(int initialCapacity, int capacityIncrement) {
@@ -139,7 +135,12 @@ public abstract class EsriGraphicList extends OMGraphicList implements ShapeCons
         if (extents == null) {
             // These are set to their opposites to guarantee some
             // movement.
-            extents = new double[] { 90f, 180f, -90f, -180f };
+            extents = new double[] {
+                90f,
+                180f,
+                -90f,
+                -180f
+            };
         }
 
         return extents;
@@ -216,56 +217,43 @@ public abstract class EsriGraphicList extends OMGraphicList implements ShapeCons
      * list of offsets, which the AbstractSupport.open method will use to
      * iterate through the contents of the SHP file.
      * 
-     * @param shp
-     *            The url of the SHP file
-     * @param shx
-     *            The url of the SHX file
-     * @param drawingAttributes
-     *            a DrawingAttributes object containing the rendering parameters
-     *            you might want on the OMGraphics. The OMGraphic default (black
-     *            edge, clear fill) will be used if this is null.
-     * @param dbf
-     *            a DbfTableModel, if you want each row of objects from the
-     *            table (an array), inserted into their associated OMGraphic's
-     *            appObject. The dbf will be added to the list appObject, so you
-     *            can ask it questions later. If null, no problem. If the number
-     *            of records doesn't match the OMGraphic list length, nothing
-     *            will be done.
+     * @param shp The url of the SHP file
+     * @param shx The url of the SHX file
+     * @param drawingAttributes a DrawingAttributes object containing the
+     *        rendering parameters you might want on the OMGraphics. The
+     *        OMGraphic default (black edge, clear fill) will be used if this is
+     *        null.
+     * @param dbf a DbfTableModel, if you want each row of objects from the
+     *        table (an array), inserted into their associated OMGraphic's
+     *        appObject. The dbf will be added to the list appObject, so you can
+     *        ask it questions later. If null, no problem. If the number of
+     *        records doesn't match the OMGraphic list length, nothing will be
+     *        done.
      * @return A new EsriGraphicList, null if there is a problem.
      * 
      * @deprecated use getGraphicList(URL, DrawingAttributes, DbfTableModel)
      */
-    public static EsriGraphicList getEsriGraphicList(URL shp, URL shx,
-                                                     DrawingAttributes drawingAttributes,
-                                                     DbfTableModel dbf) {
+    public static EsriGraphicList getEsriGraphicList(URL shp, URL shx, DrawingAttributes drawingAttributes, DbfTableModel dbf) {
         return getEsriGraphicList(shp, drawingAttributes, dbf, null);
     }
 
     /**
      * Reads the contents of the SHP files.
      * 
-     * @param shp
-     *            The url of the SHP file
-     * @param shx
-     *            The url of the SHX file
-     * @param drawingAttributes
-     *            a DrawingAttributes object containing the rendering parameters
-     *            you might want on the OMGraphics. The OMGraphic default (black
-     *            edge, clear fill) will be used if this is null.
-     * @param dbf
-     *            a DbfTableModel. The dbf will be added to the list appObject,
-     *            so you can ask it questions later. If null, no problem. If the
-     *            number of records doesn't match the OMGraphic list length,
-     *            nothing will be done.
-     * @param coordTranslator
-     *            a GeoCoordTransformation to use to convert coordinates to
-     *            decimal degree lat/lon data.
+     * @param shp The url of the SHP file
+     * @param drawingAttributes a DrawingAttributes object containing the
+     *        rendering parameters you might want on the OMGraphics. The
+     *        OMGraphic default (black edge, clear fill) will be used if this is
+     *        null.
+     * @param dbf a DbfTableModel. The dbf will be added to the list appObject,
+     *        so you can ask it questions later. If null, no problem. If the
+     *        number of records doesn't match the OMGraphic list length, nothing
+     *        will be done.
+     * @param coordTranslator a GeoCoordTransformation to use to convert
+     *        coordinates to decimal degree lat/lon data.
      * @return A new EsriGraphicList, null if there is a problem.
      */
-    public static EsriGraphicList getEsriGraphicList(
-                                                     URL shp,
-                                                     DrawingAttributes drawingAttributes,
-                                                     DbfTableModel dbf,
+    public static EsriGraphicList getEsriGraphicList(URL shp, DrawingAttributes drawingAttributes, DbfTableModel dbf,
                                                      GeoCoordTransformation coordTranslator) {
         EsriGraphicList list = null;
 
@@ -301,17 +289,16 @@ public abstract class EsriGraphicList extends OMGraphicList implements ShapeCons
      * records doesn't match the OMGraphic list length, the dbf information
      * won't be added to the list.
      * 
-     * @param shp
-     *            The url of the SHP file
-     * @param drawingAttributes
-     *            a DrawingAttributes object containing the rendering parameters
-     *            you might want on the OMGraphics. The OMGraphic default (black
-     *            edge, clear fill) will be used if this is null.
+     * @param shp The url of the SHP file
+     * @param drawingAttributes a DrawingAttributes object containing the
+     *        rendering parameters you might want on the OMGraphics. The
+     *        OMGraphic default (black edge, clear fill) will be used if this is
+     *        null.
+     * @param coordTranslator used to transform coordinates to lat/lon decimal
+     *        degrees for OpenMap.
      * @return A new EsriGraphicList, null if there is a problem.
      */
-    public static EsriGraphicList getEsriGraphicList(
-                                                     URL shp,
-                                                     DrawingAttributes drawingAttributes,
+    public static EsriGraphicList getEsriGraphicList(URL shp, DrawingAttributes drawingAttributes,
                                                      GeoCoordTransformation coordTranslator) {
         DbfTableModel dbf = null;
 
@@ -319,7 +306,7 @@ public abstract class EsriGraphicList extends OMGraphicList implements ShapeCons
             String shpPath = shp.getFile();
             String protocol = shp.getProtocol();
             String host = shp.getHost();
-            logger.info(shpPath);
+
             if (shpPath != null && shpPath.endsWith(".shp")) {
                 String dbfPath = shpPath.replace(".shp", ".dbf");
                 URL dbfURL;
@@ -364,12 +351,10 @@ public abstract class EsriGraphicList extends OMGraphicList implements ShapeCons
                     raf.seek(24);
                     int contentLength = raf.readInt();
 
-                    int indexedContentLength = index[0][index[0].length - 1]
-                            + index[1][index[1].length - 1];
+                    int indexedContentLength = index[0][index[0].length - 1] + index[1][index[1].length - 1];
 
                     if (contentLength != indexedContentLength) {
-                        System.out.println(shape + " content length - shp: "
-                                + contentLength + ", shx: " + indexedContentLength);
+                        System.out.println(shape + " content length - shp: " + contentLength + ", shx: " + indexedContentLength);
                         raf.seek(24);
                         raf.writeInt(indexedContentLength);
                     }
@@ -390,8 +375,7 @@ public abstract class EsriGraphicList extends OMGraphicList implements ShapeCons
                 EsriGraphicList.logger.setLevel(Level.FINER);
                 EsriGraphicFactory.logger.setLevel(Level.FINER);
                 URL eglURL = PropUtils.getResourceOrFileOrURL(printit[0]);
-                EsriGraphicList egl = EsriGraphicList.getEsriGraphicList(eglURL, null,
-                                                                         null);
+                EsriGraphicList egl = EsriGraphicList.getEsriGraphicList(eglURL, null, null);
                 if (egl != null) {
                     System.out.println(egl.getDescription());
                 }

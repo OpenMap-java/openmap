@@ -550,7 +550,7 @@ public class ASRPDirectory extends CacheHandler implements ASRPConstants {
      * Load a block image into the cache, based on the relative coordinates of
      * the block as a key.
      * 
-     * @param xAndY String of form 'x,y' identifying the relative location of
+     * @param key String of form 'x,y' identifying the relative location of
      *        the subframe image.
      * @return Block image, hidden as a CacheObject.
      */

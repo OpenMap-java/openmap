@@ -855,7 +855,8 @@ public class OverviewMapHandler extends OMToolComponent implements
      * small with a very general map layer, it won't be of any use, really, if
      * it gets really zoomed in.
      * 
-     * @param setting the scale setting - 1:setting
+     * @param width setting the scale setting - 1:setting
+     * @param uom unit of measure for width
      */
     public void setMinScale(float width, Length uom) {
         if (width > 0) {

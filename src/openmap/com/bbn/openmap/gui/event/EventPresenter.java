@@ -70,7 +70,7 @@ public interface EventPresenter extends FilterPresenter {
      * Return a set of drawing attributes that match what the presenter is using
      * for selection;
      * 
-     * @return
+     * @return DrawingAttributes containing rendering info for selected items.
      */
     DrawingAttributes getSelectionDrawingAttributes();
 

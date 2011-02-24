@@ -31,21 +31,23 @@ import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * A Location that takes an URL for an image and creates a Raster for
- * a Location marker. The URL should be the contents of an image file
- * (gif, jpeg) that an ImageIcon object can use to create an Image
- * object. The string for an icon can be a path to a resource, file or
- * URL, and the URLRasterLocation will convert it to a URL.
+ * A Location that takes an URL for an image and creates a Raster for a Location
+ * marker. The URL should be the contents of an image file (gif, jpeg) that an
+ * ImageIcon object can use to create an Image object. The string for an icon
+ * can be a path to a resource, file or URL, and the URLRasterLocation will
+ * convert it to a URL.
  */
-public class URLRasterLocation extends Location {
+public class URLRasterLocation
+        extends Location {
     /** The spacing between the label and the outside of the image. */
     public int SPACING = 0;
 
     /**
      * A constructor to enable creation of subclasses.
      */
-    public URLRasterLocation() {}
-    
+    public URLRasterLocation() {
+    }
+
     /**
      * Create a URLRasterLocation at a latitude/longitude location.
      * 
@@ -54,15 +56,11 @@ public class URLRasterLocation extends Location {
      * @param name the label for the location.
      * @param iconURL a string to a URL for an image
      */
-    public URLRasterLocation(double latitude, double longitude, String name,
-            String iconURL) {
-        super(latitude, longitude, name, getIconRaster(latitude,
-                longitude,
-                iconURL));
+    public URLRasterLocation(double latitude, double longitude, String name, String iconURL) {
+        super(latitude, longitude, name, getIconRaster(latitude, longitude, iconURL));
 
         if (location instanceof OMRaster) {
-            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2)
-                    + SPACING);
+            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2) + SPACING);
         }
 
     }
@@ -75,15 +73,11 @@ public class URLRasterLocation extends Location {
      * @param name the label for the location.
      * @param iconURL a URL for an image
      */
-    public URLRasterLocation(double latitude, double longitude, String name,
-            URL iconURL) {
-        super(latitude, longitude, name, getIconRaster(latitude,
-                longitude,
-                iconURL));
+    public URLRasterLocation(double latitude, double longitude, String name, URL iconURL) {
+        super(latitude, longitude, name, getIconRaster(latitude, longitude, iconURL));
 
         if (location instanceof OMRaster) {
-            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2)
-                    + SPACING);
+            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2) + SPACING);
         }
 
     }
@@ -91,10 +85,9 @@ public class URLRasterLocation extends Location {
     /**
      * Create a ByteRasterLocation at a screen x/y location.
      * 
-     * @param x horizontal pixel screen location from the the left
-     *        side of the map.
-     * @param y vertical pixel screen location, from the top of the
+     * @param x horizontal pixel screen location from the the left side of the
      *        map.
+     * @param y vertical pixel screen location, from the top of the map.
      * @param name the label for the location.
      * @param iconURL a String for a URL for an image
      */
@@ -102,18 +95,16 @@ public class URLRasterLocation extends Location {
         super(x, y, name, getIconRaster(x, y, iconURL));
 
         if (location instanceof OMRaster) {
-            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2)
-                    + SPACING);
+            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2) + SPACING);
         }
     }
 
     /**
      * Create a ByteRasterLocation at a screen x/y location.
      * 
-     * @param x horizontal pixel screen location from the the left
-     *        side of the map.
-     * @param y vertical pixel screen location, from the top of the
+     * @param x horizontal pixel screen location from the the left side of the
      *        map.
+     * @param y vertical pixel screen location, from the top of the map.
      * @param name the label for the location.
      * @param iconURL a URL for an image
      */
@@ -121,8 +112,7 @@ public class URLRasterLocation extends Location {
         super(x, y, name, getIconRaster(x, y, iconURL));
 
         if (location instanceof OMRaster) {
-            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2)
-                    + SPACING);
+            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2) + SPACING);
         }
     }
 
@@ -131,25 +121,18 @@ public class URLRasterLocation extends Location {
      * 
      * @param latitude latitide in decimal degrees
      * @param longitude longitude in decimal degrees.
-     * @param xOffset horizontal pixel screen location from the
-     *        longitude map point.
-     * @param yOffset vertical pixel screen location, from the
-     *        latitide map point.
+     * @param xOffset horizontal pixel screen location from the longitude map
+     *        point.
+     * @param yOffset vertical pixel screen location, from the latitide map
+     *        point.
      * @param name the label for the location.
      * @param iconURL a String for a URL for an image
      */
-    public URLRasterLocation(double latitude, double longitude, int xOffset,
-            int yOffset, String name, String iconURL) {
-        super(latitude,
-              longitude,
-              xOffset,
-              yOffset,
-              name,
-              getIconRaster(latitude, longitude, xOffset, yOffset, iconURL));
+    public URLRasterLocation(double latitude, double longitude, int xOffset, int yOffset, String name, String iconURL) {
+        super(latitude, longitude, xOffset, yOffset, name, getIconRaster(latitude, longitude, xOffset, yOffset, iconURL));
 
         if (location instanceof OMRaster) {
-            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2)
-                    + SPACING);
+            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2) + SPACING);
         }
     }
 
@@ -158,25 +141,18 @@ public class URLRasterLocation extends Location {
      * 
      * @param latitude latitide in decimal degrees
      * @param longitude longitude in decimal degrees.
-     * @param xOffset horizontal pixel screen location from the
-     *        longitude map point.
-     * @param yOffset vertical pixel screen location, from the
-     *        latitide map point.
+     * @param xOffset horizontal pixel screen location from the longitude map
+     *        point.
+     * @param yOffset vertical pixel screen location, from the latitide map
+     *        point.
      * @param name the label for the location.
      * @param iconURL a URL for an image
      */
-    public URLRasterLocation(double latitude, double longitude, int xOffset,
-            int yOffset, String name, URL iconURL) {
-        super(latitude,
-              longitude,
-              xOffset,
-              yOffset,
-              name,
-              getIconRaster(latitude, longitude, xOffset, yOffset, iconURL));
+    public URLRasterLocation(double latitude, double longitude, int xOffset, int yOffset, String name, URL iconURL) {
+        super(latitude, longitude, xOffset, yOffset, name, getIconRaster(latitude, longitude, xOffset, yOffset, iconURL));
 
         if (location instanceof OMRaster) {
-            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2)
-                    + SPACING);
+            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2) + SPACING);
         }
     }
 
@@ -216,10 +192,9 @@ public class URLRasterLocation extends Location {
     /**
      * Create an OMRaster at a latitude/longitude, from a image URL.
      * 
-     * @param x horizontal pixel screen location from the the left
-     *        side of the map.
-     * @param y vertical pixel screen location, from the top of the
+     * @param x horizontal pixel screen location from the the left side of the
      *        map.
+     * @param y vertical pixel screen location, from the top of the map.
      * @param iconURL a String for a URL for an image
      */
     public static OMRaster getIconRaster(int x, int y, String iconURL) {
@@ -233,10 +208,9 @@ public class URLRasterLocation extends Location {
     /**
      * Create an OMRaster at a latitude/longitude, from a image URL.
      * 
-     * @param x horizontal pixel screen location from the the left
-     *        side of the map.
-     * @param y vertical pixel screen location, from the top of the
+     * @param x horizontal pixel screen location from the the left side of the
      *        map.
+     * @param y vertical pixel screen location, from the top of the map.
      * @param iconURL a URL for an image
      */
     public static OMRaster getIconRaster(int x, int y, URL iconURL) {
@@ -254,14 +228,11 @@ public class URLRasterLocation extends Location {
      * 
      * @param lat latitide in decimal degrees
      * @param lon longitude in decimal degrees.
-     * @param x horizontal pixel screen location from the longitude
-     *        map point.
-     * @param y vertical pixel screen location, from the latitide map
-     *        point.
+     * @param x horizontal pixel screen location from the longitude map point.
+     * @param y vertical pixel screen location, from the latitide map point.
      * @param iconURL a String for URL for an image
      */
-    public static OMRaster getIconRaster(double lat, double lon, int x, int y,
-                                         String iconURL) {
+    public static OMRaster getIconRaster(double lat, double lon, int x, int y, String iconURL) {
         URL url = getIconRasterURL(iconURL);
         if (url == null)
             return null;
@@ -274,14 +245,11 @@ public class URLRasterLocation extends Location {
      * 
      * @param lat latitide in decimal degrees
      * @param lon longitude in decimal degrees.
-     * @param x horizontal pixel screen location from the longitude
-     *        map point.
-     * @param y vertical pixel screen location, from the latitide map
-     *        point.
+     * @param x horizontal pixel screen location from the longitude map point.
+     * @param y vertical pixel screen location, from the latitide map point.
      * @param iconURL a URL for an image
      */
-    public static OMRaster getIconRaster(double lat, double lon, int x, int y,
-                                         URL iconURL) {
+    public static OMRaster getIconRaster(double lat, double lon, int x, int y, URL iconURL) {
         ImageIcon icon = new ImageIcon(iconURL);
         if (icon == null)
             return null;
@@ -305,8 +273,7 @@ public class URLRasterLocation extends Location {
     }
 
     /**
-     * Given a new latitude/longitude, reposition the graphic and
-     * label.
+     * Given a new latitude/longitude, reposition the graphic and label.
      */
     public void setGraphicLocations(double latitude, double longitude) {
         if (location instanceof OMRaster) {
@@ -316,14 +283,12 @@ public class URLRasterLocation extends Location {
 
             label.setLat(latitude);
             label.setLon(longitude);
-            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2)
-                    + SPACING);
+            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2) + SPACING);
         }
     }
 
     /**
-     * Given a new x/y screen location, reposition the graphic and
-     * label.
+     * Given a new x/y screen location, reposition the graphic and label.
      */
     public void setGraphicLocations(int x, int y) {
         if (location instanceof OMRaster) {
@@ -333,17 +298,15 @@ public class URLRasterLocation extends Location {
 
             label.setX(x);
             label.setY(y);
-            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2)
-                    + SPACING);
+            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2) + SPACING);
         }
     }
 
     /**
-     * Given a new latitude/longitude with x/y offset points,
-     * reposition the graphic and label.
+     * Given a new latitude/longitude with x/y offset points, reposition the
+     * graphic and label.
      */
-    public void setGraphicLocations(double latitude, double longitude,
-                                    int offsetX, int offsetY) {
+    public void setGraphicLocations(double latitude, double longitude, int offsetX, int offsetY) {
         if (location instanceof OMRaster) {
             OMRaster ras = (OMRaster) location;
             ras.setLat(latitude);
@@ -355,8 +318,7 @@ public class URLRasterLocation extends Location {
             label.setLon(longitude);
             label.setX(offsetX);
             label.setY(offsetY);
-            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2)
-                    + SPACING);
+            setHorizontalLabelBuffer((((OMRaster) location).getWidth() / 2) + SPACING);
         }
     }
 }

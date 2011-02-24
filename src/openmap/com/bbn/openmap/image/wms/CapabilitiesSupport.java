@@ -39,8 +39,8 @@ import com.bbn.openmap.proj.coords.CoordinateReferenceSystem;
 
 /**
  * @version $Header:
- *          /cvs/CVS_LEBA/external/openmap/openmap/src/openmap/com/bbn/openmap/wms/CapabilitiesSupport.java,v
- *          1.1 2006/03/21 10:27:54 tomrak Exp $
+ *          /cvs/CVS_LEBA/external/openmap/openmap/src/openmap/com/bbn/openmap
+ *          /wms/CapabilitiesSupport.java,v 1.1 2006/03/21 10:27:54 tomrak Exp $
  * @author pitek
  */
 public class CapabilitiesSupport {
@@ -56,10 +56,15 @@ public class CapabilitiesSupport {
     public static final int FMT_EXCEPTIONS = 3;
 
     public static final int FMT_MAIN = 3;
-    
+
     private Map<Integer, List<String>> formatsList = new HashMap<Integer, List<String>>();
 
-    private String[] onlineResourcesList = { null, null, null, null };
+    private String[] onlineResourcesList = {
+        null,
+        null,
+        null,
+        null
+    };
 
     private List<String> keywordsList = null;
 
@@ -78,25 +83,29 @@ public class CapabilitiesSupport {
     /**
      * Creates a new instance of CapabilitiesSupport
      * 
-     * @param requestHandler
-     * @param requestProperties
+     * @param props
+     * @param scheme
+     * @param hostName
+     * @param port
+     * @param path
+     * @throws WMSException
      */
     CapabilitiesSupport(Properties props, String scheme, String hostName, int port, String path)
             throws WMSException {
-        
+
         wmsTitle = props.getProperty(WMSPrefix + "Title", "Sample Title");
         wmsAbstract = props.getProperty(WMSPrefix + "Abstract", "Sample Abstract");
         layersTitle = props.getProperty(WMSPrefix + "LayersTitle", "Sample Layer List");
         String[] strKeywords = props.getProperty(WMSPrefix + "Keyword", "").split(" ");
         List<String> keywords = Arrays.asList(strKeywords);
         setKeywords(keywords);
-        
+
         setUrl(scheme, hostName, port, path);
 
         List<String> al = new ArrayList<String>();
         setFormats(FMT_GETMAP, al);
         setFormats(FMT_GETFEATUREINFO, al);
-        
+
         al.clear();
         al.add("application/vnd.ogc.wms_xml");
         setFormats(FMT_GETCAPS, al);
@@ -105,13 +114,12 @@ public class CapabilitiesSupport {
         al.add("application/vnd.ogc.se_xml");
         setFormats(FMT_EXCEPTIONS, al);
     }
-    
-    
+
     /**
-     * Set url to wms servlet. 
+     * Set url to wms servlet.
      * 
      * @param scheme
-     * @param hostName 
+     * @param hostName
      * @param port
      * @param path a String like "/myproject/wms"
      */
@@ -141,12 +149,12 @@ public class CapabilitiesSupport {
     }
 
     /**
-     * @return
+     * @return Document specifying capabilities.
      */
     private Document generateCapabilitiesDocument(Version version) {
-        
+
         Document doc = version.createCapabilitiesDocumentStart();
-        
+
         Element root = doc.getDocumentElement();
         root.setAttribute("version", version.getVersionString());
         root.setAttribute("updateSequence", Integer.toString(updateSequence));
@@ -174,15 +182,15 @@ public class CapabilitiesSupport {
         Element request = doc.createElement("Request");
 
         request.appendChild(requestcap(doc, WMTConstants.GETCAPABILITIES, formatsList.get(FMT_GETCAPS), "Get",
-                onlineResourcesList[FMT_GETCAPS]));
+                                       onlineResourcesList[FMT_GETCAPS]));
         request.appendChild(requestcap(doc, WMTConstants.GETMAP, formatsList.get(FMT_GETMAP), "Get",
-                onlineResourcesList[FMT_GETMAP]));
-        request.appendChild(requestcap(doc, WMTConstants.GETFEATUREINFO, formatsList.get(FMT_GETFEATUREINFO),
-                "Get", onlineResourcesList[FMT_GETFEATUREINFO]));
+                                       onlineResourcesList[FMT_GETMAP]));
+        request.appendChild(requestcap(doc, WMTConstants.GETFEATUREINFO, formatsList.get(FMT_GETFEATUREINFO), "Get",
+                                       onlineResourcesList[FMT_GETFEATUREINFO]));
         capability.appendChild(request);
 
         Element exceptionElement = doc.createElement("Exception");
-        for(String format : formatsList.get(FMT_EXCEPTIONS)) {
+        for (String format : formatsList.get(FMT_EXCEPTIONS)) {
             exceptionElement.appendChild(textnode(doc, "Format", format));
         }
         capability.appendChild(exceptionElement);
@@ -192,20 +200,20 @@ public class CapabilitiesSupport {
 
         return doc;
     }
-    
+
     private Element createLayersElement(Document doc, Version version) {
         Element layers = doc.createElement("Layer");
         layers.appendChild(textnode(doc, "Title", layersTitle));
         for (Iterator<String> it = crsCodes.iterator(); it.hasNext();) {
             layers.appendChild(textnode(doc, version.getCoordinateReferenceSystemAcronym(), it.next()));
         }
-        
+
         // append bounding boxes
         layers.appendChild(version.createLatLonBoundingBox(doc));
         for (Iterator<String> it = crsCodes.iterator(); it.hasNext();) {
             appendSRSBoundingBox(doc, layers, it.next(), version);
         }
-        
+
         // append layers
         // in OpenMap, the layer on top is listed first, but in WMS
         // Capabilities, the layer on top is listed at the bottom
@@ -216,7 +224,7 @@ public class CapabilitiesSupport {
         }
         return layers;
     }
-    
+
     private void createLayerElement(Document doc, Element layers, IWmsLayer wmsLayer, Version version) {
         org.w3c.dom.Element layerElement = (org.w3c.dom.Element) node(doc, "Layer");
         layerElement.setAttribute("queryable", wmsLayer.isQueryable() ? "1" : "0");
@@ -244,8 +252,9 @@ public class CapabilitiesSupport {
                 if (style.getAbstract() != null) {
                     styleElement.appendChild(textnode(doc, "Abstract", style.getAbstract()));
                 }
-                
-                // tell the layer about the style so the style can used legend graphics
+
+                // tell the layer about the style so the style can used legend
+                // graphics
                 wmsLayer.setStyle(style.getName());
                 Legend legend = wmsLayer.getLegend();
                 if (legend != null) {
@@ -270,8 +279,7 @@ public class CapabilitiesSupport {
                         url.append(WMTConstants.GETLEGENDGRAPHIC);
                         url.append("&").append(WMTConstants.LAYER).append("=");
                         url.append(wmsLayer.getWmsName());
-                        url.append("&").append(WMTConstants.STYLE).append("=").append(
-                                style.getName());
+                        url.append("&").append(WMTConstants.STYLE).append("=").append(style.getName());
                         url.append("&").append(WMTConstants.FORMAT).append("=").append(format);
                         url.append("&").append(WMTConstants.WIDTH).append("=").append(width);
                         url.append("&").append(WMTConstants.HEIGHT).append("=").append(height);
@@ -281,7 +289,7 @@ public class CapabilitiesSupport {
                         styleElement.appendChild(legendURLElement);
                     }
                 }
-                
+
                 layerElement.appendChild(styleElement);
             }
         }
@@ -295,7 +303,7 @@ public class CapabilitiesSupport {
                 }
             }
         }
-        
+
         layers.appendChild(layerElement);
     }
 
@@ -308,54 +316,52 @@ public class CapabilitiesSupport {
     /**
      * @param request
      * @param formats
-     * @return
+     * @return true if request type handled
      */
     public boolean setFormats(int request, Collection<String> formats) {
         switch (request) {
-        case FMT_GETMAP:
-        case FMT_GETCAPS:
-        case FMT_GETFEATUREINFO:
-        case FMT_EXCEPTIONS:
-            formatsList.put(request, new ArrayList<String>(formats));
-            break;
-        default:
-            return false;
+            case FMT_GETMAP:
+            case FMT_GETCAPS:
+            case FMT_GETFEATUREINFO:
+            case FMT_EXCEPTIONS:
+                formatsList.put(request, new ArrayList<String>(formats));
+                break;
+            default:
+                return false;
         }
         return true;
     }
-    
+
     /**
      * @param which
      * @param url
-     * @return
+     * @return true if which type handled
      */
     public boolean setOnlineResource(int which, String url) {
         switch (which) {
-        case FMT_GETMAP:
-        case FMT_GETCAPS:
-        case FMT_GETFEATUREINFO:
-        case FMT_MAIN:
-            onlineResourcesList[which] = url;
-            break;
-        default:
-            return false;
+            case FMT_GETMAP:
+            case FMT_GETCAPS:
+            case FMT_GETFEATUREINFO:
+            case FMT_MAIN:
+                onlineResourcesList[which] = url;
+                break;
+            default:
+                return false;
         }
         return true;
     }
 
     /**
      * @param keywordsList
-     * @return
      */
     public void setKeywords(List<String> keywordsList) {
         this.keywordsList = keywordsList;
     }
 
-
     public void addLayer(IWmsLayer wmsLayer) {
         wmslayers.add(wmsLayer);
     }
-    
+
     public void setLayersTitle(String title) {
         this.layersTitle = title;
     }
@@ -368,35 +374,37 @@ public class CapabilitiesSupport {
         }
         org.w3c.dom.Element e1 = (org.w3c.dom.Element) node(doc, "BoundingBox");
         e1.setAttribute(version.getCoordinateReferenceSystemAcronym(), crs.getCode());
-        
+
         if (version.usesAxisOrder() && (crs.getAxisOrder() == AxisOrder.northBeforeEast)) {
-           // wms 1.3.0. 6.7.4 EXAMPLE 2
-           // "A <BoundingBox> representing the entire Earth in the EPSG:4326
-           // Layer CRS would be written as <BoundingBox CRS="EPSG:4326"
-           // minx="-90" miny="-180" maxx="90" maxy="180">. A BBOX parameter
-           // requesting a map of the entire Earth would be written in this CRS as
-           // BBOX=-90,-180,90,180."
-           e1.setAttribute("minx", Double.toString(bbox.getMinY()));
-           e1.setAttribute("miny", Double.toString(bbox.getMinX()));
-           e1.setAttribute("maxx", Double.toString(bbox.getMaxY()));
-           e1.setAttribute("maxy", Double.toString(bbox.getMaxX()));
+            // wms 1.3.0. 6.7.4 EXAMPLE 2
+            // "A <BoundingBox> representing the entire Earth in the EPSG:4326
+            // Layer CRS would be written as <BoundingBox CRS="EPSG:4326"
+            // minx="-90" miny="-180" maxx="90" maxy="180">. A BBOX parameter
+            // requesting a map of the entire Earth would be written in this CRS
+            // as
+            // BBOX=-90,-180,90,180."
+            e1.setAttribute("minx", Double.toString(bbox.getMinY()));
+            e1.setAttribute("miny", Double.toString(bbox.getMinX()));
+            e1.setAttribute("maxx", Double.toString(bbox.getMaxY()));
+            e1.setAttribute("maxy", Double.toString(bbox.getMaxX()));
         } else {
-           e1.setAttribute("minx", Double.toString(bbox.getMinX()));
-           e1.setAttribute("miny", Double.toString(bbox.getMinY()));
-           e1.setAttribute("maxx", Double.toString(bbox.getMaxX()));
-           e1.setAttribute("maxy", Double.toString(bbox.getMaxY()));
+            e1.setAttribute("minx", Double.toString(bbox.getMinX()));
+            e1.setAttribute("miny", Double.toString(bbox.getMinY()));
+            e1.setAttribute("maxx", Double.toString(bbox.getMaxX()));
+            e1.setAttribute("maxy", Double.toString(bbox.getMaxY()));
         }
         layers.appendChild(e1);
     }
-    
+
     /**
      * Generate String out of the XML document object
      * 
-     * @throws IOException, TransformerException, TransformerConfigurationException
+     * @throws IOException, TransformerException,
+     *         TransformerConfigurationException
      */
-    String generateXMLString(Version version) throws IOException, TransformerConfigurationException,
-                    TransformerException {
-        
+    String generateXMLString(Version version)
+            throws IOException, TransformerConfigurationException, TransformerException {
+
         StringWriter strWriter = new StringWriter();
         Transformer tr = TransformerFactory.newInstance().newTransformer();
         tr.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -406,22 +414,21 @@ public class CapabilitiesSupport {
         tr.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
         Document document = generateCapabilitiesDocument(version);
-        
+
         // system id not transformed by default transformer
         if (document.getDoctype() != null) {
-            tr.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, document
-                    .getDoctype().getSystemId());
+            tr.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, document.getDoctype().getSystemId());
         }
-        
+
         // Serialize XML Document
         tr.transform(new DOMSource(document), new StreamResult(strWriter));
         return strWriter.toString();
     }
-    
+
     /**
      * @param Name
      * @param Text
-     * @return
+     * @return Node created for doc with name
      */
     private Node textnode(Document doc, String Name, String text) {
         Element e1 = doc.createElement(Name);
@@ -434,13 +441,14 @@ public class CapabilitiesSupport {
     }
 
     /**
-     * @param Name
-     * @return
+     * @param doc Document
+     * @param Name name 
+     * @return Node created for doc with name
      */
     private Node node(Document doc, String Name) {
         return doc.createElement(Name);
     }
-    
+
     private Node onlineResource(Document doc, String url) {
         Element onlineResource = doc.createElement("OnlineResource");
         onlineResource.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
@@ -450,11 +458,12 @@ public class CapabilitiesSupport {
     }
 
     /**
+     * @param doc
      * @param requestName like "GetMap"
      * @param formatList
      * @param methodName like "Get" or "Post"
      * @param url
-     * @return
+     * @return Node
      */
     private Node requestcap(Document doc, String requestName, List<String> formatList, String methodName, String url) {
         Element methodNode = doc.createElement(methodName);
@@ -465,7 +474,7 @@ public class CapabilitiesSupport {
 
         Element dcpTypeNode = doc.createElement("DCPType");
         dcpTypeNode.appendChild(httpNode);
-        
+
         Element requestNameNode = doc.createElement(requestName);
         for (String format : formatList) {
             requestNameNode.appendChild(textnode(doc, "Format", format));

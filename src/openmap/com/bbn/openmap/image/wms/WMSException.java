@@ -81,12 +81,11 @@ public class WMSException extends Exception {
      */
     public static final String OPERATIONNOTSUPPORTED = "OperationNotSupported";
 
-    // this is an unsupported code, but it seems usefull enough to include.
+    // this is an unsupported code, but it seems useful enough to include.
     /**
      */
     public static final String INTERNALERROR = "InternalError";
 
-    // *************ta linia u Pitka jest dodatkowa
     protected static String exceptionTemplate = "<?xml version='1.0' encoding=\"UTF-8\"?>"
             + "<ServiceExceptionReport version=\"1.1.0\">"
             + "</ServiceExceptionReport>";
@@ -239,21 +238,21 @@ public class WMSException extends Exception {
     }
 
     /**
-     * @return
+     * @return xml for exception
      */
     public String getXML() {
         return XML;
     }
 
     /**
-     * @return
+     * @return string error message
      */
     public String getMessage() {
         return Message;
     }
 
     /**
-     * @return
+     * @return string for error code
      */
     public String getCode() {
         return Code;

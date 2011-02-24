@@ -199,7 +199,7 @@ public class SpatialIndex
     * Opens a spatial index file for reading based on the location of the
     * provided shp file.
     * 
-    * @param ssxFilename the name of the spatial index file
+    * @param shpFilename the name of the spatial index file
     * @exception IOException if something goes wrong opening the file
     */
    public SpatialIndex(String shpFilename)
@@ -227,7 +227,7 @@ public class SpatialIndex
     * Figures out the ssx file name from the shp file name.
     * 
     * @param shpFileName
-    * @return
+    * @return ssx file name from shape file name
     */
    public static String ssx(String shpFileName) {
       String ret = null;
@@ -241,7 +241,7 @@ public class SpatialIndex
     * Figures out the dbf file name from the shp file name.
     * 
     * @param shpFileName
-    * @return
+    * @return dbf file name created from shp file name.
     */
    public static String dbf(String shpFileName) {
       String ret = null;
@@ -446,7 +446,7 @@ public class SpatialIndex
     * This accessor is provided in order to allow you to modify the data
     * projection it uses, or the line type.
     * 
-    * @return
+    * @return EsriGraphicFactory being used to create EsriGraphics from shape file.
     */
    public EsriGraphicFactory getFactory() {
       if (factory == null) {
@@ -659,7 +659,7 @@ public class SpatialIndex
     * 
     * @param byteOffset , usually gotten from an Entry object.
     * @param drawingAttributes
-    * @return
+    * @return OMGraphic from entry object.
     * @throws IOException
     * @throws FormatException
     */
@@ -672,7 +672,7 @@ public class SpatialIndex
    /**
     * Provides an iterator over the SpatialIndex entries.
     * 
-    * @return
+    * @return iterator over entries
     * @throws IOException
     * @throws FormatException
     */
@@ -685,7 +685,7 @@ public class SpatialIndex
     * Provides an iterator over the SpatialIndex entries.
     * 
     * @param dataTransform GeoCoordTransform for pre-projected data.
-    * @return
+    * @return iterator over entries, data transformed.
     * @throws IOException
     * @throws FormatException
     */
@@ -707,7 +707,7 @@ public class SpatialIndex
    /**
     * 
     * @param bounds if not null, add min/max values to them.
-    * @return
+    * @return list of entries.
     * @throws IOException
     * @throws FormatException
     */
@@ -720,7 +720,7 @@ public class SpatialIndex
     * 
     * @param bounds if not null, add min/max values to them.
     * @param dataTransform GeoCoordTransform for pre-projected data.
-    * @return
+    * @return list of entries
     * @throws IOException
     * @throws FormatException
     */

@@ -52,8 +52,7 @@ public abstract class TemporalSupport {
      *        should be interpolated (in whatever way needed) if the time falls
      *        between Temporal objects.
      */
-    public <T extends TemporalRecord> T getPosition(long time,
-                                                    boolean interpolate) {
+    public <T extends TemporalRecord> T getPosition(long time, boolean interpolate) {
         T previous = null;
         T next = null;
 
@@ -101,8 +100,7 @@ public abstract class TemporalSupport {
                 // wanted if the current time is before the first
                 // position report.
                 if (logger.isLoggable(Level.FINER)) {
-                    logger.finer("premature time, invisible: "
-                            + next.toString());
+                    logger.finer("premature time, invisible: " + next.toString());
                 }
                 // We're displaying this position before we're
                 // supposed to know it's there.
@@ -153,10 +151,8 @@ public abstract class TemporalSupport {
      * @param next TemporalRecord that occurred after current time.
      * @return closest one.
      */
-    protected TemporalRecord interpolate(long time, TemporalRecord previous,
-                                         TemporalRecord next) {
-        long midTime = previous.getTime()
-                + (next.getTime() - previous.getTime()) / 2l;
+    protected TemporalRecord interpolate(long time, TemporalRecord previous, TemporalRecord next) {
+        long midTime = previous.getTime() + (next.getTime() - previous.getTime()) / 2l;
 
         if (time < midTime) {
             return previous;
@@ -188,7 +184,7 @@ public abstract class TemporalSupport {
      * Return true if the TemporalRecord was contained in the list.
      * 
      * @param tr
-     * @return
+     * @return true if removal was successful.
      */
     public boolean remove(TemporalRecord tr) {
         return getTemporals().remove(tr);

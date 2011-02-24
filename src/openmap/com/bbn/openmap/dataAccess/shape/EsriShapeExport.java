@@ -412,7 +412,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      *            a multipart geometry for the overall list. May be null anyway,
      *            though.
      * @deprecated use export(OMGraphicList, ArrayList, boolean) instead.
-     * @see #export(OMGraphicList list, ArrayList record, boolean writeFiles)
+     * @see #export(OMGraphicList list, List masterRecord, boolean writeFiles)
      */
     protected void export(OMGraphicList list, List<Object> record) {
         export(list, record, true);
@@ -927,7 +927,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * Fetches a file path from the user, via a JFileChooser. Returns null if
      * the user cancels.
      * 
-     * @see com.bbn.openmap.util.FileUtils.getFilePathFromUser
+     * @see com.bbn.openmap.util.FileUtils#getFilePathToSaveFromUser(String)
      */
     public String getFilePathFromUser() {
         return FileUtils.getFilePathToSaveFromUser("Select Name for Shape File Set...");

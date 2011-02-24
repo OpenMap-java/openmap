@@ -19,7 +19,7 @@ import com.bbn.openmap.Layer;
 public interface IWmsLayer {
 
     /**
-     * @return
+     * @return a string for the layer title
      */
     public String getTitle();
 
@@ -30,12 +30,12 @@ public interface IWmsLayer {
     public String getWmsName();
 
     /**
-     * @return
+     * @return a string description of the layer
      */
     public String getAbstract();
 
     /**
-     * @return
+     * @return true if layer is queryable
      */
     public boolean isQueryable();
 
@@ -44,24 +44,25 @@ public interface IWmsLayer {
      * 
      * @param x
      * @param y
-     * @return
+     * @return LayerFeatureInfoResponse from query 
      */
     public LayerFeatureInfoResponse query(int x, int y);
 
     /**
-     * @return
+     * @return IWmsLayerStyle array of available styles.
      */
     public IWmsLayerStyle[] getStyles();
 
     /**
-     * Ustawia styl w warstwie.
+     * Set the style in the layer
      * 
-     * @param name
+     * @param name style name
      */
     public void setStyle(String name);
 
     /**
-     * @param name
+     * @param name style name for query
+     * @return true if style supported
      */
     public boolean isStyleSupported(String name);
 
@@ -85,7 +86,7 @@ public interface IWmsLayer {
      * Return a {@link Legend} with legend information or null if legend can not
      * be created.
      * 
-     * @return
+     * @return Legend for layer.
      */
     public Legend getLegend();
     

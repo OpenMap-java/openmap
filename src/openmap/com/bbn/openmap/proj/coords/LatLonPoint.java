@@ -474,7 +474,7 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
          * 
          * @param lat latitude
          * @param lon longitude.
-         * @param isRadians true of values are radians.
+         * @param isRadian true of values are radians.
          */
         public Double(double lat, double lon, boolean isRadian) {
             setLatLon(lat, lon, isRadian);
@@ -686,7 +686,7 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
      * Ensure latitude is between the poles.
      * 
      * @param lat
-     * @return
+     * @return latitude greater than or equal to -90 and less than or equal to 90.
      */
     public final static float normalizeLatitude(float lat) {
         return (float) normalizeLatitude((double) lat);
@@ -713,7 +713,7 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
      * Ensure the longitude is between the date line.
      * 
      * @param lon
-     * @return
+     * @return longitude that is smaller than or equal to 180 and greater than or equal to -180
      */
     public final static float wrapLongitude(float lon) {
         return (float) wrapLongitude((double) lon);
@@ -817,7 +817,7 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
      * Get a new LatLonPoint a distance and azimuth from another point, based on the spherical earth model.
      * @param distance radians
      * @param azimuth radians
-     * @return
+     * @return LatLonPoint that is distance and azimuth away from this one.
      */
     public LatLonPoint getPoint(double distance, double azimuth) {
         return GreatCircle.sphericalBetween(getRadLat(), getRadLon(), distance, azimuth);

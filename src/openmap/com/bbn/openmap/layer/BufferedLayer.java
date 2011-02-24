@@ -513,7 +513,7 @@ public class BufferedLayer
       private static final long serialVersionUID = 1L;
 
       /**
-       * @param parent the parent layer of this MapBean.
+       * Default constructor.
        */
       public BLMapBean() {
          super(false);

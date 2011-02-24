@@ -59,7 +59,7 @@ public interface Attributable {
      * Convenience method to allow super class methods access to an attribute
      * table if they are acting as a wrapper.
      * 
-     * @return
+     * @return Map of all attributes
      */
     public Map<?, ?> getAttributes();
     
@@ -67,7 +67,7 @@ public interface Attributable {
      * Convenience method to allow super class methods access to an attribute
      * table if they are acting as a wrapper.
      * 
-     * @return
+     * @param map Map of all attributes
      */
     public void setAttributes(Map<?, ?> map);
 }

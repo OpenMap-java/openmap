@@ -72,8 +72,7 @@ public class Intersection {
      * MatchFilter.MatchParameters class with provided settings, and a
      * MatchCollector.CollectionMatchCollector with the provided collector.
      */
-    public static Intersection intersector(MatchParameters params,
-                                           final Collection c) {
+    public static Intersection intersector(MatchParameters params, final Collection c) {
         return new Intersection(new MatchFilter.MatchParametersMF(params), new MatchCollector.CollectionMatchCollector(c));
     }
 
@@ -81,8 +80,7 @@ public class Intersection {
      * Create an Intersection class that will use the provided MatchFilter class
      * and the provided MatchCollector.
      */
-    public static Intersection intersector(MatchFilter filter,
-                                           MatchCollector collector) {
+    public static Intersection intersector(MatchFilter filter, MatchCollector collector) {
         return new Intersection(filter, collector);
     }
 
@@ -90,7 +88,7 @@ public class Intersection {
      * Retrieve the MatchCollector that contains the results from the
      * Intersection query.
      * 
-     * @return
+     * @return MatchCollector that can be used to retrieve intersection results.
      */
     public MatchCollector getCollector() {
         return collector;
@@ -100,7 +98,7 @@ public class Intersection {
      * Retrieve the MatchFilter that can be used to control which GeoExtents are
      * considered for Intersection queries.
      * 
-     * @return
+     * @return The MatchFilter used to process intersection results.
      */
     public MatchFilter getFilter() {
         return filter;
@@ -169,8 +167,7 @@ public class Intersection {
                 // it here
                 for (GeoPath.SegmentIterator pit = ((GeoPath) extent).segmentIterator(); pit.hasNext();) {
                     GeoSegment seg = pit.nextSegment();
-                    if (filter.preConsider(seg, r)
-                            && considerSegmentXRegion(seg, r)) {
+                    if (filter.preConsider(seg, r) && considerSegmentXRegion(seg, r)) {
                         collector.collect(seg, extent);
                     }
                 }
@@ -179,15 +176,12 @@ public class Intersection {
                 BoundingCircle bc = extent.getBoundingCircle();
                 BoundingCircle rbc = r.getBoundingCircle();
                 // first pass check - the bounding circles intersect
-                if (rbc.intersects(bc.getCenter(), bc.getRadius()
-                        + filter.getHRange())) {
+                if (rbc.intersects(bc.getCenter(), bc.getRadius() + filter.getHRange())) {
                     GeoArray pts = r.getPoints();
                     if (isPointInPolygon(bc.getCenter(), pts)) {
                         // the center of extent is inside r
                         collector.collect(r, extent);
-                    } else if (isPointNearPoly(bc.getCenter(),
-                            pts,
-                            bc.getRadius() + filter.getHRange())) {
+                    } else if (isPointNearPoly(bc.getCenter(), pts, bc.getRadius() + filter.getHRange())) {
                         // Center+radius of extent is within range an edge of
                         // the r
                         collector.collect(r, extent);
@@ -212,8 +206,7 @@ public class Intersection {
         Geo regionPoint = regionBoundary.get(0, new Geo());
 
         // check for total containment
-        if (Intersection.isPointInPolygon(rPoint, regionBoundary)
-                || Intersection.isPointInPolygon(regionPoint, rBoundary)
+        if (Intersection.isPointInPolygon(rPoint, regionBoundary) || Intersection.isPointInPolygon(regionPoint, rBoundary)
         // || Intersection.isPointInPolygon(region.getBoundingCircle()
         // .getCenter(), rBoundary)
         // || Intersection.isPointInPolygon(r.getBoundingCircle()
@@ -225,8 +218,7 @@ public class Intersection {
             // intersections
             for (GeoPath.SegmentIterator pit = r.segmentIterator(); pit.hasNext();) {
                 GeoSegment seg = pit.nextSegment();
-                if (filter.preConsider(seg, region)
-                        && considerSegmentXRegion(seg, region)) {
+                if (filter.preConsider(seg, region) && considerSegmentXRegion(seg, region)) {
                     collector.collect(seg, region);
                     // For the default implementation, we just care
                     // about first hit.
@@ -266,17 +258,12 @@ public class Intersection {
                         }
                     } else if (extent instanceof GeoPath) {
                         GeoPath p = (GeoPath) extent;
-                        if (isSegmentNearPoly(seg,
-                                p.getPoints(),
-                                filter.getHRange()) != null) {
+                        if (isSegmentNearPoly(seg, p.getPoints(), filter.getHRange()) != null) {
                             collector.collect(seg, p);
                         }
                     } else {
                         BoundingCircle bc = extent.getBoundingCircle();
-                        if (isSegmentNearRadialRegion(seg,
-                                bc.getCenter(),
-                                bc.getRadius(),
-                                filter.getHRange())) {
+                        if (isSegmentNearRadialRegion(seg, bc.getCenter(), bc.getRadius(), filter.getHRange())) {
                             collector.collect(seg, extent);
                         }
                     }
@@ -296,8 +283,7 @@ public class Intersection {
         for (GeoPath.SegmentIterator pit = path.segmentIterator(); pit.hasNext();) {
             GeoSegment seg = pit.nextSegment();
 
-            if (filter.preConsider(seg, region)
-                    && considerSegmentXRegion(seg, region)) {
+            if (filter.preConsider(seg, region) && considerSegmentXRegion(seg, region)) {
                 collector.collect(seg, region);
                 // For the default implementation, we just care about
                 // the first contact.
@@ -312,7 +298,7 @@ public class Intersection {
      * 
      * @param seg
      * @param region
-     * @return
+     * @return true if segment intersects region
      */
     public boolean considerSegmentXRegion(GeoSegment seg, GeoRegion region) {
         return region.isSegmentNear(seg, filter.getHRange());
@@ -343,15 +329,12 @@ public class Intersection {
                     }
                 } else if (extent instanceof GeoPath) {
                     GeoPath path = (GeoPath) extent;
-                    if (isPointNearPoly(p.getPoint(),
-                            path.getPoints(),
-                            filter.getHRange())) {
+                    if (isPointNearPoly(p.getPoint(), path.getPoints(), filter.getHRange())) {
                         collector.collect(p, path);
                     }
                 } else {
                     BoundingCircle bc = extent.getBoundingCircle();
-                    if (p.getPoint().distance(bc.getCenter()) <= bc.getRadius()
-                            + filter.getHRange()) {
+                    if (p.getPoint().distance(bc.getCenter()) <= bc.getRadius() + filter.getHRange()) {
                         collector.collect(p, extent);
                     }
                 }
@@ -379,7 +362,7 @@ public class Intersection {
      * 
      * @param path
      * @param regions
-     * @return a list of the identifiers of the intersecting regions.
+     * @return an iterator over list of the intersecting regions.
      */
     public static Iterator intersect(Object path, Object regions) {
         MatchCollector.SetMatchCollector c = new MatchCollector.SetMatchCollector();
@@ -399,9 +382,8 @@ public class Intersection {
      * 
      * @return an array of two lat-lon points arranged as lat, lon, lat, lon
      */
-    public static float[] getIntersection(float lat1, float lon1, float lat2,
-                                          float lon2, float lat3, float lon3,
-                                          float lat4, float lon4) {
+    public static float[] getIntersection(float lat1, float lon1, float lat2, float lon2, float lat3, float lon3, float lat4,
+                                          float lon4) {
 
         Geo geoCross1 = (new Geo(lat1, lon1)).crossNormalize(new Geo(lat2, lon2));
         Geo geoCross2 = (new Geo(lat3, lon3)).crossNormalize(new Geo(lat4, lon4));
@@ -409,9 +391,12 @@ public class Intersection {
         Geo geo = geoCross1.crossNormalize(geoCross2);
         Geo anti = geo.antipode();
 
-        return new float[] { ((float) geo.getLatitude()),
-                ((float) geo.getLongitude()), ((float) anti.getLatitude()),
-                ((float) anti.getLongitude()) };
+        return new float[] {
+            ((float) geo.getLatitude()),
+            ((float) geo.getLongitude()),
+            ((float) anti.getLatitude()),
+            ((float) anti.getLongitude())
+        };
     }
 
     /**
@@ -421,9 +406,7 @@ public class Intersection {
      * 
      * @return an array of two lat-lon points arranged as lat, lon, lat, lon
      */
-    public static double[] getIntersection(double lat1, double lon1,
-                                           double lat2, double lon2,
-                                           double lat3, double lon3,
+    public static double[] getIntersection(double lat1, double lon1, double lat2, double lon2, double lat3, double lon3,
                                            double lat4, double lon4) {
 
         Geo geoCross1 = (new Geo(lat1, lon1)).crossNormalize(new Geo(lat2, lon2));
@@ -432,8 +415,12 @@ public class Intersection {
         Geo geo = geoCross1.crossNormalize(geoCross2);
         Geo anti = geo.antipode();
 
-        return new double[] { geo.getLatitude(), geo.getLongitude(),
-                anti.getLatitude(), anti.getLongitude() };
+        return new double[] {
+            geo.getLatitude(),
+            geo.getLongitude(),
+            anti.getLatitude(),
+            anti.getLongitude()
+        };
     }
 
     /**
@@ -444,9 +431,8 @@ public class Intersection {
      * @return Geo containing intersection, might have to check antipode of Geo
      *         for actual intersection.
      */
-    public static Geo getIntersectionGeo(double lat1, double lon1, double lat2,
-                                         double lon2, double lat3, double lon3,
-                                         double lat4, double lon4) {
+    public static Geo getIntersectionGeo(double lat1, double lon1, double lat2, double lon2, double lat3, double lon3, double lat4,
+                                         double lon4) {
 
         Geo geoCross1 = (new Geo(lat1, lon1)).crossNormalize(new Geo(lat2, lon2));
         Geo geoCross2 = (new Geo(lat3, lon3)).crossNormalize(new Geo(lat4, lon4));
@@ -460,18 +446,10 @@ public class Intersection {
      * values are in degrees. lat1,lon1-lat2,lon2 make up one segment,
      * lat3,lon3-lat4,lon4 make up the other segment.
      */
-    public static boolean intersects(double lat1, double lon1, double lat2,
-                                     double lon2, double lat3, double lon3,
-                                     double lat4, double lon4) {
+    public static boolean intersects(double lat1, double lon1, double lat2, double lon2, double lat3, double lon3, double lat4,
+                                     double lon4) {
 
-        double[] llp = getSegIntersection(lat1,
-                lon1,
-                lat2,
-                lon2,
-                lat3,
-                lon3,
-                lat4,
-                lon4);
+        double[] llp = getSegIntersection(lat1, lon1, lat2, lon2, lat3, lon3, lat4, lon4);
 
         return (llp[0] != Double.MAX_VALUE && llp[1] != Double.MAX_VALUE)
                 || (llp[2] != Double.MAX_VALUE && llp[3] != Double.MAX_VALUE);
@@ -492,14 +470,8 @@ public class Intersection {
 
             for (int j = 0; j < polyPoints2.length / 2 - 1; j++) {
 
-                if (intersects(polyPoints1[2 * i],
-                        polyPoints1[2 * i + 1],
-                        polyPoints1[2 * i + 2],
-                        polyPoints1[2 * i + 3],
-                        polyPoints2[2 * j],
-                        polyPoints2[2 * j + 1],
-                        polyPoints2[2 * j + 2],
-                        polyPoints2[2 * j + 3]))
+                if (intersects(polyPoints1[2 * i], polyPoints1[2 * i + 1], polyPoints1[2 * i + 2], polyPoints1[2 * i + 3],
+                               polyPoints2[2 * j], polyPoints2[2 * j + 1], polyPoints2[2 * j + 2], polyPoints2[2 * j + 3]))
                     return true;
             }
         }
@@ -513,8 +485,7 @@ public class Intersection {
      * format. For closed polygons the last pair of points in the array should
      * be the same as the first pair. All lat-lon values are in degrees.
      */
-    public static boolean polyIntersect(double[] polyPoints1,
-                                        double[] polyPoints2) {
+    public static boolean polyIntersect(double[] polyPoints1, double[] polyPoints2) {
 
         // go through each side of poly1 and test to see if it
         // intersects with any side of poly2
@@ -523,14 +494,8 @@ public class Intersection {
 
             for (int j = 0; j < polyPoints2.length / 2 - 1; j++) {
 
-                if (intersects(polyPoints1[2 * i],
-                        polyPoints1[2 * i + 1],
-                        polyPoints1[2 * i + 2],
-                        polyPoints1[2 * i + 3],
-                        polyPoints2[2 * j],
-                        polyPoints2[2 * j + 1],
-                        polyPoints2[2 * j + 2],
-                        polyPoints2[2 * j + 3]))
+                if (intersects(polyPoints1[2 * i], polyPoints1[2 * i + 1], polyPoints1[2 * i + 2], polyPoints1[2 * i + 3],
+                               polyPoints2[2 * j], polyPoints2[2 * j + 1], polyPoints2[2 * j + 2], polyPoints2[2 * j + 3]))
                     return true;
             }
         }
@@ -538,46 +503,45 @@ public class Intersection {
         return false;
     }
 
-   /**
-    * Checks if the two polygonal areas intersect. The two polygonal regions are
-    * represented by two lat-lon arrays in the lat1, lon1, lat2, lon2,...
-    * format. For closed polygons the last pair of points in the array should be
-    * the same as the first pair. All lat-lon values are in degrees. KM
-    * optimized to create each Geo only once. (TODO consider optimizing the
-    * other paths.)
-    */
-    public static boolean polyIntersect_optimized(double[] polyPoints1,
-                                        double[] polyPoints2) {
+    /**
+     * Checks if the two polygonal areas intersect. The two polygonal regions
+     * are represented by two lat-lon arrays in the lat1, lon1, lat2, lon2,...
+     * format. For closed polygons the last pair of points in the array should
+     * be the same as the first pair. All lat-lon values are in degrees. KM
+     * optimized to create each Geo only once. (TODO consider optimizing the
+     * other paths.)
+     */
+    public static boolean polyIntersect_optimized(double[] polyPoints1, double[] polyPoints2) {
 
         // go through each side of poly1 and test to see if it
         // intersects with any side of poly2
-       
-       Geo geos1[] = new Geo[polyPoints1.length / 2];
-       Geo geos2[] = new Geo[polyPoints2.length / 2];
-       
-       for (int i = 0; i < geos1.length; i++) {
-          geos1[i] = new Geo(polyPoints1[2*i], polyPoints1[2*i + 1]);
-       }
-       for (int i = 0; i < geos2.length; i++) {
-          geos2[i] = new Geo(polyPoints2[2*i], polyPoints2[2*i + 1]);
-       }
+
+        Geo geos1[] = new Geo[polyPoints1.length / 2];
+        Geo geos2[] = new Geo[polyPoints2.length / 2];
+
+        for (int i = 0; i < geos1.length; i++) {
+            geos1[i] = new Geo(polyPoints1[2 * i], polyPoints1[2 * i + 1]);
+        }
+        for (int i = 0; i < geos2.length; i++) {
+            geos2[i] = new Geo(polyPoints2[2 * i], polyPoints2[2 * i + 1]);
+        }
 
         for (int i = 0; i < geos1.length - 1; i++) {
 
             for (int j = 0; j < geos2.length - 1; j++) {
-               Geo p1 = geos1[i];
-               Geo p2 = geos1[i+1];
-               Geo p3 = geos2[j];
-               Geo p4 = geos2[j+1];
-               
-               Geo[] results = getSegIntersection(p1, p2, p3, p4);
-               
-               if(results[0] != null || results[1] != null) {
-                  return true;
-               }
+                Geo p1 = geos1[i];
+                Geo p2 = geos1[i + 1];
+                Geo p3 = geos2[j];
+                Geo p4 = geos2[j + 1];
+
+                Geo[] results = getSegIntersection(p1, p2, p3, p4);
+
+                if (results[0] != null || results[1] != null) {
+                    return true;
+                }
             }
         }
-        
+
         return false;
     }
 
@@ -602,8 +566,7 @@ public class Intersection {
                 float lon4 = polyPoints[2 * j + 3];
 
                 // ignore adjacent segments
-                if ((lat1 == lat4 && lon1 == lon4)
-                        || (lat2 == lat3 && lon2 == lon3))
+                if ((lat1 == lat4 && lon1 == lon4) || (lat2 == lat3 && lon2 == lon3))
                     continue;
 
                 if (intersects(lat1, lon1, lat2, lon2, lat3, lon3, lat4, lon4))
@@ -637,8 +600,7 @@ public class Intersection {
                 double lon4 = polyPoints[2 * j + 3];
 
                 // ignore adjacent segments
-                if ((lat1 == lat4 && lon1 == lon4)
-                        || (lat2 == lat3 && lon2 == lon3))
+                if ((lat1 == lat4 && lon1 == lon4) || (lat2 == lat3 && lon2 == lon3))
                     continue;
 
                 if (intersects(lat1, lon1, lat2, lon2, lat3, lon3, lat4, lon4))
@@ -699,8 +661,7 @@ public class Intersection {
         // assert (< (Math.abs (.dot (.crossNormalize a b) i))
         // 1.e-15))
 
-        return ((Math.abs(a.crossNormalize(b).dot(i)) <= withinRad)
-                && (a.distance(i) < a.distance(b)) && (b.distance(i) < b.distance(a)));
+        return ((Math.abs(a.crossNormalize(b).dot(i)) <= withinRad) && (a.distance(i) < a.distance(b)) && (b.distance(i) < b.distance(a)));
     }
 
     /**
@@ -743,12 +704,8 @@ public class Intersection {
      * -1 if point of intersection of the two great circle segs is not on the
      * great circle segment (lat1, lon1, lat2, lon2).
      */
-    public static double pointSegDistanceNM(double lat1, double lon1,
-                                            double lat2, double lon2,
-                                            double lat, double lon) {
-        double ret = pointSegDistance(new Geo(lat1, lon1),
-                new Geo(lat2, lon2),
-                new Geo(lat, lon));
+    public static double pointSegDistanceNM(double lat1, double lon1, double lat2, double lon2, double lat, double lon) {
+        double ret = pointSegDistance(new Geo(lat1, lon1), new Geo(lat2, lon2), new Geo(lat, lon));
 
         return (ret == -1 ? ret : Geo.nm(ret));
     }
@@ -769,8 +726,7 @@ public class Intersection {
      * point p1 to point p2 intersects the circle of radius (radians) around
      * center.
      */
-    public static boolean intersectsCircle(Geo p1, Geo p2, Geo center,
-                                           double radius) {
+    public static boolean intersectsCircle(Geo p1, Geo p2, Geo center, double radius) {
 
         // check if either of the end points of the seg are inside the
         // circle
@@ -835,8 +791,7 @@ public class Intersection {
      * returns true if the specified poly path intersects the circle centered at
      * (lat, lon). All lat-lon values are in degrees. radius is in radians.
      */
-    public static boolean intersectsCircle(float[] polyPoints, double lat,
-                                           double lon, double radius) {
+    public static boolean intersectsCircle(float[] polyPoints, double lat, double lon, double radius) {
 
         Geo a = new Geo(polyPoints[0], polyPoints[1]);
         Geo b = new Geo();
@@ -863,8 +818,7 @@ public class Intersection {
      * returns true if the specified poly path intersects the circle centered at
      * (lat, lon). All lat-lon values are in degrees. radius is in radians.
      */
-    public static boolean intersectsCircle(double[] polyPoints, double lat,
-                                           double lon, double radius) {
+    public static boolean intersectsCircle(double[] polyPoints, double lat, double lon, double radius) {
 
         Geo a = new Geo(polyPoints[0], polyPoints[1]);
         Geo b = new Geo();
@@ -959,8 +913,8 @@ public class Intersection {
      *                 .
      *                 poly[n-1] = latitude 1
      *                 poly[n] = longitude 1
-    *                                                                                                
-    * </pre>
+     *                                                                                                
+     * </pre>
      * 
      * @param x a geographic coordinate
      * @param poly an array of lat/lons describing a closed polygon
@@ -999,10 +953,9 @@ public class Intersection {
              * p1 and p2 are on different sides of the ray, and the great
              * acircle between p1 and p2 is on the side that counts;
              */
-            if ((p1.dot(ray) < 0.0) != (p2.dot(ray) < 0.0)
-                    && p1.intersect(p2, ray, tmp).dot(side) > 0.0) {
+            if ((p1.dot(ray) < 0.0) != (p2.dot(ray) < 0.0) && p1.intersect(p2, ray, tmp).dot(side) > 0.0) {
                 in = !in;
-			}
+            }
             p1.initialize(p2);
         }
 
@@ -1011,8 +964,7 @@ public class Intersection {
         // point.
         if (!poly.equals(0, p1)) {
             poly.get(0, p2);
-            if ((p1.dot(ray) < 0.0) != (p2.dot(ray) < 0.0)
-                    && p1.intersect(p2, ray, tmp).dot(side) > 0.0) {
+            if ((p1.dot(ray) < 0.0) != (p2.dot(ray) < 0.0) && p1.intersect(p2, ray, tmp).dot(side) > 0.0) {
                 in = !in;
             }
         }
@@ -1056,8 +1008,7 @@ public class Intersection {
              * p1 and p2 are on different sides of the ray, and the great
              * acircle between p1 and p2 is on the side that counts;
              */
-            if ((p1.dot(ray) < 0.0) != (p2.dot(ray) < 0.0)
-                    && p1.intersect(p2, ray, tmp).dot(side) > 0.0)
+            if ((p1.dot(ray) < 0.0) != (p2.dot(ray) < 0.0) && p1.intersect(p2, ray, tmp).dot(side) > 0.0)
                 in = !in;
 
             p1.initialize(p2);
@@ -1068,8 +1019,7 @@ public class Intersection {
         // point.
         if (!poly.equals(0, p1)) {
             poly.get(0, p2);
-            if ((p1.dot(ray) < 0.0) != (p2.dot(ray) < 0.0)
-                    && p1.intersect(p2, ray, tmp).dot(side) > 0.0) {
+            if ((p1.dot(ray) < 0.0) != (p2.dot(ray) < 0.0) && p1.intersect(p2, ray, tmp).dot(side) > 0.0) {
                 in = !in;
             }
         }
@@ -1085,14 +1035,11 @@ public class Intersection {
      * @param polyInDegrees true of poly floats represent decimal degrees.
      * @return true for Geo in poly
      */
-    public static boolean isPointInPolygon(Geo x, double[] poly,
-                                           boolean polyInDegrees) {
+    public static boolean isPointInPolygon(Geo x, double[] poly, boolean polyInDegrees) {
         if (polyInDegrees) {
-            return isPointInPolygon(x,
-                    GeoArray.Float.createFromLatLonDegrees(poly));
+            return isPointInPolygon(x, GeoArray.Float.createFromLatLonDegrees(poly));
         } else {
-            return isPointInPolygon(x,
-                    GeoArray.Float.createFromLatLonRadians(poly));
+            return isPointInPolygon(x, GeoArray.Float.createFromLatLonRadians(poly));
         }
     }
 
@@ -1104,14 +1051,11 @@ public class Intersection {
      * @param polyInDegrees true of poly floats represent decimal degrees.
      * @return true for Geo in poly
      */
-    public static boolean isPointInPolygon(Geo x, float[] poly,
-                                           boolean polyInDegrees) {
+    public static boolean isPointInPolygon(Geo x, float[] poly, boolean polyInDegrees) {
         if (polyInDegrees) {
-            return isPointInPolygon(x,
-                    GeoArray.Float.createFromLatLonDegrees(poly));
+            return isPointInPolygon(x, GeoArray.Float.createFromLatLonDegrees(poly));
         } else {
-            return isPointInPolygon(x,
-                    GeoArray.Float.createFromLatLonRadians(poly));
+            return isPointInPolygon(x, GeoArray.Float.createFromLatLonRadians(poly));
         }
     }
 
@@ -1141,9 +1085,7 @@ public class Intersection {
      *         not containing a valid lat/lon value are initialized to
      *         Float.MAX_VALUE.
      */
-    public static double[] getSegIntersection(double lat1, double lon1,
-                                              double lat2, double lon2,
-                                              double lat3, double lon3,
+    public static double[] getSegIntersection(double lat1, double lon1, double lat2, double lon2, double lat3, double lon3,
                                               double lat4, double lon4) {
         // KRA 03SEP03: The original version of this consed 26+ Geo's.
         // This one conses 8+. WAIT! Now it uses 6
@@ -1157,8 +1099,12 @@ public class Intersection {
         Geo i1 = results[0];
         Geo i2 = results[1];
 
-        double[] llp = new double[] { Double.MAX_VALUE, Double.MAX_VALUE,
-                Double.MAX_VALUE, Double.MAX_VALUE };
+        double[] llp = new double[] {
+            Double.MAX_VALUE,
+            Double.MAX_VALUE,
+            Double.MAX_VALUE,
+            Double.MAX_VALUE
+        };
 
         // check if first point of intersection lies on both segments
         if (i1 != null) {
@@ -1207,7 +1153,10 @@ public class Intersection {
         double d212 = p3.distance(i2);
         double d222 = p4.distance(i2);
 
-        Geo[] result = new Geo[] { null, null };
+        Geo[] result = new Geo[] {
+            null,
+            null
+        };
 
         // check if first point of intersection lies on both segments
         if (d1 >= d111 && d1 >= d121 && d2 >= d211 && d2 >= d221) {
@@ -1292,10 +1241,7 @@ public class Intersection {
      * Does the segment come within near radians of the region defined by
      * rCenter at rRadius?
      */
-    public static final boolean isSegmentNearRadialRegion(GeoSegment segment,
-                                                          Geo rCenter,
-                                                          double rRadius,
-                                                          double near) {
+    public static final boolean isSegmentNearRadialRegion(GeoSegment segment, Geo rCenter, double rRadius, double near) {
         Geo[] s = segment.getSeg();
         if (s != null && s.length == 2) {
             return isSegmentNearRadialRegion(s[0], s[1], rCenter, rRadius, near);
@@ -1307,17 +1253,12 @@ public class Intersection {
      * Does the segment come within near radians of the region defined by
      * rCenter at rRadius?
      */
-    public static final boolean isSegmentNearRadialRegion(Geo s1, Geo s2,
-                                                          Geo rCenter,
-                                                          double rRadius,
-                                                          double near) {
+    public static final boolean isSegmentNearRadialRegion(Geo s1, Geo s2, Geo rCenter, double rRadius, double near) {
         return s1.isInside(s2, near + rRadius, rCenter);
     }
 
     /** Is a segment horizontally within range of a Region region? */
-    public static final boolean isSegmentNearRegion(GeoSegment segment,
-                                                    double hrange,
-                                                    GeoRegion region) {
+    public static final boolean isSegmentNearRegion(GeoSegment segment, double hrange, GeoRegion region) {
         // Need to be careful here - calling
         // region.isSegmentNear(segment, hrange) can result in
         // circular code if the region just calls this method, which
@@ -1330,8 +1271,7 @@ public class Intersection {
      * polygon in r[*]? Catches segments within poly region and returns after
      * first hit, which is why it returns boolean.
      */
-    public static final boolean isSegmentNearPolyRegion(GeoSegment segment,
-                                                        GeoArray r, double near) {
+    public static final boolean isSegmentNearPolyRegion(GeoSegment segment, GeoArray r, double near) {
         Geo[] s = segment.getSeg();
         if (s != null && s.length == 2) {
             return isSegmentNearPolyRegion(s[0], s[1], r, near);
@@ -1344,18 +1284,15 @@ public class Intersection {
      * the polygon in r[*]? Catches segments within poly region and returns
      * after first hit, which is why it returns boolean.
      */
-    public static final boolean isSegmentNearPolyRegion(Geo s1, Geo s2,
-                                                        GeoArray r, double near) {
+    public static final boolean isSegmentNearPolyRegion(Geo s1, Geo s2, GeoArray r, double near) {
 
-        return isSegmentNearPoly(s1, s2, r, near) != null
-                || isPointInPolygon(s1, r);
+        return isSegmentNearPoly(s1, s2, r, near) != null || isPointInPolygon(s1, r);
     }
 
     /**
      * Where is a segment within range of a region?
      */
-    public static final Geo isSegmentNearPoly(GeoSegment segment, GeoArray r,
-                                              double near) {
+    public static final Geo isSegmentNearPoly(GeoSegment segment, GeoArray r, double near) {
         Geo[] s = segment.getSeg();
         if (s != null && s.length == 2) {
             return isSegmentNearPoly(s[0], s[1], r, near);
@@ -1374,8 +1311,7 @@ public class Intersection {
      * @return Geo location where the condition was initially met (yes), null if
      *         conditions weren't met (no).
      */
-    public static final Geo isSegmentNearPoly(Geo s1, Geo s2, GeoArray r,
-                                              double near) {
+    public static final Geo isSegmentNearPoly(Geo s1, Geo s2, GeoArray r, double near) {
 
         int rlen = r.getSize();
         Geo pl0 = r.get(rlen - 1, new Geo());
@@ -1400,8 +1336,7 @@ public class Intersection {
     /**
      * Where is a segment within range of a region?
      */
-    public static final List segmentNearPoly(GeoSegment segment, GeoArray r,
-                                             double near) {
+    public static final List segmentNearPoly(GeoSegment segment, GeoArray r, double near) {
         Geo[] s = segment.getSeg();
         List list = null;
         if (s != null && s.length == 2) {
@@ -1421,8 +1356,7 @@ public class Intersection {
      * @return Geo location where the condition was met (yes), null if
      *         conditions weren't met (no).
      */
-    public static final List segmentNearPoly(Geo s1, Geo s2, GeoArray r,
-                                             double near) {
+    public static final List segmentNearPoly(Geo s1, Geo s2, GeoArray r, double near) {
         int rlen = r.getSize();
         Geo pl0 = r.get(rlen - 1, new Geo());
         Geo pl1 = new Geo();
@@ -1548,8 +1482,7 @@ public class Intersection {
      *         ambiguous. Returns null if the segments don't interset within the
      *         range.
      */
-    public static Geo segmentsIntersectOrNear(Geo a1, Geo a2, Geo b1, Geo b2,
-                                              double r) {
+    public static Geo segmentsIntersectOrNear(Geo a1, Geo a2, Geo b1, Geo b2, double r) {
 
         if (a1 == null || a2 == null || b1 == null || b2 == null) {
             return null;
@@ -1596,8 +1529,7 @@ public class Intersection {
      *         ambiguous. Returns null if the segments don't interset within the
      *         range.
      */
-    public static Geo segmentsIntersectOrNear(Geo a1, Geo a2, Geo b1, Geo b2,
-                                              double r, Geo ret) {
+    public static Geo segmentsIntersectOrNear(Geo a1, Geo a2, Geo b1, Geo b2, double r, Geo ret) {
 
         if (a1 == null || a2 == null || b1 == null || b2 == null) {
             return null;
@@ -1656,33 +1588,32 @@ public class Intersection {
         double lat4 = 30;
         double lon4 = -130;
 
-        double[] ll = getSegIntersection(lat1,
-                -lon1,
-                lat2,
-                -lon2,
-                lat3,
-                -lon3,
-                lat4,
-                -lon4);
+        double[] ll = getSegIntersection(lat1, -lon1, lat2, -lon2, lat3, -lon3, lat4, -lon4);
 
         System.out.println("(1)=" + ll[0] + ", " + (-ll[1]));
         System.out.println("(2)=" + ll[2] + ", " + (-ll[3]));
 
-        boolean b1 = intersects(lat1,
-                -lon1,
-                lat2,
-                -lon2,
-                lat3,
-                -lon3,
-                lat4,
-                -lon4);
+        boolean b1 = intersects(lat1, -lon1, lat2, -lon2, lat3, -lon3, lat4, -lon4);
 
         System.out.println("intersects=" + b1);
 
-        double[] polypoints1 = new double[] { 38, -27, -46, 165 };
+        double[] polypoints1 = new double[] {
+            38,
+            -27,
+            -46,
+            165
+        };
 
-        double[] polypoints2 = new double[] { 51, -42, 55, -17, 11, -23, 51,
-                -42 };
+        double[] polypoints2 = new double[] {
+            51,
+            -42,
+            55,
+            -17,
+            11,
+            -23,
+            51,
+            -42
+        };
 
         boolean b2 = polyIntersect(polypoints1, polypoints2);
 

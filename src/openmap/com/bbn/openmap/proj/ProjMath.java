@@ -285,8 +285,7 @@ public final class ProjMath {
      * @param lat float latitude in radians
      * @param epsilon epsilon (&gt;= 0) radians distance from pole
      * @return float latitude (-PI/2 &lt;= phi &lt;= PI/2)
-     * @see Proj#normalizeLatitude(float)
-     * @see com.bbn.openmap.LatLonPoint#normalizeLatitude(float)
+     * @see com.bbn.openmap.proj.coords.LatLonPoint#normalizeLatitude(double)
      */
     public final static float normalizeLatitude(float lat, float epsilon) {
         if (lat > NORTH_POLE_F - epsilon) {
@@ -311,7 +310,7 @@ public final class ProjMath {
      * @param lat double latitude in radians
      * @param epsilon epsilon (&gt;= 0) radians distance from pole
      * @return double latitude (-PI/2 &lt;= phi &lt;= PI/2)
-     * @see Proj#normalizeLatitude(float)
+     * @see com.bbn.openmap.proj.coords.LatLonPoint#normalizeLatitude(double)
      */
     public final static double normalizeLatitude(double lat, double epsilon) {
         if (lat > NORTH_POLE_D - epsilon) {
@@ -356,7 +355,6 @@ public final class ProjMath {
      * 
      * @param lon double longitude in radians
      * @return double longitude (-PI &lt;= lambda &lt; PI)
-     * @see #wrapLongitude(float)
      */
     public final static double wrapLongitude(double lon) {
         if ((lon < -DATELINE_D) || (lon > DATELINE_D)) {

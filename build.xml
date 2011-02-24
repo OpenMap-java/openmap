@@ -120,7 +120,7 @@
 	############################ -->
 
 	<!-- depends="jar" -->
-	<target name="run" description="Run the OpenMap application.">
+	<target name="run" depends="init" description="Run the OpenMap application.">
 		<java classname="com.bbn.openmap.app.OpenMap" classpath="lib/openmap.jar;lib/milStd2525_png.jar;lib/omcorba.jar;lib/omsvg.jar;lib/omj3d;share" fork="yes">
 			<classpath>
 				<path refid="ext_tools_classpath" />

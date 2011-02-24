@@ -114,10 +114,9 @@ public class NatCubicClosedSpline extends NatCubicSpline {
     }
 
     /**
-     * @see com.bbn.openmap.omGraphics.NatCubicSpline#calc(float[],
-     *      float)
+     * @see NatCubicSpline#calc(double[], double)
      */
-    public double[] calc(double[] llpoints, float precision) {
+    public double[] calc(double[] llpoints, double precision) {
 
         double[] llpts = llpoints;
         int l = llpoints.length;

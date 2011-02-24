@@ -100,8 +100,9 @@ import com.bbn.openmap.util.PropUtils;
  * you don't want it to do that search, create it with an empty Properties
  * object.
  */
-public class PropertyHandler extends MapHandlerChild implements
-        SoloMapComponent {
+public class PropertyHandler
+        extends MapHandlerChild
+        implements SoloMapComponent {
 
     public static Logger logger = Logger.getLogger("com.bbn.openmap.PropertyHandler");
 
@@ -215,7 +216,7 @@ public class PropertyHandler extends MapHandlerChild implements
      * java.util.Properties object and provide it with empty Properties.
      */
     public PropertyHandler() {
-        this(false);
+        this(new Builder());
     }
 
     /**
@@ -228,58 +229,81 @@ public class PropertyHandler extends MapHandlerChild implements
      *        to show the progress of building components.
      */
     public PropertyHandler(boolean provideProgressUpdates) {
-        DEBUG = logger.isLoggable(Level.FINE);
-        updateProgress = provideProgressUpdates;
-        searchForAndLoadProperties();
+        this(new Builder().setProgressUpdates(provideProgressUpdates));
     }
 
     /**
      * Constructor to take resource name, file path or URL string as argument,
      * to create context for a particular map.
      */
-    public PropertyHandler(String urlString) throws MalformedURLException,
-            IOException {
-        this(PropUtils.getResourceOrFileOrURL(urlString));
+    public PropertyHandler(String urlString)
+            throws MalformedURLException, IOException {
+        this(new Builder().setPropertiesFile(urlString));
     }
 
     /**
      * Constructor to take path (URL) as argument, to create context for a
      * particular map.
      */
-    public PropertyHandler(URL url) throws IOException {
-        DEBUG = logger.isLoggable(Level.FINE);
-        InputStream is = null;
-
-        if (url != null) {
-            // Open URL to read in properties
-            is = url.openStream();
-        }
-
-        Properties tmpProperties = new Properties();
-        if (is != null) {
-            tmpProperties.load(is);
-        }
-
-        init(tmpProperties, "URL");
-        Environment.init(getProperties());
+    public PropertyHandler(URL url)
+            throws IOException {
+        this(new Builder().setPropertiesFile(url));
     }
 
     /**
-     * Constructor to take Properties object as argument, to create context for
-     * a particular map.
+     * Constructor to take Properties for configuration, using the default
+     * "openmap" property prefix for configuration.
+     * 
+     * @param props
      */
     public PropertyHandler(Properties props) {
+        this(new Builder().setProperties(props));
+    }
+
+    public PropertyHandler(Builder builder) {
         DEBUG = logger.isLoggable(Level.FINE);
-        init(props, null);
-        Environment.init(getProperties());
+
+        setPropertyPrefix(builder.propertyPrefix);
+        setUpdateProgress(builder.update);
+
+        Properties properties = builder.properties;
+
+        if (properties == null) {
+            searchForAndLoadProperties();
+        } else {
+            init(properties, "URL");
+            Environment.init(getProperties());
+        }
     }
 
     /**
-     * Look for openmap.properties files as a resource in the classpath, in the
-     * config directory, and in the user's home directory, in that order. If any
-     * property is duplicated in any version, last one wins.
+     * Provides this class with the default properties file name to look for.
+     * Can be overridden by subclasses to return custom file names.
+     * 
+     * @return String of properties file to search for in classpath, configDir
+     *         and user's home directory.
+     */
+    public String getDefaultPropertyFileName() {
+        return PropUtils.getScopedPropertyPrefix(Environment.OpenMapPrefix) + PropertyHandler.propsFileName;
+    }
+
+    /**
+     * Look for an openmap.properties file in the classpath, configDirectory and
+     * user home directory, in that order. If any property is duplicated in any
+     * file found in those locations, the last one in wins.
      */
     protected void searchForAndLoadProperties() {
+        searchForAndLoadProperties(getDefaultPropertyFileName());
+    }
+
+    /**
+     * Look for a properties file as a resource in the classpath, in the config
+     * directory, and in the user's home directory, in that order. If any
+     * property is duplicated in any version, last one wins.
+     * 
+     * @param props to search for
+     */
+    protected void searchForAndLoadProperties(String propsFileName) {
 
         Properties tmpProperties = new Properties();
         Properties includeProperties;
@@ -296,9 +320,7 @@ public class PropertyHandler extends MapHandlerChild implements
 
         logger.fine("***** Searching for properties ****");
 
-        String propertyPrefix = getPropertyPrefix();
-
-        String propsFileName = propertyPrefix + PropertyHandler.propsFileName;
+        String propertyPrefix = PropUtils.getScopedPropertyPrefix(getPropertyPrefix());
 
         // look for openmap.properties file in jar archive(of course
         // only in same package as this class) or wherever this
@@ -322,13 +344,11 @@ public class PropertyHandler extends MapHandlerChild implements
             propsIn = ClassLoader.getSystemResourceAsStream(propsFileName);
 
             if (propsIn != null && DEBUG) {
-                logger.fine("Loading properties from System Resources: "
-                        + propsFileName);
+                logger.fine("Loading properties from System Resources: " + propsFileName);
             }
         } else {
             if (DEBUG) {
-                logger.fine("Loading properties from file " + propsFileName
-                        + " from package of class " + getClass());
+                logger.fine("Loading properties from file " + propsFileName + " from package of class " + getClass());
             }
         }
 
@@ -356,8 +376,7 @@ public class PropertyHandler extends MapHandlerChild implements
             systemProperties = new Properties();
         }
 
-        String configDirProperty = propertyPrefix
-                + PropertyHandler.configDirProperty;
+        String configDirProperty = propertyPrefix + PropertyHandler.configDirProperty;
 
         String openmapConfigDirectory = systemProperties.getProperty(configDirProperty);
 
@@ -382,26 +401,17 @@ public class PropertyHandler extends MapHandlerChild implements
 
         // in OpenMap config directory
         if (DEBUG) {
-            logger.fine("PropertyHandler: Looking for "
-                    + propsFileName
-                    + " in configuration directory: "
-                    + (openmapConfigDirectory == null ? "not set"
-                            : openmapConfigDirectory));
+            logger.fine("PropertyHandler: Looking for " + propsFileName + " in configuration directory: "
+                    + (openmapConfigDirectory == null ? "not set" : openmapConfigDirectory));
         }
 
         // We want foundProperties to reflect if properties have ever
         // been found.
-        foundProperties |= PropUtils.loadProperties(tmpProperties,
-                openmapConfigDirectory,
-                propsFileName);
+        foundProperties |= PropUtils.loadProperties(tmpProperties, openmapConfigDirectory, propsFileName);
 
         // Include properties from config file properties.
-        includeProperties = getIncludeProperties(tmpProperties.getProperty(propertyPrefix
-                + includeProperty),
-                tmpProperties);
-        merge(includeProperties,
-                "include file properties",
-                openmapConfigDirectory);
+        includeProperties = getIncludeProperties(tmpProperties.getProperty(propertyPrefix + includeProperty), tmpProperties);
+        merge(includeProperties, "include file properties", openmapConfigDirectory);
 
         // OK, now merge the config file properties into the main
         // properties
@@ -416,30 +426,24 @@ public class PropertyHandler extends MapHandlerChild implements
         // in user's home directory, most precedence.
         String userHomeDirectory = systemProperties.getProperty("user.home");
         if (DEBUG) {
-            logger.fine("Looking for " + propsFileName
-                    + " in user's home directory: " + userHomeDirectory);
+            logger.fine("Looking for " + propsFileName + " in user's home directory: " + userHomeDirectory);
         }
 
         // We want foundProperties to reflect if properties have ever
         // been found.
-        foundProperties |= PropUtils.loadProperties(tmpProperties,
-                userHomeDirectory,
-                propsFileName);
+        foundProperties |= PropUtils.loadProperties(tmpProperties, userHomeDirectory, propsFileName);
         if (DEBUG) {
             logger.fine("***** Done with property search ****");
         }
 
         if (!foundProperties && !Environment.isApplet()) {
-            PropUtils.copyProperties(PropUtils.promptUserForProperties(),
-                    properties);
+            PropUtils.copyProperties(PropUtils.promptUserForProperties(), properties);
         }
 
         // Before we the user properties into the overall properties,
         // need to check for the include properties URLs, and load
         // those first.
-        includeProperties = getIncludeProperties(tmpProperties.getProperty(propertyPrefix
-                + includeProperty),
-                tmpProperties);
+        includeProperties = getIncludeProperties(tmpProperties.getProperty(propertyPrefix + includeProperty), tmpProperties);
         merge(includeProperties, "include file properties", userHomeDirectory);
 
         // Now, load the user home preferences last, since they take
@@ -449,9 +453,8 @@ public class PropertyHandler extends MapHandlerChild implements
         // Well, they used to take the highest precedence. Now, we
         // look for a localized property file, and write those
         // properties on top.
-        localizedProperties = getLocalizedProperties(tmpProperties.getProperty(propertyPrefix
-                + localizedProperty),
-                userHomeDirectory);
+        localizedProperties =
+                getLocalizedProperties(tmpProperties.getProperty(propertyPrefix + localizedProperty), userHomeDirectory);
         merge(localizedProperties, "localized properties", null);
 
         Environment.init(getProperties());
@@ -463,8 +466,7 @@ public class PropertyHandler extends MapHandlerChild implements
      * the openmap.properties file will be searched for in the classpath and in
      * the user home directory (if that isn't null as well).
      */
-    protected Properties getLocalizedProperties(String localizedPropertyFile,
-                                                String userHomeDirectory) {
+    protected Properties getLocalizedProperties(String localizedPropertyFile, String userHomeDirectory) {
         Properties props = null;
         if (localizedPropertyFile == null) {
             java.util.Locale loc = java.util.Locale.getDefault();
@@ -487,16 +489,13 @@ public class PropertyHandler extends MapHandlerChild implements
                 props = fetchProperties(propsURL);
             }
         } catch (MalformedURLException murle) {
-            logger.warning("PropertyHandler can't find localized property file: "
-                    + localizedPropertyFile);
+            logger.warning("PropertyHandler can't find localized property file: " + localizedPropertyFile);
             tryHomeDirectory = true;
         }
 
         if (tryHomeDirectory) {
             props = new Properties();
-            if (!PropUtils.loadProperties(props,
-                    userHomeDirectory,
-                    localizedPropertyFile)) {
+            if (!PropUtils.loadProperties(props, userHomeDirectory, localizedPropertyFile)) {
                 props = null;
             } else {
                 if (DEBUG) {
@@ -524,14 +523,12 @@ public class PropertyHandler extends MapHandlerChild implements
      * @param howString a string describing where the properties come from. Just
      *        used for debugging purposes, so passing in a null value is no big
      *        deal.
-     * @return the properties contained in this PropertyHandler.
      */
     protected void init(Properties props, String howString) {
 
         // Include properties noted in resources properties.
-        Properties includeProperties = getIncludeProperties(props.getProperty(getPropertyPrefix()
-                + includeProperty),
-                props);
+        String prefix = PropUtils.getScopedPropertyPrefix(getPropertyPrefix());
+        Properties includeProperties = getIncludeProperties(props.getProperty(prefix + includeProperty), props);
         merge(includeProperties, "include file properties", howString);
 
         if (!Environment.isApplet()) {
@@ -558,8 +555,7 @@ public class PropertyHandler extends MapHandlerChild implements
      *         the include files. If no include files are listed, the Properties
      *         object is empty, not null.
      */
-    protected Properties getIncludeProperties(String markerList,
-                                              Properties props) {
+    protected Properties getIncludeProperties(String markerList, Properties props) {
         Properties newProps = new Properties();
         Properties tmpProps = new Properties();
         Vector<String> includes = PropUtils.parseSpacedMarkers(markerList);
@@ -576,57 +572,41 @@ public class PropertyHandler extends MapHandlerChild implements
 
                 String include = props.getProperty(includeProperty);
                 if (logger.isLoggable(Level.FINER)) {
-                    logger.finer("checking " + includeProperty + ", getting: "
-                            + include);
+                    logger.finer("checking " + includeProperty + ", getting: " + include);
                 }
 
                 if (include == null) {
-                    logger.warning("PropertyHandler.getIncludeProperties(): Failed to locate include file \""
-                            + includeName
-                            + "\" with URL \""
-                            + includeProperty
-                            + "\"\n  Skipping include file \"" + include + "\"");
+                    logger.warning("PropertyHandler.getIncludeProperties(): Failed to locate include file \"" + includeName
+                            + "\" with URL \"" + includeProperty + "\"\n  Skipping include file \"" + include + "\"");
                     continue;
                 }
                 try {
                     tmpProps.clear();
                     // Open URL to read in properties
-                    URL tmpInclude = PropUtils.getResourceOrFileOrURL(null,
-                            include);
+                    URL tmpInclude = PropUtils.getResourceOrFileOrURL(null, include);
 
                     if (tmpInclude == null) {
-                        logger.fine("Can't locate URL trying to find included properties: "
-                                + include);
+                        logger.fine("Can't locate URL trying to find included properties: " + include);
                         continue;
                     }
 
                     InputStream is = tmpInclude.openStream();
                     tmpProps.load(is);
                     if (DEBUG) {
-                        logger.fine("PropertyHandler.getIncludeProperties(): located include properties file URL: "
-                                + include);
+                        logger.fine("PropertyHandler.getIncludeProperties(): located include properties file URL: " + include);
                     }
                     // Include properties noted in resources
                     // properties - a little recursive action,
                     // here.
-                    Properties includeProperties = getIncludeProperties(tmpProps.getProperty(includeProperty),
-                            tmpProps);
-                    merge(includeProperties,
-                            newProps,
-                            "include file properties",
-                            "within " + include);
+                    Properties includeProperties = getIncludeProperties(tmpProps.getProperty(includeProperty), tmpProps);
+                    merge(includeProperties, newProps, "include file properties", "within " + include);
 
-                    merge(tmpProps,
-                            newProps,
-                            "include file properties",
-                            include);
+                    merge(tmpProps, newProps, "include file properties", include);
 
                 } catch (MalformedURLException e) {
-                    logger.warning("malformed URL for include file: |"
-                            + include + "| for " + includeName);
+                    logger.warning("malformed URL for include file: |" + include + "| for " + includeName);
                 } catch (IOException ioe) {
-                    logger.warning("IOException processing " + include
-                            + "| for " + includeName);
+                    logger.warning("IOException processing " + include + "| for " + includeName);
                 }
             }
         } else {
@@ -686,8 +666,7 @@ public class PropertyHandler extends MapHandlerChild implements
      * @param what a description of what the from properties represent.
      * @param where a description of where the properties were read from.
      */
-    protected void merge(Properties from, Properties to, String what,
-                         String where) {
+    protected void merge(Properties from, Properties to, String what, String where) {
         if (!from.isEmpty()) {
 
             if (to == null) {
@@ -696,8 +675,7 @@ public class PropertyHandler extends MapHandlerChild implements
             PropUtils.copyProperties(from, to);
         } else {
             if (what != null && DEBUG) {
-                logger.fine("no " + what + " found"
-                        + (where == null ? "." : (" in " + where)));
+                logger.fine("no " + what + " found" + (where == null ? "." : (" in " + where)));
             }
         }
     }
@@ -792,9 +770,7 @@ public class PropertyHandler extends MapHandlerChild implements
 
         if (updateProgress) {
             try {
-                String internString = i18n.get(this.getClass(),
-                        "progressTitle",
-                        "Progress");
+                String internString = i18n.get(this.getClass(), "progressTitle", "Progress");
                 plg = new ProgressListenerGauge(internString);
                 plg.setWindowSupport(new WindowSupport(plg, new WindowSupport.Frm("", true)));
                 addProgressListener(plg);
@@ -817,8 +793,8 @@ public class PropertyHandler extends MapHandlerChild implements
             }
         }
 
-        String componentProperty = getPropertyPrefix()
-                + PropertyHandler.componentProperty;
+        String propPrefix = PropUtils.getScopedPropertyPrefix(getPropertyPrefix());
+        String componentProperty = propPrefix + PropertyHandler.componentProperty;
         Vector<String> componentList = PropUtils.parseSpacedMarkers(properties.getProperty(componentProperty));
 
         if (logger.isLoggable(Level.FINER)) {
@@ -826,15 +802,12 @@ public class PropertyHandler extends MapHandlerChild implements
         }
 
         if (updateProgress) {
-            fireProgressUpdate(ProgressEvent.START, i18n.get(this.getClass(),
-                    "creatingComponentsProgressMessage",
-                    "Creating Components"), 0, 100);
+            fireProgressUpdate(ProgressEvent.START,
+                               i18n.get(this.getClass(), "creatingComponentsProgressMessage", "Creating Components"), 0, 100);
         }
 
-        Vector components = ComponentFactory.create(componentList,
-                properties,
-                (updateProgress ? getProgressSupport() : null),
-                true);
+        Vector components =
+                ComponentFactory.create(componentList, properties, (updateProgress ? getProgressSupport() : null), true);
 
         size = components.size();
 
@@ -842,8 +815,7 @@ public class PropertyHandler extends MapHandlerChild implements
             Object obj = (Object) components.elementAt(i);
             try {
                 if (obj instanceof String) {
-                    logger.warning("finding out that the " + obj
-                            + " wasn't created");
+                    logger.warning("finding out that the " + obj + " wasn't created");
                     continue;
                 }
 
@@ -860,8 +832,7 @@ public class PropertyHandler extends MapHandlerChild implements
                 addUsedPrefix(markerName);
 
             } catch (MultipleSoloMapComponentException msmce) {
-                logger.warning("PropertyHandler.createComponents(): "
-                        + "tried to add multiple components of the same "
+                logger.warning("PropertyHandler.createComponents(): " + "tried to add multiple components of the same "
                         + "type when only one is allowed! - " + msmce);
             }
         }
@@ -870,9 +841,9 @@ public class PropertyHandler extends MapHandlerChild implements
         mapHandler.purgeLaterList();
 
         if (updateProgress) {
-            fireProgressUpdate(ProgressEvent.DONE, i18n.get(this.getClass(),
-                    "completedProgressMessage",
-                    "Created all components, ready..."), size, size);
+            fireProgressUpdate(ProgressEvent.DONE,
+                               i18n.get(this.getClass(), "completedProgressMessage", "Created all components, ready..."), size,
+                               size);
             removeProgressListener(plg);
         }
     }
@@ -882,7 +853,7 @@ public class PropertyHandler extends MapHandlerChild implements
         if (propertyPrefix == null) {
             propertyPrefix = Environment.OpenMapPrefix;
         }
-        propertyPrefix = PropUtils.getScopedPropertyPrefix(propertyPrefix);
+
         return propertyPrefix;
     }
 
@@ -903,8 +874,7 @@ public class PropertyHandler extends MapHandlerChild implements
      * @return Properties object containing everything written (or that would
      *         have been written, if the PrintStream is null) to PrintStream.
      */
-    public static Properties createOpenMapProperties(MapHandler mapHandler,
-                                                     PrintStream ps) {
+    public static Properties createOpenMapProperties(MapHandler mapHandler, PrintStream ps) {
 
         Properties createdProperties = new Properties();
 
@@ -958,8 +928,7 @@ public class PropertyHandler extends MapHandlerChild implements
         // if the MapBean and/or the LayerHandler are null, what's the
         // point?
         if (mapBean == null || layerHandler == null) {
-            logger.warning("no MapBean(" + mapBean + ") or LayerHandler("
-                    + layerHandler + ") to use to write properties");
+            logger.warning("no MapBean(" + mapBean + ") or LayerHandler(" + layerHandler + ") to use to write properties");
             return null;
         }
 
@@ -970,14 +939,8 @@ public class PropertyHandler extends MapHandlerChild implements
         ps.println("######################################");
 
         printMapProperties(mapBean, ps, createdProperties);
-        printComponentProperties(otherComponents,
-                propertyHandler,
-                ps,
-                createdProperties);
-        printLayerProperties(layerHandler,
-                propertyHandler,
-                ps,
-                createdProperties);
+        printComponentProperties(otherComponents, propertyHandler, ps, createdProperties);
+        printLayerProperties(layerHandler, propertyHandler, ps, createdProperties);
 
         if (logger.isLoggable(Level.FINE) && createdProperties != null) {
             System.out.println(createdProperties);
@@ -990,9 +953,7 @@ public class PropertyHandler extends MapHandlerChild implements
      * A simple helper method that writes key-value pairs to a print stream or
      * Properties, whatever is not null.
      */
-    protected static void printProperties(String key, String value,
-                                          PrintStream ps,
-                                          Properties createdProperties) {
+    protected static void printProperties(String key, String value, PrintStream ps, Properties createdProperties) {
         if (ps != null) {
             ps.println(key + "=" + value);
         }
@@ -1011,8 +972,7 @@ public class PropertyHandler extends MapHandlerChild implements
      * @param createdProperties Properties object to store properties in, may be
      *        null.
      */
-    protected static void printMapProperties(MapBean mapBean, PrintStream ps,
-                                             Properties createdProperties) {
+    protected static void printMapProperties(MapBean mapBean, PrintStream ps, Properties createdProperties) {
 
         // warning...hackish...
         com.bbn.openmap.proj.Proj proj = mapBean.projection;
@@ -1020,30 +980,15 @@ public class PropertyHandler extends MapHandlerChild implements
         ps.println("\n### OpenMap initial Map Settings ###");
         Point2D llp = proj.getCenter();
 
-        printProperties(Environment.Latitude,
-                Double.toString(llp.getY()),
-                ps,
-                createdProperties);
+        printProperties(Environment.Latitude, Double.toString(llp.getY()), ps, createdProperties);
 
-        printProperties(Environment.Longitude,
-                Double.toString(llp.getX()),
-                ps,
-                createdProperties);
+        printProperties(Environment.Longitude, Double.toString(llp.getX()), ps, createdProperties);
 
-        printProperties(Environment.Scale,
-                Float.toString(proj.getScale()),
-                ps,
-                createdProperties);
+        printProperties(Environment.Scale, Float.toString(proj.getScale()), ps, createdProperties);
 
-        printProperties(Environment.Projection,
-                proj.getName(),
-                ps,
-                createdProperties);
+        printProperties(Environment.Projection, proj.getName(), ps, createdProperties);
 
-        printProperties(Environment.BackgroundColor,
-                Integer.toHexString(mapBean.getBackground().getRGB()),
-                ps,
-                createdProperties);
+        printProperties(Environment.BackgroundColor, Integer.toHexString(mapBean.getBackground().getRGB()), ps, createdProperties);
 
         // Height and Width are in the OpenMapFrame properties, or
         // whatever other component contains everything.
@@ -1064,9 +1009,7 @@ public class PropertyHandler extends MapHandlerChild implements
      * @param createdProperties Properties object to store properties in, may be
      *        null.
      */
-    protected static void printComponentProperties(Vector components,
-                                                   PropertyHandler ph,
-                                                   PrintStream ps,
+    protected static void printComponentProperties(Vector components, PropertyHandler ph, PrintStream ps,
                                                    Properties createdProperties) {
 
         // this section looks at the components and trys to create
@@ -1087,8 +1030,8 @@ public class PropertyHandler extends MapHandlerChild implements
         String componentProperty = PropertyHandler.componentProperty;
         StringBuffer componentMarkerString = new StringBuffer(componentProperty).append("=");
         if (ph != null) {
-            componentProperty = ph.getPropertyPrefix()
-                    + PropertyHandler.componentProperty;
+            String phPrefix = PropUtils.getScopedPropertyPrefix(ph.getPropertyPrefix());
+            componentProperty = phPrefix + PropertyHandler.componentProperty;
             componentMarkerString = new StringBuffer(componentProperty).append("=");
         }
 
@@ -1104,13 +1047,10 @@ public class PropertyHandler extends MapHandlerChild implements
             Vector componentList = PropUtils.parseSpacedMarkers(phProps.getProperty(componentProperty));
 
             for (int i = 0; i < componentList.size(); i++) {
-                String markerNameClass = (String) componentList.elementAt(i)
-                        + ".class";
-                componentPropsString.append(markerNameClass).append("=")
-                        .append(phProps.get(markerNameClass)).append("\n");
+                String markerNameClass = (String) componentList.elementAt(i) + ".class";
+                componentPropsString.append(markerNameClass).append("=").append(phProps.get(markerNameClass)).append("\n");
                 if (createdProperties != null) {
-                    createdProperties.put(markerNameClass,
-                            phProps.get(markerNameClass));
+                    createdProperties.put(markerNameClass, phProps.get(markerNameClass));
                 }
             }
             componentListBuilt = true;
@@ -1131,15 +1071,13 @@ public class PropertyHandler extends MapHandlerChild implements
             someObj = comps.nextElement();
 
             if (someObj instanceof PropertyConsumer) {
-                logger.fine("Getting Property Info for"
-                        + someObj.getClass().getName());
+                logger.fine("Getting Property Info for" + someObj.getClass().getName());
 
                 PropertyConsumer pc = (PropertyConsumer) someObj;
                 componentProperties.clear();
                 markerName = pc.getPropertyPrefix();
 
-                if (ph != null && markerName != null
-                        && !markerName.equals("openmap")) {
+                if (ph != null && markerName != null && !markerName.equals("openmap")) {
                     // Gets the properties for the prefix that the
                     // property handler was set with. This should
                     // handle components that aren't good
@@ -1158,12 +1096,10 @@ public class PropertyHandler extends MapHandlerChild implements
                         pc.setPropertyPrefix(markerName);
                     }
 
-                    componentPropsString.append(markerName).append(".class=")
-                            .append(someObj.getClass().getName()).append("\n");
+                    componentPropsString.append(markerName).append(".class=").append(someObj.getClass().getName()).append("\n");
 
                     if (createdProperties != null) {
-                        createdProperties.put(markerName, someObj.getClass()
-                                .getName());
+                        createdProperties.put(markerName, someObj.getClass().getName());
                     }
                 }
 
@@ -1178,8 +1114,7 @@ public class PropertyHandler extends MapHandlerChild implements
                         String value = componentProperties.getProperty(key);
 
                         if (value != null) {
-                            componentPropsString.append(key).append("=")
-                                    .append(value).append("\n");
+                            componentPropsString.append(key).append("=").append(value).append("\n");
                         }
 
                         if (createdProperties != null && value != null) {
@@ -1190,11 +1125,9 @@ public class PropertyHandler extends MapHandlerChild implements
             } else if (!componentListBuilt) {
                 markerName = "component" + (numComponents++);
                 componentMarkerString.append(" ").append(markerName);
-                componentPropsString.append(markerName).append(".class=")
-                       .append(someObj.getClass().getName()).append("\n");
+                componentPropsString.append(markerName).append(".class=").append(someObj.getClass().getName()).append("\n");
                 if (createdProperties != null) {
-                    createdProperties.put(markerName, someObj.getClass()
-                            .getName());
+                    createdProperties.put(markerName, someObj.getClass().getName());
                 }
             }
         }
@@ -1211,7 +1144,7 @@ public class PropertyHandler extends MapHandlerChild implements
 
         if (createdProperties != null) {
             createdProperties.put(PropertyHandler.componentProperty,
-                    componentMarkerString.substring(PropertyHandler.componentProperty.length() + 1));
+                                  componentMarkerString.substring(PropertyHandler.componentProperty.length() + 1));
         }
     }
 
@@ -1230,9 +1163,7 @@ public class PropertyHandler extends MapHandlerChild implements
      * @param createdProperties Properties object to store properties in, may be
      *        null.
      */
-    protected static void printLayerProperties(LayerHandler layerHandler,
-                                               PropertyHandler ph,
-                                               PrintStream ps,
+    protected static void printLayerProperties(LayerHandler layerHandler, PropertyHandler ph, PrintStream ps,
                                                Properties createdProperties) {
 
         // Keep track of the LayerHandler. Use it to get the layers,
@@ -1243,13 +1174,11 @@ public class PropertyHandler extends MapHandlerChild implements
         // PropertyConsumers.
         String markerName;
 
-        String layerMarkerStringKey = Environment.OpenMapPrefix + "."
-                + LayerHandler.layersProperty;
+        String layerMarkerStringKey = Environment.OpenMapPrefix + "." + LayerHandler.layersProperty;
 
         StringBuffer layerMarkerString = new StringBuffer(layerMarkerStringKey).append("=");
 
-        String startUpLayerMarkerStringKey = Environment.OpenMapPrefix + "."
-                + LayerHandler.startUpLayersProperty;
+        String startUpLayerMarkerStringKey = Environment.OpenMapPrefix + "." + LayerHandler.startUpLayersProperty;
 
         StringBuffer startUpLayerMarkerString = new StringBuffer(startUpLayerMarkerStringKey).append("=");
 
@@ -1286,8 +1215,7 @@ public class PropertyHandler extends MapHandlerChild implements
             }
 
             layers[i].getProperties(layerProperties);
-            layerPropertiesString.append("### -").append(markerName)
-                    .append("- layer properties\n");
+            layerPropertiesString.append("### -").append(markerName).append("- layer properties\n");
 
             TreeMap orderedProperties = new TreeMap(layerProperties);
             for (Iterator keys = orderedProperties.keySet().iterator(); keys.hasNext();) {
@@ -1298,8 +1226,7 @@ public class PropertyHandler extends MapHandlerChild implements
                 String value = layerProperties.getProperty(key);
 
                 if (value != null) {
-                    layerPropertiesString.append(key).append("=")
-                            .append(value).append("\n");
+                    layerPropertiesString.append(key).append("=").append(value).append("\n");
                 }
 
                 if (createdProperties != null && value != null) {
@@ -1307,8 +1234,7 @@ public class PropertyHandler extends MapHandlerChild implements
                 }
             }
 
-            layerPropertiesString.append("### end of -").append(markerName)
-                    .append("- properties\n\n");
+            layerPropertiesString.append("### end of -").append(markerName).append("- properties\n\n");
         }
 
         if (ps != null) {
@@ -1319,10 +1245,9 @@ public class PropertyHandler extends MapHandlerChild implements
         }
 
         if (createdProperties != null) {
-            createdProperties.put(layerMarkerStringKey,
-                    layerMarkerString.substring(layerMarkerStringKey.length() + 1));
+            createdProperties.put(layerMarkerStringKey, layerMarkerString.substring(layerMarkerStringKey.length() + 1));
             createdProperties.put(startUpLayerMarkerStringKey,
-                    startUpLayerMarkerString.substring(startUpLayerMarkerStringKey.length() + 1));
+                                  startUpLayerMarkerString.substring(startUpLayerMarkerStringKey.length() + 1));
         }
     }
 
@@ -1351,10 +1276,9 @@ public class PropertyHandler extends MapHandlerChild implements
         }
 
         if (mapBean != null) {
-            mapBean.setProjection(mapBean.getProjectionFactory()
-                    .getDefaultProjectionFromEnvironment(Environment.getInstance(),
-                            mapBean.getWidth(),
-                            mapBean.getHeight()));
+            mapBean.setProjection(mapBean.getProjectionFactory().getDefaultProjectionFromEnvironment(Environment.getInstance(),
+                                                                                                     mapBean.getWidth(),
+                                                                                                     mapBean.getHeight()));
         } else {
             logger.warning("Can't load new projection - can't find MapBean");
         }
@@ -1448,19 +1372,12 @@ public class PropertyHandler extends MapHandlerChild implements
      * @param frameNumber the current frame count
      * @param totalFrames the total number of frames.
      */
-    protected void fireProgressUpdate(int type, String task, int frameNumber,
-                                      int totalFrames) {
+    protected void fireProgressUpdate(int type, String task, int frameNumber, int totalFrames) {
         if (updateProgress) {
-            getProgressSupport().fireUpdate(type,
-                    task,
-                    totalFrames,
-                    frameNumber);
+            getProgressSupport().fireUpdate(type, task, totalFrames, frameNumber);
         } else if (type == ProgressEvent.DONE) {
             // At least turn off progress listeners if they are up.
-            getProgressSupport().fireUpdate(ProgressEvent.DONE,
-                    task,
-                    totalFrames,
-                    frameNumber);
+            getProgressSupport().fireUpdate(ProgressEvent.DONE, task, totalFrames, frameNumber);
         }
     }
 
@@ -1512,7 +1429,8 @@ public class PropertyHandler extends MapHandlerChild implements
      * 
      * @throws MalformedURLException if propFile doesn't resolve properly.
      */
-    public void addProperties(String propFile) throws MalformedURLException {
+    public void addProperties(String propFile)
+            throws MalformedURLException {
         addProperties(fetchProperties(PropUtils.getResourceOrFileOrURL(propFile)));
     }
 
@@ -1524,9 +1442,10 @@ public class PropertyHandler extends MapHandlerChild implements
      */
     public void addProperties(Properties p) {
         String[] specialProps = new String[] {
-                Environment.OpenMapPrefix + "." + LayerHandler.layersProperty,
-                Environment.OpenMapPrefix + "."
-                        + LayerHandler.startUpLayersProperty, componentProperty };
+            Environment.OpenMapPrefix + "." + LayerHandler.layersProperty,
+            Environment.OpenMapPrefix + "." + LayerHandler.startUpLayersProperty,
+            componentProperty
+        };
 
         Properties tmp = new Properties();
         tmp.putAll(p);
@@ -1610,8 +1529,7 @@ public class PropertyHandler extends MapHandlerChild implements
                 p.load(is);
                 is.close();
             } catch (IOException e) {
-                logger.warning("Exception reading map properties at "
-                        + propsURL + ": " + e);
+                logger.warning("Exception reading map properties at " + propsURL + ": " + e);
             }
         }
         return p;
@@ -1651,6 +1569,117 @@ public class PropertyHandler extends MapHandlerChild implements
         }
         if (usedPrefixes != null) {
             usedPrefixes.clear();
+        }
+    }
+
+    /**
+     * 
+     * This Builder class lets you have more control over how a PropertyHandler
+     * is constructed. If a properties file location or a properties file is not
+     * provided, the PropertyHandler will look for an "openmap.properties" file
+     * in the classpath, config directory or user home directory. If you don't
+     * want the PropertyHandler to search for a properties file, set an empty
+     * Properties object in the Builder.
+     * 
+     * @author ddietrick
+     */
+    public static class Builder {
+
+        protected boolean update = false;
+        protected Properties properties = null;
+        protected String propertyPrefix = null;
+
+        public Builder() {
+        }
+
+        /**
+         * Have the builder look for a resource, file or URL at the location.
+         * 
+         * @param location of the properties file
+         * @return this Builder, so settings can be stacked.
+         * @throws MalformedURLException
+         * @throws IOException
+         */
+        public Builder setPropertiesFile(String location)
+                throws MalformedURLException, IOException {
+            if (location != null) {
+                this.properties = createProperties(PropUtils.getResourceOrFileOrURL(location));
+            }
+            return this;
+        }
+
+        /**
+         * Have the builder look for properties file at URL location.
+         * 
+         * @param url
+         * @return this Builder for stacking.
+         * @throws IOException
+         */
+        public Builder setPropertiesFile(URL url)
+                throws IOException {
+            if (url != null) {
+                this.properties = createProperties(url);
+            }
+            return this;
+        }
+
+        /**
+         * Have the builder use the provided properties.
+         * 
+         * @param props Properties to use.
+         * @return this Builder for stacking
+         */
+        public Builder setProperties(Properties props) {
+            this.properties = props;
+            return this;
+        }
+
+        /**
+         * Set the property prefix used for general settings in the properties
+         * in configuration of application. If not set "openmap" will be used as
+         * the default.
+         * 
+         * @param prefix
+         * @return
+         */
+        public Builder setPropertyPrefix(String prefix) {
+            this.propertyPrefix = prefix;
+            return this;
+        }
+
+        /**
+         * 
+         * @param update
+         * @return
+         */
+        public Builder setProgressUpdates(boolean update) {
+            this.update = update;
+            return this;
+        }
+
+        /**
+         * Reads the file at the given location and creates a Properties file
+         * from the contents.
+         * 
+         * @param location URL of file
+         * @return Properties
+         * @throws IOException if something goes wrong reading the file.
+         */
+        protected Properties createProperties(URL location)
+                throws IOException {
+            InputStream is = null;
+
+            if (location != null) {
+                // Open URL to read in properties
+                is = location.openStream();
+            }
+
+            Properties tmpProperties = new Properties();
+            if (is != null) {
+                tmpProperties.load(is);
+            }
+
+            return tmpProperties;
         }
     }
 }

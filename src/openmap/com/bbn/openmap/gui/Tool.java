@@ -59,7 +59,7 @@ public interface Tool {
      * Set the orientation for the GUI of the Tool, SwingConstants.HORIZONTAL or
      * SwingConstants.VERTICAL.
      * 
-     * @param orientation
+     * @param orientation that should be set on tool.
      */
     public void setOrientation(int orientation);
 
@@ -67,7 +67,7 @@ public interface Tool {
      * Set the orientation for the GUI of the Tool, SwingConstants.HORIZONTAL or
      * SwingConstants.VERTICAL.
      * 
-     * @param orientation
+     * @return orientation that is set on tool
      */
     public int getOrientation();
 }

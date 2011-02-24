@@ -56,13 +56,8 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
     }
 
     protected OMGeo(GeoExtent ge) {
-        this(ge, LINETYPE_GREATCIRCLE);
-    }
-
-    protected OMGeo(GeoExtent ge, int lineType) {
         this();
         setExtent(ge);
-        setLineType(lineType);
     }
 
     public GeoExtent getExtent() {
@@ -176,12 +171,8 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
             super(gs);
         }
 
-        public Line(GeoSegment gs, int lineType) {
-            super(gs, lineType);
-        }
-
-        public Line(Geo[] gs, int lineType) {
-            super(new GeoSegment.Impl(gs), lineType);
+        public Line(Geo[] gs) {
+            super(new GeoSegment.Impl(gs));
         }
 
         public Geo[] getGeoArray() {
@@ -254,18 +245,14 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
             super(gp);
         }
 
-        public Polyline(GeoPath gp, int lineType) {
-            super(gp, lineType);
+        public Polyline(Geo[] gs) {
+            super(new GeoPath.Impl(gs));
         }
-
-        public Polyline(Geo[] gs, int lineType) {
-            super(new GeoPath.Impl(gs), lineType);
-        }
-
-//        public Geo[] toGeoArray() {
-//            return ((GeoPath) getExtent()).getPoints().toPointArray();
-//        }
         
+        public Polyline(GeoArray points) {
+            super(new GeoPath.Impl(points));
+        }
+
         public GeoArray getPoints() {
             return ((GeoPath) getExtent()).getPoints();
         }
@@ -359,10 +346,6 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
         public SegmentIterator segmentIterator() {
             return ((GeoPath) getExtent()).segmentIterator();
         }
-
-//        public Geo[] toPointArray() {
-//            return ((GeoPath) getExtent()).getPoints().toPointArray();
-//        }
     }
 
     public static class Polygon extends Polyline implements GeoRegion {
@@ -371,12 +354,12 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
             super(gp);
         }
 
-        public Polygon(GeoPath gp, int lineType) {
-            super(gp, lineType);
+        public Polygon(Geo[] gs) {
+            super(new GeoRegion.Impl(gs));
         }
-
-        public Polygon(Geo[] gs, int lineType) {
-            super(new GeoRegion.Impl(gs), lineType);
+        
+        public Polygon(GeoArray points) {
+            super(new GeoRegion.Impl(points));
         }
 
         public boolean isPointInside(Geo point) {

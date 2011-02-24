@@ -715,7 +715,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
      * @param x x coordinate
      * @param y y coordinate
      * @return float distance
-     * @see #findClosest(int, int, float)
+     * @see #findClosest(double, double, float)
      */
     public float distance(double x, double y) {
         return findClosest(x, y, Float.MAX_VALUE, false).d;
@@ -1049,7 +1049,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
      * @param y the vertical pixel position of the window, from the top of the
      *        window.
      * @return the closest graphic to the xy window point.
-     * @see #findClosest(int, int, float)
+     * @see #findClosest(double, double, float)
      */
     public T findClosest(int x, int y) {
         return findClosest(x, y, Float.MAX_VALUE);

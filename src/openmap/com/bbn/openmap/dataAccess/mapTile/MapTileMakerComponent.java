@@ -484,7 +484,7 @@ public class MapTileMakerComponent
     * undefined at this point.
     * 
     * @param omg EditableOMGraphic in an undefiend state.
-    * @return
+    * @return OMGraphic created for drawing tool.
     */
    protected OMGraphic create(EditableOMGraphic omg) {
 
@@ -643,8 +643,8 @@ public class MapTileMakerComponent
 
       /**
        * @param frame
-       * @param object
-       * @param string
+       * @param locationComp
+       * @param title
        * @param mapTileMakerComponent
        */
       public ConfirmationDialog(Frame frame, Component locationComp, String title, MapTileMakerComponent mapTileMakerComponent) {

@@ -20,6 +20,7 @@ package com.bbn.openmap.layer.location;
 /*  Java Core  */
 import java.awt.Color;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -51,6 +52,8 @@ import com.bbn.openmap.util.PropUtils;
  */
 public abstract class AbstractLocationHandler implements LocationHandler {
 
+    protected static Logger logger = Logger.getLogger("com.bbn.openmap.layer.location.LocationHandler");
+    
     /** The parent layer. */
     protected LocationLayer zLayer;
 
@@ -100,17 +103,6 @@ public abstract class AbstractLocationHandler implements LocationHandler {
         // } catch (NumberFormatException nfe) {
         // }
     }
-
-    /**
-     * The location layer passes a LocationPopupMenu to the handler when on of
-     * its locations has been clicked on. This is an opportunity for the handler
-     * to add options to the menu that can bring up further information about
-     * the location, or to change the appearance of the location. This
-     * implementation makes no changes to the popup menu.
-     * 
-     * @param lpm LocationPopupMenu to add buttons to.
-     */
-    public void fillLocationPopUpMenu(LocationPopupMenu lpm) {}
 
     /**
      * Set the layer the handler is responding to. This is needed in case the

@@ -51,16 +51,18 @@ import com.bbn.openmap.util.Debug;
  * ImageServer, get a Graphics from the formatter, paint the map into it, then
  * retrieve the image bytes after that.
  */
-public abstract class AbstractImageFormatter implements ImageFormatter,
-        PropertyConsumer, PropertyChangeListener {
+public abstract class AbstractImageFormatter
+        implements ImageFormatter, PropertyConsumer, PropertyChangeListener {
 
     protected BufferedImage bufferedImage;
     protected String propertiesPrefix;
 
-    public AbstractImageFormatter() {}
+    public AbstractImageFormatter() {
+    }
 
     /** Set the properties of the image formatter. */
-    public void setProperties(String prefix, Properties props) {}
+    public void setProperties(String prefix, Properties props) {
+    }
 
     /**
      * Convert a BufferedImage to a image file format...
@@ -79,24 +81,24 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
      *         properties set.
      */
     public abstract ImageFormatter makeClone();
-    
-    /**
-	 * Return true if the image format support fully transparent pixels. The
-	 * returned value represent the capability of the image format, not the
-	 * current color model.
-	 * 
-	 * @return
-	 */
-	protected abstract boolean imageFormatSupportTransparentPixel();
 
-	/**
-	 * Return true if the image format support alpha channel. The returned value
-	 * represent the capability of the image format, not the current color
-	 * model.
-	 * 
-	 * @return
-	 */
-	protected abstract boolean imageFormatSupportAlphaChannel();
+    /**
+     * Return true if the image format support fully transparent pixels. The
+     * returned value represent the capability of the image format, not the
+     * current color model.
+     * 
+     * @return true of transparent pixels supported
+     */
+    protected abstract boolean imageFormatSupportTransparentPixel();
+
+    /**
+     * Return true if the image format support alpha channel. The returned value
+     * represent the capability of the image format, not the current color
+     * model.
+     * 
+     * @return true if alpha supported
+     */
+    protected abstract boolean imageFormatSupportAlphaChannel();
 
     /**
      * Take a MapBean, and get the image bytes that represent the current state.
@@ -129,8 +131,7 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
      * @param scaleImage true to resize image based on scale
      * @return byte[] representing an image of the map in it's current state.
      */
-    public byte[] getImageFromMapBean(MapBean map, int width, int height,
-                                      boolean scaleImage) {
+    public byte[] getImageFromMapBean(MapBean map, int width, int height, boolean scaleImage) {
         if (map == null) {
             return new byte[0];
         }
@@ -140,8 +141,7 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
         boolean needToScale = (width != proj.getWidth() || height != proj.getHeight());
 
         if (Debug.debugging("formatter")) {
-            Debug.output("AIF: called with w:" + width + ", h:" + height
-                    + ", need to scale (" + needToScale + ")"
+            Debug.output("AIF: called with w:" + width + ", h:" + height + ", need to scale (" + needToScale + ")"
                     + " and scaleImage (" + scaleImage + ")");
         }
 
@@ -177,21 +177,16 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
             // figure out the scale factor.
             if (scaleImage) {
                 if (Debug.debugging("formatter")) {
-                    Debug.output("AIF: scaling image to w:" + width + ", h:"
-                            + height);
+                    Debug.output("AIF: scaling image to w:" + width + ", h:" + height);
                 }
-                double area1 = (double) proj.getHeight()
-                        * (double) proj.getWidth();
+                double area1 = (double) proj.getHeight() * (double) proj.getWidth();
                 double area2 = (double) height * (double) width;
                 scaleMod = Math.sqrt(area1 / area2);
             }
 
-            Proj tp = (Proj) map.getProjectionFactory()
-                    .makeProjection(map.getProjection().getClass(),
-                            cp,
-                            map.getScale() * (float) scaleMod,
-                            width,
-                            height);
+            Proj tp =
+                    (Proj) map.getProjectionFactory().makeProjection(map.getProjection().getClass(), cp,
+                                                                     map.getScale() * (float) scaleMod, width, height);
 
             tp.drawBackground((Graphics2D) graphics, map.getBckgrnd());
 
@@ -200,8 +195,7 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
                     Projection oldProj = layers[i].getProjection();
                     layers[i].renderDataForProjection(tp, graphics);
                     if (Debug.debugging("formatter")) {
-                        Debug.output("AbstractImageFormatter: rendering "
-                                + layers[i].getName());
+                        Debug.output("AbstractImageFormatter: rendering " + layers[i].getName());
                     }
                     // Need to set the old Projection object on the
                     // Layer, not the current MapBean Proj object. If
@@ -256,15 +250,14 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
     public Graphics getGraphics(int width, int height) {
         return getGraphics(width, height, BufferedImage.TYPE_INT_RGB);
     }
-    
+
     public java.awt.Graphics getGraphics(int width, int height, boolean alpha) {
-		int imageFormat = BufferedImage.TYPE_INT_RGB;
-		if (alpha
-				&& (imageFormatSupportAlphaChannel() || imageFormatSupportTransparentPixel())) {
-			imageFormat = BufferedImage.TYPE_INT_ARGB;
-		}
-		return getGraphics(width, height, imageFormat);
-	}
+        int imageFormat = BufferedImage.TYPE_INT_RGB;
+        if (alpha && (imageFormatSupportAlphaChannel() || imageFormatSupportTransparentPixel())) {
+            imageFormat = BufferedImage.TYPE_INT_ARGB;
+        }
+        return getGraphics(width, height, imageFormat);
+    }
 
     /**
      * Return the applicable Graphics to use to paint the layers into. If the
@@ -315,21 +308,17 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
      * @param scaledHeight the desired pixel height of the image.
      * @return the scaled BufferedImage.
      */
-    public BufferedImage getScaledBufferedImage(int scaledWidth,
-                                                int scaledHeight) {
+    public BufferedImage getScaledBufferedImage(int scaledWidth, int scaledHeight) {
 
         if (bufferedImage == null) {
             return null;
         }
 
         if (Debug.debugging("formatter")) {
-            Debug.output("Formatter: scaling image to : " + scaledWidth + ", "
-                    + scaledHeight);
+            Debug.output("Formatter: scaling image to : " + scaledWidth + ", " + scaledHeight);
         }
 
-        java.awt.Image image = ImageScaler.getOptimalScalingImage(bufferedImage,
-                scaledWidth,
-                scaledHeight);
+        java.awt.Image image = ImageScaler.getOptimalScalingImage(bufferedImage, scaledWidth, scaledHeight);
 
         if (Debug.debugging("formatter")) {
             Debug.output("Formatter: creating scaled image...");
@@ -337,19 +326,14 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
 
         try {
 
-            BufferedImage buffi = BufferedImageHelper.getBufferedImage(image,
-                    0,
-                    0,
-                    -1,
-                    -1);
+            BufferedImage buffi = BufferedImageHelper.getBufferedImage(image, 0, 0, -1, -1);
 
             // Do this here, in case something bad happens in the
             // buffered image creation, so at least the original image
             // is retained.
             bufferedImage = buffi;
         } catch (InterruptedException ie) {
-            Debug.error("Formatter: Something bad happened during scaling! \n"
-                    + ie);
+            Debug.error("Formatter: Something bad happened during scaling! \n" + ie);
         }
 
         if (Debug.debugging("formatter")) {
@@ -369,8 +353,7 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
         if (bi == null) {
             return new byte[0];
         } else {
-            Debug.message("formatter",
-                    "Formatter: creating formatted image bytes...");
+            Debug.message("formatter", "Formatter: creating formatted image bytes...");
             return formatImage(bi);
         }
     }
@@ -388,8 +371,7 @@ public abstract class AbstractImageFormatter implements ImageFormatter,
         if (bi == null) {
             return new byte[0];
         } else {
-            Debug.message("formatter",
-                    "Formatter: creating formatted image bytes...");
+            Debug.message("formatter", "Formatter: creating formatted image bytes...");
             return formatImage(bi);
         }
     }

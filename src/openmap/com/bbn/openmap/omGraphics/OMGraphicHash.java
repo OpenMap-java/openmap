@@ -30,7 +30,8 @@ import java.util.Map;
  * @see com.bbn.openmap.omGraphics.OMGraphicList
  * @author David J. Ward
  */
-public class OMGraphicHash extends OMGraphicList {
+public class OMGraphicHash
+        extends OMGraphicList {
 
     private HashMap<Object, OMGraphic> graphicHash = new HashMap<Object, OMGraphic>();
 
@@ -64,7 +65,7 @@ public class OMGraphicHash extends OMGraphicList {
      * key.equals(k))</tt>, then this method returns <tt>v</tt>; otherwise it
      * returns <tt>null</tt>. (There can be at most one such mapping.)
      * 
-     * @param key key whose associated value is to be returned.
+     * @param obj key whose associated value is to be returned.
      * @return the value to which this map maps the specified key, or
      *         <tt>null</tt> if the map contains no mapping for this key.
      * 
@@ -86,7 +87,7 @@ public class OMGraphicHash extends OMGraphicList {
      * <tt>(key==null ? k==null : key.equals(k))</tt>. (There can be at most one
      * such mapping.)
      * 
-     * @param key key whose presence in this map is to be tested.
+     * @param obj key whose presence in this map is to be tested.
      * @return <tt>true</tt> if this map contains a mapping for the specified
      *         key.
      * 
@@ -107,7 +108,7 @@ public class OMGraphicHash extends OMGraphicList {
      * probably require time linear in the map size for most implementations of
      * the <tt>Map</tt> interface.
      * 
-     * @param value value whose presence in this map is to be tested.
+     * @param obj value whose presence in this map is to be tested.
      * @return <tt>true</tt> if this map maps one or more keys to the specified
      *         value.
      * @throws ClassCastException if the value is of an inappropriate type for
@@ -121,7 +122,7 @@ public class OMGraphicHash extends OMGraphicList {
 
     /**
      * Returns a set view of the mappings contained in this map. Each element in
-     * the returned set is a {@link Map.Entry}. The set is backed by the map, so
+     * the returned set is a {@link java.util.Map.Entry}. The set is backed by the map, so
      * changes to the map are reflected in the set, and vice-versa. If the map
      * is modified while an iteration over the set is in progress (except
      * through the iterator's own <tt>remove</tt> operation, or through the
@@ -164,7 +165,7 @@ public class OMGraphicHash extends OMGraphicList {
      * .))
      * 
      * @param key key with which the specified value is to be associated.
-     * @param value value to be associated with the specified key.
+     * @param graphic value to be associated with the specified key.
      * @return previous value associated with specified key, or <tt>null</tt> if
      *         there was no mapping for key. A <tt>null</tt> return can also
      *         indicate that the map previously associated <tt>null</tt> with
@@ -213,12 +214,12 @@ public class OMGraphicHash extends OMGraphicList {
     /**
      * Copies all of the mappings from the specified map to this map (optional
      * operation). The effect of this call is equivalent to that of calling
-     * {@link #put(Object,Object) put(k, v)} on this map once for each mapping
-     * from key <tt>k</tt> to value <tt>v</tt> in the specified map. The
+     * {@link #put(Object,OMGraphic) put(k, v)} on this map once for each
+     * mapping from key <tt>k</tt> to value <tt>v</tt> in the specified map. The
      * behavior of this operation is unspecified if the specified map is
      * modified while the operation is in progress.
      * 
-     * @param t Mappings to be stored in this map.
+     * @param map Mappings to be stored in this map.
      * 
      * @throws UnsupportedOperationException if the <tt>putAll</tt> method is
      *         not supported by this map.

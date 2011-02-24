@@ -28,8 +28,11 @@ import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.awt.Toolkit;
 import java.net.URL;
-import java.util.Properties;
 import java.util.Collection;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.border.BevelBorder;
@@ -44,6 +47,7 @@ import com.bbn.openmap.gui.menu.MenuList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * The BasicMapPanel is a MapPanel and OMComponentPanel that is the heart of the
@@ -60,13 +64,26 @@ import com.bbn.openmap.util.Debug;
  * (BorderLayout.NORTH, BorderLayout.SOUTH, BorderLayout.EAST,
  * BorderLayout.WEST). If you extend this component, though, other components
  * could be found via that same findAndInit method.
+ * <p>
+ * If a property prefix is set on this MapPanel, that property prefix can be
+ * used to designate MapPanelChild objects for this MapPanel. The setName
+ * variable should be set to true, and the children's parent name should match
+ * whatever property prefix is given to the panel.
+ * 
  */
-public class BasicMapPanel extends OMComponentPanel implements MapPanel {
+public class BasicMapPanel
+        extends OMComponentPanel
+        implements MapPanel {
+
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.MapPanel");
+
+    public final static String SET_NAME_PROPERTY = "setName";
 
     protected MapHandler mapHandler;
     protected MapBean mapBean;
     protected PropertyHandler propertyHandler;
     protected MenuList menuList;
+    protected boolean setName = false;
 
     /**
      * Creates an empty MapPanel that creates its own empty PropertyHandler. The
@@ -109,7 +126,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     public BasicMapPanel(PropertyHandler propertyHandler, boolean delayCreation) {
         MapHandler mh = getMapHandler();
         mh.add(this);
-        
+
         setPropertyHandler(propertyHandler);
         if (!delayCreation) {
             create();
@@ -117,19 +134,20 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     }
 
     /**
-     * Sets the properties in the PropertyHandler managed by this BasicMapPanel,
-     * and then calls create() so those properties affect the creation of the
-     * BasicMapPanel. This method is intended to be called if the BasicMapPanel
-     * is listed as a component and created by the ComponentFactory. The
-     * standard OpenMap app uses one of the constructors that takes a
-     * PropertyHandler, and then calls create() when it's appropriate to do so.
+     * Sets the properties in the PropertyHandler managed by this BasicMapPanel.
+     * This method is intended to be called when the PropertyHandler is set on
+     * the panel, in order for configuration parameters to be set on this panel
+     * before configuration.
+     * 
+     * @param prefix property prefix for scoping properties for this panel
+     * @param props the properties to search for properties in.
      */
     public void setProperties(String prefix, Properties props) {
-        super.setProperties(prefix, props);
-        PropertyHandler propHandler = getPropertyHandler();
-        propHandler.setPropertyPrefix(prefix);
-        propHandler.setProperties(props);
-        create();
+        String scopedPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+        setSetName(PropUtils.booleanFromProperties(props, scopedPrefix + SET_NAME_PROPERTY, isSetName()));
+        if (isSetName()) {
+            super.setProperties(prefix, props);
+        }
     }
 
     /**
@@ -188,14 +206,13 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
         Object obj = mh.get(com.bbn.openmap.proj.ProjectionFactory.class);
         if (obj == null) {
             Debug.message("basic",
-                    "BasicMapPanel adding ProjectionFactory and projections to MapHandler since there are none to be found.");
+                          "BasicMapPanel adding ProjectionFactory and projections to MapHandler since there are none to be found.");
             mh.add(ProjectionFactory.loadDefaultProjections());
         }
 
         // Environment will only get loaded after the property file is
         // read.
-        mb.setProjection(mb.getProjectionFactory()
-                .getDefaultProjectionFromEnvironment(Environment.getInstance()));
+        mb.setProjection(mb.getProjectionFactory().getDefaultProjectionFromEnvironment(Environment.getInstance()));
         mb.setBckgrnd(Environment.getCustomBackgroundColor());
     }
 
@@ -256,6 +273,8 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
         propertyHandler = handler;
         if (handler != null) {
             getMapHandler().add(handler);
+
+            setProperties(handler.getPropertyPrefix(), handler.getProperties());
         }
     }
 
@@ -358,18 +377,23 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 
             String parentName = ((MapPanelChild) someObj).getParentName();
             String myName = getPropertyPrefix();
-            boolean makeMyChild = (myName != null && parentName != null && myName.equalsIgnoreCase(parentName))
-                    || (myName == null && parentName == null);
+            boolean makeMyChild =
+                    (myName != null && parentName != null && myName.equalsIgnoreCase(parentName))
+                            || (myName == null && parentName == null);
 
             if (makeMyChild) {
 
                 if (Debug.debugging("basic")) {
-                    Debug.output("MapPanel: adding "
-                            + someObj.getClass().getName());
+                    Debug.output("MapPanel: adding " + someObj.getClass().getName());
                 }
                 MapPanelChild mpc = (MapPanelChild) someObj;
                 addMapPanelChild(mpc);
                 invalidate();
+            } else {
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("MapPanel with name: " + myName + " not adding child (" + someObj.getClass().getName()
+                            + ") looking for: " + parentName);
+                }
             }
         }
 
@@ -392,8 +416,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     public void findAndUndo(Object someObj) {
         if (someObj instanceof MapPanelChild && someObj instanceof Component) {
             if (Debug.debugging("basic")) {
-                Debug.output("MapPanel: removing "
-                        + someObj.getClass().getName());
+                Debug.output("MapPanel: removing " + someObj.getClass().getName());
             }
             remove((Component) someObj);
             invalidate();
@@ -426,10 +449,8 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      * for the MapBean.
      */
     public static MapBean createMapBean() {
-        int envWidth = Environment.getInteger(Environment.Width,
-                MapBean.DEFAULT_WIDTH);
-        int envHeight = Environment.getInteger(Environment.Height,
-                MapBean.DEFAULT_HEIGHT);
+        int envWidth = Environment.getInteger(Environment.Width, MapBean.DEFAULT_WIDTH);
+        int envHeight = Environment.getInteger(Environment.Height, MapBean.DEFAULT_HEIGHT);
 
         if (envWidth <= 0 || envHeight <= 0) {
             Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -444,8 +465,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
         Projection proj = new ProjectionFactory().getDefaultProjectionFromEnvironment(Environment.getInstance());
 
         if (Debug.debugging("mappanel")) {
-            Debug.output("MapPanel: creating MapBean with initial projection "
-                    + proj);
+            Debug.output("MapPanel: creating MapBean with initial projection " + proj);
         }
 
         return createMapBean(proj, new BevelBorder(BevelBorder.LOWERED));
@@ -553,5 +573,23 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      */
     public void prependProperty(String property, String value) {
         getPropertyHandler().prependProperty(property, value);
+    }
+
+    /**
+     * @return the setName setting, whether the property prefix will be set on
+     *         the MapPanel when setProperties is called.
+     */
+    public boolean isSetName() {
+        return setName;
+    }
+
+    /**
+     * @param setName whether the property prefix provided in setProperties will
+     *        be set on the MapPanel. If it is, then when MapPanelChild objects
+     *        are found in the MapHandler, they will only be added if the names
+     *        match.
+     */
+    public void setSetName(boolean setName) {
+        this.setName = setName;
     }
 }

@@ -521,7 +521,7 @@ public class OMScalingRaster
             // Create the transform op.
             // AffineTransformOp xformOp = new AffineTransformOp(xform,
             // AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-            AffineTransformOp xformOp = new AffineTransformOp(xform, AffineTransformOp.TYPE_BILINEAR);
+            AffineTransformOp xformOp = new AffineTransformOp(xform, getScaleTransformType());
             // Scale clip area -> newImage
             // extract sub-image
             try {
@@ -547,7 +547,7 @@ public class OMScalingRaster
     * because it checks to see if the raster is in a small-world situation,
     * where the image must wrap around the world.
     * 
-    * @param g java.awt.Graphics to draw the image on.
+    * @param graphics java.awt.Graphics to draw the image on.
     */
    public void render(Graphics graphics) {
 

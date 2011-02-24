@@ -41,14 +41,14 @@ public interface CoordInfoFormatter extends PropertyConsumer {
      * @param y the y pixel coordinate of the map, 0 is top.
      * @param llp the LatLonPoint represented by the pixel location.
      * @param source the object calling this method.
-     * @return
+     * @return String with coordinate info on it.
      */
     public String createCoordinateInformationLine(int x, int y,
                                                   Point2D llp, Object source);
 
     /**
      * A name, suitable for GUI display, of this formatter.
-     * @return
+     * @return String for pretty name for formatter
      */
     public String getPrettyName();
 }

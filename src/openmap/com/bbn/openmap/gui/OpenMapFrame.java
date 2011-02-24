@@ -60,8 +60,9 @@ import com.bbn.openmap.util.PropUtils;
  * applet checks and code to handle the applet environment was moved to the
  * OpenMapApplet class.
  */
-public class OpenMapFrame extends JFrame implements
-        BeanContextMembershipListener, BeanContextChild, PropertyConsumer {
+public class OpenMapFrame
+        extends JFrame
+        implements BeanContextMembershipListener, BeanContextChild, PropertyConsumer {
 
     public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.OpenMapFrame");
 
@@ -126,8 +127,7 @@ public class OpenMapFrame extends JFrame implements
      *        pane hasn't been set.
      */
     public OpenMapFrame(boolean useAsInternalFrameRootPaneIfNecessary) {
-        this(Environment.get(Environment.Title),
-             useAsInternalFrameRootPaneIfNecessary);
+        this(Environment.get(Environment.Title), useAsInternalFrameRootPaneIfNecessary);
     }
 
     /**
@@ -149,8 +149,7 @@ public class OpenMapFrame extends JFrame implements
      *        Environment has been told to use internal frames, and if a root
      *        pane hasn't been set.
      */
-    public OpenMapFrame(String title,
-            boolean useAsInternalFrameRootPaneIfNecessary) {
+    public OpenMapFrame(String title, boolean useAsInternalFrameRootPaneIfNecessary) {
         super(title);
         this.useAsInternalFrameRootPaneIfNecessary = useAsInternalFrameRootPaneIfNecessary;
     }
@@ -181,8 +180,7 @@ public class OpenMapFrame extends JFrame implements
             y = d.height / 2 - h / 2;
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("Setting window bounds from " + x + ", " + y
-                    + " for size " + w + ", " + h);
+            logger.fine("Setting window bounds from " + x + ", " + y + " for size " + w + ", " + h);
         }
 
         // compose the frame, but don't show it here
@@ -237,17 +235,17 @@ public class OpenMapFrame extends JFrame implements
      * @param someObj
      */
     public void considerForContent(Object someObj) {
-        if (someObj instanceof MapPanel && someObj instanceof Component
-                && getContentPane().getComponentCount() == 0) {
+        if (someObj instanceof MapPanel && someObj instanceof Component && getContentPane().getComponentCount() == 0) {
             logger.fine("Found a MapPanel");
             setContent((Component) someObj);
         }
     }
 
     /**
-     * Called with the MapPanel to be set in the Content Pane of this Frame.
+     * Called with the MapPanel to be set in the Content Pane of this Frame. If
+     * a MapPanel, a JMenuBar will be retrieved and added as well.
      * 
-     * @param mapPanel
+     * @param component component to be used as content.
      */
     public void setContent(Component component) {
         getContentPane().add((Component) component);
@@ -325,7 +323,7 @@ public class OpenMapFrame extends JFrame implements
         if (beanContextChildSupport != null) {
             return beanContextChildSupport.getBeanContext();
         }
-        
+
         return null;
     }
 
@@ -334,7 +332,8 @@ public class OpenMapFrame extends JFrame implements
      * 
      * @param in_bc The context to which this object is being added
      */
-    public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
+    public void setBeanContext(BeanContext in_bc)
+            throws PropertyVetoException {
         if (in_bc != null) {
             in_bc.addBeanContextMembershipListener(this);
             beanContextChildSupport.setBeanContext(in_bc);
@@ -343,16 +342,13 @@ public class OpenMapFrame extends JFrame implements
     }
 
     /** Method for BeanContextChild interface. */
-    public void addVetoableChangeListener(String propertyName,
-                                          VetoableChangeListener in_vcl) {
+    public void addVetoableChangeListener(String propertyName, VetoableChangeListener in_vcl) {
         beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
     }
 
     /** Method for BeanContextChild interface. */
-    public void removeVetoableChangeListener(String propertyName,
-                                             VetoableChangeListener in_vcl) {
-        beanContextChildSupport.removeVetoableChangeListener(propertyName,
-                in_vcl);
+    public void removeVetoableChangeListener(String propertyName, VetoableChangeListener in_vcl) {
+        beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
     }
 
     // Implementation of PropertyConsumer Interface
@@ -390,12 +386,8 @@ public class OpenMapFrame extends JFrame implements
 
         x = PropUtils.intFromProperties(setList, prefix + xProperty, x);
         y = PropUtils.intFromProperties(setList, prefix + yProperty, y);
-        width = PropUtils.intFromProperties(setList,
-                prefix + WidthProperty,
-                width);
-        height = PropUtils.intFromProperties(setList,
-                prefix + HeightProperty,
-                height);
+        width = PropUtils.intFromProperties(setList, prefix + WidthProperty, width);
+        height = PropUtils.intFromProperties(setList, prefix + HeightProperty, height);
 
         setTitle(setList.getProperty(prefix + TitleProperty, getTitle()));
 
@@ -405,12 +397,9 @@ public class OpenMapFrame extends JFrame implements
         }
 
         if (useAsInternalFrameRootPaneIfNecessary) {
-            boolean useInternalFrames = PropUtils.booleanFromProperties(setList,
-                    Environment.UseInternalFrames,
-                    false);
+            boolean useInternalFrames = PropUtils.booleanFromProperties(setList, Environment.UseInternalFrames, false);
 
-            if (useInternalFrames
-                    && Environment.getInternalFrameDesktop() == null) {
+            if (useInternalFrames && Environment.getInternalFrameDesktop() == null) {
                 logger.fine("Setting OpenMapFrame as internal pane.");
                 Environment.useInternalFrames(getRootPane());
             }

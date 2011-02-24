@@ -238,7 +238,7 @@ public class OMWarpingImage
     * @param width pixel width of image
     * @param height pixel height of image
     * @param transform
-    * @param worldFile
+    * @param worldfile describes projection of image
     */
    public void setWarp(int[] pix, int width, int height, GeoCoordTransformation transform, WorldFile worldfile) {
       warp = new ImageWarp(pix, width, height, transform, worldfile);

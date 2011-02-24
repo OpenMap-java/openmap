@@ -47,7 +47,7 @@ public interface OMEventHandler {
      *        list to see if they are in this provided list. If they are, you
      *        should return the OMEvents that fall under that filter String's
      *        jurisdiction.
-     * @return
+     * @return List of OMEvents that pass filters
      */
     List<OMEvent> getEventList(List filters);
 

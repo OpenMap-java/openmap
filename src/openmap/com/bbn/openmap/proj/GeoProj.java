@@ -381,7 +381,6 @@ public abstract class GeoProj
     *        &lt; 1, this value is generated internally).
     * @param isFilled filled poly?
     * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
-    * @see Projection#forwardPoly(float[], int, int, boolean)
     */
    protected ArrayList<float[]> forwardRhumbPoly(float[] rawllpts, int nsegs, boolean isFilled) {
 
@@ -498,7 +497,6 @@ public abstract class GeoProj
     *        &lt; 1, this value is generated internally).
     * @param isFilled filled poly?
     * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
-    * @see Projection#forwardPoly(float[], int, int, boolean)
     */
    protected ArrayList<float[]> forwardRhumbPoly(double[] rawllpts, int nsegs, boolean isFilled) {
 
@@ -615,7 +613,6 @@ public abstract class GeoProj
     *        &lt; 1, this value is generated internally).
     * @param isFilled filled poly?
     * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
-    * @see Projection#forwardPoly(float[], int, int, boolean)
     */
    protected ArrayList<float[]> forwardGreatPoly(float[] rawllpts, int nsegs, boolean isFilled) {
       int i, j, k, totalpts = 0;
@@ -669,7 +666,6 @@ public abstract class GeoProj
     *        &lt; 1, this value is generated internally).
     * @param isFilled filled poly?
     * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
-    * @see Projection#forwardPoly(float[], int, int, boolean)
     */
    protected ArrayList<float[]> forwardGreatPoly(double[] rawllpts, int nsegs, boolean isFilled) {
       int i, j, k, totalpts = 0;
@@ -762,6 +758,7 @@ public abstract class GeoProj
     * @param from Point
     * @param to Point
     * @param include_last include n or n+1 points of the n segments?
+    * @param nsegs number of segments to create, or -1 to let algorithm figure it out
     * @return double[] lat/lon points in RADIANS!
     * 
     */
@@ -826,7 +823,6 @@ public abstract class GeoProj
     *        &lt; 1, this value is generated internally).
     * @param isFilled filled poly?
     * @return ArrayList
-    * @see Projection#forwardPoly
     */
    protected ArrayList<float[]> doPolyDispatch(float[] rawllpts, int ltype, int nsegs, boolean isFilled) {
       switch (ltype) {
@@ -852,7 +848,6 @@ public abstract class GeoProj
     *        &lt; 1, this value is generated internally).
     * @param isFilled filled poly?
     * @return ArrayList<int[]>
-    * @see Projection#forwardPoly
     */
    protected ArrayList<float[]> doPolyDispatch(double[] rawllpts, int ltype, int nsegs, boolean isFilled) {
       switch (ltype) {
@@ -1004,7 +999,7 @@ public abstract class GeoProj
     * @param lon longitude
     * @param pt return point
     * @param isRadian true if lat/lon are radians instead of decimal degrees
-    * @return
+    * @return Point2D for projected point
     */
    public Point2D forward(float lat, float lon, Point2D pt, boolean isRadian) {
       return forward((double) lat, (double) lon, pt, isRadian);
@@ -1017,7 +1012,7 @@ public abstract class GeoProj
     * @param lon longitude
     * @param pt return point
     * @param isRadian true if lat/lon are radians instead of decimal degrees
-    * @return
+    * @return Point2D for projected point
     */
    abstract public Point2D forward(double lat, double lon, Point2D pt, boolean isRadian);
 
@@ -1468,7 +1463,7 @@ public abstract class GeoProj
     * have radians, use them and call forwardPoly, it's faster. This method will
     * convert the coords to radians before calling the fowardPoly method.
     * 
-    * @param rawllpts double[] of lat,lon,lat,lon,... in decimal degree lat/lon!
+    * @param llpts double[] of lat,lon,lat,lon,... in decimal degree lat/lon!
     * @param ltype line type (straight, rhumbline, greatcircle)
     * @param nsegs number of segment points (only for greatcircle or rhumbline
     *        line types, and if &lt; 1, this value is generated internally)
@@ -1536,7 +1531,7 @@ public abstract class GeoProj
     * way to get to those meter coordinates. For instance, a UTMProjection will
     * return a UTMGCT.
     * 
-    * @return
+    * @return GeoCoordTransformation for this projection
     */
    @SuppressWarnings("unchecked")
    public <T extends GeoCoordTransformation> T getGCTForProjection() {

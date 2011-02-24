@@ -19,7 +19,6 @@
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 package com.bbn.openmap.layer;
 
 import java.awt.BasicStroke;
@@ -31,7 +30,12 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -39,8 +43,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 
+import com.bbn.openmap.dataAccess.shape.ShapeGeoIndex;
 import com.bbn.openmap.event.MapMouseEvent;
+import com.bbn.openmap.geo.GeoPoint;
 import com.bbn.openmap.omGraphics.EditableOMPoly;
 import com.bbn.openmap.omGraphics.FontSizer;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
@@ -73,6 +80,7 @@ import com.bbn.openmap.omGraphics.meteo.IceAreaShapeDecoration;
 import com.bbn.openmap.omGraphics.meteo.OMHotSurfaceFront;
 import com.bbn.openmap.omGraphics.meteo.OMOcclusion;
 import com.bbn.openmap.omGraphics.util.ArcCalc;
+import com.bbn.openmap.omGraphics.util.RibbonMaker;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.coords.LatLonPoint;
@@ -98,10 +106,11 @@ import com.bbn.openmap.util.PaletteHelper;
  * 
  * @see com.bbn.openmap.layer.DemoLayer
  * 
- * Just added some decorated splines to test them. EL
+ *      Just added some decorated splines to test them. EL
  */
-public class DemoLayer extends OMGraphicHandlerLayer implements
-        DrawingToolRequestor {
+public class DemoLayer
+        extends OMGraphicHandlerLayer
+        implements DrawingToolRequestor {
 
     protected JPanel legend;
     /**
@@ -137,7 +146,9 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         // Making the setting so this layer receives events from the
         // SelectMouseMode, which has a modeID of "Gestures". Other
         // IDs can be added as needed.
-        setMouseModeIDsForEvents(new String[] { "Gestures" });
+        setMouseModeIDsForEvents(new String[] {
+            "Gestures"
+        });
     }
 
     public void paint(java.awt.Graphics g) {
@@ -184,6 +195,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         omb.setFillPaint(null);
         omb.setSelectPaint(Color.blue);
         omb.setRotationAngle(Math.PI / 2);
+        omb.putAttribute(RCT, "bitmap");
         omList.add(omb);
 
         OMPoint point = new OMPoint(42f, -72f, 14);
@@ -193,8 +205,8 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
 
         OMCircle circle = new OMCircle(40f, -70f, 50, 200);
         circle.setRotationAngle(com.bbn.openmap.MoreMath.HALF_PI / 2f);
-        circle.putAttribute(OMGraphicConstants.LABEL,
-                new OMTextLabeler("Circle Label", OMText.JUSTIFY_CENTER));
+        circle.putAttribute(OMGraphicConstants.LABEL, new OMTextLabeler("Circle Label", OMText.JUSTIFY_CENTER));
+        circle.putAttribute(RCT, "circle");
         omList.add(circle);
 
         int[] llPointsx = new int[5];
@@ -213,17 +225,28 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         LabeledOMSpline spline = new LabeledOMSpline(40f, -72, llPointsx, llPointsy, OMPoly.COORDMODE_ORIGIN);
         spline.setText("Testing");
         spline.setLocateAtCenter(true);
+        spline.putAttribute(RCT, "spline 1");
         // spline.setIndex(2);
         omList.add(spline);
 
         OMSpline spline2 = new OMSpline(llPointsx, llPointsy);
-        spline2.putAttribute(OMGraphicConstants.LABEL,
-                new OMTextLabeler("Spline Label"));
+        spline2.putAttribute(OMGraphicConstants.LABEL, new OMTextLabeler("Spline Label"));
         spline2.setLinePaint(Color.green);
+        spline2.putAttribute(RCT, "spline 2");
         omList.add(spline2);
 
-        double[] llPoints = { 55.0f, -10.0f, 50.0f, -5.0f, 45.0f, -7.0f, 43.0f,
-                -12.0f, 55.0f, -10.0f };
+        double[] llPoints = {
+            55.0f,
+            -10.0f,
+            50.0f,
+            -5.0f,
+            45.0f,
+            -7.0f,
+            43.0f,
+            -12.0f,
+            55.0f,
+            -10.0f
+        };
         OMDecoratedSpline omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         ShapeDecorator sd = new ShapeDecorator();
         sd.addDecoration(new LineShapeDecoration(5, com.bbn.openmap.omGraphics.OMColor.clear));
@@ -231,8 +254,18 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         omds.setDecorator(sd);
         omList.add(omds);
 
-        llPoints = new double[] { 56.0f, -11.0f, 51.0f, -6.0f, 46.0f, -8.0f,
-                44.0f, -13.0f, 56.0f, -11.0f };
+        llPoints = new double[] {
+            56.0f,
+            -11.0f,
+            51.0f,
+            -6.0f,
+            46.0f,
+            -8.0f,
+            44.0f,
+            -13.0f,
+            56.0f,
+            -11.0f
+        };
         omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         sd = new ShapeDecorator();
         sd.addDecoration(new LineShapeDecoration(3, com.bbn.openmap.omGraphics.OMColor.clear));
@@ -240,8 +273,18 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         omds.setDecorator(sd);
         omList.add(omds);
 
-        llPoints = new double[] { 57.0f, -12.0f, 52.0f, -7.0f, 47.0f, -9.0f,
-                45.0f, -14.0f, 57.0f, -12.0f };
+        llPoints = new double[] {
+            57.0f,
+            -12.0f,
+            52.0f,
+            -7.0f,
+            47.0f,
+            -9.0f,
+            45.0f,
+            -14.0f,
+            57.0f,
+            -12.0f
+        };
         omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         sd = new ShapeDecorator();
         sd.addDecoration(new LineShapeDecoration(2, com.bbn.openmap.omGraphics.OMColor.clear));
@@ -251,12 +294,28 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         omds.setDecorator(sd);
         omList.add(omds);
 
-        double[] llPoints2 = { 55.0f, -12.0f, 50.0f, -7.0f, 45.0f, -9.0f, 43.0f,
-                -14.0f };
+        double[] llPoints2 = {
+            55.0f,
+            -12.0f,
+            50.0f,
+            -7.0f,
+            45.0f,
+            -9.0f,
+            43.0f,
+            -14.0f
+        };
         OMHotSurfaceFront hf = new OMHotSurfaceFront(llPoints2, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         omList.add(hf);
-        double[] llPoints3 = { 55.0f, -14.0f, 50.0f, -9.0f, 45.0f, -11.0f,
-                43.0f, -16.0f };
+        double[] llPoints3 = {
+            55.0f,
+            -14.0f,
+            50.0f,
+            -9.0f,
+            45.0f,
+            -11.0f,
+            43.0f,
+            -16.0f
+        };
         OMOcclusion oc = new OMOcclusion(llPoints3, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         omList.add(oc);
 
@@ -280,11 +339,10 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         // line.addArrowHead(true);
         line.addArrowHead(OMArrowHead.ARROWHEAD_DIRECTION_BOTH);
         line.setStroke(new BasicStroke(2));
-        line.putAttribute(OMGraphicConstants.LABEL,
-                new OMTextLabeler("Line Label"));
+        line.putAttribute(OMGraphicConstants.LABEL, new OMTextLabeler("Line Label"));
 
         omList.add(line);
-        
+
         OMLine arcLine = new OMLine(0d, 0d, -20d, 30d, OMGraphic.LINETYPE_GREATCIRCLE);
         arcLine.setLinePaint(Color.green);
         arcLine.setArc(new ArcCalc(Math.PI, true));
@@ -294,11 +352,13 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         for (int i = 0; i < 100; i++) {
             point = new OMPoint((float) (Math.random() * 89f), (float) (Math.random() * -179f), 3);
             point.setSelectPaint(Color.yellow);
+            point.putAttribute(RCT, "Point " + i);
             pointList.add(point);
         }
         omList.add(pointList);
 
-        OMEllipse ell = new OMEllipse(new LatLonPoint.Double(60, -110), 1000, 300, Length.NM, com.bbn.openmap.MoreMath.HALF_PI / 2.0);
+        OMEllipse ell =
+                new OMEllipse(new LatLonPoint.Double(60, -110), 1000, 300, Length.NM, com.bbn.openmap.MoreMath.HALF_PI / 2.0);
 
         ell.setLinePaint(Color.blue);
         // ell.setFillPaint(Color.yellow);
@@ -309,8 +369,12 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         ell.setFillPaint(Color.yellow);
         omList.add(ell);
 
-        double[] llp2 = new double[] { 0.41789755f, -1.435303f, 0.41813868f,
-                -1.3967744f };
+        double[] llp2 = new double[] {
+            0.41789755f,
+            -1.435303f,
+            0.41813868f,
+            -1.3967744f
+        };
 
         OMPoly p2 = new OMPoly(llp2, OMGraphic.RADIANS, OMGraphic.LINETYPE_RHUMB);
         p2.setLinePaint(Color.yellow);
@@ -322,8 +386,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         arc.setLinePaint(Color.red);
         arc.setFillPaint(new Color(120, 0, 0, 128));
         arc.setArcType(java.awt.geom.Arc2D.OPEN);
-        arc.putAttribute(OMGraphicConstants.LABEL,
-                new OMTextLabeler("Arc Label", OMText.JUSTIFY_CENTER));
+        arc.putAttribute(OMGraphicConstants.LABEL, new OMTextLabeler("Arc Label", OMText.JUSTIFY_CENTER));
         omList.add(arc);
 
         OMAreaList combo = new OMAreaList();
@@ -336,7 +399,8 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         // 4.860833, (float) 50.490833, (float) 4.847778, 2));
         // combo.addOMGraphic(new OMLine((float) 50.491269, (float)
         // 4.704239, (float) 50.490833, (float) 4.847778, 3));
-        combo.addOMGraphic(new OMArc((float) 50.491269, (float) 4.704239, (float) 0.09168520552327833, (float) (28.201865385183652 + 90.21758717585848), (float) -90.21758717585848));
+        combo.addOMGraphic(new OMArc((float) 50.491269, (float) 4.704239, (float) 0.09168520552327833,
+                                     (float) (28.201865385183652 + 90.21758717585848), (float) -90.21758717585848));
         combo.addOMGraphic(new OMLine((float) 50.534167, (float) 4.831111, (float) 50.640833, (float) 4.832222, 2));
         combo.addOMGraphic(new OMLine((float) 50.640833, (float) 4.832222, (float) 50.547778, (float) 5.223889, 2));
         combo.addOMGraphic(new OMLine((float) 50.547778, (float) 5.223889, (float) 50.453333, (float) 5.223889, 2));
@@ -383,16 +447,15 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         omList.add(text);
 
         if (srl != null) {
-            ImageIcon ii = srl.getIcon("SFPPV-----*****",
-                    new Dimension(100, 100));
+            ImageIcon ii = srl.getIcon("SFPPV-----*****", new Dimension(100, 100));
             if (ii != null) {
                 OMScalingIcon omsi = new OMScalingIcon(20f, -50f, ii);
                 omsi.setBaseScale(4000000);
                 omsi.setMinScale(1000000);
                 omsi.setMaxScale(6000000);
 
-                omsi.putAttribute(OMGraphicConstants.LABEL,
-                        new OMTextLabeler("SFPPV-----*****", OMText.JUSTIFY_LEFT, OMTextLabeler.ANCHOR_RIGHT));
+                omsi.putAttribute(OMGraphicConstants.LABEL, new OMTextLabeler("SFPPV-----*****", OMText.JUSTIFY_LEFT,
+                                                                              OMTextLabeler.ANCHOR_RIGHT));
 
                 omList.add(omsi);
 
@@ -420,7 +483,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         oms.setFillPaint(Color.orange);
 
         omList.add(oms);
-        
+
         OMGraphicList geoTest = new OMGraphicList();
         LatLonPoint pnt1 = new LatLonPoint.Double(42.0, -71.0);
         LatLonPoint pnt2 = new LatLonPoint.Double(42.3, -70.678);
@@ -429,20 +492,16 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         OMCircle ompoint1 = new OMCircle(pnt1.getLatitude(), pnt1.getLongitude(), gspacing, Length.RADIAN);
         OMCircle ompoint2 = new OMCircle(pnt2.getLatitude(), pnt2.getLongitude(), gspacing, Length.RADIAN);
 
-        LatLonPoint int1 = GreatCircle.pointAtDistanceBetweenPoints(pnt1.getRadLat(),
-                pnt1.getRadLon(),
-                pnt2.getRadLat(),
-                pnt2.getRadLon(),
-                gspacing,
-                -1);
-        LatLonPoint int2 = GreatCircle.pointAtDistanceBetweenPoints(pnt2.getRadLat(),
-                pnt2.getRadLon(),
-                pnt1.getRadLat(),
-                pnt1.getRadLon(),
-                gspacing,
-                -1);
+        LatLonPoint int1 =
+                GreatCircle.pointAtDistanceBetweenPoints(pnt1.getRadLat(), pnt1.getRadLon(), pnt2.getRadLat(), pnt2.getRadLon(),
+                                                         gspacing, -1);
+        LatLonPoint int2 =
+                GreatCircle.pointAtDistanceBetweenPoints(pnt2.getRadLat(), pnt2.getRadLon(), pnt1.getRadLat(), pnt1.getRadLon(),
+                                                         gspacing, -1);
 
-        OMLine geoline = new OMLine(int1.getLatitude(), int1.getLongitude(), int2.getLatitude(), int2.getLongitude(), OMGraphic.LINETYPE_GREATCIRCLE);
+        OMLine geoline =
+                new OMLine(int1.getLatitude(), int1.getLongitude(), int2.getLatitude(), int2.getLongitude(),
+                           OMGraphic.LINETYPE_GREATCIRCLE);
         ompoint1.setLinePaint(Color.red);
         ompoint2.setLinePaint(Color.red);
         geoline.setLinePaint(Color.red);
@@ -451,12 +510,49 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         geoTest.add(geoline);
 
         omList.add(geoTest);
-        
+
         OMText omtest = new OMText(42.0, -71.0, "Testing how this looks\nwhen doing multiple lines", OMText.JUSTIFY_LEFT);
         omtest.setBaseline(OMText.BASELINE_TOP);
         omtest.setFillPaint(Color.red);
-        
+
         omList.add(omtest);
+
+        llPoints = new double[] {
+            -5.856972964554054E-4,
+            7.181106520146243E-5,
+            -5.856972964554055E-4,
+            -7.181106520146255E-5,
+            -2.9284864843698565E-4,
+            -7.18110652014625E-5,
+            5.856972969587945E-4,
+            -5.756442432493538E-4,
+            5.856972969587943E-4,
+            5.756442432493541E-4,
+            -2.9284864843698565E-4,
+            7.181106520146243E-5,
+            -5.856972964554054E-4,
+            7.181106520146243E-5,
+        };
+
+        double buffer = 0.1645788336933045;
+
+        for (int i = 0; i < llPoints.length - 1; i += 2) {
+            double lat = Math.toDegrees(llPoints[i]);
+            double lon = Math.toDegrees(llPoints[i + 1]);
+
+            OMText txt = new OMText(lat, lon, Integer.toString(i / 2), OMText.JUSTIFY_LEFT);
+            omList.add(txt);
+        }
+
+        RibbonMaker ribbonMaker = RibbonMaker.createFromRadians(llPoints);
+
+        OMGraphic omg = ribbonMaker.getOuterRing(Length.NM.toRadians(buffer));
+        omg.setLinePaint(Color.red);
+        omList.add(omg);
+
+        OMPoly ribbonPoly = new OMPoly(llPoints, OMPoly.RADIANS, OMGraphic.LINETYPE_GREATCIRCLE);
+        ribbonPoly.setLinePaint(Color.orange);
+        omList.add(ribbonPoly);
 
         return omList;
     }
@@ -477,7 +573,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
      * need to clear out the OMGraphicList and add the OMGraphics you want for
      * the current projection.
      */
-    public synchronized  OMGraphicList prepare() {
+    public synchronized OMGraphicList prepare() {
         OMGraphicList list = getList();
         if (list == null) {
             list = init();
@@ -493,7 +589,9 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
             filterGA.setRenderType(OMGraphic.RENDERTYPE_LATLON);
             filterGA.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
             BasicStroke filterStroke = new BasicStroke(1f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10f, new float[] {
-                    3, 3 }, 0f);
+                3,
+                3
+            }, 0f);
             filterGA.setStroke(filterStroke);
         }
         return (GraphicAttributes) filterGA.clone();
@@ -694,16 +792,14 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
 
         JButton button = new JButton("Create Containing Rectangle Filter");
         button.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent event) {
                 DrawingTool dt = getDrawingTool();
                 if (dt != null) {
                     GraphicAttributes fga = getFilterGA();
                     fga.setFillPaint(new OMColor(0x0c0a0a0a));
 
-                    OMRect rect = (OMRect) getDrawingTool().create("com.bbn.openmap.omGraphics.OMRect",
-                            fga,
-                            layer,
-                            false);
+                    OMRect rect = (OMRect) getDrawingTool().create("com.bbn.openmap.omGraphics.OMRect", fga, layer, false);
                     if (rect != null) {
                         rect.setAppObject(internalKey);
                     } else {
@@ -718,6 +814,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
 
         button = new JButton("Create Containing Polygon Filter");
         button.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent event) {
                 DrawingTool dt = getDrawingTool();
                 if (dt != null) {
@@ -746,16 +843,14 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
 
         button = new JButton("Create Excluding Rectangle Filter");
         button.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent event) {
                 DrawingTool dt = getDrawingTool();
                 if (dt != null) {
                     GraphicAttributes fga = getFilterGA();
                     fga.setFillPaint(OMColor.clear);
 
-                    OMRect rect = (OMRect) getDrawingTool().create("com.bbn.openmap.omGraphics.OMRect",
-                            fga,
-                            layer,
-                            false);
+                    OMRect rect = (OMRect) getDrawingTool().create("com.bbn.openmap.omGraphics.OMRect", fga, layer, false);
                     if (rect != null) {
                         rect.setAppObject(externalKey);
                     } else {
@@ -770,6 +865,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
 
         button = new JButton("Reset filter");
         button.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent event) {
                 resetFiltering();
                 repaint();
@@ -944,15 +1040,12 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
 
         Object obj = omg.getAppObject();
 
-        if (obj != null && (obj == internalKey || obj == externalKey)
-                && !action.isMask(OMGraphicConstants.DELETE_GRAPHIC_MASK)) {
+        if (obj != null && (obj == internalKey || obj == externalKey) && !action.isMask(OMGraphicConstants.DELETE_GRAPHIC_MASK)) {
 
             java.awt.Shape filterShape = omg.getShape();
-            OMGraphicList filteredList = filter(filterShape,
-                    (omg.getAppObject() == internalKey));
+            OMGraphicList filteredList = filter(filterShape, (omg.getAppObject() == internalKey));
             if (Debug.debugging("demo")) {
-                Debug.output("DemoLayer filter: "
-                        + filteredList.getDescription());
+                Debug.output("DemoLayer filter: " + filteredList.getDescription());
             }
         } else {
             if (!doAction(omg, action)) {
@@ -1088,14 +1181,23 @@ public class DemoLayer extends OMGraphicHandlerLayer implements
         l.add(new JMenuItem("When"));
         l.add(new JMenuItem("Where"));
         l.add(new JMenuItem("How"));
+
         return l;
     }
 
+    private String RCT = "rightClickTest";
+
     public List<Component> getItemsForOMGraphicMenu(OMGraphic omg) {
+
+        String rightClickTest = (String) omg.getAttribute(RCT);
+
+        logger.info("right click test: " + rightClickTest);
+
         List<Component> l = new ArrayList<Component>();
         l.add(new JMenuItem("Which"));
         l.add(new JMenuItem("Why"));
+        l.add(new JSeparator());
+        l.add(new JMenuItem(rightClickTest));
         return l;
     }
-
 }

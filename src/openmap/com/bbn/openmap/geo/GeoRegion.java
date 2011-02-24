@@ -55,6 +55,14 @@ public interface GeoRegion extends GeoPath {
         public Impl(double[] lls, boolean isDegrees) {
             super(lls, isDegrees);
         }
+        
+        /**
+         * Create a region from a GeoArray.
+         * @param points
+         */
+        public Impl(GeoArray points) {
+            super(points);
+        }
 
         /**
          * @deprecated use getID() instead.

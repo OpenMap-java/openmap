@@ -28,8 +28,8 @@ package com.bbn.openmap.proj;
  * 
  * Adapted to Java by Colin Mummery (colin_mummery@agilent.com) from C++ code by
  * Chuck Gantz (chuck.gantz@globalstar.com).
- * 
- * @see http://en.wikipedia.org/wiki/Figure_of_the_Earth
+ * <p>
+ * See http://en.wikipedia.org/wiki/Figure_of_the_Earth
  */
 public class Ellipsoid {
 
@@ -156,7 +156,7 @@ public class Ellipsoid {
      * possible selections. Returns null if the Ellipsoid isn't found.
      * 
      * @param name
-     * @return
+     * @return Ellipsoid for given name, null if not found.
      */
     public static Ellipsoid getByName(String name) {
         Ellipsoid[] all = getAllEllipsoids();

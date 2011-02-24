@@ -445,7 +445,7 @@ public class ToolPanel
     * Checks to see if the menu item controls this ToolPanel.
     * 
     * @param mi
-    * @return
+    * @return true if menu item refers to this tool panel.
     */
    public boolean checkToolPanelToggleMenuItem(ToolPanelToggleMenuItem mi) {
       return (mi != null && mi.getToolPanel().equals(this));

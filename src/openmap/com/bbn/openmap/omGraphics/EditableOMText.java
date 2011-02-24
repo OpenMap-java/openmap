@@ -546,7 +546,7 @@ public class EditableOMText extends EditableOMGraphic implements ActionListener 
      *            the orientation is Vertical, a button will be added to the
      *            guiComp, or returned. This button will call up a dialog box
      *            with the settings, since they don't really lay out vertically.
-     * @return
+     * @return JComponent with text controls.
      */
     protected JComponent getTextGUI(int orientation, JComponent guiComp) {
         attributeBox = null;

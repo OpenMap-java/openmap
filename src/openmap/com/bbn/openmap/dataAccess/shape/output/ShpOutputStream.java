@@ -76,7 +76,7 @@ public class ShpOutputStream {
      * Get the transform being used on the coordinates of the EsriGraphics as
      * they are written to the stream.
      * 
-     * @return
+     * @return GeoCoordTransform if used, may be null for no transformation.
      */
     public GeoCoordTransformation getTransform() {
         return transform;

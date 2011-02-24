@@ -531,7 +531,6 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
      *            the link to communicate over.
      * @param proj
      *            the projection to give to the graphics.
-     * @return LinkOMGraphicList containing graphics from the server.
      * @throws IOException
      */
     protected void sendMapRequest(ClientLink link, Projection proj)

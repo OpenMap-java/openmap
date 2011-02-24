@@ -35,7 +35,9 @@ import com.bbn.openmap.util.Debug;
 /**
  * This is an OMPoly that has been extended to manage a text label.
  */
-public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
+public class LabeledOMPoly
+        extends OMPoly
+        implements LabeledOMGraphic {
 
     protected OMText label;
     protected Point offset;
@@ -49,7 +51,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     /**
      * Create an LabeledOMPoly from a list of float lat/lon pairs.
      * 
-     * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(float[], int, int)
+     * @see OMPoly#OMPoly(double[], int, int)
      */
     public LabeledOMPoly(double[] llPoints, int units, int lType) {
         super(llPoints, units, lType);
@@ -58,7 +60,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     /**
      * Create an LabeledOMPoly from a list of float lat/lon pairs.
      * 
-     * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(float[], int, int, int)
+     * @see OMPoly#OMPoly(double[], int, int, int)
      */
     public LabeledOMPoly(double[] llPoints, int units, int lType, int nsegs) {
         super(llPoints, units, lType, nsegs);
@@ -76,7 +78,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     /**
      * Create an x/y LabeledOMPoly.
      * 
-     * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(int[], int[])
+     * @see OMPoly#OMPoly(int[], int[])
      */
     public LabeledOMPoly(int[] xPoints, int[] yPoints) {
         super(xPoints, yPoints);
@@ -85,21 +87,18 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
     /**
      * Create an x/y LabeledOMPoly at an offset from lat/lon.
      * 
-     * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(float, float, int[], int)
+     * @see OMPoly#OMPoly(double, double, int[], int)
      */
-    public LabeledOMPoly(float latPoint, float lonPoint, int[] xypoints,
-            int cMode) {
+    public LabeledOMPoly(double latPoint, double lonPoint, int[] xypoints, int cMode) {
         super(latPoint, lonPoint, xypoints, cMode);
     }
 
     /**
      * Create an x/y LabeledOMPoly at an offset from lat/lon.
      * 
-     * @see com.bbn.openmap.omGraphics.OMPoly#OMPoly(float, float, int[], int[],
-     *      int)
+     * @see OMPoly#OMPoly(double, double, int[], int[], int)
      */
-    public LabeledOMPoly(float latPoint, float lonPoint, int[] xPoints,
-            int[] yPoints, int cMode) {
+    public LabeledOMPoly(double latPoint, double lonPoint, int[] xPoints, int[] yPoints, int cMode) {
         super(latPoint, lonPoint, xPoints, yPoints, cMode);
     }
 
@@ -375,10 +374,7 @@ public class LabeledOMPoly extends OMPoly implements LabeledOMGraphic {
                     index = 0;
                 if (index > numPoints)
                     index = numPoints - 1;
-                ((GeoProj) proj).forward(rawllpts[2 * index],
-                        rawllpts[2 * index + 1],
-                        handyPoint,
-                        true);
+                ((GeoProj) proj).forward(rawllpts[2 * index], rawllpts[2 * index + 1], handyPoint, true);
             }
         } else {
             float[][] x = xpoints;

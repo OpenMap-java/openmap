@@ -203,7 +203,7 @@ public class EventPanel extends OMComponentPanel implements MapPanelChild {
     protected JPanel macroPanel = null;
 
     /**
-     * @param hasFilters2
+     * 
      */
     protected void updateFilterCalloutInterface() {
         if (launchFilterPanel == null) {
@@ -283,7 +283,7 @@ public class EventPanel extends OMComponentPanel implements MapPanelChild {
      * Sets the EventPresenter as the active on, which also sets its filter
      * panel in the overall filter panel.
      * 
-     * @param object
+     * @param eventPresenter
      */
     protected void setActiveEventPresenter(EventPresenter eventPresenter) {
         JPanel filterPanel = getFilterPanel();
@@ -313,7 +313,7 @@ public class EventPanel extends OMComponentPanel implements MapPanelChild {
      * houses the macro filter interface common to all EventPresenters, and the
      * filter panel of the active EventPresenter.
      * 
-     * @return
+     * @return JPanel containing filter controls
      */
     protected JPanel getFilterPanel() {
         if (filterPanel == null) {

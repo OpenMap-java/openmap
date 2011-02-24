@@ -839,7 +839,6 @@ public class RpfTocHandler {
     * @param chartSeriesCode chart selection. If null, all coverage boxes
     *        fitting on the screen will be returned.
     * @param coverages a list of potential coverages
-    * @return a Vector of applicable RpfCoverageBoxes.
     */
    public void getCatalogCoverage(float ullat, float ullon, float lrlat, float lrlon, CADRG proj, String chartSeriesCode,
                                   Vector<RpfCoverageBox> coverages) {

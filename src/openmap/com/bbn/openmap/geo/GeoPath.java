@@ -113,13 +113,20 @@ public interface GeoPath extends GeoExtent {
          */
         public Impl(double[] lls, boolean isDegrees) {
             if (isDegrees) {
-                pts = GeoArray.Double.createFromLatLonDegrees(lls);
+                setPoints(GeoArray.Double.createFromLatLonDegrees(lls));
             } else {
-                pts = GeoArray.Double.createFromLatLonRadians(lls);
+                setPoints(GeoArray.Double.createFromLatLonRadians(lls));
             }
-            length = pts.getSize();
         }
 
+        /**
+         * Create a path from a GeoArray.
+         * @param pnts
+         */
+        public Impl(GeoArray pnts) {
+            setPoints(pnts);
+        }
+        
         /**
          * Create a path from Geos.
          * 

@@ -645,12 +645,6 @@ public class RpfLayer
       return retList;
    }
 
-   /**
-    * Paints the layer.
-    * 
-    * @param g the Graphics context for painting
-    * 
-    */
 //   public void paint(java.awt.Graphics g) {
 //      Debug.message("rpf", "RpfLayer.paint()");
 //      super.paint(g);

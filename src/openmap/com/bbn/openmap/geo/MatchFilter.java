@@ -6,19 +6,18 @@ package com.bbn.openmap.geo;
 public interface MatchFilter {
 
     /**
-     * do inexpensive comparisons to determine if the two elements
-     * might intersect.
+     * do inexpensive comparisons to determine if the two elements might
+     * intersect.
      * 
      * @return true iff further checks might yield intersection.
      */
     boolean preConsider(GeoExtent seg, GeoExtent region);
 
     /**
-     * the distance (in radians) to consider two objects to be
-     * interacting, that is, intersecting for our purposes.
+     * the distance (in radians) to consider two objects to be interacting, that
+     * is, intersecting for our purposes.
      * 
-     * @return the maximum distance to consider touching. Must be
-     *         non-negative.
+     * @return the maximum distance to consider touching. Must be non-negative.
      */
     double getHRange();
 
@@ -26,7 +25,8 @@ public interface MatchFilter {
     // implementations
     //
 
-    public static class MatchParametersMF implements MatchFilter {
+    public static class MatchParametersMF
+            implements MatchFilter {
         protected double hrange = 0.0;
 
         public MatchParametersMF(MatchParameters params) {
@@ -47,7 +47,8 @@ public interface MatchFilter {
         }
     }
 
-    public static class ExactMF implements MatchFilter {
+    public static class ExactMF
+            implements MatchFilter {
         public double getHRange() {
             return 0.0;
         }

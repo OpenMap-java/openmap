@@ -411,7 +411,7 @@ public interface OMGraphic extends OMGeometry, OMGraphicConstants, Cloneable {
     
     /**
      * To support clone operations.  Might not be implemented to the depth desired.
-     * @return
+     * @return Object cloned from this OMGraphic
      */
     Object clone();
 

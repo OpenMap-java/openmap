@@ -292,6 +292,7 @@ public class BinaryFile {
     * as BinaryFile constructor for tracking down a file.
     * 
     * @param name A path to a file, a URL, or a path to a jar file entry.
+    * @return true if the file can be found
     */
    public static boolean exists(String name) {
       boolean exists = false;
@@ -407,7 +408,7 @@ public class BinaryFile {
    /**
     * Accessor for the byte ordering used to read multibyte types.
     * 
-    * @return byte ordering
+    * @return byte ordering, true means MSB first.
     */
    public boolean byteOrder() {
       return MSBFirst;
@@ -613,7 +614,7 @@ public class BinaryFile {
     * and then multiplying by -1." Basically they are encoded as positive
     * numbers, but bit 15 is set to 1.
     * 
-    * @return
+    * @return 2 bytes merged into a short
     * @throws EOFException
     * @throws FormatException
     */
@@ -848,8 +849,7 @@ public class BinaryFile {
     * Read the {@link BinaryFile} into memory and return a new
     * {@link BinaryFile} instance working on that in-memory version of the file.
     * 
-    * @param in
-    * @return
+    * @return BinaryFile object pointing to memory version. 
     * @throws IOException
     */
    public BinaryFile readFully()

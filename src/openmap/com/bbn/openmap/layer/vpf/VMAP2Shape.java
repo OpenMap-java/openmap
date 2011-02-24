@@ -172,7 +172,7 @@ public class VMAP2Shape {
      * 
      * @param list
      * @param zero_eps
-     * @return
+     * @return OMGraphicList of polylines of joined segments
      */
     protected static OMGraphicList joinCommonLines(OMGraphicList list,
                                                    float zero_eps) {

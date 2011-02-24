@@ -79,7 +79,7 @@ public class OpenMap {
             }
         });
     }
-    
+
     protected void configureMapPanel(PropertyHandler propertyHandler) {
         BasicMapPanel basicMapPanel = new BasicMapPanel(propertyHandler, true);
         // Creates the components in the main application thread. If any of
@@ -168,18 +168,17 @@ public class OpenMap {
     public static PropertyHandler configurePropertyHandler(String propertiesFile) {
         PropertyHandler propertyHandler = null;
 
-        if (propertiesFile != null) {
-            try {
-                propertyHandler = new PropertyHandler(propertiesFile);
-            } catch (MalformedURLException murle) {
-                Debug.error(murle.getMessage());
-                murle.printStackTrace();
-                propertyHandler = null;
-            } catch (IOException ioe) {
-                Debug.error(ioe.getMessage());
-                ioe.printStackTrace();
-                propertyHandler = null;
-            }
+        try {
+            PropertyHandler.Builder builder = new PropertyHandler.Builder().setPropertiesFile(propertiesFile);
+            propertyHandler = new PropertyHandler(builder);
+        } catch (MalformedURLException murle) {
+            Debug.error(murle.getMessage());
+            murle.printStackTrace();
+            propertyHandler = new PropertyHandler();
+        } catch (IOException ioe) {
+            Debug.error(ioe.getMessage());
+            ioe.printStackTrace();
+            propertyHandler = new PropertyHandler();
         }
 
         return propertyHandler;
@@ -193,8 +192,8 @@ public class OpenMap {
         ArgParser ap = new ArgParser("OpenMap");
         String propArgs = null;
         ap.add("properties",
-                "A resource, file path or URL to properties file\n Ex: http://myhost.com/xyz.props or file:/myhome/abc.pro\n See Java Documentation for java.net.URL class for more details",
-                1);
+               "A resource, file path or URL to properties file\n Ex: http://myhost.com/xyz.props or file:/myhome/abc.pro\n See Java Documentation for java.net.URL class for more details",
+               1);
 
         ap.parse(args);
 

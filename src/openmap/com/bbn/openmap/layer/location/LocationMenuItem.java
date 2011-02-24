@@ -29,20 +29,21 @@ import java.awt.geom.Point2D;
 import javax.swing.JMenuItem;
 
 /**
- * This is an item that sits on the popup menu. It knows how to get
- * information it needs from the menu, and recenters the map, or
- * brings up more information about the location.
+ * This is an item that sits on the popup menu. It knows how to get information
+ * it needs from the menu, and recenters the map, or brings up more information
+ * about the location.
  */
-public class LocationMenuItem extends JMenuItem implements ActionListener {
-    /** the location popup menu for the item */
-    protected LocationPopupMenu clp;
-    /** the layer the item is for */
-    protected LocationLayer layer;
+public class LocationMenuItem
+        extends JMenuItem
+        implements ActionListener {
+
+    protected Location location;
 
     /**
      * Construct an empty item
      */
-    public LocationMenuItem() {}
+    public LocationMenuItem() {
+    }
 
     /**
      * Construct a menuitem with a label
@@ -55,7 +56,7 @@ public class LocationMenuItem extends JMenuItem implements ActionListener {
     }
 
     /**
-     * Construct a menuitem with a label and mnemonic
+     * Construct a menu item with a label and mnemonic
      * 
      * @param text the text for the item
      * @param mnemonic the mnemonic key for the item
@@ -65,41 +66,33 @@ public class LocationMenuItem extends JMenuItem implements ActionListener {
         this.addActionListener(this);
     }
 
-    public LocationMenuItem(String text, LocationPopupMenu aCLP,
-            LocationLayer aLayer) {
+    public LocationMenuItem(String text, Location loc) {
         this(text);
-        setLocationPopupMenu(aCLP);
-        setLayer(aLayer);
+        setLoc(loc);
     }
 
-    public void setLocationPopupMenu(LocationPopupMenu aCLP) {
-        clp = aCLP;
+    /**
+     * @return the location
+     */
+    public Location getLoc() {
+        return location;
     }
 
-    public LocationPopupMenu getLocationPopupMenu() {
-        return clp;
-    }
-
-    public void setLayer(LocationLayer aLayer) {
-        layer = aLayer;
-    }
-
-    public LocationLayer getLayer() {
-        return layer;
+    /**
+     * @param location the location to set
+     */
+    public void setLoc(Location location) {
+        this.location = location;
     }
 
     public void actionPerformed(java.awt.event.ActionEvent e) {
-        //          Debug.output("Action: " + e);
+        // Debug.output("Action: " + e);
         String command = e.getActionCommand();
 
-        if (layer != null && e.getSource().equals(this)) {
-            if (command == LocationLayer.recenter) {
-                MouseEvent evt = clp.getEvent();
-                Point2D llp = layer.getProjection().inverse(evt.getX(),
-                        evt.getY());
-                clp.getMap().setCenter(llp.getY(), llp.getX());
-            } else if (command.equals(LocationHandler.showdetails)) {
-                clp.getLoc().showDetails(layer);
+        if (command.equals(LocationHandler.showdetails)) {
+            try {
+                getLoc().showDetails();
+            } catch (NullPointerException npe) {
             }
         }
     }

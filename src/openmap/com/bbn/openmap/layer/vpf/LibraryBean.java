@@ -196,7 +196,7 @@ public class LibraryBean
     * Creates a new VPFFeatureWarehouse every time, with the shared
     * featureCache.
     * 
-    * @return
+    * @return VPFCachedFeatureGraphicWarehouse used by LibraryBean
     */
    public VPFCachedFeatureGraphicWarehouse getWarehouse() {
       if (Debug.debugging("vpf")) {

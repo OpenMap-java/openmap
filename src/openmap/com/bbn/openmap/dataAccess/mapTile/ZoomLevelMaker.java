@@ -207,7 +207,7 @@ public class ZoomLevelMaker
    /**
     * Get the description of this zoom level.
     * 
-    * @return
+    * @return string description of zoom level
     */
    public String getDescription() {
       return description;
@@ -226,7 +226,7 @@ public class ZoomLevelMaker
     * Get the current marker name (property prefix) for layers considered for
     * this zoom level.
     * 
-    * @return
+    * @return layers used for zoom level
     */
    public List<String> getLayers() {
       if (layers == null) {
@@ -248,7 +248,7 @@ public class ZoomLevelMaker
    /**
     * Return the current scale set in this object.
     * 
-    * @return
+    * @return scale setting for zoom level
     */
    public float getScale() {
       if (scale < 0) {
@@ -263,9 +263,9 @@ public class ZoomLevelMaker
    }
    
    /**
-    * Set the current scale to use fo calculating the zoom level.
+    * Set the current scale to use for calculating the zoom level.
     * 
-    * @param scale
+    * @param scale to set
     */
    public void setScale(float scale) {
       this.scale = scale;
@@ -273,9 +273,9 @@ public class ZoomLevelMaker
 
    /**
     * Get bounds, defined as world coordinates (i.e. lat/lon). Does not cross
-    * over dateline.
+    * over date line.
     * 
-    * @return
+    * @return the bounds for this zoom level
     */
    public List<Rectangle2D> getBounds() {
       return bounds;
@@ -283,7 +283,7 @@ public class ZoomLevelMaker
 
    /**
     * Set world coordinate bounds for tiles to be created. Should not cross over
-    * dateline.
+    * date line.
     * 
     * @param bounds No checks performed - x, y have to be the min, height and
     *        width must not exceed boundary limits (lat +/- 85, lon +/- 180)
@@ -296,7 +296,7 @@ public class ZoomLevelMaker
    /**
     * Get the bounds as defined as UV tile limits.
     * 
-    * @return
+    * @return a List of Rectangle2D of uv bounds for this zoom level
     */
    public List<Rectangle2D> getUVBounds(MapTileCoordinateTransform mtct, int zoomLevel) {
       List<Rectangle2D> ret = new LinkedList<Rectangle2D>();
@@ -321,7 +321,7 @@ public class ZoomLevelMaker
     * @param y1
     * @param x2
     * @param y2
-    * @return Rect2D
+    * @return Rect2D, properly constructed from coordinates
     */
    public Rectangle2D createProperBounds(double x1, double y1, double x2, double y2) {
       double x = Math.min(x1, x2);

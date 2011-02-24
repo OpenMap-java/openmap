@@ -22,21 +22,22 @@
 
 package com.bbn.openmap.app;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+
 import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.gui.OverlayMapPanel;
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The OpenMap application framework. This class creates a PropertyHandler that
- * searches the classpath, config directory and user's home directory for an
- * openmap.properties file, and creates the application based on the contents of
- * the properties files. It also creates an MapPanel and an OpenMapFrame to be
- * used for the application and adds them to the MapHandler contained in the
- * MapPanel. All other components are added to that MapHandler as well, and they
- * use the MapHandler to locate, connect and communicate with each other.
+ * A Main application class using the OpenMap framework. This class is like the
+ * OpenMap application class except it uses the new OverlayMapPanel instead of
+ * the BasicMapPanel. The property prefix used for the properties is "main", so
+ * this application is configured based on the main.components property list.
  */
-public class Main extends OpenMap {
+public class Main
+        extends OpenMap {
 
     /**
      * Create a new OpenMap framework object - creates a MapPanel, OpenMapFrame,
@@ -47,7 +48,7 @@ public class Main extends OpenMap {
     public Main() {
         this(null);
     }
-    
+
     /**
      * Create a new OpenMap framework object - creates a MapPanel, OpenMapFrame,
      * and brings up the layer palettes that are being told to be open at
@@ -55,17 +56,43 @@ public class Main extends OpenMap {
      * the application. PropertyHandler may be null.
      */
     public Main(PropertyHandler propertyHandler) {
-       super(propertyHandler);
+        super(propertyHandler);
     }
-    
+
     protected void configureMapPanel(PropertyHandler propertyHandler) {
-        OverlayMapPanel basicMapPanel = new OverlayMapPanel(propertyHandler, true);
+        OverlayMapPanel mapPanel = new OverlayMapPanel(propertyHandler, true);
         // Creates the components in the main application thread. If any of
         // these components need to update their GUI, they should hand a
         // Runnable object to the SwingUtilities.invokeLater(Runnable) method,
         // and it will be updated accordingly.
-        basicMapPanel.create();
-        mapPanel = basicMapPanel;
+        mapPanel.create();
+        this.mapPanel = mapPanel;
+    }
+
+    /**
+     * Given a path to a properties file, try to configure a PropertyHandler
+     * with it. If the properties file is not valid, the returned
+     * PropertyHandler will look for the openmap.properties file in the
+     * classpath and the user's home directory.
+     */
+    public static PropertyHandler configurePropertyHandler(String propertiesFile) {
+        PropertyHandler propertyHandler = null;
+
+        try {
+            PropertyHandler.Builder builder =
+                    new PropertyHandler.Builder().setPropertiesFile(propertiesFile).setPropertyPrefix("main");
+            propertyHandler = new PropertyHandler(builder);
+        } catch (MalformedURLException murle) {
+            Debug.error(murle.getMessage());
+            murle.printStackTrace();
+            propertyHandler = new PropertyHandler();
+        } catch (IOException ioe) {
+            Debug.error(ioe.getMessage());
+            ioe.printStackTrace();
+            propertyHandler = new PropertyHandler();
+        }
+
+        return propertyHandler;
     }
 
     /**
@@ -94,15 +121,15 @@ public class Main extends OpenMap {
     }
 
     /**
-     * The main OpenMap application.
+     * A Main OpenMap application.
      */
     static public void main(String args[]) {
 
-        ArgParser ap = new ArgParser("OpenMap");
+        ArgParser ap = new ArgParser("Main");
         String propArgs = null;
         ap.add("properties",
-                "A resource, file path or URL to properties file\n Ex: http://myhost.com/xyz.props or file:/myhome/abc.pro\n See Java Documentation for java.net.URL class for more details",
-                1);
+               "A resource, file path or URL to properties file\n Ex: http://myhost.com/xyz.props or file:/myhome/abc.pro\n See Java Documentation for java.net.URL class for more details",
+               1);
 
         ap.parse(args);
 

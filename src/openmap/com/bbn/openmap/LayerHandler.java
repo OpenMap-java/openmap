@@ -587,7 +587,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent,
      * are in the appropriate order.
      * 
      * @param layers
-     * @return
+     * @return Layer[] of layers with background layers moved to back.
      */
     protected Layer[] organizeBackgroundLayers(Layer[] layers) {
         while (isForegroundUnderBackgroundLayer(layers)) {

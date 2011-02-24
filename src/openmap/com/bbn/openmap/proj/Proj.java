@@ -105,7 +105,6 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * @param s float scale of projection
      * @param w width of screen
      * @param h height of screen
-     * @param type projection type
      * @see ProjectionFactory
      */
     public Proj(Point2D center, float s, int w, int h) {
@@ -347,7 +346,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
 
     /**
      * Sets the projection ID used for determining equality. The projection ID
-     * String is intern()ed for efficient comparison.
+     * String is interned for efficient comparison.
      */
     protected void setProjectionID() {
         projID = (getClass().getName() + ":" + scale + ":" + centerX + ":"
@@ -498,7 +497,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * @param x integer x coordinate
      * @param y integer y coordinate
      * @return LatLonPoint (new)
-     * @see #inverse(Point)
+     * @see #inverse(Point2D)
      */
     public Point2D inverse(double x, double y) {
         return inverse(x, y, new Point2D.Double());

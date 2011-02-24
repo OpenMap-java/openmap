@@ -50,7 +50,8 @@ import com.bbn.openmap.util.PaletteHelper;
 
 /**
  */
-public class EditableOMRangeRings extends EditableOMCircle {
+public class EditableOMRangeRings
+        extends EditableOMCircle {
 
     // TODO need to update the memory mechanism between OMRangeRings that are
     // being edited/created so that statics aren't being used. Maybe add a
@@ -79,8 +80,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
      * Create the EditableOMRangeRings with an OMCircle already defined, ready
      * for editing.
      * 
-     * @param omc
-     *            OMCircle that should be edited.
+     * @param omc OMCircle that should be edited.
      */
     public EditableOMRangeRings(OMRangeRings omc) {
         setGraphic(omc);
@@ -100,8 +100,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
         }
 
         if (Debug.debugging("eomc")) {
-            Debug.output("EditableOMRangeRings.createGraphic(): rendertype = "
-                    + renderType);
+            Debug.output("EditableOMRangeRings.createGraphic(): rendertype = " + renderType);
         }
 
         circle = new OMRangeRings(90f, -180f, 0f);
@@ -115,9 +114,8 @@ public class EditableOMRangeRings extends EditableOMCircle {
      * Modifies the gui to not include line type adjustments, and adds widgets
      * to control range ring settings.
      * 
-     * @param graphicAttributes
-     *            the GraphicAttributes to use to get the GUI widget from to
-     *            control those parameters for this EOMG.
+     * @param graphicAttributes the GraphicAttributes to use to get the GUI
+     *        widget from to control those parameters for this EOMG.
      * @return java.awt.Component to use to control parameters for this EOMG.
      */
     public Component getGUI(GraphicAttributes graphicAttributes) {
@@ -125,8 +123,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
         if (graphicAttributes != null) {
             JComponent panel = graphicAttributes.getColorAndLineGUI();
             // panel.add(getRangeRingGUI());
-            getRangeRingGUI(graphicAttributes.getOrientation(),
-                            graphicAttributes.toolbar);
+            getRangeRingGUI(graphicAttributes.getOrientation(), graphicAttributes.toolbar);
             return panel;
         } else {
             return getRangeRingGUI();
@@ -161,12 +158,10 @@ public class EditableOMRangeRings extends EditableOMCircle {
         int value = -1;
         try {
             if (intervalStr.toLowerCase().endsWith("m")) {
-                intervalStr = intervalStr
-                        .substring(0, intervalStr.length() - 1);
+                intervalStr = intervalStr.substring(0, intervalStr.length() - 1);
                 value = (int) df.parse(intervalStr).intValue() * 1000000;
             } else if (intervalStr.toLowerCase().endsWith("k")) {
-                intervalStr = intervalStr
-                        .substring(0, intervalStr.length() - 1);
+                intervalStr = intervalStr.substring(0, intervalStr.length() - 1);
                 value = df.parse(intervalStr).intValue() * 1000;
             } else if (intervalStr.trim().length() == 0) {
                 // do nothing
@@ -231,16 +226,14 @@ public class EditableOMRangeRings extends EditableOMCircle {
     /**
      * Get the GUI associated with changing the Text.
      * 
-     * @param orientation
-     *            SwingConstants.HORIZONTAL/VERTICAL
-     * @param guiComp
-     *            the JComponent to add stuff to. If the orientation is
-     *            HORIZONTAL, the components will be added directly to this
-     *            component, or to a new JComponent that is returned if null. If
-     *            the orientation is Vertical, a button will be added to the
-     *            guiComp, or returned. This button will call up a dialog box
-     *            with the settings, since they don't really lay out vertically.
-     * @return
+     * @param orientation SwingConstants.HORIZONTAL/VERTICAL
+     * @param guiComp the JComponent to add stuff to. If the orientation is
+     *        HORIZONTAL, the components will be added directly to this
+     *        component, or to a new JComponent that is returned if null. If the
+     *        orientation is Vertical, a button will be added to the guiComp, or
+     *        returned. This button will call up a dialog box with the settings,
+     *        since they don't really lay out vertically.
+     * @return JComponent for controlling range-ring specific attributes.
      */
     protected JComponent getRangeRingGUI(int orientation, JComponent guiComp) {
         attributeBox = null;
@@ -299,14 +292,12 @@ public class EditableOMRangeRings extends EditableOMCircle {
     }
 
     private int getInterval() {
-        return (!isNewRing()) ? ((OMRangeRings) circle).getInterval()
-                : haveUserSpecifiedValue() ? lastInterval
-                        : OMRangeRings.DEFAULT_INTERVAL;
+        return (!isNewRing()) ? ((OMRangeRings) circle).getInterval() : haveUserSpecifiedValue() ? lastInterval
+                : OMRangeRings.DEFAULT_INTERVAL;
     }
 
     private Length getUnits() {
-        return (!isNewRing()) ? ((OMRangeRings) circle).getIntervalUnits()
-                : haveUserSpecifiedValue() ? lastUnit : null;
+        return (!isNewRing()) ? ((OMRangeRings) circle).getIntervalUnits() : haveUserSpecifiedValue() ? lastUnit : null;
     }
 
     private boolean isNewRing() {
@@ -320,14 +311,12 @@ public class EditableOMRangeRings extends EditableOMCircle {
     }
 
     private JTextField makeIntervalField() {
-        JTextField field = new JTextField(Integer
-                .toString(((OMRangeRings) circle).getInterval()), 5);
+        JTextField field = new JTextField(Integer.toString(((OMRangeRings) circle).getInterval()), 5);
         field.setMargin(new Insets(0, 1, 0, 1));
         // without minimum size set, field can be too small to use
         field.setMinimumSize(new Dimension(40, 18));
         field.setHorizontalAlignment(JTextField.RIGHT);
-        field.setToolTipText(i18n.get(this, "intervalField.tooltip",
-                                      "Value for interval between rings."));
+        field.setToolTipText(i18n.get(this, "intervalField.tooltip", "Value for interval between rings."));
         field.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 updateInterval(((JTextField) (ae.getSource())).getText());
@@ -364,8 +353,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
                 currentIndex = i;
             }
         }
-        unitStrings[unitStrings.length - 1] = i18n
-                .get(this, "unitStrings.concentric", "concentric");
+        unitStrings[unitStrings.length - 1] = i18n.get(this, "unitStrings.concentric", "concentric");
 
         JComboBox combo = new JComboBox(unitStrings);
         combo.setBorder(new EmptyBorder(0, 1, 0, 1));
@@ -392,8 +380,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
                 }
 
                 if (newLength != null && oldLength != null) {
-                    value = (int) newLength.fromRadians(oldLength
-                            .toRadians(value));
+                    value = (int) newLength.fromRadians(oldLength.toRadians(value));
                 } else {
                     int numSubCircles;
                     if (rr.subCircles == null || rr.subCircles.length == 0) {
@@ -405,10 +392,9 @@ public class EditableOMRangeRings extends EditableOMCircle {
                     if (newLength == null) {
                         value = numSubCircles;
                     } else if (oldLength == null) {
-                        value = (int) Math.ceil(newLength
-                                .fromRadians(Length.DECIMAL_DEGREE.toRadians(rr
-                                        .getRadius()))
-                                / numSubCircles);
+                        value =
+                                (int) Math.ceil(newLength.fromRadians(Length.DECIMAL_DEGREE.toRadians(rr.getRadius()))
+                                        / numSubCircles);
                     }
                 }
 
@@ -423,8 +409,7 @@ public class EditableOMRangeRings extends EditableOMCircle {
     private JCheckBox makeSnapCheckBox() {
         String snapText = i18n.get(this, "snapToInterval", "Snap");
         JCheckBox snapBox = new JCheckBox(snapText, isSnapToInterval());
-        snapText = i18n.get(this, "snapToInterval", I18n.TOOLTIP,
-                            "Round radius to nearest interval value.");
+        snapText = i18n.get(this, "snapToInterval", I18n.TOOLTIP, "Round radius to nearest interval value.");
         snapBox.setToolTipText(snapText);
         snapBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -479,12 +464,9 @@ public class EditableOMRangeRings extends EditableOMCircle {
                 OMRangeRings rr = (OMRangeRings) circle;
                 Length units = rr.getIntervalUnits();
                 if (units != null) {
-                    double rds = units.fromRadians(Length.DECIMAL_DEGREE
-                            .toRadians(radius));
-                    radius = Math.round(rds / rr.getInterval())
-                            * rr.getInterval();
-                    radius = Length.DECIMAL_DEGREE.fromRadians(units
-                            .toRadians(radius));
+                    double rds = units.fromRadians(Length.DECIMAL_DEGREE.toRadians(radius));
+                    radius = Math.round(rds / rr.getInterval()) * rr.getInterval();
+                    radius = Length.DECIMAL_DEGREE.fromRadians(units.toRadians(radius));
                 }
             }
             circle.setRadius(radius);

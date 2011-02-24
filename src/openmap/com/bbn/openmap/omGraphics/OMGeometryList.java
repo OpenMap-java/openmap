@@ -99,7 +99,7 @@ public class OMGeometryList extends OMList<OMGeometry> implements Serializable {
      * For backward compatibility.
      * 
      * @param omg
-     * @return
+     * @return true if add was successful
      */
     public boolean addOMGraphic(OMGraphic omg) {
         return super.add(omg);

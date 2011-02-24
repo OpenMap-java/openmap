@@ -118,11 +118,7 @@ public class VPFFeatureLayer
    }
 
    /**
-    * Another way to set the parameters of the DcwLayer.
-    * 
-    * @see #pathProperty
-    * @see #coverageTypeProperty
-    * @see #featureTypesProperty
+    * Another way to set the parameters of the VPFLayer.
     */
    public void setProperties(String prefix, Properties props) {
       super.setProperties(prefix, props);

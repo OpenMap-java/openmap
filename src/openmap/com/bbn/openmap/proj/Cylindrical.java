@@ -54,15 +54,13 @@ public abstract class Cylindrical extends GeoProj {
      * @param scale float scale of projection
      * @param width width of screen
      * @param height height of screen
-     * @param type projection type
-     * 
      */
     public Cylindrical(LatLonPoint center, float scale, int width, int height) {
         super(center, scale, width, height);
     }
 
     /**
-     * Return stringified description of this projection.
+     * Return string-ified description of this projection.
      * <p>
      * 
      * @return String

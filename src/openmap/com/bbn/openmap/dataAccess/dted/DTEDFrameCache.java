@@ -134,10 +134,10 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
      * level. Assumes that paths have been given to the cache. Lat/lons in
      * decimal degrees.
      * 
-     * @return complete path to file with lat/lon.
      * @param lat latitude of point
      * @param lon longitude of point
      * @param level the dted level wanted (0, 1)
+     * @return complete path to file with lat/lon.
      */
     public String findFileName(double lat, double lon, int level) {
 
@@ -164,10 +164,10 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
     /**
      * Return The DTED Frame, Given A Lat, Lon And DTED Level.
      * 
-     * @return DTED frame.
      * @param lat latitude of point
      * @param lon longitude of point
      * @param level the dted level wanted (0, 1, 2)
+     * @return DTED frame.
      */
     public DTEDFrame get(double lat, double lon, int level) {
         String name = findFileName(lat, lon, level);
@@ -213,7 +213,7 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
      * Load a dted frame into the cache, based on the path of the frame as a
      * key.
      * 
-     * @param dtedFramePath complete path to the frame.
+     * @param key complete path to the frame, String.
      * @return DTED frame, hidden as a CacheObject.
      */
     public CacheObject load(Object key) {

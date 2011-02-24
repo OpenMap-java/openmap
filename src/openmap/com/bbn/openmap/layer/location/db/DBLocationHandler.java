@@ -26,40 +26,48 @@ package com.bbn.openmap.layer.location.db;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.logging.Level;
+
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 
-/*  OpenMap  */
-import com.bbn.openmap.layer.location.*;
-import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.layer.location.AbstractLocationHandler;
+import com.bbn.openmap.layer.location.ByteRasterLocation;
+import com.bbn.openmap.layer.location.Location;
+import com.bbn.openmap.layer.location.LocationCBMenuItem;
+import com.bbn.openmap.layer.location.LocationHandler;
+import com.bbn.openmap.layer.location.LocationMenuItem;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.quadtree.QuadTree;
 
 /**
- * The DBLocationLayer is a LocationHandler designed to let you put
- * data on the map based on information from a Database. The
- * properties file lets you set defaults on whether to draw the
- * locations and the names by default. For crowded layers, having all
- * the names displayed might cause a cluttering problem. In gesture
- * mode, OpenMap will display the name of each location as the mouse
- * is passed over it. Pressing the left mouse button over a location
- * brings up a popup menu that lets you show/hide the name label, and
- * also to display attributes of the location in a Browser window that
- * OpenMap launches.
+ * The DBLocationLayer is a LocationHandler designed to let you put data on the
+ * map based on information from a Database. The properties file lets you set
+ * defaults on whether to draw the locations and the names by default. For
+ * crowded layers, having all the names displayed might cause a cluttering
+ * problem. In gesture mode, OpenMap will display the name of each location as
+ * the mouse is passed over it. Pressing the left mouse button over a location
+ * brings up a popup menu that lets you show/hide the name label, and also to
+ * display attributes of the location in a Browser window that OpenMap launches.
  * 
  * <P>
- * If you want to extend the functionality of this LocationHandler,
- * there are a couple of methods to focus your changes: The
- * setProperties() method lets you add properties to set from the
- * properties file. The createData() method, by default, is a one-time
- * method that creates the graphic objects based on the data. By
- * modifying these methods, and creating a different combination
- * graphic other than the default LocationDataRecordSet, you can
- * create different layer effects pretty easily.
+ * If you want to extend the functionality of this LocationHandler, there are a
+ * couple of methods to focus your changes: The setProperties() method lets you
+ * add properties to set from the properties file. The createData() method, by
+ * default, is a one-time method that creates the graphic objects based on the
+ * data. By modifying these methods, and creating a different combination
+ * graphic other than the default LocationDataRecordSet, you can create
+ * different layer effects pretty easily.
  * 
  * <P>
  * In the openmap.properties file (for instance):
@@ -81,33 +89,33 @@ import com.bbn.openmap.util.quadtree.QuadTree;
  *  dblocationhandler.locationQueryString=select statement the data
  *   object needs.  See each Data object (like LocationData) to see what
  *   kind of select statement it needs.
- *  
+ * 
  * </pre>
  * 
- * In addition, this particular location handler is using the
- * LocationData object to handle the results from the location.
+ * In addition, this particular location handler is using the LocationData
+ * object to handle the results from the location.
  */
-public class DBLocationHandler extends AbstractLocationHandler implements
-        LocationHandler, ActionListener {
+public class DBLocationHandler
+        extends AbstractLocationHandler
+        implements LocationHandler, ActionListener {
 
     /** The storage mechanism for the locations. */
     protected QuadTree quadtree = null;
 
-    //Database variables.
+    // Database variables.
     /*
-     * This String should be completely specified based on which
-     * Database is being used including username and password.
-     * Alternately, username and password can be specified by in
-     * properties file as jdbc.user=USERNAME jdbc.password=PASSWORD
+     * This String should be completely specified based on which Database is
+     * being used including username and password. Alternately, username and
+     * password can be specified by in properties file as jdbc.user=USERNAME
+     * jdbc.password=PASSWORD
      */
     /** String that would be used for making a connection to Database */
     protected String jdbcString = null;
     /** Property that should be specified for setting jdbc String */
     public static final String jdbcStringProperty = "jdbcString";
     /**
-     * This String would be used to load the driver. If this string is
-     * null, jdbc Connection Manager would try to load the appropriate
-     * driver.
+     * This String would be used to load the driver. If this string is null,
+     * jdbc Connection Manager would try to load the appropriate driver.
      */
     protected String jdbcDriver = null;
     /** Property to specify jdbc driver to loaded. */
@@ -124,8 +132,7 @@ public class DBLocationHandler extends AbstractLocationHandler implements
     public static final String locationQueryStringProperty = "locationQueryString";
 
     /**
-     * The string used to query the database for the location
-     * information.
+     * The string used to query the database for the location information.
      */
     protected String locationQueryString = null;
 
@@ -133,17 +140,17 @@ public class DBLocationHandler extends AbstractLocationHandler implements
     protected Properties props;
 
     /**
-     * The default constructor for the Layer. All of the attributes
-     * are set to their default values.
+     * The default constructor for the Layer. All of the attributes are set to
+     * their default values.
      */
-    public DBLocationHandler() {}
+    public DBLocationHandler() {
+    }
 
     /**
-     * The properties and prefix are managed and decoded here, for the
-     * standard uses of the DBLocationHandler.
+     * The properties and prefix are managed and decoded here, for the standard
+     * uses of the DBLocationHandler.
      * 
-     * @param prefix string prefix used in the properties file for
-     *        this layer.
+     * @param prefix string prefix used in the properties file for this layer.
      * @param properties the properties set in the properties file.
      */
     public void setProperties(String prefix, Properties properties) {
@@ -163,23 +170,20 @@ public class DBLocationHandler extends AbstractLocationHandler implements
         userName = properties.getProperty(prefix + userNameProperty);
         userPassword = properties.getProperty(prefix + userPasswordProperty);
 
-        locationQueryString = properties.getProperty(prefix
-                + locationQueryStringProperty);
+        locationQueryString = properties.getProperty(prefix + locationQueryStringProperty);
     }
 
     /**
-     * PropertyConsumer method, to fill in a Properties object,
-     * reflecting the current values of the layer. If the layer has a
-     * propertyPrefix set, the property keys should have that prefix
-     * plus a separating '.' prepended to each property key it uses for
-     * configuration.
+     * PropertyConsumer method, to fill in a Properties object, reflecting the
+     * current values of the layer. If the layer has a propertyPrefix set, the
+     * property keys should have that prefix plus a separating '.' prepended to
+     * each property key it uses for configuration.
      * 
-     * @param props a Properties object to load the PropertyConsumer
-     *        properties into.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param props a Properties object to load the PropertyConsumer properties
+     *        into.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
@@ -196,62 +200,53 @@ public class DBLocationHandler extends AbstractLocationHandler implements
         props.put(prefix + jdbcDriverProperty, PropUtils.unnull(jdbcDriver));
         props.put(prefix + userNameProperty, PropUtils.unnull(userName));
         props.put(prefix + userPasswordProperty, PropUtils.unnull(userPassword));
-        props.put(prefix + locationQueryStringProperty,
-                PropUtils.unnull(locationQueryString));
+        props.put(prefix + locationQueryStringProperty, PropUtils.unnull(locationQueryString));
 
         // Put the properties in here for the RawDataRecordSet, which
         // gets images that can be used for the locations.
         props.put(prefix + RawDataRecordSet.tableNameProperty,
-                PropUtils.unnull(props.getProperty(prefix
-                        + RawDataRecordSet.tableNameProperty)));
+                  PropUtils.unnull(props.getProperty(prefix + RawDataRecordSet.tableNameProperty)));
         props.put(prefix + RawDataRecordSet.rawDataColumnNameProperty,
-                PropUtils.unnull(props.getProperty(prefix
-                        + RawDataRecordSet.rawDataColumnNameProperty)));
+                  PropUtils.unnull(props.getProperty(prefix + RawDataRecordSet.rawDataColumnNameProperty)));
         props.put(prefix + RawDataRecordSet.rawDataKeyColumnNameProperty,
-                PropUtils.unnull(props.getProperty(prefix
-                        + RawDataRecordSet.rawDataKeyColumnNameProperty)));
+                  PropUtils.unnull(props.getProperty(prefix + RawDataRecordSet.rawDataKeyColumnNameProperty)));
 
         return props;
     }
 
     /**
-     * Method to fill in a Properties object with values reflecting
-     * the properties able to be set on this PropertyConsumer. The key
-     * for each property should be the raw property name (without a
-     * prefix) with a value that is a String that describes what the
-     * property key represents, along with any other information about
-     * the property that would be helpful (range, default value,
-     * etc.). This method takes care of the basic LocationHandler
-     * parameters, so any LocationHandlers that extend the
-     * AbstractLocationHandler should call this method, too, before
-     * adding any specific properties.
+     * Method to fill in a Properties object with values reflecting the
+     * properties able to be set on this PropertyConsumer. The key for each
+     * property should be the raw property name (without a prefix) with a value
+     * that is a String that describes what the property key represents, along
+     * with any other information about the property that would be helpful
+     * (range, default value, etc.). This method takes care of the basic
+     * LocationHandler parameters, so any LocationHandlers that extend the
+     * AbstractLocationHandler should call this method, too, before adding any
+     * specific properties.
      * 
-     * @param list a Properties object to load the PropertyConsumer
-     *        properties into. If getList equals null, then a new
-     *        Properties object should be created.
-     * @return Properties object containing PropertyConsumer property
-     *         values. If getList was not null, this should equal
-     *         getList. Otherwise, it should be the Properties object
-     *         created by the PropertyConsumer.
+     * @param list a Properties object to load the PropertyConsumer properties
+     *        into. If getList equals null, then a new Properties object should
+     *        be created.
+     * @return Properties object containing PropertyConsumer property values. If
+     *         getList was not null, this should equal getList. Otherwise, it
+     *         should be the Properties object created by the PropertyConsumer.
      */
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
 
-        list.put("class" + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
+        list.put("class" + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
         list.put(jdbcStringProperty, "JDBC login string");
         list.put(jdbcDriverProperty, "JDBC driver class name");
         list.put(userNameProperty, "User name");
         list.put(userPasswordProperty, "User password");
-        list.put(locationQueryStringProperty,
-                "Select statement that the data object needs.");
+        list.put(locationQueryStringProperty, "Select statement that the data object needs.");
 
-        list.put(RawDataRecordSet.tableNameProperty,
-                "The name of the table in the database that holds the images.");
+        list.put(RawDataRecordSet.tableNameProperty, "The name of the table in the database that holds the images.");
         list.put(RawDataRecordSet.rawDataColumnNameProperty,
-                "The name of the column in the table in the database that holds the name (key) of the image.");
+                 "The name of the column in the table in the database that holds the name (key) of the image.");
         list.put(RawDataRecordSet.rawDataKeyColumnNameProperty,
-                "The name of the column in the table in the database that holds the raw image bytes.");
+                 "The name of the column in the table in the database that holds the raw image bytes.");
 
         return list;
     }
@@ -261,8 +256,7 @@ public class DBLocationHandler extends AbstractLocationHandler implements
     }
 
     /**
-     * Look in the database and create the QuadTree holding all the
-     * Locations.
+     * Look in the database and create the QuadTree holding all the Locations.
      */
     protected QuadTree createData() {
 
@@ -280,9 +274,7 @@ public class DBLocationHandler extends AbstractLocationHandler implements
                 Class.forName(getJdbcDriver());
             }
 
-            Connection connection = DriverManager.getConnection(getJdbcString(),
-                    getUserName(),
-                    getUserPassword());
+            Connection connection = DriverManager.getConnection(getJdbcString(), getUserName(), getUserPassword());
 
             RawDataRecordSet gifdataRS = new RawDataRecordSet(connection, getPropertyPrefix(), props);
 
@@ -292,9 +284,8 @@ public class DBLocationHandler extends AbstractLocationHandler implements
 
                 LocationData ld = new LocationData(locationdataRS);
 
-                if (Debug.debugging("location")) {
-                    Debug.output("DBLocationHandler:  location information:\n"
-                            + ld);
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("DBLocationHandler:  location information:\n" + ld);
                 }
 
                 bytearr = gifdataRS.getRawData(ld.getGraphicName());
@@ -313,8 +304,7 @@ public class DBLocationHandler extends AbstractLocationHandler implements
 
                 loc.setLocationPaint(getLocationColor());
                 loc.getLabel().setLinePaint(getNameColor());
-                loc.setDetails(ld.getCityName() + " is at lat: " + lat
-                        + ", lon: " + lon);
+                loc.setDetails(ld.getCityName() + " is at lat: " + lat + ", lon: " + lon);
 
                 qt.put(lat, lon, loc);
 
@@ -324,10 +314,10 @@ public class DBLocationHandler extends AbstractLocationHandler implements
             connection.close();
 
         } catch (SQLException sqlE) {
-            Debug.error("DBLocationHandler:SQL Exception: " + sqlE.getMessage());
+            logger.warning("DBLocationHandler:SQL Exception: " + sqlE.getMessage());
             sqlE.printStackTrace();
         } catch (ClassNotFoundException cnfE) {
-            Debug.error("DBLocationHandler: Class not found Exception: " + cnfE);
+            logger.warning("DBLocationHandler: Class not found Exception: " + cnfE);
         }
 
         return qt;
@@ -354,54 +344,63 @@ public class DBLocationHandler extends AbstractLocationHandler implements
     }
 
     /**
-     * Prepares the graphics for the layer. This is where the
-     * getRectangle() method call is made on the location.
+     * Prepares the graphics for the layer. This is where the getRectangle()
+     * method call is made on the location.
      * <p>
-     * Occasionally it is necessary to abort a prepare call. When this
-     * happens, the map will set the cancel bit in the LayerThread,
-     * (the thread that is running the prepare). If this Layer needs
-     * to do any cleanups during the abort, it should do so, but
-     * return out of the prepare asap.
-     *  
+     * Occasionally it is necessary to abort a prepare call. When this happens,
+     * the map will set the cancel bit in the LayerThread, (the thread that is
+     * running the prepare). If this Layer needs to do any cleanups during the
+     * abort, it should do so, but return out of the prepare asap.
+     * 
      */
-    public Vector get(float nwLat, float nwLon, float seLat, float seLon,
-                      Vector graphicList) {
+    public OMGraphicList get(float nwLat, float nwLon, float seLat, float seLon, OMGraphicList graphicList) {
+
+        if (graphicList == null) {
+            graphicList = new OMGraphicList();
+            graphicList.setTraverseMode(OMGraphicList.FIRST_ADDED_ON_TOP);
+        }
 
         // IF the quadtree has not been set up yet, do it!
         if (quadtree == null) {
-            Debug.output("DBLocationHandler: Figuring out the locations and names! (This is a one-time operation!)");
+            logger.fine("DBLocationHandler: Figuring out the locations and names! (This is a one-time operation!)");
             quadtree = createData();
         }
 
         if (quadtree != null) {
-            if (Debug.debugging("location")) {
-                Debug.output("DBLocationHandler|DBLocationHandler.get() ul.lon = "
-                        + nwLon
-                        + " lr.lon = "
-                        + seLon
-                        + " delta = "
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("DBLocationHandler|DBLocationHandler.get() ul.lon = " + nwLon + " lr.lon = " + seLon + " delta = "
                         + (seLon - nwLon));
             }
 
-            quadtree.get(nwLat, nwLon, seLat, seLon, graphicList);
+            Vector vec = new Vector<OMGraphic>();
+            quadtree.get(nwLat, nwLon, seLat, seLon, vec);
+
+            graphicList.addAll(vec);
         }
+
         return graphicList;
     }
 
-    public void fillLocationPopUpMenu(LocationPopupMenu locMenu) {
-
-        LocationCBMenuItem lcbi = new LocationCBMenuItem(LocationHandler.showname, locMenu, getLayer());
-        lcbi.setState(locMenu.getLoc().isShowName());
-        locMenu.add(lcbi);
-        locMenu.add(new LocationMenuItem(showdetails, locMenu, getLayer()));
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.bbn.openmap.layer.location.LocationHandler#getItemsForPopupMenu(com
+     * .bbn.openmap.layer.location.Location)
+     */
+    public List<Component> getItemsForPopupMenu(Location loc) {
+        List<Component> menuItems = new ArrayList<Component>();
+        menuItems.add(new LocationCBMenuItem(LocationHandler.showname, loc));
+        menuItems.add(new LocationMenuItem(showdetails, loc));
+        return menuItems;
     }
 
     /** Box used for constructing the palette widgets */
     protected Box box = null;
 
     /**
-     * Provides the palette widgets to control the options of showing
-     * maps, or attribute text.
+     * Provides the palette widgets to control the options of showing maps, or
+     * attribute text.
      * 
      * @return Component object representing the palette widgets.
      */
@@ -430,39 +429,35 @@ public class DBLocationHandler extends AbstractLocationHandler implements
         return box;
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // ActionListener interface implementation
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     /**
-     * The Action Listener method, that reacts to the palette widgets
-     * actions.
+     * The Action Listener method, that reacts to the palette widgets actions.
      */
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
         if (cmd == showLocationsCommand) {
             JCheckBox locationCheck = (JCheckBox) e.getSource();
             setShowLocations(locationCheck.isSelected());
-            if (Debug.debugging("location")) {
-                Debug.output("DBLocationHandler::actionPerformed showLocations is "
-                        + isShowLocations());
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("DBLocationHandler::actionPerformed showLocations is " + isShowLocations());
             }
             getLayer().repaint();
         } else if (cmd == showNamesCommand) {
             JCheckBox namesCheck = (JCheckBox) e.getSource();
             setShowNames(namesCheck.isSelected());
-            if (Debug.debugging("location")) {
-                Debug.output("DBLocationHandler::actionPerformed showNames is "
-                        + isShowNames());
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("DBLocationHandler::actionPerformed showNames is " + isShowNames());
             }
             getLayer().repaint();
         } else if (cmd == readDataCommand) {
-            Debug.output("DBLocationHandler: Re-reading Locations file");
+            logger.fine("DBLocationHandler: Re-reading Locations file");
             quadtree = null;
             getLayer().doPrepare();
         } else {
-            Debug.error("DBLocationHandler: Unknown action command \"" + cmd
-                    + "\" in actionPerformed().");
+            logger.warning("DBLocationHandler: Unknown action command \"" + cmd + "\" in actionPerformed().");
         }
     }
 

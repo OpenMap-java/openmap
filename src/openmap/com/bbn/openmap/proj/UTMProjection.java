@@ -467,7 +467,7 @@ public class UTMProjection extends GeoProj {
      * way to get to those meter coordinates. For instance, a UTMProjection will
      * return a UTMGCT.
      * 
-     * @return
+     * @return UTMGCT for current projection
      */
     public UTMGCT getGCTForProjection() {
         return new UTMGCT(getZoneNumber(), isNorthern() ? 'N' : 'S');

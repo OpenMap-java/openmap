@@ -306,7 +306,7 @@ public abstract class OMRasterObject
    /**
     * Render the raster on the java.awt.Graphics
     * 
-    * @param g java.awt.Graphics to draw the image on.
+    * @param graphics java.awt.Graphics to draw the image on.
     */
    public void render(Graphics graphics) {
       if (getNeedToRegenerate() || getNeedToReposition() || !isVisible()) {

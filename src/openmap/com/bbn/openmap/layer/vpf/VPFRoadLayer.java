@@ -121,14 +121,14 @@ public class VPFRoadLayer extends VPFLayer implements ProjectionListener,
     }
 
     /**
-     * @see com.bbn.openmap.tools.roads.RoadServices#getPathOnRoad(com.bbn.openmap.LatLonPoint, com.bbn.openmap.LatLonPoint)
+     * @see com.bbn.openmap.tools.roads.RoadServices#getPathOnRoad(LatLonPoint, LatLonPoint)
      */
     public Route getPathOnRoad(LatLonPoint start, LatLonPoint end) {
       return helper.getPathOnRoad(start, end);
     }
 
     /**
-     * @see com.bbn.openmap.tools.roads.RoadServices#displayPathOnRoad(java.awt.Point, java.awt.Point, com.bbn.openmap.tools.roads.Route, java.util.List)
+     * @see RoadServices#displayPathOnRoad(Point, Point, Route, List)
      */
     public List displayPathOnRoad(Point start, Point end, Route route, List segments) {
       return helper.displayPathOnRoad(start, end, route, segments);

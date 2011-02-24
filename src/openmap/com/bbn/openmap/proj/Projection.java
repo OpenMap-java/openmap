@@ -103,7 +103,7 @@ public interface Projection extends java.io.Serializable {
     /**
      * Get the center coordinates set in a Point2D object provided.
      * 
-     * @param the Point2D to fill in.
+     * @param fillInThis the Point2D to fill in.
      * @return center point provided.
      */
     public <T extends Point2D> T getCenter(T fillInThis);
@@ -272,7 +272,7 @@ public interface Projection extends java.io.Serializable {
      * Forward project a shape defined with world coordinates into map x, y
      * space.
      * 
-     * @param Shape java.awt.Shape object to project.
+     * @param shape java.awt.Shape object to project.
      * @return java.awt.Shape object defined for projection.
      */
     public Shape forwardShape(Shape shape);
@@ -288,7 +288,7 @@ public interface Projection extends java.io.Serializable {
     /**
      * Inverse project a Point2D from map x/y space into world coordinates.
      * 
-     * @param point XY Point2D
+     * @param point2D XY Point2D
      * @param llpt resulting Point2D object to load the result into, a new
      *        Point2D object will be created if this is null.
      * @return Point2D Object containing result.

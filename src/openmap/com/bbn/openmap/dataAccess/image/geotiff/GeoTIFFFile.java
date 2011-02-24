@@ -53,7 +53,7 @@ import com.sun.media.jai.codec.SeekableStream;
  * JAI being installed on the machine, because it needs the TIFF capabilities of
  * that package. You can ask for the BufferedImage representing the image in the
  * file, or ask for specific tag information. The GeoTIFFModelFactory can be
- * used to create specific georeferenced ImageTile objects for display in
+ * used to create specific geo-referenced ImageTile objects for display in
  * OpenMap.
  * 
  * @author dietrick
@@ -66,23 +66,23 @@ public class GeoTIFFFile {
     protected XTIFFField[] geoKeys;
     protected URL fileURL;
 
-    public GeoTIFFFile(String filePath) throws MalformedURLException,
-            IOException, IllegalArgumentException {
+    public GeoTIFFFile(String filePath)
+            throws MalformedURLException, IOException, IllegalArgumentException {
         this(PropUtils.getResourceOrFileOrURL(filePath));
     }
 
-    public GeoTIFFFile(URL fileURL) throws MalformedURLException, IOException,
-            IllegalArgumentException {
+    public GeoTIFFFile(URL fileURL)
+            throws MalformedURLException, IOException, IllegalArgumentException {
         if (fileURL == null) {
             throw new MalformedURLException("Null file provided as URL");
         }
         init(fileURL);
     }
 
-    public void init(URL fileURL) throws IOException, IllegalArgumentException {
+    public void init(URL fileURL)
+            throws IOException, IllegalArgumentException {
         this.fileURL = fileURL;
-        SeekableStream ss = SeekableStream.wrapInputStream(fileURL.openStream(),
-                true);
+        SeekableStream ss = SeekableStream.wrapInputStream(fileURL.openStream(), true);
         GeoTIFFDescriptor.register();
         GeoTIFFFactory gtFactory = new GeoTIFFFactory();
         gtfDirectory = (GeoTIFFDirectory) gtFactory.createDirectory(ss, 0);
@@ -95,16 +95,17 @@ public class GeoTIFFFile {
      * Buffered Image. This is expensive, so if you need the image again, keep
      * it around. Unless it's really huge, I guess.
      * 
-     * @return
-     * @throws IOException
+     * @return BufferedImage from GeoTIFF
+     * @throws IOException if the file URL is null, or if there's a problem
+     *         reading the file.
      */
-    public BufferedImage getBufferedImage() throws IOException {
+    public BufferedImage getBufferedImage()
+            throws IOException {
         if (fileURL == null) {
             throw new IOException("Image Decoder not created for retrieving image, need to init() GeoTIFFFile.");
         }
 
-        SeekableStream ss = SeekableStream.wrapInputStream(fileURL.openStream(),
-                true);
+        SeekableStream ss = SeekableStream.wrapInputStream(fileURL.openStream(), true);
         XTIFFImageDecoder xtffImageDecoder = new XTIFFImageDecoder(ss, new XTIFFDecodeParam());
         RenderedImage ri = xtffImageDecoder.decodeAsRenderedImage();
         BufferedImage bi = new BufferedImage(ri.getColorModel(), ri.copyData(null), false, new Hashtable());
@@ -146,7 +147,7 @@ public class GeoTIFFFile {
      * Very handy class from the file. Contains all the XTIFFFields with the tag
      * information.
      * 
-     * @return
+     * @return GeoTIFFDirectory that holds GeoTIFF fields.
      */
     public GeoTIFFDirectory getGtfDirectory() {
         return gtfDirectory;
@@ -156,7 +157,7 @@ public class GeoTIFFFile {
      * Ask specifically for the array of XTIFFFields pertaining to
      * georeferencing.
      * 
-     * @return
+     * @return XTIFFField array for keys.
      */
     public XTIFFField[] getGeoKeys() {
         return geoKeys;
@@ -190,8 +191,7 @@ public class GeoTIFFFile {
      * @return RasterPixelIsArea = 1, RasterPixelIsPoint = 2
      */
     public int getRasterType() {
-        return getGeoKeyIntValue(KeyRegistry.getCode(KeyRegistry.GEOKEY,
-                "GTRasterTypeGeoKey"));
+        return getGeoKeyIntValue(KeyRegistry.getCode(KeyRegistry.GEOKEY, "GTRasterTypeGeoKey"));
     }
 
     /**
@@ -204,8 +204,7 @@ public class GeoTIFFFile {
      *         ModelTypeGeocentric = 3 (Geocentric (X,Y,Z) Coordinate System)
      */
     public int getModelType() {
-        return getGeoKeyIntValue(KeyRegistry.getCode(KeyRegistry.GEOKEY,
-                "GTModelTypeGeoKey"));
+        return getGeoKeyIntValue(KeyRegistry.getCode(KeyRegistry.GEOKEY, "GTModelTypeGeoKey"));
     }
 
     /**
@@ -291,20 +290,21 @@ public class GeoTIFFFile {
      *                         WGS84 / UTM North     326zz where zz is UTM zone number   32601   32660
      *                         WGS84 / UTM South     327zz where zz is UTM zone number   32701   32760
      *                         US State Plane (NAD27)   267xx or 320xx where xx is a sequential number            
-     *                         US State Plane (NAD83)   269xx or 321xx where xx is a sequential number            
-     *                         
+     *                         US State Plane (NAD83)   269xx or 321xx where xx is a sequential number
+     * 
      * </pre>
      * 
-     * @return
+     * @return type code for coordinate system
      */
     public int getProjectedCSType() {
-        return getGeoKeyIntValue(KeyRegistry.getCode(KeyRegistry.GEOKEY,
-                "ProjectedCSTypeGeoKey"));
+        return getGeoKeyIntValue(KeyRegistry.getCode(KeyRegistry.GEOKEY, "ProjectedCSTypeGeoKey"));
     }
 
+    /**
+     * @return type code for geographic type
+     */
     public int getGeographicType() {
-        return getGeoKeyIntValue(KeyRegistry.getCode(KeyRegistry.GEOKEY,
-                "GeographicTypeGeoKey"));
+        return getGeoKeyIntValue(KeyRegistry.getCode(KeyRegistry.GEOKEY, "GeographicTypeGeoKey"));
     }
 
     /**
@@ -365,113 +365,111 @@ public class GeoTIFFFile {
 
             int type = xtff.getType();
             int tag = xtff.getTag();
-            buf.append("\n\tfield (").append(i).append(") - ").append(tag)
-                    .append(" (")
-                    .append(KeyRegistry.getKey(KeyRegistry.GEOKEY, tag))
-                    .append("): [");
+            buf.append("\n\tfield (").append(i).append(") - ").append(tag).append(" (")
+               .append(KeyRegistry.getKey(KeyRegistry.GEOKEY, tag)).append("): [");
 
             switch (type) {
-            case XTIFFField.TIFF_ASCII:
-                String[] fieldStrings = xtff.getAsStrings();
-                for (int j = 0; j < fieldStrings.length; j++) {
-                    buf.append(fieldStrings[j]);
-                    if (j < fieldStrings.length - 1) {
-                        buf.append(", ");
-                    }
-                }
-                buf.append("]");
-                break;
-            case XTIFFField.TIFF_DOUBLE:
-                double[] fieldDoubles = xtff.getAsDoubles();
-                for (int j = 0; j < fieldDoubles.length; j++) {
-                    buf.append(fieldDoubles[j]);
-                    if (j < fieldDoubles.length - 1) {
-                        buf.append(", ");
-                    }
-                }
-                buf.append("]");
-                break;
-            case XTIFFField.TIFF_FLOAT:
-                double[] fieldFloats = xtff.getAsDoubles();
-                for (int j = 0; j < fieldFloats.length; j++) {
-                    buf.append(fieldFloats[j]);
-                    if (j < fieldFloats.length - 1) {
-                        buf.append(", ");
-                    }
-                }
-                buf.append("]");
-                break;
-            case XTIFFField.TIFF_BYTE:
-            case XTIFFField.TIFF_SBYTE:
-                byte[] fieldBytes = xtff.getAsBytes();
-                for (int j = 0; j < fieldBytes.length; j++) {
-                    buf.append(fieldBytes[j]);
-                    if (j < fieldBytes.length - 1) {
-                        buf.append(", ");
-                    }
-                }
-                buf.append("]");
-                break;
-            case XTIFFField.TIFF_SSHORT:
-                short[] fieldShorts = xtff.getAsShorts();
-                for (int j = 0; j < fieldShorts.length; j++) {
-                    buf.append(fieldShorts[j]);
-                    if (j < fieldShorts.length - 1) {
-                        buf.append(", ");
-                    }
-                }
-                buf.append("]");
-                break;
-            case XTIFFField.TIFF_LONG:
-            case XTIFFField.TIFF_SHORT:
-                long[] fieldLongs = xtff.getAsLongs();
-                for (int j = 0; j < fieldLongs.length; j++) {
-                    buf.append(fieldLongs[j]);
-                    if (j < fieldLongs.length - 1) {
-                        buf.append(", ");
-                    }
-                }
-                buf.append("]");
-                break;
-            case XTIFFField.TIFF_SLONG:
-                int[] fieldInts = xtff.getAsInts();
-                for (int j = 0; j < fieldInts.length; j++) {
-                    buf.append(fieldInts[j]);
-                    if (j < fieldInts.length - 1) {
-                        buf.append(", ");
-                    }
-                }
-                buf.append("]");
-                break;
-            case XTIFFField.TIFF_RATIONAL:
-                long[][] fieldRationals = xtff.getAsRationals();
-                for (int k = 0; k < fieldRationals.length; k++) {
-                    buf.append("\n\t");
-                    for (int j = 0; j < fieldRationals[0].length; j++) {
-                        buf.append(fieldRationals[k][j]);
-                        if (j < fieldRationals[k].length - 1) {
+                case XTIFFField.TIFF_ASCII:
+                    String[] fieldStrings = xtff.getAsStrings();
+                    for (int j = 0; j < fieldStrings.length; j++) {
+                        buf.append(fieldStrings[j]);
+                        if (j < fieldStrings.length - 1) {
                             buf.append(", ");
                         }
                     }
-                }
-                buf.append("\n]");
-                break;
-            case XTIFFField.TIFF_SRATIONAL:
-                int[][] fieldSRationals = xtff.getAsSRationals();
-                for (int k = 0; k < fieldSRationals.length; k++) {
-                    buf.append("\n\t");
-                    for (int j = 0; j < fieldSRationals[0].length; j++) {
-                        buf.append(fieldSRationals[k][j]);
-                        if (j < fieldSRationals[k].length - 1) {
+                    buf.append("]");
+                    break;
+                case XTIFFField.TIFF_DOUBLE:
+                    double[] fieldDoubles = xtff.getAsDoubles();
+                    for (int j = 0; j < fieldDoubles.length; j++) {
+                        buf.append(fieldDoubles[j]);
+                        if (j < fieldDoubles.length - 1) {
                             buf.append(", ");
                         }
                     }
-                }
-                buf.append("\n]");
-                break;
-            default:
-                // TIFF_UNDEFINED
-                buf.append("Can't handle ").append(type).append(" type.]");
+                    buf.append("]");
+                    break;
+                case XTIFFField.TIFF_FLOAT:
+                    double[] fieldFloats = xtff.getAsDoubles();
+                    for (int j = 0; j < fieldFloats.length; j++) {
+                        buf.append(fieldFloats[j]);
+                        if (j < fieldFloats.length - 1) {
+                            buf.append(", ");
+                        }
+                    }
+                    buf.append("]");
+                    break;
+                case XTIFFField.TIFF_BYTE:
+                case XTIFFField.TIFF_SBYTE:
+                    byte[] fieldBytes = xtff.getAsBytes();
+                    for (int j = 0; j < fieldBytes.length; j++) {
+                        buf.append(fieldBytes[j]);
+                        if (j < fieldBytes.length - 1) {
+                            buf.append(", ");
+                        }
+                    }
+                    buf.append("]");
+                    break;
+                case XTIFFField.TIFF_SSHORT:
+                    short[] fieldShorts = xtff.getAsShorts();
+                    for (int j = 0; j < fieldShorts.length; j++) {
+                        buf.append(fieldShorts[j]);
+                        if (j < fieldShorts.length - 1) {
+                            buf.append(", ");
+                        }
+                    }
+                    buf.append("]");
+                    break;
+                case XTIFFField.TIFF_LONG:
+                case XTIFFField.TIFF_SHORT:
+                    long[] fieldLongs = xtff.getAsLongs();
+                    for (int j = 0; j < fieldLongs.length; j++) {
+                        buf.append(fieldLongs[j]);
+                        if (j < fieldLongs.length - 1) {
+                            buf.append(", ");
+                        }
+                    }
+                    buf.append("]");
+                    break;
+                case XTIFFField.TIFF_SLONG:
+                    int[] fieldInts = xtff.getAsInts();
+                    for (int j = 0; j < fieldInts.length; j++) {
+                        buf.append(fieldInts[j]);
+                        if (j < fieldInts.length - 1) {
+                            buf.append(", ");
+                        }
+                    }
+                    buf.append("]");
+                    break;
+                case XTIFFField.TIFF_RATIONAL:
+                    long[][] fieldRationals = xtff.getAsRationals();
+                    for (int k = 0; k < fieldRationals.length; k++) {
+                        buf.append("\n\t");
+                        for (int j = 0; j < fieldRationals[0].length; j++) {
+                            buf.append(fieldRationals[k][j]);
+                            if (j < fieldRationals[k].length - 1) {
+                                buf.append(", ");
+                            }
+                        }
+                    }
+                    buf.append("\n]");
+                    break;
+                case XTIFFField.TIFF_SRATIONAL:
+                    int[][] fieldSRationals = xtff.getAsSRationals();
+                    for (int k = 0; k < fieldSRationals.length; k++) {
+                        buf.append("\n\t");
+                        for (int j = 0; j < fieldSRationals[0].length; j++) {
+                            buf.append(fieldSRationals[k][j]);
+                            if (j < fieldSRationals[k].length - 1) {
+                                buf.append(", ");
+                            }
+                        }
+                    }
+                    buf.append("\n]");
+                    break;
+                default:
+                    // TIFF_UNDEFINED
+                    buf.append("Can't handle ").append(type).append(" type.]");
             }
         }
         logger.info(buf.toString());
@@ -485,30 +483,30 @@ public class GeoTIFFFile {
      */
     public String getStringOfType(int type) {
         switch (type) {
-        case XTIFFField.TIFF_ASCII:
-            return "ASCII";
-        case XTIFFField.TIFF_DOUBLE:
-            return "double";
-        case XTIFFField.TIFF_FLOAT:
-            return "float";
-        case XTIFFField.TIFF_BYTE:
-            return "byte";
-        case XTIFFField.TIFF_SBYTE:
-            return "sbyte";
-        case XTIFFField.TIFF_SSHORT:
-            return "sshort";
-        case XTIFFField.TIFF_LONG:
-            return "long";
-        case XTIFFField.TIFF_SHORT:
-            return "short";
-        case XTIFFField.TIFF_SLONG:
-            return "slong";
-        case XTIFFField.TIFF_RATIONAL:
-            return "rational";
-        case XTIFFField.TIFF_SRATIONAL:
-            return "srational";
-        default:
-            return "unknown";
+            case XTIFFField.TIFF_ASCII:
+                return "ASCII";
+            case XTIFFField.TIFF_DOUBLE:
+                return "double";
+            case XTIFFField.TIFF_FLOAT:
+                return "float";
+            case XTIFFField.TIFF_BYTE:
+                return "byte";
+            case XTIFFField.TIFF_SBYTE:
+                return "sbyte";
+            case XTIFFField.TIFF_SSHORT:
+                return "sshort";
+            case XTIFFField.TIFF_LONG:
+                return "long";
+            case XTIFFField.TIFF_SHORT:
+                return "short";
+            case XTIFFField.TIFF_SLONG:
+                return "slong";
+            case XTIFFField.TIFF_RATIONAL:
+                return "rational";
+            case XTIFFField.TIFF_SRATIONAL:
+                return "srational";
+            default:
+                return "unknown";
         }
     }
 
@@ -516,10 +514,11 @@ public class GeoTIFFFile {
      * Uses a GeoTIFFModelFactory to create a georeferenced ImageTile image.
      * Only handles 4326 projection right now (WGS84).
      * 
-     * @return
+     * @return ImageTile from file
      * @throws IOException
      */
-    public ImageTile getImageTile() throws IOException {
+    public ImageTile getImageTile()
+            throws IOException {
         GeoTIFFModelFactory gtmf = new GeoTIFFModelFactory(this);
         return gtmf.getImageTile();
     }

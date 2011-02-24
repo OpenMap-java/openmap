@@ -100,162 +100,163 @@ import com.bbn.openmap.util.PropUtils;
  * @author dietrick
  */
 public class MapTileLayer
-      extends OMGraphicHandlerLayer {
+        extends OMGraphicHandlerLayer {
 
-   private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-   public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.imageTile.TileLayer");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.imageTile.TileLayer");
 
-   /**
-    * Property that sets the class name of the MapTileFactory to use for this
-    * layer.
-    */
-   public final static String TILE_FACTORY_CLASS_PROPERTY = "tileFactory";
-   /**
-    * Property to allow the MapTileFactory to call repaint on this layer as map
-    * tiles become available. Default is false, enabling it will not allow this
-    * layer to be used with an ImageServer (renderDataForProjection won't work).
-    */
-   public final static String INCREMENTAL_UPDATES_PROPERTY = "incrementalUpdates";
+    /**
+     * Property that sets the class name of the MapTileFactory to use for this
+     * layer.
+     */
+    public final static String TILE_FACTORY_CLASS_PROPERTY = "tileFactory";
+    /**
+     * Property to allow the MapTileFactory to call repaint on this layer as map
+     * tiles become available. Default is false, enabling it will not allow this
+     * layer to be used with an ImageServer (renderDataForProjection won't
+     * work).
+     */
+    public final static String INCREMENTAL_UPDATES_PROPERTY = "incrementalUpdates";
 
-   /**
-    * A property to set if you want to force the layer to use tiles of a certain
-    * zoom level.
-    */
-   public final static String ZOOM_LEVEL_PROPERTY = "zoomLevel";
+    /**
+     * A property to set if you want to force the layer to use tiles of a
+     * certain zoom level.
+     */
+    public final static String ZOOM_LEVEL_PROPERTY = "zoomLevel";
 
-   /**
-    * The MapTileFactory that knows how to fetch image files and create
-    * OMRasters for them.
-    */
-   protected MapTileFactory tileFactory;
-   /**
-    * Flag to allow this layer to set itself as a repaint callback object on the
-    * tile factory.
-    */
-   protected boolean incrementalUpdates = false;
-   /**
-    * The zoomLevel to use when requesting tiles from the MapTileFactory. Is -1
-    * for default, which lets the factory choose the zoom level based on the
-    * current scale setting. You can choose 1-20 if you want to force the layer
-    * to use something else.
-    */
-   protected int zoomLevel = -1;
+    /**
+     * The MapTileFactory that knows how to fetch image files and create
+     * OMRasters for them.
+     */
+    protected MapTileFactory tileFactory;
+    /**
+     * Flag to allow this layer to set itself as a repaint callback object on
+     * the tile factory.
+     */
+    protected boolean incrementalUpdates = false;
+    /**
+     * The zoomLevel to use when requesting tiles from the MapTileFactory. Is -1
+     * for default, which lets the factory choose the zoom level based on the
+     * current scale setting. You can choose 1-20 if you want to force the layer
+     * to use something else.
+     */
+    protected int zoomLevel = -1;
 
-   public MapTileLayer() {
-      setRenderPolicy(new com.bbn.openmap.layer.policy.BufferedImageRenderPolicy(this));
-      setTileFactory(new StandardMapTileFactory());
-   }
+    public MapTileLayer() {
+        setRenderPolicy(new com.bbn.openmap.layer.policy.BufferedImageRenderPolicy(this));
+        setTileFactory(new StandardMapTileFactory());
+    }
 
-   public MapTileLayer(MapTileFactory tileFactory) {
-      this();
-      this.tileFactory = tileFactory;
-   }
+    public MapTileLayer(MapTileFactory tileFactory) {
+        this();
+        this.tileFactory = tileFactory;
+    }
 
-   /**
-    * OMGraphicHandlerLayer method, called with projection changes or whenever
-    * else doPrepare() is called. Calls getTiles on the map tile factory.
-    * 
-    * @return OMGraphicList that contains tiles to be displayed for the current
-    *         projection.
-    */
-   public synchronized OMGraphicList prepare() {
+    /**
+     * OMGraphicHandlerLayer method, called with projection changes or whenever
+     * else doPrepare() is called. Calls getTiles on the map tile factory.
+     * 
+     * @return OMGraphicList that contains tiles to be displayed for the current
+     *         projection.
+     */
+    public synchronized OMGraphicList prepare() {
 
-      Projection projection = getProjection();
+        Projection projection = getProjection();
 
-      if (projection == null) {
-         return null;
-      }
+        if (projection == null) {
+            return null;
+        }
 
-      if (tileFactory != null) {
-         OMGraphicList newList = new OMGraphicList();
-         setList(newList);
-         return tileFactory.getTiles(projection, zoomLevel, newList);
-      }
-      return null;
-   }
+        if (tileFactory != null) {
+            OMGraphicList newList = new OMGraphicList();
+            setList(newList);
+            return tileFactory.getTiles(projection, zoomLevel, newList);
+        }
+        return null;
+    }
 
-   public String getToolTipTextFor(OMGraphic omg) {
-      return (String) omg.getAttribute(OMGraphic.TOOLTIP);
-   }
+    public String getToolTipTextFor(OMGraphic omg) {
+        return (String) omg.getAttribute(OMGraphic.TOOLTIP);
+    }
 
-   public void setProperties(String prefix, Properties props) {
-      super.setProperties(prefix, props);
-      prefix = PropUtils.getScopedPropertyPrefix(prefix);
+    public void setProperties(String prefix, Properties props) {
+        super.setProperties(prefix, props);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-      String tileFactoryClassString = props.getProperty(prefix + TILE_FACTORY_CLASS_PROPERTY);
-      if (tileFactoryClassString != null) {
-         MapTileFactory itf = (MapTileFactory) ComponentFactory.create(tileFactoryClassString, prefix, props);
-         if (itf != null) {
-            setTileFactory(itf);
-         }
-      } else if (tileFactory != null && tileFactory instanceof PropertyConsumer) {
-         ((PropertyConsumer) tileFactory).setProperties(prefix, props);
-      }
+        String tileFactoryClassString = props.getProperty(prefix + TILE_FACTORY_CLASS_PROPERTY);
+        if (tileFactoryClassString != null) {
+            MapTileFactory itf = (MapTileFactory) ComponentFactory.create(tileFactoryClassString, prefix, props);
+            if (itf != null) {
+                setTileFactory(itf);
+            }
+        } else if (tileFactory != null && tileFactory instanceof PropertyConsumer) {
+            ((PropertyConsumer) tileFactory).setProperties(prefix, props);
+        }
 
-      incrementalUpdates = PropUtils.booleanFromProperties(props, prefix + INCREMENTAL_UPDATES_PROPERTY, incrementalUpdates);
+        incrementalUpdates = PropUtils.booleanFromProperties(props, prefix + INCREMENTAL_UPDATES_PROPERTY, incrementalUpdates);
 
-      setZoomLevel(PropUtils.intFromProperties(props, prefix + ZOOM_LEVEL_PROPERTY, zoomLevel));
-   }
+        setZoomLevel(PropUtils.intFromProperties(props, prefix + ZOOM_LEVEL_PROPERTY, zoomLevel));
+    }
 
-   public Properties getProperties(Properties props) {
-      props = super.getProperties(props);
+    public Properties getProperties(Properties props) {
+        props = super.getProperties(props);
 
-      String prefix = PropUtils.getScopedPropertyPrefix(this);
-      if (tileFactory != null) {
-         props.put(prefix + TILE_FACTORY_CLASS_PROPERTY, tileFactory.getClass().getName());
-         if (tileFactory instanceof PropertyConsumer) {
-            ((PropertyConsumer) tileFactory).getProperties(props);
-         }
-      }
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        if (tileFactory != null) {
+            props.put(prefix + TILE_FACTORY_CLASS_PROPERTY, tileFactory.getClass().getName());
+            if (tileFactory instanceof PropertyConsumer) {
+                ((PropertyConsumer) tileFactory).getProperties(props);
+            }
+        }
 
-      props.put(prefix + INCREMENTAL_UPDATES_PROPERTY, Boolean.toString(incrementalUpdates));
-      props.put(prefix + ZOOM_LEVEL_PROPERTY, Integer.toString(zoomLevel));
+        props.put(prefix + INCREMENTAL_UPDATES_PROPERTY, Boolean.toString(incrementalUpdates));
+        props.put(prefix + ZOOM_LEVEL_PROPERTY, Integer.toString(zoomLevel));
 
-      return props;
-   }
+        return props;
+    }
 
-   public MapTileFactory getTileFactory() {
-      return tileFactory;
-   }
+    public MapTileFactory getTileFactory() {
+        return tileFactory;
+    }
 
-   public void setTileFactory(MapTileFactory tileFactory) {
-      logger.fine("setting tile factory to: " + tileFactory.getClass().getName());
-      // This allows for general faster response, but causes the map to jump
-      // around a little bit when used with the BufferedImageRenderPolicy and
-      // when the projection changes occur rapidly, like when zooming and
-      // panning several times in a second. The generation/positioning can't
-      // keep up. It'll settle out, but it might be better to be slower and
-      // less confusing to the user.
+    public void setTileFactory(MapTileFactory tileFactory) {
+        logger.fine("setting tile factory to: " + tileFactory.getClass().getName());
+        // This allows for general faster response, but causes the map to jump
+        // around a little bit when used with the BufferedImageRenderPolicy and
+        // when the projection changes occur rapidly, like when zooming and
+        // panning several times in a second. The generation/positioning can't
+        // keep up. It'll settle out, but it might be better to be slower and
+        // less confusing to the user.
 
-      if (incrementalUpdates) {
-         tileFactory.setRepaintCallback(this);
-      }
-
-      this.tileFactory = tileFactory;
-   }
-
-   public boolean isIncrementalUpdates() {
-      return incrementalUpdates;
-   }
-
-   public void setIncrementalUpdates(boolean incrementalUpdates) {
-      this.incrementalUpdates = incrementalUpdates;
-      if (tileFactory != null) {
-         if (!incrementalUpdates) {
-            tileFactory.setRepaintCallback(null);
-         } else {
+        if (incrementalUpdates) {
             tileFactory.setRepaintCallback(this);
-         }
-      }
-   }
+        }
 
-   public int getZoomLevel() {
-      return zoomLevel;
-   }
+        this.tileFactory = tileFactory;
+    }
 
-   public void setZoomLevel(int zoomLevel) {
-      this.zoomLevel = zoomLevel;
-   }
+    public boolean isIncrementalUpdates() {
+        return incrementalUpdates;
+    }
+
+    public void setIncrementalUpdates(boolean incrementalUpdates) {
+        this.incrementalUpdates = incrementalUpdates;
+        if (tileFactory != null) {
+            if (!incrementalUpdates) {
+                tileFactory.setRepaintCallback(null);
+            } else {
+                tileFactory.setRepaintCallback(this);
+            }
+        }
+    }
+
+    public int getZoomLevel() {
+        return zoomLevel;
+    }
+
+    public void setZoomLevel(int zoomLevel) {
+        this.zoomLevel = zoomLevel;
+    }
 
 }

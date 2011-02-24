@@ -312,7 +312,7 @@ public class GeoSymAttExpression {
     * 
     * @param fci
     * @param row
-    * @return
+    * @return true if row contents passes evaluation
     */
    public boolean evaluate(FeatureClassInfo fci, int row) {
       boolean ret = true;
@@ -337,7 +337,7 @@ public class GeoSymAttExpression {
     * 
     * @param fci
     * @param row
-    * @return
+    * @return true if row passes evaluation
     */
    public boolean evaluate(FeatureClassInfo fci, List<Object> row) {
       boolean ret = true;
@@ -598,7 +598,7 @@ public class GeoSymAttExpression {
        * @param val1 NOT NULL
        * @param val2 NOT NULL
        * @param buf
-       * @return
+       * @return true if operation passes
        */
       protected boolean test(String val1, String val2, StringBuffer buf) {
          boolean ret = false;
@@ -883,7 +883,7 @@ public class GeoSymAttExpression {
        * @param val1
        * @param val2
        * @param buf
-       * @return
+       * @return true of operation passes.
        */
       protected boolean test(double val1, double val2, StringBuffer buf) {
          boolean ret = false;

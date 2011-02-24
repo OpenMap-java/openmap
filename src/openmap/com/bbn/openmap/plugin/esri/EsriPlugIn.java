@@ -437,7 +437,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
      * list of offsets, which the AbstractSupport.open method will use to
      * iterate through the contents of the SHP file.
      * 
-     * @param sho The url of the SHP file
+     * @param shp The url of the SHP file
      * @param shx The url of the SHX file (not used, OK if null).
      * @return A new EsriGraphicList, null if something went badly.
      * @deprecated Use getGeometry(URL) instead, the shx file isn't used.
@@ -452,7 +452,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
     /**
      * Reads the contents of the SHP file.
      * 
-     * @param sho The url of the SHP file
+     * @param shp The url of the SHP file
      * @return A new EsriGraphicList, null if something went badly.
      */
     public EsriGraphicList getGeometry(URL shp) {

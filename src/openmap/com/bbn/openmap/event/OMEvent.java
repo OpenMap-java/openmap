@@ -171,7 +171,7 @@ public class OMEvent implements Attributable {
      * isn't then the event will always be shown.
      * 
      * @param filters
-     * @return
+     * @return true if this event passes filters
      */
     public boolean passesMacroFilters(List filters) {
         return true;

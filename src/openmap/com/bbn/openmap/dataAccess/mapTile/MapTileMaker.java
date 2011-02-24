@@ -166,11 +166,11 @@ public class MapTileMaker
     * MapTileMaker has been configured with an openmap.properties.file and knows
     * about layers and their marker names.
     * 
-    * @param uvx
-    * @param uvy
-    * @param zoomInfo
-    * @param proj
-    * @return
+    * @param uvx uv x pixel coordinate
+    * @param uvy uv y pixel coordinate
+    * @param zoomInfo zoom level for image tile
+    * @param proj projection for tile
+    * @return byte[] for raw image bytes
     */
    public byte[] makeTile(double uvx, double uvy, ZoomLevelMaker zoomInfo, Proj proj) {
       Point2D center = tileUVToLatLon(new Point2D.Double(uvx + .5, uvy + .5), zoomInfo.getZoomLevel());
@@ -186,12 +186,12 @@ public class MapTileMaker
     * Creating a tile more freely, when you have a set of layers you want to
     * draw into the tile.
     * 
-    * @param uvx
-    * @param uvy
-    * @param zoomLevel
-    * @param layers
-    * @param proj
-    * @return
+    * @param uvx uv x pixel coordinate
+    * @param uvy uv y pixel coordinate
+    * @param zoomLevel zoom level for tile
+    * @param layers layers to include in image
+    * @param proj projection for tile
+    * @return byte[] for raw image bytes
     */
    public byte[] makeTile(double uvx, double uvy, int zoomLevel, List<Layer> layers, Proj proj, Paint background) {
       Point2D center = tileUVToLatLon(new Point2D.Double(uvx + .5, uvy + .5), zoomLevel);

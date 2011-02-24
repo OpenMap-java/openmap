@@ -381,7 +381,7 @@ public class EmbeddedScaleDisplayPanel
     * tens/hundreds version of those increments) multiple of that number.
     * 
     * @param dist
-    * @return
+    * @return scoped value of distance, incremented properly
     */
    protected double scopeDistance(double dist) {
       double new_dist;

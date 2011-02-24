@@ -1163,8 +1163,6 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * @param y vertical coordinate
      * @param maxDist maximum pixel distance from segment to be considered an
      *        intersect.
-     * @param proj Map projection if rendertype is LATLON. Need it to inverse
-     *        project x, y.
      * @return index of first node of intersecting segment, or -1 if not
      *         intersecting.
      */

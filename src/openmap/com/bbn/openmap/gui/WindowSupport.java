@@ -64,8 +64,9 @@ import com.bbn.openmap.util.Debug;
  * a consistent feel across the application). The default setting for this
  * variable is to use the Frm type.
  */
-public class WindowSupport extends ListenerSupport<ComponentListener> implements
-        ComponentListener, ActionListener {
+public class WindowSupport
+        extends ListenerSupport<ComponentListener>
+        implements ComponentListener, ActionListener {
 
     protected Component content;
     protected String title;
@@ -258,12 +259,10 @@ public class WindowSupport extends ListenerSupport<ComponentListener> implements
      */
     protected WSDisplay createDisplay(Frame owner) {
         WSDisplay wsd;
-        if (persistentDisplayType == null
-                && Environment.getBoolean(Environment.UseInternalFrames)) {
+        if (persistentDisplayType == null && Environment.getBoolean(Environment.UseInternalFrames)) {
             wsd = new IntrnlFrm(title);
         } else {
-            Class wTypeClass = persistentDisplayType == null ? getDefaultWindowSupportDisplayType()
-                    : persistentDisplayType;
+            Class wTypeClass = persistentDisplayType == null ? getDefaultWindowSupportDisplayType() : persistentDisplayType;
             if (wTypeClass == Dlg.class) {
                 wsd = new Dlg(owner, title);
             } else if (wTypeClass == IntrnlFrm.class) {
@@ -282,8 +281,8 @@ public class WindowSupport extends ListenerSupport<ComponentListener> implements
      * WSDisplay type.
      * 
      * @param owner
-     * @displayType a WSDisplay class to create. If null, the
-     *              persistentDisplayType will be used.
+     * @param displayType a WSDisplay class to create. If null, the
+     *        persistentDisplayType will be used.
      * @return WSDisplay
      */
     protected WSDisplay createDisplay(Frame owner, Class displayType) {
@@ -309,8 +308,7 @@ public class WindowSupport extends ListenerSupport<ComponentListener> implements
         return defaultWindowSupportDisplayType;
     }
 
-    public static void setDefaultWindowSupportDisplayType(
-                                                          Class defaultWindowSupportDisplayType) {
+    public static void setDefaultWindowSupportDisplayType(Class defaultWindowSupportDisplayType) {
         WindowSupport.defaultWindowSupportDisplayType = defaultWindowSupportDisplayType;
     }
 
@@ -407,12 +405,10 @@ public class WindowSupport extends ListenerSupport<ComponentListener> implements
      * @param height the vertical size of the window, if less than or equal to
      *        zero the content size will be used.
      */
-    public void displayInWindow(Frame owner, Class displayType, int x, int y,
-                                int width, int height) {
+    public void displayInWindow(Frame owner, Class displayType, int x, int y, int width, int height) {
 
         if (content == null) {
-            Debug.message("windowsupport",
-                    "WindowSupport asked to display window with null content");
+            Debug.message("windowsupport", "WindowSupport asked to display window with null content");
             return;
         }
 
@@ -425,8 +421,7 @@ public class WindowSupport extends ListenerSupport<ComponentListener> implements
             }
         }
 
-        if (display != null && displayType != null
-                && !display.getClass().getName().equals(displayType.getName())) {
+        if (display != null && displayType != null && !display.getClass().getName().equals(displayType.getName())) {
             display.dispose();
             display = null;
         }
@@ -449,8 +444,7 @@ public class WindowSupport extends ListenerSupport<ComponentListener> implements
      * against any maximum limits that may have been set in the WindowSupport.
      * Calls setBounds() on the Component.
      */
-    protected void checkBounds(Component comp, int x, int y, int width,
-                               int height) {
+    protected void checkBounds(Component comp, int x, int y, int width, int height) {
         if (comp != null) {
 
             if (width <= 0) {
@@ -488,8 +482,7 @@ public class WindowSupport extends ListenerSupport<ComponentListener> implements
         int y = d.height / 2 - h / 2;
 
         if (Debug.debugging("basic")) {
-            Debug.output("Setting PLG frame X and Y from properties to " + x
-                    + " " + y);
+            Debug.output("Setting PLG frame X and Y from properties to " + x + " " + y);
         }
 
         // compose the frame, but don't show it here
@@ -589,7 +582,9 @@ public class WindowSupport extends ListenerSupport<ComponentListener> implements
 
     }
 
-    public static class IntrnlFrm extends JInternalFrame implements WSDisplay {
+    public static class IntrnlFrm
+            extends JInternalFrame
+            implements WSDisplay {
 
         public IntrnlFrm(String title) {
             super(title,
@@ -640,7 +635,9 @@ public class WindowSupport extends ListenerSupport<ComponentListener> implements
 
     }
 
-    public static class Dlg extends JDialog implements WSDisplay {
+    public static class Dlg
+            extends JDialog
+            implements WSDisplay {
 
         public Dlg(Frame owner, String title) {
             super(owner, title);
@@ -683,7 +680,9 @@ public class WindowSupport extends ListenerSupport<ComponentListener> implements
 
     }
 
-    public static class Frm extends JFrame implements WSDisplay {
+    public static class Frm
+            extends JFrame
+            implements WSDisplay {
 
         public Frm(String title) {
             super(title);

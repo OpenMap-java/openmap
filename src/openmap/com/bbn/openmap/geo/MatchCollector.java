@@ -10,8 +10,8 @@ import java.util.Iterator;
 
 public interface MatchCollector {
     /**
-     * collect an indication that the query object a (or some part of
-     * it) matches object b in some way, presumably by intersection.
+     * collect an indication that the query object a (or some part of it)
+     * matches object b in some way, presumably by intersection.
      * 
      * @param a
      * @param b
@@ -22,10 +22,10 @@ public interface MatchCollector {
     Iterator iterator();
 
     /**
-     * A MatchCollector that collects a list of pairs of the matching
-     * objects
+     * A MatchCollector that collects a list of pairs of the matching objects
      */
-    public static class PairArrayMatchCollector implements MatchCollector {
+    public static class PairArrayMatchCollector
+            implements MatchCollector {
         protected final ArrayList result = new ArrayList();
 
         public void collect(Object a, Object b) {
@@ -55,7 +55,8 @@ public interface MatchCollector {
         }
     }
 
-    public static class SetMatchCollector implements MatchCollector {
+    public static class SetMatchCollector
+            implements MatchCollector {
         protected final HashSet result = new HashSet();
 
         public void collect(Object a, Object b) {
@@ -67,7 +68,8 @@ public interface MatchCollector {
         }
     }
 
-    public static class CollectionMatchCollector implements MatchCollector {
+    public static class CollectionMatchCollector
+            implements MatchCollector {
         protected final Collection c;
 
         public CollectionMatchCollector(Collection c) {

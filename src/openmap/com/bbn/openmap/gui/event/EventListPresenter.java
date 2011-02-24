@@ -241,7 +241,7 @@ public class EventListPresenter extends AbstractEventPresenter implements
     /**
      * This is the method that creates a sorted list of all events.
      * 
-     * @returns Iterator of OMEvents.
+     * @return Iterator of OMEvents.
      */
     public synchronized Iterator<OMEvent> getAllEvents() {
 
@@ -279,7 +279,7 @@ public class EventListPresenter extends AbstractEventPresenter implements
     /**
      * This is the method that creates a sorted list of visible events.
      * 
-     * @returns Iterator of OMEvents.
+     * @return Iterator of OMEvents.
      */
     public synchronized Iterator<OMEvent> getActiveEvents() {
         if (activeEvents == null) {
@@ -1046,7 +1046,7 @@ public class EventListPresenter extends AbstractEventPresenter implements
     protected long currentTime;
 
     /**
-     * @param newValue
+     * @param newCurrentTime the time to use for selecting current event.
      */
     protected synchronized void highlightCurrentEvent(long newCurrentTime) {
         currentTime = newCurrentTime;

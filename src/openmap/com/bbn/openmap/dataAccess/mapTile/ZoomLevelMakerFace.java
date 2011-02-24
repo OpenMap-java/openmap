@@ -436,7 +436,7 @@ public class ZoomLevelMakerFace
    /**
     * Whether this ZLIF is the active tab in the MapTileMakerComponent.
     * 
-    * @return
+    * @return true if face is active
     */
    protected boolean isActive() {
       return active;
@@ -454,7 +454,7 @@ public class ZoomLevelMakerFace
    /**
     * Whether this ZoomLevel should be used in the tile creation or skipped.
     * 
-    * @return
+    * @return if zoom level should be included in tile creation.
     */
    public boolean isInclude() {
       return include;
@@ -504,8 +504,8 @@ public class ZoomLevelMakerFace
     * Called from the MapTileMakerComponent, so this ZLIF is ready to paint its
     * boundaries if it is activated.
     * 
-    * @param proj
-    * @return
+    * @param proj Projection to use to render boundaries.
+    * @return true if boundaries can be generated for given projection
     */
    protected boolean generate(Projection proj) {
       if (boundaries != null) {

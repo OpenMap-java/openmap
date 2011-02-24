@@ -662,8 +662,8 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      * You do not need to set this if you're only drawing the arc outline.
      * 
      * @param value boolean
-     * @see OMGraphic#setLineColor
-     * @see OMGraphic#setFillColor
+     * @see OMGraphic#setLinePaint
+     * @see OMGraphic#setFillPaint
      */
     public void setPolarCorrection(boolean value) {
         correctPolar = value;

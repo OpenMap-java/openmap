@@ -1014,7 +1014,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     /**
      * The ListModel used by the JList, displaying the images.
      * 
-     * @return
+     * @return the ListModel
      */
     protected synchronized ListModel getListModel() {
         if (listModel == null) {
@@ -1044,7 +1044,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
      * Remove an ImageTile from the ListModel.
      * 
      * @param tile
-     * @return
+     * @return true if removal was successful.
      */
     protected boolean removeImageTileFromList(ImageTile tile) {
         return ((DefaultListModel) getListModel()).removeElement(tile);
@@ -1252,7 +1252,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
      * find out which list object was moused.
      * 
      * @param e
-     * @return
+     * @return index of list member moused on.
      */
     protected int getResultListIndex(MouseEvent e) {
         int index = -1;
@@ -1277,7 +1277,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
     /**
      * Get the pixel height of each cell in the JList.
      * 
-     * @return
+     * @return pixel height of cell
      */
     protected double getResultsListCellHeight() {
         double height = 0;

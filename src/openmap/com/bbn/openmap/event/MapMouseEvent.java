@@ -77,7 +77,7 @@ public class MapMouseEvent extends MouseEvent {
      * provides the projected coordinates of the MouseEvent, i.e. the location
      * of the MouseEvent in the non-rotated pixel space of the projection.
      * 
-     * @return
+     * @return Point2D coordinates of location of mouse position
      */
     public Point2D getProjectedLocation() {
         if (map != null) {

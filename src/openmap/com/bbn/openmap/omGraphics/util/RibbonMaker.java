@@ -522,8 +522,8 @@ public class RibbonMaker
     *
     * @param rIterator RibbonIterator for one of the legs of corner
     * @param side which RibbonIterator side
-    * @param front which half you want, true for first part
-    * @return
+    * @param first which half you want, true for first part
+    * @return OMPoly that represents half of the buffered path.
     */
    protected OMPoly getHalfPoly(RibbonIterator rIterator, int side, boolean first)
    {
@@ -577,7 +577,7 @@ public class RibbonMaker
     *
     * @param rIterator RibbonIterator for one of the legs of corner
     * @param side which RibbonIterator side
-    * @return
+    * @return OMPoly that represents buffered path between geos.
     */
    protected OMPoly getPoly(RibbonIterator rIterator, int side)
    {

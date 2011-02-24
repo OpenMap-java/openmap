@@ -22,61 +22,55 @@
 
 package com.bbn.openmap.layer.location;
 
-import java.awt.event.*;
+import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBoxMenuItem;
 
 /**
- * This is an checkbox item that sits on the popup menu. It knows how
- * to get information it needs from the menu, and recenters the map,
- * or brings up more information about the location.
+ * This is an checkbox item that sits on the popup menu. It knows how to get
+ * information it needs from the menu, and recenters the map, or brings up more
+ * information about the location.
  */
-public class LocationCBMenuItem extends JCheckBoxMenuItem implements
-        ActionListener {
+public class LocationCBMenuItem
+        extends JCheckBoxMenuItem
+        implements ActionListener {
 
-    protected LocationPopupMenu clp;
-    protected LocationLayer layer;
+    protected Location location;
 
-    public LocationCBMenuItem() {}
-
-    public LocationCBMenuItem(String text) {
+    public LocationCBMenuItem(String text, Location loc) {
         super(text);
+        setLoc(loc);
         this.addActionListener(this);
-    }
-
-    public LocationCBMenuItem(String text, LocationPopupMenu aCLP,
-            LocationLayer aLayer) {
-        this(text);
-        setLocationPopupMenu(aCLP);
-        setLayer(aLayer);
-    }
-
-    public void setLocationPopupMenu(LocationPopupMenu aCLP) {
-        clp = aCLP;
-    }
-
-    public LocationPopupMenu getLocationPopupMenu() {
-        return clp;
-    }
-
-    public void setLayer(LocationLayer aLayer) {
-        layer = aLayer;
-    }
-
-    public LocationLayer getLayer() {
-        return layer;
+        setSelected(loc.isShowName());
     }
 
     public void actionPerformed(java.awt.event.ActionEvent e) {
-        //          Debug.output("Action: " + e);
         String command = e.getActionCommand();
 
-        if (layer != null && e.getSource().equals(this)) {
+        if (e.getSource().equals(this)) {
             if (command.equals(LocationHandler.showname)) {
                 JCheckBoxMenuItem btn = (JCheckBoxMenuItem) e.getSource();
-                clp.getLoc().setShowName(btn.getState());
-                layer.repaint();
+                try {
+                    location.setShowName(btn.getState());
+                    location.getLocationHandler().getLayer().repaint();
+                } catch (NullPointerException npe) {
+
+                }
             }
         }
+    }
+
+    /**
+     * @return the location
+     */
+    public Location getLoc() {
+        return location;
+    }
+
+    /**
+     * @param location the location to set
+     */
+    public void setLoc(Location location) {
+        this.location = location;
     }
 }

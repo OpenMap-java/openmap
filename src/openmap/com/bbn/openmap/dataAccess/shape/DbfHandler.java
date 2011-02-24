@@ -245,7 +245,7 @@ public class DbfHandler extends OMComponent {
     /**
      * Return an iterator for all of the Rules that the DbfHandler knows about.
      * 
-     * @return
+     * @return Iterator over Rules
      */
     public Iterator<Rule> getRuleIterator() {
         return getRules().iterator();
@@ -384,7 +384,7 @@ public class DbfHandler extends OMComponent {
      * @param indicies column indexes of values to be concatenated in return
      *        value
      * @param record List to use for return value
-     * @return String
+     * @return String of content
      */
     public String getContentFromIndicies(int[] indicies, List record) {
         int numIndicies = indicies.length;
@@ -537,7 +537,7 @@ public class DbfHandler extends OMComponent {
          * value.
          * 
          * @param val
-         * @return
+         * @return true of the operation passed
          */
         public boolean evaluate(Object val) {
             return op.evaluate(this.val, val);
@@ -549,7 +549,7 @@ public class DbfHandler extends OMComponent {
          * 
          * @param actionProperty prefix + ActionProperty
          * @param props
-         * @return int[] of column indexes in the dbf file reflecting the order
+         * @return int array of column indexes in the dbf file reflecting the order
          *         and number of column names listed as the property value.
          */
         public int[] getIndicies(String actionProperty, Properties props) {
@@ -573,7 +573,7 @@ public class DbfHandler extends OMComponent {
          * Given a prefix + ActionProperty, get the column names listed as the
          * property value and figure out what the indexes of the columns are.
          * 
-         * @param int[] of column indexes in the dbf file reflecting the order
+         * @param indicies int[] of column indexes in the dbf file reflecting the order
          *        and number of column names to be listed as a property value.
          * @return String for use in properties of space-separated column names.
          */

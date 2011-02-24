@@ -44,20 +44,20 @@ import com.bbn.openmap.gui.MapPanel;
 import com.bbn.openmap.util.Debug;
 
 /**
- * OpenMap Applet. Uses the MapHandler, via
- * BeanContextMembershipListener methods to lay out the MapPanel and
- * JMenuBar. Creates a PropertyHandler that will look for the
- * openmap.properties file in the codebase. If the
+ * OpenMap Applet. Uses the MapHandler, via BeanContextMembershipListener
+ * methods to lay out the MapPanel and JMenuBar. Creates a PropertyHandler that
+ * will look for the openmap.properties file in the codebase. If the
  * 
  * <pre>
  * PROPERTIES
  * </pre>
  * 
- * applet parameter is specified with a different properties file, that
- * file will be used instead.
+ * applet parameter is specified with a different properties file, that file
+ * will be used instead.
  */
-public class OpenMapApplet extends JApplet implements
-        BeanContextMembershipListener, BeanContextChild {
+public class OpenMapApplet
+        extends JApplet
+        implements BeanContextMembershipListener, BeanContextChild {
 
     public final static String PropertiesProperty = "PROPERTIES";
 
@@ -75,20 +75,44 @@ public class OpenMapApplet extends JApplet implements
     // {"ORBgatekeeperIOR", "boolean", "URL to gatekeeper IOR."},
 
     protected final String pinfo[][] = {
-            { Environment.Latitude, "float", "Starting center latitude" },
-            { Environment.Longitude, "float", "Starting center longitude" },
-            { Environment.Scale, "float", "Starting Scale" },
-            { Environment.Projection, "String", "Default projection type" },
-            { "debug.basic", "none", "enable basic debugging" },
-            { Environment.HelpURL, "String",
-                    "URL location of OpenMap help pages" } };
+        {
+            Environment.Latitude,
+            "float",
+            "Starting center latitude"
+        },
+        {
+            Environment.Longitude,
+            "float",
+            "Starting center longitude"
+        },
+        {
+            Environment.Scale,
+            "float",
+            "Starting Scale"
+        },
+        {
+            Environment.Projection,
+            "String",
+            "Default projection type"
+        },
+        {
+            "debug.basic",
+            "none",
+            "enable basic debugging"
+        },
+        {
+            Environment.HelpURL,
+            "String",
+            "URL location of OpenMap help pages"
+        }
+    };
 
     /**
      * Returns information about this applet.
      * <p>
      * 
-     * @return a string containing information about the author,
-     *         version, and copyright of the applet.
+     * @return a string containing information about the author, version, and
+     *         copyright of the applet.
      * @since JDK1.0
      */
     public String getAppletInfo() {
@@ -96,26 +120,38 @@ public class OpenMapApplet extends JApplet implements
     }
 
     /**
-     * Returns information about the parameters that are understood by
-     * this applet.
+     * Returns information about the parameters that are understood by this
+     * applet.
      * <p>
-     * Each element of the array should be a set of three
-     * <code>Strings</code> containing the name, the type, and a
-     * description. For example:
+     * Each element of the array should be a set of three <code>Strings</code>
+     * containing the name, the type, and a description. For example:
      * <p>
      * <blockquote>
      * 
      * <pre>
-     * String pinfo[][] = { { &quot;fps&quot;, &quot;1-10&quot;, &quot;frames per second&quot; },
-     *         { &quot;repeat&quot;, &quot;boolean&quot;, &quot;repeat image loop&quot; },
-     *         { &quot;imgs&quot;, &quot;url&quot;, &quot;images directory&quot; } };
+     * String pinfo[][] = {
+     *     {
+     *         &quot;fps&quot;,
+     *         &quot;1-10&quot;,
+     *         &quot;frames per second&quot;
+     *     },
+     *     {
+     *         &quot;repeat&quot;,
+     *         &quot;boolean&quot;,
+     *         &quot;repeat image loop&quot;
+     *     },
+     *     {
+     *         &quot;imgs&quot;,
+     *         &quot;url&quot;,
+     *         &quot;images directory&quot;
+     *     }
+     * };
      * </pre>
      * 
      * </blockquote>
      * <p>
      * 
-     * @return an array describing the parameters this applet looks
-     *         for.
+     * @return an array describing the parameters this applet looks for.
      * @since JDK1.0
      */
     public String[][] getParameterInfo() {
@@ -123,13 +159,12 @@ public class OpenMapApplet extends JApplet implements
     }
 
     /**
-     * Called by the browser or applet viewer to inform this applet
-     * that it has been loaded into the system. It is always called
-     * before the first time that the <code>start</code> method is
-     * called.
+     * Called by the browser or applet viewer to inform this applet that it has
+     * been loaded into the system. It is always called before the first time
+     * that the <code>start</code> method is called.
      * <p>
-     * The implementation of this method provided by the
-     * <code>Applet</code> class does nothing.
+     * The implementation of this method provided by the <code>Applet</code>
+     * class does nothing.
      * 
      * @see java.applet.Applet#destroy()
      * @see java.applet.Applet#start()
@@ -139,27 +174,30 @@ public class OpenMapApplet extends JApplet implements
     public void init() {
         // Initialize as an applet
         Environment.init(this);
-        Debug.init(this, new String[] { "debug.basic", "debug.cspec",
-                "debug.layer", "debug.mapbean", "debug.plugin" });
+        Debug.init(this, new String[] {
+            "debug.basic",
+            "debug.cspec",
+            "debug.layer",
+            "debug.mapbean",
+            "debug.plugin"
+        });
 
         String propValue = getParameter(PropertiesProperty);
         PropertyHandler propHandler = null;
 
         try {
             if (propValue != null) {
-                propHandler = new PropertyHandler(propValue);
+                PropertyHandler.Builder builder = new PropertyHandler.Builder().setPropertiesFile(propValue);
+                propHandler = new PropertyHandler(builder);
                 if (Debug.debugging("app")) {
-                    Debug.output("OpenMapApplet: Using properties from "
-                            + propValue);
+                    Debug.output("OpenMapApplet: Using properties from " + propValue);
                 }
             }
         } catch (MalformedURLException murle) {
-            Debug.error("OpenMap: property file specified: "
-                    + propValue
+            Debug.error("OpenMap: property file specified: " + propValue
                     + " doesn't exist, searching for default openmap.properties file...");
         } catch (IOException ioe) {
-            Debug.error("OpenMap: There is a problem using the property file specified: "
-                    + propValue
+            Debug.error("OpenMap: There is a problem using the property file specified: " + propValue
                     + ", searching for default openmap.properties file...");
         }
 
@@ -173,10 +211,9 @@ public class OpenMapApplet extends JApplet implements
     }
 
     /**
-     * Called by the browser or applet viewer to inform this applet
-     * that it should start its execution. It is called after the
-     * <code>init</code> method and each time the applet is
-     * revisited in a Web page.
+     * Called by the browser or applet viewer to inform this applet that it
+     * should start its execution. It is called after the <code>init</code>
+     * method and each time the applet is revisited in a Web page.
      * <p>
      * 
      * @see java.applet.Applet#destroy()
@@ -190,10 +227,10 @@ public class OpenMapApplet extends JApplet implements
     }
 
     /**
-     * Called by the browser or applet viewer to inform this applet
-     * that it should stop its execution. It is called when the Web
-     * page that contains this applet has been replaced by another
-     * page, and also just before the applet is to be destroyed.
+     * Called by the browser or applet viewer to inform this applet that it
+     * should stop its execution. It is called when the Web page that contains
+     * this applet has been replaced by another page, and also just before the
+     * applet is to be destroyed.
      * <p>
      * 
      * @see java.applet.Applet#destroy()
@@ -206,10 +243,10 @@ public class OpenMapApplet extends JApplet implements
     }
 
     /**
-     * Called by the browser or applet viewer to inform this applet
-     * that it is being reclaimed and that it should destroy any
-     * resources that it has allocated. The <code>stop</code> method
-     * will always be called before <code>destroy</code>.
+     * Called by the browser or applet viewer to inform this applet that it is
+     * being reclaimed and that it should destroy any resources that it has
+     * allocated. The <code>stop</code> method will always be called before
+     * <code>destroy</code>.
      * <p>
      * 
      * @see java.applet.Applet#init()
@@ -223,8 +260,8 @@ public class OpenMapApplet extends JApplet implements
     }
 
     /**
-     * The method called by BeanContextMembershipListener methods to
-     * find components in the MapHandler.
+     * The method called by BeanContextMembershipListener methods to find
+     * components in the MapHandler.
      */
     public void findAndInit(Iterator it) {
         while (it.hasNext()) {
@@ -241,8 +278,7 @@ public class OpenMapApplet extends JApplet implements
 
             JMenuBar jmb = ((MapPanel) someObj).getMapMenuBar();
             if (jmb != null) {
-                Debug.message("basic",
-                        "OpenMapApplet: Got MenuBar from MapPanel");
+                Debug.message("basic", "OpenMapApplet: Got MenuBar from MapPanel");
                 getRootPane().setJMenuBar(jmb);
             }
 
@@ -256,24 +292,23 @@ public class OpenMapApplet extends JApplet implements
     }
 
     /**
-     * BeanContextMembership interface method. Called when objects are
-     * added to the BeanContext.
+     * BeanContextMembership interface method. Called when objects are added to
+     * the BeanContext.
      * 
-     * @param bcme contains an Iterator that lets you go through the
-     *        new objects.
+     * @param bcme contains an Iterator that lets you go through the new
+     *        objects.
      */
     public void childrenAdded(BeanContextMembershipEvent bcme) {
         findAndInit(bcme.iterator());
     }
 
     /**
-     * BeanContextMembership interface method. Called by BeanContext
-     * when children are being removed. Unhooks itself from the
-     * objects that are being removed if they are contained within the
-     * Frame.
+     * BeanContextMembership interface method. Called by BeanContext when
+     * children are being removed. Unhooks itself from the objects that are
+     * being removed if they are contained within the Frame.
      * 
-     * @param bcme event that contains an Iterator to use to go
-     *        through the removed objects.
+     * @param bcme event that contains an Iterator to use to go through the
+     *        removed objects.
      */
     public void childrenRemoved(BeanContextMembershipEvent bcme) {
         for (Iterator it = bcme.iterator(); it.hasNext();) {
@@ -286,21 +321,18 @@ public class OpenMapApplet extends JApplet implements
      */
     public void findAndUndo(Object someObj) {
         if (someObj instanceof MapPanel && someObj instanceof Container) {
-            Debug.message("basic",
-                    "OpenMapApplet: MapPanel is being removed from applet");
+            Debug.message("basic", "OpenMapApplet: MapPanel is being removed from applet");
             getContentPane().remove((Container) someObj);
 
             if (getJMenuBar() == ((MapPanel) someObj).getMapMenuBar()) {
-                Debug.message("basic",
-                        "OpenMapApplet: Menu Bar is being removed");
+                Debug.message("basic", "OpenMapApplet: Menu Bar is being removed");
                 setJMenuBar(null);
             }
         }
 
         if (someObj instanceof JMenuBar) {
             if (getJMenuBar() == (JMenuBar) someObj) {
-                Debug.message("basic",
-                        "OpenMapApplet: MenuBar is being removed from applet");
+                Debug.message("basic", "OpenMapApplet: MenuBar is being removed from applet");
                 setJMenuBar(null);
             }
         }
@@ -316,7 +348,8 @@ public class OpenMapApplet extends JApplet implements
      * 
      * @param in_bc The context to which this object is being added
      */
-    public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
+    public void setBeanContext(BeanContext in_bc)
+            throws PropertyVetoException {
         if (in_bc != null) {
             in_bc.addBeanContextMembershipListener(this);
             beanContextChildSupport.setBeanContext(in_bc);
@@ -325,15 +358,12 @@ public class OpenMapApplet extends JApplet implements
     }
 
     /** Method for BeanContextChild interface. */
-    public void addVetoableChangeListener(String propertyName,
-                                          VetoableChangeListener in_vcl) {
+    public void addVetoableChangeListener(String propertyName, VetoableChangeListener in_vcl) {
         beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
     }
 
     /** Method for BeanContextChild interface. */
-    public void removeVetoableChangeListener(String propertyName,
-                                             VetoableChangeListener in_vcl) {
-        beanContextChildSupport.removeVetoableChangeListener(propertyName,
-                in_vcl);
+    public void removeVetoableChangeListener(String propertyName, VetoableChangeListener in_vcl) {
+        beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
     }
 }

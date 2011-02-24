@@ -229,8 +229,8 @@ public class DTEDFrameCache extends CacheHandler implements PropertyConsumer {
      * Load a dted frame into the cache, based on the path of the frame as a
      * key.
      * 
-     * @param dtedFramePath complete path to the frame.
-     * @return DTED frame, hidden as a CacheObject.
+     * @param key complete path to the frame, as a string.
+     * @return DTED frame, hidden in a CacheObject.
      */
     public CacheObject load(Object key) {
         if (key != null) {

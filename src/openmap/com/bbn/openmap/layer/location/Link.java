@@ -27,27 +27,26 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Paint;
 import java.awt.Stroke;
+import java.util.logging.Level;
 
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMLine;
-import com.bbn.openmap.util.Debug;
 
 /**
- * A Link is a relationship between Locations, represented as a line
- * between them. If you want to draw the endpoints, use a
- * LocationHandler for them.
+ * A Link is a relationship between Locations, represented as a line between
+ * them. If you want to draw the endpoints, use a LocationHandler for them.
  * <P>
  * 
- * Although this class extends from Location, it doesn't handle
- * displaying a name for the link that well. The name will appear as
- * the first node's marker name, although it should declutter if
- * needed.
+ * Although this class extends from Location, it doesn't handle displaying a
+ * name for the link that well. The name will appear as the first node's marker
+ * name, although it should declutter if needed.
  */
-public class Link extends Location {
+public class Link
+        extends Location {
 
     /*
-     * The other endpoints of the link, in decimal degrees. The first
-     * endpoints are contained in the Location superclass.
+     * The other endpoints of the link, in decimal degrees. The first endpoints
+     * are contained in the Location superclass.
      */
     /** The lat of point 2. */
     public double lat2 = 0.0f;
@@ -73,10 +72,10 @@ public class Link extends Location {
     public static float DEFAULT_THICKNESS = 1.0f;
 
     /**
-     * A plain constructor if you are planning on setting everything
-     * yourself.
+     * A plain constructor if you are planning on setting everything yourself.
      */
-    public Link() {}
+    public Link() {
+    }
 
     /**
      * Construct a Link with the given attributes
@@ -89,15 +88,13 @@ public class Link extends Location {
      * @param paint the link's displayed edge java.awt.Paint (Color).
      * @param dashed Is it a dashed line?
      * @param thickness The line thickness.
-     * @param linetype LINETYPE_STRAIGHT, LINETYPE_GREATCIRCLE,
-     *        LINETYPE_RHUMB
+     * @param linetype LINETYPE_STRAIGHT, LINETYPE_GREATCIRCLE, LINETYPE_RHUMB
      */
-    public Link(double lat1, double lon1, double lat2, double lon2, String details,
-            Paint paint, boolean dashed, float thickness, int linetype) {
+    public Link(double lat1, double lon1, double lat2, double lon2, String details, Paint paint, boolean dashed, float thickness,
+                int linetype) {
 
-        if (Debug.debugging("location")) {
-            Debug.output("Link(" + lat1 + ", " + lon1 + ", " + lat2 + ", "
-                    + lon2 + ", " + details + ", " + paint + ", " + dashed
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Link(" + lat1 + ", " + lon1 + ", " + lat2 + ", " + lon2 + ", " + details + ", " + paint + ", " + dashed
                     + ", " + thickness + ", " + linetype + ")");
         }
 
@@ -129,11 +126,10 @@ public class Link extends Location {
      * @param dashed Is it a dashed line?
      * @param thickness The line thickness.
      */
-    public Link(int x1, int y1, int x2, int y2, String details, Paint paint,
-            boolean dashed, float thickness) {
+    public Link(int x1, int y1, int x2, int y2, String details, Paint paint, boolean dashed, float thickness) {
 
-        if (Debug.debugging("location")) {
-            Debug.output("Link(" + x1 + ", " + y1 + ", " + x2 + ", " + y2 + ")");
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Link(" + x1 + ", " + y1 + ", " + x2 + ", " + y2 + ")");
         }
 
         this.x = x1;
@@ -160,12 +156,14 @@ public class Link extends Location {
      * @param thickness the thickness of the line
      * @param dashed true if the line should be dashed
      */
-    public void setLinkDrawingParameters(OMLine link, Paint paint,
-                                         float thickness, boolean dashed) {
+    public void setLinkDrawingParameters(OMLine link, Paint paint, float thickness, boolean dashed) {
         Stroke stroke;
         if (dashed) {
             // create a basic default dash
-            float[] dash = { 8.0f, 8.0f };
+            float[] dash = {
+                8.0f,
+                8.0f
+            };
             stroke = new BasicStroke(thickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
         } else {
             stroke = new BasicStroke(thickness);
@@ -191,7 +189,12 @@ public class Link extends Location {
         this.lon2 = lon2;
 
         OMLine line = (OMLine) getLocationMarker();
-        double[] locs = { lat1, lon1, lat2, lon2 };
+        double[] locs = {
+            lat1,
+            lon1,
+            lat2,
+            lon2
+        };
         line.setLL(locs);
     }
 
@@ -221,14 +224,16 @@ public class Link extends Location {
     }
 
     /** Does nothing - marker handled in setLocation methods. */
-    public void setGraphicLocations(double latitude, double longitude) {}
+    public void setGraphicLocations(double latitude, double longitude) {
+    }
 
     /** Does nothing - marker handled in setLocation methods. */
-    public void setGraphicLocations(int x, int y) {}
+    public void setGraphicLocations(int x, int y) {
+    }
 
     /** Does nothing - marker handled in setLocation methods. */
-    public void setGraphicLocations(double latitude, double longitude,
-                                    int offsetX, int offsetY) {}
+    public void setGraphicLocations(double latitude, double longitude, int offsetX, int offsetY) {
+    }
 
     public void setLinkColor(Paint linkPaint) {
         // location is actually the link graphic. getLink() does the

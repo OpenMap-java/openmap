@@ -52,24 +52,24 @@ import com.bbn.openmap.util.FileUtils;
 /**
  * Basic implementation of internationalization support.
  * <P>
- * This class backs the I18n interface by I18n.property files that it
- * expects to find in each package.
+ * This class backs the I18n interface by I18n.property files that it expects to
+ * find in each package.
  * <P>
- * This class provides a mechanism for creating the I18n.property
- * files that it expects to use in the application. If the
- * 'i18n.create' flag is set in the Debug class, then this class will
- * track what resource bundle property files were searched for, and
- * what values were returned for requested keys. The
- * dumpCreatedResourceBundles() method will cause the resource bundles
- * to be written out, where they can be modified to change the strings
- * displayed in the GUI. If the 'i18n.default' flag is set, then
- * 'I18N.properties' files will be created. If that flag is not set,
- * then the name of the files will be modified for the locale
- * currently set for the application (i.e. I18N_en_US.properties for
- * the US locale). You can add the I18nFileCreateMenuItem to an
- * application to trigger the dumpCreatedResourceBundles() method.
+ * This class provides a mechanism for creating the I18n.property files that it
+ * expects to use in the application. If the 'i18n.create' flag is set in the
+ * Debug class, then this class will track what resource bundle property files
+ * were searched for, and what values were returned for requested keys. The
+ * dumpCreatedResourceBundles() method will cause the resource bundles to be
+ * written out, where they can be modified to change the strings displayed in
+ * the GUI. If the 'i18n.default' flag is set, then 'I18N.properties' files will
+ * be created. If that flag is not set, then the name of the files will be
+ * modified for the locale currently set for the application (i.e.
+ * I18N_en_US.properties for the US locale). You can add the
+ * I18nFileCreateMenuItem to an application to trigger the
+ * dumpCreatedResourceBundles() method.
  */
-public class BasicI18n implements I18n, Serializable {
+public class BasicI18n
+        implements I18n, Serializable {
 
     /**
      * Debug string, 'i18n'
@@ -77,23 +77,22 @@ public class BasicI18n implements I18n, Serializable {
     public static final String DEBUG = "i18n";
 
     /**
-     * Debug string that causes the BasicI18n class to keep track of
-     * resource property files and strings it looks for, as well as
-     * their defaults. These files can be created by calling
-     * dumpCreatedResourceBundles().
+     * Debug string that causes the BasicI18n class to keep track of resource
+     * property files and strings it looks for, as well as their defaults. These
+     * files can be created by calling dumpCreatedResourceBundles().
      */
     public static final String DEBUG_CREATE = "i18n.create";
 
     /**
-     * If set, created ResourceBundle files will not have the local
-     * suffixes added to them. Otherwise, the locale set in I18n will
-     * be used and appended.
+     * If set, created ResourceBundle files will not have the local suffixes
+     * added to them. Otherwise, the locale set in I18n will be used and
+     * appended.
      */
     public static final String DEBUG_CREATE_DEFAULT = "i18n.default";
 
     /**
-     * All properties files containing string should be contained in a
-     * file called I18N.properties. This string defines the I18N.
+     * All properties files containing string should be contained in a file
+     * called I18N.properties. This string defines the I18N.
      */
     public static final String ResourceFileNamePrefix = "I18N";
 
@@ -122,8 +121,7 @@ public class BasicI18n implements I18n, Serializable {
         return get(requestor, field, TEXT, defaultString);
     }
 
-    public String get(Object requestor, String field, int type,
-                      String defaultString) {
+    public String get(Object requestor, String field, int type, String defaultString) {
         return get(requestor.getClass(), field, type, defaultString);
     }
 
@@ -131,8 +129,7 @@ public class BasicI18n implements I18n, Serializable {
         return get(requestor, field, TEXT, defaultString);
     }
 
-    public String get(Class requestor, String field, int type,
-                      String defaultString) {
+    public String get(Class requestor, String field, int type, String defaultString) {
         String ret = getInternal(requestor, field, type);
 
         if (Debug.debugging(DEBUG_CREATE)) {
@@ -155,91 +152,72 @@ public class BasicI18n implements I18n, Serializable {
     // Methods making it easier to use MessageFormat:
     // //////////////////////////////////////////////
 
-    public String get(Object requestor, String field, String defaultString,
-                      Object param1) {
-        return get(requestor.getClass(),
-                field,
-                TEXT,
-                defaultString,
-                new Object[] { param1 });
+    public String get(Object requestor, String field, String defaultString, Object param1) {
+        return get(requestor.getClass(), field, TEXT, defaultString, new Object[] {
+            param1
+        });
     }
 
-    public String get(Object requestor, String field, int type,
-                      String defaultString, Object param1) {
-        return get(requestor.getClass(),
-                field,
-                type,
-                defaultString,
-                new Object[] { param1 });
+    public String get(Object requestor, String field, int type, String defaultString, Object param1) {
+        return get(requestor.getClass(), field, type, defaultString, new Object[] {
+            param1
+        });
     }
 
-    public String get(Class requestor, String field, String defaultString,
-                      Object param1) {
-        return get(requestor,
-                field,
-                TEXT,
-                defaultString,
-                new Object[] { param1 });
-    }
-
-    public String get(Class requestor, String field, int type,
-                      String defaultString, Object param1) {
-        return get(requestor,
-                field,
-                type,
-                defaultString,
-                new Object[] { param1 });
-    }
-
-    public String get(Object requestor, String field, String defaultString,
-                      Object param1, Object param2) {
-        return get(requestor.getClass(),
-                field,
-                TEXT,
-                defaultString,
-                new Object[] { param1, param2 });
-    }
-
-    public String get(Object requestor, String field, int type,
-                      String defaultString, Object param1, Object param2) {
-        return get(requestor.getClass(),
-                field,
-                type,
-                defaultString,
-                new Object[] { param1, param2 });
-    }
-
-    public String get(Class requestor, String field, String defaultString,
-                      Object param1, Object param2) {
+    public String get(Class requestor, String field, String defaultString, Object param1) {
         return get(requestor, field, TEXT, defaultString, new Object[] {
-                param1, param2 });
+            param1
+        });
     }
 
-    public String get(Class requestor, String field, int type,
-                      String defaultString, Object param1, Object param2) {
+    public String get(Class requestor, String field, int type, String defaultString, Object param1) {
         return get(requestor, field, type, defaultString, new Object[] {
-                param1, param2 });
+            param1
+        });
     }
 
-    public String get(Object requestor, String field, String defaultString,
-                      Object[] params) {
+    public String get(Object requestor, String field, String defaultString, Object param1, Object param2) {
+        return get(requestor.getClass(), field, TEXT, defaultString, new Object[] {
+            param1,
+            param2
+        });
+    }
+
+    public String get(Object requestor, String field, int type, String defaultString, Object param1, Object param2) {
+        return get(requestor.getClass(), field, type, defaultString, new Object[] {
+            param1,
+            param2
+        });
+    }
+
+    public String get(Class requestor, String field, String defaultString, Object param1, Object param2) {
+        return get(requestor, field, TEXT, defaultString, new Object[] {
+            param1,
+            param2
+        });
+    }
+
+    public String get(Class requestor, String field, int type, String defaultString, Object param1, Object param2) {
+        return get(requestor, field, type, defaultString, new Object[] {
+            param1,
+            param2
+        });
+    }
+
+    public String get(Object requestor, String field, String defaultString, Object[] params) {
         return get(requestor.getClass(), field, TEXT, defaultString, params);
     }
 
-    public String get(Object requestor, String field, int type,
-                      String defaultString, Object[] params) {
+    public String get(Object requestor, String field, int type, String defaultString, Object[] params) {
         return get(requestor.getClass(), field, type, defaultString, params);
     }
 
-    public String get(Class requestor, String field, String defaultString,
-                      Object[] params) {
+    public String get(Class requestor, String field, String defaultString, Object[] params) {
         return get(requestor, field, TEXT, defaultString, params);
     }
 
-    public String get(Class requestor, String field, int type,
-                      String defaultString, Object[] params) {
-        return MessageFormat.format(get(requestor, field, type, defaultString),
-                params);
+    public String get(Class requestor, String field, int type, String defaultString, Object[] params) {
+        return MessageFormat.format(get(requestor, field, type, defaultString), params);
     }
 
     // Methods fill setting the textual properties of common Swing
@@ -249,19 +227,13 @@ public class BasicI18n implements I18n, Serializable {
     public void set(Object requestor, String field, JLabel comp) {
         set(requestor, field, (JComponent) comp);
         comp.setText(getTEXT(requestor, field, comp.getText()));
-        comp.setDisplayedMnemonic(getMNEMONIC(requestor,
-                field,
-                comp.getDisplayedMnemonic(),
-                false));
+        comp.setDisplayedMnemonic(getMNEMONIC(requestor, field, comp.getDisplayedMnemonic(), false));
     }
 
     public void set(Object requestor, String field, JButton comp) {
         set(requestor, field, (JComponent) comp);
         comp.setText(getTEXT(requestor, field, comp.getText()));
-        comp.setMnemonic(getMNEMONIC(requestor,
-                field,
-                comp.getMnemonic(),
-                false));
+        comp.setMnemonic(getMNEMONIC(requestor, field, comp.getMnemonic(), false));
     }
 
     public void set(Object requestor, String field, JMenu comp) {
@@ -304,7 +276,8 @@ public class BasicI18n implements I18n, Serializable {
         } catch (NoSuchFieldException e) {
             // We'll try again below.
         } catch (SecurityException e) {
-            RuntimeException r = new MissingResourceException("SecurityException trying to reflect on field field", c.getName(), field);
+            RuntimeException r =
+                    new MissingResourceException("SecurityException trying to reflect on field field", c.getName(), field);
             r.initCause(e);
             throw r;
         }
@@ -316,7 +289,8 @@ public class BasicI18n implements I18n, Serializable {
                 r.initCause(e);
                 throw r;
             } catch (SecurityException e) {
-                RuntimeException r = new MissingResourceException("SecurityException trying to reflect on field field", c.getName(), field);
+                RuntimeException r =
+                        new MissingResourceException("SecurityException trying to reflect on field field", c.getName(), field);
                 r.initCause(e);
                 throw r;
             }
@@ -357,8 +331,7 @@ public class BasicI18n implements I18n, Serializable {
         } else if (JComponent.class.isInstance(type)) {
             set(requestor, field, (JComponent) fd);
         } else {
-            Debug.message(DEBUG, "Couldn't assign data for unknown type: "
-                    + type);
+            Debug.message(DEBUG, "Couldn't assign data for unknown type: " + type);
         }
     }
 
@@ -379,20 +352,17 @@ public class BasicI18n implements I18n, Serializable {
         if (tooltip != null) {
             comp.setToolTipText(tooltip);
         } else {
-            Debug.message(DEBUG, "No tooltip for: "
-                    + getKeyRef(requestor, field));
+            Debug.message(DEBUG, "No tooltip for: " + getKeyRef(requestor, field));
         }
     }
 
     /**
      * Get text for the given component.
      */
-    protected String getTEXT(Object requestor, String field,
-                             String defaultString) {
+    protected String getTEXT(Object requestor, String field, String defaultString) {
         String text = get(requestor, field, TEXT, defaultString);
         if (text == null) {
-            throw new MissingResourceException("No TEXT resource", requestor.getClass()
-                    .getName(), field);
+            throw new MissingResourceException("No TEXT resource", requestor.getClass().getName(), field);
         }
         return text;
     }
@@ -400,12 +370,10 @@ public class BasicI18n implements I18n, Serializable {
     /**
      * Get title for the given component.
      */
-    protected String getTITLE(Object requestor, String field,
-                              String defaultString) {
+    protected String getTITLE(Object requestor, String field, String defaultString) {
         String title = get(requestor, field, TITLE, defaultString);
         if (title == null) {
-            throw new MissingResourceException("No TITLE resource", requestor.getClass()
-                    .getName(), field);
+            throw new MissingResourceException("No TITLE resource", requestor.getClass().getName(), field);
         }
         return title;
     }
@@ -413,16 +381,11 @@ public class BasicI18n implements I18n, Serializable {
     /**
      * Get text for the given component.
      */
-    protected int getMNEMONIC(Object requestor, String field, int defaultInt,
-                              boolean verbose) {
-        String mn = get(requestor,
-                field,
-                MNEMONIC,
-                Character.toString((char) defaultInt));
+    protected int getMNEMONIC(Object requestor, String field, int defaultInt, boolean verbose) {
+        String mn = get(requestor, field, MNEMONIC, Character.toString((char) defaultInt));
         if (mn == null) {
             if (verbose) {
-                Debug.message(DEBUG, "No MNEMONIC resource for "
-                        + getKeyRef(requestor, field));
+                Debug.message(DEBUG, "No MNEMONIC resource for " + getKeyRef(requestor, field));
             }
             return defaultInt;
         }
@@ -434,42 +397,37 @@ public class BasicI18n implements I18n, Serializable {
     }
 
     /**
-     * Obtain a String from the underlying data for the given
-     * class/field/type.
+     * Obtain a String from the underlying data for the given class/field/type.
      * 
-     * @return null if the data can't be found -- defaulting happens
-     *         above here.
+     * @return null if the data can't be found -- defaulting happens above here.
      */
     protected String getInternal(Class requestor, String field, int type) {
         ResourceBundle bundle = null;
         Package pckg = requestor.getPackage();
 
-        String bString = (pckg == null ? ""
-                : (requestor.getPackage().getName() + "."))
-                + ResourceFileNamePrefix;
+        String bString = (pckg == null ? "" : (requestor.getPackage().getName() + ".")) + ResourceFileNamePrefix;
 
         try {
             bundle = ResourceBundle.getBundle(bString, loc);
         } catch (MissingResourceException e) {
-            Debug.message(DEBUG, "Could not locate resource: "
-                    + bString.replace('.', '/') + ".properties");
+            Debug.message(DEBUG, "Could not locate resource: " + bString.replace('.', '/') + ".properties");
             return null;
         }
 
         String key = shortClassName(requestor) + "." + field;
         switch (type) {
-        case TEXT:
-            // Do nothing.
-            break;
-        case TITLE:
-            key += ".title";
-            break;
-        case TOOLTIP:
-            key += ".tooltip";
-            break;
-        case MNEMONIC:
-            key += ".mnemonic";
-            break;
+            case TEXT:
+                // Do nothing.
+                break;
+            case TITLE:
+                key += ".title";
+                break;
+            case TOOLTIP:
+                key += ".tooltip";
+                break;
+            case MNEMONIC:
+                key += ".mnemonic";
+                break;
         }
 
         try {
@@ -479,30 +437,26 @@ public class BasicI18n implements I18n, Serializable {
         } catch (MissingResourceException e) {
 
             Debug.message(DEBUG, "Could not locate string in resource: "
-                    + (pckg == null ? "" : (requestor.getPackage().getName().replace('.', '/') + ".")) 
-                    + "properties for key: " + key);
+                    + (pckg == null ? "" : (requestor.getPackage().getName().replace('.', '/') + ".")) + "properties for key: "
+                    + key);
 
             return null;
         }
     }
 
     /**
-     * Obtain a String from the underlying data for the given
-     * class/field/type.
-     * 
-     * @return null if the data can't be found -- defaulting happens
-     *         above here.
+     * Obtain a String from the underlying data for the given class/field/type.
+     * The default is set in the propertyFileProperties. This method is called
+     * when the debugging flag is set, indicating that a new resource directory
+     * should be created for all classes that use 18n resources.
      */
-    protected void setForBundleCreation(Class requestor, String field,
-                                        int type, String defaultString) {
+    protected void setForBundleCreation(Class requestor, String field, int type, String defaultString) {
         ResourceBundle bundle = null;
 
         Package pckg = requestor.getPackage();
 
-        String bString = (pckg == null ? ""
-                : (requestor.getPackage().getName() + "."))
-                + ResourceFileNamePrefix;
-        
+        String bString = (pckg == null ? "" : (requestor.getPackage().getName() + ".")) + ResourceFileNamePrefix;
+
         String propertyFileNameKey = null;
         Properties propertyFileProperties = null;
 
@@ -533,18 +487,18 @@ public class BasicI18n implements I18n, Serializable {
 
         String resourceKey = shortClassName(requestor) + "." + field;
         switch (type) {
-        case TEXT:
-            // Do nothing.
-            break;
-        case TITLE:
-            resourceKey += ".title";
-            break;
-        case TOOLTIP:
-            resourceKey += ".tooltip";
-            break;
-        case MNEMONIC:
-            resourceKey += ".mnemonic";
-            break;
+            case TEXT:
+                // Do nothing.
+                break;
+            case TITLE:
+                resourceKey += ".title";
+                break;
+            case TOOLTIP:
+                resourceKey += ".tooltip";
+                break;
+            case MNEMONIC:
+                resourceKey += ".mnemonic";
+                break;
         }
 
         try {
@@ -560,11 +514,11 @@ public class BasicI18n implements I18n, Serializable {
     }
 
     /**
-     * If called, will bring up a JFileChooser so you can pick a
-     * location to dump the resource files that were searched for,
-     * with values that were found or the defaults provided in the
-     * code. This will only do something if the BasicI18n class was
-     * accessed with the 'i18n.create' flag set in the Debug class.
+     * If called, will bring up a JFileChooser so you can pick a location to
+     * dump the resource files that were searched for, with values that were
+     * found or the defaults provided in the code. This will only do something
+     * if the BasicI18n class was accessed with the 'i18n.create' flag set in
+     * the Debug class.
      */
     public void dumpCreatedResourceBundles() {
         String location = FileUtils.getFilePathToSaveFromUser("Choose Location");
@@ -574,12 +528,12 @@ public class BasicI18n implements I18n, Serializable {
     }
 
     /**
-     * Will dump the resource bundle property files searched for by
-     * this class, along with the contents that were returned or with
-     * the defaults provided by the application.
+     * Will dump the resource bundle property files searched for by this class,
+     * along with the contents that were returned or with the defaults provided
+     * by the application.
      * 
-     * @param location directory location to use as the root for
-     *        resource bundle file hierarchy.
+     * @param location directory location to use as the root for resource bundle
+     *        file hierarchy.
      */
     public void dumpCreatedResourceBundles(String location) {
         Hashtable bundleHash = getCreateHash();

@@ -1,13 +1,10 @@
-/* 
- * <copyright>
- *  Copyright 2010 BBN Technologies
- * </copyright>
- */
+
 package com.bbn.openmap.dataAccess.mapTile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +14,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.FileUtils;
 
 /**
  * A utility class to help manage tile trees. Use the builders to configure and
@@ -37,16 +35,10 @@ public class MapTileUtil {
    public final static int ZOOM_LEVELS = 21;
 
    MapTileCoordinateTransform mtcTransform;
-   String source;
-   String destination;
-   String format;
    List<double[]> boundsList;
    boolean[] zoomLevels;
 
-   protected MapTileUtil(Builder builder) {
-      source = builder.source;
-      destination = builder.destination;
-      format = builder.format;
+   public MapTileUtil(Action builder) {
       boundsList = builder.boundsList;
       zoomLevels = builder.zoomLevels;
       mtcTransform = builder.mtcTransform;
@@ -58,7 +50,7 @@ public class MapTileUtil {
     * 
     * @param builder
     */
-   protected void grabTiles(Builder builder) {
+   public void grabTiles(Action builder) {
 
       if (boundsList == null) {
          boundsList = new ArrayList<double[]>();
@@ -107,90 +99,23 @@ public class MapTileUtil {
    }
 
    /**
-    * An action method that will fetch a tile from a URL and copy it to the
-    * destination directory.
-    * 
-    * @param x
-    * @param y
-    * @param zoomLevel
-    */
-   protected void grabURLTile(int x, int y, int zoomLevel) {
-
-      java.net.URL url = null;
-      ImageIcon ii = null;
-
-      String imagePath = source + "/" + zoomLevel + "/" + x + "/" + y + (format.startsWith(".") ? format : "." + format);
-
-      try {
-
-         url = new java.net.URL(imagePath);
-         java.net.HttpURLConnection urlc = (java.net.HttpURLConnection) url.openConnection();
-
-         if (logger.isLoggable(Level.FINER)) {
-            logger.finer("url content type: " + urlc.getContentType());
-         }
-
-         if (urlc == null) {
-            logger.warning("unable to connect to " + imagePath);
-            return;
-         }
-
-         if (urlc.getContentType().startsWith("image")) {
-
-            InputStream in = urlc.getInputStream();
-            // ------- Testing without this
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            int buflen = 2048; // 2k blocks
-            byte buf[] = new byte[buflen];
-            int len = -1;
-            while ((len = in.read(buf, 0, buflen)) != -1) {
-               out.write(buf, 0, len);
-            }
-            out.flush();
-            out.close();
-
-            byte[] imageBytes = out.toByteArray();
-            ii = new ImageIcon(imageBytes);
-
-            if (destination != null) {
-               File localFile =
-                     new File(destination + "/" + zoomLevel + "/" + x + "/" + y + (format.startsWith(".") ? format : "." + format));
-
-               File parentDir = localFile.getParentFile();
-               parentDir.mkdirs();
-
-               FileOutputStream fos = new FileOutputStream(localFile);
-               fos.write(imageBytes);
-               fos.flush();
-               fos.close();
-            }
-
-         } // end if image
-      } catch (java.net.MalformedURLException murle) {
-         logger.warning("WebImagePlugIn: URL \"" + imagePath + "\" is malformed.");
-      } catch (java.io.IOException ioe) {
-         logger.warning("Couldn't connect to " + imagePath + "Connection Problem");
-      }
-
-   }
-
-   /**
     * For instance...
+    * 
     * @param args
     */
    public static void main(String[] args) {
 
-      new URLGrabber("http://tah.openstreetmap.org/Tiles/tile", "/data/tiles").addZoomRange(0, 14).go();
+      new URLGrabber("http://tah.openstreetmap.org/Tiles/tile", "/data/tiles").addZoomRange(0, 5).go();
    }
 
    /**
-    * A generic Builder that handles most configuration issues for the
+    * A generic builder Action that handles most configuration issues for the
     * MapTileUtil. Extend to make MTU do what you want by overriding go and
     * action.
     * 
     * @author dietrick
     */
-   public abstract static class Builder {
+   public abstract static class Action {
       String source;
       String destination;
 
@@ -200,12 +125,12 @@ public class MapTileUtil {
       boolean[] zoomLevels; // 0-20
       MapTileCoordinateTransform mtcTransform = new OSMMapTileCoordinateTransform();
 
-      public Builder(String source, String destination) {
+      public Action(String source, String destination) {
          this.source = source;
          this.destination = destination;
       }
 
-      public Builder addBounds(double ulat, double llon, double llat, double rlon) {
+      public Action addBounds(double ulat, double llon, double llat, double rlon) {
          if (boundsList == null) {
             boundsList = new ArrayList<double[]>();
          }
@@ -221,7 +146,7 @@ public class MapTileUtil {
          return this;
       }
 
-      public Builder addZoom(int zoom) {
+      public Action addZoom(int zoom) {
          if (zoomLevels == null) {
             zoomLevels = new boolean[ZOOM_LEVELS];
          }
@@ -234,7 +159,7 @@ public class MapTileUtil {
          return this;
       }
 
-      public Builder addZoomRange(int zoom1, int zoom2) {
+      public Action addZoomRange(int zoom1, int zoom2) {
          int min = Math.min(zoom1, zoom2);
          int max = Math.max(zoom1, zoom2);
          for (int z = min; z <= max; z++) {
@@ -243,12 +168,12 @@ public class MapTileUtil {
          return this;
       }
 
-      public Builder format(String format) {
+      public Action format(String format) {
          this.format = format;
          return this;
       }
 
-      public Builder transform(MapTileCoordinateTransform transform) {
+      public Action transform(MapTileCoordinateTransform transform) {
          mtcTransform = transform;
          return this;
       }
@@ -265,15 +190,102 @@ public class MapTileUtil {
        * @param mtu callback
        */
       public abstract void action(int x, int y, int zoomLevel, MapTileUtil mtu);
+
+      public String getSource() {
+         return source;
+      }
+
+      public void setSource(String source) {
+         this.source = source;
+      }
+
+      public String getDestination() {
+         return destination;
+      }
+
+      public void setDestination(String destination) {
+         this.destination = destination;
+      }
+
+      public String getFormat() {
+         return format;
+      }
+
+      public void setFormat(String format) {
+         this.format = format;
+      }
+
+      public List<double[]> getBoundsList() {
+         return boundsList;
+      }
+
+      public void setBoundsList(List<double[]> boundsList) {
+         this.boundsList = boundsList;
+      }
+
+      public boolean[] getZoomLevels() {
+         return zoomLevels;
+      }
+
+      public void setZoomLevels(boolean[] zoomLevels) {
+         this.zoomLevels = zoomLevels;
+      }
+
+      public MapTileCoordinateTransform getMtcTransform() {
+         return mtcTransform;
+      }
+
+      public void setMtcTransform(MapTileCoordinateTransform mtcTransform) {
+         this.mtcTransform = mtcTransform;
+      }
    }
 
    /**
-    * A Builder that knows how to get the MTU to download files from a website.
+    * Action that copies tiles from one directory to another.
+    *
+    * @author dietrick
+    */
+   public static class FileGrabber
+         extends Action {
+
+      public FileGrabber(String source, String destination) {
+         super(source, destination);
+      }
+
+      public void go() {
+         if (source != null && destination != null) {
+            new MapTileUtil(this).grabTiles(this);
+         } else {
+            logger.warning("Need a source and destination for tile locations");
+         }
+      }
+
+      public void action(int x, int y, int zoomLevel, MapTileUtil mtu) {
+         File sourceFile = new File(getSource() + "/" + zoomLevel + "/" + x + "/" + y + "." + format);
+         File destDir = new File(getDestination() + "/" + zoomLevel + "/" + x);
+         destDir.mkdirs();
+
+         File destFile = new File(destDir, y + "." + format);
+
+         try {
+            if (sourceFile.exists()) {
+               FileUtils.copy(sourceFile, destFile, 1024);
+            }
+         } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+      }
+   }
+
+   /**
+    * A Builder that knows how to download files from a website.
     * 
     * @author dietrick
     */
    public static class URLGrabber
-         extends Builder {
+         extends Action {
+
       public URLGrabber(String source, String destination) {
          super(source, destination);
       }
@@ -287,8 +299,78 @@ public class MapTileUtil {
       }
 
       public void action(int x, int y, int zoomLevel, MapTileUtil mtu) {
-         mtu.grabURLTile(x, y, zoomLevel);
+         grabURLTile(x, y, zoomLevel);
       }
+
+      /**
+       * An action method that will fetch a tile from a URL and copy it to the
+       * destination directory.
+       * 
+       * @param x
+       * @param y
+       * @param zoomLevel
+       */
+      public void grabURLTile(int x, int y, int zoomLevel) {
+
+         java.net.URL url = null;
+         ImageIcon ii = null;
+
+         String imagePath = source + "/" + zoomLevel + "/" + x + "/" + y + (format.startsWith(".") ? format : "." + format);
+
+         try {
+
+            url = new java.net.URL(imagePath);
+            java.net.HttpURLConnection urlc = (java.net.HttpURLConnection) url.openConnection();
+
+            if (logger.isLoggable(Level.FINER)) {
+               logger.finer("url content type: " + urlc.getContentType());
+            }
+
+            if (urlc == null) {
+               logger.warning("unable to connect to " + imagePath);
+               return;
+            }
+
+            if (urlc.getContentType().startsWith("image")) {
+
+               InputStream in = urlc.getInputStream();
+               // ------- Testing without this
+               ByteArrayOutputStream out = new ByteArrayOutputStream();
+               int buflen = 2048; // 2k blocks
+               byte buf[] = new byte[buflen];
+               int len = -1;
+               while ((len = in.read(buf, 0, buflen)) != -1) {
+                  out.write(buf, 0, len);
+               }
+               out.flush();
+               out.close();
+
+               byte[] imageBytes = out.toByteArray();
+               ii = new ImageIcon(imageBytes);
+
+               if (destination != null) {
+                  File localFile =
+                        new File(destination + "/" + zoomLevel + "/" + x + "/" + y
+                              + (format.startsWith(".") ? format : "." + format));
+
+                  File parentDir = localFile.getParentFile();
+                  parentDir.mkdirs();
+
+                  FileOutputStream fos = new FileOutputStream(localFile);
+                  fos.write(imageBytes);
+                  fos.flush();
+                  fos.close();
+               }
+
+            } // end if image
+         } catch (java.net.MalformedURLException murle) {
+            logger.warning("WebImagePlugIn: URL \"" + imagePath + "\" is malformed.");
+         } catch (java.io.IOException ioe) {
+            logger.warning("Couldn't connect to " + imagePath + "Connection Problem");
+         }
+
+      }
+
    }
 
 }

@@ -281,7 +281,7 @@ public class OMGraphicHandlerLayer
    /**
     * Queries for the interruptible flag.
     * 
-    * @return
+    * @return true if interruptible flag is set
     */
    public boolean isInterruptable() {
       return interruptable;
@@ -1380,7 +1380,7 @@ public class OMGraphicHandlerLayer
     * @param orientation JSlider.HORIZONTAL/JSlider.VERTICAL
     * @param initialValue an initial transparency value between 0-1, 0 being
     *        clear.
-    * @return
+    * @return JPanel with controls for transparency setting.
     */
    public JPanel getTransparencyAdjustmentPanel(String label, int orientation, float initialValue) {
       JPanel opaquePanel = PaletteHelper.createPaletteJPanel(label);

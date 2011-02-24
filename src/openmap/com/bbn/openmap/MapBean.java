@@ -288,7 +288,7 @@ public class MapBean
    /**
     * Return a string-ified representation of the MapBean.
     * 
-    * @return String
+    * @return String representing mapbean.
     */
    public String toString() {
       return getClass().getName() + "@" + Integer.toHexString(hashCode());
@@ -573,7 +573,7 @@ public class MapBean
     * 
     * @param lat the latitude of center point of the map in decimal degrees
     * @param lon the longitude of center point of the map in decimal degrees
-    * @see Proj#setCenter(float, float)
+    * @see Proj#setCenter(double, double)
     */
    public void setCenter(double lat, double lon) {
       projection.setCenter(new Point2D.Double(lon, lat));
@@ -585,7 +585,7 @@ public class MapBean
     * 
     * @param lat the latitude of center point of the map in decimal degrees
     * @param lon the longitude of center point of the map in decimal degrees
-    * @see Proj#setCenter(float, float)
+    * @see Proj#setCenter(double, double)
     */
    public void setCenter(float lat, float lon) {
       setCenter((double) lat, (double) lon);
@@ -668,7 +668,7 @@ public class MapBean
    /**
     * Get the projection property.
     * 
-    * @return Projection
+    * @return current Projection of map.
     */
    public Projection getProjection() {
       return projection;
@@ -1214,12 +1214,11 @@ public class MapBean
     * Checks the rotation set on the MapBean and accounts for it before calling
     * inverse on the projection.
     * 
-    * @param <T>
     * @param x horizontal window pixel from left side
     * @param y vertical window pixel from top
     * @param ret Point2D object returned with coordinates suitable for
     *        projection where mouse event is.
-    * @return ret, or new Point2D object from projection if ret is null.
+    * @return the provided T ret object, or new Point2D object from projection if ret is null.
     */
    public <T extends Point2D> T inverse(double x, double y, T ret) {
       if (rotHelper == null) {
@@ -1338,7 +1337,7 @@ public class MapBean
    /**
     * Get the rotation of the map in RADIANS.
     * 
-    * @return
+    * @return the angle the map has been rotated, in RADIANS, clockwise is positive.
     */
    public double getRotation() {
       if (rotHelper != null) {

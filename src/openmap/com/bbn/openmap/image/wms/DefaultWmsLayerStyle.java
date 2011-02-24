@@ -31,21 +31,21 @@ public class DefaultWmsLayerStyle implements IWmsLayerStyle {
     }
 
     /**
-     * @return
+     * @return title
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * @return
+     * @return name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @return
+     * @return string for style abstract
      */
     public String getAbstract() {
         return styleAbstract;

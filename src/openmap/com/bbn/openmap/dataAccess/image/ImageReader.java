@@ -47,7 +47,7 @@ public interface ImageReader {
      * Will be called by the Image cache by the ImageTile to replenish the image
      * data as it is needed when the ImageTile is on the map.
      * 
-     * @return
+     * @return BufferedImage of image.
      */
     BufferedImage getBufferedImage();
 }

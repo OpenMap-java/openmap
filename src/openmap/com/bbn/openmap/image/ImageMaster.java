@@ -123,8 +123,7 @@ public class ImageMaster {
      * @param resourceName the name of the resource to load
      * @return true if all's well.
      */
-    protected boolean loadPropertiesFromResource(Properties props,
-                                                 String resourceName) {
+    protected boolean loadPropertiesFromResource(Properties props, String resourceName) {
 
         InputStream propsIn = getClass().getResourceAsStream(resourceName);
 
@@ -138,8 +137,7 @@ public class ImageMaster {
                 props.load(propsIn);
                 return true;
             } catch (java.io.IOException e) {
-                Debug.error("ImageMaster: Caught IOException loading resources: "
-                        + resourceName);
+                Debug.error("ImageMaster: Caught IOException loading resources: " + resourceName);
                 return false;
             }
         }
@@ -159,8 +157,7 @@ public class ImageMaster {
             props.load(propsIn);
             return true;
         } catch (java.io.IOException e) {
-            Debug.error("ImageMaster: Caught IOException loading resources: "
-                    + url);
+            Debug.error("ImageMaster: Caught IOException loading resources: " + url);
             return false;
         }
     }
@@ -181,11 +178,9 @@ public class ImageMaster {
             props.load(propsStream);
             return true;
         } catch (java.io.FileNotFoundException e) {
-            Debug.error("ImageMaster.loadProperties(): Unable to read configuration file \""
-                    + propsFile + "\"");
+            Debug.error("ImageMaster.loadProperties(): Unable to read configuration file \"" + propsFile + "\"");
         } catch (java.io.IOException e) {
-            Debug.error("ImageMaster.loadProperties(): Caught IO Exception reading configuration file \""
-                    + propsFile + "\" \n" + e);
+            Debug.error("ImageMaster.loadProperties(): Caught IO Exception reading configuration file \"" + propsFile + "\" \n" + e);
         }
         return false;
     }
@@ -231,13 +226,11 @@ public class ImageMaster {
         String serversValue = properties.getProperty(ImageServersProperty);
 
         if (Debug.debugging("imagemaster")) {
-            Debug.output("ImageMaster.setImageServers(): servers = \""
-                    + serversValue + "\"");
+            Debug.output("ImageMaster.setImageServers(): servers = \"" + serversValue + "\"");
         }
 
         if (serversValue == null) {
-            Debug.error("ImageMaster.setImageServers(): No property \""
-                    + ImageServersProperty
+            Debug.error("ImageMaster.setImageServers(): No property \"" + ImageServersProperty
                     + "\" found in application properties.");
             return new ImageMasterHelper[0];
         }
@@ -378,7 +371,8 @@ public class ImageMaster {
      * The ImageMasterHelper contains an ImageServer, and acts like the
      * ImageReceiver to create the Image file when the bits are ready.
      */
-    public class ImageMasterHelper implements ImageReceiver {
+    public class ImageMasterHelper
+            implements ImageReceiver {
         public ImageServer iServer;
         public String outputFileName;
         public boolean complete = false;
@@ -389,35 +383,23 @@ public class ImageMaster {
         public int scaleToWidth = -1;
         public int scaleToHeight = -1;
 
-        public ImageMasterHelper(String prefix, Properties props,
-                ImageMaster master) {
+        public ImageMasterHelper(String prefix, Properties props, ImageMaster master) {
 
             String propPrefix = prefix + ".";
 
-            float scale = PropUtils.floatFromProperties(props, propPrefix
-                    + ImageScaleProperty, 20000000f);
-            int height = PropUtils.intFromProperties(props, propPrefix
-                    + ImageHeightProperty, 480);
-            int width = PropUtils.intFromProperties(props, propPrefix
-                    + ImageWidthProperty, 640);
-            float longitude = PropUtils.floatFromProperties(props, propPrefix
-                    + ImageLongitudeProperty, -71f);
-            float latitude = PropUtils.floatFromProperties(props, propPrefix
-                    + ImageLatitudeProperty, 42f);
-            String projType = props.getProperty(propPrefix
-                    + ImageProjectionProperty);
-            String uniquePropsURL = props.getProperty(propPrefix
-                    + ServerPropertiesProperty);
-            scaleToWidth = PropUtils.intFromProperties(props, propPrefix
-                    + ScaleToWidthProperty, -1);
-            scaleToHeight = PropUtils.intFromProperties(props, propPrefix
-                    + ScaleToHeightProperty, -1);
+            float scale = PropUtils.floatFromProperties(props, propPrefix + ImageScaleProperty, 20000000f);
+            int height = PropUtils.intFromProperties(props, propPrefix + ImageHeightProperty, 480);
+            int width = PropUtils.intFromProperties(props, propPrefix + ImageWidthProperty, 640);
+            float longitude = PropUtils.floatFromProperties(props, propPrefix + ImageLongitudeProperty, -71f);
+            float latitude = PropUtils.floatFromProperties(props, propPrefix + ImageLatitudeProperty, 42f);
+            String projType = props.getProperty(propPrefix + ImageProjectionProperty);
+            String uniquePropsURL = props.getProperty(propPrefix + ServerPropertiesProperty);
+            scaleToWidth = PropUtils.intFromProperties(props, propPrefix + ScaleToWidthProperty, -1);
+            scaleToHeight = PropUtils.intFromProperties(props, propPrefix + ScaleToHeightProperty, -1);
 
             outputFileName = props.getProperty(propPrefix + ImageNameProperty);
-            outputLogFileName = props.getProperty(propPrefix
-                    + OutputLogFileProperty);
-            errorLogFileName = props.getProperty(propPrefix
-                    + ErrorLogFileProperty);
+            outputLogFileName = props.getProperty(propPrefix + OutputLogFileProperty);
+            errorLogFileName = props.getProperty(propPrefix + ErrorLogFileProperty);
 
             if (outputLogFileName != null && errorLogFileName != null) {
                 if (outputLogFileName.equalsIgnoreCase(errorLogFileName)) {
@@ -442,16 +424,12 @@ public class ImageMaster {
                 projClass = Mercator.class;
             }
 
-            proj = (Proj) projectionFactory.makeProjection(projClass,
-                    new Point2D.Float(latitude, longitude),
-                    scale,
-                    width,
-                    height);
+            proj = (Proj) projectionFactory.makeProjection(projClass, new Point2D.Float(latitude, longitude), scale, width, height);
 
             // Set the background color of the map
-            Color background = (Color) PropUtils.parseColorFromProperties(props,
-                    propPrefix + ImageBackgroundColorProperty,
-                    MapBean.DEFAULT_BACKGROUND_COLOR);
+            Color background =
+                    (Color) PropUtils.parseColorFromProperties(props, propPrefix + ImageBackgroundColorProperty,
+                                                               MapBean.DEFAULT_BACKGROUND_COLOR);
 
             iMaster = master;
 
@@ -465,8 +443,7 @@ public class ImageMaster {
                 try {
                     loadProperties(uniqueProps, new URL(uniquePropsURL));
                 } catch (MalformedURLException mue) {
-                    Debug.error("ImageMaster: Malformed URL for server properties: "
-                            + uniquePropsURL);
+                    Debug.error("ImageMaster: Malformed URL for server properties: " + uniquePropsURL);
                     uniqueProps = null;
                 }
             } else {
@@ -483,7 +460,7 @@ public class ImageMaster {
          * Override this method if you want to change the available projections
          * from the defaults.
          * 
-         * @return
+         * @return the ProjectionFactory with projections
          */
         public ProjectionFactory getProjectionFactory() {
             return ProjectionFactory.loadDefaultProjections();
@@ -493,9 +470,7 @@ public class ImageMaster {
          * Start the ImageServer on it's creative journey.
          */
         public void create() {
-            receiveImageData(iServer.createImage(proj,
-                    scaleToWidth,
-                    scaleToHeight));
+            receiveImageData(iServer.createImage(proj, scaleToWidth, scaleToHeight));
         }
 
         /**
@@ -517,16 +492,14 @@ public class ImageMaster {
          */
         public void writeDataFile(String fileName, byte[] imageData) {
             try {
-                Debug.message("imagemaster",
-                        "ImageMasterHelper: Writing image file " + fileName);
+                Debug.message("imagemaster", "ImageMasterHelper: Writing image file " + fileName);
 
                 FileOutputStream binFile = new FileOutputStream(fileName);
                 binFile.write(imageData);
                 binFile.close();
 
             } catch (IOException ioe) {
-                Debug.error("ImageMasterHelper: Error writing image file "
-                        + fileName);
+                Debug.error("ImageMasterHelper: Error writing image file " + fileName);
             }
         }
     }

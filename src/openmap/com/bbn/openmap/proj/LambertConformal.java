@@ -27,10 +27,11 @@ import com.bbn.openmap.util.Debug;
  * <br>
  * Needs to be modified for use in the southern hemisphere.
  * <p>
+ * See http://www.epsg.org/guides/docs/G7-2.pdf
  * 
  * @author David J. Ward
  * @author Chris van Lith
- * @see http://www.epsg.org/guides/docs/G7-2.pdf
+ * 
  */
 public class LambertConformal
       extends GeoProj {
@@ -564,7 +565,7 @@ public class LambertConformal
     * @param y integer y coordinate
     * @param llp LatLonPoint
     * @return LatLonPoint llp
-    * @see Proj#inverse(Point)
+    * @see Proj#inverse(Point2D)
     */
    public <T extends Point2D> T inverse(double x, double y, T llp) {
       if (llp == null) {

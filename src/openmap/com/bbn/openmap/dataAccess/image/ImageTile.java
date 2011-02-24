@@ -76,7 +76,8 @@ public class ImageTile extends OMScalingRaster implements Serializable {
      * @param ullon longitude of the left side of the image.
      * @param lrlat latitude of the bottom of the image.
      * @param lrlon longitude of the right side of the image.
-     * @param ii ImageIcon used for the image.
+     * @param imageDecoder ImageReader for Image.
+     * @param cache CacheHandler holding cached images.
      */
     public ImageTile(double ullat, double ullon, double lrlat, double lrlon,
             ImageReader imageDecoder, CacheHandler cache) {
@@ -100,7 +101,7 @@ public class ImageTile extends OMScalingRaster implements Serializable {
      * @param ullon longitude of the left side of the image.
      * @param lrlat latitude of the bottom of the image.
      * @param lrlon longitude of the right side of the image.
-     * @param ii ImageIcon used for the image.
+     * @param image BufferedImage used for the image.
      */
     public ImageTile(double ullat, double ullon, double lrlat, double lrlon,
             BufferedImage image) {

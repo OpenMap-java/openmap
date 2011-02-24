@@ -81,7 +81,7 @@ public abstract class OMEventHandlerAdapter extends OMComponent implements
      *        list to see if they are in this provided list. If they are, you
      *        should return the OMEvents that fall under that filter String's
      *        jurisdiction.
-     * @return
+     * @return List of OMEvents that past filters
      */
     public List<OMEvent> getEventList(List filters) {
         // At this level, we just want to return all events. Let

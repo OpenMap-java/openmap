@@ -50,8 +50,9 @@ public class BufferedImageHelper {
      * This class has only static methods, so there is no need to
      * construct anything.
      */
-    private BufferedImageHelper() {};
-
+    private BufferedImageHelper() {
+    }
+    
     /**
      * A test/instantiation copy of the JAI object to use if JAI is
      * installed.

@@ -391,11 +391,12 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
      * given parameters. The parameters are converted to Properties before being
      * passed to the ProjectionLoader.
      * 
-     * @param centerLat center latitude in decimal degrees.
-     * @param centerLon center latitude in decimal degrees.
-     * @param scale float scale.
-     * @param width pixel width of projection.
-     * @param height pixel height of projection.
+     * @param loader ProjectionLoader for projection type
+     * @param center center coordinate for projection
+     * @param scale scale for projection
+     * @param width pixel width of projection
+     * @param height pixel height of projection
+     * @return Projection
      */
     public Projection makeProjection(ProjectionLoader loader, Point2D center,
                                      float scale, int width, int height) {

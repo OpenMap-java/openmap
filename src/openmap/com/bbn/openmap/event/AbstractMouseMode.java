@@ -501,7 +501,7 @@ public class AbstractMouseMode
    /**
     * Check setting for whether MouseMode responds to mouse wheel events.
     * 
-    * @return
+    * @return true if mouse mode is interested in mouse wheel events.
     */
    public boolean isMouseWheelListener() {
       return mouseWheelListener;

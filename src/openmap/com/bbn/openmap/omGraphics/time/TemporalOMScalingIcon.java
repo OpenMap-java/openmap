@@ -34,7 +34,9 @@ import com.bbn.openmap.omGraphics.OMRasterObject;
 import com.bbn.openmap.omGraphics.OMScalingIcon;
 import com.bbn.openmap.proj.Projection;
 
-public class TemporalOMScalingIcon extends OMScalingIcon implements TemporalOMGraphic {
+public class TemporalOMScalingIcon
+        extends OMScalingIcon
+        implements TemporalOMGraphic {
 
     /**
      * Construct a blank TemporalOMScalingIcon, to be filled in with set calls.
@@ -63,8 +65,7 @@ public class TemporalOMScalingIcon extends OMScalingIcon implements TemporalOMGr
      * @param baseScale the scale where the icon will be show regular size.
      * @see #setPixel
      */
-    public TemporalOMScalingIcon(Object id, int renderType,
-            boolean interpolate, int w, int h, int[] pix, float baseScale) {
+    public TemporalOMScalingIcon(Object id, int renderType, boolean interpolate, int w, int h, int[] pix, float baseScale) {
         this(id, renderType, interpolate);
         setColorModel(OMRasterObject.COLORMODEL_DIRECT);
         setWidth(w);
@@ -85,8 +86,7 @@ public class TemporalOMScalingIcon extends OMScalingIcon implements TemporalOMGr
      * @param ii ImageIcon used for the image.
      * @param baseScale the scale where the icon will be show regular size.
      */
-    public TemporalOMScalingIcon(Object id, int renderType,
-            boolean interpolate, ImageIcon ii, float baseScale) {
+    public TemporalOMScalingIcon(Object id, int renderType, boolean interpolate, ImageIcon ii, float baseScale) {
         this(id, renderType, interpolate);
         setWidth(ii.getIconWidth());
         setHeight(ii.getIconHeight());
@@ -96,37 +96,31 @@ public class TemporalOMScalingIcon extends OMScalingIcon implements TemporalOMGr
     }
 
     /**
-     * Create an OMRaster, Lat/Lon placement with an ImageIcon. Doesn't scale,
-     * because baseScale, minScale and maxScale are all set to the same number
-     * (4000000).
+     * Create an scaling icon that will be moved around.
      * 
      * @param id the id of the TemporalOMScalingIcon
      * @param renderType rendertype of coordinates to be used in moving this
      *        around
      * @param interpolate flag to interpolate position between TemporalRecords.
-     * @param centerLat latitude of the top of the image.
-     * @param centerLon longitude of the left side of the image.
      * @param ii ImageIcon used for the image.
      */
-    public TemporalOMScalingIcon(Object id, int renderType,
-            boolean interpolate, ImageIcon ii) {
+    public TemporalOMScalingIcon(Object id, int renderType, boolean interpolate, ImageIcon ii) {
         this(id, renderType, interpolate, ii.getImage(), 4000000);
         setMaxScale(4000000);
         setMinScale(4000000);
     }
 
     /**
-     * Create an OMRaster, Lat/Lon placement with an Image.
+     * Create an scaling icon that will be moved around.
      * 
-     * @param centerLat latitude of the top of the image.
-     * @param centerLon longitude of the left side of the image.
-     * @param offsetX horizontal pixel offset of icon (positive pushes east).
-     * @param offsetY vertical pixel offset of icon (positive pushes south).
-     * @param ii Image used for the image.
-     * @param baseScale the scale where the icon will be show regular size.
+     * @param id ID of object.
+     * @param renderType the interpreted path between known positions
+     * @param interpolate whether the positions between known timestamps should
+     *        be interpolated.
+     * @param ii ImageIcon used for image
+     * @param baseScale
      */
-    public TemporalOMScalingIcon(Object id, int renderType,
-            boolean interpolate, Image ii, float baseScale) {
+    public TemporalOMScalingIcon(Object id, int renderType, boolean interpolate, Image ii, float baseScale) {
         this(id, renderType, interpolate);
         setColorModel(OMRasterObject.COLORMODEL_IMAGEICON);
         setImage(ii);
@@ -134,20 +128,16 @@ public class TemporalOMScalingIcon extends OMScalingIcon implements TemporalOMGr
     }
 
     /**
-     * Create an OMRaster, Lat/Lon placement with an ImageIcon. Doesn't scale,
-     * because baseScale, minScale and maxScale are all set to the same number
-     * (4000000).
+     * Create a scaling icon that moves.
      * 
-     * @param id the id of the TemporalOMScalingIcon
-     * @param renderType rendertype of coordinates to be used in moving this
-     *        around
-     * @param interpolate flag to interpolate position between TemporalRecords.
-     * @param centerLat latitude of the top of the image.
-     * @param centerLon longitude of the left side of the image.
-     * @param image ImageIcon used for the image.
+     * @param id ID of icon
+     * @param renderType how position will be interpolated between know
+     *        positions
+     * @param interpolate whether position should be interpolated between known
+     *        positions.
+     * @param image java Image to use for icon.
      */
-    public TemporalOMScalingIcon(Object id, int renderType,
-            boolean interpolate, Image image) {
+    public TemporalOMScalingIcon(Object id, int renderType, boolean interpolate, Image image) {
         this(id, renderType, interpolate);
         setColorModel(OMRasterObject.COLORMODEL_IMAGEICON);
         setImage(image);
@@ -175,9 +165,8 @@ public class TemporalOMScalingIcon extends OMScalingIcon implements TemporalOMGr
      * @param baseScale the scale where the icon will be show regular size.
      * @see #setPixel
      */
-    public TemporalOMScalingIcon(Object id, int renderType,
-            boolean interpolate, int w, int h, byte[] bytes,
-            Color[] colorTable, int trans, float baseScale) {
+    public TemporalOMScalingIcon(Object id, int renderType, boolean interpolate, int w, int h, byte[] bytes, Color[] colorTable,
+                                 int trans, float baseScale) {
 
         this(id, renderType, interpolate);
         setColorModel(OMRasterObject.COLORMODEL_INDEXED);
@@ -265,13 +254,13 @@ public class TemporalOMScalingIcon extends OMScalingIcon implements TemporalOMGr
 
         Point2D pt = tp.getLocation();
         switch (renderType) {
-        case RENDERTYPE_XY:
-            setX((int)pt.getX());
-            setY((int)pt.getY());
-            break;
-        default:
-            setLat(pt.getY());
-            setLon(pt.getX());
+            case RENDERTYPE_XY:
+                setX((int) pt.getX());
+                setY((int) pt.getY());
+                break;
+            default:
+                setLat(pt.getY());
+                setLon(pt.getX());
         }
 
         super.generate(p);

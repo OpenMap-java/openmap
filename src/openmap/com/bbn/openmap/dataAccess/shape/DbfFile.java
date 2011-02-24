@@ -405,7 +405,7 @@ public class DbfFile extends DbfTableModel {
      * indicating a column that should be used. Returns a boolean[] with trues
      * in the indexes for those columns.
      * 
-     * @return
+     * @return boolean[] representing columns, true values should be used.
      */
     public boolean[] getColumnMask() {
         boolean[] columnMask = new boolean[_columnMask.length];

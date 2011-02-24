@@ -215,8 +215,8 @@ public class EventListIconPackage extends OMComponent {
      * Should only be called with a reference to a dedicated EventListPresenter
      * for this IconPackage.
      * 
-     * @param elp
-     * @return
+     * @param elp EventListPresenter supplying events
+     * @return JPanel that contains components for controlling events.
      */
     protected JPanel createEventControlPanel(EventListPresenter elp) {
 

@@ -604,8 +604,6 @@ public class RpfCoverage implements ActionListener, RpfConstants,
      * (the thread that is running the prepare). If this Layer needs
      * to do any cleanups during the abort, it should do so, but
      * return out of the prepare asap.
-     * 
-     * @return OMGraphicList of rectangles showing coverages.
      */
     public void prepare(RpfFrameProvider frameProvider, Projection projection,
                         String chartSeries) {
