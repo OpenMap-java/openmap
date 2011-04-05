@@ -29,13 +29,14 @@ import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.Closable;
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGrid;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.grid.OMGridData;
 import com.bbn.openmap.omGraphics.grid.SlopeGenerator;
 import com.bbn.openmap.proj.CADRG;
-import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
@@ -46,7 +47,8 @@ import com.bbn.openmap.util.Debug;
  * configured to create a visual representation of the data, depending on what
  * OMGridGenerators are used on the OMGrid object.
  */
-public class DTEDFrame implements Closable {
+public class DTEDFrame
+        implements Closable {
 
     public final static int UHL_SIZE = 80;
     public final static int DSI_SIZE = 648;
@@ -194,15 +196,12 @@ public class DTEDFrame implements Closable {
      */
     public int elevationAt(float lat, float lon) {
         if (frame_is_valid == true) {
-            if (lat >= dsi.sw_lat && lat <= dsi.ne_lat && lon >= dsi.sw_lon
-                    && lon <= dsi.ne_lon) {
+            if (lat >= dsi.sw_lat && lat <= dsi.ne_lat && lon >= dsi.sw_lon && lon <= dsi.ne_lon) {
 
                 // lat/lon_post_intervals are *10 too big -
                 // extra 0 in 36000 to counteract
-                int lat_index = Math.round((lat - dsi.sw_lat) * 36000
-                        / uhl.lat_post_interval);
-                int lon_index = Math.round((lon - dsi.sw_lon) * 36000
-                        / uhl.lon_post_interval);
+                int lat_index = Math.round((lat - dsi.sw_lat) * 36000 / uhl.lat_post_interval);
+                int lon_index = Math.round((lon - dsi.sw_lon) * 36000 / uhl.lon_post_interval);
 
                 if (elevations[lon_index] == null)
                     readDataRecord(lon_index);
@@ -223,15 +222,12 @@ public class DTEDFrame implements Closable {
      */
     public int interpElevationAt(float lat, float lon) {
         if (frame_is_valid == true) {
-            if (lat >= dsi.sw_lat && lat <= dsi.ne_lat && lon >= dsi.sw_lon
-                    && lon <= dsi.ne_lon) {
+            if (lat >= dsi.sw_lat && lat <= dsi.ne_lat && lon >= dsi.sw_lon && lon <= dsi.ne_lon) {
 
                 // lat/lon_post_intervals are *10 too big -
                 // extra 0 in 36000 to counteract
-                float lat_index = (lat - dsi.sw_lat) * 36000F
-                        / uhl.lat_post_interval;
-                float lon_index = (lon - dsi.sw_lon) * 36000F
-                        / uhl.lon_post_interval;
+                float lat_index = (lat - dsi.sw_lat) * 36000F / uhl.lat_post_interval;
+                float lon_index = (lon - dsi.sw_lon) * 36000F / uhl.lon_post_interval;
 
                 int lflon_index = (int) Math.floor(lon_index);
                 int lclon_index = (int) Math.ceil(lon_index);
@@ -264,12 +260,7 @@ public class DTEDFrame implements Closable {
                 int ll = elevations[lflon_index][lclat_index];
                 int lr = elevations[lclon_index][lclat_index];
 
-                float answer = resolveFourPoints(ul,
-                        ur,
-                        lr,
-                        ll,
-                        lat_index,
-                        lon_index);
+                float answer = resolveFourPoints(ul, ur, lr, ll, lat_index, lon_index);
                 return Math.round(answer);
             }
         }
@@ -287,8 +278,7 @@ public class DTEDFrame implements Closable {
      * @param lrlon right longitude in decimal degrees.
      * @return int[4] array of start x, start y, end x, and end y.
      */
-    public int[] getIndexesFromLatLons(float ullat, float ullon, float lrlat,
-                                       float lrlon) {
+    public int[] getIndexesFromLatLons(float ullat, float ullon, float lrlat, float lrlon) {
         float upper = ullat;
         float lower = lrlat;
         float right = lrlon;
@@ -308,14 +298,10 @@ public class DTEDFrame implements Closable {
         }
 
         int[] ret = new int[4];
-        float ullat_index = (upper - dsi.sw_lat) * 36000F
-                / uhl.lat_post_interval;
-        float ullon_index = (left - dsi.sw_lon) * 36000F
-                / uhl.lon_post_interval;
-        float lrlat_index = (lower - dsi.sw_lat) * 36000F
-                / uhl.lat_post_interval;
-        float lrlon_index = (right - dsi.sw_lon) * 36000F
-                / uhl.lon_post_interval;
+        float ullat_index = (upper - dsi.sw_lat) * 36000F / uhl.lat_post_interval;
+        float ullon_index = (left - dsi.sw_lon) * 36000F / uhl.lon_post_interval;
+        float lrlat_index = (lower - dsi.sw_lat) * 36000F / uhl.lat_post_interval;
+        float lrlon_index = (right - dsi.sw_lon) * 36000F / uhl.lon_post_interval;
 
         ret[0] = (int) Math.round(ullon_index);
         ret[1] = (int) Math.round(lrlat_index);
@@ -352,8 +338,7 @@ public class DTEDFrame implements Closable {
      * @return array of elevations in meters. The spacing of the posts depends
      *         on the DTED level.
      */
-    public short[][] getElevations(float ullat, float ullon, float lrlat,
-                                   float lrlon) {
+    public short[][] getElevations(float ullat, float ullon, float lrlat, float lrlon) {
         int[] indexes = getIndexesFromLatLons(ullat, ullon, lrlat, lrlon);
         return getElevations(indexes[0], indexes[1], indexes[2], indexes[3]);
     }
@@ -398,11 +383,7 @@ public class DTEDFrame implements Closable {
         for (int x = left; x <= right; x++) {
             if (elevations[x] == null)
                 readDataRecord(x);
-            System.arraycopy(elevations[x],
-                    lower,
-                    matrix[matrixColumn],
-                    0,
-                    (upper - lower + 1));
+            System.arraycopy(elevations[x], lower, matrix[matrixColumn], 0, (upper - lower + 1));
             matrixColumn++;
         }
         return matrix;
@@ -416,21 +397,14 @@ public class DTEDFrame implements Closable {
      * A try at interpolating the corners of the surrounding posts, given a lat
      * lon. Called from a function where the data for the lon has been read in.
      */
-    private float resolveFourPoints(int ul, int ur, int lr, int ll,
-                                    float lat_index, float lon_index) {
-        float top_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (float) (ur - ul))
-                + ul;
-        float bottom_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (float) (lr - ll))
-                + ll;
-        float right_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (float) (ur - lr))
-                + lr;
-        float left_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (float) (ul - ll))
-                / 100.0F + ll;
+    private float resolveFourPoints(int ul, int ur, int lr, int ll, float lat_index, float lon_index) {
+        float top_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (float) (ur - ul)) + ul;
+        float bottom_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (float) (lr - ll)) + ll;
+        float right_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (float) (ur - lr)) + lr;
+        float left_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (float) (ul - ll)) / 100.0F + ll;
 
-        float lon_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (top_avg - bottom_avg))
-                + bottom_avg;
-        float lat_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (right_avg - left_avg))
-                + left_avg;
+        float lon_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (top_avg - bottom_avg)) + bottom_avg;
+        float lat_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (right_avg - left_avg)) + left_avg;
 
         float result = (lon_avg + lat_avg) / 2.0F;
         return result;
@@ -453,8 +427,7 @@ public class DTEDFrame implements Closable {
             // data
             // 12 = 1+3+2+2+4 = counts and checksum
             // 2*uhl....size of elevation post space
-            binFile.seek(UHL_SIZE + DSI_SIZE + ACC_SIZE
-                    + (lon_index * (12 + (2 * uhl.num_lat_points))));
+            binFile.seek(UHL_SIZE + DSI_SIZE + ACC_SIZE + (lon_index * (12 + (2 * uhl.num_lat_points))));
             binFile.read(); // sent byte
             binFile.skipBytes(3); // 3 byte data_block_count
             binFile.readShort(); // longitude count
@@ -511,32 +484,30 @@ public class DTEDFrame implements Closable {
         // columns.
 
         if (Debug.debugging("grid")) {
-            Debug.output("DTEDFrame creating OMGrid with vResolution: "
-                    + vResolution + ",  hResolution: " + hResolution
-                    + ", created from:" + "\n\tNE LAT: " + dsi.ne_lat
-                    + "\n\tSW LAT: " + dsi.sw_lat + "\n\tNE LON: " + dsi.ne_lon
-                    + "\n\tSW LON: " + dsi.sw_lon + "\n\tlat lines: "
-                    + dsi.num_lat_lines + "\n\tlon points: "
-                    + dsi.num_lon_points);
+            Debug.output("DTEDFrame creating OMGrid with vResolution: " + vResolution + ",  hResolution: " + hResolution
+                    + ", created from:" + "\n\tNE LAT: " + dsi.ne_lat + "\n\tSW LAT: " + dsi.sw_lat + "\n\tNE LON: " + dsi.ne_lon
+                    + "\n\tSW LON: " + dsi.sw_lon + "\n\tlat lines: " + dsi.num_lat_lines + "\n\tlon points: " + dsi.num_lon_points);
         }
 
-        OMDTEDGrid omg = new OMDTEDGrid(dsi.lat_origin, dsi.lon_origin, dsi.ne_lat, dsi.ne_lon, (float) vResolution, (float) hResolution, new OMGridData.Short(elevations));
+        OMDTEDGrid omg =
+                new OMDTEDGrid(dsi.lat_origin, dsi.lon_origin, dsi.ne_lat, dsi.ne_lon, (float) vResolution, (float) hResolution,
+                               new OMGridData.Short(elevations));
         omg.setUnits(Length.METER);
         return omg;
     }
 
     /**
      * If you just want to get an image for the DTEDFrame, then call this. One
-     * OMRaster for the entire DTEDFrame will be returned, with the default
-     * rendering parameters (Colored shading) and the default colortable. Use
-     * the other getOMRaster method if you want something different. This method
-     * actually calls that other method, so read the documentation for that as
-     * well.
+     * image in an OMGraphic for the entire DTEDFrame will be returned, with the
+     * default rendering parameters (Colored shading) and the default
+     * colortable. Use the other getImage method if you want something
+     * different. This method actually calls that other method, so read the
+     * documentation for that as well.
      * 
      * @param proj EqualArc projection to use to create image.
-     * @return raster image to display in OpenMap.
+     * @return raster image OMGraphic to display in OpenMap.
      */
-    public OMRaster getOMRaster(EqualArc proj) {
+    public OMGraphic getImage(Projection proj) {
         OMGrid grid = getOMGrid();
         grid.generate(proj);
         SlopeGenerator sg = new SlopeGenerator();
@@ -576,13 +547,13 @@ public class DTEDFrame implements Closable {
 
         CADRG crg = new CADRG(new LatLonPoint.Double(lat, lon), 1500000, 600, 600);
 
-        final com.bbn.openmap.omGraphics.OMRaster ras = df.getOMRaster(crg);
+        final com.bbn.openmap.omGraphics.OMGraphic ras = df.getImage(crg);
 
         java.awt.Frame window = new java.awt.Frame(args[0]) {
             public void paint(java.awt.Graphics g) {
-                if (ras != null) {
-                    g.translate(-300 + ras.getWidth() / 2, -300
-                            + ras.getHeight() / 2);
+                if (ras instanceof OMRaster) {
+                    OMRaster raster = (OMRaster) ras;
+                    g.translate(-300 + raster.getWidth() / 2, -300 + raster.getHeight() / 2);
                     ras.render(g);
                 }
             }
@@ -596,7 +567,12 @@ public class DTEDFrame implements Closable {
             }
         });
 
-        window.setSize(ras.getWidth(), ras.getHeight());
+        if (ras instanceof OMRaster) {
+            OMRaster raster = (OMRaster) ras;
+            window.setSize(raster.getWidth(), raster.getHeight());
+        } else {
+            window.setSize(250, 250);
+        }
         window.setVisible(true);
         window.repaint();
     }

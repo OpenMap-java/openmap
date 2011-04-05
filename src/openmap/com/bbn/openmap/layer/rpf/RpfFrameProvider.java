@@ -23,7 +23,8 @@
 package com.bbn.openmap.layer.rpf;
 
 import java.util.Vector;
-import com.bbn.openmap.proj.CADRG;
+
+import com.bbn.openmap.proj.Projection;
 
 /**
  * The RpfFrameProvider describes an interface to an object that can provide
@@ -50,7 +51,7 @@ public interface RpfFrameProvider {
     * Given a projection that describes a map or geographical area, return
     * RpfCoverageBoxes that let you know how to locate and ask for RpfSubframes.
     */
-   public Vector<RpfCoverageBox> getCoverage(float ullat, float ullon, float lrlat, float lrlon, CADRG p);
+   public Vector<RpfCoverageBox> getCoverage(float ullat, float ullon, float lrlat, float lrlon, Projection p);
 
    /**
     * Given a projection that describes a map or geographical area, return
@@ -63,16 +64,16 @@ public interface RpfFrameProvider {
     * @param lrlon right lon
     * @param chartSeries can be null to see all/any.
     */
-   public Vector<RpfCoverageBox> getCatalogCoverage(float ullat, float ullon, float lrlat, float lrlon, CADRG p, String chartSeries);
+   public Vector<RpfCoverageBox> getCatalogCoverage(float ullat, float ullon, float lrlat, float lrlon, Projection p, String chartSeries);
 
    /**
     * Given an area and a two-letter chart series code, find the percentage of
     * coverage on the map that that chart series can offer. If you want specific
     * coverage information, use the getCatalogCoverage call.
     * 
-    * @see #getCatalogCoverage(float, float, float, float, CADRG, String)
+    * @see #getCatalogCoverage(float, float, float, float, Projection, String)
     */
-   public float getCalculatedCoverage(float ullat, float ullon, float lrlat, float lrlon, CADRG p, String chartSeries);
+   public float getCalculatedCoverage(float ullat, float ullon, float lrlat, float lrlon, Projection p, String chartSeries);
 
    /**
     * Given the indexes to a certain RpfTocEntry within a certain A.TOC, find
@@ -88,7 +89,7 @@ public interface RpfFrameProvider {
     *        rectangle of the entry.
     * @param y the vertical subframe index, from the top side of a boundary
     *        rectangle of the entry.
-    * @see #getCoverage(float, float, float, float, CADRG)
+    * @see #getCoverage(float, float, float, float, Projection)
     * @return integer pixel data.
     */
    public int[] getSubframeData(int tocNumber, int entryNumber, int x, int y);
@@ -109,7 +110,7 @@ public interface RpfFrameProvider {
     *        rectangle of the entry.
     * @param y the vertical subframe index, from the top side of a boundary
     *        rectangle of the entry.
-    * @see #getCoverage(float, float, float, float, CADRG)
+    * @see #getCoverage(float, float, float, float, Projection)
     * @return string.
     */
    public String getSubframeAttributes(int tocNumber, int entryNumber, int x, int y);

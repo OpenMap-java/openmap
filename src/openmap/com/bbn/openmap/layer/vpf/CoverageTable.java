@@ -897,7 +897,7 @@ public class CoverageTable {
                         if (false) {
                            StringBuffer pout = new StringBuffer();
                            for (Object obj : fcirow) {
-                              pout.append(obj.toString() + ",");
+                              pout.append(obj).append(',');
                            }
                            System.out.println(pout);
                         }

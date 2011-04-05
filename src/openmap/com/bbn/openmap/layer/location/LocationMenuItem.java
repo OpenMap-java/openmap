@@ -23,8 +23,6 @@
 package com.bbn.openmap.layer.location;
 
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
 
 import javax.swing.JMenuItem;
 

@@ -30,12 +30,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Point2D;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -45,9 +40,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
-import com.bbn.openmap.dataAccess.shape.ShapeGeoIndex;
 import com.bbn.openmap.event.MapMouseEvent;
-import com.bbn.openmap.geo.GeoPoint;
 import com.bbn.openmap.omGraphics.EditableOMPoly;
 import com.bbn.openmap.omGraphics.FontSizer;
 import com.bbn.openmap.omGraphics.GraphicAttributes;

@@ -1041,16 +1041,16 @@ public class TestLayer extends OMGraphicHandlerLayer implements
                 StringTokenizer tok = new StringTokenizer(verts, "\n\r");
 
                 // clean out comments
-                verts = "";
+                StringBuilder sb = new StringBuilder();
                 while (tok.hasMoreTokens()) {
                     str = tok.nextToken().trim();
                     if (str.charAt(0) != '#') {
-                        verts = verts + str + " ";
+                        sb.append(str).append(" ");
                     }
                 }
 
                 // extract vertices
-                tok = new StringTokenizer(verts);
+                tok = new StringTokenizer(sb.toString());
                 int size = tok.countTokens();
                 System.out.println("ll size=" + size);
                 llpts = new double[size];
@@ -1122,11 +1122,11 @@ public class TestLayer extends OMGraphicHandlerLayer implements
                         setSegs((JTextField) e.getSource());
                     }
                 });
-                String entry = "";
+                StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < llpts.length; i += 2) {
-                    entry = entry + llpts[i] + " " + llpts[i + 1] + "\n";
+                    sb.append(llpts[i]).append(" ").append(llpts[i + 1]).append("\n");
                 }
-                ta = PaletteHelper.createTextArea("llpts", entry, pop, 5, 8);
+                ta = PaletteHelper.createTextArea("llpts", sb.toString(), pop, 5, 8);
                 ta.addFocusListener(new FocusAdapter() {
                     public void focusLost(FocusEvent e) {
                         setLL((JTextArea) e.getSource());

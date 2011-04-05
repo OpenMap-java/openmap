@@ -549,7 +549,7 @@ public class GeoSymAttExpression {
 
                if (colIndex < 0) {
                   if (reasoning != null) {
-                     reasoning.append("\n  col " + colName + " not found in FCI[" + fci.columnNameString() + "]");
+                     reasoning.append("\n  col ").append(colName).append(" not found in FCI[").append(fci.columnNameString()).append("]");
                   }
                   logger.info("col " + colName + " not found in FCI[" + fci.columnNameString() + "]");
                   return false;
@@ -559,12 +559,12 @@ public class GeoSymAttExpression {
                return test(realVal, val, reasoning);
             } else {
                if (reasoning != null) {
-                  reasoning.append("\n  Can't read row " + row);
+                  reasoning.append("\n  Can't read row ").append(row);
                }
             }
          } catch (FormatException fe) {
             if (reasoning != null) {
-               reasoning.append("\n  FormatException reading row " + row);
+               reasoning.append("\n  FormatException reading row ").append(row);
             }
          }
          return false;
@@ -704,7 +704,7 @@ public class GeoSymAttExpression {
 
                if (colIndex < 0) {
                   if (reasoning != null) {
-                     reasoning.append("\n  col " + colName + " not found in FCI[" + fci.columnNameString() + "]");
+                     reasoning.append("\n  col ").append(colName).append(" not found in FCI[").append(fci.columnNameString()).append("]");
                   }
 
                   return false;
@@ -714,16 +714,16 @@ public class GeoSymAttExpression {
                return test(realVal, val, reasoning);
             } else {
                if (reasoning != null) {
-                  reasoning.append("\n  Can't read row " + row);
+                  reasoning.append("\n  Can't read row ").append(row);
                }
             }
          } catch (FormatException fe) {
             if (reasoning != null) {
-               reasoning.append("\n  FormatException reading row " + row);
+               reasoning.append("\n  FormatException reading row ").append(row);
             }
          } catch (NumberFormatException nfe) {
             if (reasoning != null) {
-               reasoning.append("\n  NumberFormatException reading " + fcirow.get(colIndex).toString());
+               reasoning.append("\n  NumberFormatException reading ").append(fcirow.get(colIndex));
             }
          }
 
@@ -741,7 +741,7 @@ public class GeoSymAttExpression {
 
             if (colIndex < 0) {
                if (reasoning != null) {
-                  reasoning.append("\n  col " + colName + " not found in FCI[" + fci.columnNameString() + "]");
+                  reasoning.append("\n  col ").append(colName).append(" not found in FCI[").append(fci.columnNameString()).append("]");
                }
                return false;
             }
@@ -750,7 +750,7 @@ public class GeoSymAttExpression {
             return test(realVal, val, reasoning);
          } catch (NumberFormatException nfe) {
             if (reasoning != null) {
-               reasoning.append("\n  NumberFormatException reading " + row.get(colIndex).toString());
+               reasoning.append("\n  NumberFormatException reading ").append(row.get(colIndex));
             }
          }
 

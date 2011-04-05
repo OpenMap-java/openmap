@@ -39,6 +39,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.layer.policy.BufferedImageRenderPolicy;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRect;
@@ -87,9 +88,6 @@ import com.bbn.openmap.util.PropUtils;
  *     # This property should reflect the paths to the dted level 0, 1 and newer 2 (file extension .dt2) data directories, separated by a semicolon.
  *     dted.paths=/usr/local/matt/data/dted;/cdrom/cdrom0/dted
  *     
- *     # This property should reflect the paths to old dted level 2 data directories (file extension .dt1)
- *     dted.level2.paths=/usr/local/matt/data/dted_level2
- *     
  *     # Number between 0-255: 0 is transparent, 255 is opaque
  *     dted.opaque=255
  *     
@@ -135,7 +133,8 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * @see com.bbn.openmap.layer.rpf.ChangeCase
  */
-public class DTEDLayer extends OMGraphicHandlerLayer {
+public class DTEDLayer
+        extends OMGraphicHandlerLayer {
 
     /** The cache manager. */
     protected transient DTEDCacheManager cache = null;
@@ -260,7 +259,11 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
         setName("DTED");
         setDefaultValues();
         setPaths(pathsToDTEDDirs);
-        setMouseModeIDsForEvents(new String[] { "Gestures" });
+        setMouseModeIDsForEvents(new String[] {
+            "Gestures"
+        });
+
+        setRenderPolicy(new BufferedImageRenderPolicy(this));
     }
 
     /**
@@ -282,7 +285,7 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
 
     public DTEDCacheManager getCache() {
         if (cache == null) {
-//            Debug.output("DTEDLayer: Creating cache! (This is a one-time operation!)");
+            // Debug.output("DTEDLayer: Creating cache! (This is a one-time operation!)");
             cache = new DTEDCacheManager(paths, numColors, opaqueness);
             cache.setCacheSize(cacheSize);
             DTEDFrameSubframeInfo dfsi = new DTEDFrameSubframeInfo(viewType, bandHeight, dtedLevel, slopeAdjust);
@@ -314,36 +317,26 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
         super.setProperties(prefix, properties);
         prefix = PropUtils.getScopedPropertyPrefix(this);
 
-        paths = PropUtils.initPathsFromProperties(properties, prefix
-                + DTEDPathsProperty, paths);
-        setOpaqueness(PropUtils.intFromProperties(properties, prefix
-                + OpaquenessProperty, getOpaqueness()));
+        paths = PropUtils.initPathsFromProperties(properties, prefix + DTEDPathsProperty, paths);
+        setOpaqueness(PropUtils.intFromProperties(properties, prefix + OpaquenessProperty, getOpaqueness()));
 
-        setNumColors(PropUtils.intFromProperties(properties, prefix
-                + NumColorsProperty, getNumColors()));
+        setNumColors(PropUtils.intFromProperties(properties, prefix + NumColorsProperty, getNumColors()));
 
-        setDtedLevel(PropUtils.intFromProperties(properties, prefix
-                + DTEDLevelProperty, getDtedLevel()));
+        setDtedLevel(PropUtils.intFromProperties(properties, prefix + DTEDLevelProperty, getDtedLevel()));
 
-        setViewType(PropUtils.intFromProperties(properties, prefix
-                + DTEDViewTypeProperty, getViewType()));
+        setViewType(PropUtils.intFromProperties(properties, prefix + DTEDViewTypeProperty, getViewType()));
 
-        setSlopeAdjust(PropUtils.intFromProperties(properties, prefix
-                + DTEDSlopeAdjustProperty, getSlopeAdjust()));
+        setSlopeAdjust(PropUtils.intFromProperties(properties, prefix + DTEDSlopeAdjustProperty, getSlopeAdjust()));
 
-        setBandHeight(PropUtils.intFromProperties(properties, prefix
-                + DTEDBandHeightProperty, getBandHeight()));
+        setBandHeight(PropUtils.intFromProperties(properties, prefix + DTEDBandHeightProperty, getBandHeight()));
 
         // The Layer maxScale is talking the place of the DTEDLayer minScale
         // property.
-        setMaxScale(PropUtils.floatFromProperties(properties, prefix
-                + DTEDMinScaleProperty, getMaxScale()));
+        setMaxScale(PropUtils.floatFromProperties(properties, prefix + DTEDMinScaleProperty, getMaxScale()));
 
-        setCacheSize((int) PropUtils.intFromProperties(properties, prefix
-                + DTEDFrameCacheSizeProperty, getCacheSize()));
+        setCacheSize((int) PropUtils.intFromProperties(properties, prefix + DTEDFrameCacheSizeProperty, getCacheSize()));
 
-        setKillCache(PropUtils.booleanFromProperties(properties, prefix
-                + DTEDKillCacheProperty, getKillCache()));
+        setKillCache(PropUtils.booleanFromProperties(properties, prefix + DTEDKillCacheProperty, getKillCache()));
 
     }
 
@@ -357,7 +350,7 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
             cache = null;
         }
     }
-
+    
     /**
      * Prepares the graphics for the layer. This is where the getRectangle()
      * method call is made on the dted.
@@ -384,13 +377,8 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
 
         DTEDCacheManager cache = getCache();
 
-        // Check to make sure the projection is EqualArc
         if (!(projection instanceof EqualArc)) {
-            if (viewType != DTEDFrameSubframe.NOSHADING) {
-                fireRequestInfoLine("  DTED requires an Equal Arc projection (CADRG/LLXY) to view images.");
-                Debug.error("DTEDLayer: DTED requires an Equal Arc projection (CADRG/LLXY) to view images.");
-            }
-            return new OMGraphicList();
+            //fireRequestInfoLine("DTED works faster with an Equal Arc projection (CADRG/LLXY).");
         }
 
         Debug.message("basic", getName() + "|DTEDLayer.prepare(): doing it");
@@ -402,20 +390,17 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
 
         // call getRectangle();
         if (Debug.debugging("dted")) {
-            Debug.output(getName() + "|DTEDLayer.prepare(): "
-                    + "calling getRectangle " + " with projection: "
-                    + projection + " ul = " + projection.getUpperLeft()
-                    + " lr = " + projection.getLowerRight());
+            Debug.output(getName() + "|DTEDLayer.prepare(): " + "calling getRectangle " + " with projection: " + projection
+                    + " ul = " + projection.getUpperLeft() + " lr = " + projection.getLowerRight());
         }
 
         OMGraphicList omGraphicList;
 
         if (projection.getScale() < maxScale) {
-            omGraphicList = cache.getRectangle((EqualArc) projection);
+            omGraphicList = cache.getRectangle(projection);
         } else {
             fireRequestInfoLine("  The scale is too small for DTED viewing.");
-            Debug.error("DTEDLayer: scale (1:" + projection.getScale()
-                    + ") is smaller than minimum (1:" + maxScale + ") allowed.");
+            Debug.error("DTEDLayer: scale (1:" + projection.getScale() + ") is smaller than minimum (1:" + maxScale + ") allowed.");
             omGraphicList = new OMGraphicList();
         }
         // ///////////////////
@@ -423,19 +408,16 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
         int size = 0;
         if (omGraphicList != null) {
             size = omGraphicList.size();
-            Debug.message("basic", getName()
-                    + "|DTEDLayer.prepare(): finished with " + size
-                    + " graphics");
-
-            // Don't forget to project them. Since they are only
-            // being recalled if the projection has changed, then we
-            // need to force a reprojection of all of them because the
-            // screen position has changed.
-            omGraphicList.project(projection, true);
+            Debug.message("basic", getName() + "|DTEDLayer.prepare(): finished with " + size + " graphics");
+            
+            // // Don't forget to project them. Since they are only
+            // // being recalled if the projection has changed, then we
+            // // need to force a reprojection of all of them because the
+            // // screen position has changed.
+            // omGraphicList.project(projection, true);
 
         } else {
-            Debug.message("basic", getName()
-                    + "|DTEDLayer.prepare(): finished with null graphics list");
+            Debug.message("basic", getName() + "|DTEDLayer.prepare(): finished with null graphics list");
         }
 
         return omGraphicList;
@@ -482,20 +464,20 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
 
     public void setViewType(int vt) {
         switch (vt) {
-        case DTEDFrameSubframe.NOSHADING:
-        case DTEDFrameSubframe.SLOPESHADING:
-        case DTEDFrameSubframe.COLOREDSHADING:
-        case DTEDFrameSubframe.METERSHADING:
-        case DTEDFrameSubframe.FEETSHADING:
-            viewType = vt;
-            if (cache != null) {
-                DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
-                dfsi.viewType = viewType;
-            }
+            case DTEDFrameSubframe.NOSHADING:
+            case DTEDFrameSubframe.SLOPESHADING:
+            case DTEDFrameSubframe.COLOREDSHADING:
+            case DTEDFrameSubframe.METERSHADING:
+            case DTEDFrameSubframe.FEETSHADING:
+                viewType = vt;
+                if (cache != null) {
+                    DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
+                    dfsi.viewType = viewType;
+                }
 
-            break;
-        default:
-            // unchanged
+                break;
+            default:
+                // unchanged
         }
     }
 
@@ -530,9 +512,8 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
                 dfsi.slopeAdjust = slopeAdjust;
             }
         } else {
-            Debug.output("DTEDLayer (" + getName()
-                    + ") being told to set slope adjustment to invalid value ("
-                    + sa + "), must be 1-5");
+            Debug.output("DTEDLayer (" + getName() + ") being told to set slope adjustment to invalid value (" + sa
+                    + "), must be 1-5");
         }
     }
 
@@ -586,9 +567,7 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
         if (cs > 0) {
             cacheSize = cs;
         } else {
-            Debug.output("DTEDLayer (" + getName()
-                    + ") being told to set cache size to invalid value (" + cs
-                    + ").");
+            Debug.output("DTEDLayer (" + getName() + ") being told to set cache size to invalid value (" + cs + ").");
         }
     }
 
@@ -668,15 +647,15 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
             levels.add(level2);
 
             switch (dtedLevel) {
-            case 2:
-                level2.setSelected(true);
-                break;
-            case 1:
-                level1.setSelected(true);
-                break;
-            case 0:
-            default:
-                level0.setSelected(true);
+                case 2:
+                    level2.setSelected(true);
+                    break;
+                case 1:
+                    level1.setSelected(true);
+                    break;
+                case 0:
+                default:
+                    level0.setSelected(true);
             }
 
             levelPanel.add(level0);
@@ -685,8 +664,13 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
 
             // The DTED view selector
             JPanel viewPanel = PaletteHelper.createPaletteJPanel("View Type");
-            String[] viewStrings = { "None", "Shading", "Elevation Shading",
-                    "Elevation Bands (Meters)", "Elevation Bands (Feet)" };
+            String[] viewStrings = {
+                "None",
+                "Shading",
+                "Elevation Shading",
+                "Elevation Bands (Meters)",
+                "Elevation Bands (Feet)"
+            };
 
             JComboBox viewList = new JComboBox(viewStrings);
             viewList.addActionListener(new ActionListener() {
@@ -694,23 +678,23 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
                     JComboBox jcb = (JComboBox) e.getSource();
                     int newView = jcb.getSelectedIndex();
                     switch (newView) {
-                    case 0:
-                        viewType = DTEDFrameSubframe.NOSHADING;
-                        break;
-                    case 1:
-                        viewType = DTEDFrameSubframe.SLOPESHADING;
-                        break;
-                    case 2:
-                        viewType = DTEDFrameSubframe.COLOREDSHADING;
-                        break;
-                    case 3:
-                        viewType = DTEDFrameSubframe.METERSHADING;
-                        break;
-                    case 4:
-                        viewType = DTEDFrameSubframe.FEETSHADING;
-                        break;
-                    default:
-                        viewType = DTEDFrameSubframe.NOSHADING;
+                        case 0:
+                            viewType = DTEDFrameSubframe.NOSHADING;
+                            break;
+                        case 1:
+                            viewType = DTEDFrameSubframe.SLOPESHADING;
+                            break;
+                        case 2:
+                            viewType = DTEDFrameSubframe.COLOREDSHADING;
+                            break;
+                        case 3:
+                            viewType = DTEDFrameSubframe.METERSHADING;
+                            break;
+                        case 4:
+                            viewType = DTEDFrameSubframe.FEETSHADING;
+                            break;
+                        default:
+                            viewType = DTEDFrameSubframe.NOSHADING;
                     }
                     if (cache != null) {
                         DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
@@ -722,39 +706,44 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
             });
             int selectedView;
             switch (viewType) {
-            case 0:
-            case 1:
-                selectedView = viewType;
-                break;
-            case 2:
-            case 3:
-                selectedView = viewType + 1;
-                break;
-            case 4:
-                // This puts the layer in testing mode, and the menu
-                // changes.
-                String[] viewStrings2 = { "None", "Shading",
-                        "Elevation Bands (Meters)", "Elevation Bands (Feet)",
-                        "Subframe Testing", "Elevation Shading" };
-                viewList = new JComboBox(viewStrings2);
-                viewList.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        JComboBox jcb = (JComboBox) e.getSource();
-                        int newView = jcb.getSelectedIndex();
-                        if (cache != null) {
-                            DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
-                            dfsi.viewType = newView;
-                            // cache.setSubframeInfo(dfsi);
+                case 0:
+                case 1:
+                    selectedView = viewType;
+                    break;
+                case 2:
+                case 3:
+                    selectedView = viewType + 1;
+                    break;
+                case 4:
+                    // This puts the layer in testing mode, and the menu
+                    // changes.
+                    String[] viewStrings2 = {
+                        "None",
+                        "Shading",
+                        "Elevation Bands (Meters)",
+                        "Elevation Bands (Feet)",
+                        "Subframe Testing",
+                        "Elevation Shading"
+                    };
+                    viewList = new JComboBox(viewStrings2);
+                    viewList.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            JComboBox jcb = (JComboBox) e.getSource();
+                            int newView = jcb.getSelectedIndex();
+                            if (cache != null) {
+                                DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
+                                dfsi.viewType = newView;
+                                // cache.setSubframeInfo(dfsi);
+                            }
                         }
-                    }
-                });
-                selectedView = viewType;
-                break;
-            case 5:
-                selectedView = 2; // DTEDFrameSubframe.COLOREDSHADING
-                break;
-            default:
-                selectedView = DTEDFrameSubframe.NOSHADING;
+                    });
+                    selectedView = viewType;
+                    break;
+                case 5:
+                    selectedView = 2; // DTEDFrameSubframe.COLOREDSHADING
+                    break;
+                default:
+                    selectedView = DTEDFrameSubframe.NOSHADING;
             }
 
             viewList.setSelectedIndex(selectedView);
@@ -775,9 +764,7 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
                 public void stateChanged(ChangeEvent ce) {
                     JSlider slider = (JSlider) ce.getSource();
                     if (slider.getValueIsAdjusting()) {
-                        fireRequestInfoLine(getName()
-                                + " - Contrast Slider value = "
-                                + slider.getValue());
+                        fireRequestInfoLine(getName() + " - Contrast Slider value = " + slider.getValue());
                         slopeAdjust = slider.getValue();
                         if (cache != null) {
                             DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
@@ -801,8 +788,7 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
                 public void stateChanged(ChangeEvent ce) {
                     JSlider slider = (JSlider) ce.getSource();
                     if (slider.getValueIsAdjusting()) {
-                        fireRequestInfoLine(getName()
-                                + " - Band Slider value = " + slider.getValue());
+                        fireRequestInfoLine(getName() + " - Band Slider value = " + slider.getValue());
                         bandHeight = slider.getValue();
                         if (cache != null) {
                             DTEDFrameSubframeInfo dfsi = cache.getSubframeInfo();
@@ -858,15 +844,15 @@ public class DTEDLayer extends OMGraphicHandlerLayer {
 
     public boolean determineLocation(MouseEvent e) {
         Projection projection = getProjection();
-        LatLonPoint ll = projection.inverse(e.getX(),
-                e.getY(),
-                new LatLonPoint.Double());
-        location = new DTEDLocation(e.getX(), e.getY());
-        location.setElevation(cache.getElevation((float) ll.getY(),
-                (float) ll.getX()));
-        location.generate(projection);
-        repaint();
-        return true;
+        if (cache != null && projection != null) {
+            LatLonPoint ll = projection.inverse(e.getX(), e.getY(), new LatLonPoint.Double());
+            location = new DTEDLocation(e.getX(), e.getY());
+            location.setElevation(cache.getElevation((float) ll.getY(), (float) ll.getX()));
+            location.generate(projection);
+            repaint();
+            return true;
+        }
+        return false;
     }
 
     /**

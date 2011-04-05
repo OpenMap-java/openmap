@@ -24,8 +24,11 @@ package com.bbn.openmap.layer.dted;
 
 import java.awt.geom.Point2D;
 
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.EqualArc;
+import com.bbn.openmap.proj.LLXY;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
@@ -43,8 +46,6 @@ public class DTEDCacheHandler {
     public final static int SF_PIXEL_HW = 200;
     /** The DTED level 0, 1 directory paths. */
     protected String[] paths;
-    /** The DTED level 2 directory paths. */
-    protected String[] paths2;
     /** The real frame cache. */
     protected DTEDFrameCache frameCache;
     protected int frameCacheSize = -1; // No limit.
@@ -53,62 +54,49 @@ public class DTEDCacheHandler {
     // colortable
 
     // Setting up the screen...
-    protected LatLonPoint ulCoords, lrCoords;
-    protected double frameUp, frameDown, frameLeft, frameRight;
-    protected double xPixInterval, yPixInterval; // degrees/pixel
-    protected int numXSubframes, numYSubframes;
-    protected int lastSubframeWidth, lastSubframeHeight;
-    protected int currentFrameCacheSize = -10; // guarantees that it
+    LatLonPoint ulCoords, lrCoords;
+    double frameUp, frameDown, frameLeft, frameRight;
+    double xPixInterval, yPixInterval; // degrees/pixel
+    int numXSubframes, numYSubframes;
+    int lastSubframeWidth, lastSubframeHeight;
+    int currentFrameCacheSize = -10; // guarantees that it
     // will changed first
     // time.
 
     // Returning the images...
-    protected boolean firstImageReturned = true;
-    protected double frameLon = 0.0;
-    protected double frameLat = 0.0;
-    protected int subx = 0;
-    protected int suby = 0;
-    protected boolean newframe = false;
-    protected DTEDSubframedFrame frame = null;
+    boolean firstImageReturned = true;
+    double frameLon = 0.0;
+    double frameLat = 0.0;
+    int subx = 0;
+    int suby = 0;
+    boolean newframe = false;
+    DTEDSubframedFrame frame = null;
 
     /** A description of the drawing attributes of the images. */
-    protected DTEDFrameSubframeInfo dfsi = new DTEDFrameSubframeInfo(DTEDFrameSubframe.NOSHADING, DTEDFrameSubframe.DEFAULT_BANDHEIGHT, DTEDFrameSubframe.LEVEL_0, DTEDFrameSubframe.DEFAULT_SLOPE_ADJUST);
+    protected DTEDFrameSubframeInfo dfsi = new DTEDFrameSubframeInfo(DTEDFrameSubframe.NOSHADING,
+                                                                     DTEDFrameSubframe.DEFAULT_BANDHEIGHT,
+                                                                     DTEDFrameSubframe.LEVEL_0,
+                                                                     DTEDFrameSubframe.DEFAULT_SLOPE_ADJUST);
 
     public DTEDCacheHandler() {
-        this(null,
-             DTEDFrameColorTable.DTED_COLORS,
-             DTEDFrameColorTable.DEFAULT_OPAQUENESS,
-             FRAME_CACHE_SIZE);
+        this(null, DTEDFrameColorTable.DTED_COLORS, DTEDFrameColorTable.DEFAULT_OPAQUENESS, FRAME_CACHE_SIZE);
     }
 
     public DTEDCacheHandler(String[] dataPaths, int numColors, int opaque) {
-        this(dataPaths, null, numColors, opaque, -1);
+        this(dataPaths, numColors, opaque, -1);
     }
 
-    public DTEDCacheHandler(String[] dataPaths, String[] data2Paths,
-            int numColors, int opaque) {
-        this(dataPaths, data2Paths, numColors, opaque, -1);
-    }
-
-    public DTEDCacheHandler(String[] dataPaths, int numColors, int opaqueness,
-            int subframe_cache_size) {
-        this(dataPaths, null, numColors, opaqueness, subframe_cache_size);
-    }
-
-    public DTEDCacheHandler(String[] dataPaths, String[] data2Paths,
-            int numColors, int opaqueness, int subframe_cache_size) {
+    public DTEDCacheHandler(String[] dataPaths, int numColors, int opaqueness, int subframe_cache_size) {
 
         colortable = new DTEDFrameColorTable(numColors, opaqueness, true);
 
         setFrameCacheSize(subframe_cache_size);
 
         paths = dataPaths;
-        paths2 = data2Paths;
-        frameCache = new DTEDFrameCache(dataPaths, data2Paths, frameCacheSize);
+        frameCache = new DTEDFrameCache(dataPaths, frameCacheSize);
 
         if (Debug.debugging("dted")) {
-            Debug.output("DTEDCacheHandler: Created with cache size of "
-                    + frameCacheSize);
+            Debug.output("DTEDCacheHandler: Created with cache size of " + frameCacheSize);
         }
     }
 
@@ -158,11 +146,8 @@ public class DTEDCacheHandler {
      * @param proj the EqualArc projection of the screen.
      */
     public void setProjection(EqualArc proj) {
-        setProjection(proj,
-                ((Point2D) proj.getUpperLeft()).getY(),
-                ((Point2D) proj.getUpperLeft()).getX(),
-                ((Point2D) proj.getLowerRight()).getY(),
-                ((Point2D) proj.getLowerRight()).getX());
+        setProjection(proj, ((Point2D) proj.getUpperLeft()).getY(), ((Point2D) proj.getUpperLeft()).getX(),
+                      ((Point2D) proj.getLowerRight()).getY(), ((Point2D) proj.getLowerRight()).getX());
     }
 
     /**
@@ -181,15 +166,10 @@ public class DTEDCacheHandler {
      * @param lon2 longitude of the lower right corner of the window, in decimal
      *        degrees.
      */
-    public void setProjection(EqualArc proj, double lat1, double lon1,
-                              double lat2, double lon2) {
+    public void setProjection(Projection proj, double lat1, double lon1, double lat2, double lon2) {
 
         ulCoords = new LatLonPoint.Double(lat1, lon1);
         lrCoords = new LatLonPoint.Double(lat2, lon2);
-        double xpi = 360 / proj.getXPixConstant();
-        double ypi = 90 / proj.getYPixConstant();
-
-        int numFramesNeeded;
 
         firstImageReturned = true;
 
@@ -203,22 +183,32 @@ public class DTEDCacheHandler {
         frameRight = Math.ceil((double) lon2);
 
         if (Debug.debugging("dted"))
-            Debug.output("frameUp = " + frameUp + ", frameDown = " + frameDown
-                    + ", frameLeft = " + frameLeft + ", frameRight = "
+            Debug.output("frameUp = " + frameUp + ", frameDown = " + frameDown + ", frameLeft = " + frameLeft + ", frameRight = "
                     + frameRight);
 
+        int numFramesNeeded;
         // Limit the size of the cache, if desired.
         if (frameCacheSize > 0) {
             numFramesNeeded = frameCacheSize;
             if (Debug.debugging("dteddetail")) {
-                Debug.output("DTEDCacheHandler: frameCacheSize remains at: "
-                        + numFramesNeeded);
+                Debug.output("DTEDCacheHandler: frameCacheSize remains at: " + numFramesNeeded);
             }
         } else {
             // calculate how many frames should be in the cache...
-            numFramesNeeded = (int) (Math.abs(frameUp - frameDown)
-                    * Math.abs(frameRight - frameLeft) * 2);
+            numFramesNeeded = (int) (Math.abs(frameUp - frameDown) * Math.abs(frameRight - frameLeft) * 2);
         }
+
+        EqualArc eaProj = null;
+        boolean isEqualArcProj = proj instanceof EqualArc;
+
+        if (isEqualArcProj) {
+            eaProj = (EqualArc) proj;
+        } else {
+            eaProj = LLXY.convertProjection(proj);
+        }
+
+        double xpi = 360 / eaProj.getXPixConstant();
+        double ypi = 90 / eaProj.getYPixConstant();
 
         if (xPixInterval != xpi || yPixInterval != ypi) {
 
@@ -240,61 +230,57 @@ public class DTEDCacheHandler {
             int frame_width = (int) Math.ceil(1.0 / xpi);
             int frame_height = (int) Math.ceil(1.0 / ypi);
 
-            // Even number of subframes in frame
-            numXSubframes = frame_width / SF_PIXEL_HW;
-            lastSubframeWidth = SF_PIXEL_HW;
-            numYSubframes = frame_height / SF_PIXEL_HW;
-            lastSubframeHeight = SF_PIXEL_HW;
+            /*
+             * There is some weird projection parameter stuff going on when the
+             * projection is not equal arc, the subframe placement isn't quite
+             * being set up right. Some subframes are getting misplaced. To work
+             * around this, since I don't have time/money to really look at it,
+             * we're going to make one subframe for non-equal-arc projections
+             * and let the OMWarpingImage handle it. The DTEDFrameSubframe has
+             * also been modified to make the bounds of the subframe the entire
+             * image for non-EA projections.
+             */
+            if (!isEqualArcProj) {
+                numXSubframes = 1;
+                numYSubframes = 1;
+                lastSubframeHeight = frame_height;
+                lastSubframeWidth = frame_width;
+            } else {
 
-            if (frame_width % SF_PIXEL_HW != 0) {
-                lastSubframeWidth = frame_width - (numXSubframes * SF_PIXEL_HW);
-                numXSubframes++;
-            }
-            if (frame_height % SF_PIXEL_HW != 0) {
-                lastSubframeHeight = frame_height
-                        - (numYSubframes * SF_PIXEL_HW);
-                numYSubframes++;
-            }
+                // Even number of subframes in frame
+                numXSubframes = frame_width / SF_PIXEL_HW;
+                lastSubframeWidth = SF_PIXEL_HW;
+                numYSubframes = frame_height / SF_PIXEL_HW;
+                lastSubframeHeight = SF_PIXEL_HW;
 
+                if (frame_width % SF_PIXEL_HW != 0) {
+                    lastSubframeWidth = frame_width - (numXSubframes * SF_PIXEL_HW);
+                    numXSubframes++;
+                }
+                if (frame_height % SF_PIXEL_HW != 0) {
+                    lastSubframeHeight = frame_height - (numYSubframes * SF_PIXEL_HW);
+                    numYSubframes++;
+                }
+            }
             currentFrameCacheSize = numFramesNeeded;
 
-            frameCache.resizeCache(numFramesNeeded,
-                    numXSubframes,
-                    numYSubframes);
+            frameCache.resizeCache(numFramesNeeded, numXSubframes, numYSubframes);
             if (Debug.debugging("dteddetail")) {
-                Debug.output("DTEDCacheHandler: frameCacheSize set to: "
-                        + numFramesNeeded);
+                Debug.output("DTEDCacheHandler: frameCacheSize set to: " + numFramesNeeded);
             }
 
             if (Debug.debugging("dted"))
-                Debug.output("***** Screen Parameters Changed! \n"
-                        + " Frame width (pix) = "
-                        + frame_width
-                        + "\n"
-                        + " Frame height (pix) = "
-                        + frame_height
-                        + "\n"
-                        + " Num x subframes = "
-                        + numXSubframes
-                        + "\n"
-                        + " Num y subframes = "
-                        + numYSubframes
-                        + "\n"
-                        + " last sf width = "
-                        + lastSubframeWidth
-                        + "\n"
-                        + " last sf height = "
-                        + lastSubframeHeight
-                        + "\n"
-                        + " X pix interval = "
-                        + xpi + "\n" + " Y pix interval = " + ypi + "\n");
+                Debug.output("***** Screen Parameters Changed! \n" + " Frame width (pix) = " + frame_width + "\n"
+                        + " Frame height (pix) = " + frame_height + "\n" + " Num x subframes = " + numXSubframes + "\n"
+                        + " Num y subframes = " + numYSubframes + "\n" + " last sf width = " + lastSubframeWidth + "\n"
+                        + " last sf height = " + lastSubframeHeight + "\n" + " X pix interval = " + xpi + "\n"
+                        + " Y pix interval = " + ypi + "\n");
 
         } else if (Math.abs(numFramesNeeded - currentFrameCacheSize) > numFramesNeeded / 2) {
             currentFrameCacheSize = numFramesNeeded;
             frameCache.resizeCache(numFramesNeeded);
             if (Debug.debugging("dteddetail")) {
-                Debug.output("DTEDCacheHandler: frameCacheSize set to: "
-                        + numFramesNeeded);
+                Debug.output("DTEDCacheHandler: frameCacheSize set to: " + numFramesNeeded);
             }
         }
     }
@@ -309,11 +295,12 @@ public class DTEDCacheHandler {
      * left to right frames, and top to bottom for each column of frames. It
      * handles all the subframes for a frame at one time.
      * 
-     * @return OMRaster image.
+     * @param proj current projection.
+     * @return OMGraphic image, projected if not null.
      */
-    public OMRaster getNextImage() {
+    public OMGraphic getNextImage(Projection proj) {
 
-        OMRaster subframe = null;
+        OMGraphic subframe = null;
 
         // Subframe coordinates and height and width
         // upper left, lower right
@@ -360,8 +347,7 @@ public class DTEDCacheHandler {
 
             if (newframe && frameLon < frameRight) {
                 if (Debug.debugging("dted"))
-                    Debug.output(" gni: Getting new frame Lat = " + frameLat
-                            + " Lon = " + frameLon);
+                    Debug.output(" gni: Getting new frame Lat = " + frameLat + " Lon = " + frameLon);
 
                 frame = frameCache.get(frameLat, frameLon, dfsi.dtedLevel);
             }
@@ -382,21 +368,16 @@ public class DTEDCacheHandler {
                 double width_degrees = (double) SF_PIXEL_HW * xPixInterval;
                 double height_degrees = (double) SF_PIXEL_HW * yPixInterval;
 
-                sf_ullat = (double) (frameLat + 1.0)
-                        - ((double) suby * height_degrees);
+                sf_ullat = (double) (frameLat + 1.0) - ((double) suby * height_degrees);
                 sf_ullon = (double) frameLon + ((double) subx * width_degrees);
-                sf_lrlat = (double) (frameLat + 1.0)
-                        - ((double) suby * height_degrees) - sf_height_degrees;
-                sf_lrlon = (double) frameLon + ((double) subx * width_degrees)
-                        + sf_width_degrees;
+                sf_lrlat = (double) (frameLat + 1.0) - ((double) suby * height_degrees) - sf_height_degrees;
+                sf_lrlon = (double) frameLon + ((double) subx * width_degrees) + sf_width_degrees;
 
-                if ((ulCoords.getY() > sf_lrlat && lrCoords.getY() < sf_ullat)
-                        &&
+                if ((ulCoords.getY() > sf_lrlat && lrCoords.getY() < sf_ullat) &&
 
-                        (ulCoords.getX() < sf_lrlon && lrCoords.getX() > sf_ullon)
-                        &&
+                (ulCoords.getX() < sf_lrlon && lrCoords.getX() > sf_ullon) &&
 
-                        subx < numXSubframes) {
+                subx < numXSubframes) {
 
                     dfsi.height = (int) sf_height;
                     dfsi.width = (int) sf_width;
@@ -406,22 +387,19 @@ public class DTEDCacheHandler {
                     dfsi.suby = suby;
 
                     if (Debug.debugging("dteddetail")) {
-                        Debug.output(" gni: Looking for Subframe " + subx
-                                + ", " + suby);
+                        Debug.output(" gni: Looking for Subframe " + subx + ", " + suby);
                     }
 
-                    subframe = frame.getSubframeOMRaster(dfsi, colortable);
+                    subframe = frame.getSubframeImage(dfsi, colortable, proj);
 
                     if (subframe != null) {
                         if (Debug.debugging("dted")) {
-                            Debug.output(" gni: Subframe " + subx + ", " + suby
-                                    + " found :)");
+                            Debug.output(" gni: Subframe " + subx + ", " + suby + " found :)");
                         }
                         return subframe;
                     }
                 } else if (Debug.debugging("dteddetail")) {
-                    Debug.output(" gni: Subframe " + subx + ", " + suby
-                            + " didn't meet screen criteria");
+                    Debug.output(" gni: Subframe " + subx + ", " + suby + " didn't meet screen criteria");
                 }
             }
             sf_width = SF_PIXEL_HW;

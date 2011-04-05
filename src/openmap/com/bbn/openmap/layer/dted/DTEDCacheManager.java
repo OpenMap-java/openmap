@@ -24,9 +24,9 @@ package com.bbn.openmap.layer.dted;
 
 import java.awt.geom.Point2D;
 
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.omGraphics.OMRaster;
-import com.bbn.openmap.proj.EqualArc;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -68,7 +68,6 @@ public class DTEDCacheManager {
 
     protected DTEDFrameSubframeInfo subframeInfo;
     protected String[] dtedDirPaths;
-    protected String[] dted2DirPaths;
 
     // for cache constructors
     protected int numColors;
@@ -115,44 +114,12 @@ public class DTEDCacheManager {
     }
 
     /**
-     * Constructor that lets you set the paths of the DTED
-     * directories, where the data is located, as well as the number
-     * of colors you want used in the graphics.
-     * 
-     * @param DTEDPaths pathnames to the DTED level 0 and 1
-     *        directories.
-     * @param DTED2Paths pathnames to the DTED level 2 directories.
-     * @param num_colors number of colors to be used in the graphics.
-     * @param opaque the opaqueness of the dted images, 0 - 255 (0 is
-     *        clear)
-     */
-    public DTEDCacheManager(String[] DTEDPaths, String[] DTED2Paths,
-            int num_colors, int opaque) {
-        dtedDirPaths = DTEDPaths;
-        dted2DirPaths = DTED2Paths;
-        numColors = num_colors;
-        opaqueness = opaque;
-    }
-
-    /**
      * Used to set the DTED directory paths.
      * 
      * @param paths DTED Level 0 and 1 directory paths.
      */
     public void setDtedDirPaths(String[] paths) {
         dtedDirPaths = paths;
-        resetCaches();
-    }
-
-    /**
-     * Used to set the DTED directory paths.
-     * 
-     * @param paths DTED Level 0 and 1 directory paths.
-     * @param paths2 DTED Level 2 directory paths.
-     */
-    public void setDtedDirPaths(String[] paths, String[] paths2) {
-        dtedDirPaths = paths;
-        dted2DirPaths = paths2;
         resetCaches();
     }
 
@@ -191,7 +158,7 @@ public class DTEDCacheManager {
      */
     public int getElevation(float lat, float lon) {
         if (caches[0] == null) {
-            caches[0] = new DTEDCacheHandler(dtedDirPaths, dted2DirPaths, numColors, opaqueness);
+            caches[0] = new DTEDCacheHandler(dtedDirPaths, numColors, opaqueness);
             caches[0].setSubframeInfo(subframeInfo);
         }
         return caches[0].getElevation(lat, lon);
@@ -218,7 +185,7 @@ public class DTEDCacheManager {
      * @param proj The projection of the screen (CADRG).
      * @return List of rasters to display.
      */
-    public OMGraphicList getRectangle(EqualArc proj) {
+    public OMGraphicList getRectangle(Projection proj) {
 
         float[] lat = new float[3];
         float[] lon = new float[3];
@@ -280,7 +247,7 @@ public class DTEDCacheManager {
          */
 
         if (caches[0] == null) {
-            caches[0] = new DTEDCacheHandler(dtedDirPaths, dted2DirPaths, numColors, opaqueness, cacheSize);
+            caches[0] = new DTEDCacheHandler(dtedDirPaths, numColors, opaqueness, cacheSize);
             caches[0].setSubframeInfo(subframeInfo);
         }
 
@@ -293,7 +260,7 @@ public class DTEDCacheManager {
         // Dateline split
         if (lon_minus == 1) {
             if (caches[1] == null) {
-                caches[1] = new DTEDCacheHandler(dtedDirPaths, dted2DirPaths, numColors, opaqueness, cacheSize);
+                caches[1] = new DTEDCacheHandler(dtedDirPaths, numColors, opaqueness, cacheSize);
                 caches[1].setSubframeInfo(subframeInfo);
             }
 
@@ -308,7 +275,7 @@ public class DTEDCacheManager {
         // Equator Split
         if (lat_minus == 1) {
             if (caches[2] == null) {
-                caches[2] = new DTEDCacheHandler(dtedDirPaths, dted2DirPaths, numColors, opaqueness, cacheSize);
+                caches[2] = new DTEDCacheHandler(dtedDirPaths, numColors, opaqueness, cacheSize);
                 caches[2].setSubframeInfo(subframeInfo);
             }
 
@@ -321,7 +288,7 @@ public class DTEDCacheManager {
         // Both!!
         if (lon_minus == 1 && lat_minus == 1) {
             if (caches[3] == null) {
-                caches[3] = new DTEDCacheHandler(dtedDirPaths, dted2DirPaths, numColors, opaqueness, cacheSize);
+                caches[3] = new DTEDCacheHandler(dtedDirPaths, numColors, opaqueness, cacheSize);
                 caches[3].setSubframeInfo(subframeInfo);
             }
 
@@ -338,10 +305,10 @@ public class DTEDCacheManager {
 
         for (int nbox = 0; nbox < MAX_NUM_BOXES; nbox++) {
             if (caches[nbox] != null) {
-                OMRaster image = caches[nbox].getNextImage();
+                OMGraphic image = caches[nbox].getNextImage(proj);
                 while (image != null) {
                     graphics.add(image);
-                    image = caches[nbox].getNextImage();
+                    image = caches[nbox].getNextImage(proj);
                 }
             }
         }

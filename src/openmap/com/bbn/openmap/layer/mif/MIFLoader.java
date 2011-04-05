@@ -199,11 +199,12 @@ public class MIFLoader {
                     // check the CoordSys header, OpenMap only
                     // directly
                     // supports LatLong type of coordsys
-                    String coordSysLine = COORDSYS_WORD;
+                    StringBuilder sb = new StringBuilder(COORDSYS_WORD);
                     while (st != null && st.hasMoreElements()) {
-                        coordSysLine += " " + st.nextElement();
+                        sb.append(' ').append(st.nextElement());
                     }
 
+                    String coordSysLine = sb.toString();
                     String goodCoordSys = COORDSYS_WORD + " "
                             + LATLONG_COORDSYS_DEF;
                     if (goodCoordSys.length() < coordSysLine.length()) {
@@ -278,7 +279,7 @@ public class MIFLoader {
                     } else if (isSame(tok, TEXT_WORD)) // handle a MIF
                     // TEXT primitive
                     {
-                        String textString = "";
+                        StringBuilder sb = new StringBuilder();
 
                         // if the actual text is not on the same line as
                         // the primitive declaration
@@ -288,9 +289,10 @@ public class MIFLoader {
                         }
                         // build up the display text string,
                         while (st != null && st.hasMoreTokens()) {
-                            textString += st.nextToken();
+                            sb.append(st.nextToken());
                         }
 
+                        String textString = sb.toString();
                         if (textString.length() >= 1) {
                             // remove any surrounding " characters
                             textString = textString.substring(1, textString

@@ -744,9 +744,10 @@ public abstract class OMRasterObject
     * the imageFilter in the OMRasterObject. Called from generate() if the
     * filteredWidth and filteredHeight differ from width and height.
     * 
+    * @param image the Image to filter
     * @return the filtered image.
     */
-   protected Image filterImage() {
+   protected Image filterImage(Image image) {
 
       // Can we do a little clipping here?? If it's been projected,
       // maybe.
@@ -760,7 +761,7 @@ public abstract class OMRasterObject
          Image img = tf.trimExcessPixels();
 
          if (img != null) {
-            bitmap = img;
+            image = img;
             imageFilter = tf.getFilterWithChanges();
             // we can play around with point1, since that is where
             // the
@@ -782,11 +783,11 @@ public abstract class OMRasterObject
          }
       }
 
-      if (Toolkit.getDefaultToolkit() != null && bitmap != null) {
-         ImageProducer prod = new FilteredImageSource(bitmap.getSource(), imageFilter);
+      if (Toolkit.getDefaultToolkit() != null && image != null) {
+         ImageProducer prod = new FilteredImageSource(image.getSource(), imageFilter);
          return Toolkit.getDefaultToolkit().createImage(prod);
       } else
-         return bitmap;
+         return image;
    }
 
    /**

@@ -296,7 +296,7 @@ public class OMBitmap extends OMRasterObject implements Serializable {
         }
 
         if (imageFilter != null) {
-            bitmap = filterImage();
+            bitmap = filterImage(bitmap);
         }
 
         setShape();

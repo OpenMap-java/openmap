@@ -1,7 +1,6 @@
 package com.bbn.openmap.dataAccess.mapTile;
 
 import java.awt.Graphics;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -9,9 +8,7 @@ import java.util.logging.Logger;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMColor;
-import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMRect;
-import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.PropUtils;
 

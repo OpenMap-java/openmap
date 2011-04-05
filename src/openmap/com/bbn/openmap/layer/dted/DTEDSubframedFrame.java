@@ -22,11 +22,14 @@
 
 package com.bbn.openmap.layer.dted;
 
+import java.awt.Color;
+
 import com.bbn.openmap.dataAccess.dted.DTEDFrame;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.OMRasterObject;
 import com.bbn.openmap.proj.CADRG;
-import com.bbn.openmap.proj.EqualArc;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 
@@ -36,7 +39,8 @@ import com.bbn.openmap.util.Debug;
  * attribute information of it's data, and also maintains an array of images
  * (DTEDFrameSubframe) that represent views of the elevation posts.
  */
-public class DTEDSubframedFrame extends DTEDFrame {
+public class DTEDSubframedFrame
+        extends DTEDFrame {
 
     /** The colortable used to create the images. */
     public DTEDFrameColorTable colorTable;
@@ -77,8 +81,7 @@ public class DTEDSubframedFrame extends DTEDFrame {
      * @param cTable the colortable to use for the images.
      * @param info presentation parameters.
      */
-    public DTEDSubframedFrame(String filePath, DTEDFrameColorTable cTable,
-            DTEDFrameSubframeInfo info) {
+    public DTEDSubframedFrame(String filePath, DTEDFrameColorTable cTable, DTEDFrameSubframeInfo info) {
         this(filePath, cTable, info, false);
     }
 
@@ -106,8 +109,7 @@ public class DTEDSubframedFrame extends DTEDFrame {
      *        longitude column depending on the need. False is recommended for
      *        DTED level 1 and 2.
      */
-    public DTEDSubframedFrame(String filePath, DTEDFrameColorTable cTable,
-            DTEDFrameSubframeInfo info, boolean readWholeFile) {
+    public DTEDSubframedFrame(String filePath, DTEDFrameColorTable cTable, DTEDFrameSubframeInfo info, boolean readWholeFile) {
 
         super(filePath, readWholeFile);
 
@@ -131,8 +133,7 @@ public class DTEDSubframedFrame extends DTEDFrame {
         number_vert_subframes = numVertSubframes;
         subframes = new DTEDFrameSubframe[numHorizSubframes][numVertSubframes];
         if (Debug.debugging("dted")) {
-            Debug.output("///////// DTEDFrame: subframe array initialized, "
-                    + numHorizSubframes + "x" + numVertSubframes);
+            Debug.output("///////// DTEDFrame: subframe array initialized, " + numHorizSubframes + "x" + numVertSubframes);
         }
     }
 
@@ -147,8 +148,8 @@ public class DTEDSubframedFrame extends DTEDFrame {
      * @param proj EqualArc projection to use to create image.
      * @return raster image to display in OpenMap.
      */
-    public OMRaster getOMRaster(EqualArc proj) {
-        return getOMRaster(null, null, proj);
+    public OMGraphic getImage(Projection proj) {
+        return getImage(null, null, proj);
     }
 
     /**
@@ -168,8 +169,7 @@ public class DTEDSubframedFrame extends DTEDFrame {
      * @return raster image to display in OpenMap.
      * @param proj EqualArc projection to use to create image.
      */
-    public OMRaster getOMRaster(DTEDFrameSubframeInfo dfsi,
-                                DTEDFrameColorTable colortable, EqualArc proj) {
+    public OMGraphic getImage(DTEDFrameSubframeInfo dfsi, DTEDFrameColorTable colortable, Projection proj) {
         if (proj == null) {
             Debug.error("DTEDFrame.getOMRaster: need projection to create image.");
             return null;
@@ -180,20 +180,24 @@ public class DTEDSubframedFrame extends DTEDFrame {
         }
 
         if (dfsi == null) {
-            dfsi = new DTEDFrameSubframeInfo(DTEDFrameSubframe.COLOREDSHADING, DTEDFrameSubframe.DEFAULT_BANDHEIGHT, DTEDFrameSubframe.LEVEL_1, // Doesn't
-            // matter
-            DTEDFrameSubframe.DEFAULT_SLOPE_ADJUST);
+            dfsi =
+                    new DTEDFrameSubframeInfo(DTEDFrameSubframe.COLOREDSHADING, DTEDFrameSubframe.DEFAULT_BANDHEIGHT,
+                                              DTEDFrameSubframe.LEVEL_1, // Doesn't
+                                              // matter
+                                              DTEDFrameSubframe.DEFAULT_SLOPE_ADJUST);
         }
 
-        dfsi.xPixInterval = 360 / proj.getXPixConstant(); // degrees/pixel
-        dfsi.yPixInterval = 90 / proj.getYPixConstant();
+        CADRG cadrg = CADRG.convertProjection(proj);
+
+        dfsi.xPixInterval = 360 / cadrg.getXPixConstant(); // degrees/pixel
+        dfsi.yPixInterval = 90 / cadrg.getYPixConstant();
         dfsi.height = (int) (1 / dfsi.yPixInterval);
         dfsi.width = (int) (1 / dfsi.xPixInterval);
 
         // Will trigger the right thing in getSubframeOMRaster;
         subframes = null;
 
-        return getSubframeOMRaster(dfsi, colortable);
+        return getSubframeImage(dfsi, colortable, proj);
     }
 
     /**
@@ -206,12 +210,11 @@ public class DTEDSubframedFrame extends DTEDFrame {
      * @param colortable the colortable to use when building the image.
      * @return raster image to display in OpenMap.
      */
-    public OMRaster getSubframeOMRaster(DTEDFrameSubframeInfo dfsi,
-                                        DTEDFrameColorTable colortable) {
+    public OMGraphic getSubframeImage(DTEDFrameSubframeInfo dfsi, DTEDFrameColorTable colortable, Projection proj) {
         if (!frame_is_valid)
             return null;
 
-        OMRaster raster = null;
+        OMGraphic raster = null;
 
         if (dfsi.viewType == DTEDFrameSubframe.NOSHADING)
             return null;
@@ -238,24 +241,18 @@ public class DTEDSubframedFrame extends DTEDFrame {
         DTEDFrameSubframe subframe = subframes[dfsi.subx][dfsi.suby];
 
         if (Debug.debugging("dteddetail")) {
-            Debug.output("Subframe lat/lon => lat= " + lat_origin + " vs. "
-                    + dfsi.lat + " lon= " + lon_origin + " vs. " + dfsi.lon
+            Debug.output("Subframe lat/lon => lat= " + lat_origin + " vs. " + dfsi.lat + " lon= " + lon_origin + " vs. " + dfsi.lon
                     + " subx = " + dfsi.subx + " suby = " + dfsi.suby);
-            Debug.output("Height/width of subframe => height= " + dfsi.height
-                    + " width= " + dfsi.width);
+            Debug.output("Height/width of subframe => height= " + dfsi.height + " width= " + dfsi.width);
         }
 
         if (subframe != null) {
 
-            // The subframe section will not be null, because it is
-            // created when the subframe is.
-            if (subframe.image != null && subframe.si.equals(dfsi)) {
-                // IF there is an image in the cache and the drawing
-                // parameters are correct
-                raster = subframe.image;
-
-                if (Debug.debugging("dted"))
+            raster = subframe.getImageIfCurrent(proj, dfsi);
+            if (raster != null) {
+                if (Debug.debugging("dted")) {
                     Debug.output("######## DTEDFrame: returning cached subframe");
+                }
                 return raster;
             }
 
@@ -263,21 +260,11 @@ public class DTEDSubframedFrame extends DTEDFrame {
                 Debug.output("   *** DTEDFrame: changing image of cached subframe");
             }
 
-            if (subframe.image == null) {
-                if (Debug.debugging("dted")) {
-                    Debug.output("   +++ DTEDFrame: creating subframe image");
-                }
-                if (dfsi.colorModel == OMRasterObject.COLORMODEL_DIRECT)
-                    subframe.image = new OMRaster(lat_origin, lon_origin, dfsi.width, dfsi.height, new int[dfsi.height
-                            * dfsi.width]);
-                else
-                    subframe.image = new OMRaster(lat_origin, lon_origin, dfsi.width, dfsi.height, null, colortable.colors, 255);
-            }
-
-            // If there is an image, the types are different and it
-            // needs to be
-            // redrawn
-            subframe.si = dfsi.makeClone();
+            /*
+             * If there is an image, the types are different and it needs to be
+             * redrawn
+             */
+            subframe.dfsi = dfsi.makeClone();
 
         } else {
 
@@ -285,41 +272,28 @@ public class DTEDSubframedFrame extends DTEDFrame {
                 Debug.output("   +++ DTEDFrame: creating subframe");
             }
 
-            subframes[dfsi.subx][dfsi.suby] = new DTEDFrameSubframe(dfsi);
-            subframe = subframes[dfsi.subx][dfsi.suby];
-            if (dfsi.colorModel == OMRasterObject.COLORMODEL_DIRECT) {
-                subframe.image = new OMRaster(lat_origin, lon_origin, dfsi.width, dfsi.height, new int[dfsi.height
-                        * dfsi.width]);
-            } else {
-                subframe.image = new OMRaster(lat_origin, lon_origin, dfsi.width, dfsi.height, null, colortable.colors, 255);
-            }
+            subframe = new DTEDFrameSubframe(dfsi);
+            subframes[dfsi.subx][dfsi.suby] = subframe;
         }
-
-        raster = subframe.image;
 
         // lat/lon_post_intervals are *10 too big - // extra 0 in
         // 36000 to counteract
         // start in lower left of subframe
-        double start_lat_index = (lat_origin - (double) dsi.sw_lat) * 36000.0
-                / (double) uhl.lat_post_interval;
-        double start_lon_index = (lon_origin - (double) dsi.sw_lon) * 36000.0
-                / (double) uhl.lon_post_interval;
-        double end_lat_index = ((lat_origin - ((double) dfsi.height * dfsi.yPixInterval)) - (double) dsi.sw_lat)
-                * 36000.0 / (double) uhl.lat_post_interval;
-        double end_lon_index = ((lon_origin + ((double) dfsi.width * dfsi.xPixInterval)) - (double) dsi.sw_lon)
-                * 36000.0 / (double) uhl.lon_post_interval;
-        double lat_interval = (start_lat_index - end_lat_index)
-                / (double) dfsi.height;
-        double lon_interval = (end_lon_index - start_lon_index)
-                / (double) dfsi.width;
+        double start_lat_index = (lat_origin - (double) dsi.sw_lat) * 36000.0 / (double) uhl.lat_post_interval;
+        double start_lon_index = (lon_origin - (double) dsi.sw_lon) * 36000.0 / (double) uhl.lon_post_interval;
+        double end_lat_index =
+                ((lat_origin - ((double) dfsi.height * dfsi.yPixInterval)) - (double) dsi.sw_lat) * 36000.0
+                        / (double) uhl.lat_post_interval;
+        double end_lon_index =
+                ((lon_origin + ((double) dfsi.width * dfsi.xPixInterval)) - (double) dsi.sw_lon) * 36000.0
+                        / (double) uhl.lon_post_interval;
+        double lat_interval = (start_lat_index - end_lat_index) / (double) dfsi.height;
+        double lon_interval = (end_lon_index - start_lon_index) / (double) dfsi.width;
 
         if (Debug.debugging("dteddetail"))
-            Debug.output("  start_lat_index => " + start_lat_index + "\n"
-                    + "  end_lat_index => " + end_lat_index + "\n"
-                    + "  start_lon_index => " + start_lon_index + "\n"
-                    + "  end_lon_index => " + end_lon_index + "\n"
-                    + "  lat_interval => " + lat_interval + "\n"
-                    + "  lon_interval => " + lon_interval);
+            Debug.output("  start_lat_index => " + start_lat_index + "\n" + "  end_lat_index => " + end_lat_index + "\n"
+                    + "  start_lon_index => " + start_lon_index + "\n" + "  end_lon_index => " + end_lon_index + "\n"
+                    + "  lat_interval => " + lat_interval + "\n" + "  lon_interval => " + lon_interval);
 
         short e1, e2;
         short xc = 0;
@@ -351,21 +325,21 @@ public class DTEDSubframedFrame extends DTEDFrame {
             ys_offset = start_lat_index - Math.ceil(lat_interval);
 
             switch (dfsi.dtedLevel) {
-            // larger numbers make less contrast
-            case 0:
-                modifier = (double) 4;
-                break;// 1000 ideal
-            case 1:
-                modifier = (double) .02;
-                break;// 2 ideal
-            case 2:
-                modifier = (double) .0001;
-                break;
-            case 3:
-                modifier = (double) .000001;
-                break;
-            default:
-                modifier = (double) 1;
+                // larger numbers make less contrast
+                case 0:
+                    modifier = (double) 4;
+                    break;// 1000 ideal
+                case 1:
+                    modifier = (double) .02;
+                    break;// 2 ideal
+                case 2:
+                    modifier = (double) .0001;
+                    break;
+                case 3:
+                    modifier = (double) .000001;
+                    break;
+                default:
+                    modifier = (double) 1;
             }
             // With more colors, contrast tends to be a little light
             // for the
@@ -375,9 +349,11 @@ public class DTEDSubframedFrame extends DTEDFrame {
 
             for (int h = dfsi.slopeAdjust; h < 5; h++)
                 modifier *= 10;
-            distance = Math.sqrt((modifier * lon_interval * lon_interval)
-                    + (modifier * lat_interval * lat_interval));
+            distance = Math.sqrt((modifier * lon_interval * lon_interval) + (modifier * lat_interval * lat_interval));
         }
+
+        ImageData imageData = ImageData.getImageData(dfsi.colorModel, dfsi.width, dfsi.height, colortable.colors);
+
         for (short x = 0; x < dfsi.width; x++) {
 
             // used for both elevation banding and slope
@@ -404,14 +380,12 @@ public class DTEDSubframedFrame extends DTEDFrame {
                     xnw = xc;
                     xse = (short) (xnw + 2.0 * Math.ceil(lon_interval));
                 }
-                if (xc == dsi.num_lon_points - 1
-                        || xse > dsi.num_lon_points - 1) {
+                if (xc == dsi.num_lon_points - 1 || xse > dsi.num_lon_points - 1) {
                     xse = (short) (dsi.num_lon_points - 1);
                     xnw = (short) (xse - 2.0 * Math.ceil(lon_interval));
                 }
 
-                if (((elevations[xnw] == null) && !readDataRecord(xnw))
-                        || ((elevations[xse] == null) && !readDataRecord(xse))) {
+                if (((elevations[xnw] == null) && !readDataRecord(xnw)) || ((elevations[xse] == null) && !readDataRecord(xse))) {
                     Debug.error("DTEDFrame: Problem reading lat point line in data record");
                     return null;
                 }
@@ -428,8 +402,7 @@ public class DTEDSubframedFrame extends DTEDFrame {
                 elevation = (int) elevations[xc][yc];
 
                 // elevation shading
-                if (dfsi.viewType == DTEDFrameSubframe.METERSHADING
-                        || dfsi.viewType == DTEDFrameSubframe.FEETSHADING) {
+                if (dfsi.viewType == DTEDFrameSubframe.METERSHADING || dfsi.viewType == DTEDFrameSubframe.FEETSHADING) {
 
                     // Just use the top two-thirds of the colors
                     if (elevation == 0)
@@ -454,26 +427,21 @@ public class DTEDSubframedFrame extends DTEDFrame {
                         // mode(216 colors) lets you add a few colors.
                         if (colortable.colors.length < 216) {
                             try {
-                                assignment = (int) ((elevation / dfsi.bandHeight)
-                                        % (colortable.colors.length - 6) + 6);
+                                assignment = (int) ((elevation / dfsi.bandHeight) % (colortable.colors.length - 6) + 6);
                             } catch (java.lang.ArithmeticException ae) {
                                 assignment = 1;
                             }
                         } else {
                             try {
-                                assignment = (int) (((elevation / dfsi.bandHeight)
-                                        % (10 - 2 * (3 - dfsi.slopeAdjust)) * (colortable.colors.length / (10 - 2 * (3 - dfsi.slopeAdjust)))) + 6);
+                                assignment =
+                                        (int) (((elevation / dfsi.bandHeight) % (10 - 2 * (3 - dfsi.slopeAdjust)) * (colortable.colors.length / (10 - 2 * (3 - dfsi.slopeAdjust)))) + 6);
                             } catch (java.lang.ArithmeticException ae) {
                                 assignment = 1;
                             }
                         }
                     }
-                    if (dfsi.colorModel == OMRasterObject.COLORMODEL_DIRECT)
-                        raster.setPixel(x,
-                                y,
-                                colortable.colors[assignment].getRGB());
-                    else
-                        raster.setByte(x, y, (byte) assignment);
+                    
+                    imageData.set(x, y, assignment);
                 }
 
                 // Slope shading
@@ -489,8 +457,7 @@ public class DTEDSubframedFrame extends DTEDFrame {
                     // frame limits
                     if (yse < 0)
                         yse = 0;
-                    if (yc == dsi.num_lat_lines - 1
-                            || ynw > dsi.num_lat_lines - 1)
+                    if (yc == dsi.num_lat_lines - 1 || ynw > dsi.num_lat_lines - 1)
                         ynw = (short) (dsi.num_lat_lines - 1);
 
                     e2 = elevations[xse][yse]; // down & right
@@ -519,12 +486,8 @@ public class DTEDSubframedFrame extends DTEDFrame {
                             }
                         if (elevation == 0)
                             assignment = 0;
-                        if (dfsi.colorModel == OMRasterObject.COLORMODEL_DIRECT)
-                            raster.setPixel(x,
-                                    y,
-                                    colortable.colors[assignment].getRGB());
-                        else
-                            raster.setByte(x, y, (byte) assignment);
+                        
+                        imageData.set(x, y, assignment);
                     }
 
                     else {
@@ -541,13 +504,8 @@ public class DTEDSubframedFrame extends DTEDFrame {
                         // bright
 
                         assignment = (int) value;
-                        if (dfsi.colorModel == OMRasterObject.COLORMODEL_DIRECT)
-                            raster.setPixel(x,
-                                    y,
-                                    colortable.colors[assignment].getRGB());
-                        else
-                            raster.setByte(x, y, (byte) assignment);
-
+                        
+                        imageData.set(x, y, assignment);
                     }
                 }
                 // Subframe outlines - different colors for each side
@@ -566,10 +524,7 @@ public class DTEDSubframedFrame extends DTEDFrame {
                     else
                         c = 7;
 
-                    if (dfsi.colorModel == OMRasterObject.COLORMODEL_DIRECT)
-                        raster.setPixel(x, y, colortable.colors[c].getRGB());
-                    else
-                        raster.setByte(x, y, (byte) c);
+                    imageData.set(x, y, c);
 
                 } else if (dfsi.viewType == DTEDFrameSubframe.COLOREDSHADING) {
                     assignment = 1;
@@ -587,20 +542,19 @@ public class DTEDSubframedFrame extends DTEDFrame {
                     if (elevation > 33000)
                         assignment = 1;
 
-                    if (dfsi.colorModel == OMRasterObject.COLORMODEL_DIRECT)
-                        raster.setPixel(x,
-                                y,
-                                colortable.colors[assignment].getRGB());
-                    else
-                        raster.setByte(x, y, (byte) assignment);
+                    imageData.set(x, y, assignment);
                 }
             }
+            
         }
+
+        imageData.updateData(subframe);
 
         if (Debug.debugging("dteddetail"))
             Debug.output("DTEDFrame: leaving raster");
-        return raster;
 
+        
+        return subframe.getImage(proj);
     }
 
     public static void main(String args[]) {
@@ -635,11 +589,13 @@ public class DTEDSubframedFrame extends DTEDFrame {
         float lon = df.dsi.lon_origin + .5f;
 
         CADRG crg = new CADRG(new LatLonPoint.Double(lat, lon), 1500000, 600, 600);
-        final OMRaster ras = df.getOMRaster(crg);
+        final OMGraphic ras = df.getImage(crg);
 
         // Pushes the image to the left top of the frame.
-        crg.setHeight(ras.getHeight());
-        crg.setWidth(ras.getWidth());
+        if (ras instanceof OMRaster) {
+            crg.setHeight(((OMRaster) ras).getHeight());
+            crg.setWidth(((OMRaster) ras).getWidth());
+        }
 
         ras.generate(crg);
 
@@ -659,8 +615,77 @@ public class DTEDSubframedFrame extends DTEDFrame {
             }
         });
 
-        window.setSize(ras.getWidth(), ras.getHeight());
+        window.setSize(crg.getWidth(), crg.getHeight());
         window.setVisible(true);
         window.repaint();
+    }
+
+    protected static abstract class ImageData {
+        protected abstract void set(short x, short y, int value);
+        protected abstract void updateData(DTEDFrameSubframe dfs);
+        
+        int width = 0;
+        int height = 0;
+        Color[] colors;
+
+        protected ImageData(int w, int h, Color[] colors) {
+            this.width = w;
+            this.height = h;
+            this.colors = colors;
+        }
+
+        protected static ImageData getImageData(int colorModel, int width, int height, Color[] colors) {
+            if (colorModel == OMRasterObject.COLORMODEL_DIRECT) {
+                return new Pixel(width, height, colors);
+            } else {
+                return new Byte(width, height, colors);
+            }
+        }
+
+        protected static class Pixel
+                extends ImageData {
+            int[] pixels;
+            
+            int ranColor;
+
+            protected Pixel(int w, int h, Color[] colors) {
+                super(w, h, colors);
+                pixels = new int[w * h];
+                
+                int red = (int) (Math.random() * 255);
+                int green = (int) (Math.random() * 255);
+                int blue = (int) (Math.random() * 255);
+                
+                Color color = new Color(red, green, blue);
+                ranColor = color.getRGB();
+            }
+
+            protected void set(short x, short y, int value) {
+                pixels[(y * width) + x] = colors[value].getRGB();
+//                pixels[(y * width) + x] = ranColor;
+            }
+
+            protected  void updateData(DTEDFrameSubframe dfs) {
+                dfs.setPixels(pixels);
+            }
+        }
+
+        protected static class Byte
+                extends ImageData {
+            byte[] bytes;
+
+            protected Byte(int w, int h, Color[] colors) {
+                super(w, h, colors);
+                bytes = new byte[w * h];
+            }
+
+            protected void set(short x, short y, int value) {
+                bytes[(y * width) + x] = (byte) value;
+            }
+
+            protected  void updateData(DTEDFrameSubframe dfs) {
+                dfs.setBitsAndColors(bytes, colors);
+            }
+        }
     }
 }

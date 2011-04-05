@@ -30,7 +30,6 @@ import java.util.Properties;
 
 import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.MapBean;
-import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;

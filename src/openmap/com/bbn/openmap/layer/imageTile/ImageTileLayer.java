@@ -112,8 +112,8 @@ import com.bbn.openmap.util.PropUtils;
  * # optional - image cache size specifies how many images will be held in memory for fast retrieval.
  * imageTileLayer.imageCacheSize=20
  *                         
- * # optional - image cutoff scale specifies the scale that images will not load when the projection is zoomed out from it.
- * imageTileLayer.imageCutoffScale=1000000
+ * # optional - image cutoff ratio specifies the scale that images will not load when the projection is zoomed out from it.
+ * imageTileLayer.imageCutoffRatio=5
  *                     
  * # optional - image Reader loaders specify which image files are handled
  * imageTileLayer.imageReaderLoaders=geotiff

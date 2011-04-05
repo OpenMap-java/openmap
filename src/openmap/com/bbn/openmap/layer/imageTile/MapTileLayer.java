@@ -24,9 +24,7 @@
 
 package com.bbn.openmap.layer.imageTile;
 
-import java.io.IOException;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import com.bbn.openmap.PropertyConsumer;
@@ -36,7 +34,6 @@ import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.ClasspathHacker;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.PropUtils;
 

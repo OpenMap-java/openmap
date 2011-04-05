@@ -653,7 +653,7 @@ public class ImageServer
     }
 
     /**
-     * Part of the PropertyConsumer interface. Doesn't do anything yet.
+     * Part of the PropertyConsumer interface.
      */
     public Properties getProperties(Properties props) {
         if (props == null) {
@@ -672,16 +672,32 @@ public class ImageServer
 
         buf = new StringBuffer();
         if (imageFormatters != null) {
+            int index = 1;
             for (ImageFormatter formatter : imageFormatters.values()) {
+
+                String className = formatter.getClass().getName();
+                String prfx = className.substring(className.lastIndexOf('.') + 1) + index;
+
                 if (formatter instanceof PropertyConsumer) {
                     PropertyConsumer pc = (PropertyConsumer) formatter;
-                    buf.append(pc.getPropertyPrefix()).append(" ");
-                    pc.getProperties(props);
-                } else {
-                    String className = formatter.getClass().getName();
-                    buf.append(className).append(" ");
-                    props.put(className + ComponentFactory.DotClassNameProperty, className);
+                    String opp = pc.getPropertyPrefix();
+
+                    if (opp != null) {
+                        prfx = opp;
+                        pc.getProperties(props);
+                    } else {
+                        pc.setPropertyPrefix(prfx);
+                        pc.getProperties(props);
+                        // Reset it to whatever it was before we grabbed
+                        // properties.
+                        pc.setPropertyPrefix(null);
+                    }
                 }
+
+                buf.append(prfx).append(" ");
+                props.put(prfx + ComponentFactory.DotClassNameProperty, formatter.getClass().getName());
+
+                index++;
             }
         }
 
@@ -774,6 +790,14 @@ public class ImageServer
      */
     public synchronized void setFormatter(ImageFormatter f) {
         formatter = f;
+
+        if (imageFormatters == null) {
+            imageFormatters = new Hashtable<String, ImageFormatter>();
+        }
+
+        if (!imageFormatters.containsKey(formatter.getFormatLabel())) {
+            imageFormatters.put(formatter.getFormatLabel(), formatter);
+        }
     }
 
     /**

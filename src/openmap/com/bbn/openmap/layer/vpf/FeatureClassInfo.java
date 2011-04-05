@@ -492,7 +492,7 @@ public class FeatureClassInfo extends DcwRecordFile implements
    public String columnNameString() {
       StringBuffer sBuf = new StringBuffer();
       for (DcwColumnInfo dci : getColumnInfo()) {
-         sBuf.append(dci.getColumnName() + " ");
+         sBuf.append(dci.getColumnName()).append(' ');
       }
       return sBuf.toString().trim();
    }

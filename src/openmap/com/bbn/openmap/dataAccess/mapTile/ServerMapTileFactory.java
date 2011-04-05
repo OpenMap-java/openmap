@@ -24,7 +24,6 @@
 
 package com.bbn.openmap.dataAccess.mapTile;
 
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -39,7 +38,6 @@ import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.cacheHandler.CacheObject;

@@ -24,7 +24,16 @@
 
 package com.bbn.openmap.layer.dted;
 
-import com.bbn.openmap.omGraphics.OMRaster;
+import java.awt.Color;
+import java.awt.geom.Point2D;
+
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMScalingRaster;
+import com.bbn.openmap.omGraphics.OMWarpingImage;
+import com.bbn.openmap.proj.EqualArc;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonGCT;
+import com.bbn.openmap.util.DataBounds;
 
 public class DTEDFrameSubframe {
     // Types of slope shading
@@ -39,8 +48,8 @@ public class DTEDFrameSubframe {
     /** Test markings, for the boundary of the subframe. */
     public static final int BOUNDARYSHADING = 4;
     /**
-     * Colorized slope shading. Color bands are based on elevation,
-     * and are accented by shaded indications.
+     * Colorized slope shading. Color bands are based on elevation, and are
+     * accented by shaded indications.
      */
     public static final int COLOREDSHADING = 5;
     /** DTED LEVEL 0, 1km posts. */
@@ -54,14 +63,197 @@ public class DTEDFrameSubframe {
     /** Default contrast setting for slope shading. */
     public static final int DEFAULT_SLOPE_ADJUST = 3;
 
-    public DTEDFrameSubframeInfo si;
-    public OMRaster image;
+    public DTEDFrameSubframeInfo dfsi;
+    protected ImageCreator imageCreator = null;
 
     public DTEDFrameSubframe(DTEDFrameSubframeInfo info) {
-        si = info.makeClone();
+        dfsi = info.makeClone();
     }
 
-    //      public void finalize(){
-    //      Debug.message("gc", " DTEDFrameSubframe: getting GC'd");
-    //      }
+    public OMGraphic getImageIfCurrent(Projection proj, DTEDFrameSubframeInfo dfsi) {
+        if (dfsi.equals(this.dfsi) && imageCreator != null) {
+            return imageCreator.getImage(proj);
+        }
+
+        return null;
+    }
+
+    // public void finalize(){
+    // Debug.message("gc", " DTEDFrameSubframe: getting GC'd");
+    // }
+
+    public OMGraphic getImage(Projection proj) {
+        if (imageCreator != null) {
+            return imageCreator.getImage(proj);
+        }
+        return null;
+    }
+
+    public void setPixels(int[] pixels) {
+        imageCreator = new Pixels(pixels);
+    }
+
+    public void setBitsAndColors(byte[] bits, Color[] colors) {
+        imageCreator = new BitsAndColors(bits, colors);
+    }
+
+    public abstract class ImageCreator {
+        /**
+         * The OMGraphic holding the image.
+         */
+        OMGraphic image;
+
+        /**
+         * Get the proper OMGraphic given the projection type.
+         * 
+         * @param proj
+         * @return a projected OMGraphic for the image.
+         */
+        protected abstract OMGraphic getImage(Projection proj);
+
+        /**
+         * Set the transparent color index or opaqueness setting, depending on
+         * color model.
+         * 
+         * @param opaqueness
+         */
+        protected abstract void setTransparent(int opaqueness);
+
+    }
+
+    /**
+     * Direct colormodel implementation.
+     * 
+     * @author ddietrick
+     */
+    public class Pixels
+            extends ImageCreator {
+
+        int[] pixels = null;
+
+        protected Pixels(int[] pixels) {
+            this.pixels = pixels;
+        }
+
+        protected void setTransparent(int opaqueness) {
+            if (pixels != null) {
+                for (int i = 0; i < pixels.length; i++) {
+                    pixels[i] = (0x00FFFFFF & pixels[i]) | (opaqueness << 24);
+                }
+                // image = null; ??
+            }
+        }
+
+        protected OMGraphic getImage(Projection proj) {
+
+            boolean scaling = proj instanceof EqualArc;
+
+            if (pixels == null || dfsi == null) {
+                return null;
+            }
+
+            Point2D projOrigin = proj.forward(dfsi.lat, dfsi.lon);
+            Point2D otherCorner = new Point2D.Double();
+            if (proj instanceof EqualArc) {
+                projOrigin.setLocation(projOrigin.getX() + dfsi.width, projOrigin.getY() + dfsi.height);
+                proj.inverse(projOrigin, otherCorner);
+            } else {
+                /*
+                 * Working with DTEDCacheHandler to work around non-EqualArc
+                 * projection subframe bounds location problems. For those
+                 * projection types, making one subframe per frame that covers
+                 * the entire degree x degree area.
+                 */
+                otherCorner.setLocation(dfsi.lon + 1, dfsi.lat - 1);
+            }
+
+            if (image == null) {
+                if (scaling) {
+                    image =
+                            new OMScalingRaster(dfsi.lat, dfsi.lon, otherCorner.getY(), otherCorner.getX(), dfsi.width,
+                                                dfsi.height, pixels);
+                } else {
+                    DataBounds bounds =
+                            new DataBounds(otherCorner.getX(), otherCorner.getY(), (double) dfsi.lon, (double) dfsi.lat);
+                    image = new OMWarpingImage(pixels, dfsi.width, dfsi.height, new LatLonGCT(), bounds);
+                }
+            } else {
+                if (scaling) {
+                    if (!(image instanceof OMScalingRaster)) {
+                        image =
+                                new OMScalingRaster(dfsi.lat, dfsi.lon, otherCorner.getY(), otherCorner.getX(), dfsi.width,
+                                                    dfsi.height, pixels);
+                    }
+                } else {
+                    if (image instanceof OMScalingRaster) {
+                        image = new OMWarpingImage((OMScalingRaster) image, null);
+                    }
+                }
+            }
+
+            image.generate(proj);
+
+            return image;
+        }
+
+    }
+
+    /**
+     * Indexed colormodel implementation.
+     * 
+     * @author ddietrick
+     */
+    public class BitsAndColors
+            extends ImageCreator {
+
+        byte[] bits = null;
+        Color[] colors = null;
+
+        protected BitsAndColors(byte[] bits, Color[] colors) {
+            this.bits = bits;
+            this.colors = colors;
+        }
+
+        protected void setTransparent(int opaqueness) {
+            // setTransparent has to be set on the resulting OMScalingRaster and
+            // regenerated
+        }
+
+        protected OMGraphic getImage(Projection proj) {
+            boolean scaling = proj instanceof EqualArc;
+
+            if (bits == null || colors == null || dfsi == null) {
+                return null;
+            }
+
+            Point2D projOrigin = proj.forward(dfsi.lat, dfsi.lon);
+            projOrigin.setLocation(projOrigin.getX() + dfsi.width, projOrigin.getY() + dfsi.height);
+            Point2D otherCorner = proj.inverse(projOrigin);
+
+            if (image == null) {
+                image =
+                        new OMScalingRaster(dfsi.lat, dfsi.lon, otherCorner.getY(), otherCorner.getX(), dfsi.width, dfsi.height,
+                                            bits, colors, 255);
+                image.generate(proj);
+                if (!scaling) {
+                    image = new OMWarpingImage((OMScalingRaster) image, null);
+                }
+            } else {
+                if (scaling) {
+                    if (!(image instanceof OMScalingRaster)) {
+                        image =
+                                new OMScalingRaster(dfsi.lat, dfsi.lon, otherCorner.getY(), otherCorner.getX(), dfsi.width,
+                                                    dfsi.height, bits, colors, 255);
+                    }
+                } else {
+                    if (image instanceof OMScalingRaster) {
+                        image = new OMWarpingImage((OMScalingRaster) image, null);
+                    }
+                }
+            }
+            image.generate(proj);
+
+            return image;
+        }
+    }
 }

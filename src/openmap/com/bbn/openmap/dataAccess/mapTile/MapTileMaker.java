@@ -31,19 +31,23 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 import java.util.logging.Level;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.image.ImageFormatter;
 import com.bbn.openmap.image.ImageServer;
+import com.bbn.openmap.image.PNG32ImageFormatter;
 import com.bbn.openmap.image.SunJPEGFormatter;
 import com.bbn.openmap.layer.imageTile.MapTileLayer;
 import com.bbn.openmap.layer.shape.ShapeLayer;
@@ -494,6 +498,9 @@ public class MapTileMaker
             }, new SunJPEGFormatter());
             tim.createDefaultZoomLevels(4);
 
+            tim.setRootDir("<Path to top level directory for tiles>");
+            tim.setFormatter(new PNG32ImageFormatter());
+            
          } else {
             tim = new MapTileMaker(props);
          }
@@ -501,11 +508,25 @@ public class MapTileMaker
          Properties configurationProps = new Properties();
          configurationProps = tim.getProperties(configurationProps);
 
+         StringBuilder sb = new StringBuilder("#### MapTileMaker Properties ####\n");
+
+         if (!configurationProps.isEmpty()) {
+             TreeMap orderedProperties = new TreeMap(configurationProps);
+             for (Iterator keys = orderedProperties.keySet().iterator(); keys.hasNext();) {
+                 String key = (String) keys.next();
+                 String value = configurationProps.getProperty(key);
+
+                 if (value != null) {
+                     sb.append(key).append("=").append(value).append("\n");
+                 }
+             }
+         }
+         
          try {
             FileOutputStream fos = new FileOutputStream(outputFile);
-            configurationProps.store(fos, "TileMaker Properties");
-            fos.flush();
-            fos.close();
+            PrintStream ps = new PrintStream(fos);
+            ps.println(sb.toString());
+            ps.close();
          } catch (IOException ioe) {
             logger.warning("caught IOException writing property file: " + ioe.getMessage());
          }

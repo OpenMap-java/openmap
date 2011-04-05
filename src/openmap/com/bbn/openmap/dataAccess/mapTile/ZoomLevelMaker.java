@@ -24,7 +24,6 @@
 
 package com.bbn.openmap.dataAccess.mapTile;
 
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,10 +32,6 @@ import java.util.Vector;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.OMComponent;
-import com.bbn.openmap.proj.Mercator;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.PropUtils;
 
@@ -67,275 +62,295 @@ import com.bbn.openmap.util.PropUtils;
  * @author dietrick
  */
 public class ZoomLevelMaker
-      extends ZoomLevelInfo {
+        extends ZoomLevelInfo {
 
-   public final static String BOUNDS_PROPERTY = "bounds";
-   public final static String NAME_PROPERTY = "name";
-   public final static String DESCRIPTION_PROPERTY = "description";
-   public final static String ZOOM_LEVEL_PROPERTY = "zoomLevel";
-   public final static String LAYERS_PROPERTY = "layers";
-   public final static String RANGE_PROPERTY = "range";
+    public final static String BOUNDS_PROPERTY = "bounds";
+    public final static String NAME_PROPERTY = "name";
+    public final static String DESCRIPTION_PROPERTY = "description";
+    public final static String ZOOM_LEVEL_PROPERTY = "zoomLevel";
+    public final static String LAYERS_PROPERTY = "layers";
+    public final static String RANGE_PROPERTY = "range";
 
-   protected String name;
-   protected String description;
-   protected List<String> layers;
-   protected float scale = -1f;
-   protected int range = 0;
-   protected List<Rectangle2D> bounds = new LinkedList<Rectangle2D>();
+    public final static int RANGE_NOT_SET = -1;
 
-   /**
-    * Need this to create it from properties
-    */
-   public ZoomLevelMaker() {
-   }
-   
-   /**
-    * Create a ZoomLevelInfo object that contains information about what map
-    * tiles should be created for this zoom level.
-    * 
-    * @param name
-    * @param desc
-    * @param zoomLevel
-    */
-   public ZoomLevelMaker(String name, String desc, int zoomLevel) {
-      this.name = name;
-      this.description = desc;
-      this.zoomLevel = zoomLevel;
-   }
+    protected String name;
+    protected String description;
+    protected List<String> layers;
+    protected float scale = -1f;
+    /**
+     * The range should be equal or smaller than the zoom level, describing how
+     * many other zoom levels should be created from the tiles created for this
+     * zoom level (scaling). If the range is -1, then it hasn't been set and the
+     * zoom level will be returned for this value.
+     */
+    protected int range = RANGE_NOT_SET;
+    protected List<Rectangle2D> bounds = new LinkedList<Rectangle2D>();
 
-   public void setProperties(String prefix, Properties props) {
-      super.setProperties(prefix, props);
-      prefix = PropUtils.getScopedPropertyPrefix(prefix);
+    /**
+     * Need this to create it from properties
+     */
+    public ZoomLevelMaker() {
+    }
 
-      name = props.getProperty(prefix + NAME_PROPERTY, name);
-      description = props.getProperty(prefix + DESCRIPTION_PROPERTY, description);
-      zoomLevel = PropUtils.intFromProperties(props, prefix + ZOOM_LEVEL_PROPERTY, zoomLevel);
-      range = PropUtils.intFromProperties(props, prefix + RANGE_PROPERTY, range);
+    /**
+     * Create a ZoomLevelInfo object that contains information about what map
+     * tiles should be created for this zoom level.
+     * 
+     * @param name
+     * @param desc
+     * @param zoomLevel
+     */
+    public ZoomLevelMaker(String name, String desc, int zoomLevel) {
+        this.name = name;
+        this.description = desc;
+        this.zoomLevel = zoomLevel;
+    }
 
-      String boundsPropertyStrings = props.getProperty(prefix + BOUNDS_PROPERTY);
-      if (boundsPropertyStrings != null) {
-         Vector<String> boundsStrings = PropUtils.parseSpacedMarkers(boundsPropertyStrings);
-         int count = 0;
-         while (boundsStrings != null && !boundsStrings.isEmpty() && boundsStrings.size() >= count + 4) {
-            double lat1 = Double.parseDouble(boundsStrings.get(count));
-            double lon1 = Double.parseDouble(boundsStrings.get(count + 1));
-            double lat2 = Double.parseDouble(boundsStrings.get(count + 2));
-            double lon2 = Double.parseDouble(boundsStrings.get(count + 3));
+    public void setProperties(String prefix, Properties props) {
+        super.setProperties(prefix, props);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-            bounds.add(createProperBounds(lon1, lat1, lon2, lat2));
-            count += 4;
-         }
-      }
+        name = props.getProperty(prefix + NAME_PROPERTY, name);
+        description = props.getProperty(prefix + DESCRIPTION_PROPERTY, description);
+        zoomLevel = PropUtils.intFromProperties(props, prefix + ZOOM_LEVEL_PROPERTY, zoomLevel);
+        range = PropUtils.intFromProperties(props, prefix + RANGE_PROPERTY, range);
 
-      String layerPropertyStrings = props.getProperty(prefix + LAYERS_PROPERTY);
-      if (layerPropertyStrings != null) {
-         Vector<String> layerStrings = PropUtils.parseSpacedMarkers(layerPropertyStrings);
-         if (layerStrings != null && !layerStrings.isEmpty()) {
-            getLayers().addAll(layerStrings);
-         }
-      }
-   }
+        String boundsPropertyStrings = props.getProperty(prefix + BOUNDS_PROPERTY);
+        if (boundsPropertyStrings != null) {
+            Vector<String> boundsStrings = PropUtils.parseSpacedMarkers(boundsPropertyStrings);
+            int count = 0;
+            while (boundsStrings != null && !boundsStrings.isEmpty() && boundsStrings.size() >= count + 4) {
+                double lat1 = Double.parseDouble(boundsStrings.get(count));
+                double lon1 = Double.parseDouble(boundsStrings.get(count + 1));
+                double lat2 = Double.parseDouble(boundsStrings.get(count + 2));
+                double lon2 = Double.parseDouble(boundsStrings.get(count + 3));
 
-   public Properties getProperties(Properties props) {
-      props = super.getProperties(props);
-      String prefix = PropUtils.getScopedPropertyPrefix(this);
-      props.put(prefix + ComponentFactory.ClassNameProperty, getClass().getName());
-      props.put(prefix + NAME_PROPERTY, PropUtils.unnull(name));
-      props.put(prefix + DESCRIPTION_PROPERTY, PropUtils.unnull(description));
-      props.put(prefix + ZOOM_LEVEL_PROPERTY, Integer.toString(zoomLevel));
-      props.put(prefix + RANGE_PROPERTY, range);
+                bounds.add(createProperBounds(lon1, lat1, lon2, lat2));
+                count += 4;
+            }
+        }
 
-      StringBuffer buf = new StringBuffer();
-      for (String layerMarkerName : layers) {
-         buf.append(layerMarkerName).append(" ");
-      }
-      props.put(prefix + LAYERS_PROPERTY, buf.toString().trim());
+        String layerPropertyStrings = props.getProperty(prefix + LAYERS_PROPERTY);
+        if (layerPropertyStrings != null) {
+            Vector<String> layerStrings = PropUtils.parseSpacedMarkers(layerPropertyStrings);
+            if (layerStrings != null && !layerStrings.isEmpty()) {
+                getLayers().addAll(layerStrings);
+            }
+        }
+    }
 
-      buf = new StringBuffer();
-      for (Rectangle2D bound : getBounds()) {
-         double x = bound.getX();
-         double y = bound.getY();
-         buf.append(y).append(" ").append(x).append(" ").append((y + bound.getHeight())).append(" ").append((x + bound.getWidth()))
-            .append(" ");
-      }
-      props.put(prefix + BOUNDS_PROPERTY, buf.toString().trim());
+    public Properties getProperties(Properties props) {
+        props = super.getProperties(props);
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        props.put(prefix + ComponentFactory.ClassNameProperty, getClass().getName());
+        props.put(prefix + NAME_PROPERTY, PropUtils.unnull(name));
+        props.put(prefix + DESCRIPTION_PROPERTY, PropUtils.unnull(description));
+        props.put(prefix + ZOOM_LEVEL_PROPERTY, Integer.toString(zoomLevel));
 
-      return props;
-   }
+        if (range != RANGE_NOT_SET) {
+            props.put(prefix + RANGE_PROPERTY, Integer.toString(range));
+        }
 
-   public Properties getPropertyInfo(Properties props) {
-      props = super.getPropertyInfo(props);
-      I18n i18n = Environment.getI18n();
+        StringBuffer buf = new StringBuffer();
+        for (String layerMarkerName : layers) {
+            buf.append(layerMarkerName).append(" ");
+        }
+        props.put(prefix + LAYERS_PROPERTY, buf.toString().trim());
 
-      PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, NAME_PROPERTY, "Name",
-                                    "Name for zoom level tiles", null);
+        buf = new StringBuffer();
+        for (Rectangle2D bound : getBounds()) {
+            double x = bound.getX();
+            double y = bound.getY();
+            buf.append(y).append(" ").append(x).append(" ").append((y + bound.getHeight())).append(" ")
+               .append((x + bound.getWidth())).append(" ");
+        }
+        props.put(prefix + BOUNDS_PROPERTY, buf.toString().trim());
 
-      PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, DESCRIPTION_PROPERTY,
-                                    "Descroption", "Description for zoom level tiles", null);
+        return props;
+    }
 
-      PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, ZOOM_LEVEL_PROPERTY,
-                                    "Zoom Level (1-20)", "Number for zoom level", null);
+    public Properties getPropertyInfo(Properties props) {
+        props = super.getPropertyInfo(props);
+        I18n i18n = Environment.getI18n();
 
-      PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, BOUNDS_PROPERTY, "Bounds",
-                                    "Bounds for tile creation (lat lon lat lon)", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, NAME_PROPERTY, "Name",
+                                      "Name for zoom level tiles", null);
 
-      PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, LAYERS_PROPERTY, "Layers",
-                                    "Space separated marker names for layers used in tiles.", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, DESCRIPTION_PROPERTY,
+                                      "Descroption", "Description for zoom level tiles", null);
 
-      PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, RANGE_PROPERTY, "Range",
-                                    "Zoom level to create tiles down to, using the tiles created at this zoom level.", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, ZOOM_LEVEL_PROPERTY,
+                                      "Zoom Level (1-20)", "Number for zoom level", null);
 
-      return props;
-   }
+        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, BOUNDS_PROPERTY,
+                                      "Bounds", "Bounds for tile creation (lat lon lat lon)", null);
 
-   /**
-    * @return the name of this zoom level info.
-    */
-   public String getName() {
-      return name;
-   }
+        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, LAYERS_PROPERTY,
+                                      "Layers", "Space separated marker names for layers used in tiles.", null);
 
-   /**
-    * Set the name of this zoom level info.
-    * 
-    * @param name
-    */
-   public void setName(String name) {
-      this.name = name;
-   }
+        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, RANGE_PROPERTY,
+                                      "Range", "Zoom level to create tiles down to, using the tiles created at this zoom level.",
+                                      null);
 
-   /**
-    * Get the description of this zoom level.
-    * 
-    * @return string description of zoom level
-    */
-   public String getDescription() {
-      return description;
-   }
+        return props;
+    }
 
-   /**
-    * Set the description for this zoom level.
-    * 
-    * @param description
-    */
-   public void setDescription(String description) {
-      this.description = description;
-   }
+    /**
+     * @return the name of this zoom level info.
+     */
+    public String getName() {
+        return name;
+    }
 
-   /**
-    * Get the current marker name (property prefix) for layers considered for
-    * this zoom level.
-    * 
-    * @return layers used for zoom level
-    */
-   public List<String> getLayers() {
-      if (layers == null) {
-         layers = new LinkedList<String>();
-      }
-      return layers;
-   }
+    /**
+     * Set the name of this zoom level info.
+     * 
+     * @param name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-   /**
-    * Set the marker names (property prefixes) for the layers that should be
-    * considered for this zoom level.
-    * 
-    * @param layers
-    */
-   public void setLayers(List<String> layers) {
-      this.layers = layers;
-   }
+    /**
+     * Get the description of this zoom level.
+     * 
+     * @return string description of zoom level
+     */
+    public String getDescription() {
+        return description;
+    }
 
-   /**
-    * Return the current scale set in this object.
-    * 
-    * @return scale setting for zoom level
-    */
-   public float getScale() {
-      if (scale < 0) {
-         scale = MapTileMaker.getScaleForZoom(zoomLevel);
-      }
-      return scale;
-   }
+    /**
+     * Set the description for this zoom level.
+     * 
+     * @param description
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-   public void setZoomLevel(int zoomLevel) {
-      super.setZoomLevel(zoomLevel);
-      scale = -1;
-   }
-   
-   /**
-    * Set the current scale to use for calculating the zoom level.
-    * 
-    * @param scale to set
-    */
-   public void setScale(float scale) {
-      this.scale = scale;
-   }
+    /**
+     * Get the current marker name (property prefix) for layers considered for
+     * this zoom level.
+     * 
+     * @return layers used for zoom level
+     */
+    public List<String> getLayers() {
+        if (layers == null) {
+            layers = new LinkedList<String>();
+        }
+        return layers;
+    }
 
-   /**
-    * Get bounds, defined as world coordinates (i.e. lat/lon). Does not cross
-    * over date line.
-    * 
-    * @return the bounds for this zoom level
-    */
-   public List<Rectangle2D> getBounds() {
-      return bounds;
-   }
+    /**
+     * Set the marker names (property prefixes) for the layers that should be
+     * considered for this zoom level.
+     * 
+     * @param layers
+     */
+    public void setLayers(List<String> layers) {
+        this.layers = layers;
+    }
 
-   /**
-    * Set world coordinate bounds for tiles to be created. Should not cross over
-    * date line.
-    * 
-    * @param bounds No checks performed - x, y have to be the min, height and
-    *        width must not exceed boundary limits (lat +/- 85, lon +/- 180)
-    *        when added to x, y.
-    */
-   public void addBounds(Rectangle2D bounds) {
-      this.bounds.add(bounds);
-   }
+    /**
+     * Return the current scale set in this object.
+     * 
+     * @return scale setting for zoom level
+     */
+    public float getScale() {
+        if (scale < 0) {
+            scale = MapTileMaker.getScaleForZoom(zoomLevel);
+        }
+        return scale;
+    }
 
-   /**
-    * Get the bounds as defined as UV tile limits.
-    * 
-    * @return a List of Rectangle2D of uv bounds for this zoom level
-    */
-   public List<Rectangle2D> getUVBounds(MapTileCoordinateTransform mtct, int zoomLevel) {
-      List<Rectangle2D> ret = new LinkedList<Rectangle2D>();
-      for (Rectangle2D bounds : getBounds()) {
-         ret.add(getUVBounds(bounds, mtct, zoomLevel));
-      }
+    public void setZoomLevel(int zoomLevel) {
+        super.setZoomLevel(zoomLevel);
+        scale = -1;
+    }
 
-      if (ret.isEmpty()) {
-         int etc = getEdgeTileCount();
-         ret.add(new Rectangle2D.Double(0, 0, etc, etc));
-      }
+    /**
+     * Set the current scale to use for calculating the zoom level.
+     * 
+     * @param scale to set
+     */
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
 
-      return ret;
-   }
+    /**
+     * Get bounds, defined as world coordinates (i.e. lat/lon). Does not cross
+     * over date line.
+     * 
+     * @return the bounds for this zoom level
+     */
+    public List<Rectangle2D> getBounds() {
+        return bounds;
+    }
 
-   /**
-    * Create a bounding rectangle given the four coordinates, where the upper
-    * left corner of the rectangle is the minimum x, y values and the width and
-    * height are the difference between xs and ys.
-    * 
-    * @param x1
-    * @param y1
-    * @param x2
-    * @param y2
-    * @return Rect2D, properly constructed from coordinates
-    */
-   public Rectangle2D createProperBounds(double x1, double y1, double x2, double y2) {
-      double x = Math.min(x1, x2);
-      double y = Math.min(y1, y2);
-      double w = Math.abs(x1 - x2);
-      double h = Math.abs(y1 - y2);
-      return new Rectangle2D.Double(x, y, w, h);
-   }
+    /**
+     * Set world coordinate bounds for tiles to be created. Should not cross
+     * over date line.
+     * 
+     * @param bounds No checks performed - x, y have to be the min, height and
+     *        width must not exceed boundary limits (lat +/- 85, lon +/- 180)
+     *        when added to x, y.
+     */
+    public void addBounds(Rectangle2D bounds) {
+        this.bounds.add(bounds);
+    }
 
-   public int getRange() {
-      return range;
-   }
+    /**
+     * Get the bounds as defined as UV tile limits.
+     * 
+     * @return a List of Rectangle2D of uv bounds for this zoom level
+     */
+    public List<Rectangle2D> getUVBounds(MapTileCoordinateTransform mtct, int zoomLevel) {
+        List<Rectangle2D> ret = new LinkedList<Rectangle2D>();
+        for (Rectangle2D bounds : getBounds()) {
+            ret.add(getUVBounds(bounds, mtct, zoomLevel));
+        }
 
-   public void setRange(int range) {
-      this.range = range;
-   }
+        if (ret.isEmpty()) {
+            int etc = getEdgeTileCount();
+            ret.add(new Rectangle2D.Double(0, 0, etc, etc));
+        }
+
+        return ret;
+    }
+
+    /**
+     * Create a bounding rectangle given the four coordinates, where the upper
+     * left corner of the rectangle is the minimum x, y values and the width and
+     * height are the difference between xs and ys.
+     * 
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @return Rect2D, properly constructed from coordinates
+     */
+    public Rectangle2D createProperBounds(double x1, double y1, double x2, double y2) {
+        double x = Math.min(x1, x2);
+        double y = Math.min(y1, y2);
+        double w = Math.abs(x1 - x2);
+        double h = Math.abs(y1 - y2);
+        return new Rectangle2D.Double(x, y, w, h);
+    }
+
+    /**
+     * Get the range of this ZoomLevelMaker.
+     * @return the range set for this zlm, or the current zoom level if the range has not been set.
+     */
+    public int getRange() {
+        if (range <= RANGE_NOT_SET) {
+            return getZoomLevel();
+        }
+        
+        return range;
+    }
+
+    public void setRange(int range) {
+        this.range = range;
+    }
 }

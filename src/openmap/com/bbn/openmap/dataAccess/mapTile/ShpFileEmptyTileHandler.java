@@ -11,9 +11,7 @@ import java.util.Properties;
 import com.bbn.openmap.dataAccess.shape.ShapeGeoIndex;
 import com.bbn.openmap.geo.GeoPoint;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
-import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMRect;
-import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.PropUtils;
 
@@ -69,21 +67,17 @@ public class ShpFileEmptyTileHandler
     public BufferedImage getImageForEmptyTile(String imagePath, int x, int y, int zoomLevel,
                                               MapTileCoordinateTransform mtcTransform, Projection proj) {
 
-        Point2D pnt = new Point2D.Double();
-        pnt.setLocation(x, y);
+        Point2D pnt = new Point2D.Double(x, y);
         Point2D tileUL = mtcTransform.tileUVToLatLon(pnt, zoomLevel);
-        pnt.setLocation(x + 1, y + 1);
-        Point2D tileLR = mtcTransform.tileUVToLatLon(pnt, zoomLevel);
-
-        double x1 = Math.min(tileUL.getX(), tileLR.getX());
-//        double x2 = Math.max(tileUL.getX(), tileLR.getX());
-        double y1 = Math.min(tileUL.getY(), tileLR.getY());
-//        double y2 = Math.max(tileUL.getY(), tileLR.getY());
+        
+        /*
+         * We just need one point in the tile, since it's all empty and either over land or sea.
+         */
 
         OMRect rect = new OMRect(0, 0, TILE_SIZE, TILE_SIZE);
 
         if (zoomLevel < noCoverageZoom) {
-            if (isOverLand(y1, x1)) {
+            if (isOverLand(tileUL.getY(), tileUL.getX())) {
                 landAttributes.setTo(rect);
             } else {
                 backgroundAtts.setTo(rect);

@@ -4,9 +4,7 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.util.logging.Level;
 
-import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.cacheHandler.CacheObject;
 

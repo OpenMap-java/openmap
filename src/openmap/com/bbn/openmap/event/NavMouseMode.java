@@ -19,7 +19,6 @@
 // $Author: dietrick $
 // 
 // **********************************************************************
-
 package com.bbn.openmap.event;
 
 import java.awt.Cursor;
@@ -29,9 +28,12 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
 import com.bbn.openmap.MapBean;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.proj.Proj;
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
+import java.awt.Color;
 
 /**
  * The Navigation Mouse Mode interprets mouse clicks and mouse drags to recenter
@@ -44,15 +46,20 @@ import com.bbn.openmap.util.Debug;
  * to work. If you use a MouseDelegator with the bean, it will take care of that
  * for you.
  */
-public class NavMouseMode extends CoordMouseMode {
+public class NavMouseMode
+        extends CoordMouseMode {
 
     /**
      * Mouse Mode identifier, which is "Navigation".
      */
     public final static transient String modeID = "Navigation";
-
     protected Point point1, point2;
     protected boolean autoZoom = false;
+    /**
+     * DrawingAttributes to use for drawn rectangle. Fill paint will be used for
+     * XOR color, line paint will be used for paint color.
+     */
+    protected DrawingAttributes rectAttributes = DrawingAttributes.getDefaultClone();
 
     /**
      * Construct a NavMouseMode. Sets the ID of the mode to the modeID, the
@@ -60,6 +67,8 @@ public class NavMouseMode extends CoordMouseMode {
      */
     public NavMouseMode() {
         this(true);
+        rectAttributes.setFillPaint(Color.lightGray);
+        rectAttributes.setLinePaint(Color.darkGray);
     }
 
     /**
@@ -89,8 +98,7 @@ public class NavMouseMode extends CoordMouseMode {
         }
         e.getComponent().requestFocus();
 
-        if (!mouseSupport.fireMapMousePressed(e)
-                && e.getSource() instanceof MapBean) {
+        if (!mouseSupport.fireMapMousePressed(e) && e.getSource() instanceof MapBean) {
             // set the new first point
             point1 = e.getPoint();
             // ensure the second point isn't set.
@@ -98,19 +106,20 @@ public class NavMouseMode extends CoordMouseMode {
             autoZoom = true;
         }
     }
-    
+
     public void mouseClicked(MouseEvent e) {
         Object obj = e.getSource();
 
         mouseSupport.fireMapMouseClicked(e);
 
-        if (!(obj instanceof MapBean) || point1 == null)
+        if (!(obj instanceof MapBean) || point1 == null) {
             return;
-        
+        }
+
         MapBean map = (MapBean) obj;
         Projection projection = map.getProjection();
         Proj p = (Proj) projection;
-        
+
         Point2D llp = map.getCoordinates(e);
 
         boolean shift = e.isShiftDown();
@@ -151,9 +160,9 @@ public class NavMouseMode extends CoordMouseMode {
         mouseSupport.fireMapMouseReleased(e);
 
         // point2 is always going to be null for a click.
-        if (!(obj instanceof MapBean) || !autoZoom || point1 == null
-                || point2 == null)
+        if (!(obj instanceof MapBean) || !autoZoom || point1 == null || point2 == null) {
             return;
+        }
 
         MapBean map = (MapBean) obj;
         Projection projection = map.getProjection();
@@ -161,9 +170,7 @@ public class NavMouseMode extends CoordMouseMode {
 
         synchronized (this) {
 
-            point2 = getRatioPoint((MapBean) e.getSource(),
-                    point1,
-                    e.getPoint());
+            point2 = getRatioPoint((MapBean) e.getSource(), point1, e.getPoint());
             int dx = Math.abs(point2.x - point1.x);
             int dy = Math.abs(point2.y - point1.y);
 
@@ -201,9 +208,7 @@ public class NavMouseMode extends CoordMouseMode {
             }
 
             // Figure out the new scale
-            float newScale = com.bbn.openmap.proj.ProjMath.getScale(point1,
-                    point2,
-                    projection);
+            float newScale = com.bbn.openmap.proj.ProjMath.getScale(point1, point2, projection);
 
             // Figure out the center of the rectangle
             int centerx = Math.min(point1.x, point2.x) + dx / 2;
@@ -280,7 +285,6 @@ public class NavMouseMode extends CoordMouseMode {
 
     // Mouse Motion Listener events
     // /////////////////////////////
-
     /**
      * Handle a mouseDragged MouseMotionListener event. A rectangle is drawn
      * from the mousePressed point, since I'm assuming that I'm drawing a box to
@@ -296,17 +300,16 @@ public class NavMouseMode extends CoordMouseMode {
         super.mouseDragged(e);
 
         if (e.getSource() instanceof MapBean) {
-            if (!autoZoom)
+            if (!autoZoom) {
                 return;
+            }
 
             // clean up the old rectangle, since point2 has the old
             // value.
             paintRectangle((MapBean) e.getSource(), point1, point2);
             // paint new rectangle
             // point2 = e.getPoint();
-            point2 = getRatioPoint((MapBean) e.getSource(),
-                    point1,
-                    e.getPoint());
+            point2 = getRatioPoint((MapBean) e.getSource(), point1, e.getPoint());
             paintRectangle((MapBean) e.getSource(), point1, point2);
         }
     }
@@ -314,31 +317,11 @@ public class NavMouseMode extends CoordMouseMode {
     /**
      * Given a MapBean, which provides the projection, and the starting point of
      * a box (pt1), look at pt2 to see if it represents the ratio of the
-     * projection map size. If it doesn't, provide a point that does.
+     * projection map size. If it doesn't, provide a point that does. This
+     * method signature is provided for backwards compatibility.
      */
     protected Point getRatioPoint(MapBean map, Point pt1, Point pt2) {
-        Projection proj = map.getProjection();
-        float mapRatio = (float) proj.getHeight() / (float) proj.getWidth();
-
-        float boxHeight = (float) (pt1.y - pt2.y);
-        float boxWidth = (float) (pt1.x - pt2.x);
-        float boxRatio = Math.abs(boxHeight / boxWidth);
-        int isNegative = -1;
-        if (boxRatio > mapRatio) {
-            // box is too tall, adjust boxHeight
-            if (boxHeight < 0)
-                isNegative = 1;
-            boxHeight = Math.abs(mapRatio * boxWidth);
-            pt2.y = pt1.y + (isNegative * (int) boxHeight);
-
-        } else if (boxRatio < mapRatio) {
-            // box is too wide, adjust boxWidth
-            if (boxWidth < 0)
-                isNegative = 1;
-            boxWidth = Math.abs(boxHeight / mapRatio);
-            pt2.x = pt1.x + (isNegative * (int) boxWidth);
-        }
-        return pt2;
+        return ProjMath.getRatioPoint(map.getProjection(), pt1, pt2);
     }
 
     /**
@@ -366,26 +349,23 @@ public class NavMouseMode extends CoordMouseMode {
      * @param pt2 the opposite corner of the box.
      */
     protected void paintRectangle(Graphics g, Point pt1, Point pt2) {
-        g.setXORMode(java.awt.Color.lightGray);
-        g.setColor(java.awt.Color.darkGray);
+        g.setXORMode((Color) rectAttributes.getFillPaint());
+        g.setColor((Color) rectAttributes.getLinePaint());
 
         if (pt1 != null && pt2 != null) {
             int width = Math.abs(pt2.x - pt1.x);
             int height = Math.abs(pt2.y - pt1.y);
 
-            if (width == 0)
+            if (width == 0) {
                 width++;
-            if (height == 0)
+            }
+            if (height == 0) {
                 height++;
+            }
 
-            g.drawRect(pt1.x < pt2.x ? pt1.x : pt2.x, pt1.y < pt2.y ? pt1.y
-                    : pt2.y, width, height);
-            g.drawRect(pt1.x < pt2.x ? pt1.x + (pt2.x - pt1.x) / 2 - 1 : pt2.x
-                    + (pt1.x - pt2.x) / 2 - 1,
-                    pt1.y < pt2.y ? pt1.y + (pt2.y - pt1.y) / 2 - 1 : pt2.y
-                            + (pt1.y - pt2.y) / 2 - 1,
-                    2,
-                    2);
+            g.drawRect(pt1.x < pt2.x ? pt1.x : pt2.x, pt1.y < pt2.y ? pt1.y : pt2.y, width, height);
+            g.drawRect(pt1.x < pt2.x ? pt1.x + (pt2.x - pt1.x) / 2 - 1 : pt2.x + (pt1.x - pt2.x) / 2 - 1, pt1.y < pt2.y ? pt1.y
+                    + (pt2.y - pt1.y) / 2 - 1 : pt2.y + (pt1.y - pt2.y) / 2 - 1, 2, 2);
         }
     }
 
@@ -398,4 +378,11 @@ public class NavMouseMode extends CoordMouseMode {
         paintRectangle(g, point1, point2);
     }
 
+    public DrawingAttributes getRectAttributes() {
+        return rectAttributes;
+    }
+
+    public void setRectAttributes(DrawingAttributes rectAttributes) {
+        this.rectAttributes = rectAttributes;
+    }
 }

@@ -29,6 +29,7 @@ import java.awt.geom.Point2D;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.gui.OverviewMapHandler;
 import com.bbn.openmap.proj.GeoProj;
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
@@ -153,32 +154,11 @@ public class DefaultOverviewMouseMode
    }
 
    /**
-    * Given a MapBean, which provides the projection, and the starting point of
+    * Get the projection of the source map and the starting point of
     * a box (pt1), look at pt2 to see if it represents the ratio of the
     * projection map size. If it doesn't, provide a point that does.
     */
    protected Point getRatioPoint(MapBean map, Point pt1, Point pt2) {
-      Projection proj = overviewMapHandler.getSourceMap().getProjection();
-      float mapRatio = (float) proj.getHeight() / (float) proj.getWidth();
-
-      float boxHeight = (float) (pt1.y - pt2.y);
-      float boxWidth = (float) (pt1.x - pt2.x);
-      float boxRatio = Math.abs(boxHeight / boxWidth);
-      int isNegative = -1;
-      if (boxRatio > mapRatio) {
-         // box is too tall, adjust boxHeight
-         if (boxHeight < 0)
-            isNegative = 1;
-         boxHeight = Math.abs(mapRatio * boxWidth);
-         pt2.y = pt1.y + (isNegative * (int) boxHeight);
-
-      } else if (boxRatio < mapRatio) {
-         // box is too wide, adjust boxWidth
-         if (boxWidth < 0)
-            isNegative = 1;
-         boxWidth = Math.abs(boxHeight / mapRatio);
-         pt2.x = pt1.x + (isNegative * (int) boxWidth);
-      }
-      return pt2;
+      return ProjMath.getRatioPoint(overviewMapHandler.getSourceMap().getProjection(), pt1, pt2);
    }
 }

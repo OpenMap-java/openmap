@@ -46,6 +46,7 @@ import com.bbn.openmap.omGraphics.grid.GeneratorLoader;
 import com.bbn.openmap.omGraphics.grid.OMGridGenerator;
 import com.bbn.openmap.omGraphics.grid.SinkGenerator;
 import com.bbn.openmap.proj.EqualArc;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -249,7 +250,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
      * @param proj The projection of the screen (CADRG).
      * @return List of rasters to display.
      */
-    public OMGraphicList getRectangle(EqualArc proj) {
+    public OMGraphicList getRectangle(Projection proj) {
 
         double[] lat = new double[3];
         double[] lon = new double[3];
@@ -378,9 +379,9 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
      * looks like so it can figure out which frames (and subframes) will be
      * needed.
      * 
-     * @param proj the EqualArc projection of the screen.
+     * @param proj the projection of the screen.
      */
-    public void setProjection(EqualArc proj) {
+    public void setProjection(Projection proj) {
         Point2D ul = proj.getUpperLeft();
         Point2D lr = proj.getLowerRight();
         setProjection(proj, ul.getY(), ul.getX(), lr.getY(), lr.getX());
@@ -392,7 +393,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
      * needed. Should be called when the CacheHandler is dealing with just a
      * part of the map, such as when the map covers the dateline or equator.
      * 
-     * @param proj the EqualArc projection of the screen.
+     * @param proj the projection of the screen.
      * @param lat1 latitude of the upper left corner of the window, in decimal
      *        degrees.
      * @param lon1 longitude of the upper left corner of the window, in decimal
@@ -402,7 +403,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
      * @param lon2 longitude of the lower right corner of the window, in decimal
      *        degrees.
      */
-    public void setProjection(EqualArc proj, double lat1, double lon1,
+    public void setProjection(Projection proj, double lat1, double lon1,
                               double lat2, double lon2) {
 
         firstImageReturned = true;
@@ -423,7 +424,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
     }
 
     /**
-     * Returns the next OMRaster image. When setProjection() is called, the
+     * Returns the next OMGraphic image. When setProjection() is called, the
      * cache sets the projection parameters it needs, and also resets this
      * popping mechanism. When this mechanism is reset, you can keep calling
      * this method to get another subframe image. When it returns a null value,
@@ -432,7 +433,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
      * left to right frames, and top to bottom for each column of frames. It
      * handles all the subframes for a frame at one time.
      * 
-     * @return OMRaster image.
+     * @return OMGraphic image.
      */
     public OMGraphic getNextImage() {
 

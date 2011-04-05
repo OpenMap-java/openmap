@@ -62,7 +62,7 @@ public class DTEDDirectoryHandler implements PropertyConsumer {
      */
     protected DTEDNameTranslator translator = new StandardDTEDNameTranslator();
 
-    public DTEDDirectoryHandler() {};
+    public DTEDDirectoryHandler() {}
 
     /**
      * Create a DTEDDirectoryHandler with a StandardDTEDNameTranslator, looking

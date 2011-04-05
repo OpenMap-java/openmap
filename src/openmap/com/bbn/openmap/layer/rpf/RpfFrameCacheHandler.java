@@ -32,7 +32,7 @@ package com.bbn.openmap.layer.rpf;
 import java.util.List;
 import java.util.Vector;
 
-import com.bbn.openmap.proj.CADRG;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.cacheHandler.CacheHandler;
 import com.bbn.openmap.util.cacheHandler.CacheObject;
@@ -126,11 +126,11 @@ public class RpfFrameCacheHandler
     * @param ullon NW longitude.
     * @param lrlat SE latitude.
     * @param lrlon SE longitude
-    * @param proj CADRG projection to use for zone decisions.
+    * @param proj projection to use for zone decisions.
     * @param chartSeries RpfProductInfo.seriesCode entry.
     * @return Vector of RpfCoverageBoxes.
     */
-   public Vector<RpfCoverageBox> getCatalogCoverage(float ullat, float ullon, float lrlat, float lrlon, CADRG proj, String chartSeries) {
+   public Vector<RpfCoverageBox> getCatalogCoverage(float ullat, float ullon, float lrlat, float lrlon, Projection proj, String chartSeries) {
 
       Vector<RpfCoverageBox> coverages = new Vector<RpfCoverageBox>();
       for (RpfTocHandler toc : tocs) {
@@ -163,7 +163,7 @@ public class RpfFrameCacheHandler
     * @return percentage of map covered by specific chart type.
     * @see #getCatalogCoverage
     */
-   public float getCalculatedCoverage(float ullat, float ullon, float lrlat, float lrlon, CADRG p, String chartSeries) {
+   public float getCalculatedCoverage(float ullat, float ullon, float lrlat, float lrlon, Projection p, String chartSeries) {
 
       if (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)) {
          return 0f;
@@ -265,7 +265,7 @@ public class RpfFrameCacheHandler
     * @param proj CADRG projection to use for zone decisions.
     * @return Vector of RpfCoverageBoxes.
     */
-   public Vector<RpfCoverageBox> getCoverage(float ullat, float ullon, float lrlat, float lrlon, CADRG proj) {
+   public Vector<RpfCoverageBox> getCoverage(float ullat, float ullon, float lrlat, float lrlon, Projection proj) {
 
       Debug.message("rpf", "RpfFrameCacheHandler: getCoverage()");
 
@@ -704,7 +704,7 @@ public class RpfFrameCacheHandler
       Debug.message("rpf", "RpfFrameCacheHandler: reset frame cache.");
    }
 
-   public static float scaleDifference(CADRG proj, RpfCoverageBox box) {
+   public static float scaleDifference(Projection proj, RpfCoverageBox box) {
       return (float) (Math.abs(proj.getScale() - box.scale));
    }
 

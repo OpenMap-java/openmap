@@ -26,19 +26,8 @@ package com.bbn.openmap.dataAccess.mapTile;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Vector;
 
-import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.OMComponent;
-import com.bbn.openmap.proj.Mercator;
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.proj.coords.LatLonPoint;
-import com.bbn.openmap.util.ComponentFactory;
-import com.bbn.openmap.util.PropUtils;
 
 /**
  * The ZoomLevelInfo class is used by the TileMaker and handles how tiles are

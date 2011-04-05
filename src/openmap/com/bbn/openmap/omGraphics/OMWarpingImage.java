@@ -45,24 +45,24 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * <pre>
  * try {
- *    String imageFile = &quot;/data/geoimages/NBenguela.2004357.aqua.250m.jpg&quot;;
- *    WorldFile worldFile = WorldFile.get(PropUtils.getResourceOrFileOrURL(imageFile));
- *    OMWarpingImage omwi = new OMWarpingImage(imageFile, LatLonGCT.INSTANCE, worldFile);
- *    omList.add(omwi);
+ *     String imageFile = &quot;/data/geoimages/NBenguela.2004357.aqua.250m.jpg&quot;;
+ *     WorldFile worldFile = WorldFile.get(PropUtils.getResourceOrFileOrURL(imageFile));
+ *     OMWarpingImage omwi = new OMWarpingImage(imageFile, LatLonGCT.INSTANCE, worldFile);
+ *     omList.add(omwi);
  * } catch (MalformedURLException e) {
- *    e.printStackTrace();
+ *     e.printStackTrace();
  * } catch (InterruptedException e) {
- *    e.printStackTrace();
+ *     e.printStackTrace();
  * }
  * 
  * try {
- *    String imageFile = &quot;/data/images/earthmap4k.jpg&quot;;
- *    OMWarpingImage omwi = new OMWarpingImage(imageFile);
- *    omList.add(omwi);
+ *     String imageFile = &quot;/data/images/earthmap4k.jpg&quot;;
+ *     OMWarpingImage omwi = new OMWarpingImage(imageFile);
+ *     omList.add(omwi);
  * } catch (MalformedURLException e) {
- *    e.printStackTrace();
+ *     e.printStackTrace();
  * } catch (InterruptedException e) {
- *    e.printStackTrace();
+ *     e.printStackTrace();
  * }
  * 
  * </pre>
@@ -70,210 +70,251 @@ import com.bbn.openmap.util.PropUtils;
  * @author dietrick
  */
 public class OMWarpingImage
-      extends OMGraphicAdapter
-      implements OMGraphic {
+        extends OMGraphicAdapter
+        implements OMGraphic {
 
-   private static final long serialVersionUID = 1L;
-   protected ImageWarp warp;
-   protected OMRaster raster;
+    private static final long serialVersionUID = 1L;
+    protected ImageWarp warp;
+    protected OMRaster raster;
 
-   /**
-    * Create an OMWarpingImage from path to image (resource, file or URL).
-    * 
-    * @param imagePath
-    * @throws MalformedURLException
-    * @throws InterruptedException
-    */
-   public OMWarpingImage(String imagePath)
-         throws MalformedURLException, InterruptedException {
-      setWarp(imagePath, LatLonGCT.INSTANCE, new DataBounds(-180, -90, 180, 90));
-   }
+    /**
+     * Create an OMWarpingImage from path to image (resource, file or URL).
+     * 
+     * @param imagePath
+     * @throws MalformedURLException
+     * @throws InterruptedException
+     */
+    public OMWarpingImage(String imagePath)
+            throws MalformedURLException, InterruptedException {
+        setWarp(imagePath, LatLonGCT.INSTANCE, new DataBounds(-180, -90, 180, 90));
+    }
 
-   /**
-    * Create an OMWarpingImage from path to image (resource, file or URL).
-    * 
-    * @param imagePath
-    * @param transform the transform describing the image's projection.
-    * @param imageBounds the bounds of the image, in its coordinate system.
-    * @throws MalformedURLException
-    * @throws InterruptedException
-    */
-   public OMWarpingImage(String imagePath, GeoCoordTransformation transform, DataBounds imageBounds)
-         throws MalformedURLException, InterruptedException {
-      setWarp(imagePath, transform, imageBounds);
-   }
+    /**
+     * Create an OMWarpingImage from path to image (resource, file or URL).
+     * 
+     * @param imagePath
+     * @param transform the transform describing the image's projection.
+     * @param imageBounds the bounds of the image, in its coordinate system.
+     * @throws MalformedURLException
+     * @throws InterruptedException
+     */
+    public OMWarpingImage(String imagePath, GeoCoordTransformation transform, DataBounds imageBounds)
+            throws MalformedURLException, InterruptedException {
+        setWarp(imagePath, transform, imageBounds);
+    }
 
-   /**
-    * Create an OMWarpingImage from path to image (resource, file or URL).
-    * 
-    * @param imagePath
-    * @param transform transform the transform describing the image's
-    *        projection.
-    * @param worldfile The WorldFile describing the image's location.
-    * @throws MalformedURLException
-    * @throws InterruptedException
-    */
-   public OMWarpingImage(String imagePath, GeoCoordTransformation transform, WorldFile worldfile)
-         throws MalformedURLException, InterruptedException {
-      setWarp(imagePath, transform, worldfile);
-   }
+    /**
+     * Create an OMWarpingImage from path to image (resource, file or URL).
+     * 
+     * @param imagePath
+     * @param transform transform the transform describing the image's
+     *        projection.
+     * @param worldfile The WorldFile describing the image's location.
+     * @throws MalformedURLException
+     * @throws InterruptedException
+     */
+    public OMWarpingImage(String imagePath, GeoCoordTransformation transform, WorldFile worldfile)
+            throws MalformedURLException, InterruptedException {
+        setWarp(imagePath, transform, worldfile);
+    }
 
-   /**
-    * Takes an image, assumed to be a world image in the LLXY projection (equal
-    * arc) covering -180, 180 longitude to -90, 90 latitude.
-    * 
-    * @param bi
-    */
-   public OMWarpingImage(BufferedImage bi) {
-      setWarp(bi, LatLonGCT.INSTANCE, new DataBounds(-180, -90, 180, 90));
-   }
+    /**
+     * Takes an image, assumed to be a world image in the LLXY projection (equal
+     * arc) covering -180, 180 longitude to -90, 90 latitude.
+     * 
+     * @param bi
+     */
+    public OMWarpingImage(BufferedImage bi) {
+        setWarp(bi, LatLonGCT.INSTANCE, new DataBounds(-180, -90, 180, 90));
+    }
 
-   /**
-    * Create an OMWarpingImage from a BufferedImage.
-    * 
-    * @param bi a BufferedImage
-    * @param transform the transform describing the image's projection.
-    * @param imageBounds the bounds of the image, in its coordinate system.
-    * @throws MalformedURLException
-    * @throws InterruptedException
-    */
-   public OMWarpingImage(BufferedImage bi, GeoCoordTransformation transform, DataBounds imageBounds) {
-      setWarp(bi, transform, imageBounds);
-   }
+    /**
+     * Create an OMWarpingImage from a BufferedImage.
+     * 
+     * @param bi a BufferedImage
+     * @param transform the transform describing the image's projection.
+     * @param imageBounds the bounds of the image, in its coordinate system.
+     * @throws MalformedURLException
+     * @throws InterruptedException
+     */
+    public OMWarpingImage(BufferedImage bi, GeoCoordTransformation transform, DataBounds imageBounds) {
+        setWarp(bi, transform, imageBounds);
+    }
 
-   /**
-    * Create an OMWarpingImage from a BufferedImage.
-    * 
-    * @param bi BufferedImage
-    * @param transform transform the transform describing the image's
-    *        projection.
-    * @param worldfile The WorldFile describing the image's location.
-    * @throws MalformedURLException
-    * @throws InterruptedException
-    */
-   public OMWarpingImage(BufferedImage bi, GeoCoordTransformation transform, WorldFile worldfile) {
-      setWarp(bi, transform, worldfile);
-   }
+    /**
+     * Create an OMWarpingImage from a BufferedImage.
+     * 
+     * @param bi BufferedImage
+     * @param transform transform the transform describing the image's
+     *        projection.
+     * @param worldfile The WorldFile describing the image's location.
+     * @throws MalformedURLException
+     * @throws InterruptedException
+     */
+    public OMWarpingImage(BufferedImage bi, GeoCoordTransformation transform, WorldFile worldfile) {
+        setWarp(bi, transform, worldfile);
+    }
 
-   /**
-    * Takes an array of ARGB integer values representing an image, assumed to be
-    * a world image in the LLXY projection (equal arc) covering -180, 180
-    * longitude to -90, 90 latitude.
-    * 
-    * @param pix int[] ARGB pixel array for image
-    * @param width pixel width of image
-    * @param height pixel height of image
-    */
-   public OMWarpingImage(int[] pix, int width, int height) {
-      setWarp(pix, width, height, LatLonGCT.INSTANCE, new DataBounds(-180, -90, 180, 90));
-   }
+    /**
+     * Takes an array of ARGB integer values representing an image, assumed to
+     * be a world image in the LLXY projection (equal arc) covering -180, 180
+     * longitude to -90, 90 latitude.
+     * 
+     * @param pix int[] ARGB pixel array for image
+     * @param width pixel width of image
+     * @param height pixel height of image
+     */
+    public OMWarpingImage(int[] pix, int width, int height) {
+        setWarp(pix, width, height, LatLonGCT.INSTANCE, new DataBounds(-180, -90, 180, 90));
+    }
 
-   /**
-    * Create an OMWarpingImage from a BufferedImage.
-    * 
-    * @param pix int[] ARGB pixel array for image
-    * @param width pixel width of image
-    * @param height pixel height of image
-    * @param transform the transform describing the image's projection.
-    * @param imageBounds the bounds of the image, in its coordinate system.
-    */
-   public OMWarpingImage(int[] pix, int width, int height, GeoCoordTransformation transform, DataBounds imageBounds) {
-      setWarp(pix, width, height, transform, imageBounds);
-   }
+    /**
+     * Create an OMWarpingImage from a BufferedImage.
+     * 
+     * @param pix int[] ARGB pixel array for image
+     * @param width pixel width of image
+     * @param height pixel height of image
+     * @param transform the transform describing the image's projection.
+     * @param imageBounds the bounds of the image, in its coordinate system.
+     */
+    public OMWarpingImage(int[] pix, int width, int height, GeoCoordTransformation transform, DataBounds imageBounds) {
+        setWarp(pix, width, height, transform, imageBounds);
+    }
 
-   /**
-    * Create an OMWarpingImage from a BufferedImage.
-    * 
-    * @param pix int[] ARGB pixel array for image
-    * @param width pixel width of image
-    * @param height pixel height of image
-    * @param transform transform the transform describing the image's
-    *        projection.
-    * @param worldfile The WorldFile describing the image's location.
-    */
-   public OMWarpingImage(int[] pix, int width, int height, GeoCoordTransformation transform, WorldFile worldfile) {
-      setWarp(pix, width, height, transform, worldfile);
-   }
+    /**
+     * Create an OMWarpingImage from a BufferedImage.
+     * 
+     * @param pix int[] ARGB pixel array for image
+     * @param width pixel width of image
+     * @param height pixel height of image
+     * @param transform transform the transform describing the image's
+     *        projection.
+     * @param worldfile The WorldFile describing the image's location.
+     */
+    public OMWarpingImage(int[] pix, int width, int height, GeoCoordTransformation transform, WorldFile worldfile) {
+        setWarp(pix, width, height, transform, worldfile);
+    }
 
-   /**
-    * Set all the information needed.
-    * 
-    * @param imagePath
-    * @param transform
-    * @param imageBounds
-    * @throws MalformedURLException
-    * @throws InterruptedException
-    */
-   public void setWarp(String imagePath, GeoCoordTransformation transform, DataBounds imageBounds)
-         throws MalformedURLException, InterruptedException {
-      URL imageURL = PropUtils.getResourceOrFileOrURL(imagePath);
-      BufferedImage bi = BufferedImageHelper.getBufferedImage(imageURL);
-      warp = new ImageWarp(bi, transform, imageBounds);
-   }
+    /**
+     * Create an OMWarpingImage from an OMScalingRaster - useful for when the
+     * projection being used on the map doesn't match the projection of the
+     * raster, and it needs to be transformed. The OMScalingRaster is in an
+     * equal-arc projection (CADRG or LLXY).
+     * 
+     * @param omsr OMScalingRaster
+     * @param transform a GeoCoordTransform if the OMScalingRaster image isn't a
+     *        WGS84 image.
+     */
+    public OMWarpingImage(OMScalingRaster omsr, GeoCoordTransformation transform) {
+        if (omsr != null) {
+            ImageWarp iw = omsr.getImageWarp(transform);
+            if (iw != null) {
+                setWarp(iw);
+            }
+        }
+    }
 
-   public void setWarp(String imagePath, GeoCoordTransformation transform, WorldFile worldfile)
-         throws MalformedURLException, InterruptedException {
-      URL imageURL = PropUtils.getResourceOrFileOrURL(imagePath);
-      BufferedImage bi = BufferedImageHelper.getBufferedImage(imageURL);
-      warp = new ImageWarp(bi, transform, worldfile);
-   }
+    /**
+     * Set all the information needed.
+     * 
+     * @param imagePath
+     * @param transform
+     * @param imageBounds
+     * @throws MalformedURLException
+     * @throws InterruptedException
+     */
+    public void setWarp(String imagePath, GeoCoordTransformation transform, DataBounds imageBounds)
+            throws MalformedURLException, InterruptedException {
+        URL imageURL = PropUtils.getResourceOrFileOrURL(imagePath);
+        BufferedImage bi = BufferedImageHelper.getBufferedImage(imageURL);
+        setWarp(new ImageWarp(bi, transform, imageBounds));
+    }
 
-   /**
-    * Set all the information needed.
-    * 
-    * @param pix int[] ARGB pixel array for image
-    * @param width pixel width of image
-    * @param height pixel height of image
-    * @param transform
-    * @param imageBounds
-    */
-   public void setWarp(int[] pix, int width, int height, GeoCoordTransformation transform, DataBounds imageBounds) {
-      warp = new ImageWarp(pix, width, height, transform, imageBounds);
-   }
+    public void setWarp(String imagePath, GeoCoordTransformation transform, WorldFile worldfile)
+            throws MalformedURLException, InterruptedException {
+        URL imageURL = PropUtils.getResourceOrFileOrURL(imagePath);
+        BufferedImage bi = BufferedImageHelper.getBufferedImage(imageURL);
+        setWarp(new ImageWarp(bi, transform, worldfile));
+    }
 
-   /**
-    * Set all the information needed.
-    * 
-    * @param pix int[] ARGB pixel array for image
-    * @param width pixel width of image
-    * @param height pixel height of image
-    * @param transform
-    * @param worldfile describes projection of image
-    */
-   public void setWarp(int[] pix, int width, int height, GeoCoordTransformation transform, WorldFile worldfile) {
-      warp = new ImageWarp(pix, width, height, transform, worldfile);
-   }
+    /**
+     * Set all the information needed.
+     * 
+     * @param pix int[] ARGB pixel array for image
+     * @param width pixel width of image
+     * @param height pixel height of image
+     * @param transform
+     * @param imageBounds
+     */
+    public void setWarp(int[] pix, int width, int height, GeoCoordTransformation transform, DataBounds imageBounds) {
+        setWarp(new ImageWarp(pix, width, height, transform, imageBounds));
+    }
 
-   public void setWarp(BufferedImage bi, GeoCoordTransformation transform, DataBounds imageBounds) {
-      warp = new ImageWarp(bi, transform, imageBounds);
-   }
+    /**
+     * Set all the information needed.
+     * 
+     * @param pix int[] ARGB pixel array for image
+     * @param width pixel width of image
+     * @param height pixel height of image
+     * @param transform
+     * @param worldfile describes projection of image
+     */
+    public void setWarp(int[] pix, int width, int height, GeoCoordTransformation transform, WorldFile worldfile) {
+        setWarp(new ImageWarp(pix, width, height, transform, worldfile));
+    }
 
-   public void setWarp(BufferedImage bi, GeoCoordTransformation transform, WorldFile worldfile) {
-      warp = new ImageWarp(bi, transform, worldfile);
-   }
+    public void setWarp(BufferedImage bi, GeoCoordTransformation transform, DataBounds imageBounds) {
+        setWarp(new ImageWarp(bi, transform, imageBounds));
+    }
 
-   public void setWarp(ImageWarp wrp) {
-      warp = wrp;
-   }
+    public void setWarp(BufferedImage bi, GeoCoordTransformation transform, WorldFile worldfile) {
+        setWarp(new ImageWarp(bi, transform, worldfile));
+    }
 
-   public ImageWarp getWarp() {
-      return warp;
-   }
+    public void setWarp(ImageWarp wrp) {
+        warp = wrp;
+        setNeedToRegenerate(true);
+    }
 
-   @Override
-   public boolean generate(Projection proj) {
-      if (warp != null) {
-         raster = warp.getOMRaster(proj);
-      }
+    public ImageWarp getWarp() {
+        return warp;
+    }
 
-      return true;
-   }
+    @Override
+    public boolean generate(Projection proj) {
+        if (warp != null) {
+            if (updateImageForProjection(proj) || raster == null) {
+                raster = warp.getOMRaster(proj);
+            }
+        }
 
-   @Override
-   public void render(Graphics g) {
-      if (raster != null) {
-         raster.render(g);
-      }
-   }
+        setNeedToRegenerate(false);
+        return true;
+    }
+
+    protected Projection lastProjection = null;
+
+    /**
+     * Called from within generate. Some render buffering calls generate to make
+     * sure the latest projection is called on an OMGraphic before it's put into
+     * a buffer. We're keeping track of the last projection used to generate the
+     * warped image, and if it's the same, don't bother regenerating, use the
+     * raster we have.
+     * 
+     * @param proj current projection.
+     * @return false if the rest of generate() should be skipped.
+     */
+    protected boolean updateImageForProjection(Projection proj) {
+        boolean ret = proj.equals(lastProjection);
+        lastProjection = proj;
+        return !ret;
+    }
+
+    @Override
+    public void render(Graphics g) {
+        if (raster != null) {
+            raster.render(g);
+        }
+    }
 
 }

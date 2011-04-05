@@ -232,5 +232,21 @@ public class LLXY
    public double getYPixConstant() {
       return ppd * 90.0;
    }
+   
+   public static LLXY convertProjection(Projection proj) {
+       if (proj instanceof LLXY) {
+           return (LLXY) proj;
+       }
+       
+       LLXY llxy  =
+               new LLXY((LatLonPoint) proj.getCenter(new LatLonPoint.Float()), proj.getScale(), proj.getWidth(), proj.getHeight());
 
+       Point2D ulp = llxy.forward(proj.getUpperLeft());
+       Point2D lrp = llxy.forward(proj.getLowerRight());
+
+       int w = (int) Math.abs(lrp.getX() - ulp.getX());
+       int h = (int) Math.abs(lrp.getY() - ulp.getY());
+
+       return new LLXY((LatLonPoint) proj.getCenter(new LatLonPoint.Float()), proj.getScale(), w, h);
+   }
 }

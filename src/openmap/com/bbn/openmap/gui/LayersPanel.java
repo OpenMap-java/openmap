@@ -57,7 +57,6 @@ import com.bbn.openmap.BufferedLayerMapBean;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
-import com.bbn.openmap.LightMapHandlerChild;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.event.LayerEvent;
 import com.bbn.openmap.event.LayerListener;

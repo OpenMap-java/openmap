@@ -558,8 +558,8 @@ public class GraticuleLayer
          return newgraphics;
       }
       tenDegreeLines = null;
-
-      double ctrLon = projection.getCenter().getX();
+      // Need the cast to make Windows happy during the ant build for jdk1.5.0_22
+      double ctrLon = ((Point2D)projection.getCenter()).getX();
       if (projection instanceof GeoProj) {
          ctrLon = ((GeoProj) projection).getReferenceLon();
       }

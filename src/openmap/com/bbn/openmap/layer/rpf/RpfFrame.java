@@ -815,9 +815,9 @@ public class RpfFrame {
          subframe = new RpfSubframe();
       }
 
-      if (viewAttributes != null) {
-         subframe.setColorModel(viewAttributes.colorModel);
-      }
+//      if (viewAttributes != null) {
+//         subframe.setColorModel(viewAttributes.colorModel);
+//      }
 
       if (colortable == null) {
          colortable = this.colortable;
@@ -828,13 +828,10 @@ public class RpfFrame {
             Debug.output("RpfFrame: decompress to byte[]");
          }
          byte[] pixels = decompressSubframe(x, y);
-         OMRaster image = subframe.image;
-         image.setBits(pixels);
-         image.setColors(colortable.colors);
+         subframe.setBitsAndColors(pixels, colortable.colors);
       } else {
          int[] pixels = decompressSubframe(x, y, colortable);
-         OMRaster image = subframe.image;
-         image.setPixels(pixels);
+         subframe.setPixels(pixels);
       }
       return subframe;
    }

@@ -24,6 +24,7 @@ package com.bbn.openmap.proj;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import com.bbn.openmap.MoreMath;
 
@@ -51,7 +52,7 @@ public final class ProjMath {
      * North pole latitude in degrees.
      */
     public final static transient double NORTH_POLE_DEG_D = 90d;
-    
+
     /**
      * South pole latitude in radians.
      */
@@ -61,7 +62,7 @@ public final class ProjMath {
      * South pole latitude in degrees.
      */
     public final static transient double SOUTH_POLE_DEG_D = -NORTH_POLE_DEG_D;
-    
+
     /**
      * Dateline longitude in radians.
      */
@@ -76,7 +77,7 @@ public final class ProjMath {
      * Dateline longitude in degrees.
      */
     public final static transient double DATELINE_DEG_D = 180d;
-    
+
     /**
      * Longitude range in radians.
      */
@@ -91,9 +92,10 @@ public final class ProjMath {
      * Longitude range in degrees.
      */
     public final static transient double LON_RANGE_DEG_D = 360d;
-    
+
     // cannot construct
-    private ProjMath() {}
+    private ProjMath() {
+    }
 
     /**
      * rounds the quantity away from 0.
@@ -133,8 +135,7 @@ public final class ProjMath {
      * @return float distance
      */
     public final static float lonDistance(float lon1, float lon2) {
-        return (float) Math.min(Math.abs(lon1 - lon2), ((lon1 < 0) ? lon1
-                + Math.PI : Math.PI - lon1)
+        return (float) Math.min(Math.abs(lon1 - lon2), ((lon1 < 0) ? lon1 + Math.PI : Math.PI - lon1)
                 + ((lon2 < 0) ? lon2 + Math.PI : Math.PI - lon2));
     }
 
@@ -379,7 +380,7 @@ public final class ProjMath {
         }
         return lon;
     }
-    
+
     /**
      * Converts units (km, nm, miles, etc) to decimal degrees for a spherical
      * planet. This does not check for arc distances &gt; 1/2 planet
@@ -490,8 +491,7 @@ public final class ProjMath {
      * @param projection the projection to use for other projection parameters,
      *        like map width and map height.
      */
-    public static float getScale(Point point1, Point point2,
-                                 Projection projection) {
+    public static float getScale(Point point1, Point point2, Projection projection) {
 
         return getScaleFromProjected(point1, point2, projection);
     }
@@ -509,19 +509,25 @@ public final class ProjMath {
      * @param projection the projection to use for other projection parameters,
      *        like map width and map height.
      */
-    public static float getScaleFromProjected(Point2D point1, Point2D point2,
-                                              Projection projection) {
+    public static float getScaleFromProjected(Point2D point1, Point2D point2, Projection projection) {
         if (projection == null) {
             return Float.MAX_VALUE;
         }
 
-        Point2D ll1 = projection.inverse(point1);
-        Point2D ll2 = projection.inverse(point2);
+        /**
+         * Just to make sure of the order for upper left and lower right, which
+         * seems to make a difference for the projection calculation.
+         */
+        Point2D upperLeft = new Point2D.Double(Math.min(point1.getX(), point2.getX()), Math.min(point1.getY(), point2.getY()));
+        Point2D lowerRight = new Point2D.Double(Math.max(point1.getX(), point2.getX()), Math.max(point1.getY(), point2.getY()));
+
+        Point2D ll1 = projection.inverse(upperLeft);
+        Point2D ll2 = projection.inverse(lowerRight);
 
         point1 = new Point2D.Double();
         point2 = new Point2D.Double(projection.getWidth(), projection.getHeight());
 
-        return getScale(ll1, ll2, point1, point2, projection);
+        return getScale(ll1, ll2, upperLeft, lowerRight, projection);
     }
 
     /**
@@ -542,8 +548,7 @@ public final class ProjMath {
      * @param projection the projection to use to query to get the scale for,
      *        for projection type and height and width.
      */
-    protected static float getScale(Point2D ll1, Point2D ll2, Point2D point1,
-                                    Point2D point2, Projection projection) {
+    protected static float getScale(Point2D ll1, Point2D ll2, Point2D point1, Point2D point2, Projection projection) {
 
         return projection.getScale(ll1, ll2, point1, point2);
     }
@@ -575,15 +580,93 @@ public final class ProjMath {
      * @return true if it seems like these two longitude values represent a
      *         dateline crossing.
      */
-    public static boolean isCrossingDateline(double leftLon, double rightLon,
-                                             float projScale) {
+    public static boolean isCrossingDateline(double leftLon, double rightLon, float projScale) {
         // if the left longitude is greater than the right, we're obviously
         // crossing the dateline. If they are approximately equal, we could be
         // showing the whole earth, but only if the scale is significantly
         // large. If the scale is small, we could be really zoomed in.
-        return ((leftLon > rightLon) || (MoreMath.approximately_equal(leftLon,
-                rightLon,
-                .001f) && projScale > 1000000f));
+        return ((leftLon > rightLon) || (MoreMath.approximately_equal(leftLon, rightLon, .001f) && projScale > 1000000f));
+    }
+
+    /**
+     * Given a projection and the starting point of a box (pt1), look at pt2 to
+     * see if it represents the ratio of the projection map size. If it doesn't,
+     * provide a point that does.
+     * 
+     * @param proj the projection to use for the calculations.
+     * @param pt1 upper left point in pixel space
+     * @param pt2 second point in pixel space.
+     * @return new pt that matches projection h/w ratio.
+     */
+    public static Point getRatioPoint(Projection proj, Point pt1, Point pt2) {
+        float mapRatio = (float) proj.getHeight() / (float) proj.getWidth();
+
+        float boxHeight = (float) (pt1.y - pt2.y);
+        float boxWidth = (float) (pt1.x - pt2.x);
+        float boxRatio = Math.abs(boxHeight / boxWidth);
+        int isNegative = -1;
+        if (boxRatio > mapRatio) {
+            // box is too tall, adjust boxHeight
+            if (boxHeight < 0) {
+                isNegative = 1;
+            }
+            boxHeight = Math.abs(mapRatio * boxWidth);
+            pt2.y = pt1.y + (isNegative * (int) boxHeight);
+
+        } else if (boxRatio < mapRatio) {
+            // box is too wide, adjust boxWidth
+            if (boxWidth < 0) {
+                isNegative = 1;
+            }
+            boxWidth = Math.abs(boxHeight / mapRatio);
+            pt2.x = pt1.x + (isNegative * (int) boxWidth);
+        }
+        return pt2;
+    }
+
+    /**
+     * Given a projection to match against and the starting point of a box
+     * (pt1), look at pt2 to see if it represents the ratio of the projection
+     * map size. Return a rectangle for the resulting zoom area.
+     * 
+     * @param proj the current projection.
+     * @param pt1 first point, where mouse down happened, for instance.
+     * @param pt2 latest point, where mouse released happened, for instance.
+     * @param zoomOnCenter whether the first point represents the center of the
+     *        zoom box, or one of the corners.
+     * @return Rectangle2D representing the new zoom box.
+     */
+    public static Rectangle2D getRatioBox(Projection proj, Point2D pt1, Point2D pt2, boolean zoomOnCenter) {
+        double mapRatio = (double) proj.getHeight() / (double) proj.getWidth();
+
+        double boxHeight = Math.abs(pt1.getY() - pt2.getY());
+        double boxWidth = Math.abs(pt1.getX() - pt2.getX());
+        double boxRatio = Math.abs(boxHeight / boxWidth);
+
+        if (boxRatio > mapRatio) {
+            boxHeight = Math.abs(mapRatio * boxWidth);
+        } else if (boxRatio < mapRatio) {
+            boxWidth = Math.abs(boxHeight / mapRatio);
+        }
+
+        if (zoomOnCenter) {
+            double anchorx = pt1.getX() - boxWidth;
+            double anchory = pt1.getY() - boxHeight;
+
+            return new Rectangle2D.Double(anchorx, anchory, 2 * boxWidth, 2 * boxHeight);
+        } else {
+
+            double anchorx = pt1.getX();
+            if (pt2.getX() < anchorx) {
+                anchorx -= boxWidth;
+            }
+            double anchory = pt1.getY();
+            if (pt2.getY() < anchory) {
+                anchory -= boxHeight;
+            }
+
+            return new Rectangle2D.Double(anchorx, anchory, boxWidth, boxHeight);
+        }
     }
 
 }

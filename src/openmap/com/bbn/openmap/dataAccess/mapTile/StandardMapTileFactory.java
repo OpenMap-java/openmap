@@ -21,27 +21,20 @@
 //$Author: dietrick $
 //
 //**********************************************************************
-
 package com.bbn.openmap.dataAccess.mapTile;
 
 import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.FilteredImageSource;
-import java.awt.image.ImageFilter;
-import java.awt.image.ImageProducer;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
@@ -49,10 +42,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.swing.GrayFilter;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
@@ -100,26 +89,36 @@ import com.bbn.openmap.util.cacheHandler.CacheObject;
 public class StandardMapTileFactory
         extends CacheHandler
         implements MapTileFactory, PropertyConsumer {
-    protected String prefix = null;
 
+    protected String prefix = null;
     protected final static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory");
     protected final static Logger mapTileLogger = Logger.getLogger("MAPTILE_DEBUGGING");
-
     public final static String ROOT_DIR_PROPERTY = "rootDir";
     public final static String FILE_EXT_PROPERTY = "fileExt";
     public final static String CACHE_SIZE_PROPERTY = "cacheSize";
     public final static String MTCTRANSFORM_PROPERTY = "mapTileTransform";
     public final static String EMPTY_TILE_HANDLER_PROPERTY = "emptyTileHandler";
+    public final static String ZOOM_LEVEL_INFO_PROPERTY = "zoomLevelInfo";
+    /**
+     * Inserted into properties loaded via tiles.omp, so that the
+     * EmptyTileHandler can know where the tile set is located, in case it needs
+     * to know the absolute path. Will contain the root directory path specified
+     * in the factory properties, as opposed to any rootDir property set in the
+     * tiles.omp file that would specify a relative root directory path.
+     */
+    public final static String ROOT_DIR_PATH_PROPERTY = "rootDirPath";
 
+    /**
+     * The name of the properties file that the factory looks for in the root
+     * directory of the data (tiles.omp).
+     */
     public final static String TILE_PROPERTIES = "tiles.omp";
-
     protected ZoomLevelInfo zoomLevelInfo = new ZoomLevelInfo();
     protected String rootDir;
     protected String fileExt = ".png";
     protected String rootDirProperty; // For writing out later, if necessary
     protected EmptyTileHandler emptyTileHandler = null;
     protected boolean verbose = false;
-
     /**
      * A component that is painting the tiles to the screen. If this component
      * is set on this tile factory, it will be told to repaint the OMGraphicList
@@ -326,8 +325,9 @@ public class StandardMapTileFactory
         }
 
         ret = load(key, x, y, zoomLevel, proj);
-        if (ret == null)
+        if (ret == null) {
             return null;
+        }
 
         replaceLeastUsed(ret);
         return ret.obj;
@@ -424,6 +424,8 @@ public class StandardMapTileFactory
         return getTiles(proj, zoomLevel, new OMGraphicList());
     }
 
+    protected Projection lastProj;
+    
     /**
      * Returns projected tiles for given projection at specified zoom level. Use
      * this call if you are providing a repaint callback component to the
@@ -444,6 +446,13 @@ public class StandardMapTileFactory
             return list;
         }
 
+        if (lastProj == null || !proj.getClass().isAssignableFrom(lastProj.getClass())) {
+            logger.fine("Clearing out cache for new projection type");
+            clear(); // empty the cache to rebuild OMGraphics for different type projection.
+        }
+        
+        lastProj = proj;
+        
         /**
          * Given a projection, a couple of things have to happen.
          * 
@@ -460,7 +469,6 @@ public class StandardMapTileFactory
          * ZoomLevelInfo object can be used to figure out what the file path
          * looks like.
          */
-
         if (zoomLevel < 0) {
             zoomLevel = getZoomLevelForProj(proj);
             if (verbose) {
@@ -470,8 +478,9 @@ public class StandardMapTileFactory
 
         if (zoomLevel >= 0) {
 
-            if (zoomLevel == 0)
+            if (zoomLevel == 0) {
                 zoomLevel++;
+            }
 
             zoomLevelInfo.setZoomLevel(zoomLevel);
 
@@ -518,6 +527,7 @@ public class StandardMapTileFactory
      * @author dietrick
      */
     class LoadObj {
+
         String imagePath;
         int x;
         int y;
@@ -574,7 +584,6 @@ public class StandardMapTileFactory
                  * one-by-one after, calling repaint as they are added to the
                  * list.
                  */
-
                 OMGraphic tileGraphic = (OMGraphic) getFromCache(imagePath, x, y, zoomLevel);
 
                 boolean rightOMGraphicType =
@@ -598,8 +607,9 @@ public class StandardMapTileFactory
             }
         }
 
-        if (verbose)
+        if (verbose) {
             logger.fine("found " + list.size() + " frames in cache, loading " + reloads.size() + " others now...");
+        }
 
         if (repaintCallback != null) {
             repaintCallback.repaint();
@@ -618,8 +628,9 @@ public class StandardMapTileFactory
                     + (doExtraTiles ? ", moving to off-screen frames..." : ""));
         }
 
-        if (!doExtraTiles)
+        if (!doExtraTiles) {
             return;
+        }
 
         // Just for giggles, lets go ahead and walk around the edge of the area
         // and prefetch tiles to load them into memory...
@@ -759,6 +770,10 @@ public class StandardMapTileFactory
         handleLoad(imagePath, x, y, zoomLevel, proj, list);
     }
 
+    /**
+     * An array of scales for all of the possible zoom levels, from 1 to 20.
+     * They get calculate the first time getZoomLevelForProj is called.
+     */
     protected float[] scales;
 
     /**
@@ -813,6 +828,12 @@ public class StandardMapTileFactory
                 ((PropertyConsumer) emptyTileHandler).getProperties(getList);
             }
         }
+
+        // Only save the zoomLevelInfo property if it's not the default.
+        if (zoomLevelInfo != null && !zoomLevelInfo.getClass().equals(ZoomLevelInfo.class)) {
+            getList.put(prefix + ZOOM_LEVEL_INFO_PROPERTY, zoomLevelInfo.getClass().getName());
+        }
+
         return getList;
     }
 
@@ -845,11 +866,11 @@ public class StandardMapTileFactory
             setRootDir(rootDirectory);
         }
 
-        String fileExt = setList.getProperty(prefix + FILE_EXT_PROPERTY);
+        String tmpFileExt = setList.getProperty(prefix + FILE_EXT_PROPERTY);
 
         // Add a period if it doesn't exist.
-        if (fileExt != null) {
-            setFileExt(fileExt);
+        if (tmpFileExt != null) {
+            setFileExt(tmpFileExt);
         }
 
         String mapTileCoordinateTransform = setList.getProperty(prefix + MTCTRANSFORM_PROPERTY);
@@ -867,6 +888,15 @@ public class StandardMapTileFactory
 
             if (obj instanceof EmptyTileHandler) {
                 setEmptyTileHandler((EmptyTileHandler) obj);
+            }
+        }
+
+        String zoomLevelInfoString = setList.getProperty(prefix + ZOOM_LEVEL_INFO_PROPERTY);
+        if (zoomLevelInfoString != null) {
+            Object obj = ComponentFactory.create(zoomLevelInfoString, prefix, setList);
+
+            if (obj instanceof ZoomLevelInfo) {
+                setZoomLevelInfo((ZoomLevelInfo) obj);
             }
         }
 
@@ -897,9 +927,10 @@ public class StandardMapTileFactory
 
                         JarFile jarFile = new JarFile(jarName);
                         JarEntry jarPropertyFile = (JarEntry) jarFile.getEntry(TILE_PROPERTIES);
+
                         if (jarPropertyFile != null) {
                             InputStream is = jarFile.getInputStream(jarPropertyFile);
-                            configure(is);
+                            configureFromProperties(is, rootDirectory);
                         }
 
                     } catch (IOException ioe) {
@@ -908,24 +939,24 @@ public class StandardMapTileFactory
                 }
 
                 // You might notice that we didn't set the rootDir here if a jar
-                // file
-                // is being used. That's because we just want to use whatever
-                // the
-                // tile
-                // file says, and this method will be called again if needed
-                // when
-                // the
-                // properties get written.
+                // file is being used. That's because we just want to use
+                // whatever
+                // the tile file says, and this method will be called again if
+                // needed when the properties get written.
 
             } else {
                 // check for tile.omp file that may describe how to read tiles.
                 File tileProps = new File(rootDirectory, TILE_PROPERTIES);
+
+                // Keep track of what the root directory was before we read
+                // tiles.omp
+                String currentRootDirectory = this.rootDir;
+                String currentRootDirProperty = rootDirProperty;
                 if (tileProps.exists()) {
                     try {
                         // Do this in case other properties are set for the tile
-                        // set,
-                        // file ext, transform.
-                        configure(tileProps.toURI().toURL().openStream());
+                        // set, file ext, transform.
+                        configureFromProperties(tileProps.toURI().toURL().openStream(), rootDirectory);
                     } catch (MalformedURLException murle) {
                         logger.warning("tile file for " + rootDirectory + " couldn't be read: " + tileProps.getAbsolutePath());
                     } catch (IOException ioe) {
@@ -933,9 +964,22 @@ public class StandardMapTileFactory
                     }
                 }
 
-                this.rootDir = rootDirectory;
+                /*
+                 * OK, things look a little crazy here, because there is a bit
+                 * of recursion going on. The configure call above may cause a
+                 * setRootDir call with a relative path stored in a jar file.
+                 * These rules below make sure the relative root dir from the
+                 * inner loop sets the rootDir, while preserving the
+                 * rootDirProperty from the outer loop.
+                 */
 
-                if (rootDirProperty == null) {
+                if (currentRootDirectory == null && this.rootDir == null) {
+                    // the tiles.omp file didn't change the root directory, so
+                    // lets go with the directory given.
+                    this.rootDir = rootDirectory;
+                }
+
+                if (currentRootDirProperty == null) {
                     // Assuming a file path being set, not as a result of a jar
                     // file
                     rootDirProperty = rootDirectory;
@@ -950,11 +994,22 @@ public class StandardMapTileFactory
 
     }
 
-    protected void configure(InputStream is)
+    /**
+     * Called with an input stream for a properties file, used for reading
+     * tiles.omp files.
+     * 
+     * @param is input stream for tiles.omp file.
+     * @param rootDirectory original path to what was specified as root
+     *        directory
+     * @throws IOException
+     */
+    protected void configureFromProperties(InputStream is, String rootDirectory)
             throws IOException {
 
         Properties props = new Properties();
         props.load(is);
+
+        props.put(ROOT_DIR_PATH_PROPERTY, rootDirectory);
 
         String oldPrefix = getPropertyPrefix();
         setProperties(null, props);
@@ -967,6 +1022,40 @@ public class StandardMapTileFactory
 
     public void setFileExt(String fileExt) {
         this.fileExt = (fileExt != null && fileExt.startsWith(".")) ? fileExt : "." + fileExt;
+    }
+
+    /**
+     * Get the ZoomLevelInfo set on the factory. The ZoomLevelInfo has basic
+     * layout information about tiles for a particular zoom level, including how
+     * tiles are named and how the factory should go about loading them. The
+     * default ZoomLevelInfo is based on the OpenStreetMap tile layout, zoom
+     * levels 0-20 (where level 0 is all the way zoomed out), and the tiles are
+     * stored zoomLevel/x/y.(fileExt).
+     * 
+     * @return the zoomLevelInfo
+     */
+    public ZoomLevelInfo getZoomLevelInfo() {
+        return zoomLevelInfo;
+    }
+
+    /**
+     * Get the ZoomLevelInfo set on the factory. The ZoomLevelInfo has basic
+     * layout information about tiles for a particular zoom level, including how
+     * tiles are named and how the factory should go about loading them. The
+     * default ZoomLevelInfo is based on the OpenStreetMap tile layout, zoom
+     * levels 0-20 (where level 0 is all the way zoomed out), and the tiles are
+     * stored zoomLevel/x/y.(fileExt). You can set a different zoom level info
+     * if you want to work with a tile set that is stored/defined differently
+     * than OSM.
+     * <p>
+     * Won't allow itself to be set to null.
+     * 
+     * @param zoomLevelInfo the zoomLevelInfo to set
+     */
+    public void setZoomLevelInfo(ZoomLevelInfo zoomLevelInfo) {
+        if (zoomLevelInfo != null) {
+            this.zoomLevelInfo = zoomLevelInfo;
+        }
     }
 
     public MapTileCoordinateTransform getMtcTransform() {
@@ -1000,5 +1089,4 @@ public class StandardMapTileFactory
     public void setEmptyTileHandler(EmptyTileHandler emptyTileHandler) {
         this.emptyTileHandler = emptyTileHandler;
     }
-
 }

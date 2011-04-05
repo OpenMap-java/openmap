@@ -62,11 +62,7 @@ public class DTEDSpecialist extends Specialist {
     protected String[] dtedpaths = new String[] { "/mnt/cdrom/dted",
             "/mnt/disk/dted" };
 
-    protected String[] dted2paths = new String[] { "/mnt/cdrom/dted_level2",
-            "/mnt/disk/dted_level2" };
-
     protected int ncolors = 216;
-
     protected int opaque = 255;
 
     protected DTEDCacheManager cache_manager;
@@ -92,7 +88,7 @@ public class DTEDSpecialist extends Specialist {
     }
 
     protected void init() {
-        cache_manager = new DTEDCacheManager(dtedpaths, dted2paths, ncolors, opaque);
+        cache_manager = new DTEDCacheManager(dtedpaths, ncolors, opaque);
         DTEDFrameSubframeInfo dfsi = new DTEDFrameSubframeInfo(viewType, bandHeight, dtedLevel, slopeAdjust);
         dfsi.colorModel = OMRasterObject.COLORMODEL_INDEXED;
         cache_manager.setSubframeInfo(dfsi);
@@ -197,7 +193,6 @@ public class DTEDSpecialist extends Specialist {
         System.err.println("       Specialist Args:");
         System.err.println("       -ior <iorfile>                  IOR file");
         System.err.println("       -dtedpaths \"<path1> ...\"      Path to search for DTED data");
-        System.err.println("       -dted2paths \"<path1> ...\"     Path to search for DTED level2 data");
         System.err.println("       -level <0|1|2>                  DTED level (default is 0)");
     }
 
@@ -215,24 +210,9 @@ public class DTEDSpecialist extends Specialist {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equalsIgnoreCase("-dtedpaths")) {
                 dtedpaths = getPaths(args[++i]);
-            } else if (args[i].equalsIgnoreCase("-dted2paths")) {
-                dted2paths = getPaths(args[++i]);
             } else if (args[i].equalsIgnoreCase("-level")) {
-                switch (Integer.parseInt(args[++i])) {
-                case 1:
-                    System.out.println("Setting level 1");
-                    dtedLevel = DTEDFrameSubframe.LEVEL_1;
-                    break;
-                case 2:
-                    System.out.println("Setting level 2");
-                    dtedLevel = DTEDFrameSubframe.LEVEL_2;
-                    break;
-                case 0:
-                default:
-                    System.out.println("Setting level 0");
-                    dtedLevel = DTEDFrameSubframe.LEVEL_0;
-                    break;
-                }
+                dtedLevel = Integer.parseInt(args[++i]);
+                System.out.println("Setting level " + dtedLevel);
             }
         }
         super.parseArgs(args);

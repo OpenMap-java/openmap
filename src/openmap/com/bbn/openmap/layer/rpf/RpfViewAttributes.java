@@ -87,8 +87,7 @@ public class RpfViewAttributes implements RpfConstants, PropertyConsumer {
     public boolean showMaps;
     /** Flag to display attribute information about the subframes. */
     public boolean showInfo;
-    /** CADRG Projection of the map. */
-    public CADRG proj;
+
     /**
      * Autofetch the subframe attributes from the FrameProvider. Use
      * only if you are interested in background information about the

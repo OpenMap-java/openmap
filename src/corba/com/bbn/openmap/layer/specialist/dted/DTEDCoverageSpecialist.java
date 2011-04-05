@@ -52,15 +52,14 @@ import com.bbn.openmap.util.Debug;
 /**
  * HACK: this specialist copies functionality from the DTEDCoverageLayer.
  */
-public class DTEDCoverageSpecialist extends Specialist {
+public class DTEDCoverageSpecialist
+        extends Specialist {
 
     /** The paths to the DTED directories, telling where the data is. */
-    protected String[] paths = { "/mnt/cdrom/dted", "/mnt/disk/dted" };
-    /**
-     * The paths to the DTED Level 2 directories, telling where the data is.
-     */
-    protected String[] paths2 = { "/mnt/cdrom/dted_level2",
-            "/mnt/disk/dted_level2" };
+    protected String[] paths = {
+        "/mnt/cdrom/dted",
+        "/mnt/disk/dted"
+    };
 
     /** Flag to tell the cache to return the coverage for level 0 dted. */
     protected boolean showDTEDLevel0 = true;
@@ -121,8 +120,6 @@ public class DTEDCoverageSpecialist extends Specialist {
 
     /** The property describing the locations of level 0 and 1 data. */
     public static final String DTEDPathsProperty = ".paths";
-    /** The property describing the locations of level 2 data. */
-    public static final String DTED2PathsProperty = ".level2.paths";
 
     /** Property setting to show level 0 data on startup. */
     public static final String ShowLevel0Property = ".level0.showcov";
@@ -182,10 +179,7 @@ public class DTEDCoverageSpecialist extends Specialist {
      */
     public void setProperties(String prefix, java.util.Properties properties) {
 
-        paths = initPathsFromProperties(properties.getProperty(prefix
-                + DTEDPathsProperty));
-        paths2 = initPathsFromProperties(properties.getProperty(prefix
-                + DTED2PathsProperty));
+        paths = initPathsFromProperties(properties.getProperty(prefix + DTEDPathsProperty));
 
         coverageFile = properties.getProperty(prefix + CoverageFileProperty);
         coverageURL = properties.getProperty(prefix + CoverageURLProperty);
@@ -194,40 +188,29 @@ public class DTEDCoverageSpecialist extends Specialist {
         if (fillString != null)
             fillRects = Boolean.valueOf(fillString).booleanValue();
 
-        String opaqueString = properties.getProperty(prefix
-                + OpaquenessProperty);
+        String opaqueString = properties.getProperty(prefix + OpaquenessProperty);
         try {
             opaqueness = Integer.valueOf(opaqueString).intValue();
         } catch (NumberFormatException e) {
-            System.err.println("Unable to parse " + OpaquenessProperty + " = "
-                    + opaqueString);
+            System.err.println("Unable to parse " + OpaquenessProperty + " = " + opaqueString);
             opaqueness = DTEDFrameColorTable.DEFAULT_OPAQUENESS;
         }
 
-        level0Color = parseColor(properties,
-                prefix + Level0ColorProperty,
-                defaultLevel0Color);
+        level0Color = parseColor(properties, prefix + Level0ColorProperty, defaultLevel0Color);
 
-        level1Color = parseColor(properties,
-                prefix + Level1ColorProperty,
-                defaultLevel1Color);
+        level1Color = parseColor(properties, prefix + Level1ColorProperty, defaultLevel1Color);
 
-        level2Color = parseColor(properties,
-                prefix + Level2ColorProperty,
-                defaultLevel2Color);
+        level2Color = parseColor(properties, prefix + Level2ColorProperty, defaultLevel2Color);
 
-        String showLevel0String = properties.getProperty(prefix
-                + ShowLevel0Property);
+        String showLevel0String = properties.getProperty(prefix + ShowLevel0Property);
         if (showLevel0String != null)
             showDTEDLevel0 = Boolean.valueOf(showLevel0String).booleanValue();
 
-        String showLevel1String = properties.getProperty(prefix
-                + ShowLevel1Property);
+        String showLevel1String = properties.getProperty(prefix + ShowLevel1Property);
         if (showLevel1String != null)
             showDTEDLevel1 = Boolean.valueOf(showLevel1String).booleanValue();
 
-        String showLevel2String = properties.getProperty(prefix
-                + ShowLevel2Property);
+        String showLevel2String = properties.getProperty(prefix + ShowLevel2Property);
         if (showLevel2String != null)
             showDTEDLevel2 = Boolean.valueOf(showLevel2String).booleanValue();
     }
@@ -277,8 +260,7 @@ public class DTEDCoverageSpecialist extends Specialist {
             try {
                 return parseColor(colorString);
             } catch (NumberFormatException e) {
-                System.err.println("Unparseable number \"" + colorString
-                        + "\" in property \"" + propName + "\"");
+                System.err.println("Unparseable number \"" + colorString + "\" in property \"" + propName + "\"");
                 return dfault;
             }
         }
@@ -291,7 +273,8 @@ public class DTEDCoverageSpecialist extends Specialist {
      * @param colorString the hex string value (RGB)
      * @return the java Color.
      */
-    protected Color parseColor(String colorString) throws NumberFormatException {
+    protected Color parseColor(String colorString)
+            throws NumberFormatException {
         // parse color as hexidecimal RGB value
         int colorSpec = Integer.parseInt(colorString, 16);
         if (colorSpec < 0) {
@@ -301,11 +284,8 @@ public class DTEDCoverageSpecialist extends Specialist {
         }
     }
 
-    public UGraphic[] fillRectangle(CProjection p, LLPoint ll1, LLPoint ll2,
-                                    String staticArgs,
-                                    StringHolder dynamicArgs,
-                                    GraphicChange notifyOnChange,
-                                    String uniqueID) {
+    public UGraphic[] fillRectangle(CProjection p, LLPoint ll1, LLPoint ll2, String staticArgs, StringHolder dynamicArgs,
+                                    GraphicChange notifyOnChange, String uniqueID) {
         System.out.println("DTEDCoverageSpecialist.fillRectangle()");
 
         Projection proj = MakeProjection.getProjection(p);
@@ -330,29 +310,15 @@ public class DTEDCoverageSpecialist extends Specialist {
                 level2UGraphics = createUGraphics((OMGraphicList) omGraphicLists.get(2));
             }
 
-            UGraphic[] ugraphics = new UGraphic[level0UGraphics.length
-                    + level1UGraphics.length + level2UGraphics.length];
+            UGraphic[] ugraphics = new UGraphic[level0UGraphics.length + level1UGraphics.length + level2UGraphics.length];
             int off = 0;
-            System.arraycopy(level0UGraphics,
-                    0,
-                    ugraphics,
-                    off,
-                    level0UGraphics.length);
+            System.arraycopy(level0UGraphics, 0, ugraphics, off, level0UGraphics.length);
             off += level0UGraphics.length;
-            System.arraycopy(level1UGraphics,
-                    0,
-                    ugraphics,
-                    off,
-                    level1UGraphics.length);
+            System.arraycopy(level1UGraphics, 0, ugraphics, off, level1UGraphics.length);
             off += level1UGraphics.length;
-            System.arraycopy(level2UGraphics,
-                    0,
-                    ugraphics,
-                    off,
-                    level2UGraphics.length);
+            System.arraycopy(level2UGraphics, 0, ugraphics, off, level2UGraphics.length);
 
-            System.out.println("DTEDCoverageSpecialist.fillRectangle(): returning "
-                    + ugraphics.length + " graphics");
+            System.out.println("DTEDCoverageSpecialist.fillRectangle(): returning " + ugraphics.length + " graphics");
             return ugraphics;
         } else {
             System.out.println("DTEDCoverageSpecialist.fillRectangle(): finished with null graphics list");
@@ -379,12 +345,18 @@ public class DTEDCoverageSpecialist extends Specialist {
                 omr = (OMRect) gr;
                 eg = SGraphic.createEGraphic();
                 lineColor = omr.getLineColor().getRGB();
-                eg.color = new EColor(null, (short) ((lineColor & 0xff0000) >> 8), (short) (lineColor & 0x00ff00), (short) ((lineColor & 0x0000ff) << 8));
+                eg.color =
+                        new EColor(null, (short) ((lineColor & 0xff0000) >> 8), (short) (lineColor & 0x00ff00),
+                                   (short) ((lineColor & 0x0000ff) << 8));
                 if (fillRects) {
                     fillColor = omr.getFillColor().getRGB();
-                    eg.fillColor = new EColor(null, (short) ((fillColor & 0xff0000) >> 8), (short) (fillColor & 0x00ff00), (short) ((fillColor & 0x0000ff) << 8));
+                    eg.fillColor =
+                            new EColor(null, (short) ((fillColor & 0xff0000) >> 8), (short) (fillColor & 0x00ff00),
+                                       (short) ((fillColor & 0x0000ff) << 8));
                 }
-                er = new ERectangle(eg, nullP1, nullP1, new LLPoint((float) omr.getNorthLat(), (float) omr.getWestLon()), new LLPoint((float) omr.getSouthLat(), (float) omr.getEastLon()));
+                er =
+                        new ERectangle(eg, nullP1, nullP1, new LLPoint((float) omr.getNorthLat(), (float) omr.getWestLon()),
+                                       new LLPoint((float) omr.getSouthLat(), (float) omr.getEastLon()));
                 ug = new UGraphic();
                 ug.erect(er);
                 ugraphics[i] = ug;
@@ -396,11 +368,7 @@ public class DTEDCoverageSpecialist extends Specialist {
                 len = x_ugraphics.length + ugraphics.length - 1;
                 UGraphic[] new_ugraphics = new UGraphic[len];
                 System.arraycopy(ugraphics, 0, new_ugraphics, 0, i);
-                System.arraycopy(x_ugraphics,
-                        0,
-                        new_ugraphics,
-                        i,
-                        x_ugraphics.length);
+                System.arraycopy(x_ugraphics, 0, new_ugraphics, i, x_ugraphics.length);
 
                 i += x_ugraphics.length;
                 ugraphics = new_ugraphics;
@@ -443,8 +411,6 @@ public class DTEDCoverageSpecialist extends Specialist {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equalsIgnoreCase("-dtedpaths")) {
                 paths = getPaths(args[++i]);
-            } else if (args[i].equalsIgnoreCase("-dted2paths")) {
-                paths2 = getPaths(args[++i]);
             } else if (args[i].equalsIgnoreCase("-covfile")) {
                 coverageFile = args[++i];
             }

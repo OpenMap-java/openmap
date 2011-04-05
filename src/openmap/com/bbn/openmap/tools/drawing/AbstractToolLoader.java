@@ -137,7 +137,7 @@ public abstract class AbstractToolLoader implements EditToolLoader {
             // only have a editableClassName.
             eomg.createGraphic(ga);
         }
-        return null;
+        return eomg;
     }
 
     /**

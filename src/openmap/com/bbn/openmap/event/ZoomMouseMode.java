@@ -22,7 +22,8 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
  * This mouse mode responds to a double click with an animation effect of
  * zooming in the map.
  */
-public class ZoomMouseMode extends CoordMouseMode {
+public class ZoomMouseMode
+        extends CoordMouseMode {
     protected double squareWidth = 50;
     public final static transient String modeID = "Zoom".intern();
     protected MapBean theMap = null;
@@ -46,8 +47,7 @@ public class ZoomMouseMode extends CoordMouseMode {
                     int squareCenterX = currX;
                     int squareCenterY = currY;
 
-                    double aspect = (double) theMap.getHeight()
-                            / (double) theMap.getWidth();
+                    double aspect = (double) theMap.getHeight() / (double) theMap.getWidth();
                     double squareWidth = this.squareWidth;
                     double squareHeight = this.squareWidth;
                     if (aspect > 1) {
@@ -55,45 +55,33 @@ public class ZoomMouseMode extends CoordMouseMode {
                     } else {
                         squareWidth /= aspect;
                     }
-                    int squareUpperLeftX = squareCenterX
-                            - ((int) squareWidth / 2);
-                    int squareUpperLeftY = squareCenterY
-                            - ((int) squareHeight / 2);
+                    int squareUpperLeftX = squareCenterX - ((int) squareWidth / 2);
+                    int squareUpperLeftY = squareCenterY - ((int) squareHeight / 2);
 
                     if (squareUpperLeftX < 1) {
                         squareUpperLeftX = 1;
                         squareCenterX = (int) (squareUpperLeftX + squareWidth / 2);
                     } else if (squareUpperLeftX + squareWidth >= theMap.getWidth()) {
-                        squareUpperLeftX = (int) (theMap.getWidth()
-                                - squareWidth - 1);
+                        squareUpperLeftX = (int) (theMap.getWidth() - squareWidth - 1);
                         squareCenterX = (int) (squareUpperLeftX + squareWidth / 2);
                     }
                     if (squareUpperLeftY < 1) {
                         squareUpperLeftY = 1;
                         squareCenterY = (int) (squareUpperLeftY + squareHeight / 2);
                     } else if (squareUpperLeftY + squareHeight >= theMap.getHeight()) {
-                        squareUpperLeftY = (int) (theMap.getHeight()
-                                - squareHeight - 1);
+                        squareUpperLeftY = (int) (theMap.getHeight() - squareHeight - 1);
                         squareCenterY = (int) (squareUpperLeftY + squareHeight / 2);
                     }
                     Projection proj = theMap.getProjection();
-                    Point2D upperLeft = proj.inverse(squareUpperLeftX,
-                            squareUpperLeftY,
-                            new LatLonPoint.Double());
-                    Point2D lowerRight = proj.inverse(squareUpperLeftX
-                            + (int) (squareWidth), squareUpperLeftY
-                            + (int) (squareHeight), new LatLonPoint.Double());
+                    Point2D upperLeft = proj.inverse(squareUpperLeftX, squareUpperLeftY, new LatLonPoint.Double());
+                    Point2D lowerRight =
+                            proj.inverse(squareUpperLeftX + (int) (squareWidth), squareUpperLeftY + (int) (squareHeight),
+                                         new LatLonPoint.Double());
                     Point2D center = proj.inverse(squareCenterX, squareCenterY);
-                    double necessaryScale = proj.getScale(upperLeft,
-                            lowerRight,
-                            proj.forward(upperLeft),
-                            proj.forward(lowerRight));
-                    final Projection newProj = theMap.getProjectionFactory()
-                            .makeProjection(proj.getClass(),
-                                    center,
-                                    (float) necessaryScale,
-                                    theMap.getWidth(),
-                                    theMap.getHeight());
+                    double necessaryScale = proj.getScale(upperLeft, lowerRight, proj.forward(upperLeft), proj.forward(lowerRight));
+                    final Projection newProj =
+                            theMap.getProjectionFactory().makeProjection(proj.getClass(), center, (float) necessaryScale,
+                                                                         theMap.getWidth(), theMap.getHeight());
 
                     Thread delayThread = new Thread() {
                         public void run() {
@@ -101,27 +89,18 @@ public class ZoomMouseMode extends CoordMouseMode {
                         }
                     };
 
-                    java.awt.image.BufferedImage bi = theMap.getGraphicsConfiguration()
-                            .createCompatibleImage(theMap.getWidth(),
-                                    theMap.getHeight(),
-                                    Transparency.OPAQUE);
+                    java.awt.image.BufferedImage bi =
+                            theMap.getGraphicsConfiguration().createCompatibleImage(theMap.getWidth(), theMap.getHeight(),
+                                                                                    Transparency.OPAQUE);
                     theMap.paintAll(bi.getGraphics());
-                    java.awt.image.BufferedImage bi2 = bi.getSubimage(squareUpperLeftX,
-                            squareUpperLeftY,
-                            (int) squareWidth,
-                            (int) squareHeight);
-                    java.awt.image.BufferedImage square = new java.awt.image.BufferedImage((int) squareWidth, (int) squareHeight, java.awt.image.BufferedImage.TYPE_INT_RGB);
-                    square.getGraphics().drawImage(bi2,
-                            0,
-                            0,
-                            (int) squareWidth,
-                            (int) squareHeight,
-                            null);
+                    java.awt.image.BufferedImage bi2 =
+                            bi.getSubimage(squareUpperLeftX, squareUpperLeftY, (int) squareWidth, (int) squareHeight);
+                    java.awt.image.BufferedImage square =
+                            new java.awt.image.BufferedImage((int) squareWidth, (int) squareHeight,
+                                                             java.awt.image.BufferedImage.TYPE_INT_RGB);
+                    square.getGraphics().drawImage(bi2, 0, 0, (int) squareWidth, (int) squareHeight, null);
                     square.getGraphics().setColor(new Color(0, 255, 0, 255));
-                    square.getGraphics().drawRect(0,
-                            0,
-                            square.getWidth() - 1,
-                            square.getHeight() - 1);
+                    square.getGraphics().drawRect(0, 0, square.getWidth() - 1, square.getHeight() - 1);
                     delayThread.start();
                     double iterations = 10;
                     double widthIncrease = theMap.getWidth() - squareWidth;
@@ -132,16 +111,13 @@ public class ZoomMouseMode extends CoordMouseMode {
                     double upInc = squareUpperLeftY / iterations;
 
                     for (int i = 0; i < iterations + 1; i++) {
-                        theMap.getGraphics(true).drawImage(square,
-                                squareUpperLeftX - (int) (leftInc * i),
-                                squareUpperLeftY - (int) (upInc * i),
-                                (int) squareWidth + (int) (widthInc * i),
-                                (int) squareHeight + (int) (heightInc * i),
-                                null);
+                        theMap.getGraphics(true).drawImage(square, squareUpperLeftX - (int) (leftInc * i),
+                                                           squareUpperLeftY - (int) (upInc * i),
+                                                           (int) squareWidth + (int) (widthInc * i),
+                                                           (int) squareHeight + (int) (heightInc * i), null);
                         try {
                             Thread.sleep(50);
                         } catch (Exception ex) {
-                            ;
                         }
                     }
                 }
