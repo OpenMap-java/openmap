@@ -42,7 +42,9 @@ import com.bbn.openmap.util.Debug;
  * 
  * @see OMScalingRaster
  */
-public class OMScalingIcon extends OMScalingRaster implements Serializable {
+public class OMScalingIcon
+        extends OMScalingRaster
+        implements Serializable {
 
     protected float baseScale;
     protected float maxScale = Float.MAX_VALUE;
@@ -72,8 +74,7 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      * @param baseScale the scale where the icon will be show regular size.
      * @see #setPixel
      */
-    public OMScalingIcon(double centerLat, double centerLon, int offsetX,
-            int offsetY, int w, int h, int[] pix, float baseScale) {
+    public OMScalingIcon(double centerLat, double centerLon, int offsetX, int offsetY, int w, int h, int[] pix, float baseScale) {
 
         super(centerLat, centerLon, 0f, 0f, w, h, pix);
         setX(offsetX);
@@ -93,8 +94,7 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      * @param ii ImageIcon used for the image.
      * @param baseScale the scale where the icon will be show regular size.
      */
-    public OMScalingIcon(double centerLat, double centerLon, int offsetX,
-            int offsetY, ImageIcon ii, float baseScale) {
+    public OMScalingIcon(double centerLat, double centerLon, int offsetX, int offsetY, ImageIcon ii, float baseScale) {
         this(centerLat, centerLon, offsetX, offsetY, ii.getImage(), baseScale);
     }
 
@@ -121,8 +121,7 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      * @param ii Image used for the image.
      * @param baseScale the scale where the icon will be show regular size.
      */
-    public OMScalingIcon(double centerLat, double centerLon, int offsetX,
-            int offsetY, Image ii, float baseScale) {
+    public OMScalingIcon(double centerLat, double centerLon, int offsetX, int offsetY, Image ii, float baseScale) {
         super();
         setRenderType(OMGraphic.RENDERTYPE_LATLON);
         setColorModel(COLORMODEL_IMAGEICON);
@@ -169,9 +168,8 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
      * @param baseScale the scale where the icon will be show regular size.
      * @see #setPixel
      */
-    public OMScalingIcon(float centerLat, float centerLon, int offsetX,
-            int offsetY, int w, int h, byte[] bytes, Color[] colorTable,
-            int trans, float baseScale) {
+    public OMScalingIcon(float centerLat, float centerLon, int offsetX, int offsetY, int w, int h, byte[] bytes,
+                         Color[] colorTable, int trans, float baseScale) {
 
         super(centerLat, centerLon, 0f, 0f, w, h, bytes, colorTable, trans);
         setX(offsetX);
@@ -193,13 +191,12 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
             Debug.error("OMScalingIcon: null projection in position!");
             return false;
         }
-        
-        if (sourceImage == null) {
-           // Debug.error("OMScalingIcon: null sourceImage in position!");
-           // XXX: For now fail silently.
-           return false;
-       }
 
+        if (sourceImage == null) {
+            // Debug.error("OMScalingIcon: null sourceImage in position!");
+            // XXX: For now fail silently.
+            return false;
+        }
 
         float shrinkScale = proj.getScale();
 
@@ -215,22 +212,22 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
         point1 = (Point) proj.forward(lat, lon, new Point());
         point2 = (Point) proj.forward(lat, lon, new Point());
 
-      int halfImageWidth = sourceImage.getWidth() / 2;
-      int halfImageHeight = sourceImage.getHeight() / 2;
-      int myX = getX();
-      int myY = getY();
-        
-      double p1x = point1.getX();
-      double p1y = point1.getY();
-      double newP1x = p1x + (scaleFactor * (myX - halfImageWidth));
-      double newP1y = p1y + (scaleFactor * (myY - halfImageHeight));
-      point1.setLocation((int) newP1x, (int) newP1y);
+        int halfImageWidth = sourceImage.getWidth() / 2;
+        int halfImageHeight = sourceImage.getHeight() / 2;
+        int myX = getX();
+        int myY = getY();
 
-      double p2x = point2.getX();
-      double p2y = point2.getY();
-      double newP2x = p2x + (scaleFactor * (myX + halfImageWidth));
-      double newP2y = p2y + (scaleFactor * (myY + halfImageHeight));
-      point2.setLocation((int) newP2x, (int) newP2y);
+        double p1x = point1.getX();
+        double p1y = point1.getY();
+        double newP1x = p1x + (scaleFactor * (myX - halfImageWidth));
+        double newP1y = p1y + (scaleFactor * (myY - halfImageHeight));
+        point1.setLocation((int) newP1x, (int) newP1y);
+
+        double p2x = point2.getX();
+        double p2y = point2.getY();
+        double newP2x = p2x + (scaleFactor * (myX + halfImageWidth));
+        double newP2y = p2y + (scaleFactor * (myY + halfImageHeight));
+        point2.setLocation((int) newP2x, (int) newP2y);
 
         setNeedToReposition(false);
         return true;

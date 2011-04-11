@@ -146,29 +146,13 @@ public class MapTileMakerComponent
       String map_tile_maker = i18n.get(MapTileMakerComponent.class, "map_tile_maker", "Map Tile Maker");
       mainPanel.setBorder(BorderFactory.createTitledBorder(map_tile_maker));
       GridBagConstraints outerC = new GridBagConstraints();
-      outerC.insets = new Insets(5, 5, 5, 5);
+      outerC.insets = new Insets(0, 5, 5, 5);
       outerC.gridx = GridBagConstraints.REMAINDER;
       outerC.fill = GridBagConstraints.BOTH;
       outerC.weightx = 1.0f;
       outerC.weighty = 1.0f;
 
-//      JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
-//
       String zoom_level = i18n.get(MapTileMakerComponent.class, "zoom_level", "Zoom Level");
-//
-//      for (int i = 0; i < 21; i++) {
-//         ZoomLevelMakerFace zlif = new ZoomLevelMakerFace(new ZoomLevelMaker(zoom_level + " " + i, "", i), this);
-//         faces.add(zlif);
-//         tabbedPane.add(zlif, outerC, i);
-//         tabbedPane.setTitleAt(i, Integer.toString(i));
-//      }
-//
-//      tabbedPane.addChangeListener(new ChangeListener() {
-//         public void stateChanged(ChangeEvent e) {
-//            ZoomLevelMakerFace zlif = (ZoomLevelMakerFace) ((JTabbedPane) e.getSource()).getSelectedComponent();
-//            resetActive(zlif);
-//         }
-//      });
 
       ZoomLevelMakerFace zlif = new ZoomLevelMakerFace(new ZoomLevelMaker(zoom_level + " " + 0, "", 0), this);
       faces.add(zlif);

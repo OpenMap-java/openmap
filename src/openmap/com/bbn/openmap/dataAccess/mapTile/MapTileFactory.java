@@ -74,4 +74,9 @@ public interface MapTileFactory {
     */
    public void setRepaintCallback(Component callback);
 
+   /**
+    * Tell the factory to clean up resources. 
+    */
+    public void reset();
+
 }

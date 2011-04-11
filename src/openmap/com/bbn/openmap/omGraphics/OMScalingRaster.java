@@ -315,6 +315,23 @@ public class OMScalingRaster
      * @return true if the image is ready to paint.
      */
     public boolean generate(Projection proj) {
+
+        if (!updateImageForProjection(proj)) {
+            
+            if (getNeedToReposition()) {
+                position(proj);
+                setShape();
+            }
+
+            if (this.shape == null) {
+                setShape();
+            }
+
+            setNeedToRegenerate(false);
+
+            return true;
+        }
+
         this.shape = null;
 
         // Position sets the position for the OMRaster!!!!
@@ -340,11 +357,6 @@ public class OMScalingRaster
                 // let's get rid of the memory that we won't use anymore.
                 pixels = null;
                 bits = null;
-            }
-        } else {
-            if (!updateImageForProjection(proj) && getNeedToRegenerate()) {
-                setNeedToRegenerate(false);
-                return true;
             }
         }
 
@@ -394,7 +406,7 @@ public class OMScalingRaster
      * @return false if the rest of generate() should be skipped.
      */
     protected boolean updateImageForProjection(Projection proj) {
-        boolean ret = proj.equals(lastProjection);
+        boolean ret = bitmap != null && proj.equals(lastProjection) && !getNeedToRegenerate();
         lastProjection = proj;
         return !ret;
     }
@@ -697,13 +709,14 @@ public class OMScalingRaster
      * scaling.
      */
     public void setShape() {
+        if (point2 != null && point1 != null) {
+            // generate shape that is a boundary of the generated image.
+            // We'll make it a GeneralPath rectangle.
+            int w = point2.x - point1.x;
+            int h = point2.y - point1.y;
 
-        // generate shape that is a boundary of the generated image.
-        // We'll make it a GeneralPath rectangle.
-        int w = point2.x - point1.x;
-        int h = point2.y - point1.y;
-
-        setShape(createBoxShape(point1.x, point1.y, w, h));
+            setShape(createBoxShape(point1.x, point1.y, w, h));
+        }
     }
 
     public boolean isOnMap(Projection proj) {

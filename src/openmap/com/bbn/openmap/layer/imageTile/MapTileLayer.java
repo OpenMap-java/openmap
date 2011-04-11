@@ -24,6 +24,7 @@
 
 package com.bbn.openmap.layer.imageTile;
 
+import java.awt.Container;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -211,6 +212,17 @@ public class MapTileLayer
         props.put(prefix + ZOOM_LEVEL_PROPERTY, Integer.toString(zoomLevel));
 
         return props;
+    }
+
+    /**
+     * Called when the layer has been turned off and the projection changes,
+     * signifying that the layer can clean up.
+     */
+    public void removed(Container cont) {
+        MapTileFactory tileFactory = getTileFactory();
+        if (tileFactory != null) {
+            tileFactory.reset();
+        }
     }
 
     public MapTileFactory getTileFactory() {

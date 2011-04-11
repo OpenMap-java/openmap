@@ -157,6 +157,13 @@ public class StandardMapTileFactory
     }
 
     /**
+     * Tell the factory to clean up resources.
+     */
+    public void reset() {
+        clear();
+    }
+    
+    /**
      * Called to load cache object from data source, when not found in cache.
      * 
      * @param key cache key
