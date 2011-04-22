@@ -802,13 +802,11 @@ public class StandardMapTileFactory
         }
 
         float currentScale = proj.getScale();
-        float currentDiff = Float.NEGATIVE_INFINITY;
         int ret = low;
         for (int i = low; i <= high; i++) {
             float diff = currentScale - scales[i];
-            if (diff <= 0 && diff > currentDiff) {
-                ret = i;
-                currentDiff = diff;
+            if (diff > 0) {
+                return i;
             }
         }
 

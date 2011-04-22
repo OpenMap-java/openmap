@@ -955,8 +955,8 @@ public abstract class GeoProj
          pixPerDegree = getPlanetPixelCircumference() / 360.0;
          // }
 
-         // The new scale...
-         return (float) (pixPerDegree / (deltaPix / deltaDegrees));
+         // The new scale, need it to match the current projection width.
+         return (float) (pixPerDegree / (getWidth() / deltaDegrees));
       } catch (NullPointerException npe) {
          com.bbn.openmap.util.Debug.error("ProjMath.getScale(): caught null pointer exception.");
          return Float.MAX_VALUE;

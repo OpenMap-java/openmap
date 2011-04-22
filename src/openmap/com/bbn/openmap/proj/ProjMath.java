@@ -524,9 +524,6 @@ public final class ProjMath {
         Point2D ll1 = projection.inverse(upperLeft);
         Point2D ll2 = projection.inverse(lowerRight);
 
-        point1 = new Point2D.Double();
-        point2 = new Point2D.Double(projection.getWidth(), projection.getHeight());
-
         return getScale(ll1, ll2, upperLeft, lowerRight, projection);
     }
 
