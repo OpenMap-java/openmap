@@ -50,6 +50,8 @@ public class ChangeCase
    public ChangeCase(boolean toUpperCase) {
       super();
       toUpper = toUpperCase;
+      setExhaustiveSearch(true);
+      setTopToBottom(false);
       setCallback(this);
    }
 

@@ -30,12 +30,16 @@ import com.bbn.openmap.util.Debug;
 /**
  * A Wanderer is a class that traverses a directory tree and finds files and
  * directories. It then makes a method call on the WandererCallback class to
- * have something done on those directories or files.
+ * have something done on those directories or files. Subclasses can set whether
+ * the search is exhaustive (ignoring returns from handleDirectory that the
+ * search was successful) and/or runs top to bottom of the directory structure,
+ * or bottom to top.
  */
 public class Wanderer {
 
    WandererCallback callback = null;
    protected boolean exhaustiveSearch = false;
+   protected boolean topToBottom = true;
 
    public Wanderer() {
 
@@ -91,11 +95,17 @@ public class Wanderer {
          }
 
          if (dirTest) {
-            // It's a directory...
-            continueWandering = callback.handleDirectory(file);
 
-            if (continueWandering) {
-               continueWandering = handleDirectory(file, filenames);
+            if (isTopToBottom()) {
+               // It's a directory...
+               continueWandering = callback.handleDirectory(file);
+
+               if (continueWandering) {
+                  continueWandering = handleDirectory(file, filenames);
+               }
+            } else {
+               handleDirectory(file, filenames);
+               callback.handleDirectory(file);
             }
 
          } else {
@@ -148,6 +158,20 @@ public class Wanderer {
     */
    public void setExhaustiveSearch(boolean exhaustiveSearch) {
       this.exhaustiveSearch = exhaustiveSearch;
+   }
+
+   public boolean isTopToBottom() {
+      return topToBottom;
+   }
+
+   /**
+    * Set to true if handleDirectory is called before moving to
+    * handleFile/handleDirectory for child files.
+    * 
+    * @param topToBottom
+    */
+   public void setTopToBottom(boolean topToBottom) {
+      this.topToBottom = topToBottom;
    }
 
    /**

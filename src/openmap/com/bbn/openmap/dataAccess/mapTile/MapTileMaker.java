@@ -280,7 +280,7 @@ public class MapTileMaker
             tileFactory.setRootDir(getRootDir());
             tileFactory.setFileExt(getFormatter().getFormatLabel());
             tileLayer.setTileFactory(tileFactory);
-            
+
             List<Layer> subLayers = new ArrayList<Layer>();
             subLayers.add(tileLayer);
 
@@ -324,8 +324,7 @@ public class MapTileMaker
 
                            String filePath = rangeZFI.formatImageFilePath(getRootDir(), (int) x, (int) y);
                            String outputFile = writeImageFile(imageBytes, filePath, true);
-                           
-                           
+
                            if (logger.isLoggable(Level.INFO)) {
                               logger.finer("wrote: " + outputFile);
                            }
@@ -426,7 +425,7 @@ public class MapTileMaker
    public final static Point2D UVLR = new Point2D.Double(TILE_SIZE, TILE_SIZE);
 
    public static float getScaleForZoom(int zoom) {
-      Projection proj = new Mercator(new LatLonPoint.Double(), 1000000, 500, 500);
+      Projection proj = new Mercator(new LatLonPoint.Double(), 1000000, TILE_SIZE, TILE_SIZE);
       return getScaleForZoomAndProjection(proj, zoom);
    }
 
@@ -437,8 +436,20 @@ public class MapTileMaker
       return proj.getScale(originLLUL, originLLLR, UVUL, UVLR);
    }
 
+   /**
+    * Creates an array of scale values for different zoom levels. Make sure you
+    * don't reference the array outside of the low and high zoom levels. There
+    * will be a high zoom level number of items in the array, but the first
+    * index set will be the low zoom level index.
+    * 
+    * @param proj
+    * @param lowZoomLevel
+    * @param highZoomLevel
+    * @return array, initialized for the low zoom level index to the high zoom
+    *         level index.
+    */
    public static float[] getScalesForZoomLevels(Projection proj, int lowZoomLevel, int highZoomLevel) {
-      float[] ret = new float[highZoomLevel - lowZoomLevel + 1];
+      float[] ret = new float[highZoomLevel + 1];
       for (int i = lowZoomLevel; i <= highZoomLevel; i++) {
          ret[i] = getScaleForZoomAndProjection(proj, i);
       }
@@ -500,7 +511,7 @@ public class MapTileMaker
 
             tim.setRootDir("<Path to top level directory for tiles>");
             tim.setFormatter(new PNG32ImageFormatter());
-            
+
          } else {
             tim = new MapTileMaker(props);
          }
@@ -511,17 +522,17 @@ public class MapTileMaker
          StringBuilder sb = new StringBuilder("#### MapTileMaker Properties ####\n");
 
          if (!configurationProps.isEmpty()) {
-             TreeMap orderedProperties = new TreeMap(configurationProps);
-             for (Iterator keys = orderedProperties.keySet().iterator(); keys.hasNext();) {
-                 String key = (String) keys.next();
-                 String value = configurationProps.getProperty(key);
+            TreeMap orderedProperties = new TreeMap(configurationProps);
+            for (Iterator keys = orderedProperties.keySet().iterator(); keys.hasNext();) {
+               String key = (String) keys.next();
+               String value = configurationProps.getProperty(key);
 
-                 if (value != null) {
-                     sb.append(key).append("=").append(value).append("\n");
-                 }
-             }
+               if (value != null) {
+                  sb.append(key).append("=").append(value).append("\n");
+               }
+            }
          }
-         
+
          try {
             FileOutputStream fos = new FileOutputStream(outputFile);
             PrintStream ps = new PrintStream(fos);

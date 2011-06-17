@@ -1135,9 +1135,12 @@ public class VPFAutoFeatureGraphicWarehouse
                } else if (omg instanceof OMPoly) {
                   OMPoly omp = (OMPoly) omg;
                   if (!omp.isPolygon()) {
-                     omp.setLinePaint(cgmDisplay[0].getLineColor());
-                     omp.setStroke(new BasicStroke(1));
-                     omp.setFillPaint(OMColor.clear);
+		      // This check is necessary of the cgms are not found
+                     if (cgmDisplay[0] != null) {
+                        omp.setLinePaint(cgmDisplay[0].getLineColor());
+                        omp.setStroke(new BasicStroke(1));
+                        omp.setFillPaint(OMColor.clear);
+                     }
                   } else {
 
                      if (cgmDisplay.length == 1 && cgmDisplay[0] != null) {

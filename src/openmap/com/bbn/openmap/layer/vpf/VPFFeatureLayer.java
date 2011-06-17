@@ -325,16 +325,13 @@ public class VPFFeatureLayer
          return new OMGraphicList();
       }
 
-      LatLonPoint upperleft = (LatLonPoint) p.getUpperLeft();
-      LatLonPoint lowerright = (LatLonPoint) p.getLowerRight();
-
       LatLonPoint ll1 = p.getUpperLeft();
       LatLonPoint ll2 = p.getLowerRight();
 
       // Check both dynamic args and palette values when
       // deciding what to draw.
       if (logger.isLoggable(Level.FINE)) {
-         logger.fine("calling draw with boundaries: " + upperleft + " " + lowerright);
+         logger.fine("calling draw with boundaries: " + ll1 + " " + ll2);
       }
       long start = System.currentTimeMillis();
 
