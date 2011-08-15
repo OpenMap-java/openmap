@@ -34,7 +34,7 @@ public class NullMouseMode extends AbstractMouseMode {
     /**
      * Mouse Mode identifier, which is "None".
      */
-    public final static transient String modeID = "None".intern();
+    public final static transient String modeID = "None";
 
     /**
      * Construct a NullMouseMode. Default constructor sets the ID to

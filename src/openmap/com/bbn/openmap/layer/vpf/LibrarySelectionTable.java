@@ -170,8 +170,8 @@ public class LibrarySelectionTable {
       String dhtf = vpfpath + (addSlash ? "/" : "") + "dht";
 
       if (!BinaryFile.exists(latf)) {
-         latf = latf + ".";
-         dhtf = dhtf + ".";
+            latf += ".";
+            dhtf += ".";
       }
 
       DcwRecordFile latrf = new DcwRecordFile(latf);

@@ -38,6 +38,7 @@ import java.io.Serializable;
 
 import com.bbn.openmap.omGraphics.geom.BasicGeometry;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -85,8 +86,9 @@ import com.bbn.openmap.util.Debug;
  * @see OMGraphicList
  * @see Projection
  */
-public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphic,
-        OMGraphicConstants, Cloneable, Serializable {
+public abstract class OMGraphicAdapter
+        extends BasicGeometry
+        implements OMGraphic, OMGraphicConstants, Cloneable, Serializable {
 
     /**
      * The Java2D Stroke. This is used for lineWidth, and dashing of the lines
@@ -210,7 +212,8 @@ public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphi
     /**
      * Construct a default OMGraphic.
      */
-    protected OMGraphicAdapter() {}
+    protected OMGraphicAdapter() {
+    }
 
     /**
      * Construct an OMGraphic. Standard simple constructor that the child
@@ -238,8 +241,7 @@ public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphi
      * @param fc fill color
      * @param sc select color
      */
-    public OMGraphicAdapter(int rType, int lType, int dcType, Color lc, Color fc,
-            Color sc) {
+    public OMGraphicAdapter(int rType, int lType, int dcType, Color lc, Color fc, Color sc) {
         this(rType, lType, dcType);
         setLinePaint(lc);
         setSelectPaint(sc);
@@ -584,8 +586,7 @@ public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphi
         if (paint != null) {
             fillPaint = paint;
             if (Debug.debugging("omGraphics")) {
-                Debug.output("OMGraphic.setFillPaint(): fillPaint= "
-                        + fillPaint);
+                Debug.output("OMGraphic.setFillPaint(): fillPaint= " + fillPaint);
             }
         } else {
             fillPaint = clear;
@@ -624,8 +625,7 @@ public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphi
 
     protected void setEdgeMatchesFill() {
         Paint paint = getDisplayPaint();
-        if (fillPaint instanceof Color && paint instanceof Color
-                && !isClear(fillPaint)) {
+        if (fillPaint instanceof Color && paint instanceof Color && !isClear(fillPaint)) {
             edgeMatchesFill = ((Color) fillPaint).equals((Color) paint);
         } else {
             edgeMatchesFill = false;
@@ -852,15 +852,15 @@ public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphi
      * @see #setLabelLocation(int[], int[])
      */
     public void setLabelLocation(float[] xpoints, float[] ypoints) {
-		int[] xs = new int[xpoints.length];
-		int[] ys = new int[ypoints.length];
-		for (int i = 0; i < xpoints.length; i++) {
-			xs[i] = (int) xpoints[i];
-			ys[i] = (int) ypoints[i];
-		}
-		setLabelLocation(xs, ys);
-	}
-    
+        int[] xs = new int[xpoints.length];
+        int[] ys = new int[ypoints.length];
+        for (int i = 0; i < xpoints.length; i++) {
+            xs[i] = (int) xpoints[i];
+            ys[i] = (int) ypoints[i];
+        }
+        setLabelLocation(xs, ys);
+    }
+
     /**
      * Sets the label location at the given point. If the hasLabel variable
      * hasn't been set, it no-ops.
@@ -1014,7 +1014,8 @@ public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphi
     /**
      * Write this object to a stream.
      */
-    private void writeObject(ObjectOutputStream oos) throws IOException {
+    private void writeObject(ObjectOutputStream oos)
+            throws IOException {
         oos.defaultWriteObject();
 
         // Now write the Stroke. Take into account the stroke member
@@ -1022,8 +1023,8 @@ public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphi
         writeStroke(oos, stroke, OMGraphicAdapter.BASIC_STROKE);
     }
 
-    protected void writeStroke(ObjectOutputStream oos, Stroke stroke,
-                               Stroke defStroke) throws IOException {
+    protected void writeStroke(ObjectOutputStream oos, Stroke stroke, Stroke defStroke)
+            throws IOException {
 
         boolean writeStroke = (stroke != defStroke) && stroke != null;
 
@@ -1093,4 +1094,22 @@ public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphi
 
         return stroke;
     }
+
+    /**
+     * Takes the generic OMGraphic settings from another OMGraphic and pushes
+     * them to this one.
+     */
+    public void restore(OMGeometry source) {
+        super.restore(source);
+
+        this.renderType = source.getRenderType();
+        if (source instanceof OMGraphic) {
+            OMGraphic omgSource = (OMGraphic) source;
+            this.declutterType = omgSource.getDeclutterType();
+            this.selected = omgSource.isSelected();
+            this.showEditablePalette = omgSource.getShowEditablePalette();
+            DrawingAttributes.sTransfer(omgSource, this);
+        }
+    }
+
 }

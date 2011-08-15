@@ -82,7 +82,7 @@ public class DistanceMouseMode extends CoordMouseMode {
     /**
      * Mouse mode identifier, is "Distance". This is returned on getID()
      */
-    public final static transient String modeID = "Distance".intern();
+    public final static transient String modeID = "Distance";
     public final static String UnitProperty = "units";
     public final static String ShowCircleProperty = "showCircle";
     public final static String ShowAngleProperty = "showAngle";
@@ -141,7 +141,7 @@ public class DistanceMouseMode extends CoordMouseMode {
     boolean repaintToClean = false;
 
     // The map bean
-    MapBean theMap;
+    protected transient MapBean theMap;
 
     /**
      * Construct a DistanceMouseMode. Default constructor. Sets the ID to the
@@ -324,7 +324,7 @@ public class DistanceMouseMode extends CoordMouseMode {
             // add the anchor point to the list of line segments
             segments.addElement(rPoint1);
             // add the distance to the total distance
-            totalDistance = totalDistance + distance;
+            totalDistance += distance;
         }
     }
 

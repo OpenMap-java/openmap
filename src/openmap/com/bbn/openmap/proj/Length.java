@@ -22,6 +22,9 @@
 
 package com.bbn.openmap.proj;
 
+import java.io.IOException;
+import java.io.Serializable;
+
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.util.Debug;
@@ -31,7 +34,7 @@ import com.bbn.openmap.util.Debug;
  * specify unit type, and can be used for conversion from radians to/from
  * whatever units are represented by the implemented class.
  */
-public class Length {
+public class Length implements Serializable {
 
     /** Miles, in WGS 84 spherical earth model units. */
     public final static Length MILE = new Length("mile", "miles", Planet.wgs84_earthEquatorialCircumferenceMiles_D);
@@ -48,11 +51,11 @@ public class Length {
     /** Decimal Degrees, in WGS 84 Spherical earth model units. */
     public final static Length DECIMAL_DEGREE = new Length("decimal degree", "deg", 360.0);
     /** Data Mile, in WGS 84 spherical earth model units. */
-    public final static Length DM = new Length("datamile", "dm", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0 / 6000.0);
+    public final static Length DM =
+            new Length("datamile", "dm", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0 / 6000.0);
 
     /** Radians, in terms of a spherical earth. */
-    public final static Length RADIAN = new Length("radian", "rad",
-            com.bbn.openmap.MoreMath.TWO_PI_D) {
+    public final static Length RADIAN = new Length("radian", "rad", com.bbn.openmap.MoreMath.TWO_PI_D) {
         public float toRadians(float numUnits) {
             return numUnits;
         }
@@ -69,13 +72,13 @@ public class Length {
             return numRadians;
         }
     };
-    
+
     /** Unit/radians */
     protected final double constant;
     protected final String name;
     protected final String abbr;
     protected double unitEquatorCircumference;
-    protected I18n i18n = Environment.getI18n();
+    protected transient I18n i18n = Environment.getI18n();
 
     /**
      * Create a Length, with a name an the number of it's units that go around
@@ -85,8 +88,7 @@ public class Length {
     public Length(String name, String abbr, double unitEquatorCircumference) {
         this.name = i18n.get(this, abbr + ".name", name).toLowerCase().intern();
         this.unitEquatorCircumference = unitEquatorCircumference;
-        this.constant = unitEquatorCircumference
-                / com.bbn.openmap.MoreMath.TWO_PI_D;
+        this.constant = unitEquatorCircumference / com.bbn.openmap.MoreMath.TWO_PI_D;
         this.abbr = abbr.toLowerCase().intern();
     }
 
@@ -153,7 +155,16 @@ public class Length {
      * this class.
      */
     public static Length[] getAvailable() {
-        return new Length[] { METER, KM, FEET, YARD, MILE, DM, NM, DECIMAL_DEGREE };
+        return new Length[] {
+            METER,
+            KM,
+            FEET,
+            YARD,
+            MILE,
+            DM,
+            NM,
+            DECIMAL_DEGREE
+        };
     }
 
     /**
@@ -163,14 +174,14 @@ public class Length {
      */
     public static Length get(String name) {
         Length[] choices = getAvailable();
-
-        for (int i = 0; i < choices.length; i++) {
-            if (name.toLowerCase().intern() == choices[i].toString()
-                    || name.toLowerCase().intern() == choices[i].getAbbr()) {
-                return choices[i];
+        if (name != null) {
+            name = name.toLowerCase();
+            for (Length choice : choices) {
+                if (name.equals(choice.toString()) || name.equals(choice.getAbbr())) {
+                    return choice;
+                }
             }
         }
         return null;
     }
-
 }

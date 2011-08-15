@@ -24,11 +24,14 @@
 
 package com.bbn.openmap.omGraphics.editable;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.layer.util.stateMachine.*;
+import java.awt.geom.Point2D;
+
+import com.bbn.openmap.layer.util.stateMachine.State;
+import com.bbn.openmap.omGraphics.EditableOMCircle;
 import com.bbn.openmap.util.Debug;
 
-public class CircleStateMachine extends EOMGStateMachine {
+public class CircleStateMachine
+        extends EOMGStateMachine {
 
     public CircleStateMachine(EditableOMCircle circle) {
         super(circle);
@@ -38,11 +41,19 @@ public class CircleStateMachine extends EOMGStateMachine {
         State[] states = super.init();
         Debug.message("eomc", "CircleStateMachine.init()");
 
-        //  These are the only two states that need something special
-        //  to happen.
+        // These are the only two states that need something special
+        // to happen.
         states[GRAPHIC_UNDEFINED] = new CircleUndefinedState((EditableOMCircle) graphic);
         states[GRAPHIC_SELECTED] = new CircleSelectedState((EditableOMCircle) graphic);
         states[GRAPHIC_SETOFFSET] = new CircleSetOffsetState((EditableOMCircle) graphic);
+        states[GRAPHIC_EDIT] = new GraphicUndefinedEditState((EditableOMCircle) graphic);
         return states;
+    }
+
+    protected void setInitialEdit() {
+        setEdit();
+        if (getState(GRAPHIC_EDIT) instanceof GraphicUndefinedEditState) {
+            ((GraphicUndefinedEditState)getState(GRAPHIC_EDIT)).needAnotherPoint = true;
+        }
     }
 }

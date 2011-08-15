@@ -46,8 +46,6 @@ import com.bbn.openmap.I18n;
 public abstract class EditableOMAbstractLine extends EditableOMGraphic {
 
     protected JMenu arrowheadMenu = null;
-    
-    protected I18n i18n = Environment.getI18n();
 
     public Component getGUI(GraphicAttributes graphicAttributes) {
         if (graphicAttributes != null) {

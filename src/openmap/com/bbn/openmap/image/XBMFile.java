@@ -218,7 +218,7 @@ public class XBMFile {
             else
                 System.out.print((char) ' ');
         }
-        System.out.println("");
+        System.out.println();
     }
 
     /**

@@ -33,15 +33,16 @@ import com.bbn.openmap.omGraphics.awt.Revertable;
 import com.bbn.openmap.omGraphics.awt.ShapeDecorator;
 
 /**
- * A decorated splined OMPoly. Decoration list is empty, but
- * accessible via getDecorator() Code from OMPoly, few changes :
- * render() just need to delegate the drawing of the polyline to the
- * ShapeDecorator
+ * A decorated splined OMPoly. Decoration list is empty, but accessible via
+ * getDecorator() Code from OMPoly, few changes : render() just need to delegate
+ * the drawing of the polyline to the ShapeDecorator
  * 
  * @author Eric LEPICIER
  * @version 27 juil. 2002
  */
-public class OMDecoratedSpline extends OMSpline implements Revertable {
+public class OMDecoratedSpline
+        extends OMSpline
+        implements Revertable {
 
     private ShapeDecorator decorator = new ShapeDecorator();
 
@@ -107,8 +108,7 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
      * @param xypoints
      * @param cMode
      */
-    public OMDecoratedSpline(double latPoint, double lonPoint, int[] xypoints,
-            int cMode) {
+    public OMDecoratedSpline(double latPoint, double lonPoint, int[] xypoints, int cMode) {
         super(latPoint, lonPoint, xypoints, cMode);
         initDecorations();
     }
@@ -122,16 +122,15 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
      * @param yPoints
      * @param cMode
      */
-    public OMDecoratedSpline(double latPoint, double lonPoint, int[] xPoints,
-                             int[] yPoints, int cMode) {
+    public OMDecoratedSpline(double latPoint, double lonPoint, int[] xPoints, int[] yPoints, int cMode) {
         super(latPoint, lonPoint, xPoints, yPoints, cMode);
         initDecorations();
     }
 
     /**
-     * Paint the poly. This works if generate() has been successful.
-     * Same code than OMPoly, just delegates the drawing of the
-     * polyline to the ShapeDecorator
+     * Paint the poly. This works if generate() has been successful. Same code
+     * than OMPoly, just delegates the drawing of the polyline to the
+     * ShapeDecorator
      * 
      * @param g java.awt.Graphics to paint the poly onto.
      */
@@ -175,15 +174,15 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
                         // set the interior coloring parameters
                         setGraphicsForFill(g);
                         GeneralPath poly = new GeneralPath();
-                        for(int j = 0; j < _x.length; j++){
-                        	if(j==0){
-                        		poly.moveTo(_x[0], _y[0]);
-                        	} else {
-                        		poly.lineTo(_x[j], _y[j]);
-                        	}
+                        for (int j = 0; j < _x.length; j++) {
+                            if (j == 0) {
+                                poly.moveTo(_x[0], _y[0]);
+                            } else {
+                                poly.lineTo(_x[j], _y[j]);
+                            }
                         }
                         ((Graphics2D) g).fill(poly);
-                        //g.fillPolygon(_x, _y, _x.length);
+                        // g.fillPolygon(_x, _y, _x.length);
                     }
 
                     // only draw outline if different color
@@ -204,8 +203,7 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
             }
         } catch (Exception e) {
             // Trying to catch any clipping problems from within a JRE
-            Debug.output("OMDecoratedSpline: caught Java rendering exception\n"
-                    + e.getMessage());
+            Debug.output("OMDecoratedSpline: caught Java rendering exception\n" + e.getMessage());
         }
     }
 
@@ -230,7 +228,8 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
     /**
      * Called by constructor, may be overriden.
      */
-    protected void initDecorations() {}
+    protected void initDecorations() {
+    }
 
     /**
      * @see com.bbn.openmap.omGraphics.awt.Revertable#revert()
@@ -238,5 +237,12 @@ public class OMDecoratedSpline extends OMSpline implements Revertable {
     public void revert() {
         decorator.revert();
     }
-}
 
+    public void restore(OMGeometry source) {
+        super.restore(source);
+        if (source instanceof OMDecoratedSpline) {
+            OMDecoratedSpline spline = (OMDecoratedSpline) source;
+            this.decorator = spline.decorator;
+        }
+    }
+}

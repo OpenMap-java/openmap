@@ -473,7 +473,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
                         ellipsoid));
             }
             if (Debug.debugging("utmdistancegrid")) {
-                System.out.println("");
+                System.out.println();
             }
         }
 

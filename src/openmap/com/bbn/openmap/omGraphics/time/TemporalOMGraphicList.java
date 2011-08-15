@@ -42,7 +42,7 @@ public class TemporalOMGraphicList extends OMGraphicList implements
      */
     public TemporalOMGraphicList() {
         super(10);
-    };
+    }
 
     /**
      * Construct an TemporalOMGraphicList with an initial capacity.
@@ -51,7 +51,7 @@ public class TemporalOMGraphicList extends OMGraphicList implements
      */
     public TemporalOMGraphicList(int initialCapacity) {
         super(initialCapacity);
-    };
+    }
 
     /**
      * Construct an TemporalOMGraphicList around a List of OMGraphics. The

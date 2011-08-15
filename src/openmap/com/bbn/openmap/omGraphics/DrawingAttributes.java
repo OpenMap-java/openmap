@@ -2140,4 +2140,86 @@ public class DrawingAttributes
             return false;
         }
     }
+    
+    /**
+     * Builders are usually for immutable objects, but it seems kinda handy to have one for this class, to eliminate lines of code.
+     *
+     * @author ddietrick
+     */
+    public static class Builder {
+        DrawingAttributes da = null;
+        
+        public Builder() {
+           da = DrawingAttributes.getDefaultClone();
+        }
+
+        public Builder setLinePaint(Paint lPaint) {
+            da.setLinePaint(lPaint);
+            return this;
+        }
+        
+        public Builder setFillPaint(Paint fPaint) {
+            da.setFillPaint(fPaint);
+            return this;
+        }
+        
+        public Builder setSelectPaint(Paint sPaint) {
+            da.setSelectPaint(sPaint);
+            return this;
+        }
+        
+        public Builder setStroke(Stroke s) {
+            da.setStroke(s);
+            return this;
+        }
+        
+        public Builder setLineWidth(int lineWidth) {
+            da.setStroke(new BasicStroke(lineWidth));
+            return this;
+        }
+        
+        public Builder setFillPattern(TexturePaint tPaint) {
+            da.setFillPattern(tPaint);
+            return this;
+        }
+        
+        public Builder setMattingPaint(Paint mPaint) {
+            da.setMattingPaint(mPaint);
+            return this;
+        }
+        
+        public Builder setMatted(boolean matted) {
+            da.setMatted(matted);
+            return this;
+        }
+        
+        public Builder setPointOval(boolean oval) {
+            da.setPointOval(oval);
+            return this;
+        }
+        
+        public Builder setPointRadius(int radius) {
+            da.setPointRadius(radius);
+            return this;
+        }
+        
+        public Builder setOrientation(int orientation) {
+            da.setOrientation(orientation);
+            return this;
+        }
+        
+        public Builder setFrom(DrawingAttributes anotherDa) {
+            anotherDa.setTo(da);
+            return this;
+        }
+        
+        public Builder setFrom(OMGraphic omg) {
+            da.setFrom(omg);
+            return this;
+        }
+        
+        public DrawingAttributes build() {
+            return da;
+        }
+    }
 }

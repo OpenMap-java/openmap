@@ -45,7 +45,6 @@ import com.bbn.openmap.omGraphics.OMGrid;
 import com.bbn.openmap.omGraphics.grid.GeneratorLoader;
 import com.bbn.openmap.omGraphics.grid.OMGridGenerator;
 import com.bbn.openmap.omGraphics.grid.SinkGenerator;
-import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;

@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 
 import com.bbn.openmap.image.ImageHelper;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.DeepCopyUtil;
 
 /**
  * The OMRasterObject is the parent class for OMRaster and OMBitmap objects. It
@@ -154,12 +155,12 @@ public abstract class OMRasterObject
    /**
     * Projected window pixel location of the upper left corner of the image.
     */
-   protected Point point1 = null;
+   protected transient Point point1 = null;
 
    /**
     * Projected window pixel location of the lower right corner of the image.
     */
-   protected Point point2 = null;
+   protected transient Point point2 = null;
 
    /**
     * The width of the image after scaling, if you want the image to be a
@@ -186,19 +187,19 @@ public abstract class OMRasterObject
     * Pixel height of the current projection. Used for efficient zoom-in
     * scaling.
     */
-   int projHeight;
+   transient int projHeight;
 
    /**
     * Pixel width of the current projection. Used for efficient zoom-in scaling.
     */
-   int projWidth;
+   transient int projWidth;
 
    /** the angle by which the image is to be rotated, in radians */
    protected double rotationAngle;
 
    public static Logger logger = Logger.getLogger("com.bbn.openmap.omGraphics.OMRasterObject");
 
-   protected boolean DEBUG = logger.isLoggable(Level.FINE);
+   protected transient boolean DEBUG = logger.isLoggable(Level.FINE);
 
    /**
     * A Constructor that sets the graphic type to raster, render type to
@@ -998,5 +999,26 @@ public abstract class OMRasterObject
 
    public boolean hasLineTypeChoice() {
       return false;
+   }
+
+   public void restore(OMGeometry source) {
+      super.restore(source);
+      if (source instanceof OMRasterObject) {
+         OMRasterObject rasterO = (OMRasterObject) source;
+         this.colorModel = rasterO.colorModel;
+         this.pixels = DeepCopyUtil.deepCopy(rasterO.pixels);
+         this.x = rasterO.x;
+         this.y = rasterO.y;
+         this.lat = rasterO.lat;
+         this.lon = rasterO.lon;
+         this.width = rasterO.width;
+         this.height = rasterO.height;
+         this.bits = DeepCopyUtil.deepCopy(rasterO.bits);
+         this.filteredWidth = rasterO.filteredWidth;
+         this.filteredHeight = rasterO.filteredHeight;
+         this.rotationAngle = rasterO.rotationAngle;
+         // OKOK, again, not a deep copy.
+         this.imageFilter = rasterO.imageFilter;
+      }
    }
 }

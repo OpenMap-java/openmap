@@ -24,11 +24,12 @@
 
 package com.bbn.openmap.omGraphics.editable;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.layer.util.stateMachine.*;
+import com.bbn.openmap.layer.util.stateMachine.State;
+import com.bbn.openmap.omGraphics.EditableOMRect;
 import com.bbn.openmap.util.Debug;
 
-public class RectStateMachine extends EOMGStateMachine {
+public class RectStateMachine
+        extends EOMGStateMachine {
 
     public RectStateMachine(EditableOMRect rect) {
         super(rect);
@@ -38,11 +39,19 @@ public class RectStateMachine extends EOMGStateMachine {
         State[] states = super.init();
         Debug.message("eomc", "RectStateMachine.init()");
 
-        //  These are the only two states that need something special
-        //  to happen.
+        // These are the only two states that need something special
+        // to happen.
         states[GRAPHIC_UNDEFINED] = new RectUndefinedState((EditableOMRect) graphic);
         states[GRAPHIC_SELECTED] = new RectSelectedState((EditableOMRect) graphic);
         states[GRAPHIC_SETOFFSET] = new RectSetOffsetState((EditableOMRect) graphic);
+        states[GRAPHIC_EDIT] = new GraphicUndefinedEditState(graphic);
         return states;
+    }
+
+    protected void setInitialEdit() {
+        setEdit();
+        if (getState(GRAPHIC_EDIT) instanceof GraphicUndefinedEditState) {
+            ((GraphicUndefinedEditState) getState(GRAPHIC_EDIT)).needAnotherPoint = true;
+        }
     }
 }

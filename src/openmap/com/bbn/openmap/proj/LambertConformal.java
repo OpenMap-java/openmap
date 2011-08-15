@@ -423,7 +423,7 @@ public class LambertConformal
     *--------------------------------------------------------------------------*/
    public Point2D worldToLL(double x, double y, Point2D llp) {
 
-      x = x - falseEasting;
+      x -= falseEasting;
       y = rf - (y - falseNorthing);
 
       double rR = Math.sqrt(x * x + y * y);

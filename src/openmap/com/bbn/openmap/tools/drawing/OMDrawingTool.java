@@ -56,8 +56,10 @@ import com.bbn.openmap.event.MapMouseMode;
 import com.bbn.openmap.event.PaintListener;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.event.ProjectionListener;
+import com.bbn.openmap.event.UndoStack;
 import com.bbn.openmap.gui.OMToolComponent;
 import com.bbn.openmap.gui.WindowSupport;
+import com.bbn.openmap.gui.menu.UndoMenuItemStackTrigger;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.omGraphics.EditableOMGraphicList;
@@ -67,6 +69,7 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.SinkGraphic;
+import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
 import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.omGraphics.event.EOMGListener;
 import com.bbn.openmap.omGraphics.event.SelectionListener;
@@ -201,6 +204,13 @@ public class OMDrawingTool
    protected SelectionSupport selectionSupport = null;
 
    /**
+    * The stack for keeping track of edits and allowing them to be reverted.
+    */
+   protected UndoStack undoStack = null;
+
+   protected UndoMenuItemStackTrigger undoTrigger = null;
+
+   /**
     * A behavior mask to show the GUI for the OMDrawingTool. Since the
     * OMDrawingTool is a com.bbn.openmap.gui.Tool object, it will only appear on
     * the tool panel if it has been added to it, and if it is being used as a
@@ -325,6 +335,9 @@ public class OMDrawingTool
       selectionSupport = new SelectionSupport(this);
       setAttributes(new GraphicAttributes());
       setMouseMode(createMouseMode());
+      undoStack = new UndoStack();
+      undoTrigger = new UndoMenuItemStackTrigger();
+      undoStack.addUndoStackTrigger(undoTrigger);
 
       // Shouldn't assume that the drawing tool is a tool. This can
       // be set in the properties if it should be. Otherwise, the
@@ -479,8 +492,7 @@ public class OMDrawingTool
 
       if (getCurrentEditable() != null) {
          if (DEBUG) {
-            Debug
-                 .output("OMDrawingTool.edit(): can't edit " + g.getClass().getName() + ", drawing tool busy with another graphic.");
+            Debug.output("OMDrawingTool.edit(): can't edit " + g.getClass().getName() + ", drawing tool busy with another graphic.");
          }
          return null;
       }
@@ -552,8 +564,7 @@ public class OMDrawingTool
       }
 
       if (DEBUG) {
-         Debug
-              .output("OMDrawingTool.edit(): can't edit " + eomg.getClass().getName() + ", drawing tool busy with another graphic.");
+         Debug.output("OMDrawingTool.edit(): can't edit " + eomg.getClass().getName() + ", drawing tool busy with another graphic.");
       }
 
       return null;
@@ -628,8 +639,7 @@ public class OMDrawingTool
       EditableOMGraphic eomg = getCurrentEditable();
       if (eomg != null
             && eomg.getGraphic() == omg
-            || (eomg instanceof EditableOMGraphicList && ((OMGraphicList) ((EditableOMGraphicList) eomg).getGraphic())
-                                                                                                                      .contains(omg))) {
+            || (eomg instanceof EditableOMGraphicList && ((OMGraphicList) ((EditableOMGraphicList) eomg).getGraphic()).contains(omg))) {
          ret = true;
       }
       return ret;
@@ -667,8 +677,7 @@ public class OMDrawingTool
          boolean repaintCanvas = true;
          if (!(currentEditable instanceof EditableOMGraphicList)) {
             if (DEBUG) {
-               Debug
-                    .output("OMDrawingTool.select:  already working on OMGraphic, creating an EditableOMGraphicList for selection mode");
+               Debug.output("OMDrawingTool.select:  already working on OMGraphic, creating an EditableOMGraphicList for selection mode");
             }
 
             EditableOMGraphicList eomgl = new EditableOMGraphicList(new OMGraphicList());
@@ -904,6 +913,7 @@ public class OMDrawingTool
          }
 
          if (currentEditable != null) {
+            currentEditable.setUndoStack(undoStack);
             return true;
          }
       }
@@ -1123,6 +1133,13 @@ public class OMDrawingTool
             currentEditable.getGraphic().setVisible(false);
          }
          currentEditable.addEOMGListener(this);
+
+         // If we're editing a existing OMGraphic, we need to save current
+         // state. We can check that because existing OMGraphics should be
+         // selected at this point.
+         if (currentEditable.getStateMachine().getState() instanceof GraphicSelectedState) {
+            currentEditable.updateCurrentState(null);
+         }
       }
 
       if (!isMask(PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK) && completeHookup) {
@@ -1239,6 +1256,7 @@ public class OMDrawingTool
       unsetMask(DEACTIVATE_ASAP_BEHAVIOR_MASK);
       popup = null;
       activated = false;
+      undoStack.clearStacks(true, true);
 
       // End cleanup
       // ////////////////////////////////
@@ -1710,7 +1728,9 @@ public class OMDrawingTool
           * pressed with the mouse button being released, display the option
           * menu. Otherwise, just get ready to end.
           */
-         doPopup(me.getX(), me.getY(), null);
+         boolean popupIsUp = doPopup(me.getX(), me.getY(), null);
+
+         currentEditable.setPopupIsUp(popupIsUp);
       } else if (event.shouldDeactivate() && isAllowDrawingToolToDeactivateItself()) {
          if (DEBUG) {
             Debug.output("OMDrawingTool.eomgChanged(): omdt being told to deactivate");
@@ -1860,6 +1880,10 @@ public class OMDrawingTool
          });
          pum.add(delete);
       }
+
+      pum.addSeparator();
+      pum.add(undoTrigger.getUndoMenuItem());
+      pum.add(undoTrigger.getRedoMenuItem());
 
       // JMenuItem reset = new JMenuItem("Undo Changes");
       // reset.setEnabled(false);

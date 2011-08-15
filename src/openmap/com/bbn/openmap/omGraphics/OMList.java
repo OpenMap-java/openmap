@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -53,7 +54,8 @@ import com.bbn.openmap.util.Debug;
  * LAST_ADDED_ON_TOP) is drawn on top of the list and considered first for
  * searches.
  */
-public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
+public abstract class OMList<T extends OMGeometry>
+        extends OMGraphicAdapter
         implements List<T>, OMGraphic {
 
     /**
@@ -143,8 +145,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
             sb.append("|--> ");
         }
 
-        sb.append("OMList with ").append(size()).append(" object"
-               ).append((size() == 1 ? "\n" : "s\n"));
+        sb.append("OMList with ").append(size()).append(" object").append((size() == 1 ? "\n" : "s\n"));
 
         synchronized (graphics) {
             StringBuffer sb1 = new StringBuffer();
@@ -249,8 +250,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
             synchronized (graphics) {
                 for (T omg : graphics) {
 
-                    if (o == omg
-                            || (omg instanceof OMList<?> && ((OMList<? extends OMGeometry>) omg).contains(o))) {
+                    if (o == omg || (omg instanceof OMList<?> && ((OMList<? extends OMGeometry>) omg).contains(o))) {
 
                         ret = true;
                         break;
@@ -730,9 +730,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
         public int index = NONE; // unknown
 
         public String toString() {
-            return "OMDist: omg="
-                    + (omg == null ? "null" : omg.getClass().getName())
-                    + ", d=" + d + ", index=" + index;
+            return "OMDist: omg=" + (omg == null ? "null" : omg.getClass().getName()) + ", d=" + d + ", index=" + index;
         }
     }
 
@@ -761,13 +759,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
                     i = 0;
                     ListIterator<T> iterator = graphics.listIterator();
                     while (iterator.hasNext()) {
-                        tomd = findClosestTest(omd,
-                                i++,
-                                iterator.next(),
-                                x,
-                                y,
-                                limit,
-                                resetSelect);
+                        tomd = findClosestTest(omd, i++, iterator.next(), x, y, limit, resetSelect);
                         if (tomd == null)
                             continue;
                         omd = tomd; // for style
@@ -778,13 +770,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
                     i = size();
                     ListIterator<T> iterator = graphics.listIterator(i);
                     while (iterator.hasPrevious()) {
-                        tomd = findClosestTest(omd,
-                                i--,
-                                iterator.previous(),
-                                x,
-                                y,
-                                limit,
-                                resetSelect);
+                        tomd = findClosestTest(omd, i--, iterator.previous(), x, y, limit, resetSelect);
                         if (tomd == null)
                             continue;
                         omd = tomd; // for style
@@ -799,16 +785,11 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
             int size = size();
             if (omd.omg != null && isVague()) {
                 omd.omg = (T) this;
-                Debug.output(this.getClass().getName() + "(" + size
-                        + ") detecting hit and vagueness, returning " + omd);
+                Debug.output(this.getClass().getName() + "(" + size + ") detecting hit and vagueness, returning " + omd);
             } else if (omd.omg != null && !isVague()) {
-                Debug.output(this.getClass().getName() + "(" + size
-                        + ") detecting hit, no vagueness, returning contained "
-                        + omd);
+                Debug.output(this.getClass().getName() + "(" + size + ") detecting hit, no vagueness, returning contained " + omd);
             } else {
-                Debug.output(this.getClass().getName() + "(" + size
-                        + ") omd.omg "
-                        + (omd.omg == null ? "== null" : "!= null"));
+                Debug.output(this.getClass().getName() + "(" + size + ") omd.omg " + (omd.omg == null ? "== null" : "!= null"));
             }
         }
 
@@ -834,9 +815,8 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
      *         closest. OMDist.graphic could be null, OMDist.d could be
      *         Infinity.
      */
-    protected OMDist<T> findClosestTest(OMDist<T> current, int index,
-                                        OMGeometry graphic, double x, double y,
-                                        float limit, boolean resetSelect) {
+    protected OMDist<T> findClosestTest(OMDist<T> current, int index, OMGeometry graphic, double x, double y, float limit,
+                                        boolean resetSelect) {
 
         if (current == null) {
             current = createDist();
@@ -852,10 +832,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
 
         if (graphic instanceof OMList<?>) {
             omgl = (OMList<T>) graphic;
-            OMDist<T> dist = (OMDist<T>) omgl.findClosest(x,
-                    y,
-                    limit,
-                    resetSelect);
+            OMDist<T> dist = (OMDist<T>) omgl.findClosest(x, y, limit, resetSelect);
             if (dist.omg != null) {
                 currentDistance = dist.d;
                 graphic = dist.omg;
@@ -924,8 +901,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
      * @return OMGraphicList containing all of the OMGraphics within the limit,
      *         empty if none are found.
      */
-    public synchronized OMList<T> findAll(int x, int y, float limit,
-                                          boolean resetSelect, OMList<T> addTo) {
+    public synchronized OMList<T> findAll(int x, int y, float limit, boolean resetSelect, OMList<T> addTo) {
         if (addTo == null) {
             addTo = create();
         }
@@ -937,26 +913,14 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
                 if (traverseMode == FIRST_ADDED_ON_TOP) {
                     ListIterator<? extends OMGeometry> iterator = graphics.listIterator();
                     while (iterator.hasNext()) {
-                        if (!findAllTest(x,
-                                y,
-                                limit,
-                                resetSelect,
-                                addTo,
-                                iterator.next(),
-                                omd)) {
+                        if (!findAllTest(x, y, limit, resetSelect, addTo, iterator.next(), omd)) {
                             break;
                         }
                     }
                 } else {
                     ListIterator<? extends OMGeometry> iterator = graphics.listIterator(size());
                     while (iterator.hasPrevious()) {
-                        if (!findAllTest(x,
-                                y,
-                                limit,
-                                resetSelect,
-                                addTo,
-                                iterator.previous(),
-                                omd)) {
+                        if (!findAllTest(x, y, limit, resetSelect, addTo, iterator.previous(), omd)) {
                             break;
                         }
 
@@ -966,8 +930,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
         }
 
         if (Debug.debugging("omgraphics")) {
-            Debug.output(this.getClass().getName() + "(" + size()
-                    + ") detecting hits and vagueness, returning list with "
+            Debug.output(this.getClass().getName() + "(" + size() + ") detecting hits and vagueness, returning list with "
                     + addTo.size() + " graphics.");
         }
 
@@ -993,9 +956,8 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
      * @return true of this method should still be called again in a loop, false
      *         of this list is vague and we have a hit.
      */
-    protected boolean findAllTest(int x, int y, float limit,
-                                  boolean resetSelect, OMList<T> addTo,
-                                  OMGeometry geometry, OMDist<T> omd) {
+    protected boolean findAllTest(int x, int y, float limit, boolean resetSelect, OMList<T> addTo, OMGeometry geometry,
+                                  OMDist<T> omd) {
 
         if (geometry instanceof OMList<?>) {
             int oldSize = addTo.size();
@@ -1010,13 +972,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
 
         } else {
 
-            omd = findClosestTest(omd,
-                    0 /* doesn't matter */,
-                    geometry,
-                    x,
-                    y,
-                    limit,
-                    resetSelect);
+            omd = findClosestTest(omd, 0 /* doesn't matter */, geometry, x, y, limit, resetSelect);
 
             if (geometry == null || omd.omg == null) {
                 // no hit, but continue testing...
@@ -1145,12 +1101,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
                 if (traverseMode == FIRST_ADDED_ON_TOP) {
                     ListIterator<? extends OMGeometry> iterator = graphics.listIterator();
                     while (iterator.hasNext()) {
-                        tomd = selectClosestTest(omd,
-                                0,
-                                iterator.next(),
-                                x,
-                                y,
-                                limit);
+                        tomd = selectClosestTest(omd, 0, iterator.next(), x, y, limit);
                         if (tomd == null)
                             continue;
                         omd = tomd; // for style
@@ -1160,12 +1111,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
                 } else {
                     ListIterator<? extends OMGeometry> iterator = graphics.listIterator(size());
                     while (iterator.hasPrevious()) {
-                        tomd = selectClosestTest(omd,
-                                0,
-                                iterator.previous(),
-                                x,
-                                y,
-                                limit);
+                        tomd = selectClosestTest(omd, 0, iterator.previous(), x, y, limit);
                         if (tomd == null)
                             continue;
                         omd = tomd; // for style
@@ -1198,21 +1144,13 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
      *         method will return this list if it is set to be vague and one of
      *         its children meet the criteria.
      */
-    protected OMDist<T> selectClosestTest(OMDist<T> current, int index,
-                                          OMGeometry graphic, int x, int y,
-                                          float limit) {
+    protected OMDist<T> selectClosestTest(OMDist<T> current, int index, OMGeometry graphic, int x, int y, float limit) {
         if (current == null) {
             current = createDist();
         }
 
         T oldGraphic = current.omg;
-        OMDist<T> ret = findClosestTest(current,
-                index,
-                graphic,
-                x,
-                y,
-                limit,
-                true);
+        OMDist<T> ret = findClosestTest(current, index, graphic, x, y, limit, true);
 
         // Test for the OMDist still holding the same OMGraphicList,
         // which will be the case if this list is vague. The distance
@@ -1348,14 +1286,12 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
         boolean alreadyOnList = (i != -1);
 
         if (action == null || action.getValue() == 0 && !alreadyOnList) {
-            Debug.message("omgl",
-                    "OMGraphicList.doAction: adding graphic with null action");
+            Debug.message("omgl", "OMGraphicList.doAction: adding graphic with null action");
             add(graphic);
             return;
         }
 
-        if (action.isMask(ADD_GRAPHIC_MASK)
-                || action.isMask(UPDATE_GRAPHIC_MASK) && !alreadyOnList) {
+        if (action.isMask(ADD_GRAPHIC_MASK) || action.isMask(UPDATE_GRAPHIC_MASK) && !alreadyOnList) {
             Debug.message("omgl", "OMGraphicList.doAction: adding graphic");
             add(graphic);
         }
@@ -1371,8 +1307,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
         }
 
         if (action.isMask(RAISE_TO_TOP_GRAPHIC_MASK)) {
-            Debug.message("omgl",
-                    "OMGraphicList.doAction: raising graphic to top");
+            Debug.message("omgl", "OMGraphicList.doAction: raising graphic to top");
             moveIndexedToTop(i);
         }
 
@@ -1382,14 +1317,12 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
         }
 
         if (action.isMask(LOWER_TO_BOTTOM_GRAPHIC_MASK)) {
-            Debug.message("omgl",
-                    "OMGraphicList.doAction: lowering graphic to bottom");
+            Debug.message("omgl", "OMGraphicList.doAction: lowering graphic to bottom");
             moveIndexedOneToBottom(i);
         }
 
         if (action.isMask(DESELECTALL_GRAPHIC_MASK)) {
-            Debug.message("omgl",
-                    "OMGraphicList.doAction: deselecting all graphics.");
+            Debug.message("omgl", "OMGraphicList.doAction: deselecting all graphics.");
             deselect();
         }
 
@@ -1488,8 +1421,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
         if (g != null) {
             synchronized (graphics) {
                 for (OMGeometry omg : graphics) {
-                    if (g == omg
-                            || (omg instanceof OMList<?> && ((OMList<? extends OMGeometry>) omg).contains(g))) {
+                    if (g == omg || (omg instanceof OMList<?> && ((OMList<? extends OMGeometry>) omg).contains(g))) {
 
                         return true;
                     }
@@ -1505,7 +1437,8 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
      * implement their own particular criteria for sorting an OMGraphicList.
      * Does nothing for a generic OMGraphicList.
      */
-    public void sort() {}
+    public void sort() {
+    }
 
     /**
      * Convenience method to cast an object to an OMGraphic if it is one.
@@ -1516,6 +1449,28 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter
             return (OMGraphic) obj;
         } else {
             return null;
+        }
+    }
+
+    /**
+     * You need to make sure that the Generic type of the source matches the
+     * generic type of this list. Will fail silently. Not sure if this is the
+     * right way to handle it, though.
+     */
+    public void restore(OMGeometry source) {
+        super.restore(source);
+        try {
+            if (source instanceof OMList<?>) {
+                OMList<T> list = (OMList<T>) source;
+                for (T omg : list) {
+                    T newCopy = (T) ComponentFactory.create(omg.getClass().getName());
+                    if (newCopy != null) {
+                        newCopy.restore(source);
+                    }
+                }
+            }
+        } catch (ClassCastException cce) {
+            // Should really check better. Duh.
         }
     }
 }

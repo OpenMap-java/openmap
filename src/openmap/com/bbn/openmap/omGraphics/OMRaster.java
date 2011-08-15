@@ -33,6 +33,7 @@ import javax.swing.ImageIcon;
 
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.DeepCopyUtil;
 
 /**
  * The OMRaster object lets you create multi-colored images. An image is a two
@@ -830,5 +831,14 @@ public class OMRaster
         }
         
         return bi;
+    }
+    
+    public void restore(OMGeometry source) {
+       super.restore(source);
+       if (source instanceof OMRaster) {
+          OMRaster raster = (OMRaster) source;
+          this.colors = DeepCopyUtil.deepCopy(raster.colors);
+          this.transparent = raster.transparent;
+       }
     }
 }

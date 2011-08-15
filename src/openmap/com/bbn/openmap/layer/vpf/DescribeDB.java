@@ -44,6 +44,13 @@ import com.bbn.openmap.io.FormatException;
 
 public class DescribeDB {
     /**
+     * Prints a newline to System.out
+     */
+    public static void println() {
+        System.out.println();
+    }
+
+    /**
      * Prints a string to System.out with a newline
      * 
      * @param s the string to print
@@ -100,12 +107,12 @@ public class DescribeDB {
             for (String libraryName : libraries) {
                 print(libraryName, " ");
             }
-            println("");
-            println("");
+            println();
+            println();
             for (String libraryName : libraries) {
                 String prefix = libraryName + ":";
                 printLibrary(prefix, lst.getCAT(libraryName));
-                println("");
+                println();
             }
         }
     }
@@ -130,7 +137,7 @@ public class DescribeDB {
             print(coverages[i]);
             print(" ");
         }
-        println("");
+        println();
         for (int i = 0; i < coverages.length; i++) {
             printCoverage(prefix + coverages[i] + ":", cat, coverages[i]);
         }
@@ -151,7 +158,7 @@ public class DescribeDB {
                 + cat.getCoverageTopologyLevel(covname));
         CoverageTable ct = cat.getCoverageTable(covname);
         print(prefix, "FeatureClassNames: ");
-        println("");
+        println();
         Hashtable<String, CoverageTable.FeatureClassRec> info = ct.getFeatureTypeInfo();
         for (CoverageTable.FeatureClassRec fcr : info.values()) {
 

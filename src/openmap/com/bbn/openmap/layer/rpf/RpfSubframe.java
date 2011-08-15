@@ -35,7 +35,6 @@ package com.bbn.openmap.layer.rpf;
 import java.awt.Color;
 
 import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMRasterObject;
 import com.bbn.openmap.omGraphics.OMScalingRaster;
 import com.bbn.openmap.omGraphics.OMWarpingImage;
 import com.bbn.openmap.proj.EqualArc;

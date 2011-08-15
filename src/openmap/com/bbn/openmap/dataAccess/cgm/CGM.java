@@ -185,7 +185,7 @@ public class CGM
          StringBuffer buf = new StringBuffer();
          int count = 0;
          for (Command c : commandList) {
-            buf.append("Command " + (count++) + ": " + c.toString() + "\n");
+                buf.append("Command ").append(count++).append(": ").append(c.toString()).append("\n");
          }
          return buf.toString();
       } else {

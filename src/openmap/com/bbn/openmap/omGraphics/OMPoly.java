@@ -32,6 +32,8 @@ import java.awt.geom.Line2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import org.hamcrest.core.IsEqual;
+
 import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.geo.Intersection;
 import com.bbn.openmap.proj.DrawUtil;
@@ -39,6 +41,7 @@ import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.DeepCopyUtil;
 
 /**
  * Graphic object that represents a polygon or polyline
@@ -87,7 +90,9 @@ import com.bbn.openmap.util.Debug;
  * @see OMRect
  * @see OMLine
  */
-public class OMPoly extends OMAbstractLine implements Serializable {
+public class OMPoly
+        extends OMAbstractLine
+        implements Serializable {
 
     /**
      * Translation offsets. For RENDERTYPE_OFFSET, the xy points are relative to
@@ -263,15 +268,10 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * @param yPoints float[] of y coordinates
      * @param cMode offset coordinate mode
      */
-    public OMPoly(double latPoint, double lonPoint, int[] xPoints,
-            int[] yPoints, int cMode) {
+    public OMPoly(double latPoint, double lonPoint, int[] xPoints, int[] yPoints, int cMode) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
-        setLocation(latPoint,
-                lonPoint,
-                OMGraphic.DECIMAL_DEGREES,
-                xPoints,
-                yPoints);
+        setLocation(latPoint, lonPoint, OMGraphic.DECIMAL_DEGREES, xPoints, yPoints);
         coordMode = cMode;
     }
 
@@ -348,8 +348,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      *        OMGraphic.DECIMAL_DEGREES
      * @param xypoints array of x/y points, arranged x, y, x, y, etc.
      */
-    public void setLocation(double latPoint, double lonPoint, int units,
-                            int[] xypoints) {
+    public void setLocation(double latPoint, double lonPoint, int units, int[] xypoints) {
         this.units = OMGraphic.RADIANS;
         if (units == OMGraphic.DECIMAL_DEGREES) {
             lat = ProjMath.degToRad(latPoint);
@@ -381,8 +380,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * @param xPoints float[] of x coordinates
      * @param yPoints float[] of y coordinates
      */
-    public void setLocation(double latPoint, double lonPoint, int units,
-                            int[] xPoints, int[] yPoints) {
+    public void setLocation(double latPoint, double lonPoint, int units, int[] xPoints, int[] yPoints) {
         this.units = OMGraphic.RADIANS;
         if (units == OMGraphic.DECIMAL_DEGREES) {
             lat = ProjMath.degToRad(latPoint);
@@ -399,9 +397,10 @@ public class OMPoly extends OMAbstractLine implements Serializable {
 
     /**
      * Return the rawllpts array. NOTE: this is an unsafe method to access the
-     * rawllpts array. Use with caution. These are RADIANS!
+     * rawllpts array. Use with caution. These are RADIANS! For
+     * RENDERTYPE_LATLON polys.
      * 
-     * @return float[] rawllpts of lat, lon, lat, lon
+     * @return double[] rawllpts of lat, lon, lat, lon
      */
     public double[] getLatLonArray() {
         // If the OMPoly has been generated with a non GeoProj projection, these
@@ -413,6 +412,18 @@ public class OMPoly extends OMAbstractLine implements Serializable {
             units = RADIANS;
         }
         return rawllpts;
+    }
+
+    /**
+     * Use this if you want to play around with the values without messing with
+     * the OMPoly. This is safe to mess with, allocates new double[], in
+     * radians. If you want decimal degrees, use ProjMath.arrayRadToDeg with the
+     * returned array. For RENDERTYPE_LATLON polys
+     * 
+     * @return copy of lat/lons, in lat/lon/lat/lon order. RADIANS!
+     */
+    public double[] getLatLonArrayCopy() {
+        return DeepCopyUtil.deepCopy(getLatLonArray());
     }
 
     /**
@@ -593,123 +604,118 @@ public class OMPoly extends OMAbstractLine implements Serializable {
 
         switch (renderType) {
 
-        case RENDERTYPE_XY:
-            if (xs == null) {
-                Debug.message("omgraphic",
-                        "OMPoly x/y rendertype null coordinates");
-                return false;
-            }
-
-            // Need to keep these around for the LabeledOMPoly
-            xpoints = new float[1][0];
-            ypoints = new float[1][0];
-            // Need to convert the int[] to float[] and assign them to
-            // xpoints/ypoints.
-            float[] xfs = new float[xs.length];
-            float[] yfs = new float[ys.length];
-            for (i = 0; i < xs.length; i++) {
-                xfs[i] = xs[i];
-                yfs[i] = ys[i];
-            }
-
-            xpoints[0] = xfs;
-            ypoints[0] = yfs;
-
-            break;
-
-        case RENDERTYPE_OFFSET:
-            if (xs == null) {
-                Debug.message("omgraphic",
-                        "OMPoly offset rendertype null coordinates");
-                return false;
-            }
-
-            npts = xs.length;
-            float[] _x = new float[npts];
-            float[] _y = new float[npts];
-
-            // forward project the radian point
-            Point origin = new Point();
-            if (proj instanceof GeoProj) {
-                ((GeoProj) proj).forward(lat, lon, origin, true);// radians
-            } else {
-                proj.forward(Math.toDegrees(lat), Math.toDegrees(lon), origin);
-            }
-
-            if (coordMode == COORDMODE_ORIGIN) {
-                for (i = 0; i < npts; i++) {
-                    _x[i] = xs[i] + origin.x;
-                    _y[i] = ys[i] + origin.y;
-                }
-            } else { // CModePrevious offset deltas
-                _x[0] = xs[0] + origin.x;
-                _y[0] = ys[0] + origin.y;
-
-                for (i = 1; i < npts; i++) {
-                    _x[i] = xs[i] + _x[i - 1];
-                    _y[i] = ys[i] + _y[i - 1];
-                }
-            }
-            // Need to keep these around for the LabeledOMPoly
-            xpoints = new float[1][0];
-            xpoints[0] = _x;
-            ypoints = new float[1][0];
-            ypoints[0] = _y;
-
-            break;
-
-        case RENDERTYPE_LATLON:
-            // polygon/polyline project the polygon/polyline.
-            // Vertices should already be in radians.
-            ArrayList<float[]> vector;
-            if (proj instanceof GeoProj) {
-                if (units == DECIMAL_DEGREES) {
-                    ProjMath.arrayDegToRad(rawllpts);
-                    units = RADIANS;
-                }
-                vector = ((GeoProj) proj).forwardPoly(rawllpts,
-                        lineType,
-                        nsegs,
-                        isPolygon);
-            } else {
-                if (units == RADIANS) {
-                    ProjMath.arrayRadToDeg(rawllpts);
-                    units = DECIMAL_DEGREES;
-                }
-                vector = proj.forwardPoly(rawllpts, isPolygon);
-            }
-
-            int size = vector.size();
-
-            xpoints = new float[(int) (size / 2)][0];
-            ypoints = new float[xpoints.length][0];
-
-            for (i = 0, j = 0; i < size; i += 2, j++) {
-                xpoints[j] = vector.get(i);
-                ypoints[j] = vector.get(i + 1);
-            }
-
-            if (!doShapes) {
-                if (size > 1) {
-                    if (arrowhead != null) {
-                        arrowhead.generate(this);
-                    }
-                    setNeedToRegenerate(false);
-                    initLabelingDuringGenerate();
-                    if (checkPoints(xpoints, ypoints)) {
-                        setLabelLocation(xpoints[0], ypoints[0]);
-                    }
-                    return true;
-                } else {
+            case RENDERTYPE_XY:
+                if (xs == null) {
+                    Debug.message("omgraphic", "OMPoly x/y rendertype null coordinates");
                     return false;
                 }
-            }
 
-            break;
+                // Need to keep these around for the LabeledOMPoly
+                xpoints = new float[1][0];
+                ypoints = new float[1][0];
+                // Need to convert the int[] to float[] and assign them to
+                // xpoints/ypoints.
+                float[] xfs = new float[xs.length];
+                float[] yfs = new float[ys.length];
+                for (i = 0; i < xs.length; i++) {
+                    xfs[i] = xs[i];
+                    yfs[i] = ys[i];
+                }
 
-        case RENDERTYPE_UNKNOWN:
-            Debug.error("OMPoly.generate: invalid RenderType");
-            return false;
+                xpoints[0] = xfs;
+                ypoints[0] = yfs;
+
+                break;
+
+            case RENDERTYPE_OFFSET:
+                if (xs == null) {
+                    Debug.message("omgraphic", "OMPoly offset rendertype null coordinates");
+                    return false;
+                }
+
+                npts = xs.length;
+                float[] _x = new float[npts];
+                float[] _y = new float[npts];
+
+                // forward project the radian point
+                Point origin = new Point();
+                if (proj instanceof GeoProj) {
+                    ((GeoProj) proj).forward(lat, lon, origin, true);// radians
+                } else {
+                    proj.forward(Math.toDegrees(lat), Math.toDegrees(lon), origin);
+                }
+
+                if (coordMode == COORDMODE_ORIGIN) {
+                    for (i = 0; i < npts; i++) {
+                        _x[i] = xs[i] + origin.x;
+                        _y[i] = ys[i] + origin.y;
+                    }
+                } else { // CModePrevious offset deltas
+                    _x[0] = xs[0] + origin.x;
+                    _y[0] = ys[0] + origin.y;
+
+                    for (i = 1; i < npts; i++) {
+                        _x[i] = xs[i] + _x[i - 1];
+                        _y[i] = ys[i] + _y[i - 1];
+                    }
+                }
+                // Need to keep these around for the LabeledOMPoly
+                xpoints = new float[1][0];
+                xpoints[0] = _x;
+                ypoints = new float[1][0];
+                ypoints[0] = _y;
+
+                break;
+
+            case RENDERTYPE_LATLON:
+                // polygon/polyline project the polygon/polyline.
+                // Vertices should already be in radians.
+                ArrayList<float[]> vector;
+                if (proj instanceof GeoProj) {
+                    if (units == DECIMAL_DEGREES) {
+                        ProjMath.arrayDegToRad(rawllpts);
+                        units = RADIANS;
+                    }
+                    vector = ((GeoProj) proj).forwardPoly(rawllpts, lineType, nsegs, isPolygon);
+                } else {
+                    if (units == RADIANS) {
+                        ProjMath.arrayRadToDeg(rawllpts);
+                        units = DECIMAL_DEGREES;
+                    }
+                    vector = proj.forwardPoly(rawllpts, isPolygon);
+                }
+
+                int size = vector.size();
+
+                xpoints = new float[(int) (size / 2)][0];
+                ypoints = new float[xpoints.length][0];
+
+                for (i = 0, j = 0; i < size; i += 2, j++) {
+                    xpoints[j] = vector.get(i);
+                    ypoints[j] = vector.get(i + 1);
+                }
+
+                if (!doShapes) {
+                    if (size > 1) {
+                        if (arrowhead != null) {
+                            arrowhead.generate(this);
+                        }
+                        setNeedToRegenerate(false);
+                        initLabelingDuringGenerate();
+                        if (checkPoints(xpoints, ypoints)) {
+                            setLabelLocation(xpoints[0], ypoints[0]);
+                        }
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+
+                break;
+
+            case RENDERTYPE_UNKNOWN:
+                Debug.error("OMPoly.generate: invalid RenderType");
+                return false;
         }
 
         if (arrowhead != null) {
@@ -729,8 +735,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * @param ypoints2
      */
     protected boolean checkPoints(float[][] xpoints2, float[][] ypoints2) {
-        if (xpoints == null || ypoints == null || xpoints.length == 0
-                || ypoints.length == 0) {
+        if (xpoints == null || ypoints == null || xpoints.length == 0 || ypoints.length == 0) {
             return false;
         }
         return true;
@@ -825,8 +830,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                     if (matted || !isLineClear || !edgeMatchesFill) {
 
                         if (matted) {
-                            if (g instanceof Graphics2D
-                                    && stroke instanceof BasicStroke) {
+                            if (g instanceof Graphics2D && stroke instanceof BasicStroke) {
                                 ((Graphics2D) g).setStroke(new BasicStroke(((BasicStroke) stroke).getLineWidth() + 2f));
                                 setGraphicsColor(g, mattingPaint);
                                 GeneralPath polyLine = new GeneralPath();
@@ -862,8 +866,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                 else {
 
                     if (matted) {
-                        if (g instanceof Graphics2D
-                                && stroke instanceof BasicStroke) {
+                        if (g instanceof Graphics2D && stroke instanceof BasicStroke) {
                             ((Graphics2D) g).setStroke(new BasicStroke(((BasicStroke) stroke).getLineWidth() + 2f));
                             // Just to draw the matting for the
                             // arrowhead.
@@ -908,8 +911,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
 
         } catch (Exception e) {
             // Trying to catch any clipping problems from within a JRE
-            Debug.output("OMPoly: caught Java rendering exception\n"
-                    + e.getMessage());
+            Debug.output("OMPoly: caught Java rendering exception\n" + e.getMessage());
             if (Debug.debugging("ompoly")) {
                 e.printStackTrace();
             }
@@ -998,26 +1000,26 @@ public class OMPoly extends OMAbstractLine implements Serializable {
 
         switch (renderType) {
 
-        case RENDERTYPE_XY:
-        case RENDERTYPE_OFFSET:
-            setShape(createShape(xpoints[0], ypoints[0], isPolygon));
-            break;
-        case RENDERTYPE_LATLON:
-            int size = xpoints.length;
+            case RENDERTYPE_XY:
+            case RENDERTYPE_OFFSET:
+                setShape(createShape(xpoints[0], ypoints[0], isPolygon));
+                break;
+            case RENDERTYPE_LATLON:
+                int size = xpoints.length;
 
-            for (int i = 0; i < size; i++) {
-                GeneralPath gp = createShape(xpoints[i], ypoints[i], isPolygon);
+                for (int i = 0; i < size; i++) {
+                    GeneralPath gp = createShape(xpoints[i], ypoints[i], isPolygon);
 
-                if (shape == null) {
-                    setShape(gp);
-                } else {
-                    ((GeneralPath) shape).append(gp, false);
+                    if (shape == null) {
+                        setShape(gp);
+                    } else {
+                        ((GeneralPath) shape).append(gp, false);
+                    }
                 }
-            }
 
-            break;
+                break;
 
-        default:
+            default:
         }
 
         setLabelLocation(xpoints[0], ypoints[0]);
@@ -1033,24 +1035,24 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     protected boolean isGeometryClosed() {
         geometryClosed = false;
         switch (renderType) {
-        case RENDERTYPE_XY:
-        case RENDERTYPE_OFFSET:
-            if (xs != null && xs.length > 2) {
-                geometryClosed = (xs[0] == xs[xs.length - 1] && ys[0] == ys[ys.length - 1]);
-            }
-            break;
-        case RENDERTYPE_LATLON:
-            if (rawllpts != null) {
-                int l = rawllpts.length;
-                if (l > 4) {
-                    geometryClosed = (Math.abs(rawllpts[0] - rawllpts[l - 2]) < 1e-5 && Math.abs(rawllpts[1]
-                            - rawllpts[l - 1]) < 1e-5);
+            case RENDERTYPE_XY:
+            case RENDERTYPE_OFFSET:
+                if (xs != null && xs.length > 2) {
+                    geometryClosed = (xs[0] == xs[xs.length - 1] && ys[0] == ys[ys.length - 1]);
                 }
-            }
-            break;
-        case RENDERTYPE_UNKNOWN:
-            Debug.error("OMPoly.generate: invalid RenderType");
-            break;
+                break;
+            case RENDERTYPE_LATLON:
+                if (rawllpts != null) {
+                    int l = rawllpts.length;
+                    if (l > 4) {
+                        geometryClosed =
+                                (Math.abs(rawllpts[0] - rawllpts[l - 2]) < 1e-5 && Math.abs(rawllpts[1] - rawllpts[l - 1]) < 1e-5);
+                    }
+                }
+                break;
+            case RENDERTYPE_UNKNOWN:
+                Debug.error("OMPoly.generate: invalid RenderType");
+                break;
         }
 
         return geometryClosed;
@@ -1083,8 +1085,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      *        the start or end of the polygon, only the coordinate pair
      *        connecting to the original poly will be removed.
      */
-    public void insertRadians(double[] latlons, int coordPairIndex,
-                              boolean replaceEndsOfInsertedAtJoin) {
+    public void insertRadians(double[] latlons, int coordPairIndex, boolean replaceEndsOfInsertedAtJoin) {
         int minPntsNeededForInsertion = 2;
         boolean atEnd = false;
         // Test for closed polygon to adjust the insertion point a little to
@@ -1129,8 +1130,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
 
         }
 
-        if (renderType == OMGraphic.RENDERTYPE_LATLON && latlons != null
-                && latlons.length >= minPntsNeededForInsertion
+        if (renderType == OMGraphic.RENDERTYPE_LATLON && latlons != null && latlons.length >= minPntsNeededForInsertion
                 && latlons.length % 2 == 0) {
             double[] oldrawllpnts = rawllpts;
             int oldCoordsRemaining = oldrawllpnts.length - insertionPoint;
@@ -1138,16 +1138,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
             rawllpts = new double[oldrawllpnts.length + newCoordLength];
 
             System.arraycopy(oldrawllpnts, 0, rawllpts, 0, insertionPoint);
-            System.arraycopy(latlons,
-                    newCoordStart,
-                    rawllpts,
-                    insertionPoint,
-                    newCoordLength);
-            System.arraycopy(oldrawllpnts,
-                    insertionPoint,
-                    rawllpts,
-                    insertionPoint + newCoordLength,
-                    oldCoordsRemaining);
+            System.arraycopy(latlons, newCoordStart, rawllpts, insertionPoint, newCoordLength);
+            System.arraycopy(oldrawllpnts, insertionPoint, rawllpts, insertionPoint + newCoordLength, oldCoordsRemaining);
 
             setNeedToRegenerate(true);
         }
@@ -1166,8 +1158,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * @return index of first node of intersecting segment, or -1 if not
      *         intersecting.
      */
-    public int getIndexOfFirstNodeOfSegIntersect(double x, double y,
-                                                 double maxDist) {
+    public int getIndexOfFirstNodeOfSegIntersect(double x, double y, double maxDist) {
         int ret = -1;
         if (!getNeedToRegenerate()) {
             if (renderType == RENDERTYPE_LATLON) {
@@ -1181,14 +1172,13 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                 for (int i = 0; i < ll.length - 3; i += 2, index++) {
                     geo1.initializeRadians(ll[i], ll[i + 1]);
                     geo2.initializeRadians(ll[i + 2], ll[i + 3]);
-                    
+
                     if (Intersection.isOnSegment(geo1, geo2, testGeom)) {
                         return index;
                     }
                 }
 
-            } else if (renderType == RENDERTYPE_XY
-                    || renderType == RENDERTYPE_OFFSET) {
+            } else if (renderType == RENDERTYPE_XY || renderType == RENDERTYPE_OFFSET) {
 
                 if (xpoints != null) {
                     for (int copy = 0; copy < xpoints.length; copy++) {
@@ -1200,12 +1190,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                             double endPntX = xpoints[copy][node + 1];
                             double endPntY = ypoints[copy][node + 1];
 
-                            float dist = (float) Line2D.ptSegDist(startPntX,
-                                    startPntY,
-                                    endPntX,
-                                    endPntY,
-                                    (double) x,
-                                    (double) y);
+                            float dist = (float) Line2D.ptSegDist(startPntX, startPntY, endPntX, endPntY, (double) x, (double) y);
 
                             if (dist <= maxDist) {
                                 return index;
@@ -1221,9 +1206,24 @@ public class OMPoly extends OMAbstractLine implements Serializable {
     }
 
     public static void main(String[] argv) {
-        double[] origPoints = new double[] { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0 };
-        double[] insertionPoints = new double[] { 1.1, 1.2, 1.3, 1.4, 1.5, 1.6,
-                1.7, 1.8 };
+        double[] origPoints = new double[] {
+            0.0,
+            1.0,
+            2.0,
+            3.0,
+            4.0,
+            5.0
+        };
+        double[] insertionPoints = new double[] {
+            1.1,
+            1.2,
+            1.3,
+            1.4,
+            1.5,
+            1.6,
+            1.7,
+            1.8
+        };
         OMPoly poly = new OMPoly(origPoints, OMGraphic.RADIANS, OMGraphic.LINETYPE_GREATCIRCLE);
         poly.insertRadians(insertionPoints, 2, true);
         double[] pnts = poly.getLatLonArray();
@@ -1264,5 +1264,29 @@ public class OMPoly extends OMAbstractLine implements Serializable {
             System.out.println("pnt[" + i + "]: " + pnts[i]);
         }
 
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.bbn.openmap.omGraphics.OMGraphic#restore(com.bbn.openmap.omGraphics
+     * .OMGraphic)
+     */
+    public void restore(OMGeometry source) {
+        super.restore(source);
+        if (source instanceof OMPoly) {
+            OMPoly polySource = (OMPoly) source;
+            this.units = polySource.units;
+            // These two things are in radians!
+            this.lat = polySource.lat;
+            this.lon = polySource.lon;
+            this.coordMode = polySource.coordMode;
+            this.xs = DeepCopyUtil.deepCopy(polySource.xs);
+            this.ys = DeepCopyUtil.deepCopy(polySource.ys);
+            this.isPolygon = polySource.isPolygon;
+            this.rawllpts = DeepCopyUtil.deepCopy(polySource.getLatLonArray());
+            this.doShapes = polySource.doShapes;
+        }
     }
 }

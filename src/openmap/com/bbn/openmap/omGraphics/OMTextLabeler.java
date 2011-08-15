@@ -226,5 +226,13 @@ public class OMTextLabeler extends OMText implements OMLabeler {
     public void setAnchor(int anchor) {
         this.anchor = anchor;
     }
+    
+    public void restore(OMGeometry source) {
+        super.restore(source);
+        if (source instanceof OMTextLabeler) {
+            OMTextLabeler labeler = (OMTextLabeler) source;
+            this.anchor = labeler.anchor;
+        }
+    }
 
 }

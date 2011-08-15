@@ -67,5 +67,14 @@ public class OMShape extends OMGraphicAdapter implements OMGraphic {
 
         return false;
     }
+    
+    public void restore(OMGeometry source) {
+       super.restore(source);
+       if (source instanceof OMShape) {
+          OMShape shape = (OMShape) source;
+          
+          this.origShape = new GeneralPath(shape.origShape);
+       }
+    }
 
 }

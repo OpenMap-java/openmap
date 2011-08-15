@@ -34,7 +34,7 @@ import com.bbn.openmap.util.PropUtils;
 public class RangeRingsMouseMode extends CoordMouseMode {
     private static final long serialVersionUID = 6208201699394207932L;
 
-    public final static transient String modeID = "RangeRings".intern();
+    public final static transient String modeID = "RangeRings";
 
     /**
      * The property string used to set the numRings member variable.

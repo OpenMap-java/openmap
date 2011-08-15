@@ -39,7 +39,9 @@ import com.bbn.openmap.util.Debug;
  * adjusted radius. The radius is the pixel distance from the center of the
  * location to each edge of the marking rectangle or circle.
  */
-public class OMPoint extends OMGraphicAdapter implements OMGraphic, Serializable {
+public class OMPoint
+        extends OMGraphicAdapter
+        implements OMGraphic, Serializable {
 
     public final static int DEFAULT_RADIUS = 2;
     public final static boolean DEFAULT_ISOVAL = false;
@@ -246,37 +248,37 @@ public class OMPoint extends OMGraphicAdapter implements OMGraphic, Serializable
         int y2 = 0;
 
         switch (renderType) {
-        case RENDERTYPE_XY:
-            x1 = x - radius;
-            y1 = y - radius;
-            x2 = x + radius;
-            y2 = y + radius;
+            case RENDERTYPE_XY:
+                x1 = x - radius;
+                y1 = y - radius;
+                x2 = x + radius;
+                y2 = y + radius;
 
-            break;
-        case RENDERTYPE_OFFSET:
-        case RENDERTYPE_LATLON:
-            if (!proj.isPlotable(lat1, lon1)) {
-                setNeedToRegenerate(true);// HMMM not the best flag
+                break;
+            case RENDERTYPE_OFFSET:
+            case RENDERTYPE_LATLON:
+                if (!proj.isPlotable(lat1, lon1)) {
+                    setNeedToRegenerate(true);// HMMM not the best flag
+                    return false;
+                }
+                Point p1 = (Point) proj.forward(lat1, lon1, new Point());
+
+                x1 = p1.x + x - radius;
+                y1 = p1.y + y - radius;
+                x2 = p1.x + x + radius;
+                y2 = p1.y + y + radius;
+                break;
+            case RENDERTYPE_UNKNOWN:
+                System.err.println("OMPoint.generate(): invalid RenderType");
                 return false;
-            }
-            Point p1 = (Point) proj.forward(lat1, lon1, new Point());
-
-            x1 = p1.x + x - radius;
-            y1 = p1.y + y - radius;
-            x2 = p1.x + x + radius;
-            y2 = p1.y + y + radius;
-            break;
-        case RENDERTYPE_UNKNOWN:
-            System.err.println("OMPoint.generate(): invalid RenderType");
-            return false;
         }
 
         if (oval) {
-            setShape(new GeneralPath(new Ellipse2D.Float((float) Math.min(x2, x1), (float) Math.min(y2,
-                    y1), (float) Math.abs(x2 - x1), (float) Math.abs(y2 - y1))));
+            setShape(new GeneralPath(new Ellipse2D.Float((float) Math.min(x2, x1), (float) Math.min(y2, y1), (float) Math.abs(x2
+                    - x1), (float) Math.abs(y2 - y1))));
         } else {
-            setShape(createBoxShape((int) Math.min(x2, x1), (int) Math.min(y2,
-                    y1), (int) Math.abs(x2 - x1), (int) Math.abs(y2 - y1)));
+            setShape(createBoxShape((int) Math.min(x2, x1), (int) Math.min(y2, y1), (int) Math.abs(x2 - x1),
+                                    (int) Math.abs(y2 - y1)));
         }
 
         initLabelingDuringGenerate();
@@ -290,7 +292,21 @@ public class OMPoint extends OMGraphicAdapter implements OMGraphic, Serializable
         return false;
     }
 
-    public static class Image extends OMPoint {
+    public void restore(OMGeometry source) {
+        super.restore(source);
+        if (source instanceof OMPoint) {
+            OMPoint point = (OMPoint) source;
+            this.radius = point.radius;
+            this.x = point.x;
+            this.y = point.y;
+            this.lat1 = point.lat1;
+            this.lon1 = point.lon1;
+            this.oval = point.oval;
+        }
+    }
+
+    public static class Image
+            extends OMPoint {
         protected java.awt.Image image;
         protected boolean useImage = true;
         protected int imageX = 0;
@@ -372,8 +388,7 @@ public class OMPoint extends OMGraphicAdapter implements OMGraphic, Serializable
 
             setShape(null);
             if (proj == null) {
-                Debug.message("omgraphic",
-                        "OMPoint: null projection in generate!");
+                Debug.message("omgraphic", "OMPoint: null projection in generate!");
                 return false;
             }
 
@@ -383,32 +398,31 @@ public class OMPoint extends OMGraphicAdapter implements OMGraphic, Serializable
             int imageOffsetX = imageWidth / 2;
             int imageOffsetY = imageHeight / 2;
             switch (renderType) {
-            case RENDERTYPE_XY:
-                imageX = x - imageOffsetX;
-                imageY = y - imageOffsetY;
+                case RENDERTYPE_XY:
+                    imageX = x - imageOffsetX;
+                    imageY = y - imageOffsetY;
 
-                break;
-            case RENDERTYPE_OFFSET:
-            case RENDERTYPE_LATLON:
-                if (!proj.isPlotable(lat1, lon1)) {
-                    setNeedToRegenerate(true);// HMMM not the best flag
+                    break;
+                case RENDERTYPE_OFFSET:
+                case RENDERTYPE_LATLON:
+                    if (!proj.isPlotable(lat1, lon1)) {
+                        setNeedToRegenerate(true);// HMMM not the best flag
+                        return false;
+                    }
+                    Point2D p1 = proj.forward(lat1, lon1);
+
+                    imageX = (int) p1.getX() + x - imageOffsetX;
+                    imageY = (int) p1.getY() + y - imageOffsetY;
+                    break;
+                case RENDERTYPE_UNKNOWN:
+                    System.err.println("OMPoint.Image.generate(): invalid RenderType");
                     return false;
-                }
-                Point2D p1 = proj.forward(lat1, lon1);
-
-                imageX = (int) p1.getX() + x - imageOffsetX;
-                imageY = (int) p1.getY() + y - imageOffsetY;
-                break;
-            case RENDERTYPE_UNKNOWN:
-                System.err.println("OMPoint.Image.generate(): invalid RenderType");
-                return false;
             }
 
             setShape(createBoxShape(imageX, imageY, imageWidth, imageHeight));
 
             initLabelingDuringGenerate();
-            setLabelLocation(new Point(imageX + imageWidth, imageY
-                    + imageOffsetY));
+            setLabelLocation(new Point(imageX + imageWidth, imageY + imageOffsetY));
 
             setNeedToRegenerate(false);
             return true;
@@ -437,6 +451,17 @@ public class OMPoint extends OMGraphicAdapter implements OMGraphic, Serializable
          */
         public boolean shouldRenderFill() {
             return isUseImage() || super.shouldRenderFill();
+        }
+
+        public void restore(OMGeometry source) {
+            super.restore(source);
+            if (source instanceof OMPoint.Image) {
+                OMPoint.Image pntImage = (OMPoint.Image) source;
+                this.image = pntImage.image;
+                this.useImage = pntImage.useImage;
+                this.imageX = pntImage.imageX;
+                this.imageY = pntImage.imageY;
+            }
         }
     }
 

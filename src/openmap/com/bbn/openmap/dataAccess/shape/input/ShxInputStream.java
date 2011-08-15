@@ -33,49 +33,50 @@ import java.io.InputStream;
  */
 public class ShxInputStream {
 
-    /**
-     * An input stream to process primitives in Little Endian or Big Endian
-     */
-    private LittleEndianInputStream _leis = null;
+   /**
+    * An input stream to process primitives in Little Endian or Big Endian
+    */
+   private LittleEndianInputStream _leis = null;
 
-    /**
-     * Chains an input stream with a Little EndianInputStream
-     */
-    public ShxInputStream(InputStream is) {
-        BufferedInputStream bis = new BufferedInputStream(is);
-        _leis = new LittleEndianInputStream(bis);
-    }
+   /**
+    * Chains an input stream with a Little EndianInputStream
+    */
+   public ShxInputStream(InputStream is) {
+      BufferedInputStream bis = new BufferedInputStream(is);
+      _leis = new LittleEndianInputStream(bis);
+   }
 
-    /**
-     * Processes the SHX file to obtain a list of offsets, which classes derived
-     * from AbstractSupport will use to iterate through the associated SHP file
-     * 
-     * @return an array of offsets, which will be passed into the open method of
-     *         classes which extend AbstractSupport.
-     */
-    public int[][] getIndex() {
-        int[][] indexData = null;
-        try {
-            /*int fileCode = */_leis.readInt();
-            _leis.skipBytes(20);
-            int fileLength = _leis.readInt();
-            int numShapes = (fileLength - 50) / 4;
-            indexData = new int[2][numShapes];
-            _leis.skipBytes(4);
-            /*_type = */_leis.readLEInt();
-            _leis.skip(64);
-            for (int i = 0; i <= numShapes - 1; i++) {
-                indexData[0][i] = _leis.readInt();
-                indexData[1][i] = _leis.readInt();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return indexData;
-    }
+   /**
+    * Processes the SHX file to obtain a list of offsets, which classes derived
+    * from AbstractSupport will use to iterate through the associated SHP file
+    * 
+    * @return an array of offsets, which will be passed into the open method of
+    *         classes which extend AbstractSupport.
+    */
+   public int[][] getIndex() {
+      int[][] indexData = null;
+      try {
+         /* int fileCode = */_leis.readInt();
+         _leis.skipBytes(20);
+         int fileLength = _leis.readInt();
+         int numShapes = (fileLength - 50) / 4;
+         indexData = new int[2][numShapes];
+         _leis.skipBytes(4);
+         /* _type = */_leis.readLEInt();
+         _leis.skip(64);
+         for (int i = 0; i <= numShapes - 1; i++) {
+            indexData[0][i] = _leis.readInt();
+            indexData[1][i] = _leis.readInt();
+         }
+      } catch (IOException e) {
+         e.printStackTrace();
+         return null;
+      }
+      return indexData;
+   }
 
-    public void close() throws IOException {
-        _leis.close();
-    }
+   public void close()
+         throws IOException {
+      _leis.close();
+   }
 }

@@ -425,9 +425,9 @@ public class LOSGenerator implements TerrainTool {
         int maxIndex = (LOSedge * 4) - 4; // 4 corners out for
         // redundancy
         if (index < 0)
-            index = maxIndex + index;
+            index += maxIndex;
         else if (index >= maxIndex)
-            index = index - maxIndex;
+            index -= maxIndex;
 
         if (Debug.debugging("losdetail")) {
             Debug.output(" angle = " + arc_angle + ", index/maxIndex = "
@@ -553,9 +553,9 @@ public class LOSGenerator implements TerrainTool {
      * @param value height of the object in meters.
      */
     public void setLOSobjectHeight(int value) {
-        LOScenterHeight = LOScenterHeight - LOSobjectHeight;
+        LOScenterHeight -= LOSobjectHeight;
         LOSobjectHeight = value;
-        LOScenterHeight = LOScenterHeight + LOSobjectHeight;
+        LOScenterHeight += LOSobjectHeight;
     }
 
     /**

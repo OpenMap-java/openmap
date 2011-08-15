@@ -39,7 +39,7 @@ public class JPEGHelper {
      * This class has only static methods, so there is no need to
      * construct anything.
      */
-    private JPEGHelper() {};
+    private JPEGHelper() {}
 
     /**
      * Return a byte array that contains the JPEG encoded image.

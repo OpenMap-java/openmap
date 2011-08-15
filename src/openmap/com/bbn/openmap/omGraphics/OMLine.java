@@ -38,27 +38,31 @@ import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.DeepCopyUtil;
 
 /**
  * Graphic object that represents a simple line.
  * <p>
- * The OMLine is used to create simple lines, from one point on the
- * window to the other. If you want to have a line with several parts,
- * use OMPoly as a polyline with no fillColor.
+ * The OMLine is used to create simple lines, from one point on the window to
+ * the other. If you want to have a line with several parts, use OMPoly as a
+ * polyline with no fillColor.
  * <h3>NOTE:</h3>
- * See the <a
- * href="com.bbn.openmap.proj.Projection.html#line_restrictions">
- * RESTRICTIONS </a> on Lat/Lon lines. Not following the guidelines
- * listed may result in ambiguous/undefined shapes! Similar
- * assumptions apply to the other vector graphics that we define:
- * circles, ellipses, rects, polys.
+ * See the <a href="com.bbn.openmap.proj.Projection.html#line_restrictions">
+ * RESTRICTIONS </a> on Lat/Lon lines. Not following the guidelines listed may
+ * result in ambiguous/undefined shapes! Similar assumptions apply to the other
+ * vector graphics that we define: circles, ellipses, rects, polys.
  * <p>
  * 
  * @see OMPoly
  */
-public class OMLine extends OMAbstractLine implements Serializable, NonRegional {
+public class OMLine
+        extends OMAbstractLine
+        implements Serializable, NonRegional {
 
-    protected boolean isPolyline = false;
+    /**
+     * Figured out after generation, based on what's going on with the map.
+     */
+    protected transient boolean isPolyline = false;
 
     /** latlons is a array of 4 doubles - lat1, lon1, lat2, lon2. */
     protected double[] latlons = null;
@@ -67,14 +71,13 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
     protected int[] pts = null;
 
     /**
-     * For x-y and offset lines, there is the ability to put a curve
-     * in the line. This setting is the amount of an angle, limited to
-     * a semi-circle (PI) that the curve will represent. In other
-     * words, the arc between the two end points is going to look like
-     * a 0 degrees of a circle (straight line, which is the default),
-     * or 180 degrees of a circle (full semi-circle). Given in
-     * radians, though, not degrees. The ArcCalc object handles all
-     * the details.
+     * For x-y and offset lines, there is the ability to put a curve in the
+     * line. This setting is the amount of an angle, limited to a semi-circle
+     * (PI) that the curve will represent. In other words, the arc between the
+     * two end points is going to look like a 0 degrees of a circle (straight
+     * line, which is the default), or 180 degrees of a circle (full
+     * semi-circle). Given in radians, though, not degrees. The ArcCalc object
+     * handles all the details.
      */
     protected ArcCalc arc = null;
 
@@ -93,11 +96,10 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
      * @param lon_1 longitude of first point, decimal degrees.
      * @param lat_2 latitude of second point, decimal degrees.
      * @param lon_2 longitude of second point, decimal degrees.
-     * @param lineType a choice between LINETYPE_STRAIGHT,
-     *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB.
+     * @param lineType a choice between LINETYPE_STRAIGHT, LINETYPE_GREATCIRCLE
+     *        or LINETYPE_RHUMB.
      */
-    public OMLine(double lat_1, double lon_1, double lat_2, double lon_2,
-            int lineType) {
+    public OMLine(double lat_1, double lon_1, double lat_2, double lon_2, int lineType) {
         this(lat_1, lon_1, lat_2, lon_2, lineType, -1);
     }
 
@@ -108,14 +110,13 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
      * @param lon_1 longitude of first point, decimal degrees.
      * @param lat_2 latitude of second point, decimal degrees.
      * @param lon_2 longitude of second point, decimal degrees.
-     * @param lineType a choice between LINETYPE_STRAIGHT,
-     *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB.
-     * @param nsegs number of segment points (only for
-     *        LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and
-     *        if &lt; 1, this value is generated internally)
+     * @param lineType a choice between LINETYPE_STRAIGHT, LINETYPE_GREATCIRCLE
+     *        or LINETYPE_RHUMB.
+     * @param nsegs number of segment points (only for LINETYPE_GREATCIRCLE or
+     *        LINETYPE_RHUMB line types, and if &lt; 1, this value is generated
+     *        internally)
      */
-    public OMLine(double lat_1, double lon_1, double lat_2, double lon_2,
-            int lineType, int nsegs) {
+    public OMLine(double lat_1, double lon_1, double lat_2, double lon_2, int lineType, int nsegs) {
         super(RENDERTYPE_LATLON, lineType, DECLUTTERTYPE_NONE);
         latlons = new double[4];
         latlons[0] = lat_1;
@@ -128,14 +129,14 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
     /**
      * Create a line between two xy points on the window.
      * 
-     * @param x1 the x location of the first point, in pixels from the
-     *        left of the window.
-     * @param y1 the y location of the first point, in pixels from the
-     *        top of the window.
-     * @param x2 the x location of the second point, in pixels from
-     *        the left of the window.
-     * @param y2 the y location of the second point, in pixels from
-     *        the top of the window.
+     * @param x1 the x location of the first point, in pixels from the left of
+     *        the window.
+     * @param y1 the y location of the first point, in pixels from the top of
+     *        the window.
+     * @param x2 the x location of the second point, in pixels from the left of
+     *        the window.
+     * @param y2 the y location of the second point, in pixels from the top of
+     *        the window.
      */
     public OMLine(int x1, int y1, int x2, int y2) {
         super(RENDERTYPE_XY, LINETYPE_STRAIGHT, DECLUTTERTYPE_NONE);
@@ -147,23 +148,23 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
     }
 
     /**
-     * Create a line between two x-y points on the window, where the
-     * x-y points are offsets from a lat-lon point. It assumes that
-     * you'll want a straight window line between the points, so if
-     * you don't, use the setLineType() method to change it.
+     * Create a line between two x-y points on the window, where the x-y points
+     * are offsets from a lat-lon point. It assumes that you'll want a straight
+     * window line between the points, so if you don't, use the setLineType()
+     * method to change it.
      * 
-     * @param lat_1 the latitude of the reference point of the line,
-     *        in decimal degrees.
-     * @param lon_1 the longitude of the reference point of the line,
-     *        in decimal degrees.
-     * @param x1 the x location of the first point, in pixels from the
+     * @param lat_1 the latitude of the reference point of the line, in decimal
+     *        degrees.
+     * @param lon_1 the longitude of the reference point of the line, in decimal
+     *        degrees.
+     * @param x1 the x location of the first point, in pixels from the longitude
+     *        point.
+     * @param y1 the y location of the first point, in pixels from the latitude
+     *        point.
+     * @param x2 the x location of the second point, in pixels from the
      *        longitude point.
-     * @param y1 the y location of the first point, in pixels from the
-     *        latitude point.
-     * @param x2 the x location of the second point, in pixels from
-     *        the longitude point.
-     * @param y2 the y location of the second point, in pixels from
-     *        the latitude point.
+     * @param y2 the y location of the second point, in pixels from the latitude
+     *        point.
      */
     public OMLine(double lat_1, double lon_1, int x1, int y1, int x2, int y2) {
 
@@ -179,11 +180,10 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
     }
 
     /**
-     * Set the lat lon values of the end points of the line from an
-     * array of doubles - lat1, lon1, lat2, lon2. This does not look at
-     * the line render type, so it acts accordingly. LL1 is only used
-     * in RENDERTYPE_LATLON, RENDERTYPE_OFFSET, and LL2 is only used
-     * in RENDERTYPE_LATLON.
+     * Set the lat lon values of the end points of the line from an array of
+     * doubles - lat1, lon1, lat2, lon2. This does not look at the line render
+     * type, so it acts accordingly. LL1 is only used in RENDERTYPE_LATLON,
+     * RENDERTYPE_OFFSET, and LL2 is only used in RENDERTYPE_LATLON.
      * 
      * @param lls array of doubles - lat1, lon1, lat2, lon2
      */
@@ -193,11 +193,11 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
     }
 
     /**
-     * Get the lat lon values of the end points of the line in an
-     * array of doubles - lat1, lon1, lat2, lon2. Again, this does not
-     * look at the line render type, so it acts accordingly. LL1 is
-     * only used in RENDERTYPE_LATLON, RENDERTYPE_OFFSET, and LL2 is
-     * only used in RENDERTYPE_LATLON.
+     * Get the lat lon values of the end points of the line in an array of
+     * doubles - lat1, lon1, lat2, lon2. Again, this does not look at the line
+     * render type, so it acts accordingly. LL1 is only used in
+     * RENDERTYPE_LATLON, RENDERTYPE_OFFSET, and LL2 is only used in
+     * RENDERTYPE_LATLON.
      * 
      * @return the lat lon array, and all are decimal degrees.
      */
@@ -206,10 +206,9 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
     }
 
     /**
-     * Set the xy values of the end points of the line from an array
-     * of ints - x1, y1, x2, y2 . This does not look at the line
-     * render type, so it acts accordingly. p1 and p2 are only used in
-     * RENDERTYPE_XY, RENDERTYPE_OFFSET.
+     * Set the xy values of the end points of the line from an array of ints -
+     * x1, y1, x2, y2 . This does not look at the line render type, so it acts
+     * accordingly. p1 and p2 are only used in RENDERTYPE_XY, RENDERTYPE_OFFSET.
      * 
      * @param xys array of ints for the points - x1, y1, x2, y2
      */
@@ -219,10 +218,9 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
     }
 
     /**
-     * Get the xy values of the end points of the line in an array of
-     * ints - x1, y1, x2, y2 . This does not look at the line render
-     * type, so it acts accordingly. p1 and p2 are only used in
-     * RENDERTYPE_XY, RENDERTYPE_OFFSET.
+     * Get the xy values of the end points of the line in an array of ints - x1,
+     * y1, x2, y2 . This does not look at the line render type, so it acts
+     * accordingly. p1 and p2 are only used in RENDERTYPE_XY, RENDERTYPE_OFFSET.
      * 
      * @return the array of x-y points, and all are pixel values
      */
@@ -231,9 +229,8 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
     }
 
     /**
-     * Check to see if this line is a polyline. This is a polyline if
-     * it is LINETYPE_GREATCIRCLE or LINETYPE_RHUMB for
-     * RENDERTYPE_LATLON polys.
+     * Check to see if this line is a polyline. This is a polyline if it is
+     * LINETYPE_GREATCIRCLE or LINETYPE_RHUMB for RENDERTYPE_LATLON polys.
      * 
      * @return true if polyline false if not
      */
@@ -242,9 +239,9 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
     }
 
     /**
-     * Set the number of segments of the lat/lon line. (This is only
-     * for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and if
-     * &lt; 1, this value is generated internally).
+     * Set the number of segments of the lat/lon line. (This is only for
+     * LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types, and if &lt; 1, this
+     * value is generated internally).
      * 
      * @param nsegs number of segment points
      */
@@ -253,8 +250,8 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
     }
 
     /**
-     * Get the number of segments of the lat/lon line. (This is only
-     * for LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types).
+     * Get the number of segments of the lat/lon line. (This is only for
+     * LINETYPE_GREATCIRCLE or LINETYPE_RHUMB line types).
      * 
      * @return int number of segment points
      */
@@ -263,16 +260,15 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
     }
 
     /**
-     * Set the arc that is drawn between the points of a x-y or offset
-     * line.
+     * Set the arc that is drawn between the points of a x-y or offset line.
      */
     public void setArc(ArcCalc ac) {
         arc = ac;
     }
 
     /**
-     * Return the arc angle set for this line. Will only be set if it
-     * was set externally.
+     * Return the arc angle set for this line. Will only be set if it was set
+     * externally.
      * 
      * @return arc angle in radians.
      */
@@ -299,104 +295,103 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
         initLabelingDuringGenerate();
 
         switch (renderType) {
-        case RENDERTYPE_XY:
-            if (arc != null) {
-                xpoints = new float[1][];
-                ypoints = new float[1][];
-                arc.generate(pts[0], pts[1], pts[2], pts[3]);
-                xpoints[0] = arc.getXPoints();
-                ypoints[0] = arc.getYPoints();
-            } else {
-                xpoints = new float[1][2];
-                ypoints = new float[1][2];
-
-                if (pts == null)
-                    return false;
-
-                xpoints[0][0] = pts[0];
-                ypoints[0][0] = pts[1];
-                xpoints[0][1] = pts[2];
-                ypoints[0][1] = pts[3];
-            }
-            setShape(createShape(xpoints[0], ypoints[0], false));
-            break;
-        case RENDERTYPE_OFFSET:
-            if (!proj.isPlotable(latlons[0], latlons[1])) {
-                setNeedToRegenerate(true);// HMMM not the best flag
-                return false;
-            }
-            Point p1 = (Point) proj.forward(latlons[0], latlons[1], new Point());
-            if (arc != null) {
-                xpoints = new float[1][];
-                ypoints = new float[1][];
-                arc.generate(p1.x + pts[0], p1.y + pts[1], p1.x + pts[2], p1.y
-                        + pts[3]);
-
-                xpoints[0] = arc.getXPoints();
-                ypoints[0] = arc.getYPoints();
-            } else {
-                xpoints = new float[1][2];
-                ypoints = new float[1][2];
-
-                xpoints[0][0] = p1.x + pts[0];
-                ypoints[0][0] = p1.y + pts[1];
-                xpoints[0][1] = p1.x + pts[2];
-                ypoints[0][1] = p1.y + pts[3];
-            }
-            setShape(createShape(xpoints[0], ypoints[0], false));
-            break;
-        case RENDERTYPE_LATLON:
-            if (arc != null) {
-                p1 = (Point) proj.forward(latlons[0], latlons[1], new Point());
-                Point p2 = (Point) proj.forward(latlons[2], latlons[3], new Point());
-                xpoints = new float[1][];
-                ypoints = new float[1][];
-                arc.generate(p1.x, p1.y, p2.x, p2.y);
-
-                xpoints[0] = arc.getXPoints();
-                ypoints[0] = arc.getYPoints();
-
-                setShape(createShape(xpoints[0], ypoints[0], false));
-
-                isPolyline = true;
-
-            } else {
-                ArrayList<float[]> lines = null;
-                if (proj instanceof GeoProj) {
-                    lines = ((GeoProj) proj).forwardLine(new LatLonPoint.Double(latlons[0], latlons[1]),
-                        new LatLonPoint.Double(latlons[2], latlons[3]),
-                        lineType,
-                        nsegs);
+            case RENDERTYPE_XY:
+                if (arc != null) {
+                    xpoints = new float[1][];
+                    ypoints = new float[1][];
+                    arc.generate(pts[0], pts[1], pts[2], pts[3]);
+                    xpoints[0] = arc.getXPoints();
+                    ypoints[0] = arc.getYPoints();
                 } else {
-                    lines = proj.forwardLine(new Point2D.Double(latlons[1], latlons[0]),
-                            new Point2D.Double(latlons[3], latlons[2]));
+                    xpoints = new float[1][2];
+                    ypoints = new float[1][2];
+
+                    if (pts == null)
+                        return false;
+
+                    xpoints[0][0] = pts[0];
+                    ypoints[0][0] = pts[1];
+                    xpoints[0][1] = pts[2];
+                    ypoints[0][1] = pts[3];
                 }
+                setShape(createShape(xpoints[0], ypoints[0], false));
+                break;
+            case RENDERTYPE_OFFSET:
+                if (!proj.isPlotable(latlons[0], latlons[1])) {
+                    setNeedToRegenerate(true);// HMMM not the best flag
+                    return false;
+                }
+                Point p1 = (Point) proj.forward(latlons[0], latlons[1], new Point());
+                if (arc != null) {
+                    xpoints = new float[1][];
+                    ypoints = new float[1][];
+                    arc.generate(p1.x + pts[0], p1.y + pts[1], p1.x + pts[2], p1.y + pts[3]);
 
-                int size = lines.size();
+                    xpoints[0] = arc.getXPoints();
+                    ypoints[0] = arc.getYPoints();
+                } else {
+                    xpoints = new float[1][2];
+                    ypoints = new float[1][2];
 
-                xpoints = new float[(int) (size / 2)][0];
-                ypoints = new float[xpoints.length][0];
+                    xpoints[0][0] = p1.x + pts[0];
+                    ypoints[0][0] = p1.y + pts[1];
+                    xpoints[0][1] = p1.x + pts[2];
+                    ypoints[0][1] = p1.y + pts[3];
+                }
+                setShape(createShape(xpoints[0], ypoints[0], false));
+                break;
+            case RENDERTYPE_LATLON:
+                if (arc != null) {
+                    p1 = (Point) proj.forward(latlons[0], latlons[1], new Point());
+                    Point p2 = (Point) proj.forward(latlons[2], latlons[3], new Point());
+                    xpoints = new float[1][];
+                    ypoints = new float[1][];
+                    arc.generate(p1.x, p1.y, p2.x, p2.y);
 
-                for (int i = 0, j = 0; i < size; i += 2, j++) {
-                	float[] xps = (float[]) lines.get(i);
-                	float[] yps = (float[]) lines.get(i + 1);
+                    xpoints[0] = arc.getXPoints();
+                    ypoints[0] = arc.getYPoints();
 
-                    xpoints[j] = xps;
-                    ypoints[j] = yps;
+                    setShape(createShape(xpoints[0], ypoints[0], false));
 
-                    GeneralPath gp = createShape(xps, yps, false);
-                    if (shape == null) {
-                        setShape(gp);
+                    isPolyline = true;
+
+                } else {
+                    ArrayList<float[]> lines = null;
+                    if (proj instanceof GeoProj) {
+                        lines =
+                                ((GeoProj) proj).forwardLine(new LatLonPoint.Double(latlons[0], latlons[1]),
+                                                             new LatLonPoint.Double(latlons[2], latlons[3]), lineType, nsegs);
                     } else {
-                        ((GeneralPath) shape).append(gp, false);
+                        lines =
+                                proj.forwardLine(new Point2D.Double(latlons[1], latlons[0]), new Point2D.Double(latlons[3],
+                                                                                                                latlons[2]));
                     }
+
+                    int size = lines.size();
+
+                    xpoints = new float[(int) (size / 2)][0];
+                    ypoints = new float[xpoints.length][0];
+
+                    for (int i = 0, j = 0; i < size; i += 2, j++) {
+                        float[] xps = (float[]) lines.get(i);
+                        float[] yps = (float[]) lines.get(i + 1);
+
+                        xpoints[j] = xps;
+                        ypoints[j] = yps;
+
+                        GeneralPath gp = createShape(xps, yps, false);
+                        if (shape == null) {
+                            setShape(gp);
+                        } else {
+                            ((GeneralPath) shape).append(gp, false);
+                        }
+                    }
+                    isPolyline = (lineType != LINETYPE_STRAIGHT);
                 }
-                isPolyline = (lineType != LINETYPE_STRAIGHT);
-            }
-            break;
-        case RENDERTYPE_UNKNOWN:
-            System.err.println("OMLine.generate: invalid RenderType");
-            return false;
+                break;
+            case RENDERTYPE_UNKNOWN:
+                System.err.println("OMLine.generate: invalid RenderType");
+                return false;
         }
 
         setLabelLocation(shape);
@@ -428,8 +423,7 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
         // Just to draw the matting for the arrowhead. The matting
         // for the rest of the line will be taken care of in
         // super.render().
-        if (arrowhead != null && isMatted() && g instanceof Graphics2D
-                && stroke instanceof BasicStroke) {
+        if (arrowhead != null && isMatted() && g instanceof Graphics2D && stroke instanceof BasicStroke) {
             ((Graphics2D) g).setStroke(new BasicStroke(((BasicStroke) stroke).getLineWidth() + 2f));
             setGraphicsColor(g, Color.black);
             arrowhead.render(g);
@@ -450,28 +444,42 @@ public class OMLine extends OMAbstractLine implements Serializable, NonRegional 
     }
 
     /**
-     * The OMLine should never render fill. It can think it does, if
-     * the geometry turns out to be curved. Returning false affects
-     * distance() and contains() methods.
+     * The OMLine should never render fill. It can think it does, if the
+     * geometry turns out to be curved. Returning false affects distance() and
+     * contains() methods.
      */
     public boolean shouldRenderFill() {
         return false;
     }
 
     /**
-     * This takes the area out of OMLines that may look like they have
-     * area, depending on their shape. Checks to see what
-     * shouldRenderFill() returns (false by default) to decide how to
-     * measure this. If shouldRenderFill == true, the super.contains()
-     * method is returned, which assumes the line shape has area if it
-     * is curved. Otherwise, it returns true if the point is on the
-     * line.
+     * This takes the area out of OMLines that may look like they have area,
+     * depending on their shape. Checks to see what shouldRenderFill() returns
+     * (false by default) to decide how to measure this. If shouldRenderFill ==
+     * true, the super.contains() method is returned, which assumes the line
+     * shape has area if it is curved. Otherwise, it returns true if the point
+     * is on the line.
      */
     public boolean contains(double x, double y) {
         if (shouldRenderFill()) {
             return super.contains(x, y);
         } else {
             return (distance(x, y) == 0);
+        }
+    }
+
+    public void restore(OMGeometry source) {
+        super.restore(source);
+        if (source instanceof OMLine) {
+            OMLine line = (OMLine) source;
+
+            this.latlons = DeepCopyUtil.deepCopy(line.latlons);
+            this.pts = DeepCopyUtil.deepCopy(line.pts);
+            if (line.arc != null) {
+                this.arc = new ArcCalc(line.arc.getArcAngle(), line.arc.isArcUp());
+            } else {
+                this.arc = null;
+            }
         }
     }
 

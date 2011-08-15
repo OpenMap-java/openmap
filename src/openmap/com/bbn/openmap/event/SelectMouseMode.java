@@ -49,7 +49,7 @@ public class SelectMouseMode extends CoordMouseMode {
      * Mouse Mode identifier, which is "Gestures". This is returned on
      * getID()
      */
-    public final static transient String modeID = "Gestures".intern();
+    public final static transient String modeID = "Gestures";
 
     /**
      * Construct a SelectMouseMode. Default constructor. Sets the ID

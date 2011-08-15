@@ -38,6 +38,8 @@ public interface GridData {
     public void setMajor(boolean value);
 
     public boolean getMajor();
+    
+    public GridData deepCopy();
 
     public interface Boolean extends GridData {
         public boolean getBooleanValue(int x, int y);

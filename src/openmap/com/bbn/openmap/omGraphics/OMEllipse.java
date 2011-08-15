@@ -43,7 +43,7 @@ public class OMEllipse extends OMCircle {
 
     protected double majorAxisSpan;
     protected double minorAxisSpan;
-    protected double[] rawllpts;
+    protected transient double[] rawllpts;
 
     /**
      * Create a OMEllipse, positioned with a lat-lon center and a lat-lon axis.
@@ -279,5 +279,14 @@ public class OMEllipse extends OMCircle {
 
         setNeedToRegenerate(false);
         return true;
+    }
+    
+    public void restore(OMGeometry source){
+        super.restore(source);
+        if (source instanceof OMEllipse) {
+            OMEllipse ellipse = (OMEllipse) source;
+            this.majorAxisSpan = ellipse.majorAxisSpan;
+            this.minorAxisSpan = ellipse.minorAxisSpan;
+        }
     }
 }

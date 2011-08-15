@@ -88,7 +88,6 @@ public class HttpConnection extends Thread {
             try {
                 close();
             } catch (IOException e2) {
-                ;
             }
             System.err.println("Exception while getting socket streams: " + e);
             return;

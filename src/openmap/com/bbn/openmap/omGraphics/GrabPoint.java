@@ -29,25 +29,26 @@ import java.awt.Color;
  * adjusted. Some GrabPoints are limited in the direction that they are able to
  * move.
  */
-public class GrabPoint extends OMPoint {
+public class GrabPoint
+        extends OMPoint {
 
     public final static int DEFAULT_RADIUS = 3;
 
     public GrabPoint(int x, int y) {
         this(x, y, DEFAULT_RADIUS);
-        setLinePaint(Color.black);
-        setFillPaint(Color.white);
-        setVisible(false);
     }
 
     public GrabPoint(int x, int y, int radius) {
-        super(x, y, radius);
-        setLinePaint(Color.black);
-        setFillPaint(Color.white);
+        super(x, y);
+        setDefaultDrawingAttributes(radius);
         setVisible(false);
     }
 
     public void set(double x, double y) {
         set((int) x, (int) y);
+    }
+    
+    public void setDefaultDrawingAttributes(int pointRadius) {
+        new DrawingAttributes.Builder().setLinePaint(Color.black).setFillPaint(Color.white).setPointRadius(pointRadius).build().setTo(this);
     }
 }

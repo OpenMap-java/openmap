@@ -273,7 +273,7 @@ public class CoverageTable {
       try {
          String filename = tablepath + (addSlash ? "/" : "") + "fcs";
          if (!BinaryFile.exists(filename)) {
-            filename = filename + ".";
+            filename += ".";
             appendDot = true;
          }
          DcwRecordFile fcs = new DcwRecordFile(filename);

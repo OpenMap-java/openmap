@@ -23,6 +23,7 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Font;
+import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -48,6 +49,14 @@ public class FontSizer implements Serializable {
      */
     protected int multiplier = 1;
 
+    /**
+     * Create a FontSizer with the same settings as the source.
+     * @param source
+     */
+    public FontSizer(FontSizer source) {
+        restore(source);
+    }
+    
     /**
      * @param font the font to use as the base font.
      * @param baseScale the scale where the base font is shown at its
@@ -176,5 +185,16 @@ public class FontSizer implements Serializable {
         } else {
             font = OMText.DEFAULT_FONT;
         }
+    }
+    
+    public void restore(FontSizer source) {
+        this.font = source.font.deriveFont(AffineTransform.TYPE_IDENTITY);
+        this.lastFont = source.font.deriveFont(AffineTransform.TYPE_IDENTITY);
+        this.baseScale = source.baseScale;
+        this.lastScale = source.lastScale;
+        this.curScale = source.curScale;
+        this.minPointSize = source.minPointSize;
+        this.maxPointSize = source.maxPointSize;
+        this.multiplier = source.multiplier;
     }
 }

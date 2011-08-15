@@ -484,23 +484,21 @@ public abstract class LayerGraphicWarehouseSupport
                // HACK: we're assuming data is going from west to
                // east,
                // so we wrap the other way
-               newllpts[i] = ProjMath.degToRad(-89.99f);
-               newllpts[++i] = ProjMath.degToRad(179.99f);
-               newllpts[++i] = ProjMath.degToRad(-89.99f);
-               newllpts[++i] = ProjMath.degToRad(90f);
-               newllpts[++i] = ProjMath.degToRad(-89.99f);
-               newllpts[++i] = ProjMath.degToRad(0f);
-               newllpts[++i] = ProjMath.degToRad(-89.99f);
-               newllpts[++i] = ProjMath.degToRad(-90f);
-               newllpts[++i] = ProjMath.degToRad(-89.99f);
-               newllpts[++i] = ProjMath.degToRad(-179.99f);
-               ++i;// lat
+               newllpts[i++] = ProjMath.degToRad(-89.99f);
+               newllpts[i++] = ProjMath.degToRad(179.99f);
+               newllpts[i++] = ProjMath.degToRad(-89.99f);
+               newllpts[i++] = ProjMath.degToRad(90f);
+               newllpts[i++] = ProjMath.degToRad(-89.99f);
+               newllpts[i++] = ProjMath.degToRad(0f);
+               newllpts[i++] = ProjMath.degToRad(-89.99f);
+               newllpts[i++] = ProjMath.degToRad(-90f);
+               newllpts[i++] = ProjMath.degToRad(-89.99f);
+               newllpts[i++] = ProjMath.degToRad(-179.99f);
                // HACK: advance to western hemisphere where we
                // pick up the real data again
                while (llpts[i + 1] > 0) {// lon
-                  newllpts[i] = ProjMath.degToRad(-89.99f);
-                  newllpts[++i] = ProjMath.degToRad(-179.99f);
-                  ++i;// lat
+                  newllpts[i++] = ProjMath.degToRad(-89.99f);
+                  newllpts[i++] = ProjMath.degToRad(-179.99f);
                }
                i -= 2;
             }

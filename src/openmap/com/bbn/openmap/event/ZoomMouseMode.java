@@ -25,7 +25,7 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 public class ZoomMouseMode
         extends CoordMouseMode {
     protected double squareWidth = 50;
-    public final static transient String modeID = "Zoom".intern();
+    public final static transient String modeID = "Zoom";
     protected MapBean theMap = null;
 
     public ZoomMouseMode() {

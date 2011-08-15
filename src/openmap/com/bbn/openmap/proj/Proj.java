@@ -350,7 +350,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      */
     protected void setProjectionID() {
         projID = (getClass().getName() + ":" + scale + ":" + centerX + ":"
-                + centerY + ":" + width + ":" + height + ":").intern();
+                + centerY + ":" + width + ":" + height + ":");
     }
 
     /**
@@ -397,7 +397,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         if (getClass() != o.getClass()) {
             return false;
         }
-        return (getProjectionID() == ((Projection) o).getProjectionID());
+        return getProjectionID().equals(((Projection) o).getProjectionID());
     }
 
     /**

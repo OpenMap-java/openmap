@@ -79,14 +79,14 @@ public class GenerateVPFProperties
             for (String libraryName : libraries) {
                print(libraryName, " ");
             }
-            println("");
-            println("");
+            println();
+            println();
          }
          for (String libraryName : libraries) {
             String prefix = lst.getDatabaseName() + "_" + libraryName;
             println("# Library: " + prefix);
             printLibrary(prefix, lst.getCAT(libraryName));
-            println("");
+            println();
          }
       }
    }
@@ -144,7 +144,7 @@ public class GenerateVPFProperties
          fca = new File(fcaPath);
       }
       if (!fca.canRead()) {
-         println("");
+         println();
          return null;
       }
       try {
@@ -186,7 +186,7 @@ public class GenerateVPFProperties
          printFeatures("edge", edge_features, layername);
          printFeatures("area", area_features, layername);
          printFeatures("point", point_features, layername);
-         println("");
+         println();
 
       } else {
          return null;
@@ -205,7 +205,7 @@ public class GenerateVPFProperties
          for (Object obj : features) {
             print(obj.toString());
          }
-         println("");
+         println();
       }
    }
 }

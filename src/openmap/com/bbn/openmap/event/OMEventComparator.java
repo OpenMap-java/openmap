@@ -6,9 +6,12 @@ import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.bbn.openmap.util.HashCodeUtil;
+
 /**
  */
-public class OMEventComparator implements Comparator<OMEvent> {
+public class OMEventComparator
+        implements Comparator<OMEvent> {
 
     public static Logger logger = Logger.getLogger("com.bbn.openmap.event.OMEventComparator");
 
@@ -57,11 +60,9 @@ public class OMEventComparator implements Comparator<OMEvent> {
             } else {
                 obj1.setSorted(true);
             }
-            
 
             if (logging) {
-                logger.info("comparing [" + id1 + "] at " + tsc1 + " to ["
-                        + id2 + "] at " + tsc2);
+                logger.info("comparing [" + id1 + "] at " + tsc1 + " to [" + id2 + "] at " + tsc2);
             }
 
             // Since time stamps are equal, go to the time stamp comparator
@@ -85,8 +86,7 @@ public class OMEventComparator implements Comparator<OMEvent> {
                 obj2.setTimeStampComparator(tsc1);
                 ret = 1;
                 if (logging) {
-                    logger.info("^^^^^ " + ts1 + ", upping [" + id1 + "] to "
-                            + tsc1 + " over [" + id2 + "]");
+                    logger.info("^^^^^ " + ts1 + ", upping [" + id1 + "] to " + tsc1 + " over [" + id2 + "]");
                 }
             }
         }
@@ -104,4 +104,9 @@ public class OMEventComparator implements Comparator<OMEvent> {
         return obj.hashCode() == this.hashCode();
     }
 
+    public int hashCode() {
+        int result = HashCodeUtil.SEED;
+        result = HashCodeUtil.hash(result, getClass().getName());
+        return result;
+    }
 }

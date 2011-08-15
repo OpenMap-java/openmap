@@ -168,10 +168,10 @@ public class JarLoader {
             if (!warnedAboutNoBeans) {
                 // We only print this explanatory message once.
                 warnedAboutNoBeans = true;
-                System.err.println("");
+                System.err.println();
                 System.err.println("Each jar file needs to contain a manifest file describing which entries are");
                 System.err.println("beans.  You can should provide a suitable manifest when you create the jar.");
-                System.err.println("");
+                System.err.println();
             }
         }
 

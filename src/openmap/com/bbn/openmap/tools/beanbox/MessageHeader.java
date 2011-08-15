@@ -112,9 +112,9 @@ public class MessageHeader {
     public void print(PrintWriter p) {
         for (int i = 0; i < nkeys; i++)
             if (keys[i] != null)
-                p.print(keys[i] + (values[i] != null ? ": " + values[i] : "")
-                        + "\r\n");
-        p.print("\r\n");
+                p.println(keys[i] + (values[i] != null ? ": " + values[i] : "")
+                        + "\r");
+        p.println("\r");
         p.flush();
     }
 

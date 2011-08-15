@@ -24,9 +24,11 @@
 
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.EditableOMRect;
+import com.bbn.openmap.omGraphics.GrabPoint;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
@@ -60,7 +62,8 @@ public class RectUndefinedState extends GraphicUndefinedState {
             Debug.message("eomg",
                     "RectStateMachine|undefined state| *offset needed*");
         }
-        graphic.getStateMachine().setEdit();
+        
+        ((RectStateMachine)graphic.getStateMachine()).setInitialEdit();
         graphic.fireEvent(EOMGEvent.EOMG_EDIT);
         return getMapMouseListenerResponse();
     }

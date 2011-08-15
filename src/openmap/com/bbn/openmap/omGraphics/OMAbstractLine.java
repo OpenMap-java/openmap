@@ -209,5 +209,26 @@ public abstract class OMAbstractLine extends OMGraphicAdapter implements OMGraph
                 OMArrowHead.DEFAULT_WINGTIP,
                 OMArrowHead.DEFAULT_WINGLENGTH);
     }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.bbn.openmap.omGraphics.OMGraphic#restore(com.bbn.openmap.omGraphics
+     * .OMGraphic)
+     */
+    public void restore(OMGraphic source) {
+        super.restore(source);
+        if (source instanceof OMAbstractLine) {
+            OMAbstractLine lineSource = (OMAbstractLine) source;
+            OMArrowHead sah = lineSource.getArrowHead();
+            if (sah != null) {
+                OMArrowHead destArrowHead = new OMArrowHead(sah.getArrowDirectionType(), sah.getLocation(), sah.getWingTip(), sah.getWingLength());
+                setArrowHead(destArrowHead);
+            }
+            
+            nsegs = lineSource.nsegs;
+        }
+    }
 
 }

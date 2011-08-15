@@ -357,12 +357,12 @@ public class WholeWorldTileHandler
 
         public String toString() {
             StringBuilder sb = new StringBuilder("WholeWorldTileHandler[");
-            sb.append("source:" + sourceFile + ",");
-            sb.append("target:" + targetFile + ",");
-            sb.append("subJarZoomDef:" + subJarZoomDef + ",");
-            sb.append("worldWideZoomLevel:" + worldWideZoomLevel + ",");
-            sb.append("maxZoomLevelInSubJars:" + maxZoomLevelInSubJars + ",");
-            sb.append("tileExt:" + tileExt + "]");
+            sb.append("source:").append(sourceFile).append(',');
+            sb.append("target:").append(targetFile).append(',');
+            sb.append("subJarZoomDef:").append(subJarZoomDef).append(',');
+            sb.append("worldWideZoomLevel:").append(worldWideZoomLevel).append(',');
+            sb.append("maxZoomLevelInSubJars:").append(maxZoomLevelInSubJars).append(',');
+            sb.append("tileExt:").append(tileExt).append(']');
 
             return sb.toString();
         }
@@ -416,7 +416,7 @@ public class WholeWorldTileHandler
                 }
             }
 
-            if (jarDirs.size() > 0 && sourceFile != null) {
+            if (!jarDirs.isEmpty() && sourceFile != null) {
                 String worldWideJarFile = targetFile + File.separator + sourceFile.getName() + ".jar";
                 logger.fine("writing :" + worldWideJarFile);
 

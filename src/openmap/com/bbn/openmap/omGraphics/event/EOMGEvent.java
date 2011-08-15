@@ -24,12 +24,20 @@
 
 package com.bbn.openmap.omGraphics.event;
 
-import com.bbn.openmap.omGraphics.EditableOMGraphic;
-
 import java.awt.Cursor;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
+import com.bbn.openmap.omGraphics.EditableOMGraphic;
+
+/**
+ * The EOMGEvent describes a change in state of an EditableOMGraphic. State,
+ * that is, in terms of what the StateMachine is interested in. Whenever a EOMG
+ * state changes, the EOMG fires a chance through one of these events so that
+ * any interested party can find out what's going on.
+ * 
+ * @author ddietrick
+ */
 public class EOMGEvent {
     /**
      * The status of the EditableOMGraphic hasn't changed.
@@ -38,58 +46,63 @@ public class EOMGEvent {
     /** Nothing about the graphic is known or defined. */
     public final static int EOMG_UNDEFINED = 0;
     /**
-     * The Graphic is defined and in a stable state without the grab
-     * points active.
+     * The Graphic is defined and in a stable state without the grab points
+     * active.
      */
     public final static int EOMG_DEFINED = 1;
     /**
-     * The Graphic is defined, in a stable state with the grab points
-     * active.  Receiving an event with this status means that the EditableOMGraphic
-     * has returned to the stable state, and can be used as a trigger for
-     * other GUI updates.
+     * The Graphic is defined, in a stable state with the grab points active.
+     * Receiving an event with this status means that the EditableOMGraphic has
+     * returned to the stable state, and can be used as a trigger for other GUI
+     * updates.
      */
     public final static int EOMG_SELECTED = 2;
     /**
-     * The Graphic is defined, in a state of flux. The GrabPoints are
-     * being manipulated, and the graphic parameters are being
-     * modified as a result of this.
+     * The Graphic is defined, in a state of flux. The GrabPoints are being
+     * manipulated, and the graphic parameters are being modified as a result of
+     * this.
      */
     public final static int EOMG_EDIT = 3;
     /**
-     * This is a state where something different or extra is being
-     * done. Grab point being added/defined, some other parameter of
-     * the graphic being modified where an extra state warrants it.
-     * There may be other auxillary states defined, and they should be
-     * defined to be greater than EOMG_COMPLETE.
+     * This is a state where something different or extra is being done. Grab
+     * point being added/defined, some other parameter of the graphic being
+     * modified where an extra state warrants it. There may be other auxillary
+     * states defined, and they should be defined to be greater than
+     * EOMG_COMPLETE.
      */
     public final static int EOMG_AUX = 4;
     /**
      * The state where the editing is complete.
      */
     public final static int EOMG_COMPLETE = 5;
+    
+    /**
+     * A state where the current OMGraphic state should be saved for an Undo operation.  
+     */
+    public final static int EOMG_UNDO = 6;
 
     /** The EOMG in question. */
     protected EditableOMGraphic source;
     /**
-     * The Cursor that should be active after this event is received.
-     * If null, then the cursor should be unchanged.
+     * The Cursor that should be active after this event is received. If null,
+     * then the cursor should be unchanged.
      */
     protected Cursor cursor;
     /**
-     * An instructional/error message that should be presented to the
-     * user. If null, nothing should be displayed. Send an empty
-     * string to clear out what is currently being displayed.
+     * An instructional/error message that should be presented to the user. If
+     * null, nothing should be displayed. Send an empty string to clear out what
+     * is currently being displayed.
      */
     protected String message;
     /**
-     * A java MouseEvent that might have caused this EOMGEvent. Can be
-     * used by the listener to determine what type of action to take,
-     * to check if an option key was held down, etc. May be null!
+     * A java MouseEvent that might have caused this EOMGEvent. Can be used by
+     * the listener to determine what type of action to take, to check if an
+     * option key was held down, etc. May be null!
      */
     protected MouseEvent mouseEvent = null;
 
     /**
-     * The status of the EOMG as this event is sent.  Will be EOMG_UNDEFINED,
+     * The status of the EOMG as this event is sent. Will be EOMG_UNDEFINED,
      * EOMG_DEFINED, EOMG_SELECTED, EOMG_EDIT or EOMG_COMPLETE.
      */
     protected int status = EOMG_UNDEFINED;
@@ -97,8 +110,7 @@ public class EOMGEvent {
     /**
      * Create an Event.
      */
-    public EOMGEvent(EditableOMGraphic source, Cursor cursor, String message,
-            MouseEvent me, int status) {
+    public EOMGEvent(EditableOMGraphic source, Cursor cursor, String message, MouseEvent me, int status) {
         this.source = source;
         this.cursor = cursor;
         this.message = message;
@@ -146,8 +158,7 @@ public class EOMGEvent {
     }
 
     /**
-     * @return the MouseEvent that started the EOMG changing. May be
-     *         null!
+     * @return the MouseEvent that started the EOMG changing. May be null!
      */
     public MouseEvent getMouseEvent() {
         return mouseEvent;
@@ -172,4 +183,3 @@ public class EOMGEvent {
         this.status = status;
     }
 }
-

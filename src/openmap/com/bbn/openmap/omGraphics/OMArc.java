@@ -56,7 +56,9 @@ import com.bbn.openmap.util.Debug;
  * 
  * @see OMPoly
  */
-public class OMArc extends OMGraphicAdapter implements OMGraphic {
+public class OMArc
+        extends OMGraphicAdapter
+        implements OMGraphic {
 
     /** Horizontal pixel location of the center. */
     protected double x1 = 0;
@@ -147,8 +149,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      * @param s starting angle of arc, decimal degrees
      * @param e angular extent of arc, decimal degrees
      */
-    public OMArc(double latPoint, double lonPoint, int w, int h, double s,
-            double e) {
+    public OMArc(double latPoint, double lonPoint, int w, int h, double s, double e) {
         this(latPoint, lonPoint, 0, 0, w, h, s, e);
     }
 
@@ -193,8 +194,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      *        arcs, positive extents go in the counter-clockwise direction,
      *        matching the java.awt.geom.Arc2D convention.
      */
-    public OMArc(double latPoint, double lonPoint, int offset_x1,
-            int offset_y1, int w, int h, double s, double e) {
+    public OMArc(double latPoint, double lonPoint, int offset_x1, int offset_y1, int w, int h, double s, double e) {
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
 
         center = new LatLonPoint.Double(latPoint, lonPoint);
@@ -219,15 +219,9 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      *        arcs, positive extents go in the clockwise direction, matching the
      *        OpenMap convention in coordinate space.
      */
-    public OMArc(double latPoint, double lonPoint, double radius, double s,
-            double e) {
+    public OMArc(double latPoint, double lonPoint, double radius, double s, double e) {
 
-        this(new LatLonPoint.Double(latPoint, lonPoint),
-             radius,
-             Length.DECIMAL_DEGREE,
-             -1,
-             s,
-             e);
+        this(new LatLonPoint.Double(latPoint, lonPoint), radius, Length.DECIMAL_DEGREE, -1, s, e);
     }
 
     /**
@@ -243,14 +237,8 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      *        arcs, positive extents go in the clockwise direction, matching the
      *        OpenMap convention in coordinate space.
      */
-    public OMArc(double latPoint, double lonPoint, double radius, Length units,
-            double s, double e) {
-        this(new LatLonPoint.Double(latPoint, lonPoint),
-             radius,
-             units,
-             -1,
-             s,
-             e);
+    public OMArc(double latPoint, double lonPoint, double radius, Length units, double s, double e) {
+        this(new LatLonPoint.Double(latPoint, lonPoint), radius, units, -1, s, e);
     }
 
     /**
@@ -268,14 +256,8 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      *        arcs, positive extents go in the clockwise direction, matching the
      *        OpenMap convention in coordinate space.
      */
-    public OMArc(double latPoint, double lonPoint, double radius, Length units,
-            int nverts, double s, double e) {
-        this(new LatLonPoint.Double(latPoint, lonPoint),
-             radius,
-             units,
-             nverts,
-             s,
-             e);
+    public OMArc(double latPoint, double lonPoint, double radius, Length units, int nverts, double s, double e) {
+        this(new LatLonPoint.Double(latPoint, lonPoint), radius, units, nverts, s, e);
     }
 
     /**
@@ -293,8 +275,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      *        arcs, positive extents go in the clockwise direction, matching the
      *        OpenMap convention in coordinate space.
      */
-    public OMArc(LatLonPoint center, double radius, Length units, int nverts,
-            double s, double e) {
+    public OMArc(LatLonPoint center, double radius, Length units, int nverts, double s, double e) {
 
         super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         this.radius = units.toRadians(radius);
@@ -312,7 +293,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      * @return x position of center.
      */
     public int getX() {
-        return (int)x1;
+        return (int) x1;
     }
 
     /**
@@ -323,7 +304,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      * @return y position of center.
      */
     public int getY() {
-        return (int)y1;
+        return (int) y1;
     }
 
     /**
@@ -333,7 +314,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      * @return x offset from center.
      */
     public int getOffX() {
-        return (int)off_x;
+        return (int) off_x;
     }
 
     /**
@@ -343,7 +324,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      * @return y offset from center.
      */
     public int getOffY() {
-        return (int)off_y;
+        return (int) off_y;
     }
 
     /**
@@ -373,7 +354,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      * @return the horizontal pixel diameter of the arc.
      */
     public int getWidth() {
-        return (int)width;
+        return (int) width;
     }
 
     /**
@@ -383,7 +364,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      * @return the vertical pixel diameter of the arc.
      */
     public int getHeight() {
-        return (int)height;
+        return (int) height;
     }
 
     /**
@@ -702,114 +683,109 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
         AffineTransform af = null;
 
         switch (renderType) {
-        case RENDERTYPE_OFFSET:
-            if (!proj.isPlotable(center)) {
-                setNeedToRegenerate(true);// HMMM not the best flag
-                return false;
-            }
+            case RENDERTYPE_OFFSET:
+                if (!proj.isPlotable(center)) {
+                    setNeedToRegenerate(true);// HMMM not the best flag
+                    return false;
+                }
 
-            Point2D p1 = new Point2D.Double();
-            // if (proj instanceof GeoProj) {
-            // ((GeoProj) proj).forward(center.getRadLat(),
-            // center.getRadLon(),
-            // p1,
-            // true);
-            // } else {
-            p1 = proj.forward(center, p1);
-            // }
-            x1 = p1.getX() + off_x;
-            y1 = p1.getY() + off_y;
-            // Fall through...
-        case RENDERTYPE_XY:
-            double x = x1 - width / 2d;
-            double y = y1 - height / 2d;
+                Point2D p1 = new Point2D.Double();
+                // if (proj instanceof GeoProj) {
+                // ((GeoProj) proj).forward(center.getRadLat(),
+                // center.getRadLon(),
+                // p1,
+                // true);
+                // } else {
+                p1 = proj.forward(center, p1);
+                // }
+                x1 = p1.getX() + off_x;
+                y1 = p1.getY() + off_y;
+                // Fall through...
+            case RENDERTYPE_XY:
+                double x = x1 - width / 2d;
+                double y = y1 - height / 2d;
 
-            Shape arcShape = createArcShape(x, y, width, height);
+                Shape arcShape = createArcShape(x, y, width, height);
 
-            if (rotationAngle != DEFAULT_ROTATIONANGLE) {
-                af = new AffineTransform();
-                af.rotate(rotationAngle, x1, y1);
-            }
-            pi = arcShape.getPathIterator(af);
-            gp = new GeneralPath();
-            gp.append(pi, false);
-            // In X/Y or Offset RenderType, there is only one shape.
-            setShape(gp);
+                if (rotationAngle != DEFAULT_ROTATIONANGLE) {
+                    af = new AffineTransform();
+                    af.rotate(rotationAngle, x1, y1);
+                }
+                pi = arcShape.getPathIterator(af);
+                gp = new GeneralPath();
+                gp.append(pi, false);
+                // In X/Y or Offset RenderType, there is only one shape.
+                setShape(gp);
 
-            break;
+                break;
 
-        case RENDERTYPE_LATLON:
+            case RENDERTYPE_LATLON:
 
-            GeneralPath tempShape = null;
+                GeneralPath tempShape = null;
 
-            if (proj instanceof GeoProj) {
+                if (proj instanceof GeoProj) {
 
-                Point2D p = proj.forward(center.getY(),
-                        center.getX(),
-                        new Point2D.Double());
+                    Point2D p = proj.forward(center.getY(), center.getX(), new Point2D.Double());
 
-                x1 = p.getX();
-                y1 = p.getY();
+                    x1 = p.getX();
+                    y1 = p.getY();
 
-                ArrayList<float[]> coordLists = getCoordLists(((GeoProj) proj),
-                        center,
-                        radius,
-                        nverts);
-                int size = coordLists.size();
+                    ArrayList<float[]> coordLists = getCoordLists(((GeoProj) proj), center, radius, nverts);
+                    int size = coordLists.size();
 
-                for (int i = 0; i < size; i += 2) {
-                	float[] xpoints = (float[]) coordLists.get(i);
-                    float[] ypoints = (float[]) coordLists.get(i + 1);
+                    for (int i = 0; i < size; i += 2) {
+                        float[] xpoints = (float[]) coordLists.get(i);
+                        float[] ypoints = (float[]) coordLists.get(i + 1);
 
-                    gp = createShape(xpoints,
-                            ypoints,
-                            (arcType != Arc2D.OPEN || (arcType == Arc2D.OPEN && !isClear(fillPaint))));
+                        gp =
+                                createShape(xpoints, ypoints,
+                                            (arcType != Arc2D.OPEN || (arcType == Arc2D.OPEN && !isClear(fillPaint))));
 
-                    if (shape == null) {
-                        setShape(gp);
-                    } else {
-                        ((GeneralPath) shape).append(gp, false);
-                    }
-
-                    correctFill = proj instanceof Cylindrical
-                            && ((shouldCenterBeInShape() && shape != null && !shape.contains(x1,
-                                    y1)) || correctPolar);
-
-                    if (correctFill) {
-                    	float[][] alts = doPolarFillCorrection(xpoints,
-                                ypoints,
-                                (center.getRadLat() > 0f) ? -1
-                                        : proj.getWidth() + 1);
-
-                        int gp2length = alts[0].length - 2;
-
-                        gp1 = createShape(alts[0], alts[1], true);
-                        gp2 = createShape(alts[0], alts[1], 0, gp2length, false);
-
-                        if (tempShape == null || polarShapeLine == null) {
-                            tempShape = gp1;
-                            polarShapeLine = gp2;
+                        if (shape == null) {
+                            setShape(gp);
                         } else {
-                            tempShape.append(gp1, false);
-                            polarShapeLine.append(gp2, false);
+                            ((GeneralPath) shape).append(gp, false);
+                        }
+
+                        correctFill =
+                                proj instanceof Cylindrical
+                                        && ((shouldCenterBeInShape() && shape != null && !shape.contains(x1, y1)) || correctPolar);
+
+                        if (correctFill) {
+                            float[][] alts =
+                                    doPolarFillCorrection(xpoints, ypoints, (center.getRadLat() > 0f) ? -1 : proj.getWidth() + 1);
+
+                            int gp2length = alts[0].length - 2;
+
+                            gp1 = createShape(alts[0], alts[1], true);
+                            gp2 = createShape(alts[0], alts[1], 0, gp2length, false);
+
+                            if (tempShape == null || polarShapeLine == null) {
+                                tempShape = gp1;
+                                polarShapeLine = gp2;
+                            } else {
+                                tempShape.append(gp1, false);
+                                polarShapeLine.append(gp2, false);
+                            }
                         }
                     }
+                } else {
+                    double degRadius = Math.toDegrees(radius);
+                    // Create shape for non-GeoProj in lat/lon space...
+                    tempShape =
+                            new GeneralPath(proj.forwardShape(new Arc2D.Double(center.getX() - degRadius,
+                                                                               center.getY() - degRadius, 2 * degRadius,
+                                                                               2 * degRadius, start, extent, arcType)));
                 }
-            } else {
-                double degRadius = Math.toDegrees(radius);
-                // Create shape for non-GeoProj in lat/lon space...
-                tempShape = new GeneralPath(proj.forwardShape(new Arc2D.Double(center.getX()
-                        - degRadius, center.getY() - degRadius, 2 * degRadius, 2 * degRadius, start, extent, arcType)));
-            }
 
-            if (tempShape != null) {
-                setShape(tempShape);
-            }
+                if (tempShape != null) {
+                    setShape(tempShape);
+                }
 
-            break;
-        case RENDERTYPE_UNKNOWN:
-            System.err.println("OMArc.generate(): invalid RenderType");
-            return false;
+                break;
+            case RENDERTYPE_UNKNOWN:
+                System.err.println("OMArc.generate(): invalid RenderType");
+                return false;
         }
         setNeedToRegenerate(false);
         return true;
@@ -818,11 +794,10 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
     /**
      * An internal method designed to fetch the Shape to be used for an XY or
      * OFFSET OMArc. This method is smart enough to take the calculated position
-     * information and make a call to Arc2D.Double with start, extent and arcType
-     * information.
+     * information and make a call to Arc2D.Double with start, extent and
+     * arcType information.
      */
-    protected Shape createArcShape(double x, double y, double fwidth,
-                                   double fheight) {
+    protected Shape createArcShape(double x, double y, double fwidth, double fheight) {
         return new Arc2D.Double(x, y, fwidth, fheight, start, extent, arcType);
     }
 
@@ -832,19 +807,12 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      * and make a call to Projection.forwardArc() with start, extent and arcType
      * information.
      */
-    protected ArrayList<float[]> getCoordLists(GeoProj proj, LatLonPoint center,
-                                      double radius, int nverts) {
+    protected ArrayList<float[]> getCoordLists(GeoProj proj, LatLonPoint center, double radius, int nverts) {
 
-        int at = (arcType == Arc2D.OPEN && !isClear(fillPaint) ? Arc2D.CHORD
-                : arcType);
+        int at = (arcType == Arc2D.OPEN && !isClear(fillPaint) ? Arc2D.CHORD : arcType);
 
         return proj.forwardArc(center, /* radians */
-                true,
-                radius,
-                nverts,
-                ProjMath.degToRad(start),
-                ProjMath.degToRad(extent),
-                at);
+        true, radius, nverts, ProjMath.degToRad(start), ProjMath.degToRad(extent), at);
     }
 
     /**
@@ -867,7 +835,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      *         the [1] is the y points.
      */
     private float[][] doPolarFillCorrection(float[] xpoints, float[] ypoints, int y1) {
-    	float[][] ret = new float[2][];
+        float[][] ret = new float[2][];
 
         int len = xpoints.length;
         float[] alt_xpts = new float[len + 2];
@@ -936,6 +904,26 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
         if (center != null)
             clone.center = (LatLonPoint) center.clone();
         return clone;
+    }
+
+    public void restore(OMGeometry source) {
+        super.restore(source);
+        if (source instanceof OMArc) {
+            OMArc arc = (OMArc) source;
+            this.x1 = arc.x1;
+            this.y1 = arc.y1;
+            this.off_x = arc.off_x;
+            this.off_y = arc.off_y;
+            this.center = new LatLonPoint.Double(arc.getCenter());
+            this.radius = arc.radius;
+            this.width = arc.width;
+            this.height = arc.height;
+            this.start = arc.start;
+            this.extent = arc.extent;
+            this.arcType = arc.arcType;
+            this.nverts = arc.nverts;
+            this.rotationAngle = arc.rotationAngle;
+        }
     }
 
 }

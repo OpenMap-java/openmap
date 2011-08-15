@@ -229,7 +229,7 @@ public class Orthographic extends Azimuth {
         }
         
         // convert from screen to world coordinates
-        x = x - wx;
+        x -= wx;
         y = hy - y;
 
         // Debug.output("Orthographic.inverse: x,y=" + x + "," + y);

@@ -357,4 +357,11 @@ public class OMGraphicHash
         super.clear();
         graphicHash.clear();
     }
+    
+    public void restore(OMGeometry source) {
+        super.restore(source);
+        if (source instanceof OMGraphicHash) {
+            this.putAll(((OMGraphicHash)source).graphicHash);
+        }
+    }
 }

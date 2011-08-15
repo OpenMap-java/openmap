@@ -56,7 +56,8 @@ import com.bbn.openmap.util.Debug;
  * If you want the OMGrid to hide the OMGraphics that are created, make it
  * vague.
  */
-public class OMGrid extends OMGraphicList {
+public class OMGrid
+        extends OMGraphicList {
 
     /**
      * The orientation angle of the grid, in radians. Up/North is zero.
@@ -179,7 +180,8 @@ public class OMGrid extends OMGraphicList {
     protected Length units = null;
 
     /** Default constructor. */
-    public OMGrid() {}
+    public OMGrid() {
+    }
 
     /**
      * Create a OMGrid that covers a lat/lon area. Column major by default. If
@@ -196,8 +198,7 @@ public class OMGrid extends OMGraphicList {
      * @param data a double array of integers, representing the rows and columns
      *        of data.
      */
-    public OMGrid(double lat, double lon, double vResolution,
-            double hResolution, int[][] data) {
+    public OMGrid(double lat, double lon, double vResolution, double hResolution, int[][] data) {
         setRenderType(RENDERTYPE_LATLON);
         set(lat, lon, 0, 0, vResolution, hResolution, data);
     }
@@ -218,8 +219,7 @@ public class OMGrid extends OMGraphicList {
      * @param data a double array of integers, representing the rows and columns
      *        of data.
      */
-    public OMGrid(int x, int y, double vResolution, double hResolution,
-            int[][] data) {
+    public OMGrid(int x, int y, double vResolution, double hResolution, int[][] data) {
         setRenderType(RENDERTYPE_XY);
         set(0.0f, 0.0f, x, y, vResolution, hResolution, data);
     }
@@ -242,8 +242,7 @@ public class OMGrid extends OMGraphicList {
      * @param data a double array of integers, representing the rows and columns
      *        of data.
      */
-    public OMGrid(double lat, double lon, int x, int y, double vResolution,
-            double hResolution, int[][] data) {
+    public OMGrid(double lat, double lon, int x, int y, double vResolution, double hResolution, int[][] data) {
         setRenderType(RENDERTYPE_OFFSET);
         set(lat, lon, x, y, vResolution, hResolution, data);
     }
@@ -262,8 +261,7 @@ public class OMGrid extends OMGraphicList {
      *        degrees per column.
      * @param data GridData object holding rows and columns of grid data.
      */
-    public OMGrid(double lat, double lon, double vResolution,
-            double hResolution, GridData data) {
+    public OMGrid(double lat, double lon, double vResolution, double hResolution, GridData data) {
         setRenderType(RENDERTYPE_LATLON);
         set(lat, lon, 0, 0, vResolution, hResolution, data);
     }
@@ -283,8 +281,7 @@ public class OMGrid extends OMGraphicList {
      *        column.
      * @param data GridData object holding rows and columns of grid data.
      */
-    public OMGrid(int x, int y, double vResolution, double hResolution,
-            GridData data) {
+    public OMGrid(int x, int y, double vResolution, double hResolution, GridData data) {
         setRenderType(RENDERTYPE_XY);
         set(0.0f, 0.0f, x, y, vResolution, hResolution, data);
     }
@@ -306,8 +303,7 @@ public class OMGrid extends OMGraphicList {
      *        column.
      * @param data GridData object holding rows and columns of grid data.
      */
-    public OMGrid(double lat, double lon, int x, int y, double vResolution,
-            double hResolution, GridData data) {
+    public OMGrid(double lat, double lon, int x, int y, double vResolution, double hResolution, GridData data) {
         setRenderType(RENDERTYPE_OFFSET);
         set(lat, lon, x, y, vResolution, hResolution, data);
     }
@@ -315,16 +311,14 @@ public class OMGrid extends OMGraphicList {
     /**
      * Set the parameters of the OMGrid after construction.
      */
-    protected void set(double lat, double lon, int x, int y,
-                       double vResolution, double hResolution, int[][] data) {
+    protected void set(double lat, double lon, int x, int y, double vResolution, double hResolution, int[][] data) {
         set(lat, lon, x, y, vResolution, hResolution, new OMGridData.Int(data));
     }
 
     /**
      * Set the parameters of the OMGrid after construction.
      */
-    protected void set(double lat, double lon, int x, int y,
-                       double vResolution, double hResolution, GridData data) {
+    protected void set(double lat, double lon, int x, int y, double vResolution, double hResolution, GridData data) {
         latitude = lat;
         longitude = lon;
         point = new Point(x, y);
@@ -341,7 +335,7 @@ public class OMGrid extends OMGraphicList {
      * @deprecated set when data is set.
      */
     public void setRows(int rows) {
-    // this.rows = rows;
+        // this.rows = rows;
     }
 
     /**
@@ -401,7 +395,7 @@ public class OMGrid extends OMGraphicList {
      * @deprecated set when the data is set
      */
     public void setColumns(int columns) {
-    // this.columns = columns;
+        // this.columns = columns;
     }
 
     /**
@@ -607,12 +601,10 @@ public class OMGrid extends OMGraphicList {
             width = point2.x - point1.x;
 
             if (Debug.debugging("grid")) {
-                Debug.output("OMGrid.generate:  height = " + height
-                        + ", width = " + width);
+                Debug.output("OMGrid.generate:  height = " + height + ", width = " + width);
             }
 
-        } else if (renderType == RENDERTYPE_XY
-                || renderType == RENDERTYPE_OFFSET) {
+        } else if (renderType == RENDERTYPE_XY || renderType == RENDERTYPE_OFFSET) {
 
             width = (int) Math.round(columns * horizontalResolution);
             height = (int) Math.round(rows * verticalResolution);
@@ -632,8 +624,8 @@ public class OMGrid extends OMGraphicList {
         }
 
         if (Debug.debugging("grid")) {
-            Debug.output("OMGrid generated grid, at " + point1 + " and "
-                    + point2 + " with height " + height + " and width " + width);
+            Debug.output("OMGrid generated grid, at " + point1 + " and " + point2 + " with height " + height + " and width "
+                    + width);
         }
 
         // THis has to happen here, in case the generator wants to
@@ -672,10 +664,8 @@ public class OMGrid extends OMGraphicList {
      */
     public void render(Graphics g) {
         if (generator != null) {
-            if ((needToRegenerate && generator.needGenerateToRender())
-                    || !isVisible()) {
-                Debug.message("grid",
-                        "OMGrid: need to generate or is not visible!");
+            if ((needToRegenerate && generator.needGenerateToRender()) || !isVisible()) {
+                Debug.message("grid", "OMGrid: need to generate or is not visible!");
                 return;
             }
         }
@@ -717,26 +707,21 @@ public class OMGrid extends OMGraphicList {
                     // the map
                     if (major == COLUMN_MAJOR) {
                         if (renderType == RENDERTYPE_LATLON) {
-                            pt = (Point) proj.forward(latitude + y
-                                    * verticalResolution, longitude + x
-                                    * horizontalResolution, pt);
+                            pt = (Point) proj.forward(latitude + y * verticalResolution, longitude + x * horizontalResolution, pt);
                         } else {
                             pt.y = point1.y + (int) (y * verticalResolution);
                             pt.x = point1.x + (int) (x * horizontalResolution);
                         }
                     } else {
                         if (renderType == RENDERTYPE_LATLON) {
-                            pt = (Point) proj.forward(latitude + x
-                                    * verticalResolution, longitude + y
-                                    * horizontalResolution, pt);
+                            pt = (Point) proj.forward(latitude + x * verticalResolution, longitude + y * horizontalResolution, pt);
                         } else {
                             pt.y = point1.y + (int) (x * verticalResolution);
                             pt.x = point1.x + (int) (y * horizontalResolution);
                         }
                     }
 
-                    if ((pt.x >= 0 || pt.x <= proj.getWidth())
-                            && (pt.y >= 0 || pt.y <= proj.getHeight())) {
+                    if ((pt.x >= 0 || pt.x <= proj.getWidth()) && (pt.y >= 0 || pt.y <= proj.getHeight())) {
                         // It's on the map! Get a graphic from it!
                         graphiclist.add(gridObjects.generate(data[x][y], proj));
                     }
@@ -766,11 +751,9 @@ public class OMGrid extends OMGraphicList {
         if (renderType == RENDERTYPE_LATLON) {
 
             lat_index = (int) Math.round((lat - latitude) / verticalResolution);
-            lon_index = (int) Math.round((lon - longitude)
-                    / horizontalResolution);
+            lon_index = (int) Math.round((lon - longitude) / horizontalResolution);
 
-        } else if (renderType == RENDERTYPE_XY
-                || renderType == RENDERTYPE_OFFSET) {
+        } else if (renderType == RENDERTYPE_XY || renderType == RENDERTYPE_OFFSET) {
             if (getNeedToRegenerate()) {
                 /** Only care about this if we need to... */
                 if (proj == null) {
@@ -782,14 +765,12 @@ public class OMGrid extends OMGraphicList {
             Point pt = (Point) proj.forward(lat, lon, new Point());
 
             lat_index = (int) Math.round((pt.y - point1.y) / verticalResolution);
-            lon_index = (int) Math.round((pt.x - point1.x)
-                    / horizontalResolution);
+            lon_index = (int) Math.round((pt.x - point1.x) / horizontalResolution);
         }
 
         GridData gd = getData();
 
-        if (gd != null && (lat_index >= 0 || lat_index < rows)
-                && (lon_index >= 0 || lon_index < columns)) {
+        if (gd != null && (lat_index >= 0 || lat_index < rows) && (lon_index >= 0 || lon_index < columns)) {
             Object obj = null;
             if (major == COLUMN_MAJOR) {
                 obj = gd.get(lon_index, lat_index);
@@ -832,8 +813,7 @@ public class OMGrid extends OMGraphicList {
             lat_index = (lat - latitude) / verticalResolution;
             lon_index = (lon - longitude) / horizontalResolution;
 
-        } else if (renderType == RENDERTYPE_XY
-                || renderType == RENDERTYPE_OFFSET) {
+        } else if (renderType == RENDERTYPE_XY || renderType == RENDERTYPE_OFFSET) {
             if (getNeedToRegenerate()) {
                 /** Only care about this if we need to... */
                 if (proj == null) {
@@ -848,8 +828,7 @@ public class OMGrid extends OMGraphicList {
             lon_index = (pt.x - point1.x) / horizontalResolution;
         }
 
-        if ((lat_index >= 0 || lat_index < rows)
-                && (lon_index >= 0 || lon_index < columns)) {
+        if ((lat_index >= 0 || lat_index < rows) && (lon_index >= 0 || lon_index < columns)) {
 
             int lflon_index = (int) Math.floor(lon_index);
             int lclon_index = (int) Math.ceil(lon_index);
@@ -892,12 +871,7 @@ public class OMGrid extends OMGraphicList {
                 lr = data[lclat_index][lclon_index];
             }
 
-            double answer = resolve_four_points(ul,
-                    ur,
-                    lr,
-                    ll,
-                    lat_index,
-                    lon_index);
+            double answer = resolve_four_points(ul, ur, lr, ll, lat_index, lon_index);
             return (int) Math.round(answer);
         }
 
@@ -908,23 +882,55 @@ public class OMGrid extends OMGraphicList {
      * A try at interpolating the corners of the surrounding posts, given a lat
      * lon. Called from a function where the data for the lon has been read in.
      */
-    private double resolve_four_points(int ul, int ur, int lr, int ll,
-                                       double lat_index, double lon_index) {
-        double top_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (float) (ur - ul))
-                + ul;
-        double bottom_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (float) (lr - ll))
-                + ll;
-        double right_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (float) (ur - lr))
-                + lr;
-        double left_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (float) (ul - ll))
-                / 100.0F + ll;
+    private double resolve_four_points(int ul, int ur, int lr, int ll, double lat_index, double lon_index) {
+        double top_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (float) (ur - ul)) + ul;
+        double bottom_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (float) (lr - ll)) + ll;
+        double right_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (float) (ur - lr)) + lr;
+        double left_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (float) (ul - ll)) / 100.0F + ll;
 
-        double lon_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (top_avg - bottom_avg))
-                + bottom_avg;
-        double lat_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (right_avg - left_avg))
-                + left_avg;
+        double lon_avg = ((lat_index - new Double(Math.floor(lat_index)).floatValue()) * (top_avg - bottom_avg)) + bottom_avg;
+        double lat_avg = ((lon_index - new Double(Math.floor(lon_index)).floatValue()) * (right_avg - left_avg)) + left_avg;
 
         double result = (lon_avg + lat_avg) / 2.0;
         return result;
+    }
+
+    public void restore(OMGeometry source) {
+        super.restore(source);
+        if (source instanceof OMGrid) {
+            OMGrid grid = (OMGrid) source;
+            this.orientation = grid.orientation;
+            this.rows = grid.rows;
+            this.columns = grid.columns;
+            this.latitude = grid.latitude;
+            this.longitude = grid.longitude;
+            this.verticalResolution = grid.verticalResolution;
+            this.horizontalResolution = grid.horizontalResolution;
+            this.height = grid.height;
+            this.width = grid.width;
+            this.major = grid.major;
+            this.units = grid.units;
+
+            if (grid.data != null) {
+                this.data = grid.data.deepCopy();
+            }
+            if (grid.point != null) {
+                this.point = new Point(grid.point);
+            }
+            if (grid.point1 != null) {
+                this.point1 = new Point(grid.point1);
+            }
+            if (grid.point2 != null) {
+                this.point2 = new Point(grid.point2);
+            }
+            // Not sure how to handle this, since gridObjects are pretty vague.
+            if (grid.gridObjects != null) {
+                this.gridObjects = grid.gridObjects;
+            }
+            if (grid.generator != null) {
+                this.generator = grid.generator;
+            }
+
+        }
     }
 }

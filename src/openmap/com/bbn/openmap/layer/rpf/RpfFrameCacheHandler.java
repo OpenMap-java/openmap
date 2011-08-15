@@ -238,7 +238,7 @@ public class RpfFrameCacheHandler
                // System.out.print(".");
             }
          }
-         // System.out.println("");
+         // System.out.println();
       }
 
       return count / (float) (numHFrames * numVFrames);

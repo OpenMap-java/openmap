@@ -36,7 +36,8 @@ import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
-public class PolyAddNodeState extends State {
+public class PolyAddNodeState
+        extends State {
     protected EditableOMGraphic graphic;
 
     public PolyAddNodeState(EditableOMPoly eomg) {
@@ -49,8 +50,7 @@ public class PolyAddNodeState extends State {
      * then we do nothing except set the moving point and go to edit mode.
      */
     public boolean mouseReleased(MouseEvent e) {
-        Debug.message("eomg",
-                "GraphicStateMachine|add node state|mouseReleased");
+        Debug.message("eomg", "GraphicStateMachine|add node state|mouseReleased");
 
         GrabPoint mp = graphic.getMovingPoint(e);
 
@@ -71,17 +71,16 @@ public class PolyAddNodeState extends State {
                     x = llp.getX();
                     y = llp.getY();
                 }
-                
+
                 int index = poly.getIndexOfFirstNodeOfSegIntersect(x, y, 2);
-//                int index = ((EditableOMPoly) graphic).whichGrabPoint(mp);
-                
+                // int index = ((EditableOMPoly) graphic).whichGrabPoint(mp);
+
                 if (index != -1) {
-                    ((EditableOMPoly) graphic).addPoint(e.getX(),
-                            e.getY(),
-                            index + 1);
+                    ((EditableOMPoly) graphic).addPoint(e.getX(), e.getY(), index + 1);
 
                     graphic.fireEvent(EOMGEvent.EOMG_SELECTED);
                 }
+                graphic.fireEvent(EOMGCursors.DEFAULT, "", e, EOMGEvent.EOMG_UNDO);
             }
         }
 
@@ -91,19 +90,16 @@ public class PolyAddNodeState extends State {
     }
 
     public boolean mouseMoved(MouseEvent e) {
-        Debug.message("eomgdetail",
-                "PolyStateMachine|add node state|mouseMoved");
+        Debug.message("eomgdetail", "PolyStateMachine|add node state|mouseMoved");
 
-        if (graphic.isMouseEventTouching(e)) { // Only change the cursor over graphic between nodes
-            graphic.fireEvent(EOMGCursors.EDIT,
-                    i18n.get(PolyAddNodeState.class,
-                            "Click_between_nodes_to_add_another_node.",
-                            "Click between nodes to add another node."), e, EOMGEvent.EOMG_UNCHANGED);
+        if (graphic.isMouseEventTouching(e)) { // Only change the cursor over
+                                               // graphic between nodes
+            graphic.fireEvent(EOMGCursors.EDIT, i18n.get(PolyAddNodeState.class, "Click_between_nodes_to_add_another_node.",
+                                                         "Click between nodes to add another node."), e, EOMGEvent.EOMG_UNCHANGED);
         } else {
-            graphic.fireEvent(EOMGCursors.DEFAULT,
-                    i18n.get(PolyAddNodeState.class,
-                            "Click_between_nodes_to_add_another_node.",
-                            "Click between nodes to add another node."), e, EOMGEvent.EOMG_UNCHANGED);
+            graphic.fireEvent(EOMGCursors.DEFAULT, i18n.get(PolyAddNodeState.class, "Click_between_nodes_to_add_another_node.",
+                                                            "Click between nodes to add another node."), e,
+                              EOMGEvent.EOMG_UNCHANGED);
         }
 
         // graphic.redraw(e);
@@ -111,19 +107,14 @@ public class PolyAddNodeState extends State {
     }
 
     public boolean mouseDragged(MouseEvent e) {
-        Debug.message("eomgdetail",
-                "PolyStateMachine|add node state|mouseDragged");
+        Debug.message("eomgdetail", "PolyStateMachine|add node state|mouseDragged");
 
         if (graphic.getGraphic().distance(e.getX(), e.getY()) < 2) {
-            graphic.fireEvent(EOMGCursors.EDIT,
-                    i18n.get(PolyAddNodeState.class,
-                            "Release_between_nodes_to_add_a_node.",
-                            "Release between nodes to add a node."), e, EOMGEvent.EOMG_UNCHANGED);
+            graphic.fireEvent(EOMGCursors.EDIT, i18n.get(PolyAddNodeState.class, "Release_between_nodes_to_add_a_node.",
+                                                         "Release between nodes to add a node."), e, EOMGEvent.EOMG_UNCHANGED);
         } else {
-            graphic.fireEvent(EOMGCursors.DEFAULT,
-                    i18n.get(PolyAddNodeState.class,
-                            "Release_between_nodes_to_add_a_node.",
-                            "Release between nodes to add a node."), e, EOMGEvent.EOMG_UNCHANGED);
+            graphic.fireEvent(EOMGCursors.DEFAULT, i18n.get(PolyAddNodeState.class, "Release_between_nodes_to_add_a_node.",
+                                                            "Release between nodes to add a node."), e, EOMGEvent.EOMG_UNCHANGED);
         }
 
         // graphic.redraw(e);

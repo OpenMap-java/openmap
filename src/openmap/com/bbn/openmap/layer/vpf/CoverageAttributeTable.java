@@ -83,7 +83,7 @@ public class CoverageAttributeTable {
       dirpath = dcwpath + "/" + libraryname;
       String cat = dirpath + "/cat";
       if (!BinaryFile.exists(cat)) {
-         cat = cat + ".";
+         cat += ".";
       }
 
       DcwRecordFile rf = new DcwRecordFile(cat);
@@ -177,7 +177,7 @@ public class CoverageAttributeTable {
          String fcsFile = pathname + (addSlash ? "/" : "") + "fcs";
 
          if (!BinaryFile.exists(fcsFile)) {
-            fcsFile = fcsFile + ".";
+            fcsFile += ".";
          }
 
          DcwRecordFile fcs = new DcwRecordFile(fcsFile);
@@ -236,7 +236,7 @@ public class CoverageAttributeTable {
 
          String fbrFile = pathname + (addSlash ? "/" : "") + "fbr";
          if (!BinaryFile.exists(fbrFile)) {
-            fbrFile = fbrFile + ".";
+            fbrFile += ".";
          }
          DcwRecordFile fbr = new DcwRecordFile(fbrFile);
          int fbrIDColumn = fbr.whatColumn(Constants.ID);

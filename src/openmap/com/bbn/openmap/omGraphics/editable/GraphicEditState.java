@@ -24,14 +24,19 @@
 
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.layer.util.stateMachine.*;
+import javax.swing.SwingUtilities;
+
+import com.bbn.openmap.layer.util.stateMachine.State;
+import com.bbn.openmap.omGraphics.EditableOMGraphic;
+import com.bbn.openmap.omGraphics.GrabPoint;
 import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
-public class GraphicEditState extends State implements EOMGEditState {
+public class GraphicEditState
+        extends State
+        implements EOMGEditState {
 
     protected EditableOMGraphic graphic;
 
@@ -58,6 +63,12 @@ public class GraphicEditState extends State implements EOMGEditState {
         } else {
             graphic.getStateMachine().setSelected();
             GrabPoint mp = graphic.getMovingPoint();
+
+            // If right mouse button not pressed, then it's a valid end to a modification. 
+            if (!SwingUtilities.isRightMouseButton(e)) {
+                graphic.fireEvent(EOMGCursors.DEFAULT, "", e, EOMGEvent.EOMG_UNDO);
+            }
+
             if (mp == null && !graphic.getCanGrabGraphic()) {
                 graphic.fireEvent(EOMGCursors.DEFAULT, "", e, EOMGEvent.EOMG_SELECTED);
             } else {
@@ -71,4 +82,3 @@ public class GraphicEditState extends State implements EOMGEditState {
         return getMapMouseListenerResponse();
     }
 }
-

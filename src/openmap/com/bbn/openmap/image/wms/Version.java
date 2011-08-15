@@ -1,5 +1,7 @@
 package com.bbn.openmap.image.wms;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,6 +80,10 @@ abstract class Version {
     public abstract boolean usesAxisOrder();
 
     public abstract String getServiceName();
+    
+    public abstract Collection<String> getCapabiltiesFormats();
+    
+    public abstract Collection<String> getExceptionFormats();
 
     private static class V111 extends Version {
 
@@ -127,6 +133,16 @@ abstract class Version {
         public String getServiceName() {
             return "OGC:WMS";
         }
+
+      @Override
+      public Collection<String> getExceptionFormats() {
+         return Arrays.asList("application/vnd.ogc.se_xml");
+      }
+
+      @Override
+      public Collection<String> getCapabiltiesFormats() {
+         return Arrays.asList("application/vnd.ogc.wms_xml");
+      }
 
     }
 
@@ -195,6 +211,16 @@ abstract class Version {
         public String getServiceName() {
             return "WMS";
         }
+
+      @Override
+      public Collection<String> getExceptionFormats() {
+         return Arrays.asList("XML");
+      }
+
+      @Override
+      public Collection<String> getCapabiltiesFormats() {
+         return Arrays.asList("text/xml");
+      }
 
     }
 

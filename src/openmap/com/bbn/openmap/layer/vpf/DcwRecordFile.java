@@ -602,10 +602,8 @@ public class DcwRecordFile {
                 + "\nRecord Length: " + recordLength + " Record Count: "
                 + getRecordCount());
         for (int i = 0; i < columnInfo.length; i++) {
-            System.out.print("Column " + i + " " + columnInfo[i].toString()
-                    + "\n");
+            System.out.println("Column " + i + " " + columnInfo[i].toString());
         }
-        System.out.flush();
     }
 
     /** Closes the associated input file. (may later get reopened) */

@@ -79,9 +79,9 @@ public class OffsetGrabPoint extends GrabPoint {
      */
     public GrabPoint removeGrabPoint(GrabPoint rgp) {
         if (offsetPoints != null) {
-            Offset offset = (Offset) offsetPoints.remove(rgp);
+            Offset offset = offsetPoints.remove(rgp);
             if (offset != null) {
-                return (GrabPoint) (offset).gp;
+                return offset.gp;
             }
         }
         return null;
@@ -133,9 +133,7 @@ public class OffsetGrabPoint extends GrabPoint {
     public synchronized void moveOffsets() {
         if (!overflowLock) {
             overflowLock = true;
-                Enumeration<Offset> elements = offsetPoints.elements();
-            while (elements.hasMoreElements()) {
-                Offset offset = elements.nextElement();
+            for (Offset offset : offsetPoints.values()) {
                 offset.move();
             }
             overflowLock = false;
@@ -151,9 +149,7 @@ public class OffsetGrabPoint extends GrabPoint {
     public synchronized void updateOffsets() {
         if (!overflowLock) {
             overflowLock = true;
-            Enumeration<Offset> elements = offsetPoints.elements();
-            while (elements.hasMoreElements()) {
-                Offset offset = elements.nextElement();
+            for (Offset offset : offsetPoints.values()) {
                 offset.update();
             }
             overflowLock = false;
@@ -210,15 +206,9 @@ public class OffsetGrabPoint extends GrabPoint {
                 gp.set(newX, newY);
             }
 
-            // if (Debug.debugging("eomg")) {
-            // Debug.output("OffsetGrabPoint.offset moving GB to " +
-            // newX + ", " + newY);
-            // }
-
             if (gp instanceof OffsetGrabPoint) {
                 ((OffsetGrabPoint) gp).moveOffsets();
             }
-
         }
 
     }

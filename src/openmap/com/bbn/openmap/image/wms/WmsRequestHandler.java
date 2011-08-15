@@ -267,6 +267,7 @@ public class WmsRequestHandler
         GetMapRequestParameters parameters = new GetMapRequestParameters();
 
         checkVersion(requestProperties, parameters);
+        checkExceptions(requestProperties, parameters);
         checkFormat(requestProperties, parameters);
         setFormatter(parameters.formatter);
 
@@ -289,6 +290,7 @@ public class WmsRequestHandler
         GetLegendGraphicRequestParameters parameters = new GetLegendGraphicRequestParameters();
 
         checkVersion(requestProperties, parameters);
+        checkExceptions(requestProperties, parameters);
         checkWidthAndHeight(requestProperties, parameters);
         checkFormat(requestProperties, parameters);
         setFormatter(parameters.getFormatter());
@@ -412,6 +414,7 @@ public class WmsRequestHandler
         GetFeatureInfoRequestParameters parameters = new GetFeatureInfoRequestParameters();
 
         checkVersion(requestProperties, parameters);
+        checkExceptions(requestProperties, parameters);
         checkFormat(requestProperties, parameters);
         setFormatter(parameters.formatter);
         checkBackground(requestProperties, parameters);
@@ -478,17 +481,7 @@ public class WmsRequestHandler
         String requestType = requestProperties.getProperty(REQUEST);
 
         boolean getcaps = ((requestType != null) && requestType.equals(GETCAPABILITIES));
-        if (!getcaps) {
-            String ex = requestProperties.getProperty(EXCEPTIONS);
-            // if ((ex != null) && !ex.equals("application/vnd.ogc.se_xml")) {
-            // Poprawka wacha
-            // poni¿szy warunek roszszerzy³em o application/vnd.ogc.se_inimage
-            // gdy¿ WMSplugin wymaga tego formatu exception'ów , który jest
-            // formatem opcjonalnym dla WMS
-            if ((ex != null) && (!ex.equals("application/vnd.ogc.se_inimage") && !ex.equals("application/vnd.ogc.se_xml"))) {
-                throw new WMSException("Invalid EXCEPTIONS value: " + ex);
-            }
-        } else {
+        if (getcaps) {
             if ((service == null) || !service.equals("WMS")) {
                 throw new WMSException("Unsupported service name: " + service);
             }
@@ -827,6 +820,26 @@ public class WmsRequestHandler
             }
         }
     }
+
+   private void checkExceptions(Properties requestProperties, WmsRequestParameters parameters)
+         throws WMSException {
+      Version version = parameters.getVersion();
+      if (version == null) {
+         return;
+      }
+
+      String ex = requestProperties.getProperty(EXCEPTIONS);
+      
+      // exceptions parameter is optional. ignore if missing.
+      if (ex == null) {
+         return;
+      }
+      
+      // ArcGIS uses both 1.1.1 and 1.3.0 type exceptions value with 1.3.0, so we should not throw here.
+      
+      // TODO: handle optional exceptions value after OpenMap wms get support
+      // for image base exceptions
+   }
 
     private void checkFeatureInfoPoint(Properties requestProperties, GetFeatureInfoRequestParameters parameters)
             throws WMSException {

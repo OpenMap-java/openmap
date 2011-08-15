@@ -14,20 +14,13 @@ import java.util.concurrent.Future;
  * Reuse threads instead of making new ones over and over.
  */
 public final class TaskService {
+    public static TaskService singleton() {
+        return SingletonHolder.instance;
+    }
 
-   private static TaskService singleton;
-
-   /**
-    * @return the singleton pool.
-    */
-   public static TaskService singleton() {
-      synchronized (TaskService.class) {
-         if (singleton == null) {
-            singleton = new TaskService();
-         }
-         return singleton;
-      }
-   }
+    private static class SingletonHolder {
+        private static final TaskService instance = new TaskService();
+    }
 
    private final ExecutorService executor;
 
@@ -39,10 +32,10 @@ public final class TaskService {
     * Run a task in a thread.
     */
    public void spawn(Runnable task) {
-      singleton.executor.execute(task);
+      executor.execute(task);
    }
 
    public <T> Future<T> spawn(Callable<T> task) {
-      return singleton.executor.submit(task);
+      return executor.submit(task);
    }
 }

@@ -47,24 +47,13 @@ public class CapabilitiesSupport {
 
     public static final String WMSPrefix = ImageServer.OpenMapPrefix + "wms.";
 
-    public static final int FMT_GETCAPS = 0;
+    public static final int FMT_GETMAP = 0;
 
-    public static final int FMT_GETMAP = 1;
-
-    public static final int FMT_GETFEATUREINFO = 2;
-
-    public static final int FMT_EXCEPTIONS = 3;
-
-    public static final int FMT_MAIN = 3;
+    public static final int FMT_GETFEATUREINFO = 1;
 
     private Map<Integer, List<String>> formatsList = new HashMap<Integer, List<String>>();
-
-    private String[] onlineResourcesList = {
-        null,
-        null,
-        null,
-        null
-    };
+    
+    private String onlineResource;
 
     private List<String> keywordsList = null;
 
@@ -105,14 +94,6 @@ public class CapabilitiesSupport {
         List<String> al = new ArrayList<String>();
         setFormats(FMT_GETMAP, al);
         setFormats(FMT_GETFEATUREINFO, al);
-
-        al.clear();
-        al.add("application/vnd.ogc.wms_xml");
-        setFormats(FMT_GETCAPS, al);
-
-        al.clear();
-        al.add("application/vnd.ogc.se_xml");
-        setFormats(FMT_EXCEPTIONS, al);
     }
 
     /**
@@ -142,10 +123,7 @@ public class CapabilitiesSupport {
      * @param url
      */
     public void setUrl(String url) {
-        setOnlineResource(FMT_MAIN, url);
-        setOnlineResource(FMT_GETMAP, url);
-        setOnlineResource(FMT_GETCAPS, url);
-        setOnlineResource(FMT_GETFEATUREINFO, url);
+       this.onlineResource = url;
     }
 
     /**
@@ -172,7 +150,7 @@ public class CapabilitiesSupport {
             service.appendChild(keywordListElement);
         }
 
-        service.appendChild(onlineResource(doc, onlineResourcesList[FMT_MAIN]));
+        service.appendChild(onlineResource(doc, onlineResource));
 
         service.appendChild(textnode(doc, "Fees", "none"));
         service.appendChild(textnode(doc, "AccessConstraints", "none"));
@@ -181,16 +159,16 @@ public class CapabilitiesSupport {
         Node capability = doc.createElement("Capability");
         Element request = doc.createElement("Request");
 
-        request.appendChild(requestcap(doc, WMTConstants.GETCAPABILITIES, formatsList.get(FMT_GETCAPS), "Get",
-                                       onlineResourcesList[FMT_GETCAPS]));
+        request.appendChild(requestcap(doc, WMTConstants.GETCAPABILITIES, version.getCapabiltiesFormats(), "Get",
+                                       onlineResource));
         request.appendChild(requestcap(doc, WMTConstants.GETMAP, formatsList.get(FMT_GETMAP), "Get",
-                                       onlineResourcesList[FMT_GETMAP]));
+                                       onlineResource));
         request.appendChild(requestcap(doc, WMTConstants.GETFEATUREINFO, formatsList.get(FMT_GETFEATUREINFO), "Get",
-                                       onlineResourcesList[FMT_GETFEATUREINFO]));
+                                       onlineResource));
         capability.appendChild(request);
 
         Element exceptionElement = doc.createElement("Exception");
-        for (String format : formatsList.get(FMT_EXCEPTIONS)) {
+        for (String format : version.getExceptionFormats()) {
             exceptionElement.appendChild(textnode(doc, "Format", format));
         }
         capability.appendChild(exceptionElement);
@@ -271,7 +249,7 @@ public class CapabilitiesSupport {
                         StringBuilder url = new StringBuilder();
                         // would be nicer to use FMT_GETLEGENDGRAPHIC, but it
                         // may not be listed
-                        url.append(onlineResourcesList[FMT_MAIN]);
+                        url.append(onlineResource);
                         url.append("?").append(WMTConstants.SERVICE).append("=WMS");
                         url.append("&").append(WMTConstants.VERSION).append("=");
                         url.append(version.getVersionString());
@@ -321,34 +299,20 @@ public class CapabilitiesSupport {
     public boolean setFormats(int request, Collection<String> formats) {
         switch (request) {
             case FMT_GETMAP:
-            case FMT_GETCAPS:
             case FMT_GETFEATUREINFO:
-            case FMT_EXCEPTIONS:
                 formatsList.put(request, new ArrayList<String>(formats));
-                break;
+                return true;
             default:
                 return false;
         }
-        return true;
     }
 
     /**
      * @param which
      * @param url
-     * @return true if which type handled
      */
-    public boolean setOnlineResource(int which, String url) {
-        switch (which) {
-            case FMT_GETMAP:
-            case FMT_GETCAPS:
-            case FMT_GETFEATUREINFO:
-            case FMT_MAIN:
-                onlineResourcesList[which] = url;
-                break;
-            default:
-                return false;
-        }
-        return true;
+    public void setOnlineResource(String url) {
+       this.onlineResource = url;
     }
 
     /**
@@ -465,7 +429,7 @@ public class CapabilitiesSupport {
      * @param url
      * @return Node
      */
-    private Node requestcap(Document doc, String requestName, List<String> formatList, String methodName, String url) {
+    private Node requestcap(Document doc, String requestName, Collection<String> formatList, String methodName, String url) {
         Element methodNode = doc.createElement(methodName);
         methodNode.appendChild(onlineResource(doc, url));
 

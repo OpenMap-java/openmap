@@ -290,8 +290,10 @@ public class EmbeddedScaleDisplayPanel
          if (uom.equals(Length.KM)) {
             new_dist *= 1000;
             cur_uom = Length.METER;
-         } else if (uom.equals(Length.MILE)) {
-            new_dist = Length.FEET.fromRadians(Length.MILE.toRadians(new_dist));
+         } else if (uom.equals(Length.MILE) ||
+                 uom.equals(Length.DM) ||
+                 uom.equals(Length.NM)) {
+            new_dist = Length.FEET.fromRadians(uom.toRadians(new_dist));
             cur_uom = Length.FEET;
          }
 

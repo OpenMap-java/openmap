@@ -21,7 +21,7 @@ public class ShapeDecorator implements Revertable {
     /**
      * The list of decorations (instances of ShapeDecoration)
      */
-    private List decorations = new ArrayList();
+    private List<ShapeDecoration> decorations = new ArrayList<ShapeDecoration>();
 
     /**
      * The flatness used for Shape.getPathIterator()
@@ -38,7 +38,7 @@ public class ShapeDecorator implements Revertable {
      * 
      * @return List the list of decorations
      */
-    public List getDecorations() {
+    public List<ShapeDecoration> getDecorations() {
         return decorations;
     }
 
@@ -68,7 +68,7 @@ public class ShapeDecorator implements Revertable {
      * @return ShapeDecoration the removed Decoration
      */
     public ShapeDecoration removeDecoration(int index) {
-        return (ShapeDecoration) (decorations.remove(index));
+        return decorations.remove(index);
     }
 
     /**
@@ -87,10 +87,8 @@ public class ShapeDecorator implements Revertable {
      * @see com.bbn.openmap.omGraphics.awt.Revertable#revert()
      */
     public void revert() {
-        ShapeDecoration s;
-        for (Iterator i = decorations.listIterator(); i.hasNext();) {
-            s = (ShapeDecoration) i.next();
-            s.revert();
+        for (ShapeDecoration shapeDecoration : decorations) {
+            shapeDecoration.revert();
         }
     }
 

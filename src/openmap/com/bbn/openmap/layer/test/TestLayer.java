@@ -1151,11 +1151,11 @@ public class TestLayer extends OMGraphicHandlerLayer implements
                         }
                     });
                 }
-                String entry = "";
+                StringBuilder entry = new StringBuilder();
                 for (int i = 0; i < xypts.length; i += 2) {
-                    entry = entry + xypts[i] + " " + xypts[i + 1] + "\n";
+                    entry.append(xypts[i]).append(" ").append(xypts[i + 1]).append("\n");
                 }
-                ta = PaletteHelper.createTextArea("xypts", entry, pop, 0, 0);
+                ta = PaletteHelper.createTextArea("xypts", entry.toString(), pop, 0, 0);
                 ta.addFocusListener(new FocusAdapter() {
                     public void focusLost(FocusEvent e) {
                         setXY((JTextArea) e.getSource());

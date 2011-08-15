@@ -79,7 +79,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
     protected int lineType = LINETYPE_UNKNOWN;
 
     /** Flag to indicate that the object needs to be reprojected. */
-    protected boolean needToRegenerate = true;
+    protected transient boolean needToRegenerate = true;
 
     /**
      * Space for an application to associate geometry with an application
@@ -949,5 +949,21 @@ public abstract class BasicGeometry implements OMGeometry, Serializable,
         ys[3] = y + height;
 
         return createShape(xs, ys, true);
+    }
+    
+    public void restore(OMGeometry source) {
+        this.lineType = source.getLineType();
+        this.visible = source.isVisible();
+        
+        Map<Object, Object> attributes = source.getAttributes();
+        if (attributes != null) {
+            Map<Object, Object> nAttributes = createAttributeMap();
+            nAttributes.putAll(attributes);
+            // But, now the ATT_MAP_KEY points to the source attributes map.  Need to adjust...
+            nAttributes.put(ATT_MAP_KEY, nAttributes);
+            // The attribute map for this objects should be set already, nothing more to do with attributes.
+        }
+        
+        this.needToRegenerate = true;
     }
 }

@@ -24,7 +24,7 @@
 
 package com.bbn.openmap.omGraphics.grid;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.proj.Projection;
 
 public interface OMGridObjects {

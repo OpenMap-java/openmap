@@ -39,7 +39,7 @@ public class AcmeGifHelper {
      * This class has only static methods, so there is no need to
      * construct anything.
      */
-    private AcmeGifHelper() {};
+    private AcmeGifHelper() {}
 
     /**
      * Return a byte array that contains the GIF encoded image.

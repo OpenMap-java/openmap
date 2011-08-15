@@ -409,4 +409,20 @@ public class OMRect extends OMGraphicAdapter implements OMGraphic {
         setNeedToRegenerate(false);
         return true;
     }
+    
+    public void restore(OMGeometry source) {
+        super.restore(source);
+        if (source instanceof OMRect) {
+            OMRect rect = (OMRect) source;
+            this.x1 = rect.x1;
+            this.y1 = rect.y1;
+            this.lat1 = rect.lat1;
+            this.lon1 = rect.lon1;
+            this.x2 = rect.x2;
+            this.y2 = rect.y2;
+            this.lat2 = rect.lat2;
+            this.lon2 = rect.lon2;
+            this.nsegs = rect.nsegs;
+        }
+    }
 }

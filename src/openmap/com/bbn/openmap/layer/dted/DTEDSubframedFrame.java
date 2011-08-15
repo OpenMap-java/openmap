@@ -582,7 +582,7 @@ public class DTEDSubframedFrame
             // for (int j = 0; j < e.length; j++) {
             // System.out.print(e[j][i] + " ");
             // }
-            // System.out.println("");
+            // System.out.println();
             // }
         }
         float lat = df.dsi.lat_origin + .5f;

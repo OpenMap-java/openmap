@@ -334,4 +334,9 @@ public interface OMGeometry {
      */
     public String getDescription();
 
+    /**
+     * Replace the member variables of this OMGraphic with copies of member variables from another one.
+     * @param source
+     */
+    void restore(OMGeometry source);
 }
