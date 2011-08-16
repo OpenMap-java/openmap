@@ -27,14 +27,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URL;
 
 import com.bbn.openmap.util.Debug;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGEncodeParam;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
+import java.util.Iterator;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
 
 /**
  * This class provides some utility methods for creating jpeg encoded images. It
@@ -51,7 +55,7 @@ public class JPEGHelper {
 
     /**
      * Return a byte array that contains the JPEG encoded image.
-     * 
+     *
      * @param image the image to encode
      * @param quality the JPEG quality factor to use in encoding
      * @exception IOException an error occurred in encoding the image
@@ -60,22 +64,33 @@ public class JPEGHelper {
             throws IOException {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ImageOutputStream iosout = new MemoryCacheImageOutputStream(out);
+
         if (Debug.debugging("jpeghelper")) {
             Debug.output("Got output stream..." + out);
         }
 
-        JPEGEncodeParam param = JPEGCodec.getDefaultJPEGEncodeParam(image);
-        param.setQuality(quality, true);
+        Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpeg");
+        ImageWriter writer = iter.next();
+        ImageWriteParam iwp = writer.getDefaultWriteParam();
+        iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+		iwp.setCompressionQuality(quality);
+
         if (Debug.debugging("jpeghelper")) {
             Debug.output("Got encode params...");
         }
 
-        JPEGImageEncoder enc = JPEGCodec.createJPEGEncoder(out, param);
+		writer.setOutput(iosout);
         if (Debug.debugging("jpeghelper")) {
             Debug.output("Got jpeg encoder...");
         }
 
-        enc.encode(image);
+        writer.setOutput(iosout);
+        if (Debug.debugging("jpeghelper")) {
+            Debug.output("Got jpeg encoder...");
+        }
+
+        writer.dispose();
         if (Debug.debugging("jpeghelper")) {
             Debug.output("encoded?");
         }
@@ -85,7 +100,7 @@ public class JPEGHelper {
 
     /**
      * Return a byte array that contains the JPEG encoded image.
-     * 
+     *
      * @param w the width of the image
      * @param h the height of the image
      * @param pixels the array of pixels in RGB directcolor
@@ -100,9 +115,23 @@ public class JPEGHelper {
         return encodeJPEG(bi, quality);
     }
 
+    private static void encodeAndWriteJPEGFile(File file, BufferedImage image, float quality)
+            throws IOException {
+        Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpeg");
+        ImageWriter writer = iter.next();
+        ImageWriteParam iwp = writer.getDefaultWriteParam();
+        iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        iwp.setCompressionQuality(quality);
+        FileImageOutputStream output = new FileImageOutputStream(file);
+        writer.setOutput(output);
+        IIOImage iioi = new IIOImage(image, null, null);
+        writer.write(null, iioi, iwp);
+        writer.dispose();
+    }
+
     /**
      * A test main that encodes an image url at various jpeg quality factors.
-     * 
+     *
      * @param args url [width height]
      */
     public static void main(String args[])
@@ -147,12 +176,9 @@ public class JPEGHelper {
             for (int i = 0; i < 20; i++) {
                 File f = new File(filebase + ((i < 10) ? "0" : "") + i + ".jpg");
                 float quality = 0.0499f * i;
-                byte data[] = encodeJPEG(bi, quality);
-                OutputStream writef = new FileOutputStream(f);
-                writef.write(data);
-                writef.close();
+                encodeAndWriteJPEGFile(f, bi, quality);
                 html.println("Image Quality Factor: " + quality + " <br>");
-                html.println("Image Size (bytes) : " + data.length + " <br>");
+                html.println("Image Size (bytes) : " + f.length() + " <br>");
                 html.println("<img src=\"" + f.getName() + "\"> <hr>");
             }
 
