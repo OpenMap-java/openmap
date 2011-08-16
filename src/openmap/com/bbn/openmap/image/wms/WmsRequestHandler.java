@@ -51,21 +51,14 @@ public class WmsRequestHandler
         implements ImageServerConstants {
 
     /**
-     */
+	 */
     private CapabilitiesSupport capabilities;
-
     private Map<String, IWmsLayer> wmsLayerByName = new HashMap<String, IWmsLayer>();
-
     private List<IWmsLayer> wmsLayers = new ArrayList<IWmsLayer>();
-
     private WmsLayerFactory wmsLayerFactory;
-
     private Map<String, ImageFormatter> imageFormatterByContentType = new HashMap<String, ImageFormatter>();
-
     private FeatureInfoResponse featureInfoResponse;
-
     public static final String WMSPrefix = CapabilitiesSupport.WMSPrefix;
-
     private static final String FeatureInfoResponseClassNameProperty = "featureInfoResponse.class";
 
     /**
@@ -371,7 +364,6 @@ public class WmsRequestHandler
             return getCapabilities().generateXMLString(parameters.getVersion());
         } catch (Exception e) {
             e.printStackTrace();
-            // nie ma takiego kodu b³êdu, ale s¹dzê, ¿e powinien byæ
             throw new WMSException("Unable to compile a response due to server misconfiguration.", WMSException.INTERNALERROR);
         }
     }
@@ -821,25 +813,26 @@ public class WmsRequestHandler
         }
     }
 
-   private void checkExceptions(Properties requestProperties, WmsRequestParameters parameters)
-         throws WMSException {
-      Version version = parameters.getVersion();
-      if (version == null) {
-         return;
-      }
+    private void checkExceptions(Properties requestProperties, WmsRequestParameters parameters)
+            throws WMSException {
+        Version version = parameters.getVersion();
+        if (version == null) {
+            return;
+        }
 
-      String ex = requestProperties.getProperty(EXCEPTIONS);
-      
-      // exceptions parameter is optional. ignore if missing.
-      if (ex == null) {
-         return;
-      }
-      
-      // ArcGIS uses both 1.1.1 and 1.3.0 type exceptions value with 1.3.0, so we should not throw here.
-      
-      // TODO: handle optional exceptions value after OpenMap wms get support
-      // for image base exceptions
-   }
+        String ex = requestProperties.getProperty(EXCEPTIONS);
+
+        // exceptions parameter is optional. ignore if missing.
+        if (ex == null) {
+            return;
+        }
+
+        // ArcGIS uses both 1.1.1 and 1.3.0 type exceptions value with 1.3.0, so
+        // we should not throw here.
+
+        // TODO: handle optional exceptions value after OpenMap wms get support
+        // for image base exceptions
+    }
 
     private void checkFeatureInfoPoint(Properties requestProperties, GetFeatureInfoRequestParameters parameters)
             throws WMSException {
@@ -926,5 +919,4 @@ public class WmsRequestHandler
         setTransparent(parameters.getTransparent());
         setBackground(parameters.background);
     }
-
 }

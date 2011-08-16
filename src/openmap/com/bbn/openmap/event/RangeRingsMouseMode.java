@@ -28,21 +28,19 @@ import com.bbn.openmap.util.PropUtils;
  * The whole map bean is repainted each time the range rings needs to be
  * repainted. The map bean needs to use a mouseDelegator to repaint properly.<br>
  * 
- * @author Stéphane Wasserhardt
+ * @author Stï¿½phane Wasserhardt
  * 
  */
-public class RangeRingsMouseMode extends CoordMouseMode {
+public class RangeRingsMouseMode
+        extends CoordMouseMode {
+
     private static final long serialVersionUID = 6208201699394207932L;
-
     public final static transient String modeID = "RangeRings";
-
     /**
      * The property string used to set the numRings member variable.
      */
     public static final String NUM_RINGS_PROPERTY = "numRings";
-
     public transient DecimalFormat df = new DecimalFormat("0.###");
-
     /**
      * Format used to draw distances.
      */
@@ -52,7 +50,6 @@ public class RangeRingsMouseMode extends CoordMouseMode {
      * will be used. Default value is 3.<br>
      */
     protected int numRings = 3;
-
     /**
      * Origin point of the range rings to be drawn.
      */
@@ -65,7 +62,6 @@ public class RangeRingsMouseMode extends CoordMouseMode {
      * Destination point of the range rings to be drawn.
      */
     protected LatLonPoint destination = null;
-
     /**
      * Active MapBean.
      */
@@ -167,8 +163,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
         if ((e.getComponent().hasFocus()) && (e.getSource() instanceof MapBean)) {
             setMapBean((MapBean) e.getSource());
 
-            LatLonPoint pt = (LatLonPoint) getMapBean().getProjection()
-                    .inverse(e.getPoint(), new LatLonPoint.Double());
+            LatLonPoint pt = (LatLonPoint) getMapBean().getProjection().inverse(e.getPoint(), new LatLonPoint.Double());
             // If this is the first click (real first click or click after
             // "finished" rangeRings)
             if ((origin == null) || ((origin != null) && (destination != null))) {
@@ -181,8 +176,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
                 destination = null;
 
                 startUp();
-            }
-            // This case is when only the origin is known
+            } // This case is when only the origin is known
             else {
                 // The click then corresponds to the selection of a destination
                 destination = pt;
@@ -198,8 +192,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
         if (e.getSource() instanceof MapBean) {
             setMapBean((MapBean) (e.getSource()));
             if (origin != null) {
-                intermediateDest = (LatLonPoint) getMapBean().getProjection()
-                        .inverse(e.getPoint(), new LatLonPoint.Double());
+                intermediateDest = (LatLonPoint) getMapBean().getProjection().inverse(e.getPoint(), new LatLonPoint.Double());
 
                 fireMouseLocation(e);
 
@@ -220,9 +213,9 @@ public class RangeRingsMouseMode extends CoordMouseMode {
 
     /**
      * Repaints the map bean. When this mouse mode is active, it is registered
-     * as a <code>paintListener</code> for the mapBean by the mouseDelegator,
-     * so the <code>listenerPaint</code> method can draw the range rings on
-     * the map bean.
+     * as a <code>paintListener</code> for the mapBean by the mouseDelegator, so
+     * the <code>listenerPaint</code> method can draw the range rings on the map
+     * bean.
      */
     public void redraw() {
         MapBean mb = getMapBean();
@@ -309,8 +302,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
         Graphics2D g = (Graphics2D) graphics;
         Rectangle2D r = g.getFontMetrics().getStringBounds(infoText, graphics);
 
-        pt.setLocation(pt.getX() - (r.getWidth() / 2d), pt.getY()
-                - (r.getHeight() / 2d));
+        pt.setLocation(pt.getX() - (r.getWidth() / 2d), pt.getY() - (r.getHeight() / 2d));
 
         OMText text = new OMText((int) pt.getX(), (int) pt.getY(), infoText, OMText.JUSTIFY_LEFT);
 
@@ -367,8 +359,8 @@ public class RangeRingsMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Paints a unique circle centered on <code>origin</code> and which
-     * crosses <code>dest</code> on the map bean.
+     * Paints a unique circle centered on <code>origin</code> and which crosses
+     * <code>dest</code> on the map bean.
      * 
      * @param dest A point on the circle.
      */
@@ -381,8 +373,8 @@ public class RangeRingsMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Paints a unique circle centered on <code>origin</code> and which
-     * crosses <code>dest</code> on the given Graphics.
+     * Paints a unique circle centered on <code>origin</code> and which crosses
+     * <code>dest</code> on the given Graphics.
      * 
      * @param dest A point on the circle.
      * @param graphics The Graphics to paint on.
@@ -397,10 +389,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
         double radlambda = ProjMath.degToRad(dest.getX());
 
         // calculate the circle radius
-        double dRad = GreatCircle.sphericalDistance(radphi1,
-                radlambda0,
-                radphi,
-                radlambda);
+        double dRad = GreatCircle.sphericalDistance(radphi1, radlambda0, radphi, radlambda);
         // convert into decimal degrees
         float rad = (float) ProjMath.radToDeg(dRad);
 
@@ -432,8 +421,8 @@ public class RangeRingsMouseMode extends CoordMouseMode {
     }
 
     /**
-     * Paints a label for the circle drawn using <code>dest</code> on the
-     * given Graphics.
+     * Paints a label for the circle drawn using <code>dest</code> on the given
+     * Graphics.
      * 
      * @param dest A point on the circle.
      * @param graphics The Graphics to paint on.
@@ -447,13 +436,9 @@ public class RangeRingsMouseMode extends CoordMouseMode {
         LatLonPoint llp = new LatLonPoint.Double(origin);
         double distance = llp.distance(dest);
         if (llp.getLatitude() > 0) {
-            llp.setLatLon(Math.toRadians(llp.getLatitude()) - distance,
-                    Math.toRadians(llp.getLongitude()),
-                    true);
+            llp.setLatLon(Math.toRadians(llp.getLatitude()) - distance, Math.toRadians(llp.getLongitude()), true);
         } else {
-            llp.setLatLon(Math.toRadians(llp.getLatitude()) + distance,
-                    Math.toRadians(llp.getLongitude()),
-                    true);
+            llp.setLatLon(Math.toRadians(llp.getLatitude()) + distance, Math.toRadians(llp.getLongitude()), true);
             th = -th / 2d;
         }
 
@@ -477,14 +462,16 @@ public class RangeRingsMouseMode extends CoordMouseMode {
      * 
      * @param point OMPoint.
      */
-    protected void preparePoint(OMPoint point) {}
+    protected void preparePoint(OMPoint point) {
+    }
 
     /**
      * Customizes the given OMCicle before it is rendered.
      * 
      * @param circle OMCircle.
      */
-    protected void prepareCircle(OMCircle circle) {}
+    protected void prepareCircle(OMCircle circle) {
+    }
 
     /**
      * Customizes the given OMText before it is rendered.
@@ -504,8 +491,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
      * @return label String.
      */
     protected String getOriginLabel() {
-        return "(" + df.format(origin.getY()) + ", " + df.format(origin.getX())
-                + ")";
+        return "(" + df.format(origin.getY()) + ", " + df.format(origin.getX()) + ")";
     }
 
     /**
@@ -528,19 +514,22 @@ public class RangeRingsMouseMode extends CoordMouseMode {
      * Called when the origin point of the range rings has been selected, before
      * painting on the map.
      */
-    protected void startUp() {}
+    protected void startUp() {
+    }
 
     /**
      * Called when the origin point of the range is is known, and the mouse is
      * moving on the map, but before painting on the map.
      */
-    protected void update() {}
+    protected void update() {
+    }
 
     /**
      * Called when the end point of the range rings has been selected, before
      * painting on the map.
      */
-    protected void finished() {}
+    protected void finished() {
+    }
 
     /**
      * Called when the range rings must be cleared, before repainting a clean
@@ -552,16 +541,13 @@ public class RangeRingsMouseMode extends CoordMouseMode {
         destination = null;
     }
 
-    private AffineTransform getTranslation(LatLonPoint pt1, LatLonPoint pt2,
-                                           Projection proj) {
+    private AffineTransform getTranslation(LatLonPoint pt1, LatLonPoint pt2, Projection proj) {
         Point2D p1 = proj.forward(pt1);
         Point2D p2 = proj.forward(pt2);
-        return AffineTransform.getTranslateInstance(p2.getX() - p1.getX(),
-                p2.getY() - p1.getY());
+        return AffineTransform.getTranslateInstance(p2.getX() - p1.getX(), p2.getY() - p1.getY());
     }
 
-    private LatLonPoint translate(LatLonPoint pt,
-                                  AffineTransform xyTranslation, Projection proj) {
+    private LatLonPoint translate(LatLonPoint pt, AffineTransform xyTranslation, Projection proj) {
         Point2D p = proj.forward(pt);
         xyTranslation.transform(p, p);
         return (LatLonPoint) proj.inverse(p, new LatLonPoint.Double());
@@ -572,8 +558,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        numRings = PropUtils.intFromProperties(props, prefix
-                + NUM_RINGS_PROPERTY, numRings);
+        numRings = PropUtils.intFromProperties(props, prefix + NUM_RINGS_PROPERTY, numRings);
     }
 
     public Properties getProperties(Properties props) {
@@ -581,8 +566,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
 
         String prefix = PropUtils.getScopedPropertyPrefix(getPropertyPrefix());
 
-        props.setProperty(prefix + NUM_RINGS_PROPERTY,
-                Integer.toString(numRings));
+        props.setProperty(prefix + NUM_RINGS_PROPERTY, Integer.toString(numRings));
 
         return props;
     }
@@ -590,8 +574,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
 
-        list.setProperty(NUM_RINGS_PROPERTY,
-                "Number of range rings to be drawn (minimum=1; default=3).");
+        list.setProperty(NUM_RINGS_PROPERTY, "Number of range rings to be drawn (minimum=1; default=3).");
 
         return list;
     }

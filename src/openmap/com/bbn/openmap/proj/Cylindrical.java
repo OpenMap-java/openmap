@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Cylindrical.java,v $
 // $RCSfile: Cylindrical.java,v $
 // $Revision: 1.10 $
 // $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.proj;
@@ -40,7 +40,8 @@ import com.bbn.openmap.util.Debug;
  * @see CADRG
  * 
  */
-public abstract class Cylindrical extends GeoProj {
+public abstract class Cylindrical
+        extends GeoProj {
 
     // used for calculating wrapping of ArrayList graphics
     protected transient Point world; // world width in pixels.
@@ -120,8 +121,7 @@ public abstract class Cylindrical extends GeoProj {
         // bit
 
         if (Debug.debugging("proj")) {
-            Debug.output("Cylindrical.computeParameters(): " + "world.x = "
-                    + world.x + " half_world = " + half_world
+            Debug.output("Cylindrical.computeParameters(): " + "world.x = " + world.x + " half_world = " + half_world
                     + " XSCALE_THRESHOLD = " + XSCALE_THRESHOLD);
         }
     }
@@ -129,7 +129,7 @@ public abstract class Cylindrical extends GeoProj {
     /**
      * Pan the map/projection.
      * <ul>
-     * <li><code>pan(±180, c)</code> pan south
+     * <li><code>pan(180, c)</code> pan south
      * <li><code>pan(-90, c)</code> pan west
      * <li><code>pan(0, c)</code> pan north
      * <li><code>pan(90, c)</code> pan east
@@ -208,8 +208,7 @@ public abstract class Cylindrical extends GeoProj {
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords,
-                              float[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords, float[] ycoords, boolean[] visible, int copyoff,
                               int copylen) {
         Point2D temp = new Point2D.Float();
         int end = copylen + copyoff;
@@ -244,8 +243,7 @@ public abstract class Cylindrical extends GeoProj {
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords,
-                              float[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords, float[] ycoords, boolean[] visible, int copyoff,
                               int copylen) {
         Point2D temp = new Point2D.Float();
         int end = copylen + copyoff;
@@ -290,8 +288,7 @@ public abstract class Cylindrical extends GeoProj {
      *        projections.
      * @return ArrayList of x[], y[], x[], y[], ... the projected poly
      */
-    protected ArrayList<float[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs,
-                                     boolean isFilled) {
+    protected ArrayList<float[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs, boolean isFilled) {
         int n, k, flag = 0, min = 0, max = 0;
         float xp, xadj = 0;
 
@@ -408,8 +405,7 @@ public abstract class Cylindrical extends GeoProj {
      *        projections.
      * @return ArrayList of x[], y[], x[], y[], ... the projected poly
      */
-    protected ArrayList<float[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs,
-                                     boolean isFilled) {
+    protected ArrayList<float[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs, boolean isFilled) {
         int n, k, flag = 0, min = 0, max = 0;
         float xp, xadj = 0;
 
@@ -500,8 +496,7 @@ public abstract class Cylindrical extends GeoProj {
     public static final void dumpPoly(float[] rawllpts, float[] xs, float[] ys) {
         Debug.output("poly:");
         for (int i = 0, j = 0; j < xs.length; i += 2, j++) {
-            System.out.print("[" + ProjMath.radToDeg(rawllpts[i]) + ","
-                    + ProjMath.radToDeg(rawllpts[i + 1]) + "]=");
+            System.out.print("[" + ProjMath.radToDeg(rawllpts[i]) + "," + ProjMath.radToDeg(rawllpts[i + 1]) + "]=");
             Debug.output("(" + xs[j] + "," + ys[j] + ")");
         }
         Debug.output("");
@@ -511,8 +506,7 @@ public abstract class Cylindrical extends GeoProj {
     public static final void dumpPoly(double[] rawllpts, float[] xs, float[] ys) {
         Debug.output("poly:");
         for (int i = 0, j = 0; j < xs.length; i += 2, j++) {
-            System.out.print("[" + ProjMath.radToDeg(rawllpts[i]) + ","
-                    + ProjMath.radToDeg(rawllpts[i + 1]) + "]=");
+            System.out.print("[" + ProjMath.radToDeg(rawllpts[i]) + "," + ProjMath.radToDeg(rawllpts[i + 1]) + "]=");
             Debug.output("(" + xs[j] + "," + ys[j] + ")");
         }
         Debug.output("");

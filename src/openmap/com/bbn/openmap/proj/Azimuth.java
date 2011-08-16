@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Azimuth.java,v $
 // $RCSfile: Azimuth.java,v $
 // $Revision: 1.10 $
 // $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.proj;
@@ -41,7 +41,8 @@ import com.bbn.openmap.util.Debug;
  * @see Orthographic
  * @see Gnomonic
  */
-public abstract class Azimuth extends GeoProj {
+public abstract class Azimuth
+        extends GeoProj {
 
     // encapsules extra variables to forward() method call
     protected static class AzimuthVar {
@@ -106,9 +107,9 @@ public abstract class Azimuth extends GeoProj {
     /**
      * Called when some fundamental parameters change.
      * <p>
-     * Each projection will decide how to respond to this change. For
-     * instance, they may need to recalculate "constant" parameters
-     * used in the forward() and inverse() calls.
+     * Each projection will decide how to respond to this change. For instance,
+     * they may need to recalculate "constant" parameters used in the forward()
+     * and inverse() calls.
      * <p>
      * 
      */
@@ -119,8 +120,7 @@ public abstract class Azimuth extends GeoProj {
 
         // maxscale = scale at which a world hemisphere fits in the
         // window
-        maxscale = (width < height) ? (planetPixelRadius * 2) / width
-                : (planetPixelRadius * 2) / height;
+        maxscale = (width < height) ? (planetPixelRadius * 2) / width : (planetPixelRadius * 2) / height;
         if (maxscale < minscale) {
             maxscale = minscale;
         }
@@ -143,8 +143,7 @@ public abstract class Azimuth extends GeoProj {
         // bit
 
         if (Debug.debugging("proj")) {
-            Debug.output("Azimuth.computeParameters(): " + "world.x = "
-                    + world.x + " XSCALE_THRESHOLD = " + XSCALE_THRESHOLD);
+            Debug.output("Azimuth.computeParameters(): " + "world.x = " + world.x + " XSCALE_THRESHOLD = " + XSCALE_THRESHOLD);
         }
     }
 
@@ -167,11 +166,9 @@ public abstract class Azimuth extends GeoProj {
     }
 
     /**
-     * Forward project a point. Wrapper around Azimuth-specific
-     * forwarding.
+     * Forward project a point. Wrapper around Azimuth-specific forwarding.
      */
-    public final Point2D forward(double lat, double lon, Point2D pt,
-                               boolean isRadian) {
+    public final Point2D forward(double lat, double lon, Point2D pt, boolean isRadian) {
         if (!isRadian) {
             lat = Math.toRadians(lat);
             lon = Math.toRadians(lon);
@@ -180,9 +177,8 @@ public abstract class Azimuth extends GeoProj {
     }
 
     /**
-     * Forward project a point. If the point is not within the
-     * viewable hemisphere, return flags in AzimuthVar variable if
-     * specified.
+     * Forward project a point. If the point is not within the viewable
+     * hemisphere, return flags in AzimuthVar variable if specified.
      * 
      * @param lat latitude in radians
      * @param lon longitude in radians
@@ -190,13 +186,12 @@ public abstract class Azimuth extends GeoProj {
      * @param azVar AzimuthVar or null
      * @return Point2D pt
      */
-    protected abstract Point2D _forward(double lat, double lon, Point2D pt,
-                                      AzimuthVar azVar);
+    protected abstract Point2D _forward(double lat, double lon, Point2D pt, AzimuthVar azVar);
 
     /**
      * Pan the map/projection.
      * <ul>
-     * <li><code>pan(±180, c)</code> pan south
+     * <li><code>pan(180, c)</code> pan south
      * <li><code>pan(-90, c)</code> pan west
      * <li><code>pan(0, c)</code> pan north
      * <li><code>pan(90, c)</code> pan east
@@ -244,10 +239,7 @@ public abstract class Azimuth extends GeoProj {
             // check for large planet
             if (MoreMath.approximately_equal(to.getRadLon(), centerX, 0.0001f)) {
                 // cast out to hemisphere edge
-                to = GreatCircle.sphericalBetween(centerY,
-                        centerX,
-                        MoreMath.HALF_PI_D,
-                        -(Math.PI / 4));
+                to = GreatCircle.sphericalBetween(centerY, centerX, MoreMath.HALF_PI_D, -(Math.PI / 4));
             }
             setCenter(to);
         }
@@ -264,10 +256,7 @@ public abstract class Azimuth extends GeoProj {
             // check for large planet
             if (MoreMath.approximately_equal(to.getRadLat(), centerY, 0.0001f)) {
                 // cast out to hemisphere edge
-                to = GreatCircle.sphericalBetween(centerY,
-                        centerX,
-                        MoreMath.HALF_PI_D,
-                        0);
+                to = GreatCircle.sphericalBetween(centerY, centerX, MoreMath.HALF_PI_D, 0);
             }
             setCenter(to);
         }
@@ -291,10 +280,7 @@ public abstract class Azimuth extends GeoProj {
             // check for large planet
             if (MoreMath.approximately_equal(to.getRadLon(), centerX, 0.0001f)) {
                 // cast out to hemisphere edge
-                to = GreatCircle.sphericalBetween(centerY,
-                        centerX,
-                        MoreMath.HALF_PI_D,
-                        (Math.PI / 4));
+                to = GreatCircle.sphericalBetween(centerY, centerX, MoreMath.HALF_PI_D, (Math.PI / 4));
             }
             setCenter(to);
         }
@@ -317,10 +303,7 @@ public abstract class Azimuth extends GeoProj {
             // check for large planet
             if (MoreMath.approximately_equal(to.getRadLon(), centerX, 0.0001f)) {
                 // cast out to hemisphere edge
-                to = GreatCircle.sphericalBetween(centerY,
-                        centerX,
-                        MoreMath.HALF_PI_D,
-                        (Math.PI / 2));
+                to = GreatCircle.sphericalBetween(centerY, centerX, MoreMath.HALF_PI_D, (Math.PI / 2));
             }
             setCenter(to);
         }
@@ -345,10 +328,7 @@ public abstract class Azimuth extends GeoProj {
             // check for large planet
             if (MoreMath.approximately_equal(to.getRadLon(), centerX, 0.0001f)) {
                 // cast out to hemisphere edge
-                to = GreatCircle.sphericalBetween(centerY,
-                        centerX,
-                        MoreMath.HALF_PI_D,
-                        (0.75 * Math.PI));
+                to = GreatCircle.sphericalBetween(centerY, centerX, MoreMath.HALF_PI_D, (0.75 * Math.PI));
             }
             setCenter(to);
         }
@@ -365,10 +345,7 @@ public abstract class Azimuth extends GeoProj {
             // check for large planet
             if (MoreMath.approximately_equal(to.getRadLat(), centerY, 0.0001f)) {
                 // cast out to hemisphere edge
-                to = GreatCircle.sphericalBetween(centerY,
-                        centerX,
-                        MoreMath.HALF_PI_D,
-                        Math.PI);
+                to = GreatCircle.sphericalBetween(centerY, centerX, MoreMath.HALF_PI_D, Math.PI);
             }
             setCenter(to);
         }
@@ -393,10 +370,7 @@ public abstract class Azimuth extends GeoProj {
             // check for large planet
             if (MoreMath.approximately_equal(to.getRadLon(), centerX, 0.0001f)) {
                 // cast out to hemisphere edge
-                to = GreatCircle.sphericalBetween(centerY,
-                        centerX,
-                        MoreMath.HALF_PI_D,
-                        (-0.75 * Math.PI));
+                to = GreatCircle.sphericalBetween(centerY, centerX, MoreMath.HALF_PI_D, (-0.75 * Math.PI));
             }
             setCenter(to);
         }
@@ -418,10 +392,7 @@ public abstract class Azimuth extends GeoProj {
             // check for large planet
             if (MoreMath.approximately_equal(to.getRadLon(), centerX, 0.0001f)) {
                 // cast out to hemisphere edge
-                to = GreatCircle.sphericalBetween(centerY,
-                        centerX,
-                        MoreMath.HALF_PI_D,
-                        -MoreMath.HALF_PI_D);
+                to = GreatCircle.sphericalBetween(centerY, centerX, MoreMath.HALF_PI_D, -MoreMath.HALF_PI_D);
             }
             setCenter(to);
         }
@@ -467,20 +438,17 @@ public abstract class Azimuth extends GeoProj {
     }
 
     /**
-     * Forward project a lat/lon Poly. This is a complex method.
-     * Please read the in-code documentation for an explanation of the
-     * algorithm.
+     * Forward project a lat/lon Poly. This is a complex method. Please read the
+     * in-code documentation for an explanation of the algorithm.
      * 
      * @param rawllpts float[] of lat,lon,lat,lon,... in RADIANS!
      * @param ltype line type (straight, rhumbline, greatcircle)
-     * @param nsegs number of segment points (only for greatcircle or
-     *        rhumbline line types, and if &lt; 1, this value is
-     *        generated internally)
+     * @param nsegs number of segment points (only for greatcircle or rhumbline
+     *        line types, and if &lt; 1, this value is generated internally)
      * @param isFilled filled poly?
      * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
      */
-    protected ArrayList<float[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs,
-                                     boolean isFilled) {
+    protected ArrayList<float[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs, boolean isFilled) {
         // Idea:
         // The azimuthal projection family (mostly) shows one
         // hemisphere only.
@@ -502,7 +470,7 @@ public abstract class Azimuth extends GeoProj {
         //
         // * Return all projected points if case 1, or nothing
         // if case 2.
-        //      
+        //
         // * For case 3:
         //
         // * If poly isn't filled, just return the
@@ -593,10 +561,7 @@ public abstract class Azimuth extends GeoProj {
         } else {
             // save beginning of subsection if not filled
             azVar.index = 0;
-            azVar.current_azimuth = GreatCircle.sphericalAzimuth((float) centerY,
-                    (float) centerX,
-                    rawllpts[0],
-                    rawllpts[1]);
+            azVar.current_azimuth = GreatCircle.sphericalAzimuth((float) centerY, (float) centerX, rawllpts[0], rawllpts[1]);
             // Debug.output("marker0="+azVar.index+
             // " az="+ProjMath.radToDeg(azVar.current_azimuth));
             if (!isFilled) {
@@ -618,10 +583,8 @@ public abstract class Azimuth extends GeoProj {
             if (!curr_invalid && prev_invalid) {
                 // record transition (outside -> inside)
                 azVar.index = i - 1;// include outside point
-                azVar.current_azimuth = GreatCircle.sphericalAzimuth((float) centerY,
-                        (float) centerX,
-                        rawllpts[j - 2],
-                        rawllpts[j - 1]);
+                azVar.current_azimuth =
+                        GreatCircle.sphericalAzimuth((float) centerY, (float) centerX, rawllpts[j - 2], rawllpts[j - 1]);
                 // Debug.output("marker oi="+azVar.index+
                 // " az="+ProjMath.radToDeg(azVar.current_azimuth));
                 sections.add(azVar);
@@ -684,10 +647,8 @@ public abstract class Azimuth extends GeoProj {
                 }
                 azVar.index = i;
                 j = rawllpts.length;
-                azVar.current_azimuth = GreatCircle.sphericalAzimuth((float) centerY,
-                        (float) centerX,
-                        rawllpts[j - 2],
-                        rawllpts[j - 1]);
+                azVar.current_azimuth =
+                        GreatCircle.sphericalAzimuth((float) centerY, (float) centerX, rawllpts[j - 2], rawllpts[j - 1]);
                 // Debug.output("marker end="+azVar.index+
                 // " az="+ProjMath.radToDeg(azVar.current_azimuth));
                 sections.add(azVar);
@@ -727,20 +688,17 @@ public abstract class Azimuth extends GeoProj {
     }// _forwardPoly()
 
     /**
-     * Forward project a lat/lon Poly. This is a complex method.
-     * Please read the in-code documentation for an explanation of the
-     * algorithm.
+     * Forward project a lat/lon Poly. This is a complex method. Please read the
+     * in-code documentation for an explanation of the algorithm.
      * 
      * @param rawllpts double[] of lat,lon,lat,lon,... in RADIANS!
      * @param ltype line type (straight, rhumbline, greatcircle)
-     * @param nsegs number of segment points (only for greatcircle or
-     *        rhumbline line types, and if &lt; 1, this value is
-     *        generated internally)
+     * @param nsegs number of segment points (only for greatcircle or rhumbline
+     *        line types, and if &lt; 1, this value is generated internally)
      * @param isFilled filled poly?
      * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
      */
-    protected ArrayList<float[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs,
-                                     boolean isFilled) {
+    protected ArrayList<float[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs, boolean isFilled) {
         boolean DEBUG = Debug.debugging("proj");
 
         int len = rawllpts.length >>> 1;
@@ -771,10 +729,7 @@ public abstract class Azimuth extends GeoProj {
         } else {
             // save beginning of subsection if not filled
             azVar.index = 0;
-            azVar.current_azimuth = (float) GreatCircle.sphericalAzimuth(centerY,
-                    centerX,
-                    rawllpts[0],
-                    rawllpts[1]);
+            azVar.current_azimuth = (float) GreatCircle.sphericalAzimuth(centerY, centerX, rawllpts[0], rawllpts[1]);
             // Debug.output("marker0="+azVar.index+
             // " az="+ProjMath.radToDeg(azVar.current_azimuth));
             if (!isFilled) {
@@ -796,10 +751,7 @@ public abstract class Azimuth extends GeoProj {
             if (!curr_invalid && prev_invalid) {
                 // record transition (outside -> inside)
                 azVar.index = i - 1;// include outside point
-                azVar.current_azimuth = (float) GreatCircle.sphericalAzimuth(centerY,
-                        centerX,
-                        rawllpts[j - 2],
-                        rawllpts[j - 1]);
+                azVar.current_azimuth = (float) GreatCircle.sphericalAzimuth(centerY, centerX, rawllpts[j - 2], rawllpts[j - 1]);
                 // Debug.output("marker oi="+azVar.index+
                 // " az="+ProjMath.radToDeg(azVar.current_azimuth));
                 sections.add(azVar);
@@ -862,10 +814,7 @@ public abstract class Azimuth extends GeoProj {
                 }
                 azVar.index = i;
                 j = rawllpts.length;
-                azVar.current_azimuth = (float) GreatCircle.sphericalAzimuth(centerY,
-                        centerX,
-                        rawllpts[j - 2],
-                        rawllpts[j - 1]);
+                azVar.current_azimuth = (float) GreatCircle.sphericalAzimuth(centerY, centerX, rawllpts[j - 2], rawllpts[j - 1]);
                 // Debug.output("marker end="+azVar.index+
                 // " az="+ProjMath.radToDeg(azVar.current_azimuth));
                 sections.add(azVar);
@@ -955,16 +904,16 @@ public abstract class Azimuth extends GeoProj {
     // edge points may actually appear to switch order, which blows up
     // our hemisphere edge calculations. The algorithm corrects
     // (hacks-around) this problem by disallowing excessively wide
-    // polygons (in->out and out->in azimuth difference of > 180°).
+    // polygons (in->out and out->in azimuth difference of > 180).
     // (Thus, we stamp out one problem only to introduce another, but
     // this problem as easier to work around as we shall see below).
     //
     // PROBLEMATIC WIDE POLYS:
     //
     // Consider a polygon band around the world following east-west
-    // rhumblines at latitudes ±20:
-    // (-20,-10),(-20,-90),(-20,±180),(-20,90),(-20,10),
-    // (20,10),(20,90),(20,±180),(20,-90),(20,-10),(-20,-10)
+    // rhumblines at latitudes 20:
+    // (-20,-10),(-20,-90),(-20,180),(-20,90),(-20,10),
+    // (20,10),(20,90),(20,180),(20,-90),(20,-10),(-20,-10)
     //
     // Obviously we want to draw color INSIDE this band, but as we
     // will see, this doesn't happen in certain viewing positions.
@@ -975,7 +924,7 @@ public abstract class Azimuth extends GeoProj {
     // polyline is drawn correctly, the fill side will be rendered
     // incorrectly since the algorithm will connect the polygon the
     // short way around the projection edge. Here's the picture:
-    // 
+    //
     // __________________
     // / \
     // / _____x______ \
@@ -984,13 +933,13 @@ public abstract class Azimuth extends GeoProj {
     // / / \ \
     // / / \ \
     // / / Azimuth \ \
-    // | / ±180° | |
+    // | / 180 | |
     // | | | | |
     // | | | | |
-    // | x -90°--N--90° x |
+    // | x -90--N--90 x |
     // | | | | |
     // | | | | |
-    // | | 0° / |
+    // | | 0 / |
     // \ \ / /
     // \ \ / /
     // \ \ in-> out-> / /
@@ -999,7 +948,7 @@ public abstract class Azimuth extends GeoProj {
     // \ x x /
     // \_____|______|_____/
     // ^^^^^^
-    // 
+    //
     // POLY WORKAROUNDS:
     //
     // You may need to break large polygons like the example one into
@@ -1010,15 +959,16 @@ public abstract class Azimuth extends GeoProj {
     // original poly to draw the bounding outline (remember that
     // polylines don't have the fill problem just described!)
     //
-    private void generateFilledPoly(float[] xs, float[] ys, ArrayList<AzimuthVar> sections,
-                                    ArrayList<float[]> ret_vec) {
+    private void generateFilledPoly(float[] xs, float[] ys, ArrayList<AzimuthVar> sections, ArrayList<float[]> ret_vec) {
         AzimuthVar beginAz, oiAz, ioAz;
         /*
-         * the merged list is going to end up being series of lists of two AzimuthVar objects, then a double[]
+         * the merged list is going to end up being series of lists of two
+         * AzimuthVar objects, then a double[]
          */
         ArrayList merged = null;
         /*
-         * The masterList is going to end up holding a merged ArrayList and an Integer count of vertexes.
+         * The masterList is going to end up holding a merged ArrayList and an
+         * Integer count of vertexes.
          */
         ArrayList masterList = new ArrayList();
         double[] edgePoints = null;
@@ -1044,8 +994,7 @@ public abstract class Azimuth extends GeoProj {
                 // finished a complex section
                 if (merged != null) {
                     // close the polygon
-                    edgePoints = getHemisphereEdge(oiAz.current_azimuth,
-                            ioAz.current_azimuth);
+                    edgePoints = getHemisphereEdge(oiAz.current_azimuth, ioAz.current_azimuth);
                     vertexCount += (edgePoints.length >>> 1);
                     merged.add(edgePoints);
                     masterList.add(new Integer(vertexCount));
@@ -1076,8 +1025,7 @@ public abstract class Azimuth extends GeoProj {
                 vertexCount += ioAz.index - beginAz.index;
             }
             // connect the sections
-            edgePoints = getHemisphereEdge(oiAz.current_azimuth,
-                    ioAz.current_azimuth);
+            edgePoints = getHemisphereEdge(oiAz.current_azimuth, ioAz.current_azimuth);
             vertexCount += (edgePoints.length >>> 1);
             merged.add(edgePoints);
             AzimuthVar endAz = (AzimuthVar) sections.get(en);
@@ -1134,8 +1082,7 @@ public abstract class Azimuth extends GeoProj {
     // Find the closest azimuth value to the one listed. Check in
     // appropriate clockwise or counter-clockwise direction. This is
     // called from generateFilledPoly().
-    private int findClosestAzimuth(ArrayList<AzimuthVar> sections, double az,
-                                   boolean clockwise) {
+    private int findClosestAzimuth(ArrayList<AzimuthVar> sections, double az, boolean clockwise) {
         double delta;
         double closest = (clockwise) ? -MoreMath.TWO_PI_D : MoreMath.TWO_PI_D;
         int id = -1;
@@ -1187,14 +1134,8 @@ public abstract class Azimuth extends GeoProj {
         // Debug.output("delta="+ProjMath.radToDeg(delta));
 
         // get the two LatLonPoints on the edge.
-        LatLonPoint ll1 = GreatCircle.sphericalBetween(centerY,
-                centerX,
-                MoreMath.HALF_PI_D,
-                ioAz);
-        LatLonPoint ll2 = GreatCircle.sphericalBetween(centerY,
-                centerX,
-                MoreMath.HALF_PI_D,
-                oiAz);
+        LatLonPoint ll1 = GreatCircle.sphericalBetween(centerY, centerX, MoreMath.HALF_PI_D, ioAz);
+        LatLonPoint ll2 = GreatCircle.sphericalBetween(centerY, centerX, MoreMath.HALF_PI_D, oiAz);
 
         // Debug.output("ll1="+ll1+" ll2="+ll2);
 
@@ -1203,12 +1144,7 @@ public abstract class Azimuth extends GeoProj {
         int npts = (int) (Math.abs(delta) / ACCEPTABLE_AZ);
         if (npts == 0)
             ++npts;
-        double[] radpts = GreatCircle.greatCircle(ll1.getRadLat(),
-                ll1.getRadLon(),
-                ll2.getRadLat(),
-                ll2.getRadLon(),
-                npts,
-                true);
+        double[] radpts = GreatCircle.greatCircle(ll1.getRadLat(), ll1.getRadLon(), ll2.getRadLat(), ll2.getRadLon(), npts, true);
 
         return radpts;
     }
@@ -1216,10 +1152,8 @@ public abstract class Azimuth extends GeoProj {
     // Clip filled poly section along the hemisphere edge. Add the
     // closed poly coordinates to the return ArrayList. This is called
     // from generateFilledPoly().
-    private void hemisphereClip(float[] xs, float[] ys, AzimuthVar oiAz,
-                                AzimuthVar ioAz, ArrayList<float[]> ret_vec) {
-        double[] radpts = getHemisphereEdge(oiAz.current_azimuth,
-                ioAz.current_azimuth);
+    private void hemisphereClip(float[] xs, float[] ys, AzimuthVar oiAz, AzimuthVar ioAz, ArrayList<float[]> ret_vec) {
+        double[] radpts = getHemisphereEdge(oiAz.current_azimuth, ioAz.current_azimuth);
         int len = radpts.length;
         int m = len >>> 1;
         int off1 = oiAz.index;
@@ -1243,13 +1177,12 @@ public abstract class Azimuth extends GeoProj {
     }
 
     /**
-     * Forward project a raw array of radian points. This assumes
-     * nothing about the array of coordinates. In no way does it
-     * assume the points are connected or that the composite figure is
-     * to be filled.
+     * Forward project a raw array of radian points. This assumes nothing about
+     * the array of coordinates. In no way does it assume the points are
+     * connected or that the composite figure is to be filled.
      * <p>
-     * It does populate a visible array indicating whether the points
-     * are visible on the projected view of the world.
+     * It does populate a visible array indicating whether the points are
+     * visible on the projected view of the world.
      * <p>
      * 
      * @param rawllpts array of lat,lon,... in radians
@@ -1258,14 +1191,12 @@ public abstract class Azimuth extends GeoProj {
      * @param ycoords y coordinates
      * @param visible coordinates visible?
      * @param copyoff offset into x,y,visible arrays
-     * @param copylen number of coordinates (coordinate arrays should
-     *        be at least this long, rawllpts should be at least twice
-     *        as long).
-     * @return boolean true if all points visible, false if some
-     *         points not visible.
+     * @param copylen number of coordinates (coordinate arrays should be at
+     *        least this long, rawllpts should be at least twice as long).
+     * @return boolean true if all points visible, false if some points not
+     *         visible.
      */
-    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords,
-                              float[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords, float[] ycoords, boolean[] visible, int copyoff,
                               int copylen) {
         Point temp = new Point();
         AzimuthVar azVar = new AzimuthVar();
@@ -1282,13 +1213,12 @@ public abstract class Azimuth extends GeoProj {
     }
 
     /**
-     * Forward project a raw array of radian points. This assumes
-     * nothing about the array of coordinates. In no way does it
-     * assume the points are connected or that the composite figure is
-     * to be filled.
+     * Forward project a raw array of radian points. This assumes nothing about
+     * the array of coordinates. In no way does it assume the points are
+     * connected or that the composite figure is to be filled.
      * <p>
-     * It does populate a visible array indicating whether the points
-     * are visible on the projected view of the world.
+     * It does populate a visible array indicating whether the points are
+     * visible on the projected view of the world.
      * <p>
      * 
      * @param rawllpts array of lat,lon,... in radians
@@ -1297,14 +1227,12 @@ public abstract class Azimuth extends GeoProj {
      * @param ycoords y coordinates
      * @param visible coordinates visible?
      * @param copyoff offset into x,y,visible arrays
-     * @param copylen number of coordinates (coordinate arrays should
-     *        be at least this long, rawllpts should be at least twice
-     *        as long).
-     * @return boolean true if all points visible, false if some
-     *         points not visible.
+     * @param copylen number of coordinates (coordinate arrays should be at
+     *        least this long, rawllpts should be at least twice as long).
+     * @return boolean true if all points visible, false if some points not
+     *         visible.
      */
-    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords,
-                              float[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords, float[] ycoords, boolean[] visible, int copyoff,
                               int copylen) {
         Point temp = new Point();
         AzimuthVar azVar = new AzimuthVar();
@@ -1332,8 +1260,8 @@ public abstract class Azimuth extends GeoProj {
     // }
 
     /**
-     * Assume that the Graphics has been set with the Paint/Color
-     * needed, just render the shape of the background.
+     * Assume that the Graphics has been set with the Paint/Color needed, just
+     * render the shape of the background.
      */
     public void drawBackground(Graphics g) {
         // if we're zoomed in, just draw background
@@ -1361,12 +1289,7 @@ public abstract class Azimuth extends GeoProj {
             g.setColor((Color) oldPaint);
         }
 
-        g.fillArc(width / 2 - s / 2,
-                height / 2 - s / 2,
-                s/*-1*/,
-                s/*-1*/,
-                0,
-                360);
+        g.fillArc(width / 2 - s / 2, height / 2 - s / 2, s/*-1*/, s/*-1*/, 0, 360);
     }
 
     protected Color spaceColor = Color.black;

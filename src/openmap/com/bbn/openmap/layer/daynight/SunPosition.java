@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/daynight/SunPosition.java,v $
 // $RCSfile: SunPosition.java,v $
 // $Revision: 1.4 $
 // $Date: 2004/10/14 18:05:53 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.layer.daynight;
@@ -30,20 +30,18 @@ import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
- * SunPosition calculates the latitude/longitude on the Earth that is
- * closest to the Sun, the point on the Earth where the sun is
- * directly overhead.
+ * SunPosition calculates the latitude/longitude on the Earth that is closest to
+ * the Sun, the point on the Earth where the sun is directly overhead.
  * <P>
  * 
- * All of these calculations are based on an epoch, or a starting
- * point where the Sun's position is known. From the reference book,
- * the epoch is 1990 January 0.0.
+ * All of these calculations are based on an epoch, or a starting point where
+ * the Sun's position is known. From the reference book, the epoch is 1990
+ * January 0.0.
  * <P>
  * 
- * Also, all of the equations, and understanding of this whole
- * algorithm, was gained from a great book - Practical Astronomy with
- * Your Calculator, by Peter Duffett-Smith, Third Edition, Cambridge
- * University Press 1988.
+ * Also, all of the equations, and understanding of this whole algorithm, was
+ * gained from a great book - Practical Astronomy with Your Calculator, by Peter
+ * Duffett-Smith, Third Edition, Cambridge University Press 1988.
  */
 public class SunPosition {
 
@@ -53,31 +51,28 @@ public class SunPosition {
     public final static double EPOCH_TIME_SECS = 631065600;
 
     /**
-     * Constant denoting the number of radians an object would travel
-     * if it orbited around the earth in a day.
+     * Constant denoting the number of radians an object would travel if it
+     * orbited around the earth in a day.
      */
     public static double ORBIT_RADS_PER_DAY = MoreMath.TWO_PI / 365.242191;
 
     /**
-     * Ecliptic Longitude of earth at 1990 January epoch. From
-     * Duffett-Smith, chapter 46, table 6. (279.403303 degrees
-     * converted to radians).
+     * Ecliptic Longitude of earth at 1990 January epoch. From Duffett-Smith,
+     * chapter 46, table 6. (279.403303 degrees converted to radians).
      */
     public static final double ECLIPTIC_LONGITUDE_EPOCH = 4.87650757893409;
     /**
-     * Variable notation of ECLIPTIC_LONGITUDE_EPOCH from
-     * Duffett-Smith.
+     * Variable notation of ECLIPTIC_LONGITUDE_EPOCH from Duffett-Smith.
      */
     public static final double epsilon_g = ECLIPTIC_LONGITUDE_EPOCH;
 
     /**
-     * Ecliptic Longitude of of perigee. From Duffett-Smith, chapter
-     * 46, table 6. (282.768422 degrees converted to radians).
+     * Ecliptic Longitude of of perigee. From Duffett-Smith, chapter 46, table
+     * 6. (282.768422 degrees converted to radians).
      */
     public static final double ECLIPTIC_LONGITUDE_PERIGEE = 4.935239985213178;
     /**
-     * Variable notation of ECLIPTIC_LONGITUDE_PERIGEE from
-     * Duffett-Smith.
+     * Variable notation of ECLIPTIC_LONGITUDE_PERIGEE from Duffett-Smith.
      */
     public static final double omega_bar_g = ECLIPTIC_LONGITUDE_PERIGEE;
 
@@ -87,72 +82,61 @@ public class SunPosition {
     public static final double ECCENTRICITY = 0.016713;
 
     /**
-     * MEAN_OBLIQUITY_OF_EPOCH gives the mean obliquity of the
-     * ecliptic, which is the angle between the planes of the equator
-     * and the ecliptic. Using the algorithm described in
-     * Duffett-Smith, chapter 27, this is calculated for the 1990
-     * January epoch to be .4091155 radians (23.440592 degrees).
+     * MEAN_OBLIQUITY_OF_EPOCH gives the mean obliquity of the ecliptic, which
+     * is the angle between the planes of the equator and the ecliptic. Using
+     * the algorithm described in Duffett-Smith, chapter 27, this is calculated
+     * for the 1990 January epoch to be .4091155 radians (23.440592 degrees).
      */
     public static final double MEAN_OBLIQUITY_OF_EPOCH = .4091155;
 
     // These parameters are used in the Moon position calculations.
 
     /**
-     * Moon parameter, from Duffett-Smith, chapter 65, table 10. In
-     * radians.
+     * Moon parameter, from Duffett-Smith, chapter 65, table 10. In radians.
      */
     public static final double MOON_EPOCH_MEAN_LONGITUDE = 318.351648 * Math.PI / 180.0;
     /**
-     * The algorithm representation for the moon
-     * MOON_EPOCH_MEAN_LONGITUDE, "l".
+     * The algorithm representation for the moon MOON_EPOCH_MEAN_LONGITUDE, "l".
      */
     public static final double el0 = MOON_EPOCH_MEAN_LONGITUDE;
 
     /**
-     * Moon parameter, from Duffett-Smith, chapter 65, table 10. In
-     * radians.
+     * Moon parameter, from Duffett-Smith, chapter 65, table 10. In radians.
      */
     public static final double PERIGEE_EPOCH_MEAN_LONGITUDE = 36.340410 * Math.PI / 180.0;
     /**
-     * The algorithm representation for the moon
-     * PERIGEE_EPOCH_MEAN_LONGITUDE.
+     * The algorithm representation for the moon PERIGEE_EPOCH_MEAN_LONGITUDE.
      */
     public static final double P0 = PERIGEE_EPOCH_MEAN_LONGITUDE;
 
     /**
-     * Moon parameter, from Duffett-Smith, chapter 65, table 10. In
-     * radians.
+     * Moon parameter, from Duffett-Smith, chapter 65, table 10. In radians.
      */
     public static final double NODE_EPOCH_MEAN_LONGITUDE = 318.510107 * Math.PI / 180.0;
     /**
-     * The algorithm representation for the moon
-     * NODE_EPOCH_MEAN_LONGITUDE.
+     * The algorithm representation for the moon NODE_EPOCH_MEAN_LONGITUDE.
      */
     public static final double N0 = NODE_EPOCH_MEAN_LONGITUDE;
 
     /**
-     * Moon parameter, from Duffett-Smith, chapter 65, table 10. In
-     * radians.
+     * Moon parameter, from Duffett-Smith, chapter 65, table 10. In radians.
      */
     public static final double MOON_ORBIT_INCLINATION = 5.145396 * Math.PI / 180.0;
     /**
-     * The algorithm representation for the moon
-     * MOON_ORBIT_INCLINATION, "i".
+     * The algorithm representation for the moon MOON_ORBIT_INCLINATION, "i".
      */
     public static final double eye = MOON_ORBIT_INCLINATION;
 
     /** Moon parameter, from Duffett-Smith, chapter 65, table 10. */
     public static final double MOON_ECCENTRICITY = .054900;
     /** Moon parameter, from Duffett-Smith, chapter 65, table 10. */
-    public static final double MAJOR_AXIS_MOON_ORBIT = 384401; //km
+    public static final double MAJOR_AXIS_MOON_ORBIT = 384401; // km
     /**
-     * Moon parameter, from Duffett-Smith, chapter 65, table 10. In
-     * radians.
+     * Moon parameter, from Duffett-Smith, chapter 65, table 10. In radians.
      */
     public static final double MOON_ANGULAR_SIZE = .5181 * Math.PI / 180.0;
     /**
-     * Moon parameter, from Duffett-Smith, chapter 65, table 10. In
-     * radians.
+     * Moon parameter, from Duffett-Smith, chapter 65, table 10. In radians.
      */
     public static final double MOON_PARALLAX = .9507 * Math.PI / 180.0;
 
@@ -160,8 +144,8 @@ public class SunPosition {
      * Use Kepllers's equation to find the eccentric anomaly. From
      * Duffett-Smith, chapter 47.
      * 
-     * @param M the angle that the Sun has moved since it passed
-     *        through perigee.
+     * @param M the angle that the Sun has moved since it passed through
+     *        perigee.
      */
     public static double eccentricAnomaly(double M) {
         double delta;
@@ -177,8 +161,8 @@ public class SunPosition {
     }
 
     /**
-     * Calculate the mean anomaly of sun, in radians. From
-     * Duffett-Smith, chapter 47.
+     * Calculate the mean anomaly of sun, in radians. From Duffett-Smith,
+     * chapter 47.
      * 
      * @param daysSinceEpoch number of days since 1990 January epoch.
      */
@@ -196,57 +180,51 @@ public class SunPosition {
     }
 
     /**
-     * Calculate the ecliptic longitude of sun, in radians. From
-     * Duffett-Smith, chapter 47.
+     * Calculate the ecliptic longitude of sun, in radians. From Duffett-Smith,
+     * chapter 47.
      * 
-     * @param M0 sun's mean anomaly, calculated for the requested time
-     *        relative to the 1990 epoch.
+     * @param M0 sun's mean anomaly, calculated for the requested time relative
+     *        to the 1990 epoch.
      */
     protected static double sunEclipticLongitude(double M0) {
         double E = eccentricAnomaly(M0);
-        double v = 2 * Math.atan(Math.sqrt((1 + ECCENTRICITY)
-                / (1 - ECCENTRICITY))
-                * Math.tan(E / 2.0));
+        double v = 2 * Math.atan(Math.sqrt((1 + ECCENTRICITY) / (1 - ECCENTRICITY)) * Math.tan(E / 2.0));
         double ret = v + omega_bar_g;
         ret = adjustWithin2PI(ret);
         return ret;
     }
 
     /**
-     * Conversion from ecliptic to equatorial coordinates for
-     * ascension. From Duffett-Smith, chapter 27.
+     * Conversion from ecliptic to equatorial coordinates for ascension. From
+     * Duffett-Smith, chapter 27.
      * 
      * @param lambda ecliptic longitude
      * @param beta ecliptic latitude
      */
-    protected static double eclipticToEquatorialAscension(double lambda,
-                                                          double beta) {
+    protected static double eclipticToEquatorialAscension(double lambda, double beta) {
         double sin_e = Math.sin(MEAN_OBLIQUITY_OF_EPOCH);
         double cos_e = Math.cos(MEAN_OBLIQUITY_OF_EPOCH);
 
-        return Math.atan2(Math.sin(lambda) * cos_e - Math.tan(beta) * sin_e,
-                Math.cos(lambda));
+        return Math.atan2(Math.sin(lambda) * cos_e - Math.tan(beta) * sin_e, Math.cos(lambda));
     }
 
     /**
-     * Conversion from ecliptic to equatorial coordinates for
-     * declination. From Duffett-Smith, chapter 27.
+     * Conversion from ecliptic to equatorial coordinates for declination. From
+     * Duffett-Smith, chapter 27.
      * 
      * @param lambda ecliptic longitude
      * @param beta ecliptic latitude
      */
-    protected static double eclipticToEquatorialDeclination(double lambda,
-                                                            double beta) {
+    protected static double eclipticToEquatorialDeclination(double lambda, double beta) {
         double sin_e = Math.sin(MEAN_OBLIQUITY_OF_EPOCH);
         double cos_e = Math.cos(MEAN_OBLIQUITY_OF_EPOCH);
 
-        return Math.asin(Math.sin(beta) * cos_e + Math.cos(beta) * sin_e
-                * Math.sin(lambda));
+        return Math.asin(Math.sin(beta) * cos_e + Math.cos(beta) * sin_e * Math.sin(lambda));
     }
 
     /**
-     * Given a date from a gregorian calendar, give back a julian
-     * date. From Duffett-Smith, chapter 4.
+     * Given a date from a gregorian calendar, give back a julian date. From
+     * Duffett-Smith, chapter 4.
      * 
      * @param cal Gregorian calendar for requested date.
      * @return julian date of request.
@@ -276,16 +254,14 @@ public class SunPosition {
     }
 
     /**
-     * Calculate the greenwich sidereal time (GST). From
-     * Duffett-Smith, chapter 12.
+     * Calculate the greenwich sidereal time (GST). From Duffett-Smith, chapter
+     * 12.
      * 
      * @param julianDate julian date of request
-     * @param time calendar reflecting local time zone change to
-     *        greenwich
+     * @param time calendar reflecting local time zone change to greenwich
      * @return GST relative to unix epoch.
      */
-    public static double greenwichSiderealTime(double julianDate,
-                                               GregorianCalendar time) {
+    public static double greenwichSiderealTime(double julianDate, GregorianCalendar time) {
 
         double T = (julianDate - 2451545.0) / 36525.0;
         double T0 = 6.697374558 + (T * (2400.051336 + (T + 2.5862E-5)));
@@ -295,9 +271,7 @@ public class SunPosition {
             T0 += 24.0;
         }
 
-        double UT = time.get(Calendar.HOUR_OF_DAY)
-                + (time.get(Calendar.MINUTE) + time.get(Calendar.SECOND) / 60.0)
-                / 60.0;
+        double UT = time.get(Calendar.HOUR_OF_DAY) + (time.get(Calendar.MINUTE) + time.get(Calendar.SECOND) / 60.0) / 60.0;
 
         T0 += UT * 1.002737909;
 
@@ -310,9 +284,9 @@ public class SunPosition {
     }
 
     /**
-     * Given the number of milliseconds since the unix epoch, compute
-     * position on the earth (lat, lon) such that sun is directly
-     * overhead. From Duffett-Smith, chapter 46-47.
+     * Given the number of milliseconds since the unix epoch, compute position
+     * on the earth (lat, lon) such that sun is directly overhead. From
+     * Duffett-Smith, chapter 46-47.
      * 
      * @param mssue milliseconds since unix epoch
      * @return LatLonPoint of the point on the earth that is closest.
@@ -333,8 +307,7 @@ public class SunPosition {
         cal.setTime(new Date(mssue - (gmtOffset + dstOffset))); // rep.
                                                                 // 12.04.99
 
-        double numDaysSinceEpoch = ((mssue / 1000) - EPOCH_TIME_SECS)
-                / (24.0f * 3600.0f);
+        double numDaysSinceEpoch = ((mssue / 1000) - EPOCH_TIME_SECS) / (24.0f * 3600.0f);
 
         // M0 - mean anomaly of the sun
         double M0 = sunMeanAnomaly(numDaysSinceEpoch);
@@ -343,21 +316,18 @@ public class SunPosition {
         // alpha
         double sunAscension = eclipticToEquatorialAscension(sunLongitude, 0.0);
         // delta
-        double sunDeclination = eclipticToEquatorialDeclination(sunLongitude,
-                0.0);
+        double sunDeclination = eclipticToEquatorialDeclination(sunLongitude, 0.0);
 
-        double tmpAscension = sunAscension - (MoreMath.TWO_PI / 24)
-                * greenwichSiderealTime(julianDate, cal);
+        double tmpAscension = sunAscension - (MoreMath.TWO_PI / 24) * greenwichSiderealTime(julianDate, cal);
 
         return new LatLonPoint.Double(sunDeclination, tmpAscension, true);
     }
 
     /**
-     * Given the number of milliseconds since the unix epoch, compute
-     * position on the earth (lat, lon) such that moon is directly
-     * overhead. From Duffett-Smith, chapter 65. Note: This is acting
-     * like it works, but I don't have anything to test it against. No
-     * promises.
+     * Given the number of milliseconds since the unix epoch, compute position
+     * on the earth (lat, lon) such that moon is directly overhead. From
+     * Duffett-Smith, chapter 65. Note: This is acting like it works, but I
+     * don't have anything to test it against. No promises.
      * 
      * @param mssue milliseconds since unix epoch
      * @return LatLonPoint of the point on the earth that is closest.
@@ -375,8 +345,7 @@ public class SunPosition {
         cal.setTime(new Date(mssue - gmtOffset));
 
         // Step 1,2
-        double numDaysSinceEpoch = ((mssue / 1000) - EPOCH_TIME_SECS)
-                / (24.0f * 3600.0f);
+        double numDaysSinceEpoch = ((mssue / 1000) - EPOCH_TIME_SECS) / (24.0f * 3600.0f);
         // Step 3
         // M0 - mean anomaly of the sun
         double M0 = sunMeanAnomaly(numDaysSinceEpoch);
@@ -401,42 +370,40 @@ public class SunPosition {
         double Mmp = Mm + Ev - Ae - A3;
         // Step 10
         double Ec = 6.2886 * Math.sin(Mmp);
-        // Step 11
+        // Step 11
         double A4 = 0.214 * Math.sin(2 * Mmp);
-        // Step 12
+        // Step 12
         double elp = el + Ev + Ec - Ae + A4;
-        // Step 13
+        // Step 13
         double V = .6583 * Math.sin(2 * (elp - sunLongitude));
-        // Step 14
+        // Step 14
         double elpp = elp + V;
-        // Step 15
+        // Step 15
         double Np = N - (.16 * Math.sin(M0));
-        // Step 16
+        // Step 16
         double y = Math.sin(elpp - Np) * Math.cos(eye);
-        // Step 17
+        // Step 17
         double x = Math.cos(elpp - Np);
-        // Step 18
+        // Step 18
         double amb = Math.atan2(y, x);
-        // Step 19
+        // Step 19
         double lambda_m = amb + Np;
-        // Step 20
+        // Step 20
         double beta_m = Math.asin(Math.sin(elpp - Np) * Math.sin(eye));
-        // Step 21
+        // Step 21
         // alpha
         double moonAscension = eclipticToEquatorialAscension(lambda_m, beta_m);
         // delta
-        double moonDeclination = eclipticToEquatorialDeclination(lambda_m,
-                beta_m);
+        double moonDeclination = eclipticToEquatorialDeclination(lambda_m, beta_m);
 
-        double tmpAscension = moonAscension - (MoreMath.TWO_PI / 24)
-                * greenwichSiderealTime(julianDate, cal);
+        double tmpAscension = moonAscension - (MoreMath.TWO_PI / 24) * greenwichSiderealTime(julianDate, cal);
 
         return new LatLonPoint.Double(moonDeclination, tmpAscension, true);
     }
 
     /**
-     * Little function that resets the input to be within 0 - 2*PI, by
-     * adding or subtracting 2PI as needed.
+     * Little function that resets the input to be within 0 - 2*PI, by adding or
+     * subtracting 2PI as needed.
      * 
      * @param num The number to be modified, if needed.
      */
@@ -454,9 +421,7 @@ public class SunPosition {
     }
 
     public static void main(String[] arg) {
-        System.out.println("Sun is over "
-                + SunPosition.sunPosition(System.currentTimeMillis()));
-        System.out.println("Moon is over "
-                + SunPosition.moonPosition(System.currentTimeMillis()));
+        System.out.println("Sun is over " + SunPosition.sunPosition(System.currentTimeMillis()));
+        System.out.println("Moon is over " + SunPosition.moonPosition(System.currentTimeMillis()));
     }
 }

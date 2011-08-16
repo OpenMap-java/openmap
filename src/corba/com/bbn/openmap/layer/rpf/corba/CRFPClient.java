@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/rpf/corba/CRFPClient.java,v $
 // $RCSfile: CRFPClient.java,v $
 // $Revision: 1.6 $
 // $Date: 2005/12/09 21:09:15 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.layer.rpf.corba;
@@ -48,8 +48,9 @@ import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageDecoder;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.MemoryCacheImageInputStream;
 
 /**
  * An implementation of the RpfFrameProvider interface that uses CORBA to get
@@ -451,10 +452,8 @@ public class CRFPClient
             if (jpegData.length == 0)
                 return null;
 
-            ByteArrayInputStream bais = new ByteArrayInputStream(jpegData);
-            JPEGImageDecoder jid = JPEGCodec.createJPEGDecoder(bais);
-
-            BufferedImage bi = jid.decodeAsBufferedImage();
+            ImageInputStream iis = new MemoryCacheImageInputStream(new ByteArrayInputStream(jpegData));
+            BufferedImage bi = ImageIO.read(iis);
             int height = bi.getHeight();
             int width = bi.getWidth();
             int[] pixels = bi.getRGB(0, 0, width, height, null, 0, width);

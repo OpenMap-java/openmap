@@ -4,7 +4,7 @@
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
 // </copyright>
 // **********************************************************************
@@ -26,13 +26,14 @@ import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.layer.vpf.DcwRecordFile;
 
 /**
- * This class infers the format of a VPF file from the name of the
- * file, and dispatches to the appropriate servlet for that type.
+ * This class infers the format of a VPF file from the name of the file, and
+ * dispatches to the appropriate servlet for that type.
  * 
- * This could probably also be handled by a long set of
- * servlet-mapping tags in the deployment descriptor. (web.xml)
+ * This could probably also be handled by a long set of servlet-mapping tags in
+ * the deployment descriptor. (web.xml)
  */
-public class DispatchServlet extends VPFHttpServlet {
+public class DispatchServlet
+        extends VPFHttpServlet {
     public static final String RECORD_FILE_OBJ = "com.bbn.openmap.vpf_tools.table_obj";
     public static final String ROOTPATH_FILENAME = "com.bbn.openmap.vpf_tools.url_path";
 
@@ -76,8 +77,7 @@ public class DispatchServlet extends VPFHttpServlet {
                 return;
             } else if (filename.endsWith("x") || filename.endsWith("x.")) {
                 response.setContentType("text/html");
-                out.println(HTML_DOCTYPE + "<HTML><HEAD><TITLE>" + filename
-                        + "</TITLE></HEAD>\r\n<BODY>\r\n<H1>Table " + filename
+                out.println(HTML_DOCTYPE + "<HTML><HEAD><TITLE>" + filename + "</TITLE></HEAD>\r\n<BODY>\r\n<H1>Table " + filename
                         + "</H1>\r\n");
                 out.println(getStylesheetHTML(request));
                 out.println("Skipping VLI format - this format is simply an index to find rows in a corresponding table file, it isn't very interesting to look at so its getting skipped.");
@@ -92,9 +92,8 @@ public class DispatchServlet extends VPFHttpServlet {
                 rd.forward(request, response);
             } else {
                 response.setContentType("text/html");
-                out.println(HTML_DOCTYPE + "<HTML>\n<HEAD><TITLE>" + filename
-                        + "</TITLE></HEAD>\r\n<BODY>\r\n<H1>Table " + filename
-                        + "</H1>\r\n");
+                out.println(HTML_DOCTYPE + "<HTML>\n<HEAD><TITLE>" + filename + "</TITLE></HEAD>\r\n<BODY>\r\n<H1>Table "
+                        + filename + "</H1>\r\n");
                 out.println(getStylesheetHTML(request));
                 DcwRecordFile foo = new DcwRecordFile(rootpath);
                 request.setAttribute(RECORD_FILE_OBJ, foo);

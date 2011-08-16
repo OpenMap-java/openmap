@@ -7,7 +7,7 @@ import java.util.LinkedList;
  * Various computations about plane geometry.
  * 
  * @author Eric LEPICIER from Pascal HAURIE 1997
- * @version 11 août 2002
+ * @version 11 aot 2002
  */
 public class LineUtil {
 
@@ -21,8 +21,7 @@ public class LineUtil {
      * @return double the square distance between A and B
      */
     public static double norm2(Point2D A, Point2D B) {
-        return (A.getX() - B.getX()) * (A.getX() - B.getX())
-                + (A.getY() - B.getY()) * (A.getY() - B.getY());
+        return (A.getX() - B.getX()) * (A.getX() - B.getX()) + (A.getY() - B.getY()) * (A.getY() - B.getY());
     }
 
     /**
@@ -42,8 +41,8 @@ public class LineUtil {
      * @param A the begin point
      * @param B the end point
      * @param d the distance from A to the wanted point
-     * @return Point2D the point at distance d from A on the segment
-     *         AB, the point B if d>AB
+     * @return Point2D the point at distance d from A on the segment AB, the
+     *         point B if d>AB
      */
     public static Point2D interpolatedPoint(Point2D A, Point2D B, double d) {
 
@@ -54,8 +53,7 @@ public class LineUtil {
         if (1 - r < FLT_EPSILON)
             return B;
 
-        Point2D P = new Point2D.Double(r * B.getX() + (1 - r) * A.getX(), r
-                * B.getY() + (1 - r) * A.getY());
+        Point2D P = new Point2D.Double(r * B.getX() + (1 - r) * A.getX(), r * B.getY() + (1 - r) * A.getY());
         return P;
     }
 
@@ -67,8 +65,7 @@ public class LineUtil {
      * @param polysegment the returned points
      * @return true if we got the desired length, false otherwise
      */
-    protected static boolean retrievePoints(float length, LinkedList points,
-                                            LinkedList polysegment) {
+    protected static boolean retrievePoints(float length, LinkedList points, LinkedList polysegment) {
         polysegment.clear();
 
         // first point

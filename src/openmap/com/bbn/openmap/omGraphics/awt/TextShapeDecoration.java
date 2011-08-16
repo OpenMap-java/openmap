@@ -13,9 +13,10 @@ import java.util.LinkedList;
  * A ShapeDecoration that draws a text along a path
  * 
  * @author Eric LEPICIER
- * @version 16 août 2002
+ * @version 16 aot 2002
  */
-public class TextShapeDecoration extends AbstractShapeDecoration {
+public class TextShapeDecoration
+        extends AbstractShapeDecoration {
     private String text;
     private Font font = null;
     private int verticalAlignment = BASELINE;
@@ -32,8 +33,7 @@ public class TextShapeDecoration extends AbstractShapeDecoration {
     /** Orientation for the shape text decoration: use poly direction */
     public final static int FORWARD = LEFT;
     /**
-     * Orientation for the shape text decoration: use reverse poly
-     * direction
+     * Orientation for the shape text decoration: use reverse poly direction
      */
     public final static int BACKWARD = RIGHT;
     /** Orientation for the shape text decoration: force left to right */
@@ -45,15 +45,14 @@ public class TextShapeDecoration extends AbstractShapeDecoration {
     /** Orientation for the shape text decoration: force bottom to top */
     public final static int BOTTOM_TO_TOP = 6;
     /**
-     * Orientation for the shape text decoration: occidental reading
-     * use
+     * Orientation for the shape text decoration: occidental reading use
      */
     public final static int MOST_READABLE = 7;
 
     /**
-     * Text will follow the poly instead of being written on the
-     * segment from begin to end of the poly, also allow text to be
-     * uncomplete. You may add this one to the other constants
+     * Text will follow the poly instead of being written on the segment from
+     * begin to end of the poly, also allow text to be uncomplete. You may add
+     * this one to the other constants
      */
     public final static int FOLLOW_POLY = 16;
 
@@ -68,8 +67,7 @@ public class TextShapeDecoration extends AbstractShapeDecoration {
      * @param orientation
      * @param verticalAlignment
      */
-    public TextShapeDecoration(String text, Font font, int orientation,
-            int verticalAlignment) {
+    public TextShapeDecoration(String text, Font font, int orientation, int verticalAlignment) {
         super(0.0f, 0.0f, orientation);
         setVerticalAlignment(verticalAlignment);
         setFont(font);
@@ -147,25 +145,25 @@ public class TextShapeDecoration extends AbstractShapeDecoration {
 
         // adjust vertical alignment
         switch (verticalAlignment) {
-        case TOP:
-            y += metrics.getAscent();
-            break;
-        case BOTTOM:
-            y -= metrics.getDescent();
-            break;
-        case CENTER:
-            y += metrics.getAscent() - (metrics.getHeight()) / 2;
-            break;
-        case BASELINE:
-            break;
+            case TOP:
+                y += metrics.getAscent();
+                break;
+            case BOTTOM:
+                y -= metrics.getDescent();
+                break;
+            case CENTER:
+                y += metrics.getAscent() - (metrics.getHeight()) / 2;
+                break;
+            case BASELINE:
+                break;
         }
 
         drawAngledString(g, text, x, y, angle);
     }
 
     /**
-     * Returns true if the polyline need to be reverted for the text
-     * to be drawn with the specified orientation.
+     * Returns true if the polyline need to be reverted for the text to be drawn
+     * with the specified orientation.
      * 
      * @param x1 starting point x coordinate
      * @param y1 starting point y coordinate
@@ -176,26 +174,26 @@ public class TextShapeDecoration extends AbstractShapeDecoration {
     protected boolean needToReverse(int x1, int y1, int x2, int y2) {
         boolean reverse = false;
         switch (getOrientation() & ~FOLLOW_POLY) {
-        case FORWARD:
-            break;
-        case BACKWARD:
-            reverse = true;
-            break;
-        case LEFT_TO_RIGHT:
-            reverse = x1 > x2;
-            break;
-        case RIGHT_TO_LEFT:
-            reverse = x1 < x2;
-            break;
-        case TOP_TO_BOTTOM:
-            reverse = y1 > y2;
-            break;
-        case BOTTOM_TO_TOP:
-            reverse = y1 < y2;
-            break;
-        case MOST_READABLE:
-            reverse = x2 < x1 || y1 > y2;
-            break;
+            case FORWARD:
+                break;
+            case BACKWARD:
+                reverse = true;
+                break;
+            case LEFT_TO_RIGHT:
+                reverse = x1 > x2;
+                break;
+            case RIGHT_TO_LEFT:
+                reverse = x1 < x2;
+                break;
+            case TOP_TO_BOTTOM:
+                reverse = y1 > y2;
+                break;
+            case BOTTOM_TO_TOP:
+                reverse = y1 < y2;
+                break;
+            case MOST_READABLE:
+                reverse = x2 < x1 || y1 > y2;
+                break;
         }
         return reverse;
     }
@@ -250,8 +248,7 @@ public class TextShapeDecoration extends AbstractShapeDecoration {
      * @param y
      * @param angle
      */
-    public static void drawAngledString(Graphics g, String text, int x, int y,
-                                        double angle) {
+    public static void drawAngledString(Graphics g, String text, int x, int y, double angle) {
 
         Graphics2D g2D = (Graphics2D) g;
         AffineTransform oldAt = g2D.getTransform();
@@ -314,12 +311,11 @@ public class TextShapeDecoration extends AbstractShapeDecoration {
     /**
      * Sets the verticalAlignment.
      * 
-     * @param verticalAlignment The verticalAlignment to set (TOP,
-     *        CENTER, BASELINE, BOTTOM)
+     * @param verticalAlignment The verticalAlignment to set (TOP, CENTER,
+     *        BASELINE, BOTTOM)
      */
     public void setVerticalAlignment(int verticalAlignment) {
         this.verticalAlignment = verticalAlignment;
     }
 
 }
-

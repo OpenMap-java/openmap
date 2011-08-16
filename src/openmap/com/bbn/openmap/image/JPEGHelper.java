@@ -1,45 +1,53 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/image/JPEGHelper.java,v $
 // $RCSfile: JPEGHelper.java,v $
 // $Revision: 1.3 $
 // $Date: 2004/10/14 18:05:51 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.image;
 
-import com.sun.image.codec.jpeg.*;
-import java.io.*;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.URL;
 
 import com.bbn.openmap.util.Debug;
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGEncodeParam;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /**
- * This class provides some utility methods for creating jpeg encoded
- * images. It relies on the Sun JDK/SDK JPEG codec classes.
+ * This class provides some utility methods for creating jpeg encoded images. It
+ * relies on the Sun JDK/SDK JPEG codec classes.
  */
 public class JPEGHelper {
 
     /**
-     * This class has only static methods, so there is no need to
-     * construct anything.
+     * This class has only static methods, so there is no need to construct
+     * anything.
      */
-    private JPEGHelper() {}
+    private JPEGHelper() {
+    }
 
     /**
      * Return a byte array that contains the JPEG encoded image.
@@ -93,12 +101,12 @@ public class JPEGHelper {
     }
 
     /**
-     * A test main that encodes an image url at various jpeg quality
-     * factors.
+     * A test main that encodes an image url at various jpeg quality factors.
      * 
      * @param args url [width height]
      */
-    public static void main(String args[]) throws Exception {
+    public static void main(String args[])
+            throws Exception {
         if (args.length == 0) {
             System.out.println("java jpeg url [width height]");
             System.exit(-1);
@@ -128,20 +136,14 @@ public class JPEGHelper {
 
         Debug.output("url=" + urlsource + " filebase=" + filebase);
 
-        BufferedImage bi = BufferedImageHelper.getBufferedImage(new URL(urlsource),
-                0,
-                0,
-                uw,
-                uh);
+        BufferedImage bi = BufferedImageHelper.getBufferedImage(new URL(urlsource), 0, 0, uw, uh);
         if (bi == null) {
             Debug.error("JPEGHelper: Image load failed");
         } else {
-            PrintStream html = new PrintStream(new FileOutputStream(new File(filebase
-                    + ".html")));
+            PrintStream html = new PrintStream(new FileOutputStream(new File(filebase + ".html")));
 
             html.println("Source url = " + urlsource + " <br>");
-            html.println(" width = " + uw + " height=" + uh + " pixels=" + uw
-                    * uh + " <hr>");
+            html.println(" width = " + uw + " height=" + uh + " pixels=" + uw * uh + " <hr>");
             for (int i = 0; i < 20; i++) {
                 File f = new File(filebase + ((i < 10) ? "0" : "") + i + ".jpg");
                 float quality = 0.0499f * i;
@@ -156,6 +158,6 @@ public class JPEGHelper {
 
             html.close();
         }
-        System.exit(-1); //awt stinks
+        System.exit(-1); // awt stinks
     }
 }

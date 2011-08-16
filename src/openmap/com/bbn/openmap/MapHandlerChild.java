@@ -56,15 +56,17 @@ import java.util.Iterator;
  * <P>
  * 
  * An object does not have to be a MapHandlerChild to be added to the
- * MapHandler, but it does need to be one to be able to use it. If you use the
- * findAndInit(Iterator) method to look for objects, you'll find it is called on
- * two different conditions. It's called when this MapHandlerChild is added to
- * the MapHandler, and it then receives a list of all the objects currently
- * contained in the MapHandler. It is also called when other objects are added
- * to the MapHandler. The list then contains objects that have just been added.
- * The findAndInit(Object) method has been added to allow subclassed objects to
- * call super.findAndInit(Object) to let the super classes handles the objects
- * they care about.
+ * MapHandler, but it does need to be one to be able to use it. If you override
+ * and use the findAndInit(Iterator) method to look for objects, you'll find it
+ * is called on two different conditions. It's called when this MapHandlerChild
+ * is added to the MapHandler, and it then receives a list of all the objects
+ * currently contained in the MapHandler. It is also called when other objects
+ * are added to the MapHandler. The list then contains objects that have just
+ * been added. The findAndInit(Object) method has been added to allow subclassed
+ * objects to call super.findAndInit(Object) to let the super classes handles
+ * the objects they care about. You don't call the findAndInit(Object) method.
+ * You override it and implement the method so that you can look for the objects
+ * you need.
  * <P>
  * 
  * When objects are removed from the BeanContext, the childrenRemoved() method
@@ -77,8 +79,8 @@ import java.util.Iterator;
  * added to it, and it will fire property change notifications to get itself
  * removed from the first BeanContext.
  */
-public class MapHandlerChild implements BeanContextChild,
-        BeanContextMembershipListener, LightMapHandlerChild {
+public class MapHandlerChild
+        implements BeanContextChild, BeanContextMembershipListener, LightMapHandlerChild {
 
     /**
      * A boolean that prevents the BeanContextChild from looking at events from
@@ -97,7 +99,9 @@ public class MapHandlerChild implements BeanContextChild,
      * This is the method that your object can use to find other objects within
      * the MapHandler (BeanContext). This method gets called when the object
      * gets added to the MapHandler, or when another object gets added to the
-     * MapHandler after the object is a member.
+     * MapHandler after the object is a member. It's probably better to not
+     * override this method, just override the findAndUndo(Object) method
+     * instead.
      * 
      * @param it Iterator to use to go through a list of objects. Find the ones
      *        you need, and hook yourself up.
@@ -114,7 +118,8 @@ public class MapHandlerChild implements BeanContextChild,
      * lets subclasses call a method on super classes so they can handle their
      * needs as well.
      */
-    public void findAndInit(Object obj) {}
+    public void findAndInit(Object obj) {
+    }
 
     /**
      * BeanContextMembershipListener method. Called when a new object is added
@@ -146,7 +151,8 @@ public class MapHandlerChild implements BeanContextChild,
      * their super class, so it can handle what it needs to with objects it may
      * be interested in.
      */
-    public void findAndUndo(Object obj) {}
+    public void findAndUndo(Object obj) {
+    }
 
     /** Method for BeanContextChild interface. */
     public BeanContext getBeanContext() {
@@ -159,7 +165,8 @@ public class MapHandlerChild implements BeanContextChild,
      * BeanContextSupport, and receives the initial list of objects currently
      * contained in the BeanContext.
      */
-    public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
+    public void setBeanContext(BeanContext in_bc)
+            throws PropertyVetoException {
 
         if (in_bc != null) {
             if (!isolated || beanContextChildSupport.getBeanContext() == null) {
@@ -175,8 +182,7 @@ public class MapHandlerChild implements BeanContextChild,
      * to add a listener to this object's property. You don't need this function
      * for objects that extend java.awt.Component.
      */
-    public void addPropertyChangeListener(String propertyName,
-                                          PropertyChangeListener in_pcl) {
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener in_pcl) {
         beanContextChildSupport.addPropertyChangeListener(propertyName, in_pcl);
     }
 
@@ -185,10 +191,8 @@ public class MapHandlerChild implements BeanContextChild,
      * to remove a listener to this object's property. You don't need this
      * function for objects that extend java.awt.Component.
      */
-    public void removePropertyChangeListener(String propertyName,
-                                             PropertyChangeListener in_pcl) {
-        beanContextChildSupport.removePropertyChangeListener(propertyName,
-                in_pcl);
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener in_pcl) {
+        beanContextChildSupport.removePropertyChangeListener(propertyName, in_pcl);
     }
 
     /**
@@ -196,8 +200,7 @@ public class MapHandlerChild implements BeanContextChild,
      * to add a listener to this object's property. This listener wants to have
      * the right to veto a property change.
      */
-    public void addVetoableChangeListener(String propertyName,
-                                          VetoableChangeListener in_vcl) {
+    public void addVetoableChangeListener(String propertyName, VetoableChangeListener in_vcl) {
         beanContextChildSupport.addVetoableChangeListener(propertyName, in_vcl);
     }
 
@@ -206,10 +209,8 @@ public class MapHandlerChild implements BeanContextChild,
      * to remove a listener to this object's property. The listener has the
      * power to veto property changes.
      */
-    public void removeVetoableChangeListener(String propertyName,
-                                             VetoableChangeListener in_vcl) {
-        beanContextChildSupport.removeVetoableChangeListener(propertyName,
-                in_vcl);
+    public void removeVetoableChangeListener(String propertyName, VetoableChangeListener in_vcl) {
+        beanContextChildSupport.removeVetoableChangeListener(propertyName, in_vcl);
     }
 
     /**

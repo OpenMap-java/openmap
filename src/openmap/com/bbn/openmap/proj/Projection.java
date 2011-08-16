@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Projection.java,v $
 // $RCSfile: Projection.java,v $
 // $Revision: 1.9 $
 // $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.proj;
@@ -70,7 +70,8 @@ import java.util.ArrayList;
  * @see GeoProj
  * 
  */
-public interface Projection extends java.io.Serializable {
+public interface Projection
+        extends java.io.Serializable {
 
     /**
      * Get the scale.
@@ -319,7 +320,7 @@ public interface Projection extends java.io.Serializable {
     /**
      * Pan the map/projection.
      * <ul>
-     * <li><code>pan(±180, c)</code> pan south `c' amount.
+     * <li><code>pan(180, c)</code> pan south `c' amount.
      * <li><code>pan(-90, c)</code> pan west `c' amount.
      * <li><code>pan(0, c)</code> pan north `c' amount.
      * <li><code>pan(90, c)</code> pan east `c' amount.
@@ -334,7 +335,7 @@ public interface Projection extends java.io.Serializable {
     /**
      * Pan the map/projection.
      * <ul>
-     * <li><code>pan(±180)</code> pan south
+     * <li><code>pan(180)</code> pan south
      * <li><code>pan(-90)</code> pan west
      * <li><code>pan(0)</code> pan north
      * <li><code>pan(90)</code> pan east
@@ -409,8 +410,7 @@ public interface Projection extends java.io.Serializable {
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords,
-                              float[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords, float[] ycoords, boolean[] visible, int copyoff,
                               int copylen);
 
     /**
@@ -432,8 +432,7 @@ public interface Projection extends java.io.Serializable {
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords,
-                              float[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords, float[] ycoords, boolean[] visible, int copyoff,
                               int copylen);
 
     /**
@@ -464,8 +463,7 @@ public interface Projection extends java.io.Serializable {
      *        right corner of the area of interest. Note that this is where ll2
      *        is going to go in the new projection, not where it is now.
      */
-    public <T extends Point2D> float getScale(T ll1, T ll2, Point2D point1,
-                                              Point2D point2);
+    public <T extends Point2D> float getScale(T ll1, T ll2, Point2D point1, Point2D point2);
 
     /**
      * Get the unprojected coordinates units of measure.

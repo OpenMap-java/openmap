@@ -1,25 +1,24 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMGraphic.java,v $
 // $RCSfile: EditableOMGraphic.java,v $
 // $Revision: 1.11 $
 // $Date: 2005/12/09 21:09:04 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
-
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Color;
@@ -43,6 +42,7 @@ import com.bbn.openmap.omGraphics.event.EOMGListenerSupport;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
+import java.util.MissingResourceException;
 
 /**
  * The EditableOMGraphic is a shell that controls actions to edit or create a
@@ -95,15 +95,12 @@ public abstract class EditableOMGraphic
      * moved.
      */
     protected GrabPoint movingPoint = null;
-
     protected EOMGListenerSupport listeners = null;
-
     /**
      * Flag to indicate whether a GUI for this EOMG should be presented to allow
      * edits to it's attributes.
      */
     protected boolean showGUI = true;
-
     /**
      * Flag to let states know if the edges of the graphic can be grabbed
      * directly, for movement or manipulation, as opposed to just allowing those
@@ -115,9 +112,7 @@ public abstract class EditableOMGraphic
      * undone if desired.
      */
     protected UndoStack undoStack;
-    
     protected I18n i18n = Environment.getI18n();
-
     /**
      * A little flag to let the EOMG that a popup menu is up on the map. If the
      * menu is up, and the menu is not clicked on, we don't really want to
@@ -130,10 +125,8 @@ public abstract class EditableOMGraphic
      * let this EditableOMGraphic know what is being done to it.
      */
     protected int actionMask = 0;
-
     protected boolean DEBUG = false;
     protected boolean DEBUG_DETAIL = false;
-
     protected boolean xorRendering = true;
 
     protected EditableOMGraphic() {
@@ -629,7 +622,7 @@ public abstract class EditableOMGraphic
     }
 
     /**
-     */
+	 */
     public abstract void render(Graphics g);
 
     public boolean isXorRendering() {
@@ -668,87 +661,99 @@ public abstract class EditableOMGraphic
 
     // Mouse Listener events
     // //////////////////////
-
     /**
-     */
+	 */
     public boolean mousePressed(MouseEvent e) {
-        if (DEBUG_DETAIL)
+        if (DEBUG_DETAIL) {
             Debug.output(getClass().getName() + ".mousePressed()");
-        if (!mouseOnMap)
+        }
+        if (!mouseOnMap) {
             return false;
+        }
         return stateMachine.getState().mousePressed(e);
     }
 
     /**
-     */
+	 */
     public boolean mouseReleased(MouseEvent e) {
-        if (DEBUG_DETAIL)
+        if (DEBUG_DETAIL) {
             Debug.output(getClass().getName() + ".mouseReleased()");
-        if (!mouseOnMap)
+        }
+        if (!mouseOnMap) {
             return false;
+        }
         return stateMachine.getState().mouseReleased(e);
     }
 
     /**
-     */
+	 */
     public boolean mouseClicked(MouseEvent e) {
-        if (DEBUG_DETAIL)
+        if (DEBUG_DETAIL) {
             Debug.output(getClass().getName() + ".mouseClicked()");
-        if (!mouseOnMap)
+        }
+        if (!mouseOnMap) {
             return false;
+        }
         return stateMachine.getState().mouseClicked(e);
     }
 
     boolean mouseOnMap = true;
 
     /**
-     */
+	 */
     public void mouseEntered(MouseEvent e) {
-        if (DEBUG_DETAIL)
+        if (DEBUG_DETAIL) {
             Debug.output(getClass().getName() + ".mouseEntered()");
+        }
         mouseOnMap = true;
         stateMachine.getState().mouseEntered(e);
     }
 
     /**
-     */
+	 */
     public void mouseExited(MouseEvent e) {
-        if (DEBUG_DETAIL)
+        if (DEBUG_DETAIL) {
             Debug.output(getClass().getName() + ".mouseExited()");
+        }
         mouseOnMap = false;
         stateMachine.getState().mouseExited(e);
     }
 
     // Mouse Motion Listener events
     // /////////////////////////////
-
     /**
-     */
+	 */
     public boolean mouseDragged(MouseEvent e) {
-        if (DEBUG_DETAIL)
+        if (DEBUG_DETAIL) {
             Debug.output(getClass().getName() + ".mouseDragged()");
-        if (!mouseOnMap)
+        }
+        if (!mouseOnMap) {
             return false;
+        }
         return stateMachine.getState().mouseDragged(e);
     }
 
     /**
-     */
+	 */
     public boolean mouseMoved(MouseEvent e) {
-        if (DEBUG_DETAIL)
+        if (DEBUG_DETAIL) {
             Debug.output(getClass().getName() + ".mouseMoved()");
-        if (!mouseOnMap)
+        }
+        if (!mouseOnMap) {
             return false;
+        }
         return stateMachine.getState().mouseMoved(e);
     }
 
     /**
-     */
+	 */
     public void mouseMoved() {
-        if (DEBUG_DETAIL)
+        if (DEBUG_DETAIL) {
             Debug.output(getClass().getName() + ".mouseMoved()");
-        if (!mouseOnMap)
+        }
+        if (!mouseOnMap) {
             return;
+        }
         stateMachine.getState().mouseMoved();
     }
 
@@ -901,7 +906,12 @@ public abstract class EditableOMGraphic
         if (whatHappened == null) {
             whatHappened = i18n.get(this.getClass(), "omgraphicUndoString", "Edit");
         }
-        return new OMGraphicUndoEvent(this, whatHappened);
+        try {
+            return new OMGraphicUndoEvent(this, whatHappened);
+        } catch (MissingResourceException mre) {
+            // Return null so event won't be registered.
+            return null;
+        }
     }
 
     /**
@@ -951,24 +961,31 @@ public abstract class EditableOMGraphic
 
     /**
      * Generic undo event for basic OMGraphics.
-     *
+     * 
      * @author dietrick
      */
     public static class OMGraphicUndoEvent
             implements UndoEvent {
+
         protected EditableOMGraphic eomg;
         protected OMGraphic stateHolder;
         protected String description;
 
-        public OMGraphicUndoEvent(EditableOMGraphic eomg, String description) {
+        public OMGraphicUndoEvent(EditableOMGraphic eomg, String description)
+                throws MissingResourceException {
             this.eomg = eomg;
             this.description = description;
 
             OMGraphic omg = eomg.getGraphic();
             stateHolder = (OMGraphic) ComponentFactory.create(omg.getClass().getName());
 
-            // stateHolder = new OMPoly();
-            stateHolder.restore(eomg.getGraphic());
+            if (stateHolder != null) {
+                // stateHolder = new OMPoly();
+                stateHolder.restore(eomg.getGraphic());
+            } else {
+                throw new MissingResourceException(eomg.getClass().getName() + " can't provide UndoEvents", eomg.getClass()
+                                                                                                                .getName(), "");
+            }
         }
 
         /*
@@ -1029,5 +1046,4 @@ public abstract class EditableOMGraphic
             this.description = description;
         }
     }
-
 }

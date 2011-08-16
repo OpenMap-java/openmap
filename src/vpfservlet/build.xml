@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="OpenMap VPF Servlets" default="all" basedir=".">
-	<target name="init" 
+	<target name="init"
 	        description="Sets properties needed by the other targets.">
 		<tstamp/>
 		<property name="openmap.home" value="../.."/>
@@ -11,7 +11,7 @@
 
 		<!-- YOU HAVE TO CHANGE THIS TO MATCH YOUR TOMCAT INSTALLATION -->
 		<!--<property name="tomcat.home" value="/usr/local/java/jakarta-tomcat-4.0.1"/>-->
-		<property name="tomcat.home" value="/usr/local/apache-tomcat-6.0.26"/>
+		<property name="tomcat.home" value="/usr/local/apache-tomcat-7.0.8"/>
 
 		<property name="javac.excludes" value="**/*.in, **/Makefile, **/*.bat,
 		                                       **/ChangeLog, **/*.html, **/*.txt,
@@ -28,21 +28,21 @@
 
 	<!--  ############################
 	      End of property setup.
-	      ############################ -->  
+	      ############################ -->
 
 	<!--  ############################
 	      Main targets
-	      ############################ -->  
+	      ############################ -->
 
-	<target name="todo" 
-	        depends="classes, jar" 
+	<target name="todo"
+	        depends="classes, jar"
                 description="Compiles all of the OpenMap classes and builds jar files in lib directory."/>
 
-	<target name="classes" 
-	        depends="vpf" 
+	<target name="classes"
+	        depends="vpf"
                 description="Compiles VPF Servlet classes."/>
 
-	<target name="all" 
+	<target name="all"
 	        depends="jar"
 		description="Compiles VPF Servlet classes and creates the war (web archive) file."/>
 
@@ -53,14 +53,14 @@
 		<jar jarfile="${vpf.home}/vpfbrowse.war"
 		   basedir="${vpf.home}"
 		   includes="**, **/*.jsp, **/*.html"
-		   excludes="**/*.war, **/build.xml, **/src/**" /> 
+		   excludes="**/*.war, **/build.xml, **/src/**" />
 
-	</target>    
-  
+	</target>
+
   <!--  ############################
 	Standard target, to build everything you can.
-	############################ -->  
-	<target name="vpf" depends="init" 
+	############################ -->
+	<target name="vpf" depends="init"
 		description="Compiles the VPF Servlet classes. ">
 	     <echo message="Building VPF Servlet classes..."/>
 	     <mkdir dir="${vpf.lib_dir}"/>
@@ -69,7 +69,7 @@
                   includes="**/*.jar"/>
              </copy>
 	     <mkdir dir="${vpf.classes}"/>
-	     <javac srcdir="${vpf.home}" 
+	     <javac srcdir="${vpf.home}"
 	            destdir="${vpf.classes}"
 		    classpath="${tomcat.jar};${vpf.jar}"
 		    excludes="${javac.excludes}, ${dependency.excludes}"/>
@@ -77,8 +77,8 @@
 
   <!--  ############################
 	Build the documentation.
-	############################ -->  
-	<target name="docs" 
+	############################ -->
+	<target name="docs"
 	        depends="init"
 		description="Make the javadoc API html documents.">
 	     <javadoc sourcepath="${openmap.home}"
@@ -96,8 +96,8 @@
 
   <!--  ############################
 	Cleanup targets
-	############################ -->  
-	<target name="clean" 
+	############################ -->
+	<target name="clean"
 	        depends="clean_classes, clean_jars"
 		description="Delete jar files and all class files"/>
 
@@ -109,7 +109,7 @@
 	        depends="clean, clean_docs"
 		description="Delete jar files, class files, and generated documentation."/>
 
-	<target name="clean_classes" 
+	<target name="clean_classes"
 	        depends="init"
 		description="Delete the OpenMap class files.">
 	     <delete dir="${vpf.classes}" />
@@ -132,7 +132,7 @@
 
   <!--  ############################
 	End of cleanup targets.
-	############################ -->  
+	############################ -->
 
 </project>
 

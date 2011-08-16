@@ -94,26 +94,29 @@ public class DynamicWmsRequestHandler
                         layerAlreadyAdded = true;
                     }
                 }
-                if (!layerAlreadyAdded) { 
-                    /* if the layer is not checked for static (ie, port map) to j add to vector */
+                if (!layerAlreadyAdded) {
+                    /*
+                     * if the layer is not checked for static (ie, port map) to
+                     * j add to vector
+                     */
                     tmpLayers.add(newLayers[i]);
                 }
             }
             Layer[] newArrLayers = (Layer[]) tmpLayers.toArray(new Layer[tmpLayers.size()]);
             layers = newArrLayers;
             for (int j = 0; j < layers.length; j++) { // dodaj stare warstwy
-                                                      // (statyczne, podk³ad
+                                                      // (statyczne, podkad
                                                       // mapy)
                 layers[j].setPropertyPrefix(layers[j].getName());
                 // Debug.message("imageserver", "OGCMRH: updateLayers NEW LAYERS
                 // layer:" + layers[j].getName());
             }
-        } else { //update the existing layers
+        } else { // update the existing layers
             Debug.message("ms", "OGCserver: updateLayers: UPDATE LAYERS COMES.");
             for (int i = 0; i < newLayers.length; i++) {
                 for (int j = 0; j < layers.length; j++) {
                     // Debug.message("imageserver", "OGCMRH: updateLayers layer:
-                    // sprawdzam parê warstw :>" + newLayers[i].getName()+"< i
+                    // sprawdzam par warstw :>" + newLayers[i].getName()+"< i
                     // >"+layers[j].getName()+"<");
                     if (layers[j].getName().trim().equalsIgnoreCase(newLayers[i].getName().trim())) {
                         // if
@@ -147,7 +150,7 @@ public class DynamicWmsRequestHandler
             }
         }
 
-       // update map names
+        // update map names
         createWmsLayers();
     }
 

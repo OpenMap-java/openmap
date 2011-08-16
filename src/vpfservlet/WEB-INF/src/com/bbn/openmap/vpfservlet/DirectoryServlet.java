@@ -4,7 +4,7 @@
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
 // </copyright>
 // **********************************************************************
@@ -28,12 +28,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.bbn.openmap.layer.util.html.HtmlListElement;
 
 /**
- * This servlet lists the files in a directory of a configured VPF
- * database. Directory listing can be disabled, see the
- * listDirectories servlet parameter in the deployment descriptor.
- * (web.xml)
+ * This servlet lists the files in a directory of a configured VPF database.
+ * Directory listing can be disabled, see the listDirectories servlet parameter
+ * in the deployment descriptor. (web.xml)
  */
-public class DirectoryServlet extends VPFHttpServlet {
+public class DirectoryServlet
+        extends VPFHttpServlet {
 
     /**
      * A do-nothing constructor - init does all the work.
@@ -43,8 +43,8 @@ public class DirectoryServlet extends VPFHttpServlet {
     }
 
     /**
-     * false if this servlet should generate a "disabled by
-     * administrator" method rather than a directory list.
+     * false if this servlet should generate a "disabled by administrator"
+     * method rather than a directory list.
      */
     private boolean listFiles;
 
@@ -65,13 +65,12 @@ public class DirectoryServlet extends VPFHttpServlet {
         PrintWriter out = response.getWriter();
 
         String filename = fp.getName().toLowerCase();
-        
+
         // This was never used!!!
         String end = "</BODY></HTML>";
 
         response.setContentType("text/html");
-        out.println(HTML_DOCTYPE + "<HTML>\n<HEAD><TITLE>" + filename
-                + "</TITLE></HEAD>\r\n<BODY>\r\n<H1>Directory " + filename
+        out.println(HTML_DOCTYPE + "<HTML>\n<HEAD><TITLE>" + filename + "</TITLE></HEAD>\r\n<BODY>\r\n<H1>Directory " + filename
                 + "</H1>\r\n");
         out.println(getStylesheetHTML(request));
 
@@ -102,20 +101,14 @@ public class DirectoryServlet extends VPFHttpServlet {
             HtmlListElement filelist = new HtmlListElement("Sub-Directories");
 
             for (Iterator dir = directories.iterator(); dir.hasNext();) {
-                String url = fileURL(request,
-                        response,
-                        pathInfo,
-                        (String) dir.next());
+                String url = fileURL(request, response, pathInfo, (String) dir.next());
                 filelist.addElement(url);
             }
             filelist.generate(out);
 
             filelist = new HtmlListElement("Files");
             for (Iterator file = filenames.iterator(); file.hasNext();) {
-                String url = fileURL(request,
-                        response,
-                        pathInfo,
-                        (String) file.next());
+                String url = fileURL(request, response, pathInfo, (String) file.next());
                 filelist.addElement(url);
             }
             filelist.generate(out);
@@ -123,9 +116,9 @@ public class DirectoryServlet extends VPFHttpServlet {
         out.println(end);
     }
 
-    public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config)
+            throws ServletException {
         super.init(config);
-        listFiles = Boolean.valueOf(config.getInitParameter("listDirectories"))
-                .booleanValue();
+        listFiles = Boolean.valueOf(config.getInitParameter("listDirectories")).booleanValue();
     }
 }

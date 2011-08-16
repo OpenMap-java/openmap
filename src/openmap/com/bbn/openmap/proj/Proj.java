@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/proj/Proj.java,v $
 // $RCSfile: Proj.java,v $
 // $Revision: 1.14 $
 // $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.proj;
@@ -73,7 +73,8 @@ import com.bbn.openmap.util.Debug;
  * @see GeoProj
  * 
  */
-public abstract class Proj implements Projection, Cloneable, Serializable {
+public abstract class Proj
+        implements Projection, Cloneable, Serializable {
 
     /**
      * Minimum width of projection.
@@ -342,15 +343,15 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * <P>
      * Make sure you call super.init() if you override this method.
      */
-    protected void init() {}
+    protected void init() {
+    }
 
     /**
      * Sets the projection ID used for determining equality. The projection ID
      * String is interned for efficient comparison.
      */
     protected void setProjectionID() {
-        projID = (getClass().getName() + ":" + scale + ":" + centerX + ":"
-                + centerY + ":" + width + ":" + height + ":");
+        projID = (getClass().getName() + ":" + scale + ":" + centerX + ":" + centerY + ":" + width + ":" + height + ":");
     }
 
     /**
@@ -380,9 +381,8 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * @see #getProjectionID
      */
     public String toString() {
-        return (" center(" + centerX + ":" + centerY + ") scale=" + scale
-                + " maxscale=" + maxscale + " minscale=" + minscale + " width="
-                + width + " height=" + height + "]");
+        return (" center(" + centerX + ":" + centerY + ") scale=" + scale + " maxscale=" + maxscale + " minscale=" + minscale
+                + " width=" + width + " height=" + height + "]");
     }
 
     /**
@@ -543,12 +543,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
                 } else if (type == PathIterator.SEG_CUBICTO) {
                     world3.setLocation(coords[4], coords[5]);
                     forward(world3, screen3);
-                    path.curveTo(screen.x,
-                            screen.y,
-                            screen2.x,
-                            screen2.y,
-                            screen3.x,
-                            screen3.y);
+                    path.curveTo(screen.x, screen.y, screen2.x, screen2.y, screen3.x, screen3.y);
                 }
             }
 
@@ -578,8 +573,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords,
-                              float[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords, float[] ycoords, boolean[] visible, int copyoff,
                               int copylen) {
         Point temp = new Point();
         int end = copylen + copyoff;
@@ -612,8 +606,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords,
-                              float[] ycoords, boolean[] visible, int copyoff,
+    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords, float[] ycoords, boolean[] visible, int copyoff,
                               int copylen) {
         Point temp = new Point();
         int end = copylen + copyoff;
@@ -627,7 +620,12 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
     }
 
     public ArrayList<float[]> forwardLine(Point2D ll1, Point2D ll2) {
-        double[] rawllpts = { ll1.getY(), ll1.getX(), ll2.getY(), ll2.getX() };
+        double[] rawllpts = {
+            ll1.getY(),
+            ll1.getX(),
+            ll2.getY(),
+            ll2.getX()
+        };
         return forwardPoly(rawllpts, false);
     }
 
@@ -639,10 +637,19 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * @return ArrayList<float[]>
      */
     public ArrayList<float[]> forwardRect(Point2D ll1, Point2D ll2) {
-        double[] rawllpts = { ll1.getY(), ll1.getX(), ll1.getY(), ll2.getX(),
-                ll2.getY(), ll2.getX(), ll2.getY(), ll1.getX(),
-                // connect:
-                ll1.getY(), ll1.getX() };
+        double[] rawllpts = {
+            ll1.getY(),
+            ll1.getX(),
+            ll1.getY(),
+            ll2.getX(),
+            ll2.getY(),
+            ll2.getX(),
+            ll2.getY(),
+            ll1.getX(),
+            // connect:
+            ll1.getY(),
+            ll1.getX()
+        };
         return forwardPoly(rawllpts, true);
     }
 
@@ -722,7 +729,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * <p>
      * Example pans:
      * <ul>
-     * <li><code>pan(±180, c)</code> pan south `c' degrees
+     * <li><code>pan(180, c)</code> pan south `c' degrees
      * <li><code>pan(-90, c)</code> pan west `c' degrees
      * <li><code>pan(0, c)</code> pan north `c' degrees
      * <li><code>pan(90, c)</code> pan east `c' degrees
@@ -737,7 +744,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
     /**
      * Pan the map/projection.
      * <ul>
-     * <li><code>pan(±180, c)</code> pan south
+     * <li><code>pan(180, c)</code> pan south
      * <li><code>pan(-90, c)</code> pan west
      * <li><code>pan(0, c)</code> pan north
      * <li><code>pan(90, c)</code> pan east
@@ -893,8 +900,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      *        location where you want ll2 to go in the new projection, not where
      *        it is now.
      */
-    public abstract float getScale(Point2D ll1, Point2D ll2, Point2D point1,
-                                   Point2D point2);
+    public abstract float getScale(Point2D ll1, Point2D ll2, Point2D point1, Point2D point2);
 
     /**
      * Overridden to ensure that setParameters() are called with the read
@@ -904,8 +910,8 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    private void readObject(ObjectInputStream in) throws IOException,
-            ClassNotFoundException {
+    private void readObject(ObjectInputStream in)
+            throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         computeParameters();
         projID = null;

@@ -1,17 +1,17 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source:
 // /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/e00/ArcData.java,v
 // $
@@ -19,16 +19,18 @@
 // $Revision: 1.5 $
 // $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.layer.e00;
 
-public class ArcData extends E00Data {
+public class ArcData
+        extends E00Data {
     double[] coords;
     int deja = 0;
 
-    public ArcData() {}
+    public ArcData() {
+    }
 
     public ArcData(E00Data d) {
         valeur = d.valeur;
@@ -47,14 +49,14 @@ public class ArcData extends E00Data {
             else
                 c2 = d;
             if (type == 1)
-                d.valeur2 = valeur; // met à niveau l'arc frontière
+                d.valeur2 = valeur;
         } else if (d.type == 1) {
             if (c1 == null)
                 c1 = d;
             else
                 c2 = d;
             if (type == 0)
-                valeur = d.valeur; // met à niveau l'arc frontière
+                valeur = d.valeur;
         }
     }
 
@@ -65,14 +67,14 @@ public class ArcData extends E00Data {
             else
                 f2 = d;
             if (type == 1)
-                d.valeur = valeur; // met à niveau l'arc frontière
+                d.valeur = valeur;
         } else if (d.type == 1) {
             if (f1 == null)
                 f1 = d;
             else
                 f2 = d;
             if (type == 0)
-                valeur2 = d.valeur; // met à niveau l'arc frontière
+                valeur2 = d.valeur;
         }
     }
 
@@ -158,7 +160,10 @@ public class ArcData extends E00Data {
         while (d2 != null) {
             if (d2 == this) {
                 System.out.println("Arc " + id);
-                return new ArcData[] { this, null };
+                return new ArcData[] {
+                    this,
+                    null
+                };
             }
             d2.deja = 1;
             if (d2.c0 == d1) {
@@ -190,7 +195,10 @@ public class ArcData extends E00Data {
         }
         df = d1;
         System.out.println("arc " + di.id + "->" + df.id);
-        return new ArcData[] { di, df };
+        return new ArcData[] {
+            di,
+            df
+        };
     }
 
 }
