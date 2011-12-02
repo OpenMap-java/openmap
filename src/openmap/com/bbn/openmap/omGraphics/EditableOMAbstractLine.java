@@ -36,9 +36,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JRadioButtonMenuItem;
 
-import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
-
 /**
  * The EditableOMAbstractLine encompasses an OMAbstractLine, providing
  * a mechanism for adding an arrowhead menu in the line editor menu.

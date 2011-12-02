@@ -684,7 +684,7 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
             }
             out.print(llsize / 2);
             Object o = oj.getAppObject();
-            if (o != null && o instanceof String)
+            if (o instanceof String)
                 System.out.println(o);
             else
                 out.println();

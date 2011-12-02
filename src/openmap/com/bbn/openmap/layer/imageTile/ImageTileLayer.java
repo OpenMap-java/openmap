@@ -202,7 +202,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
                 String idlClassName = props.getProperty(prefix + idlMarkerName);
 
                 Object obj = ComponentFactory.create(idlClassName);
-                if (obj != null && obj instanceof ImageReaderLoader) {
+                if (obj instanceof ImageReaderLoader) {
                     imageReaderLoaders.add((ImageReaderLoader) obj);
                 }
             }

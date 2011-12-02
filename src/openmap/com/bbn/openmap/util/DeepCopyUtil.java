@@ -5,8 +5,6 @@
  */
 package com.bbn.openmap.util;
 
-import java.util.Arrays;
-
 import com.bbn.openmap.omGraphics.OMGeometry;
 
 /**

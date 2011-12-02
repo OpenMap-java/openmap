@@ -1140,7 +1140,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
 
         Object obj = omg.getAppObject();
         LinkProperties lp = null;
-        if (obj != null && obj instanceof LinkProperties) {
+        if (obj instanceof LinkProperties) {
             lp = (LinkProperties) obj;
             id = lp.getProperty(LPC_GRAPHICID);
         }

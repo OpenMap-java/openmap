@@ -58,7 +58,7 @@ public class LinkGraphic implements LinkConstants, LinkPropertiesConstants {
 
         if (props == null) {
             Object obj = omGraphic.getAppObject();
-            if (obj != null && obj instanceof LinkProperties) {
+            if (obj instanceof LinkProperties) {
                 props = (LinkProperties) obj;
             } else {
                 props = new LinkProperties();

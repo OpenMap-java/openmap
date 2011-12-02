@@ -188,7 +188,7 @@ public class MapTileLayer
             if (itf != null) {
                 setTileFactory(itf);
             }
-        } else if (tileFactory != null && tileFactory instanceof PropertyConsumer) {
+        } else if (tileFactory instanceof PropertyConsumer) {
             ((PropertyConsumer) tileFactory).setProperties(prefix, props);
         }
 

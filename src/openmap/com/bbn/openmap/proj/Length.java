@@ -22,7 +22,6 @@
 
 package com.bbn.openmap.proj;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 import com.bbn.openmap.Environment;
@@ -41,7 +40,7 @@ public class Length implements Serializable {
     /** Feet, in WGS 84 spherical earth model units. */
     public final static Length FEET = new Length("feet", "ft", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0);
     /** Feet, in WGS 84 spherical earth model units. */
-    public final static Length YARD = new Length("yards", "yd", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0 * 3.0);
+    public final static Length YARD = new Length("yards", "yd", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0 / 3.0);
     /** Meters, in WGS 84 Spherical earth model units. */
     public final static Length METER = new Length("meter", "m", Planet.wgs84_earthEquatorialCircumferenceMeters_D);
     /** Kilometers, in WGS 84 Spherical earth model units. */

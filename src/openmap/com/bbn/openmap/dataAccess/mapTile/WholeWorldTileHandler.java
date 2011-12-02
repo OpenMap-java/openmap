@@ -7,6 +7,7 @@ package com.bbn.openmap.dataAccess.mapTile;
 
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -19,6 +20,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.zip.Adler32;
+import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipOutputStream;
 
 import com.bbn.openmap.image.BufferedImageHelper;
@@ -198,7 +202,7 @@ public class WholeWorldTileHandler
 
         subFrameDefZoomLevel = PropUtils.intFromProperties(props, prefix + SUBJAR_ZOOMLEVEL_PROPERTY, subFrameDefZoomLevel);
         worldWideZoomLevel = PropUtils.intFromProperties(props, prefix + WORLDWIDE_ZOOMLEVEL_PROPERTY, worldWideZoomLevel);
-        rootDirForJars = props.getProperty(prefix + StandardMapTileFactory.ROOT_DIR_PATH_PROPERTY);
+        rootDirForJars = props.getProperty(prefix + StandardMapTileFactory.ROOT_DIR_PATH_PROPERTY, rootDirForJars);
 
         String jarBaseName = props.getProperty(prefix + PARENT_JAR_NAME_PROPERTY);
         if (jarBaseName != null) {
@@ -299,6 +303,11 @@ public class WholeWorldTileHandler
         protected int worldWideZoomLevel = 10;
         protected int maxZoomLevelInSubJars = 20;
         protected String tileExt = ".png";
+        protected int minx = 0;
+        protected int miny = 0;
+        protected int maxx = -1;
+        protected int maxy = -1;
+        protected boolean doWorldJar = true;
 
         public Builder(File source)
                 throws FileNotFoundException {
@@ -407,29 +416,36 @@ public class WholeWorldTileHandler
             }
 
             // Create the top-level worldwide jar
-            List<File> jarDirs = new ArrayList<File>();
+            if (doWorldJar) {
+                List<File> jarDirs = new ArrayList<File>();
 
-            for (int zoomLevel = 0; zoomLevel <= worldWideZoomLevel; zoomLevel++) {
-                File zoomLevelDir = new File(sourceFile, Integer.toString(zoomLevel));
-                if (zoomLevelDir.exists()) {
-                    jarDirs.add(zoomLevelDir);
+                for (int zoomLevel = 0; zoomLevel <= worldWideZoomLevel; zoomLevel++) {
+                    File zoomLevelDir = new File(sourceFile, Integer.toString(zoomLevel));
+                    if (zoomLevelDir.exists()) {
+                        jarDirs.add(zoomLevelDir);
+                    }
                 }
-            }
 
-            if (!jarDirs.isEmpty() && sourceFile != null) {
-                String worldWideJarFile = targetFile + File.separator + sourceFile.getName() + ".jar";
-                logger.fine("writing :" + worldWideJarFile);
+                if (!jarDirs.isEmpty() && sourceFile != null) {
+                    String worldWideJarFile = targetFile + File.separator + sourceFile.getName() + ".jar";
+                    logger.info("writing :" + worldWideJarFile);
 
-                FileOutputStream fos = new FileOutputStream(worldWideJarFile);
-                ZipOutputStream zoStream = new ZipOutputStream(fos);
-                // zoStream.setMethod(ZipOutputStream.STORED);
-                for (File file : jarDirs) {
-                    int trim = sourceFile.getParent().length() + 1;
-                    FileUtils.writeZipEntry(file, zoStream, trim);
+                    FileOutputStream fos = new FileOutputStream(worldWideJarFile);
+                    CheckedOutputStream checksum = new CheckedOutputStream(fos, new Adler32());
+                    ZipOutputStream zoStream = new ZipOutputStream(new BufferedOutputStream(checksum));
+
+                    // ZipOutputStream zoStream = new ZipOutputStream(fos);
+                    // zoStream.setMethod(ZipOutputStream.DEFLATED);
+                    for (File file : jarDirs) {
+                        int trim = sourceFile.getParent().length() + 1;
+                        FileUtils.writeZipEntry(file, zoStream, trim);
+                    }
+                    zoStream.close();
+
+                    copyAndUpdateProperties(sourceFile, targetFile);
                 }
-                zoStream.close();
-
-                copyAndUpdateProperties(sourceFile, targetFile);
+            } else {
+                logger.info("skipping world file");
             }
             // Worldwide jar created.
 
@@ -437,9 +453,32 @@ public class WholeWorldTileHandler
             int dimensionForZoom = (int) Math.pow(2, subJarZoomDef);
             MapTileCoordinateTransform transform = new OSMMapTileCoordinateTransform();
 
+            int startx = 0;
+            int starty = 0;
+            int endx = dimensionForZoom;
+            int endy = dimensionForZoom;
+
+            // OK, look at the minx, miny, maxx, maxy to figure out the jar
+            // files to create.
+            if (minx >= 0) {
+                startx = minx;
+            }
+
+            if (maxx >= 0) {
+                endx = Math.min(maxx + 1, dimensionForZoom);
+            }
+
+            if (miny >= 0) {
+                starty = miny;
+            }
+
+            if (maxy >= 0) {
+                endy = Math.min(maxy + 1, dimensionForZoom);
+            }
+
             // x, y tile coordinates for subjar files.
-            for (int x = 0; x < dimensionForZoom; x++) {
-                for (int y = 0; y < dimensionForZoom; y++) {
+            for (int x = startx; x < endx; x++) {
+                for (int y = starty; y < endy; y++) {
 
                     // Calculate the lat/lon limits of the current tile
                     Point2D llp1 = transform.tileUVToLatLon(new Point2D.Double(x, y), subJarZoomDef);
@@ -447,9 +486,12 @@ public class WholeWorldTileHandler
 
                     File subJarFile = new File(targetFile, sourceFile.getName() + "_" + x + "_" + y + ".jar");
 
+                    logger.info("Creating: " + subJarFile);
+                    long fileCount = 0;
                     ZipOutputStream zoStream = null;
+                    int trim = sourceFile.getParent().length() + 1;
 
-                    for (int zoomLevel = worldWideZoomLevel + 1; zoomLevel < maxZoomLevelInSubJars; zoomLevel++) {
+                    for (int zoomLevel = worldWideZoomLevel + 1; zoomLevel <= maxZoomLevelInSubJars; zoomLevel++) {
 
                         File checkZoomLevelDir = new File(sourceFile, Integer.toString(zoomLevel));
                         if (checkZoomLevelDir.exists()) {
@@ -475,11 +517,21 @@ public class WholeWorldTileHandler
                                              * and then put nothing into it.
                                              */
                                             FileOutputStream fos = new FileOutputStream(subJarFile);
-                                            zoStream = new ZipOutputStream(fos);
+
+                                            CheckedOutputStream checksum = new CheckedOutputStream(fos, new Adler32());
+                                            zoStream = new ZipOutputStream(new BufferedOutputStream(checksum));
+
+                                            // zoStream = new
+                                            // ZipOutputStream(fos);
+                                            // zoStream.setMethod(ZipOutputStream.DEFLATED);
                                         }
 
-                                        int trim = sourceFile.getParent().length() + 1;
-                                        FileUtils.writeZipEntry(tile, zoStream, trim);
+                                        if (tile.getAbsolutePath().length() - trim > 0) {
+                                            FileUtils.writeZipEntry(tile, zoStream, trim);
+                                            fileCount++;
+                                        } else {
+                                            logger.info("here's the problem");
+                                        }
                                     }
                                 }
                             }
@@ -488,9 +540,55 @@ public class WholeWorldTileHandler
 
                     if (zoStream != null) {
                         zoStream.close();
+                        zoStream = null;
+                        logger.info("closing zip file (" + subJarFile.getPath() + "), added " + fileCount + " files to jar");
                     }
                 }
             }
+        }
+
+        /**
+         * Set the starting x number of the subjar file to create. Depends on
+         * the subjar zoom to figure out what that means.
+         * 
+         * @param parseInt
+         */
+        public void minx(int parseInt) {
+            minx = parseInt;
+        }
+
+        /**
+         * Set the starting y number of the subjar file to create. Depends on
+         * the subjar zoom to figure out what that means.
+         * 
+         * @param parseInt
+         */
+        public void miny(int parseInt) {
+            miny = parseInt;
+        }
+
+        /**
+         * Set the ending y number of the subjar file to create. Depends on the
+         * subjar zoom to figure out what that means.
+         * 
+         * @param parseInt
+         */
+        public void maxx(int parseInt) {
+            maxx = parseInt;
+        }
+
+        /**
+         * Set the ending y number of the subjar file to create. Depends on the
+         * subjar zoom to figure out what that means.
+         * 
+         * @param parseInt
+         */
+        public void maxy(int parseInt) {
+            maxy = parseInt;
+        }
+
+        public void setDoWorldJar(boolean dwj) {
+            doWorldJar = dwj;
         }
     }
 
@@ -511,6 +609,12 @@ public class WholeWorldTileHandler
         ap.add("maxZoomInSubJars", "Maximum tile zoom level added to sub jars (20 is default).", 1);
         ap.add("worldWideZoomLevel", "Maximum tile zoom level to add to world wide jar (10 is default).", 1);
         ap.add("tileExt", "Tile extension (.png is default).", 1);
+        ap.add("minx", "Subjar x minimum to create", 1);
+        ap.add("miny", "Subjar y minimum to create", 1);
+        ap.add("maxx", "Subjar x maximum to create", 1);
+        ap.add("maxy", "Subjar y maximum to create", 1);
+        ap.add("noWorldJar", "Don't create world level jar file");
+        ap.add("verbose", "Comment on what's going on");
 
         if (!ap.parse(args)) {
             ap.printUsage();
@@ -545,6 +649,37 @@ public class WholeWorldTileHandler
                 arg = ap.getArgValues("tileExt");
                 if (arg != null) {
                     wwthBuilder.tileExt(arg[0]);
+                }
+
+                arg = ap.getArgValues("minx");
+                if (arg != null) {
+                    wwthBuilder.minx(Integer.parseInt(arg[0]));
+                }
+
+                arg = ap.getArgValues("miny");
+                if (arg != null) {
+                    wwthBuilder.miny(Integer.parseInt(arg[0]));
+                }
+
+                arg = ap.getArgValues("maxx");
+                if (arg != null) {
+                    wwthBuilder.maxx(Integer.parseInt(arg[0]));
+                }
+
+                arg = ap.getArgValues("maxy");
+                if (arg != null) {
+                    wwthBuilder.maxy(Integer.parseInt(arg[0]));
+                }
+
+                arg = ap.getArgValues("verbose");
+                if (arg != null) {
+                    logger.setLevel(Level.FINE);
+                }
+
+                arg = ap.getArgValues("noWorldJar");
+                if (arg != null) {
+                    logger.info("setting build world file to false");
+                    wwthBuilder.setDoWorldJar(false);
                 }
 
                 System.out.println(wwthBuilder.toString());

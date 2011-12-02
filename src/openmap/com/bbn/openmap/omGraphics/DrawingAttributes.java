@@ -1483,7 +1483,7 @@ public class DrawingAttributes
         float lineWidth;
         boolean basicStrokeDefined = false;
 
-        if (stroke != null && stroke instanceof BasicStroke) {
+        if (stroke instanceof BasicStroke) {
             basicStrokeDefined = true;
         }
 

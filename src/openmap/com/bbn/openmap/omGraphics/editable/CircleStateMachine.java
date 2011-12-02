@@ -24,8 +24,6 @@
 
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.geom.Point2D;
-
 import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.EditableOMCircle;
 import com.bbn.openmap.util.Debug;

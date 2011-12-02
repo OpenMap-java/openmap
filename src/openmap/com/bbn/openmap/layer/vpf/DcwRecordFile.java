@@ -481,7 +481,7 @@ public class DcwRecordFile {
      * @exception FormatException an error.
      */
     private void openVLI() throws FormatException, IOException {
-        String realfname = filename.toString();
+        String realfname = filename;
         boolean endwithdot = realfname.endsWith(".");
         String fopen;
         if (endwithdot) {

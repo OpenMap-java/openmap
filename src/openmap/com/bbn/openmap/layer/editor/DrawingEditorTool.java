@@ -821,7 +821,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
                             loaderPropertyPrefix,
                             props);
 
-                    if (obj != null && obj instanceof EditToolLoader) {
+                    if (obj instanceof EditToolLoader) {
                         EditToolLoader loader = (EditToolLoader) obj;
 
                         if (Debug.debugging("editortool")) {
@@ -842,8 +842,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
                                     loaderPropertyPrefix,
                                     props);
 
-                            if (daObject != null
-                                    && daObject instanceof DrawingAttributes) {
+                            if (daObject instanceof DrawingAttributes) {
                                 if (Debug.debugging("editortool")) {
                                     Debug.output("DrawingEditorTool: attributes from "
                                             + loaderAttributeClass);

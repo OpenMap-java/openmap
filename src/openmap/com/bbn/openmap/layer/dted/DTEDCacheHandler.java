@@ -407,4 +407,27 @@ public class DTEDCacheHandler {
         }
     }
 
+    /**
+     * Get the colortable being used to color the frames.
+     * 
+     * @return DTEDFrameColorTable
+     */
+    public DTEDFrameColorTable getColortable() {
+        return colortable;
+    }
+
+    /**
+     * Set the DTEDFrameColorTable used by the handler. If you pass in a null
+     * value, a default colortable will be inserted.
+     * 
+     * @param colorT
+     */
+    public void setColortable(DTEDFrameColorTable colorT) {
+        if (colorT == null) {
+            colortable = new DTEDFrameColorTable(DTEDFrameColorTable.DTED_COLORS, DTEDFrameColorTable.DEFAULT_OPAQUENESS, true);
+        } else {
+            colortable = colorT;
+        }
+    }
+
 }

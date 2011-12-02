@@ -121,7 +121,7 @@ public class DTEDDirectoryHandler implements PropertyConsumer {
             Object obj = ComponentFactory.create(translatorClassName,
                     prefix,
                     props);
-            if (obj != null && obj instanceof DTEDNameTranslator) {
+            if (obj instanceof DTEDNameTranslator) {
                 translator = (DTEDNameTranslator) obj;
             }
         } else if (translator == null) {

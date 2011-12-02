@@ -52,7 +52,7 @@ public class LinkOMGraphicList extends OMGraphicList implements
      */
     public LinkOMGraphicList() {
         super(10);
-    };
+    }
 
     /**
      * Construct an OMGraphicList with an initial capacity.
@@ -61,7 +61,7 @@ public class LinkOMGraphicList extends OMGraphicList implements
      */
     public LinkOMGraphicList(int initialCapacity) {
         super(initialCapacity);
-    };
+    }
 
     public void setProjection(Projection proj) {
         currentProjection = proj;

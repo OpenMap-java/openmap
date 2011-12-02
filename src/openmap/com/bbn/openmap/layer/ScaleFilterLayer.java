@@ -840,7 +840,7 @@ public class ScaleFilterLayer
         }
 
         BeanContext bc = getBeanContext();
-        if (bc != null && bc instanceof MapHandler) {
+        if (bc instanceof MapHandler) {
             MapHandler mh = (MapHandler) bc;
             findAndUndo(mh.get(MouseDelegator.class));
         }

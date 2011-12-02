@@ -89,7 +89,7 @@ public class CodePosition {
 
     public CodePosition() {
         DEBUG = Debug.debugging("codeposition");
-    };
+    }
 
     public CodePosition(String name, int start, int end) {
         this();

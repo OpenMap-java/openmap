@@ -1,0 +1,275 @@
+priority,type,facc,conditions
+0,Area,BA040,
+0,Area,BE010,cvl=99999
+0,Area,BE010,idsm=0 AND cvl>=msdcand<>99999
+0,Area,BE010,idsm=0 AND cvl>=ssdcand<msdc
+0,Area,BE010,idsm=0 AND isdm=0 AND cvl<mssc
+0,Area,BE010,idsm=0 AND isdm=0 AND cvl>=msscand<ssdc
+0,Area,BE010,idsm=0 AND isdm=1 AND cvl<mssc
+0,Area,BE010,idsm=0 AND isdm=1 AND cvl>=msscand<ssdc
+0,Area,BE010,idsm=1 AND cvl>=ssdcand<>99999
+0,Area,BE010,idsm=1 AND isdm=0 AND cvl<ssdc
+0,Area,BE010,idsm=1 AND isdm=1 AND cvl<ssdc
+1,Area,AK090,
+1,Area,BA020,
+1,Area,BA020,isdm=1
+1,Area,BA030,
+1,Area,BD120,vrr=8
+1,Area,BD120,vrr=8 AND isdm=1
+1,Area,BJ110,
+1,Area,DA010,
+1,Area,FC031,mac=2 AND hdp=0 AND isdm=0
+1,Area,FC031,mac=2 AND hdp=0 AND isdm=1
+1,Area,FC031,mac=2 AND idsm=0 AND hdp>=msdc
+1,Area,FC031,mac=2 AND idsm=0 AND hdp>=msscand<ssdc AND isdm=0
+1,Area,FC031,mac=2 AND idsm=0 AND hdp>=msscand<ssdc AND isdm=1
+1,Area,FC031,mac=2 AND idsm=0 AND hdp>=ssdcand<msdc
+1,Area,FC031,mac=2 AND idsm=0 AND hdp>0and<mssc AND isdm=0
+1,Area,FC031,mac=2 AND idsm=0 AND hdp>0and<mssc AND isdm=1
+1,Area,FC031,mac=2 AND idsm=1 AND hdp>=ssdc
+1,Area,FC031,mac=2 AND idsm=1 AND hdp>0and<ssdc AND isdm=0
+1,Area,FC031,mac=2 AND idsm=1 AND hdp>0and<ssdc AND isdm=1
+2,Line,BH020,
+2,Line,BH140,
+2,Line,FC031,mac=2
+2,Area,BH020,
+2,Area,BH080,
+2,Area,BH090,
+2,Area,BH130,
+2,Area,BH140,
+2,Area,BI030,
+2,Area,GB005,
+3,Line,AK020,
+3,Line,AL070,
+3,Line,AL260,
+#3,Line,AT005,
+3,Line,BH120,
+3,Line,BH180,
+3,Line,BH210,
+3,Line,FC021,mac=26 AND mbl=NULL
+3,Line,FC021,mbl<>7and<>13 AND mac=NULL
+3,Line,FC021,mbl=7 AND mac=NULL
+3,Area,AC030,
+3,Area,AL020,
+3,Area,AN060,
+3,Area,BB010,mac<>12
+3,Area,BB180,
+3,Area,BD060,
+3,Area,BH050,
+3,Area,BH095,
+3,Area,BH155,
+3,Area,BJ030,
+3,Area,BJ030,
+3,Area,BJ065,
+3,Area,BJ065,
+3,Area,BJ100,
+3,Area,BJ100,
+3,Area,DB090,
+3,Area,DB170,
+3,Area,EA030,
+3,Area,EA040,
+3,Area,EA050,
+3,Area,EC030,veg<>19
+3,Area,EC030,veg=19
+3,Area,FC021,mac=0or999
+3,Area,FC021,mac=25or30or35
+3,Area,FC021,mac=26
+3,Area,FC021,mac=26
+3,Area,FC021,mac=26
+3,Area,FC021,mac=31
+3,Area,FC021,mac=49
+3,Area,FC021,mac=57
+3,Area,FC031,mac=0or9
+3,Area,FC036,mac=20
+3,Area,FC036,mac=21or23or61
+3,Area,FC036,mac=45or46
+3,Area,FC165,rtt=0
+4,Line,AK130,
+4,Line,AN010,
+4,Line,AP020,
+4,Line,AP030,
+#4,Line,AQ070,fer=1
+#4,Line,AQ070,fer=2
+4,Line,AQ130,
+4,Line,BA020,
+4,Line,BB010,mac<>12
+4,Line,BB100,
+4,Line,BC100,
+4,Line,BD010,
+4,Line,CA010,
+4,Line,DB090,
+4,Line,FA000,use=23
+4,Line,FA000,use=32
+4,Line,FA020,
+4,Line,FA040,
+4,Line,FA060,
+4,Line,FA110,
+4,Line,FC021,mac=0or999 AND mbl=NULL
+4,Line,FC021,mac=25 AND mbl=NULL
+4,Line,FC021,mac=30or35 AND mbl=NULL
+4,Line,FC021,mac=31 AND mbl=NULL
+4,Line,FC021,mac=49 AND mbl=NULL
+4,Line,FC021,mac=56 AND mbl=NULL
+4,Line,FC021,mac=57 AND mbl=NULL
+4,Line,FC021,mbl=13 AND mac=NULL
+4,Line,FC031,mac=0or9
+4,Line,FC100,
+4,Area,AA010,
+4,Area,AB000,
+4,Area,AB010,
+4,Area,AC000,
+4,Area,AD010,
+4,Area,AD030,
+4,Area,AH010,
+4,Area,AH050,
+4,Area,AK040,
+4,Area,AK160,
+4,Area,AL015,
+4,Area,AL030,
+4,Area,AL200,loc=22 AND vrr=1
+4,Area,AL200,loc=22 AND vrr=4 AND hdp=0
+4,Area,AL200,loc=22 AND vrr=4 AND hdp>0and<=20
+4,Area,AL200,loc=22 AND vrr=4 AND hdp>20
+4,Area,AL200,loc=22 AND vrr=8
+4,Area,AL200,loc=8
+4,Area,AM010,
+4,Area,AM030,
+4,Area,AM040,
+4,Area,AM070,
+4,Area,AQ116,
+4,Area,AT020,
+4,Area,BB090,
+4,Area,BB110,
+4,Area,BB150,
+4,Area,BC080,
+4,Area,BD010,
+4,Area,BD020,acc<>1
+4,Area,BD020,vrr=1 AND hdp=NULL
+4,Area,BD020,vrr=4 AND hdp=0
+4,Area,BD020,vrr=4 AND hdp>0and<=20
+4,Area,BD020,vrr=4 AND hdp>20
+4,Area,BD020,vrr=8 AND hdp=NULL
+4,Area,BD030,
+4,Area,BD030,acc<>1
+4,Area,BD040,
+4,Area,BD050,
+4,Area,BD080,
+4,Area,BD100,acc<>1
+4,Area,BD100,vrr=1
+4,Area,BD100,vrr=4
+4,Area,BD100,vrr=8
+4,Area,BD120,vrr<>8 AND acc<>1
+4,Area,BD120,vrr<>8 AND hdp=0orNULL
+4,Area,BD120,vrr=4 AND hdp>0and<=20
+4,Area,BD120,vrr=4 AND hdp>20
+4,Area,BD140,acc<>1
+4,Area,BD140,vrr=1
+4,Area,BD140,vrr=4
+4,Area,BD140,vrr=8
+4,Area,BD180,vrr=0or2 AND hdp=NULL
+4,Area,BD180,vrr=1 AND hdp=NULL
+4,Area,BD180,vrr=4 AND hdp=0
+4,Area,BD180,vrr=4 AND hdp>0and<=20
+4,Area,BD180,vrr=4 AND hdp>20
+4,Area,BD180,vrr=8 AND hdp=NULL
+4,Area,FC021,mac=27or28or29
+4,Area,FC021,mac=32or33
+4,Area,FC021,mac=42
+4,Area,FC021,mac=48
+4,Area,FC021,mac=55
+4,Area,FC021,mac=56
+4,Area,FC041,tsp=3
+4,Area,FC165,rtt=11
+4,Area,FC165,rtt=4
+4,Area,FC177,
+4,Area,GB070,
+4,Area,ZC040,
+5,Line,FC021,mac=27or28or29 AND mbl=NULL
+5,Line,FC021,mac=32or33 AND mbl=NULL
+5,Line,FC021,mac=42 AND mbl=NULL
+5,Line,FC021,mac=48 AND mbl=NULL
+5,Line,FC021,mac=55 AND mbl=NULL
+5,Line,FC177,
+5,Line,GB070,
+5,Area,AL005,
+5,Area,BB010,mac=12
+5,Area,BB115,
+5,Area,BB170,
+5,Area,FC021,mac=24
+5,Area,FC021,mac=44
+5,Area,FC021,mac=58
+5,Area,FC031,mac=4
+5,Area,FC031,mac=41
+5,Area,FC036,mac=0or999
+5,Area,FC036,mac=37
+5,Area,GB055,
+#6,Line,AQ113,loc<>25 AND pro<>95and<>116 AND plt<>2and<>3
+#6,Line,AQ113,loc<>25 AND pro=116
+#6,Line,AQ113,loc<>25 AND pro=95 OR plt=2or3
+6,Line,BB010,mac=12
+6,Line,BB170,
+6,Line,BC040,
+6,Line,BH010,loc<>25
+6,Line,BI020,
+6,Line,FC021,mac=24 AND mbl=NULL
+6,Line,FC021,mac=44 AND mbl=NULL
+6,Line,FC021,mac=58 AND mbl=NULL
+6,Line,FC031,mac=4
+6,Line,FC036,
+6,Line,FC130,
+6,Line,FC165,atn=1 AND exs=22 AND rtt<>3
+6,Line,FC165,atn=1 AND exs=22 AND rtt=3
+6,Line,FC165,atn=1 AND exs=23 AND rtt<>3
+6,Line,FC165,atn=1 AND exs=23 AND rtt=3
+6,Line,FC165,atn=2 AND exs=22 AND rtt<>3
+6,Line,FC165,atn=2 AND exs=22 AND rtt=3
+6,Line,FC165,atn=2 AND exs=23 AND rtt<>3
+6,Line,FC165,atn=2 AND exs=23 AND rtt=3
+6,Line,FC165,exs=0 AND rtt<>3
+6,Line,FC165,exs=0 AND rtt=3
+6,Line,FC170,
+6,Line,GB055,
+6,Area,BB040,vrr=1
+6,Area,BB040,vrr=4or8
+6,Area,BB140,vrr=1
+6,Area,BB140,vrr=4or8
+6,Area,BB190,
+6,Area,BB220,vrr=1
+6,Area,BB220,vrr=4or8
+6,Area,FC031,mac=40
+6,Area,FC031,mac=5
+6,Area,FC036,mac=15
+6,Area,FC036,mac=22
+6,Area,FC036,mac=43
+6,Area,FC041,tsp=6or7
+6,Area,FC170,
+7,Line,BA010,acc=1 AND slt<>6and<>8
+7,Line,BA010,acc=2 AND slt<>6and<>8
+7,Line,BA010,slt=6or8
+7,Line,BB040,vrr=1
+7,Line,BB040,vrr=4or8
+7,Line,BB140,vrr=1
+7,Line,BB140,vrr=4or8
+7,Line,BB190,
+7,Line,BB220,vrr=1
+7,Line,BB220,vrr=4or8
+7,Line,BB230,
+7,Line,BB240,vrr=1
+7,Line,BB240,vrr=4or8
+7,Line,FC031,mac=40or41
+7,Line,FC031,mac=5
+7,Line,FC041,tsp=2
+8,Line,AQ010,
+8,Line,AQ040,bsc<>12 AND bot<>4and<>10and<>11
+8,Line,AQ040,bsc=12 OR bot=4or10or11
+8,Line,AQ045,
+#8,Line,AQ113,loc=25
+8,Line,AT030,
+8,Line,AT060,
+8,Line,BH010,loc=25
+8,Line,BI040,
+8,Line,FC041,tsp=4
+8,Area,AQ040,bsc<>12 AND bot<>4and<>10and<>11
+8,Area,AQ040,bsc=12 OR bot=4or10or11
+8,Area,AQ045,
+8,Area,BC060,

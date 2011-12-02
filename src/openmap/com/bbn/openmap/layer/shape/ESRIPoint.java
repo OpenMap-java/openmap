@@ -25,6 +25,7 @@ package com.bbn.openmap.layer.shape;
 import java.text.NumberFormat;
 
 import com.bbn.openmap.dataAccess.shape.ShapeUtils;
+import com.bbn.openmap.util.HashCodeUtil;
 
 /**
  * A class representing an x,y coordinate.
@@ -51,7 +52,8 @@ public class ESRIPoint {
     public double y;
 
     /** Null constructor. */
-    public ESRIPoint() {}
+    public ESRIPoint() {
+    }
 
     /**
      * Initializes a point with the given coordinates.
@@ -94,9 +96,9 @@ public class ESRIPoint {
     /**
      *  
      */
-    //     public int binaryStoreSize() {
-    //      return 28; // Constant for Point records
-    //     }
+    // public int binaryStoreSize() {
+    // return 28; // Constant for Point records
+    // }
     /**
      * Constructs a point from the given data buffer.
      * 
@@ -136,5 +138,19 @@ public class ESRIPoint {
         }
         final ESRIPoint pt = (ESRIPoint) obj;
         return (x == pt.x && y == pt.y);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        int result = HashCodeUtil.SEED;
+        // collect the contributions of various fields
+        result = HashCodeUtil.hash(result, x);
+        result = HashCodeUtil.hash(result, y);
+        return result;
     }
 }

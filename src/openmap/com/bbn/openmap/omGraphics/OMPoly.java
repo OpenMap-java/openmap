@@ -32,8 +32,6 @@ import java.awt.geom.Line2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import org.hamcrest.core.IsEqual;
-
 import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.geo.Intersection;
 import com.bbn.openmap.proj.DrawUtil;

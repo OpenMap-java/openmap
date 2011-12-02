@@ -381,6 +381,14 @@ public abstract class OMList<T extends OMGeometry>
             return graphics.remove(index);
         }
     }
+    
+    /**
+     * @return an unmodifiable copy of this list. 
+     */
+    public synchronized final List<T> getCopy() {
+        List<T> listCopy = new ArrayList<T>(graphics);
+        return Collections.unmodifiableList(listCopy);
+    }
 
     /**
      * Moves the graphic at the given index to the part of the list where it
@@ -568,8 +576,7 @@ public abstract class OMList<T extends OMGeometry>
      * @see #generate(Projection, boolean)
      */
     public boolean generate(Projection p) {
-        generate(p, true);
-        return true;
+        return generate(p, true);
     }
 
     /**
@@ -581,24 +588,27 @@ public abstract class OMList<T extends OMGeometry>
      * @param forceProjectAll if true, all the graphics on the list are
      *        generated with the new projection. If false they are only
      *        generated if getNeedToRegenerate() returns true
+     * @return true if generation was successful for all objects on list.
      * @see OMGraphic#generate
      * @see OMGraphic#regenerate
      */
-    public void generate(Projection p, boolean forceProjectAll) {
+    public boolean generate(Projection p, boolean forceProjectAll) {
+        boolean ret = true;
         synchronized (graphics) {
             Iterator<T> iterator = iterator();
             // Check forceProjectAll outside the loop for slight
             // performance improvement.
             if (forceProjectAll) {
                 while (iterator.hasNext()) {
-                    iterator.next().generate(p);
+                    ret &= iterator.next().generate(p);
                 }
             } else {
                 while (iterator.hasNext()) {
-                    iterator.next().regenerate(p);
+                    ret &= iterator.next().regenerate(p);
                 }
             }
         }
+        return ret;
     }
 
     /**
@@ -974,7 +984,7 @@ public abstract class OMList<T extends OMGeometry>
 
             omd = findClosestTest(omd, 0 /* doesn't matter */, geometry, x, y, limit, resetSelect);
 
-            if (geometry == null || omd.omg == null) {
+            if (omd == null || omd.omg == null) {
                 // no hit, but continue testing...
                 return true;
             }

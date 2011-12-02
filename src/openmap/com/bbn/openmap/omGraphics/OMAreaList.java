@@ -92,11 +92,12 @@ public class OMAreaList extends OMGeometryList implements Serializable {
      * Shape to the main Shape. This method closes off the GeneralPath Shape, so
      * it will be considered a polygon.
      */
-    public synchronized void generate(Projection p, boolean forceProjectAll) {
-        super.generate(p, forceProjectAll);
+    public synchronized boolean generate(Projection p, boolean forceProjectAll) {
+        boolean isGenerated = super.generate(p, forceProjectAll);
         if (shape != null) {
             shape.closePath();
         }
+        return isGenerated;
     }
 
     /**

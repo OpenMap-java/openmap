@@ -318,6 +318,26 @@ public class ImageServer
      *        it scaled, use -1.
      * @param scaledHeight scaled pixel height of final image. If you don't want
      *        it scaled, use -1.
+     * @param showLayers Layersthat should be part of this image.
+     * @return a byte[] representing the formatted image.
+     */
+    public byte[] createImageFromLayers(Projection proj, int scaledWidth, int scaledHeight, List<Layer> showLayers) {
+        return createImageFromLayers(proj, scaledWidth, scaledHeight, showLayers, getBackground());
+    }
+
+    /**
+     * Use the ProjectionPainter interface of the layers to create an image.
+     * This approach avoids some of the timing issues that the thread model of
+     * the MapBean and Layers that seem to pop up from time to time. They are
+     * Swing components, you know. They were designed to be part of a GUI. So,
+     * this is a serialized, safe way to do things. The background used for the
+     * image is the one set in this ImageServer object.
+     * 
+     * @param proj projection of map.
+     * @param scaledWidth scaled pixel width of final image. If you don't want
+     *        it scaled, use -1.
+     * @param scaledHeight scaled pixel height of final image. If you don't want
+     *        it scaled, use -1.
      * @param showLayers Layer marker names reflecting the layers that should be
      *        part of this image.
      * @param background the Paint to be used for the background of this image.

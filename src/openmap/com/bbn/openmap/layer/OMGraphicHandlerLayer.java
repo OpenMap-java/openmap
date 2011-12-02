@@ -499,6 +499,14 @@ public class OMGraphicHandlerLayer
    }
 
    /**
+    * Overrides Layer.dispose(), makes sure the OMGraphicList is cleared.
+    */
+   public void dispose() {
+       super.dispose();
+       setList(null);
+   }
+   
+   /**
     * This method is here to provide a default action for Layers as they act as
     * a ProjectionPainter. Normally, ProjectionPainters are expected to receive
     * the projection, gather/create OMGraphics that apply to the projection, and

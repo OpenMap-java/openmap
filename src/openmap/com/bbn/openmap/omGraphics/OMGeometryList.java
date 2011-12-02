@@ -247,7 +247,7 @@ public class OMGeometryList extends OMList<OMGeometry> implements Serializable {
      * @see OMGeometry#generate
      * @see OMGeometry#regenerate
      */
-    public void generate(Projection p, boolean forceProjectAll) {
+    public boolean generate(Projection p, boolean forceProjectAll) {
 
         // Important! Resets the shape.
         shape = null;
@@ -270,6 +270,8 @@ public class OMGeometryList extends OMList<OMGeometry> implements Serializable {
             }
         }
         setNeedToRegenerate(false);
+        
+        return shape != null;
     }
 
     /**

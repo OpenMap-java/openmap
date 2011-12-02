@@ -26,11 +26,7 @@ package com.bbn.openmap.omGraphics.editable;
 
 import java.awt.event.MouseEvent;
 
-import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.EditableOMGraphic;
-import com.bbn.openmap.omGraphics.GrabPoint;
-import com.bbn.openmap.omGraphics.event.EOMGEvent;
-import com.bbn.openmap.util.Debug;
 
 /**
  * The GraphicUndefinedEditState is for a couple of OMGraphics that are still

@@ -285,7 +285,7 @@ public class GraphicLoaderPlugIn extends OMGraphicHandlerPlugIn {
         props.setProperty(GraphicLoaderProperty, "Classname of GraphicLoader");
 
         GraphicLoader gl = getGraphicLoader();
-        if (gl != null && gl instanceof PropertyConsumer) {
+        if (gl instanceof PropertyConsumer) {
             ((PropertyConsumer) gl).getPropertyInfo(props);
         }
 

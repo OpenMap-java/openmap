@@ -440,7 +440,7 @@ public abstract class Layer
         super.setName(name);
 
         BeanContext bc = getBeanContext();
-        if (bc != null && bc instanceof MapHandler) {
+        if (bc instanceof MapHandler) {
             LayerHandler lh = (LayerHandler) ((MapHandler) bc).get("com.bbn.openmap.LayerHandler");
 
             if (lh != null) {
@@ -492,7 +492,7 @@ public abstract class Layer
             props.put(prefix + DataPathPrefixProperty, dataPathPrefix);
         }
 
-        if (coordTransform != null && coordTransform instanceof PropertyConsumer) {
+        if (coordTransform instanceof PropertyConsumer) {
             ((PropertyConsumer) coordTransform).getProperties(props);
         }
 
@@ -1029,6 +1029,7 @@ public abstract class Layer
         if (attributes != null) {
             attributes.clear();
         }
+        removed(null);
     }
 
     /**

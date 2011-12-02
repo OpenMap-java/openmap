@@ -74,21 +74,19 @@ public class JPEGHelper {
         ImageWriter writer = iter.next();
         ImageWriteParam iwp = writer.getDefaultWriteParam();
         iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-		iwp.setCompressionQuality(quality);
+        iwp.setCompressionQuality(quality);
 
         if (Debug.debugging("jpeghelper")) {
             Debug.output("Got encode params...");
-        }
-
-		writer.setOutput(iosout);
-        if (Debug.debugging("jpeghelper")) {
-            Debug.output("Got jpeg encoder...");
         }
 
         writer.setOutput(iosout);
         if (Debug.debugging("jpeghelper")) {
             Debug.output("Got jpeg encoder...");
         }
+
+        IIOImage iioi = new IIOImage(image, null, null);
+        writer.write(null, iioi, iwp);
 
         writer.dispose();
         if (Debug.debugging("jpeghelper")) {

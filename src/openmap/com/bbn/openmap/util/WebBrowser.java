@@ -110,7 +110,7 @@ public class WebBrowser {
                 edu.stanford.ejalbert.BrowserLauncher.openURL(url);
             } catch (IOException ioe) {
                 Debug.error("WebBrowser caught IOException loading webpage ("
-                        + url.toString() + ")\n" + ioe.getMessage());
+                        + url + ")\n" + ioe.getMessage());
             }
             return;
 
@@ -254,7 +254,7 @@ public class WebBrowser {
             edu.stanford.ejalbert.BrowserLauncher.openURL(url);
         } catch (IOException ioe) {
             Debug.error("WebBrowser caught IOException loading webpage ("
-                    + url.toString() + ")\n" + ioe.getMessage());
+                    + url + ")\n" + ioe.getMessage());
         }
 
     }

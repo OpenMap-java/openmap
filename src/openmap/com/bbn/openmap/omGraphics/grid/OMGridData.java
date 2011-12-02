@@ -24,7 +24,6 @@
 
 package com.bbn.openmap.omGraphics.grid;
 
-import com.bbn.openmap.omGraphics.OMGraphicAdapter;
 import com.bbn.openmap.omGraphics.OMGrid;
 import com.bbn.openmap.util.DeepCopyUtil;
 

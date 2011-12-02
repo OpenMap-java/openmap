@@ -326,13 +326,13 @@ public class UTMPoint {
 
     /**
      * Converts UTM coords to lat/long given an ellipsoid. This is a convenience
-     * class where the Zone can be specified as a single string eg."61N" which
+     * class where the Zone can be specified as a single string eg."60N" which
      * is then broken down into the ZoneNumber and ZoneLetter.
      * 
      * @param ellip an ellipsoid definition.
      * @param UTMNorthing A float value for the northing to be converted.
      * @param UTMEasting A float value for the easting to be converted.
-     * @param UTMZone A String value for the UTM zone eg."61N".
+     * @param UTMZone A String value for the UTM zone eg."60N".
      * @param llpoint a LatLonPoint, if you want it to be filled in with the
      *        results. If null, a new LatLonPoint will be allocated.
      * @return A LatLonPoint class instance containing the lat/long value, or

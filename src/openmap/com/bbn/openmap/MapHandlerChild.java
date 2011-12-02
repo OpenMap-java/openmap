@@ -174,6 +174,8 @@ public class MapHandlerChild
                 beanContextChildSupport.setBeanContext(in_bc);
                 findAndInit(in_bc.iterator());
             }
+        } else {
+            beanContextChildSupport.setBeanContext(in_bc);
         }
     }
 

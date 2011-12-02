@@ -142,9 +142,9 @@ import com.bbn.openmap.util.PropUtils;
  * If layers are not added to the overview map, then it won't show up in the
  * application.
  */
-public class OverviewMapHandler extends OMToolComponent implements
-        ProjectionListener, Serializable, PropertyConsumer,
-        PropertyChangeListener, ComponentListener {
+public class OverviewMapHandler
+        extends OMToolComponent
+        implements ProjectionListener, Serializable, PropertyConsumer, PropertyChangeListener, ComponentListener {
 
     public final static String OverviewMapHandlerLayerProperty = "overviewLayers";
     public final static String ScaleFactorProperty = "overviewScaleFactor";
@@ -243,7 +243,8 @@ public class OverviewMapHandler extends OMToolComponent implements
      * 
      * @param props properties object.
      */
-    public OverviewMapHandler(Properties props) throws Exception {
+    public OverviewMapHandler(Properties props)
+            throws Exception {
         this(null, props);
     }
 
@@ -254,7 +255,8 @@ public class OverviewMapHandler extends OMToolComponent implements
      *        OverviewMapHandler.
      * @param props properties object.
      */
-    public OverviewMapHandler(String prefix, Properties props) throws Exception {
+    public OverviewMapHandler(String prefix, Properties props)
+            throws Exception {
 
         this();
         setProperties(prefix, props);
@@ -291,7 +293,8 @@ public class OverviewMapHandler extends OMToolComponent implements
      * 
      * @deprecated use setProperties(props).
      */
-    public void init(Properties props) throws Exception {
+    public void init(Properties props)
+            throws Exception {
         setProperties(null, props);
     }
 
@@ -305,7 +308,8 @@ public class OverviewMapHandler extends OMToolComponent implements
      * @param props properties object.
      * @deprecated use setProperties(prefix, props).
      */
-    public void init(String prefix, Properties props) throws Exception {
+    public void init(String prefix, Properties props)
+            throws Exception {
         setProperties(prefix, props);
     }
 
@@ -329,19 +333,15 @@ public class OverviewMapHandler extends OMToolComponent implements
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        Vector<String> overviewLayers = PropUtils.parseSpacedMarkers(props.getProperty(prefix
-                + OverviewMapHandlerLayerProperty));
+        Vector<String> overviewLayers = PropUtils.parseSpacedMarkers(props.getProperty(prefix + OverviewMapHandlerLayerProperty));
 
         if (overviewLayers.isEmpty()) {
-            Debug.message("overview",
-                    "OverviewMapHandler:  created without layers!");
+            Debug.message("overview", "OverviewMapHandler:  created without layers!");
         }
 
-        scaleFactor = PropUtils.floatFromProperties(props, prefix
-                + ScaleFactorProperty, defaultScaleFactor);
+        scaleFactor = PropUtils.floatFromProperties(props, prefix + ScaleFactorProperty, defaultScaleFactor);
 
-        minScale = PropUtils.floatFromProperties(props, prefix
-                + MinScaleProperty, defaultMinScale);
+        minScale = PropUtils.floatFromProperties(props, prefix + MinScaleProperty, defaultMinScale);
 
         String uom = props.getProperty(prefix + MinScaleUomProperty);
         if (uom != null) {
@@ -349,18 +349,13 @@ public class OverviewMapHandler extends OMToolComponent implements
             setMinScale(minScale, minScaleUom);
         }
 
-        backgroundSlave = PropUtils.booleanFromProperties(props, prefix
-                + BackgroundSlaveProperty, backgroundSlave);
+        backgroundSlave = PropUtils.booleanFromProperties(props, prefix + BackgroundSlaveProperty, backgroundSlave);
 
-        setControlSourceMap(PropUtils.booleanFromProperties(props, prefix
-                + ControlSourceMapProperty, controlSourceMap));
+        setControlSourceMap(PropUtils.booleanFromProperties(props, prefix + ControlSourceMapProperty, controlSourceMap));
 
-        String statusLayerName = props.getProperty(prefix + StatusLayerProperty
-                + ".class");
+        String statusLayerName = props.getProperty(prefix + StatusLayerProperty + ".class");
         if (statusLayerName != null) {
-            statusLayer = (Layer) ComponentFactory.create(statusLayerName,
-                    prefix + StatusLayerProperty,
-                    props);
+            statusLayer = (Layer) ComponentFactory.create(statusLayerName, prefix + StatusLayerProperty, props);
             if (statusLayer == null) {
                 Debug.error("OverviewMapHandler.setProperties: status layer not set.");
             }
@@ -370,8 +365,7 @@ public class OverviewMapHandler extends OMToolComponent implements
 
         statusLayer.setProperties(prefix, props);
 
-        projection = createStartingProjection(props.getProperty(prefix
-                + ProjectionTypeProperty));
+        projection = createStartingProjection(props.getProperty(prefix + ProjectionTypeProperty));
 
         setLayers(LayerHandler.getLayers(overviewLayers, overviewLayers, props));
     }
@@ -397,12 +391,10 @@ public class OverviewMapHandler extends OMToolComponent implements
         // the projection will change when it is added to a MapBean
         // as a projection listener.p
         return (Proj) projectionFactory.makeProjection(projClass,
-                new Point2D.Float(Environment.getFloat(Environment.Latitude, 0f), Environment.getFloat(Environment.Longitude,
-                        0f)),
-                Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY)
-                        * scaleFactor,
-                INITIAL_WIDTH,
-                INITIAL_HEIGHT);
+                                                       new Point2D.Float(Environment.getFloat(Environment.Latitude, 0f),
+                                                                         Environment.getFloat(Environment.Longitude, 0f)),
+                                                       Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY)
+                                                               * scaleFactor, INITIAL_WIDTH, INITIAL_HEIGHT);
     }
 
     /**
@@ -437,24 +429,19 @@ public class OverviewMapHandler extends OMToolComponent implements
                 layer.getProperties(props);
             }
         }
-        props.put(prefix + OverviewMapHandlerLayerProperty,
-                layerList.toString());
+        props.put(prefix + OverviewMapHandlerLayerProperty, layerList.toString());
 
         props.put(prefix + ScaleFactorProperty, Float.toString(scaleFactor));
-        props.put(prefix + ProjectionTypeProperty, map.getProjection()
-                .getName());
+        props.put(prefix + ProjectionTypeProperty, map.getProjection().getName());
         props.put(prefix + MinScaleProperty, Float.toString(minScale));
-        props.put(prefix + BackgroundSlaveProperty,
-                new Boolean(backgroundSlave).toString());
+        props.put(prefix + BackgroundSlaveProperty, new Boolean(backgroundSlave).toString());
 
         if (statusLayer != null) {
-            props.put(prefix + StatusLayerProperty, statusLayer.getClass()
-                    .getName());
+            props.put(prefix + StatusLayerProperty, statusLayer.getClass().getName());
             statusLayer.getProperties(props);
         }
 
-        props.put(prefix + ControlSourceMapProperty,
-                new Boolean(controlSourceMap).toString());
+        props.put(prefix + ControlSourceMapProperty, new Boolean(controlSourceMap).toString());
 
         return props;
     }
@@ -481,23 +468,19 @@ public class OverviewMapHandler extends OMToolComponent implements
         }
 
         list.put(OverviewMapHandlerLayerProperty,
-                "Space separated list of marker names of layers to use as background on the overview map.");
+                 "Space separated list of marker names of layers to use as background on the overview map.");
         list.put(ScaleFactorProperty,
-                "Multiplier reflecting the difference between the scale of the overview map and the source map (default is 20.0).");
-        list.put(ProjectionTypeProperty,
-                "Projection name to use for overview map (Default is mercator).");
-        list.put(MinScaleProperty,
-                "Minimum scale of overview map (Default is 500,000.0).");
+                 "Multiplier reflecting the difference between the scale of the overview map and the source map (default is 20.0).");
+        list.put(ProjectionTypeProperty, "Projection name to use for overview map (Default is mercator).");
+        list.put(MinScaleProperty, "Minimum scale of overview map (Default is 500,000.0).");
         list.put(StatusLayerProperty,
-                "Class name of layer to use as the active layer on the overview map, receiving mouse events (Default is com.bbn.openmap.layer.OverviewMapAreaLayer).");
+                 "Class name of layer to use as the active layer on the overview map, receiving mouse events (Default is com.bbn.openmap.layer.OverviewMapAreaLayer).");
         list.put(ControlSourceMapProperty,
-                "Flag to have the source map controlled by gestures on the overview map (true/false, default is true).");
-        list.put(ControlSourceMapProperty + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
+                 "Flag to have the source map controlled by gestures on the overview map (true/false, default is true).");
+        list.put(ControlSourceMapProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
         list.put(BackgroundSlaveProperty,
-                "Flag to have the map mimic any changes made to the source map's background (true/false, default is true).");
-        list.put(BackgroundSlaveProperty + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
+                 "Flag to have the map mimic any changes made to the source map's background (true/false, default is true).");
+        list.put(BackgroundSlaveProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
 
         statusLayer.getPropertyInfo(list);
 
@@ -640,8 +623,7 @@ public class OverviewMapHandler extends OMToolComponent implements
             return;
         }
 
-        if (statusLayer != null
-                && statusLayer instanceof OverviewMapStatusListener) {
+        if (statusLayer instanceof OverviewMapStatusListener) {
             ((OverviewMapStatusListener) statusLayer).setSourceMapProjection(proj);
         }
 
@@ -651,8 +633,7 @@ public class OverviewMapHandler extends OMToolComponent implements
         // source projection width and the overview
         // map projection width.
         Projection sourceProj = sourceMap.getProjection();
-        newScale *= (float) sourceProj.getWidth()
-                / (float) projection.getWidth();
+        newScale *= (float) sourceProj.getWidth() / (float) projection.getWidth();
 
         if (newScale < minScale) {
             newScale = minScale;
@@ -879,10 +860,8 @@ public class OverviewMapHandler extends OMToolComponent implements
             Point2D left = new Point2D.Double(center.getX(), center.getY());
             Point2D right = new Point2D.Double(center.getX(), center.getY());
 
-            double newLeftX = projUom.fromRadians(projUom.toRadians(left.getX())
-                    - radius);
-            double newRightX = projUom.fromRadians(projUom.toRadians(right.getX())
-                    + radius);
+            double newLeftX = projUom.fromRadians(projUom.toRadians(left.getX()) - radius);
+            double newRightX = projUom.fromRadians(projUom.toRadians(right.getX()) + radius);
 
             left.setLocation(newLeftX, left.getY());
             right.setLocation(newRightX, right.getY());
@@ -915,9 +894,11 @@ public class OverviewMapHandler extends OMToolComponent implements
         }
     }
 
-    public void componentResized(ComponentEvent e) {}
+    public void componentResized(ComponentEvent e) {
+    }
 
-    public void componentMoved(ComponentEvent e) {}
+    public void componentMoved(ComponentEvent e) {
+    }
 
     /**
      * Return an ActionListener that will bring up an independent window with an
@@ -983,8 +964,7 @@ public class OverviewMapHandler extends OMToolComponent implements
      */
     public void findAndInit(Object someObj) {
         if (someObj instanceof com.bbn.openmap.MapBean) {
-            Debug.message("overview",
-                    "OverviewMapHandler found a MapBean object");
+            Debug.message("overview", "OverviewMapHandler found a MapBean object");
             setSourceMap((MapBean) someObj);
         }
     }
@@ -994,8 +974,7 @@ public class OverviewMapHandler extends OMToolComponent implements
     public void findAndUndo(Object someObj) {
         if (someObj instanceof MapBean) {
             if (getSourceMap() == (MapBean) someObj) {
-                Debug.message("overview",
-                        "OverviewMapHandler: removing source MapBean");
+                Debug.message("overview", "OverviewMapHandler: removing source MapBean");
                 setSourceMap(null);
             }
         }
@@ -1009,7 +988,8 @@ public class OverviewMapHandler extends OMToolComponent implements
      * Support for directing the setCenter and setScale calls to any MapBeans
      * that care to be listening.
      */
-    public class ControlledMapSupport extends ListenerSupport<MapBean> {
+    public class ControlledMapSupport
+            extends ListenerSupport<MapBean> {
 
         /**
          * Construct a ControlledMapSupport.
@@ -1048,8 +1028,7 @@ public class OverviewMapHandler extends OMToolComponent implements
      * changes. Act on if necessary.
      */
     public void propertyChange(PropertyChangeEvent pce) {
-        if (pce.getPropertyName() == MapBean.BackgroundProperty
-                && backgroundSlave) {
+        if (pce.getPropertyName() == MapBean.BackgroundProperty && backgroundSlave) {
             map.setBckgrnd((Paint) pce.getNewValue());
         }
     }

@@ -54,8 +54,7 @@ public class ArgParser {
      * Create a parser for the named program. Automatically adds the -help
      * option.
      * 
-     * @param pName
-     *            the program name.
+     * @param pName the program name.
      */
     public ArgParser(String pName) {
         programName = pName;
@@ -67,10 +66,8 @@ public class ArgParser {
      * Add a argument to the parser. Don't include the '-' in the argName,
      * that's added automatically. Assumes that the option expects no arguments.
      * 
-     * @param argName
-     *            the command line option
-     * @param desc
-     *            a help line description.
+     * @param argName the command line option
+     * @param desc a help line description.
      */
     public void add(String argName, String desc) {
         add(argName, desc, 0);
@@ -80,12 +77,10 @@ public class ArgParser {
      * Add a argument to the parser. Don't include the '-' in the argName,
      * that's added automatically.
      * 
-     * @param argName
-     *            the command line option
-     * @param desc
-     *            a help line description.
-     * @param expectedNumberOfArguments
-     *            the number of option parameters expected for this option.
+     * @param argName the command line option
+     * @param desc a help line description.
+     * @param expectedNumberOfArguments the number of option parameters expected
+     *        for this option.
      */
     public void add(String argName, String desc, int expectedNumberOfArguments) {
         add(argName, desc, expectedNumberOfArguments, false);
@@ -95,21 +90,16 @@ public class ArgParser {
      * Add a argument to the parser. Don't include the '-' in the argName,
      * that's added automatically.
      * 
-     * @param argName
-     *            the command line option
-     * @param desc
-     *            a help line description.
-     * @param expectedNumberOfArguments
-     *            the number of option parameters expected for this option.
-     * @param expectDashedArguments
-     *            tell the parser that this option may have arguments that may
-     *            start with dashes, for instance, a negative number. False by
-     *            default.
+     * @param argName the command line option
+     * @param desc a help line description.
+     * @param expectedNumberOfArguments the number of option parameters expected
+     *        for this option.
+     * @param expectDashedArguments tell the parser that this option may have
+     *        arguments that may start with dashes, for instance, a negative
+     *        number. False by default.
      */
-    public void add(String argName, String desc, int expectedNumberOfArguments,
-                    boolean expectDashedArguments) {
-        Arg newArg = new Arg(argName, desc, expectedNumberOfArguments,
-                expectDashedArguments);
+    public void add(String argName, String desc, int expectedNumberOfArguments, boolean expectDashedArguments) {
+        Arg newArg = new Arg(argName, desc, expectedNumberOfArguments, expectDashedArguments);
         args.add(newArg);
         if (Debug.debugging("parse")) {
             Debug.output("ArgParser: adding " + argName);
@@ -135,15 +125,12 @@ public class ArgParser {
                         Arg curArg = (Arg) args.elementAt(j);
                         if (curArg.is(eval, allowAbbr)) {
                             if (Debug.debugging("parse")) {
-                                Debug.output("ArgParser: arg " + curArg.name
-                                        + " reading values.");
+                                Debug.output("ArgParser: arg " + curArg.name + " reading values.");
                             }
                             if (!curArg.readArgs(argv, ++i)) {
                                 // Something's wrong with the
                                 // arguments.
-                                bail(
-                                     "ArgParser: Unexpected arguments with option "
-                                             + curArg.name + ".", true);
+                                bail("ArgParser: Unexpected arguments with option " + curArg.name + ".", true);
                             }
                             hit = true;
                             if (curArg.numExpectedValues != TO_END) {
@@ -168,15 +155,12 @@ public class ArgParser {
                         for (int k = 0; k < diff; k++) {
                             rest[k] = argv[i + k];
                             if (rest[k].charAt(0) == option) {
-                                bail(
-                                     "ArgParser: Not expecting option in list of arguments.",
-                                     true);
+                                bail("ArgParser: Not expecting option in list of arguments.", true);
                             }
                         }
                     }
                     if (Debug.debugging("parse")) {
-                        Debug.output("ArgParser: adding " + rest.length
-                                + " strings to the leftover list.");
+                        Debug.output("ArgParser: adding " + rest.length + " strings to the leftover list.");
                     }
 
                     return true;
@@ -194,10 +178,8 @@ public class ArgParser {
      * Called if something is messed up. Prints a message, and the usage
      * statement, if desired.
      * 
-     * @param message
-     *            a message to display.
-     * @param printUsageStatement
-     *            true to display a list of available options.
+     * @param message a message to display.
+     * @param printUsageStatement true to display a list of available options.
      */
     public void bail(String message, boolean printUsageStatement) {
         Debug.output(message);
@@ -229,7 +211,9 @@ public class ArgParser {
     }
 
     /**
-     * Return a Arg object with a particular name.
+     * Return a Arg object with a particular name. This method shouldn't be used
+     * to figure out if values have been passed in to an application. It's to
+     * find out if an option is available to be chosen, not if it has.
      */
     public Arg getArg(String name) {
         for (int i = 0; i < args.size(); i++) {
@@ -277,16 +261,13 @@ public class ArgParser {
             StringBuffer sb = new StringBuffer();
             String filler = arg.name.length() < 6 ? "\t\t" : "\t";
 
-            sb.append("  -").append(arg.name).append(filler)
-                    .append(arg.description);
+            sb.append("  -").append(arg.name).append(filler).append(arg.description);
             if (arg.numExpectedValues == TO_END) {
                 sb.append(" (Variable number of arguments expected)");
             } else if (arg.numExpectedValues == 1) {
                 sb.append(" (1 argument expected)");
             } else {
-                sb
-                        .append(" (").append(arg.numExpectedValues)
-                                .append(" arguments expected)");
+                sb.append(" (").append(arg.numExpectedValues).append(" arguments expected)");
             }
             Debug.output(sb.toString());
         }
@@ -353,8 +334,7 @@ public class ArgParser {
          * to not check for arguments that may start with dashes, in case one of
          * the arguments may be a negative number.
          */
-        public Arg(String aName, String desc, int expectedNumberOfArguments,
-                boolean expectDashedArguments) {
+        public Arg(String aName, String desc, int expectedNumberOfArguments, boolean expectDashedArguments) {
             name = aName;
             description = desc;
             numExpectedValues = expectedNumberOfArguments;
@@ -386,15 +366,12 @@ public class ArgParser {
          * arguments to tell when it's done. Returns true if everything happens
          * as expected.
          * 
-         * @param argv
-         *            the entire array passed to the parser.
-         * @param argIndex
-         *            the index of the first option argument value.
+         * @param argv the entire array passed to the parser.
+         * @param argIndex the index of the first option argument value.
          * @return true if what was read was what was expected.
          */
         public boolean readArgs(String[] argv, int argIndex)
-                throws ArrayIndexOutOfBoundsException,
-                NegativeArraySizeException {
+                throws ArrayIndexOutOfBoundsException, NegativeArraySizeException {
 
             if (numExpectedValues != TO_END) {
                 values = new String[numExpectedValues];
@@ -406,16 +383,11 @@ public class ArgParser {
                 values[i] = argv[argIndex + i];
                 if (values[i].charAt(0) == option && !dashedArguments) {
                     if (numExpectedValues != TO_END) {
-                        Debug.output("ArgParser: Option "
-                                + name
-                                + " expects "
-                                + numExpectedValues
-                                + (numExpectedValues == 1 ? " argument."
-                                        : " arguments."));
+                        Debug.output("ArgParser: Option " + name + " expects " + numExpectedValues
+                                + (numExpectedValues == 1 ? " argument." : " arguments."));
 
                     } else {
-                        Debug.output("ArgParser: Option " + name
-                                + " not expecting options after its values.");
+                        Debug.output("ArgParser: Option " + name + " not expecting options after its values.");
                     }
                     return false; // Unexpected argument.
                 }
@@ -426,9 +398,8 @@ public class ArgParser {
 
         public String toString() {
             StringBuffer sb = new StringBuffer();
-            sb.append("Arg: ").append(name).append(" expects ")
-                    .append(numExpectedValues)
-                    .append((numExpectedValues == 1 ? " value.\n" : " values.\n"));
+            sb.append("Arg: ").append(name).append(" expects ").append(numExpectedValues)
+              .append((numExpectedValues == 1 ? " value.\n" : " values.\n"));
             if (values != null) {
                 sb.append("Values: ");
                 for (int i = 0; i < values.length; i++) {
@@ -444,7 +415,8 @@ public class ArgParser {
      * A Arg class to spur off help messages. Gets added automatically to the
      * parser.
      */
-    public class HelpArg extends ArgParser.Arg {
+    public class HelpArg
+            extends ArgParser.Arg {
 
         public HelpArg() {
             super("help", "Print usage statement, with arguments.", 0);

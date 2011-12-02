@@ -143,13 +143,13 @@ public class OMDrawingToolLauncher
     * Set the DrawingTool for this launcher.
     */
    public void setDrawingTool(DrawingTool dt) {
-      if (drawingTool != null && drawingTool instanceof OMDrawingTool) {
+      if (drawingTool instanceof OMDrawingTool) {
          ((OMDrawingTool) drawingTool).removePropertyChangeListener(this);
       }
 
       drawingTool = dt;
 
-      if (drawingTool != null && drawingTool instanceof OMDrawingTool) {
+      if (drawingTool instanceof OMDrawingTool) {
          ((OMDrawingTool) drawingTool).addPropertyChangeListener(this);
       }
    }

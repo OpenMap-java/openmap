@@ -53,26 +53,30 @@ import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * Get data about recent earthquakes from the USGS finger sites and
- * display it.
+ * Get data about recent earthquakes from the USGS finger sites and display it.
  * <p>
- * Debugging information is printed when the OpenMap Viewer is launch
- * with -Ddebug.earthquake flag.
+ * Debugging information is printed when the OpenMap Viewer is launch with
+ * -Ddebug.earthquake flag.
  * <P>
  * 
  * <pre>
  * 
- *  
+ * 
  *   # Properties for the Earthquake Layer
  *   earthquake.sites=&lt;finger site&gt; &lt;finger site&gt; ...
  *   # in seconds
  *   earthquake.queryinterval=300
- *   
- *  
+ * 
+ * 
  * </pre>
+ * 
+ * NOTE: I'm not sure this layer works anymore, probably hasn't for some time
+ * since the finger sites no longer provide data AFAIK. Leaving this layer in
+ * the package as another example.
  */
-public class EarthquakeLayer extends OMGraphicHandlerLayer implements
-        MapMouseListener {
+public class EarthquakeLayer
+        extends OMGraphicHandlerLayer
+        implements MapMouseListener {
 
     public final static transient String fingerSitesProperty = "sites";
     public final static transient String queryIntervalProperty = "queryInterval";
@@ -80,20 +84,24 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
     /**
      * Sites to finger user the user `quake'.
      */
-    protected String fingerSites[] = { "scec.gps.caltech.edu",
-            "geophys.washington.edu", "giseis.alaska.edu", "mbmgsun.mtech.edu",
-            "quake.eas.slu.edu" };
+    protected String fingerSites[] = {
+        "scec.gps.caltech.edu",
+        "geophys.washington.edu",
+        "giseis.alaska.edu",
+        "mbmgsun.mtech.edu",
+        "quake.eas.slu.edu"
+    };
 
     // Old sites
-    //      "gldfs.cr.usgs.gov",
-    //      "andreas.wr.usgs.gov",
-    //      "seismo.unr.edu",
-    //      "eqinfo.seis.utah.edu",
-    //      "sisyphus.idbsu.edu",
-    //      "info.seismo.usbr.gov",
-    //      "vtso.geol.vt.edu",
-    //      "tako.wr.usgs.gov",
-    //      "ldeo.columbia.edu"
+    // "gldfs.cr.usgs.gov",
+    // "andreas.wr.usgs.gov",
+    // "seismo.unr.edu",
+    // "eqinfo.seis.utah.edu",
+    // "sisyphus.idbsu.edu",
+    // "info.seismo.usbr.gov",
+    // "vtso.geol.vt.edu",
+    // "tako.wr.usgs.gov",
+    // "ldeo.columbia.edu"
 
     /**
      * Sites that are actively being queried.
@@ -127,8 +135,8 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Fetch data from finger sites, if needed, generate the
-     * OMGraphics with the current projection regardless.
+     * Fetch data from finger sites, if needed, generate the OMGraphics with the
+     * current projection regardless.
      */
     public synchronized OMGraphicList prepare() {
         if (needToRefetchData()) {
@@ -174,11 +182,13 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
             group.add(circ);
 
             // Info
-            text = new OMText(llData[i], llData[i + 1], 0, circle_h + 10, infoData[j], java.awt.Font.decode("SansSerif"), OMText.JUSTIFY_CENTER);
+            text =
+                    new OMText(llData[i], llData[i + 1], 0, circle_h + 10, infoData[j], java.awt.Font.decode("SansSerif"),
+                               OMText.JUSTIFY_CENTER);
             text.setLinePaint(lineColor);
             group.add(text);
 
-            group.setAppObject(new Integer(j));//remember index
+            group.setAppObject(new Integer(j));// remember index
             omgraphics.add(group);
         }
 
@@ -219,8 +229,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
             }
 
             infoData[j] = smag;
-            drillData[j++] = sdate + " " + stime + " (UTC)  " + slat + " "
-                    + slon + " " + smag + " " + scomment;
+            drillData[j++] = sdate + " " + stime + " (UTC)  " + slat + " " + slon + " " + smag + " " + scomment;
 
             // Remove NESW from lat and lon before converting to float
             int west = slon.indexOf("W");
@@ -242,8 +251,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
                 flat = new Float(slat).floatValue();
                 flon = new Float(slon).floatValue();
             } catch (NumberFormatException e) {
-                Debug.error("EarthquakeLayer.parseData(): " + e + " line: "
-                        + line);
+                Debug.error("EarthquakeLayer.parseData(): " + e + " line: " + line);
             }
 
             // replace West and South demarcations with minus sign
@@ -258,8 +266,8 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Get the earthquake data from the USGS. Should be called in a
-     * SwingWorker thread, or you will freeze the application.
+     * Get the earthquake data from the USGS. Should be called in a SwingWorker
+     * thread, or you will freeze the application.
      * 
      * @return Vector containing information from the websites.
      */
@@ -277,10 +285,9 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
 
             try {
                 if (Debug.debugging("earthquake")) {
-                    Debug.output("Opening socket connection to "
-                            + fingerSites[i]);
+                    Debug.output("Opening socket connection to " + fingerSites[i]);
                 }
-                quakefinger = new Socket(fingerSites[i], 79);//open
+                quakefinger = new Socket(fingerSites[i], 79);// open
                 // connection
                 // to
                 // finger
@@ -292,8 +299,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
                 output.println("/W quake");// use `/W' flag for long
                 // output
             } catch (IOException e) {
-                Debug.error("EarthquakeLayer.getEarthquakeData(): "
-                        + "can't open or write to socket: " + e);
+                Debug.error("EarthquakeLayer.getEarthquakeData(): " + "can't open or write to socket: " + e);
                 continue;
             }
 
@@ -301,8 +307,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
                 // add data lines to list
                 while ((line = input.readLine()) != null) {
                     if (Debug.debugging("earthquake")) {
-                        Debug.output("EarthquakeLayer.getEarthQuakeData(): "
-                                + line);
+                        Debug.output("EarthquakeLayer.getEarthQuakeData(): " + line);
                     }
                     if (line.length() == 0)
                         continue;
@@ -315,25 +320,25 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
                     linesOfData.addElement(line);
                 }
             } catch (IOException e) {
-                Debug.error("EarthquakeLayer.getEarthquakeData(): "
-                        + "can't read from the socket: " + e);
+                Debug.error("EarthquakeLayer.getEarthquakeData(): " + "can't read from the socket: " + e);
                 if (isCancelled()) {
                     return null;
                 }
             }
 
             try {
-                quakefinger.close();
+                if (quakefinger != null) {
+                    quakefinger.close();
+                }
             } catch (IOException e) {
-                Debug.error("EarthquakeLayer.getEarthquakeData(): "
-                        + "error closing socket: " + e);
+                Debug.error("EarthquakeLayer.getEarthquakeData(): " + "error closing socket: " + e);
             }
         }
 
-        //      int nQuakes = linesOfData.size();
-        //      for (int i=0; i<nQuakes; i++) {
-        //          Debug.output((String)linesOfData.elementAt(i));
-        //      }
+        // int nQuakes = linesOfData.size();
+        // for (int i=0; i<nQuakes; i++) {
+        // Debug.output((String)linesOfData.elementAt(i));
+        // }
         return linesOfData;
     }
 
@@ -390,7 +395,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
             gui.setLayout(gridbag);
             constraints.fill = GridBagConstraints.HORIZONTAL; // fill
             // horizontally
-            constraints.gridwidth = GridBagConstraints.REMAINDER; //another
+            constraints.gridwidth = GridBagConstraints.REMAINDER; // another
             // row
             constraints.anchor = GridBagConstraints.EAST; // tack to
             // the left
@@ -402,10 +407,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
                     activeSites[index] = !activeSites[index];
                 }
             };
-            p = PaletteHelper.createCheckbox("Sites",
-                    fingerSites,
-                    activeSites,
-                    al);
+            p = PaletteHelper.createCheckbox("Sites", fingerSites, activeSites, al);
             gridbag.setConstraints(p, constraints);
             gui.add(p);
 
@@ -425,8 +427,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Returns the MapMouseListener object that handles the mouse
-     * events.
+     * Returns the MapMouseListener object that handles the mouse events.
      * 
      * @return the MapMouseListener for the layer, or null if none
      */
@@ -434,28 +435,30 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
         return this;
     }
 
-    //----------------------------------------------------------------
+    // ----------------------------------------------------------------
     // MapMouseListener interface methods
-    //----------------------------------------------------------------
+    // ----------------------------------------------------------------
 
     /**
-     * Return a list of the modes that are interesting to the
-     * MapMouseListener. The source MouseEvents will only get sent to
-     * the MapMouseListener if the mode is set to one that the
-     * listener is interested in. Layers interested in receiving
-     * events should register for receiving events in "select" mode:
-     * <code>
+     * Return a list of the modes that are interesting to the MapMouseListener.
+     * The source MouseEvents will only get sent to the MapMouseListener if the
+     * mode is set to one that the listener is interested in. Layers interested
+     * in receiving events should register for receiving events in "select"
+     * mode: <code>
      * <pre>
      * return new String[] { SelectMouseMode.modeID };
      * </pre>
      * <code>
+     * 
      * @return String[] of modeID's
      * @see com.bbn.openmap.event.NavMouseMode#modeID
      * @see com.bbn.openmap.event.SelectMouseMode#modeID
      * @see com.bbn.openmap.event.NullMouseMode#modeID
      */
     public String[] getMouseModeServiceList() {
-        return new String[] { com.bbn.openmap.event.SelectMouseMode.modeID };
+        return new String[] {
+            com.bbn.openmap.event.SelectMouseMode.modeID
+        };
     }
 
     /**
@@ -489,12 +492,12 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Invoked when the mouse has been clicked on a component. The
-     * listener will receive this event if it successfully processed
-     * <code>mousePressed()</code>, or if no other listener
-     * processes the event. If the listener successfully processes
-     * mouseClicked(), then it will receive the next mouseClicked()
-     * notifications that have a click count greater than one.
+     * Invoked when the mouse has been clicked on a component. The listener will
+     * receive this event if it successfully processed
+     * <code>mousePressed()</code>, or if no other listener processes the event.
+     * If the listener successfully processes mouseClicked(), then it will
+     * receive the next mouseClicked() notifications that have a click count
+     * greater than one.
      * 
      * @param e MouseEvent
      * @return true if the listener was able to process the event.
@@ -508,20 +511,21 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
      * 
      * @param e MouseEvent
      */
-    public void mouseEntered(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {
+    }
 
     /**
      * Invoked when the mouse exits a component.
      * 
      * @param e MouseEvent
      */
-    public void mouseExited(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {
+    }
 
     /**
-     * Invoked when a mouse button is pressed on a component and then
-     * dragged. The listener will receive these events if it
-     * successfully processes mousePressed(), or if no other listener
-     * processes the event.
+     * Invoked when a mouse button is pressed on a component and then dragged.
+     * The listener will receive these events if it successfully processes
+     * mousePressed(), or if no other listener processes the event.
      * 
      * @param e MouseEvent
      * @return true if the listener was able to process the event.
@@ -531,8 +535,8 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Invoked when the mouse button has been moved on a component
-     * (with no buttons down).
+     * Invoked when the mouse button has been moved on a component (with no
+     * buttons down).
      * 
      * @param e MouseEvent
      * @return true if the listener was able to process the event.
@@ -547,18 +551,18 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Handle a mouse cursor moving without the button being pressed.
-     * This event is intended to tell the listener that there was a
-     * mouse movement, but that the event was consumed by another
-     * layer. This will allow a mouse listener to clean up actions
-     * that might have happened because of another motion event
-     * response.
+     * Handle a mouse cursor moving without the button being pressed. This event
+     * is intended to tell the listener that there was a mouse movement, but
+     * that the event was consumed by another layer. This will allow a mouse
+     * listener to clean up actions that might have happened because of another
+     * motion event response.
      */
-    public void mouseMoved() {}
+    public void mouseMoved() {
+    }
 
-    //----------------------------------------------------------------
+    // ----------------------------------------------------------------
     // PropertyConsumer Interface
-    //----------------------------------------------------------------
+    // ----------------------------------------------------------------
 
     /**
      * Set the properties of the EarthquakeLayer.
@@ -590,8 +594,7 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
             }
         }
 
-        fetchIntervalMillis = PropUtils.intFromProperties(props, prefix
-                + queryIntervalProperty, 300) * 1000;
+        fetchIntervalMillis = PropUtils.intFromProperties(props, prefix + queryIntervalProperty, 300) * 1000;
     }
 
     /**
@@ -603,11 +606,11 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Get the associated properties object. This method creates a
-     * Properties object if necessary and fills it with the relevant
-     * data for this layer. Relevant properties for EarthquakeLayers
-     * are the sites to retrieve earth quake data from, and the
-     * interval in milliseconds (see class description.)
+     * Get the associated properties object. This method creates a Properties
+     * object if necessary and fills it with the relevant data for this layer.
+     * Relevant properties for EarthquakeLayers are the sites to retrieve earth
+     * quake data from, and the interval in milliseconds (see class
+     * description.)
      */
     public Properties getProperties(String prefix, Properties props) {
         props = super.getProperties(props);
@@ -623,16 +626,14 @@ public class EarthquakeLayer extends OMGraphicHandlerLayer implements
         sitesToFinger.deleteCharAt(sitesToFinger.length() - 1);
 
         props.put(prefix + fingerSitesProperty, sitesToFinger.toString());
-        props.put(prefix + queryIntervalProperty,
-                Long.toString(fetchIntervalMillis));
+        props.put(prefix + queryIntervalProperty, Long.toString(fetchIntervalMillis));
         return props;
     }
 
     /**
-     * Supplies the propertiesInfo object associated with this
-     * EarthquakeLayer object. Contains the human readable
-     * descriptions of the properties and the
-     * <code>initPropertiesProperty</code> (see Inspector class.)
+     * Supplies the propertiesInfo object associated with this EarthquakeLayer
+     * object. Contains the human readable descriptions of the properties and
+     * the <code>initPropertiesProperty</code> (see Inspector class.)
      */
     public Properties getPropertyInfo(Properties info) {
         info = super.getPropertyInfo(info);

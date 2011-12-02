@@ -59,7 +59,7 @@ public class AbstractEditorTool extends StandardMapMouseInterpreter implements
 
     public void setLayer(OMGraphicHandlerLayer eLayer) {
         super.setLayer(eLayer);
-        if (eLayer != null && eLayer instanceof EditorLayer) {
+        if (eLayer instanceof EditorLayer) {
             ((EditorLayer) eLayer).setMouseEventInterpreter(this);
         }
     }

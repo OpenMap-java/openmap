@@ -66,7 +66,8 @@ public class ComponentFactory {
      */
     private static ComponentFactory singleton;
 
-    protected ComponentFactory() {}
+    protected ComponentFactory() {
+    }
 
     /**
      * Method call to retrieve the singleton instance of the ComponentFactory.
@@ -100,8 +101,7 @@ public class ComponentFactory {
      * @param properties Properties object containing the details.
      * @return Vector containing the new Objects.
      */
-    public static Vector<?> create(Vector<String> markerNames,
-                                   Properties properties) {
+    public static Vector<?> create(Vector<String> markerNames, Properties properties) {
         return getInstance()._create(markerNames, null, properties, null, false);
     }
 
@@ -117,13 +117,8 @@ public class ComponentFactory {
      * @param properties Properties object containing the details.
      * @return Vector containing the new Objects.
      */
-    public static Vector<?> create(Vector<String> markerNames, String prefix,
-                                   Properties properties) {
-        return getInstance()._create(markerNames,
-                prefix,
-                properties,
-                null,
-                false);
+    public static Vector<?> create(Vector<String> markerNames, String prefix, Properties properties) {
+        return getInstance()._create(markerNames, prefix, properties, null, false);
     }
 
     /**
@@ -140,14 +135,8 @@ public class ComponentFactory {
      *        to. It's OK if this is null to not have progress events sent.
      * @return Vector containing the new Objects.
      */
-    public static Vector<?> create(Vector<String> markerNames, String prefix,
-                                   Properties properties,
-                                   ProgressSupport progressSupport) {
-        return getInstance()._create(markerNames,
-                prefix,
-                properties,
-                progressSupport,
-                false);
+    public static Vector<?> create(Vector<String> markerNames, String prefix, Properties properties, ProgressSupport progressSupport) {
+        return getInstance()._create(markerNames, prefix, properties, progressSupport, false);
     }
 
     /**
@@ -163,14 +152,8 @@ public class ComponentFactory {
      *        to. It's OK if this is null to not have progress events sent.
      * @return Vector containing the new Objects.
      */
-    public static Vector<?> create(Vector<String> markerNames,
-                                   Properties properties,
-                                   ProgressSupport progressSupport) {
-        return getInstance()._create(markerNames,
-                null,
-                properties,
-                progressSupport,
-                false);
+    public static Vector<?> create(Vector<String> markerNames, Properties properties, ProgressSupport progressSupport) {
+        return getInstance()._create(markerNames, null, properties, progressSupport, false);
     }
 
     /**
@@ -195,15 +178,9 @@ public class ComponentFactory {
      *         vector, so you can figure out which markerNames go with which
      *         objects.
      */
-    public static Vector<?> create(Vector<String> markerNames,
-                                   Properties properties,
-                                   ProgressSupport progressSupport,
+    public static Vector<?> create(Vector<String> markerNames, Properties properties, ProgressSupport progressSupport,
                                    boolean matchInOutVectorSize) {
-        return getInstance()._create(markerNames,
-                null,
-                properties,
-                progressSupport,
-                matchInOutVectorSize);
+        return getInstance()._create(markerNames, null, properties, progressSupport, matchInOutVectorSize);
     }
 
     /**
@@ -229,16 +206,10 @@ public class ComponentFactory {
      *         vector, so you can figure out which markerNames go with which
      *         objects.
      */
-    public static Vector<?> create(Vector<String> markerNames, String prefix,
-                                   Properties properties,
-                                   ProgressSupport progressSupport,
-                                   boolean matchInOutVectorSize) {
+    public static Vector<?> create(Vector<String> markerNames, String prefix, Properties properties,
+                                   ProgressSupport progressSupport, boolean matchInOutVectorSize) {
 
-        return getInstance()._create(markerNames,
-                prefix,
-                properties,
-                progressSupport,
-                matchInOutVectorSize);
+        return getInstance()._create(markerNames, prefix, properties, progressSupport, matchInOutVectorSize);
     }
 
     /**
@@ -264,31 +235,24 @@ public class ComponentFactory {
      *         vector, so you can figure out which markerNames go with which
      *         objects.
      */
-    protected Vector<?> _create(Vector<String> markerNames, String prefix,
-                                Properties properties,
-                                ProgressSupport progressSupport,
+    protected Vector<?> _create(Vector<String> markerNames, String prefix, Properties properties, ProgressSupport progressSupport,
                                 boolean matchInOutVectorSize) {
 
         int size = markerNames.size();
         Vector<Object> vector = new Vector<Object>(size);
 
         if (progressSupport != null) {
-            progressSupport.fireUpdate(ProgressEvent.UPDATE,
-                    "Creating Components",
-                    100,
-                    0);
+            progressSupport.fireUpdate(ProgressEvent.UPDATE, "Creating Components", 100, 0);
         }
 
         for (int i = 0; i < size; i++) {
-            String componentName = PropUtils.getScopedPropertyPrefix(prefix)
-                    + markerNames.elementAt(i);
+            String componentName = PropUtils.getScopedPropertyPrefix(prefix) + markerNames.elementAt(i);
 
             String classProperty = componentName + DotClassNameProperty;
             String className = properties.getProperty(classProperty);
 
             if (className == null) {
-                logger.warning("Failed to locate property \"" + componentName
-                        + "\" with class \"" + classProperty
+                logger.warning("Failed to locate property \"" + componentName + "\" with class \"" + classProperty
                         + "\"\n  Skipping component \"" + componentName + "\"");
                 if (matchInOutVectorSize) {
                     vector.add(componentName);
@@ -297,10 +261,7 @@ public class ComponentFactory {
             }
 
             if (progressSupport != null) {
-                progressSupport.fireUpdate(ProgressEvent.UPDATE,
-                        "Creating Components",
-                        size,
-                        i);
+                progressSupport.fireUpdate(ProgressEvent.UPDATE, "Creating Components", size, i);
             }
 
             Object component = create(className, componentName, properties);
@@ -308,28 +269,19 @@ public class ComponentFactory {
             if (component != null) {
                 vector.add(component);
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("ComponentFactory: [" + className + "(" + i
-                            + ")] created");
+                    logger.fine("ComponentFactory: [" + className + "(" + i + ")] created");
                 }
             } else {
                 if (matchInOutVectorSize) {
                     vector.add(componentName);
                 }
-                logger.info("["
-                        + componentName
-                        + " : "
-                        + className
-                        + "("
-                        + i
+                logger.info("[" + componentName + " : " + className + "(" + i
                         + ")] NOT created. -- Set logging flag to FINE/FINER for details.");
             }
         }
 
         if (progressSupport != null) {
-            progressSupport.fireUpdate(ProgressEvent.UPDATE,
-                    "Configuring...",
-                    size,
-                    size);
+            progressSupport.fireUpdate(ProgressEvent.UPDATE, "Configuring...", size, size);
         }
         return vector;
     }
@@ -366,8 +318,7 @@ public class ComponentFactory {
      * @param properties Properties to use to initialize the object, if the
      *        object is a PropertyConsumer.
      */
-    public static Object create(String className, String prefix,
-                                Properties properties) {
+    public static Object create(String className, String prefix, Properties properties) {
 
         return create(className, (Object[]) null, prefix, properties);
     }
@@ -397,8 +348,7 @@ public class ComponentFactory {
      *        constructorArgs.
      * @return object if all goes well, null if anything bad happens.
      */
-    public static Object create(String className, Object[] constructorArgs,
-                                Class<?>[] argClasses) {
+    public static Object create(String className, Object[] constructorArgs, Class<?>[] argClasses) {
         return create(className, constructorArgs, argClasses, null, null);
     }
 
@@ -415,8 +365,7 @@ public class ComponentFactory {
      *        object is a PropertyConsumer.
      * @return object if all goes well, null if anything bad happens.
      */
-    public static Object create(String className, Object[] constructorArgs,
-                                String prefix, Properties properties) {
+    public static Object create(String className, Object[] constructorArgs, String prefix, Properties properties) {
         return create(className, constructorArgs, null, prefix, properties);
     }
 
@@ -436,14 +385,9 @@ public class ComponentFactory {
      *        object is a PropertyConsumer.
      * @return object if all goes well, null if anything bad happens.
      */
-    public static Object create(String className, Object[] constructorArgs,
-                                Class<?>[] argClasses, String prefix,
+    public static Object create(String className, Object[] constructorArgs, Class<?>[] argClasses, String prefix,
                                 Properties properties) {
-        return getInstance()._create(className,
-                constructorArgs,
-                argClasses,
-                prefix,
-                properties);
+        return getInstance()._create(className, constructorArgs, argClasses, prefix, properties);
     }
 
     /**
@@ -462,10 +406,9 @@ public class ComponentFactory {
      *        object is a PropertyConsumer.
      * @return object if all goes well, null if anything bad happens.
      */
-    protected Object _create(String className, Object[] constructorArgs,
-                             Class<?>[] argClasses, String prefix,
-                             Properties properties) {
+    protected Object _create(String className, Object[] constructorArgs, Class<?>[] argClasses, String prefix, Properties properties) {
         String errorMessage = null;
+        Throwable exceptionCaught = null;
         boolean DEBUG = false;
         try {
 
@@ -515,8 +458,7 @@ public class ComponentFactory {
                             sb.append(", ");
                     }
                 }
-                logger.finer(" - created class arguments [" + sb.toString()
-                        + "]");
+                logger.finer(" - created class arguments [" + sb.toString() + "]");
             }
 
             Constructor<?> constructor = null;
@@ -538,17 +480,14 @@ public class ComponentFactory {
                  * The argClasses may have subclasses of what the desired
                  * constructor needs, so we need to check explicitly.
                  */
-                obj = createWithSubclassConstructorArgs(newObjClass,
-                        argClasses,
-                        constructorArgs);
+                obj = createWithSubclassConstructorArgs(newObjClass, argClasses, constructorArgs);
                 if (DEBUG && obj != null)
                     logger.finer(" - got object on try #2");
             }
 
             if (obj instanceof PropertyConsumer && properties != null) {
                 if (DEBUG) {
-                    logger.finer("  setting properties with prefix \"" + prefix
-                            + "\"");
+                    logger.finer("  setting properties with prefix \"" + prefix + "\"");
                 }
                 ((PropertyConsumer) obj).setProperties(prefix, properties);
 
@@ -568,32 +507,39 @@ public class ComponentFactory {
             return obj;
 
         } catch (NoSuchMethodException nsme) {
+            exceptionCaught = nsme;
             errorMessage = "NoSuchMethodException: " + nsme.getMessage();
         } catch (InstantiationException ie) {
-            errorMessage = "InstantiationException: " + ie.getMessage()
-                    + " - Might be trying to create an abstract class";
+            exceptionCaught = ie;
+            errorMessage = "InstantiationException: " + ie.getMessage() + " - Might be trying to create an abstract class";
         } catch (IllegalAccessException iae) {
             if (DEBUG)
                 iae.printStackTrace();
+            exceptionCaught = iae;
             errorMessage = "IllegalAccessException: " + iae.getMessage();
         } catch (IllegalArgumentException iae2) {
             if (DEBUG)
                 iae2.printStackTrace();
+            exceptionCaught = iae2;
             errorMessage = "IllegalArgumentException: " + iae2.getMessage();
         } catch (InvocationTargetException ite) {
             if (DEBUG)
                 ite.printStackTrace();
+            exceptionCaught = ite;
             errorMessage = "InvocationTargetException: " + ite.getMessage();
         } catch (ClassNotFoundException cnfe) {
+            exceptionCaught = cnfe;
             errorMessage = "ClassNotFoundException: " + cnfe.getMessage();
         }
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("Failed to create \""
-                    + className
-                    + (prefix != null ? "\" using component marker name \""
-                            + prefix + "\"" : "") + " - error message: "
+            logger.fine("Failed to create \"" + className
+                    + (prefix != null ? "\" using component marker name \"" + prefix + "\"" : "") + " - error message: "
                     + errorMessage);
+
+            if (exceptionCaught != null) {
+                logger.log(Level.WARNING, "Exception reported is as follows:", exceptionCaught);
+            }
         }
 
         return null;
@@ -612,11 +558,8 @@ public class ComponentFactory {
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    protected Object createWithSubclassConstructorArgs(Class<?> newObjClass,
-                                                       Class<?>[] argClasses,
-                                                       Object[] constructorArgs)
-            throws NoSuchMethodException, InstantiationException,
-            IllegalAccessException, IllegalArgumentException,
+    protected Object createWithSubclassConstructorArgs(Class<?> newObjClass, Class<?>[] argClasses, Object[] constructorArgs)
+            throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException,
             InvocationTargetException {
 
         boolean DEBUG = logger.isLoggable(Level.FINER);
@@ -631,9 +574,7 @@ public class ComponentFactory {
         int numConstructors = constructors.length;
 
         if (DEBUG) {
-            logger.finer(" - searching " + numConstructors
-                    + " possible constructor"
-                    + (numConstructors == 1 ? "" : "s"));
+            logger.finer(" - searching " + numConstructors + " possible constructor" + (numConstructors == 1 ? "" : "s"));
         }
 
         for (int i = 0; i < numConstructors; i++) {
@@ -645,8 +586,7 @@ public class ComponentFactory {
             // First, check the number of arguments for a match
             if (numArgs != numArgClasses) {
                 if (DEBUG) {
-                    logger.finer(" - constructor " + i + " with " + numArgs
-                            + " arguments not a match");
+                    logger.finer(" - constructor " + i + " with " + numArgs + " arguments not a match");
                 }
 
                 continue; // Nope, not it.
@@ -657,8 +597,7 @@ public class ComponentFactory {
             // compiler happy.
             if (numArgs == 0 || argClasses == null) {
                 if (DEBUG) {
-                    logger.finer(" - constructor " + i
-                            + " with no arguments is a match");
+                    logger.finer(" - constructor " + i + " with no arguments is a match");
                 }
                 return constructor;
             }
@@ -682,8 +621,7 @@ public class ComponentFactory {
                     // Is this even necessary? Don't think so...
                     argClasses[j] = argClasses[j].getSuperclass();
                     if (DEBUG) {
-                        logger.finer(" - superclass arg class match, arg " + j
-                                + " reassigning to " + argClasses[j].toString());
+                        logger.finer(" - superclass arg class match, arg " + j + " reassigning to " + argClasses[j].toString());
                     }
                     good = true; // Maintain true...
                     // } else if (constructorArgs[j] instanceof
@@ -695,9 +633,8 @@ public class ComponentFactory {
 
                 } else {
                     if (DEBUG) {
-                        logger.finer(" - arg class mismatch on arg " + j
-                                + ", bailing (" + arguments[j].getName()
-                                + " vs. " + argClasses[j].getName() + ")");
+                        logger.finer(" - arg class mismatch on arg " + j + ", bailing (" + arguments[j].getName() + " vs. "
+                                + argClasses[j].getName() + ")");
                     }
                     good = false; // Punch with false
                     break;

@@ -38,7 +38,6 @@ import java.io.Serializable;
 
 import com.bbn.openmap.omGraphics.geom.BasicGeometry;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 
 /**

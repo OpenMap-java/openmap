@@ -32,6 +32,9 @@ import java.util.Vector;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.omGraphics.OMColor;
+import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.PropUtils;
 
@@ -76,7 +79,9 @@ public class ZoomLevelMaker
     protected String name;
     protected String description;
     protected List<String> layers;
+    protected List<Layer> layerList;
     protected float scale = -1f;
+
     /**
      * The range should be equal or smaller than the zoom level, describing how
      * many other zoom levels should be created from the tiles created for this
@@ -253,6 +258,27 @@ public class ZoomLevelMaker
     }
 
     /**
+     * Get the List of Layer Objects, if it's been set.
+     * 
+     * @return List of Layers
+     */
+    public List<Layer> getLayerList() {
+        return layerList;
+    }
+
+    /**
+     * Set a List of Layer objects. If this is set, the layer marker names won't
+     * be used. This is a more programmatic approach, rather than using
+     * properties and property prefixes of the layers to set them for this zoom
+     * level.
+     * 
+     * @param layerList
+     */
+    public void setLayerList(List<Layer> layerList) {
+        this.layerList = layerList;
+    }
+
+    /**
      * Return the current scale set in this object.
      * 
      * @return scale setting for zoom level
@@ -340,17 +366,33 @@ public class ZoomLevelMaker
 
     /**
      * Get the range of this ZoomLevelMaker.
-     * @return the range set for this zlm, or the current zoom level if the range has not been set.
+     * 
+     * @return the range set for this zlm, or the current zoom level if the
+     *         range has not been set.
      */
     public int getRange() {
         if (range <= RANGE_NOT_SET) {
             return getZoomLevel();
         }
-        
+
         return range;
     }
 
     public void setRange(int range) {
         this.range = range;
+    }
+
+    /**
+     * @param uvx
+     * @param uvy
+     * @param mapTileMaker
+     * @param proj
+     * @return
+     */
+    public byte[] makeTile(double uvx, double uvy, MapTileMaker mapTileMaker, Proj proj) {
+        if (layerList != null) {
+            return mapTileMaker.makeTile(uvx, uvy, getZoomLevel(), layerList, proj, mapTileMaker.getBackground());
+        }
+        return mapTileMaker.makeTile(uvx, uvy, this, proj);
     }
 }

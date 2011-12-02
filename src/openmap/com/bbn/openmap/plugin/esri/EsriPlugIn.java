@@ -458,7 +458,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
     public EsriGraphicList getGeometry(URL shp) {
         if (parentLayer == null) {
             Component comp = getComponent();
-            if (comp != null && comp instanceof Layer) {
+            if (comp instanceof Layer) {
                 parentLayer = (Layer) comp;
             }
         }
@@ -797,7 +797,7 @@ public class EsriPlugIn extends BeanContextAbstractPlugIn implements
 
                 if (parentLayer == null) {
                     Component comp = getComponent();
-                    if (comp != null && comp instanceof Layer) {
+                    if (comp instanceof Layer) {
                         parentLayer = (Layer) comp;
                     }
                 }

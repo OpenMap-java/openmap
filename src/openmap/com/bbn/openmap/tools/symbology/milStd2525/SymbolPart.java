@@ -80,7 +80,7 @@ public class SymbolPart {
      */
     protected String cgmName;
     /**
-     * The symbol geometery object for this SymbolPart.
+     * The symbol geometry object for this SymbolPart.
      */
     protected CGM cgm;
     /**

@@ -180,7 +180,7 @@ public class EventLayer extends OMGraphicHandlerLayer implements
             props.put(prefix + ImporterProperty, importer.getClass().getName());
         }
 
-        if (importer != null && importer instanceof PropertyConsumer) {
+        if (importer instanceof PropertyConsumer) {
             ((PropertyConsumer) importer).getProperties(props);
         }
 
@@ -216,7 +216,7 @@ public class EventLayer extends OMGraphicHandlerLayer implements
                 "Class name of data importer",
                 null);
 
-        if (importer != null && importer instanceof PropertyConsumer) {
+        if (importer instanceof PropertyConsumer) {
             ((PropertyConsumer) importer).getPropertyInfo(list);
         }
 

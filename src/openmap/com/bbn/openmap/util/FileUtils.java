@@ -36,7 +36,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.Adler32;
 import java.util.zip.CRC32;
+import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -197,7 +199,9 @@ public class FileUtils {
                 zipFile.getParentFile().mkdirs();
             }
             FileOutputStream fos = new FileOutputStream(zipFile);
-            ZipOutputStream zoStream = new ZipOutputStream(fos);
+            CheckedOutputStream checksum = new CheckedOutputStream(fos, new Adler32());
+            ZipOutputStream zoStream = new ZipOutputStream(new BufferedOutputStream(checksum));
+            // ZipOutputStream zoStream = new ZipOutputStream(fos);
             // zoStream.setMethod(ZipOutputStream.STORED);
             for (File file : toBeZipped) {
                 writeZipEntry(file, zoStream, file.getParent().length() + 1);
@@ -244,10 +248,10 @@ public class FileUtils {
 
         entryName = entryName.replace('\\', '/');
 
-        long size = fromFile.length();
+        //long size = fromFile.length();
         ZipEntry zEntry = new ZipEntry(entryName);
-        zEntry.setSize(size);
-        zEntry.setCrc(0);// Don't know what it these values are
+        //zEntry.setSize(size);
+        //zEntry.setCrc(0);// Don't know what it these values are
         // right now, but zero works...
         zoStream.putNextEntry(zEntry);
 
@@ -256,15 +260,14 @@ public class FileUtils {
         byte[] bytes = new byte[1024];
 
         int numRead;
-        CRC32 checksum = new CRC32();
+        //CRC32 checksum = new CRC32();
         while ((numRead = fis.read(bytes)) > 0) {
             zoStream.write(bytes, 0, numRead);
-            checksum.update(bytes, 0, numRead);
+          //  checksum.update(bytes, 0, numRead);
         }
-        zEntry.setCrc(checksum.getValue());
-
-        fis.close();
+        //zEntry.setCrc(checksum.getValue());
         zoStream.closeEntry();
+        fis.close();
     }
 
     /**

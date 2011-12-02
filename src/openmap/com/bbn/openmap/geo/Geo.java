@@ -504,8 +504,15 @@ public class Geo {
         return Geo.distanceNM(new Geo(lat1, lon1), new Geo(lat2, lon2));
     }
 
-    /** Azimuth in radians from this to v2. */
-    public double azimuth(Geo v2) {
+    /**
+     * Azimuth in radians from this to v2.
+     * 
+     * @param v2 other Geo
+     * @return radian angle between this and v2. Will also return NaN for
+     *         identical points, or other Math conventions for resulting math
+     *         results.
+     */
+    public double strictAzimuth(Geo v2) {
         /*
          * n1 is the great circle representing the meridian of this. n2 is the
          * great circle between this and v2. The azimuth is the angle between
@@ -518,6 +525,21 @@ public class Geo {
         Geo n2 = v2.crossNormalize(this);
         double az = Math.atan2(-north.dot(n2), n1.dot(n2));
         return (az > 0.0) ? az : 2.0 * Math.PI + az;
+    }
+
+    /**
+     * Azimuth in radians from this to v2.
+     * 
+     * @param v2 other Geo
+     * @return radian angle between this and v2, and zero instead of NaN if the
+     *         two geos are identical.
+     */
+    public double azimuth(Geo v2) {
+        double ret = strictAzimuth(v2);
+        if (Double.isNaN(ret)) {
+            return 0;
+        }
+        return ret;
     }
 
     /**

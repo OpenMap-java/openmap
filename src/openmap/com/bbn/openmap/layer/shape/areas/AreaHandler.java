@@ -277,7 +277,7 @@ public class AreaHandler implements PropertyConsumer {
             props = new Properties();
         }
 
-        if (coordTransform != null && coordTransform instanceof PropertyConsumer) {
+        if (coordTransform instanceof PropertyConsumer) {
             ((PropertyConsumer) coordTransform).getProperties(props);
         }
 
