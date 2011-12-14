@@ -25,7 +25,6 @@ package com.bbn.openmap.omGraphics;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
-import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.editable.GraphicEditState;
 import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
 import com.bbn.openmap.omGraphics.editable.LineStateMachine;
@@ -33,7 +32,7 @@ import com.bbn.openmap.omGraphics.geom.NonRegional;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
-
+import com.bbn.openmap.util.stateMachine.State;
 /**
  * The EditableOMLine encompasses an OMLine, providing methods for modifying or
  * creating it.

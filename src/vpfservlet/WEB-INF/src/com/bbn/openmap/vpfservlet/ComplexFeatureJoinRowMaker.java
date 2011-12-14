@@ -19,10 +19,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.layer.util.html.TableDataElement;
-import com.bbn.openmap.layer.util.html.TableRowElement;
 import com.bbn.openmap.layer.vpf.DcwRecordFile;
 import com.bbn.openmap.layer.vpf.VPFUtil;
+import com.bbn.openmap.util.html.TableDataElement;
+import com.bbn.openmap.util.html.TableRowElement;
 
 /**
  * A RowMaker that performs the join in a feature index table.

@@ -26,6 +26,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.layer.policy.BufferedImageRenderPolicy;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;
@@ -37,20 +38,35 @@ import com.bbn.openmap.omGraphics.OMTextLabeler;
  * This layer is a good place to start learning how to create OpenMap layers. It
  * extends OMGraphicHandler, which contains a good bit of functionality, but
  * exposes only the methods you need to start putting features (OMGraphics) on
- * the map. If you want to learn more about interacting with your OMGraphics
- * after you get the hang of displaying them efficiently, then move to the
+ * the map.
+ * 
+ * Note that this is a layer where the objects never change, and the map objects
+ * used by this layer never change. They always get managed and drawn, even if
+ * they are off the visible map. When the projection changes, the OMGraphics are
+ * told what the new projection is so they can reposition themselves, and then
+ * they are redrawn.
+ * 
+ * If you want the OMGraphics on the layer to change depending on where the map
+ * view is, look at ProjectionResponseLayer. You'll want to look at that layer
+ * if you have a lot of map stuff to display on your layer, so you only render
+ * what you need.
+ * 
+ * If you want to learn more about interacting with your OMGraphics after you
+ * get the hang of displaying them efficiently, then move to the
  * InteractionLayer.
  */
-public class BasicLayer extends OMGraphicHandlerLayer {
+public class BasicLayer
+        extends OMGraphicHandlerLayer {
 
     /**
      * The empty constructor is necessary for any layer being created using the
      * openmap.properties file, via the openmap.layers property. This method
      * needs to be public, too. Don't try to do too much in the constructor -
-     * remember, this code gets executed whether the user turns the layer on
-     * uses the layer or not. Performance-wise, it's better to do most
-     * initialization the first time the layer is made part of the map. You can
-     * test for that in the prepare() method.
+     * remember, this code gets executed whether the user uses the layer or not.
+     * Performance-wise, it's better to do most initialization the first time
+     * the layer is made part of the map. You can test for that in the prepare()
+     * method, by testing whether the OMGraphicList for the layer is null or
+     * not.
      * 
      * @see #prepare
      */
@@ -64,6 +80,8 @@ public class BasicLayer extends OMGraphicHandlerLayer {
         // need to set it, this method call is here to illustrate where and how
         // you would make that call with a different policy.
         setProjectionChangePolicy(new com.bbn.openmap.layer.policy.StandardPCPolicy(this, true));
+        // Improves performance
+        setRenderPolicy(new BufferedImageRenderPolicy());
     }
 
     /**
@@ -73,12 +91,19 @@ public class BasicLayer extends OMGraphicHandlerLayer {
      * is what we want painted on the map. The OMGraphics need to be generated
      * with the current projection. We test for a null OMGraphicList in the
      * layer to see if we need to create the OMGraphics. This layer doesn't
-     * change it's OMGraphics for different projections, if your layer does, you
+     * change its OMGraphics for different projections, if your layer does, you
      * need to clear out the OMGraphicList and add the OMGraphics you want for
      * the current projection.
      */
     public synchronized OMGraphicList prepare() {
         OMGraphicList list = getList();
+
+        // Here's a test to see if it's the first time that the layer has been
+        // added to the map. This list object will be whatever was returned from
+        // this method the last time prepare() was called. In this
+        // example, we always return an OMGraphicList object, so if it's null,
+        // prepare() must not have been called yet.
+
         if (list == null) {
             list = init();
         }
@@ -127,11 +152,11 @@ public class BasicLayer extends OMGraphicHandlerLayer {
         OMGraphicList omList = new OMGraphicList();
 
         // Add an OMLine
-        OMLine line = new OMLine(40f, -75f, 42f, -70f, OMGraphic.LINETYPE_GREATCIRCLE);
+        OMLine line = new OMLine(40f, -145f, 42f, -70f, OMGraphic.LINETYPE_GREATCIRCLE);
         // line.addArrowHead(true);
         line.setStroke(new BasicStroke(2));
-        line.putAttribute(OMGraphicConstants.LABEL,
-                new OMTextLabeler("Line Label"));
+        line.setLinePaint(Color.red);
+        line.putAttribute(OMGraphicConstants.LABEL, new OMTextLabeler("Line Label"));
 
         omList.add(line);
 
@@ -139,8 +164,8 @@ public class BasicLayer extends OMGraphicHandlerLayer {
         OMGraphicList pointList = new OMGraphicList();
         for (int i = 0; i < 100; i++) {
             OMPoint point = new OMPoint((float) (Math.random() * 89f), (float) (Math.random() * -179f), 3);
-            point.setLinePaint(Color.green);
-            pointList.add(point);
+            point.setFillPaint(Color.yellow);
+            point.setOval(true);            pointList.add(point);
         }
         omList.add(pointList);
 

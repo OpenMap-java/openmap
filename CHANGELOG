@@ -1,3 +1,311 @@
+2011-12-06  dietrick  <dietrick@client.wonkavision.local>
+
+	This entry is a summary of the changes made to OpenMap between the
+	4.6.5 release and the 5.0 release.  The API has changed
+	significantly for the Projection classes, and that's the main
+	reason for the major version change.
+
+	The Projection classes used to translate decimal degree lat/lon
+	point objects to java.awt.Point x/y pixel coordinates.  The new
+	Projection classes make translations using Point2D objects.
+	LatLonPoint has been moved inside the com.bbn.openmap.proj.coords
+	package, and now extends Point2D.  The pixel locations returned
+	from the Projection are also Point2D objects.  If you've written
+	any code that calls Projection methods, you may have to modify
+	that code to work with the changes.
+
+	Throughout the code, there have been changes to incorporate
+	Generic types, utilizing StringBuilder methods, moving from the
+	com.bbn.openmap.util.Debug class to the Java logging mechanism,
+	implementing equals() and hashcode() methods.
+
+	OM5 requires the Java 5 runtime.
+	
+	* com.bbn.openmap
+
+	Updated BufferedMapBean to handle panning better, shifting current
+	map image appropriately until the layers react to the projection
+	change.
+	
+	The Layer class has been updated to have a GeoCoordTransformation
+	member variable, for data that isn't stored in decimal degree
+	lat/lon coordinates.
+	
+	MapBean updated to have a handle on its ProjectionFactory.
+	
+	Update the MapHandler class with generified methods.
+
+	Added the notion of isolation to the MapHandlerChild, so it will
+	ignore BeanContext events it receives from other BeanContext
+	objects that it doesn't know about.
+	
+	Updated PropertyHandler so it's not tied to the openmap.properties file name.
+
+	* com.bbn.openmap.app
+
+	Added a couple of new application-type classes.  The Main
+	application represents the new OpenMap app look, and it utilizes
+	the new OverlayMapPanel.
+
+	The TimeFrameApp uses the HotwashPanel and some of the new time
+	management components.
+
+	* com.bbn.openmap.app.example
+
+	Moved SimpleMap and SimpleMap2 here.
+
+	* com.bbn.openmap.dataAccess.cgm
+
+	Added components that all more sections of the CGM files to be
+	read, like constants, colormodel, colortable, marker
+	representation and marker size.
+
+	* com.bbn.openmap.dataAccess.mapTile
+
+	This new package deals with map image tiles, the kind that are
+	used in OpenStreetMap/Google/GDAL tiles, etc.  
+
+	The MapTileFactory classes read tile sets for the MapTileLayer and
+	creates images for display on the map.
+
+	The StandardMapTileFactory reads tiles stored locally.
+
+	The ServerMapTileFactory can fetch tiles from a URL (where tiles
+	are stored under a root location plus z/x/y.png type location).
+
+	The ServerMapTileFactory will store the images it fetches locally
+	to reduce the load on the server.  The
+	GreyStandard/ServerMapTileFactory classes convert the images to
+	greyscale.
+
+	The EmptyTileHandler classes tell the factory classes how to
+	handle missing tiles, whether to do nothing, create new tiles or
+	use a default tile to fill the area in.
+
+	The OpenStreetMap tiles are stored a little differently than tiles
+	that meet the TileMappingService configuration (like the tiles
+	GDAL creates).  You can use the OSMMapTileCoordinateTransform for
+	OpenMap/OpenStreetMap tile sets, and the
+	TMSMapTileCoordinateTransform for GDAL image tile sets.
+	
+	The MapTileMaker can create map tile sets from OpenMap layers.
+	The MapTileMakerComponent can be added to the OpenMap application
+	to visualy define and launch MapTileMaker tile creation.
+
+	* com.bbn.openmap.dataAccess.shape
+
+	Added a DbfTableModelFactory class that helps create DbfTableModel
+	for an EsriGraphicList when the data is read in.
+
+	Added ShapeGeoIndex, an ExtentIndex implementation created from a
+	shape file.  This ExtentIndex can be used with the uses the
+	com.bbn.openmap.geo package components to discover intersections
+	with other extents (points, paths, regions, etc).
+	
+	* com.bbn.openmap.event
+
+	Added two new sets of event objects.  Added OMEvent class, which
+	is a object representing something that happens at a certain time.
+	The OMEvent class is accompanied by the OMEventComparator and
+	OMEventHandler, and some other components to aid in selection and
+	filtering of OMEvents.  These component tie into the new
+	com.bbn.openmap.time components and TemporalOMGraphics.
+
+	Added Undo classes (UndoEvent, UndoStack, UndoStackSupport and
+	UndoStackTrigger).  These components are currently used by the
+	drawing tool undo/redo capability, but can be used by any
+	component that wants to save and restore state.
+
+	Added the OMMouseMode, which is a combination of the PanMouseMode
+	and SelectionMouseMode.  The behavior is similar to
+	standard/expected web map mouse behavior.
+
+	* com.bbn.openmap.examples
+
+	Removed this package.  The beanbox example is now under
+	com.bbn.openmap.layer.beanbox.  hello and crew packages were
+	obsolete, and the simple applications have been moved up to app.
+	
+	* com.bbn.openmap.gui
+
+	Added the OverlayMapPanel, an extension of BasicMapPanel that
+	knows how to layer other components with the map so they appear as
+	if they are floating on it. The EmbeddedNavPanel and
+	EmbeddedScaleDisplayPanel are two components the OverlayMapPanel
+	uses.  The DistQuickTool is used by the panel to quickly measure
+	distances on the map.
+
+	The HotwashPanel is a new BasicMapPanel that has sliders built
+	into it.  It was created to house the new time controls and event
+	lists on the bottom and to the left.
+
+	The event subpackage contains components that manage and display
+	OMTime events.
+	
+	* com.bbn.openmap.image.wms incorporated many changes from Tore
+	Haslet that added compatibility with WMS 1.3, including
+	capabilities queries and projection translations.
+
+	* com.bbn.openmap.layer.event
+
+	Added the EventLayer and supporting components. The EventLayer
+	handles TemporalOMGraphics and uses the new com.bbn.openmap.time
+	management components.
+
+	* com.bbn.openmap.layer.imageTile
+
+	Added the MapTileLayer.  The layer uses the new
+	com.bbn.openmap.dataAccess.mapTile components to render
+	OpenStreetMap/GDAL/Google map tiles.
+
+	* com.bbn.openmap.layer
+
+	Updated OMGraphicHandlerLayer to utilize the new ISwingWorker classes.
+
+	* com.bbn.openmap.layer.policy
+
+	Added NullProjectionChangePolicy that does nothing when the
+	projection changes, and added the PanningImageRenderPolicy, to be
+	used by layers that want to redraw what they have when the
+	projection changes.  A buffered image is reprojected and reused
+	until the layer can update for the new projection.
+
+	* com.bbn.openmap.layer.util
+
+	Added DataPathWanderer class, extending Wanderer, that finds valid
+	data paths for a data user.  Base class for creating a data auto-finder.
+
+	* com.bbn.openmap.layer.vpf
+
+	Added VPFFeatureLayer and supporting classes.  This layer uses
+	priorty files and GeoSym information/cgm files to order and render
+	features from VPF.  New files added to share/data/vpf directory to
+	support DNC.
+
+	Added VPFFeatureInfoHandler that lets you get attribute
+	information for features.  Configurable via properties. Can be
+	extended to display attribute in different ways.  The
+	TTFeatureInfoHandler displays attributes in a tooltip.
+
+	* com.bbn.openmap.omGraphics
+
+	The OMGraphics have been updated to double precision.
+
+	OMGraphic is now an interface, with OMGraphicAdapter being the base class.
+
+	DrawingAttributes have new transfer methods that make it easier to
+	clone and copy settings.  Added Builder class to make it easier to
+	make it more convenient to create and make settings on a new
+	instance.
+
+	Added GraphicUndefinedEditState to the editable subpackage, for
+	OMGraphics in the process of being defined by the drawing tool.
+	It's a state that defines when an OMGraphic is only partially
+	defined.
+
+	OMGraphicList and OMGeometryList extend OMList, which itself
+	implements the List interface.  They are now iterable, and use
+	Generic Types to define what is held in them.
+
+	Added OMWarpingImage, which is a raster OMGraphicClass that warps
+	its image to the current OpenMap projection (during generate).
+
+	Added the time subpackage, which defines interfaces for OMGraphics
+	that change over time.  TemporalOMPoint and TemporalOMScalingIcon
+	are two implementations of that interface.
+
+	Added ImageWarp class to the util subpackage, which does the
+	heaving lifting work of the OMWarpingImage.
+
+	Added RibbonMaker class to the util subpackage, which creates a
+	buffer area around a vector shape.
+	
+	* com.bbn.openmap.proj
+
+	The proj package classes have undergone a significant API change,
+	as described in the summary above.  For the top-level Proj class
+	and Projection interface, the Point references for projected
+	locations have been replaced with Point2D objects.  The
+	LatLonPoint references have been replaced with Point2D references.
+	The old projection classes now extend the GeoProj class, and the
+	Point2D objects meant to indicate latitude/longitude points are
+	LatLonPoints.
+
+	There is a Cartesian projection for standard X/Y drawing.  You can
+	use the OMShape object for drawing things in a Cartiesian
+	projection.  Other OMGraphics will work too, but the lat/lon
+	coordinates are interpreted as x/y coordinates.
+	
+	Deleted the ProjectionFactoryLoader and the View classes. The
+	ProjectionFactory is no longer a singleton, there's a different
+	ProjectionFactory for each MapBean, and each MapBean can have a
+	different set of Projections it can handle.
+
+	* com.bbn.openmap.proj.coords
+
+	All of the coordinate point classes and methods have been moved
+	here, including LatLonPoint and VHTransform.  Updates to GCT
+	classes.
+
+	LatLonPoint was rewritten to inherit from Point2D, and is modeled
+	after that class with Float and Double implementations.  Note that
+	overridden Point2D methods have (x,y) signatures, while
+	LatLonPoint.setLocation(lat, lon) methods have (y, x) signatures.
+	
+	* com.bbn.openmap.time
+
+	Created new time package, moved older time components here just to
+	make them more application-friendly.  Added components that
+	understand the notion of time bounds and managing the notion of a
+	point in time.
+
+	* com.bbn.openmap.tools.drawing
+
+	Updated OMDrawingTool to use UndoStack and triggers to handle edit
+	undos and redos.
+
+	* com.bbn.openmap.tools.symbology.milStd2525
+
+	Added SVGSourceFileReorganizer, a class that takes the
+	distribution package from DISA and flattens the files out into a
+	target directory, renaming them as needed for the
+	SymbolReferenceLibrary.
+	
+	* com.bbn.openmap.util package
+
+	Added AbstractXMLParser class, a base class for XML parsing, wraps
+	the DefaultHandler java class.
+
+	Added Attributable interface, describing classes that can handle
+	an attribute map.
+
+	Added ClasspathHacker, which adds jars to classpath at runtime.
+
+	Added MGRSCoordInfoFormatter, which formats coordinates into MGRS format.
+
+	DataBounds updated to use Point2D objects, add method added.
+	
+	Added DeepCopyUtil, which handles cloning propery.  OMGraphics updated to use it.
+
+	FileUtils updated to have new zip writing algorithm, methods.
+
+	Added HashCodeUtil to assist in creating proper hash code values.
+
+	Added ISwingWorker interface and updated OMGraphicHandlerLayer to
+	use it, so other implementions could be used in the layer. Added
+	PooledSwingWorker, implementing a reuseable SwingWorker. Added
+	TaskService to manage SwingWorkers.
+
+	PropUtils added methods to create objects from property
+	list (standard openmap.properties paradigm).  parseColor method
+	returns a Paint object instead of a Color object.
+
+	Updated Wanderer class to be able to handle exhaustive and
+	non-exhaustive searches.
+
+	Moved former com.bbn.openmap.layer.util.http/html/stateMachine
+	packages to this util package.
+	
 2009-03-26  Don Dietrick  <dietrick@dhcp89-073-115.bbn.com>
 
 	* Refined the DTED packages, removing duplicate classes in

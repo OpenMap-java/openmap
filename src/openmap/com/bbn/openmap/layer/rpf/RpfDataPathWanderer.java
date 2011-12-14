@@ -2,9 +2,9 @@ package com.bbn.openmap.layer.rpf;
 
 import java.io.File;
 
-import com.bbn.openmap.layer.util.DataPathWanderer;
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.wanderer.DataPathWanderer;
 
 /**
  * Adds RPF directories with a A.TOC file inside them to the data paths.
@@ -13,8 +13,6 @@ import com.bbn.openmap.util.Debug;
  */
 public class RpfDataPathWanderer
       extends DataPathWanderer {
-
-  
 
    public RpfDataPathWanderer() {
       setCallback(this);
@@ -25,8 +23,8 @@ public class RpfDataPathWanderer
    }
 
    /**
-    * Management method for the wanderer, that steps through the children of the
-    * directory and calls handleEntry for them.
+     * Management method for the wanderer, that steps through the children of
+     * the directory and calls handleEntry for them.
     * 
     * @param directory the directory to handle
     * @param contentNames an array of Strings representing children of the
@@ -48,7 +46,8 @@ public class RpfDataPathWanderer
 
          if (foundRPFDir) {
             addDataPath(directory.getAbsolutePath());
-            // This stops the search from continuing on down in this RPF directory.
+                // This stops the search from continuing on down in this RPF
+                // directory.
             return true;
          }
       }
@@ -81,11 +80,9 @@ public class RpfDataPathWanderer
       return true;
    }
 
-
-
    /**
-    * Given a set of files or directories, parade through them to change their
-    * case.
+     * Given a set of files or directories, search them to find the parent RPF
+     * directories to use for an RPF layer.
     * 
     * @param argv paths to files or directories, use -h to get a usage
     *        statement.
@@ -93,7 +90,7 @@ public class RpfDataPathWanderer
    public static void main(String[] argv) {
       Debug.init();
 
-      ArgParser ap = new ArgParser("Wanderer");
+        ArgParser ap = new ArgParser("RpfDataPathWanderer");
 
       if (argv.length == 0) {
          ap.bail("", true);

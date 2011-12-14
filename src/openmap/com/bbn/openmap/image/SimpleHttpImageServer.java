@@ -25,8 +25,10 @@ package com.bbn.openmap.image;
 import com.bbn.openmap.*;
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.layer.util.http.*;
-
+import com.bbn.openmap.util.http.HttpConnection;
+import com.bbn.openmap.util.http.HttpRequestEvent;
+import com.bbn.openmap.util.http.HttpRequestListener;
+import com.bbn.openmap.util.http.HttpServer;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.util.*;

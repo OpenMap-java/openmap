@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bbn.openmap.layer.util.html.TableHeaderElement;
+import com.bbn.openmap.util.html.TableHeaderElement;
 
 /**
  * A base class useful for servlets that use the VPF tools context

@@ -117,9 +117,21 @@ public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
      * null (default).
      */
     public RenderingHints getRenderingHints() {
+        if (renderingHints == null) {
+            renderingHints = new RenderingHints(null);
+        }
         return renderingHints;
     }
 
+    /**
+     * Set a RenderingHint on this object.
+     * @param key RenderingHint KEY
+     * @param value RenderingHint VALUE
+     */
+    public void put(Object key, Object value) {
+        getRenderingHints().put(key, value);
+    }
+    
     /**
      * If you are going to change the Graphics object in this method, you should
      * make a copy of it first using the Graphics.create() method so the changes
@@ -176,11 +188,7 @@ public class RenderingHintsRenderPolicy extends StandardRenderPolicy {
                         }
 
                         if (key != null && value != null) {
-                            if (renderingHints == null) {
-                                renderingHints = new RenderingHints(null);
-                            }
-                            renderingHints.put(key, value);
-                            if (logger.isLoggable(Level.FINE)) {
+                            put(key, value);                            if (logger.isLoggable(Level.FINE)) {
                                 logger.fine("RHRP+++ adding "
                                         + renderingHintKeyString + " | "
                                         + renderingHintValueString);

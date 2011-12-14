@@ -25,8 +25,7 @@
 package com.bbn.openmap.omGraphics.editable;
 
 import com.bbn.openmap.omGraphics.EditableOMText;
-import com.bbn.openmap.layer.util.stateMachine.State;
-
+import com.bbn.openmap.util.stateMachine.State;
 public class TextStateMachine extends EOMGStateMachine {
 
     public TextStateMachine(EditableOMText text) {

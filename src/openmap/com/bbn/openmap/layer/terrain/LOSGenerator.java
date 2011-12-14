@@ -33,7 +33,6 @@ import com.bbn.openmap.event.ProgressEvent;
 import com.bbn.openmap.event.ProgressListener;
 import com.bbn.openmap.event.ProgressSupport;
 import com.bbn.openmap.gui.ProgressListenerGauge;
-import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.OMCircle;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRaster;
@@ -42,6 +41,7 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.SwingWorker;
+import com.bbn.openmap.util.stateMachine.State;
 
 /**
  * The LOSGenerator uses gestures to create a mask over the map. The

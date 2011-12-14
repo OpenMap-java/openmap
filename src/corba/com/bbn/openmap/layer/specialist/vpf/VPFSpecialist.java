@@ -34,11 +34,10 @@ import com.bbn.openmap.corba.CSpecialist.UGraphic;
 import com.bbn.openmap.corba.CSpecialist.WidgetChange;
 import com.bbn.openmap.layer.specialist.SCheckBox;
 import com.bbn.openmap.layer.specialist.Specialist;
-import com.bbn.openmap.layer.util.http.HttpServer;
 import com.bbn.openmap.layer.vpf.LibrarySelectionTable;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
-
+import com.bbn.openmap.util.http.HttpServer;
 /**
  * Implement the Specialist interface so that we can serve graphics to
  * OpenMap via CORBA.

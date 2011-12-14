@@ -3,7 +3,7 @@ package com.bbn.openmap.image.wms;
 import java.util.Arrays;
 import java.util.Collection;
 
-import com.bbn.openmap.layer.util.http.HttpConnection;
+import com.bbn.openmap.util.http.HttpConnection;
 
 public class DefaultFeatureInfoResponse implements FeatureInfoResponse {
 

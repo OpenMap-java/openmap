@@ -24,7 +24,8 @@
 
 package com.bbn.openmap.layer.terrain;
 
-import com.bbn.openmap.layer.util.stateMachine.*;
+import com.bbn.openmap.util.stateMachine.State;
+import com.bbn.openmap.util.stateMachine.StateMachine;
 
 class ProfileStateMachine extends StateMachine {
 

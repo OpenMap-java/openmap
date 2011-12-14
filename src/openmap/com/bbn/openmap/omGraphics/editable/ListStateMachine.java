@@ -27,9 +27,8 @@ package com.bbn.openmap.omGraphics.editable;
 import java.util.*;
 
 import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.layer.util.stateMachine.*;
 import com.bbn.openmap.util.Debug;
-
+import com.bbn.openmap.util.stateMachine.State;
 public class ListStateMachine extends EOMGStateMachine {
 
     public ListStateMachine(EditableOMGraphicList list) {

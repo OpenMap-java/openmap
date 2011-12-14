@@ -24,10 +24,9 @@
 
 package com.bbn.openmap.omGraphics.editable;
 
-import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.EditableOMCircle;
 import com.bbn.openmap.util.Debug;
-
+import com.bbn.openmap.util.stateMachine.State;
 public class CircleStateMachine
         extends EOMGStateMachine {
 

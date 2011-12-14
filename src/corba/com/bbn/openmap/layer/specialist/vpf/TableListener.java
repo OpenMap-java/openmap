@@ -26,16 +26,15 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import com.bbn.openmap.layer.util.html.Document;
-import com.bbn.openmap.layer.util.html.HeaderElement;
-import com.bbn.openmap.layer.util.html.StringElement;
-import com.bbn.openmap.layer.util.html.TableHeaderElement;
-import com.bbn.openmap.layer.util.html.TableRowElement;
-import com.bbn.openmap.layer.util.http.HttpRequestEvent;
-import com.bbn.openmap.layer.util.http.HttpRequestListener;
 import com.bbn.openmap.layer.vpf.DcwColumnInfo;
 import com.bbn.openmap.layer.vpf.DcwRecordFile;
-
+import com.bbn.openmap.util.html.Document;
+import com.bbn.openmap.util.html.HeaderElement;
+import com.bbn.openmap.util.html.StringElement;
+import com.bbn.openmap.util.html.TableHeaderElement;
+import com.bbn.openmap.util.html.TableRowElement;
+import com.bbn.openmap.util.http.HttpRequestEvent;
+import com.bbn.openmap.util.http.HttpRequestListener;
 /**
  * An HttpRequestListener that returns schema and data from a VPF
  * table

@@ -27,7 +27,7 @@ import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.bbn.openmap.layer.util.http.IHttpResponse;
+import com.bbn.openmap.util.http.IHttpResponse;
 
 /**
  */

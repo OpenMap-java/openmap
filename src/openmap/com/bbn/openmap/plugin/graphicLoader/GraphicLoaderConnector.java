@@ -41,8 +41,7 @@ import com.bbn.openmap.util.PropUtils;
  * be added to the MapHandler, also.
  * <P>
  * 
- * If the GraphicLoaderCOnnector finds a GraphicLoader that is not
- * hooked up to a receiver, it creates a GraphicLoaderPlugIn and
+ * If the GraphicLoaderConnector finds a GraphicLoader that is not * hooked up to a receiver, it creates a GraphicLoaderPlugIn and
  * PlugInLayer, and adds the PlugInLayer to the LayerHandler. This
  * causes the LayerHandler to add the layer to the application. If the
  * GraphicLoaderConnector doesn't have a handle to the LayerHandler

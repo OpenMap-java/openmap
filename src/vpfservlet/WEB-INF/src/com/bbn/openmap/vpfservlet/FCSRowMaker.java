@@ -19,9 +19,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bbn.openmap.layer.util.html.TableRowElement;
 import com.bbn.openmap.layer.vpf.Constants;
 import com.bbn.openmap.layer.vpf.DcwRecordFile;
+import com.bbn.openmap.util.html.TableRowElement;
 
 /**
  * A RowMaker class specifically for the markup of VPF feature class schema

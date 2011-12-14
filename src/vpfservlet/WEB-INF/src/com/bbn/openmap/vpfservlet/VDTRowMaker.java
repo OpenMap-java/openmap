@@ -19,8 +19,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bbn.openmap.layer.util.html.TableRowElement;
 import com.bbn.openmap.layer.vpf.DcwRecordFile;
+import com.bbn.openmap.util.html.TableRowElement;
 
 /**
  * A RowMaker class for int.vdt and char.vdt tables. It generates a

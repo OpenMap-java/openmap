@@ -15,7 +15,7 @@
 
 package com.bbn.openmap.image;
 
-import com.bbn.openmap.layer.util.http.HttpConnection;
+import com.bbn.openmap.util.http.HttpConnection;
 
 public class PNGImageIOFormatter extends ImageIOFormatter {
 

@@ -27,7 +27,6 @@ package com.bbn.openmap.omGraphics.editable;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
-import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.omGraphics.EditableOMPoly;
 import com.bbn.openmap.omGraphics.GrabPoint;
@@ -35,6 +34,7 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.stateMachine.State;
 
 public class PolyAddNodeState
         extends State {

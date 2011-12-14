@@ -25,7 +25,7 @@
 package com.bbn.openmap.layer.terrain;
 
 import java.awt.event.*;
-import com.bbn.openmap.layer.util.stateMachine.*;
+import com.bbn.openmap.util.stateMachine.State;
 
 class LOSViewState extends State {
 

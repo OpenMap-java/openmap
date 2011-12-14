@@ -20,8 +20,8 @@ import java.io.ByteArrayOutputStream;
 
 import javax.imageio.ImageIO;
 
-import com.bbn.openmap.layer.util.http.HttpConnection;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.http.HttpConnection;
 
 public class GIFImageIOFormatter extends ImageIOFormatter {
 

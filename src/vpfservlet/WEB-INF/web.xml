@@ -35,26 +35,27 @@
     logged in the servlet logs.
     -->
 
-    <context-param>
-      <param-name>com.bbn.openmap.vpfservlet.vpf_library.dnc13</param-name>
-      <param-value>dnc13</param-value>
+<!--    <context-param>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.dnc17</param-name>
+      <param-value>dnc17</param-value>
       <description>
-        DNC data, being accessed with a relative path.  The dnc13 directory
+        DNC data, being accessed with a relative path.  The dnc17 directory
         could be included as part of the .war file.
       </description>
     </context-param>
+	-->
 
     <context-param>
-      <param-name>com.bbn.openmap.vpfservlet.vpf_library.dnc13a</param-name>
-      <param-value>d:/data/dnc13</param-value>
+      <param-name>com.bbn.openmap.vpfservlet.vpf_library.dnc17</param-name>
+      <param-value>/Volumes/data/vpf/dnc/dnc17</param-value>
       <description>
-	DNC data, being accessed with an absolute path.
+	  DNC17 data, East Coast US.
       </description>
     </context-param>
 
     <context-param>
       <param-name>com.bbn.openmap.vpfservlet.vpf_library.noamer</param-name>
-      <param-value>d:/data/VMAPLV0</param-value>
+      <param-value>/Volumes/data/vpf/vmaplv0/disk0</param-value>
       <description>
         VMAP Level 0 North America Data.
       </description>

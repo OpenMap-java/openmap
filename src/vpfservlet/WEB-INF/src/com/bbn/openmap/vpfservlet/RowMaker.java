@@ -15,7 +15,7 @@ package com.bbn.openmap.vpfservlet;
 
 import java.util.List;
 
-import com.bbn.openmap.layer.util.html.TableRowElement;
+import com.bbn.openmap.util.html.TableRowElement;
 
 /**
  * An interface used to generate rows of an (html) table from a (VPF)

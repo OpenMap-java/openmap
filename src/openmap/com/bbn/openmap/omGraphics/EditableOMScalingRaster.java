@@ -28,7 +28,6 @@ import java.awt.image.BufferedImage;
 import javax.swing.JOptionPane;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.editable.GraphicEditState;
 import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
 import com.bbn.openmap.omGraphics.editable.GraphicSetOffsetState;
@@ -36,7 +35,7 @@ import com.bbn.openmap.omGraphics.editable.ScalingRasterStateMachine;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
-
+import com.bbn.openmap.util.stateMachine.State;
 /**
  * The EditableOMScalingRaster encompasses an OMScalingRaster, providing methods
  * for modifying or creating it. This class only modifies OMScaling Rasters in

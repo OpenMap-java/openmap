@@ -20,11 +20,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.layer.util.html.TableRowElement;
 import com.bbn.openmap.layer.vpf.Constants;
 import com.bbn.openmap.layer.vpf.CoverageTable;
 import com.bbn.openmap.layer.vpf.DcwColumnInfo;
 import com.bbn.openmap.layer.vpf.DcwRecordFile;
+import com.bbn.openmap.util.html.TableRowElement;
 
 /**
  * A RowMaker class that will perform VDT (value description table)

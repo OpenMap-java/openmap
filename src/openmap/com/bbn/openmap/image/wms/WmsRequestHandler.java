@@ -27,8 +27,6 @@ import com.bbn.openmap.image.ImageFormatter;
 import com.bbn.openmap.image.ImageServer;
 import com.bbn.openmap.image.ImageServerConstants;
 import com.bbn.openmap.image.MapRequestFormatException;
-import com.bbn.openmap.layer.util.http.HttpConnection;
-import com.bbn.openmap.layer.util.http.IHttpResponse;
 import com.bbn.openmap.proj.AspectRatioProjection;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Proj;
@@ -37,6 +35,8 @@ import com.bbn.openmap.proj.coords.CoordinateReferenceSystem;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
+import com.bbn.openmap.util.http.HttpConnection;
+import com.bbn.openmap.util.http.IHttpResponse;
 
 /**
  * @version $Header:

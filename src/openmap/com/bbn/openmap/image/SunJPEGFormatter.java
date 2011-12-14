@@ -27,10 +27,9 @@ package com.bbn.openmap.image;
 import java.awt.image.BufferedImage;
 import java.util.Properties;
 
-import com.bbn.openmap.layer.util.http.HttpConnection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-
+import com.bbn.openmap.util.http.HttpConnection;
 public class SunJPEGFormatter extends AbstractImageFormatter {
 
     public static final String QualityProperty = "imagequality";

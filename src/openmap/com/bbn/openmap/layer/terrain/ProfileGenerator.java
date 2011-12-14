@@ -31,7 +31,6 @@ import java.util.Vector;
 
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
 import com.bbn.openmap.image.AcmeGifFormatter;
-import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMPoly;
@@ -40,6 +39,7 @@ import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.stateMachine.State;
 
 /**
  * This tool lets the user draw a line on the map, and then presents

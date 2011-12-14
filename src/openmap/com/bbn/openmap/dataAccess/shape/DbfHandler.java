@@ -102,7 +102,8 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * @author dietrick
  */
-public class DbfHandler extends OMComponent {
+public class DbfHandler
+        extends OMComponent {
 
     protected DbfFile dbf;
     protected List<Rule> rules;
@@ -132,11 +133,13 @@ public class DbfHandler extends OMComponent {
         defaultDA = new DrawingAttributes();
     }
 
-    public DbfHandler(String dbfFilePath) throws IOException, FormatException {
+    public DbfHandler(String dbfFilePath)
+            throws IOException, FormatException {
         this(new BinaryFile(dbfFilePath));
     }
 
-    public DbfHandler(BinaryFile bf) throws IOException, FormatException {
+    public DbfHandler(BinaryFile bf)
+            throws IOException, FormatException {
         this();
         dbf = new DbfFile(bf);
         dbf.close();
@@ -279,8 +282,7 @@ public class DbfHandler extends OMComponent {
      *        determinations.
      * @return OMGraphic if it should be displayed, null if it shouldn't.
      */
-    public OMGraphic evaluate(OMGraphic omg, OMGraphicList labelList,
-                              Projection proj) {
+    public OMGraphic evaluate(OMGraphic omg, OMGraphicList labelList, Projection proj) {
         Object obj = omg.getAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE);
 
         if (obj instanceof Integer) {
@@ -304,8 +306,7 @@ public class DbfHandler extends OMComponent {
      *        determinations.
      * @return OMGraphic if it should be displayed, null if it shouldn't.
      */
-    public OMGraphic evaluate(int index, OMGraphic omg,
-                              OMGraphicList labelList, Projection proj) {
+    public OMGraphic evaluate(int index, OMGraphic omg, OMGraphicList labelList, Projection proj) {
 
         List<Rule> rules = getRules();
         if (rules.isEmpty()) {
@@ -325,32 +326,23 @@ public class DbfHandler extends OMComponent {
                     if (proj != null) {
                         scale = proj.getScale();
 
-                        if (scale < rule.displayMinScale
-                                || scale > rule.displayMaxScale) {
+                        if (scale < rule.displayMinScale || scale > rule.displayMaxScale) {
                             // We met the rule, it's telling us not to display.
                             return null;
                         }
                     }
 
                     if (rule.infolineIndicies != null) {
-                        omg.putAttribute(OMGraphicConstants.INFOLINE,
-                                getContentFromIndicies(rule.infolineIndicies,
-                                        record));
+                        omg.putAttribute(OMGraphicConstants.INFOLINE, getContentFromIndicies(rule.infolineIndicies, record));
                     }
                     if (rule.tooltipIndicies != null) {
-                        omg.putAttribute(OMGraphicConstants.TOOLTIP,
-                                getContentFromIndicies(rule.tooltipIndicies,
-                                        record));
+                        omg.putAttribute(OMGraphicConstants.TOOLTIP, getContentFromIndicies(rule.tooltipIndicies, record));
                     }
-                    if (rule.labelIndicies != null
-                            && scale >= rule.labelMinScale
-                            && scale <= rule.labelMaxScale) {
+                    if (rule.labelIndicies != null && scale >= rule.labelMinScale && scale <= rule.labelMaxScale) {
 
-                        String curLabel = getContentFromIndicies(rule.labelIndicies,
-                                record);
+                        String curLabel = getContentFromIndicies(rule.labelIndicies, record);
 
-                        if (lastLabel == null
-                                || (lastLabel != null && !lastLabel.equalsIgnoreCase(curLabel))) {
+                        if (lastLabel == null || (lastLabel != null && !lastLabel.equalsIgnoreCase(curLabel))) {
 
                             OMTextLabeler label = new OMTextLabeler(curLabel, OMText.JUSTIFY_CENTER);
                             // Needs to get added to the OMGraphic so it gets
@@ -398,7 +390,8 @@ public class DbfHandler extends OMComponent {
         return buf.toString().trim();
     }
 
-    public class Rule extends OMComponent {
+    public class Rule
+            extends OMComponent {
         protected DbfFile dbf;
         /**
          * The column index where the testing value can be found for the rule to
@@ -444,29 +437,24 @@ public class DbfHandler extends OMComponent {
             }
 
             if (key == null) {
-                Debug.output("No key for rule (" + prefix
-                        + ") found in properties.");
+                Debug.output("No key for rule (" + prefix + ") found in properties.");
             }
 
-            displayMinScale = PropUtils.floatFromProperties(props,
-                    prefix + RuleActionRender + "." + RuleActionMinScale,
-                    displayMinScale);
-            displayMaxScale = PropUtils.floatFromProperties(props,
-                    prefix + RuleActionRender + "." + RuleActionMaxScale,
-                    displayMaxScale);
-            labelMinScale = PropUtils.floatFromProperties(props, prefix
-                    + RuleActionLabel + "." + RuleActionMinScale, labelMinScale);
-            labelMaxScale = PropUtils.floatFromProperties(props, prefix
-                    + RuleActionLabel + "." + RuleActionMaxScale, labelMaxScale);
+            displayMinScale =
+                    PropUtils.floatFromProperties(props, prefix + RuleActionRender + "." + RuleActionMinScale, displayMinScale);
+            displayMaxScale =
+                    PropUtils.floatFromProperties(props, prefix + RuleActionRender + "." + RuleActionMaxScale, displayMaxScale);
+            labelMinScale =
+                    PropUtils.floatFromProperties(props, prefix + RuleActionLabel + "." + RuleActionMinScale, labelMinScale);
+            labelMaxScale =
+                    PropUtils.floatFromProperties(props, prefix + RuleActionLabel + "." + RuleActionMaxScale, labelMaxScale);
 
             tooltipIndicies = getIndicies(prefix + RuleActionTooltip, props);
             infolineIndicies = getIndicies(prefix + RuleActionInfoline, props);
             labelIndicies = getIndicies(prefix + RuleActionLabel, props);
             da = null;
 
-            boolean renderProperties = PropUtils.booleanFromProperties(props,
-                    prefix + RuleActionRender,
-                    false);
+            boolean renderProperties = PropUtils.booleanFromProperties(props, prefix + RuleActionRender, false);
 
             if (renderProperties) {
                 da = new DrawingAttributes();
@@ -483,45 +471,35 @@ public class DbfHandler extends OMComponent {
             }
 
             String prefix = PropUtils.getScopedPropertyPrefix(this);
-            props.put(prefix + RuleKeyColumnProperty,
-                    PropUtils.unnull(dbf.getColumnName(keyIndex)));
+            props.put(prefix + RuleKeyColumnProperty, PropUtils.unnull(dbf.getColumnName(keyIndex)));
             if (this.op != null) {
-                props.put(prefix + RuleOperatorProperty,
-                        this.op.getPropertyNotation());
+                props.put(prefix + RuleOperatorProperty, this.op.getPropertyNotation());
             }
             if (val != null) {
-                props.put(prefix + RuleValueProperty,
-                        PropUtils.unnull(val.toString()));
+                props.put(prefix + RuleValueProperty, PropUtils.unnull(val.toString()));
             }
 
             if (displayMinScale != Float.MIN_VALUE) {
-                props.put(prefix + RuleActionRender + "." + RuleActionMinScale,
-                        Float.toString(displayMinScale));
+                props.put(prefix + RuleActionRender + "." + RuleActionMinScale, Float.toString(displayMinScale));
             }
             if (displayMaxScale != Float.MAX_VALUE) {
-                props.put(prefix + RuleActionRender + "." + RuleActionMaxScale,
-                        Float.toString(displayMaxScale));
+                props.put(prefix + RuleActionRender + "." + RuleActionMaxScale, Float.toString(displayMaxScale));
             }
             if (labelMinScale != Float.MIN_VALUE) {
-                props.put(prefix + RuleActionLabel + "." + RuleActionMinScale,
-                        Float.toString(labelMinScale));
+                props.put(prefix + RuleActionLabel + "." + RuleActionMinScale, Float.toString(labelMinScale));
             }
             if (labelMaxScale != Float.MAX_VALUE) {
-                props.put(prefix + RuleActionLabel + "." + RuleActionMaxScale,
-                        Float.toString(labelMaxScale));
+                props.put(prefix + RuleActionLabel + "." + RuleActionMaxScale, Float.toString(labelMaxScale));
             }
 
             if (tooltipIndicies != null && tooltipIndicies.length > 0) {
-                props.put(prefix + RuleActionTooltip,
-                        getColumnNamesFromIndicies(tooltipIndicies));
+                props.put(prefix + RuleActionTooltip, getColumnNamesFromIndicies(tooltipIndicies));
             }
             if (infolineIndicies != null && infolineIndicies.length > 0) {
-                props.put(prefix + RuleActionInfoline,
-                        getColumnNamesFromIndicies(infolineIndicies));
+                props.put(prefix + RuleActionInfoline, getColumnNamesFromIndicies(infolineIndicies));
             }
             if (labelIndicies != null && labelIndicies.length > 0) {
-                props.put(prefix + RuleActionLabel,
-                        getColumnNamesFromIndicies(labelIndicies));
+                props.put(prefix + RuleActionLabel, getColumnNamesFromIndicies(labelIndicies));
             }
 
             if (da != null) {
@@ -549,8 +527,9 @@ public class DbfHandler extends OMComponent {
          * 
          * @param actionProperty prefix + ActionProperty
          * @param props
-         * @return int array of column indexes in the dbf file reflecting the order
-         *         and number of column names listed as the property value.
+         * @return int array of column indexes in the dbf file reflecting the
+         *         order and number of column names listed as the property
+         *         value.
          */
         public int[] getIndicies(String actionProperty, Properties props) {
             int[] indicies = null;
@@ -573,8 +552,9 @@ public class DbfHandler extends OMComponent {
          * Given a prefix + ActionProperty, get the column names listed as the
          * property value and figure out what the indexes of the columns are.
          * 
-         * @param indicies int[] of column indexes in the dbf file reflecting the order
-         *        and number of column names to be listed as a property value.
+         * @param indicies int[] of column indexes in the dbf file reflecting
+         *        the order and number of column names to be listed as a
+         *        property value.
          * @return String for use in properties of space-separated column names.
          */
         public String getColumnNamesFromIndicies(int[] indicies) {
@@ -707,8 +687,7 @@ public class DbfHandler extends OMComponent {
         /**
          * lte: less than or equals
          */
-        public final static Op LESS_THAN_EQUALS = new Op("less than or equals",
-                "lte") {
+        public final static Op LESS_THAN_EQUALS = new Op("less than or equals", "lte") {
             public boolean compare(int kvcr) {
                 return kvcr == 0 || kvcr > 0;
             }
@@ -724,8 +703,7 @@ public class DbfHandler extends OMComponent {
         /**
          * gte: greater than or equals
          */
-        public final static Op GREATER_THAN_EQUALS = new Op(
-                "greater than or equals", "gte") {
+        public final static Op GREATER_THAN_EQUALS = new Op("greater than or equals", "gte") {
             public boolean compare(int kvcr) {
                 return kvcr == 0 || kvcr < 0;
             }
@@ -810,9 +788,18 @@ public class DbfHandler extends OMComponent {
 
         public abstract boolean compare(int keyValcompareResult);
 
-        public static Op[] POSSIBLES = new Op[] { EQUALS, GREATER_THAN,
-                GREATER_THAN_EQUALS, LESS_THAN, LESS_THAN_EQUALS, NOT_EQUALS,
-                NONE, ALL, STARTS_WITH, ENDS_WITH };
+        public static Op[] POSSIBLES = new Op[] {
+            EQUALS,
+            GREATER_THAN,
+            GREATER_THAN_EQUALS,
+            LESS_THAN,
+            LESS_THAN_EQUALS,
+            NOT_EQUALS,
+            NONE,
+            ALL,
+            STARTS_WITH,
+            ENDS_WITH
+        };
 
         public static Op resolve(String opString) {
             if (opString == null) {

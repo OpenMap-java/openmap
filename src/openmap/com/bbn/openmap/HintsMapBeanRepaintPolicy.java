@@ -28,12 +28,12 @@ import java.util.Properties;
 import com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy;
 
 /**
- * The class lets you set RenderingHints on the MapBean, to set
- * anti-aliasing, etc. This class can be added to the OpenMap
- * application via the openmap.components property in the
- * openmap.properties file.
+ * The class lets you set RenderingHints on the MapBean, to set anti-aliasing,
+ * etc. This class can be added to the OpenMap application via the
+ * openmap.components property in the openmap.properties file.
  */
-public class HintsMapBeanRepaintPolicy extends StandardMapBeanRepaintPolicy
+public class HintsMapBeanRepaintPolicy
+        extends StandardMapBeanRepaintPolicy
         implements Cloneable {
 
     protected RenderingHintsRenderPolicy hints;
@@ -57,11 +57,23 @@ public class HintsMapBeanRepaintPolicy extends StandardMapBeanRepaintPolicy
     }
 
     /**
+     * Set RenderingHint on this object.
+     * 
+     * @param key RenderingHint KEY
+     * @param value RenderingHint VALUE
+     */
+    public void put(Object key, Object value) {
+        if (hints != null) {
+            hints.put(key, value);
+        }
+    }
+
+    /**
      * A hook for the RepaintPolicy to make any adjustments to the
-     * java.awt.Graphics object before sending the Graphics object to
-     * the layers for painting. Gives the policy a chance to make
-     * rendering hint changes on Graphic2D objects, setting
-     * anti-aliasing configurations, etc. No modifications are made.
+     * java.awt.Graphics object before sending the Graphics object to the layers
+     * for painting. Gives the policy a chance to make rendering hint changes on
+     * Graphic2D objects, setting anti-aliasing configurations, etc. No
+     * modifications are made.
      */
     public Graphics modifyGraphicsForPainting(Graphics graphics) {
         if (hints != null) {
@@ -99,4 +111,3 @@ public class HintsMapBeanRepaintPolicy extends StandardMapBeanRepaintPolicy
         return bmbrp;
     }
 }
-

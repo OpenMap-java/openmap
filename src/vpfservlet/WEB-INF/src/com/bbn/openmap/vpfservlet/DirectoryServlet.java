@@ -25,7 +25,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bbn.openmap.layer.util.html.HtmlListElement;
+import com.bbn.openmap.util.html.HtmlListElement;
 
 /**
  * This servlet lists the files in a directory of a configured VPF database.

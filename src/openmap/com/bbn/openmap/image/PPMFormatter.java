@@ -27,10 +27,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.util.Properties;
 
-import com.bbn.openmap.layer.util.http.HttpConnection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-
+import com.bbn.openmap.util.http.HttpConnection;
 /**
  * A simple formatter to create PPM images.
  * <P>

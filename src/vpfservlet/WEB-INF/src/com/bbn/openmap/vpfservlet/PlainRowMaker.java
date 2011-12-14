@@ -16,7 +16,7 @@ package com.bbn.openmap.vpfservlet;
 import java.util.Iterator;
 import java.util.List;
 
-import com.bbn.openmap.layer.util.html.TableRowElement;
+import com.bbn.openmap.util.html.TableRowElement;
 
 /**
  * A basic RowMaker that makes rows.

@@ -24,12 +24,11 @@
 
 package com.bbn.openmap.omGraphics.editable;
 
-import com.bbn.openmap.layer.util.stateMachine.State;
-import com.bbn.openmap.layer.util.stateMachine.StateMachine;
 import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
-
+import com.bbn.openmap.util.stateMachine.State;
+import com.bbn.openmap.util.stateMachine.StateMachine;
 public class EOMGStateMachine extends StateMachine {
 
     public EditableOMGraphic graphic;

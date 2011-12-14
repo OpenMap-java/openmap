@@ -23,12 +23,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.layer.util.html.HtmlListElement;
-import com.bbn.openmap.layer.util.html.ListElement;
-import com.bbn.openmap.layer.util.html.TableHeaderElement;
-import com.bbn.openmap.layer.util.html.TableRowElement;
-import com.bbn.openmap.layer.util.html.WrapElement;
 import com.bbn.openmap.layer.vpf.DcwSpatialIndex;
+import com.bbn.openmap.util.html.HtmlListElement;
+import com.bbn.openmap.util.html.ListElement;
+import com.bbn.openmap.util.html.TableHeaderElement;
+import com.bbn.openmap.util.html.TableRowElement;
+import com.bbn.openmap.util.html.WrapElement;
 
 /**
  * This servlet generates HTML for VPF files in spatial index format.

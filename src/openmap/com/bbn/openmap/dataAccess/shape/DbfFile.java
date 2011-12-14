@@ -49,7 +49,8 @@ import com.bbn.openmap.util.FileUtils;
  * 
  * @author dietrick
  */
-public class DbfFile extends DbfTableModel {
+public class DbfFile
+        extends DbfTableModel {
 
     protected int _rowCount;
     protected int _recordLength;
@@ -77,8 +78,7 @@ public class DbfFile extends DbfTableModel {
     /**
      * Creates a blank DbfTableModel
      * 
-     * @param columnCount
-     *            The number of columns this model will manage
+     * @param columnCount The number of columns this model will manage
      */
     public DbfFile(int columnCount) {
         this();
@@ -90,13 +90,14 @@ public class DbfFile extends DbfTableModel {
         _names = new String[columnCount];
     }
 
-    public DbfFile(BinaryFile bf) throws EOFException, FormatException,
-            IOException {
+    public DbfFile(BinaryFile bf)
+            throws EOFException, FormatException, IOException {
         this();
         setBinaryFile(bf);
     }
 
-    public void readHeader(BinaryFile bf) throws FormatException, IOException {
+    public void readHeader(BinaryFile bf)
+            throws FormatException, IOException {
         try {
             bf.seek(0);
             bf.byteOrder(false);
@@ -135,8 +136,7 @@ public class DbfFile extends DbfTableModel {
             }
 
             if (DEBUG && _headerLength != bf.getFilePointer()) {
-                Debug
-                        .output("DbfFile: Header length specified in file doesn't match current pointer location");
+                Debug.output("DbfFile: Header length specified in file doesn't match current pointer location");
             }
 
         } catch (EOFException eofe) {
@@ -163,7 +163,8 @@ public class DbfFile extends DbfTableModel {
     /**
      * Reads the data and puts data in an ArrayList of records.
      */
-    public void readData() throws IOException, FormatException {
+    public void readData()
+            throws IOException, FormatException {
         readData(0, _rowCount);
     }
 
@@ -171,8 +172,7 @@ public class DbfFile extends DbfTableModel {
      * Read in a set of records from the dbf file, starting at the provided
      * index and continuing for the provided count.
      * 
-     * @param startingRecordIndex
-     *            , 0 is the first record index.
+     * @param startingRecordIndex , 0 is the first record index.
      * @param numRecordsToRead
      * @throws IOException
      * @throws FormatException
@@ -183,8 +183,7 @@ public class DbfFile extends DbfTableModel {
             startingRecordIndex = 0;
         }
 
-        if (numRecordsToRead < 0
-                || numRecordsToRead > _rowCount - startingRecordIndex) {
+        if (numRecordsToRead < 0 || numRecordsToRead > _rowCount - startingRecordIndex) {
             numRecordsToRead = _rowCount - startingRecordIndex;
         }
 
@@ -198,14 +197,14 @@ public class DbfFile extends DbfTableModel {
     /**
      * Fetches the record data for the given index.
      * 
-     * @param index
-     *            the index of the data, starting at 0 for the first record.
+     * @param index the index of the data, starting at 0 for the first record.
      * @return List containing Strings and Numbers for the dbf entry for the
      *         record.
      * @throws IOException
      * @throws FormatException
      */
-    public List<Object> getRecordData(int index) throws IOException, FormatException {
+    public List<Object> getRecordData(int index)
+            throws IOException, FormatException {
         if (bf == null) {
             throw new IOException("DbfFile not set with valid BinaryFile.");
         }
@@ -278,8 +277,7 @@ public class DbfFile extends DbfTableModel {
     /**
      * Creates a DbfTableModel for a given .dbf file
      * 
-     * @param dbf
-     *            The url of the file to retrieve.
+     * @param dbf The url of the file to retrieve.
      * @return The DbfTableModel, null if there is a problem.
      */
     public static DbfTableModel getDbfTableModel(URL dbf) {
@@ -289,8 +287,7 @@ public class DbfFile extends DbfTableModel {
     /**
      * Creates a DbfTableModel for a given .dbf file
      * 
-     * @param dbf
-     *            The path of the file to retrieve.
+     * @param dbf The path of the file to retrieve.
      * @return The DbfTableModel, null if there is a problem.
      */
     public static DbfTableModel getDbfTableModel(String dbf) {
@@ -301,9 +298,7 @@ public class DbfFile extends DbfTableModel {
             model.close();
         } catch (Exception exception) {
             if (Debug.debugging("shape")) {
-                Debug
-                        .error("problem loading DBF file"
-                                + exception.getMessage());
+                Debug.error("problem loading DBF file" + exception.getMessage());
             }
         }
         return model;
@@ -315,16 +310,8 @@ public class DbfFile extends DbfTableModel {
         ap.add("columns", "Print field header information.");
         ap.add("mask", "Only show listed columns", -1);
         ap.add("source", "The dbf file to read.", 1);
-        ap
-                .add(
-                     "target",
-                     "The dbf file to write, use with mask to remove columns into new dbf file.",
-                     1);
-        ap
-                .add(
-                     "num",
-                     "Specify the number of records to read and display (handy for large dbf files)",
-                     1);
+        ap.add("target", "The dbf file to write, use with mask to remove columns into new dbf file.", 1);
+        ap.add("num", "Specify the number of records to read and display (handy for large dbf files)", 1);
 
         if (!ap.parse(args)) {
             ap.printUsage();
@@ -389,8 +376,7 @@ public class DbfFile extends DbfTableModel {
                 } else {
                     dtm.setWritable(true);
                     dtm.exitOnClose = true;
-                    dtm.showGUI(args[0], MODIFY_ROW_MASK | MODIFY_COLUMN_MASK
-                            | SAVE_MASK);
+                    dtm.showGUI(args[0], MODIFY_ROW_MASK | MODIFY_COLUMN_MASK | SAVE_MASK);
                 }
             }
 
@@ -452,8 +438,7 @@ public class DbfFile extends DbfTableModel {
                 readHeader(bf);
             }
         } catch (Exception e) {
-            Debug.error("problem setting column mask for DbfFile"
-                    + e.getMessage());
+            Debug.error("problem setting column mask for DbfFile" + e.getMessage());
         }
         createColumnMaskArray(mask);
     }
@@ -471,8 +456,7 @@ public class DbfFile extends DbfTableModel {
                 readHeader(bf);
             }
         } catch (Exception e) {
-            Debug.error("problem setting column mask for DbfFile"
-                    + e.getMessage());
+            Debug.error("problem setting column mask for DbfFile" + e.getMessage());
         }
         if (columnNames != null && _names != null) {
             boolean[] mask = new boolean[_names.length];
@@ -563,9 +547,8 @@ public class DbfFile extends DbfTableModel {
         return bf;
     }
 
-    public void setBinaryFile(BinaryFile bf) throws EOFException,
-            FormatException, IOException {
-        this.bf = bf;
+    public void setBinaryFile(BinaryFile bf)
+            throws EOFException, FormatException, IOException {        this.bf = bf;
         readHeader(bf);
     }
 

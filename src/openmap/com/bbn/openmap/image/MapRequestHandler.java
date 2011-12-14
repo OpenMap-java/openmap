@@ -31,14 +31,13 @@ import java.util.Vector;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.Layer;
-import com.bbn.openmap.layer.util.http.HttpConnection;
 import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.ProjectionFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.PropertyStringFormatException;
-
+import com.bbn.openmap.util.http.HttpConnection;
 /**
  * The MapRequestHandler is the front end for String requests to the
  * ImageServer. It's goal is to be able to handle OpenGIS WMT mapserver

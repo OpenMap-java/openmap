@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.layer.util.html.TableDataElement;
-import com.bbn.openmap.layer.util.html.TableRowElement;
 import com.bbn.openmap.layer.vpf.DcwRecordFile;
 import com.bbn.openmap.layer.vpf.FeatureClassInfo;
+import com.bbn.openmap.util.html.TableDataElement;
+import com.bbn.openmap.util.html.TableRowElement;
 
 /**
  * A RowMaker subclass that handles joins between tables, where the

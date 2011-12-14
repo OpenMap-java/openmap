@@ -48,6 +48,7 @@ import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.layer.policy.BufferedImageRenderPolicy;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMPoly;
@@ -196,6 +197,7 @@ public class GraticuleLayer
       // precalculate for boxy
       boxy = true;
       setName("Graticule");
+      setRenderPolicy(new BufferedImageRenderPolicy());
    }
 
    /**

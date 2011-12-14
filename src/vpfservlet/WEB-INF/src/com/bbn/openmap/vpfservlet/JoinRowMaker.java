@@ -19,11 +19,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.layer.util.html.TableDataElement;
-import com.bbn.openmap.layer.util.html.TableRowElement;
 import com.bbn.openmap.layer.vpf.DcwRecordFile;
 import com.bbn.openmap.layer.vpf.FeatureClassInfo;
 import com.bbn.openmap.layer.vpf.TilingAdapter;
+import com.bbn.openmap.util.html.TableDataElement;
+import com.bbn.openmap.util.html.TableRowElement;
 
 /**
  * A RowMaker subclass that handles simple joins between tables.

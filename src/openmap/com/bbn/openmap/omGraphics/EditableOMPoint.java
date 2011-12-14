@@ -30,7 +30,6 @@ import javax.swing.JComponent;
 import javax.swing.JToolBar;
 
 import com.bbn.openmap.gui.GridBagToolBar;
-import com.bbn.openmap.layer.util.stateMachine.State;
 import com.bbn.openmap.omGraphics.editable.GraphicEditState;
 import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
 import com.bbn.openmap.omGraphics.editable.GraphicSetOffsetState;
@@ -39,6 +38,7 @@ import com.bbn.openmap.omGraphics.editable.PointStateMachine;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.stateMachine.State;
 
 /**
  * An EditableOMGraphic that encapsulates an OMPoint.

@@ -85,6 +85,8 @@ public class InteractionLayer extends BasicLayer {
         // MouseMode it should listen to, so it can tell the MouseModes to send
         // events to it.
         setMouseModeIDsForEvents(new String[] { "Gestures" });
+        
+        // Instead of "Gestures", you can also use SelectMouseMode.modeID or OMMouseMode.modeID    
     }
 
     /**
