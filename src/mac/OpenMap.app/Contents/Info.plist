@@ -29,9 +29,9 @@
 		<key>VMOptions</key>
 		<string>-Xmx768m</string>
 		<key>MainClass</key>
-		<string>com.bbn.openmap.app.OpenMap</string>
+		<string>com.bbn.openmap.app.Main</string>
 		<key>JVMVersion</key>
-		<string>1.4+</string>
+		<string>1.5+</string>
 		<key>ClassPath</key>
 			<array>
 			<string>$APP_PACKAGE/Contents/Resources</string>

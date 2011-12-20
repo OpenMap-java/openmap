@@ -28,6 +28,9 @@
 		<property name="openmap_mac_package.dir" value="${openmap_package.dir}/OpenMap_${openmap_version}" />
 		<property name="openmap_release.dir" value="${openmap_mac_package.dir}/openmap-${openmap_version}" />
 		<property name="openmap.zip" value="${openmap_package.dir}/openmap-${openmap_version}.zip" />
+		<property name="macJavaStub" value="/System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub" />
+
+		<available file="${macJavaStub}" property="do.copyMacJavaStub" />
 
 		<path id="ext_tools_classpath">
 			<fileset dir="${openmap.ext}">
@@ -151,10 +154,16 @@
 			<fileset dir="${openmap.home}/lib" includes="**/*.jar" />
 		</copy>
 
+		<antcall target="copyMacJavaStub" />
+
 		<replace file="${mac.app}/Contents/Info.plist" token="@version@" value="${openmap_version}" />
 
 		<chmod file="${mac.app}/Contents/MacOS/JavaApplicationStub" perm="ugo+rx" />
 		<chmod dir="${mac.app}" perm="ugo+rx" />
+	</target>
+
+	<target name="copyMacJavaStub" if="${do.copyMacJavaStub}">
+		<copy file="${macJavaStub}" todir="${mac.app}/contents/MacOS" />
 	</target>
 
 	<target name="package" description="Create a directory containing the OpenMap release package." depends="clean_all, all, jars, mac, docs">
