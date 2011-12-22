@@ -18,7 +18,7 @@
 					   **/*.gif, **/*.png" />
 		<property name="mac.app" value="OpenMap.app" />
 		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
-		<property name="openmap_version" value="5.0 beta" />
+		<property name="openmap_version" value="5.0" />
 		<property name="openmap.ext" value="${openmap.home}/ext" />
 		<property name="openmap.src" value="${openmap.home}/src/openmap" />
 		<property name="svg.src" value="${openmap.home}/src/svg" />
@@ -168,7 +168,7 @@
 
 	<target name="package" description="Create a directory containing the OpenMap release package." depends="clean_all, all, jars, mac, docs">
 		<delete dir="${openmap_package.dir}" />
-		<property name="install_excludes" value="**/CVS, **/.DS_Store, **/*~" />
+		<property name="install_excludes" value="**/CVS, **/.svn, **/.DS_Store, **/*~" />
 		<copy file="${openmap.home}/bin/openmap.bat" tofile="${openmap_release.dir}/openmap.bat" />
 		<copy file="${openmap.home}/bin/openmap" tofile="${openmap_release.dir}/openmap" />
 		<copy file="${openmap.home}/openmap.properties" tofile="${openmap_release.dir}/openmap.properties" />
