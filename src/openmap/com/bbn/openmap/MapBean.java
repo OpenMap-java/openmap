@@ -148,11 +148,10 @@ public class MapBean
    /**
     * OpenMap version.
     */
-   public static final String version = "5.0b";
+   public static final String version = "5.0";
 
    /**
-    * Suppress the copyright message on initialization. But remember, the
-    * OpenMap License says you can't do this!
+    * Suppress the copyright message on initialization.
     */
    public static boolean suppressCopyright = false;
 

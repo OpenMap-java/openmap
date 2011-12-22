@@ -119,10 +119,10 @@ done
 
 if [ "$VISIBROKER_HOME" = "" ] ; then
 #    echo $JAVACMD -Xmx256m -classpath "$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
-    $JAVACMD -Xmx512m -classpath "$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share -Ddebug.showprogress $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
+    $JAVACMD -Xmx512m -classpath "$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share -Ddebug.showprogress $JAVA_ARGS com.bbn.openmap.app.Main $OPENMAP_ARGS
 else
 #    echo $JAVACMD -Xmx256m -Xbootclasspath:"$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
-    $JAVACMD -Xmx512m -Xbootclasspath:"$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share -Ddebug.showprogress $JAVA_ARGS com.bbn.openmap.app.OpenMap $OPENMAP_ARGS
+    $JAVACMD -Xmx512m -Xbootclasspath:"$LOCALCLASSPATH" -Dopenmap.configDir=$OPENMAP_HOME/share -Ddebug.showprogress $JAVA_ARGS com.bbn.openmap.app.Main $OPENMAP_ARGS
 fi
 
 
