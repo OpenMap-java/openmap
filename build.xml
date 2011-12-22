@@ -166,7 +166,7 @@
 		<copy file="${macJavaStub}" todir="${mac.app}/contents/MacOS" />
 	</target>
 
-	<target name="package" description="Create a directory containing the OpenMap release package." depends="clean_all, all, jars, mac, docs">
+	<target name="package" description="Create a directory containing the OpenMap release package." depends="clean_all, all, jars, mac">
 		<delete dir="${openmap_package.dir}" />
 		<property name="install_excludes" value="**/CVS, **/.svn, **/.DS_Store, **/*~" />
 		<copy file="${openmap.home}/bin/openmap.bat" tofile="${openmap_release.dir}/openmap.bat" />
@@ -190,11 +190,6 @@
 		</copy>
 		<copy todir="${openmap_release.dir}/src">
 			<fileset dir="${openmap.home}/src">
-				<exclude name="${install_excludes}" />
-			</fileset>
-		</copy>
-		<copy todir="${openmap_release.dir}/doc">
-			<fileset dir="${openmap.home}/doc">
 				<exclude name="${install_excludes}" />
 			</fileset>
 		</copy>
