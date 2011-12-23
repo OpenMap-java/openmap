@@ -18,7 +18,7 @@
 					   **/*.gif, **/*.png" />
 		<property name="mac.app" value="OpenMap.app" />
 		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
-		<property name="openmap_version" value="5.0" />
+		<property name="openmap_version" value="5.0.1b" />
 		<property name="openmap.ext" value="${openmap.home}/ext" />
 		<property name="openmap.src" value="${openmap.home}/src/openmap" />
 		<property name="svg.src" value="${openmap.home}/src/svg" />

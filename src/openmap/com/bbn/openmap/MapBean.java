@@ -148,7 +148,7 @@ public class MapBean
    /**
     * OpenMap version.
     */
-   public static final String version = "5.0";
+   public static final String version = "5.0.1b";
 
    /**
     * Suppress the copyright message on initialization.
