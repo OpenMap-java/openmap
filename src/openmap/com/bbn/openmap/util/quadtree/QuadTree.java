@@ -22,9 +22,10 @@
 
 package com.bbn.openmap.util.quadtree;
 
-import com.bbn.openmap.util.DataOrganizer;
 import java.io.Serializable;
 import java.util.Vector;
+
+import com.bbn.openmap.util.DataOrganizer;
 
 /**
  * The QuadTree lets you organize objects in a grid, that redefines itself and

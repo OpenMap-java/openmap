@@ -222,7 +222,7 @@ public class OMEllipse extends OMCircle {
 
         for (i = 0; i < nMax + 1; i++) {
 
-            LatLonPoint llPt = center.getPoint((float) distance[i], azimuth[i]);
+            LatLonPoint llPt = LatLonPoint.getDouble(center).getPoint((float) distance[i], azimuth[i]);
             llPoints[nCounter++] = llPt.getRadLat();
             llPoints[nCounter++] = llPt.getRadLon();
         }

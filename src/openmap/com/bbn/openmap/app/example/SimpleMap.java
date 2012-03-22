@@ -25,6 +25,7 @@ package com.bbn.openmap.app.example;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Properties;
+
 import javax.swing.JFrame;
 
 import com.bbn.openmap.MapBean;

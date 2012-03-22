@@ -22,14 +22,16 @@
 
 package com.bbn.openmap.tools.drawing;
 
+import java.util.HashMap;
+
+import javax.swing.ImageIcon;
+
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.util.Debug;
-import java.util.HashMap;
-import javax.swing.ImageIcon;
 
 /**
  * The AbstractToolLoader groups together some of the code that was

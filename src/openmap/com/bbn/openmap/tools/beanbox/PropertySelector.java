@@ -16,9 +16,10 @@
 
 package com.bbn.openmap.tools.beanbox;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
+import java.awt.Choice;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.beans.PropertyEditor;
 
 /**
  * A class that provides support for a PropertyEditor that uses tags.

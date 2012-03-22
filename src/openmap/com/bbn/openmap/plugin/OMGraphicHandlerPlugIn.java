@@ -22,9 +22,14 @@
 
 package com.bbn.openmap.plugin;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Shape;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.FilterSupport;
+import com.bbn.openmap.omGraphics.OMAction;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicHandler;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 
 /**

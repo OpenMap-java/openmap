@@ -27,9 +27,9 @@ import com.bbn.openmap.util.PropUtils;
  * Mouse mode for drawing temporary range rings on a map bean.<br>
  * The whole map bean is repainted each time the range rings needs to be
  * repainted. The map bean needs to use a mouseDelegator to repaint properly.<br>
- * 
- * @author St�phane Wasserhardt
- * 
+ *
+ * @author Stephane Wasserhardt
+ *
  */
 public class RangeRingsMouseMode
         extends CoordMouseMode {
@@ -87,7 +87,7 @@ public class RangeRingsMouseMode
 
     /**
      * Return the map bean.
-     * 
+     *
      * @return The map bean.
      */
     public MapBean getMapBean() {
@@ -96,7 +96,7 @@ public class RangeRingsMouseMode
 
     /**
      * Set the map bean.
-     * 
+     *
      * @param aMap a map bean
      */
     public void setMapBean(MapBean aMap) {
@@ -105,7 +105,7 @@ public class RangeRingsMouseMode
 
     /**
      * Give the Format object used to display distances.
-     * 
+     *
      * @return Format.
      */
     public Format getDistanceFormat() {
@@ -114,7 +114,7 @@ public class RangeRingsMouseMode
 
     /**
      * Sets the Format object used to display distances.
-     * 
+     *
      * @param distanceFormat Format.
      */
     public void setDistanceFormat(Format distanceFormat) {
@@ -124,7 +124,7 @@ public class RangeRingsMouseMode
 
     /**
      * Returns the number of rings to display.
-     * 
+     *
      * @return the number of rings to display.
      */
     public int getNumRings() {
@@ -133,7 +133,7 @@ public class RangeRingsMouseMode
 
     /**
      * Sets the number of rings to display.
-     * 
+     *
      * @param numRings the number of rings to display.
      */
     public void setNumRings(int numRings) {
@@ -252,7 +252,7 @@ public class RangeRingsMouseMode
     /**
      * Paints the origin point of the range rings and its label on the given
      * Graphics.
-     * 
+     *
      * @param graphics The Graphics to paint on.
      */
     protected void paintOrigin(Graphics graphics) {
@@ -266,7 +266,7 @@ public class RangeRingsMouseMode
 
     /**
      * Paints the origin point of the range rings on the given Graphics.
-     * 
+     *
      * @param graphics The Graphics to paint on.
      */
     protected void paintOriginPoint(Graphics graphics) {
@@ -288,7 +288,7 @@ public class RangeRingsMouseMode
 
     /**
      * Paints the origin label of the range rings on the given Graphics.
-     * 
+     *
      * @param graphics The Graphics to paint on.
      */
     protected void paintOriginLabel(Graphics graphics) {
@@ -317,7 +317,7 @@ public class RangeRingsMouseMode
 
     /**
      * Paints the circles and their labels on the map bean.
-     * 
+     *
      * @param dest The destination point, used with the <code>origin</code>
      *        member variable to compute the rings.
      */
@@ -331,7 +331,7 @@ public class RangeRingsMouseMode
 
     /**
      * Paints the circles and their labels on the given Graphics.
-     * 
+     *
      * @param dest The destination point, used with the <code>origin</code>
      *        member variable to compute the rings.
      * @param graphics The Graphics to paint on.
@@ -361,7 +361,7 @@ public class RangeRingsMouseMode
     /**
      * Paints a unique circle centered on <code>origin</code> and which crosses
      * <code>dest</code> on the map bean.
-     * 
+     *
      * @param dest A point on the circle.
      */
     protected void paintCircle(LatLonPoint dest) {
@@ -375,7 +375,7 @@ public class RangeRingsMouseMode
     /**
      * Paints a unique circle centered on <code>origin</code> and which crosses
      * <code>dest</code> on the given Graphics.
-     * 
+     *
      * @param dest A point on the circle.
      * @param graphics The Graphics to paint on.
      */
@@ -409,7 +409,7 @@ public class RangeRingsMouseMode
     /**
      * Paints a label for the circle drawn using <code>dest</code> on the map
      * bean.
-     * 
+     *
      * @param dest A point on the circle.
      */
     protected void paintLabel(LatLonPoint dest) {
@@ -423,7 +423,7 @@ public class RangeRingsMouseMode
     /**
      * Paints a label for the circle drawn using <code>dest</code> on the given
      * Graphics.
-     * 
+     *
      * @param dest A point on the circle.
      * @param graphics The Graphics to paint on.
      */
@@ -459,7 +459,7 @@ public class RangeRingsMouseMode
 
     /**
      * Customizes the given OMPoint before it is rendered.
-     * 
+     *
      * @param point OMPoint.
      */
     protected void preparePoint(OMPoint point) {
@@ -467,7 +467,7 @@ public class RangeRingsMouseMode
 
     /**
      * Customizes the given OMCicle before it is rendered.
-     * 
+     *
      * @param circle OMCircle.
      */
     protected void prepareCircle(OMCircle circle) {
@@ -475,7 +475,7 @@ public class RangeRingsMouseMode
 
     /**
      * Customizes the given OMText before it is rendered.
-     * 
+     *
      * @param text OMText.
      */
     protected void prepareLabel(OMText text) {
@@ -487,7 +487,7 @@ public class RangeRingsMouseMode
     /**
      * Returns the String to be used as a labeler for the origin point of the
      * range rings.
-     * 
+     *
      * @return label String.
      */
     protected String getOriginLabel() {
@@ -497,7 +497,7 @@ public class RangeRingsMouseMode
     /**
      * Returns the String to be used as a labeler for the circle drawn using
      * <code>dest</code>.
-     * 
+     *
      * @param dest A point on a circle.
      * @return label String.
      */

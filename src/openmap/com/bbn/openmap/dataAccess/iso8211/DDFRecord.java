@@ -22,11 +22,11 @@
 
 package com.bbn.openmap.dataAccess.iso8211;
 
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.layer.vpf.MutableInt;
-
 import java.util.Iterator;
 import java.util.Vector;
+
+import com.bbn.openmap.layer.vpf.MutableInt;
+import com.bbn.openmap.util.Debug;
 
 /**
  * Contains instance data from one data record (DR). The data is

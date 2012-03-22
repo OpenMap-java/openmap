@@ -22,12 +22,12 @@
 
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.omGraphics.OMRect;
-import com.bbn.openmap.util.Debug;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+
+import com.bbn.openmap.omGraphics.OMRect;
+import com.bbn.openmap.util.Debug;
 
 /**
  * Read and write the Link protocol for rectangles.

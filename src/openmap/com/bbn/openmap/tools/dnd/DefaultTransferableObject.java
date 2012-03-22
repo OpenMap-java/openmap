@@ -22,8 +22,10 @@
 
 package com.bbn.openmap.tools.dnd;
 
-import java.awt.datatransfer.*;
-import java.util.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.util.Arrays;
 
 /**
  * Transferable object class with the default data flavor of

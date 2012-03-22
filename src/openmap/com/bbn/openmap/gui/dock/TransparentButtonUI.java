@@ -22,9 +22,15 @@
 
 package com.bbn.openmap.gui.dock;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.plaf.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonModel;
+import javax.swing.JComponent;
+import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.metal.MetalButtonUI;
 
 /**

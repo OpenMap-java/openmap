@@ -151,7 +151,7 @@ public class DataBounds {
     public boolean contains(Point2D query) {
         double x = query.getX();
         double y = query.getY();
-        return x + 1 >= min.getX() && x - 1 <= max.getX() && y + 1 >= min.getY() && y - 1 <= max.getY();
+        return x >= min.getX() && x <= max.getX() && y >= min.getY() && y <= max.getY();
     }
 
     public double getWidth() {

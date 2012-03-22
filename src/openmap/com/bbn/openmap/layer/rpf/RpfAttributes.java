@@ -22,8 +22,8 @@
 
 package com.bbn.openmap.layer.rpf;
 
-import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.BinaryFile;

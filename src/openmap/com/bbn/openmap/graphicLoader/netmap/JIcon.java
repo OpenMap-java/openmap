@@ -22,7 +22,7 @@
 
 package com.bbn.openmap.graphicLoader.netmap;
 
-import java.awt.*;
+import java.awt.Image;
 
 /**
  * Structure definition for an image icon

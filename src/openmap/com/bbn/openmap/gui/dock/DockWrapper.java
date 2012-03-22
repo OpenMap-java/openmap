@@ -22,19 +22,27 @@
 
 package com.bbn.openmap.gui.dock;
 
-import java.awt.Cursor;
-import java.awt.Insets;
-import java.awt.Color;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
-import javax.swing.plaf.ButtonUI;
+import java.awt.Insets;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
+
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
+import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.event.MouseInputAdapter;
+import javax.swing.plaf.ButtonUI;
 
 import com.bbn.openmap.util.Debug;
 

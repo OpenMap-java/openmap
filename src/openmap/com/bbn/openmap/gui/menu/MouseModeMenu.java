@@ -22,13 +22,18 @@
 
 package com.bbn.openmap.gui.menu;
 
-import java.awt.event.*;
-import java.beans.*;
-import java.beans.beancontext.*;
-import javax.swing.*;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.beancontext.BeanContextChildSupport;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
+import javax.swing.ButtonGroup;
+import javax.swing.JRadioButtonMenuItem;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
+import com.bbn.openmap.MouseDelegator;
+import com.bbn.openmap.event.MapMouseMode;
 import com.bbn.openmap.gui.AbstractOpenMapMenu;
 import com.bbn.openmap.util.Debug;
 

@@ -16,10 +16,14 @@
 
 package com.bbn.openmap.tools.beanbox;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import javax.swing.*;
+import java.awt.Canvas;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.beans.PropertyEditor;
+
+import javax.swing.JDialog;
 
 /**
  * Provides support to the GenericPropertySheet for displaying a

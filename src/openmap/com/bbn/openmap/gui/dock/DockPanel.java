@@ -23,7 +23,8 @@
 package com.bbn.openmap.gui.dock;
 
 import java.awt.BorderLayout;
-import javax.swing.*;
+
+import javax.swing.JComponent;
 
 /**
  * An interface onto a component that has a background component and

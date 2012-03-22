@@ -31,9 +31,10 @@ import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import javax.swing.JRootPane;
-import javax.swing.JLayeredPane;
+
 import javax.swing.JApplet;
+import javax.swing.JLayeredPane;
+import javax.swing.JRootPane;
 
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;

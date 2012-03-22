@@ -22,8 +22,8 @@
 
 package com.bbn.openmap.tools.drawing;
 
-import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.omGraphics.EditableOMDecoratedSpline;
+import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
 import com.bbn.openmap.omGraphics.OMDecoratedSpline;
 import com.bbn.openmap.omGraphics.OMGraphic;

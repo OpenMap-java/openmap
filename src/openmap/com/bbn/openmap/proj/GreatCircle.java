@@ -22,8 +22,8 @@
 
 package com.bbn.openmap.proj;
 
-import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * Methods for calculating great circle and other distances on the sphere and

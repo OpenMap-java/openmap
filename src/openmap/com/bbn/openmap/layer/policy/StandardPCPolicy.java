@@ -22,9 +22,9 @@
 
 package com.bbn.openmap.layer.policy;
 
-import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.event.LayerStatusEvent;
 import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;

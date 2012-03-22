@@ -23,9 +23,9 @@
 package com.bbn.openmap.tools.drawing;
 
 import com.bbn.openmap.omGraphics.EditableOMGraphic;
+import com.bbn.openmap.omGraphics.EditableOMSpline;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.EditableOMSpline;
 import com.bbn.openmap.omGraphics.OMSpline;
 import com.bbn.openmap.omGraphics.labeled.EditableLabeledOMSpline;
 

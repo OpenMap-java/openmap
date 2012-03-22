@@ -22,7 +22,11 @@
 
 package com.bbn.openmap.tools.drawing;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.EditableOMGraphic;
+import com.bbn.openmap.omGraphics.EditableOMText;
+import com.bbn.openmap.omGraphics.GraphicAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMText;
 
 /**
  * Loader that knows how to create/edit OMText objects.

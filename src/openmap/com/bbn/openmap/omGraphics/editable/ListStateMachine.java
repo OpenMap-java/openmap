@@ -24,9 +24,10 @@
 
 package com.bbn.openmap.omGraphics.editable;
 
-import java.util.*;
+import java.util.Iterator;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.EditableOMGraphic;
+import com.bbn.openmap.omGraphics.EditableOMGraphicList;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.stateMachine.State;
 public class ListStateMachine extends EOMGStateMachine {

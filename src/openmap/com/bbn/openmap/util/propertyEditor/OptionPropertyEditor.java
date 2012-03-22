@@ -22,13 +22,13 @@
 
 package com.bbn.openmap.util.propertyEditor;
 
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
-
 import java.awt.Component;
 import java.awt.event.FocusEvent;
 import java.util.Properties;
 import java.util.Vector;
+
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * The base class for property editors that support a list of options

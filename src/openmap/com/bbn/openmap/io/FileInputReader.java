@@ -22,8 +22,13 @@
 
 package com.bbn.openmap.io;
 
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
 import com.bbn.openmap.util.Debug;
-import java.io.*;
 
 /**
  * This class wraps a java.io.RandomAccessFile to allow us to choose the

@@ -22,10 +22,12 @@
 
 package com.bbn.openmap.util.http;
 
-import java.io.*;
-import java.net.*;
-import java.util.Vector;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * A simple HTTP Server implementing HTTP/0.9 protocols.

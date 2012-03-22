@@ -1,0 +1,64 @@
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+    "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+
+<web-app>
+
+    <!-- General description of your web application -->
+
+	<display-name>MapTile Utility Web Services</display-name>
+	<description>
+	  A web service intented to provide Tile Map Server (TMS) image tiles, and also control production of those tiles.
+	</description>
+
+    <!--
+	The servlets will first try and resolve the
+    path within the webapp directory, and if not found there, will try the
+    path as an absolute path.  If either of these paths are found, the library
+    will be added to the list of available databases on the servlet home page.
+    If neither of the paths work, the library will not be listed, and an error
+    logged in the servlet logs.
+    -->
+
+	<context-param>
+		<param-name>TileSetDefinitions</param-name>
+		<param-value>tileset1.properties;tileset2.properties</param-value>
+		<description>
+		  Standard tile set properties
+		</description>
+	</context-param>
+
+    <!-- Servlet definitions -->
+	<servlet>
+		<servlet-name>MapTile</servlet-name>
+		<description>
+		  Provide map tiles as asked for, based on z/x/y.png requests.
+		</description>
+		<servlet-class>com.bbn.openmap.maptileservlet.MapTileServlet</servlet-class>
+	</servlet>
+
+    <!-- Define the mapping from URL path to servlet -->
+    <!-- Unless you are modifying the code, you should not need to modify these.  These will be 
+	 updated in the future when I add classes to handle TMS queries for metadata about 
+	 available tile sets. -->
+
+	<servlet-mapping>
+		<servlet-name>MapTile</servlet-name>
+		<url-pattern></url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>MapTile</servlet-name>
+		<url-pattern>*</url-pattern>
+	</servlet-mapping>
+
+    <!-- Define the default session timeout for your application,
+         in minutes.  From a servlet or JSP page, you can modify
+         the timeout for a particular session dynamically by using
+         HttpSession.getMaxInactiveInterval(). -->
+
+	<session-config>
+		<session-timeout>30</session-timeout>    <!-- 30 minutes -->
+	</session-config>
+
+</web-app>

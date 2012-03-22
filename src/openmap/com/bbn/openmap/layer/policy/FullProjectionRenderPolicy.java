@@ -22,9 +22,10 @@
 
 package com.bbn.openmap.layer.policy;
 
+import java.awt.Graphics;
+
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.proj.Projection;
-import java.awt.Graphics;
 
 /**
  * The FullProjectionRenderPolicy is a StandardRenderPolicy that sets

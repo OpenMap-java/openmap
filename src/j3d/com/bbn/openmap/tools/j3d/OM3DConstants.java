@@ -22,8 +22,9 @@
 
 package com.bbn.openmap.tools.j3d;
 
-import javax.vecmath.*;
-import javax.media.j3d.*;
+import javax.media.j3d.BoundingSphere;
+import javax.vecmath.Color3f;
+import javax.vecmath.Point3d;
 
 /**
  * An interface that any class can implement to get access to common

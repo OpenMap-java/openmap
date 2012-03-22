@@ -22,13 +22,13 @@
 
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.omGraphics.OMPoint;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+
+import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * Read and write the Link protocol for points. The protocol for the point has

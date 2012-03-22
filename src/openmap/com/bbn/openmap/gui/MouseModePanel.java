@@ -23,15 +23,23 @@
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.Serializable;
-import javax.swing.*;
-import javax.swing.border.*;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.event.*;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+
+import com.bbn.openmap.MouseDelegator;
+import com.bbn.openmap.event.MapMouseMode;
 import com.bbn.openmap.util.Debug;
 
 

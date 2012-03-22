@@ -29,11 +29,16 @@ import java.net.Socket;
 import java.util.Vector;
 
 import com.bbn.openmap.Environment;
+import com.bbn.openmap.layer.link.Link;
+import com.bbn.openmap.layer.link.LinkBoundingPoly;
+import com.bbn.openmap.layer.link.LinkGraphicList;
+import com.bbn.openmap.layer.link.LinkMapRequest;
+import com.bbn.openmap.layer.link.LinkProperties;
+import com.bbn.openmap.layer.link.LinkPropertiesConstants;
+import com.bbn.openmap.layer.link.LinkServer;
+import com.bbn.openmap.layer.shape.ESRIRecord;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
-
-import com.bbn.openmap.layer.link.*;
-import com.bbn.openmap.layer.shape.*;
 
 /**
  * This LinkServer provides graphics from ShapeFiles. The LinkLayer can provide

@@ -22,16 +22,19 @@
 
 package com.bbn.openmap.image;
 
-import com.bbn.openmap.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.util.Properties;
+
+import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.http.HttpConnection;
 import com.bbn.openmap.util.http.HttpRequestEvent;
 import com.bbn.openmap.util.http.HttpRequestListener;
 import com.bbn.openmap.util.http.HttpServer;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.util.*;
 
 /**
  * The SimpleHttpImageServer is an ImageServer extended into a simple

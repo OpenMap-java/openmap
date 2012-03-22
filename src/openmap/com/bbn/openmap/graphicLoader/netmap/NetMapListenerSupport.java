@@ -22,10 +22,10 @@
 
 package com.bbn.openmap.graphicLoader.netmap;
 
-import com.bbn.openmap.util.Debug;
-
 import java.util.Properties;
 import java.util.Vector;
+
+import com.bbn.openmap.util.Debug;
 
 /**
  * NetMapListenerSupport is used to manage NetMapListeners, and to

@@ -24,15 +24,17 @@
 
 package com.bbn.openmap.dataAccess.asrp;
 
-import com.bbn.openmap.dataAccess.iso8211.*;
-import com.bbn.openmap.util.Debug;
-
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
+
+import com.bbn.openmap.dataAccess.iso8211.DDFField;
+import com.bbn.openmap.dataAccess.iso8211.DDFModule;
+import com.bbn.openmap.dataAccess.iso8211.DDFRecord;
+import com.bbn.openmap.util.Debug;
 
 public class GeneralASRPFile {
 

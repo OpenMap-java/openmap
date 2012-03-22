@@ -22,6 +22,8 @@
 
 package com.bbn.openmap.time;
 
+import com.bbn.openmap.util.HashCodeUtil;
+
 /**
  * TimerStatus objects accompany TimeEvents to describe what's going on with the
  * application clock, or the reason the current time has changed.
@@ -119,4 +121,15 @@ public class TimerStatus {
         final TimerStatus ts = (TimerStatus)obj;
         return ts == this;
     }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode() {
+      int result = HashCodeUtil.SEED;
+      // collect the contributions of various fields
+      result = HashCodeUtil.hash(result, description);
+      return result;
+   }
 }

@@ -21,6 +21,7 @@
 // **********************************************************************
 package com.bbn.openmap.event;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -33,7 +34,6 @@ import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-import java.awt.Color;
 
 /**
  * The Navigation Mouse Mode interprets mouse clicks and mouse drags to recenter

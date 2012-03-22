@@ -16,9 +16,11 @@
 
 package com.bbn.openmap.tools.beanbox;
 
-import java.beans.*;
-import java.util.List;
+import java.beans.BeanInfo;
+import java.beans.PropertyDescriptor;
+import java.beans.SimpleBeanInfo;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * BeanInfo for a

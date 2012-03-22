@@ -20,7 +20,8 @@
  */
 package com.bbn.openmap.dataAccess.cgm;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 public class EdgeColor extends ColorCommand {
     public EdgeColor(int ec, int eid, int l, DataInputStream in)

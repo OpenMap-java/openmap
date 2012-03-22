@@ -44,12 +44,13 @@
 
 		<mkdir dir="${svg.classes}" />
 		<echo message="Compiling SVG classes with ${svg.jars}" />
-		<javac srcdir="${svg.src}" destdir="${svg.classes}" debug="on" excludes="${javac.excludes}" source="1.5" target="1.5">
+		<javac includeantruntime="false" srcdir="${svg.src}" destdir="${svg.classes}" debug="on" excludes="${javac.excludes}" source="1.5" target="1.5">
 			<classpath>
 				<path refid="ext_tools_classpath" />
 				<pathelement path="${openmap.home}/lib/openmap.jar" />
 				<pathelement path="${openmap.home}" />
 			</classpath>
+			<compilerarg value="${compiler.args}"/>
 		</javac>
 	</target>
 

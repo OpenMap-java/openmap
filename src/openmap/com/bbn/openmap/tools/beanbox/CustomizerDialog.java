@@ -16,9 +16,15 @@
 
 package com.bbn.openmap.tools.beanbox;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
+import java.awt.Button;
+import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.Customizer;
 
 /**
  * Utility class that takes a generic component editor and wraps it in

@@ -27,7 +27,6 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-/*  OpenMap  */
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;

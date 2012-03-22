@@ -24,9 +24,9 @@ package com.bbn.openmap.tools.drawing;
 
 import java.awt.event.MouseEvent;
 
+import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.EditableOMGraphic;
 
 /**
  * A DrawingTool is an object that can take a request for editing an

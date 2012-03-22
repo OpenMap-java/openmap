@@ -22,7 +22,8 @@
 
 package com.bbn.openmap.util.http;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 import com.bbn.openmap.util.Debug;
 

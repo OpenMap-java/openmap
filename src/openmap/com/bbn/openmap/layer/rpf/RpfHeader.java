@@ -32,11 +32,13 @@
 package com.bbn.openmap.layer.rpf;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
+import com.bbn.openmap.io.BinaryBufferedFile;
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.io.*;
 
 /**
  * Reads the part of the RpfFrame that gives a basic location map to

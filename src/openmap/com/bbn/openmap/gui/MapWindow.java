@@ -22,10 +22,17 @@
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
 
-import com.bbn.openmap.*;
+import javax.swing.JFrame;
+
+import com.bbn.openmap.BufferedMapBean;
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.LayerHandler;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.MapHandler;
+import com.bbn.openmap.MouseDelegator;
+import com.bbn.openmap.MultipleSoloMapComponentException;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 

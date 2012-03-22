@@ -22,11 +22,22 @@
 
 package com.bbn.openmap.gui.menu;
 
-import javax.swing.*;
-import java.awt.event.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import com.bbn.openmap.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.MapBean;
 
 /**
  * This object brings up OpenMap about information.

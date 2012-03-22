@@ -22,10 +22,10 @@
 
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.util.Debug;
-
-import java.io.*;
+import java.io.IOException;
 import java.net.Socket;
+
+import com.bbn.openmap.util.Debug;
 
 /**
  * The LinkManager..

@@ -141,8 +141,10 @@
 
 	<target name="jdkcorba.stubs" depends="jdkcorba.idl" description="Compile stub classes created from idl files." if="idl.compiled">
 		<echo message="Compiling CORBA stub classes..." />
-		<javac srcdir="${corba.src}" destdir="${corba.classes}" debug="on" includes="**/CRpfFrameProvider/**, **/CSpecialist/**, **/corbaImageServer/**" excludes="${javac.excludes}" source="1.5" target="1.5">
+		<javac includeantruntime="false" srcdir="${corba.src}" destdir="${corba.classes}" debug="on" includes="**/CRpfFrameProvider/**, **/CSpecialist/**, **/corbaImageServer/**" excludes="${javac.excludes}" source="1.5" target="1.5">
 			<classpath refid="ext_tools_classpath" />
+<!--			<compilerarg value="-Xlint:unchecked"/>-->
+			<compilerarg value="-Xlint:deprecation"/>
 		</javac>
 	</target>
 
@@ -150,12 +152,14 @@
 	<target name="classes.jdkcorba" depends="jdkcorba.stubs" description="Compiles the Corba classes with the JDK CORBA implementation. (Call this to build CORBA classes)" if="idl.compiled">
 
 		<echo message="Compiling CORBA classes with JDK CORBA..." />
-		<javac srcdir="${corba.src}" destdir="${corba.classes}" debug="on" includes="**/*.java" excludes="**/unimplemented/**" source="1.5" target="1.5">
+		<javac includeantruntime="false" srcdir="${corba.src}" destdir="${corba.classes}" debug="on" includes="**/*.java" excludes="**/unimplemented/**" source="1.5" target="1.5">
 			<classpath>
 				<path refid="ext_tools_classpath" />
 				<pathelement path="${openmap.classes}" />
 				<pathelement path="${openmap.home}/lib/openmap.jar" />
 			</classpath>
+<!--			<compilerarg value="-Xlint:unchecked"/>-->
+			<compilerarg value="-Xlint:deprecation"/>
 		</javac>
 
 		<copy todir="${corba.classes}/com/bbn/openmap">
@@ -215,12 +219,14 @@
 
 	<target name="visibroker.stubs" depends="visibroker.idl" if="idl.compiled" description="Compile stub classes created from idl files.">
 		<echo message="Compiling CORBA stub classes..." />
-		<javac srcdir="${corba.src}" destdir="${corba.classes}" debug="on" includes="**/CRpfFrameProvider/**, **/CSpecialist/**, **/corbaImageServer/**" excludes="${javac.excludes}" bootclasspath="${visibroker.bootclasspath}" source="1.5" target="1.5">
+		<javac includeantruntime="false" srcdir="${corba.src}" destdir="${corba.classes}" debug="on" includes="**/CRpfFrameProvider/**, **/CSpecialist/**, **/corbaImageServer/**" excludes="${javac.excludes}" bootclasspath="${visibroker.bootclasspath}" source="1.5" target="1.5">
 			<classpath>
 				<path refid="ext_tools_classpath" />
 				<pathelement path="${openmap.classes}" />
 				<pathelement path="${openmap.home}/lib/openmap.jar" />
 			</classpath>
+<!--			<compilerarg value="-Xlint:unchecked"/>-->
+			<compilerarg value="-Xlint:deprecation"/>
 		</javac>
 	</target>
 
@@ -228,7 +234,7 @@
 	<target name="classes.visibroker" depends="visibroker.stubs" description="Compiles the Corba classes with the Visibroker CORBA implementation. You must have Visibroker (http://www.borland.com/bes/visibroker) installed. (Call this to build CORBA classes) " if="do.visibroker, idl.compiled">
 
 		<echo message="Compiling CORBA classes with Visibroker..." />
-		<javac srcdir="${corba.src}" destdir="${corba.classes}" debug="on" includes="**/layer/rpf/corba/**/*.java,
+		<javac includeantruntime="false" srcdir="${corba.src}" destdir="${corba.classes}" debug="on" includes="**/layer/rpf/corba/**/*.java,
 		     **/layer/specialist/**/*.java,
 		     **/plugin/corbaImage/**/*.java" excludes="**/unimplemented/**" bootclasspath="${visibroker.bootclasspath}" source="1.5" target="1.5">
 			<classpath>
@@ -236,6 +242,7 @@
 				<pathelement path="${openmap.classes}" />
 				<pathelement path="${openmap.home}/lib/openmap.jar" />
 			</classpath>
+			<compilerarg value="${compiler.args}"/>
 		</javac>
 
 		<copy todir="${corba.classes}/com/bbn/openmap">

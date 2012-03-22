@@ -18,7 +18,7 @@ import com.bbn.openmap.util.PropUtils;
  * MapTileLayer, and those properties will trickle down through the
  * MapTileServer, which will in turn create one of these.
  * <P>
- * 
+ *
  * <pre>
  * emptyTileHandler=com.bbn.openmap.dataAccess.mapTile.SimpleEmptyTileHandler
  * # clear with black edges by default if not specified
@@ -31,7 +31,7 @@ import com.bbn.openmap.util.PropUtils;
  * noCoverage.lineColor=hex RGB color
  * noCoverage.fillPattern=path to resource, file or URL of pattern to use for tile fill.
  * </pre>
- * 
+ *
  * @author ddietrick
  */
 public class SimpleEmptyTileHandler
@@ -60,7 +60,7 @@ public class SimpleEmptyTileHandler
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.bbn.openmap.dataAccess.mapTile.EmptyTileHandler#getOMGraphicForEmptyTile
      * (java.lang.String, int, int, int,
@@ -79,12 +79,12 @@ public class SimpleEmptyTileHandler
             if (noCoverageAtts == null) {
                 return null;
             }
-            
+
             noCoverageAtts.setTo(rect);
         }
 
         rect.generate(proj);
-        
+
         BufferedImage bi = new BufferedImage(TILE_SIZE, TILE_SIZE, BufferedImage.TYPE_INT_ARGB);
         Graphics g = bi.getGraphics();
         rect.render(g);
@@ -107,6 +107,8 @@ public class SimpleEmptyTileHandler
 
     public void setProperties(String prefix, Properties props) {
         setPropertyPrefix(prefix);
+
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         backgroundAtts.setProperties(prefix + BACKGROUND_PROPERTY, props);
         noCoverageAtts.setProperties(prefix + NO_COVERAGE_ZOOM_PROPERTY, props);

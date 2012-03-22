@@ -22,13 +22,6 @@
 
 package com.bbn.openmap.layer.e00;
 
-import com.bbn.openmap.layer.location.BasicLocation;
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.omGraphics.OMPoly;
-import com.bbn.openmap.omGraphics.OMText;
-import com.bbn.openmap.util.Debug;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
@@ -36,6 +29,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+
+import com.bbn.openmap.layer.location.BasicLocation;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.util.Debug;
 
 /**
  * A parser for an E00 file. Description of the Class parses an E00 file and

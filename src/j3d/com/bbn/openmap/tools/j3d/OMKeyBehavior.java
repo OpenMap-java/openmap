@@ -23,14 +23,20 @@
 package com.bbn.openmap.tools.j3d;
 
 import java.awt.AWTEvent;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
 import java.util.Enumeration;
 
-import javax.media.j3d.*;
-import javax.vecmath.*;
+import javax.media.j3d.Behavior;
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
+import javax.media.j3d.WakeupCondition;
+import javax.media.j3d.WakeupCriterion;
+import javax.media.j3d.WakeupOnAWTEvent;
+import javax.media.j3d.WakeupOr;
+import javax.vecmath.Vector3d;
 
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * OMKeyBehavior is a modified version of KeyBehavior, available from

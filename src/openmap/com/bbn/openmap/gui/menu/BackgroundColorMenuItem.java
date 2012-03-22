@@ -24,15 +24,16 @@
 
 package com.bbn.openmap.gui.menu;
 
-import com.bbn.openmap.LightMapHandlerChild;
-import com.bbn.openmap.Environment;
-import com.bbn.openmap.MapBean;
-import com.bbn.openmap.omGraphics.OMColorChooser;
-
 import java.awt.Paint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JMenuItem;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.LightMapHandlerChild;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.omGraphics.OMColorChooser;
 
 public class BackgroundColorMenuItem extends JMenuItem implements
         ActionListener, LightMapHandlerChild {

@@ -16,27 +16,27 @@
 
 package com.bbn.openmap.tools.beanbox;
 
-import java.awt.*;
+import java.awt.Component;
 
 /**
  * Custom property editor for the
  * {@link com.bbn.openmap.tools.beanbox.BeanLayoutManager}property.
  */
-public class BeanLayoutEditor extends PropertyBeanEditor {
-    private GenericPropertySheet propSheet;
+public class BeanLayoutEditor
+      extends PropertyBeanEditor {
+   private GenericPropertySheet propSheet;
 
-    /**
-     * returns an instance of the
-     * {@link com.bbn.openmap.tools.beanbox.GenericPropertySheet}
-     * which serves as the custom editor component for the
-     * BeanLayoutManager property.
-     */
-    public Component getCustomEditor() {
-        Object value = getValue();
-        if (propSheet == null)
-            propSheet = new GenericPropertySheet(value, 575, 20, this, null);
-        else
-            propSheet.setTarget(value);
-        return propSheet;
-    }
-};
+   /**
+    * returns an instance of the
+    * {@link com.bbn.openmap.tools.beanbox.GenericPropertySheet} which serves as
+    * the custom editor component for the BeanLayoutManager property.
+    */
+   public Component getCustomEditor() {
+      Object value = getValue();
+      if (propSheet == null)
+         propSheet = new GenericPropertySheet(value, 575, 20, this, null);
+      else
+         propSheet.setTarget(value);
+      return propSheet;
+   }
+}

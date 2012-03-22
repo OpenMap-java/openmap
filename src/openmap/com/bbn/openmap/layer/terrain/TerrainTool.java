@@ -22,7 +22,7 @@
 
 package com.bbn.openmap.layer.terrain;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.stateMachine.State;
 

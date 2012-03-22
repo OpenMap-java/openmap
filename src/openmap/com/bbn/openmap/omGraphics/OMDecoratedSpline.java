@@ -27,10 +27,9 @@ import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.geom.GeneralPath;
 
-import com.bbn.openmap.util.Debug;
-
 import com.bbn.openmap.omGraphics.awt.Revertable;
 import com.bbn.openmap.omGraphics.awt.ShapeDecorator;
+import com.bbn.openmap.util.Debug;
 
 /**
  * A decorated splined OMPoly. Decoration list is empty, but accessible via

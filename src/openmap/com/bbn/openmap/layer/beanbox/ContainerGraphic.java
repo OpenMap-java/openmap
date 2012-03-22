@@ -17,8 +17,8 @@
 package com.bbn.openmap.layer.beanbox;
 
 import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.omGraphics.OMGraphicConstants;
+import com.bbn.openmap.omGraphics.OMRect;
 
 /**
  * A custom graphic class for representing objects of type

@@ -22,9 +22,9 @@
 
 package com.bbn.openmap.util.propertyEditor;
 
-import com.bbn.openmap.util.Debug;
-
 import javax.swing.JComboBox;
+
+import com.bbn.openmap.util.Debug;
 
 /**
  * The ComboBoxPropertyEditor provides a set of options within a

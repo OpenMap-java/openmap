@@ -21,9 +21,25 @@
 //**********************************************************************
 package com.bbn.openmap.tools.dnd;
 
-import java.awt.*;
-import java.awt.dnd.*;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceDragEvent;
+import java.awt.dnd.DragSourceDropEvent;
+import java.awt.dnd.DragSourceEvent;
+import java.awt.dnd.DragSourceListener;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
+import java.awt.dnd.MouseDragGestureRecognizer;
 import java.util.Hashtable;
+
 import com.bbn.openmap.util.Debug;
 
 /**

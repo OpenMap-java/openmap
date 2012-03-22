@@ -22,12 +22,13 @@
 
 package com.bbn.openmap.gui.menu;
 
-import java.beans.beancontext.BeanContext;
 import java.beans.PropertyVetoException;
-import java.util.LinkedList;
+import java.beans.beancontext.BeanContext;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Properties;
 import java.util.Vector;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 

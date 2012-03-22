@@ -22,12 +22,13 @@
 
 package com.bbn.openmap.dataAccess.iso8211;
 
-import com.bbn.openmap.io.BinaryBufferedFile;
-import com.bbn.openmap.io.BinaryFile;
-import com.bbn.openmap.util.Debug;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Vector;
+
+import com.bbn.openmap.io.BinaryBufferedFile;
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.util.Debug;
 
 /**
  * The class that represents a ISO 8211 file.

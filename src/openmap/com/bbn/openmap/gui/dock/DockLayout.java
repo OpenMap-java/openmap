@@ -22,9 +22,15 @@
 
 package com.bbn.openmap.gui.dock;
 
-import java.awt.*;
-import javax.swing.*;
-import java.util.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.LayoutManager2;
+import java.awt.Rectangle;
+import java.util.Iterator;
+
+import javax.swing.JComponent;
 
 import com.bbn.openmap.util.Debug;
 

@@ -16,7 +16,7 @@
 
 package com.bbn.openmap.tools.beanbox;
 
-import java.beans.*;
+import java.beans.BeanInfo;
 
 /**
  * An action to perform on instantiated beans. Used by the BeanPanel.

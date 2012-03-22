@@ -2,8 +2,9 @@ package com.bbn.openmap.tools.j3d.geometry;
 
 import java.awt.Color;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.omGraphics.grid.*;
+import com.bbn.openmap.omGraphics.OMColor;
+import com.bbn.openmap.omGraphics.OMGrid;
+import com.bbn.openmap.omGraphics.grid.SimpleColorGenerator;
 import com.bbn.openmap.tools.j3d.MapContent;
 import com.bbn.openmap.tools.j3d.OM3DGraphicHandler;
 

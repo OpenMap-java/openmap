@@ -23,9 +23,12 @@
 package com.bbn.openmap.layer.link.shape;
 
 import java.io.IOException;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.layer.link.*;
-import com.bbn.openmap.layer.shape.*;
+
+import com.bbn.openmap.layer.link.LinkGraphicList;
+import com.bbn.openmap.layer.link.LinkProperties;
+import com.bbn.openmap.layer.shape.ESRIPoly;
+import com.bbn.openmap.layer.shape.ESRIPolygonRecord;
+import com.bbn.openmap.omGraphics.OMGraphic;
 
 /**
  */

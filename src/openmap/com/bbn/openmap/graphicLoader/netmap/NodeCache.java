@@ -22,7 +22,8 @@
 
 package com.bbn.openmap.graphicLoader.netmap;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 /**
  * A holder for all the nodes on the map. Cache is smart enough to

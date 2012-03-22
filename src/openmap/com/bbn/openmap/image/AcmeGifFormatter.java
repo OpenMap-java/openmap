@@ -22,10 +22,11 @@
 
 package com.bbn.openmap.image;
 
+import java.awt.image.BufferedImage;
+import java.util.Properties;
+
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.http.HttpConnection;
-import java.util.*;
-import java.awt.image.BufferedImage;
 
 /**
  * This formatter requires the Acme.JPM.Encoders package. That code

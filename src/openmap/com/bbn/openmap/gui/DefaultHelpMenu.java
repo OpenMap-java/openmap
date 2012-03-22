@@ -23,6 +23,7 @@
 package com.bbn.openmap.gui;
 
 import java.util.Iterator;
+
 import javax.swing.JMenuItem;
 
 import com.bbn.openmap.util.Debug;

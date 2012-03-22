@@ -22,11 +22,11 @@
 
 package com.bbn.openmap.tools.drawing;
 
+import javax.swing.ImageIcon;
+
 import com.bbn.openmap.omGraphics.EditableOMGraphic;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
-
-import javax.swing.ImageIcon;
 
 /**
  * An EditToolLoader is interface that describes an object that

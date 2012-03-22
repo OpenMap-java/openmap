@@ -29,9 +29,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URL;
-
-import com.bbn.openmap.util.Debug;
 import java.util.Iterator;
+
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -39,6 +38,8 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
+
+import com.bbn.openmap.util.Debug;
 
 /**
  * This class provides some utility methods for creating jpeg encoded images. It

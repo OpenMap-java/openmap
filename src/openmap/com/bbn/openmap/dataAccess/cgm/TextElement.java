@@ -20,8 +20,9 @@
  */
 package com.bbn.openmap.dataAccess.cgm;
 
-import java.awt.*;
-import java.io.*;
+import java.awt.Font;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 public class TextElement extends Command {
     int X, Y;

@@ -22,15 +22,15 @@
 
 package com.bbn.openmap.dataAccess.iso8211;
 
-import com.bbn.openmap.layer.vpf.MutableInt;
-import com.bbn.openmap.util.Debug;
-
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
+
+import com.bbn.openmap.layer.vpf.MutableInt;
+import com.bbn.openmap.util.Debug;
 
 /**
  * This object represents one field in a DDFRecord. This models an

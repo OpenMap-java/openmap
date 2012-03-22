@@ -22,12 +22,20 @@
 
 package com.bbn.openmap.graphicLoader.netmap;
 
-import java.awt.*;
+import java.awt.Choice;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Properties;
-import javax.swing.*;
+
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.util.Debug;

@@ -22,17 +22,23 @@
 
 package com.bbn.openmap.tools.j3d;
 
-import com.bbn.openmap.gui.Tool;
+import java.awt.Container;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.beancontext.BeanContextMembershipEvent;
+import java.util.Iterator;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.SwingConstants;
+
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.MapHandlerChild;
+import com.bbn.openmap.gui.Tool;
 import com.bbn.openmap.tools.j3d.geometry.Curtain;
 import com.bbn.openmap.util.Debug;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.beancontext.*;
-import java.util.*;
-import javax.swing.*;
 
 /**
  * @author dietrick

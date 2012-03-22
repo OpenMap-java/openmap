@@ -22,19 +22,20 @@
 
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.omGraphics.OMRaster;
-import com.bbn.openmap.proj.ProjMath;
-import com.bbn.openmap.util.ColorFactory;
-import com.bbn.openmap.util.Debug;
-import com.bbn.openmap.util.PropUtils;
-
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.PixelGrabber;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+
 import javax.swing.ImageIcon;
+
+import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.util.ColorFactory;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.PropUtils;
 
 /**
  * Read and write a Link protocol versions of a raster.

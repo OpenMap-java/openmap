@@ -22,14 +22,15 @@
 
 package com.bbn.openmap.graphicLoader;
 
-import java.awt.*;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Properties;
+
 import javax.swing.Timer;
 
 import com.bbn.openmap.OMComponent;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.OMGraphicHandler;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.PropUtils;
 

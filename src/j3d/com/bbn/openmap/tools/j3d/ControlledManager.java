@@ -22,11 +22,15 @@
 
 package com.bbn.openmap.tools.j3d;
 
+import java.awt.BorderLayout;
+
+import javax.media.j3d.Background;
+import javax.media.j3d.Behavior;
+import javax.media.j3d.TransformGroup;
+import javax.swing.JFrame;
+
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.proj.Projection;
-import java.awt.*;
-import javax.media.j3d.*;
-import javax.swing.JFrame;
 
 /**
  * A 3D manager where the eye position is controlled by an outside

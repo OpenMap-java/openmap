@@ -22,11 +22,11 @@
 
 package com.bbn.openmap.io;
 
-import com.bbn.openmap.MoreMath;
-
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
+
+import com.bbn.openmap.MoreMath;
 
 /**
  * This class extends the BinaryFile class, doing buffered reads on the

@@ -8,9 +8,19 @@
 package com.bbn.openmap.tools.j3d;
 
 // Standard imports
-import javax.media.j3d.*;
-import javax.vecmath.Vector3f;
+import javax.media.j3d.Canvas3D;
+import javax.media.j3d.DirectionalLight;
+import javax.media.j3d.Group;
+import javax.media.j3d.Light;
+import javax.media.j3d.Node;
+import javax.media.j3d.PhysicalBody;
+import javax.media.j3d.PhysicalEnvironment;
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
+import javax.media.j3d.View;
+import javax.media.j3d.ViewPlatform;
 import javax.vecmath.AxisAngle4f;
+import javax.vecmath.Vector3f;
 
 /**
  * This Camera class was modified from Justin Couch's

@@ -24,8 +24,8 @@
 
 package com.bbn.openmap.omGraphics.grid;
 
-import com.bbn.openmap.omGraphics.OMGrid;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGrid;
 import com.bbn.openmap.omGraphics.SinkGraphic;
 import com.bbn.openmap.proj.Projection;
 

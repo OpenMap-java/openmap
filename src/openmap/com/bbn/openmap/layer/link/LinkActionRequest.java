@@ -22,11 +22,11 @@
 
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.util.Debug;
-
-import java.io.IOException;
-import java.awt.event.MouseEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+
+import com.bbn.openmap.util.Debug;
 
 /**
  * Class used to send a gesture to a server. In this case, a gesture

@@ -22,16 +22,16 @@
 
 package com.bbn.openmap.dataAccess.dted;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.ArgParser;
 import com.bbn.openmap.util.Debug;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.LinkedList;
-import java.util.Iterator;
 
 /**
  * DTEDAdmin is a utility class that finds DTED frame files in order

@@ -23,6 +23,7 @@
 package com.bbn.openmap.graphicLoader;
 
 import java.awt.event.MouseEvent;
+
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.omGraphics.OMGraphicHandler;

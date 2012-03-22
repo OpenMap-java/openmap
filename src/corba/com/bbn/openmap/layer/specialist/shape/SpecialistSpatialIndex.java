@@ -1,64 +1,53 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/corba/com/bbn/openmap/layer/specialist/shape/SpecialistSpatialIndex.java,v $
 // $RCSfile: SpecialistSpatialIndex.java,v $
 // $Revision: 1.3 $
 // $Date: 2004/10/14 18:05:37 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.layer.specialist.shape;
 
-import java.io.*;
+import java.io.IOException;
 
-import com.bbn.openmap.dataAccess.shape.ShapeUtils;
-import com.bbn.openmap.layer.shape.*;
+import com.bbn.openmap.layer.shape.ESRIRecord;
+import com.bbn.openmap.layer.shape.SpatialIndex;
 
 /**
  */
 public class SpecialistSpatialIndex extends SpatialIndex {
 
     /**
-     * Opens a spatial index file for reading.
-     * 
-     * @param ssxFilename the name of the spatial index file
-     * @exception IOException if something goes wrong opening the file
-     */
-    public SpecialistSpatialIndex(String ssxFilename) throws IOException {
-        super(ssxFilename);
-    }
-
-    /**
-     * Opens a spatial index file and it's associated shape file.
-     * 
-     * @param ssxFilename the name of the spatial index file
+     * Opens a spatial index file for its associated shape file.
+     *
      * @param shpFilename the name of the shape file
      * @exception IOException if something goes wrong opening the
      *            files
      */
-    public SpecialistSpatialIndex(String ssxFilename, String shpFilename)
+    public SpecialistSpatialIndex(String shpFilename)
             throws IOException {
-        super(ssxFilename, shpFilename);
+        super(shpFilename);
     }
 
     /**
      * Creates a record instance from the shape file data. Calls the
      * appropriate record constructor based on the shapeType, and
      * passes the buffer and offset to that constructor.
-     * 
+     *
      * @param shapeType the shape file's shape type, enumerated in
      *        <code>ShapeUtils</code>
      * @param b the buffer pointing to the raw record data

@@ -7,7 +7,11 @@
 
 package com.bbn.openmap.tools.j3d;
 
-import javax.media.j3d.*;
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.Group;
+import javax.media.j3d.Locale;
+import javax.media.j3d.Node;
+import javax.media.j3d.VirtualUniverse;
 
 /**
  * Test class for representing a universe

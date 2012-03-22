@@ -22,7 +22,9 @@
 
 package com.bbn.openmap.image;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
  * XBMFile is a class which reads in a bitmap file, and provides the

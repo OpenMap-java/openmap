@@ -23,7 +23,10 @@
 package com.bbn.openmap.graphicLoader.netmap;
 
 import java.awt.Color;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMPoint;

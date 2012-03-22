@@ -22,12 +22,20 @@
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
-import java.beans.*;
-import java.beans.beancontext.*;
+import java.awt.Component;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
+import java.beans.beancontext.BeanContext;
+import java.beans.beancontext.BeanContextChild;
+import java.beans.beancontext.BeanContextChildSupport;
+import java.beans.beancontext.BeanContextMembershipEvent;
+import java.beans.beancontext.BeanContextMembershipListener;
 import java.io.Serializable;
-import java.util.*;
-import javax.swing.*;
+import java.util.Iterator;
+
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 
 import com.bbn.openmap.util.Debug;
 

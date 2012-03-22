@@ -59,7 +59,7 @@ public class Route implements Cloneable, Serializable {
             this.time = time;
             this.crowsPathHours = crowsPathHours;
         }
-    };
+    }
 
     public synchronized static Route getBestRoute(Intersection from,
                                                   Intersection to,

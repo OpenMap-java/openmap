@@ -22,8 +22,8 @@
 
 package com.bbn.openmap.tools.drawing;
 
-import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMAction;
+import com.bbn.openmap.omGraphics.OMGraphic;
 
 /**
  * A DrawingToolRequestor is an object that asks a DrawingTool to do

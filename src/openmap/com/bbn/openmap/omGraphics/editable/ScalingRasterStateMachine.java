@@ -24,7 +24,7 @@
 
 package com.bbn.openmap.omGraphics.editable;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.EditableOMScalingRaster;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.stateMachine.State;
 public class ScalingRasterStateMachine extends EOMGStateMachine {

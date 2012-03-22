@@ -8,8 +8,6 @@ package com.bbn.openmap.image.wms;
 
 import java.util.Properties;
 
-import com.bbn.openmap.Layer;
-
 /**
  * @version $Header:
  *          /cvs/openmap/openmap/src/openmap/com/bbn/openmap/image/wms/IWmsLayer.java,v

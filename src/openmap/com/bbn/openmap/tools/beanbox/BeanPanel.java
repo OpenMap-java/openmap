@@ -16,21 +16,58 @@
 
 package com.bbn.openmap.tools.beanbox;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.dnd.*;
-import java.beans.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import java.io.*;
-import java.util.*;
-import java.net.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceDragEvent;
+import java.awt.dnd.DragSourceDropEvent;
+import java.awt.dnd.DragSourceEvent;
+import java.awt.dnd.DragSourceListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.BeanDescriptor;
+import java.beans.BeanInfo;
+import java.beans.Beans;
+import java.beans.Introspector;
+import java.io.File;
+import java.io.Serializable;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
-import com.bbn.openmap.util.Debug;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
+import javax.swing.event.MouseInputAdapter;
+
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.gui.OMToolComponent;
 import com.bbn.openmap.tools.dnd.DefaultTransferableObject;
+import com.bbn.openmap.util.Debug;
 
 /**
  * The BeanPanel class is an openmap component that loads a set of

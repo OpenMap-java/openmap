@@ -25,7 +25,7 @@ package com.bbn.openmap.layer.specialist.shape;
 import java.io.IOException;
 import java.util.Vector;
 
-import com.bbn.openmap.layer.specialist.*;
+import com.bbn.openmap.layer.specialist.SColor;
 
 /**
  */

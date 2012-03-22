@@ -23,6 +23,7 @@
 package com.bbn.openmap.tools.symbology.milStd2525;
 
 import java.util.Properties;
+
 import com.bbn.openmap.util.PropUtils;
 
 /**

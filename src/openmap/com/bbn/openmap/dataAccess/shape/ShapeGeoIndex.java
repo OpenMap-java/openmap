@@ -1,11 +1,13 @@
-/* 
+/*
  * <copyright>
  *  Copyright 2011 BBN Technologies
  * </copyright>
  */
+
 package com.bbn.openmap.dataAccess.shape;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import com.bbn.openmap.geo.ExtentIndex;
@@ -28,19 +30,37 @@ import com.bbn.openmap.proj.coords.GeoCoordTransformation;
  * A GeoExtentIndex that knows how to work with Shape files. Plots the shape
  * file contents in memory in lat/lon space, can then be used with the
  * Intersection class to do spatial analysis on the shape file contents.
- * 
+ *
  * @author ddietrick
  */
 public class ShapeGeoIndex
-        extends ArrayListExtentIndexImpl {
+    extends ArrayListExtentIndexImpl {
+    protected HashMap<Object, OMGraphic> omgraphics;
 
     private ShapeGeoIndex(Builder builder) {
         super(builder.numberOfBuckets, builder.margin);
-        EsriGraphicList graphicList = EsriGraphicList.getEsriGraphicList(builder.shapeFile, null, builder.geoCoordTransform);
+        omgraphics = new HashMap<Object, OMGraphic>();
+        EsriGraphicList graphicList = EsriGraphicList.getEsriGraphicList(builder.shapeFile, null,
+            builder.geoCoordTransform);
 
         if (graphicList != null) {
             load(graphicList);
         }
+    }
+
+    /**
+     * After you test for intersections with some GeoExtent, you get an iterator of GeoExtents.  You can get the ID
+     * from each of those, which will in turn allow you to ask for the OMGraphic representing the shape from the given
+     * file. The ID is an integer index into the shape file and attribute dbf file, btw.
+     *
+     * @param id The id provided by the extent in the intersection test.
+     * @return OMGraphic or null (if not found).
+     */
+    public OMGraphic getForID(Object id) {
+        if (omgraphics != null) {
+            return omgraphics.get(id);
+        }
+        return null;
     }
 
     public void load(EsriGraphicList list) {
@@ -64,7 +84,7 @@ public class ShapeGeoIndex
                     loadPolylines(list);
                     break;
                 default:
-                    // case ShapeConstants.SHAPE_TYPE_NULL:
+                // case ShapeConstants.SHAPE_TYPE_NULL:
             }
         }
     }
@@ -96,6 +116,7 @@ public class ShapeGeoIndex
         GeoPoint.Impl geoPoint = new GeoPoint.Impl(latitude, longitude);
         geoPoint.setID(id);
         addExtent(geoPoint);
+        omgraphics.put(id, omp);
     }
 
     /**
@@ -122,6 +143,7 @@ public class ShapeGeoIndex
         GeoRegion.Impl region = new GeoRegion.Impl(latlonArray, false);
         region.setID(id);
         addExtent(region);
+        omgraphics.put(id, omp);
     }
 
     /**
@@ -148,24 +170,25 @@ public class ShapeGeoIndex
         GeoPath.Impl region = new GeoPath.Impl(latlonArray);
         region.setID(id);
         addExtent(region);
+        omgraphics.put(id, omp);
     }
 
     /**
      * Get an iterator with all of the objects in this ShapeGeoIndex that
      * intersect with the given extent.
-     * 
+     *
      * @param extent GeoExtent (GeoPoint, GeoPath, GeoRegion) to test against.
      * @return Iterator over intersecting shape objects.
      */
     public Iterator getIntersections(GeoExtent extent) {
         return getIntersections(extent, new MatchFilter.MatchParametersMF(MatchParameters.STRICT),
-                                new MatchCollector.SetMatchCollector());
+            new MatchCollector.SetMatchCollector());
     }
 
     /**
      * Get an iterator with all of the objects in this ShapeGeoIndex that
      * intersect with the given extent.
-     * 
+     *
      * @param extent GeoExtext (GeoPoint, GeoPath, GeoRegion) to test against.
      * @param filter MatchFilter a MatchFilter can eliminate
      * @param collector
@@ -182,11 +205,10 @@ public class ShapeGeoIndex
 
     /**
      * Use this class to create a ShapeGeoIndex.
-     * 
+     *
      * @author ddietrick
      */
     public static class Builder {
-
         private URL shapeFile;
         private GeoCoordTransformation geoCoordTransform;
         private int numberOfBuckets = ExtentIndex.AbstractExtentIndex.D_NBUCKETS;

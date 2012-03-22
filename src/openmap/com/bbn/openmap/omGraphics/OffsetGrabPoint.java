@@ -22,7 +22,6 @@
 
 package com.bbn.openmap.omGraphics;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
 
 /**

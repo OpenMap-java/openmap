@@ -27,6 +27,7 @@ import java.awt.Dimension;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Properties;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;

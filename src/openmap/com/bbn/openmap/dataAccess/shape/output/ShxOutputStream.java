@@ -22,7 +22,8 @@
 
 package com.bbn.openmap.dataAccess.shape.output;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.OutputStream;
 
 /**
  * Writes the .shx file

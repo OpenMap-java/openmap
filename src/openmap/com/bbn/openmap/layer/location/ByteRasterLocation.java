@@ -23,13 +23,13 @@
 package com.bbn.openmap.layer.location;
 
 /*  Java Core  */
-import javax.swing.ImageIcon;
 import java.awt.Point;
 
-/*  OpenMap  */
+import javax.swing.ImageIcon;
+
+import com.bbn.openmap.layer.DeclutterMatrix;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.OMRasterObject;
-import com.bbn.openmap.layer.DeclutterMatrix;
 import com.bbn.openmap.proj.Projection;
 
 /**

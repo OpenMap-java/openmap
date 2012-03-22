@@ -22,13 +22,13 @@
 
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.omGraphics.OMGrid;
-import com.bbn.openmap.omGraphics.grid.GridData;
-import com.bbn.openmap.util.Debug;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+
+import com.bbn.openmap.omGraphics.OMGrid;
+import com.bbn.openmap.omGraphics.grid.GridData;
+import com.bbn.openmap.util.Debug;
 
 /**
  * Reading and writing the Link protocol version of a grid object. It is assumed

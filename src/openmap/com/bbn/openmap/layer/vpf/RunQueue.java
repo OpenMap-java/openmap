@@ -22,7 +22,8 @@
 
 package com.bbn.openmap.layer.vpf;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implement a very basic thread scheduling mechanism.

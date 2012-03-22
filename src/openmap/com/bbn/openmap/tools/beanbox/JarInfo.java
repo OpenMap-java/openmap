@@ -16,7 +16,9 @@
 
 package com.bbn.openmap.tools.beanbox;
 
-import java.beans.*;
+import java.beans.BeanInfo;
+import java.beans.Beans;
+import java.beans.Introspector;
 import java.util.Hashtable;
 
 /**

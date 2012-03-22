@@ -1,3 +1,34 @@
+2012-01-27  dietrick  <dietrick@client.wonkavision.local>
+
+	* Added the maptileservlet package.  This servlet package provide
+	map tiles and can be used with the MapTileLayer using the
+	ServerMapTileFactory, and can also be easily be used with Leaflet.
+
+	* Misc updates to remove extra semi-colons and fixed some
+	compiling warnings.
+
+	* Modified OMArc to take a Point2D object instead of a
+	LatLonPoint.  This allows it to be used with the Cartesian
+	projection.
+
+	* Modified WholeWorldTileHandler to have more control over how it
+	creates jar files holding map tiles.  Can now create specific
+	subjars, control whether the master jar gets created, etc.
+
+	* Added TileMillMapTileFactory to
+	com.bbn.openmap.dataAccess.mapTile package, and also added the
+	sqlite jar to the ext directory.  This MapTileFactory can read the
+	output tile database files created using the TileMill application.
+
+	* Tweaked the API, got rid of new Grey*TileFactory classes in the
+	com.bbn.openmap.dataAccess.mapTile package, created new
+	TileImagePreparer and added Grey and standard versions of that
+	instead.  Now the StandardMapTileFactory and ServerMapTileFactory
+	can have different classes handing images, and those classes can
+	be swapped at runtime.
+
+	* Fixed build problems when ext directory was missing.
+
 2011-12-23  Knox Rogers  <krogers@Knoxs-MacBook-Pro.local>
 
 	* OpenMap 5.0 released

@@ -22,15 +22,15 @@
 
 package com.bbn.openmap.gui.time;
 
-import com.bbn.openmap.PropertyConsumer;
-
-import com.bbn.openmap.time.RealTimeHandler;
-import com.bbn.openmap.util.Debug;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Properties;
-import javax.swing.*;
+
+import javax.swing.JComboBox;
+
+import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.time.RealTimeHandler;
+import com.bbn.openmap.util.Debug;
 
 /**
  * The TimerRateComboBox is a general pace selector for a

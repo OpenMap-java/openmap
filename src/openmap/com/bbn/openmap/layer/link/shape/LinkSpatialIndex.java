@@ -24,8 +24,8 @@ package com.bbn.openmap.layer.link.shape;
 
 import java.io.IOException;
 
-import com.bbn.openmap.dataAccess.shape.ShapeUtils;
-import com.bbn.openmap.layer.shape.*;
+import com.bbn.openmap.layer.shape.ESRIRecord;
+import com.bbn.openmap.layer.shape.SpatialIndex;
 
 /**
  */

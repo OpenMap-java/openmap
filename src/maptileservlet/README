@@ -1,0 +1,111 @@
+A basic set of JSP/Servlet code to serve up map tiles, such as the type 
+the MapTileLayer uses (or Leaflet).
+
+The packages uses J2EE capabilities, and has only been tested under
+the Apache Software Foundation's Jakarta Tomcat J2EE engine and Glassfish. 
+
+The OpenMap Maptile Servlet can serve up different tile sets.
+
+To build the code, the build.xml file needs to be modified so the
+servlet-api.jar is found.  This file is in the tomcat and glassfish
+installations.
+
+Next, you need to modify the WEB-INF/web.xml file so it points to your
+map tile data.  Each tile set is defined by a properties file, two
+have been provided in this package as an example, tileset1.properties
+and tileset2.properties
+
+	<context-param>
+		<param-name>TileSetDefinitions</param-name>
+		<param-value>tileset1.properties;tileset2.properties</param-value>
+		<description>
+		Tile sets available for request.
+		</description>
+	</context-param>
+
+These properties file will be copied into the classes directory when
+the war file gets created, so the servlet can find them and configure
+itself to serve up tiles.  Don't modify the versions in the classes
+directory, they will be overwritten if you run ant on the build.xml
+file.  Each property file should contain the same basic properties for
+a MapTileLayer:
+
+The 'name' property is important - it's the name your request will
+have in it to specify a particular tile set.
+
+name=my_tile_set
+rootDir=/Volumes/data/my_tile_set
+
+The other properties that can be used are standard for the MapTileLayer, 
+too.  The rootDir property tells the MapTileSet where to look for more information,
+and it will look for a tiles.omp file for more properties that pertain to that
+particular map tile set.  You can specify properties in the properties file specified
+in the TileSetDefinitions (tileset1.properties, for example), or you can just have
+other properties in the tiles.omp file stored in the rootDir directory.  For example, these
+properties can be set to handle what the MapTileSet does when a tile is not found:
+
+emptyTileHandler=com.bbn.openmap.dataAccess.mapTile.ShpFileEmptyTileHandler
+shpFile=/data/shape/cntry02/cntry02.shp
+background.fillColor=EAFFF4
+background.lineColor=EAFFF4
+mapTileTransform=com.bbn.openmap.dataAccess.mapTile.OSMMapTileCoordinateTransform
+land.lineColor=DECD8B
+land.fillColor=DECD8B
+
+The properties from the emptyTileHandler on down are just properties
+for the EmptyTileHandler defined for the dataset.  That's just a
+component that can create tiles on the fly for any missing tiles.  The
+one defined here will use a shape file to create missing tiles.  If
+you don't supply these parameters, that's OK - nothing will be served
+for empty tiles.
+
+The tiles can be requested by accessing:
+
+http://localhost:tomcat_port/maptile/my_tile_set/z/x/y.png
+
+where z is zoom level (0-20), x and y are tile coordinates (which depend on zoom level).
+
+You can use the MapTileLayer to connect to this server, if you
+configure it with these properties:
+
+tiles.class=com.bbn.openmap.layer.imageTile.MapTileLayer
+tiles.prettyName=Map Tile Server
+tiles.tileFactory=com.bbn.openmap.dataAccess.mapTile.ServerMapTileFactory
+tiles.rootDir=http://localhost:8080:/maptile/my_tile_set
+
+Another good way to play with this is by using Leaflet, at
+http://leaflet.cloudmade.com/.  It's a javascript mapping toolkit.
+You can use use a html page like this to connect to this server, with
+the leaflet package stored next to it on the web server.
+
+<!DOCTYPE html>
+<html>
+
+<head>
+<!-- Leaflet -->
+<link rel="stylesheet" href="./leaflet/leaflet.css" />
+<!--[if lte IE 8]><link rel="stylesheet" href="../dist/leaflet.ie.css" /><![endif]-->
+<script src="./leaflet/leaflet.js"></script>
+</head>
+
+<body>
+
+<div id="map" style="height: 600px; margin-right: 18px; margin-left: 18px; margin-top: 18px; margin-bottom: 18px"></div>
+<script>
+// create a CloudMade tile layer
+var cloudmadeUrl = 'http://localhost:8080/maptile/my_tile_set/{z}/{x}/{y}.png',
+    cloudmadeAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery',
+    cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 17, attribution: cloudmadeAttribution});
+
+// initialize the map on the "map" div
+var map = new L.Map('map');
+
+// set the map view to a given center and zoom and add the CloudMade layer
+map.setView(new L.LatLng(38, -76), 7).addLayer(cloudmade);
+
+</script>
+</body>
+</html>
+
+
+

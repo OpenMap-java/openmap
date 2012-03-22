@@ -22,10 +22,15 @@
 
 package com.bbn.openmap.gui;
 
-import javax.swing.*;
+import javax.swing.JSeparator;
 
-import com.bbn.openmap.*;
-import com.bbn.openmap.gui.menu.*;
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.gui.menu.AboutMenuItem;
+import com.bbn.openmap.gui.menu.LoadPropertiesMenuItem;
+import com.bbn.openmap.gui.menu.MapBeanPrinterMenuItem;
+import com.bbn.openmap.gui.menu.QuitMenuItem;
+import com.bbn.openmap.gui.menu.SaveAsMenu;
+import com.bbn.openmap.gui.menu.SavePropertiesMenuItem;
 
 /**
  * FileMenu creates AboutMenuItem, SavePropertiesMenuItem,

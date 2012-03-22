@@ -22,8 +22,9 @@
 
 package com.bbn.openmap;
 
-import com.bbn.openmap.proj.Projection;
 import java.awt.Graphics;
+
+import com.bbn.openmap.proj.Projection;
 
 /**
  * The ProjectionPainter interface is intended for objects that can

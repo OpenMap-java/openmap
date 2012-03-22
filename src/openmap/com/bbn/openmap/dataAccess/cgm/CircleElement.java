@@ -20,7 +20,8 @@
  */
 package com.bbn.openmap.dataAccess.cgm;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 public class CircleElement extends Command {
     int X1, Y1, R1;

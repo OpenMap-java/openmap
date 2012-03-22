@@ -20,10 +20,11 @@
  */
 package com.bbn.openmap.dataAccess.cgm;
 
-import java.awt.*;
-import java.io.*;
-import java.net.*;
-import java.applet.*;
+import java.applet.Applet;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.io.DataInputStream;
+import java.net.URL;
 
 public class CGMApplet extends Applet {
     public void init() {

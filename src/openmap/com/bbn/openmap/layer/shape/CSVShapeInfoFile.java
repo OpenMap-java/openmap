@@ -22,14 +22,14 @@
 
 package com.bbn.openmap.layer.shape;
 
-import com.bbn.openmap.util.Debug;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import com.bbn.openmap.dataAccess.shape.ShapeConstants;
 import com.bbn.openmap.io.CSVFile;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-
-import java.net.URL;
-import java.net.MalformedURLException;
+import com.bbn.openmap.util.Debug;
 
 /**
  * The CSVShapeInfoFile holds on to the contents of a CSV file, with

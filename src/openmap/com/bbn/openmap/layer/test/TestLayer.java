@@ -44,8 +44,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import com.bbn.openmap.event.MapMouseListener;
-import com.bbn.openmap.event.NavMouseMode;
-import com.bbn.openmap.event.NullMouseMode;
 import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMArrowHead;

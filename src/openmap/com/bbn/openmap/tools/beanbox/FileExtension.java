@@ -16,7 +16,8 @@
 
 package com.bbn.openmap.tools.beanbox;
 
-import java.io.*;
+import java.io.File;
+import java.io.FilenameFilter;
 
 /**
  * File filter utility class. Used by the BeanPanel.

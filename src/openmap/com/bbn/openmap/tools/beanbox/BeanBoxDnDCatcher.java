@@ -15,27 +15,55 @@
 
 package com.bbn.openmap.tools.beanbox;
 
-import java.awt.dnd.*;
-import java.awt.datatransfer.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.*;
-import java.net.*;
-import java.beans.*;
-import java.beans.beancontext.*;
-import javax.swing.*;
-import javax.swing.border.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceListener;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.beans.BeanInfo;
+import java.beans.PropertyChangeListener;
+import java.beans.beancontext.BeanContextChild;
+import java.beans.beancontext.BeanContextMembershipListener;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Vector;
 
-import com.bbn.openmap.tools.dnd.DefaultDnDCatcher;
-import com.bbn.openmap.tools.dnd.ComponentDragGestureListener;
-import com.bbn.openmap.tools.dnd.DefaultTransferableObject;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 
+import com.bbn.openmap.Layer;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.SoloMapComponent;
-import com.bbn.openmap.Layer;
 import com.bbn.openmap.event.LayerListener;
 import com.bbn.openmap.event.ProjectionListener;
+import com.bbn.openmap.tools.dnd.ComponentDragGestureListener;
+import com.bbn.openmap.tools.dnd.DefaultDnDCatcher;
+import com.bbn.openmap.tools.dnd.DefaultTransferableObject;
 import com.bbn.openmap.util.Debug;
 
 /**

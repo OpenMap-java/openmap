@@ -22,13 +22,20 @@
 
 package com.bbn.openmap.layer.link;
 
-import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.omGraphics.grid.*;
-import com.bbn.openmap.Layer;
-import com.bbn.openmap.util.Debug;
-
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
+
+import com.bbn.openmap.Layer;
+import com.bbn.openmap.omGraphics.grid.OMGridGenerator;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.Debug;
 
 /**
  * The Link object is the main mechanism for communications between a

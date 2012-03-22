@@ -22,11 +22,11 @@
 
 package com.bbn.openmap.gui;
 
-import java.awt.Container;
 import java.awt.Component;
-import java.awt.Insets;
+import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.util.Properties;
 

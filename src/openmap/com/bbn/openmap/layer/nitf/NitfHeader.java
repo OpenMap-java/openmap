@@ -32,10 +32,12 @@
 package com.bbn.openmap.layer.nitf;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
-import com.bbn.openmap.io.*;
+import com.bbn.openmap.io.BinaryBufferedFile;
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.io.FormatException;
 
 /**
  * The NitfHeader reads the header information in a NITF (National

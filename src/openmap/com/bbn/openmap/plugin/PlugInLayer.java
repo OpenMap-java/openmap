@@ -29,7 +29,6 @@ import java.beans.beancontext.BeanContextChild;
 import java.beans.beancontext.BeanContextMembershipListener;
 import java.util.Properties;
 
-/*  OpenMap  */
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;

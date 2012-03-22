@@ -23,8 +23,8 @@
 package com.bbn.openmap.tools.symbology.milStd2525;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 import com.bbn.openmap.util.Debug;

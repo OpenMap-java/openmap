@@ -3,7 +3,9 @@ package com.bbn.openmap.tools.j3d.geometry;
 import java.awt.Color;
 import java.util.HashSet;
 import java.util.Iterator;
-import javax.media.j3d.*;
+
+import javax.media.j3d.Shape3D;
+
 import com.bbn.openmap.MapHandlerChild;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.tools.j3d.MapContent;

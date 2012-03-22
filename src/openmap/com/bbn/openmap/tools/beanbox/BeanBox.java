@@ -16,9 +16,13 @@
 
 package com.bbn.openmap.tools.beanbox;
 
-import java.awt.*;
-import java.beans.*;
-import java.util.*;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.beans.BeanInfo;
+import java.util.HashMap;
+import java.util.Vector;
 
 import com.bbn.openmap.image.ImageScaler;
 import com.bbn.openmap.util.Debug;

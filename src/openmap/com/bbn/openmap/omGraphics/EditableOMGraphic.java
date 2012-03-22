@@ -27,6 +27,7 @@ import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.util.MissingResourceException;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
@@ -42,7 +43,6 @@ import com.bbn.openmap.omGraphics.event.EOMGListenerSupport;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
-import java.util.MissingResourceException;
 
 /**
  * The EditableOMGraphic is a shell that controls actions to edit or create a

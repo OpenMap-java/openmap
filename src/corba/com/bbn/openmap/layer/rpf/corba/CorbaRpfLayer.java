@@ -146,11 +146,12 @@ public class CorbaRpfLayer extends RpfLayer {
     public void setPaths(String[] pathsToRPFDirs) {
         RpfFrameProvider frameProvider = getFrameProvider();
 
-        if (frameProvider != null) {
+        if (!(frameProvider instanceof CRFPClient)) {
             return;
         }
 
-        setFrameProvider((RpfFrameProvider) new CRFPClient());
+        frameProvider = (RpfFrameProvider) new CRFPClient();
+        setFrameProvider(frameProvider);
 
         if (props != null) {
             // Set default settings...

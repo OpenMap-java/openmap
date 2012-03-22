@@ -23,13 +23,12 @@
 package com.bbn.openmap.layer.link;
 
 /*  Java Core  */
-import java.io.*;
+import java.io.IOException;
 
-/*  OpenMap  */
+import com.bbn.openmap.omGraphics.grid.OMGridGenerator;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.ISwingWorker;
 import com.bbn.openmap.util.SwingWorker;
-import com.bbn.openmap.omGraphics.grid.*;
 
 /**
  * The Link Listener is the object listening from input from the link

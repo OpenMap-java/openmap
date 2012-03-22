@@ -22,13 +22,22 @@
 
 package com.bbn.openmap.graphicLoader;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.util.Iterator;
-import javax.swing.*;
-import javax.swing.event.*;
 
-import com.bbn.openmap.omGraphics.*;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import com.bbn.openmap.omGraphics.OMGraphicHandler;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 

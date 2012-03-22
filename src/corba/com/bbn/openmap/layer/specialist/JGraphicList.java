@@ -26,47 +26,48 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 
 /** class JGraphic */
-public class JGraphicList extends OMGraphicList {
+public class JGraphicList
+      extends OMGraphicList {
 
-    /**
-     * Construct an OMGraphicList.
-     */
-    public JGraphicList() {
-        super();
-    };
+   /**
+    * Construct an OMGraphicList.
+    */
+   public JGraphicList() {
+      super();
+   }
 
-    /**
-     * Construct an OMGraphicList with an initial capacity.
-     * 
-     * @param initialCapacity the initial capacity of the list
-     */
-    public JGraphicList(int initialCapacity) {
-        super(initialCapacity);
-    };
+   /**
+    * Construct an OMGraphicList with an initial capacity.
+    * 
+    * @param initialCapacity the initial capacity of the list
+    */
+   public JGraphicList(int initialCapacity) {
+      super(initialCapacity);
+   }
 
-    /**
-     * Construct an OMGraphicList with an initial capacity and a
-     * standard increment value.
-     * 
-     * @param initialCapacity the initial capacity of the list
-     * @param capacityIncrement the capacityIncrement for resizing
-     */
-    public JGraphicList(int initialCapacity, int capacityIncrement) {
-        super(initialCapacity);
-    };
+   /**
+    * Construct an OMGraphicList with an initial capacity and a standard
+    * increment value.
+    * 
+    * @param initialCapacity the initial capacity of the list
+    * @param capacityIncrement the capacityIncrement for resizing
+    */
+   public JGraphicList(int initialCapacity, int capacityIncrement) {
+      super(initialCapacity);
+   }
 
-    public OMGraphic getOMGraphicWithId(String gID) {
-        java.util.Iterator targets = iterator();
-        while (targets.hasNext()) {
-            OMGraphic graphic = (OMGraphic) targets.next();
-            if (graphic instanceof JObjectHolder) {
-                com.bbn.openmap.corba.CSpecialist.EComp ecomp = ((JObjectHolder) graphic).getObject();
-                if (ecomp.cID.equals(gID)) {
-                    return graphic;
-                }
+   public OMGraphic getOMGraphicWithId(String gID) {
+      java.util.Iterator targets = iterator();
+      while (targets.hasNext()) {
+         OMGraphic graphic = (OMGraphic) targets.next();
+         if (graphic instanceof JObjectHolder) {
+            com.bbn.openmap.corba.CSpecialist.EComp ecomp = ((JObjectHolder) graphic).getObject();
+            if (ecomp.cID.equals(gID)) {
+               return graphic;
             }
-        }
-        return null;
-    }
+         }
+      }
+      return null;
+   }
 
 }

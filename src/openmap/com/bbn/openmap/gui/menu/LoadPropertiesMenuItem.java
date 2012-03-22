@@ -22,12 +22,20 @@
 
 package com.bbn.openmap.gui.menu;
 
-import java.awt.event.*;
-import java.awt.*;
-import java.util.*;
-import java.io.*;
+import java.awt.FileDialog;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Properties;
 
-import com.bbn.openmap.*;
+import com.bbn.openmap.InformationDelegator;
+import com.bbn.openmap.LayerHandler;
+import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.util.Debug;
 
 /**

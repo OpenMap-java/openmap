@@ -30,179 +30,154 @@
 
 package com.bbn.openmap.dataAccess.iso8211;
 
-import com.bbn.openmap.layer.vpf.MutableInt;
-import com.bbn.openmap.util.Debug;
-
 import java.io.IOException;
 import java.util.Iterator;
 
+import com.bbn.openmap.layer.vpf.MutableInt;
+import com.bbn.openmap.util.Debug;
+
 /**
- * Class that uses the DDF* classes to read an 8211 file and print out
- * the contents.
+ * Class that uses the DDF* classes to read an 8211 file and print out the
+ * contents.
  */
 public class View8211 {
 
-    protected boolean bFSPTHack = false;
-    protected String pszFilename = null;
+   protected boolean bFSPTHack = false;
+   protected String pszFilename = null;
 
-    public View8211(String filename, boolean fspt_repeating) {
-        pszFilename = filename;
-        bFSPTHack = fspt_repeating;
+   public View8211(String filename, boolean fspt_repeating) {
+      pszFilename = filename;
+      bFSPTHack = fspt_repeating;
 
-        view();
-    }
+      view();
+   }
 
-    protected void view() {
-        DDFModule oModule;
+   protected void view() {
+      DDFModule oModule;
 
-        try {
+      try {
 
-            oModule = new DDFModule(pszFilename);
+         oModule = new DDFModule(pszFilename);
 
-            if (bFSPTHack) {
-                DDFFieldDefinition poFSPT = oModule.findFieldDefn("FSPT");
+         if (bFSPTHack) {
+            DDFFieldDefinition poFSPT = oModule.findFieldDefn("FSPT");
 
-                if (poFSPT == null)
-                    Debug.error("View8211: unable to find FSPT field to set repeating flag.");
-                else
-                    poFSPT.setRepeating(true);
+            if (poFSPT == null)
+               Debug.error("View8211: unable to find FSPT field to set repeating flag.");
+            else
+               poFSPT.setRepeating(true);
+         }
+
+         /* -------------------------------------------------------------------- */
+         /* Loop reading records till there are none left. */
+         /* -------------------------------------------------------------------- */
+         DDFRecord poRecord;
+         int iRecord = 1;
+
+         while ((poRecord = oModule.readRecord()) != null) {
+            Debug.output("Record " + (iRecord++) + "(" + poRecord.getDataSize() + " bytes)");
+
+            /* ------------------------------------------------------------ */
+            /* Loop over each field in this particular record. */
+            /* ------------------------------------------------------------ */
+            for (Iterator it = poRecord.iterator(); it != null && it.hasNext();) {
+               // Debug.output(((DDFField)it.next()).toString()));
+               viewRecordField(((DDFField) it.next()));
             }
+         }
 
-            /* -------------------------------------------------------------------- */
-            /* Loop reading records till there are none left. */
-            /* -------------------------------------------------------------------- */
-            DDFRecord poRecord;
-            int iRecord = 1;
+      } catch (IOException ioe) {
+         Debug.error(ioe.getMessage());
+         ioe.printStackTrace();
+      }
+   }
 
-            while ((poRecord = oModule.readRecord()) != null) {
-                Debug.output("Record " + (iRecord++) + "("
-                        + poRecord.getDataSize() + " bytes)");
+   /**
+    * Dump the contents of a field instance in a record.
+    */
+   protected void viewRecordField(DDFField poField) {
+      DDFFieldDefinition poFieldDefn = poField.getFieldDefn();
 
-                /* ------------------------------------------------------------ */
-                /* Loop over each field in this particular record. */
-                /* ------------------------------------------------------------ */
-                for (Iterator it = poRecord.iterator(); it != null
-                        && it.hasNext();
-                // Debug.output(((DDFField)it.next()).toString()));
-                viewRecordField(((DDFField) it.next())))
-                    ;
-            }
+      // Report general information about the field.
+      Debug.output("    Field " + poFieldDefn.getName() + ": " + poFieldDefn.getDescription());
 
-        } catch (IOException ioe) {
-            Debug.error(ioe.getMessage());
-            ioe.printStackTrace();
-        }
-    }
+      // Get pointer to this fields raw data. We will move through
+      // it consuming data as we report subfield values.
 
-    /**
-     * Dump the contents of a field instance in a record.
-     */
-    protected void viewRecordField(DDFField poField) {
-        DDFFieldDefinition poFieldDefn = poField.getFieldDefn();
+      byte[] pachFieldData = poField.getData();
+      int nBytesRemaining = poField.getDataSize();
 
-        // Report general information about the field.
-        Debug.output("    Field " + poFieldDefn.getName() + ": "
-                + poFieldDefn.getDescription());
+      /* -------------------------------------------------------- */
+      /* Loop over the repeat count for this fields */
+      /* subfields. The repeat count will almost */
+      /* always be one. */
+      /* -------------------------------------------------------- */
+      for (int iRepeat = 0; iRepeat < poField.getRepeatCount(); iRepeat++) {
+         if (iRepeat > 0) {
+            Debug.output("Repeating (" + iRepeat + ")...");
+         }
+         /* -------------------------------------------------------- */
+         /* Loop over all the subfields of this field, advancing */
+         /* the data pointer as we consume data. */
+         /* -------------------------------------------------------- */
+         for (int iSF = 0; iSF < poFieldDefn.getSubfieldCount(); iSF++) {
 
-        // Get pointer to this fields raw data. We will move through
-        // it consuming data as we report subfield values.
+            DDFSubfieldDefinition poSFDefn = poFieldDefn.getSubfieldDefn(iSF);
+            int nBytesConsumed = viewSubfield(poSFDefn, pachFieldData, nBytesRemaining);
+            nBytesRemaining -= nBytesConsumed;
+            byte[] tempData = new byte[pachFieldData.length - nBytesConsumed];
+            System.arraycopy(pachFieldData, nBytesConsumed, tempData, 0, tempData.length);
+            pachFieldData = tempData;
+         }
+      }
+   }
 
-        byte[] pachFieldData = poField.getData();
-        int nBytesRemaining = poField.getDataSize();
+   protected int viewSubfield(DDFSubfieldDefinition poSFDefn, byte[] pachFieldData, int nBytesRemaining) {
 
-        /* -------------------------------------------------------- */
-        /* Loop over the repeat count for this fields */
-        /* subfields. The repeat count will almost */
-        /* always be one. */
-        /* -------------------------------------------------------- */
-        for (int iRepeat = 0; iRepeat < poField.getRepeatCount(); iRepeat++) {
-            if (iRepeat > 0) {
-                Debug.output("Repeating (" + iRepeat + ")...");
-            }
-            /* -------------------------------------------------------- */
-            /* Loop over all the subfields of this field, advancing */
-            /* the data pointer as we consume data. */
-            /* -------------------------------------------------------- */
-            for (int iSF = 0; iSF < poFieldDefn.getSubfieldCount(); iSF++) {
+      MutableInt nBytesConsumed = new MutableInt();
 
-                DDFSubfieldDefinition poSFDefn = poFieldDefn.getSubfieldDefn(iSF);
-                int nBytesConsumed = viewSubfield(poSFDefn,
-                        pachFieldData,
-                        nBytesRemaining);
-                nBytesRemaining -= nBytesConsumed;
-                byte[] tempData = new byte[pachFieldData.length
-                        - nBytesConsumed];
-                System.arraycopy(pachFieldData,
-                        nBytesConsumed,
-                        tempData,
-                        0,
-                        tempData.length);
-                pachFieldData = tempData;
-            }
-        }
-    }
+      DDFDataType ddfdt = poSFDefn.getType();
 
-    protected int viewSubfield(DDFSubfieldDefinition poSFDefn,
-                               byte[] pachFieldData, int nBytesRemaining) {
+      if (ddfdt == DDFDataType.DDFInt) {
+         Debug.output("        " + poSFDefn.getName() + " = "
+               + poSFDefn.extractIntData(pachFieldData, nBytesRemaining, nBytesConsumed));
+      } else if (ddfdt == DDFDataType.DDFFloat) {
+         Debug.output("        " + poSFDefn.getName() + " = "
+               + poSFDefn.extractFloatData(pachFieldData, nBytesRemaining, nBytesConsumed));
+      } else if (ddfdt == DDFDataType.DDFString) {
+         Debug.output("        " + poSFDefn.getName() + " = "
+               + poSFDefn.extractStringData(pachFieldData, nBytesRemaining, nBytesConsumed));
+      } else if (ddfdt == DDFDataType.DDFBinaryString) {
+         poSFDefn.extractStringData(pachFieldData, nBytesRemaining, nBytesConsumed); // pabyBString
 
-        MutableInt nBytesConsumed = new MutableInt();
+         Debug.output("        " + poSFDefn.getName());
+      }
 
-        DDFDataType ddfdt = poSFDefn.getType();
+      return nBytesConsumed.value;
+   }
 
-        if (ddfdt == DDFDataType.DDFInt) {
-            Debug.output("        "
-                    + poSFDefn.getName()
-                    + " = "
-                    + poSFDefn.extractIntData(pachFieldData,
-                            nBytesRemaining,
-                            nBytesConsumed));
-        } else if (ddfdt == DDFDataType.DDFFloat) {
-            Debug.output("        "
-                    + poSFDefn.getName()
-                    + " = "
-                    + poSFDefn.extractFloatData(pachFieldData,
-                            nBytesRemaining,
-                            nBytesConsumed));
-        } else if (ddfdt == DDFDataType.DDFString) {
-            Debug.output("        "
-                    + poSFDefn.getName()
-                    + " = "
-                    + poSFDefn.extractStringData(pachFieldData,
-                            nBytesRemaining,
-                            nBytesConsumed));
-        } else if (ddfdt == DDFDataType.DDFBinaryString) {
-            poSFDefn.extractStringData(pachFieldData,
-                    nBytesRemaining,
-                    nBytesConsumed); // pabyBString
+   public static void main(String[] argv) {
 
-            Debug.output("        " + poSFDefn.getName());
-        }
+      Debug.init();
 
-        return nBytesConsumed.value;
-    }
+      String pszFilename = null;
+      boolean bFSPTHack = false;
 
-    public static void main(String[] argv) {
+      for (int iArg = 0; iArg < argv.length; iArg++) {
+         if (argv[iArg].equals("-fspt_repeating")) {
+            bFSPTHack = true;
+         } else {
+            pszFilename = argv[iArg];
+         }
+      }
 
-        Debug.init();
+      if (pszFilename == null) {
+         Debug.output("Usage: View8211 filename\n");
+         System.exit(1);
+      }
 
-        String pszFilename = null;
-        boolean bFSPTHack = false;
+      new View8211(pszFilename, bFSPTHack);
 
-        for (int iArg = 0; iArg < argv.length; iArg++) {
-            if (argv[iArg].equals("-fspt_repeating")) {
-                bFSPTHack = true;
-            } else {
-                pszFilename = argv[iArg];
-            }
-        }
-
-        if (pszFilename == null) {
-            Debug.output("Usage: View8211 filename\n");
-            System.exit(1);
-        }
-
-        new View8211(pszFilename, bFSPTHack);
-
-    }
+   }
 
 }

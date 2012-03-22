@@ -32,9 +32,10 @@ import java.beans.beancontext.BeanContextMembershipEvent;
 import java.beans.beancontext.BeanContextMembershipListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Iterator;
+
 import javax.swing.JApplet;
 import javax.swing.JMenuBar;
-import java.util.Iterator;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.MapBean;

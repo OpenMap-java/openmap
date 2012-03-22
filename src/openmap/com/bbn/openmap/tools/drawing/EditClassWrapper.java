@@ -23,6 +23,7 @@
 package com.bbn.openmap.tools.drawing;
 
 import java.net.URL;
+
 import javax.swing.ImageIcon;
 
 /**

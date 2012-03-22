@@ -20,7 +20,8 @@
  */
 package com.bbn.openmap.dataAccess.cgm;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 public class EllipticalArcElement extends Command {
     int X, Y, X1, Y1, X2, Y2, SX1, SY1, SX2, SY2;

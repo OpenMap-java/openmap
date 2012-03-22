@@ -24,9 +24,9 @@ package com.bbn.openmap.layer.vpf;
 
 import java.io.IOException;
 
-import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.BinaryBufferedFile;
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.io.FormatException;
 
 /**
  * Read in a VPF variable length index file, and allows access to

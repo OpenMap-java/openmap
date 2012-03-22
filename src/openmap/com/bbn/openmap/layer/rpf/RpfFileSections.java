@@ -34,7 +34,8 @@ package com.bbn.openmap.layer.rpf;
 import java.awt.Color;
 import java.io.IOException;
 
-import com.bbn.openmap.io.*;
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.Debug;
 
 /**

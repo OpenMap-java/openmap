@@ -22,11 +22,11 @@
 
 package com.bbn.openmap.gui.menu;
 
-import com.bbn.openmap.MapBean;
-import com.bbn.openmap.image.MapBeanPrinter;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.image.MapBeanPrinter;
 
 /**
  * A MapBeanPrinterMenuItem is a MapHandlerMenuItem that looks for the

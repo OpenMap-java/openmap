@@ -23,6 +23,7 @@
 package com.bbn.openmap.omGraphics.grid;
 
 import java.awt.Color;
+
 import com.bbn.openmap.proj.Length;
 
 /**

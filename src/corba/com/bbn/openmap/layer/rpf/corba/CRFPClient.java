@@ -31,6 +31,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.MemoryCacheImageInputStream;
+
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.layer.rpf.RpfCoverageBox;
 import com.bbn.openmap.layer.rpf.RpfFrameProvider;
@@ -48,9 +52,6 @@ import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.MemoryCacheImageInputStream;
 
 /**
  * An implementation of the RpfFrameProvider interface that uses CORBA to get

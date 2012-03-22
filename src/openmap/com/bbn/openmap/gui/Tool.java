@@ -22,7 +22,7 @@
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
+import java.awt.Container;
 
 /**
  * Represents an item on the ToolPanel. If the Tool is a PropertyConsumer and a

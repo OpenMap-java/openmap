@@ -22,7 +22,11 @@
 
 package com.bbn.openmap.tools.dnd;
 
-import java.awt.dnd.*;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSourceListener;
+import java.awt.dnd.InvalidDnDOperationException;
+
 import com.bbn.openmap.util.Debug;
 
 /**

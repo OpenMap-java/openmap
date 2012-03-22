@@ -22,11 +22,14 @@
 
 package com.bbn.openmap.layer.vpf;
 
-import java.io.IOException;
 import java.io.EOFException;
-import java.util.*;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.BitSet;
 
-import com.bbn.openmap.io.*;
+import com.bbn.openmap.io.BinaryBufferedFile;
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.Debug;
 
 /** Read a VPF thematic index file. (VPF *.?ti files) */

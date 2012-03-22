@@ -25,7 +25,9 @@ package com.bbn.openmap.omGraphics.grid;
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.util.Properties;
+
 import javax.swing.JPanel;
+
 import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.util.PropUtils;
 

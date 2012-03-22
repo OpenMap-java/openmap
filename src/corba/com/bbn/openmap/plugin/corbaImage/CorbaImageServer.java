@@ -22,13 +22,13 @@
 
 package com.bbn.openmap.plugin.corbaImage;
 
-import com.bbn.openmap.image.MapRequestHandler;
-import com.bbn.openmap.plugin.corbaImage.corbaImageServer.*;
-import com.bbn.openmap.util.corba.CORBASupport;
-import com.bbn.openmap.util.Debug;
-
-import java.io.*;
+import java.io.IOException;
 import java.util.Properties;
+
+import com.bbn.openmap.image.MapRequestHandler;
+import com.bbn.openmap.plugin.corbaImage.corbaImageServer.ServerPOA;
+import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.corba.CORBASupport;
 
 /**
  * The CorbaImageServer is a CORBA implementation of a server that

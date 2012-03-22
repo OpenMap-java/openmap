@@ -23,7 +23,7 @@
 package com.bbn.openmap.layer;
 
 import com.bbn.openmap.Layer;
-import com.bbn.openmap.event.*;
+import com.bbn.openmap.event.ProjectionEvent;
 
 /**
  * SinkLayer is a Layer which does nothing. This can be used primarily

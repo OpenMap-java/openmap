@@ -17,7 +17,9 @@
  */
 package com.bbn.openmap.tools.j3d;
 
-import javax.media.j3d.*;
+import javax.media.j3d.Behavior;
+import javax.media.j3d.TransformGroup;
+
 import com.bbn.openmap.proj.Projection;
 
 public interface NavBehaviorProvider {

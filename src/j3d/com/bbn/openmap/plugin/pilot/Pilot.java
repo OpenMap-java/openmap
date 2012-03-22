@@ -166,7 +166,7 @@ public class Pilot extends OMPoint implements ActionListener, FocusListener {
                             }
                             palette = null;
                             // firePaletteEvent(false);
-                        };
+                        }
                     });
             // add the window to the desktop
             if (desktop != null) {
@@ -180,7 +180,7 @@ public class Pilot extends OMPoint implements ActionListener, FocusListener {
                         new ComponentAdapter() {
                             public void componentHidden(ComponentEvent e) {
                             // firePaletteEvent(false);
-                            };
+                            }
                         });
             }
             palette.setVisible(true);

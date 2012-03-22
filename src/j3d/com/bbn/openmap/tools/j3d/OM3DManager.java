@@ -22,9 +22,18 @@
 
 package com.bbn.openmap.tools.j3d;
 
-import java.awt.*;
-import javax.media.j3d.*;
-import javax.vecmath.*;
+import java.awt.Dimension;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+
+import javax.media.j3d.Background;
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.Canvas3D;
+import javax.media.j3d.GraphicsConfigTemplate3D;
+import javax.media.j3d.Group;
+import javax.media.j3d.VirtualUniverse;
+import javax.vecmath.Vector3f;
 
 /**
  * An abstract 3D manager object, containing content, canvas, camera

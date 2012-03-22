@@ -22,14 +22,14 @@
 
 package com.bbn.openmap.layer.link;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 
 /**
  */

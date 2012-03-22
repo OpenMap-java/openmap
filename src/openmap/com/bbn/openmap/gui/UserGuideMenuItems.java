@@ -22,12 +22,23 @@
 
 package com.bbn.openmap.gui;
 
-import java.beans.*;
-import java.beans.beancontext.*;
-import java.util.*;
-import java.awt.event.*;
-import javax.swing.*;
-import com.bbn.openmap.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
+import java.beans.beancontext.BeanContext;
+import java.beans.beancontext.BeanContextChild;
+import java.beans.beancontext.BeanContextChildSupport;
+import java.beans.beancontext.BeanContextMembershipEvent;
+import java.beans.beancontext.BeanContextMembershipListener;
+import java.util.Iterator;
+import java.util.Vector;
+
+import javax.swing.JMenuItem;
+
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.InformationDelegator;
 
 /**
  * This class provides MenuItems that get added under HelpMenu. This

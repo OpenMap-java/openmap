@@ -22,13 +22,15 @@
 
 package com.bbn.openmap.plugin.pilot;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.beancontext.BeanContext;
+import java.awt.Component;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
+import java.beans.beancontext.BeanContext;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.plugin.*;
+import com.bbn.openmap.omGraphics.OMAction;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.plugin.OMGraphicHandlerPlugIn;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.tools.drawing.OMDrawingTool;
 import com.bbn.openmap.util.Debug;

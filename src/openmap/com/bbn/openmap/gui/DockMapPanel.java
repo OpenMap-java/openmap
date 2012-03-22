@@ -22,16 +22,17 @@
 
 package com.bbn.openmap.gui;
 
-import java.awt.LayoutManager;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.LayoutManager;
+
 import javax.swing.JComponent;
 
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.PropertyHandler;
-import com.bbn.openmap.gui.dock.DockPanel;
 import com.bbn.openmap.gui.dock.BasicDockPanel;
 import com.bbn.openmap.gui.dock.DockConstraint;
+import com.bbn.openmap.gui.dock.DockPanel;
 
 /**
  * The DockMapPanel is a MapPanel that uses a DockPanel for its

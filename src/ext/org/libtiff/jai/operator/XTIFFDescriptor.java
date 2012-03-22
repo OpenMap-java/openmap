@@ -34,8 +34,6 @@ import javax.media.jai.JAI;
 import javax.media.jai.OperationDescriptorImpl;
 import javax.media.jai.OperationRegistry;
 
-import org.libtiff.jai.codec.XTIFFDirectory;
-import org.libtiff.jai.codec.XTIFFTileCodecImpl;
 import org.libtiff.jai.codecimpl.XTIFFCodec;
 import org.libtiff.jai.codecimpl.XTIFFImage;
 

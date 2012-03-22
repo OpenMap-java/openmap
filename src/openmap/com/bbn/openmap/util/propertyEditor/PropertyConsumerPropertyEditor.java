@@ -22,10 +22,10 @@
 
 package com.bbn.openmap.util.propertyEditor;
 
-import com.bbn.openmap.PropertyConsumer;
-
 import java.beans.PropertyEditorSupport;
 import java.util.Properties;
+
+import com.bbn.openmap.PropertyConsumer;
 
 /**
  * The base class for property editors that can use properties to

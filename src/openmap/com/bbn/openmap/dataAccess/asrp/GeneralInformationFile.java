@@ -24,11 +24,12 @@
 
 package com.bbn.openmap.dataAccess.asrp;
 
-import com.bbn.openmap.dataAccess.iso8211.*;
-import com.bbn.openmap.util.Debug;
-
 import java.awt.Dimension;
 import java.io.IOException;
+
+import com.bbn.openmap.dataAccess.iso8211.DDFModule;
+import com.bbn.openmap.dataAccess.iso8211.DDFRecord;
+import com.bbn.openmap.util.Debug;
 
 public class GeneralInformationFile extends GeneralASRPFile {
 

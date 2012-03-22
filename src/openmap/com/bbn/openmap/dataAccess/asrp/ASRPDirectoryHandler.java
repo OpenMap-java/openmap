@@ -22,6 +22,11 @@
 
 package com.bbn.openmap.dataAccess.asrp;
 
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRect;
@@ -29,11 +34,6 @@ import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.Debug;
-
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * The ASRPDirectoryHandler is the main object a layer would use when

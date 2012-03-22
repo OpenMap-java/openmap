@@ -15,7 +15,7 @@
 					     **/*.pl, **/unimplemented/**, **/build.xml" />
 
 		<property name="javac.excludes" value="${general.excludes}, 
-					   **/*.gif, **/*.png" />
+					   **/*.gif, **/*.png, **/IntersectionTest.java" />
 		<property name="mac.app" value="OpenMap.app" />
 		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
 		<property name="openmap_version" value="5.0.1b" />
@@ -30,12 +30,14 @@
 		<property name="openmap.zip" value="${openmap_package.dir}/openmap-${openmap_version}.zip" />
 		<property name="macJavaStub" value="/System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub" />
 
+		<!-- Whatever you put in value will be passed to compiler.-->
+<!--		<property name="compiler.args" value="-Xlint:deprecation,unchecked"/>-->
+		<property name="compiler.args" value="-nowarn"/>
+
 		<available file="${macJavaStub}" property="do.copyMacJavaStub" />
 
 		<path id="ext_tools_classpath">
-			<fileset dir="${openmap.ext}">
-				<include name="**/*.jar" />
-			</fileset>
+		  <fileset dir="." includes="ext/**/*.jar" />
 		</path>
 
 	</target>

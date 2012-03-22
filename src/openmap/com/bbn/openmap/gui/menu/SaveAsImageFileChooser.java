@@ -22,11 +22,13 @@
 
 package com.bbn.openmap.gui.menu;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+
 import com.bbn.openmap.gui.DimensionQueryPanel;
 import com.bbn.openmap.util.PaletteHelper;
-
-import javax.swing.*;
-import java.awt.*;
 
 /**
  * A class extended from a JFileChooser that adds fields for

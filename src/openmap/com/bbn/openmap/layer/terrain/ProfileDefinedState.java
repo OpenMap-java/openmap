@@ -24,8 +24,11 @@
 
 package com.bbn.openmap.layer.terrain;
 
-import java.awt.event.*;
-import com.bbn.openmap.util.stateMachine.State;import com.bbn.openmap.event.LayerStatusEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+
+import com.bbn.openmap.event.LayerStatusEvent;
+import com.bbn.openmap.util.stateMachine.State;
 
 class ProfileDefinedState extends State {
 

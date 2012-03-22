@@ -6,7 +6,6 @@ import java.awt.Paint;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-import com.bbn.openmap.proj.coords.CoordinateReferenceSystem;
 import com.bbn.openmap.proj.coords.DatumShiftGCT;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 

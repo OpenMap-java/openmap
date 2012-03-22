@@ -17,10 +17,10 @@
 
 package com.bbn.openmap.layer.vpf;
 
-import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.io.BinaryFile;
-
 import java.io.EOFException;
+
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.io.FormatException;
 
 /**
  * Encapsulate the information about a particular column in a vpf

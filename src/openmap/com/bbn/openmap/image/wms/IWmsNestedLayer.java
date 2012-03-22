@@ -1,6 +1,5 @@
 package com.bbn.openmap.image.wms;
 
-import com.bbn.openmap.Layer;
 
 /**
  * A variant of {@link IWmsLayer} that allow for nesting of wms layers.

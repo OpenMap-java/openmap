@@ -24,8 +24,8 @@ package com.bbn.openmap.omGraphics.meteo;
 
 import java.awt.Color;
 
-import com.bbn.openmap.omGraphics.awt.LineShapeDecoration;
 import com.bbn.openmap.omGraphics.OMDecoratedSpline;
+import com.bbn.openmap.omGraphics.awt.LineShapeDecoration;
 
 /**
  * OMOcclusion Just need to init the decorations.

@@ -22,7 +22,10 @@
 
 package com.bbn.openmap.omGraphics.labeled;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.EditableOMPoly;
+import com.bbn.openmap.omGraphics.GraphicAttributes;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMPoly;
 
 /**
  * The EditableLabeledOMPoly encompasses an LabeledOMPoly, providing

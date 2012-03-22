@@ -22,12 +22,23 @@
 
 package com.bbn.openmap.tools.dnd;
 
-import java.awt.event.*;
-import java.beans.*;
-import java.util.*;
-import java.beans.beancontext.*;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
+import java.beans.beancontext.BeanContext;
+import java.beans.beancontext.BeanContextChild;
+import java.beans.beancontext.BeanContextChildSupport;
+import java.beans.beancontext.BeanContextMembershipEvent;
+import java.beans.beancontext.BeanContextMembershipListener;
+import java.util.Iterator;
+import java.util.Vector;
 
-import com.bbn.openmap.*;
+import com.bbn.openmap.MapBean;
+import com.bbn.openmap.SoloMapComponent;
 import com.bbn.openmap.util.Debug;
 
 /**

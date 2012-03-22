@@ -33,7 +33,6 @@ import java.util.List;
 import javax.swing.JMenuItem;
 
 import com.bbn.openmap.event.MapMouseEvent;
-import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;

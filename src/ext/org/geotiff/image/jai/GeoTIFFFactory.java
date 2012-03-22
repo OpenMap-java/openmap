@@ -18,7 +18,6 @@ import java.io.IOException;
 
 import org.libtiff.jai.codec.XTIFFDirectory;
 import org.libtiff.jai.codec.XTIFFFactory;
-import org.libtiff.jai.codec.XTIFFField;
 
 import com.sun.media.jai.codec.SeekableStream;
 

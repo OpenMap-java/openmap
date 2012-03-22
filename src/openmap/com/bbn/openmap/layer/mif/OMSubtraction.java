@@ -22,12 +22,18 @@
 
 package com.bbn.openmap.layer.mif;
 
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.*;
-import java.awt.*;
-import java.awt.geom.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.geom.Area;
+import java.awt.geom.GeneralPath;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Vector;
+
+import com.bbn.openmap.omGraphics.OMGraphicAdapter;
+import com.bbn.openmap.proj.Projection;
 
 /**
  * Defines a Region of a MIF file where when one region encloses

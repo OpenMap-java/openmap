@@ -22,7 +22,9 @@
 
 package com.bbn.openmap.util.http;
 
-import java.io.*;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 
 /**
  * An event corresponding to a single HTTP request ("GET" command).

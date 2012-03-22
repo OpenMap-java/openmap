@@ -22,8 +22,9 @@
 
 package com.bbn.openmap.gui;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+
+import javax.swing.JScrollPane;
 
 /**
  * The ScrollPaneWindowSupport class does the same thing as

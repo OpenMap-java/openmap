@@ -22,7 +22,8 @@
 
 package com.bbn.openmap.image;
 
-import java.awt.image.*;
+import java.awt.image.ImageObserver;
+import java.awt.image.PixelGrabber;
 
 import com.bbn.openmap.util.Debug;
 

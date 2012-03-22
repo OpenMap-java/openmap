@@ -31,6 +31,7 @@
 package com.bbn.openmap.layer.rpf;
 
 import java.awt.Point;
+
 import com.bbn.openmap.util.Debug;
 
 /**

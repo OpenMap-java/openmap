@@ -23,11 +23,13 @@
 // **********************************************************************
 package com.bbn.openmap.dataAccess.dted;
 
-import com.bbn.openmap.io.*;
-import com.bbn.openmap.util.Debug;
-
-import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import com.bbn.openmap.io.BinaryBufferedFile;
+import com.bbn.openmap.io.BinaryFile;
+import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.util.Debug;
 
 public class DTEDFrameUHL {
     public int abs_vert_acc = -1; // in meters

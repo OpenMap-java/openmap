@@ -22,7 +22,8 @@
 
 package com.bbn.openmap.util.html;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Vector;
 
 /** A basic html container type */
 public class ListElement implements ContainerElement {

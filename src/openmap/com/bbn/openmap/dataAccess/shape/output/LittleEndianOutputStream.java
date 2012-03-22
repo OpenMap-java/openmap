@@ -22,7 +22,10 @@
 
 package com.bbn.openmap.dataAccess.shape.output;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UTFDataFormatException;
 
 /**
  * Provides methods for writing data to an output stream in

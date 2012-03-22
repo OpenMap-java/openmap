@@ -22,12 +22,12 @@
 
 package com.bbn.openmap.dataAccess.dted;
 
+import java.util.Properties;
+
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-
-import java.util.Properties;
 
 /**
  * DTEDDirectoryHandler is a wrapper for a DTEDNameTranslator used for a DTED

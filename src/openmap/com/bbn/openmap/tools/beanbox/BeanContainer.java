@@ -16,7 +16,7 @@
 
 package com.bbn.openmap.tools.beanbox;
 
-import java.util.*;
+import java.util.Vector;
 
 /**
  * The {@link com.bbn.openmap.tools.beanbox.BeanBox}treats all bean

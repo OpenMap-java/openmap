@@ -23,8 +23,15 @@
 package com.bbn.openmap.gui.dock;
 
 import java.awt.Component;
-import javax.swing.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.swing.JComponent;
+import javax.swing.JLayeredPane;
+import javax.swing.JToolBar;
+import javax.swing.UIManager;
 
 import com.bbn.openmap.util.Debug;
 

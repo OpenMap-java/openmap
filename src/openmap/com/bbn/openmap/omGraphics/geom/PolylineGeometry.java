@@ -23,8 +23,9 @@
 package com.bbn.openmap.omGraphics.geom;
 
 import java.io.Serializable;
-import com.bbn.openmap.omGraphics.*;
-import com.bbn.openmap.proj.*;
+
+import com.bbn.openmap.omGraphics.OMGeometry;
+import com.bbn.openmap.proj.DrawUtil;
 
 /**
  * Graphic object that represents a polygon.

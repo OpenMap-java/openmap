@@ -23,7 +23,7 @@
 package com.bbn.openmap.dataAccess.dted;
 
 import com.bbn.openmap.omGraphics.OMGrid;
-import com.bbn.openmap.omGraphics.grid.*;
+import com.bbn.openmap.omGraphics.grid.GridData;
 
 /**
  * The OMDTEDGrid is an extended OMGrid with information about the

@@ -20,7 +20,9 @@
  */
 package com.bbn.openmap.dataAccess.cgm;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class ReadCGM {
     public static void main(String args[]) throws IOException {

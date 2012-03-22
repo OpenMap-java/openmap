@@ -22,13 +22,12 @@
 
 package com.bbn.openmap.layer.link.shape;
 
-import java.util.Properties;
 import java.net.Socket;
+import java.util.Properties;
 
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.Environment;
-
-import com.bbn.openmap.layer.link.*;
+import com.bbn.openmap.layer.link.LinkServerStarter;
+import com.bbn.openmap.util.Debug;
 
 /**
  * This class starts ShapeLinkServers on a per-client basis. A usage

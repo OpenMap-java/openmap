@@ -22,16 +22,19 @@
 
 package com.bbn.openmap.gui;
 
-import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
 import com.bbn.openmap.MapBean;
-import com.bbn.openmap.gui.menu.CoordsMenuItem;
-import com.bbn.openmap.gui.menu.ProjectionMenu;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.event.ZoomEvent;
 import com.bbn.openmap.event.ZoomListener;
 import com.bbn.openmap.event.ZoomSupport;
+import com.bbn.openmap.gui.menu.CoordsMenuItem;
+import com.bbn.openmap.gui.menu.ProjectionMenu;
+import com.bbn.openmap.util.Debug;
 
 /**
  * Provides MenuItems that lets users control the projection. This

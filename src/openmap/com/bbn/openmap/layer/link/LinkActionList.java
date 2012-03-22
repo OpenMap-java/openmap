@@ -22,19 +22,20 @@
 
 package com.bbn.openmap.layer.link;
 
+import java.awt.Color;
+import java.awt.Image;
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.Vector;
+
+import javax.swing.ImageIcon;
+
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGrid;
 import com.bbn.openmap.omGraphics.grid.OMGridGenerator;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-
-import java.awt.Color;
-import java.awt.Image;
-import java.io.EOFException;
-import java.io.IOException;
-import java.util.Vector;
-import javax.swing.ImageIcon;
 
 /**
  * The LinkActionList carries information about actions that the client should

@@ -17,13 +17,19 @@
 
 package com.bbn.openmap.layer.nexrad;
 
-import java.awt.*;
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
-import com.bbn.openmap.layer.*;
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
 

@@ -20,7 +20,8 @@
  */
 package com.bbn.openmap.dataAccess.cgm;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 public class CircularArcElement extends Command {
     int X, Y, SX1, SY1, SX2, SY2, R;

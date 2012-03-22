@@ -24,9 +24,9 @@
 
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
 
-import com.bbn.openmap.omGraphics.*;
+import com.bbn.openmap.omGraphics.EditableOMText;
 import com.bbn.openmap.util.Debug;
 
 public class TextEditState extends GraphicEditState implements EOMGEditState {

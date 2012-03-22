@@ -22,9 +22,10 @@
 
 package com.bbn.openmap.proj;
 
-import com.bbn.openmap.util.Debug;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import com.bbn.openmap.util.Debug;
 
 /**
  * This is a utility class that can be used by beans that need support

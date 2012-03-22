@@ -22,6 +22,18 @@
 
 package com.bbn.openmap.layer.asrp;
 
+import java.awt.Component;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.util.Properties;
+
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.dataAccess.asrp.ASRPConstants;
 import com.bbn.openmap.dataAccess.asrp.ASRPDirectory;
@@ -36,18 +48,6 @@ import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.DataBoundsProvider;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
-
-import java.awt.GridLayout;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
-import java.io.IOException;
-import java.util.Properties;
-
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
 
 /**
  * The ASRPLayer displays ASRP data, which is an international,

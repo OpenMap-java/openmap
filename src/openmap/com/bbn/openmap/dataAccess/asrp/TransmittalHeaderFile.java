@@ -22,14 +22,16 @@
 
 package com.bbn.openmap.dataAccess.asrp;
 
-import com.bbn.openmap.dataAccess.iso8211.*;
-
-import com.bbn.openmap.util.Debug;
-
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.bbn.openmap.dataAccess.iso8211.DDFField;
+import com.bbn.openmap.dataAccess.iso8211.DDFModule;
+import com.bbn.openmap.dataAccess.iso8211.DDFRecord;
+import com.bbn.openmap.dataAccess.iso8211.DDFSubfield;
+import com.bbn.openmap.util.Debug;
 
 /**
  * The transmitter header file contains information about various ASRP

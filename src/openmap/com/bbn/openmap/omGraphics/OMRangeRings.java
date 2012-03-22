@@ -260,7 +260,7 @@ public class OMRangeRings
 
          for (i = 0; i < noUnitInterval; i++) {
             rad = (i + 1) * radius / (noUnitInterval + 1);
-            circles[i] = new OMCircle(center, rad, Length.RADIAN, -1);
+            circles[i] = new OMCircle(LatLonPoint.getDouble(center), rad, Length.RADIAN, -1);
             value = ((i + 1) + "/" + (noUnitInterval + 1));
             t[i] = new OMText(center.getY() + Length.DECIMAL_DEGREE.fromRadians(rad), center.getX(), value, OMText.JUSTIFY_CENTER);
          }
@@ -271,7 +271,7 @@ public class OMRangeRings
          t = new OMText[number + 1];
          for (i = 0; i < number; i++) {
             rad = (i + 1) * realDistanceInterval;
-            circles[i] = new OMCircle(center, rad, Length.RADIAN, -1);
+            circles[i] = new OMCircle(LatLonPoint.getDouble(center), rad, Length.RADIAN, -1);
             value = (form.format((double) (i + 1) * interval) + " " + intervalUnits.getAbbr());
             t[i] = new OMText(center.getY() + Length.DECIMAL_DEGREE.fromRadians(rad), center.getX(), value, OMText.JUSTIFY_CENTER);
          }

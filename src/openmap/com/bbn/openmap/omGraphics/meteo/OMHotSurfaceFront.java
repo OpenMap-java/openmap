@@ -22,8 +22,8 @@
 
 package com.bbn.openmap.omGraphics.meteo;
 
-import com.bbn.openmap.omGraphics.awt.LineShapeDecoration;
 import com.bbn.openmap.omGraphics.OMDecoratedSpline;
+import com.bbn.openmap.omGraphics.awt.LineShapeDecoration;
 
 /**
  * OMHotSurfaceFront Just need to init the decorations.

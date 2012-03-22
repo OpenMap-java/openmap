@@ -22,14 +22,29 @@
 
 package com.bbn.openmap.plugin.esri;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import com.bbn.openmap.dataAccess.shape.*;
-import com.bbn.openmap.dataAccess.shape.output.*;
-import com.bbn.openmap.omGraphics.*;
-import java.util.*;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import com.bbn.openmap.dataAccess.shape.DbfTableModel;
+import com.bbn.openmap.dataAccess.shape.EsriGraphicList;
+import com.bbn.openmap.dataAccess.shape.EsriPoint;
+import com.bbn.openmap.dataAccess.shape.EsriPolygon;
+import com.bbn.openmap.dataAccess.shape.EsriPolygonList;
+import com.bbn.openmap.dataAccess.shape.EsriPolyline;
+import com.bbn.openmap.dataAccess.shape.EsriPolylineList;
+import com.bbn.openmap.dataAccess.shape.ShapeConstants;
+import com.bbn.openmap.dataAccess.shape.output.DbfOutputStream;
+import com.bbn.openmap.dataAccess.shape.output.ShpOutputStream;
+import com.bbn.openmap.dataAccess.shape.output.ShxOutputStream;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 
 /**
  * A class to test the creation of shape file sets
