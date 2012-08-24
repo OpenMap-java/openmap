@@ -10,29 +10,12 @@
  * with the terms of the license agreement you entered into with CSC.
  *
  */
-
 package com.bbn.openmap.maptileservlet;
 
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Properties;
-import java.util.logging.Logger;
 
 import com.bbn.openmap.PropertyConsumer;
-import com.bbn.openmap.dataAccess.mapTile.EmptyTileHandler;
-import com.bbn.openmap.dataAccess.mapTile.MapTileCoordinateTransform;
-import com.bbn.openmap.dataAccess.mapTile.MapTileMaker;
-import com.bbn.openmap.dataAccess.mapTile.OSMMapTileCoordinateTransform;
-import com.bbn.openmap.dataAccess.mapTile.SimpleEmptyTileHandler;
-import com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory;
-import com.bbn.openmap.image.PNGImageIOFormatter;
-import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.FormatException;
-import com.bbn.openmap.proj.Mercator;
-import com.bbn.openmap.proj.coords.LatLonPoint;
-import com.bbn.openmap.util.ComponentFactory;
-import com.bbn.openmap.util.PropUtils;
 
 /**
  * The MapTileSet contains all the information for handling a specific set of

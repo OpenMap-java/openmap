@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMCircle.java,v $
 // $RCSfile: EditableOMCircle.java,v $
 // $Revision: 1.12 $
 // $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
@@ -96,7 +96,7 @@ public class EditableOMCircle extends EditableOMGraphic {
     /**
      * Create the EditableOMCircle with an OMCircle already defined, ready for
      * editing.
-     * 
+     *
      * @param omc OMCircle that should be edited.
      */
     public EditableOMCircle(OMCircle omc) {
@@ -214,7 +214,7 @@ public class EditableOMCircle extends EditableOMGraphic {
     /**
      * Given a MouseEvent, find a GrabPoint that it is touching, and set the
      * moving point to that GrabPoint.
-     * 
+     *
      * @param e MouseEvent
      * @return GrabPoint that is touched by the MouseEvent, null if none are.
      */
@@ -223,7 +223,7 @@ public class EditableOMCircle extends EditableOMGraphic {
         movingPoint = null;
 
         GrabPoint[] gb = getGrabPoints();
-        
+
         Point2D pnt = getProjectionPoint(e);
         int x = (int) pnt.getX();
         int y = (int) pnt.getY();
@@ -577,7 +577,7 @@ public class EditableOMCircle extends EditableOMGraphic {
 
     /**
      * To be overloaded if needed when setting circle's radius.
-     * 
+     *
      * @param radius in DECIMAL_DEGREES
      */
     protected void setRadius(double radius) {
@@ -610,7 +610,7 @@ public class EditableOMCircle extends EditableOMGraphic {
      * Use the current projection to place the graphics on the screen. Has to be
      * called to at least assure the graphics that they are ready for rendering.
      * Called when the graphic position changes.
-     * 
+     *
      * @param proj com.bbn.openmap.proj.Projection
      * @return true
      */
@@ -650,7 +650,7 @@ public class EditableOMCircle extends EditableOMGraphic {
      * Draw the EditableOMCircle parts into the java.awt.Graphics object. The
      * grab points are only rendered if the circle machine state is
      * CircleSelectedState.CIRCLE_SELECTED.
-     * 
+     *
      * @param graphics java.awt.Graphics.
      */
     public void render(java.awt.Graphics graphics) {
@@ -719,18 +719,18 @@ public class EditableOMCircle extends EditableOMGraphic {
      * widget is being created/edited, then don't call this method from the
      * EditableOMGraphic implementation, and return a null Component from
      * getGUI.
-     * 
+     *
      * @param graphicAttributes the GraphicAttributes to use to get the GUI
      *        widget from to control those parameters for this EOMG.
      * @return java.awt.Component to use to control parameters for this EOMG.
      */
     public java.awt.Component getGUI(GraphicAttributes graphicAttributes) {
         Debug.message("eomg", "EditableOMCircle.getGUI");
-        if (graphicAttributes != null) {
-            return graphicAttributes.getColorAndLineGUI();
-        } else {
+//        if (graphicAttributes != null) {
+//            return graphicAttributes.getColorAndLineGUI();
+//        } else {
             return null;
-        }
+//        }
     }
 
 }

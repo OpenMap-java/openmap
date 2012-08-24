@@ -159,11 +159,11 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
                 if (pl instanceof PropertyConsumer) {
 
                     PropertyConsumer pc = (PropertyConsumer) pl;
-                    markerName = pc.getPropertyPrefix();
+                    markerName = PropUtils.getScopedPropertyPrefix(pc.getPropertyPrefix());
 
                     // Need to do this here before the marker name
                     // potentially changes
-                    props.put(markerName + ".class", pl.getClass().getName());
+                    props.put(markerName + "class", pl.getClass().getName());
 
                     if (markerName.startsWith(prefix)) {
                         markerName = markerName.substring(prefix.length());

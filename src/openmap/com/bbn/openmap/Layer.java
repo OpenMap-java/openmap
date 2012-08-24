@@ -17,7 +17,7 @@
 // $Revision: 1.34 $
 // $Date: 2008/09/28 19:06:07 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap;
@@ -703,9 +703,9 @@ public abstract class Layer
      * @param aInfoDisplayListener the listener to add
      */
     public void addInfoDisplayListener(InfoDisplayListener aInfoDisplayListener) {
-        synchronized (IDListeners) {
+        // synchronized (IDListeners) {    //2012.06.15 TAW
             IDListeners.add(aInfoDisplayListener);
-        }
+        //}
     }
 
     /**
@@ -714,10 +714,9 @@ public abstract class Layer
      * @param aInfoDisplayListener the listener to remove
      */
     public void removeInfoDisplayListener(InfoDisplayListener aInfoDisplayListener) {
-
-        synchronized (IDListeners) {
+        // synchronized (IDListeners) {  //2012.06.15 TAW
             IDListeners.remove(aInfoDisplayListener);
-        }
+       // }
     }
 
     /**
@@ -727,11 +726,11 @@ public abstract class Layer
      * @param evt the InfoDisplay event carrying the string.
      */
     public void fireRequestInfoLine(InfoDisplayEvent evt) {
-        synchronized (IDListeners) {
+        //synchronized (IDListeners) { // //2012.06.15 TAW
             for (InfoDisplayListener listener : IDListeners) {
                 listener.requestInfoLine(evt);
             }
-        }
+        //}
     }
 
     /**
@@ -765,11 +764,11 @@ public abstract class Layer
      *        Browser.
      */
     public void fireRequestBrowserContent(InfoDisplayEvent evt) {
-        synchronized (IDListeners) {
+        // synchronized (IDListeners) {   //2012.06.15 TAW
             for (InfoDisplayListener listener : IDListeners) {
                 listener.requestBrowserContent(evt);
             }
-        }
+        // }
     }
 
     /**
@@ -791,11 +790,11 @@ public abstract class Layer
      *        Browser.
      */
     public void fireRequestURL(InfoDisplayEvent evt) {
-        synchronized (IDListeners) {
+        // synchronized (IDListeners) {      //2012.06.15 TAW
             for (InfoDisplayListener listener : IDListeners) {
                 listener.requestURL(evt);
             }
-        }
+        // }
     }
 
     /**
@@ -816,11 +815,11 @@ public abstract class Layer
      * @param cursor the cursor to use.
      */
     public void fireRequestCursor(java.awt.Cursor cursor) {
-        synchronized (IDListeners) {
+        // synchronized (IDListeners) {  //2012.06.15 TAW
             for (InfoDisplayListener listener : IDListeners) {
                 listener.requestCursor(cursor);
             }
-        }
+        // }
     }
 
     /**
@@ -831,11 +830,11 @@ public abstract class Layer
      *        dialog window.
      */
     public void fireRequestMessage(InfoDisplayEvent evt) {
-        synchronized (IDListeners) {
+        // synchronized (IDListeners) {  //2012.06.15 TAW
             for (InfoDisplayListener listener : IDListeners) {
                 listener.requestMessage(evt);
             }
-        }
+        // }
     }
 
     /**
@@ -870,7 +869,7 @@ public abstract class Layer
      * InfoDisplayEvent is null, then a requestHideToolTip will be fired.
      */
     public void fireRequestToolTip(InfoDisplayEvent event) {
-        synchronized (IDListeners) {
+        // synchronized (IDListeners) {   //2012.06.15 TAW
             for (InfoDisplayListener listener : IDListeners) {
                 if (event != null) {
                     listener.requestShowToolTip(event);
@@ -878,7 +877,7 @@ public abstract class Layer
                     listener.requestHideToolTip();
                 }
             }
-        }
+        //}
     }
 
     // /////////////////////////////////////////////////
@@ -890,9 +889,9 @@ public abstract class Layer
      * @param aLayerStatusListener LayerStatusListener
      */
     public void addLayerStatusListener(LayerStatusListener aLayerStatusListener) {
-        synchronized (lsListeners) {
+        //synchronized (lsListeners) {  //2012.06.15 TAW
             lsListeners.add(aLayerStatusListener);
-        }
+        //}
     }
 
     /**
@@ -901,9 +900,9 @@ public abstract class Layer
      * @param aLayerStatusListener the listener to remove
      */
     public void removeLayerStatusListener(LayerStatusListener aLayerStatusListener) {
-        synchronized (lsListeners) {
+        // synchronized (lsListeners) {  //2012.06.15 TAW
             lsListeners.remove(aLayerStatusListener);
-        }
+        //}
     }
 
     /**
@@ -912,12 +911,12 @@ public abstract class Layer
      * @param evt LayerStatusEvent
      */
     public void fireStatusUpdate(LayerStatusEvent evt) {
-        synchronized (lsListeners) {
+        // synchronized (lsListeners) {  //2012.06.15 TAW
             // AWTAvailable conditional removed, not used, not useful.
             for (LayerStatusListener listener : lsListeners) {
                 listener.updateLayerStatus(evt);
             }
-        }
+        // }
     }
 
     /**
@@ -1317,12 +1316,12 @@ public abstract class Layer
         if (localHackList != null) {
             localHackList.clear();
         }
-        synchronized (IDListeners) {
+        // synchronized (IDListeners) {  //2012.06.15 TAW
             IDListeners.clear();
-        }
-        synchronized (lsListeners) {
+        //}
+        //synchronized (lsListeners) {
             lsListeners.clear();
-        }
+        //}
         BeanContext bc = getBeanContext();
         if (bc != null) {
             bc.removeBeanContextMembershipListener(this);

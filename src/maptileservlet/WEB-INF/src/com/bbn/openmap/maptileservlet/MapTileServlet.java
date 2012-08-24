@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.http.HttpConnection;
+import java.io.InputStream;
 
 /**
  * MapTileServlet is a servlet class that fields requests for map tiles.
@@ -63,7 +64,8 @@ public class MapTileServlet
 
                   Properties descProps = new Properties();
                   logger.info("going to read props");
-                  descProps.load(descURL.openStream());
+                  InputStream descURLStream = descURL.openStream();
+                  descProps.load(descURLStream);
 
                   logger.info("loaded " + desc + " " + descProps.toString());
 
@@ -74,6 +76,8 @@ public class MapTileServlet
                      mapTileSets.put(mts.getName(), mts);
                      logger.info("Adding " + mtsName + " dataset");
                   }
+
+                  descURLStream.close();
                }
             } catch (MalformedURLException murle) {
                logger.warning("MalformedURLException reading " + desc);

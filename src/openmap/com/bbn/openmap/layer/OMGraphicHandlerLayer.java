@@ -502,10 +502,10 @@ public class OMGraphicHandlerLayer
     * Overrides Layer.dispose(), makes sure the OMGraphicList is cleared.
     */
    public void dispose() {
-       super.dispose();
-       setList(null);
+      super.dispose();
+      setList(null);
    }
-   
+
    /**
     * This method is here to provide a default action for Layers as they act as
     * a ProjectionPainter. Normally, ProjectionPainters are expected to receive
@@ -1237,18 +1237,18 @@ public class OMGraphicHandlerLayer
     */
    public void select(OMGraphicList list) {
       if (list != null) {
-         Iterator<OMGraphic> it = list.iterator();
-         while (it.hasNext()) {
+         for (OMGraphic omg : list) {
+
             if (selectedList == null) {
                selectedList = new OMGraphicList();
             }
 
-            OMGraphic omg = it.next();
             if (omg instanceof OMGraphicList && !((OMGraphicList) omg).isVague()) {
                select((OMGraphicList) omg);
             } else {
                selectedList.add(omg);
             }
+
          }
       }
    }
@@ -1258,12 +1258,10 @@ public class OMGraphicHandlerLayer
     */
    public void deselect(OMGraphicList list) {
       if (list != null) {
-         Iterator<OMGraphic> it = list.iterator();
-         while (it.hasNext() && selectedList != null) {
-            OMGraphic omg = it.next();
+         for (OMGraphic omg : list) {
             if (omg instanceof OMGraphicList && !((OMGraphicList) omg).isVague()) {
                deselect((OMGraphicList) omg);
-            } else {
+            } else if (selectedList != null) {
                selectedList.remove(omg);
             }
          }

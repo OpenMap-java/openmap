@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMText.java,v $
 // $RCSfile: EditableOMText.java,v $
 // $Revision: 1.14 $
 // $Date: 2009/02/25 22:34:03 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
@@ -97,7 +97,7 @@ public class EditableOMText
     /**
      * Create the EditableOMText with an OMText already defined, ready for
      * editing.
-     * 
+     *
      * @param omc OMText that should be edited.
      */
     public EditableOMText(OMText omc) {
@@ -200,7 +200,7 @@ public class EditableOMText
     /**
      * Given a MouseEvent, find a GrabPoint that it is touching, and set the
      * moving point to that GrabPoint.
-     * 
+     *
      * @param e MouseEvent
      * @return GrabPoint that is touched by the MouseEvent, null if none are.
      */
@@ -408,7 +408,7 @@ public class EditableOMText
      * Use the current projection to place the graphics on the screen. Has to be
      * called to at least assure the graphics that they are ready for rendering.
      * Called when the graphic position changes.
-     * 
+     *
      * @param proj com.bbn.openmap.proj.Projection
      * @return true
      */
@@ -440,7 +440,7 @@ public class EditableOMText
      * Draw the EditableOMtext parts into the java.awt.Graphics object. The grab
      * points are only rendered if the point machine state is
      * TextSelectedState.TEXT_SELECTED.
-     * 
+     *
      * @param graphics java.awt.Graphics.
      */
     public void render(java.awt.Graphics graphics) {
@@ -488,7 +488,7 @@ public class EditableOMText
      * widget is being created/edited, then don't call this method from the
      * EditableOMGraphic implementation, and return a null Component from
      * getGUI.
-     * 
+     *
      * @param graphicAttributes the GraphicAttributes to use to get the GUI
      *        widget from to control those parameters for this EOMG.
      * @return java.awt.Component to use to control parameters for this EOMG.
@@ -496,12 +496,13 @@ public class EditableOMText
     public java.awt.Component getGUI(GraphicAttributes graphicAttributes) {
         Debug.message("eomg", "EditableOMPoly.getGUI");
         if (graphicAttributes != null) {
-            JComponent gaGUI = (JComponent) graphicAttributes.getGUI();
+            //JComponent gaGUI = (JComponent) graphicAttributes.getGUI();
+            JComponent toolbar = createAttributePanel(graphicAttributes);
             // ((JComponent) gaGUI).add(getTextGUI());
 
-            getTextGUI(graphicAttributes.getOrientation(), graphicAttributes.toolbar);
+            getTextGUI(graphicAttributes.getOrientation(), toolbar);
 
-            return gaGUI;
+            return toolbar;
         } else {
             return getTextGUI();
         }
@@ -524,7 +525,7 @@ public class EditableOMText
 
     /**
      * Get the GUI associated with changing the Text.
-     * 
+     *
      * @param orientation SwingConstants.HORIZONTAL/VERTICAL
      * @param guiComp the JComponent to add stuff to. If the orientation is
      *        HORIZONTAL, the components will be added directly to this

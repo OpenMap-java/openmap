@@ -624,8 +624,8 @@ public class Intersection {
     }
 
     /**
-     * Calculates the great circle distance from the point (lat, lon) to the
-     * great circle containing the points (lat1, lon1) and (lat2, lon2).
+     * Calculates the great circle distance from the point (center) to the
+     * great circle containing the points (p1) and (p2).
      * 
      * @return radians
      */

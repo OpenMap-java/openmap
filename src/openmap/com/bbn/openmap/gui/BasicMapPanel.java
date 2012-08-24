@@ -376,10 +376,15 @@ public class BasicMapPanel
         if (someObj instanceof MapPanelChild && someObj instanceof Component) {
 
             String parentName = ((MapPanelChild) someObj).getParentName();
+            boolean hasNamedParent = parentName != null && !parentName.trim().isEmpty(); 
+           
             String myName = getPropertyPrefix();
+            boolean hasName = myName != null && !myName.trim().isEmpty();
+            
+            @SuppressWarnings("null")
             boolean makeMyChild =
-                    (myName != null && parentName != null && myName.equalsIgnoreCase(parentName))
-                            || (myName == null && parentName == null);
+                    (hasName && hasNamedParent && myName.equalsIgnoreCase(parentName))
+                            || (!hasName && !hasNamedParent);
 
             if (makeMyChild) {
 

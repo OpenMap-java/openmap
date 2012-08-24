@@ -53,7 +53,7 @@ import com.bbn.openmap.util.PropUtils;
  * tiles.fileExt=.png
  * tiles.cacheSize=the number of mapTiles the factory should hold on to. The default is 100.
  * # transform for naming convention of tiles default is OSMMapTileCoordinateTransform, but it depends on the source of tiles.  GDAL is TSMMapTileCoordinateTransform
- * mapTileTransform=com.bbn.openmap.dataAccess.mapTile.OSMMapTileCoordinateTransform, or com.bbn.openmap.dataAccess.mapTile.TMSMapTileCoordinateTransform
+ * tiles.mapTileTransform=com.bbn.openmap.dataAccess.mapTile.OSMMapTileCoordinateTransform, or com.bbn.openmap.dataAccess.mapTile.TMSMapTileCoordinateTransform
  * 
  * </pre>
  * 

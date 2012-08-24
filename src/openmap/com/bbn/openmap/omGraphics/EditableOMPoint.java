@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoint.java,v $
 // $RCSfile: EditableOMPoint.java,v $
 // $Revision: 1.16 $
 // $Date: 2009/02/25 22:34:03 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
@@ -73,7 +73,7 @@ public class EditableOMPoint extends EditableOMGraphic {
     /**
      * Create the EditableOMPoint with an OMPoint already defined, ready for
      * editing.
-     * 
+     *
      * @param omc OMPoint that should be edited.
      */
     public EditableOMPoint(OMPoint omc) {
@@ -162,7 +162,7 @@ public class EditableOMPoint extends EditableOMGraphic {
     /**
      * Given a MouseEvent, find a GrabPoint that it is touching, and set the
      * moving point to that GrabPoint.
-     * 
+     *
      * @param e MouseEvent
      * @return GrabPoint that is touched by the MouseEvent, null if none are.
      */
@@ -170,11 +170,11 @@ public class EditableOMPoint extends EditableOMGraphic {
 
         movingPoint = null;
         GrabPoint[] gb = getGrabPoints();
-        
+
         Point2D pnt = getProjectionPoint(e);
         double x = pnt.getX();
         double y = pnt.getY();
-        
+
         for (int i = gb.length - 1; i >= 0; i--) {
 
             if (gb[i] != null && gb[i].distance(x, y) == 0) {
@@ -393,7 +393,7 @@ public class EditableOMPoint extends EditableOMGraphic {
      * Use the current projection to place the graphics on the screen. Has to be
      * called to at least assure the graphics that they are ready for rendering.
      * Called when the graphic position changes.
-     * 
+     *
      * @param proj com.bbn.openmap.proj.Projection
      * @return true
      */
@@ -428,7 +428,7 @@ public class EditableOMPoint extends EditableOMGraphic {
      * Draw the EditableOMPoint parts into the java.awt.Graphics object. The
      * grab points are only rendered if the point machine state is
      * PointSelectedState.POINT_SELECTED.
-     * 
+     *
      * @param graphics java.awt.Graphics.
      */
     public void render(java.awt.Graphics graphics) {
@@ -475,7 +475,7 @@ public class EditableOMPoint extends EditableOMGraphic {
     /**
      * Modifies the gui to not include line type adjustments, and adds widgets
      * to control point settings.
-     * 
+     *
      * @param graphicAttributes the GraphicAttributes to use to get the GUI
      *        widget from to control those parameters for this EOMG.
      * @return java.awt.Component to use to control parameters for this EOMG.
@@ -483,7 +483,8 @@ public class EditableOMPoint extends EditableOMGraphic {
     public Component getGUI(GraphicAttributes graphicAttributes) {
         Debug.message("eomg", "EditableOMPoint.getGUI");
         if (graphicAttributes != null) {
-            JComponent panel = graphicAttributes.getColorAndLineGUI();
+            // JComponent panel = graphicAttributes.getColorAndLineGUI();
+            JComponent panel = createAttributePanel(graphicAttributes);
             panel.add(getPointGUI());
             return panel;
         } else {

@@ -19,7 +19,6 @@
 // $Author: dietrick $
 //
 // **********************************************************************
-
 package com.bbn.openmap.tools.drawing;
 
 import java.awt.Component;
@@ -155,8 +154,9 @@ public class OMDrawingTool
     * for the current graphic.
     */
    protected GraphicAttributes graphicAttributes = GraphicAttributes.getGADefaultClone();
-
-   /** The current graphic being modified. */
+   /**
+    * The current graphic being modified.
+    */
    protected EditableOMGraphic currentEditable;
    /**
     * The MouseDelegator to use to get mouse events directed to the DrawingTool.
@@ -190,26 +190,24 @@ public class OMDrawingTool
     * deactivate. True by default.
     */
    protected boolean allowDrawingToolToDeactivateItself = true;
-
    /**
     * The component to notify when the drawing tool is finished.
     */
    protected DrawingToolRequestor requestor = null;
-   /** The current projection. */
+   /**
+    * The current projection.
+    */
    protected Projection projection = null;
    /**
     * A support object to handle telling listeners that the drawing tool is in
     * the process of editing an object, hence making it selected.
     */
    protected SelectionSupport selectionSupport = null;
-
    /**
     * The stack for keeping track of edits and allowing them to be reverted.
     */
    protected UndoStack undoStack = null;
-
    protected UndoMenuItemStackTrigger undoTrigger = null;
-
    /**
     * A behavior mask to show the GUI for the OMDrawingTool. Since the
     * OMDrawingTool is a com.bbn.openmap.gui.Tool object, it will only appear on
@@ -265,7 +263,6 @@ public class OMDrawingTool
     * the OMGraphic. A combination of GUI_VIA_POPUP and ALT_POPUP.
     */
    public final static int QUICK_CHANGE_BEHAVIOR_MASK = 10;
-
    /**
     * A integer that is looked at, bitwise, to determine different behaviors.
     */
@@ -274,47 +271,39 @@ public class OMDrawingTool
     * Used for property change notifications.
     */
    public final static String LoadersProperty = "OMDrawingTool.loaders";
-
    /**
     * Debug flag turned on when <B>drawingtool </B> debug flag enabled.
     */
    protected boolean DEBUG = false;
-
    /**
     * A handle to the InformationDelegator to use for status messages.
     */
    protected InformationDelegator informationDelegator = null;
-
    /**
     * A Vector of Classes that can be handled by the OMDrawingTool. Constructed
     * the first time canEdit() is called after an EditToolLoader is added or
     * removed.
     */
    protected Vector possibleEditableClasses = null;
-
    /**
     * Just a helper flag to reduce work caused by unnecessary deactivate calls.
     * Set internally in activate() and deactivate().
     */
    protected boolean activated = false;
-
    /**
     * Tell the drawing tool to be invisible when it is inactive. True by
     * default.
     */
    protected boolean visibleWhenInactive = true;
-
    /**
     * The property, visibleWhenIactive, to set to false if you want that
     * behavior.
     */
    public final static String VisibleWhenInactiveProperty = "visibleWhenInactive";
-
    /**
     * The property list defining behavior mask values that should be set.
     */
    public final static String BehaviorProperty = "behavior";
-
    /**
     * Flag to tell tool to reset the GUI when it is deactivated. The only time
     * you would want this to be false (true is default) is when you are creating
@@ -425,12 +414,14 @@ public class OMDrawingTool
       }
 
       if (showGUI) {
-         if (DEBUG)
+         if (DEBUG) {
             Debug.output("OMDrawingTool.create(): showing GUI per request");
+         }
          setMask(SHOW_GUI_BEHAVIOR_MASK);
       } else {
-         if (DEBUG)
+         if (DEBUG) {
             Debug.output("OMDrawingTool.create(): NOT showing GUI per request");
+         }
          unsetMask(SHOW_GUI_BEHAVIOR_MASK);
       }
 
@@ -500,12 +491,14 @@ public class OMDrawingTool
       this.requestor = requestor;
 
       if (showGUI) {
-         if (DEBUG)
+         if (DEBUG) {
             Debug.output("OMDrawingTool.edit(): showing GUI per request");
+         }
          setMask(SHOW_GUI_BEHAVIOR_MASK);
       } else {
-         if (DEBUG)
+         if (DEBUG) {
             Debug.output("OMDrawingTool.edit(): NOT showing GUI per request");
+         }
          unsetMask(SHOW_GUI_BEHAVIOR_MASK);
       }
 
@@ -822,8 +815,9 @@ public class OMDrawingTool
       Iterator iterator = keys.iterator();
       while (iterator.hasNext()) {
          String key = (String) iterator.next();
-         if (DEBUG)
+         if (DEBUG) {
             Debug.output("OMDrawingTool.getEditableGraphic(" + g.getClass().getName() + "): looking at (" + key + ") loader.");
+         }
 
          try {
             Class kc = Class.forName(key);
@@ -844,8 +838,9 @@ public class OMDrawingTool
 
                EditableOMGraphic eomg = loader.getEditableGraphic(g);
 
-               if (DEBUG)
+               if (DEBUG) {
                   Debug.output("OMDrawingTool.getEditableGraphic(" + g.getClass().getName() + "): found one.");
+               }
 
                return eomg;
             }
@@ -1054,25 +1049,29 @@ public class OMDrawingTool
     * @return this.
     */
    public Component getGUI() {
-      if (!resetGUIWhenDeactivated)
+      if (!resetGUIWhenDeactivated) {
          return this;
+      }
 
       removeAll();
       Component eomgc = null;
 
       graphicAttributes.setLineMenuAdditions(null);
       graphicAttributes.setOrientation(getOrientation());
+
+      // We're adding these separately now, not as part of the interface for the
+      // EditableOMGraphic.
+      if (graphicAttributes != null) {
+         
+         add(graphicAttributes.getGUI());
+      }
+
       if (currentEditable != null) {
          // GUI specific to a particular EditableOMGraphic type.
          eomgc = currentEditable.getGUI(graphicAttributes);
          if (eomgc != null) {
             add(eomgc);
          }
-      }
-
-      // Basic, generic GUI if eomgc wasn't set.
-      if (eomgc == null) {
-         add(graphicAttributes.getGUI());
       }
 
       revalidate();
@@ -1124,8 +1123,9 @@ public class OMDrawingTool
    protected synchronized void activate(boolean completeHookup) {
       activated = true;
 
-      if (DEBUG)
+      if (DEBUG) {
          Debug.output("OMDrawingTool: activate()");
+      }
       if (currentEditable != null && graphicAttributes != null) {
          // For partial hookups, for select() we don't need this.
          if (completeHookup) {
@@ -1214,8 +1214,9 @@ public class OMDrawingTool
       }
 
       // Don't waste effort;
-      if (!activated)
+      if (!activated) {
          return;
+      }
 
       if (!isMask(PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK)) {
          if (mouseDelegator != null) {
@@ -1311,8 +1312,9 @@ public class OMDrawingTool
     */
    public void notifyListener(OMGraphic graphic, OMAction action) {
       if (requestor != null) {
-         if (DEBUG)
+         if (DEBUG) {
             Debug.output("OMDrawingTool: notifying requestor, graphic with action");
+         }
          requestor.drawingComplete(graphic, action);
       }
 
@@ -1459,7 +1461,6 @@ public class OMDrawingTool
    // public void setUseAsTool(boolean value) {
    // super.setUseAsTool(value);
    // }
-
    /**
     * Called from the findAndInit(Iterator) method, when objects are added to
     * the MapHandler. so the OMDrawingTool can hook up with what it needs. An
@@ -1473,26 +1474,30 @@ public class OMDrawingTool
    public void findAndInit(Object someObj) {
 
       if (someObj instanceof InformationDelegator) {
-         if (DEBUG)
+         if (DEBUG) {
             Debug.output("DrawingTool: found InformationDelegator");
+         }
          if (dtmm != null) {
             dtmm.setInfoDelegator((InformationDelegator) someObj);
          }
          setInformationDelegator((InformationDelegator) someObj);
       }
       if (someObj instanceof MouseDelegator) {
-         if (DEBUG)
+         if (DEBUG) {
             Debug.output("DrawingTool: found MouseDelegator.");
+         }
          setMouseDelegator((MouseDelegator) someObj);
       }
       if (someObj instanceof MapBean) {
-         if (DEBUG)
+         if (DEBUG) {
             Debug.output("DrawingTool: found MapBean.");
+         }
          setCanvas((JComponent) someObj);
       }
       if (someObj instanceof EditToolLoader) {
-         if (DEBUG)
+         if (DEBUG) {
             Debug.output("DrawingTool: found EditToolLoader: " + someObj.getClass().getName());
+         }
          addLoader((EditToolLoader) someObj);
       }
    }
@@ -1521,7 +1526,6 @@ public class OMDrawingTool
    }
 
    // ////////////// end BeanContext stuff
-
    /**
     * Display the palette.
     */
@@ -1703,8 +1707,9 @@ public class OMDrawingTool
       }
 
       if (event.shouldShowGUI() && isMask(ALT_POPUP_BEHAVIOR_MASK)) {
-         if (DEBUG)
+         if (DEBUG) {
             Debug.output("OMDrawingTool.eomgChanged(): try for menu.");
+         }
          MouseEvent me = event.getMouseEvent();
 
          // While we're here, get a good place for the window in
@@ -1747,6 +1752,7 @@ public class OMDrawingTool
 
                JMenuItem done = new JMenuItem("Done");
                done.addActionListener(new ActionListener() {
+
                   public void actionPerformed(ActionEvent ae) {
                      deactivate();
                   }
@@ -1835,8 +1841,9 @@ public class OMDrawingTool
       if ((g.getAttribute(OMGraphicConstants.CHANGE_APPEARANCE)) == null
             || ((Boolean) g.getAttribute(OMGraphicConstants.CHANGE_APPEARANCE)).booleanValue()) {
 
-         JMenuItem gui = new JMenuItem(i18n.get(OMDrawingTool.class, "popupMenuChangeAppearance", "Change Appearance"));
+         JMenuItem gui = new JMenuItem(i18n.get(OMDrawingTool.class, "popupMenuChangeAppearance", "Attributes..."));
          gui.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent ae) {
                EditableOMGraphic eomg = getCurrentEditable();
                if (eomg != null) {
@@ -1851,6 +1858,12 @@ public class OMDrawingTool
                }
             }
          });
+
+         // This is where we are going to add the DrawingAttributes menu. We
+         // need to take it off the
+         // EOMG gui palettes, though
+         pum.add(graphicAttributes.getColorAndLineMenu());
+
          if (isMask(SHOW_GUI_BEHAVIOR_MASK | GUI_VIA_POPUP_BEHAVIOR_MASK) && !getUseAsTool()) {
             pum.add(gui);
          } else {
@@ -1864,6 +1877,7 @@ public class OMDrawingTool
 
          JMenuItem delete = new JMenuItem(i18n.get(OMDrawingTool.class, "popupMenuDelete", "Delete"));
          delete.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent ae) {
                OMAction action = new OMAction();
                action.setMask(OMGraphic.DELETE_GRAPHIC_MASK);
@@ -1902,22 +1916,24 @@ public class OMDrawingTool
 
    // ////////// SelectionListener support
    public void addSelectionListener(SelectionListener list) {
-      if (selectionSupport != null)
+      if (selectionSupport != null) {
          selectionSupport.addSelectionListener(list);
+      }
    }
 
    public void removeSelectionListener(SelectionListener list) {
-      if (selectionSupport != null)
+      if (selectionSupport != null) {
          selectionSupport.removeSelectionListener(list);
+      }
    }
 
    public void clearSelectionListeners() {
-      if (selectionSupport != null)
+      if (selectionSupport != null) {
          selectionSupport.clearSelectionListeners();
+      }
    }
 
    // ////////// SelectionListener support ends
-
    public static void main(String[] args) {
       OMDrawingTool omdt = new OMDrawingTool();
       omdt.showPalette();
@@ -1951,6 +1967,5 @@ public class OMDrawingTool
       }
 
    }
-
    // TODO need to override getProperties to include Behavior mask settings.
 }

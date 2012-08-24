@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMPoly.java,v $
 // $RCSfile: EditableOMPoly.java,v $
 // $Revision: 1.19 $
 // $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
@@ -52,6 +52,7 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.stateMachine.State;
+import javax.swing.JToolBar;
 /**
  * The EditableOMPoly encompasses an OMPoly, providing methods for modifying or
  * creating it.
@@ -102,7 +103,7 @@ public class EditableOMPoly
     /**
      * Create the EditableOMPoly with an OMPoly already defined, ready for
      * editing.
-     * 
+     *
      * @param omp OMPoly that should be edited.
      */
     public EditableOMPoly(OMPoly omp) {
@@ -111,7 +112,7 @@ public class EditableOMPoly
 
     /**
      * Create and initialize the state machine that interprets the
-     * 
+     *
      * modifying gestures/commands, as well as initialize the grab points. Also
      * allocates the grab point array needed by the EditableOMPoly.
      */
@@ -339,7 +340,7 @@ public class EditableOMPoly
      * moving point to that GrabPoint. Called when a MouseEvent happens, and you
      * want to find out if a GrabPoint should be used to make modifications to
      * the graphic or its position.
-     * 
+     *
      * @param e MouseEvent
      * @return GrabPoint that is touched by the MouseEvent, null if none are.
      */
@@ -386,7 +387,7 @@ public class EditableOMPoly
      * first node, and for the last, in case of an enclosed polygon, are
      * OffsetGrabPoints. All of the other points will be regular GrabPoints.
      * Usually called when assigning points to a previously defined poly.
-     * 
+     *
      * @param x the horizontal pixel location of the grab point.
      * @param y the vertical pixel location of the grab point.
      * @param index the index of the grab point.
@@ -612,8 +613,8 @@ public class EditableOMPoly
                     }
                 }
 
-                double newlat = (float) llp.getRadLat();
-                double newlon = (float) llp.getRadLon();
+                double newlat = llp.getRadLat();
+                double newlon = llp.getRadLon();
 
                 poly.setLocation(newlat, newlon, OMGraphic.RADIANS, ints);
 
@@ -635,7 +636,7 @@ public class EditableOMPoly
     /**
      * Add a point to the end of the polyline/polygon and then make it the
      * moving one.
-     * 
+     *
      * @return the index for the point in the polygon, starting with 0.
      */
     public int addMovingPoint(int x, int y) {
@@ -646,7 +647,7 @@ public class EditableOMPoly
 
     /**
      * Add a point to the end of the polyline/polygon.
-     * 
+     *
      * @return the index for the point in the polygon, starting with 0.
      */
     public int addPoint(int x, int y) {
@@ -658,7 +659,7 @@ public class EditableOMPoly
      * position is less than zero, the point will be the starting point. If the
      * position is greater than the list of current points, the point will be
      * added to the end of the poly.
-     * 
+     *
      * @return the index for the point in the polygon, starting with 0.
      */
     public int addPoint(int x, int y, int position) {
@@ -672,7 +673,7 @@ public class EditableOMPoly
      * added to the end of the poly. This method is convenient because it lets
      * you define the GrabPoint object to use for the node, in case you need a
      * special type of GrabPoint.
-     * 
+     *
      * @param gp the GrabPoint set to the screen coordinates of the point to be
      *        added.
      * @return the index for the point in the polygon, starting with 0.
@@ -688,7 +689,7 @@ public class EditableOMPoly
      * added to the end of the poly. This method is convenient because it lets
      * you define the GrabPoint object to use for the node, in case you need a
      * special type of GrabPoint.
-     * 
+     *
      * @return the index for the point in the polygon, starting with 0.
      */
     public int addPoint(GrabPoint gp, int position) {
@@ -728,11 +729,11 @@ public class EditableOMPoly
                 double newlon;
 
                 if (rads) {
-                    newlat = (float) llpnt.getRadLat();
-                    newlon = (float) llpnt.getRadLon();
+                    newlat = llpnt.getRadLat();
+                    newlon = llpnt.getRadLon();
                 } else {
-                    newlat = (float) llpnt.getY();
-                    newlon = (float) llpnt.getX();
+                    newlat = llpnt.getY();
+                    newlon = llpnt.getX();
                 }
 
                 if (actualPosition >= ll.length) {
@@ -862,11 +863,11 @@ public class EditableOMPoly
                 LatLonPoint llpnt = projection.inverse(offsetX, offsetY, new LatLonPoint.Double());
 
                 if (rads) {
-                    poly.lat = (float) llpnt.getRadLat();
-                    poly.lon = (float) llpnt.getRadLon();
+                    poly.lat = llpnt.getRadLat();
+                    poly.lon = llpnt.getRadLon();
                 } else {
-                    poly.lat = (float) llpnt.getY();
-                    poly.lon = (float) llpnt.getX();
+                    poly.lat = llpnt.getY();
+                    poly.lon = llpnt.getX();
                 }
             }
 
@@ -1056,7 +1057,7 @@ public class EditableOMPoly
      * Use the current projection to place the graphics on the screen. Has to be
      * called to at least assure the graphics that they are ready for rendering.
      * Called when the graphic position changes.
-     * 
+     *
      * @param proj com.bbn.openmap.proj.Projection
      * @return true
      */
@@ -1072,7 +1073,7 @@ public class EditableOMPoly
     /**
      * Generate the grab points, checking the OMGraphic to see if it contains
      * information about what the grab points should look like.
-     * 
+     *
      * @param proj
      */
     protected void generateGrabPoints(Projection proj) {
@@ -1137,7 +1138,7 @@ public class EditableOMPoly
      * Draw the EditableOMPoly parts into the java.awt.Graphics object. The grab
      * points are only rendered if the poly machine state is
      * PolySelectedState.POLY_SELECTED.
-     * 
+     *
      * @param graphics java.awt.Graphics.
      */
     public void render(java.awt.Graphics graphics) {
@@ -1199,7 +1200,7 @@ public class EditableOMPoly
      * point gets added to the polygon, and should take an array of all the
      * GrabPoints created. It will add the offsetGrabPoint to the end of the
      * array.
-     * 
+     *
      * @param points a GrabPoint[] for the points on the polygon.
      * @return true if the grab point array was exactly what the
      *         EditableOMGraphic was expecting, in terms of length of the
@@ -1254,7 +1255,7 @@ public class EditableOMPoly
      * gPoints array declared in EditableOMGraphic - no longer. If the index is
      * -1, the offset grab point is set, and any other index refers to the
      * concurrent polygon point.
-     * 
+     *
      * @param gb GrabPoint to assign within array.
      * @param index the index of the array to put the GrabPoint. This index
      *        should be -1 for the offset grab point, or the index of the corner
@@ -1310,7 +1311,7 @@ public class EditableOMPoly
 
     /**
      * Adds widgets to modify polygon.
-     * 
+     *
      * @param graphicAttributes the GraphicAttributes to use to get the GUI
      *        widget from to control those parameters for this EOMG.
      * @return Component to use to control parameters for this EOMG.
@@ -1322,9 +1323,10 @@ public class EditableOMPoly
             graphicAttributes.setLineMenuAdditions(new JMenu[] {
                 ahm
             });
-            JComponent gaGUI = (JComponent) graphicAttributes.getGUI();
-            getPolyGUI(graphicAttributes.getOrientation(), graphicAttributes.toolbar);
-            return gaGUI;
+//            JComponent gaGUI = (JComponent) graphicAttributes.getGUI();
+            JComponent toolbar = createAttributePanel(graphicAttributes);
+            getPolyGUI(graphicAttributes.getOrientation(), toolbar);
+            return toolbar;
         } else {
             return getPolyGUI();
         }
@@ -1507,7 +1509,7 @@ public class EditableOMPoly
     /**
      * Subclass for undoing edits for OMPoly classes, handles enclose/unenclose
      * events.
-     * 
+     *
      * @author ddietrick
      */
     public static class OMPolyUndoEvent

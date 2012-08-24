@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/BasicStrokeEditorMenu.java,v $
 // $RCSfile: BasicStrokeEditorMenu.java,v $
 // $Revision: 1.8 $
 // $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
@@ -43,8 +43,9 @@ import javax.swing.JRadioButtonMenuItem;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.util.PropUtils;
+import javax.swing.JComponent;
 
-/** 
+/**
  */
 public class BasicStrokeEditorMenu extends JPopupMenu {
 
@@ -59,7 +60,7 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
     protected float dashPhase;
 
     private I18n i18n = Environment.getI18n();
-    
+
     protected JButton launchButton;
 
     public BasicStrokeEditorMenu() {
@@ -72,7 +73,7 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
         } else {
             basicStroke = new BasicStroke(1f);
         }
-        
+
         setBasicStroke(basicStroke);
     }
 
@@ -117,7 +118,7 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
         super.show(invoker, x, y);
     }
 
-    public JPopupMenu setGUI(JPopupMenu popup) {
+    public JComponent setGUI(JComponent popup) {
 
         //////// Line Cap
         JMenu capMenu = new JMenu(i18n.get(BasicStrokeEditorMenu.class, "Cap_Decoration", "Cap Decoration"));
@@ -316,7 +317,7 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
 
     /**
      * Given a BasicStroke, create an ImageIcon that shows it.
-     * 
+     *
      * @param stroke the BasicStroke to draw on the Icon.
      * @param width the width of the icon.
      * @param height the height of the icon.
@@ -342,10 +343,10 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
 
         return new ImageIcon(bigImage);
     }
-    
+
     /**
      * Given a BasicStroke, create an ImageIcon that shows it.
-     * 
+     *
      * @param stroke the BasicStroke to draw on the Icon.
      * @param width the width of the icon.
      * @param height the height of the icon.
@@ -358,11 +359,11 @@ public class BasicStrokeEditorMenu extends JPopupMenu {
 
     	BufferedImage bigImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     	Graphics2D g = (Graphics2D) bigImage.getGraphics();
-    	
+
     	g.setBackground(OMColor.clear);
     	g.setPaint(OMColor.clear);
     	g.fillRect(0, 0, width, height);
-    	
+
     	g.setPaint(background);
     	g.fillRect(0, 0, width, height);
     	if (matting != null) {

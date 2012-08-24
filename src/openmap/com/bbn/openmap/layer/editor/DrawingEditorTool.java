@@ -473,7 +473,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
                         + ")");
             }
 
-            drawingTool.setMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK);
+            drawingTool.setMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK | OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
 
             OMGraphic newOMG = drawingTool.create(ttc,
                     ga,

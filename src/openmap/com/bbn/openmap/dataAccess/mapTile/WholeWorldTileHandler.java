@@ -189,6 +189,7 @@ public class WholeWorldTileHandler
          logger.fine("parent jar name not set, can't figure out how to load tile jars.");
       }
 
+      // If no image is found, do the default action for an empty tile.
       if (bi == null) {
          bi = super.getImageForEmptyTile(imagePath, x, y, zoomLevel, mtcTransform, proj);
       }
@@ -580,6 +581,7 @@ public class WholeWorldTileHandler
                                   * you can't create a zip file and then put
                                   * nothing into it.
                                   */
+                                 @SuppressWarnings("resource")
                                  FileOutputStream fos = new FileOutputStream(subJarFile);
 
                                  CheckedOutputStream checksum = new CheckedOutputStream(fos, new Adler32());

@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/EditableOMRangeRings.java,v $
 // $RCSfile: EditableOMRangeRings.java,v $
 // $Revision: 1.15 $
 // $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
@@ -83,7 +83,7 @@ public class EditableOMRangeRings
    /**
     * Create the EditableOMRangeRings with an OMCircle already defined, ready
     * for editing.
-    * 
+    *
     * @param omc OMCircle that should be edited.
     */
    public EditableOMRangeRings(OMRangeRings omc) {
@@ -117,7 +117,7 @@ public class EditableOMRangeRings
    /**
     * Modifies the gui to not include line type adjustments, and adds widgets to
     * control range ring settings.
-    * 
+    *
     * @param graphicAttributes the GraphicAttributes to use to get the GUI
     *        widget from to control those parameters for this EOMG.
     * @return java.awt.Component to use to control parameters for this EOMG.
@@ -125,10 +125,11 @@ public class EditableOMRangeRings
    public Component getGUI(GraphicAttributes graphicAttributes) {
       Debug.message("eomg", "EditableOMRangeRings.getGUI");
       if (graphicAttributes != null) {
-         JComponent panel = graphicAttributes.getColorAndLineGUI();
+         // JComponent panel = graphicAttributes.getColorAndLineGUI();
+         JComponent toolbar = createAttributePanel(graphicAttributes);
          // panel.add(getRangeRingGUI());
-         getRangeRingGUI(graphicAttributes.getOrientation(), graphicAttributes.toolbar);
-         return panel;
+         getRangeRingGUI(graphicAttributes.getOrientation(), toolbar);
+         return toolbar;
       } else {
          return getRangeRingGUI();
       }
@@ -201,7 +202,7 @@ public class EditableOMRangeRings
 
    /**
     * Get the GUI associated with changing the Text.
-    * 
+    *
     * @param orientation SwingConstants.HORIZONTAL/VERTICAL
     * @param guiComp the JComponent to add stuff to. If the orientation is
     *        HORIZONTAL, the components will be added directly to this
@@ -461,7 +462,7 @@ public class EditableOMRangeRings
    /**
     * Subclass for undoing edits for OMRangeRing classes, handles events that
     * may affect the extra GUI widgets.
-    * 
+    *
     * @author ddietrick
     */
    public static class OMRangeRingUndoEvent

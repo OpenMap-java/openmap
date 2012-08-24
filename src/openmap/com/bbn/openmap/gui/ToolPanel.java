@@ -605,10 +605,9 @@ public class ToolPanel
          props.put(prefix + AvoidComponentsProperty, listProp.toString());
       }
 
-      props.put(prefix + PreferredLocationProperty, getPreferredLocation());
-
-      props.put(prefix + NameProperty, getName());
-      props.put(prefix + ParentNameProperty, PropUtils.unnull(getParentName()));
+      PropUtils.putIfNotDefault(props, prefix + PreferredLocationProperty, getPreferredLocation());
+      PropUtils.putIfNotDefault(props, prefix + NameProperty, getName());
+      PropUtils.putIfNotDefault(props, prefix + ParentNameProperty, getParentName());
       return props;
    }
 

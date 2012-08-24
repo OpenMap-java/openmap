@@ -295,7 +295,7 @@ public class BinaryBufferedFile extends BinaryFile {
             try {
                 refillBuffer();
             } catch (EOFException e) {
-                if (numread == 0) {
+                if (numread >= 0) {
                     // If it's really EOF and nothing was ever read (as opposed
                     // to getting a little out of the buffer before the EOF),
                     // return EOF value

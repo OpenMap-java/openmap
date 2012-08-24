@@ -75,7 +75,7 @@ public class RpfTocEntry {
     }
 
     public void setInfo(String seriesCode) {
-        info = (RpfProductInfo) RpfProductInfo.getCatalog().get(seriesCode);
+        info = (RpfProductInfo) RpfProductInfo.getCatalog().get(seriesCode.toUpperCase());
         if (info != null) {
             if (info.dataType.equalsIgnoreCase("CIB"))
                 Cib = true;

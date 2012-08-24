@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This is an utility class that can be used by beans that need support for
@@ -38,8 +39,7 @@ import java.util.ListIterator;
  * for a listener support subclass managing the Vector of listeners. It knows
  * nothing about firing events to the listeners.
  */
-public class ListenerSupport<E>
-      extends ArrayList<E>
+public class ListenerSupport<E> extends CopyOnWriteArrayList<E> // ArrayList<E>   // 2012.06.15 TAW JRE-7999
       implements java.io.Serializable {
 
    private static final long serialVersionUID = 1L;

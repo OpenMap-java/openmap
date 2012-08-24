@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/tools/drawing/OMDrawingToolLauncher.java,v $
 // $RCSfile: OMDrawingToolLauncher.java,v $
 // $Revision: 1.21 $
 // $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.tools.drawing;
@@ -67,24 +67,24 @@ import com.bbn.openmap.util.PropUtils;
  * told about from the DrawingTool, and OMGraphicHandlers that it finds in a
  * MapHandler. There are no methods to manually add stuff to this GUI.
  * <p>
- * 
+ *
  * There are two properties that can be set for the launcher:
- * 
+ *
  * <pre>
- * 
- * 
- * 
- * 
+ *
+ *
+ *
+ *
  *       # Number of launcher buttons to place in a row in that part of the
  *       # GUI. -1 (the default) is to keep them all on one line.
  *       omdtl.horizNumLoaderButtons=-1
- *      
+ *
  *       # If set to true, a text popup will be used for the OMGraphic
  *       # loaders instead of buttons (false is default).
  *       omdtl.useTextLabels=false
- * 
- * 
- * 
+ *
+ *
+ *
  * </pre>
  */
 public class OMDrawingToolLauncher
@@ -552,7 +552,7 @@ public class OMDrawingToolLauncher
    /**
     * Set the component that will receive the new/edited OMGraphic from the
     * DrawingTool. Does not change the GUI. Called when the combo box changes.
-    * 
+    *
     * @param name GUI pretty name of requestor.
     */
    public void setCurrentRequestor(String name) {
@@ -572,7 +572,7 @@ public class OMDrawingToolLauncher
    /**
     * Set the next thing to be created to be whatever the pretty name
     * represents. Sets currentCreation.
-    * 
+    *
     * @param name GUI pretty name of thing to be created, from one of the
     *        EditToolLoaders.
     */
@@ -583,7 +583,7 @@ public class OMDrawingToolLauncher
    /**
     * Given a pretty name, look through the EditToolLoaders and find out the
     * classname that goes with editing it.
-    * 
+    *
     * @param prettyName GUI pretty name of tool, or thing to be created, from
     *        one of the EditToolLoaders.
     */
@@ -609,7 +609,7 @@ public class OMDrawingToolLauncher
     * the MapHandler (BeanContext). This method gets called when the object gets
     * added to the MapHandler, or when another object gets added to the
     * MapHandler after the object is a member.
-    * 
+    *
     * @param someObj the object that was added to the BeanContext (MapHandler)
     *        that is being searched for. Find the ones you need, and hook
     *        yourself up.
@@ -667,7 +667,7 @@ public class OMDrawingToolLauncher
    /**
     * Tool interface method. The retrieval tool's interface. This method creates
     * a button that will bring up the LauncherPanel.
-    * 
+    *
     * @return String The key for this tool.
     */
    public Container getFace() {
@@ -690,7 +690,7 @@ public class OMDrawingToolLauncher
    /**
     * Get the ActionListener that triggers the LauncherPanel. Useful to have to
     * provide an alternative way to bring up the LauncherPanel.
-    * 
+    *
     * @return ActionListener
     */
    public ActionListener getActionListener() {

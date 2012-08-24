@@ -19,7 +19,7 @@
 		<property name="mac.app" value="OpenMap.app" />
 		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
 		<property name="openmap_version" value="5.0.1b" />
-		<property name="openmap.ext" value="${openmap.home}/ext" />
+		<property name="openmap.ext" value="${openmap.home}/src/ext" />
 		<property name="openmap.src" value="${openmap.home}/src/openmap" />
 		<property name="svg.src" value="${openmap.home}/src/svg" />
 		<property name="j3d.src" value="${openmap.home}/src/j3d" />
@@ -31,13 +31,17 @@
 		<property name="macJavaStub" value="/System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub" />
 
 		<!-- Whatever you put in value will be passed to compiler.-->
-<!--		<property name="compiler.args" value="-Xlint:deprecation,unchecked"/>-->
-		<property name="compiler.args" value="-nowarn"/>
+		<!--		<property name="compiler.args" value="-Xlint:deprecation,unchecked"/>-->
+		<property name="compiler.args" value="-nowarn" />
 
 		<available file="${macJavaStub}" property="do.copyMacJavaStub" />
 
+		<!-- ################################
+		You can add path to external jars here, comma separated in the includes list.  This covers 
+		the jars in the external libraries available from svn 
+		#########################  -->
 		<path id="ext_tools_classpath">
-		  <fileset dir="." includes="ext/**/*.jar" />
+			<fileset dir="." includes="ext/**/*.jar" />
 		</path>
 
 	</target>
