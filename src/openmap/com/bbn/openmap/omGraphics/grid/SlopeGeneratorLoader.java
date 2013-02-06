@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.bbn.openmap.layer.rpf.RpfLayer;
 import com.bbn.openmap.util.PaletteHelper;
 
 public class SlopeGeneratorLoader extends ColorGeneratorLoader {
@@ -41,6 +42,10 @@ public class SlopeGeneratorLoader extends ColorGeneratorLoader {
 
     protected int contrast = 5;
 
+    public SlopeGeneratorLoader() {
+        setPrettyName(i18n.get(SlopeGeneratorLoader.class, "name", "Greyscale Slope")); //default
+    }
+    
     public void setContrast(int cont) {
         int oldValue = contrast;
         contrast = cont;

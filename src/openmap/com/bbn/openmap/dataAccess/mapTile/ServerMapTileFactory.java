@@ -37,6 +37,7 @@ import javax.swing.ImageIcon;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.TilePathBuilder;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.PropUtils;
@@ -65,9 +66,8 @@ import com.bbn.openmap.util.cacheHandler.CacheObject;
  * 
  * @author dietrick
  */
-public class ServerMapTileFactory
-        extends StandardMapTileFactory
-        implements MapTileFactory, PropertyConsumer {
+public class ServerMapTileFactory extends StandardMapTileFactory implements MapTileFactory,
+        PropertyConsumer {
 
     public final static String LOCAL_CACHE_ROOT_DIR_PROPERTY = "localCacheRootDir";
 
@@ -92,7 +92,7 @@ public class ServerMapTileFactory
         String localLoc = null;
 
         if (localCacheDir != null && zoomLevelInfo != null) {
-            localLoc = zoomLevelInfo.formatImageFilePath(localCacheDir, x, y) + fileExt;
+            localLoc = buildLocalFilePath(x, y, zoomLevel, fileExt);
             /**
              * If a local cache is defined, then the cache will always use the
              * string for the local file as the key.
@@ -134,26 +134,23 @@ public class ServerMapTileFactory
      */
     public CacheObject load(Object key, int x, int y, int zoomLevel, Projection proj) {
         if (key instanceof String) {
-            String imagePath = (String) key;
+
             if (verbose) {
-                logger.fine("fetching file for cache: " + imagePath);
+                logger.fine("fetching file for cache: " + key);
             }
 
             java.net.URL url = null;
             ImageIcon ii = null;
 
-            String localLoc = null;
-            if (localCacheDir != null && zoomLevelInfo != null) {
-                localLoc = zoomLevelInfo.formatImageFilePath(localCacheDir, x, y) + fileExt;
+            CacheObject localVersion = super.load(key, x, y, zoomLevel, proj);
 
-                CacheObject localVersion = super.load(localLoc, x, y, zoomLevel, proj);
-
-                if (localVersion != null) {
-                    logger.fine("found version of tile in local cache: " + localLoc);
-                    return localVersion;
-                }
+            if (localVersion != null) {
+                logger.fine("found version of tile in local cache: " + key);
+                return localVersion;
             }
 
+            // build file path here uses rootDir, which is the URL.
+            String imagePath = buildFilePath(x, y, zoomLevel, fileExt);
             try {
                 url = new java.net.URL(imagePath);
                 java.net.HttpURLConnection urlc = (java.net.HttpURLConnection) url.openConnection();
@@ -164,7 +161,8 @@ public class ServerMapTileFactory
 
                 if (urlc == null || urlc.getContentType() == null) {
                     if (logger.isLoggable(Level.FINE)) {
-                        logger.fine("unable to connect to (tile might be unavailable): " + imagePath);
+                        logger.fine("unable to connect to (tile might be unavailable): "
+                                + imagePath);
                     }
 
                     /*
@@ -175,7 +173,7 @@ public class ServerMapTileFactory
                      * If the web location is used, the tile fetch will always
                      * go back to the server and never find cached empty tiles.
                      */
-                    return getEmptyTile(localLoc, x, y, zoomLevel, proj);
+                    return getEmptyTile(key, x, y, zoomLevel, proj);
                 }
 
                 // text
@@ -211,7 +209,7 @@ public class ServerMapTileFactory
                     ii = new ImageIcon(imageBytes);
 
                     if (localCacheDir != null) {
-                        File localFile = new File(localLoc);
+                        File localFile = new File(key.toString());
 
                         File parentDir = localFile.getParentFile();
                         parentDir.mkdirs();
@@ -241,10 +239,6 @@ public class ServerMapTileFactory
                          * Again, create a CacheObject based on the local name
                          * if the local dir is defined.
                          */
-                        if (localLoc != null) {
-                            key = localLoc;
-                        }
-
                         if (raster != null) {
                             return new CacheObject(key, raster);
                         }
@@ -262,10 +256,48 @@ public class ServerMapTileFactory
              * At this point, nothing was found for this location, so it's an
              * empty tile.
              */
-            return getEmptyTile(localLoc, x, y, zoomLevel, proj);
+            return getEmptyTile(key, x, y, zoomLevel, proj);
         }
 
         return null;
+    }
+
+    /**
+     * Acts the same as the buildFilePath method, but works for a local
+     * directory specified in the properties.
+     * 
+     * @param x tile coordinate
+     * @param y tile coordinate
+     * @param z zoom level
+     * @param fileExt file extension for image tiles.
+     * @return new path for tile file
+     */
+    public String buildLocalFilePath(int x, int y, int z, String fileExt) {
+        if (localTilePathBuilder == null) {
+            localTilePathBuilder = new TilePathBuilder(localCacheDir);
+        }
+
+        return localTilePathBuilder.buildTilePath(x, y, z, fileExt);
+    }
+
+    private TilePathBuilder localTilePathBuilder = null;
+
+    /**
+     * Creates a unique cache key for this tile based on zoom, x, y. This method
+     * was created so the ServerMapTileFactory could override it and use local
+     * cache names for keys if a local cache was being used.
+     * 
+     * @param x tile coord.
+     * @param y tile coord.
+     * @param z zoomLevel.
+     * @param fileExt file extension.
+     * @return String used in cache.
+     */
+    protected String buildCacheKey(int x, int y, int z, String fileExt) {
+        if (localCacheDir != null) {
+            return buildLocalFilePath(x, y, z, fileExt);
+        }
+        return super.buildCacheKey(x, y, z, fileExt);
     }
 
     public Properties getProperties(Properties getList) {
@@ -277,10 +309,7 @@ public class ServerMapTileFactory
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
         I18n i18n = Environment.getI18n();
-        PropUtils.setI18NPropertyInfo(i18n, list, com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.class,
-                                      LOCAL_CACHE_ROOT_DIR_PROPERTY, "Local Cache Tile Directory",
-                                      "Root directory containing image tiles retrieved from image server.",
-                                      "com.bbn.openmap.util.propertyEditor.DirectoryPropertyEditor");
+        PropUtils.setI18NPropertyInfo(i18n, list, com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.class, LOCAL_CACHE_ROOT_DIR_PROPERTY, "Local Cache Tile Directory", "Root directory containing image tiles retrieved from image server.", "com.bbn.openmap.util.propertyEditor.DirectoryPropertyEditor");
         return list;
     }
 

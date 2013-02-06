@@ -968,7 +968,7 @@ public class DbfTableModel
             }
             s = sb.toString();
         } else if (retLength > length) {
-            s = s.substring(length);
+            s = s.substring(0, length);
         }
 
         return s;

@@ -81,7 +81,7 @@ public class OverlayMapPanel
     */
    protected JPanel widgets;
 
-   private JPanel centerContainer = new JPanel();
+   private JPanel centerContainer;
 
    /**
     * Creates an empty OverlayMapPanel that creates its own empty
@@ -170,6 +170,8 @@ public class OverlayMapPanel
       hackPanel.setOpaque(false);
       hackPanel.add(map, BorderLayout.CENTER);
 
+      centerContainer = new JPanel();
+      
       centerContainer.setLayout(new OverlayLayout(centerContainer));
 
       // These may be null, but the EmbeddedNavPanel will choose it's own

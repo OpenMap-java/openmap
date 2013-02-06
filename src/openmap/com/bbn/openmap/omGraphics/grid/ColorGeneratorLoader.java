@@ -39,6 +39,10 @@ public class ColorGeneratorLoader extends GeneratorLoader {
     public final static String DEFAULT_COLORS_CLASS = "com.bbn.openmap.omGraphics.grid.GreyscaleSlopeColors";
 
     protected ElevationColors colors;
+    
+    public ColorGeneratorLoader() {
+        setPrettyName(i18n.get(ColorGeneratorLoader.class, "name", "Color Shading")); //default
+    }
 
     public void setColors(ElevationColors cols) {
         ElevationColors oldColors = colors;

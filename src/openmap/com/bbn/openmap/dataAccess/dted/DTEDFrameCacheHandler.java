@@ -31,6 +31,7 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -88,8 +89,8 @@ import com.bbn.openmap.util.cacheHandler.CacheObject;
  * The markerName is generally provided by the parent component of the
  * DTEDFrameCacheHandler, like the DTEDFrameCacheLayer.
  */
-public class DTEDFrameCacheHandler extends CacheHandler implements
-        DTEDConstants, PropertyConsumer, PropertyChangeListener {
+public class DTEDFrameCacheHandler extends CacheHandler implements DTEDConstants, PropertyConsumer,
+        PropertyChangeListener {
 
     public final static String GeneratorLoadersProperty = "generators";
 
@@ -113,7 +114,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
     /**
      * The list of GeneratorLoaders.
      */
-    protected ArrayList<GeneratorLoader> generatorLoaders = new ArrayList<GeneratorLoader>();
+    protected List<GeneratorLoader> generatorLoaders = new ArrayList<GeneratorLoader>();
 
     /**
      * The DTEDFrameCache must be set at some point.
@@ -176,8 +177,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
      */
     public void setActiveGeneratorLoader(String active) {
         for (GeneratorLoader gl : generatorLoaders) {
-            if (active.equals(gl.getPrettyName())
-                    && gl != activeGeneratorLoader) {
+            if (active.equals(gl.getPrettyName()) && gl != activeGeneratorLoader) {
                 activeGeneratorLoader = gl;
                 resetCache();
             }
@@ -189,6 +189,9 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
      */
     public OMGridGenerator getGenerator() {
         if (activeGeneratorLoader != null) {
+            return activeGeneratorLoader.getGenerator();
+        } else if (generatorLoaders != null && generatorLoaders.size() > 0) {
+            activeGeneratorLoader = generatorLoaders.get(0);
             return activeGeneratorLoader.getGenerator();
         } else {
             return new SinkGenerator();
@@ -314,18 +317,17 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
             Debug.output("--- DTEDFrameCacheHandler: getting images: ---");
         }
 
-        setProjection(proj,
-                lat[ya - lat_minus],
-                lon[xa - lon_minus],
-                lat[ya],
-                lon[xa]);
+        setProjection(proj, lat[ya - lat_minus], lon[xa - lon_minus], lat[ya], lon[xa]);
 
         OMGraphicList list = loadListFromHandler(null);
 
         // Dateline split
         if (lon_minus == 1) {
-            setProjection(proj, lat[ya - lat_minus], lon[0], lat[ya], -1f
-                    * lon[1]); // -1 to make it 180
+            setProjection(proj, lat[ya - lat_minus], lon[0], lat[ya], -1f * lon[1]); // -1
+                                                                                     // to
+                                                                                     // make
+                                                                                     // it
+                                                                                     // 180
             list = loadListFromHandler(list);
         }
 
@@ -402,8 +404,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
      * @param lon2 longitude of the lower right corner of the window, in decimal
      *        degrees.
      */
-    public void setProjection(Projection proj, double lat1, double lon1,
-                              double lat2, double lon2) {
+    public void setProjection(Projection proj, double lat1, double lon1, double lat2, double lon2) {
 
         firstImageReturned = true;
 
@@ -417,9 +418,8 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
         frameRight = Math.ceil(lon2);
 
         if (Debug.debugging("dted"))
-            Debug.output("frameUp = " + frameUp + ", frameDown = " + frameDown
-                    + ", frameLeft = " + frameLeft + ", frameRight = "
-                    + frameRight);
+            Debug.output("frameUp = " + frameUp + ", frameDown = " + frameDown + ", frameLeft = "
+                    + frameLeft + ", frameRight = " + frameRight);
     }
 
     /**
@@ -461,8 +461,7 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
 
             if (newframe && frameLon < frameRight) {
                 if (Debug.debugging("dted")) {
-                    Debug.output(" gni: Getting new frame Lat = " + frameLat
-                            + " Lon = " + frameLon);
+                    Debug.output(" gni: Getting new frame Lat = " + frameLat + " Lon = " + frameLon);
                 }
 
                 OMGraphic omg = get(frameLat, frameLon, dtedLevel);
@@ -491,8 +490,8 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
         CacheObject ret = searchCache(key);
         if (ret != null) {
             if (Debug.debugging("dted")) {
-                Debug.output("DTEDFrameCacheHandler.get():  retrieving frame from cache ("
-                        + lat + ":" + lon + ":" + level + ")");
+                Debug.output("DTEDFrameCacheHandler.get():  retrieving frame from cache (" + lat
+                        + ":" + lon + ":" + level + ")");
             }
             return (OMGraphic) ret.obj;
         }
@@ -504,8 +503,8 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
 
         replaceLeastUsed(ret);
         if (Debug.debugging("dted")) {
-            Debug.output("DTEDFrameCacheHandler.get():  loading new frame into cache ("
-                    + lat + ":" + lon + ":" + level + ")");
+            Debug.output("DTEDFrameCacheHandler.get():  loading new frame into cache (" + lat + ":"
+                    + lon + ":" + level + ")");
         }
         return (OMGraphic) ret.obj;
     }
@@ -582,11 +581,10 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
         setPropertyPrefix(prefix);
 
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
-        String generatorList = props.getProperty(realPrefix
-                + GeneratorLoadersProperty);
+        String generatorList = props.getProperty(realPrefix + GeneratorLoadersProperty);
         if (generatorList != null) {
             Vector<String> generatorMarkers = PropUtils.parseSpacedMarkers(generatorList);
-            for (String gmString: generatorMarkers) {
+            for (String gmString : generatorMarkers) {
                 String loaderPrefix = realPrefix + gmString;
                 String loaderClassnameProperty = loaderPrefix + ".class";
                 String classname = props.getProperty(loaderClassnameProperty);
@@ -706,12 +704,27 @@ public class DTEDFrameCacheHandler extends CacheHandler implements
         clear();
     }
 
-    public ArrayList<GeneratorLoader> getGeneratorLoaders() {
+    public List<GeneratorLoader> getGeneratorLoaders() {
+        if (generatorLoaders == null) {
+            generatorLoaders = new ArrayList<GeneratorLoader>();
+        }
         return generatorLoaders;
     }
 
-    public void setGeneratorLoaders(ArrayList<GeneratorLoader> generatorLoaders) {
+    public void setGeneratorLoaders(List<GeneratorLoader> generatorLoaders) {
         this.generatorLoaders = generatorLoaders;
+    }
+    
+    public void clearGeneratorLoaders() {
+        getGeneratorLoaders().clear();
+    }
+    
+    public void addGeneratorLoader(GeneratorLoader gl) {
+        getGeneratorLoaders().add(gl);
+    }
+    
+    public boolean removeGeneratorLoader(GeneratorLoader gl) {
+        return getGeneratorLoaders().remove(gl);
     }
 
 }

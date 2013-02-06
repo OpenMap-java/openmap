@@ -61,7 +61,7 @@ public class GeneratorLoader extends OMComponent {
         super.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
         setPrettyName(props.getProperty(prefix
-                + com.bbn.openmap.Layer.PrettyNameProperty, ""));
+                + com.bbn.openmap.Layer.PrettyNameProperty, prettyName));
     }
 
     public Properties getProperties(Properties props) {

@@ -30,6 +30,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.layer.policy.ListResetPCPolicy;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMWarpingImage;
 import com.bbn.openmap.proj.Projection;
@@ -61,6 +62,7 @@ public class MapTileUtilLayer
    public MapTileUtilLayer() {
       images = new HashMap<String, BufferedImage>();
       omgraphics = new OMGraphicList();
+      setProjectionChangePolicy(new ListResetPCPolicy(this));
    }
 
    public String getTileRootDir() {
@@ -155,9 +157,21 @@ public class MapTileUtilLayer
       }
    }
 
+   protected void clearMapTileImages() {
+       if (images != null) {
+           images.clear();
+       }
+       
+       if (imageList != null) {
+           imageList.removeAll();
+       }
+   }
+   
+   
    JPanel gui = null;
    DirectoryPropertyEditor dirEditor = null;
    JButton generateButton = null;
+   JButton clearButton = null;
    JList imageList = null;
 
    public JComponent getGUI() {
@@ -211,7 +225,12 @@ public class MapTileUtilLayer
          c.gridy = 2;
          c.insets = new Insets(0, 10, 10, 10);
 
-         JButton button1 = new JButton("Clear");
+         clearButton = new JButton("Clear");
+         clearButton.addActionListener(new ActionListener() {
+             public void actionPerformed(ActionEvent ae) {
+                 clearMapTileImages();
+             }
+         });
          generateButton = new JButton("Generate");
          generateButton.setEnabled(tileRootDir != null && tileRootDir.length() != 0);
          generateButton.addActionListener(new ActionListener() {
@@ -221,7 +240,7 @@ public class MapTileUtilLayer
          });
 
          c.gridx = 0;
-         gui.add(button1, c);
+         gui.add(clearButton, c);
 
          c.gridx = 2;
          c.anchor = GridBagConstraints.NORTHEAST;
@@ -264,6 +283,8 @@ public class MapTileUtilLayer
             setOMGraphics(omgl);
             doPrepare();
          }
+         
+         clearButton.setEnabled(((JList)arg0.getSource()).getComponentCount() > 0);
       }
 
    }

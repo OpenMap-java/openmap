@@ -210,8 +210,10 @@ public class CSVTokenizer extends Tokenizer {
             // (new java.io.FileInputStream(args[0]))));
             while (true) {
                 Object token = csv.token();
-                if (csv.isEOF(token))
+                if (csv.isEOF(token)) {
+                    csv.close();
                     return;
+                }
                 System.out.println(token);
             }
         } catch (Exception e) {

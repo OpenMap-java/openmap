@@ -42,6 +42,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
@@ -70,10 +72,10 @@ import com.bbn.openmap.util.cacheHandler.CacheObject;
  * zoom-level/x coord/y coord.file-extension. This class can be extended to
  * allow different tile naming/storing conventions to be used.
  * <p>
- *
+ * 
  * This component can be configured using properties:
  * <p>
- *
+ * 
  * <pre>
  * rootDir=the path to the parent directory of the tiles. The factory will construct specific file paths that are appended to this value.
  * fileExt=the file extension to append to the tile names
@@ -87,12 +89,11 @@ import com.bbn.openmap.util.cacheHandler.CacheObject;
  * # or
  * tileImagePreparer=com.bbn.openmap.dataAccess.mapTile.GreyscaleImagePreparer
  * </pre>
- *
+ * 
  * @author dietrick
  */
-public class StandardMapTileFactory
-    extends CacheHandler
-    implements MapTileFactory, PropertyConsumer {
+public class StandardMapTileFactory extends CacheHandler implements MapTileFactory,
+        PropertyConsumer {
     protected String prefix = null;
     protected final static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory");
     protected final static Logger mapTileLogger = Logger.getLogger("MAPTILE_DEBUGGING");
@@ -171,7 +172,7 @@ public class StandardMapTileFactory
 
     /**
      * Called to load cache object from data source, when not found in cache.
-     *
+     * 
      * @param key cache key
      * @param x uv x coordinate
      * @param y uv y coordinate
@@ -213,7 +214,7 @@ public class StandardMapTileFactory
     /**
      * Creates an OMRaster appropriate for projection and other parameters from
      * a buffered image.
-     *
+     * 
      * @param bi BufferedImage to use for tile.
      * @param x x uv coordinate for tile.
      * @param y y uv coordinate for tile.
@@ -222,8 +223,9 @@ public class StandardMapTileFactory
      * @return OMGraphic (OMScalingRaster or OMWarpingImage, most likely)
      * @throws InterruptedException
      */
-    protected OMGraphic createOMGraphicFromBufferedImage(BufferedImage bi, int x, int y, int zoomLevel, Projection proj)
-        throws InterruptedException {
+    protected OMGraphic createOMGraphicFromBufferedImage(BufferedImage bi, int x, int y,
+                                                         int zoomLevel, Projection proj)
+            throws InterruptedException {
 
         OMGraphic raster = null;
 
@@ -237,8 +239,8 @@ public class StandardMapTileFactory
             }
 
             if (mapTileLogger.isLoggable(Level.FINE)) {
-                raster.putAttribute(OMGraphic.LABEL, new OMTextLabeler("Tile: " + zoomLevel + "|" + x + "|" + y,
-                    OMText.JUSTIFY_CENTER));
+                raster.putAttribute(OMGraphic.LABEL, new OMTextLabeler("Tile: " + zoomLevel + "|"
+                        + x + "|" + y, OMText.JUSTIFY_CENTER));
                 raster.setSelected(true);
             }
         }
@@ -249,14 +251,15 @@ public class StandardMapTileFactory
     /**
      * Create an OMScalingRaster that matches the basic projection of the
      * current map. Only scales evenly for the opposite corner points.
-     *
+     * 
      * @param image BufferedImage created from tile file
      * @param x uv x coordinate
      * @param y uv y coordinate
      * @param zoomLevel zoom level for tile retrieval
      * @return OMGraphic, but really an OMScalingRaster.
      */
-    protected OMGraphic getTileMatchingProjectionType(BufferedImage image, int x, int y, int zoomLevel) {
+    protected OMGraphic getTileMatchingProjectionType(BufferedImage image, int x, int y,
+                                                      int zoomLevel) {
 
         Point2D pnt = new Point2D.Double();
         pnt.setLocation(x, y);
@@ -280,14 +283,15 @@ public class StandardMapTileFactory
      * different projections. The base projection is going to be defined for the
      * mtc transform set on the factory. Warping images are slower to generate
      * for a map projection than scaling rasters.
-     *
+     * 
      * @param image
      * @param x
      * @param y
      * @param zoomLevel
      * @return OMGraphic, but really an OMWarpingImage
      */
-    protected OMGraphic getTileNotMatchingProjectionType(BufferedImage image, int x, int y, int zoomLevel) {
+    protected OMGraphic getTileNotMatchingProjectionType(BufferedImage image, int x, int y,
+                                                         int zoomLevel) {
 
         DataBounds dataBounds = new DataBounds(new Point(x, y), new Point(x + 1, y + 1));
         dataBounds.setyDirUp(mtcTransform.isYDirectionUp());
@@ -298,7 +302,7 @@ public class StandardMapTileFactory
     /**
      * Method that allows subclasses to modify the image as necessary before it
      * is passed into an OMGraphic.
-     *
+     * 
      * @param origImage Any java Image
      * @param imageWidth pixel width
      * @param imageHeight pixel height
@@ -306,7 +310,7 @@ public class StandardMapTileFactory
      * @throws InterruptedException
      */
     protected BufferedImage preprocessImage(Image origImage, int imageWidth, int imageHeight)
-        throws InterruptedException {
+            throws InterruptedException {
 
         return getTileImagePreparer().preprocessImage(origImage, imageWidth, imageHeight);
     }
@@ -316,7 +320,7 @@ public class StandardMapTileFactory
      * load method to do some projection calculations to initialize tile
      * parameters. If the object is not found in the cache, then load is called
      * to get it from the data source.
-     *
+     * 
      * @param key cache key, usually string of location of a tile
      * @param x uv x location of tile
      * @param y uv y location of tile
@@ -347,7 +351,7 @@ public class StandardMapTileFactory
      * An auxiliary call to retrieve something from the cache, modified to allow
      * load method to do some projection calculations to initialize tile
      * parameters. If the object is not found in the cache, null is returned.
-     *
+     * 
      * @param key cache key, usually string of location of a tile
      * @param x uv x location of tile
      * @param y uv y location of tile
@@ -370,7 +374,7 @@ public class StandardMapTileFactory
      * Call to make when you want the tile factory to create some empty tile
      * representation for the given location. You can return any type of
      * OMGraphic embedded in a CacheObject.
-     *
+     * 
      * @param key the cache key for this object
      * @param x the uv x coordinate of the tile
      * @param y the uv y coordinate of the tile
@@ -414,7 +418,7 @@ public class StandardMapTileFactory
 
     /**
      * Returns projected tiles for the given projection.
-     *
+     * 
      * @param proj the projection to fetch tiles for.
      * @return OMGraphicList containing projected OMGraphics.
      * @throws InterruptedException
@@ -425,7 +429,7 @@ public class StandardMapTileFactory
 
     /**
      * Returns projected tiles for given projection at specified zoom level.
-     *
+     * 
      * @param proj projection for query
      * @param zoomLevel zoom level 1-20 for tiles to be returned, -1 for code to
      *        figure out appropriate zoom level.
@@ -435,13 +439,14 @@ public class StandardMapTileFactory
     public OMGraphicList getTiles(Projection proj, int zoomLevel) {
         return getTiles(proj, zoomLevel, new OMGraphicList());
     }
+
     protected Projection lastProj;
 
     /**
      * Returns projected tiles for given projection at specified zoom level. Use
      * this call if you are providing a repaint callback component to the
      * factory, so you will have a handle on the OMGraphicList to render to.
-     *
+     * 
      * @param proj projection for query
      * @param zoomLevel zoom level 1-20 for tiles to be returned, -1 for code to
      *        figure out appropriate zoom level.
@@ -453,8 +458,8 @@ public class StandardMapTileFactory
     public OMGraphicList getTiles(Projection proj, int zoomLevel, OMGraphicList list) {
 
         if (fileExt == null || rootDir == null) {
-            logger.warning("No path to tile files provided (" + rootDir + "), or file extension (" + fileExt +
-                ") not specified");
+            logger.warning("No path to tile files provided (" + rootDir + "), or file extension ("
+                    + fileExt + ") not specified");
             return list;
         }
 
@@ -468,16 +473,16 @@ public class StandardMapTileFactory
 
         /**
          * Given a projection, a couple of things have to happen.
-         *
+         * 
          * - First, we need to figure out what zoom level fits us best if it is
          * not specified.
-         *
+         * 
          * - Second, we need to figure out the uv bounds that fit the
          * projection.
-         *
+         * 
          * - Third, we need to grab the images for uv grid, by cycling through
          * the limits in both directions.
-         *
+         * 
          * The TileMaker static methods let us convert uv to lat/lon and back, a
          * ZoomLevelInfo object can be used to figure out what the file path
          * looks like.
@@ -507,9 +512,8 @@ public class StandardMapTileFactory
             int uvright = uvBounds[3];
 
             if (verbose) {
-                logger.fine("for " + proj + ", fetching tiles between x(" + uvleft + ", " + uvright + ") y(" + uvup +
-                    ", " +
-                    uvbottom + ")");
+                logger.fine("for " + proj + ", fetching tiles between x(" + uvleft + ", " + uvright
+                        + ") y(" + uvup + ", " + uvbottom + ")");
             }
 
             // dateline test
@@ -537,7 +541,7 @@ public class StandardMapTileFactory
      * tiles that need to be loaded. The cached tiles will be immediately
      * displayed, and then these tiles will be displayed after that as they are
      * loaded.
-     *
+     * 
      * @author dietrick
      */
     class LoadObj {
@@ -554,13 +558,12 @@ public class StandardMapTileFactory
         }
     }
 
-    protected void getTiles(int uvleft, int uvright, int uvup, int uvbottom, ZoomLevelInfo zoomLevelInfo,
-        Projection proj,
-        OMGraphicList list) {
+    protected void getTiles(int uvleft, int uvright, int uvup, int uvbottom,
+                            ZoomLevelInfo zoomLevelInfo, Projection proj, OMGraphicList list) {
         if (verbose) {
-            logger.fine("for zoom level: " + zoomLevelInfo.getZoomLevel() + ", screen covers uv coords [t:" + uvup +
-                ", l:" +
-                uvleft + ", b:" + uvbottom + ", r:" + uvright + "]");
+            logger.fine("for zoom level: " + zoomLevelInfo.getZoomLevel()
+                    + ", screen covers uv coords [t:" + uvup + ", l:" + uvleft + ", b:" + uvbottom
+                    + ", r:" + uvright + "]");
         }
 
         if (zoomLevelInfo.getZoomLevel() == 0) {
@@ -582,11 +585,12 @@ public class StandardMapTileFactory
 
                 // Try to help doing unnecessary work
                 if (Thread.currentThread().isInterrupted()) {
-                    logger.fine("Detected interruption in standard loop, thread " + Thread.currentThread().getName());
+                    logger.fine("Detected interruption in standard loop, thread "
+                            + Thread.currentThread().getName());
                     return;
                 }
 
-                String imagePath = zoomLevelInfo.formatImageFilePath(rootDir, x, y) + fileExt;
+                String imagePath = buildCacheKey(x, y, zoomLevel, fileExt);
 
                 /**
                  * Need to modify the action of the cache a little to make the
@@ -594,23 +598,21 @@ public class StandardMapTileFactory
                  * tiles, gathering all of the tiles that are immediately
                  * available. Generate them, add them to list, and call repaint
                  * when they are set.
-                 *
+                 * 
                  * Keep track of the ones that are not there, and load those
                  * one-by-one after, calling repaint as they are added to the
                  * list.
                  */
                 OMGraphic tileGraphic = (OMGraphic) getFromCache(imagePath, x, y, zoomLevel);
 
-                boolean rightOMGraphicType =
-                    (tileGraphic instanceof OMScalingRaster && isMercator) ||
-                    (tileGraphic instanceof OMWarpingImage && !isMercator);
+                boolean rightOMGraphicType = (tileGraphic instanceof OMScalingRaster && isMercator)
+                        || (tileGraphic instanceof OMWarpingImage && !isMercator);
 
                 if (tileGraphic != null/* && rightOMGraphicType */) {
 
                     if (mapTileLogger.isLoggable(Level.FINE)) {
-                        tileGraphic.putAttribute(OMGraphic.LABEL, new OMTextLabeler("Tile: " + zoomLevel + "|" + x + "|" +
-                            y,
-                            OMText.JUSTIFY_CENTER));
+                        tileGraphic.putAttribute(OMGraphic.LABEL, new OMTextLabeler("Tile: "
+                                + zoomLevel + "|" + x + "|" + y, OMText.JUSTIFY_CENTER));
                         tileGraphic.setSelected(true);
                     }
 
@@ -624,7 +626,8 @@ public class StandardMapTileFactory
         }
 
         if (verbose) {
-            logger.fine("found " + list.size() + " frames in cache, loading " + reloads.size() + " others now...");
+            logger.fine("found " + list.size() + " frames in cache, loading " + reloads.size()
+                    + " others now...");
         }
 
         if (repaintCallback != null) {
@@ -640,8 +643,8 @@ public class StandardMapTileFactory
         }
 
         if (verbose) {
-            logger.fine("finished loading " + reloads.size() + " frames from source for screen" +
-                (doExtraTiles ? ", moving to off-screen frames..." : ""));
+            logger.fine("finished loading " + reloads.size() + " frames from source for screen"
+                    + (doExtraTiles ? ", moving to off-screen frames..." : ""));
         }
 
         if (!doExtraTiles) {
@@ -726,7 +729,7 @@ public class StandardMapTileFactory
      * manage the resulting OMRaster tile. Adds the tile to the list after
      * generating it with the projection, and calls the repaintCallback if there
      * is one.
-     *
+     * 
      * @param imagePath the image path for the tile
      * @param x the x uv coordinate of the tile
      * @param y the y uv coordinate of the tile
@@ -735,7 +738,8 @@ public class StandardMapTileFactory
      * @param list the OMGraphicList to add the tile to.
      * @throws InterruptedException
      */
-    private void handleLoad(String imagePath, int x, int y, int zoomLevel, Projection proj, OMGraphicList list) {
+    private void handleLoad(String imagePath, int x, int y, int zoomLevel, Projection proj,
+                            OMGraphicList list) {
 
         if (Thread.currentThread().isInterrupted()) {
             return;
@@ -773,7 +777,7 @@ public class StandardMapTileFactory
      * manage the resulting OMRaster tile. Adds the tile to the list after
      * generating it with the projection, and calls the repaintCallback if there
      * is one. Handles creating the image file path given the other info.
-     *
+     * 
      * @param x the x uv coordinate of the tile
      * @param y the y uv coordinate of the tile
      * @param zoomLevel the zoomLevel of the tile
@@ -782,9 +786,12 @@ public class StandardMapTileFactory
      * @throws InterruptedException
      */
     private void handleLoad(int x, int y, int zoomLevel, Projection proj, OMGraphicList list) {
-        String imagePath = zoomLevelInfo.formatImageFilePath(rootDir, x, y) + fileExt;
+        // String imagePath = zoomLevelInfo.formatImageFilePath(rootDir, x, y) +
+        // fileExt;
+        String imagePath = buildFilePath(x, y, zoomLevel, fileExt);
         handleLoad(imagePath, x, y, zoomLevel, proj, list);
     }
+
     /**
      * An array of scales for all of the possible zoom levels, from 1 to 20.
      * They get calculate the first time getZoomLevelForProj is called.
@@ -792,12 +799,111 @@ public class StandardMapTileFactory
     protected float[] scales;
 
     /**
+     * Build an image path to load, based on specified tile coordinates, zoom
+     * level and file extension settings.
+     * 
+     * Look at the root directory definition and determine if the x,y,z values
+     * of the path are specified as the holder values {z}, {x} and {y}.
+     * 
+     * If they aren't specified, the provided values will be appended to the
+     * rootDir as z/x/y.fileExt.
+     * 
+     * If {z}, {x} or {y} are found in the root dir path, then it's assumed that
+     * the rootDir contains all the information needed to specify the path and
+     * regular expressions will be used to replace those value holders with the
+     * values specified. The file extension in this case will not be appended to
+     * the rootDir.
+     * 
+     * @param x the x tile coordinate
+     * @param y the y tile coordinate
+     * @param z the zoom level
+     * @param fileExt the file extension to use for the path.
+     */
+    public String buildFilePath(int x, int y, int z, String fileExt) {
+        if (tilePathBuilder == null) {
+            tilePathBuilder = new TilePathBuilder(rootDir);
+        }
+
+        return tilePathBuilder.buildTilePath(x, y, z, fileExt);
+    }
+
+    private TilePathBuilder tilePathBuilder = null;
+
+    /**
+     * Creates a unique cache key for this tile based on zoom, x, y. This method
+     * was created so the ServerMapTileFactory could override it and use local
+     * cache names for keys if a local cache was being used.
+     * 
+     * @param x tile coord.
+     * @param y tile coord.
+     * @param z zoomLevel.
+     * @param fileExt file extension.
+     * @return String used in cache.
+     */
+    protected String buildCacheKey(int x, int y, int z, String fileExt) {
+        return buildFilePath(x, y, z, fileExt);
+    }
+
+    public static class TilePathBuilder {
+        String rez = "(\\{z\\})"; // Curly Braces 1
+        String rex = "(\\{x\\})"; // Curly Braces 2
+        String rey = "(\\{y\\})"; // Curly Braces 3
+
+        Pattern pz = Pattern.compile(rez, Pattern.CASE_INSENSITIVE);
+        Pattern px = Pattern.compile(rex, Pattern.CASE_INSENSITIVE);
+        Pattern py = Pattern.compile(rey, Pattern.CASE_INSENSITIVE);
+
+        String startingPath;
+        boolean patternsUsed = false;
+        boolean patternUseChecked = false;
+
+        public TilePathBuilder(String rootDir) {
+            startingPath = rootDir;
+        }
+
+        public boolean isPatternsUsed() {
+            return patternsUsed;
+        }
+
+        public String buildTilePath(int x, int y, int z, String fileExt) {
+            String ret = startingPath;
+            if (((!patternUseChecked) || (patternUseChecked && patternsUsed))
+                    && startingPath != null && !startingPath.isEmpty()) {
+                ret = updatePath(ret, pz, Integer.toString(z));
+                ret = updatePath(ret, px, Integer.toString(x));
+                ret = updatePath(ret, py, Integer.toString(y));
+                patternUseChecked = true;
+            }
+
+            if (!patternsUsed) {
+                // No pattern matching, need to build from scratch, with fileExt
+                return buildDefaultTilePath(x, y, z, fileExt);
+            }
+
+            return ret;
+        }
+
+        private String buildDefaultTilePath(int x, int y, int z, String fileExt) {
+            return startingPath + "/" + z + "/" + x + "/" + y + fileExt;
+        }
+
+        private String updatePath(String currentPath, Pattern p, String replaceWith) {
+            Matcher m = p.matcher(currentPath);
+            if (m.find()) {
+                patternsUsed = true;
+                return m.replaceAll(replaceWith);
+            }
+            return currentPath;
+        }
+    }
+
+    /**
      * Given a projection, figure out the appropriate zoom level for it. Right
      * now, 0 is totally zoomed with one tile for the entire earth. But we don't
      * return 0, we start at 1. OM can't handle one tile that covers the entire
      * earth because of the restriction for handling OMGraphics to less than
      * half of the earth.
-     *
+     * 
      * @param proj
      * @return the zoom level.
      */
@@ -878,17 +984,10 @@ public class StandardMapTileFactory
 
     public Properties getPropertyInfo(Properties list) {
         I18n i18n = Environment.getI18n();
-        PropUtils.setI18NPropertyInfo(i18n, list, com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.class,
-            ROOT_DIR_PROPERTY, "Tile Directory", "Root directory containing image tiles",
-            "com.bbn.openmap.util.propertyEditor.DirectoryPropertyEditor");
-        PropUtils.setI18NPropertyInfo(i18n, list, com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.class,
-            FILE_EXT_PROPERTY, "Image File Extension", "Extension of image files (.jpg, .png, etc)", null);
-        PropUtils.setI18NPropertyInfo(i18n, list, com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.class,
-            CACHE_SIZE_PROPERTY, "Cache Size", "Number of tile images held in memory", null);
-        PropUtils.setI18NPropertyInfo(i18n, list, com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.class,
-            ZOOM_LEVEL_TILE_SIZE_PROPERTY, "Zoom Level Tile Size",
-            "The maximum pixel size of a tile before switching to a higher zoom level (350 is default)",
-            null);
+        PropUtils.setI18NPropertyInfo(i18n, list, com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.class, ROOT_DIR_PROPERTY, "Tile Directory", "Root directory containing image tiles", "com.bbn.openmap.util.propertyEditor.DirectoryPropertyEditor");
+        PropUtils.setI18NPropertyInfo(i18n, list, com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.class, FILE_EXT_PROPERTY, "Image File Extension", "Extension of image files (.jpg, .png, etc)", null);
+        PropUtils.setI18NPropertyInfo(i18n, list, com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.class, CACHE_SIZE_PROPERTY, "Cache Size", "Number of tile images held in memory", null);
+        PropUtils.setI18NPropertyInfo(i18n, list, com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.class, ZOOM_LEVEL_TILE_SIZE_PROPERTY, "Zoom Level Tile Size", "The maximum pixel size of a tile before switching to a higher zoom level (350 is default)", null);
         return list;
     }
 
@@ -953,8 +1052,8 @@ public class StandardMapTileFactory
 
         super.resetCache(PropUtils.intFromProperties(setList, prefix + CACHE_SIZE_PROPERTY, getCacheSize()));
 
-        zoomLevelTileSize = PropUtils.intFromProperties(setList, prefix + ZOOM_LEVEL_TILE_SIZE_PROPERTY,
-            zoomLevelTileSize);
+        zoomLevelTileSize = PropUtils.intFromProperties(setList, prefix
+                + ZOOM_LEVEL_TILE_SIZE_PROPERTY, zoomLevelTileSize);
     }
 
     public void setPropertyPrefix(String prefix) {
@@ -998,7 +1097,8 @@ public class StandardMapTileFactory
 
                                         int numRead = 0;
                                         while ((numRead = jarStream.read(readBytes, 0, readBytes.length)) > 0) {
-                                            byte[] tmpBytes = new byte[numRead + contentBytes.length];
+                                            byte[] tmpBytes = new byte[numRead
+                                                    + contentBytes.length];
                                             System.arraycopy(contentBytes, 0, tmpBytes, 0, contentBytes.length);
                                             System.arraycopy(readBytes, 0, tmpBytes, contentBytes.length, numRead);
 
@@ -1062,8 +1162,8 @@ public class StandardMapTileFactory
                         // set, file ext, transform.
                         configureFromProperties(tileProps.toURI().toURL().openStream(), rootDirectory);
                     } catch (MalformedURLException murle) {
-                        logger.warning("tile file for " + rootDirectory + " couldn't be read: " + tileProps.
-                            getAbsolutePath());
+                        logger.warning("tile file for " + rootDirectory + " couldn't be read: "
+                                + tileProps.getAbsolutePath());
                     } catch (IOException ioe) {
                         logger.warning("tile file for " + rootDirectory + " couldn't be read");
                     }
@@ -1097,6 +1197,9 @@ public class StandardMapTileFactory
             rootDirProperty = rootDirectory;
         }
 
+        // Reset for new path
+        tilePathBuilder = null;
+
     }
 
     public TileImagePreparer getTileImagePreparer() {
@@ -1113,14 +1216,13 @@ public class StandardMapTileFactory
     /**
      * Called with an input stream for a properties file, used for reading
      * tiles.omp files.
-     *
+     * 
      * @param is input stream for tiles.omp file.
      * @param rootDirectory original path to what was specified as root
      *        directory
      * @throws IOException
      */
-    protected void configureFromProperties(InputStream is, String rootDirectory)
-        throws IOException {
+    protected void configureFromProperties(InputStream is, String rootDirectory) throws IOException {
 
         Properties props = new Properties();
         props.load(is);
@@ -1147,7 +1249,7 @@ public class StandardMapTileFactory
      * default ZoomLevelInfo is based on the OpenStreetMap tile layout, zoom
      * levels 0-20 (where level 0 is all the way zoomed out), and the tiles are
      * stored zoomLevel/x/y.(fileExt).
-     *
+     * 
      * @return the zoomLevelInfo
      */
     public ZoomLevelInfo getZoomLevelInfo() {
@@ -1165,7 +1267,7 @@ public class StandardMapTileFactory
      * than OSM.
      * <p>
      * Won't allow itself to be set to null.
-     *
+     * 
      * @param zoomLevelInfo the zoomLevelInfo to set
      */
     public void setZoomLevelInfo(ZoomLevelInfo zoomLevelInfo) {
@@ -1182,7 +1284,7 @@ public class StandardMapTileFactory
      * Set the map tile coordinate transformed used to figure out lat/lon to
      * tile coordinates. Can't be null, if you set it to null an
      * OSMMapTileCoordTransform will be created instead.
-     *
+     * 
      * @param mtcTransform
      */
     public void setMtcTransform(MapTileCoordinateTransform mtcTransform) {

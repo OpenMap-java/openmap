@@ -32,7 +32,7 @@ import com.bbn.openmap.proj.Projection;
 
 /**
  * The DTEDSlopeGenerator is an extension to the SlopeGenerator that
- * uses OMScalingRasters for images created frm the DTED data. It
+ * uses OMScalingRasters for images created from the DTED data. It
  * caches the image and will reuse it if the projection parameters
  * allow it. It's needed because it assumes that the OMGrid used is a
  * OMDTEDGrid, which has the lat/lons of the lower left and upper

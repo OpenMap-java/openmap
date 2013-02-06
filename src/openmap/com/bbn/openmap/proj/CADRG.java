@@ -33,9 +33,7 @@ import com.bbn.openmap.util.Debug;
  * Implements the CADRG projection. This is really an Equal Arc Projection with
  * pixel spacings as dictated by the RPF specification.
  */
-public class CADRG
-        extends Cylindrical
-        implements EqualArc {
+public class CADRG extends Cylindrical implements EqualArc {
 
     private static final long serialVersionUID = 1L;
 
@@ -51,28 +49,10 @@ public class CADRG
     private static final double SOUTH_LIMIT = -NORTH_LIMIT;
 
     private double spps_x, spps_y; // scaled pixels per SCoord
-    private static final int CADRG_ARC_A[] = {
-        369664,
-        302592,
-        245760,
-        199168,
-        163328,
-        137216,
-        110080,
-        82432
-    };
+    private static final int CADRG_ARC_A[] = { 369664, 302592, 245760, 199168, 163328, 137216,
+            110080, 82432 };
     private static final double CADRG_SCALE_LIMIT = 2000.0;
-    private static final int CADRG_get_zone_old_extents[] = {
-        32,
-        48,
-        56,
-        64,
-        68,
-        72,
-        76,
-        80,
-        90
-    };
+    private static final int CADRG_get_zone_old_extents[] = { 32, 48, 56, 64, 68, 72, 76, 80, 90 };
     private int /* ox, */oy;
     private double x_pix_constant, y_pix_constant;
     private Point ul;// upper left
@@ -125,8 +105,10 @@ public class CADRG
      * 
      */
     public String toString() {
-        return "CADRG[ spps_x=" + spps_x + " spps_y=" + spps_y + " x_pix=" + x_pix_constant + " y_pix=" + y_pix_constant +
-        /* " ox=" + ox + */" oy=" + oy + " ul(" + ul.x + "," + ul.y + ")" + super.toString();
+        return "CADRG[ spps_x=" + spps_x + " spps_y=" + spps_y + " x_pix=" + x_pix_constant
+                + " y_pix=" + y_pix_constant +
+                /* " ox=" + ox + */" oy=" + oy + " ul(" + ul.x + "," + ul.y + ")"
+                + super.toString();
     }
 
     /**
@@ -193,55 +175,14 @@ public class CADRG
         int NOT_SET = -1;
         int ret = NOT_SET;
 
-        double delta;
-        double upper_lat, lower_lat;
-        int x;
-        double pivot;
-        /** Pixels per degree */
-        double ppd = y_pix_constant / 90;
-
-        if (upper_zone_extents == null) {
-            upper_zone_extents = new double[CADRG_get_zone_old_extents.length];
-        }
-        if (lower_zone_extents == null) {
-            lower_zone_extents = new double[CADRG_get_zone_old_extents.length + 1];
-        }
-
-        /**
-         * Delta*2 is the number of degrees for the height of the projection.
-         */
-        if (y_pix_constant == 0)
-            delta = 0;
-        else
-            delta = height / 2.0 * 90.0 / y_pix_constant;
-        Debug.message("proj", "height = " + height);
-
-        upper_lat = Math.abs(Math.abs(lat) + delta);
-        lower_lat = Math.abs(Math.abs(lat) - delta);
-
-        Debug.message("proj", "upper_lat = " + upper_lat);
-        Debug.message("proj", "lower_lat = " + lower_lat);
-
-        lower_zone_extents[0] = 0f;
-        lower_zone_extents[8] = 80f;
-        upper_zone_extents[8] = 90f;
-
-        // figure out new extents - from CADRG spec
-        for (x = 0; x < CADRG_get_zone_old_extents.length - 1/* 8 */; x++) {
-            pivot = ppd * CADRG_get_zone_old_extents[x] / 1536.0;
-            pivot = Math.floor(pivot);
-            Debug.message("proj", "pivot = " + pivot);
-            lower_zone_extents[x + 1] = (float) (pivot * 1536.0 / ppd);
-            // Can't go further than the equator.
-            // if (x == 0) lower_zone_extents[x] = 0;
-            pivot++;
-            upper_zone_extents[x] = (float) (pivot * 1536.0 / ppd);
-            Debug.message("proj", "lower_zone_extents[" + x + "] = " + lower_zone_extents[x]);
-            Debug.message("proj", "upper_zone_extents[" + x + "] = " + upper_zone_extents[x]);
-
-            if ((lower_lat <= upper_zone_extents[x]) && (upper_lat <= upper_zone_extents[x]) && ret == NOT_SET)
+        for (int x = 0; x < CADRG_get_zone_old_extents.length - 1/* 8 */; x++) {
+            double testLat = Math.abs(lat);
+            if (testLat <= CADRG_get_zone_old_extents[x]) {
                 ret = x + 1;
+                break;
+            }
         }
+
         if (ret == NOT_SET)
             ret = CADRG_get_zone_old_extents.length - 1;
 
@@ -312,7 +253,8 @@ public class CADRG
      * @return number of frame rows in the current zone.
      */
     public int numVerticalFrames() {
-        return (int) Math.round((upper_zone_extents[zone - 1] - lower_zone_extents[zone - 1]) * (y_pix_constant / 90.0) / (1536.0));
+        return (int) Math.round((upper_zone_extents[zone - 1] - lower_zone_extents[zone - 1])
+                * (y_pix_constant / 90.0) / (1536.0));
     }
 
     /**
@@ -497,12 +439,39 @@ public class CADRG
             Debug.output("Y pix constant = " + y_pix_constant);
         }
 
+        // ////
+
+        /** Pixels per degree */
+        double ppd = y_pix_constant / 90.0;
+        if (upper_zone_extents == null || lower_zone_extents == null) {
+            upper_zone_extents = new double[CADRG_get_zone_old_extents.length];
+            lower_zone_extents = new double[CADRG_get_zone_old_extents.length + 1];
+
+            lower_zone_extents[0] = 0f;
+            lower_zone_extents[8] = 80f;
+            upper_zone_extents[8] = 90f;
+
+            // figure out new extents - from CADRG spec
+            for (int x = 0; x < CADRG_get_zone_old_extents.length - 1/* 8 */; x++) {
+                double pivot = Math.floor(ppd * CADRG_get_zone_old_extents[x] / 1536.0);
+                lower_zone_extents[x + 1] = pivot * 1536.0 / ppd;
+                // Can't go further than the equator.
+                // if (x == 0) lower_zone_extents[x] = 0;
+                pivot++;
+                upper_zone_extents[x] = pivot * 1536.0 / ppd;
+                Debug.message("proj", "lower_zone_extents[" + x + "] = " + lower_zone_extents[x]);
+                Debug.message("proj", "upper_zone_extents[" + x + "] = " + upper_zone_extents[x]);
+            }
+        }
+        // ////
+
         // What zone are we in? To try to reduce pixel spacing jumping when
         // zoomed
         // out, just set the zone level to one when zoomed out past 1:60M. There
         // aren't any charts available at those scales in this projection type.
+    
         if (scale > 60000000) {
-            zone = getZone(0, y_pix_constant);
+            zone = 1;
         } else {
             zone = getZone(ProjMath.radToDeg(centerY), y_pix_constant);
         }
@@ -610,7 +579,7 @@ public class CADRG
      *        matches the ll2 coordinate, usually the lower right corner of the
      *        area of interest.
      */
-    public float getScale(LatLonPoint ll1, LatLonPoint ll2, Point2D point1, Point2D point2) {
+    public float getScale(Point2D ll1, Point2D ll2, Point2D point1, Point2D point2) {
         return getScale(ll1, ll2, point1, point2, 0);
     }
 
@@ -630,7 +599,8 @@ public class CADRG
      * @param recursiveCount a protective count to keep this method from getting
      *        in a recursive death spiral.
      */
-    private float getScale(LatLonPoint ll1, LatLonPoint ll2, Point2D point1, Point2D point2, int recursiveCount) {
+    private float getScale(Point2D ll1, Point2D ll2, Point2D point1, Point2D point2,
+                           int recursiveCount) {
 
         try {
 
@@ -641,11 +611,13 @@ public class CADRG
             double dx = Math.abs(point2.getX() - point1.getX());
             double dy = Math.abs(point2.getY() - point1.getY());
 
-            double nCenterLat = Math.min(ll1.getY(), ll2.getY()) + Math.abs(ll1.getY() - ll2.getY()) / 2;
-            double nCenterLon = Math.min(ll1.getX(), ll2.getX()) + Math.abs(ll1.getX() - ll2.getX()) / 2;
+            double nCenterLat = Math.min(ll1.getY(), ll2.getY())
+                    + Math.abs(ll1.getY() - ll2.getY()) / 2;
+            double nCenterLon = Math.min(ll1.getX(), ll2.getX())
+                    + Math.abs(ll1.getX() - ll2.getX()) / 2;
 
             if (dx < dy) {
-                double dlat = Math.abs(ll1.getLatitude() - ll2.getLatitude());
+                double dlat = Math.abs(ll1.getX() - ll2.getY());
                 deltaDegrees = dlat;
                 deltaPix = getHeight();
                 pixPerDegree = getScale() * getYPixConstant() / 90;
@@ -656,14 +628,15 @@ public class CADRG
                 // point1 is to the right of point2. switch the
                 // LatLonPoints so that ll1 is west (left) of ll2.
                 if (point1.getX() > point2.getX()) {
-                    lat1 = ll1.getLatitude();
-                    lon1 = ll1.getLongitude();
-                    ll1.setLatLon(ll2);
-                    ll2.setLatLon(lat1, lon1);
+                    lat1 = ll1.getY();
+                    lon1 = ll1.getX();
+                    ll1.setLocation(ll2);
+                    // Remember for setLocation the order of args is reversed
+                    ll2.setLocation(lon1, lat1);
                 }
 
-                lon1 = ll1.getLongitude();
-                lon2 = ll2.getLongitude();
+                lon1 = ll1.getX();
+                lon2 = ll2.getY();
 
                 // allow for crossing dateline
                 if (lon1 > lon2) {
@@ -706,9 +679,8 @@ public class CADRG
         if (proj instanceof CADRG) {
             return (CADRG) proj;
         }
-        
-        CADRG cadrg =
-                new CADRG((LatLonPoint) proj.getCenter(new LatLonPoint.Float()), proj.getScale(), proj.getWidth(), proj.getHeight());
+
+        CADRG cadrg = new CADRG((LatLonPoint) proj.getCenter(new LatLonPoint.Float()), proj.getScale(), proj.getWidth(), proj.getHeight());
 
         Point2D ulp = cadrg.forward(proj.getUpperLeft());
         Point2D lrp = cadrg.forward(proj.getLowerRight());

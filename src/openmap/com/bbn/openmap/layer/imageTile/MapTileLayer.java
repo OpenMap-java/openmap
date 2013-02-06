@@ -25,11 +25,15 @@
 package com.bbn.openmap.layer.imageTile;
 
 import java.awt.Container;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Logger;
+import javax.swing.JSlider;
 
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.mapTile.MapTileFactory;
+import com.bbn.openmap.dataAccess.mapTile.ServerMapTileFactory;
 import com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -47,7 +51,6 @@ import com.bbn.openmap.util.PropUtils;
  * tiles.class=com.bbn.openmap.layer.imageTile.MapTileLayer
  * tiles.prettyName=TILES
  * tiles.tileFactory=com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory
- * tiles.jar=mapTilesInJar.jar (optional, for runtime jar loading)
  * tiles.rootDir=root_directory_of_tiles
  * #optional, .png is default
  * tiles.fileExt=.png
@@ -57,7 +60,7 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * </pre>
  * 
- * You can also have:
+ * You can use a server that provides image tiles:
  * 
  * <pre>
  * 
@@ -76,6 +79,21 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * </pre>
  * 
+ * The rootDir property can be defined as a pattern, with the zoom level z, x
+ * tile coordinate and y tile coordinate set using {z}{x}{y} for however the
+ * tiles are stored or retrieved:
+ * 
+ * <pre>
+ * rootDir=/data/tiles/{z}/{x}/{y}.png
+ * 
+ * #or, for the ServerMapTileFactory:
+ * rootDir=http://someserver.com/tileset/{z}/{x}/{y}.png
+ * 
+ * </pre>
+ * 
+ * In this case, the fileExt won't be used as the code will assume you are
+ * setting that.
+ * 
  * To make things simpler, you can define a tiles.omp file that sits under the
  * tile root directory or at the top level of the jar file, and let it specify
  * the properties for the tile set. The properties in that file should be
@@ -84,9 +102,9 @@ import com.bbn.openmap.util.PropUtils;
  * <pre>
  * 
  * fileExt=.png
- * #for instance, for GDAL processed stuff need this transform
+ * #for instance, for GDAL processed images you need this transform since tiles have difference reference coordinates
  * mapTileTransform=com.bbn.openmap.dataAccess.mapTile.TMSMapTileCoordinateTransform
- * #in jar file, should specify rootDir inside jar to tiles (don't need this for file system rootDirs):
+ * #in jar file, should specify rootDir inside jar to tiles (don't need this for layers accessing local file system rootDirs, unless you want to specify z,x,y order differently):
  * rootDir=mytiles
  * 
  * </pre>
@@ -97,8 +115,7 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * @author dietrick
  */
-public class MapTileLayer
-        extends OMGraphicHandlerLayer {
+public class MapTileLayer extends OMGraphicHandlerLayer {
 
     private static final long serialVersionUID = 1L;
 
@@ -188,11 +205,33 @@ public class MapTileLayer
             if (itf != null) {
                 setTileFactory(itf);
             }
-        } else if (tileFactory instanceof PropertyConsumer) {
+        } else {
+            // Let's see if we can figure out what kind of MapTileFactory is needed based on rootDir
+            String rootDirString = props.getProperty(prefix + StandardMapTileFactory.ROOT_DIR_PROPERTY);
+            if (rootDirString != null) {
+                try {
+                    URL url = new java.net.URL(rootDirString);
+                    // If we get here, we have a protocol, looks remote, so we should make sure the
+                    // ServerMapTileFactory is used.
+                    if (!(getTileFactory() instanceof ServerMapTileFactory)) {
+                        setTileFactory(new ServerMapTileFactory());
+                    }
+                    
+                } catch (MalformedURLException e) {
+                    // no protocol or something, use default StandardMapTileFactory
+                    if (!(getTileFactory() instanceof StandardMapTileFactory)) {
+                        setTileFactory(new StandardMapTileFactory());
+                    }
+                }
+            }
+        }
+
+        if (tileFactory instanceof PropertyConsumer) {
             ((PropertyConsumer) tileFactory).setProperties(prefix, props);
         }
 
-        incrementalUpdates = PropUtils.booleanFromProperties(props, prefix + INCREMENTAL_UPDATES_PROPERTY, incrementalUpdates);
+        incrementalUpdates = PropUtils.booleanFromProperties(props, prefix
+                + INCREMENTAL_UPDATES_PROPERTY, incrementalUpdates);
 
         setZoomLevel(PropUtils.intFromProperties(props, prefix + ZOOM_LEVEL_PROPERTY, zoomLevel));
     }
@@ -267,5 +306,13 @@ public class MapTileLayer
     public void setZoomLevel(int zoomLevel) {
         this.zoomLevel = zoomLevel;
     }
+
+    public java.awt.Component getGUI() {
+
+	return getTransparencyAdjustmentPanel(i18n.get(MapTileLayer.class, 
+						       "layerTransparencyGUILabel", "Layer Transparency"),
+					      JSlider.HORIZONTAL, getTransparency());
+    }
+
 
 }

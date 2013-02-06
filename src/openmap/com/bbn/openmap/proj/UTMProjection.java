@@ -141,10 +141,14 @@ public class UTMProjection extends GeoProj {
         double widthPX = point2.getX() - point1.getX();
 
         // float heightPX = point2.y - point1.y;
+        
+        // Instead of blindly casting, lets just make sure we have the correct object type.
+        LatLonPoint llp1 = LatLonPoint.getDouble(ll1);
+        LatLonPoint llp2 = LatLonPoint.getDouble(ll2);
 
-        UTMPoint xx1 = UTMPoint.LLtoUTM((LatLonPoint) ll1, ellps, new UTMPoint(),
+        UTMPoint xx1 = UTMPoint.LLtoUTM(llp1, ellps, new UTMPoint(),
                                         zoneNumber, northern);
-        UTMPoint xx2 = UTMPoint.LLtoUTM((LatLonPoint) ll2, ellps, new UTMPoint(),
+        UTMPoint xx2 = UTMPoint.LLtoUTM(llp2, ellps, new UTMPoint(),
                                         zoneNumber, northern);
 
         double widthMap = (xx2.easting - xx1.easting);

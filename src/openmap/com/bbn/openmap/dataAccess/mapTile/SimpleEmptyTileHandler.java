@@ -77,7 +77,7 @@ public class SimpleEmptyTileHandler
       if (zoomLevel < noCoverageZoom) {
          return backgroundTileImage;
       } else {
-         logger.info("returning emptyTileImage: " + emptyTileImage);
+         logger.fine("returning emptyTileImage: " + emptyTileImage);
          return emptyTileImage;
       }
    }
@@ -195,11 +195,11 @@ public class SimpleEmptyTileHandler
     */
    public void setNoCoverageAtts(DrawingAttributes noCoverageAtts) {
       if (noCoverageAtts != null && !noCoverageAtts.equals(this.noCoverageAtts)) {
-         logger.info("the no coverage atts are not standard, creating a new emptyTileImage");
+         logger.fine("the no coverage atts are not standard, creating a new emptyTileImage");
          emptyTileImage = createTileImageFromDrawingAttributes(noCoverageAtts);
          this.noCoverageAtts = noCoverageAtts;
       } else {
-         logger.info("++++++++ " + noCoverageAtts + " vs " + this.noCoverageAtts);
+         logger.fine("++++++++ " + noCoverageAtts + " vs " + this.noCoverageAtts);
       }
 
       if (this.noCoverageAtts == null) {

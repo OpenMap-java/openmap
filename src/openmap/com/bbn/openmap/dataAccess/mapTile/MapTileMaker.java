@@ -225,8 +225,6 @@ public class MapTileMaker
 
         byte[] imageBytes = zoomInfo.makeTile(uvx, uvy, this, proj);
 
-        // byte[] imageBytes = makeTile(uvx, uvy, zoomInfo, proj);
-
         String filePath = zoomInfo.formatImageFilePath(getRootDir(), (int) uvx, (int) uvy);
         return writeImageFile(imageBytes, filePath, true);
     }

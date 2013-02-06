@@ -166,7 +166,7 @@ public class EsriPolygonList extends EsriGraphicList {
         while (!circle.isDone()) {
             // by passing segpoints the array is filled with each x\y
             // point iterated by the circle
-            // int segType = circle.currentSegment(segPoints);
+            int segType = circle.currentSegment(segPoints);
             initialPoints.add(new Float(segPoints[0]));
             initialPoints.add(new Float(segPoints[1]));
             circle.next();

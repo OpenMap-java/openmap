@@ -52,8 +52,7 @@ import com.bbn.openmap.util.DataBounds;
  * 
  * @author ddietrick
  */
-public class EsriGraphicFactory
-        implements ShapeConstants {
+public class EsriGraphicFactory implements ShapeConstants {
 
     public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.shape.EsriGraphicFactory");
 
@@ -96,9 +95,9 @@ public class EsriGraphicFactory
      * @throws IOException
      * @throws FormatException
      */
-    public OMGraphicList getEsriGraphics(BinaryFile shp, DrawingAttributes drawingAttributes, Object pointRepresentation,
-                                         Projection mapProj, OMGraphicList list)
-            throws IOException, FormatException {
+    public OMGraphicList getEsriGraphics(BinaryFile shp, DrawingAttributes drawingAttributes,
+                                         Object pointRepresentation, Projection mapProj,
+                                         OMGraphicList list) throws IOException, FormatException {
         shp.seek(0);
         verbose = logger.isLoggable(Level.FINER);
         Header header = new Header(shp, dataTransformation);
@@ -130,8 +129,9 @@ public class EsriGraphicFactory
                 try {
                     eg = makeEsriGraphicFromRecord(offset, shp, drawingAttributes, pointRepresentation, byteTracker);
                 } catch (EOFException eof) {
-                    logger.fine("File length (" + header.fileLength + " bytes) is incorrect, file was read as much as possible ("
-                            + offset + " bytes).");
+                    logger.fine("File length (" + header.fileLength
+                            + " bytes) is incorrect, file was read as much as possible (" + offset
+                            + " bytes).");
                     eg = null;
                     break;
                 }
@@ -162,9 +162,10 @@ public class EsriGraphicFactory
      * @throws IOException
      * @throws FormatException
      */
-    public OMGraphicList getEsriGraphics(LittleEndianInputStream iStream, DrawingAttributes drawingAttributes,
-                                         Object pointRepresentation, Projection mapProj, OMGraphicList list)
-            throws IOException, FormatException {
+    public OMGraphicList getEsriGraphics(LittleEndianInputStream iStream,
+                                         DrawingAttributes drawingAttributes,
+                                         Object pointRepresentation, Projection mapProj,
+                                         OMGraphicList list) throws IOException, FormatException {
         Header header = new Header(iStream, dataTransformation);
         verbose = logger.isLoggable(Level.FINER);
         if (logger.isLoggable(Level.FINE)) {
@@ -195,8 +196,9 @@ public class EsriGraphicFactory
                 try {
                     eg = makeEsriGraphicFromRecord(offset, iStream, drawingAttributes, pointRepresentation, byteTracker);
                 } catch (EOFException eof) {
-                    logger.fine("File length (" + header.fileLength + " bytes) is incorrect, file was read as much as possible ("
-                            + offset + " bytes).");
+                    logger.fine("File length (" + header.fileLength
+                            + " bytes) is incorrect, file was read as much as possible (" + offset
+                            + " bytes).");
                     eg = null;
                     break;
                 }
@@ -225,8 +227,10 @@ public class EsriGraphicFactory
         }
     }
 
-    public OMGraphic makeEsriGraphicFromRecord(int byteOffset, BinaryFile shp, DrawingAttributes drawingAttributes,
-                                               Object pointRepresentation, ReadByteTracker byteTracker)
+    public OMGraphic makeEsriGraphicFromRecord(int byteOffset, BinaryFile shp,
+                                               DrawingAttributes drawingAttributes,
+                                               Object pointRepresentation,
+                                               ReadByteTracker byteTracker)
             throws IOException, FormatException {
         shp.seek(byteOffset);
         shp.byteOrder(true);
@@ -244,7 +248,8 @@ public class EsriGraphicFactory
     }
 
     public OMGraphic makeEsriGraphicFromRecord(int byteOffset, LittleEndianInputStream iStream,
-                                               DrawingAttributes drawingAttributes, Object pointRepresentation,
+                                               DrawingAttributes drawingAttributes,
+                                               Object pointRepresentation,
                                                ReadByteTracker byteTracker)
             throws IOException, FormatException {
 
@@ -272,8 +277,8 @@ public class EsriGraphicFactory
      * @exception IOException if something goes wrong reading the file
      * @exception FormatException
      */
-    protected OMGraphic makeEsriGraphic(BinaryFile shpFile, DrawingAttributes drawingAttributes, Object pointRepresentation,
-                                        ReadByteTracker byteTracker)
+    protected OMGraphic makeEsriGraphic(BinaryFile shpFile, DrawingAttributes drawingAttributes,
+                                        Object pointRepresentation, ReadByteTracker byteTracker)
             throws IOException, FormatException {
         /*
          * SHAPE_TYPE_NULL = 0; SHAPE_TYPE_POINT = 1; SHAPE_TYPE_ARC = 3;
@@ -291,52 +296,53 @@ public class EsriGraphicFactory
         byteTracker.addRead(4);
 
         if (verbose) {
-            logger.info("reading shape type: " + shapeType + ", " + ShapeUtils.getStringForType(shapeType));
+            logger.info("reading shape type: " + shapeType + ", "
+                    + ShapeUtils.getStringForType(shapeType));
         }
 
         switch (shapeType) {
 
-            case SHAPE_TYPE_NULL:
-                break;
-            case SHAPE_TYPE_POINT:
-                eg = createPointGraphic(shpFile, pointRepresentation, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_POLYLINE:
-                eg = createPolylineGraphic(shpFile, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_POLYGON:
-                eg = createPolygonGraphic(shpFile, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_MULTIPOINT:
-                eg = createMultiPointGraphic(shpFile, pointRepresentation, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_POINTZ:
-                eg = createPointZGraphic(shpFile, pointRepresentation, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_POLYLINEZ:
-                eg = createPolylineZGraphic(shpFile, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_POLYGONZ:
-                eg = createPolygonZGraphic(shpFile, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_MULTIPOINTZ:
-                eg = createMultiPointZGraphic(shpFile, pointRepresentation, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_POINTM:
-                eg = createPointMGraphic(shpFile, pointRepresentation, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_POLYLINEM:
-                eg = createPolylineMGraphic(shpFile, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_POLYGONM:
-                eg = createPolygonMGraphic(shpFile, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_MULTIPOINTM:
-                eg = createMultiPointMGraphic(shpFile, pointRepresentation, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_MULTIPATCH:
+        case SHAPE_TYPE_NULL:
+            break;
+        case SHAPE_TYPE_POINT:
+            eg = createPointGraphic(shpFile, pointRepresentation, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_POLYLINE:
+            eg = createPolylineGraphic(shpFile, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_POLYGON:
+            eg = createPolygonGraphic(shpFile, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_MULTIPOINT:
+            eg = createMultiPointGraphic(shpFile, pointRepresentation, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_POINTZ:
+            eg = createPointZGraphic(shpFile, pointRepresentation, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_POLYLINEZ:
+            eg = createPolylineZGraphic(shpFile, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_POLYGONZ:
+            eg = createPolygonZGraphic(shpFile, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_MULTIPOINTZ:
+            eg = createMultiPointZGraphic(shpFile, pointRepresentation, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_POINTM:
+            eg = createPointMGraphic(shpFile, pointRepresentation, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_POLYLINEM:
+            eg = createPolylineMGraphic(shpFile, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_POLYGONM:
+            eg = createPolygonMGraphic(shpFile, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_MULTIPOINTM:
+            eg = createMultiPointMGraphic(shpFile, pointRepresentation, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_MULTIPATCH:
 
-            default:
+        default:
 
         }
 
@@ -356,7 +362,8 @@ public class EsriGraphicFactory
      * @throws IOException
      * @throws FormatException
      */
-    protected OMGraphic makeEsriGraphic(LittleEndianInputStream iStream, DrawingAttributes drawingAttributes,
+    protected OMGraphic makeEsriGraphic(LittleEndianInputStream iStream,
+                                        DrawingAttributes drawingAttributes,
                                         Object pointRepresentation, ReadByteTracker byteTracker)
             throws IOException, FormatException {
         /*
@@ -374,52 +381,53 @@ public class EsriGraphicFactory
         byteTracker.addRead(4);
 
         if (verbose) {
-            logger.info("reading shape type: " + shapeType + ", " + ShapeUtils.getStringForType(shapeType));
+            logger.info("reading shape type: " + shapeType + ", "
+                    + ShapeUtils.getStringForType(shapeType));
         }
 
         switch (shapeType) {
 
-            case SHAPE_TYPE_NULL:
-                break;
-            case SHAPE_TYPE_POINT:
-                eg = createPointGraphic(iStream, pointRepresentation, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_POLYLINE:
-                eg = createPolylineGraphic(iStream, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_POLYGON:
-                eg = createPolygonGraphic(iStream, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_MULTIPOINT:
-                eg = createMultiPointGraphic(iStream, pointRepresentation, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_POINTZ:
-                eg = createPointZGraphic(iStream, pointRepresentation, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_POLYLINEZ:
-                eg = createPolylineZGraphic(iStream, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_POLYGONZ:
-                eg = createPolygonZGraphic(iStream, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_MULTIPOINTZ:
-                eg = createMultiPointZGraphic(iStream, pointRepresentation, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_POINTM:
-                eg = createPointMGraphic(iStream, pointRepresentation, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_POLYLINEM:
-                eg = createPolylineMGraphic(iStream, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_POLYGONM:
-                eg = createPolygonMGraphic(iStream, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_MULTIPOINTM:
-                eg = createMultiPointMGraphic(iStream, pointRepresentation, drawingAttributes, byteTracker);
-                break;
-            case SHAPE_TYPE_MULTIPATCH:
+        case SHAPE_TYPE_NULL:
+            break;
+        case SHAPE_TYPE_POINT:
+            eg = createPointGraphic(iStream, pointRepresentation, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_POLYLINE:
+            eg = createPolylineGraphic(iStream, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_POLYGON:
+            eg = createPolygonGraphic(iStream, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_MULTIPOINT:
+            eg = createMultiPointGraphic(iStream, pointRepresentation, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_POINTZ:
+            eg = createPointZGraphic(iStream, pointRepresentation, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_POLYLINEZ:
+            eg = createPolylineZGraphic(iStream, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_POLYGONZ:
+            eg = createPolygonZGraphic(iStream, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_MULTIPOINTZ:
+            eg = createMultiPointZGraphic(iStream, pointRepresentation, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_POINTM:
+            eg = createPointMGraphic(iStream, pointRepresentation, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_POLYLINEM:
+            eg = createPolylineMGraphic(iStream, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_POLYGONM:
+            eg = createPolygonMGraphic(iStream, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_MULTIPOINTM:
+            eg = createMultiPointMGraphic(iStream, pointRepresentation, drawingAttributes, byteTracker);
+            break;
+        case SHAPE_TYPE_MULTIPATCH:
 
-            default:
+        default:
 
         }
 
@@ -429,7 +437,8 @@ public class EsriGraphicFactory
 
     // ///////// Point and Multi-Point Shapes
 
-    protected EsriGraphic createPointGraphic(double x, double y, Object representation, DrawingAttributes drawingAttributes) {
+    protected EsriGraphic createPointGraphic(double x, double y, Object representation,
+                                             DrawingAttributes drawingAttributes) {
 
         if (dataTransformation != null) {
             Point2D llp = dataTransformation.inverse(x, y);
@@ -477,7 +486,8 @@ public class EsriGraphicFactory
      * @return OMPoint or OMScalingRaster or OMText
      * @throws IOException
      */
-    protected EsriGraphic createPointGraphic(BinaryFile shpFile, Object representation, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPointGraphic(BinaryFile shpFile, Object representation,
+                                             DrawingAttributes drawingAttributes,
                                              ReadByteTracker byteTracker)
             throws IOException, FormatException {
 
@@ -487,8 +497,10 @@ public class EsriGraphicFactory
         return createPointGraphic(x, y, representation, drawingAttributes);
     }
 
-    protected EsriGraphic createPointGraphic(LittleEndianInputStream iStream, Object representation,
-                                             DrawingAttributes drawingAttributes, ReadByteTracker byteTracker)
+    protected EsriGraphic createPointGraphic(LittleEndianInputStream iStream,
+                                             Object representation,
+                                             DrawingAttributes drawingAttributes,
+                                             ReadByteTracker byteTracker)
             throws IOException, FormatException {
 
         double x = iStream.readLEDouble();
@@ -497,7 +509,8 @@ public class EsriGraphicFactory
         return createPointGraphic(x, y, representation, drawingAttributes);
     }
 
-    protected EsriGraphic createMultiPointGraphic(BinaryFile shpFile, Object representation, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createMultiPointGraphic(BinaryFile shpFile, Object representation,
+                                                  DrawingAttributes drawingAttributes,
                                                   ReadByteTracker byteTracker)
             throws IOException, FormatException {
         // Skip reading the bounding box, 4 doubles
@@ -517,8 +530,10 @@ public class EsriGraphicFactory
         return multiPart;
     }
 
-    protected EsriGraphic createMultiPointGraphic(LittleEndianInputStream iStream, Object representation,
-                                                  DrawingAttributes drawingAttributes, ReadByteTracker byteTracker)
+    protected EsriGraphic createMultiPointGraphic(LittleEndianInputStream iStream,
+                                                  Object representation,
+                                                  DrawingAttributes drawingAttributes,
+                                                  ReadByteTracker byteTracker)
             throws IOException, FormatException {
         // Skip reading the bounding box, 4 doubles
         iStream.skipBytes(4 * 8);
@@ -537,7 +552,8 @@ public class EsriGraphicFactory
         return multiPart;
     }
 
-    protected EsriGraphic createPointZGraphic(BinaryFile shpFile, Object representation, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPointZGraphic(BinaryFile shpFile, Object representation,
+                                              DrawingAttributes drawingAttributes,
                                               ReadByteTracker byteTracker)
             throws IOException, FormatException {
         double x = shpFile.readDouble();
@@ -553,8 +569,10 @@ public class EsriGraphicFactory
         return ret;
     }
 
-    protected EsriGraphic createPointZGraphic(LittleEndianInputStream iStream, Object representation,
-                                              DrawingAttributes drawingAttributes, ReadByteTracker byteTracker)
+    protected EsriGraphic createPointZGraphic(LittleEndianInputStream iStream,
+                                              Object representation,
+                                              DrawingAttributes drawingAttributes,
+                                              ReadByteTracker byteTracker)
             throws IOException, FormatException {
         double x = iStream.readLEDouble();
         double y = iStream.readLEDouble();
@@ -569,7 +587,8 @@ public class EsriGraphicFactory
         return ret;
     }
 
-    protected EsriGraphic createMultiPointZGraphic(BinaryFile shpFile, Object representation, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createMultiPointZGraphic(BinaryFile shpFile, Object representation,
+                                                   DrawingAttributes drawingAttributes,
                                                    ReadByteTracker byteTracker)
             throws IOException, FormatException {
         EsriGraphic multiPart = createMultiPointGraphic(shpFile, representation, drawingAttributes, byteTracker);
@@ -609,8 +628,10 @@ public class EsriGraphicFactory
         return multiPart;
     }
 
-    protected EsriGraphic createMultiPointZGraphic(LittleEndianInputStream iStream, Object representation,
-                                                   DrawingAttributes drawingAttributes, ReadByteTracker byteTracker)
+    protected EsriGraphic createMultiPointZGraphic(LittleEndianInputStream iStream,
+                                                   Object representation,
+                                                   DrawingAttributes drawingAttributes,
+                                                   ReadByteTracker byteTracker)
             throws IOException, FormatException {
         EsriGraphic multiPart = createMultiPointGraphic(iStream, representation, drawingAttributes, byteTracker);
 
@@ -649,7 +670,8 @@ public class EsriGraphicFactory
         return multiPart;
     }
 
-    protected EsriGraphic createPointMGraphic(BinaryFile shpFile, Object representation, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPointMGraphic(BinaryFile shpFile, Object representation,
+                                              DrawingAttributes drawingAttributes,
                                               ReadByteTracker byteTracker)
             throws IOException, FormatException {
         double x = shpFile.readDouble();
@@ -663,8 +685,10 @@ public class EsriGraphicFactory
         return ret;
     }
 
-    protected EsriGraphic createPointMGraphic(LittleEndianInputStream iStream, Object representation,
-                                              DrawingAttributes drawingAttributes, ReadByteTracker byteTracker)
+    protected EsriGraphic createPointMGraphic(LittleEndianInputStream iStream,
+                                              Object representation,
+                                              DrawingAttributes drawingAttributes,
+                                              ReadByteTracker byteTracker)
             throws IOException, FormatException {
         double x = iStream.readLEDouble();
         double y = iStream.readLEDouble();
@@ -677,7 +701,8 @@ public class EsriGraphicFactory
         return ret;
     }
 
-    protected EsriGraphic createMultiPointMGraphic(BinaryFile shpFile, Object representation, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createMultiPointMGraphic(BinaryFile shpFile, Object representation,
+                                                   DrawingAttributes drawingAttributes,
                                                    ReadByteTracker byteTracker)
             throws IOException, FormatException {
         EsriGraphic multiPart = createMultiPointGraphic(shpFile, representation, drawingAttributes, byteTracker);
@@ -704,8 +729,10 @@ public class EsriGraphicFactory
         return multiPart;
     }
 
-    protected EsriGraphic createMultiPointMGraphic(LittleEndianInputStream iStream, Object representation,
-                                                   DrawingAttributes drawingAttributes, ReadByteTracker byteTracker)
+    protected EsriGraphic createMultiPointMGraphic(LittleEndianInputStream iStream,
+                                                   Object representation,
+                                                   DrawingAttributes drawingAttributes,
+                                                   ReadByteTracker byteTracker)
             throws IOException, FormatException {
         EsriGraphic multiPart = createMultiPointGraphic(iStream, representation, drawingAttributes, byteTracker);
 
@@ -733,29 +760,36 @@ public class EsriGraphicFactory
 
     // ///////// Polygon Shapes
 
-    protected EsriGraphic createPolygonGraphic(BinaryFile shpFile, DrawingAttributes drawingAttributes, ReadByteTracker byteTracker)
+    protected EsriGraphic createPolygonGraphic(BinaryFile shpFile,
+                                               DrawingAttributes drawingAttributes,
+                                               ReadByteTracker byteTracker)
             throws IOException, FormatException {
         return createPolyGraphic(shpFile, SHAPE_TYPE_POLYGON, drawingAttributes, byteTracker);
     }
 
-    protected EsriGraphic createPolygonGraphic(LittleEndianInputStream iStream, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPolygonGraphic(LittleEndianInputStream iStream,
+                                               DrawingAttributes drawingAttributes,
                                                ReadByteTracker byteTracker)
             throws IOException, FormatException {
         return createPolyGraphic(iStream, SHAPE_TYPE_POLYGON, drawingAttributes, byteTracker);
     }
 
-    protected EsriGraphic createPolylineGraphic(BinaryFile shpFile, DrawingAttributes drawingAttributes, ReadByteTracker byteTracker)
+    protected EsriGraphic createPolylineGraphic(BinaryFile shpFile,
+                                                DrawingAttributes drawingAttributes,
+                                                ReadByteTracker byteTracker)
             throws IOException, FormatException {
         return createPolyGraphic(shpFile, SHAPE_TYPE_POLYLINE, drawingAttributes, byteTracker);
     }
 
-    protected EsriGraphic createPolylineGraphic(LittleEndianInputStream iStream, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPolylineGraphic(LittleEndianInputStream iStream,
+                                                DrawingAttributes drawingAttributes,
                                                 ReadByteTracker byteTracker)
             throws IOException, FormatException {
         return createPolyGraphic(iStream, SHAPE_TYPE_POLYLINE, drawingAttributes, byteTracker);
     }
 
-    protected EsriGraphic createPolyGraphic(BinaryFile shpFile, int shapeType, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPolyGraphic(BinaryFile shpFile, int shapeType,
+                                            DrawingAttributes drawingAttributes,
                                             ReadByteTracker byteTracker)
             throws IOException, FormatException {
         EsriGraphic ret = null;
@@ -774,7 +808,8 @@ public class EsriGraphicFactory
         return ret;
     }
 
-    protected EsriGraphic createPolyGraphic(LittleEndianInputStream iStream, int shapeType, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPolyGraphic(LittleEndianInputStream iStream, int shapeType,
+                                            DrawingAttributes drawingAttributes,
                                             ReadByteTracker byteTracker)
             throws IOException, FormatException {
         EsriGraphic ret = null;
@@ -793,30 +828,36 @@ public class EsriGraphicFactory
         return ret;
     }
 
-    protected EsriGraphic createPolygonZGraphic(BinaryFile shpFile, DrawingAttributes drawingAttributes, ReadByteTracker byteTracker)
+    protected EsriGraphic createPolygonZGraphic(BinaryFile shpFile,
+                                                DrawingAttributes drawingAttributes,
+                                                ReadByteTracker byteTracker)
             throws IOException, FormatException {
         return createPolyZGraphic(shpFile, SHAPE_TYPE_POLYGONZ, drawingAttributes, byteTracker);
     }
 
-    protected EsriGraphic createPolygonZGraphic(LittleEndianInputStream iStream, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPolygonZGraphic(LittleEndianInputStream iStream,
+                                                DrawingAttributes drawingAttributes,
                                                 ReadByteTracker byteTracker)
             throws IOException, FormatException {
         return createPolyZGraphic(iStream, SHAPE_TYPE_POLYGONZ, drawingAttributes, byteTracker);
     }
 
-    protected EsriGraphic createPolylineZGraphic(BinaryFile shpFile, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPolylineZGraphic(BinaryFile shpFile,
+                                                 DrawingAttributes drawingAttributes,
                                                  ReadByteTracker byteTracker)
             throws IOException, FormatException {
         return createPolyZGraphic(shpFile, SHAPE_TYPE_POLYLINEZ, drawingAttributes, byteTracker);
     }
 
-    protected EsriGraphic createPolylineZGraphic(LittleEndianInputStream iStream, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPolylineZGraphic(LittleEndianInputStream iStream,
+                                                 DrawingAttributes drawingAttributes,
                                                  ReadByteTracker byteTracker)
             throws IOException, FormatException {
         return createPolyZGraphic(iStream, SHAPE_TYPE_POLYLINEZ, drawingAttributes, byteTracker);
     }
 
-    protected EsriGraphic createPolyZGraphic(BinaryFile shpFile, int shapeType, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPolyZGraphic(BinaryFile shpFile, int shapeType,
+                                             DrawingAttributes drawingAttributes,
                                              ReadByteTracker byteTracker)
             throws IOException, FormatException {
         EsriGraphic ret = null;
@@ -867,7 +908,8 @@ public class EsriGraphicFactory
         return ret;
     }
 
-    protected EsriGraphic createPolyZGraphic(LittleEndianInputStream iStream, int shapeType, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPolyZGraphic(LittleEndianInputStream iStream, int shapeType,
+                                             DrawingAttributes drawingAttributes,
                                              ReadByteTracker byteTracker)
             throws IOException, FormatException {
         EsriGraphic ret = null;
@@ -918,30 +960,36 @@ public class EsriGraphicFactory
         return ret;
     }
 
-    protected EsriGraphic createPolygonMGraphic(BinaryFile shpFile, DrawingAttributes drawingAttributes, ReadByteTracker byteTracker)
+    protected EsriGraphic createPolygonMGraphic(BinaryFile shpFile,
+                                                DrawingAttributes drawingAttributes,
+                                                ReadByteTracker byteTracker)
             throws IOException, FormatException {
         return createPolyZGraphic(shpFile, SHAPE_TYPE_POLYGONM, drawingAttributes, byteTracker);
     }
 
-    protected EsriGraphic createPolygonMGraphic(LittleEndianInputStream iStream, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPolygonMGraphic(LittleEndianInputStream iStream,
+                                                DrawingAttributes drawingAttributes,
                                                 ReadByteTracker byteTracker)
             throws IOException, FormatException {
         return createPolyZGraphic(iStream, SHAPE_TYPE_POLYGONM, drawingAttributes, byteTracker);
     }
 
-    protected EsriGraphic createPolylineMGraphic(BinaryFile shpFile, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPolylineMGraphic(BinaryFile shpFile,
+                                                 DrawingAttributes drawingAttributes,
                                                  ReadByteTracker byteTracker)
             throws IOException, FormatException {
         return createPolyZGraphic(shpFile, SHAPE_TYPE_POLYLINEM, drawingAttributes, byteTracker);
     }
 
-    protected EsriGraphic createPolylineMGraphic(LittleEndianInputStream iStream, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPolylineMGraphic(LittleEndianInputStream iStream,
+                                                 DrawingAttributes drawingAttributes,
                                                  ReadByteTracker byteTracker)
             throws IOException, FormatException {
         return createPolyZGraphic(iStream, SHAPE_TYPE_POLYLINEM, drawingAttributes, byteTracker);
     }
 
-    protected EsriGraphic createPolyMGraphic(BinaryFile shpFile, int shapeType, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPolyMGraphic(BinaryFile shpFile, int shapeType,
+                                             DrawingAttributes drawingAttributes,
                                              ReadByteTracker byteTracker)
             throws IOException, FormatException {
         EsriGraphic ret = null;
@@ -975,7 +1023,8 @@ public class EsriGraphicFactory
         return ret;
     }
 
-    protected EsriGraphic createPolyMGraphic(LittleEndianInputStream iStream, int shapeType, DrawingAttributes drawingAttributes,
+    protected EsriGraphic createPolyMGraphic(LittleEndianInputStream iStream, int shapeType,
+                                             DrawingAttributes drawingAttributes,
                                              ReadByteTracker byteTracker)
             throws IOException, FormatException {
         EsriGraphic ret = null;
@@ -1014,7 +1063,8 @@ public class EsriGraphicFactory
             throws IOException, FormatException {
         EsriGraphic ret = null;
         if (verbose) {
-            logger.info("creating polygon for entry, parts(" + numParts + ") numPoints(" + numPoints + ")");
+            logger.info("creating polygon for entry, parts(" + numParts + ") numPoints("
+                    + numPoints + ")");
         }
         if (numParts > 1) {
             ret = createEsriGraphicList(shapeType);
@@ -1039,8 +1089,8 @@ public class EsriGraphicFactory
             coords = getCoords(shpFile, length, isPolygon(shapeType), dataTransformation, byteTracker);
 
             if (verbose) {
-                logger.info("creating " + ShapeUtils.getStringForType(shapeType) + "(" + i + ") with coords["
-                        + getCoordString(coords) + "]");
+                logger.info("creating " + ShapeUtils.getStringForType(shapeType) + "(" + i
+                        + ") with coords[" + getCoordString(coords) + "]");
             }
 
             EsriGraphic omp = createEsriPoly(shapeType, coords, lineType, drawingAttributes);
@@ -1056,7 +1106,8 @@ public class EsriGraphicFactory
         coords = getCoords(shpFile, length, isPolygon(shapeType), dataTransformation, byteTracker);
 
         if (verbose) {
-            logger.info("creating " + ShapeUtils.getStringForType(shapeType) + " with coords[" + getCoordString(coords) + "]");
+            logger.info("creating " + ShapeUtils.getStringForType(shapeType) + " with coords["
+                    + getCoordString(coords) + "]");
         }
 
         EsriGraphic omp = createEsriPoly(shapeType, coords, lineType, drawingAttributes);
@@ -1077,9 +1128,9 @@ public class EsriGraphicFactory
         return coordString.toString();
     }
 
-    protected EsriGraphic getPolys(LittleEndianInputStream iStream, int numParts, int numPoints, int shapeType,
-                                   DrawingAttributes drawingAttributes, ReadByteTracker byteTracker)
-            throws IOException, FormatException {
+    protected EsriGraphic getPolys(LittleEndianInputStream iStream, int numParts, int numPoints,
+                                   int shapeType, DrawingAttributes drawingAttributes,
+                                   ReadByteTracker byteTracker) throws IOException, FormatException {
         EsriGraphic ret = null;
 
         if (numParts > 1) {
@@ -1105,8 +1156,8 @@ public class EsriGraphicFactory
             coords = getCoords(iStream, length, isPolygon(shapeType), dataTransformation, byteTracker);
 
             if (verbose) {
-                logger.info("creating " + ShapeUtils.getStringForType(shapeType) + "(" + i + ") with coords["
-                        + getCoordString(coords) + "]");
+                logger.info("creating " + ShapeUtils.getStringForType(shapeType) + "(" + i
+                        + ") with coords[" + getCoordString(coords) + "]");
             }
 
             EsriGraphic omp = createEsriPoly(shapeType, coords, lineType, drawingAttributes);
@@ -1122,7 +1173,8 @@ public class EsriGraphicFactory
         coords = getCoords(iStream, length, isPolygon(shapeType), dataTransformation, byteTracker);
 
         if (verbose) {
-            logger.info("creating " + ShapeUtils.getStringForType(shapeType) + " with coords[" + getCoordString(coords) + "]");
+            logger.info("creating " + ShapeUtils.getStringForType(shapeType) + " with coords["
+                    + getCoordString(coords) + "]");
         }
 
         EsriGraphic omp = createEsriPoly(shapeType, coords, lineType, drawingAttributes);
@@ -1135,8 +1187,8 @@ public class EsriGraphicFactory
         return ret;
     }
 
-    protected static float[] getFloatCoords(BinaryFile shpFile, int length, boolean isPolygon, GeoCoordTransformation dataTrans,
-                                            ReadByteTracker bitTracker)
+    protected float[] getFloatCoords(BinaryFile shpFile, int length, boolean isPolygon,
+                                     GeoCoordTransformation dataTrans, ReadByteTracker bitTracker)
             throws IOException, FormatException {
 
         float[] coords = new float[isPolygon ? length * 2 + 2 : length * 2];
@@ -1173,8 +1225,9 @@ public class EsriGraphicFactory
         return coords;
     }
 
-    protected static float[] getFloatCoords(LittleEndianInputStream iStream, int length, boolean isPolygon,
-                                            GeoCoordTransformation dataTrans, ReadByteTracker bitTracker)
+    protected float[] getFloatCoords(LittleEndianInputStream iStream, int length,
+                                     boolean isPolygon, GeoCoordTransformation dataTrans,
+                                     ReadByteTracker bitTracker)
             throws IOException, FormatException {
 
         float[] coords = new float[isPolygon ? length * 2 + 2 : length * 2];
@@ -1211,8 +1264,8 @@ public class EsriGraphicFactory
         return coords;
     }
 
-    protected static double[] getCoords(BinaryFile shpFile, int length, boolean isPolygon, GeoCoordTransformation dataTrans,
-                                        ReadByteTracker bitTracker)
+    protected double[] getCoords(BinaryFile shpFile, int length, boolean isPolygon,
+                                 GeoCoordTransformation dataTrans, ReadByteTracker bitTracker)
             throws IOException, FormatException {
 
         double[] coords = new double[isPolygon ? length * 2 + 2 : length * 2];
@@ -1249,8 +1302,8 @@ public class EsriGraphicFactory
         return coords;
     }
 
-    protected static double[] getCoords(LittleEndianInputStream iStream, int length, boolean isPolygon,
-                                        GeoCoordTransformation dataTrans, ReadByteTracker bitTracker)
+    protected double[] getCoords(LittleEndianInputStream iStream, int length, boolean isPolygon,
+                                 GeoCoordTransformation dataTrans, ReadByteTracker bitTracker)
             throws IOException, FormatException {
 
         double[] coords = new double[isPolygon ? length * 2 + 2 : length * 2];
@@ -1288,10 +1341,12 @@ public class EsriGraphicFactory
     }
 
     public static boolean isPolygon(int shapeType) {
-        return shapeType == SHAPE_TYPE_POLYGON || shapeType == SHAPE_TYPE_POLYGONZ || shapeType == SHAPE_TYPE_POLYGONM;
+        return shapeType == SHAPE_TYPE_POLYGON || shapeType == SHAPE_TYPE_POLYGONZ
+                || shapeType == SHAPE_TYPE_POLYGONM;
     }
 
-    public static EsriGraphic createEsriPoly(int shapeType, double[] coords, int lineType, DrawingAttributes da) {
+    public static EsriGraphic createEsriPoly(int shapeType, double[] coords, int lineType,
+                                             DrawingAttributes da) {
 
         if (da == null) {
             da = DrawingAttributes.DEFAULT;
@@ -1299,33 +1354,33 @@ public class EsriGraphicFactory
 
         EsriGraphic ret = null;
         switch (shapeType) {
-            case SHAPE_TYPE_POLYGON:
-                ret = new EsriPolygon(coords, OMPoly.RADIANS, lineType);
-                da.setTo((OMGraphic) ret);
-                break;
-            case SHAPE_TYPE_POLYLINE:
-                ret = new EsriPolyline(coords, OMPoly.RADIANS, lineType);
-                da.setTo((OMGraphic) ret);
-                ((OMGraphic) ret).setFillPaint(OMColor.clear);
-                break;
-            case SHAPE_TYPE_POLYGONM:
-                ret = new EsriPolygonM(coords, OMPoly.RADIANS, lineType);
-                da.setTo((OMGraphic) ret);
-                break;
-            case SHAPE_TYPE_POLYGONZ:
-                ret = new EsriPolygonZ(coords, OMPoly.RADIANS, lineType);
-                da.setTo((OMGraphic) ret);
-                break;
-            case SHAPE_TYPE_POLYLINEM:
-                ret = new EsriPolylineM(coords, OMPoly.RADIANS, lineType);
-                da.setTo((OMGraphic) ret);
-                ((OMGraphic) ret).setFillPaint(OMColor.clear);
-                break;
-            case SHAPE_TYPE_POLYLINEZ:
-                ret = new EsriPolylineZ(coords, OMPoly.RADIANS, lineType);
-                da.setTo((OMGraphic) ret);
-                ((OMGraphic) ret).setFillPaint(OMColor.clear);
-                break;
+        case SHAPE_TYPE_POLYGON:
+            ret = new EsriPolygon(coords, OMPoly.RADIANS, lineType);
+            da.setTo((OMGraphic) ret);
+            break;
+        case SHAPE_TYPE_POLYLINE:
+            ret = new EsriPolyline(coords, OMPoly.RADIANS, lineType);
+            da.setTo((OMGraphic) ret);
+            ((OMGraphic) ret).setFillPaint(OMColor.clear);
+            break;
+        case SHAPE_TYPE_POLYGONM:
+            ret = new EsriPolygonM(coords, OMPoly.RADIANS, lineType);
+            da.setTo((OMGraphic) ret);
+            break;
+        case SHAPE_TYPE_POLYGONZ:
+            ret = new EsriPolygonZ(coords, OMPoly.RADIANS, lineType);
+            da.setTo((OMGraphic) ret);
+            break;
+        case SHAPE_TYPE_POLYLINEM:
+            ret = new EsriPolylineM(coords, OMPoly.RADIANS, lineType);
+            da.setTo((OMGraphic) ret);
+            ((OMGraphic) ret).setFillPaint(OMColor.clear);
+            break;
+        case SHAPE_TYPE_POLYLINEZ:
+            ret = new EsriPolylineZ(coords, OMPoly.RADIANS, lineType);
+            da.setTo((OMGraphic) ret);
+            ((OMGraphic) ret).setFillPaint(OMColor.clear);
+            break;
         }
         return ret;
     }
@@ -1333,35 +1388,35 @@ public class EsriGraphicFactory
     public static EsriGraphicList createEsriGraphicList(int shapeType) {
         EsriGraphicList ret = null;
         switch (shapeType) {
-            case SHAPE_TYPE_NULL:
-                break;
-            case SHAPE_TYPE_POINT:
-            case SHAPE_TYPE_MULTIPOINT:
-            case SHAPE_TYPE_POINTZ:
-            case SHAPE_TYPE_MULTIPOINTZ:
-            case SHAPE_TYPE_POINTM:
-            case SHAPE_TYPE_MULTIPOINTM:
-                ret = new EsriPointList();
-                ret.setType(shapeType);
-                break;
-            case SHAPE_TYPE_POLYGON:
-                ret = new EsriPolygonList();
-                break;
-            case SHAPE_TYPE_POLYLINE:
-                ret = new EsriPolylineList();
-                break;
-            case SHAPE_TYPE_POLYGONM:
-                ret = new EsriPolygonMList();
-                break;
-            case SHAPE_TYPE_POLYGONZ:
-                ret = new EsriPolygonZList();
-                break;
-            case SHAPE_TYPE_POLYLINEM:
-                ret = new EsriPolylineMList();
-                break;
-            case SHAPE_TYPE_POLYLINEZ:
-                ret = new EsriPolylineZList();
-                break;
+        case SHAPE_TYPE_NULL:
+            break;
+        case SHAPE_TYPE_POINT:
+        case SHAPE_TYPE_MULTIPOINT:
+        case SHAPE_TYPE_POINTZ:
+        case SHAPE_TYPE_MULTIPOINTZ:
+        case SHAPE_TYPE_POINTM:
+        case SHAPE_TYPE_MULTIPOINTM:
+            ret = new EsriPointList();
+            ret.setType(shapeType);
+            break;
+        case SHAPE_TYPE_POLYGON:
+            ret = new EsriPolygonList();
+            break;
+        case SHAPE_TYPE_POLYLINE:
+            ret = new EsriPolylineList();
+            break;
+        case SHAPE_TYPE_POLYGONM:
+            ret = new EsriPolygonMList();
+            break;
+        case SHAPE_TYPE_POLYGONZ:
+            ret = new EsriPolygonZList();
+            break;
+        case SHAPE_TYPE_POLYLINEM:
+            ret = new EsriPolylineMList();
+            break;
+        case SHAPE_TYPE_POLYLINEZ:
+            ret = new EsriPolylineZList();
+            break;
         }
         return ret;
     }
@@ -1417,7 +1472,8 @@ public class EsriGraphicFactory
         }
 
         public String toString() {
-            return "ReadByteTracker has noted " + currentCount + " of " + totalCount + " bytes read";
+            return "ReadByteTracker has noted " + currentCount + " of " + totalCount
+                    + " bytes read";
         }
     }
 
@@ -1435,8 +1491,7 @@ public class EsriGraphicFactory
         public double mMin;
         public double mMax;
 
-        public Header(BinaryFile shp)
-                throws IOException, FormatException {
+        public Header(BinaryFile shp) throws IOException, FormatException {
             this(shp, null);
         }
 
@@ -1469,8 +1524,7 @@ public class EsriGraphicFactory
             }
         }
 
-        public Header(LittleEndianInputStream iStream)
-                throws IOException {
+        public Header(LittleEndianInputStream iStream) throws IOException {
             this(iStream, null);
         }
 
@@ -1505,7 +1559,8 @@ public class EsriGraphicFactory
         }
 
         public String toString() {
-            return "header[fc=" + fileCode + ",len=" + fileLength + ",ver=" + version + ",type=" + shapeType + "]";
+            return "header[fc=" + fileCode + ",len=" + fileLength + ",ver=" + version + ",type="
+                    + shapeType + "]";
         }
     }
 }

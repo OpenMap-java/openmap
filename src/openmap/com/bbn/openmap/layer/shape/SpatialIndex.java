@@ -169,7 +169,7 @@ public class SpatialIndex
     public final static int DEFAULT_SHAPE_RECORD_SIZE = 50000;
 
     /** The shape file. */
-    protected BinaryBufferedFile shp;
+    protected BinaryFile shp;
 
     /**
      * The handler for dbf file information.
@@ -261,6 +261,16 @@ public class SpatialIndex
     }
 
     /**
+     * Method that can be overridden to adjust how the BinaryFile is created for shp files.
+     * @param shapeFileName The path to shape file, absolute, relative or URL
+     * @return BinaryFile
+     * @throws IOException if the shapeFileName can't be found.
+     */
+    protected BinaryFile getShpFile(String shapeFileName) throws IOException {
+        return new BinaryBufferedFile(shapeFileName);
+    }
+    
+    /**
      * Returns the bounds of the shape file. If bounds don't exist, they are
      * read from the shape file header.
      * 
@@ -271,7 +281,7 @@ public class SpatialIndex
         if (bounds == null) {
             try {
                 if (shpFileName != null) {
-                    BinaryFile shpFile = new BinaryBufferedFile(shpFileName);
+                    BinaryFile shpFile = getShpFile(shpFileName);
                     EsriGraphicFactory.Header header = new EsriGraphicFactory.Header(shpFile, coordTransform);
                     DataBounds dataBounds = header.getDataBounds();
                     if (dataBounds != null) {
@@ -372,7 +382,7 @@ public class SpatialIndex
 
         BinaryBufferedFile ssx = new BinaryBufferedFile(ssx(shpFileName));
         if (shp == null) {
-            shp = new BinaryBufferedFile(shpFileName);
+            shp = getShpFile(shpFileName);
         }
 
         // Need to figure out what the shape type is...
@@ -521,7 +531,7 @@ public class SpatialIndex
         }
 
         if (shp == null) {
-            shp = new BinaryBufferedFile(shpFileName);
+            shp = getShpFile(shpFileName);
         }
 
         if (shp == null) {
@@ -613,7 +623,7 @@ public class SpatialIndex
         }
 
         if (shp == null) {
-            shp = new BinaryBufferedFile(shpFileName);
+            shp = getShpFile(shpFileName);
         }
 
         if (shp == null) {

@@ -375,6 +375,9 @@ public class RpfFrame {
          if (!header.readHeader(binFile))
             return false;
 
+         if (DEBUG_RPFDETAIL)
+             Debug.output(header.toString());
+         
          /* Check date for validity: date should be "1993xxxx" */
          if (!header.standardDate.startsWith("199") && !header.standardDate.startsWith("20")) {
             Debug.output("RpfFrame.read: Invalid date in header: " + header.standardDate);

@@ -143,6 +143,8 @@ public class CSVFile
 
             token = csvt.token();
          }
+         
+         csvt.close();
       } catch (java.io.IOException ioe) {
          throw new com.bbn.openmap.util.HandleError(ioe);
       } catch (ArrayIndexOutOfBoundsException aioobe) {
@@ -154,13 +156,6 @@ public class CSVFile
          Debug.error("CSVFile can't open: " + infoUrl + ", check URL notation.");
       }
 
-      try {
-         if (streamReader != null) {
-            streamReader.close();
-         }
-      } catch (java.io.IOException ioe) {
-         throw new com.bbn.openmap.util.HandleError(ioe);
-      }
       infoRecords = records;
 
       if (Debug.debugging("csv")) {

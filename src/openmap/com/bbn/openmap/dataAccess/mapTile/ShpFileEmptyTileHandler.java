@@ -1,13 +1,13 @@
 package com.bbn.openmap.dataAccess.mapTile;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.Properties;
 
 import com.bbn.openmap.layer.shape.ShapeLayer;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
-import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
@@ -50,98 +50,97 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * @author ddietrick
  */
-public class ShpFileEmptyTileHandler
-      extends SimpleEmptyTileHandler {
-   public final static String LAND_ATTRIBUTES_PROPERTY = "land";
-   public final static String SHP_FILE_PROPERTY = "shpFile";
-   protected ShapeLayer shapeStuff;
-   protected DrawingAttributes landAttributes = DrawingAttributes.getDefaultClone();
+public class ShpFileEmptyTileHandler extends SimpleEmptyTileHandler {
+    public final static String LAND_ATTRIBUTES_PROPERTY = "land";
+    public final static String SHP_FILE_PROPERTY = "shpFile";
+    protected ShapeLayer shapeStuff;
+    protected DrawingAttributes landAttributes = DrawingAttributes.getDefaultClone();
 
-   public ShpFileEmptyTileHandler() {
-   }
+    public ShpFileEmptyTileHandler() {
+    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * com.bbn.openmap.dataAccess.mapTile.EmptyTileHandler#getOMGraphicForEmptyTile
-    * (java.lang.String, int, int, int,
-    * com.bbn.openmap.dataAccess.mapTile.MapTileCoordinateTransform,
-    * com.bbn.openmap.proj.Projection)
-    */
-   public BufferedImage getImageForEmptyTile(String imagePath, int x, int y, int zoomLevel,
-                                             MapTileCoordinateTransform mtcTransform, Projection proj) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.bbn.openmap.dataAccess.mapTile.EmptyTileHandler#getOMGraphicForEmptyTile
+     * (java.lang.String, int, int, int,
+     * com.bbn.openmap.dataAccess.mapTile.MapTileCoordinateTransform,
+     * com.bbn.openmap.proj.Projection)
+     */
+    public BufferedImage getImageForEmptyTile(String imagePath, int x, int y, int zoomLevel,
+                                              MapTileCoordinateTransform mtcTransform,
+                                              Projection proj) {
 
-      if (shapeStuff != null && zoomLevel < noCoverageZoom) {
-         OMRect rect = new OMRect(0, 0, TILE_SIZE, TILE_SIZE);
-         BufferedImage bi = new BufferedImage(TILE_SIZE, TILE_SIZE, BufferedImage.TYPE_INT_ARGB);
-         Graphics g = bi.getGraphics();
+        if (shapeStuff != null && zoomLevel < noCoverageZoom) {
 
-         LatLonPoint center = mtcTransform.tileUVToLatLon(new Point2D.Double(x + .5, y + .5), zoomLevel, new LatLonPoint.Double());
-         Mercator merc = new Mercator(center, MapTileMaker.getScaleForZoom(zoomLevel), TILE_SIZE, TILE_SIZE);
+            BufferedImage bi = new BufferedImage(TILE_SIZE, TILE_SIZE, BufferedImage.TYPE_INT_ARGB);
+            Graphics g = bi.getGraphics();
 
-         backgroundAtts.setTo(rect);
-         rect.generate(merc);
-         rect.render(g);
+            LatLonPoint center = mtcTransform.tileUVToLatLon(new Point2D.Double(x + .5, y + .5), zoomLevel, new LatLonPoint.Double());
+            Mercator merc = new Mercator(center, MapTileMaker.getScaleForZoom(zoomLevel), TILE_SIZE, TILE_SIZE);
 
-         if (shapeStuff != null) {
+            ((Graphics2D) g).setPaint(backgroundAtts.getFillPaint());
+            g.fillRect(0, 0, TILE_SIZE, TILE_SIZE);
+
+            if (shapeStuff != null) {
+                shapeStuff.setDrawingAttributes(landAttributes);
+                shapeStuff.renderDataForProjection(merc, g);
+            }
+
+            g.dispose();
+            return bi;
+
+        } else {
+            return super.getImageForEmptyTile(imagePath, x, y, zoomLevel, mtcTransform, proj);
+        }
+    }
+
+    public ShapeLayer getShapeStuff() {
+        return shapeStuff;
+    }
+
+    public void setShapeStuff(ShapeLayer shapeStuff) {
+        this.shapeStuff = shapeStuff;
+    }
+
+    public void setProperties(String prefix, Properties props) {
+        super.setProperties(prefix, props);
+
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+
+        landAttributes.setProperties(prefix + LAND_ATTRIBUTES_PROPERTY, props);
+
+        String shapeFileName = props.getProperty(prefix + SHP_FILE_PROPERTY);
+        if (shapeFileName != null) {
+            shapeStuff = new ShapeLayer(shapeFileName);
             shapeStuff.setDrawingAttributes(landAttributes);
-            shapeStuff.renderDataForProjection(merc, g);
-         }
 
-         g.dispose();
-         return bi;
+            // If noCoverageZoom property is not set and the shape file is, then
+            // make the default action to show the shape file.
+            if (props.getProperty(prefix + NO_COVERAGE_ZOOM_PROPERTY) == null) {
+                noCoverageZoom = 20;
+            }
+        }
+    }
 
-      } else {
-         return super.getImageForEmptyTile(imagePath, x, y, zoomLevel, mtcTransform, proj);
-      }
-   }
+    public Properties getProperties(Properties props) {
+        props = super.getProperties(props);
+        landAttributes.getProperties(props);
+        return props;
+    }
 
-   public ShapeLayer getShapeStuff() {
-      return shapeStuff;
-   }
+    /**
+     * @return the landAttributes
+     */
+    public DrawingAttributes getLandAttributes() {
+        return landAttributes;
+    }
 
-   public void setShapeStuff(ShapeLayer shapeStuff) {
-      this.shapeStuff = shapeStuff;
-   }
-
-   public void setProperties(String prefix, Properties props) {
-      super.setProperties(prefix, props);
-
-      prefix = PropUtils.getScopedPropertyPrefix(prefix);
-
-      landAttributes.setProperties(prefix + LAND_ATTRIBUTES_PROPERTY, props);
-
-      String shapeFileName = props.getProperty(prefix + SHP_FILE_PROPERTY);
-      if (shapeFileName != null) {
-         shapeStuff = new ShapeLayer(shapeFileName);
-         shapeStuff.setDrawingAttributes(landAttributes);
-
-         // If noCoverageZoom property is not set and the shape file is, then
-         // make the default action to show the shape file.
-         if (props.getProperty(prefix + NO_COVERAGE_ZOOM_PROPERTY) == null) {
-            noCoverageZoom = 20;
-         }
-      }
-   }
-
-   public Properties getProperties(Properties props) {
-      props = super.getProperties(props);
-      landAttributes.getProperties(props);
-      return props;
-   }
-
-   /**
-    * @return the landAttributes
-    */
-   public DrawingAttributes getLandAttributes() {
-      return landAttributes;
-   }
-
-   /**
-    * @param landAttributes the landAttributes to set
-    */
-   public void setLandAttributes(DrawingAttributes landAttributes) {
-      this.landAttributes = landAttributes;
-   }
+    /**
+     * @param landAttributes the landAttributes to set
+     */
+    public void setLandAttributes(DrawingAttributes landAttributes) {
+        this.landAttributes = landAttributes;
+    }
 }

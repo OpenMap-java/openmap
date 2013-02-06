@@ -409,7 +409,7 @@ public class OMScalingRaster
     */
    protected boolean updateImageForProjection(Projection proj) {
       boolean ret = bitmap != null && proj.equals(lastProjection) && !getNeedToRegenerate();
-      lastProjection = proj;
+      lastProjection = proj.makeClone();
       return !ret;
    }
 

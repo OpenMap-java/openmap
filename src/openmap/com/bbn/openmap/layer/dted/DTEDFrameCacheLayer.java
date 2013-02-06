@@ -27,8 +27,9 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -37,15 +38,21 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import com.bbn.openmap.dataAccess.dted.DTEDConstants;
+import com.bbn.openmap.dataAccess.dted.DTEDDirectoryHandler;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCacheHandler;
-import com.bbn.openmap.event.MapMouseListener;
-import com.bbn.openmap.event.SelectMouseMode;
+import com.bbn.openmap.dataAccess.dted.DTEDNameTranslator;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
+import com.bbn.openmap.omGraphics.event.StandardMapMouseInterpreter;
+import com.bbn.openmap.omGraphics.grid.GeneratorLoader;
+import com.bbn.openmap.omGraphics.grid.SlopeGeneratorLoader;
 import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
@@ -113,8 +120,8 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * @see com.bbn.openmap.layer.rpf.ChangeCase
  */
-public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
-        ActionListener, MapMouseListener, Serializable, DTEDConstants {
+public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements ActionListener,
+        Serializable, DTEDConstants {
 
     /** The cache handler. */
     protected transient DTEDFrameCacheHandler cache = new DTEDFrameCacheHandler(null);
@@ -186,6 +193,7 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
      * their default values.
      */
     public DTEDFrameCacheLayer() {
+        setMouseModeIDsForEvents(new String[] { "Gestures" });
         setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
     }
 
@@ -195,8 +203,7 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
      * 
      * @param dfc paths to the DTED directories that hold level 0 and 1 data.
      */
-    public DTEDFrameCacheLayer(
-            com.bbn.openmap.dataAccess.dted.DTEDFrameCache dfc) {
+    public DTEDFrameCacheLayer(com.bbn.openmap.dataAccess.dted.DTEDFrameCache dfc) {
         this();
         setFrameCache(dfc);
     }
@@ -241,8 +248,7 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
         super.setProperties(prefix, properties);
         prefix = PropUtils.getScopedPropertyPrefix(this);
 
-        setDtedLevel(PropUtils.intFromProperties(properties, prefix
-                + DTEDLevelProperty, getDtedLevel()));
+        setDtedLevel(PropUtils.intFromProperties(properties, prefix + DTEDLevelProperty, getDtedLevel()));
         cache.setProperties(prefix, properties);
 
     }
@@ -288,15 +294,13 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
     public synchronized OMGraphicList prepare() {
 
         if (isCancelled()) {
-            Debug.message("dted", getName()
-                    + "|DTEDFrameCacheLayer.prepare(): aborted.");
+            Debug.message("dted", getName() + "|DTEDFrameCacheLayer.prepare(): aborted.");
             return null;
         }
 
         if (cache == null) {
-            Debug.message("dted",
-                    getName()
-                            + "|DTEDFrameCacheLayer can't add anything to map because the DTEDFrameCache has not been set.");
+            Debug.message("dted", getName()
+                    + "|DTEDFrameCacheLayer can't add anything to map because the DTEDFrameCache has not been set.");
         }
 
         Projection projection = getProjection();
@@ -316,8 +320,7 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
             return new OMGraphicList();
         }
 
-        Debug.message("basic", getName()
-                + "|DTEDFrameCacheLayer.prepare(): doing it");
+        Debug.message("basic", getName() + "|DTEDFrameCacheLayer.prepare(): doing it");
 
         // Setting the OMGraphicsList for this layer. Remember, the
         // OMGraphicList is made up of OMGraphics, which are generated
@@ -326,9 +329,8 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
 
         // call getRectangle();
         if (Debug.debugging("dted")) {
-            Debug.output(getName() + "|DTEDFrameCacheLayer.prepare(): "
-                    + "calling getRectangle " + " with projection: "
-                    + projection + " ul = " + projection.getUpperLeft()
+            Debug.output(getName() + "|DTEDFrameCacheLayer.prepare(): " + "calling getRectangle "
+                    + " with projection: " + projection + " ul = " + projection.getUpperLeft()
                     + " lr = " + projection.getLowerRight());
         }
 
@@ -338,9 +340,8 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
             omGraphicList = cache.getRectangle((EqualArc) projection);
         } else {
             fireRequestInfoLine("  The scale is too small for DTED viewing.");
-            Debug.error("DTEDFrameCacheLayer: scale (1:"
-                    + projection.getScale() + ") is smaller than minimum (1:"
-                    + maxScale + ") allowed.");
+            Debug.error("DTEDFrameCacheLayer: scale (1:" + projection.getScale()
+                    + ") is smaller than minimum (1:" + maxScale + ") allowed.");
             omGraphicList = new OMGraphicList();
         }
         // ///////////////////
@@ -348,9 +349,8 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
         int size = 0;
         if (omGraphicList != null) {
             size = omGraphicList.size();
-            Debug.message("basic", getName()
-                    + "|DTEDFrameCacheLayer.prepare(): finished with " + size
-                    + " graphics");
+            Debug.message("basic", getName() + "|DTEDFrameCacheLayer.prepare(): finished with "
+                    + size + " graphics");
 
             // Don't forget to project them. Since they are only
             // being recalled if the projection has changed, then we
@@ -359,9 +359,8 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
             omGraphicList.project(projection, true);
 
         } else {
-            Debug.message("basic",
-                    getName()
-                            + "|DTEDFrameCacheLayer.prepare(): finished with null graphics list");
+            Debug.message("basic", getName()
+                    + "|DTEDFrameCacheLayer.prepare(): finished with null graphics list");
         }
 
         return omGraphicList;
@@ -497,52 +496,134 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements
         return palette;
     }
 
-    // ----------------------------------------------------------------------
-    // MapMouseListener interface implementation. This will be
-    // replaced with a subclass of StandardMouseModeInterpreter that
-    // only receives the map mouse click.
-    // ----------------------------------------------------------------------
+    /**
+     * Overridden to modify the MapMouseInterpreter used by the layer.
+     */
+    public synchronized MapMouseInterpreter getMouseEventInterpreter() {
+        if (getMouseModeIDsForEvents() != null && mouseEventInterpreter == null) {
+            setMouseEventInterpreter(new StandardMapMouseInterpreter(this) {
+                public boolean leftClick(MouseEvent me) {
+                    super.leftClick(me);
+                    determineLocation(me);
+                    return true;
+                }
 
-    public synchronized MapMouseListener getMapMouseListener() {
-        return this;
+                public boolean leftClick(OMGraphic omg, MouseEvent me) {
+                    super.leftClick(omg, me);
+                    determineLocation(me);
+                    return true;
+                }
+
+            });
+        }
+
+        return mouseEventInterpreter;
     }
 
-    public String[] getMouseModeServiceList() {
-        String[] services = { SelectMouseMode.modeID };
-        return services;
-    }
-
-    public boolean mousePressed(MouseEvent e) {
-        return false;
-    }
-
-    public boolean mouseReleased(MouseEvent e) {
+    public boolean determineLocation(MouseEvent e) {
         Projection projection = getProjection();
-        Point2D ll = projection.inverse(e.getX(), e.getY());
-        location = new DTEDLocation(e.getX(), e.getY());
-        location.setElevation(cache.getElevation((float) ll.getY(),
-                (float) ll.getX()));
-        location.generate(projection);
-        repaint();
-        return true;
-    }
-
-    public boolean mouseClicked(MouseEvent e) {
+        if (cache != null && projection != null) {
+            LatLonPoint ll = projection.inverse(e.getX(), e.getY(), new LatLonPoint.Double());
+            location = new DTEDLocation(e.getX(), e.getY());
+            location.setElevation(cache.getElevation((float) ll.getY(), (float) ll.getX()));
+            location.generate(projection);
+            repaint();
+            return true;
+        }
         return false;
     }
 
-    public void mouseEntered(MouseEvent e) {}
-
-    public void mouseExited(MouseEvent e) {}
-
-    public boolean mouseDragged(MouseEvent e) {
+    /**
+     * Don't need DTEDFrames highlighting themselves.
+     */
+    public boolean isHighlightable(OMGraphic omg) {
         return false;
     }
 
-    public boolean mouseMoved(MouseEvent e) {
-        return false;
-    }
+    /**
+     * This is the easiest way to construct a DTEDFrameCacheLayer programmatically.
+     * Create the Builder, configure it, and call create() to configure the layer.
+     */
 
-    public void mouseMoved() {}
+    public static class Builder {
+        List<DTEDDirectoryHandler> dirHandlers;
+        List<GeneratorLoader> loaders = new ArrayList<GeneratorLoader>();
+        DTEDNameTranslator nTranslator;
+
+        /**
+         * Create a builder for a DTEDFrameCacheLayer.
+         * @param dtedDirectory a path to the dted directory.
+         */
+        public Builder(String dtedDirectory) {
+            this(new DTEDDirectoryHandler(dtedDirectory));
+        }
+        
+        /**
+         * Create a builder for a DTEDFrameCacheLayer.
+         * 
+         * @param dirHandler don't pass in a null value, things will get ugly.
+         */
+        public Builder(DTEDDirectoryHandler dirHandler) {
+            dirHandlers = new ArrayList<DTEDDirectoryHandler>();
+            dirHandlers.add(dirHandler);
+        }
+
+        /**
+         * If set, this name translator will be added to all directory handlers
+         * set in this builder. If not called the StandardDTEDNameTranslator
+         * will be used.
+         * 
+         * @param translator DTEDNameTranslator.
+         * @return this builder.
+         */
+        public Builder setNameTranslator(DTEDNameTranslator translator) {
+            nTranslator = translator;
+            return this;
+        }
+
+        /**
+         * Add a generator loader to the DTEDFrameCache to be used by the layer.
+         * If not called, the SloperGeneratorLoader will be used.
+         * 
+         * @param gLoader
+         * @return
+         */
+        public Builder addGeneratorLoader(GeneratorLoader gLoader) {
+            if (loaders == null) {
+                loaders = new ArrayList<GeneratorLoader>();
+            }
+            if (gLoader != null) {
+                loaders.add(gLoader);
+            }
+            return this;
+        }
+
+        /**
+         * Create the DTEDFrameCacheLayer.
+         * @return the new layer, configured with Builder settings.
+         */
+        public DTEDFrameCacheLayer create() {
+            com.bbn.openmap.dataAccess.dted.DTEDFrameCache dfc = new com.bbn.openmap.dataAccess.dted.DTEDFrameCache();
+            for (DTEDDirectoryHandler dHandler : dirHandlers) {
+                if (nTranslator != null) {
+                    dHandler.setTranslator(nTranslator);
+                }
+                dfc.addDTEDDirectoryHandler(dHandler);
+            }
+
+            DTEDFrameCacheLayer layer = new DTEDFrameCacheLayer(dfc);
+            com.bbn.openmap.dataAccess.dted.DTEDFrameCacheHandler dfcHandler = layer.getCache();
+            
+            if (!loaders.isEmpty()) {
+                dfcHandler.setGeneratorLoaders(loaders);
+            } else {
+                dfcHandler.addGeneratorLoader(new SlopeGeneratorLoader());
+            }
+            
+            dfcHandler.setActiveGeneratorLoader(dfcHandler.getGeneratorLoaders().get(0).getPrettyName());
+
+            return layer;
+        }
+    }
 
 }

@@ -37,78 +37,82 @@ import com.bbn.openmap.util.propertyEditor.PropertyConsumerPropertyEditor;
  * A PropertyEditor for a set of DrawingAttributes properties, providing the
  * standard DrawingAttributes GUI for property configuration.
  */
-public class DrawingAttributesPropertyEditor extends
-        PropertyConsumerPropertyEditor {
+public class DrawingAttributesPropertyEditor
+      extends PropertyConsumerPropertyEditor {
 
-    protected DrawingAttributes drawingAttributes;
+   protected DrawingAttributes drawingAttributes;
 
-    public DrawingAttributesPropertyEditor() {}
+   public DrawingAttributesPropertyEditor() {
+   }
 
-    public boolean supportsCustomEditor() {
-        return true;
-    }
+   public boolean supportsCustomEditor() {
+      return true;
+   }
 
-    public void setCustomEditor(Component comp) {
-    }
+   public void setCustomEditor(Component comp) {
+   }
 
-    /** Returns the editor GUI. */
-    public Component getCustomEditor() {
-        JPanel panel = new JPanel();
-        GridBagLayout layout = new GridBagLayout();
-        GridBagConstraints c = new GridBagConstraints();
-        
-        c.anchor = GridBagConstraints.WEST;
-        
-        panel.setLayout(layout);
-        Component comp = getDrawingAttributes().getGUI();
-        layout.setConstraints(comp, c);
-        panel.add(comp);
-        
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 1.0f;
-        JPanel filler = new JPanel();
-        layout.setConstraints(filler, c);
-        panel.add(filler);
-        
-        return panel;
-    }
+   /** Returns the editor GUI. */
+   public Component getCustomEditor() {
+      JPanel panel = new JPanel();
+      GridBagLayout layout = new GridBagLayout();
+      GridBagConstraints c = new GridBagConstraints();
 
-    public DrawingAttributes getDrawingAttributes() {
-        if (drawingAttributes == null) {
-            drawingAttributes = DrawingAttributes.getDefaultClone();
-        }
-        return drawingAttributes;
-    }
+      c.anchor = GridBagConstraints.WEST;
 
-    public void setDrawingAttributes(DrawingAttributes drawingAttributes) {
-        this.drawingAttributes = drawingAttributes;
-    }
+      panel.setLayout(layout);
+      Component comp = getDrawingAttributes().getGUI();
+      if (comp != null) {
+         layout.setConstraints(comp, c);
+         panel.add(comp);
+      }
 
-    public void focusGained(FocusEvent e) {}
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.weightx = 1.0f;
+      JPanel filler = new JPanel();
+      layout.setConstraints(filler, c);
+      panel.add(filler);
 
-    public void focusLost(FocusEvent e) {
-        firePropertyChange();
-    }
+      return panel;
+   }
 
-    public String getAsText() {
-        return "";
-    }
-    
-    /**
-     * @param prefix the token to prefix the property names
-     * @param props the <code>Properties</code> object
-     */
-    public void setProperties(String prefix, Properties props) {
-        prefix = PropUtils.decodeDummyMarkerFromPropertyInfo(prefix);
-        getDrawingAttributes().setProperties(prefix, props);
-    }
+   public DrawingAttributes getDrawingAttributes() {
+      if (drawingAttributes == null) {
+         drawingAttributes = DrawingAttributes.getDefaultClone();
+      }
+      return drawingAttributes;
+   }
 
-    public Properties getProperties(Properties props) {
-        if (drawingAttributes != null) {
-            return drawingAttributes.getProperties(props);
-        } else {
-            return props;
-        }
-    }
+   public void setDrawingAttributes(DrawingAttributes drawingAttributes) {
+      this.drawingAttributes = drawingAttributes;
+   }
+
+   public void focusGained(FocusEvent e) {
+   }
+
+   public void focusLost(FocusEvent e) {
+      firePropertyChange();
+   }
+
+   public String getAsText() {
+      return "";
+   }
+
+   /**
+    * @param prefix the token to prefix the property names
+    * @param props the <code>Properties</code> object
+    */
+   public void setProperties(String prefix, Properties props) {
+      prefix = PropUtils.decodeDummyMarkerFromPropertyInfo(prefix);
+      getDrawingAttributes().setProperties(prefix, props);
+   }
+
+   public Properties getProperties(Properties props) {
+      if (drawingAttributes != null) {
+         return drawingAttributes.getProperties(props);
+      } else {
+         return props;
+      }
+   }
 
 }
