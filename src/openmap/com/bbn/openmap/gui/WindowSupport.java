@@ -26,8 +26,9 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -476,10 +477,18 @@ public class WindowSupport
         int w = comp.getWidth();
         int h = comp.getHeight();
 
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        Debug.message("basic", "Screen dimensions are " + d);
-        int x = d.width / 2 - w / 2;
-        int y = d.height / 2 - h / 2;
+        // see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5100801
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        int width = gd.getDisplayMode().getWidth();
+        int height = gd.getDisplayMode().getHeight();
+
+        int x = width / 2 - w / 2;
+        int y = height / 2 - h / 2;
+        Debug.message("basic", "Screen dimensions are " + gd.getDisplayMode());
+        // Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        // Debug.message("basic", "Screen dimensions are " + d);
+        // int x = d.width / 2 - w / 2;
+        // int y = d.height / 2 - h / 2;
 
         if (Debug.debugging("basic")) {
             Debug.output("Setting PLG frame X and Y from properties to " + x + " " + y);

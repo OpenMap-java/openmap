@@ -49,9 +49,9 @@ import com.bbn.openmap.util.DeepCopyUtil;
 public class OMRangeRings
       extends OMCircle {
    /** The inner ring of circles. */
-   protected transient OMCircle[] subCircles = null;
+   protected OMCircle[] subCircles = null;
    /** The labels for the circles. */
-   protected transient OMText[] labels = null;
+   protected OMText[] labels = null;
 
    /** By default, there are 3 inner rings, 4 total. */
    public final static int DEFAULT_INTERVAL = 4;
@@ -67,7 +67,7 @@ public class OMRangeRings
     * to the inner circles. Only used in render(), and allocated to save
     * repeated allocation during render.
     */
-   protected transient DrawingAttributes drawingAttributes = new DrawingAttributes();
+   protected DrawingAttributes drawingAttributes = new DrawingAttributes();
    /** The center point of the range rings. */
    protected OMPoint centerPoint;
    /** The default format. */
