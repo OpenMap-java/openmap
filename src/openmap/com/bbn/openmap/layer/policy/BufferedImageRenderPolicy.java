@@ -180,7 +180,7 @@ public class BufferedImageRenderPolicy
 
         OMRaster omr = null;
 
-        if (list != null && layer != null) {
+        if (proj != null && list != null && layer != null) {
             int w = proj.getWidth();
             int h = proj.getHeight();
 
