@@ -109,8 +109,8 @@ import com.bbn.openmap.util.PropUtils;
  * dtlayer.lines.class=com.bbn.openmap.tools.drawing.OMLineLoader
  * 
  */
-public class DrawingEditorTool extends AbstractEditorTool implements
-        ActionListener, PropertyChangeListener, PropertyConsumer {
+public class DrawingEditorTool extends AbstractEditorTool implements ActionListener,
+        PropertyChangeListener, PropertyConsumer {
 
     /**
      * OMDrawingTool handling OMGraphic modifications and creations.
@@ -279,8 +279,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
     public void findAndInit(Object someObj) {
         super.findAndInit(someObj);
 
-        if (someObj instanceof MapBean
-                || someObj instanceof InformationDelegator) {
+        if (someObj instanceof MapBean || someObj instanceof InformationDelegator) {
             drawingTool.findAndInit(someObj);
         }
 
@@ -328,8 +327,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
             setMouseDelegator(null);
         }
 
-        if (someObj instanceof MapBean
-                || someObj instanceof InformationDelegator) {
+        if (someObj instanceof MapBean || someObj instanceof InformationDelegator) {
             drawingTool.findAndUndo(someObj);
         }
 
@@ -431,20 +429,29 @@ public class DrawingEditorTool extends AbstractEditorTool implements
             Debug.output("DET.actionPerformed(" + command + ")");
         }
 
-        if (command == RESET_CMD) {
+        if (RESET_CMD.equals(command)) {
             setWantsEvents(false);
-        } else if (command != thingToCreate) {
-            EditorLayer elayer = (EditorLayer) getLayer();
-            elayer.releaseProxyMouseMode();
+        } else if (command != null) {
+            if (!command.equals(thingToCreate)) {
 
-            if (thingToCreate == null && mouseDelegator != null) {
-                mouseDelegator.setActiveMouseModeWithID(elayer.getMouseMode()
-                        .getID());
+                EditorLayer elayer = (EditorLayer) getLayer();
+                elayer.releaseProxyMouseMode();
+
+                if (thingToCreate == null && mouseDelegator != null) {
+                    mouseDelegator.setActiveMouseModeWithID(elayer.getMouseMode().getID());
+                }
+
+                // Calling with command will set 'thingToCreate' and
+                // resetForNewGraphic
+                setWantsEvents(command);
+            } else {
+                // This is the key to making this work with the OMMouseMode and
+                // OverlayMapPanel (Main app). Clicking on the active toggle
+                // button just resets the layer and passes control back to the
+                // main mouse mode. Kinda like it for the regular OpenMap app,
+                // too.
+                totalReset();
             }
-
-            // Calling with command will set 'thingToCreate' and
-            // resetForNewGraphic
-            setWantsEvents(command);
         }
     }
 
@@ -469,16 +476,13 @@ public class DrawingEditorTool extends AbstractEditorTool implements
             }
 
             if (Debug.debugging("editortool")) {
-                Debug.output("DrawingEditorTool.activateDrawingTool(" + ttc
-                        + ")");
+                Debug.output("DrawingEditorTool.activateDrawingTool(" + ttc + ")");
             }
 
-            drawingTool.setMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK | OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
+            drawingTool.setMask(OMDrawingTool.PASSIVE_MOUSE_EVENT_BEHAVIOR_MASK
+                    | OMDrawingTool.QUICK_CHANGE_BEHAVIOR_MASK);
 
-            OMGraphic newOMG = drawingTool.create(ttc,
-                    ga,
-                    (DrawingToolRequestor) getLayer(),
-                    true);
+            OMGraphic newOMG = drawingTool.create(ttc, ga, (DrawingToolRequestor) getLayer(), true);
 
             if (newOMG == null) {
                 // Something bad happened, might as well try to clean
@@ -523,8 +527,8 @@ public class DrawingEditorTool extends AbstractEditorTool implements
                 // if you only want one OMGraphic at a time:
                 // OMGraphicList omgl = layer.getList();
                 // if (omgl != null && !omgl.isEmpty()) {
-                //     omgl.clear();
-                //     layer.repaint();
+                // omgl.clear();
+                // layer.repaint();
                 // }
 
                 omdtmm.mousePressed(e);
@@ -774,7 +778,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
                 Debug.output("DET.propertyChange: mousemode changed to " + mmID);
             }
 
-            if (mmID != ((EditorLayer) getLayer()).getMouseMode().getID()) {
+            if (!mmID.equals(((EditorLayer) getLayer()).getMouseMode().getID())) {
                 totalReset();
             }
             drawingTool.showPalette(); // Reset to basic parameters
@@ -798,8 +802,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        showAttributes = PropUtils.booleanFromProperties(props, prefix
-                + ShowAttributesProperty, showAttributes);
+        showAttributes = PropUtils.booleanFromProperties(props, prefix + ShowAttributesProperty, showAttributes);
 
         if (drawingTool != null) {
             drawingTool.setProperties(prefix, props);
@@ -812,21 +815,17 @@ public class DrawingEditorTool extends AbstractEditorTool implements
             for (String loaderPrefix : loaderVector) {
                 String loaderPropertyPrefix = PropUtils.getScopedPropertyPrefix(prefix
                         + loaderPrefix);
-                String loaderClassString = props.getProperty(loaderPropertyPrefix
-                        + "class");
+                String loaderClassString = props.getProperty(loaderPropertyPrefix + "class");
                 String loaderAttributeClass = props.getProperty(loaderPropertyPrefix
                         + AttributesClassProperty);
                 if (loaderClassString != null) {
-                    Object obj = ComponentFactory.create(loaderClassString,
-                            loaderPropertyPrefix,
-                            props);
+                    Object obj = ComponentFactory.create(loaderClassString, loaderPropertyPrefix, props);
 
                     if (obj instanceof EditToolLoader) {
                         EditToolLoader loader = (EditToolLoader) obj;
 
                         if (Debug.debugging("editortool")) {
-                            Debug.output("DrawingEditorTool: adding "
-                                    + loaderClassString);
+                            Debug.output("DrawingEditorTool: adding " + loaderClassString);
                         }
 
                         addEditToolLoader(loader);
@@ -838,9 +837,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
                                         + loaderAttributeClass);
                             }
 
-                            Object daObject = ComponentFactory.create(loaderAttributeClass,
-                                    loaderPropertyPrefix,
-                                    props);
+                            Object daObject = ComponentFactory.create(loaderAttributeClass, loaderPropertyPrefix, props);
 
                             if (daObject instanceof DrawingAttributes) {
                                 if (Debug.debugging("editortool")) {
@@ -850,8 +847,7 @@ public class DrawingEditorTool extends AbstractEditorTool implements
 
                                 String[] classnames = loader.getEditableClasses();
                                 for (int i = 0; i < classnames.length; i++) {
-                                    drawingAttributesTable.put(classnames[i],
-                                            (DrawingAttributes) daObject);
+                                    drawingAttributesTable.put(classnames[i], (DrawingAttributes) daObject);
                                 }
 
                             } else {

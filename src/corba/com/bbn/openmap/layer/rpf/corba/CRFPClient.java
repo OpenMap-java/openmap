@@ -175,7 +175,7 @@ public class CRFPClient
      * When the client is deleted, it should sign off from the server, so that
      * it can free up it's cache for it.
      */
-    protected void finalize() {
+    protected void dispose() {
         if (Debug.debugging("crfp")) {
             Debug.output("CRFPClient.finalize(): calling shutdown");
         }

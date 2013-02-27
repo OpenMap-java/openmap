@@ -101,7 +101,7 @@ public class CorbaRpfLayer extends RpfLayer {
 
     public void removed(java.awt.Container cont) {
         super.removed(cont);
-        finalize();
+        dispose();
     }
 
     /**
@@ -129,10 +129,10 @@ public class CorbaRpfLayer extends RpfLayer {
      * When the layer is deleted, it should sign off from the server,
      * so that it can free up it's cache for it.
      */
-    public void finalize() {
+    public void dispose() {
         // Check just in case, although this should never happen.
         if (frameProvider != null) {
-            ((CRFPClient) frameProvider).finalize();
+            ((CRFPClient) frameProvider).dispose();
         }
     }
 

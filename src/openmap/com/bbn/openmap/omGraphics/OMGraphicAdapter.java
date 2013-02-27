@@ -1000,7 +1000,7 @@ public abstract class OMGraphicAdapter
 
     /**
      * Generic return of SinkGraphic for subclasses that don't implement clone
-     * properly, which is applicable for all of them right now..
+     * properly.
      */
     public Object clone() {
         try {

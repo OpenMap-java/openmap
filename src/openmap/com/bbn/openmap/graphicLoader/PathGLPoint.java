@@ -64,7 +64,7 @@ public class PathGLPoint extends GLPoint {
             pathIndex = 0;
         }
 
-        if (pathPoints != null && pathPoints.length >= 4) {
+        if (pathPoints.length >= 4) {
 
             int la1 = pathIndex;
             int lo1 = pathIndex + 1;

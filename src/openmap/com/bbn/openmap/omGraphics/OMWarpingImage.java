@@ -25,6 +25,8 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -69,9 +71,7 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * @author dietrick
  */
-public class OMWarpingImage
-        extends OMGraphicAdapter
-        implements OMGraphic {
+public class OMWarpingImage extends OMGraphicAdapter implements OMGraphic {
 
     private static final long serialVersionUID = 1L;
     protected ImageWarp warp;
@@ -84,8 +84,7 @@ public class OMWarpingImage
      * @throws MalformedURLException
      * @throws InterruptedException
      */
-    public OMWarpingImage(String imagePath)
-            throws MalformedURLException, InterruptedException {
+    public OMWarpingImage(String imagePath) throws MalformedURLException, InterruptedException {
         setWarp(imagePath, LatLonGCT.INSTANCE, new DataBounds(-180, -90, 180, 90));
     }
 
@@ -177,7 +176,8 @@ public class OMWarpingImage
      * @param transform the transform describing the image's projection.
      * @param imageBounds the bounds of the image, in its coordinate system.
      */
-    public OMWarpingImage(int[] pix, int width, int height, GeoCoordTransformation transform, DataBounds imageBounds) {
+    public OMWarpingImage(int[] pix, int width, int height, GeoCoordTransformation transform,
+            DataBounds imageBounds) {
         setWarp(pix, width, height, transform, imageBounds);
     }
 
@@ -191,7 +191,8 @@ public class OMWarpingImage
      *        projection.
      * @param worldfile The WorldFile describing the image's location.
      */
-    public OMWarpingImage(int[] pix, int width, int height, GeoCoordTransformation transform, WorldFile worldfile) {
+    public OMWarpingImage(int[] pix, int width, int height, GeoCoordTransformation transform,
+            WorldFile worldfile) {
         setWarp(pix, width, height, transform, worldfile);
     }
 
@@ -246,7 +247,8 @@ public class OMWarpingImage
      * @param transform
      * @param imageBounds
      */
-    public void setWarp(int[] pix, int width, int height, GeoCoordTransformation transform, DataBounds imageBounds) {
+    public void setWarp(int[] pix, int width, int height, GeoCoordTransformation transform,
+                        DataBounds imageBounds) {
         setWarp(new ImageWarp(pix, width, height, transform, imageBounds));
     }
 
@@ -259,7 +261,8 @@ public class OMWarpingImage
      * @param transform
      * @param worldfile describes projection of image
      */
-    public void setWarp(int[] pix, int width, int height, GeoCoordTransformation transform, WorldFile worldfile) {
+    public void setWarp(int[] pix, int width, int height, GeoCoordTransformation transform,
+                        WorldFile worldfile) {
         setWarp(new ImageWarp(pix, width, height, transform, worldfile));
     }
 
@@ -285,6 +288,7 @@ public class OMWarpingImage
         if (warp != null) {
             if (updateImageForProjection(proj) || raster == null) {
                 raster = warp.getOMRaster(proj);
+                DrawingAttributes.sTransfer(this, raster);
             }
         }
 
@@ -313,8 +317,34 @@ public class OMWarpingImage
     @Override
     public void render(Graphics g) {
         if (raster != null) {
+            raster.setSelected(isSelected());
+            raster.setMatted(isMatted());
             raster.render(g);
         }
+    }
+
+    @Override
+    public float distance(double x, double y) {
+        if (raster != null) {
+            return raster.distance(x, y);
+        }
+        return super.distance(x, y);
+    }
+
+    @Override
+    public float distanceToEdge(double x, double y) {
+        if (raster != null) {
+            return raster.distanceToEdge(x, y);
+        }
+        return super.distanceToEdge(x, y);
+    }
+
+    @Override
+    public boolean contains(double x, double y) {
+        if (raster != null) {
+            return raster.contains(x, y);
+        }
+        return super.contains(x, y);
     }
 
 }

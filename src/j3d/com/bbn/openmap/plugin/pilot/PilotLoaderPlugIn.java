@@ -140,6 +140,8 @@ public class PilotLoaderPlugIn extends OMGraphicHandlerPlugIn {
      */
     public boolean mouseClicked(MouseEvent e) {
 
+        OMGraphicList list = getList();
+        
         if (list != null) {
             OMGraphic graphic = list.getContains(e.getX(), e.getY());
             if (graphic instanceof Pilot) {

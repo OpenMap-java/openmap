@@ -213,18 +213,18 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements
     //----------------------------------------------------------------------
 
     /** The user interface palette for the Terrain layer. */
-    protected Box palette = null;
+    protected Box paletteBox = null;
     private String profileCommand = "setModeToProfile";
     private String losCommand = "setModeToLos";
 
     /** Creates the interface palette. */
     public java.awt.Component getGUI() {
 
-        if (palette == null) {
+        if (paletteBox == null) {
             if (Debug.debugging("terrain"))
                 System.out.println("TerrainLayer: creating Terrain Palette.");
 
-            palette = Box.createVerticalBox();
+            paletteBox = Box.createVerticalBox();
 
             //          palette = new JPanel();
             //          palette.setLayout(new GridLayout(0, 1));
@@ -304,13 +304,13 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements
             redraw.setActionCommand(RedrawCmd);
             redraw.addActionListener(this);
 
-            palette.add(modePanel);
-            palette.add(centerHeightPanel);
-            palette.add(profileControlPanel);
+            paletteBox.add(modePanel);
+            paletteBox.add(centerHeightPanel);
+            paletteBox.add(profileControlPanel);
             //          palette.add(redraw);
         }
 
-        return palette;
+        return paletteBox;
     }
 
     //----------------------------------------------------------------------

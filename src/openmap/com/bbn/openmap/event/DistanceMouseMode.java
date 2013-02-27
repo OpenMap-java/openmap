@@ -125,7 +125,7 @@ public class DistanceMouseMode extends CoordMouseMode {
      * The line type to be displayed, see OMGraphic. LINETYPE_GREATCIRCLE,
      * LINETYPE_RHUMB, LINETYPE_STRAIGHT default LINETYPE_GREATCIRCLE
      */
-    public static int lineType = OMGraphic.LINETYPE_GREATCIRCLE;
+    public int lineType = OMGraphic.LINETYPE_GREATCIRCLE;
 
     /**
      * To display the rubberband circle, default true

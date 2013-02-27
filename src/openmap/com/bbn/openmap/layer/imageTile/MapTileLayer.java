@@ -24,11 +24,13 @@
 
 package com.bbn.openmap.layer.imageTile;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Logger;
+
 import javax.swing.JSlider;
 
 import com.bbn.openmap.PropertyConsumer;
@@ -38,6 +40,7 @@ import com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMWarpingImage;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.PropUtils;
@@ -160,6 +163,7 @@ public class MapTileLayer extends OMGraphicHandlerLayer {
 
     public MapTileLayer() {
         setRenderPolicy(new com.bbn.openmap.layer.policy.BufferedImageRenderPolicy(this));
+        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
         setTileFactory(new StandardMapTileFactory());
     }
 
@@ -185,7 +189,7 @@ public class MapTileLayer extends OMGraphicHandlerLayer {
 
         if (tileFactory != null) {
             OMGraphicList newList = new OMGraphicList();
-            setList(newList);
+            // setList(newList);
             return tileFactory.getTiles(projection, zoomLevel, newList);
         }
         return null;
@@ -206,19 +210,24 @@ public class MapTileLayer extends OMGraphicHandlerLayer {
                 setTileFactory(itf);
             }
         } else {
-            // Let's see if we can figure out what kind of MapTileFactory is needed based on rootDir
-            String rootDirString = props.getProperty(prefix + StandardMapTileFactory.ROOT_DIR_PROPERTY);
+            // Let's see if we can figure out what kind of MapTileFactory is
+            // needed based on rootDir
+            String rootDirString = props.getProperty(prefix
+                    + StandardMapTileFactory.ROOT_DIR_PROPERTY);
             if (rootDirString != null) {
                 try {
+                    // We build URL here to test if the rootDir location exists.
                     URL url = new java.net.URL(rootDirString);
-                    // If we get here, we have a protocol, looks remote, so we should make sure the
+                    // If we get here, we have a protocol, looks remote, so we
+                    // should make sure the
                     // ServerMapTileFactory is used.
                     if (!(getTileFactory() instanceof ServerMapTileFactory)) {
-                        setTileFactory(new ServerMapTileFactory());
+                        setTileFactory(new ServerMapTileFactory(rootDirString));
                     }
-                    
+
                 } catch (MalformedURLException e) {
-                    // no protocol or something, use default StandardMapTileFactory
+                    // no protocol or something, use default
+                    // StandardMapTileFactory
                     if (!(getTileFactory() instanceof StandardMapTileFactory)) {
                         setTileFactory(new StandardMapTileFactory());
                     }
@@ -308,11 +317,7 @@ public class MapTileLayer extends OMGraphicHandlerLayer {
     }
 
     public java.awt.Component getGUI() {
-
-	return getTransparencyAdjustmentPanel(i18n.get(MapTileLayer.class, 
-						       "layerTransparencyGUILabel", "Layer Transparency"),
-					      JSlider.HORIZONTAL, getTransparency());
+        return getTransparencyAdjustmentPanel(i18n.get(MapTileLayer.class, "layerTransparencyGUILabel", "Layer Transparency"), JSlider.HORIZONTAL, getTransparency());
     }
-
 
 }

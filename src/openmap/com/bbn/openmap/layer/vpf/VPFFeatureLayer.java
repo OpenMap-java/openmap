@@ -177,12 +177,12 @@ public class VPFFeatureLayer
    }
 
    /** Where we store our default properties once we've loaded them. */
-   private static Properties defaultProps;
+   private Properties defaultProps;
 
    /**
     * Return our default properties for vpf land.
     */
-   public static Properties getDefaultProperties() {
+   public Properties getDefaultProperties() {
       if (defaultProps == null) {
          try {
             InputStream in = VPFFeatureLayer.class.getResourceAsStream("defaultVPFlayers.properties");

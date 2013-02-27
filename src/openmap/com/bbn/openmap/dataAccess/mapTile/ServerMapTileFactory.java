@@ -234,14 +234,12 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
                     BufferedImage rasterImage = preprocessImage(ii.getImage(), ii.getIconWidth(), ii.getIconHeight());
                     OMGraphic raster = createOMGraphicFromBufferedImage(rasterImage, x, y, zoomLevel, proj);
 
+                    /*
+                     * Again, create a CacheObject based on the local name if
+                     * the local dir is defined.
+                     */
                     if (raster != null) {
-                        /*
-                         * Again, create a CacheObject based on the local name
-                         * if the local dir is defined.
-                         */
-                        if (raster != null) {
-                            return new CacheObject(key, raster);
-                        }
+                        return new CacheObject(key, raster);
                     }
 
                 } catch (InterruptedException ie) {

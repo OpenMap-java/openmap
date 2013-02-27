@@ -44,7 +44,7 @@ public class Route implements Cloneable, Serializable {
     private boolean startWithFirstIntersection;
 //    private boolean endWithFirstIntersection;
 
-    Logger logger = Logger.getLogger(this.getClass().getName());
+    transient Logger logger = Logger.getLogger(this.getClass().getName());
 
     static class NodeInfo {
         Intersection intersection;

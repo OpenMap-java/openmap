@@ -142,13 +142,14 @@ public class DescribeDBServlet
     public void printLibrary(HttpServletRequest request, HttpServletResponse response, String pathPrefix, CoverageAttributeTable cat)
             throws ServletException, IOException {
         PrintWriter out = response.getWriter();
+
+        if (cat == null) {
+            out.println("<H2>Catalog doesn't exist</H2>");
+            return;
+        }
         String libName = cat.getLibraryName();
         String libpath = pathPrefix + "/" + libName;
 
-        if (cat == null) {
-            out.println("<H2>Library " + libName + " doesn't exist</H2>");
-            return;
-        }
         out.println("<H2>Library <A NAME=\"" + libName + "\"></A>" + buildURL(request, response, pathPrefix, libName, libName)
                 + "</H2>");
         String[] coverages = cat.getCoverageNames();

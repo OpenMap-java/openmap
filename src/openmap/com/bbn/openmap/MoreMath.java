@@ -63,6 +63,8 @@ public class MoreMath {
      * Math.PI/2
      */
     final public static transient double HALF_PI_D = Math.PI / 2.0d;
+    
+    final public static double EQUIVALENT_TOLERANCE = 0.0000001;
 
     // cannot construct
     private MoreMath() {}
@@ -82,6 +84,19 @@ public class MoreMath {
         return (Math.abs(a - b) <= epsilon);
     }
 
+    /**
+     * Checks if a ~= b. Use this to test equality of floating point
+     * numbers against EQUIVALENT_TOLERANCE.
+     * <p>
+     * 
+     * @param a double
+     * @param b double
+     * @return boolean
+     */
+    final public static boolean approximately_equal(double a, double b) {
+        return (Math.abs(a - b) <= EQUIVALENT_TOLERANCE);
+    }
+    
     /**
      * Checks if a ~= b. Use this to test equality of floating point
      * numbers.

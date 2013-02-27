@@ -22,14 +22,16 @@
 
 package com.bbn.openmap.time;
 
+import java.io.Serializable;
+
 import com.bbn.openmap.util.HashCodeUtil;
 
 /**
  * TimerStatus objects accompany TimeEvents to describe what's going on with the
  * application clock, or the reason the current time has changed.
  */
-public class TimerStatus {
-    
+public class TimerStatus implements Serializable {
+
     /**
      * Command string for clock controllers.
      */
@@ -76,11 +78,13 @@ public class TimerStatus {
      */
     public final static TimerStatus STEP_BACKWARD = new TimerStatus(TIMER_STEP_BACKWARD);
     /**
-     * Indicates the clock is running, and time has been incremented by the clock.
+     * Indicates the clock is running, and time has been incremented by the
+     * clock.
      */
     public final static TimerStatus FORWARD = new TimerStatus(TIMER_FORWARD);
     /**
-     * Indicates the clock is running, and time has been decremented by the clock.
+     * Indicates the clock is running, and time has been decremented by the
+     * clock.
      */
     public final static TimerStatus BACKWARD = new TimerStatus(TIMER_BACKWARD);
     /**
@@ -118,18 +122,20 @@ public class TimerStatus {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final TimerStatus ts = (TimerStatus)obj;
+        final TimerStatus ts = (TimerStatus) obj;
         return ts == this;
     }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
-   @Override
-   public int hashCode() {
-      int result = HashCodeUtil.SEED;
-      // collect the contributions of various fields
-      result = HashCodeUtil.hash(result, description);
-      return result;
-   }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        int result = HashCodeUtil.SEED;
+        // collect the contributions of various fields
+        result = HashCodeUtil.hash(result, description);
+        return result;
+    }
 }

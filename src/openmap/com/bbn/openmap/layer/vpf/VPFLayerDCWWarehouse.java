@@ -95,11 +95,11 @@ public class VPFLayerDCWWarehouse
          areaTypeExcludes = getNumbersFromPropertyList(list);
       } else {
          areaTypeExcludes = getNumbersFromPropertyList("0 2");
-         // topology artifacts and oceans, buy default
+         // topology artifacts and oceans, by default
       }
 
       if (DEBUG)
-         Debug.output("Excluding area types: " + areaTypeExcludes);
+         Debug.output("Excluding area types: " + getDebugNumbers(areaTypeExcludes));
 
       list = props.getProperty(realPrefix + LineTypeExcludeProperty);
       if (list != null) {
@@ -107,7 +107,7 @@ public class VPFLayerDCWWarehouse
       }
 
       if (DEBUG)
-         Debug.output("Excluding area types: " + lineTypeExcludes);
+         Debug.output("Excluding area types: " + getDebugNumbers(lineTypeExcludes));
 
       list = props.getProperty(realPrefix + TextTypeExcludeProperty);
       if (list != null) {
@@ -115,10 +115,19 @@ public class VPFLayerDCWWarehouse
       }
 
       if (DEBUG)
-         Debug.output("Excluding area types: " + textTypeExcludes);
-
+         Debug.output("Excluding area types: " + getDebugNumbers(textTypeExcludes));
    }
 
+   protected String getDebugNumbers(int[] arr) {
+       StringBuffer strBuf = new StringBuffer();
+       if (arr != null) {
+           for (int i : arr) {
+               strBuf.append(i).append(" ");
+           }
+       }
+       return strBuf.toString();
+   }
+   
    /**
     * From a string of space separated numbers, creates an int[].
     */

@@ -46,6 +46,7 @@ public class J2525 extends OMGraphicAdapter implements JObjectHolder {
     public J2525(E2525Symbol e2525) {
         super();
         JGraphic.fillOMGraphicParams(this, e2525.egraphic);
+        this.e2525 = e2525;
     }
 
     public void setObject(com.bbn.openmap.corba.CSpecialist.EComp aObject) {
@@ -94,50 +95,49 @@ public class J2525 extends OMGraphicAdapter implements JObjectHolder {
             System.out.println("\n\nHelp!!!!: J2525 can't draw an image!");
             // Need to update this to JFC, but need an
             // ImageObserver...
-            //g.drawImage(bitmap, point1.x, point1.y);
+            // g.drawImage(bitmap, point1.x, point1.y);
+
+            // I'm cheating and drawing in the most-used annotation
+            // (bottom1),
+            // and ignoring all the others.
+
+            // Determine proper positioning of the bottom1 label.
+            // netscape.application.Font f =
+            // netscape.application.Font.defaultFont();
+            // netscape.application.FontMetrics fm = f.fontMetrics();
+            // netscape.application.Size sz =
+            // fm.stringSize(e2525.bottom1);
+            // int x,y;
+            // x = point1.x + (bitmap.width() / 2);
+            // y = point1.y + bitmap.height();
+            // x -= sz.width/2;
+            // y += sz.height;
+
+            // g.setFont(f);
+            // g.drawString(e2525.bottom1, x, y);
+            int x = point1.x + (bitmap.getImage().getWidth(observer) / 2);
+            int y = point1.y + bitmap.getImage().getHeight(observer);
+            int w = g.getFontMetrics().stringWidth(e2525.bottom1);
+            int h = g.getFontMetrics().getHeight();
+            x -= w / 2;
+            y += h;
+
+            g.drawString(e2525.bottom1, x, y);
         } else {
             System.err.println("J2525.render: ignoring null bitmap");
         }
-
-        // I'm cheating and drawing in the most-used annotation
-        // (bottom1),
-        // and ignoring all the others.
-
-        // Determine proper positioning of the bottom1 label.
-        //     netscape.application.Font f =
-        // netscape.application.Font.defaultFont();
-        //     netscape.application.FontMetrics fm = f.fontMetrics();
-        //     netscape.application.Size sz =
-        // fm.stringSize(e2525.bottom1);
-        //     int x,y;
-        //     x = point1.x + (bitmap.width() / 2);
-        //     y = point1.y + bitmap.height();
-        //     x -= sz.width/2;
-        //     y += sz.height;
-
-        //     g.setFont(f);
-        //     g.drawString(e2525.bottom1, x, y);
-        int x = point1.x + (bitmap.getImage().getWidth(observer) / 2);
-        int y = point1.y + bitmap.getImage().getHeight(observer);
-        int w = g.getFontMetrics().stringWidth(e2525.bottom1);
-        int h = g.getFontMetrics().getHeight();
-        x -= w / 2;
-        y += h;
-
-        g.drawString(e2525.bottom1, x, y);
     }
 
     /**
-     * distance() - returns the shortest distance from the 2525 symbol
-     * to an XY-point
+     * distance() - returns the shortest distance from the 2525 symbol to an
+     * XY-point
      */
     public float distance(int x, int y) {
         float distance = Float.POSITIVE_INFINITY;
         return distance;
     }
 
-    public void update(
-                       com.bbn.openmap.corba.CSpecialist.GraphicPackage.GF_update update) {
+    public void update(com.bbn.openmap.corba.CSpecialist.GraphicPackage.GF_update update) {
         JGraphic.update((JObjectHolder) this, update);
     }
 

@@ -208,7 +208,7 @@ public class IOR {
         // gets a 2 byte integer off the byte array at index i
         dp.align(2);
         int i = dp.getPointer();
-        int x = ((b[i] << 8) + (b[i + 1]));
+        int x = (b[i] << 8) + (b[i + 1] & 0xff);
         dp.incPointer(2);
         return x;
     }

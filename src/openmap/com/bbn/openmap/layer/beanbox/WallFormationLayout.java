@@ -22,10 +22,11 @@ import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.tools.beanbox.BeanLayoutManager;
+import com.bbn.openmap.util.Debug;
 
 /**
  * A layout manager for laying out SimpleBeanbObject beans in a wall
- * forrmation. The WallFormationLayout object is itself a bean.
+ * formation. The WallFormationLayout object is itself a bean.
  */
 public class WallFormationLayout extends BeanLayoutManager {
 
@@ -110,8 +111,8 @@ public class WallFormationLayout extends BeanLayoutManager {
         for (int i = 0; i < contents.size(); i++) {
 
             Long id = (Long) contents.get(i);
-
-            SimpleBeanObject obj = SimpleBeanLayer.getLayer().getObject(id);
+            Debug.error("Here in WallFormationLayout, trying to get layer SimpleBeanObjects");
+            /*SimpleBeanObject obj = SimpleBeanLayer.getLayer().getObject(id);
 
             if (obj == null)
                 continue;
@@ -120,10 +121,11 @@ public class WallFormationLayout extends BeanLayoutManager {
             obj.setLongitude(llps[i].getLongitude());
 
             obj.setBearingInDeg(bearingInDeg);
+            */
 
         }
 
-        SimpleBeanLayer.getLayer().updateGraphics();
+        // SimpleBeanLayer.getLayer().updateGraphics();
     }
 
 }

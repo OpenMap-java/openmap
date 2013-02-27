@@ -51,30 +51,28 @@ import com.bbn.openmap.tools.j3d.OMKeyBehavior;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The PilotPath is a definition of a path that a Java 3D window will
- * take. This is a demonstration class that will have improvements as
- * time goes on. Right now, height does not have an effect on the
- * view.
+ * The PilotPath is a definition of a path that a Java 3D window will take. This
+ * is a demonstration class that will have improvements as time goes on. Right
+ * now, height does not have an effect on the view.
  * <P>
  * 
- * The PlugIn palette lets the user use the OMDrawingTool to define
- * the path. The path also provides a button on the palette to launch
- * the J3D viewer.
+ * The PlugIn palette lets the user use the OMDrawingTool to define the path.
+ * The path also provides a button on the palette to launch the J3D viewer.
  */
 public class PilotPath extends Pilot implements NavBehaviorProvider {
 
     double[] pathPoints = null;
     OMPoly poly = null;
     int pathIndex = 0;
-    float currentSegDist = 0f;
-    float nextSegOffset = 0f;
-    float rate = Length.METER.toRadians(10000);
+    double currentSegDist = 0.0;
+    double nextSegOffset = 0.0;
+    double rate = Length.METER.toRadians(10000.0);
 
     protected boolean DEBUG = false;
 
     /**
-     * Define a path, with the radius and isOval referring to the
-     * marker for marking the pilot's position on the path.
+     * Define a path, with the radius and isOval referring to the marker for
+     * marking the pilot's position on the path.
      */
     public PilotPath(OMPoly path, int radius, boolean isOval) {
         super(0f, 0f, radius, isOval);
@@ -85,8 +83,7 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
     }
 
     /**
-     * Tell the pilot to move along the path. The factor is not
-     * currently used.
+     * Tell the pilot to move along the path. The factor is not currently used.
      */
     public void move(float factor) {
         if (!stationary) {
@@ -104,7 +101,7 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
             pathIndex = 0;
         }
 
-        if (pathPoints != null && pathPoints.length >= 4) {
+        if (pathPoints.length >= 4) {
 
             int la1 = pathIndex;
             int lo1 = pathIndex + 1;
@@ -136,26 +133,23 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
     }
 
     /**
-     * Figures out the next position of the pilot, given the distance
-     * the pilot should move for this turn.
+     * Figures out the next position of the pilot, given the distance the pilot
+     * should move for this turn.
      */
     public void moveAlong() {
         if (DEBUG) {
-            Debug.output("PilotPath.moveAlong(): segment " + (pathIndex / 2)
-                    + " of " + (pathPoints.length / 2));
+            Debug.output("PilotPath.moveAlong(): segment " + (pathIndex / 2) + " of "
+                    + (pathPoints.length / 2));
         }
 
         double[] latlons = getSegmentCoordinates(pathIndex);
 
-        double segLength = GreatCircle.sphericalDistance(latlons[0],
-                latlons[1],
-                latlons[2],
-                latlons[3]);
+        double segLength = GreatCircle.sphericalDistance(latlons[0], latlons[1], latlons[2], latlons[3]);
         if (DEBUG) {
             Debug.output("PilotPath.moveAlong(): segment Length " + segLength
                     + ", and already have " + currentSegDist + " of it.");
         }
-        float needToTravel = rate;
+        double needToTravel = rate;
         int originalPathIndex = pathIndex;
         int loopingTimes = 0;
         while (needToTravel >= segLength - currentSegDist) {
@@ -167,8 +161,8 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
             // Move to the next segment of the poly
 
             if (DEBUG) {
-                Debug.output("PilotPath to next segment(" + (pathIndex / 2)
-                        + "), need to travel " + needToTravel);
+                Debug.output("PilotPath to next segment(" + (pathIndex / 2) + "), need to travel "
+                        + needToTravel);
             }
             latlons = getSegmentCoordinates(pathIndex);
 
@@ -182,37 +176,25 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
                 }
             }
 
-            segLength = GreatCircle.sphericalDistance(latlons[0],
-                    latlons[1],
-                    latlons[2],
-                    latlons[3]);
+            segLength = GreatCircle.sphericalDistance(latlons[0], latlons[1], latlons[2], latlons[3]);
         }
 
         if (DEBUG) {
             Debug.output("Moving PilotPath within current(" + (pathIndex / 2)
-                    + ") segment, segLength: " + segLength + ", ntt: "
-                    + needToTravel);
+                    + ") segment, segLength: " + segLength + ", ntt: " + needToTravel);
         }
 
         // Staying on this segment, just calculate where the
         // next point on the segment is.
-        double azimuth = GreatCircle.sphericalAzimuth(latlons[0],
-                latlons[1],
-                latlons[2],
-                latlons[3]);
+        double azimuth = GreatCircle.sphericalAzimuth(latlons[0], latlons[1], latlons[2], latlons[3]);
 
-        Point2D newPoint = GreatCircle.sphericalBetween(latlons[0],
-                latlons[1],
-                currentSegDist + needToTravel,
-                azimuth);
+        Point2D newPoint = GreatCircle.sphericalBetween(latlons[0], latlons[1], currentSegDist
+                + needToTravel, azimuth);
 
-        setLat((float) newPoint.getY());
-        setLon((float) newPoint.getX());
+        setLat(newPoint.getY());
+        setLon(newPoint.getX());
 
-        currentSegDist = (float) GreatCircle.sphericalDistance(latlons[0],
-                latlons[1],
-                Math.toRadians(newPoint.getY()),
-                Math.toRadians(newPoint.getX()));
+        currentSegDist = GreatCircle.sphericalDistance(latlons[0], latlons[1], Math.toRadians(newPoint.getY()), Math.toRadians(newPoint.getX()));
 
         // OK, now move the camera accordingly...
 
@@ -226,11 +208,11 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
         Point2D newLoc = viewProjection.forward(newPoint);
 
         if (DEBUG)
-            Debug.output(newLoc.toString() + ", compared with lastX, lastY: "
-                    + lastX + ", " + lastY + ", scaleFactor= " + scaleFactor);
+            Debug.output(newLoc.toString() + ", compared with lastX, lastY: " + lastX + ", "
+                    + lastY + ", scaleFactor= " + scaleFactor);
 
-        double centerXOffset = (double) (newLoc.getX()) * scaleFactor;
-        double centerYOffset = (double) (newLoc.getY()) * scaleFactor;
+        double centerXOffset = newLoc.getX() * scaleFactor;
+        double centerYOffset = newLoc.getY() * scaleFactor;
 
         Vector3d translate = new Vector3d();
 
@@ -271,8 +253,8 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
     protected double lastAzimuth = 0;
 
     /**
-     * Standard generate method, generating all the OMGraphics with
-     * the current position.
+     * Standard generate method, generating all the OMGraphics with the current
+     * position.
      */
     public boolean generate(Projection p) {
         // At least try to keep the current version, in case things
@@ -315,16 +297,14 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
 
     OMKeyBehavior platformBehavior;
 
-    public Behavior setViewingPlatformBehavior(TransformGroup ctg,
-                                               Projection projection,
+    public Behavior setViewingPlatformBehavior(TransformGroup ctg, Projection projection,
                                                float scaleFactor) {
 
         if (DEBUG)
             Debug.output("PilotPath setting viewing platform behavior");
         cameraTransformGroup = ctg;
 
-        platformBehavior = new OMKeyBehavior(cameraTransformGroup, viewProjection, locateWorld(projection,
-                scaleFactor));
+        platformBehavior = new OMKeyBehavior(cameraTransformGroup, viewProjection, locateWorld(projection, scaleFactor));
         // Trying to look down a little, didn't work. Should have,
         // though.
         // platformBehavior.doLookX(com.bbn.openmap.MoreMath.HALF_PI/2f);
@@ -343,31 +323,31 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
         cameraTransformGroup.getTransform(translateTransform);
 
         if (DEBUG)
-            Debug.output("PilotPath setting camera location, scaleFactor = "
-                    + this.scaleFactor);
+            Debug.output("PilotPath setting camera location, scaleFactor = " + this.scaleFactor);
         Vector3d translate = new Vector3d();
 
-        Point2D pilotPoint = projection.forward(getLat(), getLon());
-
-        // scaleFactor of < 1 shrinks the object.(.5) is the scale.
-
-        // So, this lays out where the land is, in relation to the
-        // viewer. We should get the projection from the MapBean, and
-        // offset the transform to the middle of the map.
         if (projection != null) {
+
+            Point2D pilotPoint = projection.forward(getLat(), getLon());
+
+            // scaleFactor of < 1 shrinks the object.(.5) is the scale.
+
+            // So, this lays out where the land is, in relation to the
+            // viewer. We should get the projection from the MapBean, and
+            // offset the transform to the middle of the map.
+
             double centerXOffset = pilotPoint.getX() * scaleFactor;
             double centerYOffset = pilotPoint.getY() * scaleFactor;
 
             if (DEBUG)
                 Debug.output("OM3DViewer with projection " + projection
-                        + ", setting center of scene to " + centerXOffset
-                        + ", " + centerYOffset);
+                        + ", setting center of scene to " + centerXOffset + ", " + centerYOffset);
 
             translate.set(centerXOffset, (double) height, centerYOffset);
             lastX = centerXOffset;
             lastY = centerYOffset;
         } else {
-            translate.set(0, (double) height, 0);
+            translate.set(0, height, 0);
         }
 
         return translate;
@@ -381,14 +361,8 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
     }
 
     public void launch3D() {
-        JFrame viewer = ControlledManager.getFrame("OpenMap 3D",
-                500,
-                500,
-                mapHandler,
-                (NavBehaviorProvider) this,
-                new javax.media.j3d.Background(.3f, .3f, .3f),
-                OM3DConstants.CONTENT_MASK_OMGRAPHICHANDLERLAYERS
-                        | OM3DConstants.CONTENT_MASK_OM3DGRAPHICHANDLERS);
+        JFrame viewer = ControlledManager.getFrame("OpenMap 3D", 500, 500, mapHandler, (NavBehaviorProvider) this, new javax.media.j3d.Background(.3f, .3f, .3f), OM3DConstants.CONTENT_MASK_OMGRAPHICHANDLERLAYERS
+                | OM3DConstants.CONTENT_MASK_OM3DGRAPHICHANDLERS);
         viewer.setVisible(true);
     }
 
@@ -396,8 +370,8 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
 
     /**
      * Gets the gui controls associated with the Pilot. This default
-     * implementation returns null indicating that the Pilot has no
-     * gui controls.
+     * implementation returns null indicating that the Pilot has no gui
+     * controls.
      * 
      * @return java.awt.Component or null
      */
@@ -417,7 +391,7 @@ public class PilotPath extends Pilot implements NavBehaviorProvider {
 
         heightPanel.add(new JLabel("Object height: "));
         if (heightField == null) {
-            heightField = new JTextField(Float.toString(height), 10);
+            heightField = new JTextField(Double.toString(height), 10);
             heightField.setHorizontalAlignment(JTextField.RIGHT);
             heightField.addActionListener(this);
             heightField.addFocusListener(this);

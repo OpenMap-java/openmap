@@ -50,18 +50,18 @@ import com.bbn.openmap.util.Debug;
  * <P>
  * 
  * <pre>
- *   
- *    
- *     
+ * 
+ * 
+ * 
  *      # port number of server
  *      link.port=3031
  *      # host name of server
  *      link.host=host.com
  *      # URL of properties file for server attributes
  *      link.propertiesURL=http://location.of.properties.file.com
- *      
- *     
- *    
+ * 
+ * 
+ * 
  * </pre>
  */
 public class DrawLinkLayer extends LinkLayer {
@@ -75,7 +75,8 @@ public class DrawLinkLayer extends LinkLayer {
      * The default constructor for the Layer. All of the attributes are set to
      * their default values.
      */
-    public DrawLinkLayer() {}
+    public DrawLinkLayer() {
+    }
 
     /**
      * Constructor to use when LinkLayer is not being used with OpenMap
@@ -114,8 +115,7 @@ public class DrawLinkLayer extends LinkLayer {
         LinkOMGraphicList graphics = getGraphicList();
 
         if (graphics == null) {
-            Debug.message("link",
-                    "DrawLinkLayer.mouseClicked: null LinkOMGraphicList, making new one...");
+            Debug.message("link", "DrawLinkLayer.mouseClicked: null LinkOMGraphicList, making new one...");
             // If the graphic list is null then LinkLayer::mouseClicked will
             // not report the mouse click to the server. Set it to an empty
             // list to continue processing.
@@ -139,16 +139,14 @@ public class DrawLinkLayer extends LinkLayer {
             }
         }
 
-        gesGraphic = selectableList.findClosest(e.getX(),
-                e.getY(),
-                distanceLimit);
-
         try {
 
             if (e == null) {
                 graphics.deselect();
                 return false;
             }
+
+            gesGraphic = selectableList.findClosest(e.getX(), e.getY(), distanceLimit);
 
             String id = null;
 
@@ -160,9 +158,7 @@ public class DrawLinkLayer extends LinkLayer {
             if (gesGraphic != null) {
                 Debug.message("link", "LinkLayer: found gesture graphic");
 
-                boolean tellServer = graphicGestureReaction(gesGraphic,
-                        descriptor,
-                        e);
+                boolean tellServer = graphicGestureReaction(gesGraphic, descriptor, e);
 
                 if (!tellServer) {
                     repaint();
@@ -178,8 +174,7 @@ public class DrawLinkLayer extends LinkLayer {
             }
 
             // server inform
-            if (!LinkUtil.isMask(getGestureDescriptor(),
-                    SERVER_NOTIFICATION_MASK)) {
+            if (!LinkUtil.isMask(getGestureDescriptor(), SERVER_NOTIFICATION_MASK)) {
                 return false;
             }
 
@@ -197,8 +192,7 @@ public class DrawLinkLayer extends LinkLayer {
             // it is not available - it could be used for another
             // graphics or gui fetch.
             if (l == null) {
-                Debug.message("link",
-                        "LinkLayer: unable to get link in handleGesture().");
+                Debug.message("link", "LinkLayer: unable to get link in handleGesture().");
                 return false;
             }
 
@@ -214,12 +208,7 @@ public class DrawLinkLayer extends LinkLayer {
                 }
 
                 // Send the query
-                LinkActionRequest.write(descriptor,
-                        e,
-                        (float) llpoint.getY(),
-                        (float) llpoint.getX(),
-                        args,
-                        l);
+                LinkActionRequest.write(descriptor, e, (float) llpoint.getY(), (float) llpoint.getX(), args, l);
 
             }
 
@@ -257,16 +246,13 @@ public class DrawLinkLayer extends LinkLayer {
                 String editable = prop.getProperty(LPC_EDITABLE);
                 Debug.message("link", "DrawLinkLayer: editable: " + editable);
                 if (editable.equals("false")) {
-                    Debug.message("link",
-                            "DrawLinkLayer not editing graphic.  editable = false");
+                    Debug.message("link", "DrawLinkLayer not editing graphic.  editable = false");
                 } else {
-                    Debug.message("link",
-                            "DrawLinkLayer trying to edit graphic");
+                    Debug.message("link", "DrawLinkLayer trying to edit graphic");
                     graphic = dt.edit(gesGraphic, layer);
                 }
             } else {
-                Debug.message("link",
-                        "Error: DrawLinkLayer has not drawing tool");
+                Debug.message("link", "Error: DrawLinkLayer has not drawing tool");
             }
 
             if (graphic != null) {

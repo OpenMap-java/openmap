@@ -58,17 +58,17 @@ public class Node extends OMPoint implements ActionListener, FocusListener {
     protected int width = 0;
 
     protected int menu = 0;
-    protected int shape = 0;
+    protected int shapeValue = 0;
 
     protected boolean localhost = false;
 
-    public Node(String label, int index, int shape, int menu, int color) {
+    public Node(String label, int index, int shapeval, int menu, int color) {
         super();
 
         this.label = label;
         this.index = index;
 
-        this.shape = shape;
+        this.shapeValue = shapeval;
 
         this.menu = menu;
 
@@ -121,8 +121,8 @@ public class Node extends OMPoint implements ActionListener, FocusListener {
         return this.gpsTime;
     }
 
-    public void setShape(int shape) {
-        this.shape = shape;
+    public void setShape(int shapeval) {
+        this.shapeValue = shapeval;
     }
 
     public void moveTo(int newX, int newY) {

@@ -118,11 +118,14 @@ public class SimpleHttpImageServer implements HttpRequestListener {
             throws IOException {
         httpd = new HttpServer(port, asDeamon);
         httpd.addHttpRequestListener(this);
-        httpd.start();
 
         iServer = new MapRequestHandler(props);
     }
 
+    public void start() {
+        httpd.start();
+    }
+    
     /**
      * Get the MapRequestHandler that is handling map image requests.
      */
@@ -219,6 +222,8 @@ public class SimpleHttpImageServer implements HttpRequestListener {
             } else {
                 shis = new SimpleHttpImageServer(propHandler.getProperties());
             }
+            
+            shis.start();
 
             Debug.output("OpenMap SimpleHttpImageServer: listening on port: "
                     + shis.httpd.getPort()

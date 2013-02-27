@@ -365,7 +365,7 @@ public class VMAP2Shape {
         if (defaultProperty != null) {
             System.out.println("defaultProperty=" + defaultProperty);
             realPrefix = defaultProperty + ".";
-            props = VPFLayer.getDefaultProperties();
+            props = VPFUtil.getDefaultProperties();
         }
 
         String coverage = props.getProperty(realPrefix

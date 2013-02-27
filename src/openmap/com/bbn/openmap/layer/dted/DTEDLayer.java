@@ -593,16 +593,16 @@ public class DTEDLayer
     // ----------------------------------------------------------------------
 
     /** The user interface palette for the DTED layer. */
-    protected Box palette = null;
+    protected Box paletteBox = null;
 
     /** Creates the interface palette. */
     public java.awt.Component getGUI() {
 
-        if (palette == null) {
+        if (paletteBox == null) {
             if (Debug.debugging("dted"))
                 Debug.output("DTEDLayer: creating DTED Palette.");
 
-            palette = Box.createVerticalBox();
+            paletteBox = Box.createVerticalBox();
             Box subbox1 = Box.createHorizontalBox();
             Box subbox2 = Box.createVerticalBox();
             Box subbox3 = Box.createHorizontalBox();
@@ -807,15 +807,15 @@ public class DTEDLayer
 
             subbox1.add(levelPanel);
             subbox1.add(viewPanel);
-            palette.add(subbox1);
+            paletteBox.add(subbox1);
             subbox2.add(contrastPanel);
             subbox2.add(bandPanel);
-            palette.add(subbox2);
+            paletteBox.add(subbox2);
             subbox3.add(redraw);
-            palette.add(subbox3);
+            paletteBox.add(subbox3);
         }
 
-        return palette;
+        return paletteBox;
     }
 
     /**

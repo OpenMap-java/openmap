@@ -31,7 +31,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.Properties;
 import java.util.Vector;
 
 import javax.swing.JPanel;
@@ -42,14 +41,14 @@ import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 
 /**
  *  
  */
-public class PlotLayer extends OMGraphicHandlerLayer implements
-        MapMouseListener {
+public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener {
 
     private ScatterGraph graph = null;
     private boolean show_plot_ = false;
@@ -60,13 +59,9 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
 
     // Where do we get the data from?
     // default to use GLOBE atmospheric temperature.
-    private String datasource = "AT.gst_small.txt";
+    private String datasource = "com/bbn/openmap/layer/plotLayer/AT.gst_small.txt";
 
     // "http://globe.ngdc.noaa.gov/sda/student_data/AT.gst.txt";
-    // "file:/home/gkeith/openmap/openmap/com/bbn/openmap/plotLayer/AT.gst.txt";
-    // "file:/home/gkeith/openmap/openmap/com/bbn/openmap/plotLayer/AT.gst_thin.txt";
-    // "file:/home/gkeith/openmap/openmap/com/bbn/openmap/plotLayer/AT.gst_small.txt";
-    // "http://stout:80/~gkeith/plotlayer/AT.gst_small.txt";
 
     private GLOBETempData temperature_data = null;
 
@@ -98,13 +93,25 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
      */
     public PlotLayer() {
 
-        getDataSource();
-        graph = new ScatterGraph(678, 790, null, temperature_data.overall_min_year_, temperature_data.overall_max_year_, temperature_data.overall_min_temp_, temperature_data.overall_max_temp_);
-        setList(plotDataSources());
+        // setList(plotDataSources());
     }
 
     public synchronized OMGraphicList prepare() {
-        graph.resize(plotX, plotY, plotWidth, plotHeight);
+        if (graph == null) {
+            GLOBETempData temperature_data = getDataSource();
+            if (temperature_data != null) {
+                graph = new ScatterGraph(678, 790, null, temperature_data.overall_min_year_, temperature_data.overall_max_year_, temperature_data.overall_min_temp_, temperature_data.overall_max_temp_);
+
+                setList(plotDataSources(temperature_data));
+
+            }
+        }
+
+        Projection proj = getProjection();
+        if (proj != null && graph != null) {
+            // graph.resize(plotX, plotY, plotWidth, plotHeight);
+            graph.resize(0, 0, proj.getWidth(), proj.getHeight());
+        }
         return super.prepare();
     }
 
@@ -114,10 +121,6 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
      * can load it as such.
      */
     private GLOBETempData getDataSource() {
-
-        if (temperature_data != null) {
-            return temperature_data;
-        }
 
         // load the data from the CLASSPATH
         Vector<String> dirs = Environment.getClasspathDirs();
@@ -137,18 +140,17 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
                 }
             }
             if (is == null) {
-                System.err.println("Unable to load datafile \"" + datasource
-                        + "\" from CLASSPATH");
+                System.err.println("Unable to load datafile \"" + datasource + "\" from CLASSPATH");
             }
         } else {
             System.err.println("No directories in CLASSPATH!");
-            System.err.println("Unable to load datafile \"" + datasource
-                    + "\" from CLASSPATH");
+            System.err.println("Unable to load datafile \"" + datasource + "\" from CLASSPATH");
         }
         if (is == null)
             return null;
 
         // Parse the data
+        GLOBETempData temperature_data = null;
         try {
             temperature_data = new GLOBETempData();
             temperature_data.loadData(is);
@@ -159,25 +161,22 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
     }
 
     /** Put the data points on the map. */
-    private OMGraphicList plotDataSources() {
+    private OMGraphicList plotDataSources(GLOBETempData temperature_data) {
         Debug.message("basic", "PlotLayer.plotDataSources()");
         int num_graphics = 0;
 
         OMGraphicList graphics = new OMGraphicList();
         graphics.setTraverseMode(OMGraphicList.LAST_ADDED_ON_TOP);
-        graphics.clear();
 
         Enumeration site_enum = temperature_data.getAllSites();
         while (site_enum.hasMoreElements()) {
             GLOBESite site = (GLOBESite) site_enum.nextElement();
-            // Debug.message("basic", "Plotlayer adds " +
-            // site.getName());
+            // Debug.message("basic", "PlotLayer adds " + site.getName());
             graphics.add(site.getGraphic());
             num_graphics++;
         }
 
-        Debug.message("basic", "Plotlayer found " + num_graphics
-                + " distinct sites");
+        Debug.message("basic", "Plotlayer found " + num_graphics + " distinct sites");
 
         // Find the sites that are visible on the map.
         return graphics;
@@ -200,12 +199,12 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
         OMGraphic plot = generatePlot();
         OMGraphicList list = getList();
 
-        if (plot != null) {
+        if (plot != null && list != null) {
             // System.out.println("Making plot visible..");
             list.add(plot);
+            // generate the graphics for rendering.
+            list.generate(getProjection(), false);
         }
-        // generate the graphics for rendering.
-        list.generate(getProjection(), false);
         repaint();
     }
 
@@ -286,10 +285,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
                     }
                 }
             };
-            pal = PaletteHelper.createCheckbox("Plot Control",
-                    new String[] { "Show Temperature Plot" },
-                    new boolean[] { show_plot_ },
-                    al);
+            pal = PaletteHelper.createCheckbox("Plot Control", new String[] { "Show Temperature Plot" }, new boolean[] { show_plot_ }, al);
         }
         return pal;
     }
@@ -395,7 +391,8 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
      * @param e the enter event
      * @see #getMouseModeServiceList
      */
-    public void mouseEntered(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {
+    }
 
     /**
      * Called whenever the mouse exits this layer and one of the requested mouse
@@ -404,7 +401,8 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
      * @param e the exit event
      * @see #getMouseModeServiceList
      */
-    public void mouseExited(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {
+    }
 
     /**
      * Called whenever the mouse is dragged on this layer and one of the
@@ -462,39 +460,42 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
                 fireRequestInfoLine("");
             }
 
+            return true;
         } else {
-            newSelectedGraphic = getList().selectClosest(e.getX(),
-                    e.getY(),
-                    4.0f);
+            OMGraphicList list = getList();
+            if (list != null) {
+                newSelectedGraphic = list.selectClosest(e.getX(), e.getY(), 4.0f);
 
-            if (newSelectedGraphic != null
-                    && (selectedGraphic == null || newSelectedGraphic != selectedGraphic)) {
+                if (newSelectedGraphic != null
+                        && (selectedGraphic == null || newSelectedGraphic != selectedGraphic)) {
 
-                Debug.message("basic", "Making selection...");
+                    Debug.message("basic", "Making selection...");
 
-                selectedGraphic = newSelectedGraphic;
-                // selectedGraphic.setLineColor(Color.yellow);
-                selectedGraphic.regenerate(getProjection());
+                    selectedGraphic = newSelectedGraphic;
+                    // selectedGraphic.setLineColor(Color.yellow);
+                    selectedGraphic.regenerate(getProjection());
 
-                // display site info on map
-                GLOBESite site = (GLOBESite) (newSelectedGraphic.getAppObject());
-                if (site != null) {
-                    fireRequestInfoLine(site.getInfo());
+                    // display site info on map
+                    GLOBESite site = (GLOBESite) (newSelectedGraphic.getAppObject());
+                    if (site != null) {
+                        fireRequestInfoLine(site.getInfo());
+                    }
+
+                    repaint();
+                } else if (selectedGraphic != null && newSelectedGraphic == null) {
+
+                    // revert color of un-moused object.
+                    Debug.message("basic", "Clearing selection...");
+                    // selectedGraphic.setLineColor(Color.red);
+                    selectedGraphic.regenerate(getProjection());
+                    fireRequestInfoLine("");
+                    selectedGraphic = null;
+                    repaint();
                 }
-
-                repaint();
-            } else if (selectedGraphic != null && newSelectedGraphic == null) {
-
-                // revert color of un-moused object.
-                Debug.message("basic", "Clearing selection...");
-                // selectedGraphic.setLineColor(Color.red);
-                selectedGraphic.regenerate(getProjection());
-                fireRequestInfoLine("");
-                selectedGraphic = null;
-                repaint();
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -507,14 +508,5 @@ public class PlotLayer extends OMGraphicHandlerLayer implements
     public void mouseMoved() {
         getList().deselect();
         repaint();
-    }
-
-    /**
-     * Initializes this layer from the given properties.
-     * 
-     * @param props the <code>Properties</code> holding settings for this layer
-     */
-    public void setProperties(String prefix, Properties props) {
-        super.setProperties(prefix, props);
     }
 }

@@ -22,7 +22,7 @@ import com.bbn.openmap.tools.beanbox.BeanLayoutManagerBeanInfo;
 
 /**
  * A BeanInfo for the
- * {@link com.bbn.openmap.examples.beanbox.WallFormationLayout}bean.
+ * {@link com.bbn.openmap.layer.beanbox.WallFormationLayout}bean.
  */
 public class WallFormationLayoutBeanInfo extends BeanLayoutManagerBeanInfo {
 

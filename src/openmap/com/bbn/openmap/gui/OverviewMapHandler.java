@@ -142,9 +142,8 @@ import com.bbn.openmap.util.PropUtils;
  * If layers are not added to the overview map, then it won't show up in the
  * application.
  */
-public class OverviewMapHandler
-        extends OMToolComponent
-        implements ProjectionListener, Serializable, PropertyConsumer, PropertyChangeListener, ComponentListener {
+public class OverviewMapHandler extends OMToolComponent implements ProjectionListener,
+        Serializable, PropertyConsumer, PropertyChangeListener, ComponentListener {
 
     public final static String OverviewMapHandlerLayerProperty = "overviewLayers";
     public final static String ScaleFactorProperty = "overviewScaleFactor";
@@ -243,8 +242,7 @@ public class OverviewMapHandler
      * 
      * @param props properties object.
      */
-    public OverviewMapHandler(Properties props)
-            throws Exception {
+    public OverviewMapHandler(Properties props) throws Exception {
         this(null, props);
     }
 
@@ -255,8 +253,7 @@ public class OverviewMapHandler
      *        OverviewMapHandler.
      * @param props properties object.
      */
-    public OverviewMapHandler(String prefix, Properties props)
-            throws Exception {
+    public OverviewMapHandler(String prefix, Properties props) throws Exception {
 
         this();
         setProperties(prefix, props);
@@ -271,8 +268,7 @@ public class OverviewMapHandler
      *        between the two will be added.
      * @param props properties object.
      */
-    public OverviewMapHandler(MapBean srcMap, String prefix, Properties props)
-            throws Exception {
+    public OverviewMapHandler(MapBean srcMap, String prefix, Properties props) throws Exception {
         this(prefix, props);
         setSourceMap(srcMap);
     }
@@ -293,8 +289,7 @@ public class OverviewMapHandler
      * 
      * @deprecated use setProperties(props).
      */
-    public void init(Properties props)
-            throws Exception {
+    public void init(Properties props) throws Exception {
         setProperties(null, props);
     }
 
@@ -308,8 +303,7 @@ public class OverviewMapHandler
      * @param props properties object.
      * @deprecated use setProperties(prefix, props).
      */
-    public void init(String prefix, Properties props)
-            throws Exception {
+    public void init(String prefix, Properties props) throws Exception {
         setProperties(prefix, props);
     }
 
@@ -333,7 +327,8 @@ public class OverviewMapHandler
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        Vector<String> overviewLayers = PropUtils.parseSpacedMarkers(props.getProperty(prefix + OverviewMapHandlerLayerProperty));
+        Vector<String> overviewLayers = PropUtils.parseSpacedMarkers(props.getProperty(prefix
+                + OverviewMapHandlerLayerProperty));
 
         if (overviewLayers.isEmpty()) {
             Debug.message("overview", "OverviewMapHandler:  created without layers!");
@@ -351,11 +346,13 @@ public class OverviewMapHandler
 
         backgroundSlave = PropUtils.booleanFromProperties(props, prefix + BackgroundSlaveProperty, backgroundSlave);
 
-        setControlSourceMap(PropUtils.booleanFromProperties(props, prefix + ControlSourceMapProperty, controlSourceMap));
+        setControlSourceMap(PropUtils.booleanFromProperties(props, prefix
+                + ControlSourceMapProperty, controlSourceMap));
 
         String statusLayerName = props.getProperty(prefix + StatusLayerProperty + ".class");
         if (statusLayerName != null) {
-            statusLayer = (Layer) ComponentFactory.create(statusLayerName, prefix + StatusLayerProperty, props);
+            statusLayer = (Layer) ComponentFactory.create(statusLayerName, prefix
+                    + StatusLayerProperty, props);
             if (statusLayer == null) {
                 Debug.error("OverviewMapHandler.setProperties: status layer not set.");
             }
@@ -390,11 +387,8 @@ public class OverviewMapHandler
         // size will get reset when it is added to a component, and
         // the projection will change when it is added to a MapBean
         // as a projection listener.p
-        return (Proj) projectionFactory.makeProjection(projClass,
-                                                       new Point2D.Float(Environment.getFloat(Environment.Latitude, 0f),
-                                                                         Environment.getFloat(Environment.Longitude, 0f)),
-                                                       Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY)
-                                                               * scaleFactor, INITIAL_WIDTH, INITIAL_HEIGHT);
+        return (Proj) projectionFactory.makeProjection(projClass, new Point2D.Float(Environment.getFloat(Environment.Latitude, 0f), Environment.getFloat(Environment.Longitude, 0f)), Environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY)
+                * scaleFactor, INITIAL_WIDTH, INITIAL_HEIGHT);
     }
 
     /**
@@ -467,19 +461,14 @@ public class OverviewMapHandler
             list = new Properties();
         }
 
-        list.put(OverviewMapHandlerLayerProperty,
-                 "Space separated list of marker names of layers to use as background on the overview map.");
-        list.put(ScaleFactorProperty,
-                 "Multiplier reflecting the difference between the scale of the overview map and the source map (default is 20.0).");
+        list.put(OverviewMapHandlerLayerProperty, "Space separated list of marker names of layers to use as background on the overview map.");
+        list.put(ScaleFactorProperty, "Multiplier reflecting the difference between the scale of the overview map and the source map (default is 20.0).");
         list.put(ProjectionTypeProperty, "Projection name to use for overview map (Default is mercator).");
         list.put(MinScaleProperty, "Minimum scale of overview map (Default is 500,000.0).");
-        list.put(StatusLayerProperty,
-                 "Class name of layer to use as the active layer on the overview map, receiving mouse events (Default is com.bbn.openmap.layer.OverviewMapAreaLayer).");
-        list.put(ControlSourceMapProperty,
-                 "Flag to have the source map controlled by gestures on the overview map (true/false, default is true).");
+        list.put(StatusLayerProperty, "Class name of layer to use as the active layer on the overview map, receiving mouse events (Default is com.bbn.openmap.layer.OverviewMapAreaLayer).");
+        list.put(ControlSourceMapProperty, "Flag to have the source map controlled by gestures on the overview map (true/false, default is true).");
         list.put(ControlSourceMapProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
-        list.put(BackgroundSlaveProperty,
-                 "Flag to have the map mimic any changes made to the source map's background (true/false, default is true).");
+        list.put(BackgroundSlaveProperty, "Flag to have the map mimic any changes made to the source map's background (true/false, default is true).");
         list.put(BackgroundSlaveProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.TrueFalsePropertyEditor");
 
         statusLayer.getPropertyInfo(list);
@@ -639,11 +628,9 @@ public class OverviewMapHandler
             newScale = minScale;
         }
 
-        if (projection != null) {
-            projection.setScale(newScale);
-            projection.setCenter(proj.getCenter());
-            map.setProjection(projection);
-        }
+        projection.setScale(newScale);
+        projection.setCenter(proj.getCenter());
+        map.setProjection(projection);
     }
 
     /**
@@ -988,8 +975,7 @@ public class OverviewMapHandler
      * Support for directing the setCenter and setScale calls to any MapBeans
      * that care to be listening.
      */
-    public class ControlledMapSupport
-            extends ListenerSupport<MapBean> {
+    public class ControlledMapSupport extends ListenerSupport<MapBean> {
 
         /**
          * Construct a ControlledMapSupport.

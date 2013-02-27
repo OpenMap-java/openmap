@@ -43,7 +43,7 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
  * not appear on the icon. That may help with defining certain shapes
  * to appear on the icon, however.
  */
-public interface IconPart extends Cloneable {
+public interface IconPart {
 
     /**
      * Have the IconPart render itself into the Graphic object for a
@@ -93,9 +93,9 @@ public interface IconPart extends Cloneable {
      * Get the rendering attributes for this IconPart.
      */
     public DrawingAttributes getRenderingAttributes();
-
+    
     /**
-     * Create a clone of this part.
+     * @return copy of itself, IconParts need to be Cloneable
      */
     public Object clone();
 

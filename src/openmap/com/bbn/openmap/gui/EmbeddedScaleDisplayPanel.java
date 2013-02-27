@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import com.bbn.openmap.MapBean;
+import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.event.ProjectionListener;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
@@ -273,7 +274,7 @@ public class EmbeddedScaleDisplayPanel
             logger.fine("length of line too long, halving to " + lineLength);
          }
          double testDist = scopeDistance(new_dist);
-         if (testDist != new_dist) {
+         if (!MoreMath.approximately_equal(testDist, new_dist)) {
             lineLength = right_x - getPtAtDistanceFromLatLon(loc2, testDist, projection, uom);
             if (logger.isLoggable(Level.FINE)) {
                logger.fine("needed to rescope distance to " + testDist + " from " + new_dist);
@@ -302,7 +303,7 @@ public class EmbeddedScaleDisplayPanel
          }
 
          double testDist = scopeDistance(new_dist);
-         if (testDist != new_dist) {
+         if (!MoreMath.approximately_equal(testDist, new_dist)) {
             lineLength = right_x - getPtAtDistanceFromLatLon(loc2, testDist, projection, cur_uom);
             if (logger.isLoggable(Level.FINE)) {
                logger.fine("needed to rescope distance to " + testDist + " from " + new_dist);

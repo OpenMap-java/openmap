@@ -142,6 +142,10 @@ public class BufferedImageHelper {
             if (DEBUG) {
                 logger.warning("BufferedImageHelper.getJAIBufferedImage() SecurityException error: \n" + se.getMessage());
             }
+        } catch (Exception e) {
+            if (DEBUG) {
+                logger.warning("BufferedImageHelper.getJAIBufferedImage() Exception: \n" + e.getMessage());
+            }
         }
 
         return null;

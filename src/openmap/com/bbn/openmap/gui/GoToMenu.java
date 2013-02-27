@@ -341,8 +341,6 @@ public class GoToMenu extends AbstractOpenMapMenu {
 
         } catch (NumberFormatException nfe) {
             return;
-        } catch (Exception e) {
-            return;
         }
     }
 

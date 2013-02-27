@@ -46,7 +46,7 @@ public class SimpleBeanObjectBeanInfo extends SimpleBeanInfo {
 
     public Image getIcon(int iconKind) {
 
-        Image image = loadImage("/com/bbn/openmap/examples/beanbox/simplebean.gif");
+        Image image = loadImage("/com/bbn/openmap/layer/beanbox/simplebean.gif");
 
         return image;
     }

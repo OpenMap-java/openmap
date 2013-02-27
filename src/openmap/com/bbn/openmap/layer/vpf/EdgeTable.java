@@ -67,8 +67,8 @@ public class EdgeTable
     * 
     * @param l the list to retrieve the value from
     */
-   public final int getId(List<Object> l) {
-      return ((Number) l.get(covtable.cachedLineSchema[0])).intValue();
+   public final int getID(List<Number> l) {
+      return l.get(covtable.cachedLineSchema[0]).intValue();
    }
 
    /**

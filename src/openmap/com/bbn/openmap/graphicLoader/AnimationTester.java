@@ -90,9 +90,9 @@ public class AnimationTester extends AbstractGraphicLoader {
     }
 
     JPanel panel = null;
-    String addCmd = "AddSpriteCommand";
-    String clearCmd = "ClearSpriteCommand";
-    String timerCmd = "TimerCommand";
+    final String addCmd = "AddSpriteCommand";
+    final String clearCmd = "ClearSpriteCommand";
+    final String timerCmd = "TimerCommand";
 
     public Component getGUI() {
         if (panel == null) {
@@ -152,17 +152,17 @@ public class AnimationTester extends AbstractGraphicLoader {
     public void actionPerformed(ActionEvent ae) {
         String command = ae.getActionCommand();
 
-        if (command == addCmd) {
+        if (command.equals(addCmd)) {
             addNode();
             if (!getTimer().isRunning()) {
                 manageGraphics();
             }
-        } else if (command == clearCmd) {
+        } else if (command.equals(clearCmd)) {
             clearNodes();
             if (!getTimer().isRunning()) {
                 manageGraphics();
             }
-        } else if (command == TimerCmd) {
+        } else if (command.equals(TimerCmd)) {
             JCheckBox check = (JCheckBox) ae.getSource();
             if (check.isSelected()) {
                 manageGraphics();

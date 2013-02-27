@@ -255,12 +255,6 @@ public class LOSGraphicLoader extends MMLGraphicLoader implements
         return dfc;
     }
 
-    /**
-     * The delay between timer pulses, in milliseconds. Default is 3
-     * seconds.
-     */
-    protected int updateInterval = 3000;
-
     JCheckBox timerButton = null;
     JButton addNodeButton = null;
     JButton addPathButton = null;

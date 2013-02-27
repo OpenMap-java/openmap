@@ -59,7 +59,7 @@ public class Pilot extends OMPoint implements ActionListener, FocusListener {
     /** Flag to mark whether the pilot is moving or not. */
     protected boolean stationary = true;
     protected String name;
-    protected float height = 0;// meters.
+    protected double height = 0;// meters.
 
     public Pilot(double lat, double lon, int radius, boolean isOval) {
         super(lat, lon, radius);
@@ -129,17 +129,17 @@ public class Pilot extends OMPoint implements ActionListener, FocusListener {
         return name;
     }
 
-    public void setHeight(float h) {
+    public void setHeight(double h) {
         height = h;
         if (heightField != null) {
-            heightField.setText(Float.toString(h));
+            heightField.setText(Double.toString(h));
         }
         if (Debug.debugging("pilotloader")) {
             Debug.output("Pilot: " + getName() + " setting height to : " + h);
         }
     }
 
-    public float getHeight() {
+    public double getHeight() {
         return height;
     }
 
@@ -235,7 +235,7 @@ public class Pilot extends OMPoint implements ActionListener, FocusListener {
 
         heightPanel.add(new JLabel("Object height: "));
         if (heightField == null) {
-            heightField = new JTextField(Float.toString(height), 10);
+            heightField = new JTextField(Double.toString(height), 10);
             heightField.setHorizontalAlignment(JTextField.RIGHT);
             heightField.addActionListener(this);
             heightField.addFocusListener(this);

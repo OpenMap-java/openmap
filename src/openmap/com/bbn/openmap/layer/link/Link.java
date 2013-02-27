@@ -176,7 +176,7 @@ public class Link implements LinkConstants {
      */
     public void end(String endType) throws IOException {
         dos.write(endType.getBytes());
-        if (endType == END_TOTAL) {
+        if (END_TOTAL.equals(endType)) {
             dos.flush();
         }
     }

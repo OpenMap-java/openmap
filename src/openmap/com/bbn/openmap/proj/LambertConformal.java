@@ -73,7 +73,7 @@ public class LambertConformal
     double lamdaf = 0.0;
     double alpha = 0.0;
 
-    private Ellipsoid ellps = Ellipsoid.WGS_84;
+    private transient Ellipsoid ellps = Ellipsoid.WGS_84;
 
     /**
      * A small number 10^(-10) This number can be re-factored into MoreMath

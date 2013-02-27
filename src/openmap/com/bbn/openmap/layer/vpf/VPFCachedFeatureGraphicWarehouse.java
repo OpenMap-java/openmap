@@ -160,11 +160,11 @@ public class VPFCachedFeatureGraphicWarehouse
       } else {
          // Main OMGraphicList stored in super class
 
-         if (type == VPFUtil.Area)
+         if (VPFUtil.Area.equals(type))
             addArea(omg);
-         else if (type == VPFUtil.Edge)
+         else if (VPFUtil.Edge.equals(type))
             addEdge(omg);
-         else if (type == VPFUtil.Text)
+         else if (VPFUtil.Text.equals(type))
             addText(omg);
          else
             addPoint(omg);

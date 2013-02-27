@@ -440,13 +440,13 @@ public class DemoLayer
         omList.add(text);
 
         if (srl != null) {
-            ImageIcon ii = srl.getIcon("SFPPV-----*****", new Dimension(100, 100));
+            ImageIcon ii = srl.getIcon("SFPPV-----*****", new Dimension(200, 200));
             if (ii != null) {
                 OMScalingIcon omsi = new OMScalingIcon(20f, -50f, ii);
                 omsi.setBaseScale(4000000);
                 omsi.setMinScale(1000000);
                 omsi.setMaxScale(6000000);
-
+                omsi.setRotationAngle(Math.PI/4);
                 omsi.putAttribute(OMGraphicConstants.LABEL, new OMTextLabeler("SFPPV-----*****", OMText.JUSTIFY_LEFT,
                                                                               OMTextLabeler.ANCHOR_RIGHT));
 
@@ -547,6 +547,26 @@ public class DemoLayer
         ribbonPoly.setLinePaint(Color.orange);
         omList.add(ribbonPoly);
 
+        OMEllipse ome1 = new OMEllipse(new LatLonPoint.Double(20.0, -110.0), 600, 300, Length.MILE, 0);
+        ome1.setLinePaint(Color.cyan);
+        omList.add(ome1);
+        
+        OMEllipse ome4 = new OMEllipse(new LatLonPoint.Double(20.0, -110.0), 600, 300, Length.MILE, Math.toRadians(45));
+        ome4.setLinePaint(Color.red);
+        omList.add(ome4);
+        
+        OMEllipse ome2 = new OMEllipse(new LatLonPoint.Double(20.0, -110.0), 600, 300, Length.MILE, Math.toRadians(60));
+        ome2.setLinePaint(Color.orange);
+        omList.add(ome2);
+        
+        OMEllipse ome3 = new OMEllipse(new LatLonPoint.Double(20.0, -110.0), 600, 300, Length.MILE, Math.toRadians(115));
+        ome3.setLinePaint(Color.green);
+        omList.add(ome3);
+        
+        OMEllipse ome5 = new OMEllipse(new LatLonPoint.Double(20.0, -110.0), 600, 300, Length.MILE, Math.toRadians(135));
+        ome5.setLinePaint(Color.MAGENTA);
+        omList.add(ome5);
+        
         return omList;
     }
 

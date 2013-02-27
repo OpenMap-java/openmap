@@ -88,7 +88,7 @@ public class OMScalingRaster
     * This the original version of the image, which we keep around for rescaling
     * later.
     */
-   protected BufferedImage sourceImage = null;
+   protected transient BufferedImage sourceImage = null;
 
    /**
     * The rectangle in screen co-ordinates that the scaled image projects to
@@ -491,23 +491,17 @@ public class OMScalingRaster
             // If it didn't all fit
             if (!winRect.contains(projRect)) {
                // calc X scale factor
-               float xScaleFactor = (float) sourceRect.width / (float) projRect.width;
+               double xScaleFactor = (double) sourceRect.width / (double) projRect.width;
                // and Y scale factor
-               float yScaleFactor = (float) sourceRect.height / (float) projRect.height;
-               int xOffset = (int) ((iRect.x - projRect.x)); // and
-               // x
-               // offset
-               int yOffset = (int) ((iRect.y - projRect.y)); // and
-               // y
-               // offset
-               clipRect.x = (int) (xOffset * xScaleFactor); // scale
-               // the
-               // x
-               // position
-               clipRect.y = (int) (yOffset * yScaleFactor); // scale
-               // the
-               // y
-               // position
+               double yScaleFactor = (double) sourceRect.height / (double) projRect.height;
+               // and the x offset
+               int xOffset = iRect.x - projRect.x;
+               // the y offset
+               int yOffset = iRect.y - projRect.y;
+               // Scale the x position
+               clipRect.x = (int) Math.floor(xOffset * xScaleFactor);
+               // scale the y position
+               clipRect.y = (int) Math.floor(yOffset * yScaleFactor); 
 
                // Do Math.ceil because the icon was getting
                // clipped a little if it started to move off the

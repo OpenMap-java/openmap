@@ -59,6 +59,7 @@ public abstract class PooledSwingWorker<T>
                      completed = !interrupted;
                   } catch (ExecutionException ee) {
                      interrupted = true;
+                     executionException = ee;
                   } catch (InterruptedException e) {
                      interrupted = true;
                   } catch (CancellationException ce) {

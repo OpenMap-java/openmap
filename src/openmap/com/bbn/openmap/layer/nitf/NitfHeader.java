@@ -40,9 +40,8 @@ import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.FormatException;
 
 /**
- * The NitfHeader reads the header information in a NITF (National
- * Imagery Transmission Format) and makes the section location
- * information available.
+ * The NitfHeader reads the header information in a NITF (National Imagery
+ * Transmission Format) and makes the section location information available.
  */
 public class NitfHeader {
 
@@ -65,7 +64,7 @@ public class NitfHeader {
     /** File Date and Time */
     public String FDT;// [14]
     /** File Title */
-    public String FTITLE;//[80]
+    public String FTITLE;// [80]
     /** File Security Classification */
     public String FSCLAS;// [1]
     /** File Codewords */
@@ -158,8 +157,8 @@ public class NitfHeader {
     }
 
     /**
-     * Reads the header part of the file. Will seek automatically to
-     * the beginning of the file.
+     * Reads the header part of the file. Will seek automatically to the
+     * beginning of the file.
      * 
      * @param binFile BinaryFile, opened on the NITF file.
      */
@@ -283,7 +282,14 @@ public class NitfHeader {
         BinaryFile binFile = null;
         try {
             binFile = new BinaryBufferedFile(file);
-            //          binFile = new BinaryFile(file);
+            // binFile = new BinaryFile(file);
+
+            NitfHeader header = new NitfHeader();
+            if (header.read(binFile)) {
+                System.out.println(header);
+            } else {
+                System.out.println("NitfHeader: NOT read successfully!");
+            }
         } catch (FileNotFoundException e) {
             System.err.println("NitfHeader: file " + args[0] + " not found");
             System.exit(1);
@@ -291,12 +297,5 @@ public class NitfHeader {
             System.err.println("NitfHeader: File IO Error while handling NITF header:");
             System.err.println(ioe);
         }
-
-        NitfHeader header = new NitfHeader();
-        if (header.read(binFile)) {
-            System.out.println(header);
-        } else
-            System.out.println("NitfHeader: NOT read successfully!");
-
     }
 }

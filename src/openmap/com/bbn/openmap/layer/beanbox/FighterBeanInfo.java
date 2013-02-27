@@ -47,7 +47,7 @@ public class FighterBeanInfo extends SimpleBeanObjectBeanInfo {
 
     public Image getIcon(int iconKind) {
 
-        Image image = loadImage("/com/bbn/openmap/examples/beanbox/fighter.gif");
+        Image image = loadImage("/com/bbn/openmap/layer/beanbox/fighter.gif");
 
         return image;
     }

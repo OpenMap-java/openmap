@@ -60,7 +60,72 @@ public class RpfProductInfo {
     * as the key for retrieval.
     */
    private static Hashtable<String, RpfProductInfo> CATALOG;
-
+   
+   static {
+       CATALOG = new java.util.Hashtable<String, RpfProductInfo>(60);
+       CATALOG.put(RpfConstants.GN.seriesCode, RpfConstants.GN);
+       CATALOG.put(RpfConstants.JN.seriesCode, RpfConstants.JN);
+       CATALOG.put(RpfConstants.ON.seriesCode, RpfConstants.ON);
+       CATALOG.put(RpfConstants.TP.seriesCode, RpfConstants.TP);
+       CATALOG.put(RpfConstants.LF.seriesCode, RpfConstants.LF);
+       CATALOG.put(RpfConstants.JG.seriesCode, RpfConstants.JG);
+       CATALOG.put(RpfConstants.JA.seriesCode, RpfConstants.JA);
+       CATALOG.put(RpfConstants.JR.seriesCode, RpfConstants.JR);
+       CATALOG.put(RpfConstants.TF.seriesCode, RpfConstants.TF);
+       CATALOG.put(RpfConstants.AT.seriesCode, RpfConstants.AT);
+       CATALOG.put(RpfConstants.TC.seriesCode, RpfConstants.TC);
+       CATALOG.put(RpfConstants.TL.seriesCode, RpfConstants.TL);
+       CATALOG.put(RpfConstants.TT.seriesCode, RpfConstants.TT);
+       CATALOG.put(RpfConstants.TQ.seriesCode, RpfConstants.TQ);
+       CATALOG.put(RpfConstants.HA.seriesCode, RpfConstants.HA);
+       CATALOG.put(RpfConstants.CO.seriesCode, RpfConstants.CO);
+       CATALOG.put(RpfConstants.OA.seriesCode, RpfConstants.OA);
+       CATALOG.put(RpfConstants.CG.seriesCode, RpfConstants.CG);
+       CATALOG.put(RpfConstants.C1.seriesCode, RpfConstants.C1);
+       CATALOG.put(RpfConstants.C2.seriesCode, RpfConstants.C2);
+       CATALOG.put(RpfConstants.C3.seriesCode, RpfConstants.C3);
+       CATALOG.put(RpfConstants.C4.seriesCode, RpfConstants.C4);
+       CATALOG.put(RpfConstants.C5.seriesCode, RpfConstants.C5);
+       CATALOG.put(RpfConstants.C6.seriesCode, RpfConstants.C6);
+       CATALOG.put(RpfConstants.C7.seriesCode, RpfConstants.C7);
+       CATALOG.put(RpfConstants.C8.seriesCode, RpfConstants.C8);
+       CATALOG.put(RpfConstants.C9.seriesCode, RpfConstants.C9);
+       CATALOG.put(RpfConstants.CA.seriesCode, RpfConstants.CA);
+       CATALOG.put(RpfConstants.CB.seriesCode, RpfConstants.CB);
+       CATALOG.put(RpfConstants.CC.seriesCode, RpfConstants.CC);
+       CATALOG.put(RpfConstants.CD.seriesCode, RpfConstants.CD);
+       CATALOG.put(RpfConstants.CE.seriesCode, RpfConstants.CE);
+       CATALOG.put(RpfConstants.CF.seriesCode, RpfConstants.CF);
+       CATALOG.put(RpfConstants.CH.seriesCode, RpfConstants.CH);
+       CATALOG.put(RpfConstants.CJ.seriesCode, RpfConstants.CJ);
+       CATALOG.put(RpfConstants.CK.seriesCode, RpfConstants.CK);
+       CATALOG.put(RpfConstants.CL.seriesCode, RpfConstants.CL);
+       CATALOG.put(RpfConstants.CN.seriesCode, RpfConstants.CN);
+       CATALOG.put(RpfConstants.CP.seriesCode, RpfConstants.CP);
+       CATALOG.put(RpfConstants.CQ.seriesCode, RpfConstants.CQ);
+       CATALOG.put(RpfConstants.CR.seriesCode, RpfConstants.CR);
+       CATALOG.put(RpfConstants.CS.seriesCode, RpfConstants.CS);
+       CATALOG.put(RpfConstants.CT.seriesCode, RpfConstants.CT);
+       CATALOG.put(RpfConstants.CM.seriesCode, RpfConstants.CM);
+       CATALOG.put(RpfConstants.A1.seriesCode, RpfConstants.A1);
+       CATALOG.put(RpfConstants.A2.seriesCode, RpfConstants.A2);
+       CATALOG.put(RpfConstants.A3.seriesCode, RpfConstants.A3);
+       CATALOG.put(RpfConstants.A4.seriesCode, RpfConstants.A4);
+       CATALOG.put(RpfConstants.MM.seriesCode, RpfConstants.MM);
+       CATALOG.put(RpfConstants.IM.seriesCode, RpfConstants.IM);
+       CATALOG.put(RpfConstants.I1.seriesCode, RpfConstants.I1);
+       CATALOG.put(RpfConstants.I2.seriesCode, RpfConstants.I2);
+       CATALOG.put(RpfConstants.I3.seriesCode, RpfConstants.I3);
+       CATALOG.put(RpfConstants.I4.seriesCode, RpfConstants.I4);
+       CATALOG.put(RpfConstants.D1.seriesCode, RpfConstants.D1);
+       CATALOG.put(RpfConstants.D2.seriesCode, RpfConstants.D2);
+       CATALOG.put(RpfConstants.OV.seriesCode, RpfConstants.OV);
+       CATALOG.put(RpfConstants.OI.seriesCode, RpfConstants.OI);
+       CATALOG.put(RpfConstants.LG.seriesCode, RpfConstants.LG);
+       CATALOG.put(RpfConstants.UK.seriesCode, RpfConstants.UK);
+       CATALOG.put(RpfConstants.DT.seriesCode, RpfConstants.DT);
+   }
+   
    public RpfProductInfo() {
       seriesCode = RpfConstants.BLANK;
       abbr = RpfConstants.BLANK;
@@ -128,70 +193,6 @@ public class RpfProductInfo {
     * @return Hashtable of product information.
     */
    public static Hashtable<String, RpfProductInfo> getCatalog() {
-      if (CATALOG == null) {
-         CATALOG = new java.util.Hashtable<String, RpfProductInfo>(60);
-         CATALOG.put(RpfConstants.GN.seriesCode, RpfConstants.GN);
-         CATALOG.put(RpfConstants.JN.seriesCode, RpfConstants.JN);
-         CATALOG.put(RpfConstants.ON.seriesCode, RpfConstants.ON);
-         CATALOG.put(RpfConstants.TP.seriesCode, RpfConstants.TP);
-         CATALOG.put(RpfConstants.LF.seriesCode, RpfConstants.LF);
-         CATALOG.put(RpfConstants.JG.seriesCode, RpfConstants.JG);
-         CATALOG.put(RpfConstants.JA.seriesCode, RpfConstants.JA);
-         CATALOG.put(RpfConstants.JR.seriesCode, RpfConstants.JR);
-         CATALOG.put(RpfConstants.TF.seriesCode, RpfConstants.TF);
-         CATALOG.put(RpfConstants.AT.seriesCode, RpfConstants.AT);
-         CATALOG.put(RpfConstants.TC.seriesCode, RpfConstants.TC);
-         CATALOG.put(RpfConstants.TL.seriesCode, RpfConstants.TL);
-         CATALOG.put(RpfConstants.TT.seriesCode, RpfConstants.TT);
-         CATALOG.put(RpfConstants.TQ.seriesCode, RpfConstants.TQ);
-         CATALOG.put(RpfConstants.HA.seriesCode, RpfConstants.HA);
-         CATALOG.put(RpfConstants.CO.seriesCode, RpfConstants.CO);
-         CATALOG.put(RpfConstants.OA.seriesCode, RpfConstants.OA);
-         CATALOG.put(RpfConstants.CG.seriesCode, RpfConstants.CG);
-         CATALOG.put(RpfConstants.C1.seriesCode, RpfConstants.C1);
-         CATALOG.put(RpfConstants.C2.seriesCode, RpfConstants.C2);
-         CATALOG.put(RpfConstants.C3.seriesCode, RpfConstants.C3);
-         CATALOG.put(RpfConstants.C4.seriesCode, RpfConstants.C4);
-         CATALOG.put(RpfConstants.C5.seriesCode, RpfConstants.C5);
-         CATALOG.put(RpfConstants.C6.seriesCode, RpfConstants.C6);
-         CATALOG.put(RpfConstants.C7.seriesCode, RpfConstants.C7);
-         CATALOG.put(RpfConstants.C8.seriesCode, RpfConstants.C8);
-         CATALOG.put(RpfConstants.C9.seriesCode, RpfConstants.C9);
-         CATALOG.put(RpfConstants.CA.seriesCode, RpfConstants.CA);
-         CATALOG.put(RpfConstants.CB.seriesCode, RpfConstants.CB);
-         CATALOG.put(RpfConstants.CC.seriesCode, RpfConstants.CC);
-         CATALOG.put(RpfConstants.CD.seriesCode, RpfConstants.CD);
-         CATALOG.put(RpfConstants.CE.seriesCode, RpfConstants.CE);
-         CATALOG.put(RpfConstants.CF.seriesCode, RpfConstants.CF);
-         CATALOG.put(RpfConstants.CH.seriesCode, RpfConstants.CH);
-         CATALOG.put(RpfConstants.CJ.seriesCode, RpfConstants.CJ);
-         CATALOG.put(RpfConstants.CK.seriesCode, RpfConstants.CK);
-         CATALOG.put(RpfConstants.CL.seriesCode, RpfConstants.CL);
-         CATALOG.put(RpfConstants.CN.seriesCode, RpfConstants.CN);
-         CATALOG.put(RpfConstants.CP.seriesCode, RpfConstants.CP);
-         CATALOG.put(RpfConstants.CQ.seriesCode, RpfConstants.CQ);
-         CATALOG.put(RpfConstants.CR.seriesCode, RpfConstants.CR);
-         CATALOG.put(RpfConstants.CS.seriesCode, RpfConstants.CS);
-         CATALOG.put(RpfConstants.CT.seriesCode, RpfConstants.CT);
-         CATALOG.put(RpfConstants.CM.seriesCode, RpfConstants.CM);
-         CATALOG.put(RpfConstants.A1.seriesCode, RpfConstants.A1);
-         CATALOG.put(RpfConstants.A2.seriesCode, RpfConstants.A2);
-         CATALOG.put(RpfConstants.A3.seriesCode, RpfConstants.A3);
-         CATALOG.put(RpfConstants.A4.seriesCode, RpfConstants.A4);
-         CATALOG.put(RpfConstants.MM.seriesCode, RpfConstants.MM);
-         CATALOG.put(RpfConstants.IM.seriesCode, RpfConstants.IM);
-         CATALOG.put(RpfConstants.I1.seriesCode, RpfConstants.I1);
-         CATALOG.put(RpfConstants.I2.seriesCode, RpfConstants.I2);
-         CATALOG.put(RpfConstants.I3.seriesCode, RpfConstants.I3);
-         CATALOG.put(RpfConstants.I4.seriesCode, RpfConstants.I4);
-         CATALOG.put(RpfConstants.D1.seriesCode, RpfConstants.D1);
-         CATALOG.put(RpfConstants.D2.seriesCode, RpfConstants.D2);
-         CATALOG.put(RpfConstants.OV.seriesCode, RpfConstants.OV);
-         CATALOG.put(RpfConstants.OI.seriesCode, RpfConstants.OI);
-         CATALOG.put(RpfConstants.LG.seriesCode, RpfConstants.LG);
-         CATALOG.put(RpfConstants.UK.seriesCode, RpfConstants.UK);
-         CATALOG.put(RpfConstants.DT.seriesCode, RpfConstants.DT);
-      }
       return CATALOG;
    }
 

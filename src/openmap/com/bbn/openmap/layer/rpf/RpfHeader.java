@@ -41,8 +41,8 @@ import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.Debug;
 
 /**
- * Reads the part of the RpfFrame that gives a basic location map to
- * the locations of the file.
+ * Reads the part of the RpfFrame that gives a basic location map to the
+ * locations of the file.
  */
 public class RpfHeader {
 
@@ -63,11 +63,12 @@ public class RpfHeader {
     public String release; // 2 chars
     public int locationSectionLocation;
 
-    public RpfHeader() {}
+    public RpfHeader() {
+    }
 
     /**
-     * Starts at the beginning of the file and handles the NITF header
-     * if it is there.
+     * Starts at the beginning of the file and handles the NITF header if it is
+     * there.
      */
     public boolean read(BinaryFile binFile) {
 
@@ -85,8 +86,7 @@ public class RpfHeader {
                     binFile.seek(headerOffset);
 
             } catch (IOException e) {
-                Debug.error("RpfHeader: File IO Error while reading header information:\n"
-                        + e);
+                Debug.error("RpfHeader: File IO Error while reading header information:\n" + e);
                 return false;
             }
         }
@@ -98,7 +98,7 @@ public class RpfHeader {
     public boolean readHeader(BinaryFile binFile) {
 
         try {
-            //  Read header
+            // Read header
             byte[] endianByte = binFile.readBytes(1, false);
             if (endianByte[0] > 0)
                 endian = true;
@@ -135,12 +135,10 @@ public class RpfHeader {
             }
 
         } catch (IOException e) {
-            Debug.error("RpfHeader: File IO Error while reading header information:\n"
-                    + e);
+            Debug.error("RpfHeader: File IO Error while reading header information:\n" + e);
             return false;
         } catch (FormatException f) {
-            Debug.error("RpfHeader: File IO Format error while reading header information:\n"
-                    + f);
+            Debug.error("RpfHeader: File IO Format error while reading header information:\n" + f);
             return false;
         }
 
@@ -150,29 +148,23 @@ public class RpfHeader {
     public String toString() {
         StringBuffer s = new StringBuffer();
         s.append("RpfHeader: endian is ").append(endian).append("\n");
-        s.append("RpfHeader: header section length = ")
-                .append(headerSectionLength).append("\n");
+        s.append("RpfHeader: header section length = ").append(headerSectionLength).append("\n");
         s.append("RpfHeader: filename = ").append(filename).append("\n");
         s.append("RpfHeader: neww = ").append(neww).append("\n");
-        s.append("RpfHeader: standard number = ")
-                .append(standardNumber).append("\n");
-        s.append("RpfHeader: standard date = ")
-                .append(standardDate).append("\n");
-        s.append("RpfHeader: classification = ")
-                .append(classification).append("\n");
+        s.append("RpfHeader: standard number = ").append(standardNumber).append("\n");
+        s.append("RpfHeader: standard date = ").append(standardDate).append("\n");
+        s.append("RpfHeader: classification = ").append(classification).append("\n");
         s.append("RpfHeader: country = ").append(country).append("\n");
         s.append("RpfHeader: release = ").append(release).append("\n");
-        s.append("RpfHeader: location section location = ")
-                .append(locationSectionLocation).append("\n");
+        s.append("RpfHeader: location section location = ").append(locationSectionLocation).append("\n");
         return s.toString();
     }
 
     /**
-     * Checks to see if the file is in NITF or not, and then puts the
-     * file pointer in the right place to start reading the header for
-     * the file. If the file is in NITF format, it skips the NITF
-     * header, and if it isn't, it resets the pointer to the
-     * beginning.
+     * Checks to see if the file is in NITF or not, and then puts the file
+     * pointer in the right place to start reading the header for the file. If
+     * the file is in NITF format, it skips the NITF header, and if it isn't, it
+     * resets the pointer to the beginning.
      */
     public int handleNITFHeader(BinaryFile binFile) {
         try {
@@ -209,12 +201,10 @@ public class RpfHeader {
                 return FRAME_LONG_NITF_HEADER_LENGTH;
 
         } catch (IOException e) {
-            Debug.error("RpfHeader: File IO Error while handling NITF header:\n"
-                    + e);
+            Debug.error("RpfHeader: File IO Error while handling NITF header:\n" + e);
             return -1;
         } catch (FormatException f) {
-            Debug.error("RpfHeader: File IO Format error while reading header information:\n"
-                    + f);
+            Debug.error("RpfHeader: File IO Format error while reading header information:\n" + f);
             return -1;
         }
 
@@ -231,7 +221,13 @@ public class RpfHeader {
         BinaryFile binFile = null;
         try {
             binFile = new BinaryBufferedFile(file);
-            //          binFile = new BinaryFile(file);
+            // binFile = new BinaryFile(file);
+            RpfHeader header = new RpfHeader();
+            if (header.read(binFile))
+                System.out.println(header);
+            else {
+                System.out.println("RpfHeader: NOT read successfully!");
+            }
         } catch (FileNotFoundException e) {
             System.err.println("RpfHeader: file " + args[0] + " not found");
             System.exit(1);
@@ -239,12 +235,6 @@ public class RpfHeader {
             System.err.println("RpfHeader: File IO Error while handling NITF header:");
             System.err.println(ioe);
         }
-
-        RpfHeader header = new RpfHeader();
-        if (header.read(binFile))
-            System.out.println(header);
-        else
-            System.out.println("RpfHeader: NOT read successfully!");
 
     }
 }

@@ -60,8 +60,6 @@ public class SimpleBeanLayer extends Layer implements BeanBoxHandler {
 
     protected SimpleBeanBox beanBox;
 
-    private static SimpleBeanLayer thisLayer;
-
     public SimpleBeanLayer() {
         super();
 
@@ -69,19 +67,12 @@ public class SimpleBeanLayer extends Layer implements BeanBoxHandler {
 
         addToBeanContext = true;
 
-        thisLayer = this;
-
         beanBox = new SimpleBeanBox(this);
-    }
-
-    /** Gets a reference to this layer object. */
-    public static SimpleBeanLayer getLayer() {
-        return thisLayer;
     }
 
     /**
      * @return the instance of
-     *         {@link com.bbn.openmap.examples.beanbox.SimpleBeanBox}
+     *         {@link com.bbn.openmap.layer.beanbox.SimpleBeanBox}
      *         that is maintained by this layer.
      */
     public BeanBox getBeanBox() {
@@ -95,7 +86,7 @@ public class SimpleBeanLayer extends Layer implements BeanBoxHandler {
 
     /**
      * @return an instance of
-     *         {@link com.bbn.openmap.examples.beanbox.SimpleBeanBox},
+     *         {@link com.bbn.openmap.layer.beanbox.SimpleBeanBox},
      *         which implements the MapMouseListener interface.
      */
     public MapMouseListener getMapMouseListener() {

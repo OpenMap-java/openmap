@@ -397,7 +397,6 @@ public class MapTileUtil {
         public void grabURLTile(int x, int y, int zoomLevel) {
 
             java.net.URL url = null;
-            ImageIcon ii = null;
 
             String imagePath = source + "/" + zoomLevel + "/" + x + "/" + y + (format.startsWith(".") ? format : "." + format);
 
@@ -430,7 +429,6 @@ public class MapTileUtil {
                     out.close();
 
                     byte[] imageBytes = out.toByteArray();
-                    ii = new ImageIcon(imageBytes);
 
                     if (destination != null) {
                         File localFile =

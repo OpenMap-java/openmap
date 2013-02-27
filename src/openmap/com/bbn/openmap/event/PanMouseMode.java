@@ -7,6 +7,7 @@
 package com.bbn.openmap.event;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -17,6 +18,8 @@ import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Properties;
 
 import javax.swing.ImageIcon;
@@ -24,6 +27,9 @@ import javax.swing.border.Border;
 
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.image.ImageScaler;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.proj.Cartesian;
+import com.bbn.openmap.proj.Cylindrical;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.PropUtils;
 
@@ -44,39 +50,39 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
 
-    public final static String OpaquenessProperty = "opaqueness";
-
-    public final static String LeaveShadowProperty = "leaveShadow";
-
-    public final static String UseCursorProperty = "useCursor";
+    public final static String OPAQUENESS_PROPERTY = "opaqueness";
+    public final static String LEAVE_SHADOW_PROPERTY = "leaveShadow";
+    public final static String USE_CURSOR_PROPERTY = "useCursor";
+    public final static String AZ_PANNING_SHAPEFILE_PROPERTY = "azPanningShapefile";
+    public final static String AZ_PANNING_PROPERTY = "azPanning";
 
     public final static float DEFAULT_OPAQUENESS = 0.5f;
 
     public final static transient String modeID = "Pan";
-
     private boolean isPanning = false;
-
     private BufferedImage bufferedMapImage = null;
-
     private BufferedImage bufferedRenderingImage = null;
-
     private int beanBufferWidth = 0;
-
     private int beanBufferHeight = 0;
-
     private int oX, oY;
-
     private float opaqueness;
-
     private boolean leaveShadow;
-
     private boolean useCursor;
+    private AzimuthPanner azPanner = null;
+    private String azPanningShapefile = null;
+    private DrawingAttributes azDrawing = null;
 
     public PanMouseMode() {
         super(modeID, true);
         setUseCursor(true);
         setLeaveShadow(true);
         setOpaqueness(DEFAULT_OPAQUENESS);
+        
+        DrawingAttributes da = DrawingAttributes.getDefaultClone();
+        da.setMatted(true);
+        da.setMattingPaint(Color.LIGHT_GRAY);
+
+        setAzDrawing(da);
     }
 
     public void setActive(boolean val) {
@@ -113,14 +119,9 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
             try {
                 Toolkit tk = Toolkit.getDefaultToolkit();
                 ImageIcon pointer = new ImageIcon(getClass().getResource("pan.gif"));
-                Dimension bestSize = tk.getBestCursorSize(pointer.getIconWidth(),
-                        pointer.getIconHeight());
-                Image pointerImage = ImageScaler.getOptimalScalingImage(pointer.getImage(),
-                        (int) bestSize.getWidth(),
-                        (int) bestSize.getHeight());
-                Cursor cursor = tk.createCustomCursor(pointerImage,
-                        new Point(0, 0),
-                        "PP");
+                Dimension bestSize = tk.getBestCursorSize(pointer.getIconWidth(), pointer.getIconHeight());
+                Image pointerImage = ImageScaler.getOptimalScalingImage(pointer.getImage(), (int) bestSize.getWidth(), (int) bestSize.getHeight());
+                Cursor cursor = tk.createCustomCursor(pointerImage, new Point(0, 0), "PP");
                 setModeCursor(cursor);
                 return;
             } catch (Exception e) {
@@ -135,52 +136,36 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
         super.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        opaqueness = PropUtils.floatFromProperties(props, prefix
-                + OpaquenessProperty, opaqueness);
-        leaveShadow = PropUtils.booleanFromProperties(props, prefix
-                + LeaveShadowProperty, leaveShadow);
+        opaqueness = PropUtils.floatFromProperties(props, prefix + OPAQUENESS_PROPERTY, opaqueness);
+        leaveShadow = PropUtils.booleanFromProperties(props, prefix + LEAVE_SHADOW_PROPERTY, leaveShadow);
 
-        setUseCursor(PropUtils.booleanFromProperties(props, prefix
-                + UseCursorProperty, isUseCursor()));
+        azPanningShapefile = props.getProperty(prefix + AZ_PANNING_SHAPEFILE_PROPERTY, azPanningShapefile);
+        setUseCursor(PropUtils.booleanFromProperties(props, prefix + USE_CURSOR_PROPERTY, isUseCursor()));
 
+        azDrawing.setProperties(prefix + AZ_PANNING_PROPERTY, props);
     }
 
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
         String prefix = PropUtils.getScopedPropertyPrefix(this);
-        props.put(prefix + OpaquenessProperty, Float.toString(getOpaqueness()));
-        props.put(prefix + LeaveShadowProperty,
-                Boolean.toString(isLeaveShadow()));
-        props.put(prefix + UseCursorProperty, Boolean.toString(isUseCursor()));
+        props.put(prefix + OPAQUENESS_PROPERTY, Float.toString(getOpaqueness()));
+        props.put(prefix + LEAVE_SHADOW_PROPERTY, Boolean.toString(isLeaveShadow()));
+        props.put(prefix + USE_CURSOR_PROPERTY, Boolean.toString(isUseCursor()));
+        props.put(prefix + AZ_PANNING_SHAPEFILE_PROPERTY, PropUtils.unnull(azPanningShapefile));
+
+        azDrawing.getProperties(props);
         return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
 
-        PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                PanMouseMode.class,
-                OpaquenessProperty,
-                "Transparency",
-                "Transparency level for moving map, between 0 (clear) and 1 (opaque).",
-                null);
-        PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                PanMouseMode.class,
-                LeaveShadowProperty,
-                "Leave Shadow",
-                "Display current map in background while panning.",
-                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        PropUtils.setI18NPropertyInfo(i18n, props, PanMouseMode.class, OPAQUENESS_PROPERTY, "Transparency", "Transparency level for moving map, between 0 (clear) and 1 (opaque).", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, PanMouseMode.class, LEAVE_SHADOW_PROPERTY, "Leave Shadow", "Display current map in background while panning.", "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        PropUtils.setI18NPropertyInfo(i18n, props, PanMouseMode.class, USE_CURSOR_PROPERTY, "Use Cursor", "Use hand cursor for mouse mode.", "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        PropUtils.setI18NPropertyInfo(i18n, props, OMMouseMode.class, AZ_PANNING_SHAPEFILE_PROPERTY, "Az Projection Panning Shapefile", "Use a shapefile for azimuthal projection panning.", "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
-        PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                PanMouseMode.class,
-                UseCursorProperty,
-                "Use Cursor",
-                "Use hand cursor for mouse mode.",
-                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-
+        azDrawing.getPropertyInfo(props);
         return props;
     }
 
@@ -192,11 +177,12 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
      */
     public void mouseDragged(MouseEvent arg0) {
 
-
         MapBean mb = ((MapBean) arg0.getSource());
         Point2D pnt = mb.getNonRotatedLocation(arg0);
         int x = (int) pnt.getX();
         int y = (int) pnt.getY();
+
+        Projection proj = mb.getProjection();
 
         if (!isPanning) {
             int w = mb.getWidth();
@@ -230,7 +216,7 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
 
             isPanning = true;
 
-        } else {
+        } else if (proj instanceof Cylindrical || proj instanceof Cartesian) {
             if (bufferedMapImage != null && bufferedRenderingImage != null) {
                 Graphics2D gr2d = (Graphics2D) bufferedRenderingImage.getGraphics();
                 /*
@@ -248,14 +234,29 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
                  * Drawing image with transparence and in the mouse position
                  * minus origianl mouse click position
                  */
-                gr2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-                        opaqueness));
+                gr2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opaqueness));
                 gr2d.drawImage(bufferedMapImage, x - oX, y - oY, null);
 
-                ((Graphics2D) mb.getGraphics(true)).drawImage(bufferedRenderingImage,
-                        0,
-                        0,
-                        null);
+                ((Graphics2D) mb.getGraphics(true)).drawImage(bufferedRenderingImage, 0, 0, null);
+            }
+        } else {
+            if (azPanner == null) {
+                URL url = null;
+                try {
+                    url = PropUtils.getResourceOrFileOrURL(azPanningShapefile);
+                } catch (MalformedURLException murle) {
+                }
+
+                if (url != null) {
+                    azPanner = new AzimuthPanner.Shapefile(mb, oX, oY, getAzDrawing(), url);
+                } else {
+                    azPanner = new AzimuthPanner.Standard(mb, oX, oY, getAzDrawing());
+                }
+            }
+
+            // Azimuth projection
+            if (azPanner != null) {
+                azPanner.handlePan(arg0);
             }
         }
         super.mouseDragged(arg0);
@@ -270,16 +271,20 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
             MapBean mb = (MapBean) arg0.getSource();
             Projection proj = mb.getProjection();
             Point2D center = proj.forward(proj.getCenter());
-            
+
             Point2D pnt = mb.getNonRotatedLocation(arg0);
             int x = (int) pnt.getX();
             int y = (int) pnt.getY();
-            
-            center.setLocation(center.getX() - x + oX, center.getY()
-                    - y + oY);
+
+            center.setLocation(center.getX() - x + oX, center.getY() - y + oY);
             mb.setCenter(proj.inverse(center));
             isPanning = false;
             // bufferedMapImage = null; //clean up when not active...
+            
+            if (azPanner != null) {
+                azPanner.handleUnpan(arg0);
+                azPanner = null;
+            }
         }
         super.mouseReleased(arg0);
     }
@@ -310,6 +315,34 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
 
     public int getOY() {
         return oY;
+    }
+
+    /**
+     * @return the azPanningShapefile
+     */
+    public String getAzPanningShapefile() {
+        return azPanningShapefile;
+    }
+
+    /**
+     * @param azPanningShapefile the azPanningShapefile to set
+     */
+    public void setAzPanningShapefile(String azPanningShapefile) {
+        this.azPanningShapefile = azPanningShapefile;
+    }
+
+    /**
+     * @return the azDrawing
+     */
+    public DrawingAttributes getAzDrawing() {
+        return azDrawing;
+    }
+
+    /**
+     * @param azDrawing the azDrawing to set
+     */
+    public void setAzDrawing(DrawingAttributes azDrawing) {
+        this.azDrawing = azDrawing;
     }
 
     public void projectionChanged(ProjectionEvent e) {

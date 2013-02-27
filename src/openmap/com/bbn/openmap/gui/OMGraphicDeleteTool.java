@@ -26,9 +26,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -61,14 +62,14 @@ import com.bbn.openmap.util.Debug;
  * To add the button to the OpenMap application, it just needs to be added to
  * the openmap.components property in the openmap.properties file.
  */
-public class OMGraphicDeleteTool extends OMToolComponent implements
-        SelectionListener, ActionListener, KeyListener {
+public class OMGraphicDeleteTool extends OMToolComponent implements SelectionListener,
+        ActionListener, KeyListener {
 
     protected JButton deleteButton = null;
     protected String defaultKey = "omgraphicdeletetool";
 
-    protected Hashtable deleteList;
-    protected Vector requestors;
+    protected Hashtable<OMGraphic, SelectionEvent> deleteList;
+    protected List<DrawingToolRequestor> requestors;
     protected JToolBar jToolBar;
 
     public OMGraphicDeleteTool() {
@@ -80,8 +81,8 @@ public class OMGraphicDeleteTool extends OMToolComponent implements
         jToolBar = new JToolBar();
         jToolBar.setFloatable(false);
 
-        deleteList = new Hashtable();
-        requestors = new Vector();
+        deleteList = new Hashtable<OMGraphic, SelectionEvent>();
+        requestors = new ArrayList<DrawingToolRequestor>();
 
         java.net.URL url = this.getClass().getResource("delete.gif");
         if (url != null) {
@@ -93,26 +94,24 @@ public class OMGraphicDeleteTool extends OMToolComponent implements
 
         deleteButton.addActionListener(this);
         // deleteButton.setToolTipText("Delete selected map graphic");
-        deleteButton.setToolTipText(i18n.get(OMGraphicDeleteTool.class,
-                "deleteButton",
-                I18n.TOOLTIP,
-                "Delete selected map graphic"));
+        deleteButton.setToolTipText(i18n.get(OMGraphicDeleteTool.class, "deleteButton", I18n.TOOLTIP, "Delete selected map graphic"));
         deleteButton.setEnabled(false);
 
         jToolBar.add(deleteButton);
         add(jToolBar);
     }
 
-    public void keyPressed(KeyEvent e) {}
+    public void keyPressed(KeyEvent e) {
+    }
 
     public void keyReleased(KeyEvent e) {
-        if ((e.getKeyCode() == KeyEvent.VK_BACK_SPACE)
-                || (e.getKeyCode() == KeyEvent.VK_DELETE)) {
+        if ((e.getKeyCode() == KeyEvent.VK_BACK_SPACE) || (e.getKeyCode() == KeyEvent.VK_DELETE)) {
             deleteSelected();
         }
     }
 
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 
     public void actionPerformed(ActionEvent ae) {
         Debug.message("deletebutton", "OMGDT.actionPerformed()");
@@ -120,10 +119,8 @@ public class OMGraphicDeleteTool extends OMToolComponent implements
     }
 
     public void deleteSelected() {
-        Iterator it = deleteList.values().iterator();
 
-        while (it.hasNext()) {
-            SelectionEvent item = (SelectionEvent) it.next();
+        for (SelectionEvent item : deleteList.values()) {
             Object itemSource = item.getSource();
 
             // Too specific?
@@ -132,23 +129,19 @@ public class OMGraphicDeleteTool extends OMToolComponent implements
                 ((OMDrawingTool) itemSource).deactivate(OMGraphicConstants.DELETE_GRAPHIC_MASK);
 
             } else {
-                if (item != null) { // is this check necessary? I
-                    // doubt it.
-                    DrawingToolRequestor requestor = item.getRequestor();
-                    OMGraphic omg = item.getOMGraphic();
-                    if (requestor != null) {
-                        requestor.drawingComplete(omg,
-                                new OMAction(OMGraphicConstants.DELETE_GRAPHIC_MASK));
-                    } else {
-                        // if there isn't a requestor specified, tell
-                        // anyone who will listen.
-                        Iterator reqs = requestors.iterator();
-                        while (reqs.hasNext()) {
-                            ((DrawingToolRequestor) reqs.next()).drawingComplete(omg,
-                                    new OMAction(OMGraphicConstants.DELETE_GRAPHIC_MASK));
-                        }
+
+                DrawingToolRequestor requestor = item.getRequestor();
+                OMGraphic omg = item.getOMGraphic();
+                if (requestor != null) {
+                    requestor.drawingComplete(omg, new OMAction(OMGraphicConstants.DELETE_GRAPHIC_MASK));
+                } else {
+                    // if there isn't a requestor specified, tell
+                    // anyone who will listen.
+                    for (DrawingToolRequestor reqstor : requestors) {
+                        reqstor.drawingComplete(omg, new OMAction(OMGraphicConstants.DELETE_GRAPHIC_MASK));
                     }
                 }
+
             }
         }
 
@@ -159,16 +152,13 @@ public class OMGraphicDeleteTool extends OMToolComponent implements
 
     public void selectionNotification(SelectionEvent event) {
         if (event.isSelected() && event.getOMGraphic() != null) {
-            Debug.message("deletebutton",
-                    "OMGDT.selection notification: adding selected to list.");
+            Debug.message("deletebutton", "OMGDT.selection notification: adding selected to list.");
             deleteList.put(event.getOMGraphic(), event);
         } else if (!event.isSelected()) {
-            Debug.message("deletebutton",
-                    "OMGDT.selection notification: removing selected from list.");
+            Debug.message("deletebutton", "OMGDT.selection notification: removing selected from list.");
             deleteList.remove(event.getOMGraphic());
         } else {
-            Debug.message("deletebutton",
-                    "OMGDT.selection notification: omgraphic missing from notification.");
+            Debug.message("deletebutton", "OMGDT.selection notification: omgraphic missing from notification.");
         }
 
         deleteButton.setEnabled(!deleteList.isEmpty());
@@ -181,8 +171,7 @@ public class OMGraphicDeleteTool extends OMToolComponent implements
 
     public void findAndInit(Object obj) {
         if (obj instanceof SelectionProvider) {
-            Debug.message("deletebutton",
-                    "OMGDT.findAndInit() found selection provider");
+            Debug.message("deletebutton", "OMGDT.findAndInit() found selection provider");
             ((SelectionProvider) obj).addSelectionListener(this);
         }
 

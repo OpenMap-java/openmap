@@ -22,7 +22,7 @@ package com.bbn.openmap.tools.beanbox;
  */
 public abstract class BeanLayoutManager implements java.io.Serializable {
     /**
-     * BeanContainer whose contents are layed out using this layout
+     * BeanContainer whose contents are laid out using this layout
      * manager.
      */
     protected BeanContainer _container;

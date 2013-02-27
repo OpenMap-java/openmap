@@ -42,10 +42,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
+import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.event.CenterListener;
 import com.bbn.openmap.event.CenterSupport;
 import com.bbn.openmap.event.MapMouseListener;
@@ -82,8 +81,6 @@ public class TimeSliderLayer
       implements PropertyChangeListener, MapMouseListener, ComponentListener, TimeBoundsListener, TimeEventListener {
 
    protected static Logger logger = Logger.getLogger("com.bbn.openmap.gui.time.TimeSliderLayer");
-
-   protected I18n i18n = Environment.getI18n();
 
    protected CenterSupport centerDelegate;
 
@@ -449,7 +446,7 @@ public class TimeSliderLayer
          // point between the start and end times), then everything settles
          // out.
          double x = cartesian.getCenter().getX();
-         if (x != nCenterLon) {
+         if (!MoreMath.approximately_equal(x, nCenterLon)) {
             ((MapBean) ((MapHandler) getBeanContext()).get(MapBean.class)).setCenter(0, nCenterLon);
          }
 

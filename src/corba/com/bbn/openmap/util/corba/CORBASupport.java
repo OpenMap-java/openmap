@@ -217,7 +217,7 @@ public class CORBASupport {
                }
                oldContext.rebind(finalName, namingObj);
                if (Debug.debugging("corba")) {
-                  Debug.output("CORBASupport.setUpNamingService(): Completed rebind for " + finalName);
+                  Debug.output("CORBASupport.setUpNamingService(): Completed rebind for " + finalName[0]);
                }
             } catch (org.omg.CosNaming.NamingContextPackage.CannotProceed cpe1) {
                Debug.output("CORBASupport.setUpNamingService(): Cannot proceed in rebind");

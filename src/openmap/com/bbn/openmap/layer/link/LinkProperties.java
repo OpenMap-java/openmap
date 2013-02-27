@@ -50,8 +50,8 @@ import com.bbn.openmap.util.PropUtils;
  * object. In link-land, they are handled like an array of strings. Requests
  * have a properties section, and graphic objects have them as well.
  */
-public class LinkProperties extends Properties implements
-        LinkPropertiesConstants, LinkGraphicConstants {
+public class LinkProperties extends Properties implements LinkPropertiesConstants,
+        LinkGraphicConstants {
 
     /**
      * Used by the graphics if no properties were sent with it. No properties
@@ -62,7 +62,8 @@ public class LinkProperties extends Properties implements
             return null;
         }
 
-        public void putAll(Map map) {}
+        public void putAll(Map map) {
+        }
     };
 
     protected Boolean reuseProperties;
@@ -206,11 +207,9 @@ public class LinkProperties extends Properties implements
         for (int i = 0; i < numArgs; i += 2) {
             int argLength = dis.readInt();
 
-            if (i == 0 && argLength == 1
-                    && dis.readChar() == LPC_PROPERY_MANAGEMENT_POLICY_CHAR) {
+            if (i == 0 && argLength == 1 && dis.readChar() == LPC_PROPERY_MANAGEMENT_POLICY_CHAR) {
                 argLength = dis.readInt();
-                if (argLength == 1
-                        && dis.readChar() == LPC_CLEAR_PROPERTIES_CHAR) {
+                if (argLength == 1 && dis.readChar() == LPC_CLEAR_PROPERTIES_CHAR) {
                     clear();
                 }
                 continue;
@@ -239,8 +238,7 @@ public class LinkProperties extends Properties implements
      *         is returned.
      * @throws IOException
      */
-    public static LinkProperties read(DataInput dis, LinkProperties props)
-            throws IOException {
+    public static LinkProperties read(DataInput dis, LinkProperties props) throws IOException {
 
         int numArgs = dis.readInt();
 
@@ -269,13 +267,10 @@ public class LinkProperties extends Properties implements
      *         is returned. The OMGraphic appObject is set with the read
      *         properties.
      */
-    public static LinkProperties loadPropertiesIntoOMGraphic(
-                                                             DataInput dis,
-                                                             OMGraphic omg,
+    public static LinkProperties loadPropertiesIntoOMGraphic(DataInput dis, OMGraphic omg,
                                                              LinkProperties propertiesBuffer)
             throws IOException {
-        LinkProperties readProperties = (LinkProperties) read(dis,
-                propertiesBuffer).clone();
+        LinkProperties readProperties = (LinkProperties) read(dis, propertiesBuffer).clone();
         readProperties.setProperties(omg); // load them into OMGraphic..
         return readProperties;
     }
@@ -359,8 +354,7 @@ public class LinkProperties extends Properties implements
             paint = (Paint) renderAttributesCache.get(paintKey);
 
             if (paint == null) {
-                paint = (Paint) renderAttributesCache.get("paint"
-                        + defaultPaintString);
+                paint = (Paint) renderAttributesCache.get("paint" + defaultPaintString);
             }
 
             if (paint != null) {
@@ -368,10 +362,11 @@ public class LinkProperties extends Properties implements
             }
         }
 
-        paint = ColorFactory.parseColorFromProperties(this,
-                paintProperty,
-                defaultPaintString,
-                true);
+        if (paintProperty != null && defaultPaintString != null) {
+            paint = ColorFactory.parseColorFromProperties(this, paintProperty, defaultPaintString, true);
+        } else {
+            paint = Color.black;
+        }
 
         renderAttributesCache.put(paintKey, paint);
 
@@ -383,8 +378,7 @@ public class LinkProperties extends Properties implements
         Paint fillPaint = getPaint(LPC_FILLCOLOR, CLEAR_COLOR_STRING);
         String fillPatternString = getProperty(LPC_FILLPATTERN);
 
-        if (fillPatternString == null
-                || fillPatternString.equalsIgnoreCase(LPC_SOLID_PATTERN)) {
+        if (fillPatternString == null || fillPatternString.equalsIgnoreCase(LPC_SOLID_PATTERN)) {
             return fillPaint;
         } else {
             String fillPaintString = getProperty(LPC_FILLCOLOR);
@@ -393,7 +387,8 @@ public class LinkProperties extends Properties implements
             if (fillPaintString == null) {
                 fillPaint = Color.black;
 
-                TexturePaint ret = (TexturePaint) renderAttributesCache.get("fill" + fillPaint + fillPatternString);
+                TexturePaint ret = (TexturePaint) renderAttributesCache.get("fill" + fillPaint
+                        + fillPatternString);
 
                 if (ret != null) {
                     return ret;

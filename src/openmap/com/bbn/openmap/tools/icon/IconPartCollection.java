@@ -68,7 +68,7 @@ public class IconPartCollection extends IconPartCollectionEntry {
      * Remove an entry from the collection.
      */
     public Object remove(IconPartCollectionEntry entry) {
-        return getEntryMap().remove(entry);
+        return getEntryMap().remove(entry.getName());
     }
 
     /**

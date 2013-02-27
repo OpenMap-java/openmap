@@ -114,9 +114,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
      */
     public final static String TimeParametersProperty = "timeParameters";
     public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.time.TimelineLayer");
-
-    protected I18n i18n = Environment.getI18n();
-
+    
     protected OMGraphicList eventGraphicList = null;
     protected OMGraphicList timeLinesList = null;
     protected PlayFilter playFilter = new PlayFilter();
@@ -450,14 +448,14 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
     // GUI
     // ----------------------------------------------------------------------
 
-    protected Box palette = null;
+    protected Box paletteBox = null;
 
     public java.awt.Component getGUI() {
 
-        if (palette == null) {
+        if (paletteBox == null) {
             logger.fine("creating Palette.");
 
-            palette = Box.createVerticalBox();
+            paletteBox = Box.createVerticalBox();
 
             JPanel subbox3 = new JPanel(new GridLayout(0, 1));
 
@@ -468,9 +466,9 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             setProperties.addActionListener(this);
             subbox3.add(setProperties);
 
-            palette.add(subbox3);
+            paletteBox.add(subbox3);
         }
-        return palette;
+        return paletteBox;
     }
 
     public void drawingComplete(OMGraphic omg, OMAction action) {
@@ -1172,8 +1170,7 @@ public class TimelineLayer extends OMGraphicHandlerLayer implements
             }
 
             public boolean isRating(String rating) {
-                return this.rating == rating
-                        || this.rating.equalsIgnoreCase(rating);
+                return this.rating.equalsIgnoreCase(rating);
             }
 
             public void addTime(long timeToAdd) {

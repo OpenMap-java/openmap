@@ -61,6 +61,25 @@ public abstract class GraphicWarehouseSupport
    /** remember if we draw point features */
    private boolean drawPointFeatures;
 
+   private static SColor cmap[] = null;
+   static {
+       cmap = new SColor[8];
+       // cmap[0] = ns(255, 0,0);
+       // cmap[1] = ns(0, 255, 0);
+       // cmap[2] = ns(0, 0, 255);
+       cmap[0] = ns(205, 192, 176);
+       cmap[1] = ns(255, 192, 203);
+       cmap[2] = ns(221, 160, 221);
+       cmap[3] = ns(162, 205, 90);
+       cmap[4] = ns(255, 218, 185);
+       cmap[5] = ns(255, 160, 122);
+       cmap[6] = ns(205, 201, 165);
+       cmap[7] = ns(216, 191, 216);
+       // cmap[8] = ns(255, 165, 0);
+       // cmap[9] = ns( 0, 255, 0);
+       // cmap[10] = ns( 0, 255, 255);
+    }
+   
    /**
      *  
      */
@@ -518,9 +537,7 @@ public abstract class GraphicWarehouseSupport
    Comp[] getComps() {
       return graphics.getComps();
    }
-
-   private static SColor cmap[] = null;
-
+  
    public static SColor ns(java.awt.Color color) {
       int r = color.getRed();
       int g = color.getGreen();
@@ -534,23 +551,6 @@ public abstract class GraphicWarehouseSupport
    }
 
    public static SColor getSColor(int place) {
-      if (cmap == null) {
-         cmap = new SColor[8];
-         // cmap[0] = ns(255, 0,0);
-         // cmap[1] = ns(0, 255, 0);
-         // cmap[2] = ns(0, 0, 255);
-         cmap[0] = ns(205, 192, 176);
-         cmap[1] = ns(255, 192, 203);
-         cmap[2] = ns(221, 160, 221);
-         cmap[3] = ns(162, 205, 90);
-         cmap[4] = ns(255, 218, 185);
-         cmap[5] = ns(255, 160, 122);
-         cmap[6] = ns(205, 201, 165);
-         cmap[7] = ns(216, 191, 216);
-         // cmap[8] = ns(255, 165, 0);
-         // cmap[9] = ns( 0, 255, 0);
-         // cmap[10] = ns( 0, 255, 255);
-      }
       return (cmap[place % cmap.length]);
    }
 

@@ -76,68 +76,15 @@ public class E00Parser {
     protected Font labFont, tx7Font;
     protected OMGraphic LabMarker;
     protected Color defaultcolor = Color.blue;
-    public final static Color[] defaultColors = {
-        Color.black,
-        Color.blue,
-        Color.cyan,
-        Color.darkGray,
-        Color.gray,
-        Color.green,
-        Color.lightGray,
-        Color.magenta,
-        Color.orange,
-        Color.pink,
-        Color.red,
-        Color.white,
-        Color.yellow
-    };
+    public final static Color[] defaultColors = { Color.black, Color.blue, Color.cyan,
+            Color.darkGray, Color.gray, Color.green, Color.lightGray, Color.magenta, Color.orange,
+            Color.pink, Color.red, Color.white, Color.yellow };
 
-    protected static E00Record infoRecord = new E00Record(new int[] {
-        0,
-        30,
-        34,
-        38,
-        42,
-        46,
-        56
-    }, new int[] {
-        20,
-        20,
-        50,
-        50,
-        50,
-        50
-    }, null);
-    protected static E00Record itemRecord = new E00Record(new int[] {
-        0,
-        14,
-        19,
-        21,
-        26,
-        28,
-        32,
-        34,
-        37,
-        39,
-        43,
-        47,
-        49,
-        69
-    }, new int[] {
-        20,
-        50,
-        50,
-        50,
-        50,
-        50,
-        50,
-        50,
-        50,
-        50,
-        50,
-        50,
-        50
-    }, null);
+    protected static E00Record infoRecord = new E00Record(new int[] { 0, 30, 34, 38, 42, 46, 56 }, new int[] {
+            20, 20, 50, 50, 50, 50 }, null);
+    protected static E00Record itemRecord = new E00Record(new int[] { 0, 14, 19, 21, 26, 28, 32,
+            34, 37, 39, 43, 47, 49, 69 }, new int[] { 20, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
+            50, 50 }, null);
 
     /**
      * Constructor for the E00Parser object
@@ -146,8 +93,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    public E00Parser(String mdname)
-            throws IOException {
+    public E00Parser(String mdname) throws IOException {
         isr = new BufferedReader(new FileReader(mdname));
         setPrefix(mdname);
     }
@@ -159,8 +105,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    public E00Parser(File f)
-            throws IOException {
+    public E00Parser(File f) throws IOException {
         isr = new BufferedReader(new FileReader(f));
         setPrefix(f.getName());
     }
@@ -192,8 +137,9 @@ public class E00Parser {
      *        marker
      * @since
      */
-    public void setPaints(Paint[] ArcColors, Paint[] LabColors, Paint tx7Color, Paint SelectTX7Color, Paint SelectLabColor,
-                          Paint SelectArcColor, Paint LabTextColor) {
+    public void setPaints(Paint[] ArcColors, Paint[] LabColors, Paint tx7Color,
+                          Paint SelectTX7Color, Paint SelectLabColor, Paint SelectArcColor,
+                          Paint LabTextColor) {
 
         this.ArcColors = (ArcColors == null) ? defaultColors : ArcColors;
         this.LabColors = (LabColors == null) ? defaultColors : LabColors;
@@ -233,8 +179,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    public OMGraphicList getOMGraphics()
-            throws IOException {
+    public OMGraphicList getOMGraphics() throws IOException {
         OMGraphicList WV = new OMGraphicList();
         isr.readLine();
         while (true) {
@@ -329,8 +274,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    void readSIN()
-            throws IOException {
+    void readSIN() throws IOException {
         while (true) {
             String S = isr.readLine();
             if (S == null)
@@ -346,8 +290,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    void readCNT()
-            throws IOException {
+    void readCNT() throws IOException {
         int[] header = new int[1];
         while (true) {
             String S = isr.readLine();
@@ -368,8 +311,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    void readTOL()
-            throws IOException {
+    void readTOL() throws IOException {
         int[] header = new int[1];
         while (true) {
             String S = isr.readLine();
@@ -387,8 +329,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    void readPAL()
-            throws IOException {
+    void readPAL() throws IOException {
         int[] header = new int[1];
         while (true) {
             String S = isr.readLine();
@@ -409,8 +350,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    void readTX7()
-            throws IOException {
+    void readTX7() throws IOException {
         Debug.message("e00", "E00: read TX7");
         tx7 = new OMGraphicList();
         int[] header = new int[8];
@@ -461,8 +401,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    void readLOG()
-            throws IOException {
+    void readLOG() throws IOException {
         while (true) {
             String S = isr.readLine();
             if (S == null)
@@ -478,8 +417,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    void readPRJ()
-            throws IOException {
+    void readPRJ() throws IOException {
         while (true) {
             String S = isr.readLine();
             if (S == null)
@@ -495,8 +433,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    void readLAB()
-            throws IOException {
+    void readLAB() throws IOException {
         Debug.message("e00", "E00: read LAB");
         labs = new OMGraphicList();
         double[] coords = new double[2];
@@ -527,8 +464,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    void readARC()
-            throws IOException {
+    void readARC() throws IOException {
         Debug.message("e00", "E00: read ARC");
         arcs = new OMGraphicList();
         int narc = 1;
@@ -575,8 +511,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    void readAAT()
-            throws IOException {
+    void readAAT() throws IOException {
         String S;
         String C = prefix + ".AAT";
         do {
@@ -603,8 +538,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    void readPAT()
-            throws IOException {
+    void readPAT() throws IOException {
         String S;
         String C = prefix + ".PAT";
         do {
@@ -624,6 +558,8 @@ public class E00Parser {
             String name = S.substring(50);
             // System.out.print(i+" "+S);
             S = isr.readLine();
+            if (S == null)
+                break;
             // System.out.println(" "+S);
             parseString(S, I, 14);
             BasicLocation bl = (BasicLocation) labs.getOMGraphicAt(i);
@@ -642,8 +578,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    void readIFO()
-            throws IOException {
+    void readIFO() throws IOException {
         while (true) {
             infoRecord.read(isr);
             String info = infoRecord.getStringField(0).trim();
@@ -678,8 +613,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    void readANY(E00Record r, int n)
-            throws IOException {
+    void readANY(E00Record r, int n) throws IOException {
         for (int i = 0; i < n; i++)
             r.read(isr);
     }
@@ -693,8 +627,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    void readPAT(E00Record r, int n)
-            throws IOException {
+    void readPAT(E00Record r, int n) throws IOException {
         int itype = r.getItemIndex(prefix.substring(0, 2) + "PTTYPE");
         int ival = r.getItemIndex(prefix.substring(0, 2) + "PTVAL");
         int ival2 = r.getItemIndex(prefix.substring(0, 2) + "PYTYPE");
@@ -738,8 +671,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    void readAAT(E00Record r, int n)
-            throws IOException {
+    void readAAT(E00Record r, int n) throws IOException {
         OMGraphic og;
         int type = Integer.MIN_VALUE;
         int val = Integer.MIN_VALUE;
@@ -832,8 +764,7 @@ public class E00Parser {
      * @exception IOException
      * @since
      */
-    private E00Record getRecord()
-            throws IOException {
+    private E00Record getRecord() throws IOException {
         int itemNumber = infoRecord.getIntField(2);
         int positions[] = new int[itemNumber + 1];
         int types[] = new int[itemNumber];
@@ -844,17 +775,17 @@ public class E00Parser {
             names[i] = itemRecord.getStringField(0).trim();
             int p = positions[i];
             switch (types[i]) {
-                case 20:
-                    positions[i + 1] = p + itemRecord.getIntField(5);
-                    break;
-                case 30:
-                    positions[i + 1] = p + itemRecord.getIntField(5);
-                    break;
-                case 50:
-                    positions[i + 1] = p + 11;
-                    break;
-                case 60:
-                    positions[i + 1] = p + 14;
+            case 20:
+                positions[i + 1] = p + itemRecord.getIntField(5);
+                break;
+            case 30:
+                positions[i + 1] = p + itemRecord.getIntField(5);
+                break;
+            case 50:
+                positions[i + 1] = p + 11;
+                break;
+            case 60:
+                positions[i + 1] = p + 14;
             }
         }
         return new E00Record(positions, types, names);
@@ -963,9 +894,10 @@ public class E00Parser {
          * @exception IOException
          * @since
          */
-        void read(BufferedReader isr)
-                throws IOException {
+        void read(BufferedReader isr) throws IOException {
             String Line = isr.readLine();
+            if (Line == null)
+                return;
             int delta = 0;
             for (int i = 0; i < n; i++) {
                 int n1 = fieldPosition[i] - delta;
@@ -977,6 +909,9 @@ public class E00Parser {
                     Line = isr.readLine();
                 }
                 String S;
+                if (Line == null) {
+                    break;
+                }
                 if (n1 >= Line.length())
                     S = "";
                 else if (n2 < Line.length())
@@ -987,6 +922,9 @@ public class E00Parser {
                     delta += 80;
                     n2 -= 80;
                     Line = isr.readLine();
+                    if (Line == null) {
+                        break;
+                    }
                     if (n2 < Line.length())
                         S += Line.substring(0, n2);
                     else {
@@ -996,19 +934,20 @@ public class E00Parser {
                 }
                 try {
                     switch (fieldType[i]) {
-                        case 20:
-                            stringField[i] = S;
-                            break;
-                        case 30:
-                        case 50:
-                            intField[i] = Integer.parseInt(S.trim());
-                            break;
-                        case 60:
-                            floatField[i] = Float.parseFloat(S.trim());
+                    case 20:
+                        stringField[i] = S;
+                        break;
+                    case 30:
+                    case 50:
+                        intField[i] = Integer.parseInt(S.trim());
+                        break;
+                    case 60:
+                        floatField[i] = Float.parseFloat(S.trim());
                     }
                 } catch (NumberFormatException e) {
                     if (!Line.startsWith("EOI")) {
-                        Debug.message("e00", "E00:parserr " + i + " " + fieldPosition[i] + " " + fieldPosition[i + 1] + " " + S);
+                        Debug.message("e00", "E00:parserr " + i + " " + fieldPosition[i] + " "
+                                + fieldPosition[i + 1] + " " + S);
                         Debug.message("e00", ">" + Line);
                     }
                 }

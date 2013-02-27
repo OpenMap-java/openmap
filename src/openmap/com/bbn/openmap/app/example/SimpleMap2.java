@@ -55,8 +55,6 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
  * <li>BasicLayer with some random data
  * <li>Tools to navigate around on the map
  * </ul>
- * 
- * @see RouteLayer
  */
 public class SimpleMap2 {
 

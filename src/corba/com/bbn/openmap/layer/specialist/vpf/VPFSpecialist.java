@@ -171,7 +171,7 @@ public class VPFSpecialist extends Specialist {
 
                         // If there is an alternate coverage and it's
                         // required, use it
-                        if (usealt == true && !altcov.equals("")) {
+                        if (usealt == true && altcov.length() > 0) {
                             if (key.startsWith("alt")) {
                                 key = key.substring(3, key.length()); // 3 is
                                                                       // "alt",

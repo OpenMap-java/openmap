@@ -85,7 +85,7 @@ public class LibraryBean
    /**
     * The VPFFeatureCache to use for cached features.
     */
-   protected VPFFeatureCache featureCache;
+   protected transient VPFFeatureCache featureCache;
 
    /**
     * Construct an empty bean.

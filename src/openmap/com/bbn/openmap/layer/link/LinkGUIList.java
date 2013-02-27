@@ -30,6 +30,7 @@ import javax.swing.JComponent;
 import com.bbn.openmap.util.Debug;
 
 /**
+ * Uhhh, unimplemented so far.  Big plans, though.  Widgets don't get set yet.
  */
 public class LinkGUIList {
 

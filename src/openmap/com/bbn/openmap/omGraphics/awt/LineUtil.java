@@ -3,6 +3,8 @@ package com.bbn.openmap.omGraphics.awt;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
 
+import com.bbn.openmap.MoreMath;
+
 /**
  * Various computations about plane geometry.
  * 
@@ -85,7 +87,7 @@ public class LineUtil {
             point = nextPoint;
         }
 
-        if (consumedLength == length) {
+        if (MoreMath.approximately_equal(consumedLength, length)) {
             // we got the exact distance with an existing point.
             // we need to copy the last point back: it will be the
             // first for the next call

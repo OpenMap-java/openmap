@@ -591,7 +591,7 @@ public class AbstractMouseMode
    public boolean actAsProxyFor(MapMouseMode mmm, int pdm) {
       MapMouseMode omm = mouseSupport.getProxied();
       boolean ret = false;
-      if (!(omm == null && mmm == null) && mmm != null && !mmm.equals(omm)) {
+      if (mmm != null && !mmm.equals(omm)) {
          ret = mouseSupport.setProxyFor(mmm, pdm);
          propertyChangeSupport.firePropertyChange(MouseDelegator.ProxyMouseModeProperty, omm, mmm);
       }

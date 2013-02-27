@@ -125,16 +125,14 @@ public class BasicLocationHandler
         return null;
     }
 
-    protected Box box = null;
-
     /**
      * Provides the palette widgets to control the options of showing maps, or
-     * attribute text.
+     * attribute text.  Here for override reasons.
      * 
-     * @return Component object representing the palette widgets.
+     * @return null for this class.
      */
     public java.awt.Component getGUI() {
-        return box;
+        return null;
     }
 
     // ----------------------------------------------------------------------

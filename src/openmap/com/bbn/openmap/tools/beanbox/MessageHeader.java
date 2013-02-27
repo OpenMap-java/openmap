@@ -92,14 +92,14 @@ public class MessageHeader {
                 if (keys[i] == null)
                     if (foundV)
                         return values[i];
-                    else if (values[i] == v)
+                    else if (values[i].equalsIgnoreCase(v))
                         foundV = true;
         } else
             for (int i = nkeys; --i >= 0;)
                 if (k.equalsIgnoreCase(keys[i]))
                     if (foundV)
                         return values[i];
-                    else if (values[i] == v)
+                    else if (values[i].equalsIgnoreCase(v))
                         foundV = true;
         return null;
     }

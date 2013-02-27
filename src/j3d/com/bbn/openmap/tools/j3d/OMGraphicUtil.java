@@ -99,14 +99,11 @@ public class OMGraphicUtil {
             return NULL_ITERATOR;
         }
 
-        if (graphic instanceof OMGraphicList
-                && !(graphic instanceof OMGeometryList)) {
+        if (graphic instanceof OMGraphicList) {
 
             HashSet set = new HashSet();
-            Iterator it = ((OMGraphicList) graphic).iterator();
 
-            while (it.hasNext()) {
-                OMGraphic subgraphic = (OMGraphic) it.next();
+            for (OMGraphic subgraphic : (OMGraphicList) graphic) {
                 Debug.message("3detail",
                         "OMGraphicUtil.createShape3D():  recursivly adding list...");
                 Iterator iterator = createShape3D(subgraphic, baselineHeight);
@@ -506,7 +503,7 @@ public class OMGraphicUtil {
         // polygons out of it.
         Debug.message("3detail", "OMGraphicUtil: adding polygon, data length "
                 + data.length + ", reflecting " + data.length / 3
-                + " nodes, with a strip count of " + stripCount);
+                + " nodes, with a strip count of " + stripCount.length);
         GeometryInfo gi = new GeometryInfo(GeometryInfo.POLYGON_ARRAY);
         gi.setCoordinates(data);
         gi.setStripCounts(stripCount);

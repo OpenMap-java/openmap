@@ -84,19 +84,19 @@ public abstract class FeatureCacheGraphicList
          if (lastCharIndex >= 0) {
             // char lastLetter = featureType.charAt(lastCharIndex);
 
-            if (featureType == VPFUtil.Edge) {
+            if (VPFUtil.Edge.equals(featureType)) {
                return new FeatureCacheGraphicList.EDGE();
             }
 
-            if (featureType == VPFUtil.Area) {
+            if (VPFUtil.Area.equals(featureType)) {
                return new FeatureCacheGraphicList.AREA();
             }
 
-            if (featureType == VPFUtil.Text) {
+            if (VPFUtil.Text.equals(featureType)) {
                return new FeatureCacheGraphicList.TEXT();
             }
 
-            if (featureType == VPFUtil.EPoint || featureType == VPFUtil.CPoint) {
+            if (VPFUtil.EPoint.equals(featureType) || VPFUtil.CPoint.equals(featureType)) {
                return new FeatureCacheGraphicList.POINT();
             }
          }

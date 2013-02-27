@@ -669,10 +669,7 @@ public class CoverageTable {
                   Debug.output("Drawing " + featureID.length + " " + featureType + " features for " + tileID + " " + currentTile);
                }
 
-               String libraryname = "";
-               if (cat != null) {
-                  libraryname = cat.libraryname;
-               }
+               String libraryname = cat.libraryname;
 
                if (!warehouse.needToFetchTileContents(libraryname, currentFeature, currentTile)) {
                   if (Debug.debugging("vpf")) {

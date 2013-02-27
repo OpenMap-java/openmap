@@ -83,7 +83,8 @@ public class MouseModeButtonPanel extends MouseModePanel {
         MapMouseMode[] modes = md.getMouseModes();
         for (int i = 0; i < modes.length; i++) {
             String modeStr = modes[i].getID();
-            boolean on = (modeStr == activeMode);
+            boolean on = (modeStr == null && activeMode == null)
+                    || (modeStr != null && modeStr.equals(activeMode));
 
             JToggleButton btn;
             Icon icon = modes[i].getGUIIcon();
@@ -161,7 +162,7 @@ public class MouseModeButtonPanel extends MouseModePanel {
             setPanel(mouseDelegator);
         }
     } // End of propertyChange()
-    
+
     public void reset() {
         if (toolBar != null) {
             remove(toolBar);

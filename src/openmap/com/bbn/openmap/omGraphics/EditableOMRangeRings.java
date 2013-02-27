@@ -193,7 +193,6 @@ public class EditableOMRangeRings
 
    protected JToolBar rrToolBar = null;
    protected transient DecimalFormat df = new DecimalFormat();
-   protected I18n i18n = Environment.getI18n();
    protected JComponent attributeBox;
 
    protected JComponent getRangeRingGUI() {

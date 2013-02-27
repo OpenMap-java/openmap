@@ -642,7 +642,7 @@ public class ToolPanel
       while (enumeration.hasMoreElements()) {
          Tool tool = enumeration.nextElement();
          Container face = tool.getFace();
-         // if (tool != filler && face != null && face.isVisible()) {
+         // make sure tool != filler - filler(JPanel) test is for object equivalence
          if (!filler.equals(tool) && face != null && face.isVisible()) {
             return true;
          }

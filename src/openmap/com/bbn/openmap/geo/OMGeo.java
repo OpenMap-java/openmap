@@ -30,6 +30,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.omGraphics.OMGraphicAdapter;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.proj.GeoProj;
@@ -104,8 +105,7 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
         public boolean generate(Projection proj) {
             setShape(null);
             if (proj == null) {
-                Debug.message("omgraphic",
-                        "GeoOMGraphic.Point: null projection in generate!");
+                Debug.message("omgraphic", "GeoOMGraphic.Point: null projection in generate!");
                 return false;
             }
 
@@ -127,14 +127,11 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
             double y2 = p1.getY() + radius;
 
             if (isOval) {
-                setShape(new GeneralPath(new Ellipse2D.Float((float) Math.min(x2,
-                        x1), (float) Math.min(y2, y1), (float) Math.abs(x2 - x1), (float) Math.abs(y2
-                        - y1))));
+                setShape(new GeneralPath(new Ellipse2D.Float((float) Math.min(x2, x1), (float) Math.min(y2, y1), (float) Math.abs(x2
+                        - x1), (float) Math.abs(y2 - y1))));
             } else {
-                setShape(createBoxShape((int) Math.min(x2, x1),
-                        (int) Math.min(y2, y1),
-                        (int) Math.abs(x2 - x1),
-                        (int) Math.abs(y2 - y1)));
+                setShape(createBoxShape((int) Math.min(x2, x1), (int) Math.min(y2, y1), (int) Math.abs(x2
+                        - x1), (int) Math.abs(y2 - y1)));
             }
 
             initLabelingDuringGenerate();
@@ -183,8 +180,7 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
             setShape(null);
 
             if (proj == null) {
-                Debug.message("omgraphic",
-                        "GeoOMGraphic.Line: null projection in generate!");
+                Debug.message("omgraphic", "GeoOMGraphic.Line: null projection in generate!");
                 return false;
             }
 
@@ -195,13 +191,9 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
 
             ArrayList<float[]> lines = null;
             if (proj instanceof GeoProj) {
-                lines = ((GeoProj) proj).forwardLine(new LatLonPoint.Double(latlons[0], latlons[1]),
-                        new LatLonPoint.Double(latlons[2], latlons[3]),
-                        lineType,
-                        -1);
+                lines = ((GeoProj) proj).forwardLine(new LatLonPoint.Double(latlons[0], latlons[1]), new LatLonPoint.Double(latlons[2], latlons[3]), lineType, -1);
             } else {
-                lines = proj.forwardLine(new Point2D.Double(latlons[1], latlons[0]),
-                        new Point2D.Double(latlons[3], latlons[2]));
+                lines = proj.forwardLine(new Point2D.Double(latlons[1], latlons[0]), new Point2D.Double(latlons[3], latlons[2]));
             }
 
             int size = lines.size();
@@ -248,7 +240,7 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
         public Polyline(Geo[] gs) {
             super(new GeoPath.Impl(gs));
         }
-        
+
         public Polyline(GeoArray points) {
             super(new GeoPath.Impl(points));
         }
@@ -264,8 +256,7 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
             boolean isPolygon = getExtent() instanceof GeoRegion;
 
             if (proj == null) {
-                Debug.message("omgraphic",
-                        "GeoOMGraphic.Poly: null projection in generate!");
+                Debug.message("omgraphic", "GeoOMGraphic.Poly: null projection in generate!");
                 return false;
             }
 
@@ -275,14 +266,12 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
 
             // polygon/polyline project the polygon/polyline.
             // Vertices should already be in radians.
-            
-            // We might want to cache the latlon points retrieved from the GeoArray at some point.
+
+            // We might want to cache the latlon points retrieved from the
+            // GeoArray at some point.
             ArrayList<float[]> vector;
             if (proj instanceof GeoProj) {
-                vector = ((GeoProj) proj).forwardPoly(getPoints().toLLRadians(),
-                        lineType,
-                        -1,
-                        isPolygon);
+                vector = ((GeoProj) proj).forwardPoly(getPoints().toLLRadians(), lineType, -1, isPolygon);
             } else {
                 vector = proj.forwardPoly(getPoints().toLLDegrees(), isPolygon);
             }
@@ -323,8 +312,7 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
             if (rawllpts != null) {
                 int l = rawllpts.length;
                 if (l > 4) {
-                    geometryClosed = (Math.abs(rawllpts[0] - rawllpts[l - 2]) < 1e-5 && Math.abs(rawllpts[1]
-                            - rawllpts[l - 1]) < 1e-5);
+                    geometryClosed = (MoreMath.approximately_equal(rawllpts[0], rawllpts[l - 2]) && MoreMath.approximately_equal(rawllpts[1], rawllpts[l - 1]));
                 }
             }
 
@@ -357,7 +345,7 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
         public Polygon(Geo[] gs) {
             super(new GeoRegion.Impl(gs));
         }
-        
+
         public Polygon(GeoArray points) {
             super(new GeoRegion.Impl(points));
         }

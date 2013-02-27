@@ -249,87 +249,42 @@ public class RpfCacheHandler {
      * @param lrlon SE longitude
      * @param proj projection to use for zone decisions.
      */
-    public synchronized void setCache(float ullat, float ullon, float lrlat, float lrlon, Projection proj) {
+    public synchronized void setCache(float ullat, float ullon, float lrlat, float lrlon,
+                                      Projection proj) {
 
-        boolean needNewCoverage = true;
-        String oldID = null;
-        RpfCoverageBox currentBox = null;
-        int i;
-
-        // Right now, we're just going to deal with the first coverage
-        // box back in the pile. Maybe later, we can scale other
-        // chart scale and merger coverages to fill holes. Not enough
-        // time now, though.
-
-        // This paragraph messes up tile retrieval when the mouse wheel is used
-        // for fast zooming. subframes are left out at various times, only to be
-        // retrieved after a pan.
-
-        // if (coverageBoxes != null && !coverageBoxes.isEmpty()) {
-        // currentBox = coverageBoxes.elementAt(0);
-        // oldID = currentBox.getID();
-        // float currentPercentCoverage = currentBox.getPercentCoverage();
-        //
-        // if (DEBUG_RPF) {
-        // Debug.output("RpfCachehandler: checking current coverage before re-query:");
-        // }
-        //
-        // float currentScaleDifference =
-        // RpfFrameCacheHandler.scaleDifference(proj, currentBox);
-        // if (currentPercentCoverage <= currentBox.setPercentCoverage(ullat,
-        // ullon, lrlat, lrlon, start, end)
-        // && lastScaleDifference == currentScaleDifference) {
-        // needNewCoverage = false;
-        // // needNewCoverage = true;
-        // goodData = true;
-        // lastScaleDifference = currentScaleDifference;
-        //
-        // if (DEBUG_RPF) {
-        // Debug.output("RpfCachehandler: reusing Coverage");
-        // }
-        // }
-        // }
-
-        // If the scale changes, of if the percent coverage
-        // diminishes, check to see if there is something better.
-        if (needNewCoverage) {
-
-            if (DEBUG_RPF) {
-                Debug.output("RpfCacheHandler: Need new Coverage.");
-            }
-
-            if (frameProvider != null) {
-                coverageBoxes = frameProvider.getCoverage(ullat, ullon, lrlat, lrlon, proj);
-            } else {
-                coverageBoxes = null;
-            }
-
-            // See if anything came back...
-            if (coverageBoxes == null || coverageBoxes.isEmpty()) {
-                // Guess not.
-                goodData = false;
-                return;
-            }
-
-            // The percent coverage should be greater than zero here.
-            // That should be checked by the RpfTocHandler.
-
-            // Base the cache off the coverage in the first box. It's
-            // supposed to have the best coverage.
-            currentBox = coverageBoxes.elementAt(0);
-
-            if (!currentBox.getID().equals(oldID)) {
-                resetSubframeIndex(currentBox.verticalSubframes(), currentBox.horizontalSubframes());
-                initCache(false);
-            }
-
-            start = currentBox.startIndexes;
-            end = currentBox.endIndexes;
-            goodData = true;
+        if (DEBUG_RPF) {
+            Debug.output("RpfCacheHandler: Need new Coverage.");
         }
 
+        if (frameProvider != null) {
+            coverageBoxes = frameProvider.getCoverage(ullat, ullon, lrlat, lrlon, proj);
+        } else {
+            coverageBoxes = null;
+        }
+
+        // See if anything came back...
+        if (coverageBoxes == null || coverageBoxes.isEmpty()) {
+            // Guess not.
+            goodData = false;
+            return;
+        }
+
+        // The percent coverage should be greater than zero here.
+        // That should be checked by the RpfTocHandler.
+
+        // Base the cache off the coverage in the first box. It's
+        // supposed to have the best coverage.
+        RpfCoverageBox currentBox = coverageBoxes.elementAt(0);
+
+        resetSubframeIndex(currentBox.verticalSubframes(), currentBox.horizontalSubframes());
+        initCache(false);
+
+        start = currentBox.startIndexes;
+        end = currentBox.endIndexes;
+        goodData = true;
+
         // Set the backup indexes, just in case.
-        for (i = 1; i < coverageBoxes.size(); i++) {
+        for (int i = 1; i < coverageBoxes.size(); i++) {
             ((RpfCoverageBox) coverageBoxes.elementAt(i)).setPercentCoverage(ullat, ullon, lrlat, lrlon);
         }
 
@@ -343,7 +298,7 @@ public class RpfCacheHandler {
         // Figure out how much to scale the cached images. This would
         // be one of the big problems if we were going to merge
         // different data types.
-        if (getViewAttributes().scaleImages && currentBox != null) {
+        if (getViewAttributes().scaleImages) {
             // Do the work for a great scaling factor here...
 
             // Need to figure how much this will change for this scale
@@ -364,8 +319,8 @@ public class RpfCacheHandler {
 
     }
 
-    protected OMGraphicList getSubframes(float ullat, float ullon, float lrlat, float lrlon, Projection proj,
-                                         OMGraphicList omGraphics) {
+    protected OMGraphicList getSubframes(float ullat, float ullon, float lrlat, float lrlon,
+                                         Projection proj, OMGraphicList omGraphics) {
         setCache(ullat, ullon, lrlat, lrlon, proj);
 
         int subframeRunningCount = 0;
@@ -489,7 +444,8 @@ public class RpfCacheHandler {
 
                     subframeCacheSize = i;
                     if (DEBUG_RPF) {
-                        Debug.output("RpfCacheHandler: resetting cache size to " + subframeCacheSize);
+                        Debug.output("RpfCacheHandler: resetting cache size to "
+                                + subframeCacheSize);
                     }
                     initCache(true);
                     return;
@@ -644,8 +600,8 @@ public class RpfCacheHandler {
         } else {
 
             /* If beyond the cache boundary, don't cache it. */
-            if (subframeIndex == null || y < 0 || x < 0 || y >= subframeIndex.length || x >= subframeIndex[0].length
-                    || subframeCount >= subframeCacheSize) {
+            if (subframeIndex == null || y < 0 || x < 0 || y >= subframeIndex.length
+                    || x >= subframeIndex[0].length || subframeCount >= subframeCacheSize) {
                 cacheIt = false;
             }
 
@@ -674,7 +630,8 @@ public class RpfCacheHandler {
                      * it
                      */
                     index = getLRU();
-                    if (index < 0 || index >= subframeCacheSize || subframeCount >= subframeCacheSize) {
+                    if (index < 0 || index >= subframeCacheSize
+                            || subframeCount >= subframeCacheSize) {
                         ret = null;
                     } else {
                         referenceCache(index);
@@ -759,7 +716,8 @@ public class RpfCacheHandler {
 
         /* If beyond the image boundary, forget it */
         if (subframeIndex != null
-                && (coverageBoxes == null || coverageBoxes.isEmpty() || y < 0 || x < 0 || y >= subframeIndex.length || x >= subframeIndex[0].length)) {
+                && (coverageBoxes == null || coverageBoxes.isEmpty() || y < 0 || x < 0
+                        || y >= subframeIndex.length || x >= subframeIndex[0].length)) {
             return null;
         }
 
@@ -778,7 +736,8 @@ public class RpfCacheHandler {
         if (index == NOT_PRESENT) {
             return null;
 
-        } else if (index != NOT_CACHED && cache != null && cache.subframe[index].version == subframeVersion[y][x]
+        } else if (index != NOT_CACHED && cache != null
+                && cache.subframe[index].version == subframeVersion[y][x]
                 && subframeCount < subframeCacheSize) {
             /* We found it and it's ours; return the cached image */
             referenceCache(index);
@@ -901,7 +860,8 @@ public class RpfCacheHandler {
             lon2 = lon + coverageBox.subframeLonInterval;
 
             String data;
-            if (viewAttributes != null && (viewAttributes.autofetchAttributes || viewAttributes.showInfo)) {
+            if (viewAttributes != null
+                    && (viewAttributes.autofetchAttributes || viewAttributes.showInfo)) {
                 data = frameProvider.getSubframeAttributes(coverageBox.tocNumber, coverageBox.entryNumber, x, y);
             } else {
                 data = "";

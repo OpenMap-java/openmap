@@ -582,7 +582,7 @@ public class OMText
     * 
     * @return the string
     */
-   public java.lang.String getData() {
+   public synchronized java.lang.String getData() {
       return data;
    }
 

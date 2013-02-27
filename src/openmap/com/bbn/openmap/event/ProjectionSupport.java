@@ -34,179 +34,184 @@ import com.bbn.openmap.proj.Projection;
  * instance of this class as a member field of your bean and delegate work to
  * it.
  */
-public class ProjectionSupport
-      extends ListenerSupport<ProjectionListener> {
+public class ProjectionSupport extends ListenerSupport<ProjectionListener> {
 
-   static Logger logger = Logger.getLogger("com.bbn.openmap.event.ProjectionSupport");
-   private static final long serialVersionUID = 1L;
-   protected ProjectionChangeNotifier pcNotifier;
-   protected boolean useNotifier;
+    static Logger logger = Logger.getLogger("com.bbn.openmap.event.ProjectionSupport");
+    private static final long serialVersionUID = 1L;
+    protected ProjectionChangeNotifier pcNotifier;
+    protected boolean useNotifier;
 
-   /**
-    * Construct a ProjectionSupport.
-    */
-   public ProjectionSupport(boolean useNotifier) {
-      this(null, useNotifier);
-   }
+    /**
+     * Construct a ProjectionSupport.
+     */
+    public ProjectionSupport(boolean useNotifier) {
+        this(null, useNotifier);
+    }
 
-   /**
-    * Construct a ProjectionSupport.
-    * 
-    * @param aSource source Object
-    */
-   public ProjectionSupport(Object aSource, boolean useNotifier) {
-      super(aSource);
-      this.useNotifier = useNotifier;
-   }
+    /**
+     * Construct a ProjectionSupport.
+     * 
+     * @param aSource source Object
+     */
+    public ProjectionSupport(Object aSource, boolean useNotifier) {
+        super(aSource);
+        this.useNotifier = useNotifier;
+    }
 
-   /**
-    * Send a center event to all registered listeners.
-    * 
-    * @param proj Projection
-    */
-   public void fireProjectionChanged(Projection proj) {
-      if (proj == null || isEmpty())
-         return; // no event or no listeners
+    /**
+     * Send a center event to all registered listeners.
+     * 
+     * @param proj Projection
+     */
+    public void fireProjectionChanged(Projection proj) {
+        if (proj == null || isEmpty())
+            return; // no event or no listeners
 
-      if (useNotifier && pcNotifier == null) {
-         pcNotifier = new ProjectionChangeNotifier();
-         pcNotifier.start();
-      }
+        if (useNotifier && pcNotifier == null) {
+            pcNotifier = new ProjectionChangeNotifier();
+            pcNotifier.start();
+        }
 
-      ProjectionEvent event = new ProjectionEvent(getSource(), proj);
+        ProjectionEvent event = new ProjectionEvent(getSource(), proj);
 
-      if (pcNotifier != null) {
-         pcNotifier.fireProjectionEvent(event);
-      } else {
-         for (ProjectionListener listener : this) {
-            listener.projectionChanged(event);
-         }
-      }
-   }
+        if (pcNotifier != null) {
+            pcNotifier.fireProjectionEvent(event);
+        } else {
+            for (ProjectionListener listener : this) {
+                listener.projectionChanged(event);
+            }
+        }
+    }
 
-   /**
-    * Call when getting rid of the ProjectionSupport, it kills the
-    * ProjectionSupport thread. // <-- CJS
-    */
-   public void dispose() {
-      super.clear();
-      if (pcNotifier != null) {
-         pcNotifier.setTerminated(true);
-         pcNotifier.fireProjectionEvent(null);
-         pcNotifier.interrupt();
-         pcNotifier = null;
-      }
-   }
+    /**
+     * Call when getting rid of the ProjectionSupport, it kills the
+     * ProjectionSupport thread. // <-- CJS
+     */
+    public void dispose() {
+        super.clear();
+        if (pcNotifier != null) {
+            pcNotifier.setTerminated(true);
+            pcNotifier.fireProjectionEvent(null);
+            pcNotifier.interrupt();
+            pcNotifier = null;
+        }
+    }
 
-   /**
-    * A thread that disperses the projection event, instead of letting the Swing
-    * thread do it. A new one is created for every projection change, so the
-    * current ProjectionEvent object is getting delivered with it.
-    */
-   protected class ProjectionChangeNotifier
-         extends Thread {
+    /**
+     * A thread that disperses the projection event, instead of letting the
+     * Swing thread do it. A new one is created for every projection change, so
+     * the current ProjectionEvent object is getting delivered with it.
+     */
+    protected class ProjectionChangeNotifier extends Thread {
 
-      private final Object lock = new Object();
+        private final Object lock = new Object();
 
-      /* current projection event */
-      protected ProjectionEvent projEvent;
+        /* current projection event */
+        protected ProjectionEvent projEvent;
 
-      /* next projection event */
-      protected ProjectionEvent nextEvent;
+        /* next projection event */
+        protected ProjectionEvent nextEvent;
 
-      /* a flag to know if we are terminated. */
-      protected boolean terminated = false;
+        /* a flag to know if we are terminated. */
+        protected boolean terminated = false;
 
-      public ProjectionChangeNotifier() {
-         setName("ProjectionSupportThread " + getName());
-      }
+        public ProjectionChangeNotifier() {
+            setName("ProjectionSupportThread " + getName());
+        }
 
-      public boolean isTerminated() {
-         return terminated;
-      }
+        public boolean isTerminated() {
+            return terminated;
+        }
 
-      public void setTerminated(boolean terminated) {
-         this.terminated = terminated;
-      }
+        public void setTerminated(boolean terminated) {
+            this.terminated = terminated;
+        }
 
-      protected boolean isEventInProgress() {
-         // synchronized(lock){
-         return projEvent != null;
-         // }
-      }
+        protected boolean isEventInProgress() {
+            // synchronized(lock){
+            return projEvent != null;
+            // }
+        }
 
-      public void fireProjectionEvent(ProjectionEvent event) {
-         synchronized (lock) {
-            nextEvent = event;
-            lock.notifyAll(); // wakes up thread if sleeping
-         }
-      }
-
-      public void run() {
-         while (!terminated) { // run while parent mapbean exists
+        public void fireProjectionEvent(ProjectionEvent event) {
             synchronized (lock) {
-               if (nextEvent != null) {
-                  projEvent = nextEvent;
-                  nextEvent = null;
-               }
+                nextEvent = event;
+                lock.notifyAll(); // wakes up thread if sleeping
             }
+        }
 
-            if (projEvent != null && !isEmpty()) {
+        public void run() {
+            while (!terminated) { // run while parent mapbean exists
+                synchronized (lock) {
+                    if (nextEvent != null) {
+                        projEvent = nextEvent;
+                        nextEvent = null;
+                    }
+                }
 
-               // Instead of going top of map to bottom, go bottom to top:
+                if (projEvent != null && !isEmpty()) {
 
-               // Use this try/catch to deal with any problems getting clone of
-               // listeners, in case listener list is being changed while clone
-               // is being made, etc.
-               try {
-                  ListIterator<ProjectionListener> li = ProjectionSupport.this.listIterator();
-                  while (li.hasPrevious()) {
-                     ProjectionListener listener = li.previous();
+                    // Instead of going top of map to bottom, go bottom to top:
 
-                     // This is going from top to bottom
-                     // for (ProjectionListener listener :
-                     // ProjectionSupport.this)
-                     // {
+                    // Use this try/catch to deal with any problems getting
+                    // clone of
+                    // listeners, in case listener list is being changed while
+                    // clone
+                    // is being made, etc.
+                    try {
+                        ListIterator<ProjectionListener> li = ProjectionSupport.this.listIterator();
+                        while (li.hasPrevious()) {
+                            ProjectionListener listener = li.previous();
 
-                     if (nextEvent != null) {
-                        break; // new event has been posted, bail out
-                     }
+                            // This is going from top to bottom
+                            // for (ProjectionListener listener :
+                            // ProjectionSupport.this)
+                            // {
 
-                     // Use this try/catch to eliminate problems from individual
-                     // layers - just blow them off.
-                     try {
-                        listener.projectionChanged(projEvent);
-                     } catch (Exception e) {
-                        if (logger.isLoggable(Level.FINE)) {
-                           logger.info("ProjectionListener not handling projection well: " + listener.getClass().getName() + " : "
-                                 + e.getClass().getName() + " : " + e.getMessage());
-                           e.printStackTrace();
+                            if (nextEvent != null) {
+                                break; // new event has been posted, bail out
+                            }
+
+                            // Use this try/catch to eliminate problems from
+                            // individual
+                            // layers - just blow them off.
+                            try {
+                                listener.projectionChanged(projEvent);
+                            } catch (Exception e) {
+                                if (logger.isLoggable(Level.FINE)) {
+                                    logger.info("ProjectionListener not handling projection well: "
+                                            + listener.getClass().getName() + " : "
+                                            + e.getClass().getName() + " : " + e.getMessage());
+                                    e.printStackTrace();
+                                }
+                            }
                         }
-                     }
-                  }
 
-               } catch (Exception e) {
-                  logger.fine("caught exception: " + e.getClass().getName() + " : " + e.getMessage());
-               }
+                    } catch (Exception e) {
+                        logger.fine("caught exception: " + e.getClass().getName() + " : "
+                                + e.getMessage());
+                    }
 
-               // notification is complete
-               synchronized (lock) {
-                  projEvent = null;
-               }
-            } else { // there is no event
-               // just wait until we are awakened for the next event
-               try {
-                  synchronized (lock) {
-                     lock.wait();
-                  }
-               } catch (InterruptedException x) {
-                  // do nothing, just reenter loop
-               }
+                    // notification is complete
+                    synchronized (lock) {
+                        projEvent = null;
+                    }
+                } else { // there is no event
+                    // just wait until we are awakened for the next event
+                    try {
+                        synchronized (lock) {
+                            if (nextEvent == null) {
+                                lock.wait();
+                            }
+                        }
+                    } catch (InterruptedException x) {
+                        // do nothing, just reenter loop
+                    }
+                }
             }
-         }
 
-         logger.fine("Projection notifier thread " + getName() + " done running");
-      }
-   }
+            logger.fine("Projection notifier thread " + getName() + " done running");
+        }
+    }
 
 }

@@ -22,7 +22,6 @@
 
 package com.bbn.openmap.layer.mif;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -30,25 +29,23 @@ import java.awt.Polygon;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.io.Serializable;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.bbn.openmap.omGraphics.OMGraphicAdapter;
 import com.bbn.openmap.proj.Projection;
 
 /**
- * Defines a Region of a MIF file where when one region encloses
- * another the enclosed region is subtracted from the enclosing region
- * in order to create a hole Computationally this can be expensive to
- * do on a complex layout like a streetmap of city
+ * Defines a Region of a MIF file where when one region encloses another the
+ * enclosed region is subtracted from the enclosing region in order to create a
+ * hole Computationally this can be expensive to do on a complex layout like a
+ * streetmap of city
  */
 public class OMSubtraction extends OMGraphicAdapter implements Serializable {
 
-    Color fillcolor;
-    SubArea outer; //The outer polygon of this region
-    Area area;
-    GeneralPath gpath;
-    Vector subs; //An array of the subtractions to make
-    Projection project;
+    SubArea outer; // The outer polygon of this region
+    transient Area area; // calculated
+    List<SubArea> subs; // An array of the subtractions to make
 
     public OMSubtraction(double[] lat, double[] lon) {
         super(RENDERTYPE_LATLON, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
@@ -57,9 +54,10 @@ public class OMSubtraction extends OMGraphicAdapter implements Serializable {
 
     boolean contains(double[] latp, double[] lonp) {
         if (outer.contains(latp, lonp)) {
-            if (subs == null)
-                subs = new Vector();
-            subs.addElement(new SubArea(latp, lonp));
+            if (subs == null) {
+                subs = new ArrayList<SubArea>();
+            }
+            subs.add(new SubArea(latp, lonp));
             return true;
         }
         return false;
@@ -71,16 +69,14 @@ public class OMSubtraction extends OMGraphicAdapter implements Serializable {
             System.err.println("OMText: null projection in generate!");
             return false;
         }
-        project = proj;
+
         if (!outer.isPlotable(proj))
             return false;
 
         area = outer.getArea(proj);
 
         if (subs != null) {
-            int sublen = subs.size();
-            for (int i = 0; i < sublen; i++) {
-                SubArea sb = (SubArea) subs.elementAt(i);
+            for (SubArea sb : subs) {
                 area.subtract(sb.getArea(proj));
             }
         }
@@ -93,8 +89,8 @@ public class OMSubtraction extends OMGraphicAdapter implements Serializable {
 
         if (getNeedToRegenerate())
             return;
-        //Check if we can plot the area
-        if (!outer.isPlotable(project))
+
+        if (area == null)
             return;
 
         Graphics2D g2 = (Graphics2D) g;
@@ -103,18 +99,18 @@ public class OMSubtraction extends OMGraphicAdapter implements Serializable {
     }
 
     /**
-     * Return the shortest distance from the line to an XY-point - not
-     * relevant to this class.
+     * Return the shortest distance from the line to an XY-point - not relevant
+     * to this class.
      * 
      * @param x X coordinate of the point.
      * @param y Y coordinate fo the point.
      * @return float always zero
      */
-    public float distance(double x, double y) { //return zero
+    public float distance(double x, double y) { // return zero
         return 0.0f;
     }
 
-    class SubArea {
+    class SubArea implements Serializable {
 
         double[] lat;
         double[] lon;

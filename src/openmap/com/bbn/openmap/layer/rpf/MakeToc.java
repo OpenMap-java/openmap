@@ -1642,7 +1642,7 @@ public class MakeToc {
         int x;
         int y;
 
-        if ((frm.scale == null || grp.scale == null) && frm.scale == grp.scale) {
+        if (frm.scale == null || grp.scale == null) {
             // This is a strange situation. The product codes in the file name
             // or header aren't resolving into a scale.
 

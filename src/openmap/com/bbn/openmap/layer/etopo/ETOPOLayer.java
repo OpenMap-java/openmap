@@ -159,7 +159,7 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 	 * Spacings (in meters) between adjacent lon points at the equator. The
 	 * values here were aesthetically defined (they are not the actual spacings)
 	 */
-	protected final static double[] etopoSpacings = { 1800., 3500., 7000.,
+	protected double[] etopoSpacings = { 1800., 3500., 7000.,
 			10500. }; // ep-g
 
 	/**
@@ -202,21 +202,21 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 	protected byte[] slopeMap = null;
 
 	/** elevation bands */
-	protected static final int[] elevLimit = { -11000, -9000, -7000, -5000,
+	protected int[] elevLimit = { -11000, -9000, -7000, -5000,
 			-3000, -1500, 0, 250, 500, 750, 1000, 2000, 3500, 5000 };
 	/** number of elevation bands */
-	protected static final int elevLimitCnt = 14;
+	protected int elevLimitCnt = 14;
 
 	/** elevation band colors (one for each elevation band) */
-	protected static final int[] redElev = { 0, 0, 4, 20, 124, 130, 135, 117,
+	protected int[] redElev = { 0, 0, 4, 20, 124, 130, 135, 117,
 			252, 253, 229, 244, 252, 132 };
-	protected static final int[] greenElev = { 2, 12, 51, 159, 235, 255, 235,
+	protected int[] greenElev = { 2, 12, 51, 159, 235, 255, 235,
 			255, 236, 162, 115, 50, 20, 132 };
-	protected static final int[] blueElev = { 76, 145, 242, 249, 252, 255, 110,
+	protected int[] blueElev = { 76, 145, 242, 249, 252, 255, 110,
 			58, 29, 35, 5, 14, 46, 132 };
 
 	/** for slope shading colors, indexed by elevation band then slope */
-	protected static Color[][] slopeColors = null;
+	protected Color[][] slopeColors = null;
 
 	/* flag to recompute slope map */
 	protected boolean slopeReset = true;
@@ -285,24 +285,18 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 				// call the "brighter" method on the base color for
 				// positive slope
 				for (int j = 4; j < 8; j++) {
-
 					// set
 					if (j == 4)
 						slopeColors[i][j] = base;
 					else
 						slopeColors[i][j] = slopeColors[i][j - 1].brighter();
-
 				}
 
 				// call the "darker" method on the base color for
 				// negative slopes
 				for (int k = 3; k >= 0; k--) {
-
-					// set
 					slopeColors[i][k] = slopeColors[i][k + 1].darker();
-
 				}
-
 			}
 		}
 
@@ -739,16 +733,16 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 	// ----------------------------------------------------------------------
 
 	/** The user interface palette for the ETOPO layer. */
-	protected Box palette = null;
+	protected Box paletteBox = null;
 
 	/** Creates the interface palette. */
 	public Component getGUI() {
 
-		if (palette == null) {
+		if (paletteBox == null) {
 			if (Debug.debugging("etopo"))
 				Debug.output("ETOPOLayer: creating ETOPO Palette.");
 
-			palette = Box.createVerticalBox();
+			paletteBox = Box.createVerticalBox();
 			Box subbox0 = Box.createHorizontalBox();
 			Box subbox1 = Box.createHorizontalBox();
 			Box subbox2 = Box.createVerticalBox();
@@ -862,17 +856,17 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 			redraw.setActionCommand(RedrawCmd);
 
 			subbox0.add(resPanel);
-			palette.add(subbox0);
+			paletteBox.add(subbox0);
 			subbox1.add(viewPanel);
-			palette.add(subbox1);
+			paletteBox.add(subbox1);
 			subbox2.add(contrastPanel);
 			subbox2.add(opaquenessPanel);
-			palette.add(subbox2);
+			paletteBox.add(subbox2);
 			subbox3.add(redraw);
-			palette.add(subbox3);
+			paletteBox.add(subbox3);
 		}
 
-		return palette;
+		return paletteBox;
 	}
 
 	// ----------------------------------------------------------------------

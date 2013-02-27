@@ -25,6 +25,7 @@ package com.bbn.openmap.util.quadtree;
 import java.io.Serializable;
 import java.util.Vector;
 
+import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.util.DataOrganizer;
 
 /**
@@ -147,7 +148,7 @@ public class QuadTree implements DataOrganizer, Serializable {
         // last check is for micro-errors that happen to lon points
         // where there might be a smudge overlap for very small
         // scales.
-        if (west > east || (Math.abs(west - east) < .001)) {
+        if (west > east || MoreMath.approximately_equal(west, east, .001)) {
             return top.get(north, west, south, 180, top.get(north,
                     -180,
                     south,

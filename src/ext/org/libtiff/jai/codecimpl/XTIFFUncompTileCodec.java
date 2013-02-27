@@ -89,7 +89,7 @@ public class XTIFFUncompTileCodec extends XTIFFTileCodecImpl {
                 }
 
                 // Last pixel for odd-length lines
-                if ((cols % 2) == 1) {
+                if ((cols % 2) != 0) {
                     pixel = pixels[index++] << 4;
                     bpixels[k++] = (byte) pixel;
                 }

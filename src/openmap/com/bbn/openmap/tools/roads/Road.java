@@ -34,7 +34,8 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 
 public class Road
       implements RoadObject, Serializable {
-   Logger logger = Logger.getLogger(this.getClass().getName());
+   
+    transient Logger logger = Logger.getLogger(this.getClass().getName());
 
    /**
     * The points along the road. The first and last points are always

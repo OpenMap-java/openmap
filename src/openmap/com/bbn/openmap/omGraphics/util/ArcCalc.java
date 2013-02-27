@@ -282,7 +282,7 @@ public class ArcCalc implements Serializable {
 
         // Experienced some trouble with vertical and horizontal half
         // circles. This took care of that.
-        if (arcAngle == Math.PI && arcUp) {
+        if (MoreMath.approximately_equal(arcAngle, Math.PI) && arcUp) {
             Debug.message("arc",
                     "ArcCalc.generate: Modifying 180 angle points.");
             double tmpSlope = smallSlope + MoreMath.TWO_PI;

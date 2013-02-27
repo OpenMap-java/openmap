@@ -36,7 +36,7 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
  * DrawingAttributes that describe how it should be drawn if other
  * DrawingAttributes aren't provided at rendertime.
  */
-public class BasicAppIconPart extends BasicIconPart implements IconPart {
+public class BasicAppIconPart extends BasicIconPart implements IconPart, Cloneable {
 
     public BasicAppIconPart(Shape shape) {
         super(shape);

@@ -117,7 +117,6 @@ public class GraticuleLayer
       extends OMGraphicHandlerLayer
       implements ActionListener {
 
-   protected I18n i18n = Environment.getI18n();
    // default to not showing the ruler (mimicking older
    // GraticuleLayer)
    protected boolean defaultShowRuler = true;
@@ -1119,16 +1118,16 @@ public class GraticuleLayer
    // ----------------------------------------------------------------------
 
    /** The user interface palette for the Graticule layer. */
-   protected Box palette = null;
+   protected Box paletteBox = null;
 
    /** Creates the interface palette. */
    public java.awt.Component getGUI() {
 
-      if (palette == null) {
+      if (paletteBox == null) {
          if (Debug.debugging("graticule"))
             Debug.output("GraticuleLayer: creating Graticule Palette.");
 
-         palette = Box.createVerticalBox();
+         paletteBox = Box.createVerticalBox();
 
          JPanel layerPanel =
                PaletteHelper.createPaletteJPanel(i18n.get(GraticuleLayer.class, "layerPanel", "Graticule Layer Options"));
@@ -1167,7 +1166,7 @@ public class GraticuleLayer
          layerPanel.add(showRulerButton);
          layerPanel.add(show15Button);
          // layerPanel.add(showBelow1Button);
-         palette.add(layerPanel);
+         paletteBox.add(layerPanel);
 
          JPanel subbox3 = new JPanel(new GridLayout(0, 1));
 
@@ -1180,9 +1179,9 @@ public class GraticuleLayer
          redraw.setActionCommand(RedrawCmd);
          redraw.addActionListener(this);
          subbox3.add(redraw);
-         palette.add(subbox3);
+         paletteBox.add(subbox3);
       }
-      return palette;
+      return paletteBox;
    }
 
    // ----------------------------------------------------------------------

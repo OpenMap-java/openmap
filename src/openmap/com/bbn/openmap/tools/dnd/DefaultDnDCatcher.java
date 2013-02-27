@@ -110,8 +110,6 @@ public class DefaultDnDCatcher extends DnDListener implements BeanContextChild,
      */
     protected Hashtable layers = new Hashtable();
 
-    protected DragSource dragSource;
-
     // a reference to the MouseDelegator object in the MapHandler
     protected transient MouseDelegator md;
 

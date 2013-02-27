@@ -516,8 +516,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         panes = lpa;
     }
 
-    GridBagLayout gridbag;
-    GridBagConstraints c;
+    GridBagLayout panelGridbag;
+    GridBagConstraints pgbc;
 
     /**
      * Create the panel that shows the LayerPanes. This method creates the
@@ -530,10 +530,6 @@ public class LayersPanel extends OMToolComponent implements Serializable,
     public void createPanel(Layer[] inLayers) {
         logger.fine("creating panel");
 
-        // if (scrollPane != null) {
-        // remove(scrollPane);
-        // }
-
         Layer[] layers = inLayers;
         if (layers == null) {
             layers = new Layer[0];
@@ -541,20 +537,16 @@ public class LayersPanel extends OMToolComponent implements Serializable,
 
         if (panesPanel == null) {
             panesPanel = new JPanel();
-            gridbag = new GridBagLayout();
-            c = new GridBagConstraints();
+            panelGridbag = new GridBagLayout();
+            pgbc = new GridBagConstraints();
 
-            panesPanel.setLayout(gridbag);
+            panesPanel.setLayout(panelGridbag);
 
-            c.gridwidth = GridBagConstraints.REMAINDER;
-            c.anchor = GridBagConstraints.NORTHWEST;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.weightx = 1.0f;
+            pgbc.gridwidth = GridBagConstraints.REMAINDER;
+            pgbc.anchor = GridBagConstraints.NORTHWEST;
+            pgbc.fill = GridBagConstraints.HORIZONTAL;
+            pgbc.weightx = 1.0f;
 
-            // panesPanel.setLayout(new BoxLayout(panesPanel,
-            // BoxLayout.Y_AXIS));
-            // panesPanel.setAlignmentX(LEFT_ALIGNMENT);
-            // panesPanel.setAlignmentY(BOTTOM_ALIGNMENT);
         } else {
             ((GridBagLayout) panesPanel.getLayout()).invalidateLayout(panesPanel);
             panesPanel.removeAll();
@@ -606,7 +598,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
             } else {
                 panes.add(lpane);
 
-                gridbag.setConstraints(lpane, c);
+                panelGridbag.setConstraints(lpane, pgbc);
                 panesPanel.add(lpane);
             }
         }
@@ -616,12 +608,12 @@ public class LayersPanel extends OMToolComponent implements Serializable,
                 logger.fine("Adding BackgroundLayerSeparator");
             }
             panes.add(backgroundLayerSeparator);
-            gridbag.setConstraints(backgroundLayerSeparator, c);
+            panelGridbag.setConstraints(backgroundLayerSeparator, pgbc);
             panesPanel.add(backgroundLayerSeparator);
             panes.addAll(backgroundPanes);
 
             for (LayerPane lp : backgroundPanes) {
-                gridbag.setConstraints(lp, c);
+                panelGridbag.setConstraints(lp, pgbc);
                 panesPanel.add(lp);
             }
 
@@ -630,23 +622,13 @@ public class LayersPanel extends OMToolComponent implements Serializable,
                 logger.fine("No layers are background layers, adding separator");
             }
             panes.add(backgroundLayerSeparator);
-            gridbag.setConstraints(backgroundLayerSeparator, c);
+            panelGridbag.setConstraints(backgroundLayerSeparator, pgbc);
             panesPanel.add(backgroundLayerSeparator);
         }
 
         addFillerToPanesPanel();
 
         setPanes(panes);
-
-        // if (scrollPane != null) {
-        // remove(scrollPane);
-        // scrollPane.removeAll();
-        // scrollPane = null;
-        // }
-        //
-        // scrollPane = new JScrollPane(panesPanel,
-        // ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-        // ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         if (scrollPane == null) {
             scrollPane = new JScrollPane(panesPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -658,12 +640,12 @@ public class LayersPanel extends OMToolComponent implements Serializable,
 
     protected void addFillerToPanesPanel() {
         JPanel filler = new JPanel();
-        c.fill = GridBagConstraints.BOTH;
-        c.weighty = 1.0f;
-        gridbag.setConstraints(filler, c);
+        pgbc.fill = GridBagConstraints.BOTH;
+        pgbc.weighty = 1.0f;
+        panelGridbag.setConstraints(filler, pgbc);
         panesPanel.add(filler);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weighty = 0.0f;
+        pgbc.fill = GridBagConstraints.HORIZONTAL;
+        pgbc.weighty = 0.0f;
     }
 
     /**
@@ -893,7 +875,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         int selectedRow = -1;
 
         panesPanel.removeAll();
-        gridbag.invalidateLayout(panesPanel);
+        panelGridbag.invalidateLayout(panesPanel);
 
         List<LayerPane> panes = getPanes();
         List<Layer> layerList = new LinkedList<Layer>();
@@ -905,7 +887,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         for (LayerPane pane : panes) {
 
             if (pane == backgroundLayerSeparator) {
-                gridbag.setConstraints(pane, c);
+                panelGridbag.setConstraints(pane, pgbc);
                 panesPanel.add(backgroundLayerSeparator);
                 bufferIndex = i++;
                 continue;
@@ -913,7 +895,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
 
             Layer layer = pane.getLayer();
             layer.setAddAsBackground(i > bufferIndex);
-            gridbag.setConstraints(pane, c);
+            panelGridbag.setConstraints(pane, pgbc);
             panesPanel.add(pane);
             layerList.add(layer);
 

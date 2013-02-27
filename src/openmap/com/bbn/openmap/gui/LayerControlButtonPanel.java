@@ -185,7 +185,7 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
     public final static String NORTH_SOUTH_CONFIG = "NORTH_SOUTH";
     public final static String DefaultConfiguration = WEST_CONFIG;
 
-    protected int orientation = BoxLayout.Y_AXIS; // BoxLayout.X_AXIS
+    protected int boxOrientation = BoxLayout.Y_AXIS; // BoxLayout.X_AXIS
     protected String configuration = DefaultConfiguration;
     protected boolean embedded = true;
     protected boolean deleteLayers = true;
@@ -235,7 +235,7 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
                 createInterface(); // again, reset for new config
                 // values
 
-                setLayout(new BoxLayout(this, orientation));
+                setLayout(new BoxLayout(this, boxOrientation));
 
                 if (panel.getLayout() instanceof BorderLayout) {
                     if (configuration.equalsIgnoreCase(WEST_CONFIG)) {
@@ -264,7 +264,7 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
 
         setAlignmentX(LEFT_ALIGNMENT);
         setAlignmentY(CENTER_ALIGNMENT);
-        setLayout(new BoxLayout(this, orientation));
+        setLayout(new BoxLayout(this, boxOrientation));
 
         top = new JButton(topgif);
         top.setActionCommand(LayersPanel.LayerTopCmd);
@@ -465,7 +465,7 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
         String orient = props.getProperty(prefix + OrientationProperty);
         if (orient != null
                 && (orient.equalsIgnoreCase(HORIZONTAL_CONFIG) || (orient.equalsIgnoreCase("false")))) {
-            orientation = BoxLayout.X_AXIS;
+            boxOrientation = BoxLayout.X_AXIS;
         }
     }
 
@@ -475,7 +475,7 @@ public class LayerControlButtonPanel extends OMComponentPanel implements
 
         props.put(prefix + ConfigurationProperty, configuration);
         props.put(prefix + OrientationProperty,
-                (orientation == BoxLayout.X_AXIS ? HORIZONTAL_CONFIG
+                (boxOrientation == BoxLayout.X_AXIS ? HORIZONTAL_CONFIG
                         : VERTICAL_CONFIG));
         props.put(prefix + EmbeddedProperty, new Boolean(embedded).toString());
         props.put(prefix + DeleteLayersProperty,

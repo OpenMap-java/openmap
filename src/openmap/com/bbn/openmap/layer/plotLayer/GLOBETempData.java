@@ -48,25 +48,23 @@ public class GLOBETempData extends GLOBEData {
 
     /*
      * Data Format:
+     * <pre>
+     * Air Temperature:
+     * Field 1 = AT 
+     * Field 2 = GLOBE phase number (1 or 2)
+     * Field 3 = Site number
+     * Field 4 = Time the data was reported, YYYYMMDD where YYYY = Calendar year MM = Calendar month (starting with 1 = January) DD = Day of month (starting with 1) 
+     * Field 5 = Time the data was sampled, YYYYMMDDHH where YYYY = Calendar year MM = Calendar month (starting with 1 = January) DD = Day of month (starting with 1) HH = Hour of day (00-23)
+     * Field 6 = Decimal year
+     * Field 7 = Measurement location latitude
+     * Field 8 = Measurement location longitude (+ = East, - = West)
+     * Field 9 = Measurement location elevation (meters above sea level)
+     * Field 10 = Current air temperature (degrees Celsius) [Missing value = -99.0]
+     * Field 11 = Daily maximum air temperature (degrees Celsius) [Missing value = -99.0]
+     * Field 12 = Daily minimum air temperature (degrees Celsius) [Missing value = -99.0]
      * 
-     * Air Temperature: Field 1 = AT Field 2 = GLOBE phase number (1
-     * or 2) Field 3 = Site number Field 4 = Time the data was
-     * reported, YYYYMMDD where YYYY = Calendar year MM = Calendar
-     * month (starting with 1 = January) DD = Day of month (starting
-     * with 1) Field 5 = Time the data was sampled, YYYYMMDDHH where
-     * YYYY = Calendar year MM = Calendar month (starting with 1 =
-     * January) DD = Day of month (starting with 1) HH = Hour of day
-     * (00-23) Field 6 = Decimal year Field 7 = Measurement location
-     * latitude Field 8 = Measurement location longitude (+ = East, - =
-     * West) Field 9 = Measurement location elevation (meters above
-     * sea level) Field 10 = Current air temperature (degrees Celsius)
-     * [Missing value = -99.0] Field 11 = Daily maximum air
-     * temperature (degrees Celsius) [Missing value = -99.0] Field 12 =
-     * Daily minimum air temperature (degrees Celsius) [Missing value =
-     * -99.0]
-     * 
-     * Example: AT 1 1 19961218 1996121814 1996.96334 44.1281 -68.8747
-     * 14 18 22 -2
+     * Example: AT 1 1 19961218 1996121814 1996.96334 44.1281 -68.8747 14 18 22 -2
+     *</pre>
      *  
      */
     protected void parseDataFromStream(String line) {

@@ -39,7 +39,7 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
  * DrawingAttributes to render that combined shape. The IconPartList
  * is itself an IconPart, so the recursive possibilities are endless.
  */
-public class IconPartList implements IconPart, Iterable<IconPart> {
+public class IconPartList implements IconPart, Iterable<IconPart>, Cloneable {
 
     protected List<IconPart> parts;
     protected DrawingAttributes renderingAttributes = null;

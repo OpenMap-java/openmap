@@ -421,7 +421,7 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      *         contained on the list.
      */
     public synchronized Object clone() {
-        OMGraphicList omgl = new OMGraphicList(size());
+        OMGraphicList omgl = (OMGraphicList) super.clone();        
 
         for (OMGraphic omg : this) {
             // If the OMGraphic doesn't provide a copy (providing a

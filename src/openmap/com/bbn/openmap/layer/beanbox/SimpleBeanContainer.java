@@ -54,7 +54,7 @@ public class SimpleBeanContainer extends SimpleBeanObject implements
 
         contents = new Vector();
 
-        super.setCustomGraphicClassName("com.bbn.openmap.examples.beanbox.ContainerGraphic");
+        super.setCustomGraphicClassName("com.bbn.openmap.layer.beanbox.ContainerGraphic");
 
     }
 

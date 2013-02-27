@@ -24,6 +24,7 @@ package com.bbn.openmap.layer.dted;
 
 import java.awt.geom.Point2D;
 
+import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.EqualArc;
@@ -73,10 +74,7 @@ public class DTEDCacheHandler {
     DTEDSubframedFrame frame = null;
 
     /** A description of the drawing attributes of the images. */
-    protected DTEDFrameSubframeInfo dfsi = new DTEDFrameSubframeInfo(DTEDFrameSubframe.NOSHADING,
-                                                                     DTEDFrameSubframe.DEFAULT_BANDHEIGHT,
-                                                                     DTEDFrameSubframe.LEVEL_0,
-                                                                     DTEDFrameSubframe.DEFAULT_SLOPE_ADJUST);
+    protected DTEDFrameSubframeInfo dfsi = new DTEDFrameSubframeInfo(DTEDFrameSubframe.NOSHADING, DTEDFrameSubframe.DEFAULT_BANDHEIGHT, DTEDFrameSubframe.LEVEL_0, DTEDFrameSubframe.DEFAULT_SLOPE_ADJUST);
 
     public DTEDCacheHandler() {
         this(null, DTEDFrameColorTable.DTED_COLORS, DTEDFrameColorTable.DEFAULT_OPAQUENESS, FRAME_CACHE_SIZE);
@@ -86,7 +84,8 @@ public class DTEDCacheHandler {
         this(dataPaths, numColors, opaque, -1);
     }
 
-    public DTEDCacheHandler(String[] dataPaths, int numColors, int opaqueness, int subframe_cache_size) {
+    public DTEDCacheHandler(String[] dataPaths, int numColors, int opaqueness,
+            int subframe_cache_size) {
 
         colortable = new DTEDFrameColorTable(numColors, opaqueness, true);
 
@@ -146,8 +145,7 @@ public class DTEDCacheHandler {
      * @param proj the EqualArc projection of the screen.
      */
     public void setProjection(EqualArc proj) {
-        setProjection(proj, ((Point2D) proj.getUpperLeft()).getY(), ((Point2D) proj.getUpperLeft()).getX(),
-                      ((Point2D) proj.getLowerRight()).getY(), ((Point2D) proj.getLowerRight()).getX());
+        setProjection(proj, ((Point2D) proj.getUpperLeft()).getY(), ((Point2D) proj.getUpperLeft()).getX(), ((Point2D) proj.getLowerRight()).getY(), ((Point2D) proj.getLowerRight()).getX());
     }
 
     /**
@@ -183,8 +181,8 @@ public class DTEDCacheHandler {
         frameRight = Math.ceil((double) lon2);
 
         if (Debug.debugging("dted"))
-            Debug.output("frameUp = " + frameUp + ", frameDown = " + frameDown + ", frameLeft = " + frameLeft + ", frameRight = "
-                    + frameRight);
+            Debug.output("frameUp = " + frameUp + ", frameDown = " + frameDown + ", frameLeft = "
+                    + frameLeft + ", frameRight = " + frameRight);
 
         int numFramesNeeded;
         // Limit the size of the cache, if desired.
@@ -195,7 +193,8 @@ public class DTEDCacheHandler {
             }
         } else {
             // calculate how many frames should be in the cache...
-            numFramesNeeded = (int) (Math.abs(frameUp - frameDown) * Math.abs(frameRight - frameLeft) * 2);
+            numFramesNeeded = (int) (Math.abs(frameUp - frameDown)
+                    * Math.abs(frameRight - frameLeft) * 2);
         }
 
         EqualArc eaProj = null;
@@ -210,7 +209,8 @@ public class DTEDCacheHandler {
         double xpi = 360 / eaProj.getXPixConstant();
         double ypi = 90 / eaProj.getYPixConstant();
 
-        if (xPixInterval != xpi || yPixInterval != ypi) {
+        if (!MoreMath.approximately_equal(xPixInterval, xpi)
+                || !MoreMath.approximately_equal(yPixInterval, ypi)) {
 
             // Screen attributes changed!!!!
             xPixInterval = xpi;
@@ -270,11 +270,12 @@ public class DTEDCacheHandler {
             }
 
             if (Debug.debugging("dted"))
-                Debug.output("***** Screen Parameters Changed! \n" + " Frame width (pix) = " + frame_width + "\n"
-                        + " Frame height (pix) = " + frame_height + "\n" + " Num x subframes = " + numXSubframes + "\n"
-                        + " Num y subframes = " + numYSubframes + "\n" + " last sf width = " + lastSubframeWidth + "\n"
-                        + " last sf height = " + lastSubframeHeight + "\n" + " X pix interval = " + xpi + "\n"
-                        + " Y pix interval = " + ypi + "\n");
+                Debug.output("***** Screen Parameters Changed! \n" + " Frame width (pix) = "
+                        + frame_width + "\n" + " Frame height (pix) = " + frame_height + "\n"
+                        + " Num x subframes = " + numXSubframes + "\n" + " Num y subframes = "
+                        + numYSubframes + "\n" + " last sf width = " + lastSubframeWidth + "\n"
+                        + " last sf height = " + lastSubframeHeight + "\n" + " X pix interval = "
+                        + xpi + "\n" + " Y pix interval = " + ypi + "\n");
 
         } else if (Math.abs(numFramesNeeded - currentFrameCacheSize) > numFramesNeeded / 2) {
             currentFrameCacheSize = numFramesNeeded;
@@ -370,7 +371,8 @@ public class DTEDCacheHandler {
 
                 sf_ullat = (double) (frameLat + 1.0) - ((double) suby * height_degrees);
                 sf_ullon = (double) frameLon + ((double) subx * width_degrees);
-                sf_lrlat = (double) (frameLat + 1.0) - ((double) suby * height_degrees) - sf_height_degrees;
+                sf_lrlat = (double) (frameLat + 1.0) - ((double) suby * height_degrees)
+                        - sf_height_degrees;
                 sf_lrlon = (double) frameLon + ((double) subx * width_degrees) + sf_width_degrees;
 
                 if ((ulCoords.getY() > sf_lrlat && lrCoords.getY() < sf_ullat) &&
@@ -399,7 +401,8 @@ public class DTEDCacheHandler {
                         return subframe;
                     }
                 } else if (Debug.debugging("dteddetail")) {
-                    Debug.output(" gni: Subframe " + subx + ", " + suby + " didn't meet screen criteria");
+                    Debug.output(" gni: Subframe " + subx + ", " + suby
+                            + " didn't meet screen criteria");
                 }
             }
             sf_width = SF_PIXEL_HW;

@@ -179,8 +179,8 @@ public class BeanPanel extends OMToolComponent implements Serializable {
      * initialize the BeanPanel GUI. Instead the GUI is initialized
      * lazily when the user clicks on the 'Face' of this object on the
      * openmap components bar. Thus, this constructor should not be
-     * used to create a standalone BeanPanel. Use the parameterized
-     * constructor to create a standalone BeanPanel.
+     * used to create a stand-alone BeanPanel. Use the parameterized
+     * constructor to create a stand-alone BeanPanel.
      */
     public BeanPanel() {
         super();
@@ -206,7 +206,7 @@ public class BeanPanel extends OMToolComponent implements Serializable {
      * This constructor does everything that the default constructor
      * does and in addition initializes the BeanPanel's properties
      * from the Properties object and initializes the BeanPanel GUI.
-     * Use this constructor to create a standalone BeanPanel.
+     * Use this constructor to create a stand-alone BeanPanel.
      */
     public BeanPanel(Properties props) {
 
@@ -215,7 +215,7 @@ public class BeanPanel extends OMToolComponent implements Serializable {
         if (props == null)
             throw new IllegalArgumentException("null props");
 
-        this.loadBeanPanelProperties(props);
+        this.setProperties(props);
 
         this.initGui();
 
@@ -255,15 +255,6 @@ public class BeanPanel extends OMToolComponent implements Serializable {
 
         button.setVisible(getUseAsTool());
         return button;
-    }
-
-    /**
-     * Called when things are removed from the MapHandler.
-     */
-    public void findAndUndo(Object someObj) {
-        if (someObj instanceof LayerHandler) {
-            // do the initializing that need to be done here
-        }
     }
 
     /**
@@ -322,28 +313,6 @@ public class BeanPanel extends OMToolComponent implements Serializable {
         //System.out.println("returning " + infoClass);
 
         return (BeanInfo) retval;
-    }
-
-    /**
-     * Called when the BeanPanel is added the BeanContext, or when
-     * another object is added to the BeanContext after the
-     * LayerHandler has been added. This allows the BeanPanel to keep
-     * up-to-date with any objects that it may be interested in,
-     * namely, the LayerHandler. If a LayerHandler has already been
-     * added, the new LayerHandler will replace it.
-     * 
-     * @param someObj the object being added to the BeanContext.
-     */
-    public void findAndInit(Object someObj) {
-        if (someObj instanceof LayerHandler) {
-            // do the initializing that need to be done here
-        }
-        if (someObj instanceof PropertyHandler) {
-            // do the initializing that need to be done here
-            //if (Debug.debugging("beanbox"))
-            Properties props = ((PropertyHandler) someObj).getProperties();
-            loadBeanPanelProperties(props);
-        }
     }
 
     /**
@@ -479,7 +448,7 @@ public class BeanPanel extends OMToolComponent implements Serializable {
 
     }
 
-    private synchronized void loadBeanPanelProperties(Properties props) {
+    public synchronized void setProperties(String prefix, Properties props) {
 
         loadBeanPaths(props);
 

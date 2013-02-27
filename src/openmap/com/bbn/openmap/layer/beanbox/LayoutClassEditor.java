@@ -29,8 +29,8 @@ public class LayoutClassEditor extends PropertyEditorSupport {
      * managers: viz the NullLayout and the WallFormationLayout
      */
     public String[] getTags() {
-        String result[] = { "com.bbn.openmap.examples.beanbox.NullLayout",
-                "com.bbn.openmap.examples.beanbox.WallFormationLayout" };
+        String result[] = { "com.bbn.openmap.layer.beanbox.NullLayout",
+                "com.bbn.openmap.layer.beanbox.WallFormationLayout" };
         return result;
     }
 }

@@ -48,8 +48,7 @@ import com.bbn.openmap.proj.ProjMath;
  * 
  * @author dietrick
  */
-public abstract class LatLonPoint extends Point2D implements Cloneable,
-        Serializable {
+public abstract class LatLonPoint extends Point2D implements Cloneable, Serializable {
 
     /**
      * 
@@ -59,9 +58,9 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
     public final static double SOUTH_POLE = -NORTH_POLE;
     public final static double DATELINE = 180.0;
     public final static double LON_RANGE = 360.0;
-    public final static double EQUIVALENT_TOLERANCE = 0.00001;
 
-    protected LatLonPoint() {}
+    protected LatLonPoint() {
+    }
 
     /**
      * Factory method that will create a LatLonPoint.Float from a Point2D
@@ -161,7 +160,8 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
         /**
          * Default constructor, values set to 0, 0.
          */
-        public Float() {}
+        public Float() {
+        }
 
         /**
          * @param lat decimal degree latitude.
@@ -409,8 +409,7 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
          *        considered to be radians. Otherwise, they will be considered
          *        to be decimal degrees.
          */
-        public void read(DataInputStream s, boolean inRadians)
-                throws IOException {
+        public void read(DataInputStream s, boolean inRadians) throws IOException {
             setLatLon(s.readFloat(), s.readFloat(), inRadians);
         }
 
@@ -447,7 +446,7 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
          * 
          */
         private static final long serialVersionUID = -7463055211717523471L;
-        
+
         protected double lat;
         protected double lon;
         protected transient double radLat;
@@ -456,7 +455,8 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
         /**
          * Default constructor, values set to 0, 0.
          */
-        public Double() {}
+        public Double() {
+        }
 
         /**
          * Set the latitude, longitude for this point in decimal degrees.
@@ -644,8 +644,7 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
          *        considered to be radians. Otherwise, they will be considered
          *        to be decimal degrees.
          */
-        public void read(DataInputStream s, boolean inRadians)
-                throws IOException {
+        public void read(DataInputStream s, boolean inRadians) throws IOException {
             setLatLon(s.readDouble(), s.readDouble(), inRadians);
         }
 
@@ -686,7 +685,8 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
      * Ensure latitude is between the poles.
      * 
      * @param lat
-     * @return latitude greater than or equal to -90 and less than or equal to 90.
+     * @return latitude greater than or equal to -90 and less than or equal to
+     *         90.
      */
     public final static float normalizeLatitude(float lat) {
         return (float) normalizeLatitude((double) lat);
@@ -713,7 +713,8 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
      * Ensure the longitude is between the date line.
      * 
      * @param lon
-     * @return longitude that is smaller than or equal to 180 and greater than or equal to -180
+     * @return longitude that is smaller than or equal to 180 and greater than
+     *         or equal to -180
      */
     public final static float wrapLongitude(float lon) {
         return (float) wrapLongitude((double) lon);
@@ -775,12 +776,8 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final LatLonPoint pt = (LatLonPoint)obj;
-        return (MoreMath.approximately_equal(getY(),
-                pt.getY(),
-                EQUIVALENT_TOLERANCE) && MoreMath.approximately_equal(getX(),
-                pt.getX(),
-                EQUIVALENT_TOLERANCE));
+        final LatLonPoint pt = (LatLonPoint) obj;
+        return (MoreMath.approximately_equal(getY(), pt.getY()) && MoreMath.approximately_equal(getX(), pt.getX()));
     }
 
     /**
@@ -792,10 +789,7 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
      *         to convert the radians to other units.
      */
     public double distance(LatLonPoint toPoint) {
-        return GreatCircle.sphericalDistance(getRadLat(),
-                getRadLon(),
-                toPoint.getRadLat(),
-                toPoint.getRadLon());
+        return GreatCircle.sphericalDistance(getRadLat(), getRadLon(), toPoint.getRadLat(), toPoint.getRadLon());
     }
 
     /**
@@ -807,14 +801,13 @@ public abstract class LatLonPoint extends Point2D implements Cloneable,
      * 
      */
     public double azimuth(LatLonPoint toPoint) {
-        return GreatCircle.sphericalAzimuth(getRadLat(),
-                getRadLon(),
-                toPoint.getRadLat(),
-                toPoint.getRadLon());
+        return GreatCircle.sphericalAzimuth(getRadLat(), getRadLon(), toPoint.getRadLat(), toPoint.getRadLon());
     }
-    
+
     /**
-     * Get a new LatLonPoint a distance and azimuth from another point, based on the spherical earth model.
+     * Get a new LatLonPoint a distance and azimuth from another point, based on
+     * the spherical earth model.
+     * 
      * @param distance radians
      * @param azimuth radians
      * @return LatLonPoint that is distance and azimuth away from this one.

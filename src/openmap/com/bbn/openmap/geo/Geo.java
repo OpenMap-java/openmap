@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
+import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.proj.Length;
 
 /**
@@ -460,8 +461,9 @@ public class Geo implements Serializable {
         }
 
         Geo v2 = (Geo) obj;
-        return Math.abs(this.x - v2.x) < .0000001 && Math.abs(this.y - v2.y) < .0000001
-                && Math.abs(this.z - v2.z) < .0000001;
+        return MoreMath.approximately_equal(this.x, v2.x)
+                && MoreMath.approximately_equal(this.y, v2.y)
+                && MoreMath.approximately_equal(this.z, v2.z);
     }
 
     /** Angular distance, in radians between this and v2. */

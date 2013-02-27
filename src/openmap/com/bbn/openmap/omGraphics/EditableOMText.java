@@ -57,13 +57,12 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.stateMachine.State;
+
 /**
  * Wrapper class to edit OMText objects. This component is used by the
  * OMDrawingTool.
  */
-public class EditableOMText
-        extends EditableOMGraphic
-        implements ActionListener {
+public class EditableOMText extends EditableOMGraphic implements ActionListener {
 
     protected GrabPoint gpc;
     protected OffsetGrabPoint gpo; // offset
@@ -72,11 +71,6 @@ public class EditableOMText
 
     public final static int CENTER_POINT_INDEX = 0;
     public final static int OFFSET_POINT_INDEX = 1;
-
-    /**
-     * For internationalization.
-     */
-    protected I18n i18n = Environment.getI18n();
 
     /**
      * Create the EditableOMText, setting the state machine to create the point
@@ -97,7 +91,7 @@ public class EditableOMText
     /**
      * Create the EditableOMText with an OMText already defined, ready for
      * editing.
-     *
+     * 
      * @param omc OMText that should be edited.
      */
     public EditableOMText(OMText omc) {
@@ -145,14 +139,14 @@ public class EditableOMText
         }
 
         switch (renderType) {
-            case (OMGraphic.RENDERTYPE_LATLON):
-                text = new OMText(90f, -180f, "Text", OMText.JUSTIFY_LEFT);
-                break;
-            case (OMGraphic.RENDERTYPE_OFFSET):
-                text = new OMText(90f, -180f, 0, 0, "Text", OMText.JUSTIFY_LEFT);
-                break;
-            default:
-                text = new OMText(0, 0, "Text", OMText.JUSTIFY_LEFT);
+        case (OMGraphic.RENDERTYPE_LATLON):
+            text = new OMText(90f, -180f, "Text", OMText.JUSTIFY_LEFT);
+            break;
+        case (OMGraphic.RENDERTYPE_OFFSET):
+            text = new OMText(90f, -180f, 0, 0, "Text", OMText.JUSTIFY_LEFT);
+            break;
+        default:
+            text = new OMText(0, 0, "Text", OMText.JUSTIFY_LEFT);
         }
 
         if (ga != null) {
@@ -200,7 +194,7 @@ public class EditableOMText
     /**
      * Given a MouseEvent, find a GrabPoint that it is touching, and set the
      * moving point to that GrabPoint.
-     *
+     * 
      * @param e MouseEvent
      * @return GrabPoint that is touched by the MouseEvent, null if none are.
      */
@@ -283,7 +277,8 @@ public class EditableOMText
 
         if (ntr == false) {
 
-            if (renderType == OMGraphic.RENDERTYPE_LATLON || renderType == OMGraphic.RENDERTYPE_OFFSET) {
+            if (renderType == OMGraphic.RENDERTYPE_LATLON
+                    || renderType == OMGraphic.RENDERTYPE_OFFSET) {
 
                 if (projection != null) {
                     double lon = text.getLon();
@@ -339,7 +334,8 @@ public class EditableOMText
             }
         }
 
-        boolean settingOffset = getStateMachine().getState() instanceof GraphicSetOffsetState && movingPoint == gpo;
+        boolean settingOffset = getStateMachine().getState() instanceof GraphicSetOffsetState
+                && movingPoint == gpo;
 
         // If the center point is moving, the offset distance changes
         if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
@@ -408,7 +404,7 @@ public class EditableOMText
      * Use the current projection to place the graphics on the screen. Has to be
      * called to at least assure the graphics that they are ready for rendering.
      * Called when the graphic position changes.
-     *
+     * 
      * @param proj com.bbn.openmap.proj.Projection
      * @return true
      */
@@ -440,7 +436,7 @@ public class EditableOMText
      * Draw the EditableOMtext parts into the java.awt.Graphics object. The grab
      * points are only rendered if the point machine state is
      * TextSelectedState.TEXT_SELECTED.
-     *
+     * 
      * @param graphics java.awt.Graphics.
      */
     public void render(java.awt.Graphics graphics) {
@@ -448,13 +444,13 @@ public class EditableOMText
         State state = getStateMachine().getState();
 
         if (!(state instanceof GraphicUndefinedState)) {
-            if (text != null) {
-                text.setVisible(true);
-                text.render(graphics);
-                text.setVisible(false);
-            } else {
+            if (text == null) {
                 Debug.message("eomg", "EditableOMText.render: null point.");
+                return;
             }
+            text.setVisible(true);
+            text.render(graphics);
+            text.setVisible(false);
 
             int renderType = text.getRenderType();
 
@@ -464,11 +460,7 @@ public class EditableOMText
                     GrabPoint gp = gPoints[i];
                     if (gp != null) {
                         if ((i == OFFSET_POINT_INDEX && renderType == OMGraphic.RENDERTYPE_OFFSET && movingPoint == gpo)
-                                ||
-
-                                (state instanceof GraphicSelectedState && ((i != OFFSET_POINT_INDEX && renderType != OMGraphic.RENDERTYPE_OFFSET) || (renderType == OMGraphic.RENDERTYPE_OFFSET)))
-
-                        ) {
+                                || (state instanceof GraphicSelectedState && ((i != OFFSET_POINT_INDEX && renderType != OMGraphic.RENDERTYPE_OFFSET) || (renderType == OMGraphic.RENDERTYPE_OFFSET)))) {
 
                             gp.setVisible(true);
                             gp.render(graphics);
@@ -488,7 +480,7 @@ public class EditableOMText
      * widget is being created/edited, then don't call this method from the
      * EditableOMGraphic implementation, and return a null Component from
      * getGUI.
-     *
+     * 
      * @param graphicAttributes the GraphicAttributes to use to get the GUI
      *        widget from to control those parameters for this EOMG.
      * @return java.awt.Component to use to control parameters for this EOMG.
@@ -496,7 +488,7 @@ public class EditableOMText
     public java.awt.Component getGUI(GraphicAttributes graphicAttributes) {
         Debug.message("eomg", "EditableOMPoly.getGUI");
         if (graphicAttributes != null) {
-            //JComponent gaGUI = (JComponent) graphicAttributes.getGUI();
+            // JComponent gaGUI = (JComponent) graphicAttributes.getGUI();
             JComponent toolbar = createAttributePanel(graphicAttributes);
             // ((JComponent) gaGUI).add(getTextGUI());
 
@@ -525,7 +517,7 @@ public class EditableOMText
 
     /**
      * Get the GUI associated with changing the Text.
-     *
+     * 
      * @param orientation SwingConstants.HORIZONTAL/VERTICAL
      * @param guiComp the JComponent to add stuff to. If the orientation is
      *        HORIZONTAL, the components will be added directly to this
@@ -555,9 +547,7 @@ public class EditableOMText
         guiComp.add(PaletteHelper.getToolBarFill(orientation));
 
         if (orientation == SwingConstants.VERTICAL) {
-            JButton launchButton =
-                    new JButton(getTextAccentToggleButtonImage(DrawingAttributes.icon_width, DrawingAttributes.icon_height,
-                                                               text.getFont(), "T"));
+            JButton launchButton = new JButton(getTextAccentToggleButtonImage(DrawingAttributes.icon_width, DrawingAttributes.icon_height, text.getFont(), "T"));
             launchButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     if (attributeBox != null) {
@@ -601,19 +591,7 @@ public class EditableOMText
         palette.add(new JLabel("\u00b0 "));
         attributeBox.add(palette);
 
-        String[] sizesStrings = {
-            "3",
-            "5",
-            "8",
-            "10",
-            "12",
-            "14",
-            "18",
-            "20",
-            "24",
-            "36",
-            "48"
-        };
+        String[] sizesStrings = { "3", "5", "8", "10", "12", "14", "18", "20", "24", "36", "48" };
         sizesFont = new JComboBox(sizesStrings);
         sizesFont.setToolTipText(i18n.get(EditableOMText.class, "sizesFont", I18n.TOOLTIP, "Font Size"));
         sizesFont.setSelectedItem("" + (text.getFont()).getSize());
@@ -624,10 +602,7 @@ public class EditableOMText
         int textButtonHeight = 15;
 
         boldFont = new JToggleButton();
-        boldFont.setIcon(getTextAccentToggleButtonImage(textButtonWidth, textButtonHeight, new Font(boldFont.getFont().getName(),
-                                                                                                    Font.BOLD, boldFont.getFont()
-                                                                                                                       .getSize()),
-                                                        "B"));
+        boldFont.setIcon(getTextAccentToggleButtonImage(textButtonWidth, textButtonHeight, new Font(boldFont.getFont().getName(), Font.BOLD, boldFont.getFont().getSize()), "B"));
 
         // Too wide margins for 1 letter look unnatural
         Insets insets = boldFont.getInsets();
@@ -640,11 +615,7 @@ public class EditableOMText
         boldFont.addActionListener(this);
 
         italicFont = new JToggleButton();
-        italicFont.setIcon(getTextAccentToggleButtonImage(textButtonWidth, textButtonHeight, new Font(italicFont.getFont()
-                                                                                                                .getName(),
-                                                                                                      Font.ITALIC,
-                                                                                                      italicFont.getFont()
-                                                                                                                .getSize()), "I"));
+        italicFont.setIcon(getTextAccentToggleButtonImage(textButtonWidth, textButtonHeight, new Font(italicFont.getFont().getName(), Font.ITALIC, italicFont.getFont().getSize()), "I"));
         italicFont.setMargin(insets);
         italicFont.setSelected(text.getFont().isItalic());
         italicFont.setToolTipText(i18n.get(EditableOMText.class, "italicFont", I18n.TOOLTIP, "Italic Font"));

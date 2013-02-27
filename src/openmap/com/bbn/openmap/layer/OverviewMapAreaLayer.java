@@ -24,16 +24,19 @@ package com.bbn.openmap.layer;
 
 import java.awt.Graphics;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.Properties;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.event.OverviewMapStatusListener;
 import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMCircle;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.proj.Cylindrical;
+import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
@@ -51,16 +54,15 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
  * and translating those screen coordinates into a lat/lon array for the
  * polygon.
  */
-public class OverviewMapAreaLayer extends Layer implements
-        OverviewMapStatusListener {
+public class OverviewMapAreaLayer extends Layer implements OverviewMapStatusListener {
 
     protected float overviewScale;
-    protected OMPoly poly;
+    protected OMGraphic poly;
     protected Projection sourceMapProjection;
     protected DrawingAttributes areaAttributes = DrawingAttributes.getDefaultClone();
 
     public void projectionChanged(ProjectionEvent pEvent) {
-        // Sourge projection not yet set
+
         if (sourceMapProjection == null)
             return;
 
@@ -71,96 +73,27 @@ public class OverviewMapAreaLayer extends Layer implements
 
         boolean cylindrical = sourceMapProjection instanceof Cylindrical;
 
-        if (poly == null) {
-            poly = new OMPoly();
+        double[] llarr = ProjMath.getProjectionScreenOutlineCoords(sourceMapProjection);
+
+        if (llarr != null) {
+
+            boolean northPoleVisible = ProjMath.isVisible(sourceMapProjection, new LatLonPoint.Double(90, 0));
+            boolean southPoleVisible = ProjMath.isVisible(sourceMapProjection, new LatLonPoint.Double(-90, 0));
+
+            if (northPoleVisible || southPoleVisible) {
+                Point2D center = sourceMapProjection.getCenter();
+                Point2D ul = sourceMapProjection.getUpperLeft();
+                double dist = Geo.distance(center.getY(),  center.getX(), ul.getY(), ul.getX());
+                poly = new OMCircle(center.getY(), center.getX(), dist, Length.RADIAN);
+            } else {
+                poly = new OMPoly(llarr, OMPoly.DECIMAL_DEGREES, cylindrical ? OMGraphic.LINETYPE_STRAIGHT
+                        : OMGraphic.LINETYPE_GREATCIRCLE);
+            }
             areaAttributes.setTo(poly);
-            poly.setLineType(cylindrical ? OMGraphic.LINETYPE_STRAIGHT
-                    : OMGraphic.LINETYPE_GREATCIRCLE);
+
+            // And finally generate the poly
+            poly.generate(proj);
         }
-
-        // Would have used ArrayList<LatLonPoint> here but didn't for
-        // backward compatibility.
-        ArrayList l = new ArrayList();
-
-        // Get the parameters needed for building the coverage polygon
-        int width = sourceMapProjection.getWidth();
-        int height = sourceMapProjection.getHeight();
-        float xinc = ((float) width) / 10f;
-        float yinc = ((float) height) / 10f;
-
-        Point2D center = sourceMapProjection.getCenter(new LatLonPoint.Double());
-        Point2D tmpllp;
-
-        boolean northPoleVisible = isVisible(new LatLonPoint.Double(90, 0));
-        boolean southPoleVisible = isVisible(new LatLonPoint.Double(-90, 0));
-
-        // Walk the top edge of the source projection's screen bounds
-        for (int i = 0; i <= 10; i++) {
-            tmpllp = sourceMapProjection.inverse(xinc * i, 0, new LatLonPoint.Double());
-            if (!tmpllp.equals(center)) {
-                l.add(tmpllp);
-            }
-        }
-
-        // Walk the right edge of the source projection's screen bounds
-        for (int i = 0; i <= 10; i++) {
-            tmpllp = sourceMapProjection.inverse(width, yinc * i, new LatLonPoint.Double());
-            if (!tmpllp.equals(center)) {
-                l.add(tmpllp);
-            }
-        }
-
-        // Walk the south edge of the source projection's screen bounds
-        for (int i = 10; i >= 0; i--) {
-            tmpllp = sourceMapProjection.inverse(xinc * i, height, new LatLonPoint.Double());
-            if (!tmpllp.equals(center)) {
-                l.add(tmpllp);
-            }
-        }
-
-        // Walk the left edge of the source projection's screen bounds
-        for (int i = 10; i >= 0; i--) {
-            tmpllp = sourceMapProjection.inverse(0, yinc * i, new LatLonPoint.Double());
-            if (!tmpllp.equals(center)) {
-                l.add(tmpllp);
-            }
-        }
-
-        if (false || northPoleVisible || southPoleVisible) {
-
-        } else {
-            // populate the coordinate array for the polygon
-            double llarr[] = new double[l.size() * 2];
-            for (int i = 0; i < l.size(); i++) {
-                int pos = i * 2;
-                LatLonPoint llp = ((LatLonPoint) l.get(i));
-                llarr[pos] = (float) llp.getRadLat();
-                llarr[pos + 1] = (float) llp.getRadLon();
-            }
-
-            // Set the poly coordinates
-            poly.setLocation(llarr, OMPoly.RADIANS);
-
-        }
-
-        // And finally generate the poly
-        poly.generate(proj);
-    }
-
-    protected boolean isVisible(LatLonPoint llp) {
-        boolean ret = false;
-        if (sourceMapProjection != null) {
-            if (sourceMapProjection.isPlotable(llp)) {
-                Point2D p = sourceMapProjection.forward(llp);
-                double x = p.getX();
-                double y = p.getY();
-                if (x >= 0 && x <= sourceMapProjection.getWidth() && y >= 0
-                        && y <= sourceMapProjection.getWidth()) {
-                    ret = true;
-                }
-            }
-        }
-        return ret;
     }
 
     /**

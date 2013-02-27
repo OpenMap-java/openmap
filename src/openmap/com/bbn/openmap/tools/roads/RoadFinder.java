@@ -835,8 +835,10 @@ public class RoadFinder
       Route bestRoute = null;
 
       if (startTemp != null && endTemp != null) {
-         if (roadClasses == null)
+         if (roadClasses == null) {
             logger.warning("huh? road classes is null???");
+            return bestRoute;
+         }
 
          bestRoute = Route.getBestRoute(startTemp, endTemp, roadClasses.getBestConvoySpeed(), roadClasses.getWorstConvoySpeed());
       }

@@ -412,16 +412,16 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements Action
     // ----------------------------------------------------------------------
 
     /** The user interface palette for the DTED layer. */
-    protected Box palette = null;
+    protected Box paletteBox = null;
 
     /** Creates the interface palette. */
     public Component getGUI() {
 
-        if (palette == null) {
+        if (paletteBox == null) {
             if (Debug.debugging("dted"))
                 Debug.output("DTEDFrameCacheLayer: creating DTED Palette.");
 
-            palette = Box.createVerticalBox();
+            paletteBox = Box.createVerticalBox();
             Box subbox1 = Box.createHorizontalBox();
             Box subbox3 = Box.createHorizontalBox();
 
@@ -488,12 +488,12 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements Action
 
             subbox1.add(levelPanel);
             subbox1.add(viewPanel);
-            palette.add(subbox1);
+            paletteBox.add(subbox1);
             subbox3.add(redraw);
-            palette.add(subbox3);
+            paletteBox.add(subbox3);
         }
 
-        return palette;
+        return paletteBox;
     }
 
     /**

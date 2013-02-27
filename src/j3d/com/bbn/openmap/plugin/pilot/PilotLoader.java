@@ -118,7 +118,7 @@ public class PilotLoader extends MMLGraphicLoader implements ActionListener,
                     pt.setRadius(5);
                     pt.setOval(true);
                     pt.setFillPaint(Color.red);
-                    addNodeButton.setEnabled(false);
+//                    addNodeButton.setEnabled(false);
                     addPathButton.setEnabled(false);
                 }
             }
@@ -174,9 +174,9 @@ public class PilotLoader extends MMLGraphicLoader implements ActionListener,
 
     public void setDrawingTool(OMDrawingTool drawingTool) {
         dt = drawingTool;
-        if (addNodeButton != null) {
-            addNodeButton.setEnabled(drawingTool != null);
-        }
+//        if (addNodeButton != null) {
+//            addNodeButton.setEnabled(drawingTool != null);
+//        }
         if (addPathButton != null) {
             addPathButton.setEnabled(drawingTool != null);
         }
@@ -186,25 +186,8 @@ public class PilotLoader extends MMLGraphicLoader implements ActionListener,
         return dt;
     }
 
-    /**
-     * The delay between timer pulses, in milliseconds.
-     */
-    protected int updateInterval = 3000;
-
-    public void setUpdateInterval(int delay) {
-        updateInterval = delay;
-        if (timer != null) {
-            timer.setDelay(updateInterval);
-            timer.restart();
-        }
-    }
-
-    public int getUpdateInterval() {
-        return updateInterval;
-    }
-
     JCheckBox timerButton = null;
-    JButton addNodeButton = null;
+    //JButton addNodeButton = null;
     JButton addPathButton = null;
 
     public Component getGUI() {

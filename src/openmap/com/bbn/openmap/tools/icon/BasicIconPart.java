@@ -38,7 +38,7 @@ import com.bbn.openmap.omGraphics.DrawingAttributes;
  * will create GradientPaints for the Colors from the
  * DrawingAttribtues if desired.
  */
-public class BasicIconPart implements IconPart {
+public class BasicIconPart implements IconPart, Cloneable {
 
     /**
      * AffineTransform to adjust geometry if needed.
@@ -198,9 +198,12 @@ public class BasicIconPart implements IconPart {
     }
 
     public Object clone() {
-        BasicIconPart clone = new BasicIconPart(getGeometry(), getTransform());
-        clone.setRenderingAttributes(getRenderingAttributes());
-        clone.setClip(getClip());
+        BasicIconPart clone = null;
+        try {
+            clone = (BasicIconPart) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
         return clone;
     }
 }

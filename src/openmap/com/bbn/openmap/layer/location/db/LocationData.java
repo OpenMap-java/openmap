@@ -42,23 +42,11 @@ import java.sql.Statement;
  */
 public class LocationData {
 
-    /** Connection object that will be used to retrieve data. */
-    protected Connection connection;
-
     /* variables that would hold current values of record set */
     protected String cityName, stateName, graphicName;
     protected float latitude, longitude;
     protected String queryString = null;
 
-    private Statement stmt;
-    private ResultSet rset;
-
-    public LocationData() {
-    }
-
-    public LocationData(Connection inConnection) {
-        connection = inConnection;
-    }
 
     public LocationData(RecordSet drs)
             throws SQLException {
@@ -70,20 +58,6 @@ public class LocationData {
         graphicName = rset.getString(3);
         latitude = rset.getFloat(4);
         longitude = rset.getFloat(5);
-    }
-
-    public void close()
-            throws SQLException {
-        rset.close();
-        stmt.close();
-    }
-
-    public Connection getConnection() {
-        return connection;
-    }
-
-    public void setConnection(Connection inConnection) {
-        connection = inConnection;
     }
 
     /**
@@ -129,7 +103,7 @@ public class LocationData {
     }
 
     public static void main(String[] args) {
-        System.out.println("\n*** LocationData looks for the following query: ***\n");
+        System.out.println("\n*** LocationData handles results from the following query: ***\n");
         System.out.println(" select CITY (string), STATE (string), GRAPHIC (string, url or graphic name), LATITUDE (float), LONGITUDE (float) from LOCATION_TABLE (tablename where data is stored)\n");
         System.out.println("Note: Column names and tablename should reflect whatever is stored in the database.  Data types should match what this class is expecting, in the order listed here.\n");
     }

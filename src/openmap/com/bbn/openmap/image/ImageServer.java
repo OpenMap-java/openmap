@@ -868,7 +868,7 @@ public class ImageServer
      * @param p Properties used to initialize the Properties.
      * @return default formatter.
      */
-    protected ImageFormatter getFormatters(Properties p) {
+    protected synchronized ImageFormatter getFormatters(Properties p) {
         String formattersString;
         ImageFormatter iFormatter = null;
 

@@ -281,22 +281,22 @@ public class ScaleDisplayLayer
 
    }
 
-   JPanel palette;
+   JPanel palettePanel;
    ButtonGroup uomButtonGroup;
    Vector<JRadioButton> buttons = new Vector<JRadioButton>();
 
    /** Creates the interface palette. */
    public java.awt.Component getGUI() {
 
-      if (palette == null) {
+      if (palettePanel == null) {
 
          logger.fine("creating palette.");
 
-         palette = new JPanel();
+         palettePanel = new JPanel();
          uomButtonGroup = new ButtonGroup();
 
-         palette.setLayout(new javax.swing.BoxLayout(palette, javax.swing.BoxLayout.Y_AXIS));
-         palette.setBorder(new javax.swing.border.TitledBorder("Unit Of Measure"));
+         palettePanel.setLayout(new javax.swing.BoxLayout(palettePanel, javax.swing.BoxLayout.Y_AXIS));
+         palettePanel.setBorder(new javax.swing.border.TitledBorder("Unit Of Measure"));
 
          java.awt.event.ActionListener al = new ActionListener() {
             // We don't have to check for action commands or anything like that.
@@ -313,7 +313,7 @@ public class ScaleDisplayLayer
             jrb.setText(lengthType.getAbbr());
             jrb.setToolTipText(lengthType.toString());
             uomButtonGroup.add(jrb);
-            palette.add(jrb);
+            palettePanel.add(jrb);
 
             jrb.addActionListener(al);
 
@@ -327,6 +327,6 @@ public class ScaleDisplayLayer
          }
       }
 
-      return palette;
+      return palettePanel;
    }
 }

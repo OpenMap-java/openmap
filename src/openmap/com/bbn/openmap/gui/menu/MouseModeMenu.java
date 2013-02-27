@@ -51,9 +51,7 @@ public class MouseModeMenu extends AbstractOpenMapMenu implements
     // mouse mode widgets
     protected transient JRadioButtonMenuItem[] mouseModeButtons = new JRadioButtonMenuItem[0];
     protected transient ButtonGroup group2 = null;
-    protected I18n i18n = Environment.getI18n();
-    protected BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
-
+    
     public MouseModeMenu() {
         super();
         setText(i18n.get(this, "mouseModeMenu", defaultText));
@@ -193,19 +191,6 @@ public class MouseModeMenu extends AbstractOpenMapMenu implements
                     "MouseModeMenuItem removing MouseDelegator.");
             setMouseDelegator(null);
         }
-    }
-
-    /** Method for BeanContextChild interface. */
-    public void addPropertyChangeListener(String propertyName,
-                                          PropertyChangeListener in_pcl) {
-        beanContextChildSupport.addPropertyChangeListener(propertyName, in_pcl);
-    }
-
-    /** Method for BeanContextChild interface. */
-    public void removePropertyChangeListener(String propertyName,
-                                             PropertyChangeListener in_pcl) {
-        beanContextChildSupport.removePropertyChangeListener(propertyName,
-                in_pcl);
     }
 
 }

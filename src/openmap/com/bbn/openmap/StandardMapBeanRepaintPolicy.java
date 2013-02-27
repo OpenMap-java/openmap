@@ -27,19 +27,19 @@ import java.awt.Graphics;
 import com.bbn.openmap.util.Debug;
 
 /**
- * A MapBeanRepaintPolicy that just forwards layer repaint requests
- * normally, and does nothing for java.awt.Graphics before painting.
- * If this class or any subclass of it is added to the MapHandler, it
- * will find the MapBean and set itself on it.
+ * A MapBeanRepaintPolicy that just forwards layer repaint requests normally,
+ * and does nothing for java.awt.Graphics before painting. If this class or any
+ * subclass of it is added to the MapHandler, it will find the MapBean and set
+ * itself on it.
  * 
  * <P>
- * A StandardMapBeanRepaintPolicy is automatically set in the MapBean,
- * so you don't have to add one of these to the MapHandler. The
- * OMComponent inheritance is here to make it easier for subclasses to
- * be added and for properties to be set.
+ * A StandardMapBeanRepaintPolicy is automatically set in the MapBean, so you
+ * don't have to add one of these to the MapHandler. The OMComponent inheritance
+ * is here to make it easier for subclasses to be added and for properties to be
+ * set.
  */
-public class StandardMapBeanRepaintPolicy extends OMComponent implements
-        MapBeanRepaintPolicy, SoloMapComponent, Cloneable {
+public class StandardMapBeanRepaintPolicy extends OMComponent implements MapBeanRepaintPolicy,
+        SoloMapComponent, Cloneable {
 
     protected MapBean map;
 
@@ -63,38 +63,35 @@ public class StandardMapBeanRepaintPolicy extends OMComponent implements
     }
 
     /**
-     * Take some action based on a repaint request from this
-     * particular layer. The StandardMapBeanRepaintPolicy just
-     * forwards requests on.
+     * Take some action based on a repaint request from this particular layer.
+     * The StandardMapBeanRepaintPolicy just forwards requests on.
      */
     public void repaint(Layer layer) {
         // No decisions, just forward the repaint() request;
         if (map != null) {
             if (DEBUG) {
-                Debug.output("SMBRP: forwarding repaint request for "
-                        + layer.getName());
+                Debug.output("SMBRP: forwarding repaint request for " + layer.getName());
             }
             map.repaint();
         } else {
-            Debug.error("SMBRP: MapBean is null in repaint(" + layer.getName()
-                    + ")");
+            Debug.error("SMBRP: MapBean is null in repaint(" + layer.getName() + ")");
         }
     }
 
     /**
      * A hook for the RepaintPolicy to make any adjustments to the
-     * java.awt.Graphics object before sending the Graphics object to
-     * the layers for painting. Gives the policy a chance to make
-     * rendering hint changes on Graphic2D objects, setting
-     * anti-aliasing configurations, etc. No modifications are made.
+     * java.awt.Graphics object before sending the Graphics object to the layers
+     * for painting. Gives the policy a chance to make rendering hint changes on
+     * Graphic2D objects, setting anti-aliasing configurations, etc. No
+     * modifications are made.
      */
     public Graphics modifyGraphicsForPainting(Graphics graphics) {
         return graphics;
     }
 
     /**
-     * If a MapBean is passed to this StandardMapBeanRepaintPolicy, it
-     * will set itself on it.
+     * If a MapBean is passed to this StandardMapBeanRepaintPolicy, it will set
+     * itself on it.
      */
     public void findAndInit(Object someObj) {
         if (someObj instanceof MapBean) {
@@ -107,20 +104,23 @@ public class StandardMapBeanRepaintPolicy extends OMComponent implements
     }
 
     /**
-     * If a MapBean is passed to this StandardMapBeanRepaintPolicy, it
-     * will check if it is the repaint policy set on the MapBean and
-     * if so, remove itself from it.
+     * If a MapBean is passed to this StandardMapBeanRepaintPolicy, it will
+     * check if it is the repaint policy set on the MapBean and if so, remove
+     * itself from it.
      */
     public void findAndUndo(Object someObj) {
-        if (someObj instanceof MapBean
-                && ((MapBean) someObj).getMapBeanRepaintPolicy() == this) {
+        if (someObj instanceof MapBean && ((MapBean) someObj).getMapBeanRepaintPolicy() == this) {
             ((MapBean) someObj).setMapBeanRepaintPolicy(null);
             setMap(null);
         }
     }
 
     public Object clone() {
-        return new StandardMapBeanRepaintPolicy();
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
-

@@ -25,8 +25,12 @@ package com.bbn.openmap.proj;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMPoly;
+import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * Math functions used by projection code.
@@ -135,7 +139,8 @@ public final class ProjMath {
      * @return float distance
      */
     public final static float lonDistance(float lon1, float lon2) {
-        return (float) Math.min(Math.abs(lon1 - lon2), ((lon1 < 0) ? lon1 + Math.PI : Math.PI - lon1)
+        return (float) Math.min(Math.abs(lon1 - lon2), ((lon1 < 0) ? lon1 + Math.PI : Math.PI
+                - lon1)
                 + ((lon2 < 0) ? lon2 + Math.PI : Math.PI - lon2));
     }
 
@@ -545,7 +550,8 @@ public final class ProjMath {
      * @param projection the projection to use to query to get the scale for,
      *        for projection type and height and width.
      */
-    protected static float getScale(Point2D ll1, Point2D ll2, Point2D point1, Point2D point2, Projection projection) {
+    protected static float getScale(Point2D ll1, Point2D ll2, Point2D point1, Point2D point2,
+                                    Projection projection) {
 
         return projection.getScale(ll1, ll2, point1, point2);
     }
@@ -633,7 +639,8 @@ public final class ProjMath {
      *        zoom box, or one of the corners.
      * @return Rectangle2D representing the new zoom box.
      */
-    public static Rectangle2D getRatioBox(Projection proj, Point2D pt1, Point2D pt2, boolean zoomOnCenter) {
+    public static Rectangle2D getRatioBox(Projection proj, Point2D pt1, Point2D pt2,
+                                          boolean zoomOnCenter) {
         double mapRatio = (double) proj.getHeight() / (double) proj.getWidth();
 
         double boxHeight = Math.abs(pt1.getY() - pt2.getY());
@@ -664,6 +671,101 @@ public final class ProjMath {
 
             return new Rectangle2D.Double(anchorx, anchory, boxWidth, boxHeight);
         }
+    }
+
+    /**
+     * Walks around the perimeter of the sourceMapProjection and returns the
+     * lat/lon coords of the outline.
+     * 
+     * @param sourceMapProjection the source map's projection.
+     * @return double[] in y, x order, in whatever units the source map
+     *         projection's inverse function returns.
+     */
+    public static double[] getProjectionScreenOutlineCoords(Projection sourceMapProjection) {
+
+        // Sourge projection not yet set
+        if (sourceMapProjection == null) {
+            return null;
+        }
+
+        // Would have used ArrayList<LatLonPoint> here but didn't for
+        // backward compatibility.
+        ArrayList<Point2D> l = new ArrayList<Point2D>();
+
+        // Get the parameters needed for building the coverage polygon
+        int width = sourceMapProjection.getWidth();
+        int height = sourceMapProjection.getHeight();
+        double xinc = ((double) width) / 10.0;
+        double yinc = ((double) height) / 10.0;
+
+        Point2D center = sourceMapProjection.getCenter(new Point2D.Double());
+        Point2D tmpllp;
+
+        // Walk the top edge of the source projection's screen bounds
+        for (int i = 0; i <= 10; i++) {
+            tmpllp = sourceMapProjection.inverse(xinc * i, 0, new Point2D.Double());
+            if (!tmpllp.equals(center)) {
+                l.add(tmpllp);
+            }
+        }
+
+        // Walk the right edge of the source projection's screen bounds
+        for (int i = 0; i <= 10; i++) {
+            tmpllp = sourceMapProjection.inverse(width, yinc * i, new Point2D.Double());
+            if (!tmpllp.equals(center)) {
+                l.add(tmpllp);
+            }
+        }
+
+        // Walk the south edge of the source projection's screen bounds
+        for (int i = 10; i >= 0; i--) {
+            tmpllp = sourceMapProjection.inverse(xinc * i, height, new Point2D.Double());
+            if (!tmpllp.equals(center)) {
+                l.add(tmpllp);
+            }
+        }
+
+        // Walk the left edge of the source projection's screen bounds
+        for (int i = 10; i >= 0; i--) {
+            tmpllp = sourceMapProjection.inverse(0, yinc * i, new Point2D.Double());
+            if (!tmpllp.equals(center)) {
+                l.add(tmpllp);
+            }
+        }
+
+        // populate the coordinate array for the polygon
+        double[] llarr = new double[l.size() * 2];
+        int i = 0;
+        for (Point2D pnt : l) {
+            llarr[i] = pnt.getY();
+            llarr[i + 1] = pnt.getX();
+            i += 2;
+        }
+
+        return llarr;
+    }
+
+    /**
+     * Returns true if the Point is visible on the provided projection.
+     * 
+     * @param sourceMapProjection
+     * @param llp
+     * @return true if the Point is visible on the provided projection.
+     */
+    public static boolean isVisible(Projection sourceMapProjection, Point2D llp) {
+        boolean ret = false;
+        if (sourceMapProjection != null) {
+            if (sourceMapProjection.isPlotable(llp)) {
+                Point2D p = sourceMapProjection.forward(llp);
+                double x = p.getX();
+                double y = p.getY();
+                if (x >= 0 && x <= sourceMapProjection.getWidth() && y >= 0
+                        && y <= sourceMapProjection.getWidth()) {
+                    ret = true;
+                }
+            }
+        }
+        return ret;
     }
 
 }

@@ -688,7 +688,7 @@ public class ImageTileLayer extends OMGraphicHandlerLayer {
      * @param selectedTiles2
      */
     protected void showHideTiles(String text, ImageTile[] selectedTiles2) {
-        boolean isVisible = (text == SHOW_TILES_TITLE);
+        boolean isVisible = (SHOW_TILES_TITLE.equals(text));
         for (int i = 0; i < selectedTiles2.length; i++) {
             selectedTiles2[i].setVisible(isVisible);
         }

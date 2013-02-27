@@ -468,8 +468,6 @@ public class BeanBoxDnDCatcher extends DefaultDnDCatcher implements
 
         popup.add(menuItem);
 
-        popup.setPreferredSize(new Dimension(150, (popup.getComponentCount() + 1) * 25));
-
         if (Debug.debugging("beanbox"))
             Debug.output("showing popup");
 

@@ -274,7 +274,7 @@ public class PlugInLayer extends OMGraphicHandlerLayer {
      * 
      * @return the MapMouseListener for the layer, or null if none
      */
-    public MapMouseListener getMapMouseListener() {
+    public synchronized MapMouseListener getMapMouseListener() {
         return mml;
     }
 

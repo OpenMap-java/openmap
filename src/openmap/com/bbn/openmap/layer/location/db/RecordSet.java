@@ -59,8 +59,7 @@ public class RecordSet {
      * You have to remember to set the query string and call getAllQuery()
      * before trying to iterate through the results.
      */
-    public RecordSet(Connection inConnection)
-            throws SQLException {
+    public RecordSet(Connection inConnection) throws SQLException {
         this(inConnection, null);
     }
 
@@ -68,8 +67,7 @@ public class RecordSet {
      * Does everything. If the connection and query are not null, then the
      * result set is ready for iteration after this object is created.
      */
-    public RecordSet(Connection inConnection, String query)
-            throws SQLException {
+    public RecordSet(Connection inConnection, String query) throws SQLException {
         connection = inConnection;
         queryString = query;
         getAllQuery();
@@ -84,8 +82,7 @@ public class RecordSet {
      * 
      * @exception throws SQLException if something goes wrong with the query.
      */
-    public void getAllQuery()
-            throws SQLException {
+    public void getAllQuery() throws SQLException {
 
         if (queryString != null && connection != null) {
             try {
@@ -100,7 +97,8 @@ public class RecordSet {
                 throw new SQLException(queryString + " | " + sqlE.getMessage());
             }
         } else {
-            logger.warning("Database parameters faulty!\n  query => " + queryString + "\n  connection => " + connection);
+            logger.warning("Database parameters faulty!\n  query => " + queryString
+                    + "\n  connection => " + connection);
         }
     }
 
@@ -109,12 +107,12 @@ public class RecordSet {
      * record set of data. Then you feed this RecordSet object to the
      * constructor to a new data object.
      */
-    public boolean next()
-            throws SQLException {
+    public boolean next() throws SQLException {
         if (rset != null) {
             return rset.next();
-        } else
+        } else {
             return false;
+        }
     }
 
     /**
@@ -128,12 +126,13 @@ public class RecordSet {
         return rset;
     }
 
-    public void close()
-            throws SQLException {
-        if (rset != null)
+    public void close() throws SQLException {
+        if (rset != null) {
             rset.close();
-        if (stmt != null)
+        }
+        if (stmt != null) {
             stmt.close();
+        }
     }
 
     public Connection getConnection() {

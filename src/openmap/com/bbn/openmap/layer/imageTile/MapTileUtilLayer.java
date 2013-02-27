@@ -54,7 +54,6 @@ public class MapTileUtilLayer
       implements ListSelectionListener {
 
    protected static Logger logger = Logger.getLogger("com.bbn.openmap.layer.imageTile.MapTileUtilLayer");
-   protected GeoCoordTransformation coordTransform = LatLonGCT.INSTANCE;
    protected String tileRootDir;
    protected HashMap<String, BufferedImage> images;
    protected OMGraphicList omgraphics;
@@ -62,6 +61,7 @@ public class MapTileUtilLayer
    public MapTileUtilLayer() {
       images = new HashMap<String, BufferedImage>();
       omgraphics = new OMGraphicList();
+      coordTransform = LatLonGCT.INSTANCE;
       setProjectionChangePolicy(new ListResetPCPolicy(this));
    }
 

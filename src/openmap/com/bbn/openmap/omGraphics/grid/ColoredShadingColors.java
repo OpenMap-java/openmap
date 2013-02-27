@@ -134,7 +134,7 @@ public class ColoredShadingColors implements ElevationColors {
      */
     public int getARGB(int elevation, Length units, double slope) {
 
-        if (elevation < 0) {
+        if (elevation < 0 || colors == null) {
             return waterColor.getRGB();
         }
 
@@ -142,7 +142,7 @@ public class ColoredShadingColors implements ElevationColors {
         float numCutoffs = colors.length;
         int i = 0;
 
-        while (colors != null && i < numCutoffs && colors[i] != null
+        while (i < numCutoffs && colors[i] != null
                 && colors[i].height < elev) {
             i++;
         }

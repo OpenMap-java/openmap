@@ -46,10 +46,9 @@ import com.bbn.openmap.util.Debug;
 public class ScaleTextPanel extends OMToolComponent implements Serializable,
         ActionListener, ProjectionListener {
 
-    public final static String defaultKey = "scaletext";
+    public final static String defaultScaleTextPanelKey = "scaletext";
     public transient final static String setScaleCmd = "setScale";
 
-    protected String key = defaultKey;
     protected transient JTextField scaleField = null;
     /** Support for zooming when text field is used. */
     protected transient ZoomSupport zoomDelegate = null;
@@ -68,7 +67,7 @@ public class ScaleTextPanel extends OMToolComponent implements Serializable,
      */
     public ScaleTextPanel() {
         super();
-        setKey(defaultKey);
+        setKey(defaultScaleTextPanelKey);
 
         zoomDelegate = new ZoomSupport(this);
 

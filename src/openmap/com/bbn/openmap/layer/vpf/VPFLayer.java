@@ -280,7 +280,7 @@ public class VPFLayer
 
       if (defaultProperty != null) {
          prefix = defaultProperty;
-         props = getDefaultProperties();
+         props = VPFUtil.getDefaultProperties();
       }
 
       // need to save these so we can call setProperties on the
@@ -352,33 +352,7 @@ public class VPFLayer
    }
 
    /** Where we store our default properties once we've loaded them. */
-   private static Properties defaultProps;
-
-   /**
-    * Return our default properties for vpf land.
-    */
-   public static Properties getDefaultProperties() {
-      if (defaultProps == null) {
-         try {
-            InputStream in = VPFLayer.class.getResourceAsStream("defaultVPFlayers.properties");
-            // use a temporary so other threads won't see an
-            // empty properties file
-            Properties tmp = new Properties();
-            if (in != null) {
-               tmp.load(in);
-               in.close();
-            } else {
-               logger.warning("can't load default properties file");
-               // just use an empty properties file
-            }
-            defaultProps = tmp;
-         } catch (IOException io) {
-            logger.warning("can't load default properties: " + io);
-            defaultProps = new Properties();
-         }
-      }
-      return defaultProps;
-   }
+   private Properties defaultProps;
 
    /**
     * Set the data path to a single place.

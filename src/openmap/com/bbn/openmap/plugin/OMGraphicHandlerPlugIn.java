@@ -38,8 +38,6 @@ import com.bbn.openmap.proj.Projection;
 public class OMGraphicHandlerPlugIn extends BeanContextAbstractPlugIn implements
         OMGraphicHandler {
 
-    protected OMGraphicList list = null;
-
     protected FilterSupport filter = new FilterSupport();
 
     public OMGraphicHandlerPlugIn() {

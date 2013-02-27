@@ -564,7 +564,7 @@ public class DrawUtil {
         // calculate the offsets
         // lw = lw -1;
         int off1 = (int) lw / 2;
-        int off2 = (lw % 2 == 1) ? (int) lw / 2 + 1 : (int) lw / 2;
+        int off2 = (lw % 2 != 0) ? (int) lw / 2 + 1 : (int) lw / 2;
 
         // slope <= 1
         if (Math.abs((float) (y2 - y1) / (float) (x2 - x1)) <= 1f) {

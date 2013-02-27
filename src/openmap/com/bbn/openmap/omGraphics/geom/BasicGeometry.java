@@ -714,7 +714,7 @@ public abstract class BasicGeometry
     *         or null if the OMGeometry hasn't been updated to use Shape objects
     *         for its internal representation.
     */
-   public GeneralPath getShape() {
+   public synchronized GeneralPath getShape() {
       return shape;
    }
 

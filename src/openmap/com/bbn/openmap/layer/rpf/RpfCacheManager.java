@@ -75,7 +75,7 @@ public class RpfCacheManager
      * quadrant, and for each RPF directory, in case coverage is spread out over
      * different sources.
      */
-    protected RpfCacheHandler[] caches = new RpfCacheHandler[MAX_NUM_BOXES];
+    protected transient RpfCacheHandler[] caches = new RpfCacheHandler[MAX_NUM_BOXES];
     /** The place to look for for image data. */
     protected RpfFrameProvider frameProvider;
     /**

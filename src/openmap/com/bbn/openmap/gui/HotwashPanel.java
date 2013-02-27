@@ -84,17 +84,17 @@ public class HotwashPanel extends OMComponentPanel {
     }
 
     public Component add(Component comp, String location) {
-        if (location == BorderLayout.EAST) {
+        if (BorderLayout.EAST.equals(location)) {
             rightSlider.setRightComponent(comp);
-        } else if (location == BorderLayout.WEST) {
+        } else if (BorderLayout.WEST.equals(location)) {
             leftSlider.setLeftComponent(comp);
-        } else if (location == BorderLayout.CENTER) {
+        } else if (BorderLayout.CENTER.equals(location)) {
             if (bottomSlider != null) {
                 bottomSlider.setTopComponent(comp);
             } else {
                 leftSlider.setRightComponent(comp);
             }
-        } else if (location == BorderLayout.NORTH && bottomSlider != null) {
+        } else if (BorderLayout.NORTH.equals(location) && bottomSlider != null) {
             bottomSlider.setBottomComponent(comp);
         } else {
             super.add(comp, location);
