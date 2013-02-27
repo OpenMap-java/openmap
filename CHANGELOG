@@ -1,3 +1,28 @@
+2013-02-27  dietrick  <dietrick@client.wonkavision.local>
+
+	* Made a bunch of adjustmetns as recommended by FindBug, regarding
+	null pointer checks, equality checks, stuff like that.
+
+	* Added AzimuthPanner abstract class with Standard and Shapefile
+	subclasses.  This class is used by the PanMouseMode and
+	OMMouseMode for panning when the projection is Azimuthal.  The
+	modes used to translate the map image, the new class renders
+	things instead.  The AzimuthPanner.Standard is used if a shapefile
+	for the mousemode is not defined.
+
+	* Modified how the DrawingToolLayer tool buttons react to
+	toggling.  Toggling the tool button will deactivate the drawing
+	tool, returning mouse control to the application.
+
+	* Updated the mapTile package, allowing the frames to be defined
+	by a regex that fits how to ask for tiles from a server or
+	directory location.  Locations can include {x}{y}{z} where x,y,z
+	are x and y tile coordinates at z zoom level.  This regex can be
+	defined as the rootDir of a MapTileLayer.
+
+	* Fixed the BeanBox example, since it was moved.  Updated the
+	manifest.txt to remove outdated beans.
+	
 2012-01-27  dietrick  <dietrick@client.wonkavision.local>
 
 	* Added the maptileservlet package.  This servlet package provide
