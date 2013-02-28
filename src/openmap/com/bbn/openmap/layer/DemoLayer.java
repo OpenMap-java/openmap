@@ -101,9 +101,7 @@ import com.bbn.openmap.util.PaletteHelper;
  * 
  *      Just added some decorated splines to test them. EL
  */
-public class DemoLayer
-        extends OMGraphicHandlerLayer
-        implements DrawingToolRequestor {
+public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolRequestor {
 
     protected JPanel legend;
     /**
@@ -129,19 +127,23 @@ public class DemoLayer
      */
     protected final static String externalKey = "ek";
     protected GraphicAttributes filterGA = null;
+    /**
+     * This is a list to hold the non-changing OMGraphics to display on the
+     * layer. It is used to load the OMGraphicList that the layer actually
+     * paints.
+     */
+    protected OMGraphicList objects;
 
     public DemoLayer() {
         setName("Demo");
         // This is how to set the ProjectionChangePolicy, which
         // dictates how the layer behaves when a new projection is
         // received.
-        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.StandardPCPolicy(this, true));
+        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
         // Making the setting so this layer receives events from the
         // SelectMouseMode, which has a modeID of "Gestures". Other
         // IDs can be added as needed.
-        setMouseModeIDsForEvents(new String[] {
-            "Gestures"
-        });
+        setMouseModeIDsForEvents(new String[] { "Gestures" });
     }
 
     public void paint(java.awt.Graphics g) {
@@ -228,18 +230,8 @@ public class DemoLayer
         spline2.putAttribute(RCT, "spline 2");
         omList.add(spline2);
 
-        double[] llPoints = {
-            55.0f,
-            -10.0f,
-            50.0f,
-            -5.0f,
-            45.0f,
-            -7.0f,
-            43.0f,
-            -12.0f,
-            55.0f,
-            -10.0f
-        };
+        double[] llPoints = { 55.0f, -10.0f, 50.0f, -5.0f, 45.0f, -7.0f, 43.0f, -12.0f, 55.0f,
+                -10.0f };
         OMDecoratedSpline omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         ShapeDecorator sd = new ShapeDecorator();
         sd.addDecoration(new LineShapeDecoration(5, com.bbn.openmap.omGraphics.OMColor.clear));
@@ -247,18 +239,8 @@ public class DemoLayer
         omds.setDecorator(sd);
         omList.add(omds);
 
-        llPoints = new double[] {
-            56.0f,
-            -11.0f,
-            51.0f,
-            -6.0f,
-            46.0f,
-            -8.0f,
-            44.0f,
-            -13.0f,
-            56.0f,
-            -11.0f
-        };
+        llPoints = new double[] { 56.0f, -11.0f, 51.0f, -6.0f, 46.0f, -8.0f, 44.0f, -13.0f, 56.0f,
+                -11.0f };
         omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         sd = new ShapeDecorator();
         sd.addDecoration(new LineShapeDecoration(3, com.bbn.openmap.omGraphics.OMColor.clear));
@@ -266,18 +248,8 @@ public class DemoLayer
         omds.setDecorator(sd);
         omList.add(omds);
 
-        llPoints = new double[] {
-            57.0f,
-            -12.0f,
-            52.0f,
-            -7.0f,
-            47.0f,
-            -9.0f,
-            45.0f,
-            -14.0f,
-            57.0f,
-            -12.0f
-        };
+        llPoints = new double[] { 57.0f, -12.0f, 52.0f, -7.0f, 47.0f, -9.0f, 45.0f, -14.0f, 57.0f,
+                -12.0f };
         omds = new OMDecoratedSpline(llPoints, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         sd = new ShapeDecorator();
         sd.addDecoration(new LineShapeDecoration(2, com.bbn.openmap.omGraphics.OMColor.clear));
@@ -287,28 +259,10 @@ public class DemoLayer
         omds.setDecorator(sd);
         omList.add(omds);
 
-        double[] llPoints2 = {
-            55.0f,
-            -12.0f,
-            50.0f,
-            -7.0f,
-            45.0f,
-            -9.0f,
-            43.0f,
-            -14.0f
-        };
+        double[] llPoints2 = { 55.0f, -12.0f, 50.0f, -7.0f, 45.0f, -9.0f, 43.0f, -14.0f };
         OMHotSurfaceFront hf = new OMHotSurfaceFront(llPoints2, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         omList.add(hf);
-        double[] llPoints3 = {
-            55.0f,
-            -14.0f,
-            50.0f,
-            -9.0f,
-            45.0f,
-            -11.0f,
-            43.0f,
-            -16.0f
-        };
+        double[] llPoints3 = { 55.0f, -14.0f, 50.0f, -9.0f, 45.0f, -11.0f, 43.0f, -16.0f };
         OMOcclusion oc = new OMOcclusion(llPoints3, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
         omList.add(oc);
 
@@ -350,8 +304,7 @@ public class DemoLayer
         }
         omList.add(pointList);
 
-        OMEllipse ell =
-                new OMEllipse(new LatLonPoint.Double(60, -110), 1000, 300, Length.NM, com.bbn.openmap.MoreMath.HALF_PI / 2.0);
+        OMEllipse ell = new OMEllipse(new LatLonPoint.Double(60, -110), 1000, 300, Length.NM, com.bbn.openmap.MoreMath.HALF_PI / 2.0);
 
         ell.setLinePaint(Color.blue);
         // ell.setFillPaint(Color.yellow);
@@ -362,12 +315,7 @@ public class DemoLayer
         ell.setFillPaint(Color.yellow);
         omList.add(ell);
 
-        double[] llp2 = new double[] {
-            0.41789755f,
-            -1.435303f,
-            0.41813868f,
-            -1.3967744f
-        };
+        double[] llp2 = new double[] { 0.41789755f, -1.435303f, 0.41813868f, -1.3967744f };
 
         OMPoly p2 = new OMPoly(llp2, OMGraphic.RADIANS, OMGraphic.LINETYPE_RHUMB);
         p2.setLinePaint(Color.yellow);
@@ -392,8 +340,7 @@ public class DemoLayer
         // 4.860833, (float) 50.490833, (float) 4.847778, 2));
         // combo.addOMGraphic(new OMLine((float) 50.491269, (float)
         // 4.704239, (float) 50.490833, (float) 4.847778, 3));
-        combo.addOMGraphic(new OMArc((float) 50.491269, (float) 4.704239, (float) 0.09168520552327833,
-                                     (float) (28.201865385183652 + 90.21758717585848), (float) -90.21758717585848));
+        combo.addOMGraphic(new OMArc((float) 50.491269, (float) 4.704239, (float) 0.09168520552327833, (float) (28.201865385183652 + 90.21758717585848), (float) -90.21758717585848));
         combo.addOMGraphic(new OMLine((float) 50.534167, (float) 4.831111, (float) 50.640833, (float) 4.832222, 2));
         combo.addOMGraphic(new OMLine((float) 50.640833, (float) 4.832222, (float) 50.547778, (float) 5.223889, 2));
         combo.addOMGraphic(new OMLine((float) 50.547778, (float) 5.223889, (float) 50.453333, (float) 5.223889, 2));
@@ -446,9 +393,8 @@ public class DemoLayer
                 omsi.setBaseScale(4000000);
                 omsi.setMinScale(1000000);
                 omsi.setMaxScale(6000000);
-                omsi.setRotationAngle(Math.PI/4);
-                omsi.putAttribute(OMGraphicConstants.LABEL, new OMTextLabeler("SFPPV-----*****", OMText.JUSTIFY_LEFT,
-                                                                              OMTextLabeler.ANCHOR_RIGHT));
+                omsi.setRotationAngle(Math.PI / 4);
+                omsi.putAttribute(OMGraphicConstants.LABEL, new OMTextLabeler("SFPPV-----*****", OMText.JUSTIFY_LEFT, OMTextLabeler.ANCHOR_RIGHT));
 
                 omList.add(omsi);
 
@@ -485,16 +431,10 @@ public class DemoLayer
         OMCircle ompoint1 = new OMCircle(pnt1.getLatitude(), pnt1.getLongitude(), gspacing, Length.RADIAN);
         OMCircle ompoint2 = new OMCircle(pnt2.getLatitude(), pnt2.getLongitude(), gspacing, Length.RADIAN);
 
-        LatLonPoint int1 =
-                GreatCircle.pointAtDistanceBetweenPoints(pnt1.getRadLat(), pnt1.getRadLon(), pnt2.getRadLat(), pnt2.getRadLon(),
-                                                         gspacing, -1);
-        LatLonPoint int2 =
-                GreatCircle.pointAtDistanceBetweenPoints(pnt2.getRadLat(), pnt2.getRadLon(), pnt1.getRadLat(), pnt1.getRadLon(),
-                                                         gspacing, -1);
+        LatLonPoint int1 = GreatCircle.pointAtDistanceBetweenPoints(pnt1.getRadLat(), pnt1.getRadLon(), pnt2.getRadLat(), pnt2.getRadLon(), gspacing, -1);
+        LatLonPoint int2 = GreatCircle.pointAtDistanceBetweenPoints(pnt2.getRadLat(), pnt2.getRadLon(), pnt1.getRadLat(), pnt1.getRadLon(), gspacing, -1);
 
-        OMLine geoline =
-                new OMLine(int1.getLatitude(), int1.getLongitude(), int2.getLatitude(), int2.getLongitude(),
-                           OMGraphic.LINETYPE_GREATCIRCLE);
+        OMLine geoline = new OMLine(int1.getLatitude(), int1.getLongitude(), int2.getLatitude(), int2.getLongitude(), OMGraphic.LINETYPE_GREATCIRCLE);
         ompoint1.setLinePaint(Color.red);
         ompoint2.setLinePaint(Color.red);
         geoline.setLinePaint(Color.red);
@@ -510,22 +450,11 @@ public class DemoLayer
 
         omList.add(omtest);
 
-        llPoints = new double[] {
-            -5.856972964554054E-4,
-            7.181106520146243E-5,
-            -5.856972964554055E-4,
-            -7.181106520146255E-5,
-            -2.9284864843698565E-4,
-            -7.18110652014625E-5,
-            5.856972969587945E-4,
-            -5.756442432493538E-4,
-            5.856972969587943E-4,
-            5.756442432493541E-4,
-            -2.9284864843698565E-4,
-            7.181106520146243E-5,
-            -5.856972964554054E-4,
-            7.181106520146243E-5,
-        };
+        llPoints = new double[] { -5.856972964554054E-4, 7.181106520146243E-5,
+                -5.856972964554055E-4, -7.181106520146255E-5, -2.9284864843698565E-4,
+                -7.18110652014625E-5, 5.856972969587945E-4, -5.756442432493538E-4,
+                5.856972969587943E-4, 5.756442432493541E-4, -2.9284864843698565E-4,
+                7.181106520146243E-5, -5.856972964554054E-4, 7.181106520146243E-5, };
 
         double buffer = 0.1645788336933045;
 
@@ -550,23 +479,23 @@ public class DemoLayer
         OMEllipse ome1 = new OMEllipse(new LatLonPoint.Double(20.0, -110.0), 600, 300, Length.MILE, 0);
         ome1.setLinePaint(Color.cyan);
         omList.add(ome1);
-        
+
         OMEllipse ome4 = new OMEllipse(new LatLonPoint.Double(20.0, -110.0), 600, 300, Length.MILE, Math.toRadians(45));
         ome4.setLinePaint(Color.red);
         omList.add(ome4);
-        
+
         OMEllipse ome2 = new OMEllipse(new LatLonPoint.Double(20.0, -110.0), 600, 300, Length.MILE, Math.toRadians(60));
         ome2.setLinePaint(Color.orange);
         omList.add(ome2);
-        
+
         OMEllipse ome3 = new OMEllipse(new LatLonPoint.Double(20.0, -110.0), 600, 300, Length.MILE, Math.toRadians(115));
         ome3.setLinePaint(Color.green);
         omList.add(ome3);
-        
+
         OMEllipse ome5 = new OMEllipse(new LatLonPoint.Double(20.0, -110.0), 600, 300, Length.MILE, Math.toRadians(135));
         ome5.setLinePaint(Color.MAGENTA);
         omList.add(ome5);
-        
+
         return omList;
     }
 
@@ -587,10 +516,12 @@ public class DemoLayer
      * the current projection.
      */
     public synchronized OMGraphicList prepare() {
-        OMGraphicList list = getList();
-        if (list == null) {
-            list = init();
+        if (objects == null) {
+            objects = init();
         }
+        OMGraphicList list = new OMGraphicList();
+        // Return new list of the objects to mange for the projection change.
+        list.addAll(objects);
         list.generate(getProjection());
         return list;
     }
@@ -602,9 +533,7 @@ public class DemoLayer
             filterGA.setRenderType(OMGraphic.RENDERTYPE_LATLON);
             filterGA.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
             BasicStroke filterStroke = new BasicStroke(1f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10f, new float[] {
-                3,
-                3
-            }, 0f);
+                    3, 3 }, 0f);
             filterGA.setStroke(filterStroke);
         }
         return (GraphicAttributes) filterGA.clone();
@@ -1053,7 +982,8 @@ public class DemoLayer
 
         Object obj = omg.getAppObject();
 
-        if (obj != null && (obj == internalKey || obj == externalKey) && !action.isMask(OMGraphicConstants.DELETE_GRAPHIC_MASK)) {
+        if (obj != null && (obj == internalKey || obj == externalKey)
+                && !action.isMask(OMGraphicConstants.DELETE_GRAPHIC_MASK)) {
 
             java.awt.Shape filterShape = omg.getShape();
             OMGraphicList filteredList = filter(filterShape, (omg.getAppObject() == internalKey));

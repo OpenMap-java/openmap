@@ -196,7 +196,7 @@ public class GraticuleLayer
       // precalculate for boxy
       boxy = true;
       setName("Graticule");
-      setRenderPolicy(new BufferedImageRenderPolicy());
+      setRenderPolicy(new BufferedImageRenderPolicy(this));
    }
 
    /**

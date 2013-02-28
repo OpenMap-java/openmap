@@ -1,3 +1,13 @@
+2013-02-28  dietrick  <dietrick@client.wonkavision.local>
+
+	* Updated SwingWorker and PooledSwingWorker to use FutureTask
+	objects, reducing the number of threads that are created.  Updated
+	OMGraphicHandlerLayer.workerComplete to take a ISwingWorker in its
+	signature.
+
+	* Modified DemoLayer to have separate OMGraphicList for storage,
+	loading aux OMGraphicList for painting.
+	
 2013-02-27  dietrick  <dietrick@client.wonkavision.local>
 
 	* Made a bunch of adjustmetns as recommended by FindBug, regarding
