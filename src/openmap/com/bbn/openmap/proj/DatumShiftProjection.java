@@ -10,7 +10,7 @@ import com.bbn.openmap.proj.coords.DatumShiftGCT;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
- * This projection wraps an other projection and adds datum handling. The
+ * This projection wraps another projection and adds datum handling. The
  * motivation for this projection is to be able to serve wms clients requesting
  * maps in a datum different from wgs84.
  * <p>
@@ -22,7 +22,7 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
  * in wgs84. Internally, each method will convert datums as needed.
  * <p>
  * A user (like wms) of this projection will use a
- * {@link CoordinateReferenceSystem} to convert coordinates to wgs84 before
+ * {@link com.bbn.openmap.proj.coords.CoordinateReferenceSystem} to convert coordinates to wgs84 before
  * using this method.
  */
 public class DatumShiftProjection extends GeoProj {

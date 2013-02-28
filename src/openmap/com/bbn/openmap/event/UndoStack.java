@@ -130,7 +130,6 @@ public class UndoStack
      * need to back up.
      * 
      * @param event UndoEvent.
-     * @return the UndoEvent pushed on the backStack.
      */
     protected synchronized void rememberLastThing(UndoEvent event) {
 
@@ -180,8 +179,6 @@ public class UndoStack
 
     /**
      * Take a UndoEvent off the forwardStack, and push it on the backStack.
-     * 
-     * @return the UndoEvent pushed on the backStack.
      */
     protected synchronized void redo() {
         if (currentState != null) {

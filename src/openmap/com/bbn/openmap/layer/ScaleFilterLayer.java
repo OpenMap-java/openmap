@@ -671,9 +671,9 @@ public class ScaleFilterLayer
      * <code>
      * 
      * @return String[] of modeID's
-     * @see NavMouseMode#modeID
-     * @see SelectMouseMode#modeID
-     * @see NullMouseMode#modeID
+     * @see com.bbn.openmap.event.NavMouseMode#modeID
+     * @see com.bbn.openmap.event.SelectMouseMode#modeID
+     * @see com.bbn.openmap.event.NullMouseMode#modeID
      */
     public String[] getMouseModeServiceList() {
         HashSet<String> mmsl = new HashSet<String>();

@@ -586,7 +586,7 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements Action
          * If not called, the SloperGeneratorLoader will be used.
          * 
          * @param gLoader
-         * @return
+         * @return this Builder.
          */
         public Builder addGeneratorLoader(GeneratorLoader gLoader) {
             if (loaders == null) {

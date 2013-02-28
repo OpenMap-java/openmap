@@ -80,7 +80,7 @@ public interface MapTileFactory {
 
     /**
      * Get object that handles empty tiles.
-     * @return
+     * @return EmptyTileHandler used by the factory.
      */
     EmptyTileHandler getEmptyTileHandler();
 }

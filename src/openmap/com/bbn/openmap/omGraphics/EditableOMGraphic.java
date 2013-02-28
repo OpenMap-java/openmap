@@ -77,7 +77,7 @@ public abstract class EditableOMGraphic
    /**
     * The state machine that interprets the mouse events (and other events) and modifies the OMGraphics accordingly.
     *
-    * @see com.bbn.openmap.layer.util.stateMachine.StateMachine
+    * @see com.bbn.openmap.util.stateMachine.StateMachine
     */
    protected EOMGStateMachine stateMachine;
    /**
@@ -137,7 +137,7 @@ public abstract class EditableOMGraphic
     * Set the StateMachine for this EditableOMGraphic.
     *
     * @param sm StateMachine.
-    * @see com.bbn.openmap.layer.util.stateMachine.StateMachine
+    * @see com.bbn.openmap.util.stateMachine.StateMachine
     */
    public void setStateMachine(EOMGStateMachine sm) {
       stateMachine = sm;
@@ -852,7 +852,7 @@ public abstract class EditableOMGraphic
     * This method should be overwritten for each EditableOMGraphic to save the state of the current OMGraphic, in case
     * the user wants to revert to this state. Called from the updateCurrentState method.
     *
-    * @param String describing what got you here. You can leave this null if you just want to go with the default.
+    * @param whatHappened String describing what got you here. You can leave this null if you just want to go with the default.
     * @return UndoEvent reflecting current state. May be null if undo isn't handled. Returning null is the default
     * action.
     */

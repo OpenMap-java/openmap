@@ -310,7 +310,7 @@ public class KMLTileGridMaker {
        * If you provide an OutputStream, you're responsible for closing it.
        * 
        * @param out
-       * @return
+       * @return this Builder
        */
       public Builder setOutputStream(OutputStream out) {
          this.output = out;

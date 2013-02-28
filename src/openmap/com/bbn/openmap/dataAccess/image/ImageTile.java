@@ -48,8 +48,8 @@ import com.bbn.openmap.util.cacheHandler.CacheObject;
  * trimming code from that submission. That code was also developed with
  * assistance from Steve McDonald at SiliconSpaceships.com.
  * 
- * @see OMRaster
- * @see OMRasterObject
+ * @see com.bbn.openmap.omGraphics.OMRaster
+ * @see com.bbn.openmap.omGraphics.OMRasterObject
  */
 public class ImageTile extends OMScalingRaster implements Serializable {
 

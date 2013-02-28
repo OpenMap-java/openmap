@@ -39,16 +39,16 @@ import com.bbn.openmap.tools.beanbox.BeanBoxHandler;
 
 /**
  * An OpenMap Layer for displaying
- * {@link com.bbn.openmap.examples.beanbox.SimpleBeanObject}beans.
+ * {@link com.bbn.openmap.layer.beanbox.SimpleBeanObject}beans.
  * This class an example of an openmap layer that contains an instance
  * of the {@link com.bbn.openmap.tools.beanbox.BeanBox}class. This
  * layer maintains a reference to an instance of
- * {@link com.bbn.openmap.examples.beanbox.SimpleBeanBox}class which
+ * {@link com.bbn.openmap.layer.beanbox.SimpleBeanBox}class which
  * is a sample implementation of the
  * {@link com.bbn.openmap.tools.beanbox.BeanBox}class. The
- * {@link com.bbn.openmap.examples.beanbox.SimpleBeanBox}class
+ * {@link com.bbn.openmap.layer.beanbox.SimpleBeanBox}class
  * manages the set of
- * {@link com.bbn.openmap.examples.beanbox.SimpleBeanObject}beans
+ * {@link com.bbn.openmap.layer.beanbox.SimpleBeanObject}beans
  * that are displayed by this layer.
  */
 public class SimpleBeanLayer extends Layer implements BeanBoxHandler {

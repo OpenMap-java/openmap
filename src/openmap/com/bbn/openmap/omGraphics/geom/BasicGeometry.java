@@ -528,7 +528,7 @@ public abstract class BasicGeometry
     * Return the shortest distance from the edge of a Shape object to an XY-point.
     * <p>
     * Method taken and adapted from
-    * {@link BasicGeometry#distanceToEdge(int, int)}
+    * {@link BasicGeometry#distanceToEdge(double, double)}
     * 
     * @param x X coordinate of the point.
     * @param y Y coordinate of the point.

@@ -26,7 +26,7 @@ import com.bbn.openmap.tools.beanbox.BeanLayoutEditor;
 
 /**
  * A BeanInfo for the
- * {@link com.bbn.openmap.examples.beanbox.SimpleBeanContainer}bean
+ * {@link com.bbn.openmap.layer.beanbox.SimpleBeanContainer}bean
  */
 public class SimpleBeanContainerBeanInfo extends SimpleBeanObjectBeanInfo {
 

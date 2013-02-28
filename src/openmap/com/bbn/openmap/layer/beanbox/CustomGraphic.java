@@ -22,7 +22,7 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
 /**
  * A custom graphic class for representing SimpleBeanObject beans on
  * the map. See
- * {@link com.bbn.openmap.examples.beanbox.ContainerGraphic}for an
+ * {@link com.bbn.openmap.layer.beanbox.ContainerGraphic}for an
  * example implementation.
  */
 public abstract class CustomGraphic extends OMGraphicList {

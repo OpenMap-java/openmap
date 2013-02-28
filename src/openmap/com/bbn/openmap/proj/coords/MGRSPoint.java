@@ -186,8 +186,8 @@ public class MGRSPoint
     * 
     * @param northing northing offset
     * @param easting easting offset
-    * @zoneNumber the MGRS zone number
-    * @zoneLetter the MGRS zone letter.
+    * @param zoneNumber the MGRS zone number
+    * @param zoneLetter the MGRS zone letter.
     */
    public MGRSPoint(double northing, double easting, int zoneNumber, char zoneLetter) {
       super(northing, easting, zoneNumber, zoneLetter);

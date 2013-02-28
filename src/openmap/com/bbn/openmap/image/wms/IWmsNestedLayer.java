@@ -1,18 +1,17 @@
 package com.bbn.openmap.image.wms;
 
-
 /**
  * A variant of {@link IWmsLayer} that allow for nesting of wms layers.
  * <p>
- * Nested wms layers below a OpenMap {@link Layer} may be used to split up
- * information in a single OpenMap Layer for wms users.
+ * Nested wms layers below a OpenMap {@link com.bbn.openmap.Layer} may be used
+ * to split up information in a single OpenMap Layer for wms users.
  * <p>
  * Example: A OpenMap city layer may have nested wms layers for the different
  * type of cities. That way a wms user can select only the large cities.
  * <p>
  * There is always one top level {@link IWmsLayer} that also is a OpenMap
- * {@link Layer} - see {@link #getTopLayer()}. There may be some nested layers
- * "below" this layer - see {@link #getNestedLayers()}
+ * {@link com.bbn.openmap.Layer} - see {@link #getTopLayer()}. There may be some
+ * nested layers "below" this layer - see {@link #getNestedLayers()}
  */
 public interface IWmsNestedLayer extends IWmsLayer {
 
@@ -29,11 +28,11 @@ public interface IWmsNestedLayer extends IWmsLayer {
 
     /**
      * Return the top layer, that is the IWmsLayer that also is an OpenMap
-     * {@link Layer}. For such a top level layer, this method should return it
-     * self.
+     * {@link com.bbn.openmap.Layer}. For such a top level layer, this method
+     * should return it self.
      */
     public IWmsNestedLayer getTopLayer();
-    
+
     /**
      * Called by the outside to turn this nested layer on or off.
      * <p>

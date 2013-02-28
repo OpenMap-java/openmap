@@ -46,8 +46,8 @@ public interface UndoStackTrigger {
     * To receive a status to let the trigger know if any projections in the
     * forward or backward stacks exist, possibly to disable any gui widgets.
     * 
-    * @param containsUndo there is at least one event to undo.
-    * @param containsRedo there is at least one event to redo.
+    * @param undoEvent there is at least one event to undo.
+    * @param redoEvent there is at least one event to redo.
     */
    public void updateUndoStackStatus(UndoEvent undoEvent, UndoEvent redoEvent);
 }

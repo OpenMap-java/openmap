@@ -51,7 +51,7 @@ public class LinkSpatialIndex extends SpatialIndex {
      * @param b the buffer pointing to the raw record data
      * @param off the offset of the data starting point in the buffer
      * @exception IOException if something goes wrong reading the file
-     * @see ShapeUtils
+     * @see com.bbn.openmap.dataAccess.shape.ShapeUtils
      */
     public ESRIRecord makeESRIRecord(int shapeType, byte[] b, int off)
             throws IOException {

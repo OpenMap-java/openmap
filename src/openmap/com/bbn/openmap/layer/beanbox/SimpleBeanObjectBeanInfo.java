@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 /**
  * A BeanInfo for the
- * {@link com.bbn.openmap.examples.beanbox.SimpleBeanObject}bean.
+ * {@link com.bbn.openmap.layer.beanbox.SimpleBeanObject}bean.
  */
 public class SimpleBeanObjectBeanInfo extends SimpleBeanInfo {
 

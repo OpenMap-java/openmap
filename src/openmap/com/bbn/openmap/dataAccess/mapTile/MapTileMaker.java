@@ -217,7 +217,7 @@ public class MapTileMaker
      * @param uvy
      * @param zoomInfo
      * @param proj
-     * @return
+     * @return the final file path used, with any extensions added.
      * @throws IOException
      */
     public String makeTileFile(double uvx, double uvy, ZoomLevelMaker zoomInfo, Proj proj)

@@ -463,9 +463,9 @@ public class TestLayer extends OMGraphicHandlerLayer implements
      * return new String[1] { SelectMouseMode.modeID };
      * </pre>
      * <code>
-     * @see NavMouseMode#modeID
-     * @see SelectMouseMode#modeID
-     * @see NullMouseMode#modeID
+     * @see com.bbn.openmap.event.NavMouseMode#modeID
+     * @see com.bbn.openmap.event.SelectMouseMode#modeID
+     * @see com.bbn.openmap.event.NullMouseMode#modeID
      */
     public String[] getMouseModeServiceList() {
         return new String[] { SelectMouseMode.modeID };

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * A BeanInfo for the {@link com.bbn.openmap.examples.beanbox.Fighter}
+ * A BeanInfo for the {@link com.bbn.openmap.layer.beanbox.Fighter}
  * bean.
  */
 public class FighterBeanInfo extends SimpleBeanObjectBeanInfo {

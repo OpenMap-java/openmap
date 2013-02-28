@@ -50,21 +50,21 @@ import com.bbn.openmap.omGraphics.OMTextLabeler;
  * the default implementation in the OMGraphicHandlerLayer (so don't even
  * override them).
  * 
- * @see OMGraphicHandlerLayer#isHighlightable
- * @see OMGraphicHandlerLayer#highlight
- * @see OMGraphicHandlerLayer#unhighlight
- * @see OMGraphicHandlerLayer#getInfoText
- * @see OMGraphicHandlerLayer#getToolTipText
+ * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#isHighlightable
+ * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#highlight
+ * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#unhighlight
+ * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#getInfoText
+ * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#getToolTipText
  * 
- * @see OMGraphicHandlerLayer#isSelectable
- * @see OMGraphicHandlerLayer#select
- * @see OMGraphicHandlerLayer#deselect
- * @see OMGraphicHandlerLayer#getItemsForMapMenu
- * @see OMGraphicHandlerLayer#getItemsForOMGraphicMenu
+ * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#isSelectable
+ * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#select
+ * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#deselect
+ * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#getItemsForMapMenu
+ * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#getItemsForOMGraphicMenu
  * 
- * @see OMGraphicHandlerLayer#receivesMapEvents
- * @see OMGraphicHandlerLayer#mouseOver(MapMouseEvent)
- * @see OMGraphicHandlerLayer#leftClick
+ * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#receivesMapEvents
+ * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#mouseOver(MapMouseEvent)
+ * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#leftClick
  */
 public class InteractionLayer extends BasicLayer {
 
@@ -150,8 +150,8 @@ public class InteractionLayer extends BasicLayer {
      * If the answer is true, then highlight with this OMGraphics will be
      * called, and unhighlight will be called with the mouse is moved off of it.
      * 
-     * @see OMGraphicHandlerLayer#highlight
-     * @see OMGraphicHandlerLayer#unhighlight
+     * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#highlight
+     * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#unhighlight
      */
     public boolean isHighlightable(OMGraphic omg) {
         return true;
@@ -164,8 +164,8 @@ public class InteractionLayer extends BasicLayer {
      * going to be doing anything in particular with the selection, then return
      * false here to reduce the workload of the layer.
      * 
-     * @see OMGraphicHandlerLayer#select
-     * @see OMGraphicHandlerLayer#deselect
+     * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#select
+     * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#deselect
      */
     public boolean isSelectable(OMGraphic omg) {
         return true;
@@ -174,7 +174,7 @@ public class InteractionLayer extends BasicLayer {
     /**
      * Designate a list of OMGraphics as selected.
      * 
-     * @see OMGraphicHandlerLayer#select
+     * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#select
      */
     public void select(OMGraphicList list) {
         super.select(list);
@@ -188,7 +188,7 @@ public class InteractionLayer extends BasicLayer {
     /**
      * Designate a list of OMGraphics as deselected.
      * 
-     * @see OMGraphicHandlerLayer#deselect
+     * @see com.bbn.openmap.layer.OMGraphicHandlerLayer#deselect
      */
     public void deselect(OMGraphicList list) {
         super.deselect(list);

@@ -22,7 +22,7 @@ import com.bbn.openmap.omGraphics.OMRect;
 
 /**
  * A custom graphic class for representing objects of type
- * {@link com.bbn.openmap.examples.beanbox.SimpleBeanContainer}as a
+ * {@link com.bbn.openmap.layer.beanbox.SimpleBeanContainer}as a
  * rectangular box.
  */
 public class ContainerGraphic extends CustomGraphic {

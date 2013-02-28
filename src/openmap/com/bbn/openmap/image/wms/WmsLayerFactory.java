@@ -54,8 +54,8 @@ public class WmsLayerFactory {
      * 
      * 3. pri: Wrap it in DefaultLayerAdapter.
      * 
-     * @param layer
-     * @return
+     * @param layer source layer
+     * @return IWmsLayer created from layer
      */
     IWmsLayer createWmsLayer(Layer layer) {
         if (layer instanceof IWmsLayer) {

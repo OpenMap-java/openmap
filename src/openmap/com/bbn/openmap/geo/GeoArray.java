@@ -263,7 +263,7 @@ public interface GeoArray {
        * Returns the perpendicular distance to the closest point on the edge of
        * the polygon.
        * 
-       * @param geo the point to test against the poly
+       * @param pnt the point to test against the poly
        * @param closestPoint if not null, will be set with the location of the
        *        point on the poly closest to pnt, you can read this object after
        *        this method call to get coordinates.

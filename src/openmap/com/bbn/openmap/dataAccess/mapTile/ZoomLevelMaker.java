@@ -386,7 +386,7 @@ public class ZoomLevelMaker
      * @param uvy
      * @param mapTileMaker
      * @param proj
-     * @return
+     * @return byte array of the tile image, raw image bytes.
      */
     public byte[] makeTile(double uvx, double uvy, MapTileMaker mapTileMaker, Proj proj) {
         if (layerList != null) {

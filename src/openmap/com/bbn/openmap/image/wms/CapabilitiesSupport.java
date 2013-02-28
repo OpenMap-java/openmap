@@ -308,7 +308,6 @@ public class CapabilitiesSupport {
     }
 
     /**
-     * @param which
      * @param url
      */
     public void setOnlineResource(String url) {

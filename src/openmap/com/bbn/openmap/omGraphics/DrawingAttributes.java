@@ -429,7 +429,7 @@ public class DrawingAttributes
     * 
     * @param obj1
     * @param obj2
-    * @return
+    * @return true if objects are equal.  Object equivalence and equals() test.
     */
    private boolean eqTest(Object obj1, Object obj2) {
       // Should handle object equivalence and nulls

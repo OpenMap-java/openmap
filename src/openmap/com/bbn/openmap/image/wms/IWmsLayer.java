@@ -23,7 +23,7 @@ public interface IWmsLayer {
 
     /**
      * @return a String representing the short layer name. It is like
-     *         {@link Layer#getPropertyPrefix()} and are used in WMS Urls.
+     *         {@link com.bbn.openmap.Layer#getPropertyPrefix()} and are used in WMS Urls.
      */
     public String getWmsName();
 

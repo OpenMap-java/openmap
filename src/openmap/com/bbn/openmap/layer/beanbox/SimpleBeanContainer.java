@@ -25,7 +25,7 @@ import com.bbn.openmap.tools.beanbox.BeanLayoutManager;
 
 /**
  * A SimpleBeanContainer is itself a bean. Hence this class extends
- * the {@link com.bbn.openmap.examples.beanbox.SimpleBeanObject}.
+ * the {@link com.bbn.openmap.layer.beanbox.SimpleBeanObject}.
  * SimpleBeanContainer is a sample implementation of the
  * {@link com.bbn.openmap.tools.beanbox.BeanContainer}interface.
  */

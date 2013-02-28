@@ -20,7 +20,7 @@ import java.beans.PropertyEditorSupport;
 
 /**
  * Custom property editor for the layout class property of a
- * {@link com.bbn.openmap.examples.beanbox.SimpleBeanContainer}.
+ * {@link com.bbn.openmap.layer.beanbox.SimpleBeanContainer}.
  */
 public class LayoutClassEditor extends PropertyEditorSupport {
 
