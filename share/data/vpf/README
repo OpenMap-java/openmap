@@ -1,0 +1,33 @@
+This directory contains information that is used by the
+VPFFeatureLayer and the VPFAutoFeatureGraphicWarehouse.  The
+symbol-lookup files are summaries of the MIL-PRF-89045 GeoSym standard
+contents, that tie FACC codes, with certain parameter conditions, to
+GeoSym symbol numbers.
+
+The dcw versions are pretty complete.  The vmaplv0 version is not at
+all, but they contain a sample for inland water that should get you
+started.  You'll need a copy of the 89045 doc to figure out the symbol
+types you want to display.  The VPFFeatureLayer uses the geosym cgm
+files, you'll have to track those down (I'm not sure of the
+releaseability).
+
+
+The properties for a layer that uses these files are here:
+vpf_water.class=com.bbn.openmap.layer.vpf.VPFFeatureLayer
+vpf_water.prettyName=VMAPLV0 Inland Water
+vpf_water.vpfPath=/Volumes/data/vpf/vmaplv0/v0noa/vmaplv0
+# VFPAutoFeatureGraphicWarehouse options:
+vpf_water.cgmDirectory=data/geosym/cgm/
+vpf_water.faccLookupFile=data/vpf/vmaplv0-symbol-lookup.csv
+# The priority file is the file to adjust to customize display...
+vpf_water.priorityFile=data/vpf/vmaplv0-priority-iw.csv
+vpf_water.featureInfoHandler=com.bbn.openmap.layer.vpf.TTFeatureInfoHandler
+
+The order of how different features are laid out are specified in the
+priority file, and feature rendering is determined by the cgm files.
+
+Using this layer can be slower than the standard VPFLayer, especially
+with a lot of FACC codes being rendered.  I recommend that you
+configure the layer, and then use it to make map image tiles with the
+com.bbn.openmap.dataAccess.mapTile.MapTileMaker.  You can then use the
+tiles in the map using the com.bbn.openmap.layer.image.MapTileLayer.

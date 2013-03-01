@@ -212,4 +212,13 @@ public class DataBounds {
         result = HashCodeUtil.hash(result, yDirUp);
         return result;
     }
+
+    public boolean intersects(DataBounds db2) {
+        if (db2 == null) {
+            return false;
+        }
+        Point2D min2 = db2.getMin();
+        Point2D max2 = db2.getMax();
+        return !(min2 == null || (min2.getY() > max.getY() || max2.getY() < min.getY()) || (min2.getX() > max.getX() || max2.getX() < min.getX()));
+    }
 }

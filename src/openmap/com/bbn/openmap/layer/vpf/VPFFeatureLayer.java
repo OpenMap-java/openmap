@@ -59,6 +59,7 @@ import com.bbn.openmap.util.PropUtils;
  * faccLookupFile=path to csv file that ties FACC codes to symbol file names
  * # The priority file is the file to adjust to customize display...
  * priorityFile=path to csv file specifying which FACC codes, types should be rendered and in what order.
+ * featureInfoHandler=class of object to handle attributes
  * </pre>
  * 
  * @author dietrick

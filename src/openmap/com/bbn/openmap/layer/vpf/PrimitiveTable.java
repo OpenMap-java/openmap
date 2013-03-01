@@ -108,10 +108,11 @@ public abstract class PrimitiveTable extends DcwRecordFile {
      * @param area a List containing the AreaTable row contents.
      * @param featureType the string representing the feature type, in case the
      *        warehouse wants to do some intelligent rendering.
+     * @param primID the primitive ID of the feature, in order to gather attributes if necessary.
      * @see VPFGraphicWarehouse#createEdge
      */
     abstract public OMGraphic drawFeature(VPFFeatureWarehouse warehouse,
                                      double dpplat, double dpplon,
                                      LatLonPoint ll1, LatLonPoint ll2,
-                                     List<Object> area, String featureType);
+                                     List<Object> area, String featureType, int primID);
 }

@@ -29,24 +29,23 @@ import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.Debug;
 
 /**
- * This class wraps a feature type file (potext.tft, polbndl.lft, etc)
- * from VPF. It maintains sufficient information about the table it is
- * indexed from so that it can take a List of values, rather than a
- * single value. It also knows about its containing CoverageTable so
- * it can look up information in int.vdt and char.vdt.
+ * This class wraps a feature type file (potext.tft, polbndl.lft, etc) from VPF.
+ * It maintains sufficient information about the table it is indexed from so
+ * that it can take a List of values, rather than a single value. It also knows
+ * about its containing CoverageTable so it can look up information in int.vdt
+ * and char.vdt.
  */
-public class FeatureClassInfo extends DcwRecordFile implements
-        TerminatingRunnable, com.bbn.openmap.io.Closable {
+public class FeatureClassInfo extends DcwRecordFile implements TerminatingRunnable,
+        com.bbn.openmap.io.Closable {
 
     /** the table to look up .vdt info from */
     final private CoverageTable ctable;
     /**
-     * The name of our column from the primitive table (e.g.
-     * potext.tft_id). This is the name of the column that will let
-     * you know, in the primitive file (like edg), what type of
-     * primitive (featurewise) is being represented on that row. This
-     * field does not always exist! If it doesn't, all the features in
-     * the file are rendered.
+     * The name of our column from the primitive table (e.g. potext.tft_id).
+     * This is the name of the column that will let you know, in the primitive
+     * file (like edg), what type of primitive (featurewise) is being
+     * represented on that row. This field does not always exist! If it doesn't,
+     * all the features in the file are rendered.
      */
     final private String columnname;
 
@@ -56,7 +55,8 @@ public class FeatureClassInfo extends DcwRecordFile implements
     private boolean fullInit = false;
 
     /** things constructed with deferred initialization get queued here */
-    // private static RunQueue tq = new RunQueue(true, Thread.MIN_PRIORITY, true);
+    // private static RunQueue tq = new RunQueue(true, Thread.MIN_PRIORITY,
+    // true);
 
     /** temporary list for use in getDescription() */
     final private List<Object> tmpVec = new ArrayList<Object>();
@@ -91,15 +91,13 @@ public class FeatureClassInfo extends DcwRecordFile implements
      * @param ftname the name of the feature type
      * @exception FormatException some error was encountered
      */
-    public FeatureClassInfo(CoverageTable cthis, String colname,
-            String tablepath, String ftname) throws FormatException {
-        super(tablepath + ftname, true); //defer initialization
+    public FeatureClassInfo(CoverageTable cthis, String colname, String tablepath, String ftname)
+            throws FormatException {
+        super(tablepath + ftname, true); // defer initialization
 
         if (Debug.debugging("vpf.fci")) {
-            Debug.output("FCI: set to peruse (" + filename
-                    + ")\n\tcreated with colname (" + colname
-                    + ")\n\ttablepath (" + tablepath + ")\n\tftname (" + ftname
-                    + ")");
+            Debug.output("FCI: set to peruse (" + filename + ")\n\tcreated with colname ("
+                    + colname + ")\n\ttablepath (" + tablepath + ")\n\tftname (" + ftname + ")");
         }
 
         ctable = cthis;
@@ -114,8 +112,7 @@ public class FeatureClassInfo extends DcwRecordFile implements
     protected char featureType;
 
     /**
-     * Construct a FeatureClassInfo that can be used for feature
-     * search
+     * Construct a FeatureClassInfo that can be used for feature search
      * 
      * @param cthis the CoverageTable to use for vdt lookups
      * @param colname the column name from the primitive table
@@ -125,11 +122,10 @@ public class FeatureClassInfo extends DcwRecordFile implements
      * @param tileDirFileColName the name of the primitive id column
      * @exception FormatException some error was encountered
      */
-    public FeatureClassInfo(CoverageTable cthis, String colname,
-            String tablepath, String ftname, String tileDirFile,
-            String tileDirFileColName) throws FormatException {
+    public FeatureClassInfo(CoverageTable cthis, String colname, String tablepath, String ftname,
+            String tileDirFile, String tileDirFileColName) throws FormatException {
 
-        super(tablepath + ftname, false); //don't defer
+        super(tablepath + ftname, false); // don't defer
         // initialization
         fullInit = true;
 
@@ -154,16 +150,15 @@ public class FeatureClassInfo extends DcwRecordFile implements
         }
 
         if (Debug.debugging("vpf.fci")) {
-            Debug.output("FCI: set to peruse (" + filename
-                    + ")\n\tcreated with column name (" + colname
-                    + ")\n\ttile directory file (" + tileDirFile
+            Debug.output("FCI: set to peruse (" + filename + ")\n\tcreated with column name ("
+                    + colname + ")\n\ttile directory file (" + tileDirFile
                     + ")\n\ttile id column (" + tileDirFileColName + ")");
         }
     }
 
     /**
-     * Returns a TilingAdapter suitable for retrieving primitive ids
-     * from records in this feature table.
+     * Returns a TilingAdapter suitable for retrieving primitive ids from
+     * records in this feature table.
      * 
      * @return a tilingadapter or null
      */
@@ -175,8 +170,8 @@ public class FeatureClassInfo extends DcwRecordFile implements
     public final static String TILE_ID_COLUMN_NAME = "tile_id";
 
     /**
-     * Returns the file name (no path info) of the thematic index for
-     * the tile_id column.
+     * Returns the file name (no path info) of the thematic index for the
+     * tile_id column.
      */
     public String getTileThematicFileName() {
         if (columnInfo != null) {
@@ -192,8 +187,7 @@ public class FeatureClassInfo extends DcwRecordFile implements
     protected DcwThematicIndex thematicIndex = null;
 
     /**
-     * Causes the thematic index for the tile_id column to be
-     * initialized.
+     * Causes the thematic index for the tile_id column to be initialized.
      * 
      * @param path the path to the directory where the index lives
      * @return true if a thematic index is available, false if not
@@ -206,14 +200,12 @@ public class FeatureClassInfo extends DcwRecordFile implements
                 // have the features we want.
                 String thematicIndexName = getTileThematicFileName();
                 if (thematicIndexName != null) {
-                    thematicIndex = new DcwThematicIndex(path
-                            + thematicIndexName, byteorder);
+                    thematicIndex = new DcwThematicIndex(path + thematicIndexName, byteorder);
                 }
             }
         } catch (FormatException fe) {
             if (Debug.debugging("vpf.FormatException")) {
-                Debug.output("FeatureClassInfo.initTI: " + fe.getClass() + " "
-                        + fe.getMessage());
+                Debug.output("FeatureClassInfo.initTI: " + fe.getClass() + " " + fe.getMessage());
             }
             return false;
         }
@@ -221,8 +213,8 @@ public class FeatureClassInfo extends DcwRecordFile implements
     }
 
     /**
-     * Returns the thematic index for the tile_id column, if it has
-     * been initialized.
+     * Returns the thematic index for the tile_id column, if it has been
+     * initialized.
      * 
      * @return null or a themaitc index for the column
      */
@@ -258,8 +250,8 @@ public class FeatureClassInfo extends DcwRecordFile implements
     }
 
     /**
-     * Return the type of feature this table is for. Returns one of
-     * the featuretype codes in CoverageTable.
+     * Return the type of feature this table is for. Returns one of the
+     * featuretype codes in CoverageTable.
      * 
      * @see CoverageTable#AREA_FEATURETYPE
      */
@@ -268,26 +260,26 @@ public class FeatureClassInfo extends DcwRecordFile implements
     }
 
     /**
-     * Complete the initialization of the FeatureClassInfo. This
-     * function can be called more than once.
+     * Complete the initialization of the FeatureClassInfo. This function can be
+     * called more than once.
      */
     public synchronized void run() {
-        if (fullInit == true) {//run already ran, or the file didn't
+        if (fullInit == true) {// run already ran, or the file didn't
             // exist
             return;
         }
 
         try {
             fullInit = true;
-            finishInitialization(); //finish initialization of table
+            finishInitialization(); // finish initialization of table
 
             // The list isn't be closed as it's supposed to, and this
             // is causing a leak. We'll just avoid the list for now
             // and just close the files after we've read them.
 
-            //          BinaryFile.addClosable(this);
+            // BinaryFile.addClosable(this);
         } catch (FormatException f) {
-            //          close(); //invalidate some stuff
+            // close(); //invalidate some stuff
         }
         close();
     }
@@ -301,15 +293,15 @@ public class FeatureClassInfo extends DcwRecordFile implements
             try {
                 thematicIndex.close();
             } catch (FormatException fe) {
-                //ignored
+                // ignored
             }
         }
         return true;
     }
 
     /**
-     * Probe the DcwRecordFile looking for what column we are in.
-     * (Info needed later to getDescription with the data list.)
+     * Probe the DcwRecordFile looking for what column we are in. (Info needed
+     * later to getDescription with the data list.)
      * 
      * @param rf the primitive data table we'll get rows from
      */
@@ -318,8 +310,8 @@ public class FeatureClassInfo extends DcwRecordFile implements
     }
 
     /**
-     * Given a row from the primitive table, this function returns a
-     * full string description of the row
+     * Given a row from the primitive table, this function returns a full string
+     * description of the row
      * 
      * @param l the record list from the primitive table
      * @param type the first integral type
@@ -338,22 +330,21 @@ public class FeatureClassInfo extends DcwRecordFile implements
     }
 
     /**
-     * Given a row from the primitive table, this function returns a
-     * full string description of the row
+     * Given a row from the primitive table, this function returns a full string
+     * description of the row
      * 
      * @param ftid the record list from the primitive table
      * @param colIndex column index for attribute to return
      * @param type the first integral type
      * @return the description string for the list
      */
-//    public synchronized String getAttribute(List l, int colIndex,
-    public synchronized String getAttribute(int ftid, int colIndex,
-                                            MutableInt type) {
+    // public synchronized String getAttribute(List l, int colIndex,
+    public synchronized String getAttribute(int ftid, int colIndex, MutableInt type) {
         checkInit();
-//        if (mycolumn == -1) {
-//            return null;
-//        }
-//        int ftid = VPFUtil.objectToInt(l.get(mycolumn));
+        // if (mycolumn == -1) {
+        // return null;
+        // }
+        // int ftid = VPFUtil.objectToInt(l.get(mycolumn));
         if (ftid <= 0) {
             return null;
         }
@@ -372,24 +363,23 @@ public class FeatureClassInfo extends DcwRecordFile implements
     }
 
     /**
-     * Check to see if the file has been fully initialized, call run()
-     * to do that if needed.
+     * Check to see if the file has been fully initialized, call run() to do
+     * that if needed.
      */
     public synchronized void checkInit() {
         if (fullInit == false) {
             if (Debug.debugging("vpf")) {
-                Debug.output("FCI.checkInit() forcing init " + columnname + " "
-                        + tablename);
+                Debug.output("FCI.checkInit() forcing init " + columnname + " " + tablename);
             }
             run();
         }
     }
 
     /**
-     * Given an primary key (row id) for the feature table, return the
-     * string description. If made public, this function would need to
-     * be synchronized and check for proper initialization. But since
-     * it is always called from a method that does that, its okay.
+     * Given an primary key (row id) for the feature table, return the string
+     * description. If made public, this function would need to be synchronized
+     * and check for proper initialization. But since it is always called from a
+     * method that does that, its okay.
      * 
      * @param ftid the row id for our feature table
      * @param type the first integral type
@@ -402,42 +392,42 @@ public class FeatureClassInfo extends DcwRecordFile implements
                 return null;
             }
 
-            //boolean haveivdtindex = false;
+            // boolean haveivdtindex = false;
 
             for (int i = 0; i < columnInfo.length; i++) {
                 DcwColumnInfo dci = columnInfo[i];
 
                 String s = getAttribute(dci, tmpVec.get(i), type);
-                //////////
-                //                String s = null;
-                //                String dciVDT = dci.getVDT();
-                //                if (dciVDT == Constants.intVDTTableName) {
-                //                    int val = VPFUtil.objectToInt(tmpVec.get(i));
-                //                    if (val == Integer.MIN_VALUE) {//VPF null
-                //                        continue;
-                //                    }
-                //                    if (!haveivdtindex) {
-                //                        type.value = (short) val;
-                //                        haveivdtindex = true;
-                //                    }
-                //                    s = ctable.getDescription(tablename,
-                //                            dci.getColumnName(),
-                //                            val);
-                //                    if (s == null) {
-                //                        s = "[" + val + "]";
-                //                    }
-                //                } else if (dciVDT == Constants.charVDTTableName) {
-                //                    String val = (String) tmpVec.get(i);
-                //                    s = ctable.getDescription(tablename,
-                //                            dci.getColumnName(),
-                //                            val);
-                //                    if (s == null) {
-                //                        s = "[" + val + "]";
-                //                    }
-                //                } else if (dci.isNonKey()) {
-                //                    s = tmpVec.get(i).toString();
-                //                }
-                ////////
+                // ////////
+                // String s = null;
+                // String dciVDT = dci.getVDT();
+                // if (dciVDT == Constants.intVDTTableName) {
+                // int val = VPFUtil.objectToInt(tmpVec.get(i));
+                // if (val == Integer.MIN_VALUE) {//VPF null
+                // continue;
+                // }
+                // if (!haveivdtindex) {
+                // type.value = (short) val;
+                // haveivdtindex = true;
+                // }
+                // s = ctable.getDescription(tablename,
+                // dci.getColumnName(),
+                // val);
+                // if (s == null) {
+                // s = "[" + val + "]";
+                // }
+                // } else if (dciVDT == Constants.charVDTTableName) {
+                // String val = (String) tmpVec.get(i);
+                // s = ctable.getDescription(tablename,
+                // dci.getColumnName(),
+                // val);
+                // if (s == null) {
+                // s = "[" + val + "]";
+                // }
+                // } else if (dci.isNonKey()) {
+                // s = tmpVec.get(i).toString();
+                // }
+                // //////
 
                 if (s != null) {
                     if (retval == null) {
@@ -455,13 +445,16 @@ public class FeatureClassInfo extends DcwRecordFile implements
         return ((retval == null) ? null : retval.toString());
     }
 
-    protected String getAttribute(DcwColumnInfo dci, Object colObj,
-                                  MutableInt type) {
-        String s = null;
+    protected String getAttribute(DcwColumnInfo dci, Object colObj, MutableInt type) {
+
+        if (colObj == null) {
+            return null;
+        }
+        
         String dciVDT = dci.getVDT();
-        if (dciVDT == Constants.intVDTTableName) {
+        if (Constants.intVDTTableName.equals(dciVDT)) {
             int val = VPFUtil.objectToInt(colObj);
-            if (val == Integer.MIN_VALUE) {//VPF null
+            if (val == Integer.MIN_VALUE) {// VPF null
                 return null;
             }
 
@@ -469,32 +462,27 @@ public class FeatureClassInfo extends DcwRecordFile implements
                 type.value = (short) val;
             }
 
-            s = ctable.getDescription(tablename, dci.getColumnName(), val);
-//            if (s == null) {
-//                s = "[" + val + "]";
-//            }
-        } else if (dciVDT == Constants.charVDTTableName) {
-            String val = (String) colObj;
-            s = ctable.getDescription(tablename, dci.getColumnName(), val) + " (" + val + ")";
-//            if (s == null) {
-//                s = "[" + val + "]";
-//            }
-        } else if (dci.isNonKey()) {
-            s = colObj.toString();
+            return ctable.getDescription(tablename, dci.getColumnName(), val);
+
+        } else if (Constants.charVDTTableName.equals(dciVDT)) {
+            return (String) colObj;
+            // } else if (dci.isNonKey()) {
+            // s = colObj.toString();
         }
 
-        return s;
+        return colObj.toString();
     }
 
-   /**
-    * @return space separated list of column names, used mostly for debugging feature attribute lookups.
-    */
-   public String columnNameString() {
-      StringBuffer sBuf = new StringBuffer();
-      for (DcwColumnInfo dci : getColumnInfo()) {
-         sBuf.append(dci.getColumnName()).append(' ');
-      }
-      return sBuf.toString().trim();
-   }
+    /**
+     * @return space separated list of column names, used mostly for debugging
+     *         feature attribute lookups.
+     */
+    public String columnNameString() {
+        StringBuffer sBuf = new StringBuffer();
+        for (DcwColumnInfo dci : getColumnInfo()) {
+            sBuf.append(dci.getColumnName()).append(' ');
+        }
+        return sBuf.toString().trim();
+    }
 
 }

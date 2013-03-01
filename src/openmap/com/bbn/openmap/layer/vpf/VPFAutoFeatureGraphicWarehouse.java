@@ -453,7 +453,7 @@ public class VPFAutoFeatureGraphicWarehouse
      * Create an OMPoly for an area described by the facevec.
      */
     public OMGraphic createArea(CoverageTable covtable, AreaTable areatable, List<Object> facevec, LatLonPoint ll1,
-                                LatLonPoint ll2, double dpplat, double dpplon, String featureType) {
+                                LatLonPoint ll2, double dpplat, double dpplon, String featureType, int primID) {
 
         List<CoordFloatString> ipts = new ArrayList<CoordFloatString>();
 
@@ -481,7 +481,7 @@ public class VPFAutoFeatureGraphicWarehouse
      *
      */
     public OMGraphic createEdge(CoverageTable c, EdgeTable edgetable, List<Object> edgevec, LatLonPoint ll1, LatLonPoint ll2,
-                                double dpplat, double dpplon, CoordFloatString coords, String featureType) {
+                                double dpplat, double dpplon, CoordFloatString coords, String featureType, int primID) {
 
         OMPoly py = LayerGraphicWarehouseSupport.createEdgeOMPoly(coords, ll1, ll2, dpplat, dpplon);
         py.setFillPaint(OMColor.clear);
@@ -493,7 +493,7 @@ public class VPFAutoFeatureGraphicWarehouse
      *
      */
     public OMGraphic createText(CoverageTable c, TextTable texttable, List<Object> textvec, double latitude, double longitude,
-                                String text, String featureType) {
+                                String text, String featureType, int primID) {
 
         OMText txt = LayerGraphicWarehouseSupport.createOMText(text, latitude, longitude);
         return txt;
@@ -503,7 +503,7 @@ public class VPFAutoFeatureGraphicWarehouse
      * Method called by the VPF reader code to construct a node feature.
      */
     public OMGraphic createNode(CoverageTable c, NodeTable t, List<Object> nodeprim, double latitude, double longitude,
-                                boolean isEntityNode, String featureType) {
+                                boolean isEntityNode, String featureType, int primID) {
         // OMPoint pt = new OMPoint.Image(latitude, longitude);
 
         OMScalingIcon pt = new OMScalingIcon(latitude, longitude, (Image) null);
@@ -558,10 +558,14 @@ public class VPFAutoFeatureGraphicWarehouse
         double dpplat = Math.abs((ll1.getY() - ll2.getY()) / screenheight);
         double dpplon = Math.abs((ll1.getX() - ll2.getX()) / screenwidth);
 
+        /*
         BoundingCircle screenBounds = new GeoSegment.Impl(new Geo[] {
             new Geo(ll1.getLatitude(), ll1.getLongitude()),
             new Geo(ll2.getLatitude(), ll2.getLongitude())
         }).getBoundingCircle();
+        */
+        
+        DataBounds screenBounds = new DataBounds(ll1, ll2);
 
         for (String libraryName : lst.getLibraryNames()) {
 
@@ -588,14 +592,15 @@ public class VPFAutoFeatureGraphicWarehouse
             // if nothing is on the map.
             DataBounds bounds = cat.getBounds();
             if (bounds != null) {
+                /*
                 Point2D min = bounds.getMin();
                 Point2D max = bounds.getMax();
                 BoundingCircle catCircle = new GeoSegment.Impl(new Geo[] {
                     new Geo(min.getY(), min.getX()),
                     new Geo(max.getY(), max.getX())
                 }).getBoundingCircle();
-
-                if (!screenBounds.intersects(catCircle)) {
+                 */
+                if (!screenBounds.intersects(bounds)) {
                     logger.fine("CoverageAttributeTable for " + libraryName + " not on map, skipping...");
                     continue;
                 }
@@ -704,7 +709,7 @@ public class VPFAutoFeatureGraphicWarehouse
      * contents.
      * 
      * @param omg The OMGraphic representing a feature.
-     * @param fci The Desription of the columns of the fcirow.
+     * @param fci The Description of the columns of the fcirow.
      * @param fcirow The attributes for the feature.
      */
     public void handleInformationForOMGraphic(OMGraphic omg, FeatureClassInfo fci, List<Object> fcirow) {

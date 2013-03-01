@@ -1,5 +1,16 @@
 2013-02-28  dietrick  <dietrick@client.wonkavision.local>
 
+	* Added some data/vpf vmaplv0 configuration files with more
+	instructions on how to use the VPFFeatureLayer.
+
+	* Fixed the VPF attribute fetching with proper indexes.  The VPF
+	package api changed in a deep section, to allow the proper feature
+	id to be passed to the place where it's needed to fetch
+	attributes.
+
+	* Added intersets method to DataBounds.  Can be tested with new
+	BoundsTestLayer in layer.test package.
+
 	* Updated SwingWorker and PooledSwingWorker to use FutureTask
 	objects, reducing the number of threads that are created.  Updated
 	OMGraphicHandlerLayer.workerComplete to take a ISwingWorker in its
