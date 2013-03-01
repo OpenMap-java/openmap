@@ -101,8 +101,7 @@ public class ImageTile extends OMScalingRaster implements Serializable {
      * @param lrlon longitude of the right side of the image.
      * @param image BufferedImage used for the image.
      */
-    public ImageTile(double ullat, double ullon, double lrlat, double lrlon,
-            BufferedImage image) {
+    public ImageTile(double ullat, double ullon, double lrlat, double lrlon, BufferedImage image) {
         super(ullat, ullon, lrlat, lrlon, image);
     }
 
@@ -112,27 +111,34 @@ public class ImageTile extends OMScalingRaster implements Serializable {
     public void setSelected(boolean setting) {
         if (realSelection != null) {
             realSelection = Boolean.valueOf(setting);
-            
+
             if (setting) {
                 displayPaint = getSelectPaint();
             } else {
                 displayPaint = getLinePaint();
             }
-            
+
         } else {
             super.setSelected(setting);
         }
     }
-    
+
+    /**
+     * Checking to see of the image needs to be updated for the projection
+     * parameters, namely scale.
+     * 
+     * @param proj current projection
+     * @return true if the image scale, as projected, isn't being shrunk down
+     *         too much, and the image should be displayed.
+     */
     protected boolean shouldFetchForProjection(Projection proj) {
         Point2D anchor1 = new Point2D.Double(lat, lon);
         Point2D anchor2 = new Point2D.Double(lat2, lon2);
 
-        float imageScale = com.bbn.openmap.proj.ProjMath.getScale(anchor1,
-                anchor2,
-                proj);
-        
-        float scaleRatio = Cache.DEFAULT_SCALE_RATIO;  // Something somewhat reasonable, a default.
+        float imageScale = com.bbn.openmap.proj.ProjMath.getScale(anchor1, anchor2, proj);
+
+        float scaleRatio = Cache.DEFAULT_SCALE_RATIO; // Something somewhat
+                                                      // reasonable, a default.
         if (cache instanceof Cache) {
             scaleRatio = ((Cache) cache).getCutoffScaleRatio();
         }
@@ -144,11 +150,13 @@ public class ImageTile extends OMScalingRaster implements Serializable {
      * Called from within generate.
      * 
      * @param proj current projection.
-     * @return false if the rest of generate() should be skipped.
+     * @return false if the rest of generate() should be skipped, if the image
+     *         doesn't need to be formed for the current projection.
      */
     protected boolean updateImageForProjection(Projection proj) {
-        // point1 and point2 are already set in position()
-
+        // point1 and point2 are not yet set for a changed projection
+        position(proj);
+        
         if (imageDecoder != null) {
             if (!isOnMap(proj)) {
                 bitmap = null;
@@ -158,7 +166,8 @@ public class ImageTile extends OMScalingRaster implements Serializable {
                 return false;
             }
 
-            // Check the scale against the cache to see if we should do anything.
+            // Check the scale against the cache to see if we should do
+            // anything.
             if (shouldFetchForProjection(proj)) {
                 bitmap = null;
 
@@ -180,7 +189,7 @@ public class ImageTile extends OMScalingRaster implements Serializable {
                 selected = realSelection.booleanValue();
                 realSelection = null;
             }
-            
+
             if (sourceImage == null) {
                 if (cache != null) {
                     setImage((Image) cache.get(imageDecoder));
@@ -207,7 +216,7 @@ public class ImageTile extends OMScalingRaster implements Serializable {
     public static class Cache extends CacheHandler {
 
         public final static float DEFAULT_SCALE_RATIO = 5f;
-        
+
         protected float cutoffScaleRatio = DEFAULT_SCALE_RATIO;
 
         public Cache() {

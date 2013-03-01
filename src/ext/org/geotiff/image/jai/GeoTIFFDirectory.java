@@ -16,8 +16,7 @@ import com.sun.media.jai.codec.SeekableStream;
  * @author Niles D. Ritter
  */
 
-public class GeoTIFFDirectory extends XTIFFDirectory implements
-        java.io.Serializable {
+public class GeoTIFFDirectory extends XTIFFDirectory implements java.io.Serializable {
 
     private TreeMap geoKeyIndex = new TreeMap();
     private int keyDirectoryVersion;
@@ -32,7 +31,8 @@ public class GeoTIFFDirectory extends XTIFFDirectory implements
     /**
      * public constructor (for serializability)
      */
-    public GeoTIFFDirectory() {}
+    public GeoTIFFDirectory() {
+    }
 
     /**
      * Constructs a GeoTIFFDirectory by reading a SeekableStream. The ifd_offset
@@ -41,8 +41,7 @@ public class GeoTIFFDirectory extends XTIFFDirectory implements
      * are not part of the normal sequence of IFDs.
      */
 
-    public GeoTIFFDirectory(SeekableStream stream, long ifd_offset)
-            throws java.io.IOException {
+    public GeoTIFFDirectory(SeekableStream stream, long ifd_offset) throws java.io.IOException {
         super(stream, ifd_offset);
         readGeoKeys();
         log("GeoTIFFDirectory constructor success.");
@@ -55,14 +54,14 @@ public class GeoTIFFDirectory extends XTIFFDirectory implements
      * multiple images in a single TIFF file by maintaing multiple directories.
      */
 
-    public GeoTIFFDirectory(SeekableStream stream, int directory)
-            throws java.io.IOException {
+    public GeoTIFFDirectory(SeekableStream stream, int directory) throws java.io.IOException {
         super(stream, directory);
         readGeoKeys();
         log("GeoTIFFDirectory constructor success.");
     }
 
-    private void log(String msg) {}
+    private void log(String msg) {
+    }
 
     /**
      * Generates the TIFF fields from the GeoKey list
@@ -116,19 +115,13 @@ public class GeoTIFFDirectory extends XTIFFDirectory implements
         } // while
 
         // Add the Directory tag
-        addField(XTIFF.TIFFTAG_GEO_KEY_DIRECTORY,
-                XTIFFField.TIFF_SHORT,
-                keys.length,
-                keys);
+        addField(XTIFF.TIFFTAG_GEO_KEY_DIRECTORY, XTIFFField.TIFF_SHORT, keys.length, keys);
 
         // Add the Ascii tag if needed
         if (strings.length() > 0) {
             char zero = 0;
             strings = strings + zero;
-            addField(XTIFF.TIFFTAG_GEO_ASCII_PARAMS,
-                    XTIFFField.TIFF_ASCII,
-                    strings.length(),
-                    new String[] { strings });
+            addField(XTIFF.TIFFTAG_GEO_ASCII_PARAMS, XTIFFField.TIFF_ASCII, strings.length(), new String[] { strings });
         }
 
         // Add the double tag if needed
@@ -136,36 +129,24 @@ public class GeoTIFFDirectory extends XTIFFDirectory implements
             double[] doubleVals = new double[numDoubles];
             for (int i = 0; i < numDoubles; i++)
                 doubleVals = doubles;
-            addField(XTIFF.TIFFTAG_GEO_DOUBLE_PARAMS,
-                    XTIFFField.TIFF_DOUBLE,
-                    numDoubles,
-                    doubleVals);
+            addField(XTIFF.TIFFTAG_GEO_DOUBLE_PARAMS, XTIFFField.TIFF_DOUBLE, numDoubles, doubleVals);
         }
 
         // set up the other values stored in tags
         if (matrix != null)
-            addField(XTIFF.TIFFTAG_GEO_TRANS_MATRIX,
-                    XTIFFField.TIFF_DOUBLE,
-                    matrix.length,
-                    matrix);
+            addField(XTIFF.TIFFTAG_GEO_TRANS_MATRIX, XTIFFField.TIFF_DOUBLE, matrix.length, matrix);
         if (tiepoints != null)
-            addField(XTIFF.TIFFTAG_GEO_TIEPOINTS,
-                    XTIFFField.TIFF_DOUBLE,
-                    tiepoints.length,
-                    tiepoints);
+            addField(XTIFF.TIFFTAG_GEO_TIEPOINTS, XTIFFField.TIFF_DOUBLE, tiepoints.length, tiepoints);
         if (scales != null)
-            addField(XTIFF.TIFFTAG_GEO_PIXEL_SCALE,
-                    XTIFFField.TIFF_DOUBLE,
-                    scales.length,
-                    scales);
+            addField(XTIFF.TIFFTAG_GEO_PIXEL_SCALE, XTIFFField.TIFF_DOUBLE, scales.length, scales);
     }
 
     /**
      * stores a single geoKey in the index table, from the existing field
      * information
      */
-    private void storeGeoKey(int keyID, int tiffTag, int valueCount,
-                             int valueOrOffset) throws java.io.IOException {
+    private void storeGeoKey(int keyID, int tiffTag, int valueCount, int valueOrOffset)
+            throws java.io.IOException {
         int type = XTIFFField.TIFF_SHORT;
         Object value = null;
         if (tiffTag > 0) {
@@ -174,9 +155,8 @@ public class GeoTIFFDirectory extends XTIFFDirectory implements
             if (values != null) {
                 type = values.getType();
                 if (type == XTIFFField.TIFF_ASCII) {
-                    String svalue = values.getAsString(0)
-                            .substring(valueOrOffset,
-                                    valueOrOffset + valueCount - 1);
+                    String svalue = values.getAsString(0).substring(valueOrOffset, valueOrOffset
+                            + valueCount - 1);
                     value = new String[] { svalue };
                 } else if (type == XTIFFField.TIFF_DOUBLE) {
                     // we shouldn't have valueCount != 1 here

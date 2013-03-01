@@ -1,3 +1,10 @@
+2013-03-01  dietrick  <dietrick@client.wonkavision.local>
+
+	* Fixed the ImageTile outline behavior on projection changes.
+	Fixed bug in GeoTIFF code introduced via a FindBugs modification,
+	and tweaked the ImageTileLayer GUI to handle list selection
+	better.
+
 2013-02-28  dietrick  <dietrick@client.wonkavision.local>
 
 	* Added some data/vpf vmaplv0 configuration files with more
