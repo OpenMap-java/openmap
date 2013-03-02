@@ -912,7 +912,10 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
             this.y1 = arc.y1;
             this.off_x = arc.off_x;
             this.off_y = arc.off_y;
-            this.center = new LatLonPoint.Double(arc.getCenter());
+            Point2D center = arc.getCenter();
+            if (center != null) {
+                this.center = new LatLonPoint.Double(center);
+            }
             this.radius = arc.radius;
             this.width = arc.width;
             this.height = arc.height;

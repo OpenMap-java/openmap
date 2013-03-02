@@ -24,43 +24,23 @@
 
 package com.bbn.openmap.omGraphics.editable;
 
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 
+import javax.swing.SwingUtilities;
+
 import com.bbn.openmap.omGraphics.EditableOMLine;
+import com.bbn.openmap.omGraphics.EditableOMRect;
+import com.bbn.openmap.omGraphics.GrabPoint;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
-public class LineUndefinedState extends GraphicUndefinedState {
+public class LineUndefinedState extends ClckOrDrgUndefinedState {
 
     public LineUndefinedState(EditableOMLine eoml) {
         super(eoml);
+        indexOfFirstPoint = EditableOMLine.STARTING_POINT_INDEX;
+        indexOfSecondPoint = EditableOMLine.ENDING_POINT_INDEX;
     }
-
-    /**
-     * In this state, we need to draw a line from scratch. So, we
-     * listen for a mouse down, and set both points there, and then
-     * set the mode to line edit.
-     */
-    public boolean mousePressed(MouseEvent e) {
-        Debug.message("eoml",
-                "LineStateMachine|undefined state|mousePressed = "
-                        + graphic.getGraphic().getRenderType());
-
-        graphic.getGrabPoint(EditableOMLine.STARTING_POINT_INDEX).set(e.getX(),
-                e.getY());
-        graphic.getGrabPoint(EditableOMLine.ENDING_POINT_INDEX).set(e.getX(),
-                e.getY());
-        graphic.setMovingPoint(graphic.getGrabPoint(EditableOMLine.ENDING_POINT_INDEX));
-
-        if (graphic.getGraphic().getRenderType() == OMGraphic.RENDERTYPE_OFFSET) {
-            graphic.getStateMachine().setOffsetNeeded(true);
-            Debug.message("eoml",
-                    "LineStateMachine|undefined state| *offset needed*");
-        }
-        graphic.getStateMachine().setEdit();
-        graphic.fireEvent(EOMGEvent.EOMG_EDIT);
-        return getMapMouseListenerResponse();
-    }
-
 }
