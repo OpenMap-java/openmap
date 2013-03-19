@@ -44,6 +44,7 @@ public class CircleStateMachine
         states[GRAPHIC_SELECTED] = new CircleSelectedState((EditableOMCircle) graphic);
         states[GRAPHIC_SETOFFSET] = new CircleSetOffsetState((EditableOMCircle) graphic);
         states[GRAPHIC_EDIT] = new GraphicUndefinedEditState((EditableOMCircle) graphic);
+        states[GRAPHIC_EDIT] = new GraphicEditState((EditableOMCircle) graphic);
         return states;
     }
 

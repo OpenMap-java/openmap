@@ -1,3 +1,19 @@
+2013-03-02  dietrick  <dietrick@client.wonkavision.local>
+
+	* Added the ClckOrDrgUndefinedState to the omGraphics.editable
+	package, which is now the super class of LineUndefinedState,
+	RectUndefinedState and CircleUndefined state.  Lines, Rects and
+	Circles can now be defined with a click and mouse move to next
+	point, or with a press and drag to the next point, just like
+	polys.
+
+2013-03-01  dietrick  <dietrick@client.wonkavision.local>
+
+	* Fixed the ImageTile outline behavior on projection changes.
+	Fixed bug in GeoTIFF code introduced via a FindBugs modification,
+	and tweaked the ImageTileLayer GUI to handle list selection
+	better.
+
 2013-02-28  dietrick  <dietrick@client.wonkavision.local>
 
 	* Added some data/vpf vmaplv0 configuration files with more
