@@ -63,10 +63,40 @@ import com.bbn.openmap.util.PropUtils;
 /**
  * The MapTileMaker is an ImageServer extension that knows how to create image
  * tile sets, like the kind of tiles used by Google Maps and OpenStreetMap, Tile
- * Map Service (TMS). It uses ZoomLayerInfo objects to define how tiles are
+ * Map Service (TMS). It uses ZoomLayerMarker objects to define how tiles are
  * created for different zoom levels. You can run this class as an application.
  * With the -create option, it will create a sample properties file to
- * demonstrate what properties are needed to run it.
+ * demonstrate what properties are needed to run it.<p>
+ *
+ * The properties look much like the ImageServer properties, with a couple of additional values:<p>
+ * <pre>
+ * ### MapTileMaker/ImageServer properties ###
+ * antialiasing=false
+ * # Image formatter definition
+ * formatters=formatter1
+ * # Layer definitions for layers that are available for zoom levels
+ * layers=layer1 layer2 ...
+ * rootDir=Path to top level directory for tiles
+ * zoomLevels=zoom1 zoom2
+ *
+ * formatter1=.class=com.bbn.openmap.image.PNG32ImageFormatter
+ * layer1.class=com.bbn.openmap.layer.shape.ShapeLayer
+ * # ... layer1 properties follow, see layer docs for specific properties for that layer
+ *
+ * # Then, for each zoom level
+ * zoom1.class=com.bbn.openmap.image.ZoomLevelInfo
+ * #Optional, to limit tile areas created, in sets of 4, must be in lat,lon order
+ * zoom1.bounds=lat lon lat lon
+ * zoom1.description=Tiles for zoom level 4
+ * #Marker names for layers to be rendered, the property prefixes for the layers held by TileMaker
+ * zoom1.layers=layer1 layer2
+ * zoom1.name=ZoomLayerInfo 4
+ * zoom1.zoomLevel=4
+ * # If defined, copies of zoomLevel tiles will be scaled through range level.
+ * zoom1.range=0
+ * 
+ * # and repeat for every zoomLevel defined
+ * </pre>
  * 
  * @author dietrick
  */

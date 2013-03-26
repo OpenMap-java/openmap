@@ -47,8 +47,8 @@ import com.bbn.openmap.util.PropUtils;
  * <pre>
  * #Needed for property file creation of TileMaker
  * zoomMarker.class=com.bbn.openmap.image.ZoomLevelInfo
- * #Optional, to limit tile areas created, in sets of 4
- * zoomMarker.bounds=lat lon lat lon lat lon lat lon
+ * #Optional, to limit tile areas created, in sets of 4, must be in lat,lon order.
+ * zoomMarker.bounds=lat lon lat lon
  * zoomMarker.description=Tiles for zoom level 4
  * #Marker names for layers to be rendered, the property prefixes for the layers held by TileMaker
  * zoomMarker.layers=lakes shape
