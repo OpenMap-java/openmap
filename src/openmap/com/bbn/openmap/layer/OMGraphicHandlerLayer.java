@@ -725,7 +725,6 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
             String msg;
 
             try {
-
                 long start = System.currentTimeMillis();
                 OMGraphicList list = getRenderPolicy().prepare();
                 long stop = System.currentTimeMillis();
@@ -744,7 +743,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
                 } else {
                     logger.fine(getName() + " layer ran out of memory, attempting to recover...");
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 msg = getName() + "|LayerWorker.construct(): " + e.getClass().getName() + ", "
                         + e.getMessage();
                 logger.info(msg);
