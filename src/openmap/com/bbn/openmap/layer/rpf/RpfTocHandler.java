@@ -1036,7 +1036,8 @@ public class RpfTocHandler {
                                 coverageEntries.clear();
                             }
                             coverageEntries.add(currentEntry);
-
+                            bestEntry = currentEntry;
+                            prevBoundaryHits = hits;
                         }
 
                     } else if (hits > prevBoundaryHits
