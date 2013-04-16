@@ -41,10 +41,10 @@
 	<target name="all" depends="war" description="Compiles Ommaptile Servlet classes and creates the war (web archive) file." />
 
 	<target name="war" depends="jar">
-		<war destfile="${ommaptile.home}/ommaptile.war" webxml="WEB-INF/web.xml">
-			<lib dir="${ommaptile.lib_dir}"/>
-			<fileset dir="${ommaptile.home}" includes="*.properties"/>
-		</war>
+	  <war destfile="${ommaptile.home}/ommaptile.war" webxml="WEB-INF/web.xml">
+	    <lib dir="${ommaptile.lib_dir}"/>
+	    <classes dir="${ommaptile.home}" includes="*.properties"/>
+	  </war>
 	</target>
 	
 	<target name="jar" depends="classes">
@@ -66,6 +66,7 @@
 		<copy todir="${ommaptile.lib_dir}">
 			<fileset dir="${openmap.home}/ext/sqlitejdbc" includes="*.jar" />
 		</copy>
+		
 		
 		<javac srcdir="${ommaptile.home}" destdir="${ommaptile.classes}" classpath="${tomcat.jar};${ommaptile.jar}" excludes="${javac.excludes}, ${dependency.excludes}" />
 	</target>

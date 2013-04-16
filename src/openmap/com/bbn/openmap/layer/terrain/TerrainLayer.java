@@ -45,30 +45,29 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
+import com.bbn.openmap.util.PropUtils;
 
 /**
- * The Terrain Layer is an example of creating a layer that acts as a
- * tool that defines and area (via user gestures) and presents a
- * result of the analysis of the data. In this case, Elevation data is
- * used in two different ways. The Profile tool lets you draw a line
- * on the map, and then uses DTED data to create a GIF image that
- * shows the terrain profile along the drawn line. The LOS
- * (line-of-sight) tool lets you define a circle, and then calculates
- * the places on the ground that are within sight of the center of the
- * circle. The result is shown with the visible points being colored
- * green, and all other points being clear. The LOS tool lets you use
- * a height slider on its palette to define additional height at the
- * point, representing a tower, building, or location of an aircraft.
+ * The Terrain Layer is an example of creating a layer that acts as a tool that
+ * defines and area (via user gestures) and presents a result of the analysis of
+ * the data. In this case, Elevation data is used in two different ways. The
+ * Profile tool lets you draw a line on the map, and then uses DTED data to
+ * create a GIF image that shows the terrain profile along the drawn line. The
+ * LOS (line-of-sight) tool lets you define a circle, and then calculates the
+ * places on the ground that are within sight of the center of the circle. The
+ * result is shown with the visible points being colored green, and all other
+ * points being clear. The LOS tool lets you use a height slider on its palette
+ * to define additional height at the point, representing a tower, building, or
+ * location of an aircraft.
  * 
  * <P>
  * The tools require you to be in the gesture mode of OpenMap.
  * 
  * <P>
- * The TerrainLayer needs a DTEDFrameCache. It can be added to the
- * layer programmatically, or the layer will find it if the
- * DTEDFrameCache is added to the MapHandler. To do that in the
- * OpenMap application, add the DTEDFrameCache to the
- * openmap.components property in the openmap.properties file.
+ * The TerrainLayer needs a DTEDFrameCache. It can be added to the layer
+ * programmatically, or the layer will find it if the DTEDFrameCache is added to
+ * the MapHandler. To do that in the OpenMap application, add the DTEDFrameCache
+ * to the openmap.components property in the openmap.properties file.
  * 
  * <pre>
  * 
@@ -80,13 +79,12 @@ import com.bbn.openmap.util.PaletteHelper;
  *  #----------------------------------------------------------------------
  *  # End of properties file for TerrainLayer
  *  #----------------------------------------------------------------------
- *  
+ * 
  * </pre>
  * 
  * @see com.bbn.openmap.dataAccess.dted.DTEDFrameCache
  */
-public class TerrainLayer extends OMGraphicHandlerLayer implements
-        ActionListener, MapMouseListener {
+public class TerrainLayer extends OMGraphicHandlerLayer implements ActionListener, MapMouseListener {
     /** The cache that knows how to handle DTED requests. */
     public DTEDFrameCache frameCache;
 
@@ -109,8 +107,8 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements
     public final static String createCommand = "createTool";
 
     /**
-     * The default constructor for the Layer. All of the attributes
-     * are set to their default values.
+     * The default constructor for the Layer. All of the attributes are set to
+     * their default values.
      */
     public TerrainLayer() {
         setName("Terrain");
@@ -125,8 +123,8 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements
     }
 
     /**
-     * Sets the default values for the variables, if the properties
-     * are not found, or are invalid. Usually not a good idea.
+     * Sets the default values for the variables, if the properties are not
+     * found, or are invalid. Usually not a good idea.
      */
     protected void setDefaultValues() {
         mode = PROFILE;
@@ -143,49 +141,37 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements
     /**
      * Set all the TerrainLayer properties from a properties object
      * 
-     * @param prefix a string that gets set to individualize the
-     *        properties to a specific layer.
+     * @param prefix a string that gets set to individualize the properties to a
+     *        specific layer.
      * @param properties the properties object
      */
     public void setProperties(String prefix, java.util.Properties properties) {
 
         super.setProperties(prefix, properties);
         setDefaultValues();
-        prefix = com.bbn.openmap.util.PropUtils.getScopedPropertyPrefix(prefix);
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        try {
-
-            String defaultModeString = properties.getProperty(prefix
-                    + defaultModeProperty);
-            if (defaultModeString.equalsIgnoreCase("LOS"))
-                setMode(LOS);
-            //          else if (defaultModeString.equalsIgnoreCase("PROFILE"))
-            //              defaultMode = PROFILE;
-            else
-                setMode(PROFILE);
-        } catch (NullPointerException e) {
-            System.err.println("TerrainLayer: Caught NullPointerException loading resources.");
-            System.err.println("TerrainLayer: Using default resources.");
-            setDefaultValues();
-            setMode(mode);
+        String defaultModeString = properties.getProperty(prefix + defaultModeProperty, "PROFILE");
+        if (defaultModeString.equalsIgnoreCase("LOS")) {
+            setMode(LOS);
+        } else {
+            setMode(PROFILE);
         }
     }
 
     /**
-     * Prepares the graphics for the layer. This is where the
-     * getRectangle() method call is made on the dted.
+     * Prepares the graphics for the layer. This is where the getRectangle()
+     * method call is made on the dted.
      * <p>
-     * Occasionally it is necessary to abort a prepare call. When this
-     * happens, the map will set the cancel bit in the LayerThread,
-     * (the thread that is running the prepare). If this Layer needs
-     * to do any cleanups during the abort, it should do so, but
-     * return out of the prepare asap.
+     * Occasionally it is necessary to abort a prepare call. When this happens,
+     * the map will set the cancel bit in the LayerThread, (the thread that is
+     * running the prepare). If this Layer needs to do any cleanups during the
+     * abort, it should do so, but return out of the prepare asap.
      */
     public synchronized OMGraphicList prepare() {
 
         if (isCancelled()) {
-            Debug.message("dted", getName()
-                    + "|TerrainLayer.prepare(): aborted.");
+            Debug.message("dted", getName() + "|TerrainLayer.prepare(): aborted.");
             return null;
         }
 
@@ -202,15 +188,15 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements
         // OMGraphicList is made up of OMGraphics, which are generated
         // (projected) when the graphics are added to the list. So,
         // after this call, the list is ready for painting.
-        
+
         profileTool.setScreenParameters(projection);
         LOSTool.setScreenParameters(projection);
         return currentTool.getGraphics();
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // GUI
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     /** The user interface palette for the Terrain layer. */
     protected Box paletteBox = null;
@@ -226,8 +212,8 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements
 
             paletteBox = Box.createVerticalBox();
 
-            //          palette = new JPanel();
-            //          palette.setLayout(new GridLayout(0, 1));
+            // palette = new JPanel();
+            // palette.setLayout(new GridLayout(0, 1));
 
             // The Terrain Level selector
             JPanel modePanel = PaletteHelper.createPaletteJPanel("Tool Mode");
@@ -307,19 +293,18 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements
             paletteBox.add(modePanel);
             paletteBox.add(centerHeightPanel);
             paletteBox.add(profileControlPanel);
-            //          palette.add(redraw);
+            // palette.add(redraw);
         }
 
         return paletteBox;
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // ActionListener interface implementation
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     /**
-     * The reaction handler for the buttons being pressed on the
-     * palette.
+     * The reaction handler for the buttons being pressed on the palette.
      */
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
@@ -331,17 +316,17 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements
         }
     }
 
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
     // MapMouseListener interface implementation
-    //----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
 
     public synchronized MapMouseListener getMapMouseListener() {
         return this;
     }
 
     /**
-     * Tells the MouseDelegator which Mouse Modes we're interested in
-     * receiving events from. In this case, just the "Gestures" mode.
+     * Tells the MouseDelegator which Mouse Modes we're interested in receiving
+     * events from. In this case, just the "Gestures" mode.
      */
     public String[] getMouseModeServiceList() {
         String[] services = { SelectMouseMode.modeID };
@@ -360,9 +345,11 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements
         return currentTool.getState().mouseClicked(e);
     }
 
-    public void mouseEntered(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {
+    }
 
-    public void mouseExited(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {
+    }
 
     public boolean mouseDragged(MouseEvent e) {
         return currentTool.getState().mouseDragged(e);
@@ -372,12 +359,12 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements
         return false;
     }
 
-    public void mouseMoved() {}
+    public void mouseMoved() {
+    }
 
     /**
-     * Little math utility that both tools use, that just implements
-     * the pathagorean theorem to do the number of pixels between two
-     * screen points.
+     * Little math utility that both tools use, that just implements the
+     * pathagorean theorem to do the number of pixels between two screen points.
      */
     public static int numPixelsBetween(int x1, int y1, int x2, int y2) {
         return (int) Math.sqrt(Math.pow((double) (x1 - x2), 2.0)
@@ -391,11 +378,11 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements
             currentTool.reset();
         if (m == PROFILE) {
             currentTool = profileTool;
-            //        System.out.println("Changing mode to PROFILE");
+            // System.out.println("Changing mode to PROFILE");
         }
         if (m == LOS) {
             currentTool = LOSTool;
-            //        System.out.println("Changing mode to LOS");
+            // System.out.println("Changing mode to LOS");
         }
         if (currentTool != null) {
             currentTool.reset();
@@ -420,4 +407,3 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements
     }
 
 }
-

@@ -30,7 +30,7 @@
 
     <!-- Servlet definitions -->
 	<servlet>
-		<servlet-name>MapTile</servlet-name>
+		<servlet-name>ommaptile</servlet-name>
 		<description>
 		  Provide map tiles as asked for, based on z/x/y.png requests.
 		</description>
@@ -43,12 +43,12 @@
 	 available tile sets. -->
 
 	<servlet-mapping>
-		<servlet-name>MapTile</servlet-name>
+		<servlet-name>ommaptile</servlet-name>
 		<url-pattern></url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
-		<servlet-name>MapTile</servlet-name>
+		<servlet-name>ommaptile</servlet-name>
 		<url-pattern>*</url-pattern>
 	</servlet-mapping>
 

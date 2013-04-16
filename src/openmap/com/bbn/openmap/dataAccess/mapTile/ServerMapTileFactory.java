@@ -139,8 +139,7 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
                 logger.fine("fetching file for cache: " + key);
             }
 
-            java.net.URL url = null;
-            ImageIcon ii = null;
+            byte[] imageBytes = null;
 
             CacheObject localVersion = super.load(key, x, y, zoomLevel, proj);
 
@@ -151,84 +150,12 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
 
             // build file path here uses rootDir, which is the URL.
             String imagePath = buildFilePath(x, y, zoomLevel, fileExt);
-            try {
-                url = new java.net.URL(imagePath);
-                java.net.HttpURLConnection urlc = (java.net.HttpURLConnection) url.openConnection();
 
-                if (logger.isLoggable(Level.FINER)) {
-                    logger.finer("url content type: " + urlc.getContentType());
-                }
+            imageBytes = getImageBytes(imagePath, (String) key);
 
-                if (urlc == null || urlc.getContentType() == null) {
-                    if (logger.isLoggable(Level.FINE)) {
-                        logger.fine("unable to connect to (tile might be unavailable): "
-                                + imagePath);
-                    }
-
-                    /*
-                     * Not found, or there's a problem, check with the factory
-                     * on how to handle tiles that aren't there. Use the local
-                     * location to store it in the cache, since that's what
-                     * going to be used for the cache search next time around.
-                     * If the web location is used, the tile fetch will always
-                     * go back to the server and never find cached empty tiles.
-                     */
-                    return getEmptyTile(key, x, y, zoomLevel, proj);
-                }
-
-                // text
-                if (urlc.getContentType().startsWith("text")) {
-                    java.io.BufferedReader bin = new java.io.BufferedReader(new java.io.InputStreamReader(urlc.getInputStream()));
-                    String st;
-                    StringBuffer message = new StringBuffer();
-                    while ((st = bin.readLine()) != null) {
-                        message.append(st);
-                    }
-
-                    // Debug.error(message.toString());
-                    // How about we toss the message out to the user
-                    // instead?
-                    logger.fine(message.toString());
-
-                    // image
-                } else if (urlc.getContentType().startsWith("image")) {
-
-                    InputStream in = urlc.getInputStream();
-                    // ------- Testing without this
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    int buflen = 2048; // 2k blocks
-                    byte buf[] = new byte[buflen];
-                    int len = -1;
-                    while ((len = in.read(buf, 0, buflen)) != -1) {
-                        out.write(buf, 0, len);
-                    }
-                    out.flush();
-                    out.close();
-
-                    byte[] imageBytes = out.toByteArray();
-                    ii = new ImageIcon(imageBytes);
-
-                    if (localCacheDir != null) {
-                        File localFile = new File(key.toString());
-
-                        File parentDir = localFile.getParentFile();
-                        parentDir.mkdirs();
-
-                        FileOutputStream fos = new FileOutputStream(localFile);
-                        fos.write(imageBytes);
-                        fos.flush();
-                        fos.close();
-                    }
-
-                } // end if image
-            } catch (java.net.MalformedURLException murle) {
-                logger.warning("WebImagePlugIn: URL \"" + imagePath + "\" is malformed.");
-            } catch (java.io.IOException ioe) {
-                logger.fine("Couldn't connect to " + imagePath + ", connection problem");
-            }
-
-            if (ii != null && ii.getIconWidth() > 0) {
+            if (imageBytes != null && imageBytes.length > 0) {
                 // image found
+                ImageIcon ii = new ImageIcon(imageBytes);
 
                 try {
                     BufferedImage rasterImage = preprocessImage(ii.getImage(), ii.getIconWidth(), ii.getIconHeight());
@@ -258,6 +185,84 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
         }
 
         return null;
+    }
+
+    /**
+     * Tries to get the image bytes from imagePath URL. If image found, will
+     * write it locally to localFilePath for caching.
+     * 
+     * @param imagePath the source URL image path.
+     * @param localFilePath the caching local file path
+     * @return byte[] of image
+     */
+    public byte[] getImageBytes(String imagePath, String localFilePath) {
+        byte[] imageBytes = null;
+
+        try {
+            java.net.URL url = new java.net.URL(imagePath);
+            java.net.HttpURLConnection urlc = (java.net.HttpURLConnection) url.openConnection();
+
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer("url content type: " + urlc.getContentType());
+            }
+
+            if (urlc == null || urlc.getContentType() == null) {
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("unable to connect to (tile might be unavailable): " + imagePath);
+                }
+
+                // text
+            } else if (urlc.getContentType().startsWith("text")) {
+                java.io.BufferedReader bin = new java.io.BufferedReader(new java.io.InputStreamReader(urlc.getInputStream()));
+                String st;
+                StringBuffer message = new StringBuffer();
+                while ((st = bin.readLine()) != null) {
+                    message.append(st);
+                }
+
+                // Debug.error(message.toString());
+                // How about we toss the message out to the user
+                // instead?
+                logger.fine(message.toString());
+
+                // image
+            } else if (urlc.getContentType().startsWith("image")) {
+
+                InputStream in = urlc.getInputStream();
+                // ------- Testing without this
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                int buflen = 2048; // 2k blocks
+                byte buf[] = new byte[buflen];
+                int len = -1;
+                while ((len = in.read(buf, 0, buflen)) != -1) {
+                    out.write(buf, 0, len);
+                }
+                out.flush();
+                out.close();
+
+                imageBytes = out.toByteArray();
+
+                if (localFilePath != null) {
+                    File localFile = new File(localFilePath);
+
+                    File parentDir = localFile.getParentFile();
+                    parentDir.mkdirs();
+
+                    FileOutputStream fos = new FileOutputStream(localFile);
+                    fos.write(imageBytes);
+                    fos.flush();
+                    fos.close();
+                }
+
+            } // end if image
+        } catch (java.net.MalformedURLException murle) {
+            logger.warning("ServerMapTileFactory: URL \"" + imagePath + "\" is malformed.");
+        } catch (java.io.IOException ioe) {
+            logger.fine("Couldn't connect to " + imagePath + ", connection problem");
+        }
+
+        return imageBytes;
+
     }
 
     /**
