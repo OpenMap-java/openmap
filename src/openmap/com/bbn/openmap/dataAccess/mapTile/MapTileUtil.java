@@ -108,10 +108,9 @@ public class MapTileUtil {
 
         // new URLGrabber("http://tah.openstreetmap.org/Tiles/tile", "/data/tiles").addZoomRange(0, 5).go();
 
-        // new Copy("/Volumes/data/st_osm_tiles", "/Volumes/data/working/st_osm_tiles").addZoom(17)
-        //                                                                             .addBounds(7.8696, 2.324, 2.899, 9.053).go();
+        // new Copy("/data/sourcetiles", "/data/desttiles").addZoom(17).addBounds(7.8696, 2.324, 2.899, 9.053).go();
 
-        new Jar("/Users/dietrick/Desktop/dnc_ng_tiles", "/Users/dietrick/Desktop/dnc_nigeria_tiles.jar").addZoomRange(0,17).addBounds(14.042,2.498,.809,15.215).go();
+        new Jar("/data/sourcetiles", "/data/dest.jar").addZoomRange(0,17).addBounds(14.042,2.498,.809,15.215).go();
     }
 
     /**
