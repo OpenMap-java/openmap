@@ -63,8 +63,7 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * @author dietrick
  */
-public class ZoomLevelMaker
-        extends ZoomLevelInfo {
+public class ZoomLevelMaker extends ZoomLevelInfo {
 
     public final static String BOUNDS_PROPERTY = "bounds";
     public final static String NAME_PROPERTY = "name";
@@ -79,7 +78,6 @@ public class ZoomLevelMaker
     protected String description;
     protected List<String> layers;
     protected List<Layer> layerList;
-    protected float scale = -1f;
 
     /**
      * The range should be equal or smaller than the zoom level, describing how
@@ -123,7 +121,8 @@ public class ZoomLevelMaker
         if (boundsPropertyStrings != null) {
             Vector<String> boundsStrings = PropUtils.parseSpacedMarkers(boundsPropertyStrings);
             int count = 0;
-            while (boundsStrings != null && !boundsStrings.isEmpty() && boundsStrings.size() >= count + 4) {
+            while (boundsStrings != null && !boundsStrings.isEmpty()
+                    && boundsStrings.size() >= count + 4) {
                 double lat1 = Double.parseDouble(boundsStrings.get(count));
                 double lon1 = Double.parseDouble(boundsStrings.get(count + 1));
                 double lat2 = Double.parseDouble(boundsStrings.get(count + 2));
@@ -165,8 +164,7 @@ public class ZoomLevelMaker
         for (Rectangle2D bound : getBounds()) {
             double x = bound.getX();
             double y = bound.getY();
-            buf.append(y).append(" ").append(x).append(" ").append((y + bound.getHeight())).append(" ")
-               .append((x + bound.getWidth())).append(" ");
+            buf.append(y).append(" ").append(x).append(" ").append((y + bound.getHeight())).append(" ").append((x + bound.getWidth())).append(" ");
         }
         props.put(prefix + BOUNDS_PROPERTY, buf.toString().trim());
 
@@ -177,24 +175,17 @@ public class ZoomLevelMaker
         props = super.getPropertyInfo(props);
         I18n i18n = Environment.getI18n();
 
-        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, NAME_PROPERTY, "Name",
-                                      "Name for zoom level tiles", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, NAME_PROPERTY, "Name", "Name for zoom level tiles", null);
 
-        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, DESCRIPTION_PROPERTY,
-                                      "Descroption", "Description for zoom level tiles", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, DESCRIPTION_PROPERTY, "Descroption", "Description for zoom level tiles", null);
 
-        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, ZOOM_LEVEL_PROPERTY,
-                                      "Zoom Level (1-20)", "Number for zoom level", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, ZOOM_LEVEL_PROPERTY, "Zoom Level (1-20)", "Number for zoom level", null);
 
-        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, BOUNDS_PROPERTY,
-                                      "Bounds", "Bounds for tile creation (lat lon lat lon)", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, BOUNDS_PROPERTY, "Bounds", "Bounds for tile creation (lat lon lat lon)", null);
 
-        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, LAYERS_PROPERTY,
-                                      "Layers", "Space separated marker names for layers used in tiles.", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, LAYERS_PROPERTY, "Layers", "Space separated marker names for layers used in tiles.", null);
 
-        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, RANGE_PROPERTY,
-                                      "Range", "Zoom level to create tiles down to, using the tiles created at this zoom level.",
-                                      null);
+        PropUtils.setI18NPropertyInfo(i18n, props, com.bbn.openmap.dataAccess.mapTile.ZoomLevelMaker.class, RANGE_PROPERTY, "Range", "Zoom level to create tiles down to, using the tiles created at this zoom level.", null);
 
         return props;
     }
@@ -277,30 +268,9 @@ public class ZoomLevelMaker
         this.layerList = layerList;
     }
 
-    /**
-     * Return the current scale set in this object.
-     * 
-     * @return scale setting for zoom level
-     */
-    public float getScale() {
-        if (scale < 0) {
-            scale = MapTileMaker.getScaleForZoom(zoomLevel);
-        }
-        return scale;
-    }
-
     public void setZoomLevel(int zoomLevel) {
         super.setZoomLevel(zoomLevel);
         scale = -1;
-    }
-
-    /**
-     * Set the current scale to use for calculating the zoom level.
-     * 
-     * @param scale to set
-     */
-    public void setScale(float scale) {
-        this.scale = scale;
     }
 
     /**

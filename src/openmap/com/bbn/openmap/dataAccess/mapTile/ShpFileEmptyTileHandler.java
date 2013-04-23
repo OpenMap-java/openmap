@@ -78,7 +78,7 @@ public class ShpFileEmptyTileHandler extends SimpleEmptyTileHandler {
             Graphics g = bi.getGraphics();
 
             LatLonPoint center = mtcTransform.tileUVToLatLon(new Point2D.Double(x + .5, y + .5), zoomLevel, new LatLonPoint.Double());
-            Mercator merc = new Mercator(center, MapTileMaker.getScaleForZoom(zoomLevel), TILE_SIZE, TILE_SIZE);
+            Mercator merc = new Mercator(center, mtcTransform.getScaleForZoom(zoomLevel), TILE_SIZE, TILE_SIZE);
 
             ((Graphics2D) g).setPaint(backgroundAtts.getFillPaint());
             g.fillRect(0, 0, TILE_SIZE, TILE_SIZE);

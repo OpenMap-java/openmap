@@ -66,9 +66,13 @@ import com.bbn.openmap.util.PropUtils;
  * Map Service (TMS). It uses ZoomLayerMarker objects to define how tiles are
  * created for different zoom levels. You can run this class as an application.
  * With the -create option, it will create a sample properties file to
- * demonstrate what properties are needed to run it.<p>
- *
- * The properties look much like the ImageServer properties, with a couple of additional values:<p>
+ * demonstrate what properties are needed to run it.
+ * <p>
+ * 
+ * The properties look much like the ImageServer properties, with a couple of
+ * additional values:
+ * <p>
+ * 
  * <pre>
  * ### MapTileMaker/ImageServer properties ###
  * antialiasing=false
@@ -78,11 +82,11 @@ import com.bbn.openmap.util.PropUtils;
  * layers=layer1 layer2 ...
  * rootDir=Path to top level directory for tiles
  * zoomLevels=zoom1 zoom2
- *
+ * 
  * formatter1=.class=com.bbn.openmap.image.PNG32ImageFormatter
  * layer1.class=com.bbn.openmap.layer.shape.ShapeLayer
  * # ... layer1 properties follow, see layer docs for specific properties for that layer
- *
+ * 
  * # Then, for each zoom level
  * zoom1.class=com.bbn.openmap.image.ZoomLevelInfo
  * #Optional, to limit tile areas created, in sets of 4, must be in lat,lon order
@@ -100,8 +104,7 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * @author dietrick
  */
-public class MapTileMaker
-        extends ImageServer {
+public class MapTileMaker extends ImageServer {
 
     public final static String ROOT_DIRECTORY_PROPERTY = "rootDir";
     public final static String ZOOM_LEVELS_PROPERTY = "zoomLevels";
@@ -109,7 +112,8 @@ public class MapTileMaker
     protected String rootDir;
     protected List<ZoomLevelMaker> zoomLevels;
     protected MapTileCoordinateTransform mtcTransform = new OSMMapTileCoordinateTransform();
-
+    protected int TILE_SIZE = mtcTransform.getTileSize();
+    
     /**
      * Empty constructor that expects to be configured later.
      */
@@ -163,9 +167,8 @@ public class MapTileMaker
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         rootDir = props.getProperty(prefix + ROOT_DIRECTORY_PROPERTY, rootDir);
-        List<ZoomLevelMaker> zoomLevels =
-                (List<ZoomLevelMaker>) PropUtils.objectsFromProperties(props, prefix + ZOOM_LEVELS_PROPERTY,
-                                                                       ComponentFactory.ClassNameProperty);
+        List<ZoomLevelMaker> zoomLevels = (List<ZoomLevelMaker>) PropUtils.objectsFromProperties(props, prefix
+                + ZOOM_LEVELS_PROPERTY, ComponentFactory.ClassNameProperty);
         getZoomLevels().addAll(zoomLevels);
     }
 
@@ -189,9 +192,7 @@ public class MapTileMaker
 
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
-        PropUtils.setI18NPropertyInfo(Environment.getI18n(), props, com.bbn.openmap.dataAccess.mapTile.MapTileMaker.class,
-                                      ROOT_DIRECTORY_PROPERTY, "Tile Directory", "Root directory for holding tile files.",
-                                      "com.bbn.openmap.util.propertyEditor.DirectoryPropertyEditor");
+        PropUtils.setI18NPropertyInfo(Environment.getI18n(), props, com.bbn.openmap.dataAccess.mapTile.MapTileMaker.class, ROOT_DIRECTORY_PROPERTY, "Tile Directory", "Root directory for holding tile files.", "com.bbn.openmap.util.propertyEditor.DirectoryPropertyEditor");
         return props;
     }
 
@@ -208,7 +209,7 @@ public class MapTileMaker
      */
     public byte[] makeTile(double uvx, double uvy, ZoomLevelMaker zoomInfo, Proj proj) {
         Point2D center = tileUVToLatLon(new Point2D.Double(uvx + .5, uvy + .5), zoomInfo.getZoomLevel());
-        proj.setScale(zoomInfo.getScale());
+        proj.setScale(mtcTransform.getScaleForZoom(zoomInfo.getZoomLevel()));
         proj.setCenter(center);
         proj.setHeight(TILE_SIZE);
         proj.setWidth(TILE_SIZE);
@@ -228,9 +229,10 @@ public class MapTileMaker
      * @param background the paint to use for the background of the image.
      * @return byte[] for raw image bytes
      */
-    public byte[] makeTile(double uvx, double uvy, int zoomLevel, List<Layer> layers, Proj proj, Paint background) {
+    public byte[] makeTile(double uvx, double uvy, int zoomLevel, List<Layer> layers, Proj proj,
+                           Paint background) {
         Point2D center = tileUVToLatLon(new Point2D.Double(uvx + .5, uvy + .5), zoomLevel);
-        proj.setScale(getScaleForZoom(zoomLevel));
+        proj.setScale(mtcTransform.getScaleForZoom(zoomLevel));
         proj.setCenter(center);
         proj.setHeight(TILE_SIZE);
         proj.setWidth(TILE_SIZE);
@@ -278,7 +280,7 @@ public class MapTileMaker
             }
         }
 
-        Proj proj = new Mercator(new LatLonPoint.Double(), 10000, TILE_SIZE, TILE_SIZE);
+        Proj proj = new Mercator(new LatLonPoint.Double(), 10000, MapTileCoordinateTransform.TILE_SIZE, MapTileCoordinateTransform.TILE_SIZE);
 
         List<ZoomLevelMaker> zoomLevels = getZoomLevels();
         for (ZoomLevelMaker zfi : zoomLevels) {
@@ -316,7 +318,8 @@ public class MapTileMaker
                                 logger.finer("wrote: " + outputFile);
                             }
                         } catch (IOException ioe) {
-                            logger.warning("Caught IOException writing " + x + ", " + y + ", " + zfi);
+                            logger.warning("Caught IOException writing " + x + ", " + y + ", "
+                                    + zfi);
                         }
                     }
 
@@ -342,6 +345,7 @@ public class MapTileMaker
                     tileLayer.setZoomLevel(rangeZoomLevel);
                     ZoomLevelInfo rangeZFI = new ZoomLevelInfo();
                     rangeZFI.setZoomLevel(rangeZoomLevel);
+                    rangeZFI.setScale(mtcTransform.getScaleForZoom(rangeZoomLevel));
                     // Create new tiles from the tiles one zoom level up
                     tileLayer.setZoomLevel(rangeZoomLevel + 1);
 
@@ -384,7 +388,8 @@ public class MapTileMaker
                                         logger.finer("wrote: " + outputFile);
                                     }
                                 } catch (IOException ioe) {
-                                    logger.warning("Caught IOException writing " + x + ", " + y + ", " + zfi);
+                                    logger.warning("Caught IOException writing " + x + ", " + y
+                                            + ", " + zfi);
                                 }
                             }
 
@@ -434,7 +439,8 @@ public class MapTileMaker
         zoomLevels.clear();
 
         for (int i = 0; i <= maxZoomLevel; i++) {
-            ZoomLevelMaker zfi = new ZoomLevelMaker("ZoomLayerInfo " + i, "Tiles for zoom level " + i, i);
+            ZoomLevelMaker zfi = new ZoomLevelMaker("ZoomLayerInfo " + i, "Tiles for zoom level "
+                    + i, i);
             zfi.setLayers(layerNames);
             zfi.setPropertyPrefix("zoom" + i);
             zoomLevels.add(zfi);
@@ -473,42 +479,6 @@ public class MapTileMaker
 
     public LatLonPoint tileUVToLatLon(Point2D tileUV, int zoom, LatLonPoint ret) {
         return mtcTransform.tileUVToLatLon(tileUV, zoom, ret);
-    }
-
-    public final static int TILE_SIZE = 256;
-    public final static Point2D UVUL = new Point2D.Double(0, 0);
-    public final static Point2D UVLR = new Point2D.Double(TILE_SIZE, TILE_SIZE);
-
-    public static float getScaleForZoom(int zoom) {
-        Projection proj = new Mercator(new LatLonPoint.Double(), 1000000, TILE_SIZE, TILE_SIZE);
-        return getScaleForZoomAndProjection(proj, zoom);
-    }
-
-    public static float getScaleForZoomAndProjection(Projection proj, int zoom) {
-        MapTileCoordinateTransform mtct = new OSMMapTileCoordinateTransform();
-        Point2D originLLUL = mtct.tileUVToLatLon(new Point2D.Double(0.0, 0.0), zoom);
-        Point2D originLLLR = mtct.tileUVToLatLon(new Point2D.Double(1.0, 1.0), zoom);
-        return proj.getScale(originLLUL, originLLLR, UVUL, UVLR);
-    }
-
-    /**
-     * Creates an array of scale values for different zoom levels. Make sure you
-     * don't reference the array outside of the low and high zoom levels. There
-     * will be a high zoom level number of items in the array, but the first
-     * index set will be the low zoom level index.
-     * 
-     * @param proj
-     * @param lowZoomLevel
-     * @param highZoomLevel
-     * @return array, initialized for the low zoom level index to the high zoom
-     *         level index.
-     */
-    public static float[] getScalesForZoomLevels(Projection proj, int lowZoomLevel, int highZoomLevel) {
-        float[] ret = new float[highZoomLevel + 1];
-        for (int i = lowZoomLevel; i <= highZoomLevel; i++) {
-            ret[i] = getScaleForZoomAndProjection(proj, i);
-        }
-        return ret;
     }
 
     public static void main(String[] args) {
@@ -559,9 +529,7 @@ public class MapTileMaker
                 props.put("shape.fillColor", "FFBBBBBB");
                 shapeLayer.setProperties("shape", props);
 
-                tim = new MapTileMaker(new Layer[] {
-                    shapeLayer
-                }, new SunJPEGFormatter());
+                tim = new MapTileMaker(new Layer[] { shapeLayer }, new SunJPEGFormatter());
                 tim.createDefaultZoomLevels(4);
 
                 tim.setRootDir("<Path to top level directory for tiles>");

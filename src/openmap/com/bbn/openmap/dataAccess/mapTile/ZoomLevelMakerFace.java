@@ -269,6 +269,9 @@ public class ZoomLevelMakerFace
     public void updateZoomLevel(int zoomLevel) {
         DecimalFormat df = new DecimalFormat("000,000");
         zfi.setZoomLevel(zoomLevel);
+        
+        zfi.setScale(new OSMMapTileCoordinateTransform().getScaleForZoom(zoomLevel));
+        
         int etc = zfi.getEdgeTileCount();
 
         tileDimensions.setText(etc + " x " + etc);

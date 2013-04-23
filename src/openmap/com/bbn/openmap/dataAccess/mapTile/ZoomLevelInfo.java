@@ -58,6 +58,7 @@ public class ZoomLevelInfo
       extends OMComponent {
 
    protected int zoomLevel = 0;
+   protected float scale = -1f;
 
    /**
     * Default constructor.
@@ -79,6 +80,24 @@ public class ZoomLevelInfo
       this.zoomLevel = zoomLevel;
    }
 
+   /**
+    * Return the current scale set in this object.
+    * 
+    * @return scale setting for zoom level
+    */
+   public float getScale() {
+       return scale;
+   }
+
+   /**
+    * Set the current scale to use for calculating the zoom level.
+    * 
+    * @param scale to set
+    */
+   public void setScale(float scale) {
+       this.scale = scale;
+   }
+   
    /**
     * @return the number of tiles across or down for the current zoom level.
     */

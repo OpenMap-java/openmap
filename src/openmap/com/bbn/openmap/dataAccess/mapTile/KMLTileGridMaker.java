@@ -64,6 +64,7 @@ public class KMLTileGridMaker {
       zli.setZoomLevel(level);
       int edgeTileCount = zli.getEdgeTileCount();
       OSMMapTileCoordinateTransform transform = new OSMMapTileCoordinateTransform();
+      zli.setScale(transform.getScaleForZoom(level));
       for (int x = 0; x < edgeTileCount; x++) {
          for (int y = 0; y < edgeTileCount; y++) {
             Point2D ulllp = transform.tileUVToLatLon(new Point2D.Double(x, y), level);

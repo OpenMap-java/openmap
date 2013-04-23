@@ -913,7 +913,7 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
         MapTileCoordinateTransform mtct = new OSMMapTileCoordinateTransform();
 
         if (scales == null) {
-            scales = MapTileMaker.getScalesForZoomLevels(proj, 0, high);
+            scales = mtct.getScalesForZoomLevels(proj, high);
         }
 
         float currentScale = proj.getScale();

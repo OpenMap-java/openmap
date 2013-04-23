@@ -75,7 +75,7 @@ public class TileInfo {
         if (eth != null) {
 
             LatLonPoint center = mtcTransform.tileUVToLatLon(new Point2D.Double(x + .5, y + .5), zoomLevel, new LatLonPoint.Double());
-            Mercator merc = new Mercator(center, MapTileMaker.getScaleForZoom(zoomLevel), SimpleEmptyTileHandler.TILE_SIZE, SimpleEmptyTileHandler.TILE_SIZE);
+            Mercator merc = new Mercator(center, mtcTransform.getScaleForZoom(zoomLevel), SimpleEmptyTileHandler.TILE_SIZE, SimpleEmptyTileHandler.TILE_SIZE);
             logger.fine("going to create empty tile: " + pathInfo + " from "
                     + eth.getClass().getName());
 

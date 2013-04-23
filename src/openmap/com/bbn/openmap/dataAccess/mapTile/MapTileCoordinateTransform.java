@@ -7,8 +7,10 @@ package com.bbn.openmap.dataAccess.mapTile;
 
 import java.awt.geom.Point2D;
 
+import com.bbn.openmap.proj.Mercator;
+import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.GeoCoordTransformation;
 import com.bbn.openmap.proj.coords.LatLonPoint;
-import com.bbn.openmap.proj.coords.MercatorUVGCT;
 
 /**
  * The TileCoordinateTransform is an object that knows how to translate lat/lon
@@ -61,7 +63,41 @@ public interface MapTileCoordinateTransform {
    /**
     * The coordinate transformation object used for lat/lon uv conversions.
     * 
-    * @return Mercator UVGGT for a particular zoom level.
+    * @return transform appropriate for a particular zoom level.
     */
-   public MercatorUVGCT getTransform(int zoomLevel);
+   public GeoCoordTransformation getTransform(int zoomLevel);
+   
+   /**
+    * Return a scale value for the transforming projection, given a discrete zoom level.
+    * @param zoom level
+    * @return scale value.
+    */
+   public float getScaleForZoom(int zoom);
+
+   /**
+    * Get the scale value for a Projection and discrete zoom level.
+    * @param proj the projection to use for scale calculations.
+    * @param zoom the discrete zoom level.
+    * @return scale value for the given projection.
+    */
+   public float getScaleForZoomAndProjection(Projection proj, int zoom);
+
+   /**
+    * Creates an array of scale values for different zoom levels. Make sure you
+    * don't reference the array outside of 0 and high zoom levels. There
+    * will be a high zoom level number of items in the array.
+    * 
+    * @param proj
+    * @param highZoomLevel
+    * @return array, initialized for the 0 zoom level index to the high zoom
+    *         level index.
+    */
+   public float[] getScalesForZoomLevels(Projection proj, int highZoomLevel);
+   
+   /**
+    * Return the pixel size for the tiles for this transform.
+    * @return
+    */
+   public int getTileSize();
+   
 }
