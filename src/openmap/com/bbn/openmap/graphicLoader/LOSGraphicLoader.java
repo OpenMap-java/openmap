@@ -29,6 +29,7 @@ import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -49,7 +50,6 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
 import com.bbn.openmap.tools.drawing.OMDrawingTool;
 import com.bbn.openmap.tools.terrain.LOSGenerator;
-import com.bbn.openmap.util.Debug;
 
 /**
  * A managing object of GLPoints and PathGLPoints. Has a timer to move
@@ -68,6 +68,8 @@ public class LOSGraphicLoader extends MMLGraphicLoader implements
 
     HashMap points = new HashMap();
 
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.graphicLoader.LOSGraphicLoader");
+    
     public LOSGraphicLoader() {
         super();
         setName("LOS Demo");
@@ -129,12 +131,10 @@ public class LOSGraphicLoader extends MMLGraphicLoader implements
         }
 
         if (receiver != null) {
-            Debug.message("graphicloader",
-                    "LOSGraphicLoader.manageGraphics: Updating graphics.");
+            logger.fine("Updating graphics.");
             receiver.setList(list);
         } else {
-            Debug.message("graphicloader",
-                    "LOSGraphicLoader.manageGraphics: no receiver to notify.");
+            logger.fine("no receiver to notify.");
         }
 
     }
@@ -150,7 +150,7 @@ public class LOSGraphicLoader extends MMLGraphicLoader implements
             }
 
             boolean isLOS = los.isLOS(new LatLonPoint.Double(pt1.getLat(), pt1.getLon()),
-                    pt1.getHeight(),
+                    pt1.getHeight(), true,
                     new LatLonPoint.Double(pt2.getLat(), pt2.getLon()),
                     pt2.getHeight(),
                     numPoints);
@@ -164,8 +164,7 @@ public class LOSGraphicLoader extends MMLGraphicLoader implements
                 ret = isLOS;
             }
         } else {
-            Debug.message("graphicloader",
-                    "LOSGraphicLoader doesn't have a LOSGenerator");
+            logger.fine("LOSGraphicLoader doesn't have a LOSGenerator");
         }
         pt1.connected(ret);
         pt2.connected(ret);
@@ -242,7 +241,7 @@ public class LOSGraphicLoader extends MMLGraphicLoader implements
         dfc = cache;
         if (cache != null) {
             getTimer().start();
-            Debug.message("graphicloader", "LOSGraphicLoader starting timer");
+            logger.fine("LOSGraphicLoader starting timer");
             if (los == null) {
                 los = new LOSGenerator(dfc);
             } else {
@@ -333,13 +332,11 @@ public class LOSGraphicLoader extends MMLGraphicLoader implements
      */
     public void findAndInit(Object obj) {
         if (obj instanceof DTEDFrameCache) {
-            Debug.message("graphicloader",
-                    "LOSGraphicLoader: found DTEDFrameCache");
+            logger.fine("LOSGraphicLoader: found DTEDFrameCache");
             setDTEDFrameCache((DTEDFrameCache) obj);
         }
         if (obj instanceof OMDrawingTool) {
-            Debug.message("graphicloader",
-                    "LOSGraphicLoader: found OMDrawingTool");
+            logger.fine("LOSGraphicLoader: found OMDrawingTool");
             setDrawingTool((OMDrawingTool) obj);
         }
     }
@@ -350,8 +347,7 @@ public class LOSGraphicLoader extends MMLGraphicLoader implements
      */
     public void findAndUndo(Object obj) {
         if (obj instanceof DTEDFrameCache) {
-            Debug.message("graphicloader",
-                    "LOSGraphicLoader: removing DTEDFrameCache");
+            logger.fine("removing DTEDFrameCache");
             DTEDFrameCache dfc = getDTEDFrameCache();
             if (dfc == obj) { // Check to see if they are the same
                               // object
@@ -359,8 +355,7 @@ public class LOSGraphicLoader extends MMLGraphicLoader implements
             }
         }
         if (obj instanceof OMDrawingTool) {
-            Debug.message("graphicloader",
-                    "LOSGraphicLoader: removing OMDrawingTool");
+            logger.fine("removing OMDrawingTool");
             OMDrawingTool odt = getDrawingTool();
             if (odt == obj) {
                 setDrawingTool(null);

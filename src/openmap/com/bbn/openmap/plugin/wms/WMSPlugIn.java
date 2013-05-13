@@ -60,16 +60,16 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
     /** URL to the server script that responds to WMS map requests */
     protected String wmsServer = null;
     /** GIF, PNG, JPEG, etc. (anything the server supports) */
-    protected String imageFormat = null;
+    protected String imageFormat = "image/png";
     /**
      * If using a lossy image format, such as jpeg, set this to high, medium or
      * low
      */
     protected String imageQuality = "MEDIUM";
     /** Specify the color for non-data areas of the image in r,g,b */
-    protected String backgroundColor = null;
+    protected String backgroundColor = "0x00FFFFFF";
     /** true=make the backgroundColor transparent */
-    protected String transparent = null;
+    protected String transparent = "true";
     /** version of the Web map server spec the server supports */
     protected String wmsVersion = "1.1.1";
     /** Comma-separated list of layer names */
@@ -108,7 +108,8 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
     /** integer identifier for low image quality */
     public static final int LOSSY_IMAGE_QUALITY_LOW = 0;
 
-    public WMSPlugIn() {}
+    public WMSPlugIn() {
+    }
 
     /**
      * Add new layers to the server request, using the default style.
@@ -159,21 +160,14 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         if (p != null) {
             Point2D ul = p.getUpperLeft();
             Point2D lr = p.getLowerRight();
-            bbox = Double.toString(ul.getX()) + ","
-                    + Double.toString(lr.getY()) + ","
-                    + Double.toString(lr.getX()) + ","
-                    + Double.toString(ul.getY());
+            bbox = Double.toString(ul.getX()) + "," + Double.toString(lr.getY()) + ","
+                    + Double.toString(lr.getX()) + "," + Double.toString(ul.getY());
             height = Integer.toString(p.getHeight());
             width = Integer.toString(p.getWidth());
         }
 
         StringBuffer buf = new StringBuffer(queryHeader);
-        buf.append("?").append(WMTConstants.VERSION).append("=").append(wmsVersion).append("&"
-               ).append(WMTConstants.REQUEST).append("=").append(mapRequestName).append("&"
-               ).append(WMTConstants.SRS).append("=").append("EPSG:4326").append("&"
-               ).append(WMTConstants.BBOX).append("=").append(bbox).append("&").append(WMTConstants.HEIGHT
-               ).append("=").append(height).append("&").append(WMTConstants.WIDTH).append("=").append(width).append("&"
-               ).append(WMTConstants.EXCEPTIONS).append("=").append(errorHandling);
+        buf.append("?").append(WMTConstants.VERSION).append("=").append(wmsVersion).append("&").append(WMTConstants.REQUEST).append("=").append(mapRequestName).append("&").append(WMTConstants.SRS).append("=").append("EPSG:4326").append("&").append(WMTConstants.BBOX).append("=").append(bbox).append("&").append(WMTConstants.HEIGHT).append("=").append(height).append("&").append(WMTConstants.WIDTH).append("=").append(width).append("&").append(WMTConstants.EXCEPTIONS).append("=").append(errorHandling);
 
         if (imageFormat != null) {
             buf.append("&").append(WMTConstants.FORMAT).append("=").append(imageFormat);
@@ -202,10 +196,10 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         if (cStyles == null) {
             cStyles = "";
         }
-        
-//        if (styles != null) {
-            buf.append("&").append(WMTConstants.STYLES).append("=").append(cStyles);
-//        }
+
+        // if (styles != null) {
+        buf.append("&").append(WMTConstants.STYLES).append("=").append(cStyles);
+        // }
 
         if (Debug.debugging("wms")) {
             Debug.output("query string: " + buf);
@@ -228,8 +222,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
                         buf.append("&").append(paramName).append("=").append(paramValue);
                     } catch (NoSuchElementException e) {
                         if (Debug.debugging("wms")) {
-                            Debug.output("WMSPlugIn.getRectangle(): "
-                                    + "parameter \"" + paramName
+                            Debug.output("WMSPlugIn.getRectangle(): " + "parameter \"" + paramName
                                     + "\" has no value");
                         }
                     }
@@ -266,14 +259,13 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
 
         queryHeader = wmsServer;
 
-        imageFormat = setList.getProperty(prefix + ImageFormatProperty);
+        setImageFormat(setList.getProperty(prefix + ImageFormatProperty, getImageFormat()));
 
-        setTransparent(setList.getProperty(prefix + TransparentProperty));
+        setTransparent(setList.getProperty(prefix + TransparentProperty, getTransparent()));
 
-        setBackgroundColor(setList.getProperty(prefix + BackgroundColorProperty));
+        setBackgroundColor(setList.getProperty(prefix + BackgroundColorProperty, getBackgroundColor()));
 
-        setWmsVersion(setList.getProperty(prefix + WMSVersionProperty,
-                wmsVersion));
+        setWmsVersion(setList.getProperty(prefix + WMSVersionProperty, getWmsVersion()));
 
         layers = setList.getProperty(prefix + LayersProperty);
         styles = setList.getProperty(prefix + StylesProperty);
@@ -281,10 +273,8 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         /**
          * Include for vendor specific parameters
          */
-        vendorSpecificNames = setList.getProperty(prefix
-                + VendorSpecificNamesProperty);
-        vendorSpecificValues = setList.getProperty(prefix
-                + VendorSpecificValuesProperty);
+        setVendorSpecificNames(setList.getProperty(prefix + VendorSpecificNamesProperty, getVendorSpecificNames()));
+        setVendorSpecificValues(setList.getProperty(prefix + VendorSpecificValuesProperty, getVendorSpecificValues()));
 
     } // end setProperties
 
@@ -296,44 +286,34 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         props.put(prefix + WMSServerProperty, PropUtils.unnull(wmsServer));
         props.put(prefix + ImageFormatProperty, PropUtils.unnull(imageFormat));
         props.put(prefix + TransparentProperty, PropUtils.unnull(transparent));
-        props.put(prefix + BackgroundColorProperty,
-                PropUtils.unnull(backgroundColor));
+        props.put(prefix + BackgroundColorProperty, PropUtils.unnull(backgroundColor));
         props.put(prefix + WMSVersionProperty, PropUtils.unnull(wmsVersion));
         props.put(prefix + LayersProperty, PropUtils.unnull(layers));
         props.put(prefix + StylesProperty, PropUtils.unnull(styles));
-        props.put(prefix + VendorSpecificNamesProperty,
-                PropUtils.unnull(vendorSpecificNames));
-        props.put(prefix + VendorSpecificValuesProperty,
-                PropUtils.unnull(vendorSpecificValues));
+        props.put(prefix + VendorSpecificNamesProperty, PropUtils.unnull(vendorSpecificNames));
+        props.put(prefix + VendorSpecificValuesProperty, PropUtils.unnull(vendorSpecificValues));
         return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
 
-        props.put(initPropertiesProperty, WMSServerProperty + " "
-                + WMSVersionProperty + " " + LayersProperty + " "
-                + StylesProperty + " " + VendorSpecificNamesProperty + " "
-                + VendorSpecificValuesProperty + " " + ImageFormatProperty
-                + " " + TransparentProperty + " " + BackgroundColorProperty);
+        props.put(initPropertiesProperty, WMSServerProperty + " " + WMSVersionProperty + " "
+                + LayersProperty + " " + StylesProperty + " " + VendorSpecificNamesProperty + " "
+                + VendorSpecificValuesProperty + " " + ImageFormatProperty + " "
+                + TransparentProperty + " " + BackgroundColorProperty);
 
-        props.put(WMSServerProperty,
-                "URL to the server script that responds to WMS map requests");
+        props.put(WMSServerProperty, "URL to the server script that responds to WMS map requests");
         props.put(ImageFormatProperty, "Image format (GIF, PNG, JPEG)");
-        props.put(TransparentProperty,
-                "Flag to indicate that background of image should be tranparent");
-        props.put(TransparentProperty + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(TransparentProperty, "Flag to indicate that background of image should be tranparent");
+        props.put(TransparentProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
         props.put(BackgroundColorProperty, "The Background color for the image");
-        props.put(BackgroundColorProperty + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
+        props.put(BackgroundColorProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.ColorPropertyEditor");
         props.put(WMSVersionProperty, "The WMS specification version");
         props.put(LayersProperty, "A list of layers to use in the query");
         props.put(StylesProperty, "A list of layer styles to use in the query");
-        props.put(VendorSpecificNamesProperty,
-                "Vendor-specific capability names to use in the query");
-        props.put(VendorSpecificValuesProperty,
-                "Vendor-specific capability values for the names");
+        props.put(VendorSpecificNamesProperty, "Vendor-specific capability names to use in the query");
+        props.put(VendorSpecificValuesProperty, "Vendor-specific capability values for the names");
         return props;
     }
 
@@ -483,8 +463,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         }
 
         if (Debug.debugging("wms")) {
-            Debug.output("WMSPlugIn: set up with header \"" + queryHeader
-                    + "\"");
+            Debug.output("WMSPlugIn: set up with header \"" + queryHeader + "\"");
         }
 
         java.util.StringTokenizer st = new java.util.StringTokenizer(wmsVer, ".");
@@ -498,8 +477,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         }
 
         // set the image type parameter
-        if (majorVersion == 1 && minorVersion > 7
-                && !imageFormat.startsWith("image/")) {
+        if (majorVersion == 1 && minorVersion > 7 && !imageFormat.startsWith("image/")) {
             imageFormat = "image/" + imageFormat;
         }
 

@@ -19,8 +19,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -30,6 +34,7 @@ import javax.swing.JPanel;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
+import com.bbn.openmap.gui.MiniBrowser;
 import com.bbn.openmap.image.ImageServerConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRaster;
@@ -41,8 +46,7 @@ import com.bbn.openmap.util.PropUtils;
  * This class asks for an image from a web server. How it asks for that image is
  * what is abstract.
  */
-public abstract class WebImagePlugIn extends AbstractPlugIn implements
-        ImageServerConstants {
+public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServerConstants {
 
     /** For convenience. */
     protected PlugInLayer layer = null;
@@ -54,9 +58,11 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
      * Create the query to be sent to the server, based on current settings.
      */
     public abstract String createQueryString(Projection p);
-    
+
     // I18N mechanism
     static I18n i18n = Environment.getI18n();
+
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.plugin.WebImagePlugIn");
 
     /**
      * The getRectangle call is the main call into the PlugIn module. The module
@@ -74,9 +80,8 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
 
         String urlString = createQueryString(p);
 
-        if (Debug.debugging("plugin")) {
-            Debug.output("WebImagePlugIn.getRectangle() with \"" + urlString
-                    + "\"");
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("WebImagePlugIn.getRectangle() with \"" + urlString + "\"");
         }
 
         if (urlString == null) {
@@ -89,17 +94,16 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
             url = new java.net.URL(urlString);
             java.net.HttpURLConnection urlc = (java.net.HttpURLConnection) url.openConnection();
 
-            if (Debug.debugging("plugin")) {
-                Debug.output("url content type: " + urlc.getContentType());
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("url content type: " + urlc.getContentType());
             }
 
             if (urlc == null || urlc.getContentType() == null) {
                 if (layer != null) {
-                    layer.fireRequestMessage(getName()
-                            + ": unable to connect to " + getServerName());
-                } else {
-                    Debug.error(getName() + ": unable to connect to "
+                    layer.fireRequestMessage(getName() + ": unable to connect to "
                             + getServerName());
+                } else {
+                    logger.warning(getName() + ": unable to connect to " + getServerName());
                 }
                 return list;
             }
@@ -163,14 +167,10 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
                 list.add(image);
             } // end if image
         } catch (java.net.MalformedURLException murle) {
-            Debug.error("WebImagePlugIn: URL \"" + urlString
-                    + "\" is malformed.");
+            logger.warning("WebImagePlugIn: URL \"" + urlString + "\" is malformed.");
         } catch (java.io.IOException ioe) {
-            JOptionPane.showMessageDialog(null,
-                    getName() + ":\n\n   Couldn't connect to "
-                            + getServerName(),
-                    "Connection Problem",
-                    JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, getName() + ":\n\n   Couldn't connect to "
+                    + getServerName(), "Connection Problem", JOptionPane.INFORMATION_MESSAGE);
 
         }
 
@@ -184,7 +184,7 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
     public java.awt.Component getGUI() {
         JPanel panel = new JPanel(new GridLayout(0, 1));
         JButton parameterButton = new JButton(i18n.get(WebImagePlugIn.class, "Adjust_Parameters", "Adjust Parameters"));
-        
+
         parameterButton.setActionCommand(Layer.DisplayPropertiesCmd);
 
         if (layer != null) {
@@ -192,7 +192,7 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
         }
 
         JButton viewQueryButton = new JButton(i18n.get(WebImagePlugIn.class, "View_Current_Query", "View Current Query"));
-        
+
         viewQueryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 if (layer != null) {
@@ -208,10 +208,27 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
                         updatedQuery.append(it.next());
                     }
 
-                    JOptionPane.showMessageDialog(null,
-                            updatedQuery.toString(),
-                            "Current Query for " + getName(),
-                            JOptionPane.INFORMATION_MESSAGE);
+                    if (logger.isLoggable(Level.FINE)) {
+                        String stb = "Send Query to Browser";
+                        String ok = "OK";
+
+                        Object[] options = new Object[] { stb, ok };
+                        int selectedVal = JOptionPane.showOptionDialog(null, updatedQuery, "Current Query for "
+                                + getName(), JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, ok);
+
+                        if (selectedVal == 0) {
+                            try {
+                                new MiniBrowser(new URL(query));
+                            } catch (MalformedURLException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        }
+
+                    } else {
+                        JOptionPane.showMessageDialog(null, updatedQuery.toString(), "Current Query for "
+                                + getName(), JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
             }
         });
@@ -233,7 +250,7 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements
     }
 
     protected JButton redrawButton = new JButton(i18n.get(WebImagePlugIn.class, "Query_Server", "Query Server"));
-    
+
     protected JOptionPane messageWindow = new JOptionPane();
 
     /**
