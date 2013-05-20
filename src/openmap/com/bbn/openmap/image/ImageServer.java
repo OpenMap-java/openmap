@@ -1212,12 +1212,7 @@ public class ImageServer
      * modified openmap.properties file.
      * 
      * <pre>
-     * 
-     * 
-     *                   java com.bbn.openmap.image.ImageServer -properties (path
-     *                    to properties file) -file (path to output image)
-     * 
-     * 
+     * java com.bbn.openmap.image.ImageServer -properties (path to properties file) -file (path to output image)
      * </pre>
      * 
      * <P>

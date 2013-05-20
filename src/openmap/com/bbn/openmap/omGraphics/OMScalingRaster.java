@@ -457,6 +457,9 @@ public class OMScalingRaster extends OMRaster implements Serializable {
         clipRect = null;
 
         Rectangle iRect = projRect;
+        // <= 2 is limiting this intersection to regular world - small world
+        // will have multiple rects, corners  We don't want to clip the bitmap 
+        // if we have to draw it on different parts of the map window (if it wraps).
         if (corners == null || corners.size() <= 2) {
             iRect = winRect.intersection(projRect);
         }
@@ -542,6 +545,18 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                     // filter get too big. Treat it like the height and width
                     // being set to -1.
                     logger.fine("Caught IllegalArgumentException: " + iae.getMessage());
+                    bitmap = null;
+                } catch (OutOfMemoryError oome) {
+                    // This sometimes happens on startup, but rarely. The size
+                    // of the DataBuffer created from the filter causes the
+                    // error to be thrown. We never see the effect of the error
+                    // in the application, however - the application continues
+                    // and recovers. I have a feeling its a result of the
+                    // startup order, and the projection isn't quite right yet.
+                    logger.fine("Caught OutOfMemoryException, setting bitmap to null");
+                    bitmap = null;
+                } catch (NegativeArraySizeException nase) {
+                    logger.fine("Caught OutOfMemoryException, setting bitmap to null");
                     bitmap = null;
                 }
             }

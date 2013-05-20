@@ -44,8 +44,7 @@ import com.bbn.openmap.proj.Projection;
  * projection change because we need the image buffer to be transparent for
  * parts of the map that are not used by the layer.
  */
-public class BufferedImageRenderPolicy
-        extends RenderingHintsRenderPolicy {
+public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
 
     protected OMRaster buffer = null;
 
@@ -119,13 +118,35 @@ public class BufferedImageRenderPolicy
         Graphics2D g2 = (Graphics2D) g.create();
         OMRaster bufferedImage = getBuffer();
 
-        if (bufferedImage == null && list != null && layer.isProjectionOK(proj)) {
+        if (layer.isProjectionOK(proj)) {
 
-            bufferedImage = createAndPaintImageBuffer(list, proj);
-            setBuffer(bufferedImage);
-            setCompositeOnGraphics(g2);
+            if (bufferedImage == null && list != null) {
 
-            if (bufferedImage != null) {
+                bufferedImage = createAndPaintImageBuffer(list, proj);
+                setBuffer(bufferedImage);
+                setCompositeOnGraphics(g2);
+
+                if (bufferedImage != null) {
+                    // Check one last time before rendering, is the image
+                    // projection
+                    // current for the layer? Scroll wheel sometimes screws this
+                    // up.
+                    Object imageProj = bufferedImage.getAttribute(CURRENT_PROJECTION);
+                    Projection newProj = layer.getProjection();
+                    if (!newProj.equals(imageProj)) {
+                        bufferedImage.generate(newProj);
+                        bufferedImage.putAttribute(CURRENT_PROJECTION, newProj);
+                    }
+
+                    bufferedImage.render(g2);
+                } else {
+                    // Not sure why we'd get here...
+                    super.setRenderingHints(g2);
+                    list.render(g2);
+                }
+                
+            } else if (bufferedImage != null) {
+
                 // Check one last time before rendering, is the image projection
                 // current for the layer? Scroll wheel sometimes screws this up.
                 Object imageProj = bufferedImage.getAttribute(CURRENT_PROJECTION);
@@ -134,27 +155,13 @@ public class BufferedImageRenderPolicy
                     bufferedImage.generate(newProj);
                     bufferedImage.putAttribute(CURRENT_PROJECTION, newProj);
                 }
-
+                setCompositeOnGraphics(g2);
                 bufferedImage.render(g2);
-            } else {
-                // Not sure why we'd get here...
-                super.setRenderingHints(g2);
-                list.render(g2);
+                
             }
-        } else if (bufferedImage != null && layer.isProjectionOK(proj)) {
-
-            // Check one last time before rendering, is the image projection
-            // current for the layer? Scroll wheel sometimes screws this up.
-            Object imageProj = bufferedImage.getAttribute(CURRENT_PROJECTION);
-            Projection newProj = layer.getProjection();
-            if (!newProj.equals(imageProj)) {
-                bufferedImage.generate(newProj);
-                bufferedImage.putAttribute(CURRENT_PROJECTION, newProj);
-            }
-            setCompositeOnGraphics(g2);
-            bufferedImage.render(g2);
         } else if (logger.isLoggable(Level.FINE)) {
-            logger.fine(layer.getName() + ".paint(): " + (list == null ? "NULL list, skipping..." : " skipping due to projection."));
+            logger.fine(layer.getName() + ".paint(): "
+                    + (list == null ? "NULL list, skipping..." : " skipping due to projection."));
         }
 
         g2.dispose();

@@ -217,7 +217,8 @@ public class MapTileLayer extends OMGraphicHandlerLayer {
             if (rootDirString != null) {
                 try {
                     // We build URL here to test if the rootDir location exists.
-                    URL url = new java.net.URL(rootDirString);
+                    // Comment out url to avoid dead store findbugs problem.
+                    /*URL url = */new java.net.URL(rootDirString);
                     // If we get here, we have a protocol, looks remote, so we
                     // should make sure the
                     // ServerMapTileFactory is used.

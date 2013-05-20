@@ -38,6 +38,8 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -55,7 +57,6 @@ import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.event.MapMouseMode;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -120,6 +121,8 @@ public class ScaleFilterLayer
      * The index of the currently selected layer.
      */
     protected int targetIndex = -1;
+    
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.ScaleFilterLayer");
 
     /**
      * Initializes an empty layer.
@@ -248,7 +251,7 @@ public class ScaleFilterLayer
         String layersString = props.getProperty(prefix + layersProperty);
         Vector<Layer> layers = getLayers();
         if (layersString == null || layersString.length() == 0) {
-            Debug.error("ScaleFilterLayer(): null layersString!");
+            logger.info("ScaleFilterLayer(): null layersString!");
             return;
         }
         StringTokenizer tok = new StringTokenizer(layersString);
@@ -258,8 +261,8 @@ public class ScaleFilterLayer
             String classProperty = layerName + ".class";
             String className = props.getProperty(classProperty);
             if (className == null) {
-                Debug.error("ScaleFilterLayer.parseLayers(): Failed to locate property \"" + classProperty + "\"");
-                Debug.error("ScaleFilterLayer.parseLayers(): Skipping layer \"" + layerName + "\"");
+                logger.info("ScaleFilterLayer.parseLayers(): Failed to locate property \"" + classProperty + "\"");
+                logger.info("ScaleFilterLayer.parseLayers(): Skipping layer \"" + layerName + "\"");
                 className = SinkLayer.class.getName();
             }
 
@@ -269,11 +272,11 @@ public class ScaleFilterLayer
                 } else {
                     obj = Class.forName(className).newInstance();
                 }
-                if (Debug.debugging("scalefilterlayer")) {
-                    Debug.output("ScaleFilterLayer.parseLayers(): Instantiated " + className);
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Instantiated " + className);
                 }
             } catch (Exception e) {
-                Debug.error("ScaleFilterLayer.parseLayers(): Failed to instantiate \"" + className + "\": " + e);
+                logger.info("Failed to instantiate \"" + className + "\": " + e);
                 obj = SinkLayer.getSharedInstance();
             }
 
@@ -306,7 +309,7 @@ public class ScaleFilterLayer
 
         String scales = props.getProperty(prefix + transitionScalesProperty);
         if (scales == null) {
-            Debug.error("ScaleFilterLayer.parseScales(): Failed to locate property \"" + transitionScalesProperty + "\"");
+            logger.info("Failed to locate property \"" + transitionScalesProperty + "\"");
             if (transitionScales.length > 0) {
                 transitionScales[0] = defaultTransitionScale;
             }
@@ -320,7 +323,7 @@ public class ScaleFilterLayer
             tok = new StringTokenizer(scales);
             transitionScales[0] = (tok.hasMoreTokens()) ? new Float(tok.nextToken()).floatValue() : defaultTransitionScale;
         } catch (NumberFormatException e) {
-            Debug.error("ScaleFilterLayer.parseScales()1: " + e);
+            logger.info("ScaleFilterLayer.parseScales()1: " + e);
             transitionScales[0] = defaultTransitionScale;
         }
 
@@ -330,7 +333,7 @@ public class ScaleFilterLayer
                     transitionScales[i] =
                             (tok.hasMoreTokens()) ? new Float(tok.nextToken()).floatValue() : transitionScales[i - 1] / 3;
                 } catch (NumberFormatException e) {
-                    Debug.error("ScaleFilterLayer.parseScales()2: " + e);
+                    logger.info("ScaleFilterLayer.parseScales()2: " + e);
                     transitionScales[i] = transitionScales[i - 1] / 3;
                 }
             }
@@ -342,7 +345,7 @@ public class ScaleFilterLayer
      */
     public synchronized void renderDataForProjection(Projection proj, java.awt.Graphics g) {
         if (proj == null) {
-            Debug.error("ScaleFilterLayer.renderDataForProjection: null projection!");
+            logger.info("null projection!");
             return;
         } else {
             setTargetIndex(proj.getScale());
@@ -377,8 +380,8 @@ public class ScaleFilterLayer
         }
         targetIndex = i;
 
-        if (Debug.debugging("scalefilterlayer")) {
-            Debug.output("ScaleFilterLayer(" + getName() + ") targetIndex: " + targetIndex + ", changed: " + changed);
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("ScaleFilterLayer(" + getName() + ") targetIndex: " + targetIndex + ", changed: " + changed);
         }
 
         return changed;
@@ -606,9 +609,7 @@ public class ScaleFilterLayer
     /**
      * The current MapMouseListener from the currently appropriate layer.
      */
-    protected MapMouseListener clmml = null; // current layer map
-
-    // mouse listener
+    protected MapMouseListener clmml = null; // current layer map mouse listener
 
     /**
      * Set the coolMM flag, whenever the scale-appropriate layer changes, or if

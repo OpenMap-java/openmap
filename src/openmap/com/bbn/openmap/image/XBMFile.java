@@ -119,7 +119,7 @@ public class XBMFile {
             pict_size = (int) height * (int) Math.ceil((float) width / 8.0);
             bits = new byte[num_bytes];
             setBits(fileStuffString.substring(startBits, endBits));
-
+            in.close();
         } catch (IOException e3) {
             System.out.println("XBMFile: Error reading file.");
         }
