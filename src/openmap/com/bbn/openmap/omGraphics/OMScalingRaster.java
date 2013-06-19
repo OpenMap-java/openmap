@@ -558,6 +558,9 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                 } catch (NegativeArraySizeException nase) {
                     logger.fine("Caught OutOfMemoryException, setting bitmap to null");
                     bitmap = null;
+                } catch (NullPointerException npe) {
+                    logger.fine("Caught NPE, setting bitmap to null");
+                    bitmap = null;
                 }
             }
         } else {

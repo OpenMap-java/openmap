@@ -98,7 +98,15 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
             // up the image to the projection.
             Projection proj = layer.getProjection();
             OMGraphicList list = layer.prepare();
-            setBuffer(createAndPaintImageBuffer(list, proj));
+            try {
+                setBuffer(createAndPaintImageBuffer(list, proj));
+            } catch (NullPointerException npe) {
+                logger.fine("Caught NPE creating the image buffer for layer: " + layer.getName());
+                if (logger.isLoggable(Level.FINE)) {
+                    npe.printStackTrace();
+                }
+                setBuffer(null);
+            }
 
             return list;
         } else {
@@ -144,7 +152,7 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
                     super.setRenderingHints(g2);
                     list.render(g2);
                 }
-                
+
             } else if (bufferedImage != null) {
 
                 // Check one last time before rendering, is the image projection
@@ -157,7 +165,7 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
                 }
                 setCompositeOnGraphics(g2);
                 bufferedImage.render(g2);
-                
+
             }
         } else if (logger.isLoggable(Level.FINE)) {
             logger.fine(layer.getName() + ".paint(): "
