@@ -95,8 +95,7 @@ public interface MapTileCoordinateTransform {
    public float[] getScalesForZoomLevels(Projection proj, int highZoomLevel);
    
    /**
-    * Return the pixel size for the tiles for this transform.
-    * @return
+    * @return the pixel size for tiles for this transform.
     */
    public int getTileSize();
    

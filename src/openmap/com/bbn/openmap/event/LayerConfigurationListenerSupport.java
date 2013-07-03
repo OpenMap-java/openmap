@@ -25,11 +25,9 @@ public class LayerConfigurationListenerSupport extends ListenerSupport<LayerConf
     }
 
     /**
-     * Send a center event to all registered listeners.
+     * Check the list of layers, make changes as required.
      * 
-     * @param latitude the latitude
-     * @param longitude the longitude
-     * @see CenterEvent
+     * @param layerList the list of layers to check.
      */
     public synchronized List<Layer> checkLayerConfiguration(List<Layer> layerList) {
         if (size() == 0)
