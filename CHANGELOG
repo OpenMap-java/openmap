@@ -1,3 +1,56 @@
+2013-07-03  dietrick  <dietrick@client.wonkavision.local>
+
+	* Released OpenMap 5.0.1
+
+2013-06-19  dietrick  <dietrick@client.wonkavision.local>
+
+	* Added NPE checks to BufferedImageRenderPolicy and OMScalingRaster. 
+
+	* Added width acessors to OMText.  Added Executor methods to
+	TaskService to allow customization and control for Layer
+	threading.
+
+2013-05-20  dietrick  <dietrick@client.wonkavision.local>
+
+	* Updates to OMScalingRaster to gracefully handle memory
+	exceptions if the scaled image is too big.  Updated javadocs and
+	java comments in these classes, added Logger for ScaleFilterLayer.
+
+	* Refactored the LayerHandler so it uses a List<Layer> internally
+	to manage Layers. Created the LayerConfigurationListener interface
+	and LayerConfigurationListenerSupport object, both of which are
+	used by the LayerHandler to pre-notify components when the active
+	layers for the application are about to change.  The
+	LayerConfigurationListener has the opportunity to make
+	modifications to the layer configuration, or change visibility of
+	other layers, etc. Added the BasicLayerConfigurationListener, an
+	example component that changes the projection of the MapBean to
+	CADRG if an RpfLayer is active.
+
+2013-04-13  dietrick  <dietrick@client.wonkavision.local>
+
+	* Cleaned up debugging.  Updated LOS code API for better control.
+	Updated WMSPlugIn setProperties so the current values aren't
+	zeroed out of they aren't set.
+
+2013-04-23  dietrick  <dietrick@client.wonkavision.local>
+
+	* Moved the smarts for zoom levels out of the MapTileMaker class
+	and put them in the MapTileCoordinateTransform classes.  Added
+	AbstractMapTileCoordinateTransform class to merge similar methods
+	and functionality for existing mtct classes.  Updated other
+	classes to call mtc functions instead of MapTileMaker static
+	functions.
+
+2013-04-16  dietrick  <dietrick@client.wonkavision.local>
+
+	* Added RelayMapTileSet for MapTileServlet, which fetches tiles
+	from a remote server and caches them locally.  Updated
+	TerrainLayer to eliminate some verbose error messages.
+
+	* Added Kevin's (kpfarr) fix to RpfTocHandler for merging entry
+	coverages properly.
+
 2013-03-02  dietrick  <dietrick@client.wonkavision.local>
 
 	* Added the ClckOrDrgUndefinedState to the omGraphics.editable
@@ -37,7 +90,7 @@
 	
 2013-02-27  dietrick  <dietrick@client.wonkavision.local>
 
-	* Made a bunch of adjustmetns as recommended by FindBug, regarding
+	* Made a bunch of adjustments as recommended by FindBug, regarding
 	null pointer checks, equality checks, stuff like that.
 
 	* Added AzimuthPanner abstract class with Standard and Shapefile

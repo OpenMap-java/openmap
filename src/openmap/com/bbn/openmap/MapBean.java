@@ -148,7 +148,7 @@ public class MapBean
    /**
     * OpenMap version.
     */
-   public static final String version = "5.0.1b";
+   public static final String version = "5.0.1";
 
    /**
     * Suppress the copyright message on initialization.
@@ -160,7 +160,7 @@ public class MapBean
    private static boolean DEBUG_THREAD = true;
 
    private static final String copyrightNotice = "OpenMap(tm) Version " + version + "\r\n"
-         + "  Copyright (C) BBNT Solutions LLC.  All rights reserved.\r\n" + "  See http://openmap.bbn.com/ for details.\r\n";
+         + "  Copyright (C) BBNT Solutions LLC.  All rights reserved.\r\n" + "  See http://code.google.com/p/openmap/ for details.\r\n";
 
    public final static float DEFAULT_CENTER_LAT = 0.0f;
 
