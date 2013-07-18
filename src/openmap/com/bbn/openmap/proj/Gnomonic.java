@@ -221,7 +221,7 @@ public class Gnomonic extends Azimuth {
         double kPrime = 1f / Math.cos(c);
         double cosPhi = Math.cos(phi);
         double sinPhi = Math.sin(phi);
-        double lambdaMinusCtrLon = lambda - centerY;
+        double lambdaMinusCtrLon = lambda - centerX;
         double cosLambdaMinusCtrLon = Math.cos(lambdaMinusCtrLon);
         double sinLambdaMinusCtrLon = Math.sin(lambdaMinusCtrLon);
 
