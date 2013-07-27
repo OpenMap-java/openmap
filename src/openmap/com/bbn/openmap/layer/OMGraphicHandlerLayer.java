@@ -54,6 +54,7 @@ import com.bbn.openmap.layer.policy.StandardRenderPolicy;
 import com.bbn.openmap.omGraphics.FilterSupport;
 import com.bbn.openmap.omGraphics.OMAction;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicHandler;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.event.GestureResponsePolicy;
 import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
@@ -161,7 +162,7 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * </pre>
  */
-public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolicy {
+public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolicy, OMGraphicHandler {
 
     public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.OMGraphicHandlerLayer");
 

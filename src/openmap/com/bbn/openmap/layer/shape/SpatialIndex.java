@@ -148,8 +148,7 @@ import com.bbn.openmap.util.PropUtils;
  * @version $Revision: 1.19 $ $Date: 2009/02/25 22:34:04 $
  * @see ShapeIndex
  */
-public class SpatialIndex
-        extends ShapeUtils {
+public class SpatialIndex extends ShapeUtils {
 
     public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.shape.SpatialIndex");
 
@@ -204,8 +203,7 @@ public class SpatialIndex
      * @param shpFilename the name of the spatial index file
      * @exception IOException if something goes wrong opening the file
      */
-    public SpatialIndex(String shpFilename)
-            throws IOException {
+    public SpatialIndex(String shpFilename) throws IOException {
         this.shpFileName = shpFilename;
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("SpatialIndex(" + shpFilename + ");");
@@ -220,8 +218,7 @@ public class SpatialIndex
      * @exception IOException if something goes wrong opening the files
      * @deprecated ssx file is figured based on the shp file path
      */
-    public SpatialIndex(String ssxFilename, String shpFilename)
-            throws IOException {
+    public SpatialIndex(String ssxFilename, String shpFilename) throws IOException {
         this(shpFilename);
     }
 
@@ -261,7 +258,9 @@ public class SpatialIndex
     }
 
     /**
-     * Method that can be overridden to adjust how the BinaryFile is created for shp files.
+     * Method that can be overridden to adjust how the BinaryFile is created for
+     * shp files.
+     * 
      * @param shapeFileName The path to shape file, absolute, relative or URL
      * @return BinaryFile
      * @throws IOException if the shapeFileName can't be found.
@@ -269,7 +268,7 @@ public class SpatialIndex
     protected BinaryFile getShpFile(String shapeFileName) throws IOException {
         return new BinaryBufferedFile(shapeFileName);
     }
-    
+
     /**
      * Returns the bounds of the shape file. If bounds don't exist, they are
      * read from the shape file header.
@@ -321,24 +320,23 @@ public class SpatialIndex
      * @exception IOException if something goes wrong reading the file
      * @see ShapeUtils
      */
-    public ESRIRecord makeESRIRecord(int shapeType, byte[] b, int off)
-            throws IOException {
+    public ESRIRecord makeESRIRecord(int shapeType, byte[] b, int off) throws IOException {
         switch (shapeType) {
-            case SHAPE_TYPE_NULL:
-                return null;
-            case SHAPE_TYPE_POINT:
-                // return new ESRIPointRecord(b, off);
-                return new ESRIPointRecord(b, off, pointIcon);
-            case SHAPE_TYPE_POLYGON:
-            case SHAPE_TYPE_ARC:
-                // case SHAPE_TYPE_POLYLINE:
-                return new ESRIPolygonRecord(b, off);
-            case SHAPE_TYPE_MULTIPOINT:
-                logger.fine("SpatialIndex.makeESRIRecord: Arc NYI");
-                return null;
-                // return new ESRIMultipointRecord(b, off);
-            default:
-                return null;
+        case SHAPE_TYPE_NULL:
+            return null;
+        case SHAPE_TYPE_POINT:
+            // return new ESRIPointRecord(b, off);
+            return new ESRIPointRecord(b, off, pointIcon);
+        case SHAPE_TYPE_POLYGON:
+        case SHAPE_TYPE_ARC:
+            // case SHAPE_TYPE_POLYLINE:
+            return new ESRIPolygonRecord(b, off);
+        case SHAPE_TYPE_MULTIPOINT:
+            logger.fine("SpatialIndex.makeESRIRecord: Arc NYI");
+            return null;
+            // return new ESRIMultipointRecord(b, off);
+        default:
+            return null;
         }
     }
 
@@ -367,7 +365,8 @@ public class SpatialIndex
         }
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("locateRecords:\n\txmin: " + xmin + "; ymin: " + ymin + "\n\txmax: " + xmax + "; ymax: " + ymax);
+            logger.fine("locateRecords:\n\txmin: " + xmin + "; ymin: " + ymin + "\n\txmax: " + xmax
+                    + "; ymax: " + ymax);
         }
 
         byte ixRecord[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
@@ -426,7 +425,8 @@ public class SpatialIndex
                     // System.out.flush();
 
                     if (recordSize < 0) {
-                        logger.warning("SpatialIndex: supposed to read record size of " + recordSize);
+                        logger.warning("SpatialIndex: supposed to read record size of "
+                                + recordSize);
                         break;
                     }
 
@@ -439,16 +439,17 @@ public class SpatialIndex
                     }
 
                     if (logger.isLoggable(Level.FINE)) {
-                        logger.fine("going to shp byteOffset = " + byteOffset + " for record size = " + recordSize + ", offset = "
-                                + offset + ", shape type = " + shapeType);
+                        logger.fine("going to shp byteOffset = " + byteOffset
+                                + " for record size = " + recordSize + ", offset = " + offset
+                                + ", shape type = " + shapeType);
                     }
 
                     try {
                         shp.seek(byteOffset);
                         int nBytes = shp.read(sRecord, 0, recordSize);
                         if (nBytes < recordSize) {
-                            logger.warning("Shapefile SpatialIndex expected " + recordSize + " bytes, but got " + nBytes
-                                    + " bytes instead.");
+                            logger.warning("Shapefile SpatialIndex expected " + recordSize
+                                    + " bytes, but got " + nBytes + " bytes instead.");
                         }
 
                         ESRIRecord record = makeESRIRecord(shapeType, sRecord, 0);
@@ -488,7 +489,10 @@ public class SpatialIndex
     public EsriGraphicFactory getFactory() {
         if (factory == null) {
             factory = new EsriGraphicFactory();
-            factory.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
+            // You can set this in the ShapeLayer if you want, replacing
+            // DrawingAttributes with GraphicAttributes with a LINETYPE set.
+            
+            // factory.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
         }
         return factory;
     }
@@ -518,12 +522,14 @@ public class SpatialIndex
      *         rectangle
      * @exception IOException if something goes wrong reading the files
      */
-    public OMGraphicList getOMGraphics(double xmin, double ymin, double xmax, double ymax, OMGraphicList list,
-                                       DrawingAttributes drawingAttributes, Projection mapProj, GeoCoordTransformation dataProj)
+    public OMGraphicList getOMGraphics(double xmin, double ymin, double xmax, double ymax,
+                                       OMGraphicList list, DrawingAttributes drawingAttributes,
+                                       Projection mapProj, GeoCoordTransformation dataProj)
             throws IOException, FormatException {
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("locateRecords:\n\txmin: " + xmin + "; ymin: " + ymin + "\n\txmax: " + xmax + "; ymax: " + ymax);
+            logger.fine("locateRecords:\n\txmin: " + xmin + "; ymin: " + ymin + "\n\txmax: " + xmax
+                    + "; ymax: " + ymax);
         }
 
         if (list == null) {
@@ -552,9 +558,7 @@ public class SpatialIndex
 
                 try {
 
-                    OMGraphic omg =
-                            (OMGraphic) factory.makeEsriGraphicFromRecord(entry.getByteOffset(), shp, drawingAttributes, pointIcon,
-                                                                          byteTracker);
+                    OMGraphic omg = (OMGraphic) factory.makeEsriGraphicFromRecord(entry.getByteOffset(), shp, drawingAttributes, pointIcon, byteTracker);
 
                     if (omg != null) {
 
@@ -614,7 +618,8 @@ public class SpatialIndex
      *         rectangle
      * @exception IOException if something goes wrong reading the files
      */
-    public OMGraphicList getAllOMGraphics(OMGraphicList retList, DrawingAttributes drawingAttributes, Projection mapProj,
+    public OMGraphicList getAllOMGraphics(OMGraphicList retList,
+                                          DrawingAttributes drawingAttributes, Projection mapProj,
                                           GeoCoordTransformation dataProj)
             throws IOException, FormatException {
 
@@ -703,8 +708,7 @@ public class SpatialIndex
      */
     public OMGraphic getOMGraphicAtOffset(int byteOffset, DrawingAttributes drawingAttributes)
             throws IOException, FormatException {
-        return (OMGraphic) getFactory().makeEsriGraphicFromRecord(byteOffset, shp, drawingAttributes, pointIcon,
-                                                                  new EsriGraphicFactory.ReadByteTracker());
+        return (OMGraphic) getFactory().makeEsriGraphicFromRecord(byteOffset, shp, drawingAttributes, pointIcon, new EsriGraphicFactory.ReadByteTracker());
     }
 
     /**
@@ -714,8 +718,7 @@ public class SpatialIndex
      * @throws IOException
      * @throws FormatException
      */
-    public Iterator<Entry> entryIterator()
-            throws IOException, FormatException {
+    public Iterator<Entry> entryIterator() throws IOException, FormatException {
         return entryIterator(null);
     }
 
@@ -749,8 +752,7 @@ public class SpatialIndex
      * @throws IOException
      * @throws FormatException
      */
-    protected List<Entry> readIndexFile(ESRIBoundingBox bounds)
-            throws IOException, FormatException {
+    protected List<Entry> readIndexFile(ESRIBoundingBox bounds) throws IOException, FormatException {
         return readIndexFile(bounds, null);
     }
 
@@ -847,7 +849,8 @@ public class SpatialIndex
      * @return <code>true</code> if the rectangles intersect, <code>false</code>
      *         if they do not
      */
-    protected static final boolean intersects(double xmin1, double ymin1, double xmax1, double ymax1, double xmin2, double ymin2,
+    protected static final boolean intersects(double xmin1, double ymin1, double xmax1,
+                                              double ymax1, double xmin2, double ymin2,
                                               double xmax2, double ymax2) {
         return !((xmax1 <= xmin2) || (ymax1 <= ymin2) || (xmin1 >= xmax2) || (ymin1 >= ymax2));
     }
@@ -858,8 +861,7 @@ public class SpatialIndex
      * @param showBounds true to show bounding box, false to skip it
      * @exception IOException if something goes wrong reading the file
      */
-    public void dumpIndex(boolean showBounds)
-            throws IOException {
+    public void dumpIndex(boolean showBounds) throws IOException {
         byte ixRecord[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
         int recNum = 0;
 
@@ -885,8 +887,9 @@ public class SpatialIndex
                         + offset
                         + ", "
                         + length
-                        + (showBounds ? ("; " + readLEDouble(ixRecord, 8) + ", " + readLEDouble(ixRecord, 16) + ", "
-                                + readLEDouble(ixRecord, 24) + ", " + readLEDouble(ixRecord, 32)) : ""));
+                        + (showBounds ? ("; " + readLEDouble(ixRecord, 8) + ", "
+                                + readLEDouble(ixRecord, 16) + ", " + readLEDouble(ixRecord, 24)
+                                + ", " + readLEDouble(ixRecord, 32)) : ""));
             }
         }
         ssx.close();
@@ -907,8 +910,8 @@ public class SpatialIndex
         out.println("Creates spatial index <file.ssx> from " + "shape file <file.shp>.");
         out.println();
         out.println("java " + className + " -d file.shp");
-        out.println("Dumps spatial index information, excluding " + "bounding boxes to stdout.  Useful for "
-                + "comparing to a shape index.");
+        out.println("Dumps spatial index information, excluding "
+                + "bounding boxes to stdout.  Useful for " + "comparing to a shape index.");
         out.println();
         out.println("java " + className + " -d -b file.shp");
         out.println("Dumps spatial index information including " + "bounding boxes to stdout.");
@@ -1003,8 +1006,7 @@ public class SpatialIndex
      * @exception IOException if something goes wrong reading or writing the
      *            file
      */
-    public static void main(String argv[])
-            throws IOException {
+    public static void main(String argv[]) throws IOException {
         int argc = argv.length;
 
         if (argc == 0) {
@@ -1175,7 +1177,8 @@ public class SpatialIndex
 
                         if (recLengthBytes > recBufSize) {
                             if (logger.isLoggable(Level.FINE)) {
-                                logger.fine("Shapefile SpatialIndex increasing recBufSize to " + recLengthBytes);
+                                logger.fine("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
                             }
                             recBufSize = recLengthBytes;
                             recBuf = new byte[recBufSize];
@@ -1250,7 +1253,8 @@ public class SpatialIndex
 
                         if (recLengthBytes > recBufSize) {
                             if (logger.isLoggable(Level.FINE)) {
-                                logger.fine("Shapefile SpatialIndex increasing recBufSize to " + recLengthBytes);
+                                logger.fine("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
                             }
                             recBufSize = recLengthBytes;
                             recBuf = new byte[recBufSize];
@@ -1323,7 +1327,8 @@ public class SpatialIndex
 
                         if (recLengthBytes > recBufSize) {
                             if (logger.isLoggable(Level.FINE)) {
-                                logger.fine("Shapefile SpatialIndex increasing recBufSize to " + recLengthBytes);
+                                logger.fine("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
                             }
                             recBufSize = recLengthBytes;
                             recBuf = new byte[recBufSize];
@@ -1385,28 +1390,28 @@ public class SpatialIndex
                 ssx.write(fileHeader, 0, SHAPE_FILE_HEADER_LENGTH);
                 shapeType = readLEInt(fileHeader, 32);
                 switch (shapeType) {
-                    case SHAPE_TYPE_NULL:
-                        indexNulls(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
-                        break;
-                    case SHAPE_TYPE_POINT:
-                    case SHAPE_TYPE_POINTZ:
-                    case SHAPE_TYPE_POINTM:
-                        indexPoints(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
-                        break;
-                    case SHAPE_TYPE_MULTIPOINT:
-                    case SHAPE_TYPE_MULTIPOINTZ:
-                    case SHAPE_TYPE_MULTIPOINTM:
-                        // case SHAPE_TYPE_ARC:
-                    case SHAPE_TYPE_POLYLINE:
-                    case SHAPE_TYPE_POLYLINEZ:
-                    case SHAPE_TYPE_POLYLINEM:
-                    case SHAPE_TYPE_POLYGON:
-                    case SHAPE_TYPE_POLYGONZ:
-                    case SHAPE_TYPE_POLYGONM:
-                        indexPolygons(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
-                        break;
-                    default:
-                        logger.warning("Unknown shape type: " + shapeType);
+                case SHAPE_TYPE_NULL:
+                    indexNulls(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
+                    break;
+                case SHAPE_TYPE_POINT:
+                case SHAPE_TYPE_POINTZ:
+                case SHAPE_TYPE_POINTM:
+                    indexPoints(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
+                    break;
+                case SHAPE_TYPE_MULTIPOINT:
+                case SHAPE_TYPE_MULTIPOINTZ:
+                case SHAPE_TYPE_MULTIPOINTM:
+                    // case SHAPE_TYPE_ARC:
+                case SHAPE_TYPE_POLYLINE:
+                case SHAPE_TYPE_POLYLINEZ:
+                case SHAPE_TYPE_POLYLINEM:
+                case SHAPE_TYPE_POLYGON:
+                case SHAPE_TYPE_POLYGONZ:
+                case SHAPE_TYPE_POLYGONM:
+                    indexPolygons(shp, SHAPE_FILE_HEADER_LENGTH, ssx);
+                    break;
+                default:
+                    logger.warning("Unknown shape type: " + shapeType);
                 }
 
             } catch (java.io.IOException e) {
@@ -1470,7 +1475,8 @@ public class SpatialIndex
 
                         if (recLengthBytes > recBufSize) {
                             if (logger.isLoggable(Level.FINE)) {
-                                logger.fine("Shapefile SpatialIndex increasing recBufSize to " + recLengthBytes);
+                                logger.fine("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
                             }
                             recBufSize = recLengthBytes;
                             recBuf = new byte[recBufSize];
@@ -1487,8 +1493,7 @@ public class SpatialIndex
                         }
                         ptr += recLengthBytes + 8;
 
-                        Entry entry =
-                                new Entry(polyBounds.min.x, polyBounds.min.y, polyBounds.max.x, polyBounds.max.y, (int) recOffset);
+                        Entry entry = new Entry(polyBounds.min.x, polyBounds.min.y, polyBounds.max.x, polyBounds.max.y, (int) recOffset);
                         entries.add(entry);
                     }
                 }
@@ -1540,7 +1545,8 @@ public class SpatialIndex
 
                         if (recLengthBytes > recBufSize) {
                             if (logger.isLoggable(Level.FINE)) {
-                                logger.fine("Shapefile SpatialIndex increasing recBufSize to " + recLengthBytes);
+                                logger.fine("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
                             }
                             recBufSize = recLengthBytes;
                             recBuf = new byte[recBufSize];
@@ -1607,7 +1613,8 @@ public class SpatialIndex
 
                         if (recLengthBytes > recBufSize) {
                             if (logger.isLoggable(Level.FINE)) {
-                                logger.fine("Shapefile SpatialIndex increasing recBufSize to " + recLengthBytes);
+                                logger.fine("Shapefile SpatialIndex increasing recBufSize to "
+                                        + recLengthBytes);
                             }
                             recBufSize = recLengthBytes;
                             recBuf = new byte[recBufSize];
@@ -1664,28 +1671,28 @@ public class SpatialIndex
                 shp.read(fileHeader, 0, SHAPE_FILE_HEADER_LENGTH);
                 shapeType = readLEInt(fileHeader, 32);
                 switch (shapeType) {
-                    case SHAPE_TYPE_NULL:
-                        indexNulls(shp, SHAPE_FILE_HEADER_LENGTH, entries);
-                        break;
-                    case SHAPE_TYPE_POINT:
-                    case SHAPE_TYPE_POINTZ:
-                    case SHAPE_TYPE_POINTM:
-                        indexPoints(shp, SHAPE_FILE_HEADER_LENGTH, entries);
-                        break;
-                    case SHAPE_TYPE_MULTIPOINT:
-                    case SHAPE_TYPE_MULTIPOINTZ:
-                    case SHAPE_TYPE_MULTIPOINTM:
-                        // case SHAPE_TYPE_ARC:
-                    case SHAPE_TYPE_POLYLINE:
-                    case SHAPE_TYPE_POLYLINEZ:
-                    case SHAPE_TYPE_POLYLINEM:
-                    case SHAPE_TYPE_POLYGON:
-                    case SHAPE_TYPE_POLYGONZ:
-                    case SHAPE_TYPE_POLYGONM:
-                        indexPolygons(shp, SHAPE_FILE_HEADER_LENGTH, entries);
-                        break;
-                    default:
-                        logger.warning("Unknown shape type: " + shapeType);
+                case SHAPE_TYPE_NULL:
+                    indexNulls(shp, SHAPE_FILE_HEADER_LENGTH, entries);
+                    break;
+                case SHAPE_TYPE_POINT:
+                case SHAPE_TYPE_POINTZ:
+                case SHAPE_TYPE_POINTM:
+                    indexPoints(shp, SHAPE_FILE_HEADER_LENGTH, entries);
+                    break;
+                case SHAPE_TYPE_MULTIPOINT:
+                case SHAPE_TYPE_MULTIPOINTZ:
+                case SHAPE_TYPE_MULTIPOINTM:
+                    // case SHAPE_TYPE_ARC:
+                case SHAPE_TYPE_POLYLINE:
+                case SHAPE_TYPE_POLYLINEZ:
+                case SHAPE_TYPE_POLYLINEM:
+                case SHAPE_TYPE_POLYGON:
+                case SHAPE_TYPE_POLYGONZ:
+                case SHAPE_TYPE_POLYGONM:
+                    indexPolygons(shp, SHAPE_FILE_HEADER_LENGTH, entries);
+                    break;
+                default:
+                    logger.warning("Unknown shape type: " + shapeType);
                 }
 
             } catch (java.io.IOException e) {

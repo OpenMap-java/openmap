@@ -26,6 +26,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Iterator;
 
 import javax.swing.JButton;
@@ -42,23 +43,24 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
 /**
- * The AnimationTester is a simple GraphicLoader that lets you toss a
- * bunch of sprites (circles) up on the map to watch them wiggle, to
- * get a feel of the paint delay of the map. You can add sprites to
- * the map (they get placed randomly), and clear the list, and adjust
- * the length of delay between repaints().
+ * The AnimationTester is a simple GraphicLoader that lets you toss a bunch of
+ * sprites (circles) up on the map to watch them wiggle, to get a feel of the
+ * paint delay of the map. You can add sprites to the map (they get placed
+ * randomly), and clear the list, and adjust the length of delay between
+ * repaints().
  */
 public class AnimationTester extends AbstractGraphicLoader {
 
     OMGraphicList nodes = new OMGraphicList();
     float factor = 1f;
 
-    public AnimationTester() {}
+    public AnimationTester() {
+        getTimer().stop();
+    }
 
     public void manageGraphics() {
         if (Debug.debugging("animationtester")) {
-            Debug.output("AnimationTester.manageGraphics with " + nodes.size()
-                    + " node(s).");
+            Debug.output("AnimationTester.manageGraphics with " + nodes.size() + " node(s).");
         }
         Projection p = getProjection();
 
@@ -71,7 +73,7 @@ public class AnimationTester extends AbstractGraphicLoader {
 
         OMGraphicHandler receiver = getReceiver();
         if (receiver != null) {
-            receiver.setList(nodes);
+            receiver.setList(new OMGraphicList(nodes));
         }
     }
 
@@ -90,9 +92,6 @@ public class AnimationTester extends AbstractGraphicLoader {
     }
 
     JPanel panel = null;
-    final String addCmd = "AddSpriteCommand";
-    final String clearCmd = "ClearSpriteCommand";
-    final String timerCmd = "TimerCommand";
 
     public Component getGUI() {
         if (panel == null) {
@@ -100,13 +99,23 @@ public class AnimationTester extends AbstractGraphicLoader {
 
             JPanel buttonBox = new JPanel();
             JButton button = new JButton("Add Sprite");
-            button.setActionCommand(addCmd);
-            button.addActionListener(this);
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    addNode();
+                    manageGraphics();
+                    getTimer().restart();
+                }
+            });
             buttonBox.add(button);
 
             button = new JButton("Clear Sprites");
-            button.setActionCommand(clearCmd);
-            button.addActionListener(this);
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    clearNodes();
+                    manageGraphics();
+                    getTimer().restart();
+                }
+            });
             buttonBox.add(button);
             panel.add(buttonBox);
 
@@ -130,8 +139,8 @@ public class AnimationTester extends AbstractGraphicLoader {
                     if (slider2.getValueIsAdjusting()) {
                         manageGraphics();
                         float interval = ((float) (slider2.getValue()) + .01f) * 100f;
-                        Debug.output("Animation Tester delay set to: "
-                                + interval / 1000f + " seconds");
+                        Debug.output("Animation Tester delay set to: " + interval / 1000f
+                                + " seconds");
                         setUpdateInterval((int) interval);
 
                     }
@@ -140,38 +149,21 @@ public class AnimationTester extends AbstractGraphicLoader {
             panel.add(slider);
 
             JCheckBox timerButton = new JCheckBox("Run Timer", getTimer().isRunning());
-            timerButton.setActionCommand(TimerCmd);
-            timerButton.addActionListener(this);
+            timerButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    JCheckBox check = (JCheckBox) ae.getSource();
+                    if (check.isSelected()) {
+                        manageGraphics();
+                        getTimer().restart();
+                    } else {
+                        getTimer().stop();
+                    }
+                }
+            });
 
             panel.add(timerButton);
 
         }
         return panel;
-    }
-
-    public void actionPerformed(ActionEvent ae) {
-        String command = ae.getActionCommand();
-
-        if (command.equals(addCmd)) {
-            addNode();
-            if (!getTimer().isRunning()) {
-                manageGraphics();
-            }
-        } else if (command.equals(clearCmd)) {
-            clearNodes();
-            if (!getTimer().isRunning()) {
-                manageGraphics();
-            }
-        } else if (command.equals(TimerCmd)) {
-            JCheckBox check = (JCheckBox) ae.getSource();
-            if (check.isSelected()) {
-                manageGraphics();
-                getTimer().restart();
-            } else {
-                getTimer().stop();
-            }
-        } else {
-            manageGraphics();
-        }
     }
 }

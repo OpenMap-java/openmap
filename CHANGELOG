@@ -1,3 +1,22 @@
+2013-07-27  dietrick  <dietrick@client.wonkavision.local>
+
+	* Moved default LINETYPE for shape files from GREAT_CIRLCE to
+	STRAIGHT.  That should speed things up a bit.
+
+	* Added com.bbn.openmap.layer.learn.SimpleAnimationLayer, a little
+	tutorial example of doing animation on OpenMap.  Borrows a lot for
+	the AnimationTester, which was also refreshed.
+
+	* Added OMGraphicHandler to the interfaces that
+	OMGraphicHandlerLayer implements.  It used to implement that
+	interface, and should have been, obviously.
+
+	* Fixed off-by-one errors in the AreaHandler.
+	
+2013-07-03  dietrick  <dietrick@client.wonkavision.local>
+
+	* Fixed some JavaDoc errors, added update to Gnomonic Projection.
+
 2013-07-03  dietrick  <dietrick@client.wonkavision.local>
 
 	* Released OpenMap 5.0.1

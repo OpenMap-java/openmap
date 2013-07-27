@@ -598,19 +598,25 @@ public class AreaHandler implements PropertyConsumer {
     }
 
     /**
-     * Get the name of the object at record number. The record number is the
-     * shapefile record number, which is one greater than the index number.
-     * Returns an empty string if something goes wrong.
+     * Get the name of the object at the index of the list.  This is a
+     * zero-based index.  Remember, the record number out of the shape
+     * file is one-based.  The index stored in the OMGraphic attribute
+     * created from the shape files is zero-based to help with
+     * lookups.
+     *
+     * @param integer a zero-based index.
+     * @return an empty string if something goes wrong, or the name as
+     * a String.
      */
     public String getName(Integer integer) {
         try {
             if (infoFile != null) {
-                Vector vector = infoFile.getRecord(integer.intValue() - 1);
+                Vector vector = infoFile.getRecord(integer.intValue());
                 if (vector != null) {
                     return (String) vector.elementAt(nameIndex);
                 }
             } else if (dbfModel != null) {
-                Object obj = dbfModel.getValueAt(integer.intValue() - 1, nameIndex);
+                Object obj = dbfModel.getValueAt(integer.intValue(), nameIndex);
                 if (obj != null) {
                     if (obj instanceof String) {
                         return (String) obj;
@@ -626,10 +632,9 @@ public class AreaHandler implements PropertyConsumer {
 
     /**
      * Given the shapefile record number, find the drawing parameters that
-     * should be used for the shape. Note, this recordNumber is the shapefile
-     * record number, which starts at one. All our indexes start at 0, so this
-     * is taken into account here. Don't make the adjustment elsewhere. Returns
-     * the default coloring if the key for the drawing parameters isn't found.
+     * should be used for the shape. 
+     *
+     * @param recordNumber the zero-based record number from the OMGraphicList.
      */
     public DrawingAttributes getDrawParamsFromCSV(int recordNumber) {
         if (infoFile == null) {
@@ -639,7 +644,7 @@ public class AreaHandler implements PropertyConsumer {
         // OFF BY ONE!!! The shape record numbers
         // assigned to the records start with 1, while
         // everything else we do starts with 0...
-        Vector info = infoFile.getRecord(recordNumber - 1);
+        Vector info = infoFile.getRecord(recordNumber);
 
         if (info == null) {
             if (Debug.debugging("areas")) {
@@ -687,6 +692,8 @@ public class AreaHandler implements PropertyConsumer {
      * Given the shapefile record number, find the drawing parameters from the
      * DBF model that should be used for the shape. Returns the default coloring
      * if the key for the drawing parameters isn't found.
+     *
+     * @param recordNumber the zero-based record number from the OMGraphicList
      */
     public DrawingAttributes getDrawParamsFromDBF(int recordNumber) {
         if (dbfModel == null) {
@@ -720,7 +727,7 @@ public class AreaHandler implements PropertyConsumer {
             // Only bother with this the first time around.
             if (pa.name == null) {
                 // String name = (String) info.elementAt(nameIndex);
-                String name = (String) dbfModel.getValueAt(recordNumber - 1, nameIndex);
+                String name = (String) dbfModel.getValueAt(recordNumber, nameIndex);
                 if (name != null) {
                     pa.name = name;
                 } else {
@@ -774,6 +781,8 @@ public class AreaHandler implements PropertyConsumer {
      * Given the shapefile record number, find the drawing parameters that
      * should be used for the shape. Returns the default coloring if the key for
      * the drawing parameters isn't found.
+     *
+     * @param recordNumber the zero-based record number from the OMGraphics.
      */
     public DrawingAttributes getDrawParams(int recordNumber) {
         if (dbfModel != null)
