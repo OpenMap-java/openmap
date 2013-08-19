@@ -33,6 +33,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.RasterFormatException;
 import java.awt.image.RenderedImage;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -561,6 +562,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                 } catch (NullPointerException npe) {
                     logger.fine("Caught NPE, setting bitmap to null");
                     bitmap = null;
+                } catch (RasterFormatException rfe) {
+                    logger.fine("Caught RasterFormatException, setting bitmap to null");
                 }
             }
         } else {

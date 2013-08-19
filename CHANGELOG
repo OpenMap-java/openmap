@@ -1,3 +1,9 @@
+2013-08-19  dietrick  <dietrick@client.wonkavision.local>
+
+	* Added the GoogleMapTileFactory as an example of how to extend 
+	the MapTileFactory to contact different services.  Added the 
+	ability for MapTileLayer to display map data attribution.	
+
 2013-07-27  dietrick  <dietrick@client.wonkavision.local>
 
 	* Moved default LINETYPE for shape files from GREAT_CIRLCE to

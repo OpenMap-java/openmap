@@ -24,10 +24,8 @@
 
 package com.bbn.openmap.layer.imageTile;
 
-import java.awt.Color;
 import java.awt.Container;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -38,9 +36,10 @@ import com.bbn.openmap.dataAccess.mapTile.MapTileFactory;
 import com.bbn.openmap.dataAccess.mapTile.ServerMapTileFactory;
 import com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.omGraphics.OMWarpingImage;
+import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.PropUtils;
@@ -110,6 +109,9 @@ import com.bbn.openmap.util.PropUtils;
  * #in jar file, should specify rootDir inside jar to tiles (don't need this for layers accessing local file system rootDirs, unless you want to specify z,x,y order differently):
  * rootDir=mytiles
  * 
+ * #optional
+ * attribution=map data 2013 OpenStreetMap
+ * 
  * </pre>
  * 
  * If you do this last configuration, all you need to define is rootDir (and
@@ -144,6 +146,12 @@ public class MapTileLayer extends OMGraphicHandlerLayer {
     public final static String ZOOM_LEVEL_PROPERTY = "zoomLevel";
 
     /**
+     * A property to set for displaying attribution for the data used by the
+     * layer.
+     */
+    public final static String DATA_ATTRIBUTION_PROPERTY = "attribution";
+
+    /**
      * The MapTileFactory that knows how to fetch image files and create
      * OMRasters for them.
      */
@@ -160,6 +168,17 @@ public class MapTileLayer extends OMGraphicHandlerLayer {
      * to use something else.
      */
     protected int zoomLevel = -1;
+
+    /**
+     * Attribution for the map data. If it exists, it will be displayed on the
+     * lower left corner of the map.
+     */
+    protected String attribution = null;
+
+    /**
+     * Rendering parameters for attribution string.
+     */
+    protected DrawingAttributes attributionAttributes = DrawingAttributes.getDefaultClone();
 
     public MapTileLayer() {
         setRenderPolicy(new com.bbn.openmap.layer.policy.BufferedImageRenderPolicy(this));
@@ -190,8 +209,30 @@ public class MapTileLayer extends OMGraphicHandlerLayer {
         if (tileFactory != null) {
             OMGraphicList newList = new OMGraphicList();
             // setList(newList);
+
+            OMText attrib = getAttributionGraphic();
+            if (attrib != null) {
+                newList.add(attrib);
+            }
+
             return tileFactory.getTiles(projection, zoomLevel, newList);
         }
+        return null;
+    }
+
+    /**
+     * @return OMText for attribution text
+     */
+    private OMText getAttributionGraphic() {
+        Projection proj = getProjection();
+        if (attribution != null && proj != null) {
+            OMText attText = new OMText(10, proj.getHeight() - 10, attribution, OMText.JUSTIFY_LEFT);
+            if (attributionAttributes != null) {
+                attributionAttributes.setTo(attText);
+            }
+            return attText;
+        }
+
         return null;
     }
 
@@ -202,6 +243,9 @@ public class MapTileLayer extends OMGraphicHandlerLayer {
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
+
+        attribution = props.getProperty(prefix + DATA_ATTRIBUTION_PROPERTY, attribution);
+        attributionAttributes.setProperties(prefix, props);
 
         String tileFactoryClassString = props.getProperty(prefix + TILE_FACTORY_CLASS_PROPERTY);
         if (tileFactoryClassString != null) {
@@ -218,7 +262,7 @@ public class MapTileLayer extends OMGraphicHandlerLayer {
                 try {
                     // We build URL here to test if the rootDir location exists.
                     // Comment out url to avoid dead store findbugs problem.
-                    /*URL url = */new java.net.URL(rootDirString);
+                    /* URL url = */new java.net.URL(rootDirString);
                     // If we get here, we have a protocol, looks remote, so we
                     // should make sure the
                     // ServerMapTileFactory is used.
@@ -259,6 +303,8 @@ public class MapTileLayer extends OMGraphicHandlerLayer {
 
         props.put(prefix + INCREMENTAL_UPDATES_PROPERTY, Boolean.toString(incrementalUpdates));
         props.put(prefix + ZOOM_LEVEL_PROPERTY, Integer.toString(zoomLevel));
+
+        attributionAttributes.getProperties(props);
 
         return props;
     }
@@ -319,6 +365,34 @@ public class MapTileLayer extends OMGraphicHandlerLayer {
 
     public java.awt.Component getGUI() {
         return getTransparencyAdjustmentPanel(i18n.get(MapTileLayer.class, "layerTransparencyGUILabel", "Layer Transparency"), JSlider.HORIZONTAL, getTransparency());
+    }
+
+    /**
+     * @return the attribution
+     */
+    public String getAttribution() {
+        return attribution;
+    }
+
+    /**
+     * @param attribution the attribution to set
+     */
+    public void setAttribution(String attribution) {
+        this.attribution = attribution;
+    }
+
+    /**
+     * @return the attributionAttributes
+     */
+    public DrawingAttributes getAttributionAttributes() {
+        return attributionAttributes;
+    }
+
+    /**
+     * @param attributionAttributes the attributionAttributes to set
+     */
+    public void setAttributionAttributes(DrawingAttributes attributionAttributes) {
+        this.attributionAttributes = attributionAttributes;
     }
 
 }
