@@ -13,7 +13,6 @@
 		<property name="openmap.classes" value="${openmap.class_dir}/openmap" />
 		<property name="openmap.src" value="${openmap.home}/src/openmap" />
 		<property name="openmap.jar" value="${openmap.home}/lib/openmap.jar" />
-		<property name="openmap.src_ext" value="${openmap.home}/src/ext" />
 		<property name="openmap.docs" value="${openmap.home}/doc" />
 
 		<property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
@@ -74,27 +73,11 @@
 	Build all the packages that OpenMap code depends on, that are
 	from other people.
 	############################ -->
-	<target name="ext" depends="debug" description="Compiles the ext classes that OpenMap needs.">
-		<javac includeantruntime="false" srcdir="${openmap.src_ext}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes}" source="1.5" target="1.5">
-			<classpath refid="ext_tools_classpath" />
-			<compilerarg value="${compiler.args}"/>
-		</javac>
-	</target>
-
-	<target name="jai" depends="ext" description="Compiles the ext classes that OpenMap needs that depend on JAI." if="do.jai">
-		<javac includeantruntime="false" srcdir="${openmap.src_ext}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}" source="1.5" target="1.5">
-			<classpath refid="ext_tools_classpath" />
-			<compilerarg value="${compiler.args}"/>
-		</javac>
+	<target name="jai" depends="debug" description="Compiles the ext classes that OpenMap needs that depend on JAI." if="do.jai">
 		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}" source="1.5" target="1.5">
 			<classpath refid="ext_tools_classpath" />
 			<compilerarg value="${compiler.args}"/>
 		</javac>
-
-		<copy todir="${openmap.classes}">
-			<fileset dir="${openmap.src_ext}" includes="**/*.properties" />
-		</copy>
-
 	</target>
 
 	<!--  ############################
@@ -118,7 +101,7 @@
 	Build the documentation.
 	############################ -->
 	<target name="docs.openmap" depends="init.openmap" description="Make the javadoc API html documents.">
-		<javadoc sourcepath="${openmap.src}:${openmap.src_ext}" destdir="${openmap.docs}/api" maxmemory="256m" excludepackagenames="**unimplemented**" packagenames="com.bbn.openmap.*, Acme.*, dopplet.*, edu.*" author="true" version="true" use="true" windowtitle="OpenMap API" doctitle="OpenMap" bottom="Copyright (C) BBNT Solutions LLC; See http://openmap.bbn.com/ for details">
+		<javadoc sourcepath="${openmap.src}" destdir="${openmap.docs}/api" maxmemory="256m" excludepackagenames="**unimplemented**" packagenames="com.bbn.openmap.*, Acme.*, dopplet.*, edu.*" author="true" version="true" use="true" windowtitle="OpenMap API" doctitle="OpenMap" bottom="Copyright (C) BBNT Solutions LLC; See http://openmap.bbn.com/ for details">
 			<classpath refid="ext_tools_classpath" />
 		</javadoc>
 	</target>
