@@ -40,6 +40,12 @@ import com.bbn.openmap.util.PropUtils;
  * localCacheRootDir=the local path of the cached tiles, i.e. /data/tiles/{z}/{x}/{y}.png
  * </pre>
  * 
+ * As an example, a url for accessing a tile from this server would be:
+ * <pre>
+ * http://your.machine/ommaptile/the-name-of-dataset/z/x/y.png
+ * </pre>
+ * where ommaptile is the name of the servlet.  You can change that in the web.xml and in glassfish/tomcat.
+ * 
  * @author dietrick
  */
 public class RelayMapTileSet extends ServerMapTileFactory implements MapTileSet {

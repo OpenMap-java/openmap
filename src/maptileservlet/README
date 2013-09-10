@@ -36,6 +36,18 @@ have in it to specify a particular tile set.
 name=my_tile_set
 rootDir=/Volumes/data/my_tile_set
 
+You can specify a MapTileSet class to use for a map tile sets.  The StandardMapTileSet 
+is the default, but the TileMillMapTile can be used to read mbtiles files, and the 
+RelayMapTileSet can be used to fetch tiles from a remote server while maintaining 
+a local cache copy of the tiles for subsequent distribution.  You can specify the 
+MapTileSet class using the 'class' property.
+
+class=com.bbn.openmap.maptileservlet.TileMillMapTileSet
+
+or
+
+class=com.bbn.openmap.maptileservlet.RelayMapTileSet
+
 The other properties that can be used are standard for the MapTileLayer, 
 too.  The rootDir property tells the MapTileSet where to look for more information,
 and it will look for a tiles.omp file for more properties that pertain to that
@@ -61,7 +73,7 @@ for empty tiles.
 
 The tiles can be requested by accessing:
 
-http://localhost:tomcat_port/maptile/my_tile_set/z/x/y.png
+http://localhost:tomcat_port/ommaptile/my_tile_set/z/x/y.png
 
 where z is zoom level (0-20), x and y are tile coordinates (which depend on zoom level).
 
@@ -69,8 +81,7 @@ You can use the MapTileLayer to connect to this server, if you
 configure it with these properties:
 
 tiles.class=com.bbn.openmap.layer.imageTile.MapTileLayer
-tiles.prettyName=Map Tile Server
-tiles.tileFactory=com.bbn.openmap.dataAccess.mapTile.ServerMapTileFactory
+tiles.prettyName=Map Tiles
 tiles.rootDir=http://localhost:8080:/maptile/my_tile_set
 
 Another good way to play with this is by using Leaflet, at
