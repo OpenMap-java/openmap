@@ -505,7 +505,7 @@ public class ImageServer
      */
     public byte[] createImage(Projection proj, int scaledWidth, int scaledHeight, int includedLayerMask, Paint background) {
 
-        logger.info("using the new ProjectionPainter interface!  createImage with layer mask.");
+        logger.fine("using the new ProjectionPainter interface!  createImage with layer mask.");
 
         if (formatter == null) {
             logger.warning("no formatter set! Can't create image.");
