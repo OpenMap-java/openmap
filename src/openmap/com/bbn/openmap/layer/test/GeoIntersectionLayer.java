@@ -132,8 +132,7 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * @author dietrick
  */
-public class GeoIntersectionLayer extends EditorLayer implements
-        PropertyChangeListener {
+public class GeoIntersectionLayer extends EditorLayer implements PropertyChangeListener {
 
     /** This list holds the OMGraphics that have been drawn. */
     protected OMGraphicList drawnList = new OMGraphicList();
@@ -216,17 +215,14 @@ public class GeoIntersectionLayer extends EditorLayer implements
         list.add(intersectionResultList);
         list.add(drawnList);
         if (DEBUG)
-            Debug.output("GeoIntersectLayer(" + getName()
-                    + "): Adding lines to main list");
+            Debug.output("GeoIntersectLayer(" + getName() + "): Adding lines to main list");
         list.add(fileDataList);
         if (DEBUG)
-            Debug.output("GeoIntersectLayer(" + getName()
-                    + "): Adding shapes to main list");
+            Debug.output("GeoIntersectLayer(" + getName() + "): Adding shapes to main list");
 
         list.generate(getProjection());
         if (DEBUG)
-            Debug.output("GeoIntersectLayer(" + getName()
-                    + "): Projected main list, returning");
+            Debug.output("GeoIntersectLayer(" + getName() + "): Projected main list, returning");
 
         return list;
 
@@ -238,8 +234,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
 
         for (OMGraphic omg : drawnList) {
 
-            if (omg instanceof OMLine
-                    || (omg instanceof OMPoly && !((OMPoly) omg).isPolygon())) {
+            if (omg instanceof OMLine || (omg instanceof OMPoly && !((OMPoly) omg).isPolygon())) {
 
                 if (DEBUG) {
                     Debug.output("GeoIntersectLayer(" + getName()
@@ -252,8 +247,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
                 Iterator crssngs = null;
 
                 if (showCrossingPoints) {
-                    BoundaryCrossing.Collector results = BoundaryCrossing.getCrossings(path,
-                            rIndex);
+                    BoundaryCrossing.Collector results = BoundaryCrossing.getCrossings(path, rIndex);
                     intrsctns = results.iterator();
                     crssngs = results.getCrossings();
                 } else {
@@ -266,8 +260,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
                     setRegionAsSelected(ompr);
 
                     if (DEBUG) {
-                        Debug.output("GeoIntersectLayer(" + getName()
-                                + "): Set Poly for hit");
+                        Debug.output("GeoIntersectLayer(" + getName() + "): Set Poly for hit");
                     }
                 }
 
@@ -279,30 +272,25 @@ public class GeoIntersectionLayer extends EditorLayer implements
 
                     OMPoint pgeo = new OMPoint((float) geo.getLatitude(), (float) geo.getLongitude());
                     pgeo.setFillPaint(Color.WHITE);
-                    pgeo.putAttribute(OMGraphic.LABEL,
-                            new OMTextLabeler(Integer.toString(num++)));
+                    pgeo.putAttribute(OMGraphic.LABEL, new OMTextLabeler(Integer.toString(num++)));
                     intersectionResultList.add(pgeo);
                 }
 
             } else if (omg instanceof OMPoly) {
-                for (Iterator hits = Intersection.intersect(new OMPolyRegion((OMPoly) omg),
-                        rIndex); hits.hasNext();) {
+                for (Iterator hits = Intersection.intersect(new OMPolyRegion((OMPoly) omg), rIndex); hits.hasNext();) {
                     setRegionAsSelected((OMPolyRegion) hits.next());
 
                     if (DEBUG) {
-                        Debug.output("GeoIntersectLayer(" + getName()
-                                + "): Set Poly for hit");
+                        Debug.output("GeoIntersectLayer(" + getName() + "): Set Poly for hit");
                     }
                 }
             } else if (omg instanceof OMPoint) {
                 OMPoint omp = (OMPoint) omg;
-                for (Iterator hits = Intersection.intersect(new GeoPoint.Impl(omp.getLat(), omp.getLon()),
-                        rIndex); hits.hasNext();) {
+                for (Iterator hits = Intersection.intersect(new GeoPoint.Impl(omp.getLat(), omp.getLon()), rIndex); hits.hasNext();) {
                     setRegionAsSelected((OMPolyRegion) hits.next());
 
                     if (DEBUG) {
-                        Debug.output("GeoIntersectLayer(" + getName()
-                                + "): Set Poly for hit");
+                        Debug.output("GeoIntersectLayer(" + getName() + "): Set Poly for hit");
                     }
                 }
             }
@@ -346,18 +334,18 @@ public class GeoIntersectionLayer extends EditorLayer implements
      * or line list if a valid file is selected.
      */
     public void addShapeFileFromUser() {
-        String shpFileName = FileUtils.getFilePathToOpenFromUser("Pick Shape File",
-                new FileFilter() {
 
-                    public boolean accept(File f) {
-                        return f.isDirectory() || f.getName().endsWith("shp");
-                    }
+        String shpFileName = FileUtils.getFilePathToOpenFromUser("Pick Shape File", new FileFilter() {
 
-                    public String getDescription() {
-                        return "ESRI Shape (.shp) file";
-                    }
+            public boolean accept(File f) {
+                return f.isDirectory() || f.getName().endsWith("shp");
+            }
 
-                });
+            public String getDescription() {
+                return "ESRI Shape (.shp) file";
+            }
+
+        });
 
         if (shpFileName != null) {
             addShapeFile(new File(shpFileName));
@@ -380,16 +368,11 @@ public class GeoIntersectionLayer extends EditorLayer implements
                 DrawingAttributes da = new DrawingAttributes();
                 da.setSelectPaint(new Color(200, 100, 100, 200));
 
-                EsriGraphicList shapeList = EsriGraphicList.getEsriGraphicList(shpFile.toURI()
-                        .toURL(),
-                        da,
-                        DbfTableModel.getDbfTableModel(new File(shpFilePath.replaceAll(".shp",
-                                ".dbf")).toURI().toURL()),
-                        coordTransform);
+                EsriGraphicList shapeList = EsriGraphicList.getEsriGraphicList(shpFile.toURI().toURL(), da, DbfTableModel.getDbfTableModel(new File(shpFilePath.replaceAll(".shp", ".dbf")).toURI().toURL()), coordTransform);
 
                 if (DEBUG)
-                    Debug.output("GeoIntersectLayer(" + getName()
-                            + "): Adding shapes from " + shpFileName);
+                    Debug.output("GeoIntersectLayer(" + getName() + "): Adding shapes from "
+                            + shpFileName);
 
                 JCheckBox visibilityControl = new JCheckBox("Show", true);
                 visibilityControl.addActionListener(new ActionListener() {
@@ -422,8 +405,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
                 panel.add(removeButton);
 
                 shapeList.putAttribute(SHAPE_FILE_NAME_ATTRIBUTE, shpFileName);
-                shapeList.putAttribute(SHAPE_VISIBILITY_CONTROL_ATTRIBUTE,
-                        visibilityControl);
+                shapeList.putAttribute(SHAPE_VISIBILITY_CONTROL_ATTRIBUTE, visibilityControl);
                 shapeList.putAttribute(SHAPE_CONTROL_ATTRIBUTE, panel);
 
                 int type = shapeList.getType();
@@ -470,8 +452,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
                 shapeDA.setTo(((OMPolyRegion) reset.next()).poly);
             }
             if (DEBUG)
-                Debug.output("GeoIntersectLayer(" + getName()
-                        + "): Reset region fills");
+                Debug.output("GeoIntersectLayer(" + getName() + "): Reset region fills");
         }
 
         return regionIndex;
@@ -479,8 +460,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
 
     protected void addToRegionIndex(OMPoly p, ExtentIndex regionIndex) {
         if (regionIndex.addExtent(new OMPolyRegion(p)) && DEBUG) {
-            Debug.output("GeoIntersectLayer(" + getName()
-                    + "): Added poly region to RegionIndex");
+            Debug.output("GeoIntersectLayer(" + getName() + "): Added poly region to RegionIndex");
         }
     }
 
@@ -505,8 +485,8 @@ public class GeoIntersectionLayer extends EditorLayer implements
             deselect(drawnList);
             doPrepare();
         } else {
-            Debug.error("GeoIntersectLayer(" + getName() + "):  received "
-                    + omg + " and " + action + " with no list ready");
+            Debug.error("GeoIntersectLayer(" + getName() + "):  received " + omg + " and " + action
+                    + " with no list ready");
         }
 
         // This is important!!
@@ -540,8 +520,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
     }
 
     public boolean isHighlightable(OMGraphic omg) {
-        return createPointCheck
-                || (drawnList != null && drawnList.contains(omg));
+        return createPointCheck || (drawnList != null && drawnList.contains(omg));
     }
 
     public String getToolTipTextFor(OMGraphic omg) {
@@ -564,8 +543,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
     }
 
     public boolean isSelectable(OMGraphic omg) {
-        return createPointCheck
-                || (drawnList != null && drawnList.contains(omg));
+        return createPointCheck || (drawnList != null && drawnList.contains(omg));
     }
 
     public void select(OMGraphicList omgl) {
@@ -606,9 +584,7 @@ public class GeoIntersectionLayer extends EditorLayer implements
                     p.inverse((int) (i + x), (int) (j + y), llHolder);
 
                     g.initialize(llHolder.getY(), llHolder.getX());
-                    boolean inGeo = Intersection.isPointInPolygon(g,
-                            rawll,
-                            false);
+                    boolean inGeo = Intersection.isPointInPolygon(g, rawll, false);
 
                     int val = 0;
                     if (inShape == inGeo) {
@@ -921,9 +897,8 @@ public class GeoIntersectionLayer extends EditorLayer implements
 
             getDrawnIntersectorList().clear();
             setShowCrossingPoints(false);
-            double[] coords = new double[] { 33.4f, -77.2f, 34f, -79.5f, 35f,
-                    -90f, 40f, -100f, 45f, -101f, 50f, -83.2f, 35f, -65.7f,
-                    -34f, -70.5f, 33.4f, -77.2f };
+            double[] coords = new double[] { 33.4f, -77.2f, 34f, -79.5f, 35f, -90f, 40f, -100f,
+                    45f, -101f, 50f, -83.2f, 35f, -65.7f, -34f, -70.5f, 33.4f, -77.2f };
 
             omg = new OMPoly(coords, OMPoly.DECIMAL_DEGREES, OMGraphic.LINETYPE_GREATCIRCLE);
             getDrawnIntersectorList().add(omg);

@@ -747,28 +747,19 @@ public class Geo implements Serializable {
      * @return ret Do not pass in a null value.
      */
     public Geo intersect(Geo q, Geo r, Geo ret) {
-        Geo gc = this.crossNormalize(q);
-        Geo rc = r.normalize();
-        double dist = gc.distance(rc);
-        if (dist > Math.PI / 2) {
-            gc = gc.antipode();
-        }
-        double az = gc.azimuth(rc);
-        dist = Intersection.pointCircleDistance(this, q, r);
-        ret = r.offset(dist, az, ret);
 
-        if (!Intersection.isOnSegment(this, q, ret)) {
-            ret = r.offset(dist, Math.PI + az, ret);
-        }
+        // There used to be code in here that broke the intersection code. It
+        // was inserted into the 5.1 code, but I can't find a record of why.
+        // Reverting to the old code that still works, at least for the test
+        // cases we have.
 
-        return ret;
+        double a = this.dot(r);
+        double b = q.dot(r);
+        double x = -b / (a - b);
+        // This still results in one Geo being allocated and lost, in the
+        // q.scale call.
+        return this.scale(x, ret).add(q.scale(1.0 - x), ret).normalize(ret);
 
-        // double a = this.dot(r);
-        // double b = q.dot(r);
-        // double x = -b / (a - b);
-        // // This still results in one Geo being allocated and lost, in the
-        // // q.scale call.
-        // return this.scale(x, ret).add(q.scale(1.0 - x), ret).normalize(ret);
     }
 
     /** alias for computeCorridor(path, radius, radians(10), true) * */

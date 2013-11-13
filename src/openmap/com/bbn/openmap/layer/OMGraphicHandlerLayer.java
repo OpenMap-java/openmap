@@ -272,6 +272,14 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     protected boolean interruptable = true;
 
     /**
+     * Flag used to let the layer know the layer worker was considered to be
+     * interrupted. The interruptible flag dictates whether the thread is
+     * actually interrupted. This flag is available to let the layer decide if
+     * work should complete when things are more stable.
+     */
+    protected boolean wrapItUp = false;
+
+    /**
      * Sets the interruptible flag
      */
     public void setInterruptable(boolean b) {
@@ -459,6 +467,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
                 if (layerWorker != null && interruptable && !layerWorker.isInterrupted()) {
                     layerWorker.interrupt();
                 }
+                wrapItUp = true;
             }
         } catch (SecurityException se) {
             logger.warning(getName()
@@ -478,6 +487,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
             layerWorker = worker;
 
             if (layerWorker != null) {
+                wrapItUp = false;
                 layerWorker.start();
             }
         }
@@ -497,6 +507,13 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      */
     protected ISwingWorker<OMGraphicList> createLayerWorker() {
         return new LayerWorker();
+    }
+
+    /**
+     * @return true if the current layer worker should finish ASAP.
+     */
+    public boolean shouldWrapItUp() {
+        return wrapItUp;
     }
 
     /**

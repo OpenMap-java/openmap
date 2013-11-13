@@ -44,6 +44,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
 import com.bbn.openmap.Environment;
@@ -53,10 +54,18 @@ public class FileUtils {
     protected static Logger logger = Logger.getLogger("com.bbn.openmap.util.FileUtils");
 
     public static String getFilePathToSaveFromUser(String title) {
-        JFileChooser chooser = getChooser(title);
-        int state = chooser.showSaveDialog(null);
-        String ret = handleResponse(chooser, state);
-        return ret;
+        OpenFileRunnable runnable = new OpenFileRunnable(title, null) {
+            public void run() {
+                JFileChooser chooser = getChooser(title);
+                if (fileFilter != null) {
+                    chooser.setFileFilter(fileFilter);
+                }
+                int state = chooser.showSaveDialog(null);
+                result = handleResponse(chooser, state);
+            }
+        };
+        runnable.invoke();
+        return runnable.getResult();
     }
 
     public static String getFilePathToOpenFromUser(String title) {
@@ -64,24 +73,73 @@ public class FileUtils {
     }
 
     public static String getFilePathToOpenFromUser(String title, FileFilter ff) {
-        JFileChooser chooser = getChooser(title);
-        if (ff != null) {
-            chooser.setFileFilter(ff);
-        }
-        int state = chooser.showOpenDialog(null);
-        String ret = handleResponse(chooser, state);
-        return ret;
+        OpenFileRunnable runnable = new OpenFileRunnable(title, ff);
+        runnable.invoke();
+        return runnable.getResult();
     }
 
-    public static String getPathToOpenFromUser(String title, FileFilter ff, int fileSelectionMode, String acceptButtonText) {
-        JFileChooser chooser = getChooser(title);
-        chooser.setFileSelectionMode(fileSelectionMode);
-        if (ff != null) {
-            chooser.setFileFilter(ff);
+    public static String getPathToOpenFromUser(String title, FileFilter ff, int fileSelectionMode,
+                                               String acceptButtonText) {
+        OpenPathRunnable runnable = new OpenPathRunnable(title, ff, fileSelectionMode, acceptButtonText);
+        runnable.invoke();
+        return runnable.getResult();
+    }
+
+    static class OpenFileRunnable implements Runnable {
+
+        String title;
+        FileFilter fileFilter;
+        String result;
+
+        OpenFileRunnable(String title, FileFilter ff) {
+            this.title = title;
+            this.fileFilter = ff;
         }
-        int state = chooser.showDialog(null, acceptButtonText);
-        String ret = handleResponse(chooser, state);
-        return ret;
+
+        public void run() {
+            JFileChooser chooser = getChooser(title);
+            if (fileFilter != null) {
+                chooser.setFileFilter(fileFilter);
+            }
+            int state = chooser.showOpenDialog(null);
+            this.result = handleResponse(chooser, state);
+        }
+
+        String getResult() {
+            return result;
+        }
+
+        void invoke() {
+            try {
+                SwingUtilities.invokeAndWait(OpenFileRunnable.this);
+            } catch (Exception e) {
+                if (logger.isLoggable(Level.FINE)) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    static class OpenPathRunnable extends OpenFileRunnable {
+
+        int fileSelectionMode;
+        String acceptButtonText;
+
+        OpenPathRunnable(String title, FileFilter ff, int fileSelectionMode, String acceptButtonText) {
+            super(title, ff);
+            this.fileSelectionMode = fileSelectionMode;
+            this.acceptButtonText = acceptButtonText;
+        }
+
+        public void run() {
+            JFileChooser chooser = getChooser(title);
+            chooser.setFileSelectionMode(fileSelectionMode);
+            if (fileFilter != null) {
+                chooser.setFileFilter(fileFilter);
+            }
+            int state = chooser.showDialog(null, acceptButtonText);
+            this.result = handleResponse(chooser, state);
+        }
     }
 
     public static JFileChooser getChooser(String title) {
@@ -124,8 +182,7 @@ public class FileUtils {
      * @param bufSize the byte size of the transfer buffer.
      * @throws IOException Thrown if anything goes wrong.
      */
-    public static void copy(File fromFile, File toFile, int bufSize)
-            throws IOException {
+    public static void copy(File fromFile, File toFile, int bufSize) throws IOException {
 
         FileInputStream fis = new FileInputStream(fromFile);
         FileOutputStream fos = new FileOutputStream(toFile);
@@ -234,7 +291,8 @@ public class FileUtils {
         } else {
 
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine(toBeZipped + ", " + toBeZipped.getAbsolutePath().substring(prefixTrimLength) + ")");
+                logger.fine(toBeZipped + ", "
+                        + toBeZipped.getAbsolutePath().substring(prefixTrimLength) + ")");
             }
 
             writeZipEntry(toBeZipped, zoStream, prefixTrimLength < 0 ? toBeZipped.getName()
@@ -247,10 +305,10 @@ public class FileUtils {
 
         entryName = entryName.replace('\\', '/');
 
-        //long size = fromFile.length();
+        // long size = fromFile.length();
         ZipEntry zEntry = new ZipEntry(entryName);
-        //zEntry.setSize(size);
-        //zEntry.setCrc(0);// Don't know what it these values are
+        // zEntry.setSize(size);
+        // zEntry.setCrc(0);// Don't know what it these values are
         // right now, but zero works...
         zoStream.putNextEntry(zEntry);
 
@@ -259,12 +317,12 @@ public class FileUtils {
         byte[] bytes = new byte[1024];
 
         int numRead;
-        //CRC32 checksum = new CRC32();
+        // CRC32 checksum = new CRC32();
         while ((numRead = fis.read(bytes)) > 0) {
             zoStream.write(bytes, 0, numRead);
-          //  checksum.update(bytes, 0, numRead);
+            // checksum.update(bytes, 0, numRead);
         }
-        //zEntry.setCrc(checksum.getValue());
+        // zEntry.setCrc(checksum.getValue());
         zoStream.closeEntry();
         fis.close();
     }
@@ -330,8 +388,7 @@ public class FileUtils {
         }
     }
 
-    protected static void unzip(ZipInputStream zin, File f)
-            throws IOException {
+    protected static void unzip(ZipInputStream zin, File f) throws IOException {
         final int BUFFER = 2048;
         FileOutputStream out = new FileOutputStream(f);
         byte[] b = new byte[BUFFER];

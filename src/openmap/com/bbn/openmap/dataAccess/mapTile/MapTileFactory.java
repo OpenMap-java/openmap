@@ -32,13 +32,13 @@ import com.bbn.openmap.proj.Projection;
 /**
  * An object that fetches tiles for a given projection. It could cache the
  * tiles, it can get them from anywhere it might want to.
- *
+ * 
  * @author dietrick
  */
 public interface MapTileFactory {
     /**
      * Create an OMGraphicList with a set of tiles on it.
-     *
+     * 
      * @param proj
      * @return OMGraphicList that was created.
      * @throws InterruptedException
@@ -48,13 +48,14 @@ public interface MapTileFactory {
     /**
      * Create an OMGraphicList that covers the projection with tiles that suit
      * the specified zoom level.
+     * 
      * @throws InterruptedException
      */
     OMGraphicList getTiles(Projection proj, int zoomLevel);
 
     /**
      * Add tiles to OMGraphicList provided that suit the given projection.
-     *
+     * 
      * @param proj
      * @param list
      * @return the OMGraphicList provided.
@@ -63,15 +64,16 @@ public interface MapTileFactory {
     OMGraphicList getTiles(Projection proj, int zoomLevel, OMGraphicList list);
 
     /**
-     * Set a component in the tile factory that should be told to repaint when
-     * new tiles become available. Using the callback assumes that you have
-     * called getTiles() with an OMGraphicList that will be rendered by the
-     * callback. Tiles added to the OMGraphicList should be generated with the
-     * projection passed in getTiles();
-     *
-     * @param callback java.awt.Component to call repaint on.
+     * Set a MapTileRequestor in the tile factory that should be told to repaint
+     * when new tiles become available, and to check with during the tile fetch
+     * whether to keep going or not. listUpdate will be called when a new tile
+     * has been added to the OMGraphicList passed in the getTiles method, and
+     * shouldContinue will be called during stable times during the getTiles
+     * fetch.
+     * 
+     * @param requestor callback MapTileRequestor to ask status questions.
      */
-    void setRepaintCallback(Component callback);
+    void setMapTileRequester(MapTileRequester requestor);
 
     /**
      * Tell the factory to clean up resources.
@@ -80,6 +82,7 @@ public interface MapTileFactory {
 
     /**
      * Get object that handles empty tiles.
+     * 
      * @return EmptyTileHandler used by the factory.
      */
     EmptyTileHandler getEmptyTileHandler();

@@ -101,6 +101,13 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     protected int scaleTransformType = AffineTransformOp.TYPE_BILINEAR;
 
     /**
+     * This lastProjection is used to keep track of the last projection used to
+     * warp or scale the image, an used during the rendering process to check if
+     * we should rework the image to be displayed.
+     */
+    protected Projection lastProjection = null;
+
+    /**
      * Construct a blank OMRaster, to be filled in with set calls.
      */
     public OMScalingRaster() {
@@ -380,8 +387,6 @@ public class OMScalingRaster extends OMRaster implements Serializable {
         return true;
     }
 
-    protected Projection lastProjection = null;
-
     /**
      * Called from within generate. Some render buffering calls generate to make
      * sure the latest projection is called on an OMGraphic before it's put into
@@ -395,8 +400,11 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      *         the image.
      */
     protected boolean updateImageForProjection(Projection proj) {
-        boolean ret = bitmap != null && proj.equals(lastProjection) && !getNeedToRegenerate();
-        lastProjection = proj.makeClone();
+        boolean projUnchanged = proj.equals(lastProjection);
+        boolean ret = bitmap != null && projUnchanged && !getNeedToRegenerate();
+        if (!projUnchanged) {
+            lastProjection = proj.makeClone();
+        }
         return !ret;
     }
 
@@ -459,8 +467,9 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
         Rectangle iRect = projRect;
         // <= 2 is limiting this intersection to regular world - small world
-        // will have multiple rects, corners  We don't want to clip the bitmap 
-        // if we have to draw it on different parts of the map window (if it wraps).
+        // will have multiple rects, corners We don't want to clip the bitmap
+        // if we have to draw it on different parts of the map window (if it
+        // wraps).
         if (corners == null || corners.size() <= 2) {
             iRect = winRect.intersection(projRect);
         }

@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.mapTile.MapTileFactory;
+import com.bbn.openmap.dataAccess.mapTile.MapTileRequester;
 import com.bbn.openmap.dataAccess.mapTile.ServerMapTileFactory;
 import com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
@@ -120,7 +121,7 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * @author dietrick
  */
-public class MapTileLayer extends OMGraphicHandlerLayer {
+public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileRequester {
 
     private static final long serialVersionUID = 1L;
 
@@ -184,6 +185,9 @@ public class MapTileLayer extends OMGraphicHandlerLayer {
         setRenderPolicy(new com.bbn.openmap.layer.policy.BufferedImageRenderPolicy(this));
         setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
         setTileFactory(new StandardMapTileFactory());
+        // We need to make this layer uninterruptable, because that messes with
+        // the image file loading.
+        setInterruptable(false);
     }
 
     public MapTileLayer(MapTileFactory tileFactory) {
@@ -333,9 +337,7 @@ public class MapTileLayer extends OMGraphicHandlerLayer {
         // keep up. It'll settle out, but it might be better to be slower and
         // less confusing to the user.
 
-        if (incrementalUpdates) {
-            tileFactory.setRepaintCallback(this);
-        }
+        tileFactory.setMapTileRequester(this);
 
         this.tileFactory = tileFactory;
     }
@@ -346,13 +348,6 @@ public class MapTileLayer extends OMGraphicHandlerLayer {
 
     public void setIncrementalUpdates(boolean incrementalUpdates) {
         this.incrementalUpdates = incrementalUpdates;
-        if (tileFactory != null) {
-            if (!incrementalUpdates) {
-                tileFactory.setRepaintCallback(null);
-            } else {
-                tileFactory.setRepaintCallback(this);
-            }
-        }
     }
 
     public int getZoomLevel() {
@@ -393,6 +388,28 @@ public class MapTileLayer extends OMGraphicHandlerLayer {
      */
     public void setAttributionAttributes(DrawingAttributes attributionAttributes) {
         this.attributionAttributes = attributionAttributes;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.bbn.openmap.dataAccess.mapTile.MapTileRequestor#shouldContinue()
+     */
+    @Override
+    public boolean shouldContinue() {
+        return !shouldWrapItUp();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.bbn.openmap.dataAccess.mapTile.MapTileRequestor#listUpdated()
+     */
+    @Override
+    public void listUpdated() {
+        if (incrementalUpdates) {
+            repaint();
+        }
     }
 
 }

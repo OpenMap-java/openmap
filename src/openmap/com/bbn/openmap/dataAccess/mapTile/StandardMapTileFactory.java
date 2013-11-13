@@ -23,7 +23,6 @@
 //**********************************************************************
 package com.bbn.openmap.dataAccess.mapTile;
 
-import java.awt.Component;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.geom.Point2D;
@@ -126,14 +125,13 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
     protected boolean verbose = false;
     protected int zoomLevelTileSize = 350;
     protected TileImagePreparer tileImagePreparer;
+
     /**
-     * A component that is painting the tiles to the screen. If this component
-     * is set on this tile factory, it will be told to repaint the OMGraphicList
-     * it provides with the current contents. If you want the map to update as
-     * tiles are created by the factory, they will pop up on the map when they
-     * are ready.
+     * If set, the MapTileRequester will be notified when the list provided in
+     * getTiles() has been updated, and asked if it should continue with the
+     * getTiles() request at opportune times, when tile fetching is stable.
      */
-    protected Component repaintCallback;
+    protected MapTileRequester mapTileRequester;
     /**
      * Flag to tell the factory to create the extra tiles off-map. Tends to
      * cause the layer to do more work than necessary, so it's not used.
@@ -150,12 +148,12 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
         verbose = logger.isLoggable(Level.FINE);
     }
 
-    public StandardMapTileFactory(Component layer, String rootDir, String tileFileExt) {
+    public StandardMapTileFactory(MapTileRequester layer, String rootDir, String tileFileExt) {
         super(100);
         setRootDir(rootDir);
         setFileExt(tileFileExt);
         verbose = logger.isLoggable(Level.FINE);
-        this.repaintCallback = layer;
+        this.mapTileRequester = layer;
     }
 
     @Override
@@ -583,10 +581,7 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
         for (int x = uvleftM; x < uvrightM; x++) {
             for (int y = uvupM; y < uvbottomM; y++) {
 
-                // Try to help doing unnecessary work
-                if (Thread.currentThread().isInterrupted()) {
-                    logger.fine("Detected interruption in standard loop, thread "
-                            + Thread.currentThread().getName());
+                if (mapTileRequester != null && !mapTileRequester.shouldContinue()) {
                     return;
                 }
 
@@ -621,7 +616,6 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
                 } else {
                     reloads.add(new LoadObj(imagePath, x, y, zoomLevel));
                 }
-
             }
         }
 
@@ -630,8 +624,8 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
                     + " others now...");
         }
 
-        if (repaintCallback != null) {
-            repaintCallback.repaint();
+        if (mapTileRequester != null) {
+            mapTileRequester.listUpdated();
         }
 
         /*
@@ -639,7 +633,17 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
          * fetched from the source.
          */
         for (LoadObj reload : reloads) {
-            handleLoad(reload.imagePath, reload.x, reload.y, reload.zoomLevel, proj, list);
+            // Check and see of we should bother fetching the new tile.
+            if (mapTileRequester != null && !mapTileRequester.shouldContinue()) {
+                return;
+            }
+
+            loadTile(reload.imagePath, reload.x, reload.y, reload.zoomLevel, proj, list);
+
+            // OK, got it, notify requester the list has been updated.
+            if (mapTileRequester != null) {
+                mapTileRequester.listUpdated();
+            }
         }
 
         if (verbose) {
@@ -683,39 +687,39 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
 
         // Get the corners
         if (top && left) {
-            handleLoad(x1, y1, zoomLevel, proj, list);
+            loadTile(x1, y1, zoomLevel, proj, list);
         }
         if (bottom && left) {
-            handleLoad(x1, y2, zoomLevel, proj, list);
+            loadTile(x1, y2, zoomLevel, proj, list);
         }
         if (bottom && right) {
-            handleLoad(x2, y2, zoomLevel, proj, list);
+            loadTile(x2, y2, zoomLevel, proj, list);
         }
         if (top && right) {
-            handleLoad(x2, y1, zoomLevel, proj, list);
+            loadTile(x2, y1, zoomLevel, proj, list);
         }
         // Now go along the sides
         if (top) {
             for (int x = uvleft; x < uvright; x++) {
-                handleLoad(x, y1, zoomLevel, proj, list);
+                loadTile(x, y1, zoomLevel, proj, list);
             }
         }
 
         if (bottom) {
             for (int x = uvleft; x < uvright; x++) {
-                handleLoad(x, y2, zoomLevel, proj, list);
+                loadTile(x, y2, zoomLevel, proj, list);
             }
         }
 
         if (right) {
             for (int y = uvup; y < uvbottom; y++) {
-                handleLoad(x2, y, zoomLevel, proj, list);
+                loadTile(x2, y, zoomLevel, proj, list);
             }
         }
 
         if (left) {
             for (int y = uvup; y < uvbottom; y++) {
-                handleLoad(x1, y, zoomLevel, proj, list);
+                loadTile(x1, y, zoomLevel, proj, list);
             }
         }
 
@@ -738,12 +742,8 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
      * @param list the OMGraphicList to add the tile to.
      * @throws InterruptedException
      */
-    private void handleLoad(String imagePath, int x, int y, int zoomLevel, Projection proj,
-                            OMGraphicList list) {
-
-        if (Thread.currentThread().isInterrupted()) {
-            return;
-        }
+    private void loadTile(String imagePath, int x, int y, int zoomLevel, Projection proj,
+                          OMGraphicList list) {
 
         CacheObject ret = load(imagePath, x, y, zoomLevel, proj);
         if (ret == null) {
@@ -764,10 +764,6 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
                 if (logger.isLoggable(Level.FINE)) {
                     raster.putAttribute(OMGraphic.TOOLTIP, imagePath);
                 }
-
-                if (repaintCallback != null) {
-                    repaintCallback.repaint();
-                }
             }
         }
     }
@@ -785,11 +781,11 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
      * @param list the OMGraphicList to add the tile to.
      * @throws InterruptedException
      */
-    private void handleLoad(int x, int y, int zoomLevel, Projection proj, OMGraphicList list) {
+    private void loadTile(int x, int y, int zoomLevel, Projection proj, OMGraphicList list) {
         // String imagePath = zoomLevelInfo.formatImageFilePath(rootDir, x, y) +
         // fileExt;
         String imagePath = buildFilePath(x, y, zoomLevel, fileExt);
-        handleLoad(imagePath, x, y, zoomLevel, proj, list);
+        loadTile(imagePath, x, y, zoomLevel, proj, list);
     }
 
     /**
@@ -944,12 +940,12 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
         return ret;
     }
 
-    public Component getRepaintCallback() {
-        return repaintCallback;
+    public MapTileRequester getMapTileRequester() {
+        return mapTileRequester;
     }
 
-    public void setRepaintCallback(Component callback) {
-        this.repaintCallback = callback;
+    public void setMapTileRequester(MapTileRequester mtRequestor) {
+        this.mapTileRequester = mtRequestor;
     }
 
     public Properties getProperties(Properties getList) {

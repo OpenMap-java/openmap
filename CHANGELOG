@@ -1,3 +1,41 @@
+2013-11-12  dietrick  <dietrick@client.wonkavision.local>
+
+	* Created the MapTileRequester interface, which lets the
+	MapTileFactory ask it whether it should keep working.  If
+	provided, the StandardMapTileFactory will use the requester as
+	tiles are fetched to determine if the tile group fetch is still
+	relevant.  The MapTileRequester interface replaces the
+	MapTileFactory repaintCallback member variable.
+
+	* Reverted the Geo.intersect method to use the former algorithm.
+	The newer algorithm was faulty and broke code.
+
+	* Updated MapTileLayer to implement the mapTile MapTileRequestor
+	interface, which also uses the new wrapItUp flag discussed below.
+	The repaintCallback repaint() calls made in the MapTileFactory
+	were moved back into this layer, using the MapTileRequester
+	notifications.
+
+	* Updated layer classes in the com.bbn.openmap.layer.test
+	package. The GeoIntersectionLayer was reformatted, and the
+	GeoTestLayer was restuctured to use more regular data.
+
+	* Added a boolean flag, wrapItUp, to the OMGraphicHandlerLayer.
+	Means something slightly different than interruptable.  WrapItUp
+	gets set to true if another SwingWorker is queued to run, due to
+	another doPrepare() call or projection change.  If interruptable
+	is set to true, the current SwingWorker is killed, and the state
+	of some things might be in flux.  If a layer is marked as
+	uninterruptable to avoid this state of flux (think loading image
+	files), the wrapItUp flag lets the layer decide when to stop
+	working if it wishes.
+
+	* Added check to OMScalingRaster for lastProjection, so a clone of
+	the projection is only made if it changes.
+
+	* Added threading to FileUtils chooser methods, so if they aren't
+	called in the event thread they will still appear.
+
 2013-08-19  dietrick  <dietrick@client.wonkavision.local>
 
 	* Added the GoogleMapTileFactory as an example of how to extend 
