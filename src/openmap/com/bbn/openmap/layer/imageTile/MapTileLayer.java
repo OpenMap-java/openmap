@@ -395,7 +395,6 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
      * 
      * @see com.bbn.openmap.dataAccess.mapTile.MapTileRequestor#shouldContinue()
      */
-    @Override
     public boolean shouldContinue() {
         return !shouldWrapItUp();
     }
@@ -405,7 +404,6 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
      * 
      * @see com.bbn.openmap.dataAccess.mapTile.MapTileRequestor#listUpdated()
      */
-    @Override
     public void listUpdated() {
         if (incrementalUpdates) {
             repaint();
