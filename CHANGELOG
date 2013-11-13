@@ -1,5 +1,7 @@
 2013-11-12  dietrick  <dietrick@client.wonkavision.local>
 
+	* Tagged OpenMap 5.0.2
+
 	* Created the MapTileRequester interface, which lets the
 	MapTileFactory ask it whether it should keep working.  If
 	provided, the StandardMapTileFactory will use the requester as
