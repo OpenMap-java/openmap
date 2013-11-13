@@ -636,7 +636,7 @@ public class CADRG extends Cylindrical implements EqualArc {
                 }
 
                 lon1 = ll1.getX();
-                lon2 = ll2.getY();
+                lon2 = ll2.getX();
 
                 // allow for crossing dateline
                 if (lon1 > lon2) {
