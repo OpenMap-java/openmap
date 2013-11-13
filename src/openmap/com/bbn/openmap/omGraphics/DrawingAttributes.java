@@ -1555,7 +1555,7 @@ public class DrawingAttributes
 
       // OK, Fill pattern next...
       fPattern = props.getProperty(realPrefix + fillPatternProperty);
-      if (fPattern != null && !fPattern.isEmpty()) {
+      if (fPattern != null && fPattern.length() != 0) {
 
          try {
 

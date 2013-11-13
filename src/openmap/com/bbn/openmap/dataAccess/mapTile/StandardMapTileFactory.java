@@ -864,7 +864,7 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
         public String buildTilePath(int x, int y, int z, String fileExt) {
             String ret = startingPath;
             if (((!patternUseChecked) || (patternUseChecked && patternsUsed))
-                    && startingPath != null && !startingPath.isEmpty()) {
+		&& startingPath != null && startingPath.length() != 0) {
                 ret = updatePath(ret, pz, Integer.toString(z));
                 ret = updatePath(ret, px, Integer.toString(x));
                 ret = updatePath(ret, py, Integer.toString(y));

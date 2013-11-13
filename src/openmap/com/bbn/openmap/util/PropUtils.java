@@ -987,7 +987,7 @@ public class PropUtils {
          String valString = value.toString().trim();
          if (def == null || (def != null && !def.toString().trim().equals(valString))) {
             // empty property strings are a pain...
-            if (!valString.isEmpty()) {
+	     if (valString.length() != 0) {
                props.put(propertyName, valString);
             }
          }
