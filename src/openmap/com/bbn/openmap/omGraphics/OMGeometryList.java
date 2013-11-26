@@ -69,7 +69,8 @@ public class OMGeometryList extends OMList<OMGeometry> implements Serializable {
     /**
      * Construct an OMGeometryList.
      */
-    public OMGeometryList() {}
+    public OMGeometryList() {
+    }
 
     /**
      * Construct an OMGeometryList with an initial capacity.
@@ -153,6 +154,10 @@ public class OMGeometryList extends OMList<OMGeometry> implements Serializable {
      * @param gr the AWT Graphics context
      */
     public void render(Graphics gr) {
+        
+        if (isVague() && !isVisible())
+            return;
+        
         Shape shp = getShape();
         if (shp != null) {
 
@@ -160,7 +165,7 @@ public class OMGeometryList extends OMList<OMGeometry> implements Serializable {
                 if (gr instanceof Graphics2D && stroke instanceof BasicStroke) {
                     ((Graphics2D) gr).setStroke(new BasicStroke(((BasicStroke) stroke).getLineWidth() + 2f));
                     setGraphicsColor(gr, mattingPaint);
-                    draw(gr);
+                    ((Graphics2D) gr).draw(shp);
                 }
             }
 
@@ -175,21 +180,12 @@ public class OMGeometryList extends OMList<OMGeometry> implements Serializable {
                 if (traverseMode == FIRST_ADDED_ON_TOP) {
                     ListIterator<OMGeometry> iterator = graphics.listIterator(graphics.size());
                     while (iterator.hasPrevious()) {
-                        OMGeometry geometry = (OMGeometry) iterator.previous();
-
-                        if (geometry.isVisible()) {
-                            renderGeometry(geometry, gr);
-                        }
-
+                        renderGeometry(iterator.previous(), gr);
                     }
                 } else {
                     ListIterator<OMGeometry> iterator = graphics.listIterator();
                     while (iterator.hasNext()) {
-                        OMGeometry geometry = (OMGeometry) iterator.next();
-
-                        if (geometry.isVisible()) {
-                            renderGeometry(geometry, gr);
-                        }
+                        renderGeometry(iterator.next(), gr);
                     }
                 }
             }
@@ -199,18 +195,26 @@ public class OMGeometryList extends OMList<OMGeometry> implements Serializable {
     }
 
     protected void renderGeometry(OMGeometry geometry, Graphics gr) {
-        if (matted) {
-            if (gr instanceof Graphics2D && stroke instanceof BasicStroke) {
-                ((Graphics2D) gr).setStroke(new BasicStroke(((BasicStroke) stroke).getLineWidth() + 2f));
-                setGraphicsColor(gr, mattingPaint);
-                geometry.draw(gr);
-            }
-        }
 
-        setGraphicsForFill(gr);
-        geometry.fill(gr);
-        setGraphicsForEdge(gr);
-        geometry.draw(gr);
+        Shape shp = geometry.getShape();
+
+        boolean isRenderable = !geometry.getNeedToRegenerate() && geometry.isVisible()
+                && shp != null;
+
+        if (isRenderable) {
+            if (matted) {
+                if (gr instanceof Graphics2D && stroke instanceof BasicStroke) {
+                    ((Graphics2D) gr).setStroke(new BasicStroke(((BasicStroke) stroke).getLineWidth() + 2f));
+                    setGraphicsColor(gr, mattingPaint);
+                    draw(gr, shp);
+                }
+            }
+
+            setGraphicsForFill(gr);
+            fill(gr, shp);
+            setGraphicsForEdge(gr);
+            draw(gr, shp);
+        }
     }
 
     /**
@@ -223,6 +227,7 @@ public class OMGeometryList extends OMList<OMGeometry> implements Serializable {
      * @param gr the AWT Graphics context
      */
     public void renderAllAsSelected(Graphics gr) {
+        Shape shape = getShape();
         if (shape != null) {
 
             setGraphicsForFill(gr);
@@ -249,57 +254,80 @@ public class OMGeometryList extends OMList<OMGeometry> implements Serializable {
      */
     public boolean generate(Projection p, boolean forceProjectAll) {
 
-        // Important! Resets the shape.
-        shape = null;
+        setNeedToRegenerate(true);
+
+        GeneralPath projectedShape = null;
+
         synchronized (graphics) {
 
             if (traverseMode == FIRST_ADDED_ON_TOP) {
                 ListIterator<OMGeometry> iterator = graphics.listIterator(size());
                 while (iterator.hasPrevious()) {
-                    updateShape((OMGeometry) iterator.previous(),
-                            p,
-                            forceProjectAll);
+                    projectedShape = updateShape(projectedShape, (OMGeometry) iterator.previous(), p, forceProjectAll);
                 }
             } else {
                 ListIterator<OMGeometry> iterator = graphics.listIterator();
                 while (iterator.hasNext()) {
-                    updateShape((OMGeometry) iterator.next(),
-                            p,
-                            forceProjectAll);
+                    projectedShape = updateShape(projectedShape, (OMGeometry) iterator.next(), p, forceProjectAll);
                 }
             }
         }
+
+        setShape(projectedShape);
         setNeedToRegenerate(false);
-        
-        return shape != null;
+
+        return projectedShape != null;
     }
 
     /**
      * Given a OMGeometry, it calls generate/regenerate on it, and then adds the
-     * GeneralPath shape within it to the OMGeometryList shape object.
+     * GeneralPath shape within it to the OMGeometryList shape object. Calls
+     * setShape() with the new current shape, which is a synchronized method.
+     * 
+     * @param geometry the geometry to append
+     * @param p the current projection
+     * @param forceProject flag to force re-generation
+     * @deprecated use the new paradigm from the other updateShape
      */
-    protected void updateShape(OMGeometry geometry, Projection p,
-                               boolean forceProject) {
-
-        if (forceProject) {
-            geometry.generate(p);
-        } else {
-            geometry.regenerate(p);
-        }
+    protected void updateShape(OMGeometry geometry, Projection p, boolean forceProject) {
 
         if (geometry.isVisible()) {
-            GeneralPath gp = (GeneralPath) geometry.getShape();
-
-            if (gp == null) {
-                return;
-            }
-
-            if (shape == null) {
-                setShape(gp);
+            if (forceProject) {
+                geometry.generate(p);
             } else {
-                ((GeneralPath) shape).append(gp, connectParts);
+                geometry.regenerate(p);
             }
+
+            setShape(appendShapeEdge(getShape(), geometry.getShape(), connectParts));
         }
+    }
+
+    /**
+     * Given an OMGeometry, check its visibility and if visible, generate it if
+     * required and add the result to the provided current shape. Does not call
+     * setShape().
+     * 
+     * @param currentShape the current shape
+     * @param geometry the geometry to test
+     * @param p the current projection
+     * @param forceProject flag to force regeneration
+     * @return the newly combined shape.
+     */
+    protected GeneralPath updateShape(GeneralPath currentShape, OMGeometry geometry, Projection p,
+                                      boolean forceProject) {
+
+        GeneralPath newShapePart = null;
+        if (geometry != null && geometry.isVisible()) {
+            if (forceProject) {
+                geometry.generate(p);
+            } else {
+                geometry.regenerate(p);
+            }
+
+            newShapePart = geometry.getShape();
+        }
+
+        return appendShapeEdge(currentShape, newShapePart, connectParts);
     }
 
     /**

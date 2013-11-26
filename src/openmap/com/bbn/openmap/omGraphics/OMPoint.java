@@ -229,13 +229,15 @@ public class OMPoint
     }
 
     /**
-     * Prepare the rectangle for rendering.
+     * Prepare the point for rendering.
      * 
      * @param proj Projection
      * @return true if generate was successful
      */
     public boolean generate(Projection proj) {
-        setShape(null);
+
+        setNeedToRegenerate(true);
+
         if (proj == null) {
             Debug.message("omgraphic", "OMPoint: null projection in generate!");
             return false;
@@ -376,7 +378,7 @@ public class OMPoint
         }
 
         /**
-         * Prepare the rectangle for rendering.
+         * Prepare the point image for rendering.
          * 
          * @param proj Projection
          * @return true if generate was successful
@@ -386,9 +388,9 @@ public class OMPoint
                 return super.generate(proj);
             }
 
-            setShape(null);
             if (proj == null) {
                 Debug.message("omgraphic", "OMPoint: null projection in generate!");
+                setNeedToRegenerate(true);
                 return false;
             }
 
@@ -435,7 +437,7 @@ public class OMPoint
          * @see com.bbn.openmap.omGraphics.OMGraphic#render(java.awt.Graphics)
          */
         public void render(Graphics g) {
-            if (!isRenderable())
+            if (!isRenderable(getShape()))
                 return;
 
             if (isUseImage()) {

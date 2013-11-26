@@ -326,7 +326,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
             }
         }
 
-        this.shape = null;
+        setShape(null);
 
         // Position sets the position for the OMRaster!!!!
         if (!position(proj)) {
@@ -368,17 +368,15 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                 setShape(createBoxShape(point1.x, point1.y, w, h));
             } else {
                 int numRects = corners.size();
+                GeneralPath projectedShape = null;
                 for (int i = 0; i < numRects; i += 2) {
                     GeneralPath gp = createShape(corners.get(i), corners.get(i + 1), true);
 
-                    if (shape == null) {
-                        setShape(gp);
-                    } else {
-                        ((GeneralPath) shape).append(gp, false);
-                    }
+                    projectedShape = appendShapeEdge(projectedShape, gp, false);
                 }
+                setShape(projectedShape);
             }
-
+            
             setNeedToRegenerate(false);
         } else {
             // Make the label go away if it is off-screen.

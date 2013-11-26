@@ -669,18 +669,17 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      * @return true if generate was successful
      */
     public boolean generate(Projection proj) {
-        setShape(null);
         polarShapeLine = null;
         correctFill = false;
+
+        setNeedToRegenerate(true);
 
         if (proj == null) {
             Debug.message("omgraphic", "OMArc: null projection in generate!");
             return false;
         }
 
-        GeneralPath gp, gp1, gp2;
-        PathIterator pi;
-        AffineTransform af = null;
+        GeneralPath projectedShape = null;
 
         switch (renderType) {
         case RENDERTYPE_OFFSET:
@@ -689,15 +688,8 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
                 return false;
             }
 
-            Point2D p1 = new Point2D.Double();
-            // if (proj instanceof GeoProj) {
-            // ((GeoProj) proj).forward(center.getRadLat(),
-            // center.getRadLon(),
-            // p1,
-            // true);
-            // } else {
-            p1 = proj.forward(center, p1);
-            // }
+            Point2D p1 = proj.forward(center, new Point2D.Double());
+
             x1 = p1.getX() + off_x;
             y1 = p1.getY() + off_y;
             // Fall through...
@@ -707,21 +699,20 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
 
             Shape arcShape = createArcShape(x, y, width, height);
 
+            AffineTransform af = null;
             if (rotationAngle != DEFAULT_ROTATIONANGLE) {
                 af = new AffineTransform();
                 af.rotate(rotationAngle, x1, y1);
             }
-            pi = arcShape.getPathIterator(af);
-            gp = new GeneralPath();
-            gp.append(pi, false);
-            // In X/Y or Offset RenderType, there is only one shape.
-            setShape(gp);
+            PathIterator pi = arcShape.getPathIterator(af);
+            projectedShape = new GeneralPath();
+            projectedShape.append(pi, false);
 
             break;
 
         case RENDERTYPE_LATLON:
 
-            GeneralPath tempShape = null;
+            GeneralPath specialCaseShape = null;
 
             if (proj instanceof GeoProj) {
 
@@ -739,16 +730,12 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
                     float[] xpoints = (float[]) coordLists.get(i);
                     float[] ypoints = (float[]) coordLists.get(i + 1);
 
-                    gp = createShape(xpoints, ypoints, (arcType != Arc2D.OPEN || (arcType == Arc2D.OPEN && !isClear(fillPaint))));
+                    GeneralPath gp = createShape(xpoints, ypoints, (arcType != Arc2D.OPEN || (arcType == Arc2D.OPEN && !isClear(fillPaint))));
 
-                    if (shape == null) {
-                        setShape(gp);
-                    } else {
-                        ((GeneralPath) shape).append(gp, false);
-                    }
+                    projectedShape = appendShapeEdge(projectedShape, gp, false);
 
                     correctFill = proj instanceof Cylindrical
-                            && ((shouldCenterBeInShape() && shape != null && !shape.contains(x1, y1)) || correctPolar);
+                            && ((shouldCenterBeInShape() && projectedShape != null && !projectedShape.contains(x1, y1)) || correctPolar);
 
                     if (correctFill) {
                         float[][] alts = doPolarFillCorrection(xpoints, ypoints, (llCenter.getRadLat() > 0f) ? -1
@@ -756,27 +743,28 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
 
                         int gp2length = alts[0].length - 2;
 
-                        gp1 = createShape(alts[0], alts[1], true);
-                        gp2 = createShape(alts[0], alts[1], 0, gp2length, false);
+                        GeneralPath gp1 = createShape(alts[0], alts[1], true);
+                        GeneralPath gp2 = createShape(alts[0], alts[1], 0, gp2length, false);
 
-                        if (tempShape == null || polarShapeLine == null) {
-                            tempShape = gp1;
+                        if (specialCaseShape == null || polarShapeLine == null) {
+                            specialCaseShape = gp1;
                             polarShapeLine = gp2;
                         } else {
-                            tempShape.append(gp1, false);
+                            specialCaseShape.append(gp1, false);
                             polarShapeLine.append(gp2, false);
                         }
                     }
                 }
+
             } else {
                 double degRadius = Math.toDegrees(radius);
                 // Create shape for non-GeoProj in lat/lon space...
-                tempShape = new GeneralPath(proj.forwardShape(new Arc2D.Double(center.getX()
+                specialCaseShape = new GeneralPath(proj.forwardShape(new Arc2D.Double(center.getX()
                         - degRadius, center.getY() - degRadius, 2 * degRadius, 2 * degRadius, start, extent, arcType)));
             }
 
-            if (tempShape != null) {
-                setShape(tempShape);
+            if (specialCaseShape != null) {
+                projectedShape = specialCaseShape;
             }
 
             break;
@@ -784,6 +772,9 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
             System.err.println("OMArc.generate(): invalid RenderType");
             return false;
         }
+
+        setShape(projectedShape);
+
         setNeedToRegenerate(false);
         return true;
     }
@@ -857,13 +848,17 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
      */
     public void render(Graphics g) {
 
-        if (!isRenderable())
-            return;
-
         if (!correctFill) {
             // super will catch a null shape...
             super.render(g);
         } else {
+
+            Shape s = getShape();
+
+            if (!isRenderable(s)) {
+                return;
+            }
+
             // The polarShapeLine will be there only if a shape was
             // generated.
             // This is getting kicked off because the arc is
@@ -871,11 +866,11 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
             // differently.
             if (shouldRenderFill()) {
                 setGraphicsForFill(g);
-                fill(g);
+                fill(g, s);
                 // draw texture
                 if (textureMask != null && textureMask != fillPaint) {
                     setGraphicsColor(g, textureMask);
-                    fill(g);
+                    fill(g, s);
                 }
             }
 

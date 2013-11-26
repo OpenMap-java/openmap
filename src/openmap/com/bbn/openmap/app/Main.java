@@ -25,6 +25,8 @@ package com.bbn.openmap.app;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import javax.swing.UIManager;
+
 import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.gui.OverlayMapPanel;
 import com.bbn.openmap.util.ArgParser;
@@ -36,8 +38,7 @@ import com.bbn.openmap.util.Debug;
  * the BasicMapPanel. The property prefix used for the properties is "main", so
  * this application is configured based on the main.components property list.
  */
-public class Main
-        extends OpenMap {
+public class Main extends OpenMap {
 
     /**
      * Create a new OpenMap framework object - creates a MapPanel, OpenMapFrame,
@@ -79,8 +80,7 @@ public class Main
         PropertyHandler propertyHandler = null;
 
         try {
-            PropertyHandler.Builder builder =
-                    new PropertyHandler.Builder().setPropertiesFile(propertiesFile).setPropertyPrefix("main");
+            PropertyHandler.Builder builder = new PropertyHandler.Builder().setPropertiesFile(propertiesFile).setPropertyPrefix("main");
             propertyHandler = new PropertyHandler(builder);
         } catch (MalformedURLException murle) {
             Debug.error(murle.getMessage());
@@ -127,9 +127,7 @@ public class Main
 
         ArgParser ap = new ArgParser("Main");
         String propArgs = null;
-        ap.add("properties",
-               "A resource, file path or URL to properties file\n Ex: http://myhost.com/xyz.props or file:/myhome/abc.pro\n See Java Documentation for java.net.URL class for more details",
-               1);
+        ap.add("properties", "A resource, file path or URL to properties file\n Ex: http://myhost.com/xyz.props or file:/myhome/abc.pro\n See Java Documentation for java.net.URL class for more details", 1);
 
         ap.parse(args);
 

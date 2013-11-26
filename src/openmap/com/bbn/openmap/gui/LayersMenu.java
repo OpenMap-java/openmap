@@ -56,8 +56,7 @@ import com.bbn.openmap.util.Debug;
  * will be added, but if more than one per type is added, the last one added to
  * be BeanContext will be the one hooked up to this LayersMenu.
  */
-public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
-        LayerListener {
+public class LayersMenu extends AbstractOpenMapMenu implements Serializable, LayerListener {
 
     /**
      * Static value to set this menu to control layer visibility.
@@ -120,7 +119,7 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
         super();
         this.menuType = menuType;
         setText(menuName);
-//        setMnemonic('L');// HMMMM
+        // setMnemonic('L');// HMMMM
 
         layerHandler = lHandler;
 
@@ -313,10 +312,14 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
     /**
      * CheckBoxMenuItem that encapsulates a Layer.
      */
-    class LayerCheckBoxMenuItem extends JCheckBoxMenuItem implements
-            ActionListener, ComponentListener {
+    class LayerCheckBoxMenuItem extends JCheckBoxMenuItem implements ActionListener,
+            ComponentListener {
         /** The layer that the button triggers. */
         Layer layer;
+        /**
+         * Let's be safe 
+         */
+        Object LAYER_LOCK = new Object();
 
         /**
          * Construct the menu item, connected to the given layer.
@@ -325,7 +328,9 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
             if (aLayer == null) {
                 throw new IllegalArgumentException("null Layer");
             }
-            layer = aLayer;
+            synchronized (LAYER_LOCK) {
+                layer = aLayer;
+            }
             this.setText(layer.getName());
             setState(layer.isVisible());
 
@@ -335,7 +340,9 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
 
         /** Get the layer for this checkbox. */
         public Layer getLayer() {
-            return layer;
+            synchronized (LAYER_LOCK) {
+                return layer;
+            }
         }
 
         /**
@@ -343,9 +350,14 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
          * references.
          */
         public void cleanup() {
-            layer.removeComponentListener(this);
             this.removeActionListener(this);
-            layer = null;
+            if (layer != null) {
+                layer.removeComponentListener(this);
+            }
+
+            synchronized (LAYER_LOCK) {
+                layer = null;
+            }
         }
 
         /**
@@ -353,7 +365,10 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
          * layer's palette.
          */
         protected void showPalette() {
-            layer.showPalette();
+        	Layer layer = getLayer();
+            if (layer != null) {
+                layer.showPalette();
+            }
         }
 
         /**
@@ -361,31 +376,38 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
          * layer's palette.
          */
         protected void hidePalette() {
-            layer.hidePalette();
+        	Layer layer = getLayer();
+            if (layer != null) {
+                layer.hidePalette();
+            }
         }
 
         /** This menu item listens to the status of its layer. */
-        public void componentResized(ComponentEvent e) {}
+        public void componentResized(ComponentEvent e) {
+        }
 
         /** This menu item listens to the status of its layer. */
-        public void componentMoved(ComponentEvent e) {}
+        public void componentMoved(ComponentEvent e) {
+        }
 
         /**
          * This menu item listens to the status of its layer. If the layer
          * becomes visible, it makes the check box enabled.
          */
         public void componentShown(ComponentEvent e) {
-            if (e.getComponent() == layer) {
-                if (getState() != true && menuType == LAYERS_ON_OFF) {
-                    setState(true);
-                    if (Debug.debugging("layersmenu")) {
-                        Debug.output("layersmenu.LCBMI: layer "
-                                + layer.getName() + " is now visible.");
+            Layer layer = getLayer();
+            if (layer != null) {
+                if (e.getComponent() == layer) {
+                    if (getState() != true && menuType == LAYERS_ON_OFF) {
+                        setState(true);
+                        if (Debug.debugging("layersmenu")) {
+                            Debug.output("layersmenu.LCBMI: layer " + layer.getName()
+                                    + " is now visible.");
+                        }
                     }
+                } else if (e.getComponent() == layer.getPalette() && menuType == PALETTES_ON_OFF) {
+                    setState(true);
                 }
-            } else if (e.getComponent() == layer.getPalette()
-                    && menuType == PALETTES_ON_OFF) {
-                setState(true);
             }
         }
 
@@ -394,17 +416,19 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
          * becomes invisible, it disables the check box.
          */
         public void componentHidden(ComponentEvent e) {
-            if (e.getComponent() == layer) {
-                if (getState() != false && menuType == LAYERS_ON_OFF) {
-                    setState(false);
-                    if (Debug.debugging("layersmenu")) {
-                        Debug.output("layersmenu.LCBMI: layer "
-                                + layer.getName() + " is now hidden.");
+            Layer layer = getLayer();
+            if (layer != null) {
+                if (e.getComponent() == layer) {
+                    if (getState() != false && menuType == LAYERS_ON_OFF) {
+                        setState(false);
+                        if (Debug.debugging("layersmenu")) {
+                            Debug.output("layersmenu.LCBMI: layer " + layer.getName()
+                                    + " is now hidden.");
+                        }
                     }
+                } else if (e.getComponent() == layer.getPalette() && menuType == PALETTES_ON_OFF) {
+                    setState(false);
                 }
-            } else if (e.getComponent() == layer.getPalette()
-                    && menuType == PALETTES_ON_OFF) {
-                setState(false);
             }
         }
 
@@ -420,7 +444,7 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
             }
             switch (menuType) {
             case LAYERS_ON_OFF:
-                layerHandler.turnLayerOn(getState(), layer);
+                layerHandler.turnLayerOn(getState(), getLayer());
                 break;
             case PALETTES_ON_OFF:
                 if (getState())
@@ -442,9 +466,7 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
      */
     public void setupEditLayersButton(LayersPanel lp) {
         // initialize the Edit Layers... button.
-        JMenuItem button = new JMenuItem(i18n.get(LayersMenu.class,
-                "editLayersButtonTitle",
-                editLayersButtonTitle));
+        JMenuItem button = new JMenuItem(i18n.get(LayersMenu.class, "editLayersButtonTitle", editLayersButtonTitle));
         button.setActionCommand("edit");
         button.addActionListener(lp.getActionListener());
         setEdit(button);
@@ -457,9 +479,7 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
     public void setupLayerAddButton(final LayerAddPanel menu) {
         final LayerAddPanel lap = menu;
         // JMenuItem button = new JMenuItem(addLayersButtonTitle);
-        JMenuItem button = new JMenuItem(i18n.get(LayersMenu.class,
-                "addLayersButtonTitle",
-                addLayersButtonTitle));
+        JMenuItem button = new JMenuItem(i18n.get(LayersMenu.class, "addLayersButtonTitle", addLayersButtonTitle));
         button.setActionCommand("add");
         button.addActionListener(lap);
         setAdd(button);
@@ -507,14 +527,12 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
             // Need to check to see if this layerhandler is the
             // same as the one we have !!!!
             if (lh != getLayerHandler()) {
-                Debug.message("bc",
-                        "LayersMenu asked to remove LayerHandler that is not the same as what is currently held - ignoring request.");
+                Debug.message("bc", "LayersMenu asked to remove LayerHandler that is not the same as what is currently held - ignoring request.");
                 return;
             }
 
             // do the initializing that need to be done here
-            Debug.message("bc",
-                    "LayersMenu.childrenRemoved: removing LayerHandler");
+            Debug.message("bc", "LayersMenu.childrenRemoved: removing LayerHandler");
             setLayerHandler(null);
             setEdit(null);
         }
@@ -530,13 +548,11 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable,
             // like we need to maintain a handle on the
             // LayersPanel being triggered.
             if (lp != getLayersPanel()) {
-                Debug.message("bc",
-                        "LayersMenu asked to remove LayersPanel that is not the same as what is currently held - ignoring request.");
+                Debug.message("bc", "LayersMenu asked to remove LayersPanel that is not the same as what is currently held - ignoring request.");
                 return;
             }
             // do the initializing that need to be done here
-            Debug.message("bc",
-                    "LayersMenu.childrenRemoved: removing LayersPanel");
+            Debug.message("bc", "LayersMenu.childrenRemoved: removing LayersPanel");
             setLayersPanel(null);
             setEdit(null);
         }

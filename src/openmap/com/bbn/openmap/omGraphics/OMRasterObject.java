@@ -27,6 +27,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AreaAveragingScaleFilter;
@@ -295,8 +296,9 @@ public abstract class OMRasterObject
       int w = width;
       int h = height;
 
-      if (shape != null) {
-         java.awt.Rectangle rect = shape.getBounds();
+      Shape projectedShape = getShape();
+      if (projectedShape != null) {
+         java.awt.Rectangle rect = projectedShape.getBounds();
          w = (int) rect.getWidth();
          h = (int) rect.getHeight();
       }

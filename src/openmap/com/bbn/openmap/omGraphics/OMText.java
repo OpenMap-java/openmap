@@ -782,9 +782,12 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * @see #pt
      */
     public synchronized boolean generate(Projection proj) {
-        // HACK synchronized because of various race conditions that
-        // need to
-        // be sorted out.
+        /*
+         * HACK synchronized because of various race conditions that need to be
+         * sorted out.
+         */
+
+        setNeedToRegenerate(true);
 
         if (proj == null) {
             Debug.message("omgraphic", "OMText: null projection in generate!");
@@ -794,15 +797,13 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
         // flush the cached information about the bounding box.
         polyBounds = null;
 
-        // Although it most definitely has bounds, OMText is
-        // considered a
-        // point object by the projection code. We need to check to
-        // make
-        // sure the point is plot-able: if not then don't display it.
-        // This
-        // might occur, for instance, if we're using the Orthographic
-        // and the
-        // point is on the other side of the world.
+        /*
+         * Although it most definitely has bounds, OMText is considered a point
+         * object by the projection code. We need to check to make sure the
+         * point is plot-able: if not then don't display it. This might occur,
+         * for instance, if we're using the Orthographic and the point is on the
+         * other side of the world.
+         */
         switch (renderType) {
         case RENDERTYPE_XY:
             pt = point;
@@ -1026,10 +1027,11 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     public synchronized void render(Graphics g) {
         // copy the graphic, so our transform doesn't cascade to
         // others...
-        g = g.create();
 
         if (getNeedToRegenerate() || pt == null || !isVisible())
             return;
+
+        g = g.create();
 
         g.setFont(getFont());
         setGraphicsForEdge(g);
@@ -1044,23 +1046,27 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
         // for that rotation. Don't need to rotate the Graphics for
         // the shape.
 
-        if (shouldRenderFill()) {
-            setGraphicsForFill(g);
-            fill(g);
+        Shape s = getShape();
 
-            if (textureMask != null && textureMask != fillPaint) {
-                setGraphicsColor(g, textureMask);
-                fill(g);
-            }
-        }
+        if (isRenderable(s)) {
+            if (shouldRenderFill()) {
+                setGraphicsForFill(g);
+                fill(g, s);
 
-        if (isMatted()) {
-            if (isSelected()) {
-                setGraphicsColor(g, getSelectPaint());
-            } else {
-                setGraphicsColor(g, getMattingPaint());
+                if (textureMask != null && textureMask != fillPaint) {
+                    setGraphicsColor(g, textureMask);
+                    fill(g, s);
+                }
             }
-            draw(g);
+
+            if (isMatted()) {
+                if (isSelected()) {
+                    setGraphicsColor(g, getSelectPaint());
+                } else {
+                    setGraphicsColor(g, getMattingPaint());
+                }
+                draw(g, s);
+            }
         }
 
         // to use later to unset the transform, if used.
@@ -1255,10 +1261,13 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
             }
 
             if (polyBounds != null) {
+
+                GeneralPath projectedShape = null;
+
                 if (useMaxWidthForBounds) {
-                    setShape(new GeneralPath(polyBounds.getBounds()));
+                    projectedShape = new GeneralPath(polyBounds.getBounds());
                 } else {
-                    setShape(new GeneralPath(polyBounds));
+                    projectedShape = new GeneralPath(polyBounds);
                 }
 
                 // Make sure the shape takes into account the current
@@ -1285,11 +1294,13 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
                     AffineTransform at = new AffineTransform();
                     at.rotate(rotationAngle, rx + woffset, pt.getY());
-                    PathIterator pi = shape.getPathIterator(at);
+                    PathIterator pi = projectedShape.getPathIterator(at);
                     GeneralPath gp = new GeneralPath();
                     gp.append(pi, false);
-                    setShape(gp);
+                    // Replace shape with rotated version
+                    projectedShape = gp;
                 }
+                setShape(projectedShape);
             }
 
         } else {
@@ -1339,7 +1350,8 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     /**
      * Get the pixel width of the longest line.
      * 
-     * @return pixels, returns null if the widths haven't been calculated yet, zero minimum if they have.
+     * @return pixels, returns null if the widths haven't been calculated yet,
+     *         zero minimum if they have.
      */
     public Integer getMaxLineWidth() {
         if (widths != null) {

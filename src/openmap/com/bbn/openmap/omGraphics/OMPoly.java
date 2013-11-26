@@ -27,6 +27,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Point;
+import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.io.Serializable;
@@ -585,8 +586,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * @return true if generate was successful
      */
     public boolean generate(Projection proj) {
-        int i, j, npts;
-        setShape(null);
+
         setNeedToRegenerate(true);
 
         if (proj == null) {
@@ -605,6 +605,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
         case RENDERTYPE_XY:
             if (xs == null) {
                 Debug.message("omgraphic", "OMPoly x/y rendertype null coordinates");
+                setNeedToRegenerate(true);                
                 return false;
             }
 
@@ -615,7 +616,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
             // xpoints/ypoints.
             float[] xfs = new float[xs.length];
             float[] yfs = new float[ys.length];
-            for (i = 0; i < xs.length; i++) {
+            for (int i = 0; i < xs.length; i++) {
                 xfs[i] = xs[i];
                 yfs[i] = ys[i];
             }
@@ -628,10 +629,11 @@ public class OMPoly extends OMAbstractLine implements Serializable {
         case RENDERTYPE_OFFSET:
             if (xs == null) {
                 Debug.message("omgraphic", "OMPoly offset rendertype null coordinates");
+                setNeedToRegenerate(true);
                 return false;
             }
 
-            npts = xs.length;
+            int npts = xs.length;
             float[] _x = new float[npts];
             float[] _y = new float[npts];
 
@@ -644,7 +646,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
             }
 
             if (coordMode == COORDMODE_ORIGIN) {
-                for (i = 0; i < npts; i++) {
+                for (int i = 0; i < npts; i++) {
                     _x[i] = xs[i] + origin.x;
                     _y[i] = ys[i] + origin.y;
                 }
@@ -652,7 +654,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                 _x[0] = xs[0] + origin.x;
                 _y[0] = ys[0] + origin.y;
 
-                for (i = 1; i < npts; i++) {
+                for (int i = 1; i < npts; i++) {
                     _x[i] = xs[i] + _x[i - 1];
                     _y[i] = ys[i] + _y[i - 1];
                 }
@@ -688,7 +690,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
             xpoints = new float[(int) (size / 2)][0];
             ypoints = new float[xpoints.length][0];
 
-            for (i = 0, j = 0; i < size; i += 2, j++) {
+            for (int i = 0, j = 0; i < size; i += 2, j++) {
                 xpoints[j] = vector.get(i);
                 ypoints[j] = vector.get(i + 1);
             }
@@ -713,6 +715,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
 
         case RENDERTYPE_UNKNOWN:
             Debug.error("OMPoly.generate: invalid RenderType");
+            setNeedToRegenerate(true);
             return false;
         }
 
@@ -721,7 +724,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
         }
 
         setNeedToRegenerate(false);
-        createShape();
+        setShape(createShape());
         return true;
     }
 
@@ -752,7 +755,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * @param g java.awt.Graphics to paint the poly onto.
      */
     public void render(Graphics g) {
-        if (shape != null) {
+        
+        if (getShape() != null) {
             super.render(g);
 
             if (arrowhead != null) {
@@ -815,12 +819,10 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                             }
                         }
                         ((Graphics2D) g).fill(polyGon);
-                        // g.fillPolygon(_x, _y, _x.length);
 
                         if (tm != null && tm != fillPaint) {
                             setGraphicsColor(g, tm);
                             ((Graphics2D) g).fill(polyGon);
-                            // g.fillPolygon(_x, _y, _x.length);
                         }
                     }
 
@@ -840,13 +842,10 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                                     }
                                 }
                                 ((Graphics2D) g).draw(polyLine);
-                                // g.drawPolyline(_x, _y, _x.length);
                             }
                         }
 
                         setGraphicsForEdge(g);
-                        // for some reason, this used to be
-                        // drawPolygon
                         GeneralPath polyGon = new GeneralPath();
                         for (int j = 0; j < _x.length; j++) {
                             if (j == 0) {
@@ -856,7 +855,6 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                             }
                         }
                         ((Graphics2D) g).draw(polyGon);
-                        // g.drawPolygon(_x, _y, _x.length);
                     }
                 }
 
@@ -882,7 +880,6 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                                 }
                             }
                             ((Graphics2D) g).draw(polyLine);
-                            // g.drawPolyline(_x, _y, _x.length);
                         }
                     }
 
@@ -897,7 +894,6 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                         }
                     }
                     ((Graphics2D) g).draw(polyLine);
-                    // g.drawPolyline(_x, _y, _x.length);
 
                     if (arrowhead != null) {
                         arrowhead.render(g);
@@ -925,6 +921,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * @return the distance of the object to the location given.
      */
     public float distance(double x, double y) {
+        Shape shape = getShape();
         if (shape != null) {
             return super.distance(x, y);
         }
@@ -976,10 +973,12 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      *         internal representation.
      */
     public GeneralPath getShape() {
+        GeneralPath shape = super.getShape();
         if (shape == null) {
             // Since polygons have the option of not creating shape
             // objects, should create one if asked.
-            createShape();
+            shape = createShape();
+            setShape(shape);
         }
         return shape;
     }
@@ -988,10 +987,12 @@ public class OMPoly extends OMAbstractLine implements Serializable {
      * Since OMPoly has the option to not create a Shape, this method is here to
      * create it if it is asked for. The OMPoly needs to be generated.
      */
-    protected void createShape() {
+    protected GeneralPath createShape() {
+
+        GeneralPath shape = null;
 
         if (getNeedToRegenerate() || !checkPoints(xpoints, ypoints)) {
-            return;
+            return shape;
         }
 
         initLabelingDuringGenerate();
@@ -1000,7 +1001,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
 
         case RENDERTYPE_XY:
         case RENDERTYPE_OFFSET:
-            setShape(createShape(xpoints[0], ypoints[0], isPolygon));
+            shape = createShape(xpoints[0], ypoints[0], isPolygon);
             break;
         case RENDERTYPE_LATLON:
             int size = xpoints.length;
@@ -1008,11 +1009,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
             for (int i = 0; i < size; i++) {
                 GeneralPath gp = createShape(xpoints[i], ypoints[i], isPolygon);
 
-                if (shape == null) {
-                    setShape(gp);
-                } else {
-                    ((GeneralPath) shape).append(gp, false);
-                }
+                shape = appendShapeEdge(shape, gp, false);
             }
 
             break;
@@ -1021,6 +1018,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
         }
 
         setLabelLocation(xpoints[0], ypoints[0]);
+        return shape;
     }
 
     protected boolean geometryClosed = false;

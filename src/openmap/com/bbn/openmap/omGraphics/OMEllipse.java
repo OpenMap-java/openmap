@@ -234,8 +234,8 @@ public class OMEllipse extends OMCircle {
         if (renderType == RENDERTYPE_XY || renderType == RENDERTYPE_OFFSET) {
             return super.generate(proj); // generate using circle's generate
         }
-        // RENDERTYPE_LATLON should go in here
-        setShape(null);
+        
+        setNeedToRegenerate(true);        
 
         if (proj == null) {
             Debug.message("omgraphic",
@@ -258,19 +258,17 @@ public class OMEllipse extends OMCircle {
                     true);
 
             int size = vector.size();
-
+            GeneralPath projectedShape = null;
             // We could call create shape, but this is more efficient.
             for (int i = 0; i < size; i += 2) {
                 GeneralPath gp = createShape(vector.get(i),
                         vector.get(i + 1),
                         true);
 
-                if (shape == null) {
-                    setShape(gp);
-                } else {
-                    ((GeneralPath) shape).append(gp, false);
-                }
+                projectedShape = appendShapeEdge(projectedShape, gp, false);
             }
+            
+            setShape(projectedShape);
         } else {
             // Create an ellipse in projected space using java2d
             Ellipse2D ellipse = new Ellipse2D.Float((float) center.getX(), (float) center.getY(), (float) majorAxisSpan, (float) minorAxisSpan);

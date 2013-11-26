@@ -25,6 +25,7 @@ package com.bbn.openmap.omGraphics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 
 import com.bbn.openmap.omGraphics.awt.Revertable;
@@ -139,8 +140,9 @@ public class OMDecoratedSpline
             return;
         }
 
-        if (shape != null) {
-            decorator.draw(g, shape);
+        Shape projectedShape = getShape();
+        if (projectedShape != null) {
+            decorator.draw(g, projectedShape);
             return;
         }
 
@@ -150,8 +152,6 @@ public class OMDecoratedSpline
         // safety: grab local reference of projected points
         float[][] xpts = xpoints;
         float[][] ypts = ypoints;
-        float[] _x, _y;
-        int i;
         int len = xpts.length;
 
         Paint displayPaint = getDisplayPaint();
@@ -161,9 +161,9 @@ public class OMDecoratedSpline
 
         // If shapes are null, then we have to do things the old way.
         try {
-            for (i = 0; i < len; i++) {
-                _x = xpts[i];
-                _y = ypts[i];
+            for (int i = 0; i < len; i++) {
+                float[] _x = xpts[i];
+                float[] _y = ypts[i];
 
                 // render polygon
                 if (isPolygon) {

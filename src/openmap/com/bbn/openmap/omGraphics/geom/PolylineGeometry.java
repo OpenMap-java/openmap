@@ -75,7 +75,7 @@ public abstract class PolylineGeometry extends PolygonGeometry implements
      * @return the distance of the object to the location given.
      */
     public float distance(double x, double y) {
-        if (shape != null) {
+        if (getShape() != null) {
             return super.distance(x, y);
         }
 
@@ -90,12 +90,11 @@ public abstract class PolylineGeometry extends PolygonGeometry implements
         // safety: grab local reference of projected points
         float[][] xpts = xpoints;
         float[][] ypts = ypoints;
-        float[] _x, _y;
         int len = xpts.length;
 
         for (int i = 0; i < len; i++) {
-            _x = xpts[i];
-            _y = ypts[i];
+            float[] _x = xpts[i];
+            float[] _y = ypts[i];
 
             // get the closest point
             temp = DrawUtil.closestPolyDistance(_x, _y, x, y, false);

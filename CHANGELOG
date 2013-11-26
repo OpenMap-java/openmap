@@ -1,3 +1,35 @@
+2013-11-25  dietrick  <dietrick@client.wonkavision.local>
+
+	* Tagged OpenMap 5.0.3
+
+	* Added delete() method to FileUtils.
+
+2013-11-24  dietrick  <dietrick@client.wonkavision.local>
+
+	* OMGraphic interface has been updated with isRenderable, draw and
+	fill methods that take a Shape object as an argument.  The old
+	implementation methods are no longer synchronized. For
+	BasicGeometry, the getShape() and setShape() methods are
+	synchronized and all instances of direct access to the shape
+	object have been replaced with calls to these methods.  All render
+	methods in OMGraphic implementations have been updated to use one
+	getShape() call, and then use that handle to a shape for checks
+	and drawing.  This greatly improves rendering performance.  The
+	OMList implementations that build a single shape from parts have
+	been updated to have more efficient algorithms for building
+	shapes.
+
+	* Updated the SimpleAnimationLayer for more control over the
+	sprites.  You can set the number of sprites for a batch add, the
+	timer was changed to a java.util.Timer that uses a Task for
+	updating the sprites.  The GUI was updated to use GridBagLayout
+	and has some new controls.  Deleted the
+	com.bbn.openmap.graphicLoader.AnimationTester class, it was
+	outdated.
+
+	* Updated LayersMenu to use an object lock for the layer with the
+	menu entries.
+
 2013-11-12  dietrick  <dietrick@client.wonkavision.local>
 
 	* Tagged OpenMap 5.0.2

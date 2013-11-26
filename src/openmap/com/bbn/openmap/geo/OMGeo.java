@@ -103,7 +103,9 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
         }
 
         public boolean generate(Projection proj) {
-            setShape(null);
+
+            setNeedToRegenerate(true);
+
             if (proj == null) {
                 Debug.message("omgraphic", "GeoOMGraphic.Point: null projection in generate!");
                 return false;
@@ -177,8 +179,9 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
         }
 
         public boolean generate(Projection proj) {
-            setShape(null);
 
+            setNeedToRegenerate(true);
+            
             if (proj == null) {
                 Debug.message("omgraphic", "GeoOMGraphic.Line: null projection in generate!");
                 return false;
@@ -201,6 +204,8 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
             float[][] xpoints = new float[(int) (size / 2)][0];
             float[][] ypoints = new float[xpoints.length][0];
 
+            GeneralPath projectedShape = null;
+            
             for (int i = 0, j = 0; i < size; i += 2, j++) {
                 float[] xps = (float[]) lines.get(i);
                 float[] yps = (float[]) lines.get(i + 1);
@@ -209,14 +214,15 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
                 ypoints[j] = yps;
 
                 GeneralPath gp = createShape(xps, yps, false);
-                if (shape == null) {
-                    setShape(gp);
+                if (projectedShape == null) {
+                    projectedShape = gp;
                 } else {
-                    ((GeneralPath) shape).append(gp, false);
+                    projectedShape.append(gp, false);
                 }
             }
-
-            setLabelLocation(shape);
+            
+            setShape(projectedShape);
+            setLabelLocation(projectedShape);
             setNeedToRegenerate(false);
             return true;
         }
@@ -250,9 +256,9 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
         }
 
         public boolean generate(Projection proj) {
-            int i, j;
-            setShape(null);
-            setNeedToRegenerate(true);
+
+            setNeedToRegenerate(true);            
+            
             boolean isPolygon = getExtent() instanceof GeoRegion;
 
             if (proj == null) {
@@ -281,7 +287,7 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
             float[][] xpoints = new float[(int) (size / 2)][0];
             float[][] ypoints = new float[xpoints.length][0];
 
-            for (i = 0, j = 0; i < size; i += 2, j++) {
+            for (int i = 0, j = 0; i < size; i += 2, j++) {
                 xpoints[j] = (float[]) vector.get(i);
                 ypoints[j] = (float[]) vector.get(i + 1);
             }
@@ -289,17 +295,14 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
             initLabelingDuringGenerate();
 
             size = xpoints.length;
-
-            for (i = 0; i < size; i++) {
+            GeneralPath projectedShape = null;
+            for (int i = 0; i < size; i++) {
                 GeneralPath gp = createShape(xpoints[i], ypoints[i], isPolygon);
 
-                if (shape == null) {
-                    setShape(gp);
-                } else {
-                    ((GeneralPath) shape).append(gp, false);
-                }
+                projectedShape = appendShapeEdge(projectedShape, gp, false);
             }
 
+            setShape(projectedShape);
             setLabelLocation(xpoints[0], ypoints[0]);
 
             setNeedToRegenerate(false);

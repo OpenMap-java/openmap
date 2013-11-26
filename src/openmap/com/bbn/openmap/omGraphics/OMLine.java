@@ -283,8 +283,9 @@ public class OMLine
      * @return true if generate was successful
      */
     public boolean generate(Projection proj) {
-        setShape(null);
 
+        setNeedToRegenerate(true);
+        
         if (proj == null) {
             Debug.message("omgraphic", "OMLine: null projection in generate!");
             return false;
@@ -293,9 +294,15 @@ public class OMLine
         // reset the internals
         isPolyline = false;
         initLabelingDuringGenerate();
+        GeneralPath projectedShape = null;
 
         switch (renderType) {
             case RENDERTYPE_XY:
+
+                if (pts == null) {
+                    return false;
+                }
+                
                 if (arc != null) {
                     xpoints = new float[1][];
                     ypoints = new float[1][];
@@ -306,21 +313,19 @@ public class OMLine
                     xpoints = new float[1][2];
                     ypoints = new float[1][2];
 
-                    if (pts == null)
-                        return false;
-
                     xpoints[0][0] = pts[0];
                     ypoints[0][0] = pts[1];
                     xpoints[0][1] = pts[2];
                     ypoints[0][1] = pts[3];
                 }
-                setShape(createShape(xpoints[0], ypoints[0], false));
+                projectedShape = createShape(xpoints[0], ypoints[0], false);
                 break;
             case RENDERTYPE_OFFSET:
-                if (!proj.isPlotable(latlons[0], latlons[1])) {
-                    setNeedToRegenerate(true);// HMMM not the best flag
+                if (pts == null || latlons == null || !proj.isPlotable(latlons[0], latlons[1])) {
+                    setNeedToRegenerate(true);
                     return false;
                 }
+                
                 Point p1 = (Point) proj.forward(latlons[0], latlons[1], new Point());
                 if (arc != null) {
                     xpoints = new float[1][];
@@ -338,9 +343,14 @@ public class OMLine
                     xpoints[0][1] = p1.x + pts[2];
                     ypoints[0][1] = p1.y + pts[3];
                 }
-                setShape(createShape(xpoints[0], ypoints[0], false));
+                projectedShape = createShape(xpoints[0], ypoints[0], false);
                 break;
             case RENDERTYPE_LATLON:
+                if (latlons == null) {
+                    setNeedToRegenerate(true);
+                    return false;
+                }
+                
                 if (arc != null) {
                     p1 = (Point) proj.forward(latlons[0], latlons[1], new Point());
                     Point p2 = (Point) proj.forward(latlons[2], latlons[3], new Point());
@@ -351,7 +361,7 @@ public class OMLine
                     xpoints[0] = arc.getXPoints();
                     ypoints[0] = arc.getYPoints();
 
-                    setShape(createShape(xpoints[0], ypoints[0], false));
+                    projectedShape = createShape(xpoints[0], ypoints[0], false);
 
                     isPolyline = true;
 
@@ -371,7 +381,7 @@ public class OMLine
 
                     xpoints = new float[(int) (size / 2)][0];
                     ypoints = new float[xpoints.length][0];
-
+                    
                     for (int i = 0, j = 0; i < size; i += 2, j++) {
                         float[] xps = (float[]) lines.get(i);
                         float[] yps = (float[]) lines.get(i + 1);
@@ -380,21 +390,21 @@ public class OMLine
                         ypoints[j] = yps;
 
                         GeneralPath gp = createShape(xps, yps, false);
-                        if (shape == null) {
-                            setShape(gp);
-                        } else {
-                            ((GeneralPath) shape).append(gp, false);
-                        }
+
+                        projectedShape = appendShapeEdge(projectedShape, gp, false);
                     }
+                    
                     isPolyline = (lineType != LINETYPE_STRAIGHT);
                 }
                 break;
             case RENDERTYPE_UNKNOWN:
                 System.err.println("OMLine.generate: invalid RenderType");
+                setNeedToRegenerate(true);
                 return false;
         }
 
-        setLabelLocation(shape);
+        setShape(projectedShape);
+        setLabelLocation(projectedShape);
 
         if (arrowhead != null) {
             arrowhead.generate(this);
@@ -416,7 +426,7 @@ public class OMLine
      */
     public void render(Graphics g) {
 
-        if (!isRenderable()) {
+        if (!isRenderable(getShape())) {
             return;
         }
 

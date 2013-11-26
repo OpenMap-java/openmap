@@ -160,8 +160,8 @@ public class OMSpline extends OMPoly {
      * @return true if generate was successful
      */
     public boolean generate(Projection proj) {
-        int i, j, npts;
-        setShape(null);
+
+        setNeedToRegenerate(true);
 
         if (proj == null) {
             Debug.message("omspline", "OMSpline: null projection in generate!");
@@ -200,7 +200,7 @@ public class OMSpline extends OMPoly {
                 return false;
             }
 
-            npts = xs.length;
+            int npts = xs.length;
             float[] _x = new float[npts];
             float[] _y = new float[npts];
 
@@ -213,7 +213,7 @@ public class OMSpline extends OMPoly {
             }
 
             if (coordMode == COORDMODE_ORIGIN) {
-                for (i = 0; i < npts; i++) {
+                for (int i = 0; i < npts; i++) {
                     _x[i] = (float) (xs[i] + origin.getX());
                     _y[i] = (float) (ys[i] + origin.getY());
                 }
@@ -221,7 +221,7 @@ public class OMSpline extends OMPoly {
                 _x[0] = xs[0] + origin.x;
                 _y[0] = ys[0] + origin.y;
 
-                for (i = 1; i < npts; i++) {
+                for (int i = 1; i < npts; i++) {
                     _x[i] = xs[i] + _x[i - 1];
                     _y[i] = ys[i] + _y[i - 1];
                 }
@@ -263,7 +263,7 @@ public class OMSpline extends OMPoly {
             xpoints = new float[(int) (size / 2)][0];
             ypoints = new float[xpoints.length][0];
 
-            for (i = 0, j = 0; i < size; i += 2, j++) {
+            for (int i = 0, j = 0; i < size; i += 2, j++) {
                 xpoints[j] = vector.get(i);
                 ypoints[j] = vector.get(i + 1);
             }
@@ -283,7 +283,7 @@ public class OMSpline extends OMPoly {
         }
 
         setNeedToRegenerate(false);
-        createShape();
+        setShape(createShape());
         return true;
     }
 

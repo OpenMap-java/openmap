@@ -27,6 +27,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.geom.GeneralPath;
@@ -756,29 +757,35 @@ public abstract class OMGraphicAdapter
      */
     public void render(Graphics g) {
 
+        Shape s = getShape();
+        
+        if (!isRenderable(s)) {
+            return;
+        }
+        
         if (matted) {
             if (g instanceof Graphics2D && stroke instanceof BasicStroke) {
                 BasicStroke bs = (BasicStroke) stroke;
                 ((Graphics2D) g).setStroke(new BasicStroke(bs.getLineWidth() + 2f, bs.getEndCap(), bs.getLineJoin()));
 
                 setGraphicsColor(g, mattingPaint);
-                draw(g);
+                draw(g, s);
             }
         }
 
         if (shouldRenderFill()) {
             setGraphicsForFill(g);
-            fill(g);
+            fill(g, s);
 
             if (textureMask != null && textureMask != fillPaint) {
                 setGraphicsColor(g, textureMask);
-                fill(g);
+                fill(g, s);
             }
         }
 
         if (shouldRenderEdge()) {
             setGraphicsForEdge(g);
-            draw(g);
+            draw(g, s);
         }
 
         renderLabel(g);

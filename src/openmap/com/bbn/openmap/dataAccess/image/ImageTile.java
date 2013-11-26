@@ -162,7 +162,6 @@ public class ImageTile extends OMScalingRaster implements Serializable {
                 bitmap = null;
                 sourceImage = null;
                 setNeedToRegenerate(true);
-                setShape(null);
                 return false;
             }
 

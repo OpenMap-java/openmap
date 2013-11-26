@@ -23,6 +23,7 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Graphics;
+import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.util.Map;
 
@@ -178,9 +179,24 @@ public interface OMGeometry {
     public boolean generate(Projection proj);
 
     /**
-     *  
+     * Self-discovery of internal Shape object used for check, or implemented if
+     * a Shape object doesn't matter.
+     * 
+     * @return true if the OMGeometry should be rendered - it's visible and the
+     *         projected shape is created and reflects the current location
+     *         settings of the geometry.
      */
     public boolean isRenderable();
+
+    /**
+     * Shape object provided for Shape-readiness check.
+     * 
+     * @param s Shape to check if ready for rendering
+     * @return true if the OMGeometry should be rendered - it's visible and the
+     *         projected shape is created and reflects the current location
+     *         settings of the geometry.
+     */
+    public boolean isRenderable(Shape s);
 
     /**
      * Paint the graphic. This paints the graphic into the Graphics context.
@@ -213,6 +229,27 @@ public interface OMGeometry {
      * objects, it should have its own render method.
      * 
      * @param g Graphics2D context to render into.
+     * @param s Shape object to use for fill.
+     */
+    public void fill(Graphics g, Shape s);
+
+    /**
+     * Paint the graphic. This method has been broken out of render as a way to
+     * allow OMGeometries to fine-tune their rendering process.
+     * <P>
+     * 
+     * This paints the graphic into the Graphics context. This is similar to
+     * <code>paint()</code> function of java.awt.Components. Note that if the
+     * graphic has not been generated or if it isn't visible, it will not be
+     * rendered.
+     * <P>
+     * 
+     * This method used to be abstract, but with the conversion of OMGeometrys
+     * to internally represent themselves as java.awt.Shape objects, it's a more
+     * generic method. If the OMGeometry hasn't been updated to use Shape
+     * objects, it should have its own render method.
+     * 
+     * @param g Graphics2D context to render into.
      */
     public void fill(Graphics g);
 
@@ -220,6 +257,27 @@ public interface OMGeometry {
      * Paint the graphic, as an outlined shape. This method has been broken out
      * of render as a way to allow OMGeometries to fine-tune their rendering
      * process.
+     * <P>
+     * 
+     * This paints the graphic into the Graphics context. This is similar to
+     * <code>paint()</code> function of java.awt.Components. Note that if the
+     * graphic has not been generated or if it isn't visible, it will not be
+     * rendered.
+     * <P>
+     * 
+     * This method used to be abstract, but with the conversion of OMGeometrys
+     * to internally represent themselves as java.awt.Shape objects, it's a more
+     * generic method. If the OMGeometry hasn't been updated to use Shape
+     * objects, it should have its own render method.
+     * 
+     * @param g Graphics2D context to render into.
+     * @param s Shape object to use for drawing.
+     */
+    public void draw(Graphics g, Shape s);
+
+    /**
+     * Paint the graphic. This method has been broken out of render as a way to
+     * allow OMGeometries to fine-tune their rendering process.
      * <P>
      * 
      * This paints the graphic into the Graphics context. This is similar to
@@ -260,10 +318,11 @@ public interface OMGeometry {
      * @param x X coordinate of the point.
      * @param y Y coordinate of the point.
      * @return float distance, in pixels, from graphic to the point. Returns
-     *         Float.POSITIVE_INFINITY if the geometry isn't ready (ungenerated).
+     *         Float.POSITIVE_INFINITY if the geometry isn't ready
+     *         (ungenerated).
      */
     public float distanceToEdge(double x, double y);
-    
+
     /**
      * Answsers the question whether or not the OMGeometry contains the given
      * pixel point.
@@ -335,7 +394,9 @@ public interface OMGeometry {
     public String getDescription();
 
     /**
-     * Replace the member variables of this OMGraphic with copies of member variables from another one.
+     * Replace the member variables of this OMGraphic with copies of member
+     * variables from another one.
+     * 
      * @param source
      */
     void restore(OMGeometry source);

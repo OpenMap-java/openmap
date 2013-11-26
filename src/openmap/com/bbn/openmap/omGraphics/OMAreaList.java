@@ -94,8 +94,9 @@ public class OMAreaList extends OMGeometryList implements Serializable {
      */
     public synchronized boolean generate(Projection p, boolean forceProjectAll) {
         boolean isGenerated = super.generate(p, forceProjectAll);
-        if (shape != null) {
-            shape.closePath();
+        GeneralPath projectedShape = getShape();
+        if (projectedShape != null) {
+            projectedShape.closePath();
         }
         return isGenerated;
     }
@@ -114,13 +115,13 @@ public class OMAreaList extends OMGeometryList implements Serializable {
         }
 
         if (geometry.isVisible()) {
-            GeneralPath gp = (GeneralPath) geometry.getShape();
+            GeneralPath gp = geometry.getShape();
 
             if (gp == null) {
                 return;
             }
 
-            setShape(appendShapeEdge(shape, gp, connectParts));
+            setShape(appendShapeEdge(getShape(), gp, connectParts));
             // save memory?? by deleting the shape in each part, since
             // they are each contributing to the whole.
             geometry.setShape((GeneralPath) null);

@@ -116,7 +116,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
      * is here to create it if it is asked for. The OMPoly needs to be
      * generated.
      */
-    protected abstract void createShape();
+    protected abstract GeneralPath createShape();
 
     /**
      * Return the shortest distance from the graphic to an XY-point.
@@ -127,7 +127,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
      * @return the distance of the object to the location given.
      */
     public float distance(double x, double y) {
-        if (shape != null) {
+        if (getShape() != null) {
             return super.distance(x, y);
         }
 
@@ -177,11 +177,13 @@ public abstract class PolygonGeometry extends BasicGeometry implements
      *         the OMGeometry hasn't been updated to use Shape objects
      *         for its internal representation.
      */
-    public GeneralPath getShape() {
+    public synchronized GeneralPath getShape() {
+        GeneralPath shape = super.getShape();
         if (shape == null && !getNeedToRegenerate() && !doShapes) {
             // Since polygons have the option of not creating shape
             // objects, should create one if asked.
-            createShape();
+            shape = createShape();
+            setShape(shape);
         }
         return shape;
     }
@@ -314,8 +316,8 @@ public abstract class PolygonGeometry extends BasicGeometry implements
         }
 
         public boolean generate(Projection proj) {
-            int i, j;
-            shape = null;
+
+            setNeedToRegenerate(true);
 
             if (proj == null) {
                 Debug.message("omgraphic",
@@ -342,46 +344,44 @@ public abstract class PolygonGeometry extends BasicGeometry implements
             }
 
             // We could call create shape, but this is more efficient.
-
-            for (i = 0, j = 0; i < size; i += 2, j++) {
+            GeneralPath projectedShape = null;
+            for (int i = 0, j = 0; i < size; i += 2, j++) {
                 if (doShapes) {
                     GeneralPath gp = BasicGeometry.createShape((float[]) vector.get(i),
                             (float[]) vector.get(i + 1),
                             isPolygon);
-                    if (shape == null) {
-                        shape = gp;
-                    } else {
-                        ((GeneralPath) shape).append(gp, false);
-                    }
+                    
+                    projectedShape = appendShapeEdge(projectedShape, gp, false);
+                    
                 } else {
                     xpoints[j] = (float[]) vector.get(i);
                     ypoints[j] = (float[]) vector.get(i + 1);
                 }
             }
+            
+            setShape(projectedShape);
 
             setNeedToRegenerate(false);
             return true;
         }
 
-        protected void createShape() {
+        protected GeneralPath createShape() {
 
             if (getNeedToRegenerate()) {
-                return;
+                return null;
             }
 
             int size = xpoints.length;
-
+            GeneralPath projectedShape = null;
             for (int i = 0; i < size; i++) {
                 GeneralPath gp = BasicGeometry.createShape(xpoints[i],
                         ypoints[i],
                         isPolygon);
 
-                if (shape == null) {
-                    shape = gp;
-                } else {
-                    ((GeneralPath) shape).append(gp, false);
-                }
+                projectedShape = appendShapeEdge(projectedShape, gp, false);
             }
+            
+            return projectedShape;
         }
 
         public int getRenderType() {
@@ -492,11 +492,11 @@ public abstract class PolygonGeometry extends BasicGeometry implements
         }
 
         public boolean generate(Projection proj) {
-            shape = null;
 
             if (proj == null) {
                 Debug.message("omgraphic",
                         "OMPoly: null projection in generate!");
+                setNeedToRegenerate(true);
                 return false;
             }
 
@@ -513,19 +513,21 @@ public abstract class PolygonGeometry extends BasicGeometry implements
             ypoints[0] = ys;
 
             if (doShapes) {
-                createShape();
+                setShape(createShape());
+            } else {
+                setShape(null);
             }
             setNeedToRegenerate(false);
             return true;
         }
 
-        protected void createShape() {
+        protected GeneralPath createShape() {
 
             if (getNeedToRegenerate()) {
-                return;
+                return null;
             }
 
-            shape = BasicGeometry.createShape(xpoints[0], ypoints[0], isPolygon);
+            return BasicGeometry.createShape(xpoints[0], ypoints[0], isPolygon);
         }
 
         public int getRenderType() {
@@ -713,12 +715,11 @@ public abstract class PolygonGeometry extends BasicGeometry implements
         }
 
         public boolean generate(Projection proj) {
-            int i, npts;
-            shape = null;
 
             if (proj == null) {
                 Debug.message("omgraphic",
                         "OMPoly: null projection in generate!");
+                setNeedToRegenerate(true);
                 return false;
             }
 
@@ -728,7 +729,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
                 return false;
             }
 
-            npts = xs.length;
+            int npts = xs.length;
             float[] _x = new float[npts];
             float[] _y = new float[npts];
 
@@ -741,7 +742,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
             }
 
             if (coordMode == COORDMODE_ORIGIN) {
-                for (i = 0; i < npts; i++) {
+                for (int i = 0; i < npts; i++) {
                     _x[i] = xs[i] + origin.x;
                     _y[i] = ys[i] + origin.y;
                 }
@@ -749,7 +750,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
                 _x[0] = xs[0] + origin.x;
                 _y[0] = ys[0] + origin.y;
 
-                for (i = 1; i < npts; i++) {
+                for (int i = 1; i < npts; i++) {
                     _x[i] = xs[i] + _x[i - 1];
                     _y[i] = ys[i] + _y[i - 1];
                 }
@@ -760,9 +761,7 @@ public abstract class PolygonGeometry extends BasicGeometry implements
             ypoints = new float[1][0];
             ypoints[0] = _y;
 
-            if (doShapes) {
-                this.createShape();
-            }
+            setShape(doShapes? this.createShape() : null);
 
             setNeedToRegenerate(false);
             return true;

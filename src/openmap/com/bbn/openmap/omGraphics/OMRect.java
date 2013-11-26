@@ -117,8 +117,7 @@ public class OMRect extends OMGraphicAdapter implements OMGraphic {
      *        LINETYPE_RHUMB line types, and if &lt; 1, this value is generated
      *        internally)
      */
-    public OMRect(double lt1, double ln1, double lt2, double ln2, int lType,
-            int nsegs) {
+    public OMRect(double lt1, double ln1, double lt2, double ln2, int lType, int nsegs) {
         super(RENDERTYPE_LATLON, lType, DECLUTTERTYPE_NONE);
         lat1 = lt1;
         lon1 = ln1;
@@ -184,8 +183,7 @@ public class OMRect extends OMGraphicAdapter implements OMGraphic {
      * @param ln2 longitude of east edge, decimal degrees.
      * @param lType line type - see OMGraphic.lineType.
      */
-    public void setLocation(double lt1, double ln1, double lt2, double ln2,
-                            int lType) {
+    public void setLocation(double lt1, double ln1, double lt2, double ln2, int lType) {
         setRenderType(RENDERTYPE_LATLON);
         setLineType(lType);
         lat1 = lt1;
@@ -234,8 +232,7 @@ public class OMRect extends OMGraphicAdapter implements OMGraphic {
      * @param py2 y pixel position of the second corner relative to the
      *        reference point
      */
-    public void setLocation(double lt1, double ln1, int px1, int py1, int px2,
-                            int py2) {
+    public void setLocation(double lt1, double ln1, int px1, int py1, int px2, int py2) {
         setRenderType(RENDERTYPE_OFFSET);
         setLineType(LINETYPE_UNKNOWN);
         lat1 = lt1;
@@ -349,8 +346,9 @@ public class OMRect extends OMGraphicAdapter implements OMGraphic {
      * @return true if generate was successful
      */
     public boolean generate(Projection proj) {
-        setShape(null);
 
+        setNeedToRegenerate(true);
+        
         if (proj == null) {
             Debug.message("omgraphic", "OMRect: null projection in generate!");
             return false;
@@ -360,8 +358,8 @@ public class OMRect extends OMGraphicAdapter implements OMGraphic {
 
         switch (renderType) {
         case RENDERTYPE_XY:
-            setShape(createBoxShape((int) Math.min(x2, x1), (int) Math.min(y2,
-                    y1), (int) Math.abs(x2 - x1), (int) Math.abs(y2 - y1)));
+            setShape(createBoxShape((int) Math.min(x2, x1), (int) Math.min(y2, y1), (int) Math.abs(x2
+                    - x1), (int) Math.abs(y2 - y1)));
             break;
         case RENDERTYPE_OFFSET:
             if (!proj.isPlotable(lat1, lon1)) {
@@ -370,10 +368,8 @@ public class OMRect extends OMGraphicAdapter implements OMGraphic {
             }
             Point p1 = (Point) proj.forward(lat1, lon1, new Point());
 
-            setShape(createBoxShape((int) Math.min(p1.x + x1, p1.x + x2),
-                    (int) Math.min(p1.y + y1, p1.y + y2),
-                    (int) Math.abs(x2 - x1),
-                    (int) Math.abs(y2 - y1)));
+            setShape(createBoxShape((int) Math.min(p1.x + x1, p1.x + x2), (int) Math.min(p1.y + y1, p1.y
+                    + y2), (int) Math.abs(x2 - x1), (int) Math.abs(y2 - y1)));
             break;
         case RENDERTYPE_LATLON:
             ArrayList<float[]> rects;
@@ -381,26 +377,19 @@ public class OMRect extends OMGraphicAdapter implements OMGraphic {
             if (proj instanceof GeoProj) {
                 rects = ((GeoProj) proj).forwardRect(new LatLonPoint.Double(lat1, lon1), // NW
                         new LatLonPoint.Double(lat2, lon2), // SE
-                        lineType,
-                        nsegs,
-                        !isClear(fillPaint));
+                        lineType, nsegs, !isClear(fillPaint));
             } else {
-                rects = proj.forwardRect(new Point2D.Double(lon1, lat1),
-                        new Point2D.Double(lon2, lat2));
+                rects = proj.forwardRect(new Point2D.Double(lon1, lat1), new Point2D.Double(lon2, lat2));
             }
             int size = rects.size();
-
+            GeneralPath projectedShape = null;
             for (int i = 0; i < size; i += 2) {
-                GeneralPath gp = createShape(rects.get(i),
-                        rects.get(i + 1),
-                        true);
+                GeneralPath gp = createShape(rects.get(i), rects.get(i + 1), true);
 
-                if (shape == null) {
-                    setShape(gp);
-                } else {
-                    ((GeneralPath) shape).append(gp, false);
-                }
+                projectedShape = appendShapeEdge(projectedShape, gp, false);
             }
+            
+            setShape(projectedShape);
             break;
         case RENDERTYPE_UNKNOWN:
             System.err.println("OMRect.generate(): invalid RenderType");
@@ -409,7 +398,7 @@ public class OMRect extends OMGraphicAdapter implements OMGraphic {
         setNeedToRegenerate(false);
         return true;
     }
-    
+
     public void restore(OMGeometry source) {
         super.restore(source);
         if (source instanceof OMRect) {
