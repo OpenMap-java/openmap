@@ -27,7 +27,7 @@ import com.bbn.openmap.io.FormatException;
 public interface MapTileSet extends PropertyConsumer {
 
    /**
-    * Property used for tileset properies defining MapTileSet class.
+    * Property used for MapTileSet class.
     */
    public final static String CLASS_ATTRIBUTE = "class";
 

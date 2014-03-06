@@ -35,7 +35,8 @@ import com.bbn.openmap.util.wanderer.WandererCallback;
  * properties files are, under the TileSetDefinitions attribute. The properties
  * files in that directory are automatically read and used to create
  * MapTileSets. The default deployed name and location of this directory is the
- * WEB-INF/classes/tileSetDefinitions directory, but any location can be specified.
+ * WEB-INF/classes/tileSetDefinitions directory, but any location can be
+ * specified.
  * 
  * Each maptileset properties file should specify a name of the tile set, which
  * is used in the path to reach those tiles. The MapTileSet object is used by
@@ -171,10 +172,12 @@ public class MapTileServlet extends HttpServlet {
         // Empty path request, let's return summary catalog, might be of some
         // help.
         if (pathInfo.length() <= 1) {
+            String tilePathHeader = req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
             StringBuilder builder = new StringBuilder("<html><body>Map Tile Sets:<p>");
             for (MapTileSet mts : mapTileSets.values()) {
                 String description = mts.getDescription();
-                builder.append("Tile set name: ").append(mts.getName()).append(", description: ");
+                builder.append("Tile set name: <a href=\"http://").append(tilePathHeader).append("/").append(mts.getName()).append("/map\">");
+                builder.append(mts.getName()).append("</a>, description: ");
                 builder.append(description == null ? "n/a" : description).append("<br>");
             }
             builder.append("</body></html>");
@@ -185,10 +188,20 @@ public class MapTileServlet extends HttpServlet {
             osw.flush();
             return;
         }
-
+        
         MapTileSet mts = getMapTileSetForRequest(pathInfo);
 
         if (mts != null) {
+
+            if (pathInfo.endsWith("map")) {
+                String tilePathHeader = req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
+                String map = getMap(tilePathHeader, mts);
+                resp.setContentType(HttpConnection.CONTENT_HTML);
+                OutputStreamWriter osw = new OutputStreamWriter(out);
+                out.write(map.getBytes());
+                osw.flush();
+                return;
+            }
 
             try {
                 resp.setContentType(HttpConnection.CONTENT_PNG);
@@ -299,5 +312,29 @@ public class MapTileServlet extends HttpServlet {
      */
     private static Logger getLogger() {
         return LoggerHolder.LOGGER;
+    }
+    
+    /**
+     * Creates a HTML string that will display a Leaflet map with the map tiles for the MapTileSet.
+     * @param tileReqHeader the server:port/context string of this servlet.
+     * @param mts the MapTileSet to display.
+     * @return html text.
+     */
+    protected String getMap(String tileReqHeader, MapTileSet mts) {
+        String name = mts.getName();
+        
+        StringBuilder ret = new StringBuilder();
+        
+        ret.append("<html><head><link rel=\"stylesheet\" href=\"http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css\" />");
+        ret.append("<script src=\"http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js\"></script></head><body>");
+        ret.append("<div id=\"map\" style=\"position:absolute; top:20px; left:20px; right:20px; bottom:20px;overflow:hidden;min-height;200px\"></div>");
+        ret.append("<script>");
+        ret.append("var ").append(name).append("Url = \'http://").append(tileReqHeader);
+        ret.append("/").append(name).append("/{z}/{x}/{y}.png\',").append(name).append("=new L.TileLayer(").append(name).append("Url, {maxZoom: 20});");
+        ret.append("var map = new L.Map('map', {center:new L.LatLng(0, 0), zoom:1, maxZoom:20, minZoom:0});");
+        ret.append("map.addLayer(").append(name).append(");map.addControl(new L.Control.Scale());");
+        ret.append("</script></body></html>");
+        
+        return ret.toString();
     }
 }
