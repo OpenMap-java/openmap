@@ -22,7 +22,7 @@
 
 	<context-param>
 		<param-name>TileSetDefinitions</param-name>
-		<param-value>tileset1.properties;tileset2.properties</param-value>
+		<param-value>./tileSetProperties</param-value>
 		<description>
 		  Standard tile set properties
 		</description>

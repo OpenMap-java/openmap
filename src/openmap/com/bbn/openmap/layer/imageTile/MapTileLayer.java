@@ -25,11 +25,17 @@
 package com.bbn.openmap.layer.imageTile;
 
 import java.awt.Container;
+import java.awt.event.ActionEvent;
 import java.net.MalformedURLException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JSlider;
+
+import sun.awt.VerticalBagLayout;
 
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.mapTile.MapTileFactory;
@@ -212,7 +218,6 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
 
         if (tileFactory != null) {
             OMGraphicList newList = new OMGraphicList();
-            // setList(newList);
 
             OMText attrib = getAttributionGraphic();
             if (attrib != null) {
@@ -359,7 +364,27 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
     }
 
     public java.awt.Component getGUI() {
-        return getTransparencyAdjustmentPanel(i18n.get(MapTileLayer.class, "layerTransparencyGUILabel", "Layer Transparency"), JSlider.HORIZONTAL, getTransparency());
+        JPanel panel = new JPanel();
+        panel.setLayout(new VerticalBagLayout());
+
+        JPanel clearCachePanel = new JPanel();
+        JButton clearButton = new JButton(i18n.get(MapTileLayer.class, "clearCacheLabel", "Clear Tile Cache"));
+        clearCachePanel.add(clearButton);
+        clearButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String query = i18n.get(MapTileLayer.class, "mapTileLayerDeleteCacheQuery", "Delete tiles on disk? Click OK to delete...");
+                
+                int dialogResult = JOptionPane.showConfirmDialog(null, query, "Warning", JOptionPane.OK_CANCEL_OPTION);
+                if (dialogResult == JOptionPane.OK_OPTION) {
+                    clearCache();
+                }
+            }
+        });
+
+        panel.add(getTransparencyAdjustmentPanel(i18n.get(MapTileLayer.class, "layerTransparencyGUILabel", "Layer Transparency"), JSlider.HORIZONTAL, getTransparency()));
+        panel.add(clearCachePanel);
+
+        return panel;
     }
 
     /**
@@ -407,6 +432,16 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
     public void listUpdated() {
         if (incrementalUpdates) {
             repaint();
+        }
+    }
+
+    /**
+     * Clear the MapTileFactory cache.
+     */
+    public void clearCache() {
+        MapTileFactory mtf = getTileFactory();
+        if (mtf != null) {
+            mtf.reset();
         }
     }
 

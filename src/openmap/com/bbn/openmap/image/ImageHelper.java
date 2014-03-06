@@ -24,8 +24,8 @@ package com.bbn.openmap.image;
 
 import java.awt.image.ImageObserver;
 import java.awt.image.PixelGrabber;
-
-import com.bbn.openmap.util.Debug;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A class that holds static functions that do things we tend to do to
@@ -33,6 +33,8 @@ import com.bbn.openmap.util.Debug;
  */
 public class ImageHelper {
 
+    public final static Logger logger = Logger.getLogger("com.bbn.openmap.image.ImageHelper");
+    
     /**
      * Take a PixelGrabber and get the pixels out of it.
      * 
@@ -49,7 +51,7 @@ public class ImageHelper {
             boolean grabbed = pg.grabPixels();
 
             if (!grabbed) {
-                Debug.error("ImageHelper.grabPixels(): Error in loading image");
+                logger.fine("Error in loading image, no pixels grabbed");
                 return null;
             }
 
@@ -57,8 +59,8 @@ public class ImageHelper {
             while (true) {
                 int status = pg.getStatus();
 
-                if (Debug.debugging("image")) {
-                    Debug.output("ImageHelper.grabPixels(): status = " + status);
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("pixelgrabber status = " + status);
                 }
 
                 if ((status & ImageObserver.ALLBITS) != 0) {
@@ -74,7 +76,9 @@ public class ImageHelper {
                     break;
                 }
                 if ((status & ImageObserver.ERROR) != 0) {
-                    Debug.error("ImageHelper.grabPixels(): Error in loading image");
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("Error in loading image, ImageObserver error");
+                    }
                     return null;
                 }
                 Thread.sleep(100);

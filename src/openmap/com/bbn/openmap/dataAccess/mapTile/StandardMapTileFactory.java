@@ -123,6 +123,14 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
     protected String rootDirProperty; // For writing out later, if necessary
     protected EmptyTileHandler emptyTileHandler = null;
     protected boolean verbose = false;
+    /**
+     * The zoom level tile size is used by the factory to determine when it
+     * needs to get tiles for a different zoom level. The default value is 350.
+     * That is, when the factory is figuring out what zoom level to use, if the
+     * pixel size of a tile is greater than or equal to 350 x 350, it decides to
+     * check the next zoom level for retrieving tiles. This is used instead of
+     * just comparing projection scales.
+     */
     protected int zoomLevelTileSize = 350;
     protected TileImagePreparer tileImagePreparer;
 
@@ -162,7 +170,7 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
     }
 
     /**
-     * Tell the factory to clean up resources.
+     * Tell the factory to dump the cache.
      */
     public void reset() {
         clear();
@@ -600,10 +608,7 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
                  */
                 OMGraphic tileGraphic = (OMGraphic) getFromCache(imagePath, x, y, zoomLevel);
 
-                boolean rightOMGraphicType = (tileGraphic instanceof OMScalingRaster && isMercator)
-                        || (tileGraphic instanceof OMWarpingImage && !isMercator);
-
-                if (tileGraphic != null/* && rightOMGraphicType */) {
+                if (tileGraphic != null) {
 
                     if (mapTileLogger.isLoggable(Level.FINE)) {
                         tileGraphic.putAttribute(OMGraphic.LABEL, new OMTextLabeler("Tile: "
@@ -864,7 +869,7 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
         public String buildTilePath(int x, int y, int z, String fileExt) {
             String ret = startingPath;
             if (((!patternUseChecked) || (patternUseChecked && patternsUsed))
-		&& startingPath != null && startingPath.length() != 0) {
+                    && startingPath != null && startingPath.length() != 0) {
                 ret = updatePath(ret, pz, Integer.toString(z));
                 ret = updatePath(ret, px, Integer.toString(x));
                 ret = updatePath(ret, py, Integer.toString(y));

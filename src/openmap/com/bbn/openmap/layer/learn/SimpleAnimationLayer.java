@@ -32,6 +32,7 @@ import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMScalingIcon;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
@@ -343,7 +344,11 @@ public class SimpleAnimationLayer extends OMGraphicHandlerLayer {
             OMGraphicList safeList = new OMGraphicList(sal.movingPoints);
 
             for (OMGraphic point : safeList) {
-                moveRandomly((OMPoint) point, sal.movementFactor, proj);
+                if (point instanceof OMPoint) {
+                    moveRandomly((OMPoint) point, sal.movementFactor, proj);
+                } else if (point instanceof OMScalingIcon) {
+                    moveRandomly((OMScalingIcon) point, sal.movementFactor, proj);
+                }
 
                 if (proj != null) {
                     point.generate(proj);
@@ -372,6 +377,25 @@ public class SimpleAnimationLayer extends OMGraphicHandlerLayer {
          * @param factor a movement factor, in pixels.
          */
         protected void moveRandomly(OMPoint point, double factor, Projection proj) {
+            double hor = Math.random() - .5;
+            double vert = Math.random() - .5;
+
+            Point2D mapPoint = proj.forward(point.getLat(), point.getLon());
+            mapPoint.setLocation(mapPoint.getX() + (hor * factor), mapPoint.getY()
+                    + (vert * factor));
+            Point2D llp = proj.inverse(mapPoint);
+
+            point.setLat(llp.getY());
+            point.setLon(llp.getX());
+        }
+
+        /**
+         * Simple method to move an OMPoint around randomly.
+         * 
+         * @param point the OMPoint to move.
+         * @param factor a movement factor, in pixels.
+         */
+        protected void moveRandomly(OMScalingIcon point, double factor, Projection proj) {
             double hor = Math.random() - .5;
             double vert = Math.random() - .5;
 

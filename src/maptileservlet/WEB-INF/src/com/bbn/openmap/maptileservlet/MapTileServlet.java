@@ -1,5 +1,6 @@
 package com.bbn.openmap.maptileservlet;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,13 +25,17 @@ import javax.servlet.http.HttpServletResponse;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.http.HttpConnection;
+import com.bbn.openmap.util.wanderer.Wanderer;
+import com.bbn.openmap.util.wanderer.WandererCallback;
 
 /**
  * MapTileServlet is a servlet class that fields requests for map tiles. It can
  * handle multiple MapTileSets, each one defined by a properties file. The
- * web.xml file for this servlet lets you specify the properties files it should
- * know about, under the TileSetDefinitions attribute. The properties files
- * should be stored in the WEB-INF/classes directory when deployed.
+ * web.xml file for this servlet lets you specify the directory where these
+ * properties files are, under the TileSetDefinitions attribute. The properties
+ * files in that directory are automatically read and used to create
+ * MapTileSets. The default deployed name and location of this directory is the
+ * WEB-INF/classes/tileSetDefinitions directory, but any location can be specified.
  * 
  * Each maptileset properties file should specify a name of the tile set, which
  * is used in the path to reach those tiles. The MapTileSet object is used by
@@ -43,7 +48,7 @@ import com.bbn.openmap.util.http.HttpConnection;
  * to disperse, but goes to another server location to fetch new tiles it
  * doesn't have. Each MapTileSet has configuration information in its javadoc.
  * See the web.xml file for more information about configuring this
- * MapTileServlet. 
+ * MapTileServlet.
  * 
  * @author dietrick
  */
@@ -60,65 +65,83 @@ public class MapTileServlet extends HttpServlet {
         mapTileSets = Collections.synchronizedMap(new HashMap<String, MapTileSet>());
     }
 
+    /**
+     * Called when the servlet is loaded.
+     */
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         ServletContext context = config.getServletContext();
 
         String descriptions = context.getInitParameter(TILE_SET_DESCRIPTION_ATTRIBUTE);
         Logger logger = getLogger();
-        logger.info("descriptions: " + descriptions);
+        logger.info("Looking for Tile Set Descriptions at: " + descriptions);
         if (descriptions != null) {
-            Collection<String> descriptionV = PropUtils.parseMarkers(descriptions, ";");
-            logger.info("got " + descriptionV.toString());
-            for (String desc : descriptionV) {
-                logger.info("looking for " + desc);
-                try {
-                    URL descURL = PropUtils.getResourceOrFileOrURL(desc);
-                    if (descURL != null) {
-                        logger.info("found url for " + descURL);
 
-                        Properties descProps = new Properties();
-                        logger.info("going to read props");
-                        InputStream descURLStream = descURL.openStream();
-                        descProps.load(descURLStream);
+            // Changing descriptions to a folder containing properties files
+            // defining tile sets.
+            try {
 
-                        logger.info("loaded " + desc + " " + descProps.toString());
+                URL descriptionFolder = PropUtils.getResourceOrFileOrURL(descriptions);
+                PropertiesWanderer wanderer = new PropertiesWanderer(new File(descriptionFolder.getFile()));
 
-                        MapTileSet mts = create(descProps);
-
-                        if (mts != null && mts.allGood()) {
-                            String mtsName = mts.getName();
-                            mapTileSets.put(mts.getName(), mts);
-                            logger.info("Adding " + mtsName + " dataset");
-                        }
-
-                        descURLStream.close();
-                    }
-                } catch (MalformedURLException murle) {
-                    logger.warning("MalformedURLException reading " + desc);
-                } catch (IOException ioe) {
-                    logger.warning("IOException reading " + desc);
-                }
+            } catch (MalformedURLException e) {
+                logger.warning("unable to open for Tile Set properties file given " + descriptions);
+            } catch (NullPointerException npe) {
+                logger.warning("Can't find directory holding Tile Set properties files: "
+                        + descriptions);
             }
         }
 
     }
 
-    public MapTileSet create(Properties props) {
+    /**
+     * Given a URL to a properties file describing a MapTileSet, create it and
+     * add it to the list.
+     * 
+     * @param tileSetProperties
+     * @throws IOException
+     * @throws MalformedURLException
+     */
+    protected void parseAndAddMapTileSet(URL tileSetProperties)
+            throws IOException, MalformedURLException {
+        Properties descProps = new Properties();
+        Logger logger = getLogger();
+
+        logger.info("going to read props");
+        InputStream descURLStream = tileSetProperties.openStream();
+        descProps.load(descURLStream);
+
+        logger.info("loaded " + tileSetProperties.toString() + " " + descProps.toString());
+
+        MapTileSet mts = createMapTileSetFromProperties(descProps);
+
+        if (mts != null && mts.allGood()) {
+            String mtsName = mts.getName();
+            mapTileSets.put(mts.getName(), mts);
+            logger.info("Adding " + mtsName + " dataset");
+        }
+
+        descURLStream.close();
+    }
+
+    protected MapTileSet createMapTileSetFromProperties(Properties props) {
         String className = props.getProperty(MapTileSet.CLASS_ATTRIBUTE);
+        Logger logger = getLogger();
         if (className == null) {
             MapTileSet mts = new StandardMapTileSet();
             mts.setProperties(props);
             return mts;
         } else {
-            getLogger().info("Creating special map tile set: " + className);
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Creating special map tile set: " + className);
+            }
             try {
                 Object obj = ComponentFactory.create(className, null, props);
 
                 if (obj instanceof MapTileSet) {
                     return (MapTileSet) obj;
                 } else {
-                    getLogger().info("Had trouble creating "
+                    logger.fine("Had trouble creating "
                             + (obj == null ? className : obj.getClass().getName())
                             + ", not a MapTileSet");
                 }
@@ -142,7 +165,25 @@ public class MapTileServlet extends HttpServlet {
         String pathInfo = req.getPathInfo();
         Logger logger = getLogger();
         if (logger.isLoggable(Level.FINE)) {
-            getLogger().fine("received: " + pathInfo);
+            logger.fine("received: " + pathInfo);
+        }
+
+        // Empty path request, let's return summary catalog, might be of some
+        // help.
+        if (pathInfo.length() <= 1) {
+            StringBuilder builder = new StringBuilder("<html><body>Map Tile Sets:<p>");
+            for (MapTileSet mts : mapTileSets.values()) {
+                String description = mts.getDescription();
+                builder.append("Tile set name: ").append(mts.getName()).append(", description: ");
+                builder.append(description == null ? "n/a" : description).append("<br>");
+            }
+            builder.append("</body></html>");
+
+            resp.setContentType(HttpConnection.CONTENT_HTML);
+            OutputStreamWriter osw = new OutputStreamWriter(out);
+            out.write(builder.toString().getBytes());
+            osw.flush();
+            return;
         }
 
         MapTileSet mts = getMapTileSetForRequest(pathInfo);
@@ -160,10 +201,10 @@ public class MapTileServlet extends HttpServlet {
                     getLogger().fine("Tile not found: " + pathInfo);
                 }
                 HttpConnection.writeHttpResponse(out, HttpConnection.CONTENT_PLAIN, "Problem loading "
-                        + pathInfo);
+                        + pathInfo + " from map tile set:" + mts.getName());
             }
         } else {
-            HttpConnection.writeHttpResponse(out, HttpConnection.CONTENT_PLAIN, "Map Tile Set not found for "
+            HttpConnection.writeHttpResponse(out, HttpConnection.CONTENT_PLAIN, "Map Tile Set not found for request: "
                     + pathInfo);
         }
     }
@@ -182,6 +223,55 @@ public class MapTileServlet extends HttpServlet {
         }
 
         return mapTileSets.get(key);
+    }
+
+    /**
+     * Given a starting directory, look for properties files that describe
+     * MapTileSets.
+     * 
+     * @author dietrick
+     */
+    private class PropertiesWanderer extends Wanderer implements WandererCallback {
+
+        public PropertiesWanderer(File startingDirectory) {
+            setCallback(this);
+            handleEntry(startingDirectory);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * com.bbn.openmap.util.wanderer.WandererCallback#handleDirectory(java
+         * .io.File)
+         */
+        public boolean handleDirectory(File directory) {
+            // Do nothing to directories
+            return true;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * com.bbn.openmap.util.wanderer.WandererCallback#handleFile(java.io
+         * .File)
+         */
+        public boolean handleFile(File file) {
+            getLogger().fine("Checking " + file);
+            try {
+                String name = file.getName();
+                if (name.endsWith("properties")) {
+                    parseAndAddMapTileSet(file.toURI().toURL());
+                }
+            } catch (MalformedURLException murle) {
+                getLogger().warning("Unable to read/load " + file + ", murle");
+            } catch (IOException e) {
+                getLogger().warning("Unable to read/load " + file + ", ioe");
+            }
+            return true;
+        }
+
     }
 
     /**

@@ -38,12 +38,12 @@
 
 	<target name="classes" depends="ommaptile" description="Compiles ommaptile Servlet classes." />
 
-	<target name="all" depends="war" description="Compiles Ommaptile Servlet classes and creates the war (web archive) file." />
+	<target name="all" depends="war" description="Compiles ommaptile Servlet classes and creates the war (web archive) file." />
 
 	<target name="war" depends="jar">
 	  <war destfile="${ommaptile.home}/ommaptile.war" webxml="WEB-INF/web.xml">
 	    <lib dir="${ommaptile.lib_dir}"/>
-	    <classes dir="${ommaptile.home}" includes="*.properties"/>
+	    <classes dir="${ommaptile.home}" includes="tileSetProperties/**"/>
 	  </war>
 	</target>
 	

@@ -28,6 +28,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -37,9 +38,9 @@ import javax.swing.ImageIcon;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
-import com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.TilePathBuilder;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.FileUtils;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.cacheHandler.CacheObject;
 
@@ -321,6 +322,25 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         localCacheDir = setList.getProperty(prefix + LOCAL_CACHE_ROOT_DIR_PROPERTY, localCacheDir);
+    }
+
+    /**
+     * Tell the factory to dump the cache. For the ServerMapTileFactory, this
+     * also includes the local file cache dir.
+     */
+    public void reset() {
+        super.reset();
+        if (localCacheDir != null) {
+            File localCacheDirFile = new File(localCacheDir);
+            if (localCacheDirFile.exists()) {
+                try {
+                    FileUtils.deleteFile(localCacheDirFile);
+                } catch (IOException e) {
+                    logger.fine("There's a problem deleting local cache directory: "
+                            + e.getMessage());
+                }
+            }
+        }
     }
 
 }

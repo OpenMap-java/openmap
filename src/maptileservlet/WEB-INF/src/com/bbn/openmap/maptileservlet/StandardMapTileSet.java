@@ -14,6 +14,8 @@
 package com.bbn.openmap.maptileservlet;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -51,6 +53,7 @@ import com.bbn.openmap.util.PropUtils;
 public class StandardMapTileSet extends StandardMapTileFactory implements MapTileSet {
 
     public final static String NAME_ATTRIBUTE = "name";
+    public final static String DESCRIPTION_ATTRIBUTE = "description";
 
     protected String name;
     protected String description = null;
@@ -68,12 +71,14 @@ public class StandardMapTileSet extends StandardMapTileFactory implements MapTil
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         name = props.getProperty(prefix + NAME_ATTRIBUTE, name);
+        description = props.getProperty(prefix + DESCRIPTION_ATTRIBUTE, description);
     }
 
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
         String prefix = PropUtils.getScopedPropertyPrefix(this);
         props.put(prefix + NAME_ATTRIBUTE, PropUtils.unnull(name));
+        props.put(prefix + DESCRIPTION_ATTRIBUTE, PropUtils.unnull(description));
         return props;
     }
 
@@ -99,16 +104,33 @@ public class StandardMapTileSet extends StandardMapTileFactory implements MapTil
             file.close();
 
         } catch (IOException ioe) {
+            logger.fine("Problem fetching the file");
             // The file wasn't found.
             if (emptyTileHandler != null) {
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Creating " + filePath + " since it wasn't found from the server.");
+                }
+                
                 TileInfo ti = new TileInfo(filePath);// FPBT: used to be
                                                      // pathInfo
                 ti.setMtcTransform(getMtcTransform());
                 BufferedImage bufferedImage = ti.getBufferedImage(emptyTileHandler);
-                // TODO: Need to incorporate formatter to create the correct
-                // image
-                // formatter.
-                imageData = new PNGImageIOFormatter().formatImage(bufferedImage);
+
+                if (bufferedImage != null) {
+                    imageData = new PNGImageIOFormatter().formatImage(bufferedImage);
+                    logger.fine("buffered image created, writing file to disk too");
+                    File newFile = new File(filePath);
+                    newFile.getParentFile().mkdirs();
+                    // Write the image data to the local cache location
+                    FileOutputStream fos = new FileOutputStream(newFile);
+                    fos.write(imageData);
+                    fos.flush();
+                    fos.close();
+                } else {
+                    logger.fine("null buffered image back from EmptyTileHandler");
+                }
+            } else {
+                logger.fine("no empty file handler");
             }
         }
 

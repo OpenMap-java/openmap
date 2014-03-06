@@ -24,9 +24,13 @@
 
 package com.bbn.openmap.dataAccess.mapTile;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Paint;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -83,7 +87,7 @@ import com.bbn.openmap.util.PropUtils;
  * rootDir=Path to top level directory for tiles
  * zoomLevels=zoom1 zoom2
  * 
- * formatter1=.class=com.bbn.openmap.image.PNG32ImageFormatter
+ * formatter1=.class=com.bbn.openmap.image.PNGImageIOFormatter
  * layer1.class=com.bbn.openmap.layer.shape.ShapeLayer
  * # ... layer1 properties follow, see layer docs for specific properties for that layer
  * 
@@ -104,7 +108,7 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * @author dietrick
  */
-public class MapTileMaker extends ImageServer {
+public class MapTileMaker extends ImageServer implements EmptyTileHandler {
 
     public final static String ROOT_DIRECTORY_PROPERTY = "rootDir";
     public final static String ZOOM_LEVELS_PROPERTY = "zoomLevels";
@@ -113,11 +117,11 @@ public class MapTileMaker extends ImageServer {
     protected List<ZoomLevelMaker> zoomLevels;
     protected MapTileCoordinateTransform mtcTransform = new OSMMapTileCoordinateTransform();
     protected int TILE_SIZE = mtcTransform.getTileSize();
-    
+
     /**
      * Empty constructor that expects to be configured later.
      */
-    protected MapTileMaker() {
+    public MapTileMaker() {
     }
 
     /**
@@ -259,6 +263,93 @@ public class MapTileMaker extends ImageServer {
 
         String filePath = zoomInfo.formatImageFilePath(getRootDir(), (int) uvx, (int) uvy);
         return writeImageFile(imageBytes, filePath, true);
+    }
+
+    /**
+     * EmptyTileHandler method, called when a MapTileFactory needs to create and
+     * return a missing tile.
+     * 
+     * @param imagePath the path of the missing tile that is going to be used as
+     *        cache lookup later.
+     * @param x the uv x coordinate of the tile.
+     * @param y the uv y coordinate of the tile.
+     * @param zoomLevel the zoom level of the tile.
+     * @param mtcTransform the transform that converts x,y coordinates to
+     *        lat/lon and describes the layout of the uv tile coordinates.
+     * @param proj the map projection, in case that matters what should be
+     *        returned for the empty tile.
+     * @return BufferedImage for image tile, or null if there's a problem
+     */
+    public BufferedImage getImageForEmptyTile(String imagePath, int x, int y, int zoomLevel,
+                                              MapTileCoordinateTransform mtcTransform,
+                                              Projection proj) {
+
+        Layer[] layers = null;
+
+        List<ZoomLevelMaker> zoomLevels = getZoomLevels();
+        if (zoomLevels != null && !zoomLevels.isEmpty()) {
+            for (ZoomLevelMaker zoomLevelMaker : zoomLevels) {
+                if (zoomLevelMaker.getZoomLevel() == zoomLevel) {
+                    List<Layer> layerList = zoomLevelMaker.getLayerList();
+                    if (layerList != null) {
+                        layers = layerList.toArray(new Layer[layerList.size()]);
+                    } else {
+                        // The zoom level was defined, but layers for the zoom
+                        // level weren't, use top-level layers.
+                        layers = getLayers();
+                    }
+                    break;
+                }
+            }
+        } else {
+            // particular layer configurations for zoom levels aren't defined,
+            // use all layers.
+            layers = getLayers();
+        }
+
+        // Either layers weren't defined at all, or a particular zoom level
+        // wasn't defined.
+        if (layers == null) {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("There are no layers defined for zoom level" + zoomLevel
+                        + " in MapTileMaker, can't create image");
+            }
+            return null;
+        }
+
+        LatLonPoint center = tileUVToLatLon(new Point2D.Double(x + .5, y + .5), zoomLevel);
+        Mercator m = new Mercator(center, mtcTransform.getScaleForZoom(zoomLevel), TILE_SIZE, TILE_SIZE);
+
+        BufferedImage bufferedImage = new BufferedImage(TILE_SIZE, TILE_SIZE, BufferedImage.TYPE_INT_ARGB);
+
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Graphics graphics = ge.createGraphics(bufferedImage);
+        graphics.setClip(0, 0, TILE_SIZE, TILE_SIZE);
+
+        if (graphics == null) {
+            return null;
+        }
+
+        m.drawBackground((Graphics2D) graphics, background);
+
+        if (layers != null) {
+            for (int i = layers.length - 1; i >= 0; i--) {
+                try {
+                    layers[i].renderDataForProjection(proj, graphics);
+                } catch (Exception e) {
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("Problem rendering layer " + i);
+                    }
+                }
+            }
+
+        } else if (logger.isLoggable(Level.FINE)) {
+            logger.fine("no layers available for image");
+        }
+
+        graphics.dispose();
+
+        return bufferedImage;
     }
 
     /**
