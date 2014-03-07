@@ -80,7 +80,7 @@ public class EsriPolygon extends OMPoly implements Cloneable, EsriGraphic {
 
         // Check both graphic extents in case they are inadvertently
         // switched.
-        for (int i = 0; i < graphicExtents.length; i += 2) {
+        for (int i = 0; i < graphicExtents.length - 1; i += 2) {
             if (ex[0] > graphicExtents[i])
                 ex[0] = graphicExtents[i];
             if (ex[1] > graphicExtents[i + 1])
