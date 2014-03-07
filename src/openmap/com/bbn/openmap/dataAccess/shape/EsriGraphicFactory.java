@@ -964,28 +964,28 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                 DrawingAttributes drawingAttributes,
                                                 ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        return createPolyZGraphic(shpFile, SHAPE_TYPE_POLYGONM, drawingAttributes, byteTracker);
+        return createPolyMGraphic(shpFile, SHAPE_TYPE_POLYGONM, drawingAttributes, byteTracker);
     }
 
     protected EsriGraphic createPolygonMGraphic(LittleEndianInputStream iStream,
                                                 DrawingAttributes drawingAttributes,
                                                 ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        return createPolyZGraphic(iStream, SHAPE_TYPE_POLYGONM, drawingAttributes, byteTracker);
+        return createPolyMGraphic(iStream, SHAPE_TYPE_POLYGONM, drawingAttributes, byteTracker);
     }
 
     protected EsriGraphic createPolylineMGraphic(BinaryFile shpFile,
                                                  DrawingAttributes drawingAttributes,
                                                  ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        return createPolyZGraphic(shpFile, SHAPE_TYPE_POLYLINEM, drawingAttributes, byteTracker);
+        return createPolyMGraphic(shpFile, SHAPE_TYPE_POLYLINEM, drawingAttributes, byteTracker);
     }
 
     protected EsriGraphic createPolylineMGraphic(LittleEndianInputStream iStream,
                                                  DrawingAttributes drawingAttributes,
                                                  ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        return createPolyZGraphic(iStream, SHAPE_TYPE_POLYLINEM, drawingAttributes, byteTracker);
+        return createPolyMGraphic(iStream, SHAPE_TYPE_POLYLINEM, drawingAttributes, byteTracker);
     }
 
     protected EsriGraphic createPolyMGraphic(BinaryFile shpFile, int shapeType,
