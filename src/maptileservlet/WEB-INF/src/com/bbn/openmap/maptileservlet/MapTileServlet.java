@@ -7,9 +7,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -172,7 +173,8 @@ public class MapTileServlet extends HttpServlet {
         // Empty path request, let's return summary catalog, might be of some
         // help.
         if (pathInfo.length() <= 1) {
-            String tilePathHeader = req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
+            String tilePathHeader = req.getServerName() + ":" + req.getServerPort()
+                    + req.getContextPath();
             StringBuilder builder = new StringBuilder("<html><body>Map Tile Sets:<p>");
             for (MapTileSet mts : mapTileSets.values()) {
                 String description = mts.getDescription();
@@ -188,13 +190,14 @@ public class MapTileServlet extends HttpServlet {
             osw.flush();
             return;
         }
-        
+
         MapTileSet mts = getMapTileSetForRequest(pathInfo);
 
         if (mts != null) {
 
             if (pathInfo.endsWith("map")) {
-                String tilePathHeader = req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
+                String tilePathHeader = req.getServerName() + ":" + req.getServerPort()
+                        + req.getContextPath();
                 String map = getMap(tilePathHeader, mts);
                 resp.setContentType(HttpConnection.CONTENT_HTML);
                 OutputStreamWriter osw = new OutputStreamWriter(out);
@@ -313,28 +316,55 @@ public class MapTileServlet extends HttpServlet {
     private static Logger getLogger() {
         return LoggerHolder.LOGGER;
     }
-    
+
     /**
-     * Creates a HTML string that will display a Leaflet map with the map tiles for the MapTileSet.
+     * Creates a HTML string that will display a Leaflet map with the map tiles
+     * for the MapTileSet.
+     * 
      * @param tileReqHeader the server:port/context string of this servlet.
      * @param mts the MapTileSet to display.
      * @return html text.
      */
     protected String getMap(String tileReqHeader, MapTileSet mts) {
         String name = mts.getName();
-        
+
+        List<String> nameList = new ArrayList<String>();
+        nameList.add(name);
+        for (MapTileSet set : mapTileSets.values()) {
+            if (!name.equals(set.getName())) {
+                nameList.add(set.getName());
+            }
+        }
+
         StringBuilder ret = new StringBuilder();
-        
+
         ret.append("<html><head><link rel=\"stylesheet\" href=\"http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css\" />");
         ret.append("<script src=\"http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js\"></script></head><body>");
         ret.append("<div id=\"map\" style=\"position:absolute; top:20px; left:20px; right:20px; bottom:20px;overflow:hidden;min-height;200px\"></div>");
         ret.append("<script>");
-        ret.append("var ").append(name).append("Url = \'http://").append(tileReqHeader);
-        ret.append("/").append(name).append("/{z}/{x}/{y}.png\',").append(name).append("=new L.TileLayer(").append(name).append("Url, {maxZoom: 20});");
-        ret.append("var map = new L.Map('map', {center:new L.LatLng(0, 0), zoom:1, maxZoom:20, minZoom:0});");
-        ret.append("map.addLayer(").append(name).append(");map.addControl(new L.Control.Scale());");
+
+        StringBuilder layerControlList = null;
+        for (String mtsName : nameList) {
+            ret.append("var ").append(mtsName).append("Url=\'http://").append(tileReqHeader).append("/").append(mtsName).append("/{z}/{x}/{y}.png\';");
+            ret.append("var ").append(mtsName).append("=L.tileLayer(").append(mtsName).append("Url);");
+            if (layerControlList == null) {
+                layerControlList = new StringBuilder("var baseMaps={");
+                layerControlList.append("\"").append(mtsName).append("\":").append(mtsName);
+            } else {
+                layerControlList.append(",\"").append(mtsName).append("\":").append(mtsName);
+            }
+        }
+
+        if (layerControlList != null) {
+            layerControlList.append("};");
+            ret.append(layerControlList.toString());
+        }
+        ret.append("var map = new L.Map('map', {center:new L.LatLng(0, 0), zoom:1, maxZoom:20, minZoom:0, layers:[").append(name).append("]});");
+        ret.append("L.control.scale().addTo(map);");
+        ret.append("L.control.layers(baseMaps).addTo(map);");
+
         ret.append("</script></body></html>");
-        
+
         return ret.toString();
     }
 }
