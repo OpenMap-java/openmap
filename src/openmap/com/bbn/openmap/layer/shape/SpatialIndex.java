@@ -265,7 +265,7 @@ public class SpatialIndex extends ShapeUtils {
      * @return BinaryFile
      * @throws IOException if the shapeFileName can't be found.
      */
-    protected BinaryFile getShpFile(String shapeFileName) throws IOException {
+    protected synchronized BinaryFile getShpFile(String shapeFileName) throws IOException {
         return new BinaryBufferedFile(shapeFileName);
     }
 
@@ -536,11 +536,15 @@ public class SpatialIndex extends ShapeUtils {
             list = new OMGraphicList();
         }
 
-        if (shp == null) {
+        BinaryFile shpFile = shp;
+        DbfHandler dbfFile = dbf;
+        
+        if (shpFile == null) {
             shp = getShpFile(shpFileName);
+            shpFile = shp;
         }
 
-        if (shp == null) {
+        if (shpFile == null) {
             return list;
         }
 
@@ -558,12 +562,12 @@ public class SpatialIndex extends ShapeUtils {
 
                 try {
 
-                    OMGraphic omg = (OMGraphic) factory.makeEsriGraphicFromRecord(entry.getByteOffset(), shp, drawingAttributes, pointIcon, byteTracker);
+                    OMGraphic omg = (OMGraphic) factory.makeEsriGraphicFromRecord(entry.getByteOffset(), shpFile, drawingAttributes, pointIcon, byteTracker);
 
                     if (omg != null) {
 
-                        if (dbf != null) {
-                            omg = dbf.evaluate(omg, labels, mapProj);
+                        if (dbfFile != null) {
+                            omg = dbfFile.evaluate(omg, labels, mapProj);
 
                             if (omg == null) {
                                 // Failed dbf test, should be ignored.
@@ -585,16 +589,16 @@ public class SpatialIndex extends ShapeUtils {
             }
         }
 
-        if (shp != null) {
-            shp.close();
+        if (shpFile != null) {
+            shpFile.close();
             // Not sure why we want to set this null here. It's cleaner, but a
             // new
             // BinaryFile object is created for every projection change.
             // shp = null;
         }
 
-        if (dbf != null) {
-            dbf.close();
+        if (dbfFile != null) {
+            dbfFile.close();
         }
 
         return list;

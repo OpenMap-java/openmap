@@ -36,15 +36,19 @@ import com.bbn.openmap.dataAccess.shape.output.ShpOutputStream;
 import com.bbn.openmap.dataAccess.shape.output.ShxOutputStream;
 import com.bbn.openmap.omGraphics.BasicStrokeEditor;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMAreaList;
 import com.bbn.openmap.omGraphics.OMCircle;
+import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
+import com.bbn.openmap.omGraphics.OMList;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.omGraphics.OMRangeRings;
 import com.bbn.openmap.omGraphics.OMRect;
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.GeoCoordTransformation;
 import com.bbn.openmap.util.ArgParser;
@@ -124,15 +128,12 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
     /**
      * Create an EsriShapeExport object.
      * 
-     * @param list
-     *            the OMGraphicList to export.
-     * @param proj
-     *            the Projection of the map, needed to convert some OMGraphic
-     *            types to OMPolys.
-     * @param pathToFile
-     *            the file path of the shape file to save to. If null, the user
-     *            will be queried. If not null, the files will be saved without
-     *            any GUI confirmation.
+     * @param list the OMGraphicList to export.
+     * @param proj the Projection of the map, needed to convert some OMGraphic
+     *        types to OMPolys.
+     * @param pathToFile the file path of the shape file to save to. If null,
+     *        the user will be queried. If not null, the files will be saved
+     *        without any GUI confirmation.
      */
     public EsriShapeExport(OMGraphicList list, Projection proj, String pathToFile) {
 
@@ -145,14 +146,11 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
     /**
      * Create an EsriShapeExport object.
      * 
-     * @param list
-     *            the EsriGraphicList to export.
-     * @param dbf
-     *            the DbfTableModel holding the attributes for the list objects.
-     * @param pathToFile
-     *            the file path of the shape file to save to. If null, the user
-     *            will be queried. If not null, the files will be saved without
-     *            any GUI confirmation.
+     * @param list the EsriGraphicList to export.
+     * @param dbf the DbfTableModel holding the attributes for the list objects.
+     * @param pathToFile the file path of the shape file to save to. If null,
+     *        the user will be queried. If not null, the files will be saved
+     *        without any GUI confirmation.
      */
     public EsriShapeExport(EsriGraphicList list, DbfTableModel dbf, String pathToFile) {
 
@@ -277,6 +275,74 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
     /** Scoping method to call addGraphic with the right list. */
     protected void addPoint(OMGraphic graphic, List<Object> record) {
         addGraphic(getPointList(), graphic, record);
+    }
+
+    /**
+     * Scoping method to call addGraphic with contents of OMAreaList. Since
+     * OpenMap can handle polylines as polygons, and this isn't a concept that
+     * other apps can really handle, we're just going to export polylines from
+     * this method.
+     */
+    protected void addAreaList(OMAreaList omal, List<Object> record) {
+        double[] coords = gatherCoords(omal, null);
+        if (coords != null) {
+            addLine(new OMPoly(coords, OMGraphic.DECIMAL_DEGREES, OMGraphic.LINETYPE_STRAIGHT), record);
+        }
+    }
+
+    /**
+     * Walk through OMGeometry, that may be a OMList of Geometries (OMAreaList)
+     * and concatentate the coordinates to make one big poly. Called
+     * recursively.
+     * 
+     * @param omg current OMGeometry
+     * @param current the current coord list.
+     * @return new/current coord array.
+     */
+    protected double[] gatherCoords(OMGeometry omg, double[] current) {
+
+        if (omg instanceof OMList<?>) {
+            OMList<OMGeometry> oml = (OMList<OMGeometry>) omg;
+            for (OMGeometry omgy : oml) {
+                current = gatherCoords(omgy, current);
+            }
+            return current;
+        } else if (omg.getRenderType() == OMGraphic.RENDERTYPE_LATLON) {
+            if (omg instanceof OMPoly) {
+                current = combineCoords(current, ProjMath.arrayRadToDeg(((OMPoly) omg).getLatLonArrayCopy()));
+            } else if (omg instanceof OMLine) {
+                current = combineCoords(current, ((OMLine) omg).getLL());
+            } else if (omg instanceof OMPoint) {
+                OMPoint omp = (OMPoint) omg;
+                double lat = omp.getLat();
+                double lon = omp.getLon();
+                current = combineCoords(current, new double[] { lat, lon });
+            }
+        }
+        return current;
+    }
+
+    /**
+     * Utility method to concatenate coordinate arrays. Handles nulls.
+     * 
+     * @param orig
+     * @param addCoords
+     * @return orig + addCoords
+     */
+    protected double[] combineCoords(double[] orig, double[] addCoords) {
+        if (orig != null && addCoords != null) {
+            System.out.println("creating double array size " + (orig.length + addCoords.length));
+            double[] newCoords = new double[orig.length + addCoords.length];
+            System.arraycopy(orig, 0, newCoords, 0, orig.length);
+            System.arraycopy(addCoords, 0, newCoords, orig.length, addCoords.length);
+            return newCoords;
+        } else if (orig == null && addCoords == null) {
+            return new double[] {};
+        } else if (orig != null) {
+            return orig;
+        } else {
+            return addCoords;
+        }
     }
 
     /**
@@ -405,12 +471,10 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * level iteration to cause the method to fetch the record from the
      * masterDBF, if it exists.
      * 
-     * @param list
-     *            the OMGraphicList to write
-     * @param record
-     *            the record for the current list, used if the list is actually
-     *            a multipart geometry for the overall list. May be null anyway,
-     *            though.
+     * @param list the OMGraphicList to write
+     * @param record the record for the current list, used if the list is
+     *        actually a multipart geometry for the overall list. May be null
+     *        anyway, though.
      * @deprecated use export(OMGraphicList, ArrayList, boolean) instead.
      * @see #export(OMGraphicList list, List masterRecord, boolean writeFiles)
      */
@@ -428,20 +492,16 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * list should be stored as an attribute in the EsriGraphicList under the
      * DBF_ATTRIBUTE key.
      * 
-     * @param list
-     *            the OMGraphicList to write.
-     * @param masterRecord
-     *            the record for the current list, used if the list is actually
-     *            a multipart geometry for the overall list. May be null anyway,
-     *            though.
-     * @param writeFiles
-     *            Flag to note when this method is being called iteratively,
-     *            which is when record is not null. If it is iterative, then the
-     *            writing of the files should not be performed on this round of
-     *            the method call.
+     * @param list the OMGraphicList to write.
+     * @param masterRecord the record for the current list, used if the list is
+     *        actually a multipart geometry for the overall list. May be null
+     *        anyway, though.
+     * @param writeFiles Flag to note when this method is being called
+     *        iteratively, which is when record is not null. If it is iterative,
+     *        then the writing of the files should not be performed on this
+     *        round of the method call.
      */
-    protected void export(OMGraphicList list, List<Object> masterRecord,
-                          boolean writeFiles) {
+    protected void export(OMGraphicList list, List<Object> masterRecord, boolean writeFiles) {
         badGraphics = 0;
 
         if (list == null) {
@@ -491,6 +551,14 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
                 continue;
             }
 
+            // OMAreaList needs to be marked as RENDERTYPE_LATLON
+            if (dtlGraphic instanceof OMAreaList) {
+                if (DEBUG) {
+                    logger.fine("ESE: handling OMAreaList");
+                }
+                addAreaList((OMAreaList) dtlGraphic, record);
+            }
+
             if (dtlGraphic instanceof OMPoly) {
                 OMPoly omPoly = (OMPoly) dtlGraphic;
                 // verify that this instance of OMPoly is a polygon
@@ -512,19 +580,16 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
             else if (dtlGraphic instanceof OMRect) {
                 if (DEBUG)
                     logger.fine("ESE: handling OMRect");
-                addPolygon((OMGraphic) EsriPolygonList.convert((OMRect) dtlGraphic),
-                           record);
+                addPolygon((OMGraphic) EsriPolygonList.convert((OMRect) dtlGraphic), record);
             } else if (dtlGraphic instanceof OMCircle) {
                 if (DEBUG)
                     logger.fine("ESE: handling OMCircle");
-                addPolygon((OMGraphic) EsriPolygonList.convert((OMCircle) dtlGraphic,
-                                                               projection), record);
+                addPolygon((OMGraphic) EsriPolygonList.convert((OMCircle) dtlGraphic, projection), record);
 
             } else if (dtlGraphic instanceof OMRangeRings) {
                 if (DEBUG)
                     logger.fine("ESE: handling OMRangeRings");
-                export(EsriPolygonList.convert((OMRangeRings) dtlGraphic, projection),
-                       record, false);
+                export(EsriPolygonList.convert((OMRangeRings) dtlGraphic, projection), record, false);
 
             }
 
@@ -580,14 +645,14 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
         }
 
         if (lineList != null) {
-            eseInterfaces.add(new ESEInterface(lineList, filePath,
-                    (needTypeSuffix ? LineSuffix : null)));
+            eseInterfaces.add(new ESEInterface(lineList, filePath, (needTypeSuffix ? LineSuffix
+                    : null)));
             needTypeSuffix = true;
         }
 
         if (pointList != null) {
-            eseInterfaces.add(new ESEInterface(pointList, filePath,
-                    (needTypeSuffix ? PointSuffix : null)));
+            eseInterfaces.add(new ESEInterface(pointList, filePath, (needTypeSuffix ? PointSuffix
+                    : null)));
         }
 
         if (needConfirmation) {
@@ -721,8 +786,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * OMGraphics.
      * 
      * 
-     * @param list
-     *            the EsriGraphicList to create a DbfTableModel from.
+     * @param list the EsriGraphicList to create a DbfTableModel from.
      * @return The completed DbfTableModel.
      */
     public static DbfTableModel createDefaultModel(EsriGraphicList list) {
@@ -816,8 +880,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
         return _model;
     }
 
-    public static void syncDrawingAttributesToTableModel(DbfTableModel model,
-                                                         OMGraphicList list,
+    public static void syncDrawingAttributesToTableModel(DbfTableModel model, OMGraphicList list,
                                                          boolean clearUpdatedStatus) {
 
         int count = 0;
@@ -844,8 +907,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
                 }
                 index = model.getColumnIndexForName(SHAPE_DBF_SELECTCOLOR);
                 if (index >= 0) {
-                    record.set(index,
-                               ColorFactory.getHexColorString(omg.getSelectColor()));
+                    record.set(index, ColorFactory.getHexColorString(omg.getSelectColor()));
                 }
 
                 BasicStroke bs = (BasicStroke) omg.getStroke();
@@ -885,25 +947,26 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
      * set of lat/lon points of the float[] defined by OMPoly.getLatLonArray().
      * Returns true for a polygon and false for a polyline.
      * 
-     * @param omPoly
-     *            the OMPoly object to be verified
+     * @param omPoly the OMPoly object to be verified
      * @return The polygon value
      */
     public static boolean isPolygon(OMPoly omPoly) {
-        boolean isPolygon = false;
         // get the array of lat/lon points
         double[] points = omPoly.getLatLonArray();
         int i = points.length;
 
-        // compare the first and last set of points, equal points
-        // verifies a polygon.
-        if (points[0] == points[i - 2] && points[1] == points[i - 1]) {
+        boolean isPolygon = false;
+        // Do we have at least 3 lat/lon coordinates?
+        if (points != null && i > 5) {
+            // compare the first and last set of points, equal points
+            // verifies a polygon.
+            isPolygon = points[0] == points[i - 2] && points[1] == points[i - 1];
 
-            isPolygon = true;
-        }
-        // check OMPoly's definition of a polygon
-        if (omPoly.isPolygon()) {
-            isPolygon = true;
+            // check OMPoly's definition of a polygon. If you want to force
+            // polygon you can set the fill color or set the isPolyon flag. If
+            // you want to force polyline you can set isPolygon flag to false
+            // after color parameters have been set.
+            isPolygon = isPolygon && omPoly.isPolygon();
         }
 
         return isPolygon;
@@ -918,8 +981,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
         sb.append("\nProblem with creating the shapefile set.");
         sb.append("\n").append(e.toString());
 
-        JOptionPane.showMessageDialog(null, sb.toString(), "ESRI Shape Export to File",
-                                      JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, sb.toString(), "ESRI Shape Export to File", JOptionPane.ERROR_MESSAGE);
         e.printStackTrace();
     }
 
@@ -957,9 +1019,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
                 dbf = shp.substring(0, shp.lastIndexOf('.') + 1) + PARAM_DBF;
 
                 DbfTableModel model = DbfTableModel.getDbfTableModel(PropUtils.getResourceOrFileOrURL(dbf));
-                EsriGraphicList list = EsriGraphicList.getEsriGraphicList(
-                                                                          PropUtils.getResourceOrFileOrURL(shp),
-                                                                          null, null);
+                EsriGraphicList list = EsriGraphicList.getEsriGraphicList(PropUtils.getResourceOrFileOrURL(shp), null, null);
 
                 logger.info(list.getDescription());
 
@@ -967,8 +1027,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
                 ese.export();
 
             } catch (MalformedURLException murle) {
-                logger.warning("EsriShapeExport: Malformed URL Exception\n"
-                        + murle.getMessage());
+                logger.warning("EsriShapeExport: Malformed URL Exception\n" + murle.getMessage());
             } catch (NullPointerException npe) {
                 logger.warning("EsriShapeExport: Path to shape file isn't good enough to find .dbf file and .shx file.");
             } catch (Exception exception) {
@@ -987,10 +1046,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
         OMGraphicList ret = null;
 
         if (shpFileURL != null) {
-            EsriGraphicList regList = EsriGraphicList.getEsriGraphicList(
-                                                                         shpFileURL,
-                                                                         drawingAttributes,
-                                                                         coordTransform);
+            EsriGraphicList regList = EsriGraphicList.getEsriGraphicList(shpFileURL, drawingAttributes, coordTransform);
             ret = new OMGraphicList();
             ret.addAll(regList);
 
@@ -1008,10 +1064,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
                 try {
                     URL linesURL = PropUtils.getResourceOrFileOrURL(linesPath);
                     if (linesURL != null) {
-                        EsriGraphicList lineList = EsriGraphicList.getEsriGraphicList(
-                                                                                      linesURL,
-                                                                                      drawingAttributes,
-                                                                                      coordTransform);
+                        EsriGraphicList lineList = EsriGraphicList.getEsriGraphicList(linesURL, drawingAttributes, coordTransform);
                         if (lineList != null) {
                             DbfTableModel dbf = (DbfTableModel) lineList.getAttribute(DBF_ATTRIBUTE);
                             if (regDbf != null && dbf != null && regDbf.matches(dbf)) {
@@ -1022,10 +1075,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
                     }
                     URL pntsURL = PropUtils.getResourceOrFileOrURL(pntsPath);
                     if (pntsURL != null) {
-                        EsriGraphicList pntsList = EsriGraphicList.getEsriGraphicList(
-                                                                                      pntsURL,
-                                                                                      drawingAttributes,
-                                                                                      coordTransform);
+                        EsriGraphicList pntsList = EsriGraphicList.getEsriGraphicList(pntsURL, drawingAttributes, coordTransform);
                         if (pntsList != null) {
                             DbfTableModel dbf = (DbfTableModel) pntsList.getAttribute(DBF_ATTRIBUTE);
                             if (regDbf != null && dbf != null && regDbf.matches(dbf)) {
@@ -1062,8 +1112,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
 
         protected JTextField filePathField;
 
-        public ESEInterface(EsriGraphicList eglist, String filePathString,
-                String fileNameSuffix) {
+        public ESEInterface(EsriGraphicList eglist, String filePathString, String fileNameSuffix) {
             list = eglist;
             filePath = filePathString;
 
@@ -1101,9 +1150,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
                 sectionTitle = "Shape File";
             }
 
-            panel.setBorder(BorderFactory.createTitledBorder(
-                                                             BorderFactory.createEtchedBorder(),
-                                                             sectionTitle));
+            panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), sectionTitle));
 
             panel.setLayout(new GridLayout(0, 1));
             JPanel pathPanel = new JPanel();
@@ -1153,8 +1200,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
 
             // This helps when a file chooser has been used to pick a file to be
             // replaced.
-            if (filePath.endsWith(".shp") || filePath.endsWith(".shx")
-                    || filePath.endsWith(".dbf")) {
+            if (filePath.endsWith(".shp") || filePath.endsWith(".shx") || filePath.endsWith(".dbf")) {
                 filePath = filePath.substring(0, filePath.length() - 4);
             }
 

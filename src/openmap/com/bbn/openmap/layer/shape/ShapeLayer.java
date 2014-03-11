@@ -120,12 +120,11 @@ import com.bbn.openmap.util.PropUtils;
  * @version $Revision: 1.29 $ $Date: 2008/10/16 17:58:15 $
  * @see SpatialIndex
  */
-public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
-        DataBoundsProvider {
+public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener, DataBoundsProvider {
 
-   private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-   public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.shape.ShapeLayer");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.shape.ShapeLayer");
 
     /** The name of the property that holds the name of the shape file. */
     public final static String shapeFileProperty = "shapeFile";
@@ -169,7 +168,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
     }
 
     public ShapeLayer(String shapeFileName) {
-    	this();
+        this();
         spatialIndex = SpatialIndex.locateAndSetShapeData(shapeFileName);
     }
 
@@ -185,14 +184,12 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
      * A call-back method to override in case you want to change the BinaryFile
      * used to in the DbfHandler.
      * 
-     * @param dbfFileName
-     *            path to DBF file.
+     * @param dbfFileName path to DBF file.
      * @return DbfHandler with BinaryFile set in it.
      * @throws FormatException
      * @throws IOException
      */
-    protected DbfHandler createDbfHandler(String dbfFileName) throws FormatException,
-            IOException {
+    protected DbfHandler createDbfHandler(String dbfFileName) throws FormatException, IOException {
         BinaryBufferedFile bbf = new BinaryBufferedFile(dbfFileName);
         return new DbfHandler(bbf);
     }
@@ -200,13 +197,11 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
     /**
      * This method gets called from setProperties.
      * 
-     * @param realPrefix
-     *            This prefix has already been scoped, which means it is an
-     *            empty string if setProperties was called with a null prefix,
-     *            or it's a String ending with a period if it was defined with
-     *            characters.
-     * @param props
-     *            Properties containing information about files and the layer.
+     * @param realPrefix This prefix has already been scoped, which means it is
+     *        an empty string if setProperties was called with a null prefix, or
+     *        it's a String ending with a period if it was defined with
+     *        characters.
+     * @param props Properties containing information about files and the layer.
      */
     protected void setFileProperties(String realPrefix, Properties props) {
         shapeFileName = props.getProperty(realPrefix + shapeFileProperty);
@@ -225,13 +220,13 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
                 }
             } catch (FormatException fe) {
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.warning(getName() + ": Couldn't create DBF handler for "
-                            + dbfFileName + ", FormatException: " + fe.getMessage());
+                    logger.warning(getName() + ": Couldn't create DBF handler for " + dbfFileName
+                            + ", FormatException: " + fe.getMessage());
                 }
             } catch (IOException ioe) {
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.warning(getName() + ": Couldn't create DBF handler for "
-                            + dbfFileName + ", IOException: " + ioe.getMessage());
+                    logger.warning(getName() + ": Couldn't create DBF handler for " + dbfFileName
+                            + ", IOException: " + ioe.getMessage());
                 }
             }
 
@@ -244,8 +239,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
                     spatialIndex.setPointIcon(imageIcon);
                 }
             } catch (MalformedURLException murle) {
-                logger.warning(getName() + ": point image URL not so good: \n\t"
-                        + imageURLString);
+                logger.warning(getName() + ": point image URL not so good: \n\t" + imageURLString);
             } catch (NullPointerException npe) {
                 // May happen if not connected to the internet.
                 fireRequestMessage("Can't access icon image: \n    " + imageURLString);
@@ -262,8 +256,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
     /**
      * Initializes this layer from the given properties.
      * 
-     * @param props
-     *            the <code>Properties</code> holding settings for this layer
+     * @param props the <code>Properties</code> holding settings for this layer
      */
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
@@ -272,7 +265,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
 
         String realPrefix = PropUtils.getScopedPropertyPrefix(this);
         setFileProperties(realPrefix, props);
-        
+
         shadowX = PropUtils.intFromProperties(props, realPrefix + shadowXProperty, 0);
         shadowY = PropUtils.intFromProperties(props, realPrefix + shadowYProperty, 0);
     }
@@ -284,10 +277,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
         props = super.getProperties(props);
 
         String prefix = PropUtils.getScopedPropertyPrefix(this);
-        props.put(prefix + shapeFileProperty,
-                  (shapeFileName == null ? "" : shapeFileName));
-        props.put(prefix + pointImageURLProperty, (imageURLString == null ? ""
-                : imageURLString));
+        props.put(prefix + shapeFileProperty, (shapeFileName == null ? "" : shapeFileName));
+        props.put(prefix + pointImageURLProperty, (imageURLString == null ? "" : imageURLString));
 
         props.put(prefix + shadowXProperty, Integer.toString(shadowX));
         props.put(prefix + shadowYProperty, Integer.toString(shadowY));
@@ -319,10 +310,9 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
      * with any other information about the property that would be helpful
      * (range, default value, etc.).
      * 
-     * @param list
-     *            a Properties object to load the PropertyConsumer properties
-     *            into. If getList equals null, then a new Properties object
-     *            should be created.
+     * @param list a Properties object to load the PropertyConsumer properties
+     *        into. If getList equals null, then a new Properties object should
+     *        be created.
      * @return Properties object containing PropertyConsumer property values. If
      *         getList was not null, this should equal getList. Otherwise, it
      *         should be the Properties object created by the PropertyConsumer.
@@ -330,58 +320,21 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
 
-        String dummyMarker = PropUtils.getDummyMarkerForPropertyInfo(getPropertyPrefix(),
-                                                                     null);
+        String dummyMarker = PropUtils.getDummyMarkerForPropertyInfo(getPropertyPrefix(), null);
 
-        PropUtils.setI18NPropertyInfo(
-                                      i18n,
-                                      list,
-                                      ShapeLayer.class,
-                                      dummyMarker,
-                                      "Rendering Attributes",
-                                      "Attributes that determine how the shapes will be drawn.",
-                                      "com.bbn.openmap.omGraphics.DrawingAttributesPropertyEditor");
+        PropUtils.setI18NPropertyInfo(i18n, list, ShapeLayer.class, dummyMarker, "Rendering Attributes", "Attributes that determine how the shapes will be drawn.", "com.bbn.openmap.omGraphics.DrawingAttributesPropertyEditor");
 
-        list.put(initPropertiesProperty, shapeFileProperty + " " + " "
-                + pointImageURLProperty + " " + shadowXProperty + " " + shadowYProperty
-                + " " + dummyMarker + " " + AddToBeanContextProperty + " "
-                + MinScaleProperty + " " + MaxScaleProperty);
+        list.put(initPropertiesProperty, shapeFileProperty + " " + " " + pointImageURLProperty
+                + " " + shadowXProperty + " " + shadowYProperty + " " + dummyMarker + " "
+                + AddToBeanContextProperty + " " + MinScaleProperty + " " + MaxScaleProperty);
 
-        PropUtils.setI18NPropertyInfo(
-                                      i18n,
-                                      list,
-                                      ShapeLayer.class,
-                                      shapeFileProperty,
-                                      shapeFileProperty,
-                                      "Location of Shape file - .shp (File, CURL or relative file path).",
-                                      "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        PropUtils.setI18NPropertyInfo(i18n, list, ShapeLayer.class, shapeFileProperty, shapeFileProperty, "Location of Shape file - .shp (File, CURL or relative file path).", "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
-        PropUtils.setI18NPropertyInfo(
-                                      i18n,
-                                      list,
-                                      ShapeLayer.class,
-                                      pointImageURLProperty,
-                                      pointImageURLProperty,
-                                      "Image file to use for map location of point data (optional).",
-                                      "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        PropUtils.setI18NPropertyInfo(i18n, list, ShapeLayer.class, pointImageURLProperty, pointImageURLProperty, "Image file to use for map location of point data (optional).", "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
-        PropUtils.setI18NPropertyInfo(
-                                      i18n,
-                                      list,
-                                      ShapeLayer.class,
-                                      shadowXProperty,
-                                      shadowXProperty,
-                                      "Horizontal pixel offset for shadow image for shapes.",
-                                      null);
+        PropUtils.setI18NPropertyInfo(i18n, list, ShapeLayer.class, shadowXProperty, shadowXProperty, "Horizontal pixel offset for shadow image for shapes.", null);
 
-        PropUtils.setI18NPropertyInfo(
-                                      i18n,
-                                      list,
-                                      ShapeLayer.class,
-                                      shadowYProperty,
-                                      shadowYProperty,
-                                      "Vertical pixel offset for shadow image for shapes.",
-                                      null);
+        PropUtils.setI18NPropertyInfo(i18n, list, ShapeLayer.class, shadowYProperty, shadowYProperty, "Vertical pixel offset for shadow image for shapes.", null);
 
         return list;
     }
@@ -426,13 +379,19 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
         OMGraphicList list = getList();
         Projection projection = getProjection();
 
+        boolean DEBUG_FINE = logger.isLoggable(Level.FINE);
+
         if (projection == null) {
-            logger.fine(getName() + ": prepare called with null projection");
+            if (DEBUG_FINE) {
+                logger.fine(getName() + ": prepare called with null projection");
+            }
             return new OMGraphicList();
         }
 
         if (spatialIndex == null) {
-            logger.fine(getName() + ": spatialIndex is null!");
+            if (DEBUG_FINE) {
+                logger.fine(getName() + ": spatialIndex is null!");
+            }
 
             if (list != null) {
                 list.generate(projection, true);// all new graphics
@@ -461,7 +420,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
         // ulLon >= lrLon, but we need to be careful of the check for
         // equality because of floating point arguments...
         if (ProjMath.isCrossingDateline(ulLon, lrLon, projection.getScale())) {
-            if (logger.isLoggable(Level.FINE)) {
+            if (DEBUG_FINE) {
                 logger.fine("ShapeLayer.computeGraphics(): Dateline is on screen");
             }
 
@@ -470,12 +429,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
 
             try {
 
-                list = spatialIndex.getOMGraphics(ulLon, ymin, 180.0d, ymax, list,
-                                                  drawingAttributes, projection,
-                                                  coordTransform);
-                list = spatialIndex.getOMGraphics(-180.0d, ymin, lrLon, ymax, list,
-                                                  drawingAttributes, projection,
-                                                  coordTransform);
+                list = spatialIndex.getOMGraphics(ulLon, ymin, 180.0d, ymax, list, drawingAttributes, projection, coordTransform);
+                list = spatialIndex.getOMGraphics(-180.0d, ymin, lrLon, ymax, list, drawingAttributes, projection, coordTransform);
 
             } catch (InterruptedIOException iioe) {
                 // This means that the thread has been interrupted,
@@ -484,9 +439,18 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
                 // the next thread solve all problems.
                 list = null;
             } catch (IOException ex) {
-                ex.printStackTrace();
+                if (DEBUG_FINE) {
+                    ex.printStackTrace();
+                }
             } catch (FormatException fe) {
-                fe.printStackTrace();
+                if (DEBUG_FINE) {
+                    fe.printStackTrace();
+                }
+            } catch (NullPointerException npe) {
+                // Have seen a NPE as a timing issue on startup that resolves itself quickly - the shp file is null
+                if (DEBUG_FINE) {
+                    npe.printStackTrace();
+                }
             }
         } else {
 
@@ -496,9 +460,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
             double ymax = Math.max(ulLat, lrLat);
 
             try {
-                list = spatialIndex.getOMGraphics(xmin, ymin, xmax, ymax, list,
-                                                  drawingAttributes, projection,
-                                                  coordTransform);
+                list = spatialIndex.getOMGraphics(xmin, ymin, xmax, ymax, list, drawingAttributes, projection, coordTransform);
             } catch (InterruptedIOException iioe) {
                 // This means that the thread has been interrupted,
                 // probably due to a projection change. Not a big
@@ -506,9 +468,18 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
                 // the next thread solve all problems.
                 list = null;
             } catch (java.io.IOException ex) {
-                ex.printStackTrace();
+                if (DEBUG_FINE) {
+                    ex.printStackTrace();
+                }
             } catch (FormatException fe) {
-                fe.printStackTrace();
+                if (DEBUG_FINE) {
+                    fe.printStackTrace();
+                }
+            } catch (NullPointerException npe) {
+                // Have seen a NPE as a timing issue on startup that resolves itself quickly - the shp file is null
+                if (DEBUG_FINE) {
+                    npe.printStackTrace();
+                }
             }
         }
 
@@ -518,8 +489,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
     /**
      * Renders the layer on the map.
      * 
-     * @param g
-     *            a graphics context
+     * @param g a graphics context
      */
     public void paint(Graphics g) {
         if (shadowX == 0 && shadowY == 0) {
@@ -531,8 +501,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
 
             if (omg != null) {
                 if (logger.isLoggable(Level.FINE))
-                    logger.fine("ShapeLayer.paint(): " + omg.size() + " omg" + " shadow="
-                            + shadowX + "," + shadowY);
+                    logger.fine("ShapeLayer.paint(): " + omg.size() + " omg" + " shadow=" + shadowX
+                            + "," + shadowY);
 
                 if (shadowX != 0 || shadowY != 0) {
                     Graphics shadowG = g.create();
@@ -560,7 +530,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
             box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             JPanel stuff = new JPanel();
-            JLabel label  = new JLabel(i18n.get(ShapeLayer.class, "rendering_attributes", "Rendering Attributes: "));
+            JLabel label = new JLabel(i18n.get(ShapeLayer.class, "rendering_attributes", "Rendering Attributes: "));
             stuff.add(label);
             // stuff.setLayout(new BoxLayout(stuff,
             // BoxLayout.X_AXIS));
@@ -573,8 +543,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
             box.add(stuff);
 
             JPanel pal2 = new JPanel();
-            JButton redraw = new JButton(i18n.get(ShapeLayer.class, "redrawLayerButton",
-                                                  "Redraw Layer"));
+            JButton redraw = new JButton(i18n.get(ShapeLayer.class, "redrawLayerButton", "Redraw Layer"));
             redraw.setActionCommand(RedrawCmd);
             redraw.addActionListener(this);
             pal2.add(redraw);
@@ -593,8 +562,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
         if (spatialIndex != null) {
             ESRIBoundingBox bounds = spatialIndex.getBounds();
             if (bounds != null) {
-                box = new DataBounds(bounds.min.x, bounds.min.y, bounds.max.x,
-                        bounds.max.y);
+                box = new DataBounds(bounds.min.x, bounds.min.y, bounds.max.x, bounds.max.y);
             }
         }
         return box;
@@ -610,9 +578,9 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
             list.clear();
             list = null;
         }
-        
+
         if (spatialIndex != null) {
-           spatialIndex.close(true);
+            spatialIndex.close(true);
         }
 
     }

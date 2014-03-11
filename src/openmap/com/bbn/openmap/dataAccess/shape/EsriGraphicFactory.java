@@ -232,16 +232,20 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                Object pointRepresentation,
                                                ReadByteTracker byteTracker)
             throws IOException, FormatException {
-        shp.seek(byteOffset);
-        shp.byteOrder(true);
 
-        int recordNumber = shp.readInteger();
-        int recordContentLength = shp.readInteger() * 2;
-        byteTracker.reset(recordContentLength);
+        OMGraphic omg = null;
+        if (shp != null) {
+            shp.seek(byteOffset);
+            shp.byteOrder(true);
 
-        OMGraphic omg = makeEsriGraphic(shp, drawingAttributes, pointRepresentation, byteTracker);
-        if (omg != null) {
-            omg.putAttribute(SHAPE_INDEX_ATTRIBUTE, new Integer(recordNumber - 1));
+            int recordNumber = shp.readInteger();
+            int recordContentLength = shp.readInteger() * 2;
+            byteTracker.reset(recordContentLength);
+
+            omg = makeEsriGraphic(shp, drawingAttributes, pointRepresentation, byteTracker);
+            if (omg != null) {
+                omg.putAttribute(SHAPE_INDEX_ATTRIBUTE, new Integer(recordNumber - 1));
+            }
         }
 
         return omg;
@@ -252,14 +256,16 @@ public class EsriGraphicFactory implements ShapeConstants {
                                                Object pointRepresentation,
                                                ReadByteTracker byteTracker)
             throws IOException, FormatException {
+        OMGraphic omg = null;
+        if (iStream != null) {
+            int recordNumber = iStream.readInt();
+            int recordContentLength = iStream.readInt() * 2;
+            byteTracker.reset(recordContentLength);
 
-        int recordNumber = iStream.readInt();
-        int recordContentLength = iStream.readInt() * 2;
-        byteTracker.reset(recordContentLength);
-
-        OMGraphic omg = makeEsriGraphic(iStream, drawingAttributes, pointRepresentation, byteTracker);
-        if (omg != null) {
-            omg.putAttribute(SHAPE_INDEX_ATTRIBUTE, new Integer(recordNumber - 1));
+            omg = makeEsriGraphic(iStream, drawingAttributes, pointRepresentation, byteTracker);
+            if (omg != null) {
+                omg.putAttribute(SHAPE_INDEX_ATTRIBUTE, new Integer(recordNumber - 1));
+            }
         }
 
         return omg;
