@@ -1,3 +1,35 @@
+2014-03-13  dietrick  <dietrick@client.wonkavision.local>
+
+	* Tagged OpenMap 5.0.4
+
+2014-03-12  dietrick  <dietrick@client.wonkavision.local>
+
+	* Added a GUI button to the MapTileLayer to delete the tile cache
+	on disk for those layers using a ServerMapTileFactory.  Disabled
+	for layers solely relying on a single map tile directory accessed
+	locally.
+
+	* Improved the property handling of the ommaptileservlet so that
+	the web.xml specifies a property directory instead of the
+	properties files themselves.  Moving a new properties file into
+	the directory (which specifies a new tile set) and reloading the
+	servlet will load the new tileset or any changes.  Update the
+	MapTileMaker to implement EmptyTileHandler, which allows
+	ommaptileservlet to generate tiles on the fly when they are
+	needed, caching them for later requests.
+
+	* Fix for Geo.azimuth(Geo) method, which provided incorrect
+	answsers moving away from the equator.  Replaced with the
+	GreatCircle.sphericalAzimuth algorithm while taking advantage of
+	Geo's ellipsoid model.
+
+	* The com.bbn.openmap.dataAccess.shape package has some bug fixes,
+	including some addition null pointer exception checks, a fix for
+	off-by-one problem with extents, polyline/polygon M types being
+	incorrectly sent to the Z methods.
+
+	* WholeWorldTileHandler has improved source directory handling.
+
 2013-11-25  dietrick  <dietrick@client.wonkavision.local>
 
 	* Tagged OpenMap 5.0.3
