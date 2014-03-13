@@ -24,18 +24,18 @@
 
 package com.bbn.openmap.layer.imageTile;
 
+import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.net.MalformedURLException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-
-import sun.awt.VerticalBagLayout;
 
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.mapTile.MapTileFactory;
@@ -364,25 +364,32 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
     }
 
     public java.awt.Component getGUI() {
+        // Only allow delete cache button if the source of the tiles are from a
+        // server.
+
         JPanel panel = new JPanel();
-        panel.setLayout(new VerticalBagLayout());
-
-        JPanel clearCachePanel = new JPanel();
-        JButton clearButton = new JButton(i18n.get(MapTileLayer.class, "clearCacheLabel", "Clear Tile Cache"));
-        clearCachePanel.add(clearButton);
-        clearButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String query = i18n.get(MapTileLayer.class, "mapTileLayerDeleteCacheQuery", "Delete tiles on disk? Click OK to delete...");
-                
-                int dialogResult = JOptionPane.showConfirmDialog(null, query, "Warning", JOptionPane.OK_CANCEL_OPTION);
-                if (dialogResult == JOptionPane.OK_OPTION) {
-                    clearCache();
-                }
-            }
-        });
-
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(getTransparencyAdjustmentPanel(i18n.get(MapTileLayer.class, "layerTransparencyGUILabel", "Layer Transparency"), JSlider.HORIZONTAL, getTransparency()));
-        panel.add(clearCachePanel);
+
+        if (getTileFactory() instanceof ServerMapTileFactory) {
+            JPanel clearCachePanel = new JPanel(new BorderLayout());
+            clearCachePanel.add(new JPanel(), BorderLayout.WEST);
+            clearCachePanel.add(new JPanel(), BorderLayout.EAST);
+            JButton clearButton = new JButton(i18n.get(MapTileLayer.class, "clearCacheLabel", "Clear Tile Cache"));
+            clearCachePanel.add(clearButton, BorderLayout.CENTER);
+            clearButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String query = i18n.get(MapTileLayer.class, "mapTileLayerDeleteCacheQuery", "Delete tiles on disk? Click OK to delete...");
+
+                    int dialogResult = JOptionPane.showConfirmDialog(null, query, "Warning", JOptionPane.OK_CANCEL_OPTION);
+                    if (dialogResult == JOptionPane.OK_OPTION) {
+                        clearCache();
+                    }
+                }
+            });
+
+            panel.add(clearCachePanel);
+        }
 
         return panel;
     }
