@@ -31,11 +31,6 @@ import java.util.logging.LogRecord;
 
 public class OMLoggingFormatter extends Formatter {
 
- 
-    // Line separator string. This is the value of the line.separator
-    // property at the moment that the SimpleFormatter was created.
-    private String lineSeparator = (String) java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction("line.separator"));
-
     /**
      * Format the given LogRecord.
      * 
@@ -57,7 +52,7 @@ public class OMLoggingFormatter extends Formatter {
         sb.append(record.getLevel().getLocalizedName());
         sb.append(": ");
         sb.append(message);
-        sb.append(lineSeparator);
+        sb.append("\n");
         if (record.getThrown() != null) {
             try {
                 StringWriter sw = new StringWriter();
