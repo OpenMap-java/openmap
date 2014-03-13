@@ -512,7 +512,7 @@ public class Geo implements Serializable {
     }
 
     /**
-     * Azimuth in radians from this to v2.
+     * Azimuth in radians from v2 to this.
      * 
      * @param v2 other Geo
      * @return radian angle between this and v2. Will also return NaN for
@@ -528,17 +528,46 @@ public class Geo implements Serializable {
         // Geo n1 = north.cross(this);
         // Geo n2 = v2.cross(this);
         // crossNormalization is needed to geos of different length.
-        Geo n1 = north.crossNormalize(this);
-        Geo n2 = v2.crossNormalize(this);
-        double az = Math.atan2(-north.dot(n2), n1.dot(n2));
-        return (az > 0.0) ? az : 2.0 * Math.PI + az;
+        /*
+         * Geo n1 = north.crossNormalize(this); Geo n2 =
+         * v2.crossNormalize(this); double az = Math.atan2(-north.dot(n2),
+         * n1.dot(n2)); return (az > 0.0) ? az : 2.0 * Math.PI + az;
+         */
+
+        /**
+         * Not sure why the above algorithm doesn't work, although it seems like
+         * it doesn't. It's a off when the latitudes are further away from the
+         * equator. I've worked through the math, and it looks like it should
+         * work, but tests at 50 deg N reveal severe departure from results from
+         * other toolkits. -DFD
+         */
+
+        // Even though the GreatCircle class is based on the spherical model,
+        // this result is based on the ellipsoidal model because the latitudes
+        // have already been corrected for and flattened.
+
+        // Taking the algorithm from the GreatCircle.sphericalAzimuth method
+        // directly, so that the omgeo.jar file won't depend on openmap.jar.
+
+        double phi1 = this.getLatitudeRadians();
+        double lambda0 = this.getLongitudeRadians();
+        double phi = v2.getLatitudeRadians();
+        double lambda = v2.getLongitudeRadians();
+        
+        double ldiff = lambda - lambda0;
+        double cosphi = Math.cos(phi);
+
+        double az =  Math.atan2(cosphi * Math.sin(ldiff), (Math.cos(phi1) * Math.sin(phi) - Math.sin(phi1)
+                * cosphi * Math.cos(ldiff)));
+        
+        return (az >= 0.0) ? az : MoreMath.TWO_PI_D + az;
     }
 
     /**
-     * Azimuth in radians from this to v2.
+     * Azimuth in radians from v2 to this.
      * 
      * @param v2 other Geo
-     * @return radian angle between this and v2, and zero instead of NaN if the
+     * @return radian angle between v2 and this, and zero instead of NaN if the
      *         two geos are identical.
      */
     public double azimuth(Geo v2) {
