@@ -21,7 +21,16 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 public abstract class AbstractMapTileCoordinateTransform implements MapTileCoordinateTransform {
 
     int tileSize = TILE_SIZE;
-    
+    /**
+     * The zoom level tile size is used by the factory to determine when it
+     * needs to get tiles for a different zoom level. The default value is 350.
+     * That is, when the factory is figuring out what zoom level to use, if the
+     * pixel size of a tile is greater than or equal to 350 x 350, it decides to
+     * check the next zoom level for retrieving tiles. This is used instead of
+     * just comparing projection scales.
+     */
+    int DEFAULT_ZOOM_LEVEL_TILE_SIZE = 350;
+
     /*
      * (non-Javadoc)
      * 
@@ -71,6 +80,65 @@ public abstract class AbstractMapTileCoordinateTransform implements MapTileCoord
     }
 
     /**
+     * Given a projection, figure out the appropriate zoom level for it. Right
+     * now, 0 is totally zoomed with one tile for the entire earth. But we don't
+     * return 0, we start at 1. OM can't handle one tile that covers the entire
+     * earth because of the restriction for handling OMGraphics to less than
+     * half of the earth.
+     * 
+     * @param proj
+     * @return the zoom level.
+     */
+    public int getZoomLevelForProj(Projection proj) {
+        return getZoomLevelForProj(proj, DEFAULT_ZOOM_LEVEL_TILE_SIZE);
+    }
+    
+    /**
+     * Given a projection, figure out the appropriate zoom level for it. Right
+     * now, 0 is totally zoomed with one tile for the entire earth. But we don't
+     * return 0, we start at 1. OM can't handle one tile that covers the entire
+     * earth because of the restriction for handling OMGraphics to less than
+     * half of the earth.
+     * 
+     * @param proj
+     * @param zoomLevelTileSize used for determining zoom levels, a kind of
+     *        buffer around true zoom levels since the OpenMap layers scale
+     *        images.
+     * @return the zoom level.
+     */
+    public int getZoomLevelForProj(Projection proj, int zoomLevelTileSize) {
+        int low = 1;
+        int high = 20;
+
+        float currentScale = proj.getScale();
+        int ret = low;
+        for (int currentZoom = low; currentZoom <= high; currentZoom++) {
+            // nearest tile to center
+            Point2D nttc = latLonToTileUV(proj.getCenter(), currentZoom);
+
+            double nttcX = Math.floor(nttc.getX());
+            double nttcY = Math.floor(nttc.getY());
+            Point2D originLLUL = tileUVToLatLon(new Point2D.Double(nttcX, nttcY), currentZoom);
+            Point2D originLLLR = tileUVToLatLon(new Point2D.Double(nttcX + 1, nttcY + 1), currentZoom);
+
+            Point2D projUVUL = proj.forward(originLLUL);
+            Point2D projLLLR = proj.forward(originLLLR);
+
+            if (Math.abs(projUVUL.getX() - projLLLR.getX()) <= zoomLevelTileSize) {
+                return currentZoom;
+            }
+
+            /*
+             * Used to try to do this with scale comparisons, now just look at
+             * tile sizes. float diff = currentScale - scales[currentZoom]; if
+             * (diff > 0) { return currentZoom + 1; }
+             */
+        }
+
+        return ret;
+    }
+
+    /**
      * Creates an array of scale values for different zoom levels. Make sure you
      * don't reference the array outside of 0 and high zoom levels. There will
      * be a high zoom level number of items in the array.
@@ -87,7 +155,7 @@ public abstract class AbstractMapTileCoordinateTransform implements MapTileCoord
         }
         return ret;
     }
-    
+
     /**
      * Returns the tile size of the transform.
      */

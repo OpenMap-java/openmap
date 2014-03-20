@@ -494,7 +494,7 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
          * looks like.
          */
         if (zoomLevel < 0) {
-            zoomLevel = getZoomLevelForProj(proj);
+            zoomLevel = mtcTransform.getZoomLevelForProj(proj, zoomLevelTileSize);
             if (verbose) {
                 logger.fine("Best zoom level calculated at: " + zoomLevel);
             }
@@ -794,12 +794,6 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
     }
 
     /**
-     * An array of scales for all of the possible zoom levels, from 1 to 20.
-     * They get calculate the first time getZoomLevelForProj is called.
-     */
-    protected float[] scales;
-
-    /**
      * Build an image path to load, based on specified tile coordinates, zoom
      * level and file extension settings.
      * 
@@ -896,53 +890,6 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
             }
             return currentPath;
         }
-    }
-
-    /**
-     * Given a projection, figure out the appropriate zoom level for it. Right
-     * now, 0 is totally zoomed with one tile for the entire earth. But we don't
-     * return 0, we start at 1. OM can't handle one tile that covers the entire
-     * earth because of the restriction for handling OMGraphics to less than
-     * half of the earth.
-     * 
-     * @param proj
-     * @return the zoom level.
-     */
-    public int getZoomLevelForProj(Projection proj) {
-        int low = 1;
-        int high = 20;
-        MapTileCoordinateTransform mtct = new OSMMapTileCoordinateTransform();
-
-        if (scales == null) {
-            scales = mtct.getScalesForZoomLevels(proj, high);
-        }
-
-        float currentScale = proj.getScale();
-        int ret = low;
-        for (int currentZoom = low; currentZoom <= high; currentZoom++) {
-            // nearest tile to center
-            Point2D nttc = mtct.latLonToTileUV(proj.getCenter(), currentZoom);
-
-            double nttcX = Math.floor(nttc.getX());
-            double nttcY = Math.floor(nttc.getY());
-            Point2D originLLUL = mtct.tileUVToLatLon(new Point2D.Double(nttcX, nttcY), currentZoom);
-            Point2D originLLLR = mtct.tileUVToLatLon(new Point2D.Double(nttcX + 1, nttcY + 1), currentZoom);
-
-            Point2D projUVUL = proj.forward(originLLUL);
-            Point2D projLLLR = proj.forward(originLLLR);
-
-            if (Math.abs(projUVUL.getX() - projLLLR.getX()) <= zoomLevelTileSize) {
-                return currentZoom;
-            }
-
-            /*
-             * Used to try to do this with scale comparisons, now just look at
-             * tile sizes. float diff = currentScale - scales[currentZoom]; if
-             * (diff > 0) { return currentZoom + 1; }
-             */
-        }
-
-        return ret;
     }
 
     public MapTileRequester getMapTileRequester() {
