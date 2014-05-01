@@ -34,8 +34,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Iterator;
 
+import javax.imageio.ImageIO;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -258,7 +261,7 @@ public class WindowSupport
      * @param owner
      * @return WSDisplay
      */
-    protected WSDisplay createDisplay(Frame owner) {
+    protected WSDisplay createDisplay(Window owner) {
         WSDisplay wsd;
         if (persistentDisplayType == null && Environment.getBoolean(Environment.UseInternalFrames)) {
             wsd = new IntrnlFrm(title);
@@ -272,6 +275,7 @@ public class WindowSupport
                 wsd = new Frm(title);
             }
         }
+        setFavIcon(wsd);
         setDisplay(wsd);
         return wsd;
     }
@@ -286,7 +290,7 @@ public class WindowSupport
      *        persistentDisplayType will be used.
      * @return WSDisplay
      */
-    protected WSDisplay createDisplay(Frame owner, Class displayType) {
+    protected WSDisplay createDisplay(Window owner, Class displayType) {
         WSDisplay wsd;
 
         if (displayType == null) {
@@ -352,7 +356,7 @@ public class WindowSupport
      * 
      * @param owner Frame for JDialog
      */
-    public void displayInWindow(Frame owner) {
+    public void displayInWindow(Window owner) {
 
         Dimension dim = getComponentSize();
         if (dim != null) {
@@ -390,7 +394,7 @@ public class WindowSupport
      * @param height the vertical size of the window, if less than or equal to
      *        zero the content size will be used.
      */
-    public void displayInWindow(Frame owner, int x, int y, int width, int height) {
+    public void displayInWindow(Window owner, int x, int y, int width, int height) {
         displayInWindow(owner, null, x, y, width, height);
     }
 
@@ -406,7 +410,7 @@ public class WindowSupport
      * @param height the vertical size of the window, if less than or equal to
      *        zero the content size will be used.
      */
-    public void displayInWindow(Frame owner, Class displayType, int x, int y, int width, int height) {
+    public void displayInWindow(Window owner, Class displayType, int x, int y, int width, int height) {
 
         if (content == null) {
             Debug.message("windowsupport", "WindowSupport asked to display window with null content");
@@ -648,7 +652,7 @@ public class WindowSupport
             extends JDialog
             implements WSDisplay {
 
-        public Dlg(Frame owner, String title) {
+        public Dlg(Window owner, String title) {
             super(owner, title);
             Debug.message("windows", "WindowSupport creating frame");
         }
@@ -741,6 +745,18 @@ public class WindowSupport
                 super.setVisible(true);
             }
             toFront();
+        }
+    }
+
+    protected void setFavIcon(WSDisplay wsd) {
+        String iconPath = Environment.get("openmap.favicon");
+        if (iconPath != null && wsd instanceof Window) {
+            try {
+                BufferedImage favIcon = ImageIO.read(WindowSupport.class.getResourceAsStream(iconPath));
+                ((Window) wsd).setIconImage(favIcon);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

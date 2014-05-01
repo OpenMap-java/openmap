@@ -23,6 +23,7 @@
 package com.bbn.openmap.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -30,6 +31,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -413,11 +415,14 @@ public class LayersPanel extends OMToolComponent implements Serializable,
                 }
 
                 MapHandler mh = (MapHandler) getBeanContext();
-                Frame frame = null;
+                Window frame = null;
                 if (mh != null) {
                     frame = (Frame) mh.get(java.awt.Frame.class);
                 }
 
+                if (frame == null && evt.getSource() instanceof Component) {
+                    frame = SwingUtilities.getWindowAncestor((Component) evt.getSource());
+                }
                 ws.displayInWindow(frame, x, y, w, h);
             }
         };

@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -1447,7 +1448,7 @@ public abstract class Layer
 
         if (ws != null) {
             MapHandler mh = (MapHandler) getBeanContext();
-            Frame frame = null;
+            Window frame = null;
             if (mh != null) {
                 frame = (Frame) mh.get(java.awt.Frame.class);
 
@@ -1458,12 +1459,13 @@ public abstract class Layer
                     } else {
                         try {
                             java.awt.Component parent = mapBean.getParent();
-                            while (parent.getParent() != null && !(parent instanceof java.awt.Frame)) {
+                            while (parent.getParent() != null
+                                    && !(parent instanceof java.awt.Window)) {
                                 parent = parent.getParent();
                             }
 
-                            if (parent instanceof java.awt.Frame) {
-                                frame = (java.awt.Frame) parent;
+                            if (parent instanceof java.awt.Window) {
+                                frame = (java.awt.Window) parent;
                             }
 
                         } catch (Exception e) {
