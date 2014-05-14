@@ -284,6 +284,7 @@ public class OMSpline extends OMPoly {
 
         setNeedToRegenerate(false);
         setShape(createShape());
+        setLabelLocation(getShape(), proj);
         return true;
     }
 

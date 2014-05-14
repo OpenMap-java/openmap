@@ -4,21 +4,26 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.util.Properties;
 
 import com.bbn.openmap.MapBean;
+import static com.bbn.openmap.PropertyConsumer.initPropertiesProperty;
+import static com.bbn.openmap.event.DistanceMouseMode.ShowAngleProperty;
+import static com.bbn.openmap.event.DistanceMouseMode.ShowCircleProperty;
+import static com.bbn.openmap.event.DistanceMouseMode.UnitProperty;
+import com.bbn.openmap.geo.Geo;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMCircle;
+import com.bbn.openmap.omGraphics.OMGraphicConstants;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.omGraphics.OMText;
-import com.bbn.openmap.proj.GreatCircle;
-import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.PropUtils;
@@ -27,12 +32,11 @@ import com.bbn.openmap.util.PropUtils;
  * Mouse mode for drawing temporary range rings on a map bean.<br>
  * The whole map bean is repainted each time the range rings needs to be
  * repainted. The map bean needs to use a mouseDelegator to repaint properly.<br>
- *
+ * 
  * @author Stephane Wasserhardt
- *
+ * 
  */
-public class RangeRingsMouseMode
-        extends CoordMouseMode {
+public class RangeRingsMouseMode extends CoordMouseMode {
 
     private static final long serialVersionUID = 6208201699394207932L;
     public final static transient String modeID = "RangeRings";
@@ -40,6 +44,7 @@ public class RangeRingsMouseMode
      * The property string used to set the numRings member variable.
      */
     public static final String NUM_RINGS_PROPERTY = "numRings";
+    public static final String UNITS_PROPERTY = "units";
     public transient DecimalFormat df = new DecimalFormat("0.###");
     /**
      * Format used to draw distances.
@@ -53,19 +58,17 @@ public class RangeRingsMouseMode
     /**
      * Origin point of the range rings to be drawn.
      */
-    protected LatLonPoint origin = null;
+    protected Point2D origin = null;
     /**
      * Temporary destination point of the range rings to be drawn.
      */
-    protected LatLonPoint intermediateDest = null;
+    protected Point2D intermediateDest = null;
     /**
      * Destination point of the range rings to be drawn.
      */
-    protected LatLonPoint destination = null;
-    /**
-     * Active MapBean.
-     */
-    protected MapBean mapBean;
+    protected Point2D destination = null;
+
+    protected DrawingAttributes rrAttributes = DrawingAttributes.getDefaultClone();
 
     public RangeRingsMouseMode() {
         this(true);
@@ -83,29 +86,14 @@ public class RangeRingsMouseMode
 
     protected void init() {
         setModeCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-    }
-
-    /**
-     * Return the map bean.
-     *
-     * @return The map bean.
-     */
-    public MapBean getMapBean() {
-        return mapBean;
-    }
-
-    /**
-     * Set the map bean.
-     *
-     * @param aMap a map bean
-     */
-    public void setMapBean(MapBean aMap) {
-        mapBean = aMap;
+        rrAttributes.setLinePaint(Color.GRAY);
+        rrAttributes.setMattingPaint(Color.LIGHT_GRAY);
+        rrAttributes.setMatted(true);
     }
 
     /**
      * Give the Format object used to display distances.
-     *
+     * 
      * @return Format.
      */
     public Format getDistanceFormat() {
@@ -114,17 +102,16 @@ public class RangeRingsMouseMode
 
     /**
      * Sets the Format object used to display distances.
-     *
+     * 
      * @param distanceFormat Format.
      */
     public void setDistanceFormat(Format distanceFormat) {
         this.distanceFormat = distanceFormat;
-        redraw();
     }
 
     /**
      * Returns the number of rings to display.
-     *
+     * 
      * @return the number of rings to display.
      */
     public int getNumRings() {
@@ -133,361 +120,238 @@ public class RangeRingsMouseMode
 
     /**
      * Sets the number of rings to display.
-     *
+     * 
      * @param numRings the number of rings to display.
      */
     public void setNumRings(int numRings) {
         this.numRings = numRings;
-        redraw();
+    }
+
+    public void setActive(boolean active) {
+        if (!active) {
+            cleanUp();
+        }
     }
 
     public void mouseClicked(MouseEvent e) {
-        if (e.getSource() instanceof MapBean) {
-            setMapBean((MapBean) e.getSource());
+        MapBean theMap = e.getSource() instanceof MapBean ? (MapBean) e.getSource() : null;
+        if (theMap != null) {
             // if double (or more) mouse clicked
             if (e.getClickCount() >= 2) {
                 // Clean the range rings
-
                 cleanUp();
-
-                redraw();
+                theMap.repaint();
             }
         }
     }
 
     public void mousePressed(MouseEvent e) {
-        e.getComponent().requestFocus();
-    }
-
-    public void mouseReleased(MouseEvent e) {
-        if ((e.getComponent().hasFocus()) && (e.getSource() instanceof MapBean)) {
-            setMapBean((MapBean) e.getSource());
-
-            LatLonPoint pt = (LatLonPoint) getMapBean().getProjection().inverse(e.getPoint(), new LatLonPoint.Double());
-            // If this is the first click (real first click or click after
-            // "finished" rangeRings)
-            if ((origin == null) || ((origin != null) && (destination != null))) {
-                // First, we clear up the map (erase any previous rangeRings)
-                cleanUp();
-                redraw();
-
-                origin = pt;
-                // Just to be sure
-                destination = null;
-
-                startUp();
-            } // This case is when only the origin is known
-            else {
-                // The click then corresponds to the selection of a destination
-                destination = pt;
-
-                finished();
+        Object obj = e.getSource();
+        if (obj instanceof MapBean) {
+            MapBean theMap = (MapBean) obj;
+            if (origin == null) {
+                Point pnt = e.getPoint();
+                origin = theMap.inverse(pnt.getX(), pnt.getY(), new LatLonPoint.Double());
+                theMap.addPaintListener(this);
             }
-
-            redraw();
         }
     }
 
+    public void mouseReleased(MouseEvent e) {
+        Object obj = e.getSource();
+        if (obj instanceof MapBean) {
+            MapBean theMap = (MapBean) obj;
+
+            if (origin != null && destination == null) {
+                Point pnt = e.getPoint();
+                Point2D originPnt = theMap.getProjection().forward(origin);
+                if (Math.abs(originPnt.getX() - pnt.getX()) > 5
+                        && Math.abs(originPnt.getY() - pnt.getY()) > 5) {
+                    destination = theMap.inverse(pnt.getX(), pnt.getY(), new LatLonPoint.Double());
+                    intermediateDest = null;
+                }
+            }
+
+            theMap.repaint();
+        }
+    }
+
+    public void mouseDragged(MouseEvent e) {
+        mouseMoved(e);
+    }
+
     public void mouseMoved(MouseEvent e) {
-        if (e.getSource() instanceof MapBean) {
-            setMapBean((MapBean) (e.getSource()));
-            if (origin != null) {
-                intermediateDest = (LatLonPoint) getMapBean().getProjection().inverse(e.getPoint(), new LatLonPoint.Double());
-
+        Object obj = e.getSource();
+        if (obj instanceof MapBean) {
+            MapBean theMap = (MapBean) obj;
+            if (origin != null && destination == null) {
+                Point pnt = e.getPoint();
+                intermediateDest = theMap.inverse(pnt.getX(), pnt.getY(), new LatLonPoint.Double());
                 fireMouseLocation(e);
-
-                update();
-
-                redraw();
+                theMap.repaint();
             } else {
                 fireMouseLocation(e);
             }
         }
     }
 
-    public void mouseEntered(MouseEvent e) {
-        if (e.getSource() instanceof MapBean) {
-            setMapBean((MapBean) e.getSource());
-        }
-    }
-
     /**
-     * Repaints the map bean. When this mouse mode is active, it is registered
-     * as a <code>paintListener</code> for the mapBean by the mouseDelegator, so
-     * the <code>listenerPaint</code> method can draw the range rings on the map
-     * bean.
+     * PaintListener method.
+     * 
+     * @param source the source object, most likely the MapBean
+     * @param g java.awt.Graphics
      */
-    public void redraw() {
-        MapBean mb = getMapBean();
-        if (mb != null) {
-            mb.repaint();
-        }
-    }
-
-    public void listenerPaint(Graphics g) {
-        // We paint only if we know the origin ...
-        if (origin != null) {
-            paintOrigin(g);
-            // ... and we paint the rings if we know either of destination or
-            // intermediateDest
-            if (destination != null) {
-                paintRangeRings(destination, g);
-            } else if (intermediateDest != null) {
-                paintRangeRings(intermediateDest, g);
+    public void listenerPaint(Object source, Graphics g) {
+        MapBean theMap = source instanceof MapBean ? (MapBean) source : null;
+        if (theMap != null) {
+            if (origin != null) {
+                paintOrigin(origin, g, theMap);
+                // ... and we paint the rings if we know either destination or
+                // intermediateDest
+                if (destination != null) {
+                    paintRangeRings(origin, destination, g, theMap);
+                } else if (intermediateDest != null) {
+                    paintRangeRings(origin, intermediateDest, g, theMap);
+                }
+            } else {
+                theMap.removePaintListener(this);
             }
-        }
-    }
-
-    /**
-     * Paints the origin point of the range rings and its label on the map bean.
-     */
-    protected void paintOrigin() {
-        MapBean mb = getMapBean();
-        if (mb != null) {
-            Graphics g = mb.getGraphics(true);
-            paintOrigin(g);
         }
     }
 
     /**
      * Paints the origin point of the range rings and its label on the given
      * Graphics.
-     *
+     * 
+     * @param llp the location of the origin.
      * @param graphics The Graphics to paint on.
      */
-    protected void paintOrigin(Graphics graphics) {
-        MapBean mb = getMapBean();
-        if (mb == null) {
-            return;
-        }
-        paintOriginPoint(graphics);
-        paintOriginLabel(graphics);
+    protected void paintOrigin(Point2D llp, Graphics graphics, MapBean theMap) {
+        paintOriginPoint(llp, graphics, theMap);
+        paintOriginLabel(llp, graphics, theMap);
     }
 
     /**
      * Paints the origin point of the range rings on the given Graphics.
-     *
+     * 
+     * @param originPnt the origin point
      * @param graphics The Graphics to paint on.
      */
-    protected void paintOriginPoint(Graphics graphics) {
-        MapBean mb = getMapBean();
-
-        Projection proj = mb.getProjection();
-
-        OMPoint pt = new OMPoint((float) origin.getY(), (float) origin.getX());
-
-        Graphics2D g = (Graphics2D) graphics;
-        g.setPaintMode();
-        g.setColor(Color.BLACK);
-
-        preparePoint(pt);
-
-        pt.generate(proj);
-        pt.render(g);
+    protected void paintOriginPoint(Point2D originPnt, Graphics graphics, MapBean theMap) {
+        if (theMap != null && originPnt != null) {
+            OMPoint pt = new OMPoint(originPnt.getY(), originPnt.getX());
+            preparePoint(pt);
+            pt.generate(theMap.getRotatedProjection());
+            pt.render(graphics);
+        }
     }
 
     /**
      * Paints the origin label of the range rings on the given Graphics.
-     *
+     * 
+     * @param originPnt the origin point
      * @param graphics The Graphics to paint on.
      */
-    protected void paintOriginLabel(Graphics graphics) {
-        MapBean mb = getMapBean();
-
-        Projection proj = mb.getProjection();
-        Point2D pt = proj.forward(origin);
-
-        String infoText = getOriginLabel();
-
-        Graphics2D g = (Graphics2D) graphics;
-        Rectangle2D r = g.getFontMetrics().getStringBounds(infoText, graphics);
-
-        pt.setLocation(pt.getX() - (r.getWidth() / 2d), pt.getY() - (r.getHeight() / 2d));
-
-        OMText text = new OMText((int) pt.getX(), (int) pt.getY(), infoText, OMText.JUSTIFY_LEFT);
-
-        g.setPaintMode();
-        g.setColor(Color.BLACK);
-
-        prepareLabel(text);
-
-        text.generate(proj);
-        text.render(g);
-    }
-
-    /**
-     * Paints the circles and their labels on the map bean.
-     *
-     * @param dest The destination point, used with the <code>origin</code>
-     *        member variable to compute the rings.
-     */
-    protected void paintRangeRings(LatLonPoint dest) {
-        MapBean mb = getMapBean();
-        if (mb != null) {
-            Graphics g = mb.getGraphics(true);
-            paintRangeRings(dest, g);
+    protected void paintOriginLabel(Point2D originPnt, Graphics graphics, MapBean theMap) {
+        if (theMap != null && originPnt != null) {
+            OMText text = new OMText(originPnt.getY(), originPnt.getX(), getOriginLabel(), OMText.JUSTIFY_CENTER);
+            text.setBaseline(OMText.BASELINE_BOTTOM);
+            text.putAttribute(OMGraphicConstants.NO_ROTATE, Boolean.TRUE);
+            prepareLabel(text);
+            text.generate(theMap.getRotatedProjection());
+            text.render(graphics);
         }
     }
 
     /**
      * Paints the circles and their labels on the given Graphics.
-     *
-     * @param dest The destination point, used with the <code>origin</code>
-     *        member variable to compute the rings.
+     * 
+     * @param originPnt the origin location
+     * @param dest the location of the inner ring.
      * @param graphics The Graphics to paint on.
      */
-    protected void paintRangeRings(LatLonPoint dest, Graphics graphics) {
-        MapBean mb = getMapBean();
-        if (mb == null) {
-            return;
-        }
+    protected void paintRangeRings(Point2D originPnt, Point2D dest, Graphics graphics,
+                                   MapBean theMap) {
+        Geo originGeo = new Geo(originPnt.getY(), originPnt.getX(), true);
+        Geo destGeo = new Geo(dest.getY(), dest.getX(), true);
+        double distance = originGeo.distance(destGeo); // radians
 
-        Projection proj = mb.getProjection();
+        for (int i = 1; i <= Math.max(1, numRings); i++) {
+            double ringDist = distance * (double) i;
 
-        AffineTransform xyTranslation = getTranslation(origin, dest, proj);
-
-        LatLonPoint p = null;
-        for (int i = 0; i < Math.max(1, numRings); i++) {
-            if (p == null) {
-                p = dest;
-            } else {
-                p = translate(p, xyTranslation, proj);
-            }
-            paintCircle(p, graphics);
-            paintLabel(p, graphics);
-        }
-    }
-
-    /**
-     * Paints a unique circle centered on <code>origin</code> and which crosses
-     * <code>dest</code> on the map bean.
-     *
-     * @param dest A point on the circle.
-     */
-    protected void paintCircle(LatLonPoint dest) {
-        MapBean mb = getMapBean();
-        if (mb != null) {
-            Graphics g = mb.getGraphics(true);
-            paintCircle(dest, g);
+            paintCircle(originGeo, ringDist, graphics, theMap);
+            paintLabel(originGeo, ringDist, graphics, theMap);
         }
     }
 
     /**
      * Paints a unique circle centered on <code>origin</code> and which crosses
      * <code>dest</code> on the given Graphics.
-     *
-     * @param dest A point on the circle.
+     * 
+     * @param originGeo the origin location
+     * @param distance the distance of the circle from the origin, in radians
      * @param graphics The Graphics to paint on.
      */
-    protected void paintCircle(LatLonPoint dest, Graphics graphics) {
-        double oLat = origin.getY();
-        double oLon = origin.getX();
-
-        double radphi1 = ProjMath.degToRad(oLat);
-        double radlambda0 = ProjMath.degToRad(oLon);
-        double radphi = ProjMath.degToRad(dest.getY());
-        double radlambda = ProjMath.degToRad(dest.getX());
-
-        // calculate the circle radius
-        double dRad = GreatCircle.sphericalDistance(radphi1, radlambda0, radphi, radlambda);
-        // convert into decimal degrees
-        float rad = (float) ProjMath.radToDeg(dRad);
-
-        // make the circle
-        OMCircle circle = new OMCircle((float) oLat, (float) oLon, rad);
-
+    protected void paintCircle(Geo originGeo, double distance, Graphics graphics, MapBean theMap) {
+        OMCircle circle = new OMCircle(originGeo.getLatitude(), originGeo.getLongitude(), Length.DECIMAL_DEGREE.fromRadians(distance));
         prepareCircle(circle);
-
-        // get the map projection
-        Projection proj = getMapBean().getProjection();
-        // prepare the circle for rendering
-        circle.generate(proj);
-        // render the circle graphic
+        circle.generate(theMap.getRotatedProjection());
         circle.render(graphics);
-    }
-
-    /**
-     * Paints a label for the circle drawn using <code>dest</code> on the map
-     * bean.
-     *
-     * @param dest A point on the circle.
-     */
-    protected void paintLabel(LatLonPoint dest) {
-        MapBean mb = getMapBean();
-        if (mb != null) {
-            Graphics g = mb.getGraphics(true);
-            paintLabel(dest, g);
-        }
     }
 
     /**
      * Paints a label for the circle drawn using <code>dest</code> on the given
      * Graphics.
-     *
-     * @param dest A point on the circle.
-     * @param graphics The Graphics to paint on.
+     * 
+     * @param originGeo the Geo for the origin location
+     * @param distance the distance of circle in radians.
+     * @param graphics The Graphics to paint in.
      */
-    protected void paintLabel(LatLonPoint dest, Graphics graphics) {
-        String infoText = getLabelFor(dest);
-        Graphics2D g = (Graphics2D) graphics;
-        Rectangle2D r = g.getFontMetrics().getStringBounds(infoText, graphics);
-        double th = r.getHeight();
-
-        LatLonPoint llp = new LatLonPoint.Double(origin);
-        double distance = llp.distance(dest);
-        if (llp.getLatitude() > 0) {
-            llp.setLatLon(Math.toRadians(llp.getLatitude()) - distance, Math.toRadians(llp.getLongitude()), true);
-        } else {
-            llp.setLatLon(Math.toRadians(llp.getLatitude()) + distance, Math.toRadians(llp.getLongitude()), true);
-            th = -th / 2d;
-        }
-
-        Projection proj = getMapBean().getProjection();
-        Point2D pt = proj.forward(llp);
-        pt.setLocation(pt.getX() - (r.getWidth() / 2d), pt.getY() - th);
-
-        OMText text = new OMText((int) pt.getX(), (int) pt.getY(), infoText, OMText.JUSTIFY_LEFT);
-
-        g.setPaintMode();
-        g.setColor(Color.BLACK);
-
+    protected void paintLabel(Geo originGeo, double distance, Graphics graphics, MapBean theMap) {
+        Geo ringGeo = originGeo.offset(distance, Math.PI);
+        OMText text = new OMText(ringGeo.getLatitude(), ringGeo.getLongitude(), getLabelFor(distance), OMText.JUSTIFY_CENTER);
+        text.putAttribute(OMGraphicConstants.NO_ROTATE, Boolean.TRUE);
+        text.setBaseline(OMText.BASELINE_BOTTOM);
         prepareLabel(text);
-
-        text.generate(proj);
-        text.render(g);
+        text.generate(theMap.getRotatedProjection());
+        text.render(graphics);
     }
 
     /**
      * Customizes the given OMPoint before it is rendered.
-     *
+     * 
      * @param point OMPoint.
      */
     protected void preparePoint(OMPoint point) {
+        rrAttributes.setTo(point);
     }
 
     /**
      * Customizes the given OMCicle before it is rendered.
-     *
+     * 
      * @param circle OMCircle.
      */
     protected void prepareCircle(OMCircle circle) {
+        rrAttributes.setTo(circle);
     }
 
     /**
      * Customizes the given OMText before it is rendered.
-     *
+     * 
      * @param text OMText.
      */
     protected void prepareLabel(OMText text) {
-        text.setLinePaint(Color.BLACK);
-        text.setTextMatteColor(getMapBean().getBackground());
+        rrAttributes.setTo(text);
+
+        text.setLinePaint(rrAttributes.getLinePaint());
+        text.setTextMatteColor((Color) rrAttributes.getMattingPaint());
         text.setTextMatteStroke(new BasicStroke(4));
     }
 
     /**
      * Returns the String to be used as a labeler for the origin point of the
      * range rings.
-     *
+     * 
      * @return label String.
      */
     protected String getOriginLabel() {
@@ -497,38 +361,18 @@ public class RangeRingsMouseMode
     /**
      * Returns the String to be used as a labeler for the circle drawn using
      * <code>dest</code>.
-     *
-     * @param dest A point on a circle.
+     * 
+     * @param distance The distance from the origin for the label, in radians.
      * @return label String.
      */
-    protected String getLabelFor(LatLonPoint dest) {
+    protected String getLabelFor(double distance) {
+
         Format distFormat = getDistanceFormat();
-        double distance = origin.distance(dest);
+
         if (distFormat == null) {
             return Double.toString(distance);
         }
         return distFormat.format(new Double(distance));
-    }
-
-    /**
-     * Called when the origin point of the range rings has been selected, before
-     * painting on the map.
-     */
-    protected void startUp() {
-    }
-
-    /**
-     * Called when the origin point of the range is is known, and the mouse is
-     * moving on the map, but before painting on the map.
-     */
-    protected void update() {
-    }
-
-    /**
-     * Called when the end point of the range rings has been selected, before
-     * painting on the map.
-     */
-    protected void finished() {
     }
 
     /**
@@ -541,40 +385,65 @@ public class RangeRingsMouseMode
         destination = null;
     }
 
-    private AffineTransform getTranslation(LatLonPoint pt1, LatLonPoint pt2, Projection proj) {
+    private AffineTransform getTranslation(Point2D pt1, Point2D pt2, Projection proj) {
         Point2D p1 = proj.forward(pt1);
         Point2D p2 = proj.forward(pt2);
         return AffineTransform.getTranslateInstance(p2.getX() - p1.getX(), p2.getY() - p1.getY());
     }
 
-    private LatLonPoint translate(LatLonPoint pt, AffineTransform xyTranslation, Projection proj) {
+    private LatLonPoint translate(Point2D pt, AffineTransform xyTranslation, Projection proj) {
         Point2D p = proj.forward(pt);
         xyTranslation.transform(p, p);
         return (LatLonPoint) proj.inverse(p, new LatLonPoint.Double());
     }
 
+    /**
+     * Set properties for this mouse mode
+     * 
+     * @param prefix property prefix that should be prepended to property keys.
+     * @param props the properties containing key-values.
+     */
     public void setProperties(String prefix, Properties props) {
         super.setProperties(prefix, props);
-
+        rrAttributes.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         numRings = PropUtils.intFromProperties(props, prefix + NUM_RINGS_PROPERTY, numRings);
     }
 
+    /**
+     * Get the current Properties for this mouse mode.
+     * 
+     * @param props The Properties object to add props to. A Properties object
+     *        will be created if null.
+     * @return props
+     */
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
 
-        String prefix = PropUtils.getScopedPropertyPrefix(getPropertyPrefix());
+        rrAttributes.getProperties(props);
 
+        String prefix = PropUtils.getScopedPropertyPrefix(getPropertyPrefix());
         props.setProperty(prefix + NUM_RINGS_PROPERTY, Integer.toString(numRings));
 
         return props;
     }
 
+    /**
+     * Return property info metadata for this PropertyConsumer.
+     * 
+     * @param list Properties to add to, may be null.
+     * @return Properties for this object.
+     */
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
 
+        list = rrAttributes.getPropertyInfo(list);
         list.setProperty(NUM_RINGS_PROPERTY, "Number of range rings to be drawn (minimum=1; default=3).");
+
+        list.setProperty(initPropertiesProperty, UnitProperty + " " + ShowCircleProperty + " "
+                + ShowAngleProperty + " " + DrawingAttributes.linePaintProperty + " "
+                + DrawingAttributes.mattingPaintProperty + " " + DrawingAttributes.mattedProperty);
 
         return list;
     }

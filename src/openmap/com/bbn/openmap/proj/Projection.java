@@ -70,8 +70,7 @@ import java.util.ArrayList;
  * @see GeoProj
  * 
  */
-public interface Projection
-        extends java.io.Serializable {
+public interface Projection extends java.io.Serializable {
 
     /**
      * Get the scale.
@@ -410,8 +409,8 @@ public interface Projection
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords, float[] ycoords, boolean[] visible, int copyoff,
-                              int copylen);
+    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords, float[] ycoords,
+                              boolean[] visible, int copyoff, int copylen);
 
     /**
      * Forward project a raw array of world coordinates. This assumes nothing
@@ -432,8 +431,8 @@ public interface Projection
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords, float[] ycoords, boolean[] visible, int copyoff,
-                              int copylen);
+    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords, float[] ycoords,
+                              boolean[] visible, int copyoff, int copylen);
 
     /**
      * Clone the projection.
@@ -472,4 +471,11 @@ public interface Projection
      */
     public Length getUcuom();
 
+    /**
+     * Get the rotation setting of the view for this projection. Provided here
+     * so that map objects manage their orientation if they want.
+     * 
+     * @return rotation of the view in RADIANS.
+     */
+    public double getRotationAngle();
 }

@@ -284,7 +284,7 @@ public class OMPoint
         }
 
         initLabelingDuringGenerate();
-        setLabelLocation(new Point(x2, y1));
+        setLabelLocation(new Point(x2, y1), proj);
 
         setNeedToRegenerate(false);
         return true;
@@ -424,7 +424,7 @@ public class OMPoint
             setShape(createBoxShape(imageX, imageY, imageWidth, imageHeight));
 
             initLabelingDuringGenerate();
-            setLabelLocation(new Point(imageX + imageWidth, imageY + imageOffsetY));
+            setLabelLocation(new Point(imageX + imageWidth, imageY + imageOffsetY), proj);
 
             setNeedToRegenerate(false);
             return true;

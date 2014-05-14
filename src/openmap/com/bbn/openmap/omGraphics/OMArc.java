@@ -774,7 +774,7 @@ public class OMArc extends OMGraphicAdapter implements OMGraphic {
         }
 
         setShape(projectedShape);
-
+        setLabelLocation(projectedShape, proj);
         setNeedToRegenerate(false);
         return true;
     }

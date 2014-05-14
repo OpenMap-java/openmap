@@ -398,7 +398,7 @@ public class DistQuickTool
        * PaintListener interface, notifying the MouseMode that the MapBean has
        * repainted itself. Useful if the MouseMode is drawing stuff.
        */
-      public void listenerPaint(java.awt.Graphics g) {
+      public void listenerPaint(Object source, Graphics g) {
          if (distanceList != null) {
             distanceList.render(g);
          }

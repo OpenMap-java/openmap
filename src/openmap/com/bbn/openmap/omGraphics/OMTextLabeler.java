@@ -31,7 +31,11 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 
 /**
- * A default implementation of OMLabeler that extends from OMText.
+ * A default implementation of OMLabeler that extends from OMText. One thing
+ going on with OMTextLabelers is that they are set to be non-rotating by
+ default, which means they preserve their set orientation even when the map
+ rotates. If you want them to rotate with the map, unset the
+ OMGraphicConstants.NO_ROTATE attribute, or set it to Boolean.FALSE.
  * 
  * @author dietrick
  */
@@ -83,6 +87,8 @@ public class OMTextLabeler extends OMText implements OMLabeler {
         setFont(font);
         setJustify(just);
         setAnchor(loc);
+
+        putAttribute(OMGraphicConstants.NO_ROTATE, Boolean.TRUE);
     }
 
     public void setLocation(GeneralPath gp) {
@@ -92,16 +98,14 @@ public class OMTextLabeler extends OMText implements OMLabeler {
             double x = rect.getX();
             double y = rect.getY();
 
-            if (anchor == ANCHOR_TOP || anchor == ANCHOR_CENTER
-                    || anchor == ANCHOR_BOTTOM) {
+            if (anchor == ANCHOR_TOP || anchor == ANCHOR_CENTER || anchor == ANCHOR_BOTTOM) {
                 x += rect.getWidth() / 2;
             } else if (anchor == ANCHOR_TOPRIGHT || anchor == ANCHOR_RIGHT
                     || anchor == ANCHOR_BOTTOMRIGHT) {
                 x += rect.getWidth();
             }
 
-            if (anchor == ANCHOR_LEFT || anchor == ANCHOR_CENTER
-                    || anchor == ANCHOR_RIGHT) {
+            if (anchor == ANCHOR_LEFT || anchor == ANCHOR_CENTER || anchor == ANCHOR_RIGHT) {
                 y += rect.getHeight() / 2;
             } else if (anchor == ANCHOR_BOTTOMLEFT || anchor == ANCHOR_BOTTOM
                     || anchor == ANCHOR_BOTTOMRIGHT) {
@@ -115,7 +119,8 @@ public class OMTextLabeler extends OMText implements OMLabeler {
     /*
      * (non-Javadoc)
      * 
-     * @see com.bbn.openmap.omGraphics.OMLabeler#setLocation(java.awt.geom.Point2D)
+     * @see
+     * com.bbn.openmap.omGraphics.OMLabeler#setLocation(java.awt.geom.Point2D)
      */
     public void setLocation(Point2D p) {
         polyBounds = null;
@@ -162,7 +167,6 @@ public class OMTextLabeler extends OMText implements OMLabeler {
      */
     protected static Point getCenter(int[] xpts, int[] ypts) {
 
-
         int npoints = xpts.length;
         if (npoints == 1) {
             Point center = new Point(xpts[0], ypts[0]);
@@ -187,7 +191,7 @@ public class OMTextLabeler extends OMText implements OMLabeler {
         double factor = 0;
         double cx = 0.0f;
         double cy = 0.0f;
-        
+
         for (int i = 0; i < npoints; ++i) {
             int j = (i + 1) % npoints;
 
@@ -215,7 +219,7 @@ public class OMTextLabeler extends OMText implements OMLabeler {
         cx *= factor;
         cy *= factor;
 
-        Point center = new Point((int)Math.round(cx), (int)Math.round(cy));
+        Point center = new Point((int) Math.round(cx), (int) Math.round(cy));
         return center;
     }
 
@@ -226,7 +230,7 @@ public class OMTextLabeler extends OMText implements OMLabeler {
     public void setAnchor(int anchor) {
         this.anchor = anchor;
     }
-    
+
     public void restore(OMGeometry source) {
         super.restore(source);
         if (source instanceof OMTextLabeler) {

@@ -127,40 +127,6 @@ public abstract class Cylindrical
     }
 
     /**
-     * Pan the map/projection.
-     * <ul>
-     * <li><code>pan(180, c)</code> pan south
-     * <li><code>pan(-90, c)</code> pan west
-     * <li><code>pan(0, c)</code> pan north
-     * <li><code>pan(90, c)</code> pan east
-     * </ul>
-     * 
-     * @param Az azimuth "east of north" in decimal degrees:
-     *        <code>-180 &lt;= Az &lt;= 180</code>
-     */
-    public void pan(float Az) {
-        if (MoreMath.approximately_equal(Math.abs(Az), 180f, 0.01f)) {
-            setCenter(inverse(width / 2, height));// south
-        } else if (MoreMath.approximately_equal(Az, -135f, 0.01f)) {
-            setCenter(inverse(0, height));// southwest
-        } else if (MoreMath.approximately_equal(Az, -90f, 0.01f)) {
-            setCenter(inverse(0, height / 2));// west
-        } else if (MoreMath.approximately_equal(Az, -45f, 0.01f)) {
-            setCenter(inverse(0, 0));// northwest
-        } else if (MoreMath.approximately_equal(Az, 0f, 0.01f)) {
-            setCenter(inverse(width / 2, 0));// north
-        } else if (MoreMath.approximately_equal(Az, 45f, 0.01f)) {
-            setCenter(inverse(width, 0));// northeast
-        } else if (MoreMath.approximately_equal(Az, 90f, 0.01f)) {
-            setCenter(inverse(width, height / 2));// east
-        } else if (MoreMath.approximately_equal(Az, 135f, 0.01f)) {
-            setCenter(inverse(width, height));// southeast
-        } else {
-            super.pan(Az);
-        }
-    }
-
-    /**
      * Get the upper left (northwest) point of the projection.
      * <p>
      * Returns the upper left point (or closest equivalent) of the projection

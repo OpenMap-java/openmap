@@ -120,8 +120,7 @@ public interface OMGraphicConstants {
     public final static int RADIANS = 1;
 
     /** A transparent color. */
-    public final static Color clear = com.bbn.openmap.util.ColorFactory.createColor(0,
-                                                                                    true);
+    public final static Color clear = com.bbn.openmap.util.ColorFactory.createColor(0, true);
 
     /** A Basic Stroke. */
     public final static java.awt.Stroke BASIC_STROKE = new java.awt.BasicStroke();
@@ -210,9 +209,14 @@ public interface OMGraphicConstants {
      * OMGraphic has changed, and its state should be updated somewhere.
      */
     public static final String UPDATED = "Updated";
-    
+
     public static final String OMGRAPHIC_ELT = "omgraphic";
-    
+
     public static final String OMGRAPHIC_TYPE_ATTR = "type";
-    
+    /**
+     * An attribute that can be set on OMGraphics that can be rotated, so that
+     * they are not rotated when the map is.
+     */
+    public static final String NO_ROTATE = "norotate";
+
 }

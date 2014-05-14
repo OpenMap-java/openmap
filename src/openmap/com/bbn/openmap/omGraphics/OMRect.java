@@ -395,6 +395,9 @@ public class OMRect extends OMGraphicAdapter implements OMGraphic {
             System.err.println("OMRect.generate(): invalid RenderType");
             return false;
         }
+        
+        setLabelLocation(getShape(), proj);
+        
         setNeedToRegenerate(false);
         return true;
     }

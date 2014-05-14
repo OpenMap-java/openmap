@@ -67,21 +67,20 @@ public class DefaultOverviewMouseMode
       }
       Object obj = e.getSource();
       if (!mouseSupport.fireMapMouseReleased(e)) {
-         if (!(obj instanceof MapBean) || !autoZoom || point1 == null)
+
+          if (!(obj == theMap) || !autoZoom || point1 == null) {
             return;
-         MapBean map = (MapBean) obj;
-         Projection projection = map.getProjection();
+         }
+         
+         Projection projection = theMap.getProjection();
 
          synchronized (this) {
-            point2 = getRatioPoint(map, point1, e.getPoint());
+            point2 = getRatioPoint(theMap, point1, e.getPoint());
             int dx = Math.abs(point2.x - point1.x);
             int dy = Math.abs(point2.y - point1.y);
 
             // Don't bother redrawing if the rectangle is too small
             if ((dx < 5) || (dy < 5)) {
-               // clean up the rectangle, since point2 has the
-               // old value.
-               paintRectangle(map, point1, point2);
 
                // If rectangle is too small in both x and y then
                // recenter the map
@@ -89,6 +88,9 @@ public class DefaultOverviewMouseMode
                   Point2D llp = projection.inverse(e.getPoint());
                   overviewMapHandler.getControlledMapListeners().setCenter(llp);
                }
+               
+               theMap.repaint();
+               
                return;
             }
 
@@ -147,9 +149,8 @@ public class DefaultOverviewMouseMode
 
             overviewMapHandler.getControlledMapListeners().setCenter(center);
          }
-         // reset the points
-         point1 = null;
-         point2 = null;
+         
+         cleanUp();
       }
    }
 

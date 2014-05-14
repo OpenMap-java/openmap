@@ -49,282 +49,262 @@ import com.bbn.openmap.layer.BufferedLayer;
  * layers 1 and 4 being displayed from the BufferedLayer. Something to think
  * about when it comes to designing GUI elements.
  */
-public class BufferedLayerMapBean
-      extends BufferedMapBean {
+public class BufferedLayerMapBean extends BufferedMapBean {
 
-   protected BufferedLayer bufferedLayer;
+    protected BufferedLayer bufferedLayer;
 
-   protected boolean DEBUG = false;
+    protected boolean DEBUG = false;
 
-   /**
-    * Construct a MapBean.
-    */
-   public BufferedLayerMapBean() {
-      super();
-      DEBUG = logger.isLoggable(Level.FINE);
-   }
+    /**
+     * Construct a MapBean.
+     */
+    public BufferedLayerMapBean() {
+        super();
+        DEBUG = logger.isLoggable(Level.FINE);
+    }
 
-   public BufferedLayerMapBean(boolean useThreadedNotification) {
-      super(useThreadedNotification);
-      DEBUG = logger.isLoggable(Level.FINE);
-   }
+    public BufferedLayerMapBean(boolean useThreadedNotification) {
+        super(useThreadedNotification);
+        DEBUG = logger.isLoggable(Level.FINE);
+    }
 
-   /**
-    * Set the background color of the map. Actually sets the background color of
-    * the projection, and calls repaint().
-    * 
-    * @param color java.awt.Color.
-    */
-   public void setBackgroundColor(Color color) {
-      super.setBackground(color);
-      getBufferedLayer().setBackground(color);
-   }
+    /**
+     * Set the background color of the map. Actually sets the background color
+     * of the projection, and calls repaint().
+     * 
+     * @param color java.awt.Color.
+     */
+    public void setBackgroundColor(Color color) {
+        super.setBackground(color);
+        getBufferedLayer().setBackground(color);
+    }
 
-   public void setBckgrnd(Paint paint) {
-      super.setBckgrnd(paint);
-      getBufferedLayer().setBckgrnd(paint);
-   }
+    public void setBckgrnd(Paint paint) {
+        super.setBckgrnd(paint);
+        getBufferedLayer().setBckgrnd(paint);
+    }
 
-   public synchronized void setBufferedLayer(BufferedLayer bl) {
-      bufferedLayer = bl;
-   }
+    public synchronized void setBufferedLayer(BufferedLayer bl) {
+        bufferedLayer = bl;
+    }
 
-   public synchronized BufferedLayer getBufferedLayer() {
-      if (bufferedLayer == null) {
-         bufferedLayer = new BufferedLayer();
-         addPropertyChangeListener(bufferedLayer);
-         bufferedLayer.setName("Background Layers");
-      }
+    public synchronized BufferedLayer getBufferedLayer() {
+        if (bufferedLayer == null) {
+            bufferedLayer = new BufferedLayer();
+            addPropertyChangeListener(bufferedLayer);
+            bufferedLayer.setName("Background Layers");
+        }
 
-      return bufferedLayer;
-   }
+        return bufferedLayer;
+    }
 
-   /**
-    * Set the MapBeanRepaintPolicy used by the MapBean. This method is
-    * overridden in order to pass the policy on to the MapBean stored in the
-    * internal BufferedLayer.
-    */
-   public void setMapBeanRepaintPolicy(MapBeanRepaintPolicy mbrp) {
-      super.setMapBeanRepaintPolicy(mbrp);
+    /**
+     * Set the MapBeanRepaintPolicy used by the MapBean. This method is
+     * overridden in order to pass the policy on to the MapBean stored in the
+     * internal BufferedLayer.
+     */
+    public void setMapBeanRepaintPolicy(MapBeanRepaintPolicy mbrp) {
+        super.setMapBeanRepaintPolicy(mbrp);
 
-      MapBean mb = getBufferedLayer().getMapBean();
-      if (mb != null) {
-         if (mbrp == null) {
-            mb.setMapBeanRepaintPolicy(mbrp);
-         } else {
-            MapBeanRepaintPolicy mbrp2 = (MapBeanRepaintPolicy) mbrp.clone();
-            mb.setMapBeanRepaintPolicy(mbrp2);
-            mbrp2.setMap(mb);
-         }
-      }
-   }
-
-   /**
-    * LayerListener interface method. A list of layers will be added, removed,
-    * or replaced based on on the type of LayerEvent.
-    * 
-    * @param evt a LayerEvent
-    */
-   public void setLayers(LayerEvent evt) {
-      bufferDirty = true;
-      Layer[] layers = evt.getLayers();
-      int type = evt.getType();
-
-      if (type == LayerEvent.ALL) {
-         // Don't care about these at all...
-         return;
-      }
-
-      // @HACK is this cool?:
-      if (layers == null) {
-         logger.warning("layer[] is null!");
-         return;
-      }
-
-      boolean oldChange = getDoContainerChange();
-      setDoContainerChange(false);
-
-      BufferedLayer bufLayer;
-
-      synchronized (this) {
-         bufLayer = getBufferedLayer();
-      }
-
-      // use LayerEvent.REPLACE when you want to remove all current
-      // layers
-      // add a new set
-      if (type == LayerEvent.REPLACE) {
-         if (DEBUG) {
-            debugmsg("Replacing all layers");
-         }
-         removeAll();
-         bufLayer.clearLayers();
-
-         for (int i = 0; i < layers.length; i++) {
-            // @HACK is this cool?:
-            if (layers[i] == null) {
-               logger.warning("layer " + i + " is null");
-               continue;
-            }
-
-            if (DEBUG) {
-               debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
-            }
-
-            if (layers[i].getAddAsBackground()) {
-               if (DEBUG) {
-                  logger.fine("Adding layer[" + i + "]= " + layers[i].getName() + " to background");
-               }
-
-               bufLayer.addLayer(layers[i]);
+        MapBean mb = getBufferedLayer().getMapBean();
+        if (mb != null) {
+            if (mbrp == null) {
+                mb.setMapBeanRepaintPolicy(mbrp);
             } else {
-               add(layers[i]);
+                MapBeanRepaintPolicy mbrp2 = (MapBeanRepaintPolicy) mbrp.clone();
+                mb.setMapBeanRepaintPolicy(mbrp2);
+                mbrp2.setMap(mb);
             }
+        }
+    }
 
-            layers[i].setVisible(true);
-         }
+    /**
+     * LayerListener interface method. A list of layers will be added, removed,
+     * or replaced based on on the type of LayerEvent.
+     * 
+     * @param evt a LayerEvent
+     */
+    public void setLayers(LayerEvent evt) {
+        setBufferDirty(true);
+        Layer[] layers = evt.getLayers();
+        int type = evt.getType();
 
-         if (bufLayer.hasLayers()) {
-            add(bufLayer);
-         }
-      }
+        if (type == LayerEvent.ALL) {
+            // Don't care about these at all...
+            return;
+        }
 
-      // use LayerEvent.ADD when adding and/or reshuffling layers
-      else if (type == LayerEvent.ADD) {
+        // @HACK is this cool?:
+        if (layers == null) {
+            logger.warning("layer[] is null!");
+            return;
+        }
 
-         remove(bufLayer);
+        boolean oldChange = getDoContainerChange();
+        setDoContainerChange(false);
 
-         if (DEBUG) {
-            debugmsg("Adding new layers");
-         }
-         for (int i = 0; i < layers.length; i++) {
+        BufferedLayer bufLayer;
+
+        synchronized (this) {
+            bufLayer = getBufferedLayer();
+        }
+
+        // use LayerEvent.REPLACE when you want to remove all current
+        // layers add a new set
+        if (type == LayerEvent.REPLACE) {
             if (DEBUG) {
-               debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
+                debugmsg("Replacing all layers");
             }
 
-            // add(layers[i]);
-            layers[i].setVisible(true);
+            removeAll();
+            bufLayer.clearLayers();
+            bufLayer.setProjection(getRotatedProjection());
 
-            if (layers[i].getAddAsBackground()) {
-               if (DEBUG) {
-                  debugmsg("Adding layer[" + i + "]= " + layers[i].getName() + " to background");
-               }
-               bufLayer.addLayer(layers[i]);
-            } else {
-               add(layers[i]);
+            for (int i = 0; i < layers.length; i++) {
+                // @HACK is this cool?:
+                if (layers[i] == null) {
+                    logger.warning("layer " + i + " is null");
+                    continue;
+                }
+
+                if (DEBUG) {
+                    debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
+                }
+
+                if (layers[i].getAddAsBackground()) {
+                    if (DEBUG) {
+                        logger.fine("Adding layer[" + i + "]= " + layers[i].getName()
+                                + " to background");
+                    }
+
+                    bufLayer.addLayer(layers[i]);
+                } else {
+                    add(layers[i]);
+                }
+
+                layers[i].setVisible(true);
             }
-         }
 
-         if (bufLayer.hasLayers()) {
-            add(bufLayer);
-         }
-      }
+            if (bufLayer.hasLayers()) {
+                add(bufLayer);
+            }
+        }
 
-      // use LayerEvent.REMOVE when you want to delete layers from
-      // the map
-      else if (type == LayerEvent.REMOVE) {
-         if (DEBUG) {
-            debugmsg("Removing layers");
-         }
-         for (int i = 0; i < layers.length; i++) {
+        // use LayerEvent.ADD when adding and/or reshuffling layers
+        else if (type == LayerEvent.ADD) {
+
+            remove(bufLayer);
+
             if (DEBUG) {
-               debugmsg("Removing layer[" + i + "]= " + layers[i].getName());
+                debugmsg("Adding new layers");
             }
-            remove(layers[i]);
-            bufLayer.removeLayer(layers[i]);
-         }
-      }
+            for (int i = 0; i < layers.length; i++) {
+                if (DEBUG) {
+                    debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
+                }
 
-      if (!layerRemovalDelayed) {
-         purgeAndNotifyRemovedLayers();
-      }
+                // add(layers[i]);
+                layers[i].setVisible(true);
 
-      setDoContainerChange(oldChange);
-      repaint();
-      revalidate();
-   }
+                if (layers[i].getAddAsBackground()) {
+                    if (DEBUG) {
+                        debugmsg("Adding layer[" + i + "]= " + layers[i].getName()
+                                + " to background");
+                    }
+                    bufLayer.addLayer(layers[i]);
+                } else {
+                    add(layers[i]);
+                }
+            }
 
-   /**
-    * ContainerListener Interface method. Should not be called directly. Part of
-    * the ContainerListener interface, and it's here to make the MapBean a good
-    * Container citizen.
-    * 
-    * @param e ContainerEvent
-    */
-   protected void changeLayers(ContainerEvent e) {
-      // Container Changes can be disabled to speed adding/removing
-      // multiple layers
-      if (!doContainerChange) {
-         return;
-      }
+            if (bufLayer.hasLayers()) {
+                add(bufLayer);
+            }
+        }
 
-      Component[] comps = this.getComponents();
-      int ncomponents = comps.length;
-      int nBufLayerComponents = 0;
+        // use LayerEvent.REMOVE when you want to delete layers from
+        // the map
+        else if (type == LayerEvent.REMOVE) {
+            if (DEBUG) {
+                debugmsg("Removing layers");
+            }
+            for (int i = 0; i < layers.length; i++) {
+                if (DEBUG) {
+                    debugmsg("Removing layer[" + i + "]= " + layers[i].getName());
+                }
+                remove(layers[i]);
+                bufLayer.removeLayer(layers[i]);
+            }
+        }
 
-      BufferedLayer bufLayer;
-      synchronized (this) {
-         bufLayer = getBufferedLayer();
-      }
+        if (!layerRemovalDelayed) {
+            purgeAndNotifyRemovedLayers();
+        }
 
-      if (ncomponents == 0 || comps[ncomponents - 1] != bufLayer) {
-         super.changeLayers(e);
-         return;
-      }
+        setDoContainerChange(oldChange);
+        revalidate();
+        repaint();
+    }
 
-      Component[] bufLayers = bufLayer.getLayers();
-      nBufLayerComponents = bufLayers.length;
+    /**
+     * ContainerListener Interface method. Should not be called directly. Part
+     * of the ContainerListener interface, and it's here to make the MapBean a
+     * good Container citizen.
+     * 
+     * @param e ContainerEvent
+     */
+    protected void changeLayers(ContainerEvent e) {
+        // Container Changes can be disabled to speed adding/removing
+        // multiple layers
+        if (!doContainerChange) {
+            return;
+        }
 
-      // Take 1 off for the bufLayer
-      Layer[] newLayers = new Layer[ncomponents + nBufLayerComponents - 1];
-      System.arraycopy(comps, 0, newLayers, 0, ncomponents - 1);
-      System.arraycopy(bufLayers, 0, newLayers, ncomponents - 1, nBufLayerComponents);
+        Component[] comps = this.getComponents();
+        int ncomponents = comps.length;
+        int nBufLayerComponents = 0;
 
-      if (DEBUG)
-         debugmsg("changeLayers() - firing change");
-      firePropertyChange(LayersProperty, currentLayers, newLayers);
+        BufferedLayer bufLayer;
+        synchronized (this) {
+            bufLayer = getBufferedLayer();
+        }
 
-      // Tell the new layers that they have been added
-      for (int i = 0; i < addedLayers.size(); i++) {
-         ((Layer) addedLayers.elementAt(i)).added(this);
-      }
-      addedLayers.removeAllElements();
+        if (ncomponents == 0 || comps[ncomponents - 1] != bufLayer) {
+            super.changeLayers(e);
+            return;
+        }
 
-      currentLayers = newLayers;
-   }
+        Component[] bufLayers = bufLayer.getLayers();
+        nBufLayerComponents = bufLayers.length;
 
-   /**
-    * Call when getting rid of the MapBean, it releases pointers to all
-    * listeners and kills the ProjectionSupport thread.
-    */
-   public void dispose() {
-      if (bufferedLayer != null) {
-         bufferedLayer.dispose();
-      }
-      super.dispose();
-   }
+        // Take 1 off for the bufLayer
+        Layer[] newLayers = new Layer[ncomponents + nBufLayerComponents - 1];
+        System.arraycopy(comps, 0, newLayers, 0, ncomponents - 1);
+        System.arraycopy(bufLayers, 0, newLayers, ncomponents - 1, nBufLayerComponents);
 
-   /*
-    * Not sure why this method was overwritten in this subclass, because it
-    * marks the buffered layer as dirty, causing it to be re-created. That
-    * defeats the whole point of the BufferedLayer in the BufferedLayerMapBean.
-    * The layers that are part of the BufferedLayer know how to get the
-    * BLMapBean to refresh itself when needed, so this method is OK as the
-    * superclass runs it.
-    */
+        if (DEBUG) {
+            debugmsg("changeLayers() - firing change");
+        }
 
-   // /**
-   // * Marks the image buffer as dirty if value is true. On the next
-   // * <code>paintChildren()</code>, we will call <code>paint()</code> on all
-   // * Layer components.
-   // *
-   // * @param value boolean
-   // */
-   // public void setBufferDirty(boolean value) {
-   // super.setBufferDirty(value);
-   // if (bufferedLayer != null && value) {
-   // bufferedLayer.setBufferDirty(true);
-   // }
-   // }
+        firePropertyChange(LayersProperty, currentLayers, newLayers);
 
+        // Tell the new layers that they have been added
+        for (int i = 0; i < addedLayers.size(); i++) {
+            ((Layer) addedLayers.elementAt(i)).added(this);
+        }
+        addedLayers.removeAllElements();
+
+        currentLayers = newLayers;
+    }
+
+    /**
+     * Call when getting rid of the MapBean, it releases pointers to all
+     * listeners and kills the ProjectionSupport thread.
+     */
+    public void dispose() {
+        if (bufferedLayer != null) {
+            bufferedLayer.dispose();
+        }
+        super.dispose();
+    }
 }

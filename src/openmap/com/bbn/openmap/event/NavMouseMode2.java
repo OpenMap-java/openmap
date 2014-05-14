@@ -22,10 +22,13 @@
 
 package com.bbn.openmap.event;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.proj.Proj;
@@ -86,29 +89,24 @@ public class NavMouseMode2 extends NavMouseMode {
 
         if (!mouseSupport.fireMapMouseReleased(e)) {
 
-            if (!(obj instanceof MapBean) || !autoZoom || point1 == null
-                    || point2 == null)
+            if (!(theMap == obj) || !autoZoom || point1 == null || point2 == null) {
                 return;
+            }
 
-            MapBean map = (MapBean) obj;
-            Projection projection = map.getProjection();
+            Projection projection = theMap.getProjection();
             Proj p = (Proj) projection;
+            MapBean map = theMap;
 
             synchronized (this) {
-                point2 = getRatioPoint((MapBean) e.getSource(),
-                        point1,
-                        e.getPoint());
+                point2 = getRatioPoint(map, point1, e.getPoint());
                 int dx = Math.abs(point2.x - point1.x);
                 int dy = Math.abs(point2.y - point1.y);
 
                 // Don't bother redrawing if the rectangle is too small
                 if ((dx < 5) || (dy < 5)) {
-                    // clean up the rectangle, since point2 has the
-                    // old value.
-                    paintRectangle(map, point1, point2);
 
                     // If rectangle is too small in both x and y then
-                    // recenter the map
+                    // re-center the map
                     if ((dx < 5) && (dy < 5)) {
                         Point2D llp = map.getCoordinates(e);
 
@@ -123,10 +121,7 @@ public class NavMouseMode2 extends NavMouseMode {
                             }
                         }
 
-                        // reset the points here so the point doesn't
-                        // get rendered on the repaint.
-                        point1 = null;
-                        point2 = null;
+                        cleanUp();
 
                         p.setCenter(llp);
                         map.setProjection(p);
@@ -139,14 +134,11 @@ public class NavMouseMode2 extends NavMouseMode {
                 dy = Math.abs(point2.y - point1.y);
 
                 // cornerPoint 1 should be the upper left.
-                Point cornerPoint1 = new Point(point2.x < point1.x ? point2.x
-                        : point1.x, point2.y < point1.y ? point2.y : point1.y);
-                Point cornerPoint2 = new Point(cornerPoint1.x + 2 * dx, cornerPoint1.y
-                        + 2 * dy);
+                Point cornerPoint1 = new Point(point2.x < point1.x ? point2.x : point1.x, point2.y < point1.y ? point2.y
+                        : point1.y);
+                Point cornerPoint2 = new Point(cornerPoint1.x + 2 * dx, cornerPoint1.y + 2 * dy);
 
-                float newScale = com.bbn.openmap.proj.ProjMath.getScale(cornerPoint1,
-                        cornerPoint2,
-                        projection);
+                float newScale = com.bbn.openmap.proj.ProjMath.getScale(cornerPoint1, cornerPoint2, projection);
 
                 // Figure out the center of the rectangle
                 Point2D center = map.inverse(point1.x, point1.y, null);
@@ -156,12 +148,7 @@ public class NavMouseMode2 extends NavMouseMode {
                 // the MapBean fire two ProjectionEvents.
                 p.setScale(newScale);
                 p.setCenter(center);
-
-                // reset the points so they don't show up in the
-                // listener paint.
-                point1 = null;
-                point2 = null;
-
+                cleanUp();
                 map.setProjection(p);
             }
         }
@@ -180,8 +167,6 @@ public class NavMouseMode2 extends NavMouseMode {
      * @param pt2 the opposite corner of the box.
      */
     protected void paintRectangle(Graphics g, Point pt1, Point pt2) {
-        g.setXORMode(java.awt.Color.lightGray);
-        g.setColor(java.awt.Color.darkGray);
 
         if (pt1 != null && pt2 != null) {
 
@@ -193,8 +178,13 @@ public class NavMouseMode2 extends NavMouseMode {
             if (height == 0)
                 height++;
 
-            g.drawRect(pt1.x - width, pt1.y - height, width * 2, height * 2);
-            g.drawRect(pt1.x - 1, pt1.y - 1, 3, 3);
+            Rectangle2D rect1 = new Rectangle2D.Double(pt1.x - width, pt1.y - height, width * 2, height * 2);
+            Rectangle2D rect2 = new Rectangle2D.Double(pt1.x - 1, pt1.y - 1, 3, 3);
+
+            if (theMap != null) {
+                rectAttributes.render((Graphics2D) g, theMap.getNonRotatedShape(rect1));
+                rectAttributes.render((Graphics2D) g, theMap.getNonRotatedShape(rect2));
+            }
         }
     }
 }

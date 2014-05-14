@@ -41,6 +41,7 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 import com.bbn.openmap.event.MapMouseEvent;
+import com.bbn.openmap.layer.policy.BufferedImageRenderPolicy;
 import com.bbn.openmap.omGraphics.EditableOMPoly;
 import com.bbn.openmap.omGraphics.FontSizer;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
@@ -140,6 +141,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
         // dictates how the layer behaves when a new projection is
         // received.
         setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+        setRenderPolicy(new BufferedImageRenderPolicy(this));
         // Making the setting so this layer receives events from the
         // SelectMouseMode, which has a modeID of "Gestures". Other
         // IDs can be added as needed.
@@ -395,7 +397,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
                 omsi.setMaxScale(6000000);
                 omsi.setRotationAngle(Math.PI / 4);
                 omsi.putAttribute(OMGraphicConstants.LABEL, new OMTextLabeler("SFPPV-----*****", OMText.JUSTIFY_LEFT, OMTextLabeler.ANCHOR_RIGHT));
-
+                omsi.putAttribute(OMGraphicConstants.NO_ROTATE, Boolean.TRUE);
                 omList.add(omsi);
 
                 SymbolPart sp = srl.getSymbolPartForCode("SFPPV-----*****");

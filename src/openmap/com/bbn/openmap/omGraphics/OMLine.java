@@ -403,9 +403,10 @@ public class OMLine
                 return false;
         }
 
+        // label location is set in setShape
         setShape(projectedShape);
-        setLabelLocation(projectedShape);
-
+        setLabelLocation(projectedShape, proj);
+        
         if (arrowhead != null) {
             arrowhead.generate(this);
         }

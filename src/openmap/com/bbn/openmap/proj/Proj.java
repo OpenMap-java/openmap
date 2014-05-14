@@ -26,6 +26,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
@@ -73,8 +74,7 @@ import com.bbn.openmap.util.Debug;
  * @see GeoProj
  * 
  */
-public abstract class Proj
-        implements Projection, Cloneable, Serializable {
+public abstract class Proj implements Projection, Cloneable, Serializable {
 
     /**
      * Minimum width of projection.
@@ -93,6 +93,11 @@ public abstract class Proj
     protected double centerX;
     protected double centerY;
     protected String projID = null; // identifies this projection (if needed)
+    /**
+     * The rotation angle of the map is stored here so that non-rotating
+     * things can correct themselves.  Is not used for equality checks.
+     */
+    protected double rotationAngle = 0;
 
     /**
      * The unprojected coordinates units of measure.
@@ -351,7 +356,8 @@ public abstract class Proj
      * String is interned for efficient comparison.
      */
     protected void setProjectionID() {
-        projID = (getClass().getName() + ":" + scale + ":" + centerX + ":" + centerY + ":" + width + ":" + height + ":");
+        projID = (getClass().getName() + ":" + scale + ":" + centerX + ":" + centerY + ":" + width
+                + ":" + height + ":" + rotationAngle);
     }
 
     /**
@@ -381,8 +387,8 @@ public abstract class Proj
      * @see #getProjectionID
      */
     public String toString() {
-        return (" center(" + centerX + ":" + centerY + ") scale=" + scale + " maxscale=" + maxscale + " minscale=" + minscale
-                + " width=" + width + " height=" + height + "]");
+        return (" center(" + centerX + ":" + centerY + ") scale=" + scale + " maxscale=" + maxscale
+                + " minscale=" + minscale + " width=" + width + " height=" + height + "]");
     }
 
     /**
@@ -573,8 +579,8 @@ public abstract class Proj
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords, float[] ycoords, boolean[] visible, int copyoff,
-                              int copylen) {
+    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords, float[] ycoords,
+                              boolean[] visible, int copyoff, int copylen) {
         Point temp = new Point();
         int end = copylen + copyoff;
         for (int i = copyoff, j = rawoff; i < end; i++, j += 2) {
@@ -606,8 +612,8 @@ public abstract class Proj
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords, float[] ycoords, boolean[] visible, int copyoff,
-                              int copylen) {
+    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords, float[] ycoords,
+                              boolean[] visible, int copyoff, int copylen) {
         Point temp = new Point();
         int end = copylen + copyoff;
         for (int i = copyoff, j = rawoff; i < end; i++, j += 2) {
@@ -620,12 +626,7 @@ public abstract class Proj
     }
 
     public ArrayList<float[]> forwardLine(Point2D ll1, Point2D ll2) {
-        double[] rawllpts = {
-            ll1.getY(),
-            ll1.getX(),
-            ll2.getY(),
-            ll2.getX()
-        };
+        double[] rawllpts = { ll1.getY(), ll1.getX(), ll2.getY(), ll2.getX() };
         return forwardPoly(rawllpts, false);
     }
 
@@ -637,19 +638,10 @@ public abstract class Proj
      * @return ArrayList<float[]>
      */
     public ArrayList<float[]> forwardRect(Point2D ll1, Point2D ll2) {
-        double[] rawllpts = {
-            ll1.getY(),
-            ll1.getX(),
-            ll1.getY(),
-            ll2.getX(),
-            ll2.getY(),
-            ll2.getX(),
-            ll2.getY(),
-            ll1.getX(),
-            // connect:
-            ll1.getY(),
-            ll1.getX()
-        };
+        double[] rawllpts = { ll1.getY(), ll1.getX(), ll1.getY(), ll2.getX(), ll2.getY(),
+                ll2.getX(), ll2.getY(), ll1.getX(),
+                // connect:
+                ll1.getY(), ll1.getX() };
         return forwardPoly(rawllpts, true);
     }
 
@@ -753,9 +745,7 @@ public abstract class Proj
      * @param Az azimuth "east of north" in decimal degrees:
      *        <code>-180 &lt;= Az &lt;= 180</code>
      */
-    public void pan(float Az) {
-        pan(Az, 45f);
-    }
+    abstract public void pan(float Az);
 
     /**
      * pan the map northwest.
@@ -910,8 +900,7 @@ public abstract class Proj
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    private void readObject(ObjectInputStream in)
-            throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         computeParameters();
         projID = null;
@@ -949,4 +938,24 @@ public abstract class Proj
     public Point2D getLowerRight() {
         return inverse(width, height, new Point2D.Double());
     }
+
+    /**
+     * @return the rotationAngle
+     */
+    public double getRotationAngle() {
+        return rotationAngle;
+    }
+
+    /**
+     * This setting is purely for informational purposes, as a way for the
+     * projection to pass along any rotation activity of the MapBean to
+     * OMGraphics. Setting this value will not rotate the map. Rotating the map
+     * should be done directly to the MapBean.
+     * 
+     * @param rotationAngle the rotationAngle to set, in RADIANS
+     */
+    public void setRotationAngle(double rotationAngle) {
+        this.rotationAngle = rotationAngle;
+    }
+
 }

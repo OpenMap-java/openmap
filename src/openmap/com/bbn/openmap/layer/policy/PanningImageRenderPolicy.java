@@ -43,11 +43,13 @@ import com.bbn.openmap.proj.Projection;
  * background layers eliminates the flashing effect seen when panning or zooming
  * a map when a faster-responding layer is on top.
  * <P>
- * You can set this object on an OMGraphicHandlerLayer through the API, or set it in the properties:
+ * You can set this object on an OMGraphicHandlerLayer through the API, or set
+ * it in the properties:
+ * 
  * <pre>
  * layer.renderPolicy=rp
  * layer.rp.class=com.bbn.openmap.layer.policy.PanningImageRenderPolicy
- * </pre> 
+ * </pre>
  */
 public class PanningImageRenderPolicy extends RenderingHintsRenderPolicy {
 
@@ -79,14 +81,13 @@ public class PanningImageRenderPolicy extends RenderingHintsRenderPolicy {
             if (layer.isProjectionOK(proj)) {
                 // set the offsets depending on how much the image moves
                 Point2D ul = proj.getUpperLeft();
-                if (oldUL != null && !oldUL.equals(ul)
-                        && oldScale == proj.getScale()
+                if (oldUL != null && !oldUL.equals(ul) && oldScale == proj.getScale()
                         && proj.getClass().equals(oldProjType)) {
                     Point2D currentPoint = proj.forward(ul);
                     Point2D oldPoint = proj.forward(oldUL);
 
-                    offset.setLocation(oldPoint.getX() - currentPoint.getX(),
-                            oldPoint.getY() - currentPoint.getY());
+                    offset.setLocation(oldPoint.getX() - currentPoint.getX(), oldPoint.getY()
+                            - currentPoint.getY());
 
                     layer.repaint();
                 }
@@ -136,17 +137,11 @@ public class PanningImageRenderPolicy extends RenderingHintsRenderPolicy {
 
             if (bufferedImage != null) {
 
-                if (proj != null) {
-                    // Gets reset by JComponent
-                    g.setClip(0, 0, proj.getWidth(), proj.getHeight());
-                }
-
                 AffineTransform af = new AffineTransform();
                 af.translate(offset.getX(), offset.getY());
                 g2.drawRenderedImage((BufferedImage) bufferedImage, af);
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("RenderingPolicy:" + layer.getName()
-                            + ": rendering buffer");
+                    logger.fine("RenderingPolicy:" + layer.getName() + ": rendering buffer");
                 }
 
             } else if (list != null) {
@@ -158,10 +153,8 @@ public class PanningImageRenderPolicy extends RenderingHintsRenderPolicy {
                 }
             }
         } else if (logger.isLoggable(Level.FINE)) {
-            logger.fine(layer.getName()
-                    + ".paint(): "
-                    + (list == null ? "NULL list, skipping..."
-                            : " skipping due to projection."));
+            logger.fine(layer.getName() + ".paint(): "
+                    + (list == null ? "NULL list, skipping..." : " skipping due to projection."));
         }
 
     }

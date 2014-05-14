@@ -1,3 +1,74 @@
+2014-05-14  dietrick  <dietrick@wonkavision.local>
+
+	* Updated the MapBean (and subclasses) to handle rotation better.
+	When a rotation angle is set on the MapBean, it starts to use a
+	RotationHelper (inner class) to create a new image buffer for a
+	projection large enough to cover the corners of the map.  The
+	RotationHelper handles the rotated map.  The paintChildren()
+	method has been updated to only render layers.  Rendering of the
+	PaintListeners and Border are handled by separate methods called
+	from the paint() method.  To get the map to render fully when
+	rotated, the clip area is disabled when the map is rotated.
+
+	The MapBean has new methods to use when working with rotation.
+	The MapBean inverse method gives you map coordinates taking into
+	account rotation.  The getRotatedProjection provides the
+	projection being sent to the layers at any given time, while
+	getProjection always provides the original projection.  The best
+	place to see how these methods are used is to check out the
+	listenerPaint methods in the MouseModes.
+
+	OMText and OMScalingRaster OMGraphics pay attention to the
+	OMGraphicConstants.NO_ROTATE attribute.  If that attribute is set,
+	they will always appear at their rotated angle relative to the
+	MapBean boundaries.  OMTextLabelers always have that attribute
+	set, so they will automatically correct for rotation.
+	
+	* Updated Projections to have a rotationAngle member variable.
+	This member variable is only present to pass the setting from the
+	MapBean on to OMGraphics, in case they want to modify themselves
+	with regard to rotation.  Projection objects themselves don't use
+	this member variable.  The panning method in Projections was also
+	fixed.  There was an issue with the pan command for directions
+	other than the 8 pre-defined directions.  Now panning works for
+	all directions, and when the map is rotated.
+
+	* Added AbstractProjectionChangePolicy to handle common projection
+	change policy functionality.  IMPORTANT: The OMGraphicHandlerLayer
+	SwingWorker has been modified so it doesn't automatically call
+	repaint on the layer when the thread is complete.  The
+	AbstractProjectionChangePolicy handles calling repaint() on the
+	layer, after determining the layer has something to paint.  If a
+	layer (before a projection change had no OMGraphics to paint, and
+	after the projection change still doesn't have OMGraphics to
+	paint) isn't contributing to the map, repaint() will not be called
+	on it.  You can override this behavior by setting a different
+	ProjectionChange policy on the layer.
+
+	* Updated the OMGraphicAdapter (base class for all OMGraphics)
+	setLabelLocation method signatures so the projection is also
+	passed in.  This allows OMTextLabelers to figure out how to not be
+	affected by map rotation.  The old method signatures have been
+	deprecated.
+
+	* Updated the MouseModes to handle rotation.  They have been
+	modified to be PaintListeners and paint directly on top of the map
+	instead of using XOR drawing techniques. Their code has been
+	refactored and their API signatures have changed slightly. TODO:
+	There is a known issue with the PanMouseMode map rendering when
+	the map is rotated.  The current work-around is to have the
+	AzimuithPanner enabled for all projections when the map is
+	rotated.  I've also seen a issue with the
+	NavMouseModes/DistanceMouseMode rendering when the 1) map is
+	rotated 2) on a Mac and 3) the ToolBar is visible.  The rendered
+	graphics are offset lower than they should be (height of ToolBar).
+
+	* Modified the PaintListener interface so the source object is
+	also provided in the listenerPaint method signature.
+
+	* Updated EditableOMPoly setGrabPoints methods to be safer when
+	dealing with poly coords and projections.
+
 2014-03-13  dietrick  <dietrick@client.wonkavision.local>
 
 	* Tagged OpenMap 5.0.4

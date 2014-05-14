@@ -38,102 +38,99 @@ import com.bbn.openmap.util.Debug;
  * The StandardRenderPolicy is a RenderPolicy that simply paints the current
  * graphic list. No conditions or deviations are considered.
  */
-public class StandardRenderPolicy
-      extends OMComponent
-      implements RenderPolicy {
+public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
 
-   public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.policy.RenderPolicy");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.policy.RenderPolicy");
 
-   /**
-    * Don't let this be null, nothing will happen. At all.
-    */
-   protected OMGraphicHandlerLayer layer;
+    /**
+     * Don't let this be null, nothing will happen. At all.
+     */
+    protected OMGraphicHandlerLayer layer;
 
-   protected Composite composite;
+    protected Composite composite;
 
-   public StandardRenderPolicy() {
-   }
+    public StandardRenderPolicy() {
+    }
 
-   /**
-    * Don't pass in a null layer.
-    */
-   public StandardRenderPolicy(OMGraphicHandlerLayer layer) {
-      this();
-      setLayer(layer);
-   }
+    /**
+     * Don't pass in a null layer.
+     */
+    public StandardRenderPolicy(OMGraphicHandlerLayer layer) {
+        this();
+        setLayer(layer);
+    }
 
-   public void setLayer(OMGraphicHandlerLayer l) {
-      layer = l;
-   }
+    public void setLayer(OMGraphicHandlerLayer l) {
+        layer = l;
+    }
 
-   public OMGraphicHandlerLayer getLayer() {
-      return layer;
-   }
+    public OMGraphicHandlerLayer getLayer() {
+        return layer;
+    }
 
-   public Composite getComposite() {
-      return composite;
-   }
+    public Composite getComposite() {
+        return composite;
+    }
 
-   /**
-    * Can be used to set Composite objects (like AlphaComposite) on Graphics2D
-    * objects before the layer is painted.
-    * 
-    * @param composite
-    */
-   public void setComposite(Composite composite) {
-      this.composite = composite;
-   }
+    /**
+     * Can be used to set Composite objects (like AlphaComposite) on Graphics2D
+     * objects before the layer is painted.
+     * 
+     * @param composite
+     */
+    public void setComposite(Composite composite) {
+        this.composite = composite;
+    }
 
-   /**
-    * Call made by the policy from the paint(g) method in order to set the
-    * composite on the Graphics2D object. This method is meant to be overridden
-    * if needed.
-    * 
-    * @param g Graphics2D that the Composite will be set on.
-    */
-   protected void setCompositeOnGraphics(Graphics2D g) {
-      if (composite != null) {
-         g.setComposite(composite);
-      }
-   }
+    /**
+     * Call made by the policy from the paint(g) method in order to set the
+     * composite on the Graphics2D object. This method is meant to be overridden
+     * if needed.
+     * 
+     * @param g Graphics2D that the Composite will be set on.
+     */
+    protected void setCompositeOnGraphics(Graphics2D g) {
+        if (composite != null) {
+            g.setComposite(composite);
+        }
+    }
 
-   /**
-    * The StandardRenderPolicy doesn't need to do anything before prepare()
-    * returns.
-    */
-   public void prePrepare() {
-      // NOOP
-   }
+    /**
+     * The StandardRenderPolicy doesn't need to do anything before prepare()
+     * returns.
+     */
+    public void prePrepare() {
+        // NOOP
+    }
 
-   public OMGraphicList prepare() {
-      if (layer != null) {
-         return layer.prepare();
-      } else {
-         return null;
-      }
-   }
+    public OMGraphicList prepare() {
+        if (layer != null) {
+            return layer.prepare();
+        } else {
+            return null;
+        }
+    }
 
-   /**
-    * Assumes that the OMGraphicList to be rendered is set on the
-    * OMGraphicHandlerLayer, available via setList().
-    */
-   public void paint(Graphics g) {
-      if (layer != null) {
-         OMGraphicList list = layer.getList();
-         Projection proj = layer.getProjection();
-         if (list != null && layer.isProjectionOK(proj)) {
-            if (proj != null) {
-               g.setClip(0, 0, proj.getWidth(), proj.getHeight());
+    /**
+     * Assumes that the OMGraphicList to be rendered is set on the
+     * OMGraphicHandlerLayer, available via setList().
+     */
+    public void paint(Graphics g) {
+        if (layer != null) {
+            OMGraphicList list = layer.getList();
+            Projection proj = layer.getProjection();
+            if (list != null && layer.isProjectionOK(proj)) {
+
+                setCompositeOnGraphics((Graphics2D) g);
+
+                list.render(g);
+            } else if (logger.isLoggable(Level.FINE)) {
+                logger.fine(layer.getName()
+                        + ".paint(): "
+                        + (list == null ? "NULL list, skipping..." : " skipping due to projection."));
             }
-
-            setCompositeOnGraphics((Graphics2D) g);
-
-            list.render(g);
-         } else if (logger.isLoggable(Level.FINE)) {
-            logger.fine(layer.getName() + ".paint(): " + (list == null ? "NULL list, skipping..." : " skipping due to projection."));
-         }
-      } else {
-         Debug.error("RenderPolicy.paint():  NULL layer, skipping...");
-      }
-   }
+        } else {
+            Debug.error("RenderPolicy.paint():  NULL layer, skipping...");
+        }
+    }
 }

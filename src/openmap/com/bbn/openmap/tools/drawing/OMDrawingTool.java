@@ -1400,9 +1400,10 @@ public class OMDrawingTool extends OMToolComponent implements DrawingTool, Seria
     /**
      * PaintListener interface. We want to know when the canvas is repainted.
      * 
+     * @param source object being painted.
      * @param g the Graphics to draw into.
      */
-    public void listenerPaint(Graphics g) {
+    public void listenerPaint(Object source, Graphics g) {
         // Call repaintRender here because if the graphic is in the
         // middle of being moved, we'll draw it in the mouse event
         // thread. Otherwise, it gets set in the image for the

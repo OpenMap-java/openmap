@@ -22,12 +22,19 @@
 
 package com.bbn.openmap.event;
 
+import java.awt.Graphics;
+
 /**
  * A PaintListener is an object that wants to know when another object
- * is painted();
+ * is painted with a java.awt.Graphics object.
  */
 public interface PaintListener {
 
-    public void listenerPaint(java.awt.Graphics graphics);
+    /**
+     * Method called when the source object is painted.
+     * @param source the source object, may be null, you need to check.
+     * @param graphics the graphics to paint into.
+     */
+    public void listenerPaint(Object source, Graphics graphics);
 
 }

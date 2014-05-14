@@ -592,9 +592,9 @@ public class MapTileMakerComponent
    /*
     * (non-Javadoc)
     * 
-    * @see com.bbn.openmap.event.PaintListener#listenerPaint(java.awt.Graphics)
+    * @see com.bbn.openmap.event.PaintListener#listenerPaint(Object source, java.awt.Graphics)
     */
-   public void listenerPaint(Graphics graphics) {
+   public void listenerPaint(Object source, Graphics graphics) {
       if (activeFace != null) {
          activeFace.paintBoundaries(graphics);
       }

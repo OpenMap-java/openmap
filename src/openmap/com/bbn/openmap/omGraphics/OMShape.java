@@ -61,6 +61,7 @@ public class OMShape extends OMGraphicAdapter implements OMGraphic {
 
         if (origShape != null) {
             setShape(new GeneralPath(proj.forwardShape(origShape)));
+            setLabelLocation(getShape(), proj);
             setNeedToRegenerate(false);
             return true;
         }

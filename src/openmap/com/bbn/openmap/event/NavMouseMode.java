@@ -24,10 +24,14 @@ package com.bbn.openmap.event;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Properties;
 
+import com.bbn.openmap.BufferedMapBean;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.proj.Proj;
@@ -46,8 +50,7 @@ import com.bbn.openmap.util.Debug;
  * to work. If you use a MouseDelegator with the bean, it will take care of that
  * for you.
  */
-public class NavMouseMode
-        extends CoordMouseMode {
+public class NavMouseMode extends CoordMouseMode {
 
     /**
      * Mouse Mode identifier, which is "Navigation".
@@ -55,6 +58,8 @@ public class NavMouseMode
     public final static transient String modeID = "Navigation";
     protected Point point1, point2;
     protected boolean autoZoom = false;
+    MapBean theMap = null;
+
     /**
      * DrawingAttributes to use for drawn rectangle. Fill paint will be used for
      * XOR color, line paint will be used for paint color.
@@ -67,8 +72,9 @@ public class NavMouseMode
      */
     public NavMouseMode() {
         this(true);
-        rectAttributes.setFillPaint(Color.lightGray);
-        rectAttributes.setLinePaint(Color.darkGray);
+        rectAttributes.setLinePaint(Color.GRAY);
+        rectAttributes.setMattingPaint(Color.LIGHT_GRAY);
+        rectAttributes.setMatted(true);
     }
 
     /**
@@ -83,6 +89,9 @@ public class NavMouseMode
         super(modeID, shouldConsumeEvents);
         // override the default cursor
         setModeCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+        rectAttributes.setLinePaint(Color.GRAY);
+        rectAttributes.setMattingPaint(Color.LIGHT_GRAY);
+        rectAttributes.setMatted(true);
     }
 
     /**
@@ -133,13 +142,17 @@ public class NavMouseMode
             }
         }
 
-        // reset the points here so the point doesn't get
-        // rendered on the repaint.
-        point1 = null;
-        point2 = null;
+        cleanUp();
 
         p.setCenter(llp);
         map.setProjection(p);
+    }
+
+    public void mouseMoved(MouseEvent e) {
+        mouseSupport.fireMapMouseMoved(e);
+        if (theMap != null) {
+            cleanUp();
+        }
     }
 
     /**
@@ -160,7 +173,7 @@ public class NavMouseMode
         mouseSupport.fireMapMouseReleased(e);
 
         // point2 is always going to be null for a click.
-        if (!(obj instanceof MapBean) || !autoZoom || point1 == null || point2 == null) {
+        if (!(obj == theMap) || !autoZoom || point1 == null || point2 == null) {
             return;
         }
 
@@ -176,9 +189,6 @@ public class NavMouseMode
 
             // Don't bother redrawing if the rectangle is too small
             if ((dx < 5) || (dy < 5)) {
-                // clean up the rectangle, since point2 has the old
-                // value.
-                paintRectangle(map, point1, point2);
 
                 // If rectangle is too small in both x and y then
                 // recenter the map
@@ -196,13 +206,13 @@ public class NavMouseMode
                         }
                     }
 
-                    // reset the points here so the point doesn't get
-                    // rendered on the repaint.
-                    point1 = null;
-                    point2 = null;
+                    cleanUp();
 
                     p.setCenter(llp);
                     map.setProjection(p);
+                } else {
+                    cleanUp();
+                    map.repaint();
                 }
                 return;
             }
@@ -229,10 +239,7 @@ public class NavMouseMode
             p.setScale(newScale);
             p.setCenter(center);
 
-            // reset the points here so the point doesn't get rendered
-            // on the repaint.
-            point1 = null;
-            point2 = null;
+            cleanUp();
 
             map.setProjection(p);
         }
@@ -269,16 +276,14 @@ public class NavMouseMode
 
         super.mouseExited(e);
 
-        if (e.getSource() instanceof MapBean) {
+        if (theMap == e.getSource()) {
             // don't zoom in, because the mouse is off the window.
             autoZoom = false;
-            // clean up the last box drawn
-            paintRectangle((MapBean) e.getSource(), point1, point2);
             // set the second point to null so that a new box will be
             // drawn if the mouse comes back, and the box will use the
-            // old
-            // starting point, if the mouse button is still down.
+            // old starting point, if the mouse button is still down.
             point2 = null;
+            theMap.repaint();
 
         }
     }
@@ -299,19 +304,30 @@ public class NavMouseMode
 
         super.mouseDragged(e);
 
-        if (e.getSource() instanceof MapBean) {
+        Object obj = e.getSource();
+
+        if (obj instanceof MapBean && theMap == null) {
+            theMap = (MapBean) obj;
+            theMap.addPaintListener(this);
+        }
+
+        if (theMap != null) {
             if (!autoZoom) {
                 return;
             }
 
-            // clean up the old rectangle, since point2 has the old
-            // value.
-            paintRectangle((MapBean) e.getSource(), point1, point2);
-            // paint new rectangle
-            // point2 = e.getPoint();
-            point2 = getRatioPoint((MapBean) e.getSource(), point1, e.getPoint());
-            paintRectangle((MapBean) e.getSource(), point1, point2);
+            point2 = getRatioPoint(theMap, point1, e.getPoint());
+            theMap.repaint();
         }
+    }
+
+    protected void cleanUp() {
+        if (theMap != null) {
+            theMap.removePaintListener(this);
+            theMap = null;
+        }
+        point1 = null;
+        point2 = null;
     }
 
     /**
@@ -333,26 +349,10 @@ public class NavMouseMode
      * @param pt1 one corner of the box to drawn, in window pixel coordinates.
      * @param pt2 the opposite corner of the box.
      */
-    protected void paintRectangle(MapBean map, Point pt1, Point pt2) {
-        if (map != null) {
-            paintRectangle(map.getGraphics(), pt1, pt2);
-        }
-    }
-
-    /**
-     * Draws or erases boxes between two screen pixel points. The graphics from
-     * the map is set to XOR mode, and this method uses two colors to make the
-     * box disappear if on has been drawn at these coordinates, and the box to
-     * appear if it hasn't.
-     * 
-     * @param pt1 one corner of the box to drawn, in window pixel coordinates.
-     * @param pt2 the opposite corner of the box.
-     */
     protected void paintRectangle(Graphics g, Point pt1, Point pt2) {
-        g.setXORMode((Color) rectAttributes.getFillPaint());
-        g.setColor((Color) rectAttributes.getLinePaint());
 
         if (pt1 != null && pt2 != null) {
+
             int width = Math.abs(pt2.x - pt1.x);
             int height = Math.abs(pt2.y - pt1.y);
 
@@ -363,9 +363,17 @@ public class NavMouseMode
                 height++;
             }
 
-            g.drawRect(pt1.x < pt2.x ? pt1.x : pt2.x, pt1.y < pt2.y ? pt1.y : pt2.y, width, height);
-            g.drawRect(pt1.x < pt2.x ? pt1.x + (pt2.x - pt1.x) / 2 - 1 : pt2.x + (pt1.x - pt2.x) / 2 - 1, pt1.y < pt2.y ? pt1.y
-                    + (pt2.y - pt1.y) / 2 - 1 : pt2.y + (pt1.y - pt2.y) / 2 - 1, 2, 2);
+            Rectangle2D rect1 = new Rectangle2D.Double(pt1.x < pt2.x ? pt1.x : pt2.x, pt1.y < pt2.y ? pt1.y
+                    : pt2.y, width, height);
+            Rectangle2D rect2 = new Rectangle2D.Double(pt1.x < pt2.x ? pt1.x + (pt2.x - pt1.x) / 2
+                    - 1 : pt2.x + (pt1.x - pt2.x) / 2 - 1, pt1.y < pt2.y ? pt1.y + (pt2.y - pt1.y)
+                    / 2 - 1 : pt2.y + (pt1.y - pt2.y) / 2 - 1, 2, 2);
+
+            if (theMap != null) {
+                rectAttributes.render((Graphics2D) g, theMap.getNonRotatedShape(rect1));
+                rectAttributes.render((Graphics2D) g, theMap.getNonRotatedShape(rect2));
+            }
+
         }
     }
 
@@ -373,9 +381,18 @@ public class NavMouseMode
      * Called by the MapBean when it repaints, to let the MouseMode know when to
      * update itself on the map. PaintListener interface.
      */
-    public void listenerPaint(java.awt.Graphics g) {
-        // will be properly rejected of point1, point2 == null
-        paintRectangle(g, point1, point2);
+    public void listenerPaint(Object obj, java.awt.Graphics g) {
+
+        if (theMap == null && obj instanceof MapBean) {
+            ((MapBean) obj).removePaintListener(this);
+            return;
+        }
+
+        Graphics2D graphics = (Graphics2D) g.create();
+        if (point1 != null && point2 != null) {
+            paintRectangle(graphics, point1, point2);
+        }
+        graphics.dispose();
     }
 
     public DrawingAttributes getRectAttributes() {
@@ -385,4 +402,34 @@ public class NavMouseMode
     public void setRectAttributes(DrawingAttributes rectAttributes) {
         this.rectAttributes = rectAttributes;
     }
+
+    /**
+     * PropertyConsumer interface method.
+     */
+    public void setProperties(String prefix, Properties setList) {
+        super.setProperties(prefix, setList);
+
+        rectAttributes.setProperties(prefix, setList);
+    }
+
+    /**
+     * PropertyConsumer interface method.
+     */
+    public Properties getProperties(Properties getList) {
+        return rectAttributes.getProperties(getList);
+    }
+
+    /**
+     * PropertyConsumer interface method.
+     */
+    public Properties getPropertyInfo(Properties list) {
+        list = super.getPropertyInfo(list);
+
+        rectAttributes.getPropertyInfo(list);
+
+        list.put(initPropertiesProperty, DrawingAttributes.linePaintProperty + " "
+                + DrawingAttributes.mattingPaintProperty + " " + DrawingAttributes.mattedProperty);
+        return list;
+    }
+
 }

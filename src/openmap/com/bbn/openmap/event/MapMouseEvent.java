@@ -109,7 +109,7 @@ public class MapMouseEvent extends MouseEvent {
     }
     
     public boolean mapIsRotated() {
-        return (map != null && map.getRotation() != 0.0);
+        return (map != null && map.getRotationAngle() != 0.0);
     }
 
 }

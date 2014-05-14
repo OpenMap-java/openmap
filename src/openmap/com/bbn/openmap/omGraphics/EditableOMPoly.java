@@ -47,18 +47,19 @@ import com.bbn.openmap.omGraphics.editable.PolyDeleteNodeState;
 import com.bbn.openmap.omGraphics.editable.PolyStateMachine;
 import com.bbn.openmap.omGraphics.editable.PolyUndefinedState;
 import com.bbn.openmap.proj.GeoProj;
+import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.stateMachine.State;
 import javax.swing.JToolBar;
+
 /**
  * The EditableOMPoly encompasses an OMPoly, providing methods for modifying or
  * creating it.
  */
-public class EditableOMPoly
-        extends EditableOMAbstractLine {
+public class EditableOMPoly extends EditableOMAbstractLine {
 
     protected ArrayList<GrabPoint> polyGrabPoints;
     protected OffsetGrabPoint gpo; // offset
@@ -103,7 +104,7 @@ public class EditableOMPoly
     /**
      * Create the EditableOMPoly with an OMPoly already defined, ready for
      * editing.
-     *
+     * 
      * @param omp OMPoly that should be edited.
      */
     public EditableOMPoly(OMPoly omp) {
@@ -112,7 +113,7 @@ public class EditableOMPoly
 
     /**
      * Create and initialize the state machine that interprets the
-     *
+     * 
      * modifying gestures/commands, as well as initialize the grab points. Also
      * allocates the grab point array needed by the EditableOMPoly.
      */
@@ -287,14 +288,14 @@ public class EditableOMPoly
     public OMGraphic createGraphic(int renderType, int lineType) {
         OMGraphic g = null;
         switch (renderType) {
-            case (OMGraphic.RENDERTYPE_LATLON):
-                g = new OMPoly(new double[0], OMGraphic.RADIANS, lineType);
-                break;
-            case (OMGraphic.RENDERTYPE_OFFSET):
-                g = new OMPoly(90f, -180f, new int[0], OMPoly.COORDMODE_ORIGIN);
-                break;
-            default:
-                g = new OMPoly(new int[0]);
+        case (OMGraphic.RENDERTYPE_LATLON):
+            g = new OMPoly(new double[0], OMGraphic.RADIANS, lineType);
+            break;
+        case (OMGraphic.RENDERTYPE_OFFSET):
+            g = new OMPoly(90f, -180f, new int[0], OMPoly.COORDMODE_ORIGIN);
+            break;
+        default:
+            g = new OMPoly(new int[0]);
         }
         ((OMPoly) g).setDoShapes(true);
         return g;
@@ -340,7 +341,7 @@ public class EditableOMPoly
      * moving point to that GrabPoint. Called when a MouseEvent happens, and you
      * want to find out if a GrabPoint should be used to make modifications to
      * the graphic or its position.
-     *
+     * 
      * @param e MouseEvent
      * @return GrabPoint that is touched by the MouseEvent, null if none are.
      */
@@ -387,7 +388,7 @@ public class EditableOMPoly
      * first node, and for the last, in case of an enclosed polygon, are
      * OffsetGrabPoints. All of the other points will be regular GrabPoints.
      * Usually called when assigning points to a previously defined poly.
-     *
+     * 
      * @param x the horizontal pixel location of the grab point.
      * @param y the vertical pixel location of the grab point.
      * @param index the index of the grab point.
@@ -419,27 +420,28 @@ public class EditableOMPoly
         OMPoly poly = (OMPoly) graphic;
         boolean ntr = poly.getNeedToRegenerate();
         int renderType = poly.getRenderType();
-        Point p = new Point();
+        Point2D p = new Point2D.Double();
+        Projection proj = getProjection();
         GrabPoint gb;
         int i;
         int npts;
-        boolean geoProj = projection instanceof GeoProj;
+        boolean geoProj = proj instanceof GeoProj;
 
         if (ntr == false) {
             if (renderType == OMGraphic.RENDERTYPE_LATLON) {
                 Debug.message("eomg", "EditableOMPoly: modifying lat/lon line");
 
-                if (projection != null) {
+                if (proj != null) {
 
                     double[] ll = poly.getLatLonArray();
                     boolean rads = poly.getUnits() == OMGraphic.RADIANS;
                     gb = null; // reset for this loop
 
-                    for (i = 0; i < ll.length; i += 2) {
+                    for (i = 0; i < ll.length - 1; i += 2) {
                         if (geoProj) {
-                            ((GeoProj) projection).forward(ll[i], ll[i + 1], p, rads);
+                            ((GeoProj) proj).forward(ll[i], ll[i + 1], p, rads);
                         } else {
-                            projection.forward(ll[i], ll[i + 1], p);
+                            proj.forward(ll[i], ll[i + 1], p);
                         }
                         // Need to add a grab point for this
                         // coordinate
@@ -459,11 +461,11 @@ public class EditableOMPoly
                 // Check to see if the poly is a offset poly, and set
                 // the
                 // offset grab point accordingly.
-                if (projection != null) {
+                if (proj != null) {
                     if (geoProj) {
-                        ((GeoProj) projection).forward(poly.lat, poly.lon, p, true);
+                        ((GeoProj) proj).forward(poly.lat, poly.lon, p, true);
                     } else {
-                        projection.forward(poly.lat, poly.lon, p);
+                        proj.forward(poly.lat, poly.lon, p);
                     }
                     gpo.set((int) p.getX(), (int) p.getY());
 
@@ -518,14 +520,13 @@ public class EditableOMPoly
      * change according to the grab points.
      */
     public void setGrabPoints() {
-        int i;
-        GrabPoint gb; // just to use a temp marker
-        LatLonPoint llp = new LatLonPoint.Double();
-        int renderType = poly.getRenderType();
 
+        int renderType = poly.getRenderType();
+        Projection proj = getProjection();
         if (renderType == OMGraphic.RENDERTYPE_LATLON) {
-            if (projection != null) {
-                double[] radCoords = new double[polyGrabPoints.size() * 2];
+            if (proj != null) {
+
+                double[] newCoords = new double[polyGrabPoints.size() * 2];
 
                 // OK, this code resets the location of every point slightly to
                 // the inverse location of the grab points. So if you grab one
@@ -534,53 +535,59 @@ public class EditableOMPoly
                 // we can check the corresponding projected location of the
                 // current node and it matches the grab point, just use the
                 // current poly value.
-                double[] currentCoords = poly.getLatLonArray();
-                Point2D testPoint = new Point2D.Double();
-                for (i = 0; i < polyGrabPoints.size(); i++) {
-                    gb = (GrabPoint) polyGrabPoints.get(i);
+                double[] currentCoords = ProjMath.arrayRadToDeg(poly.getLatLonArrayCopy());
 
-                    boolean useGrabPointLocation = true;
-                    try {
-                        double radLat = currentCoords[i * 2];
-                        double lat = Math.toDegrees(radLat);
-                        double radLon = currentCoords[i * 2 + 1];
-                        double lon = Math.toDegrees(radLon);
-                        testPoint = projection.forward(lat, lon, testPoint);
+                Point2D polyPoint = new Point2D.Double();
+                LatLonPoint movedPoint = new LatLonPoint.Double();
 
-                        if (testPoint.getX() == gb.getX() && testPoint.getY() == gb.getY()) {
-                            // The projected location of the current node is the
-                            // same as the grab point, use that location.
-                            radCoords[2 * i] = radLat;
-                            radCoords[2 * i + 1] = radLon;
-                            useGrabPointLocation = false;
+                for (int i = 0; i < polyGrabPoints.size(); i++) {
+                    GrabPoint gb = (GrabPoint) polyGrabPoints.get(i);
+
+                    int latIndex = i * 2;
+                    int lonIndex = i * 2 + 1;
+
+                    // Set the current coordinate to the GP coordinate - the
+                    // logic is easier this way
+                    proj.inverse(gb.getX(), gb.getY(), movedPoint);
+                    newCoords[latIndex] = movedPoint.getY();
+                    newCoords[lonIndex] = movedPoint.getX();
+
+                    if (lonIndex < currentCoords.length && gpm != gb) {
+
+                        double lat = currentCoords[latIndex];
+                        double lon = currentCoords[lonIndex];
+                        polyPoint = proj.forward(lat, lon, polyPoint);
+
+                        // if the grab point, forward projected, is in the same
+                        // pixel as the old point, then use the previous value.
+                        boolean pointUnmoved = polyPoint.getX() == gb.getX()
+                                && polyPoint.getY() == gb.getY();
+                        if (pointUnmoved) {
+                            newCoords[latIndex] = currentCoords[latIndex];
+                            newCoords[lonIndex] = currentCoords[lonIndex];
                         }
-
-                    } catch (Exception e) {
-                        // If anything goes wrong, don't worry about it, just
-                        // use the
-                        // projected inverse of grab point
-                    }
-
-                    if (useGrabPointLocation) {
-                        projection.inverse(gb.getX(), gb.getY(), llp);
-                        radCoords[2 * i] = llp.getRadLat();
-                        radCoords[2 * i + 1] = llp.getRadLon();
                     }
                 }
 
-                poly.setLocation(radCoords, OMGraphic.RADIANS);
+                double[] oldCoords = ProjMath.arrayRadToDeg(poly.getLatLonArrayCopy());
+                int changeCount = 0;
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < oldCoords.length - 1; i += 2) {
+                    if (oldCoords[i] != newCoords[i] || oldCoords[i + 1] != newCoords[i + 1]) {
+                        sb.append(i / 2).append(" ");
+                        changeCount++;
+                    }
+                }
+
+                /*
+                 * Debug.output("EOMP.SGP: " + changeCount +
+                 * " points changed out of " + (oldCoords.length / 2) + ", " +
+                 * sb.toString());
+                 */
+                poly.setLocation(ProjMath.arrayDegToRad(newCoords), OMGraphic.RADIANS);
+
             } else {
                 Debug.message("eomg", "EditableOMPoly.setGrabPoints: projection is null, can't figure out LATLON points for poly.");
-            }
-        } else if (renderType == OMGraphic.RENDERTYPE_OFFSET) {
-            // Do the offset point.
-            if (projection != null) {
-
-                projection.inverse(gpo.getX(), gpo.getY(), llp);
-
-            } else {
-                Debug.message("eomg",
-                              "EditableOMPoly.setGrabPoints: projection is null, can't figure out LATLON points for poly offset.");
             }
         }
 
@@ -597,8 +604,8 @@ public class EditableOMPoly
                 // find out which to do.
                 GrabPoint previous = gpo;
 
-                for (i = 0; i < polyGrabPoints.size(); i++) {
-                    gb = (GrabPoint) polyGrabPoints.get(i);
+                for (int i = 0; i < polyGrabPoints.size(); i++) {
+                    GrabPoint gb = (GrabPoint) polyGrabPoints.get(i);
 
                     if (poly.coordMode == OMPoly.COORDMODE_PREVIOUS) {
 
@@ -613,15 +620,18 @@ public class EditableOMPoly
                     }
                 }
 
-                double newlat = llp.getRadLat();
-                double newlon = llp.getRadLon();
+                if (proj != null) {
 
-                poly.setLocation(newlat, newlon, OMGraphic.RADIANS, ints);
+                    LatLonPoint llp = proj.inverse(gpo.getX(), gpo.getY(), new LatLonPoint.Double());
+                    poly.setLocation(llp.getRadLat(), llp.getRadLon(), OMGraphic.RADIANS, ints);
 
+                } else {
+                    Debug.message("eomg", "EditableOMPoly.setGrabPoints: projection is null, can't figure out LATLON points for poly offset.");
+                }
             } else {
 
-                for (i = 0; i < polyGrabPoints.size(); i++) {
-                    gb = (GrabPoint) polyGrabPoints.get(i);
+                for (int i = 0; i < polyGrabPoints.size(); i++) {
+                    GrabPoint gb = (GrabPoint) polyGrabPoints.get(i);
 
                     ints[2 * i] = gb.getX();
                     ints[2 * i + 1] = gb.getY();
@@ -636,7 +646,7 @@ public class EditableOMPoly
     /**
      * Add a point to the end of the polyline/polygon and then make it the
      * moving one.
-     *
+     * 
      * @return the index for the point in the polygon, starting with 0.
      */
     public int addMovingPoint(int x, int y) {
@@ -647,7 +657,7 @@ public class EditableOMPoly
 
     /**
      * Add a point to the end of the polyline/polygon.
-     *
+     * 
      * @return the index for the point in the polygon, starting with 0.
      */
     public int addPoint(int x, int y) {
@@ -659,7 +669,7 @@ public class EditableOMPoly
      * position is less than zero, the point will be the starting point. If the
      * position is greater than the list of current points, the point will be
      * added to the end of the poly.
-     *
+     * 
      * @return the index for the point in the polygon, starting with 0.
      */
     public int addPoint(int x, int y, int position) {
@@ -673,7 +683,7 @@ public class EditableOMPoly
      * added to the end of the poly. This method is convenient because it lets
      * you define the GrabPoint object to use for the node, in case you need a
      * special type of GrabPoint.
-     *
+     * 
      * @param gp the GrabPoint set to the screen coordinates of the point to be
      *        added.
      * @return the index for the point in the polygon, starting with 0.
@@ -689,7 +699,7 @@ public class EditableOMPoly
      * added to the end of the poly. This method is convenient because it lets
      * you define the GrabPoint object to use for the node, in case you need a
      * special type of GrabPoint.
-     *
+     * 
      * @return the index for the point in the polygon, starting with 0.
      */
     public int addPoint(GrabPoint gp, int position) {
@@ -702,21 +712,21 @@ public class EditableOMPoly
         int y = gp.getY();
 
         int renderType = poly.getRenderType();
-        boolean rads = (poly.getUnits() == OMGraphic.RADIANS);
+        Projection proj = getProjection();
 
         if (renderType == OMGraphic.RENDERTYPE_LATLON) {
             Debug.message("eomg", "EditableOMPoly: adding point to lat/lon poly");
 
-            if (projection != null) {
+            if (proj != null) {
 
                 double[] ll = poly.getLatLonArray();
                 int actualPosition = (position == Integer.MAX_VALUE ? ll.length : position * 2);
 
-                LatLonPoint llpnt = projection.inverse(x, y, new LatLonPoint.Double());
+                LatLonPoint llpnt = proj.inverse(x, y, new LatLonPoint.Double());
 
                 if (Debug.debugging("eomp")) {
-                    Debug.output("EditableOMPoly: adding point to lat/lon poly at " + x + ", " + y + ": " + llpnt
-                            + ", at the end of ");
+                    Debug.output("EditableOMPoly: adding point to lat/lon poly at " + x + ", " + y
+                            + ": " + llpnt + ", at the end of ");
 
                     for (int j = 0; j < ll.length; j += 2) {
                         Debug.output(ll[j] + ", " + ll[j + 1]);
@@ -725,16 +735,8 @@ public class EditableOMPoly
 
                 double[] newll = new double[ll.length + 2];
 
-                double newlat;
-                double newlon;
-
-                if (rads) {
-                    newlat = llpnt.getRadLat();
-                    newlon = llpnt.getRadLon();
-                } else {
-                    newlat = llpnt.getY();
-                    newlon = llpnt.getX();
-                }
+                double newlat = llpnt.getRadLat();
+                double newlon = llpnt.getRadLon();
 
                 if (actualPosition >= ll.length) {
                     // Put the new points at the end
@@ -754,15 +756,16 @@ public class EditableOMPoly
                     newll[1] = newlon;
                     position = 0;
                 } else {
-                    // actualPosition because there are 2 floats for
-                    // every
+                    // actualPosition because there are 2 floats for every
                     // position.
                     newll[actualPosition] = newlat;
                     newll[actualPosition + 1] = newlon;
                     System.arraycopy(ll, 0, newll, 0, actualPosition);
-                    System.arraycopy(ll, actualPosition, newll, actualPosition + 2, ll.length - actualPosition);
+                    System.arraycopy(ll, actualPosition, newll, actualPosition + 2, ll.length
+                            - actualPosition);
                 }
-                poly.setLocation((double[]) newll, poly.getUnits());
+
+                poly.setLocation(newll, OMGraphic.RADIANS);
             }
         } else if (renderType == OMGraphic.RENDERTYPE_XY) {
             // Grab the projected endpoints
@@ -837,18 +840,15 @@ public class EditableOMPoly
             int offsetY;
 
             if (gpo.getX() == -1 && gpo.getY() == -1) {
-                offsetX = projection.getWidth() / 2;
-                offsetY = projection.getHeight() / 2;
+                offsetX = proj.getWidth() / 2;
+                offsetY = proj.getHeight() / 2;
             } else {
                 offsetX = gpo.getX();
                 offsetY = gpo.getY();
             }
 
             if (poly.coordMode == OMPoly.COORDMODE_ORIGIN || position == 0) { // cover
-                // the
-                // first
-                // point
-
+                // the first point
                 newxs[position] = x - offsetX;
                 newys[position] = y - offsetY;
             } else { // CMode Previous offset deltas
@@ -860,18 +860,13 @@ public class EditableOMPoly
                 // Could call projection.getCenter() but that might
                 // break if/when we make other projection
                 // libraries/paradigms active.
-                LatLonPoint llpnt = projection.inverse(offsetX, offsetY, new LatLonPoint.Double());
+                LatLonPoint llpnt = proj.inverse(offsetX, offsetY, new LatLonPoint.Double());
 
-                if (rads) {
-                    poly.lat = llpnt.getRadLat();
-                    poly.lon = llpnt.getRadLon();
-                } else {
-                    poly.lat = llpnt.getY();
-                    poly.lon = llpnt.getX();
-                }
+                poly.lat = llpnt.getRadLat();
+                poly.lon = llpnt.getRadLon();
             }
 
-            poly.setLocation(poly.lat, poly.lon, poly.getUnits(), newxs, newys);
+            poly.setLocation(poly.lat, poly.lon, OMGraphic.RADIANS, newxs, newys);
         }
 
         // Need to reset the arrowhead when an end point is added,
@@ -892,8 +887,8 @@ public class EditableOMPoly
 
         // This is the standard call that needs to be made here, the
         // arrowhead changes are around this.
-        poly.regenerate(projection);
-        gp.generate(projection);
+        poly.regenerate(proj);
+        gp.generate(proj);
 
         return position;
     }
@@ -914,6 +909,7 @@ public class EditableOMPoly
     public void deletePoint(int position) {
 
         int renderType = poly.getRenderType();
+        Projection proj = getProjection();
 
         boolean needToHookUp = false;
         if (position <= 0 && isEnclosed()) {
@@ -926,7 +922,7 @@ public class EditableOMPoly
         if (renderType == OMGraphic.RENDERTYPE_LATLON) {
             Debug.message("eomg", "EditableOMPoly: removing point from lat/lon poly");
 
-            if (projection != null) {
+            if (proj != null) {
 
                 double[] ll = poly.getLatLonArray();
                 double[] newll = new double[ll.length - 2];
@@ -946,9 +942,10 @@ public class EditableOMPoly
                     // every
                     // position.
                     System.arraycopy(ll, 0, newll, 0, actualPosition);
-                    System.arraycopy(ll, actualPosition + 2, newll, actualPosition, ll.length - actualPosition - 2);
+                    System.arraycopy(ll, actualPosition + 2, newll, actualPosition, ll.length
+                            - actualPosition - 2);
                 }
-                poly.setLocation((double[]) newll, poly.getUnits());
+                poly.setLocation(newll, poly.getUnits());
             }
         } else {
             // Grab the projected endpoints
@@ -970,10 +967,12 @@ public class EditableOMPoly
             } else {
 
                 System.arraycopy(poly.xs, 0, newxs, 0, position);
-                System.arraycopy(poly.xs, position + 1, newxs, position, currentLength - position - 1);
+                System.arraycopy(poly.xs, position + 1, newxs, position, currentLength - position
+                        - 1);
 
                 System.arraycopy(poly.ys, 0, newys, 0, position);
-                System.arraycopy(poly.ys, position + 1, newys, position, currentLength - position - 1);
+                System.arraycopy(poly.ys, position + 1, newys, position, currentLength - position
+                        - 1);
 
             }
 
@@ -984,8 +983,8 @@ public class EditableOMPoly
             }
         }
 
-        if (projection != null) {
-            poly.regenerate(projection);
+        if (proj != null) {
+            poly.regenerate(proj);
         }
 
         // Remove the GrabPoint for the deleted spot.
@@ -1057,7 +1056,7 @@ public class EditableOMPoly
      * Use the current projection to place the graphics on the screen. Has to be
      * called to at least assure the graphics that they are ready for rendering.
      * Called when the graphic position changes.
-     *
+     * 
      * @param proj com.bbn.openmap.proj.Projection
      * @return true
      */
@@ -1073,7 +1072,7 @@ public class EditableOMPoly
     /**
      * Generate the grab points, checking the OMGraphic to see if it contains
      * information about what the grab points should look like.
-     *
+     * 
      * @param proj
      */
     protected void generateGrabPoints(Projection proj) {
@@ -1138,7 +1137,7 @@ public class EditableOMPoly
      * Draw the EditableOMPoly parts into the java.awt.Graphics object. The grab
      * points are only rendered if the poly machine state is
      * PolySelectedState.POLY_SELECTED.
-     *
+     * 
      * @param graphics java.awt.Graphics.
      */
     public void render(java.awt.Graphics graphics) {
@@ -1156,7 +1155,8 @@ public class EditableOMPoly
         }
 
         // Render the points actually on the polygon
-        if (state instanceof GraphicSelectedState || state instanceof PolyAddNodeState || state instanceof PolyDeleteNodeState) {
+        if (state instanceof GraphicSelectedState || state instanceof PolyAddNodeState
+                || state instanceof PolyDeleteNodeState) {
             for (GrabPoint gb : polyGrabPoints) {
                 if (gb != null) {
                     gb.setVisible(true);
@@ -1200,7 +1200,7 @@ public class EditableOMPoly
      * point gets added to the polygon, and should take an array of all the
      * GrabPoints created. It will add the offsetGrabPoint to the end of the
      * array.
-     *
+     * 
      * @param points a GrabPoint[] for the points on the polygon.
      * @return true if the grab point array was exactly what the
      *         EditableOMGraphic was expecting, in terms of length of the
@@ -1255,7 +1255,7 @@ public class EditableOMPoly
      * gPoints array declared in EditableOMGraphic - no longer. If the index is
      * -1, the offset grab point is set, and any other index refers to the
      * concurrent polygon point.
-     *
+     * 
      * @param gb GrabPoint to assign within array.
      * @param index the index of the array to put the GrabPoint. This index
      *        should be -1 for the offset grab point, or the index of the corner
@@ -1311,7 +1311,7 @@ public class EditableOMPoly
 
     /**
      * Adds widgets to modify polygon.
-     *
+     * 
      * @param graphicAttributes the GraphicAttributes to use to get the GUI
      *        widget from to control those parameters for this EOMG.
      * @return Component to use to control parameters for this EOMG.
@@ -1320,10 +1320,8 @@ public class EditableOMPoly
         Debug.message("eomg", "EditableOMPoly.getGUI");
         if (graphicAttributes != null) {
             JMenu ahm = getArrowHeadMenu();
-            graphicAttributes.setLineMenuAdditions(new JMenu[] {
-                ahm
-            });
-//            JComponent gaGUI = (JComponent) graphicAttributes.getGUI();
+            graphicAttributes.setLineMenuAdditions(new JMenu[] { ahm });
+            // JComponent gaGUI = (JComponent) graphicAttributes.getGUI();
             JComponent toolbar = createAttributePanel(graphicAttributes);
             getPolyGUI(graphicAttributes.getOrientation(), toolbar);
             return toolbar;
@@ -1363,13 +1361,13 @@ public class EditableOMPoly
         return getPolyGUI(true, true, true, true, orientation, toolbar);
     }
 
-    public JComponent getPolyGUI(boolean includeEnclose, boolean includeExt, boolean includeAdd, boolean includeDelete,
-                                 int orientation) {
+    public JComponent getPolyGUI(boolean includeEnclose, boolean includeExt, boolean includeAdd,
+                                 boolean includeDelete, int orientation) {
         return getPolyGUI(includeEnclose, includeExt, includeAdd, includeDelete, orientation, null);
     }
 
-    public JComponent getPolyGUI(boolean includeEnclose, boolean includeExt, boolean includeAdd, boolean includeDelete,
-                                 int orientation, JComponent buttonBox) {
+    public JComponent getPolyGUI(boolean includeEnclose, boolean includeExt, boolean includeAdd,
+                                 boolean includeDelete, int orientation, JComponent buttonBox) {
 
         if (buttonBox == null) {
             buttonBox = new GridBagToolBar();
@@ -1384,8 +1382,7 @@ public class EditableOMPoly
             url = getImageURL("enclosepoly.gif");
             imageIcon = new ImageIcon(url);
             polygonButton = new JToggleButton(imageIcon);
-            polygonButton.setToolTipText(i18n.get(EditableOMPoly.class, "polygonButton.tooltip",
-                                                  "Automatically link first and last nodes"));
+            polygonButton.setToolTipText(i18n.get(EditableOMPoly.class, "polygonButton.tooltip", "Automatically link first and last nodes"));
 
             polygonButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -1509,12 +1506,10 @@ public class EditableOMPoly
     /**
      * Subclass for undoing edits for OMPoly classes, handles enclose/unenclose
      * events.
-     *
+     * 
      * @author ddietrick
      */
-    public static class OMPolyUndoEvent
-            extends OMGraphicUndoEvent
-            implements UndoEvent {
+    public static class OMPolyUndoEvent extends OMGraphicUndoEvent implements UndoEvent {
 
         protected boolean enclosed = false;
 

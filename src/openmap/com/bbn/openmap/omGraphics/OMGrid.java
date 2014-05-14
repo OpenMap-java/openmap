@@ -640,6 +640,8 @@ public class OMGrid
             add(generateGridObjects(proj));
         }
 
+        setLabelLocation(getShape(), proj);
+        
         setNeedToRegenerate(false);
 
         return true;

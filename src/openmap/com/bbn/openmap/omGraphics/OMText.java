@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMText.java,v $
 // $RCSfile: OMText.java,v $
 // $Revision: 1.19 $
 // $Date: 2008/01/29 22:04:13 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
@@ -187,6 +188,11 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /** The angle by which the text is to be rotated, in radians */
     protected double rotationAngle = DEFAULT_ROTATIONANGLE;
+    /**
+     * The rotation angle used at render time, depending on rotate-ability.
+     * Radians.  If null, no rotation should be applied at render time.
+     */
+    protected Double renderRotationAngle = null;
 
     /**
      * The text matte color surrounds each character of the string with this
@@ -236,7 +242,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     /**
      * Creates a text object, with Lat/Lon placement, and default SansSerif
      * font.
-     * 
+     *
      * @param lt latitude of the string, in decimal degrees.
      * @param ln longitude of the string, in decimal degrees.
      * @param stuff the string to be displayed.
@@ -248,7 +254,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Creates a text object, with Lat/Lon placement.
-     * 
+     *
      * @param lt latitude of the string, in decimal degrees.
      * @param ln longitude of the string, in decimal degrees.
      * @param stuff the string to be displayed.
@@ -268,7 +274,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Creates a text object, with XY placement, and default SansSerif font.
-     * 
+     *
      * @param px1 horizontal window pixel location of the string.
      * @param py1 vertical window pixel location of the string.
      * @param stuff the string to be displayed.
@@ -280,7 +286,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Creates a text object, with XY placement.
-     * 
+     *
      * @param px1 horizontal window pixel location of the string.
      * @param py1 vertical window pixel location of the string.
      * @param stuff the string to be displayed.
@@ -298,7 +304,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     /**
      * Creates a Text object, with lat/lon placement with XY offset, and default
      * SansSerif font.
-     * 
+     *
      * @param lt latitude of the string, in decimal degrees.
      * @param ln longitude of the string, in decimal degrees.
      * @param offX horizontal offset of string
@@ -312,7 +318,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Creates a Text object, with lat/lon placement with XY offset.
-     * 
+     *
      * @param lt latitude of the string, in decimal degrees.
      * @param ln longitude of the string, in decimal degrees.
      * @param offX horizontal offset of string
@@ -334,7 +340,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     /**
      * Get the font of the text object, which might have been scaled by the font
      * sizer.
-     * 
+     *
      * @return the font of the object.
      */
     public Font getFont() {
@@ -349,11 +355,11 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * is not null, this font will be set in that object as well, and the active
      * font will come from the font sizer. To make the set font the constant
      * font, set the font sizer to null. Flushes the cache fields
-     * <code>fm</code> , <code>widths</code>, and <code>polyBounds</code>. Calls
+     * <code>fm</code> , <code>widths</code>, and <code>currentPolyBounds</code>. Calls
      * setScaledFont.
-     * 
+     *
      * @param aFont font to be used for the text.
-     * 
+     *
      * @see #fm
      * @see #widths
      * @see #polyBounds
@@ -415,7 +421,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Get the x location. Applies to XY and OFFSET text objects.
-     * 
+     *
      * @return the horizontal window location of the string, from the left of
      *         the window.
      */
@@ -429,7 +435,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Set the x location. Applies to XY and OFFSET text objects.
-     * 
+     *
      * @param newX the horizontal pixel location of the window to place the
      *        string.
      */
@@ -444,7 +450,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Get the y location. Applies to XY and OFFSET text objects.
-     * 
+     *
      * @return the vertical pixel location of the string, from the top of the
      *         window.
      */
@@ -458,7 +464,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Set the y location. Applies to XY and OFFSET text objects.
-     * 
+     *
      * @param newY the vertical pixel location of the window to place the
      *        string.
      */
@@ -474,7 +480,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     /**
      * Get the latitude location of the string. Applies to LATLON and OFFSET
      * text objects.
-     * 
+     *
      * @return the latitude, in decimal degrees.
      */
     public double getLat() {
@@ -483,7 +489,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Set the latitude. Applies to LATLON and OFFSET text objects.
-     * 
+     *
      * @param l latitude for new location, in decimal degrees.
      */
     public void setLat(double l) {
@@ -493,7 +499,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Return the longitude. Applies to LATLON and OFFSET text objects.
-     * 
+     *
      * @return the longitude location of the string, in decimal degrees.
      */
     public double getLon() {
@@ -502,7 +508,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Set the longitude. Applies to LATLON and OFFSET text objects.
-     * 
+     *
      * @param l the longitude location for the string, in decimal degrees.
      */
     public void setLon(double l) {
@@ -514,7 +520,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * Not for the faint hearted. Used by the DeclutterMatrix to replace text on
      * the map after it has been projected. This method lets the declutter
      * matrix find out where the text should go.
-     * 
+     *
      * @return Point on the map where the text has been projected to go.
      */
     public Point2D getMapLocation() {
@@ -525,7 +531,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * Not for the faint hearted. Used by the DeclutterMatrix to replace text on
      * the map after it has been projected. This method lets the declutter
      * matrix put the text in an uncluttered place.
-     * 
+     *
      * @param point the point on the map where the text being placed.
      */
     public void setMapLocation(Point2D point) {
@@ -535,7 +541,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Returns the color used to matte the actual text of this class.
-     * 
+     *
      * @return the text matte color, null if not used
      */
     public Color getTextMatteColor() {
@@ -546,9 +552,9 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * Sets the color used to paint the outline of the characters in this text.
      * The thickness of the outline is decided by the textMatteStroke. If the
      * color is null, the outline will not be painted.
-     * 
+     *
      * The default value is null.
-     * 
+     *
      * @param textMatteColor
      */
     public void setTextMatteColor(Color textMatteColor) {
@@ -558,7 +564,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     /**
      * Returns the stroke used to paint the outline of the characters in this
      * text.
-     * 
+     *
      * @return the stroke used to paint the outline
      */
     public Stroke getTextMatteStroke() {
@@ -569,9 +575,9 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * Sets the stroke used to paint the outline of the characters in this text
      * For best effect the stroke thickness should be larger than 1 and it
      * should be continuous.
-     * 
+     *
      * The default thickness is 2.
-     * 
+     *
      * @param textMatteStroke the new stroke
      */
     public void setTextMatteStroke(Stroke textMatteStroke) {
@@ -580,7 +586,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Return the string.
-     * 
+     *
      * @return the string
      */
     public synchronized java.lang.String getData() {
@@ -589,12 +595,12 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Sets the string contents that are presented. Flushes the cache fields
-     * <code>parsedData</code>,<code>widths</code>, and <code>polyBounds</code>.
+     * <code>parsedData</code>,<code>widths</code>, and <code>currentPolyBounds</code>.
      * HACK synchronized so that it doesn't interfere with other methods that
      * are using parsedData.
-     * 
+     *
      * @param d the text to be displayed
-     * 
+     *
      * @see #parsedData
      * @see #widths
      * @see #polyBounds
@@ -610,7 +616,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Gets the justification of this OMText.
-     * 
+     *
      * @return one of JUSTIFY_LEFT, JUSTIFY_CENTER, JUSTIFY_RIGHT
      */
     public int getJustify() {
@@ -619,8 +625,8 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Sets the justification of this OMText. Flushes the cache fields
-     * <code>fm</code>,<code>widths</code>, and <code>polyBounds</code>.
-     * 
+     * <code>fm</code>,<code>widths</code>, and <code>currentPolyBounds</code>.
+     *
      * @param j one of JUSTIFY_LEFT, JUSTIFY_CENTER, JUSTIFY_RIGHT
      * @see #polyBounds
      */
@@ -633,7 +639,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Gets the baseline location of this OMText.
-     * 
+     *
      * @return one of BASELINE_BOTTOM, BASELINE_MIDDLE or BASELINE_TOP.
      */
     public int getBaseline() {
@@ -642,8 +648,8 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Sets the location of the baseline of this OMText. Flushes the cache
-     * fields <code>fm</code>,<code>widths</code>, and <code>polyBounds</code>.
-     * 
+     * fields <code>fm</code>,<code>widths</code>, and <code>currentPolyBounds</code>.
+     *
      * @param b one of BASELINE_BOTTOM, BASELINE_MIDDLE or BASELINE_TOP.
      * @see #polyBounds
      */
@@ -656,7 +662,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Gets the show bounds field.
-     * 
+     *
      * @deprecated use isMatted() instead.
      * @return true if bounds are shown, false if hidden.
      */
@@ -667,7 +673,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     /**
      * Sets the show bounds field. When <code>true</code>, the bounding box of
      * this text is displayed.
-     * 
+     *
      * @deprecated use setMatted(boolean) instead.
      * @param show true to show, false to hide.
      * @see #setFillColor
@@ -679,7 +685,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     /**
      * Set flag to specify that the bounds, if displayed, should be rectangular.
      * Only really affects mult-line text.
-     * 
+     *
      * @param value if true, bounds for multi-line text will be retangular
      *        instead of closely following text.
      */
@@ -690,7 +696,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     /**
      * Get flag to specify that the bounds, if displayed, should be rectangular.
      * Only really affects mult-line text.
-     * 
+     *
      * @return true if bounds for multi-line text will be retangular instead of
      *         closely following text.
      */
@@ -700,7 +706,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Get the text bounds.
-     * 
+     *
      * @return Polygon or null if bounds not calculated yet
      */
     public Polygon getPolyBounds() {
@@ -712,7 +718,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Set the fmHeight to use for the footprint.
-     * 
+     *
      * @param fmh the setting for fmHeight, out of the parameters stated above.
      */
     public void setFMHeight(int fmh) {
@@ -721,7 +727,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Get the fmHeight used for the footprint.
-     * 
+     *
      * @return the setting for fmHeight, out of the parameters stated above.
      */
     public int getFMHeight() {
@@ -730,7 +736,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Set the angle by which the text is to rotated.
-     * 
+     *
      * @param theta the number of radians the text is to be rotated. Measured
      *        clockwise from horizontal.
      * @deprecated use setRotationAngle instead.
@@ -742,7 +748,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Get the current rotation of the text.
-     * 
+     *
      * @return the text rotation.
      * @deprecated use getRotationAngle instead.
      */
@@ -752,7 +758,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Set the angle by which the text is to rotated.
-     * 
+     *
      * @param angle the number of radians the text is to be rotated. Measured
      *        clockwise from horizontal. Positive numbers move the positive x
      *        axis toward the positive y axis.
@@ -764,7 +770,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Get the current rotation of the text.
-     * 
+     *
      * @return the text rotation.
      */
     public double getRotationAngle() {
@@ -774,11 +780,11 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     /**
      * Prepares the text for rendering. Determines the location based on the
      * renderType and possibly the projection. Sets the field <code>pt</code>.
-     * Flushes the cache field <code>polyBounds</code>.
-     * 
+     * Flushes the cache field <code>currentPolyBounds</code>.
+     *
      * @param proj the projection of the window.
      * @return true if the placement of the string on the window is valid.
-     * 
+     *
      * @see #pt
      */
     public synchronized boolean generate(Projection proj) {
@@ -796,6 +802,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
         // flush the cached information about the bounding box.
         polyBounds = null;
+        renderRotationAngle = null;
 
         /*
          * Although it most definitely has bounds, OMText is considered a point
@@ -833,6 +840,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
         }
 
         setFont(proj.getScale());
+        evaluateRotationAngle(proj);
 
         // Compliance with Shape additions to OMGeometry/OMGraphic.
         // If font metrics are set, we can take care of this now. If
@@ -841,17 +849,32 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
         // one-projection lag for font metrics to catch up with any
         // change.
         computeBounds();
-
+        setLabelLocation(getShape(), proj);
         setNeedToRegenerate(false);
         return true;
     }
 
-    protected Projection hackProj = null;
+    /**
+     * Set the renderRotationAngle based on the projection angle and OMText settings.
+     * @param proj the current projection.
+     */
+    public void evaluateRotationAngle(Projection proj) {
+        renderRotationAngle = null;
+        double projRotation = proj.getRotationAngle();
+        Object noRotationAtt = getAttribute(OMGraphicConstants.NO_ROTATE);
+        boolean compensateForProjRot = noRotationAtt != null && !noRotationAtt.equals(Boolean.FALSE);
+
+        if (compensateForProjRot) {
+            renderRotationAngle = rotationAngle - projRotation;
+        } else if (rotationAngle != DEFAULT_ROTATIONANGLE) {
+            renderRotationAngle = rotationAngle;
+        }
+    }
 
     /**
      * Build a font out of an X Font description string. This function take this
      * common string format, and pulls the font type, style, and size out of it.
-     * 
+     *
      * @param fontString the X font description.
      */
     public static Font rebuildFont(String fontString) {
@@ -888,7 +911,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * XFont type text structure. Dashes need to be included, line feeds are
      * not. They are here only for readability. The rebuildFont method brings
      * this back to a java Font.
-     * 
+     *
      * @param font the Java font to convert to an XFont string.
      * @return the font as a string.
      */
@@ -929,7 +952,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Counts occurrences of a character in a string.
-     * 
+     *
      * @param str the String
      * @param ch the character to count
      * @return the number of occurrences
@@ -950,7 +973,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     /**
      * Breaks the text down into separate lines. Sets the cache field
      * <code>parsedData</code>.
-     * 
+     *
      * @see #parsedData
      */
     protected void parseData() {
@@ -982,9 +1005,9 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     /**
      * Computes the widths of each line of the text. Sets the cache field
      * <code>widths</code>.
-     * 
+     *
      * @param fm the metrics to use for computation.
-     * 
+     *
      * @see #widths
      */
     protected void computeStringWidths(FontMetrics fm) {
@@ -1003,7 +1026,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * object, to figure out the dimensions of the text in order to manipulate
      * the placement of the text on the map. These internals were otherwise
      * initialized only when render function was called.
-     * 
+     *
      * @param g the java.awt.Graphics to put the string on.
      */
     public synchronized void prepareForRender(Graphics g) {
@@ -1019,9 +1042,9 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     /**
      * Renders the text onto the given graphics. Sets the cache field
      * <code>fm</code>.
-     * 
+     *
      * @param g the java.awt.Graphics to put the string on.
-     * 
+     *
      * @see #fm
      */
     public synchronized void render(Graphics g) {
@@ -1074,7 +1097,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
         double rw = 0.0;
         double woffset = 0.0;
 
-        if (g instanceof Graphics2D && rotationAngle != DEFAULT_ROTATIONANGLE) {
+        if (g instanceof Graphics2D && renderRotationAngle != null) {
 
             Rectangle rect = polyBounds.getBounds();
 
@@ -1092,8 +1115,9 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
             case JUSTIFY_RIGHT:
                 woffset = rw;
             }
+
             // rotate about our text anchor point
-            ((Graphics2D) g).rotate(rotationAngle, rx + woffset, pt.getY());
+            ((Graphics2D) g).rotate(renderRotationAngle, rx + woffset, pt.getY());
         }
 
         setGraphicsForEdge(g);
@@ -1159,13 +1183,14 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
                 g2.setColor(getLineColor());
             }
         }
+
         g.drawString(string, (int) x, (int) y);
     }
 
     /**
      * Computes the bounding polygon. Sets the cache field
-     * <code>polyBounds</code>.
-     * 
+     * <code>currentPolyBounds</code>.
+     *
      * @see #polyBounds
      */
     protected void computeBounds() {
@@ -1173,7 +1198,9 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
             parseData();
         }
 
-        if (polyBounds == null && pt != null && fm != null) {
+		Polygon currentPolyBounds = this.polyBounds;
+
+        if (currentPolyBounds == null && pt != null && fm != null) {
 
             // System.out.println("\tcomputing poly bounds");
 
@@ -1197,7 +1224,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
             }
 
             int nLines = parsedData.length;
-            polyBounds = new Polygon();
+            currentPolyBounds = new Polygon();
 
             computeStringWidths(fm);
 
@@ -1236,10 +1263,10 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
                 }
 
                 // top of line
-                polyBounds.addPoint((int) pt.getX() + xoffset, currenty);
+                currentPolyBounds.addPoint((int) pt.getX() + xoffset, currenty);
                 currenty += height;
                 // bottom of line
-                polyBounds.addPoint((int) pt.getX() + xoffset, currenty);
+                currentPolyBounds.addPoint((int) pt.getX() + xoffset, currenty);
             }
 
             // Next, all line startpoints (the left side)
@@ -1255,27 +1282,26 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
                     xoffset = -widths[i];
                     break;
                 }
-                polyBounds.addPoint((int) pt.getX() + xoffset, currenty);
+                currentPolyBounds.addPoint((int) pt.getX() + xoffset, currenty);
                 currenty -= height;
-                polyBounds.addPoint((int) pt.getX() + xoffset, currenty);
+                currentPolyBounds.addPoint((int) pt.getX() + xoffset, currenty);
             }
-
-            if (polyBounds != null) {
 
                 GeneralPath projectedShape = null;
 
                 if (useMaxWidthForBounds) {
-                    projectedShape = new GeneralPath(polyBounds.getBounds());
+                    projectedShape = new GeneralPath(currentPolyBounds.getBounds());
                 } else {
-                    projectedShape = new GeneralPath(polyBounds);
+                    projectedShape = new GeneralPath(currentPolyBounds);
                 }
 
                 // Make sure the shape takes into account the current
                 // rotation angle. Code taken from generate() method,
                 // so it should match up with the drawn text.
-                if (rotationAngle != DEFAULT_ROTATIONANGLE) {
+                Double angle = renderRotationAngle;
+                if (angle != null) {
 
-                    Rectangle rect = polyBounds.getBounds();
+                    Rectangle rect = currentPolyBounds.getBounds();
 
                     double rx = rect.getX();
                     double rw = rect.getWidth();
@@ -1293,20 +1319,21 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
                     }
 
                     AffineTransform at = new AffineTransform();
-                    at.rotate(rotationAngle, rx + woffset, pt.getY());
+                    at.rotate(angle, rx + woffset, pt.getY());
                     PathIterator pi = projectedShape.getPathIterator(at);
                     GeneralPath gp = new GeneralPath();
                     gp.append(pi, false);
                     // Replace shape with rotated version
                     projectedShape = gp;
                 }
+
+				this.polyBounds = currentPolyBounds;
                 setShape(projectedShape);
-            }
 
         } else {
             if (Debug.debugging("omtext")) {
                 Debug.output("OMText.computeBounds() didn't compute because polybounds = "
-                        + polyBounds + " or  pt = " + pt + " or fm = " + fm
+                        + currentPolyBounds + " or  pt = " + pt + " or fm = " + fm
                         + ", (only polybounds should be null)");
             }
         }
@@ -1315,10 +1342,10 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     /**
      * Return the shortest distance from the OMText to an XY-point.
      * <p>
-     * 
+     *
      * This method uses the OMText's internal Shape object, created from the
      * boundary of the text, as its boundary.
-     * 
+     *
      * @param x X coordinate of the point.
      * @param y Y coordinate of the point.
      * @return float distance, in pixels, from graphic to the point. Returns
@@ -1334,7 +1361,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Return a copy of the pixel lengths of the text line(s).
-     * 
+     *
      * @return array of ints. Returns null if the widths haven't been calculated
      *         yet.
      */
@@ -1349,7 +1376,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Get the pixel width of the longest line.
-     * 
+     *
      * @return pixels, returns null if the widths haven't been calculated yet,
      *         zero minimum if they have.
      */

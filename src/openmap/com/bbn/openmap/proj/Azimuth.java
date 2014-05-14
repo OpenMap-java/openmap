@@ -41,8 +41,7 @@ import com.bbn.openmap.util.Debug;
  * @see Orthographic
  * @see Gnomonic
  */
-public abstract class Azimuth
-        extends GeoProj {
+public abstract class Azimuth extends GeoProj {
 
     // encapsules extra variables to forward() method call
     protected static class AzimuthVar {
@@ -120,7 +119,8 @@ public abstract class Azimuth
 
         // maxscale = scale at which a world hemisphere fits in the
         // window
-        maxscale = (width < height) ? (planetPixelRadius * 2) / width : (planetPixelRadius * 2) / height;
+        maxscale = (width < height) ? (planetPixelRadius * 2) / width : (planetPixelRadius * 2)
+                / height;
         if (maxscale < minscale) {
             maxscale = minscale;
         }
@@ -143,7 +143,8 @@ public abstract class Azimuth
         // bit
 
         if (Debug.debugging("proj")) {
-            Debug.output("Azimuth.computeParameters(): " + "world.x = " + world.x + " XSCALE_THRESHOLD = " + XSCALE_THRESHOLD);
+            Debug.output("Azimuth.computeParameters(): " + "world.x = " + world.x
+                    + " XSCALE_THRESHOLD = " + XSCALE_THRESHOLD);
         }
     }
 
@@ -189,7 +190,11 @@ public abstract class Azimuth
     protected abstract Point2D _forward(double lat, double lon, Point2D pt, AzimuthVar azVar);
 
     /**
-     * Pan the map/projection.
+     * Pan the map/projection. We check for N,S,E,W,SE,NE,SW,NW and manage those
+     * directions a bit, so that going back and forth between them will put the
+     * map back where it was, instead of inching toward the equator. For other
+     * Az values, we go to the inverse of the x, y point in that direction
+     * (superclass behavior).
      * <ul>
      * <li><code>pan(180, c)</code> pan south
      * <li><code>pan(-90, c)</code> pan west
@@ -448,7 +453,8 @@ public abstract class Azimuth
      * @param isFilled filled poly?
      * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
      */
-    protected ArrayList<float[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs, boolean isFilled) {
+    protected ArrayList<float[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs,
+                                              boolean isFilled) {
         // Idea:
         // The azimuthal projection family (mostly) shows one
         // hemisphere only.
@@ -583,8 +589,7 @@ public abstract class Azimuth
             if (!curr_invalid && prev_invalid) {
                 // record transition (outside -> inside)
                 azVar.index = i - 1;// include outside point
-                azVar.current_azimuth =
-                        GreatCircle.sphericalAzimuth((float) centerY, (float) centerX, rawllpts[j - 2], rawllpts[j - 1]);
+                azVar.current_azimuth = GreatCircle.sphericalAzimuth((float) centerY, (float) centerX, rawllpts[j - 2], rawllpts[j - 1]);
                 // Debug.output("marker oi="+azVar.index+
                 // " az="+ProjMath.radToDeg(azVar.current_azimuth));
                 sections.add(azVar);
@@ -647,8 +652,7 @@ public abstract class Azimuth
                 }
                 azVar.index = i;
                 j = rawllpts.length;
-                azVar.current_azimuth =
-                        GreatCircle.sphericalAzimuth((float) centerY, (float) centerX, rawllpts[j - 2], rawllpts[j - 1]);
+                azVar.current_azimuth = GreatCircle.sphericalAzimuth((float) centerY, (float) centerX, rawllpts[j - 2], rawllpts[j - 1]);
                 // Debug.output("marker end="+azVar.index+
                 // " az="+ProjMath.radToDeg(azVar.current_azimuth));
                 sections.add(azVar);
@@ -698,7 +702,8 @@ public abstract class Azimuth
      * @param isFilled filled poly?
      * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
      */
-    protected ArrayList<float[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs, boolean isFilled) {
+    protected ArrayList<float[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs,
+                                              boolean isFilled) {
         boolean DEBUG = Debug.debugging("proj");
 
         int len = rawllpts.length >>> 1;
@@ -959,7 +964,8 @@ public abstract class Azimuth
     // original poly to draw the bounding outline (remember that
     // polylines don't have the fill problem just described!)
     //
-    private void generateFilledPoly(float[] xs, float[] ys, ArrayList<AzimuthVar> sections, ArrayList<float[]> ret_vec) {
+    private void generateFilledPoly(float[] xs, float[] ys, ArrayList<AzimuthVar> sections,
+                                    ArrayList<float[]> ret_vec) {
         AzimuthVar beginAz, oiAz, ioAz;
         /*
          * the merged list is going to end up being series of lists of two
@@ -1152,7 +1158,8 @@ public abstract class Azimuth
     // Clip filled poly section along the hemisphere edge. Add the
     // closed poly coordinates to the return ArrayList. This is called
     // from generateFilledPoly().
-    private void hemisphereClip(float[] xs, float[] ys, AzimuthVar oiAz, AzimuthVar ioAz, ArrayList<float[]> ret_vec) {
+    private void hemisphereClip(float[] xs, float[] ys, AzimuthVar oiAz, AzimuthVar ioAz,
+                                ArrayList<float[]> ret_vec) {
         double[] radpts = getHemisphereEdge(oiAz.current_azimuth, ioAz.current_azimuth);
         int len = radpts.length;
         int m = len >>> 1;
@@ -1196,8 +1203,8 @@ public abstract class Azimuth
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords, float[] ycoords, boolean[] visible, int copyoff,
-                              int copylen) {
+    public boolean forwardRaw(float[] rawllpts, int rawoff, float[] xcoords, float[] ycoords,
+                              boolean[] visible, int copyoff, int copylen) {
         Point temp = new Point();
         AzimuthVar azVar = new AzimuthVar();
         boolean ok = true;
@@ -1232,8 +1239,8 @@ public abstract class Azimuth
      * @return boolean true if all points visible, false if some points not
      *         visible.
      */
-    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords, float[] ycoords, boolean[] visible, int copyoff,
-                              int copylen) {
+    public boolean forwardRaw(double[] rawllpts, int rawoff, float[] xcoords, float[] ycoords,
+                              boolean[] visible, int copyoff, int copylen) {
         Point temp = new Point();
         AzimuthVar azVar = new AzimuthVar();
         boolean ok = true;

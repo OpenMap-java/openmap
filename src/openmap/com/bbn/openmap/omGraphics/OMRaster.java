@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/OMRaster.java,v $
 // $RCSfile: OMRaster.java,v $
 // $Revision: 1.8 $
 // $Date: 2009/01/21 01:24:41 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics;
@@ -49,7 +49,7 @@ import com.bbn.openmap.util.DeepCopyUtil;
  * OMRaster is faster to display, because it doesn't need to take the time to
  * resolve the colortable values into pixels.
  * <P>
- * 
+ *
  * For direct colormodel images: If you pass in a null pix or a pix with a zero
  * length, the object will create the pixels for you but will not general a
  * renderable version of the object. You will need to call render before
@@ -59,21 +59,21 @@ import com.bbn.openmap.util.DeepCopyUtil;
  * the data is not yet known. The memory for the pixels will be allocated, and
  * then they can be set with image data later when a database is accessed.
  * <P>
- * 
+ *
  * For ImageIcon OMRasters: Using an ImageIcon to create an OMRaster gives you
  * the ability to put an image on the screen based on an ImageIcon made from
  * file or URL. The OMRaster uses this ImageIcon as is - there is no opportunity
  * to change any parameters of this image. So set the colors, transparency, etc.
  * before you create the OMRaster.
  * <P>
- * 
+ *
  * For indexed colormodel images: If you pass in an empty byte array, a byte
  * array will be created based on the width and height. You will have to resolve
  * empty colortables and set the pixels later. Use this method (null bytes) if
  * you are building images in a cache, for tiled mapping data or something else
  * where the data is not yet known. The memory for the pixels will be allocated,
  * and then they can be set with image data later when a database is accessed.
- * 
+ *
  * There is the ability to add a filter to the image, to change it's appearance
  * for rendering. The most common filter, which is included as a kind of
  * default, is the scale filter. Filtering the OMRasterObject replaces the
@@ -84,12 +84,10 @@ import com.bbn.openmap.util.DeepCopyUtil;
  * re-scaling. For OMRasters created by ImageIcons or Images, though, you'll
  * need to hold on to the original Image. The internal version is replaced by
  * the filtered version.
- * 
+ *
  * @see OMRasterObject
  */
-public class OMRaster
-        extends OMRasterObject
-        implements Serializable {
+public class OMRaster extends OMRasterObject implements Serializable {
 
     /**
      * The integer colors that are needed in a java colortable. The Color[] that
@@ -119,7 +117,7 @@ public class OMRaster
 
     /**
      * Creates an OMRaster images, Lat/Lon placement with a direct colormodel.
-     * 
+     *
      * @param lt latitude of the top of the image.
      * @param ln longitude of the left side of the image.
      * @param w width of the image, in pixels.
@@ -143,7 +141,7 @@ public class OMRaster
 
     /**
      * Create an OMRaster image, XY placement with a direct colormodel.
-     * 
+     *
      * @param x1 window location of the left side of the image.
      * @param y1 window location of the top of the image.
      * @param w width of the image, in pixels.
@@ -168,7 +166,7 @@ public class OMRaster
     /**
      * Create an OMRaster, Lat/lon placement with XY offset with a direct
      * colormodel.
-     * 
+     *
      * @param lt latitude of the top of the image, before the offset.
      * @param ln longitude of the left side of the image, before the offset.
      * @param offset_x1 number of pixels to move image to the right.
@@ -199,7 +197,7 @@ public class OMRaster
 
     /**
      * Create an OMRaster, Lat/Lon placement with an ImageIcon.
-     * 
+     *
      * @param lt latitude of the top of the image.
      * @param ln longitude of the left side of the image.
      * @param ii ImageIcon used for the image.
@@ -210,7 +208,7 @@ public class OMRaster
 
     /**
      * Create an OMRaster, Lat/Lon placement with an Image.
-     * 
+     *
      * @param lt latitude of the top of the image.
      * @param ln longitude of the left side of the image.
      * @param ii Image used for the image.
@@ -225,7 +223,7 @@ public class OMRaster
 
     /**
      * Create an OMRaster image, X/Y placement with an ImageIcon.
-     * 
+     *
      * @param x1 window location of the left side of the image.
      * @param y1 window location of the top of the image.
      * @param ii ImageIcon used for the image.
@@ -236,7 +234,7 @@ public class OMRaster
 
     /**
      * Create an OMRaster image, X/Y placement with an Image.
-     * 
+     *
      * @param x1 window location of the left side of the image.
      * @param y1 window location of the top of the image.
      * @param ii Image used for the image.
@@ -251,7 +249,7 @@ public class OMRaster
 
     /**
      * Create an OMRaster, Lat/Lon with X/Y placement with an ImageIcon.
-     * 
+     *
      * @param lt latitude of the top of the image, before the offset.
      * @param ln longitude of the left side of the image, before the offset.
      * @param offset_x1 number of pixels to move image to the right.
@@ -268,7 +266,7 @@ public class OMRaster
      * to be drawn. Otherwise, you have to figure out when the Image is
      * complete, so that you can get the layer to paint it! Use the ImageIcon
      * constructor if you don't mind blocking to wait for the pixels to arrive.
-     * 
+     *
      * @param lt latitude of the top of the image, before the offset.
      * @param ln longitude of the left side of the image, before the offset.
      * @param offset_x1 number of pixels to move image to the right.
@@ -292,7 +290,7 @@ public class OMRaster
     /**
      * Lat/Lon placement with a indexed colormodel, which is using a colortable
      * and a byte array to construct the int[] pixels.
-     * 
+     *
      * @param lt latitude of the top of the image.
      * @param ln longitude of the left side of the image.
      * @param w width of the image, in pixels.
@@ -318,7 +316,7 @@ public class OMRaster
 
         if (bits != null && bits.length != 0) {
             if (colorTable != null && colors.length != 0) {
-                computePixels();
+                pixels = computePixels(bits);
             }
         } else {
             bits = new byte[height * width];
@@ -328,7 +326,7 @@ public class OMRaster
     /**
      * XY placement with a indexed colormodel, which is using a colortable and a
      * byte array to construct the int[] pixels.
-     * 
+     *
      * @param x1 window location of the left side of the image.
      * @param y1 window location of the top of the image.
      * @param w width of the image, in pixels.
@@ -354,7 +352,7 @@ public class OMRaster
 
         if (bits != null && bits.length != 0) {
             if (colorTable != null && colors.length != 0) {
-                computePixels();
+                pixels = computePixels(bits);
             }
         } else {
             bits = new byte[height * width];
@@ -364,7 +362,7 @@ public class OMRaster
     /**
      * Lat/lon placement with XY offset with a indexed colormodel, which is
      * using a colortable and a byte array to construct the int[] pixels.
-     * 
+     *
      * @param lt latitude of the top of the image, before the offset.
      * @param ln longitude of the left side of the image, before the offset.
      * @param offset_x1 number of pixels to move image to the right.
@@ -376,7 +374,8 @@ public class OMRaster
      * @param trans transparency of image.
      * @see #setPixel
      */
-    public OMRaster(double lt, double ln, int offset_x1, int offset_y1, int w, int h, byte[] bytes, Color[] colorTable, int trans) {
+    public OMRaster(double lt, double ln, int offset_x1, int offset_y1, int w, int h, byte[] bytes,
+            Color[] colorTable, int trans) {
 
         super(RENDERTYPE_OFFSET, LINETYPE_UNKNOWN, DECLUTTERTYPE_NONE);
         setColorModel(COLORMODEL_INDEXED);
@@ -394,7 +393,7 @@ public class OMRaster
 
         if (bits != null && bits.length != 0) {
             if (colorTable != null && colors.length != 0) {
-                computePixels();
+                pixels = computePixels(bits);
             }
         } else {
             bits = new byte[height * width];
@@ -405,7 +404,7 @@ public class OMRaster
     /**
      * Just a simple check to see if the x, y pair actually fits into the pixel
      * array.
-     * 
+     *
      * @param x x location of pixel, from the left side of image.
      * @param y y location of pixel, from the top of image.
      * @return true if location within pixel array.
@@ -419,7 +418,7 @@ public class OMRaster
 
     /**
      * Set the ImageIcon.
-     * 
+     *
      * @param img ImageIcon
      */
     public void setImageIcon(ImageIcon img) {
@@ -428,7 +427,7 @@ public class OMRaster
 
     /**
      * Set the image pixel value at a location.
-     * 
+     *
      * @param x Horizontal location of pixel from left.
      * @param y Vertical location of pixel from top.
      * @param colorValue the color value of the pixel.
@@ -446,7 +445,7 @@ public class OMRaster
 
     /**
      * Get the image pixel value at a location.
-     * 
+     *
      * @param x Horizontal location of pixel from left.
      * @param y Vertical location of pixel from top.
      * @return the integer color value of the image at x, y
@@ -460,7 +459,7 @@ public class OMRaster
 
     /**
      * Set image byte data, for index frame using colortable.
-     * 
+     *
      * @param x Horizontal location of pixel from left.
      * @param y Vertical location of pixel from top.
      * @param ctIndex The array index of the applicable color in the color
@@ -478,7 +477,7 @@ public class OMRaster
 
     /**
      * Get image byte data, which the index to a colortable for indexed images.
-     * 
+     *
      * @param x Horizontal location of pixel from left.
      * @param y Vertical location of pixel from top.
      * @return byte value of bytes(x, y)
@@ -494,15 +493,15 @@ public class OMRaster
      * Set the bytes used to create the pixels used to create the image. Checks
      * to see of the length matches the height * width, but doesn't do anything
      * if they don't match, except print out a warning. Make sure it does.
-     * 
+     *
      * @param values byte values containing bit pixel values.
      */
     public void setBits(byte[] values) {
         super.setBits(values);
         if ((values.length) != (height * width)) {
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine("OMBitmap: new byte[] size (" + +values.length + ") doesn't" + " match [height*width (" + height
-                        * width + ")]");
+                logger.fine("OMBitmap: new byte[] size (" + +values.length + ") doesn't"
+                        + " match [height*width (" + height * width + ")]");
             }
         }
     }
@@ -513,7 +512,7 @@ public class OMRaster
      * operation. For an indexed colormodel, the data still needs to be
      * reconstructed, but it will cost you the time in generate(). The
      * transparency value should be a number between 0-255.
-     * 
+     *
      * @param value New value of the alpha value for the image.
      */
     public void setTransparent(int value) {
@@ -523,8 +522,7 @@ public class OMRaster
         transparent = value;
         setNeedToRegenerate(true);
         if (bits != null) {
-            pixels = null;
-            computePixels();
+            pixels = computePixels(bits);
         } else {
             value <<= 24;// move to alpha position
             // direct color model, touch each pixel in the image
@@ -547,7 +545,7 @@ public class OMRaster
 
     /**
      * Get the transparent setting of the image.
-     * 
+     *
      * @return the transparent value (0-255) of the image.
      */
     public int getTransparent() {
@@ -558,7 +556,7 @@ public class OMRaster
      * Set the color table to the int RGB values passed in. Valid for the
      * indexed colormodel only. The pixels will be colored according to these
      * values.
-     * 
+     *
      * @param values array of color RGB values.
      */
     public void setColors(int[] values) {
@@ -576,7 +574,7 @@ public class OMRaster
      * according to these values. The transparency values of these colors will
      * only take effect of they are less than the transparency value of the
      * images' value.
-     * 
+     *
      * @param values array of java.awt.Color colors.
      */
     public void setColors(Color[] values) {
@@ -649,7 +647,7 @@ public class OMRaster
     /**
      * Get the array of colors used in the indexed color model. If the image is
      * not a indexed colormodel, the int[] will be null.
-     * 
+     *
      * @return color int[] if index colormodel, null otherwise.
      */
     public int[] getColors() {
@@ -662,68 +660,55 @@ public class OMRaster
      * integer values used in the Image. It uses the bits as indexes into the
      * color table, and builds a big array of ints to use in the bitmap image.
      * If the bits are null, then the object was created in the direct color
-     * model where the colors are already built into the pixels. SO, if you call
+     * model where the colors are already built into the pixels. So, if you call
      * this, the pixels have to be null and the bits good indexes into the
      * colortable.
-     * 
-     * @return true if the image is OK to draw after this function.
+     *
+     * @return new int[] for image pixels, null if there was a problem or if the
+     *         colormodel is not COLORMODEL_INDEXED.
      */
-    protected boolean computePixels() {
+    protected int[] computePixels(byte[] bits) {
 
-        if (DEBUG)
+        if (DEBUG) {
             logger.fine("OMRaster.compute pixels!");
-
-        int i;
-        if (colorModel != COLORMODEL_INDEXED) {
-            return true;
         }
 
-        if (colors == null || colors.length == 0) {
-            logger.fine("OMRaster: attempting to compute pixels without color table!");
-            return false;
+        if (colorModel != COLORMODEL_INDEXED) {
+            // I don't like this... DFD
+            return new int[0];
+        }
+
+        if (colors == null || colors.length == 0 || bits == null || bits.length != 0) {
+            logger.fine("OMRaster: attempting to compute pixels without color table or proper indexes!");
+            return null;
         }
 
         int nPixels = width * height;
         if (DEBUG) {
             logger.fine("Computing pixels for image size:" + width + ", " + height);
         }
-        // pixels are the image pixels
-        pixels = new int[nPixels];
+
+        int[] iPixels = new int[nPixels];
 
         // Now, using the new constructed color table, build a set of
-        // pixels.
-        // alpha is a ready, shifted version of the overall
+        // pixels. alpha is a ready, shifted version of the overall
         // transparency value;
         int alpha = (transparent << 24) & 0xff000000;
-        // numColors is the number of colors.
         int numColors = colors.length;
+        int bitsLength = bits.length;
 
-        for (i = 0; i < nPixels; i++) {
+        for (int i = 0; i < bitsLength && i < nPixels; i++) {
             byte b = bits[i];
-            int color;
+            int color = 0;
 
             // make the alpha for this color the lessor of what the
             // colortable is, versus the transparent value
             // int pixAlpha;
 
-            try {
-                if (b >= numColors) {
-                    if (DEBUG)
-                        logger.fine("OMRaster:.computePixels() problem!: " + b);
-                    color = clear.getRGB();
-
-                } else if (b < 0) {
-                    color = colors[MoreMath.signedToInt(b)];
-                } else {
-                    color = colors[b];
-                }
-            } catch (ArrayIndexOutOfBoundsException aiiobe) {
-                // If the color can't be found, don't paint it.
-                if (DEBUG) {
-                    logger.fine("OMRaster.computePixels() problem, can't find color for index: " + aiiobe.getMessage());
-                }
-
-                color = clear.getRGB();
+            if (b < 0) {
+                color = colors[MoreMath.signedToInt(b)];
+            } else if (b < numColors) {
+                color = colors[b];
             }
 
             // OK, got an int value, argb, for the color to be put on
@@ -737,11 +722,11 @@ public class OMRaster
             } // Otherwise, just go with the alpha value set on the
               // color...
 
-            pixels[i] = color;
+            iPixels[i] = color;
 
         }
 
-        return true;
+        return iPixels;
     }
 
     /**
@@ -750,11 +735,12 @@ public class OMRaster
      * images, it creates the ImageIcon used for drawing to the window (internal
      * to object). For indexed colormodel images, it also calls computePixels,
      * to resolve the colortable and the bytes to create the image pixels.
-     * 
+     *
      * @param proj Projection used to position the image on the window.
      * @return true if the image is ready to paint.
      */
     public boolean generate(Projection proj) {
+        renderRotationAngle = null;
 
         // Position sets the position for the OMRaster!!!!
         if (!position(proj)) {
@@ -774,6 +760,8 @@ public class OMRaster
             }
         }
 
+        evaluateRotationAngle(proj);
+
         // generate shape that is a boundary of the generated image.
         // We'll make it a GeneralPath rectangle.
         setShape();
@@ -782,34 +770,69 @@ public class OMRaster
         return true;
     }
 
+    /**
+     * Set the renderRotationAngle based on the projection angle and OMRaster
+     * settings.
+     *
+     * @param proj the current projection.
+     */
+    protected void evaluateRotationAngle(Projection proj) {
+        renderRotationAngle = null;
+        double projRotation = proj.getRotationAngle();
+
+		if (projRotation != 0.0) {
+			// Only do the attribute check if the projection is rotated.
+			Object noRotationAtt = getAttribute(OMGraphicConstants.NO_ROTATE);
+			boolean compensateForProjRot = noRotationAtt != null
+				&& !noRotationAtt.equals(Boolean.FALSE);
+
+			if (compensateForProjRot) {
+				renderRotationAngle = rotationAngle - projRotation;
+				return;
+			}
+		}
+
+		if (rotationAngle != DEFAULT_ROTATIONANGLE) {
+			renderRotationAngle = rotationAngle;
+		}
+	}
+	
     protected Image getBitmapFromInternalData() {
         Image bi = bitmap;
+        int[] iPixels = this.pixels;
+        byte[] iBits = this.bits;
+        int iWidth = this.width;
+        int iHeight = this.height;
+        java.awt.image.ImageFilter iImageFilter = this.imageFilter;
 
         if (colorModel != COLORMODEL_IMAGEICON) {
 
             // This section is for the indexed color model rasters
             // that need to resolve the color map to the bit array
             // indexes.
-            boolean allsWell = true;
+
             // If pixels == null, then computePixels has not been
             // called
-            if (pixels == null) {
-                allsWell = false;
-                if (bits != null)
-                    allsWell = computePixels();
-                if (!allsWell) {
+            if (iPixels == null) {
+
+                if (iBits != null) {
+                    iPixels = computePixels(iBits);
+                    pixels = iPixels;
+                }
+
+                if (iPixels != null) {
                     logger.fine("attempted to generate without pixels defined!");
                     return null;
                 }
             }
 
-            if (width <= 0 || height <= 0) {
+            if (iWidth <= 0 || iHeight <= 0 || iPixels == null) {
                 // NeedToRegenerate should still be true, so it won't
                 // render.
                 return null;
             }
 
-            bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            bi = new BufferedImage(iWidth, iHeight, BufferedImage.TYPE_INT_ARGB);
 
             /**
              * Looking at the standard BufferedImage code, an int[0] is
@@ -819,26 +842,30 @@ public class OMRaster
              * directly into the raster.
              */
             WritableRaster raster = (WritableRaster) ((BufferedImage) bi).getRaster();
-            raster.setDataElements(0, 0, width, height, pixels);
-        } 
+			try {
+				raster.setDataElements(0, 0, iWidth, iHeight, iPixels);
+			} catch (ArrayIndexOutOfBoundsException aioobe) {
+				logger.fine("w: " + iWidth + ", h: " + iHeight + ", p.l: " + (iPixels != null? (iPixels.length + ", diff " + (iWidth * iHeight - iPixels.length)) : "null"));
+			}
+        }
 
         /*
-         * REPLACING bitmap with the filtered version - keep a copy yourself
-         * if you need the original!!! i.e. for COLORMODEL_IMAGEICON
+         * REPLACING bitmap with the filtered version - keep a copy yourself if
+         * you need the original!!! i.e. for COLORMODEL_IMAGEICON
          */
-        if (imageFilter != null) {
+        if (iImageFilter != null) {
             bi = filterImage(bi);
         }
-        
+
         return bi;
     }
-    
+
     public void restore(OMGeometry source) {
-       super.restore(source);
-       if (source instanceof OMRaster) {
-          OMRaster raster = (OMRaster) source;
-          this.colors = DeepCopyUtil.deepCopy(raster.colors);
-          this.transparent = raster.transparent;
-       }
+        super.restore(source);
+        if (source instanceof OMRaster) {
+            OMRaster raster = (OMRaster) source;
+            this.colors = DeepCopyUtil.deepCopy(raster.colors);
+            this.transparent = raster.transparent;
+        }
     }
 }

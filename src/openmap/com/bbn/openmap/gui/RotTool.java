@@ -51,7 +51,7 @@ public class RotTool extends OMToolComponent {
 
     public void setRotation(double rot) {
         if (map != null) {
-            map.setRotation(rot);
+            map.setRotationAngle(rot);
         }
     }
 

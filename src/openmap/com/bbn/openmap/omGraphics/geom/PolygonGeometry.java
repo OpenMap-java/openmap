@@ -360,7 +360,6 @@ public abstract class PolygonGeometry extends BasicGeometry implements
             }
             
             setShape(projectedShape);
-
             setNeedToRegenerate(false);
             return true;
         }

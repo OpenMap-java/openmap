@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/OMGraphicHandlerLayer.java,v $
 // $RCSfile: OMGraphicHandlerLayer.java,v $
 // $Revision: 1.33 $
 // $Date: 2007/04/24 19:53:44 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.layer;
@@ -73,14 +73,14 @@ import com.bbn.openmap.util.PropUtils;
  * for managing OMGraphics, and can perform display filtering as supported by
  * the FilterSupport object.
  * <P>
- * 
+ *
  * When extending this class for a simple layer, they only method you need to
  * override is the prepare() method. This is a good class to use to start
  * writing your own layers. Start with overriding the prepare() method, having
  * it return an OMGraphicList containing OMGraphics on the map that are
  * appropriate for the current projection.
  * <P>
- * 
+ *
  * The OMGraphicHandlerLayer already has an OMGraphicList variable, so if you
  * extend this class you don't have to manage another one. You can add your
  * OMGraphics to the list provided with getList(). If you create a list of
@@ -96,7 +96,7 @@ import com.bbn.openmap.util.PropUtils;
  * OMGraphics in the constructor, you delay the entire program (maybe startup of
  * the map!) while the OMGraphics are created.
  * <P>
- * 
+ *
  * If you let prepare() create a new OMGraphicList based on the new projection,
  * then make sure the ProjectionChangePolicy for the layer is set to a
  * com.bbn.openmap.layer.policy.ResetListPCPolicy, or at least clear out the old
@@ -110,7 +110,7 @@ import com.bbn.openmap.util.PropUtils;
  * the list will prevent your layer from drawing anything on the new projection
  * until it is ready.
  * <P>
- * 
+ *
  * The OMGraphicHandlerLayer has support built in for launching a SwingWorker to
  * do work for you in a separate thread. This behavior is controlled by the
  * ProjectionChangePolicy that is set for the layer. Both the StandardPCPolicy
@@ -118,7 +118,7 @@ import com.bbn.openmap.util.PropUtils;
  * The StandardPCPolicy only calls this if the number of OMGraphics on its list
  * is greater than some cutoff value.
  * <P>
- * 
+ *
  * useLayerWorker variable is true (default), then doPrepare() will be called
  * when a new ProjectionEvent is received in the projectionChanged method. This
  * will cause prepare() to be called in a separate thread. You can use prepare()
@@ -128,7 +128,7 @@ import com.bbn.openmap.util.PropUtils;
  * create/manage OMGraphics any way you want. The SwingWorker only gets launched
  * if doPrepare() gets called.
  * <P>
- * 
+ *
  * MouseEvents are not handled by a MapMouseInterpreter, with the layer being
  * the GestureResponsePolicy object dictating how events are responded to. The
  * interpreter does the work of fielding MapMouseEvents, figuring out if they
@@ -137,17 +137,17 @@ import com.bbn.openmap.util.PropUtils;
  * edit OMGraphics. The mouseModes property can be set to the MapMouseMode IDs
  * that the interpreter should respond to.
  * <P>
- * 
+ *
  * For OMGraphicHandlerLayers, there are several properties that can be set that
  * dictate important behavior:
- * 
+ *
  * <pre>
- * 
- * 
- * 
+ *
+ *
+ *
  *     layer.projectionChangePolicy=pcp
  *     layer.pcp.class=com.bbn.openmap.layer.policy.StandardPCPolicy
- *    
+ *
  *     layer.renderPolicy=srp
  *     layer.srp.class=com.bbn.openmap.layer.policy.StandardRenderPolicy
  *     # or
@@ -155,11 +155,11 @@ import com.bbn.openmap.util.PropUtils;
  *     layer.ta.class=com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy
  *     layer.ta.renderingHints=KEY_TEXT_ANTIALIASING
  *     layer.ta.KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_ON
- *    
+ *
  *     layer.mouseModes=Gestures
  *     layer.consumeEvents=true
- * 
- * 
+ *
+ *
  * </pre>
  */
 public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolicy, OMGraphicHandler {
@@ -167,7 +167,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.OMGraphicHandlerLayer");
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     /**
@@ -175,7 +175,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * property should be set with a scoping marker name used to define a policy
      * class and any other properties that the policy should use.
      * "projectionChangePolicy"
-     * 
+     *
      * @see com.bbn.openmap.layer.policy.ProjectionChangePolicy
      * @see com.bbn.openmap.layer.policy.StandardPCPolicy
      * @see com.bbn.openmap.layer.policy.ListResetPCPolicy
@@ -185,7 +185,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * The property that can be set for the RenderPolicy. This property should
      * be set with a marker name used to define a policy class and any other
      * properties that the policy should use. "renderPolicy"
-     * 
+     *
      * @see com.bbn.openmap.layer.policy.StandardRenderPolicy
      * @see com.bbn.openmap.layer.policy.BufferedImageRenderPolicy
      * @see com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy
@@ -288,7 +288,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 
     /**
      * Queries for the interruptible flag.
-     * 
+     *
      * @return true if interruptible flag is set
      */
     public boolean isInterruptable() {
@@ -315,7 +315,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 
     /**
      * To find out whether SQL queries are handled.
-     * 
+     *
      * @see com.bbn.openmap.omGraphics.OMGraphicHandler#supportsSQL().
      */
     public boolean supportsSQL() {
@@ -388,7 +388,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * layer is part of the map, and whenever the map projection changes. Will
      * trigger a repaint().
      * <p>
-     * 
+     *
      * The ProjectionEvent is passed to the current ProjectionChangePolicy
      * object, which determines what will happen on the layer and how. By
      * default, a StandardPCPolicy is notified with the projection change, and
@@ -398,7 +398,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * thread to call prepare(). The StandardPCPolicy does not do anything to
      * the OMGraphicList when the projection changes.
      * <p>
-     * 
+     *
      * If you need the OMGraphicList cleared out with a new projection, you can
      * substitute a ListRestPCPolicy for the StandardPCPolicy. You would want to
      * do this if your OMGraphicList changes for different projections - The
@@ -408,7 +408,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * set the ProjectionChangePolicy directly with the
      * setProjectionChangePolicy, or by overriding the getProjectionChangePolicy
      * method and returning the type you want by default if it is null.
-     * 
+     *
      * @see com.bbn.openmap.layer.policy.ProjectionChangePolicy
      * @see com.bbn.openmap.layer.policy.StandardPCPolicy
      * @see com.bbn.openmap.layer.policy.ListResetPCPolicy
@@ -478,7 +478,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     /**
      * Sets the SwingWorker off to call prepare(). If the SwingWorker passed in
      * is not null, start() is called on it.
-     * 
+     *
      * @param worker null to reset the layerWorker variable, or a SwingWorker to
      *        start up.
      */
@@ -502,7 +502,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * prepare() method. By default, a new LayerWorker is returned. This method
      * may be overridden to make the layer use an extended
      * LayerWorker/SwingWorker class.
-     * 
+     *
      * @return SwingWorker/LayerWorker
      */
     protected ISwingWorker<OMGraphicList> createLayerWorker() {
@@ -535,7 +535,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * <P>
      * If the layer doesn't override this method, then the paint(Graphics)
      * method will be called.
-     * 
+     *
      * @param proj Projection of the map.
      * @param g java.awt.Graphics to draw into.
      */
@@ -552,7 +552,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 
     /**
      * The default action is to get the OMGraphicList and render it.
-     * 
+     *
      * @param g java.awt.Graphics object to render OMGraphics into.
      */
     public void paint(Graphics g) {
@@ -629,18 +629,18 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * the current projection, which can be retrieved by calling
      * getProjection().
      * <P>
-     * 
+     *
      * This method will be called in a separate thread if doPrepare() is called
      * on the layer. This will automatically cause repaint() to be called, which
      * lets java know to call paint() on this class.
      * <P>
-     * 
+     *
      * Note that the default action of this method is to get the OMGraphicList
      * as it is currently set in the layer, re-projects the list with the
      * current projection (calls generate() on them), and then returns the
      * current list.
      * <P>
-     * 
+     *
      * If your layer needs to change what is on the list based on what the
      * current projection is, you can either clear() the list yourself and add
      * new OMGraphics to it (remember to call generate(Projection) on them), and
@@ -649,11 +649,11 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * before calling this method. The OMGraphicHandlerList will ignore a null
      * OMGraphicList.
      * <P>
-     * 
+     *
      * NOTE: If you call prepare directly, you may need to call repaint(), too.
      * With all invocations of this method that are cause by a projection
      * change, repaint() will be called for you.
-     * 
+     *
      * The method is synchronized in case renderDataForProjection() gets called
      * while in the middle of this method. For a different projection, that
      * would be bad.
@@ -698,7 +698,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * The LayerWorker calls this method on the layer when it is done working.
      * If the calling worker is not the same as the "current" worker, then a new
      * worker is created.
-     * 
+     *
      * @param worker the worker that has the graphics.
      */
     protected void workerComplete(ISwingWorker<OMGraphicList> worker) {
@@ -717,8 +717,8 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
                 setLayerWorker(null);
 
                 if (!worker.isInterrupted()) {
+					// CAUTION! layer.repaint() is called in workerComplete!!
                     getProjectionChangePolicy().workerComplete(list);
-                    repaint();
                 }
             }
         }
@@ -803,7 +803,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * PropertyChangePolicyProperty and prefix + . + RenderPolicyProperty. If
      * the .class property is set, then a new policy object will be created and
      * replace the one set before this method is called.
-     * 
+     *
      * @param prefix the token to prefix the property names
      * @param props the <code>Properties</code> object
      */
@@ -1340,7 +1340,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * Return a JMenu with contents applicable to a pop-up menu for a location
      * over the map. The pop-up doesn't concern any OMGraphics, and should be
      * presented for a click on the map background.
-     * 
+     *
      * @param mme a MapMouseEvent describing the location over where the menu
      *        items should apply, in case different options are appropriate for
      *        different places.
@@ -1354,7 +1354,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     /**
      * Return a java.util.List containing input for a JMenu with contents
      * applicable to a pop-up menu for a location over an OMGraphic.
-     * 
+     *
      * @return a List containing options for the given OMGraphic. Return null or
      *         empty list if there are no options.
      */
@@ -1379,7 +1379,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * A notification that the mouse cursor has been moved over the map, not
      * over any of the OMGraphics on the GestureResponsePolicy. This only gets
      * called if the response to receiveMapEvents is true.
-     * 
+     *
      * @param mme MapMouseEvent describing the location of the mouse.
      * @return true of this information is to be considered consumed and should
      *         not be passed to anybody else.
@@ -1393,7 +1393,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * on the map, and not on any of the OMGraphics. This only gets called if
      * the response to receiveMapEvents is true. Right clicks on the map are
      * always reported to the getItemsForMapMenu method.
-     * 
+     *
      * @param mme MapMouseEvent describing the location of the mouse.
      * @return true of this information is to be considered consumed and should
      *         not be passed to anybody else.
@@ -1406,7 +1406,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * Create a JPanel that has a slider to control the layer transparency. An
      * action listener that calls layer repaint() when the value changes will be
      * added to the slider.
-     * 
+     *
      * @param label the label for the panel around the slider.
      * @param orientation JSlider.HORIZONTAL/JSlider.VERTICAL
      * @param initialValue an initial transparency value between 0-1, 0 being
@@ -1439,7 +1439,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     /**
      * Set the transparency of the layer. This transparency is applied during
      * rendering.
-     * 
+     *
      * @param value 0f for clear, 1f for opaque.
      */
     public void setTransparency(float value) {
@@ -1452,7 +1452,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 
     /**
      * Get the transparency value for this layer.
-     * 
+     *
      * @return 1 if opaque, 0 for clear.
      */
     public float getTransparency() {

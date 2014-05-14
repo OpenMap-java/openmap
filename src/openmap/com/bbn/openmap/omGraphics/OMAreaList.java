@@ -126,6 +126,8 @@ public class OMAreaList extends OMGeometryList implements Serializable {
             // they are each contributing to the whole.
             geometry.setShape((GeneralPath) null);
         }
+        
+        setLabelLocation(getShape(), p);
     }
 
     /**

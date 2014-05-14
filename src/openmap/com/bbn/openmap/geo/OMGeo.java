@@ -137,7 +137,7 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
             }
 
             initLabelingDuringGenerate();
-            setLabelLocation(new Point((int) x2, (int) y1));
+            setLabelLocation(new Point((int) x2, (int) y1), proj);
 
             setNeedToRegenerate(false);
             return true;
@@ -181,7 +181,7 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
         public boolean generate(Projection proj) {
 
             setNeedToRegenerate(true);
-            
+
             if (proj == null) {
                 Debug.message("omgraphic", "GeoOMGraphic.Line: null projection in generate!");
                 return false;
@@ -205,7 +205,7 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
             float[][] ypoints = new float[xpoints.length][0];
 
             GeneralPath projectedShape = null;
-            
+
             for (int i = 0, j = 0; i < size; i += 2, j++) {
                 float[] xps = (float[]) lines.get(i);
                 float[] yps = (float[]) lines.get(i + 1);
@@ -220,9 +220,9 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
                     projectedShape.append(gp, false);
                 }
             }
-            
+
             setShape(projectedShape);
-            setLabelLocation(projectedShape);
+            setLabelLocation(projectedShape, proj);
             setNeedToRegenerate(false);
             return true;
         }
@@ -257,8 +257,8 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
 
         public boolean generate(Projection proj) {
 
-            setNeedToRegenerate(true);            
-            
+            setNeedToRegenerate(true);
+
             boolean isPolygon = getExtent() instanceof GeoRegion;
 
             if (proj == null) {
@@ -303,7 +303,7 @@ public abstract class OMGeo extends OMGraphicAdapter implements GeoExtent {
             }
 
             setShape(projectedShape);
-            setLabelLocation(xpoints[0], ypoints[0]);
+            setLabelLocation(xpoints[0], ypoints[0], proj);
 
             setNeedToRegenerate(false);
             return true;

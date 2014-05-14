@@ -65,7 +65,7 @@ public class PaintListenerSupport extends ListenerSupport<PaintListener> {
                 Debug.output("PaintListenerSupport.paint(): target is: "
                         + target);
             }
-            target.listenerPaint(graphics);
+            target.listenerPaint(getSource(), graphics);
         }
     }
 }

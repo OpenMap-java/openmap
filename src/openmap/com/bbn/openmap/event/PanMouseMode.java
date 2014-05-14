@@ -1,7 +1,7 @@
 /*
- * 
+ *
  * Copyright (C) SISDEF Ltda. All rights reserved.
- * 
+ *
  * Created on 25-feb-2005
  */
 package com.bbn.openmap.event;
@@ -10,8 +10,8 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -23,11 +23,13 @@ import java.net.URL;
 import java.util.Properties;
 
 import javax.swing.ImageIcon;
-import javax.swing.border.Border;
 
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.image.ImageScaler;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
+import com.bbn.openmap.omGraphics.OMGraphicConstants;
+import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.omGraphics.OMScalingIcon;
 import com.bbn.openmap.proj.Cartesian;
 import com.bbn.openmap.proj.Cylindrical;
 import com.bbn.openmap.proj.Projection;
@@ -61,10 +63,11 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
     public final static transient String modeID = "Pan";
     private boolean isPanning = false;
     private BufferedImage bufferedMapImage = null;
-    private BufferedImage bufferedRenderingImage = null;
+    private OMRaster paintedImage = null;
     private int beanBufferWidth = 0;
     private int beanBufferHeight = 0;
     private int oX, oY;
+    private MouseEvent lastMouseEvent;
     private float opaqueness;
     private boolean leaveShadow;
     private boolean useCursor;
@@ -75,9 +78,9 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
     public PanMouseMode() {
         super(modeID, true);
         setUseCursor(true);
-        setLeaveShadow(true);
+        setLeaveShadow(false);
         setOpaqueness(DEFAULT_OPAQUENESS);
-        
+
         DrawingAttributes da = DrawingAttributes.getDefaultClone();
         da.setMatted(true);
         da.setMattingPaint(Color.LIGHT_GRAY);
@@ -90,13 +93,9 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
             if (bufferedMapImage != null) {
                 bufferedMapImage.flush();
             }
-            if (bufferedRenderingImage != null) {
-                bufferedRenderingImage.flush();
-            }
             beanBufferWidth = 0;
             beanBufferHeight = 0;
             bufferedMapImage = null;
-            bufferedRenderingImage = null;
         }
     }
 
@@ -170,77 +169,93 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
     }
 
     /**
-     * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
-     *      The first click for drag, the image is generated. This image is
-     *      redrawing when the mouse is move, but, I need to repain the original
-     *      image.
+     * PaintListener method.
+     * 
+     * @param source the source object, most likely the MapBean
+     * @param g java.awt.Graphics
      */
-    public void mouseDragged(MouseEvent arg0) {
+    public void listenerPaint(Object source, Graphics g) {
+        MapBean mapBean = source instanceof MapBean ? (MapBean) source : null;
 
-        MapBean mb = ((MapBean) arg0.getSource());
-        Point2D pnt = mb.getNonRotatedLocation(arg0);
-        int x = (int) pnt.getX();
-        int y = (int) pnt.getY();
+        if (azPanner != null) {
+            azPanner.render(g);
+        } else if (mapBean != null) {
+            if (isPanning && lastMouseEvent != null && bufferedMapImage != null) {
 
-        Projection proj = mb.getProjection();
-
-        if (!isPanning) {
-            int w = mb.getWidth();
-            int h = mb.getHeight();
-
-            /*
-             * Making the image
-             */
-
-            if (bufferedMapImage == null || bufferedRenderingImage == null) {
-                createBuffers(w, h);
-            }
-
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            Graphics2D g = (Graphics2D) ge.createGraphics(bufferedMapImage);
-            g.setClip(0, 0, w, h);
-            Border border = mb.getBorder();
-            mb.setBorder(null);
-            if (mb.getRotation() != 0.0) {
-                double angle = mb.getRotation();
-                mb.setRotation(0.0);
-                mb.paintAll(g);
-                mb.setRotation(angle);
-            } else {
-                mb.paintAll(g);
-            }
-            mb.setBorder(border);
-
-            oX = x;
-            oY = y;
-
-            isPanning = true;
-
-        } else if (proj instanceof Cylindrical || proj instanceof Cartesian) {
-            if (bufferedMapImage != null && bufferedRenderingImage != null) {
-                Graphics2D gr2d = (Graphics2D) bufferedRenderingImage.getGraphics();
-                /*
-                 * Drawing original image without transparence and in the
-                 * initial position
+                /**
+                 * TODO:  This doesn't work for rotated images, can't quite get the
+                 * buffered image to render in the right location and not be
+                 * rotated as well. So for now, if rotated, handle as if for
+                 * azimuth. - DFD
                  */
-                if (leaveShadow) {
-                    gr2d.drawImage(bufferedMapImage, 0, 0, null);
-                } else {
-                    gr2d.setPaint(mb.getBckgrnd());
-                    gr2d.fillRect(0, 0, mb.getWidth(), mb.getHeight());
+
+                Graphics2D gr2d = (Graphics2D) g.create();
+                Projection proj = mapBean.getRotatedProjection();
+
+                if (!leaveShadow) {
+                    gr2d.setPaint(mapBean.getBckgrnd());
+                    // Takes care of rotated dimensions, too.
+                    gr2d.fillRect(0, 0, proj.getWidth(), proj.getHeight());
                 }
 
+                Point2D pnt0 = proj.forward(mapBean.inverse(oX, oY, null));
+                int startX = (int) pnt0.getX();
+                int startY = (int) pnt0.getY();
+
+                Point2D pnt = mapBean.getNonRotatedLocation(lastMouseEvent);
+                int x = (int) pnt.getX();
+                int y = (int) pnt.getY();
+
                 /*
-                 * Drawing image with transparence and in the mouse position
-                 * minus origianl mouse click position
+                 * Drawing image with transparency and in the mouse position
+                 * minus original mouse click position
                  */
                 gr2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opaqueness));
-                gr2d.drawImage(bufferedMapImage, x - oX, y - oY, null);
 
-                ((Graphics2D) mb.getGraphics(true)).drawImage(bufferedRenderingImage, 0, 0, null);
+                paintedImage.setX(x - startX);
+                paintedImage.setY(y - startY);
+                paintedImage.setRotationAngle(-proj.getRotationAngle());
+                
+                paintedImage.generate(proj);
+                paintedImage.render(gr2d);
+
+            } else {
+                mapBean.removePaintListener(this);
             }
-        } else {
-            if (azPanner == null) {
+        }
+    }
+
+    public void mousePressed(MouseEvent arg0) {
+        MapBean mapBean = arg0.getSource() instanceof MapBean ? (MapBean) arg0.getSource() : null;
+
+        if (mapBean != null) {
+
+            lastMouseEvent = arg0;
+            oX = (int) arg0.getX();
+            oY = (int) arg0.getY();
+            // If the map is rotated, the size of the projection will be bigger
+            // than
+            // the size of the MapBean.
+            Projection proj = mapBean.getRotatedProjection();
+            int w = proj.getWidth();
+            int h = proj.getHeight();
+
+            if ((proj instanceof Cylindrical || proj instanceof Cartesian)
+                    && proj.getRotationAngle() == 0.0) {
+                
+                if (bufferedMapImage == null) {
+                    createBuffer(w, h);
+                }
+
+                Graphics2D g = (Graphics2D) bufferedMapImage.getGraphics();
+                mapBean.paintChildren(g, null);
+
+                Point2D ul = mapBean.inverse(0.0, 0.0, null);
+
+                paintedImage = new OMRaster(ul.getY(), ul.getX(), 0, 0, bufferedMapImage);
+                paintedImage.putAttribute(OMGraphicConstants.NO_ROTATE, Boolean.TRUE);
+
+            } else {
                 URL url = null;
                 try {
                     url = PropUtils.getResourceOrFileOrURL(azPanningShapefile);
@@ -248,16 +263,35 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
                 }
 
                 if (url != null) {
-                    azPanner = new AzimuthPanner.Shapefile(mb, oX, oY, getAzDrawing(), url);
+                    azPanner = new AzimuthPanner.Shapefile(oX, oY, getAzDrawing(), url);
                 } else {
-                    azPanner = new AzimuthPanner.Standard(mb, oX, oY, getAzDrawing());
+                    azPanner = new AzimuthPanner.Standard(oX, oY, getAzDrawing());
                 }
             }
 
-            // Azimuth projection
+            isPanning = true;
+            mapBean.addPaintListener(this);
+        }
+    }
+
+    /**
+     * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
+     *      The first click for drag, the image is generated. This image is
+     *      redrawing when the mouse is move, but, I need to repaint the
+     *      original image.
+     */
+    public void mouseDragged(MouseEvent arg0) {
+
+        MapBean mapBean = arg0.getSource() instanceof MapBean ? (MapBean) arg0.getSource() : null;
+        lastMouseEvent = arg0;
+
+        if (mapBean != null) {
+
             if (azPanner != null) {
-                azPanner.handlePan(arg0);
+                azPanner.handlePan(mapBean, arg0);
             }
+
+            mapBean.repaint();
         }
         super.mouseDragged(arg0);
     }
@@ -267,25 +301,31 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
      *      Make Pan event for the map.
      */
     public void mouseReleased(MouseEvent arg0) {
-        if (isPanning && arg0.getSource() instanceof MapBean) {
-            MapBean mb = (MapBean) arg0.getSource();
-            Projection proj = mb.getProjection();
-            Point2D center = proj.forward(proj.getCenter());
 
-            Point2D pnt = mb.getNonRotatedLocation(arg0);
-            int x = (int) pnt.getX();
-            int y = (int) pnt.getY();
+        MapBean mapBean = arg0.getSource() instanceof MapBean ? (MapBean) arg0.getSource() : null;
+
+        if (azPanner != null) {
+            azPanner.handleUnpan(arg0);
+            azPanner = null;
+        }
+
+        if (isPanning && mapBean != null) {
+            Projection proj = mapBean.getProjection();
+            Point2D center = proj.forward(proj.getCenter());
+            int x = (int) arg0.getX();
+            int y = (int) arg0.getY();
 
             center.setLocation(center.getX() - x + oX, center.getY() - y + oY);
-            mb.setCenter(proj.inverse(center));
-            isPanning = false;
-            // bufferedMapImage = null; //clean up when not active...
-            
-            if (azPanner != null) {
-                azPanner.handleUnpan(arg0);
-                azPanner = null;
-            }
+
+            isPanning = false; // needs to be here too so paintlistener doesn't
+                               // get triggered
+            mapBean.setCenter(mapBean.inverse(center.getX(), center.getY(), null));
         }
+
+        oX = 0;
+        oY = 0;
+        isPanning = false;
+
         super.mouseReleased(arg0);
     }
 
@@ -351,7 +391,7 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
             MapBean mb = (MapBean) obj;
             int w = mb.getWidth();
             int h = mb.getHeight();
-            createBuffers(w, h);
+            createBuffer(w, h);
         }
     }
 
@@ -363,11 +403,11 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
      * @param w mapBean's width.
      * @param h mapBean's height.
      */
-    public synchronized void createBuffers(int w, int h) {
+    public synchronized void createBuffer(int w, int h) {
         if (w > 0 && h > 0 && (w != beanBufferWidth || h != beanBufferHeight)) {
             beanBufferWidth = w;
             beanBufferHeight = h;
-            createBuffersImpl(w, h);
+            createBufferImpl(w, h);
         }
     }
 
@@ -377,16 +417,12 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
      * @param w Non-zero mapBean's width.
      * @param h Non-zero mapBean's height.
      */
-    protected void createBuffersImpl(int w, int h) {
+    protected void createBufferImpl(int w, int h) {
         // Release system resources used by previous images...
         if (bufferedMapImage != null) {
             bufferedMapImage.flush();
         }
-        if (bufferedRenderingImage != null) {
-            bufferedRenderingImage.flush();
-        }
-        // New images...
+        // New image...
         bufferedMapImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        bufferedRenderingImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
     }
 }

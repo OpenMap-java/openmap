@@ -274,6 +274,7 @@ public class OMGeometryList extends OMList<OMGeometry> implements Serializable {
         }
 
         setShape(projectedShape);
+        setLabelLocation(projectedShape, p);
         setNeedToRegenerate(false);
 
         return projectedShape != null;

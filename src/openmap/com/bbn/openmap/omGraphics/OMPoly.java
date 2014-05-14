@@ -725,6 +725,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
 
         setNeedToRegenerate(false);
         setShape(createShape());
+        setLabelLocation(getShape(), proj);
         return true;
     }
 
@@ -979,6 +980,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
             // objects, should create one if asked.
             shape = createShape();
             setShape(shape);
+            setLabelLocation(shape, null);
         }
         return shape;
     }

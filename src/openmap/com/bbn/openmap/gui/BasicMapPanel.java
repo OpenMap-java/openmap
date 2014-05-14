@@ -71,9 +71,7 @@ import com.bbn.openmap.util.PropUtils;
  * whatever property prefix is given to the panel.
  * 
  */
-public class BasicMapPanel
-        extends OMComponentPanel
-        implements MapPanel {
+public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 
     public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.MapPanel");
 
@@ -205,8 +203,7 @@ public class BasicMapPanel
         // catch some people by surprise when 4.6.1 comes out.
         Object obj = mh.get(com.bbn.openmap.proj.ProjectionFactory.class);
         if (obj == null) {
-            Debug.message("basic",
-                          "BasicMapPanel adding ProjectionFactory and projections to MapHandler since there are none to be found.");
+            Debug.message("basic", "BasicMapPanel adding ProjectionFactory and projections to MapHandler since there are none to be found.");
             mh.add(ProjectionFactory.loadDefaultProjections());
         }
 
@@ -376,15 +373,14 @@ public class BasicMapPanel
         if (someObj instanceof MapPanelChild && someObj instanceof Component) {
 
             String parentName = ((MapPanelChild) someObj).getParentName();
-            boolean hasNamedParent = parentName != null && parentName.trim().length() != 0; 
-           
+            boolean hasNamedParent = parentName != null && parentName.trim().length() != 0;
+
             String myName = getPropertyPrefix();
             boolean hasName = myName != null && myName.trim().length() != 0;
-            
+
             @SuppressWarnings("null")
-            boolean makeMyChild =
-                    (hasName && hasNamedParent && myName.equalsIgnoreCase(parentName))
-                            || (!hasName && !hasNamedParent);
+            boolean makeMyChild = (hasName && hasNamedParent && myName.equalsIgnoreCase(parentName))
+                    || (!hasName && !hasNamedParent);
 
             if (makeMyChild) {
 
@@ -396,8 +392,8 @@ public class BasicMapPanel
                 invalidate();
             } else {
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("MapPanel with name: " + myName + " not adding child (" + someObj.getClass().getName()
-                            + ") looking for: " + parentName);
+                    logger.fine("MapPanel with name: " + myName + " not adding child ("
+                            + someObj.getClass().getName() + ") looking for: " + parentName);
                 }
             }
         }
@@ -416,7 +412,7 @@ public class BasicMapPanel
 
     /**
      * The MapPanel looks for MapPanelChild components and removes them from
-     * iteself.
+     * itself.
      */
     public void findAndUndo(Object someObj) {
         if (someObj instanceof MapPanelChild && someObj instanceof Component) {
@@ -531,8 +527,7 @@ public class BasicMapPanel
      * 
      * @throws MalformedURLException if propFile doesn't resolve properly.
      */
-    public void addProperties(String propFile)
-            throws java.net.MalformedURLException {
+    public void addProperties(String propFile) throws java.net.MalformedURLException {
         getPropertyHandler().addProperties(propFile);
     }
 

@@ -32,6 +32,7 @@ import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.gui.Tool;
 import com.bbn.openmap.layer.DrawingToolLayer;
+import com.bbn.openmap.layer.policy.BufferedImageRenderPolicy;
 import com.bbn.openmap.omGraphics.OMAction;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;

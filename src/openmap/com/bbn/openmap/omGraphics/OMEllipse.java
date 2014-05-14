@@ -55,8 +55,8 @@ public class OMEllipse extends OMCircle {
      * @param units com.bbn.openmap.proj.Length object.
      * @param rotateAngle angle of rotation in Radians
      */
-    public OMEllipse(LatLonPoint centerPoint, double majorAxisSpan,
-            double minorAxisSpan, Length units, double rotateAngle) {
+    public OMEllipse(LatLonPoint centerPoint, double majorAxisSpan, double minorAxisSpan,
+            Length units, double rotateAngle) {
         setRenderType(RENDERTYPE_LATLON);
         setLineType(LINETYPE_GREATCIRCLE);
 
@@ -75,8 +75,7 @@ public class OMEllipse extends OMCircle {
      * @param minorAxisSpan vertical diameter of circle/ellipse, pixels
      * @param rotateAngle angle of rotation in Radians
      */
-    public OMEllipse(int x1, int y1, int majorAxisSpan, int minorAxisSpan,
-            double rotateAngle) {
+    public OMEllipse(int x1, int y1, int majorAxisSpan, int minorAxisSpan, double rotateAngle) {
         super(x1, y1, majorAxisSpan, minorAxisSpan);
         setRotationAngle(rotateAngle);
     }
@@ -108,14 +107,9 @@ public class OMEllipse extends OMCircle {
      * @param w horizontal diameter of circle/ellipse, pixels.
      * @param h vertical diameter of circle/ellipse, pixels.
      */
-    public OMEllipse(LatLonPoint centerPoint, int offset_x1, int offset_y1,
-            int w, int h, double rotateAngle) {
-        super(centerPoint.getY(),
-              centerPoint.getX(),
-              offset_x1,
-              offset_y1,
-              w,
-              h);
+    public OMEllipse(LatLonPoint centerPoint, int offset_x1, int offset_y1, int w, int h,
+            double rotateAngle) {
+        super(centerPoint.getY(), centerPoint.getX(), offset_x1, offset_y1, w, h);
         setRotationAngle(rotateAngle);
     }
 
@@ -189,8 +183,7 @@ public class OMEllipse extends OMCircle {
 
         for (i = 0; i < nMax; i++) {
 
-            x = Math.sqrt((a * a * b * b)
-                    / ((b * b) + ((a * a) * Math.pow(Math.tan(angle), 2))));
+            x = Math.sqrt((a * a * b * b) / ((b * b) + ((a * a) * Math.pow(Math.tan(angle), 2))));
             double yt = (x * x) / (a * a);
             if (yt > 1.0) {
                 yt = 1.0;
@@ -198,8 +191,7 @@ public class OMEllipse extends OMCircle {
             y = Math.sqrt((1.0 - yt) * (b * b));
 
             distance[i] = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-            azimuth[i] = angle + com.bbn.openmap.MoreMath.HALF_PI
-                    + getRotationAngle();
+            azimuth[i] = angle + com.bbn.openmap.MoreMath.HALF_PI + getRotationAngle();
 
             if (Debug.debugging("ellipse")) {
                 Debug.output(" "
@@ -209,9 +201,8 @@ public class OMEllipse extends OMCircle {
                         + " ( "
                         + distance[i]
                         + " ) "
-                        + (Debug.debugging("ellipsedetail") ? ("[from x:" + x
-                                + ", y:" + y + ", a:" + a + ", b:" + b + "]")
-                                : ""));
+                        + (Debug.debugging("ellipsedetail") ? ("[from x:" + x + ", y:" + y + ", a:"
+                                + a + ", b:" + b + "]") : ""));
             }
             angle += angleInc;
         }
@@ -234,12 +225,11 @@ public class OMEllipse extends OMCircle {
         if (renderType == RENDERTYPE_XY || renderType == RENDERTYPE_OFFSET) {
             return super.generate(proj); // generate using circle's generate
         }
-        
-        setNeedToRegenerate(true);        
+
+        setNeedToRegenerate(true);
 
         if (proj == null) {
-            Debug.message("omgraphic",
-                    "OMEllipse: null projection in generate!");
+            Debug.message("omgraphic", "OMEllipse: null projection in generate!");
             return false;
         }
 
@@ -252,22 +242,17 @@ public class OMEllipse extends OMCircle {
         // polygon/polyline project the polygon/polyline.
         // Vertices should already be in radians.ArrayList vector;
         if (proj instanceof GeoProj) {
-            vector = ((GeoProj) proj).forwardPoly(rawllpts,
-                    getLineType(),
-                    -1,
-                    true);
+            vector = ((GeoProj) proj).forwardPoly(rawllpts, getLineType(), -1, true);
 
             int size = vector.size();
             GeneralPath projectedShape = null;
             // We could call create shape, but this is more efficient.
             for (int i = 0; i < size; i += 2) {
-                GeneralPath gp = createShape(vector.get(i),
-                        vector.get(i + 1),
-                        true);
+                GeneralPath gp = createShape(vector.get(i), vector.get(i + 1), true);
 
                 projectedShape = appendShapeEdge(projectedShape, gp, false);
             }
-            
+
             setShape(projectedShape);
         } else {
             // Create an ellipse in projected space using java2d
@@ -275,11 +260,13 @@ public class OMEllipse extends OMCircle {
             setShape(new GeneralPath(proj.forwardShape(ellipse)));
         }
 
+        setLabelLocation(getShape(), proj);
+
         setNeedToRegenerate(false);
         return true;
     }
-    
-    public void restore(OMGeometry source){
+
+    public void restore(OMGeometry source) {
         super.restore(source);
         if (source instanceof OMEllipse) {
             OMEllipse ellipse = (OMEllipse) source;

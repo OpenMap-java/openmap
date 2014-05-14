@@ -14,9 +14,12 @@
 
 package com.bbn.openmap.event;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -188,6 +191,22 @@ public class OMMouseMode extends CoordMouseMode {
     }
 
     /**
+     * PaintListener method.
+     * 
+     * @param source the source object, most likely the MapBean
+     * @param g java.awt.Graphics
+     */
+    public void listenerPaint(Object source, Graphics g) {
+        MapBean mapBean = source instanceof MapBean ? (MapBean) source : null;
+
+        if (azPanner != null) {
+            azPanner.render(g);
+        } else if (mapBean != null) {
+            mapBean.removePaintListener(this);
+        }
+    }
+
+    /**
      * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
      *      The first click for drag, the image is generated. This image is
      *      redrawing when the mouse is move, but, I need to repain the original
@@ -198,20 +217,19 @@ public class OMMouseMode extends CoordMouseMode {
 
         if (mouseSupport.proxy == null) {
 
-            BufferedMapBean mb = getBufferedMapBean(arg0);
-            if (mb == null) {
+            BufferedMapBean mapBean = getBufferedMapBean(arg0);
+            if (mapBean == null) {
                 // OMMouseMode needs a BufferedMapBean
                 return;
             }
 
-            Projection proj = mb.getProjection();
+            Projection proj = mapBean.getProjection();
 
             // Left mouse click, pan
             if (SwingUtilities.isLeftMouseButton(arg0)) {
 
-                Point2D pnt = mb.getNonRotatedLocation(arg0);
-                int x = (int) pnt.getX();
-                int y = (int) pnt.getY();
+                int x = arg0.getX();
+                int y = arg0.getY();
 
                 if (!isPanning) {
                     oX = x;
@@ -221,8 +239,8 @@ public class OMMouseMode extends CoordMouseMode {
                 } else if (proj instanceof Cylindrical || proj instanceof Cartesian) {
                     // oX and oY set for this case. Not used for Azimuth
                     // projections.
-                    mb.setPanningTransform(AffineTransform.getTranslateInstance(x - oX, y - oY));
-                    mb.repaint();
+                    mapBean.setPanningTransform(AffineTransform.getTranslateInstance(x - oX, y - oY));
+                    mapBean.repaint();
 
                 } else {
 
@@ -234,16 +252,18 @@ public class OMMouseMode extends CoordMouseMode {
                         }
 
                         if (url != null) {
-                            azPanner = new AzimuthPanner.Shapefile(mb, oX, oY, getAzDrawing(), url);
+                            azPanner = new AzimuthPanner.Shapefile(oX, oY, getAzDrawing(), url);
                         } else {
-                            azPanner = new AzimuthPanner.Standard(mb, oX, oY, getAzDrawing());
+                            azPanner = new AzimuthPanner.Standard(oX, oY, getAzDrawing());
                         }
+                        mapBean.addPaintListener(this);
                     }
 
                     // Azimuth projection
                     if (azPanner != null) {
-                        azPanner.handlePan(arg0);
+                        azPanner.handlePan(mapBean, arg0);
                     }
+                    mapBean.repaint();
                 }
             }
         }
@@ -322,17 +342,21 @@ public class OMMouseMode extends CoordMouseMode {
             Projection proj = mb.getProjection();
             Point2D center = proj.forward(proj.getCenter());
 
-            Point2D pnt = mb.getNonRotatedLocation(arg0);
-            int x = (int) pnt.getX();
-            int y = (int) pnt.getY();
+            int x = arg0.getX();
+            int y = arg0.getY();
 
             center.setLocation(center.getX() - x + oX, center.getY() - y + oY);
-            mb.setCenter(proj.inverse(center));
+            /*
+             * OK, center now holds the pixel location of the new center pnt. To
+             * figure out the lat/lon of it, we can do a straight inverse
+             * projection operation. We will need to take rotation into account
+             * if needed.
+             */
+            mb.setCenter(mb.inverse(center.getX(), center.getY(), null));
 
             mb.setPanningTransform(null);
 
             isPanning = false;
-            // bufferedMapImage = null; //clean up when not active...
 
             if (azPanner != null) {
                 azPanner.handleUnpan(arg0);
@@ -363,10 +387,16 @@ public class OMMouseMode extends CoordMouseMode {
         return isPanning;
     }
 
+    /**
+     * @return the starting x pixel location of a drag.
+     */
     public int getOX() {
         return oX;
     }
 
+    /**
+     * @return the starting y pixel location of a drag.
+     */
     public int getOY() {
         return oY;
     }

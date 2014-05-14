@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/omGraphics/geom/BasicGeometry.java,v $
 // $RCSfile: BasicGeometry.java,v $
 // $Revision: 1.19 $
 // $Date: 2009/01/21 01:24:42 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap.omGraphics.geom;
@@ -42,13 +42,13 @@ import com.bbn.openmap.util.Debug;
  * Base class implementation of OpenMap OMGeometry, the super class for all
  * OMGraphics.
  * <p>
- * 
+ *
  * The geometry classes are intended to pull the object location data out of the
  * OMGraphics. If you have a bunch of OMGraphics that are all rendered with
  * common attributes, you can create a bunch of OMGeometry objects to plavce in
  * a OMGeometryList that will render them all alike.
  * <p>
- * 
+ *
  * The BasicGeometry can hold attributes. Traditionally, there has been an
  * appObject (Application Object) that could be set in the OMGeometry/OMGraphic
  * to maintain a pointer for additional information about the shape. This has
@@ -59,7 +59,7 @@ import com.bbn.openmap.util.Debug;
  * stored in the appObject. Using the setAppObject() and getAppObject() methods
  * in conjunction with other attributes will cause that object to be stored in
  * the attribute Map under the APP_OBJECT_KEY Map key.
- * 
+ *
  * @see PolygonGeometry
  * @see PolylineGeometry
  * @see com.bbn.openmap.omGraphics.OMGeometryList
@@ -83,7 +83,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
     /**
      * Space for an application to associate geometry with an application
      * object. This object can contain attribute information about the geometry.
-     * 
+     *
      * @see #setAppObject
      * @see #getAppObject
      */
@@ -112,7 +112,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * be drawn. See the definition of the lineType parameter. Accepts
      * LINETYPE_RHUMB, LINETYPE_STRAIGHT and LINETYPE_GREATCIRCLE. Any weird
      * values get set to LINETYPE_STRAIGHT.
-     * 
+     *
      * @param value the line type of the graphic.
      */
     public void setLineType(int value) {
@@ -125,7 +125,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
 
     /**
      * Return the line type.
-     * 
+     *
      * @return the linetype - LINETYPE_RHUMB, LINETYPE_STRAIGHT,
      *         LINETYPE_GREATCIRCLE or LINETYPE_UNKNOWN.
      */
@@ -135,7 +135,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
 
     /**
      * Return the render type.
-     * 
+     *
      * @return the rendertype of the object - RENDERTYPE_LATLON, RENDERTYPE_XY,
      *         RENDERTYPE_OFFSET and RENDERTYPE_UNKNOWN.
      */
@@ -145,7 +145,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * Sets the regenerate flag for the graphic. This flag is used to determine
      * if extra work needs to be done to prepare the object for rendering. This
      * also sets the shape to null;
-     * 
+     *
      * @param value boolean
      */
     public void setNeedToRegenerate(boolean value) {
@@ -157,7 +157,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
 
     /**
      * Return the regeneration status.
-     * 
+     *
      * @return boolean
      */
     public boolean getNeedToRegenerate() {
@@ -169,7 +169,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * This is checked by the OMGeometryList when it iterates through its list
      * for render and gesturing. It is not checked by the internal OMGeometry
      * methods, although maybe it should be...
-     * 
+     *
      * @param visible boolean
      */
     public void setVisible(boolean visible) {
@@ -178,7 +178,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
 
     /**
      * Get the visibility variable.
-     * 
+     *
      * @return boolean
      */
     public boolean isVisible() {
@@ -204,14 +204,14 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * gets the OMGeometry object back from the OMGeometryList, and can then get
      * back to the application level object through this pointer.
      * <P>
-     * 
+     *
      * The BasicGeometry has been updated to use an attribute Object Map to hold
      * multiple attributes. If no attributes have been added, then the appObject
      * will just hold any object passed in here. If attributes have already been
      * added, then calling this method will add the object to the Map under the
      * APP_OBJECT_KEY key. getAppObject() will return the object set in this
      * method.
-     * 
+     *
      * @param obj Object
      */
     public synchronized void setAppObject(Object obj) {
@@ -221,7 +221,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
     /**
      * Same as setAppObject with the option for disabling the attribute Map
      * management.
-     * 
+     *
      * @param checkToReplaceObjWithMap if false, just sets obj to appObject.
      */
     protected synchronized void setAppObject(Object obj, boolean checkToReplaceObjWithMap) {
@@ -236,7 +236,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * Gets the application's object pointer. If an attribute Map object is
      * being used, returns the object stored in that map under the
      * APP_OBJECT_KEY key.
-     * 
+     *
      * @return Object
      */
     public synchronized Object getAppObject() {
@@ -246,7 +246,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
     /**
      * Same as getAppObject, with the option of disabling the attribute Map
      * management.
-     * 
+     *
      * @param checkForObjOnMap if false, just returns the appObject.
      */
     protected synchronized Object getAppObject(boolean checkForObjOnMap) {
@@ -436,7 +436,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * (for instance if <code>proj</code> is null), and if debugging is enabled,
      * a message may be output to the controlling terminal.
      * <p>
-     * 
+     *
      * @param proj Projection
      * @return boolean true if successful, false if not.
      * @see #regenerate
@@ -455,7 +455,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * A check to see if the OMGeometry is ready for rendering. This is the
      * method you should call, with a the handle to the shape object you're
      * interested in rendering.
-     * 
+     *
      * @param shape the projected shape of the OMGraphic
      * @return true if draw/fill should be called.
      */
@@ -470,18 +470,18 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * doing renderable check, and then call draw, with a single handle to the
      * current shape object.
      * <P>
-     * 
+     *
      * This paints the graphic into the Graphics context. This is similar to
      * <code>paint()</code> function of java.awt.Components. Note that if the
      * graphic has not been generated or if it isn't visible, it will not be
      * rendered.
      * <P>
-     * 
+     *
      * This method used to be abstract, but with the conversion of OMGeometrys
      * to internally represent themselves as java.awt.Shape objects, it's a more
      * generic method. If the OMGeometry hasn't been updated to use Shape
      * objects, it should have its own render method.
-     * 
+     *
      * @param g Graphics2D context to render into.
      */
     public void fill(Graphics g) {
@@ -492,18 +492,18 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * Paint the graphic, as a filled shape. The Graphics object should be set
      * for rendering.
      * <P>
-     * 
+     *
      * This paints the graphic into the Graphics context. This is similar to
      * <code>paint()</code> function of java.awt.Components. Note that if the
      * graphic has not been generated or if it isn't visible, it will not be
      * rendered.
      * <P>
-     * 
+     *
      * This method used to be abstract, but with the conversion of OMGeometrys
      * to internally represent themselves as java.awt.Shape objects, it's a more
      * generic method. If the OMGeometry hasn't been updated to use Shape
      * objects, it should have its own render method.
-     * 
+     *
      * @param g Graphics2D context to render into.
      * @param s Shape object to fill for rendering.
      */
@@ -517,18 +517,18 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * Paint the graphic, as an outlined shape. The Graphics object should be
      * ready for rendering (paint, stroke).
      * <P>
-     * 
+     *
      * This paints the graphic into the Graphics context. This is similar to
      * <code>paint()</code> function of java.awt.Components. Note that if the
      * graphic has not been generated or if it isn't visible, it will not be
      * rendered.
      * <P>
-     * 
+     *
      * This method used to be abstract, but with the conversion of OMGeometrys
      * to internally represent themselves as java.awt.Shape objects, it's a more
      * generic method. If the OMGeometry hasn't been updated to use Shape
      * objects, it should have its own render method.
-     * 
+     *
      * @param g Graphics2D context to render into.
      * @param s Shape object to render.
      */
@@ -545,18 +545,18 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * call the other one after doing renderable check and fill, with a single
      * handle to the current shape object.
      * <P>
-     * 
+     *
      * This paints the graphic into the Graphics context. This is similar to
      * <code>paint()</code> function of java.awt.Components. Note that if the
      * graphic has not been generated or if it isn't visible, it will not be
      * rendered.
      * <P>
-     * 
+     *
      * This method used to be abstract, but with the conversion of OMGeometrys
      * to internally represent themselves as java.awt.Shape objects, it's a more
      * generic method. If the OMGeometry hasn't been updated to use Shape
      * objects, it should have its own render method.
-     * 
+     *
      * @param g Graphics2D context to render into.
      */
     public void draw(Graphics g) {
@@ -579,7 +579,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
     /**
      * Return the shortest distance from the edge of a graphic to an XY-point.
      * <p>
-     * 
+     *
      * @param x X coordinate of the point.
      * @param y Y coordinate of the point.
      * @return float distance, in pixels, from graphic to the point. Returns
@@ -602,7 +602,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * <p>
      * Method taken and adapted from
      * {@link BasicGeometry#distanceToEdge(double, double)}
-     * 
+     *
      * @param x X coordinate of the point.
      * @param y Y coordinate of the point.
      * @param shape Shape object to test.
@@ -668,15 +668,15 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * see of the point is contained within the OMGraphic, which may, or may not
      * be the right thing for clear OMGraphics or lines.
      * <p>
-     * 
+     *
      * This method used to be abstract, but with the conversion of OMGeometrys
      * to internally represent themselves as java.awt.Shape objects, it's a more
      * generic method. If the OMGeometry hasn't been updated to use Shape
      * objects, it should have its own distance method.
      * <p>
-     * 
+     *
      * Calls _distance(x, y);
-     * 
+     *
      * @param x X coordinate of the point.
      * @param y Y coordinate of the point.
      * @return float distance, in pixels, from graphic to the point. Returns
@@ -691,11 +691,11 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * see of the point is contained within the OMGraphic, which may, or may not
      * be the right thing for clear OMGraphics or lines.
      * <p>
-     * 
+     *
      * _distance was added so subclasses could make this call if their
      * geometries/attributes require this action (when fill color doesn't
      * matter).
-     * 
+     *
      * @param x X coordinate of the point.
      * @param y Y coordinate of the point.
      * @return float distance, in pixels, from graphic to the point. Returns
@@ -721,7 +721,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
     }
 
     /**
-     * Answsers the question whether or not the OMGeometry contains the given
+     * Answers the question whether or not the OMGeometry contains the given
      * pixel point.
      * <P>
      * This method used to be abstract, but with the conversion of OMGeometrys
@@ -734,7 +734,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * object, just ask for it and then ask it directly. This method is provided
      * because it is the most useful, used when determining if a mouse event is
      * occurring over an object on the map.
-     * 
+     *
      * @param x X pixel coordinate of the point.
      * @param y Y pixel coordinate of the point.
      * @return getShape().contains(x, y), false if the OMGraphic hasn't been
@@ -757,7 +757,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * <code>generate()</code> only if</code> needToRegenerate() </code> on the
      * graphic returns true. To force a graphic to be generated, call
      * <code>generate()</code> directly.
-     * 
+     *
      * @param proj the Projection
      * @return true if generated, false if didn't do it (maybe a problem).
      * @see #generate
@@ -780,10 +780,10 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * needs to show up in more than one place on the map. In conditions like
      * that, the Shape will have multiple parts.
      * <p>
-     * 
+     *
      * The java.awt.Shape object gives you the ability to do a little spatial
      * analysis on the graphics.
-     * 
+     *
      * @return java.awt.geom.GeneralPath (a java.awt.Shape object), or null if
      *         the graphic needs to be generated with the current map
      *         projection, or null if the OMGeometry hasn't been updated to use
@@ -799,10 +799,10 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * to clear out the object to save memory, or to allow a little
      * customization if your requirements dictate.
      * <p>
-     * 
+     *
      * The java.awt.Shape object gives you the ability to do a little spatial
      * analysis on the graphics.
-     * 
+     *
      * @param gp java.awt.geom.GeneralPath, or null if the graphic needs to be
      *        generated with the current map projection or to clear out the
      *        object being held by the OMGeometry.
@@ -816,7 +816,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * points a y points should be projected. This method is used by subclasses
      * that get projected coordinates out of the projection classes, and they
      * need to build a Shape object from those coordinates.
-     * 
+     *
      * @param xpoints projected x coordinates
      * @param ypoints projected y coordinates
      * @param isPolygon whether the points make up a polygon, or a polyline. If
@@ -833,7 +833,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * points a y points should be projected. This method is used by subclasses
      * that get projected coordinates out of the projection classes, and they
      * need to build a Shape object from those coordinates.
-     * 
+     *
      * @param xpoints projected x coordinates
      * @param ypoints projected y coordinates
      * @param startIndex the starting coordinate index in the array.
@@ -909,7 +909,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
     /**
      * Convenience method to add the coordinates to the given GeneralPath. You
      * need to close the path yourself if you want it to be a polygon.
-     * 
+     *
      * @param toShape the GeneralPath Shape object to add the coordinates to.
      * @param xpoints horizontal pixel coordinates.
      * @param ypoints vertical pixel coordinates.
@@ -922,7 +922,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
     /**
      * Convenience method to add the coordinates to the given GeneralPath. You
      * need to close the path yourself if you want it to be a polygon.
-     * 
+     *
      * @param toShape the GeneralPath Shape object to add the coordinates to.
      * @param xpoints horizontal pixel coordinates.
      * @param ypoints vertical pixel coordinates.
@@ -941,7 +941,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * GeneralPath Shape. A PathIterator is used to figure out the points to use
      * to add to the toShape. You need to close the path yourself if you want it
      * to be a polygon. Assumes that the two paths should be connected.
-     * 
+     *
      * @param toShape the GeneralPath Shape object to add the edge to.
      * @param addShape the GeneralPath Shape to add to the toShape.
      * @return toShape, with coordinates appended. Returns addShape if toShape
@@ -956,7 +956,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * GeneralPath Shape. A PathIterator is used to figure out the points to use
      * to add to the toShape. You need to close the path yourself if you want it
      * to be a polygon.
-     * 
+     *
      * @param toShape the GeneralPath Shape object to add the edge to.
      * @param addShape the GeneralPath Shape to add to the toShape.
      * @param lineTo specify whether the first point of the appended path is
@@ -983,23 +983,23 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
         return toShape;
 
         /*
-         * 
+         *
          * PathIterator pi2 = addShape.getPathIterator(null);
          * FlatteningPathIterator pi = new FlatteningPathIterator(pi2, .25);
          * double[] coords = new double[6];
-         * 
+         *
          * while (!pi.isDone()) { int type = pi.currentSegment(coords); if
          * (lineTo) { if (DEBUG) { Debug.output(" adding point [" + type + "] ("
          * + (pointCount++) + ") " + (float) coords[0] + ", " + (float)
          * coords[1]); } toShape.lineTo((float) coords[0], (float) coords[1]);
-         * 
+         *
          * } else { if (DEBUG) { Debug.output("Creating new shape, first point "
          * + (float) coords[0] + ", " + (float) coords[1]); }
          * toShape.moveTo((float) coords[0], (float) coords[1]); lineTo = true;
          * } pi.next(); }
-         * 
+         *
          * if (DEBUG) { Debug.output(" -- end point (" + pointCount + ")"); }
-         * 
+         *
          * return toShape;
          */
     }

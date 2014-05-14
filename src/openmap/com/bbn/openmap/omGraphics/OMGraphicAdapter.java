@@ -86,9 +86,8 @@ import com.bbn.openmap.util.Debug;
  * @see OMGraphicList
  * @see Projection
  */
-public abstract class OMGraphicAdapter
-        extends BasicGeometry
-        implements OMGraphic, OMGraphicConstants, Cloneable, Serializable {
+public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphic,
+        OMGraphicConstants, Cloneable, Serializable {
 
     /**
      * The Java2D Stroke. This is used for lineWidth, and dashing of the lines
@@ -756,13 +755,23 @@ public abstract class OMGraphicAdapter
      * @param g Graphics2D context to render into.
      */
     public void render(Graphics g) {
+        renderShape(g);
+        renderLabel(g);
+    }
 
+    /**
+     * Called from render, just handles rendering of the java.awt.Shape of the
+     * OMGraphic, as it is currently stored in this OMGraphic.
+     * 
+     * @param g java.awt.Graphics to render into.
+     */
+    protected void renderShape(Graphics g) {
         Shape s = getShape();
-        
+
         if (!isRenderable(s)) {
             return;
         }
-        
+
         if (matted) {
             if (g instanceof Graphics2D && stroke instanceof BasicStroke) {
                 BasicStroke bs = (BasicStroke) stroke;
@@ -786,28 +795,6 @@ public abstract class OMGraphicAdapter
         if (shouldRenderEdge()) {
             setGraphicsForEdge(g);
             draw(g, s);
-        }
-
-        renderLabel(g);
-    }
-
-    /**
-     * Calls super.setShape(), but also checks the attributes for a label and
-     * moves the label accordingly. The label will be placed in the center of
-     * the bounding box around the path.
-     */
-    public void setShape(GeneralPath gp) {
-        super.setShape(gp);
-
-        hasLabel = false;
-
-        // Go ahead and set the label location if the shape exists.
-        if (gp != null) {
-            OMLabeler labeler = (OMLabeler) getAttribute(LABEL);
-            if (labeler != null) {
-                labeler.setLocation(gp);
-                hasLabel = true;
-            }
         }
     }
 
@@ -844,12 +831,42 @@ public abstract class OMGraphicAdapter
      * 
      * @param xpoints
      * @param ypoints
+     * @deprecated use the version with the projection.
      */
     public void setLabelLocation(int[] xpoints, int[] ypoints) {
-        if (hasLabel) {
-            OMLabeler oml = (OMLabeler) getAttribute(LABEL);
-            if (oml != null) {
-                oml.setLocation(xpoints, ypoints);
+        setLabelLocation(xpoints, ypoints, null);
+    }
+
+    /**
+     * @see #setLabelLocation(int[], int[])
+     * @deprecated use the version with the projection.
+     */
+    public void setLabelLocation(float[] xpoints, float[] ypoints) {
+        setLabelLocation(xpoints, ypoints, null);
+    }
+
+    /**
+     * Checks the attributes for a label and moves the label accordingly. The
+     * label will be placed in the center of the bounding box around the path.
+     * 
+     * @param xpoints int[] describing the projected location of the OMGraphic.
+     * @param ypoints int[] describing the projected location of the OMGraphic.
+     * @param proj the current projection to do further evaluating of placement.
+     */
+    protected void setLabelLocation(int[] xpoints, int[] ypoints, Projection proj) {
+        hasLabel = false;
+        Object obj = getAttribute(LABEL);
+        if (obj instanceof OMLabeler) {
+            OMLabeler labeler = (OMLabeler) obj;
+
+            // Go ahead and set the label location if the shape exists.
+            if (xpoints != null && ypoints != null) {
+                labeler.setLocation(xpoints, ypoints);
+                hasLabel = true;
+            }
+
+            if (proj != null) {
+                labeler.evaluateRotationAngle(proj);
             }
         }
     }
@@ -857,14 +874,14 @@ public abstract class OMGraphicAdapter
     /**
      * @see #setLabelLocation(int[], int[])
      */
-    public void setLabelLocation(float[] xpoints, float[] ypoints) {
+    public void setLabelLocation(float[] xpoints, float[] ypoints, Projection proj) {
         int[] xs = new int[xpoints.length];
         int[] ys = new int[ypoints.length];
         for (int i = 0; i < xpoints.length; i++) {
             xs[i] = (int) xpoints[i];
             ys[i] = (int) ypoints[i];
         }
-        setLabelLocation(xs, ys);
+        setLabelLocation(xs, ys, proj);
     }
 
     /**
@@ -872,12 +889,33 @@ public abstract class OMGraphicAdapter
      * hasn't been set, it no-ops.
      * 
      * @param p
+     * @deprecated use the version with Projection.
      */
     public void setLabelLocation(Point2D p) {
-        if (hasLabel) {
-            OMLabeler oml = (OMLabeler) getAttribute(LABEL);
-            if (oml != null) {
-                oml.setLocation(p);
+        setLabelLocation(p, null);
+    }
+
+    /**
+     * Checks the attributes for a label and moves the label accordingly. The
+     * label will be placed in the center of the bounding box around the path.
+     * 
+     * @param p Point2D describing the projected location of the label.
+     * @param proj the current projection to do further evaluating of placement.
+     */
+    protected void setLabelLocation(Point2D p, Projection proj) {
+        hasLabel = false;
+        Object obj = getAttribute(LABEL);
+        if (obj instanceof OMLabeler) {
+            OMLabeler labeler = (OMLabeler) obj;
+
+            // Go ahead and set the label location if the shape exists.
+            if (p != null) {
+                labeler.setLocation(p);
+                hasLabel = true;
+            }
+
+            if (proj != null) {
+                labeler.evaluateRotationAngle(proj);
             }
         }
     }
@@ -886,13 +924,34 @@ public abstract class OMGraphicAdapter
      * Sets the label location at the center of the bounding box of the path. If
      * the hasLabel variable hasn't been set, it no-ops.
      * 
-     * @param gp
+     * @param gp GeneralPath
+     * @deprecated use the version with the Projection
      */
     public void setLabelLocation(GeneralPath gp) {
-        if (hasLabel) {
-            OMLabeler oml = (OMLabeler) getAttribute(LABEL);
-            if (oml != null) {
-                oml.setLocation(gp);
+        setLabelLocation(gp, null);
+    }
+
+    /**
+     * Checks the attributes for a label and moves the label accordingly. The
+     * label will be placed in the center of the bounding box around the path.
+     * 
+     * @param gp GeneralPath describing the projected location of the OMGraphic.
+     * @param proj the current projection to do further evaluating of placement.
+     */
+    protected void setLabelLocation(GeneralPath gp, Projection proj) {
+        hasLabel = false;
+        Object obj = getAttribute(LABEL);
+        if (obj instanceof OMLabeler) {
+            OMLabeler labeler = (OMLabeler) obj;
+
+            // Go ahead and set the label location if the shape exists.
+            if (gp != null) {
+                labeler.setLocation(gp);
+                hasLabel = true;
+            }
+
+            if (proj != null) {
+                labeler.evaluateRotationAngle(proj);
             }
         }
     }
@@ -985,13 +1044,7 @@ public abstract class OMGraphicAdapter
         boolean ret = false;
 
         if (proj != null) {
-
             ret = super.regenerate(proj);
-
-            // handle extra case: OMRasterObject.getNeedToReposition()
-            if (!ret && this instanceof OMRasterObject) {
-                ret = generate(proj);
-            }
         }
 
         return ret;
@@ -1020,8 +1073,7 @@ public abstract class OMGraphicAdapter
     /**
      * Write this object to a stream.
      */
-    private void writeObject(ObjectOutputStream oos)
-            throws IOException {
+    private void writeObject(ObjectOutputStream oos) throws IOException {
         oos.defaultWriteObject();
 
         // Now write the Stroke. Take into account the stroke member
@@ -1067,8 +1119,7 @@ public abstract class OMGraphicAdapter
     /**
      * Read this object from a stream.
      */
-    private void readObject(ObjectInputStream ois)
-            throws ClassNotFoundException, IOException {
+    private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
         ois.defaultReadObject();
 
         // Read the Stroke

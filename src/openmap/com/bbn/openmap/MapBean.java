@@ -1,23 +1,23 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/MapBean.java,v $
 // $RCSfile: MapBean.java,v $
 // $Revision: 1.23 $
 // $Date: 2009/02/05 18:46:11 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
 
 package com.bbn.openmap;
@@ -33,15 +33,17 @@ import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.Paint;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -66,6 +68,7 @@ import com.bbn.openmap.event.ProjectionListener;
 import com.bbn.openmap.event.ProjectionSupport;
 import com.bbn.openmap.event.ZoomEvent;
 import com.bbn.openmap.event.ZoomListener;
+import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
@@ -123,1308 +126,1585 @@ import com.bbn.openmap.util.Debug;
  * 
  * @see Layer
  */
-public class MapBean
-      extends JComponent
-      implements ComponentListener, ContainerListener, ProjectionListener, PanListener, ZoomListener, LayerListener,
-      CenterListener, SoloMapComponent {
+public class MapBean extends JComponent implements ComponentListener, ContainerListener,
+        ProjectionListener, PanListener, ZoomListener, LayerListener, CenterListener,
+        SoloMapComponent {
 
-   public static Logger logger = Logger.getLogger("com.bbn.openmap.MapBean");
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.MapBean");
 
-   public static final String LayersProperty = "MapBean.layers";
+    public static final String LayersProperty = "MapBean.layers";
 
-   public static final String CursorProperty = "MapBean.cursor";
+    public static final String CursorProperty = "MapBean.cursor";
 
-   public static final String BackgroundProperty = "MapBean.background";
+    public static final String BackgroundProperty = "MapBean.background";
 
-   public static final String ProjectionProperty = "MapBean.projection";
+    public static final String ProjectionProperty = "MapBean.projection";
 
-   public static final String ProjectionVetoedProperty = "MapBean.projectionVetoed";
+    public static final String ProjectionVetoedProperty = "MapBean.projectionVetoed";
 
-   /**
-    * OpenMap title.
-    */
-   public static final String title = "OpenMap(tm)";
+    /**
+     * OpenMap title.
+     */
+    public static final String title = "OpenMap(tm)";
 
-   /**
-    * OpenMap version.
-    */
-   public static final String version = "5.0.5b";
+    /**
+     * OpenMap version.
+     */
+    public static final String version = "5.0.5b";
 
-   /**
-    * Suppress the copyright message on initialization.
-    */
-   public static boolean suppressCopyright = false;
+    /**
+     * Suppress the copyright message on initialization.
+     */
+    public static boolean suppressCopyright = false;
 
-   private static boolean DEBUG_TIMESTAMP = false;
+    private static boolean DEBUG_TIMESTAMP = false;
 
-   private static boolean DEBUG_THREAD = true;
+    private static boolean DEBUG_THREAD = true;
 
-   private static final String copyrightNotice = "OpenMap(tm) Version " + version + "\r\n"
-         + "  Copyright (C) BBNT Solutions LLC.  All rights reserved.\r\n" + "  See http://code.google.com/p/openmap/ for details.\r\n";
+    private static final String copyrightNotice = "OpenMap(tm) Version " + version + "\r\n"
+            + "  Copyright (C) BBNT Solutions LLC.  All rights reserved.\r\n"
+            + "  See http://code.google.com/p/openmap/ for details.\r\n";
 
-   public final static float DEFAULT_CENTER_LAT = 0.0f;
+    public final static float DEFAULT_CENTER_LAT = 0.0f;
 
-   public final static float DEFAULT_CENTER_LON = 0.0f;
+    public final static float DEFAULT_CENTER_LON = 0.0f;
 
-   // zoomed all the way out
-   public final static float DEFAULT_SCALE = Float.MAX_VALUE;
+    // zoomed all the way out
+    public final static float DEFAULT_SCALE = Float.MAX_VALUE;
 
-   public final static int DEFAULT_WIDTH = 640;
+    public final static int DEFAULT_WIDTH = 640;
 
-   public final static int DEFAULT_HEIGHT = 480;
+    public final static int DEFAULT_HEIGHT = 480;
 
-   protected int minHeight = 100;
+    protected int minHeight = 100;
 
-   protected int minWidth = 100;
+    protected int minWidth = 100;
 
-   protected Proj projection = new Mercator(new LatLonPoint.Double(DEFAULT_CENTER_LAT, DEFAULT_CENTER_LON), DEFAULT_SCALE,
-                                            DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    protected Proj projection = new Mercator(new LatLonPoint.Double(DEFAULT_CENTER_LAT, DEFAULT_CENTER_LON), DEFAULT_SCALE, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
-   protected ProjectionSupport projectionSupport;
+    protected ProjectionSupport projectionSupport;
 
-   /**
-    * Layers that are removed from the MapBean are held until the next
-    * projection change. When the projection changes, they are notified that
-    * they have been removed from the map. This list is kept so that toggling a
-    * layer on and off won't cause them to get rid of their resources, in case
-    * the user is just creating different views of the map.
-    */
-   protected Vector<Layer> removedLayers = new Vector<Layer>(0);
+    /**
+     * Layers that are removed from the MapBean are held until the next
+     * projection change. When the projection changes, they are notified that
+     * they have been removed from the map. This list is kept so that toggling a
+     * layer on and off won't cause them to get rid of their resources, in case
+     * the user is just creating different views of the map.
+     */
+    protected Vector<Layer> removedLayers = new Vector<Layer>(0);
 
-   /**
-    * Some users may want the layers deleted immediately when they are removed
-    * from the map. This flag controls that. The default behavior is to hold a
-    * reference to a layer and actually release it when the projection changes
-    * (default = true). Set to false if you want the MapBean to tell a Layer it
-    * has been removed immediately when it happens.
-    */
-   protected boolean layerRemovalDelayed = true;
+    /**
+     * Some users may want the layers deleted immediately when they are removed
+     * from the map. This flag controls that. The default behavior is to hold a
+     * reference to a layer and actually release it when the projection changes
+     * (default = true). Set to false if you want the MapBean to tell a Layer it
+     * has been removed immediately when it happens.
+     */
+    protected boolean layerRemovalDelayed = true;
 
-   /**
-    * This vector is to let the layers know when they have been added to the
-    * map.
-    */
-   protected Vector<Layer> addedLayers = new Vector<Layer>(0);
+    /**
+     * This vector is to let the layers know when they have been added to the
+     * map.
+     */
+    protected Vector<Layer> addedLayers = new Vector<Layer>(0);
 
-   /**
-    * The PaintListeners want to know when the map has been repainted.
-    */
-   protected PaintListenerSupport painters = null;
+    /**
+     * The PaintListeners want to know when the map has been repainted.
+     */
+    protected PaintListenerSupport painters = null;
 
-   /**
-    * The background color for this particular MapBean. If null, the setting for
-    * the projection, which in turn is set in the Environment class, will be
-    * used.
-    */
-   protected Paint background = null;
+    /**
+     * The background color for this particular MapBean. If null, the setting
+     * for the projection, which in turn is set in the Environment class, will
+     * be used.
+     */
+    protected Paint background = null;
 
-   /**
-    * The MapBeanRepaintPolicy to use to handler/filter/pace layer repaint()
-    * requests. If not set, a StandardMapBeanRepaintPolicy will be used, which
-    * forwards repaint requests to Swing normally.
-    */
-   protected MapBeanRepaintPolicy repaintPolicy = null;
+    /**
+     * The MapBeanRepaintPolicy to use to handler/filter/pace layer repaint()
+     * requests. If not set, a StandardMapBeanRepaintPolicy will be used, which
+     * forwards repaint requests to Swing normally.
+     */
+    protected MapBeanRepaintPolicy repaintPolicy = null;
+    /**
+     * The angle, in radians, to rotate the map. 0.0 is north-up, clockwise is
+     * positive.
+     */
+    protected double rotationAngle = 0;
 
-   public final static Color DEFAULT_BACKGROUND_COLOR = new Color(191, 239, 255);
+    public final static Color DEFAULT_BACKGROUND_COLOR = new Color(191, 239, 255);
 
-   /**
-    * Return the OpenMap Copyright message.
-    * 
-    * @return String Copyright
-    */
-   public static String getCopyrightMessage() {
-      return copyrightNotice;
-   }
+    /**
+     * Return the OpenMap Copyright message.
+     * 
+     * @return String Copyright
+     */
+    public static String getCopyrightMessage() {
+        return copyrightNotice;
+    }
 
-   /**
-    * Construct a MapBean.
-    */
-   public MapBean() {
-      this(true);
-   }
+    /**
+     * Construct a MapBean.
+     */
+    public MapBean() {
+        this(true);
+    }
 
-   public MapBean(boolean useThreadedNotification) {
-      if (logger.isLoggable(Level.FINE)) {
-         debugmsg("MapBean()");
-      }
-      if (!suppressCopyright) {
-         Debug.output(copyrightNotice);
-      }
+    public MapBean(boolean useThreadedNotification) {
+        if (logger.isLoggable(Level.FINE)) {
+            debugmsg("MapBean()");
+        }
+        if (!suppressCopyright) {
+            Debug.output(copyrightNotice);
+        }
 
-      background = DEFAULT_BACKGROUND_COLOR;
+        background = DEFAULT_BACKGROUND_COLOR;
 
-      // Don't need one for every MapBean, just the first one.
-      suppressCopyright = true;
+        // Don't need one for every MapBean, just the first one.
+        suppressCopyright = true;
 
-      super.setLayout(new OverlayLayout(this));
-      projectionSupport = new ProjectionSupport(this, useThreadedNotification);
-      addComponentListener(this);
-      addContainerListener(this);
+        super.setLayout(new OverlayLayout(this));
+        projectionSupport = new ProjectionSupport(this, useThreadedNotification);
+        addComponentListener(this);
+        addContainerListener(this);
 
-      // ----------------------------------------
-      // In a builder tool it seems that the OverlayLayout
-      // makes the MapBean fail to resize. And since it has
-      // no children by default, it has no size. So I add
-      // a null Layer here to give it a default size.
-      // ----------------------------------------
-      if (java.beans.Beans.isDesignTime()) {
-         add(new Layer() {
-            public void projectionChanged(ProjectionEvent e) {
+        // ----------------------------------------
+        // In a builder tool it seems that the OverlayLayout
+        // makes the MapBean fail to resize. And since it has
+        // no children by default, it has no size. So I add
+        // a null Layer here to give it a default size.
+        // ----------------------------------------
+        if (java.beans.Beans.isDesignTime()) {
+            add(new Layer() {
+                public void projectionChanged(ProjectionEvent e) {
+                }
+
+                public Dimension getPreferredSize() {
+                    return new Dimension(100, 100);
+                }
+            });
+        }
+
+        setPreferredSize(new Dimension(projection.getWidth(), projection.getHeight()));
+
+        DEBUG_TIMESTAMP = logger.isLoggable(Level.FINER);
+        DEBUG_THREAD = logger.isLoggable(Level.FINER);
+    }
+
+    /**
+     * Return a string-ified representation of the MapBean.
+     * 
+     * @return String representing mapbean.
+     */
+    public String toString() {
+        return getClass().getName() + "@" + Integer.toHexString(hashCode());
+    }
+
+    /**
+     * Call when getting rid of the MapBean, it releases pointers to all
+     * listeners and kills the ProjectionSupport thread.
+     */
+    public void dispose() {
+        setLayerRemovalDelayed(false);
+
+        if (projectionSupport != null) {
+            projectionSupport.dispose();
+            projectionSupport = null;
+        }
+
+        if (painters != null) {
+            painters.clear();
+            painters = null;
+        }
+
+        if (addedLayers != null) {
+            addedLayers.removeAllElements();
+            addedLayers = null;
+        }
+
+        currentLayers = null;
+        projectionFactory = null;
+
+        removeComponentListener(this);
+        removeContainerListener(this);
+        removeAll();
+        purgeAndNotifyRemovedLayers();
+    }
+
+    /*----------------------------------------------------------------------
+     * Window System overrides
+     *----------------------------------------------------------------------*/
+
+    /**
+     * Adds additional constraints on possible children components. The new
+     * component must be a Layer. This method included as a good container
+     * citizen, and should not be called directly. Use the add() methods
+     * inherited from java.awt.Container instead.
+     * 
+     * @param comp Component
+     * @param constraints Object
+     * @param index int location
+     */
+    protected final void addImpl(Component comp, Object constraints, int index) {
+        if (comp instanceof Layer) {
+            super.addImpl(comp, constraints, index);
+        } else {
+            throw new IllegalArgumentException("only Layers can be added to a MapBean");
+        }
+    }
+
+    /**
+     * Prevents changing the LayoutManager. Don't let anyone change the
+     * LayoutManager! This is called by the parent component and should not be
+     * called directly.
+     */
+    public final void setLayout(LayoutManager mgr) {
+        throw new IllegalArgumentException("cannot change layout of Map");
+    }
+
+    /**
+     * Return the minimum size of the MapBean window. Included here to be a good
+     * citizen.
+     */
+    public Dimension getMinimumSize() {
+        return new Dimension(minWidth, minHeight);
+    }
+
+    /**
+     * Set the minimum size of the MapBean window. Included here to be a good
+     * citizen.
+     */
+    public void setMinimumSize(Dimension dim) {
+        minWidth = (int) dim.getWidth();
+        minHeight = (int) dim.getHeight();
+    }
+
+    /**
+     * Get the Insets of the MapBean. This returns 0-length Insets.
+     * <p>
+     * This makes sure that there will be no +x,+y offset when drawing graphics.
+     * This is ok since any borders around the MapBean will get drawn afterwards
+     * on top.
+     * 
+     * @return Insets 0-length Insets
+     */
+    public final Insets getInsets() {
+        return insets;
+    }
+
+    private final transient static Insets insets = new Insets(0, 0, 0, 0);
+
+    /*----------------------------------------------------------------------
+     * ComponentListener implementation
+     *----------------------------------------------------------------------*/
+
+    /**
+     * ComponentListener interface method. Should not be called directly.
+     * Invoked when component has been resized, and kicks off a projection
+     * change.
+     * 
+     * @param e ComponentEvent
+     */
+    public void componentResized(ComponentEvent e) {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Size changed: " + getWidth() + " x " + getHeight());
+        }
+
+        projection.setWidth(getWidth());
+        projection.setHeight(getHeight());
+        fireProjectionChanged();
+    }
+
+    /**
+     * ComponentListener interface method. Should not be called directly.
+     * Invoked when component has been moved.
+     * 
+     * @param e ComponentEvent
+     */
+    public void componentMoved(ComponentEvent e) {
+    }
+
+    /**
+     * ComponentListener interface method. Should not be called directly.
+     * Invoked when component has been shown.
+     * 
+     * @param e ComponentEvent
+     */
+    public void componentShown(ComponentEvent e) {
+    }
+
+    /**
+     * ComponentListener interface method. Should not be called directly.
+     * Invoked when component has been hidden.
+     * 
+     * @param e ComponentEvent
+     */
+    public void componentHidden(ComponentEvent e) {
+    }
+
+    /*----------------------------------------------------------------------
+     *
+     *----------------------------------------------------------------------*/
+
+    /**
+     * Add a ProjectionListener to the MapBean. You do not need to call this
+     * method to add layers as ProjectionListeners. This method is called for
+     * the layer when it is added to the MapBean. Use this method for other
+     * objects that you want to know about the MapBean's projection.
+     * 
+     * @param l ProjectionListener
+     */
+    public synchronized void addProjectionListener(ProjectionListener l) {
+        projectionSupport.add(l);
+        // Assume that it wants the current projection
+        try {
+            l.projectionChanged(new ProjectionEvent(this, getRotatedProjection()));
+        } catch (Exception e) {
+            if (logger.isLoggable(Level.FINER)) {
+                logger.fine("ProjectionListener not handling projection well: "
+                        + l.getClass().getName() + " : " + e.getClass().getName() + " : "
+                        + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Remove a ProjectionListener from the MapBean. You do not need to call
+     * this method to remove layers that are ProjectionListeners. This method is
+     * called for the layer when it is removed from the MapBean. Use this method
+     * for other objects that you want to remove from receiving projection
+     * events.
+     * 
+     * @param l ProjectionListener
+     */
+    public synchronized void removeProjectionListener(ProjectionListener l) {
+        projectionSupport.remove(l);
+    }
+
+    /**
+     * Called from within the MapBean when its projection listeners need to know
+     * about a projection change.
+     */
+    protected void fireProjectionChanged() {
+
+        setRotHelper(rotationAngle != 0 ? new RotationHelper(rotationAngle, getProjection()) : null);
+        RotationHelper rotHelper = getRotHelper();
+
+        // Let's make sure that this is up to date.
+        ((Proj) getProjection()).setRotationAngle(rotationAngle);
+        Projection proj = getRotatedProjection();
+        // This too, in case it's rotated.
+        ((Proj) proj).setRotationAngle(rotationAngle);
+
+        // Fire the property change, so the messages get cleared out.
+        // Then, if any of the layers have a problem with their new
+        // projection, their messages will be displayed.
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("MapBean firing projection: " + proj);
+        }
+        try {
+            firePropertyChange(ProjectionProperty, null, proj);
+        } catch (ProjectionChangeVetoException pcve) {
+            firePropertyChange(ProjectionVetoedProperty, proj, pcve);
+            pcve.updateWithParameters(this);
+            return;
+        }
+        projectionSupport.fireProjectionChanged(proj);
+        purgeAndNotifyRemovedLayers();
+    }
+
+    /**
+     * Clear the vector containing all of the removed layers, and let those
+     * layers know they have been removed from the map.
+     */
+    public void purgeAndNotifyRemovedLayers() {
+        // Tell any layers that have been removed that they have
+        // been removed
+        if (removedLayers.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < removedLayers.size(); i++) {
+            Layer l = ((Layer) removedLayers.elementAt(i));
+            l.removed(this);
+        }
+        removedLayers.removeAllElements();
+
+        // Shouldn't call this, but it's the only thing
+        // that seems to make it work...
+        // Seems to help gc'ing layers in a timely manner.
+        if (Debug.debugging("helpgc")) {
+            System.gc();
+        }
+    }
+
+    /*----------------------------------------------------------------------
+     * Properties
+     *----------------------------------------------------------------------*/
+
+    /**
+     * Gets the scale of the map.
+     * 
+     * @return float the current scale of the map
+     * @see Projection#getScale
+     */
+    public float getScale() {
+        return projection.getScale();
+    }
+
+    /**
+     * Sets the scale of the map. The Projection may silently disregard this
+     * setting, setting it to a <strong>maxscale </strong> or <strong>minscale
+     * </strong> value.
+     * 
+     * @param newScale the new scale
+     * @see Proj#setScale
+     */
+    public void setScale(float newScale) {
+        projection.setScale(newScale);
+        fireProjectionChanged();
+    }
+
+    /**
+     * Gets the center of the map in the form of a LatLonPoint.
+     * 
+     * @return the center point of the map
+     * @see Projection#getCenter
+     */
+    public Point2D getCenter() {
+        return projection.getCenter();
+    }
+
+    /**
+     * Sets the center of the map.
+     * 
+     * @param newCenter the center point of the map
+     * @see Proj#setCenter(Point2D)
+     */
+    public void setCenter(Point2D newCenter) {
+        projection.setCenter(newCenter);
+        fireProjectionChanged();
+    }
+
+    /**
+     * Sets the center of the map.
+     * 
+     * @param lat the latitude of center point of the map in decimal degrees
+     * @param lon the longitude of center point of the map in decimal degrees
+     * @see Proj#setCenter(double, double)
+     */
+    public void setCenter(double lat, double lon) {
+        projection.setCenter(new Point2D.Double(lon, lat));
+        fireProjectionChanged();
+    }
+
+    /**
+     * Sets the center of the map.
+     * 
+     * @param lat the latitude of center point of the map in decimal degrees
+     * @param lon the longitude of center point of the map in decimal degrees
+     * @see Proj#setCenter(double, double)
+     */
+    public void setCenter(float lat, float lon) {
+        setCenter((double) lat, (double) lon);
+    }
+
+    /**
+     * Set the background color of the map. If the background for this MapBean
+     * is not null, the background of the projection will be used.
+     * 
+     * @param color java.awt.Color.
+     */
+    public void setBackgroundColor(Color color) {
+        setBackground(color);
+    }
+
+    public void setBackground(Color color) {
+        super.setBackground(color);
+        setBckgrnd((Paint) color);
+    }
+
+    /**
+     * We override this to set the paint mode on the Graphics before the border
+     * is painted, otherwise we get an XOR effect in the border.
+     */
+    public void paintBorder(Graphics g) {
+        g.setPaintMode();
+        super.paintBorder(g);
+    }
+
+    /**
+     * Set the background of the map. If the background for this MapBean is not
+     * null, the background of the projection will be used.
+     * 
+     * @param paint java.awt.Paint.
+     */
+    public void setBckgrnd(Paint paint) {
+        setBufferDirty(true);
+
+        // Instead, do this.
+        Paint oldBackground = background;
+        background = paint;
+        firePropertyChange(BackgroundProperty, oldBackground, background);
+
+        repaint();
+    }
+
+    /**
+     * Get the background color of the map. If the background color for this
+     * MapBean has been explicitly set, that value will be returned. Otherwise,
+     * the background color of the projection will be returned. If the
+     * background is not a color (as opposed to Paint) this method will return
+     * null.
+     * 
+     * @return color java.awt.Color.
+     */
+    public Color getBackground() {
+        Paint ret = getBckgrnd();
+        if (ret instanceof Color) {
+            return (Color) ret;
+        }
+
+        return super.getBackground();
+    }
+
+    /**
+     * Get the background of the map. If the background for this MapBean has
+     * been explicitly set, that value will be returned. Otherwise, the
+     * background of the projection will be returned.
+     * 
+     * @return color java.awt.Color.
+     */
+    public Paint getBckgrnd() {
+        Paint ret = background;
+        if (ret == null) {
+            ret = super.getBackground();
+        }
+        return ret;
+    }
+
+    /**
+     * Get the projection property, reflects the projection with no rotation.
+     * 
+     * @return current Projection of map.
+     */
+    public Projection getProjection() {
+        return projection;
+    }
+
+    /**
+     * @return the expanded rotated projection if map rotated, normal projection
+     *         if not rotated. The rotated projection is larger than the MapBean
+     *         and has extra offsets.
+     */
+    public Projection getRotatedProjection() {
+        RotationHelper rotation = getRotHelper();
+        Projection proj = rotation != null ? rotation.getProjection() : projection;
+        // Double check
+        ((Proj) proj).setRotationAngle(getRotationAngle());
+        return proj;
+    }
+
+    /**
+     * Set the projection. Shouldn't be null, and won't do anything if it is.
+     * 
+     * @param aProjection Projection
+     */
+    public void setProjection(Projection aProjection) {
+        if (aProjection != null && !aProjection.getProjectionID().contains("NaN")) {
+            setBufferDirty(true);
+            projection = (Proj) aProjection;
+            setPreferredSize(new Dimension(projection.getWidth(), projection.getHeight()));
+            fireProjectionChanged();
+        }
+    }
+
+    // ------------------------------------------------------------
+    // CenterListener interface
+    // ------------------------------------------------------------
+
+    /**
+     * Handles incoming <code>CenterEvents</code>.
+     * 
+     * @param evt the incoming center event
+     */
+    public void center(CenterEvent evt) {
+        setCenter(evt.getLatitude(), evt.getLongitude());
+    }
+
+    // ------------------------------------------------------------
+    // PanListener interface
+    // ------------------------------------------------------------
+
+    /**
+     * Handles incoming <code>PanEvents</code>.
+     * 
+     * @param evt the incoming pan event
+     */
+    public void pan(PanEvent evt) {
+        if (logger.isLoggable(Level.FINE)) {
+            debugmsg("PanEvent: " + evt);
+        }
+        float az = evt.getAzimuth() - (float) Math.toDegrees(rotationAngle);
+        float c = evt.getArcDistance();
+        if (Float.isNaN(c)) {
+            projection.pan(az);
+        } else {
+            projection.pan(az, c);
+        }
+
+        fireProjectionChanged();
+    }
+
+    // ------------------------------------------------------------
+    // ZoomListener interface
+    // ------------------------------------------------------------
+
+    /**
+     * Zoom the Map. Part of the ZoomListener interface. Sets the scale of the
+     * MapBean projection, based on a relative or absolute amount.
+     * 
+     * @param evt the ZoomEvent describing the new scale.
+     */
+    public void zoom(ZoomEvent evt) {
+        float newScale;
+        if (evt.isAbsolute()) {
+            newScale = evt.getAmount();
+        } else if (evt.isRelative()) {
+            newScale = getScale() * evt.getAmount();
+        } else {
+            return;
+        }
+        setScale(newScale);
+    }
+
+    // ------------------------------------------------------------
+    // ContainerListener interface
+    // ------------------------------------------------------------
+
+    protected transient Layer[] currentLayers = new Layer[0];
+
+    protected transient boolean doContainerChange = true;
+
+    /**
+     * ContainerListener Interface method. Should not be called directly. Part
+     * of the ContainerListener interface, and it's here to make the MapBean a
+     * good Container citizen.
+     * 
+     * @param value boolean
+     */
+    public void setDoContainerChange(boolean value) {
+        // if changing from false to true, call changeLayers()
+        if (!doContainerChange && value) {
+            doContainerChange = value;
+            changeLayers(null);
+        } else {
+            doContainerChange = value;
+        }
+    }
+
+    /**
+     * ContainerListener Interface method. Should not be called directly. Part
+     * of the ContainerListener interface, and it's here to make the MapBean a
+     * good Container citizen.
+     * 
+     * @return boolean
+     */
+    public boolean getDoContainerChange() {
+        return doContainerChange;
+    }
+
+    /**
+     * ContainerListener Interface method. Should not be called directly. Part
+     * of the ContainerListener interface, and it's here to make the MapBean a
+     * good Container citizen.
+     * 
+     * @param e ContainerEvent
+     */
+    public void componentAdded(ContainerEvent e) {
+        // Blindly cast. addImpl has already checked to be
+        // sure the child is a Layer.
+        Layer childLayer = (Layer) e.getChild();
+        addProjectionListener(childLayer);
+
+        // If the new layer is in the queue to have removed() called
+        // on it take it off the queue, and don't add it to the
+        // added() queue (it doesn't know that it was removed, yet).
+        // Otherwise, add it to the queue to have added() called on
+        // it.
+        if (!removedLayers.removeElement(childLayer)) {
+            addedLayers.addElement(childLayer);
+        }
+        changeLayers(e);
+    }
+
+    /**
+     * ContainerListener Interface method. Should not be called directly. Part
+     * of the ContainerListener interface, and it's here to make the MapBean a
+     * good Container citizen. Layers that are removed are added to a list,
+     * which is cleared when the projection changes. If they are added to the
+     * MapBean again before the projection changes, they are taken off the list,
+     * added back to the MapBean, and are simply repainted. This prevents layers
+     * from doing unnecessary work if they are toggled on and off without
+     * projection changes.
+     * 
+     * @param e ContainerEvent
+     * @see com.bbn.openmap.MapBean#purgeAndNotifyRemovedLayers
+     */
+    public void componentRemoved(ContainerEvent e) {
+        // Blindly cast. addImpl has already checked to be
+        // sure the child is a Layer.
+        Layer childLayer = (Layer) e.getChild();
+        removeProjectionListener(childLayer);
+        removedLayers.addElement(childLayer);
+        changeLayers(e);
+    }
+
+    /**
+     * ContainerListener Interface method. Should not be called directly. Part
+     * of the ContainerListener interface, and it's here to make the MapBean a
+     * good Container citizen.
+     * 
+     * @param e ContainerEvent
+     */
+    protected void changeLayers(ContainerEvent e) {
+        // Container Changes can be disabled to speed adding/removing
+        // multiple layers
+        if (!doContainerChange) {
+            return;
+        }
+        Component[] comps = this.getComponents();
+        int ncomponents = comps.length;
+        Layer[] newLayers = new Layer[ncomponents];
+        System.arraycopy(comps, 0, newLayers, 0, ncomponents);
+        if (logger.isLoggable(Level.FINE)) {
+            debugmsg("changeLayers() - firing change");
+        }
+        firePropertyChange(LayersProperty, currentLayers, newLayers);
+
+        // Tell the new layers that they have been added
+        for (int i = 0; i < addedLayers.size(); i++) {
+            ((Layer) addedLayers.elementAt(i)).added(this);
+        }
+        addedLayers.removeAllElements();
+
+        currentLayers = newLayers;
+
+    }
+
+    // ------------------------------------------------------------
+    // ProjectionListener interface
+    // ------------------------------------------------------------
+
+    /**
+     * ProjectionListener interface method. Should not be called directly.
+     * 
+     * @param e ProjectionEvent
+     */
+    public void projectionChanged(ProjectionEvent e) {
+        Projection newProj = e.getProjection();
+        if (!projection.equals(newProj)) {
+            setProjection(newProj);
+        }
+    }
+
+    /**
+     * Set the Mouse cursor over the MapBean component.
+     * 
+     * @param newCursor Cursor
+     */
+    public void setCursor(Cursor newCursor) {
+        firePropertyChange(CursorProperty, this.getCursor(), newCursor);
+        super.setCursor(newCursor);
+    }
+
+    /**
+     * In addition to adding the PropertyChangeListener as the JComponent method
+     * does, this method also provides the listener with the initial version of
+     * the Layer and Cursor properties.
+     */
+    public void addPropertyChangeListener(PropertyChangeListener pcl) {
+        super.addPropertyChangeListener(pcl);
+        pcl.propertyChange(new PropertyChangeEvent(this, LayersProperty, currentLayers, currentLayers));
+        pcl.propertyChange(new PropertyChangeEvent(this, CursorProperty, this.getCursor(), this.getCursor()));
+        pcl.propertyChange(new PropertyChangeEvent(this, BackgroundProperty, this.getBckgrnd(), this.getBckgrnd()));
+    }
+
+    protected final void debugmsg(String msg) {
+        logger.fine(this.toString()
+                + (DEBUG_TIMESTAMP ? (" [" + System.currentTimeMillis() + "]") : "")
+                + (DEBUG_THREAD ? (" [" + Thread.currentThread() + "]") : "") + ": " + msg);
+    }
+
+    /**
+     * Same as JComponent.paint(), except if there are no children (Layers), the
+     * projection still paints the background and the border is painted.
+     */
+    public void paint(Graphics g) {
+        if (projection != null) {
+            drawProjectionBackground(g);
+        }
+
+        if (this.getComponentCount() > 0) {
+            paintChildren(g, null);
+        }
+
+        paintPainters(g);
+
+        // Border gets painted over by printChildren with special layer
+        // handling.
+        paintBorder(g);
+    }
+
+    /**
+     * Convenience method to test if Graphics is Graphics2D object, and to try
+     * to do the right thing.
+     */
+    protected void drawProjectionBackground(Graphics g) {
+        if (g instanceof Graphics2D) {
+            projection.drawBackground((Graphics2D) g, getBckgrnd());
+        } else {
+            g.setColor(getBackground());
+            projection.drawBackground(g);
+        }
+    }
+
+    /**
+     * Same as JComponent.paintChildren() except any PaintListeners are notified
+     * and the border is painted over the children.
+     */
+    public void paintChildren(Graphics g) {
+        paintChildren(g, null);
+        paintPainters(g);
+    }
+
+    public void paintPainters(Graphics g) {
+        RotationHelper rotationHelper = getRotHelper();
+
+        if (painters != null) {
+            if (rotationHelper != null) {
+                rotationHelper.paintPainters(g);
+            } else {
+                painters.paint(g);
+            }
+        }
+    }
+
+    /**
+     * Same as paintChildren, but allows you to set a clipping area to paint. Be
+     * careful with this, because if the clipping area is set while some layer
+     * decides to paint itself, that layer may not have all it's objects
+     * painted.
+     */
+    public void paintChildren(Graphics g, Rectangle clip) {
+
+        g = getMapBeanRepaintPolicy().modifyGraphicsForPainting(g);
+
+        drawProjectionBackground(g);
+
+        if (rotHelper != null) {
+            rotHelper.paintChildren(g, clip);
+        } else {
+            // Normal painting
+            super.paintChildren(g);
+        }
+    }
+
+    /**
+     * A method that grabs the component list of the MapBean, and renders just
+     * the layers from back to front. No clipping is set, other than what is set
+     * on the Graphics object.
+     * 
+     * @param g Graphics
+     */
+    protected void paintLayers(Graphics g) {
+        synchronized (getTreeLock()) {
+            int i = getComponentCount() - 1;
+            if (i < 0) {
+                return;
             }
 
-            public Dimension getPreferredSize() {
-               return new Dimension(100, 100);
+            for (; i >= 0; i--) {
+                Component comp = getComponent(i);
+
+                final boolean isLayer = comp instanceof Layer;
+
+                if (isLayer && comp.isVisible()) {
+                    comp.paint(g);
+                }
             }
-         });
-      }
-
-      setPreferredSize(new Dimension(projection.getWidth(), projection.getHeight()));
-
-      DEBUG_TIMESTAMP = logger.isLoggable(Level.FINER);
-      DEBUG_THREAD = logger.isLoggable(Level.FINER);
-   }
-
-   /**
-    * Return a string-ified representation of the MapBean.
-    * 
-    * @return String representing mapbean.
-    */
-   public String toString() {
-      return getClass().getName() + "@" + Integer.toHexString(hashCode());
-   }
-
-   /**
-    * Call when getting rid of the MapBean, it releases pointers to all
-    * listeners and kills the ProjectionSupport thread.
-    */
-   public void dispose() {
-      setLayerRemovalDelayed(false);
-
-      if (projectionSupport != null) {
-         projectionSupport.dispose();
-         projectionSupport = null;
-      }
-
-      if (painters != null) {
-         painters.clear();
-         painters = null;
-      }
-
-      if (addedLayers != null) {
-         addedLayers.removeAllElements();
-         addedLayers = null;
-      }
-
-      currentLayers = null;
-      projectionFactory = null;
-
-      removeComponentListener(this);
-      removeContainerListener(this);
-      removeAll();
-      purgeAndNotifyRemovedLayers();
-   }
-
-   /*----------------------------------------------------------------------
-    * Window System overrides
-    *----------------------------------------------------------------------*/
-
-   /**
-    * Adds additional constraints on possible children components. The new
-    * component must be a Layer. This method included as a good container
-    * citizen, and should not be called directly. Use the add() methods
-    * inherited from java.awt.Container instead.
-    * 
-    * @param comp Component
-    * @param constraints Object
-    * @param index int location
-    */
-   protected final void addImpl(Component comp, Object constraints, int index) {
-      if (comp instanceof Layer) {
-         super.addImpl(comp, constraints, index);
-      } else {
-         throw new IllegalArgumentException("only Layers can be added to a MapBean");
-      }
-   }
-
-   /**
-    * Prevents changing the LayoutManager. Don't let anyone change the
-    * LayoutManager! This is called by the parent component and should not be
-    * called directly.
-    */
-   public final void setLayout(LayoutManager mgr) {
-      throw new IllegalArgumentException("cannot change layout of Map");
-   }
-
-   /**
-    * Return the minimum size of the MapBean window. Included here to be a good
-    * citizen.
-    */
-   public Dimension getMinimumSize() {
-      return new Dimension(minWidth, minHeight);
-   }
-
-   /**
-    * Set the minimum size of the MapBean window. Included here to be a good
-    * citizen.
-    */
-   public void setMinimumSize(Dimension dim) {
-      minWidth = (int) dim.getWidth();
-      minHeight = (int) dim.getHeight();
-   }
-
-   /**
-    * Get the Insets of the MapBean. This returns 0-length Insets.
-    * <p>
-    * This makes sure that there will be no +x,+y offset when drawing graphics.
-    * This is ok since any borders around the MapBean will get drawn afterwards
-    * on top.
-    * 
-    * @return Insets 0-length Insets
-    */
-   public final Insets getInsets() {
-      return insets;
-   }
-
-   private final transient static Insets insets = new Insets(0, 0, 0, 0);
-
-   /*----------------------------------------------------------------------
-    * ComponentListener implementation
-    *----------------------------------------------------------------------*/
-
-   /**
-    * ComponentListener interface method. Should not be called directly. Invoked
-    * when component has been resized, and kicks off a projection change.
-    * 
-    * @param e ComponentEvent
-    */
-   public void componentResized(ComponentEvent e) {
-      if (logger.isLoggable(Level.FINE)) {
-         logger.fine("Size changed: " + getWidth() + " x " + getHeight());
-      }
-      projection.setWidth(getWidth());
-      projection.setHeight(getHeight());
-      fireProjectionChanged();
-   }
-
-   /**
-    * ComponentListener interface method. Should not be called directly. Invoked
-    * when component has been moved.
-    * 
-    * @param e ComponentEvent
-    */
-   public void componentMoved(ComponentEvent e) {
-   }
-
-   /**
-    * ComponentListener interface method. Should not be called directly. Invoked
-    * when component has been shown.
-    * 
-    * @param e ComponentEvent
-    */
-   public void componentShown(ComponentEvent e) {
-   }
-
-   /**
-    * ComponentListener interface method. Should not be called directly. Invoked
-    * when component has been hidden.
-    * 
-    * @param e ComponentEvent
-    */
-   public void componentHidden(ComponentEvent e) {
-   }
-
-   /*----------------------------------------------------------------------
-    * 
-    *----------------------------------------------------------------------*/
-
-   /**
-    * Add a ProjectionListener to the MapBean. You do not need to call this
-    * method to add layers as ProjectionListeners. This method is called for the
-    * layer when it is added to the MapBean. Use this method for other objects
-    * that you want to know about the MapBean's projection.
-    * 
-    * @param l ProjectionListener
-    */
-   public synchronized void addProjectionListener(ProjectionListener l) {
-      projectionSupport.add(l);
-      // Assume that it wants the current projection
-      try {
-         l.projectionChanged(new ProjectionEvent(this, getProjection()));
-      } catch (Exception e) {
-         if (logger.isLoggable(Level.FINER)) {
-            logger.fine("ProjectionListener not handling projection well: " + l.getClass().getName() + " : "
-                  + e.getClass().getName() + " : " + e.getMessage());
-            e.printStackTrace();
-         }
-      }
-   }
-
-   /**
-    * Remove a ProjectionListener from the MapBean. You do not need to call this
-    * method to remove layers that are ProjectionListeners. This method is
-    * called for the layer when it is removed from the MapBean. Use this method
-    * for other objects that you want to remove from receiving projection
-    * events.
-    * 
-    * @param l ProjectionListener
-    */
-   public synchronized void removeProjectionListener(ProjectionListener l) {
-      projectionSupport.remove(l);
-   }
-
-   /**
-    * Called from within the MapBean when its projection listeners need to know
-    * about a projection change.
-    */
-   protected void fireProjectionChanged() {
-
-      // Fire the property change, so the messages get cleared out.
-      // Then, if any of the layers have a problem with their new
-      // projection, their messages will be displayed.
-      if (logger.isLoggable(Level.FINE)) {
-         logger.fine("MapBean firing projection: " + getProjection());
-      }
-      try {
-         firePropertyChange(ProjectionProperty, null, getProjection());
-      } catch (ProjectionChangeVetoException pcve) {
-         firePropertyChange(ProjectionVetoedProperty, getProjection(), pcve);
-         pcve.updateWithParameters(this);
-         return;
-      }
-      projectionSupport.fireProjectionChanged(getProjection());
-      purgeAndNotifyRemovedLayers();
-   }
-
-   /**
-    * Clear the vector containing all of the removed layers, and let those
-    * layers know they have been removed from the map.
-    */
-   public void purgeAndNotifyRemovedLayers() {
-      // Tell any layers that have been removed that they have
-      // been removed
-      if (removedLayers.isEmpty()) {
-         return;
-      }
-      for (int i = 0; i < removedLayers.size(); i++) {
-         Layer l = ((Layer) removedLayers.elementAt(i));
-         l.removed(this);
-      }
-      removedLayers.removeAllElements();
-
-      // Shouldn't call this, but it's the only thing
-      // that seems to make it work...
-      // Seems to help gc'ing layers in a timely manner.
-      if (Debug.debugging("helpgc")) {
-         System.gc();
-      }
-   }
-
-   /*----------------------------------------------------------------------
-    * Properties
-    *----------------------------------------------------------------------*/
-
-   /**
-    * Gets the scale of the map.
-    * 
-    * @return float the current scale of the map
-    * @see Projection#getScale
-    */
-   public float getScale() {
-      return projection.getScale();
-   }
-
-   /**
-    * Sets the scale of the map. The Projection may silently disregard this
-    * setting, setting it to a <strong>maxscale </strong> or <strong>minscale
-    * </strong> value.
-    * 
-    * @param newScale the new scale
-    * @see Proj#setScale
-    */
-   public void setScale(float newScale) {
-      projection.setScale(newScale);
-      fireProjectionChanged();
-   }
-
-   /**
-    * Gets the center of the map in the form of a LatLonPoint.
-    * 
-    * @return the center point of the map
-    * @see Projection#getCenter
-    */
-   public Point2D getCenter() {
-      return projection.getCenter();
-   }
-
-   /**
-    * Sets the center of the map.
-    * 
-    * @param newCenter the center point of the map
-    * @see Proj#setCenter(Point2D)
-    */
-   public void setCenter(Point2D newCenter) {
-      projection.setCenter(newCenter);
-      fireProjectionChanged();
-   }
-
-   /**
-    * Sets the center of the map.
-    * 
-    * @param lat the latitude of center point of the map in decimal degrees
-    * @param lon the longitude of center point of the map in decimal degrees
-    * @see Proj#setCenter(double, double)
-    */
-   public void setCenter(double lat, double lon) {
-      projection.setCenter(new Point2D.Double(lon, lat));
-      fireProjectionChanged();
-   }
-
-   /**
-    * Sets the center of the map.
-    * 
-    * @param lat the latitude of center point of the map in decimal degrees
-    * @param lon the longitude of center point of the map in decimal degrees
-    * @see Proj#setCenter(double, double)
-    */
-   public void setCenter(float lat, float lon) {
-      setCenter((double) lat, (double) lon);
-   }
-
-   /**
-    * Set the background color of the map. If the background for this MapBean is
-    * not null, the background of the projection will be used.
-    * 
-    * @param color java.awt.Color.
-    */
-   public void setBackgroundColor(Color color) {
-      setBackground(color);
-   }
-
-   public void setBackground(Color color) {
-      super.setBackground(color);
-      setBckgrnd((Paint) color);
-   }
-
-   /**
-    * We override this to set the paint mode on the Graphics before the border
-    * is painted, otherwiser we get an XOR effect in the border.
-    */
-   public void paintBorder(Graphics g) {
-      g.setPaintMode();
-      super.paintBorder(g);
-   }
-
-   /**
-    * Set the background of the map. If the background for this MapBean is not
-    * null, the background of the projection will be used.
-    * 
-    * @param paint java.awt.Paint.
-    */
-   public void setBckgrnd(Paint paint) {
-      setBufferDirty(true);
-
-      // Instead, do this.
-      Paint oldBackground = background;
-      background = paint;
-      firePropertyChange(BackgroundProperty, oldBackground, background);
-
-      repaint();
-   }
-
-   /**
-    * Get the background color of the map. If the background color for this
-    * MapBean has been explicitly set, that value will be returned. Otherwise,
-    * the background color of the projection will be returned. If the background
-    * is not a color (as opposed to Paint) this method will return null.
-    * 
-    * @return color java.awt.Color.
-    */
-   public Color getBackground() {
-      Paint ret = getBckgrnd();
-      if (ret instanceof Color) {
-         return (Color) ret;
-      }
-
-      return super.getBackground();
-   }
-
-   /**
-    * Get the background of the map. If the background for this MapBean has been
-    * explicitly set, that value will be returned. Otherwise, the background of
-    * the projection will be returned.
-    * 
-    * @return color java.awt.Color.
-    */
-   public Paint getBckgrnd() {
-      Paint ret = background;
-      if (ret == null) {
-         // ret = projection.getBackgroundColor();
-         ret = super.getBackground();
-      }
-      return ret;
-   }
-
-   /**
-    * Get the projection property.
-    * 
-    * @return current Projection of map.
-    */
-   public Projection getProjection() {
-      return projection;
-   }
-
-   /**
-    * Set the projection. Shouldn't be null, and won't do anything if it is.
-    * 
-    * @param aProjection Projection
-    */
-   public void setProjection(Projection aProjection) {
-      if (aProjection != null && !aProjection.getProjectionID().contains("NaN")) {
-         setBufferDirty(true);
-         projection = (Proj) aProjection;
-         setPreferredSize(new Dimension(projection.getWidth(), projection.getHeight()));
-         fireProjectionChanged();
-      }
-   }
-
-   // ------------------------------------------------------------
-   // CenterListener interface
-   // ------------------------------------------------------------
-
-   /**
-    * Handles incoming <code>CenterEvents</code>.
-    * 
-    * @param evt the incoming center event
-    */
-   public void center(CenterEvent evt) {
-      setCenter(evt.getLatitude(), evt.getLongitude());
-   }
-
-   // ------------------------------------------------------------
-   // PanListener interface
-   // ------------------------------------------------------------
-
-   /**
-    * Handles incoming <code>PanEvents</code>.
-    * 
-    * @param evt the incoming pan event
-    */
-   public void pan(PanEvent evt) {
-      if (logger.isLoggable(Level.FINE)) {
-         debugmsg("PanEvent: " + evt);
-      }
-      float az = evt.getAzimuth();
-      float c = evt.getArcDistance();
-      if (Float.isNaN(c)) {
-         projection.pan(az);
-      } else {
-         projection.pan(az, c);
-      }
-
-      fireProjectionChanged();
-   }
-
-   // ------------------------------------------------------------
-   // ZoomListener interface
-   // ------------------------------------------------------------
-
-   /**
-    * Zoom the Map. Part of the ZoomListener interface. Sets the scale of the
-    * MapBean projection, based on a relative or absolute amount.
-    * 
-    * @param evt the ZoomEvent describing the new scale.
-    */
-   public void zoom(ZoomEvent evt) {
-      float newScale;
-      if (evt.isAbsolute()) {
-         newScale = evt.getAmount();
-      } else if (evt.isRelative()) {
-         newScale = getScale() * evt.getAmount();
-      } else {
-         return;
-      }
-      setScale(newScale);
-   }
-
-   // ------------------------------------------------------------
-   // ContainerListener interface
-   // ------------------------------------------------------------
-
-   protected transient Layer[] currentLayers = new Layer[0];
-
-   protected transient boolean doContainerChange = true;
-
-   /**
-    * ContainerListener Interface method. Should not be called directly. Part of
-    * the ContainerListener interface, and it's here to make the MapBean a good
-    * Container citizen.
-    * 
-    * @param value boolean
-    */
-   public void setDoContainerChange(boolean value) {
-      // if changing from false to true, call changeLayers()
-      if (!doContainerChange && value) {
-         doContainerChange = value;
-         changeLayers(null);
-      } else {
-         doContainerChange = value;
-      }
-   }
-
-   /**
-    * ContainerListener Interface method. Should not be called directly. Part of
-    * the ContainerListener interface, and it's here to make the MapBean a good
-    * Container citizen.
-    * 
-    * @return boolean
-    */
-   public boolean getDoContainerChange() {
-      return doContainerChange;
-   }
-
-   /**
-    * ContainerListener Interface method. Should not be called directly. Part of
-    * the ContainerListener interface, and it's here to make the MapBean a good
-    * Container citizen.
-    * 
-    * @param e ContainerEvent
-    */
-   public void componentAdded(ContainerEvent e) {
-      // Blindly cast. addImpl has already checked to be
-      // sure the child is a Layer.
-      Layer childLayer = (Layer) e.getChild();
-      addProjectionListener(childLayer);
-
-      // If the new layer is in the queue to have removed() called
-      // on it take it off the queue, and don't add it to the
-      // added() queue (it doesn't know that it was removed, yet).
-      // Otherwise, add it to the queue to have added() called on
-      // it.
-      if (!removedLayers.removeElement(childLayer)) {
-         addedLayers.addElement(childLayer);
-      }
-      changeLayers(e);
-   }
-
-   /**
-    * ContainerListener Interface method. Should not be called directly. Part of
-    * the ContainerListener interface, and it's here to make the MapBean a good
-    * Container citizen. Layers that are removed are added to a list, which is
-    * cleared when the projection changes. If they are added to the MapBean
-    * again before the projection changes, they are taken off the list, added
-    * back to the MapBean, and are simply repainted. This prevents layers from
-    * doing unnecessary work if they are toggled on and off without projection
-    * changes.
-    * 
-    * @param e ContainerEvent
-    * @see com.bbn.openmap.MapBean#purgeAndNotifyRemovedLayers
-    */
-   public void componentRemoved(ContainerEvent e) {
-      // Blindly cast. addImpl has already checked to be
-      // sure the child is a Layer.
-      Layer childLayer = (Layer) e.getChild();
-      removeProjectionListener(childLayer);
-      removedLayers.addElement(childLayer);
-      changeLayers(e);
-   }
-
-   /**
-    * ContainerListener Interface method. Should not be called directly. Part of
-    * the ContainerListener interface, and it's here to make the MapBean a good
-    * Container citizen.
-    * 
-    * @param e ContainerEvent
-    */
-   protected void changeLayers(ContainerEvent e) {
-      // Container Changes can be disabled to speed adding/removing
-      // multiple layers
-      if (!doContainerChange) {
-         return;
-      }
-      Component[] comps = this.getComponents();
-      int ncomponents = comps.length;
-      Layer[] newLayers = new Layer[ncomponents];
-      System.arraycopy(comps, 0, newLayers, 0, ncomponents);
-      if (logger.isLoggable(Level.FINE)) {
-         debugmsg("changeLayers() - firing change");
-      }
-      firePropertyChange(LayersProperty, currentLayers, newLayers);
-
-      // Tell the new layers that they have been added
-      for (int i = 0; i < addedLayers.size(); i++) {
-         ((Layer) addedLayers.elementAt(i)).added(this);
-      }
-      addedLayers.removeAllElements();
-
-      currentLayers = newLayers;
-
-   }
-
-   // ------------------------------------------------------------
-   // ProjectionListener interface
-   // ------------------------------------------------------------
-
-   /**
-    * ProjectionListener interface method. Should not be called directly.
-    * 
-    * @param e ProjectionEvent
-    */
-   public void projectionChanged(ProjectionEvent e) {
-      Projection newProj = e.getProjection();
-      if (!projection.equals(newProj)) {
-         setProjection(newProj);
-      }
-   }
-
-   /**
-    * Set the Mouse cursor over the MapBean component.
-    * 
-    * @param newCursor Cursor
-    */
-   public void setCursor(Cursor newCursor) {
-      firePropertyChange(CursorProperty, this.getCursor(), newCursor);
-      super.setCursor(newCursor);
-   }
-
-   /**
-    * In addition to adding the PropertyChangeListener as the JComponent method
-    * does, this method also provides the listener with the initial version of
-    * the Layer and Cursor properties.
-    */
-   public void addPropertyChangeListener(PropertyChangeListener pcl) {
-      super.addPropertyChangeListener(pcl);
-      pcl.propertyChange(new PropertyChangeEvent(this, LayersProperty, currentLayers, currentLayers));
-      pcl.propertyChange(new PropertyChangeEvent(this, CursorProperty, this.getCursor(), this.getCursor()));
-      pcl.propertyChange(new PropertyChangeEvent(this, BackgroundProperty, this.getBckgrnd(), this.getBckgrnd()));
-   }
-
-   protected final void debugmsg(String msg) {
-      logger.fine(this.toString() + (DEBUG_TIMESTAMP ? (" [" + System.currentTimeMillis() + "]") : "")
-            + (DEBUG_THREAD ? (" [" + Thread.currentThread() + "]") : "") + ": " + msg);
-   }
-
-   /**
-    * Same as JComponent.paint(), except if there are no children (Layers), the
-    * projection still paints the background and the border is painted.
-    */
-   public void paint(Graphics g) {
-      if (getComponentCount() == 0 && projection != null) {
-         drawProjectionBackground(g);
-         paintBorder(g);
-      } else {
-         super.paint(g);
-      }
-   }
-
-   /**
-    * Convenience method to test if Graphics is Graphics2D object, and to try to
-    * do the right thing.
-    */
-   protected void drawProjectionBackground(Graphics g) {
-      if (g instanceof Graphics2D) {
-         projection.drawBackground((Graphics2D) g, getBckgrnd());
-      } else {
-         g.setColor(getBackground());
-         projection.drawBackground(g);
-      }
-   }
-
-   /**
-    * Same as JComponent.paintChildren() except any PaintListeners are notified
-    * and the border is painted over the children.
-    */
-   public void paintChildren(Graphics g) {
-      paintChildren(g, null);
-   }
-
-   /**
-    * Same as paintChildren, but allows you to set a clipping area to paint. Be
-    * careful with this, because if the clipping area is set while some layer
-    * decides to paint itself, that layer may not have all it's objects painted.
-    */
-   public void paintChildren(Graphics g, Rectangle clip) {
-
-      g = getMapBeanRepaintPolicy().modifyGraphicsForPainting(g);
-
-      if (clip != null) {
-         g.setClip(clip);
-      } else {
-         // Had to do this to make the DrawingTool happy, or
-         // anything else swing-like that wanted to be around or on
-         // top of the MapBean.
-         g.setClip(0, 0, getWidth(), getHeight());
-      }
-
-      if (rotHelper != null) {
-         g.drawImage(rotHelper.paintChildren(g, clip), 0, 0, null);
-      } else {
-         drawProjectionBackground(g);
-         // Normal painting
-         super.paintChildren(g);
-
-         // Take care of the PaintListeners...
-         if (painters != null) {
-            painters.paint(g);
-         }
-      }
-
-      // border gets overwritten accidentally, so redraw it now
-      paintBorder(g);
-   }
-
-   public Graphics getGraphics() {
-      return getGraphics(false);
-   }
-
-   public Graphics getGraphics(boolean rotateIfSet) {
-      if (rotateIfSet && rotHelper != null) {
-         return rotHelper.getGraphics();
-      }
-
-      return super.getGraphics();
-   }
-
-   /**
-    * Method that provides an option of whether or not to draw the border when
-    * painting. Usually called from another object trying to control the Map
-    * appearance when events are flying around.
-    */
-   public void paintChildrenWithBorder(Graphics g, boolean drawBorder) {
-      drawProjectionBackground(g);
-      if (drawBorder) {
-         paintChildren(g);
-      } else {
-         super.paintChildren(g);
-      }
-   }
-
-   /**
-    * Add a PaintListener.
-    * 
-    * @param l PaintListener
-    */
-   public synchronized void addPaintListener(PaintListener l) {
-      if (painters == null) {
-         painters = new PaintListenerSupport(this);
-      }
-      painters.add(l);
-   }
-
-   /**
-    * Remove a PaintListener.
-    * 
-    * @param l PaintListener
-    */
-   public synchronized void removePaintListener(PaintListener l) {
-      if (painters == null) {
-         return;
-      }
-      painters.remove(l);
-
-      // Should we get rid of the support if there are no painters?
-      // The support will get created when a listener is added.
-      if (painters.isEmpty()) {
-         painters = null;
-      }
-   }
-
-   // ------------------------------------------------------------
-   // LayerListener interface
-   // ------------------------------------------------------------
-
-   /**
-    * LayerListener interface method. A list of layers will be added, removed,
-    * or replaced based on on the type of LayerEvent.
-    * 
-    * @param evt a LayerEvent
-    */
-   public void setLayers(LayerEvent evt) {
-      Layer[] layers = evt.getLayers();
-      int type = evt.getType();
-
-      if (type == LayerEvent.ALL) {
-         // Don't care about these at all...
-         return;
-      }
-
-      // @HACK is this cool?:
-      if (layers == null) {
-         System.err.println("MapBean.setLayers(): layers is null!");
-         return;
-      }
-
-      boolean oldChange = getDoContainerChange();
-      setDoContainerChange(false);
-
-      // use LayerEvent.REPLACE when you want to remove all current
-      // layers
-      // add a new set
-      if (type == LayerEvent.REPLACE) {
-         if (logger.isLoggable(Level.FINE)) {
-            debugmsg("Replacing all layers");
-         }
-         removeAll();
-
-         for (int i = 0; i < layers.length; i++) {
-            // @HACK is this cool?:
-            if (layers[i] == null) {
-               System.err.println("MapBean.setLayers(): layer " + i + " is null");
-               continue;
-            }
-
+        }
+    }
+
+    public Graphics getGraphics(boolean rotateIfSet) {
+        if (rotateIfSet && rotHelper != null) {
+            return rotHelper.getGraphics();
+        }
+
+        return super.getGraphics();
+    }
+
+    /**
+     * Method that provides an option of whether or not to draw the border when
+     * painting. Usually called from another object trying to control the Map
+     * appearance when events are flying around.
+     */
+    public void paintChildrenWithBorder(Graphics g, boolean drawBorder) {
+        paintChildren(g);
+        if (drawBorder) {
+            paintBorder(g);
+        }
+    }
+
+    /**
+     * Add a PaintListener.
+     * 
+     * @param l PaintListener
+     */
+    public synchronized void addPaintListener(PaintListener l) {
+        if (painters == null) {
+            painters = new PaintListenerSupport(this);
+        }
+        painters.add(l);
+    }
+
+    /**
+     * Remove a PaintListener.
+     * 
+     * @param l PaintListener
+     */
+    public synchronized void removePaintListener(PaintListener l) {
+        if (painters == null) {
+            return;
+        }
+        painters.remove(l);
+
+        // Should we get rid of the support if there are no painters?
+        // The support will get created when a listener is added.
+        if (painters.isEmpty()) {
+            painters = null;
+        }
+    }
+
+    // ------------------------------------------------------------
+    // LayerListener interface
+    // ------------------------------------------------------------
+
+    /**
+     * LayerListener interface method. A list of layers will be added, removed,
+     * or replaced based on on the type of LayerEvent.
+     * 
+     * @param evt a LayerEvent
+     */
+    public void setLayers(LayerEvent evt) {
+        setBufferDirty(true);
+        Layer[] layers = evt.getLayers();
+        int type = evt.getType();
+
+        if (type == LayerEvent.ALL) {
+            // Don't care about these at all...
+            return;
+        }
+
+        // @HACK is this cool?:
+        if (layers == null) {
             if (logger.isLoggable(Level.FINE)) {
-               debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
+                debugmsg("MapBean.setLayers(): layers is null!");
             }
-            add(layers[i]);
-            layers[i].setVisible(true);
-         }
+            return;
+        }
 
-      }
+        boolean oldChange = getDoContainerChange();
+        setDoContainerChange(false);
 
-      // use LayerEvent.ADD when adding and/or reshuffling layers
-      else if (type == LayerEvent.ADD) {
-         if (logger.isLoggable(Level.FINE)) {
-            debugmsg("Adding new layers");
-         }
-         for (int i = 0; i < layers.length; i++) {
+        // use LayerEvent.REPLACE when you want to remove all current
+        // layers add a new set
+        if (type == LayerEvent.REPLACE) {
             if (logger.isLoggable(Level.FINE)) {
-               debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
+                debugmsg("Replacing all layers");
             }
-            add(layers[i]);
-            layers[i].setVisible(true);
-         }
-      }
+            removeAll();
 
-      // use LayerEvent.REMOVE when you want to delete layers from
-      // the map
-      else if (type == LayerEvent.REMOVE) {
-         if (logger.isLoggable(Level.FINE)) {
-            debugmsg("Removing layers");
-         }
-         for (int i = 0; i < layers.length; i++) {
+            for (int i = 0; i < layers.length; i++) {
+
+                if (layers[i] == null) {
+                    if (logger.isLoggable(Level.FINE)) {
+                        debugmsg("MapBean.setLayers(): layer " + i + " is null");
+                    }
+                    continue;
+                }
+
+                if (logger.isLoggable(Level.FINE)) {
+                    debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
+                }
+                add(layers[i]);
+                layers[i].setVisible(true);
+            }
+
+        }
+
+        // use LayerEvent.ADD when adding and/or reshuffling layers
+        else if (type == LayerEvent.ADD) {
             if (logger.isLoggable(Level.FINE)) {
-               debugmsg("Removing layer[" + i + "]= " + layers[i].getName());
+                debugmsg("Adding new layers");
             }
-            remove(layers[i]);
-         }
-      }
+            for (int i = 0; i < layers.length; i++) {
+                if (logger.isLoggable(Level.FINE)) {
+                    debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
+                }
+                add(layers[i]);
+                layers[i].setVisible(true);
+            }
+        }
 
-      if (!layerRemovalDelayed) {
-         purgeAndNotifyRemovedLayers();
-      }
+        // use LayerEvent.REMOVE when you want to delete layers from
+        // the map
+        else if (type == LayerEvent.REMOVE) {
+            if (logger.isLoggable(Level.FINE)) {
+                debugmsg("Removing layers");
+            }
+            for (int i = 0; i < layers.length; i++) {
+                if (logger.isLoggable(Level.FINE)) {
+                    debugmsg("Removing layer[" + i + "]= " + layers[i].getName());
+                }
+                remove(layers[i]);
+            }
+        }
 
-      setDoContainerChange(oldChange);
-      repaint();
-      revalidate();
-   }
+        if (!layerRemovalDelayed) {
+            purgeAndNotifyRemovedLayers();
+        }
 
-   /**
-    * A call to try and get the MapBean to reduce flashing by controlling when
-    * repaints happen, waiting for lower layers to call for a repaint(), too.
-    * Calls shouldForwardRepaint(Layer), which acts as a policy for whether to
-    * forward the repaint up the Swing tree.
-    */
-   public void repaint(Layer layer) {
-      // Debug.output(layer.getName() + " - wants a repaint()");
-      getMapBeanRepaintPolicy().repaint(layer);
-   }
+        setDoContainerChange(oldChange);
+        revalidate();
+        repaint();
+    }
 
-   /**
-    * Set the MapBeanRepaintPolicy used by the MapBean. This policy can be used
-    * to pace/filter layer repaint() requests.
-    */
-   public void setMapBeanRepaintPolicy(MapBeanRepaintPolicy mbrp) {
-      repaintPolicy = mbrp;
-   }
+    /**
+     * A call to try and get the MapBean to reduce flashing by controlling when
+     * repaints happen, waiting for lower layers to call for a repaint(), too.
+     * Calls shouldForwardRepaint(Layer), which acts as a policy for whether to
+     * forward the repaint up the Swing tree.
+     */
+    public void repaint(Layer layer) {
+        setBufferDirty(true);
+        if (logger.isLoggable(Level.FINER)) {
+            String name = layer.getName();
+            logger.finer((name == null ? layer.getClass().getName() : name)
+                    + " - wants a repaint()");
+        }
+        getMapBeanRepaintPolicy().repaint(layer);
+    }
 
-   /**
-    * Get the MapBeanRepaintPolicy used by the MapBean. This policy can be used
-    * to pace/filter layer repaint() requests. If no policy has been set, a
-    * StandardMapBeanRepaintPolicy will be created, which simply forwards all
-    * requests.
-    */
-   public MapBeanRepaintPolicy getMapBeanRepaintPolicy() {
-      if (repaintPolicy == null) {
-         repaintPolicy = new StandardMapBeanRepaintPolicy(this);
-      }
-      return repaintPolicy;
-   }
+    /**
+     * Set the MapBeanRepaintPolicy used by the MapBean. This policy can be used
+     * to pace/filter layer repaint() requests.
+     */
+    public void setMapBeanRepaintPolicy(MapBeanRepaintPolicy mbrp) {
+        repaintPolicy = mbrp;
+    }
 
-   /**
-    * Convenience function to get the LatLonPoint representing a screen location
-    * from a MouseEvent. Returns null if the event is null, or if the projection
-    * is not set in the MapBean. Allocates new LatLonPoint with coordinates.
-    * Takes rotation set on MapBean into account.
-    */
-   public Point2D getCoordinates(MouseEvent event) {
-      return getCoordinates(event, null);
-   }
+    /**
+     * Get the MapBeanRepaintPolicy used by the MapBean. This policy can be used
+     * to pace/filter layer repaint() requests. If no policy has been set, a
+     * StandardMapBeanRepaintPolicy will be created, which simply forwards all
+     * requests.
+     */
+    public MapBeanRepaintPolicy getMapBeanRepaintPolicy() {
+        if (repaintPolicy == null) {
+            repaintPolicy = new StandardMapBeanRepaintPolicy(this);
+        }
+        return repaintPolicy;
+    }
 
-   /**
-    * Convenience function to get the LatLonPoint representing a screen location
-    * from a MouseEvent. Returns null if the event is null, or if the projection
-    * is not set in the MapBean. Save on memory allocation by sending in the
-    * LatLonPoint to fill. Takes rotation set on MapBean into account.
-    */
-   public <T extends Point2D> T getCoordinates(MouseEvent event, T llp) {
-      Projection proj = getProjection();
-      if (proj == null || event == null) {
-         return null;
-      }
+    /**
+     * Convenience function to get the LatLonPoint representing a screen
+     * location from a MouseEvent. Returns null if the event is null, or if the
+     * projection is not set in the MapBean. Allocates new LatLonPoint with
+     * coordinates. Takes rotation set on MapBean into account.
+     */
+    public Point2D getCoordinates(MouseEvent event) {
+        return getCoordinates(event, null);
+    }
 
-      return inverse(event.getX(), event.getY(), llp);
-   }
+    /**
+     * Convenience function to get the LatLonPoint representing a screen
+     * location from a MouseEvent. Returns null if the event is null, or if the
+     * projection is not set in the MapBean. Save on memory allocation by
+     * sending in the LatLonPoint to fill. Takes rotation set on MapBean into
+     * account.
+     */
+    public <T extends Point2D> T getCoordinates(MouseEvent event, T llp) {
+        Projection proj = getProjection();
+        if (proj == null || event == null) {
+            return null;
+        }
 
-   /**
-    * Convenience function to get the pixel Point2D representing a screen
-    * location from a MouseEvent in the projection space (as if there is no
-    * rotation set). Returns null if the event is null. This is used to talk to
-    * the OMGraphics, since they don't know about the map rotation.
-    */
-   public Point2D getNonRotatedLocation(MouseEvent event) {
-      return getNonRotatedLocation(event, null);
-   }
+        return inverse(event.getX(), event.getY(), llp);
+    }
 
-   /**
-    * Convenience function to get the pixel Point2D representing a screen
-    * location from a MouseEvent in the projection space (as if there is no
-    * rotation set). Returns null if the event is null. This is used to talk to
-    * the OMGraphics, since they don't know about the map rotation.
-    */
-   public Point2D getNonRotatedLocation(MouseEvent event, Point2D pnt) {
-      if (event == null) {
-         return null;
-      }
+    /**
+     * Convenience function to get the pixel Point2D representing a screen
+     * location from a MouseEvent in the projection space (as if there is no
+     * rotation set). Returns null if the event is null. This is used to talk to
+     * the OMGraphics, since they don't know about the map rotation.
+     */
+    public Point2D getNonRotatedLocation(MouseEvent event) {
+        return getNonRotatedLocation(event, null);
+    }
 
-      if (pnt == null) {
-         pnt = new Point2D.Double(event.getX(), event.getY());
-      } else {
-         pnt.setLocation(event.getX(), event.getY());
-      }
+    /**
+     * Convenience function to get the pixel Point2D representing a screen
+     * location from a MouseEvent in the projection space (as if there is no
+     * rotation set). Returns null if the event is null. This is used to talk to
+     * the OMGraphics, since they don't know about the map rotation.
+     */
+    public Point2D getNonRotatedLocation(MouseEvent event, Point2D pnt) {
+        if (event == null) {
+            return null;
+        }
 
-      if (rotHelper != null) {
-         pnt = rotHelper.inverseTransform(pnt, pnt);
-      }
+        if (pnt == null) {
+            pnt = new Point2D.Double(event.getX(), event.getY());
+        } else {
+            pnt.setLocation(event.getX(), event.getY());
+        }
 
-      return pnt;
-   }
+        if (rotHelper != null) {
+            pnt = rotHelper.inverseTransform(pnt, pnt);
+        }
 
-   /**
-    * Checks the rotation set on the MapBean and accounts for it before calling
-    * inverse on the projection.
-    * 
-    * @param x horizontal window pixel from left side
-    * @param y vertical window pixel from top
-    * @param ret Point2D object returned with coordinates suitable for
-    *        projection where mouse event is.
-    * @return the provided T ret object, or new Point2D object from projection if ret is null.
-    */
-   public <T extends Point2D> T inverse(double x, double y, T ret) {
-      if (rotHelper == null) {
-         ret = getProjection().inverse(x, y, ret);
-      } else {
-         ret = rotHelper.inverse(x, y, ret);
-      }
+        return pnt;
+    }
 
-      return ret;
-   }
+    /**
+     * If the map has been rotated, get a shape that has been transformed into
+     * the pixel space of the unrotated maps (the space the projected OMGraphics
+     * know about).
+     * 
+     * @param shape input shape
+     * @return GeneralPath for transform shape if map is rotated, the input
+     *         shape if the map is not rotated.
+     */
+    public Shape getNonRotatedShape(Shape shape) {
+        if (rotHelper != null) {
+            return rotHelper.inverseTransform(shape);
+        }
+        return shape;
+    }
 
-   /**
-    * Interface-like method to query if the MapBean is buffered, so you can
-    * control behavior better. Allows the removal of specific instance-like
-    * queries for, say, BufferedMapBean, when all you really want to know is if
-    * you have the data is buffered, and if so, should be buffer be cleared. For
-    * the MapBean, always false.
-    */
-   public boolean isBuffered() {
-      return false;
-   }
+    /**
+     * Checks the rotation set on the MapBean and accounts for it before calling
+     * inverse on the projection.
+     * 
+     * @param x horizontal window pixel from left side
+     * @param y vertical window pixel from top
+     * @param ret Point2D object returned with coordinates suitable for
+     *        projection where mouse event is.
+     * @return the provided T ret object, or new Point2D object from projection
+     *         if ret is null.
+     */
+    public <T extends Point2D> T inverse(double x, double y, T ret) {
+        return (rotHelper == null) ? getProjection().inverse(x, y, ret)
+                : rotHelper.inverse(x, y, ret);
+    }
 
-   /**
-    * Interface-like method to set a buffer dirty, if there is one. In MapBean,
-    * there isn't.
-    * 
-    * @param value boolean
-    */
-   public void setBufferDirty(boolean value) {
-   }
+    /**
+     * Interface-like method to query if the MapBean is buffered, so you can
+     * control behavior better. Allows the removal of specific instance-like
+     * queries for, say, BufferedMapBean, when all you really want to know is if
+     * you have the data is buffered, and if so, should be buffer be cleared.
+     * For the MapBean, always false.
+     */
+    public boolean isBuffered() {
+        return false;
+    }
 
-   /**
-    * Checks whether the image buffer should be repainted.
-    * 
-    * @return boolean whether the layer buffer is dirty. Always true for
-    *         MapBean, because a paint is always gonna need to happen.
-    */
-   public boolean isBufferDirty() {
-      return true;
-   }
+    /**
+     * Interface-like method to set a buffer dirty, if there is one. In MapBean,
+     * there isn't.
+     * 
+     * @param value boolean
+     */
+    public void setBufferDirty(boolean value) {
+    }
 
-   /**
-    * If true (default) layers are held when they are removed, and then released
-    * and notified of removal when the projection changes. This saves the layers
-    * from releasing resources if the layer is simply being toggled on/off for
-    * different map views.
-    */
-   public void setLayerRemovalDelayed(boolean set) {
-      layerRemovalDelayed = set;
-   }
+    /**
+     * Checks whether the image buffer should be repainted.
+     * 
+     * @return boolean whether the layer buffer is dirty. Always true for
+     *         MapBean, because a paint is always gonna need to happen.
+     */
+    public boolean isBufferDirty() {
+        return true;
+    }
 
-   /**
-    * Return the flag for delayed layer removal.
-    */
-   public boolean isLayerRemovalDelayed() {
-      return layerRemovalDelayed;
-   }
+    /**
+     * If true (default) layers are held when they are removed, and then
+     * released and notified of removal when the projection changes. This saves
+     * the layers from releasing resources if the layer is simply being toggled
+     * on/off for different map views.
+     * 
+     * @param set the setting
+     */
+    public void setLayerRemovalDelayed(boolean set) {
+        layerRemovalDelayed = set;
+    }
 
-   /**
-    * Go through the layers, and for all of them that have the autoPalette
-    * variable turned on, show their palettes.
-    */
-   public void showLayerPalettes() {
-      Component[] comps = this.getComponents();
-      for (int i = 0; i < comps.length; i++) {
-         // they have to be layers
-         if (((Layer) comps[i]).autoPalette) {
-            ((Layer) comps[i]).showPalette();
-         }
-      }
-   }
+    /**
+     * @return the flag for delayed layer removal.
+     */
+    public boolean isLayerRemovalDelayed() {
+        return layerRemovalDelayed;
+    }
 
-   /**
-    * Turn off all layer palettes.
-    */
-   public void hideLayerPalettes() {
-      Component[] comps = this.getComponents();
-      for (int i = 0; i < comps.length; i++) {
-         // they have to be layers
-         ((Layer) comps[i]).hidePalette();
-      }
-   }
+    /**
+     * Go through the layers, and for all of them that have the autoPalette
+     * variable turned on, show their palettes.
+     */
+    public void showLayerPalettes() {
+        for (Component comp : getComponents()) {
+            // they have to be layers
+            Layer l = (Layer) comp;
+            if (l.autoPalette) {
+                l.showPalette();
+            }
+        }
+    }
 
-   protected ProjectionFactory projectionFactory;
+    /**
+     * Turn off all layer palettes.
+     */
+    public void hideLayerPalettes() {
+        for (Component comp : getComponents()) {
+            // they have to be layers
+            ((Layer) comp).hidePalette();
+        }
+    }
 
-   public ProjectionFactory getProjectionFactory() {
-      if (projectionFactory == null) {
-         projectionFactory = ProjectionFactory.loadDefaultProjections();
-      }
+    protected ProjectionFactory projectionFactory;
 
-      return projectionFactory;
-   }
+    public ProjectionFactory getProjectionFactory() {
+        if (projectionFactory == null) {
+            projectionFactory = ProjectionFactory.loadDefaultProjections();
+        }
 
-   public void setProjectionFactory(ProjectionFactory projFactory) {
-      projectionFactory = projFactory;
-   }
+        return projectionFactory;
+    }
 
-   protected RotationHelper rotHelper;
+    public void setProjectionFactory(ProjectionFactory projFactory) {
+        projectionFactory = projFactory;
+    }
 
-   /**
-    * Set the rotation of the map in RADIANS
-    * 
-    * @param angle
-    */
-   public void setRotation(double angle) {
+    protected RotationHelper rotHelper;
 
-      if (angle != 0) {
-         rotHelper = new RotationHelper(angle);
-      } else {
-         rotHelper = null;
-      }
+    /**
+     * @return the locRotHelper
+     */
+    protected RotationHelper getRotHelper() {
+        return rotHelper;
+    }
 
-      repaint();
-   }
+    /**
+     * @param rotHelper the locRotHelper to set
+     */
+    protected void setRotHelper(RotationHelper rotHelper) {
+        if (this.rotHelper != null) {
+            this.rotHelper.dispose();
+        }
 
-   /**
-    * Get the rotation of the map in RADIANS.
-    * 
-    * @return the angle the map has been rotated, in RADIANS, clockwise is positive.
-    */
-   public double getRotation() {
-      if (rotHelper != null) {
-         return rotHelper.angle;
-      }
-      return 0;
-   }
+        this.rotHelper = rotHelper;
+    }
 
-   protected class RotationHelper {
+    /**
+     * Set the rotation of the map in RADIANS.
+     * 
+     * @param angle radians of rotation, increasing clockwise.
+     */
+    public void setRotationAngle(double angle) {
+        setRotationAngle(angle, false);
+    }
 
-      protected Image rotImage;
-      protected AffineTransform rot;
-      protected double angle;
+    /**
+     * Set the rotation of the map in RADIANS.
+     * 
+     * @param angle radians of rotation, increasing clockwise.
+     * @param fastRotation if true, fireProjectionChange will not be called, and
+     *        the RotationHelper will be used to spin image buffer.
+     */
+    public void setRotationAngle(double angle, boolean fastRotation) {
+        if (this.rotationAngle != angle) {
+            this.rotationAngle = angle;
 
-      public RotationHelper(double angle) {
-         this.angle = angle;
+            /*
+             * moving into this block makes rotation work faster, and smooth.
+             * However, it doesn't give the non-rotating OMGraphics a chance to
+             * counteract the rotation.
+             */
+            if (fastRotation && angle != 0) {
+                /*
+                 * If only the angle changes, we can just update the
+                 * locRotHelper angle, and reuse all of the other settings. If
+                 * the angle changes and zero is involved,either way, get the
+                 * rotation helper set up in fireProjectionChanged. The
+                 * RotationHelper needs to be redefined for any other projection
+                 * changes anyway.
+                 */
+                RotationHelper locRotHelper = getRotHelper();
+                if (locRotHelper != null) {
+                    locRotHelper.updateAngle(angle);
+                    repaint();
+                    return;
+                }
+            }
 
-         this.rot = AffineTransform.getRotateInstance(angle, getWidth() / 2.0, getHeight() / 2.0);
-      }
+            fireProjectionChanged();
+        }
+    }
 
-      public Image paintChildren(Graphics g, Rectangle clip) {
+    /**
+     * Get the rotation of the map in RADIANS.
+     * 
+     * @return the angle the map has been rotated, in RADIANS, clockwise is
+     *         positive.
+     */
+    public double getRotationAngle() {
+        return rotationAngle;
+    }
 
-         int w = getWidth();
-         int h = getHeight();
-         if (rotImage == null) {
-            // rotImage = createVolatileImage(w, h);
-            rotImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-         }
-         Graphics2D g2 = (Graphics2D) rotImage.getGraphics();
-         g2.setColor(Color.black);
-         g2.fillRect(0, 0, w, h);
+    protected class RotationHelper {
 
-         // This Ellipse can be set to get a circular map area.
-         // double dim = Math.min(w, h);
-         // g2.setClip(new Ellipse2D.Double((w - dim) / 2, 0, dim, dim));
-         g2.setTransform(rot);
+        Image rotImage;
 
-         // This just lets the map be drawn according to the standard
-         // rectangle clip area.
-         g2.setClip(clip);
-         drawProjectionBackground(g2);
-         MapBean.super.paintChildren(g2);
+        double angle;
+        Point2D rotCenter;
+        int rotBufferHeight;
+        int rotBufferWidth;
+        int rotXOffset;
+        int rotYOffset;
+        Projection rotProjection;
+        AffineTransform rotTransform;
 
-         // Take care of the PaintListeners...
-         if (painters != null) {
-            painters.paint(g2);
-         }
+        private RotationHelper(double angle, Projection currentProjection) {
 
-         g2.dispose();
-         return rotImage;
-      }
+            /*
+             * We're going to try to do buffering with a image that will cover
+             * all of the corners when the map is rotated. We'll measure the
+             * ground distance from the center of the projection/map to each
+             * corner, and take the longest to create a bounding circle. The
+             * NSEW of that bounding circle (as a bounding box) Makes up the
+             * buffered image pixel bounds, and the inverse projected
+             * coordinates of that box should be returned as upper left and
+             * lower right coordinates when those methods are called. The
+             * projection of that box should be the same as the current
+             * projection, except for the new width and height.
+             * 
+             * Because the height and width are different for the buffered
+             * image, we're going to have to translate it before it is rotated.
+             * We can probably just tack on an additional translate to the rot.
+             * That difference will be 1/2 the difference of the height and
+             * width between the rot image and the original projection (mapbean
+             * dimensions).
+             */
+            Point2D center = currentProjection.getCenter();
+            Point2D ul = currentProjection.getUpperLeft();
+            Point2D lr = currentProjection.getLowerRight();
 
-      public Graphics getGraphics() {
-         Graphics2D g = (Graphics2D) MapBean.super.getGraphics().create();
-         g.setTransform(rot);
-         g.setClip(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
-         return g;
-      }
+            /*
+             * Woooooow, we're really going to have to work it, aren't we? We
+             * need to handle GeoProj differently than Cartesian coords. That
+             * seems to lend itself to moving this kind of calculations to the
+             * super classes of the projection classes. *sigh*
+             * 
+             * For now, let's try assuming that GeoProj
+             */
+            Geo centerGeo = new Geo(center.getY(), center.getX());
+            Geo ulGeo = new Geo(ul.getY(), ul.getX());
+            Geo lrGeo = new Geo(lr.getY(), lr.getX());
 
-      public <T extends Point2D> T inverse(double x, double y, T ret) {
+            // Comparing the UL and LR corners for distance, get the greatest.
+            double dist = Math.max(centerGeo.distance(ulGeo), centerGeo.distance(lrGeo));
 
-         Point2D pnt = new Point2D.Double(x, y);
+            // Now calculate the bounds of that distance in 4 directions
+            Geo N = Geo.offset(centerGeo, dist, 0);
+            Geo S = Geo.offset(centerGeo, dist, Math.PI);
+            Geo E = Geo.offset(centerGeo, dist, Math.PI / 2.0);
+            Geo W = Geo.offset(centerGeo, dist, -Math.PI / 2);
 
-         try {
-            pnt = rotHelper.rot.inverseTransform(pnt, pnt);
-            ret = getProjection().inverse(pnt, ret);
-         } catch (NoninvertibleTransformException e) {
-            e.printStackTrace();
-         }
+            // Calculate the coordinates of new bounds for that distance from
+            // center.
+            Point2D newUL = new Point2D.Double(W.getLongitude(), N.getLatitude());
+            Point2D newLR = new Point2D.Double(E.getLongitude(), S.getLatitude());
 
-         return ret;
-      }
+            // Calculate the pixel bounds of the new bounding box to get new
+            // projection h, w
+            Point2D newULPix = currentProjection.forward(newUL);
+            Point2D newLRPix = currentProjection.forward(newLR);
 
-      public Point2D inverseTransform(Point2D src, Point2D dst) {
-         try {
-            dst = rot.inverseTransform(src, dst);
-         } catch (NoninvertibleTransformException e) {
-            e.printStackTrace();
-         }
-         return dst;
-      }
+            int rotBufferHeight = (int) Math.abs(newLRPix.getY() - newULPix.getY());
+            int rotBufferWidth = (int) Math.abs(newLRPix.getX() - newULPix.getX());
+            this.rotProjection = projectionFactory.makeProjection(currentProjection.getClass(), center, currentProjection.getScale(), rotBufferWidth, rotBufferHeight);
+            this.rotImage = new BufferedImage(rotBufferWidth, rotBufferHeight, BufferedImage.TYPE_INT_ARGB);
+            rotCenter = rotProjection.forward(center);
 
-      public void dispose() {
-         if (rotImage != null) {
-            rotImage.flush();
-         }
-      }
+            /*
+             * Now calculate the different in size between the current
+             * projection and the buffered image projection, and the offset
+             * needed for translation for proper painting.
+             */
+            this.rotXOffset = (rotProjection.getWidth() - currentProjection.getWidth()) / 2;
+            this.rotYOffset = (rotProjection.getHeight() - currentProjection.getHeight()) / 2;
+            updateAngle(angle);
+        }
 
-   }
+        public void updateAngle(double angle) {
+            this.angle = angle;
+            this.rotTransform = AffineTransform.getRotateInstance(angle, rotCenter.getX(), rotCenter.getY());
+        }
+
+        /**
+         * @returns the projection of the image buffer that is big enough for
+         *          rotated areas.
+         */
+        public Projection getProjection() {
+            return rotProjection;
+        }
+
+        public void paintChildren(Graphics g, Rectangle clip) {
+
+            if (rotProjection == null) {
+                // We're not properly prepared for rotation, return;
+                return;
+            }
+
+            Graphics2D g2 = (Graphics2D) rotImage.getGraphics();
+            ((Proj) rotProjection).drawBackground(g2, getBckgrnd());
+            g2.setTransform(rotTransform);
+            paintLayers(g2);
+            g.drawImage(rotImage, -rotXOffset, -rotYOffset, null);
+            g2.dispose();
+        }
+
+        public void paintPainters(Graphics g) {
+            if (painters != null) {
+
+                int x = getX();
+                int y = getY();
+                Graphics2D g2 = (Graphics2D) g.create();
+                AffineTransform transform = AffineTransform.getTranslateInstance(-rotXOffset
+                        + getX(), -rotYOffset + getY());
+                transform.concatenate(rotTransform);
+                g2.setTransform(transform);
+
+                painters.paint(g2);
+                g2.dispose();
+            }
+        }
+
+        /**
+         * @return a Graphics object from the MapBean with the rotation
+         *         transform applied.
+         */
+        public Graphics getGraphics() {
+            Graphics2D g = (Graphics2D) MapBean.super.getGraphics().create();
+            g.setTransform(rotTransform);
+            return g;
+        }
+
+        /**
+         * Performs a projection.inverse operation that also takes into account
+         * rotation.
+         * 
+         * @param x pixel x
+         * @param y pixel y
+         * @param ret T in the coordinate space of projection.
+         * @return T, either ret or a new object.
+         */
+        public <T extends Point2D> T inverse(double x, double y, T ret) {
+
+            Point2D pnt = new Point2D.Double(x + rotXOffset, y + rotYOffset);
+
+            try {
+                pnt = rotTransform.inverseTransform(pnt, pnt);
+                return getProjection().inverse(pnt, ret);
+            } catch (NoninvertibleTransformException e) {
+                logger.log(Level.FINE, e.getMessage(), e);
+            }
+
+            return ret;
+        }
+
+        /**
+         * Returns dst, the unrotated pixel location of the map.
+         * 
+         * @param src the pixel point
+         * @param dst
+         * @return see above.
+         */
+        public Point2D inverseTransform(Point2D src, Point2D dst) {
+            try {
+                src.setLocation(src.getX() + rotXOffset, src.getY() + rotYOffset);
+                dst = rotTransform.inverseTransform(src, dst);
+            } catch (NoninvertibleTransformException e) {
+                logger.log(Level.FINE, e.getMessage(), e);
+            }
+            return dst;
+        }
+
+        /**
+         * Returns a transformed version of the Shape, unrotated into the
+         * projected pixel space of the layer OMGraphics.
+         * 
+         * @param shape to transform
+         * @return the transformed shape.
+         */
+        public Shape inverseTransform(Shape shape) {
+
+            double[] coords = new double[6];
+            GeneralPath path = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
+
+            PathIterator pi = shape.getPathIterator(getInverseRotationTransform());
+            while (!pi.isDone()) {
+                int type = pi.currentSegment(coords);
+
+                if (type == PathIterator.SEG_MOVETO) {
+                    path.moveTo(coords[0], coords[1]);
+                } else if (type == PathIterator.SEG_LINETO) {
+                    path.lineTo(coords[0], coords[1]);
+                } else if (type == PathIterator.SEG_CLOSE) {
+                    path.closePath();
+                } else {
+                    if (type == PathIterator.SEG_QUADTO) {
+                        path.quadTo(coords[0], coords[1], coords[2], coords[3]);
+                    } else if (type == PathIterator.SEG_CUBICTO) {
+                        path.curveTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+                    }
+                }
+
+                pi.next();
+            }
+
+            return path;
+        }
+
+        public AffineTransform getInverseRotationTransform() {
+            try {
+                AffineTransform translateOffset = AffineTransform.getTranslateInstance(rotXOffset, rotYOffset);
+                AffineTransform transform = rotTransform.createInverse();
+                translateOffset.preConcatenate(transform);
+                return translateOffset;
+            } catch (NoninvertibleTransformException e) {
+                logger.log(Level.FINE, "AffineTransform problem", e);
+            }
+
+            return new AffineTransform();
+        }
+
+        public void dispose() {
+            if (rotImage != null) {
+                rotImage.flush();
+            }
+        }
+    }
 
 }
