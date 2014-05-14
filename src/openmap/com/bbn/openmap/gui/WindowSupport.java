@@ -36,6 +36,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 
 import javax.imageio.ImageIO;
@@ -68,9 +70,8 @@ import com.bbn.openmap.util.Debug;
  * a consistent feel across the application). The default setting for this
  * variable is to use the Frm type.
  */
-public class WindowSupport
-        extends ListenerSupport<ComponentListener>
-        implements ComponentListener, ActionListener {
+public class WindowSupport extends ListenerSupport<ComponentListener> implements ComponentListener,
+        ActionListener {
 
     protected Component content;
     protected String title;
@@ -261,12 +262,13 @@ public class WindowSupport
      * @param owner
      * @return WSDisplay
      */
-    protected WSDisplay createDisplay(Window owner) {
+    protected WSDisplay createDisplay(Frame owner) {
         WSDisplay wsd;
         if (persistentDisplayType == null && Environment.getBoolean(Environment.UseInternalFrames)) {
             wsd = new IntrnlFrm(title);
         } else {
-            Class wTypeClass = persistentDisplayType == null ? getDefaultWindowSupportDisplayType() : persistentDisplayType;
+            Class wTypeClass = persistentDisplayType == null ? getDefaultWindowSupportDisplayType()
+                    : persistentDisplayType;
             if (wTypeClass == Dlg.class) {
                 wsd = new Dlg(owner, title);
             } else if (wTypeClass == IntrnlFrm.class) {
@@ -290,7 +292,7 @@ public class WindowSupport
      *        persistentDisplayType will be used.
      * @return WSDisplay
      */
-    protected WSDisplay createDisplay(Window owner, Class displayType) {
+    protected WSDisplay createDisplay(Frame owner, Class displayType) {
         WSDisplay wsd;
 
         if (displayType == null) {
@@ -356,7 +358,7 @@ public class WindowSupport
      * 
      * @param owner Frame for JDialog
      */
-    public void displayInWindow(Window owner) {
+    public void displayInWindow(Frame owner) {
 
         Dimension dim = getComponentSize();
         if (dim != null) {
@@ -394,7 +396,7 @@ public class WindowSupport
      * @param height the vertical size of the window, if less than or equal to
      *        zero the content size will be used.
      */
-    public void displayInWindow(Window owner, int x, int y, int width, int height) {
+    public void displayInWindow(Frame owner, int x, int y, int width, int height) {
         displayInWindow(owner, null, x, y, width, height);
     }
 
@@ -410,7 +412,7 @@ public class WindowSupport
      * @param height the vertical size of the window, if less than or equal to
      *        zero the content size will be used.
      */
-    public void displayInWindow(Window owner, Class displayType, int x, int y, int width, int height) {
+    public void displayInWindow(Frame owner, Class displayType, int x, int y, int width, int height) {
 
         if (content == null) {
             Debug.message("windowsupport", "WindowSupport asked to display window with null content");
@@ -426,7 +428,8 @@ public class WindowSupport
             }
         }
 
-        if (display != null && displayType != null && !display.getClass().getName().equals(displayType.getName())) {
+        if (display != null && displayType != null
+                && !display.getClass().getName().equals(displayType.getName())) {
             display.dispose();
             display = null;
         }
@@ -595,9 +598,7 @@ public class WindowSupport
 
     }
 
-    public static class IntrnlFrm
-            extends JInternalFrame
-            implements WSDisplay {
+    public static class IntrnlFrm extends JInternalFrame implements WSDisplay {
 
         public IntrnlFrm(String title) {
             super(title,
@@ -648,11 +649,9 @@ public class WindowSupport
 
     }
 
-    public static class Dlg
-            extends JDialog
-            implements WSDisplay {
+    public static class Dlg extends JDialog implements WSDisplay {
 
-        public Dlg(Window owner, String title) {
+        public Dlg(Frame owner, String title) {
             super(owner, title);
             Debug.message("windows", "WindowSupport creating frame");
         }
@@ -693,9 +692,7 @@ public class WindowSupport
 
     }
 
-    public static class Frm
-            extends JFrame
-            implements WSDisplay {
+    public static class Frm extends JFrame implements WSDisplay {
 
         public Frm(String title) {
             super(title);
@@ -748,14 +745,40 @@ public class WindowSupport
         }
     }
 
+    /**
+     * Set the FavIcon for the WSDisplay.
+     * 
+     * @param wsd
+     */
     protected void setFavIcon(WSDisplay wsd) {
         String iconPath = Environment.get("openmap.favicon");
         if (iconPath != null && wsd instanceof Window) {
             try {
                 BufferedImage favIcon = ImageIO.read(WindowSupport.class.getResourceAsStream(iconPath));
-                ((Window) wsd).setIconImage(favIcon);
+
+                // Java 5 incompatible
+                // ((Window) wsd).setIconImage(favIcon);
+
+                // Use reflection that'll work if using java 6 and higher. We
+                // can remove all this when OM makes the jump to java 6 or
+                // higher.
+                try {
+                    Method siiMethod = wsd.getClass().getMethod("setIconImage", BufferedImage.class);
+                    siiMethod.invoke((Window) wsd, favIcon);
+                } catch (NoSuchMethodException e) {
+                    Debug.message("windows", e.getMessage());
+                } catch (SecurityException e) {
+                    Debug.message("windows", e.getMessage());
+                } catch (IllegalAccessException e) {
+                    Debug.message("windows", e.getMessage());
+                } catch (IllegalArgumentException e) {
+                    Debug.message("windows", e.getMessage());
+                } catch (InvocationTargetException e) {
+                    Debug.message("windows", e.getMessage());
+                }
+
             } catch (IOException e) {
-                e.printStackTrace();
+                Debug.message("windows", e.getMessage());
             }
         }
     }

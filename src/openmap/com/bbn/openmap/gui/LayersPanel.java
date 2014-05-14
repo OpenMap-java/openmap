@@ -137,8 +137,8 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * </pre>
  */
-public class LayersPanel extends OMToolComponent implements Serializable,
-        ActionListener, LayerListener, PropertyChangeListener {
+public class LayersPanel extends OMToolComponent implements Serializable, ActionListener,
+        LayerListener, PropertyChangeListener {
 
     public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.LayersPanel");
 
@@ -366,10 +366,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
             layerButton = new JButton(new ImageIcon(OMToolSet.class.getResource("layers.gif"), "Layer Controls"));
             layerButton.setBorderPainted(false);
             // layerButton.setToolTipText("Layer Controls");
-            layerButton.setToolTipText(i18n.get(LayersPanel.class,
-                    "layerButton",
-                    I18n.TOOLTIP,
-                    "Layer Controls"));
+            layerButton.setToolTipText(i18n.get(LayersPanel.class, "layerButton", I18n.TOOLTIP, "Layer Controls"));
             layerButton.setMargin(new Insets(0, 0, 0, 0));
             layerButton.addActionListener(getActionListener());
         }
@@ -389,9 +386,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
                 WindowSupport ws = getWindowSupport();
 
                 if (ws == null) {
-                    ws = new WindowSupport(LayersPanel.this, i18n.get(LayersPanel.class,
-                            "title",
-                            "Layers"));
+                    ws = new WindowSupport(LayersPanel.this, i18n.get(LayersPanel.class, "title", "Layers"));
                     setWindowSupport(ws);
                 }
 
@@ -415,14 +410,18 @@ public class LayersPanel extends OMToolComponent implements Serializable,
                 }
 
                 MapHandler mh = (MapHandler) getBeanContext();
-                Window frame = null;
+                // Window frame = null; // java 5 incompatibility
+                Frame frame = null;
                 if (mh != null) {
                     frame = (Frame) mh.get(java.awt.Frame.class);
                 }
 
-                if (frame == null && evt.getSource() instanceof Component) {
-                    frame = SwingUtilities.getWindowAncestor((Component) evt.getSource());
-                }
+                /* java 5 incompatibility */
+                /*
+                 * if (frame == null && evt.getSource() instanceof Component) {
+                 * frame = SwingUtilities.getWindowAncestor((Component)
+                 * evt.getSource()); }
+                 */
                 ws.displayInWindow(frame, x, y, w, h);
             }
         };
@@ -460,14 +459,12 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         }
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("LayersPanel.setLayers() with " + layers.length
-                    + " layers.");
+            logger.fine("LayersPanel.setLayers() with " + layers.length + " layers.");
         }
 
         List<LayerPane> panes = getPanes();
         int separatorOffset = 0;
-        if (backgroundLayerSeparator != null
-                && panes.contains(backgroundLayerSeparator)) {
+        if (backgroundLayerSeparator != null && panes.contains(backgroundLayerSeparator)) {
             separatorOffset = 1;
         }
 
@@ -578,8 +575,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         for (int i = 0; i < layers.length; i++) {
             Layer layer = layers[i];
             if (layer == null) {
-                logger.fine("caught null layer, " + i + " out of "
-                        + layers.length);
+                logger.fine("caught null layer, " + i + " out of " + layers.length);
                 continue;
             }
 
@@ -657,8 +653,7 @@ public class LayersPanel extends OMToolComponent implements Serializable,
      * Called when a new LayerPane needs to be created for a layer. You can use
      * this to extend LayerPane and return something else that fits your GUI.
      */
-    protected LayerPane createLayerPaneForLayer(Layer layer,
-                                                LayerHandler layerHandler,
+    protected LayerPane createLayerPaneForLayer(Layer layer, LayerHandler layerHandler,
                                                 ButtonGroup bg) {
         if (showStatus) {
             return new LayerStatusPane(layer, layerHandler, bg);
@@ -955,12 +950,10 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         Object obj = pce.getNewValue();
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("receiving PropertyChangeEvent " + command + ", "
-                    + pce.toString());
+            logger.fine("receiving PropertyChangeEvent " + command + ", " + pce.toString());
         }
 
-        if ((command == LayerSelectedCmd || command == LayerDeselectedCmd)
-                && obj instanceof Layer) {
+        if ((command == LayerSelectedCmd || command == LayerDeselectedCmd) && obj instanceof Layer) {
 
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("layer panel notification that layer is selected: "
@@ -968,10 +961,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
             }
             firePropertyChange(command, null, ((Layer) obj));
 
-        } else if ((command == LayersPanel.LayerTopCmd
-                || command == LayersPanel.LayerBottomCmd
-                || command == LayersPanel.LayerUpCmd
-                || command == LayersPanel.LayerDownCmd || command == LayersPanel.LayerRemoveCmd)
+        } else if ((command == LayersPanel.LayerTopCmd || command == LayersPanel.LayerBottomCmd
+                || command == LayersPanel.LayerUpCmd || command == LayersPanel.LayerDownCmd || command == LayersPanel.LayerRemoveCmd)
                 && obj instanceof Layer) {
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("layer panel notification that layer should be raised: "
@@ -1041,15 +1032,13 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         super.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        String controlString = props.getProperty(prefix
-                + ControlButtonsProperty);
+        String controlString = props.getProperty(prefix + ControlButtonsProperty);
 
         if (controlString != NO_CONTROLS) {
             if (controlString == null) {
                 setControls(createControlButtons());
             } else {
-                Object obj = ComponentFactory.create(controlString, prefix
-                        + ControlButtonsProperty, props);
+                Object obj = ComponentFactory.create(controlString, prefix + ControlButtonsProperty, props);
 
                 if (obj instanceof LayerControlButtonPanel) {
                     setControlsAndNotify((LayerControlButtonPanel) obj);
@@ -1057,10 +1046,8 @@ public class LayersPanel extends OMToolComponent implements Serializable,
             }
         }
 
-        bufferedBoundary = PropUtils.booleanFromProperties(props, prefix
-                + BufferedBoundaryProperty, bufferedBoundary);
-        showStatus = PropUtils.booleanFromProperties(props, prefix
-                + ShowStatusProperty, showStatus);
+        bufferedBoundary = PropUtils.booleanFromProperties(props, prefix + BufferedBoundaryProperty, bufferedBoundary);
+        showStatus = PropUtils.booleanFromProperties(props, prefix + ShowStatusProperty, showStatus);
     }
 
     public Properties getProperties(Properties props) {
@@ -1069,28 +1056,20 @@ public class LayersPanel extends OMToolComponent implements Serializable,
         String prefix = PropUtils.getScopedPropertyPrefix(this);
         LayerControlButtonPanel controls = getControls();
         if (controls != null) {
-            props.put(prefix + ControlButtonsProperty, controls.getClass()
-                    .getName());
+            props.put(prefix + ControlButtonsProperty, controls.getClass().getName());
             controls.getProperties(props);
         }
-        props.put(prefix + BufferedBoundaryProperty,
-                new Boolean(bufferedBoundary).toString());
-        props.put(prefix + ShowStatusProperty,
-                new Boolean(showStatus).toString());
+        props.put(prefix + BufferedBoundaryProperty, new Boolean(bufferedBoundary).toString());
+        props.put(prefix + ShowStatusProperty, new Boolean(showStatus).toString());
         return props;
     }
 
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
 
-        String interString = i18n.get(LayersPanel.class,
-                ControlButtonsProperty,
-                I18n.TOOLTIP,
-                "Class to use for layer control buttons (Optional)");
+        String interString = i18n.get(LayersPanel.class, ControlButtonsProperty, I18n.TOOLTIP, "Class to use for layer control buttons (Optional)");
         props.put(ControlButtonsProperty, interString);
-        interString = i18n.get(LayersPanel.class,
-                ControlButtonsProperty,
-                "Button Panel Control");
+        interString = i18n.get(LayersPanel.class, ControlButtonsProperty, "Button Panel Control");
         props.put(ControlButtonsProperty + LabelEditorProperty, interString);
 
         LayerControlButtonPanel controls = getControls();
@@ -1098,29 +1077,17 @@ public class LayersPanel extends OMToolComponent implements Serializable,
             controls.getPropertyInfo(props);
         }
 
-        interString = i18n.get(LayersPanel.class,
-                BufferedBoundaryProperty,
-                I18n.TOOLTIP,
-                "Force layer movement to respect background layer boundary.");
+        interString = i18n.get(LayersPanel.class, BufferedBoundaryProperty, I18n.TOOLTIP, "Force layer movement to respect background layer boundary.");
         props.put(BufferedBoundaryProperty, interString);
-        interString = i18n.get(LayersPanel.class,
-                BufferedBoundaryProperty,
-                "Use Background Layers");
+        interString = i18n.get(LayersPanel.class, BufferedBoundaryProperty, "Use Background Layers");
         props.put(BufferedBoundaryProperty + LabelEditorProperty, interString);
-        props.put(BufferedBoundaryProperty + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(BufferedBoundaryProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-        interString = i18n.get(LayersPanel.class,
-                ShowStatusProperty,
-                I18n.TOOLTIP,
-                "Use Layer Panes that show layer status.");
+        interString = i18n.get(LayersPanel.class, ShowStatusProperty, I18n.TOOLTIP, "Use Layer Panes that show layer status.");
         props.put(ShowStatusProperty, interString);
-        interString = i18n.get(LayersPanel.class,
-                ShowStatusProperty,
-                "Show Layer Status");
+        interString = i18n.get(LayersPanel.class, ShowStatusProperty, "Show Layer Status");
         props.put(ShowStatusProperty + LabelEditorProperty, interString);
-        props.put(ShowStatusProperty + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(ShowStatusProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         return props;
     }

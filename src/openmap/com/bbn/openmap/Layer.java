@@ -110,10 +110,8 @@ import com.bbn.openmap.util.propertyEditor.Inspector;
  * @see com.bbn.openmap.event.ProjectionEvent
  * @see com.bbn.openmap.PropertyConsumer
  */
-public abstract class Layer
-        extends JComponent
-        implements ProjectionListener, ProjectionPainter, BeanContextChild, BeanContextMembershipListener, PropertyConsumer,
-        ActionListener {
+public abstract class Layer extends JComponent implements ProjectionListener, ProjectionPainter,
+        BeanContextChild, BeanContextMembershipListener, PropertyConsumer, ActionListener {
 
     private static final long serialVersionUID = 1L;
 
@@ -340,7 +338,8 @@ public abstract class Layer
      */
     public final void addMouseListener(MouseListener l) {
         String pkg = getPackage(l.getClass());
-        if (java.beans.Beans.isDesignTime() || pkg.equals(SWING_PACKAGE) || pkg.startsWith(SWING_PACKAGE)
+        if (java.beans.Beans.isDesignTime() || pkg.equals(SWING_PACKAGE)
+                || pkg.startsWith(SWING_PACKAGE)
                 || pkg.startsWith("com.sun.java.accessibility.util")) {
 
             // Used to do nothing for the equals and startsWith
@@ -349,8 +348,10 @@ public abstract class Layer
             // Tom Peel for pointing this out, 11/29/00.
             super.addMouseListener(l);
         } else {
-            throw new IllegalArgumentException("This operation is disallowed because the package \"" + getPackage(l.getClass())
-                    + "\" is not in the swing package (\"" + SWING_PACKAGE + "\").");
+            throw new IllegalArgumentException("This operation is disallowed because the package \""
+                    + getPackage(l.getClass())
+                    + "\" is not in the swing package (\""
+                    + SWING_PACKAGE + "\").");
         }
     }
 
@@ -410,9 +411,11 @@ public abstract class Layer
 
         setName(props.getProperty(prettyName, defaultName));
 
-        setAddToBeanContext(PropUtils.booleanFromProperties(props, realPrefix + AddToBeanContextProperty, addToBeanContext));
+        setAddToBeanContext(PropUtils.booleanFromProperties(props, realPrefix
+                + AddToBeanContextProperty, addToBeanContext));
 
-        setAddAsBackground(PropUtils.booleanFromProperties(props, realPrefix + AddAsBackgroundProperty, addAsBackground));
+        setAddAsBackground(PropUtils.booleanFromProperties(props, realPrefix
+                + AddAsBackgroundProperty, addAsBackground));
 
         setRemovable(PropUtils.booleanFromProperties(props, realPrefix + RemovableProperty, removable));
 
@@ -429,8 +432,8 @@ public abstract class Layer
         String transClassName = props.getProperty(realPrefix + TransformProperty);
         if (transClassName != null) {
             try {
-                coordTransform =
-                        (GeoCoordTransformation) ComponentFactory.create(transClassName, realPrefix + TransformProperty, props);
+                coordTransform = (GeoCoordTransformation) ComponentFactory.create(transClassName, realPrefix
+                        + TransformProperty, props);
             } catch (ClassCastException cce) {
 
             }
@@ -530,9 +533,7 @@ public abstract class Layer
         list.put(PrettyNameProperty + LabelEditorProperty, internString);
         list.put(PrettyNameProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
 
-        internString =
-                i18n.get(Layer.class, AutoPaletteProperty, I18n.TOOLTIP,
-                         "Flag to automatically display palette when properties are set");
+        internString = i18n.get(Layer.class, AutoPaletteProperty, I18n.TOOLTIP, "Flag to automatically display palette when properties are set");
         list.put(AutoPaletteProperty, internString);
         internString = i18n.get(Layer.class, AutoPaletteProperty, "Open Palette At Start");
         list.put(AutoPaletteProperty + LabelEditorProperty, internString);
@@ -550,24 +551,18 @@ public abstract class Layer
         list.put(RemovableProperty + LabelEditorProperty, internString);
         list.put(RemovableProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-        internString =
-                i18n.get(Layer.class, AddToBeanContextProperty, I18n.TOOLTIP,
-                         "Flag to give the layer access to all of the other application components.");
+        internString = i18n.get(Layer.class, AddToBeanContextProperty, I18n.TOOLTIP, "Flag to give the layer access to all of the other application components.");
         list.put(AddToBeanContextProperty, internString);
         internString = i18n.get(Layer.class, AddToBeanContextProperty, "Add to MapHandler");
         list.put(AddToBeanContextProperty + LabelEditorProperty, internString);
         list.put(AddToBeanContextProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-        internString =
-                i18n.get(Layer.class, MinScaleProperty, I18n.TOOLTIP,
-                         "Minimum projection scale value that the layer will respond to.");
+        internString = i18n.get(Layer.class, MinScaleProperty, I18n.TOOLTIP, "Minimum projection scale value that the layer will respond to.");
         list.put(MinScaleProperty, internString);
         internString = i18n.get(Layer.class, MinScaleProperty, "Minimum Scale Value");
         list.put(MinScaleProperty + LabelEditorProperty, internString);
 
-        internString =
-                i18n.get(Layer.class, MaxScaleProperty, I18n.TOOLTIP,
-                         "Maximum projection scale value that the layer will respond to.");
+        internString = i18n.get(Layer.class, MaxScaleProperty, I18n.TOOLTIP, "Maximum projection scale value that the layer will respond to.");
         list.put(MaxScaleProperty, internString);
         internString = i18n.get(Layer.class, MaxScaleProperty, "Maximum Scale Value");
         list.put(MaxScaleProperty + LabelEditorProperty, internString);
@@ -704,9 +699,9 @@ public abstract class Layer
      * @param aInfoDisplayListener the listener to add
      */
     public void addInfoDisplayListener(InfoDisplayListener aInfoDisplayListener) {
-        // synchronized (IDListeners) {    //2012.06.15 TAW
-            IDListeners.add(aInfoDisplayListener);
-        //}
+        // synchronized (IDListeners) { //2012.06.15 TAW
+        IDListeners.add(aInfoDisplayListener);
+        // }
     }
 
     /**
@@ -715,9 +710,9 @@ public abstract class Layer
      * @param aInfoDisplayListener the listener to remove
      */
     public void removeInfoDisplayListener(InfoDisplayListener aInfoDisplayListener) {
-        // synchronized (IDListeners) {  //2012.06.15 TAW
-            IDListeners.remove(aInfoDisplayListener);
-       // }
+        // synchronized (IDListeners) { //2012.06.15 TAW
+        IDListeners.remove(aInfoDisplayListener);
+        // }
     }
 
     /**
@@ -727,11 +722,11 @@ public abstract class Layer
      * @param evt the InfoDisplay event carrying the string.
      */
     public void fireRequestInfoLine(InfoDisplayEvent evt) {
-        //synchronized (IDListeners) { // //2012.06.15 TAW
-            for (InfoDisplayListener listener : IDListeners) {
-                listener.requestInfoLine(evt);
-            }
-        //}
+        // synchronized (IDListeners) { // //2012.06.15 TAW
+        for (InfoDisplayListener listener : IDListeners) {
+            listener.requestInfoLine(evt);
+        }
+        // }
     }
 
     /**
@@ -765,10 +760,10 @@ public abstract class Layer
      *        Browser.
      */
     public void fireRequestBrowserContent(InfoDisplayEvent evt) {
-        // synchronized (IDListeners) {   //2012.06.15 TAW
-            for (InfoDisplayListener listener : IDListeners) {
-                listener.requestBrowserContent(evt);
-            }
+        // synchronized (IDListeners) { //2012.06.15 TAW
+        for (InfoDisplayListener listener : IDListeners) {
+            listener.requestBrowserContent(evt);
+        }
         // }
     }
 
@@ -791,10 +786,10 @@ public abstract class Layer
      *        Browser.
      */
     public void fireRequestURL(InfoDisplayEvent evt) {
-        // synchronized (IDListeners) {      //2012.06.15 TAW
-            for (InfoDisplayListener listener : IDListeners) {
-                listener.requestURL(evt);
-            }
+        // synchronized (IDListeners) { //2012.06.15 TAW
+        for (InfoDisplayListener listener : IDListeners) {
+            listener.requestURL(evt);
+        }
         // }
     }
 
@@ -816,10 +811,10 @@ public abstract class Layer
      * @param cursor the cursor to use.
      */
     public void fireRequestCursor(java.awt.Cursor cursor) {
-        // synchronized (IDListeners) {  //2012.06.15 TAW
-            for (InfoDisplayListener listener : IDListeners) {
-                listener.requestCursor(cursor);
-            }
+        // synchronized (IDListeners) { //2012.06.15 TAW
+        for (InfoDisplayListener listener : IDListeners) {
+            listener.requestCursor(cursor);
+        }
         // }
     }
 
@@ -831,10 +826,10 @@ public abstract class Layer
      *        dialog window.
      */
     public void fireRequestMessage(InfoDisplayEvent evt) {
-        // synchronized (IDListeners) {  //2012.06.15 TAW
-            for (InfoDisplayListener listener : IDListeners) {
-                listener.requestMessage(evt);
-            }
+        // synchronized (IDListeners) { //2012.06.15 TAW
+        for (InfoDisplayListener listener : IDListeners) {
+            listener.requestMessage(evt);
+        }
         // }
     }
 
@@ -870,15 +865,15 @@ public abstract class Layer
      * InfoDisplayEvent is null, then a requestHideToolTip will be fired.
      */
     public void fireRequestToolTip(InfoDisplayEvent event) {
-        // synchronized (IDListeners) {   //2012.06.15 TAW
-            for (InfoDisplayListener listener : IDListeners) {
-                if (event != null) {
-                    listener.requestShowToolTip(event);
-                } else {
-                    listener.requestHideToolTip();
-                }
+        // synchronized (IDListeners) { //2012.06.15 TAW
+        for (InfoDisplayListener listener : IDListeners) {
+            if (event != null) {
+                listener.requestShowToolTip(event);
+            } else {
+                listener.requestHideToolTip();
             }
-        //}
+        }
+        // }
     }
 
     // /////////////////////////////////////////////////
@@ -890,9 +885,9 @@ public abstract class Layer
      * @param aLayerStatusListener LayerStatusListener
      */
     public void addLayerStatusListener(LayerStatusListener aLayerStatusListener) {
-        //synchronized (lsListeners) {  //2012.06.15 TAW
-            lsListeners.add(aLayerStatusListener);
-        //}
+        // synchronized (lsListeners) { //2012.06.15 TAW
+        lsListeners.add(aLayerStatusListener);
+        // }
     }
 
     /**
@@ -901,9 +896,9 @@ public abstract class Layer
      * @param aLayerStatusListener the listener to remove
      */
     public void removeLayerStatusListener(LayerStatusListener aLayerStatusListener) {
-        // synchronized (lsListeners) {  //2012.06.15 TAW
-            lsListeners.remove(aLayerStatusListener);
-        //}
+        // synchronized (lsListeners) { //2012.06.15 TAW
+        lsListeners.remove(aLayerStatusListener);
+        // }
     }
 
     /**
@@ -912,11 +907,11 @@ public abstract class Layer
      * @param evt LayerStatusEvent
      */
     public void fireStatusUpdate(LayerStatusEvent evt) {
-        // synchronized (lsListeners) {  //2012.06.15 TAW
-            // AWTAvailable conditional removed, not used, not useful.
-            for (LayerStatusListener listener : lsListeners) {
-                listener.updateLayerStatus(evt);
-            }
+        // synchronized (lsListeners) { //2012.06.15 TAW
+        // AWTAvailable conditional removed, not used, not useful.
+        for (LayerStatusListener listener : lsListeners) {
+            listener.updateLayerStatus(evt);
+        }
         // }
     }
 
@@ -940,8 +935,8 @@ public abstract class Layer
         if (p instanceof MapBean) {
             ((MapBean) p).setBufferDirty(true);
             if (Debug.debugging("basic")) {
-                Debug.output(getName() + "|Layer: repaint(tm=" + tm + ", x=" + x + ", y=" + y + ", width=" + width + ", height="
-                        + height + ")");
+                Debug.output(getName() + "|Layer: repaint(tm=" + tm + ", x=" + x + ", y=" + y
+                        + ", width=" + width + ", height=" + height + ")");
             }
 
             // How dangerous is this? Let the MapBean manage the
@@ -1234,8 +1229,7 @@ public abstract class Layer
      * Method for BeanContextChild interface. Gets an iterator from the
      * BeanContext to call findAndInit() over.
      */
-    public void setBeanContext(BeanContext in_bc)
-            throws PropertyVetoException {
+    public void setBeanContext(BeanContext in_bc) throws PropertyVetoException {
 
         if (in_bc != null) {
             connectToBeanContext(in_bc);
@@ -1248,8 +1242,7 @@ public abstract class Layer
      * iterator as in setBeanContext(). Good for protected sub-layers where you
      * want to optimize the calling of the findAndInit() method over them.
      */
-    public void connectToBeanContext(BeanContext in_bc)
-            throws PropertyVetoException {
+    public void connectToBeanContext(BeanContext in_bc) throws PropertyVetoException {
 
         if (in_bc != null) {
             in_bc.addBeanContextMembershipListener(this);
@@ -1262,8 +1255,7 @@ public abstract class Layer
      * the iterator as in setBeanContext(). Good for protected sub-layers where
      * you want to optimize the calling of the findAndUndo() method over them.
      */
-    public void disconnectFromBeanContext()
-            throws PropertyVetoException {
+    public void disconnectFromBeanContext() throws PropertyVetoException {
 
         BeanContext bc = getBeanContext();
         if (bc != null) {
@@ -1317,12 +1309,12 @@ public abstract class Layer
         if (localHackList != null) {
             localHackList.clear();
         }
-        // synchronized (IDListeners) {  //2012.06.15 TAW
-            IDListeners.clear();
-        //}
-        //synchronized (lsListeners) {
-            lsListeners.clear();
-        //}
+        // synchronized (IDListeners) { //2012.06.15 TAW
+        IDListeners.clear();
+        // }
+        // synchronized (lsListeners) {
+        lsListeners.clear();
+        // }
         BeanContext bc = getBeanContext();
         if (bc != null) {
             bc.removeBeanContextMembershipListener(this);
@@ -1448,7 +1440,8 @@ public abstract class Layer
 
         if (ws != null) {
             MapHandler mh = (MapHandler) getBeanContext();
-            Window frame = null;
+            // Window frame = null; // java 5 incompatibility
+            Frame frame = null;
             if (mh != null) {
                 frame = (Frame) mh.get(java.awt.Frame.class);
 
@@ -1464,8 +1457,14 @@ public abstract class Layer
                                 parent = parent.getParent();
                             }
 
-                            if (parent instanceof java.awt.Window) {
-                                frame = (java.awt.Window) parent;
+                            /* java 5 incompatibility */
+                            /*
+                             * if (parent instanceof java.awt.Window) { frame =
+                             * (java.awt.Window) parent; }
+                             */
+
+                            if (parent instanceof java.awt.Frame) {
+                                frame = (java.awt.Frame) parent;
                             }
 
                         } catch (Exception e) {
@@ -1524,8 +1523,7 @@ public abstract class Layer
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    private void readObject(ObjectInputStream in)
-            throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         i18n = Environment.getI18n();
         beanContextChildSupport = new BeanContextChildSupport(this);
