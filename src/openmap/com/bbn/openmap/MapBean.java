@@ -1660,7 +1660,7 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
          */
         public Shape inverseTransform(Shape shape) {
 
-            double[] coords = new double[6];
+            float[] coords = new float[6];
             GeneralPath path = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
 
             PathIterator pi = shape.getPathIterator(getInverseRotationTransform());
