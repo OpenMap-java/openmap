@@ -1,5 +1,9 @@
 2014-05-14  dietrick  <dietrick@wonkavision.local>
 
+	* Tagged OpenMap 5.1.0 - Since the API signatures have changed for
+	some components, the minor version number is being
+	increased. Details following.
+
 	* Updated the MapBean (and subclasses) to handle rotation better.
 	When a rotation angle is set on the MapBean, it starts to use a
 	RotationHelper (inner class) to create a new image buffer for a
