@@ -1563,8 +1563,8 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
         }
 
         /**
-         * @returns the projection of the image buffer that is big enough for
-         *          rotated areas.
+         * @return the projection of the image buffer that is big enough for
+         *         rotated areas.
          */
         public Projection getProjection() {
             return rotProjection;
