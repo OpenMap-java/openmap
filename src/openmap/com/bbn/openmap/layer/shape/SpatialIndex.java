@@ -491,7 +491,7 @@ public class SpatialIndex extends ShapeUtils {
             factory = new EsriGraphicFactory();
             // You can set this in the ShapeLayer if you want, replacing
             // DrawingAttributes with GraphicAttributes with a LINETYPE set.
-            
+
             // factory.setLineType(OMGraphic.LINETYPE_GREATCIRCLE);
         }
         return factory;
@@ -538,7 +538,7 @@ public class SpatialIndex extends ShapeUtils {
 
         BinaryFile shpFile = shp;
         DbfHandler dbfFile = dbf;
-        
+
         if (shpFile == null) {
             shp = getShpFile(shpFileName);
             shpFile = shp;
@@ -736,17 +736,19 @@ public class SpatialIndex extends ShapeUtils {
      */
     public Iterator<Entry> entryIterator(GeoCoordTransformation dataTransform)
             throws IOException, FormatException {
-        if (entries == null) {
+        List<Entry> entriesHandle = entries;
+        if (entriesHandle == null) {
             boolean gatherBounds = false;
             if (bounds == null) {
                 bounds = new ESRIBoundingBox();
                 gatherBounds = true;
             }
 
-            entries = readIndexFile(gatherBounds ? bounds : null, dataTransform);
+            entriesHandle = readIndexFile(gatherBounds ? bounds : null, dataTransform);
+            entries = entriesHandle;
         }
 
-        return entries.iterator();
+        return new ArrayList<Entry>(entriesHandle).iterator();
     }
 
     /**
@@ -770,7 +772,7 @@ public class SpatialIndex extends ShapeUtils {
      */
     protected List<Entry> readIndexFile(ESRIBoundingBox bounds, GeoCoordTransformation dataTransform)
             throws IOException, FormatException {
-        entries = new ArrayList<Entry>();
+        List<Entry> entries = new ArrayList<Entry>();
 
         byte ixRecord[] = new byte[SPATIAL_INDEX_RECORD_LENGTH];
 
@@ -783,8 +785,7 @@ public class SpatialIndex extends ShapeUtils {
         if (!BinaryBufferedFile.exists(ssxFileName)) {
             // If we got this far without an ssx existing, then we should just
             // create one in memory.
-            entries = SpatialIndex.MemoryIndex.create(shpFileName);
-            return entries;
+            return SpatialIndex.MemoryIndex.create(shpFileName);
         }
 
         BinaryBufferedFile ssx = new BinaryBufferedFile(ssxFileName);

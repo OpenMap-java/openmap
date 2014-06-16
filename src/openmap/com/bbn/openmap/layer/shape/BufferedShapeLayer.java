@@ -46,8 +46,8 @@ import com.bbn.openmap.proj.Projection;
  */
 public class BufferedShapeLayer extends ShapeLayer {
 
-   private static final long serialVersionUID = 1L;
-   protected OMGraphicList bufferedList = null;
+    private static final long serialVersionUID = 1L;
+    protected OMGraphicList bufferedList = null;
 
     /**
      * Initializes an empty shape layer.
@@ -70,13 +70,9 @@ public class BufferedShapeLayer extends ShapeLayer {
     /**
      * Get the graphics for the entire planet.
      */
-    protected OMGraphicList getWholePlanet() throws IOException,
-            FormatException {
+    protected OMGraphicList getWholePlanet() throws IOException, FormatException {
         spatialIndex.readIndexFile(null, coordTransform);
-        return spatialIndex.getAllOMGraphics((OMGraphicList) null,
-                drawingAttributes,
-                (Projection) null,
-                coordTransform);
+        return spatialIndex.getAllOMGraphics((OMGraphicList) null, drawingAttributes, (Projection) null, coordTransform);
     }
 
     /**
@@ -103,10 +99,14 @@ public class BufferedShapeLayer extends ShapeLayer {
                 bufferedList = getWholePlanet();
             }
         } catch (FormatException fe) {
-            logger.warning(fe.getMessage());
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(fe.getMessage());
+            }
             return list;
         } catch (IOException ioe) {
-            logger.warning(ioe.getMessage());
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(ioe.getMessage());
+            }
             return list;
         }
 
@@ -123,35 +123,44 @@ public class BufferedShapeLayer extends ShapeLayer {
         // check for dateline anomaly on the screen. we check for
         // ulLon >= lrLon, but we need to be careful of the check for
         // equality because of floating point arguments...
-        if (ProjMath.isCrossingDateline(ulLon, lrLon, proj.getScale())) {
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine(getName() + ": Dateline is on screen");
+        try {
+            if (ProjMath.isCrossingDateline(ulLon, lrLon, proj.getScale())) {
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine(getName() + ": Dateline is on screen");
+                }
+
+                double ymin = Math.min(ulLat, lrLat);
+                double ymax = Math.max(ulLat, lrLat);
+
+                checkSpatialIndexEntries(ulLon, ymin, 180.0d, ymax, list, proj);
+                checkSpatialIndexEntries(-180.0d, ymin, lrLon, ymax, list, proj);
+
+            } else {
+
+                double xmin = Math.min(ulLon, lrLon);
+                double xmax = Math.max(ulLon, lrLon);
+                double ymin = Math.min(ulLat, lrLat);
+                double ymax = Math.max(ulLat, lrLat);
+                checkSpatialIndexEntries(xmin, ymin, xmax, ymax, list, proj);
             }
-
-            double ymin = Math.min(ulLat, lrLat);
-            double ymax = Math.max(ulLat, lrLat);
-
-            checkSpatialIndexEntries(ulLon, ymin, 180.0d, ymax, list, proj);
-            checkSpatialIndexEntries(-180.0d, ymin, lrLon, ymax, list, proj);
-
-        } else {
-
-            double xmin = Math.min(ulLon, lrLon);
-            double xmax = Math.max(ulLon, lrLon);
-            double ymin = Math.min(ulLat, lrLat);
-            double ymax = Math.max(ulLat, lrLat);
-            checkSpatialIndexEntries(xmin, ymin, xmax, ymax, list, proj);
+        } catch (FormatException fe) {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(fe.getMessage());
+            }
+        } catch (IOException ioe) {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(ioe.getMessage());
+            }
         }
 
         return list;
     }
 
-    protected void checkSpatialIndexEntries(double xmin, double ymin,
-                                            double xmax, double ymax,
-                                            OMGraphicList retList,
-                                            Projection proj) {
+    protected void checkSpatialIndexEntries(double xmin, double ymin, double xmax, double ymax,
+                                            OMGraphicList retList, Projection proj)
+            throws IOException, FormatException {
         // There should be the same number of objects in both iterators.
-        Iterator<?> entryIt = spatialIndex.entries.iterator();
+        Iterator<?> entryIt = spatialIndex.entryIterator();
         Iterator<?> omgIt = bufferedList.iterator();
 
         OMGraphicList labels = null;
@@ -187,25 +196,23 @@ public class BufferedShapeLayer extends ShapeLayer {
         }
         super.actionPerformed(e);
     }
-    
+
     /**
      * This method gets called from setProperties.
      * 
-     * @param realPrefix
-     *            This prefix has already been scoped, which means it is an
-     *            empty string if setProperties was called with a null prefix,
-     *            or it's a String ending with a period if it was defined with
-     *            characters.
-     * @param props
-     *            Properties containing information about files and the layer.
+     * @param realPrefix This prefix has already been scoped, which means it is
+     *        an empty string if setProperties was called with a null prefix, or
+     *        it's a String ending with a period if it was defined with
+     *        characters.
+     * @param props Properties containing information about files and the layer.
      */
     protected void setFileProperties(String realPrefix, Properties props) {
-       bufferedList = null;
-       super.setFileProperties(realPrefix, props);
+        bufferedList = null;
+        super.setFileProperties(realPrefix, props);
     }
-    
+
     public void setSpatialIndex(SpatialIndex si) {
-       bufferedList = null;
-       super.setSpatialIndex(si);
-   }
+        bufferedList = null;
+        super.setSpatialIndex(si);
+    }
 }

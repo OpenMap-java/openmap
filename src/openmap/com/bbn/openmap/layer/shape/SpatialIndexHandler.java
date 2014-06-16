@@ -79,7 +79,8 @@ public class SpatialIndexHandler implements PropertyConsumer {
     // for internationalization
     protected I18n i18n = Environment.getI18n();
 
-    public SpatialIndexHandler() {}
+    public SpatialIndexHandler() {
+    }
 
     public SpatialIndexHandler(String prefix, Properties props) {
         setProperties(prefix, props);
@@ -94,8 +95,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
         StringBuffer sb = new StringBuffer();
         sb.append("For ").append(prettyName).append(":\n");
         sb.append("  Shape file name: ").append(shapeFileName).append("\n");
-        sb.append("  Spatal index file name: ")
-                .append(SpatialIndex.ssx(shapeFileName)).append("\n");
+        sb.append("  Spatal index file name: ").append(SpatialIndex.ssx(shapeFileName)).append("\n");
         sb.append("  image URL: ").append(imageURLString).append("\n");
         sb.append("  drawing attributes: ").append(drawingAttributes).append("\n");
         return sb.toString();
@@ -111,9 +111,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
         stuff.add(drawingAttributes.getGUI());
 
         JPanel checks = new JPanel(new GridLayout(0, 1));
-        JCheckBox enableButton = new JCheckBox(i18n.get(SpatialIndexHandler.class,
-                "enableButton",
-                "Show"));
+        JCheckBox enableButton = new JCheckBox(i18n.get(SpatialIndexHandler.class, "enableButton", "Show"));
         enableButton.setSelected(enabled);
         enableButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -123,9 +121,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
         });
         checks.add(enableButton);
 
-        JCheckBox bufferButton = new JCheckBox(i18n.get(SpatialIndexHandler.class,
-                "bufferButton",
-                "Buffer"));
+        JCheckBox bufferButton = new JCheckBox(i18n.get(SpatialIndexHandler.class, "bufferButton", "Buffer"));
         bufferButton.setSelected(buffered);
         bufferButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -159,8 +155,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
         setPropertyPrefix(prefix);
         String realPrefix = PropUtils.getScopedPropertyPrefix(this);
         prettyName = props.getProperty(realPrefix + Layer.PrettyNameProperty);
-        String dataPathPrefix = props.getProperty(prefix
-                + Layer.DataPathPrefixProperty);
+        String dataPathPrefix = props.getProperty(prefix + Layer.DataPathPrefixProperty);
 
         if (dataPathPrefix != null && dataPathPrefix.length() > 0) {
             dataPathPrefix += "/";
@@ -185,32 +180,27 @@ public class SpatialIndexHandler implements PropertyConsumer {
                 }
             } catch (FormatException fe) {
                 if (Debug.debugging("shape")) {
-                    Debug.error("ShapeLayer: Couldn't create DBF handler for "
-                            + dbfFileName + ", FormatException: "
-                            + fe.getMessage());
+                    Debug.error("ShapeLayer: Couldn't create DBF handler for " + dbfFileName
+                            + ", FormatException: " + fe.getMessage());
                 }
             } catch (IOException ioe) {
                 if (Debug.debugging("shape")) {
-                    Debug.error("ShapeLayer: Couldn't create DBF handler for "
-                            + dbfFileName + ", IOException: "
-                            + ioe.getMessage());
+                    Debug.error("ShapeLayer: Couldn't create DBF handler for " + dbfFileName
+                            + ", IOException: " + ioe.getMessage());
                 }
             }
 
-            imageURLString = props.getProperty(realPrefix
-                    + ShapeLayer.pointImageURLProperty);
+            imageURLString = props.getProperty(realPrefix + ShapeLayer.pointImageURLProperty);
 
             try {
                 if (imageURLString != null && imageURLString.length() > 0) {
-                    URL imageURL = PropUtils.getResourceOrFileOrURL(this,
-                            imageURLString);
+                    URL imageURL = PropUtils.getResourceOrFileOrURL(this, imageURLString);
                     ImageIcon imageIcon = new ImageIcon(imageURL);
                     spatialIndex.setPointIcon(imageIcon);
                 }
             } catch (MalformedURLException murle) {
                 Debug.error("MultiShapeLayer.setProperties(" + realPrefix
-                        + ": point image URL not so good: \n\t"
-                        + imageURLString);
+                        + ": point image URL not so good: \n\t" + imageURLString);
 
             } catch (NullPointerException npe) {
                 // May happen if not connected to the internet.
@@ -224,18 +214,14 @@ public class SpatialIndexHandler implements PropertyConsumer {
 
         drawingAttributes = new DrawingAttributes(realPrefix, props);
 
-        enabled = PropUtils.booleanFromProperties(props, realPrefix
-                + EnabledProperty, enabled);
-        buffered = PropUtils.booleanFromProperties(props, realPrefix
-                + BufferedProperty, buffered);
+        enabled = PropUtils.booleanFromProperties(props, realPrefix + EnabledProperty, enabled);
+        buffered = PropUtils.booleanFromProperties(props, realPrefix + BufferedProperty, buffered);
 
-        String transClassName = props.getProperty(realPrefix
-                + ShapeLayer.TransformProperty);
+        String transClassName = props.getProperty(realPrefix + ShapeLayer.TransformProperty);
         if (transClassName != null) {
             try {
-                coordTranslator = (GeoCoordTransformation) ComponentFactory.create(transClassName,
-                        realPrefix + ShapeLayer.TransformProperty,
-                        props);
+                coordTranslator = (GeoCoordTransformation) ComponentFactory.create(transClassName, realPrefix
+                        + ShapeLayer.TransformProperty, props);
             } catch (ClassCastException cce) {
 
             }
@@ -249,10 +235,10 @@ public class SpatialIndexHandler implements PropertyConsumer {
         }
 
         String prefix = PropUtils.getScopedPropertyPrefix(this);
-        props.put(prefix + ShapeLayer.shapeFileProperty,
-                (shapeFileName == null ? "" : shapeFileName));
-        props.put(prefix + ShapeLayer.pointImageURLProperty,
-                (imageURLString == null ? "" : imageURLString));
+        props.put(prefix + ShapeLayer.shapeFileProperty, (shapeFileName == null ? ""
+                : shapeFileName));
+        props.put(prefix + ShapeLayer.pointImageURLProperty, (imageURLString == null ? ""
+                : imageURLString));
 
         if (drawingAttributes != null) {
             drawingAttributes.getProperties(props);
@@ -290,18 +276,11 @@ public class SpatialIndexHandler implements PropertyConsumer {
         // only have to modify one properties file with the
         // translation.
 
-        interString = i18n.get(ShapeLayer.class,
-                ShapeLayer.shapeFileProperty,
-                I18n.TOOLTIP,
-                "Location of Shape file - .shp (File, URL or relative file path).");
+        interString = i18n.get(ShapeLayer.class, ShapeLayer.shapeFileProperty, I18n.TOOLTIP, "Location of Shape file - .shp (File, URL or relative file path).");
         props.put(ShapeLayer.shapeFileProperty, interString);
-        interString = i18n.get(ShapeLayer.class,
-                ShapeLayer.shapeFileProperty,
-                ShapeLayer.shapeFileProperty);
-        props.put(ShapeLayer.shapeFileProperty + LabelEditorProperty,
-                interString);
-        props.put(ShapeLayer.shapeFileProperty + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        interString = i18n.get(ShapeLayer.class, ShapeLayer.shapeFileProperty, ShapeLayer.shapeFileProperty);
+        props.put(ShapeLayer.shapeFileProperty + LabelEditorProperty, interString);
+        props.put(ShapeLayer.shapeFileProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
         // interString = i18n.get(ShapeLayer.class,
         // ShapeLayer.spatialIndexProperty,
@@ -317,47 +296,28 @@ public class SpatialIndexHandler implements PropertyConsumer {
         // props.put(ShapeLayer.spatialIndexProperty + ScopedEditorProperty,
         // "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
-        interString = i18n.get(ShapeLayer.class,
-                ShapeLayer.pointImageURLProperty,
-                I18n.TOOLTIP,
-                "Image file to use for map location of point data (optional).");
+        interString = i18n.get(ShapeLayer.class, ShapeLayer.pointImageURLProperty, I18n.TOOLTIP, "Image file to use for map location of point data (optional).");
         props.put(ShapeLayer.pointImageURLProperty, interString);
-        interString = i18n.get(ShapeLayer.class,
-                ShapeLayer.pointImageURLProperty,
-                ShapeLayer.pointImageURLProperty);
-        props.put(ShapeLayer.pointImageURLProperty + LabelEditorProperty,
-                interString);
-        props.put(ShapeLayer.pointImageURLProperty + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
+        interString = i18n.get(ShapeLayer.class, ShapeLayer.pointImageURLProperty, ShapeLayer.pointImageURLProperty);
+        props.put(ShapeLayer.pointImageURLProperty + LabelEditorProperty, interString);
+        props.put(ShapeLayer.pointImageURLProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
 
         if (drawingAttributes != null) {
             drawingAttributes.getPropertyInfo(props);
         } else {
             DrawingAttributes.DEFAULT.getPropertyInfo(props);
         }
-        interString = i18n.get(SpatialIndexHandler.class,
-                EnabledProperty,
-                I18n.TOOLTIP,
-                "Show file contents");
+        interString = i18n.get(SpatialIndexHandler.class, EnabledProperty, I18n.TOOLTIP, "Show file contents");
         props.put(EnabledProperty, interString);
-        interString = i18n.get(SpatialIndexHandler.class,
-                EnabledProperty,
-                EnabledProperty);
+        interString = i18n.get(SpatialIndexHandler.class, EnabledProperty, EnabledProperty);
         props.put(EnabledProperty + LabelEditorProperty, interString);
-        props.put(EnabledProperty + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(EnabledProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-        interString = i18n.get(SpatialIndexHandler.class,
-                BufferedProperty,
-                I18n.TOOLTIP,
-                "Read and hold entire file contents (may be faster)");
+        interString = i18n.get(SpatialIndexHandler.class, BufferedProperty, I18n.TOOLTIP, "Read and hold entire file contents (may be faster)");
         props.put(BufferedProperty, interString);
-        interString = i18n.get(SpatialIndexHandler.class,
-                BufferedProperty,
-                BufferedProperty);
+        interString = i18n.get(SpatialIndexHandler.class, BufferedProperty, BufferedProperty);
         props.put(BufferedProperty + LabelEditorProperty, interString);
-        props.put(BufferedProperty + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(BufferedProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         return props;
     }
@@ -379,15 +339,9 @@ public class SpatialIndexHandler implements PropertyConsumer {
      * @param xmax double for the max horizontal limit of the bounding box.
      * @param ymax double for the max vertical limit of the bounding box.
      */
-    public OMGraphicList getGraphics(double xmin, double ymin, double xmax,
-                                     double ymax) throws IOException,
-            FormatException {
-        return getGraphics(xmin,
-                ymin,
-                xmax,
-                ymax,
-                (OMGraphicList) null,
-                (Projection) null);
+    public OMGraphicList getGraphics(double xmin, double ymin, double xmax, double ymax)
+            throws IOException, FormatException {
+        return getGraphics(xmin, ymin, xmax, ymax, (OMGraphicList) null, (Projection) null);
     }
 
     /**
@@ -402,9 +356,8 @@ public class SpatialIndexHandler implements PropertyConsumer {
      *        OMGraphicList will be created.
      * @return OMGraphicList containing the new OMGraphics.
      */
-    public OMGraphicList getGraphics(double xmin, double ymin, double xmax,
-                                     double ymax, OMGraphicList list)
-            throws IOException, FormatException {
+    public OMGraphicList getGraphics(double xmin, double ymin, double xmax, double ymax,
+                                     OMGraphicList list) throws IOException, FormatException {
         return getGraphics(xmin, ymin, xmax, ymax, list, (Projection) null);
     }
 
@@ -421,10 +374,9 @@ public class SpatialIndexHandler implements PropertyConsumer {
      * @param proj the projection to use to generate the OMGraphics.
      * @return OMGraphicList containing the new OMGraphics.
      */
-    public OMGraphicList getGraphics(double xmin, double ymin, double xmax,
-                                     double ymax, OMGraphicList list,
-                                     Projection proj) throws IOException,
-            FormatException {
+    public OMGraphicList getGraphics(double xmin, double ymin, double xmax, double ymax,
+                                     OMGraphicList list, Projection proj)
+            throws IOException, FormatException {
         if (list == null) {
             list = new OMGraphicList();
         }
@@ -436,14 +388,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
                 bufferedList = null;
             }
 
-            spatialIndex.getOMGraphics(xmin,
-                    ymin,
-                    xmax,
-                    ymax,
-                    list,
-                    drawingAttributes,
-                    proj,
-                    coordTranslator);
+            spatialIndex.getOMGraphics(xmin, ymin, xmax, ymax, list, drawingAttributes, proj, coordTranslator);
 
         } else {
 
@@ -469,12 +414,11 @@ public class SpatialIndexHandler implements PropertyConsumer {
      * @param retList the list that passing OMGraphics will be added to.
      * @param proj the current map projection.
      */
-    protected void checkSpatialIndexEntries(double xmin, double ymin,
-                                            double xmax, double ymax,
-                                            OMGraphicList retList,
-                                            Projection proj) {
+    protected void checkSpatialIndexEntries(double xmin, double ymin, double xmax, double ymax,
+                                            OMGraphicList retList, Projection proj)
+            throws IOException, FormatException {
         // There should be the same number of objects in both iterators.
-        Iterator<?> entryIt = spatialIndex.entries.iterator();
+        Iterator<?> entryIt = spatialIndex.entryIterator();
         Iterator<?> omgIt = bufferedList.iterator();
 
         OMGraphicList labels = null;
@@ -511,8 +455,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
     /**
      * Get the graphics for the entire planet.
      */
-    protected OMGraphicList getWholePlanet() throws IOException,
-            FormatException {
+    protected OMGraphicList getWholePlanet() throws IOException, FormatException {
         return getWholePlanet(coordTranslator);
     }
 
@@ -523,10 +466,7 @@ public class SpatialIndexHandler implements PropertyConsumer {
             throws IOException, FormatException {
         // Sets the entries
         spatialIndex.readIndexFile(null, dataTransform);
-        return spatialIndex.getAllOMGraphics((OMGraphicList) null,
-                drawingAttributes,
-                (Projection) null,
-                dataTransform);
+        return spatialIndex.getAllOMGraphics((OMGraphicList) null, drawingAttributes, (Projection) null, dataTransform);
     }
 
     public void setPrettyName(String set) {
