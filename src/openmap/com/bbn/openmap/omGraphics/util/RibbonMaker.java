@@ -32,20 +32,8 @@ import com.bbn.openmap.proj.Length;
  * 
  * <pre>
  * 
- * llPoints = new double[] {
- *     40.0f,
- *     -92.0f,
- *     42.0f,
- *     -87.0f,
- *     38.57,
- *     -90.825,
- *     37.0f,
- *     -89.0f,
- *     35.0f,
- *     -94.0f,
- *     40.0f,
- *     -92.0f
- * };
+ * llPoints = new double[] { 40.0f, -92.0f, 42.0f, -87.0f, 38.57, -90.825, 37.0f, -89.0f, 35.0f,
+ *         -94.0f, 40.0f, -92.0f };
  * 
  * OMGraphic omg = RibbonMaker.createFromDecimalDegrees(llPoints).getOuterRing(Length.MILE.toRadians(100));
  * 
@@ -162,6 +150,11 @@ public class RibbonMaker {
 
         RibbonIterator leg2 = new RibbonIterator(g2, g3, dist);
         OMPoly poly2 = getHalfPoly(leg2, Ribbon.LEFT, true);
+
+        // Oh dear...
+        if (poly1 == null || poly2 == null) {
+            return;
+        }
 
         if (bend == STRAIGHT || g2.equals(g3)) {
             ret.add(poly1);
@@ -280,7 +273,8 @@ public class RibbonMaker {
      * @param dist the distance the buffer should be from the legs
      * @param ret the OMGraphicList to add the resulting poly to.
      */
-    protected void addShortLegPolyForIntersection(Geo g1, Geo g2, Geo g3, int ribbonSide, double dist, OMAreaList ret) {
+    protected void addShortLegPolyForIntersection(Geo g1, Geo g2, Geo g3, int ribbonSide,
+                                                  double dist, OMAreaList ret) {
 
         /**
          * We need to do some extra work here. Since one of the legs is shorter
@@ -305,6 +299,10 @@ public class RibbonMaker {
         RibbonIterator leg2 = new RibbonIterator(g2, g3, dist);
         OMPoly fullPoly2 = getPoly(leg2, ribbonSide);
 
+        if (fullPoly1 == null || fullPoly2 == null) {
+            return;
+        }
+
         // Intersection is the point on both polys that is buffer distance away
         // from corner
         Geo intersection = getPolyIntersection(fullPoly1, fullPoly2);
@@ -316,31 +314,35 @@ public class RibbonMaker {
 
         leg1 = new RibbonIterator(g1, g2, dist);
         OMPoly halfPoly1 = getHalfPoly(leg1, ribbonSide, false);
-        GeoArray geoPoly2 = GeoArray.Double.createFromLatLonRadians(fullPoly2.getLatLonArray());
+        if (halfPoly1 != null) {
+            GeoArray geoPoly2 = GeoArray.Double.createFromLatLonRadians(fullPoly2.getLatLonArray());
 
-        double[] leg1Coords = halfPoly1.getLatLonArray();
-        for (int i = 0; i < leg1Coords.length - 1; i += 2) {
-            Geo pnt = new Geo(leg1Coords[i], leg1Coords[i + 1], false);
+            double[] leg1Coords = halfPoly1.getLatLonArray();
+            for (int i = 0; i < leg1Coords.length - 1; i += 2) {
+                Geo pnt = new Geo(leg1Coords[i], leg1Coords[i + 1], false);
 
-            if (!tooClose(pnt, dist)) {
-                results.add(pnt);
+                if (!tooClose(pnt, dist)) {
+                    results.add(pnt);
+                }
             }
-        }
 
-        if (!tooClose(intersection, dist)) {
-            results.add(intersection);
+            if (!tooClose(intersection, dist)) {
+                results.add(intersection);
+            }
         }
 
         leg2 = new RibbonIterator(g2, g3, dist);
         OMPoly halfPoly2 = getHalfPoly(leg2, ribbonSide, true);
-        GeoArray geoPoly1 = GeoArray.Double.createFromLatLonRadians(fullPoly1.getLatLonArray());
+        if (halfPoly2 != null) {
+            GeoArray geoPoly1 = GeoArray.Double.createFromLatLonRadians(fullPoly1.getLatLonArray());
 
-        double[] leg2Coords = halfPoly2.getLatLonArray();
-        for (int i = 0; i < leg2Coords.length - 1; i += 2) {
-            Geo pnt = new Geo(leg2Coords[i], leg2Coords[i + 1], false);
+            double[] leg2Coords = halfPoly2.getLatLonArray();
+            for (int i = 0; i < leg2Coords.length - 1; i += 2) {
+                Geo pnt = new Geo(leg2Coords[i], leg2Coords[i + 1], false);
 
-            if (!tooClose(pnt, dist)) {
-                results.add(pnt);
+                if (!tooClose(pnt, dist)) {
+                    results.add(pnt);
+                }
             }
         }
 
@@ -554,10 +556,8 @@ public class RibbonMaker {
         }
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine(new StringBuilder("Making arg starting at ").append(Length.DECIMAL_DEGREE.fromRadians(radAngle1))
-                                                                    .append(", ")
-                                                                    .append(Length.DECIMAL_DEGREE.fromRadians(radAngle2 - radAngle1))
-                                                                    .toString());
+            logger.fine(new StringBuilder("Making arg starting at ").append(Length.DECIMAL_DEGREE.fromRadians(radAngle1)).append(", ").append(Length.DECIMAL_DEGREE.fromRadians(radAngle2
+                    - radAngle1)).toString());
         }
 
         List<Geo> points = new LinkedList<Geo>();
