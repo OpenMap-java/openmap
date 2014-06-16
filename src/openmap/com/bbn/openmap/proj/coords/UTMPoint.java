@@ -207,7 +207,7 @@ public class UTMPoint {
      * @param utmPoint A UTMPoint instance to put the results in. If null, a new
      *        UTMPoint will be allocated.
      * @param zoneNumber the number of the zone
-     * @param isNorthern true if zone is in northern hemispehere
+     * @param isNorthern true if zone is in northern hemisphere
      * @return A UTM class instance containing the value of <code>null</code> if
      *         conversion failed. If you pass in a UTMPoint, it will be returned
      *         as well if successful.
