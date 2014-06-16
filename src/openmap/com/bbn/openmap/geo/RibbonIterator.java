@@ -20,8 +20,7 @@ import java.util.Iterator;
  * Geo are perpendicular to the great circle path that the CENTER Geo resides
  * on.
  */
-public class RibbonIterator
-        implements Iterator<Ribbon>, Iterable<Ribbon> {
+public class RibbonIterator implements Iterator<Ribbon>, Iterable<Ribbon> {
 
     protected Geo v1;
     protected Geo v2;
@@ -30,7 +29,6 @@ public class RibbonIterator
     protected Rotation rotator;
     protected Geo point;
     protected double distance;
-    protected boolean hasNext;
 
     /**
      * Return an iterator that returns Ribbons along the great circle between v1
@@ -57,15 +55,29 @@ public class RibbonIterator
     public RibbonIterator(Geo v1, Geo v2, double radius, double rotationIntervalDist) {
         this.v1 = v1;
         this.v2 = v2;
-        this.distance = v1.distance(v2);
-        this.radius = radius;
-        this.gc = v1.crossNormalize(v2);
-        this.rotator = new Rotation(gc, rotationIntervalDist);
-        this.point = v1;
-        this.hasNext = true;
+
+        if (v1 == null || v2 == null || v1.equals(v2)) {
+            // hasNext should fail
+            this.point = v2;
+        } else {
+            this.distance = v1.distance(v2);
+            this.radius = radius;
+            this.gc = v1.crossNormalize(v2);
+            this.rotator = new Rotation(gc, rotationIntervalDist);
+            this.point = v1;
+        }
     }
 
+    /**
+     * Call after hasNext() returns true.
+     * 
+     * @return next Ribbon containing points at offset from v1 and v2.
+     */
     public Ribbon next() {
+        if (!hasNext()) {
+            return Ribbon.getEmpty();
+        }
+
         if (point != v2 && v1.distance(point) < distance) {
             Ribbon result = new Ribbon(point, gc, radius);
             point = rotator.rotate(point);
@@ -76,6 +88,11 @@ public class RibbonIterator
         }
     }
 
+    /**
+     * Are there more Ribbons in the iterator?
+     * 
+     * @return true if there are, then call next().
+     */
     public boolean hasNext() {
         return point != v2;
     }

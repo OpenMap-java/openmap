@@ -20,8 +20,7 @@ package com.bbn.openmap.geo;
  * <ul>
  * <li>LEFT, a point radius radians to the left of the great circle.
  * <li>CENTER, a point on the great circle.
- * <li>RIGHT, a point radius radians to the right of the great
- * circle.
+ * <li>RIGHT, a point radius radians to the right of the great circle.
  * </ul>
  */
 public class Ribbon {
@@ -59,13 +58,32 @@ public class Ribbon {
     }
 
     /**
-     * Create a Ribbon at the point x along the great circle who's
-     * normal is gc, and radius is the distance appart in radians.
+     * Create a Ribbon at the point x along the great circle who's normal is gc,
+     * and radius is the distance apart in radians.
      */
     public Ribbon(Geo x, Geo gc, double radius) {
         Geo v = x.crossNormalize(gc);
         Rotation r = new Rotation(v, radius);
         Geo left = r.rotate(x);
         point = new Geo[] { left, x, x.add(x.subtract(left)) };
+    }
+
+    /**
+     * Call for RibbonIterator to create empty Ribbon when weird parameters are
+     * passed in.
+     * 
+     * @return empty Ribbon.
+     */
+    public static Ribbon getEmpty() {
+        return new Ribbon(new Object());
+    }
+
+    /**
+     * For EMPTY Ribbon.
+     * 
+     * @param dummy
+     */
+    private Ribbon(Object dummy) {
+        point = new Geo[] {};
     }
 }
