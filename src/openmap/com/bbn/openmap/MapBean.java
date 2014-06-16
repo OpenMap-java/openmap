@@ -488,14 +488,8 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
      */
     protected void fireProjectionChanged() {
 
-        setRotHelper(rotationAngle != 0 ? new RotationHelper(rotationAngle, getProjection()) : null);
-        RotationHelper rotHelper = getRotHelper();
-
-        // Let's make sure that this is up to date.
-        ((Proj) getProjection()).setRotationAngle(rotationAngle);
+        // This handles setting up the RotationHelper if it's needed.
         Projection proj = getRotatedProjection();
-        // This too, in case it's rotated.
-        ((Proj) proj).setRotationAngle(rotationAngle);
 
         // Fire the property change, so the messages get cleared out.
         // Then, if any of the layers have a problem with their new
@@ -698,7 +692,7 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
      *         and has extra offsets.
      */
     public Projection getRotatedProjection() {
-        RotationHelper rotation = getRotHelper();
+        RotationHelper rotation = getUpdatedRotHelper();
         Projection proj = rotation != null ? rotation.getProjection() : projection;
         // Double check
         ((Proj) proj).setRotationAngle(getRotationAngle());
@@ -979,6 +973,8 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
     }
 
     public void paintPainters(Graphics g) {
+        // Just want a quick, non-changing handle on the helper. Don't need to
+        // configure it.
         RotationHelper rotationHelper = getRotHelper();
 
         if (painters != null) {
@@ -1399,8 +1395,32 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
     protected RotationHelper rotHelper;
 
     /**
-     * @return the locRotHelper
+     * Handles all of the updating of the RotationHelper if needed, based on the
+     * current rotation settings on the MapBean.
+     * 
+     * @return the locRotHelper, null if not needed.
      */
+    protected RotationHelper getUpdatedRotHelper() {
+        double rotAngle = getRotationAngle();
+        Projection proj = getProjection();
+        RotationHelper rotationHelper = this.rotHelper;
+
+        if (rotAngle != 0.0) {
+            if (rotationHelper == null) {
+                rotationHelper = new RotationHelper(rotAngle, proj);
+                setRotHelper(rotationHelper);
+            } else {
+                rotationHelper.updateForBufferDimensions(proj);
+                rotationHelper.updateAngle(rotAngle);
+            }
+        } else if (rotationHelper != null && !rotationHelper.isStillNeeded(rotAngle)) {
+            setRotHelper(null);
+            rotationHelper = null;
+        }
+
+        return rotationHelper;
+    }
+
     protected RotationHelper getRotHelper() {
         return rotHelper;
     }
@@ -1408,12 +1428,12 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
     /**
      * @param rotHelper the locRotHelper to set
      */
-    protected void setRotHelper(RotationHelper rotHelper) {
+    protected void setRotHelper(RotationHelper nRotHelper) {
         if (this.rotHelper != null) {
             this.rotHelper.dispose();
         }
 
-        this.rotHelper = rotHelper;
+        this.rotHelper = nRotHelper;
     }
 
     /**
@@ -1486,29 +1506,40 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
         AffineTransform rotTransform;
 
         private RotationHelper(double angle, Projection currentProjection) {
+            updateForBufferDimensions(currentProjection);
+            updateAngle(angle);
+        }
 
-            /*
-             * We're going to try to do buffering with a image that will cover
-             * all of the corners when the map is rotated. We'll measure the
-             * ground distance from the center of the projection/map to each
-             * corner, and take the longest to create a bounding circle. The
-             * NSEW of that bounding circle (as a bounding box) Makes up the
-             * buffered image pixel bounds, and the inverse projected
-             * coordinates of that box should be returned as upper left and
-             * lower right coordinates when those methods are called. The
-             * projection of that box should be the same as the current
-             * projection, except for the new width and height.
-             * 
-             * Because the height and width are different for the buffered
-             * image, we're going to have to translate it before it is rotated.
-             * We can probably just tack on an additional translate to the rot.
-             * That difference will be 1/2 the difference of the height and
-             * width between the rot image and the original projection (mapbean
-             * dimensions).
-             */
-            Point2D center = currentProjection.getCenter();
-            Point2D ul = currentProjection.getUpperLeft();
-            Point2D lr = currentProjection.getLowerRight();
+        /**
+         * We're going to try to do buffering with a image that will cover all
+         * of the corners when the map is rotated. We'll measure the ground
+         * distance from the center of the projection/map to each corner, and
+         * take the longest to create a bounding circle. The NSEW of that
+         * bounding circle (as a bounding box) Makes up the buffered image pixel
+         * bounds, and the inverse projected coordinates of that box should be
+         * returned as upper left and lower right coordinates when those methods
+         * are called. The projection of that box should be the same as the
+         * current projection, except for the new width and height.
+         * 
+         * Because the height and width are different for the buffered image,
+         * we're going to have to translate it before it is rotated. We can
+         * probably just tack on an additional translate to the rot. That
+         * difference will be 1/2 the difference of the height and width between
+         * the rot image and the original projection (mapbean dimensions).
+         * 
+         * @param proj the projection to use to create the current image buffer
+         * @return boolean true if the rotBufferHeight and/or rotBufferWidth
+         *         have changed, indicating that the image buffer was recreated
+         *         for new dimensions.
+         */
+        protected boolean updateForBufferDimensions(Projection proj) {
+
+            int currentRotBufferWidth = rotBufferWidth;
+            int currentRotBufferHeight = rotBufferHeight;
+
+            Point2D center = proj.getCenter();
+            Point2D ul = proj.getUpperLeft();
+            Point2D lr = proj.getLowerRight();
 
             /*
              * Woooooow, we're really going to have to work it, aren't we? We
@@ -1538,28 +1569,43 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
 
             // Calculate the pixel bounds of the new bounding box to get new
             // projection h, w
-            Point2D newULPix = currentProjection.forward(newUL);
-            Point2D newLRPix = currentProjection.forward(newLR);
+            Point2D newULPix = proj.forward(newUL);
+            Point2D newLRPix = proj.forward(newLR);
 
-            int rotBufferHeight = (int) Math.abs(newLRPix.getY() - newULPix.getY());
-            int rotBufferWidth = (int) Math.abs(newLRPix.getX() - newULPix.getX());
-            this.rotProjection = projectionFactory.makeProjection(currentProjection.getClass(), center, currentProjection.getScale(), rotBufferWidth, rotBufferHeight);
-            this.rotImage = new BufferedImage(rotBufferWidth, rotBufferHeight, BufferedImage.TYPE_INT_ARGB);
-            rotCenter = rotProjection.forward(center);
+            rotBufferHeight = (int) Math.abs(newLRPix.getY() - newULPix.getY());
+            rotBufferWidth = (int) Math.abs(newLRPix.getX() - newULPix.getX());
+            rotProjection = projectionFactory.makeProjection(proj.getClass(), center, proj.getScale(), rotBufferWidth, rotBufferHeight);
+            this.rotCenter = rotProjection.forward(center);
 
             /*
              * Now calculate the different in size between the current
              * projection and the buffered image projection, and the offset
              * needed for translation for proper painting.
              */
-            this.rotXOffset = (rotProjection.getWidth() - currentProjection.getWidth()) / 2;
-            this.rotYOffset = (rotProjection.getHeight() - currentProjection.getHeight()) / 2;
-            updateAngle(angle);
+            this.rotXOffset = (rotProjection.getWidth() - proj.getWidth()) / 2;
+            this.rotYOffset = (rotProjection.getHeight() - proj.getHeight()) / 2;
+
+            if (!(currentRotBufferHeight == rotBufferHeight && currentRotBufferWidth == rotBufferWidth)) {
+                this.rotImage = new BufferedImage(rotBufferWidth, rotBufferHeight, BufferedImage.TYPE_INT_ARGB);
+                return true;
+            }
+
+            return false;
         }
 
         public void updateAngle(double angle) {
             this.angle = angle;
             this.rotTransform = AffineTransform.getRotateInstance(angle, rotCenter.getX(), rotCenter.getY());
+        }
+
+        /**
+         * @param az angle to test against
+         * @return true if current angle or new angle is not zero. Two zero
+         *         angles in a row is an indication that the RotationHelper is
+         *         no longer needed.
+         */
+        public boolean isStillNeeded(double az) {
+            return !(az == 0.0 && angle == 0.0);
         }
 
         /**
