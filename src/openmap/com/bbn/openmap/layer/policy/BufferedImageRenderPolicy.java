@@ -24,6 +24,7 @@ package com.bbn.openmap.layer.policy;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -186,6 +187,14 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
 
     /** Set the BufferedImage for the layer. */
     protected void setBuffer(OMRaster bi) {
+        OMRaster currentBuffer = buffer;
+        if (currentBuffer != null) {
+            Image image = currentBuffer.getImage();
+            if (image != null) {
+                image.flush();
+            }
+        }
+
         buffer = bi;
     }
 
