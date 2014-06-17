@@ -7,24 +7,25 @@
     <description>
     </description>
 
-    <!--
+	<!-- Location of openmap.properties file to use to configure layers for WMS servlet.  The value should be a path to the properties file. -->
     <context-param>
       <param-name>mapDefinition</param-name>
-      <param-value>E:/home/tomrak/devel/tide/ommod/res/cfg/openmapexample/openmap.properties</param-value>
+      <param-value>wms.properties</param-value>
       <description>
         Configuration file for openmap. Default value is "openmap.properties"
       </description>
     </context-param>
-    -->
     
+    <!-- The port number that the servlet container (glassfish, apache) is running on. -->
     <context-param>
       <param-name>port</param-name>
-      <param-value>7070</param-value>
+      <param-value>8080</param-value>
       <description>
          Server port number
       </description>
     </context-param>
     
+    <!-- The request path used by clients (browsers, map programs), after the basic URL for the server. This is the part in front of the ? in the map request. -->
     <context-param>
       <param-name>path</param-name>
       <param-value>/omwms</param-value>

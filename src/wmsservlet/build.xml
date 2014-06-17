@@ -12,6 +12,9 @@
 		<fileset dir="${openmap.home}/lib">
 			<include name="**/*.jar" />
 		</fileset>
+		<fileset dir="${openmap.home}/ext/apache">
+			<include name="servlet-api.jar" />
+		</fileset>
 	</path>
 
 	<target name="init">
