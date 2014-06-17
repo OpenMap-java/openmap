@@ -1413,10 +1413,21 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
                 rotationHelper.updateForBufferDimensions(proj);
                 rotationHelper.updateAngle(rotAngle);
             }
-        } else if (rotationHelper != null && !rotationHelper.isStillNeeded(rotAngle)) {
-            setRotHelper(null);
-            rotationHelper = null;
-        }
+        } else if (rotationHelper != null) {
+            /*
+             * Just because the angle is zero, let's check with the
+             * rotationHelper. If the map is just passing through zero rotation,
+             * keep it around. If we get a couple of projection changes with the
+             * az set to zero, then get rid of the rotation helper.
+             */
+            if (rotationHelper.isStillNeeded(rotAngle)) {
+                rotationHelper.updateForBufferDimensions(proj);
+                rotationHelper.updateAngle(rotAngle);
+            } else {
+                setRotHelper(null);
+                rotationHelper = null;
+            }
+        } // else return null rotationHelper
 
         return rotationHelper;
     }
@@ -1572,8 +1583,25 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
             Point2D newULPix = proj.forward(newUL);
             Point2D newLRPix = proj.forward(newLR);
 
-            rotBufferHeight = (int) Math.abs(newLRPix.getY() - newULPix.getY());
-            rotBufferWidth = (int) Math.abs(newLRPix.getX() - newULPix.getX());
+            int reqRotBufferHeight = (int) Math.abs(newLRPix.getY() - newULPix.getY());
+            int reqRotBufferWidth = (int) Math.abs(newLRPix.getX() - newULPix.getX());
+
+            // If the image is a little bigger than we need, we can reuse. Only
+            // replace it if it is significantly bigger, or at all smaller.
+            boolean needNewHeightImage = reqRotBufferHeight > currentRotBufferHeight
+                    || reqRotBufferHeight < .9 * currentRotBufferHeight;
+            boolean needNewWidthImage = reqRotBufferWidth > currentRotBufferWidth
+                    || currentRotBufferWidth < .9 * currentRotBufferWidth;
+
+            boolean bufferImageResized = false;
+
+            if (needNewHeightImage || needNewWidthImage) {
+                this.rotImage = new BufferedImage(reqRotBufferWidth, reqRotBufferHeight, BufferedImage.TYPE_INT_ARGB);
+                rotBufferWidth = reqRotBufferWidth;
+                rotBufferHeight = reqRotBufferHeight;
+                bufferImageResized = true;
+            }
+
             rotProjection = projectionFactory.makeProjection(proj.getClass(), center, proj.getScale(), rotBufferWidth, rotBufferHeight);
             this.rotCenter = rotProjection.forward(center);
 
@@ -1585,12 +1613,7 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
             this.rotXOffset = (rotProjection.getWidth() - proj.getWidth()) / 2;
             this.rotYOffset = (rotProjection.getHeight() - proj.getHeight()) / 2;
 
-            if (!(currentRotBufferHeight == rotBufferHeight && currentRotBufferWidth == rotBufferWidth)) {
-                this.rotImage = new BufferedImage(rotBufferWidth, rotBufferHeight, BufferedImage.TYPE_INT_ARGB);
-                return true;
-            }
-
-            return false;
+            return bufferImageResized;
         }
 
         public void updateAngle(double angle) {
