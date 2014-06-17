@@ -46,9 +46,7 @@ import com.bbn.openmap.util.http.IHttpResponse;
  * @author wachu
  * @author pitek
  */
-public class WmsRequestHandler
-        extends ImageServer
-        implements ImageServerConstants {
+public class WmsRequestHandler extends ImageServer implements ImageServerConstants {
 
     /**
 	 */
@@ -72,8 +70,8 @@ public class WmsRequestHandler
      * @throws IOException
      * @throws WMSException
      */
-    public WmsRequestHandler(String wmsScheme, String wmsHostName, int wmsPort, String wmsUrlPath, Properties props)
-            throws IOException, WMSException {
+    public WmsRequestHandler(String wmsScheme, String wmsHostName, int wmsPort, String wmsUrlPath,
+            Properties props) throws IOException, WMSException {
 
         super(props);
         setProperties(props);
@@ -95,8 +93,8 @@ public class WmsRequestHandler
         }
 
         // create FeatureInfoResponse from properties.
-        featureInfoResponse =
-                (FeatureInfoResponse) PropUtils.objectFromProperties(props, WMSPrefix + FeatureInfoResponseClassNameProperty);
+        featureInfoResponse = (FeatureInfoResponse) PropUtils.objectFromProperties(props, WMSPrefix
+                + FeatureInfoResponseClassNameProperty);
         if (featureInfoResponse == null) {
             featureInfoResponse = new DefaultFeatureInfoResponse();
         }
@@ -189,7 +187,8 @@ public class WmsRequestHandler
         if (layer instanceof Layer) {
             return (Layer) layer;
         }
-        throw new IllegalStateException("Top layer must be a OpenMap Layer, not " + layer.getClass());
+        throw new IllegalStateException("Top layer must be a OpenMap Layer, not "
+                + layer.getClass());
     }
 
     /**
@@ -274,7 +273,8 @@ public class WmsRequestHandler
 
         checkLayersAndStyles(requestProperties, parameters);
 
-        Debug.message("ms", "handleGetMapRequest: createImage layers:" + parameters.topLayerNames.toString());
+        Debug.message("ms", "handleGetMapRequest: createImage layers:"
+                + parameters.topLayerNames.toString());
         return createImage(projection, parameters.width, parameters.height, parameters.topLayerNames, bgPaint);
     }
 
@@ -319,7 +319,8 @@ public class WmsRequestHandler
      * @throws MapRequestFormatException
      * @throws WMSException
      */
-    public void handleGetCapabilitiesRequest(Properties requestProperties, IHttpResponse httpResponse)
+    public void handleGetCapabilitiesRequest(Properties requestProperties,
+                                             IHttpResponse httpResponse)
             throws IOException, MapRequestFormatException, WMSException {
         String response = handleGetCapabilitiesRequest(requestProperties);
         httpResponse.writeHttpResponse(HttpConnection.CONTENT_XML, response.getBytes("UTF-8"));
@@ -375,7 +376,8 @@ public class WmsRequestHandler
      * @throws MapRequestFormatException
      * @throws WMSException
      */
-    public void handleGetLegendGraphicRequest(Properties requestProperties, IHttpResponse httpResponse)
+    public void handleGetLegendGraphicRequest(Properties requestProperties,
+                                              IHttpResponse httpResponse)
             throws IOException, MapRequestFormatException, WMSException {
         byte[] image = handleGetLegendGraphicRequest(requestProperties);
         String contentType = getFormatter().getContentType();
@@ -467,8 +469,7 @@ public class WmsRequestHandler
      * @param requestProperties
      * @throws WMSException
      */
-    private void checkRequest(Properties requestProperties)
-            throws WMSException {
+    private void checkRequest(Properties requestProperties) throws WMSException {
         String service = requestProperties.getProperty(SERVICE);
         String requestType = requestProperties.getProperty(REQUEST);
 
@@ -485,8 +486,8 @@ public class WmsRequestHandler
      * @param parameters
      * @throws WMSException
      */
-    private void checkProjectionType(Properties requestProperties, GetMapRequestParameters parameters)
-            throws WMSException {
+    private void checkProjectionType(Properties requestProperties,
+                                     GetMapRequestParameters parameters) throws WMSException {
         String strSRS = requestProperties.getProperty(SRS);
         if (strSRS == null) {
             // wms 1.3.0 uses CRS parameter instead of SRS
@@ -503,7 +504,8 @@ public class WmsRequestHandler
         parameters.crs = crs;
     }
 
-    private void checkWidthAndHeight(Properties requestProperties, WidthAndHeightRequestParameters parameters)
+    private void checkWidthAndHeight(Properties requestProperties,
+                                     WidthAndHeightRequestParameters parameters)
             throws WMSException {
         String strWidth = requestProperties.getProperty(WIDTH);
         if (strWidth == null) {
@@ -548,8 +550,7 @@ public class WmsRequestHandler
         }
         String[] arrayBBox = strBBox.split(",");
         if (arrayBBox.length != 4) {
-            throw new WMSException("Invalid BBOX parameter. BBOX must contain exactly 4 values separated with comas.",
-                                   WMSException.INVALIDDIMENSIONVALUE);
+            throw new WMSException("Invalid BBOX parameter. BBOX must contain exactly 4 values separated with comas.", WMSException.INVALIDDIMENSIONVALUE);
         }
 
         try {
@@ -558,8 +559,15 @@ public class WmsRequestHandler
             double minY = Double.parseDouble(arrayBBox[1]);
             double maxX = Double.parseDouble(arrayBBox[2]);
             double maxY = Double.parseDouble(arrayBBox[3]);
-            double medX = ((maxX - minX) / 2d) + minX;
             double medY = ((maxY - minY) / 2d) + minY;
+
+            // This doesn't work over the dateline
+            double medX = ((maxX - minX) / 2d) + minX;
+
+            // Maybe we need to add a crs capability for figuring out medX if
+            // the dateline is being crossed. If we had a proper medX it
+            // wouldn't be a problem, OpenMap can handle creating images that
+            // cross the dateline.
 
             // use CRS to convert BBOX to latlon values
             CoordinateReferenceSystem crs = parameters.crs;
@@ -574,8 +582,8 @@ public class WmsRequestHandler
         }
     }
 
-    private void checkLayersAndStyles(Properties requestProperties, GetMapRequestParameters parameters)
-            throws WMSException {
+    private void checkLayersAndStyles(Properties requestProperties,
+                                      GetMapRequestParameters parameters) throws WMSException {
         String strLayers = requestProperties.getProperty(LAYERS);
         if (strLayers == null) {
             throw new WMSException("LAYERS not specified.", WMSException.LAYERNOTDEFINED);
@@ -653,7 +661,8 @@ public class WmsRequestHandler
         }
     }
 
-    private void checkLayerAndStyle(Properties requestProperties, GetLegendGraphicRequestParameters parameters)
+    private void checkLayerAndStyle(Properties requestProperties,
+                                    GetLegendGraphicRequestParameters parameters)
             throws WMSException {
 
         String layerName = requestProperties.getProperty(LAYER);
@@ -680,8 +689,8 @@ public class WmsRequestHandler
         }
     }
 
-    private void checkQueryLayers(Properties requestProperties, GetFeatureInfoRequestParameters parameters)
-            throws WMSException {
+    private void checkQueryLayers(Properties requestProperties,
+                                  GetFeatureInfoRequestParameters parameters) throws WMSException {
 
         String strLayers = requestProperties.getProperty(QUERY_LAYERS);
         if (strLayers == null) {
@@ -738,7 +747,8 @@ public class WmsRequestHandler
 
         LatLonPoint llp1 = parameters.bboxLatLonLowerLeft;
         LatLonPoint llp2 = parameters.bboxLatLonUpperRight;
-        Debug.message("wms", "bbox toLatLon: 1: " + llp1 + ", 2: " + llp2 + ", center: " + parameters.bboxLatLonCenter);
+        Debug.message("wms", "bbox toLatLon: 1: " + llp1 + ", 2: " + llp2 + ", center: "
+                + parameters.bboxLatLonCenter);
         projection.setCenter(parameters.bboxLatLonCenter);
 
         int intnewwidth = parameters.width;
@@ -834,7 +844,8 @@ public class WmsRequestHandler
         // for image base exceptions
     }
 
-    private void checkFeatureInfoPoint(Properties requestProperties, GetFeatureInfoRequestParameters parameters)
+    private void checkFeatureInfoPoint(Properties requestProperties,
+                                       GetFeatureInfoRequestParameters parameters)
             throws WMSException {
 
         parameters.x = -1;
@@ -853,8 +864,8 @@ public class WmsRequestHandler
         }
     }
 
-    private void checkInfoFormat(Properties requestProperties, GetFeatureInfoRequestParameters parameters)
-            throws WMSException {
+    private void checkInfoFormat(Properties requestProperties,
+                                 GetFeatureInfoRequestParameters parameters) throws WMSException {
 
         String format = requestProperties.getProperty(INFO_FORMAT);
 
