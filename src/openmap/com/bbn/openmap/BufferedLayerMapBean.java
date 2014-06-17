@@ -27,6 +27,7 @@ import java.awt.Component;
 import java.awt.Paint;
 import java.awt.event.ContainerEvent;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.bbn.openmap.event.LayerEvent;
 import com.bbn.openmap.layer.BufferedLayer;
@@ -51,6 +52,7 @@ import com.bbn.openmap.layer.BufferedLayer;
  */
 public class BufferedLayerMapBean extends BufferedMapBean {
 
+    private static Logger logger = Logger.getLogger(BufferedLayerMapBean.class.getName());
     protected BufferedLayer bufferedLayer;
 
     protected boolean DEBUG = false;

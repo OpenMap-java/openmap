@@ -130,7 +130,7 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
         ProjectionListener, PanListener, ZoomListener, LayerListener, CenterListener,
         SoloMapComponent {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.MapBean");
+    private static Logger logger = Logger.getLogger(MapBean.class.getName());
 
     public static final String LayersProperty = "MapBean.layers";
 
