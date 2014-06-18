@@ -1432,12 +1432,18 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
         return rotationHelper;
     }
 
+    /**
+     * Get the RotationHelper that assists with rotated maps.
+     * 
+     * @return RotationHelper, may be null if map isn't rotated.
+     */
     protected RotationHelper getRotHelper() {
         return rotHelper;
     }
 
     /**
-     * @param rotHelper the locRotHelper to set
+     * @param nRotHelper the locRotHelper to set as the current one. Disposes of
+     *        the old one.
      */
     protected void setRotHelper(RotationHelper nRotHelper) {
         if (this.rotHelper != null) {
