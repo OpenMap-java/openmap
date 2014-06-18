@@ -18,7 +18,7 @@
 					   **/*.gif, **/*.png, **/IntersectionTest.java" />
 		<property name="mac.app" value="OpenMap.app" />
 		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
-		<property name="openmap_version" value="5.1.1" />
+		<property name="openmap_version" value="5.1.2b" />
 		<property name="openmap.ext" value="${openmap.home}/src/ext" />
 		<property name="openmap.src" value="${openmap.home}/src/openmap" />
 		<property name="svg.src" value="${openmap.home}/src/svg" />
