@@ -1,3 +1,16 @@
+2014-06-18  dietrick  <dietrick@wonkavision.local>
+
+	* Tagged OpenMap 5.1.1
+
+	* Made some memory usage improvements to the MapBean rotation
+	components, the rotated image buffer is reused under most
+	conditions.  Added more cleanup to BufferedImageRenderPolicy.
+
+	* Added comments/README to the WMS servlet components.
+
+	* Modified the SpatialIndex to use a separate ArrayList for entry
+	traversal when responding to a projection change.
+
 2014-05-14  dietrick  <dietrick@wonkavision.local>
 
 	* Tagged OpenMap 5.1.0 - Since the API signatures have changed for
