@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" path="src/openmap"/>
+	<classpathentry kind="src" path="src/wmsservlet/WEB-INF/src"/>
 	<classpathentry kind="src" path="src/vpfservlet/WEB-INF/src"/>
 	<classpathentry kind="src" path="src/maptileservlet/WEB-INF/src"/>
 	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" path="src/ext"/>
 	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" output="classes/corba" path="src/corba"/>
 	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" output="classes/j3d" path="src/j3d"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
 	<classpathentry kind="lib" path="ext/batik-1.7/extensions/batik-rasterizer-ext.jar"/>
 	<classpathentry kind="lib" path="ext/batik-1.7/extensions/batik-squiggle-ext.jar"/>
@@ -48,5 +48,8 @@
 	<classpathentry kind="lib" path="ext/junit-4.6.jar"/>
 	<classpathentry kind="lib" path="ext/sqlitejdbc/sqlitejdbc-v056.jar"/>
 	<classpathentry kind="lib" path="ext/apache/servlet-api.jar"/>
+	<classpathentry kind="lib" path="ext/postgis-jdbc-2.1.0SVN.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="ext/postgresql-9.3-1100.jdbc41.jar"/>
 	<classpathentry kind="output" path="classes/openmap"/>
 </classpath>
