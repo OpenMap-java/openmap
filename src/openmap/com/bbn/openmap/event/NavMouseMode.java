@@ -119,7 +119,7 @@ public class NavMouseMode extends CoordMouseMode {
     public void mouseClicked(MouseEvent e) {
         Object obj = e.getSource();
 
-        mouseSupport.fireMapMouseClicked(e);
+        super.mouseClicked(e);
 
         if (!(obj instanceof MapBean) || point1 == null) {
             return;
@@ -149,7 +149,7 @@ public class NavMouseMode extends CoordMouseMode {
     }
 
     public void mouseMoved(MouseEvent e) {
-        mouseSupport.fireMapMouseMoved(e);
+        super.mouseMoved(e);
         if (theMap != null) {
             cleanUp();
         }
@@ -168,9 +168,19 @@ public class NavMouseMode extends CoordMouseMode {
         if (Debug.debugging("mousemode")) {
             Debug.output(getID() + "|NavMouseMode.mouseReleased()");
         }
-        Object obj = e.getSource();
 
-        mouseSupport.fireMapMouseReleased(e);
+        if (!mouseSupport.fireMapMouseReleased(e)) {
+            handleMouseReleased(e);
+        }
+    }
+
+    /**
+     * Override this method to change what happens when the mouse is released.
+     * 
+     * @param e MouseEvent
+     */
+    protected void handleMouseReleased(MouseEvent e) {
+        Object obj = e.getSource();
 
         // point2 is always going to be null for a click.
         if (!(obj == theMap) || !autoZoom || point1 == null || point2 == null) {
