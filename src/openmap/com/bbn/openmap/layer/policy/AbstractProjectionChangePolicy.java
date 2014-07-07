@@ -51,11 +51,11 @@ public abstract class AbstractProjectionChangePolicy implements ProjectionChange
      * overrides this method so that nothing does.
      * <P>
      * 
-     * Modified as of 5.0.5 to control when layer.repaint() is called. If the
-     * previous OMGraphicList is null, and the current OMGraphicList is also
-     * null or empty, then repaint is not called. This is to cut back on a
-     * flashing effect when layers that aren't doing anything call for repaints
-     * before those that are call for painting.
+     * Modified as of 5.1.2/5.1 to control when layer.repaint() is called. If
+     * the previous OMGraphicList is null, and the current OMGraphicList is also
+     * null, then repaint is not called. This is to cut back on a flashing
+     * effect when layers that aren't doing anything call for repaints before
+     * those that are call for painting.
      * 
      * @param aList the current OMGraphicList returned from the prepare() method
      *        via the SwingWorker thread.
@@ -64,11 +64,9 @@ public abstract class AbstractProjectionChangePolicy implements ProjectionChange
         if (layer != null) {
             boolean repaintIt = layer.getList() != null;
             layer.setList(aList);
-            if (aList != null && aList.size() > 0) {
-                repaintIt = true;
-            }
 
-            if (repaintIt) {
+            // Don't call repaint if the layer list was null, and still is.
+            if (repaintIt && aList != null) {
                 layer.repaint();
             } else {
                 getLogger().fine("Not painting cause of nothin'");
