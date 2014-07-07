@@ -1,3 +1,13 @@
+2014-07-07  dietrick  <dietrick@wonkavision.local>
+
+	* Tagged OpenMap 5.1.2
+
+	* AbstractProjectionChangePolicy.java change recent modifications
+	so that if a layer's previous and current OMGraphicList are null,
+	repaint isn't called on the layer.  Previously, empty
+	OMGraphicLists prevented repaint from being called too, and that
+	has bad side-effects.
+
 2014-06-18  dietrick  <dietrick@wonkavision.local>
 
 	* Tagged OpenMap 5.1.1
