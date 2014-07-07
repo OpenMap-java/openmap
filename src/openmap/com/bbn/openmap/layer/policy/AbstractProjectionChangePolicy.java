@@ -62,9 +62,10 @@ public abstract class AbstractProjectionChangePolicy implements ProjectionChange
      */
     public void workerComplete(OMGraphicList aList) {
         if (layer != null) {
+	    layer.setList(aList);
+
             boolean repaintIt = layer.getList() != null;
             if (aList != null && aList.size() > 0) {
-                layer.setList(aList);
                 repaintIt = true;
             }
 
