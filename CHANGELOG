@@ -1,3 +1,19 @@
+2014-07-25  dietrick  <dietrick@wonkavision.local>
+
+	* Modified OMRasterObject/OMScalingRaster/OMScalingIcon image
+	handling.  The projected image is no longer held in memory.
+	Instead, the transform, created in generate(), is saved and
+	applied when rendering.  OMScalingIcon figures out when the image
+	doesn't need to be scaled and just draws it in that case.
+
+	* Modified BufferedMapBean, BufferedLayer and MapBean, adjusting
+	the image buffers to be cleaned and reused when the size doesn't
+	change.
+
+	* Some layers have been tweaked - OMGraphicHandlerLayer will print
+	out an information message if memory exceptions occur,
+	SimpleAnimationLayer moves the sprites a bit more.
+
 2014-07-07  dietrick  <dietrick@wonkavision.local>
 
 	* Tagged OpenMap 5.1.2
