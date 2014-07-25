@@ -23,6 +23,8 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -51,6 +53,12 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
     protected float baseScale;
     protected float maxScale = Float.MAX_VALUE;
     protected float minScale = 0f;
+
+    /**
+     * Shortcut flag for position/scaleTo/rendering for images that don't need
+     * scaling. Preserves rendering quality.
+     */
+    protected boolean noScalingRequired = false;
 
     /**
      * Construct a blank OMRaster, to be filled in with set calls.
@@ -197,7 +205,7 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
             return false;
         }
 
-        if (sourceImage == null) {
+        if (bitmap == null) {
             // Debug.error("OMScalingIcon: null sourceImage in position!");
             // XXX: For now fail silently.
             return false;
@@ -212,13 +220,16 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
             shrinkScale = minScale;
         }
 
+        noScalingRequired = baseScale == shrinkScale;
+
         float scaleFactor = baseScale / shrinkScale;
 
         point1 = (Point) proj.forward(lat, lon, new Point());
         point2 = (Point) proj.forward(lat, lon, new Point());
 
-        int halfImageWidth = sourceImage.getWidth() / 2;
-        int halfImageHeight = sourceImage.getHeight() / 2;
+        int halfImageWidth = width / 2;
+        int halfImageHeight = height / 2;
+        // Mindful of pixel offset icons
         int myX = getX();
         int myY = getY();
 
@@ -257,17 +268,23 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
     }
 
     /**
-     * Overridding this so we don't clip rotated icons near the edge of the map.  Just display icons as whole.
+     * Over-riding this so we don't clip rotated icons near the edge of the map.
+     * Just display icons as whole.
      */
     protected void scaleTo(Projection thisProj) {
 
-        if (DEBUG)
+        if (DEBUG) {
             logger.fine("OMScalingRaster: scaleTo()");
+        }
 
-        if (sourceImage == null) {
+        if (bitmap == null) {
             if (DEBUG) {
-                logger.fine("OMScalingRaster.scaleTo() sourceImage is null");
+                logger.fine("scaleTo() source image is null");
             }
+            return;
+        }
+
+        if (noScalingRequired) {
             return;
         }
 
@@ -277,11 +294,12 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
         projRect.setSize(point2.x - point1.x, point2.y - point1.y);
 
         Rectangle sourceRect = new Rectangle();
-        sourceRect.width = sourceImage.getWidth();
-        sourceRect.height = sourceImage.getHeight();
+        sourceRect.width = width;
+        sourceRect.height = height;
 
         // Now we have everything we need to sort out this new projection.
         // boolean currentVisibility = isVisible();
+        clipRect = null;
 
         if (!projRect.isEmpty()) {
 
@@ -312,27 +330,51 @@ public class OMScalingIcon extends OMScalingRaster implements Serializable {
                 xform.setToScale(widthAdj, heightAdj);
 
                 // Create the transform op.
-                // AffineTransformOp xformOp = new AffineTransformOp(xform,
-                // AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-                AffineTransformOp xformOp = new AffineTransformOp(xform, getScaleTransformType());
-                // Scale clip area -> newImage
-                // extract sub-image
-                try {
-                    BufferedImage newImage = xformOp.filter(sourceImage, null);
-
-                    bitmap = newImage;
-                    point1.setLocation(projRect.x, projRect.y);
-                    // setVisible(currentVisibility);
-                } catch (IllegalArgumentException iae) {
-                    // This has been kicked off when the dimensions of the
-                    // filter get too big. Treat it like the height and width
-                    // being set to -1.
-                    logger.fine("Caught IllegalArgumentException: " + iae.getMessage());
-                    bitmap = null;
-                }
+                this.scalingXFormOp = new AffineTransformOp(xform, getScaleTransformType());
             }
-        } else {
-            bitmap = null;
+        }
+    }
+
+    /**
+     * Render the image at the given pixel location. This method should be
+     * overridden for special Image handling.
+     * 
+     * @param g the Graphics object to render the image into. Assumes this is a
+     *        derivative of the Graphics passed into the OMGraphic, and can be
+     *        modified without worrying about passing settings on to other
+     *        OMGraphics.
+     * @param image the image to render.
+     * @param loc the pixel location of the image.
+     */
+    protected void renderImage(Graphics g, Image image, Point loc) {
+
+        if (image != null) {
+
+            if (DEBUG) {
+                logger.fine("drawing icon image at " + loc.x + ", " + loc.y);
+            }
+
+            if (noScalingRequired) {
+                g.drawImage(image, loc.x, loc.y, null);
+                return;
+            }
+
+            if (g instanceof Graphics2D) {
+                if (image instanceof BufferedImage) {
+                    ((Graphics2D) g).drawImage((BufferedImage) image, scalingXFormOp, loc.x, loc.y);
+                } else {
+
+                    int dx1 = loc.x;
+                    int dy1 = loc.y;
+                    int dx2 = point2.x;
+                    int dy2 = point2.y;
+
+                    ((Graphics2D) g).drawImage(image, dx1, dy1, dx2, dy2, 0, 0, width, height, this);
+                }
+            } // else what? Never seen this test fail with Java2D
+
+        } else if (DEBUG) {
+            logger.fine("ignoring null bitmap image");
         }
     }
 

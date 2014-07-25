@@ -159,8 +159,6 @@ public class ImageTile extends OMScalingRaster implements Serializable {
         
         if (imageDecoder != null) {
             if (!isOnMap(proj)) {
-                bitmap = null;
-                sourceImage = null;
                 setNeedToRegenerate(true);
                 return false;
             }
@@ -168,7 +166,6 @@ public class ImageTile extends OMScalingRaster implements Serializable {
             // Check the scale against the cache to see if we should do
             // anything.
             if (shouldFetchForProjection(proj)) {
-                bitmap = null;
 
                 if (realSelection == null) {
                     if (getFillPaint() == com.bbn.openmap.omGraphics.OMColor.clear) {
@@ -189,7 +186,7 @@ public class ImageTile extends OMScalingRaster implements Serializable {
                 realSelection = null;
             }
 
-            if (sourceImage == null) {
+            if (bitmap == null) {
                 if (cache != null) {
                     setImage((Image) cache.get(imageDecoder));
                 } else {

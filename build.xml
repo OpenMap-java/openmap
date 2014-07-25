@@ -94,7 +94,7 @@
 	<!--  ############################
 	Cleanup targets
 	############################ -->
-	<target name="clean_all" depends="clean, clean_docs" description="Delete jar files, class files, and generated documentation.">
+	<target name="clean_all" depends="clean" description="Delete jar files, class files, and generated documentation.">
 		<delete dir="${mac.app}" />
 		<delete dir="${openmap_package.dir}" />
 	</target>

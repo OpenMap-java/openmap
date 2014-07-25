@@ -544,17 +544,13 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements PropertyChan
          * image if the buffer is dirty.
          */
         public void paintChildren(Graphics g, Rectangle clip) {
-            Image localDrawingBuffer = drawingBuffer;
+            BufferedImage localDrawingBuffer = drawingBuffer;
             if (bufferDirty) {
 
-                // bufferDirty will be reset, drawingBuffer re-allocated in
-                // superclass method.
-                disposeDrawingBuffer();
-
-                // We need to reallocate, since the drawingBuffer is transparent
-                // for this MapBean. It's the fastest way to erase a transparent
-                // image.
-                localDrawingBuffer = resetDrawingBuffer(getProjection());
+                // Reset will clear out the pixels if the size of the buffer is
+                // appropriate for the projection
+                localDrawingBuffer = resetDrawingBuffer(localDrawingBuffer, getProjection());
+                // Reassign the drawingBuffer if a new buffer was allocated.
                 drawingBuffer = localDrawingBuffer;
 
                 paintLayers(localDrawingBuffer.getGraphics());

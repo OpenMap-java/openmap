@@ -60,7 +60,7 @@ public class SimpleAnimationLayer extends OMGraphicHandlerLayer {
     /**
      * A movement factor for the points.
      */
-    double movementFactor = 1.0;
+    double movementFactor = 4.0;
     /**
      * Timer used to drive the animation for the layer.
      */
@@ -375,6 +375,7 @@ public class SimpleAnimationLayer extends OMGraphicHandlerLayer {
          * 
          * @param point the OMPoint to move.
          * @param factor a movement factor, in pixels.
+         * @param proj the current map projection
          */
         protected void moveRandomly(OMPoint point, double factor, Projection proj) {
             double hor = Math.random() - .5;
@@ -394,6 +395,7 @@ public class SimpleAnimationLayer extends OMGraphicHandlerLayer {
          * 
          * @param point the OMPoint to move.
          * @param factor a movement factor, in pixels.
+         * @param proj the current map projection
          */
         protected void moveRandomly(OMScalingIcon point, double factor, Projection proj) {
             double hor = Math.random() - .5;

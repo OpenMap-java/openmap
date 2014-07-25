@@ -22,6 +22,7 @@
 
 package com.bbn.openmap;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -51,7 +52,7 @@ public class BufferedMapBean extends MapBean {
 
     private static Logger logger = Logger.getLogger(BufferedMapBean.class.getName());
     protected boolean bufferDirty = true;
-    protected Image drawingBuffer = null;
+    protected BufferedImage drawingBuffer = null;
 
     PanHelper panningTransform = null;
 
@@ -76,17 +77,36 @@ public class BufferedMapBean extends MapBean {
     }
 
     /**
-     * Create the drawing buffer for the layers based on the projection
-     * parameters.
+     * Provide a drawing buffer for the layers based on the projection
+     * parameters. If the currentImageBuffer is the right size, the pixels will
+     * be cleared.
      * 
-     * @param proj
-     * @return BufferedImage used for reusable image buffer.
+     * @param currentImageBuffer the buffer to reuse and return, if the size is
+     *        appropriate. Flushed if another BufferedImage is returned.
+     * @param proj the current projection of the map
+     * @return BufferedImage to be used for image buffer.
      */
-    protected BufferedImage resetDrawingBuffer(Projection proj) {
+    protected BufferedImage resetDrawingBuffer(BufferedImage currentImageBuffer, Projection proj) {
         try {
 
             int w = proj.getWidth();
             int h = proj.getHeight();
+
+            if (currentImageBuffer != null) {
+                int cibWidth = currentImageBuffer.getWidth();
+                int cibHeight = currentImageBuffer.getHeight();
+
+                if (cibWidth == w && cibHeight == h) {
+                    Graphics2D graphics = (Graphics2D) currentImageBuffer.getGraphics();
+                    graphics.setComposite(AlphaComposite.Clear);
+                    graphics.fillRect(0, 0, w, h);
+                    graphics.setComposite(AlphaComposite.SrcOver);
+                    return currentImageBuffer;
+                } else {
+                    currentImageBuffer.flush();
+                }
+            }
+
             return new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 
         } catch (java.lang.NegativeArraySizeException nae) {
@@ -106,15 +126,14 @@ public class BufferedMapBean extends MapBean {
 
         // if a layer has requested a render, then we render all of
         // them into a drawing buffer
-        Image localDrawingBuffer = drawingBuffer;
-        
+        BufferedImage localDrawingBuffer = drawingBuffer;
+
         if (panningTransform == null && bufferDirty) {
             bufferDirty = false;
 
-            if (localDrawingBuffer == null) {
-                localDrawingBuffer = resetDrawingBuffer(getProjection());
-                drawingBuffer = localDrawingBuffer;
-            }
+            localDrawingBuffer = resetDrawingBuffer(localDrawingBuffer, getProjection());
+            // In case it's been resized
+            drawingBuffer = localDrawingBuffer;
 
             // draw the old image
             Graphics gr = getMapBeanRepaintPolicy().modifyGraphicsForPainting(localDrawingBuffer.getGraphics());
@@ -174,7 +193,6 @@ public class BufferedMapBean extends MapBean {
      */
     public void setBufferDirty(boolean value) {
         bufferDirty = value;
-        disposeDrawingBuffer();
     }
 
     /**
@@ -196,7 +214,7 @@ public class BufferedMapBean extends MapBean {
             localDrawingBuffer.flush();
         }
     }
-    
+
     public void dispose() {
         disposeDrawingBuffer();
         super.dispose();

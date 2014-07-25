@@ -27,12 +27,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.image.AreaAveragingScaleFilter;
+import java.awt.image.BufferedImage;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageConsumer;
 import java.awt.image.ImageFilter;
@@ -55,14 +55,14 @@ import com.bbn.openmap.util.DeepCopyUtil;
  * The OMRasterObject is the parent class for OMRaster and OMBitmap objects. It
  * manages some of the same functions that both classes require in order to
  * create image pixel data from bytes or integers.
- *
+ * 
  * <P>
  * An ImageFilter may be applied to OMRasterObjects. These can be scale filters,
  * color filters, or maybe (?hopefully?) projection filters. These filters won't
  * change the original image data, and the original can be reconstructed by
  * resetting the filter to null, and generating the object.
  * <P>
- *
+ * 
  * For all classes in the OMRasterObject family, a java.awt.Shape object is
  * created for the border of the image. This Shape object is used for distance
  * calculations. If the OMRasterObject is selected(), however, this Shape will
@@ -223,7 +223,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
      * A Constructor that sets the graphic type, render type, line type and the
      * declutter type to the values you pass in. See OMGraphic for the
      * definitions of these attributes.
-     *
+     * 
      * @param rType render type
      * @param lType line type
      * @param dcType declutter type
@@ -235,7 +235,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
     /**
      * The color model is set based on the constructor. This setting controls
      * what parameter changes are possible for different models of images.
-     *
+     * 
      * @param cm the colormode that describes how the colors are being set -
      *        COLORMODEL_DIRECT, COLORMODEL_INDEXED, or COLORMODEL_IMAGEICON.
      */
@@ -245,7 +245,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Get the color model type of the image.
-     *
+     * 
      * @return COLORMODEL_DIRECT, COLORMODEL_INDEXED, or COLORMODEL_IMAGEICON.
      */
     public int getColorModel() {
@@ -267,7 +267,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Set the angle by which the image is to rotated.
-     *
+     * 
      * @param angle the number of radians the image is to be rotated. Measured
      *        clockwise from horizontal.
      */
@@ -278,7 +278,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Get the current rotation of the image.
-     *
+     * 
      * @return the image rotation.
      */
     public double getRotationAngle() {
@@ -288,8 +288,9 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
     /**
      * Compute the raster objects pixels, based on the color model and the byte
      * values.
-     *
-     * @return int[] where things are OK (height*width = pixel.length), null if there is a problem.
+     * 
+     * @return int[] where things are OK (height*width = pixel.length), null if
+     *         there is a problem.
      */
     protected abstract int[] computePixels(byte[] bits);
 
@@ -307,20 +308,15 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
             int w = width;
             int h = height;
 
-            // Call it a hunch, but I don't think we want to involved the Shape
-            // here, since it's being rotated, too.
-            /*
-             * Shape projectedShape = getShape(); if (projectedShape != null) {
-             * java.awt.Rectangle rect = projectedShape.getBounds(); w = (int)
-             * rect.getWidth(); h = (int) rect.getHeight(); }
-             */
+            // Note that this rotation is based on height and width of the
+            // image, which is not the right thing to do for scaled images.
             ((Graphics2D) g).rotate(angle, point1.x + w / 2, point1.y + h / 2);
         }
     }
 
     /**
      * Render the raster on the java.awt.Graphics
-     *
+     * 
      * @param graphics java.awt.Graphics to draw the image on.
      */
     public void render(Graphics graphics) {
@@ -348,31 +344,41 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
             rotate((Graphics2D) g);
         }
 
-        if (bitmap != null) {
-
-            if (DEBUG) {
-                logger.fine("OMRasterObject.render() | drawing " + width + "x" + height
-                        + " image at " + point1.x + ", " + point1.y);
-            }
-            if (g instanceof Graphics2D && bitmap instanceof RenderedImage) {
-                // Affine translation for placement...
-                ((Graphics2D) g).drawRenderedImage((RenderedImage) bitmap, new AffineTransform(1f, 0f, 0f, 1f, point1.x, point1.y));
-                // Undo the affine translation for future graphics?? Apparently
-                // not...
-                // ((Graphics2D) g).translate(-point1.x, -point1.y);
-            } else {
-                g.drawImage(bitmap, point1.x, point1.y, this);
-            }
-        } else {
-            if (DEBUG)
-                logger.fine("OMRasterObject.render: ignoring null bitmap");
-        }
+        renderImage(g, bitmap, point1);
 
         if (isSelected() || logger.isLoggable(Level.FINER)) {
             renderShape(g);
         }
 
         renderLabel(graphics);
+    }
+
+    /**
+     * Render the image at the given pixel location. This method should be
+     * overridden for special Image handling.
+     * 
+     * @param g the Graphics object to render the image into. Assumes this is a
+     *        derivative of the Graphics passed into the OMGraphic, and can be
+     *        modified without worrying about passing settings on to other
+     *        OMGraphics.
+     * @param loc the pixel location of the image.
+     */
+    protected void renderImage(Graphics g, Image image, Point loc) {
+        if (image != null) {
+
+            if (DEBUG) {
+                logger.fine("drawing " + width + "x" + height + " image at " + loc.x + ", " + loc.y);
+            }
+
+            if (g instanceof Graphics2D && image instanceof RenderedImage) {
+                // Affine translation for placement...
+                ((Graphics2D) g).drawRenderedImage((RenderedImage) image, new AffineTransform(1f, 0f, 0f, 1f, loc.x, loc.y));
+            } else {
+                g.drawImage(image, loc.x, loc.y, this);
+            }
+        } else if (DEBUG) {
+            logger.fine("ignoring null bitmap image");
+        }
     }
 
     /**
@@ -400,7 +406,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
      * Internally evaluates renderRotationAngle and if necessary, applies the
      * rotation to the shape. If no rotation modifications are needed, the gp is
      * returned as is.
-     *
+     * 
      * @param projectedShape The GeneralPath to rotate, if necessary.
      * @param anchorX the x coordinate of the rotation point.
      * @param anchorY the y coordinate of the rotation point.
@@ -425,7 +431,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
      * Since the image doesn't necessarily need to be regenerated when it is
      * merely moved, raster objects have this function, called from generate()
      * and when a placement attribute is changed.
-     *
+     * 
      * @return true if enough information is in the object for proper placement.
      * @param proj projection of window.
      */
@@ -501,7 +507,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Set the image to be drawn, if the color model is COLORMODEL_IMAGEICON.
-     *
+     * 
      * @param ii the image icon to use.
      */
     public void setImage(Image ii) {
@@ -516,8 +522,13 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
         // imageUpdate. Set the height and width anyway. If they are
         // -1, you know the image isn't ready - another way to find
         // out.
-        width = bitmap.getWidth(this);
-        height = bitmap.getHeight(this);
+        if (bitmap instanceof BufferedImage) {
+            width = ((BufferedImage) bitmap).getWidth();
+            height = ((BufferedImage) bitmap).getHeight();
+        } else {
+            width = bitmap.getWidth(this);
+            height = bitmap.getHeight(this);
+        }
 
         if (!(ii instanceof RenderedImage)) {
             Toolkit.getDefaultToolkit().prepareImage(bitmap, -1, -1, this);
@@ -525,8 +536,9 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
     }
 
     /**
-     * Overrides OMGraphicAdapter version to handle OMRasterObject getNeedToReposition.
-     *
+     * Overrides OMGraphicAdapter version to handle OMRasterObject
+     * getNeedToReposition.
+     * 
      * @param proj the Projection
      * @return true if generated, false if didn't do it (maybe a problem).
      * @see #generate
@@ -544,7 +556,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Get the image that will be put on the window.
-     *
+     * 
      * @return the Image created by computePixels and generate().
      */
     public Image getImage() {
@@ -563,7 +575,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
      * Set the pixels for the image for direct color model images. Checks to see
      * of the length matches the height * width, but doesn't do anything if they
      * don't match. Make sure it does.
-     *
+     * 
      * @param values the pixel values.
      */
     public void setPixels(int[] values) {
@@ -576,7 +588,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Return the pixels used for the image.
-     *
+     * 
      * @return the integer array of ints used as integer colors for each pixel
      *         of the image.
      */
@@ -587,7 +599,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
     /**
      * Change the x attribute, which matters only if the render type is
      * RENDERTYPE_XY or RENDERTYPE_OFFSET.
-     *
+     * 
      * @param value the x location in pixels.
      */
     public void setX(int value) {
@@ -599,7 +611,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Returns the x attribute.
-     *
+     * 
      * @return the x value, pixels from left of window or image origin.
      */
     public int getX() {
@@ -609,7 +621,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
     /**
      * Change the y attribute, which matters only if the render type is
      * RENDERTYPE_XY or RENDERTYPE_OFFSET.
-     *
+     * 
      * @param value the y location in pixels
      */
     public void setY(int value) {
@@ -621,7 +633,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Return the y attribute.
-     *
+     * 
      * @return the y value, pixels from top or image origin.
      */
     public int getY() {
@@ -630,7 +642,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Return the map location of the image, after generation.
-     *
+     * 
      * @return Point, null if not projected yet.
      */
     public Point getMapLocation() {
@@ -640,7 +652,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
     /**
      * Change the latitude attribute, which matters only if the render type is
      * RENDERTYPE_LATLON or RENDERTYPE_OFFSET.
-     *
+     * 
      * @param value latitude in decimal degrees.
      */
     public void setLat(double value) {
@@ -652,7 +664,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Get the latitude.
-     *
+     * 
      * @return the latitude in decimal degrees.
      */
     public double getLat() {
@@ -662,7 +674,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
     /**
      * Change the longitude attribute, which matters only if the render type is
      * RENDERTYPE_LATLON or RENDERTYPE_OFFSET.
-     *
+     * 
      * @param value the longitude in decimal degrees.
      */
     public void setLon(double value) {
@@ -674,7 +686,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Get the longitude.
-     *
+     * 
      * @return longitude in decimal degrees.
      */
     public double getLon() {
@@ -683,7 +695,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Set the height of the image, in pixels.
-     *
+     * 
      * @param value height in pixels.
      */
     public void setHeight(int value) {
@@ -695,7 +707,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Get the height of image.
-     *
+     * 
      * @return height in pixels.
      */
     public int getHeight() {
@@ -704,7 +716,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Get the height of image after a filter was applied.
-     *
+     * 
      * @return filteredHeight in pixels.
      */
     public int getFilteredHeight() {
@@ -713,7 +725,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Set width of image.
-     *
+     * 
      * @param value width in pixels.
      */
     public void setWidth(int value) {
@@ -725,7 +737,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Get width of image.
-     *
+     * 
      * @return width of image in pixels.
      */
     public int getWidth() {
@@ -734,7 +746,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Get width of image, after a filter is applied.
-     *
+     * 
      * @return filteredWidth of image in pixels.
      */
     public int getFilteredWidth() {
@@ -744,7 +756,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
     /**
      * Set the bytes used to create the pixels used to create the image. Used
      * for indexed color model images in OMRaster, and OMBitmaps.
-     *
+     * 
      * @param values byte values
      */
     public void setBits(byte[] values) {
@@ -754,7 +766,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Get the byte values for indexed color model images and OMBitmaps.
-     *
+     * 
      * @return the bytes used to create the pixels.
      */
     public byte[] getBits() {
@@ -763,7 +775,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Set a filter to be used on the constructed image. Applied at generate().
-     *
+     * 
      * @param filter Image filter to apply to constructed raster.
      */
     public void setImageFilter(ImageFilter filter) {
@@ -776,7 +788,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
 
     /**
      * Return the image filter used on the image.
-     *
+     * 
      * @return imagefilter, null if one wasn't set.
      */
     public ImageFilter getImageFilter() {
@@ -787,7 +799,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
      * Convenience function to scale the Image to the xy size. Sets the
      * imageFilter to a ReplicateScaleFilter or AreaAveragingScaleFilter,
      * depending on the algorithm type.
-     *
+     * 
      * @param w width to scale to, in pixels
      * @param h height to scale to, in pixels
      * @param algorithmType OMRasterObject parameter describing which scaling
@@ -805,7 +817,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
      * A method used to manipulate the image according to the parameters set by
      * the imageFilter in the OMRasterObject. Called from generate() if the
      * filteredWidth and filteredHeight differ from width and height.
-     *
+     * 
      * @param image the Image to filter
      * @return the filtered image.
      */
@@ -867,9 +879,14 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
             if (colorModel == COLORMODEL_IMAGEICON) {
                 setImage(img);
             }
-            return false;// all set
         }
-        return true;// need more info
+        if ((infoflags & ImageObserver.WIDTH) != 0) {
+            this.width = width;
+        }
+        if ((infoflags & ImageObserver.HEIGHT) != 0) {
+            this.height = height;
+        }
+        return !(this.bitmap != null && this.width > 0 && this.height > 0);
     }
 
     /**
@@ -885,7 +902,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
         /**
          * Constructs an TrimScaleFilter that scales the pixels from its source
          * Image as specified by the width and height parameters.
-         *
+         * 
          * @param width the target width to scale the image
          * @param height the target height to scale the image
          */
@@ -897,7 +914,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
         /**
          * Constructs an AreaAveragingScaleFilter that scales the pixels from
          * its source Image as specified by the width and height parameters.
-         *
+         * 
          * @param width the target width to scale the image
          * @param height the target height to scale the image
          * @param algorithmType FAST_SCALING or SMOOTH_SCALING - FAST is much
@@ -913,7 +930,7 @@ public abstract class OMRasterObject extends OMGraphicAdapter implements OMGraph
          * allow the averaging algorithm to do its work. If the algorithmType is
          * set to FAST, I manipulate the hints to force the filter to act like a
          * ReplicateScaleFilter.
-         *
+         * 
          * @see ImageConsumer#setHints
          */
         public void setHints(int hints) {

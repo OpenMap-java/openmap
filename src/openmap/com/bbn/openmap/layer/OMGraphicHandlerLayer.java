@@ -759,7 +759,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
                     logger.fine(msg);
                     e.printStackTrace();
                 } else {
-                    logger.fine(getName() + " layer ran out of memory, attempting to recover...");
+                    logger.info(getName() + " layer ran out of memory, attempting to recover...");
                 }
             } catch (Throwable e) {
                 msg = getName() + "|LayerWorker.construct(): " + e.getClass().getName() + ", "

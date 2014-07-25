@@ -404,6 +404,20 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
                 if (sp != null) {
                     omsi.putAttribute(OMGraphic.TOOLTIP, sp.getDescription());
                 }
+
+                omsi = new OMScalingIcon(43f, -70f, ii);
+                omsi.setBaseScale(500000);
+                omsi.setMinScale(500000);
+                omsi.setMaxScale(500000);
+                omsi.setRotationAngle(-Math.PI / 4);
+                omsi.putAttribute(OMGraphicConstants.LABEL, new OMTextLabeler("SFPPV-----*****", OMText.JUSTIFY_LEFT, OMTextLabeler.ANCHOR_RIGHT));
+                omsi.putAttribute(OMGraphicConstants.NO_ROTATE, Boolean.TRUE);
+                omList.add(omsi);
+
+                if (sp != null) {
+                    omsi.putAttribute(OMGraphic.TOOLTIP, sp.getDescription());
+                }
+
             } else {
                 Debug.output("DemoLayer: couldn't create symbol from SymbolReferenceLibrary");
             }

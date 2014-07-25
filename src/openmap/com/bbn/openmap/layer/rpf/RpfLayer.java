@@ -41,6 +41,7 @@ import com.bbn.openmap.I18n;
 import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.layer.policy.BufferedImageRenderPolicy;
+import com.bbn.openmap.layer.policy.ListResetPCPolicy;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMList;
@@ -171,7 +172,8 @@ public class RpfLayer
     public RpfLayer() {
         setName("RPF");
         viewAttributes = new RpfViewAttributes();
-        setRenderPolicy(new BufferedImageRenderPolicy(this));
+        setProjectionChangePolicy(new ListResetPCPolicy(this));
+        // setRenderPolicy(new BufferedImageRenderPolicy(this));
         setMouseModeIDsForEvents(new String[] {
             SelectMouseMode.modeID
         });

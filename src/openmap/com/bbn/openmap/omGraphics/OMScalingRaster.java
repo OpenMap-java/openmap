@@ -58,12 +58,12 @@ import java.awt.RenderingHints;
  * your mileage may vary - you have to understand the projection of the image,
  * and know how it fits the projection type of the map. Of course, at larger
  * scales, it might not matter so much.
- *
+ * 
  * This class was inspired by, and created from parts of the ImageLayer
  * submission from Adrian Lumsden@sss, on 25-Jan-2002. Used the scaling and
  * trimming code from that submission. That code was also developed with
  * assistance from Steve McDonald at SiliconSpaceships.com.
- *
+ * 
  * @see OMRaster
  * @see OMRasterObject
  */
@@ -86,19 +86,20 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     protected double lon2 = 0.0f;
 
     /**
-     * This the original version of the image, which we keep around for
-     * rescaling later.
+     * AffineTransformOp applied to the bitmap at render time.
      */
-    protected transient BufferedImage sourceImage = null;
-
+    protected AffineTransformOp scalingXFormOp;
     /**
-     * The rectangle in screen co-ordinates that the scaled image projects to
+     * The rectangle in screen coordinates that the scaled image projects to
      * after clipping.
      */
     protected transient Rectangle clipRect;
 
     protected transient ArrayList<float[]> corners;
 
+    /**
+     * Transform type for AffineTransformOp to use to scale images.
+     */
     protected int scaleTransformType = AffineTransformOp.TYPE_BILINEAR;
 
     /**
@@ -121,7 +122,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     /**
      * Creates an OMRaster images, Lat/Lon placement with a direct colormodel
      * image.
-     *
+     * 
      * @param ullat latitude of the top of the image.
      * @param ullon longitude of the left side of the image.
      * @param lrlat latitude of the bottom of the image.
@@ -142,7 +143,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
     /**
      * Create an OMRaster, Lat/Lon placement with an ImageIcon.
-     *
+     * 
      * @param ullat latitude of the top of the image.
      * @param ullon longitude of the left side of the image.
      * @param lrlat latitude of the bottom of the image.
@@ -155,7 +156,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
     /**
      * Create an OMRaster, Lat/Lon placement with an Image.
-     *
+     * 
      * @param ullat latitude of the top of the image.
      * @param ullon longitude of the left side of the image.
      * @param lrlat latitude of the bottom of the image.
@@ -180,7 +181,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     /**
      * Lat/Lon placement with a indexed colormodel, which is using a colortable
      * and a byte array to construct the int[] pixels.
-     *
+     * 
      * @param ullat latitude of the top of the image.
      * @param ullon longitude of the left side of the image.
      * @param lrlat latitude of the bottom of the image.
@@ -200,68 +201,10 @@ public class OMScalingRaster extends OMRaster implements Serializable {
     }
 
     /**
-     * Creates a BufferedImage version of the image. A new BufferedImage object
-     * is created, and the image is copied into it. You can get rid of the input
-     * image after calling this method. The OMRaster variables height, width and
-     * bitmap are set here to the values for the new BufferedImage.
-     *
-     * @param image the input image.
-     */
-    public void setImage(Image image) {
-        if (DEBUG) {
-            logger.fine("OMScalingRaster.setImage: " + image);
-        }
-
-        /**
-         * Oh, don't do this. The image is created from the colortable and pixel
-         * version, too, and setting the color model to IMAGEICON will cause any
-         * updates to not take hold.
-         */
-        // setColorModel(COLORMODEL_IMAGEICON);
-
-        if (image == null) {
-            bitmap = null;
-            sourceImage = null;
-            return;
-        }
-
-        if (!(image instanceof BufferedImage)) {
-            int w = image.getWidth(this);
-            int h = image.getHeight(this);
-            if (w <= 0) {
-                w = width;
-            }
-            if (h <= 0) {
-                h = height;
-            }
-
-            sourceImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2D = sourceImage.createGraphics();
-            g2D.drawImage(image, 0, 0, this);
-        } else {
-
-            // null check above
-            if (image.equals(sourceImage)) {
-                // Nothing needs to be done.
-                return;
-            }
-
-            sourceImage = (BufferedImage) image;
-        }
-
-        width = sourceImage.getWidth();
-        height = sourceImage.getHeight();
-
-        setNeedToRegenerate(true);
-        // Just in case rendering tries to happen.
-        bitmap = sourceImage;
-    }
-
-    /**
      * Since the image doesn't necessarily need to be regenerated when it is
      * merely moved, raster objects have this function, called from generate()
      * and when a placement attribute is changed.
-     *
+     * 
      * @return true if enough information is in the object for proper placement.
      * @param proj projection of window.
      */
@@ -307,7 +250,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * images, it creates the ImageIcon used for drawing to the window (internal
      * to object). For indexed colormodel images, it also calls computePixels,
      * to resolve the colortable and the bytes to create the image pixels.
-     *
+     * 
      * @param proj Projection used to position the image on the window.
      * @return true if the image is ready to paint.
      */
@@ -319,7 +262,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                 position(proj);
                 setShape();
             } else {
-				// Nothing changed with image placement, image is ready, we can
+                // Nothing changed with image placement, image is ready, we can
                 // return at this point.
                 setShape();
                 setNeedToRegenerate(false);
@@ -340,12 +283,13 @@ public class OMScalingRaster extends OMRaster implements Serializable {
         if (colorModel != COLORMODEL_IMAGEICON) {
             // If the sourceImage hasn't been created, and needs to
             // be, then just do what we normally do in OMRaster.
-            if (sourceImage == null || getNeedToRegenerate()) {
+            if (bitmap == null || getNeedToRegenerate()) {
                 if (DEBUG) {
                     logger.fine("OMScalingRaster: generating image");
                 }
                 super.generate(proj);
-                // bitmap is set to a BufferedImage
+                // bitmap is set to a BufferedImage, but this does some other
+                // stuff, too.
                 setImage(bitmap);
 
                 // Since we have a source image that is going to be reused,
@@ -364,9 +308,10 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
         if (bitmap != null) {
             if (corners == null) {
+                GeneralPath projectedShape = createBoxShape(point1.x, point1.y, point2.x - point1.x, point2.y
+                        - point1.y);
                 int w = bitmap.getWidth(this);
                 int h = bitmap.getHeight(this);
-                GeneralPath projectedShape = createBoxShape(point1.x, point1.y, w, h);
                 double anchorX = point1.x + w / 2;
                 double anchorY = point1.y + h / 2;
                 setShape(adjustShapeForRotation(projectedShape, anchorX, anchorY));
@@ -406,7 +351,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * warped image, and if it's the same, don't bother regenerating, use the
      * raster we have. This method is a question: do we need to update the image
      * because of a projection change?
-     *
+     * 
      * @param proj current projection.
      * @return false if the projection shouldn't cause anything to change for
      *         the image.
@@ -418,16 +363,16 @@ public class OMScalingRaster extends OMRaster implements Serializable {
             lastProjection = proj.makeClone();
         }
 
-		evaluateRotationAngle(proj);
-		return !ret;
+        evaluateRotationAngle(proj);
+        return !ret;
     }
 
     /**
      * Since the OMScalingRaster changes height and width depending on scale, we
      * need to rotate the image over that point and factor in the scaled height
      * and width of the image. Called from within OMRasterObject.render().
-	 *
-	 * @param g Graphics2D object to rotate and translate.
+     * 
+     * @param g Graphics2D object to rotate and translate.
      */
     protected void rotate(Graphics2D g) {
         Double angle = renderRotationAngle;
@@ -449,18 +394,18 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * NorthWest, then the OMRaster bitmap is set to a image, clipped from the
      * source, that is entirely on the map. The OMRaster point1 is set to 0, 0,
      * since that is where the clipped image should be placed.
-     *
+     * 
      * @param thisProj the projection that the image should be scaled to.
      */
     protected void scaleTo(Projection thisProj) {
 
         if (DEBUG) {
-            logger.fine("OMScalingRaster: scaleTo()");
-		}
+            logger.fine("starting scaling evaluation.");
+        }
 
-        if (sourceImage == null) {
+        if (bitmap == null) {
             if (DEBUG) {
-                logger.fine("OMScalingRaster.scaleTo() sourceImage is null");
+                logger.fine("source image is null");
             }
             return;
         }
@@ -473,8 +418,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
         projRect.setSize(point2.x - point1.x, point2.y - point1.y);
 
         Rectangle sourceRect = new Rectangle();
-        sourceRect.width = sourceImage.getWidth();
-        sourceRect.height = sourceImage.getHeight();
+        sourceRect.width = bitmap.getWidth(this);
+        sourceRect.height = bitmap.getHeight(this);
 
         // Now we have everything we need to sort out this new projection.
         // boolean currentVisibility = isVisible();
@@ -534,10 +479,10 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                     // original icon bounds
                     if (clipRect.width + clipRect.x > sourceRect.width) {
                         clipRect.width = sourceRect.width - clipRect.x;
-					}
+                    }
                     if (clipRect.height + clipRect.y > sourceRect.height) {
                         clipRect.height = sourceRect.height - clipRect.y;
-					}
+                    }
                 }
 
                 // check width and height of clipRect, in case it got
@@ -563,42 +508,11 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                 // Create the transform op.
                 // AffineTransformOp xformOp = new AffineTransformOp(xform,
                 // AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-                AffineTransformOp xformOp = new AffineTransformOp(xform, getScaleTransformType());
-                // Scale clip area -> newImage
-                // extract sub-image
-                try {
-                    BufferedImage newImage = xformOp.filter(sourceImage.getSubimage(clipRect.x, clipRect.y, clipRect.width, clipRect.height), null);
+                this.scalingXFormOp = new AffineTransformOp(xform, getScaleTransformType());
 
-                    bitmap = newImage;
-                    point1.setLocation(iRect.x, iRect.y);
-                    // setVisible(currentVisibility);
-                } catch (IllegalArgumentException iae) {
-                    // This has been kicked off when the dimensions of the
-                    // filter get too big. Treat it like the height and width
-                    // being set to -1.
-                    logger.fine("Caught IllegalArgumentException: " + iae.getMessage());
-                    bitmap = null;
-                } catch (OutOfMemoryError oome) {
-                    // This sometimes happens on startup, but rarely. The size
-                    // of the DataBuffer created from the filter causes the
-                    // error to be thrown. We never see the effect of the error
-                    // in the application, however - the application continues
-                    // and recovers. I have a feeling its a result of the
-                    // startup order, and the projection isn't quite right yet.
-                    logger.fine("Caught OutOfMemoryException, setting bitmap to null");
-                    bitmap = null;
-                } catch (NegativeArraySizeException nase) {
-                    logger.fine("Caught OutOfMemoryException, setting bitmap to null");
-                    bitmap = null;
-                } catch (NullPointerException npe) {
-                    logger.fine("Caught NPE, setting bitmap to null");
-                    bitmap = null;
-                } catch (RasterFormatException rfe) {
-                    logger.fine("Caught RasterFormatException, setting bitmap to null");
-                }
+                point1.setLocation(iRect.x, iRect.y);
+                point2.setLocation(iRect.x + iRect.width, iRect.y + iRect.height);
             }
-        } else {
-            bitmap = null;
         }
     }
 
@@ -606,7 +520,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * Render the raster on the java.awt.Graphics. Overrides the raster method
      * because it checks to see if the raster is in a small-world situation,
      * where the image must wrap around the world.
-     *
+     * 
      * @param graphics java.awt.Graphics to draw the image on.
      */
     public void render(Graphics graphics) {
@@ -633,21 +547,65 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                 rotate((Graphics2D) g);
             }
 
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine("OMRasterObject.render() | drawing " + width + "x" + height
-                        + " image at " + point1.x + ", " + point1.y);
-            }
-
-            if (g instanceof Graphics2D && bitmap instanceof RenderedImage) {
-                // Affine translation for placement...
-                ((Graphics2D) g).drawRenderedImage((RenderedImage) bitmap, new AffineTransform(1f, 0f, 0f, 1f, point1.x, point1.y));
-            } else {
-                g.drawImage(bitmap, point1.x, point1.y, this);
-            }
+            renderImage(g, bitmap, point1);
         }
 
         // render the location that is always set.
         super.render(graphics);
+    }
+
+    /**
+     * Render the image at the given pixel location. This method should be
+     * overridden for special Image handling.
+     * 
+     * @param g the Graphics object to render the image into. Assumes this is a
+     *        derivative of the Graphics passed into the OMGraphic, and can be
+     *        modified without worrying about passing settings on to other
+     *        OMGraphics.
+     * @param image the image to render.
+     * @param loc the pixel location of the image.
+     */
+    protected void renderImage(Graphics g, Image image, Point loc) {
+
+        Rectangle visibleImageArea = getClippedRectangle();
+
+        if (image != null) {
+
+            if (visibleImageArea != null) {
+
+                if (DEBUG) {
+                    logger.fine("drawing " + visibleImageArea + " image at " + loc.x + ", " + loc.y);
+                }
+
+                if (g instanceof Graphics2D) {
+                    if (image instanceof BufferedImage) {
+                        ((Graphics2D) g).drawImage(((BufferedImage) image).getSubimage(visibleImageArea.x, visibleImageArea.y, visibleImageArea.width, visibleImageArea.height), scalingXFormOp, loc.x, loc.y);
+                    } else {
+
+                        int sx1 = visibleImageArea.x;
+                        int sy1 = visibleImageArea.y;
+                        int sx2 = sx1 + visibleImageArea.width;
+                        int sy2 = sy1 + visibleImageArea.height;
+
+                        int dx1 = loc.x;
+                        int dy1 = loc.y;
+                        Point2D d2 = scalingXFormOp.getPoint2D(new Point2D.Double(dx1
+                                + visibleImageArea.width, dy1 + visibleImageArea.height), new Point2D.Double());
+                        int dx2 = (int) d2.getX();
+                        int dy2 = (int) d2.getY();
+
+                        ((Graphics2D) g).drawImage(image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, this);
+                    }
+                } // else what? Never seen this test fail with Java2D
+
+            } else {
+                // draw whole image at location, as is...
+                g.drawImage(image, loc.x, loc.y, this);
+            }
+
+        } else if (DEBUG) {
+            logger.fine("ignoring null bitmap image");
+        }
     }
 
     /**
@@ -662,7 +620,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
     /**
      * Change the upper latitude attribute.
-     *
+     * 
      * @param value latitude in decimal degrees.
      */
     public void setULLat(double value) {
@@ -671,7 +629,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
     /**
      * Get the upper latitude.
-     *
+     * 
      * @return the latitude in decimal degrees.
      */
     public double getULLat() {
@@ -680,7 +638,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
     /**
      * Change the western longitude attribute.
-     *
+     * 
      * @param value the longitude in decimal degrees.
      */
     public void setULLon(double value) {
@@ -689,7 +647,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
     /**
      * Get the western longitude.
-     *
+     * 
      * @return longitude in decimal degrees.
      */
     public double getULLon() {
@@ -698,7 +656,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
     /**
      * Change the southern latitude attribute.
-     *
+     * 
      * @param value latitude in decimal degrees.
      */
     public void setLRLat(double value) {
@@ -710,7 +668,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
     /**
      * Get the southern latitude.
-     *
+     * 
      * @return the latitude in decimal degrees.
      */
     public double getLRLat() {
@@ -719,7 +677,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
     /**
      * Change the eastern longitude attribute.
-     *
+     * 
      * @param value the longitude in decimal degrees.
      */
     public void setLRLon(double value) {
@@ -731,7 +689,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
     /**
      * Get the eastern longitude.
-     *
+     * 
      * @return longitude in decimal degrees.
      */
     public double getLRLon() {
@@ -753,6 +711,12 @@ public class OMScalingRaster extends OMRaster implements Serializable {
         }
     }
 
+    /**
+     * Test to see if projected image is on map.
+     * 
+     * @param proj current projection
+     * @return true of projected image location intersects map area.
+     */
     public boolean isOnMap(Projection proj) {
         Point2D p1 = proj.forward(lat, lon);
         Point2D p2 = proj.forward(lat2, lon2);
@@ -780,7 +744,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * AffineTransformOp.TYPE_BILINEAR. Can also be
      * AffineTransformOp.TYPE_BICUBIC or
      * AffineTransformOp.TYPE_NEAREST_NEIGHBOR.
-     *
+     * 
      * @param scaleTransformType
      */
     public void setScaleTransformType(int scaleTransformType) {
@@ -795,7 +759,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      * Creates an ImageWarp object from the contents of the OMScalingRaster.
      * This can be used in an OMWarpingImage to be used for display in
      * projections that don't match the raster's projection.
-     *
+     * 
      * @param transform the OMScalingImage assumes that the coordinates/pixel
      *        transformation of the image is equal arc. If it's not, the correct
      *        transformation should be provided for this query. The
@@ -806,7 +770,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      */
     public ImageWarp getImageWarp(GeoCoordTransformation transform) {
         ImageWarp imageWarp = null;
-        Image image = sourceImage;
+        Image image = bitmap;
 
         if (image != null) {
             DataBounds imageBounds = new DataBounds();
@@ -839,7 +803,7 @@ public class OMScalingRaster extends OMRaster implements Serializable {
             this.lon2 = omsr.lon2;
             this.scaleTransformType = omsr.scaleTransformType;
             // OK, OK, I know this isn't a deep copy. TODO
-            this.sourceImage = omsr.sourceImage;
+            // this.sourceImage = omsr.sourceImage;
         }
     }
 }

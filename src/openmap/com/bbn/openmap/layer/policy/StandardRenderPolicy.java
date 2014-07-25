@@ -130,7 +130,7 @@ public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
                         + (list == null ? "NULL list, skipping..." : " skipping due to projection."));
             }
         } else {
-            Debug.error("RenderPolicy.paint():  NULL layer, skipping...");
+            logger.fine("RenderPolicy.paint():  NULL layer, skipping...");
         }
     }
 }

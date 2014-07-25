@@ -66,7 +66,7 @@ public abstract class AbstractProjectionChangePolicy implements ProjectionChange
             layer.setList(aList);
 
             // Don't call repaint if the layer list was null, and still is.
-            if (repaintIt && aList != null) {
+            if (repaintIt || aList != null) {
                 layer.repaint();
             } else {
                 getLogger().fine("Not painting cause of nothin'");
