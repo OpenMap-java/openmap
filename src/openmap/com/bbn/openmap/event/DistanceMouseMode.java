@@ -105,27 +105,27 @@ public class DistanceMouseMode extends CoordMouseMode implements PaintListener {
     /**
      * rPoint1 is the anchor point of a line segment
      */
-    Point2D rPoint1;
+    protected Point2D rPoint1;
     /**
      * rPoint2 is the new (current) point of a line segment
      */
-    Point2D rPoint2;
+    protected Point2D rPoint2;
     /**
      * Flag, true if the mouse has already been pressed
      */
-    boolean drawDistanceObjects = false;
+    protected boolean drawDistanceObjects = false;
     /**
      * Vector to store all distance segments, first point and last point pairs
      */
-    Vector<Point2D> segments = new Vector<Point2D>();
+    protected Vector<Point2D> segments = new Vector<Point2D>();
     /**
      * Distance of the current segment
      */
-    double distance = 0;
+    protected double distance = 0;
     /**
      * The cumulative distance from the first mouse click
      */
-    double totalDistance = 0;
+    protected double totalDistance = 0;
 
     /**
      * The line type to be displayed, see OMGraphic. LINETYPE_GREATCIRCLE,
@@ -146,7 +146,7 @@ public class DistanceMouseMode extends CoordMouseMode implements PaintListener {
     /**
      * Rendering attributes for lines and circles.
      */
-    DrawingAttributes renderAttributes = DrawingAttributes.getDefaultClone();
+    protected DrawingAttributes renderAttributes = DrawingAttributes.getDefaultClone();
 
     // The map bean
     transient MapBean theMap;
@@ -597,14 +597,14 @@ public class DistanceMouseMode extends CoordMouseMode implements PaintListener {
      *
      * @param aMap a map bean
      */
-    void setMapBean(MapBean aMap) {
+    protected void setMapBean(MapBean aMap) {
         theMap = aMap;
     }
 
     /**
      * Return the map bean.
      */
-    MapBean getMapBean() {
+    protected MapBean getMapBean() {
         return theMap;
     }
 
