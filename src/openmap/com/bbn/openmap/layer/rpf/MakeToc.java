@@ -656,12 +656,13 @@ public class MakeToc {
                     Debug.output("MakeToc: " + frame.filename + " / " + head.filename
                             + " (filename/header) unknown map type " + seriesCode + " / "
                             + dblChkSeriesCode + " - ignoring.");
+                    frames.remove(frame);
                     continue;
                 }
             }
 
             String scaleString = rpi.scaleString;
-            if (rpi.scale == RpfConstants.Various) {
+            if (rpi.scale == RpfConstants.Various || scaleString == null || scaleString.isEmpty()) {
                 // need to figure out how to consult the frame for
                 // what it is.
                 // RpfAttributes.chartSeriesCode might have something
@@ -674,6 +675,7 @@ public class MakeToc {
                         + "? (Answer should look like: 1:XXX,XXX)");
                 if (scaleString == null || scaleString.length() == 0) {
                     Debug.error("Bad input for scale for " + frame.filename + ", skipping.");
+                    frames.remove(frame);
                     continue;
                 }
             }

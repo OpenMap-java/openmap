@@ -77,8 +77,7 @@ public class RpfTocEntry {
     public void setInfo(String seriesCode) {
         info = (RpfProductInfo) RpfProductInfo.getCatalog().get(seriesCode.toUpperCase());
         if (info != null) {
-            if (info.dataType.equalsIgnoreCase("CIB"))
-                Cib = true;
+            Cib = info.dataType.equalsIgnoreCase("CIB");
             coverage.chartCode = info.seriesCode;
         } else {
             info = RpfConstants.UK;
