@@ -431,7 +431,7 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements PropertyChan
         if (hasLayers()) {
             mapBean.paintChildren(g);
         }
-		mapBean.paintPainters(g);
+        mapBean.paintPainters(g);
     }
 
     /**
@@ -508,13 +508,21 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements PropertyChan
     public class BLMapBean extends BufferedMapBean {
 
         private static final long serialVersionUID = 1L;
+        /**
+         * We need ALMOST_CLEAR so that the buffered image has a slight
+         * background to it if any of the layers are semi-transparent. If there
+         * is no background, the semi-transparent layers get washed out. Adding
+         * a touch of something to the background of the buffer lets them render
+         * normally.
+         */
+        private Color ALMOST_CLEAR = new Color(0x01FFFFFF, true);
 
         /**
          * Default constructor.
          */
         public BLMapBean() {
             super(false);
-            background = OMColor.clear;
+            background = ALMOST_CLEAR;
         }
 
         /**
@@ -524,11 +532,7 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements PropertyChan
          * @return color java.awt.Color.
          */
         public Color getBackground() {
-            return OMColor.clear;
-        }
-
-        protected void drawProjectionBackground(Graphics g) {
-            // noop for this map bean
+            return ALMOST_CLEAR;
         }
 
         /**
@@ -550,9 +554,13 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements PropertyChan
                 // Reset will clear out the pixels if the size of the buffer is
                 // appropriate for the projection
                 localDrawingBuffer = resetDrawingBuffer(localDrawingBuffer, getProjection());
+
                 // Reassign the drawingBuffer if a new buffer was allocated.
                 drawingBuffer = localDrawingBuffer;
-
+                // We need to draw the projection background with oh-so-slight
+                // transparent rect to allow semi-transparent layers to render
+                // properly.
+                drawProjectionBackground(localDrawingBuffer.getGraphics());
                 paintLayers(localDrawingBuffer.getGraphics());
             }
 
