@@ -51,8 +51,7 @@ import com.bbn.openmap.proj.Projection;
  * 
  * @author dietrick
  */
-public class ZoomLevelMakerFace
-        extends OMComponentPanel {
+public class ZoomLevelMakerFace extends OMComponentPanel {
 
     protected static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.mapTile.ZoomLevelMakerFace");
 
@@ -163,8 +162,7 @@ public class ZoomLevelMakerFace
         JPanel outerLayerPanel = new JPanel(new GridBagLayout());
         String layers_for_title = i18n.get(ZoomLevelMakerFace.class, "layers_for_title", "Layers");
         outerLayerPanel.setBorder(BorderFactory.createTitledBorder(layers_for_title));
-        JScrollPane jsp =
-                new JScrollPane(layerPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane jsp = new JScrollPane(layerPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         c.weighty = 1.0f;
         c.insets = new Insets(0, 0, 0, 0);
         outerLayerPanel.add(jsp, c);
@@ -184,16 +182,14 @@ public class ZoomLevelMakerFace
         boundsList.addListSelectionListener(new SelectionListener());
         boundsList.addMouseListener(new ListMouseListener());
 
-        JScrollPane scrollableBoundsList =
-                new JScrollPane(boundsList, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane scrollableBoundsList = new JScrollPane(boundsList, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         boundsPanel.add(scrollableBoundsList, BorderLayout.CENTER);
 
         JPanel boundsButtonPanel = new JPanel();
 
         ImageIcon ii = createImageIcon("add_16x16.png");
         createBoundaryButton = new JButton(ii);
-        String create_a_boundary_rectangle =
-                i18n.get(ZoomLevelMakerFace.class, "create_a_boundary_rectangle", "Create a boundary rectangle");
+        String create_a_boundary_rectangle = i18n.get(ZoomLevelMakerFace.class, "create_a_boundary_rectangle", "Create a boundary rectangle");
         createBoundaryButton.setToolTipText(create_a_boundary_rectangle);
         createBoundaryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -204,8 +200,7 @@ public class ZoomLevelMakerFace
 
         ii = createImageIcon("edit_16x16.png");
         editBoundaryButton = new JButton(ii);
-        String edit_a_selected_boundary_rectangle =
-                i18n.get(ZoomLevelMakerFace.class, "edit_a_selected_boundary_rectangle", "Edit a selected boundary rectangle");
+        String edit_a_selected_boundary_rectangle = i18n.get(ZoomLevelMakerFace.class, "edit_a_selected_boundary_rectangle", "Edit a selected boundary rectangle");
         editBoundaryButton.setToolTipText(edit_a_selected_boundary_rectangle);
         editBoundaryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -219,8 +214,7 @@ public class ZoomLevelMakerFace
 
         ii = createImageIcon("remov_16x16.png");
         deleteBoundaryButton = new JButton(ii);
-        String delete_a_selected_boundary_rectangle =
-                i18n.get(ZoomLevelMakerFace.class, "delete_a_selected_boundary_rectangle", "Delete a selected boundary rectangle");
+        String delete_a_selected_boundary_rectangle = i18n.get(ZoomLevelMakerFace.class, "delete_a_selected_boundary_rectangle", "Delete a selected boundary rectangle");
         deleteBoundaryButton.setToolTipText(delete_a_selected_boundary_rectangle);
         deleteBoundaryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -269,9 +263,9 @@ public class ZoomLevelMakerFace
     public void updateZoomLevel(int zoomLevel) {
         DecimalFormat df = new DecimalFormat("000,000");
         zfi.setZoomLevel(zoomLevel);
-        
+
         zfi.setScale(new OSMMapTileCoordinateTransform().getScaleForZoom(zoomLevel));
-        
+
         int etc = zfi.getEdgeTileCount();
 
         tileDimensions.setText(etc + " x " + etc);
@@ -473,7 +467,8 @@ public class ZoomLevelMakerFace
         for (OMGraphic omr : boundaries) {
             if (omr instanceof OMRect) {
                 String bounding_rectangle = i18n.get(ZoomLevelMakerFace.class, "bounding_rectangle", "Bounding Rectangle");
-                boundsModel.addElement(new BoundsObject((OMRect) omr, bounding_rectangle + " " + (count++)));
+                boundsModel.addElement(new BoundsObject((OMRect) omr, bounding_rectangle + " "
+                        + (count++)));
             }
         }
 
@@ -510,8 +505,7 @@ public class ZoomLevelMakerFace
      * 
      * @author dietrick
      */
-    private final class BoundsListModel
-            extends AbstractListModel {
+    private final class BoundsListModel extends AbstractListModel {
         private static final long serialVersionUID = 1L;
 
         public int getSize() {
@@ -555,8 +549,7 @@ public class ZoomLevelMakerFace
      * 
      * @author dietrick
      */
-    public class BoundsObject
-            implements Cloneable {
+    public class BoundsObject implements Cloneable {
         protected OMRect bounds;
         protected String name;
 
@@ -570,9 +563,7 @@ public class ZoomLevelMakerFace
         }
 
         public BoundsObject clone() {
-            OMRect copy =
-                    new OMRect(bounds.getNorthLat(), bounds.getWestLon(), bounds.getSouthLat(), bounds.getEastLon(),
-                               OMGraphic.LINETYPE_RHUMB);
+            OMRect copy = new OMRect(bounds.getNorthLat(), bounds.getWestLon(), bounds.getSouthLat(), bounds.getEastLon(), OMGraphic.LINETYPE_RHUMB);
             DrawingAttributes atts = DrawingAttributes.getDefaultClone();
             atts.setFrom(bounds);
             atts.setTo(copy);
@@ -585,8 +576,7 @@ public class ZoomLevelMakerFace
      * 
      * @author dietrick
      */
-    public class LayerObject
-            extends JCheckBox {
+    public class LayerObject extends JCheckBox {
         private static final long serialVersionUID = 1L;
         protected Layer layer;
 
@@ -626,8 +616,7 @@ public class ZoomLevelMakerFace
      * 
      * @author dietrick
      */
-    private final class SelectionListener
-            implements ListSelectionListener {
+    private final class SelectionListener implements ListSelectionListener {
 
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
@@ -644,8 +633,7 @@ public class ZoomLevelMakerFace
      * 
      * @author dietrick
      */
-    private class ListMouseListener
-            extends MouseAdapter {
+    private class ListMouseListener extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {
@@ -659,7 +647,8 @@ public class ZoomLevelMakerFace
     }
 
     public ImageIcon createImageIcon(String path) {
-        URL imgURL = ZoomLevelMakerFace.class.getClassLoader().getResource("com/bbn/openmap/dataAccess/mapTile/" + path);
+        URL imgURL = ZoomLevelMakerFace.class.getClassLoader().getResource("com/bbn/openmap/dataAccess/mapTile/"
+                + path);
         if (imgURL != null) {
             return new ImageIcon(imgURL);
         } else {
