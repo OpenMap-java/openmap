@@ -99,7 +99,7 @@ public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
      * The StandardRenderPolicy doesn't need to do anything before prepare()
      * returns.
      */
-    public void prePrepare() {
+    public void prePrepare(Projection newProj) {
         // NOOP
     }
 

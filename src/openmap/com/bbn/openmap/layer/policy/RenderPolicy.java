@@ -27,6 +27,7 @@ import java.awt.Graphics;
 
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.proj.Projection;
 
 /**
  * A policy object that can be used by an OMGraphicHandlerLayer to figure out
@@ -34,48 +35,51 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
  */
 public interface RenderPolicy {
 
-   /**
-    * A method to set the parent layer on the RenderPolicy.
-    */
-   public void setLayer(OMGraphicHandlerLayer layer);
+    /**
+     * A method to set the parent layer on the RenderPolicy.
+     */
+    public void setLayer(OMGraphicHandlerLayer layer);
 
-   /**
-    * A method to get the parent layer on the RenderPolicy.
-    */
-   public OMGraphicHandlerLayer getLayer();
+    /**
+     * A method to get the parent layer on the RenderPolicy.
+     */
+    public OMGraphicHandlerLayer getLayer();
 
-   /**
-    * Set a Composite object on a Graphics2D object before rendering. Set to
-    * null (default) to not do anything.
-    */
-   public void setComposite(Composite composite);
+    /**
+     * Set a Composite object on a Graphics2D object before rendering. Set to
+     * null (default) to not do anything.
+     */
+    public void setComposite(Composite composite);
 
-   public Composite getComposite();
+    public Composite getComposite();
 
-   /**
-    * Be very careful with doing things in this method. It is called from the
-    * doPrepare() method in the calling thread, in order to allow any buffering
-    * to update itself outside of the LayerWorker thread. It allows the render
-    * policy to keep up with rapid projection changes even if the LayerWorker
-    * threads are getting backed up. Do not do a lot of work in this thread, it
-    * will slow down projection change notifications being received from other
-    * layers if you do.
-    */
-   void prePrepare();
+    /**
+     * Be very careful with doing things in this method. It is called from the
+     * doPrepare() method in the calling thread, in order to allow any buffering
+     * to update itself outside of the LayerWorker thread. It allows the render
+     * policy to keep up with rapid projection changes even if the LayerWorker
+     * threads are getting backed up. Do not do a lot of work in this thread, it
+     * will slow down projection change notifications being received from other
+     * layers if you do.
+     * 
+     * @param newProjection the new projection received in a projectionChanged
+     *        method for the layer.
+     */
+    void prePrepare(Projection newProjection);
 
-   /**
-    * Called when an OMGraphicHandlerLayer should begin preparing OMGraphics for
-    * the map. This is a hook into the list to help RenderPolicy make decisions
-    * or set up the list for faster rendering.
-    */
-   public OMGraphicList prepare();
+    /**
+     * Called when an OMGraphicHandlerLayer should begin preparing OMGraphics
+     * for the map. This is a hook into the list to help RenderPolicy make
+     * decisions or set up the list for faster rendering.
+     */
+    public OMGraphicList prepare();
 
-   /**
-    * Called from OMGraphicHandlerLayer.paint(Graphics), so the policy can
-    * handle the painting for the layer. If you are going to change the Graphics
-    * object in this method, you should make a copy of it first using the
-    * Graphics.create() method so the changes won't affect other layers.
-    */
-   public void paint(Graphics g);
+    /**
+     * Called from OMGraphicHandlerLayer.paint(Graphics), so the policy can
+     * handle the painting for the layer. If you are going to change the
+     * Graphics object in this method, you should make a copy of it first using
+     * the Graphics.create() method so the changes won't affect other layers.
+     */
+    public void paint(Graphics g);
 
 }

@@ -153,28 +153,25 @@ public class ProjectionSupport extends ListenerSupport<ProjectionListener> {
 
                     // Instead of going top of map to bottom, go bottom to top:
 
-                    // Use this try/catch to deal with any problems getting
-                    // clone of
-                    // listeners, in case listener list is being changed while
-                    // clone
-                    // is being made, etc.
+                    /*
+                     * Use this try/catch to deal with any problems getting
+                     * clone of listeners, in case listener list is being
+                     * changed while clone is being made, etc.
+                     */
                     try {
+
                         ListIterator<ProjectionListener> li = ProjectionSupport.this.listIterator();
                         while (li.hasPrevious()) {
                             ProjectionListener listener = li.previous();
-
-                            // This is going from top to bottom
-                            // for (ProjectionListener listener :
-                            // ProjectionSupport.this)
-                            // {
 
                             if (nextEvent != null) {
                                 break; // new event has been posted, bail out
                             }
 
-                            // Use this try/catch to eliminate problems from
-                            // individual
-                            // layers - just blow them off.
+                            /*
+                             * Use this try/catch to eliminate problems from
+                             * individual layers - just blow them off.
+                             */
                             try {
                                 listener.projectionChanged(projEvent);
                             } catch (Exception e) {

@@ -446,8 +446,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
             // Assume will need whole image, set the clipRect so it's
             // on the map, somewhere.
-            clipRect = new Rectangle();
-            clipRect.setBounds(sourceRect);
+            Rectangle nClipRect = new Rectangle();
+            nClipRect.setBounds(sourceRect);
 
             // If big enough to see
             if ((iRect.width >= 1) && (iRect.height >= 1)) {
@@ -463,47 +463,48 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                     // the y offset
                     int yOffset = iRect.y - projRect.y;
                     // Scale the x position
-                    clipRect.x = (int) Math.floor(xOffset * xScaleFactor);
+                    nClipRect.x = (int) Math.floor(xOffset * xScaleFactor);
                     // scale the y position
-                    clipRect.y = (int) Math.floor(yOffset * yScaleFactor);
+                    nClipRect.y = (int) Math.floor(yOffset * yScaleFactor);
 
                     // Do Math.ceil because the icon was getting
                     // clipped a little if it started to move off the
                     // screen a little.
-                    clipRect.width = (int) Math.ceil(iRect.width * xScaleFactor); // scale
+                    nClipRect.width = (int) Math.ceil(iRect.width * xScaleFactor); // scale
                     // the width
-                    clipRect.height = (int) Math.ceil(iRect.height * yScaleFactor); // scale
+                    nClipRect.height = (int) Math.ceil(iRect.height * yScaleFactor); // scale
                     // the height
 
                     // Make sure the rounding doesn't exceed the
                     // original icon bounds
-                    if (clipRect.width + clipRect.x > sourceRect.width) {
-                        clipRect.width = sourceRect.width - clipRect.x;
+                    if (nClipRect.width + nClipRect.x > sourceRect.width) {
+                        nClipRect.width = sourceRect.width - nClipRect.x;
                     }
-                    if (clipRect.height + clipRect.y > sourceRect.height) {
-                        clipRect.height = sourceRect.height - clipRect.y;
+                    if (nClipRect.height + nClipRect.y > sourceRect.height) {
+                        nClipRect.height = sourceRect.height - nClipRect.y;
                     }
                 }
 
                 // check width and height of clipRect, in case it got
                 // rounded down to zero.
-                if (clipRect.width <= 0) {
-                    clipRect.width = 1;
+                if (nClipRect.width <= 0) {
+                    nClipRect.width = 1;
                 }
-                if (clipRect.height <= 0) {
-                    clipRect.height = 1;
+                if (nClipRect.height <= 0) {
+                    nClipRect.height = 1;
                 }
                 // Now we can grab the bit we want out of the source
                 // and scale it to fit the intersection.
 
                 // Calc width adjustment
-                double widthAdj = (double) iRect.width / (double) clipRect.width;
+                double widthAdj = (double) iRect.width / (double) nClipRect.width;
                 // Calc height adjustment
-                double heightAdj = (double) iRect.height / (double) clipRect.height;
+                double heightAdj = (double) iRect.height / (double) nClipRect.height;
                 // Create the transform
                 AffineTransform xform = new AffineTransform();
                 // Specify scaling
                 xform.setToScale(widthAdj, heightAdj);
+                clipRect = nClipRect;
 
                 // Create the transform op.
                 // AffineTransformOp xformOp = new AffineTransformOp(xform,

@@ -72,14 +72,17 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
     }
 
     /**
-     * Called from the OMGraphicHandlerLayer's doPrepare() method. This method
-     * updates the current image buffer so it can be re-projected for the
+     * Called from the OMGraphicHandlerLayer's projectionChanged() method. This
+     * method updates the current image buffer so it can be re-projected for the
      * current projection before the layer worker goes off to do more work. In
      * case of rapid projection changes, the layer should be able to display the
-     * current buffer in the right place, at least.
+     * current buffer in the right place, at least. Ghah! Don't do a lot of work
+     * in this thread.
+     * 
+     * @param newProj the newest projection known.
      */
-    public void prePrepare() {
-        getImageBuffer().generate(layer.getProjection());
+    public void prePrepare(Projection newProj) {
+        getImageBuffer().generate(newProj);
     }
 
     public OMGraphicList prepare() {
@@ -152,6 +155,7 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
             OMScalingRaster lImageRaster = getImageRaster();
             if (lImageRaster != null) {
                 if (proj instanceof Cylindrical) {
+                    lImageRaster.setNeedToReposition(true);
                     lImageRaster.setNeedToRegenerate(true);
                     lImageRaster.generate(proj);
                 } else {
@@ -178,16 +182,15 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
                     omr.render(g);
                     return true;
                 }
-
-                return false;
             }
 
-            // projection hasn't changed, but layer is repainting...just
-            // draw image buffer.
-            if (imageBuffer != null) {
-                g.drawImage(imageBuffer, 0, 0, null);
-                return true;
-            }
+            /*
+             * We used to have a could of calls here that painted the current
+             * ImageBuffer if it wasn't null. Turns out, that's not a good idea.
+             * It causes the layer to paint itself in its old location for a
+             * flash before updating. So we're just going to let the
+             * OMScalingRaster handling painting.
+             */
 
             return false;
         }

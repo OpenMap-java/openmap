@@ -147,7 +147,7 @@ import com.bbn.openmap.util.PropUtils;
  *
  *     layer.projectionChangePolicy=pcp
  *     layer.pcp.class=com.bbn.openmap.layer.policy.StandardPCPolicy
- *
+ * 
  *     layer.renderPolicy=srp
  *     layer.srp.class=com.bbn.openmap.layer.policy.StandardRenderPolicy
  *     # or
@@ -155,7 +155,7 @@ import com.bbn.openmap.util.PropUtils;
  *     layer.ta.class=com.bbn.openmap.layer.policy.RenderingHintsRenderPolicy
  *     layer.ta.renderingHints=KEY_TEXT_ANTIALIASING
  *     layer.ta.KEY_TEXT_ANTIALIASING=VALUE_TEXT_ANTIALIAS_ON
- *
+ * 
  *     layer.mouseModes=Gestures
  *     layer.consumeEvents=true
  *
@@ -418,6 +418,8 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
             logger.fine("OMGraphicHandlerLayer " + getName() + " projection changed, calling "
                     + getProjectionChangePolicy().getClass().getName());
         }
+
+        getRenderPolicy().prePrepare(pe.getProjection());
         getProjectionChangePolicy().projectionChanged(pe);
     }
 
@@ -572,12 +574,6 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     public void doPrepare() {
         synchronized (LAYERWORKER_LOCK) {
 
-            // Tell the rendering policy to do any display buffer changes that
-            // are
-            // necessary, regardless of whether a new thread is kicked off or
-            // not.
-            getRenderPolicy().prePrepare();
-
             if (isWorking()) {
                 if (logger.isLoggable(Level.FINE)) {
                     logger.fine(getName() + " layer already working in prepare(), canceling");
@@ -717,7 +713,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
                 setLayerWorker(null);
 
                 if (!worker.isInterrupted()) {
-					// CAUTION! layer.repaint() is called in workerComplete!!
+                    // CAUTION! layer.repaint() is called in workerComplete!!
                     getProjectionChangePolicy().workerComplete(list);
                 }
             }
