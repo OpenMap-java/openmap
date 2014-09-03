@@ -127,7 +127,7 @@ public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphi
      * the textureMask has transparency, the fill paint still influences
      * appearance.
      */
-    protected TexturePaint textureMask = null;
+    protected transient TexturePaint textureMask = null;
 
     /**
      * This color is the highlight color that can be used when the object is
@@ -1076,9 +1076,10 @@ public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphi
     private void writeObject(ObjectOutputStream oos) throws IOException {
         oos.defaultWriteObject();
 
-        // Now write the Stroke. Take into account the stroke member
-        // could be null.
+        // Now write the Stroke and TexturePaint mask. Take into account they
+        // each could be null.
         writeStroke(oos, stroke, OMGraphicAdapter.BASIC_STROKE);
+        writeTextureMask(oos, textureMask);
     }
 
     protected void writeStroke(ObjectOutputStream oos, Stroke stroke, Stroke defStroke)
@@ -1117,6 +1118,28 @@ public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphi
     }
 
     /**
+     * Will only write TexturePaint objects that are Serializable.
+     * 
+     * @param oos the ObjectOutputStream to write on
+     * @param tMask the TexturePaint mask
+     * @throws IOException
+     */
+    protected void writeTextureMask(ObjectOutputStream oos, TexturePaint tMask) throws IOException {
+
+        boolean writeMask = (tMask instanceof Serializable);
+
+        if (writeMask) {
+            // First write a flag indicating if the Mask is on the
+            // stream.
+            oos.writeBoolean(true);
+            oos.writeObject((Serializable) tMask);
+
+        } else {
+            oos.writeBoolean(false);
+        }
+    }
+
+    /**
      * Read this object from a stream.
      */
     private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
@@ -1124,6 +1147,7 @@ public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphi
 
         // Read the Stroke
         stroke = readStroke(ois, OMGraphicAdapter.BASIC_STROKE);
+        textureMask = readTextureMask(ois);
     }
 
     protected Stroke readStroke(ObjectInputStream ois, Stroke defStroke)
@@ -1150,6 +1174,21 @@ public abstract class OMGraphicAdapter extends BasicGeometry implements OMGraphi
         }
 
         return stroke;
+    }
+
+    protected TexturePaint readTextureMask(ObjectInputStream ois)
+            throws ClassNotFoundException, IOException {
+        TexturePaint tPaint = null;
+
+        // Get the flag indicating a stroke was streamed
+        boolean streamHasTPaint = ois.readBoolean();
+
+        // Read and create the stroke
+        if (streamHasTPaint) {
+            tPaint = (TexturePaint) ois.readObject();
+        }
+
+        return tPaint;
     }
 
     /**
