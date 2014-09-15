@@ -182,20 +182,24 @@ public class NavMouseMode extends CoordMouseMode {
     protected void handleMouseReleased(MouseEvent e) {
         Object obj = e.getSource();
 
+        MapBean map = (MapBean) theMap;
+        Point firstPoint = this.point1;
+        Point secondPoint = this.point2;
+
         // point2 is always going to be null for a click.
-        if (!(obj == theMap) || !autoZoom || point1 == null || point2 == null) {
+        if (!(obj == map) || !autoZoom || firstPoint == null || secondPoint == null) {
             return;
         }
 
-        MapBean map = (MapBean) obj;
         Projection projection = map.getProjection();
         Proj p = (Proj) projection;
 
         synchronized (this) {
 
-            point2 = getRatioPoint((MapBean) e.getSource(), point1, e.getPoint());
-            int dx = Math.abs(point2.x - point1.x);
-            int dy = Math.abs(point2.y - point1.y);
+            point2 = getRatioPoint((MapBean) e.getSource(), firstPoint, e.getPoint());
+            secondPoint = point2;
+            int dx = Math.abs(secondPoint.x - firstPoint.x);
+            int dy = Math.abs(secondPoint.y - firstPoint.y);
 
             // Don't bother redrawing if the rectangle is too small
             if ((dx < 5) || (dy < 5)) {
@@ -228,11 +232,11 @@ public class NavMouseMode extends CoordMouseMode {
             }
 
             // Figure out the new scale
-            float newScale = com.bbn.openmap.proj.ProjMath.getScale(point1, point2, projection);
+            float newScale = com.bbn.openmap.proj.ProjMath.getScale(firstPoint, secondPoint, projection);
 
             // Figure out the center of the rectangle
-            int centerx = Math.min(point1.x, point2.x) + dx / 2;
-            int centery = Math.min(point1.y, point2.y) + dy / 2;
+            int centerx = Math.min(firstPoint.x, secondPoint.x) + dx / 2;
+            int centery = Math.min(firstPoint.y, secondPoint.y) + dy / 2;
             Point2D center = map.inverse(centerx, centery, null);
 
             // Fire events on main map to change view to match rect1
@@ -321,13 +325,16 @@ public class NavMouseMode extends CoordMouseMode {
             theMap.addPaintListener(this);
         }
 
-        if (theMap != null) {
+        MapBean map = this.theMap;
+        Point firstPoint = this.point1;
+
+        if (map != null) {
             if (!autoZoom) {
                 return;
             }
 
-            point2 = getRatioPoint(theMap, point1, e.getPoint());
-            theMap.repaint();
+            point2 = getRatioPoint(map, firstPoint, e.getPoint());
+            map.repaint();
         }
     }
 

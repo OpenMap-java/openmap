@@ -594,7 +594,8 @@ public final class ProjMath {
     /**
      * Given a projection and the starting point of a box (pt1), look at pt2 to
      * see if it represents the ratio of the projection map size. If it doesn't,
-     * provide a point that does.
+     * provide a point that does. You need to make sure that the proj, pt1 and
+     * pt2 is not null.
      * 
      * @param proj the projection to use for the calculations.
      * @param pt1 upper left point in pixel space

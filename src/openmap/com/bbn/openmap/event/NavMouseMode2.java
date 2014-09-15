@@ -87,18 +87,23 @@ public class NavMouseMode2 extends NavMouseMode {
 
         Object obj = e.getSource();
 
-        if (!(theMap == obj) || !autoZoom || point1 == null || point2 == null) {
+        Point firstPoint = this.point1;
+        Point secondPoint = this.point2;
+        MapBean map = this.theMap;
+
+        if (!(map == obj) || !autoZoom || firstPoint == null || secondPoint == null) {
             return;
         }
 
-        Projection projection = theMap.getProjection();
+        Projection projection = map.getProjection();
         Proj p = (Proj) projection;
-        MapBean map = theMap;
 
         synchronized (this) {
-            point2 = getRatioPoint(map, point1, e.getPoint());
-            int dx = Math.abs(point2.x - point1.x);
-            int dy = Math.abs(point2.y - point1.y);
+            point2 = getRatioPoint(map, firstPoint, e.getPoint());
+            secondPoint = point2;
+
+            int dx = Math.abs(secondPoint.x - firstPoint.x);
+            int dy = Math.abs(secondPoint.y - firstPoint.y);
 
             // Don't bother redrawing if the rectangle is too small
             if ((dx < 5) || (dy < 5)) {
@@ -128,18 +133,18 @@ public class NavMouseMode2 extends NavMouseMode {
             }
 
             // Figure out the new scale
-            dx = Math.abs(point2.x - point1.x);
-            dy = Math.abs(point2.y - point1.y);
+            dx = Math.abs(secondPoint.x - firstPoint.x);
+            dy = Math.abs(secondPoint.y - firstPoint.y);
 
             // cornerPoint 1 should be the upper left.
-            Point cornerPoint1 = new Point(point2.x < point1.x ? point2.x : point1.x, point2.y < point1.y ? point2.y
-                    : point1.y);
+            Point cornerPoint1 = new Point(secondPoint.x < firstPoint.x ? secondPoint.x
+                    : firstPoint.x, secondPoint.y < firstPoint.y ? secondPoint.y : firstPoint.y);
             Point cornerPoint2 = new Point(cornerPoint1.x + 2 * dx, cornerPoint1.y + 2 * dy);
 
             float newScale = com.bbn.openmap.proj.ProjMath.getScale(cornerPoint1, cornerPoint2, projection);
 
             // Figure out the center of the rectangle
-            Point2D center = map.inverse(point1.x, point1.y, null);
+            Point2D center = map.inverse(firstPoint.x, firstPoint.y, null);
 
             // Set the parameters of the projection and then set
             // the projection of the map. This way we save having
