@@ -662,7 +662,7 @@ public class MakeToc {
             }
 
             String scaleString = rpi.scaleString;
-            if (rpi.scale == RpfConstants.Various || scaleString == null || scaleString.isEmpty()) {
+            if (rpi.scale == RpfConstants.Various || scaleString == null || scaleString.length() == 0) {
                 // need to figure out how to consult the frame for
                 // what it is.
                 // RpfAttributes.chartSeriesCode might have something
