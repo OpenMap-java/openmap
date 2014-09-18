@@ -1,3 +1,35 @@
+2014-09-18  dietrick  <dietrick@wonkavision.local>
+
+	* Tagged OpenMap 5.1.4
+
+	* Updated OpenMapFrame to use Height, Width properties defined the
+	same way as in the Environment class.  The OpenMapFrame no longer
+	looks for a PropertyHandler in the MapHandler, the OpenMap class
+	will provide the properties to it right after it's created.  The
+	OpenMapFrame now consistently follows the height/width settings,
+	and the openmap.properties Height/Width properties have proper
+	capitalization.
+
+	The PropertyHandler.Builder class has a build method, which is now
+	used by updated Main and OpenMap classes.  OpenMap and Main now
+	have Logger member variables, moving away from Debug.
+
+	* Updated OMGraphicAdapter to handle TexturePaint masks property
+	during Serialization.  The SerializableTexturePaint was added to
+	help with this.
+
+	* Modified OMScalingRaster so local handles to clipRect are used
+	for positioning, to help with multithreaded environment.  The old
+	way was causing NPE to appear under certain conditions.  Local
+	handles were also implemented in the NavMouseModes for the same
+	reason.
+
+	* Updated BLMapBean has been updated to use an almost entirely
+	transparent background so that semi-transparent layers will render
+	property.  Previously, semi-transparent layers would not appear.
+
+	* Updated RPF catalog with entries from latest version of specification.
+
 2014-07-28  dietrick  <dietrick@wonkavision.local>
 
 	* Tagged OpenMap 5.1.3
