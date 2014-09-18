@@ -169,7 +169,7 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
          * 
          * @param g
          * @param proj
-         * @return
+         * @return true if paint was successful for the OMScaling Raster
          */
         public boolean paint(Graphics2D g, Projection proj) {
             Projection currentProj = currentProjection;
@@ -201,7 +201,6 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
          * 
          * @param list OMGraphicList from layer's prepare method.
          * @param proj current projection that has buffer size information.
-         * @return BufferedImage to render to map in paint method.
          */
         protected void update(OMGraphicList list, Projection proj) {
             BufferedImage currentImageBuffer = null;

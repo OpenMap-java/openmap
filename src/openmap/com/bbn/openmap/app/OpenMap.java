@@ -218,7 +218,7 @@ public class OpenMap {
     /**
      * get the logger
      *
-     * @return
+     * @return Logger for OpenMap class.
      */
     protected static Logger getLogger() {
         return LoggerHolder.LOGGER;

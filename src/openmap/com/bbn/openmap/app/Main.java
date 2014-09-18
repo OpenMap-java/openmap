@@ -94,7 +94,7 @@ public class Main extends OpenMap {
      * to configure itself. The OpenMap object has a MapHandler that you can use
      * to gain access to all the components.
      * 
-     * @return OpenMap
+     * @return Main, extending OpenMap
      * @see #getMapHandler
      */
     public static Main create() {
@@ -106,7 +106,7 @@ public class Main extends OpenMap {
      * to configure itself. The OpenMap object has a MapHandler that you can use
      * to gain access to all the components.
      * 
-     * @return OpenMap
+     * @return Main, extending OpenMap
      * @see #getMapHandler
      */
     public static Main create(String propertiesFile) {
@@ -137,7 +137,7 @@ public class Main extends OpenMap {
     /**
      * get the logger
      *
-     * @return
+     * @return Logger for Main.
      */
     protected static Logger getLogger() {
         return LoggerHolder.LOGGER;
