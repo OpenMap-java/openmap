@@ -26,6 +26,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.MapHandler;
@@ -56,7 +58,7 @@ public class OpenMap {
      * for an openmap.properties file.
      */
     public OpenMap() {
-        this(null);
+        this((PropertyHandler) null);
     }
 
     /**
@@ -91,10 +93,25 @@ public class OpenMap {
     }
 
     protected void showInFrame() {
-        OpenMapFrame omf = (OpenMapFrame) getMapHandler().get(com.bbn.openmap.gui.OpenMapFrame.class);
+
+        MapHandler mapHandler = getMapHandler();
+
+        OpenMapFrame omf = (OpenMapFrame) mapHandler.get(com.bbn.openmap.gui.OpenMapFrame.class);
 
         if (omf == null) {
+            /*
+             * If there is no OpenMapFrame specified in the properties file, we
+             * need to create one and configure it from the current properties.
+             */
             omf = new OpenMapFrame(Environment.get(Environment.Title));
+
+            PropertyHandler propertyHandler = (PropertyHandler) mapHandler.get(com.bbn.openmap.PropertyHandler.class);
+            if (propertyHandler != null) {
+                // Use the default property prefix for the default window
+                // property settings.
+                omf.setProperties("openmap", propertyHandler.getProperties());
+            }
+
             getMapHandler().add(omf);
         }
 
@@ -102,7 +119,7 @@ public class OpenMap {
 
         omf.setVisible(true);
         mapPanel.getMapBean().showLayerPalettes();
-        Debug.message("basic", "OpenMap: READY");
+        getLogger().fine("OpenMap: READY");
     }
 
     /**
@@ -166,22 +183,16 @@ public class OpenMap {
      * classpath and the user's home directory.
      */
     public static PropertyHandler configurePropertyHandler(String propertiesFile) {
-        PropertyHandler propertyHandler = null;
 
         try {
-            PropertyHandler.Builder builder = new PropertyHandler.Builder().setPropertiesFile(propertiesFile);
-            propertyHandler = new PropertyHandler(builder);
+            return new PropertyHandler.Builder().setPropertiesFile(propertiesFile).build();
         } catch (MalformedURLException murle) {
-            Debug.error(murle.getMessage());
-            murle.printStackTrace();
-            propertyHandler = new PropertyHandler();
+            getLogger().log(Level.WARNING, murle.getMessage(), murle);
         } catch (IOException ioe) {
-            Debug.error(ioe.getMessage());
-            ioe.printStackTrace();
-            propertyHandler = new PropertyHandler();
+            getLogger().log(Level.WARNING, ioe.getMessage(), ioe);
         }
 
-        return propertyHandler;
+        return new PropertyHandler();
     }
 
     /**
@@ -191,9 +202,7 @@ public class OpenMap {
 
         ArgParser ap = new ArgParser("OpenMap");
         String propArgs = null;
-        ap.add("properties",
-               "A resource, file path or URL to properties file\n Ex: http://myhost.com/xyz.props or file:/myhome/abc.pro\n See Java Documentation for java.net.URL class for more details",
-               1);
+        ap.add("properties", "A resource, file path or URL to properties file\n Ex: http://myhost.com/xyz.props or file:/myhome/abc.pro\n See Java Documentation for java.net.URL class for more details", 1);
 
         ap.parse(args);
 
@@ -204,4 +213,35 @@ public class OpenMap {
 
         OpenMap.create(propArgs);
     }
+
+    // <editor-fold defaultstate="collapsed" desc="Logger Code">
+    /**
+     * get the logger
+     *
+     * @return
+     */
+    protected static Logger getLogger() {
+        return LoggerHolder.LOGGER;
+    }
+
+    /**
+     * Holder for this class Logger. This allows for lazy initialization of the
+     * logger.
+     */
+    private static final class LoggerHolder {
+
+        /**
+         * The logger for this class
+         */
+        private static final Logger LOGGER = Logger.getLogger(OpenMap.class.getName());
+
+        /**
+         * Prevent instantiation
+         */
+        private LoggerHolder() {
+            throw new AssertionError("This should never be instantiated");
+        }
+    }
+    // </editor-fold>
+
 }

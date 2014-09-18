@@ -24,8 +24,8 @@ package com.bbn.openmap.app;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-
-import javax.swing.UIManager;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.gui.OverlayMapPanel;
@@ -77,22 +77,16 @@ public class Main extends OpenMap {
      * classpath and the user's home directory.
      */
     public static PropertyHandler configurePropertyHandler(String propertiesFile) {
-        PropertyHandler propertyHandler = null;
 
         try {
-            PropertyHandler.Builder builder = new PropertyHandler.Builder().setPropertiesFile(propertiesFile).setPropertyPrefix("main");
-            propertyHandler = new PropertyHandler(builder);
+            return new PropertyHandler.Builder().setPropertiesFile(propertiesFile).setPropertyPrefix("main").build();
         } catch (MalformedURLException murle) {
-            Debug.error(murle.getMessage());
-            murle.printStackTrace();
-            propertyHandler = new PropertyHandler();
+            getLogger().log(Level.WARNING, murle.getMessage(), murle);
         } catch (IOException ioe) {
-            Debug.error(ioe.getMessage());
-            ioe.printStackTrace();
-            propertyHandler = new PropertyHandler();
+            getLogger().log(Level.WARNING, ioe.getMessage(), ioe);
         }
 
-        return propertyHandler;
+        return new PropertyHandler();
     }
 
     /**
@@ -138,4 +132,34 @@ public class Main extends OpenMap {
 
         Main.create(propArgs);
     }
+
+    // <editor-fold defaultstate="collapsed" desc="Logger Code">
+    /**
+     * get the logger
+     *
+     * @return
+     */
+    protected static Logger getLogger() {
+        return LoggerHolder.LOGGER;
+    }
+
+    /**
+     * Holder for this class Logger. This allows for lazy initialization of the
+     * logger.
+     */
+    private static final class LoggerHolder {
+
+        /**
+         * The logger for this class
+         */
+        private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+
+        /**
+         * Prevent instantiation
+         */
+        private LoggerHolder() {
+            throw new AssertionError("This should never be instantiated");
+        }
+    }
+    // </editor-fold>
 }

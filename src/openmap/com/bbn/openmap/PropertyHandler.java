@@ -1681,5 +1681,14 @@ public class PropertyHandler
 
             return tmpProperties;
         }
+
+        /**
+         * Build the property handler.
+         * 
+         * @return new property handler with builder settings.
+         */
+        public PropertyHandler build() {
+            return new PropertyHandler(this);
+        }
     }
 }

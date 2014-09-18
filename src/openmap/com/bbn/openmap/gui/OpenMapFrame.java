@@ -75,16 +75,16 @@ public class OpenMapFrame
     /**
      * The property to set the pixel width of the frame, width.
      */
-    public static final String WidthProperty = "width";
+    public static final String WidthProperty = "Width";
     /**
      * The property to set the pixel height of the frame, height.
      */
-    public static final String HeightProperty = "height";
+    public static final String HeightProperty = "Height";
 
     /**
      * The property to set the title of the frame, title.
      */
-    public static final String TitleProperty = "title";
+    public static final String TitleProperty = "Title";
 
     /**
      * useAsInternalFrameRootPaneIfNecessary will tell the OpenMapFrame to set
@@ -101,11 +101,10 @@ public class OpenMapFrame
     private BeanContextChildSupport beanContextChildSupport = new BeanContextChildSupport();
 
     protected String propertyPrefix;
-    protected int x = -1;
-    protected int y = -1;
-    protected int width = Integer.MAX_VALUE;
-    protected int height = Integer.MAX_VALUE;
-    boolean propsInitialized = false;
+    protected int frameLocX = -1;
+    protected int frameLocY = -1;
+    protected int frameWidth = Integer.MAX_VALUE;
+    protected int frameHeight = Integer.MAX_VALUE;
 
     /**
      * All OMComponentPanels have access to an I18n object, which is provided by
@@ -174,18 +173,18 @@ public class OpenMapFrame
         if (h > d.height)
             h = d.height - d.height / 10;
 
-        if (x < 0)
-            x = d.width / 2 - w / 2;
-        if (y < 0)
-            y = d.height / 2 - h / 2;
+        if (frameLocX < 0)
+            frameLocX = d.width / 2 - w / 2;
+        if (frameLocY < 0)
+            frameLocY = d.height / 2 - h / 2;
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("Setting window bounds from " + x + ", " + y + " for size " + w + ", " + h);
+            logger.fine("Setting window bounds from " + frameLocX + ", " + frameLocY + " for size " + w + ", " + h);
         }
 
         // compose the frame, but don't show it here
         // contentPane.setBounds(x, y, w, h);
-        setBounds(x, y, w, h);
+        setBounds(frameLocX, frameLocY, w, h);
     }
 
     /**
@@ -219,11 +218,6 @@ public class OpenMapFrame
             logger.fine("OpenMapFrame: Found a MenuBar");
             getRootPane().setJMenuBar((JMenuBar) someObj);
             invalidate();
-        }
-
-        // Only do this if the properties haven't been set on the frame, yet.
-        if (someObj instanceof PropertyHandler && !propsInitialized) {
-            setProperties(((PropertyHandler) someObj).getProperties());
         }
     }
 
@@ -260,7 +254,7 @@ public class OpenMapFrame
             }
         }
 
-        setPosition(width, height);
+        setPosition(frameWidth, frameHeight);
         invalidate();
         pack();
         setVisible(true);
@@ -380,20 +374,19 @@ public class OpenMapFrame
      *        retrieve expected properties it can use for configuration.
      */
     public void setProperties(String prefix, Properties setList) {
-        propsInitialized = true;
         setPropertyPrefix(prefix);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        x = PropUtils.intFromProperties(setList, prefix + xProperty, x);
-        y = PropUtils.intFromProperties(setList, prefix + yProperty, y);
-        width = PropUtils.intFromProperties(setList, prefix + WidthProperty, width);
-        height = PropUtils.intFromProperties(setList, prefix + HeightProperty, height);
+        frameLocX = PropUtils.intFromProperties(setList, prefix + xProperty, frameLocX);
+        frameLocY = PropUtils.intFromProperties(setList, prefix + yProperty, frameLocY);
+        frameWidth = PropUtils.intFromProperties(setList, prefix + WidthProperty, frameWidth);
+        frameHeight = PropUtils.intFromProperties(setList, prefix + HeightProperty, frameHeight);
 
         setTitle(setList.getProperty(prefix + TitleProperty, getTitle()));
 
         if (getContentPane().getComponentCount() > 0) {
             logger.fine("setting window dimensions");
-            setPosition(width, height);
+            setPosition(frameWidth, frameHeight);
         }
 
         if (useAsInternalFrameRootPaneIfNecessary) {
