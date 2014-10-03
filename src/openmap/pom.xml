@@ -45,13 +45,6 @@
     </mailingLists>
     <dependencies>
         <dependency>
-            <!-- jai_codec must be downloaded and installed manually due to
-                licensing constraints preventing it from being in Maven
-                Central. Download from:
-                http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib.zip
-                And then install into local repository:
-                $ mvn install:install-file -Dfile=/home/leif/Downloads/jai-1_1_3/lib/jai_codec.jar -DgroupId=com.sun.media -DartifactId=jai-codec -Dversion=1.1.3 -Dpackaging=jar
-            -->
             <groupId>com.sun.media</groupId>
             <artifactId>jai-codec</artifactId>
             <version>1.1.3</version>
@@ -79,6 +72,14 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <repositories>
+        <repository>
+            <!-- Provides problematic jai-codec binary missing from Maven Central -->
+            <id>thirdparty-releases</id>
+            <name>JBoss Thirdparty Releases</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <plugin>
