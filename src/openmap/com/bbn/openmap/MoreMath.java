@@ -136,30 +136,6 @@ public class MoreMath {
         return (double) Math.log(x + Math.sqrt(x * x + 1));
     }
 
-    /**
-     * Hyperbolic sin.
-     * <p>
-     * Hyperbolic sine: (e^x-e^-x)/2
-     * 
-     * @param x float
-     * @return float sinh(x)
-     */
-    public static final float sinh(float x) {
-        return (float) (Math.pow(Math.E, x) - Math.pow(Math.E, -x)) / 2.0f;
-    }
-
-    /**
-     * Hyperbolic sin.
-     * <p>
-     * Hyperbolic sine: (e^x-e^-x)/2
-     * 
-     * @param x double
-     * @return double sinh(x)
-     */
-    public static final double sinh(double x) {
-        return (double) (Math.pow(Math.E, x) - Math.pow(Math.E, -x)) / 2.0d;
-    }
-
     // HACK - are there functions that already exist?
     /**
      * Return sign of number.

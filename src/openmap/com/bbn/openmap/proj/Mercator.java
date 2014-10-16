@@ -167,9 +167,8 @@ public class Mercator extends Cylindrical {
 
         // same as forward_x and forward_y, and convert to screen
         // coords
-		double x = (scaled_radius * wrapLongitude(lon - centerX)) + wx;
-		double y = hy
-				- (scaled_radius * (MoreMath.asinh(Math.tan(lat)) - asinh_of_tanCtrLat));
+        double x = (scaled_radius * wrapLongitude(lon - centerX)) + wx;
+        double y = hy - (scaled_radius * (MoreMath.asinh(Math.tan(lat)) - asinh_of_tanCtrLat));
         p.setLocation(x, y);
         return p;
     }
@@ -184,11 +183,11 @@ public class Mercator extends Cylindrical {
      * @see Proj#inverse(Point2D)
      */
     public <T extends Point2D> T inverse(double x, double y, T llp) {
-        
+
         if (llp == null) {
             llp = (T) new LatLonPoint.Double();
         }
-        
+
         // convert from screen to world coordinates
         x -= wx;
         y = hy - y;
@@ -196,8 +195,8 @@ public class Mercator extends Cylindrical {
         // inverse project
         double wc = asinh_of_tanCtrLat * scaled_radius;
 
-        llp.setLocation(Math.toDegrees(wrapLongitude(x / scaled_radius + centerX)),
-                Math.toDegrees(normalizeLatitude(Math.atan(MoreMath.sinh((y + wc) / scaled_radius)))));
+        llp.setLocation(Math.toDegrees(wrapLongitude(x / scaled_radius + centerX)), Math.toDegrees(normalizeLatitude(Math.atan(Math.sinh((y + wc)
+                / scaled_radius)))));
 
         return llp;
     }
@@ -238,13 +237,12 @@ public class Mercator extends Cylindrical {
      * @param nsegs number of segments
      * @return float[] of lat, lon, lat, lon, ... in RADIANS!
      */
-    protected float[] rhumbProject(Point2D from, Point2D to, boolean include_last,
-                                   int nsegs) {
+    protected float[] rhumbProject(Point2D from, Point2D to, boolean include_last, int nsegs) {
 
         // calculate pixel distance
         if (nsegs < 1) {
             // dynamically calculate the number of segments to draw
-            nsegs = DrawUtil.pixel_distance((int)from.getX(), (int)from.getY(), (int)to.getX(), (int)to.getY()) >> 3;// /8
+            nsegs = DrawUtil.pixel_distance((int) from.getX(), (int) from.getY(), (int) to.getX(), (int) to.getY()) >> 3;// /8
             if (nsegs == 0)
                 nsegs = 1;
             else if (nsegs > MAX_RHUMB_SEGS)
@@ -261,11 +259,12 @@ public class Mercator extends Cylindrical {
         // ")invto=("+llp2.getLatitude()+","+llp2.getLongitude()+")");
         // Debug.output("nsegs="+nsegs);
         // calculate nsegs(+1) extra vertices between endpoints
-        int[] xypts = DrawUtil.lineSegments((int)from.getX(), (int)from.getY(), // coords
-                (int)to.getX(), (int)to.getY(), nsegs, // number of segs between
+        int[] xypts = DrawUtil.lineSegments((int) from.getX(), (int) from.getY(), // coords
+                (int) to.getX(), (int) to.getY(), nsegs, // number of segs
+                                                         // between
                 include_last, // include last point
                 new int[nsegs << 1] // retval
-                );
+        );
 
         float[] llpts = new float[xypts.length];
         for (int i = 0; i < llpts.length; i += 2) {
@@ -291,13 +290,12 @@ public class Mercator extends Cylindrical {
      * @param nsegs number of segments
      * @return double[] of lat, lon, lat, lon, ... in RADIANS!
      */
-    protected double[] rhumbProjectDouble(Point2D from, Point2D to,
-                                          boolean include_last, int nsegs) {
+    protected double[] rhumbProjectDouble(Point2D from, Point2D to, boolean include_last, int nsegs) {
 
         // calculate pixel distance
         if (nsegs < 1) {
             // dynamically calculate the number of segments to draw
-            nsegs = DrawUtil.pixel_distance((int)from.getX(), (int)from.getY(), (int)to.getX(), (int)to.getY()) >> 3;// /8
+            nsegs = DrawUtil.pixel_distance((int) from.getX(), (int) from.getY(), (int) to.getX(), (int) to.getY()) >> 3;// /8
             if (nsegs == 0)
                 nsegs = 1;
             else if (nsegs > MAX_RHUMB_SEGS)
@@ -314,11 +312,12 @@ public class Mercator extends Cylindrical {
         // ")invto=("+llp2.getLatitude()+","+llp2.getLongitude()+")");
         // Debug.output("nsegs="+nsegs);
         // calculate nsegs(+1) extra vertices between endpoints
-        int[] xypts = DrawUtil.lineSegments((int)from.getX(), (int)from.getY(), // coords
-                (int)to.getX(), (int)to.getY(), nsegs, // number of segs between
+        int[] xypts = DrawUtil.lineSegments((int) from.getX(), (int) from.getY(), // coords
+                (int) to.getX(), (int) to.getY(), nsegs, // number of segs
+                                                         // between
                 include_last, // include last point
                 new int[nsegs << 1] // retval
-                );
+        );
 
         double[] llpts = new double[xypts.length];
         for (int i = 0; i < llpts.length; i += 2) {

@@ -699,6 +699,14 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      */
     protected void workerComplete(ISwingWorker<OMGraphicList> worker) {
         synchronized (LAYERWORKER_LOCK) {
+
+            if (layerWorkerQueue == null && !worker.isInterrupted()) {
+                OMGraphicList list = worker.get();
+                // CAUTION! layer.repaint() is called in workerComplete!!
+                getProjectionChangePolicy().workerComplete(list);
+                setLayerWorker(null);
+            }
+
             if (layerWorkerQueue != null) {
                 if (logger.isLoggable(Level.FINER)) {
                     logger.finer("worker " + worker
@@ -707,15 +715,6 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
                 }
                 setLayerWorker(layerWorkerQueue);
                 layerWorkerQueue = null;
-            } else {
-                // success!
-                OMGraphicList list = worker.get();
-                setLayerWorker(null);
-
-                if (!worker.isInterrupted()) {
-                    // CAUTION! layer.repaint() is called in workerComplete!!
-                    getProjectionChangePolicy().workerComplete(list);
-                }
             }
         }
     }

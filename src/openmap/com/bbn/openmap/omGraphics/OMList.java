@@ -188,15 +188,15 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter impl
     }
 
     public Iterator<T> iterator() {
-        return graphics.iterator();
+        return getCopy().iterator();
     }
 
     public ListIterator<T> listIterator() {
-        return graphics.listIterator();
+        return getCopy().listIterator();
     }
 
     public ListIterator<T> listIterator(int size) {
-        return graphics.listIterator(size);
+        return getCopy().listIterator(size);
     }
 
     public List<T> subList(int fromIndex, int toIndex) {
@@ -692,7 +692,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter impl
      * determining which OMGraphics should be used in different distance,
      * generate and render methods.
      */
-    protected boolean processAllGeometries = false;
+    protected boolean processAllGeometries = true;
 
     /**
      * This method is called internally for those methods where skipping
