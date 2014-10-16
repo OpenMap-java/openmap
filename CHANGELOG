@@ -1,3 +1,19 @@
+2014-10-16  dietrick  <dietrick@wonkavision.local>
+
+	* Tagged OpenMap 5.1.5
+
+	* Removed sinh from MoreMath, the standard Math function should be
+	used instead.  Updated Mercator to use it.  Updated
+	OMGraphicHandlerLayer threading model to handle workerComplete()
+	better.  There were situations where a canceled worker could
+	result in two or more more threads locking up on prepare().
+	OMList updated so that processAllGraphics is true by default, was
+	causing an extra loop through graphics to check visibility for
+	sublists.  Updated iterator methods to iterate over shallow copy
+	of graphics.
+
+	* Added check in OMWarpingImage.render() to check isRenderable().
+
 2014-09-18  dietrick  <dietrick@wonkavision.local>
 
 	* Tagged OpenMap 5.1.4
