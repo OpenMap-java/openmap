@@ -316,7 +316,7 @@ public class OMWarpingImage extends OMGraphicAdapter implements OMGraphic {
 
     @Override
     public void render(Graphics g) {
-        if (raster != null) {
+        if (raster != null && isRenderable(raster.getShape())) {
             raster.setSelected(isSelected());
             raster.setMatted(isMatted());
             raster.render(g);
