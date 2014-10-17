@@ -249,6 +249,17 @@ public class BufferedLayerMapBean extends BufferedMapBean {
     }
 
     /**
+     * In an effort to limit map flashing, the BufferedLayerMapBean consults the
+     * BufferedLayer to check that all background layers are ready to be painted
+     * after a projection change, before forwarding on all repaint requests.
+     */
+    public void repaint(Layer layer) {
+        if (bufferedLayer == null || bufferedLayer.isReadyToPaint()) {
+            super.repaint(layer);
+        }
+    }
+
+    /**
      * ContainerListener Interface method. Should not be called directly. Part
      * of the ContainerListener interface, and it's here to make the MapBean a
      * good Container citizen.

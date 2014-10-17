@@ -504,6 +504,14 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
             pcve.updateWithParameters(this);
             return;
         }
+
+        // Mark the layers as dirty, as a group, before notifying them of a
+        // projection change. They will mark themselves clean when they call
+        // repaint.
+        for (Component c : getComponents()) {
+            ((Layer) c).setReadyToPaint(false);
+        }
+
         projectionSupport.fireProjectionChanged(proj);
         purgeAndNotifyRemovedLayers();
     }

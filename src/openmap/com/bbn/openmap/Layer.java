@@ -26,7 +26,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -46,6 +45,7 @@ import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -313,6 +313,16 @@ public abstract class Layer extends JComponent implements ProjectionListener, Pr
      * pre-projected coordinates.
      */
     protected GeoCoordTransformation coordTransform;
+
+    /**
+     * New variable to describe when a layer has responded to a projection
+     * change and is ready to be painted. Used by the BufferedLayerMapBean,
+     * which limits repaint calls to only be passed on when all background
+     * layers are ready to be painted. This eliminates the flashing effect
+     * caused when some layers call for a repaint before background layers do,
+     * causing the map background to be displayed for a second.
+     */
+    protected AtomicBoolean readyToPaint = new AtomicBoolean(true);
 
     /**
      * Returns the package of the given class as a string.
@@ -931,6 +941,7 @@ public abstract class Layer extends JComponent implements ProjectionListener, Pr
      * method, and don't call super.repaint(), the layers will not be repainted.
      */
     public void repaint(long tm, int x, int y, int width, int height) {
+        readyToPaint.set(true);
         Component p = getParent();
         if (p instanceof MapBean) {
             ((MapBean) p).setBufferDirty(true);
@@ -1127,6 +1138,20 @@ public abstract class Layer extends JComponent implements ProjectionListener, Pr
      */
     public boolean getAddAsBackground() {
         return addAsBackground;
+    }
+
+    /**
+     * @return the readyToPaint
+     */
+    public boolean isReadyToPaint() {
+        return readyToPaint.get();
+    }
+
+    /**
+     * @param readyToPaint the readyToPaint to set
+     */
+    public void setReadyToPaint(boolean readyToPaint) {
+        this.readyToPaint.set(readyToPaint);
     }
 
     /**

@@ -267,6 +267,35 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements PropertyChan
     }
 
     /**
+     * Returns true if all children are are ready to be painted - that is, they
+     * have called for a repaint.
+     * 
+     * @return the readyToPaint
+     */
+    public boolean isReadyToPaint() {
+        for (Component c : getLayers()) {
+            if (!((Layer) c).isReadyToPaint()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Set whether this layer should be ready to paint. Called when the
+     * projection changes, to make child layers 'dirty'. We don't change the
+     * super classes' version of the variable, because it's never consulted and
+     * it's probably better that it's always true by default.
+     * 
+     * @param readyToPaint the readyToPaint to set
+     */
+    public void setReadyToPaint(boolean readyToPaint) {
+        for (Component c : getLayers()) {
+            ((Layer) c).setReadyToPaint(readyToPaint);
+        }
+    }
+
+    /**
      * You can change what kind of MapBean is used to hold onto the layers. This
      * method just sets the new MapBean into the layer, as is. If there was a
      * previous MapBean with layers, they're gone and replaces with whatever is
