@@ -1,3 +1,16 @@
+2014-10-17  dietrick  <dietrick@wonkavision.local>
+
+	* Tagged OpenMap 5.1.6
+
+	* Modified Layer, BufferedLayer, BufferedLayerMapBean and MapBean
+	to eliminate the flashing effect caused when faster-responding
+	layers were paired with slower-responding layers, and the map
+	background would be seen briefly.  Now, when the
+	BufferedLayerMapBean is used, its BufferedLayer is consulted to
+	make sure all 'background' layers are ready before repaint()
+	requests are forwarded to the AWT mechanism.  Layers are ready
+	when repaint() is called on them.
+
 2014-10-16  dietrick  <dietrick@wonkavision.local>
 
 	* Tagged OpenMap 5.1.5
