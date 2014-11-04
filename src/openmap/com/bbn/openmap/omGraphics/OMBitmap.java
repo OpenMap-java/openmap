@@ -25,8 +25,11 @@ package com.bbn.openmap.omGraphics;
 import java.awt.Color;
 import java.awt.Paint;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.awt.image.MemoryImageSource;
 import java.io.Serializable;
+
+import javax.swing.ImageIcon;
 
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
@@ -273,15 +276,16 @@ public class OMBitmap extends OMRasterObject implements Serializable {
         }
 
         if (getNeedToRegenerate() || bitmap == null) {
+            int[] imagePixels = computePixels(bits);
+            pixels = imagePixels;
 
-            pixels = computePixels(bits);
-
-            Toolkit tk = Toolkit.getDefaultToolkit();
-            bitmap = tk.createImage(new MemoryImageSource(width, height, pixels, 0, width));
+            BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            bi.setRGB(0, 0, width, height, imagePixels, 0, width);
+            setImage(bi);
         }
 
         if (imageFilter != null) {
-            bitmap = filterImage(bitmap);
+            setImage(filterImage(bitmap));
         }
 
         setShape();
