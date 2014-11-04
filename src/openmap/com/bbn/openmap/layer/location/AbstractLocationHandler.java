@@ -19,6 +19,9 @@ package com.bbn.openmap.layer.location;
 
 /*  Java Core  */
 import java.awt.Color;
+import java.awt.Component;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -203,6 +206,17 @@ public abstract class AbstractLocationHandler implements LocationHandler {
         JPanel jp = new JPanel();
         jp.add(new JLabel("No Palette"));
         return jp;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.bbn.openmap.layer.location.LocationHandler#getItemsForPopupMenu(com
+     * .bbn.openmap.layer.location.Location)
+     */
+    public List<Component> getItemsForPopupMenu(Location loc) {
+        return null;
     }
 
     /**
