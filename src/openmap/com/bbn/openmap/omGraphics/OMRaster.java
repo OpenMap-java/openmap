@@ -766,6 +766,8 @@ public class OMRaster extends OMRasterObject implements Serializable {
         // We'll make it a GeneralPath rectangle.
         setShape();
 
+        setLabelLocation(getShape(), proj);
+
         setNeedToRegenerate(false);
         return true;
     }
