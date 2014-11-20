@@ -162,29 +162,28 @@ public class BufferedLayerMapBean extends BufferedMapBean {
             bufLayer.clearLayers();
             bufLayer.setProjection(getRotatedProjection());
 
-            for (int i = 0; i < layers.length; i++) {
+            for (Layer layer : layers) {
                 // @HACK is this cool?:
-                if (layers[i] == null) {
-                    logger.warning("layer " + i + " is null");
+                if (layer == null) {
+                    logger.warning("skipping null layer in layer array passed to MapBean");
                     continue;
                 }
 
                 if (DEBUG) {
-                    debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
+                    debugmsg("Adding layer[" + layer.getName() + "]");
                 }
 
-                if (layers[i].getAddAsBackground()) {
+                if (layer.getAddAsBackground()) {
                     if (DEBUG) {
-                        logger.fine("Adding layer[" + i + "]= " + layers[i].getName()
-                                + " to background");
+                        logger.fine("Adding layer[" + layer.getName() + "] to background");
                     }
 
-                    bufLayer.addLayer(layers[i]);
+                    bufLayer.addLayer(layer);
                 } else {
-                    add(layers[i]);
+                    add(layer);
                 }
 
-                layers[i].setVisible(true);
+                layer.setVisible(true);
             }
 
             if (bufLayer.hasLayers()) {
@@ -200,22 +199,20 @@ public class BufferedLayerMapBean extends BufferedMapBean {
             if (DEBUG) {
                 debugmsg("Adding new layers");
             }
-            for (int i = 0; i < layers.length; i++) {
+            for (Layer layer : layers) {
                 if (DEBUG) {
-                    debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
+                    debugmsg("Adding layer[" + layer.getName() + "]");
                 }
 
-                // add(layers[i]);
-                layers[i].setVisible(true);
+                layer.setVisible(true);
 
-                if (layers[i].getAddAsBackground()) {
+                if (layer.getAddAsBackground()) {
                     if (DEBUG) {
-                        debugmsg("Adding layer[" + i + "]= " + layers[i].getName()
-                                + " to background");
+                        debugmsg("Adding layer[" + layer.getName() + "] to background");
                     }
-                    bufLayer.addLayer(layers[i]);
+                    bufLayer.addLayer(layer);
                 } else {
-                    add(layers[i]);
+                    add(layer);
                 }
             }
 
@@ -230,12 +227,12 @@ public class BufferedLayerMapBean extends BufferedMapBean {
             if (DEBUG) {
                 debugmsg("Removing layers");
             }
-            for (int i = 0; i < layers.length; i++) {
+            for (Layer layer : layers) {
                 if (DEBUG) {
-                    debugmsg("Removing layer[" + i + "]= " + layers[i].getName());
+                    debugmsg("Removing layer[" + layer.getName() + "]");
                 }
-                remove(layers[i]);
-                bufLayer.removeLayer(layers[i]);
+                remove(layer);
+                bufLayer.removeLayer(layer);
             }
         }
 
@@ -302,8 +299,8 @@ public class BufferedLayerMapBean extends BufferedMapBean {
         firePropertyChange(LayersProperty, currentLayers, newLayers);
 
         // Tell the new layers that they have been added
-        for (int i = 0; i < addedLayers.size(); i++) {
-            ((Layer) addedLayers.elementAt(i)).added(this);
+        for (Layer layer : addedLayers) {
+            layer.added(this);
         }
         addedLayers.removeAllElements();
 

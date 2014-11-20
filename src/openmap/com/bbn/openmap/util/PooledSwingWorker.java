@@ -1,8 +1,5 @@
 package com.bbn.openmap.util;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
 
 /**
  * @param <T> The type of value computed by the task.

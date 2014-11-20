@@ -188,7 +188,6 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
     protected DrawingAttributes attributionAttributes = DrawingAttributes.getDefaultClone();
 
     public MapTileLayer() {
-        setRenderPolicy(new com.bbn.openmap.layer.policy.BufferedImageRenderPolicy(this));
         setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
         setTileFactory(new StandardMapTileFactory());
         // We need to make this layer uninterruptable, because that messes with

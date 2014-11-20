@@ -6,15 +6,11 @@
 package com.bbn.openmap.dataAccess.mapTile;
 
 import java.awt.image.BufferedImage;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.logging.Level;
 
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.omGraphics.OMTextLabeler;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.cacheHandler.CacheObject;
 
 /**

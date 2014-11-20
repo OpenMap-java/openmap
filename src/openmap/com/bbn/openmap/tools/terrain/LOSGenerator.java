@@ -32,7 +32,6 @@ import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Planet;
 import com.bbn.openmap.proj.coords.LatLonPoint;
-import com.bbn.openmap.util.Debug;
 
 /**
  * A Class that can do Line-Of-Sight calculations between two points. Uses the

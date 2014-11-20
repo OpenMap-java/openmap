@@ -33,7 +33,6 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.bbn.openmap.layer.rpf.RpfLayer;
 import com.bbn.openmap.util.PaletteHelper;
 
 public class SlopeGeneratorLoader extends ColorGeneratorLoader {

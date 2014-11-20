@@ -45,7 +45,6 @@ import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.PropertyConsumer;
-import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.util.PropUtils;
 
 /**

@@ -43,7 +43,6 @@ import javax.vecmath.Color4b;
 import javax.vecmath.Point3d;
 
 import com.bbn.openmap.omGraphics.OMColor;
-import com.bbn.openmap.omGraphics.OMGeometryList;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMGrid;

@@ -29,7 +29,6 @@ import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -53,9 +52,7 @@ import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.event.ProjectionEvent;
-import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -129,8 +126,8 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements PropertyChan
 
         Layer[] layers = LayerHandler.getLayers(layersValue, startuplayers, props);
 
-        for (int i = 0; i < layers.length; i++) {
-            mapBean.add(layers[i]);
+        for (Layer layer : layers) {
+            mapBean.add(layer);
         }
     }
 
@@ -584,19 +581,55 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements PropertyChan
                 // appropriate for the projection
                 localDrawingBuffer = resetDrawingBuffer(localDrawingBuffer, getProjection());
 
-                // Reassign the drawingBuffer if a new buffer was allocated.
-                drawingBuffer = localDrawingBuffer;
                 // We need to draw the projection background with oh-so-slight
                 // transparent rect to allow semi-transparent layers to render
                 // properly.
+
                 drawProjectionBackground(localDrawingBuffer.getGraphics());
-                paintLayers(localDrawingBuffer.getGraphics());
+                /**
+                 * We used to call paintLayers here.
+                 */
+                // paintLayers(localDrawingBuffer.getGraphics());
+                /**
+                 * But, there are problems with rendering if the projection
+                 * changes quickly (rotation, following a track, etc) and
+                 * there's an animated layer active. Calling
+                 * renderDataForProjection on the background layer eliminates
+                 * flickering with background layers and the background color.
+                 * Sometimes having a BufferedImageRenderPolicy on some of these
+                 * background layers also causes flashing. Since the
+                 * BufferedLayer provides buffering, those layers can have a
+                 * StandardRenderPolicy.
+                 */
+                renderDataForProjection(getProjection(), localDrawingBuffer.getGraphics());
+
+                // Reassign the drawingBuffer if a new buffer was allocated.
+                drawingBuffer = localDrawingBuffer;
             }
 
             if (localDrawingBuffer != null) {
                 g.drawImage(localDrawingBuffer, 0, 0, null);
             }
 
+        }
+
+        /**
+         * @return the expanded rotated projection if map rotated, normal
+         *         projection if not rotated. The rotated projection is larger
+         *         than the MapBean and has extra offsets.
+         */
+        public Projection getRotatedProjection() {
+            RotationHelper rotation = getUpdatedRotHelper();
+            Projection proj = rotation != null ? rotation.getProjection() : projection;
+            /**
+             * The original method in the superclass sets the rotation angle on
+             * the projection, but the rotation in this map bean is 0, so
+             * calling this just messes up rotation settings in the projection,
+             * stomping it to zero. This has the effect of breaking
+             * anti-rotation in OMText and OMScalingIcons.
+             */
+            // ((Proj) proj).setRotationAngle(getRotationAngle());
+            return proj;
         }
 
         /**

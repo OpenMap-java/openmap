@@ -28,9 +28,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 import com.bbn.openmap.MoreMath;
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMPoly;
-import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * Math functions used by projection code.

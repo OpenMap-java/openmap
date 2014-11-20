@@ -8,7 +8,6 @@ package com.bbn.openmap.event;
 import java.util.List;
 
 import com.bbn.openmap.Layer;
-import com.bbn.openmap.LayerHandler;
 
 /**
  * ListenerSupport for the LayerHandler to use for managing LayerConfigurationListeners.

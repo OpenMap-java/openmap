@@ -69,7 +69,7 @@ import com.bbn.openmap.util.WebBrowser;
  * The InformationDelegator lets you alter its behavior with property settings:
  * 
  * <pre>
- *   
+ * 
  *     # Make the status lights buttons that bring up layer palettes.
  *     infoDelegator.triggers=true
  *     # Show the layer status lights.
@@ -78,12 +78,11 @@ import com.bbn.openmap.util.WebBrowser;
  *     infoDelegator.showInfoLine=true
  *     # Show the text line for coordinate information
  *     infoDelegator.showCoordsInfoLine=true
- *    
+ * 
  * </pre>
  */
-public class InformationDelegator extends OMComponentPanel implements
-        InfoDisplayListener, PropertyChangeListener, ProgressListener,
-        MapPanelChild {
+public class InformationDelegator extends OMComponentPanel implements InfoDisplayListener,
+        PropertyChangeListener, ProgressListener, MapPanelChild {
 
     protected JLabel infoLineHolder;
     protected JLabel infoLineHolder2;
@@ -121,6 +120,7 @@ public class InformationDelegator extends OMComponentPanel implements
     public final static String ShowLightsProperty = "showLights";
     public final static String ShowInfoLineProperty = "showInfoLine";
     public final static String ShowCoordsInfoLineProperty = "showCoordsInfoLine";
+    public final static String WebBrowserClassProperty = "webBrowserClass";
 
     public final static int MAP_OBJECT_INFO_LINE = 0; // Default
     public final static int COORDINATE_INFO_LINE = 1;
@@ -222,8 +222,7 @@ public class InformationDelegator extends OMComponentPanel implements
                 MapMouseMode mmm = (MapMouseMode) evt.getNewValue();
                 setResetCursor(mmm.getModeCursor());
             } else if (propName == MapBean.LayersProperty) {
-                resetForLayers((Layer[]) evt.getNewValue(),
-                        (Layer[]) evt.getOldValue());
+                resetForLayers((Layer[]) evt.getNewValue(), (Layer[]) evt.getOldValue());
             } else if (propName != MapBean.ProjectionProperty) {
                 // For stuff we don't care about, just return from
                 // here. Otherwise, reset the GUI below...
@@ -339,50 +338,36 @@ public class InformationDelegator extends OMComponentPanel implements
         statusBar.reset();
     }
 
-    public void initBrowser() {
-        setBrowser(new WebBrowser());
-    }
-
     public void setBrowser(WebBrowser wb) {
         browser = wb;
         browser.setInfoDelegator(this);
     }
 
     public WebBrowser getBrowser() {
-        if (browser == null) {
-            initBrowser();
-        }
         return browser;
-    }
-
-    /**
-     * Callback method.
-     */
-    public void checkBrowser() {
-        if (browser != null)
-            browser.exitValue();
     }
 
     /**
      * Try to display a URL in a web browser.
      */
     public void displayURL(String url) {
-        MapHandler mh = (MapHandler) getBeanContext();
-        Frame frame = null;
-        if (mh != null) {
-            frame = (Frame) mh.get(java.awt.Frame.class);
-        }
 
-        try {
-            com.bbn.openmap.gui.MiniBrowser.display(frame, new URL(url));
-        } catch (java.net.MalformedURLException murle) {
-            Debug.error("InformationDelegator can't launch " + url);
-        }
+        WebBrowser wb = getBrowser();
+        if (wb == null) {
+            MapHandler mh = (MapHandler) getBeanContext();
+            Frame frame = null;
+            if (mh != null) {
+                frame = (Frame) mh.get(java.awt.Frame.class);
+            }
 
-        // WebBrowser wb = getBrowser();
-        // if (wb != null) {
-        // wb.launch(url);
-        // }
+            try {
+                com.bbn.openmap.gui.MiniBrowser.display(frame, new URL(url));
+            } catch (java.net.MalformedURLException murle) {
+                Debug.error("InformationDelegator can't launch " + url);
+            }
+        } else {
+            wb.launch(url);
+        }
     }
 
     /**
@@ -410,8 +395,7 @@ public class InformationDelegator extends OMComponentPanel implements
      */
     public void displayInfoLine(String infoLine, int labelDesignator) {
         if (infoLineHolder != null) {
-            setLabel((infoLine != null && infoLine.length() > 0) ? infoLine
-                    : fudgeString, labelDesignator);
+            setLabel((infoLine != null && infoLine.length() > 0) ? infoLine : fudgeString, labelDesignator);
         }
     }
 
@@ -420,15 +404,9 @@ public class InformationDelegator extends OMComponentPanel implements
      */
     public void displayMessage(String title, String message) {
         if (Environment.getBoolean(Environment.UseInternalFrames)) {
-            JOptionPane.showInternalMessageDialog(Environment.getInternalFrameDesktop(),
-                    message,
-                    title,
-                    JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showInternalMessageDialog(Environment.getInternalFrameDesktop(), message, title, JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(null,
-                    message,
-                    title,
-                    JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -452,8 +430,7 @@ public class InformationDelegator extends OMComponentPanel implements
     public void requestMessage(InfoDisplayEvent event) {
         Layer l = event.getLayer();
         String layername = (l == null) ? null : l.getName();
-        displayMessage("Message from " + layername + " layer:",
-                event.getInformation());
+        displayMessage("Message from " + layername + " layer:", event.getInformation());
     }
 
     /**
@@ -514,8 +491,8 @@ public class InformationDelegator extends OMComponentPanel implements
      * the tooltip should no longer be displayed. This method should always
      * follow a call to <code>showToolTip</code?
      *
-     * @param me A MouseEvent which passes from a MapMouseListener to
-     * indicate that a tooltip should disappear 
+     * @param me A MouseEvent which passes from a MapMouseListener to indicate
+     *        that a tooltip should disappear
      * @deprecated call requestHideToolTip() instead.
      */
     public void requestHideToolTip(MouseEvent me) {
@@ -661,16 +638,21 @@ public class InformationDelegator extends OMComponentPanel implements
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         statusBar.setProperties(prefix, props);
-        setShowLights(PropUtils.booleanFromProperties(props, prefix
-                + ShowLightsProperty, showLights));
-        setShowInfoLine(PropUtils.booleanFromProperties(props, prefix
-                + ShowInfoLineProperty, getShowInfoLine()));
+        setShowLights(PropUtils.booleanFromProperties(props, prefix + ShowLightsProperty, showLights));
+        setShowInfoLine(PropUtils.booleanFromProperties(props, prefix + ShowInfoLineProperty, getShowInfoLine()));
         setShowCoordsInfoLine(PropUtils.booleanFromProperties(props, prefix
                 + ShowCoordsInfoLineProperty, getShowCoordsInfoLine()));
         String pl = props.getProperty(prefix + PreferredLocationProperty);
         if (pl != null) {
             setPreferredLocation(pl);
         }
+
+        Object webBrowserObj = PropUtils.objectFromProperties(props, prefix
+                + WebBrowserClassProperty);
+        if (webBrowserObj instanceof WebBrowser) {
+            setBrowser((WebBrowser) webBrowserObj);
+        }
+
     }
 
     public Properties getProperties(Properties props) {
@@ -680,13 +662,15 @@ public class InformationDelegator extends OMComponentPanel implements
 
         statusBar.getProperties(props);
         String prefix = PropUtils.getScopedPropertyPrefix(this);
-        props.put(prefix + ShowLightsProperty,
-                new Boolean(showLights).toString());
-        props.put(prefix + ShowInfoLineProperty,
-                new Boolean(getShowInfoLine()).toString());
-        props.put(prefix + ShowCoordsInfoLineProperty,
-                new Boolean(getShowCoordsInfoLine()).toString());
+        props.put(prefix + ShowLightsProperty, new Boolean(showLights).toString());
+        props.put(prefix + ShowInfoLineProperty, new Boolean(getShowInfoLine()).toString());
+        props.put(prefix + ShowCoordsInfoLineProperty, new Boolean(getShowCoordsInfoLine()).toString());
         props.put(prefix + PreferredLocationProperty, getPreferredLocation());
+
+        WebBrowser wb = getBrowser();
+        if (wb != null) {
+            props.put(prefix + WebBrowserClassProperty, wb.getClass().getName());
+        }
         return props;
     }
 
@@ -696,33 +680,11 @@ public class InformationDelegator extends OMComponentPanel implements
         }
 
         statusBar.getPropertyInfo(props);
-        PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                InformationDelegator.class,
-                ShowLightsProperty,
-                "Show Layer Status",
-                "Show the layer status lights.",
-                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-        PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                InformationDelegator.class,
-                ShowInfoLineProperty,
-                "Show Map Information",
-                "Show the text line containing map object information.",
-                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-        PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                InformationDelegator.class,
-                ShowCoordsInfoLineProperty,
-                "Show Coordinate Information",
-                "Show the text line containing coordinate information.",
-                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-        PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                InformationDelegator.class,
-                PreferredLocationProperty,
-                "Preferred Location",
-                "Set the preferred location of the information lines (default under the map).", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, InformationDelegator.class, ShowLightsProperty, "Show Layer Status", "Show the layer status lights.", "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        PropUtils.setI18NPropertyInfo(i18n, props, InformationDelegator.class, ShowInfoLineProperty, "Show Map Information", "Show the text line containing map object information.", "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        PropUtils.setI18NPropertyInfo(i18n, props, InformationDelegator.class, ShowCoordsInfoLineProperty, "Show Coordinate Information", "Show the text line containing coordinate information.", "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        PropUtils.setI18NPropertyInfo(i18n, props, InformationDelegator.class, PreferredLocationProperty, "Preferred Location", "Set the preferred location of the information lines (default under the map).", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, InformationDelegator.class, WebBrowserClassProperty, "WebBrowser Class", "Set an object to be used to handle displaying web pages (default is null).", null);
 
         return props;
     }
@@ -802,7 +764,8 @@ public class InformationDelegator extends OMComponentPanel implements
         return statusBar.getLightTriggers();
     }
 
-    public void setFloatable(boolean value) {}
+    public void setFloatable(boolean value) {
+    }
 
     /**
      * BorderLayout.SOUTH by default for this class.

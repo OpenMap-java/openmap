@@ -14,12 +14,10 @@
 
 package com.bbn.openmap.event;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -37,7 +35,6 @@ import com.bbn.openmap.BufferedMapBean;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.image.ImageScaler;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
-import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Cartesian;
 import com.bbn.openmap.proj.Cylindrical;
 import com.bbn.openmap.proj.Proj;

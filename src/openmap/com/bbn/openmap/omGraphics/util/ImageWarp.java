@@ -25,24 +25,15 @@
 package com.bbn.openmap.omGraphics.util;
 
 import java.awt.Image;
-import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.image.PixelGrabber;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.bbn.openmap.dataAccess.image.WorldFile;
-import com.bbn.openmap.geo.ConvexHull;
-import com.bbn.openmap.geo.Geo;
-import com.bbn.openmap.geo.GeoArray;
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.omGraphics.OMRaster;
-import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.GeoCoordTransformation;
 import com.bbn.openmap.proj.coords.LatLonGCT;

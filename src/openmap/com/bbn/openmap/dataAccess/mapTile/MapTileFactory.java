@@ -24,8 +24,6 @@
 
 package com.bbn.openmap.dataAccess.mapTile;
 
-import java.awt.Component;
-
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 

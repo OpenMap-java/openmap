@@ -40,7 +40,6 @@ import javax.swing.JSlider;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.layer.policy.BufferedImageRenderPolicy;
 import com.bbn.openmap.layer.policy.ListResetPCPolicy;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;

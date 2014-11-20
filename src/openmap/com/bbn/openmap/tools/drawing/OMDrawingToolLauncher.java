@@ -48,7 +48,6 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
-import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.MapHandler;

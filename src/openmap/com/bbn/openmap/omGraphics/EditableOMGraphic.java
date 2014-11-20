@@ -29,6 +29,9 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.MissingResourceException;
 
+import javax.swing.JComponent;
+import javax.swing.JToolBar;
+
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapBean;
@@ -44,14 +47,6 @@ import com.bbn.openmap.omGraphics.event.EOMGListenerSupport;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.util.logging.Level;
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
 
 /**
  * The EditableOMGraphic is a shell that controls actions to edit or create a graphic. This class contains a state

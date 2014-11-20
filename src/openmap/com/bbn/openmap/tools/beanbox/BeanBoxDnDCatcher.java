@@ -17,7 +17,6 @@ package com.bbn.openmap.tools.beanbox;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.datatransfer.Transferable;

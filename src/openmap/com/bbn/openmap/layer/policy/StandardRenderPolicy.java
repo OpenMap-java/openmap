@@ -32,7 +32,6 @@ import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
 
 /**
  * The StandardRenderPolicy is a RenderPolicy that simply paints the current

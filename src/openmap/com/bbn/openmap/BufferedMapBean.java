@@ -54,7 +54,7 @@ public class BufferedMapBean extends MapBean {
     protected boolean bufferDirty = true;
     protected BufferedImage drawingBuffer = null;
 
-    PanHelper panningTransform = null;
+    protected PanHelper panningTransform = null;
 
     public BufferedMapBean() {
         super();
@@ -267,7 +267,8 @@ public class BufferedMapBean extends MapBean {
                 g.drawImage(buffer, 0, 0, null);
             }
 
-            if (rotHelper == null && painters != null) {
+            RotationHelper rotationHelper = getRotHelper();
+            if (rotationHelper == null && painters != null) {
                 painters.paint(g);
             }
         }

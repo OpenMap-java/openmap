@@ -43,7 +43,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 
@@ -190,7 +189,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     protected double rotationAngle = DEFAULT_ROTATIONANGLE;
     /**
      * The rotation angle used at render time, depending on rotate-ability.
-     * Radians.  If null, no rotation should be applied at render time.
+     * Radians. If null, no rotation should be applied at render time.
      */
     protected Double renderRotationAngle = null;
 
@@ -355,8 +354,8 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * is not null, this font will be set in that object as well, and the active
      * font will come from the font sizer. To make the set font the constant
      * font, set the font sizer to null. Flushes the cache fields
-     * <code>fm</code> , <code>widths</code>, and <code>currentPolyBounds</code>. Calls
-     * setScaledFont.
+     * <code>fm</code> , <code>widths</code>, and <code>currentPolyBounds</code>
+     * . Calls setScaledFont.
      *
      * @param aFont font to be used for the text.
      *
@@ -595,9 +594,9 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Sets the string contents that are presented. Flushes the cache fields
-     * <code>parsedData</code>,<code>widths</code>, and <code>currentPolyBounds</code>.
-     * HACK synchronized so that it doesn't interfere with other methods that
-     * are using parsedData.
+     * <code>parsedData</code>,<code>widths</code>, and
+     * <code>currentPolyBounds</code>. HACK synchronized so that it doesn't
+     * interfere with other methods that are using parsedData.
      *
      * @param d the text to be displayed
      *
@@ -648,7 +647,8 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
 
     /**
      * Sets the location of the baseline of this OMText. Flushes the cache
-     * fields <code>fm</code>,<code>widths</code>, and <code>currentPolyBounds</code>.
+     * fields <code>fm</code>,<code>widths</code>, and
+     * <code>currentPolyBounds</code>.
      *
      * @param b one of BASELINE_BOTTOM, BASELINE_MIDDLE or BASELINE_TOP.
      * @see #polyBounds
@@ -710,9 +710,8 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * @return Polygon or null if bounds not calculated yet
      */
     public Polygon getPolyBounds() {
-        if (polyBounds == null) {
-            computeBounds();
-        }
+        polyBounds = computeBounds(polyBounds);
+
         return polyBounds;
     }
 
@@ -848,21 +847,24 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
         // to put this off until render. There will be a
         // one-projection lag for font metrics to catch up with any
         // change.
-        computeBounds();
+        polyBounds = computeBounds(null);
         setLabelLocation(getShape(), proj);
         setNeedToRegenerate(false);
         return true;
     }
 
     /**
-     * Set the renderRotationAngle based on the projection angle and OMText settings.
+     * Set the renderRotationAngle based on the projection angle and OMText
+     * settings.
+     * 
      * @param proj the current projection.
      */
     public void evaluateRotationAngle(Projection proj) {
         renderRotationAngle = null;
         double projRotation = proj.getRotationAngle();
         Object noRotationAtt = getAttribute(OMGraphicConstants.NO_ROTATE);
-        boolean compensateForProjRot = noRotationAtt != null && !noRotationAtt.equals(Boolean.FALSE);
+        boolean compensateForProjRot = noRotationAtt != null
+                && !noRotationAtt.equals(Boolean.FALSE);
 
         if (compensateForProjRot) {
             renderRotationAngle = rotationAngle - projRotation;
@@ -1036,7 +1038,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
         if (fm == null) {
             fm = g.getFontMetrics();
         }
-        computeBounds();
+        polyBounds = computeBounds(polyBounds);
     }
 
     /**
@@ -1063,7 +1065,8 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
             fm = g.getFontMetrics();
         }
 
-        computeBounds();
+        Polygon currentPolyBounds = computeBounds(this.polyBounds);
+        this.polyBounds = currentPolyBounds;
 
         // If there is a rotation angle, the shape will be calculated
         // for that rotation. Don't need to rotate the Graphics for
@@ -1097,9 +1100,10 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
         double rw = 0.0;
         double woffset = 0.0;
 
-        if (g instanceof Graphics2D && renderRotationAngle != null) {
+        Double currentRenderRotationAngle = renderRotationAngle;
+        if (g instanceof Graphics2D && currentRenderRotationAngle != null) {
 
-            Rectangle rect = polyBounds.getBounds();
+            Rectangle rect = currentPolyBounds.getBounds();
 
             rx = rect.getX();
             rw = rect.getWidth();
@@ -1117,7 +1121,7 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
             }
 
             // rotate about our text anchor point
-            ((Graphics2D) g).rotate(renderRotationAngle, rx + woffset, pt.getY());
+            ((Graphics2D) g).rotate(currentRenderRotationAngle, rx + woffset, pt.getY());
         }
 
         setGraphicsForEdge(g);
@@ -1191,14 +1195,16 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      * Computes the bounding polygon. Sets the cache field
      * <code>currentPolyBounds</code>.
      *
+     * @param currentPolyBounds the current polygon bounds, new ones will be
+     *        created if it's null
+     * @return new poly bounds if needed, or the current polygon bounds if
+     *         already set.
      * @see #polyBounds
      */
-    protected void computeBounds() {
+    protected Polygon computeBounds(Polygon currentPolyBounds) {
         if (parsedData == null) {
             parseData();
         }
-
-		Polygon currentPolyBounds = this.polyBounds;
 
         if (currentPolyBounds == null && pt != null && fm != null) {
 
@@ -1287,48 +1293,47 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
                 currentPolyBounds.addPoint((int) pt.getX() + xoffset, currenty);
             }
 
-                GeneralPath projectedShape = null;
+            GeneralPath projectedShape = null;
 
-                if (useMaxWidthForBounds) {
-                    projectedShape = new GeneralPath(currentPolyBounds.getBounds());
-                } else {
-                    projectedShape = new GeneralPath(currentPolyBounds);
+            if (useMaxWidthForBounds) {
+                projectedShape = new GeneralPath(currentPolyBounds.getBounds());
+            } else {
+                projectedShape = new GeneralPath(currentPolyBounds);
+            }
+
+            // Make sure the shape takes into account the current
+            // rotation angle. Code taken from generate() method,
+            // so it should match up with the drawn text.
+            Double angle = renderRotationAngle;
+            if (angle != null) {
+
+                Rectangle rect = currentPolyBounds.getBounds();
+
+                double rx = rect.getX();
+                double rw = rect.getWidth();
+                double woffset = 0.0;
+
+                switch (justify) {
+                case JUSTIFY_LEFT:
+                    // woffset = 0.0;
+                    break;
+                case JUSTIFY_CENTER:
+                    woffset = rw / 2;
+                    break;
+                case JUSTIFY_RIGHT:
+                    woffset = rw;
                 }
 
-                // Make sure the shape takes into account the current
-                // rotation angle. Code taken from generate() method,
-                // so it should match up with the drawn text.
-                Double angle = renderRotationAngle;
-                if (angle != null) {
+                AffineTransform at = new AffineTransform();
+                at.rotate(angle, rx + woffset, pt.getY());
+                PathIterator pi = projectedShape.getPathIterator(at);
+                GeneralPath gp = new GeneralPath();
+                gp.append(pi, false);
+                // Replace shape with rotated version
+                projectedShape = gp;
+            }
 
-                    Rectangle rect = currentPolyBounds.getBounds();
-
-                    double rx = rect.getX();
-                    double rw = rect.getWidth();
-                    double woffset = 0.0;
-
-                    switch (justify) {
-                    case JUSTIFY_LEFT:
-                        // woffset = 0.0;
-                        break;
-                    case JUSTIFY_CENTER:
-                        woffset = rw / 2;
-                        break;
-                    case JUSTIFY_RIGHT:
-                        woffset = rw;
-                    }
-
-                    AffineTransform at = new AffineTransform();
-                    at.rotate(angle, rx + woffset, pt.getY());
-                    PathIterator pi = projectedShape.getPathIterator(at);
-                    GeneralPath gp = new GeneralPath();
-                    gp.append(pi, false);
-                    // Replace shape with rotated version
-                    projectedShape = gp;
-                }
-
-				this.polyBounds = currentPolyBounds;
-                setShape(projectedShape);
+            setShape(projectedShape);
 
         } else {
             if (Debug.debugging("omtext")) {
@@ -1337,6 +1342,8 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
                         + ", (only polybounds should be null)");
             }
         }
+
+        return currentPolyBounds;
     }
 
     /**

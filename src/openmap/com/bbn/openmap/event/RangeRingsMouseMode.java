@@ -1,5 +1,9 @@
 package com.bbn.openmap.event;
 
+import static com.bbn.openmap.event.DistanceMouseMode.ShowAngleProperty;
+import static com.bbn.openmap.event.DistanceMouseMode.ShowCircleProperty;
+import static com.bbn.openmap.event.DistanceMouseMode.UnitProperty;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -13,10 +17,6 @@ import java.text.Format;
 import java.util.Properties;
 
 import com.bbn.openmap.MapBean;
-import static com.bbn.openmap.PropertyConsumer.initPropertiesProperty;
-import static com.bbn.openmap.event.DistanceMouseMode.ShowAngleProperty;
-import static com.bbn.openmap.event.DistanceMouseMode.ShowCircleProperty;
-import static com.bbn.openmap.event.DistanceMouseMode.UnitProperty;
 import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMCircle;

@@ -42,7 +42,6 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.event.UndoEvent;
 import com.bbn.openmap.proj.Length;

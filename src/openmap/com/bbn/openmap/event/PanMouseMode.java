@@ -29,7 +29,6 @@ import com.bbn.openmap.image.ImageScaler;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphicConstants;
 import com.bbn.openmap.omGraphics.OMRaster;
-import com.bbn.openmap.omGraphics.OMScalingIcon;
 import com.bbn.openmap.proj.Cartesian;
 import com.bbn.openmap.proj.Cylindrical;
 import com.bbn.openmap.proj.Projection;

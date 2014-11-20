@@ -43,8 +43,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.event.CenterListener;

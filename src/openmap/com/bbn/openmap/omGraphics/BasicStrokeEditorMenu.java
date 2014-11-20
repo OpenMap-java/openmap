@@ -36,6 +36,7 @@ import java.util.Vector;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
@@ -43,7 +44,6 @@ import javax.swing.JRadioButtonMenuItem;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.util.PropUtils;
-import javax.swing.JComponent;
 
 /**
  */

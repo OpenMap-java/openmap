@@ -23,7 +23,6 @@
 package com.bbn.openmap.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -31,7 +30,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;

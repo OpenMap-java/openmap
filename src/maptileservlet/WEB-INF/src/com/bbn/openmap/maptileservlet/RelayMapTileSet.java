@@ -13,13 +13,10 @@
 
 package com.bbn.openmap.maptileservlet;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import com.bbn.openmap.dataAccess.mapTile.ServerMapTileFactory;
-import com.bbn.openmap.image.PNGImageIOFormatter;
 import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.PropUtils;

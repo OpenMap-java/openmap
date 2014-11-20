@@ -24,17 +24,7 @@
 
 package com.bbn.openmap.omGraphics.editable;
 
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-
-import javax.swing.SwingUtilities;
-
 import com.bbn.openmap.omGraphics.EditableOMLine;
-import com.bbn.openmap.omGraphics.EditableOMRect;
-import com.bbn.openmap.omGraphics.GrabPoint;
-import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.event.EOMGEvent;
-import com.bbn.openmap.util.Debug;
 
 public class LineUndefinedState extends ClckOrDrgUndefinedState {
 

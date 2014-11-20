@@ -39,7 +39,6 @@ import com.bbn.openmap.image.ImageServerConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**

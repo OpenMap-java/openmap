@@ -23,7 +23,6 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Component;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -53,7 +52,6 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.stateMachine.State;
-import javax.swing.JToolBar;
 
 /**
  * The EditableOMPoly encompasses an OMPoly, providing methods for modifying or

@@ -33,11 +33,8 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.RasterFormatException;
-import java.awt.image.RenderedImage;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 import javax.swing.ImageIcon;
 
@@ -48,7 +45,6 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.GeoCoordTransformation;
 import com.bbn.openmap.proj.coords.LatLonGCT;
 import com.bbn.openmap.util.DataBounds;
-import java.awt.RenderingHints;
 
 /**
  * This is an extension to OMRaster that automatically scales itelf to match the

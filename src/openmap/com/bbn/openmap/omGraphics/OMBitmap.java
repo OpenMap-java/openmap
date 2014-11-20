@@ -24,12 +24,8 @@ package com.bbn.openmap.omGraphics;
 
 import java.awt.Color;
 import java.awt.Paint;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-import java.awt.image.MemoryImageSource;
 import java.io.Serializable;
-
-import javax.swing.ImageIcon;
 
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;

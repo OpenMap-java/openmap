@@ -127,7 +127,7 @@ public class OMTextLabeler extends OMText implements OMLabeler {
         setX((int) p.getX());
         setY((int) p.getY());
         setMapLocation(p);
-        computeBounds();
+        polyBounds = computeBounds(null);
         setNeedToRegenerate(false);
     }
 

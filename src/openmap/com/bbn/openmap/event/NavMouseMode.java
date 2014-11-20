@@ -31,7 +31,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Properties;
 
-import com.bbn.openmap.BufferedMapBean;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.proj.Proj;

@@ -25,8 +25,6 @@
 package com.bbn.openmap.omGraphics;
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;

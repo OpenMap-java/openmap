@@ -9,7 +9,6 @@ import java.awt.geom.Point2D;
 
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.proj.coords.GeoCoordTransformation;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**

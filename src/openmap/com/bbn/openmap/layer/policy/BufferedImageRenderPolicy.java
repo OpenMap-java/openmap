@@ -25,15 +25,12 @@ package com.bbn.openmap.layer.policy;
 import java.awt.AlphaComposite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.OMScalingRaster;
 import com.bbn.openmap.proj.Cylindrical;
 import com.bbn.openmap.proj.Projection;

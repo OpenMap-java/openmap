@@ -11,8 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipOutputStream;
 
-import javax.swing.ImageIcon;
-
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.FileUtils;
 

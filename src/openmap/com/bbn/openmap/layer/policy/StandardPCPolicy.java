@@ -22,14 +22,15 @@
 
 package com.bbn.openmap.layer.policy;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.bbn.openmap.event.LayerStatusEvent;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * ProjectionChangePolicy that uses a Layer SwingWorker to kick off a thread to

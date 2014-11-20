@@ -150,7 +150,7 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
     /**
      * OpenMap version.
      */
-    public static final String version = "5.1.7b";
+    public static final String version = "5.1.7";
 
     /**
      * Suppress the copyright message on initialization.
@@ -526,9 +526,8 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
         if (removedLayers.isEmpty()) {
             return;
         }
-        for (int i = 0; i < removedLayers.size(); i++) {
-            Layer l = ((Layer) removedLayers.elementAt(i));
-            l.removed(this);
+        for (Layer layer : removedLayers) {
+            layer.removed(this);
         }
         removedLayers.removeAllElements();
 
@@ -885,8 +884,8 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
         firePropertyChange(LayersProperty, currentLayers, newLayers);
 
         // Tell the new layers that they have been added
-        for (int i = 0; i < addedLayers.size(); i++) {
-            ((Layer) addedLayers.elementAt(i)).added(this);
+        for (Layer layer : addedLayers) {
+            layer.added(this);
         }
         addedLayers.removeAllElements();
 
@@ -1005,9 +1004,9 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
         g = getMapBeanRepaintPolicy().modifyGraphicsForPainting(g);
 
         drawProjectionBackground(g);
-
-        if (rotHelper != null) {
-            rotHelper.paintChildren(g, clip);
+        RotationHelper rotationHelper = getRotHelper();
+        if (rotationHelper != null) {
+            rotationHelper.paintChildren(g, clip);
         } else {
             // Normal painting
             super.paintChildren(g);
@@ -1041,8 +1040,9 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
     }
 
     public Graphics getGraphics(boolean rotateIfSet) {
-        if (rotateIfSet && rotHelper != null) {
-            return rotHelper.getGraphics();
+        RotationHelper rotationHelper = getRotHelper();
+        if (rotateIfSet && rotationHelper != null) {
+            return rotationHelper.getGraphics();
         }
 
         return super.getGraphics();
@@ -1129,20 +1129,20 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
             }
             removeAll();
 
-            for (int i = 0; i < layers.length; i++) {
+            for (Layer layer : layers) {
 
-                if (layers[i] == null) {
+                if (layer == null) {
                     if (logger.isLoggable(Level.FINE)) {
-                        debugmsg("MapBean.setLayers(): layer " + i + " is null");
+                        debugmsg("MapBean.setLayers(): skipping null layer from being added to MapBean");
                     }
                     continue;
                 }
 
                 if (logger.isLoggable(Level.FINE)) {
-                    debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
+                    debugmsg("Adding layer[" + layer.getName() + "]");
                 }
-                add(layers[i]);
-                layers[i].setVisible(true);
+                add(layer);
+                layer.setVisible(true);
             }
 
         }
@@ -1152,12 +1152,12 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
             if (logger.isLoggable(Level.FINE)) {
                 debugmsg("Adding new layers");
             }
-            for (int i = 0; i < layers.length; i++) {
+            for (Layer layer : layers) {
                 if (logger.isLoggable(Level.FINE)) {
-                    debugmsg("Adding layer[" + i + "]= " + layers[i].getName());
+                    debugmsg("Adding layer[" + layer.getName() + "]");
                 }
-                add(layers[i]);
-                layers[i].setVisible(true);
+                add(layer);
+                layer.setVisible(true);
             }
         }
 
@@ -1167,11 +1167,11 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
             if (logger.isLoggable(Level.FINE)) {
                 debugmsg("Removing layers");
             }
-            for (int i = 0; i < layers.length; i++) {
+            for (Layer layer : layers) {
                 if (logger.isLoggable(Level.FINE)) {
-                    debugmsg("Removing layer[" + i + "]= " + layers[i].getName());
+                    debugmsg("Removing layer[" + layer.getName() + "]");
                 }
-                remove(layers[i]);
+                remove(layer);
             }
         }
 
@@ -1274,8 +1274,9 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
             pnt.setLocation(event.getX(), event.getY());
         }
 
-        if (rotHelper != null) {
-            pnt = rotHelper.inverseTransform(pnt, pnt);
+        RotationHelper rotationHelper = getRotHelper();
+        if (rotationHelper != null) {
+            pnt = rotationHelper.inverseTransform(pnt, pnt);
         }
 
         return pnt;
@@ -1291,8 +1292,9 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
      *         shape if the map is not rotated.
      */
     public Shape getNonRotatedShape(Shape shape) {
-        if (rotHelper != null) {
-            return rotHelper.inverseTransform(shape);
+        RotationHelper rotationHelper = getRotHelper();
+        if (rotationHelper != null) {
+            return rotationHelper.inverseTransform(shape);
         }
         return shape;
     }
@@ -1309,8 +1311,9 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
      *         if ret is null.
      */
     public <T extends Point2D> T inverse(double x, double y, T ret) {
-        return (rotHelper == null) ? getProjection().inverse(x, y, ret)
-                : rotHelper.inverse(x, y, ret);
+        RotationHelper rotationHelper = getRotHelper();
+        return (rotationHelper == null) ? getProjection().inverse(x, y, ret)
+                : rotationHelper.inverse(x, y, ret);
     }
 
     /**
@@ -1411,7 +1414,7 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
     protected RotationHelper getUpdatedRotHelper() {
         double rotAngle = getRotationAngle();
         Projection proj = getProjection();
-        RotationHelper rotationHelper = this.rotHelper;
+        RotationHelper rotationHelper = getRotHelper();
 
         if (rotAngle != 0.0) {
             if (rotationHelper == null) {
@@ -1454,8 +1457,9 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
      *        the old one.
      */
     protected void setRotHelper(RotationHelper nRotHelper) {
-        if (this.rotHelper != null) {
-            this.rotHelper.dispose();
+        RotationHelper rotationHelper = this.rotHelper;
+        if (rotationHelper != null) {
+            rotationHelper.dispose();
         }
 
         this.rotHelper = nRotHelper;

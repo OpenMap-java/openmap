@@ -27,10 +27,7 @@ package com.bbn.openmap.omGraphics.editable;
 import java.awt.event.MouseEvent;
 
 import com.bbn.openmap.omGraphics.EditableOMCircle;
-import com.bbn.openmap.omGraphics.EditableOMLine;
-import com.bbn.openmap.omGraphics.GrabPoint;
 import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.event.EOMGEvent;
 import com.bbn.openmap.util.Debug;
 
 public class CircleUndefinedState extends ClckOrDrgUndefinedState {

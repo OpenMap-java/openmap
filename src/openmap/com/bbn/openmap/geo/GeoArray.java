@@ -23,7 +23,6 @@
 //**********************************************************************
 package com.bbn.openmap.geo;
 
-import com.bbn.openmap.MoreMath;
 
 /**
  * A GeoArray is a interface that represents a set of Geo information. Rather

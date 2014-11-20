@@ -48,11 +48,17 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
 import com.bbn.openmap.util.Debug;
 
+/*
+ import edu.stanford.ejalbert.BrowserLauncher;
+ import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
+ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
+ */
+
 public class MiniBrowser extends OMComponentPanel implements ActionListener {
 
     JEditorPane jep;
     Stack stack;
-    JButton browserLaunch = null;
+    // JButton browserLaunch = null;
     JButton backButton = null;
     JButton dismissButton = null;
 
@@ -92,12 +98,12 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
         setLayout(gridbag);
 
         // Has to happen before first push
-        browserLaunch = new JButton("Open in Browser");
+        // browserLaunch = new JButton("Open in Browser");
         URL url = this.getClass().getResource("w.gif");
         ImageIcon imageIcon = new ImageIcon(url, "Go back");
         backButton = new JButton(imageIcon);
         dismissButton = new JButton("Close");
-        //////
+        // ////
         jep = new JEditorPane();
         jep.setEditable(false);
         jep.addHyperlinkListener(new HyperlinkListener() {
@@ -106,14 +112,12 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
                     JEditorPane pane = (JEditorPane) e.getSource();
 
                     if (e instanceof HTMLFrameHyperlinkEvent) {
-                        Debug.message("minibrowser",
-                                "processing HTMLFrameHyperlinkEvent");
+                        Debug.message("minibrowser", "processing HTMLFrameHyperlinkEvent");
                         HTMLFrameHyperlinkEvent evt = (HTMLFrameHyperlinkEvent) e;
                         HTMLDocument doc = (HTMLDocument) pane.getDocument();
                         doc.processHTMLFrameHyperlinkEvent(evt);
                     } else {
-                        Debug.message("minibrowser",
-                                "processing HyperlinkEvent");
+                        Debug.message("minibrowser", "processing HyperlinkEvent");
                         try {
                             push(e.getURL());
                         } catch (Throwable t) {
@@ -151,12 +155,13 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
         gridbag2.setConstraints(backButton, c2);
         buttonPanel.add(backButton);
 
-        browserLaunch.setActionCommand(LaunchBrowserCmd);
-        browserLaunch.addActionListener(this);
-        browserLaunch.setVisible(false);
-        gridbag2.setConstraints(browserLaunch, c2);
-        buttonPanel.add(browserLaunch);
-
+        /**
+         * browserLaunch.setActionCommand(LaunchBrowserCmd);
+         * browserLaunch.addActionListener(this);
+         * browserLaunch.setVisible(false);
+         * gridbag2.setConstraints(browserLaunch, c2);
+         * buttonPanel.add(browserLaunch);
+         */
         WindowSupport ws = new WindowSupport(this, "");
 
         c2.anchor = GridBagConstraints.EAST;
@@ -166,7 +171,7 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
         gridbag2.setConstraints(dismissButton, c2);
         buttonPanel.add(dismissButton);
 
-        ////////////
+        // //////////
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.WEST;
@@ -191,9 +196,10 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
                 if (stack.size() <= 1) {
                     backButton.setEnabled(false);
                 }
-            } else if (command == LaunchBrowserCmd) {
-                ((MiniBrowserPage) stack.peek()).launchInBrowser();
-            }
+            }/*
+              * else if (command == LaunchBrowserCmd) { ((MiniBrowserPage)
+              * stack.peek()).launchInBrowser(); }
+              */
         } catch (EmptyStackException ese) {
             backButton.setEnabled(false);
         } catch (IOException ioe) {
@@ -221,10 +227,10 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
         }
     }
 
-    protected void enableBrowserLaunch(boolean set) {
-        browserLaunch.setVisible(set);
-        invalidate();
-    }
+    /*
+     * protected void enableBrowserLaunch(boolean set) {
+     * browserLaunch.setVisible(set); invalidate(); }
+     */
 
     protected void finalize() {
         Debug.message("minibrowser", "MiniBrowser getting gc'd");
@@ -267,6 +273,8 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
         String mimeType = null;
         URL url = null;
 
+        // BrowserLauncher browserLauncher;
+
         public MiniBrowserPage(String mt, String stuff) {
             mimeType = mt;
             content = stuff;
@@ -280,27 +288,26 @@ public class MiniBrowser extends OMComponentPanel implements ActionListener {
             if (isURL()) {
                 Debug.message("minibrowser", "loadInto(URL)");
                 jep.setPage(url);
-                enableBrowserLaunch(true);
+                // enableBrowserLaunch(true);
                 jep.updateUI();
             } else {
                 Debug.message("minibrowser", "loadInto(String)");
                 jep.setContentType(mimeType);
                 jep.setText(content);
-                enableBrowserLaunch(false);
+                // enableBrowserLaunch(false);
                 jep.updateUI();
             }
         }
 
-        public void launchInBrowser() {
-            try {
-                if (isURL())
-                    edu.stanford.ejalbert.BrowserLauncher.openURL(url.toString());
-            } catch (IOException ioe) {
-                Debug.error("MiniBrowser caught IOException loading webpage ("
-                        + url.toString() + ")\n" + ioe.getMessage());
-            }
-        }
-
+        /**
+         * public void launchInBrowser() { if (isURL()) { try { browserLauncher
+         * = new BrowserLauncher();
+         * browserLauncher.openURLinBrowser(url.toString()); } catch
+         * (BrowserLaunchingInitializingException e) { // TODO Auto-generated
+         * catch block e.printStackTrace(); } catch
+         * (UnsupportedOperatingSystemException e) { // TODO Auto-generated
+         * catch block e.printStackTrace(); } } }
+         */
         public boolean isURL() {
             return url != null;
         }

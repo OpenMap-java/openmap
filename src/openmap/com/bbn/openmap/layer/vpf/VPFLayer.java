@@ -26,8 +26,6 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.beancontext.BeanContext;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Properties;
 import java.util.StringTokenizer;

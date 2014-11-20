@@ -44,7 +44,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
-import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.event.ProjectionEvent;

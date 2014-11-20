@@ -45,8 +45,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 
-import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;

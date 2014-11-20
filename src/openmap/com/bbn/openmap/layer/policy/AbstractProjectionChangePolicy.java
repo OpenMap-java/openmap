@@ -13,9 +13,10 @@
 
 package com.bbn.openmap.layer.policy;
 
+import java.util.logging.Logger;
+
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphicList;
-import java.util.logging.Logger;
 
 /**
  * Implements the common functionality of all projection change policies.

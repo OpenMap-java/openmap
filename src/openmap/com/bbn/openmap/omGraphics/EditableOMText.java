@@ -45,7 +45,6 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
-import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
 import com.bbn.openmap.omGraphics.editable.GraphicEditState;
 import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;

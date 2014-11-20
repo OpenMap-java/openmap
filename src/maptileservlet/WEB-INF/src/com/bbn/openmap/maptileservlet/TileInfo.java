@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 import com.bbn.openmap.dataAccess.mapTile.EmptyTileHandler;
 import com.bbn.openmap.dataAccess.mapTile.MapTileCoordinateTransform;
-import com.bbn.openmap.dataAccess.mapTile.MapTileMaker;
 import com.bbn.openmap.dataAccess.mapTile.OSMMapTileCoordinateTransform;
 import com.bbn.openmap.dataAccess.mapTile.SimpleEmptyTileHandler;
 import com.bbn.openmap.proj.Mercator;

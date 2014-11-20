@@ -1,4 +1,26 @@
-2014-10-17  dietrick  <dietrick@wonkavision.local>
+2014-11-19  Don Dietrick  <dietrick@hsawaknow.local>
+
+	* Tagged OpenMap 5.1.7
+
+	* Updated the MapBean, BufferedMapBean, BufferedLayerMapBean and
+	BufferedLayer to handle flashing better, especially with
+	background layers.  Also fixed a problem in BufferedLayer where it
+	was resetting the rotation angle in the projection, causing all
+	the icons and labels to rotate with the map instead of staying
+	straight up.
+
+	* Updated com.bbn.openmap.util.WebBrowser to be an abstract class
+	that the InformationDelegator uses to launch web pages.  If no
+	WebBrowser implementation is specified, the InformationDelegator
+	uses the simple MiniBrowser in OpenMap.  If the BrowserLauncher2
+	jar file is in the classpath the new
+	com.bbn.openmap.util.BrowserLauncher2WebBrowser class can be
+	specified in the InforamtionDelegator properties to be used for
+	displaying websites.  Removed the old BrowserLauncher code.
+
+	* Updated import statements to remove unused classes.
+
+ 2014-10-17  dietrick  <dietrick@wonkavision.local>
 
 	* Tagged OpenMap 5.1.6
 

@@ -63,8 +63,6 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 
-import com.bbn.openmap.LayerHandler;
-import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.gui.OMToolComponent;
 import com.bbn.openmap.tools.dnd.DefaultTransferableObject;
 import com.bbn.openmap.util.Debug;
