@@ -1,3 +1,19 @@
+2014-12-15  Don Dietrick  <dietrick@hsawaknow.local>
+
+	* Tagged OpenMap 5.1.8
+
+	* Modified the OMGraphicHandlerLayer threading and locking code.
+
+	* Added ImageWarp methods to make it easier to use as a standalone
+	object.
+
+	* Updated precision for Planet NM constants.
+
+	* Updated the MapBean and MapHandler listener handling code.
+
+	* Removed the iis directory and WebService.  It will no longer be
+	maintained or tested.
+
 2014-11-19  Don Dietrick  <dietrick@hsawaknow.local>
 
 	* Tagged OpenMap 5.1.7
