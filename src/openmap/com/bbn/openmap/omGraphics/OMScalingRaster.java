@@ -767,26 +767,31 @@ public class OMScalingRaster extends OMRaster implements Serializable {
      */
     public ImageWarp getImageWarp(GeoCoordTransformation transform) {
         ImageWarp imageWarp = null;
-        Image image = bitmap;
 
-        if (image != null) {
-            DataBounds imageBounds = new DataBounds();
-            imageBounds.add(lon, lat);
-            imageBounds.add(lon2, lat2);
+        DataBounds imageBounds = new DataBounds();
+        imageBounds.add(lon, lat);
+        imageBounds.add(lon2, lat2);
 
-            if (transform == null) {
-                transform = new LatLonGCT();
+        if (pixels != null) {
+            imageWarp = new ImageWarp(pixels, width, height, transform, imageBounds);
+        } else {
+            Image image = bitmap;
+            if (image != null) {
+
+                if (transform == null) {
+                    transform = new LatLonGCT();
+                }
+
+                BufferedImage bi = null;
+                if (image instanceof BufferedImage) {
+                    bi = (BufferedImage) image;
+                } else {
+                    bi = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+                    bi.getGraphics().drawImage(image, 0, 0, null);
+                }
+
+                imageWarp = new ImageWarp(bi, transform, imageBounds);
             }
-
-            BufferedImage bi = null;
-            if (image instanceof BufferedImage) {
-                bi = (BufferedImage) image;
-            } else {
-                bi = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-                bi.getGraphics().drawImage(image, 0, 0, null);
-            }
-
-            imageWarp = new ImageWarp(bi, transform, imageBounds);
         }
 
         return imageWarp;

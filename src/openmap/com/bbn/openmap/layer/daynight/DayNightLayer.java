@@ -470,12 +470,6 @@ public class DayNightLayer extends OMGraphicHandlerLayer implements
             list.clear();
         }
 
-        if (isCancelled()) {
-            Debug.message("daynight", getName()
-                    + "|DayNightLayer.prepare(): aborted.");
-            return null;
-        }
-
         Debug.message("basic", getName() + "|DayNightLayer.prepare(): doing it");
 
         OMGraphic ras = createImage(getProjection());

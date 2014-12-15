@@ -659,11 +659,6 @@ public class ETOPOLayer extends OMGraphicHandlerLayer implements ActionListener 
 	 */
 	public synchronized OMGraphicList prepare() {
 
-		if (isCancelled()) {
-			Debug.message("etopo", getName()
-					+ "|ETOPOLayer.prepare(): aborted.");
-			return null;
-		}
 		Projection projection = getProjection();
 		if (projection == null) {
 			Debug

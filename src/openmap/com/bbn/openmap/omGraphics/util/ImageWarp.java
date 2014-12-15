@@ -25,6 +25,7 @@
 package com.bbn.openmap.omGraphics.util;
 
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
@@ -348,7 +349,14 @@ public class ImageWarp {
         return null;
     }
 
-    protected DataBounds calculateProjectedImageBounds(Projection p) {
+    /**
+     * Returns the image bounds of the image as it would be warped to the
+     * provided projection.
+     * 
+     * @param p Projection the image will be displayed on
+     * @return DataBounds, in the projected coordinate space.
+     */
+    public DataBounds calculateProjectedImageBounds(Projection p) {
 
         // This doesn't seem to do anything but slow things down.
         // if (geoTrans.equals(LatLonGCT.INSTANCE)) {
@@ -401,6 +409,29 @@ public class ImageWarp {
         }
         return db;
 
+    }
+
+    /**
+     * Convenience function to get projected image bounds for an image that has
+     * been warped for a given projection. If you've grabbed the pixel ints,
+     * this is how you get the projected image bounds for those ints.
+     * 
+     * @return Rectangle for bounds
+     */
+    public Rectangle getProjectedImageBoundsForLastProjection() {
+
+        DataBounds projImageBounds = projectedImageBounds;
+        Rectangle rect = null;
+
+        if (projImageBounds != null) {
+            int minx = (int) Math.floor(projImageBounds.getMin().getX());
+            int miny = (int) Math.floor(projImageBounds.getMin().getY());
+            int maxx = (int) Math.ceil(projImageBounds.getMax().getX());
+            int maxy = (int) Math.ceil(projImageBounds.getMax().getY());
+
+            rect = new Rectangle(minx, miny, maxx - minx, maxy - miny);
+        }
+        return rect;
     }
 
     /**

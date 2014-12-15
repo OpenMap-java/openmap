@@ -31,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,7 +62,6 @@ import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
 import com.bbn.openmap.omGraphics.event.StandardMapMouseInterpreter;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ComponentFactory;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.ISwingWorker;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PooledSwingWorker;
@@ -251,7 +251,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * the primary layerworker returns from being interrupted, setting the one
      * in the queue will take care of all of them.
      */
-    protected ISwingWorker<OMGraphicList> layerWorkerQueue;
+    protected boolean layerWorkerQueue = false;
 
     protected String[] mouseModeIDs = null;
 
@@ -272,15 +272,8 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     protected boolean interruptable = true;
 
     /**
-     * Flag used to let the layer know the layer worker was considered to be
-     * interrupted. The interruptible flag dictates whether the thread is
-     * actually interrupted. This flag is available to let the layer decide if
-     * work should complete when things are more stable.
-     */
-    protected boolean wrapItUp = false;
-
-    /**
-     * Sets the interruptible flag
+     * Sets the interruptible flag, allowing the current swing worker thread to
+     * have interrupt called on it.
      */
     public void setInterruptable(boolean b) {
         interruptable = b;
@@ -289,7 +282,8 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     /**
      * Queries for the interruptible flag.
      *
-     * @return true if interruptible flag is set
+     * @return true if interruptible flag is set, allowing interrupt to be
+     *         called on swing worker threads.
      */
     public boolean isInterruptable() {
         return interruptable;
@@ -463,20 +457,6 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         rp.setLayer(this);
     }
 
-    protected void interrupt() {
-        try {
-            synchronized (LAYERWORKER_LOCK) {
-                if (layerWorker != null && interruptable && !layerWorker.isInterrupted()) {
-                    layerWorker.interrupt();
-                }
-                wrapItUp = true;
-            }
-        } catch (SecurityException se) {
-            logger.warning(getName()
-                    + " layer caught a SecurityException when something tried to stop work on the worker thread");
-        }
-    }
-
     /**
      * Sets the SwingWorker off to call prepare(). If the SwingWorker passed in
      * is not null, start() is called on it.
@@ -487,11 +467,11 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     protected void setLayerWorker(ISwingWorker<OMGraphicList> worker) {
         synchronized (LAYERWORKER_LOCK) {
             layerWorker = worker;
+            layerWorkerQueue = false;
+        }
 
-            if (layerWorker != null) {
-                wrapItUp = false;
-                layerWorker.start();
-            }
+        if (worker != null) {
+            worker.start();
         }
     }
 
@@ -509,13 +489,6 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      */
     protected ISwingWorker<OMGraphicList> createLayerWorker() {
         return new LayerWorker();
-    }
-
-    /**
-     * @return true if the current layer worker should finish ASAP.
-     */
-    public boolean shouldWrapItUp() {
-        return wrapItUp;
     }
 
     /**
@@ -574,46 +547,36 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
     public void doPrepare() {
         synchronized (LAYERWORKER_LOCK) {
 
-            if (isWorking()) {
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine(getName() + " layer already working in prepare(), canceling");
-                }
-                // This won't do anything if the layer knows it's already been
-                // canceled, but we need to call this the first time. We never
-                // want to go on and launch another worker if there's already
-                // one, even if it's been canceled. The worker will launch
-                // another one.
-                if (layerWorkerQueue == null) {
-                    setCancelled(true);
-                } else {
-                    logger.finer("skipping swing worker creation, already queued");
-                }
-
+            if (layerWorkerQueue) {
                 return;
             }
-            // If there isn't a worker thread working on a projection
-            // changed or other doPrepare call, then create a thread that
-            // will do the real work. If there is a thread working on
-            // this, then set the canceled flag in the layer.
-            if (logger.isLoggable(Level.FINER)) {
-                logger.finer("creating another layer worker..." + (layerWorker == null) + ", "
-                        + (layerWorkerQueue == null));
+
+            ISwingWorker<OMGraphicList> currentLayerWorker = layerWorker;
+
+            if (currentLayerWorker != null) {
+                layerWorkerQueue = true;
+                if (interruptable) {
+                    currentLayerWorker.interrupt();
+                }
+                return;
             }
+
             setLayerWorker(createLayerWorker());
         }
     }
 
     /**
-     * A check to see if the SwingWorker is doing something.
+     * A check to see if the LayerWorker (SwingWorker) exists (is doing
+     * something).
      */
     public boolean isWorking() {
+        // We don't care if it hasn't been interrupted - since the
+        // LayerWorker will launch a new thread when things settle out, we
+        // just want to know if there is a LayerWorker in place. If multiple
+        // doPrepare() calls come in, we need to ignore all of the requests
+        // that have come it after the first one that canceled the
+        // LayerWorker in the first place.
         synchronized (LAYERWORKER_LOCK) {
-            // We don't care if it hasn't been interrupted - since the
-            // LayerWorker will launch a new thread when things settle out, we
-            // just want to know if there is a LayerWorker in place. If multiple
-            // doPrepare() calls come in, we need to ignore all of the requests
-            // that have come it after the first one that canceled the
-            // LayerWorker in the first place.
             return (layerWorker != null);
         }
     }
@@ -667,26 +630,20 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         return currentList;
     }
 
+    /**
+     * Lock object used for managing LayerWorker and queue synchronization.
+     */
     protected final Object LAYERWORKER_LOCK = new Object();
 
     /**
-     * Used to set the canceled flag in the layer. The swing worker checks this
-     * once in a while to see if the projection has changed since it started
-     * working. If this is set to true, the swing worker quits when it is safe.
+     * Check to see if it's likely the current thread will be replaced with
+     * another one.
+     * 
+     * @return true if another layer worker is queued up.
      */
-    public void setCancelled(boolean set) {
-        synchronized (LAYERWORKER_LOCK) {
-            if (set && !isCancelled() && layerWorkerQueue == null) {
-                layerWorkerQueue = createLayerWorker();
-                interrupt();// if the layerWorker is busy, stop it.
-            }
-        }
-    }
-
-    /** Check to see if the canceled flag has been set. */
     public boolean isCancelled() {
         synchronized (LAYERWORKER_LOCK) {
-            return layerWorker != null && layerWorker.isInterrupted();
+            return layerWorkerQueue;
         }
     }
 
@@ -695,27 +652,21 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
      * If the calling worker is not the same as the "current" worker, then a new
      * worker is created.
      *
-     * @param worker the worker that has the graphics.
+     * @param worker the worker that has the graphics, must not be null.
      */
     protected void workerComplete(ISwingWorker<OMGraphicList> worker) {
+
+        boolean finishUpWithWorker = false;
+
         synchronized (LAYERWORKER_LOCK) {
+            finishUpWithWorker = !layerWorkerQueue;
+            setLayerWorker(layerWorkerQueue ? createLayerWorker() : null);
+            layerWorkerQueue = false;
+        }
 
-            if (layerWorkerQueue == null && !worker.isInterrupted()) {
-                OMGraphicList list = worker.get();
-                // CAUTION! layer.repaint() is called in workerComplete!!
-                getProjectionChangePolicy().workerComplete(list);
-                setLayerWorker(null);
-            }
-
-            if (layerWorkerQueue != null) {
-                if (logger.isLoggable(Level.FINER)) {
-                    logger.finer("worker " + worker
-                            + " SW launching another because of interruption of thread "
-                            + Thread.currentThread().getName());
-                }
-                setLayerWorker(layerWorkerQueue);
-                layerWorkerQueue = null;
-            }
+        if (finishUpWithWorker) {
+            // CAUTION! layer.repaint() is called in workerComplete!!
+            getProjectionChangePolicy().workerComplete(worker.get());
         }
     }
 
@@ -735,7 +686,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         public OMGraphicList construct() {
             logger.fine(getName() + "|LayerWorker.construct()");
             fireStatusUpdate(LayerStatusEvent.START_WORKING);
-            String msg;
+            String errorMsg = null;
 
             try {
                 long start = System.currentTimeMillis();
@@ -749,23 +700,23 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
                 return list;
 
             } catch (OutOfMemoryError e) {
-                msg = getName() + "|LayerWorker.construct(): " + e.getMessage();
+                errorMsg = getName() + "|LayerWorker.construct(): " + e.getMessage();
                 if (logger.isLoggable(Level.FINER)) {
-                    logger.fine(msg);
+                    logger.fine(errorMsg);
                     e.printStackTrace();
                 } else {
                     logger.info(getName() + " layer ran out of memory, attempting to recover...");
                 }
             } catch (Throwable e) {
-                msg = getName() + "|LayerWorker.construct(): " + e.getClass().getName() + ", "
+                errorMsg = getName() + "|LayerWorker.construct(): " + e.getClass().getName() + ", "
                         + e.getMessage();
-                logger.info(msg);
+                logger.info(errorMsg);
                 e.printStackTrace();
             }
 
             // This is only called if there is an error.
-            if (Debug.debugging("displayLayerErrors")) {
-                fireRequestMessage(new InfoDisplayEvent(this, msg));
+            if (errorMsg != null && logger.isLoggable(Level.FINE)) {
+                fireRequestMessage(new InfoDisplayEvent(this, errorMsg));
             }
 
             return null;

@@ -321,9 +321,6 @@ public class EarthquakeLayer
                 }
             } catch (IOException e) {
                 Debug.error("EarthquakeLayer.getEarthquakeData(): " + "can't read from the socket: " + e);
-                if (isCancelled()) {
-                    return null;
-                }
             }
 
             try {

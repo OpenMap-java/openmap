@@ -39,7 +39,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
-import com.bbn.openmap.layer.policy.BufferedImageRenderPolicy;
+import com.bbn.openmap.layer.policy.ListResetPCPolicy;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRect;
@@ -262,8 +262,7 @@ public class DTEDLayer
         setMouseModeIDsForEvents(new String[] {
             "Gestures"
         });
-
-        setRenderPolicy(new BufferedImageRenderPolicy(this));
+        setProjectionChangePolicy(new ListResetPCPolicy(this));
     }
 
     /**
@@ -362,11 +361,6 @@ public class DTEDLayer
      * 
      */
     public synchronized OMGraphicList prepare() {
-
-        if (isCancelled()) {
-            Debug.message("dted", getName() + "|DTEDLayer.prepare(): aborted.");
-            return null;
-        }
 
         Projection projection = getProjection();
 

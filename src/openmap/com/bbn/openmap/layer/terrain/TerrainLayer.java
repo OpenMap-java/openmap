@@ -170,11 +170,6 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements ActionListene
      */
     public synchronized OMGraphicList prepare() {
 
-        if (isCancelled()) {
-            Debug.message("dted", getName() + "|TerrainLayer.prepare(): aborted.");
-            return null;
-        }
-
         Projection projection = getProjection();
 
         if (projection == null) {

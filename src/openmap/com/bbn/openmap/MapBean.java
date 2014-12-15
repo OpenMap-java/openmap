@@ -47,6 +47,7 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -509,7 +510,12 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
         // projection change. They will mark themselves clean when they call
         // repaint.
         for (Component c : getComponents()) {
-            ((Layer) c).setReadyToPaint(false);
+            Layer l = (Layer) c;
+            if (l != null) {
+                // Weird, I know, but I've seen c be null and throw an
+                // exception here.
+                l.setReadyToPaint(false);
+            }
         }
 
         projectionSupport.fireProjectionChanged(proj);
@@ -523,13 +529,16 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
     public void purgeAndNotifyRemovedLayers() {
         // Tell any layers that have been removed that they have
         // been removed
-        if (removedLayers.isEmpty()) {
+
+        ArrayList<Layer> rLayers = new ArrayList<Layer>(removedLayers);
+        removedLayers.clear();
+
+        if (rLayers.isEmpty()) {
             return;
         }
-        for (Layer layer : removedLayers) {
+        for (Layer layer : rLayers) {
             layer.removed(this);
         }
-        removedLayers.removeAllElements();
 
         // Shouldn't call this, but it's the only thing
         // that seems to make it work...

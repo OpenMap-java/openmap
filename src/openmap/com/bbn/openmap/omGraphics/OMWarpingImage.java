@@ -197,8 +197,7 @@ public class OMWarpingImage extends OMGraphicAdapter implements OMGraphic {
     /**
      * Create an OMWarpingImage from an OMScalingRaster - useful for when the
      * projection being used on the map doesn't match the projection of the
-     * raster, and it needs to be transformed. The OMScalingRaster is in an
-     * equal-arc projection (CADRG or LLXY).
+     * raster, and it needs to be transformed.
      * 
      * @param omsr OMScalingRaster
      * @param transform a GeoCoordTransform if the OMScalingRaster image isn't a

@@ -50,13 +50,13 @@ public class Planet {
     final public static transient float wgs84_earthEquatorialCircumferenceKM = wgs84_earthEquatorialCircumferenceMeters / 1000f;
     final public static transient float wgs84_earthEquatorialCircumferenceMiles = wgs84_earthEquatorialCircumferenceKM * 0.62137119f;// HACK
     /* 60.0f * 360.0f -- sixty nm per degree units? */
-    final public static transient float wgs84_earthEquatorialCircumferenceNMiles = 21600.0f;
+    final public static transient float wgs84_earthEquatorialCircumferenceNMiles = wgs84_earthEquatorialCircumferenceMeters / 1852f;
     final public static transient double wgs84_earthEquatorialCircumferenceMeters_D = MoreMath.TWO_PI_D
             * wgs84_earthEquatorialRadiusMeters_D;
     final public static transient double wgs84_earthEquatorialCircumferenceKM_D = wgs84_earthEquatorialCircumferenceMeters_D / 1000;
     final public static transient double wgs84_earthEquatorialCircumferenceMiles_D = wgs84_earthEquatorialCircumferenceKM_D * 0.62137119;// HACK
     /* 60.0f * 360.0f; sixty nm per degree */// units?
-    final public static transient double wgs84_earthEquatorialCircumferenceNMiles_D = 21600.0;
+    final public static transient double wgs84_earthEquatorialCircumferenceNMiles_D = wgs84_earthEquatorialCircumferenceMeters / 1852;
     // wgs84_earthEquatorialCircumferenceKM*0.5389892f; // calculated,
     // same as line above.
     // wgs84_earthEquatorialCircumferenceKM*0.5399568f;//HACK use UNIX

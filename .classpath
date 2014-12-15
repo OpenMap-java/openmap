@@ -48,5 +48,6 @@
 	<classpathentry kind="lib" path="ext/junit-4.6.jar"/>
 	<classpathentry kind="lib" path="ext/sqlitejdbc/sqlitejdbc-v056.jar"/>
 	<classpathentry kind="lib" path="ext/apache/servlet-api.jar"/>
+	<classpathentry kind="lib" path="ext/BrowserLauncher2-all-1_3.jar"/>
 	<classpathentry kind="output" path="classes/openmap"/>
 </classpath>

@@ -420,11 +420,6 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                     + ")");
         }
 
-        if (isCancelled()) {
-            Debug.message("link", getName() + "|LinkLayer.prepare(): aborted.");
-            return currentList;
-        }
-
         Projection projection = getProjection();
         if (projection == null) {
             Debug

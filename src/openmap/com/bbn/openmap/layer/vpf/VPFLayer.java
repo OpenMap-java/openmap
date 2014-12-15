@@ -225,7 +225,6 @@ public class VPFLayer
     */
    public VPFLayer() {
       setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
-      setRenderPolicy(new com.bbn.openmap.layer.policy.BufferedImageRenderPolicy(this));
       setMouseModeIDsForEvents(new String[] {
          "Gestures"
       });

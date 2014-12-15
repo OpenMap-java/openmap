@@ -539,11 +539,6 @@ public class RpfLayer
      */
     public synchronized OMGraphicList prepare() {
 
-        if (isCancelled()) {
-            rpfLogger.fine("aborted.");
-            return null;
-        }
-
         Projection projection = getProjection();
         OMGraphicList retList = new OMGraphicList();
         retList.setTraverseMode(OMList.FIRST_ADDED_ON_TOP);

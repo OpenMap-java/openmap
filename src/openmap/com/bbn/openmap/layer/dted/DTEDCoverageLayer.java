@@ -102,12 +102,6 @@ public class DTEDCoverageLayer extends OMGraphicHandlerLayer {
      */
     public synchronized OMGraphicList prepare() {
 
-        if (isCancelled()) {
-            Debug.message("dtedcov", getName()
-                    + "|DTEDCoverageLayer.prepare(): aborted.");
-            return null;
-        }
-
         Debug.message("basic", getName()
                 + "|DTEDCoverageLayer.prepare(): doing it");
 

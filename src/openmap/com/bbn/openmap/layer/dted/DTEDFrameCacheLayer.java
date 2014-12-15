@@ -293,11 +293,6 @@ public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements Action
      */
     public synchronized OMGraphicList prepare() {
 
-        if (isCancelled()) {
-            Debug.message("dted", getName() + "|DTEDFrameCacheLayer.prepare(): aborted.");
-            return null;
-        }
-
         if (cache == null) {
             Debug.message("dted", getName()
                     + "|DTEDFrameCacheLayer can't add anything to map because the DTEDFrameCache has not been set.");

@@ -427,7 +427,7 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
      * @see com.bbn.openmap.dataAccess.mapTile.MapTileRequestor#shouldContinue()
      */
     public boolean shouldContinue() {
-        return !shouldWrapItUp();
+        return !isInterruptable() || !isCancelled();
     }
 
     /*

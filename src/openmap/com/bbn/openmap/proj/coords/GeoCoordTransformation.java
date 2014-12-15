@@ -27,7 +27,7 @@ package com.bbn.openmap.proj.coords;
 import java.awt.geom.Point2D;
 
 /**
- * A DecimalDegreeTranslator is an object that knows how to translate a set of
+ * A GeoCoordTransformation is an object that knows how to translate a set of
  * coordinates from one coordinate system definition to/from a set of decimal
  * degree coordinates.
  * 

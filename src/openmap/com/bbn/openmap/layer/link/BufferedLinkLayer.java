@@ -86,12 +86,6 @@ public class BufferedLinkLayer extends LinkLayer {
      */
     public synchronized OMGraphicList prepare() {
 
-        if (isCancelled()) {
-            Debug.message("link", getName()
-                    + "|BufferedLinkLayer.prepare(): aborted.");
-            return null;
-        }
-
         Projection projection = getProjection();
 
         if (projection == null) {
