@@ -189,11 +189,6 @@
 				<include name="build.xml" />
 			</fileset>
 		</copy>
-		<copy todir="${openmap_release.dir}/iis">
-			<fileset dir="${openmap.home}/iis">
-				<exclude name="${install_excludes}" />
-			</fileset>
-		</copy>
 		<copy todir="${openmap_release.dir}/src">
 			<fileset dir="${openmap.home}/src">
 				<exclude name="${install_excludes}" />
