@@ -1,3 +1,10 @@
+2014-12-18  Don Dietrick  <dietrick@hsawaknow.local>
+
+	* Tagged OpenMap 5.1.9
+
+	* Fixed the OMScalingRaster, was drawing full-sized image when the
+	bounds said it should be totally off the map.
+
 2014-12-15  Don Dietrick  <dietrick@hsawaknow.local>
 
 	* Tagged OpenMap 5.1.8
