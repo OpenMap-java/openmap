@@ -595,9 +595,6 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                     }
                 } // else what? Never seen this test fail with Java2D
 
-            } else {
-                // draw whole image at location, as is...
-                g.drawImage(image, loc.x, loc.y, this);
             }
 
         } else if (DEBUG) {
