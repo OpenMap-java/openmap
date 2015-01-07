@@ -32,8 +32,11 @@ import com.bbn.openmap.MapBean;
 import com.bbn.openmap.layer.shape.ShapeLayer;
 
 /**
- * This is a simple application that uses the OpenMap MapBean to show
- * a map.
+ * This is a simple application that uses the OpenMap MapBean to show a map.
+ * This sample application is just provided to show the simplest way to put a
+ * map in a java application. If you want a the best example to use for a simple
+ * application to play with OpenMap components, use SimpleMap2! Use the
+ * MapHandler! Use a MapPanel!
  * <p>
  * This example shows:
  * <ul>

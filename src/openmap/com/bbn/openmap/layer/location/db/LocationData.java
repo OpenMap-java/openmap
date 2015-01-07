@@ -22,10 +22,8 @@
 
 package com.bbn.openmap.layer.location.db;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  * This class is responsible for retrieving Latitude and Longitude Data from a

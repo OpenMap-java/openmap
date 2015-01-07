@@ -23,6 +23,7 @@
 package com.bbn.openmap.proj;
 
 import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
@@ -39,57 +40,7 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 public class GreatCircle {
 
     // cannot construct
-    private GreatCircle() {}
-
-    /**
-     * Determine azimuth and distance on the ellipsoid.
-     * 
-     * @param a Semi-major axis of ellipsoid
-     * @param finv flattening of the ellipsoid (WGS84 is 1/298.257)
-     * @param glat1 Latitude of from station
-     * @param glon1 Longitude of from station
-     * @param glat2 Latitude of to station
-     * @param glon2 Longitude of to station
-     * @param ret_val AziDist struct
-     * @return AziDist ret_val struct with azimuth and distance
-     * @deprecated this has been yanked until we have a more stable and
-     *             documented algorithm
-     */
-    public final static AziDist ellipsoidalAziDist(double a, double finv,
-                                                   double glat1, double glon1,
-                                                   double glat2, double glon2,
-                                                   AziDist ret_val) {
-        return null;
-    }
-
-    /**
-     * Calculate spherical arc distance between two points.
-     * <p>
-     * Computes arc distance `c' on the sphere. equation (5-3a). (0 &lt;= c
-     * &lt;= PI)
-     * <p>
-     * 
-     * @param phi1 latitude in radians of start point
-     * @param lambda0 longitude in radians of start point
-     * @param phi latitude in radians of end point
-     * @param lambda longitude in radians of end point
-     * @return float arc distance `c'
-     * 
-     */
-    final public static float sphericalDistance(float phi1, float lambda0,
-                                                float phi, float lambda) {
-        return (float) sphericalDistance((double) phi1,
-                (double) lambda0,
-                (double) phi,
-                (double) lambda);
-    }
-
-    /**
-     * @deprecated use sphericalDistance instead.
-     */
-    final public static float spherical_distance(float phi1, float lambda0,
-                                                 float phi, float lambda) {
-        return sphericalDistance(phi1, lambda0, phi, lambda);
+    private GreatCircle() {
     }
 
     /**
@@ -106,52 +57,13 @@ public class GreatCircle {
      * @param lambda longitude in radians of end point
      * @return float arc distance `c'
      */
-    final public static double sphericalDistance(double phi1, double lambda0,
-                                                 double phi, double lambda) {
+    final public static double sphericalDistance(double phi1, double lambda0, double phi,
+                                                 double lambda) {
         double pdiff = Math.sin(((phi - phi1) / 2.0));
         double ldiff = Math.sin((lambda - lambda0) / 2.0);
-        double rval = Math.sqrt((pdiff * pdiff) + Math.cos(phi1)
-                * Math.cos(phi) * (ldiff * ldiff));
+        double rval = Math.sqrt((pdiff * pdiff) + Math.cos(phi1) * Math.cos(phi) * (ldiff * ldiff));
 
         return 2.0 * Math.asin(rval);
-    }
-
-    /**
-     * @deprecated use sphericalDistance instead.
-     */
-    final public static double spherical_distance(double phi1, double lambda0,
-                                                  double phi, double lambda) {
-        return sphericalDistance(phi1, lambda0, phi, lambda);
-    }
-
-    /**
-     * Calculate spherical azimuth between two points.
-     * <p>
-     * Computes the azimuth `Az' east of north from phi1, lambda0 bearing toward
-     * phi and lambda. (5-4b). (-PI &lt;= Az &lt;= PI).
-     * <p>
-     * 
-     * @param phi1 latitude in radians of start point
-     * @param lambda0 longitude in radians of start point
-     * @param phi latitude in radians of end point
-     * @param lambda longitude in radians of end point
-     * @return float azimuth east of north `Az'
-     * 
-     */
-    final public static float sphericalAzimuth(float phi1, float lambda0,
-                                               float phi, float lambda) {
-        return (float) sphericalAzimuth((double) phi1,
-                (double) lambda0,
-                (double) phi,
-                (double) lambda);
-    }
-
-    /**
-     * @deprecated use sphericalAzimuth instead.
-     */
-    final public static float spherical_azimuth(float phi1, float lambda0,
-                                                float phi, float lambda) {
-        return sphericalAzimuth(phi1, lambda0, phi, lambda);
     }
 
     /**
@@ -168,60 +80,13 @@ public class GreatCircle {
      * @return float azimuth east of north `Az'
      * 
      */
-    final public static double sphericalAzimuth(double phi1, double lambda0,
-                                                double phi, double lambda) {
+    final public static double sphericalAzimuth(double phi1, double lambda0, double phi,
+                                                double lambda) {
         double ldiff = lambda - lambda0;
         double cosphi = Math.cos(phi);
 
-        return Math.atan2(cosphi * Math.sin(ldiff), (Math.cos(phi1)
-                * Math.sin(phi) - Math.sin(phi1) * cosphi * Math.cos(ldiff)));
-    }
-
-    /**
-     * @deprecated use sphericalAzimuth instead.
-     */
-    final public static double spherical_azimuth(double phi1, double lambda0,
-                                                 double phi, double lambda) {
-        return sphericalAzimuth(phi1, lambda0, phi, lambda);
-    }
-
-    /**
-     * Calculate point at azimuth and distance from another point.
-     * <p>
-     * Returns a LatLonPoint.Float at arc distance `c' in direction `Az' from
-     * start point.
-     * <p>
-     * 
-     * @param phi1 latitude in radians of start point
-     * @param lambda0 longitude in radians of start point
-     * @param c arc radius in radians (0 &lt; c &lt;= PI)
-     * @param Az azimuth (direction) east of north (-PI &lt;= Az &lt; PI)
-     * @return LatLonPoint
-     * 
-     */
-    final public static LatLonPoint sphericalBetween(float phi1, float lambda0,
-                                                     float c, float Az) {
-        double cosphi1 = Math.cos(phi1);
-        double sinphi1 = Math.sin(phi1);
-        double cosAz = Math.cos(Az);
-        double sinAz = Math.sin(Az);
-        double sinc = Math.sin(c);
-        double cosc = Math.cos(c);
-
-        return new LatLonPoint.Float((float) Math.toDegrees(Math.asin(sinphi1
-                * cosc + cosphi1 * sinc * cosAz)), (float) Math.toDegrees(Math.atan2(sinc
-                * sinAz,
-                cosphi1 * cosc - sinphi1 * sinc * cosAz)
-                + lambda0));
-    }
-
-    /**
-     * @deprecated use shoerucalBetween instead.
-     */
-    final public static LatLonPoint spherical_between(float phi1,
-                                                      float lambda0, float c,
-                                                      float Az) {
-        return sphericalBetween(phi1, lambda0, c, Az);
+        return Math.atan2(cosphi * Math.sin(ldiff), (Math.cos(phi1) * Math.sin(phi) - Math.sin(phi1)
+                * cosphi * Math.cos(ldiff)));
     }
 
     /**
@@ -239,8 +104,7 @@ public class GreatCircle {
      * @return LatLonPoint
      * 
      */
-    final public static LatLonPoint sphericalBetween(double phi1,
-                                                     double lambda0, double c,
+    final public static LatLonPoint sphericalBetween(double phi1, double lambda0, double c,
                                                      double Az) {
         double cosphi1 = Math.cos(phi1);
         double sinphi1 = Math.sin(phi1);
@@ -249,20 +113,9 @@ public class GreatCircle {
         double sinc = Math.sin(c);
         double cosc = Math.cos(c);
 
-        return new LatLonPoint.Double(ProjMath.radToDeg(Math.asin(sinphi1
-                * cosc + cosphi1 * sinc * cosAz)), ProjMath.radToDeg(Math.atan2(sinc
-                * sinAz,
-                cosphi1 * cosc - sinphi1 * sinc * cosAz)
-                + lambda0));
-    }
-
-    /**
-     * @deprecated use sphericalBetween instead.
-     */
-    final public static LatLonPoint spherical_between(double phi1,
-                                                      double lambda0, double c,
-                                                      double Az) {
-        return sphericalBetween(phi1, lambda0, c, Az);
+        return new LatLonPoint.Double(Math.asin(sinphi1 * cosc + cosphi1 * sinc * cosAz), Math.atan2(sinc
+                * sinAz, cosphi1 * cosc - sinphi1 * sinc * cosAz)
+                + lambda0, true);
     }
 
     /**
@@ -277,11 +130,10 @@ public class GreatCircle {
      * @param c arc radius in radians (0 &lt; c &lt;= PI)
      * @param Az azimuth (direction) east of north (-PI &lt;= Az &lt; PI)
      * @param n number of points along great circle edge to calculate
-     * @return float[n+1] radian lat,lon pairs
+     * @return float[n+1] radian lat, lon pairs
      * 
      */
-    final public static float[] sphericalBetween(float phi1, float lambda0,
-                                                 float c, float Az, int n) {
+    final public static float[] sphericalBetween(float phi1, float lambda0, float c, float Az, int n) {
         // full constants for the computation
         double cosphi1 = Math.cos(phi1);
         double sinphi1 = Math.sin(phi1);
@@ -303,22 +155,13 @@ public class GreatCircle {
             double cosc = Math.cos(c);
 
             // generate new point
-            points[i] = (float) Math.asin(sinphi1 * cosc + cosphi1 * sinc
-                    * cosAz);
+            points[i] = (float) Math.asin(sinphi1 * cosc + cosphi1 * sinc * cosAz);
 
-            points[i + 1] = (float) Math.atan2(sinc * sinAz, cosphi1 * cosc
-                    - sinphi1 * sinc * cosAz)
+            points[i + 1] = (float) Math.atan2(sinc * sinAz, cosphi1 * cosc - sinphi1 * sinc
+                    * cosAz)
                     + lambda0;
         }
         return points;
-    }
-
-    /**
-     * @deprecated use sphericalBetween instead.
-     */
-    final public static float[] spherical_between(float phi1, float lambda0,
-                                                  float c, float Az, int n) {
-        return sphericalBetween(phi1, lambda0, c, Az, n);
     }
 
     /**
@@ -336,8 +179,8 @@ public class GreatCircle {
      * @return double[n+1] radian lat,lon pairs
      * 
      */
-    final public static double[] sphericalBetween(double phi1, double lambda0,
-                                                  double c, double Az, int n) {
+    final public static double[] sphericalBetween(double phi1, double lambda0, double c, double Az,
+                                                  int n) {
         // full constants for the computation
         double cosphi1 = Math.cos(phi1);
         double sinphi1 = Math.sin(phi1);
@@ -361,19 +204,10 @@ public class GreatCircle {
             // generate new point
             points[i] = Math.asin(sinphi1 * cosc + cosphi1 * sinc * cosAz);
 
-            points[i + 1] = Math.atan2(sinc * sinAz, cosphi1 * cosc - sinphi1
-                    * sinc * cosAz)
+            points[i + 1] = Math.atan2(sinc * sinAz, cosphi1 * cosc - sinphi1 * sinc * cosAz)
                     + lambda0;
         }
         return points;
-    }
-
-    /**
-     * @deprecated use shpericalBetween instead.
-     */
-    final public static double[] spherical_between(double phi1, double lambda0,
-                                                   double c, double Az, int n) {
-        return sphericalBetween(phi1, lambda0, c, Az, n);
     }
 
     /**
@@ -393,9 +227,8 @@ public class GreatCircle {
      * @return float[n] or float[n+1] radian lat,lon pairs
      * 
      */
-    final public static float[] greatCircle(float phi1, float lambda0,
-                                            float phi, float lambda, int n,
-                                            boolean include_last) {
+    final public static float[] greatCircle(float phi1, float lambda0, float phi, float lambda,
+                                            int n, boolean include_last) {
         // number of points to generate
         int end = include_last ? n + 1 : n;
         end <<= 1;// *2 for pairs
@@ -409,12 +242,11 @@ public class GreatCircle {
         double l2diff = Math.sin((ldiff) / 2);
 
         // calculate spherical distance
-        double c = 2.0f * Math.asin(Math.sqrt(p2diff * p2diff + cosphi1
-                * cosphi * l2diff * l2diff));
+        double c = 2.0f * Math.asin(Math.sqrt(p2diff * p2diff + cosphi1 * cosphi * l2diff * l2diff));
 
         // calculate spherical azimuth
-        double Az = Math.atan2(cosphi * Math.sin(ldiff), (cosphi1
-                * Math.sin(phi) - sinphi1 * cosphi * Math.cos(ldiff)));
+        double Az = Math.atan2(cosphi * Math.sin(ldiff), (cosphi1 * Math.sin(phi) - sinphi1
+                * cosphi * Math.cos(ldiff)));
         double cosAz = Math.cos(Az);
         double sinAz = Math.sin(Az);
 
@@ -432,24 +264,14 @@ public class GreatCircle {
             double cosc = Math.cos(c);
 
             // generate new point
-            points[i] = (float) Math.asin(sinphi1 * cosc + cosphi1 * sinc
-                    * cosAz);
+            points[i] = (float) Math.asin(sinphi1 * cosc + cosphi1 * sinc * cosAz);
 
-            points[i + 1] = (float) Math.atan2(sinc * sinAz, cosphi1 * cosc
-                    - sinphi1 * sinc * cosAz)
+            points[i + 1] = (float) Math.atan2(sinc * sinAz, cosphi1 * cosc - sinphi1 * sinc
+                    * cosAz)
                     + lambda0;
         }
 
         return points;
-    }
-
-    /**
-     * @deprecated use greatCircle instead.
-     */
-    final public static float[] great_circle(float phi1, float lambda0,
-                                             float phi, float lambda, int n,
-                                             boolean include_last) {
-        return greatCircle(phi1, lambda0, phi, lambda, n, include_last);
     }
 
     /**
@@ -470,9 +292,8 @@ public class GreatCircle {
      * @return double[n] or double[n+1] radian lat,lon pairs
      * 
      */
-    final public static double[] greatCircle(double phi1, double lambda0,
-                                             double phi, double lambda, int n,
-                                             boolean include_last) {
+    final public static double[] greatCircle(double phi1, double lambda0, double phi,
+                                             double lambda, int n, boolean include_last) {
         // number of points to generate
         int end = include_last ? n + 1 : n;
         end <<= 1;// *2 for pairs
@@ -486,12 +307,11 @@ public class GreatCircle {
         double l2diff = Math.sin((ldiff) / 2);
 
         // calculate spherical distance
-        double c = 2.0f * Math.asin(Math.sqrt(p2diff * p2diff + cosphi1
-                * cosphi * l2diff * l2diff));
+        double c = 2.0f * Math.asin(Math.sqrt(p2diff * p2diff + cosphi1 * cosphi * l2diff * l2diff));
 
         // calculate spherical azimuth
-        double Az = Math.atan2(cosphi * Math.sin(ldiff), (cosphi1
-                * Math.sin(phi) - sinphi1 * cosphi * Math.cos(ldiff)));
+        double Az = Math.atan2(cosphi * Math.sin(ldiff), (cosphi1 * Math.sin(phi) - sinphi1
+                * cosphi * Math.cos(ldiff)));
         double cosAz = Math.cos(Az);
         double sinAz = Math.sin(Az);
 
@@ -511,8 +331,7 @@ public class GreatCircle {
             // generate new point
             points[i] = Math.asin(sinphi1 * cosc + cosphi1 * sinc * cosAz);
 
-            points[i + 1] = Math.atan2(sinc * sinAz, cosphi1 * cosc - sinphi1
-                    * sinc * cosAz)
+            points[i + 1] = Math.atan2(sinc * sinAz, cosphi1 * cosc - sinphi1 * sinc * cosAz)
                     + lambda0;
         }
 
@@ -535,12 +354,8 @@ public class GreatCircle {
      * @return LatLonPoint if distance is less than distance between points,
      *         null if it is greater.
      */
-    public static LatLonPoint pointAtDistanceBetweenPoints(double phi1,
-                                                           double lambda0,
-                                                           double phi,
-                                                           double lambda,
-                                                           double distance,
-                                                           int n) {
+    public static LatLonPoint pointAtDistanceBetweenPoints(double phi1, double lambda0, double phi,
+                                                           double lambda, double distance, int n) {
         LatLonPoint ret = null;
 
         double pntDist = sphericalDistance(phi1, lambda0, phi, lambda);
@@ -567,15 +382,6 @@ public class GreatCircle {
     }
 
     /**
-     * @deprecated use greatCircle instead.
-     */
-    final public static double[] great_circle(double phi1, double lambda0,
-                                              double phi, double lambda, int n,
-                                              boolean include_last) {
-        return greatCircle(phi1, lambda0, phi, lambda, n, include_last);
-    }
-
-    /**
      * Calculate partial earth circle on the sphere.
      * <p>
      * Returns n float lat,lon pairs at arc distance c from point at
@@ -591,17 +397,9 @@ public class GreatCircle {
      * @return float[n] radian lat,lon pairs along earth circle
      * 
      */
-    final public static float[] earthCircle(float phi1, float lambda0, float c,
-                                            float s, float e, int n) {
+    final public static float[] earthCircle(float phi1, float lambda0, float c, float s, float e,
+                                            int n) {
         return earthCircle(phi1, lambda0, c, s, e, n, new float[n << 1]);
-    }
-
-    /**
-     * @deprecated use earthCircle instead.
-     */
-    final public static float[] earth_circle(float phi1, float lambda0,
-                                             float c, float s, float e, int n) {
-        return earthCircle(phi1, lambda0, c, s, e, n);
     }
 
     /**
@@ -618,23 +416,8 @@ public class GreatCircle {
      * @return float[n] radian lat,lon pairs along earth circle
      * 
      */
-    final public static float[] earthCircle(float phi1, float lambda0, float c,
-                                            int n) {
-        return earthCircle(phi1,
-                lambda0,
-                c,
-                0.0f,
-                MoreMath.TWO_PI,
-                n,
-                new float[n << 1]);
-    }
-
-    /**
-     * @deprecated use earthCircle instead.
-     */
-    final public static float[] earth_circle(float phi1, float lambda0,
-                                             float c, int n) {
-        return earthCircle(phi1, lambda0, c, n);
+    final public static float[] earthCircle(float phi1, float lambda0, float c, int n) {
+        return earthCircle(phi1, lambda0, c, 0.0f, MoreMath.TWO_PI, n, new float[n << 1]);
     }
 
     /**
@@ -653,17 +436,9 @@ public class GreatCircle {
      * @return float[n] radian lat,lon pairs along earth circle
      * 
      */
-    final public static float[] earthCircle(float phi1, float lambda0, float c,
-                                            int n, float[] ret_val) {
+    final public static float[] earthCircle(float phi1, float lambda0, float c, int n,
+                                            float[] ret_val) {
         return earthCircle(phi1, lambda0, c, 0.0f, MoreMath.TWO_PI, n, ret_val);
-    }
-
-    /**
-     * @deprecated use earthCircle instead.
-     */
-    final public static float[] earth_circle(float phi1, float lambda0,
-                                             float c, int n, float[] ret_val) {
-        return earthCircle(phi1, lambda0, c, n, ret_val);
     }
 
     /**
@@ -684,9 +459,8 @@ public class GreatCircle {
      * @return float[n] radian lat,lon pairs along earth circle.
      * 
      */
-    final public static float[] earthCircle(float phi1, float lambda0, float c,
-                                            float s, float e, int n,
-                                            float[] ret_val) {
+    final public static float[] earthCircle(float phi1, float lambda0, float c, float s, float e,
+                                            int n, float[] ret_val) {
         double Az, cosAz, sinAz;
         double cosphi1 = Math.cos(phi1);
         double sinphi1 = Math.sin(phi1);
@@ -712,23 +486,13 @@ public class GreatCircle {
             cosAz = Math.cos(Az);
             sinAz = Math.sin(Az);
 
-            ret_val[i] = (float) Math.asin(sinphi1 * cosc + cosphi1 * sinc
-                    * cosAz);
-            ret_val[i + 1] = (float) Math.atan2(sinc * sinAz, cosphi1 * cosc
-                    - sinphi1 * sinc * cosAz)
+            ret_val[i] = (float) Math.asin(sinphi1 * cosc + cosphi1 * sinc * cosAz);
+            ret_val[i + 1] = (float) Math.atan2(sinc * sinAz, cosphi1 * cosc - sinphi1 * sinc
+                    * cosAz)
                     + lambda0;
         }
 
         return ret_val;
-    }
-
-    /**
-     * @deprecated use earthCircle instead.
-     */
-    final public static float[] earth_circle(float phi1, float lambda0,
-                                             float c, float s, float e, int n,
-                                             float[] ret_val) {
-        return earthCircle(phi1, lambda0, c, s, e, n, ret_val);
     }
 
     /**
@@ -747,18 +511,9 @@ public class GreatCircle {
      * @return double[n] radian lat,lon pairs along earth circle
      * 
      */
-    final public static double[] earthCircle(double phi1, double lambda0,
-                                             double c, double s, double e, int n) {
+    final public static double[] earthCircle(double phi1, double lambda0, double c, double s,
+                                             double e, int n) {
         return earthCircle(phi1, lambda0, c, s, e, n, new double[n << 1]);
-    }
-
-    /**
-     * @deprecated use earthCircle instead.
-     */
-    final public static double[] earth_circle(double phi1, double lambda0,
-                                              double c, double s, double e,
-                                              int n) {
-        return earthCircle(phi1, lambda0, c, s, e, n);
     }
 
     /**
@@ -775,23 +530,8 @@ public class GreatCircle {
      * @return double[n] radian lat,lon pairs along earth circle
      * 
      */
-    final public static double[] earthCircle(double phi1, double lambda0,
-                                             double c, int n) {
-        return earthCircle(phi1,
-                lambda0,
-                c,
-                0.0f,
-                MoreMath.TWO_PI_D,
-                n,
-                new double[n << 1]);
-    }
-
-    /**
-     * @deprecated use earthCircle instead.
-     */
-    final public static double[] earth_circle(double phi1, double lambda0,
-                                              double c, int n) {
-        return earthCircle(phi1, lambda0, c, n);
+    final public static double[] earthCircle(double phi1, double lambda0, double c, int n) {
+        return earthCircle(phi1, lambda0, c, 0.0f, MoreMath.TWO_PI_D, n, new double[n << 1]);
     }
 
     /**
@@ -810,23 +550,9 @@ public class GreatCircle {
      * @return double[n] radian lat,lon pairs along earth circle
      * 
      */
-    final public static double[] earthCircle(double phi1, double lambda0,
-                                             double c, int n, double[] ret_val) {
-        return earthCircle(phi1,
-                lambda0,
-                c,
-                0.0f,
-                MoreMath.TWO_PI_D,
-                n,
-                ret_val);
-    }
-
-    /**
-     * @deprecated use earthCircle instead.
-     */
-    final public static double[] earth_circle(double phi1, double lambda0,
-                                              double c, int n, double[] ret_val) {
-        return earthCircle(phi1, lambda0, c, n, ret_val);
+    final public static double[] earthCircle(double phi1, double lambda0, double c, int n,
+                                             double[] ret_val) {
+        return earthCircle(phi1, lambda0, c, 0.0f, MoreMath.TWO_PI_D, n, ret_val);
     }
 
     /**
@@ -847,9 +573,8 @@ public class GreatCircle {
      * @return double[n] radian lat,lon pairs along earth circle.
      * 
      */
-    final public static double[] earthCircle(double phi1, double lambda0,
-                                             double c, double s, double e,
-                                             int n, double[] ret_val) {
+    final public static double[] earthCircle(double phi1, double lambda0, double c, double s,
+                                             double e, int n, double[] ret_val) {
         double Az, cosAz, sinAz;
         double cosphi1 = Math.cos(phi1);
         double sinphi1 = Math.sin(phi1);
@@ -876,21 +601,11 @@ public class GreatCircle {
             sinAz = Math.sin(Az);
 
             ret_val[i] = Math.asin(sinphi1 * cosc + cosphi1 * sinc * cosAz);
-            ret_val[i + 1] = Math.atan2(sinc * sinAz, cosphi1 * cosc - sinphi1
-                    * sinc * cosAz)
+            ret_val[i + 1] = Math.atan2(sinc * sinAz, cosphi1 * cosc - sinphi1 * sinc * cosAz)
                     + lambda0;
         }
 
         return ret_val;
-    }
-
-    /**
-     * @deprecated use earthCorcle instead.
-     */
-    final public static double[] earth_circle(double phi1, double lambda0,
-                                              double c, double s, double e,
-                                              int n, double[] ret_val) {
-        return earthCircle(phi1, lambda0, c, s, e, n, ret_val);
     }
 
     /*

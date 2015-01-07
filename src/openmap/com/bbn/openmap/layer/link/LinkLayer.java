@@ -1264,10 +1264,10 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
         if (latmin >= -90.f && latmax <= 90.f && lonmin >= -180.f
                 && lonmax <= 180.f && latmin <= latmax && lonmin <= lonmax) {
             // Calculate center point
-            float dist = 0.5f * GreatCircle.sphericalDistance(ProjMath
+            double dist = 0.5f * GreatCircle.sphericalDistance(ProjMath
                     .degToRad(latmax), ProjMath.degToRad(lonmin), ProjMath
                     .degToRad(latmin), ProjMath.degToRad(lonmax));
-            float azimuth = GreatCircle.sphericalAzimuth(ProjMath
+            double azimuth = GreatCircle.sphericalAzimuth(ProjMath
                     .degToRad(latmax), ProjMath.degToRad(lonmin), ProjMath
                     .degToRad(latmin), ProjMath.degToRad(lonmax));
             center = GreatCircle.sphericalBetween(ProjMath.degToRad(latmax),

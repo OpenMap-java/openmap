@@ -178,21 +178,6 @@ public interface Projection extends java.io.Serializable {
      *        implementation).
      * @param lon horizontal location component (units depend on the projection
      *        implementation).
-     * @return boolean true if plotable.
-     */
-    public boolean isPlotable(float lat, float lon);
-
-    /**
-     * Checks if a location is plot-able.
-     * <p>
-     * Call this to check and see if a location can be plotted. This is meant to
-     * be used for checking before projecting and rendering Point2D objects
-     * (bitmaps or text objects tacked at a location, for instance).
-     * 
-     * @param lat vertical location component (units depend on the projection
-     *        implementation).
-     * @param lon horizontal location component (units depend on the projection
-     *        implementation).
      * @return boolean true of plotable.
      */
     public boolean isPlotable(double lat, double lon);
@@ -329,7 +314,7 @@ public interface Projection extends java.io.Serializable {
      *        <code>-180 &lt;= Az &lt;= 180</code>
      * @param c distance in units determined by the projection implementation.
      */
-    public void pan(float Az, float c);
+    public void pan(double Az, double c);
 
     /**
      * Pan the map/projection.
@@ -343,7 +328,7 @@ public interface Projection extends java.io.Serializable {
      * @param Az azimuth "east of north" in decimal degrees:
      *        <code>-180 &lt;= Az &lt;= 180</code>
      */
-    public void pan(float Az);
+    public void pan(double Az);
 
     /**
      * Forward project a line defined by two coordinate end points.

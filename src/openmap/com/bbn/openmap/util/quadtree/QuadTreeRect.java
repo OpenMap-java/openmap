@@ -26,17 +26,16 @@ package com.bbn.openmap.util.quadtree;
 
 import java.io.Serializable;
 
-public class QuadTreeRect
-        implements Serializable {
+public class QuadTreeRect implements Serializable {
 
     static final long serialVersionUID = -5585535433679092922L;
 
-    public float north;
-    public float south;
-    public float west;
-    public float east;
+    public double north;
+    public double south;
+    public double west;
+    public double east;
 
-    public QuadTreeRect(float n, float w, float s, float e) {
+    public QuadTreeRect(double n, double w, double s, double e) {
         north = n;
         west = w;
         south = s;
@@ -47,7 +46,7 @@ public class QuadTreeRect
         return within(rect.north, rect.west, rect.south, rect.east);
     }
 
-    public boolean within(float n, float w, float s, float e) {
+    public boolean within(double n, double w, double s, double e) {
 
         // We check for equality for the northern and western border
         // because the rectangles, out of convention for this package,
@@ -56,22 +55,23 @@ public class QuadTreeRect
         // Thanks to Paul Tomblin for pointing out that the old code
         // wasn't entirely correct, and supplied the better algorithm.
 
-        if (s >= north)
+        if (s >= north) {
             return false;
-        if (n < south)
+        }
+        if (n < south) {
             return false;
-        if (w > east)
+        }
+        if (w > east) {
             return false;
-        if (e <= west)
+        }
+        if (e <= west) {
             return false;
+        }
         return true;
     }
 
-    public boolean pointWithinBounds(float lat, float lon) {
-        if (lon >= west && lon < east && lat <= north && lat > south) {
-            return true;
-        } else
-            return false;
+    public boolean pointWithinBounds(double lat, double lon) {
+        return (lon >= west && lon < east && lat <= north && lat > south);
     }
 
     /**
@@ -82,7 +82,7 @@ public class QuadTreeRect
      * @param lon left-right location in QuadTree Grid (longitude, x)
      * @return closest distance to the point.
      */
-    public double borderDistance(float lat, float lon) {
+    public double borderDistance(double lat, double lon) {
 
         double nsdistance;
         double ewdistance;
@@ -99,8 +99,7 @@ public class QuadTreeRect
             ewdistance = Math.min((Math.abs(lon - east)), (Math.abs(lon - west)));
         }
 
-        double distance = Math.sqrt(Math.pow(nsdistance, 2.0) + Math.pow(ewdistance, 2.0));
-        return distance;
+        return Math.sqrt(Math.pow(nsdistance, 2.0) + Math.pow(ewdistance, 2.0));
     }
 
     /**
@@ -132,7 +131,6 @@ public class QuadTreeRect
 
         double dx = ewdistance * ewdistance;
         double dy = nsdistance * nsdistance;
-        double distanceSqr = dx * dx + dy * dy;
-        return distanceSqr;
+        return dx * dx + dy * dy;
     }
 }

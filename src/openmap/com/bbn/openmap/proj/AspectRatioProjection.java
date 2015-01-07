@@ -183,11 +183,6 @@ public class AspectRatioProjection extends GeoProj {
     }
 
     @Override
-    public boolean isPlotable(float lat, float lon) {
-        return wrappedProjection.isPlotable(lat, lon);
-    }
-
-    @Override
     protected ArrayList<float[]> _forwardPoly(double[] rawllpts, int ltype, int nsegs,
                                      boolean isFilled) {
         ArrayList<float[]> stuff = wrappedProjection._forwardPoly(rawllpts,

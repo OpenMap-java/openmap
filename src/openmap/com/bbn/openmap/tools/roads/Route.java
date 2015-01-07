@@ -42,18 +42,17 @@ public class Route implements Cloneable, Serializable {
     Road[] roads;
 
     private boolean startWithFirstIntersection;
-//    private boolean endWithFirstIntersection;
+    // private boolean endWithFirstIntersection;
 
     transient Logger logger = Logger.getLogger(this.getClass().getName());
 
     static class NodeInfo {
         Intersection intersection;
         Road bestRoad = null;
-        float time;
-        float crowsPathHours;
+        double time;
+        double crowsPathHours;
 
-        NodeInfo(Intersection intersection, Road road, float time,
-                float crowsPathHours) {
+        NodeInfo(Intersection intersection, Road road, double time, double crowsPathHours) {
             this.intersection = intersection;
             this.bestRoad = road;
             this.time = time;
@@ -61,31 +60,26 @@ public class Route implements Cloneable, Serializable {
         }
     }
 
-    public synchronized static Route getBestRoute(Intersection from,
-                                                  Intersection to,
-                                                  float bestConvoySpeed,
-                                                  float worstConvoySpeed) {
+    public synchronized static Route getBestRoute(Intersection from, Intersection to,
+                                                  double bestConvoySpeed, double worstConvoySpeed) {
         Hashtable marks = new Hashtable();
         boolean haveRoute = false;
-        float toLat;
-        float toLon;
+        double toLat;
+        double toLon;
         LatLonPoint toLoc = to.getLocation();
         toLat = toLoc.getLatitude();
         toLon = toLoc.getLongitude();
         LatLonPoint fromLoc = from.getLocation();
-        float fromLat = fromLoc.getLatitude();
-        float fromLon = fromLoc.getLongitude();
-        float timeLimitBase = GreatCircle.sphericalDistance(toLat,
-                toLon,
-                fromLat,
-                fromLon)
+        double fromLat = fromLoc.getLatitude();
+        double fromLon = fromLoc.getLongitude();
+        double timeLimitBase = GreatCircle.sphericalDistance(toLat, toLon, fromLat, fromLon)
                 / worstConvoySpeed;
-        float bestTime = Float.MAX_VALUE;
+        double bestTime = Double.MAX_VALUE;
         for (float snakeFactor = 1.0f; snakeFactor < 40f; snakeFactor *= 2f) {
-            //	  if (logger.isLoggable(Level.INFO))
-            //	    logger.info ("Snake factor " + snakeFactor);
+            // if (logger.isLoggable(Level.INFO))
+            // logger.info ("Snake factor " + snakeFactor);
 
-            float timeLimit = timeLimitBase * snakeFactor;
+            double timeLimit = timeLimitBase * snakeFactor;
             Vector toDo = new Vector();
             toDo.addElement(from);
             marks.clear();
@@ -95,45 +89,39 @@ public class Route implements Cloneable, Serializable {
                 for (Enumeration e = toDo.elements(); e.hasMoreElements();) {
                     Intersection thisIntersection = (Intersection) e.nextElement();
                     NodeInfo thisInfo = (NodeInfo) marks.get(thisIntersection);
-                    //  System.out.println ("examining " +
+                    // System.out.println ("examining " +
                     // thisIntersection);
                     for (Enumeration e2 = thisIntersection.getRoads(); e2.hasMoreElements();) {
                         Road road = (Road) e2.nextElement();
-                        //			System.out.println (" - road " + road);
-                        float roadTime = road.getTraverseHours();
-                        float newTime = thisInfo.time + roadTime;
+                        // System.out.println (" - road " + road);
+                        double roadTime = road.getTraverseHours();
+                        double newTime = thisInfo.time + roadTime;
                         if (newTime > timeLimit)
                             continue;
                         Intersection nextIntersection = road.getOtherIntersection(thisIntersection);
-                        //			System.out.println (" - next inter " +
+                        // System.out.println (" - next inter " +
                         // nextIntersection);
 
                         NodeInfo nextInfo = (NodeInfo) marks.get(nextIntersection);
                         if (nextInfo == null) {
                             LatLonPoint nextLoc = nextIntersection.getLocation();
-                            float crowsPathDistance = GreatCircle.sphericalDistance(toLat,
-                                    toLon,
-                                    nextLoc.getLatitude(),
-                                    nextLoc.getLongitude());
-                            float crowsPathHours = crowsPathDistance
-                                    / bestConvoySpeed;
+                            double crowsPathDistance = GreatCircle.sphericalDistance(toLat, toLon, nextLoc.getLatitude(), nextLoc.getLongitude());
+                            double crowsPathHours = crowsPathDistance / bestConvoySpeed;
                             nextInfo = new NodeInfo(nextIntersection, road, newTime, crowsPathHours);
                             marks.put(nextIntersection, nextInfo);
                             if (newTime + nextInfo.crowsPathHours > bestTime)
                                 continue;
                             newToDo.addElement(nextIntersection);
-                            //    System.out.println (" - best road for "
+                            // System.out.println (" - best road for "
                             // + nextIntersection + " is " + road);
                         } else if (nextInfo.time > newTime) {
                             if (!nextInfo.intersection.equals(nextIntersection)) {
-                                System.err.println("huh?  lookup of "
-                                        + nextIntersection
-                                        + " gets node info with inter "
-                                        + nextInfo.intersection);
+                                System.err.println("huh?  lookup of " + nextIntersection
+                                        + " gets node info with inter " + nextInfo.intersection);
                             }
                             nextInfo.time = newTime;
                             nextInfo.bestRoad = road;
-                            //System.out.println (" - (redo) best
+                            // System.out.println (" - (redo) best
                             // road for " + nextIntersection + " is "
                             // + road);
                             if (newTime + nextInfo.crowsPathHours > bestTime)
@@ -143,7 +131,7 @@ public class Route implements Cloneable, Serializable {
                             continue;
                         }
                         if (nextIntersection == to) {
-                            //System.err.println ("found end " + to);
+                            // System.err.println ("found end " + to);
                             bestTime = nextInfo.time;
                             haveRoute = true;
                         }
@@ -234,28 +222,28 @@ public class Route implements Cloneable, Serializable {
     }
 
     public long getTravelTime() {
-        float hours = 0.0f;
+        double hours = 0.0f;
         for (int i = 0; i < roads.length; i++) {
             Road road = roads[i];
-            float roadLength = road.getLengthInKilometers();
-            float convoySpeed = road.getRoadClass().getConvoySpeed();
-            float timeToTraverse = roadLength / convoySpeed;
+            double roadLength = road.getLengthInKilometers();
+            double convoySpeed = road.getRoadClass().getConvoySpeed();
+            double timeToTraverse = roadLength / convoySpeed;
             hours += timeToTraverse;
         }
         return (long) (hours * MSEC_PER_HOUR);
     }
 
     public LatLonPoint location(long time) {
-        float hours = time / MSEC_PER_HOUR;
+        double hours = time / MSEC_PER_HOUR;
         Intersection from = (startWithFirstIntersection ? roads[0].getFirstIntersection()
                 : roads[0].getSecondIntersection());
 
         for (int i = 0; i < roads.length; i++) {
             Road road = roads[i];
             boolean forward = road.getFirstIntersection() == from;
-            float roadLength = road.getLengthInKilometers();
-            float convoySpeed = road.getRoadClass().getConvoySpeed();
-            float timeToTraverse = roadLength / convoySpeed;
+            double roadLength = road.getLengthInKilometers();
+            double convoySpeed = road.getRoadClass().getConvoySpeed();
+            double timeToTraverse = roadLength / convoySpeed;
             if (timeToTraverse > hours) {
                 float fraction = (float) hours / (float) timeToTraverse;
                 if (!forward)

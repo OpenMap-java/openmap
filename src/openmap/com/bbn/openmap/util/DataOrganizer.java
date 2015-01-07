@@ -22,16 +22,15 @@
 
 package com.bbn.openmap.util;
 
-import java.util.Vector;
+import java.util.Collection;
 
 /**
- * The DataOrganizer lets you organize objects in a way that will let
- * you retrieve them based on a geographic query. It's an interface
- * that lets you decide, with an implementation, the best way to
- * manage and retrieve your data.
+ * The DataOrganizer lets you organize objects in a way that will let you
+ * retrieve them based on a geographic query. It's an interface that lets you
+ * decide, with an implementation, the best way to manage and retrieve your
+ * data.
  */
-
-public interface DataOrganizer {
+public interface DataOrganizer<T> {
 
     /**
      * Add a object into the organizer at a location.
@@ -40,7 +39,7 @@ public interface DataOrganizer {
      * @param lon left-right location (longitude, x)
      * @return true if the insertion worked.
      */
-    public boolean put(float lat, float lon, Object obj);
+    public boolean put(double lat, double lon, T obj);
 
     /**
      * Remove a object out of the organizer at a location.
@@ -49,7 +48,7 @@ public interface DataOrganizer {
      * @param lon left-right location (longitude, x)
      * @return the object removed, null if the object not found.
      */
-    public Object remove(float lat, float lon, Object obj);
+    public T remove(double lat, double lon, T obj);
 
     /** Clear the organizer. */
     public void clear();
@@ -61,7 +60,7 @@ public interface DataOrganizer {
      * @param lon left-right location in QuadTree Grid (longitude, x)
      * @return the object that is closest to the lat/lon.
      */
-    public Object get(float lat, float lon);
+    public T get(double lat, double lon);
 
     /**
      * Find an object closest to a lat/lon, within a given maximum.
@@ -69,10 +68,10 @@ public interface DataOrganizer {
      * @param lat up-down location in QuadTree Grid (latitude, y)
      * @param lon left-right location in QuadTree Grid (longitude, x)
      * @param withinDistance maximum distance to have a hit.
-     * @return the object that is closest to the lat/lon, within the
-     *         given distance.
+     * @return the object that is closest to the lat/lon, within the given
+     *         distance.
      */
-    public Object get(float lat, float lon, double withinDistance);
+    public T get(double lat, double lon, double withinDistance);
 
     /**
      * Find all the objects within a bounding box.
@@ -83,6 +82,6 @@ public interface DataOrganizer {
      * @param east right location in QuadTree Grid (longitude, x)
      * @return Vector of objects.
      */
-    public Vector get(float north, float west, float south, float east);
+    public Collection<T> get(double north, double west, double south, double east);
 
 }

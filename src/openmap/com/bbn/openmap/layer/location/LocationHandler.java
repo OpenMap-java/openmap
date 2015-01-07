@@ -44,8 +44,7 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
  * 
  * </pre>
  */
-public interface LocationHandler
-        extends PropertyConsumer {
+public interface LocationHandler extends PropertyConsumer {
 
     /**
      * A default button name used to trigger more information about a location
@@ -57,8 +56,6 @@ public interface LocationHandler
 
     /** Property setting to show name data on startup. (showNames) */
     public static final String ShowNamesProperty = "showNames";
-    /** Property to use to change the color for name data. (nameColor) */
-    public static final String NameColorProperty = "nameColor";
     /** The default line color for names. (FF339159) */
     public final static String defaultNameColorString = "FF339159"; // greenish
 
@@ -68,10 +65,6 @@ public interface LocationHandler
      * Property setting to show location splots on startup. (showLocations)
      */
     public static final String ShowLocationsProperty = "showLocations";
-    /**
-     * Property to use to set the color of the location splot. (locationColor)
-     */
-    public static final String LocationColorProperty = "locationColor";
     /** The default line color for locations. (FFCE4F3F) */
     public final static String defaultLocationColorString = "FFCE4F3F"; // reddish
     /** (showLocations) */
@@ -84,13 +77,13 @@ public interface LocationHandler
     public final static String readDataCommand = "readData";
 
     /**
-     * Property prefix to use to scope properties to be used for name markers.
-     * (name)
+     * Property prefix to use to scope properties to be used for name markers,
+     * including rendering properties. (name)
      */
     public final static String NamePropertyPrefix = "name";
     /**
      * Property prefix to use to scope properties to be used for location
-     * markers. (location)
+     * markers, including rendering properties. (location)
      */
     public final static String LocationPropertyPrefix = "location";
 
@@ -103,9 +96,11 @@ public interface LocationHandler
      * @param seLon SouthEast longitude of area of interest.
      * @param graphicList Vector to add Locations to. If null, the
      *        LocationHandler should create a new Vector to place graphics into.
-     * @return Either the OMGraphicList passed in, or the new one that was created if null.
+     * @return Either the OMGraphicList passed in, or the new one that was
+     *         created if null.
      */
-    public OMGraphicList get(float nwLat, float nwLon, float seLat, float seLon, OMGraphicList graphicList);
+    public OMGraphicList get(double nwLat, double nwLon, double seLat, double seLon,
+                             OMGraphicList graphicList);
 
     /**
      * A trigger function to tell the handler that new data is available.
@@ -182,5 +177,20 @@ public interface LocationHandler
      * @param cont Container being removed from.
      */
     public void removed(java.awt.Container cont);
+
+    /**
+     * Set the name used in the GUI to represent this data set.
+     * 
+     * @param prettyName A GUI pretty name.
+     */
+    public void setPrettyName(String prettyName);
+
+    /**
+     * Get the GUI pretty name for the data set retrieved by this
+     * LocationHandler.
+     * 
+     * @return
+     */
+    public String getPrettyName();
 
 }

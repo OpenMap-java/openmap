@@ -41,8 +41,7 @@ import com.bbn.openmap.omGraphics.OMLine;
  * name for the link that well. The name will appear as the first node's marker
  * name, although it should declutter if needed.
  */
-public class Link
-        extends Location {
+public class Link extends Location {
 
     /*
      * The other endpoints of the link, in decimal degrees. The first endpoints
@@ -85,17 +84,12 @@ public class Link
      * @param lat2 latitude of end-point
      * @param lon2 longitude of endpoint
      * @param details A string that gives information about this link
-     * @param paint the link's displayed edge java.awt.Paint (Color).
-     * @param dashed Is it a dashed line?
-     * @param thickness The line thickness.
-     * @param linetype LINETYPE_STRAIGHT, LINETYPE_GREATCIRCLE, LINETYPE_RHUMB
      */
-    public Link(double lat1, double lon1, double lat2, double lon2, String details, Paint paint, boolean dashed, float thickness,
-                int linetype) {
+    public Link(double lat1, double lon1, double lat2, double lon2, String details) {
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("Link(" + lat1 + ", " + lon1 + ", " + lat2 + ", " + lon2 + ", " + details + ", " + paint + ", " + dashed
-                    + ", " + thickness + ", " + linetype + ")");
+            logger.fine("Link(" + lat1 + ", " + lon1 + ", " + lat2 + ", " + lon2 + ", " + details
+                    + ")");
         }
 
         this.lat = lat1;
@@ -109,8 +103,7 @@ public class Link
             this.details = "";
         }
 
-        OMLine link = new OMLine(lat1, lon1, lat2, lon2, linetype);
-        setLinkDrawingParameters(link, paint, thickness, dashed);
+        OMLine link = new OMLine(lat1, lon1, lat2, lon2, OMGraphic.LINETYPE_GREATCIRCLE);
         setLocationMarker(link);
     }
 
@@ -122,11 +115,8 @@ public class Link
      * @param x2 End x point of Link
      * @param y2 End y point of Link
      * @param details A string that gives information about this link
-     * @param paint the link's displayed edge java.awt.Paint (Color).
-     * @param dashed Is it a dashed line?
-     * @param thickness The line thickness.
      */
-    public Link(int x1, int y1, int x2, int y2, String details, Paint paint, boolean dashed, float thickness) {
+    public Link(int x1, int y1, int x2, int y2, String details) {
 
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("Link(" + x1 + ", " + y1 + ", " + x2 + ", " + y2 + ")");
@@ -144,33 +134,7 @@ public class Link
         }
 
         OMLine link = new OMLine(x1, y1, x2, y2);
-        setLinkDrawingParameters(link, paint, thickness, dashed);
         setLocationMarker(link);
-    }
-
-    /**
-     * Set the drawing attributes of the link
-     * 
-     * @param link the line used for the link
-     * @param paint the line color
-     * @param thickness the thickness of the line
-     * @param dashed true if the line should be dashed
-     */
-    public void setLinkDrawingParameters(OMLine link, Paint paint, float thickness, boolean dashed) {
-        Stroke stroke;
-        if (dashed) {
-            // create a basic default dash
-            float[] dash = {
-                8.0f,
-                8.0f
-            };
-            stroke = new BasicStroke(thickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
-        } else {
-            stroke = new BasicStroke(thickness);
-        }
-
-        link.setStroke(stroke);
-        link.setLinePaint(paint);
     }
 
     /**
@@ -189,12 +153,7 @@ public class Link
         this.lon2 = lon2;
 
         OMLine line = (OMLine) getLocationMarker();
-        double[] locs = {
-            lat1,
-            lon1,
-            lat2,
-            lon2
-        };
+        double[] locs = { lat1, lon1, lat2, lon2 };
         line.setLL(locs);
     }
 
@@ -218,9 +177,11 @@ public class Link
         xy[1] = this.y = y1;
         xy[2] = this.x2 = x2;
         xy[3] = this.y2 = y2;
-        OMLine link = getLink();
-        link.setPts(xy);
-        link.setRenderType(RENDERTYPE_XY);
+        OMLine link = (OMLine) getLocationMarker();
+        if (link instanceof OMLine) {
+            ((OMLine) link).setPts(xy);
+            ((OMLine) link).setRenderType(RENDERTYPE_XY);
+        }
     }
 
     /** Does nothing - marker handled in setLocation methods. */
@@ -233,25 +194,5 @@ public class Link
 
     /** Does nothing - marker handled in setLocation methods. */
     public void setGraphicLocations(double latitude, double longitude, int offsetX, int offsetY) {
-    }
-
-    public void setLinkColor(Paint linkPaint) {
-        // location is actually the link graphic. getLink() does the
-        // proper casting.
-        if (location != null) {
-            getLink().setLinePaint(linkPaint);
-        }
-    }
-
-    public void setShowLink(boolean showLinks) {
-        showLocation = showLinks;
-    }
-
-    public boolean isShowLink() {
-        return showLocation;
-    }
-
-    public OMLine getLink() {
-        return (OMLine) getLocationMarker();
     }
 }

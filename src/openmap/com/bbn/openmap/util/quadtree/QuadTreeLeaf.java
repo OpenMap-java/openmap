@@ -26,15 +26,15 @@ package com.bbn.openmap.util.quadtree;
 
 import java.io.Serializable;
 
-public class QuadTreeLeaf implements Serializable {
+public class QuadTreeLeaf<T> implements Serializable {
 
     static final long serialVersionUID = 7885745536157252519L;
 
-    public float latitude;
-    public float longitude;
-    public Object object;
+    public double latitude;
+    public double longitude;
+    public T object;
 
-    public QuadTreeLeaf(float lat, float lon, Object obj) {
+    public QuadTreeLeaf(double lat, double lon, T obj) {
         latitude = lat;
         longitude = lon;
         object = obj;

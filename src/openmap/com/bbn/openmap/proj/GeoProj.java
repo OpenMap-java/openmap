@@ -332,8 +332,8 @@ public abstract class GeoProj extends Proj {
      *        <code>-180 &lt;= Az &lt;= 180</code>
      * @param c arc distance in decimal degrees
      */
-    public void pan(float Az, float c) {
-        setCenter(GreatCircle.sphericalBetween(centerY, centerX, ProjMath.degToRad(c), ProjMath.degToRad(Az)));
+    public void pan(double Az, double c) {
+        setCenter(RhumbCalculator.calculatePointOnRhumbLine(getCenter(), Math.toRadians(Az), Math.toRadians(c)));
     }
 
     /**
@@ -343,13 +343,13 @@ public abstract class GeoProj extends Proj {
      * @param Az azimuth "east of north" in decimal degrees:
      *        <code>-180 &lt;= Az &lt;= 180</code>
      */
-    public void pan(float Az) {
+    public void pan(double Az) {
         double angle = Math.toRadians(90 - Az);
         int w2 = getWidth() / 2;
         int h2 = getHeight() / 2;
         LatLonPoint newLoc = inverse(w2 + (w2 * Math.cos(angle)), h2 + (h2 * Math.sin(angle)));
-        double dist = GreatCircle.sphericalDistance(centerY, centerX, newLoc.getRadLat(), newLoc.getRadLon());
-        pan(Az, (float) Math.toDegrees(dist));
+        double dist = RhumbCalculator.getDistanceBetweenPoints(getCenter(), newLoc);
+        pan(Az, Math.toDegrees(dist));
     }
 
     /**

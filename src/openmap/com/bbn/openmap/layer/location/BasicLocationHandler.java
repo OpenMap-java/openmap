@@ -27,62 +27,58 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 
 import com.bbn.openmap.omGraphics.OMGraphicList;
 
 /**
  * A basic location handler, that just returns simple testing locations.
  */
-public class BasicLocationHandler
-        implements LocationHandler, ActionListener {
-    /** The parent layer. */
-    protected LocationLayer layer;
-    /** PropertyConsumer property prefix. */
-    protected String propertyPrefix = null;
+public class BasicLocationHandler extends AbstractLocationHandler {
+
+    protected final OMGraphicList graphicList = new OMGraphicList();
 
     /**
      * The default constructor for the Layer. All of the attributes are set to
      * their default values.
      */
     public BasicLocationHandler() {
-    }
-
-    /** Set the layer this handler is serving. */
-    public void setLayer(LocationLayer l) {
-        layer = l;
-    }
-
-    /** Get the layer the handler is serving. */
-    public LocationLayer getLayer() {
-        return layer;
+        reloadData();
     }
 
     public void reloadData() {
-    }
+        Color[] colors = new Color[8];
+        colors[0] = Color.red;
+        colors[1] = Color.green;
+        colors[2] = Color.yellow;
+        colors[3] = Color.blue;
+        colors[4] = Color.black;
+        colors[5] = Color.white;
+        colors[6] = Color.orange;
+        colors[7] = Color.pink;
 
-    public boolean isShowNames() {
-        return true;
-    }
+        graphicList.clear();
 
-    public void setShowNames(boolean set) {
-    }
+        for (int i = 0; i < 10; i++) {
+            // Sprinkle some randomness in the values
+            double ran = Math.random() * 10;
+            boolean dir = Math.random() > .5;
+            if (!dir) {
+                ran *= -1;
+            }
 
-    public boolean isShowLocations() {
-        return true;
-    }
-
-    public void setShowLocations(boolean set) {
-    }
-
-    public boolean isForceGlobal() {
-        return true;
-    }
-
-    public void setForceGlobal(boolean set) {
+            Location location = new BasicLocation(42f + ran, -72f + ran, "testing" + i, null);
+            location.setLocationHandler(this);
+            location.getLabel().setLinePaint(colors[i % 8]);
+            // location.getLabel().setShowBounds(true);
+            location.setShowName(true);
+            location.setShowLocation(true);
+            graphicList.add(location);
+        }
     }
 
     /**
@@ -92,158 +88,79 @@ public class BasicLocationHandler
     public void removed(java.awt.Container cont) {
     }
 
-    protected Color[] colors = null;
-
-    public OMGraphicList get(float nwLat, float nwLon, float seLat, float seLon, OMGraphicList graphicList) {
-
-        if (colors == null) {
-            colors = new Color[8];
-            colors[0] = Color.red;
-            colors[1] = Color.green;
-            colors[2] = Color.yellow;
-            colors[3] = Color.blue;
-            colors[4] = Color.black;
-            colors[5] = Color.white;
-            colors[6] = Color.orange;
-            colors[7] = Color.pink;
-        }
-
-        for (int i = 0; i < 10; i++) {
-            Location location = new BasicLocation(42f, -72f, "testing" + i, null);
-            location.setLocationHandler(this);
-            location.getLabel().setLinePaint(colors[i % 8]);
-            // location.getLabel().setShowBounds(true);
-            location.setShowName(true);
-            location.setShowLocation(true);
-            graphicList.add(location);
-        }
-
+    public OMGraphicList get(double nwLat, double nwLon, double seLat, double seLon,
+                             OMGraphicList graphicList) {
+        graphicList.addAll(this.graphicList);
         return graphicList;
     }
 
-    public List<Component> getItemsForPopupMenu(Location loc) {
-        return null;
-    }
+    protected Box box = null;
 
     /**
      * Provides the palette widgets to control the options of showing maps, or
-     * attribute text.  Here for override reasons.
+     * attribute text.
      * 
-     * @return null for this class.
+     * @return Component object representing the palette widgets.
      */
-    public java.awt.Component getGUI() {
-        return null;
-    }
+    public Component getGUI() {
+        if (box == null) {
+            JCheckBox showLocationCheck, showNameCheck;
+            JButton rereadFilesButton;
 
-    // ----------------------------------------------------------------------
-    // ActionListener interface implementation
-    // ----------------------------------------------------------------------
+            showLocationCheck = new JCheckBox("Show Locations", isShowLocations());
+            showLocationCheck.setActionCommand(showLocationsCommand);
+            showLocationCheck.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    JCheckBox locationCheck = (JCheckBox) ae.getSource();
+                    setShowLocations(locationCheck.isSelected());
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("CSVLocationHandler::actionPerformed showLocations is "
+                                + isShowLocations());
+                    }
+                    getLayer().repaint();
+                }
+            });
+            showLocationCheck.setToolTipText("<HTML><BODY>Show location markers on the map.</BODY></HTML>");
 
-    /**
-     * The Action Listener method, that reacts to the palette widgets actions.
-     */
-    public void actionPerformed(ActionEvent e) {
-    }
+            showNameCheck = new JCheckBox("Show Location Names", isShowNames());
+            showNameCheck.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    JCheckBox namesCheck = (JCheckBox) ae.getSource();
+                    setShowNames(namesCheck.isSelected());
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("CSVLocationHandler::actionPerformed showNames is "
+                                + isShowNames());
+                    }
 
-    // ----------------------------------------------------------------------
-    // PropertyConsumer interface implementation
-    // ----------------------------------------------------------------------
+                    LocationLayer ll = getLayer();
+                    if (namesCheck.isSelected() && ll.getDeclutterMatrix() != null
+                            && ll.getUseDeclutterMatrix()) {
+                        ll.doPrepare();
+                    } else {
+                        ll.repaint();
+                    }
+                }
+            });
+            showNameCheck.setToolTipText("<HTML><BODY>Show location names on the map.</BODY></HTML>");
 
-    /**
-     * Sets the properties for the handler. This particular method assumes that
-     * the marker name is not needed, because all of the contents of this
-     * Properties object are to be used for this object, and scoping the
-     * properties with a prefix is unnecessary.
-     * 
-     * @param props the <code>Properties</code> object.
-     */
-    public void setProperties(Properties props) {
-        setProperties(null, props);
-    }
+            rereadFilesButton = new JButton("Reload Data From Source");
+            rereadFilesButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("Re-reading Locations file");
+                    }
+                    reloadData();
+                    getLayer().doPrepare();
+                }
+            });
+            rereadFilesButton.setToolTipText("<HTML><BODY>Reload the data file, and put these settings<br>on the individual map objects.</BODY></HTML>");
 
-    /**
-     * Set up the properties of the handler. Part of the PropertyConsumer
-     * interface.
-     * 
-     * Supported properties include:
-     * <UL>
-     * <LI>locationColor - number of seconds between attempts to retrieve
-     * Features data
-     * <LI>featuresSvcURL - URL to invoke to retrieve the XML Features document.
-     * </UL>
-     */
-    public void setProperties(String prefix, Properties properties) {
-        setPropertyPrefix(prefix);
-    }
-
-    /**
-     * PropertyConsumer method, to fill in a Properties object, reflecting the
-     * current values of the layer. If the layer has a propertyPrefix set, the
-     * property keys should have that prefix plus a separating '.' prepended to
-     * each property key it uses for configuration. This method takes care of
-     * the basic LocationHandler parameters, so any LocationHandlers that extend
-     * the AbstractLocationHandler should call this method, too, before adding
-     * any specific properties.
-     * 
-     * @param props a Properties object to load the PropertyConsumer properties
-     *        into. If props equals null, then a new Properties object should be
-     *        created.
-     * @return Properties object containing PropertyConsumer property values. If
-     *         getList was not null, this should equal getList. Otherwise, it
-     *         should be the Properties object created by the PropertyConsumer.
-     */
-    public Properties getProperties(Properties props) {
-        if (props == null) {
-            props = new Properties();
+            box = Box.createVerticalBox();
+            box.add(showLocationCheck);
+            box.add(showNameCheck);
+            box.add(rereadFilesButton);
         }
-        return props;
-    }
-
-    /**
-     * Method to fill in a Properties object with values reflecting the
-     * properties able to be set on this PropertyConsumer. The key for each
-     * property should be the raw property name (without a prefix) with a value
-     * that is a String that describes what the property key represents, along
-     * with any other information about the property that would be helpful
-     * (range, default value, etc.). This method takes care of the basic
-     * LocationHandler parameters, so any LocationHandlers that extend the
-     * AbstractLocationHandler should call this method, too, before adding any
-     * specific properties.
-     * 
-     * @param list a Properties object to load the PropertyConsumer properties
-     *        into. If getList equals null, then a new Properties object should
-     *        be created.
-     * @return Properties object containing PropertyConsumer property values. If
-     *         getList was not null, this should equal getList. Otherwise, it
-     *         should be the Properties object created by the PropertyConsumer.
-     */
-    public Properties getPropertyInfo(Properties list) {
-        if (list == null) {
-            list = new Properties();
-        }
-
-        return list;
-    }
-
-    /**
-     * Set the property key prefix that should be used by the PropertyConsumer.
-     * The prefix, along with a '.', should be prepended to the property keys
-     * known by the PropertyConsumer.
-     * 
-     * @param prefix the prefix String.
-     */
-    public void setPropertyPrefix(String prefix) {
-        propertyPrefix = prefix;
-    }
-
-    /**
-     * Get the property key prefix that is being used to prepend to the property
-     * keys for Properties lookups.
-     * 
-     * @return thre property prefix
-     */
-    public String getPropertyPrefix() {
-        return propertyPrefix;
+        return box;
     }
 
 }

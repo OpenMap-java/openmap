@@ -321,7 +321,7 @@ public class Cartesian extends Proj implements Projection, java.io.Serializable 
      * @param Az direction, 0 is north, positive is clockwise.
      * @param c number of world coordinates to pan.
      */
-    public void pan(float Az, float c) {
+    public void pan(double Az, double c) {
         double currentX = centerX;
         double currentY = centerY;
 
@@ -334,8 +334,8 @@ public class Cartesian extends Proj implements Projection, java.io.Serializable 
     /**
      * Pan half a view.
      */
-    public void pan(float Az) {
-        pan(Az, (float) (getUpperLeft().distance(getLowerRight()) / 4.0));
+    public void pan(double Az) {
+        pan(Az, (getUpperLeft().distance(getLowerRight()) / 4.0));
     }
 
     /**

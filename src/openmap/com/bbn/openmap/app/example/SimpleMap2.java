@@ -44,6 +44,8 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 
 /**
  * This is a simple application that uses the OpenMap MapBean to show a map.
+ * This is the model you should follow if you are starting to use OpenMap and
+ * want to create your own application. Use the MapHandler! Use a MapPanel!
  * <p>
  * This example shows:
  * <ul>
@@ -117,8 +119,8 @@ public class SimpleMap2 {
              * Create a ShapeLayer to show world political boundaries. Set the
              * properties of the layer. This assumes that the datafile
              * "cntry02.shp" is in a path specified in the CLASSPATH variable.
-             * These files are distributed with OpenMap and reside in the
-             * top level "share" sub-directory.
+             * These files are distributed with OpenMap and reside in the top
+             * level "share" sub-directory.
              */
             ShapeLayer shapeLayer = new BufferedShapeLayer();
 
@@ -138,7 +140,7 @@ public class SimpleMap2 {
             mapHandler.add(new GraticuleLayer());
 
             mapHandler.add(new BasicLayer());
-            
+
         } catch (MultipleSoloMapComponentException msmce) {
             // The MapHandler is only allowed to have one of certain
             // items. These items implement the SoloMapComponent

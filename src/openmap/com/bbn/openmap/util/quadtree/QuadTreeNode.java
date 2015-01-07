@@ -23,6 +23,8 @@
 package com.bbn.openmap.util.quadtree;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -35,29 +37,25 @@ import com.bbn.openmap.MoreMath;
  * handle point data.
  */
 
-public class QuadTreeNode implements Serializable {
+public class QuadTreeNode<T> implements Serializable {
 
     static final long serialVersionUID = -6111633198469889444L;
 
-    public final static int NORTHWEST = 0;
-    public final static int NORTHEAST = 1;
-    public final static int SOUTHEAST = 2;
-    public final static int SOUTHWEST = 3;
     public final static float NO_MIN_SIZE = -1;
     public final static float DEFAULT_MIN_SIZE = 5;
 
-    protected Vector<QuadTreeLeaf> items;
-    protected QuadTreeNode[] children;
+    protected Collection<QuadTreeLeaf<T>> items;
+    protected Collection<QuadTreeNode<T>> children;
     protected int maxItems;
-    protected float minSize;
+    protected double minSize;
     public QuadTreeRect bounds;
     /**
      * Added to avoid problems when a node is completely filled with a single
      * point value.
      */
     protected boolean allTheSamePoint;
-    protected float firstLat;
-    protected float firstLon;
+    protected double firstLat;
+    protected double firstLon;
 
     /**
      * Constructor to use if you are going to store the objects in lat/lon
@@ -70,7 +68,7 @@ public class QuadTreeNode implements Serializable {
      * @param maximumItems number of items to hold in a node before splitting
      *        itself into four children and redispensing the items into them.
      */
-    public QuadTreeNode(float north, float west, float south, float east, int maximumItems) {
+    public QuadTreeNode(double north, double west, double south, double east, int maximumItems) {
         this(north, west, south, east, maximumItems, NO_MIN_SIZE);
     }
 
@@ -88,12 +86,12 @@ public class QuadTreeNode implements Serializable {
      * @param minimumSize the minimum difference between the boundaries of the
      *        node.
      */
-    public QuadTreeNode(float north, float west, float south, float east, int maximumItems,
-            float minimumSize) {
+    public QuadTreeNode(double north, double west, double south, double east, int maximumItems,
+            double minimumSize) {
         bounds = new QuadTreeRect(north, west, south, east);
         maxItems = maximumItems;
         minSize = minimumSize;
-        items = new Vector<QuadTreeLeaf>();
+        items = new ArrayList<QuadTreeLeaf<T>>();
     }
 
     /** Return true if the node has children. */
@@ -115,21 +113,20 @@ public class QuadTreeNode implements Serializable {
                 return;
         }
 
-        float nsHalf = (float) (bounds.north - (bounds.north - bounds.south) / 2.0);
-        float ewHalf = (float) (bounds.east - (bounds.east - bounds.west) / 2.0);
-        children = new QuadTreeNode[4];
+        double nsHalf = (bounds.north - (bounds.north - bounds.south) / 2.0);
+        double ewHalf = (bounds.east - (bounds.east - bounds.west) / 2.0);
+        children = new ArrayList<QuadTreeNode<T>>(4);
 
-        children[NORTHWEST] = new QuadTreeNode(bounds.north, bounds.west, nsHalf, ewHalf, maxItems);
-        children[NORTHEAST] = new QuadTreeNode(bounds.north, ewHalf, nsHalf, bounds.east, maxItems);
-        children[SOUTHEAST] = new QuadTreeNode(nsHalf, ewHalf, bounds.south, bounds.east, maxItems);
-        children[SOUTHWEST] = new QuadTreeNode(nsHalf, bounds.west, bounds.south, ewHalf, maxItems);
-        Vector<QuadTreeLeaf> temp = (Vector<QuadTreeLeaf>) items.clone();
-        items.removeAllElements();
-        Enumeration<QuadTreeLeaf> things = temp.elements();
-        while (things.hasMoreElements()) {
-            put(things.nextElement());
+        children.add(new QuadTreeNode<T>(bounds.north, bounds.west, nsHalf, ewHalf, maxItems));
+        children.add(new QuadTreeNode<T>(bounds.north, ewHalf, nsHalf, bounds.east, maxItems));
+        children.add(new QuadTreeNode<T>(nsHalf, ewHalf, bounds.south, bounds.east, maxItems));
+        children.add(new QuadTreeNode<T>(nsHalf, bounds.west, bounds.south, ewHalf, maxItems));
+        Collection<QuadTreeLeaf> temp = new ArrayList<QuadTreeLeaf>(items);
+        items.clear();
+
+        for (QuadTreeLeaf leaf : temp) {
+            put(leaf);
         }
-        // items.removeAllElements();
     }
 
     /**
@@ -140,15 +137,16 @@ public class QuadTreeNode implements Serializable {
      * @return node if child covers the point, null if the point is out of
      *         range.
      */
-    protected QuadTreeNode getChild(float lat, float lon) {
+    protected QuadTreeNode<T> getChild(double lat, double lon) {
         if (bounds.pointWithinBounds(lat, lon)) {
             if (children != null) {
-                for (QuadTreeNode child : children) {
+                for (QuadTreeNode<T> child : children) {
                     if (child.bounds.pointWithinBounds(lat, lon))
                         return child.getChild(lat, lon);
                 }
-            } else
+            } else {
                 return this; // no children, lat, lon here...
+            }
         }
         return null;
     }
@@ -159,10 +157,10 @@ public class QuadTreeNode implements Serializable {
      * @param lat up-down location in QuadTree Grid (latitude, y)
      * @param lon left-right location in QuadTree Grid (longitude, x)
      * @param obj object to add to the tree.
-     * @return true if the pution worked.
+     * @return true if the put worked.
      */
-    public boolean put(float lat, float lon, Object obj) {
-        return put(new QuadTreeLeaf(lat, lon, obj));
+    public boolean put(double lat, double lon, T obj) {
+        return put(new QuadTreeLeaf<T>(lat, lon, obj));
     }
 
     /**
@@ -171,9 +169,9 @@ public class QuadTreeNode implements Serializable {
      * @param leaf object-location composite
      * @return true if the pution worked.
      */
-    public boolean put(QuadTreeLeaf leaf) {
+    public boolean put(QuadTreeLeaf<T> leaf) {
         if (children == null) {
-            this.items.addElement(leaf);
+            this.items.add(leaf);
             if (this.items.size() == 1) {
                 this.allTheSamePoint = true;
                 this.firstLat = leaf.latitude;
@@ -184,11 +182,12 @@ public class QuadTreeNode implements Serializable {
                 }
             }
 
-            if (this.items.size() > maxItems && !this.allTheSamePoint)
+            if (this.items.size() > maxItems && !this.allTheSamePoint) {
                 split();
+            }
             return true;
         } else {
-            QuadTreeNode node = getChild(leaf.latitude, leaf.longitude);
+            QuadTreeNode<T> node = getChild(leaf.latitude, leaf.longitude);
             if (node != null) {
                 return node.put(leaf);
             }
@@ -201,10 +200,11 @@ public class QuadTreeNode implements Serializable {
      * 
      * @param lat up-down location in QuadTree Grid (latitude, y)
      * @param lon left-right location in QuadTree Grid (longitude, x)
+     * @param obj the object to be removed.
      * @return the object removed, null if the object not found.
      */
-    public Object remove(float lat, float lon, Object obj) {
-        return remove(new QuadTreeLeaf(lat, lon, obj));
+    public T remove(double lat, double lon, T obj) {
+        return remove(new QuadTreeLeaf<T>(lat, lon, obj));
     }
 
     /**
@@ -213,18 +213,17 @@ public class QuadTreeNode implements Serializable {
      * @param leaf object-location composite
      * @return the object removed, null if the object not found.
      */
-    public Object remove(QuadTreeLeaf leaf) {
+    public T remove(QuadTreeLeaf<T> leaf) {
         if (children == null) {
             // This must be the node that has it...
-            for (int i = 0; i < items.size(); i++) {
-                QuadTreeLeaf qtl = (QuadTreeLeaf) items.elementAt(i);
+            for (QuadTreeLeaf<T> qtl : new ArrayList<QuadTreeLeaf<T>>(items)) {
                 if (leaf.object == qtl.object) {
-                    items.removeElementAt(i);
+                    items.remove(qtl);
                     return qtl.object;
                 }
             }
         } else {
-            QuadTreeNode node = getChild(leaf.latitude, leaf.longitude);
+            QuadTreeNode<T> node = getChild(leaf.latitude, leaf.longitude);
             if (node != null) {
                 return node.remove(leaf);
             }
@@ -234,7 +233,7 @@ public class QuadTreeNode implements Serializable {
 
     /** Clear the tree below this node. */
     public void clear() {
-        this.items.removeAllElements();
+        this.items.clear();
         if (children != null) {
             for (QuadTreeNode child : children) {
                 child.clear();
@@ -251,7 +250,7 @@ public class QuadTreeNode implements Serializable {
      * @return the object that matches the best distance, null if no object was
      *         found.
      */
-    public Object get(float lat, float lon) {
+    public T get(double lat, double lon) {
         return get(lat, lon, Double.POSITIVE_INFINITY);
     }
 
@@ -268,7 +267,7 @@ public class QuadTreeNode implements Serializable {
      * @return the object that matches the best distance, null if no closer
      *         object was found.
      */
-    public Object get(float lat, float lon, double withinDistance) {
+    public T get(double lat, double lon, double withinDistance) {
         return get(lat, lon, new MutableDistance(withinDistance));
     }
 
@@ -285,11 +284,11 @@ public class QuadTreeNode implements Serializable {
      * @return the object that matches the best distance, null if no closer
      *         object was found.
      */
-    public Object get(double lat, double lon, MutableDistance bestDistance) {
-        Object closest = null;
-        if (children == null) // This must be the node that has it...
-        {
-            for (QuadTreeLeaf qtl : items) {
+    public T get(double lat, double lon, MutableDistance bestDistance) {
+        T closest = null;
+        // This must be the node that has it...
+        if (children == null) {
+            for (QuadTreeLeaf<T> qtl : items) {
                 double dx = lon - qtl.longitude;
                 double dy = lat - qtl.latitude;
                 double distanceSqr = dx * dx + dy * dy;
@@ -305,10 +304,10 @@ public class QuadTreeNode implements Serializable {
             // versus the bestDistance. If there is a boundary that
             // is closer, then it is possible that another node has an
             // object that is closer.
-            for (QuadTreeNode child : children) {
+            for (QuadTreeNode<T> child : children) {
                 double childDistance = child.bounds.borderDistanceSqr(lat, lon);
                 if (childDistance < bestDistance.value) {
-                    Object test = child.get(lat, lon, bestDistance);
+                    T test = child.get(lat, lon, bestDistance);
                     if (test != null)
                         closest = test;
                 }
@@ -324,10 +323,10 @@ public class QuadTreeNode implements Serializable {
      * @param west left location in QuadTree Grid (longitude, x)
      * @param south lower location in QuadTree Grid (latitude, y)
      * @param east right location in QuadTree Grid (longitude, x)
-     * @return Vector of objects.
+     * @return Collection of objects.
      */
-    public Vector<?> get(float north, float west, float south, float east) {
-        return get(new QuadTreeRect(north, west, south, east), new Vector<Object>());
+    public Collection<T> get(double north, double west, double south, double east) {
+        return get(new QuadTreeRect(north, west, south, east), new ArrayList<T>());
     }
 
     /**
@@ -337,34 +336,35 @@ public class QuadTreeNode implements Serializable {
      * @param west left location in QuadTree Grid (longitude, x)
      * @param south lower location in QuadTree Grid (latitude, y)
      * @param east right location in QuadTree Grid (longitude, x)
-     * @param vector current vector of objects.
-     * @return Vector of objects.
+     * @param collection current Collection of objects.
+     * @return collection of objects.
      */
-    public Vector get(float north, float west, float south, float east, Vector vector) {
-        return get(new QuadTreeRect(north, west, south, east), vector);
+    public Collection<T> get(double north, double west, double south, double east,
+                             Collection<T> collection) {
+        return get(new QuadTreeRect(north, west, south, east), collection);
     }
 
     /**
      * Get all the objects within a bounding box.
      * 
      * @param rect boundary of area to fill.
-     * @param vector current vector of objects.
-     * @return updated Vector of objects.
+     * @param collection current Collection of objects.
+     * @return updated Collection of objects.
      */
-    public Vector get(QuadTreeRect rect, Vector vector) {
+    public Collection<T> get(QuadTreeRect rect, Collection<T> collection) {
         if (children == null) {
-            for (QuadTreeLeaf qtl : this.items) {
+            for (QuadTreeLeaf<T> qtl : this.items) {
                 if (rect.pointWithinBounds(qtl.latitude, qtl.longitude)) {
-                    vector.add(qtl.object);
+                    collection.add(qtl.object);
                 }
             }
         } else {
-            for (QuadTreeNode child : children) {
+            for (QuadTreeNode<T> child : children) {
                 if (child.bounds.within(rect)) {
-                    child.get(rect, vector);
+                    child.get(rect, collection);
                 }
             }
         }
-        return vector;
+        return collection;
     }
 }

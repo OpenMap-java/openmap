@@ -25,6 +25,9 @@ package com.bbn.openmap.layer.location.csv;
 /*  Java Core  */
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -33,16 +36,21 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 
 import com.bbn.openmap.layer.location.Link;
+import com.bbn.openmap.layer.location.Location;
+import com.bbn.openmap.layer.location.URLRasterLocation;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.DataOrganizer;
 import com.bbn.openmap.util.PropUtils;
+import com.bbn.openmap.util.quadtree.QuadTree;
 
 /**
  * The CSVLinkHandler is designed to let you put data on the map based on
  * information from a Comma Separated Value(CSV) file. It's assumed that the
  * each row in the file refers to two locations, and that a link is to be shown
- * between the two locations.
+ * between the two locations. It has the same basic properties as the
+ * CSVLocationHandler, with allowances for extra lat/lon per record to handle
+ * the other side of the link/line.
  * 
  * <P>
  * The individual fields must not have leading whitespace.
@@ -52,8 +60,8 @@ import com.bbn.openmap.util.PropUtils;
  * can take the form of file:/myfile.csv for a local file or
  * http://somehost.org/myfile.csv for a remote file
  * 
- * If there is a lat1/lon1 index, and a lat2/lon2 index, then the links'
- * endpoints are in the link file.
+ * If there is a lat/lon index, and a lat2/lon2 index, then the links' endpoints
+ * are in the link file.
  * <P>
  * 
  * The Link CSV file has to have certain fields, and the column number of those
@@ -61,16 +69,13 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * <pre>
  * 
- *          # latitude and longitude indexes of the link end points
- *          linkMarkerName.lat1Index=column_number
- *          linkMarkerName.lon1Index=column_number
+ *          # latitude and longitude indexes of the link end points.  The first two are the same as CSVLocationHandler.
+ *          linkMarkerName.latIndex=column_number
+ *          linkMarkerName.lonIndex=column_number
  *          linkMarkerName.lat2Index=column_number
  *          linkMarkerName.lon2Index=column_number
- *          # These are optional
- *          linkMarkerName.dashIndex=column_number for true/false (false is default)
- *          linkMarkerName.colorIndex=column_number for color notation
- *          linkMarkerName.thicknessIndex=column_number for pixel thickness of link
- *          linkMarkerName.geoStyleIndex=column_number for link rendertype (STRAIGHT, GC, RHUMB)
+ *          
+ *          #plus all the other optional properties. The marker parameters will work on the link OMGraphics.
  * 
  * </pre>
  * 
@@ -80,22 +85,11 @@ import com.bbn.openmap.util.PropUtils;
  * appear. Right now, one of the endpoints of the line has to be in the map
  * window in order for the link to be displayed, and that's not quite right.
  */
-public class CSVLinkHandler
-        extends CSVLocationHandler {
+public class CSVLinkHandler extends CSVLocationHandler {
 
     // //////////////////////
     // Link Variables
 
-    /**
-     * Property to use to designate the column of the link file to use as the
-     * latitude of end "1".
-     */
-    public static final String Lat1IndexProperty = "lat1Index";
-    /**
-     * Property to use to designate the column of the link file to use as the
-     * longitude of end "1".
-     */
-    public static final String Lon1IndexProperty = "lon1Index";
     /**
      * Property to use to designate the column of the link file to use as the
      * latitude of end "2".
@@ -106,40 +100,12 @@ public class CSVLinkHandler
      * longitude of end "2".
      */
     public static final String Lon2IndexProperty = "lon2Index";
-    /** Not used. */
-    public static final String LinkTypeIndexProperty = "linkTypeIndex";
-    /**
-     * Index in file for True/false property to indicate link should be dashed
-     * line.
-     */
-    public static final String DashIndexProperty = "dashIndex";
-    public static final String ColorIndexProperty = "colorIndex";
-    public static final String ThicknessIndexProperty = "thicknessIndex";
-    /**
-     * Index in CSV file for rendertype of link - STRAIGHT, GC, RHUMB
-     */
-    public static final String GeoStyleIndexProperty = "geoStyleIndex";
 
     /** The names of the various link types on the map. Not used. */
-    // public static final String LinkTypesProperty = "linkTypes";
-    /** Index of column in CSV to use as latitude1 of link. */
-    protected int lat1Index = -1;
-    /** Index of column in CSV to use as longitude1 of link. */
-    protected int lon1Index = -1;
     /** Index of column in CSV to use as latitude2 of link. */
     protected int lat2Index = -1;
     /** Index of column in CSV to use as longitude2 of link. */
     protected int lon2Index = -1;
-    /** Index of column in CSV to use as the type of link. */
-    // protected int linkTypeIndex = -1;
-    /**
-     * Index of column in CSV to use as the line-type to draw a link in.
-     */
-    protected int geoStyleIndex = -1;
-
-    protected int dashIndex = -1;
-    protected int colorIndex = -1;
-    protected int thicknessIndex = -1;
 
     /**
      * The default constructor for the Layer. All of the attributes are set to
@@ -160,23 +126,8 @@ public class CSVLinkHandler
 
         String realPrefix = PropUtils.getScopedPropertyPrefix(this);
 
-        lat1Index = PropUtils.intFromProperties(properties, realPrefix + Lat1IndexProperty, lat1Index);
-        lon1Index = PropUtils.intFromProperties(properties, realPrefix + Lon1IndexProperty, lon1Index);
         lat2Index = PropUtils.intFromProperties(properties, realPrefix + Lat2IndexProperty, lat2Index);
         lon2Index = PropUtils.intFromProperties(properties, realPrefix + Lon2IndexProperty, lon2Index);
-        geoStyleIndex = PropUtils.intFromProperties(properties, realPrefix + GeoStyleIndexProperty, geoStyleIndex);
-
-        // linkTypeIndex = PropUtils.intFromProperties(properties,
-        // realPrefix
-        // + LinkTypeIndexProperty, linkTypeIndex);
-
-        // This will replace the three properties below it.
-        // Note - I can't remember how - DFD - Oh, yeah, it's not
-        // implemented.
-
-        colorIndex = PropUtils.intFromProperties(properties, realPrefix + ColorIndexProperty, colorIndex);
-        dashIndex = PropUtils.intFromProperties(properties, realPrefix + DashIndexProperty, dashIndex);
-        thicknessIndex = PropUtils.intFromProperties(properties, realPrefix + ThicknessIndexProperty, thicknessIndex);
     }
 
     /**
@@ -195,23 +146,9 @@ public class CSVLinkHandler
         props = super.getProperties(props);
 
         String prefix = PropUtils.getScopedPropertyPrefix(this);
-        // Start JDJ Changes
-        props.put(prefix + "class", this.getClass().getName());
-        props.put(prefix + LocationFileProperty, PropUtils.unnull(locationFile));
-        props.put(prefix + csvHeaderProperty, new Boolean(csvHasHeader).toString());
-        // End JDJ Changes
-        props.put(prefix + Lat1IndexProperty, Integer.toString(lat1Index));
-        props.put(prefix + Lon1IndexProperty, Integer.toString(lon1Index));
-        props.put(prefix + Lat2IndexProperty, Integer.toString(lat2Index));
-        props.put(prefix + Lon2IndexProperty, Integer.toString(lon2Index));
 
-        // props.put(prefix + LinkTypeIndexProperty,
-        // Integer.toString(linkTypeIndex));
-
-        props.put(prefix + DashIndexProperty, Integer.toString(dashIndex));
-        props.put(prefix + ColorIndexProperty, Integer.toString(colorIndex));
-        props.put(prefix + ThicknessIndexProperty, Integer.toString(thicknessIndex));
-        props.put(prefix + GeoStyleIndexProperty, Integer.toString(geoStyleIndex));
+        props.put(prefix + Lat2IndexProperty, (lat2Index != -1 ? Integer.toString(lat2Index) : ""));
+        props.put(prefix + Lon2IndexProperty, (lon2Index != -1 ? Integer.toString(lon2Index) : ""));
 
         return props;
     }
@@ -240,38 +177,29 @@ public class CSVLinkHandler
         list.remove(LatIndexProperty);
         list.remove(LonIndexProperty);
 
-        list.put(Lat1IndexProperty, "The column index, in the location file, of the first node latitude.");
-        list.put(Lon1IndexProperty, "The column index, in the location file, of the first node longitude.");
+        list.put(LatIndexProperty, "The column index, in the location file, of the first node latitude.");
+        list.put(LonIndexProperty, "The column index, in the location file, of the first node longitude.");
         list.put(Lat2IndexProperty, "The column index, in the location file, of the second node latitude.");
         list.put(Lon2IndexProperty, "The column index, in the location file, of the second node longitude.");
 
-        list.put(DashIndexProperty, "The column index, in the location file, of the true/false dash indicator.");
-        list.put(ColorIndexProperty, "The column index, in the location file, of the color string.");
-        list.put(ThicknessIndexProperty, "The column index, in the location file, of the pixel thickness of the link.");
-        list.put(GeoStyleIndexProperty, "The column index, in the location file, of the render type of the link.");
         return list;
     }
 
     protected boolean checkIndexSettings() {
 
-        if (lat1Index == -1 || lon1Index == -1 || lat2Index == -1 || lon2Index == -1) {
+        if (latIndex == -1 || lonIndex == -1 || lat2Index == -1 || lon2Index == -1) {
             logger.warning("CSVLocationHandler: createData(): Index properties for Lat/Lon/Name are not set properly! lat index:"
                     + latIndex + ", lon index:" + lonIndex);
             return false;
         }
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("CSVLinkHandler: Reading File:" + locationFile + " lat1Index: " + lat1Index + " lon1Index: " + lon1Index
-                    + " lat2Index: " + lat2Index + " lon2Index: " + lon2Index + " geoStyleIndex: " + geoStyleIndex
-                    // + " linkTypeIndex: " + linkTypeIndex
-                    + " dashIndex: " + dashIndex + " colorIndex: " + colorIndex + " thicknessIndex: " + thicknessIndex);
+            logger.fine("CSVLinkHandler: Reading File:" + locationFile + " lat1Index: " + latIndex
+                    + " lon1Index: " + lonIndex + " lat2Index: " + lat2Index + " lon2Index: "
+                    + lon2Index);
         }
 
         return true;
-    }
-
-    protected TokenDecoder getTokenDecoder() {
-        return new LinkDecoder();
     }
 
     /**
@@ -289,150 +217,68 @@ public class CSVLinkHandler
         JCheckBox showCSVLinkCheck;
 
         showCSVLinkCheck = new JCheckBox("Show Links", isShowLocations());
-        showCSVLinkCheck.setActionCommand(showLocationsCommand);
-        showCSVLinkCheck.addActionListener(this);
+        showCSVLinkCheck.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                JCheckBox locationCheck = (JCheckBox) ae.getSource();
+                setShowLocations(locationCheck.isSelected());
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("CSVLocationHandler::actionPerformed showLocations is "
+                            + isShowLocations());
+                }
+                getLayer().repaint();
+            }
+        });
 
         rereadFilesButton = new JButton("Re-Read Data File");
-        rereadFilesButton.setActionCommand(readDataCommand);
-        rereadFilesButton.addActionListener(this);
+        rereadFilesButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Re-reading Locations file");
+                }
+                quadtree = null;
+                getLayer().doPrepare();
+            }
+        });
         Box box = Box.createVerticalBox();
         box.add(showCSVLinkCheck);
         box.add(rereadFilesButton);
         return box;
     }
 
-    /* Utility functions */
-
     /**
-     * This gets a line-type from a token, and translates it into one of
-     * LINETYPE_STRAIGHT, LINETYPE_GREATCIRCLE, or LINETYPE_RHUMB.
+     * This is the method called by create data with a row's worth of
+     * information stuffed in the record List. The indexes set in the properties
+     * should describe what each entry is.
      * 
-     * @param token the token read from the CSV file.
-     * @return one of LINETYPE_STRAIGHT, LINETYPE_GREATCIRCLE, or LINETYPE_RHUMB
+     * @param recordList a record/row of data from the csv file.
+     * @param qt the Quadtree to add the Location object, created from the row
+     *        contents.
      */
-    protected int getLineTypeFromToken(Object token) {
-        int default_lintetype = OMGraphic.LINETYPE_STRAIGHT;
-        String tokstring = ((String) token).trim().toLowerCase();
+    protected void createLocation(List recordList, QuadTree<Location> qt) {
+
+        String name = tokenToString(recordList, nameIndex, "");
+        double lat = tokenToDouble(recordList, latIndex, 0.0);
+        double lon = tokenToDouble(recordList, lonIndex, 0.0, eastIsNeg);
+        String iconURL = tokenToString(recordList, iconIndex, defaultIconURL);
+
+        double lat2 = tokenToDouble(recordList, lat2Index, 0.0);
+        double lon2 = tokenToDouble(recordList, lon2Index, 0.0, eastIsNeg);
+
+        Link link = new Link(lat, lon, lat2, lon2, "No details");
+        getLocationDrawingAttributes().setTo(link);
+
+        link.setLocationHandler(CSVLinkHandler.this);
+
+        // What we really want to do is get the
+        // locationDrawingAttributes and set them on the link.
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("CSVLinkHandler:getLineTypeFromToken(" + tokstring + ")");
+            logger.fine("CSVLinkHandler: " + link.getDetails());
         }
 
-        if (tokstring.startsWith("s"))
-            return OMGraphic.LINETYPE_STRAIGHT;
-        else if (tokstring.startsWith("g"))
-            return OMGraphic.LINETYPE_GREATCIRCLE;
-        else if (tokstring.startsWith("r"))
-            return OMGraphic.LINETYPE_RHUMB;
-        else {
-            logger.warning("Don't understand Linetype " + tokstring + ", using default (STRAIGHT)");
-            return default_lintetype;
-        }
-    }
+        qt.put(lat, lon, link);
+        qt.put(lat2, lon2, link);
 
-    /**
-     * This interprets a color value from a token. The color can be one of the
-     * standard colors in the java.awt.Color class, or it can be a hexadecimal
-     * representation of any other displayable color.
-     * <p>
-     * 
-     * @param token the token read from the CSV file.
-     *        <p>
-     * @return the java.awt.Color described by that token, or Color.black (if
-     *         the token cannot be translated into a proper color).
-     */
-    protected Color getColorFromToken(Object token) {
-        String tokstring = (String) token;
-
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine("CSVLinkHandler: getColorFromToken(" + tokstring + ")");
-        }
-
-        Color c = ColorFactory.getNamedColor(tokstring, null);
-
-        if (c == null) {
-            // decode a hex color string.
-            c = Color.decode(tokstring);
-            if (c == null) {
-                c = Color.BLACK;
-            }
-        }
-
-        if (logger.isLoggable(Level.FINE)) {
-            logger.fine("CSVLinkHandler: getColorFromToken returns (" + c + ")");
-        }
-
-        return c;
-    }
-
-    public class LinkDecoder
-            implements TokenDecoder {
-
-        float lat1;
-        float lon1;
-        float lat2;
-        float lon2;
-        int linetype;
-        Color color;
-        boolean dashed;
-        float thickness;
-
-        public LinkDecoder() {
-            reset();
-        }
-
-        public void reset() {
-            lat1 = 0;
-            lon1 = 0;
-            lat2 = 0;
-            lon2 = 0;
-            linetype = OMGraphic.LINETYPE_GREATCIRCLE;
-            color = (Color) getLocationDrawingAttributes().getLinePaint();
-            dashed = false;
-            thickness = 1f;
-        }
-
-        public void handleToken(Object token, int i) {
-            try {
-                if (i == lat1Index)
-                    lat1 = ((Double) token).floatValue();
-                else if (i == lon1Index)
-                    lon1 = ((Double) token).floatValue();
-                else if (i == lat2Index)
-                    lat2 = ((Double) token).floatValue();
-                else if (i == lon2Index)
-                    lon2 = ((Double) token).floatValue();
-                else if (i == geoStyleIndex)
-                    linetype = getLineTypeFromToken(token);
-
-                // These are going to go away...
-                else if (i == colorIndex)
-                    color = getColorFromToken(token);
-                else if (i == thicknessIndex)
-                    thickness = ((Double) token).floatValue();
-                else if (i == dashIndex)
-                    dashed = Boolean.valueOf((String) token).booleanValue();
-            } catch (NumberFormatException nfe) {
-
-            }
-        }
-
-        public void createAndAddObjectFromTokens(DataOrganizer organizer) {
-            // Original Lines added to this else block to fix
-            // reading a data file with a header in it.
-            Link link = new Link(lat1, lon1, lat2, lon2, "No details", color, dashed, thickness, linetype);
-            link.setLocationHandler(CSVLinkHandler.this);
-
-            // What we really want to do is get the
-            // locationDrawingAttributes and set them on the link.
-
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine("CSVLinkHandler: " + link.getDetails());
-            }
-
-            organizer.put(lat1, lon1, link);
-            organizer.put(lat2, lon2, link);
-            reset();
-        }
+        qt.put(lat, lon, createLocation(lat, lon, name, iconURL, recordList));
     }
 }

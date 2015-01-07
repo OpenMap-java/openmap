@@ -160,21 +160,6 @@ public class Gnomonic extends Azimuth {
         return lat;
     }
 
-    /**
-     * Get the distance c of the point from the center of the hemisphere.
-     * 
-     * @param phi1 latitude
-     * @param lambda0 longitude
-     * @param phi latitude
-     * @param lambda longitude
-     * @return float c angular distance in radians
-     * 
-     */
-    final public static float hemisphere_distance(float phi1, float lambda0,
-                                                  float phi, float lambda) {
-        return GreatCircle.sphericalDistance(phi1, lambda0, phi, lambda)/*-epsilon*/;
-    }
-
     final public static double hemisphere_distance(double phi1, double lambda0,
                                                    double phi, double lambda) {
         return GreatCircle.sphericalDistance(phi1, lambda0, phi, lambda)/*-epsilon*/;

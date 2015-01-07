@@ -30,6 +30,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -100,8 +101,6 @@ import com.bbn.openmap.util.quadtree.QuadTree;
  *       csvlocationhandler.class=com.bbn.openmap.layer.location.csv.CSVLocationHandler
  *       csvlocationhandler.locationFile=/data/worldpts/WorldLocs_point.csv
  *       csvlocationhandler.csvFileHasHeader=true
- *       csvlocationhandler.locationColor=FF0000
- *       csvlocationhandler.nameColor=008C54
  *       csvlocationhandler.showNames=false
  *       csvlocationhandler.showLocations=true
  *       csvlocationhandler.nameIndex=0
@@ -122,13 +121,19 @@ import com.bbn.openmap.util.quadtree.QuadTree;
  *      csvlocationhandler.location.fillColor=FFaaaaaa
  *      csvlocationhandler.location.pointRadius=3
  *      csvlocationhandler.location.pointOval=true
- *      # The old nameColor and locationColor properties will still work, and will take precedence over these DrawingAttribtues properties.
+ *      
+ *      # optional, can be used if you override createLocation and need access to varying rendering attributes.
+ *      # ra1, ra2 and ra3 would be used as keys in renderAttributes map.  All GraphicAttributes properties are available, not
+ *      # just lineColor.
+ *     
+ *      csvlocationhandler.renderAttributesList=ra1 ra2 ra3
+ *      csvlocationhandler.ra1.lineColor=0xFFFF0000
+ *      csvlocationhandler.ra2.lineColor=0xFF00FF00
+ *      csvlocationhandler.ra3.lineColor=0xFF00FFFF
  * 
  * </pre>
  */
-public class CSVLocationHandler
-        extends AbstractLocationHandler
-        implements LocationHandler, ActionListener {
+public class CSVLocationHandler extends AbstractLocationHandler implements LocationHandler {
 
     /** The path to the primary CSV file holding the locations. */
     protected String locationFile;
@@ -137,7 +142,7 @@ public class CSVLocationHandler
     /** Set if the CSVFile has a header record. Default is false. */
     public final static String csvHeaderProperty = "csvFileHasHeader";
     /** The storage mechanism for the locations. */
-    protected QuadTree quadtree = null;
+    protected QuadTree<Location> quadtree = null;
 
     /** The property describing whether East is a negative value. */
     public static final String eastIsNegProperty = "eastIsNeg";
@@ -231,8 +236,9 @@ public class CSVLocationHandler
         csvHasHeader = PropUtils.booleanFromProperties(properties, prefix + csvHeaderProperty, false);
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("CSVLocationHandler indexes:\n  latIndex = " + latIndex + "\n  lonIndex = " + lonIndex + "\n  nameIndex = "
-                    + nameIndex + "\n  has header = " + csvHasHeader);
+            logger.fine("CSVLocationHandler indexes:\n  latIndex = " + latIndex + "\n  lonIndex = "
+                    + lonIndex + "\n  nameIndex = " + nameIndex + "\n  has header = "
+                    + csvHasHeader);
         }
     }
 
@@ -315,8 +321,9 @@ public class CSVLocationHandler
         }
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("CSVLocationHandler: Reading File:" + locationFile + " NameIndex: " + nameIndex + " latIndex: " + latIndex
-                    + " lonIndex: " + lonIndex + " iconIndex: " + iconIndex + " eastIsNeg: " + eastIsNeg);
+            logger.fine("CSVLocationHandler: Reading File:" + locationFile + " NameIndex: "
+                    + nameIndex + " latIndex: " + latIndex + " lonIndex: " + lonIndex
+                    + " iconIndex: " + iconIndex + " eastIsNeg: " + eastIsNeg);
         }
 
         return true;
@@ -325,18 +332,17 @@ public class CSVLocationHandler
     /**
      * Look at the CSV file and create the QuadTree holding all the Locations.
      */
-    protected QuadTree createData() {
+    protected QuadTree<Location> createData() {
 
-        QuadTree qt = new QuadTree(90.0f, -180.0f, -90.0f, 180.0f, 100, 50f);
+        QuadTree<Location> qt = new QuadTree<Location>(90.0f, -180.0f, -90.0f, 180.0f, 100, 50f);
 
         if (!checkIndexSettings()) {
             return null;
         }
 
-        BufferedReader streamReader = null;
         int lineCount = 0;
         Object token = null;
-        TokenDecoder tokenHandler = getTokenDecoder();
+        // TokenDecoder tokenHandler = getTokenDecoder();
 
         // readHeader should be set to true if the first line has
         // been read, or if the csvHasHeader is false.
@@ -351,22 +357,29 @@ public class CSVLocationHandler
             URL csvURL = PropUtils.getResourceOrFileOrURL(null, locationFile);
             if (csvURL != null) {
 
-                streamReader = new BufferedReader(new InputStreamReader(csvURL.openStream()));
+                BufferedReader streamReader = new BufferedReader(new InputStreamReader(csvURL.openStream()));
                 CSVTokenizer csvt = new CSVTokenizer(streamReader);
 
                 token = csvt.token();
+
+                List recordList = Collections.synchronizedList(new ArrayList(10));
 
                 while (!csvt.isEOF(token)) {
                     int i = 0;
 
                     if (logger.isLoggable(Level.FINE)) {
-                        logger.fine("CSVLocationHandler| Starting a line | have" + (readHeader ? " " : "n't ") + "read header");
+                        logger.fine("CSVLocationHandler| Starting a line | have"
+                                + (readHeader ? " " : "n't ") + "read header");
                     }
+
+                    // Prepare it for the new row/record
+                    recordList.clear();
 
                     while (!csvt.isNewline(token) && !csvt.isEOF(token)) {
 
                         if (readHeader) {
-                            tokenHandler.handleToken(token, i);
+                            // tokenHandler.handleToken(token, i);
+                            recordList.add(token);
                         }
 
                         token = csvt.token();
@@ -382,10 +395,13 @@ public class CSVLocationHandler
                         readHeader = true;
                     } else {
                         lineCount++;
-                        tokenHandler.createAndAddObjectFromTokens(qt);
+                        createLocation(recordList, qt);
+                        // tokenHandler.createAndAddObjectFromTokens(qt);
                     }
                     token = csvt.token();
                 }
+
+                csvt.close();
             } else {
                 if (logger.isLoggable(Level.FINE)) {
                     logger.fine("couldn't figure out file: " + locationFile);
@@ -398,7 +414,8 @@ public class CSVLocationHandler
         } catch (NumberFormatException nfe) {
             throw new com.bbn.openmap.util.HandleError(nfe);
         } catch (ClassCastException cce) {
-            logger.warning("Problem reading entries in " + locationFile + ", check your index settings, first column = 0.");
+            logger.warning("Problem reading entries in " + locationFile
+                    + ", check your index settings, first column = 0.");
             throw new com.bbn.openmap.util.HandleError(cce);
         } catch (NullPointerException npe) {
             logger.warning("Problem reading location file, check " + locationFile);
@@ -408,15 +425,8 @@ public class CSVLocationHandler
         }
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("CSVLocationHandler | Finished File:" + locationFile + ", read " + lineCount + " locations");
-        }
-
-        try {
-            if (streamReader != null) {
-                streamReader.close();
-            }
-        } catch (java.io.IOException ioe) {
-            throw new com.bbn.openmap.util.HandleError(ioe);
+            logger.fine("CSVLocationHandler | Finished File:" + locationFile + ", read "
+                    + lineCount + " locations");
         }
 
         if (lineCount == 0 && readHeader) {
@@ -428,22 +438,42 @@ public class CSVLocationHandler
         return qt;
     }
 
-    protected TokenDecoder getTokenDecoder() {
-        return new DefaultLocationDecoder();
+    /**
+     * This is the method called by create data with a row's worth of
+     * information stuffed in the record List. The indexes set in the properties
+     * should describe what each entry is.
+     * 
+     * @param recordList a record/row of data from the csv file.
+     * @param qt the Quadtree to add the Location object, created from the row
+     *        contents.
+     */
+    protected void createLocation(List recordList, QuadTree<Location> qt) {
+
+        String name = tokenToString(recordList, nameIndex, "");
+        double lat = tokenToDouble(recordList, latIndex, 0.0);
+        double lon = tokenToDouble(recordList, lonIndex, 0.0, eastIsNeg);
+        String iconURL = tokenToString(recordList, iconIndex, defaultIconURL);
+
+        qt.put(lat, lon, createLocation(lat, lon, name, iconURL, recordList));
     }
 
     /**
      * When a new Location object needs to be created from data read in the CSV
      * file, this method is called. This method lets you extend the
-     * CSVLocationLayer and easily set what kind of Location objects to use.
+     * CSVLocationLayer and easily set what kind of Location objects to use
+     * based on file contents. The lat/lon/name/icon path have already been
+     * decoded from the record List.
      * 
      * @param lat latitude of location, decimal degrees.
      * @param lon longitude of location, decimal degrees.
      * @param name the label of the location.
      * @param iconURL the String for a URL for an icon. Can be null.
+     * @param recordList the original List of Objects in case other entries in
+     *        the row should affect how the Location object is configured.
      * @return Location object for lat/lon/name/iconURL.
      */
-    protected Location createLocation(float lat, float lon, String name, String iconURL) {
+    protected Location createLocation(double lat, double lon, String name, String iconURL,
+                                      List recordList) {
 
         // This will turn into a regular location if iconURL is null.
         Location loc = new URLRasterLocation(lat, lon, name, iconURL);
@@ -468,47 +498,71 @@ public class CSVLocationHandler
     }
 
     /**
-     * @param ranFile the file to be read. The file pointer should be set to the
-     *        line you want read.
-     * @return Array of strings representing the values between the commas.
+     * Scope object to String. If anything goes wrong the default is returned.
+     * 
+     * @param recordList the List for the record.
+     * @param index the index of the object to fetch.
+     * @param def default value
+     * @return String value
      */
-    protected String[] readCSVLineFromFile(BufferedReader ranFile, String[] retPaths) {
-        if (ranFile != null) {
-
-            try {
-                String newLine = ranFile.readLine();
-                if (newLine == null)
-                    return null;
-                StringTokenizer token = new StringTokenizer(newLine, ",");
-                int numPaths = token.countTokens();
-
-                if (retPaths == null) {
-                    retPaths = new String[numPaths];
-                } else
-                    numPaths = retPaths.length;
-                for (int i = 0; i < numPaths; i++) {
-                    retPaths[i] = token.nextToken();
-                }
-            } catch (java.io.IOException ioe) {
-                return null;
-            } catch (java.util.NoSuchElementException nsee) {
-                logger.fine("CSVLocationHandler: readCSVLineFromFile: oops");
+    protected String tokenToString(List recordList, int index, String def) {
+        try {
+            Object obj = recordList.get(index);
+            if (obj != null) {
+                return obj.toString();
             }
+        } catch (Exception e) {
+            // just return default
         }
-        return retPaths;
+        return def;
+    }
+
+    /**
+     * Scope object to double if it's a number, or return default. If anything
+     * goes wrong the default is returned.
+     * 
+     * @param recordList the List for the record.
+     * @param index the index of the object to fetch.
+     * @param def default value
+     * @return double value
+     */
+    protected double tokenToDouble(List recordList, int index, double def) {
+        try {
+            Object obj = recordList.get(index);
+            if (obj instanceof Double) {
+                return ((Double) obj).doubleValue();
+            }
+        } catch (Exception e) {
+
+        }
+
+        return def;
+    }
+
+    /**
+     * Scope object to double if it's a number, or return default. Swap the sign
+     * if needed, if east is supposed to be a negative number. If anything goes
+     * wrong the default is returned.
+     * 
+     * @param recordList the List for the record.
+     * @param index the index of the object to fetch.
+     * @param def default value
+     * @param swapSign multiply value by -1, say, if you know that the file has
+     *        negative values for eastern hemisphere longitudes (hey, I've seen
+     *        it).
+     * @return double value
+     */
+    protected double tokenToDouble(List recordList, int index, double def, boolean swapSign) {
+        Double ret = tokenToDouble(recordList, index, def);
+        return swapSign ? -1 * ret : ret;
     }
 
     /**
      * Prepares the graphics for the layer. This is where the getRectangle()
-     * method call is made on the location.
-     * <p>
-     * Occasionally it is necessary to abort a prepare call. When this happens,
-     * the map will set the cancel bit in the LayerThread, (the thread that is
-     * running the prepare). If this Layer needs to do any cleanups during the
-     * abort, it should do so, but return out of the prepare asap.
-     * 
+     * method calls to build the OMGraphicList to draw.
      */
-    public OMGraphicList get(float nwLat, float nwLon, float seLat, float seLon, OMGraphicList graphicList) {
+    public OMGraphicList get(double nwLat, double nwLon, double seLat, double seLon,
+                             OMGraphicList graphicList) {
 
         if (graphicList == null) {
             graphicList = new OMGraphicList();
@@ -523,14 +577,14 @@ public class CSVLocationHandler
 
         if (quadtree != null) {
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine("CSVLocationHandler|CSVLocationHandler.get() ul.lon = " + nwLon + " lr.lon = " + seLon + " delta = "
-                        + (seLon - nwLon));
+                logger.fine("CSVLocationHandler|CSVLocationHandler.get() ul.lon = " + nwLon
+                        + " lr.lon = " + seLon + " delta = " + (seLon - nwLon));
             }
 
-            Vector vec = new Vector<OMGraphic>();
-            quadtree.get(nwLat, nwLon, seLat, seLon, vec);
+            List<Location> hits = new ArrayList<Location>();
+            quadtree.get(nwLat, nwLon, seLat, seLon, hits);
 
-            graphicList.addAll(vec);
+            graphicList.addAll(hits);
         }
 
         return graphicList;
@@ -560,30 +614,70 @@ public class CSVLocationHandler
      */
     public Component getGUI() {
         if (box == null) {
-            JCheckBox showCSVLocationCheck, showNameCheck, forceGlobalCheck;
+            JCheckBox showLocationCheck, showNameCheck, forceGlobalCheck;
             JButton rereadFilesButton;
 
-            showCSVLocationCheck = new JCheckBox("Show Locations", isShowLocations());
-            showCSVLocationCheck.setActionCommand(showLocationsCommand);
-            showCSVLocationCheck.addActionListener(this);
-            showCSVLocationCheck.setToolTipText("<HTML><BODY>Show location markers on the map.</BODY></HTML>");
+            showLocationCheck = new JCheckBox("Show Locations", isShowLocations());
+            showLocationCheck.setActionCommand(showLocationsCommand);
+            showLocationCheck.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    JCheckBox locationCheck = (JCheckBox) ae.getSource();
+                    setShowLocations(locationCheck.isSelected());
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("CSVLocationHandler::actionPerformed showLocations is "
+                                + isShowLocations());
+                    }
+                    getLayer().repaint();
+                }
+            });
+            showLocationCheck.setToolTipText("<HTML><BODY>Show location markers on the map.</BODY></HTML>");
+
             showNameCheck = new JCheckBox("Show Location Names", isShowNames());
-            showNameCheck.setActionCommand(showNamesCommand);
-            showNameCheck.addActionListener(this);
+            showNameCheck.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    JCheckBox namesCheck = (JCheckBox) ae.getSource();
+                    setShowNames(namesCheck.isSelected());
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("CSVLocationHandler::actionPerformed showNames is "
+                                + isShowNames());
+                    }
+
+                    LocationLayer ll = getLayer();
+                    if (namesCheck.isSelected() && ll.getDeclutterMatrix() != null
+                            && ll.getUseDeclutterMatrix()) {
+                        ll.doPrepare();
+                    } else {
+                        ll.repaint();
+                    }
+                }
+            });
             showNameCheck.setToolTipText("<HTML><BODY>Show location names on the map.</BODY></HTML>");
 
             forceGlobalCheck = new JCheckBox("Override Location Settings", isForceGlobal());
             forceGlobalCheck.setActionCommand(forceGlobalCommand);
-            forceGlobalCheck.addActionListener(this);
+            forceGlobalCheck.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    JCheckBox forceGlobalCheck = (JCheckBox) ae.getSource();
+                    setForceGlobal(forceGlobalCheck.isSelected());
+                    getLayer().repaint();
+                }
+            });
             forceGlobalCheck.setToolTipText("<HTML><BODY>Make these settings override those set<BR>on the individual map objects.</BODY></HTML>");
 
             rereadFilesButton = new JButton("Reload Data From Source");
-            rereadFilesButton.setActionCommand(readDataCommand);
-            rereadFilesButton.addActionListener(this);
+            rereadFilesButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("Re-reading Locations file");
+                    }
+                    quadtree = null;
+                    getLayer().doPrepare();
+                }
+            });
             rereadFilesButton.setToolTipText("<HTML><BODY>Reload the data file, and put these settings<br>on the individual map objects.</BODY></HTML>");
 
             box = Box.createVerticalBox();
-            box.add(showCSVLocationCheck);
+            box.add(showLocationCheck);
             box.add(showNameCheck);
             box.add(forceGlobalCheck);
             box.add(rereadFilesButton);
@@ -591,102 +685,4 @@ public class CSVLocationHandler
         return box;
     }
 
-    // ----------------------------------------------------------------------
-    // ActionListener interface implementation
-    // ----------------------------------------------------------------------
-
-    /**
-     * The Action Listener method, that reacts to the palette widgets actions.
-     */
-    public void actionPerformed(ActionEvent e) {
-        String cmd = e.getActionCommand();
-        if (cmd == showLocationsCommand) {
-            JCheckBox locationCheck = (JCheckBox) e.getSource();
-            setShowLocations(locationCheck.isSelected());
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine("CSVLocationHandler::actionPerformed showLocations is " + isShowLocations());
-            }
-            getLayer().repaint();
-        } else if (cmd == showNamesCommand) {
-            JCheckBox namesCheck = (JCheckBox) e.getSource();
-            setShowNames(namesCheck.isSelected());
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine("CSVLocationHandler::actionPerformed showNames is " + isShowNames());
-            }
-
-            LocationLayer ll = getLayer();
-            if (namesCheck.isSelected() && ll.getDeclutterMatrix() != null && ll.getUseDeclutterMatrix()) {
-                ll.doPrepare();
-            } else {
-                ll.repaint();
-            }
-        } else if (cmd == forceGlobalCommand) {
-            JCheckBox forceGlobalCheck = (JCheckBox) e.getSource();
-            setForceGlobal(forceGlobalCheck.isSelected());
-            getLayer().repaint();
-        } else if (cmd == readDataCommand) {
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine("Re-reading Locations file");
-            }
-            quadtree = null;
-            getLayer().doPrepare();
-        } else {
-            logger.warning("Unknown action command \"" + cmd + "\" in LocationLayer.actionPerformed().");
-        }
-    }
-
-    public interface TokenDecoder {
-        void handleToken(Object token, int column);
-
-        void createAndAddObjectFromTokens(DataOrganizer organizer);
-    }
-
-    public class DefaultLocationDecoder
-            implements TokenDecoder {
-        protected String name;
-        protected float lat;
-        protected float lon;
-        protected String iconURL;
-
-        public DefaultLocationDecoder() {
-        }
-
-        public void reset() {
-            name = null;
-            lat = 0f;
-            lon = 0f;
-            iconURL = null;
-        }
-
-        public void handleToken(Object token, int i) {
-            if (i == nameIndex) {
-                if (token instanceof Double) {
-                    name = ((Double) token).toString();
-                } else {
-                    name = (String) token;
-                }
-            } else if (i == latIndex) {
-                lat = ((Double) token).floatValue();
-            } else if (i == lonIndex) {
-                lon = ((Double) token).floatValue();
-                if (eastIsNeg) {
-                    lon *= -1;
-                }
-            } else if (i == iconIndex) {
-                iconURL = (String) token;
-            }
-        }
-
-        public void createAndAddObjectFromTokens(DataOrganizer organizer) {
-            if (iconURL == null && defaultIconURL != null) {
-                iconURL = defaultIconURL;
-            }
-
-            Location loc = createLocation(lat, lon, name, iconURL);
-
-            organizer.put(lat, lon, loc);
-            reset();
-        }
-
-    }
 }

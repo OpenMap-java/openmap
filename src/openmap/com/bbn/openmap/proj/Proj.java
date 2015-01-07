@@ -730,7 +730,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      *        <code>-180 &lt;= Az &lt;= 180</code>
      * @param c arc distance in decimal degrees
      */
-    abstract public void pan(float Az, float c);
+    abstract public void pan(double Az, double c);
 
     /**
      * Pan the map/projection.
@@ -744,7 +744,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
      * @param Az azimuth "east of north" in decimal degrees:
      *        <code>-180 &lt;= Az &lt;= 180</code>
      */
-    abstract public void pan(float Az);
+    abstract public void pan(double Az);
 
     /**
      * pan the map northwest.
@@ -753,7 +753,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         pan(-45f);
     }
 
-    final public void panNW(float c) {
+    final public void panNW(double c) {
         pan(-45f);
     }
 
@@ -764,7 +764,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         pan(0f);
     }
 
-    final public void panN(float c) {
+    final public void panN(double c) {
         pan(0f);
     }
 
@@ -775,7 +775,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         pan(45f);
     }
 
-    final public void panNE(float c) {
+    final public void panNE(double c) {
         pan(45f);
     }
 
@@ -786,7 +786,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         pan(90f);
     }
 
-    final public void panE(float c) {
+    final public void panE(double c) {
         pan(90f);
     }
 
@@ -797,7 +797,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         pan(135f);
     }
 
-    final public void panSE(float c) {
+    final public void panSE(double c) {
         pan(135f);
     }
 
@@ -808,7 +808,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         pan(180f);
     }
 
-    final public void panS(float c) {
+    final public void panS(double c) {
         pan(180f);
     }
 
@@ -819,7 +819,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         pan(-135f);
     }
 
-    final public void panSW(float c) {
+    final public void panSW(double c) {
         pan(-135f);
     }
 
@@ -830,14 +830,14 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
         pan(-90f);
     }
 
-    final public void panW(float c) {
+    final public void panW(double c) {
         pan(-90f);
     }
 
     /**
      */
-    public boolean isPlotable(float lat, float lon) {
-        return isPlotable((double) lat, (double) lon);
+    public boolean isPlotable(double lat, double lon) {
+        return isPlotable(lat, lon);
     }
 
     public boolean isPlotable(Point2D point) {

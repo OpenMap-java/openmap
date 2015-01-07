@@ -353,7 +353,8 @@ public class DBLocationHandler
      * abort, it should do so, but return out of the prepare asap.
      * 
      */
-    public OMGraphicList get(float nwLat, float nwLon, float seLat, float seLon, OMGraphicList graphicList) {
+    public OMGraphicList get(double nwLat, double nwLon, double seLat, double seLon,
+                             OMGraphicList graphicList) {
 
         if (graphicList == null) {
             graphicList = new OMGraphicList();

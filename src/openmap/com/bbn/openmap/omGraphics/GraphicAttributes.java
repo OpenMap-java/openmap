@@ -48,8 +48,8 @@ import com.bbn.openmap.util.PropUtils;
  * DrawingAttributes class fishes out the applicable properties for you, creates
  * the objects needed, and then lets you get those objects when needed.
  */
-public class GraphicAttributes extends DrawingAttributes implements
-        ActionListener, Serializable, OMGraphicConstants {
+public class GraphicAttributes extends DrawingAttributes implements ActionListener, Serializable,
+        OMGraphicConstants {
 
     /**
      * The name of the property that holds the line type of the graphic.
@@ -113,27 +113,16 @@ public class GraphicAttributes extends DrawingAttributes implements
      * PropertyConsumer method.
      */
     public void setProperties(String prefix, Properties props) {
-
         super.setProperties(prefix, props);
-
-        String realPrefix;
+        prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
         if (props == null) {
             return;
         }
 
-        if (prefix != null) {
-            realPrefix = prefix + ".";
-        } else {
-            realPrefix = "";
-        }
-
         // Set up the Graphic attributes.
-        lineType = PropUtils.intFromProperties(props, realPrefix
-                + lineTypeProperty, LINETYPE_UNKNOWN);
-
-        renderType = PropUtils.intFromProperties(props, realPrefix
-                + renderTypeProperty, RENDERTYPE_UNKNOWN);
+        lineType = PropUtils.intFromProperties(props, prefix + lineTypeProperty, lineType);
+        renderType = PropUtils.intFromProperties(props, prefix + renderTypeProperty, renderType);
     }
 
     public Object clone() {
@@ -163,16 +152,13 @@ public class GraphicAttributes extends DrawingAttributes implements
     public void setLineType(int lt) {
         int oldLineType = lineType;
 
-        if (lt == LINETYPE_STRAIGHT || lt == LINETYPE_GREATCIRCLE
-                || lt == LINETYPE_RHUMB) {
+        if (lt == LINETYPE_STRAIGHT || lt == LINETYPE_GREATCIRCLE || lt == LINETYPE_RHUMB) {
             lineType = lt;
         } else {
             lineType = LINETYPE_UNKNOWN;
         }
 
-        propertyChangeSupport.firePropertyChange("lineType",
-                oldLineType,
-                lineType);
+        propertyChangeSupport.firePropertyChange("lineType", oldLineType, lineType);
     }
 
     /**
@@ -189,17 +175,14 @@ public class GraphicAttributes extends DrawingAttributes implements
     public void setRenderType(int rt) {
         int oldRenderType = renderType;
 
-        if (rt == RENDERTYPE_XY || rt == RENDERTYPE_LATLON
-                || rt == RENDERTYPE_OFFSET) {
+        if (rt == RENDERTYPE_XY || rt == RENDERTYPE_LATLON || rt == RENDERTYPE_OFFSET) {
             renderType = rt;
 
         } else {
             renderType = RENDERTYPE_UNKNOWN;
         }
 
-        propertyChangeSupport.firePropertyChange("renderType",
-                oldRenderType,
-                renderType);
+        propertyChangeSupport.firePropertyChange("renderType", oldRenderType, renderType);
     }
 
     /**
@@ -225,7 +208,7 @@ public class GraphicAttributes extends DrawingAttributes implements
         lineType = graphic.getLineType();
         renderType = graphic.getRenderType();
         enableLineTypeChoice = graphic.hasLineTypeChoice();
-        
+
         if (resetGUI) {
             resetGUI();
         }
@@ -291,9 +274,7 @@ public class GraphicAttributes extends DrawingAttributes implements
         JMenu lineTypeMenu = null;
 
         if (renderType == RENDERTYPE_LATLON && enableLineTypeChoice) {
-            lineTypeMenu = new JMenu(i18n.get(GraphicAttributes.class,
-                    "Line_Type",
-                    "Line Type"));
+            lineTypeMenu = new JMenu(i18n.get(GraphicAttributes.class, "Line_Type", "Line Type"));
 
             ActionListener listener = new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
@@ -306,24 +287,18 @@ public class GraphicAttributes extends DrawingAttributes implements
             };
 
             ButtonGroup group = new ButtonGroup();
-            JRadioButtonMenuItem button = new JRadioButtonMenuItem(i18n.get(DrawingAttributes.class,
-                    "Great_Circle",
-                    "Great Circle"), lineType == LineType.GreatCircle);
+            JRadioButtonMenuItem button = new JRadioButtonMenuItem(i18n.get(DrawingAttributes.class, "Great_Circle", "Great Circle"), lineType == LineType.GreatCircle);
             button.setActionCommand(String.valueOf(LineType.GreatCircle));
             button.addActionListener(listener);
             lineTypeMenu.add(button);
 
-            button = new JRadioButtonMenuItem(i18n.get(GraphicAttributes.class,
-                    "Rhumb",
-                    "Rhumb"), lineType == LineType.Rhumb);
+            button = new JRadioButtonMenuItem(i18n.get(GraphicAttributes.class, "Rhumb", "Rhumb"), lineType == LineType.Rhumb);
             button.setActionCommand(String.valueOf(LineType.Rhumb));
             group.add(button);
             button.addActionListener(listener);
             lineTypeMenu.add(button);
 
-            button = new JRadioButtonMenuItem(i18n.get(GraphicAttributes.class,
-                    "Straight",
-                    "Straight"), lineType == LineType.Straight);
+            button = new JRadioButtonMenuItem(i18n.get(GraphicAttributes.class, "Straight", "Straight"), lineType == LineType.Straight);
             button.setActionCommand(String.valueOf(LineType.Straight));
             group.add(button);
             button.addActionListener(listener);
