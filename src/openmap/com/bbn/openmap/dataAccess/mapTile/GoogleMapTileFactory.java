@@ -98,7 +98,7 @@ public class GoogleMapTileFactory extends ServerMapTileFactory {
     }
 
     public Properties getProperties(Properties props) {
-        props = getProperties(props);
+        props = super.getProperties(props);
         String prefix = PropUtils.getScopedPropertyPrefix(this);
         props.put(prefix + API_KEY_PROPERTY, PropUtils.unnull(apiKey));
         props.put(prefix + MAPTYPE_PROPERTY, PropUtils.unnull(mapType));
