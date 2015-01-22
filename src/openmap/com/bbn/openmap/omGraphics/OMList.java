@@ -277,28 +277,20 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter impl
      */
     public boolean add(T g) {
         checkForDuplicate(g);
-        synchronized (graphics) {
-            return graphics.add(g);
-        }
+        return graphics.add(g);
     }
 
-    public synchronized void add(int index, T g) {
+    public void add(int index, T g) {
         checkForDuplicate(g);
-        synchronized (graphics) {
-            graphics.add(index, g);
-        }
+        graphics.add(index, g);
     }
 
     public Object[] toArray() {
-        synchronized (graphics) {
-            return graphics.toArray();
-        }
+        return graphics.toArray();
     }
 
     public <E> E[] toArray(E[] a) {
-        synchronized (graphics) {
-            return graphics.toArray(a);
-        }
+        return graphics.toArray(a);
     }
 
     /**
@@ -321,34 +313,6 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter impl
      */
     public int getTraverseMode() {
         return traverseMode;
-    }
-
-    /**
-     * Get the graphic with the appObject. Traverse mode doesn't matter. Tests
-     * object identity first, then tries equality.
-     * <p>
-     * 
-     * If this list contains OMGraphicLists that are not vague, and the those
-     * lists' appObject doesn't match, the object will be passed to those lists
-     * as well for a check, with their OMGraphic being passed back with a
-     * successful search.
-     * 
-     * @param appObj appObject of the wanted graphic.
-     * @return T or null if not found
-     * @see Object#equals
-     * @see OMGraphic#setAppObject
-     * @see OMGraphic#getAppObject
-     */
-    public T getWithObject(Object appObj) {
-        synchronized (graphics) {
-            for (T omg : graphics) {
-                Object obj = omg.getAppObject();
-                if (obj == appObj || (appObj != null && appObj.equals(obj))) {
-                    return omg;
-                }
-            }
-        }
-        return null;
     }
 
     /**
@@ -378,16 +342,15 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter impl
     }
 
     public T remove(int index) {
-        synchronized (graphics) {
-            return graphics.remove(index);
-        }
+        return graphics.remove(index);
     }
 
     /**
      * @return an unmodifiable copy of this list.
      */
-    public synchronized final List<T> getCopy() {
-        List<T> listCopy = new ArrayList<T>(graphics);
+    public final List<T> getCopy() {
+        final List<T> listCopy;
+        listCopy = new ArrayList<T>(graphics);
         return Collections.unmodifiableList(listCopy);
     }
 
@@ -492,11 +455,9 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter impl
     public void moveIndexedOneToFront(int location) {
         int listSize = size();
         if (location > 0 && location < listSize) {
-            synchronized (graphics) {
-                T tmpGraphic = get(location);
-                graphics.set(location, get(location - 1));
-                graphics.set(location - 1, tmpGraphic);
-            }
+            T tmpGraphic = get(location);
+            graphics.set(location, get(location - 1));
+            graphics.set(location - 1, tmpGraphic);
         }
     }
 
@@ -512,13 +473,11 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter impl
     public void moveIndexedToLast(int location) {
         int listSize = size();
         if (location < listSize - 1 && location >= 0) {
-            synchronized (graphics) {
-                T tmpGraphic = get(location);
-                for (int i = location; i < listSize - 1; i++) {
-                    set(i, get(i + 1));
-                }
-                graphics.set(listSize - 1, tmpGraphic);
+            T tmpGraphic = get(location);
+            for (int i = location; i < listSize - 1; i++) {
+                set(i, get(i + 1));
             }
+            graphics.set(listSize - 1, tmpGraphic);
         }
     }
 
@@ -532,11 +491,9 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter impl
     public void moveIndexedOneToBack(int location) {
         int listSize = size();
         if (location < listSize - 1 && location >= 0) {
-            synchronized (graphics) {
-                T tmpGraphic = get(location);
-                graphics.set(location, get(location + 1));
-                graphics.set(location + 1, tmpGraphic);
-            }
+            T tmpGraphic = get(location);
+            graphics.set(location, get(location + 1));
+            graphics.set(location + 1, tmpGraphic);
         }
     }
 
@@ -658,7 +615,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter impl
      * 
      * @param gr the AWT Graphics context
      */
-    public synchronized void renderAllAsSelected(Graphics gr) {
+    public void renderAllAsSelected(Graphics gr) {
 
         synchronized (graphics) {
             if (traverseMode == FIRST_ADDED_ON_TOP) {
@@ -916,7 +873,7 @@ public abstract class OMList<T extends OMGeometry> extends OMGraphicAdapter impl
      * @return OMGraphicList containing all of the OMGraphics within the limit,
      *         empty if none are found.
      */
-    public synchronized OMList<T> findAll(int x, int y, float limit, boolean resetSelect,
+    public OMList<T> findAll(int x, int y, float limit, boolean resetSelect,
                                           OMList<T> addTo) {
         if (addTo == null) {
             addTo = create();

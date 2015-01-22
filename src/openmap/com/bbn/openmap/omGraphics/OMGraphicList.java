@@ -120,7 +120,7 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
     /**
      * Add an OMGraphic to the list.
      */
-    public synchronized boolean add(OMGraphic g) {
+    public boolean add(OMGraphic g) {
         checkForDuplicate(g);
         return graphics.add(g);
     }
@@ -133,11 +133,11 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      * @param index index of the OMGraphic to return
      * @exception ArrayIndexOutOfBoundsException if index is out-of-bounds
      */
-    public synchronized void setOMGraphicAt(OMGraphic graphic, int index) {
+    public void setOMGraphicAt(OMGraphic graphic, int index) {
         graphics.set(index, graphic);
     }
 
-    public synchronized OMGraphic getOMGraphicAt(int index) {
+    public OMGraphic getOMGraphicAt(int index) {
         return get(index);
     }
 
@@ -150,7 +150,7 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      *            or <code>location &gt;=
      * this.size()</code>
      */
-    public synchronized OMGraphic get(int location) {
+    public OMGraphic get(int location) {
         return graphics.get(location);
     }
 
@@ -161,8 +161,8 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      */
     public void setStroke(java.awt.Stroke stroke) {
         super.setStroke(stroke);
-        synchronized (this) {
-            for (OMGraphic omg : this) {
+        synchronized (graphics) {
+            for (OMGraphic omg : graphics) {
                 omg.setStroke(stroke);
             }
         }
@@ -175,8 +175,8 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      */
     public void setFillPaint(Paint paint) {
         super.setFillPaint(paint);
-        synchronized (this) {
-            for (OMGraphic omg : this) {
+        synchronized (graphics) {
+            for (OMGraphic omg : graphics) {
                 omg.setFillPaint(paint);
             }
         }
@@ -192,8 +192,8 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      */
     public void setTextureMask(TexturePaint texture) {
         super.setTextureMask(texture);
-        synchronized (this) {
-            for (OMGraphic omg : this) {
+        synchronized (graphics) {
+            for (OMGraphic omg : graphics) {
                 omg.setTextureMask(texture);
             }
         }
@@ -206,8 +206,8 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      */
     public void setLinePaint(Paint paint) {
         super.setLinePaint(paint);
-        synchronized (this) {
-            for (OMGraphic omg : this) {
+        synchronized (graphics) {
+            for (OMGraphic omg : graphics) {
                 omg.setLinePaint(paint);
             }
         }
@@ -220,8 +220,8 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      */
     public void setSelectPaint(Paint paint) {
         super.setSelectPaint(paint);
-        synchronized (this) {
-            for (OMGraphic omg : this) {
+        synchronized (graphics) {
+            for (OMGraphic omg : graphics) {
                 omg.setSelectPaint(paint);
             }
         }
@@ -234,8 +234,8 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      */
     public void setMattingPaint(Paint paint) {
         super.setMattingPaint(paint);
-        synchronized (this) {
-            for (OMGraphic omg : this) {
+        synchronized (graphics) {
+            for (OMGraphic omg : graphics) {
                 omg.setMattingPaint(paint);
             }
         }
@@ -246,8 +246,8 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      */
     public void setMatted(boolean value) {
         super.setMatted(value);
-        synchronized (this) {
-            for (OMGraphic omg : this) {
+        synchronized (graphics) {
+            for (OMGraphic omg : graphics) {
                 omg.setMatted(value);
             }
         }
@@ -264,13 +264,15 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      *        generator will create a renderable graphic the next time a
      *        projection is handed to the list.
      */
-    public synchronized void setGridGenerator(OMGridGenerator generator,
+    public void setGridGenerator(OMGridGenerator generator,
                                               Projection proj) {
-        for (OMGraphic graphic : this) {
-            if (graphic instanceof OMGrid) {
-                ((OMGrid) graphic).setGenerator(generator);
-                if (proj != null) {
-                    graphic.generate(proj);
+        synchronized (graphics) {
+            for (OMGraphic graphic : graphics) {
+                if (graphic instanceof OMGrid) {
+                    ((OMGrid) graphic).setGenerator(generator);
+                    if (proj != null) {
+                        graphic.generate(proj);
+                    }
                 }
             }
         }
@@ -290,11 +292,11 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      * 
      * @return a reference of the graphics List.
      */
-    public synchronized List<OMGraphic> getTargets() {
+    public List<OMGraphic> getTargets() {
         if (graphics == null) {
             // make sure that the graphics vector is not null,
             // since all of the internal methods rely on it.
-            graphics = new ArrayList<OMGraphic>();
+            graphics = Collections.synchronizedList(new ArrayList<OMGraphic>(10));
         }
 
         return graphics;
@@ -305,8 +307,8 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      * this list contains OMGraphics. Make *SURE* this is the case. The
      * OMGraphicList will behave badly if there are non-OMGraphics on the list.
      */
-    public synchronized void setTargets(List<OMGraphic> list) {
-        graphics = list;
+    public void setTargets(List<OMGraphic> list) {
+        graphics = Collections.synchronizedList(new ArrayList<OMGraphic>(list));
     }
 
     /**
@@ -342,7 +344,7 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      * 
      * @param objstream ObjectInputStream of graphic list.
      */
-    public synchronized void readGraphics(ObjectInputStream objstream)
+    public void readGraphics(ObjectInputStream objstream)
             throws IOException {
 
         Debug.message("omgraphics", "OMGraphicList: Reading cached graphics");
@@ -351,7 +353,7 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
             while (true) {
                 try {
                     OMGraphic omg = (OMGraphic) objstream.readObject();
-                    this.add(omg);
+                    graphics.add(omg);
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 } catch (OptionalDataException ode) {
@@ -380,7 +382,7 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      * 
      * @param objectstream ObjectOutputStream
      */
-    public synchronized void writeGraphics(ObjectOutputStream objectstream)
+    public void writeGraphics(ObjectOutputStream objectstream)
             throws IOException {
 
         synchronized (graphics) {
@@ -420,10 +422,10 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
      * @return a duplicate list full of shallow copies of each of the OMGraphics
      *         contained on the list.
      */
-    public synchronized Object clone() {
+    public Object clone() {
         OMGraphicList omgl = (OMGraphicList) super.clone();        
-
-        for (OMGraphic omg : this) {
+        synchronized(graphics){
+        for (OMGraphic omg : graphics) {
             // If the OMGraphic doesn't provide a copy (providing a
             // SinkGraphic instead), oh well.
             if (omg instanceof OMGraphicList) {
@@ -432,7 +434,7 @@ public class OMGraphicList extends OMList<OMGraphic> implements Serializable {
                 omgl.graphics.add(omg);
             }
         }
-
+        }
         return omgl;
     }
 

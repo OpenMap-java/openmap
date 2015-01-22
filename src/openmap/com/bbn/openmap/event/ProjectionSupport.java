@@ -173,7 +173,9 @@ public class ProjectionSupport extends ListenerSupport<ProjectionListener> {
                              * individual layers - just blow them off.
                              */
                             try {
-                                listener.projectionChanged(projEvent);
+                                synchronized (lock) {
+                                    listener.projectionChanged(projEvent); 
+                                }
                             } catch (Exception e) {
                                 if (logger.isLoggable(Level.FINE)) {
                                     logger.info("ProjectionListener not handling projection well: "
@@ -197,8 +199,8 @@ public class ProjectionSupport extends ListenerSupport<ProjectionListener> {
                     // just wait until we are awakened for the next event
                     try {
                         synchronized (lock) {
-                            if (nextEvent == null) {
-                                lock.wait();
+                            while (nextEvent == null) {
+                                lock.wait();                                                                
                             }
                         }
                     } catch (InterruptedException x) {
