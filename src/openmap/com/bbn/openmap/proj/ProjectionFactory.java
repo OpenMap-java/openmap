@@ -33,6 +33,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.MapBean;
@@ -42,7 +44,6 @@ import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.SoloMapComponent;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.ComponentFactory;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -103,11 +104,6 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
      */
     protected PropertyChangeSupport pcs;
 
-    // /**
-    // * Singleton instance.
-    // */
-    // protected static ProjectionFactory instance;
-
     protected Vector<ProjectionLoader> projLoaders = new Vector<ProjectionLoader>();
 
     /**
@@ -124,13 +120,10 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
         super.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        String loaderPrefixesString = props.getProperty(prefix
-                + ProjectionLoadersProperty);
+        String loaderPrefixesString = props.getProperty(prefix + ProjectionLoadersProperty);
         if (loaderPrefixesString != null) {
             Vector<String> loaderPrefixes = PropUtils.parseSpacedMarkers(loaderPrefixesString);
-            Vector<?> loaders = ComponentFactory.create(loaderPrefixes,
-                    prefix,
-                    props);
+            Vector<?> loaders = ComponentFactory.create(loaderPrefixes, prefix, props);
 
             for (Iterator<?> it = loaders.iterator(); it.hasNext();) {
                 Object obj = it.next();
@@ -188,17 +181,6 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
         return props;
     }
 
-    // /**
-    // * Get the singleton instance of the ProjectionFactory.
-    // */
-    // public static ProjectionFactory getInstance() {
-    // if (instance == null) {
-    // instance = new ProjectionFactory();
-    // }
-    //
-    // return instance;
-    // }
-
     /**
      * Returns an array of Projection names available from this factory.
      */
@@ -252,11 +234,7 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
     public Projection makeProjection(String projClassName, Projection p) {
 
         Point2D ctr = p.getCenter();
-        return makeProjection(projClassName,
-                ctr,
-                p.getScale(),
-                p.getWidth(),
-                p.getHeight());
+        return makeProjection(projClassName, ctr, p.getScale(), p.getWidth(), p.getHeight());
     }
 
     /**
@@ -270,23 +248,14 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
      * @param height pixel height of projection.
      * @return Projection
      */
-    public Projection makeProjection(String projClassName, Point2D center,
-                                     float scale, int width, int height) {
+    public Projection makeProjection(String projClassName, Point2D center, float scale, int width,
+                                     int height) {
 
         if (projClassName == null) {
             throw new ProjectionException("No projection class name specified");
         }
 
-        try {
-            return makeProjection((Class<? extends Projection>) Class.forName(projClassName),
-                    center,
-                    scale,
-                    width,
-                    height);
-        } catch (ClassNotFoundException cnfe) {
-            throw new ProjectionException("Projection class " + projClassName
-                    + " not found");
-        }
+        return makeProjection(getProjClassForName(projClassName), center, scale, width, height);
     }
 
     /**
@@ -300,9 +269,8 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
      * @param height pixel height of projection.
      * @return Projection
      */
-    public Projection makeProjection(Class<? extends Projection> projClass,
-                                     Point2D center, float scale, int width,
-                                     int height) {
+    public Projection makeProjection(Class<? extends Projection> projClass, Point2D center,
+                                     float scale, int width, int height) {
 
         ProjectionLoader loader = MercatorLoader.defaultMercator;
 
@@ -345,42 +313,29 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
      * @return Projection from Environment settings, fit for the pixel height
      *         and width provided.
      */
-    public Projection getDefaultProjectionFromEnvironment(
-                                                          Environment environment,
-                                                          int width, int height) {
+    public Projection getDefaultProjectionFromEnvironment(Environment environment, int width,
+                                                          int height) {
         // Initialize the map projection, scale, center
         // with user prefs or defaults
         Projection proj = null;
 
-        int w = (width <= 0) ? Environment.getInteger(Environment.Width,
-                MapBean.DEFAULT_WIDTH) : width;
-        int h = (height <= 0) ? Environment.getInteger(Environment.Height,
-                MapBean.DEFAULT_HEIGHT) : height;
+        int w = (width <= 0) ? Environment.getInteger(Environment.Width, MapBean.DEFAULT_WIDTH)
+                : width;
+        int h = (height <= 0) ? Environment.getInteger(Environment.Height, MapBean.DEFAULT_HEIGHT)
+                : height;
 
         try {
-            proj = makeProjection(Environment.get(Environment.Projection),
-                    new LatLonPoint.Float(environment.getFloat(Environment.Latitude,
-                            0f), environment.getFloat(Environment.Longitude, 0f)),
-                    environment.getFloat(Environment.Scale,
-                            Float.POSITIVE_INFINITY),
-                    w,
-                    h);
+            proj = makeProjection(Environment.get(Environment.Projection), new LatLonPoint.Float(environment.getFloat(Environment.Latitude, 0f), environment.getFloat(Environment.Longitude, 0f)), environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY), w, h);
 
         } catch (com.bbn.openmap.proj.ProjectionException pe) {
-            if (Debug.debugging("proj")) {
-                Debug.output("ProjectionFactory.getDefaultProjectionFromEnvironment(): Can't use ("
+            if (getLogger().isLoggable(Level.FINE)) {
+                getLogger().fine("Can't use ("
                         + Environment.Projection
                         + " = "
                         + Environment.get(Environment.Projection)
                         + ") property as a projection class, need a class name instead.  Using default of com.bbn.openmap.proj.Mercator.");
             }
-            proj = makeProjection(Mercator.class,
-                    new LatLonPoint.Float(environment.getFloat(Environment.Latitude,
-                            0f), environment.getFloat(Environment.Longitude, 0f)),
-                    environment.getFloat(Environment.Scale,
-                            Float.POSITIVE_INFINITY),
-                    w,
-                    h);
+            proj = makeProjection(Mercator.class, new LatLonPoint.Float(environment.getFloat(Environment.Latitude, 0f), environment.getFloat(Environment.Longitude, 0f)), environment.getFloat(Environment.Scale, Float.POSITIVE_INFINITY), w, h);
         }
 
         return proj;
@@ -398,8 +353,8 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
      * @param height pixel height of projection
      * @return Projection
      */
-    public Projection makeProjection(ProjectionLoader loader, Point2D center,
-                                     float scale, int width, int height) {
+    public Projection makeProjection(ProjectionLoader loader, Point2D center, float scale,
+                                     int width, int height) {
         return makeProjection(loader, center, scale, width, height, null);
     }
 
@@ -420,13 +375,12 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
      *        projection loader. If null, a Properties object will be created.
      * @return projection, or null if the projection can't be created.
      */
-    public Projection makeProjection(ProjectionLoader loader, Point2D center,
-                                     float scale, int width, int height,
-                                     Properties projProps) {
+    public Projection makeProjection(ProjectionLoader loader, Point2D center, float scale,
+                                     int width, int height, Properties projProps) {
 
         Projection proj = null;
         if (loader == null) {
-            Debug.error("ProjectionFactory.makeProjection() not given a ProjectionLoader to use to create a Projection");
+            getLogger().warning("not given a ProjectionLoader to use to create a Projection");
             return proj;
         }
 
@@ -442,10 +396,8 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
         proj = loader.create(projProps);
 
         if (proj == null) {
-            Debug.error("ProjectionFactory.makeProjection() tried to create a Projection from a "
-                    + loader.getPrettyName()
-                    + ", "
-                    + loader.getProjectionClass().getName() + ", failed.");
+            getLogger().warning("tried to create a Projection from a " + loader.getPrettyName()
+                    + ", " + loader.getProjectionClass().getName() + ", failed.");
         }
 
         return proj;
@@ -494,8 +446,7 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
         }
     }
 
-    public void addPropertyChangeListener(String propertyName,
-                                          PropertyChangeListener pcl) {
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener pcl) {
         if (pcl != null) {
             pcs.addPropertyChangeListener(propertyName, pcl);
             pcl.propertyChange(new PropertyChangeEvent(this, AvailableProjectionProperty, null, projLoaders));
@@ -506,8 +457,7 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
         pcs.removePropertyChangeListener(pcl);
     }
 
-    public void removePropertyChangeListener(String propertyName,
-                                             PropertyChangeListener pcl) {
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener pcl) {
         pcs.removePropertyChangeListener(propertyName, pcl);
     }
 
@@ -572,4 +522,33 @@ public class ProjectionFactory extends OMComponent implements SoloMapComponent {
         }
         return pf;
     }
+
+    // <editor-fold defaultstate="collapsed" desc="Logger Code">
+    /**
+     * Holder for this class's Logger. This allows for lazy initialization of
+     * the logger.
+     */
+    private static final class LoggerHolder {
+        /**
+         * The logger for this class
+         */
+        private static final Logger LOGGER = Logger.getLogger(ProjectionFactory.class.getName());
+
+        /**
+         * Prevent instantiation
+         */
+        private LoggerHolder() {
+            throw new AssertionError("This should never be instantiated");
+        }
+    }
+
+    /**
+     * Get the logger for this class.
+     *
+     * @return logger for this class
+     */
+    private static Logger getLogger() {
+        return LoggerHolder.LOGGER;
+    }
+    // </editor-fold>
 }
