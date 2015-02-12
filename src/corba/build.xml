@@ -26,7 +26,7 @@
 		<!-- used to check to see if the idls need to be compiled, or if they have been. -->
 		<property name="cspecialist.home" value="${corba.src}/com/bbn/openmap/corba/CSpecialist" />
 		<property name="crfp.home" value="${corba.src}/com/bbn/openmap/layer/rpf/corba/CRpfFrameProvider" />
-		<property name="corbaimage.home" value="${corba.src}/com/bbn/openmap/plugin/corbaImage/corbaImageServer" />
+		<property name="corbaimage.home" value="${corba.src}/com/bbn/openmap/layer/corbaImage/corbaImageServer" />
 
 		<!-- 
 	 Initial check to see if the idls need to be compiled.  If the
@@ -120,7 +120,7 @@
 
 		<echo message="  CORBA ImageServer package..." />
 		<exec executable="${idl2java.compiler}" failifexecutionfails="false">
-			<arg line='-td ${corba.src} -fall -pkgPrefix corbaImageServer com.bbn.openmap.plugin.corbaImage ${corba.src}/com/bbn/openmap/plugin/corbaImage/CorbaImageServer.idl' />
+			<arg line='-td ${corba.src} -fall -pkgPrefix corbaImageServer com.bbn.openmap.layer.corbaImage ${corba.src}/com/bbn/openmap/layer/corbaImage/CorbaImageServer.idl' />
 		</exec>
 
 		<!-- 
@@ -198,7 +198,7 @@
 
 		<java classname="${idl2java.compiler}" fork="yes">
 			<jvmarg line='-Xbootclasspath:${visibroker.bootclasspath} -DORBdisableLocator' />
-			<arg line='-root_dir ${corba.src} -package com.bbn.openmap.plugin.corbaImage ${corba.src}/com/bbn/openmap/plugin/corbaImage/CorbaImageServer.idl' />
+			<arg line='-root_dir ${corba.src} -package com.bbn.openmap.layer.corbaImage ${corba.src}/com/bbn/openmap/layer/corbaImage/CorbaImageServer.idl' />
 		</java>
 
 		<!-- 
@@ -236,7 +236,7 @@
 		<echo message="Compiling CORBA classes with Visibroker..." />
 		<javac includeantruntime="false" srcdir="${corba.src}" destdir="${corba.classes}" debug="on" includes="**/layer/rpf/corba/**/*.java,
 		     **/layer/specialist/**/*.java,
-		     **/plugin/corbaImage/**/*.java" excludes="**/unimplemented/**" bootclasspath="${visibroker.bootclasspath}" source="1.5" target="1.5">
+		     **/layer/corbaImage/**/*.java" excludes="**/unimplemented/**" bootclasspath="${visibroker.bootclasspath}" source="1.5" target="1.5">
 			<classpath>
 				<path refid="ext_tools_classpath" />
 				<pathelement path="${openmap.classes}" />
@@ -274,7 +274,7 @@
 	<target name="clean_stubs.corba" depends="init.corba" description="Delete the Corba OpenMap Stub classes generated from IDLs.">
 		<delete dir="${corba.src}/com/bbn/openmap/layer/rpf/corba/CRpfFrameProvider" />
 		<delete dir="${corba.src}/com/bbn/openmap/corba" />
-		<delete dir="${corba.src}/com/bbn/openmap/plugin/corbaImage/corbaImageServer" />
+		<delete dir="${corba.src}/com/bbn/openmap/layer/corbaImage/corbaImageServer" />
 	</target>
 
 	<target name="clean_jars.corba" description="Delete only the jar files from the lib directory.">

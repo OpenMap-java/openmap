@@ -53,7 +53,7 @@ import com.bbn.openmap.image.ImageFormatter;
 import com.bbn.openmap.image.ImageServer;
 import com.bbn.openmap.image.PNG32ImageFormatter;
 import com.bbn.openmap.image.SunJPEGFormatter;
-import com.bbn.openmap.layer.imageTile.MapTileLayer;
+import com.bbn.openmap.layer.image.MapTileLayer;
 import com.bbn.openmap.layer.shape.ShapeLayer;
 import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.proj.Mercator;

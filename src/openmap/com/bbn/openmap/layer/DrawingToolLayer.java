@@ -45,7 +45,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.dataAccess.shape.DbfTableModel;
 import com.bbn.openmap.dataAccess.shape.DbfTableModelFactory;
 import com.bbn.openmap.dataAccess.shape.EsriShapeExport;
@@ -66,6 +65,7 @@ import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
 import com.bbn.openmap.tools.drawing.OMDrawingTool;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.FileUtils;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.propertyEditor.Inspector;

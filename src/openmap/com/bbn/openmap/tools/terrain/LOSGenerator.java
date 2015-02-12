@@ -26,12 +26,12 @@ import java.awt.Color;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Planet;
 import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * A Class that can do Line-Of-Sight calculations between two points. Uses the

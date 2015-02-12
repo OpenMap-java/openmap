@@ -57,7 +57,7 @@ public class LinkGraphic implements LinkConstants, LinkPropertiesConstants {
         // This is so not object-oriented. I know, I know.
 
         if (props == null) {
-            Object obj = omGraphic.getAppObject();
+            Object obj = omGraphic.getAttribute(OMGraphic.APP_OBJECT);
             if (obj instanceof LinkProperties) {
                 props = (LinkProperties) obj;
             } else {

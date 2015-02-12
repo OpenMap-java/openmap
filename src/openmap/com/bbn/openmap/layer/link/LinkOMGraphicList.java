@@ -90,7 +90,7 @@ public class LinkOMGraphicList extends OMGraphicList implements
      */
     public synchronized boolean add(OMGraphic g) {
         boolean ret = super.add(g);
-        String id = ((LinkProperties) g.getAppObject()).getProperty(LPC_GRAPHICID);
+        String id = ((LinkProperties) g.getAttribute(OMGraphic.APP_OBJECT)).getProperty(LPC_GRAPHICID);
         if (Debug.debugging("linkdetail")) {
             Debug.output("LinkOMGraphicList: Adding graphic, id(" + id + ")");
         }
@@ -109,7 +109,7 @@ public class LinkOMGraphicList extends OMGraphicList implements
     protected synchronized Object _remove(int location) {
         Object ret = super.remove(location);
         if (ret != null) {
-            String id = ((LinkProperties) ((OMGeometry) ret).getAppObject()).getProperty(LPC_GRAPHICID);
+            String id = ((LinkProperties) ((OMGeometry) ret).getAttribute(OMGraphic.APP_OBJECT)).getProperty(LPC_GRAPHICID);
             if (id != null) {
                 hash.remove(id.intern());
                 if (Debug.debugging("link")) {
@@ -132,7 +132,7 @@ public class LinkOMGraphicList extends OMGraphicList implements
     protected synchronized boolean _remove(OMGeometry geometry) {
         boolean ret = super.remove(geometry);
         if (ret != false) {
-            String id = ((LinkProperties) geometry.getAppObject()).getProperty(LPC_GRAPHICID);
+            String id = ((LinkProperties) geometry.getAttribute(OMGraphic.APP_OBJECT)).getProperty(LPC_GRAPHICID);
             hash.remove(id.intern());
             if (Debug.debugging("link")) {
                 Debug.output("LinkOMGraphicList: Removing graphic " + id);
@@ -157,7 +157,7 @@ public class LinkOMGraphicList extends OMGraphicList implements
         LinkProperties linkp = null;
 
         try {
-            linkp = (LinkProperties) graphic.getAppObject();
+            linkp = (LinkProperties) graphic.getAttribute(OMGraphic.APP_OBJECT);
 
             String id = null;
             if (linkp != null) {
@@ -228,7 +228,7 @@ public class LinkOMGraphicList extends OMGraphicList implements
             while (iterator.hasPrevious()) {
                 OMGraphic graphic = iterator.previous();
                 if (graphic.isVisible()) {
-                    Object obj = graphic.getAppObject();
+                    Object obj = graphic.getAttribute(OMGraphic.APP_OBJECT);
                     if (Debug.debugging("linkdetail")
                             && obj instanceof LinkProperties) {
                         String id = ((LinkProperties) obj).getProperty(LPC_GRAPHICID);
@@ -245,7 +245,7 @@ public class LinkOMGraphicList extends OMGraphicList implements
             while (iterator.hasNext()) {
                 OMGraphic graphic = iterator.next();
                 if (graphic.isVisible()) {
-                    Object obj = graphic.getAppObject();
+                    Object obj = graphic.getAttribute(OMGraphic.APP_OBJECT);
                     if (Debug.debugging("linkdetail")
                             && obj instanceof LinkProperties) {
                         String id = ((LinkProperties) obj).getProperty(LPC_GRAPHICID);

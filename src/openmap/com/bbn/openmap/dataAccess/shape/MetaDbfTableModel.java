@@ -38,9 +38,9 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.dataAccess.shape.input.DbfInputStream;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 
 /**
  * An extension of the DbfTableModel that allows editing of the format of the

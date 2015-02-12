@@ -33,7 +33,6 @@ import java.awt.geom.Line2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.geo.Intersection;
 import com.bbn.openmap.proj.DrawUtil;
@@ -42,6 +41,7 @@ import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.DeepCopyUtil;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * Graphic object that represents a polygon or polyline

@@ -27,9 +27,9 @@ import java.beans.beancontext.BeanContext;
 import javax.swing.JMenuItem;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.LightMapHandlerChild;
 import com.bbn.openmap.MapHandler;
+import com.bbn.openmap.util.I18n;
 
 /**
  * A MapHandlerMenuItem is a JMenuItem that uses the MapHandler to

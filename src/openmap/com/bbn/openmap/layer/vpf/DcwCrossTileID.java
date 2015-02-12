@@ -25,9 +25,9 @@ package com.bbn.openmap.layer.vpf;
 import java.io.EOFException;
 import java.io.IOException;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * Encapsulate the VPF Cross-Tile identifier primitive datatype. The

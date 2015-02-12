@@ -37,7 +37,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.event.SelectMouseMode;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.layer.policy.ListResetPCPolicy;
@@ -48,6 +47,7 @@ import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
 import com.bbn.openmap.proj.EqualArc;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.cacheHandler.CacheHandler;
 

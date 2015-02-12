@@ -17,8 +17,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * A class that represents a point on the Earth as a three dimensional unit

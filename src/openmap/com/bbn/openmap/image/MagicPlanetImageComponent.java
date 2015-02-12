@@ -43,7 +43,6 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapBean;
@@ -54,6 +53,7 @@ import com.bbn.openmap.proj.LLXY;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**

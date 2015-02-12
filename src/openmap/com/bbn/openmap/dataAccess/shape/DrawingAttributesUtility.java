@@ -117,9 +117,7 @@ public class DrawingAttributesUtility implements ShapeConstants {
     protected void configureForRecord(OMGraphic graphic, List<Object> record) {
         if (desColumn != -1) {
             String ret = (String) record.get(desColumn);
-            if (graphic.getAppObject() == null) {
-                graphic.setAppObject(ret);
-            }
+            graphic.putAttribute(SHAPE_DBF_DESCRIPTION, ret);
         }
 
         getDefaultAttributes().setTo(da);

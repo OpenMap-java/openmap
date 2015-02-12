@@ -34,7 +34,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.omGraphics.OMAction;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -45,6 +44,7 @@ import com.bbn.openmap.omGraphics.event.SelectionProvider;
 import com.bbn.openmap.tools.drawing.DrawingToolRequestor;
 import com.bbn.openmap.tools.drawing.OMDrawingTool;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 
 /**
  * The OMGraphicDeleteTool is a Swing component that contains a button that

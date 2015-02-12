@@ -48,9 +48,9 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.gui.menu.ToolPanelToggleMenuItem;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**

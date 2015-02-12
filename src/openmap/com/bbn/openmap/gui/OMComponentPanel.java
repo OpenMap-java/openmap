@@ -36,9 +36,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.LightMapHandlerChild;
 import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.util.I18n;
 
 /**
  * The OMComponentPanel is a convenient super class intended to provide an easy

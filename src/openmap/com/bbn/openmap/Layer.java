@@ -64,6 +64,7 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.GeoCoordTransformation;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.propertyEditor.Inspector;
 

@@ -38,7 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
+import com.bbn.openmap.util.I18n;
 
 /**
  * A PropertyEditor that displays an either/or option. The widget

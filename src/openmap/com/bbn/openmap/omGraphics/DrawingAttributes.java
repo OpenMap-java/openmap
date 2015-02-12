@@ -62,7 +62,6 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.omGraphics.awt.ShapeRenderer;
@@ -71,6 +70,7 @@ import com.bbn.openmap.tools.icon.IconPartList;
 import com.bbn.openmap.tools.icon.OMIconFactory;
 import com.bbn.openmap.tools.icon.OpenMapAppPartCollection;
 import com.bbn.openmap.util.HashCodeUtil;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.propertyEditor.OptionPropertyEditor;
 

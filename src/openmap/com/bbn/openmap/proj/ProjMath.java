@@ -27,7 +27,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
-import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * Math functions used by projection code.

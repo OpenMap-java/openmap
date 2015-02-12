@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.geo.GeoArray;
 import com.bbn.openmap.geo.Intersection;
@@ -15,6 +14,7 @@ import com.bbn.openmap.omGraphics.OMAreaList;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * The RibbonMaker class takes polygon coordinates and creates another polygon

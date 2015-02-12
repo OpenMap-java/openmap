@@ -31,9 +31,9 @@ import java.util.logging.Level;
 
 import javax.swing.ImageIcon;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.DeepCopyUtil;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * The OMRaster object lets you create multi-colored images. An image is a two

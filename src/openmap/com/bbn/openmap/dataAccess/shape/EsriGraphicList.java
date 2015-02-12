@@ -187,10 +187,6 @@ public abstract class EsriGraphicList
      */
     public DbfTableModel getTable() {
         Object obj = getAttribute(DBF_ATTRIBUTE);
-        // Backward compatibility
-        if (obj == null) {
-            obj = getAppObject();
-        }
         if (obj instanceof DbfTableModel) {
             return (DbfTableModel) obj;
         } else {

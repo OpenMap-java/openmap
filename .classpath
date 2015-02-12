@@ -49,5 +49,16 @@
 	<classpathentry kind="lib" path="ext/sqlitejdbc/sqlitejdbc-v056.jar"/>
 	<classpathentry kind="lib" path="ext/apache/servlet-api.jar"/>
 	<classpathentry kind="lib" path="ext/BrowserLauncher2-all-1_3.jar"/>
+	<classpathentry kind="lib" path="ext/postgis-jdbc-2.1.0SVN.jar"/>
+	<classpathentry kind="lib" path="ext/postgresql-9.3-1100.jdbc41.jar"/>
+	<classpathentry kind="lib" path="ext/jackson/jackson-annotations-2.2.3.jar"/>
+	<classpathentry kind="lib" path="ext/jackson/jackson-core-2.2.3.jar"/>
+	<classpathentry kind="lib" path="ext/jackson/jackson-databind-2.2.3.jar"/>
+	<classpathentry kind="lib" path="ext/jackson/jackson-dataformat-smile-2.1.1.jar"/>
+	<classpathentry kind="lib" path="ext/jackson/jackson-datatype-guava-2.2.0.jar"/>
+	<classpathentry kind="lib" path="ext/jackson/jackson-datatype-joda-2.2.0.jar"/>
+	<classpathentry kind="lib" path="ext/jackson/jackson-module-afterburner-2.2.1.jar"/>
+	<classpathentry kind="lib" path="ext/jackson/jackson-module-mrbean-2.2.1.jar"/>
+	<classpathentry kind="lib" path="ext/jackson/jackson-module-paranamer-2.2.3.jar"/>
 	<classpathentry kind="output" path="classes/openmap"/>
 </classpath>

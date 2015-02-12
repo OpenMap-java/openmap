@@ -40,11 +40,11 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.Timer;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MouseDelegator;
 import com.bbn.openmap.OMComponent;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.propertyEditor.OptionPropertyEditor;
 

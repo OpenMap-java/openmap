@@ -30,13 +30,13 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.omGraphics.OMGraphicAdapter;
 import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * This is a class (or set of classes) that map GeoExtents to OMGraphics. They

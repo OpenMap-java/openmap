@@ -35,11 +35,11 @@ import java.util.logging.Level;
 import javax.swing.ImageIcon;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.cacheHandler.CacheObject;
 

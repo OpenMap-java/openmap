@@ -35,9 +35,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.proj.Ellipsoid;
 import com.bbn.openmap.util.HashCodeUtil;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * From: http://www.commlinx.com.au/Datum%20Transformation%20Description.html :

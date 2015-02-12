@@ -32,7 +32,6 @@ import java.util.Vector;
 
 import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.MapBean;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMCircle;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -44,6 +43,7 @@ import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.MoreMath;
 import com.bbn.openmap.util.PropUtils;
 
 /**

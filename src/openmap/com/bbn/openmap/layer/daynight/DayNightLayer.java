@@ -29,8 +29,6 @@ import java.util.Properties;
 
 import javax.swing.Timer;
 
-import com.bbn.openmap.I18n;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.event.ProjectionListener;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMCircle;
@@ -42,6 +40,8 @@ import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
+import com.bbn.openmap.util.MoreMath;
 import com.bbn.openmap.util.PropUtils;
 
 /**

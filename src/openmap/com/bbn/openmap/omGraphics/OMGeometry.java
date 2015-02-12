@@ -112,24 +112,6 @@ public interface OMGeometry {
     public void deselect();
 
     /**
-     * Holds an application specific object for later access. This can be used
-     * to associate an application object with an OMGeometry for later
-     * retrieval. For instance, when the graphic is clicked on, the application
-     * gets the OMGeometry object back from the OMGeometryList, and can then get
-     * back to the application level object through this pointer.
-     * 
-     * @param obj Object
-     */
-    public void setAppObject(Object obj);
-
-    /**
-     * Gets the application's object pointer.
-     * 
-     * @return Object
-     */
-    public Object getAppObject();
-
-    /**
      * Set an attribute in an OMGeometry.
      */
     public void putAttribute(Object key, Object value);

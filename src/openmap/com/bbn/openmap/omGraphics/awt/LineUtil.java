@@ -3,7 +3,7 @@ package com.bbn.openmap.omGraphics.awt;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
 
-import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * Various computations about plane geometry.

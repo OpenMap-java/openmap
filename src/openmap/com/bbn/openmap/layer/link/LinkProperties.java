@@ -293,7 +293,7 @@ public class LinkProperties extends Properties implements LinkPropertiesConstant
         omg.setStroke(getStroke());
 
         if (this != EMPTY_PROPERTIES) {
-            omg.setAppObject(this);
+            omg.putAttribute(OMGraphic.APP_OBJECT, this);
         }
     }
 

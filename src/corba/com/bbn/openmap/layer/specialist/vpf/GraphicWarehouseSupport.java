@@ -399,7 +399,7 @@ public abstract class GraphicWarehouseSupport
 
       }
 
-      if ((west < east) && com.bbn.openmap.MoreMath.approximately_equal(east, west, 0.001f)) {
+      if ((west < east) && com.bbn.openmap.util.MoreMath.approximately_equal(east, west, 0.001f)) {
          float tmp = west;
          west = east;
          east = tmp;

@@ -59,7 +59,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.dataAccess.shape.input.DbfInputStream;
 import com.bbn.openmap.dataAccess.shape.output.DbfOutputStream;
 import com.bbn.openmap.omGraphics.OMAction;
@@ -67,6 +66,7 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.FileUtils;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**

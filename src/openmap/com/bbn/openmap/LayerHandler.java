@@ -39,9 +39,8 @@ import com.bbn.openmap.event.LayerConfigurationListenerSupport;
 import com.bbn.openmap.event.LayerEvent;
 import com.bbn.openmap.event.LayerListener;
 import com.bbn.openmap.event.LayerSupport;
-import com.bbn.openmap.plugin.PlugIn;
-import com.bbn.openmap.plugin.PlugInLayer;
 import com.bbn.openmap.util.ComponentFactory;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -424,12 +423,6 @@ public class LayerHandler extends OMComponent implements SoloMapComponent, Seria
 
             if (obj instanceof Layer) {
                 l = (Layer) obj;
-            } else if (obj instanceof PlugIn) {
-
-                PlugInLayer pl = new PlugInLayer();
-                pl.setProperties(layerName, p);
-                pl.setPlugIn((PlugIn) obj);
-                l = pl;
             } else {
                 logger.info("Skipped \""
                         + layerName
@@ -992,15 +985,6 @@ public class LayerHandler extends OMComponent implements SoloMapComponent, Seria
             }
         }
 
-        if (someObj instanceof PlugIn) {
-            PlugIn pi = (PlugIn) someObj;
-            if (pi.getComponent() == null) {
-                PlugInLayer pil = new PlugInLayer();
-                pil.setPlugIn(pi);
-                addLayer(pil, 0);
-            }
-        }
-
         if (someObj instanceof PropertyHandler) {
             // Used to notify the PropertyHandler of used property
             // prefix names.
@@ -1029,14 +1013,6 @@ public class LayerHandler extends OMComponent implements SoloMapComponent, Seria
         
         if (someObj instanceof Layer) {
             removeLayer((Layer) someObj);
-        }
-
-        if (someObj instanceof PlugIn) {
-            PlugIn pi = (PlugIn) someObj;
-            Component comp = pi.getComponent();
-            if (comp instanceof Layer && hasLayer((Layer) comp)) {
-                removeLayer((Layer) comp);
-            }
         }
 
         if (someObj instanceof PropertyHandler && someObj == getPropertyHandler()) {

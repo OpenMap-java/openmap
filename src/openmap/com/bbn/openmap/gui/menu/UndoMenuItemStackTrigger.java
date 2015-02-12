@@ -11,10 +11,10 @@ import java.util.List;
 import javax.swing.JMenuItem;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.event.UndoEvent;
 import com.bbn.openmap.event.UndoStack;
 import com.bbn.openmap.event.UndoStackTrigger;
+import com.bbn.openmap.util.I18n;
 
 /**
  * UndoMenuItemStackTrigger holds a couple of menu items that can trigger an UndoStack.

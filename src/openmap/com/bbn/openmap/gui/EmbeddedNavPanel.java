@@ -235,7 +235,7 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 
 		interString = i18n.get(EmbeddedNavPanel.class,
 			PanDistanceProperty,
-			com.bbn.openmap.I18n.TOOLTIP,
+			com.bbn.openmap.util.I18n.TOOLTIP,
 			"Panning Distance.");
 		props.put(PanDistanceProperty, interString);
 		interString = i18n.get(EmbeddedNavPanel.class,
@@ -248,7 +248,7 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 
 		interString = i18n.get(EmbeddedNavPanel.class,
 			ZoomFactorProperty,
-			com.bbn.openmap.I18n.TOOLTIP,
+			com.bbn.openmap.util.I18n.TOOLTIP,
 			"Zoom Factor.");
 		props.put(ZoomFactorProperty, interString);
 		interString = i18n.get(EmbeddedNavPanel.class,

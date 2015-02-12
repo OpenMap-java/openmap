@@ -22,7 +22,7 @@
 
 package com.bbn.openmap.proj;
 
-import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * Planet datums and parameters. These values are taken from John

@@ -30,7 +30,8 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
 import java.io.Serializable;
-import java.util.Hashtable;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.bbn.openmap.omGraphics.OMGeometry;
@@ -77,17 +78,13 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      */
     protected int lineType = LINETYPE_UNKNOWN;
 
-    /** Flag to indicate that the object needs to be reprojected. */
+    /** Flag to indicate that the object needs to be re-projected. */
     protected transient boolean needToRegenerate = true;
 
     /**
-     * Space for an application to associate geometry with an application
-     * object. This object can contain attribute information about the geometry.
-     *
-     * @see #setAppObject
-     * @see #getAppObject
+     * Attribute Map for this Geometry/OMGraphic.
      */
-    protected Object appObject;
+    protected Map<Object, Object> attributes;
 
     /**
      * A flag to render this geometry visible.
@@ -101,9 +98,6 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * the earth.
      */
     protected transient GeneralPath shape = null;
-
-    protected static final String APP_OBJECT_KEY = "app_object_key";
-    protected static final String ATT_MAP_KEY = "att_map_key";
 
     // ////////////////////////////////////////////////////////
 
@@ -198,126 +192,10 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
     }
 
     /**
-     * Holds an application specific object for later access. This can be used
-     * to associate an application object with an OMGeometry for later
-     * retrieval. For instance, when the graphic is clicked on, the application
-     * gets the OMGeometry object back from the OMGeometryList, and can then get
-     * back to the application level object through this pointer.
-     * <P>
-     *
-     * The BasicGeometry has been updated to use an attribute Object Map to hold
-     * multiple attributes. If no attributes have been added, then the appObject
-     * will just hold any object passed in here. If attributes have already been
-     * added, then calling this method will add the object to the Map under the
-     * APP_OBJECT_KEY key. getAppObject() will return the object set in this
-     * method.
-     *
-     * @param obj Object
-     */
-    public synchronized void setAppObject(Object obj) {
-        setAppObject(obj, true);
-    }
-
-    /**
-     * Same as setAppObject with the option for disabling the attribute Map
-     * management.
-     *
-     * @param checkToReplaceObjWithMap if false, just sets obj to appObject.
-     */
-    protected synchronized void setAppObject(Object obj, boolean checkToReplaceObjWithMap) {
-        if (checkToReplaceObjWithMap && checkAttributeMap()) {
-            putAttribute(APP_OBJECT_KEY, obj);
-        } else {
-            appObject = obj;
-        }
-    }
-
-    /**
-     * Gets the application's object pointer. If an attribute Map object is
-     * being used, returns the object stored in that map under the
-     * APP_OBJECT_KEY key.
-     *
-     * @return Object
-     */
-    public synchronized Object getAppObject() {
-        return getAppObject(true);
-    }
-
-    /**
-     * Same as getAppObject, with the option of disabling the attribute Map
-     * management.
-     *
-     * @param checkForObjOnMap if false, just returns the appObject.
-     */
-    protected synchronized Object getAppObject(boolean checkForObjOnMap) {
-        if (checkForObjOnMap && checkAttributeMap()) {
-            return getAttribute(APP_OBJECT_KEY);
-        } else {
-            return appObject;
-        }
-    }
-
-    /**
-     * A call used by the BasicGeometry to replace a current application object
-     * with an Object Map while also adding that application object to the Map
-     * under the APP_OBJECT_KEY key value.
-     */
-    protected void replaceAppObjectWithAttributeMap() {
-        if (!checkAttributeMap()) {
-            // OK, we know we need to create a Map for the attributes,
-            // and place it in the appObject of this BasicGeometry.
-            // So, get whatever is already there,
-            Object appObj = getAppObject(false);
-
-            // Create the new Map, set a pointer to itself so we know
-            // it's the attribute Map (and not just replacing a Map
-            // that someone else was using before
-            Map<Object, Object> attributes = createAttributeMap();
-            attributes.put(ATT_MAP_KEY, attributes);
-            setAppObject(attributes, false);
-
-            // Now, set the old appObject if appropriate.
-            if (appObj != null) {
-                attributes.put(APP_OBJECT_KEY, appObj);
-            }
-        }
-    }
-
-    /**
-     * Returns true if the appObject is a Map and if it's the attribute Map,
-     * false if the appObject is something different or null.
-     */
-    protected boolean checkAttributeMap() {
-        return checkAttributeMap(getAppObject(false));
-    }
-
-    /**
-     * Returns true of the Object is a Map and is pointing to itself in the Map
-     * under the ATT_MAP_KEY.
-     */
-    protected boolean checkAttributeMap(Object obj) {
-        return (obj instanceof Map<?, ?> && ((Map<Object, Object>) obj).get(ATT_MAP_KEY) == obj);
-    }
-
-    /**
-     * Returns a Map that is being used as an attribute holder. If a Map doesn't
-     * exist, one will be created. If the current appObject isn't the map, a Map
-     * will be created and the appObject will be added to it under the
-     * APP_OBJECT_KEY. Regardless, the attribute map will be returned from this
-     * method call.
-     */
-    protected Map<Object, Object> getAttributeMap() {
-        // replaceAppObjectWithAttributeMap will do nothing if
-        // attribute map is already set.
-        replaceAppObjectWithAttributeMap();
-        return (Map<Object, Object>) getAppObject(false);
-    }
-
-    /**
      * Method to extend if you don't like Hashtables used for attribute table.
      */
     protected Map<Object, Object> createAttributeMap() {
-        return new Hashtable<Object, Object>();
+        return Collections.synchronizedMap(new LinkedHashMap<Object, Object>());
     }
 
     /**
@@ -325,8 +203,8 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * doesn't exist.
      */
     public void putAttribute(Object key, Object value) {
-        if (key != null && value != null) {
-            getAttributeMap().put(key, value);
+        if (key != null) {
+            getAttributes().put(key, value);
         }
     }
 
@@ -337,10 +215,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      */
     public Object getAttribute(Object key) {
         if (key != null) {
-            Object appObj = getAppObject(false);
-            if (appObj instanceof Map<?, ?>) {
-                return ((Map<Object, Object>) appObj).get(key);
-            }
+            return getAttributes().get(key);
         }
         return null;
     }
@@ -352,11 +227,9 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * from the Map, or null if there wasn't a value for the given key.
      */
     public Object removeAttribute(Object key) {
-        Object appObj = getAppObject(false);
-        if (appObj instanceof Map<?, ?>) {
-            return ((Map<Object, Object>) appObj).remove(key);
+        if (key != null) {
+            return getAttributes().remove(key);
         }
-        // else
         return null;
     }
 
@@ -366,25 +239,17 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * the Map isn't considered to be the 'official' attribute Map.
      */
     public void clearAttributes() {
-        Object appObj = getAppObject(false);
-        if (appObj instanceof Map<?, ?>) {
-            ((Map<Object, Object>) appObj).clear();
-        }
+        getAttributes().clear();
     }
 
     /**
-     * Returns the 'official' attribute Map, null if it hasn't been set.
+     * Returns the 'official' attribute Map.
      */
     public Map<Object, Object> getAttributes() {
-        Object appObj = getAppObject(false);
-        if (checkAttributeMap(appObj)) {
-            // Only returns the attribute Map if it's the official
-            // version, which is marked by having a pointer to itself
-            // under the ATT_MAP_KEY
-            return (Map<Object, Object>) appObj;
+        if (attributes == null) {
+            attributes = createAttributeMap();
         }
-        // else
-        return null;
+        return attributes;
     }
 
     /**
@@ -393,23 +258,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
      * APP_OBJECT_KEY.
      */
     public void setAttributes(Map<Object, Object> atts) {
-
-        if (atts == null) {
-            return;
-        }
-
-        if (!checkAttributeMap()) {
-            if (appObject != null) {
-                atts.put(APP_OBJECT_KEY, appObject);
-            }
-        } else {
-            Object appObj = getAttribute(APP_OBJECT_KEY);
-            if (appObj != null) {
-                atts.put(APP_OBJECT_KEY, appObj);
-            }
-        }
-        atts.put(ATT_MAP_KEY, atts);
-        setAppObject(atts, false);
+        attributes = atts;
     }
 
     /**
@@ -983,23 +832,23 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
         return toShape;
 
         /*
-         *
+         * 
          * PathIterator pi2 = addShape.getPathIterator(null);
          * FlatteningPathIterator pi = new FlatteningPathIterator(pi2, .25);
          * double[] coords = new double[6];
-         *
+         * 
          * while (!pi.isDone()) { int type = pi.currentSegment(coords); if
          * (lineTo) { if (DEBUG) { Debug.output(" adding point [" + type + "] ("
          * + (pointCount++) + ") " + (float) coords[0] + ", " + (float)
          * coords[1]); } toShape.lineTo((float) coords[0], (float) coords[1]);
-         *
+         * 
          * } else { if (DEBUG) { Debug.output("Creating new shape, first point "
          * + (float) coords[0] + ", " + (float) coords[1]); }
          * toShape.moveTo((float) coords[0], (float) coords[1]); lineTo = true;
          * } pi.next(); }
-         *
+         * 
          * if (DEBUG) { Debug.output(" -- end point (" + pointCount + ")"); }
-         *
+         * 
          * return toShape;
          */
     }
@@ -1026,19 +875,7 @@ public abstract class BasicGeometry implements OMGeometry, Serializable, OMGraph
     public void restore(OMGeometry source) {
         this.lineType = source.getLineType();
         this.visible = source.isVisible();
-
-        Map<Object, Object> attributes = source.getAttributes();
-        if (attributes != null) {
-            Map<Object, Object> nAttributes = createAttributeMap();
-            nAttributes.putAll(attributes);
-            // But, now the ATT_MAP_KEY points to the source attributes map.
-            // Need
-            // to adjust...
-            nAttributes.put(ATT_MAP_KEY, nAttributes);
-            // The attribute map for this objects should be set already, nothing
-            // more to do with attributes.
-        }
-
+        this.attributes = source.getAttributes();
         this.needToRegenerate = true;
     }
 }

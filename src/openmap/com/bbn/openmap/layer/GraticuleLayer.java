@@ -44,8 +44,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
-import com.bbn.openmap.I18n;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.layer.policy.BufferedImageRenderPolicy;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -57,6 +55,8 @@ import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
+import com.bbn.openmap.util.MoreMath;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 

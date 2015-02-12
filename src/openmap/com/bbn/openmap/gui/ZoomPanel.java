@@ -34,11 +34,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.event.ZoomEvent;
 import com.bbn.openmap.event.ZoomListener;
 import com.bbn.openmap.event.ZoomSupport;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 
 /**
  * Bean to zoom the Map.

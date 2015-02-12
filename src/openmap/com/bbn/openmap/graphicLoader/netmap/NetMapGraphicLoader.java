@@ -32,7 +32,6 @@ import com.bbn.openmap.graphicLoader.MMLGraphicLoader;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
-import com.bbn.openmap.plugin.PlugIn;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
@@ -52,8 +51,8 @@ import com.bbn.openmap.util.PropUtils;
  * GraphicLoaderConnector is also in the MapHandler, too, because it will create
  * a GraphicLoaderPlugIn/PlugInLayer for the NetMapGraphicLoader.
  */
-public class NetMapGraphicLoader extends MMLGraphicLoader implements
-        NetMapListener, NetMapConstants {
+public class NetMapGraphicLoader extends MMLGraphicLoader implements NetMapListener,
+        NetMapConstants {
 
     /** The list that gets sent to the GraphicLoaderPlugIn. */
     protected OMGraphicList omList = null;
@@ -154,8 +153,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
                 node.setLat(Float.parseFloat(geo));
                 node.posLat = geo;
             } catch (Exception e) {
-                Debug.error("NetMapGraphicLoader: " + geo
-                        + " is not a valid latitude value.");
+                Debug.error("NetMapGraphicLoader: " + geo + " is not a valid latitude value.");
             }
         }
 
@@ -166,8 +164,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
                 node.setLon(Float.parseFloat(geo));
                 node.posLon = geo;
             } catch (Exception e) {
-                Debug.error("NetMapGraphicLoader: " + geo
-                        + " is not a valid longitude value.");
+                Debug.error("NetMapGraphicLoader: " + geo + " is not a valid longitude value.");
             }
         }
     }
@@ -187,14 +184,10 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
 
         // Used for many (if not all commands, might as well do this
         // here.
-        int index = PropUtils.intFromProperties(eventProps,
-                INDEX_FIELD,
-                ERROR_VALUE_INT);
+        int index = PropUtils.intFromProperties(eventProps, INDEX_FIELD, ERROR_VALUE_INT);
         if (cmd.equals(NODE_OBJECT)) {
 
-            int shape = PropUtils.intFromProperties(eventProps,
-                    SHAPE_FIELD,
-                    ERROR_VALUE_INT);
+            int shape = PropUtils.intFromProperties(eventProps, SHAPE_FIELD, ERROR_VALUE_INT);
 
             if (index == ERROR_VALUE_INT) {
                 Debug.error("NMGL: error parsing object index for node.");
@@ -223,8 +216,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
 
                 setNodePositionFromEventProps(node, eventProps);
                 lineList.move(node);
-                node.setTime(Double.parseDouble(eventProps.getProperty(TIME_FIELD,
-                        "0")));
+                node.setTime(Double.parseDouble(eventProps.getProperty(TIME_FIELD, "0")));
 
             } else {
 
@@ -244,12 +236,8 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
                  * int height = LayerUtils.intFromProperties(eventProps,
                  * HEIGHT_FIELD, ERROR_VALUE_INT);
                  */
-                status = PropUtils.intFromProperties(eventProps,
-                        STATUS_FIELD,
-                        0);
-                int menu = PropUtils.intFromProperties(eventProps,
-                        MENU_FIELD,
-                        0);
+                status = PropUtils.intFromProperties(eventProps, STATUS_FIELD, 0);
+                int menu = PropUtils.intFromProperties(eventProps, MENU_FIELD, 0);
                 /*
                  * int joffset = LayerUtils.intFromProperties(eventProps,
                  * JOFFSET_FIELD, ERROR_VALUE_INT);
@@ -302,9 +290,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
             node = nodeList.get(index);
 
             if (node != null) {
-                status = PropUtils.intFromProperties(eventProps,
-                        STATUS_FIELD,
-                        ERROR_VALUE_INT);
+                status = PropUtils.intFromProperties(eventProps, STATUS_FIELD, ERROR_VALUE_INT);
                 if (status != ERROR_VALUE_INT) {
                     node.setStatus(status);
                 }
@@ -320,9 +306,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
             line = lineList.get(index);
 
             if (line != null) {
-                status = PropUtils.intFromProperties(eventProps,
-                        STATUS_FIELD,
-                        ERROR_VALUE_INT);
+                status = PropUtils.intFromProperties(eventProps, STATUS_FIELD, ERROR_VALUE_INT);
                 if (status != ERROR_VALUE_INT) {
                     line.setStatus(status);
                 }
@@ -337,22 +321,14 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
 
             line = lineList.get(index);
 
-            int shape = PropUtils.intFromProperties(eventProps,
-                    SHAPE_FIELD,
-                    ERROR_VALUE_INT);
+            int shape = PropUtils.intFromProperties(eventProps, SHAPE_FIELD, ERROR_VALUE_INT);
 
             if (shape == NODE_DELETE) {
                 lineList.del(index);
             } else {
-                status = PropUtils.intFromProperties(eventProps,
-                        STATUS_FIELD,
-                        0);
-                int node1 = PropUtils.intFromProperties(eventProps,
-                        LINK_NODE1_FIELD,
-                        ERROR_VALUE_INT);
-                int node2 = PropUtils.intFromProperties(eventProps,
-                        LINK_NODE2_FIELD,
-                        ERROR_VALUE_INT);
+                status = PropUtils.intFromProperties(eventProps, STATUS_FIELD, 0);
+                int node1 = PropUtils.intFromProperties(eventProps, LINK_NODE1_FIELD, ERROR_VALUE_INT);
+                int node2 = PropUtils.intFromProperties(eventProps, LINK_NODE2_FIELD, ERROR_VALUE_INT);
 
                 if (node1 == ERROR_VALUE_INT || node2 == ERROR_VALUE_INT) {
                     Debug.error("NMGL: error parsing node indexes for link");
@@ -363,12 +339,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
                 Node n2 = nodeList.get(node2);
 
                 if (n1 != null && n2 != null) {
-                    lineList.add(String.valueOf(index),
-                            index,
-                            shape,
-                            status,
-                            n1,
-                            n2);
+                    lineList.add(String.valueOf(index), index, shape, status, n1, n2);
                 } else {
                     if (DEBUG) {
                         Debug.output("NetMapGraphicLoader: can't create lobj, nodes are undefined");
@@ -388,8 +359,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
             // manageGraphics();
         } else {
             if (DEBUG) {
-                Debug.output("NMGL: received unused event: "
-                        + eventProps.toString());
+                Debug.output("NMGL: received unused event: " + eventProps.toString());
             }
         }
         manageGraphics();
@@ -490,7 +460,7 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
      * @return true if the listener was able to process the event.
      */
     public boolean mouseMoved(java.awt.event.MouseEvent e) {
-        if (receiver instanceof PlugIn && omList != null) {
+        if (receiver instanceof Layer && omList != null) {
             OMGraphic graphic = omList.getContains(e.getX(), e.getY());
             String label = null;
             if (graphic instanceof Node) {
@@ -498,18 +468,16 @@ public class NetMapGraphicLoader extends MMLGraphicLoader implements
                 // } else if (graphic instanceof Line) {
                 // label = ((Line)graphic).getLabel();
             }
-            if (receiver instanceof PlugIn) {
-                Component comp = ((PlugIn) receiver).getComponent();
-                if (comp instanceof Layer) {
-                    if (graphic != null && label != null) {
-                        ((Layer) comp).fireRequestToolTip("Node " + label);
-                        toolTipUp = true;
-                    } else if (toolTipUp) {
-                        ((Layer) comp).fireHideToolTip();
-                        toolTipUp = false;
-                    }
-                    return true;
+
+            if (receiver instanceof Layer) {
+                if (graphic != null && label != null) {
+                    ((Layer) receiver).fireRequestToolTip("Node " + label);
+                    toolTipUp = true;
+                } else if (toolTipUp) {
+                    ((Layer) receiver).fireHideToolTip();
+                    toolTipUp = false;
                 }
+                return true;
             }
         }
         return false;

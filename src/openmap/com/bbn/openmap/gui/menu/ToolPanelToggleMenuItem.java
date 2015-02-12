@@ -32,8 +32,8 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JMenuItem;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.gui.ToolPanel;
+import com.bbn.openmap.util.I18n;
 
 /**
  * Menu item that holds onto the tool panel, and hides/displays it when

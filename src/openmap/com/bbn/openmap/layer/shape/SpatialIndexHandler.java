@@ -38,7 +38,6 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.shape.DbfHandler;
@@ -53,6 +52,7 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.GeoCoordTransformation;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**

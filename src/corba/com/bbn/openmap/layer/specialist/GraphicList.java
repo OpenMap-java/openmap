@@ -33,7 +33,7 @@ import com.bbn.openmap.corba.CSpecialist.UGraphic;
  * UGraphics, and can return an array of UGraphics that corresponds to
  * its contained list
  */
-public class GraphicList implements com.bbn.openmap.util.GraphicList {
+public class GraphicList {
     /** our list of graphics */
     protected Vector graphics = new Vector();
 

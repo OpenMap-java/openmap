@@ -39,7 +39,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.layer.DeclutterMatrix;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
@@ -48,6 +47,7 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 

@@ -47,9 +47,9 @@ import com.bbn.openmap.event.ProgressListener;
 import com.bbn.openmap.event.ProgressSupport;
 import com.bbn.openmap.gui.ProgressListenerGauge;
 import com.bbn.openmap.gui.WindowSupport;
-import com.bbn.openmap.plugin.PlugIn;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -907,7 +907,7 @@ public class PropertyHandler
                 mapBean = (MapBean) someObj;
             } else if (someObj instanceof LayerHandler) {
                 layerHandler = (LayerHandler) someObj;
-            } else if (someObj instanceof Layer || someObj instanceof PlugIn) {
+            } else if (someObj instanceof Layer) {
                 // do nothing, layerhandler will handle
             } else if (someObj instanceof PropertyHandler) {
                 propertyHandler = (PropertyHandler) someObj;

@@ -66,7 +66,7 @@ public class GLOBESite {
         graphic_.setLinePaint(Color.red);
         graphic_.setFillPaint(Color.red);
         graphic_.setSelectPaint(Color.yellow);
-        graphic_.setAppObject(this);
+        graphic_.putAttribute(OMGraphic.APP_OBJECT, this);
 
         temp_table_ = new Hashtable();
         //      max_temp_table_ = new Hashtable();

@@ -25,9 +25,9 @@ package com.bbn.openmap.proj;
 import java.awt.Graphics;
 import java.awt.geom.Point2D;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * Implements the Gnomonic projection.

@@ -22,7 +22,6 @@
 
 package com.bbn.openmap.util;
 
-import com.bbn.openmap.MoreMath;
 
 /**
  * Class to perform fan compression on points.

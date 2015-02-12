@@ -26,9 +26,9 @@ import java.io.Serializable;
 import java.util.Properties;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.omGraphics.OMRasterObject;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.propertyEditor.OptionPropertyEditor;
 

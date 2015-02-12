@@ -41,7 +41,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
+import com.bbn.openmap.util.I18n;
 
 public class DimensionQueryPanel extends JPanel {
 

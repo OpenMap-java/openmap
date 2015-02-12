@@ -48,7 +48,6 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.InformationDelegator;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.gui.OMToolComponent;
@@ -57,6 +56,7 @@ import com.bbn.openmap.omGraphics.GraphicAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.geom.NonRegional;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 

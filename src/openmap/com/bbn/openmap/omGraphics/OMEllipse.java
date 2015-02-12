@@ -191,7 +191,7 @@ public class OMEllipse extends OMCircle {
             y = Math.sqrt((1.0 - yt) * (b * b));
 
             distance[i] = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-            azimuth[i] = angle + com.bbn.openmap.MoreMath.HALF_PI + getRotationAngle();
+            azimuth[i] = angle + com.bbn.openmap.util.MoreMath.HALF_PI + getRotationAngle();
 
             if (Debug.debugging("ellipse")) {
                 Debug.output(" "

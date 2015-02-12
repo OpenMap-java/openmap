@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * The QuadTreeNode is the part of the QuadTree that either holds children

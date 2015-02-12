@@ -661,32 +661,10 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
     }
 
     /**
-     * Gets the show bounds field.
-     *
-     * @deprecated use isMatted() instead.
-     * @return true if bounds are shown, false if hidden.
-     */
-    public boolean getShowBounds() {
-        return isMatted();
-    }
-
-    /**
-     * Sets the show bounds field. When <code>true</code>, the bounding box of
-     * this text is displayed.
-     *
-     * @deprecated use setMatted(boolean) instead.
-     * @param show true to show, false to hide.
-     * @see #setFillColor
-     */
-    public void setShowBounds(boolean show) {
-        setMatted(show);
-    }
-
-    /**
      * Set flag to specify that the bounds, if displayed, should be rectangular.
-     * Only really affects mult-line text.
+     * Only really affects multi-line text.
      *
-     * @param value if true, bounds for multi-line text will be retangular
+     * @param value if true, bounds for multi-line text will be rectangular
      *        instead of closely following text.
      */
     public void setUseMaxWidthForBounds(boolean value) {
@@ -731,28 +709,6 @@ public class OMText extends OMGraphicAdapter implements OMGraphic {
      */
     public int getFMHeight() {
         return fmHeight;
-    }
-
-    /**
-     * Set the angle by which the text is to rotated.
-     *
-     * @param theta the number of radians the text is to be rotated. Measured
-     *        clockwise from horizontal.
-     * @deprecated use setRotationAngle instead.
-     */
-    public void setTheta(double theta) {
-        setRotationAngle(theta);
-        setNeedToRegenerate(true);
-    }
-
-    /**
-     * Get the current rotation of the text.
-     *
-     * @return the text rotation.
-     * @deprecated use getRotationAngle instead.
-     */
-    public double getTheta() {
-        return getRotationAngle();
     }
 
     /**

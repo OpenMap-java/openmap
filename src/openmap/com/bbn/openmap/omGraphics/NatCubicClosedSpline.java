@@ -22,7 +22,7 @@
 
 package com.bbn.openmap.omGraphics;
 
-import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * A natural cubic closed spline calculation.

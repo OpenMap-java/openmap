@@ -25,7 +25,7 @@ import java.awt.geom.AffineTransform;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * These are defined as a center point and two conjugate diameter points.

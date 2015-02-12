@@ -26,8 +26,16 @@ of OpenMap.<P>
 
 The main mapping window is the MapBean, which is a JComponent.  It
 contains Layers, each layer providing a thematic overlay to
-the map.  There is a buffered version of the MapBean called the
-BufferedMapBean. <P>
+the map.  There are three flavors of MapBeans:  MapBean, BufferedMapBean, 
+and BufferedLayerMapBean.  You should use the BufferedLayerMapBean, it 
+is an extension of BufferedMapBean with the added feature of putting 
+'background' layers into a single buffer at the back of the map, 
+and controlling map paints to occur when those layers are 
+ready.  This feature prevents the map from having a flashing effect 
+observed when slower layers with more things on the map paint after 
+faster layers with less.  The MapBeanRepaintPolicy components let you 
+make modifications to the MapBean rendering - adding anti-aliasing, etc.
+<P>
 
 The other main component is the MapHandler.  The MapHandler is an
 extended BeanContext, and can be thought of as the widget holding to
@@ -55,9 +63,18 @@ Other components of real interest are:
 not.
 <LI>MouseDelegator - manages how MouseEvents over the map are directed
 to layers or other components.
+<LI>PropertyConsumer - components that can be configured using Java 
+Properties.  The OpenMap application uses a properties file to configure 
+its components, allowing you to add or change components and their 
+behavior without having to update code.
 <LI>PropertyHandler - uses properties to configure the application
 <LI>InformationDelegator - an object that other components can use to
 provide information to the user.
+<LI>OMComponent - a base class for classes that are PropertyConsumers 
+and also use the MapHandler to locate other components.
+<LI>ProjectionPainter - interface for objects that want to draw on top 
+of the map after the layers have been rendered.  Useful for quickly rendering
+things on top of the map.
 </UL>
 
 

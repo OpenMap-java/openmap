@@ -26,7 +26,6 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
 import com.bbn.openmap.event.LayerStatusEvent;
 import com.bbn.openmap.event.ProgressEvent;
@@ -40,6 +39,7 @@ import com.bbn.openmap.proj.Planet;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.MoreMath;
 import com.bbn.openmap.util.SwingWorker;
 import com.bbn.openmap.util.stateMachine.State;
 

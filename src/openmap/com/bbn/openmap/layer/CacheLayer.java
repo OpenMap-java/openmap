@@ -270,7 +270,7 @@ public class CacheLayer extends Layer implements ActionListener,
             case 1:
                 if (Debug.debugging("cachelayer")) {
                     Debug.output("CacheLayer: Show Info: "
-                            + selectedGraphic.getAppObject());
+                            + selectedGraphic.getAttribute(OMGraphic.INFOLINE));
                 }
                 break;
             case 2:
@@ -344,7 +344,7 @@ public class CacheLayer extends Layer implements ActionListener,
             if (newSelectedGraphic != null) {
                 oldFillColor = newSelectedGraphic.getFillColor();
                 newSelectedGraphic.setFillPaint(Color.white);
-                fireRequestInfoLine(newSelectedGraphic.getAppObject()
+                fireRequestInfoLine(newSelectedGraphic.getAttribute(OMGraphic.INFOLINE)
                         .toString());
             }
             repaint();

@@ -2,8 +2,8 @@ package com.bbn.openmap.proj.coords;
 
 import java.awt.geom.Point2D;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.proj.Planet;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * Convert between mercator meters and lat/lon degrees.

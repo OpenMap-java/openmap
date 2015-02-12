@@ -29,7 +29,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.bbn.openmap.BasicI18n;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.event.ProgressEvent;
 import com.bbn.openmap.event.ProgressSupport;

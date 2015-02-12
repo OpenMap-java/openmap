@@ -32,11 +32,11 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.event.CenterSupport;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.proj.coords.UTMPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 
 /**
  * UTMCoordPanel is a simple gui with entry boxes and labels for Zone

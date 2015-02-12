@@ -218,5 +218,14 @@ public interface OMGraphicConstants {
      * they are not rotated when the map is.
      */
     public static final String NO_ROTATE = "norotate";
+    /**
+     * Generic attribute key for index attributes.
+     */
+    public static final String INDEX = "index";
+    /**
+     * Handy attribute key for app object, to speed up updating code that used
+     * the old app object in OMGraphics instead of using the attributes map.
+     */
+    public static final String APP_OBJECT = "APP_OBJECT";
 
 }

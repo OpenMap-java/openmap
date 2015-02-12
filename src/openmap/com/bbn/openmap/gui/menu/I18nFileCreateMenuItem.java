@@ -31,9 +31,9 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JMenuItem;
 
-import com.bbn.openmap.BasicI18n;
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
+import com.bbn.openmap.util.BasicI18n;
+import com.bbn.openmap.util.I18n;
 
 public class I18nFileCreateMenuItem extends JMenuItem implements ActionListener {
 

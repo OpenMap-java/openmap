@@ -30,9 +30,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.proj.GreatCircle;
 import com.bbn.openmap.proj.ProjMath;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * A Point2D representation of LatLonPoints, used integrate with the

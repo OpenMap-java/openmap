@@ -24,7 +24,6 @@ package com.bbn.openmap.layer.dted;
 
 import java.awt.geom.Point2D;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.EqualArc;
@@ -32,6 +31,7 @@ import com.bbn.openmap.proj.LLXY;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * The DTEDCacheHandler controls the real cache of DTED frames. It is managed by

@@ -143,8 +143,6 @@ import com.bbn.openmap.util.PropUtils;
  *
  * <pre>
  *
- *
- *
  *     layer.projectionChangePolicy=pcp
  *     layer.pcp.class=com.bbn.openmap.layer.policy.StandardPCPolicy
  * 

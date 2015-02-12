@@ -37,7 +37,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
+import com.bbn.openmap.util.I18n;
 
 /**
  * A PropertyEditor that brings up a JFileChooser panel to select a

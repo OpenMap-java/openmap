@@ -26,6 +26,7 @@ import java.io.IOException;
 
 import javax.swing.ImageIcon;
 
+import com.bbn.openmap.dataAccess.shape.ShapeConstants;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGeometryList;
@@ -163,7 +164,9 @@ public class ESRIPointRecord extends ESRIRecord {
                 drawingAttributes.setTo(r);
             }
             list.add(r);
-            r.setAppObject(new Integer(getRecordNumber())); //added by DGK
+            r.putAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE, new Integer(getRecordNumber())); // added
+                                                                                                  // by
+                                                                                                  // DGK
         } else {
             list.add(new OMRaster((float) y, (float) x, -ii.getIconWidth() / 2, -ii.getIconHeight() / 2, ii));
         }

@@ -36,7 +36,9 @@ import javax.swing.JApplet;
 import javax.swing.JLayeredPane;
 import javax.swing.JRootPane;
 
+import com.bbn.openmap.util.BasicI18n;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**

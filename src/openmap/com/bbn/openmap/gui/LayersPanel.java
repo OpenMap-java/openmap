@@ -54,13 +54,13 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 import com.bbn.openmap.BufferedLayerMapBean;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.event.LayerEvent;
 import com.bbn.openmap.event.LayerListener;
 import com.bbn.openmap.util.ComponentFactory;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**

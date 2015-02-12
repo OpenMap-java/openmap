@@ -42,9 +42,9 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.PropertyConsumer;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**

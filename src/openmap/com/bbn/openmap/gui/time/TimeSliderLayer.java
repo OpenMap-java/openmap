@@ -44,7 +44,6 @@ import javax.swing.JPanel;
 
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.event.CenterListener;
 import com.bbn.openmap.event.CenterSupport;
 import com.bbn.openmap.event.MapMouseListener;
@@ -70,6 +69,7 @@ import com.bbn.openmap.time.TimerStatus;
 import com.bbn.openmap.tools.icon.BasicIconPart;
 import com.bbn.openmap.tools.icon.IconPart;
 import com.bbn.openmap.tools.icon.OMIconFactory;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * Timeline layer

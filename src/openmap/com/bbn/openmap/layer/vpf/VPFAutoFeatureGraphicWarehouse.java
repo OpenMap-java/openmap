@@ -40,7 +40,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.cgm.CGM;
 import com.bbn.openmap.dataAccess.cgm.CGMDisplay;
@@ -59,6 +58,7 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**

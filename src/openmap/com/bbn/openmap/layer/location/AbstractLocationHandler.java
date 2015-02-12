@@ -28,11 +28,11 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.omGraphics.GraphicAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**

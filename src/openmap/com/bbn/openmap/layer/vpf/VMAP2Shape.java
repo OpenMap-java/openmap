@@ -26,7 +26,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.dataAccess.shape.EsriShapeExport;
 import com.bbn.openmap.dataAccess.shape.ShapeUtils;
 import com.bbn.openmap.layer.shape.ShapeFile;
@@ -38,6 +37,7 @@ import com.bbn.openmap.proj.DrawUtil;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.MoreMath;
 import com.bbn.openmap.util.PropUtils;
 
 /**

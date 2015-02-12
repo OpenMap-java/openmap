@@ -34,7 +34,6 @@ import java.util.Properties;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.dataAccess.asrp.ASRPConstants;
 import com.bbn.openmap.dataAccess.asrp.ASRPDirectory;
 import com.bbn.openmap.dataAccess.asrp.ASRPDirectoryHandler;
@@ -47,6 +46,7 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.DataBoundsProvider;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**

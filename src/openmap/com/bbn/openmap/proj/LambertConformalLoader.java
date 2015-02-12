@@ -25,9 +25,9 @@ package com.bbn.openmap.proj;
 import java.awt.geom.Point2D;
 import java.util.Properties;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**

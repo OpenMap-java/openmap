@@ -28,7 +28,6 @@ import java.io.Serializable;
 
 import javax.swing.JTextField;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.event.ProjectionEvent;
 import com.bbn.openmap.event.ProjectionListener;
@@ -37,6 +36,7 @@ import com.bbn.openmap.event.ZoomListener;
 import com.bbn.openmap.event.ZoomSupport;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 
 /**
  * The ScaleTextPanel is a JPanel holding a JTextField that controls

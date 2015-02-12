@@ -33,7 +33,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
@@ -44,6 +43,7 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.I18n;
 
 /**
  * A class that visually manages the settings for a ZoomLevelInfo object. Works

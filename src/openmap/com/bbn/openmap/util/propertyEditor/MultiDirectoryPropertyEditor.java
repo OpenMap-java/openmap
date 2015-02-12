@@ -30,7 +30,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
+import com.bbn.openmap.util.I18n;
 
 /**
  * A PropertyEditor that brings up a JFileChooser panel that allows

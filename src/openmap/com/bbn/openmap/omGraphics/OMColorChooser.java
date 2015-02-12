@@ -43,7 +43,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
+import com.bbn.openmap.util.I18n;
 
 /**
  * A wrapper class that pops up a modified JColorChooser class. The

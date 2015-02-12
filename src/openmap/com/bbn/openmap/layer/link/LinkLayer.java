@@ -900,7 +900,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
      */
     protected boolean graphicGestureReaction(OMGraphic graphic, int descriptor,
                                              MouseEvent e) {
-        LinkProperties props = (LinkProperties) graphic.getAppObject();
+        LinkProperties props = (LinkProperties) graphic.getAttribute(OMGraphic.APP_OBJECT);
 
         // Mouse clicked
         boolean mc = LinkUtil.isMask(descriptor, MOUSE_CLICKED_MASK);
@@ -1023,7 +1023,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
                 // back.
 
                 descriptor = LinkUtil.setMask(descriptor, GRAPHIC_ID_MASK);
-                id = ((LinkProperties) gesGraphic.getAppObject())
+                id = ((LinkProperties) gesGraphic.getAttribute(OMGraphic.APP_OBJECT))
                         .getProperty(LPC_GRAPHICID);
             } else {
                 // clear out info line
@@ -1133,7 +1133,7 @@ public class LinkLayer extends OMGraphicHandlerLayer implements
         // on what to do with it, to the server.
         String id = null; // unknown
 
-        Object obj = omg.getAppObject();
+        Object obj = omg.getAttribute(OMGraphic.APP_OBJECT);
         LinkProperties lp = null;
         if (obj instanceof LinkProperties) {
             lp = (LinkProperties) obj;

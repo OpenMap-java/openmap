@@ -22,9 +22,9 @@
 
 package com.bbn.openmap.dataAccess.iso8211;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.layer.vpf.MutableInt;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * Information from the DDR record describing one subfield of a DDFFieldDefn.

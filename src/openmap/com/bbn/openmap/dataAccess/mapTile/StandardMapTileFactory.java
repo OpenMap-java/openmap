@@ -29,6 +29,7 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -45,7 +46,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -60,6 +60,7 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.ClasspathHacker;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.DataBounds;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.cacheHandler.CacheHandler;
 import com.bbn.openmap.util.cacheHandler.CacheObject;
@@ -212,7 +213,10 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
                 logger.fine("Can't find resource located at " + imagePath);
             } catch (InterruptedException e) {
                 logger.fine("Reading the image file was interrupted: " + imagePath);
+            } catch (Exception fnfe) {
+                logger.fine("file not found: " + imagePath);
             }
+
         }
         return null;
     }

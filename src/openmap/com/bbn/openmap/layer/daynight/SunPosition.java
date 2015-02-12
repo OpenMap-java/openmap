@@ -26,8 +26,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * SunPosition calculates the latitude/longitude on the Earth that is closest to

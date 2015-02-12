@@ -33,7 +33,6 @@ import javax.swing.JComponent;
 import javax.swing.JToolBar;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.event.MapMouseAdapter;
 import com.bbn.openmap.event.MapMouseEvent;
@@ -47,6 +46,7 @@ import com.bbn.openmap.omGraphics.event.EOMGListenerSupport;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 
 /**
  * The EditableOMGraphic is a shell that controls actions to edit or create a graphic. This class contains a state

@@ -47,9 +47,9 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
+import com.bbn.openmap.util.I18n;
 
 /**
  * A LayerPane is a single instance of how a layer represented in the

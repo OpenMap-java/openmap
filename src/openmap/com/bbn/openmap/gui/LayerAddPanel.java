@@ -46,8 +46,6 @@ import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.PropertyHandler;
-import com.bbn.openmap.plugin.PlugIn;
-import com.bbn.openmap.plugin.PlugInLayer;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
@@ -313,13 +311,6 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
 
             if (layer instanceof PropertyConsumer) {
 
-                if (layer instanceof PlugIn) {
-                    PlugInLayer pil = new PlugInLayer();
-                    pil.setPlugIn((PlugIn) layer);
-                    pil.setName(prefix);
-                    layer = pil;
-                }
-
                 if (layer instanceof Layer) {
                     // Set the pretty name to what the user chose.
                     ((Layer) layer).setName(prefix);
@@ -345,9 +336,6 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
                     // easier, instead of adding it to the bottom and
                     // having it lost behind some other layers.
                     layerHandler.addLayer((Layer) layer, 0);
-                } else if (layer instanceof PlugIn) {
-                    PlugInLayer pil = (PlugInLayer) ((PlugIn) layer).getComponent();
-                    layerHandler.addLayer(pil, 0);
                 }
                 prefixTextField.setText(DefaultLayerName);
             } else if (layerHandler != null) {

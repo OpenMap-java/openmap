@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -45,8 +46,6 @@ import com.bbn.openmap.Environment;
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.PropertyConsumer;
-import com.bbn.openmap.plugin.PlugIn;
-import com.bbn.openmap.plugin.PlugInLayer;
 import com.bbn.openmap.proj.GeoProj;
 import com.bbn.openmap.proj.Mercator;
 import com.bbn.openmap.proj.Proj;
@@ -368,14 +367,6 @@ public class ImageServer
                     String layerName = (String) showLayers.get(j);
                     Layer layer = layers[i];
                     String prefix = layer.getPropertyPrefix();
-                    if (prefix == null) {
-                        // Just in case the PlugInLayer prefix didn't get set to
-                        // the
-                        // same as the plugins'
-                        if (layer instanceof PlugInLayer) {
-                            prefix = ((PlugInLayer) layer).getPlugIn().getPropertyPrefix();
-                        }
-                    }
 
                     if (layerName.equals(prefix)) {
                         layer.renderDataForProjection(proj, graphics);
@@ -944,15 +935,14 @@ public class ImageServer
         }
 
         int nLayerNames = layerNames.size();
-        Vector<Layer> layers = new Vector<Layer>(nLayerNames);
+        List<Layer> layers = new ArrayList<Layer>(nLayerNames);
 
-        for (int i = 0; i < nLayerNames; i++) {
-            String layerName = (String) layerNames.elementAt(i);
+        for (String layerName : layerNames) {
 
             // Check to see if some other ImageServer has used this
             // layer, and reuse it.
             if (instantiatedLayers != null) {
-                Layer iLayer = (Layer) instantiatedLayers.get(layerName);
+                Layer iLayer = instantiatedLayers.get(layerName);
                 if (iLayer != null) {
 
                     // We might want to consider adding this:
@@ -976,20 +966,10 @@ public class ImageServer
             }
 
             Object obj = ComponentFactory.create(className, layerName, p);
-            if (obj instanceof Layer || obj instanceof PlugIn) {
-                Layer l = null;
+            if (obj instanceof Layer) {
+                Layer l = (Layer) obj;
 
-                if (obj instanceof PlugIn) {
-                    PlugIn pi = (PlugIn) obj;
-                    PlugInLayer pil = new PlugInLayer();
-                    pil.setPlugIn(pi);
-                    pil.setName(p.getProperty(PropUtils.getScopedPropertyPrefix(pi) + Layer.PrettyNameProperty));
-                    l = pil;
-                } else {
-                    l = (Layer) obj;
-                }
-
-                layers.addElement(l);
+                layers.add(l);
 
                 if (instantiatedLayers != null) {
                     instantiatedLayers.put(layerName, l);
@@ -1004,9 +984,9 @@ public class ImageServer
         if (nLayers == 0) {
             return new Layer[0];
         } else {
-            Layer[] value = new Layer[nLayers];
-            layers.copyInto(value);
-            return value;
+            Layer[] layerArray = new Layer[nLayers];
+            layers.toArray(layerArray);
+            return layerArray;
         }
     }
 

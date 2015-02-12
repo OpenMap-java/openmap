@@ -188,7 +188,8 @@ public class EarthquakeLayer
             text.setLinePaint(lineColor);
             group.add(text);
 
-            group.setAppObject(new Integer(j));// remember index
+            group.putAttribute(OMGraphic.INDEX, new Integer(j));// remember
+                                                                // index
             omgraphics.add(group);
         }
 
@@ -479,7 +480,7 @@ public class EarthquakeLayer
         if (omgraphics != null && drillData != null) {
             OMGraphic obj = omgraphics.findClosest(e.getX(), e.getY(), 4);
             if (obj != null) {
-                int id = ((Integer) obj.getAppObject()).intValue();
+                int id = ((Integer) obj.getAttribute(OMGraphic.INDEX)).intValue();
                 fireRequestInfoLine(drillData[id]);
                 showingInfoLine = true;
                 return true;

@@ -30,11 +30,11 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.proj.coords.GeoCoordTransformation;
 import com.bbn.openmap.proj.coords.LatLonGCT;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * GeoProj is the base class of all Projections that deal with coordinates on

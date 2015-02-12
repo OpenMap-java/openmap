@@ -26,7 +26,6 @@ import java.io.File;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.corba.CSpecialist.CheckButton;
 import com.bbn.openmap.corba.CSpecialist.Comp;
 import com.bbn.openmap.corba.CSpecialist.MouseEvent;
@@ -37,6 +36,7 @@ import com.bbn.openmap.layer.specialist.Specialist;
 import com.bbn.openmap.layer.vpf.LibrarySelectionTable;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.MoreMath;
 import com.bbn.openmap.util.http.HttpServer;
 /**
  * Implement the Specialist interface so that we can serve graphics to

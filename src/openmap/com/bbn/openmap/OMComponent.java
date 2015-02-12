@@ -24,9 +24,11 @@ package com.bbn.openmap;
 
 import java.util.Properties;
 
+import com.bbn.openmap.util.I18n;
+
 /**
  * A OMComponent is an OpenMap component that does two basic things: it is a
- * MapHandlerChilds, so it knows how to use the MapHandler to find other
+ * MapHandlerChild, so it knows how to use the MapHandler to find other
  * components it needs, and it is a PropertyConsumer, so it can be configured by
  * a set of Properties. An OMComponent is a perfect candidate to be created by
  * being listed in the openmap.components property of the openmap.properties

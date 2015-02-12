@@ -22,7 +22,7 @@
 
 package com.bbn.openmap.graphicLoader.netmap;
 
-import com.bbn.openmap.plugin.graphicLoader.GraphicLoaderConnector;
+import com.bbn.openmap.layer.graphicLoader.GraphicLoaderConnector;
 
 /**
  * The NetMapConnectionHandler is an extension to the

@@ -27,13 +27,13 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.io.Serializable;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * A class that calculates an arc between two points, given the point

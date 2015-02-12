@@ -65,6 +65,7 @@ import com.bbn.openmap.omGraphics.OMScalingIcon;
 import com.bbn.openmap.omGraphics.OMShape;
 import com.bbn.openmap.omGraphics.OMSpline;
 import com.bbn.openmap.omGraphics.OMText;
+import com.bbn.openmap.omGraphics.OMTextBalloon;
 import com.bbn.openmap.omGraphics.OMTextLabeler;
 import com.bbn.openmap.omGraphics.awt.CircleShapeDecoration;
 import com.bbn.openmap.omGraphics.awt.LineShapeDecoration;
@@ -127,6 +128,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
      * for objects outside the drawn shape.
      */
     protected final static String externalKey = "ek";
+    protected final static String FILTER_KEY_ATTRIBUTE = "fka";
     protected GraphicAttributes filterGA = null;
     /**
      * This is a list to hold the non-changing OMGraphics to display on the
@@ -201,7 +203,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
         omList.add(point);
 
         OMCircle circle = new OMCircle(40f, -70f, 50, 200);
-        circle.setRotationAngle(com.bbn.openmap.MoreMath.HALF_PI / 2f);
+        circle.setRotationAngle(com.bbn.openmap.util.MoreMath.HALF_PI / 2f);
         circle.putAttribute(OMGraphicConstants.LABEL, new OMTextLabeler("Circle Label", OMText.JUSTIFY_CENTER));
         circle.putAttribute(RCT, "circle");
         omList.add(circle);
@@ -306,7 +308,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
         }
         omList.add(pointList);
 
-        OMEllipse ell = new OMEllipse(new LatLonPoint.Double(60, -110), 1000, 300, Length.NM, com.bbn.openmap.MoreMath.HALF_PI / 2.0);
+        OMEllipse ell = new OMEllipse(new LatLonPoint.Double(60, -110), 1000, 300, Length.NM, com.bbn.openmap.util.MoreMath.HALF_PI / 2.0);
 
         ell.setLinePaint(Color.blue);
         // ell.setFillPaint(Color.yellow);
@@ -511,6 +513,11 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
         OMEllipse ome5 = new OMEllipse(new LatLonPoint.Double(20.0, -110.0), 600, 300, Length.MILE, Math.toRadians(135));
         ome5.setLinePaint(Color.MAGENTA);
         omList.add(ome5);
+
+        OMTextBalloon balloon = new OMTextBalloon(34, -85, "This is a test of a OMTextBalloon.", OMText.JUSTIFY_LEFT);
+        balloon.setFillPaint(Color.white);
+
+        omList.add(balloon);
 
         return omList;
     }
@@ -759,7 +766,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
 
                     OMRect rect = (OMRect) getDrawingTool().create("com.bbn.openmap.omGraphics.OMRect", fga, layer, false);
                     if (rect != null) {
-                        rect.setAppObject(internalKey);
+                        rect.putAttribute(FILTER_KEY_ATTRIBUTE, internalKey);
                     } else {
                         Debug.error("DemoLayer: Drawing tool can't create OMRect");
                     }
@@ -788,7 +795,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
 
                     if (poly != null) {
                         poly.setIsPolygon(true);
-                        poly.setAppObject(internalKey);
+                        poly.putAttribute(FILTER_KEY_ATTRIBUTE, internalKey);
                     } else {
                         Debug.error("DemoLayer: Drawing tool can't create OMPoly");
                     }
@@ -810,7 +817,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
 
                     OMRect rect = (OMRect) getDrawingTool().create("com.bbn.openmap.omGraphics.OMRect", fga, layer, false);
                     if (rect != null) {
-                        rect.setAppObject(externalKey);
+                        rect.putAttribute(FILTER_KEY_ATTRIBUTE, externalKey);
                     } else {
                         Debug.error("DemoLayer: Drawing tool can't create OMRect");
                     }
@@ -996,13 +1003,13 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
     public void drawingComplete(OMGraphic omg, OMAction action) {
         Debug.message("demo", "DemoLayer: DrawingTool complete");
 
-        Object obj = omg.getAppObject();
+        Object obj = omg.getAttribute(FILTER_KEY_ATTRIBUTE);
 
         if (obj != null && (obj == internalKey || obj == externalKey)
                 && !action.isMask(OMGraphicConstants.DELETE_GRAPHIC_MASK)) {
 
             java.awt.Shape filterShape = omg.getShape();
-            OMGraphicList filteredList = filter(filterShape, (omg.getAppObject() == internalKey));
+            OMGraphicList filteredList = filter(filterShape, (omg.getAttribute(FILTER_KEY_ATTRIBUTE) == internalKey));
             if (Debug.debugging("demo")) {
                 Debug.output("DemoLayer filter: " + filteredList.getDescription());
             }

@@ -34,8 +34,8 @@ import java.net.URLClassLoader;
 import java.util.Vector;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * The BinaryFile is the standard object used to access data files. It acts like

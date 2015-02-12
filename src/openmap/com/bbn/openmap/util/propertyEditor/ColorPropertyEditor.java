@@ -39,7 +39,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.omGraphics.OMColorChooser;
@@ -48,6 +47,7 @@ import com.bbn.openmap.tools.icon.OMIconFactory;
 import com.bbn.openmap.tools.icon.OpenMapAppPartCollection;
 import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 
 /**
  * A PropertyEditor that brings up a JFileChooser panel to select a

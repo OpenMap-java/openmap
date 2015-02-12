@@ -43,8 +43,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.event.MapMouseListener;
+import com.bbn.openmap.util.I18n;
 
 /**
  * The state is intended to be a abstract juncture in a pattern of

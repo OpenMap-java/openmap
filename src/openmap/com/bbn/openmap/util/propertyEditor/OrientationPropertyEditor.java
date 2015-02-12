@@ -29,7 +29,7 @@ package com.bbn.openmap.util.propertyEditor;
 import javax.swing.JRadioButton;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
+import com.bbn.openmap.util.I18n;
 
 public class OrientationPropertyEditor extends TrueFalsePropertyEditor {
 

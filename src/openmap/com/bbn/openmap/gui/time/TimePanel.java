@@ -49,7 +49,6 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.AbstractBorder;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.event.OMEventSelectionCoordinator;
 import com.bbn.openmap.gui.MapPanelChild;
 import com.bbn.openmap.gui.OMComponentPanel;
@@ -58,6 +57,7 @@ import com.bbn.openmap.time.Clock;
 import com.bbn.openmap.time.TimeEvent;
 import com.bbn.openmap.time.TimeEventListener;
 import com.bbn.openmap.time.TimerRateHolder;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**

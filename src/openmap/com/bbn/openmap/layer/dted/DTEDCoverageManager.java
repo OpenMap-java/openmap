@@ -37,7 +37,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
@@ -45,6 +44,7 @@ import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRect;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.wanderer.Wanderer;

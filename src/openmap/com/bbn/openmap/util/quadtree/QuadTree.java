@@ -26,8 +26,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.util.DataOrganizer;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * The QuadTree lets you organize objects in a grid, that redefines itself and

@@ -45,7 +45,6 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
-import com.bbn.openmap.I18n;
 import com.bbn.openmap.omGraphics.editable.GraphicEditState;
 import com.bbn.openmap.omGraphics.editable.GraphicSelectedState;
 import com.bbn.openmap.omGraphics.editable.GraphicSetOffsetState;
@@ -54,6 +53,7 @@ import com.bbn.openmap.omGraphics.editable.TextStateMachine;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.stateMachine.State;
 

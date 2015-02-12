@@ -22,10 +22,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.FormatException;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * Read and encapsulate VPF table files.

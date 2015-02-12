@@ -30,7 +30,7 @@ import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.util.Properties;
 
-import com.bbn.openmap.I18n;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**
