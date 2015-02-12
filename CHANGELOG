@@ -1,3 +1,26 @@
+2015-02-06  Don Dietrick  <dietrick@hsawaknow.local>
+
+	* Tagged OpenMap 5.1.10
+
+2015-01-22  Don Dietrick  <dietrick@hsawaknow.local>
+
+	* Updated ProjectionFactory to use getProjClassForName instead of
+	trying to make a class from a general string.  This way, pretty
+	names can be used in the properties to set the default projection
+	type of the app.  Updated to Logger.
+
+2015-01-21  Don Dietrick  <dietrick@hsawaknow.local>
+
+	* Synchronization updates from Andrew Lloyd for OMGraphicList,
+	properly unsynchronizing on methods and synchronizing on
+	iterations.
+
+2015-01-07  Don Dietrick  <dietrick@hsawaknow.local>
+
+	* Updated projections to pan using Rhumb calculations instead of
+	GreatCircle calculations, which was causing a slight skew to the
+	equator when going east-west.
+
 2014-12-18  Don Dietrick  <dietrick@hsawaknow.local>
 
 	* Tagged OpenMap 5.1.9
