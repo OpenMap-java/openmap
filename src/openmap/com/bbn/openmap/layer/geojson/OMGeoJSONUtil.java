@@ -19,6 +19,7 @@ import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.omGraphics.OMRangeRings;
 import com.bbn.openmap.omGraphics.OMRect;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Conversion methods for GeoJSON to OpenMap.
@@ -84,6 +85,13 @@ public class OMGeoJSONUtil {
      * open OMPolys or OMLines or OMPoints are converted to MultiPolygon,
      * MultiLineString or MultiPoint respectively. Anything that can't be
      * handled is ignored.
+     * <P>
+     * 
+     * From here, all you need to do to write out JSON is this:
+     * 
+     * <pre>
+     * String json = new ObjectMapper().writeValueAsString(fCollection);
+     * </pre>
      * 
      * @param omg OMGraphic to convert
      * @return FeatureCollection.
