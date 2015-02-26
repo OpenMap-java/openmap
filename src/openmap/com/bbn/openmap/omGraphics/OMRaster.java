@@ -678,7 +678,7 @@ public class OMRaster extends OMRasterObject implements Serializable {
             return new int[0];
         }
 
-        if (colors == null || colors.length == 0 || bits == null || bits.length != 0) {
+        if (colors == null || colors.length == 0 || bits == null || bits.length == 0) {
             logger.fine("OMRaster: attempting to compute pixels without color table or proper indexes!");
             return null;
         }
