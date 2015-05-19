@@ -4,7 +4,7 @@
     <artifactId>openmap</artifactId>
     <packaging>jar</packaging>
     <name>OpenMap</name>
-    <version>5.1.5-SNAPSHOT</version>
+    <version>5.1.11-SNAPSHOT</version>
     <description>A Java Beans based toolkit for building applications and applets needing geographic information</description>
     <url>http://openmap.bbn.com</url>
     <licenses>
