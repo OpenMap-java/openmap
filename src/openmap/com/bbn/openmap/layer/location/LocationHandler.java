@@ -189,7 +189,7 @@ public interface LocationHandler extends PropertyConsumer {
      * Get the GUI pretty name for the data set retrieved by this
      * LocationHandler.
      * 
-     * @return
+     * @return a pretty name for LocationHandler, to be used in the GUI.
      */
     public String getPrettyName();
 

@@ -73,7 +73,7 @@ public class QuadTree<T> implements DataOrganizer<T>, Serializable {
      * 
      * @param lat up-down location in QuadTree Grid (latitude, y)
      * @param lon left-right location in QuadTree Grid (longitude, x)
-     * @param the object to remove
+     * @param obj the object to remove
      * @return the object removed, null if the object not found.
      */
     public T remove(double lat, double lon, T obj) {

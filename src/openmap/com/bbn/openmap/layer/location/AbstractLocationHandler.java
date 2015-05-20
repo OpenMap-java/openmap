@@ -395,7 +395,7 @@ public abstract class AbstractLocationHandler extends OMComponent implements Loc
      * Get the GUI pretty name for the data set retrieved by this
      * LocationHandler.
      * 
-     * @return
+     * @return pretty name for location handler, for GUI use.
      */
     public String getPrettyName() {
         return prettyName;

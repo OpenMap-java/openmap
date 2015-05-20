@@ -25,8 +25,6 @@ package com.bbn.openmap.proj;
 /**
  * Structure contains azimuth and distance values. Distance units are
  * determined by the operation.
- * 
- * @see GreatCircle#ellipsoidalAziDist
  */
 public class AziDist {
     public double faz;// forward azimuth

@@ -155,11 +155,22 @@ public class WMSLayer extends WebImageLayer {
         String height = "undefined";
         String width = "undefined";
 
+        String sCoordParamName = WMTConstants.SRS;
+
         if (p != null) {
             Point2D ul = p.getUpperLeft();
             Point2D lr = p.getLowerRight();
-            bbox = Double.toString(ul.getX()) + "," + Double.toString(lr.getY()) + ","
-                    + Double.toString(lr.getX()) + "," + Double.toString(ul.getY());
+
+            if (wmsVersion.compareTo("1.3.0") == 0) {
+                bbox = Double.toString(lr.getY()) + "," + Double.toString(ul.getX()) + ","
+                        + Double.toString(ul.getY()) + "," + Double.toString(lr.getX());
+                sCoordParamName = WMTConstants.CRS;
+                errorHandling = "INIMAGE";
+            } else {
+                bbox = Double.toString(ul.getX()) + "," + Double.toString(lr.getY()) + ","
+                        + Double.toString(lr.getX()) + "," + Double.toString(ul.getY());
+            }
+
             height = Integer.toString(p.getHeight());
             width = Integer.toString(p.getWidth());
         }

@@ -609,9 +609,6 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                 return false;
             }
 
-            // Need to keep these around for the LabeledOMPoly
-            xpoints = new float[1][0];
-            ypoints = new float[1][0];
             // Need to convert the int[] to float[] and assign them to
             // xpoints/ypoints.
             float[] xfs = new float[xs.length];
@@ -621,6 +618,9 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                 yfs[i] = ys[i];
             }
 
+            // Need to keep these around for the LabeledOMPoly
+            xpoints = new float[1][0];
+            ypoints = new float[1][0];
             xpoints[0] = xfs;
             ypoints[0] = yfs;
 
@@ -687,12 +687,14 @@ public class OMPoly extends OMAbstractLine implements Serializable {
 
             int size = vector.size();
 
-            xpoints = new float[(int) (size / 2)][0];
-            ypoints = new float[xpoints.length][0];
+            float[][] loc_xpoints = new float[(int) (size / 2)][0];
+            float[][] loc_ypoints = new float[loc_xpoints.length][0];
+            xpoints = loc_xpoints;
+            ypoints = loc_ypoints;
 
             for (int i = 0, j = 0; i < size; i += 2, j++) {
-                xpoints[j] = vector.get(i);
-                ypoints[j] = vector.get(i + 1);
+                loc_xpoints[j] = vector.get(i);
+                loc_ypoints[j] = vector.get(i + 1);
             }
 
             if (!doShapes) {
@@ -702,8 +704,8 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                     }
                     setNeedToRegenerate(false);
                     initLabelingDuringGenerate();
-                    if (checkPoints(xpoints, ypoints)) {
-                        setLabelLocation(xpoints[0], ypoints[0]);
+                    if (checkPoints(loc_xpoints, loc_ypoints)) {
+                        setLabelLocation(loc_xpoints[0], loc_ypoints[0], proj);
                     }
                     return true;
                 } else {
