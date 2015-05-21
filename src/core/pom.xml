@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.bbn.openmap</groupId>
-    <artifactId>openmap</artifactId>
+    <artifactId>openmap-core</artifactId>
     <packaging>jar</packaging>
     <name>OpenMap</name>
-    <version>5.1.11-SNAPSHOT</version>
+    <version>5.2-SNAPSHOT</version>
     <description>A Java Beans based toolkit for building applications and applets needing geographic information</description>
     <url>http://openmap.bbn.com</url>
     <licenses>
@@ -24,11 +24,6 @@
             <email>dfdietrick@gmail.com</email>
         </developer>
     </developers>
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>9</version>
-    </parent>
     <scm>
         <connection>scm:git:https://code.google.com/p/openmap/</connection>
         <developerConnection>scm:git:https://code.google.com/p/openmap/</developerConnection>
@@ -75,6 +70,31 @@
             <artifactId>junit</artifactId>
             <version>4.6</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+        	<groupId>com.fasterxml.jackson.core</groupId>
+        	<artifactId>jackson-core</artifactId>
+        	<version>2.5.3</version>
+        </dependency>
+        <dependency>
+        	<groupId>com.fasterxml.jackson.core</groupId>
+        	<artifactId>jackson-annotations</artifactId>
+        	<version>2.5.3</version>
+        </dependency>
+        <dependency>
+        	<groupId>com.fasterxml.jackson.core</groupId>
+        	<artifactId>jackson-databind</artifactId>
+        	<version>2.5.3</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.postgis</groupId>
+        	<artifactId>postgis-jdbc</artifactId>
+        	<version>1.3.3</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.postgresql</groupId>
+        	<artifactId>postgresql</artifactId>
+        	<version>9.3-1100-jdbc41</version>
         </dependency>
     </dependencies>
     <repositories>
