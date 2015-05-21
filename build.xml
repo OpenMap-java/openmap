@@ -19,8 +19,7 @@
 		<property name="mac.app" value="OpenMap.app" />
 		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
 		<property name="openmap_version" value="5.2.0b" />
-		<property name="openmap.ext" value="${openmap.home}/src/ext" />
-		<property name="openmap.src" value="${openmap.home}/src/openmap" />
+		<property name="core.src" value="${openmap.home}/src/core" />
 		<property name="svg.src" value="${openmap.home}/src/svg" />
 		<property name="j3d.src" value="${openmap.home}/src/j3d" />
 		<property name="corba.src" value="${openmap.home}/src/corba" />
@@ -41,7 +40,7 @@
 		the jars in the external libraries available from svn 
 		#########################  -->
 		<path id="ext_tools_classpath">
-			<fileset dir="." includes="ext/**/*.jar" />
+			<fileset dir="ext" includes="**/*.jar" />
 		</path>
 
 	</target>
@@ -50,45 +49,49 @@
 	Main targets
 	############################ -->
 
-	<target name="classes" depends="init" description="Compiles standard OpenMap classes.">
-		<ant antfile="${openmap.src}/build.xml" target="classes" inheritRefs="true" />
-		<antcall target="svg" inheritRefs="true" />
-		<antcall target="j3d" inheritRefs="true" />
-		<antcall target="corba" inheritRefs="true" />
+	<target name="classes" depends="init" description="Compiles all OpenMap classes.">
+		<antcall target="core" />
+		<antcall target="svg" />
+		<antcall target="j3d" />
+		<antcall target="corba" />
 	</target>
 
+	<target name="core" depends="init" description="Compiles SVG OpenMap classes.">
+		<ant antfile="${core.src}/build.xml" target="classes" />
+	</target>	
+	
 	<target name="svg" depends="init" description="Compiles SVG OpenMap classes.">
-		<ant antfile="${svg.src}/build.xml" target="classes.svg" inheritRefs="true" />
+		<ant antfile="${svg.src}/build.xml" target="classes" />
 	</target>
 
 	<target name="j3d" depends="init" description="Compiles J3D OpenMap classes.">
-		<ant antfile="${j3d.src}/build.xml" target="classes.j3d" inheritRefs="true" />
+		<ant antfile="${j3d.src}/build.xml" target="classes" />
 	</target>
 
 	<target name="corba" depends="init" description="Compiles CORBA OpenMap classes.">
-		<ant antfile="${corba.src}/build.xml" target="classes.corba" inheritRefs="true" />
+		<ant antfile="${corba.src}/build.xml" target="classes" />
 	</target>
 
 	<target name="jars" depends="classes" description="Compiles OpenMap and alternative classes.">
-		<ant antfile="${openmap.src}/build.xml" target="jar.openmap" inheritRefs="true" />
-		<ant antfile="${svg.src}/build.xml" target="jar.svg" inheritRefs="true" />
-		<ant antfile="${j3d.src}/build.xml" target="jar.j3d" inheritRefs="true" />
-		<ant antfile="${corba.src}/build.xml" target="jar.corba" inheritRefs="true" />
+		<ant antfile="${core.src}/build.xml" target="jar" inheritRefs="true" />
+		<ant antfile="${svg.src}/build.xml" target="jar" inheritRefs="false" />
+		<ant antfile="${j3d.src}/build.xml" target="jar" inheritRefs="true" />
+		<ant antfile="${corba.src}/build.xml" target="jar" inheritRefs="true" />
 	</target>
 
 	<target name="geo" depends="init" description="Compiles Geo package and creates omgeo.jar.">
-		<ant antfile="${openmap.src}/build.xml" target="jar.geo" inheritRefs="true" />
+		<ant antfile="${core.src}/build.xml" target="jar.geo" inheritRefs="true" />
 	</target>
 
 	<target name="all" depends="init" description="Compiles OpenMap classes and creates the jar files.">
-		<ant antfile="${openmap.src}/build.xml" target="all.openmap" inheritRefs="true" />
-		<ant antfile="${svg.src}/build.xml" target="all.svg" inheritRefs="true" />
-		<ant antfile="${j3d.src}/build.xml" target="all.j3d" inheritRefs="true" />
-		<ant antfile="${corba.src}/build.xml" target="all.corba" inheritRefs="true" />
+		<ant antfile="${core.src}/build.xml" target="all" inheritRefs="true" />
+		<ant antfile="${svg.src}/build.xml" target="all" inheritRefs="true" />
+		<ant antfile="${j3d.src}/build.xml" target="all" inheritRefs="true" />
+		<ant antfile="${corba.src}/build.xml" target="all" inheritRefs="true" />
 	</target>
 
 	<target name="docs" depends="init" description="Creates OpenMap API documentation.">
-		<ant antfile="${openmap.src}/build.xml" target="docs.openmap" inheritRefs="true" />
+		<ant antfile="${core.src}/build.xml" target="docs.core" inheritRefs="true" />
 	</target>
 
 	<!--  ############################
@@ -100,28 +103,28 @@
 	</target>
 
 	<target name="clean" depends="init" description="Delete jar files and all class files.">
-		<ant antfile="${openmap.src}/build.xml" target="clean.openmap" inheritRefs="true" />
-		<ant antfile="${svg.src}/build.xml" target="clean.svg" inheritRefs="true" />
-		<ant antfile="${j3d.src}/build.xml" target="clean.j3d" inheritRefs="true" />
-		<ant antfile="${corba.src}/build.xml" target="clean.corba" inheritRefs="true" />
+		<ant antfile="${core.src}/build.xml" target="clean" inheritRefs="true" />
+		<ant antfile="${svg.src}/build.xml" target="clean" inheritRefs="true" />
+		<ant antfile="${j3d.src}/build.xml" target="clean" inheritRefs="true" />
+		<ant antfile="${corba.src}/build.xml" target="clean" inheritRefs="true" />
 	</target>
 
 	<target name="distclean" depends="init" description="Delete class files, but not the jar files.">
-		<ant antfile="${openmap.src}/build.xml" target="distclean.openmap" inheritRefs="true" />
-		<ant antfile="${svg.src}/build.xml" target="distclean.svg" inheritRefs="true" />
-		<ant antfile="${j3d.src}/build.xml" target="distclean.j3d" inheritRefs="true" />
-		<ant antfile="${corba.src}/build.xml" target="distclean.corba" inheritRefs="true" />
+		<ant antfile="${core.src}/build.xml" target="distclean" inheritRefs="true" />
+		<ant antfile="${svg.src}/build.xml" target="distclean" inheritRefs="true" />
+		<ant antfile="${j3d.src}/build.xml" target="distclean" inheritRefs="true" />
+		<ant antfile="${corba.src}/build.xml" target="distclean" inheritRefs="true" />
 	</target>
 
 	<target name="clean_jars" depends="init" description="Delete only the jar files from the lib directory.">
-		<ant antfile="${openmap.src}/build.xml" target="clean_jars.openmap" inheritRefs="true" />
-		<ant antfile="${svg.src}/build.xml" target="clean_jars.svg" inheritRefs="true" />
-		<ant antfile="${j3d.src}/build.xml" target="clean_jars.j3d" inheritRefs="true" />
-		<ant antfile="${corba.src}/build.xml" target="clean_jars.corba" inheritRefs="true" />
+		<ant antfile="${core.src}/build.xml" target="jarclean" inheritRefs="true" />
+		<ant antfile="${svg.src}/build.xml" target="jarclean" inheritRefs="true" />
+		<ant antfile="${j3d.src}/build.xml" target="jarclean" inheritRefs="true" />
+		<ant antfile="${corba.src}/build.xml" target="jarclean" inheritRefs="true" />
 	</target>
 
 	<target name="clean_docs" depends="init" description="Delete only the generated API documentation.">
-		<ant antfile="${openmap.src}/build.xml" target="clean_docs.openmap" inheritRefs="true" />
+		<ant antfile="${core.src}/build.xml" target="docsclean" inheritRefs="true" />
 	</target>
 
 	<!--  ############################

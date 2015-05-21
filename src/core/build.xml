@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<project name="OpenMap_Core" default="all" basedir=".">
+
+	<!--  ############################
+	Set up the different builds.
+	############################ -->
+
+	<target name="init" description="Sets properties needed by the OpenMap core targets.">
+		<tstamp />
+
+		<property name="openmap.home" value="../.." />
+		<property name="openmap.core" value="${openmap.home}/src/core" />		
+		<property name="openmap.src" value="${openmap.core}/src/main/java" />
+		<property name="openmap.classes" value="${openmap.core}/build/classes" />
+		<property name="openmap.jar" value="${openmap.core}/dist/openmap.jar" />
+		<property name="openmap.docs" value="${openmap.home}/doc" />
+
+		<property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
+							 **/ChangeLog, **/*.html, **/*.txt,
+							 **/*.*.txt, **/*.dat,
+							 **/*.pl,
+							 **/unimplemented/**, 
+							 **/build.xml" />
+
+		<property name="javac.excludes" value="${general.excludes}, 
+						       **/*.gif,
+						       **/*.png, 
+						       **/*.properties" />
+
+		<property name="jai.includes" value="**/jai/**, **/geotiff/**" />
+
+		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
+		<available classname="com.sun.media.jai.codec.ImageCodec" property="do.jai">
+			<classpath>
+				<fileset dir="${openmap.home}/ext" includes="**/*.jar" />
+			</classpath>
+		</available>
+		<echo message="do.jai = ${do.jai}" />
+
+		<echo message="Java Home: ${java.home}" />
+	</target>
+
+	<!--  ############################
+	      End of property setup.
+	      ############################ -->
+
+	<!--  ############################
+	      Main targets
+	      ############################ -->
+
+	<target name="all" depends="jar" description="Compiles standard OpenMap classes and creates the jar files." />
+
+	<target name="jar" depends="classes" description="Builds jar files, placing them in the lib directory.">
+
+		<jar jarfile="${openmap.jar}" basedir="${openmap.classes}" manifest="${openmap.home}/share/manifest.txt" index="true" includes="openmap.properties,
+			 **/*.class,
+			 **/*.gif, **/*.png,
+			 **/*.properties" />
+	</target>
+
+	<!--  ############################
+	Standard target, to build everything you can.
+	############################ -->
+	<target name="classes" depends="init" description="Compiles the OpenMap classes.">
+
+	    <mkdir dir="${openmap.classes}" />
+
+		<!-- Main OpenMap Classes -->
+		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes}" source="1.5" target="1.5">
+			<classpath>
+				<fileset dir="${openmap.home}/ext" includes="**/*.jar" />
+			</classpath>
+		</javac>
+
+		<!-- JAI code -->
+		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}" source="1.5" target="1.5">
+			<classpath>
+				<fileset dir="${openmap.home}/ext" includes="**/*.jar" />
+			</classpath>
+		</javac>
+
+		<!-- Copy the gifs and other resources to the new classpath. -->
+		<copy todir="${openmap.classes}" file="${openmap.home}/openmap.properties" />
+		<copy todir="${openmap.classes}">
+			<fileset dir="${openmap.core}/src/main/resources" includes="**/*.gif, **/*.png, **/*.properties" />
+		</copy>
+
+	</target>
+
+	<!--  ############################
+	Build the documentation.
+	############################ -->
+	<target name="docs" depends="init" description="Make the javadoc API html documents.">
+		<javadoc sourcepath="${openmap.src}" destdir="${openmap.docs}/api" maxmemory="256m" excludepackagenames="**unimplemented**" packagenames="com.bbn.openmap.*, Acme.*, dopplet.*, edu.*" author="true" version="true" use="true" windowtitle="OpenMap API" doctitle="OpenMap" bottom="Copyright (C) BBNT Solutions LLC; See http://openmap.bbn.com/ for details">
+			<classpath refid="ext_tools_classpath" />
+		</javadoc>
+	</target>
+
+	<!--  ############################
+	Cleanup targets
+	############################ -->
+	<target name="clean_all" depends="clean, docsclean" description="Delete jar files, class files, and generated documentation." />
+
+	<target name="clean" depends="distclean, jarclean" description="Delete jar files and all class files" />
+
+	<target name="distclean" depends="init" description="Delete class files, but not the jar files.">
+		<delete dir="${openmap.core}/build" />		
+	</target>
+
+	<target name="jarclean" description="Delete only the jar files from the lib directory.">
+		<delete dir="${openmap.core}/dist" />
+	</target>
+
+	<target name="docsclean" depends="init" description="Delete only the generated API documentation.">
+		<delete>
+			<fileset dir="${openmap.docs}/api" includes="**/*.html,
+				     **/stylesheet.css, 
+				     **/package-list" excludes="doc-index.html" />
+		</delete>
+		<delete dir="${openmap.docs}/api/com" />
+		<delete dir="${openmap.docs}/api/Acme" />
+		<delete dir="${openmap.docs}/api/edu" />
+	</target>
+
+	<!--  ############################
+	End of cleanup targets.
+	############################ -->
+
+</project>
+

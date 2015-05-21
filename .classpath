@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" path="src/openmap"/>
-	<classpathentry kind="src" path="src/vpfservlet/WEB-INF/src"/>
-	<classpathentry kind="src" path="src/maptileservlet/WEB-INF/src"/>
-	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" path="src/ext"/>
-	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" output="classes/corba" path="src/corba"/>
-	<classpathentry excluding="**/.DS_Store|**/.cvsignore|build.xml" kind="src" output="classes/j3d" path="src/j3d"/>
+	<classpathentry kind="src" path="src/core/src/main/java"/>
+	<classpathentry kind="src" path="src/vpfservlet/src/main/java"/>
+	<classpathentry kind="src" path="src/maptileservlet/src/main/java"/>
+	<classpathentry kind="src" path="src/j3d/src/main/java"/>
+	<classpathentry kind="src" path="src/corba/src/main/java"/>
+	<classpathentry kind="src" path="src/svg/src/main/java"/>
+	<classpathentry kind="src" path="src/wmsservlet/src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
 	<classpathentry kind="lib" path="ext/batik-1.7/extensions/batik-rasterizer-ext.jar"/>

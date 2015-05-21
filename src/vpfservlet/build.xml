@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="OpenMap VPF Servlets" default="all" basedir=".">
+<project name="OpenMap VPF Servlet" default="all" basedir=".">
 	<target name="init" description="Sets properties needed by the other targets.">
 		<tstamp />
 		<property name="openmap.home" value="../.." />

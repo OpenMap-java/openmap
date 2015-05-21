@@ -1,20 +1,19 @@
 <?xml version="1.0"?>
-<project name="OpenMap_corba" default="all.corba" basedir=".">
+<project name="OpenMap_corba" default="all" basedir=".">
 
 	<!--  ############################
 	Set up the different builds.
 	############################ -->
 
-	<target name="init.corba" description="Sets properties needed by the other targets.">
+	<target name="init" description="Sets properties needed by the other targets.">
 		<tstamp />
 
 		<property name="openmap.home" value="../.." />
-		<property name="openmap.class_dir" value="${openmap.home}/classes" />
-		<property name="openmap.classes" value="${openmap.home}/classes/openmap" />
-		<property name="corba.src" value="${openmap.home}/src/corba" />
-		<property name="corba.jar" value="${openmap.home}/lib/omcorba.jar" />
-		<property name="corba_vb.jar" value="${openmap.home}/lib/omcorba_vb.jar" />
-		<property name="corba.classes" value="${openmap.home}/classes/corba" />
+		<property name="openmap.corba" value="${openmap.home}/src/corba" />
+		<property name="corba.src" value="${openmap.corba}/src/main/java" />
+		<property name="corba.classes" value="${openmap.corba}/build/classes" />
+		<property name="corba.jar" value="${openmap.corba}/dist/omcorba.jar" />
+		<property name="corba.docs" value="${openmap.home}/doc" />
 
 		<property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
 		                             **/ChangeLog, **/*.html, **/*.txt,
@@ -29,10 +28,10 @@
 		<property name="corbaimage.home" value="${corba.src}/com/bbn/openmap/layer/corbaImage/corbaImageServer" />
 
 		<!-- 
-	 Initial check to see if the idls need to be compiled.  If the
-	 stub directories exist, assume they do.  You can 'make
-	 distclean' to delete these directories to start over. 
-      -->
+		 Initial check to see if the idls need to be compiled.  If the
+		 stub directories exist, assume they do.  You can 'make
+		 distclean' to delete these directories to start over. 
+	      -->
 		<condition property="idl.compiled">
 			<and>
 				<available file="${cspecialist.home}" />
@@ -47,25 +46,22 @@
 	 things to call the executable.  Make sure the idl2java
 	 compiler is in your path.
 
-	 <property name="idl2java.compiler" value="com.sun.tools.corba.se.idl.toJavaPortable.Compile" /> 
-	 -->
-
-		<!-- Set this value to your idl2java executable, and make sure
-	 it's in your path -->
+	 <property name="idl2java.compiler" value="com.sun.tools.corba.se.idl.toJavaPortable.Compile" /> -->
+	<!-- Set this value to your idl2java executable, and make sure it's in your path -->
 		<property name="idl2java.compiler" value="idlj" />
 
 		<!-- #################################
-	 VisiBroker settings - need to set idl2java compiler
-	 property differently. 
+		 VisiBroker settings - need to set idl2java compiler
+	 	property differently. 
          -->
 
 		<!-- sets the do.visibroker present property to the value "true"
-	 if the home directory of Visibroker is found. -->
+	 	if the home directory of Visibroker is found. -->
 		<property name="visibroker.home" value="/usr/local/openmap/vbroker-3.4/java" />
 		<available file="${visibroker.home}" property="do.visibroker" />
 		<!-- Visibroker compiler class is:
-    <property name="idl2java.compiler" value="com.visigenic.vbroker.tools.idl2java" />
-    -->
+	    <property name="idl2java.compiler" value="com.visigenic.vbroker.tools.idl2java" />
+	    -->
 		<property name="visibroker.jars" value="${visibroker.home}/lib/vbjapp.jar:${visibroker.home}/lib/vbjcosnm.jar:${visibroker.home}/lib/vbjtools.jar:${visibroker.home}/lib/vbjorb.jar" />
 		<property name="visibroker.bootclasspath" value="${visibroker.jars}:${java.home}/lib/rt.jar:${corba.classes}:${openmap.classes}" />
 
@@ -76,15 +72,9 @@
 	############################ -->
 
 	<!-- in case we change orbs later. -->
-	<target name="all.corba" depends="classes.corba, jar.corba" />
+	<target name="all" depends="classes, jar" />
 
-	<target name="classes.corba" depends="init.corba">
-		<mkdir dir="${corba.classes}" />
-		<antcall target="classes.jdkcorba" inheritRefs="true" />
-		<!--    <antcall target="classes.visibroker" inheritRefs="true"/> -->
-	</target>
-
-	<target name="jar.corba">
+	<target name="jar">
 		<antcall target="jar.jdkcorba" />
 	</target>
 
@@ -92,20 +82,20 @@
 	JDK CORBA targets
 	############################ -->
 
-	<target name="jdkcorba.idl" depends="init.corba" description="Create stub classes from idl files and compile stubs." unless="idl.compiled">
+	<target name="jdkcorba.idl" depends="init" description="Create stub classes from idl files and compile stubs." unless="idl.compiled">
 		<echo message="Creating CORBA stub classes from idls with JDK CORBA..." />
 
 		<!-- Used to compile the idl files with a java command, but the
-	 class isn't being found consistently across platforms.  If
-	 you want to use this method, note the <java> command.  The
-	 arg line is the same.  You can modify the other two packages
-	 accordingly.
+		 class isn't being found consistently across platforms.  If
+	 	you want to use this method, note the <java> command.  The
+	 	arg line is the same.  You can modify the other two packages
+	 	accordingly.
 
-    <echo message="  CORBA RPF FrameProvider package..."/>
-    <java classname="${idl2java.compiler}" fork="yes"> 
-      <arg line='-td ${corba.src} -fall -pkgPrefix CRpfFrameProvider com.bbn.openmap.layer.rpf.corba com/bbn/openmap/layer/rpf/corba/CorbaRpfFrameProvider.idl'/>
-    </java>
-    -->
+    	<echo message="  CORBA RPF FrameProvider package..."/>
+    	<java classname="${idl2java.compiler}" fork="yes"> 
+      		<arg line='-td ${corba.src} -fall -pkgPrefix CRpfFrameProvider com.bbn.openmap.layer.rpf.corba com/bbn/openmap/layer/rpf/corba/CorbaRpfFrameProvider.idl'/>
+	    </java>
+	    -->
 
 		<echo message="  CORBA RPF FrameProvider package..." />
 		<exec executable="pwd" />
@@ -124,11 +114,11 @@
 		</exec>
 
 		<!-- 
-	 Update the idl.compiled property if the compilations
-	 passed. If the compilations failed, then these directories
-	 won't be created, and the other class files won't be given to
-	 the compiler and an empty jar file won't be created.  
-      -->
+		 Update the idl.compiled property if the compilations
+	 	passed. If the compilations failed, then these directories
+	 	won't be created, and the other class files won't be given to
+	 	the compiler and an empty jar file won't be created.  
+      	-->
 		<condition property="idl.compiled">
 			<and>
 				<available file="${cspecialist.home}" />
@@ -140,26 +130,26 @@
 	</target>
 
 	<target name="jdkcorba.stubs" depends="jdkcorba.idl" description="Compile stub classes created from idl files." if="idl.compiled">
+		<mkdir dir="${corba.classes}" />
 		<echo message="Compiling CORBA stub classes..." />
 		<javac includeantruntime="false" srcdir="${corba.src}" destdir="${corba.classes}" debug="on" includes="**/CRpfFrameProvider/**, **/CSpecialist/**, **/corbaImageServer/**" excludes="${javac.excludes}" source="1.5" target="1.5">
-			<classpath refid="ext_tools_classpath" />
-<!--			<compilerarg value="-Xlint:unchecked"/>-->
-			<compilerarg value="-Xlint:deprecation"/>
+			<!--			<compilerarg value="-Xlint:unchecked"/>-->
+			<compilerarg value="-Xlint:deprecation" />
 		</javac>
 	</target>
 
 	<!-- Kick off bulding corba classes with visibroker -->
-	<target name="classes.jdkcorba" depends="jdkcorba.stubs" description="Compiles the Corba classes with the JDK CORBA implementation. (Call this to build CORBA classes)" if="idl.compiled">
+	<target name="classes" depends="jdkcorba.stubs" description="Compiles the Corba classes with the JDK CORBA implementation. (Call this to build CORBA classes)" if="idl.compiled">
+
+		<ant dir="${openmap.home}/src/core" target="jar" />
 
 		<echo message="Compiling CORBA classes with JDK CORBA..." />
 		<javac includeantruntime="false" srcdir="${corba.src}" destdir="${corba.classes}" debug="on" includes="**/*.java" excludes="**/unimplemented/**" source="1.5" target="1.5">
 			<classpath>
-				<path refid="ext_tools_classpath" />
-				<pathelement path="${openmap.classes}" />
-				<pathelement path="${openmap.home}/lib/openmap.jar" />
+				<pathelement path="${openmap.home}/src/core/dist/openmap.jar" />
 			</classpath>
-<!--			<compilerarg value="-Xlint:unchecked"/>-->
-			<compilerarg value="-Xlint:deprecation"/>
+			<!--			<compilerarg value="-Xlint:unchecked"/>-->
+			<compilerarg value="-Xlint:deprecation" />
 		</javac>
 
 		<copy todir="${corba.classes}/com/bbn/openmap">
@@ -168,7 +158,7 @@
 
 	</target>
 
-	<target name="jar.jdkcorba" depends="init.corba" description="Builds jar files, placing them in the lib directory." if="idl.compiled">
+	<target name="jar.jdkcorba" depends="init" description="Builds jar files, placing them in the lib directory." if="idl.compiled">
 
 		<jar jarfile="${corba.jar}" basedir="${corba.classes}" index="true" includes="**/*.class" />
 	</target>
@@ -177,7 +167,7 @@
 	Visibroker targets
 	############################ -->
 
-	<target name="visibroker.idl" depends="init.corba" description="Create stub classes from idl files and compile stubs." unless="idl.compiled">
+	<target name="visibroker.idl" depends="init" description="Create stub classes from idl files and compile stubs." unless="idl.compiled">
 		<echo message="Creating CORBA stub classes from idls with Visibroker..." />
 
 		<!-- These compilations rely on the java invocation of the idl
@@ -225,8 +215,8 @@
 				<pathelement path="${openmap.classes}" />
 				<pathelement path="${openmap.home}/lib/openmap.jar" />
 			</classpath>
-<!--			<compilerarg value="-Xlint:unchecked"/>-->
-			<compilerarg value="-Xlint:deprecation"/>
+			<!--			<compilerarg value="-Xlint:unchecked"/>-->
+			<compilerarg value="-Xlint:deprecation" />
 		</javac>
 	</target>
 
@@ -242,7 +232,7 @@
 				<pathelement path="${openmap.classes}" />
 				<pathelement path="${openmap.home}/lib/openmap.jar" />
 			</classpath>
-			<compilerarg value="${compiler.args}"/>
+			<compilerarg value="${compiler.args}" />
 		</javac>
 
 		<copy todir="${corba.classes}/com/bbn/openmap">
@@ -253,7 +243,7 @@
 
 	<!-- Target only needed if you want a differently named jar file for
        openmap class files compiled with visibroker. -->
-	<target name="jar.visibroker" depends="init.corba" description="Builds jar files, placing them in the lib directory." if="do.visibroker,idl.compiled">
+	<target name="jar.visibroker" depends="init" description="Builds jar files, placing them in the lib directory." if="do.visibroker,idl.compiled">
 
 		<jar jarfile="${corba_vb.jar}" basedir="${corba.classes}" includes="**/*.class" />
 	</target>
@@ -261,27 +251,27 @@
 	<!--  ############################
 	Cleanup targets
 	############################ -->
-	<target name="clean_all.corba" depends="clean.corba, clean_stubs.corba, clean_docs.corba" description="Delete jar files, class files, and generated documentation." />
+	<target name="clean_all" depends="clean, stubclean, docsclean" description="Delete jar files, class files, and generated documentation." />
 
-	<target name="clean.corba" depends="clean_classes.corba, clean_jars.corba" description="Delete jar files and all class files" />
+	<target name="clean" depends="classesclean, jarclean" description="Delete jar files and all class files" />
 
-	<target name="distclean.corba" depends="clean_classes.corba, clean_stubs.corba" description="Delete the Corba OpenMap class files and the stub classes, but not the jar files." />
+	<target name="distclean" depends="classesclean, stubclean" description="Delete the Corba OpenMap class files and the stub classes, but not the jar files." />
 
-	<target name="clean_classes.corba" depends="init.corba" description="Delete the Corba OpenMap class files and the stub classes, but not the jar files.">
-		<delete dir="${corba.classes}" />
+	<target name="classesclean" depends="init" description="Delete the Corba OpenMap class files and the stub classes, but not the jar files.">
+		<delete dir="${openmap.corba}/build" />
 	</target>
 
-	<target name="clean_stubs.corba" depends="init.corba" description="Delete the Corba OpenMap Stub classes generated from IDLs.">
+	<target name="stubclean" depends="init" description="Delete the Corba OpenMap Stub classes generated from IDLs.">
 		<delete dir="${corba.src}/com/bbn/openmap/layer/rpf/corba/CRpfFrameProvider" />
 		<delete dir="${corba.src}/com/bbn/openmap/corba" />
 		<delete dir="${corba.src}/com/bbn/openmap/layer/corbaImage/corbaImageServer" />
 	</target>
 
-	<target name="clean_jars.corba" description="Delete only the jar files from the lib directory.">
-		<delete file="${corba.jar}" />
+	<target name="jarclean" description="Delete only the jar files from the lib directory.">
+		<delete dir="${openmap.corba}/dist" />
 	</target>
 
-	<target name="clean_docs.corba" description="Delete only the generated API documentation.">
+	<target name="docsclean" description="Delete only the generated API documentation.">
 		<delete dir="${openmap.docs}/com" />
 		<delete>
 			<fileset dir="${openmap.docs}" includes="**/*.html" excludes="doc-index.html" />
