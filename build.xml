@@ -22,7 +22,6 @@
 		<property name="core.src" value="${openmap.home}/src/core" />
 		<property name="svg.src" value="${openmap.home}/src/svg" />
 		<property name="j3d.src" value="${openmap.home}/src/j3d" />
-		<property name="corba.src" value="${openmap.home}/src/corba" />
 		<property name="openmap_package.dir" value="${openmap.home}/package" />
 		<property name="openmap_mac_package.dir" value="${openmap_package.dir}/OpenMap_${openmap_version}" />
 		<property name="openmap_release.dir" value="${openmap_mac_package.dir}/openmap-${openmap_version}" />
@@ -53,7 +52,6 @@
 		<antcall target="core" />
 		<antcall target="svg" />
 		<antcall target="j3d" />
-		<antcall target="corba" />
 	</target>
 
 	<target name="core" depends="init" description="Compiles SVG OpenMap classes.">
@@ -68,15 +66,10 @@
 		<ant antfile="${j3d.src}/build.xml" target="classes" />
 	</target>
 
-	<target name="corba" depends="init" description="Compiles CORBA OpenMap classes.">
-		<ant antfile="${corba.src}/build.xml" target="classes" />
-	</target>
-
 	<target name="jars" depends="classes" description="Compiles OpenMap and alternative classes.">
 		<ant antfile="${core.src}/build.xml" target="jar" inheritRefs="true" />
 		<ant antfile="${svg.src}/build.xml" target="jar" inheritRefs="false" />
 		<ant antfile="${j3d.src}/build.xml" target="jar" inheritRefs="true" />
-		<ant antfile="${corba.src}/build.xml" target="jar" inheritRefs="true" />
 	</target>
 
 	<target name="geo" depends="init" description="Compiles Geo package and creates omgeo.jar.">
@@ -87,7 +80,6 @@
 		<ant antfile="${core.src}/build.xml" target="all" inheritRefs="true" />
 		<ant antfile="${svg.src}/build.xml" target="all" inheritRefs="true" />
 		<ant antfile="${j3d.src}/build.xml" target="all" inheritRefs="true" />
-		<ant antfile="${corba.src}/build.xml" target="all" inheritRefs="true" />
 	</target>
 
 	<target name="docs" depends="init" description="Creates OpenMap API documentation.">
@@ -106,21 +98,18 @@
 		<ant antfile="${core.src}/build.xml" target="clean" inheritRefs="true" />
 		<ant antfile="${svg.src}/build.xml" target="clean" inheritRefs="true" />
 		<ant antfile="${j3d.src}/build.xml" target="clean" inheritRefs="true" />
-		<ant antfile="${corba.src}/build.xml" target="clean" inheritRefs="true" />
 	</target>
 
 	<target name="distclean" depends="init" description="Delete class files, but not the jar files.">
 		<ant antfile="${core.src}/build.xml" target="distclean" inheritRefs="true" />
 		<ant antfile="${svg.src}/build.xml" target="distclean" inheritRefs="true" />
 		<ant antfile="${j3d.src}/build.xml" target="distclean" inheritRefs="true" />
-		<ant antfile="${corba.src}/build.xml" target="distclean" inheritRefs="true" />
 	</target>
 
 	<target name="clean_jars" depends="init" description="Delete only the jar files from the lib directory.">
 		<ant antfile="${core.src}/build.xml" target="jarclean" inheritRefs="true" />
 		<ant antfile="${svg.src}/build.xml" target="jarclean" inheritRefs="true" />
 		<ant antfile="${j3d.src}/build.xml" target="jarclean" inheritRefs="true" />
-		<ant antfile="${corba.src}/build.xml" target="jarclean" inheritRefs="true" />
 	</target>
 
 	<target name="clean_docs" depends="init" description="Delete only the generated API documentation.">
@@ -133,14 +122,13 @@
 
 	<!-- depends="jar" -->
 	<target name="run" depends="init" description="Run the OpenMap application.">
-		<java classname="com.bbn.openmap.app.OpenMap" classpath="lib/openmap.jar;lib/milStd2525_png.jar;lib/omcorba.jar;lib/omsvg.jar;lib/omj3d;share" fork="yes">
+		<java classname="com.bbn.openmap.app.OpenMap" classpath="lib/openmap.jar;lib/milStd2525_png.jar;lib/omsvg.jar;lib/omj3d;share" fork="yes">
 			<classpath>
 				<path refid="ext_tools_classpath" />
 				<pathelement path="${openmap.home}/lib/openmap.jar" />
 				<pathelement path="${openmap.home}/lib/milStd2525_png.jar" />
 				<pathelement path="${openmap.home}/lib/omsvg.jar" />
 				<pathelement path="${openmap.home}/lib/omj3d.jar" />
-				<pathelement path="${openmap.home}/lib/omcorba.jar" />
 				<pathelement path="${openmap.home}/share" />
 			</classpath>
 		</java>

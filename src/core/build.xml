@@ -11,8 +11,8 @@
 		<property name="openmap.home" value="../.." />
 		<property name="openmap.core" value="${openmap.home}/src/core" />		
 		<property name="openmap.src" value="${openmap.core}/src/main/java" />
-		<property name="openmap.classes" value="${openmap.core}/build/classes" />
-		<property name="openmap.jar" value="${openmap.core}/dist/openmap.jar" />
+		<property name="openmap.classes" value="${openmap.core}/target/classes" />
+		<property name="openmap.jar" value="${openmap.core}/target/openmap.jar" />
 		<property name="openmap.docs" value="${openmap.home}/doc" />
 
 		<property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
@@ -101,14 +101,16 @@
 	############################ -->
 	<target name="clean_all" depends="clean, docsclean" description="Delete jar files, class files, and generated documentation." />
 
-	<target name="clean" depends="distclean, jarclean" description="Delete jar files and all class files" />
+	<target name="clean" depends="init" description="Delete jar files and all class files" >
+		<delete dir="${openmap.core}/target" />
+	</target>
 
 	<target name="distclean" depends="init" description="Delete class files, but not the jar files.">
-		<delete dir="${openmap.core}/build" />		
+		<delete dir="${openmap.classes}" />		
 	</target>
 
 	<target name="jarclean" description="Delete only the jar files from the lib directory.">
-		<delete dir="${openmap.core}/dist" />
+		<delete file="${openmap.core}/target/*.jar" />
 	</target>
 
 	<target name="docsclean" depends="init" description="Delete only the generated API documentation.">

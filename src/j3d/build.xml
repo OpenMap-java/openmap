@@ -7,8 +7,8 @@
 		<property name="openmap.home" value="../.." />
 		<property name="openmap.j3d" value="${openmap.home}/src/j3d" />
 		<property name="j3d.src" value="${openmap.j3d}/src/main/java" />
-		<property name="j3d.classes" value="${openmap.j3d}/build/classes" />
-		<property name="j3d.jar" value="${openmap.j3d}/dist/omj3d.jar" />
+		<property name="j3d.classes" value="${openmap.j3d}/target/classes" />
+		<property name="j3d.jar" value="${openmap.j3d}/target/omj3d.jar" />
 		<property name="j3d.docs" value="${openmap.home}/doc" />
 
 
@@ -49,7 +49,7 @@
 		<javac includeantruntime="false" srcdir="${j3d.src}" destdir="${j3d.classes}" debug="on" excludes="${javac.excludes}" source="1.5" target="1.5">
 			<classpath>
 				<fileset dir="${openmap.home}/ext" includes="**/*.jar" />
-				<pathelement path="${openmap.home}/src/core/dist/openmap.jar" />
+				<pathelement path="${openmap.home}/src/core/target/openmap.jar" />
 				<pathelement path="${openmap.home}" />
 			</classpath>
 		</javac>
@@ -68,14 +68,16 @@
 	############################ -->
 	<target name="clean_all" depends="clean, docsclean" description="Delete jar files, class files, and generated documentation." />
 
-	<target name="clean" depends="distclean, jarclean" description="Delete jar files and all class files" />
+	<target name="clean" depends="init" description="Delete jar files and all class files" >
+		<delete dir="${openmap.j3d}/target" />
+	</target>
 
 	<target name="distclean" depends="init" description="Delete class files, but not the jar files.">
-		<delete dir="${openmap.j3d}/build" />
+		<delete dir="${j3d.classes}" />
 	</target>
 
 	<target name="jarclean" description="Delete only the jar files from the lib directory.">
-		<delete dir="${openmap.j3d}/dist" />
+		<delete file="${j3d.jar}" />
 	</target>
 
 	<target name="docsclean" description="Delete only the generated API documentation.">

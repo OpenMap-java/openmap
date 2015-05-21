@@ -11,8 +11,8 @@
 		<property name="openmap.home" value="../.." />
 		<property name="openmap.svg" value="${openmap.home}/src/svg" />		
 		<property name="svg.src" value="${openmap.svg}/src/main/java" />
-		<property name="svg.classes" value="${openmap.svg}/build/classes" />
-		<property name="svg.jar" value="${openmap.svg}/dist/omsvg.jar" />
+		<property name="svg.classes" value="${openmap.svg}/target/classes" />
+		<property name="svg.jar" value="${openmap.svg}/target/omsvg.jar" />
 		<property name="svg.docs" value="${openmap.home}/doc" />
 
 		<property name="general.excludes" value="**/*.in, **/Makefile, **/*.bat,
@@ -48,7 +48,7 @@
 		<javac includeantruntime="false" srcdir="${svg.src}" destdir="${svg.classes}" debug="on" excludes="${javac.excludes}" source="1.5" target="1.5">
 			<classpath>
 				<pathelement path="${svg.jars}" />
-				<pathelement path="${openmap.home}/src/core/dist/openmap.jar" />
+				<pathelement path="${openmap.home}/src/core/target/openmap.jar" />
 			</classpath>
 		</javac>
 	</target>
@@ -62,14 +62,16 @@
 	############################ -->
 	<target name="clean_all" depends="clean, docsclean" description="Delete jar files, class files, and generated documentation." />
 
-	<target name="clean" depends="distclean, jarclean" description="Delete jar files and all class files" />
+	<target name="clean" depends="init" description="Delete jar files and all class files" >
+		<delete dir="${openmap.svg}/target" />
+	</target>
 
 	<target name="distclean" depends="init" description="Delete class files, but not the jar files.">
-		<delete dir="${openmap.svg}/build" />
+		<delete dir="${svg.classes}" />
 	</target>
 
 	<target name="jarclean" description="Delete only the jar files from the lib directory.">
-		<delete dir="${openmap.svg}/dist" />
+		<delete file="${svg.jar}" />
 	</target>
 
 	<target name="docsclean" description="Delete only the generated API documentation.">
