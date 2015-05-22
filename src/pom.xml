@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.bbn.openmap</groupId>
+  <artifactId>openmap-all</artifactId>
+  <packaging>pom</packaging>
+  <version>5.2-SNAPSHOT</version>
+  <name>openmap-all</name>
+  <description>A Java Beans based toolkit for building applications and applets needing geographic information</description>
+  <url>http://openmap.bbn.com</url>
+  <licenses>
+    <license>
+      <name>OpenMap Software License</name>
+      <url>https://code.google.com/p/openmap/source/browse/LICENSE</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <organization>
+    <name>BBN Technologies</name>
+    <url>http://www.bbn.com</url>
+  </organization>
+  <developers>
+    <developer>
+      <name>Don Dietrick</name>
+      <email>dfdietrick@gmail.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://code.google.com/p/openmap/</connection>
+    <developerConnection>scm:git:https://code.google.com/p/openmap/</developerConnection>
+    <url>http://code.google.com/p/openmap/source/browse</url>
+  </scm>
+  <mailingLists>
+   <mailingList>
+      <archive>https://groups.google.com/forum/#!forum/openmap-users</archive>
+    </mailingList>
+    <mailingList>
+      <archive>http://openmap.bbn.com/mailArchives/openmap-users</archive>
+    </mailingList>
+  </mailingLists>
+  <repositories>
+    <repository>
+      <!-- Provides problematic jai-codec binary missing from Maven Central -->
+      <id>thirdparty-releases</id>
+      <name>JBoss Thirdparty Releases</name>
+      <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+    </repository>
+  </repositories>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  
+  <modules>
+    <module>core</module>
+    <module>svg</module>
+    <module>j3d</module>
+    <module>wmsservlet</module>
+    <module>maptileservlet</module>
+    <module>vpfbrowseservlet</module>
+  </modules>
+</project>

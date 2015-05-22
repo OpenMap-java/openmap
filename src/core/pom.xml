@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.bbn.openmap</groupId>
-    <artifactId>openmap-core</artifactId>
+    <artifactId>openmap</artifactId>
     <packaging>jar</packaging>
-    <name>OpenMap</name>
+    <name>openmap</name>
     <version>5.2-SNAPSHOT</version>
-    <description>A Java Beans based toolkit for building applications and applets needing geographic information</description>
+    <description>OpenMap is a Java Beans based toolkit for building applications and applets needing geographic information.  This project encapsulates the main part of the toolkit.</description>
     <url>http://openmap.bbn.com</url>
     <licenses>
         <license>
@@ -131,11 +131,17 @@
                             <goal>perform</goal>
                         </goals>
                         <configuration>
-                            <pomFileName>src/openmap/pom.xml</pomFileName>
+                            <pomFileName>src/core/pom.xml</pomFileName>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+    <parent>
+    	<groupId>com.bbn.openmap</groupId>
+    	<artifactId>openmap-all</artifactId>
+    	<version>5.2-SNAPSHOT</version>
+    	<relativePath>..</relativePath>
+    </parent>
 </project>
