@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/core/src/main/java"/>
-	<classpathentry kind="src" path="src/vpfservlet/src/main/java"/>
+	<classpathentry kind="src" path="src/vpfbrowseservlet/src/main/java"/>
 	<classpathentry kind="src" path="src/maptileservlet/src/main/java"/>
 	<classpathentry kind="src" path="src/j3d/src/main/java"/>
 	<classpathentry kind="src" path="src/svg/src/main/java"/>
