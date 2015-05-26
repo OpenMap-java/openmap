@@ -4,40 +4,8 @@
     <artifactId>openmap</artifactId>
     <packaging>jar</packaging>
     <name>openmap</name>
-    <version>5.2-SNAPSHOT</version>
     <description>OpenMap is a Java Beans based toolkit for building applications and applets needing geographic information.  This project encapsulates the main part of the toolkit.</description>
     <url>http://openmap.bbn.com</url>
-    <licenses>
-        <license>
-            <name>OpenMap Software License</name>
-            <url>https://code.google.com/p/openmap/source/browse/LICENSE</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-    <organization>
-        <name>BBN Technologies</name>
-        <url>http://www.bbn.com</url>
-    </organization>
-    <developers>
-        <developer>
-            <name>Don Dietrick</name>
-            <email>dfdietrick@gmail.com</email>
-        </developer>
-    </developers>
-    <scm>
-        <connection>scm:git:https://code.google.com/p/openmap/</connection>
-        <developerConnection>scm:git:https://code.google.com/p/openmap/</developerConnection>
-        <url>http://code.google.com/p/openmap/source/browse</url>
-    </scm>
-    <issueManagement>
-        <system>Bugzilla</system>
-        <url>https://openmap.bbn.com/bugzilla</url>
-    </issueManagement>
-    <mailingLists>
-        <mailingList>
-            <archive>http://openmap.bbn.com/mailArchives/openmap-users</archive>
-        </mailingList>
-    </mailingLists>
     <dependencies>
         <dependency>
             <groupId>com.sun.media</groupId>
@@ -105,39 +73,6 @@
             <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
         </repository>
     </repositories>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.4.1</version>
-                <configuration>
-                    <localCheckout>true</localCheckout>
-                </configuration>
-                <!-- Help 'mvn release:perform' find the pom when it does a checkout -->
-                <executions>
-                    <execution>
-                        <id>default</id>
-                        <goals>
-                            <goal>perform</goal>
-                        </goals>
-                        <configuration>
-                            <pomFileName>src/core/pom.xml</pomFileName>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
     <parent>
     	<groupId>com.bbn.openmap</groupId>
     	<artifactId>openmap-all</artifactId>
