@@ -65,18 +65,6 @@
         <configuration>
           <localCheckout>true</localCheckout>
         </configuration>
-        <!-- Help 'mvn release:perform' find the pom when it does a checkout -->
-        <executions>
-          <execution>
-            <id>default</id>
-            <goals>
-              <goal>perform</goal>
-            </goals>
-            <configuration>
-              <pomFileName>src/pom.xml</pomFileName>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
@@ -91,11 +79,11 @@
   </dependencies>
   
   <modules>
-    <module>core</module>
-    <module>svg</module>
-    <module>j3d</module>
-    <module>wmsservlet</module>
-    <module>maptileservlet</module>
-    <module>vpfbrowseservlet</module>
+    <module>src/core</module>
+    <module>src/svg</module>
+    <module>src/j3d</module>
+    <module>src/wmsservlet</module>
+    <module>src/maptileservlet</module>
+    <module>src/vpfbrowseservlet</module>
   </modules>
 </project>

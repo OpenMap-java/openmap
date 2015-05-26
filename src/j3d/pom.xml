@@ -22,6 +22,6 @@
     	<groupId>com.bbn.openmap</groupId>
     	<artifactId>openmap-all</artifactId>
     	<version>5.2-SNAPSHOT</version>
-    	<relativePath>..</relativePath>
+    	<relativePath>../..</relativePath>
     </parent>
 </project>
