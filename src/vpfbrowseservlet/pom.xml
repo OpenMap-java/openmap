@@ -1,27 +1,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.bbn.openmap</groupId>
-    <artifactId>vpfbrowse</artifactId>
-    <packaging>war</packaging>
-    <name>vpfbrowseservlet</name>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>openmap-vpfbrowseservlet</artifactId>
+	<packaging>war</packaging>
+	<name>openmap-vpfbrowseservlet</name>
 
-    <dependencies>
-    	<dependency>
-    	  <groupId>javax.servlet</groupId>
-    	  <artifactId>servlet-api</artifactId>
-    	  <version>2.5</version>
-    	</dependency>
-	<dependency>
-	  <groupId>com.bbn.openmap</groupId>
-	  <artifactId>openmap</artifactId>
-	  <version>5.2-SNAPSHOT</version>
-	</dependency>
-    </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.bbn.openmap</groupId>
+			<artifactId>openmap</artifactId>
+			<version>5.2-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 
-    <parent>
-    	<groupId>com.bbn.openmap</groupId>
-    	<artifactId>openmap-all</artifactId>
-    	<version>5.2-SNAPSHOT</version>
-    	<relativePath>../..</relativePath>
-    </parent>
+	<parent>
+		<groupId>com.bbn.openmap</groupId>
+		<artifactId>openmap-all</artifactId>
+		<version>5.2-SNAPSHOT</version>
+		<relativePath>../..</relativePath>
+	</parent>
 </project>
