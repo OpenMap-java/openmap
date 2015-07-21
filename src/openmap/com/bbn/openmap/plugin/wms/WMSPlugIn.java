@@ -178,7 +178,7 @@ public class WMSPlugIn extends WebImagePlugIn implements ImageServerConstants {
         }
 
         StringBuffer buf = new StringBuffer(queryHeader);
-        buf.append("?").append(WMTConstants.VERSION).append("=").append(wmsVersion).append("&").append(WMTConstants.REQUEST).append("=").append(mapRequestName).append("&").append(WMTConstants.SRS).append("=").append("EPSG:4326").append("&").append(WMTConstants.BBOX).append("=").append(bbox).append("&").append(WMTConstants.HEIGHT).append("=").append(height).append("&").append(WMTConstants.WIDTH).append("=").append(width).append("&").append(WMTConstants.EXCEPTIONS).append("=").append(errorHandling);
+        buf.append("?").append(WMTConstants.VERSION).append("=").append(wmsVersion).append("&").append(WMTConstants.REQUEST).append("=").append(mapRequestName).append("&").append(sCoordParamName).append("=").append("EPSG:4326").append("&").append(WMTConstants.BBOX).append("=").append(bbox).append("&").append(WMTConstants.HEIGHT).append("=").append(height).append("&").append(WMTConstants.WIDTH).append("=").append(width).append("&").append(WMTConstants.EXCEPTIONS).append("=").append(errorHandling);
 
         if (imageFormat != null) {
             buf.append("&").append(WMTConstants.FORMAT).append("=").append(imageFormat);
