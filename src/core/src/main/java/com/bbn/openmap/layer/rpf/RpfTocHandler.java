@@ -98,6 +98,15 @@ public class RpfTocHandler {
     private int tocNumber = 0;
 
     /**
+     * Flag to tell the TOC handler to not consider matching zones when
+     * evaluating coverage boxes for which one provides the best coverage for a
+     * projection. Because the subframes are being scaled and warped, it's
+     * better to get coverage from any zone rather than to limit the entry
+     * responses with zone matching the projection.
+     */
+    private boolean ignoreZonesForCoverageBoxes = true;
+
+    /**
      * Flag to note whether absolute pathnames are used in the A.TOC. Set to
      * false, because it's not supposed to be that way, according to the
      * specification. This is reset automatically when the A.TOC file is read.
@@ -990,7 +999,7 @@ public class RpfTocHandler {
                     && scaleFactor <= upperScaleFactorLimit
                     && (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY) || chartSeries.equalsIgnoreCase(currentEntry.info.seriesCode))) {
 
-                if (isOkZone(currentEntry.zone, okZones)) {
+                if (ignoreZonesForCoverageBoxes || isOkZone(currentEntry.zone, okZones)) {
                     // sets currentEntry.coverage.boundaryHits
                     int hits = currentEntry.coverage.setBoundaryHits(ullat, ullon, lrlat, lrlon);
 
@@ -1213,6 +1222,20 @@ public class RpfTocHandler {
 
     public void setFullPathsInATOC(boolean fullPathsInATOC) {
         this.fullPathsInATOC = fullPathsInATOC;
+    }
+
+    /**
+     * @return the ignoreZonesForCoverageBoxes
+     */
+    public boolean isIgnoreZonesForCoverageBoxes() {
+        return ignoreZonesForCoverageBoxes;
+    }
+
+    /**
+     * @param ignoreZonesForCoverageBoxes the ignoreZonesForCoverageBoxes to set
+     */
+    public void setIgnoreZonesForCoverageBoxes(boolean ignoreZonesForCoverageBoxes) {
+        this.ignoreZonesForCoverageBoxes = ignoreZonesForCoverageBoxes;
     }
 
     public static void main(String[] args) {
