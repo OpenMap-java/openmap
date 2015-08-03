@@ -1,0 +1,13 @@
+BBN Technologies' OpenMap TM package is an Open Source JavaBeans TM based programmer's toolkit. Using OpenMap, you can quickly build applications and applets that access data from legacy databases and applications. OpenMap provides the means to allow users to see and manipulate geospatial information. OpenMap is under constant development - the latest version is **OpenMap 5.1.11, released July 20, 2015**.  Note that with v5.0, you need to be using Java 5 or later.  A complete list of updates is maintained in the [CHANGELOG](http://code.google.com/p/openmap/source/browse/CHANGELOG) file in the package.
+
+You can [download](https://drive.google.com/folderview?id=0B-Y9CwNIsUOHenpDWGhBSk42b1E&usp=sharing) a copy for free, use it, and make changes to it. Be sure to read the [license](OpenMapLicense.md) before you do.
+
+Follow [OpenMap on Twitter](http://twitter.com/openmap) for announcements about new releases and updates to the code base.  If you need help, you can post questions on the [Google OpenMap-Users Group](https://groups.google.com/forum/#!forum/openmap-users) forum.  For a historical perspective, the [old BBN openmap-users mailing list archive](http://openmap.bbn.com/mailArchives/openmap-users/thread.html) is still available.
+
+Google Code has removed the ability to provide downloadable compressed release files in the Download tab (as of version 5.0.3).  The latest download packages are available via the External Links -> [Downloads](https://drive.google.com/folderview?id=0B-Y9CwNIsUOHenpDWGhBSk42b1E&usp=sharing) link to the left.  The current Java API documents can be found [here](http://dietricks.com/openmap/api) or they can be [downloaded](https://drive.google.com/folderview?id=0B-Y9CwNIsUOHenpDWGhBSk42b1E&usp=sharing) as a zip file.
+
+Developer documentation can be found on the [Wiki page](http://code.google.com/p/openmap/w/list) and in the [Downloads section](http://code.google.com/p/openmap/downloads/list).
+
+Since OpenMap is open source, we welcome additions and changes from the user community. We've incorporated a number of contributions, with plenty of submissions available to the user community separate from the official distribution.
+
+BBN Technologies is an innovative research and development company, providing both advanced research and custom, research-based solutions for our customers. We have over 50 years of experience in technological innovation, and provide expertise in a number of technology focus areas, including acoustic technologies, agent-based systems, logistics, planning, and decision support, and speech and language processing, among others. For a complete list of our offerings, be sure to visit our corporate site.
