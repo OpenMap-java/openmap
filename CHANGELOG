@@ -1,3 +1,17 @@
+2015-08-07  Don Dietrick  <dietrick@hsawaknow.local>
+
+	* Tagged OpenMap 5.1.12
+	
+	* Added the scaleOverCoverage property to the RpfLayer, and
+	modifying the RpfTocHandler to use it when determining the best
+	TOC entry for the current map query.  It's true by default, but
+	when used for tiles (wmsservlet), the RpfLayer performs
+	better (fills in some empty tiles) with data it may have for
+	different scales.
+
+	* Updated WMSPlugIn query to use correct CRS parameter for v1.3
+	queries.
+	
 2015-07-20  Don Dietrick  <dietrick@hsawaknow.local>
 
 	* Tagged OpenMap 5.1.11
