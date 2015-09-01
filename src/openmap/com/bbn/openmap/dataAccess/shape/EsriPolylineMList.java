@@ -40,7 +40,6 @@ public class EsriPolylineMList extends EsriPolylineList {
      */
     public EsriPolylineMList() {
         super();
-        setType(SHAPE_TYPE_POLYLINEM);
     }
 
     /**
@@ -54,6 +53,13 @@ public class EsriPolylineMList extends EsriPolylineList {
 
     public EsriPolyline convert(OMPoly ompoly) {
         return EsriPolylineM.convert(ompoly);
+    }
+
+    /**
+     * Get the list type in ESRI type number form - 23.
+     */
+    public int getType() {
+        return SHAPE_TYPE_POLYLINEM;
     }
 
     public EsriGraphic shallowCopy() {
