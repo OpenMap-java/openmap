@@ -22,13 +22,9 @@
 
 		<echo message="Checking for j3d libraries" />
 		<condition property="do.j3d">
-			<and>
-				<available classname="javax.media.j3d.Shape3D">
-					<classpath>
-						<fileset dir="${openmap.home}/ext" includes="**/*.jar" />					
-					</classpath>
-				</available>
-			</and>
+		  <and>
+		    <available classname="javax.media.j3d.Shape3D"/>
+		  </and>
 		</condition>
 
 		<echo message="do.j3d = ${do.j3d}" />
@@ -48,7 +44,6 @@
 
 		<javac includeantruntime="false" srcdir="${j3d.src}" destdir="${j3d.classes}" debug="on" excludes="${javac.excludes}" source="1.5" target="1.5">
 			<classpath>
-				<fileset dir="${openmap.home}/ext" includes="**/*.jar" />
 				<pathelement path="${openmap.home}/src/core/target/openmap.jar" />
 				<pathelement path="${openmap.home}" />
 			</classpath>

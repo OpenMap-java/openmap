@@ -28,14 +28,15 @@
 						       **/*.properties" />
 
 		<property name="jai.includes" value="**/jai/**, **/geotiff/**" />
+		<property name="json.includes" value="**/geojson/**" />
+		<property name="postgis.includes" value="**/postgis/**" />
+		<property name="browserlauncher.includes" value="**/BrowserLauncher*.java" />
 
 		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
-		<available classname="com.sun.media.jai.codec.ImageCodec" property="do.jai">
-			<classpath>
-				<fileset dir="${openmap.home}/ext" includes="**/*.jar" />
-			</classpath>
-		</available>
-		<echo message="do.jai = ${do.jai}" />
+		<available classname="com.sun.media.jai.codec.ImageCodec" property="do.jai" />
+		<available classname="com.fasterxml.jackson.annotation.JsonInclude" property="do.json" />
+		<available classname="org.postgis.PGgeometry" property="do.postgis" />
+		<available classname="edu.stanford.ejalbert.BrowserLauncher" property="do.browserlauncher" />
 
 		<echo message="Java Home: ${java.home}" />
 	</target>
@@ -66,18 +67,13 @@
 	    <mkdir dir="${openmap.classes}" />
 
 		<!-- Main OpenMap Classes -->
-		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes}" source="1.5" target="1.5">
-			<classpath>
-				<fileset dir="${openmap.home}/ext" includes="**/*.jar" />
-			</classpath>
-		</javac>
+		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes},${json.includes},${postgis.includes},${browserlauncher.includes}" source="1.5" target="1.5"/>
 
-		<!-- JAI code -->
-		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}" source="1.5" target="1.5">
-			<classpath>
-				<fileset dir="${openmap.home}/ext" includes="**/*.jar" />
-			</classpath>
-		</javac>
+		<!-- Optional classes, depending on available external packages -->
+		<antcall target="classes.jai" />
+		<antcall target="classes.json" />
+		<antcall target="classes.postgis" />
+		<antcall target="classes.browserlauncher" />
 
 		<!-- Copy the gifs and other resources to the new classpath. -->
 		<copy todir="${openmap.classes}" file="${openmap.home}/openmap.properties" />
@@ -85,6 +81,26 @@
 			<fileset dir="${openmap.core}/src/main/resources" includes="**/*.gif, **/*.png, **/*.properties" />
 		</copy>
 
+	</target>
+
+	<target name="classes.jai" if="${do.jai}" >
+	  <echo message="Compiling JAI classes..." />
+	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${jai.includes}" source="1.5" target="1.5"/>
+	</target>
+
+	<target name="classes.json" if="${do.json}" >
+	  <echo message="Compiling JSOM classes..." />
+	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${json.includes}" source="1.5" target="1.5"/>
+	</target>
+
+	<target name="classes.postgis" if="${do.postgis}" >
+	  <echo message="Compiling PostGIS classes..." />
+	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${postgis.includes}" source="1.5" target="1.5"/>
+	</target>
+
+	<target name="classes.browserlauncher" if="${do.browserlauncher}" >
+	  <echo message="Compiling BrowserLauncher classes..." />
+	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${browserlauncher.includes}" source="1.5" target="1.5"/>
 	</target>
 
 	<!--  ############################

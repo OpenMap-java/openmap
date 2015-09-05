@@ -3,6 +3,7 @@
 	<artifactId>openmap-wmsservlet</artifactId>
 	<packaging>war</packaging>
 	<name>openmap-wmsservlet</name>
+	<description>OpenMap is a Java Beans based toolkit for building applications and applets needing geographic information.  This project encapsulates the wms servlet components that can be used with Tomcat/Glassfish to create a Web Mapping Service.</description>
 
 	<dependencies>
 		<dependency>

@@ -3,6 +3,7 @@
     <artifactId>openmap-j3d</artifactId>
     <packaging>jar</packaging>
     <name>openmap-j3d</name>
+    <description>OpenMap is a Java Beans based toolkit for building applications and applets needing geographic information.  This project encapsulates the code that handles j3d components.  Careful.</description>
 
     <dependencies>
     	<dependency>

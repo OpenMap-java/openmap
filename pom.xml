@@ -1,107 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.bbn.openmap</groupId>
-  <artifactId>openmap-all</artifactId>
-  <packaging>pom</packaging>
-  <version>5.2-SNAPSHOT</version>
-  <name>openmap-all</name>
-  <description>A Java Beans based toolkit for building applications and applets needing geographic information</description>
-  <url>http://openmap.bbn.com</url>
-  <licenses>
-    <license>
-      <name>OpenMap Software License</name>
-      <url>https://code.google.com/p/openmap/source/browse/LICENSE</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  <organization>
-    <name>BBN Technologies</name>
-    <url>http://www.bbn.com</url>
-  </organization>
-  <developers>
-    <developer>
-      <name>Don Dietrick</name>
-      <email>dfdietrick@gmail.com</email>
-    </developer>
-  </developers>
-  <scm>
-    <connection>scm:git:https://code.google.com/p/openmap/</connection>
-    <developerConnection>scm:git:https://code.google.com/p/openmap/</developerConnection>
-    <url>http://code.google.com/p/openmap/source/browse</url>
-  </scm>
-  <mailingLists>
-   <mailingList>
-      <archive>https://groups.google.com/forum/#!forum/openmap-users</archive>
-    </mailingList>
-    <mailingList>
-      <archive>http://openmap.bbn.com/mailArchives/openmap-users</archive>
-    </mailingList>
-  </mailingLists>
-  <repositories>
-    <repository>
-      <!-- Provides problematic jai-codec binary missing from Maven Central -->
-      <id>thirdparty-releases</id>
-      <name>JBoss Thirdparty Releases</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-    </repository>
-  </repositories>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.bbn.openmap</groupId>
+	<artifactId>openmap-all</artifactId>
+	<packaging>pom</packaging>
+	<version>5.2-SNAPSHOT</version>
+	<name>openmap-all</name>
+	<description>A Java Beans based toolkit for building applications and applets needing geographic information</description>
+	<url>http://github.com/OpenMap-java/openmap</url>
+	<licenses>
+		<license>
+			<name>OpenMap Software License</name>
+			<url>https://github.com/OpenMap-java/openmap/blob/master/LICENSE</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<organization>
+		<name>BBN Technologies</name>
+		<url>http://www.bbn.com</url>
+	</organization>
+	<developers>
+		<developer>
+			<name>Don Dietrick</name>
+			<email>dfdietrick@gmail.com</email>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:https://github.com/OpenMap-java/openmap.git</connection>
+		<developerConnection>scm:git:https://github.com/OpenMap-java/openmap</developerConnection>
+		<url>https://github.com/OpenMap-java/openmap</url>
+	</scm>
+	<mailingLists>
+		<mailingList>
+			<archive>https://groups.google.com/forum/#!forum/openmap-users</archive>
+		</mailingList>
+		<mailingList>
+			<archive>http://openmap.bbn.com/mailArchives/openmap-users</archive>
+		</mailingList>
+	</mailingLists>
+	<repositories>
+		<repository>
+			<!-- Provides problematic jai-codec binary missing from Maven Central -->
+			<id>thirdparty-releases</id>
+			<name>JBoss Thirdparty Releases</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+		</repository>
+	</repositories>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>2.4.1</version>
-        <configuration>
-          <localCheckout>true</localCheckout>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.5.4</version>
-        <configuration>
-          <descriptors>
-            <descriptor>share/zip.xml</descriptor>
-          </descriptors>
-        </configuration>
-        <executions>
-          <execution>
-            <id>make-assembly</id> <!-- this is used for inheritance merges -->
-            <phase>package</phase>  <!-- append to the packaging phase. -->
-            <goals>
-              <goal>single</goal> <!-- goals == mojos -->
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-  
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-  
-  <modules>
-    <module>src/core</module>
-    <module>src/svg</module>
-    <module>src/j3d</module>
-    <module>src/wmsservlet</module>
-    <module>src/maptileservlet</module>
-    <module>src/vpfbrowseservlet</module>
-  </modules>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.4.1</version>
+				<configuration>
+					<localCheckout>true</localCheckout>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<modules>
+		<module>src/core</module>
+		<module>src/svg</module>
+		<module>src/j3d</module>
+		<module>src/wmsservlet</module>
+		<module>src/maptileservlet</module>
+		<module>src/vpfbrowseservlet</module>
+	</modules>
 </project>

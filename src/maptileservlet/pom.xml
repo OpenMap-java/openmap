@@ -3,6 +3,7 @@
 	<artifactId>openmap-maptileservlet</artifactId>
 	<packaging>war</packaging>
 	<name>openmap-maptileservlet</name>
+	<description>OpenMap is a Java Beans based toolkit for building applications and applets needing geographic information.  This project encapsulates map tile servlet components that can be used with Tomcat/Glassfish to create a tile server.</description>
 
 	<dependencies>
 		<dependency>
