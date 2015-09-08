@@ -20,39 +20,39 @@
 
 <body>
 
-The GraphicLoader PlugIn package is designed to provide support for
-GraphicLoaders, which in turn are objects that need to drive changes in
-OMGraphics over a map.  The GraphicLoader is an object that manages
-OMGraphics and their positions, and sends an OMGraphicList to its
-receiver when they need to be updated. <P>
+	The GraphicLoader package is designed to provide support for
+	GraphicLoaders, which in turn are objects that need to drive changes in
+	OMGraphics over a map.  The GraphicLoader is an object that manages
+	OMGraphics and their positions, and sends an OMGraphicList to its
+	receiver when they need to be updated. <P>
 
-The package consists of a GraphicLoaderPlugIn, which is a PlugIn that accepts
-graphics from another object, called the GraphicLoader.  The GraphicLoader
-is an object with a timer that manages these location objects. The
-GraphicLoaderConnector is an object that should be added to the
-MapHander - when it finds a GraphicLoader in the MapHandler, it will
-automatically create a GraphicLoaderPlugIn for it, and
-will either give the GraphicLoaderPlugIn to the LayerHandler if it
-knows about one, or give the GraphicLoaderPlugIn to the MapHandler so
-it can be found by the LayerHandler later.<P>
+		The package consists of a GraphicLoaderLayer, which is a layer that accepts
+		graphics from another object, called the GraphicLoader.  The GraphicLoader
+		is an object with a timer that manages these location objects. The
+		GraphicLoaderConnector is an object that should be added to the
+		MapHander - when it finds a GraphicLoader in the MapHandler, it will
+		automatically create a GraphicLoaderLayer for it, and
+		will give it to the LayerHandler if it
+		knows about one, or give the GraphicLoaderLayer to the MapHandler so
+		it can be found by the LayerHandler later.<P>
 
-To add a GraphicLoader to the OpenMap application, you can do it
-several ways:
-<UL>
-<LI>You can create a specific GraphicLoaderPlugIn that creates its
-  own GraphicLoader, and initializes it accordingly.  You would add
-  the GraphicLoaderPlugIn to the openmap.layers property in the
-  openmap.properties file.
-<LI>You can create a GraphicLoaderPlugIn by adding an entry to the
-  openmap.layer property in the openmap.properties file, and define
-  what kind of GraphicLoader to create in the properties for the
-  GraphicLoaderPlugIn.
-<LI>You can add a
-  com.bbn.openmap.plugin.graphicLoader.GraphicLoaderConnector to the
-  openmap.components property, and then add the GraphicLoader to the
-  openmap.components property as well.  The GraphicLoaderConnector
-  will find the GraphicLoader, and create a
-  GraphicLoaderPlugIn/PlugInLayer for the GraphicLoader and add it to
-  the LayerHandler on top of the map.
-</UL>
+		To add a GraphicLoader to the OpenMap application, you can do it
+		several ways:
+	<UL>
+		<LI>You can create a specific GraphicLoaderLayer that creates its
+			own GraphicLoader, and initializes it accordingly.  You would add
+			the GraphicLoaderLayer to the openmap.layers property in the
+			openmap.properties file.
+		<LI>You can create a GraphicLoaderLayer by adding an entry to the
+			openmap.layer property in the openmap.properties file, and define
+			what kind of GraphicLoader to create in the properties for the
+			GraphicLoaderLayer.
+		<LI>You can add a
+			com.bbn.openmap.layer.graphicLoader.GraphicLoaderConnector to the
+			openmap.components property, and then add the GraphicLoader to the
+			openmap.components property as well.  The GraphicLoaderConnector
+			will find the GraphicLoader, and create a
+			GraphicLoaderLayer for the GraphicLoader and add it to
+			the LayerHandler on top of the map.
+	</UL>
 </body>

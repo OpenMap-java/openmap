@@ -1,30 +1,25 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
-// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/plugin/graphicLoader/GraphicLoaderConnector.java,v $
+//
+// $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/layer/graphicLoader/GraphicLoaderConnector.java,v $
 // $RCSfile: GraphicLoaderConnector.java,v $
 // $Revision: 1.6 $
 // $Date: 2005/08/09 20:35:11 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
-
 package com.bbn.openmap.layer.graphicLoader;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
 
 import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
@@ -32,177 +27,175 @@ import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.graphicLoader.GraphicLoader;
 import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
 
 /**
- * The GraphicLoaderConnector is a MapHandler membership listener, looking for
- * GraphicLoaders without receivers. This class uses the MapHandler to find
- * GraphicLoaders, and requires the LayerHandler to be added to the MapHandler,
- * also.
+ * The GraphicLoaderConnector is a MapHandler membership listener, looking for GraphicLoaders without receivers. This
+ * class uses the MapHandler to find GraphicLoaders, and requires the LayerHandler to be added to the MapHandler, also.
  * <P>
- * 
- * If the GraphicLoaderConnector finds a GraphicLoader that is not hooked up to
- * a receiver, it creates a GraphicLoaderPlugIn and PlugInLayer, and adds the
- * PlugInLayer to the LayerHandler. This causes the LayerHandler to add the
- * layer to the application. If the GraphicLoaderConnector doesn't have a handle
- * to the LayerHandler when it finds a GraphicLoader, it adds the PlugInLayer it
- * created to an internal list to add to the LayerHandler when the connector
- * finds one.
+ *
+ * If the GraphicLoaderConnector finds a GraphicLoader that is not hooked up to a receiver, it creates a
+ * GraphicLoaderLayer, and adds the layer to the LayerHandler. This causes the LayerHandler to add the layer to the
+ * application. If the GraphicLoaderConnector doesn't have a handle to the LayerHandler when it finds a GraphicLoader,
+ * it adds the PlugInLayer it created to an internal list to add to the LayerHandler when the connector finds one.
  */
-public class GraphicLoaderConnector extends OMComponent {
+public class GraphicLoaderConnector
+	extends OMComponent {
 
-    protected LayerHandler layerHandler = null;
-    protected int newLayerIndex = 0; // On Top by default
-    protected boolean newLayerVisible = true; // Make new PlugInLayers
-                                              // visible.
-    protected List<Layer> orphanGraphicLoaderLayers = null;
-    public final static String NewLayerIndexProperty = "newLayerIndex";
-    public final static String NewLayerVisibleProperty = "newLayerVisible";
+	protected LayerHandler layerHandler = null;
+	protected int newLayerIndex = 0; // On Top by default
+	protected boolean newLayerVisible = true; // Make new PlugInLayers
+	// visible.
+	protected List<Layer> orphanGraphicLoaderLayers = null;
+	public final static String NewLayerIndexProperty = "newLayerIndex";
+	public final static String NewLayerVisibleProperty = "newLayerVisible";
 
-    public GraphicLoaderConnector() {}
+	public GraphicLoaderConnector() {
+	}
 
-    /**
-     * Set the index of any new layers to be added to the
-     * LayerHandler. Negative numbers put the layer on top of the map.
-     */
-    public void setNewLayerIndex(int i) {
-        newLayerIndex = i;
-    }
+	/**
+	 * Set the index of any new layers to be added to the LayerHandler. Negative numbers put the layer on top of the
+	 * map.
+	 */
+	public void setNewLayerIndex(int i) {
+		newLayerIndex = i;
+	}
 
-    public int getNewLayerIndex() {
-        return newLayerIndex;
-    }
+	public int getNewLayerIndex() {
+		return newLayerIndex;
+	}
 
-    /**
-     * Set whether the new layers should initially be visible when
-     * they are added to the map.
-     */
-    public void setNewLayerVisible(boolean set) {
-        newLayerVisible = set;
-    }
+	/**
+	 * Set whether the new layers should initially be visible when they are added to the map.
+	 */
+	public void setNewLayerVisible(boolean set) {
+		newLayerVisible = set;
+	}
 
-    public boolean setNewLayerVisible() {
-        return newLayerVisible;
-    }
+	public boolean setNewLayerVisible() {
+		return newLayerVisible;
+	}
 
-    /**
-     * Set the LayerHandler to be notified with any new GraphicLoaderLayers.
-     */
-    public void setLayerHandler(LayerHandler lh) {
-        layerHandler = lh;
-        if (orphanGraphicLoaderLayers != null) {
-            if (Debug.debugging("glc")) {
-                Debug.output("GraphicLoaderConnector: have LayerHandler, adding PlugInLayers from orphaned GraphicLoaders");
-            }
+	/**
+	 * Set the LayerHandler to be notified with any new GraphicLoaderLayers.
+	 */
+	public void setLayerHandler(LayerHandler lh) {
+		layerHandler = lh;
+		if (orphanGraphicLoaderLayers != null) {
+			if (Debug.debugging("glc")) {
+				Debug.output(
+					"GraphicLoaderConnector: have LayerHandler, adding PlugInLayers from orphaned GraphicLoaders");
+			}
 
-            for (Layer layer : orphanGraphicLoaderLayers) {
-                layerHandler.addLayer(layer, newLayerIndex);
-            }
-            orphanGraphicLoaderLayers = null;
-        }
-    }
+			for (Layer layer : orphanGraphicLoaderLayers) {
+				layerHandler.addLayer(layer, newLayerIndex);
+			}
+			orphanGraphicLoaderLayers = null;
+		}
+	}
 
-    public LayerHandler getLayerHandler() {
-        return layerHandler;
-    }
+	public LayerHandler getLayerHandler() {
+		return layerHandler;
+	}
 
-    /**
-     * Check to see if the GraphicLoader already has a receiver set
-     * inside it. If it doesn't call hookUpGraphicLoaderWithLayer();
-     */
-    public void checkGraphicLoader(GraphicLoader gl) {
-        if (gl.getReceiver() == null) {
-            hookUpGraphicLoaderWithLayer(gl);
-        }
-    }
+	/**
+	 * Check to see if the GraphicLoader already has a receiver set inside it. If it doesn't call
+	 * hookUpGraphicLoaderWithLayer();
+	 */
+	public void checkGraphicLoader(GraphicLoader gl) {
+		if (gl.getReceiver() == null) {
+			hookUpGraphicLoaderWithLayer(gl);
+		}
+	}
 
-    /**
-     * Assumes that the GraphicLoader doesn't already have a receiver.
-     * Creates a GraphicLoaderPlugIn, and a PlugInLayer, and hooks
-     * everything up. Then hands the PlugInLayer to the LayerHandler
-     * to get set on the map.
-     */
-    public void hookUpGraphicLoaderWithLayer(GraphicLoader gl) {
-        if (gl != null) {
-            GraphicLoaderLayer layer = new GraphicLoaderLayer();
-            gl.setReceiver(layer);
-            layer.setGraphicLoader(gl);
-            LayerHandler lh = getLayerHandler();
+	/**
+	 * Assumes that the GraphicLoader doesn't already have a receiver. Creates a GraphicLoaderPlugIn, and a PlugInLayer,
+	 * and hooks everything up. Then hands the PlugInLayer to the LayerHandler to get set on the map.
+	 */
+	public void hookUpGraphicLoaderWithLayer(GraphicLoader gl) {
+		if (gl != null) {
+			GraphicLoaderLayer layer = new GraphicLoaderLayer();
+			gl.setReceiver(layer);
+			layer.setGraphicLoader(gl);
+			LayerHandler lh = getLayerHandler();
 
-            if (lh != null) {
-                lh.addLayer(layer, newLayerIndex);
-            } else {
-                // If we haven't seen the LayerHandler yet, add the
-                // PlugInLayer to a list that we can use later when
-                // the LayerHandler is found.
-                if (orphanGraphicLoaderLayers == null) {
-                    orphanGraphicLoaderLayers = new LinkedList<Layer>();
-                }
-                orphanGraphicLoaderLayers.add(layer);
-            }
-        }
-    }
+			if (lh != null) {
+				lh.addLayer(layer, newLayerIndex);
+			} else {
+				// If we haven't seen the LayerHandler yet, add the
+				// PlugInLayer to a list that we can use later when
+				// the LayerHandler is found.
+				if (orphanGraphicLoaderLayers == null) {
+					orphanGraphicLoaderLayers = new LinkedList<Layer>();
+				}
+				orphanGraphicLoaderLayers.add(layer);
+			}
+		}
+	}
 
-    /**
-     * Find GraphicLoaders and LayerHandler in the MapHandler.
-     */
-    public void findAndInit(Object obj) {
-        if (obj instanceof GraphicLoader) {
-            checkGraphicLoader((GraphicLoader) obj);
-        }
+	/**
+	 * Find GraphicLoaders and LayerHandler in the MapHandler.
+	 */
+	public void findAndInit(Object obj) {
+		if (obj instanceof GraphicLoader) {
+			checkGraphicLoader((GraphicLoader) obj);
+		}
 
-        if (obj instanceof LayerHandler) {
-            Debug.message("graphicLoader",
-                    "GraphicLoaderConnector found a LayerHandler.");
-            setLayerHandler((LayerHandler) obj);
-        }
-    }
+		if (obj instanceof LayerHandler) {
+			Debug.message("graphicLoader",
+				"GraphicLoaderConnector found a LayerHandler.");
+			setLayerHandler((LayerHandler) obj);
+		}
+	}
 
-    public void findAndUndo(Object obj) {
-        if (obj instanceof LayerHandler) {
-            Debug.message("graphicLoader",
-                    "GraphicLoaderConnector removing a LayerHandler.");
-            LayerHandler lh = getLayerHandler();
-            if (lh != null && lh == (LayerHandler) obj) {
-                setLayerHandler(null);
-            }
-        }
-    }
+	public void findAndUndo(Object obj) {
+		if (obj instanceof LayerHandler) {
+			Debug.message("graphicLoader",
+				"GraphicLoaderConnector removing a LayerHandler.");
+			LayerHandler lh = getLayerHandler();
+			if (lh != null && lh == (LayerHandler) obj) {
+				setLayerHandler(null);
+			}
+		}
+	}
 
-    public void setProperties(String prefix, Properties props) {
-        super.setProperties(prefix, props);
+	public void setProperties(String prefix, Properties props) {
+		super.setProperties(prefix, props);
 
-        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+		prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        newLayerIndex = PropUtils.intFromProperties(props, prefix
-                + NewLayerIndexProperty, newLayerIndex);
+		newLayerIndex = PropUtils.intFromProperties(props, prefix
+			+ NewLayerIndexProperty, newLayerIndex);
 
-        newLayerVisible = PropUtils.booleanFromProperties(props, prefix
-                + NewLayerVisibleProperty, newLayerVisible);
+		newLayerVisible = PropUtils.booleanFromProperties(props, prefix
+			+ NewLayerVisibleProperty, newLayerVisible);
 
-    }
+	}
 
-    public Properties getProperties(Properties props) {
-        props = super.getProperties(props);
+	public Properties getProperties(Properties props) {
+		props = super.getProperties(props);
 
-        String prefix = PropUtils.getScopedPropertyPrefix(this);
+		String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-        props.put(prefix + NewLayerIndexProperty,
-                Integer.toString(newLayerIndex));
-        props.put(prefix + NewLayerVisibleProperty,
-                new Boolean(newLayerVisible).toString());
-        return props;
-    }
+		props.put(prefix + NewLayerIndexProperty,
+			Integer.toString(newLayerIndex));
+		props.put(prefix + NewLayerVisibleProperty,
+			new Boolean(newLayerVisible).toString());
+		return props;
+	}
 
-    public Properties getPropertyInfo(Properties list) {
-        list = super.getPropertyInfo(list);
+	public Properties getPropertyInfo(Properties list) {
+		list = super.getPropertyInfo(list);
 
-        list.put(NewLayerIndexProperty,
-                "The new layer index, where it should be added to the map. (0 on top)");
-        list.put(NewLayerVisibleProperty,
-                "Whether a new layer should initially be visible");
-        list.put(NewLayerVisibleProperty + ScopedEditorProperty,
-                "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+		list.put(NewLayerIndexProperty,
+			"The new layer index, where it should be added to the map. (0 on top)");
+		list.put(NewLayerVisibleProperty,
+			"Whether a new layer should initially be visible");
+		list.put(NewLayerVisibleProperty + ScopedEditorProperty,
+			"com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
-        return list;
-    }
+		return list;
+	}
 }
