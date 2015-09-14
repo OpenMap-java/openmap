@@ -1,0 +1,11 @@
+org_id,org_name,UIC,org_long_name,org_comment,icon_url
+UA-HQ,UA-HQ,,UA Headquarters,,/Users/dietrick/Desktop/testicon.gif
+BIC,BIC,,Brigade Intel and Comm,,/Users/dietrick/Desktop/testicon.gif
+1-CABN,1-CABN,,1st Combined Arms Battalion,,/Users/dietrick/Desktop/testicon.gif
+2-CABN,2-CABN,,2nd Combined Arms Battalion,,/Users/dietrick/Desktop/testicon.gif
+3-CABN,3-CABN,,3rd Combined Arms Battalion,,/Users/dietrick/Desktop/testicon.gif
+AVNDET,AVNDET,,Aviation detachment,,/Users/dietrick/Desktop/testicon.gif
+NLOS,NLOS,,Non-Line of Sight Battalion,,/Users/dietrick/Desktop/testicon.gif
+FSB,FSB,,Forward Support Battalion,,/Users/dietrick/Desktop/testicon.gif
+159-AVNCO,159-AVNCO,WC5LAA,159th Av Co Hvy Hel,(CH-47s or Chinooks),/Users/dietrick/Desktop/testicon.gif
+7-158-AVNCO,7-158-AVNCO,WC3EAA,7/158 AV Co Aslt Hel,(UH-60s or Blackhawks),/Users/dietrick/Desktop/testicon.gif
