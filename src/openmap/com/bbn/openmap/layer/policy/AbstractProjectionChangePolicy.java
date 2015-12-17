@@ -1,14 +1,5 @@
 /*
  * AbstractProjectionChangePolicy.java        Apr 29, 2014 11:25:15 PM
- *
- * Copyright (c)  2014-2014 CSC, Inc.
- * All rights reserved.
- *
- * This software is the confidential and proprietary information of
- * CSC, Inc. ("Confidential Information").  You shall not disclose
- * such Confidential Information and shall use it only in accordance
- * with the terms of the license agreement you entered into with CSC.
- *
  */
 
 package com.bbn.openmap.layer.policy;

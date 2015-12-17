@@ -1,14 +1,5 @@
 /*
  * TileImagePreparer.java        Jan 10, 2012 9:37:01 PM
- *
- * Copyright (c)  2012-2012 CSC, Inc.
- * All rights reserved.
- *
- * This software is the confidential and proprietary information of
- * CSC, Inc. ("Confidential Information").  You shall not disclose
- * such Confidential Information and shall use it only in accordance
- * with the terms of the license agreement you entered into with CSC.
- *
  */
 
 package com.bbn.openmap.dataAccess.mapTile;
