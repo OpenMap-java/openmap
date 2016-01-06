@@ -313,7 +313,7 @@ public class DMSLatLonPoint implements Cloneable {
         final DMSLatLonPoint pt = (DMSLatLonPoint) obj;
         return (pt.lat_isnegative == lat_isnegative
                 && pt.lat_degrees == lat_degrees
-                && pt.lat_minutes == lat_degrees
+                && pt.lat_minutes == lat_minutes
                 && pt.lat_seconds == lat_seconds
                 && pt.lon_isnegative == lon_isnegative
                 && pt.lon_degrees == lon_degrees

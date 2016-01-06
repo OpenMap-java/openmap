@@ -8,7 +8,6 @@ package com.bbn.openmap.omGraphics.rule;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 

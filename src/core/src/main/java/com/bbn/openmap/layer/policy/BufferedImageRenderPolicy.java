@@ -45,7 +45,7 @@ import com.bbn.openmap.proj.Projection;
  */
 public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
 
-    protected final ImageBuffer imageBuffer = new ImageBuffer();
+    protected ImageBuffer imageBuffer = new ImageBuffer();
 
     /**
      * Set the layer at some point before use.
@@ -61,6 +61,13 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
         super(layer);
     }
 
+    /**
+     * Set the ImageBuffer, for subclasses to modify it's particular behavior
+     */
+    protected void setImageBuffer(ImageBuffer iBuffer) {
+    	imageBuffer = iBuffer;
+    }
+    
     /**
      * @return the imageBuffer
      */
@@ -134,7 +141,7 @@ public class BufferedImageRenderPolicy extends RenderingHintsRenderPolicy {
             g2.dispose();
 
         } else if (logger.isLoggable(Level.FINE)) {
-            logger.fine(layer.getName() + ".paint(): skipping due to projection.");
+            logger.fine(layer.getName() + " BufferedImageRenderPolicy.paint(): skipping due to projection.");
         }
 
     }

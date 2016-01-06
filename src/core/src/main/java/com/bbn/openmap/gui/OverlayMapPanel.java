@@ -295,7 +295,7 @@ public class OverlayMapPanel
             OverlayMapPanel map = new OverlayMapPanel(new PropertyHandler(new Properties()), true);
             map.create();
 
-            map.getMapBean().setBackgroundColor(new Color(0x99b3cc));
+            map.getMapBean().setBckgrnd(new Color(0x99b3cc));
             map.addMapComponent(new LayerHandler());
             map.addMapComponent(new MouseDelegator());
             map.addMapComponent(new OMMouseMode());

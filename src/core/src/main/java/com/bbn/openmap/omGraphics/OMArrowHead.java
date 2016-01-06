@@ -458,6 +458,10 @@ public class OMArrowHead
                             findex = findex - 1;
                         }
 
+                        if (findex > xpoints.length - 2) {
+                        	findex = xpoints.length - 2;
+                        }
+                        
                         sPoint1.setLocation(xpoints[findex], ypoints[findex]);
                         ePoint1.setLocation(xpoints[findex + 1], ypoints[findex + 1]);
 

@@ -139,8 +139,6 @@ public class PostGISOMGraphicFactory {
         Point[] points = lineString.getPoints();
         int count = points.length;
 
-        OMPoly ompoly = null;
-
         double[] lineCoords = new double[count * 2];
         for (int k = 0; k < count; k++) {
             Point p = points[k];

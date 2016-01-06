@@ -33,6 +33,7 @@ import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.proj.Projection;
 
 /**
@@ -50,235 +51,263 @@ import com.bbn.openmap.proj.Projection;
  */
 public class BufferedMapBean extends MapBean {
 
-    private static Logger logger = Logger.getLogger(BufferedMapBean.class.getName());
-    protected boolean bufferDirty = true;
-    protected BufferedImage drawingBuffer = null;
+	private static Logger logger = Logger.getLogger(BufferedMapBean.class
+			.getName());
+	protected boolean bufferDirty = true;
+	protected BufferedImage drawingBuffer = null;
 
-    protected PanHelper panningTransform = null;
+	protected PanHelper panningTransform = null;
 
-    public BufferedMapBean() {
-        super();
-    }
+	public BufferedMapBean() {
+		super();
+	}
 
-    public BufferedMapBean(boolean useThreadedNotification) {
-        super(useThreadedNotification);
-    }
+	public BufferedMapBean(boolean useThreadedNotification) {
+		super(useThreadedNotification);
+	}
 
-    /**
-     * Invoked when component has been resized. Layer buffer is nullified. and
-     * super.componentResized(e) is called.
-     * 
-     * @param e ComponentEvent
-     */
-    public void componentResized(ComponentEvent e) {
-        setBufferDirty(true);
+	/**
+	 * Invoked when component has been resized. Layer buffer is nullified. and
+	 * super.componentResized(e) is called.
+	 * 
+	 * @param e
+	 *            ComponentEvent
+	 */
+	public void componentResized(ComponentEvent e) {
+		setBufferDirty(true);
 
-        super.componentResized(e);
-    }
+		super.componentResized(e);
+	}
 
-    /**
-     * Provide a drawing buffer for the layers based on the projection
-     * parameters. If the currentImageBuffer is the right size, the pixels will
-     * be cleared.
-     * 
-     * @param currentImageBuffer the buffer to reuse and return, if the size is
-     *        appropriate. Flushed if another BufferedImage is returned.
-     * @param proj the current projection of the map
-     * @return BufferedImage to be used for image buffer.
-     */
-    protected BufferedImage resetDrawingBuffer(BufferedImage currentImageBuffer, Projection proj) {
-        try {
+	/**
+	 * Provide a drawing buffer for the layers based on the projection
+	 * parameters. If the currentImageBuffer is the right size, the pixels will
+	 * be cleared.
+	 * 
+	 * @param currentImageBuffer
+	 *            the buffer to reuse and return, if the size is appropriate.
+	 *            Flushed if another BufferedImage is returned.
+	 * @param proj
+	 *            the current projection of the map
+	 * @return BufferedImage to be used for image buffer.
+	 */
+	protected BufferedImage resetDrawingBuffer(
+			BufferedImage currentImageBuffer, Projection proj) {
+		try {
 
-            int w = proj.getWidth();
-            int h = proj.getHeight();
+			int w = proj.getWidth();
+			int h = proj.getHeight();
 
-            if (currentImageBuffer != null) {
-                int cibWidth = currentImageBuffer.getWidth();
-                int cibHeight = currentImageBuffer.getHeight();
+			if (currentImageBuffer != null) {
+				int cibWidth = currentImageBuffer.getWidth();
+				int cibHeight = currentImageBuffer.getHeight();
 
-                if (cibWidth == w && cibHeight == h) {
-                    Graphics2D graphics = (Graphics2D) currentImageBuffer.getGraphics();
-                    graphics.setComposite(AlphaComposite.Clear);
-                    graphics.fillRect(0, 0, w, h);
-                    graphics.setComposite(AlphaComposite.SrcOver);
-                    return currentImageBuffer;
-                } else {
-                    currentImageBuffer.flush();
-                }
-            }
+				if (cibWidth == w && cibHeight == h) {
+					Graphics2D graphics = (Graphics2D) currentImageBuffer
+							.getGraphics();
+					graphics.setComposite(AlphaComposite.Clear);
+					graphics.fillRect(0, 0, w, h);
+					graphics.setComposite(AlphaComposite.SrcOver);
+					return currentImageBuffer;
+				} else {
+					currentImageBuffer.flush();
+				}
+			}
 
-            return new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+			return new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 
-        } catch (java.lang.NegativeArraySizeException nae) {
-        } catch (java.lang.IllegalArgumentException iae) {
-        }
+		} catch (java.lang.NegativeArraySizeException nae) {
+		} catch (java.lang.IllegalArgumentException iae) {
+		}
 
-        return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-    }
+		return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+	}
 
-    /**
-     * Same as paintChildren, but allows you to set a clipping area to paint. Be
-     * careful with this, because if the clipping area is set while some layer
-     * decides to paint itself, that layer may not have all it's objects
-     * painted. Same warnings apply.
-     */
-    public void paintChildren(Graphics g, Rectangle clip) {
+	/**
+	 * Same as paintChildren, but allows you to set a clipping area to paint. Be
+	 * careful with this, because if the clipping area is set while some layer
+	 * decides to paint itself, that layer may not have all it's objects
+	 * painted. Same warnings apply.
+	 */
+	public void paintChildren(Graphics g, Rectangle clip) {
 
-        // if a layer has requested a render, then we render all of
-        // them into a drawing buffer
-        BufferedImage localDrawingBuffer = drawingBuffer;
+		// if a layer has requested a render, then we render all of
+		// them into a drawing buffer
+		BufferedImage localDrawingBuffer = drawingBuffer;
 
-        if (panningTransform == null && bufferDirty) {
-            bufferDirty = false;
+		if (panningTransform == null && bufferDirty) {
+			bufferDirty = false;
 
-            localDrawingBuffer = resetDrawingBuffer(localDrawingBuffer, getProjection());
-            // In case it's been resized
-            drawingBuffer = localDrawingBuffer;
+			localDrawingBuffer = resetDrawingBuffer(localDrawingBuffer,
+					getProjection());
+			// In case it's been resized
+			drawingBuffer = localDrawingBuffer;
 
-            // draw the old image
-            Graphics gr = getMapBeanRepaintPolicy().modifyGraphicsForPainting(localDrawingBuffer.getGraphics());
+			// draw the old image
+			Graphics gr = getMapBeanRepaintPolicy().modifyGraphicsForPainting(
+					localDrawingBuffer.getGraphics());
 
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine("BufferedMapBean rendering layers to buffer.");
-            }
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("BufferedMapBean rendering layers to buffer.");
+			}
 
-            super.paintChildren(gr, null);
-            gr.dispose();
-        } else if (logger.isLoggable(Level.FINE)) {
-            logger.fine("BufferedMapBean rendering buffer.");
-        }
+			super.paintLayers(gr);
+			gr.dispose();
+		} else if (logger.isLoggable(Level.FINE)) {
+			logger.fine("BufferedMapBean rendering buffer.");
+		}
 
-        if (panningTransform != null) {
+		if (panningTransform != null) {
 
-            panningTransform.render((Graphics2D) g);
-            return;
+			panningTransform.render((Graphics2D) g);
+			return;
 
-        } else if (localDrawingBuffer != null) {
+		} else if (localDrawingBuffer != null) {
+			BufferedMapBean.super.drawProjectionBackground(g);
 
-            RotationHelper rotHelper = getRotHelper();
+			RotationHelper rotHelper = getRotHelper();
 
-            if (rotHelper != null) {
-                rotHelper.paintChildren(g, clip);
-                rotHelper.paintPainters(g);
-            } else {
-                drawProjectionBackground(g);
-                // draw the buffer to the screen, daImage will be drawingBuffer
-                // without rotation
-                g.drawImage(localDrawingBuffer, 0, 0, null);
+			if (rotHelper != null) {
+				rotHelper.paintChildren(g, clip);
+				rotHelper.paintPainters(g);
+			} else {
+				g.drawImage(localDrawingBuffer, 0, 0, null);
 
-                if (painters != null) {
-                    painters.paint(g);
-                }
-            }
-        }
-    }
+				if (painters != null) {
+					painters.paint(g);
+				}
+			}
+		}
+	}
 
-    /**
-     * Interface-like method to query if the MapBean is buffered, so you can
-     * control behavior better. Allows the removal of specific instance-like
-     * queries for, say, BufferedMapBean, when all you really want to know is if
-     * you have the data is buffered, and if so, should be buffer be cleared.
-     * For the BufferedMapBean, always true.
-     */
-    public boolean isBuffered() {
-        return true;
-    }
+	/**
+	 * We don't want to be drawing the background here. We want to draw
+	 * background separately, and then draw layers on top. Buffer without the
+	 * background, helps with textured and gradient backgrounds.
+	 */
+	protected void drawProjectionBackground(Graphics g) {
+	/*	if (g instanceof Graphics2D) {
+			projection.drawBackground((Graphics2D) g, OMColor.ALMOST_CLEAR);
+		} else {
+			g.setColor(OMColor.ALMOST_CLEAR);
+			projection.drawBackground(g);
+		}*/
+	}
 
-    /**
-     * Marks the image buffer as dirty if value is true. On the next
-     * <code>paintChildren()</code>, we will call <code>paint()</code> on all
-     * Layer components.
-     * 
-     * @param value boolean
-     */
-    public void setBufferDirty(boolean value) {
-        bufferDirty = value;
-    }
+	/**
+	 * Interface-like method to query if the MapBean is buffered, so you can
+	 * control behavior better. Allows the removal of specific instance-like
+	 * queries for, say, BufferedMapBean, when all you really want to know is if
+	 * you have the data is buffered, and if so, should be buffer be cleared.
+	 * For the BufferedMapBean, always true.
+	 */
+	public boolean isBuffered() {
+		return true;
+	}
 
-    /**
-     * Checks whether the image buffer should be repainted.
-     * 
-     * @return boolean whether the layer buffer is dirty
-     */
-    public boolean isBufferDirty() {
-        return bufferDirty;
-    }
+	/**
+	 * Marks the image buffer as dirty if value is true. On the next
+	 * <code>paintChildren()</code>, we will call <code>paint()</code> on all
+	 * Layer components.
+	 * 
+	 * @param value
+	 *            boolean
+	 */
+	public void setBufferDirty(boolean value) {
+		bufferDirty = value;
+	}
 
-    /**
-     * Clear out resources for the current drawing buffer.
-     */
-    protected void disposeDrawingBuffer() {
-        Image localDrawingBuffer = drawingBuffer;
-        drawingBuffer = null;
-        if (localDrawingBuffer != null) {
-            localDrawingBuffer.flush();
-        }
-    }
+	/**
+	 * Checks whether the image buffer should be repainted.
+	 * 
+	 * @return boolean whether the layer buffer is dirty
+	 */
+	public boolean isBufferDirty() {
+		return bufferDirty;
+	}
 
-    public void dispose() {
-        disposeDrawingBuffer();
-        super.dispose();
-    }
+	/**
+	 * Clear out resources for the current drawing buffer.
+	 */
+	protected void disposeDrawingBuffer() {
+		Image localDrawingBuffer = drawingBuffer;
+		drawingBuffer = null;
+		if (localDrawingBuffer != null) {
+			localDrawingBuffer.flush();
+		}
+	}
 
-    public AffineTransform getPanningTransform() {
-        return panningTransform;
-    }
+	public void dispose() {
+		disposeDrawingBuffer();
+		super.dispose();
+	}
 
-    /**
-     * Set a panning transform on the buffer for rendering in a different place,
-     * quickly. Sets the buffer to be dirty, so when the panning transform is
-     * removed, it will be recreated.
-     * 
-     * @param transform
-     */
-    public void setPanningTransform(AffineTransform transform) {
-        if (transform != null) {
-            if (panningTransform == null) {
-                panningTransform = new PanHelper(transform);
-                setBufferDirty(true);
-            } else {
-                panningTransform.update(transform);
-            }
-        } else {
-            if (panningTransform != null) {
-                panningTransform.dispose();
-            }
-            panningTransform = null;
-        }
-    }
+	public AffineTransform getPanningTransform() {
+		return panningTransform;
+	}
 
-    protected class PanHelper extends AffineTransform {
-        protected Image buffer;
+	/**
+	 * Set a panning transform on the buffer for rendering in a different place,
+	 * quickly. Sets the buffer to be dirty, so when the panning transform is
+	 * removed, it will be recreated.
+	 * 
+	 * @param transform
+	 */
+	public void setPanningTransform(AffineTransform transform) {
+		if (transform != null) {
+			if (panningTransform == null) {
+				panningTransform = new PanHelper(transform);
+				setBufferDirty(true);
+			} else {
+				panningTransform.update(transform);
+			}
+		} else {
+			if (panningTransform != null) {
+				panningTransform.dispose();
+			}
+			panningTransform = null;
+		}
+	}
 
-        protected PanHelper(AffineTransform aft) {
-            super(aft);
-            this.buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-            paintChildren(this.buffer.getGraphics(), null);
-        }
+	protected class PanHelper extends AffineTransform {
+		protected Image buffer;
 
-        protected void update(AffineTransform aft) {
-            super.setTransform(aft);
-        }
+		protected PanHelper(AffineTransform aft) {
+			super(aft);
 
-        protected void render(Graphics2D g) {
-            drawProjectionBackground(g);
-            ((Graphics2D) g).setTransform(this);
-            if (buffer != null) {
-                g.drawImage(buffer, 0, 0, null);
-            }
+			BufferedImage localHandleOnBuffer = drawingBuffer;
+			if (!bufferDirty && localHandleOnBuffer != null) {
+				this.buffer = localHandleOnBuffer;
+			} else {
+				this.buffer = new BufferedImage(getWidth(), getHeight(),
+						BufferedImage.TYPE_INT_ARGB);
+				paintLayers(this.buffer.getGraphics());
+			}
+		}
 
-            RotationHelper rotationHelper = getRotHelper();
-            if (rotationHelper == null && painters != null) {
-                painters.paint(g);
-            }
-        }
+		protected void update(AffineTransform aft) {
+			super.setTransform(aft);
+		}
 
-        protected void dispose() {
-            if (buffer != null) {
-                buffer.flush();
-                buffer = null;
-            }
-        }
+		protected void render(Graphics2D g) {
+			BufferedMapBean.super.drawProjectionBackground(g);
+			((Graphics2D) g).setTransform(this);
+			if (buffer != null) {
+				g.drawImage(buffer, 0, 0, null);
+			}
 
-    }
+			RotationHelper rotationHelper = getRotHelper();
+			if (rotationHelper == null && painters != null) {
+				painters.paint(g);
+			}
+		}
+
+		protected void dispose() {
+			if (buffer != null) {
+				buffer.flush();
+				buffer = null;
+			}
+		}
+
+	}
 }

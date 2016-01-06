@@ -114,7 +114,6 @@ public enum RuleOp {
     }
 
     public boolean evaluate(Object key, Object val) {
-        StringBuilder buf = new StringBuilder();
         if (key == null) {
             return compare(-1);
         }

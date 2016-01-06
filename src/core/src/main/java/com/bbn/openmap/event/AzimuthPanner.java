@@ -86,8 +86,8 @@ public abstract class AzimuthPanner {
 
             if (llp != null && !llp.equals(pnt0)) {
                 OMGraphicList list = new OMGraphicList();
-                OMLine line1 = new OMLine(90, llp.getX(), llp.getY(), llp.getX(), OMGraphic.LINETYPE_GREATCIRCLE);
-                OMLine line2 = new OMLine(llp.getY(), llp.getX(), -90, llp.getX(), OMGraphic.LINETYPE_GREATCIRCLE);
+                OMLine line1 = new OMLine(89.9, llp.getX(), llp.getY(), llp.getX(), OMGraphic.LINETYPE_GREATCIRCLE);
+                OMLine line2 = new OMLine(llp.getY(), llp.getX(), -89.9, llp.getX(), OMGraphic.LINETYPE_GREATCIRCLE);
                 list.add(line1);
                 list.add(line2);
                 if (llp.getX() < 0) {

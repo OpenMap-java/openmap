@@ -378,7 +378,6 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
             String myName = getPropertyPrefix();
             boolean hasName = myName != null && myName.trim().length() != 0;
 
-            @SuppressWarnings("null")
             boolean makeMyChild = (hasName && hasNamedParent && myName.equalsIgnoreCase(parentName))
                     || (!hasName && !hasNamedParent);
 

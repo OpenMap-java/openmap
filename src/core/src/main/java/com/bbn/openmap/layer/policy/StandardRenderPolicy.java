@@ -125,11 +125,11 @@ public class StandardRenderPolicy extends OMComponent implements RenderPolicy {
                 list.render(g);
             } else if (logger.isLoggable(Level.FINE)) {
                 logger.fine(layer.getName()
-                        + ".paint(): "
+                        + " StandardRenderPolicy.paint(): "
                         + (list == null ? "NULL list, skipping..." : " skipping due to projection."));
             }
         } else {
-            logger.fine("RenderPolicy.paint():  NULL layer, skipping...");
+            logger.fine("StandardRenderPolicy.paint():  NULL layer, skipping...");
         }
     }
 }

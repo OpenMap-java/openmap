@@ -76,7 +76,7 @@ public class BufferedLayerMapBean extends BufferedMapBean {
      * 
      * @param color java.awt.Color.
      */
-    public void setBackgroundColor(Color color) {
+/*    public void setBackgroundColor(Color color) {
         super.setBackground(color);
         getBufferedLayer().setBackground(color);
     }
@@ -85,7 +85,7 @@ public class BufferedLayerMapBean extends BufferedMapBean {
         super.setBckgrnd(paint);
         getBufferedLayer().setBckgrnd(paint);
     }
-
+*/
     public synchronized void setBufferedLayer(BufferedLayer bl) {
         bufferedLayer = bl;
     }

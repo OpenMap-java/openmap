@@ -52,6 +52,7 @@ import com.bbn.openmap.Layer;
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.event.ProjectionEvent;
+import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.PropUtils;
 
@@ -372,7 +373,6 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements PropertyChan
      */
     @Override
     public void projectionChanged(ProjectionEvent pevent) {
-        Projection proj = setProjection(pevent);
         // Just pass it on, let the layers decide if they have to update.
         mapBean.setProjection(pevent.getProjection());
     }
@@ -534,21 +534,13 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements PropertyChan
     public class BLMapBean extends BufferedMapBean {
 
         private static final long serialVersionUID = 1L;
-        /**
-         * We need ALMOST_CLEAR so that the buffered image has a slight
-         * background to it if any of the layers are semi-transparent. If there
-         * is no background, the semi-transparent layers get washed out. Adding
-         * a touch of something to the background of the buffer lets them render
-         * normally.
-         */
-        private Color ALMOST_CLEAR = new Color(0x01FFFFFF, true);
 
         /**
          * Default constructor.
          */
         public BLMapBean() {
             super(false);
-            background = ALMOST_CLEAR;
+            background = OMColor.ALMOST_CLEAR;
         }
 
         /**
@@ -558,7 +550,7 @@ public class BufferedLayer extends OMGraphicHandlerLayer implements PropertyChan
          * @return color java.awt.Color.
          */
         public Color getBackground() {
-            return ALMOST_CLEAR;
+            return OMColor.ALMOST_CLEAR;
         }
 
         /**

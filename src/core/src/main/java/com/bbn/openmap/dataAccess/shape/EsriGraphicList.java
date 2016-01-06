@@ -53,7 +53,7 @@ public abstract class EsriGraphicList
         extends OMGraphicList
         implements ShapeConstants, EsriGraphic {
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.shape.EsriGraphicList");
+	public static Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.shape.EsriGraphicList");
     protected double[] extents;
     protected int type;
 

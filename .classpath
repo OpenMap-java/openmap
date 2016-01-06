@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/core/src/main/java"/>
-	<classpathentry kind="src" path="src/vpfbrowseservlet/src/main/java"/>
-	<classpathentry kind="src" path="src/maptileservlet/src/main/java"/>
-	<classpathentry kind="src" path="src/j3d/src/main/java"/>
-	<classpathentry kind="src" path="src/svg/src/main/java"/>
-	<classpathentry kind="src" path="src/wmsservlet/src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
 	<classpathentry kind="output" path="classes/openmap"/>

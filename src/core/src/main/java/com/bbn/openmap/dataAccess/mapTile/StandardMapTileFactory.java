@@ -29,7 +29,6 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -582,8 +581,6 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
 
         List<LoadObj> reloads = new ArrayList<LoadObj>();
         int zoomLevel = zoomLevelInfo.getZoomLevel();
-
-        boolean isMercator = proj instanceof Mercator;
 
         int uvleftM = (int) Math.min(uvleft, uvright);
         int uvrightM = (int) Math.max(uvleft, uvright);

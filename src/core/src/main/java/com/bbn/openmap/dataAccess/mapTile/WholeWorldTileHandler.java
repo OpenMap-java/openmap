@@ -718,19 +718,19 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
 
         com.bbn.openmap.util.ArgParser ap = new com.bbn.openmap.util.ArgParser("WholeWorldTileHandler");
 
-        ap.add("source", "Path to the tile root directory.", 1);
-        ap.add("target", "Path to the tile root directory for the jarred tile files.", 1);
-        ap.add("subJarZoom", "Zoom level tiles that subjar boundaries are based on (3 is default).", 1);
+        ap.add("source", "Path to the tile root directory.  If absolute path provided, parent dirs will be trimmed off from path inside jars.", 1);
+        ap.add("target", "Path to the output directory for the jarred tile files.", 1);
+        ap.add("subJarZoom", "Zoom level tiles that subjar names and boundaries are based on (3 is default).", 1);
         ap.add("maxZoomInSubJars", "Maximum tile zoom level added to sub jars (20 is default).", 1);
         ap.add("worldWideZoomLevel", "Maximum tile zoom level to add to world wide jar (10 is default).", 1);
         ap.add("tileExt", "Tile extension (.png is default).", 1);
-        ap.add("minx", "Subjar x minimum to create", 1);
-        ap.add("miny", "Subjar y minimum to create", 1);
-        ap.add("maxx", "Subjar x maximum to create", 1);
-        ap.add("maxy", "Subjar y maximum to create", 1);
-        ap.add("noWorldJar", "Don't create world level jar file");
-        ap.add("verbose", "Comment on what's going on");
-        ap.add("fill", "Just create jars that don't exist.");
+        ap.add("minx", "Subjar x minimum to create, depends on subJarZoom tile numbering.", 1);
+        ap.add("miny", "Subjar y minimum to create, depends on subJarZoom tile numbering.", 1);
+        ap.add("maxx", "Subjar x maximum to create, depends on subJarZoom tile numbering.", 1);
+        ap.add("maxy", "Subjar y maximum to create, depends on subJarZoom tile numbering.", 1);
+        ap.add("noWorldJar", "Don't create world level jar file.");
+        ap.add("verbose", "Describe what's going on.");
+        ap.add("fill", "Only create jars that don't exist.");
 
         if (!ap.parse(args)) {
             ap.printUsage();

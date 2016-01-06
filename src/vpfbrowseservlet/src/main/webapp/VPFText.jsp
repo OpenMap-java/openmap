@@ -11,7 +11,7 @@ This is help text.
 Here we are.
 <ul>
 <li>Hostname: 
-<jsp:useBean id="lst" class="LibraryBean">
+<jsp:useBean id="lst" class="com.bbn.openmap.vpfservlet.LibraryBean">
     <% lst.setContext(application); %>
     <% lst.setResponse(response); %>
     <jsp:setProperty name="lst" property="path" param="db"/>
@@ -19,10 +19,10 @@ Here we are.
 <li> DB: <jsp:getProperty name="lst" property="libName"/>
 <% 
     LibrarySelectionTable lstt = lst.getLst();
-    String items[] = lstt.getLibraryNames();
-    for (int i = 0; i < items.length; i++) {
+    java.util.List<String> items = lstt.getLibraryNames();
+    for (String item : items) {
 %>
-<li> library  <%= items[i] %> 
+<li> library  <%= item %> 
 <%
 	}
 %>

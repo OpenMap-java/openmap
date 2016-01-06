@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
 
+import com.bbn.openmap.dataAccess.geojson.FeatureCollection;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.layer.policy.ListResetPCPolicy;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
@@ -31,7 +32,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class GeoJSONLayer extends OMGraphicHandlerLayer {
 
-    public final static String SOURCE_PROPERTY = "source";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public final static String SOURCE_PROPERTY = "source";
 
     /**
      * RuleHandler to apply to OMGraphics for rendering and action controls.
@@ -194,7 +200,7 @@ public class GeoJSONLayer extends OMGraphicHandlerLayer {
      *
      * @author dietrick
      */
-    public class GeoJSONRuleHandler extends RuleHandler<Map> {
+    public class GeoJSONRuleHandler extends RuleHandler<Map<?,?>> {
 
         /*
          * (non-Javadoc)
