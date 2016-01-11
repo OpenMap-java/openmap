@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -23,7 +24,9 @@ public class TpkReader {
 	protected String pathToTiles;
 	protected ZipFile tpkFile;
 
-	public TpkReader(String tpkLocation) throws IOException {
+	private Logger logger = Logger.getLogger("com.bbn.openmap.dataAccess.mapTile.tpk.TpkReader");
+
+	public TpkReader(String tpkLocation) throws IOException, NoClassDefFoundError {
 
 		tpkFile = new ZipFile(tpkLocation);
 
@@ -42,7 +45,8 @@ public class TpkReader {
 	/**
 	 * Get an input stream for an entry that should be there.
 	 * 
-	 * @param entryString entry path, relative to internal root of zip file
+	 * @param entryString
+	 *            entry path, relative to internal root of zip file
 	 * @return ZipInputStream
 	 * @throws IOException
 	 */
@@ -89,6 +93,8 @@ public class TpkReader {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (NoClassDefFoundError ncdfe) {
+				logger.warning("The TPK reading code needs Jackson JSON package in the classpath");
 			}
 		}
 

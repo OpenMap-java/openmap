@@ -148,12 +148,17 @@ public class TpkMapTileFactory extends StandardMapTileFactory {
 				}
 
 			} else {
-				logger.warning("TpkMapTileFactory: tpkReader is null");
+				if (!warningIssued) {
+					logger.warning("TpkMapTileFactory: tpkReader is not configured properly.");
+					warningIssued = true;
+				}
 			}
 
 		}
 		return null;
 	}
+
+	private boolean warningIssued = false;
 
 	public int read(InputStream inputStream, byte b[], int off, int len) throws IOException {
 
@@ -213,6 +218,8 @@ public class TpkMapTileFactory extends StandardMapTileFactory {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (NoClassDefFoundError ncdfe) {
+			logger.warning("TPK package requires the Jackson JSON package, ObjectMapper not found.");
 		}
 	}
 
