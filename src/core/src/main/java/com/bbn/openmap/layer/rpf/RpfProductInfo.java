@@ -21,18 +21,9 @@
 // **********************************************************************
 
 /*
- * The meat of this code is based on source code provided by The MITRE
- * Corporation, through the browse application source code.  Many
- * thanks to Nancy Markuson who provided BBN with the software, and to
- * Theron Tock, who wrote the software, and Daniel Scholten, who
- * revised it - (c) 1994 The MITRE Corporation for those parts, and
- * used/distributed with permission.  The RPF TOC reading mechanism is
- * the contributed part.
+ * This class describes the attributes of the different RPF products available. 
  */
 package com.bbn.openmap.layer.rpf;
-
-import java.util.Enumeration;
-import java.util.Hashtable;
 
 /**
  * Contains basic information about the different map and imagery types
@@ -40,300 +31,287 @@ import java.util.Hashtable;
  * released by NIMA and contains the conventions they have listed in the RPF
  * specification.
  */
-public class RpfProductInfo {
+public enum RpfProductInfo implements RpfConstants {
 
-    /** The two-letter code for a particular map type. */
-    public String seriesCode;
-    /** The three-letter common abbreviation for the map type. */
-    public String abbr;
-    /** A String scale representation of the map type. */
-    public String scaleString;
-    /** The float number representation of the map type - 1:XXX . */
-    public float scale;
-    /** A Descriptive name for the map type. */
-    public String name;
-    /** The category of the map type - CADRG/CIB/DTED. */
-    public String dataType;
+	GN("GN", "GNC", "1:5,000,000", 5000000f, "Global Navigation Chart", CADRG),
+	JN("JN", "JNC", "1:2,000,000", 2000000f, "Jet Navigation Chart", CADRG),
+	ON("ON", "ONC", "1:1,000,000", 1000000f, "Operational Navigation Chart", CADRG),
+	TP("TP", "TPC", "1:500,000", 500000f, "Tactical Pilotage Chart", CADRG),
+	LF("LF", "LFC-FR (Day)", "1:500,000", 500000f, "Low Flying Chart (Day) - Host Nation", CADRG),
+	JG("JG", "JOG", "1:250,000", 250000f, "Joint Operations Graphic", CADRG),
+	JA("JA", "JOG-A", "1:250,000", 250000f, "Joint Operations Graphic - Air", CADRG),
+	JR("JR", "JOG-R", "1:250,000", 250000f, "Joint Operations Graphic - Radar", CADRG),
+	TF("TF", "TFC", "1:250,000", 250000f, "Transit Flying Chart (UK)", CADRG),
+	AT("AT", "ATC", "1:200,000", 200000f, "Series 200 Air Target Chart", CADRG),
+	TC("TC", "TLM 100", "1:100,000", 100000f, "Topographic Line Map 1:100,000 scale", CADRG),
+	TL("TL", "TLM 50", "1:50,000", 50000f, TOPOLINEMAP, CADRG),
+	TT("TT", "TLM 25", "1:25,000", 25000f, "Topographic Line Map 1:25,000 scale", CADRG),
+	TQ("TQ", "TLM 24", "1:24,000", 24000f, "Topographic Line Map 1:24,000 scale", CADRG),
+	HA("HA", "HA", VARIOUS, Various, "Harbor and Approach Charts", CADRG),
+	CO("CO", "CO", VARIOUS, Various, "Coastal Charts", CADRG),
+	OA("OA", "OPEAREA", VARIOUS, Various, "Naval Range Operating Area Chart", CADRG),
+	CG("CG", "CG", VARIOUS, Various, CITYGRAPHICS, CADRG),
+	C1("C1", "CG", "1:10,000", 10000f, CITYGRAPHICS, CADRG),
+	C2("C2", "CG", "1:10,560", 10560f, CITYGRAPHICS, CADRG),
+	C3("C3", "CG", "1:11,000", 11000f, CITYGRAPHICS, CADRG),
+	C4("C4", "CG", "1:11,800", 11800f, CITYGRAPHICS, CADRG),
+	C5("C5", "CG", "1:12,000", 12000f, CITYGRAPHICS, CADRG),
+	C6("C6", "CG", "1:12,500", 12500f, CITYGRAPHICS, CADRG),
+	C7("C7", "CG", "1:12,800", 12800f, CITYGRAPHICS, CADRG),
+	C8("C8", "CG", "1:14,000", 14000f, CITYGRAPHICS, CADRG),
+	C9("C9", "CG", "1:14,700", 14700f, CITYGRAPHICS, CADRG),
+	CA("CA", "CG", "1:15,000", 15000f, CITYGRAPHICS, CADRG),
+	CB("CB", "CG", "1:15,500", 15500f, CITYGRAPHICS, CADRG),
+	CC("CC", "CG", "1:16,000", 16000f, CITYGRAPHICS, CADRG),
+	CD("CD", "CG", "1:16,666", 16666f, CITYGRAPHICS, CADRG),
+	CE("CE", "CG", "1:17,000", 17000f, CITYGRAPHICS, CADRG),
+	CF("CF", "CG", "1:17,500", 17500f, CITYGRAPHICS, CADRG),
+	CH("CH", "CG", "1:18,000", 18000f, CITYGRAPHICS, CADRG),
+	CJ("CJ", "CG", "1:20,000", 20000f, CITYGRAPHICS, CADRG),
+	CK("CK", "CG", "1:21,000", 21000f, CITYGRAPHICS, CADRG),
+	CL("CL", "CG", "1:21,120", 21120f, CITYGRAPHICS, CADRG),
+	CN("CN", "CG", "1:22,000", 22000f, CITYGRAPHICS, CADRG),
+	CP("CP", "CG", "1:23,000", 23000f, CITYGRAPHICS, CADRG),
+	CQ("CQ", "CG", "1:25,000", 25000f, CITYGRAPHICS, CADRG),
+	CR("CR", "CG", "1:26,000", 26000f, CITYGRAPHICS, CADRG),
+	CS("CS", "CG", "1:35,000", 35000f, CITYGRAPHICS, CADRG),
+	CT("CT", "CG", "1:36,000", 36000f, CITYGRAPHICS, CADRG),
+	CM("CM", "CM", VARIOUS, Various, "Combat Charts", CADRG),
+	A1("A1", "CM", "1:10,000", 10000f, "Combat Graphics, 1:10,000 scale", CADRG),
+	A2("A2", "CM", "1:25,000", 25000f, "Combat Graphics, 1:25,000 scale", CADRG),
+	A3("A3", "CM", "1:50,000", 50000f, "Combat Graphics, 1:50,000 scale", CADRG),
+	A4("A4", "CM", "1:100,000", 100000f, "Combat Graphics, 1:100,000 scale", CADRG),
+	MM("MM", BLANK, VARIOUS, Various, "(Miscellaneous Maps & Charts)", CADRG),
+	IM("IM", BLANK, "10m", 66666f, "Imagery, 10 meter resolution", CIB),
+	I1("I1", BLANK, "10m", 66666f, "Imagery, 10 meter resolution", CIB),
+	I2("I2", BLANK, "5m", 33333f, "Imagery, 5 meter resolution", CIB),
+	I3("I3", BLANK, "2m", 13333.2f, "Imagery, 2 meter resolution", CIB),
+	I4("I4", BLANK, "1m", 6666f, "Imagery, 1 meter resolution", CIB),
+	D1("D1", BLANK, "100m", Various, "Elevation Data from DTED level 1", CDTED),
+	D2("D2", BLANK, "30m", Various, "Elevation Data from DTED level 2", CDTED),
+	OV("OV", "Overview", VARIOUS, Various, "Overview Image", CADRG),
+	OI("OI", "Overview", VARIOUS, Various, "Overview Image", CADRG),
+	LG("LG", "Legend", VARIOUS, Various, "Legend Data", CADRG),
+	UK("UK", "Unknown", VARIOUS, Various, "Unknown", CADRG),
+	DT("DT", "CDTED", "100M", 666666f, "Compressed DTED", CDTED),
 
-    /**
-     * A hashtable that stores all the known map types, with the two-letter code
-     * as the key for retrieval.
-     */
-    private static Hashtable<String, RpfProductInfo> CATALOG;
+	/**
+	 * New as of MIL-STD-2411-1 Change 3
+	 */
+	EG("EG", "NARC", "1:11M", 11000000f, "North Atlantic Route Chart", CADRG),
+	ES("ES", "SEC", "1:500,000", 500000f, "VFR Sectional", CADRG),
+	ET("ET", "SEC", "1:250,000", 250000f, "VFR Sectional Insets", CADRG),
+	F1("F1", "TFC-1", "1:250,000", 250000f, "Transit Flying Chart (TBD #1)", CADRG),
+	F2("F2", "TFC-2", "1:250,000", 250000f, "Transit Flying Chart (TBD #2)", CADRG),
+	F3("F3", "TFC-3", "1:250,000", 250000f, "Transit Flying Chart (TBD #3)", CADRG),
+	F4("F4", "TFC-4", "1:250,000", 250000f, "Transit Flying Chart (TBD #4)", CADRG),
+	F5("F5", "TFC-5", "1:250,000", 250000f, "Transit Flying Chart (TBD #5)", CADRG),
+	I5("I5", BLANK, ".5m", 3333f, "Imagery, .5 (half) meter resolution", CIB),
+	IV("IV", BLANK, VARIOUS, Various, "Imagery, > 10 meter resolution", CIB),
+	JO("JO", "OPG", "1:250,000", 250000f, "Operations Planning Graphic", CADRG),
+	K1("K1", "ICM", "1:8,000", 8000f, "Image City Maps", CADRG),
+	K2("K2", "ICM", "1:10,000", 10000f, "Image City Maps", CADRG),
+	K3("K3", "ICM", "1:10,560", 10560f, "Image City Maps", CADRG),
+	K7("K7", "ICM", "1:12,500", 12500f, "Image City Maps", CADRG),
+	K8("K8", "ICM", "1:12,800", 12000f, "Image City Maps", CADRG),
+	KB("KB", "ICM", "1:15,000", 15000f, "Image City Maps", CADRG),
+	KE("KE", "ICM", "1:16,666", 16666f, "Image City Maps", CADRG),
+	KM("KM", "ICM", "1:21,120", 21120f, "Image City Maps", CADRG),
+	KR("KR", "ICM", "1:25,000", 25000f, "Image City Maps", CADRG),
+	KS("KS", "ICM", "1:26,000", 26000f, "Image City Maps", CADRG),
+	KU("KU", "ICM", "1:36,000", 36000f, "Image City Maps", CADRG),
+	L1("L1", "LFC-1", "1:500,000", 500000f, "Low Flying Chart (TBD #1)", CADRG),
+	L2("L2", "LFC-2", "1:500,000", 500000f, "Low Flying Chart (TBD #2)", CADRG),
+	L3("L3", "LFC-3", "1:500,000", 500000f, "Low Flying Chart (TBD #3)", CADRG),
+	L4("L4", "LFC-4", "1:500,000", 500000f, "Low Flying Chart (TBD #4)", CADRG),
+	L5("L5", "LFC-5", "1:500,000", 500000f, "Low Flying Chart (TBD #5)", CADRG),
+	LN("LN", "LFC (Night)", "1:500,000", 500000f, "Low Flying Chart (Night) - Host Nation", CADRG),
+	M1("M1", "MIM", VARIOUS, Various, "Military Installation Map (TBD #1)", CADRG),
+	M2("M2", "MIM", VARIOUS, Various, "Military Installation Map (TBD #2)", CADRG),
+	MH("MH", "MIM", "1:25,000", 25000f, "Military Installation Maps", CADRG),
+	MI("MI", "MIM", "1:50,000", 50000f, "Military Installation Maps", CADRG),
+	MJ("MJ", "MIM", "1:100,000", 100000f, "Military Installation Maps", CADRG),
+	OH("OH", "VHRC", "1:1,000,000", 1000000f, "VFR Helicopter Route Chart", CADRG),
+	OW("OW", "WAC", "1:1,000,000", 1000000f, "High Flying Chart - Host Nation", CADRG),
+	P1("P1", BLANK, "1:25,000", 25000f, "Special Military Map - Overlay", CADRG),
+	P2("P2", BLANK, "1:25,000", 25000f, "Special Military Purpose", CADRG),
+	P3("P3", BLANK, "1:25,000", 25000f, "Special Military Purpose", CADRG),
+	P4("P4", BLANK, "1:25,000", 25000f, "Special Military Purpose", CADRG),
+	P5("P5", BLANK, "1:50,000", 50000f, "Special Military Map - Overlay", CADRG),
+	P6("P6", BLANK, "1:50,000", 50000f, "Special Military Purpose", CADRG),
+	P7("P7", BLANK, "1:50,000", 50000f, "Special Military Purpose", CADRG),
+	P8("P8", BLANK, "1:50,000", 50000f, "Special Military Purpose", CADRG),
+	P9("P9", BLANK, "1:100,000", 100000f, "Special Military Map - Overlay", CADRG),
+	PA("PA", BLANK, "1:100,000", 100000f, "Special Military Purpose", CADRG),
+	PB("PB", BLANK, "1:100,000", 100000f, "Special Military Purpose", CADRG),
+	PC("PC", BLANK, "1:100,000", 100000f, "Special Military Purpose", CADRG),
+	PD("PD", BLANK, "1:250,000", 250000f, "Special Military Map - Overlay", CADRG),
+	PE("PE", BLANK, "1:250,000", 250000f, "Special Military Purpose", CADRG),
+	PF("PF", BLANK, "1:250,000", 250000f, "Special Military Purpose", CADRG),
+	PG("PG", BLANK, "1:250,000", 250000f, "Special Military Purpose", CADRG),
+	PH("PH", BLANK, "1:500,000", 500000f, "Special Military Map - Overlay", CADRG),
+	PI("PI", BLANK, "1:500,000", 500000f, "Special Military Purpose", CADRG),
+	PJ("PJ", BLANK, "1:500,000", 500000f, "Special Military Purpose", CADRG),
+	PK("PK", BLANK, "1:500,000", 500000f, "Special Military Purpose", CADRG),
+	PL("PL", BLANK, "1:1,000,000", 1000000f, "Special Military Map - Overlay", CADRG),
+	PM("PM", BLANK, "1:1,000,000", 1000000f, "Special Military Purpose", CADRG),
+	PN("PN", BLANK, "1:1,000,000", 1000000f, "Special Military Purpose", CADRG),
+	PO("PO", BLANK, "1:1,000,000", 1000000f, "Special Military Purpose", CADRG),
+	PP("PP", BLANK, "1:2,000,000", 2000000f, "Special Military Map - Overlay", CADRG),
+	PQ("PQ", BLANK, "1:2,000,000", 2000000f, "Special Military Purpose", CADRG),
+	PR("PR", BLANK, "1:2,000,000", 2000000f, "Special Military Purpose", CADRG),
+	PS("PS", BLANK, "1:5,000,000", 5000000f, "Special Military Map - Overlay", CADRG),
+	PT("PT", BLANK, "1:5,000,000", 5000000f, "Special Military Purpose", CADRG),
+	PU("PU", BLANK, "1:5,000,000", 5000000f, "Special Military Purpose", CADRG),
+	PV("PV", BLANK, "1:5,000,000", 5000000f, "Special Military Purpose", CADRG),
+	R1("R1", BLANK, "1:50,000", 50000f, "Range Charts", CADRG),
+	R2("R2", BLANK, "1:100,000", 100000f, "Range Charts", CADRG),
+	R3("R3", BLANK, "1:250,000", 250000f, "Range Charts", CADRG),
+	R4("R4", BLANK, "1:500,000", 500000f, "Range Charts", CADRG),
+	R5("R5", BLANK, "1:1,000,000", 1000000f, "Range Charts", CADRG),
+	RC("RC", "RGS-100", "1:10,000", 10000f, "Russian General Staff Maps", CADRG),
+	RL("RL", "RGS-50", "1:50,000", 50000f, "Russian General Staff Maps", CADRG),
+	RR("RR", "RGS-200", "1:200,000", 200000f, "Russian General Staff Maps", CADRG),
+	RV("RV", "Riverine", "1:50,000", 50000f, "Riverine Map 1:50,000 scale", CADRG),
+	TN("TN", "TFC (Night)", "1:250,000", 250000f, "Transit Flying Chart (Night) - Host nation", CADRG),
+	TR("TR", "TLM 100", "1:200,000", 200000f, "Topographic Line Map 1:200,000 scale", CADRG),
+	UL("UL", "TLM50-Other", "1:50,000", 50000f, "Topographic Line Map (other 1:50,000 scale)", CADRG),
+	V1("V1", "HRC Inset", "1:50,000", 50000f, "Helicopter Route Chart Inset", CADRG),
+	V2("V2", "HRC Inset", "1:62,500", 62500f, "Helicopter Route Chart Inset", CADRG),
+	V3("V3", "HRC Inset", "1:90,000", 90000f, "Helicopter Route Chart Inset", CADRG),
+	V4("V4", "HRC Inset", "1:250,000", 250000f, "Helicopter Route Chart Inset", CADRG),
+	VH("VH", "HRC", "1:125,000", 125000f, "Helicopter Route Chart", CADRG),
+	VN("VN", "VNC", "1:500,000", 500000f, "Visual Navigation Charts", CADRG),
+	VT("VT", "VTAC", "1:250,000", 250000f, "VFR Terminal Area Chart", CADRG),
+	WA("WA", BLANK, "1:250,000", 250000f, "IFR Enroute Low", CADRG),
+	WB("WB", BLANK, "1:500,000", 500000f, "IFR Enroute Low", CADRG),
+	WC("WC", BLANK, "1:750,000", 750000f, "IFR Enroute Low", CADRG),
+	WD("WD", BLANK, "1:1,000,000", 1000000f, "IFR Enroute Low", CADRG),
+	WE("WE", BLANK, "1:1,500,000", 1500000f, "IFR Enroute Low", CADRG),
+	WF("WF", BLANK, "1:2,000,000", 2000000f, "IFR Enroute Low", CADRG),
+	WG("WG", BLANK, "1:2,500,000", 2500000f, "IFR Enroute Low", CADRG),
+	WH("WH", BLANK, "1:3,000,000", 3000000f, "IFR Enroute Low", CADRG),
+	WI("WI", BLANK, "1:3,500,000", 3500000f, "IFR Enroute Low", CADRG),
+	WK("WK", BLANK, "1:4,500,000", 4500000f, "IFR Enroute Low", CADRG),
+	XD("XD", BLANK, "1:1,000,000", 1000000f, "IFR Enroute High", CADRG),
+	XE("XE", BLANK, "1:1,500,000", 1500000f, "IFR Enroute High", CADRG),
+	XF("XF", BLANK, "1:2,000,000", 2000000f, "IFR Enroute High", CADRG),
+	XG("XG", BLANK, "1:2,500,000", 2500000f, "IFR Enroute High", CADRG),
+	XH("XH", BLANK, "1:3,000,000", 3000000f, "IFR Enroute High", CADRG),
+	XI("XI", BLANK, "1:3,500,000", 3500000f, "IFR Enroute High", CADRG),
+	XJ("XJ", BLANK, "1:3,000,000", 3000000f, "IFR Enroute High", CADRG),
+	XK("XK", BLANK, "1:4,500,000", 4500000f, "IFR Enroute High", CADRG),
+	Y9("Y9", BLANK, "1:16,500,000", 16500000f, "IFR Enroute Area", CADRG),
+	YA("YA", BLANK, "1:250,000", 250000f, "IFR Enroute Area", CADRG),
+	YB("YB", BLANK, "1:500,000", 500000f, "IFR Enroute Area", CADRG),
+	YC("YC", BLANK, "1:750,000", 750000f, "IFR Enroute Area", CADRG),
+	YD("YD", BLANK, "1:1,000,000", 1000000f, "IFR Enroute Area", CADRG),
+	YE("YE", BLANK, "1:1,500,000", 1500000f, "IFR Enroute Area", CADRG),
+	YF("YF", BLANK, "1:2,000,000", 2000000f, "IFR Enroute Area", CADRG),
+	YI("YI", BLANK, "1:3,500,000", 3500000f, "IFR Enroute Area", CADRG),
+	YJ("YJ", BLANK, "1:4,000,000", 4000000f, "IFR Enroute Area", CADRG),
+	YZ("YZ", BLANK, "1:12,000,000", 12000000f, "IFR Enroute Area", CADRG),
+	Z8("Z8", BLANK, "1:16,000,000", 16000000f, "IFR Enroute High/Low", CADRG),
+	ZA("ZA", BLANK, "1:250,000", 250000f, "IFR Enroute High/Low", CADRG),
+	ZB("ZB", BLANK, "1:500,000", 500000f, "IFR Enroute High/Low", CADRG),
+	ZC("ZC", BLANK, "1:750,000", 750000f, "IFR Enroute High/Low", CADRG),
+	ZD("ZD", BLANK, "1:1,000,000", 1000000f, "IFR Enroute High/Low", CADRG),
+	ZE("ZE", BLANK, "1:1,500,000", 1500000f, "IFR Enroute High/Low", CADRG),
+	ZF("ZF", BLANK, "1:2,000,000", 2000000f, "IFR Enroute High/Low", CADRG),
+	ZG("ZG", BLANK, "1:2,500,000", 2500000f, "IFR Enroute High/Low", CADRG),
+	ZH("ZH", BLANK, "1:3,000,000", 3000000f, "IFR Enroute High/Low", CADRG),
+	ZI("ZI", BLANK, "1:3,500,000", 3500000f, "IFR Enroute High/Low", CADRG),
+	ZJ("ZJ", BLANK, "1:4,000,000", 4000000f, "IFR Enroute High/Low", CADRG),
+	ZK("ZK", BLANK, "1:4,500,000", 4500000f, "IFR Enroute High/Low", CADRG),
+	ZT("ZT", BLANK, "1:9,000,000", 9000000f, "IFR Enroute High/Low", CADRG),
+	ZV("ZV", BLANK, "1:10,000,000", 10000000f, "IFR Enroute High/Low", CADRG),
+	ZZ("ZZ", BLANK, "1:12,000,000", 12000000f, "IFR Enroute High/Low", CADRG);
 
-    static {
-        CATALOG = new java.util.Hashtable<String, RpfProductInfo>(190);
-        CATALOG.put(RpfConstants.GN.seriesCode, RpfConstants.GN);
-        CATALOG.put(RpfConstants.JN.seriesCode, RpfConstants.JN);
-        CATALOG.put(RpfConstants.ON.seriesCode, RpfConstants.ON);
-        CATALOG.put(RpfConstants.TP.seriesCode, RpfConstants.TP);
-        CATALOG.put(RpfConstants.LF.seriesCode, RpfConstants.LF);
-        CATALOG.put(RpfConstants.JG.seriesCode, RpfConstants.JG);
-        CATALOG.put(RpfConstants.JA.seriesCode, RpfConstants.JA);
-        CATALOG.put(RpfConstants.JR.seriesCode, RpfConstants.JR);
-        CATALOG.put(RpfConstants.TF.seriesCode, RpfConstants.TF);
-        CATALOG.put(RpfConstants.AT.seriesCode, RpfConstants.AT);
-        CATALOG.put(RpfConstants.TC.seriesCode, RpfConstants.TC);
-        CATALOG.put(RpfConstants.TL.seriesCode, RpfConstants.TL);
-        CATALOG.put(RpfConstants.TT.seriesCode, RpfConstants.TT);
-        CATALOG.put(RpfConstants.TQ.seriesCode, RpfConstants.TQ);
-        CATALOG.put(RpfConstants.HA.seriesCode, RpfConstants.HA);
-        CATALOG.put(RpfConstants.CO.seriesCode, RpfConstants.CO);
-        CATALOG.put(RpfConstants.OA.seriesCode, RpfConstants.OA);
-        CATALOG.put(RpfConstants.CG.seriesCode, RpfConstants.CG);
-        CATALOG.put(RpfConstants.C1.seriesCode, RpfConstants.C1);
-        CATALOG.put(RpfConstants.C2.seriesCode, RpfConstants.C2);
-        CATALOG.put(RpfConstants.C3.seriesCode, RpfConstants.C3);
-        CATALOG.put(RpfConstants.C4.seriesCode, RpfConstants.C4);
-        CATALOG.put(RpfConstants.C5.seriesCode, RpfConstants.C5);
-        CATALOG.put(RpfConstants.C6.seriesCode, RpfConstants.C6);
-        CATALOG.put(RpfConstants.C7.seriesCode, RpfConstants.C7);
-        CATALOG.put(RpfConstants.C8.seriesCode, RpfConstants.C8);
-        CATALOG.put(RpfConstants.C9.seriesCode, RpfConstants.C9);
-        CATALOG.put(RpfConstants.CA.seriesCode, RpfConstants.CA);
-        CATALOG.put(RpfConstants.CB.seriesCode, RpfConstants.CB);
-        CATALOG.put(RpfConstants.CC.seriesCode, RpfConstants.CC);
-        CATALOG.put(RpfConstants.CD.seriesCode, RpfConstants.CD);
-        CATALOG.put(RpfConstants.CE.seriesCode, RpfConstants.CE);
-        CATALOG.put(RpfConstants.CF.seriesCode, RpfConstants.CF);
-        CATALOG.put(RpfConstants.CH.seriesCode, RpfConstants.CH);
-        CATALOG.put(RpfConstants.CJ.seriesCode, RpfConstants.CJ);
-        CATALOG.put(RpfConstants.CK.seriesCode, RpfConstants.CK);
-        CATALOG.put(RpfConstants.CL.seriesCode, RpfConstants.CL);
-        CATALOG.put(RpfConstants.CN.seriesCode, RpfConstants.CN);
-        CATALOG.put(RpfConstants.CP.seriesCode, RpfConstants.CP);
-        CATALOG.put(RpfConstants.CQ.seriesCode, RpfConstants.CQ);
-        CATALOG.put(RpfConstants.CR.seriesCode, RpfConstants.CR);
-        CATALOG.put(RpfConstants.CS.seriesCode, RpfConstants.CS);
-        CATALOG.put(RpfConstants.CT.seriesCode, RpfConstants.CT);
-        CATALOG.put(RpfConstants.CM.seriesCode, RpfConstants.CM);
-        CATALOG.put(RpfConstants.A1.seriesCode, RpfConstants.A1);
-        CATALOG.put(RpfConstants.A2.seriesCode, RpfConstants.A2);
-        CATALOG.put(RpfConstants.A3.seriesCode, RpfConstants.A3);
-        CATALOG.put(RpfConstants.A4.seriesCode, RpfConstants.A4);
-        CATALOG.put(RpfConstants.MM.seriesCode, RpfConstants.MM);
-        CATALOG.put(RpfConstants.IM.seriesCode, RpfConstants.IM);
-        CATALOG.put(RpfConstants.I1.seriesCode, RpfConstants.I1);
-        CATALOG.put(RpfConstants.I2.seriesCode, RpfConstants.I2);
-        CATALOG.put(RpfConstants.I3.seriesCode, RpfConstants.I3);
-        CATALOG.put(RpfConstants.I4.seriesCode, RpfConstants.I4);
-        CATALOG.put(RpfConstants.D1.seriesCode, RpfConstants.D1);
-        CATALOG.put(RpfConstants.D2.seriesCode, RpfConstants.D2);
-        CATALOG.put(RpfConstants.OV.seriesCode, RpfConstants.OV);
-        CATALOG.put(RpfConstants.OI.seriesCode, RpfConstants.OI);
-        CATALOG.put(RpfConstants.LG.seriesCode, RpfConstants.LG);
-        CATALOG.put(RpfConstants.UK.seriesCode, RpfConstants.UK);
-        CATALOG.put(RpfConstants.DT.seriesCode, RpfConstants.DT);
-        CATALOG.put(RpfConstants.EG.seriesCode, RpfConstants.EG);
-        CATALOG.put(RpfConstants.ES.seriesCode, RpfConstants.ES);
-        CATALOG.put(RpfConstants.ET.seriesCode, RpfConstants.ET);
-        CATALOG.put(RpfConstants.F1.seriesCode, RpfConstants.F1);
-        CATALOG.put(RpfConstants.F2.seriesCode, RpfConstants.F2);
-        CATALOG.put(RpfConstants.F3.seriesCode, RpfConstants.F3);
-        CATALOG.put(RpfConstants.F4.seriesCode, RpfConstants.F4);
-        CATALOG.put(RpfConstants.F5.seriesCode, RpfConstants.F5);
-        CATALOG.put(RpfConstants.I5.seriesCode, RpfConstants.I5);
-        CATALOG.put(RpfConstants.IV.seriesCode, RpfConstants.IV);
-        CATALOG.put(RpfConstants.JO.seriesCode, RpfConstants.JO);
-        CATALOG.put(RpfConstants.K1.seriesCode, RpfConstants.K1);
-        CATALOG.put(RpfConstants.K2.seriesCode, RpfConstants.K2);
-        CATALOG.put(RpfConstants.K3.seriesCode, RpfConstants.K3);
-        CATALOG.put(RpfConstants.K7.seriesCode, RpfConstants.K7);
-        CATALOG.put(RpfConstants.K8.seriesCode, RpfConstants.K8);
-        CATALOG.put(RpfConstants.KB.seriesCode, RpfConstants.KB);
-        CATALOG.put(RpfConstants.KE.seriesCode, RpfConstants.KE);
-        CATALOG.put(RpfConstants.KM.seriesCode, RpfConstants.KM);
-        CATALOG.put(RpfConstants.KR.seriesCode, RpfConstants.KR);
-        CATALOG.put(RpfConstants.KS.seriesCode, RpfConstants.KS);
-        CATALOG.put(RpfConstants.KU.seriesCode, RpfConstants.KU);
-        CATALOG.put(RpfConstants.L1.seriesCode, RpfConstants.L1);
-        CATALOG.put(RpfConstants.L2.seriesCode, RpfConstants.L2);
-        CATALOG.put(RpfConstants.L3.seriesCode, RpfConstants.L3);
-        CATALOG.put(RpfConstants.L4.seriesCode, RpfConstants.L4);
-        CATALOG.put(RpfConstants.L5.seriesCode, RpfConstants.L5);
-        CATALOG.put(RpfConstants.LN.seriesCode, RpfConstants.LN);
-        CATALOG.put(RpfConstants.M1.seriesCode, RpfConstants.M1);
-        CATALOG.put(RpfConstants.M2.seriesCode, RpfConstants.M2);
-        CATALOG.put(RpfConstants.MH.seriesCode, RpfConstants.MH);
-        CATALOG.put(RpfConstants.MI.seriesCode, RpfConstants.MI);
-        CATALOG.put(RpfConstants.MJ.seriesCode, RpfConstants.MJ);
-        CATALOG.put(RpfConstants.OH.seriesCode, RpfConstants.OH);
-        CATALOG.put(RpfConstants.OW.seriesCode, RpfConstants.OW);
-        CATALOG.put(RpfConstants.P1.seriesCode, RpfConstants.P1);
-        CATALOG.put(RpfConstants.P2.seriesCode, RpfConstants.P2);
-        CATALOG.put(RpfConstants.P3.seriesCode, RpfConstants.P3);
-        CATALOG.put(RpfConstants.P4.seriesCode, RpfConstants.P4);
-        CATALOG.put(RpfConstants.P5.seriesCode, RpfConstants.P5);
-        CATALOG.put(RpfConstants.P6.seriesCode, RpfConstants.P6);
-        CATALOG.put(RpfConstants.P7.seriesCode, RpfConstants.P7);
-        CATALOG.put(RpfConstants.P8.seriesCode, RpfConstants.P8);
-        CATALOG.put(RpfConstants.P9.seriesCode, RpfConstants.P9);
-        CATALOG.put(RpfConstants.PA.seriesCode, RpfConstants.PA);
-        CATALOG.put(RpfConstants.PB.seriesCode, RpfConstants.PB);
-        CATALOG.put(RpfConstants.PC.seriesCode, RpfConstants.PC);
-        CATALOG.put(RpfConstants.PD.seriesCode, RpfConstants.PD);
-        CATALOG.put(RpfConstants.PE.seriesCode, RpfConstants.PE);
-        CATALOG.put(RpfConstants.PF.seriesCode, RpfConstants.PF);
-        CATALOG.put(RpfConstants.PG.seriesCode, RpfConstants.PG);
-        CATALOG.put(RpfConstants.PH.seriesCode, RpfConstants.PH);
-        CATALOG.put(RpfConstants.PI.seriesCode, RpfConstants.PI);
-        CATALOG.put(RpfConstants.PJ.seriesCode, RpfConstants.PJ);
-        CATALOG.put(RpfConstants.PK.seriesCode, RpfConstants.PK);
-        CATALOG.put(RpfConstants.PL.seriesCode, RpfConstants.PL);
-        CATALOG.put(RpfConstants.PM.seriesCode, RpfConstants.PM);
-        CATALOG.put(RpfConstants.PN.seriesCode, RpfConstants.PN);
-        CATALOG.put(RpfConstants.PO.seriesCode, RpfConstants.PO);
-        CATALOG.put(RpfConstants.PP.seriesCode, RpfConstants.PP);
-        CATALOG.put(RpfConstants.PQ.seriesCode, RpfConstants.PQ);
-        CATALOG.put(RpfConstants.PR.seriesCode, RpfConstants.PR);
-        CATALOG.put(RpfConstants.PS.seriesCode, RpfConstants.PS);
-        CATALOG.put(RpfConstants.PT.seriesCode, RpfConstants.PT);
-        CATALOG.put(RpfConstants.PU.seriesCode, RpfConstants.PU);
-        CATALOG.put(RpfConstants.PV.seriesCode, RpfConstants.PV);
-        CATALOG.put(RpfConstants.R1.seriesCode, RpfConstants.R1);
-        CATALOG.put(RpfConstants.R2.seriesCode, RpfConstants.R2);
-        CATALOG.put(RpfConstants.R3.seriesCode, RpfConstants.R3);
-        CATALOG.put(RpfConstants.R4.seriesCode, RpfConstants.R4);
-        CATALOG.put(RpfConstants.R5.seriesCode, RpfConstants.R5);
-        CATALOG.put(RpfConstants.RC.seriesCode, RpfConstants.RC);
-        CATALOG.put(RpfConstants.RL.seriesCode, RpfConstants.RL);
-        CATALOG.put(RpfConstants.RR.seriesCode, RpfConstants.RR);
-        CATALOG.put(RpfConstants.RV.seriesCode, RpfConstants.RV);
-        CATALOG.put(RpfConstants.TN.seriesCode, RpfConstants.TN);
-        CATALOG.put(RpfConstants.TR.seriesCode, RpfConstants.TR);
-        CATALOG.put(RpfConstants.UL.seriesCode, RpfConstants.UL);
-        CATALOG.put(RpfConstants.V1.seriesCode, RpfConstants.V1);
-        CATALOG.put(RpfConstants.V2.seriesCode, RpfConstants.V2);
-        CATALOG.put(RpfConstants.V3.seriesCode, RpfConstants.V3);
-        CATALOG.put(RpfConstants.V4.seriesCode, RpfConstants.V4);
-        CATALOG.put(RpfConstants.VH.seriesCode, RpfConstants.VH);
-        CATALOG.put(RpfConstants.VN.seriesCode, RpfConstants.VN);
-        CATALOG.put(RpfConstants.VT.seriesCode, RpfConstants.VT);
-        CATALOG.put(RpfConstants.WA.seriesCode, RpfConstants.WA);
-        CATALOG.put(RpfConstants.WB.seriesCode, RpfConstants.WB);
-        CATALOG.put(RpfConstants.WC.seriesCode, RpfConstants.WC);
-        CATALOG.put(RpfConstants.WD.seriesCode, RpfConstants.WD);
-        CATALOG.put(RpfConstants.WE.seriesCode, RpfConstants.WE);
-        CATALOG.put(RpfConstants.WF.seriesCode, RpfConstants.WF);
-        CATALOG.put(RpfConstants.WG.seriesCode, RpfConstants.WG);
-        CATALOG.put(RpfConstants.WH.seriesCode, RpfConstants.WH);
-        CATALOG.put(RpfConstants.WI.seriesCode, RpfConstants.WI);
-        CATALOG.put(RpfConstants.WK.seriesCode, RpfConstants.WK);
-        CATALOG.put(RpfConstants.XD.seriesCode, RpfConstants.XD);
-        CATALOG.put(RpfConstants.XE.seriesCode, RpfConstants.XE);
-        CATALOG.put(RpfConstants.XF.seriesCode, RpfConstants.XF);
-        CATALOG.put(RpfConstants.XG.seriesCode, RpfConstants.XG);
-        CATALOG.put(RpfConstants.XH.seriesCode, RpfConstants.XH);
-        CATALOG.put(RpfConstants.XI.seriesCode, RpfConstants.XI);
-        CATALOG.put(RpfConstants.XJ.seriesCode, RpfConstants.XJ);
-        CATALOG.put(RpfConstants.XK.seriesCode, RpfConstants.XK);
-        CATALOG.put(RpfConstants.Y9.seriesCode, RpfConstants.Y9);
-        CATALOG.put(RpfConstants.YA.seriesCode, RpfConstants.YA);
-        CATALOG.put(RpfConstants.YB.seriesCode, RpfConstants.YB);
-        CATALOG.put(RpfConstants.YC.seriesCode, RpfConstants.YC);
-        CATALOG.put(RpfConstants.YD.seriesCode, RpfConstants.YD);
-        CATALOG.put(RpfConstants.YE.seriesCode, RpfConstants.YE);
-        CATALOG.put(RpfConstants.YF.seriesCode, RpfConstants.YF);
-        CATALOG.put(RpfConstants.YI.seriesCode, RpfConstants.YI);
-        CATALOG.put(RpfConstants.YJ.seriesCode, RpfConstants.YJ);
-        CATALOG.put(RpfConstants.YZ.seriesCode, RpfConstants.YZ);
-        CATALOG.put(RpfConstants.Z8.seriesCode, RpfConstants.Z8);
-        CATALOG.put(RpfConstants.ZA.seriesCode, RpfConstants.ZA);
-        CATALOG.put(RpfConstants.ZB.seriesCode, RpfConstants.ZB);
-        CATALOG.put(RpfConstants.ZC.seriesCode, RpfConstants.ZC);
-        CATALOG.put(RpfConstants.ZD.seriesCode, RpfConstants.ZD);
-        CATALOG.put(RpfConstants.ZE.seriesCode, RpfConstants.ZE);
-        CATALOG.put(RpfConstants.ZF.seriesCode, RpfConstants.ZF);
-        CATALOG.put(RpfConstants.ZG.seriesCode, RpfConstants.ZG);
-        CATALOG.put(RpfConstants.ZH.seriesCode, RpfConstants.ZH);
-        CATALOG.put(RpfConstants.ZI.seriesCode, RpfConstants.ZI);
-        CATALOG.put(RpfConstants.ZJ.seriesCode, RpfConstants.ZJ);
-        CATALOG.put(RpfConstants.ZK.seriesCode, RpfConstants.ZK);
-        CATALOG.put(RpfConstants.ZT.seriesCode, RpfConstants.ZT);
-        CATALOG.put(RpfConstants.ZV.seriesCode, RpfConstants.ZV);
-        CATALOG.put(RpfConstants.ZZ.seriesCode, RpfConstants.ZZ);
-    }
+	/** The two-letter code for a particular map type. */
+	public final String seriesCode;
+	/** The three-letter common abbreviation for the map type. */
+	public final String abbr;
+	/** A String scale representation of the map type. */
+	public final String scaleString;
+	/** The float number representation of the map type - 1:XXX . */
+	public final float scale;
+	/** A Descriptive name for the map type. */
+	public final String name;
+	/** The category of the map type - CADRG/CIB/DTED. */
+	public final String dataType;
 
-    public RpfProductInfo() {
-        seriesCode = RpfConstants.BLANK;
-        abbr = RpfConstants.BLANK;
-        scaleString = RpfConstants.BLANK;
-        scale = RpfConstants.Various;
-        name = RpfConstants.BLANK;
-        dataType = RpfConstants.BLANK;
-    }
+	/**
+	 * Create a RpfProductInfo object.
+	 * 
+	 * @param sc
+	 *            the two-letter series code.
+	 * @param a
+	 *            the three letter acroynm.
+	 * @param ss
+	 *            the scale string.
+	 * @param s
+	 *            the display scale of the map.
+	 * @param n
+	 *            descriptive name of the map.
+	 * @param dt
+	 *            data type - CADRG-CIB-DTED.
+	 */
+	private RpfProductInfo(String sc, String a, String ss, float s, String n, String dt) {
+		seriesCode = sc;
+		abbr = a;
+		scaleString = ss;
+		scale = s;
+		name = n;
+		dataType = dt;
+	}
 
-    /**
-     * Create a RpfProductInfo object.
-     * 
-     * @param sc the two-letter series code.
-     * @param a the three letter acroynm.
-     * @param ss the scale string.
-     * @param s the display scale of the map.
-     * @param n descriptive name of the map.
-     * @param dt data type - CADRG-CIB-DTED.
-     */
-    public RpfProductInfo(String sc, String a, String ss, float s, String n, String dt) {
-        seriesCode = sc;
-        abbr = a;
-        scaleString = ss;
-        scale = s;
-        name = n;
-        dataType = dt;
-    }
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("RPF Product: ").append(name).append("\n");
+		sb.append("  Series Code: ").append(seriesCode).append("\n");
+		sb.append("  Abbreviation: ").append(abbr).append("\n");
+		sb.append("  Scale: ").append(scaleString);
+		if (scale == RpfConstants.Various) {
+			sb.append(" (Various)\n");
+		} else {
+			sb.append(" (").append(scale).append(")\n");
+		}
+		sb.append("  Data Type: ").append(dataType).append("\n");
+		return sb.toString();
+	}
 
-    public String toString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("RPF Product: ").append(name).append("\n");
-        sb.append("  Series Code: ").append(seriesCode).append("\n");
-        sb.append("  Abbreviation: ").append(abbr).append("\n");
-        sb.append("  Scale: ").append(scaleString);
-        if (scale == RpfConstants.Various) {
-            sb.append(" (Various)\n");
-        } else {
-            sb.append(" (").append(scale).append(")\n");
-        }
-        sb.append("  Data Type: ").append(dataType).append("\n");
-        return sb.toString();
-    }
+	/**
+	 * Returns the RpfProductInfo that has the given two-letter series code. If
+	 * the code passed in is not recognized by the catalog, the UNKNOWN
+	 * RpfProductInfo is returned.
+	 * 
+	 * @param seriesCode
+	 *            needs to be the two letter code, in uppercase.
+	 */
+	public static RpfProductInfo get(String seriesCode) {
 
-    /**
-     * Returns the RpfProductInfo that has the given two-letter series code. If
-     * the code passed in is not recognized by the catalog, the UNKNOWN
-     * RpfProductInfo is returned.
-     * 
-     * @param seriesCode needs to be the two letter code, in uppercase.
-     */
-    public static RpfProductInfo get(String seriesCode) {
-        Hashtable<String, RpfProductInfo> cat = getCatalog();
-        if (seriesCode == null)
-            return RpfConstants.UK;
-        RpfProductInfo rpi = cat.get(seriesCode);
-        if (rpi == null)
-            return RpfConstants.UK;
-        return rpi;
-    }
+		if (seriesCode == null) {
+			return UK;
+		}
 
-    /**
-     * Returns the catalog of supported chart types. If it doesn't exist yet
-     * (It's held as a static hashtable) it is created and loaded.
-     * 
-     * @return Hashtable of product information.
-     */
-    public static Hashtable<String, RpfProductInfo> getCatalog() {
-        return CATALOG;
-    }
+		for (RpfProductInfo rpi : RpfProductInfo.values()) {
+			if (rpi.seriesCode.equalsIgnoreCase(seriesCode)) {
+				return rpi;
+			}
+		}
 
-    /**
-     * The main function prints out the RPF catalog, describing all the
-     * different map types handled by the RPF package.
-     */
-    public static void main(String[] argv) {
-        Enumeration<RpfProductInfo> it = RpfProductInfo.getCatalog().elements();
-        System.out.println("RPF Catalog:\n\n");
-        while (it.hasMoreElements()) {
-            System.out.println("----------------------");
-            System.out.println(it.nextElement());
-        }
-    }
+		return UK;
+	}
+
+	/**
+	 * The main function prints out the RPF catalog, describing all the
+	 * different map types handled by the RPF package.
+	 */
+	public static void main(String[] argv) {
+		System.out.println("RPF Catalog:\n\n");
+		for (RpfProductInfo rpi : RpfProductInfo.values()) {
+			System.out.println("----------------------");
+			System.out.println(rpi);
+		}
+	}
 }

@@ -23,7 +23,7 @@
 package com.bbn.openmap.layer.rpf;
 
 import java.io.Serializable;
-import java.util.Vector;
+import java.util.List;
 
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
@@ -202,7 +202,7 @@ public class RpfCacheManager
      * 
      * @return Vector of RpfCoverageBoxes.
      */
-    public Vector<RpfCoverageBox> getCoverageBoxes() {
+    public List<RpfCoverageBox> getCoverageBoxes() {
         return caches[0].getCoverageBoxes();
     }
 

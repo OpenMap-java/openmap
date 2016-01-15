@@ -40,7 +40,7 @@ package com.bbn.openmap.layer.rpf;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
-import java.util.Vector;
+import java.util.List;
 
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
@@ -78,7 +78,7 @@ public class RpfCacheHandler {
     /**
      * The current description of the TOC entry that currently applies.
      */
-    protected Vector<RpfCoverageBox> coverageBoxes;
+    protected List<RpfCoverageBox> coverageBoxes;
     /**
      * The array of indexes for subframes contained in the RpfTocEntry.
      */
@@ -233,7 +233,7 @@ public class RpfCacheHandler {
      * 
      * @return Vector of RpfCoverageBoxes.
      */
-    public Vector<RpfCoverageBox> getCoverageBoxes() {
+    public List<RpfCoverageBox> getCoverageBoxes() {
         return coverageBoxes;
     }
 
@@ -274,7 +274,7 @@ public class RpfCacheHandler {
 
         // Base the cache off the coverage in the first box. It's
         // supposed to have the best coverage.
-        RpfCoverageBox currentBox = coverageBoxes.elementAt(0);
+        RpfCoverageBox currentBox = coverageBoxes.get(0);
 
         resetSubframeIndex(currentBox.verticalSubframes(), currentBox.horizontalSubframes());
         initCache(false);
@@ -285,7 +285,7 @@ public class RpfCacheHandler {
 
         // Set the backup indexes, just in case.
         for (int i = 1; i < coverageBoxes.size(); i++) {
-            ((RpfCoverageBox) coverageBoxes.elementAt(i)).setPercentCoverage(ullat, ullon, lrlat, lrlon);
+            coverageBoxes.get(i).setPercentCoverage(ullat, ullon, lrlat, lrlon);
         }
 
         if (DEBUG_RPF) {
@@ -608,7 +608,7 @@ public class RpfCacheHandler {
             for (int i = 1; i < size; i++) {
 
                 try {
-                    currentBox = (RpfCoverageBox) coverageBoxes.elementAt(i);
+                    currentBox = (RpfCoverageBox) coverageBoxes.get(i);
                 } catch (ArrayIndexOutOfBoundsException aioobe) {
                     return null;
                 }
@@ -722,8 +722,8 @@ public class RpfCacheHandler {
         }
 
         try {
-            currentBox = (RpfCoverageBox) coverageBoxes.elementAt(0);
-        } catch (ArrayIndexOutOfBoundsException aioobe) {
+            currentBox = (RpfCoverageBox) coverageBoxes.get(0);
+        } catch (IndexOutOfBoundsException aioobe) {
             return null;
         }
 

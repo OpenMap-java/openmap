@@ -130,7 +130,7 @@ public class RpfFrameCacheHandler
     * @param chartSeries RpfProductInfo.seriesCode entry.
     * @return Vector of RpfCoverageBoxes.
     */
-   public Vector<RpfCoverageBox> getCatalogCoverage(float ullat, float ullon, float lrlat, float lrlon, Projection proj, String chartSeries) {
+   public Vector<RpfCoverageBox> getCatalogCoverage(double ullat, double ullon, double lrlat, double lrlon, Projection proj, String chartSeries) {
 
       Vector<RpfCoverageBox> coverages = new Vector<RpfCoverageBox>();
       for (RpfTocHandler toc : tocs) {
@@ -163,7 +163,7 @@ public class RpfFrameCacheHandler
     * @return percentage of map covered by specific chart type.
     * @see #getCatalogCoverage
     */
-   public float getCalculatedCoverage(float ullat, float ullon, float lrlat, float lrlon, Projection p, String chartSeries) {
+   public float getCalculatedCoverage(double ullat, double ullon, double lrlat, double lrlon, Projection p, String chartSeries) {
 
       if (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)) {
          return 0f;
@@ -265,7 +265,7 @@ public class RpfFrameCacheHandler
     * @param proj CADRG projection to use for zone decisions.
     * @return Vector of RpfCoverageBoxes.
     */
-   public Vector<RpfCoverageBox> getCoverage(float ullat, float ullon, float lrlat, float lrlon, Projection proj) {
+   public Vector<RpfCoverageBox> getCoverage(double ullat, double ullon, double lrlat, double lrlon, Projection proj) {
 
       Debug.message("rpf", "RpfFrameCacheHandler: getCoverage()");
 
