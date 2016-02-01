@@ -29,5 +29,6 @@ public interface DDFConstants {
     public final static char DDF_LEADER_SIZE = 24;
     public final static char DDF_FIELD_TERMINATOR = 30;
     public final static char DDF_UNIT_TERMINATOR = 31;
+    public final static char DDF_FOOTER_SIZE = 53;
 
 }
