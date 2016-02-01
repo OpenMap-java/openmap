@@ -7,15 +7,12 @@ package com.bbn.openmap.omGraphics.rule;
 
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 
-import com.bbn.openmap.OMComponent;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicConstants;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.omGraphics.OMTextLabeler;
 import com.bbn.openmap.proj.Projection;
-import com.bbn.openmap.util.Debug;
 import com.bbn.openmap.util.PropUtils;
 
 /**
