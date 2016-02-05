@@ -6,7 +6,7 @@ public enum StyleSourceType {
 	VECTOR("vector"), RASTER("raster"), GEOJSON("geojson"), IMAGE("image"), VIDEO("video"), UNKNOWN("unknown");
 
 	private static String TYPE = "type";
-	
+
 	private String name;
 
 	private StyleSourceType(String name) {

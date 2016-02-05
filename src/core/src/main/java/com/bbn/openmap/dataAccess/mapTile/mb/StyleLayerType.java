@@ -20,8 +20,8 @@ public enum StyleLayerType {
 		this.name = name;
 	}
 
-	public static StyleLayerType getForNode(JsonNode node) {
-		return getForName(node.get(TYPE).toString());
+	public static StyleLayerType getFromLayerNode(JsonNode layerNode) {
+		return getForName(layerNode.get(TYPE).toString());
 	}
 
 	public static StyleLayerType getForName(String nm) {

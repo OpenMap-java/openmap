@@ -69,14 +69,14 @@ public class StyleLayer {
 
 	public StyleLayer(JsonNode layerNode) {
 		id = layerNode.get(ID).asText();
-		type = StyleLayerType.getForNode(layerNode);
+		type = StyleLayerType.getFromLayerNode(layerNode);
 		renderer = StyleDrawingAttributes.getForType(layerNode);
 		
 		source = StyleNode.getAsText(layerNode, SOURCE, null);
 		sourceLayer = StyleNode.getAsText(layerNode, SOURCE_LAYER, null);
 		interactive = StyleNode.getAsBoolean(layerNode, INTERACTIVE, false);
 		
-		filter = StyleFilter.getForNode(layerNode);
+		filter = StyleFilter.getForLayerNode(layerNode);
 		minZoom = StyleNode.getAsDouble(layerNode, MIN_ZOOM, Double.NaN);
 		maxZoom = StyleNode.getAsDouble(layerNode, MAX_ZOOM, Double.NaN);
 		

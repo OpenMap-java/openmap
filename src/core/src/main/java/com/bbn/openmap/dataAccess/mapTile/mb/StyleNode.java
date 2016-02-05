@@ -6,6 +6,11 @@ import java.util.logging.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * Helper functions for dealing with nodes.
+ * @author dietrick
+ *
+ */
 public class StyleNode {
 
 	public static String getAsText(JsonNode node, String fieldName, String dflt) {

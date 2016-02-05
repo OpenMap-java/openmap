@@ -1,7 +1,6 @@
 package com.bbn.openmap.dataAccess.mapTile.mb;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -22,12 +21,12 @@ public class StyleFilter {
 		this.op = op;
 	}
 
-	public static StyleFilter getForNode(JsonNode styleLayerNode) {
-		JsonNode fNode = styleLayerNode.get(FILTER);
-		if (fNode != null) {
+	public static StyleFilter getForLayerNode(JsonNode layerNode) {
+		JsonNode filterNode = layerNode.get(FILTER);
+		if (filterNode != null) {
 
-			JsonNode opNode = fNode.get(0);
-			StyleFilterOperation op = StyleFilterOperation.getForNode(opNode);
+			JsonNode opNode = filterNode.get(0);
+			StyleFilterOperation op = StyleFilterOperation.getForFilterNode(opNode);
 
 			switch (op) {
 			case EQUALS:
@@ -36,14 +35,14 @@ public class StyleFilter {
 			case GREATER_THAN_EQUALS:
 			case LESS_THAN:
 			case LESS_THAN_EQUALS:
-				return new StyleFilter.KEY_VALUE(op, fNode);
+				return new StyleFilter.KEY_VALUE(op, filterNode);
 			case IN:
 			case NOT_IN:
-				return new StyleFilter.KEY_LIST(op, fNode);
+				return new StyleFilter.KEY_LIST(op, filterNode);
 			case ALL:
 			case ANY:
 			case NONE:
-				return new StyleFilter.COMPOUND(op, fNode);
+				return new StyleFilter.COMPOUND(op, filterNode);
 			default:
 			}
 	
@@ -59,10 +58,10 @@ public class StyleFilter {
 		String key;
 		String value;
 
-		public KEY_VALUE(StyleFilterOperation op, JsonNode args) {
+		public KEY_VALUE(StyleFilterOperation op, JsonNode filterNode) {
 			super(op);
-			key = args.get(1).asText();
-			value = args.get(2).asText();
+			key = filterNode.get(1).asText();
+			value = filterNode.get(2).asText();
 		}
 
 		public boolean passes(Feature feature) {
@@ -75,7 +74,7 @@ public class StyleFilter {
 		String key;
 		HashSet<String> values;
 
-		public KEY_LIST(StyleFilterOperation op, JsonNode args) {
+		public KEY_LIST(StyleFilterOperation op, JsonNode filterNode) {
 			super(op);
 		}
 
@@ -87,7 +86,7 @@ public class StyleFilter {
 	public static class COMPOUND extends StyleFilter {
 		List<StyleFilter> filters;
 
-		public COMPOUND(StyleFilterOperation op, JsonNode args) {
+		public COMPOUND(StyleFilterOperation op, JsonNode filterNode) {
 			super(op);
 		}
 

@@ -11,15 +11,15 @@ public enum FeatureGeometryType {
 	MULTI_POLYGON("MultiPolygon"),
 	UNKNOWN("Unknown");
 
-	private String featureTypeName;
+	private String featureType;
 
 	private FeatureGeometryType(String featureTypeName) {
-		this.featureTypeName = featureTypeName;
+		this.featureType = featureTypeName;
 	}
 
-	public static FeatureGeometryType forName(String name) {
+	public static FeatureGeometryType get(String type) {
 		for (FeatureGeometryType fgt : FeatureGeometryType.values()) {
-			if (fgt.featureTypeName.equalsIgnoreCase(name)) {
+			if (fgt.featureType.equalsIgnoreCase(type)) {
 				return fgt;
 			}
 		}

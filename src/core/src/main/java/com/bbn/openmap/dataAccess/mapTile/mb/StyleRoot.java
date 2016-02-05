@@ -13,6 +13,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import no.ecc.vectortile.VectorTileDecoder.Feature;
 
+/**
+ * The root node of the style document.  From here, you can get to all info.
+ * @author dietrick
+ */
 public class StyleRoot {
 
 	static String VERSION = "version";
@@ -168,7 +172,7 @@ public class StyleRoot {
 		}
 
 		public StyleDrawingAttributes getRenderer(Feature feature) {
-			switch (FeatureGeometryType.forName(feature.getGeometry().getGeometryType())) {
+			switch (FeatureGeometryType.get(feature.getGeometry().getGeometryType())) {
 			case POINT:
 			case MULTI_POINT:
 			case LINEAR_RING:

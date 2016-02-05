@@ -104,19 +104,17 @@ public enum StyleFilterOperation {
 		}
 	};
 
-	private static String FILTER = "filter";
-
 	private String name;
 
 	private StyleFilterOperation(String name) {
 		this.name = name;
 	}
 
-	protected static StyleFilterOperation getForNode(JsonNode opNode) {
-		return getForName(opNode.toString());
+	protected static StyleFilterOperation getForFilterNode(JsonNode filterNode) {
+		return getForOpString(filterNode.toString());
 	}
 
-	protected static StyleFilterOperation getForName(String nm) {
+	protected static StyleFilterOperation getForOpString(String nm) {
 		for (StyleFilterOperation st : StyleFilterOperation.values()) {
 			if (st.name.equalsIgnoreCase(nm)) {
 				return st;

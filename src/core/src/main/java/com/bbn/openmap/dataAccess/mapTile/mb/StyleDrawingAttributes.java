@@ -1,7 +1,7 @@
 package com.bbn.openmap.dataAccess.mapTile.mb;
 
-import java.awt.Color;
 import java.awt.Paint;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.bbn.openmap.omGraphics.DrawingAttributes;
@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class StyleDrawingAttributes extends DrawingAttributes {
 
+	private static final long serialVersionUID = 1L;
 	static String LAYOUT = "layout";
 	static String PAINT = "paint";
 
@@ -19,10 +20,15 @@ public class StyleDrawingAttributes extends DrawingAttributes {
 	static StyleDrawingAttributes EMPTY = new LINE(null);
 
 	public static StyleDrawingAttributes getForType(JsonNode node) {
-		return get(StyleLayerType.getForNode(node), node);
+		return get(StyleLayerType.getFromLayerNode(node), node);
 	}
 
 	public static StyleDrawingAttributes get(StyleLayerType slt, JsonNode node) {
+
+		if (getLogger().isLoggable(Level.FINE)) {
+			getLogger().fine("getting style for " + slt.name);
+		}
+		
 		switch (slt) {
 		case BACKGROUND:
 			return new StyleDrawingAttributes.BACKGROUND(node);
@@ -122,6 +128,7 @@ public class StyleDrawingAttributes extends DrawingAttributes {
 	}
 
 	public static class BACKGROUND extends StyleDrawingAttributes {
+		private static final long serialVersionUID = 1L;
 		// PAINT
 		/**
 		 * Optional color. Defaults to #000000. Disabled by background-pattern.
@@ -151,6 +158,7 @@ public class StyleDrawingAttributes extends DrawingAttributes {
 	}
 
 	public static class FILL extends StyleDrawingAttributes {
+		private static final long serialVersionUID = 1L;
 		// PAINT
 		/**
 		 * Optional boolean. Defaults to true. Whether or not the fill should be
@@ -201,6 +209,7 @@ public class StyleDrawingAttributes extends DrawingAttributes {
 	}
 
 	public static class LINE extends StyleDrawingAttributes {
+		private static final long serialVersionUID = 1L;
 		// LAYOUT
 		/**
 		 * Optional enum. One of butt, round, square. Defaults to butt. The
@@ -294,6 +303,7 @@ public class StyleDrawingAttributes extends DrawingAttributes {
 	}
 
 	public static class SYMBOL extends StyleDrawingAttributes {
+		private static final long serialVersionUID = 1L;
 		// LAYOUT
 		/**
 		 * Optional enum. One of point, line. Defaults to point. Label placement
@@ -558,6 +568,7 @@ public class StyleDrawingAttributes extends DrawingAttributes {
 	}
 
 	public static class RASTER extends StyleDrawingAttributes {
+		private static final long serialVersionUID = 1L;
 		// PAINT
 		/**
 		 * Optional number. Defaults to 1. The opacity at which the image will
@@ -602,6 +613,7 @@ public class StyleDrawingAttributes extends DrawingAttributes {
 	}
 
 	public static class CIRCLE extends StyleDrawingAttributes {
+		private static final long serialVersionUID = 1L;
 		// PAINT
 		/** Optional number. Units in pixels. Defaults to 5. Circle radius. */
 		static String CIRCLE_RADIUS = "circle-radius";

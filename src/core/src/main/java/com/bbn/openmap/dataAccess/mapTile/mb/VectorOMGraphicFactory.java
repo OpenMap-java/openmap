@@ -2,6 +2,7 @@ package com.bbn.openmap.dataAccess.mapTile.mb;
 
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -39,7 +40,7 @@ public class VectorOMGraphicFactory {
 		OMGraphic omg = SinkGraphic.getSharedInstance();
 
 		if (renderer != null) {
-			switch (FeatureGeometryType.forName(geometry.getGeometryType())) {
+			switch (FeatureGeometryType.get(geometry.getGeometryType())) {
 			case POINT:
 			case MULTI_POINT:
 				break;
@@ -59,6 +60,10 @@ public class VectorOMGraphicFactory {
 				omg = transformMultiPolygon((MultiPolygon) geometry);
 				break;
 			default:
+			}
+			
+			if (getLogger().isLoggable(Level.FINE)) {
+				getLogger().fine("++ " + omg.getClass().getName());
 			}
 
 			renderer.setTo(omg);
