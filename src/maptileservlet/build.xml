@@ -44,7 +44,7 @@
 	<target name="war" depends="jar">
 	  <war destfile="${ommaptile.home}/ommaptile.war" webxml="WEB-INF/web.xml">
 	    <lib dir="${ommaptile.lib_dir}"/>
-	    <classes dir="${ommaptile.home}" includes="tileSetProperties/**"/>
+	    <classes dir="${ommaptile.home}" includes="src/main/resources/tileSetProperties"/>
 	  </war>
 	</target>
 	

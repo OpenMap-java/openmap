@@ -13,18 +13,18 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import com.bbn.openmap.dataAccess.mapTile.TileMillMapTileFactory;
+import com.bbn.openmap.dataAccess.mapTile.mb.RasterMapTileFactory;
 import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.image.PNGImageIOFormatter;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * MapTileSet that reads TileMill files.
+ * MapTileSet that reads MapBox raster mbtiles files.
  * 
  * <pre>
  * name=the-name-of-dataset
- * class=com.bbn.openmap.maptileservlet.TileMillMapTileSet
+ * class=com.bbn.openmap.maptileservlet.MBRasterMapTileSet
  * rootDir=the path to the mbtiles file.
  *  * </pre>
  * 
@@ -39,12 +39,12 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * @author dietrick
  */
-public class TileMillMapTileSet extends StandardMapTileSet {
+public class MBRasterMapTileSet extends StandardMapTileSet {
 
-    public TileMillMapTileSet() {
+    public MBRasterMapTileSet() {
     }
 
-    public TileMillMapTileSet(Properties props) {
+    public MBRasterMapTileSet(Properties props) {
         setProperties(props);
     }
 
@@ -61,7 +61,7 @@ public class TileMillMapTileSet extends StandardMapTileSet {
         byte[] imageData = null;
 
         try {
-            Class.forName(TileMillMapTileFactory.DEFAULT_TEST_CLASS);
+            Class.forName(RasterMapTileFactory.DEFAULT_TEST_CLASS);
         } catch (Exception e) {
             getLogger().warning("can't locate sqlite JDBC components");
             return null;

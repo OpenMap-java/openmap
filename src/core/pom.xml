@@ -69,6 +69,16 @@
 			<artifactId>org.postgresql</artifactId>
 			<version>9.1.901.jdbc4.1-rc9</version>
 		</dependency>
+		<dependency>
+		  <groupId>org.xerial</groupId>
+		  <artifactId>sqlite-jdbc</artifactId>
+		  <version>3.8.11.2</version>
+		</dependency>
+		<dependency>
+		  <groupId>no.ecc.vectortile</groupId>
+		  <artifactId>java-vector-tile</artifactId>
+		  <version>1.0.8</version>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
@@ -76,6 +86,10 @@
 			<id>thirdparty-releases</id>
 			<name>JBoss Thirdparty Releases</name>
 			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+		</repository>
+		<repository>
+		  <id>ECC</id>
+		  <url>https://github.com/ElectronicChartCentre/ecc-mvn-repo/raw/master/releases</url>
 		</repository>
 	</repositories>
 	<parent>
