@@ -21,10 +21,10 @@ public enum StyleLayerType {
 	}
 
 	public static StyleLayerType getFromLayerNode(JsonNode layerNode) {
-		return getForName(layerNode.get(TYPE).toString());
+		return getForType(layerNode.get(TYPE).toString());
 	}
 
-	public static StyleLayerType getForName(String nm) {
+	public static StyleLayerType getForType(String nm) {
 		for (StyleLayerType slt : StyleLayerType.values()) {
 			if (nm.contains(slt.name)) {
 				return slt;
