@@ -8,6 +8,8 @@ import java.util.logging.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import no.ecc.vectortile.VectorTileDecoder.Feature;
+
 public class StyleLayer {
 
 	/** Required string. Unique layer name. */
@@ -88,6 +90,13 @@ public class StyleLayer {
 			System.out.println(id + ": metadata is being ignored for now.");
 		}
 		
+	}
+	
+	public boolean passes(Feature feature) {
+		if (filter != null) {
+			return filter.passes(feature);
+		}
+		return true;
 	}
 
 	public static List<StyleLayer> getLayerArray(JsonNode node) {

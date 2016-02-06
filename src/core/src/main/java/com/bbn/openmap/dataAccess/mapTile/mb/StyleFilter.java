@@ -1,7 +1,9 @@
 package com.bbn.openmap.dataAccess.mapTile.mb;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,6 +17,11 @@ public class StyleFilter {
 	 */
 	static String FILTER = "filter";
 
+	/**
+	 * Filter key to check feature geometry type.
+	 */
+	static String SPECIAL_CLASS_KEY = "$type";
+
 	StyleFilterOperation op;
 
 	StyleFilter(StyleFilterOperation op) {
@@ -24,30 +31,34 @@ public class StyleFilter {
 	public static StyleFilter getForLayerNode(JsonNode layerNode) {
 		JsonNode filterNode = layerNode.get(FILTER);
 		if (filterNode != null) {
-
-			JsonNode opNode = filterNode.get(0);
-			StyleFilterOperation op = StyleFilterOperation.getForFilterNode(opNode);
-
-			switch (op) {
-			case EQUALS:
-			case NOT_EQUALS:
-			case GREATER_THAN:
-			case GREATER_THAN_EQUALS:
-			case LESS_THAN:
-			case LESS_THAN_EQUALS:
-				return new StyleFilter.KEY_VALUE(op, filterNode);
-			case IN:
-			case NOT_IN:
-				return new StyleFilter.KEY_LIST(op, filterNode);
-			case ALL:
-			case ANY:
-			case NONE:
-				return new StyleFilter.COMPOUND(op, filterNode);
-			default:
-			}
-	
+			return getForFilterNode(filterNode);
 		}
-		return new StyleFilter(StyleFilterOperation.NOTHING);				
+		return new StyleFilter(StyleFilterOperation.NOTHING);
+	}
+
+	public static StyleFilter getForFilterNode(JsonNode filterNode) {
+		JsonNode opNode = filterNode.get(0);
+		//System.out.println("eval " + filterNode + ", have first: " + opNode);
+		StyleFilterOperation op = StyleFilterOperation.getForFilterNode(opNode);
+
+		switch (op) {
+		case EQUALS:
+		case NOT_EQUALS:
+		case GREATER_THAN:
+		case GREATER_THAN_EQUALS:
+		case LESS_THAN:
+		case LESS_THAN_EQUALS:
+			return new StyleFilter.KEY_VALUE(op, filterNode);
+		case IN:
+		case NOT_IN:
+			return new StyleFilter.KEY_LIST(op, filterNode);
+		case ALL:
+		case ANY:
+		case NONE:
+			return new StyleFilter.COMPOUND(op, filterNode);
+		default:
+		}
+		return new StyleFilter(StyleFilterOperation.NOTHING);
 	}
 
 	public boolean passes(Feature feature) {
@@ -56,16 +67,38 @@ public class StyleFilter {
 
 	public static class KEY_VALUE extends StyleFilter {
 		String key;
-		String value;
+		Object value;
 
 		public KEY_VALUE(StyleFilterOperation op, JsonNode filterNode) {
 			super(op);
 			key = filterNode.get(1).asText();
-			value = filterNode.get(2).asText();
+
+			JsonNode valNode = filterNode.get(2);
+			if (valNode.isBoolean()) {
+				value = valNode.asBoolean();
+			} else if (valNode.isInt()) {
+				value = valNode.asInt();
+			} else if (valNode.isDouble() || valNode.isNumber()) {
+				value = valNode.asDouble();
+			} else {
+				value = valNode.asText();
+			}
 		}
 
 		public boolean passes(Feature feature) {
-			return true;
+			Object featureVal;
+			if (key.equals(SPECIAL_CLASS_KEY)) {
+				featureVal = feature.getGeometry().getGeometryType();
+			} else {
+				featureVal = feature.getAttributes().get(key);
+			}
+
+			boolean ret = op.passes(featureVal, value);
+
+			// System.out.println("checking " + featureVal + " vs " + value + ":
+			// " + ret);
+
+			return ret;
 		}
 
 	}
@@ -76,22 +109,61 @@ public class StyleFilter {
 
 		public KEY_LIST(StyleFilterOperation op, JsonNode filterNode) {
 			super(op);
+
+			values = new HashSet<String>();
+
+			if (filterNode.isArray()) {
+				Iterator<JsonNode> listStuff = filterNode.elements();
+				listStuff.next(); // The original op is the first thing, skip
+									// it.
+				key = listStuff.next().asText();
+				while (listStuff.hasNext()) {
+					String listThing = listStuff.next().asText();
+					//System.out.println("KEYLIST: adding " + listThing);
+					values.add(listThing);
+				}
+			}
 		}
 
 		public boolean passes(Feature feature) {
-			return true;
+			Object featureVal;
+			if (key.equals(SPECIAL_CLASS_KEY)) {
+				featureVal = feature.getGeometry().getGeometryType();
+			} else {
+				featureVal = feature.getAttributes().get(key);
+			}
+
+			boolean ret = op.passes(featureVal, values);
+
+			// System.out.println("checking " + featureVal + " in " + values +
+			// ": " + ret);
+
+			return ret;
 		}
 	}
 
 	public static class COMPOUND extends StyleFilter {
-		List<StyleFilter> filters;
+		Collection<StyleFilter> filters;
 
 		public COMPOUND(StyleFilterOperation op, JsonNode filterNode) {
 			super(op);
+			// System.out.println("COMPOUND " + op + ", " + filterNode);
+			filters = new ArrayList<StyleFilter>();
+
+			if (filterNode.isArray()) {
+				Iterator<JsonNode> subFilters = filterNode.elements();
+				// The original op is the first thing, skip it.
+				subFilters.next();
+				while (subFilters.hasNext()) {
+					JsonNode subFilter = subFilters.next();
+					// System.out.println(subFilter);
+					filters.add(getForFilterNode(subFilter));
+				}
+			}
 		}
 
 		public boolean passes(Feature feature) {
-			return true;
+			return op.passes(feature, filters);
 		}
 	}
 

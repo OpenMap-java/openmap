@@ -14,7 +14,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import no.ecc.vectortile.VectorTileDecoder.Feature;
 
 /**
- * The root node of the style document.  From here, you can get to all info.
+ * The root node of the style document. From here, you can get to all info.
+ * 
  * @author dietrick
  */
 public class StyleRoot {
@@ -127,9 +128,12 @@ public class StyleRoot {
 		// combos.add(featureClass + ", " + featureSourceLayer);
 		List<StyleLayer> matchingSourceLayers = layerGroupsBySourceLayer.get(featureSourceLayer);
 		if (matchingSourceLayers != null && !matchingSourceLayers.isEmpty()) {
-			StyleDrawingAttributes sda = matchingSourceLayers.get(0).renderer;
-			if (sda.visible) {
-				return sda;
+			StyleLayer sLayer = matchingSourceLayers.get(0);
+			if (sLayer.passes(feature)) {
+				StyleDrawingAttributes sda = sLayer.renderer;
+				if (sda.visible) {
+					return sda;
+				}
 			}
 
 			/*
@@ -149,6 +153,7 @@ public class StyleRoot {
 
 	/**
 	 * Basic styling just to see features.
+	 * 
 	 * @author dietrick
 	 *
 	 */
