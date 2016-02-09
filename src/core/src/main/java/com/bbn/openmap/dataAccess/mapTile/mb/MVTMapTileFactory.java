@@ -6,15 +6,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The MVTMapTileFactory can fetch vector tile data from a URL.
+ * The MVTMapTileFactory can fetch vector tile data from a URL. It can handle
+ * pbf data, too, just set compressed to false and change the rootDir
+ * appropriately.
  * 
  * <pre>
  * 
  * mvtLayer.class=com.bbn.openmap.layer.image.MapTileLayer
  * mvtLayer.tileFactory=com.bbn.openmap.dataAccess.mapTile.mb.MVTMapTileFactory
- * mvtLayer.prettyName=Mapzen MVT Server
- * mvtLayer.rootDir=http://vector.mapzen.com/osm/water/{z}/{x}/{y}.mvt?api_key={api-key}
+ * mvtLayer.prettyName=MVT Server
+ * mvtLayer.rootDir=http://sample_server/osm/water/{z}/{x}/{y}.mvt?api_key={api-key}
  * 
+ * #optional - mbtiles and mvt files have compressed data, pbf data is not compressed.
+ * mvtLayer.compressed=true
  * </pre>
  */
 
@@ -29,13 +33,11 @@ public class MVTMapTileFactory extends VectorMapTileFactory {
 	}
 
 	/**
-	 * Fetch tile data. Creates a SQL statement matching the MBTiles file schema
-	 * and pulls gzipped binary data from the tile_data. If you want to fetch
-	 * vector tiles differently, override this method!
+	 * Fetch tile data. Uses the key as the path to the file.
 	 * 
 	 * @param key
 	 *            the path to the tile built up from rootDir and the
-	 *            TilePathBuilder. source location
+	 *            TilePathBuilder source location.
 	 * @param x
 	 *            horizontal tile column
 	 * @param y
@@ -47,7 +49,7 @@ public class MVTMapTileFactory extends VectorMapTileFactory {
 	public byte[] getTileData(Object key, int x, int y, int zoomLevel) throws Exception {
 
 		String tilePath = (String) key;
-		System.out.println(tilePath);
+
 		try {
 			java.net.URL url = new java.net.URL(tilePath);
 			java.net.HttpURLConnection urlc = (java.net.HttpURLConnection) url.openConnection();
@@ -91,7 +93,11 @@ public class MVTMapTileFactory extends VectorMapTileFactory {
 				out.flush();
 				out.close();
 
-				return out.toByteArray();
+				if (compressed) {
+					return inflate(out.toByteArray());
+				} else {
+					return out.toByteArray();
+				}
 
 			} // end if image
 		} catch (java.net.MalformedURLException murle) {

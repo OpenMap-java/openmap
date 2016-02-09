@@ -45,6 +45,9 @@ import no.ecc.vectortile.VectorTileDecoder.FeatureIterable;
  * vectorTileLayer.tileFactory=com.bbn.openmap.dataAccess.mapTile.mb.VectorMapTileFactory
  * vectorTileLayer.style=styles/basic-v8.json
  * vectorTileLayer.rootDir=jdbc:sqlite:/data/tiles/united_states_of_america.mbtiles
+ * 
+ * #optional - mbtiles and mvt files have compressed data, pbf data is not compressed.
+ * vectorTileLayer.compressed=true
  * </pre>
  * 
  * @author dietrick
@@ -52,10 +55,13 @@ import no.ecc.vectortile.VectorTileDecoder.FeatureIterable;
 public class VectorMapTileFactory extends RasterMapTileFactory {
 
 	public final static String STYLE_LOCATION_PROPERTY = "style";
+	public final static String COMPRESSED_PROPERTY = "compressed";
 
 	VectorOMGraphicFactory factory;
 	String styleLocation;
 	StyleRoot styles;
+	/** mvt is compressed, pbf is not.*/
+	boolean compressed = true;
 
 	public VectorMapTileFactory() {
 		getLogger().fine("Using VectorTileMapTileFactory");
@@ -207,45 +213,62 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 		}
 
 		ResultSet rs = stat.executeQuery(statement.toString());
-		byte[] compressedTileData = null;
+		byte[] tileData = null;
 		if (rs.next()) {
-			compressedTileData = rs.getBytes("tile_data");
+			tileData = rs.getBytes("tile_data");
 			rs.close();
 			conn.close();
 		}
 
-		if (compressedTileData != null) {
-			byte[] inflateBuffer = new byte[4096];
-			ByteArrayOutputStream inflateBufStream = new ByteArrayOutputStream(inflateBuffer.length);
-
-			///////// unGZIP the byte data ///
-			ByteArrayInputStream bais = new ByteArrayInputStream(compressedTileData);
-			GZIPInputStream gzipIS = new GZIPInputStream(bais);
-			while (gzipIS.available() > 0) {
-				int readCount = gzipIS.read(inflateBuffer);
-				if (readCount > 0) {
-					inflateBufStream.write(inflateBuffer, 0, readCount);
-				}
+		if (tileData != null) {
+			if (compressed) {
+				return inflate(tileData);
+			} else {
+				return tileData;
 			}
-			gzipIS.close();
-			inflateBufStream.close();
-			return inflateBufStream.toByteArray();
-			///////////////////////////////////////////////////////////
 		}
 
 		return null;
+	}
+
+	/**
+	 * Decompressed the tile data (un-gzip)
+	 * 
+	 * @param tileData
+	 * @return tile data, uncompressed.
+	 * @throws IOException
+	 */
+	protected byte[] inflate(byte[] tileData) throws IOException {
+		byte[] inflateBuffer = new byte[4096];
+		ByteArrayOutputStream inflateBufStream = new ByteArrayOutputStream(inflateBuffer.length);
+
+		///////// unGZIP the byte data ///
+		ByteArrayInputStream bais = new ByteArrayInputStream(tileData);
+		GZIPInputStream gzipIS = new GZIPInputStream(bais);
+		while (gzipIS.available() > 0) {
+			int readCount = gzipIS.read(inflateBuffer);
+			if (readCount > 0) {
+				inflateBufStream.write(inflateBuffer, 0, readCount);
+			}
+		}
+		gzipIS.close();
+		inflateBufStream.close();
+		return inflateBufStream.toByteArray();
+		///////////////////////////////////////////////////////////
 	}
 
 	public void setProperties(String prefix, Properties setList) {
 		super.setProperties(prefix, setList);
 		prefix = PropUtils.getScopedPropertyPrefix(prefix);
 		styleLocation = setList.getProperty(prefix + STYLE_LOCATION_PROPERTY, styleLocation);
+		compressed = PropUtils.booleanFromProperties(setList, prefix + COMPRESSED_PROPERTY, compressed);
 	}
 
 	public Properties getProperties(Properties getList) {
 		getList = super.getProperties(getList);
 		String prefix = PropUtils.getScopedPropertyPrefix(this);
 		getList.put(prefix + STYLE_LOCATION_PROPERTY, PropUtils.unnull(STYLE_LOCATION_PROPERTY));
+		getList.put(prefix + COMPRESSED_PROPERTY, Boolean.toString(compressed));
 		return getList;
 	}
 
@@ -254,6 +277,8 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 		I18n i18n = Environment.getI18n();
 		PropUtils.setI18NPropertyInfo(i18n, list, VectorMapTileFactory.class, STYLE_LOCATION_PROPERTY, "Style",
 				"Location of JSON Style file", "com.bbn.openmap.util.propertyEditor.FilePropertyEditor");
+		PropUtils.setI18NPropertyInfo(i18n, list, VectorMapTileFactory.class, COMPRESSED_PROPERTY, "Compressed",
+				"True if tile data is compressed", "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 		return list;
 	}
 
