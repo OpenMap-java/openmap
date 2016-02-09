@@ -22,7 +22,6 @@ import com.bbn.openmap.Environment;
 import com.bbn.openmap.dataAccess.mapTile.MapTileCoordinateTransform;
 import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
@@ -82,12 +81,6 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 		return null;
 	}
 
-	public OMGraphicList getTiles(Projection proj, int zoomLevel, OMGraphicList list) {
-		OMGraphicList ret = super.getTiles(proj, zoomLevel, list);
-		// factory.dumpCombos();
-		return ret;
-	}
-
 	boolean disabled = false;
 
 	/**
@@ -122,81 +115,50 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 		RenderingHints renderingHints = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		g2.addRenderingHints(renderingHints);
+		factory.getBackground().render(g2);
 
 		try {
-			Connection conn = DriverManager.getConnection(rootDir);
-			Statement stat = conn.createStatement();
-
-			// "select zoom_level, tile_column, tile_row, tile_data from map,
-			// images where map.tile_id = images.tile_id";
-			StringBuilder statement = new StringBuilder("select tile_data from images, map where");
-			statement.append(" zoom_level = ").append(zoomLevel);
-			statement.append(" and tile_column = ").append(x);
-			statement.append(" and tile_row = ").append(Math.pow(2, zoomLevel) - y - 1);
-			statement.append(" and map.tile_id = images.tile_id;");
-
-			ResultSet rs = stat.executeQuery(statement.toString());
-
-			while (rs.next()) {
-
-				byte[] compressedTileData = rs.getBytes("tile_data");
-				byte[] inflateBuffer = new byte[4096];
-				ByteArrayOutputStream inflateBufStream = new ByteArrayOutputStream(inflateBuffer.length);
-
-				///////// unGZIP the byte data ///
-				ByteArrayInputStream bais = new ByteArrayInputStream(compressedTileData);
-				GZIPInputStream gzipIS = new GZIPInputStream(bais);
-				while (gzipIS.available() > 0) {
-					int readCount = gzipIS.read(inflateBuffer);
-					if (readCount > 0) {
-						inflateBufStream.write(inflateBuffer, 0, readCount);
-					}
+			byte[] tileData = getTileData(key, x, y, zoomLevel);
+			if (tileData != null) {
+				FeatureIterable fi = decoder.decode(tileData);
+				for (Feature feature : fi.asList()) {
+					factory.create(feature).render(g2);
 				}
-				gzipIS.close();
-				inflateBufStream.close();
-				byte[] tileData = inflateBufStream.toByteArray();
-				///////////////////////////////////////////////////////////
-
-				try {
-					FeatureIterable fi = decoder.decode(tileData);
-					factory.getBackground().render(g2);
-					for (Feature feature : fi.asList()) {
-						factory.create(feature).render(g2);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-					continue;
-				}
-
-			}
-			rs.close();
-			conn.close();
-
-			try {
-
-				OMGraphic raster = createOMGraphicFromBufferedImage(rasterImage, x, y, zoomLevel, proj);
-
-				/*
-				 * Again, create a CacheObject based on the local name if the
-				 * local dir is defined.
-				 */
-				if (raster != null) {
-					if (logger.isLoggable(Level.FINE)) {
-						logger.fine("building" + key);
-					}
-
-					return new CacheObject(key, raster);
-				}
-
-			} catch (InterruptedException ie) {
-				if (logger.isLoggable(Level.FINE)) {
-					logger.fine("factory interrupted fetching " + key);
+			} else {
+				if (getLogger().isLoggable(Level.FINER)) {
+					getLogger().finer("tile for " + zoomLevel + "|" + x + "|" + y + " is missing.");
 				}
 			}
-
 		} catch (Exception e) {
 			getLogger().warning("something went wrong fetching image from database: " + e.getMessage());
 			e.printStackTrace();
+		}
+
+		/**
+		 * At this point, we have a image of rendered tile data. Prepare it for
+		 * OpenMap layer.
+		 */
+
+		try {
+
+			OMGraphic raster = createOMGraphicFromBufferedImage(rasterImage, x, y, zoomLevel, proj);
+
+			/*
+			 * Again, create a CacheObject based on the local name if the local
+			 * dir is defined.
+			 */
+			if (raster != null) {
+				if (logger.isLoggable(Level.FINE)) {
+					logger.fine("building" + key);
+				}
+
+				return new CacheObject(key, raster);
+			}
+
+		} catch (InterruptedException ie) {
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("factory interrupted fetching " + key);
+			}
 		}
 
 		return null;
@@ -206,6 +168,72 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 			throws InterruptedException {
 
 		return BufferedImageHelper.getBufferedImage(origImage, 0, 0, 256, 256, BufferedImage.TYPE_INT_ARGB);
+	}
+
+	/**
+	 * Fetch tile data. Creates a SQL statement matching the MBTiles file schema
+	 * and pulls gzipped binary data from the tile_data. If you want to fetch
+	 * vector tiles differently, override this method!
+	 * 
+	 * @param key
+	 *            the path to the tile built up from rootDir and the
+	 *            TilePathBuilder. source location
+	 * @param x
+	 *            horizontal tile column
+	 * @param y
+	 *            vertical tile row
+	 * @param zoomLevel
+	 *            tile zoom level
+	 * @return uncompressed tile data, ready for decoding
+	 */
+	public byte[] getTileData(Object key, int x, int y, int zoomLevel) throws Exception {
+
+		// For the default implementation of this class, the rootDir should
+		// point at the mbtiles file. That's what we use to establish a
+		// connection.
+		Connection conn = DriverManager.getConnection(rootDir);
+		Statement stat = conn.createStatement();
+
+		// "select zoom_level, tile_column, tile_row, tile_data from map,
+		// images where map.tile_id = images.tile_id";
+		StringBuilder statement = new StringBuilder("select tile_data from images, map where");
+		statement.append(" zoom_level = ").append(zoomLevel);
+		statement.append(" and tile_column = ").append(x);
+		statement.append(" and tile_row = ").append(Math.pow(2, zoomLevel) - y - 1);
+		statement.append(" and map.tile_id = images.tile_id;");
+
+		if (getLogger().isLoggable(Level.FINE)) {
+			getLogger().fine(statement.toString());
+		}
+
+		ResultSet rs = stat.executeQuery(statement.toString());
+		byte[] compressedTileData = null;
+		if (rs.next()) {
+			compressedTileData = rs.getBytes("tile_data");
+			rs.close();
+			conn.close();
+		}
+
+		if (compressedTileData != null) {
+			byte[] inflateBuffer = new byte[4096];
+			ByteArrayOutputStream inflateBufStream = new ByteArrayOutputStream(inflateBuffer.length);
+
+			///////// unGZIP the byte data ///
+			ByteArrayInputStream bais = new ByteArrayInputStream(compressedTileData);
+			GZIPInputStream gzipIS = new GZIPInputStream(bais);
+			while (gzipIS.available() > 0) {
+				int readCount = gzipIS.read(inflateBuffer);
+				if (readCount > 0) {
+					inflateBufStream.write(inflateBuffer, 0, readCount);
+				}
+			}
+			gzipIS.close();
+			inflateBufStream.close();
+			return inflateBufStream.toByteArray();
+			///////////////////////////////////////////////////////////
+		}
+
+		return null;
 	}
 
 	public void setProperties(String prefix, Properties setList) {

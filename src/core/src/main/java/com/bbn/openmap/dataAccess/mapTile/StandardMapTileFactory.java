@@ -465,10 +465,10 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
      * @throws InterruptedException
      */
     public OMGraphicList getTiles(Projection proj, int zoomLevel, OMGraphicList list) {
-
-        if (fileExt == null || rootDir == null) {
+    	String fExt = getFileExt();
+        if (fExt == null || rootDir == null) {
             logger.warning("No path to tile files provided (" + rootDir + "), or file extension ("
-                    + fileExt + ") not specified");
+                    + fExt + ") not specified");
             return list;
         }
 
@@ -594,7 +594,7 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
                     return;
                 }
 
-                String imagePath = buildCacheKey(x, y, zoomLevel, fileExt);
+                String imagePath = buildCacheKey(x, y, zoomLevel, getFileExt());
 
                 /**
                  * Need to modify the action of the cache a little to make the
@@ -790,7 +790,7 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
     private void loadTile(int x, int y, int zoomLevel, Projection proj, OMGraphicList list) {
         // String imagePath = zoomLevelInfo.formatImageFilePath(rootDir, x, y) +
         // fileExt;
-        String imagePath = buildFilePath(x, y, zoomLevel, fileExt);
+        String imagePath = buildFilePath(x, y, zoomLevel, getFileExt());
         loadTile(imagePath, x, y, zoomLevel, proj, list);
     }
 
@@ -816,14 +816,24 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
      * @param fileExt the file extension to use for the path.
      */
     public String buildFilePath(int x, int y, int z, String fileExt) {
-        if (tilePathBuilder == null) {
-            tilePathBuilder = new TilePathBuilder(rootDir);
+    	TilePathBuilder pathBuilder = getTilePathBuilder();
+        if (pathBuilder == null) {
+            pathBuilder = new TilePathBuilder(rootDir);
+            setTilePathBuilder(pathBuilder);
         }
 
-        return tilePathBuilder.buildTilePath(x, y, z, fileExt);
+        return pathBuilder.buildTilePath(x, y, z, fileExt);
     }
 
     private TilePathBuilder tilePathBuilder = null;
+    
+    protected void setTilePathBuilder(TilePathBuilder tpb) {
+    	tilePathBuilder = tpb;
+    }
+    
+    protected TilePathBuilder getTilePathBuilder() {
+    	return tilePathBuilder;
+    }
 
     /**
      * Creates a unique cache key for this tile based on zoom, x, y. This method
@@ -904,7 +914,7 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
     public Properties getProperties(Properties getList) {
         String prefix = PropUtils.getScopedPropertyPrefix(this);
         getList.put(prefix + ROOT_DIR_PROPERTY, PropUtils.unnull(rootDirProperty));
-        getList.put(prefix + FILE_EXT_PROPERTY, PropUtils.unnull(fileExt));
+        getList.put(prefix + FILE_EXT_PROPERTY, PropUtils.unnull(getFileExt()));
         getList.put(prefix + CACHE_SIZE_PROPERTY, Integer.toString(getCacheSize()));
         getList.put(prefix + MTCTRANSFORM_PROPERTY, mtcTransform.getClass().toString());
         if (emptyTileHandler != null) {

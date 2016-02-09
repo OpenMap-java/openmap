@@ -93,7 +93,7 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
         String localLoc = null;
 
         if (localCacheDir != null && zoomLevelInfo != null) {
-            localLoc = buildLocalFilePath(x, y, zoomLevel, fileExt);
+            localLoc = buildLocalFilePath(x, y, zoomLevel, getFileExt());
             /**
              * If a local cache is defined, then the cache will always use the
              * string for the local file as the key.
@@ -150,7 +150,7 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
             }
 
             // build file path here uses rootDir, which is the URL.
-            String imagePath = buildFilePath(x, y, zoomLevel, fileExt);
+            String imagePath = buildFilePath(x, y, zoomLevel, getFileExt());
 
             imageBytes = getImageBytes(imagePath, (String) key);
 

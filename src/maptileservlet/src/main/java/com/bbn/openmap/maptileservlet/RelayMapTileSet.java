@@ -80,7 +80,7 @@ public class RelayMapTileSet
 		}
 
 		if (localCacheDir != null) {
-			localFilePath = buildLocalFilePath(tInfo.x, tInfo.y, tInfo.zoomLevel, fileExt);
+			localFilePath = buildLocalFilePath(tInfo.x, tInfo.y, tInfo.zoomLevel, getFileExt());
 
 			try {
 
@@ -95,7 +95,7 @@ public class RelayMapTileSet
 		}
 
         // The file wasn't found.
-		String remoteFilePath = buildFilePath(tInfo.x, tInfo.y, tInfo.zoomLevel, fileExt);
+		String remoteFilePath = buildFilePath(tInfo.x, tInfo.y, tInfo.zoomLevel, getFileExt());
 		imageData = getImageBytes(remoteFilePath, localFilePath);
 
 		return imageData;

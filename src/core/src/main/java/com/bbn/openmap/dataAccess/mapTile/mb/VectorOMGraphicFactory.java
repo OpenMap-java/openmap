@@ -102,11 +102,11 @@ public class VectorOMGraphicFactory {
 	protected OMGraphic transformPolyline(LinearRing linearRing) {
 		int numGeometries = linearRing.getNumGeometries();
 		if (numGeometries == 1) {
-			return new OMShape.PROJECTED(convertCoords(linearRing.getCoordinates(), true));
+			return new OMShape.PROJECTED(convertCoords(linearRing.getCoordinates(), false));
 		} else {
 			OMGraphicList omgl = new OMGraphicList();
 			for (int i = 0; i < numGeometries; i++) {
-				omgl.add(new OMShape.PROJECTED(convertCoords(linearRing.getGeometryN(i).getCoordinates(), true)));
+				omgl.add(new OMShape.PROJECTED(convertCoords(linearRing.getGeometryN(i).getCoordinates(), false)));
 			}
 
 			return omgl;
