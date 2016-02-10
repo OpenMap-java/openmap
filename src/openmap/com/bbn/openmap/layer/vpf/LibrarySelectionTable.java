@@ -18,6 +18,7 @@
 package com.bbn.openmap.layer.vpf;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -171,52 +172,79 @@ public class LibrarySelectionTable {
 
         int latcols[] = latrf.lookupSchema(LATColumns, true, LATschematype, LATschemalength, false);
 
-        VPFLayer.logger.fine("lst.adp: looked up schema");
-        for (List<Object> l = new ArrayList<Object>(latrf.getColumnCount()); latrf.parseRow(l);) {
-            String lname = ((String) l.get(latcols[0])).toLowerCase();
-            float br[] = new float[] { ((Float) l.get(latcols[1])).floatValue(),
-                    ((Float) l.get(latcols[2])).floatValue(),
-                    ((Float) l.get(latcols[3])).floatValue(),
-                    ((Float) l.get(latcols[4])).floatValue() };
-            try {
-                CoverageAttributeTable table = new CoverageAttributeTable(vpfpath, lname);
-                CATs.put(lname, table);
-                boundrec.put(lname, br);
-                orderedLibraryNameList.add(lname);
-                if (VPFLayer.logger.isLoggable(Level.FINE)) {
-                    VPFLayer.logger.fine(lname + " " + br[0] + " " + br[1] + " " + br[2] + " "
-                            + br[3]);
-                }
-            } catch (FormatException fe) {
-                if (VPFLayer.logger.isLoggable(Level.FINER)) {
-                    VPFLayer.logger.finer("*****\nVPFLayer.LST: Couldn't create CoverageAttributeTable for "
-                            + vpfpath
-                            + " "
-                            + lname
-                            + " "
-                            + fe.getMessage()
-                            + "\n--- Not a problem if you have multiple paths, and "
-                            + lname
-                            + " is included in another path ---\n*****");
-                    fe.printStackTrace();
-                } else {
-                    VPFLayer.logger.fine("VPFLayer.LST: CAT discrepancy (run with finer logging level for more details)");
-                }
-            }
-        }
-        latrf.close();
-        latrf = null;
-    }
+		final List<String> libDirectories = searchLibraryDirectories(vpfpath);
 
-    /**
-     * Return the list of libraries that this database has.
-     * 
-     * @return the list of libraries. for DCW, this is typically NOAMER, BROWSE,
-     *         etc.
-     */
-    public List<String> getLibraryNames() {
-        return new ArrayList<String>(orderedLibraryNameList);
-    }
+		VPFLayer.logger.fine("lst.adp: looked up schema");
+		for (final List l = new ArrayList(latrf.getColumnCount()); latrf.parseRow(l);) {
+			final String lname = ((String) l.get(latcols[0])).toLowerCase();
+			
+			if (!libDirectories.contains(lname.toUpperCase())) {
+				continue;
+			}
+			
+			final float br[] = new float[] { ((Float) l.get(latcols[1])).floatValue(),
+					((Float) l.get(latcols[2])).floatValue(), ((Float) l.get(latcols[3])).floatValue(),
+					((Float) l.get(latcols[4])).floatValue() };
+			try {
+				CoverageAttributeTable table = new CoverageAttributeTable(vpfpath, lname);
+				CATs.put(lname, table);
+				boundrec.put(lname, br);
+				orderedLibraryNameList.add(lname);
+				if (VPFLayer.logger.isLoggable(Level.FINE)) {
+					VPFLayer.logger.fine(lname + " " + br[0] + " " + br[1] + " " + br[2] + " " + br[3]);
+				}
+			} catch (FormatException fe) {
+				if (VPFLayer.logger.isLoggable(Level.FINER)) {
+					VPFLayer.logger.finer(
+							"*****\nVPFLayer.LST: Couldn't create CoverageAttributeTable for " + vpfpath + " " + lname
+									+ " " + fe.getMessage() + "\n--- Not a problem if you have multiple paths, and "
+									+ lname + " is included in another path ---\n*****");
+					fe.printStackTrace();
+				} else {
+					VPFLayer.logger
+							.fine("VPFLayer.LST: CAT discrepancy (run with finer logging level for more details)");
+				}
+			}
+		}
+		latrf.close();
+		latrf = null;
+	}
+
+	private List<String> searchLibraryDirectories(final String vpfpath) {
+		final ArrayList<String> subDirLibWithCat = new ArrayList<String>();
+
+		final File vpfDirectory = new File(vpfpath);
+		final File[] vpfSubDirectory = vpfDirectory.listFiles(new FileFilter() {
+			public boolean accept(final File file) {
+				return file.isDirectory();
+			}
+		});
+
+		for (int i = 0; i < vpfSubDirectory.length; i++) {
+			final File subDir = vpfSubDirectory[i];
+			String cat = subDir + "/cat";
+			if (BinaryFile.exists(cat)) {
+				subDirLibWithCat.add(subDir.getName().toUpperCase());
+				continue;
+			}
+			cat = cat + ".";
+			if (BinaryFile.exists(cat)) {
+				subDirLibWithCat.add(subDir.getName().toUpperCase());
+			}
+		}
+
+		return subDirLibWithCat;
+	}
+
+	/**
+	 * Return the list of libraries that this database has.
+	 * 
+	 * @return the list of libraries. for DCW, this is typically NOAMER, BROWSE,
+	 *         etc.
+	 */
+	public List<String> getLibraryNames() {
+		return new ArrayList<String>(orderedLibraryNameList);
+	}
 
     /**
      * Return the name of the database we are reading from.
