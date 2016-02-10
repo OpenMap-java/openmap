@@ -263,6 +263,14 @@ public class DDFModule implements DDFConstants {
         return fpDDF;
     }
 
+    public long getFileLength() throws IOException {
+        return fpDDF.length();
+    }
+
+    public int getRecordLength() throws IOException {
+        return _recLength;
+    }
+
     /**
      * Write out module info to debugging file.
      * 
