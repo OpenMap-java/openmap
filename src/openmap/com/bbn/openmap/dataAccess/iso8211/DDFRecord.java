@@ -22,6 +22,7 @@
 
 package com.bbn.openmap.dataAccess.iso8211;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -207,7 +208,7 @@ public class DDFRecord implements DDFConstants {
         try {
             String recLength = new String(achLeader, 0, 5);
             String fieldAreaStart = new String(achLeader, 12, 5);
-            _recLength = Integer.valueOf(recLength).intValue();
+            _recLength = controlValidFileLength(Integer.valueOf(recLength).intValue());
             _fieldAreaStart = Integer.valueOf(fieldAreaStart).intValue();
         } catch (NumberFormatException nfe) {
 
@@ -362,7 +363,26 @@ public class DDFRecord implements DDFConstants {
         return true;
     }
 
-    /**
+    private int controlValidFileLength(int fileLength) {
+		return fileLength == 0 ? computeAwaitingFileLength(fileLength) : fileLength;
+	}
+
+	private int computeAwaitingFileLength(int fileLength) {
+		int _awaiting_file_length = 0;
+		try {
+			int _src_file_length = (int)this.poModule.getFileLength();
+			int _current_record_length = this.poModule.getRecordLength();
+			_awaiting_file_length = (_src_file_length - (_current_record_length + DDFConstants.DDF_FOOTER_SIZE));
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			return fileLength;
+		}
+		
+		return _awaiting_file_length;
+	}
+
+	/**
      * Find the named field within this record.
      * 
      * @param pszName The name of the field to fetch. The comparison
