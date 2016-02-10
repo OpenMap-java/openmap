@@ -205,7 +205,9 @@ public class StyleDrawingAttributes extends DrawingAttributes {
 
 		void doPaint(JsonNode paint) {
 			setFillPaint(paint, FILL_COLOR);
-			setLinePaint(paint, FILL_OUTLINE_COLOR);
+			if (StyleNode.getAsBoolean(paint, FILL_ANTIALIAS, true)) {
+				setLinePaint(paint, FILL_OUTLINE_COLOR);
+			}
 		}
 	}
 

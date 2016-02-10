@@ -35,8 +35,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
 
+import com.bbn.openmap.Environment;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.mapTile.MapTileFactory;
 import com.bbn.openmap.dataAccess.mapTile.MapTileRequester;
@@ -49,6 +49,7 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.ComponentFactory;
+import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -129,326 +130,380 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileRequester {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.imageTile.TileLayer");
+	/**
+	 * Property that sets the class name of the MapTileFactory to use for this
+	 * layer.
+	 */
+	public final static String TILE_FACTORY_CLASS_PROPERTY = "tileFactory";
+	/**
+	 * Property to allow the MapTileFactory to call repaint on this layer as map
+	 * tiles become available. Default is false, enabling it will not allow this
+	 * layer to be used with an ImageServer (renderDataForProjection won't
+	 * work).
+	 */
+	public final static String INCREMENTAL_UPDATES_PROPERTY = "incrementalUpdates";
 
-    /**
-     * Property that sets the class name of the MapTileFactory to use for this
-     * layer.
-     */
-    public final static String TILE_FACTORY_CLASS_PROPERTY = "tileFactory";
-    /**
-     * Property to allow the MapTileFactory to call repaint on this layer as map
-     * tiles become available. Default is false, enabling it will not allow this
-     * layer to be used with an ImageServer (renderDataForProjection won't
-     * work).
-     */
-    public final static String INCREMENTAL_UPDATES_PROPERTY = "incrementalUpdates";
+	/**
+	 * A property to set if you want to force the layer to use tiles of a
+	 * certain zoom level.
+	 */
+	public final static String ZOOM_LEVEL_PROPERTY = "zoomLevel";
 
-    /**
-     * A property to set if you want to force the layer to use tiles of a
-     * certain zoom level.
-     */
-    public final static String ZOOM_LEVEL_PROPERTY = "zoomLevel";
+	/**
+	 * A property to set for displaying attribution for the data used by the
+	 * layer.
+	 */
+	public final static String DATA_ATTRIBUTION_PROPERTY = "attribution";
 
-    /**
-     * A property to set for displaying attribution for the data used by the
-     * layer.
-     */
-    public final static String DATA_ATTRIBUTION_PROPERTY = "attribution";
+	/**
+	 * The MapTileFactory that knows how to fetch image files and create
+	 * OMRasters for them.
+	 */
+	protected MapTileFactory tileFactory;
+	/**
+	 * Flag to allow this layer to set itself as a repaint callback object on
+	 * the tile factory.
+	 */
+	protected boolean incrementalUpdates = false;
+	/**
+	 * The zoomLevel to use when requesting tiles from the MapTileFactory. Is -1
+	 * for default, which lets the factory choose the zoom level based on the
+	 * current scale setting. You can choose 1-20 if you want to force the layer
+	 * to use something else.
+	 */
+	protected int zoomLevel = -1;
 
-    /**
-     * The MapTileFactory that knows how to fetch image files and create
-     * OMRasters for them.
-     */
-    protected MapTileFactory tileFactory;
-    /**
-     * Flag to allow this layer to set itself as a repaint callback object on
-     * the tile factory.
-     */
-    protected boolean incrementalUpdates = false;
-    /**
-     * The zoomLevel to use when requesting tiles from the MapTileFactory. Is -1
-     * for default, which lets the factory choose the zoom level based on the
-     * current scale setting. You can choose 1-20 if you want to force the layer
-     * to use something else.
-     */
-    protected int zoomLevel = -1;
+	/**
+	 * Attribution for the map data. If it exists, it will be displayed on the
+	 * lower left corner of the map.
+	 */
+	protected String attribution = null;
 
-    /**
-     * Attribution for the map data. If it exists, it will be displayed on the
-     * lower left corner of the map.
-     */
-    protected String attribution = null;
+	/**
+	 * Rendering parameters for attribution string.
+	 */
+	protected DrawingAttributes attributionAttributes = DrawingAttributes.getDefaultClone();
 
-    /**
-     * Rendering parameters for attribution string.
-     */
-    protected DrawingAttributes attributionAttributes = DrawingAttributes.getDefaultClone();
+	public MapTileLayer() {
+		setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
+		setTileFactory(new StandardMapTileFactory());
+		// We need to make this layer uninterruptable, because that messes with
+		// the image file loading.
+		setInterruptable(false);
+	}
 
-    public MapTileLayer() {
-        setProjectionChangePolicy(new com.bbn.openmap.layer.policy.ListResetPCPolicy(this));
-        setTileFactory(new StandardMapTileFactory());
-        // We need to make this layer uninterruptable, because that messes with
-        // the image file loading.
-        setInterruptable(false);
-    }
+	public MapTileLayer(MapTileFactory tileFactory) {
+		this();
+		this.tileFactory = tileFactory;
+	}
 
-    public MapTileLayer(MapTileFactory tileFactory) {
-        this();
-        this.tileFactory = tileFactory;
-    }
+	/**
+	 * OMGraphicHandlerLayer method, called with projection changes or whenever
+	 * else doPrepare() is called. Calls getTiles on the map tile factory.
+	 * 
+	 * @return OMGraphicList that contains tiles to be displayed for the current
+	 *         projection.
+	 */
+	public synchronized OMGraphicList prepare() {
 
-    /**
-     * OMGraphicHandlerLayer method, called with projection changes or whenever
-     * else doPrepare() is called. Calls getTiles on the map tile factory.
-     * 
-     * @return OMGraphicList that contains tiles to be displayed for the current
-     *         projection.
-     */
-    public synchronized OMGraphicList prepare() {
+		Projection projection = getProjection();
 
-        Projection projection = getProjection();
+		if (projection == null) {
+			return null;
+		}
 
-        if (projection == null) {
-            return null;
-        }
+		if (tileFactory != null) {
+			return tileFactory.getTiles(projection, zoomLevel, new OMGraphicList());
+		}
+		return null;
+	}
+	
+	public void paint(java.awt.Graphics g) {
+		super.paint(g);
+		
+		OMText attrib = getAttributionGraphic();
+		if (attrib != null) {
+			attrib.render(g);
+		}		
+	}
 
-        if (tileFactory != null) {
-            OMGraphicList newList = new OMGraphicList();
+	/**
+	 * @return OMText for attribution text
+	 */
+	protected OMText getAttributionGraphic() {
+		Projection proj = getProjection();
+		if (attribution != null && proj != null) {
+			OMText attText = new OMText(10, proj.getHeight() - 10, attribution, OMText.JUSTIFY_LEFT);
+			if (attributionAttributes != null) {
+				attributionAttributes.setTo(attText);
+			}
+			attText.generate(proj);
+			return attText;
+		}
 
-            OMText attrib = getAttributionGraphic();
-            if (attrib != null) {
-                newList.add(attrib);
-            }
+		return null;
+	}
 
-            return tileFactory.getTiles(projection, zoomLevel, newList);
-        }
-        return null;
-    }
+	public String getToolTipTextFor(OMGraphic omg) {
+		return (String) omg.getAttribute(OMGraphic.TOOLTIP);
+	}
 
-    /**
-     * @return OMText for attribution text
-     */
-    private OMText getAttributionGraphic() {
-        Projection proj = getProjection();
-        if (attribution != null && proj != null) {
-            OMText attText = new OMText(10, proj.getHeight() - 10, attribution, OMText.JUSTIFY_LEFT);
-            if (attributionAttributes != null) {
-                attributionAttributes.setTo(attText);
-            }
-            return attText;
-        }
+	public void setProperties(String prefix, Properties props) {
+		super.setProperties(prefix, props);
+		prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        return null;
-    }
+		attribution = props.getProperty(prefix + DATA_ATTRIBUTION_PROPERTY, attribution);
+		attributionAttributes.setProperties(prefix, props);
 
-    public String getToolTipTextFor(OMGraphic omg) {
-        return (String) omg.getAttribute(OMGraphic.TOOLTIP);
-    }
+		String tileFactoryClassString = props.getProperty(prefix + TILE_FACTORY_CLASS_PROPERTY);
+		if (tileFactoryClassString != null) {
+			MapTileFactory itf = (MapTileFactory) ComponentFactory.create(tileFactoryClassString, prefix, props);
+			if (itf != null) {
+				setTileFactory(itf);
+			}
+		} else {
+			// Let's see if we can figure out what kind of MapTileFactory is
+			// needed based on rootDir
+			String rootDirString = props.getProperty(prefix + StandardMapTileFactory.ROOT_DIR_PROPERTY);
+			if (rootDirString != null) {
+				try {
+					// We build URL here to test if the rootDir location exists.
+					// Comment out url to avoid dead store findbugs problem.
+					/* URL url = */new java.net.URL(rootDirString);
+					// If we get here, we have a protocol, looks remote, so we
+					// should make sure the
+					// ServerMapTileFactory is used.
+					if (!(getTileFactory() instanceof ServerMapTileFactory)) {
+						setTileFactory(new ServerMapTileFactory(rootDirString));
+					}
 
-    public void setProperties(String prefix, Properties props) {
-        super.setProperties(prefix, props);
-        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+				} catch (MalformedURLException e) {
+					// no protocol or something, use default
+					// StandardMapTileFactory
+					if (!(getTileFactory() instanceof StandardMapTileFactory)) {
+						setTileFactory(new StandardMapTileFactory());
+					}
+				}
+			}
+		}
 
-        attribution = props.getProperty(prefix + DATA_ATTRIBUTION_PROPERTY, attribution);
-        attributionAttributes.setProperties(prefix, props);
+		if (tileFactory instanceof PropertyConsumer) {
+			((PropertyConsumer) tileFactory).setProperties(prefix, props);
+		}
 
-        String tileFactoryClassString = props.getProperty(prefix + TILE_FACTORY_CLASS_PROPERTY);
-        if (tileFactoryClassString != null) {
-            MapTileFactory itf = (MapTileFactory) ComponentFactory.create(tileFactoryClassString, prefix, props);
-            if (itf != null) {
-                setTileFactory(itf);
-            }
-        } else {
-            // Let's see if we can figure out what kind of MapTileFactory is
-            // needed based on rootDir
-            String rootDirString = props.getProperty(prefix
-                    + StandardMapTileFactory.ROOT_DIR_PROPERTY);
-            if (rootDirString != null) {
-                try {
-                    // We build URL here to test if the rootDir location exists.
-                    // Comment out url to avoid dead store findbugs problem.
-                    /* URL url = */new java.net.URL(rootDirString);
-                    // If we get here, we have a protocol, looks remote, so we
-                    // should make sure the
-                    // ServerMapTileFactory is used.
-                    if (!(getTileFactory() instanceof ServerMapTileFactory)) {
-                        setTileFactory(new ServerMapTileFactory(rootDirString));
-                    }
+		incrementalUpdates = PropUtils.booleanFromProperties(props, prefix + INCREMENTAL_UPDATES_PROPERTY,
+				incrementalUpdates);
 
-                } catch (MalformedURLException e) {
-                    // no protocol or something, use default
-                    // StandardMapTileFactory
-                    if (!(getTileFactory() instanceof StandardMapTileFactory)) {
-                        setTileFactory(new StandardMapTileFactory());
-                    }
-                }
-            }
-        }
+		setZoomLevel(PropUtils.intFromProperties(props, prefix + ZOOM_LEVEL_PROPERTY, zoomLevel));
+	}
 
-        if (tileFactory instanceof PropertyConsumer) {
-            ((PropertyConsumer) tileFactory).setProperties(prefix, props);
-        }
+	public Properties getProperties(Properties props) {
+		props = super.getProperties(props);
 
-        incrementalUpdates = PropUtils.booleanFromProperties(props, prefix
-                + INCREMENTAL_UPDATES_PROPERTY, incrementalUpdates);
+		String prefix = PropUtils.getScopedPropertyPrefix(this);
+		if (tileFactory != null) {
+			props.put(prefix + TILE_FACTORY_CLASS_PROPERTY, tileFactory.getClass().getName());
+			if (tileFactory instanceof PropertyConsumer) {
+				((PropertyConsumer) tileFactory).getProperties(props);
+			}
+		}
 
-        setZoomLevel(PropUtils.intFromProperties(props, prefix + ZOOM_LEVEL_PROPERTY, zoomLevel));
-    }
+		props.put(prefix + INCREMENTAL_UPDATES_PROPERTY, Boolean.toString(incrementalUpdates));
+		props.put(prefix + ZOOM_LEVEL_PROPERTY, Integer.toString(zoomLevel));
 
-    public Properties getProperties(Properties props) {
-        props = super.getProperties(props);
+		attributionAttributes.getProperties(props);
 
-        String prefix = PropUtils.getScopedPropertyPrefix(this);
-        if (tileFactory != null) {
-            props.put(prefix + TILE_FACTORY_CLASS_PROPERTY, tileFactory.getClass().getName());
-            if (tileFactory instanceof PropertyConsumer) {
-                ((PropertyConsumer) tileFactory).getProperties(props);
-            }
-        }
+		return props;
+	}
 
-        props.put(prefix + INCREMENTAL_UPDATES_PROPERTY, Boolean.toString(incrementalUpdates));
-        props.put(prefix + ZOOM_LEVEL_PROPERTY, Integer.toString(zoomLevel));
+	public Properties getPropertyInfo(Properties props) {
+		props = super.getPropertyInfo(props);
+		I18n i18n = Environment.getI18n();
 
-        attributionAttributes.getProperties(props);
+		PropUtils.setI18NPropertyInfo(i18n, props, this.getClass(), ZOOM_LEVEL_PROPERTY, "Zoom Level",
+				"Force zoom level for queries (-1 is no forcing)", null);
+		PropUtils.setI18NPropertyInfo(i18n, props, this.getClass(), DATA_ATTRIBUTION_PROPERTY, "Attribution",
+				"Attribution for data source", null);
 
-        return props;
-    }
+		if (tileFactory instanceof PropertyConsumer) {
+			((PropertyConsumer) tileFactory).getPropertyInfo(props);
+		}
 
-    /**
-     * Called when the layer has been turned off and the projection changes,
-     * signifying that the layer can clean up.
-     */
-    public void removed(Container cont) {
-        MapTileFactory tileFactory = getTileFactory();
-        if (tileFactory != null) {
-            tileFactory.reset();
-        }
-    }
+		props.put(initPropertiesProperty,
+			  (tileFactory != null?tileFactory.getInitPropertiesOrder() + " ":"") + ZOOM_LEVEL_PROPERTY + " " + DATA_ATTRIBUTION_PROPERTY);
 
-    public MapTileFactory getTileFactory() {
-        return tileFactory;
-    }
+		return props;
+	}
 
-    public void setTileFactory(MapTileFactory tileFactory) {
-        logger.fine("setting tile factory to: " + tileFactory.getClass().getName());
-        // This allows for general faster response, but causes the map to jump
-        // around a little bit when used with the BufferedImageRenderPolicy and
-        // when the projection changes occur rapidly, like when zooming and
-        // panning several times in a second. The generation/positioning can't
-        // keep up. It'll settle out, but it might be better to be slower and
-        // less confusing to the user.
+	/**
+	 * Called when the layer has been turned off and the projection changes,
+	 * signifying that the layer can clean up.
+	 */
+	public void removed(Container cont) {
+		MapTileFactory tileFactory = getTileFactory();
+		if (tileFactory != null) {
+			tileFactory.reset();
+		}
+	}
 
-        tileFactory.setMapTileRequester(this);
+	public MapTileFactory getTileFactory() {
+		return tileFactory;
+	}
 
-        this.tileFactory = tileFactory;
-    }
+	public void setTileFactory(MapTileFactory tileFactory) {
+		getLogger().fine("setting tile factory to: " + tileFactory.getClass().getName());
+		// This allows for general faster response, but causes the map to jump
+		// around a little bit when used with the BufferedImageRenderPolicy and
+		// when the projection changes occur rapidly, like when zooming and
+		// panning several times in a second. The generation/positioning can't
+		// keep up. It'll settle out, but it might be better to be slower and
+		// less confusing to the user.
 
-    public boolean isIncrementalUpdates() {
-        return incrementalUpdates;
-    }
+		tileFactory.setMapTileRequester(this);
 
-    public void setIncrementalUpdates(boolean incrementalUpdates) {
-        this.incrementalUpdates = incrementalUpdates;
-    }
+		this.tileFactory = tileFactory;
+		
+		doPrepare();
+	}
 
-    public int getZoomLevel() {
-        return zoomLevel;
-    }
+	public boolean isIncrementalUpdates() {
+		return incrementalUpdates;
+	}
 
-    public void setZoomLevel(int zoomLevel) {
-        this.zoomLevel = zoomLevel;
-    }
+	public void setIncrementalUpdates(boolean incrementalUpdates) {
+		this.incrementalUpdates = incrementalUpdates;
+	}
 
-    public java.awt.Component getGUI() {
-        // Only allow delete cache button if the source of the tiles are from a
-        // server.
+	public int getZoomLevel() {
+		return zoomLevel;
+	}
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(getTransparencyAdjustmentPanel(i18n.get(MapTileLayer.class, "layerTransparencyGUILabel", "Layer Transparency"), JSlider.HORIZONTAL, getTransparency()));
+	public void setZoomLevel(int zoomLevel) {
+		this.zoomLevel = zoomLevel;
+	}
 
-        if (getTileFactory() instanceof ServerMapTileFactory) {
-            JPanel clearCachePanel = new JPanel(new BorderLayout());
-            clearCachePanel.add(new JPanel(), BorderLayout.WEST);
-            clearCachePanel.add(new JPanel(), BorderLayout.EAST);
-            JButton clearButton = new JButton(i18n.get(MapTileLayer.class, "clearCacheLabel", "Clear Tile Cache"));
-            clearCachePanel.add(clearButton, BorderLayout.CENTER);
-            clearButton.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    String query = i18n.get(MapTileLayer.class, "mapTileLayerDeleteCacheQuery", "Delete tiles on disk? Click OK to delete...");
+	public java.awt.Component getGUI() {
+		// Only allow delete cache button if the source of the tiles are from a
+		// server.
 
-                    int dialogResult = JOptionPane.showConfirmDialog(null, query, "Warning", JOptionPane.OK_CANCEL_OPTION);
-                    if (dialogResult == JOptionPane.OK_OPTION) {
-                        clearCache();
-                    }
-                }
-            });
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-            panel.add(clearCachePanel);
-        }
+		if (getTileFactory() instanceof ServerMapTileFactory) {
+			JPanel clearCachePanel = new JPanel(new BorderLayout());
+			clearCachePanel.add(new JPanel(), BorderLayout.WEST);
+			clearCachePanel.add(new JPanel(), BorderLayout.EAST);
+			JButton clearButton = new JButton(i18n.get(MapTileLayer.class, "clearCacheLabel", "Clear Tile Cache"));
+			clearCachePanel.add(clearButton, BorderLayout.CENTER);
+			clearButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					String query = i18n.get(MapTileLayer.class, "mapTileLayerDeleteCacheQuery",
+							"Delete tiles on disk? Click OK to delete...");
 
-        return panel;
-    }
+					int dialogResult = JOptionPane.showConfirmDialog(null, query, "Warning",
+							JOptionPane.OK_CANCEL_OPTION);
+					if (dialogResult == JOptionPane.OK_OPTION) {
+						clearCache();
+					}
+				}
+			});
 
-    /**
-     * @return the attribution
-     */
-    public String getAttribution() {
-        return attribution;
-    }
+			panel.add(clearCachePanel);
+		}
 
-    /**
-     * @param attribution the attribution to set
-     */
-    public void setAttribution(String attribution) {
-        this.attribution = attribution;
-    }
+		panel.add(getDefaultSettingsPanel(this.getClass(), getTransparency()));
+		return panel;
+	}
 
-    /**
-     * @return the attributionAttributes
-     */
-    public DrawingAttributes getAttributionAttributes() {
-        return attributionAttributes;
-    }
+	/**
+	 * @return the attribution
+	 */
+	public String getAttribution() {
+		return attribution;
+	}
 
-    /**
-     * @param attributionAttributes the attributionAttributes to set
-     */
-    public void setAttributionAttributes(DrawingAttributes attributionAttributes) {
-        this.attributionAttributes = attributionAttributes;
-    }
+	/**
+	 * @param attribution
+	 *            the attribution to set
+	 */
+	public void setAttribution(String attribution) {
+		this.attribution = attribution;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.bbn.openmap.dataAccess.mapTile.MapTileRequestor#shouldContinue()
-     */
-    public boolean shouldContinue() {
-        return !isInterruptable() || !isCancelled();
-    }
+	/**
+	 * @return the attributionAttributes
+	 */
+	public DrawingAttributes getAttributionAttributes() {
+		return attributionAttributes;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.bbn.openmap.dataAccess.mapTile.MapTileRequestor#listUpdated()
-     */
-    public void listUpdated() {
-        if (incrementalUpdates) {
-            repaint();
-        }
-    }
+	/**
+	 * @param attributionAttributes
+	 *            the attributionAttributes to set
+	 */
+	public void setAttributionAttributes(DrawingAttributes attributionAttributes) {
+		this.attributionAttributes = attributionAttributes;
+	}
 
-    /**
-     * Clear the MapTileFactory cache.
-     */
-    public void clearCache() {
-        MapTileFactory mtf = getTileFactory();
-        if (mtf != null) {
-            mtf.reset();
-        }
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.bbn.openmap.dataAccess.mapTile.MapTileRequestor#shouldContinue()
+	 */
+	public boolean shouldContinue() {
+		return !isInterruptable() || !isCancelled();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.bbn.openmap.dataAccess.mapTile.MapTileRequestor#listUpdated()
+	 */
+	public void listUpdated() {
+		if (incrementalUpdates) {
+			repaint();
+		}
+	}
+
+	/**
+	 * Clear the MapTileFactory cache.
+	 */
+	public void clearCache() {
+		MapTileFactory mtf = getTileFactory();
+		if (mtf != null) {
+			mtf.reset();
+		}
+	}
+
+	// <editor-fold defaultstate="collapsed" desc="Logger Code">
+	/**
+	 * Holder for this class's Logger. This allows for lazy initialization of
+	 * the logger.
+	 */
+	private static final class LoggerHolder {
+		/**
+		 * The logger for this class
+		 */
+		private static final Logger LOGGER = Logger.getLogger(MapTileLayer.class.getName());
+
+		/**
+		 * Prevent instantiation
+		 */
+		private LoggerHolder() {
+			throw new AssertionError("The LoggerHolder should never be instantiated");
+		}
+	}
+
+	/**
+	 * Get the logger for this class.
+	 *
+	 * @return logger for this class
+	 */
+	private static Logger getLogger() {
+		return LoggerHolder.LOGGER;
+	}
+	// </editor-fold>
 
 }

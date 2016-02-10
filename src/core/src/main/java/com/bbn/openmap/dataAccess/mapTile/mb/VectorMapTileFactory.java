@@ -6,9 +6,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -26,7 +23,6 @@ import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.cacheHandler.CacheObject;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.ecc.vectortile.VectorTileDecoder;
 import no.ecc.vectortile.VectorTileDecoder.Feature;
@@ -35,7 +31,7 @@ import no.ecc.vectortile.VectorTileDecoder.FeatureIterable;
 /**
  * MapTileFactory that handles mbtiles files containing vector data
  * (http://osm2vectortiles.org), in the MapBox format. Requires JTS and the
- * java-vector-tile project (see maven dependecies). Uses MapBox GL JSON files
+ * java-vector-tile project (see maven dependencies). Uses MapBox GL JSON files
  * for styling (https://www.mapbox.com/mapbox-gl-style-spec/).
  * 
  * <pre>
@@ -54,37 +50,72 @@ import no.ecc.vectortile.VectorTileDecoder.FeatureIterable;
  */
 public class VectorMapTileFactory extends RasterMapTileFactory {
 
-	public final static String STYLE_LOCATION_PROPERTY = "style";
 	public final static String COMPRESSED_PROPERTY = "compressed";
 
-	VectorOMGraphicFactory factory;
-	String styleLocation;
-	StyleRoot styles;
-	/** mvt is compressed, pbf is not.*/
+	VectorOMGraphicFactory omGraphicFactory;
+	StyleRoot renderStyle;
+	/** mvt is compressed, pbf is not. */
 	boolean compressed = true;
 
 	public VectorMapTileFactory() {
 		getLogger().fine("Using VectorTileMapTileFactory");
 	}
 
-	public StyleRoot loadStyleJSON(String urlString) {
-		if (urlString != null) {
-			try {
+	/**
+	 * @return the omGraphicFactory
+	 */
+	public VectorOMGraphicFactory getOMGraphicFactory() {
+		return omGraphicFactory;
+	}
 
-				URL input = PropUtils.getResourceOrFileOrURL(urlString);
-				InputStream inputStream = input.openStream();
-				return new StyleRoot(new ObjectMapper().readTree(inputStream));
+	/**
+	 * Set the VectorOMGraphicFactory. Assumes that the styling is set for it.
+	 * Resets the cache so new tiles need to be generated with the new style.
+	 * 
+	 * @param omGraphicFactory
+	 *            the omGraphicFactory to set
+	 */
+	public void setOMGraphicFactory(VectorOMGraphicFactory omGraphicFactory) {
+		this.omGraphicFactory = omGraphicFactory;
+		reset();
+	}
 
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	/**
+	 * @return the compressed
+	 */
+	public boolean isCompressed() {
+		return compressed;
+	}
+
+	/**
+	 * @param compressed
+	 *            the compressed to set
+	 */
+	public void setCompressed(boolean compressed) {
+		this.compressed = compressed;
+	}
+
+	/**
+	 * @return the renderStyle
+	 */
+	public StyleRoot getRenderStyle() {
+		return renderStyle;
+	}
+
+	/**
+	 * Causes a new VectoryOMGraphicFactory to be created with the new
+	 * renderStyle, and the cache is cleared to force new tiles to be created.
+	 * 
+	 * @param renderStyle
+	 *            the renderStyle to set
+	 */
+	public void setRenderStyle(StyleRoot renderStyle) {
+		this.renderStyle = renderStyle;
+		if (renderStyle != null) {
+			setOMGraphicFactory(new VectorOMGraphicFactory(renderStyle));
+		} else {
+			setOMGraphicFactory(null);
 		}
-
-		return null;
 	}
 
 	boolean disabled = false;
@@ -102,16 +133,18 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 			return null;
 		}
 
-		if (factory == null) {
-			if (styleLocation != null) {
-				styles = loadStyleJSON(styleLocation);
+		if (rootDir == null) {
+			getLogger().warning("Tile location (rootDir) not set");
+			return null;
+		}
+
+		if (omGraphicFactory == null) {
+
+			if (renderStyle == null) {
+				renderStyle = new StyleRoot.DEFAULT();
 			}
 
-			if (styles == null) {
-				styles = new StyleRoot.DEFAULT();
-			}
-
-			factory = new VectorOMGraphicFactory(styles);
+			omGraphicFactory = new VectorOMGraphicFactory(renderStyle);
 		}
 
 		VectorTileDecoder decoder = new VectorTileDecoder();
@@ -121,14 +154,16 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 		RenderingHints renderingHints = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		g2.addRenderingHints(renderingHints);
-		factory.getBackground().render(g2);
+
 
 		try {
 			byte[] tileData = getTileData(key, x, y, zoomLevel);
 			if (tileData != null) {
+				omGraphicFactory.getBackground().render(g2);
+				
 				FeatureIterable fi = decoder.decode(tileData);
 				for (Feature feature : fi.asList()) {
-					factory.create(feature).render(g2);
+					omGraphicFactory.create(feature).render(g2);
 				}
 			} else {
 				if (getLogger().isLoggable(Level.FINER)) {
@@ -260,14 +295,12 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 	public void setProperties(String prefix, Properties setList) {
 		super.setProperties(prefix, setList);
 		prefix = PropUtils.getScopedPropertyPrefix(prefix);
-		styleLocation = setList.getProperty(prefix + STYLE_LOCATION_PROPERTY, styleLocation);
 		compressed = PropUtils.booleanFromProperties(setList, prefix + COMPRESSED_PROPERTY, compressed);
 	}
 
 	public Properties getProperties(Properties getList) {
 		getList = super.getProperties(getList);
 		String prefix = PropUtils.getScopedPropertyPrefix(this);
-		getList.put(prefix + STYLE_LOCATION_PROPERTY, PropUtils.unnull(STYLE_LOCATION_PROPERTY));
 		getList.put(prefix + COMPRESSED_PROPERTY, Boolean.toString(compressed));
 		return getList;
 	}
@@ -275,13 +308,17 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 	public Properties getPropertyInfo(Properties list) {
 		list = super.getPropertyInfo(list);
 		I18n i18n = Environment.getI18n();
-		PropUtils.setI18NPropertyInfo(i18n, list, VectorMapTileFactory.class, STYLE_LOCATION_PROPERTY, "Style",
-				"Location of JSON Style file", "com.bbn.openmap.util.propertyEditor.FilePropertyEditor");
 		PropUtils.setI18NPropertyInfo(i18n, list, VectorMapTileFactory.class, COMPRESSED_PROPERTY, "Compressed",
 				"True if tile data is compressed", "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+		
+	
 		return list;
 	}
 
+	public String getInitPropertiesOrder() {
+		return ROOT_DIR_PROPERTY;
+	}	
+	
 	// <editor-fold defaultstate="collapsed" desc="Logger Code">
 	/**
 	 * Holder for this class's Logger. This allows for lazy initialization of

@@ -949,6 +949,10 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
         PropUtils.setI18NPropertyInfo(i18n, list, com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.class, ZOOM_LEVEL_TILE_SIZE_PROPERTY, "Zoom Level Tile Size", "The maximum pixel size of a tile before switching to a higher zoom level (350 is default)", null);
         return list;
     }
+    
+	public String getInitPropertiesOrder() {
+		return ROOT_DIR_PROPERTY + " " + FILE_EXT_PROPERTY;
+	}
 
     public String getPropertyPrefix() {
         return prefix;

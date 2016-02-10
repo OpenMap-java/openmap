@@ -1451,7 +1451,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	 * setting, the settings button and a layer refresh button.
 	 * 
 	 * @param clss
-	 *            The class for j18n
+	 *            The class for i18n translations
 	 * @param opaquenessSetting
 	 *            The current opaqueness setting, as some fraction of 255. 1 is
 	 *            opaque.

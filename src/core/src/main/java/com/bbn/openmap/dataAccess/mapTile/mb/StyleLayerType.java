@@ -21,7 +21,7 @@ public enum StyleLayerType {
 	}
 
 	public static StyleLayerType getFromLayerNode(JsonNode layerNode) {
-		return getForType(layerNode.get(TYPE).toString());
+		return getForType(StyleNode.getAsText(layerNode, TYPE, ""));
 	}
 
 	public static StyleLayerType getForType(String nm) {
