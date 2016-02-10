@@ -18,6 +18,7 @@
 package com.bbn.openmap.layer.vpf;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -43,449 +44,486 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
  */
 public class LibrarySelectionTable {
 
-    /** cutoff scale for browse coverage. */
-    public final static int DEFAULT_BROWSE_CUTOFF = 31000000;
+	/** cutoff scale for browse coverage. */
+	public final static int DEFAULT_BROWSE_CUTOFF = 31000000;
 
-    protected int BROWSE_CUTOFF = DEFAULT_BROWSE_CUTOFF;
+	protected int BROWSE_CUTOFF = DEFAULT_BROWSE_CUTOFF;
 
-    /**
-     * the names of the VPF libraries listed in the library attribute table
-     */
-    // private String libraryname[] = null; //library [i]
-    /** the bounding rectangle of the respective libraries */
-    private Map<String, float[]> boundrec = new HashMap<String, float[]>();// bounding
-                                                                           // rect
-                                                                           // as
-                                                                           // [W,S,E,N]
-    /** the CoverageAttributeTables corresponding to the different libs */
-    private Map<String, CoverageAttributeTable> CATs = new HashMap<String, CoverageAttributeTable>();
-    /**
-     * A list of libraries in the same order as their data paths were added.
-     */
-    private List<String> orderedLibraryNameList = new ArrayList<String>();
+	/**
+	 * the names of the VPF libraries listed in the library attribute table
+	 */
+	// private String libraryname[] = null; //library [i]
+	/** the bounding rectangle of the respective libraries */
+	private Map<String, float[]> boundrec = new HashMap<String, float[]>();// bounding
+																			// rect
+																			// as
+																			// [W,S,E,N]
+	/** the CoverageAttributeTables corresponding to the different libs */
+	private Map<String, CoverageAttributeTable> CATs = new HashMap<String, CoverageAttributeTable>();
+	/**
+	 * A list of libraries in the same order as their data paths were added.
+	 */
+	private List<String> orderedLibraryNameList = new ArrayList<String>();
 
-    /** the names of the lat columns */
-    final private static String LATColumns[] = { Constants.LAT_LIBNAME, Constants.LAT_XMIN,
-            Constants.LAT_YMIN, Constants.LAT_XMAX, Constants.LAT_YMAX };
-    /** the expected schema types for the library attribute table */
-    final private static char LATschematype[] = { 'T', 'F', 'F', 'F', 'F' };
-    /** the expected schema lengths for the library attribute table */
-    final private static int LATschemalength[] = { -1 /* 8 */, 1, 1, 1, 1 };
-    /** the name of the database */
-    private String databaseName;
-    /** the database description of itself */
-    private String databaseDesc;
+	/** the names of the lat columns */
+	final private static String LATColumns[] = { Constants.LAT_LIBNAME, Constants.LAT_XMIN, Constants.LAT_YMIN,
+			Constants.LAT_XMAX, Constants.LAT_YMAX };
+	/** the expected schema types for the library attribute table */
+	final private static char LATschematype[] = { 'T', 'F', 'F', 'F', 'F' };
+	/** the expected schema lengths for the library attribute table */
+	final private static int LATschemalength[] = { -1 /* 8 */, 1, 1, 1, 1 };
+	/** the name of the database */
+	private String databaseName;
+	/** the database description of itself */
+	private String databaseDesc;
 
-    /**
-     * Construct a LibrarySelectionTable without a path to data.
-     */
-    public LibrarySelectionTable() {
-    }
+	/**
+	 * Construct a LibrarySelectionTable without a path to data.
+	 */
+	public LibrarySelectionTable() {
+	}
 
-    /**
-     * Construct a LibrarySelectionTable with a path to data.
-     * 
-     * @param vpfpath the path to the base data directory; the file opened is
-     *        <code>vpfpath</code> /lat.
-     * @exception FormatException some error was encountered while trying to
-     *            handle the file.
-     */
-    public LibrarySelectionTable(String vpfpath) throws FormatException {
-        addDataPath(vpfpath);
-    }
+	/**
+	 * Construct a LibrarySelectionTable with a path to data.
+	 * 
+	 * @param vpfpath
+	 *            the path to the base data directory; the file opened is
+	 *            <code>vpfpath</code> /lat.
+	 * @exception FormatException
+	 *                some error was encountered while trying to handle the
+	 *                file.
+	 */
+	public LibrarySelectionTable(String vpfpath) throws FormatException {
+		addDataPath(vpfpath);
+	}
 
-    /**
-     * Construct a LibrarySelectionTable with a path to data.
-     * 
-     * @param vpfpaths the paths to the data directories; the file opened is
-     *        <code>vpfpath</code> /lat.
-     * @exception FormatException some error was encountered while trying to
-     *            handle the file.
-     */
-    public LibrarySelectionTable(String vpfpaths[]) throws FormatException {
-        for (int i = 0; i < vpfpaths.length; i++) {
-            addDataPath(vpfpaths[i]);
-        }
-    }
+	/**
+	 * Construct a LibrarySelectionTable with a path to data.
+	 * 
+	 * @param vpfpaths
+	 *            the paths to the data directories; the file opened is
+	 *            <code>vpfpath</code> /lat.
+	 * @exception FormatException
+	 *                some error was encountered while trying to handle the
+	 *                file.
+	 */
+	public LibrarySelectionTable(String vpfpaths[]) throws FormatException {
+		for (int i = 0; i < vpfpaths.length; i++) {
+			addDataPath(vpfpaths[i]);
+		}
+	}
 
-    /**
-     * Set the cutoff scale where if the map scale number is larger (smaller
-     * overall map scale), the coverage won't be returned. For example, if the
-     * scale cutoff is 30000000, if the map scale is 1:31000000, no map data
-     * will be returned.
-     */
-    public void setCutoffScale(int scale) {
-        BROWSE_CUTOFF = scale;
-    }
+	/**
+	 * Set the cutoff scale where if the map scale number is larger (smaller
+	 * overall map scale), the coverage won't be returned. For example, if the
+	 * scale cutoff is 30000000, if the map scale is 1:31000000, no map data
+	 * will be returned.
+	 */
+	public void setCutoffScale(int scale) {
+		BROWSE_CUTOFF = scale;
+	}
 
-    /**
-     * Get the cutoff scale where data will be retrieved.
-     */
-    public int getCutoffScale() {
-        return BROWSE_CUTOFF;
-    }
+	/**
+	 * Get the cutoff scale where data will be retrieved.
+	 */
+	public int getCutoffScale() {
+		return BROWSE_CUTOFF;
+	}
 
-    /**
-     * add a path to LibrarySelectionTable. Adding different types of VPF
-     * libraries to the same LST is likely to cause trouble. (e.g. it would be
-     * bad to add both DCW and VMAP paths to the same LST. adding each DCW disk
-     * separately is why this method exists.)
-     * 
-     * @param vpfpath the path to the base DCW directory; the file opened is
-     *        <code>vpfpath</code> /lat.
-     * @exception FormatException some error was encountered while trying to
-     *            handle the file.
-     */
-    public void addDataPath(String vpfpath) throws FormatException {
-        VPFLayer.logger.fine("LST.addDataPath(" + vpfpath + ")");
+	/**
+	 * add a path to LibrarySelectionTable. Adding different types of VPF
+	 * libraries to the same LST is likely to cause trouble. (e.g. it would be
+	 * bad to add both DCW and VMAP paths to the same LST. adding each DCW disk
+	 * separately is why this method exists.)
+	 * 
+	 * @param vpfpath
+	 *            the path to the base DCW directory; the file opened is
+	 *            <code>vpfpath</code> /lat.
+	 * @exception FormatException
+	 *                some error was encountered while trying to handle the
+	 *                file.
+	 */
+	public void addDataPath(String vpfpath) throws FormatException {
+		VPFLayer.logger.fine("LST.addDataPath(" + vpfpath + ")");
 
-        // Figure out how files names should be constructed...
-        boolean addSlash = true;
+		// Figure out how files names should be constructed...
+		boolean addSlash = true;
 
-        if (vpfpath.endsWith("/") || vpfpath.endsWith(File.separator)) {
-            addSlash = false;
-        }
+		if (vpfpath.endsWith("/") || vpfpath.endsWith(File.separator)) {
+			addSlash = false;
+		}
 
-        String latf = vpfpath + (addSlash ? "/" : "") + "lat";
-        String dhtf = vpfpath + (addSlash ? "/" : "") + "dht";
+		String latf = vpfpath + (addSlash ? "/" : "") + "lat";
+		String dhtf = vpfpath + (addSlash ? "/" : "") + "dht";
 
-        if (!BinaryFile.exists(latf)) {
-            latf += ".";
-            dhtf += ".";
-        }
+		if (!BinaryFile.exists(latf)) {
+			latf += ".";
+			dhtf += ".";
+		}
 
-        DcwRecordFile latrf = new DcwRecordFile(latf);
-        DcwRecordFile dhtrf = new DcwRecordFile(dhtf);
+		DcwRecordFile latrf = new DcwRecordFile(latf);
+		DcwRecordFile dhtrf = new DcwRecordFile(dhtf);
 
-        List<Object> databaseVec = dhtrf.parseRow();
-        int dcol = dhtrf.whatColumn("database_name");
-        if (dcol != -1) {
-            databaseName = (String) databaseVec.get(dcol);
-        }
-        dcol = dhtrf.whatColumn("database_desc");
-        if (dcol != -1) {
-            databaseDesc = (String) databaseVec.get(dcol);
-        }
-        dhtrf.close();
-        dhtrf = null;
+		List<Object> databaseVec = dhtrf.parseRow();
+		int dcol = dhtrf.whatColumn("database_name");
+		if (dcol != -1) {
+			databaseName = (String) databaseVec.get(dcol);
+		}
+		dcol = dhtrf.whatColumn("database_desc");
+		if (dcol != -1) {
+			databaseDesc = (String) databaseVec.get(dcol);
+		}
+		dhtrf.close();
+		dhtrf = null;
 
-        int latcols[] = latrf.lookupSchema(LATColumns, true, LATschematype, LATschemalength, false);
+		int latcols[] = latrf.lookupSchema(LATColumns, true, LATschematype, LATschemalength, false);
 
-        VPFLayer.logger.fine("lst.adp: looked up schema");
-        for (List<Object> l = new ArrayList<Object>(latrf.getColumnCount()); latrf.parseRow(l);) {
-            String lname = ((String) l.get(latcols[0])).toLowerCase();
-            float br[] = new float[] { ((Float) l.get(latcols[1])).floatValue(),
-                    ((Float) l.get(latcols[2])).floatValue(),
-                    ((Float) l.get(latcols[3])).floatValue(),
-                    ((Float) l.get(latcols[4])).floatValue() };
-            try {
-                CoverageAttributeTable table = new CoverageAttributeTable(vpfpath, lname);
-                CATs.put(lname, table);
-                boundrec.put(lname, br);
-                orderedLibraryNameList.add(lname);
-                if (VPFLayer.logger.isLoggable(Level.FINE)) {
-                    VPFLayer.logger.fine(lname + " " + br[0] + " " + br[1] + " " + br[2] + " "
-                            + br[3]);
-                }
-            } catch (FormatException fe) {
-                if (VPFLayer.logger.isLoggable(Level.FINER)) {
-                    VPFLayer.logger.finer("*****\nVPFLayer.LST: Couldn't create CoverageAttributeTable for "
-                            + vpfpath
-                            + " "
-                            + lname
-                            + " "
-                            + fe.getMessage()
-                            + "\n--- Not a problem if you have multiple paths, and "
-                            + lname
-                            + " is included in another path ---\n*****");
-                    fe.printStackTrace();
-                } else {
-                    VPFLayer.logger.fine("VPFLayer.LST: CAT discrepancy (run with finer logging level for more details)");
-                }
-            }
-        }
-        latrf.close();
-        latrf = null;
-    }
+		final List<String> libDirectories = searchLibraryDirectories(vpfpath);
 
-    /**
-     * Return the list of libraries that this database has.
-     * 
-     * @return the list of libraries. for DCW, this is typically NOAMER, BROWSE,
-     *         etc.
-     */
-    public List<String> getLibraryNames() {
-        return new ArrayList<String>(orderedLibraryNameList);
-    }
+		VPFLayer.logger.fine("lst.adp: looked up schema");
+		for (final List l = new ArrayList(latrf.getColumnCount()); latrf.parseRow(l);) {
+			final String lname = ((String) l.get(latcols[0])).toLowerCase();
+			
+			if (!libDirectories.contains(lname.toUpperCase())) {
+				continue;
+			}
+			
+			final float br[] = new float[] { ((Float) l.get(latcols[1])).floatValue(),
+					((Float) l.get(latcols[2])).floatValue(), ((Float) l.get(latcols[3])).floatValue(),
+					((Float) l.get(latcols[4])).floatValue() };
+			try {
+				CoverageAttributeTable table = new CoverageAttributeTable(vpfpath, lname);
+				CATs.put(lname, table);
+				boundrec.put(lname, br);
+				orderedLibraryNameList.add(lname);
+				if (VPFLayer.logger.isLoggable(Level.FINE)) {
+					VPFLayer.logger.fine(lname + " " + br[0] + " " + br[1] + " " + br[2] + " " + br[3]);
+				}
+			} catch (FormatException fe) {
+				if (VPFLayer.logger.isLoggable(Level.FINER)) {
+					VPFLayer.logger.finer(
+							"*****\nVPFLayer.LST: Couldn't create CoverageAttributeTable for " + vpfpath + " " + lname
+									+ " " + fe.getMessage() + "\n--- Not a problem if you have multiple paths, and "
+									+ lname + " is included in another path ---\n*****");
+					fe.printStackTrace();
+				} else {
+					VPFLayer.logger
+							.fine("VPFLayer.LST: CAT discrepancy (run with finer logging level for more details)");
+				}
+			}
+		}
+		latrf.close();
+		latrf = null;
+	}
 
-    /**
-     * Return the name of the database we are reading from.
-     */
-    public String getDatabaseName() {
-        return databaseName;
-    }
+	private List<String> searchLibraryDirectories(final String vpfpath) {
+		final ArrayList<String> subDirLibWithCat = new ArrayList<String>();
 
-    /**
-     * Return the description of the database we are reading from.
-     */
-    public String getDatabaseDescription() {
-        return databaseDesc;
-    }
+		final File vpfDirectory = new File(vpfpath);
+		final File[] vpfSubDirectory = vpfDirectory.listFiles(new FileFilter() {
+			public boolean accept(final File file) {
+				return file.isDirectory();
+			}
+		});
 
-    /**
-     * Return the coverage attribute table (list of coverages available for the
-     * given library) for the given library name.
-     * 
-     * @param library the name of the library to get the CAT for
-     * @return the CoverageAttributeTable requested (null if the library
-     *         requested doesn't exist in the database)
-     * @exception FormatException exceptions from opening the CAT for the
-     *            library
-     */
-    public CoverageAttributeTable getCAT(String library) throws FormatException {
-        return CATs.get(library);
-    }
+		for (int i = 0; i < vpfSubDirectory.length; i++) {
+			final File subDir = vpfSubDirectory[i];
+			String cat = subDir + "/cat";
+			if (BinaryFile.exists(cat)) {
+				subDirLibWithCat.add(subDir.getName().toUpperCase());
+				continue;
+			}
+			cat = cat + ".";
+			if (BinaryFile.exists(cat)) {
+				subDirLibWithCat.add(subDir.getName().toUpperCase());
+			}
+		}
 
-    /**
-     *  
-     */
-    public void drawTile(int scale, int screenwidth, int screenheight, String covname,
-                         VPFGraphicWarehouse warehouse, LatLonPoint ll1, LatLonPoint ll2) {
+		return subDirLibWithCat;
+	}
 
-        if (VPFLayer.logger.isLoggable(Level.FINE)) {
-            VPFLayer.logger.fine("Library selection table coverage: " + covname);
-            VPFLayer.logger.fine("Library selection table - edges: " + warehouse.drawEdgeFeatures());
-            VPFLayer.logger.fine("Library selection table - text: " + warehouse.drawTextFeatures());
-            VPFLayer.logger.fine("Library selection table - areas: " + warehouse.drawAreaFeatures());
-            VPFLayer.logger.fine("Warehouse: " + warehouse);
-            VPFLayer.logger.fine("Warehouse: cutoff scale " + BROWSE_CUTOFF);
-        }
+	/**
+	 * Return the list of libraries that this database has.
+	 * 
+	 * @return the list of libraries. for DCW, this is typically NOAMER, BROWSE,
+	 *         etc.
+	 */
+	public List<String> getLibraryNames() {
+		return new ArrayList<String>(orderedLibraryNameList);
+	}
 
-        // handle Dateline
-        if ((scale < BROWSE_CUTOFF) && (ll1.getLongitude() > ll2.getLongitude())) {
-            drawTile(scale, screenwidth, screenheight, covname, warehouse, ll1, new LatLonPoint.Float(ll2.getLatitude(), 180f - .00001f)/*
-                                                                                                                                         * 180
-                                                                                                                                         * -
-                                                                                                                                         * epsilon
-                                                                                                                                         */);
-            drawTile(scale, screenwidth, screenheight, covname, warehouse, new LatLonPoint.Float(ll1.getLatitude(), -180f), ll2);
-            return;
-        }
+	/**
+	 * Return the name of the database we are reading from.
+	 */
+	public String getDatabaseName() {
+		return databaseName;
+	}
 
-        if (VPFLayer.logger.isLoggable(Level.FINE)) {
-            VPFLayer.logger.fine("LST.drawTile() with scale of " + scale);
-        }
+	/**
+	 * Return the description of the database we are reading from.
+	 */
+	public String getDatabaseDescription() {
+		return databaseDesc;
+	}
 
-        float dpplat = Math.abs((ll1.getLatitude() - ll2.getLatitude()) / screenheight);
-        float dpplon = Math.abs((ll1.getLongitude() - ll2.getLongitude()) / screenwidth);
+	/**
+	 * Return the coverage attribute table (list of coverages available for the
+	 * given library) for the given library name.
+	 * 
+	 * @param library
+	 *            the name of the library to get the CAT for
+	 * @return the CoverageAttributeTable requested (null if the library
+	 *         requested doesn't exist in the database)
+	 * @exception FormatException
+	 *                exceptions from opening the CAT for the library
+	 */
+	public CoverageAttributeTable getCAT(String library) throws FormatException {
+		return CATs.get(library);
+	}
 
-        int inArea = 0;
-        CoverageTable redrawUntiled = null;
+	/**
+	 *  
+	 */
+	public void drawTile(int scale, int screenwidth, int screenheight, String covname, VPFGraphicWarehouse warehouse,
+			LatLonPoint ll1, LatLonPoint ll2) {
 
-        for (CoverageAttributeTable cat : CATs.values()) {
+		if (VPFLayer.logger.isLoggable(Level.FINE)) {
+			VPFLayer.logger.fine("Library selection table coverage: " + covname);
+			VPFLayer.logger.fine("Library selection table - edges: " + warehouse.drawEdgeFeatures());
+			VPFLayer.logger.fine("Library selection table - text: " + warehouse.drawTextFeatures());
+			VPFLayer.logger.fine("Library selection table - areas: " + warehouse.drawAreaFeatures());
+			VPFLayer.logger.fine("Warehouse: " + warehouse);
+			VPFLayer.logger.fine("Warehouse: cutoff scale " + BROWSE_CUTOFF);
+		}
 
-            if (VPFLayer.logger.isLoggable(Level.FINE)) {
-                VPFLayer.logger.fine("LST: checking library: " + cat.getLibraryName());
-            }
+		// handle Dateline
+		if ((scale < BROWSE_CUTOFF) && (ll1.getLongitude() > ll2.getLongitude())) {
+			drawTile(scale, screenwidth, screenheight, covname, warehouse, ll1, new LatLonPoint.Float(ll2.getLatitude(),
+					180f - .00001f)/*
+									 * 180 - epsilon
+									 */);
+			drawTile(scale, screenwidth, screenheight, covname, warehouse,
+					new LatLonPoint.Float(ll1.getLatitude(), -180f), ll2);
+			return;
+		}
 
-            if (!warehouse.checkLibraryForUsage(cat.getLibraryName())) {
-                continue;
-            }
+		if (VPFLayer.logger.isLoggable(Level.FINE)) {
+			VPFLayer.logger.fine("LST.drawTile() with scale of " + scale);
+		}
 
-            warehouse.resetForCAT();
+		float dpplat = Math.abs((ll1.getLatitude() - ll2.getLatitude()) / screenheight);
+		float dpplon = Math.abs((ll1.getLongitude() - ll2.getLongitude()) / screenwidth);
 
-            List<TileDirectory> tiles = cat.tilesInRegion(ll1.getLatitude(), ll2.getLatitude(), ll2.getLongitude(), ll1.getLongitude());
+		int inArea = 0;
+		CoverageTable redrawUntiled = null;
 
-            if (tiles == null) {
-                redrawUntiled = cat.getCoverageTable(covname);
-            } else if (cat.isTiledData() && (scale < BROWSE_CUTOFF)) {
+		for (CoverageAttributeTable cat : CATs.values()) {
 
-                if (!tiles.isEmpty()) {
-                    CoverageTable c = cat.getCoverageTable(covname);
-                    if (c == null) {
-                        if (VPFLayer.logger.isLoggable(Level.FINE)) {
-                            VPFLayer.logger.fine("|LST.drawTile(): Couldn't get coverage table for "
-                                    + covname + " " + cat.getLibraryName());
-                        }
-                        continue;
-                    }
+			if (VPFLayer.logger.isLoggable(Level.FINE)) {
+				VPFLayer.logger.fine("LST: checking library: " + cat.getLibraryName());
+			}
 
-                    if (VPFLayer.logger.isLoggable(Level.FINE)) {
-                        VPFLayer.logger.fine("Using coverage table for " + covname + " "
-                                + cat.getLibraryName());
-                    }
+			if (!warehouse.checkLibraryForUsage(cat.getLibraryName())) {
+				continue;
+			}
 
-                    inArea++;
-                    for (TileDirectory tileDirectory : tiles) {
-                        c.drawTile(tileDirectory, warehouse, ll1, ll2, dpplat, dpplon);
-                    }
-                }
-            }
-        }
-        if ((redrawUntiled != null) && (inArea == 0)) {
-            if (VPFLayer.logger.isLoggable(Level.FINE)) {
-                VPFLayer.logger.fine("LST drawing untiled browse data");
-            }
-            redrawUntiled.drawTile(new TileDirectory(), warehouse, ll1, ll2, dpplat, dpplon);
-        }
-    }
+			warehouse.resetForCAT();
 
-    /**
-     *  
-     */
-    public void drawFeatures(int scale, int screenwidth, int screenheight, String covname,
-                             VPFFeatureWarehouse warehouse, LatLonPoint ll1, LatLonPoint ll2) {
+			List<TileDirectory> tiles = cat.tilesInRegion(ll1.getLatitude(), ll2.getLatitude(), ll2.getLongitude(),
+					ll1.getLongitude());
 
-        if (VPFLayer.logger.isLoggable(Level.FINE)) {
-            VPFLayer.logger.fine("LST.drawFeatures(): Coverage name: " + covname);
-            VPFLayer.logger.fine("Library selection table - edges: " + warehouse.drawEdgeFeatures());
-            VPFLayer.logger.fine("Library selection table - text: " + warehouse.drawTextFeatures());
-            VPFLayer.logger.fine("Library selection table - areas: " + warehouse.drawAreaFeatures());
-            VPFLayer.logger.fine("Warehouse: " + warehouse);
-        }
+			if (tiles == null) {
+				redrawUntiled = cat.getCoverageTable(covname);
+			} else if (cat.isTiledData() && (scale < BROWSE_CUTOFF)) {
 
-        // handle Dateline
-        if ((scale < BROWSE_CUTOFF) && (ll1.getLongitude() > ll2.getLongitude())) {
-            drawFeatures(scale, screenwidth, screenheight, covname, warehouse, ll1, new LatLonPoint.Float(ll2.getLatitude(), 180f - .00001f)// 180-epsilon
-            );
-            drawFeatures(scale, screenwidth, screenheight, covname, warehouse, new LatLonPoint.Float(ll1.getLatitude(), -180f), ll2);
-            return;
-        }
+				if (!tiles.isEmpty()) {
+					CoverageTable c = cat.getCoverageTable(covname);
+					if (c == null) {
+						if (VPFLayer.logger.isLoggable(Level.FINE)) {
+							VPFLayer.logger.fine("|LST.drawTile(): Couldn't get coverage table for " + covname + " "
+									+ cat.getLibraryName());
+						}
+						continue;
+					}
 
-        if (VPFLayer.logger.isLoggable(Level.FINE)) {
-            VPFLayer.logger.fine("LST.drawFeatures() with scale of " + scale);
-        }
+					if (VPFLayer.logger.isLoggable(Level.FINE)) {
+						VPFLayer.logger.fine("Using coverage table for " + covname + " " + cat.getLibraryName());
+					}
 
-        float dpplat = Math.abs((ll1.getLatitude() - ll2.getLatitude()) / screenheight);
-        float dpplon = Math.abs((ll1.getLongitude() - ll2.getLongitude()) / screenwidth);
+					inArea++;
+					for (TileDirectory tileDirectory : tiles) {
+						c.drawTile(tileDirectory, warehouse, ll1, ll2, dpplat, dpplon);
+					}
+				}
+			}
+		}
+		if ((redrawUntiled != null) && (inArea == 0)) {
+			if (VPFLayer.logger.isLoggable(Level.FINE)) {
+				VPFLayer.logger.fine("LST drawing untiled browse data");
+			}
+			redrawUntiled.drawTile(new TileDirectory(), warehouse, ll1, ll2, dpplat, dpplon);
+		}
+	}
 
-        int inArea = 0;
-        CoverageTable redrawUntiled = null;
+	/**
+	 *  
+	 */
+	public void drawFeatures(int scale, int screenwidth, int screenheight, String covname,
+			VPFFeatureWarehouse warehouse, LatLonPoint ll1, LatLonPoint ll2) {
 
-        for (CoverageAttributeTable cat : CATs.values()) {
+		if (VPFLayer.logger.isLoggable(Level.FINE)) {
+			VPFLayer.logger.fine("LST.drawFeatures(): Coverage name: " + covname);
+			VPFLayer.logger.fine("Library selection table - edges: " + warehouse.drawEdgeFeatures());
+			VPFLayer.logger.fine("Library selection table - text: " + warehouse.drawTextFeatures());
+			VPFLayer.logger.fine("Library selection table - areas: " + warehouse.drawAreaFeatures());
+			VPFLayer.logger.fine("Warehouse: " + warehouse);
+		}
 
-            if (!warehouse.checkLibraryForUsage(cat.getLibraryName())) {
-                continue;
-            }
+		// handle Dateline
+		if ((scale < BROWSE_CUTOFF) && (ll1.getLongitude() > ll2.getLongitude())) {
+			drawFeatures(scale, screenwidth, screenheight, covname, warehouse, ll1,
+					new LatLonPoint.Float(ll2.getLatitude(), 180f - .00001f)// 180-epsilon
+			);
+			drawFeatures(scale, screenwidth, screenheight, covname, warehouse,
+					new LatLonPoint.Float(ll1.getLatitude(), -180f), ll2);
+			return;
+		}
 
-            if (cat.isTiledCoverage() && scale < BROWSE_CUTOFF) {
+		if (VPFLayer.logger.isLoggable(Level.FINE)) {
+			VPFLayer.logger.fine("LST.drawFeatures() with scale of " + scale);
+		}
 
-                CoverageTable c = cat.getCoverageTable(covname);
-                if (c == null) {
-                    if (VPFLayer.logger.isLoggable(Level.FINE)) {
-                        VPFLayer.logger.fine("LST.getFeatures(): Couldn't get coverage table for "
-                                + covname + " " + cat.getLibraryName());
-                    }
-                    continue;
-                }
+		float dpplat = Math.abs((ll1.getLatitude() - ll2.getLatitude()) / screenheight);
+		float dpplon = Math.abs((ll1.getLongitude() - ll2.getLongitude()) / screenwidth);
 
-                if (VPFLayer.logger.isLoggable(Level.FINE)) {
-                    VPFLayer.logger.fine("Using coverage table for " + covname + " "
-                            + cat.getLibraryName());
-                }
+		int inArea = 0;
+		CoverageTable redrawUntiled = null;
 
-                c.drawFeatures(warehouse, ll1, ll2, dpplat, dpplon);
-                inArea++;
-            } else {
-                // Set up to draw browse coverage, or non-tiled coverage
-                if (VPFLayer.logger.isLoggable(Level.FINE)) {
-                    VPFLayer.logger.fine("LST.drawTile(): Scale too small (probably) or no tiles in region.");
-                }
-                redrawUntiled = cat.getCoverageTable(covname);
+		for (CoverageAttributeTable cat : CATs.values()) {
 
-                if (redrawUntiled != null) {
-                    redrawUntiled.drawFeatures(warehouse, ll1, ll2, dpplat, dpplon);
-                }
-            }
-        }
+			if (!warehouse.checkLibraryForUsage(cat.getLibraryName())) {
+				continue;
+			}
 
-        // Moved this code up into the redrawUntiled section directly above
-        // this. It looks like the code wanted to restrict how many un-tiled
-        // coverage attribute tables would be consulted, but for certain kinds
-        // of VPF data that gets distributed as a bunch of little libraries,
-        // this seems to limit rendering to only one small area.
+			if (cat.isTiledCoverage() && scale < BROWSE_CUTOFF) {
 
-        // if ((redrawUntiled != null) && (inArea == 0)) {
-        // redrawUntiled.drawFeatures(warehouse, ll1, ll2, dpplat, dpplon);
-        // }
-    }
+				CoverageTable c = cat.getCoverageTable(covname);
+				if (c == null) {
+					if (VPFLayer.logger.isLoggable(Level.FINE)) {
+						VPFLayer.logger.fine("LST.getFeatures(): Couldn't get coverage table for " + covname + " "
+								+ cat.getLibraryName());
+					}
+					continue;
+				}
 
-    /**
-     * Given a string for a coverage type or feature type, return the
-     * description for that string. Return null if the code string isn't found.
-     * 
-     * @param coverageOrFeatureType string ID for coverage or Feature type.
-     */
-    public String getDescription(String coverageOrFeatureType) throws FormatException {
-        boolean DEBUG = VPFLayer.logger.isLoggable(Level.FINE);
+				if (VPFLayer.logger.isLoggable(Level.FINE)) {
+					VPFLayer.logger.fine("Using coverage table for " + covname + " " + cat.getLibraryName());
+				}
 
-        if (DEBUG)
-            VPFLayer.logger.fine("LST.getDescription: " + coverageOrFeatureType);
+				c.drawFeatures(warehouse, ll1, ll2, dpplat, dpplon);
+				inArea++;
+			} else {
+				// Set up to draw browse coverage, or non-tiled coverage
+				if (VPFLayer.logger.isLoggable(Level.FINE)) {
+					VPFLayer.logger.fine("LST.drawTile(): Scale too small (probably) or no tiles in region.");
+				}
+				redrawUntiled = cat.getCoverageTable(covname);
 
-        for (String libraryName : getLibraryNames()) {
-            CoverageAttributeTable cat = getCAT(libraryName);
-            if (cat == null) {
-                continue;
-            }
-            String[] coverages = cat.getCoverageNames();
-            for (int j = 0; j < coverages.length; j++) {
-                String covname = coverages[j];
-                if (coverageOrFeatureType.equalsIgnoreCase(covname)) {
-                    if (DEBUG)
-                        VPFLayer.logger.fine("** Matches coverage " + covname);
-                    return cat.getCoverageDescription(covname);
-                } else {
-                    if (DEBUG)
-                        VPFLayer.logger.fine("   Checking in coverage table " + covname);
-                    CoverageTable ct = cat.getCoverageTable(covname);
-                    Hashtable<String, CoverageTable.FeatureClassRec> info = ct.getFeatureTypeInfo();
-                    for (CoverageTable.FeatureClassRec fcr : info.values()) {
-                        String name = fcr.feature_class;
-                        if (coverageOrFeatureType.equalsIgnoreCase(name)) {
-                            if (DEBUG)
-                                VPFLayer.logger.fine("** Found feature " + name);
-                            return fcr.description;
-                        }
-                        if (DEBUG)
-                            VPFLayer.logger.fine("   checked " + name);
-                    }
-                }
-            }
-        }
-        if (DEBUG)
-            VPFLayer.logger.fine("-- No matches found.");
-        return null;
-    }
+				if (redrawUntiled != null) {
+					redrawUntiled.drawFeatures(warehouse, ll1, ll2, dpplat, dpplon);
+				}
+			}
+		}
 
-    /**
-     * Just a test main to parse vpf datafiles param args files to parse, plus
-     * other command line flags
-     * 
-     * @param args command line arguments args[0] is a path to the VPF root
-     */
-    public static void main(String[] args) {
-        String dcwbase = null;
-        if (args.length > 0) {
-            dcwbase = args[0];
+		// Moved this code up into the redrawUntiled section directly above
+		// this. It looks like the code wanted to restrict how many un-tiled
+		// coverage attribute tables would be consulted, but for certain kinds
+		// of VPF data that gets distributed as a bunch of little libraries,
+		// this seems to limit rendering to only one small area.
 
-            try {
-                LibrarySelectionTable lst = new LibrarySelectionTable(dcwbase);
-                System.out.println("Database Name " + lst.getDatabaseName());
+		// if ((redrawUntiled != null) && (inArea == 0)) {
+		// redrawUntiled.drawFeatures(warehouse, ll1, ll2, dpplat, dpplon);
+		// }
+	}
 
-                for (String libraryName : lst.getLibraryNames()) {
-                    System.out.println("Library " + libraryName);
-                    lst.getCAT(libraryName);
-                }
-            } catch (FormatException f) {
-                System.err.println("*****************************************");
-                System.err.println("*---------------------------------------*");
-                System.err.println("Format error in dealing with LST");
-                System.err.println(f.getMessage());
-                System.err.println("*---------------------------------------*");
-                System.err.println("*****************************************");
-            }
-        } else {
-            System.out.println("Need a path to the VPF lat. file");
-        }
-    }
+	/**
+	 * Given a string for a coverage type or feature type, return the
+	 * description for that string. Return null if the code string isn't found.
+	 * 
+	 * @param coverageOrFeatureType
+	 *            string ID for coverage or Feature type.
+	 */
+	public String getDescription(String coverageOrFeatureType) throws FormatException {
+		boolean DEBUG = VPFLayer.logger.isLoggable(Level.FINE);
+
+		if (DEBUG)
+			VPFLayer.logger.fine("LST.getDescription: " + coverageOrFeatureType);
+
+		for (String libraryName : getLibraryNames()) {
+			CoverageAttributeTable cat = getCAT(libraryName);
+			if (cat == null) {
+				continue;
+			}
+			String[] coverages = cat.getCoverageNames();
+			for (int j = 0; j < coverages.length; j++) {
+				String covname = coverages[j];
+				if (coverageOrFeatureType.equalsIgnoreCase(covname)) {
+					if (DEBUG)
+						VPFLayer.logger.fine("** Matches coverage " + covname);
+					return cat.getCoverageDescription(covname);
+				} else {
+					if (DEBUG)
+						VPFLayer.logger.fine("   Checking in coverage table " + covname);
+					CoverageTable ct = cat.getCoverageTable(covname);
+					Hashtable<String, CoverageTable.FeatureClassRec> info = ct.getFeatureTypeInfo();
+					for (CoverageTable.FeatureClassRec fcr : info.values()) {
+						String name = fcr.feature_class;
+						if (coverageOrFeatureType.equalsIgnoreCase(name)) {
+							if (DEBUG)
+								VPFLayer.logger.fine("** Found feature " + name);
+							return fcr.description;
+						}
+						if (DEBUG)
+							VPFLayer.logger.fine("   checked " + name);
+					}
+				}
+			}
+		}
+		if (DEBUG)
+			VPFLayer.logger.fine("-- No matches found.");
+		return null;
+	}
+
+	/**
+	 * Just a test main to parse vpf datafiles param args files to parse, plus
+	 * other command line flags
+	 * 
+	 * @param args
+	 *            command line arguments args[0] is a path to the VPF root
+	 */
+	public static void main(String[] args) {
+		String dcwbase = null;
+		if (args.length > 0) {
+			dcwbase = args[0];
+
+			try {
+				LibrarySelectionTable lst = new LibrarySelectionTable(dcwbase);
+				System.out.println("Database Name " + lst.getDatabaseName());
+
+				for (String libraryName : lst.getLibraryNames()) {
+					System.out.println("Library " + libraryName);
+					lst.getCAT(libraryName);
+				}
+			} catch (FormatException f) {
+				System.err.println("*****************************************");
+				System.err.println("*---------------------------------------*");
+				System.err.println("Format error in dealing with LST");
+				System.err.println(f.getMessage());
+				System.err.println("*---------------------------------------*");
+				System.err.println("*****************************************");
+			}
+		} else {
+			System.out.println("Need a path to the VPF lat. file");
+		}
+	}
 }
