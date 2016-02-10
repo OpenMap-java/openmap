@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,6 +17,7 @@ public class StyleFilter {
 	 * Only features that match the filter are displayed.
 	 */
 	static String FILTER = "filter";
+	static boolean fineLogging = getLogger().isLoggable(Level.FINE);
 
 	/**
 	 * Filter key to check feature geometry type.
@@ -38,7 +40,9 @@ public class StyleFilter {
 
 	public static StyleFilter getForFilterNode(JsonNode filterNode) {
 		JsonNode opNode = filterNode.get(0);
-		//System.out.println("eval " + filterNode + ", have first: " + opNode);
+		if (fineLogging) {
+			getLogger().fine("eval " + filterNode + ", have first: " + opNode);
+		}
 		StyleFilterOperation op = StyleFilterOperation.getForFilterNode(opNode);
 
 		switch (op) {
@@ -95,8 +99,9 @@ public class StyleFilter {
 
 			boolean ret = op.passes(featureVal, value);
 
-			// System.out.println("checking " + featureVal + " vs " + value + ":
-			// " + ret);
+			if (fineLogging) {
+				getLogger().fine("checking " + featureVal + " vs " + value + ":" + ret);
+			}
 
 			return ret;
 		}
@@ -114,12 +119,14 @@ public class StyleFilter {
 
 			if (filterNode.isArray()) {
 				Iterator<JsonNode> listStuff = filterNode.elements();
-				listStuff.next(); // The original op is the first thing, skip
-									// it.
+				// The original op is the first thing, skip it.				
+				listStuff.next();
 				key = listStuff.next().asText();
 				while (listStuff.hasNext()) {
 					String listThing = listStuff.next().asText();
-					//System.out.println("KEYLIST: adding " + listThing);
+					if (fineLogging) {
+						getLogger().fine("KEYLIST: adding " + listThing);
+					}
 					values.add(listThing);
 				}
 			}
@@ -135,8 +142,9 @@ public class StyleFilter {
 
 			boolean ret = op.passes(featureVal, values);
 
-			// System.out.println("checking " + featureVal + " in " + values +
-			// ": " + ret);
+			if (fineLogging) {
+				getLogger().fine("checking " + featureVal + " in " + values + ": " + ret);
+			}
 
 			return ret;
 		}
@@ -147,7 +155,9 @@ public class StyleFilter {
 
 		public COMPOUND(StyleFilterOperation op, JsonNode filterNode) {
 			super(op);
-			// System.out.println("COMPOUND " + op + ", " + filterNode);
+			if (fineLogging) {
+				getLogger().fine("COMPOUND " + op + ", " + filterNode);
+			}
 			filters = new ArrayList<StyleFilter>();
 
 			if (filterNode.isArray()) {
@@ -156,7 +166,9 @@ public class StyleFilter {
 				subFilters.next();
 				while (subFilters.hasNext()) {
 					JsonNode subFilter = subFilters.next();
-					// System.out.println(subFilter);
+					if (fineLogging) {
+						getLogger().fine(subFilter.toString());
+					}
 					filters.add(getForFilterNode(subFilter));
 				}
 			}

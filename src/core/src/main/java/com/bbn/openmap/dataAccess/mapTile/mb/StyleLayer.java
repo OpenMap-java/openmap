@@ -83,11 +83,11 @@ public class StyleLayer {
 		maxZoom = StyleNode.getAsDouble(layerNode, MAX_ZOOM, Double.NaN);
 		
 		if (layerNode.get(REF) != null) {
-			System.out.println(id + ": REF links aren't ready");
+			getLogger().warning(id + ": REF links aren't ready");
 		}
 		
 		if (layerNode.get(METADATA) != null) {
-			System.out.println(id + ": metadata is being ignored for now.");
+			getLogger().warning(id + ": metadata is being ignored for now.");
 		}
 		
 	}
