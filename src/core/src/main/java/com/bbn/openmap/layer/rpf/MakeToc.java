@@ -2093,4 +2093,5 @@ public class MakeToc {
     protected void fireProgressUpdate(int type, String task, int frameNumber, int totalFrames) {
         progressSupport.fireUpdate(type, task, totalFrames, frameNumber);
     }
+
 }
