@@ -151,7 +151,7 @@ public class MapBean extends JComponent implements ComponentListener,
 	/**
 	 * OpenMap version.
 	 */
-	public static final String version = "5.2.0b";
+	public static final String version = "6.0b";
 
 	/**
 	 * Suppress the copyright message on initialization.
