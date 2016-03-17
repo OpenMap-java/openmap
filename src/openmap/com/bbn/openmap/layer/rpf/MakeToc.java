@@ -652,7 +652,7 @@ public class MakeToc {
 			String seriesCode = head.filename.substring(9, 11);
 			RpfProductInfo rpi = RpfProductInfo.get(seriesCode);
 
-			if (rpi == RpfProductInfo.UK) {
+            if (rpi == RpfConstants.UK) {
 
 				String dblChkSeriesCode = framename.substring(9, 11);
 				RpfProductInfo rpi2 = rpi;
@@ -661,7 +661,7 @@ public class MakeToc {
 					rpi2 = RpfProductInfo.get(dblChkSeriesCode);
 				}
 
-				if (rpi2 == RpfProductInfo.UK) {
+                if (rpi2 == RpfConstants.UK) {
 
 					Debug.output("MakeToc: " + frame.filename + " / " + head.filename
 							+ " (filename/header) unknown map type " + seriesCode + " / " + dblChkSeriesCode
