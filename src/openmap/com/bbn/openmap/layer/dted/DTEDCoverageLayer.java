@@ -28,6 +28,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -51,7 +52,15 @@ import com.bbn.openmap.util.PropUtils;
  *  dtedcov.class=com.bbn.openmap.layer.dted.DTEDCoverageLayer
  *  dtedcov.prettyName=DTED Coverage
  *  # This property should reflect the paths to the DTED directories
- *  #dtedcov.paths=/tmp/data/dted
+ *  dtedcov.paths=/tmp/data/dted
+ *  
+ *  # coverage cache file, will be created if it doesn't exist
+ *  dtedcov.coverageFile=local_path_to_file
+ *  # Using property prefix, append 0, 1, 2 to prefix for drawing attributes.  In this example, dtedcov is prefix
+ *  #dtedcov0.(drawing attribute properties affect level 0 coverage rendering)
+ *  #dtedcov1.(drawing attribute properties affect level 1 coverage rendering)
+ *  #dtedcov2.(drawing attribute properties affect level 2 coverage rendering)
+ * 
  * </pre>
  */
 public class DTEDCoverageLayer extends OMGraphicHandlerLayer {
@@ -85,10 +94,40 @@ public class DTEDCoverageLayer extends OMGraphicHandlerLayer {
         super.setProperties(prefix, properties);
         setDefaultValues();
 
-        prefix = PropUtils.getScopedPropertyPrefix(prefix);
+        String propPrefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-        paths = PropUtils.initPathsFromProperties(properties, prefix
+        String[] pathStrings = PropUtils.initPathsFromProperties(properties, propPrefix
                 + DTEDLayer.DTEDPathsProperty);
+
+        if (pathStrings != null) {
+            paths = pathStrings;
+
+            coverageManager = new DTEDCoverageManager(paths);
+            coverageManager.setProperties(prefix, properties);
+        }
+    }
+
+    public Properties getProperties(Properties props) {
+        props = super.getProperties(props);
+
+
+        if (coverageManager != null) {
+            coverageManager.getProperties(props);
+        }
+
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+        if (paths != null) {
+            StringBuilder sBuilder = new StringBuilder();
+            for (String path : paths) {
+                if (sBuilder.length() != 0) {
+                    sBuilder.append(";");
+                }
+                sBuilder.append(path);
+            }
+            props.put(prefix + DTEDLayer.DTEDPathsProperty, sBuilder.toString());
+        }
+
+        return props;
     }
 
     /**
@@ -128,8 +167,6 @@ public class DTEDCoverageLayer extends OMGraphicHandlerLayer {
                         + "|DTEDCoverageLayer.prepare(): created DTEDCoverageManager");
             }
         }
-
-//        float[] coverage = coverageManager.getCoverage(projection);
         
         return coverageManager.getCoverageRects(projection);
     }
@@ -151,7 +188,7 @@ public class DTEDCoverageLayer extends OMGraphicHandlerLayer {
             GridBagConstraints c = new GridBagConstraints();
             panel.setLayout(gridbag);
 
-            Component gui = coverageManager.getGUI();
+            Component gui = coverageManager.getGUI(this);
             c.gridx = GridBagConstraints.REMAINDER;
             c.fill = GridBagConstraints.BOTH;
             c.weightx = 1.0f;
@@ -166,7 +203,7 @@ public class DTEDCoverageLayer extends OMGraphicHandlerLayer {
             JButton reset = new JButton(interString);
             reset.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    coverageManager.clear();
+                    coverageManager.reset();
                     doPrepare();
                 }
             });
@@ -182,6 +219,10 @@ public class DTEDCoverageLayer extends OMGraphicHandlerLayer {
 
     public void setPaths(String[] paths) {
         this.paths = paths;
+        if (coverageManager != null) {
+            coverageManager.reset();
+            coverageManager = null;
+        }
     }
 
     public DTEDCoverageManager getCoverageManager() {

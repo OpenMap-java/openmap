@@ -135,8 +135,8 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * </pre>
  */
-public class LayersPanel extends OMToolComponent implements Serializable, ActionListener,
-        LayerListener, PropertyChangeListener {
+public class LayersPanel extends OMToolComponent
+        implements Serializable, ActionListener, LayerListener, PropertyChangeListener {
 
     public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.LayersPanel");
 
@@ -951,7 +951,8 @@ public class LayersPanel extends OMToolComponent implements Serializable, Action
             logger.fine("receiving PropertyChangeEvent " + command + ", " + pce.toString());
         }
 
-        if ((command == LayerSelectedCmd || command == LayerDeselectedCmd) && obj instanceof Layer) {
+        if ((command == LayerSelectedCmd || command == LayerDeselectedCmd)
+                && obj instanceof Layer) {
 
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("layer panel notification that layer is selected: "
@@ -960,8 +961,8 @@ public class LayersPanel extends OMToolComponent implements Serializable, Action
             firePropertyChange(command, null, ((Layer) obj));
 
         } else if ((command == LayersPanel.LayerTopCmd || command == LayersPanel.LayerBottomCmd
-                || command == LayersPanel.LayerUpCmd || command == LayersPanel.LayerDownCmd || command == LayersPanel.LayerRemoveCmd)
-                && obj instanceof Layer) {
+                || command == LayersPanel.LayerUpCmd || command == LayersPanel.LayerDownCmd
+                || command == LayersPanel.LayerRemoveCmd) && obj instanceof Layer) {
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("layer panel notification that layer should be raised: "
                         + ((Layer) obj).getName());
@@ -1032,11 +1033,14 @@ public class LayersPanel extends OMToolComponent implements Serializable, Action
 
         String controlString = props.getProperty(prefix + ControlButtonsProperty);
 
-        if (controlString != NO_CONTROLS) {
-            if (controlString == null) {
-                setControls(createControlButtons());
-            } else {
-                Object obj = ComponentFactory.create(controlString, prefix + ControlButtonsProperty, props);
+        if (controlString == null) {
+            setControls(createControlButtons());
+        } else {
+            controlString = controlString.trim();
+
+            if (!NO_CONTROLS.equalsIgnoreCase(controlString)) {
+                Object obj = ComponentFactory.create(controlString, prefix
+                        + ControlButtonsProperty, props);
 
                 if (obj instanceof LayerControlButtonPanel) {
                     setControlsAndNotify((LayerControlButtonPanel) obj);
@@ -1044,8 +1048,10 @@ public class LayersPanel extends OMToolComponent implements Serializable, Action
             }
         }
 
-        bufferedBoundary = PropUtils.booleanFromProperties(props, prefix + BufferedBoundaryProperty, bufferedBoundary);
-        showStatus = PropUtils.booleanFromProperties(props, prefix + ShowStatusProperty, showStatus);
+        bufferedBoundary = PropUtils.booleanFromProperties(props, prefix
+                + BufferedBoundaryProperty, bufferedBoundary);
+        showStatus = PropUtils.booleanFromProperties(props, prefix
+                + ShowStatusProperty, showStatus);
     }
 
     public Properties getProperties(Properties props) {
@@ -1079,13 +1085,15 @@ public class LayersPanel extends OMToolComponent implements Serializable, Action
         props.put(BufferedBoundaryProperty, interString);
         interString = i18n.get(LayersPanel.class, BufferedBoundaryProperty, "Use Background Layers");
         props.put(BufferedBoundaryProperty + LabelEditorProperty, interString);
-        props.put(BufferedBoundaryProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(BufferedBoundaryProperty
+                + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         interString = i18n.get(LayersPanel.class, ShowStatusProperty, I18n.TOOLTIP, "Use Layer Panes that show layer status.");
         props.put(ShowStatusProperty, interString);
         interString = i18n.get(LayersPanel.class, ShowStatusProperty, "Show Layer Status");
         props.put(ShowStatusProperty + LabelEditorProperty, interString);
-        props.put(ShowStatusProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        props.put(ShowStatusProperty
+                + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         return props;
     }
