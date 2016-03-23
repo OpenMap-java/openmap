@@ -164,7 +164,7 @@ public class MapBean extends JComponent implements ComponentListener, ContainerL
 
     private static final String copyrightNotice = "OpenMap(tm) Version " + version + "\r\n"
             + "  Copyright (C) BBNT Solutions LLC.  All rights reserved.\r\n"
-            + "  See http://code.google.com/p/openmap/ for details.\r\n";
+            + "  See http://openmap-java.org/ for details.\r\n";
 
     public final static float DEFAULT_CENTER_LAT = 0.0f;
 
