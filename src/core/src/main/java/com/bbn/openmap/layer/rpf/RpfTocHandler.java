@@ -779,12 +779,12 @@ public class RpfTocHandler {
 			if (Debug.debugging("rpftoc")) {
 				Debug.output("textScaleToLong: Number Format Exception!!!!" + textScale);
 			}
-			return (long) RpfProductInfo.UK.scale;
+			return (long) RpfConstants.Various;
 		} catch (StringIndexOutOfBoundsException sioobe) {
 			if (Debug.debugging("rpftoc")) {
 				Debug.output("textScaleToLong: String index out of bounds:\n" + sioobe.getMessage());
 			}
-			return (long) RpfProductInfo.UK.scale;
+			return (long) RpfConstants.Various;
 		}
 
 		if (colon != -1) {
