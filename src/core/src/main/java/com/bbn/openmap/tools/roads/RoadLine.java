@@ -75,10 +75,7 @@ public class RoadLine extends Visual implements RoadObject {
 
     public class Graphic extends OMLine implements RoadGraphic {
         Graphic(LatLonPoint p1, LatLonPoint p2) {
-            super(p1.getLatitude(),
-                  p1.getLongitude(),
-                  p2.getLatitude(),
-                  p2.getLongitude(),
+            super(p1.getY(), p1.getX(), p2.getY(), p2.getX(),
                   OMLine.LINETYPE_STRAIGHT);
             if (road.isBlocked()) {
                 setLinePaint(Color.white);

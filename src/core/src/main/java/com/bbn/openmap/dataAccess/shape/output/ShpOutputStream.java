@@ -485,8 +485,8 @@ public class ShpOutputStream {
                point = (OMPoint) sublist.getOMGraphicAt(j);
                LatLonPoint pt = new LatLonPoint.Double(point.getLat(), point.getLon());
 
-               double lat = pt.getLatitude();
-               double lon = pt.getLongitude();
+                    double lat = pt.getY();
+                    double lon = pt.getX();
 
                if (transform == null) {
                   _leos.writeLEDouble(lon);
@@ -500,8 +500,8 @@ public class ShpOutputStream {
          } else {
             point = (OMPoint) graphic;
             LatLonPoint pt = new LatLonPoint.Double(point.getLat(), point.getLon());
-            double lat = pt.getLatitude();
-            double lon = pt.getLongitude();
+                double lat = pt.getY();
+                double lon = pt.getX();
 
             if (transform == null) {
                _leos.writeLEDouble(lon);

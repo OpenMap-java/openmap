@@ -1032,11 +1032,14 @@ public class LayersPanel extends OMToolComponent implements Serializable, Action
 
         String controlString = props.getProperty(prefix + ControlButtonsProperty);
 
-        if (controlString != NO_CONTROLS) {
-            if (controlString == null) {
-                setControls(createControlButtons());
-            } else {
-                Object obj = ComponentFactory.create(controlString, prefix + ControlButtonsProperty, props);
+        if (controlString == null) {
+            setControls(createControlButtons());
+        } else {
+            controlString = controlString.trim();
+
+            if (!NO_CONTROLS.equalsIgnoreCase(controlString)) {
+                Object obj = ComponentFactory.create(controlString, prefix
+                        + ControlButtonsProperty, props);
 
                 if (obj instanceof LayerControlButtonPanel) {
                     setControlsAndNotify((LayerControlButtonPanel) obj);
