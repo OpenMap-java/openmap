@@ -30,6 +30,7 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.omGraphics.OMPoly;
 import com.bbn.openmap.util.Debug;
+import com.bbn.openmap.util.DeepCopyUtil;
 
 /**
  * An EsriGraphicList ensures that only EsriPolygons are added to its list.
@@ -129,7 +130,8 @@ public class EsriPolylineList extends EsriGraphicList {
 
     public static OMPoly convert(OMLine omLine) {
         if (omLine.getRenderType() == OMGraphic.RENDERTYPE_LATLON) {
-            OMPoly poly = new OMPoly(omLine.getLL(), OMGraphic.DECIMAL_DEGREES, omLine.getLineType());
+        	// Yikes, if we just give omLine LL to OMPoly, they change to radians right under our feet!
+            OMPoly poly = new OMPoly(DeepCopyUtil.deepCopy(omLine.getLL()), OMGraphic.DECIMAL_DEGREES, omLine.getLineType());
             poly.setAttributes(omLine.getAttributes());
             DrawingAttributes da = new DrawingAttributes();
             da.setFrom(omLine);
