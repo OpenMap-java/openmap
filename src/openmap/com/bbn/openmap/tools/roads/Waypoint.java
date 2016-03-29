@@ -140,12 +140,12 @@ public abstract class Waypoint extends Visual implements Serializable {
         setScreenLocation(loc);
     }
 
-    public float getLatitude() {
-        return getLocation().getLatitude();
+    public double getLatitude() {
+        return getLocation().getY();
     }
 
-    public float getLongitude() {
-        return getLocation().getLongitude();
+    public double getLongitude() {
+        return getLocation().getX();
     }
 
     /**
@@ -159,8 +159,7 @@ public abstract class Waypoint extends Visual implements Serializable {
         private boolean blinkState = false;
 
         protected Graphic(int radius) {
-            super(Waypoint.this.getLocation().getLatitude(),
-                  Waypoint.this.getLocation().getLongitude(),
+            super(Waypoint.this.getLocation().getY(), Waypoint.this.getLocation().getX(),
                   -radius,
                   -radius,
                   radius,

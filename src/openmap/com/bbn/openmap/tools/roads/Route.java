@@ -64,14 +64,12 @@ public class Route implements Cloneable, Serializable {
                                                   double bestConvoySpeed, double worstConvoySpeed) {
         Hashtable marks = new Hashtable();
         boolean haveRoute = false;
-        double toLat;
-        double toLon;
         LatLonPoint toLoc = to.getLocation();
-        toLat = toLoc.getLatitude();
-        toLon = toLoc.getLongitude();
+        double toLat = toLoc.getY();
+        double toLon = toLoc.getX();
         LatLonPoint fromLoc = from.getLocation();
-        double fromLat = fromLoc.getLatitude();
-        double fromLon = fromLoc.getLongitude();
+        double fromLat = fromLoc.getY();
+        double fromLon = fromLoc.getX();
         double timeLimitBase = GreatCircle.sphericalDistance(toLat, toLon, fromLat, fromLon)
                 / worstConvoySpeed;
         double bestTime = Double.MAX_VALUE;
@@ -105,7 +103,7 @@ public class Route implements Cloneable, Serializable {
                         NodeInfo nextInfo = (NodeInfo) marks.get(nextIntersection);
                         if (nextInfo == null) {
                             LatLonPoint nextLoc = nextIntersection.getLocation();
-                            double crowsPathDistance = GreatCircle.sphericalDistance(toLat, toLon, nextLoc.getLatitude(), nextLoc.getLongitude());
+                            double crowsPathDistance = GreatCircle.sphericalDistance(toLat, toLon, nextLoc.getY(), nextLoc.getX());
                             double crowsPathHours = crowsPathDistance / bestConvoySpeed;
                             nextInfo = new NodeInfo(nextIntersection, road, newTime, crowsPathHours);
                             marks.put(nextIntersection, nextInfo);

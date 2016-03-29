@@ -118,7 +118,7 @@ public class Road implements RoadObject, Serializable {
         // ());
         for (int i = 1; i < points.length; i++) {
             LatLonPoint thisPoint = points[i].getLocation();
-            kilometers += GreatCircle.sphericalDistance(prevPoint.getLatitude(), prevPoint.getLongitude(), thisPoint.getLatitude(), thisPoint.getLongitude());
+            kilometers += GreatCircle.sphericalDistance(prevPoint.getY(), prevPoint.getX(), thisPoint.getY(), thisPoint.getX());
             prevPoint = thisPoint;
         }
         return kilometers;
@@ -132,12 +132,12 @@ public class Road implements RoadObject, Serializable {
 
     public LatLonPoint getLocationAtKilometer(double kilometers) {
         LatLonPoint prevPoint = points[0].getLocation();
-        double prevLat = prevPoint.getLatitude();
-        double prevLon = prevPoint.getLongitude();
+        double prevLat = prevPoint.getY();
+        double prevLon = prevPoint.getX();
         for (int i = 1; i < points.length; i++) {
             LatLonPoint thisPoint = points[i].getLocation();
-            double thisLat = thisPoint.getLatitude();
-            double thisLon = thisPoint.getLongitude();
+            double thisLat = thisPoint.getY();
+            double thisLon = thisPoint.getX();
             double thisLength = GreatCircle.sphericalDistance(prevLat, prevLon, thisLat, thisLon);
             if (thisLength >= kilometers) {
                 double fraction = kilometers / thisLength;

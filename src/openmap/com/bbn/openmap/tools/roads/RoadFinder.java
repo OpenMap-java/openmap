@@ -894,7 +894,7 @@ public class RoadFinder
     * @return Intersection closest
     */
    protected Intersection findClosestIntersection(LatLonPoint latLon) {
-      Intersection inter = (Intersection) interQuadTree.get(latLon.getLatitude(), latLon.getLongitude());
+        Intersection inter = (Intersection) interQuadTree.get(latLon.getY(), latLon.getX());
       if (inter == null)
          logger.warning("no intersection at " + latLon);
 

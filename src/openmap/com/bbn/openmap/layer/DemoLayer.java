@@ -444,13 +444,13 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
         LatLonPoint pnt2 = new LatLonPoint.Double(42.3, -70.678);
         double gspacing = Length.MILE.toRadians(5);
 
-        OMCircle ompoint1 = new OMCircle(pnt1.getLatitude(), pnt1.getLongitude(), gspacing, Length.RADIAN);
-        OMCircle ompoint2 = new OMCircle(pnt2.getLatitude(), pnt2.getLongitude(), gspacing, Length.RADIAN);
+        OMCircle ompoint1 = new OMCircle(pnt1.getY(), pnt1.getX(), gspacing, Length.RADIAN);
+        OMCircle ompoint2 = new OMCircle(pnt2.getY(), pnt2.getX(), gspacing, Length.RADIAN);
 
         LatLonPoint int1 = GreatCircle.pointAtDistanceBetweenPoints(pnt1.getRadLat(), pnt1.getRadLon(), pnt2.getRadLat(), pnt2.getRadLon(), gspacing, -1);
         LatLonPoint int2 = GreatCircle.pointAtDistanceBetweenPoints(pnt2.getRadLat(), pnt2.getRadLon(), pnt1.getRadLat(), pnt1.getRadLon(), gspacing, -1);
 
-        OMLine geoline = new OMLine(int1.getLatitude(), int1.getLongitude(), int2.getLatitude(), int2.getLongitude(), OMGraphic.LINETYPE_GREATCIRCLE);
+        OMLine geoline = new OMLine(int1.getY(), int1.getX(), int2.getY(), int2.getX(), OMGraphic.LINETYPE_GREATCIRCLE);
         ompoint1.setLinePaint(Color.red);
         ompoint2.setLinePaint(Color.red);
         geoline.setLinePaint(Color.red);
