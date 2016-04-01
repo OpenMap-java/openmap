@@ -28,15 +28,17 @@
 						       **/*.properties" />
 
 		<property name="jai.includes" value="**/jai/**, **/geotiff/**" />
-		<property name="json.includes" value="**/geojson/**" />
+		<property name="json.includes" value="**/geojson/**, **/tpk/**" />
 		<property name="postgis.includes" value="**/postgis/**" />
 		<property name="browserlauncher.includes" value="**/BrowserLauncher*.java" />
+		<property name="vectortile.includes" value="**/VectorMapTileLayer.java, **/mb/**" />
 
 		<property name="jar.excludes" value="${general.excludes}, **/*.java" />
 		<available classname="com.sun.media.jai.codec.ImageCodec" property="do.jai" />
 		<available classname="com.fasterxml.jackson.annotation.JsonInclude" property="do.json" />
 		<available classname="org.postgis.PGgeometry" property="do.postgis" />
 		<available classname="edu.stanford.ejalbert.BrowserLauncher" property="do.browserlauncher" />
+		<available classname="no.ecc.vectortile.VectorTileDecoder" property="do.vectortile" />
 
 		<echo message="Java Home: ${java.home}" />
 	</target>
@@ -67,14 +69,46 @@
 	    <mkdir dir="${openmap.classes}" />
 
 		<!-- Main OpenMap Classes -->
-		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes},${json.includes},${postgis.includes},${browserlauncher.includes}" source="1.5" target="1.5"/>
+		<javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" excludes="${javac.excludes},${jai.includes},${json.includes},${postgis.includes},${browserlauncher.includes},${vectortile.includes}" source="1.5" target="1.5"/>
 
 		<!-- Optional classes, depending on available external packages -->
+		<condition property="jai.message" value="jai dependencies found" else="jai dependencies NOT found, skipping those classes...">
+		  <isset property="do.jai"/>
+		</condition>
+		<echo message="${jai.message}"/>
+
+		<condition property="json.message" value="json dependencies found" else="json dependencies NOT found, skipping those classes...">
+		  <isset property="do.json"/>
+		</condition>
+		<echo message="${json.message}"/>
+
+		<condition property="postgis.message" value="postgis dependencies found" else="postgis dependencies NOT found, skipping those classes...">
+		  <isset property="do.postgis"/>
+		</condition>
+		<echo message="${postgis.message}"/>
+
+		<condition property="browserlauncher.message" value="browserlauncher dependencies found" else="browserlauncher dependencies NOT found, skipping those classes...">
+		  <isset property="do.browserlauncher"/>
+		</condition>
+		<echo message="${browserlauncher.message}"/>
+
+		<condition property="vectortile.message" value="vector tile dependencies found" else="vector tile dependencies NOT found, skipping those classes...">
+		  <isset property="do.vectortile"/>
+		</condition>
+		<echo message="${vectortile.message}"/>
+
+		<condition property="suggestion.message" value="" else="NOTE: dependencies can be retrieved if you use maven to build OpenMap...">
+		  <isset property="do.vectortile" />
+		</condition>
+		<echo message="${suggestion.message}"/>
+
 		<antcall target="classes.jai" />
 		<antcall target="classes.json" />
 		<antcall target="classes.postgis" />
 		<antcall target="classes.browserlauncher" />
+		<antcall target="classes.vectortile" />
 
+		<echo message="gathering resources..."/>
 		<!-- Copy the gifs and other resources to the new classpath. -->
 		<copy todir="${openmap.classes}" file="${openmap.home}/openmap.properties" />
 		<copy todir="${openmap.classes}">
@@ -101,6 +135,11 @@
 	<target name="classes.browserlauncher" if="${do.browserlauncher}" >
 	  <echo message="Compiling BrowserLauncher classes..." />
 	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${browserlauncher.includes}" source="1.5" target="1.5"/>
+	</target>
+
+	<target name="classes.vectortile" if="${do.vectortile}" >
+	  <echo message="Compiling Vector Tile classes..." />
+	  <javac includeantruntime="false" srcdir="${openmap.src}" destdir="${openmap.classes}" debug="on" includes="${vectortile.includes}" source="1.5" target="1.5"/>
 	</target>
 
 	<!--  ############################
