@@ -170,7 +170,7 @@ public class ColorFactory {
 
 		// If we come across people who do one letter per color.
 		if (colorString.length() == 3) {
-			colorString = new StringBuilder(colorString.charAt(0)).append(colorString.charAt(0))
+			colorString = new StringBuilder().append(colorString.charAt(0)).append(colorString.charAt(0))
 					.append(colorString.charAt(1)).append(colorString.charAt(1)).append(colorString.charAt(2))
 					.append(colorString.charAt(2)).toString();
 		}

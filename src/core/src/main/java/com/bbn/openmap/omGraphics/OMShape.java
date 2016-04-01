@@ -22,8 +22,11 @@
 
 package com.bbn.openmap.omGraphics;
 
+import java.awt.BasicStroke;
 import java.awt.Shape;
+import java.awt.geom.FlatteningPathIterator;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.PathIterator;
 
 import com.bbn.openmap.proj.Projection;
 
@@ -99,6 +102,103 @@ public class OMShape extends OMGraphicAdapter implements OMGraphic {
 		public boolean generate(Projection proj) {
 			// NOOP
 			return true;
+		}
+	}
+
+	public static class GAPPED extends OMShape {
+		private static final long serialVersionUID = 2L;
+
+		float strokeWidth;
+		float gapWidth;
+
+		public GAPPED(Shape s, float strokeWidth, float gapWidth) {
+			super(s);
+			this.strokeWidth = strokeWidth;
+			this.gapWidth = gapWidth;
+			
+			this.setStroke(new BasicStroke(strokeWidth));
+			setShape(getGappedShape(origShape));
+			setNeedToRegenerate(false);
+		}
+
+		public boolean generate(Projection proj) {
+			// NOOP
+			return true;
+		}
+
+		protected GeneralPath getGappedShape(Shape s) {
+			GeneralPath gp = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
+			GeneralPath inside = null;
+			GeneralPath outside = null;
+			//GeneralPath middle = null;
+
+			PathIterator pi2 = s.getPathIterator(null);
+			FlatteningPathIterator pi = new FlatteningPathIterator(pi2, .25);
+			double[] coords = new double[6];
+
+			double xcoord1 = 0;
+			double ycoord1 = 0;
+			double xcoord2 = 0;
+			double ycoord2 = 0;
+
+			while (!pi.isDone()) {
+				int type = pi.currentSegment(coords);
+
+				if (inside == null) {
+					// Need to set up the first point. We can't calculate the
+					// position of the perpendicular points until we know the
+					// location of the second point.
+					inside = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
+					outside = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
+					//middle = new GeneralPath(GeneralPath.WIND_EVEN_ODD);					
+					xcoord1 = coords[0];
+					ycoord1 = coords[1];
+
+					continue;
+				}
+
+				xcoord2 = coords[0];
+				ycoord2 = coords[1];
+
+				// Compute cosinus and sinus of rotation angle
+				double dx = xcoord2 - xcoord1;
+				double dy = ycoord2 - ycoord1;
+				double norm = Math.sqrt(dx * dx + dy * dy);
+				double rcos = dx / norm;
+				double rsin = dy / norm;
+
+				// Compute vertices
+				double r = .25;//getLength() / 2.0; // x radius before rotation
+				double w = (gapWidth + strokeWidth) / 2;
+
+
+				double x1 = xcoord1 + r * rcos;
+				double y1 = ycoord1 + r * rsin;
+
+				switch (type) {
+				case PathIterator.SEG_LINETO:
+					inside.lineTo(x1 - w * rsin, y1 + w * rcos);
+					outside.lineTo(x1 + w * rsin, y1 - w * rcos);
+					//middle.lineTo(xcoord1, ycoord1);
+					break;
+				case PathIterator.SEG_MOVETO:
+					inside.moveTo(x1 - w * rsin, y1 + w * rcos);
+					outside.moveTo(x1 + w * rsin, y1 - w * rcos);
+					//middle.moveTo(xcoord1, ycoord1);					
+					break;
+				default:
+				}
+
+				xcoord1 = xcoord2;
+				ycoord1 = ycoord2;
+				
+				pi.next();
+			}
+
+			gp.append(inside, false);
+			//gp.append(middle, false);
+			gp.append(outside, false);
+			return gp;
 		}
 	}
 

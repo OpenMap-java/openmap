@@ -265,9 +265,11 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
 
         double[] llPoints2 = { 55.0f, -12.0f, 50.0f, -7.0f, 45.0f, -9.0f, 43.0f, -14.0f };
         OMHotSurfaceFront hf = new OMHotSurfaceFront(llPoints2, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
+        hf.putAttribute(OMGraphic.TOOLTIP, "OMHotSurfaceFront");        
         omList.add(hf);
         double[] llPoints3 = { 55.0f, -14.0f, 50.0f, -9.0f, 45.0f, -11.0f, 43.0f, -16.0f };
         OMOcclusion oc = new OMOcclusion(llPoints3, OMSpline.DECIMAL_DEGREES, OMSpline.LINETYPE_STRAIGHT);
+        oc.putAttribute(OMGraphic.TOOLTIP, "OMOcclusion");
         omList.add(oc);
 
         // float[] llPoints4 = { 55.0f, -16.0f, 50.0f, -11.0f, 45.0f,
