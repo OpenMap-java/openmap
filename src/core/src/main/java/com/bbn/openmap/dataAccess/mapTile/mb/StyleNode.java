@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Helper functions for dealing with nodes.
+ * 
  * @author dietrick
  *
  */
@@ -52,7 +53,7 @@ public class StyleNode {
 			return dflt;
 		}
 	}
-	
+
 	public static void prettyOut(JsonNode node, String prefix) {
 		Iterator<Entry<String, JsonNode>> fields = node.fields();
 		while (fields.hasNext()) {
@@ -112,4 +113,5 @@ public class StyleNode {
 		return LoggerHolder.LOGGER;
 	}
 	// </editor-fold>
+
 }

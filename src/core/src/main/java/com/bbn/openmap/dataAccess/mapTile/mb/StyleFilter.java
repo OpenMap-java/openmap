@@ -97,7 +97,11 @@ public class StyleFilter {
 				featureVal = feature.getAttributes().get(key);
 			}
 
-			boolean ret = op.passes(featureVal, value);
+			// If one side or the other doesn't exist, we're going to fail the test
+			boolean ret = false;
+			if (featureVal != null && value != null) {
+				ret = op.passes(featureVal, value);
+			}
 
 			if (fineLogging) {
 				getLogger().fine("checking " + featureVal + " vs " + value + ":" + ret);

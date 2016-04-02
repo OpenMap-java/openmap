@@ -1,7 +1,13 @@
 package com.bbn.openmap.dataAccess.mapTile.mb;
 
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -10,15 +16,28 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
 import com.bbn.openmap.Environment;
+import com.bbn.openmap.Layer;
 import com.bbn.openmap.dataAccess.mapTile.MapTileCoordinateTransform;
+import com.bbn.openmap.dataAccess.mapTile.MapTileRequester;
 import com.bbn.openmap.image.BufferedImageHelper;
+import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.I18n;
 import com.bbn.openmap.util.PropUtils;
@@ -116,6 +135,8 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 		} else {
 			setOMGraphicFactory(null);
 		}
+
+		createGUIFilters();
 	}
 
 	boolean disabled = false;
@@ -155,16 +176,20 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		g2.addRenderingHints(renderingHints);
 
-
 		try {
 			byte[] tileData = getTileData(key, x, y, zoomLevel);
 			if (tileData != null) {
-				omGraphicFactory.getBackground().render(g2);
-				
 				FeatureIterable fi = decoder.decode(tileData);
+
+				Map<String, OMGraphicList> featureLists = omGraphicFactory.getFeatureMap();
+
 				for (Feature feature : fi.asList()) {
-					omGraphicFactory.create(feature).render(g2);
+					omGraphicFactory.createAndSort(feature, zoomLevel, featureLists);
 				}
+
+				omGraphicFactory.render(g2, zoomLevel, featureLists);
+				filterPanel.revalidate();
+
 			} else {
 				if (getLogger().isLoggable(Level.FINER)) {
 					getLogger().finer("tile for " + zoomLevel + "|" + x + "|" + y + " is missing.");
@@ -310,15 +335,14 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 		I18n i18n = Environment.getI18n();
 		PropUtils.setI18NPropertyInfo(i18n, list, VectorMapTileFactory.class, COMPRESSED_PROPERTY, "Compressed",
 				"True if tile data is compressed", "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-		
-	
+
 		return list;
 	}
 
 	public String getInitPropertiesOrder() {
 		return ROOT_DIR_PROPERTY;
-	}	
-	
+	}
+
 	// <editor-fold defaultstate="collapsed" desc="Logger Code">
 	/**
 	 * Holder for this class's Logger. This allows for lazy initialization of
@@ -347,4 +371,113 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 		return LoggerHolder.LOGGER;
 	}
 	// </editor-fold>
+
+	List<JCheckBox> filterCheckBoxes = new ArrayList<JCheckBox>();
+	JPanel filterPanel = new JPanel();
+
+	public JComponent getFilterPanel() {
+		filterPanel.removeAll();		
+		JComponent guiPanel = createGUIFilters();
+		filterPanel.add(guiPanel);
+		return filterPanel;
+	}
+
+	protected JComponent createGUIFilters() {
+		filterCheckBoxes.clear();
+
+		JPanel panel = new JPanel();
+		JScrollPane jsp = new JScrollPane(panel);
+		jsp.setMaximumSize(new Dimension(900, 500));
+		GridBagLayout gridbag = new GridBagLayout();
+		GridBagConstraints c = new GridBagConstraints();
+
+		c.anchor = GridBagConstraints.WEST;
+		c.fill = GridBagConstraints.HORIZONTAL;
+
+		panel.setLayout(gridbag);
+		if (renderStyle != null) {
+			int countForColumn = 0;
+			int countForRow = 0;
+
+			int numColumns = renderStyle.layers.size() / 10;
+			if (numColumns > 4) {
+				numColumns = 4;
+			} else if (numColumns <= 0) {
+				numColumns = 1;
+			}
+			
+			for (StyleLayer layer : renderStyle.layers) {
+				JCheckBox jcb = new JCheckBox(layer.id, renderStyle.visibleLayers.contains(layer.id));
+				jcb.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent ae) {
+						updateVisibilityList();
+					}
+				});
+				filterCheckBoxes.add(jcb);
+				c.gridx = countForColumn++ % numColumns;
+				c.gridy = countForRow++ / numColumns;
+				gridbag.setConstraints(jcb, c);
+				panel.add(jcb);
+			}
+		}
+
+		JButton selectAllButton = new JButton("Select All");
+		selectAllButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				updateVisibilityList(true);
+			}
+		});
+		JButton selectNoneButton = new JButton("Select None");		
+		selectNoneButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				updateVisibilityList(false);
+			}
+		});
+
+		JPanel parent = new JPanel();
+		gridbag = new GridBagLayout();
+		c = new GridBagConstraints();
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
+		parent.setLayout(gridbag);
+		gridbag.setConstraints(jsp, c);
+		parent.add(jsp);
+		
+		c.gridwidth = GridBagConstraints.RELATIVE;		
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0;
+		c.weighty = 0;
+		c.anchor = GridBagConstraints.EAST;
+		gridbag.setConstraints(selectAllButton, c);
+		parent.add(selectAllButton);
+		c.anchor = GridBagConstraints.WEST;		
+		gridbag.setConstraints(selectNoneButton, c);		
+		parent.add(selectNoneButton);
+		return parent;
+	}
+	
+	protected void updateVisibilityList(boolean setAllTo) {
+		for (JCheckBox jcb : filterCheckBoxes) {
+			jcb.setSelected(setAllTo);
+		}
+		updateVisibilityList();
+	}
+
+	protected void updateVisibilityList() {
+		List<String> visibleLayers = new ArrayList<String>();
+		for (JCheckBox jcb : filterCheckBoxes) {
+			if (jcb.isSelected()) {
+				visibleLayers.add(jcb.getText());
+			}
+		}
+		renderStyle.visibleLayers = visibleLayers;
+
+		reset();
+		if (mapTileRequester instanceof OMGraphicHandlerLayer) {
+			((OMGraphicHandlerLayer) mapTileRequester).doPrepare();
+
+		}
+	}
 }

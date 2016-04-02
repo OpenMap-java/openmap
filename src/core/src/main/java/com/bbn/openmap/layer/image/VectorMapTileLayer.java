@@ -1,5 +1,6 @@
 package com.bbn.openmap.layer.image;
 
+import java.awt.BorderLayout;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -7,9 +8,16 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
 import com.bbn.openmap.Environment;
+import com.bbn.openmap.dataAccess.mapTile.MapTileFactory;
 import com.bbn.openmap.dataAccess.mapTile.mb.StyleRoot;
 import com.bbn.openmap.dataAccess.mapTile.mb.VectorMapTileFactory;
+import com.bbn.openmap.gui.ScrollPaneWindowSupport;
+import com.bbn.openmap.gui.WindowSupport;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.Projection;
@@ -129,6 +137,39 @@ public class VectorMapTileLayer extends MapTileLayer {
 		props.put(initPropertiesProperty,
 				PropUtils.unnull(props.getProperty(initPropertiesProperty)) + " " + STYLE_LOCATION_PROPERTY);
 		return props;
+	}
+	
+	/**
+     * Callback method to override how window support is created.
+     * 
+     * @return WindowSupport object for layer palette.
+     */
+    protected WindowSupport createWindowSupport() {
+        return new WindowSupport(getGUI(), getName());
+    }
+
+	public java.awt.Component getGUI() {
+		// Only allow delete cache button if the source of the tiles are from a
+		// server.
+
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+		MapTileFactory mtf = getTileFactory();
+		if (mtf instanceof VectorMapTileFactory) {
+			JPanel layerFilterPanel = new JPanel(new BorderLayout());
+			layerFilterPanel.add(new JPanel(), BorderLayout.WEST);
+			layerFilterPanel.add(new JPanel(), BorderLayout.EAST);
+			JComponent filters = ((VectorMapTileFactory) mtf).getFilterPanel();
+
+			if (filters != null) {
+				layerFilterPanel.add(filters, BorderLayout.CENTER);
+				panel.add(layerFilterPanel);
+			}
+		}
+
+		panel.add(getDefaultSettingsPanel(this.getClass(), getTransparency()));
+		return panel;
 	}
 
 	// <editor-fold defaultstate="collapsed" desc="Logger Code">

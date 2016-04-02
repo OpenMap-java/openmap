@@ -80,8 +80,10 @@ public enum StyleFilterOperation {
 				return pass;
 			} catch (ClassCastException cce) {
 				getLogger().warning("Non-collection classes used as input");
-				return false;
+			} catch (NullPointerException npe) {
+				getLogger().warning("trying to test null feature: " + feature);
 			}
+			return false;
 		}
 	},
 	ANY("any") {

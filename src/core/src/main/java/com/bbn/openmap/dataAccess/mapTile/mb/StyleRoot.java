@@ -3,6 +3,7 @@ package com.bbn.openmap.dataAccess.mapTile.mb;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -36,7 +37,7 @@ public class StyleRoot {
 	double version;
 	String name;
 	Map<String, Object> metadata;
-	Map<String, JsonNode> constants;
+	JsonNode constants;
 	LatLonPoint center;
 	double zoom;
 	double bearing;
@@ -48,6 +49,7 @@ public class StyleRoot {
 
 	final HashMap<StyleLayerType, List<StyleLayer>> layerGroupsByType = new HashMap<StyleLayerType, List<StyleLayer>>();
 	final HashMap<String, List<StyleLayer>> layerGroupsBySourceLayer = new HashMap<String, List<StyleLayer>>();
+	List<String> visibleLayers = new ArrayList<String>();
 
 	private StyleRoot() {
 
@@ -59,8 +61,18 @@ public class StyleRoot {
 		zoom = StyleNode.getAsDouble(rootNode, ZOOM, Double.NaN);
 		bearing = StyleNode.getAsDouble(rootNode, BEARING, Double.NaN);
 		pitch = StyleNode.getAsDouble(rootNode, PITCH, Double.NaN);
-		sprites = rootNode.get(SPRITE).asText();
-		glyphs = rootNode.get(GLYPHS).asText();
+
+		// sprites = rootNode.get(SPRITE).asText();
+		JsonNode spriteNode = rootNode.get(SPRITE);
+		if (spriteNode != null) {
+			sprites = spriteNode.asText();
+		}
+
+		// glyphs = rootNode.get(GLYPHS).asText();
+		JsonNode glyphNode = rootNode.get(GLYPHS);
+		if (glyphNode != null) {
+			glyphs = glyphNode.asText();
+		}
 
 		JsonNode metadataNode = rootNode.get(METADATA);
 		if (metadataNode != null) {
@@ -70,9 +82,23 @@ public class StyleRoot {
 		if (sourceNode != null) {
 
 		}
+		
+		constants = rootNode.get(CONSTANTS);
+		if (getLogger().isLoggable(Level.FINE)) {
+			StringBuilder sBuilder = new StringBuilder("\n------- Constants ----------");
+			if (constants != null) {
+				Iterator<String> fieldNameIterator = constants.fieldNames();
+				while (fieldNameIterator.hasNext()) {
+					sBuilder.append("\n").append(fieldNameIterator.next());
+				}
+			}
+			sBuilder.append("\n----------------------------");
+			getLogger().fine(sBuilder.toString());
+		}		
+		
 		JsonNode layerNode = rootNode.get(LAYERS);
 		if (layerNode != null) {
-			layers = StyleLayer.getLayerArray(layerNode);
+			layers = StyleLayer.getLayerArray(layerNode, constants);
 			resetLayerGroups(layers);
 
 			if (getLogger().isLoggable(Level.FINE)) {
@@ -83,28 +109,36 @@ public class StyleRoot {
 				getLogger().fine(sb.toString());
 			}
 		}
+
 	}
 
+	/**
+	 * Assumes styleLayers isn't null.
+	 * @param styleLayers
+	 */
 	void resetLayerGroups(List<StyleLayer> styleLayers) {
 		layerGroupsByType.clear();
 		layerGroupsBySourceLayer.clear();
+		visibleLayers.clear();
 
-		for (StyleLayer sl : styleLayers) {
-			List<StyleLayer> sll = layerGroupsByType.get(sl.type);
-			if (sll == null) {
-				sll = new ArrayList<StyleLayer>();
-				layerGroupsByType.put(sl.type, sll);
+		for (StyleLayer styleLayer : styleLayers) {
+			List<StyleLayer> styleLayerList = layerGroupsByType.get(styleLayer.type);
+			if (styleLayerList == null) {
+				styleLayerList = new ArrayList<StyleLayer>();
+				layerGroupsByType.put(styleLayer.type, styleLayerList);
 			}
-			sll.add(sl);
+			styleLayerList.add(styleLayer);
 
-			if (sl.sourceLayer != null) {
-				sll = layerGroupsBySourceLayer.get(sl.sourceLayer);
-				if (sll == null) {
-					sll = new ArrayList<StyleLayer>();
-					layerGroupsBySourceLayer.put(sl.sourceLayer, sll);
+			if (styleLayer.sourceLayer != null) {
+				styleLayerList = layerGroupsBySourceLayer.get(styleLayer.sourceLayer);
+				if (styleLayerList == null) {
+					styleLayerList = new ArrayList<StyleLayer>();
+					layerGroupsBySourceLayer.put(styleLayer.sourceLayer, styleLayerList);
 				}
-				sll.add(sl);
+				styleLayerList.add(styleLayer);
 			}
+
+			visibleLayers.add(styleLayer.id);
 		}
 	}
 
@@ -116,39 +150,27 @@ public class StyleRoot {
 		return StyleDrawingAttributes.EMPTY;
 	}
 
-	public StyleDrawingAttributes getRenderer(Feature feature) { // String
-																	// featureSourceLayer,
-																	// String
-																	// featureClass)
-																	// {
-
+	public List<StyleDrawingAttributes> getRenderers(Feature feature, int zoomLevel) {
 		String featureSourceLayer = feature.getLayerName();
-		String featureClass = (String) feature.getAttributes().get("class");
-
-		// combos.add(featureClass + ", " + featureSourceLayer);
+		List<StyleDrawingAttributes> ret = new ArrayList<StyleDrawingAttributes>();
 		List<StyleLayer> matchingSourceLayers = layerGroupsBySourceLayer.get(featureSourceLayer);
 		if (matchingSourceLayers != null && !matchingSourceLayers.isEmpty()) {
-			StyleLayer sLayer = matchingSourceLayers.get(0);
-			if (sLayer.passes(feature)) {
-				StyleDrawingAttributes sda = sLayer.renderer;
-				if (sda.visible) {
-					return sda;
+			for (StyleLayer sLayer : matchingSourceLayers) {
+
+				if (feature.getLayerName().equals("water_offset")) {
+					System.out.println("here");
+				}
+
+				if (sLayer.passes(feature, zoomLevel)) {
+					StyleDrawingAttributes sda = sLayer.renderer;
+					if (sda.isVisible(zoomLevel)) {
+						ret.add(sda);
+					}
 				}
 			}
-
-			/*
-			 * for (StyleLayer styleLayer : layers) { String styleSourceLayer =
-			 * styleLayer.sourceLayer;
-			 * 
-			 * if (styleSourceLayer != null &&
-			 * styleSourceLayer.equals(featureSourceLayer)) { // We want to
-			 * match classes up if we can -
-			 * 
-			 * return styleLayer.renderer; } }
-			 */
 		}
 
-		return null;
+		return ret;
 	}
 
 	/**
@@ -159,8 +181,8 @@ public class StyleRoot {
 	 */
 	public static class DEFAULT extends StyleRoot {
 
-		StyleDrawingAttributes area = StyleDrawingAttributes.get(StyleLayerType.FILL, null);
-		StyleDrawingAttributes line = StyleDrawingAttributes.get(StyleLayerType.LINE, null);
+		StyleDrawingAttributes area = StyleDrawingAttributes.get(StyleLayerType.FILL, null, null);
+		StyleDrawingAttributes line = StyleDrawingAttributes.get(StyleLayerType.LINE, null, null);
 
 		public DEFAULT() {
 			version = 1.0;

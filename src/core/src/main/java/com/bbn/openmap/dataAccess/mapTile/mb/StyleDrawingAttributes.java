@@ -1,11 +1,17 @@
 package com.bbn.openmap.dataAccess.mapTile.mb;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Paint;
+import java.awt.Stroke;
+import java.awt.geom.GeneralPath;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.bbn.openmap.omGraphics.DrawingAttributes;
-import com.bbn.openmap.util.ColorFactory;
+import com.bbn.openmap.omGraphics.OMColor;
+import com.bbn.openmap.omGraphics.OMGraphic;
+import com.bbn.openmap.omGraphics.OMShape;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class StyleDrawingAttributes extends DrawingAttributes {
@@ -14,117 +20,193 @@ public class StyleDrawingAttributes extends DrawingAttributes {
 	static String LAYOUT = "layout";
 	static String PAINT = "paint";
 
+	final static Stroke DEFAULT_STROKE = new BasicStroke(1);
+
+	final static StyleFunction<Double> DEFAULT_OPACITY = new StyleFunction<Double>(1.0);
+	final static StyleFunction<Paint> BLACK = new StyleFunction<Paint>(Color.black);
+	final static StyleFunction<Paint> CLEAR = new StyleFunction<Paint>(OMColor.clear);
+
 	// LAYOUT
-	boolean visible = true;
+	StyleFunction<StyleVisibility> visible = null;
+	// PAINT
+	final StyleFunction<DrawingAttributes> renderers = new StyleFunction<DrawingAttributes>(
+			DrawingAttributes.getDefaultClone());
 
-	static StyleDrawingAttributes EMPTY = new LINE(null);
+	StyleDrawingAttributes refRenderer = null;
+	String layerID;
 
-	public static StyleDrawingAttributes getForType(JsonNode node) {
-		return get(StyleLayerType.getFromLayerNode(node), node);
+	JsonNode constants;
+
+	static StyleDrawingAttributes EMPTY = new LINE(null, null);
+
+	public static StyleDrawingAttributes getForType(JsonNode node, JsonNode constants) {
+		return get(StyleLayerType.getFromLayerNode(node), node, constants);
 	}
 
-	public static StyleDrawingAttributes get(StyleLayerType slt, JsonNode node) {
+	/**
+	 * We just need to grab any layout properties from the reference if one is
+	 * provided. Each attributes type will pull out different layout properties,
+	 * because each type has different layout properties.
+	 * 
+	 * @param reference
+	 *            a StyleDrawingAttributes from a layer that is a refernce layer
+	 *            to our layer.
+	 */
+	void configureFromReference(StyleDrawingAttributes reference) {
+		this.refRenderer = reference;
+		/*
+		 * This may stomp on any settings that were there.
+		 */
+		if (reference != null && visible == null) {
+			visible = reference.visible;
+		}
+	}
+
+	public static StyleDrawingAttributes get(StyleLayerType slt, JsonNode node, JsonNode constants) {
 
 		if (getLogger().isLoggable(Level.FINE)) {
 			getLogger().fine("getting style for " + slt.name);
 		}
-		
+
 		switch (slt) {
 		case BACKGROUND:
-			return new StyleDrawingAttributes.BACKGROUND(node);
+			return new StyleDrawingAttributes.BACKGROUND(node, constants);
 		case FILL:
-			return new StyleDrawingAttributes.FILL(node);
+			return new StyleDrawingAttributes.FILL(node, constants);
 		case LINE:
-			return new StyleDrawingAttributes.LINE(node);
+			return new StyleDrawingAttributes.LINE(node, constants);
 		case SYMBOL:
-			return new StyleDrawingAttributes.SYMBOL(node);
+			return new StyleDrawingAttributes.SYMBOL(node, constants);
 		case RASTER:
-			return new StyleDrawingAttributes.RASTER(node);
+			return new StyleDrawingAttributes.RASTER(node, constants);
 		case CIRCLE:
-			return new StyleDrawingAttributes.CIRCLE(node);
+			return new StyleDrawingAttributes.CIRCLE(node, constants);
 		default:
 			return null;
 		}
 	}
 
-	private StyleDrawingAttributes(JsonNode node) {
+	private StyleDrawingAttributes(JsonNode node, JsonNode constants) {
+
+		this.constants = constants;
+
+		for (int zoomLevel = StyleFunction.MIN_ZOOM_LEVEL; zoomLevel < StyleFunction.NUM_ZOOM_LEVELS; zoomLevel++) {
+			renderers.add(zoomLevel, DrawingAttributes.getDefaultClone());
+		}
+
 		if (node != null) {
 			JsonNode layout = node.get(LAYOUT);
 			if (layout != null) {
-				doLayout(layout);
+				configureLayout(layout);
 			}
 
 			JsonNode paint = node.get(PAINT);
 			if (paint != null) {
-				doPaint(paint);
+				configurePaint(paint);
 			}
 		}
 	}
 
-	void doLayout(JsonNode layout) {
-		visible = StyleVisibility.getForNode(layout).isVisible();
+	OMGraphic getOMGraphic(GeneralPath gp, int zoomLevel) {
+		OMShape oms = new OMShape.PROJECTED(gp);
+		renderers.get(zoomLevel).setTo(oms);
+		// oms.setVisible(visible.get(zoomLevel).isVisible());
+		return oms;
 	}
 
-	void doPaint(JsonNode node) {
-
+	/**
+	 * Called when constructed, layout properties will be overwritten by
+	 * reference layer values if one is provided.
+	 * 
+	 * @param layout
+	 */
+	void configureLayout(JsonNode layout) {
+		visible = StyleVisibility.getFunction(layout);
 	}
 
-	void setFillPaint(JsonNode node, String prop) {
-		Paint fill = getColor(node, prop);
-		if (fill != null) {
-			setFillPaint(fill);
-			setLinePaint(fill);
-		}
+	void configurePaint(JsonNode node) {
+		// Noop, each subclass does it differently. Should this be abstract?
 	}
 
-	void setLinePaint(JsonNode node, String prop) {
-		Paint line = getColor(node, prop);
-		if (line != null) {
-			setLinePaint(line);
-		}
-	}
-
-	void setMattingPaint(JsonNode node, String prop) {
-		Paint matting = getColor(node, prop);
-		if (matting != null) {
-			setMattingPaint(matting);
-		}
-	}
-
-	Paint getColor(JsonNode node, String prop) {
-		JsonNode cNode = node.get(prop);
-		if (cNode != null) {
-			String colorString = cNode.asText();
-			if (colorString.startsWith("#")) {
-				return ColorFactory.parseColor(colorString.substring(1), true);
-			} else if (colorString.startsWith("rgba")) {
-				String tokens = colorString.substring(5, colorString.length() - 1); // parans
-				String[] values = tokens.split(",");
-
-				if (values.length == 4) {
-					try {
-						return ColorFactory.createColor(Integer.parseInt(values[0]), Integer.parseInt(values[1]),
-								Integer.parseInt(values[2]), Integer.parseInt(values[3]));
-					} catch (NumberFormatException nfe) {
-
-					}
-				}
-			} else if (colorString.startsWith("rgb")) {
-				String tokens = colorString.substring(4, colorString.length() - 1); // parans
-				String[] values = tokens.split(",");
-				if (values.length == 3) {
-					try {
-						return ColorFactory.createColor(Integer.parseInt(values[0]), Integer.parseInt(values[1]),
-								Integer.parseInt(values[2]), 255);
-					} catch (NumberFormatException nfe) {
-
-					}
-				}
-			} else {
-				return ColorFactory.getNamedColor(colorString, null);
+	void setLinePaint(StyleFunction<Paint> linePaints) {
+		if (linePaints != null) {
+			for (int zoomLevel = StyleFunction.MIN_ZOOM_LEVEL; zoomLevel < StyleFunction.NUM_ZOOM_LEVELS; zoomLevel++) {
+				renderers.get(zoomLevel).setLinePaint(linePaints.get(zoomLevel));
 			}
 		}
-		return null;
+	}
+
+	void setLinePaint(StyleDrawingAttributes ref) {
+		if (ref != null) {
+			for (int zoomLevel = StyleFunction.MIN_ZOOM_LEVEL; zoomLevel < StyleFunction.NUM_ZOOM_LEVELS; zoomLevel++) {
+				renderers.get(zoomLevel).setLinePaint(ref.getRenderer(zoomLevel).getLinePaint());
+			}
+		}
+	}
+
+	void setFillPaint(StyleFunction<Paint> fillPaints) {
+		if (fillPaints != null) {
+			for (int zoomLevel = StyleFunction.MIN_ZOOM_LEVEL; zoomLevel < StyleFunction.NUM_ZOOM_LEVELS; zoomLevel++) {
+				renderers.get(zoomLevel).setFillPaint(fillPaints.get(zoomLevel));
+			}
+		}
+	}
+
+	void setFillPaint(StyleDrawingAttributes ref) {
+		if (ref != null) {
+			for (int zoomLevel = StyleFunction.MIN_ZOOM_LEVEL; zoomLevel < StyleFunction.NUM_ZOOM_LEVELS; zoomLevel++) {
+				renderers.get(zoomLevel).setFillPaint(ref.getRenderer(zoomLevel).getFillPaint());
+			}
+		}
+	}
+
+	void setStroke(StyleFunction<Stroke> strokes) {
+		if (strokes != null) {
+			for (int zoomLevel = StyleFunction.MIN_ZOOM_LEVEL; zoomLevel < StyleFunction.NUM_ZOOM_LEVELS; zoomLevel++) {
+				renderers.get(zoomLevel).setStroke(strokes.get(zoomLevel));
+			}
+		}
+	}
+
+	void setStroke(StyleDrawingAttributes ref) {
+		if (ref != null) {
+			for (int zoomLevel = StyleFunction.MIN_ZOOM_LEVEL; zoomLevel < StyleFunction.NUM_ZOOM_LEVELS; zoomLevel++) {
+				renderers.get(zoomLevel).setStroke(ref.getRenderer(zoomLevel).getStroke());
+			}
+		}
+	}
+
+	void setMatting(boolean isMatted, StyleFunction<Paint> mattingPaints) {
+		if (mattingPaints != null) {
+			for (int zoomLevel = StyleFunction.MIN_ZOOM_LEVEL; zoomLevel < StyleFunction.NUM_ZOOM_LEVELS; zoomLevel++) {
+				DrawingAttributes da = renderers.get(zoomLevel);
+				da.setMatted(isMatted);
+				da.setMattingPaint(mattingPaints.get(zoomLevel));
+			}
+		}
+	}
+
+	void setMatting(StyleDrawingAttributes ref) {
+		if (ref != null) {
+			for (int zoomLevel = StyleFunction.MIN_ZOOM_LEVEL; zoomLevel < StyleFunction.NUM_ZOOM_LEVELS; zoomLevel++) {
+
+				DrawingAttributes da1 = renderers.get(zoomLevel);
+				DrawingAttributes da2 = ref.getRenderer(zoomLevel);
+
+				da1.setMatted(da2.isMatted());
+				da1.setMattingPaint(da2.getMattingPaint());
+
+				renderers.get(zoomLevel).setStroke(ref.getRenderer(zoomLevel).getStroke());
+			}
+		}
+	}
+
+	DrawingAttributes getRenderer(int zoomLevel) {
+		return renderers.get(zoomLevel);
+	}
+
+	boolean isVisible(int zoomLevel) {
+		return visible == null || visible.get(zoomLevel).isVisible();
 	}
 
 	public static class BACKGROUND extends StyleDrawingAttributes {
@@ -147,12 +229,17 @@ public class StyleDrawingAttributes extends DrawingAttributes {
 		 */
 		static String BACKGROUND_OPACITY = "background-opacity";
 
-		public BACKGROUND(JsonNode node) {
-			super(node);
+		public BACKGROUND(JsonNode node, JsonNode constants) {
+			super(node, constants);
 		}
 
-		void doPaint(JsonNode paint) {
-			setFillPaint(paint, BACKGROUND_COLOR);
+		void configurePaint(JsonNode paint) {
+			StyleFunction<Double> opacity = StyleFunction.getDoubleFunction(paint.get(BACKGROUND_OPACITY), 1.0, constants);
+			StyleFunction<Paint> backgroundPaints = StyleFunction.getPaintFunction(paint.get(BACKGROUND_COLOR), opacity, BLACK, constants);
+
+			setFillPaint(backgroundPaints);
+			setLinePaint(CLEAR);
+
 		}
 
 	}
@@ -199,19 +286,36 @@ public class StyleDrawingAttributes extends DrawingAttributes {
 		 */
 		static String FILL_PATTERN = "fill-pattern";
 
-		public FILL(JsonNode node) {
-			super(node);
+		public FILL(JsonNode node, JsonNode constants) {
+			super(node, constants);
 		}
 
-		void doPaint(JsonNode paint) {
-			setFillPaint(paint, FILL_COLOR);
+		void configurePaint(JsonNode paint) {
+			StyleFunction<Double> opacity = StyleFunction.getDoubleFunction(paint.get(FILL_OPACITY), 1.0, constants);
+			StyleFunction<Paint> fillPaints = StyleFunction.getPaintFunction(paint.get(FILL_COLOR), opacity, BLACK, constants);
+
+			StyleFunction<Paint> outlinePaints = CLEAR;
 			if (StyleNode.getAsBoolean(paint, FILL_ANTIALIAS, true)) {
-				setLinePaint(paint, FILL_OUTLINE_COLOR);
+				outlinePaints = StyleFunction.getPaintFunction(paint.get(FILL_OUTLINE_COLOR), opacity, outlinePaints, constants);
 			}
+
+			setFillPaint(refRenderer);
+			setLinePaint(refRenderer);
+
+			setFillPaint(fillPaints);
+			setLinePaint(outlinePaints);
+		}
+
+		OMGraphic getOMGraphic(GeneralPath gp, int zoomLevel) {
+			OMShape oms = new OMShape.PROJECTED(gp);
+			renderers.get(zoomLevel).setTo(oms);
+			// oms.setVisible(visible.get(zoomLevel).isVisible());
+			return oms;
 		}
 	}
 
 	public static class LINE extends StyleDrawingAttributes {
+
 		private static final long serialVersionUID = 1L;
 		// LAYOUT
 		/**
@@ -295,14 +399,88 @@ public class StyleDrawingAttributes extends DrawingAttributes {
 		 */
 		static String LINE_PATTERN = "line-pattern";
 
-		public LINE(JsonNode node) {
-			super(node);
+		public LINE(JsonNode node, JsonNode constants) {
+			super(node, constants);
 		}
 
-		void doPaint(JsonNode paint) {
-			setLinePaint(paint, LINE_COLOR);
+		void configurePaint(JsonNode paint) {
+			StyleFunction<Double> opacity = StyleFunction.getDoubleFunction(paint.get(LINE_OPACITY), 1.0, constants);
+			StyleFunction<Paint> linePaints = StyleFunction.getPaintFunction(paint.get(LINE_COLOR), opacity, BLACK, constants);
+
+			configureStroke(paint);
+
+			setLinePaint(refRenderer);
+			setLinePaint(linePaints);
 		}
 
+		void configureStroke(JsonNode paint) {
+
+			StyleFunction<Double> lineWidths = StyleFunction.getDoubleFunction(paint.get(LINE_WIDTH), 1.0, constants);
+			StyleFunction<Double> lineGaps = StyleFunction.getDoubleFunction(paint.get(LINE_GAP_WIDTH), 0.0, constants);
+			StyleFunction<float[]> dashArrays = StyleFunction.getFloatArrayFunction(paint.get(LINE_DASHARRAY), constants);
+			StyleFunction<StyleLineCap> lineCaps = StyleLineCap.getFunction(paint.get(LINE_CAP));
+			StyleFunction<StyleLineJoin> lineJoins = StyleLineJoin.getFunction(paint.get(LINE_JOIN));
+
+			StyleFunction<Stroke> strokes = new StyleFunction<Stroke>(DEFAULT_STROKE);
+
+			for (int zoomLevel = StyleFunction.MIN_ZOOM_LEVEL; zoomLevel < StyleFunction.NUM_ZOOM_LEVELS; zoomLevel++) {
+				float lineWidth = safeLineWidth(lineWidths, zoomLevel);
+				int lineCap = lineCaps.get(zoomLevel).val;
+				int lineJoin = lineJoins.get(zoomLevel).val;
+				float[] dashArray = safeDashArray(dashArrays, zoomLevel);
+
+				Stroke stroke = new BasicStroke(lineWidth, lineCap, lineJoin, 2, dashArray, 0f);
+
+				// ref renderer might hold cap, join, miter-limit, round-limit.
+				// All other aspects of stroke are in feature definition.
+
+				/*
+				 * if (refRenderer != null) { Stroke refStroke =
+				 * refRenderer.getRenderer(zoomLevel).getStroke(); if (refStroke
+				 * != DEFAULT_STROKE) {
+				 * 
+				 * } }
+				 */
+
+				renderers.get(zoomLevel).setStroke(stroke);
+			}
+		}
+
+		float[] safeDashArray(StyleFunction<float[]> dashArrays, int zoomLevel) {
+			float[] dashArray = null;
+			if (dashArrays != null) {
+				float[] da = dashArrays.get(zoomLevel);
+				float sum = 0;
+				for (float f : da) {
+					sum += f;
+				}
+				if (sum > 0) {
+					dashArray = da;
+				}
+			}
+			return dashArray;
+		}
+
+		float safeLineWidth(StyleFunction<Double> lineWidths, int zoomLevel) {
+			float lineWidth = lineWidths.get(zoomLevel).floatValue();
+			if (lineWidth < 0f) {
+				lineWidth = 0f;
+			}
+			return lineWidth;
+		}
+
+		/**
+		 */
+		void configureFromReference(StyleDrawingAttributes reference) {
+			super.configureFromReference(reference);
+
+			/**
+			 * if (reference instanceof LINE) { LINE lineRef = (LINE) reference;
+			 * if (lineRef.lineGapFunction != null) {
+			 * setMattingPaint(getLinePaint());
+			 * setLinePaint(lineRef.getLinePaint()); setMatted(true); } }
+			 */
+		}
 	}
 
 	public static class SYMBOL extends StyleDrawingAttributes {
@@ -320,7 +498,7 @@ public class StyleDrawingAttributes extends DrawingAttributes {
 		 */
 		static String SYMBOL_SPACING = "symbol-spacing";
 		/**
-		 * Optional boolean. Defaults to false. If true, the symbols will not
+		 * Optional boolean. Defaults to false. If true, the symbols will )not
 		 * cross tile edges to avoid mutual collisions. Recommended in layers
 		 * that don’t have enough padding in the vector tile to prevent
 		 * collisions, or if it is a point symbol layer placed after a line
@@ -564,10 +742,14 @@ public class StyleDrawingAttributes extends DrawingAttributes {
 		 */
 		static String TEXT_TRANSLATE_ANCHOR = "text-translate-anchor";
 
-		public SYMBOL(JsonNode node) {
-			super(node);
+		public SYMBOL(JsonNode node, JsonNode constants) {
+			super(node, constants);
+			visible = null;
 		}
 
+		boolean isVisible(int zoomLevel) {
+			return false;
+		}
 	}
 
 	public static class RASTER extends StyleDrawingAttributes {
@@ -609,10 +791,14 @@ public class StyleDrawingAttributes extends DrawingAttributes {
 		 */
 		static String RASTER_FADE_DURATION = "raster-fade-duration";
 
-		public RASTER(JsonNode node) {
-			super(node);
+		public RASTER(JsonNode node, JsonNode constants) {
+			super(node, constants);
+			visible = null;
 		}
 
+		boolean isVisible(int zoomLevel) {
+			return false;
+		}
 	}
 
 	public static class CIRCLE extends StyleDrawingAttributes {
@@ -645,8 +831,28 @@ public class StyleDrawingAttributes extends DrawingAttributes {
 		 */
 		static String CIRCLE_TRANSLATE_ANCHOR = "circle-translate-anchor";
 
-		public CIRCLE(JsonNode node) {
-			super(node);
+		public CIRCLE(JsonNode node, JsonNode constants) {
+			super(node, constants);
+			visible = null;
+		}
+
+		void configurePaint(JsonNode paint) {
+			StyleFunction<Double> opacity = StyleFunction.getDoubleFunction(paint.get(CIRCLE_OPACITY), 1.0, constants);
+			StyleFunction<Paint> circlePaints = StyleFunction.getPaintFunction(paint.get(CIRCLE_COLOR), opacity, BLACK, constants);
+			StyleFunction<Double> radius = StyleFunction.getDoubleFunction(paint.get(CIRCLE_RADIUS), 5.0, constants);
+
+			setFillPaint(circlePaints);
+			setLinePaint(CLEAR);
+			setCircleStuff(true, radius);
+
+		}
+
+		void setCircleStuff(boolean pointOval, StyleFunction<Double> radius) {
+			for (int zoomLevel = StyleFunction.MIN_ZOOM_LEVEL; zoomLevel < StyleFunction.NUM_ZOOM_LEVELS; zoomLevel++) {
+				DrawingAttributes da = renderers.get(zoomLevel);
+				da.setPointOval(pointOval);
+				da.setPointRadius(radius.get(zoomLevel).intValue());
+			}
 		}
 
 	}
