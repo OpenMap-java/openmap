@@ -142,7 +142,7 @@ public class CSVLocationHandler extends AbstractLocationHandler implements Locat
     /** Set if the CSVFile has a header record. Default is false. */
     public final static String csvHeaderProperty = "csvFileHasHeader";
     /** The storage mechanism for the locations. */
-    protected QuadTree<Location> quadtree = null;
+    protected QuadTree<OMGraphic> quadtree = null;
 
     /** The property describing whether East is a negative value. */
     public static final String eastIsNegProperty = "eastIsNeg";
@@ -332,9 +332,9 @@ public class CSVLocationHandler extends AbstractLocationHandler implements Locat
     /**
      * Look at the CSV file and create the QuadTree holding all the Locations.
      */
-    protected QuadTree<Location> createData() {
+    protected QuadTree<OMGraphic> createData() {
 
-        QuadTree<Location> qt = new QuadTree<Location>(90.0f, -180.0f, -90.0f, 180.0f, 100, 50f);
+        QuadTree<OMGraphic> qt = new QuadTree<OMGraphic>(90.0f, -180.0f, -90.0f, 180.0f, 100, 50f);
 
         if (!checkIndexSettings()) {
             return null;
@@ -447,7 +447,7 @@ public class CSVLocationHandler extends AbstractLocationHandler implements Locat
      * @param qt the Quadtree to add the Location object, created from the row
      *        contents.
      */
-    protected void createLocation(List recordList, QuadTree<Location> qt) {
+    protected void createLocation(List recordList, QuadTree<OMGraphic> qt) {
 
         String name = tokenToString(recordList, nameIndex, "");
         double lat = tokenToDouble(recordList, latIndex, 0.0);
