@@ -1,7 +1,7 @@
 package com.bbn.openmap.dataAccess.mapTile.mb;
 
-import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
@@ -26,6 +26,7 @@ import no.ecc.vectortile.VectorTileDecoder.Feature;
 public class VectorOMGraphicFactory {
 
 	StyleRoot styles;
+	AffineTransform coordTransform;
 
 	public VectorOMGraphicFactory(StyleRoot styles) {
 		this.styles = styles;
@@ -45,6 +46,21 @@ public class VectorOMGraphicFactory {
 		OMGraphic omg = new OMShape.PROJECTED(new Rectangle2D.Double(0, 0, 256, 256));
 		styles.getBackgroundRenderer().getRenderer(zoomLevel).setTo(omg);
 		return omg;
+	}
+
+	/**
+	 * @return the coordTransform
+	 */
+	public AffineTransform getCoordTransform() {
+		return coordTransform;
+	}
+
+	/**
+	 * @param coordTransform
+	 *            the coordTransform to set
+	 */
+	public void setCoordTransform(AffineTransform coordTransform) {
+		this.coordTransform = coordTransform;
 	}
 
 	public void createAndSort(Feature feature, int currentZoomLevel, Map<String, OMGraphicList> featureLists) {
@@ -202,6 +218,10 @@ public class VectorOMGraphicFactory {
 
 		if (isPolygon) {
 			path.closePath();
+		}
+
+		if (coordTransform != null) {
+			path.transform(coordTransform);
 		}
 
 		return path;
