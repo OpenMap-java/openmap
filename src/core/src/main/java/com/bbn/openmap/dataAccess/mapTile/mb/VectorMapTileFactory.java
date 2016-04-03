@@ -1,6 +1,5 @@
 package com.bbn.openmap.dataAccess.mapTile.mb;
 
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -8,6 +7,7 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,9 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import com.bbn.openmap.Environment;
-import com.bbn.openmap.Layer;
 import com.bbn.openmap.dataAccess.mapTile.MapTileCoordinateTransform;
-import com.bbn.openmap.dataAccess.mapTile.MapTileRequester;
 import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -63,6 +61,8 @@ import no.ecc.vectortile.VectorTileDecoder.FeatureIterable;
  * 
  * #optional - mbtiles and mvt files have compressed data, pbf data is not compressed.
  * vectorTileLayer.compressed=true
+ * #optional - use parent tiles to fill missing tiles.
+ * vectorTileLayer.useParentTiles=true
  * </pre>
  * 
  * @author dietrick
@@ -70,11 +70,13 @@ import no.ecc.vectortile.VectorTileDecoder.FeatureIterable;
 public class VectorMapTileFactory extends RasterMapTileFactory {
 
 	public final static String COMPRESSED_PROPERTY = "compressed";
+	public final static String FILL_MISSING_TILES_FROM_PARENTS_PROPERTY = "useParentTiles";
 
 	VectorOMGraphicFactory omGraphicFactory;
 	StyleRoot renderStyle;
 	/** mvt is compressed, pbf is not. */
 	boolean compressed = true;
+	boolean useParentTiles = true;
 
 	public VectorMapTileFactory() {
 		getLogger().fine("Using VectorTileMapTileFactory");
@@ -112,6 +114,21 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 	 */
 	public void setCompressed(boolean compressed) {
 		this.compressed = compressed;
+	}
+
+	/**
+	 * @return the useParentTiles
+	 */
+	public boolean isUseParentTiles() {
+		return useParentTiles;
+	}
+
+	/**
+	 * @param useParentTiles
+	 *            the useParentTiles to set
+	 */
+	public void setUseParentTiles(boolean useParentTiles) {
+		this.useParentTiles = useParentTiles;
 	}
 
 	/**
@@ -177,12 +194,21 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 		g2.addRenderingHints(renderingHints);
 
 		try {
-			byte[] tileData = getTileData(key, x, y, zoomLevel);
+
+			// What to do if the tile isn't there? We can check smaller zoom
+			// levels to see if parent tiles exist. If they do, we can read
+			// those and set an AffineTransform on the Graphics object to adjust
+			// zoom and offset. The result should look fine, this is vector
+			// data.
+
+			TileDataLoader tileDataLoader = new TileDataLoader(key, x, y, zoomLevel);
+			byte[] tileData = tileDataLoader.tileData;
 			if (tileData != null) {
 				FeatureIterable fi = decoder.decode(tileData);
 
 				Map<String, OMGraphicList> featureLists = omGraphicFactory.getFeatureMap();
 
+				omGraphicFactory.setCoordTransform(tileDataLoader.transform);
 				for (Feature feature : fi.asList()) {
 					omGraphicFactory.createAndSort(feature, zoomLevel, featureLists);
 				}
@@ -321,12 +347,15 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 		super.setProperties(prefix, setList);
 		prefix = PropUtils.getScopedPropertyPrefix(prefix);
 		compressed = PropUtils.booleanFromProperties(setList, prefix + COMPRESSED_PROPERTY, compressed);
+		useParentTiles = PropUtils.booleanFromProperties(setList, prefix + FILL_MISSING_TILES_FROM_PARENTS_PROPERTY,
+				useParentTiles);
 	}
 
 	public Properties getProperties(Properties getList) {
 		getList = super.getProperties(getList);
 		String prefix = PropUtils.getScopedPropertyPrefix(this);
 		getList.put(prefix + COMPRESSED_PROPERTY, Boolean.toString(compressed));
+		getList.put(prefix + FILL_MISSING_TILES_FROM_PARENTS_PROPERTY, Boolean.toString(useParentTiles));
 		return getList;
 	}
 
@@ -335,7 +364,9 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 		I18n i18n = Environment.getI18n();
 		PropUtils.setI18NPropertyInfo(i18n, list, VectorMapTileFactory.class, COMPRESSED_PROPERTY, "Compressed",
 				"True if tile data is compressed", "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
-
+		PropUtils.setI18NPropertyInfo(i18n, list, VectorMapTileFactory.class, FILL_MISSING_TILES_FROM_PARENTS_PROPERTY,
+				"Use Parent Tiles", "Will use parent data for missing tiles.",
+				"com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 		return list;
 	}
 
@@ -376,7 +407,7 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 	JPanel filterPanel = new JPanel();
 
 	public JComponent getFilterPanel() {
-		filterPanel.removeAll();		
+		filterPanel.removeAll();
 		JComponent guiPanel = createGUIFilters();
 		filterPanel.add(guiPanel);
 		return filterPanel;
@@ -405,7 +436,7 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 			} else if (numColumns <= 0) {
 				numColumns = 1;
 			}
-			
+
 			for (StyleLayer layer : renderStyle.layers) {
 				JCheckBox jcb = new JCheckBox(layer.id, renderStyle.visibleLayers.contains(layer.id));
 				jcb.addActionListener(new ActionListener() {
@@ -427,7 +458,7 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 				updateVisibilityList(true);
 			}
 		});
-		JButton selectNoneButton = new JButton("Select None");		
+		JButton selectNoneButton = new JButton("Select None");
 		selectNoneButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				updateVisibilityList(false);
@@ -444,20 +475,20 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 		parent.setLayout(gridbag);
 		gridbag.setConstraints(jsp, c);
 		parent.add(jsp);
-		
-		c.gridwidth = GridBagConstraints.RELATIVE;		
+
+		c.gridwidth = GridBagConstraints.RELATIVE;
 		c.fill = GridBagConstraints.NONE;
 		c.weightx = 0;
 		c.weighty = 0;
 		c.anchor = GridBagConstraints.EAST;
 		gridbag.setConstraints(selectAllButton, c);
 		parent.add(selectAllButton);
-		c.anchor = GridBagConstraints.WEST;		
-		gridbag.setConstraints(selectNoneButton, c);		
+		c.anchor = GridBagConstraints.WEST;
+		gridbag.setConstraints(selectNoneButton, c);
 		parent.add(selectNoneButton);
 		return parent;
 	}
-	
+
 	protected void updateVisibilityList(boolean setAllTo) {
 		for (JCheckBox jcb : filterCheckBoxes) {
 			jcb.setSelected(setAllTo);
@@ -478,6 +509,82 @@ public class VectorMapTileFactory extends RasterMapTileFactory {
 		if (mapTileRequester instanceof OMGraphicHandlerLayer) {
 			((OMGraphicHandlerLayer) mapTileRequester).doPrepare();
 
+		}
+	}
+
+	/**
+	 * This class loads parent tile data if a tile isn't found. The transform
+	 * will handle how to change the projection of the points of the parent to
+	 * make them work for the desired tile location and zoom level.
+	 * 
+	 * <p>
+	 * NOTE: this class assumes that the tiles are laid out in MapBox OSM
+	 * notation, where 0,0 is upper left for tile location, and zooming out
+	 * lowers the zoom level. It does not take into account the
+	 * MapTileCoordinateTransform the layer may be using.
+	 * 
+	 * @author dietrick
+	 *
+	 */
+	class TileDataLoader {
+		/**
+		 * The transform that might have to be made on the tile data to get it
+		 * to work for the requested tile location.
+		 */
+		AffineTransform transform;
+		/**
+		 * The tile data to use.
+		 */
+		byte[] tileData;
+		/**
+		 * This is the zoom level where a tile was found that covers the
+		 * original tile area.
+		 */
+		int foundDataZoomLevel;
+
+		TileDataLoader(Object key, int x, int y, int zoomLevel) throws Exception {
+			tileData = findTileData(key, x, y, zoomLevel);
+			if (tileData == null) {
+				foundDataZoomLevel = zoomLevel;
+			}
+
+			double zoomLevelMultiplier = Math.pow(2.0, zoomLevel - foundDataZoomLevel);
+
+			double xoffset = (x % zoomLevelMultiplier) * MapTileCoordinateTransform.TILE_SIZE;
+			double yoffset = (y % zoomLevelMultiplier) * MapTileCoordinateTransform.TILE_SIZE;
+
+			this.transform = AffineTransform.getTranslateInstance(-xoffset, -yoffset);
+			this.transform.concatenate(AffineTransform.getScaleInstance(zoomLevelMultiplier, zoomLevelMultiplier));
+		}
+
+		/**
+		 * Recursive tile search, until the zoom levels run out.
+		 * 
+		 * @param key
+		 * @param x
+		 * @param y
+		 * @param zoomLevel
+		 * @return
+		 * @throws Exception
+		 */
+		byte[] findTileData(Object key, int x, int y, int zoomLevel) throws Exception {
+			byte[] tileDataBytes = getTileData(key, x, y, zoomLevel);
+			if (tileDataBytes != null || !useParentTiles) {
+				foundDataZoomLevel = zoomLevel;
+				return tileDataBytes;
+			}
+
+			if (zoomLevel == 0) {
+				return null;
+			}
+
+			// to check parent, divide x, y by 2 and get an integer, chop off
+			// the remainder.
+			zoomLevel--;
+			x = x / 2;
+			y = y / 2;
+
+			return findTileData(key, x, y, zoomLevel);
 		}
 	}
 }
