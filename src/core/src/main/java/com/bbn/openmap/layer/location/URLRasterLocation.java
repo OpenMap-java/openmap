@@ -28,6 +28,7 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 
 import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.omGraphics.OMScalingIcon;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -83,7 +84,7 @@ public class URLRasterLocation
     }
 
     /**
-     * Create a ByteRasterLocation at a screen x/y location.
+     * Create a URLRasterLocation at a screen x/y location.
      * 
      * @param x horizontal pixel screen location from the the left side of the
      *        map.
@@ -100,7 +101,7 @@ public class URLRasterLocation
     }
 
     /**
-     * Create a ByteRasterLocation at a screen x/y location.
+     * Create a URLRasterLocation at a screen x/y location.
      * 
      * @param x horizontal pixel screen location from the the left side of the
      *        map.
@@ -117,13 +118,13 @@ public class URLRasterLocation
     }
 
     /**
-     * Create a ByteRasterLocation at a screen x/y location.
+     * Create a URLRasterLocation at a lat/lon with a x/y pixel offset.
      * 
-     * @param latitude latitide in decimal degrees
+     * @param latitude latitude in decimal degrees
      * @param longitude longitude in decimal degrees.
      * @param xOffset horizontal pixel screen location from the longitude map
      *        point.
-     * @param yOffset vertical pixel screen location, from the latitide map
+     * @param yOffset vertical pixel screen location, from the latitude map
      *        point.
      * @param name the label for the location.
      * @param iconURL a String for a URL for an image
@@ -137,9 +138,9 @@ public class URLRasterLocation
     }
 
     /**
-     * Create a ByteRasterLocation at a screen x/y location.
+     * Create a URLRasterLocation at a lat/lon location with a screen x/y offset.
      * 
-     * @param latitude latitide in decimal degrees
+     * @param latitude latitude in decimal degrees
      * @param longitude longitude in decimal degrees.
      * @param xOffset horizontal pixel screen location from the longitude map
      *        point.
@@ -157,7 +158,7 @@ public class URLRasterLocation
     }
 
     /**
-     * Create an OMRaster at a latitude/longitude, from a image URL.
+     * Create an OMRaster at a latitude/longitude, using an image URL.
      * 
      * @param lat latitide in decimal degrees
      * @param lon longitude in decimal degrees.
@@ -172,25 +173,20 @@ public class URLRasterLocation
     }
 
     /**
-     * Create an OMRaster at a latitude/longitude, from a image URL.
+     * Create an OMRaster at a latitude/longitude, using an image URL.
      * 
      * @param lat latitide in decimal degrees
      * @param lon longitude in decimal degrees.
      * @param iconURL a URL for an image
      */
     public static OMRaster getIconRaster(double lat, double lon, URL iconURL) {
-
         ImageIcon icon = new ImageIcon(iconURL);
-        if (icon == null)
-            return null;
 
-        int offX = icon.getIconWidth() / 2;
-        int offY = icon.getIconHeight() / 2;
-        return new OMRaster(lat, lon, -offX, -offY, icon);
+        return new OMScalingIcon(lat, lon, icon);
     }
 
     /**
-     * Create an OMRaster at a latitude/longitude, from a image URL.
+     * Create an OMRaster at a latitude/longitude, using an image URL.
      * 
      * @param x horizontal pixel screen location from the the left side of the
      *        map.
@@ -206,7 +202,7 @@ public class URLRasterLocation
     }
 
     /**
-     * Create an OMRaster at a latitude/longitude, from a image URL.
+     * Create an OMRaster at an x, y screen location, using an image URL.
      * 
      * @param x horizontal pixel screen location from the the left side of the
      *        map.
@@ -215,8 +211,6 @@ public class URLRasterLocation
      */
     public static OMRaster getIconRaster(int x, int y, URL iconURL) {
         ImageIcon icon = new ImageIcon(iconURL);
-        if (icon == null)
-            return null;
 
         int offX = icon.getIconWidth() / 2;
         int offY = icon.getIconHeight() / 2;
@@ -224,7 +218,7 @@ public class URLRasterLocation
     }
 
     /**
-     * Create an OMRaster at a latitude/longitude, from a image URL.
+     * Create an OMRaster at a latitude/longitude with an x/y pixel offset, using an image URL.
      * 
      * @param lat latitide in decimal degrees
      * @param lon longitude in decimal degrees.
@@ -251,12 +245,8 @@ public class URLRasterLocation
      */
     public static OMRaster getIconRaster(double lat, double lon, int x, int y, URL iconURL) {
         ImageIcon icon = new ImageIcon(iconURL);
-        if (icon == null)
-            return null;
 
-        int offX = icon.getIconWidth() / 2;
-        int offY = icon.getIconHeight() / 2;
-        return new OMRaster(lat, lon, x - offX, y - offY, icon);
+        return new OMScalingIcon(lat, lon, x, y, icon, Float.MAX_VALUE);
     }
 
     /**
