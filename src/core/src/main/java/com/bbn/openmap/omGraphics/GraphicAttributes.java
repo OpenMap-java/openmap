@@ -244,9 +244,12 @@ public class GraphicAttributes extends DrawingAttributes implements ActionListen
 
 		super.setTo(graphic, false);
 		graphic.setLineType(lineType);
+
 		// Render type is dictated by coordinate settings. Changing this messes
-		// with fundamental rendering location.
-		// graphic.setRenderType(renderType);
+		// with fundamental rendering location.  Only set it if the graphic rendertype is unknown.
+		if (graphic.getRenderType() == RENDERTYPE_UNKNOWN && renderType != RENDERTYPE_UNKNOWN) {
+			graphic.setRenderType(renderType);
+		}
 
 		if (resetGUI) {
 			// The GraphicAttribute might be rendering options for this graphic,
