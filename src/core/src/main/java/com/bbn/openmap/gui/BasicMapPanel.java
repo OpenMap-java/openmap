@@ -27,6 +27,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.awt.Toolkit;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Properties;
@@ -42,6 +43,7 @@ import com.bbn.openmap.BufferedLayerMapBean;
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.MapBean;
 import com.bbn.openmap.MapHandler;
+import com.bbn.openmap.MultipleSoloMapComponentException;
 import com.bbn.openmap.PropertyHandler;
 import com.bbn.openmap.gui.menu.MenuList;
 import com.bbn.openmap.proj.Projection;
@@ -590,5 +592,15 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      */
     public void setSetName(boolean setName) {
         this.setName = setName;
+    }
+    
+    /**
+     * Add object to MapHandler via addMapComponent(Object), then return this MapPanel.
+     * @param obj object to add to MapHandler
+     * @return this MapPanel
+     */
+    public BasicMapPanel with(Object obj) {
+    	addMapComponent(obj);
+    	return this;
     }
 }

@@ -52,277 +52,298 @@ import com.bbn.openmap.util.PropUtils;
  * variable should be set to true, and the children's parent name should match
  * whatever property prefix is given to the panel.
  */
-public class OverlayMapPanel
-      extends BasicMapPanel
-      implements PropertyChangeListener {
+public class OverlayMapPanel extends BasicMapPanel implements PropertyChangeListener {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   public final static String ACTIVE_WIDGET_COLOR_PROPERTY = "activeWidgets";
-   public final static String INACTIVE_WIDGET_COLOR_PROPERTY = "inactiveWidgets";
-   public final static String WIDGET_SIZE_PROPERTY = "widgetSize";
-   protected int DEFAULT_WIDGET_BUTTON_SIZE = 15;
+	public final static String ACTIVE_WIDGET_COLOR_PROPERTY = "activeWidgets";
+	public final static String INACTIVE_WIDGET_COLOR_PROPERTY = "inactiveWidgets";
+	public final static String WIDGET_SIZE_PROPERTY = "widgetSize";
+	protected int DEFAULT_WIDGET_BUTTON_SIZE = 15;
 
-   /**
-    * May be null, in which case the widgets should decide.
-    */
-   protected DrawingAttributes activeWidgetColors;
-   /**
-    * May be null, in which case the widgets should decide.
-    */
-   protected DrawingAttributes inactiveWidgetColors;
-   /**
-    * Defaults to 15;
-    */
-   protected int widgetButtonSize = DEFAULT_WIDGET_BUTTON_SIZE;
+	/**
+	 * May be null, in which case the widgets should decide.
+	 */
+	protected DrawingAttributes activeWidgetColors;
+	/**
+	 * May be null, in which case the widgets should decide.
+	 */
+	protected DrawingAttributes inactiveWidgetColors;
+	/**
+	 * Defaults to 15;
+	 */
+	protected int widgetButtonSize = DEFAULT_WIDGET_BUTTON_SIZE;
 
-   /**
-    * A transparent JPanel with a border layout, residing on top of the MapBean.
-    */
-   protected JPanel widgets;
+	/**
+	 * A transparent JPanel with a border layout, residing on top of the
+	 * MapBean.
+	 */
+	protected JPanel widgets;
 
-   private JPanel centerContainer;
+	private JPanel centerContainer;
 
-   /**
-    * Creates an empty OverlayMapPanel that creates its own empty
-    * PropertyHandler. The MapPanel will contain a MapBean, a MapHandler,
-    * EmbeddedNavPanel and a PropertyHandler with no properties. The constructor
-    * to use to create a blank map framework to add components to.
-    */
-   public OverlayMapPanel() {
-      super(new PropertyHandler(new Properties()), false);
-   }
+	/**
+	 * Creates an empty OverlayMapPanel that creates its own empty
+	 * PropertyHandler. The MapPanel will contain a MapBean, a MapHandler,
+	 * EmbeddedNavPanel and a PropertyHandler with no properties. The
+	 * constructor to use to create a blank map framework to add components to.
+	 */
+	public OverlayMapPanel() {
+		super(new PropertyHandler(new Properties()), false);
+	}
 
-   /**
-    * Create a OverlayMapPanel with the option of delaying the search for
-    * properties until the <code>create()</code> call is made.
-    * 
-    * @param delayCreation true to let the MapPanel know that the artful
-    *        programmer will call <code>create()</code>
-    */
-   public OverlayMapPanel(boolean delayCreation) {
-      super(null, delayCreation);
-   }
+	/**
+	 * Create a OverlayMapPanel with the option of delaying the search for
+	 * properties until the <code>create()</code> call is made.
+	 * 
+	 * @param delayCreation
+	 *            true to let the MapPanel know that the artful programmer will
+	 *            call <code>create()</code>
+	 */
+	public OverlayMapPanel(boolean delayCreation) {
+		super(null, delayCreation);
+	}
 
-   /**
-    * Create a OverlayMapPanel that configures itself with the properties
-    * contained in the PropertyHandler provided. If the PropertyHandler is null,
-    * a new one will be created.
-    */
-   public OverlayMapPanel(PropertyHandler propertyHandler) {
-      super(propertyHandler, false);
-   }
+	/**
+	 * Create a OverlayMapPanel that configures itself with the properties
+	 * contained in the PropertyHandler provided. If the PropertyHandler is
+	 * null, a new one will be created.
+	 */
+	public OverlayMapPanel(PropertyHandler propertyHandler) {
+		super(propertyHandler, false);
+	}
 
-   /**
-    * Create a OverlayMapPanel that configures itself with properties contained
-    * in the PropertyHandler provided, and with the option of delaying the
-    * search for properties until the <code>create()</code> call is made.
-    * 
-    * @param delayCreation true to let the MapPanel know that the artful
-    *        programmer will call <code>create()</code>
-    */
-   public OverlayMapPanel(PropertyHandler propertyHandler, boolean delayCreation) {
-      super(propertyHandler, delayCreation);
-   }
+	/**
+	 * Create a OverlayMapPanel that configures itself with properties contained
+	 * in the PropertyHandler provided, and with the option of delaying the
+	 * search for properties until the <code>create()</code> call is made.
+	 * 
+	 * @param delayCreation
+	 *            true to let the MapPanel know that the artful programmer will
+	 *            call <code>create()</code>
+	 */
+	public OverlayMapPanel(PropertyHandler propertyHandler, boolean delayCreation) {
+		super(propertyHandler, delayCreation);
+	}
 
-   /**
-    * Calls layoutPanel(MapBean), which configures the panel.
-    */
-   protected void addMapBeanToPanel(MapBean map) {
-      layoutPanel(map);
-      map.addPropertyChangeListener(this);
-   }
+	/**
+	 * Calls layoutPanel(MapBean), which configures the panel.
+	 */
+	protected void addMapBeanToPanel(MapBean map) {
+		layoutPanel(map);
+		map.addPropertyChangeListener(this);
+	}
 
-   public DrawingAttributes getActiveWidgetColors() {
-      return activeWidgetColors;
-   }
+	public DrawingAttributes getActiveWidgetColors() {
+		return activeWidgetColors;
+	}
 
-   public void setActiveWidgetColors(DrawingAttributes activeWidgetColors) {
-      this.activeWidgetColors = activeWidgetColors;
-   }
+	public void setActiveWidgetColors(DrawingAttributes activeWidgetColors) {
+		this.activeWidgetColors = activeWidgetColors;
+	}
 
-   public DrawingAttributes getInactiveWidgetColors() {
-      return inactiveWidgetColors;
-   }
+	public DrawingAttributes getInactiveWidgetColors() {
+		return inactiveWidgetColors;
+	}
 
-   public void setInactiveWidgetColors(DrawingAttributes inactiveWidgetColors) {
-      this.inactiveWidgetColors = inactiveWidgetColors;
-   }
+	public void setInactiveWidgetColors(DrawingAttributes inactiveWidgetColors) {
+		this.inactiveWidgetColors = inactiveWidgetColors;
+	}
 
-   public int getWidgetButtonSize() {
-      return widgetButtonSize;
-   }
+	public int getWidgetButtonSize() {
+		return widgetButtonSize;
+	}
 
-   public void setWidgetButtonSize(int widgetButtonSize) {
-      this.widgetButtonSize = widgetButtonSize;
-   }
+	public void setWidgetButtonSize(int widgetButtonSize) {
+		this.widgetButtonSize = widgetButtonSize;
+	}
 
-   /**
-    * New method added, called from addMapBeanToPanel(MapBean).
-    * 
-    * @param map
-    */
-   protected void layoutPanel(MapBean map) {
-      Dimension minimumSize = new Dimension(MapBean.DEFAULT_WIDTH, MapBean.DEFAULT_HEIGHT);
+	/**
+	 * New method added, called from addMapBeanToPanel(MapBean).
+	 * 
+	 * @param map
+	 */
+	protected void layoutPanel(MapBean map) {
+		Dimension minimumSize = new Dimension(MapBean.DEFAULT_WIDTH, MapBean.DEFAULT_HEIGHT);
 
-      JPanel hackPanel = new JPanel();
-      hackPanel.setLayout(new BorderLayout());
-      hackPanel.setOpaque(false);
-      hackPanel.add(map, BorderLayout.CENTER);
+		JPanel hackPanel = new JPanel();
+		hackPanel.setLayout(new BorderLayout());
+		hackPanel.setOpaque(false);
+		hackPanel.add(map, BorderLayout.CENTER);
 
-      centerContainer = new JPanel();
-      
-      centerContainer.setLayout(new OverlayLayout(centerContainer));
+		centerContainer = new JPanel();
 
-      // These may be null, but the EmbeddedNavPanel will choose it's own
-      // default colors if that is so.
-      DrawingAttributes activeWidgetColors = getActiveWidgetColors();
-      DrawingAttributes inactiveWidgetColors = getInactiveWidgetColors();
-      int widgetButtonSize = getWidgetButtonSize();
+		centerContainer.setLayout(new OverlayLayout(centerContainer));
 
-      EmbeddedNavPanel navPanel = new EmbeddedNavPanel(activeWidgetColors, inactiveWidgetColors, widgetButtonSize);
-      navPanel.setBounds(12, 12, navPanel.getMinimumSize().width, navPanel.getMinimumSize().height);
+		// These may be null, but the EmbeddedNavPanel will choose it's own
+		// default colors if that is so.
+		DrawingAttributes activeWidgetColors = getActiveWidgetColors();
+		DrawingAttributes inactiveWidgetColors = getInactiveWidgetColors();
+		int widgetButtonSize = getWidgetButtonSize();
 
-      addMapComponent(navPanel);
-      addMapComponent(new ProjectionStack());
+		EmbeddedNavPanel navPanel = new EmbeddedNavPanel(activeWidgetColors, inactiveWidgetColors, widgetButtonSize);
+		navPanel.setBounds(12, 12, navPanel.getMinimumSize().width, navPanel.getMinimumSize().height);
 
-      EmbeddedScaleDisplayPanel scaleDisplay = new EmbeddedScaleDisplayPanel();
-      addMapComponent(scaleDisplay);
+		addMapComponent(navPanel);
+		addMapComponent(new ProjectionStack());
 
-      widgets = new JPanel();
-      widgets.setLayout(new BorderLayout());
-      widgets.setBackground(OMGraphicConstants.clear);
-      widgets.setOpaque(false);
-      widgets.setBounds(0, 0, map.getWidth(), map.getHeight());
-      widgets.setMinimumSize(minimumSize);
-      widgets.add(navPanel, BorderLayout.WEST);
-      widgets.add(scaleDisplay, BorderLayout.EAST);
+		EmbeddedScaleDisplayPanel scaleDisplay = new EmbeddedScaleDisplayPanel();
+		addMapComponent(scaleDisplay);
 
-      setBorders(map, widgets);
+		widgets = new JPanel();
+		widgets.setLayout(new BorderLayout());
+		widgets.setBackground(OMGraphicConstants.clear);
+		widgets.setOpaque(false);
+		widgets.setBounds(0, 0, map.getWidth(), map.getHeight());
+		widgets.setMinimumSize(minimumSize);
+		widgets.add(navPanel, BorderLayout.WEST);
+		widgets.add(scaleDisplay, BorderLayout.EAST);
 
-      centerContainer.add(widgets);
-      centerContainer.add(hackPanel);
+		setBorders(map, widgets);
 
-      add(centerContainer, BorderLayout.CENTER);
-   }
+		centerContainer.add(widgets);
+		centerContainer.add(hackPanel);
 
-   /**
-    * If you want different borders or color them differently, override this
-    * method.
-    * 
-    * @param map
-    * @param widgets
-    */
-   protected void setBorders(MapBean map, JPanel widgets) {
+		add(centerContainer, BorderLayout.CENTER);
+	}
 
-      if (map != null) {
-         map.setBorder(null);
-      }
+	/**
+	 * If you want different borders or color them differently, override this
+	 * method.
+	 * 
+	 * @param map
+	 * @param widgets
+	 */
+	protected void setBorders(MapBean map, JPanel widgets) {
 
-      if (widgets != null) {
-         widgets.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED, Color.GRAY, Color.DARK_GRAY));
-      }
-   }
+		if (map != null) {
+			map.setBorder(null);
+		}
 
-   /** Include exit in the File menu. Call this before create(). */
-   public void includeExitMenuItem() {
-      addProperty("quitMenu.class", "com.bbn.openmap.gui.map.QuitMenuItem");
-      appendProperty("fileMenu.items", "quitMenu");
-   }
+		if (widgets != null) {
+			widgets.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED, Color.GRAY, Color.DARK_GRAY));
+		}
+	}
 
-   public void setProperties(String prefix, Properties props) {
-      super.setProperties(prefix, props);
-      prefix = PropUtils.getScopedPropertyPrefix(prefix);
+	/** Include exit in the File menu. Call this before create(). */
+	public void includeExitMenuItem() {
+		addProperty("quitMenu.class", "com.bbn.openmap.gui.map.QuitMenuItem");
+		appendProperty("fileMenu.items", "quitMenu");
+	}
 
-      DrawingAttributes awc = getActiveWidgetColors();
-      if (awc == null) {
-         awc = DrawingAttributes.getDefaultClone();
-      }
-      DrawingAttributes iwc = getInactiveWidgetColors();
-      if (iwc == null) {
-         iwc = DrawingAttributes.getDefaultClone();
-      }
+	public void setProperties(String prefix, Properties props) {
+		super.setProperties(prefix, props);
+		prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
-      // If no properties have been set for them, reset to null so the
-      // EmbeddedNavPanel default colors are used.
-      awc.setProperties(prefix + ACTIVE_WIDGET_COLOR_PROPERTY, props);
-      if (awc.equals(DrawingAttributes.getDefaultClone())) {
-         awc = null;
-      }
+		DrawingAttributes awc = getActiveWidgetColors();
+		if (awc == null) {
+			awc = DrawingAttributes.getDefaultClone();
+		}
+		DrawingAttributes iwc = getInactiveWidgetColors();
+		if (iwc == null) {
+			iwc = DrawingAttributes.getDefaultClone();
+		}
 
-      iwc.setProperties(prefix + INACTIVE_WIDGET_COLOR_PROPERTY, props);
-      if (iwc.equals(DrawingAttributes.getDefaultClone())) {
-         iwc = null;
-      }
+		// If no properties have been set for them, reset to null so the
+		// EmbeddedNavPanel default colors are used.
+		awc.setProperties(prefix + ACTIVE_WIDGET_COLOR_PROPERTY, props);
+		if (awc.equals(DrawingAttributes.getDefaultClone())) {
+			awc = null;
+		}
 
-      setActiveWidgetColors(awc);
-      setInactiveWidgetColors(iwc);
+		iwc.setProperties(prefix + INACTIVE_WIDGET_COLOR_PROPERTY, props);
+		if (iwc.equals(DrawingAttributes.getDefaultClone())) {
+			iwc = null;
+		}
 
-      setWidgetButtonSize(PropUtils.intFromProperties(props, prefix + WIDGET_SIZE_PROPERTY, getWidgetButtonSize()));
-   }
+		setActiveWidgetColors(awc);
+		setInactiveWidgetColors(iwc);
 
-   public Properties getProperties(Properties props) {
-      props = super.getProperties(props);
-      String prefix = PropUtils.getScopedPropertyPrefix(this);
+		setWidgetButtonSize(PropUtils.intFromProperties(props, prefix + WIDGET_SIZE_PROPERTY, getWidgetButtonSize()));
+	}
 
-      DrawingAttributes awc = getActiveWidgetColors();
-      if (awc != null) {
-         awc.setPropertyPrefix(PropUtils.getScopedPropertyPrefix(this) + ACTIVE_WIDGET_COLOR_PROPERTY);
-         awc.getProperties(props);
-      }
+	public Properties getProperties(Properties props) {
+		props = super.getProperties(props);
+		String prefix = PropUtils.getScopedPropertyPrefix(this);
 
-      DrawingAttributes iwc = getInactiveWidgetColors();
-      if (iwc != null) {
-         iwc.setPropertyPrefix(PropUtils.getScopedPropertyPrefix(this) + INACTIVE_WIDGET_COLOR_PROPERTY);
-         iwc.getProperties(props);
-      }
+		DrawingAttributes awc = getActiveWidgetColors();
+		if (awc != null) {
+			awc.setPropertyPrefix(PropUtils.getScopedPropertyPrefix(this) + ACTIVE_WIDGET_COLOR_PROPERTY);
+			awc.getProperties(props);
+		}
 
-      int widgetSize = getWidgetButtonSize();
-      if (widgetSize != DEFAULT_WIDGET_BUTTON_SIZE) {
-         props.put(prefix + WIDGET_SIZE_PROPERTY, Integer.toString(widgetSize));
-      }
+		DrawingAttributes iwc = getInactiveWidgetColors();
+		if (iwc != null) {
+			iwc.setPropertyPrefix(PropUtils.getScopedPropertyPrefix(this) + INACTIVE_WIDGET_COLOR_PROPERTY);
+			iwc.getProperties(props);
+		}
 
-      return props;
-   }
+		int widgetSize = getWidgetButtonSize();
+		if (widgetSize != DEFAULT_WIDGET_BUTTON_SIZE) {
+			props.put(prefix + WIDGET_SIZE_PROPERTY, Integer.toString(widgetSize));
+		}
 
-   /** A main() method that just brings up a JFrame containing the MapPanel. */
-   public static void main(String argv[]) {
-      SwingUtilities.invokeLater(new Runnable() {
+		return props;
+	}
 
-         public void run() {
-            JFrame f = new JFrame("Map");
-            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            OverlayMapPanel map = new OverlayMapPanel(new PropertyHandler(new Properties()), true);
-            map.create();
+	/**
+	 * Add object to MapHandler via addMapComponent(Object), then return this
+	 * MapPanel.
+	 *
+	 * @param obj
+	 *            object to add to MapHandler
+	 * @return this MapPanel
+	 */
+	public OverlayMapPanel with(Object obj) {
+		addMapComponent(obj);
+		return this;
+	}
 
-            map.getMapBean().setBckgrnd(new Color(0x99b3cc));
-            map.addMapComponent(new LayerHandler());
-            map.addMapComponent(new MouseDelegator());
-            map.addMapComponent(new OMMouseMode());
-            ShapeLayer shapeLayer = new ShapeLayer("share/data/shape/cntry02/cntry02.shp");
-            // shapeLayer.setAddAsBackground(true);
-            map.addMapComponent(shapeLayer);
-            map.includeExitMenuItem();
-            f.setJMenuBar(map.getMapMenuBar());
-            f.getContentPane().add(map);
-            f.setSize(800, 600);
-            f.setVisible(true);
-         }
+	/**
+	 * Create an OverlayMapPanel with a LayerHandler, MouseDelegator and OMMouseMode pre-added().
+	 * 
+	 * @return OverlayMapPanel
+	 */
+	public static OverlayMapPanel standardConfig() {
+	   return new OverlayMapPanel()
+			   .with(new com.bbn.openmap.LayerHandler())
+			   .with(new com.bbn.openmap.MouseDelegator())
+			   .with(new com.bbn.openmap.event.OMMouseMode());
+	}
+	
+	/** A main() method that just brings up a JFrame containing the MapPanel. */
+	public static void main(String argv[]) {
+		SwingUtilities.invokeLater(new Runnable() {
 
-      });
+			public void run() {
 
-   }
+				OverlayMapPanel map = OverlayMapPanel.standardConfig().with(new ShapeLayer("share/data/shape/cntry02/cntry02.shp"));
+				map.addMapComponent(new com.bbn.openmap.InformationDelegator());
+				map.getMapBean().setBckgrnd(new Color(0x99b3cc));
+				map.includeExitMenuItem();
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.beans.PropertyChangeListener#propertyChange(java.beans.
-    * PropertyChangeEvent)
-    */
-   public void propertyChange(PropertyChangeEvent evt) {
-      if (evt.getPropertyName().equals(MapBean.CursorProperty)) {
-         centerContainer.setCursor(((Cursor) evt.getNewValue()));
-      }
-   }
-   
+				JFrame f = new JFrame("Map");
+				f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				f.setJMenuBar(map.getMapMenuBar());
+				f.getContentPane().add(map);
+				f.setSize(800, 600);
+				f.setVisible(true);
+			}
+
+		});
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.
+	 * PropertyChangeEvent)
+	 */
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getPropertyName().equals(MapBean.CursorProperty)) {
+			centerContainer.setCursor(((Cursor) evt.getNewValue()));
+		}
+	}
+
 }
