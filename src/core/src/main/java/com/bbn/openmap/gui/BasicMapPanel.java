@@ -73,7 +73,7 @@ import com.bbn.openmap.util.PropUtils;
  * whatever property prefix is given to the panel.
  * 
  */
-public class BasicMapPanel extends OMComponentPanel implements MapPanel {
+public class BasicMapPanel extends MapPanel {
 
     public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.MapPanel");
 

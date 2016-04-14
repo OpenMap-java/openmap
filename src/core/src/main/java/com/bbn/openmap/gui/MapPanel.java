@@ -36,31 +36,38 @@ import com.bbn.openmap.MapHandler;
  * doesn't, it might not be automatically added to the OpenMapFrame or
  * OpenMapApplet if it is found in the MapHandler.
  */
-public interface MapPanel {
+public abstract class MapPanel extends OMComponentPanel {
 
-    /**
-     * Get the MapBean used for the MapPanel.
-     */
-    public MapBean getMapBean();
+	/**
+	 * Get the MapBean used for the MapPanel.
+	 */
+	public abstract MapBean getMapBean();
 
-    /**
-     * Get the MapHandler used for the MapPanel. You should be able to use the
-     * MapHandler to get to any component used in the MapPanel.
-     */
-    public MapHandler getMapHandler();
+	/**
+	 * Get the MapHandler used for the MapPanel. You should be able to use the
+	 * MapHandler to get to any component used in the MapPanel.
+	 */
+	public abstract MapHandler getMapHandler();
 
-    /**
-     * Get a JMenuBar containing menus to control the map.
-     */
-    public JMenuBar getMapMenuBar();
+	/**
+	 * Get a JMenuBar containing menus to control the map.
+	 */
+	public abstract JMenuBar getMapMenuBar();
 
-    /**
-     * Get a JMenu containing sub-menus to control the map.
-     */
-    public JMenu getMapMenu();
+	/**
+	 * Get a JMenu containing sub-menus to control the map.
+	 */
+	public abstract JMenu getMapMenu();
 
-    /**
-     * Tell the panel to release components.
-     */
-    public void dispose();
+	/**
+	 * Tell the panel to release components.
+	 */
+	public abstract void dispose();
+
+	/**
+	 * Add an object to the MapHandler in this MapPanel.
+	 * 
+	 * @param obj
+	 */
+	public abstract void addMapComponent(Object obj);
 }
