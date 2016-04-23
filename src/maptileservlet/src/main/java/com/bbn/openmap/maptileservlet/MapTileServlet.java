@@ -56,7 +56,12 @@ import com.bbn.openmap.util.wanderer.WandererCallback;
  */
 public class MapTileServlet extends HttpServlet {
     public final static String TILE_SET_DESCRIPTION_ATTRIBUTE = "TileSetDefinitions";
+    public final static String LEAFLET_CSS_LOCATION_ATTRIBUTE = "leaflet_css";
+    public final static String LEAFLET_JS_LOCATION_ATTRIBUTE = "leaflet_js";
     protected Map<String, MapTileSet> mapTileSets;
+    
+    String leafletCssLocation = "http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css";
+    String leafletJsLocation = "http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js";
 
     /**
      * A do-nothing constructor - init does all the work.
@@ -93,7 +98,20 @@ public class MapTileServlet extends HttpServlet {
                         + descriptions);
             }
         }
-
+        
+        String leafletCss = context.getInitParameter(LEAFLET_CSS_LOCATION_ATTRIBUTE);
+        if (leafletCss != null) {
+        	leafletCssLocation = leafletCss;
+        }
+        logger.info("leaflet.css located at :" + leafletCssLocation);
+        
+        
+        String leafletJs = context.getInitParameter(LEAFLET_JS_LOCATION_ATTRIBUTE);
+        if (leafletJs != null) {
+        	leafletJsLocation = leafletJs;
+        }
+        logger.info("leaflet.js located at :" + leafletJsLocation);        
+        
     }
 
     /**

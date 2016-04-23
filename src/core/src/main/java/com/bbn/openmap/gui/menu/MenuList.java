@@ -24,8 +24,8 @@ package com.bbn.openmap.gui.menu;
 
 import java.beans.PropertyVetoException;
 import java.beans.beancontext.BeanContext;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -55,8 +55,8 @@ import com.bbn.openmap.util.PropUtils;
  *    menu1.class=classname of menu1
  *    menu2.class=classname of menu2
  *    menu3.class=classname of menu3
- *   
- *    
+ * 
+ * 
  * </pre>
  * 
  * When the MenuList.setBeanContext() method gets called, the MenuList will add
@@ -68,169 +68,192 @@ import com.bbn.openmap.util.PropUtils;
  */
 public class MenuList extends OMComponent {
 
-    public final static String MenusProperty = "menus";
-    public final static String MenuNameProperty = "name";
+	public final static String MenusProperty = "menus";
+	public final static String MenuNameProperty = "name";
 
-    protected LinkedList menus;
+	protected List<JMenu> menuList;
 
-    protected MenuBar menuBar;
-    protected JMenu menu;
-    protected String name = "Map";
+	protected String name = "Map";
 
-    /**
-     * Create an empty MenuList.
-     */
-    public MenuList() {
-        menus = new LinkedList();
-    }
+	/**
+	 * Create an empty MenuList.
+	 */
+	public MenuList() {
+		menuList = new ArrayList<JMenu>();
+	}
 
-    /**
-     * Get a MenuBar with JMenus on it. If the MenuList has been given a
-     * MapHandler, the Menus will have been added to it, and therefore will be
-     * connected to OpenMap components. The MenuBar is not added to the
-     * MapHandler and probably shouldn't be, since it will find and re-add the
-     * Menus it finds there in some random order.
-     */
-    public JMenuBar getMenuBar() {
-        if (menuBar == null) {
-            menuBar = new MenuBar();
-        }
+	/**
+	 * Get a MenuBar with JMenus on it. If the MenuList has been given a
+	 * MapHandler, the Menus will have been added to it, and therefore will be
+	 * connected to OpenMap components. The MenuBar is not added to the
+	 * MapHandler and probably shouldn't be, since it will find and re-add the
+	 * Menus it finds there in some random order.
+	 */
+	public JMenuBar getMenuBar() {
+		MenuBar menuBar = new MenuBar();
 
-        menuBar.removeAll();
-        Iterator iterator = menus.iterator();
-        while (iterator.hasNext()) {
-            menuBar.findAndInit(iterator.next());
-        }
-        return menuBar;
-    }
+		for (JMenu menuu : menuList) {
+			menuBar.add(menuu);
+		}
 
-    /**
-     * Get a JMenu with JMenus on it as sub-menus. If the MenuList has been
-     * given a MapHandler, the Menus will have been added to it, and therefore
-     * will be connected to OpenMap components. This menu will be named "Map",
-     * but you can rename it if you want.
-     */
-    public JMenu getMenu() {
-        if (menu == null) {
-            menu = new JMenu(name);
-        }
+		return menuBar;
+	}
 
-        menu.removeAll();
-        Iterator iterator = menus.iterator();
-        while (iterator.hasNext()) {
-            menu.add((JMenu) iterator.next());
-        }
-        return menu;
-    }
+	/**
+	 * Get a JMenu with JMenus on it as sub-menus. If the MenuList has been
+	 * given a MapHandler, the Menus will have been added to it, and therefore
+	 * will be connected to OpenMap components. This menu will be named "Map",
+	 * but you can rename it if you want.
+	 */
+	public JMenu getMenu() {
+		JMenu menu = new JMenu(name);
 
-    /**
-     * The MenuList will look for the "menus" property and build its menus.
-     */
-    public void setProperties(String prefix, Properties props) {
-        super.setProperties(prefix, props);
-        String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
-        name = props.getProperty(prefix + MenuNameProperty, name);
+		for (JMenu menuu : menuList) {
+			menu.add(menuu);
+		}
 
-        Vector menuItems = PropUtils.parseSpacedMarkers(props.getProperty(realPrefix
-                + MenusProperty));
-        if (!menuItems.isEmpty()) {
+		return menu;
+	}
 
-            int nMenuItems = menuItems.size();
+	/**
+	 * The MenuList will look for the "menus" property and build its menus.
+	 */
+	public void setProperties(String prefix, Properties props) {
+		super.setProperties(prefix, props);
+		String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
+		name = props.getProperty(prefix + MenuNameProperty, name);
 
-            if (Debug.debugging("menu")) {
-                Debug.output("MenuList created with " + nMenuItems + " menus"
-                        + (nMenuItems == 1 ? "" : "s") + " in properties");
-            }
+		Vector<String> menuItems = PropUtils.parseSpacedMarkers(props.getProperty(realPrefix + MenusProperty));
+		if (!menuItems.isEmpty()) {
 
-            for (int i = 0; i < nMenuItems; i++) {
-                String itemPrefix = (String) menuItems.elementAt(i);
-                String classProperty = itemPrefix + ".class";
-                String className = props.getProperty(classProperty);
-                if (className == null) {
-                    Debug.error("MenuList.setProperties(): Failed to locate property \""
-                            + classProperty
-                            + "\"\n  Skipping menu \""
-                            + itemPrefix + "\"");
-                    continue;
-                }
+			for (String itemPrefix : menuItems) {
+				String classProperty = itemPrefix + ".class";
+				String className = props.getProperty(classProperty);
+				if (className == null) {
+					Debug.error("MenuList.setProperties(): Failed to locate property \"" + classProperty
+							+ "\"\n  Skipping menu \"" + itemPrefix + "\"");
+					continue;
+				}
 
-                Object obj = ComponentFactory.create(className,
-                        itemPrefix,
-                        props);
-                if (obj instanceof JMenu) {
-                    menus.add(obj);
-                }
-            }
-        } else {
-            if (Debug.debugging("menu")) {
-                Debug.output("MenuList created without menus in properties");
-            }
-        }
-    }
+				Object obj = ComponentFactory.create(className, itemPrefix, props);
+				if (obj instanceof JMenu) {
+					menuList.add((JMenu) obj);
+				}
+			}
+		} else {
+			if (Debug.debugging("menu")) {
+				Debug.output("MenuList created without menus in properties");
+			}
+		}
+	}
 
-    /**
-     * PropertyConsumer interface method.
-     */
-    public Properties getProperties(Properties props) {
-        props = super.getProperties(props);
-        StringBuffer itemList = new StringBuffer();
-        Iterator iterator = menus.iterator();
-        while (iterator.hasNext()) {
-            JMenu menu = (JMenu) iterator.next();
+	/**
+	 * PropertyConsumer interface method.
+	 */
+	public Properties getProperties(Properties props) {
+		props = super.getProperties(props);
+		StringBuffer itemList = new StringBuffer();
 
-            if (menu instanceof PropertyConsumer) {
-                PropertyConsumer ps = (PropertyConsumer) menu;
-                String prefix = ps.getPropertyPrefix();
-                if (prefix == null) {
-                    prefix = menu.getText().toLowerCase();
-                    ps.setPropertyPrefix(prefix);
-                }
+		for (JMenu menu : menuList) {
+			if (menu instanceof PropertyConsumer) {
+				PropertyConsumer ps = (PropertyConsumer) menu;
+				String prefix = ps.getPropertyPrefix();
+				if (prefix == null) {
+					prefix = menu.getText().toLowerCase();
+					ps.setPropertyPrefix(prefix);
+				}
 
-                itemList.append(prefix).append(" ");
-                ps.getProperties(props);
-            }
-        }
+				itemList.append(prefix).append(" ");
+				ps.getProperties(props);
+			}
+		}
 
-        String prefix = PropUtils.getScopedPropertyPrefix(this);
-        props.put(prefix + MenusProperty, itemList.toString());
-        props.put(prefix + MenuNameProperty, name);
+		String prefix = PropUtils.getScopedPropertyPrefix(this);
+		props.put(prefix + MenusProperty, itemList.toString().trim());
+		props.put(prefix + MenuNameProperty, PropUtils.unnull(name));
 
-        return props;
-    }
+		return props;
+	}
 
-    /**
-     * PropertyConsumer interface method.
-     */
-    public Properties getPropertyInfo(Properties props) {
-        props = super.getPropertyInfo(props);
-        PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                MenuList.class,
-                MenusProperty,
-                "List of Menus",
-                "List of marker names for menu component properties.",
-                null);
-        PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                MenuList.class,
-                MenuNameProperty,
-                "Name",
-                "Name of the Menu provided by the MenuList.",
-                null);
-        return props;
-    }
+	/**
+	 * PropertyConsumer interface method.
+	 */
+	public Properties getPropertyInfo(Properties props) {
+		props = super.getPropertyInfo(props);
+		PropUtils.setI18NPropertyInfo(i18n, props, MenuList.class, MenusProperty, "List of Menus",
+				"List of marker names for menu component properties.", null);
+		PropUtils.setI18NPropertyInfo(i18n, props, MenuList.class, MenuNameProperty, "Name",
+				"Name of the Menu provided by the MenuList.", null);
+		return props;
+	}
 
-    /**
-     * Called when the MenuList is added to the MapHandler/BeanContext. The
-     * MenuList will add its menus to the BeanContext.
-     */
-    public void setBeanContext(BeanContext bc) throws PropertyVetoException {
+	/**
+	 * Called when the MenuList is added to the MapHandler/BeanContext. The
+	 * MenuList will add its menus to the BeanContext.
+	 */
+	public void setBeanContext(BeanContext bc) throws PropertyVetoException {
 
-        super.setBeanContext(bc);
-        Iterator it = menus.iterator();
-        while (bc != null && it.hasNext()) {
-            bc.add(it.next());
-        }
-    }
+		super.setBeanContext(bc);
+		if (bc != null) {
+			for (JMenu menu : menuList) {
+				bc.add(menu);
+			}
+		}
+	}
 
+	public void findAndInit(Object obj) {
+		if (obj instanceof JMenu) {
+			menuList.add((JMenu) obj);
+		}
+	}
+
+	public void findAndUndo(Object obj) {
+		if (obj instanceof JMenu) {
+			menuList.remove((JMenu) obj);
+		}
+	}
+
+	public void add(JMenu menu) {
+		menuList.add(menu);
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * Builder method.
+	 * 
+	 * @param name used on Map menu.
+	 * @return this.
+	 */
+	public MenuList withName(String name) {
+		setName(name);
+		return this;
+	}
+
+	/**
+	 * Return a MenuList with a standard load of menus.
+	 * 
+	 * @return MenuList
+	 */
+	public static MenuList standardConfig() {
+		MenuList menuList = new MenuList();
+		menuList.add(new com.bbn.openmap.gui.FileMenu());
+		menuList.add(new com.bbn.openmap.gui.NavigateMenu());
+		menuList.add(new com.bbn.openmap.gui.ControlMenu());
+		menuList.add(new com.bbn.openmap.gui.LayersMenu());
+		menuList.add(new com.bbn.openmap.gui.GoToMenu());
+		return menuList;
+	}
 }
