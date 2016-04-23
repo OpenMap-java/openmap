@@ -252,9 +252,6 @@ public class LayersPanel extends OMToolComponent
         super();
         setKey(defaultKey);
         setLayout(new BorderLayout());
-        // setWindowSupport(new WindowSupport(this, i18n.get(LayersPanel.class,
-        // "title",
-        // "Layers")));
     }
 
     /**
@@ -922,15 +919,7 @@ public class LayersPanel extends OMToolComponent
             }
         }
 
-        Object[] layerArray = layerList.toArray();
-        int length = layerArray.length;
-        Layer[] newLayers = new Layer[length];
-
-        for (int j = 0; j < length; j++) {
-            newLayers[j] = (Layer) layerArray[j];
-        }
-
-        layerHandler.setLayers(newLayers);
+		layerHandler.setLayerList(new LinkedList<Layer>(layerList));
     }
 
     /**

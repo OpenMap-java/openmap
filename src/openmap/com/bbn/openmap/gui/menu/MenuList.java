@@ -24,8 +24,8 @@ package com.bbn.openmap.gui.menu;
 
 import java.beans.PropertyVetoException;
 import java.beans.beancontext.BeanContext;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -55,8 +55,8 @@ import com.bbn.openmap.util.PropUtils;
  *    menu1.class=classname of menu1
  *    menu2.class=classname of menu2
  *    menu3.class=classname of menu3
- *   
- *    
+ * 
+ * 
  * </pre>
  * 
  * When the MenuList.setBeanContext() method gets called, the MenuList will add
@@ -71,17 +71,15 @@ public class MenuList extends OMComponent {
     public final static String MenusProperty = "menus";
     public final static String MenuNameProperty = "name";
 
-    protected LinkedList menus;
+    protected List<JMenu> menuList;
 
-    protected MenuBar menuBar;
-    protected JMenu menu;
     protected String name = "Map";
 
     /**
      * Create an empty MenuList.
      */
     public MenuList() {
-        menus = new LinkedList();
+        menuList = new ArrayList<JMenu>();
     }
 
     /**
@@ -92,14 +90,10 @@ public class MenuList extends OMComponent {
      * Menus it finds there in some random order.
      */
     public JMenuBar getMenuBar() {
-        if (menuBar == null) {
-            menuBar = new MenuBar();
-        }
+        MenuBar menuBar = new MenuBar();
 
-        menuBar.removeAll();
-        Iterator iterator = menus.iterator();
-        while (iterator.hasNext()) {
-            menuBar.findAndInit(iterator.next());
+        for (JMenu menuu : menuList) {
+            menuBar.add(menuu);
         }
         return menuBar;
     }
@@ -111,14 +105,10 @@ public class MenuList extends OMComponent {
      * but you can rename it if you want.
      */
     public JMenu getMenu() {
-        if (menu == null) {
-            menu = new JMenu(name);
-        }
+        JMenu menu = new JMenu(name);
 
-        menu.removeAll();
-        Iterator iterator = menus.iterator();
-        while (iterator.hasNext()) {
-            menu.add((JMenu) iterator.next());
+        for (JMenu menuu : menuList) {
+            menu.add(menuu);
         }
         return menu;
     }
@@ -131,34 +121,22 @@ public class MenuList extends OMComponent {
         String realPrefix = PropUtils.getScopedPropertyPrefix(prefix);
         name = props.getProperty(prefix + MenuNameProperty, name);
 
-        Vector menuItems = PropUtils.parseSpacedMarkers(props.getProperty(realPrefix
+        Vector<String> menuItems = PropUtils.parseSpacedMarkers(props.getProperty(realPrefix
                 + MenusProperty));
         if (!menuItems.isEmpty()) {
 
-            int nMenuItems = menuItems.size();
-
-            if (Debug.debugging("menu")) {
-                Debug.output("MenuList created with " + nMenuItems + " menus"
-                        + (nMenuItems == 1 ? "" : "s") + " in properties");
-            }
-
-            for (int i = 0; i < nMenuItems; i++) {
-                String itemPrefix = (String) menuItems.elementAt(i);
+            for (String itemPrefix : menuItems) {
                 String classProperty = itemPrefix + ".class";
                 String className = props.getProperty(classProperty);
                 if (className == null) {
                     Debug.error("MenuList.setProperties(): Failed to locate property \""
-                            + classProperty
-                            + "\"\n  Skipping menu \""
-                            + itemPrefix + "\"");
+                            + classProperty + "\"\n  Skipping menu \"" + itemPrefix + "\"");
                     continue;
                 }
 
-                Object obj = ComponentFactory.create(className,
-                        itemPrefix,
-                        props);
+                Object obj = ComponentFactory.create(className, itemPrefix, props);
                 if (obj instanceof JMenu) {
-                    menus.add(obj);
+                    menuList.add((JMenu) obj);
                 }
             }
         } else {
@@ -174,10 +152,8 @@ public class MenuList extends OMComponent {
     public Properties getProperties(Properties props) {
         props = super.getProperties(props);
         StringBuffer itemList = new StringBuffer();
-        Iterator iterator = menus.iterator();
-        while (iterator.hasNext()) {
-            JMenu menu = (JMenu) iterator.next();
 
+        for (JMenu menu : menuList) {
             if (menu instanceof PropertyConsumer) {
                 PropertyConsumer ps = (PropertyConsumer) menu;
                 String prefix = ps.getPropertyPrefix();
@@ -192,8 +168,8 @@ public class MenuList extends OMComponent {
         }
 
         String prefix = PropUtils.getScopedPropertyPrefix(this);
-        props.put(prefix + MenusProperty, itemList.toString());
-        props.put(prefix + MenuNameProperty, name);
+        props.put(prefix + MenusProperty, itemList.toString().trim());
+        props.put(prefix + MenuNameProperty, PropUtils.unnull(name));
 
         return props;
     }
@@ -203,20 +179,8 @@ public class MenuList extends OMComponent {
      */
     public Properties getPropertyInfo(Properties props) {
         props = super.getPropertyInfo(props);
-        PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                MenuList.class,
-                MenusProperty,
-                "List of Menus",
-                "List of marker names for menu component properties.",
-                null);
-        PropUtils.setI18NPropertyInfo(i18n,
-                props,
-                MenuList.class,
-                MenuNameProperty,
-                "Name",
-                "Name of the Menu provided by the MenuList.",
-                null);
+        PropUtils.setI18NPropertyInfo(i18n, props, MenuList.class, MenusProperty, "List of Menus", "List of marker names for menu component properties.", null);
+        PropUtils.setI18NPropertyInfo(i18n, props, MenuList.class, MenuNameProperty, "Name", "Name of the Menu provided by the MenuList.", null);
         return props;
     }
 
@@ -227,10 +191,40 @@ public class MenuList extends OMComponent {
     public void setBeanContext(BeanContext bc) throws PropertyVetoException {
 
         super.setBeanContext(bc);
-        Iterator it = menus.iterator();
-        while (bc != null && it.hasNext()) {
-            bc.add(it.next());
+        if (bc != null) {
+            for (JMenu menu : menuList) {
+                bc.add(menu);
+            }
         }
     }
 
+    public void findAndInit(Object obj) {
+        if (obj instanceof JMenu) {
+            menuList.add((JMenu) obj);
+        }
+    }
+
+    public void findAndUndo(Object obj) {
+        if (obj instanceof JMenu) {
+            menuList.remove((JMenu) obj);
+        }
+    }
+
+    public void add(JMenu menu) {
+        menuList.add(menu);
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 }

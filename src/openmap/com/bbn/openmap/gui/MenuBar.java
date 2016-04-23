@@ -40,9 +40,11 @@ import javax.swing.JMenuBar;
 import com.bbn.openmap.util.Debug;
 
 /**
- * This object looks for objects implementing MenuI interface and adds
- * them to itself. if an object implements HelpMenuI, it is then added
- * as the last element.
+ * The MenuList should create and load this with the menus it it has found.
+ * 
+ * If added to the MapHandler, this Menubar looks for a JMenus and adds them to
+ * itself. if an object implements HelpMenu, it is then added as the last
+ * element.
  */
 public class MenuBar extends JMenuBar implements Serializable,
         BeanContextMembershipListener, BeanContextChild {
@@ -67,42 +69,55 @@ public class MenuBar extends JMenuBar implements Serializable,
     }
 
     public void findAndInit(Object someObj) {
+		if (someObj instanceof JMenu) {
+			add((JMenu) someObj);
+		}
+	}
+
+	public JMenu add(JMenu someMenu) {
         int menuCount = getMenuCount();
 
+		JMenu lastMenu = getLastMenu();
+
         // Check for HelpMenu first.
-        if (someObj instanceof HelpMenu) {
-            //setHelpMenu((JMenu)someObj);
+		if (someMenu instanceof HelpMenu) {
+
             // We will use it when its implementation is available.
             // get the last menu and see if it is helpmenu
-            if (menuCount > 0 && (getMenu(menuCount - 1) instanceof HelpMenu)) {
-                System.err.println("HelpMenu already exists in MenuBar..overriding it");
+			if (lastMenu instanceof HelpMenu) {
+				if (Debug.debugging("menubar")) {
+					Debug.output("HelpMenu already exists in MenuBar..overriding it");
+				}
+				remove(lastMenu);
             }
             // make the help menu as the last menu
             if (Debug.debugging("menubar")) {
-                Debug.output("MenuBar: Adding help menu at " + getMenuCount());
+				Debug.output("MenuBar: Adding help menu at " + menuCount);
             }
-            add((JMenu) someObj, getMenuCount());
 
-        } else if (someObj instanceof MenuBarMenu) {
+			super.add(someMenu);
+
+		} else if (someMenu instanceof MenuBarMenu) {
 
             if (Debug.debugging("menubar")) {
-                Debug.output("MenuBar: Adding Menu " + ((JMenu) someObj)
-                        + "to index " + menuCount);
+				Debug.output("MenuBar: Adding Menu " + someMenu + "to index " + menuCount);
             }
 
-            JMenu lastMenu = getLastMenu();
             if (lastMenu instanceof HelpMenu) {
                 remove(lastMenu);
-                add((JMenu) someObj, menuCount - 1);
-                add(lastMenu, menuCount);
+
+				super.add(someMenu);
+				super.add(lastMenu);
+
                 if (Debug.debugging("menubar")) {
-                    Debug.output("MenuBar: last menu is HelpMenu\n moving helpMenu to "
-                            + menuCount);
+					Debug.output("MenuBar: last menu is HelpMenu\n moving helpMenu to " + menuCount);
                 }
             } else {
-                add((JMenu) someObj, menuCount);
+				super.add(someMenu);
             }
         }
+
+		return someMenu;
     }
 
     /**

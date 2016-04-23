@@ -266,8 +266,9 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable, Lay
                 Debug.error("LayersMenu.setLayers(): Layers are null.");
             }
         } else {
-            for (int i = 0; i < inLayers.length; i++) {
-                LayerCheckBoxMenuItem cbs = new LayerCheckBoxMenuItem(inLayers[i]);
+			for (Layer layer : inLayers) {
+				LayerCheckBoxMenuItem cbs = new LayerCheckBoxMenuItem(layer);
+				cbs.setEnabled(layer.isRemovable());
                 add(cbs);
             }
         }
@@ -312,8 +313,7 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable, Lay
     /**
      * CheckBoxMenuItem that encapsulates a Layer.
      */
-    class LayerCheckBoxMenuItem extends JCheckBoxMenuItem implements ActionListener,
-            ComponentListener {
+	class LayerCheckBoxMenuItem extends JCheckBoxMenuItem implements ActionListener, ComponentListener {
         /** The layer that the button triggers. */
         Layer layer;
         /**
@@ -478,13 +478,19 @@ public class LayersMenu extends AbstractOpenMapMenu implements Serializable, Lay
      */
     public void setupLayerAddButton(final LayerAddPanel menu) {
         final LayerAddPanel lap = menu;
-        // JMenuItem button = new JMenuItem(addLayersButtonTitle);
+
+		if (menu != null) {
         JMenuItem button = new JMenuItem(i18n.get(LayersMenu.class, "addLayersButtonTitle", addLayersButtonTitle));
-        button.setActionCommand("add");
-        button.addActionListener(lap);
+			button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					lap.showPanel();
+				}
+			});
+
         setAdd(button);
         add(button);
     }
+	}
 
     /**
      * Called when the BeanContext membership changes with object from the

@@ -284,7 +284,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent, Seria
         // Go through the list of old-non-removable layers, if they are not on
         // the new layer list, add them to the end.
         for (Layer layer : currentLayers) {
-            if (!layers.contains(layer)) {
+			if (!layers.contains(layer) || !layer.isRemovable()) {
                 layers.add(layer);
             }
         }
@@ -518,7 +518,12 @@ public class LayerHandler extends OMComponent implements SoloMapComponent, Seria
      * Set all the layers held by the LayerHandler. The visible layers will be
      * sent to listeners interested in visible layers (LayerEvent.REPLACE), and
      * the list of all layers will be sent to listeners interested in
-     * LayerEvent.ALL events.
+	 * LayerEvent.ALL events. Calling this method from other GUI components
+	 * could break the non-removable contract that previous layers had. The
+	 * previous layers aren't checked against this list to insure that
+	 * non-removable layers are still on this list and visible. GUI components
+	 * that may call this need to set up their GUI controls to not allow
+	 * non-removable layers to be eliminated from the application.
      * <p/>
      * <p/>
      * This method will not add the layers to the MapHandler, so you can call
@@ -540,7 +545,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent, Seria
     }
 
     public synchronized void setLayerList(List<Layer> layers) {
-        allLayers = organizeBackgroundLayers(layers);
+		List<Layer> localAllLayers = organizeBackgroundLayers(layers);
 
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("setting layers: " + getLayerNamesFromArray(layers));
@@ -551,10 +556,12 @@ public class LayerHandler extends OMComponent implements SoloMapComponent, Seria
         // they can make appropriate changes before the LayerListeners get da
         // layers.
 
-        List<Layer> checkedList = layerConfigListeners.checkLayerConfiguration(getLayerList());
+		List<Layer> checkedList = layerConfigListeners.checkLayerConfiguration(new ArrayList<Layer>(localAllLayers));
         if (checkedList != null) {
-            allLayers = organizeBackgroundLayers(checkedList);
+			localAllLayers = organizeBackgroundLayers(checkedList);
         }
+
+		allLayers = localAllLayers;
 
         getListeners().pushLayerEvent(LayerEvent.ALL, getLayers());
         getListeners().pushLayerEvent(LayerEvent.REPLACE, getMapLayers());
@@ -581,6 +588,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent, Seria
      */
     protected boolean isForegroundUnderBackgroundLayer(List<Layer> layers) {
         boolean foundBackgroundLayer = false;
+		if (layers != null) {
         for (Layer layer : layers) {
             if (layer != null) {
                 if (layer.getAddAsBackground()) {
@@ -590,6 +598,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent, Seria
                 }
             }
         }
+		}
 
         return false;
     }

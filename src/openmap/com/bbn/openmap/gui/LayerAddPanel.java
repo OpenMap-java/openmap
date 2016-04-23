@@ -29,14 +29,15 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Vector;
 
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
@@ -62,8 +63,7 @@ import com.bbn.openmap.util.propertyEditor.Inspector;
  * invoked to inspect and configure a Layer object through the PropertyConsumer
  * interface.
  */
-public class LayerAddPanel extends OMComponentPanel implements Serializable,
-        ActionListener {
+public class LayerAddPanel extends OMComponentPanel implements Serializable, ActionListener {
     /**
      * Constant field containing markers used in properties file for layers that
      * can be created using the LayerAddPanel.
@@ -81,17 +81,25 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
     /**
      * The list of available Layer classes. Is initiated with pretty names.
      */
-    protected JComboBox list = null;
+    protected JComboBox<String> list = null;
+    /**
+     * Text field used to define new Layer class to create.
+     */
+    protected JTextField classTextField = null;
     /** The String to use as a prefix for the new Layer's properties. */
     protected JTextField prefixTextField = null;
     /** Action command String for JButton. */
     protected final String configureActionCommand = "configureActionCommand";
     /** Contains Layer classes to be instantiated. */
-    protected Hashtable layerClasses = null;
+    protected Hashtable<String, String> layerClasses = null;
     /** The Inspector to handle the configuration of the new Layer. */
     protected Inspector inspector = null;
     /** The layer to configure and add. */
     protected Object layer;
+    /**
+     * JButton to use to create new Layer.
+     */
+    protected JButton configureButton;
 
     /**
      * Creates the LayerPanel.
@@ -119,8 +127,17 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
     public void createLayerClasses(Layer[] layers) {
         getLayerClasses().clear();
 
-        for (int i = 0; i < layers.length; i++) {
-            addLayer(layers[i].getName(), layers[i].getClass().getName());
+        for (Layer l : layers) {
+            String name = l.getName();
+            if (name == null) {
+                name = l.getClass().getName();
+                int lastDotIndex = name.lastIndexOf('.');
+                if (lastDotIndex >= 0) {
+                    name = name.substring(lastDotIndex);
+                }
+            }
+
+            addLayer(name, l.getClass().getName());
         }
     }
 
@@ -141,16 +158,17 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
      */
     public void createPanel() {
         removeAll();
-        
-        JButton configureButton = new JButton(i18n.get(LayerAddPanel.class, "configureButton", "Configure"));
+
+        configureButton = new JButton(i18n.get(LayerAddPanel.class, "configureButton", "Configure"));
         configureButton.addActionListener(this);
         configureButton.setActionCommand(configureActionCommand);
 
         String defaultLayerName = i18n.get(LayerAddPanel.class, "defaultLayerName", DefaultLayerName);
         prefixTextField = new JTextField(defaultLayerName, 12);
 
-        Object[] layerTypes = getLayerClasses().keySet().toArray();
-        
+        Set<String> keys = getLayerClasses().keySet();
+        String[] layerTypes = keys.toArray(new String[keys.size()]);
+
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         setLayout(gridbag);
@@ -158,34 +176,90 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
         c.weightx = 1.0;
         c.gridwidth = GridBagConstraints.REMAINDER;
         c.insets = new Insets(10, 10, 5, 10);
-        
+
         if (layerTypes.length == 0) {
-            String message = i18n.get(LayerAddPanel.class,
-                    "noLayersAvailableMessage",
-                    "No Layers available for creation.");
-            JLabel label = new JLabel(message);
-            gridbag.setConstraints(label, c);
-            add(label);
+            configureButton.setEnabled(false);
+            classTextField = new JTextField(30);
+            classTextField.setToolTipText(i18n.get(LayerAddPanel.class, "classFieldToolTip", "Class name of layer to add"));
+            /*
+             * // Since there's no list provided, give a text box to let the
+             * user // specify which layer to create. String message =
+             * i18n.get(LayerAddPanel.class, "noLayersAvailableMessage",
+             * "No Layers available for creation."); JLabel label = new
+             * JLabel(message);
+             */
+
+            classTextField.setInputVerifier(new InputVerifier() {
+
+                @Override
+                public boolean verify(JComponent input) {
+                    JTextField tf = (JTextField) input;
+                    String className = tf.getText();
+                    try {
+                        ClassLoader.getSystemClassLoader().loadClass(className);
+                    } catch (ClassNotFoundException cnfe) {
+                        configureButton.setEnabled(false);
+                        return false;
+                    }
+
+                    configureButton.setEnabled(true);
+                    return true;
+                }
+
+            });
+
+            gridbag.setConstraints(classTextField, c);
+            add(classTextField);
+
+            configureButton.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    String newClassName = (String) classTextField.getText();
+                    String prefix = prefixTextField.getText().trim();
+                    createLayer(newClassName, prefix);
+                }
+            });
+
         } else {
-            list = new JComboBox(layerTypes);
-            
+            list = new JComboBox<String>(layerTypes);
             gridbag.setConstraints(list, c);
             add(list);
-            c.insets = new Insets(5, 10, 10, 10);
-            c.gridwidth = GridBagConstraints.RELATIVE;
-            gridbag.setConstraints(prefixTextField, c);
-            add(prefixTextField);
-            
-            c.weightx = 0;
-            gridbag.setConstraints(configureButton, c);
-            add(configureButton);
+
+            configureButton.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    String prettyName = (String) list.getSelectedItem();
+                    String prefix = prefixTextField.getText().trim();
+
+                    if (prettyName == null) {
+                        return;
+                    }
+
+                    String newClassName = layerClasses.get(prettyName);
+
+                    createLayer(newClassName, prefix);
+                }
+            });
+
         }
+
+        // Prefix/Name field
+        c.insets = new Insets(5, 10, 10, 10);
+        c.gridwidth = GridBagConstraints.RELATIVE;
+        gridbag.setConstraints(prefixTextField, c);
+        add(prefixTextField);
+
+        // Add configure button
+        c.weightx = 0;
+        gridbag.setConstraints(configureButton, c);
+        add(configureButton);
+
         invalidate();
     }
 
-    public Hashtable getLayerClasses() {
+    public Hashtable<String, String> getLayerClasses() {
         if (layerClasses == null) {
-            layerClasses = new Hashtable();
+            layerClasses = new Hashtable<String, String>();
         }
         return layerClasses;
     }
@@ -209,9 +283,7 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
         if (layerClasses != null) {
             StringBuffer layerList = new StringBuffer();
 
-            Enumeration keys = layerClasses.keys();
-            while (keys.hasMoreElements()) {
-                String prettyName = (String) keys.nextElement();
+            for (String prettyName : layerClasses.keySet()) {
                 String className = (String) layerClasses.get(prettyName);
 
                 String markerName = "l" + (layerNumber++);
@@ -219,8 +291,7 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
                 props.put(markerName + ".prettyName", prettyName);
                 props.put(markerName + ".class", className);
             }
-            props.put(Environment.OpenMapPrefix + "." + layerTypes,
-                    layerList.toString());
+            props.put(Environment.OpenMapPrefix + "." + layerTypes, layerList.toString());
         }
 
         return props;
@@ -233,7 +304,7 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
      * @return Hashtable of prettyName String keys with classname values. Empty
      *         Hashtable if no layers are available.
      */
-    protected Hashtable getLayerTypes() {
+    protected Hashtable<String, String> getLayerTypes() {
         return getLayerTypes(null);
     }
 
@@ -246,8 +317,8 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
      * @return Hashtable of prettyName String keys with classname values. Empty
      *         Hashtable if no layers are available.
      */
-    protected Hashtable getLayerTypes(Properties props) {
-        Hashtable layerHash = getLayerClasses();
+    protected Hashtable<String, String> getLayerTypes(Properties props) {
+        Hashtable<String, String> layerHash = getLayerClasses();
         layerHash.clear();
 
         if (props == null) {
@@ -265,18 +336,17 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
             Debug.output("LayerAddPanel: " + addableList);
         }
 
-        Vector typeList = PropUtils.parseSpacedMarkers(addableList);
+        Vector<String> layerClassList = PropUtils.parseSpacedMarkers(addableList);
 
-        if (typeList == null) {
+        if (layerClassList == null) {
             return layerHash;
         }
 
         // debug info: available layers
         int unNamedCount = 1;
-        for (int i = 0; i < typeList.size(); ++i) {
-            String className = props.getProperty(typeList.get(i) + ".class");
-            String prettyName = props.getProperty(typeList.get(i)
-                    + ".prettyName");
+        for (String layerClassString : layerClassList) {
+            String className = props.getProperty(layerClassString + ".class");
+            String prettyName = props.getProperty(layerClassString + ".prettyName");
 
             if (prettyName == null) {
                 prettyName = "Layer " + (unNamedCount++);
@@ -293,48 +363,53 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
     }
 
     /**
+     * Create a layer given a class name and property prefix to be used as a
+     * name.
+     * 
+     * @param className class of layer to create.
+     * @param prefix pretty name and property prefix.
+     */
+    protected void createLayer(String className, String prefix) {
+        Object obj = ComponentFactory.create(className);
+
+        if (obj instanceof Layer || obj instanceof PlugIn) {
+
+            if (obj instanceof PlugIn) {
+                PlugInLayer pil = new PlugInLayer();
+                pil.setPlugIn((PlugIn) obj);
+                layer = pil;
+            } else {
+                layer = (Layer) obj;
+            }
+
+            // Set the pretty name to what the user chose.
+            ((Layer) layer).setName(prefix);
+
+            prefixTextField.setText("");
+            if (classTextField != null) {
+                classTextField.setText("");
+            }
+
+            WindowSupport ws = getWindowSupport();
+            if (ws != null) {
+                ws.cleanUp();
+            }
+        }
+
+        if (obj instanceof PropertyConsumer) {
+            // Set the prefix to a modified version of the pretty name.
+            prefix = propertyHandler.getUniquePrefix(prefix);
+            ((PropertyConsumer) obj).setPropertyPrefix(prefix);
+            inspector.inspectPropertyConsumer((PropertyConsumer) obj);
+        }
+    }
+
+    /**
      * Method associated with the ActionListener interface.
      */
     public void actionPerformed(ActionEvent e) {
 
-        if (e.getActionCommand() == configureActionCommand) {
-            // instantiate a default instance of the chosen layer
-            // and bring up the Inspector to configure it
-            String prettyName = (String) list.getSelectedItem();
-            String prefix = prefixTextField.getText().trim();
-
-            if (prettyName == null) {
-                return;
-            }
-
-            String newClassName = (String) layerClasses.get(prettyName);
-
-            layer = ComponentFactory.create(newClassName);
-
-            if (layer instanceof PropertyConsumer) {
-
-                if (layer instanceof PlugIn) {
-                    PlugInLayer pil = new PlugInLayer();
-                    pil.setPlugIn((PlugIn) layer);
-                    pil.setName(prefix);
-                    layer = pil;
-                }
-
-                if (layer instanceof Layer) {
-                    // Set the pretty name to what the user chose.
-                    ((Layer) layer).setName(prefix);
-                }
-
-                // Set the prefix to a modified version of the pretty
-                // name.
-                prefix = propertyHandler.getUniquePrefix(prefix);
-
-                ((PropertyConsumer) layer).setPropertyPrefix(prefix);
-
-                inspector.inspectPropertyConsumer((PropertyConsumer) layer);
-
-            }
-        } else if (e.getActionCommand() == Inspector.doneCommand) {
+        if (e.getActionCommand() == Inspector.doneCommand) {
             // the confirmation button of the Inspector panel was
             // pressed
             // find the beancontext and add the layer at hand (var.
@@ -345,31 +420,25 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
                     // easier, instead of adding it to the bottom and
                     // having it lost behind some other layers.
                     layerHandler.addLayer((Layer) layer, 0);
-                } else if (layer instanceof PlugIn) {
-                    PlugInLayer pil = (PlugInLayer) ((PlugIn) layer).getComponent();
-                    layerHandler.addLayer(pil, 0);
                 }
                 prefixTextField.setText(DefaultLayerName);
             } else if (layerHandler != null) {
-                String message = i18n.get(LayerAddPanel.class,
-                        "noLayerHandlerMessage",
-                        "Layer Handler not found.\nCan't find anything to add the layer to.");
+                String message = i18n.get(LayerAddPanel.class, "noLayerHandlerMessage", "Layer Handler not found.\nCan't find anything to add the layer to.");
                 JOptionPane.showMessageDialog(this, message);
             } else {
-                String message = i18n.get(LayerAddPanel.class,
-                        "noLayerCreatedMessage",
-                        "No Layer instantiated.");
+                String message = i18n.get(LayerAddPanel.class, "noLayerCreatedMessage", "No Layer instantiated.");
                 JOptionPane.showMessageDialog(this, message);
             }
         } else if (e.getActionCommand() == Inspector.cancelCommand) {
             if (layer != null && propertyHandler != null) {
                 propertyHandler.removeUsedPrefix(((PropertyConsumer) layer).getPropertyPrefix());
             }
-        } else {
-            showPanel();
         }
     }
 
+    /**
+     * Show the panel in a JFrame.
+     */
     public void showPanel() {
         createPanel();
         prefixTextField.setText(DefaultLayerName);
@@ -383,9 +452,7 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
         }
 
         if (ws == null) {
-            ws = new WindowSupport(this, i18n.get(LayerAddPanel.class,
-                    "title",
-                    "Add Layer"));
+            ws = new WindowSupport(this, i18n.get(LayerAddPanel.class, "title", "Add Layer"));
             setWindowSupport(ws);
         }
 
@@ -421,12 +488,4 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable,
         }
     }
 
-    /** Test cases. */
-    public static void main(String[] args) {
-        LayerAddPanel lap = new LayerAddPanel(new PropertyHandler(), null);
-        Layer[] layers = new Layer[1];
-        layers[0] = new com.bbn.openmap.layer.shape.ShapeLayer();
-
-        lap.createPanel(layers);
-    }
 }

@@ -180,6 +180,7 @@ public class LayerPane extends JPanel implements Serializable, ActionListener,
         onoffButton.setToolTipText(interString);
         // Determine if this layer has already been activated
         onoffButton.setSelected(layer.isVisible());
+		onoffButton.setEnabled(layer.isRemovable());
         return onoffButton;
     }
 
