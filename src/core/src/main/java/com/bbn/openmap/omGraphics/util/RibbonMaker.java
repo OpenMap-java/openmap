@@ -45,6 +45,9 @@ import com.bbn.openmap.util.MoreMath;
 public class RibbonMaker {
 
     protected GeoArray geoCoords;
+    // If a negative distance is passed to getOuterRing, then we'll construct this with opposite winding
+    protected GeoArray geoCoords_reversed = null;
+
     private static final Logger logger = Logger.getLogger("com.bbn.openmap.omGraphics.util.RibbonMaker");
     protected final static int STRAIGHT = 0;
     protected final static int BENDS_LEFT = -1;
@@ -86,32 +89,48 @@ public class RibbonMaker {
     public OMAreaList getOuterRing(double dist) {
         OMAreaList ret = new OMAreaList();
 
-        if (dist <= bufferLimit) {
+        if (Math.abs(dist) <= bufferLimit) {
             return ret;
         }
 
-        int numCoords = geoCoords.getSize();
+        GeoArray localGeoCoords = this.geoCoords;
+        if(dist < 0) {
+            // Construct a version of this shape wound the other way
+            dist = -dist;
+            if(null == geoCoords_reversed) {
+                double[] reversed = new double[2 * geoCoords.getSize()];
+                for(int i = geoCoords.getSize()-1; i >= 0; i-- ) {
+                    Geo thisGeo = geoCoords.get(geoCoords.getSize() - i - 1);
+                    reversed[2*i] = thisGeo.getLatitudeRadians();
+                    reversed[2*i+1] = thisGeo.getLongitudeRadians();
+                }
+                geoCoords_reversed = GeoArray.Double.createFromLatLonRadians(reversed);
+            }
+            localGeoCoords = geoCoords_reversed;
+        }
+
+        int numCoords = localGeoCoords.getSize();
         if (numCoords >= 3) {
 
-            Geo g1 = geoCoords.get(0);
-            Geo g2 = geoCoords.get(1);
-            Geo g3 = geoCoords.get(2);
+            Geo g1 = localGeoCoords.get(0);
+            Geo g2 = localGeoCoords.get(1);
+            Geo g3 = localGeoCoords.get(2);
 
             handlePointsForOuterRing(g1, g2, g3, dist, ret);
 
             for (int i = 3; i < numCoords; i++) {
                 g1 = g2;
                 g2 = g3;
-                g3 = geoCoords.get(i);
+                g3 = localGeoCoords.get(i);
 
                 handlePointsForOuterRing(g1, g2, g3, dist, ret);
             }
 
             // test, and close it off if needed
-            if (!geoCoords.get(0).equals(geoCoords.get(numCoords - 1))) {
+            if (!localGeoCoords.get(0).equals(localGeoCoords.get(numCoords - 1))) {
                 g1 = g2;
                 g2 = g3;
-                g3 = geoCoords.get(0);
+                g3 = localGeoCoords.get(0);
 
                 handlePointsForOuterRing(g1, g2, g3, dist, ret);
             }
@@ -120,7 +139,7 @@ public class RibbonMaker {
             // coordinate
             g1 = g2;
             g2 = g3;
-            g3 = geoCoords.get(1);
+            g3 = localGeoCoords.get(1);
 
             handlePointsForOuterRing(g1, g2, g3, dist, ret);
 
