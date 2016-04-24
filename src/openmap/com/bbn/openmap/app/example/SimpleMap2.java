@@ -123,13 +123,6 @@ public class SimpleMap2 {
             mapPanel.addMapComponent(new GraticuleLayer());
             mapPanel.addMapComponent(new BasicLayer());
 
-            // Get the default MapBean that the BasicMapPanel created.
-            MapBean mapBean = mapPanel.getMapBean();
-            // Set the map's center
-            mapBean.setCenter(new LatLonPoint.Double(43.0, -95.0));
-            // Set the map's scale 1:120 million
-            mapBean.setScale(120000000f);
-
             // Create a Swing frame. The OpenMapFrame knows how to use
             // the MapHandler to locate and place certain objects.
             OpenMapFrame frame = new OpenMapFrame("Simple Map 2");
@@ -147,6 +140,13 @@ public class SimpleMap2 {
 
             // Display the frame
             frame.setVisible(true);
+
+            // Get the default MapBean that the BasicMapPanel created.
+            MapBean mapBean = mapPanel.getMapBean();
+            // Set the map's center
+            mapBean.setCenter(new LatLonPoint.Double(43.0, -95.0));
+            // Set the map's scale 1:120 million
+            mapBean.setScale(120000000f);
 
         } catch (MultipleSoloMapComponentException msmce) {
             // The MapHandler is only allowed to have one of certain
