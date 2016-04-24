@@ -313,12 +313,12 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     // //////////////////////
 
     /**
-     * Adds a component to the map bean context. This makes the
+     * Adds a component to the map bean context (MapHandler). This makes the
      * <code>mapComponent</code> available to the map layers and other
      * components.
      * 
      * @param mapComponent a component to be added to the map bean context
-     * @throws MultipleSoloMapComponentException if mapComponent is a
+     * @throws com.bbn.openmap.MultipleSoloMapComponentException if mapComponent is a
      *         SoloMapComponent and another instance already exists and the
      *         policy is a reject policy.
      */
@@ -329,7 +329,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     }
 
     /**
-     * Remove a component from the map bean context.
+     * Remove a component from the map bean context (MapHandler).
      * 
      * @param mapComponent a component to be removed to the map bean context
      * @return true if the mapComponent was removed.

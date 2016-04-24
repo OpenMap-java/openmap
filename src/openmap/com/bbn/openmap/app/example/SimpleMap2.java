@@ -1,37 +1,32 @@
 // **********************************************************************
-// 
+//
 // <copyright>
-// 
+//
 //  BBN Technologies
 //  10 Moulton Street
 //  Cambridge, MA 02138
 //  (617) 873-8000
-// 
+//
 //  Copyright (C) BBNT Solutions LLC. All rights reserved.
-// 
+//
 // </copyright>
 // **********************************************************************
-// 
+//
 // $Source: /cvs/distapps/openmap/src/openmap/com/bbn/openmap/examples/simple/SimpleMap2.java,v $
 // $RCSfile: SimpleMap2.java,v $
 // $Revision: 1.5 $
 // $Date: 2005/05/23 19:46:57 $
 // $Author: dietrick $
-// 
+//
 // **********************************************************************
-
 package com.bbn.openmap.app.example;
-
-import java.util.Properties;
 
 import com.bbn.openmap.LayerHandler;
 import com.bbn.openmap.MapBean;
-import com.bbn.openmap.MapHandler;
 import com.bbn.openmap.MouseDelegator;
 import com.bbn.openmap.MultipleSoloMapComponentException;
 import com.bbn.openmap.event.OMMouseMode;
-import com.bbn.openmap.gui.EmbeddedNavPanel;
-import com.bbn.openmap.gui.EmbeddedScaleDisplayPanel;
+import com.bbn.openmap.gui.LayersPanel;
 import com.bbn.openmap.gui.MapPanel;
 import com.bbn.openmap.gui.OpenMapFrame;
 import com.bbn.openmap.gui.OverlayMapPanel;
@@ -42,16 +37,22 @@ import com.bbn.openmap.layer.shape.BufferedShapeLayer;
 import com.bbn.openmap.layer.shape.ShapeLayer;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Properties;
+
 /**
  * This is a simple application that uses the OpenMap MapBean to show a map.
  * This is the model you should follow if you are starting to use OpenMap and
- * want to create your own application. Use the MapHandler! Use a MapPanel!
+ * want to create your own application. Use a MapPanel! Use the MapHandler
+ * inside it!
  * <p>
  * This example shows:
  * <ul>
  * <li>MapBean
  * <li>MapHandler
  * <li>LayerHandler
+ * <li>LayersPanel
  * <li>ShapeLayer with political data
  * <li>GraticuleLayer
  * <li>BasicLayer with some random data
@@ -72,17 +73,11 @@ public class SimpleMap2 {
              */
             MapPanel mapPanel = new OverlayMapPanel();
 
-            // Get the default MapHandler the BasicMapPanel created.
-            MapHandler mapHandler = mapPanel.getMapHandler();
-
-            // Get the default MapBean that the BasicMapPanel created.
-            MapBean mapBean = mapPanel.getMapBean();
-
-            // Set the map's center
-            mapBean.setCenter(new LatLonPoint.Double(43.0, -95.0));
-
-            // Set the map's scale 1:120 million
-            mapBean.setScale(120000000f);
+            /*
+             * The MapHandler is central to this application, although you never
+             * really see it. It's in the MapPanel. Calling addMapComponent(obj)
+             * is the same as calling mapPanel.getMapHandler().add(obj).
+             */
 
             /*
              * Create and add a LayerHandler to the MapHandler. The LayerHandler
@@ -91,29 +86,17 @@ public class SimpleMap2 {
              * has methods to do this, too. The LayerHandler will find the
              * MapBean in the MapHandler.
              */
-            mapHandler.add(new LayerHandler());
-            // Add navigation tools over the map
-            mapHandler.add(new EmbeddedNavPanel());
-            // Add scale display widget over the map
-            mapHandler.add(new EmbeddedScaleDisplayPanel());
+            mapPanel.addMapComponent(new LayerHandler());
             // Add MouseDelegator, which handles mouse modes (managing mouse
-            // events)
-            mapHandler.add(new MouseDelegator());
+            // events via MouseModes)
+            mapPanel.addMapComponent(new MouseDelegator());
             // Add OMMouseMode, which handles how the map reacts to mouse
             // movements
-            mapHandler.add(new OMMouseMode());
+            mapPanel.addMapComponent(new OMMouseMode());
             // Add a ToolPanel for widgets on the north side of the map.
-            mapHandler.add(new ToolPanel());
-
-            // Create a Swing frame. The OpenMapFrame knows how to use
-            // the MapHandler to locate and place certain objects.
-            OpenMapFrame frame = new OpenMapFrame("Simple Map 2");
-            // Size the frame appropriately
-            frame.setSize(640, 480);
-
-            mapHandler.add(frame);
-            // Display the frame
-            frame.setVisible(true);
+            mapPanel.addMapComponent(new ToolPanel());
+            // Add a LayersPanel, which lets you control layers
+            mapPanel.addMapComponent(new LayersPanel());
 
             /*
              * Create a ShapeLayer to show world political boundaries. Set the
@@ -136,10 +119,34 @@ public class SimpleMap2 {
             shapeLayer.setVisible(true);
 
             // Last on top.
-            mapHandler.add(shapeLayer);
-            mapHandler.add(new GraticuleLayer());
+            mapPanel.addMapComponent(shapeLayer);
+            mapPanel.addMapComponent(new GraticuleLayer());
+            mapPanel.addMapComponent(new BasicLayer());
 
-            mapHandler.add(new BasicLayer());
+            // Get the default MapBean that the BasicMapPanel created.
+            MapBean mapBean = mapPanel.getMapBean();
+            // Set the map's center
+            mapBean.setCenter(new LatLonPoint.Double(43.0, -95.0));
+            // Set the map's scale 1:120 million
+            mapBean.setScale(120000000f);
+
+            // Create a Swing frame. The OpenMapFrame knows how to use
+            // the MapHandler to locate and place certain objects.
+            OpenMapFrame frame = new OpenMapFrame("Simple Map 2");
+            // Size the frame appropriately
+            frame.setSize(640, 480);
+
+            mapPanel.addMapComponent(frame);
+
+            // If you close the frame, exit the app
+            frame.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+
+            // Display the frame
+            frame.setVisible(true);
 
         } catch (MultipleSoloMapComponentException msmce) {
             // The MapHandler is only allowed to have one of certain
