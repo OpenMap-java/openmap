@@ -64,14 +64,14 @@ public class SimpleMap {
 		// Add the political layer to the map
 		mapPanel.getMapBean().add(shapeLayer);
 
-        // Create a Swing frame
-        JFrame frame = new JFrame("Simple Map");
-        // Size the frame appropriately
-        frame.setSize(640, 480);
+		// Create a Swing frame
+		JFrame frame = new JFrame("Simple Map");
+		// Size the frame appropriately
+		frame.setSize(640, 480);
 		// Add the map to the frame
 		frame.getContentPane().add(mapPanel);
 
-        // If you close the frame, exit the app.
+		// If you close the frame, exit the app.
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
