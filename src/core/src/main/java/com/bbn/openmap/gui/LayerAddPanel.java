@@ -79,7 +79,7 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable, Act
 	/**
 	 * The list of available Layer classes. Is initiated with pretty names.
 	 */
-	protected JComboBox<String> list = null;
+	protected JComboBox list = null;
 	/**
 	 * Text field used to define new Layer class to create.
 	 */
@@ -220,7 +220,7 @@ public class LayerAddPanel extends OMComponentPanel implements Serializable, Act
 			});
 
 		} else {
-			list = new JComboBox<String>(layerTypes);
+			list = new JComboBox(layerTypes);
 			gridbag.setConstraints(list, c);
 			add(list);
 
