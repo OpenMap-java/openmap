@@ -320,7 +320,7 @@ public class BasicMapPanel extends MapPanel {
      * components.
      * 
      * @param mapComponent a component to be added to the map bean context
-     * @throws MultipleSoloMapComponentException if mapComponent is a
+     * @throws com.bbn.openmap.MultipleSoloMapComponentException if mapComponent is a
      *         SoloMapComponent and another instance already exists and the
      *         policy is a reject policy.
      */

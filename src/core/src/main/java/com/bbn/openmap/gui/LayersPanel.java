@@ -674,11 +674,14 @@ public class LayersPanel extends OMToolComponent
 	/**
 	 * Tell the LayersPanel to add layer control buttons. Does nothing if the
 	 * controls are already set.
+	 * @return this LayerPanel, as a Builder method.
 	 */
-	public void addLayerControls() {
+	public LayersPanel addLayerControls() {
 		if (getControls() == null) {
 			setControls(createControlButtons());
 		}
+		
+		return this;
 	}
 
 	/**
