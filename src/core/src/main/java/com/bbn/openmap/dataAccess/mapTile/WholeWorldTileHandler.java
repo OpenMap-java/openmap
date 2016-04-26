@@ -6,13 +6,16 @@
 
 package com.bbn.openmap.dataAccess.mapTile;
 
+import java.awt.Image;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,6 +28,8 @@ import java.util.logging.Level;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipOutputStream;
+
+import javax.swing.ImageIcon;
 
 import com.bbn.openmap.image.BufferedImageHelper;
 import com.bbn.openmap.proj.Projection;
@@ -125,9 +130,8 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * com.bbn.openmap.dataAccess.mapTile.EmptyTileHandler#getOMGraphicForEmptyTile
-     * (java.lang.String, int, int, int,
+     * @see com.bbn.openmap.dataAccess.mapTile.EmptyTileHandler#
+     * getOMGraphicForEmptyTile (java.lang.String, int, int, int,
      * com.bbn.openmap.dataAccess.mapTile.MapTileCoordinateTransform,
      * com.bbn.openmap.proj.Projection)
      */
@@ -150,18 +154,14 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
             Point2D pnt = new Point2D.Double(x, y);
             Point2D tileUL = mtcTransform.tileUVToLatLon(pnt, zoomLevel);
 
-            boolean newlyLoadedJar = false;
-
-            String pathToJars = "";
-            if (rootDirForJars != null && rootDirForJars.length() != 0) {
-                pathToJars = rootDirForJars + "/";
-            }
+            StringBuilder jarFilePath = new StringBuilder("jar:file:").append(rootDirForJars).append("/");
 
             if (zoomLevel <= worldWideZoomLevel) {
                 /*
                  * Need to load the primary jar that has worldwide coverage.
                  */
-                newlyLoadedJar = loadJar(pathToJars + parentJarName);
+                jarFilePath.append(parentJarName);
+
             } else {
                 /*
                  * Need to figure out what the subjar name is, given the lat/lon
@@ -169,24 +169,36 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
                  */
 
                 Point2D subframeUVPnt = mtcTransform.latLonToTileUV(tileUL, subFrameDefZoomLevel);
-                newlyLoadedJar = loadJar(pathToJars
-                        + buildSubJarName(parentJarName, subframeUVPnt.getX(), subframeUVPnt.getY()));
+                jarFilePath.append(buildSubJarName(parentJarName, subframeUVPnt.getX(), subframeUVPnt.getY()));
             }
 
-            if (newlyLoadedJar) {
+            jarFilePath.append("!/").append(imagePath);
+
+            byte[] imageBytes = getImageBytes(jarFilePath.toString());
+
+            if (imageBytes != null && imageBytes.length > 0) {
+                // image found
+
                 try {
-                    URL imageURL = PropUtils.getResourceOrFileOrURL(imagePath);
-                    if (imageURL != null) {
-                        bi = BufferedImageHelper.getBufferedImage(imageURL);
+                    ImageIcon ii = new ImageIcon(imageBytes);
+                    Image origImage = ii.getImage();
+                    int imageWidth = ii.getIconWidth();
+                    int imageHeight = ii.getIconHeight();
+
+                    if (origImage instanceof BufferedImage) {
+                        return (BufferedImage) origImage;
                     } else {
-                        logger.fine("Can't find resource located at " + imagePath);
+                        return BufferedImageHelper.getBufferedImage(origImage, 0, 0, imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
                     }
-                } catch (MalformedURLException e) {
-                    logger.fine("Can't find resource located at " + imagePath);
-                } catch (InterruptedException e) {
-                    logger.fine("Reading the image file was interrupted: " + imagePath);
+
+                } catch (InterruptedException ie) {
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("WholeWorldTileHandler interrupted fetching " + imagePath);
+                    }
                 }
+
             }
+
         } else {
             logger.fine("parent jar name not set, can't figure out how to load tile jars.");
         }
@@ -212,7 +224,74 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
     }
 
     /**
-     * Load the jar if necessary.
+     * Tries to get the image bytes from imagePath URL. If image found, will
+     * write it locally to localFilePath for caching.
+     * 
+     * @param imagePath the source URL image path.
+     * @param localFilePath the caching local file path
+     * @return byte[] of image
+     */
+    public byte[] getImageBytes(String imagePath) {
+        byte[] imageBytes = null;
+
+        try {
+            java.net.URL url = new java.net.URL(imagePath);
+            java.net.URLConnection urlc = url.openConnection();
+
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer("url content type: " + urlc.getContentType());
+            }
+
+            if (urlc == null || urlc.getContentType() == null) {
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("unable to connect to (tile might be unavailable): " + imagePath);
+                }
+
+                // text
+            } else if (urlc.getContentType().startsWith("text")) {
+                java.io.BufferedReader bin = new java.io.BufferedReader(new java.io.InputStreamReader(urlc.getInputStream()));
+                String st;
+                StringBuffer message = new StringBuffer();
+                while ((st = bin.readLine()) != null) {
+                    message.append(st);
+                }
+
+                // Debug.error(message.toString());
+                // How about we toss the message out to the user
+                // instead?
+                logger.fine(message.toString());
+
+                // image
+            } else if (urlc.getContentType().startsWith("image")) {
+
+                InputStream in = urlc.getInputStream();
+                // ------- Testing without this
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                int buflen = 2048; // 2k blocks
+                byte buf[] = new byte[buflen];
+                int len = -1;
+                while ((len = in.read(buf, 0, buflen)) != -1) {
+                    out.write(buf, 0, len);
+                }
+                out.flush();
+                out.close();
+
+                imageBytes = out.toByteArray();
+
+            } // end if image
+        } catch (java.net.MalformedURLException murle) {
+            logger.warning("WholeWorldTileHandler: URL \"" + imagePath + "\" is malformed.");
+        } catch (java.io.IOException ioe) {
+            logger.fine("Couldn't connect to " + imagePath + ", connection problem");
+        }
+
+        return imageBytes;
+
+    }
+
+    /**
+     * Load the jar if necessary. Not called anymore, but left here as a note on
+     * how to dynamically modify the classpath to add a jar at runtime.
      * 
      * @param jarFileName the absolute path to the jar.
      * @return true if the jar was loaded, false if it was added before and no
@@ -250,7 +329,8 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
                 + SUBJAR_ZOOMLEVEL_PROPERTY, subFrameDefZoomLevel);
         worldWideZoomLevel = PropUtils.intFromProperties(props, prefix
                 + WORLDWIDE_ZOOMLEVEL_PROPERTY, worldWideZoomLevel);
-        rootDirForJars = props.getProperty(prefix + StandardMapTileFactory.ROOT_DIR_PATH_PROPERTY, rootDirForJars);
+        rootDirForJars = props.getProperty(prefix
+                + StandardMapTileFactory.ROOT_DIR_PATH_PROPERTY, rootDirForJars);
 
         String jarBaseName = props.getProperty(prefix + PARENT_JAR_NAME_PROPERTY);
         if (jarBaseName != null) {
@@ -428,8 +508,8 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
             }
             if (maxy >= 0) {
                 sb.append(",").append("maxy:").append(maxy);
-            }            
-            
+            }
+
             sb.append(']');
 
             return sb.toString();
@@ -480,9 +560,7 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
                 numCharsTrimmedOffNameInZip = parentOfSourceFile.getAbsolutePath().length() + 1;
             }
 
-            logger.log(Level.INFO, "inspecting files in "
-                    + sourceFile
-                    + " ("
+            logger.log(Level.INFO, "inspecting files in " + sourceFile + " ("
                     + (parentOfSourceFile == null ? "CAUTION: nothing"
                             : parentOfSourceFile.getAbsolutePath())
                     + " removed from names in jars).");
@@ -567,7 +645,8 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
 
                     // Calculate the lat/lon limits of the current tile
                     Point2D llp1 = transform.tileUVToLatLon(new Point2D.Double(x, y), subJarZoomDef);
-                    Point2D llp2 = transform.tileUVToLatLon(new Point2D.Double(x + 1, y + 2), subJarZoomDef);
+                    Point2D llp2 = transform.tileUVToLatLon(new Point2D.Double(x + 1, y
+                            + 2), subJarZoomDef);
 
                     File subJarFile = new File(targetFile, sourceFile.getName() + "_" + x + "_" + y
                             + ".jar");
@@ -581,7 +660,8 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
                     long fileCount = 0;
                     ZipOutputStream zoStream = null;
 
-                    for (int zoomLevel = worldWideZoomLevel + 1; zoomLevel <= maxZoomLevelInSubJars; zoomLevel++) {
+                    for (int zoomLevel = worldWideZoomLevel
+                            + 1; zoomLevel <= maxZoomLevelInSubJars; zoomLevel++) {
 
                         File checkZoomLevelDir = new File(sourceFile, Integer.toString(zoomLevel));
                         if (checkZoomLevelDir.exists()) {
@@ -718,19 +798,19 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
 
         com.bbn.openmap.util.ArgParser ap = new com.bbn.openmap.util.ArgParser("WholeWorldTileHandler");
 
-        ap.add("source", "Path to the tile root directory.  If absolute path provided, parent dirs will be trimmed off from path inside jars.", 1);
-        ap.add("target", "Path to the output directory for the jarred tile files.", 1);
-        ap.add("subJarZoom", "Zoom level tiles that subjar names and boundaries are based on (3 is default).", 1);
+        ap.add("source", "Path to the tile root directory.", 1);
+        ap.add("target", "Path to the tile root directory for the jarred tile files.", 1);
+        ap.add("subJarZoom", "Zoom level tiles that subjar boundaries are based on (3 is default).", 1);
         ap.add("maxZoomInSubJars", "Maximum tile zoom level added to sub jars (20 is default).", 1);
         ap.add("worldWideZoomLevel", "Maximum tile zoom level to add to world wide jar (10 is default).", 1);
         ap.add("tileExt", "Tile extension (.png is default).", 1);
-        ap.add("minx", "Subjar x minimum to create, depends on subJarZoom tile numbering.", 1);
-        ap.add("miny", "Subjar y minimum to create, depends on subJarZoom tile numbering.", 1);
-        ap.add("maxx", "Subjar x maximum to create, depends on subJarZoom tile numbering.", 1);
-        ap.add("maxy", "Subjar y maximum to create, depends on subJarZoom tile numbering.", 1);
-        ap.add("noWorldJar", "Don't create world level jar file.");
-        ap.add("verbose", "Describe what's going on.");
-        ap.add("fill", "Only create jars that don't exist.");
+        ap.add("minx", "Subjar x minimum to create", 1);
+        ap.add("miny", "Subjar y minimum to create", 1);
+        ap.add("maxx", "Subjar x maximum to create", 1);
+        ap.add("maxy", "Subjar y maximum to create", 1);
+        ap.add("noWorldJar", "Don't create world level jar file");
+        ap.add("verbose", "Comment on what's going on");
+        ap.add("fill", "Just create jars that don't exist.");
 
         if (!ap.parse(args)) {
             ap.printUsage();
