@@ -201,7 +201,7 @@ public class ServerMapTileFactory extends StandardMapTileFactory implements MapT
 
         try {
             java.net.URL url = new java.net.URL(imagePath);
-            java.net.HttpURLConnection urlc = (java.net.HttpURLConnection) url.openConnection();
+            java.net.URLConnection urlc = url.openConnection();
 
             if (logger.isLoggable(Level.FINER)) {
                 logger.finer("url content type: " + urlc.getContentType());
