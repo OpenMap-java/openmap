@@ -117,6 +117,21 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
     protected String parentJarName;
     protected Set<String> loadedJars;
     protected String rootDirForJars;
+    
+    final static String SOURCE = "source";
+    final static String TARGET = "target";
+    final static String SUB_JAR_ZOOM = "subJarZoom";
+    final static String MAX_ZOOM_IN_SUBJARS = "maxZoomInSubJars";
+    final static String WORLD_WIDE_ZOOM_LEVEL = "worldWideZoomLevel";
+    final static String TILE_EXT = "tileExt";
+    final static String MINX = "minx";
+    final static String MINY = "miny";
+    final static String MAXX = "maxx";
+    final static String MAXY = "maxy";
+    final static String NO_WORLD_JAR = "noWorldJar";
+    final static String VERBOSE = "verbose";
+    final static String FILL = "fill";
+    
     /**
      * Turns out that the Windows JRE won't add jar files with more than 262144
      * tiles in them.
@@ -437,7 +452,7 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
         protected boolean doWorldJar = true;
         protected boolean fill = false;
         protected Level logLevel = Level.FINE;
-
+        
         public Builder(File source) throws FileNotFoundException {
 
             if (source == null || !source.exists()) {
@@ -565,6 +580,8 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
                             : parentOfSourceFile.getAbsolutePath())
                     + " removed from names in jars).");
 
+            copyAndUpdateProperties(sourceFile, targetFile);
+            
             // Create the top-level worldwide jar
             if (doWorldJar) {
                 List<File> jarDirs = new ArrayList<File>();
@@ -602,7 +619,6 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
                         }
                         zoStream.close();
 
-                        copyAndUpdateProperties(sourceFile, targetFile);
                     } else {
                         logger.log(logLevel, worldWideJarFile + " already exists, skipping");
                     }
@@ -798,86 +814,86 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
 
         com.bbn.openmap.util.ArgParser ap = new com.bbn.openmap.util.ArgParser("WholeWorldTileHandler");
 
-        ap.add("source", "Path to the tile root directory.", 1);
-        ap.add("target", "Path to the tile root directory for the jarred tile files.", 1);
-        ap.add("subJarZoom", "Zoom level tiles that subjar boundaries are based on (3 is default).", 1);
-        ap.add("maxZoomInSubJars", "Maximum tile zoom level added to sub jars (20 is default).", 1);
-        ap.add("worldWideZoomLevel", "Maximum tile zoom level to add to world wide jar (10 is default).", 1);
-        ap.add("tileExt", "Tile extension (.png is default).", 1);
-        ap.add("minx", "Subjar x minimum to create", 1);
-        ap.add("miny", "Subjar y minimum to create", 1);
-        ap.add("maxx", "Subjar x maximum to create", 1);
-        ap.add("maxy", "Subjar y maximum to create", 1);
-        ap.add("noWorldJar", "Don't create world level jar file");
-        ap.add("verbose", "Comment on what's going on");
-        ap.add("fill", "Just create jars that don't exist.");
-
+        ap.add(SOURCE, "Path to the tile root directory.", 1);
+        ap.add(TARGET, "Path to the tile root directory for the jarred tile files.", 1);
+        ap.add(SUB_JAR_ZOOM, "Zoom level tiles that subjar boundaries are based on (3 is default).", 1);
+        ap.add(MAX_ZOOM_IN_SUBJARS, "Maximum tile zoom level added to sub jars (20 is default).", 1);
+        ap.add(WORLD_WIDE_ZOOM_LEVEL, "Maximum tile zoom level to add to world wide jar (10 is default).", 1);
+        ap.add(TILE_EXT, "Tile extension (.png is default).", 1);
+        ap.add(MINX, "Subjar x minimum to create", 1);
+        ap.add(MINY, "Subjar y minimum to create", 1);
+        ap.add(MAXX, "Subjar x maximum to create", 1);
+        ap.add(MAXY, "Subjar y maximum to create", 1);
+        ap.add(NO_WORLD_JAR, "Don't create world level jar file");
+        ap.add(VERBOSE, "Comment on what's going on");
+        ap.add(FILL, "Just create jars that don't exist.");
+        
         if (!ap.parse(args)) {
             ap.printUsage();
             System.exit(0);
         }
 
-        String[] arg = ap.getArgValues("source");
+        String[] arg = ap.getArgValues(SOURCE);
         if (arg != null) {
             try {
                 Builder wwthBuilder = new Builder(new File(arg[0]));
 
-                arg = ap.getArgValues("target");
+                arg = ap.getArgValues(TARGET);
                 if (arg != null) {
                     wwthBuilder.targetFile(new File(arg[0]));
                 }
 
-                arg = ap.getArgValues("subJarZoom");
+                arg = ap.getArgValues(SUB_JAR_ZOOM);
                 if (arg != null) {
                     wwthBuilder.subJarZoomDef(Integer.parseInt(arg[0]));
                 }
 
-                arg = ap.getArgValues("maxZoomInSubJars");
+                arg = ap.getArgValues(MAX_ZOOM_IN_SUBJARS);
                 if (arg != null) {
                     wwthBuilder.maxZoomLevelInSubJars(Integer.parseInt(arg[0]));
                 }
 
-                arg = ap.getArgValues("worldWideZoomLevel");
+                arg = ap.getArgValues(WORLD_WIDE_ZOOM_LEVEL);
                 if (arg != null) {
                     wwthBuilder.worldWideZoomLevel(Integer.parseInt(arg[0]));
                 }
 
-                arg = ap.getArgValues("tileExt");
+                arg = ap.getArgValues(TILE_EXT);
                 if (arg != null) {
                     wwthBuilder.tileExt(arg[0]);
                 }
 
-                arg = ap.getArgValues("minx");
+                arg = ap.getArgValues(MINX);
                 if (arg != null) {
                     wwthBuilder.minx(Integer.parseInt(arg[0]));
                 }
 
-                arg = ap.getArgValues("miny");
+                arg = ap.getArgValues(MINY);
                 if (arg != null) {
                     wwthBuilder.miny(Integer.parseInt(arg[0]));
                 }
 
-                arg = ap.getArgValues("maxx");
+                arg = ap.getArgValues(MAXX);
                 if (arg != null) {
                     wwthBuilder.maxx(Integer.parseInt(arg[0]));
                 }
 
-                arg = ap.getArgValues("maxy");
+                arg = ap.getArgValues(MAXY);
                 if (arg != null) {
                     wwthBuilder.maxy(Integer.parseInt(arg[0]));
                 }
 
-                arg = ap.getArgValues("verbose");
+                arg = ap.getArgValues(VERBOSE);
                 if (arg != null) {
                     wwthBuilder.logLevel = Level.INFO;
                 }
 
-                arg = ap.getArgValues("fill");
+                arg = ap.getArgValues(FILL);
                 if (arg != null) {
                     wwthBuilder.setFill(true);
                 }
 
-                arg = ap.getArgValues("noWorldJar");
+                arg = ap.getArgValues(NO_WORLD_JAR);
                 if (arg != null) {
                     logger.log(wwthBuilder.logLevel, "setting build world file to false");
                     wwthBuilder.setDoWorldJar(false);
