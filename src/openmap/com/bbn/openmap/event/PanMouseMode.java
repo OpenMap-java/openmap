@@ -25,6 +25,7 @@ import java.util.Properties;
 import javax.swing.ImageIcon;
 
 import com.bbn.openmap.MapBean;
+import com.bbn.openmap.MoreMath;
 import com.bbn.openmap.image.ImageScaler;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphicConstants;
@@ -251,7 +252,7 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
 
                 Point2D ul = mapBean.inverse(0.0, 0.0, null);
 
-                paintedImage = new OMRaster(ul.getY(), ul.getX(), 0, 0, bufferedMapImage);
+                paintedImage = new OMRaster(MoreMath.latJLT90(ul.getY()), ul.getX(), 0, 0, bufferedMapImage);
                 paintedImage.putAttribute(OMGraphicConstants.NO_ROTATE, Boolean.TRUE);
 
             } else {
