@@ -32,6 +32,7 @@ import com.bbn.openmap.omGraphics.OMRaster;
 import com.bbn.openmap.proj.Cartesian;
 import com.bbn.openmap.proj.Cylindrical;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.util.MoreMath;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -250,8 +251,7 @@ public class PanMouseMode extends CoordMouseMode implements ProjectionListener {
                 mapBean.paintChildren(g, null);
 
                 Point2D ul = mapBean.inverse(0.0, 0.0, null);
-
-                paintedImage = new OMRaster(ul.getY(), ul.getX(), 0, 0, bufferedMapImage);
+                paintedImage = new OMRaster(MoreMath.latJLT90(ul.getY()), ul.getX(), 0, 0, bufferedMapImage);
                 paintedImage.putAttribute(OMGraphicConstants.NO_ROTATE, Boolean.TRUE);
 
             } else {

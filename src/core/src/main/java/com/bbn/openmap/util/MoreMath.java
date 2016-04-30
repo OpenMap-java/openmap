@@ -523,6 +523,31 @@ public class MoreMath {
         else
             return BuildLongLE(bytevec, 0);
     }
+    
+    /**
+     * lat just less than 90 degrees.
+     * @param val lat value to test
+     * @return value just less than...
+     */
+    public static double latJLT90(double val) {
+    	return justLessThan(val, 90, .00001);	
+    }
+    
+    /**
+     * Return value just less than provided value, in positive and negative terms.
+     * @param val value to test
+     * @param lessThan abs value to test against
+     * @param howMuchLess how much to move val to zero based on comparison to less than
+     * @return val, or adjusted val
+     */
+    public static double justLessThan(double val, double lessThan, double howMuchLess) {
+    	if (val >= lessThan) {
+        	val = lessThan = howMuchLess;
+        } else if (val <= -lessThan) {
+        	val = -lessThan + howMuchLess;
+        }
+    	return val;
+    }
 
     /*
      * public static final void main(String[] args) { byte[] b = new
