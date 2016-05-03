@@ -48,8 +48,8 @@ public class RhumbCalculator {
         double lon1 = point.getRadLon();
 
         double lat = lat1 + dist * Math.cos(az);
-        double dphi = Math.log((1 + Math.sin(lat)) / Math.cos(lat))
-                - Math.log((1 + Math.sin(lat1)) / Math.cos(lat1));
+        double dphi = Math.log(Math.abs((1 + Math.sin(lat)) / Math.cos(lat)))
+                - Math.log(Math.abs((1 + Math.sin(lat1)) / Math.cos(lat1)));
         double dlon = 0.0;
 
         if (Math.abs(Math.cos(az)) > Math.sqrt(0.00000000000001)) {
@@ -123,8 +123,8 @@ public class RhumbCalculator {
         double tc = 0.0;
         double dlon_W = mod(lon2 - lon1, 2.0 * Math.PI);
         double dlon_E = mod(lon1 - lon2, 2.0 * Math.PI);
-        double dphi = Math.log((1 + Math.sin(lat2)) / Math.cos(lat2))
-                - Math.log((1 + Math.sin(lat1)) / Math.cos(lat1));
+        double dphi = Math.log(Math.abs((1 + Math.sin(lat2)) / Math.cos(lat2)))
+        		- Math.log(Math.abs((1 + Math.sin(lat1)) / Math.cos(lat1)));
         if (dlon_W < dlon_E) {// West is the shortest
             tc = mod(Math.atan2(-dlon_W, dphi), 2.0 * Math.PI);
         } else {
