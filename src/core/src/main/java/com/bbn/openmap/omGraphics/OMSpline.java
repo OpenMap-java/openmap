@@ -242,9 +242,9 @@ public class OMSpline extends OMPoly {
 			// Vertices should already be in radians.
 			ArrayList<float[]> vector;
 			if (proj instanceof GeoProj) {
-				vector = ((GeoProj) proj).forwardPoly(splinellpts, lineType, nsegs, isPolygon);
+				vector = ((GeoProj) proj).forwardPoly(splinellpts, lineType, nsegs, isPolygon());
 			} else {
-				vector = proj.forwardPoly(rawllpts, isPolygon);
+				vector = proj.forwardPoly(rawllpts, isPolygon());
 			}
 			int size = vector.size();
 

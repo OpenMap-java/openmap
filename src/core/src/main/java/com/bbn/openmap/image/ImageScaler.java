@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
  * It is optimized for fast scaling.
  *
  * @author Chet Hasse
- * */
+ */
 public class ImageScaler {
 
 	/**

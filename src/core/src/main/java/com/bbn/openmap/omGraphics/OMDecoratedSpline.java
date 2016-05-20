@@ -166,7 +166,7 @@ public class OMDecoratedSpline
                 float[] _y = ypts[i];
 
                 // render polygon
-                if (isPolygon) {
+                if (isPolygon()) {
 
                     // fill main polygon
                     if (!isFillClear) {
