@@ -56,7 +56,7 @@ public class Planet {
     final public static transient double wgs84_earthEquatorialCircumferenceKM_D = wgs84_earthEquatorialCircumferenceMeters_D / 1000;
     final public static transient double wgs84_earthEquatorialCircumferenceMiles_D = wgs84_earthEquatorialCircumferenceKM_D * 0.62137119;// HACK
     /* 60.0f * 360.0f; sixty nm per degree */// units?
-    final public static transient double wgs84_earthEquatorialCircumferenceNMiles_D = wgs84_earthEquatorialCircumferenceMeters / 1852;
+    final public static transient double wgs84_earthEquatorialCircumferenceNMiles_D = wgs84_earthEquatorialCircumferenceMeters_D / 1852;
     // wgs84_earthEquatorialCircumferenceKM*0.5389892f; // calculated,
     // same as line above.
     // wgs84_earthEquatorialCircumferenceKM*0.5399568f;//HACK use UNIX
