@@ -93,8 +93,8 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
     protected double centerY;
     protected String projID = null; // identifies this projection (if needed)
     /**
-     * The rotation angle of the map is stored here so that non-rotating
-     * things can correct themselves.  Is not used for equality checks.
+     * The rotation angle of the map is stored here so that non-rotating things
+     * can correct themselves. Is not used for equality checks.
      */
     protected double rotationAngle = 0;
 
@@ -125,7 +125,8 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
     /**
      * Set the scale of the projection.
      * <p>
-     * Sets the projection to the scale 1:s iff minscale &lt; s &lt; maxscale. <br>
+     * Sets the projection to the scale 1:s iff minscale &lt; s &lt; maxscale.
+     * <br>
      * If s &lt; minscale, sets the projection to minscale. <br>
      * If s &gt; maxscale, sets the projection to maxscale. <br>
      * 
@@ -509,6 +510,55 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
     }
 
     public abstract <T extends Point2D> T inverse(double x, double y, T llpt);
+
+    /**
+     * Simple shape inverse projection, converts the x,y values in the shape to
+     * the x, y values of the projection.
+     * 
+     * @param shape projected shape.
+     * @return Shape containing source coordinates inversely projected.
+     */
+    public Shape inverseShape(Shape shape) {
+        PathIterator pi = shape.getPathIterator(null);
+        double[] coords = new double[6];
+        Point2D world = new Point2D.Double();
+        Point2D world2 = new Point2D.Double();
+        Point2D world3 = new Point2D.Double();
+        Point2D screen = new Point2D.Double();
+        Point2D screen2 = new Point2D.Double();
+        Point2D screen3 = new Point2D.Double();
+
+        GeneralPath path = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
+
+        while (!pi.isDone()) {
+            int type = pi.currentSegment(coords);
+
+            screen.setLocation(coords[0], coords[1]);
+            inverse(screen, world);
+
+            if (type == PathIterator.SEG_MOVETO) {
+                path.moveTo(world.getX(), world.getY());
+            } else if (type == PathIterator.SEG_LINETO) {
+                path.lineTo(world.getX(), world.getY());
+            } else if (type == PathIterator.SEG_CLOSE) {
+                path.closePath();
+            } else {
+                screen2.setLocation(coords[2], coords[3]);
+                inverse(screen2, world2);
+                if (type == PathIterator.SEG_QUADTO) {
+                    path.quadTo(world.getX(), world.getY(), world2.getX(), world2.getY());
+                } else if (type == PathIterator.SEG_CUBICTO) {
+                    screen3.setLocation(coords[4], coords[5]);
+                    inverse(screen3, world3);
+                    path.curveTo(world.getX(), world.getY(), world2.getX(), world2.getY(), world3.getX(), world3.getY());
+                }
+            }
+
+            pi.next();
+        }
+
+        return path;
+    }
 
     /**
      * Simple shape projection, doesn't take into account what kind of lines

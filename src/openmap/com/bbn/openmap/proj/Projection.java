@@ -302,6 +302,15 @@ public interface Projection extends java.io.Serializable {
     public <T extends Point2D> T inverse(double x, double y, T llpt);
 
     /**
+     * Simple shape inverse projection, converts the x,y values in the shape to
+     * the x, y values of the projection.
+     * 
+     * @param shape projected shape.
+     * @return Shape containing source coordinates inversely projected.
+     */
+    public Shape inverseShape(Shape shape);
+
+    /**
      * Pan the map/projection.
      * <ul>
      * <li><code>pan(180, c)</code> pan south `c' amount.
