@@ -30,7 +30,7 @@
    </resources>
 
    <applet-desc 
-	documentBase="http://dstl.bbn.com/openmap"
+	documentBase="http://openmap-java.org"
 	name="OpenMap"
 	main-class="com.bbn.openmap.app.OpenMapApplet"
 	width="700"

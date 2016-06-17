@@ -145,10 +145,8 @@
 	<!--  ############################
 	Build the documentation.
 	############################ -->
-	<target name="docs" depends="init" description="Make the javadoc API html documents.">
-		<javadoc sourcepath="${openmap.src}" destdir="${openmap.docs}/api" maxmemory="256m" excludepackagenames="**unimplemented**" packagenames="com.bbn.openmap.*, Acme.*, dopplet.*, edu.*" author="true" version="true" use="true" windowtitle="OpenMap API" doctitle="OpenMap" bottom="Copyright (C) BBNT Solutions LLC; See http://openmap.bbn.com/ for details">
-			<classpath refid="ext_tools_classpath" />
-		</javadoc>
+	<target name="docs.core" depends="init" description="Make the javadoc API html documents.">
+		<javadoc sourcepath="${openmap.src}" destdir="${openmap.docs}/api" maxmemory="256m" excludepackagenames="**unimplemented**" packagenames="com.bbn.openmap.*, Acme.*, dopplet.*, edu.*" author="true" version="true" use="true" windowtitle="OpenMap API" doctitle="OpenMap" bottom="Copyright (C) BBNT Solutions LLC; See http://openmap-java.org/ for details"/>
 	</target>
 
 	<!--  ############################
