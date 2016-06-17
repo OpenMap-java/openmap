@@ -685,7 +685,7 @@ public abstract class Proj implements Projection, Cloneable, Serializable {
 	 * 
 	 * @param ll1 LatLonPoint
 	 * @param ll2 LatLonPoint
-	 * @return ArrayList<float[]>
+	 * @return ArrayList float[]
 	 */
 	public ArrayList<float[]> forwardRect(Point2D ll1, Point2D ll2) {
 		double[] rawllpts = { ll1.getY(), ll1.getX(), ll1.getY(), ll2.getX(), ll2.getY(), ll2.getX(), ll2.getY(),

@@ -25,6 +25,7 @@ package com.bbn.openmap.proj;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.bbn.openmap.util.MoreMath;
 
@@ -552,9 +553,9 @@ public class DrawUtil {
      * @param y1 line y coord1
      * @param x2 line x coord2
      * @param y2 line y coord2
-     * @return ArrayList<int[]> of x[], y[]
+     * @return List int[] of x[], y[]
      */
-    public static ArrayList<int[]> generateWideLine(int lw, int x1, int y1,
+    public static List<int[]> generateWideLine(int lw, int x1, int y1,
                                                     int x2, int y2) {
 
         ArrayList<int[]> ret_val = new ArrayList<int[]>(2);
@@ -610,10 +611,10 @@ public class DrawUtil {
      * @param ypts int[] y coords
      * @param altx int[] altx coords
      * @param connect polygon or polyline?
-     * @return ArrayList<int[]> of x[], y[]
+     * @return List int[] of x[], y[]
      * 
      */
-    final public static ArrayList<int[]> generateWidePoly(int lw, int[] xpts,
+    final public static List<int[]> generateWidePoly(int lw, int[] xpts,
                                                           int[] ypts,
                                                           int[] altx,
                                                           boolean connect) {
@@ -635,10 +636,10 @@ public class DrawUtil {
      * @param ypts int[] y coords
      * @param altx int[] altx coords
      * @param connect polygon or polyline?
-     * @return ArrayList<int[]> of x[], y[]
+     * @return List int[] of x[], y[]
      * 
      */
-    final public static ArrayList<int[]> generateWidePoly(int lw, int len,
+    final public static List<int[]> generateWidePoly(int lw, int len,
                                                           int[] xpts,
                                                           int[] ypts,
                                                           int[] altx,

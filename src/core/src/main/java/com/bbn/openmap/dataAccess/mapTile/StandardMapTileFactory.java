@@ -430,7 +430,6 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
      * 
      * @param proj the projection to fetch tiles for.
      * @return OMGraphicList containing projected OMGraphics.
-     * @throws InterruptedException
      */
     public OMGraphicList getTiles(Projection proj) {
         return getTiles(proj, -1, new OMGraphicList());
@@ -443,7 +442,6 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
      * @param zoomLevel zoom level 1-20 for tiles to be returned, -1 for code to
      *        figure out appropriate zoom level.
      * @return OMGraphicList with tiles.
-     * @throws InterruptedException
      */
     public OMGraphicList getTiles(Projection proj, int zoomLevel) {
         return getTiles(proj, zoomLevel, new OMGraphicList());
@@ -462,7 +460,6 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
      * @param list OMGraphicList that is returned, that will also have tiles
      *        added to it.
      * @return OMGraphicList with tiles.
-     * @throws InterruptedException
      */
     public OMGraphicList getTiles(Projection proj, int zoomLevel, OMGraphicList list) {
     	String fExt = getFileExt();

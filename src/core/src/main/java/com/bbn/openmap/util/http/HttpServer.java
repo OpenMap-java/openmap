@@ -33,8 +33,8 @@ import java.util.Vector;
  * A simple HTTP Server implementing HTTP/0.9 protocols.
  * 
  * Cobbled together from a server originally written by David Flanagan
- * for the book <bold>Java in a Nutshell </bold>, Copyright(c) 1996
- * O'Reilly & Associates.
+ * for the book <b>Java in a Nutshell </b>, Copyright(c) 1996
+ * O'Reilly &amp; Associates.
  * 
  * Modified to use JDK 1.1 Readers, and Writers. Further modified to
  * use the JDK 1.1 Event model.

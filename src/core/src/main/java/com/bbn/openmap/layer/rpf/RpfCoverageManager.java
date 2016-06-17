@@ -62,16 +62,15 @@ public class RpfCoverageManager {
 	}
 
 	/**
-	 * Looks at the paths for the A.TOC files and gets all the coverage
-	 * rectangles from them. Sets the entries to a big list of rectangles from
-	 * all the A.TOC files.
+	 * Get the map coverage
 	 * 
-	 * @param colors
-	 *            looks for an array of 10 colors.
-	 * @param fillRects
-	 *            whether to fill the rectangles with the color, or just do
-	 *            outlines.
-	 * @return entries from within the A.TOC files.
+	 * @param ullat
+	 * @param ullon
+	 * @param lrlat
+	 * @param lrlon 
+	 * @param proj projection for display
+	 * @param chartSeries the chart series to query for, may be null for all coverages
+	 * @param coverages  The Map to be modified
 	 */
 	protected void getCatalogCoverage(double ullat, double ullon, double lrlat, double lrlon, Projection proj,
 			String chartSeries, Map<RpfProductInfo, RpfCoverage.RpfCoverageControl> coverages) {

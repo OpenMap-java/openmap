@@ -50,17 +50,21 @@ import java.util.Properties;
  * <p>
  * A programmer can use code like the following:
  * <p>
- * <code><pre>
+ * <pre><code>
+ * 
  * if (Debug.debugging(&quot;foo&quot;)) {
  *     System.out.println(&quot;Got &quot; + nbytes + &quot; bytes of data.&quot;);
  * }
- * </pre></code>
+ * 
+ * </code></pre>
  * <p>
  * The message gets printed when the application is run with
  * <code>-Ddebug.foo</code> or when the applet gets run with:
- * <p>
+ * <pre>
+ * 
  * <code>&lt;param name=debug.foo value=&gt;</code>
- * <p>
+ * 
+ * </pre>
  * The special token <code>debug.all</code> turns on all debugging
  * for both applets and applications.
  * 
@@ -261,13 +265,15 @@ public abstract class Debug {
      * concatenated pairs. For example, like: <br>
      * `onceStr+" "+uponStr+" a "+timeStr+", "+ ... +"\nThe end."'
      * <br>
-     * Instead you should do: <code><pre>
+     * Instead you should do: <pre>
      * 
+     * <code>
      *   if (Debug.debugging(dbgToken)) {
      *       Debug.output(onceStr+&quot; &quot;+uponStr+&quot; a &quot;+timeStr+&quot;, &quot;+ ... +&quot;\nThe end.&quot;);
      *   }
-     *  
-     * </pre></code>
+     * </code>
+     * 
+     * </pre>
      * 
      * @param dbgToken a token to be tested by debugging()
      * @param message a message to be printed

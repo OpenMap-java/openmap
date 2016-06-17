@@ -40,7 +40,7 @@ import com.bbn.openmap.util.Debug;
  * </ul>
  * 
  * @author Ray Tomlinson
- * @author Tom Mitchell <tmitchell@bbn.com>
+ * @author Tom Mitchell
  * @author HACK-author blame it on aculline
  * @version $Revision: 1.5 $ $Date: 2009/01/21 01:24:42 $
  */

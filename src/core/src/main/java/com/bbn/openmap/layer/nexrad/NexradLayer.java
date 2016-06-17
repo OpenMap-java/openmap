@@ -34,7 +34,8 @@ import com.bbn.openmap.util.ColorFactory;
 import com.bbn.openmap.util.Debug;
 
 /**
- * Implement a Layer that displays nexrad rainfall data. <code><pre>
+ * Implement a Layer that displays nexrad rainfall data. 
+ * <p><pre>
  * 
  *  # zero value color (ARGB)
  *  nexrad.color.bg=ffb3b3b3
@@ -47,7 +48,7 @@ import com.bbn.openmap.util.Debug;
  *  # URL for data file
  *  nexrad.url=http://a.b.gov/file
  *  
- * </pre></code>
+ * </pre>
  * <p>
  * NOTE: the color properties do not support alpha value if running on JDK 1.1.
  */

@@ -38,7 +38,7 @@ import com.bbn.openmap.omGraphics.OMRaster;
  * An ESRI Point record.
  * 
  * @author Ray Tomlinson
- * @author Tom Mitchell <tmitchell@bbn.com>
+ * @author Tom Mitchell
  * @version $Revision: 1.9 $ $Date: 2006/08/09 21:08:41 $
  */
 public class ESRIPointRecord extends ESRIRecord {

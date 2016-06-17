@@ -33,18 +33,21 @@ import com.bbn.openmap.util.Debug;
 /**
  * Class representing an ESRI Shape File.
  * <p>
- * <H2>Usage:</H2>
- * <DT>java com.bbn.openmap.layer.shape.ShapeFile -v shapeFile</DT>
- * <DD>Verifies a shape file.</DD>
- * <p>
- * <DT>java com.bbn.openmap.layer.shape.ShapeFile -a destShapeFile srcShapeFile</DT>
- * <DD>Appends records from srcShapeFile to destShapeFile.</DD>
- * <p>
- * <DT>java com.bbn.openmap.layer.shape.ShapeFile shapeFile</DT>
- * <DD>Prints information about the header and the number of records.</DD>
- * <p>
+ * <pre>
+ * Usage:
  * 
- * @author Tom Mitchell <tmitchell@bbn.com>
+ * To verify a shape file:
+ * java com.bbn.openmap.layer.shape.ShapeFile -v shapeFile
+ * 
+ * Append records from srcShapeFile to destShapeFile:
+ * java com.bbn.openmap.layer.shape.ShapeFile -a destShapeFile srcShapeFile
+ * 
+ * Print information about the header and the number of records:
+ * java com.bbn.openmap.layer.shape.ShapeFile shapeFile
+ * 
+ * </pre>
+ * 
+ * @author Tom Mitchell
  * @author Ray Tomlinson
  * @author Geoffrey Knauth
  * @version $Revision: 1.4 $ $Date: 2005/08/09 18:48:03 $

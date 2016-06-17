@@ -48,9 +48,8 @@ import com.bbn.openmap.util.PropUtils;
  * to avoid filtering. The gui for the layer is populated with values from the
  * requested DBF column.
  * 
- * <p>
- * <code><pre>
-        
+ * <pre><code>
+ *
  * ############################
  * # Example Properties for a shape ribbon layer, using political boundaries
  * # Common properties for all layers
@@ -73,11 +72,12 @@ import com.bbn.openmap.util.PropUtils;
  * shapeRibbonLayer.fillRibbon=true
  * # If a filled color is set, this can remove the shape itself from the filled area
  * shapeRibbonLayer.removeShapeFromFill=true
- 
+ *
  * ############################
- * </pre></code>
  * 
- * @author Gary Briggs <chunky@icculus.org>
+ * </code></pre>
+ * 
+ * @author Gary Briggs 
  */
 public class ShapeRibbonLayer extends OMGraphicHandlerLayer {
 

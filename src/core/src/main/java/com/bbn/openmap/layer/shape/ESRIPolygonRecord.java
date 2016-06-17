@@ -42,7 +42,7 @@ import com.bbn.openmap.proj.ProjMath;
  * arc/polyline record types.
  * 
  * @author Ray Tomlinson
- * @author Tom Mitchell <tmitchell@bbn.com>
+ * @author Tom Mitchell
  * @author HACK-author blame it on aculline
  * @version $Revision: 1.8 $ $Date: 2009/01/21 01:24:42 $
  */

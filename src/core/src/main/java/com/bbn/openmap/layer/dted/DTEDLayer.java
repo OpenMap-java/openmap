@@ -79,9 +79,6 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * <pre>
  * 
- * 
- * 
- * 
  *     #------------------------------
  *     # Properties for DTEDLayer
  *     #------------------------------
@@ -126,12 +123,9 @@ import com.bbn.openmap.util.PropUtils;
  *     # End of properties for DTEDLayer
  *     #-------------------------------------
  * 
- * 
- * 
- * 
  * </pre>
  * 
- * @see com.bbn.openmap.layer.rpf.ChangeCase
+ * @see com.bbn.openmap.util.wanderer.ChangeCase
  */
 public class DTEDLayer
         extends OMGraphicHandlerLayer {

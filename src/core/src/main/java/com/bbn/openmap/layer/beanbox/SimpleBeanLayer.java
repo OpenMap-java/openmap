@@ -18,11 +18,9 @@ package com.bbn.openmap.layer.beanbox;
 
 import java.awt.Graphics;
 import java.lang.reflect.Constructor;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Vector;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 
@@ -53,8 +51,8 @@ import com.bbn.openmap.tools.beanbox.BeanBoxHandler;
  */
 public class SimpleBeanLayer extends Layer implements BeanBoxHandler {
 
-    protected HashMap beans = new HashMap();
-    protected HashMap graphics = new HashMap();
+    protected HashMap<Long, SimpleBeanObject> beans = new HashMap<Long, SimpleBeanObject>();
+    protected HashMap<Long, OMGraphic> graphics = new HashMap<Long, OMGraphic>();
 
     protected Projection projection;
 
@@ -97,20 +95,16 @@ public class SimpleBeanLayer extends Layer implements BeanBoxHandler {
     public void projectionChanged(ProjectionEvent event) {
         projection = event.getProjection();
 
-        Collection values = graphics.values();
-        Iterator iter = values.iterator();
-        while (iter.hasNext())
-            ((OMGraphic) iter.next()).generate(projection);
+        for (OMGraphic omg : graphics.values()) {
+        	omg.generate(projection);
+        }
     }
 
     /** override Component method */
     public void paint(Graphics g) {
 
-        Collection values = graphics.values();
-        Iterator iter = values.iterator();
-        while (iter.hasNext()) {
-            OMGraphic graphic = (OMGraphic) iter.next();
-            graphic.render(g);
+        for (OMGraphic omg : graphics.values()) {
+        	omg.render(g);
         }
     }
 
@@ -120,17 +114,12 @@ public class SimpleBeanLayer extends Layer implements BeanBoxHandler {
      */
     public void updateGraphics() {
 
-        Set keys = beans.keySet();
-
-        Iterator iter = keys.iterator();
-
-        while (iter.hasNext()) {
-
-            Long id = (Long) iter.next();
-
+    	Projection proj = projection;
+    	
+        for (Long id : beans.keySet()) {
             SimpleBeanObject bean = (SimpleBeanObject) beans.get(id);
 
-            OMGraphic graphic = (OMGraphic) graphics.get(id);
+            OMGraphic graphic = graphics.get(id);
 
             if ((graphic instanceof CustomGraphic)) {
                 ((CustomGraphic) graphic).updateGraphic(bean);
@@ -141,14 +130,14 @@ public class SimpleBeanLayer extends Layer implements BeanBoxHandler {
             }
 
             graphic.setNeedToRegenerate(true);
-
-            if (projection != null)
-                graphic.generate(projection);
+            
+            if (proj != null) {
+                graphic.generate(proj);
+            }
 
         }
 
         repaint();
-
     }
 
     /**
@@ -178,9 +167,9 @@ public class SimpleBeanLayer extends Layer implements BeanBoxHandler {
 
             try {
 
-                Class graphicClass = Class.forName(customGraphicClassName);
+                Class<?> graphicClass = Class.forName(customGraphicClassName);
 
-                Class parentClass = graphicClass;
+                Class<?> parentClass = graphicClass;
                 while (parentClass != null) {
                     if (parentClass == CustomGraphic.class) {
                         break;
@@ -189,7 +178,7 @@ public class SimpleBeanLayer extends Layer implements BeanBoxHandler {
                 }
 
                 if (parentClass != null) {
-                    Constructor constructor = graphicClass.getConstructor(new Class[] { SimpleBeanObject.class });
+                    Constructor<?> constructor = graphicClass.getConstructor(new Class[] { SimpleBeanObject.class });
                     graphic = (CustomGraphic) constructor.newInstance(new Object[] { object });
                 }
             } catch (Exception e) {
@@ -237,8 +226,8 @@ public class SimpleBeanLayer extends Layer implements BeanBoxHandler {
     /**
      * return all SimpleBeanObject beans maintained by this layer.
      */
-    public Vector getObjects() {
-        return new Vector(beans.values());
+    public List<SimpleBeanObject> getObjects() {
+        return new ArrayList<SimpleBeanObject>(beans.values());
     }
 
     /**

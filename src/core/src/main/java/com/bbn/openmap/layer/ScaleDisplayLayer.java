@@ -48,29 +48,29 @@ import com.bbn.openmap.util.PropUtils;
  * Layer objects are components which can be added to the MapBean to make a map.
  * <p>
  * Layers implement the ProjectionListener interface to listen for
- * ProjectionEvents. When the projection changes, they may need to refetch,
+ * ProjectionEvents. When the projection changes, they may need to re-fetch,
  * regenerate their graphics, and then repaint themselves into the new view.
  * <p>
- * ### Layer used by the overview handler <br>
- * scaleLayer.class=com.rolands.jtlsweb.map.layer.ScaleDisplayLayer <br>
- * scaleLayer.prettyName=Scale <br>
- * scaleLayer.lineColor=ff777777 <br>
- * scaleLayer.textColor=ff000000 <br>
- * scaleLayer.unitOfMeasure=nm <br>
- * scaleLayer.locationXoffset=-10 <br>
- * scaleLayer.locationYoffset=-20 <br>
- * scaleLayer.width=150 <br>
- * scaleLayer.height=10 <br>
- * <br>
- * unitOfMeasure - any com.bbn.openmap.proj.Length instance returned by
- * Length.get(string). <br>
- * locationXoffset - offset in pixels from left/right, positive from left edge,
- * negative from right edge <br>
- * locationYoffset - offset in pixels from top/bottom, positive from top edge,
- * negative from bottom edge <br>
- * width - width of scale indicator bar in pixels <br>
- * height - height of scale indicator bar in pixels <br>
- * <br>
+ * <pre>
+ * 
+ * ### Layer used by the overview handler
+ * scaleLayer.class=com.rolands.jtlsweb.map.layer.ScaleDisplayLayer
+ * scaleLayer.prettyName=Scale
+ * scaleLayer.lineColor=ff777777
+ * scaleLayer.textColor=ff000000
+ * scaleLayer.unitOfMeasure=nm
+ * scaleLayer.locationXoffset=-10
+ * scaleLayer.locationYoffset=-20
+ * scaleLayer.width=150
+ * scaleLayer.height=10
+ * 
+ * # unitOfMeasure - any com.bbn.openmap.proj.Length instance returned by Length.get(string).
+ * # locationXoffset - offset in pixels from left/right, positive from left edge, negative from right edge
+ * # locationYoffset - offset in pixels from top/bottom, positive from top edge, negative from bottom edge
+ * # width - width of scale indicator bar in pixels
+ * # height - height of scale indicator bar in pixels
+ *
+ * </pre>
  */
 public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
 
@@ -247,8 +247,6 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
      * Setter for property unitOfMeasure.
      * 
      * @param unitOfMeasure New value of property unitOfMeasure.
-     * 
-     * @throws PropertyVetoException
      */
     public void setUnitOfMeasure(String unitOfMeasure) {
         if (unitOfMeasure == null)
@@ -286,7 +284,9 @@ public class ScaleDisplayLayer extends OMGraphicHandlerLayer {
     ButtonGroup uomButtonGroup;
     Vector<JRadioButton> buttons = new Vector<JRadioButton>();
 
-    /** Creates the interface palette. */
+    /** 
+     * Creates the interface palette.
+     */
     public java.awt.Component getGUI() {
 
         if (palettePanel == null) {

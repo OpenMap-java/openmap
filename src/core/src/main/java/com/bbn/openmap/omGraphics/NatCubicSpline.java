@@ -96,8 +96,8 @@ public class NatCubicSpline {
 	/**
 	 * The proper access for these classes, using default steps.
 	 * 
-	 * @param xpoints projected x points
-	 * @param ypoints projected y points
+	 * @param llpoints 
+	 * @param precision
 	 * @param geometryClosed whether the spline is a closed shape
 	 * @return
 	 */
@@ -108,8 +108,8 @@ public class NatCubicSpline {
 	/**
 	 * The proper access for these classes.
 	 * 
-	 * @param xpoints projected x points
-	 * @param ypoints projected y points
+	 * @param llpoints
+	 * @param precision
 	 * @param geometryClosed whether the spline is a closed shape
 	 * @param steps the number of segments the spline curve should be broken
 	 *            into (default 12)
@@ -274,7 +274,7 @@ public class NatCubicSpline {
 	 * 
 	 * @param xpoints in float precision.
 	 * @param ypoints in float precision.
-	 * @return flaot[][]
+	 * @return float[][]
 	 */
 	public float[][] calc(float[] xpoints, float[] ypoints) {
 		float[][] res = new float[2][0];

@@ -82,7 +82,7 @@ public abstract class Rule<T> extends OMComponent {
      * value. The implementation will use the key to pull the testing value out
      * of the record.
      * 
-     * @param val
+     * @param record object to evaluate
      * @return true of the operation passed
      */
     public abstract boolean evaluate(T record);

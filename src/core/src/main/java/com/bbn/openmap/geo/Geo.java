@@ -592,11 +592,11 @@ public class Geo implements Serializable {
      * radius of sphere squared. Make sure the first point doesn't equal the
      * last.
      */
-    public static double area(Enumeration vs) {
+    public static double area(Enumeration<Geo> vs) {
         int count = 0;
         double area = 0;
-        Geo v0 = (Geo) vs.nextElement();
-        Geo v1 = (Geo) vs.nextElement();
+        Geo v0 = vs.nextElement();
+        Geo v1 = vs.nextElement();
         Geo p0 = v0;
         Geo p1 = v1;
         Geo p2 = null;
@@ -822,8 +822,8 @@ public class Geo implements Serializable {
             return null;
 
         // final polygon will be right[0],...,right[n],left[m],...,left[0]
-        ArrayList right = new ArrayList((int) (pl * 1.5));
-        ArrayList left = new ArrayList((int) (pl * 1.5));
+        ArrayList<Geo> right = new ArrayList<Geo>((int) (pl * 1.5));
+        ArrayList<Geo> left = new ArrayList<Geo>((int) (pl * 1.5));
 
         Geo g0 = null; // previous point
         Geo n0 = null; // previous normal vector
@@ -992,7 +992,7 @@ public class Geo implements Serializable {
         return approximateArc(this, p0, p1, err);
     }
 
-    /** @deprecated use </b>#offset(double, double) */
+    /** @deprecated use #offset(double, double) */
     public Geo geoAt(double distance, double azimuth) {
         return offset(distance, azimuth);
     }

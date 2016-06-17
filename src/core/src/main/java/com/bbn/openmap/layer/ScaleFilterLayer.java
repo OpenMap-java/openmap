@@ -70,23 +70,19 @@ import com.bbn.openmap.util.PropUtils;
  * ScaleFilterLayer do not get added to the openmap.layers property, but instead
  * get added to the scaledFilterLayer.layers property listed here. Then, the
  * properties for these layers are added to the openmap.properties file like any
- * other layer. <BR>
- * The properties for this layer look like this: <BR>
- * <BR>
- * <code><pre>
- *       
- *        #######################################
- *        # Properties for ScaleFilterLayer
- *        #######################################
- *        scaledFilterLayer.class=com.bbn.openmap.layer.ScaleFilterLayer
- *        scaledFilterLayer.prettyName=&amp;ltPretty name used on menu&amp;ge
- *        # List 2 or more layers, larger scale layers first
- *        scaledFilterLayer.layers=layer_1 layer_2 layer_3 ...
- *        # List the transition scales to switch between layers
- *        scaledFilterLayer.transitionScales= (transition scale from layer 1 to 2) (transition scale from layer 2 to 3) (...)
- *        #######################################
+ * other layer. 
+ * <p>
+ * <pre>
+ * The properties for this layer look like this:
+ * 
+ * scaledFilterLayer.class=com.bbn.openmap.layer.ScaleFilterLayer
+ * scaledFilterLayer.prettyName=&lt;Pretty name used on menu&gt;
+ * # List 2 or more layer prefixes, larger scale layers first
+ * scaledFilterLayer.layers=layer_1 layer_2 layer_3 ...
+ * # List the transition scales to switch between layers
+ * scaledFilterLayer.transitionScales= (transition scale from layer 1 to 2) (transition scale from layer 2 to 3) (...)
  *        
- * </pre></code>
+ * </pre>
  */
 public class ScaleFilterLayer
         extends Layer
@@ -665,11 +661,13 @@ public class ScaleFilterLayer
      * The source MouseEvents will only get sent to the MapMouseListener if the
      * mode is set to one that the listener is interested in. Layers interested
      * in receiving events should register for receiving events in "select"
-     * mode: <code>
+     * mode:
      * <pre>
+     * 
      * return new String[] { SelectMouseMode.modeID };
+     * 
      * </pre>
-     * <code>
+     *
      * 
      * @return String[] of modeID's
      * @see com.bbn.openmap.event.NavMouseMode#modeID
@@ -816,7 +814,9 @@ public class ScaleFilterLayer
         }
     }
 
-    /** Method for BeanContextChild interface. */
+    /** 
+     * Method for BeanContextChild interface. 
+     */
     public void setBeanContext(BeanContext in_bc)
             throws PropertyVetoException {
 

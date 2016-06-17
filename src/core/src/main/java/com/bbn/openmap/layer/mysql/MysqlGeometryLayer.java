@@ -67,33 +67,32 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * <pre>
  * 
- * 
- *   mygeo.prettyName=&amp;ltYour Layer Name&amp;gt
- *   mygeo.dbUrl=&amp;lt Driver Class &amp;gt eg.  &quot;jdbc:mysql://localhost/openmap?user=me&amp;password=secret&quot;
- *   mygeo.dbClass=&amp;lt Driver Class &amp;gt eg. &quot;com.mysql.jdbc.Driver&quot;
- *   mygeo.geomTable=&amp;ltDatabase Tablename&amp;gt
- *   mygeo.geomColumn=&amp;ltColumn name which contains the geometry&amp;gt
- *   mygeo.pointSymbol=&amp;ltFilename and path for image to use for point objects&amp;gtDefault is 
+ *   mygeo.prettyName=&lt;Your Layer Name&gt;
+ *   mygeo.dbUrl=&lt;Driver Class&gt; eg.  &quot;jdbc:mysql://localhost/openmap?user=me&amp;password=secret&quot;
+ *   mygeo.dbClass=&lt;Driver Class&gt; eg. &quot;com.mysql.jdbc.Driver&quot;
+ *   mygeo.geomTable=&lt;Database Tablename&gt;
+ *   mygeo.geomColumn=&lt;Column name which contains the geometry&gt;
+ *   mygeo.pointSymbol=&lt;Filename and path for image to use for point objects&gt;Default is null
+ *   
  *   # Optional Properties - use as required
  *   # NOTE: There are default for each of these 
- *   mygeo.lineColor=&amp;ltColor for lines&amp;gtDefault is red
- *   mygeo.lineWidth=&amp;ltPixel width of lines&amp;gtDefault is 0
- *   mygeo.fillColor=&amp;ltColor of fill&amp;gtDefault is red
- * 
+ *   mygeo.lineColor=&lt;Color for lines&gt; Default is red
+ *   mygeo.lineWidth=&lt;Pixel width of lines&gt; Default is 0
+ *   mygeo.fillColor=&lt;Color of fill&gt; Default is red
  * 
  * </pre>
  * 
  * Copyright 2003 by the Author <br>
  * <p>
  * 
- * @author Uwe Baier uwe.baier@gmx.net <br>
- * @version 1.0 <br>
+ * @author Uwe Baier uwe.baier@gmx.net
+ * @version 1.0
  */
 public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
 
     /**
-     * ; The connection String to use for the jdbc query, e.g.
-     * "jdbc:mysql://localhost/openmap?user=me&password=secret"
+     * The connection String to use for the jdbc query, e.g.
+     * "jdbc:mysql://localhost/openmap?user=me&amp;password=secret"
      */
     protected String dbUrl = null;
 
@@ -338,22 +337,4 @@ public class MysqlGeometryLayer extends OMGraphicHandlerLayer {
         }
         return ret;
     }
-
-    /**
-     * Method DoubleToFloat. Used to cast arrays of double precision to float,
-     * precision which is internally used by OpenMap. This is ugly, but I
-     * preferred to keep the precision of values in the Geometry Classes the
-     * same as they are in MySQL Database.
-     * 
-     * @param d
-     * @return float[]
-     */
-    private float[] DoubleToFloat(double[] d) {
-        float[] f = new float[d.length];
-        for (int i = 0; i < d.length; i++) {
-            f[i] = (float) d[i];
-        }
-        return f;
-    }
-
 }

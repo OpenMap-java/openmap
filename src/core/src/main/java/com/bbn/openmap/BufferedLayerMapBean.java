@@ -22,9 +22,7 @@
 
 package com.bbn.openmap;
 
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Paint;
 import java.awt.event.ContainerEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -73,8 +71,6 @@ public class BufferedLayerMapBean extends BufferedMapBean {
     /**
      * Set the background color of the map. Actually sets the background color
      * of the projection, and calls repaint().
-     * 
-     * @param color java.awt.Color.
      */
 /*    public void setBackgroundColor(Color color) {
         super.setBackground(color);

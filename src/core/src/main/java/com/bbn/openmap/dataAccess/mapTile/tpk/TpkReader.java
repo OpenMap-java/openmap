@@ -45,9 +45,7 @@ public class TpkReader {
 	/**
 	 * Get an input stream for an entry that should be there.
 	 * 
-	 * @param entryString
-	 *            entry path, relative to internal root of zip file
-	 * @return ZipInputStream
+	 * @param entryString entry path, relative to internal root of zip file
 	 * @throws IOException
 	 */
 	public InputStream getStream(String entryString) throws IOException {
@@ -74,8 +72,7 @@ public class TpkReader {
 	/**
 	 * Load the JSON file describing the tpk contents.
 	 * 
-	 * @param urlString
-	 *            path to json file.
+	 * @param urlString path to json file.
 	 * @return MapServerDescription with json contents.
 	 */
 	public MapServerDescription loadJSON(String urlString) {
@@ -104,8 +101,7 @@ public class TpkReader {
 	/**
 	 * Load the JSON file describing the tpk contents, given an input stream.
 	 * 
-	 * @param inputStream
-	 *            stream for the json file
+	 * @param jsonStream stream for the json file
 	 * @return MapServerDescription with json contents, or null of something wh
 	 */
 	public MapServerDescription loadJSON(InputStream jsonStream) throws IOException {

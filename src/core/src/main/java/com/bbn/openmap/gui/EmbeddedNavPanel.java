@@ -570,7 +570,7 @@ public class EmbeddedNavPanel extends OMComponentPanel implements
 		return (SLIDER_MAX - logBase2(getMapMaxScale() / mapScale));
 	}
 
-	/** Returns the largest integer n, such that 2^n <= the specified number. */
+	/** Returns the largest integer n, such that 2^n &lt;= the specified number. */
 	public final static int logBase2(double number) {
 		int log = 0;
 

@@ -37,11 +37,11 @@ import com.bbn.openmap.util.PropUtils;
  * The query to the SimpleHttpImageServer looks like something you can plug into
  * your browser to test the server:
  * <P>
- * http://hostname:port/path?REQUEST=MAP&PROJTYPE=projection_type_value&SCALE=
+ * http://hostname:port/path?REQUEST=MAP&amp;PROJTYPE=projection_type_value&amp;SCALE=
  * scale_value
- * &LAT=center_latitude&LON=center_longitude&HEIGHT=map_pixel_height&WIDTH
+ * &amp;LAT=center_latitude&amp;LON=center_longitude&amp;HEIGHT=map_pixel_height&amp;WIDTH
  * =map_pixel_width
- * &FORMAT=image_format&TRANSPARENT=true|false&BGCOLOR=background_color
+ * &amp;FORMAT=image_format&amp;TRANSPARENT=true|false&amp;BGCOLOR=background_color
  * 
  * <P>
  * The projection information will be entered automatically by the layer based

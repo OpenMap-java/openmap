@@ -58,13 +58,13 @@ public class FeatureQuery {
 
     /**
      * 
-     * @param sridBounds, which will be in 4326 projection and specified as
+     * @param projInfo which will be in 4326 projection and specified as
      *        such, i.e. something like: ST_SetSRID('BOX3D(" + upperLeft.getX()
      *        + " " + lowerRight.getY() + "," + lowerRight.getX() + " " +
      *        upperLeft.getY() + ")'::box3d,4326)
      * @return the select command for retrieving this feature, for a particular
      *         bounds if specified.
-     * @throws QueryException if where clauses detect a problem.
+     * @throws QueryException if where clauses detect a problem
      */
     protected String getQuery(ProjectionInfo projInfo) throws QueryException {
         StringBuilder ret = new StringBuilder("select");
@@ -118,7 +118,7 @@ public class FeatureQuery {
      * @param projInfo describes the current projection.
      * @return OMGraphicList containing the results from the query.
      * @throws SQLException
-     * @throws QueryException if where clauses detect a problem.
+     * @throws QueryException if where clauses detect a problem
      */
     public OMGraphicList queryDatabaseAndMakeOMGraphics(Statement stmt, ProjectionInfo projInfo)
             throws SQLException, QueryException {

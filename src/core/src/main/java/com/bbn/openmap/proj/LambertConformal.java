@@ -642,7 +642,7 @@ public class LambertConformal
      *        line types, and if &lt; 1, this value is generated internally)
      * @param isFilled filled poly? this is currently ignored for cylindrical
      *        projections.
-     * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
+     * @return ArrayList float[] of x[], y[], x[], y[], ... projected poly
      */
     protected ArrayList<float[]> _forwardPoly(float[] rawllpts, int ltype, int nsegs, boolean isFilled) {
 

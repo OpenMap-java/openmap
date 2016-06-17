@@ -22,7 +22,6 @@
 
 package com.bbn.openmap;
 
-import java.awt.Component;
 import java.beans.PropertyVetoException;
 import java.beans.beancontext.BeanContext;
 import java.io.Serializable;
@@ -51,8 +50,7 @@ import com.bbn.openmap.util.PropUtils;
  * the layer. If Layer.isVisible() is true, the layer will be added to the
  * MapBean. There are methods within the LayerHandler that let you change the
  * visibility setting of a layer.
- * <p/>
- * <p/>
+ * <p>
  * The LayerHandler is able to take a Properties object, and create layers that
  * are defined within it. The key property is "layers", which may or may not
  * have a prefix for it. If that property does have a prefix (prefix.layers,
@@ -67,8 +65,8 @@ import com.bbn.openmap.util.PropUtils;
  * particular layer can use should be listed in the Properties, with the
  * applicable marker name as a prefix. Each layer should have its available
  * properties defined in its documentation. For example:
- * <p/>
- * <p/>
+ * <p>
+ * <p>
  * 
  * <pre>
  *           &lt;p/&gt;
@@ -87,9 +85,7 @@ import com.bbn.openmap.util.PropUtils;
  *           &lt;p/&gt;
  * </pre>
  * 
- * <p/>
- * <p/>
- * <p/>
+ * <p>
  * The LayerHandler is a SoloMapComponent, which means that for a particular
  * map, there should only be one of them. When a LayerHandler is added to a
  * BeanContext, it will look for a MapBean to connect to itself as a
@@ -392,7 +388,7 @@ public class LayerHandler extends OMComponent implements SoloMapComponent, Seria
 	 * A static method that lets you pass in a Properties object, along with two
 	 * Vectors of strings, each Vector representing marker names for layers
 	 * contained in the Properties.
-	 * <p/>
+	 * <p>
 	 * If a PlugIn is listed in the properties, the LayerHandler will create a
 	 * PlugInLayer for it and set the PlugIn in that layer.
 	 * 
@@ -513,14 +509,12 @@ public class LayerHandler extends OMComponent implements SoloMapComponent, Seria
 	 * non-removable layers are still on this list and visible. GUI components
 	 * that may call this need to set up their GUI controls to not allow
 	 * non-removable layers to be eliminated from the application.
-	 * <p/>
-	 * <p/>
+	 * <p>
 	 * This method will not add the layers to the MapHandler, so you can call
 	 * this if you know the layers are already in the MapHandler or don't need
 	 * to be. If you want layers to be added to the MapHandler (if the
 	 * LayerHandler knows about it), call init(Layer[]) instead.
-	 * <p/>
-	 * <p/>
+	 * <p>
 	 * Also, this method will disregard layer non-removable status for any
 	 * layers currently held, and will simply replace all layers with the ones
 	 * provided. If you want the non-removable flag to be adhered to, call

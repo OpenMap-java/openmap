@@ -45,7 +45,7 @@ public class SaveAsMenu extends AbstractOpenMapMenu {
 
     /**
      * Method checks to see if the SVGFormatter can be created, and if
-     * it can, adds it to the FileMenu->Save As menu. The SVGFormatter
+     * it can, adds it to the FileMenu-&lt;Save As menu. The SVGFormatter
      * needs the right Batik jars in the classpath to compile.
      */
     public void addSVGMenuItem(JMenu menu) {

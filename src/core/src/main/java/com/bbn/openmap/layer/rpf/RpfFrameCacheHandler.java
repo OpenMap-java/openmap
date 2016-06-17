@@ -254,7 +254,7 @@ public class RpfFrameCacheHandler
     * from returning early when it found a box that claimed perfect coverage.
     * This was causing problems in some areas, where boxes that claimed coverage
     * didn't actually have it. This could be a data problem, so maybe we can add
-    * the early return back in in the future. 3. Changed < to <= below. 4.
+    * the early return back in in the future. 3. Changed &lt; to &lt;= below. 4.
     * Iterates thru list returned by RpcTocHandler since the return type for
     * getBestCoverageEntry changed from RpfTocEntry to List.
     * 

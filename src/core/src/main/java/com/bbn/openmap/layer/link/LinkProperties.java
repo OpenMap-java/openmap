@@ -92,7 +92,7 @@ public class LinkProperties extends Properties implements LinkPropertiesConstant
      * properties are the next thing to be read, starting with the string count.
      * 
      * @param link the Link to read properties from
-     * @throws IOException.
+     * @throws IOException
      */
     public LinkProperties(Link link) throws IOException {
         super();
@@ -103,7 +103,7 @@ public class LinkProperties extends Properties implements LinkPropertiesConstant
      * Create a LinkProperties, and read it's contents off a link.
      * 
      * @param dis DataInput to read from.
-     * @throws IOException.
+     * @throws IOException
      */
     public LinkProperties(DataInput dis) throws IOException {
         read(dis);
@@ -183,7 +183,7 @@ public class LinkProperties extends Properties implements LinkPropertiesConstant
      * the next thing to be read, starting with the string count.
      * 
      * @param dis DataInput to read from.
-     * @throws IOException.
+     * @throws IOException
      */
     public void read(DataInput dis) throws IOException {
         int numArgs = dis.readInt();
@@ -198,7 +198,7 @@ public class LinkProperties extends Properties implements LinkPropertiesConstant
      * 
      * @param numArgs the number of key + value strings to read.
      * @param dis DataInput to read from.
-     * @throws IOException.
+     * @throws IOException
      */
     public void readArgs(int numArgs, DataInput dis) throws IOException {
 

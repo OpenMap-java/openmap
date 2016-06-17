@@ -55,11 +55,11 @@ public abstract class MMLGraphicLoader extends AbstractGraphicLoader implements
      * the MapMouseListener if the mode is set to one that the
      * listener is interested in. Layers interested in receiving
      * events should register for receiving events in "select" mode:
-     * <code>
+     * 
      * <pre>
      * return new String[] { SelectMouseMode.modeID };
      * </pre>
-     * <code>
+     * 
      * @return String[] of modeID's
      * @see com.bbn.openmap.event.NavMouseMode#modeID
      * @see com.bbn.openmap.event.SelectMouseMode#modeID

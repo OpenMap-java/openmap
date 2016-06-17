@@ -29,9 +29,8 @@ package com.bbn.openmap.util;
  * HREF=http://www.afu.com/intro.html>http://www.afu.com/intro.html
  * </A>, section 17, question 6. Here is the original entry in the
  * FAQ:
- * <p>
- * 
  * <pre>
+ *
  * 
  *  11.6 How can I write C/C++ style assertions in Java?
  * 
@@ -63,8 +62,6 @@ package com.bbn.openmap.util;
  *      be optimized away, even if it has side effects.
  *  
  * </pre>
- * 
- * </p>
  * 
  * @author Peter Van Der Linden
  * @author Maintained by: Tom Mitchell (tmitchell@bbn.com)

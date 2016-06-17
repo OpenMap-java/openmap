@@ -80,7 +80,7 @@ public class RecordSet {
      * rset (ResultSet) will be full of responses. The caller should then call
      * next() to iterate through the results and fetch the data.
      * 
-     * @exception throws SQLException if something goes wrong with the query.
+     * @throws SQLException
      */
     public void getAllQuery() throws SQLException {
 

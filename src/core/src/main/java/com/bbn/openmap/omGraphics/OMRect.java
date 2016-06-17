@@ -37,7 +37,7 @@ import com.bbn.openmap.util.Debug;
  * share coordinates or window points.
  * <p>
  * <h3>NOTE:</h3>
- * See the <a href="com.bbn.openmap.proj.Projection.html#poly_restrictions">
+ * See the <a href="com.bbn.openmap.proj.GeoProj.html#poly_restrictions">
  * RESTRICTIONS </a> on Lat/Lon polygons/polylines which apply to rectangles as
  * well. Not following the guidelines listed may result in ambiguous/undefined
  * shapes! Similar assumptions apply to the other vector graphics that we

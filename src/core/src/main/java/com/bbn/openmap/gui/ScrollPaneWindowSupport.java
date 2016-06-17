@@ -10,7 +10,7 @@ import javax.swing.ScrollPaneLayout;
 /**
  * Alternative ScrollPaneLayout that returns a preferred layout size that
  * properly takes the scroll bars sizes into account. This is a workaround for a
- * display problem with the Nimbus Look & Feel.
+ * display problem with the Nimbus Look &amp; Feel.
  */
 class OMScrollPaneLayout extends ScrollPaneLayout {
 

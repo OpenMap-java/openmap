@@ -674,7 +674,7 @@ public class RpfTocHandler {
 	}
 
 	/**
-	 * Util-like function that translates a long to the string representation found in the A>TOC file.
+	 * Util-like function that translates a long to the string representation found in the A.TOC file.
 	 */
 	public static String translateScaleToSeries(long scale) {
 		if (scale == 0) {

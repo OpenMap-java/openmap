@@ -85,8 +85,8 @@ public class CoverageTable {
     /** do we need to append a '.' to three-character file names */
     public boolean appendDot = false;
     /**
-     * Need this in case we have to go from the coverage type->feature
-     * type->tile
+     * Need this in case we have to go from the coverage type-&lt;feature
+     * type-&lt;tile
      */
     protected CoverageAttributeTable cat;
 

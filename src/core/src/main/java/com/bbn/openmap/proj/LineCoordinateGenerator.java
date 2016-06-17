@@ -55,7 +55,7 @@ public class LineCoordinateGenerator {
 	/**
 	 * Create LCG with decimal degree coordinates.
 	 * 
-	 * @param radians array of coordinates in degrees, in lat, lon, lat, lon
+	 * @param degrees array of coordinates in degrees, in lat, lon, lat, lon
 	 *            order.
 	 * @return LCG
 	 */

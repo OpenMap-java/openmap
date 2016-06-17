@@ -80,28 +80,24 @@ import com.bbn.openmap.util.PropUtils;
  * though, where each image could be generated in it's own thread. That code is
  * not written - maybe someday.
  * <P>
- * <code><pre>
- *                 
- *                  
+ * <pre>
  *                   
- *                    # If the ImageServer is created and given a prefix (in this example,
- *                    # 'imageServer') the properties file should contain the properties:
- *                    imageServer.layers=&lt;layer1 layer2 ...&gt;
- *                    layer1.className=&lt;classname&gt;
- *                    layer1.prettyName=&lt;pretty name of layer&gt;
- *                    # Add other attributes as required by layer1...
- *                    layer2.className=&lt;classname&gt;
- *                    layer2.prettyName=&lt;pretty name of layer&gt;
- *                    # Add other attributes as required by layer2...
- *                    # First formatter listed is default.
- *                    imageServer.formatters=&lt;formatter1 formatter2 ...&gt;
- *                    formatter1.class=&lt;classname of formatter 1&gt;
- *                    # Add other formatter1 properties
- *                    formatter2.class=&lt;classname of formatter 2&gt;
- *                    
- *                   
- *                  
- * </pre></code>
+ * # If the ImageServer is created and given a prefix (in this example,
+ * # 'imageServer') the properties file should contain the properties:
+ * imageServer.layers=&lt;layer1 layer2 ...&gt;
+ * layer1.className=&lt;classname&gt;
+ * layer1.prettyName=&lt;pretty name of layer&gt;
+ * # Add other attributes as required by layer1...
+ * layer2.className=&lt;classname&gt;
+ * layer2.prettyName=&lt;pretty name of layer&gt;
+ * # Add other attributes as required by layer2...
+ * # First formatter listed is default.
+ * imageServer.formatters=&lt;formatter1 formatter2 ...&gt;
+ * formatter1.class=&lt;classname of formatter 1&gt;
+ * # Add other formatter1 properties
+ * formatter2.class=&lt;classname of formatter 2&gt;
+ *
+ * </pre>
  * <P>
  * NOTE: If you simply hand the ImageServer a standard openmap.properties file,
  * it works with the addition of the first two attributes except WITHOUT the

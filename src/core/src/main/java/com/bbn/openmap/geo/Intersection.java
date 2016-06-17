@@ -899,7 +899,7 @@ public class Intersection {
      * </ul>
      * 
      * <p>
-     * <code>poly<code> is an array of latitude/longitude points where:
+     * <code>poly</code> is an array of latitude/longitude points where:
      * <br>
      * <pre>
      *                                                        
@@ -1336,9 +1336,9 @@ public class Intersection {
     /**
      * Where is a segment within range of a region?
      */
-    public static final List segmentNearPoly(GeoSegment segment, GeoArray r, double near) {
+    public static final List<Geo> segmentNearPoly(GeoSegment segment, GeoArray r, double near) {
         Geo[] s = segment.getSeg();
-        List list = null;
+        List<Geo> list = null;
         if (s != null && s.length == 2) {
             list = segmentNearPoly(s[0], s[1], r, near);
         }
@@ -1356,11 +1356,11 @@ public class Intersection {
      * @return Geo location where the condition was met (yes), null if
      *         conditions weren't met (no).
      */
-    public static final List segmentNearPoly(Geo s1, Geo s2, GeoArray r, double near) {
+    public static final List<Geo> segmentNearPoly(Geo s1, Geo s2, GeoArray r, double near) {
         int rlen = r.getSize();
         Geo pl0 = r.get(rlen - 1, new Geo());
         Geo pl1 = new Geo();
-        List list = null;
+        List<Geo> list = null;
         Geo check = new Geo();
         for (int j = 0; j < rlen; j++) {
             r.get(j, pl1);
@@ -1368,7 +1368,7 @@ public class Intersection {
 
             if (ret != null) {
                 if (list == null) {
-                    list = new LinkedList();
+                    list = new LinkedList<Geo>();
                 }
 
                 list.add(ret);
@@ -1437,14 +1437,14 @@ public class Intersection {
      * @return a List where the polys intersect within the range, null if the
      *         condition wasn't met.
      */
-    public static final List polyNearPoly(GeoArray s, GeoArray r, double near) {
+    public static final List<Geo> polyNearPoly(GeoArray s, GeoArray r, double near) {
         int rlen = r.getSize();
         int slen = s.getSize();
         Geo pl0 = r.get(rlen - 1);
         Geo pl1 = new Geo();
         Geo sl0 = s.get(slen - 1);
         Geo sl1 = new Geo();
-        List list = null;
+        List<Geo> list = null;
         for (int j = 0; j < rlen; j++) {
             pl1 = r.get(j, pl1);
             for (int i = 0; i < slen; i++) {
@@ -1453,7 +1453,7 @@ public class Intersection {
 
                 if (ret != null) {
                     if (list == null) {
-                        list = new LinkedList();
+                        list = new LinkedList<Geo>();
                     }
                     list.add(ret);
                 }
@@ -1467,9 +1467,9 @@ public class Intersection {
 
     /**
      * @return a Geo location iff the great circle segments defined by a1-a2 and
-     *         b1-b2 intersect. the angles between the segments must be < PI or
+     *         b1-b2 intersect. the angles between the segments must be &lt; PI or
      *         the results are ambiguous.Returns null if the segments don't
-     *         interset within the range.
+     *         intersect within the range.
      */
     public static Geo segmentsIntersect(Geo a1, Geo a2, Geo b1, Geo b2) {
         return segmentsIntersectOrNear(a1, a2, b1, b2, 0);
@@ -1478,8 +1478,8 @@ public class Intersection {
     /**
      * @return a Geo location iff the great circle segments defined by a1-a2 and
      *         b1-b2 come within the range (r, radians) of each other. The
-     *         angles between the segments must be < PI or the results are
-     *         ambiguous. Returns null if the segments don't interset within the
+     *         angles between the segments must be &lt; PI or the results are
+     *         ambiguous. Returns null if the segments don't intersect within the
      *         range.
      */
     public static Geo segmentsIntersectOrNear(Geo a1, Geo a2, Geo b1, Geo b2, double r) {
@@ -1525,8 +1525,8 @@ public class Intersection {
     /**
      * @return a Geo location iff the great circle segments defined by a1-a2 and
      *         b1-b2 come within the range (r, radians) of each other. The
-     *         angles between the segments must be < PI or the results are
-     *         ambiguous. Returns null if the segments don't interset within the
+     *         angles between the segments must be &lt; PI or the results are
+     *         ambiguous. Returns null if the segments don't intersect within the
      *         range.
      */
     public static Geo segmentsIntersectOrNear(Geo a1, Geo a2, Geo b1, Geo b2, double r, Geo ret) {

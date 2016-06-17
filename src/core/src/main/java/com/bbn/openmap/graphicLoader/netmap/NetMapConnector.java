@@ -54,8 +54,8 @@ import com.bbn.openmap.util.PropUtils;
  * The NetMapConnector can be used in conjunction with the
  * NetMapConnectionHandler. The NetMapConnectionHandler will look for
  * NetMapConnectors in the BeanContext (MapHandler), and create a
- * NetMapGraphicLoader for it. That will set off the GraphicLoader ->
- * GraphicLoaderConnector -> GraphicLoaderPlugIn -> PlugInLayer
+ * NetMapGraphicLoader for it. That will set off the GraphicLoader -%gt;
+ * GraphicLoaderConnector -%gt; GraphicLoaderPlugIn -%gt; PlugInLayer
  * creation chain, if the GraphicLoaderConnector is also in the
  * MapHandler.
  * 

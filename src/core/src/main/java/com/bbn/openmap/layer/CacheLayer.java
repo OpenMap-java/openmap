@@ -50,9 +50,11 @@ import com.bbn.openmap.util.PropUtils;
  * graphics, but doesn't do anything. You can extend this class to be
  * more useful to you. It has one property that needs to be set in the
  * properties file:
- * <P># CacheLayer property: <BR># The layer should figure out
- * whether it's a file or URL. <BR>
- * cachelayer.cacheFile= <url of cachefile> <BR>
+ * <P>
+ * <pre>
+ * # CacheLayer property, the layer should figure out whether it's a file or URL.
+ * cachelayer.cacheFile=&lt;url of cachefile&gt;
+ * </pre>
  */
 public class CacheLayer extends Layer implements ActionListener,
         MapMouseListener {

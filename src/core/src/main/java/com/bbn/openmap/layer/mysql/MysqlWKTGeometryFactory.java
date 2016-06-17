@@ -20,14 +20,14 @@ import com.bbn.openmap.util.Debug;
  * This class represents the Factory class do create the different
  * Geometry Objects. It takes as input a WKT Representation (text) of
  * the Geometry. It should have less performance than one which
- * manipulates WKB (binary) --> ToDo.
+ * manipulates WKB (binary) (TODO).
  * <p>
  * 
- * Copyright 2003 by the Author <br>
+ * Copyright 2003 by the Author
  * <p>
  * 
- * @author Uwe Baier uwe.baier@gmx.net <br>
- * @version 1.0 <br>
+ * @author Uwe Baier uwe.baier@gmx.net
+ * @version 1.0
  */
 public class MysqlWKTGeometryFactory {
 

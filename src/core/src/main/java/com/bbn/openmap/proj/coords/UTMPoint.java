@@ -67,7 +67,7 @@ public class UTMPoint {
      * @param zone_number The zone of the coordinate.
      * @param zone_letter For UTM, 'N' or 'S', to designate the northern or
      *        southern hemisphere.
-     * @throws Number format exception of N or S isn't used.
+     * @throws NumberFormatException if N or S isn't used
      */
     public UTMPoint(double northing, double easting, int zone_number, char zone_letter) {
         this.northing = northing;
@@ -111,7 +111,7 @@ public class UTMPoint {
      * Method that provides a check for UTM zone letters. Returns an uppercase
      * version of any valid letter passed in, 'N' or 'S'.
      * 
-     * @throws NumberFormatException if zone letter is invalid.
+     * @throws NumberFormatException if zone letter is invalid
      */
     protected char checkZone(char zone) {
         zone = Character.toUpperCase(zone);

@@ -139,7 +139,7 @@ import javax.swing.JMenuItem;
  * word Internationalization. </SMALL>
  * 
  * @see com.bbn.openmap.Environment
- * @see com.bbn.openmap.BasicI18n
+ * @see BasicI18n
  */
 public interface I18n {
 
@@ -163,7 +163,7 @@ public interface I18n {
      * to TEXT for the type).
      * 
      * @param requestor object containing the code requesting the
-     *        String (typically <code>this</code).
+     *        String (typically <code>this</code>).
      * @param field the field the String belongs to.  Typically this will
      * be the variable name referring to the String or the Swing object that
      * uses the String (like a button or a label).
@@ -175,7 +175,7 @@ public interface I18n {
      * Get the string associated with the given object/field/type.
      * 
      * @param requestor object containing the code requesting the
-     *        String (typically <code>this</code).
+     *        String (typically <code>this</code>).
      * @param field the field the String belongs to.  Typically this will
      * be the variable name referring to the Swing object that uses the String
      * (like a button or a label).
@@ -191,7 +191,7 @@ public interface I18n {
      * to TEXT for the type).
      * 
      * @param requestor the class of the object containing the code
-     *        requesting the String (typically <code>Foo.class</code).
+     *        requesting the String (typically <code>Foo.class</code>).
      * @param field the field the String belongs to.  Typically this will
      * be the variable name referring to the String or the Swing object that
      * uses the String (like a button or a label).
@@ -203,7 +203,7 @@ public interface I18n {
      * Get the string associated with the given class/field/type.
      * 
      * @param requestor the classof the object containing the code
-     *        requesting the String (typically <code>Foo.class</code).
+     *        requesting the String (typically <code>Foo.class</code>).
      * @param field the field the String belongs to.  Typically this will
      * be the variable name referring to the Swing object that uses the String
      * (like a button or a label).
@@ -322,11 +322,10 @@ public interface I18n {
      * ResourceBundle.
      * 
      * @param requestor object containing the code requesting the
-     *        String (typically <code>this</code).
+     *        String (typically <code>this</code>).
      * @param field the field the String belongs to.  Typically this will
      * be the variable name referring to the <code>comp</code> parameter.
      * @param comp the component whose properties are being set.
-     * @throws MissingResourceException if the data can't be found.
      */
     public void set(Object requestor, String field, JLabel comp);
 
@@ -335,11 +334,10 @@ public interface I18n {
      * ResourceBundle.
      * 
      * @param requestor object containing the code requesting the
-     *        String (typically <code>this</code).
+     *        String (typically <code>this</code>).
      * @param field the field the String belongs to.  Typically this will
      * be the variable name referring to the <code>comp</code> parameter.
      * @param comp the component whose properties are being set.
-     * @throws MissingResourceException if the data can't be found.
      */
     public void set(Object requestor, String field, JButton comp);
 
@@ -348,11 +346,10 @@ public interface I18n {
      * ResourceBundle.
      * 
      * @param requestor object containing the code requesting the
-     *        String (typically <code>this</code).
+     *        String (typically <code>this</code>).
      * @param field the field the String belongs to.  Typically this will
      * be the variable name referring to the <code>comp</code> parameter.
      * @param comp the component whose properties are being set.
-     * @throws MissingResourceException if the data can't be found.
      */
     public void set(Object requestor, String field, JMenu comp);
 
@@ -361,11 +358,10 @@ public interface I18n {
      * ResourceBundle.
      * 
      * @param requestor object containing the code requesting the
-     *        String (typically <code>this</code).
+     *        String (typically <code>this</code>).
      * @param field the field the String belongs to.  Typically this will
      * be the variable name referring to the <code>comp</code> parameter.
      * @param comp the component whose properties are being set.
-     * @throws MissingResourceException if the data can't be found.
      */
     public void set(Object requestor, String field, JMenuItem comp);
 
@@ -374,11 +370,10 @@ public interface I18n {
      * ResourceBundle.
      * 
      * @param requestor object containing the code requesting the
-     *        String (typically <code>this</code).
+     *        String (typically <code>this</code>).
      * @param field the field the String belongs to.  Typically this will
      * be the variable name referring to the <code>comp</code> parameter.
      * @param comp the component whose properties are being set.
-     * @throws MissingResourceException if the data can't be found.
      */
     public void set(Object requestor, String field, JDialog comp);
 
@@ -387,11 +382,10 @@ public interface I18n {
      * ResourceBundle.
      * 
      * @param requestor object containing the code requesting the
-     *        String (typically <code>this</code).
+     *        String (typically <code>this</code>).
      * @param field the field the String belongs to.  Typically this will
      * be the variable name referring to the <code>comp</code> parameter.
      * @param comp the component whose properties are being set.
-     * @throws MissingResourceException if the data can't be found.
      */
     public void set(Object requestor, String field, JFrame comp);
 
@@ -403,11 +397,10 @@ public interface I18n {
      * component. </B>
      * 
      * @param requestor object containing the code requesting the
-     *        String (typically <code>this</code).
+     *        String (typically <code>this</code>).
      * @param field the field the String belongs to.  Typically this will
      * be the variable name referring to the <code>comp</code> parameter.
      * @param comp the component whose properties are being set.
-     * @throws MissingResourceException if the data can't be found.
      */
     public void set(Object requestor, String field, JComponent comp);
 
@@ -425,9 +418,8 @@ public interface I18n {
      * calling the appropriate set(...) method on this class.
      * 
      * @param requestor object containing the code requesting the
-     *        Component setup (typically <code>this</code).
+     *        Component setup (typically <code>this</code>).
      * @param field the variable name of the component being setup.
-     * @throws MissingResourceException if the data can't be found.
      */
     public void set(Object requestor, String field);
 

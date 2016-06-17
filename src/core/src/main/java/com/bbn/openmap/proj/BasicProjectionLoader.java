@@ -114,7 +114,7 @@ public abstract class BasicProjectionLoader extends OMComponent implements
     /**
      * Create the projection with the given parameters.
      * 
-     * @throws exception if a parameter is missing or invalid.
+     * @throws ProjectionException if a parameter is missing or invalid
      */
     public abstract Projection create(Properties props)
             throws ProjectionException;

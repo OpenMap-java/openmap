@@ -500,8 +500,6 @@ public class MapMouseSupport
 	/**
 	 * Get the mask that dictates which events get sent to this support object's targets even if the parent mouse mode
 	 * is acting as a proxy.
-	 *
-	 * @param masked int for proxy distribution.
 	 */
 	protected int getProxyDistributionMask() {
 		return proxyDistributionMask;

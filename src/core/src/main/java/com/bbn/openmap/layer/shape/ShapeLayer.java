@@ -63,7 +63,7 @@ import com.bbn.openmap.util.PropUtils;
  * from the .shp file. This lets you align the object with the correct attribute
  * data in the .dbf file.
  * <p>
- * <code><pre>
+ * <pre>
  *       
  * ############################
  * # Properties for a shape layer
@@ -114,9 +114,9 @@ import com.bbn.openmap.util.PropUtils;
  * shapeLayer.rule1.mattingColor=55AAAAAA
  * ############################
  * 
- * </pre></code>
+ * </pre>
  * 
- * @author Tom Mitchell <tmitchell@bbn.com>
+ * @author Tom Mitchell
  * @version $Revision: 1.29 $ $Date: 2008/10/16 17:58:15 $
  * @see SpatialIndex
  */

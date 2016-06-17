@@ -78,7 +78,7 @@ public class DockWrapper extends JPanel {
 
     BasicDockPanel dockPanel;
 
-    /** Contents of this wrapper, size >1 if tabbed, 1 if not tabbed. */
+    /** Contents of this wrapper, size &gt;1 if tabbed, 1 if not tabbed. */
     private List children = new ArrayList(1);
 
     /** Other Wrappers that have been docked onto this one. */

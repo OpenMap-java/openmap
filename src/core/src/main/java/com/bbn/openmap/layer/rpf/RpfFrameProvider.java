@@ -78,7 +78,7 @@ public interface RpfFrameProvider {
 	 * coverage on the map that that chart series can offer. If you want
 	 * specific coverage information, use the getCatalogCoverage call.
 	 * 
-	 * @see #getCatalogCoverage(float, float, float, float, Projection, String)
+	 * @see #getCatalogCoverage(double, double, double, double, Projection, String)
 	 */
 	public float getCalculatedCoverage(double ullat, double ullon, double lrlat, double lrlon, Projection p,
 			String chartSeries);
@@ -101,7 +101,7 @@ public interface RpfFrameProvider {
 	 * @param y
 	 *            the vertical subframe index, from the top side of a boundary
 	 *            rectangle of the entry.
-	 * @see #getCoverage(float, float, float, float, Projection)
+	 * @see #getCoverage(double, double, double, double, Projection)
 	 * @return integer pixel data.
 	 */
 	public int[] getSubframeData(int tocNumber, int entryNumber, int x, int y);
@@ -126,7 +126,7 @@ public interface RpfFrameProvider {
 	 * @param y
 	 *            the vertical subframe index, from the top side of a boundary
 	 *            rectangle of the entry.
-	 * @see #getCoverage(float, float, float, float, Projection)
+	 * @see #getCoverage(double, double, double, double, Projection)
 	 * @return string.
 	 */
 	public String getSubframeAttributes(int tocNumber, int entryNumber, int x, int y);

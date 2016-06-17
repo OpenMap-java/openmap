@@ -39,15 +39,12 @@ public interface MapTileFactory {
 	 * 
 	 * @param proj
 	 * @return OMGraphicList that was created.
-	 * @throws InterruptedException
 	 */
 	OMGraphicList getTiles(Projection proj);
 
 	/**
 	 * Create an OMGraphicList that covers the projection with tiles that suit
 	 * the specified zoom level.
-	 * 
-	 * @throws InterruptedException
 	 */
 	OMGraphicList getTiles(Projection proj, int zoomLevel);
 
@@ -57,7 +54,6 @@ public interface MapTileFactory {
 	 * @param proj
 	 * @param list
 	 * @return the OMGraphicList provided.
-	 * @throws InterruptedException
 	 */
 	OMGraphicList getTiles(Projection proj, int zoomLevel, OMGraphicList list);
 

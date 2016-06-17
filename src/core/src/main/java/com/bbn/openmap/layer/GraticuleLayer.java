@@ -70,8 +70,8 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * <P>
  * The openmap.properties file can control the layer with the following
- * settings: <code><pre>
- *  
+ * settings: 
+ * <p><pre>
  *   
  *    # Show lat / lon spacing labels
  *    graticule.showRuler=true
@@ -95,11 +95,11 @@ import com.bbn.openmap.util.PropUtils;
  *    graticule.specialLineColor=FF000000
  *    # the color of the labels (Hex ARGB)
  *    graticule.textColor=FF000000
- *    
  *   
- * </pre></code> In addition, you can get this layer to work with the OpenMap
- * viewer by editing your openmap.properties file: <code><pre>
- *  
+ * </pre>
+ * <p> In addition, you can get this layer to work with the OpenMap
+ * viewer by editing your openmap.properties file:
+ * <pre>
  *   
  *    # layers
  *    openmap.layers=graticule ...
@@ -107,10 +107,8 @@ import com.bbn.openmap.util.PropUtils;
  *    graticule.class=com.bbn.openmap.layer.GraticuleLayer
  *    # name
  *    graticule.prettyName=Graticule
- *    
  *   
- * </pre></code>
- * 
+ * </pre>
  */
 public class GraticuleLayer
       extends OMGraphicHandlerLayer

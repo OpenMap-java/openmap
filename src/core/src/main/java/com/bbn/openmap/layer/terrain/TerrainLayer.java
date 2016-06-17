@@ -359,7 +359,7 @@ public class TerrainLayer extends OMGraphicHandlerLayer implements ActionListene
 
     /**
      * Little math utility that both tools use, that just implements the
-     * pathagorean theorem to do the number of pixels between two screen points.
+     * pythagorean theorem to do the number of pixels between two screen points.
      */
     public static int numPixelsBetween(int x1, int y1, int x2, int y2) {
         return (int) Math.sqrt(Math.pow((double) (x1 - x2), 2.0)

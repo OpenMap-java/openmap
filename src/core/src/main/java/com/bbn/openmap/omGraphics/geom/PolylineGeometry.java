@@ -45,7 +45,7 @@ import com.bbn.openmap.proj.DrawUtil;
  * <h3>NOTES:</h3>
  * <ul>
  * <li>See the <a
- * href="../../../../com.bbn.openmap.proj.Projection.html#poly_restrictions">
+ * href="../../../../com.bbn.openmap.proj.GeoProj.html#poly_restrictions">
  * RESTRICTIONS </a> on Lat/Lon polygons/polylines. Not following the
  * guidelines listed may result in ambiguous/undefined shapes! Similar
  * assumptions apply to the other vector graphics that we define:

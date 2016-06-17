@@ -145,8 +145,6 @@ public class EmbeddedScaleDisplayPanel extends OMComponentPanel implements Proje
      * Setter for property unitOfMeasure.
      * 
      * @param unitOfMeasure New value of property unitOfMeasure.
-     * 
-     * @throws PropertyVetoException
      */
     public void setUnitOfMeasure(String unitOfMeasure) {
         if (unitOfMeasure == null)

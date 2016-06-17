@@ -32,18 +32,20 @@ import java.util.Iterator;
 public class SoloMapComponentRejectPolicy implements SoloMapComponentPolicy {
 
     /**
-     * @throws a MultipleSoloMapComponentException if a duplicate
+     * @param bc BeanContext, or MapHandler
+     * @param obj the object to check before adding to MapHandler
+     * @throws MultipleSoloMapComponentException if a duplicate
      *         instance of SoloMapComponent exists.
      * @return true if the object can be added to the MapHandler.
      */
     public boolean canAdd(BeanContextSupport bc, Object obj)
             throws MultipleSoloMapComponentException {
         if (obj instanceof SoloMapComponent) {
-            Class firstClass = obj.getClass();
-            for (Iterator it = bc.iterator(); it.hasNext();) {
+            Class<?> firstClass = obj.getClass();
+            for (Iterator<?> it = bc.iterator(); it.hasNext();) {
                 Object someObj = it.next();
                 if (someObj instanceof SoloMapComponent) {
-                    Class secondClass = someObj.getClass();
+                    Class<?> secondClass = someObj.getClass();
 
                     if (firstClass == secondClass
                             || firstClass.isAssignableFrom(secondClass)

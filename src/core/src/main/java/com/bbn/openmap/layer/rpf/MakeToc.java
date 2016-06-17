@@ -122,7 +122,7 @@ import com.bbn.openmap.util.Debug;
  * might not be what you want.
  * </P>
  * 
- * @see com.bbn.openmap.layer.rpf.ChangeCase
+ * @see com.bbn.openmap.util.wanderer.ChangeCase
  */
 public class MakeToc {
 

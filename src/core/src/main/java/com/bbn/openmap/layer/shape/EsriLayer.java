@@ -63,7 +63,8 @@ import javax.swing.event.ListSelectionListener;
  * EsriPlugIn loads Esri shape file sets from web servers or local file systems, and it enables the creation of shape
  * file sets. It needs to be inserted into a PlugInLayer to use within OpenMap.
  * <P>
- * To create a file from a remote location: <code><pre>
+ * To create a file from a remote location: 
+ * <pre><code>
  *
  * URL shp = new URL(&quot;http://www.webserver.com/file.shp&quot;);
  * URL dbf = new URL(&quot;http://www.webserver.com/file.dbf&quot;);
@@ -72,9 +73,10 @@ import javax.swing.event.ListSelectionListener;
  * PlugInLayer pil = new PlugInLayer();
  * pil.setPlugIn(epi);
  *
- * </pre></code>
+ * </code></pre>
  *
- * To open a shape file set from the local file system: <code><pre>
+ * To open a shape file set from the local file system: 
+ * <pre><code>
  *
  * File dbf = new File(&quot;c:/data/file.dbf&quot;);
  * File shp = new File(&quot;c:/data/file.shp&quot;);
@@ -82,15 +84,16 @@ import javax.swing.event.ListSelectionListener;
  * EsriPlugIn epi = new EsriPlugIn(&quot;name&quot;, dbf.toURI().toURL(), shp.toURI().toURL(), shx.toURI().toURL());
  * PlugInLayer pil = new PlugInLayer();
  * pil.setPlugIn(epi);
+ * 
+ * </code></pre>
  *
- * </pre></code>
- *
- * To create a zero content shape file set from which the user can add shapes at runtime: <code><pre>
+ * To create a zero content shape file set from which the user can add shapes at runtime:
+ * <pre><code>
  * EsriPlugIn epi = new EsriPlugIn(&quot;name&quot;, EsriLayer.TYPE_POLYLINE);
+ * </code></pre>
  *
- * </pre></code>
- *
- * To add features to an EsriLayer: <code><pre>
+ * To add features to an EsriLayer:
+ * <pre><code>
  *
  * OMGraphicList shapeData = new OMGraphicList();
  * ArrayList tabularData = new ArrayList();
@@ -105,13 +108,14 @@ import javax.swing.event.ListSelectionListener;
  * plugin.addRecord(shapeData, tabularData);
  * plugin.repaint(); // assumes that plugin added to PlugInLayer
  *
- * </pre></code>
+ * </code>
+ * </pre>
  *
  * To configure an EsriLayer through a properties file, specify file references in terms of URLs, full or relative file
  * paths.
  *
- * To reference a file on Windows 2000: <code><pre>
- *
+ * To reference a file on Windows 2000:
+ * <pre><code>
  *
  *       esri.class = com.bbn.openmap.plugin.esri.EsriPlugIn
  *       esri.prettyName = Esri Example
@@ -123,10 +127,11 @@ import javax.swing.event.ListSelectionListener;
  *       esri.shx = file:///c:/data/shapefile.shx
  *
  *
- * </pre></code>
+ * </code></pre>
  *
- * To reference a file on RedHat Linux 6.2: <code><pre>
- *
+ * To reference a file on RedHat Linux 6.2: 
+ * 
+ * <pre><code>
  *
  *       esri.class = com.bbn.openmap.plugin.esri.EsriPlugIn
  *       esri.prettyName = Esri Example
@@ -138,10 +143,11 @@ import javax.swing.event.ListSelectionListener;
  *       esri.shx = file:///home/dvanauke/resources/shapefile.shx
  *
  *
- * </pre></code>
+ * </code></pre>
  *
- * To reference a file on a web server: <code><pre>
- *
+ * To reference a file on a web server:
+ * 
+ * <pre><code>
  *
  *       esri.class = com.bbn.openmap.plugin.esri.EsriPlugIn
  *       esri.prettyName = Esri Example
@@ -150,11 +156,11 @@ import javax.swing.event.ListSelectionListener;
  *       esri.shx = http://www.webserver.com/shapefile.shx
  *
  *
- * </pre></code>
+ * </code></pre>
  *
  * The PlugIn has been updated to use the properties from the DrawingAttributes object in order to specify how it's
- * objects should be rendered: <code><pre>
- *
+ * objects should be rendered: 
+ * <pre><code>
  *
  *       esri.class = com.bbn.openmap.plugin.esri.EsriPlugIn
  *       esri.prettyName = Esri Example
@@ -163,8 +169,7 @@ import javax.swing.event.ListSelectionListener;
  *       esri.selectColor = AARRGGBB (hex ARGB color)
  *       esri.lineWidth = AARRGGBB (hex ARGB color)
  *
- *
- * </pre></code>
+ * </code></pre>
  *
  * See DrawingAttributes for more options. Also, as of OpenMap 4.5.4, you don't have to specify the location of the .dbf
  * and .shx files. If you don't, the plugin assumes that those files are next to the .shp file.

@@ -32,18 +32,21 @@ import com.bbn.openmap.dataAccess.shape.ShapeUtils;
  * Class that supports cropping of ESRI Shapefiles with a simple bounding box.
  * Does not yet update the .shx or .dbf files.
  * 
- * <p>
- * <H2>Usage:</H2>
- * <DT>java com.bbn.openmap.layer.shape.ShapeFileCrop -ul lat,lon -lr lat,lon -i
- * srcShapeFile -o destShapeFile</DT>
- * <DD>Crops the srcShapeFile, dumps the output into destShapeFile.</DD>
- * <DD>Note that this does simple rejection of entities based on their bounding
- * boxes.</DD>
- * <DD>A better scheme (unimplemented) would be to actually crop the line
- * segments.</DD>
- * <p>
+ * <pre>
+ * <b>Usage:</b>
  * 
- * @author Eliot Lebsack <elebsack@mitre.org>
+ * <code>java com.bbn.openmap.layer.shape.ShapeFileCrop -ul lat,lon -lr lat,lon -i srcShapeFile -o destShapeFile</code>
+ * 
+ * <i>Crops the srcShapeFile, dumps the output into destShapeFile.</i> 
+ * Note that this does simple rejection of entities based on their bounding
+ * boxes.
+ * 
+ * A better scheme (unimplemented) would be to actually crop the line
+ * segments.
+ * 
+ * </pre>
+ * 
+ * @author Eliot Lebsack 
  * @version $Revision: 1.5 $ $Date: 2005/12/09 21:09:10 $
  */
 public class ShapeFileCrop {

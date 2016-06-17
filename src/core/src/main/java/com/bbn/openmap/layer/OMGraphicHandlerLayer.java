@@ -307,7 +307,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	}
 
 	/**
-	 * @see com.bbn.openmap.omGraphics.OMGraphicHandler#filter(Shape, boolean).
+	 * @see com.bbn.openmap.omGraphics.OMGraphicHandler#filter(Shape, boolean)
 	 */
 	public OMGraphicList filter(Shape shapeBoundary, boolean getInsideBoundary) {
 		return filter.filter(shapeBoundary, getInsideBoundary);
@@ -316,7 +316,7 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 	/**
 	 * To find out whether SQL queries are handled.
 	 *
-	 * @see com.bbn.openmap.omGraphics.OMGraphicHandler#supportsSQL().
+	 * @see com.bbn.openmap.omGraphics.OMGraphicHandler#supportsSQL()
 	 */
 	public boolean supportsSQL() {
 		return filter.supportsSQL();
@@ -1263,11 +1263,11 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
 		return omgl;
 	}
 
-	/***************************************************************************
-	 * Return a copy of an OMGraphic. Not implemented yet.
+	/**
+	 * Return a copy of OMGraphics.
 	 */
 	public OMGraphicList copy(OMGraphicList omgl) {
-		return null;
+		return (OMGraphicList) omgl.clone();
 	}
 
 	/**

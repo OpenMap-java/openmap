@@ -112,7 +112,7 @@ public class OpenMapFrame
     protected I18n i18n = Environment.getI18n();
 
     /**
-     * Create the frame with "OpenMap <version>" in the title.
+     * Create the frame with "OpenMap &lt;version&gt;" in the title.
      */
     public OpenMapFrame() {
         this("");

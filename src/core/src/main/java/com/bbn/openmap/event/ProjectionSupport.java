@@ -85,7 +85,7 @@ public class ProjectionSupport extends ListenerSupport<ProjectionListener> {
 
     /**
      * Call when getting rid of the ProjectionSupport, it kills the
-     * ProjectionSupport thread. // <-- CJS
+     * ProjectionSupport thread. (from CJS)
      */
     public void dispose() {
         super.clear();

@@ -34,18 +34,21 @@ import com.bbn.openmap.util.Debug;
  * Currently this class has limited capabilities. It can dump the
  * index information to stdout. This is useful for verification of a
  * spatial index.
+ * <pre>
  * 
- * <H2>Usage</H2>
- * <DT>java com.bbn.openmap.shape.ShapeIndex file.shx</DT>
- * <DD><i>Dumps spatial index information, excluding bounding boxes
- * to stdout. Useful for comparing to a shape index. </i></DD>
+ * <b>Usage</b>
+ * <code>
  * 
- * <H2>To Do</H2>
- * <UL>
- * <LI>Generate an index from a shape file</LI>
- * </UL>
+ * java com.bbn.openmap.shape.ShapeIndex file.shx
  * 
- * @author Tom Mitchell <tmitchell@bbn.com>
+ * </code>
+ * </pre>
+ * 
+ * <i>Dumps spatial index information, excluding bounding boxes
+ * to stdout. Useful for comparing to a shape index. </i>
+ * 
+ * 
+ * @author Tom Mitchell
  * @version $Revision: 1.6 $ $Date: 2005/12/09 21:09:10 $
  * @see SpatialIndex
  */

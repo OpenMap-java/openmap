@@ -38,7 +38,9 @@ import com.bbn.openmap.util.Taskable;
  * Layer that displays date and time. This Layer is a Taskable
  * (ActionListener) object so that it can be prompted by a
  * javax.swing.Timer object. This layer understands the following
- * properties: <code><pre>
+ * properties:
+ * <p> 
+ * <pre>
  * 
  *  # display font as a Java font string
  *  date.font=SansSerif-Bold
@@ -53,12 +55,13 @@ import com.bbn.openmap.util.Taskable;
  *  # date format (using java.text.SimpleDateFormat patterns)
  *  date.format=EEE, d MMM yyyy HH:mm:ss z
  *  
- * </pre></code>
+ * </pre>
  * <p>
  * In addition to the previous properties, you can get this layer to
  * work with the OpenMap viewer by adding/editing the additional
  * properties in your <code>openmap.properties</code> file:
- * <code><pre>
+ * <p>
+ * <pre>
  * 
  *  # layers
  *  openmap.layers=date ...
@@ -67,7 +70,7 @@ import com.bbn.openmap.util.Taskable;
  *  # name
  *  date.prettyName=Date &amp; Time
  *  
- * </pre></code> NOTE: the color properties do not support alpha value if
+ * </pre><p> NOTE: the color properties do not support alpha value if
  * running on JDK 1.1...
  */
 public class DateLayer extends LabelLayer implements Taskable, MapMouseListener {

@@ -120,8 +120,8 @@ public class OMGeoJSONUtil {
      * Used to convert the OMGraphics attribute table to the properties JSON
      * wants.
      * 
-     * @param attributes Map<Object, Object>
-     * @return Map<String, Object>
+     * @param attributes Map&lt;Object, Object&gt;
+     * @return Map&lt;String, Object&gt;
      */
     public static Map<String, Object> convert(Map<Object, Object> attributes) {
         Map<String, Object> ret = new HashMap<String, Object>();

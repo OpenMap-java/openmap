@@ -20,7 +20,7 @@ public class MapRule extends Rule<Map> {
     /**
      * Asks the Op class to evaluate the provided value against the Rules value.
      * 
-     * @param val
+     * @param record
      * @return true of the operation passed
      */
     public boolean evaluate(Map record) {
@@ -31,9 +31,8 @@ public class MapRule extends Rule<Map> {
     /**
      * Returns a String of concatenated record values.
      * 
-     * @param indicies column indexes of values to be concatenated in return
-     *        value
-     * @param record List to use for return value
+     * @param fieldNames column names
+     * @param record Map to use to fetch values
      * @return String of content
      */
     public String getContent(List<String> fieldNames, Map record) {

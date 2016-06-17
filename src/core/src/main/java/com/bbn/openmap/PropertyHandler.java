@@ -173,7 +173,7 @@ public class PropertyHandler
      * The property name used to hold a file, resource or URL of a file to use
      * containing localized properties, like layer names. This is optional, if
      * it's not in the openmap.properties file or the properties file being read
-     * in, an openmap_&ltlocalization string&gt.properties file will be searched
+     * in, an openmap_&lt;localization string&gt;.properties file will be searched
      * for in the classpath (i.e. openmap.localized=openmap_en_US.properties).
      */
     public final static String localizedProperty = "localized";

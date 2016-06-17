@@ -21,7 +21,8 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.beans.BeanInfo;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.bbn.openmap.event.MapMouseListener;
 import com.bbn.openmap.event.SelectMouseMode;
@@ -33,425 +34,401 @@ import com.bbn.openmap.tools.beanbox.BeanContainer;
 
 /**
  * SimpleBeanBox is a sample implementation of the
- * {@link com.bbn.openmap.tools.beanbox.BeanBox}class. SimpleBeanBox manages
+ * {@link com.bbn.openmap.tools.beanbox.BeanBox} class. SimpleBeanBox manages
  * beans of type SimpleBeanObject.
  */
 public class SimpleBeanBox extends BeanBox implements MapMouseListener {
 
-    private SimpleBeanLayer layer;
+	private SimpleBeanLayer layer;
 
-    private static SimpleBeanBox thisBeanBox = null;
+	public SimpleBeanBox(SimpleBeanLayer l) {
+		super();
+		layer = l;
+	}
 
-    public SimpleBeanBox(SimpleBeanLayer l) {
-        super();
-        layer = l;
-    }
+	public String[] getMouseModeServiceList() {
+		return new String[] { SelectMouseMode.modeID };
+	}
 
-    public String[] getMouseModeServiceList() {
-        return new String[] { SelectMouseMode.modeID };
-    }
+	public boolean mousePressed(MouseEvent evt) {
+		return true;
+	}
 
-    public boolean mousePressed(MouseEvent evt) {
-        return true;
-    }
+	public boolean mouseReleased(MouseEvent evt) {
+		return true;
+	}
 
-    public boolean mouseReleased(MouseEvent evt) {
-        return true;
-    }
+	public boolean mouseClicked(MouseEvent evt) {
+		return true;
+	}
 
-    public boolean mouseClicked(MouseEvent evt) {
-        return true;
-    }
+	public void mouseEntered(MouseEvent evt) {
+	}
 
-    public void mouseEntered(MouseEvent evt) {
-    }
+	public void mouseExited(MouseEvent evt) {
+	}
 
-    public void mouseExited(MouseEvent evt) {
-    }
+	public boolean mouseDragged(MouseEvent evt) {
+		return true;
+	}
 
-    public boolean mouseDragged(MouseEvent evt) {
-        return true;
-    }
+	public boolean mouseMoved(MouseEvent evt) {
+		return true;
+	}
 
-    public boolean mouseMoved(MouseEvent evt) {
-        return true;
-    }
+	public void mouseMoved() {
+	}
 
-    public void mouseMoved() {
-    }
+	/**
+	 * adds the specified bean to SimpleBeanLayer. This method is called by the
+	 * <code>com.bbn.openmap.tools.beanbox.BeanBoxDnDCatcher</code> class to add
+	 * the specified bean to a OpenMap layer.
+	 */
+	public void addBean(Object bean) {
 
-    /**
-     * adds the specified bean to SimpleBeanLayer. This method is called by the
-     * <code>com.bbn.openmap.tools.beanbox.BeanBoxDnDCatcher</code> class to add
-     * the specified bean to a openmap layer.
-     * 
-     * @throws an IllegalArgumentException if bean is not of type
-     *         SimpleBeanObject
-     */
-    public void addBean(Object bean) {
+		// System.out.println("Enter> SimpleBeanBox.addBean");
 
-        // System.out.println("Enter> SimpleBeanBox.addBean");
+		if (!(bean instanceof SimpleBeanObject))
+			throw new IllegalArgumentException("not instanceof SimpleBeanObject");
 
-        if (!(bean instanceof SimpleBeanObject))
-            throw new IllegalArgumentException("not instanceof SimpleBeanObject");
+		layer.addObject((SimpleBeanObject) bean);
 
-        layer.addObject((SimpleBeanObject) bean);
+		// System.out.println("Exit> SimpleBeanBox.addBean");
 
-        // System.out.println("Exit> SimpleBeanBox.addBean");
+	}
 
-    }
+	/**
+	 * removes the specified bean from SimpleBeanLayer. This method is called by
+	 * the <code>com.bbn.openmap.tools.beanbox.BeanBoxDnDCatcher</code> class to
+	 * remove the specified bean from a OpenMap layer.
+	 */
+	public void removeBean(Object bean) {
 
-    /**
-     * removes the specified bean from SimpleBeanLayer. This method is called by
-     * the <code>com.bbn.openmap.tools.beanbox.BeanBoxDnDCatcher</code> class to
-     * remove the specified bean from a openmap layer.
-     * 
-     * @throws an IllegalArgumentException if bean is not of type
-     *         SimpleBeanObject
-     */
-    public void removeBean(Object bean) {
+		// System.out.println("Enter> SimpleBeanBox.removeBean");
 
-        // System.out.println("Enter> SimpleBeanBox.removeBean");
+		if (!(bean instanceof SimpleBeanObject))
+			throw new IllegalArgumentException("not instanceof SimpleBeanObject");
 
-        if (!(bean instanceof SimpleBeanObject))
-            throw new IllegalArgumentException("not instanceof SimpleBeanObject");
+		layer.removeObject(((SimpleBeanObject) bean).getId());
 
-        layer.removeObject(((SimpleBeanObject) bean).getId());
+		// System.out.println("Exit> SimpleBeanBox.removeBean");
 
-        // System.out.println("Exit> SimpleBeanBox.removeBean");
+	}
 
-    }
+	/**
+	 * checks if the specified bean is present in SimpleBeanLayer. returns true
+	 * if present, false otherwise.
+	 */
+	public boolean containsBean(Object bean) {
 
-    /**
-     * checks if the specified bean is present in SimpleBeanLayer. returns true
-     * if present, false otherwise.
-     * 
-     * @throws an IllegalArgumentException if bean is not of type
-     *         SimpleBeanObject
-     */
+		// System.out.println("Called> SimpleBeanBox.containsBean");
 
-    public boolean containsBean(Object bean) {
+		if (!(bean instanceof SimpleBeanObject))
+			throw new IllegalArgumentException("not instanceof SimpleBeanObject " + bean);
 
-        // System.out.println("Called> SimpleBeanBox.containsBean");
+		return (layer.getObject(((SimpleBeanObject) bean).getId()) != null);
+	}
 
-        if (!(bean instanceof SimpleBeanObject))
-            throw new IllegalArgumentException("not instanceof SimpleBeanObject " + bean);
+	/**
+	 * Sets the image associated with the bean using the image present in the
+	 * BeanInfo. Also sets the bean's location. This method is called by the
+	 * <code>com.bbn.openmap.tools.beanbox.BeanBoxDnDCatcher</code> class to set
+	 * the bean's properties before it is displayed in a property sheet prior to
+	 * adding to an OpenMap layer.
+	 */
+	public void setBeanProperties(Object bean, BeanInfo beanInfo, Point location) {
 
-        return (layer.getObject(((SimpleBeanObject) bean).getId()) != null);
-    }
+		// System.out.println("Enter>
+		// SimpleBeanBox.setBeanProperties");
+
+		if (!(bean instanceof SimpleBeanObject))
+			throw new IllegalArgumentException("not instanceof SimpleBeanObject " + bean);
+
+		SimpleBeanObject obj = (SimpleBeanObject) bean;
+
+		Image img = beanInfo.getIcon(BeanInfo.ICON_COLOR_32x32);
+		obj.setGraphicImage(img);
+
+		Point2D llp = layer.getProjection().inverse(location.x, location.y);
+
+		obj.setLatitude((float) llp.getY());
+		obj.setLongitude((float) llp.getX());
+
+		// System.out.println("Exit>
+		// SimpleBeanBox.setBeanProperties");
+	}
+
+	/**
+	 * gets a Vector of beans that implement the
+	 * <code>com.bbn.openmap.tools.beanbox.BeanContainer</code> interface.
+	 * 
+	 * @return a possibly empty List of container beans.
+	 */
+	protected List<SimpleBeanContainer> getAllContainers() {
+
+		List<SimpleBeanContainer> containers = new ArrayList<SimpleBeanContainer>();
+		List<SimpleBeanObject> list = layer.getObjects();
+
+		if (list != null) {
+			for (SimpleBeanObject sbo : list) {
+				if (sbo instanceof BeanContainer) {
+					containers.add((SimpleBeanContainer) sbo);
+				}
+			}
+		}
+		return containers;
+	}
+
+	/**
+	 * @param bean an object to test against, should be a SimpleBeanObject
+	 * @return a <code>BeanContainer</code> bean that contains the specified
+	 *         bean object.
+	 */
+	public BeanContainer findEnclosingContainer(Object bean) {
+
+		// System.out.println("Called>
+		// SimpleBeanBox.findEnclosingContainer");
+
+		if (!(bean instanceof SimpleBeanObject)) {
+			return null;
+		}
+
+		SimpleBeanObject obj = (SimpleBeanObject) bean;
+
+		float objLat = obj.getLatitude();
+		float objLon = obj.getLongitude();
+		LatLonPoint llp = new LatLonPoint.Float(objLat, objLon);
+
+		return findEnclosingContainer(llp);
+	}
+
+	/**
+	 * returns a SimpleBeanContainer bean that contains the specified
+	 * <code>LatLonPoint</code> on the map.
+	 */
+	public SimpleBeanContainer findEnclosingContainer(LatLonPoint llp) {
+
+		for (SimpleBeanContainer sbc : getAllContainers()) {
+			if (encloses(sbc, llp)) {
+				return sbc;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * helper method returns true if the specified <code>LatLonPoint</code> is
+	 * contained within the specified <code>SimpleBeanContainer</code>.
+	 */
+	boolean encloses(SimpleBeanContainer container, Point2D llp) {
+
+		float topLat = container.getTopLatitude();
+		float leftLon = container.getLeftLongitude();
+		float botLat = container.getBottomLatitude();
+		float rightLon = container.getRightLongitude();
+		float lat = (float) llp.getY();
+		float lon = (float) llp.getX();
+
+		if ((lon > rightLon) || (lon < leftLon)) {
+			return false;
+		}
+
+		if ((lat > topLat) || (lat < botLat)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * finds a bean of type
+	 * <code>com.bbn.openmap.tools.beanbox.BeanContainer</code> that encloses
+	 * the specified (x,y) point. In case more than one container encloses the
+	 * specified point the first one found is returned. Returns null if none is
+	 * found.
+	 */
+	BeanContainer findContainerBean(Point pointOnMap) {
+		if (layer != null && layer.getProjection() != null) {
+			Point2D llp = layer.getProjection().inverse(pointOnMap.x, pointOnMap.y);
+			return findEnclosingContainer(llp);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * returns a bean that does NOT implement
+	 * <code>com.bbn.openmap.tools.beanbox.BeanContainer</code> and which lies
+	 * closest to and within 10 pixels of the specified (x,y) point. Returns
+	 * null if no such object is found.
+	 */
+	SimpleBeanObject findNonContainerBean(Point pointOnMap) {
+
+		List<SimpleBeanObject> list = layer.getObjects();
+
+		double minSep = Double.MAX_VALUE;
+		SimpleBeanObject closest = null;
+
+		for (SimpleBeanObject sbo : list) {
+
+			if (sbo instanceof SimpleBeanContainer) {
+				continue;
+			}
+
+			Point2D p2 = layer.getProjection().forward(new LatLonPoint.Float(sbo.getLatitude(), sbo.getLongitude()));
+
+			double sep = almostEquals(pointOnMap, p2, 20);
+
+			if (sep < minSep) {
+				minSep = sep;
+				closest = sbo;
+			}
+		}
+
+		return closest;
+	}
+
+	/**
+	 * return bean at specified location giving preference to non-container
+	 * beans over container beans. If neither type of bean is found to be close
+	 * enough to the specified location, a null is returned.
+	 */
+	public Object getBeanAtLocation(Point pointOnMap) {
+
+		// System.out.println("Called>
+		// SimpleBeanBox.getBeanAtLocation");
+
+		SimpleBeanObject obj = findNonContainerBean(pointOnMap);
+
+		if (obj != null)
+			return obj;
 
-    /**
-     * Sets the image associated with the bean using the image present in the
-     * BeanInfo. Also sets the bean's location. This method is called by the
-     * <code>com.bbn.openmap.tools.beanbox.BeanBoxDnDCatcher</code> class to set
-     * the bean's properties before it is displayed in a property sheet prior to
-     * adding to an openmap layer.
-     * 
-     * @throws an IllegalArgumentException if bean is not of type
-     *         SimpleBeanObject
-     */
-    public void setBeanProperties(Object bean, BeanInfo beanInfo, Point location) {
-
-        // System.out.println("Enter>
-        // SimpleBeanBox.setBeanProperties");
-
-        if (!(bean instanceof SimpleBeanObject))
-            throw new IllegalArgumentException("not instanceof SimpleBeanObject " + bean);
-
-        SimpleBeanObject obj = (SimpleBeanObject) bean;
-
-        Image img = beanInfo.getIcon(BeanInfo.ICON_COLOR_32x32);
-        obj.setGraphicImage(img);
+		BeanContainer container = findContainerBean(pointOnMap);
 
-        Point2D llp = layer.getProjection().inverse(location.x, location.y);
-
-        obj.setLatitude((float) llp.getY());
-        obj.setLongitude((float) llp.getX());
-
-        // System.out.println("Exit>
-        // SimpleBeanBox.setBeanProperties");
-    }
-
-    /**
-     * gets a Vector of beans that implement the
-     * <code>com.bbn.openmap.tools.beanbox.BeanContainer</code> interface.
-     * 
-     * @return a possibly empty vector of container beans.
-     */
-    Vector getAllContainers() {
-
-        Vector containers = new Vector();
-        Vector list = layer.getObjects();
-
-        if (list == null || list.isEmpty())
-            return containers;
-
-        for (int i = 0; i < list.size(); i++) {
-            Object obj = list.get(i);
-
-            if (obj instanceof BeanContainer)
-                containers.add(obj);
-        }
-
-        return containers;
-    }
-
-    /**
-     * returns a <code>BeanContainer</code> bean that contains the specified
-     * bean object.
-     * 
-     * @throws an IllegalArgumentException if bean is not of type
-     *         SimpleBeanObject
-     */
-    public BeanContainer findEnclosingContainer(Object bean) {
-
-        // System.out.println("Called>
-        // SimpleBeanBox.findEnclosingContainer");
-
-        if (!(bean instanceof SimpleBeanObject)) {
-            return null;
-        }
-
-        SimpleBeanObject obj = (SimpleBeanObject) bean;
-
-        float objLat = obj.getLatitude();
-        float objLon = obj.getLongitude();
-        LatLonPoint llp = new LatLonPoint.Float(objLat, objLon);
-
-        return findEnclosingContainer(llp);
-    }
-
-    /**
-     * returns a SimpleBeanContainer bean that contains the specified
-     * <code>LatLonPoint</code> on the map.
-     */
-    public SimpleBeanContainer findEnclosingContainer(LatLonPoint llp) {
-
-        Vector containers = getAllContainers();
-
-        for (int i = 0; i < containers.size(); i++) {
-            SimpleBeanContainer container = (SimpleBeanContainer) containers.get(i);
-
-            if (encloses(container, llp))
-                return container;
-        }
+		if (container != null)
+			return container;
 
-        return null;
-    }
+		return null;
+	}
 
-    /**
-     * helper method returns true if the specified <code>LatLonPoint</code> is
-     * contained within the specified <code>SimpleBeanContainer</code>.
-     */
-    boolean encloses(SimpleBeanContainer container, Point2D llp) {
+	/**
+	 * returns the straight line separation in pixels between the specified
+	 * points if separation is equal to or less than the specified tolerance
+	 * amount, else returns Double.MAX_VALUE
+	 */
 
-        float topLat = container.getTopLatitude();
-        float leftLon = container.getLeftLongitude();
-        float botLat = container.getBottomLatitude();
-        float rightLon = container.getRightLongitude();
-        float lat = (float) llp.getY();
-        float lon = (float) llp.getX();
-
-        if ((lon > rightLon) || (lon < leftLon))
-            return false;
+	double almostEquals(Point2D p1, Point2D p2, double tol) {
 
-        if ((lat > topLat) || (lat < botLat))
-            return false;
-
-        return true;
-    }
-
-    /**
-     * finds a bean of type
-     * <code>com.bbn.openmap.tools.beanbox.BeanContainer</code> that encloses
-     * the specified (x,y) point. In case more than one container encloses the
-     * specified point the first one found is returned. Returns null if none is
-     * found.
-     */
-    BeanContainer findContainerBean(Point pointOnMap) {
-        if (layer != null && layer.getProjection() != null) {
-            Point2D llp = layer.getProjection().inverse(pointOnMap.x, pointOnMap.y);
-            return findEnclosingContainer(llp);
-        } else {
-            return null;
-        }
-    }
+		double sepX = p1.getX() - p2.getX();
+		double sepY = p1.getY() - p2.getY();
+		double sep = Math.sqrt(sepX * sepX + sepY * sepY);
 
-    /**
-     * returns a bean that does NOT implement
-     * <code>com.bbn.openmap.tools.beanbox.BeanContainer</code> and which lies
-     * closest to and within 10 pixels of the specified (x,y) point. Returns
-     * null if no such object is found.
-     */
-    SimpleBeanObject findNonContainerBean(Point pointOnMap) {
+		if (sep <= tol)
+			return sep;
+		else
+			return Double.MAX_VALUE;
+	}
 
-        Vector list = layer.getObjects();
+	/**
+	 * relocates the specified bean to the new location. This method is called
+	 * by the <code>com.bbn.openmap.tools.beanbox.BeanBoxDnDCatcher</code>
+	 * whenever the user moves a bean on the map within the same openmap layer.
+	 * 
+	 * @throws IllegalArgumentException is specified bean is not of type
+	 *             SimpleBeanObject.
+	 */
+	public void relocateBean(Object bean, BeanInfo beanInfo, Point newLocation) {
 
-        double minSep = Double.MAX_VALUE;
-        SimpleBeanObject closest = null;
+		// System.out.println("Enter> SimpleBeanBox.relocateBean");
 
-        for (int i = 0; i < list.size(); i++) {
+		if (!(bean instanceof SimpleBeanObject))
+			throw new IllegalArgumentException("not instanceof SimpleBeanObject " + bean);
 
-            Object o = list.get(i);
+		SimpleBeanObject obj = (SimpleBeanObject) bean;
 
-            SimpleBeanObject obj = (SimpleBeanObject) o;
+		Point2D llp = layer.getProjection().inverse(newLocation.x, newLocation.y);
 
-            if (obj instanceof SimpleBeanContainer)
-                continue;
+		relocateSimpleBeanObject(obj, llp);
 
-            Point2D p2 = layer.getProjection().forward(new LatLonPoint.Float(obj.getLatitude(), obj.getLongitude()));
+		layer.updateGraphics();
 
-            double sep = almostEquals(pointOnMap, p2, 20);
+		// System.out.println("Exit> SimpleBeanBox.relocateBean");
+	}
 
-            if (sep < minSep) {
-                minSep = sep;
-                closest = obj;
-            }
-        }
+	/** relocates the specified SimpleBeanObject to the new location. */
+	void relocateSimpleBeanObject(SimpleBeanObject obj, Point2D newllp) {
 
-        return closest;
-    }
+		SimpleBeanContainer oldContainer = null;
 
-    /**
-     * return bean at specified location giving preference to non-container
-     * beans over container beans. If neither type of bean is found to be close
-     * enough to the specified location, a null is returned.
-     */
-    public Object getBeanAtLocation(Point pointOnMap) {
+		// no support yet for containers within containers because
+		// of unresolved issues regarding partially over-lapping
+		// containers.
+		if (!(obj instanceof SimpleBeanContainer)) {
+			oldContainer = (SimpleBeanContainer) findEnclosingContainer(obj);
+		}
 
-        // System.out.println("Called>
-        // SimpleBeanBox.getBeanAtLocation");
+		if (oldContainer != null) {
+			oldContainer.remove(obj);
+		}
 
-        SimpleBeanObject obj = findNonContainerBean(pointOnMap);
+		obj.setLatitude((float) newllp.getY());
+		obj.setLongitude((float) newllp.getX());
 
-        if (obj != null)
-            return obj;
+		if (obj instanceof SimpleBeanContainer)
+			((SimpleBeanContainer) obj).validate();
 
-        BeanContainer container = findContainerBean(pointOnMap);
+		SimpleBeanContainer newContainer = null;
 
-        if (container != null)
-            return container;
+		if (!(obj instanceof SimpleBeanContainer)) {
+			newContainer = (SimpleBeanContainer) findEnclosingContainer(obj);
+		}
 
-        return null;
-    }
+		if (newContainer != null) {
+			newContainer.add(obj);
+		}
+	}
 
-    /**
-     * returns the straight line separation in pixels between the specified
-     * points if separation is equal to or less than the specified tolerance
-     * amount, else returns Double.MAX_VALUE
-     */
+	/**
+	 * this method is a callback method that is called by a
+	 * <code>com.bbn.openmap.tools.beanbox.GenericPropertySheet</code> when the
+	 * user closes the property sheet.
+	 */
+	public void beanChanged(Object bean, String changedPropertyName) {
 
-    double almostEquals(Point2D p1, Point2D p2, double tol) {
+		// System.out.println("Enter> SimpleBeanBox.beanChanged");
 
-        double sepX = p1.getX() - p2.getX();
-        double sepY = p1.getY() - p2.getY();
-        double sep = Math.sqrt(sepX * sepX + sepY * sepY);
+		if (!(bean instanceof SimpleBeanObject))
+			throw new IllegalArgumentException("not instanceof SimpleBeanObject " + bean);
 
-        if (sep <= tol)
-            return sep;
-        else
-            return Double.MAX_VALUE;
-    }
+		SimpleBeanObject obj = (SimpleBeanObject) bean;
 
-    /**
-     * relocates the specified bean to the new location. This method is called
-     * by the <code>com.bbn.openmap.tools.beanbox.BeanBoxDnDCatcher</code>
-     * whenever the user moves a bean on the map within the same openmap layer.
-     * 
-     * @throws IllegalArgumentException is specified bean is not of type
-     *         SimpleBeanObject.
-     */
-    public void relocateBean(Object bean, BeanInfo beanInfo, Point newLocation) {
+		layer.updateObject(obj);
 
-        // System.out.println("Enter> SimpleBeanBox.relocateBean");
+		// System.out.println("Exit> SimpleBeanBox.beanChanged");
 
-        if (!(bean instanceof SimpleBeanObject))
-            throw new IllegalArgumentException("not instanceof SimpleBeanObject " + bean);
+	}
 
-        SimpleBeanObject obj = (SimpleBeanObject) bean;
+	/**
+	 * returns the image that the cursor is set to when the specified bean is
+	 * dragged on the map.
+	 */
+	protected Image getDragImage(Object bean) {
 
-        Point2D llp = layer.getProjection().inverse(newLocation.x, newLocation.y);
+		// System.out.println("Called> SimpleBeanBox.getDragImage");
 
-        relocateSimpleBeanObject(obj, llp);
+		if (!(bean instanceof SimpleBeanObject))
+			throw new IllegalArgumentException("not instanceof SimpleBeanObject " + bean);
 
-        layer.updateGraphics();
+		SimpleBeanObject obj = (SimpleBeanObject) bean;
 
-        // System.out.println("Exit> SimpleBeanBox.relocateBean");
-    }
+		OMGraphic graphic = layer.getGraphic(obj.getId());
 
-    /** relocates the specified SimpleBeanObject to the new location. */
-    void relocateSimpleBeanObject(SimpleBeanObject obj, Point2D newllp) {
+		if (graphic instanceof OMRasterObject) {
+			return ((OMRasterObject) graphic).getImage();
+		} else
+			return super.getDragImage(bean);
 
-        SimpleBeanContainer oldContainer = null;
-
-        // no support yet for containers within containers because
-        // of unresolved issues regarding partially over-lapping
-        // containers.
-        if (!(obj instanceof SimpleBeanContainer)) {
-            oldContainer = (SimpleBeanContainer) findEnclosingContainer(obj);
-        }
-
-        if (oldContainer != null) {
-            oldContainer.remove(obj);
-        }
-
-        obj.setLatitude((float) newllp.getY());
-        obj.setLongitude((float) newllp.getX());
-
-        if (obj instanceof SimpleBeanContainer)
-            ((SimpleBeanContainer) obj).validate();
-
-        SimpleBeanContainer newContainer = null;
-
-        if (!(obj instanceof SimpleBeanContainer)) {
-            newContainer = (SimpleBeanContainer) findEnclosingContainer(obj);
-        }
-
-        if (newContainer != null) {
-            newContainer.add(obj);
-        }
-    }
-
-    /**
-     * this method is a callback method that is called by a
-     * <code>com.bbn.openmap.tools.beanbox.GenericPropertySheet</code> when the
-     * user closes the property sheet.
-     */
-    public void beanChanged(Object bean, String changedPropertyName) {
-
-        // System.out.println("Enter> SimpleBeanBox.beanChanged");
-
-        if (!(bean instanceof SimpleBeanObject))
-            throw new IllegalArgumentException("not instanceof SimpleBeanObject " + bean);
-
-        SimpleBeanObject obj = (SimpleBeanObject) bean;
-
-        layer.updateObject(obj);
-
-        // System.out.println("Exit> SimpleBeanBox.beanChanged");
-
-    }
-
-    /**
-     * returns the image that the cursor is set to when the specified bean is
-     * dragged on the map.
-     */
-    protected Image getDragImage(Object bean) {
-
-        // System.out.println("Called> SimpleBeanBox.getDragImage");
-
-        if (!(bean instanceof SimpleBeanObject))
-            throw new IllegalArgumentException("not instanceof SimpleBeanObject " + bean);
-
-        SimpleBeanObject obj = (SimpleBeanObject) bean;
-
-        OMGraphic graphic = layer.getGraphic(obj.getId());
-
-        if (graphic instanceof OMRasterObject) {
-            return ((OMRasterObject) graphic).getImage();
-        } else
-            return super.getDragImage(bean);
-
-    }
+	}
 
 }

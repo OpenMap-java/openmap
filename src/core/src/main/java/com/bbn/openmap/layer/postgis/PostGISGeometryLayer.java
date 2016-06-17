@@ -6,17 +6,17 @@
  * Properties to be set:
  * 
  * 
- *  prettyName=&amp;ltYour Layer Name&amp;gt
- *  dbUrl=&amp;lt Driver Class &amp;gt eg.  &quot;jdbc:postgresql_postGIS://localhost/postgres?user=user&amp;password=password&quot;
- *  dbClass=&amp;lt Driver Class &amp;gt eg. &quot;org.postgis.DriverWrapper&quot;
- *  geomTable=&amp;ltDatabase Tablename&amp;gt
- *  geomColumn=&amp;ltColumn name which contains the geometry&amp;gt
- *  pointSymbol=&amp;ltFilename and path for image to use for point objects&amp;gtDefault is 
+ *  prettyName=&lt;Your Layer Name&gt;
+ *  dbUrl=&lt; Driver Class &gt; eg.  &quot;jdbc:postgresql_postGIS://localhost/postgres?user=user&amp;password=password&quot;
+ *  dbClass=&lt; Driver Class &gt; eg. &quot;org.postgis.DriverWrapper&quot;
+ *  geomTable=&lt;Database Tablename&gt;
+ *  geomColumn=&lt;Column name which contains the geometry&gt;
+ *  pointSymbol=&lt;Filename and path for image to use for point objects&gt;Default is 
  *  # Optional Properties - use as required
  *  # NOTE: There are default for each of these 
- *  lineColor=&amp;ltColor for lines&amp;gtDefault is red
- *  lineWidth=&amp;ltPixel width of lines&amp;gtDefault is 0
- *  fillColor=&amp;ltColor of fill&amp;gtDefault is red
+ *  lineColor=&lt;Color for lines&gt;Default is red
+ *  lineWidth=&lt;Pixel width of lines&gt;Default is 0
+ *  fillColor=&lt;Color of fill&gt;Default is red
  * This program is distributed freely and in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -58,21 +58,23 @@ import com.bbn.openmap.util.PropUtils;
  * Properties to be set:
  * 
  * <pre>
- * prettyName=&amp;ltYour Layer Name&amp;gt 
- * dbUrl=&amp;lt Driver Class &amp;gt
+ * prettyName=&lt;Your Layer Name&gt; 
+ * dbUrl=&lt;Driver Class&gt;
+ * 
  * eg.
- * &quot;jdbc:postgresql_postGIS://localhost/postgres?user=user&amp;
- * password=password&quot; 
- * dbClass=&amp;lt Driver Class &amp;gt eg.
+ * &quot;jdbc:postgresql_postGIS://localhost/postgres?user=user&amp;password=password&quot; 
+ * dbClass=&lt;Driver Class&gt;
+ * 
+ * eg.
  * &quot;org.postgis.DriverWrapper&quot; 
- * geomTable=&amp;ltDatabase Tablename&amp;gt 
- * geomColumn=&amp;ltColumn name which contains the geometry&amp;gt 
- * pointSymbol=&amp;ltFilename and path for image to use for point objects&amp;gtDefault is 
+ * geomTable=&lt;Database Tablename&gt; 
+ * geomColumn=&lt;Column name which contains the geometry&gt; 
+ * pointSymbol=&lt;Filename and path for image to use for point objects&gt;Default is 
  * # Optional Properties - use as required 
  * # NOTE: There are default for each of these 
- * lineColor=&amp;ltColor for lines&amp;gtDefault is red 
- * lineWidth=&amp;ltPixel width of lines&amp;gtDefault is 1
- * fillColor=&amp;ltColor of fill&amp;gtDefault is red
+ * lineColor=&lt;Color for lines&gt;Default is red 
+ * lineWidth=&lt;Pixel width of lines&gt;Default is 1
+ * fillColor=&lt;Color of fill&gt;Default is red
  * 
  * </pre>
  * 
@@ -111,7 +113,7 @@ public class PostGISGeometryLayer extends OMGraphicHandlerLayer {
 
     /**
      * ; The connection String to use for the jdbc query, e.g.
-     * "jdbc:mysql://localhost/openmap?user=me&password=secret"
+     * "jdbc:mysql://localhost/openmap?user=me&amp;password=secret"
      */
     protected String dbUrl = null;
 

@@ -44,7 +44,7 @@ public class LineUtil {
      * @param B the end point
      * @param d the distance from A to the wanted point
      * @return Point2D the point at distance d from A on the segment AB, the
-     *         point B if d>AB
+     *         point B if d&gt;AB
      */
     public static Point2D interpolatedPoint(Point2D A, Point2D B, double d) {
 
@@ -67,11 +67,11 @@ public class LineUtil {
      * @param polysegment the returned points
      * @return true if we got the desired length, false otherwise
      */
-    protected static boolean retrievePoints(float length, LinkedList points, LinkedList polysegment) {
+    protected static boolean retrievePoints(float length, LinkedList<Point2D> points, LinkedList<Point2D> polysegment) {
         polysegment.clear();
 
         // first point
-        Point2D point = (Point2D) points.removeFirst();
+        Point2D point = points.removeFirst();
         polysegment.add(point);
 
         double consumedLength = 0.0;

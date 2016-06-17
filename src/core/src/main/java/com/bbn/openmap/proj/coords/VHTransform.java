@@ -46,10 +46,8 @@ import java.awt.geom.Point2D;
  * The url's to the original emails are:
  * <P>
  * 
- * http://x11.dejanews.com/getdoc.xp?AN=177302113&CONTEXT=895858362.931528704&
- * hitnum=1 <BR>
- * http://x11.dejanews.com/getdoc.xp?AN=223540739&CONTEXT=895858362.931528704&
- * hitnum=5
+ * http://x11.dejanews.com/getdoc.xp?AN=177302113&amp;CONTEXT=895858362.931528704&amp;hitnum=1 <BR>
+ * http://x11.dejanews.com/getdoc.xp?AN=223540739&amp;CONTEXT=895858362.931528704&amp;hitnum=5
  */
 public class VHTransform implements GeoCoordTransformation {
     /* Polynomial constants */
@@ -180,7 +178,7 @@ public class VHTransform implements GeoCoordTransformation {
      */
 
     /**
-     * Computes Bellcore/AT&T V & H (vertical and horizontal) coordinates from
+     * Computes Bellcore/AT&T V &amp; H (vertical and horizontal) coordinates from
      * latitude and longitude. Used primarily by local exchange carriers (LEC's)
      * to compute the V & H coordinates for wire centers.
      * <P>
@@ -204,7 +202,7 @@ public class VHTransform implements GeoCoordTransformation {
      * 
      * CASH REWARD for copies of the reference papers, or for an efficient
      * (non-iterative) inverse for this program! (i.e. a program to compute lat
-     * & long from V & H).
+     * & long from V &amp; H).
      */
 
     /** lat and lon are in degrees, positive north and east. */
@@ -257,7 +255,7 @@ public class VHTransform implements GeoCoordTransformation {
      * Headers] [Subscribe to comp.dcom.telecom]
      * 
      * 
-     * Recently I wanted to convert some Bell Labs "V&H" coordinates to latitude
+     * Recently I wanted to convert some Bell Labs "V&amp;H" coordinates to latitude
      * and longitude. A careful search through the Telecomm- unications Archives
      * turned up a C program for converting in the other direction, and many
      * pleas for what I was looking for. One poster even offered money!
@@ -271,7 +269,7 @@ public class VHTransform implements GeoCoordTransformation {
      * Grimmelmann. Enjoy!
      */
     /**
-     * V&H is a system of coordinates (V and H) for describing locations of rate
+     * V&amp;H is a system of coordinates (V and H) for describing locations of rate
      * centers in the United States. The projection, devised by J. K. Donald, is
      * an "elliptical," or "doubly equidistant" projection, scaled down by a
      * factor of 0.003 to balance errors.
@@ -283,7 +281,7 @@ public class VHTransform implements GeoCoordTransformation {
      * Webster Co., Utah). They are just 0.4 radians apart.
      * <P>
      * 
-     * Here is the transformation from latitude and longitude to V&H: First
+     * Here is the transformation from latitude and longitude to V&amp;H: First
      * project the earth from its ellipsoidal surface to a sphere. This alters
      * the latitude; the coefficients bi in the program are the coefficients of
      * the polynomial approximation for the inverse transformation. (The
