@@ -22,9 +22,8 @@
 
 package com.bbn.openmap.proj;
 
-import com.bbn.openmap.MoreMath;
-import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.bbn.openmap.util.MoreMath;
 
 /**
  * Methods for calculating great circle and other distances on the sphere and
@@ -354,7 +353,7 @@ public class GreatCircle {
      * @param lambda longitude of point 2 in radians.
      * @param distance in radians.
      * @param n number of segments to divide path into. The more segments, the
-     *        more accurate. If n <= 0, the OpenMap default of 512 is used.
+     *        more accurate. If n &lt;= 0, the OpenMap default of 512 is used.
      * @return LatLonPoint if distance is less than distance between points,
      *         null if it is greater.
      */
