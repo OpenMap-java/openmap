@@ -287,13 +287,17 @@ public class GreatCircle {
      * @param lambda0 longitude in radians of start point
      * @param phi latitude in radians of end point
      * @param lambda longitude in radians of end point
-     * @param n number of segments
+     * @param n number of segments, should be at least 1
      * @param include_last return n or n+1 segments
      * @return double[n] or double[n+1] radian lat,lon pairs
      * 
      */
     final public static double[] greatCircle(double phi1, double lambda0, double phi,
                                              double lambda, int n, boolean include_last) {
+        if (n <= 0) {
+            n = 1;
+        }
+
         // number of points to generate
         int end = include_last ? n + 1 : n;
         end <<= 1;// *2 for pairs

@@ -114,6 +114,10 @@ public class LineCoordinateGenerator {
 				double radDist = GreatCircle.sphericalDistance(y1, x1, y2, x2);
 				int nsegs = (int) (ProjMath.radToDeg(radDist) * segsPerDeg); // segs/degree
 
+                if (nsegs == 0) {
+                    nsegs = 1;
+                }
+
 				double[] coords = GreatCircle.greatCircle(y1, x1, y2, x2, nsegs, false);
 
 				if (returnDegrees) {

@@ -75,7 +75,24 @@ public class DMSLatLonPoint implements Cloneable {
     /**
      * Construct a default LatLonPoint with zero values.
      */
-    public DMSLatLonPoint() {}
+    public DMSLatLonPoint() {
+    }
+
+    /**
+     * Create DMSLatLonPoint where lat_degrees and lon_degrees are signed,
+     * negative for South and West.
+     * 
+     * @param lat_degrees
+     * @param lat_minutes
+     * @param lat_seconds
+     * @param lon_degrees
+     * @param lon_minutes
+     * @param lon_seconds
+     */
+    public DMSLatLonPoint(int lat_degrees, int lat_minutes, double lat_seconds, int lon_degrees,
+            int lon_minutes, double lon_seconds) {
+        this(lat_degrees < 0, Math.abs(lat_degrees), lat_minutes, lat_seconds, lon_degrees < 0, Math.abs(lon_degrees), lon_minutes, lon_seconds);
+    }
 
     /**
      * Construct a DMSLatLonPoint from raw int lat/lon. All parameters are
@@ -90,9 +107,9 @@ public class DMSLatLonPoint implements Cloneable {
      * @param lon_minutes integer number of minutes in longitude
      * @param lon_seconds float number of seconds in longitude
      */
-    public DMSLatLonPoint(boolean lat_isnegative, int lat_degrees,
-            int lat_minutes, double lat_seconds, boolean lon_isnegative,
-            int lon_degrees, int lon_minutes, double lon_seconds) {
+    public DMSLatLonPoint(boolean lat_isnegative, int lat_degrees, int lat_minutes,
+            double lat_seconds, boolean lon_isnegative, int lon_degrees, int lon_minutes,
+            double lon_seconds) {
 
         this.lat_isnegative = lat_isnegative;
         this.lat_degrees = (int) LatLonPoint.normalizeLatitude(lat_degrees);
@@ -111,6 +128,31 @@ public class DMSLatLonPoint implements Cloneable {
         }
         this.lon_minutes = normalize_value(lon_minutes);
         this.lon_seconds = normalize_value(lon_seconds);
+    }
+
+    /**
+     * Create DMSLatLonPoint from different notation
+     * 
+     * @param lat_degrees integer degrees for lat, signed negative for South
+     * @param lat_minutesDotSeconds positive decimal minutes.seconds fraction
+     * @param lon_degrees integer degrees for lon, signed negative for West
+     * @param lon_minutesDotSeconds positive decimal minutes.seconds fraction
+     */
+    public DMSLatLonPoint(int lat_degrees, double lat_minutesDotSeconds, int lon_degrees,
+            double lon_minutesDotSeconds) {
+        this.lat_isnegative = lat_degrees < 0;
+        this.lat_degrees = (int) LatLonPoint.normalizeLatitude(Math.abs(lat_degrees));
+
+        double lat_minDSec = Math.abs(lat_minutesDotSeconds);
+        this.lat_minutes = normalize_value((int) lat_minDSec);
+        this.lat_seconds = normalize_value((lat_minDSec - this.lat_minutes) * 60.0);
+
+        this.lon_isnegative = lon_degrees < 0;
+        this.lon_degrees = (int) LatLonPoint.wrapLongitude(Math.abs(lon_degrees));
+
+        double lon_minDSec = Math.abs(lon_minutesDotSeconds);
+        this.lon_minutes = normalize_value((int) lon_minDSec);
+        this.lon_seconds = normalize_value((lon_minDSec - this.lon_minutes) * 60.0);
     }
 
     /**
@@ -258,12 +300,10 @@ public class DMSLatLonPoint implements Cloneable {
      * @return String representation
      */
     public String toString() {
-        return "DMSLatLonPoint[lat_isnegative = " + lat_isnegative
-                + ", lat_degrees = " + lat_degrees + ", lat_minutes = "
-                + lat_minutes + ", lat_seconds = " + lat_seconds
-                + ", lon_isnegative = " + lon_isnegative + ", lon_degrees = "
-                + lon_degrees + ", lon_minutes = " + lon_minutes
-                + ", lon_seconds = " + lon_seconds + "]";
+        return "DMSLatLonPoint[lat_isnegative = " + lat_isnegative + ", lat_degrees = "
+                + lat_degrees + ", lat_minutes = " + lat_minutes + ", lat_seconds = " + lat_seconds
+                + ", lon_isnegative = " + lon_isnegative + ", lon_degrees = " + lon_degrees
+                + ", lon_minutes = " + lon_minutes + ", lon_seconds = " + lon_seconds + "]";
     }
 
     /**
@@ -311,14 +351,10 @@ public class DMSLatLonPoint implements Cloneable {
             return false;
         }
         final DMSLatLonPoint pt = (DMSLatLonPoint) obj;
-        return (pt.lat_isnegative == lat_isnegative
-                && pt.lat_degrees == lat_degrees
-                && pt.lat_minutes == lat_degrees
-                && pt.lat_seconds == lat_seconds
-                && pt.lon_isnegative == lon_isnegative
-                && pt.lon_degrees == lon_degrees
-                && pt.lon_minutes == lon_minutes
-                && pt.lon_seconds == lon_seconds);
+        return (pt.lat_isnegative == lat_isnegative && pt.lat_degrees == lat_degrees
+                && pt.lat_minutes == lat_degrees && pt.lat_seconds == lat_seconds
+                && pt.lon_isnegative == lon_isnegative && pt.lon_degrees == lon_degrees
+                && pt.lon_minutes == lon_minutes && pt.lon_seconds == lon_seconds);
     }
 
     /**
@@ -357,7 +393,7 @@ public class DMSLatLonPoint implements Cloneable {
      * @return An int hash value representing the point.
      */
     public int hashCode() {
-        return (lat_degrees | lon_degrees << 8
-                | (lat_minutes + (int) lat_seconds) << 16 | (lon_minutes + (int) lon_seconds) << 23);
+        return (lat_degrees | lon_degrees << 8 | (lat_minutes + (int) lat_seconds) << 16
+                | (lon_minutes + (int) lon_seconds) << 23);
     }
 }
