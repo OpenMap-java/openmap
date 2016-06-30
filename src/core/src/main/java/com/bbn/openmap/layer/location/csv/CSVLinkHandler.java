@@ -37,12 +37,13 @@ import javax.swing.JCheckBox;
 
 import com.bbn.openmap.layer.location.Link;
 import com.bbn.openmap.layer.location.Location;
-import com.bbn.openmap.layer.location.URLRasterLocation;
+import com.bbn.openmap.omGraphics.OMArrowHead;
 import com.bbn.openmap.omGraphics.OMGraphic;
-import com.bbn.openmap.util.ColorFactory;
-import com.bbn.openmap.util.DataOrganizer;
+import com.bbn.openmap.omGraphics.OMGraphicConstants;
+import com.bbn.openmap.omGraphics.OMLine;
 import com.bbn.openmap.util.PropUtils;
 import com.bbn.openmap.util.quadtree.QuadTree;
+import java.awt.BasicStroke;
 
 /**
  * The CSVLinkHandler is designed to let you put data on the map based on
@@ -74,6 +75,17 @@ import com.bbn.openmap.util.quadtree.QuadTree;
  *          linkMarkerName.lonIndex=column_number
  *          linkMarkerName.lat2Index=column_number
  *          linkMarkerName.lon2Index=column_number
+ *          linkMarkerName.lineWidthIndex=column_number
+ *          linkMarkerName.lineColorIndex=column_number
+ *          # Line type. One of GREATCIRCLE, STRAIGHT, or RHUMB
+ *          linkMarkerName.lineType=GREATCIRCLE
+ *          # Arrows on links. One of NONE, FORWARD, BACKWARD, BOTH
+ *          linkMarkerName.arrowDirection=NONE
+ *          # Number from 0 to 100, indicating percentage along line to show arrow
+ *          linkMarkerName.arrowLocation=0
+ *          # Arrow dimensions. See documentation for OMArrowHead
+ *          linkMarkerName.arrowWingLength=20
+ *          linkMarkerName.arrowWingTip=5
  *          
  *          #plus all the other optional properties. The marker parameters will work on the link OMGraphics.
  * 
@@ -100,13 +112,49 @@ public class CSVLinkHandler extends CSVLocationHandler {
      * longitude of end "2".
      */
     public static final String Lon2IndexProperty = "lon2Index";
-
+    /**
+     * Property to use to designate the width of the line, in floating-point-pixels
+     */
+    public static final String LineWidthIndexProperty = "lineWidthIndex";
+    /**
+     * Property to use to designate the width of the line, in floating-point-pixels
+     */
+    public static final String LineColorIndexProperty = "lineColorIndex";
+    /**
+     * Property to use to designate the line type
+     */
+    public static final String LineTypeProperty = "lineType";
+    
+    /** Property to use for Arrow direction. One of NONE, HEAD, TAIL, BOTH indicating arrow direction */
+    public static final String ArrowDirectionProperty = "arrowDirection";
+    /** Property to use for percentage along line to show arrow, 0..100 */
+    public static final String ArrowLocationProperty = "arrowLocation";
+    /** Property to use for arrow winglength */
+    public static final String ArrowWingLengthProperty = "arrowWingLength";
+    /** Property to use for arrow wingtip */
+    public static final String ArrowWingTipProperty = "arrowWingTip";
+         
     /** The names of the various link types on the map. Not used. */
     /** Index of column in CSV to use as latitude2 of link. */
     protected int lat2Index = -1;
     /** Index of column in CSV to use as longitude2 of link. */
     protected int lon2Index = -1;
+    /** Index of column in CSV to use at Line Width of Link. */
+    protected int lineWidthIndex = -1;
+    /** Index of column in CSV to use at Color for the  Link. */
+    protected int lineColorIndex = -1;
+    /** Line type */
+    protected int lineType = -1;
+    protected String lineTypeStr = "STRAIGHT";
 
+    protected String arrowDirection = "NONE";
+    protected int arrowLocation = 100;
+    protected int arrowWingLength = 20;
+    protected int arrowWingTip = 5;
+    
+    /** The actual Arrow Head */
+    OMArrowHead arrowHead = null;
+    
     /**
      * The default constructor for the Layer. All of the attributes are set to
      * their default values.
@@ -128,6 +176,41 @@ public class CSVLinkHandler extends CSVLocationHandler {
 
         lat2Index = PropUtils.intFromProperties(properties, realPrefix + Lat2IndexProperty, lat2Index);
         lon2Index = PropUtils.intFromProperties(properties, realPrefix + Lon2IndexProperty, lon2Index);
+        lineWidthIndex = PropUtils.intFromProperties(properties, realPrefix + LineWidthIndexProperty, lineWidthIndex);
+        lineColorIndex = PropUtils.intFromProperties(properties, realPrefix + LineColorIndexProperty, lineColorIndex);
+        lineTypeStr = properties.getProperty(realPrefix + LineTypeProperty, lineTypeStr);
+        if(lineTypeStr.equals("GREATCIRCLE")) {
+            lineType = OMLine.LINETYPE_GREATCIRCLE;
+        } else if(lineTypeStr.equals("STRAIGHT")) {
+            lineType = OMLine.LINETYPE_STRAIGHT;
+        } else if(lineTypeStr.equals("RHUMB")) {
+            lineType = OMLine.LINETYPE_RHUMB;
+        } else {
+            logger.warning("Unknown Line Type " + lineTypeStr + ", making STRAIGHT");
+            lineType = OMLine.LINETYPE_STRAIGHT;
+            lineTypeStr = "STRAIGHT";
+        }
+        
+        int arrowDirectionType = -1;
+        arrowDirection = properties.getProperty(realPrefix + ArrowDirectionProperty, arrowDirection);
+        if(!arrowDirection.equals("NONE")) {
+            arrowLocation = PropUtils.intFromProperties(properties, realPrefix + ArrowLocationProperty, arrowLocation);
+            arrowWingLength = PropUtils.intFromProperties(properties, realPrefix + ArrowWingLengthProperty, arrowWingLength);
+            arrowWingTip = PropUtils.intFromProperties(properties, realPrefix + ArrowWingTipProperty, arrowWingTip);
+            if(arrowDirection.equals("BOTH")) {
+                arrowDirectionType = OMArrowHead.ARROWHEAD_DIRECTION_BOTH;
+            } else if(arrowDirection.equals("FORWARD")) {
+                arrowDirectionType = OMArrowHead.ARROWHEAD_DIRECTION_FORWARD;
+            } else if(arrowDirection.equals("BACKWARD")) {
+                arrowDirectionType = OMArrowHead.ARROWHEAD_DIRECTION_BACKWARD;
+            } else {
+                logger.warning("Unknown arrow direction " + arrowDirection + ", making NONE");
+            }
+            
+            if(arrowDirectionType > -1) {
+                arrowHead = new OMArrowHead(arrowDirectionType, arrowLocation, arrowWingTip, arrowWingLength);
+            }
+        }
     }
 
     /**
@@ -149,6 +232,13 @@ public class CSVLinkHandler extends CSVLocationHandler {
 
         props.put(prefix + Lat2IndexProperty, (lat2Index != -1 ? Integer.toString(lat2Index) : ""));
         props.put(prefix + Lon2IndexProperty, (lon2Index != -1 ? Integer.toString(lon2Index) : ""));
+        props.put(prefix + LineWidthIndexProperty, (lineWidthIndex != -1 ? Integer.toString(lineWidthIndex) : ""));
+        props.put(prefix + LineColorIndexProperty, (lineColorIndex != -1 ? Integer.toString(lineColorIndex) : ""));
+        props.put(prefix + LineTypeProperty, lineTypeStr);
+        props.put(prefix + ArrowLocationProperty, arrowLocation);
+        props.put(prefix + ArrowDirectionProperty, arrowDirection);
+        props.put(prefix + ArrowWingLengthProperty, arrowWingLength);
+        props.put(prefix + ArrowWingTipProperty, arrowWingTip);
 
         return props;
     }
@@ -181,6 +271,13 @@ public class CSVLinkHandler extends CSVLocationHandler {
         list.put(LonIndexProperty, "The column index, in the location file, of the first node longitude.");
         list.put(Lat2IndexProperty, "The column index, in the location file, of the second node latitude.");
         list.put(Lon2IndexProperty, "The column index, in the location file, of the second node longitude.");
+        list.put(LineWidthIndexProperty, "The column index, in the location file, of the width of the line.");
+        list.put(LineColorIndexProperty, "The column index, in the location file, of the color of the line.");
+        list.put(LineTypeProperty, "Line Type. One of GREATCIRCLE, STRAIGHT, RHUMB.");
+        list.put(ArrowDirectionProperty, "Arrow Direction. One of NONE, BOTH, FORWARD, BACKWARD.");
+        list.put(ArrowLocationProperty, "Arrow Location. Percent along line, from 0..100");
+        list.put(ArrowWingLengthProperty, "Arrow Wing Length. See OMArrowHead documentation");
+        list.put(ArrowWingTipProperty, "Arrow Wing Tip. See OMArrowHead documentation");
 
         return list;
     }
@@ -259,6 +356,28 @@ public class CSVLinkHandler extends CSVLocationHandler {
         String name = tokenToString(recordList, nameIndex, "");
         double lat = tokenToDouble(recordList, latIndex, 0.0);
         double lon = tokenToDouble(recordList, lonIndex, 0.0, eastIsNeg);
+        float lineWidth = 1.0f;
+        if(lineWidthIndex != -1) {
+            lineWidth = (float) tokenToDouble(recordList, lineWidthIndex, lineWidth);
+        }
+        final BasicStroke stroke = new BasicStroke(lineWidth);
+        
+        Color lineColor = Color.BLACK;
+        if(lineColorIndex != -1) {
+            String testCol = tokenToString(recordList, lineColorIndex, lineColor.toString());
+            if(testCol.contains(".")) {
+                // Sometimes these things get temporarily translated to doubles somewhere
+                testCol = testCol.split("\\.")[0];
+            }
+            if(!(testCol.startsWith("0x") || testCol.startsWith("#"))) {
+                testCol = "0x" + testCol;
+            }
+            try {
+                lineColor = Color.decode(testCol);
+            } catch(NumberFormatException ex) {
+                logger.warning("Cannot decode color " + testCol);
+            }
+        }
         String iconURL = tokenToString(recordList, iconIndex, defaultIconURL);
 
         double lat2 = tokenToDouble(recordList, lat2Index, 0.0);
@@ -280,5 +399,18 @@ public class CSVLinkHandler extends CSVLocationHandler {
         qt.put(lat2, lon2, link);
 
         qt.put(lat, lon, createLocation(lat, lon, name, iconURL, recordList));
+        
+        final OMGraphic line = link.getLocationMarker();
+        
+        line.setStroke(stroke);
+        line.setLineType(lineType);
+        line.setLinePaint(lineColor);
+        if(null != arrowHead && line instanceof OMLine) {
+            final OMLine l = (OMLine)line;
+            l.addArrowHead(arrowHead.getArrowDirectionType(),
+                    arrowHead.getLocation(),
+                    arrowHead.getWingTip(),
+                    arrowHead.getWingLength());
+        }
     }
 }
