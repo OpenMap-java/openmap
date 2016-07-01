@@ -48,7 +48,7 @@ import com.bbn.openmap.util.MoreMath;
  * (multi-line-segment-object).
  * <p>
  * 
- * The differentiator between polygons and polylines is the fill color. If the
+ * The differentiators between polygons and polylines is the fill color. If the
  * fillPaint is equal to OMColor.clear, then the poly will be considered a
  * polyline. There are methods to override this in the OMPoly class, but they do
  * play around with the fillPaint, depending on the order in which the methods
@@ -71,7 +71,7 @@ import com.bbn.openmap.util.MoreMath;
  * <h3>NOTES:</h3>
  * <ul>
  * <li>See the <a
- * href="../../../../com.bbn.openmap.proj.GeoProj.html#poly_restrictions">
+ * href="../proj/GeoProj.html#poly_restrictions">
  * RESTRICTIONS </a> on Lat/Lon polygons/polylines. Not following the guidelines
  * listed may result in ambiguous/undefined shapes! Similar assumptions apply to
  * the other vector graphics that we define: circles, ellipses, rects, lines.
