@@ -352,6 +352,7 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
      * @param props the Properties to look in.
      */
     public DrawingAttributes(Properties props) {
+    	this();
         setProperties(null, props);
     }
 
@@ -364,6 +365,7 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
      * @param props the Properties to look in.
      */
     public DrawingAttributes(String prefix, Properties props) {
+    	this();
         setProperties(prefix, props);
     }
 
