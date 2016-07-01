@@ -46,11 +46,11 @@ import com.bbn.openmap.util.DeepCopyUtil;
  * The OMLine is used to create simple lines, from one point on the window to
  * the other. If you want to have a line with several parts, use OMPoly as a
  * polyline with no fillColor.
- * <h3>NOTE:</h3>
- * See the <a href="com.bbn.openmap.proj.Projection.html#line_restrictions">
- * RESTRICTIONS </a> on Lat/Lon lines. Not following the guidelines listed may
- * result in ambiguous/undefined shapes! Similar assumptions apply to the other
- * vector graphics that we define: circles, ellipses, rects, polys.
+ * <h3>NOTE:</h3> See the
+ * <a href="../proj/GeoProj.html#line_restrictions"> RESTRICTIONS </a> on
+ * Lat/Lon lines. Not following the guidelines listed may result in
+ * ambiguous/undefined shapes! Similar assumptions apply to the other vector
+ * graphics that we define: circles, ellipses, rects, polys.
  * <p>
  * 
  * @see OMPoly

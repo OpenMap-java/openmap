@@ -34,18 +34,17 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 /**
  * Graphic object that represents a circle or an ellipse.
  * <p>
- * <h3>NOTE:</h3>
- * See the <a href="com.bbn.openmap.proj.Projection.html#poly_restrictions">
- * RESTRICTIONS </a> on Lat/Lon polygons/polylines which apply to circles as
- * well. Not following the guidelines listed may result in ambiguous/undefined
- * shapes! Similar assumptions apply to the other vector graphics that we
- * define: polys, rects, lines.
+ * <h3>NOTE:</h3> See the
+ * <a href="../proj/GeoProj.html#poly_restrictions"> RESTRICTIONS </a> on
+ * Lat/Lon polygons/polylines which apply to circles as well. Not following the
+ * guidelines listed may result in ambiguous/undefined shapes! Similar
+ * assumptions apply to the other vector graphics that we define: polys, rects,
+ * lines.
  * <p>
  * We currently do not allow LatLon ellipses, only XY.
  * <p>
  * These assumptions are virtually the same as those on the more generic OMPoly
  * graphic type.
- * <p>
  * 
  * @see OMPoly
  */
