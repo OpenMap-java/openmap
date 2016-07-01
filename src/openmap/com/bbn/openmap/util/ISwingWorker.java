@@ -6,15 +6,17 @@
 package com.bbn.openmap.util;
 
 /**
- * FIXME: Enter the description of this type here
+ * Interface that describes kinds of SwingWorkers that layers might want to use.
  *
  * @author rshapiro
  */
 public interface ISwingWorker<T> {
 
-   /**
-    * Compute the value to be returned by the <code>get</code> method.
-    */
+    /**
+     * Compute the value to be returned by the <code>get</code> method.
+     * 
+     * @return the get method return
+     */
    public T construct();
 
    /**

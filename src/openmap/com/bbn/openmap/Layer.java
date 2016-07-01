@@ -359,8 +359,7 @@ public abstract class Layer extends JComponent implements ProjectionListener, Pr
             super.addMouseListener(l);
         } else {
             throw new IllegalArgumentException("This operation is disallowed because the package \""
-                    + getPackage(l.getClass())
-                    + "\" is not in the swing package (\""
+                    + getPackage(l.getClass()) + "\" is not in the swing package (\""
                     + SWING_PACKAGE + "\").");
         }
     }
@@ -427,12 +426,16 @@ public abstract class Layer extends JComponent implements ProjectionListener, Pr
         setAddAsBackground(PropUtils.booleanFromProperties(props, realPrefix
                 + AddAsBackgroundProperty, addAsBackground));
 
-        setRemovable(PropUtils.booleanFromProperties(props, realPrefix + RemovableProperty, removable));
+        setRemovable(PropUtils.booleanFromProperties(props, realPrefix
+                + RemovableProperty, removable));
 
-        autoPalette = PropUtils.booleanFromProperties(props, realPrefix + AutoPaletteProperty, autoPalette);
+        autoPalette = PropUtils.booleanFromProperties(props, realPrefix
+                + AutoPaletteProperty, autoPalette);
 
-        setMinScale(PropUtils.floatFromProperties(props, realPrefix + MinScaleProperty, getMinScale()));
-        setMaxScale(PropUtils.floatFromProperties(props, realPrefix + MaxScaleProperty, getMaxScale()));
+        setMinScale(PropUtils.floatFromProperties(props, realPrefix
+                + MinScaleProperty, getMinScale()));
+        setMaxScale(PropUtils.floatFromProperties(props, realPrefix
+                + MaxScaleProperty, getMaxScale()));
 
         String dataPathPrefix = props.getProperty(realPrefix + DataPathPrefixProperty, "");
         if (dataPathPrefix.length() > 0) {
@@ -541,31 +544,36 @@ public abstract class Layer extends JComponent implements ProjectionListener, Pr
         list.put(PrettyNameProperty, internString);
         internString = i18n.get(Layer.class, PrettyNameProperty, "Layer Name");
         list.put(PrettyNameProperty + LabelEditorProperty, internString);
-        list.put(PrettyNameProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
+        list.put(PrettyNameProperty
+                + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.NonEditablePropertyEditor");
 
         internString = i18n.get(Layer.class, AutoPaletteProperty, I18n.TOOLTIP, "Flag to automatically display palette when properties are set");
         list.put(AutoPaletteProperty, internString);
         internString = i18n.get(Layer.class, AutoPaletteProperty, "Open Palette At Start");
         list.put(AutoPaletteProperty + LabelEditorProperty, internString);
-        list.put(AutoPaletteProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(AutoPaletteProperty
+                + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         internString = i18n.get(Layer.class, AddAsBackgroundProperty, I18n.TOOLTIP, "Flag to use the layer as a background layer");
         list.put(AddAsBackgroundProperty, internString);
         internString = i18n.get(Layer.class, AddAsBackgroundProperty, "Background");
         list.put(AddAsBackgroundProperty + LabelEditorProperty, internString);
-        list.put(AddAsBackgroundProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(AddAsBackgroundProperty
+                + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         internString = i18n.get(Layer.class, RemovableProperty, I18n.TOOLTIP, "Flag to allow layer to be deleted.");
         list.put(RemovableProperty, internString);
         internString = i18n.get(Layer.class, RemovableProperty, "Removable");
         list.put(RemovableProperty + LabelEditorProperty, internString);
-        list.put(RemovableProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(RemovableProperty
+                + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         internString = i18n.get(Layer.class, AddToBeanContextProperty, I18n.TOOLTIP, "Flag to give the layer access to all of the other application components.");
         list.put(AddToBeanContextProperty, internString);
         internString = i18n.get(Layer.class, AddToBeanContextProperty, "Add to MapHandler");
         list.put(AddToBeanContextProperty + LabelEditorProperty, internString);
-        list.put(AddToBeanContextProperty + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
+        list.put(AddToBeanContextProperty
+                + ScopedEditorProperty, "com.bbn.openmap.util.propertyEditor.YesNoPropertyEditor");
 
         internString = i18n.get(Layer.class, MinScaleProperty, I18n.TOOLTIP, "Minimum projection scale value that the layer will respond to.");
         list.put(MinScaleProperty, internString);
@@ -1610,9 +1618,12 @@ public abstract class Layer extends JComponent implements ProjectionListener, Pr
     }
 
     /**
-     * The dataPathPrefix lets you append a path to a relative path at runtime.
-     * This method checks the layer attribute for such a prefix path, and
-     * prepends it to the given string.
+     * The dataPathPrefix layer attribute lets you append a path to a relative
+     * path at runtime. This method tells the layer to check for that layer
+     * attribute for such a prefix path, and prepends it to the given string
+     * separating them with a '/'.
+     * 
+     * @param fileName to prepend the attribute to
      */
     protected String prependDataPathPrefix(String fileName) {
         String dataPathPrefix = (String) getAttribute(Layer.DataPathPrefixProperty);

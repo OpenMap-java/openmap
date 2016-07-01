@@ -49,7 +49,6 @@ import java.util.Properties;
  * methods in this class with the <code>forceAlpha</code> set to
  * <code>true</code> and you are guaranteed (almost!) to get back an
  * alpha-valued color.
- * <p>
  * <li>You want to use alpha-valued colors for generic graphics, but
  * only in a version-neutral way and if the support is available
  * (e.g., you're running under the Java 2 platform). In this case you
@@ -280,12 +279,12 @@ public class ColorFactory {
     }
 
     /**
-     * Method that returns a java.awt.Color object given the name of
-     * the color. Depends on the static instances of color provided by
-     * the java.awt.Color class.
+     * Method that returns a java.awt.Color object given the name of the color.
+     * Depends on the static instances of color provided by the java.awt.Color
+     * class.
      * 
-     * @param name
-     * @param defaultColor
+     * @param name proper name of a color
+     * @param defaultColor Color to use if name not known
      * @return Color that reflects the name, or the default color.
      */
     public static Color getNamedColor(String name, Color defaultColor) {

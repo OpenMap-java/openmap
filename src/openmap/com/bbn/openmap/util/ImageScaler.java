@@ -15,9 +15,13 @@ import java.awt.image.BufferedImage;
 public class ImageScaler {
 
 	/**
-     * Progressive bilinear scaling: for any downscale size, scale
-     * iteratively by halves using BILINEAR filtering until the proper 
-     * size is reached.
+     * Progressive bilinear scaling: for any downscale size, scale iteratively
+     * by halves using BILINEAR filtering until the proper size is reached.
+     * 
+     * @param inputImage source image
+     * @param startSize starting pixel edge size of image
+     * @param endSize desired pixel edge size of image
+     * @return scaled image
      */
     public static Image getOptimalScalingImage(Image inputImage,
             int startSize, int endSize) {

@@ -212,11 +212,11 @@ public class FileUtils {
 	}
 
 	/**
-	 * Delete a file or a directory, including its content.
-	 * 
-	 * @param file
-	 * @throws IOException
-	 */
+     * Delete a file or a directory, including its content.
+     * 
+     * @param file file to delete
+     * @throws IOException if there's a problem
+     */
 	public static void deleteFile(File file) throws IOException {
 
 		if (file.isDirectory()) {
@@ -255,16 +255,14 @@ public class FileUtils {
 	}
 
 	/**
-	 * Create a zip file containing the given File.
-	 * 
-	 * @param zipFileName
-	 *            The path to the zip file. If it doesn't end in .zip, .zip will
-	 *            be added to it.
-	 * @param toBeZipped
-	 *            The Path of the file/directory to be zipped.
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 */
+     * Create a zip file containing the given File.
+     * 
+     * @param zipFileName The path to the zip file. If it doesn't end in .zip,
+     *        .zip will be added to it.
+     * @param toBeZipped The Path of the file/directory to be zipped.
+     * @throws IOException if there's a problem
+     * @throws FileNotFoundException if there's a problem
+     */
 	public static void saveZipFile(String zipFileName, File toBeZipped) throws IOException, FileNotFoundException {
 
 		try {
@@ -288,17 +286,15 @@ public class FileUtils {
 	}
 
 	/**
-	 * Create a zip file containing the files in the list. The entries will not
-	 * have their parent's file names in their path, they are stored with the
-	 * given file at the root of the zip/jar.
-	 * 
-	 * @param zipFileName
-	 *            The path to the zip/jar file.
-	 * @param toBeZipped
-	 *            The List of files to be placed in the zip/jar.
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 */
+     * Create a zip file containing the files in the list. The entries will not
+     * have their parent's file names in their path, they are stored with the
+     * given file at the root of the zip/jar.
+     * 
+     * @param zipFileName The path to the zip/jar file.
+     * @param toBeZipped The List of files to be placed in the zip/jar.
+     * @throws IOException if there's a problem
+     * @throws FileNotFoundException if there's a problem
+     */
 	public static void saveZipFile(String zipFileName, List<File> toBeZipped)
 			throws IOException, FileNotFoundException {
 
@@ -323,19 +319,17 @@ public class FileUtils {
 	}
 
 	/**
-	 * Writes a file to the jar stream.
-	 * 
-	 * @param toBeZipped
-	 *            the file to be written
-	 * @param zoStream
-	 *            the stream to write it to, prepared for the ZipFile/JarFile
-	 * @param prefixTrimLength
-	 *            The number of characters to trim off the absolute path of the
-	 *            file to be zipped. Can be useful to adjust this to adjust the
-	 *            directory depth of the entry for when it is unpacked. If less
-	 *            than 0, only the file name will be used.
-	 * @throws IOException
-	 */
+     * Writes a file to the jar stream.
+     * 
+     * @param toBeZipped the file to be written
+     * @param zoStream the stream to write it to, prepared for the
+     *        ZipFile/JarFile
+     * @param prefixTrimLength The number of characters to trim off the absolute
+     *        path of the file to be zipped. Can be useful to adjust this to
+     *        adjust the directory depth of the entry for when it is unpacked.
+     *        If less than 0, only the file name will be used.
+     * @throws IOException if there's a problem
+     */
 	public static void writeZipEntry(File toBeZipped, ZipOutputStream zoStream, int prefixTrimLength)
 			throws IOException {
 

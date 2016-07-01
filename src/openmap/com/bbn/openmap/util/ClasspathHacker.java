@@ -55,18 +55,15 @@ public class ClasspathHacker {
     /**
      * Parameters of the method to add an URL to the System classes.
      */
-    private static final Class<?>[] parameters = new Class[] {
-        URL.class
-    };
+    private static final Class<?>[] parameters = new Class[] { URL.class };
 
     /**
      * Adds a file to the classpath.
      * 
      * @param s a String pointing to the file
-     * @throws IOException
+     * @throws IOException if there was a problem
      */
-    public static void addFile(String s)
-            throws IOException {
+    public static void addFile(String s) throws IOException {
         File f = new File(s);
         addFile(f);
     }// end method
@@ -75,10 +72,9 @@ public class ClasspathHacker {
      * Adds a file to the classpath
      * 
      * @param f the file to be added
-     * @throws IOException
+     * @throws IOException if there was a problem
      */
-    public static void addFile(File f)
-            throws IOException {
+    public static void addFile(File f) throws IOException {
         addURL(f.toURI().toURL());
     }// end method
 
@@ -86,10 +82,9 @@ public class ClasspathHacker {
      * Adds the content pointed by the URL to the classpath.
      * 
      * @param u the URL pointing to the content to be added
-     * @throws IOException
+     * @throws IOException if there was a problem with URL
      */
-    public static void addURL(URL u)
-            throws IOException {
+    public static void addURL(URL u) throws IOException {
         URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 
         Class<?> sysclass = URLClassLoader.class;
@@ -106,9 +101,7 @@ public class ClasspathHacker {
             if (loadIt) {
                 Method method = sysclass.getDeclaredMethod("addURL", parameters);
                 method.setAccessible(true);
-                method.invoke(sysloader, new Object[] {
-                    u
-                });
+                method.invoke(sysloader, new Object[] { u });
                 logger.fine("loaded jar file");
             } else {
                 logger.fine("jar file already loaded, skipping");
@@ -116,6 +109,6 @@ public class ClasspathHacker {
         } catch (Throwable t) {
             t.printStackTrace();
             throw new IOException("Error, could not add URL to system classloader");
-        }// end try catch
+        } // end try catch
     }// end method
 }

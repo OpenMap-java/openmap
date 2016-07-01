@@ -33,6 +33,8 @@ public final class TaskService {
 
     /**
      * Run a task in a thread.
+     * 
+     * @param task the runnable
      */
     public void spawn(Runnable task) {
         executor.execute(task);
@@ -59,7 +61,7 @@ public final class TaskService {
      * thread pool with a fixed thread pool executor, so the maxNumThreads are
      * allocated. If they are all busy, the Runnables will queue.
      * 
-     * @param maxNumThreads
+     * @param maxNumThreads number of threads to allocate for the thread pool
      */
     public void setMaxNumThreads(int maxNumThreads) {
         executor = new ThreadPoolExecutor(0, maxNumThreads, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());

@@ -31,11 +31,8 @@ package com.bbn.openmap.util;
  * <li>a Double, indicating a numeric field.
  * <li>a String, indicating an alphanumeric field.
  * <li>the NEWLINE object, indicating the end of a record.
- * <LI>the EOF object, test with isEOF(), indicating the end of file.
+ * <li>the EOF object, test with isEOF(), indicating the end of file.
  * </ul>
- * 
- * <pre>
- * </pre>
  */
 public class CSVTokenizer extends Tokenizer {
     /** A flag the makes the tokenizer read numbers as strings. */
@@ -48,6 +45,10 @@ public class CSVTokenizer extends Tokenizer {
     /**
      * If you set numberReadAsString is true, then any number will be maintained
      * as a String.
+     * 
+     * @param in input Reader
+     * @param numberReadAsString true if numbers should be interpreted to
+     *        Strings
      */
     public CSVTokenizer(java.io.Reader in, boolean numberReadAsString) {
         super(in);
@@ -57,7 +58,7 @@ public class CSVTokenizer extends Tokenizer {
     protected Object lastTokened = NEWLINE;
 
     /**
-     * Return the next object read from the stream.
+     * @return the next object read from the stream.
      */
     public Object token() {
         int c = next();

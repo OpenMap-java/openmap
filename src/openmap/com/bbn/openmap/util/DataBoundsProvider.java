@@ -23,19 +23,19 @@
 package com.bbn.openmap.util;
 
 /**
- * An interface describing a Component that can provide basic
- * information about the area its data covers.
+ * An interface describing a Component that can provide basic information about
+ * the area its data covers.
  */
 public interface DataBoundsProvider {
 
     /**
-     * Returns a DataBounds object describing the area of coverage.
-     * May be null if the data hasn't been evaluated yet.
+     * @return a DataBounds object describing the area of coverage, may be null
+     *         if the data hasn't been evaluated yet.
      */
     public DataBounds getDataBounds();
 
     /**
-     * A pretty name for the boundary, suitable for a GUI.
+     * @return A pretty name for the boundary, suitable for a GUI
      */
     public String getName();
 

@@ -69,12 +69,12 @@ import com.bbn.openmap.util.PropUtils;
  * # Properties for a shape layer
  * shapeLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
  * shapeLayer.prettyName=Name_for_Menu
- * shapeLayer.shapeFile=&amp;ltpath to shapefile (.shp)&amp;gt
- * shapeLayer.spatialIndex=&amp;ltpath to generated spatial index file (.ssx)&amp;gt
+ * shapeLayer.shapeFile=&lt;path to shapefile (.shp)&gt;
+ * shapeLayer.spatialIndex=&lt;path to generated spatial index file (.ssx)&gt;
  * shapeLayer.lineColor=ff000000
  * shapeLayer.fillColor=ff000000
  * # plus any other properties used by the DrawingAttributes object.
- * shapeLayer.pointImageURL=&amp;ltURL for image to use for point objects&amp;gt
+ * shapeLayer.pointImageURL=&lt;URL for image to use for point objects&gt;
  *        
  *        
  * # Optionally, Rule marker names specified in space-separated list

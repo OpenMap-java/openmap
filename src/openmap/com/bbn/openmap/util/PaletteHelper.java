@@ -311,6 +311,7 @@ public class PaletteHelper {
      * Get a layer's associated palette as an internal window
      * 
      * @param gui the Component to place in the window
+     * @param windowName the title of the palette
      * @param ifl the listener to associate with the palette
      * @return the frame that the palette is in
      */
@@ -349,6 +350,7 @@ public class PaletteHelper {
      * Get a layer's associated palette as a top-level window
      * 
      * @param gui the Component to place in the window
+     * @param windowName the title of the window
      * @param cl the listener to associate with the palette
      * @return the frame that the palette is in
      */
@@ -373,6 +375,7 @@ public class PaletteHelper {
      * Get a layer's associated palette as a top-level window
      * 
      * @param gui the Component to place in the window
+     * @param windowName the title of the frame
      * @param cl the listener to associate with the palette
      * @return the frame that the palette is in
      */
