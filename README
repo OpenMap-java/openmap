@@ -34,8 +34,7 @@ a part of Verizon".
 
 Downloads and home page
 -----------------------
-The homepage is at:
-<URL:http://openmap.bbn.com/>
+The homepage is at http://openmap-java.org/
 
 Downloads of the current distribution are available from the homepage.
 
@@ -47,7 +46,7 @@ Where to start?
 The com.bbn.openmap.app.Main.java example is the default "face" of
 OpenMap.  While it looks like a complex example to start with, it's
 really a simple framework that uses the MapHandler to add and connect
-the OpenMap components.  See the viewer User's Guide
+the OpenMap components.  See the old viewer User's Guide
 (http://openmap.bbn.com/doc/user-guide.html) for more information.  You
 can check out the com.bbn.openmap.app.OpenMap application class for the older
 version of the main example class.
@@ -164,25 +163,19 @@ that depends on other packages.
 If you check OpenMap out from svn (instructions on the download page on the website), these 
 external packages are included.
 
-Bug Tracking Software
+Bugs and Problems
 ---------------------
-BBN maintains a Bugzilla site for tracking bugs and suggestions for
-OpenMap.  You can find it at:
+If you need some help, contact the mailing list at:
 
-<URL:http://openmap.bbn.com/bugzilla/>
+	https://groups.google.com/forum/#!forum/openmap-users
 
-Mailing lists
--------------
-BBN runs an "openmap-users@bbn.com" mailing list that addresses common
-OpenMap questions, comments, criticisms, bug reports, patches, and 
-notifications of new releases.  To join this mailing list, send email to
-majordart@bbn.com with "subscribe openmap-users" in the body of the
-messages.  You can find archives of this mailing list at:
+The old mailing list at BBN is still available here:
 
 	http://openmap.bbn.com/mailArchives/openmap-users/
+	
+You can also submit issues at the OpenMap home on github at: 
 
-(Use "openmap" for both the username and password.)  You can also reach 
-the OpenMap development team directly at openmap@bbn.com
+	https://github.com/OpenMap-java/openmap
 
 Please help out!
 ----------------
