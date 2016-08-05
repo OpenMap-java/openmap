@@ -179,6 +179,7 @@
 				<include name="INSTALL*" />
 				<include name="LICENSE" />
 				<include name="build.xml" />
+				<include name="version.txt" />				
 			</fileset>
 		</copy>
 		<copy todir="${openmap_release.dir}/src">

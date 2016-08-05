@@ -22,7 +22,8 @@ Prerequisites
    JDK 1.1-compatible release.  This release is available at the OpenMap
    web site, http://www.openmap.org
 
-   From OpenMap 4.6 onwards, OpenMap requires JDK 1.4 or later.
+   From OpenMap 4.6 onwards, OpenMap requires JDK 1.4 or later.  
+   As of OpenMap 5.1.14, jdk 1.6 is required.
 
 Installation
 ============
@@ -49,7 +50,8 @@ Installation
 Documentation
 =============
    
-   OpenMap is shipped with the API documentation pre-built.  If you'd like
-   to rebuild it, you can do it from the top-level OpenMap directory with
-   "ant docs".
+   The OpenMap API is available at: http://openmap-java.org/api/
+   
+   If you'd like to rebuild it, you can do it from the top-level 
+   OpenMap directory with "ant docs".
 
