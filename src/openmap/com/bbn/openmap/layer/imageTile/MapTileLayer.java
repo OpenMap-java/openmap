@@ -37,6 +37,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
+import com.bbn.openmap.Environment;
+import com.bbn.openmap.I18n;
 import com.bbn.openmap.PropertyConsumer;
 import com.bbn.openmap.dataAccess.mapTile.MapTileFactory;
 import com.bbn.openmap.dataAccess.mapTile.MapTileRequester;
@@ -215,31 +217,34 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
             return null;
         }
 
-        if (tileFactory != null) {
-            OMGraphicList newList = new OMGraphicList();
+		if (tileFactory != null) {
+			return tileFactory.getTiles(projection, zoomLevel, new OMGraphicList());
+		}
+		return null;
+	}
+	
+	public void paint(java.awt.Graphics g) {
+		super.paint(g);
+		
+		OMText attrib = getAttributionGraphic();
+		if (attrib != null) {
+			attrib.render(g);
+		}		
+	}
 
-            OMText attrib = getAttributionGraphic();
-            if (attrib != null) {
-                newList.add(attrib);
-            }
-
-            return tileFactory.getTiles(projection, zoomLevel, newList);
-        }
-        return null;
-    }
-
-    /**
-     * @return OMText for attribution text
-     */
-    private OMText getAttributionGraphic() {
-        Projection proj = getProjection();
-        if (attribution != null && proj != null) {
-            OMText attText = new OMText(10, proj.getHeight() - 10, attribution, OMText.JUSTIFY_LEFT);
-            if (attributionAttributes != null) {
-                attributionAttributes.setTo(attText);
-            }
-            return attText;
-        }
+	/**
+	 * @return OMText for attribution text
+	 */
+	protected OMText getAttributionGraphic() {
+		Projection proj = getProjection();
+		if (attribution != null && proj != null) {
+			OMText attText = new OMText(10, proj.getHeight() - 10, attribution, OMText.JUSTIFY_LEFT);
+			if (attributionAttributes != null) {
+				attributionAttributes.setTo(attText);
+			}
+			attText.generate(proj);
+			return attText;
+		}
 
         return null;
     }
@@ -255,28 +260,27 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
         attribution = props.getProperty(prefix + DATA_ATTRIBUTION_PROPERTY, attribution);
         attributionAttributes.setProperties(prefix, props);
 
-        String tileFactoryClassString = props.getProperty(prefix + TILE_FACTORY_CLASS_PROPERTY);
-        if (tileFactoryClassString != null) {
-            MapTileFactory itf = (MapTileFactory) ComponentFactory.create(tileFactoryClassString, prefix, props);
-            if (itf != null) {
-                setTileFactory(itf);
-            }
-        } else {
-            // Let's see if we can figure out what kind of MapTileFactory is
-            // needed based on rootDir
-            String rootDirString = props.getProperty(prefix
-                    + StandardMapTileFactory.ROOT_DIR_PROPERTY);
-            if (rootDirString != null) {
-                try {
-                    // We build URL here to test if the rootDir location exists.
-                    // Comment out url to avoid dead store findbugs problem.
-                    /* URL url = */new java.net.URL(rootDirString);
-                    // If we get here, we have a protocol, looks remote, so we
-                    // should make sure the
-                    // ServerMapTileFactory is used.
-                    if (!(getTileFactory() instanceof ServerMapTileFactory)) {
-                        setTileFactory(new ServerMapTileFactory(rootDirString));
-                    }
+		String tileFactoryClassString = props.getProperty(prefix + TILE_FACTORY_CLASS_PROPERTY);
+		if (tileFactoryClassString != null) {
+			MapTileFactory itf = (MapTileFactory) ComponentFactory.create(tileFactoryClassString, prefix, props);
+			if (itf != null) {
+				setTileFactory(itf);
+			}
+		} else {
+			// Let's see if we can figure out what kind of MapTileFactory is
+			// needed based on rootDir
+			String rootDirString = props.getProperty(prefix + StandardMapTileFactory.ROOT_DIR_PROPERTY);
+			if (rootDirString != null) {
+				try {
+					// We build URL here to test if the rootDir location exists.
+					// Comment out url to avoid dead store findbugs problem.
+					/* URL url = */new java.net.URL(rootDirString);
+					// If we get here, we have a protocol, looks remote, so we
+					// should make sure the
+					// ServerMapTileFactory is used.
+					if (!(getTileFactory() instanceof ServerMapTileFactory)) {
+						setTileFactory(new ServerMapTileFactory(rootDirString));
+					}
 
                 } catch (MalformedURLException e) {
                     // no protocol or something, use default
@@ -292,8 +296,8 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
             ((PropertyConsumer) tileFactory).setProperties(prefix, props);
         }
 
-        incrementalUpdates = PropUtils.booleanFromProperties(props, prefix
-                + INCREMENTAL_UPDATES_PROPERTY, incrementalUpdates);
+		incrementalUpdates = PropUtils.booleanFromProperties(props, prefix + INCREMENTAL_UPDATES_PROPERTY,
+				incrementalUpdates);
 
         setZoomLevel(PropUtils.intFromProperties(props, prefix + ZOOM_LEVEL_PROPERTY, zoomLevel));
     }
@@ -311,8 +315,29 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
 
         props.put(prefix + INCREMENTAL_UPDATES_PROPERTY, Boolean.toString(incrementalUpdates));
         props.put(prefix + ZOOM_LEVEL_PROPERTY, Integer.toString(zoomLevel));
+        props.put(prefix + DATA_ATTRIBUTION_PROPERTY, PropUtils.unnull(attribution));
 
         attributionAttributes.getProperties(props);
+
+        return props;
+    }
+
+	public Properties getPropertyInfo(Properties props) {
+		props = super.getPropertyInfo(props);
+
+		PropUtils.setI18NPropertyInfo(i18n, props, this.getClass(), ZOOM_LEVEL_PROPERTY, "Zoom Level",
+				"Force zoom level for queries (-1 is no forcing)", null);
+		PropUtils.setI18NPropertyInfo(i18n, props, this.getClass(), DATA_ATTRIBUTION_PROPERTY, "Attribution",
+				"Attribution for data source", null);
+        if (tileFactory instanceof StandardMapTileFactory) {
+            ((StandardMapTileFactory) tileFactory).getPropertyInfo(props);
+            props.put(initPropertiesProperty, ((StandardMapTileFactory) tileFactory).getInitPropertiesOrder()
+                    + " " + ZOOM_LEVEL_PROPERTY + " " + DATA_ATTRIBUTION_PROPERTY);
+        } else {
+            props.put(initPropertiesProperty, StandardMapTileFactory.ROOT_DIR_PROPERTY + " "
+                    + StandardMapTileFactory.FILE_EXT_PROPERTY + " " + ZOOM_LEVEL_PROPERTY + " "
+                    + DATA_ATTRIBUTION_PROPERTY);
+        }
 
         return props;
     }
@@ -343,8 +368,10 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
 
         tileFactory.setMapTileRequester(this);
 
-        this.tileFactory = tileFactory;
-    }
+		this.tileFactory = tileFactory;
+		
+		doPrepare();
+	}
 
     public boolean isIncrementalUpdates() {
         return incrementalUpdates;
@@ -368,7 +395,6 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(getTransparencyAdjustmentPanel(i18n.get(MapTileLayer.class, "layerTransparencyGUILabel", "Layer Transparency"), JSlider.HORIZONTAL, getTransparency()));
 
         if (getTileFactory() instanceof ServerMapTileFactory) {
             JPanel clearCachePanel = new JPanel(new BorderLayout());
@@ -390,8 +416,9 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
             panel.add(clearCachePanel);
         }
 
-        return panel;
-    }
+		panel.add(getDefaultSettingsPanel(this.getClass(), getTransparency()));
+		return panel;
+	}
 
     /**
      * @return the attribution
