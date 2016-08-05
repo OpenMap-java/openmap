@@ -22,39 +22,37 @@
 
 package com.bbn.openmap.proj;
 
-import java.io.Serializable;
+import java.util.logging.Logger;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
-import com.bbn.openmap.util.Debug;
 
 /**
  * Length is a convenience class used for a couple of things. It can be used to
  * specify unit type, and can be used for conversion from radians to/from
  * whatever units are represented by the implemented class.
  */
-public class Length implements Serializable {
+public enum Length {
 
     /** Miles, in WGS 84 spherical earth model units. */
-    public final static Length MILE = new Length("mile", "miles", Planet.wgs84_earthEquatorialCircumferenceMiles_D);
+    MILE("mile", "miles", Planet.wgs84_earthEquatorialCircumferenceMiles_D),
     /** Feet, in WGS 84 spherical earth model units. */
-    public final static Length FEET = new Length("feet", "ft", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0);
+    FEET("feet", "ft", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0),
     /** Feet, in WGS 84 spherical earth model units. */
-    public final static Length YARD = new Length("yards", "yd", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0 / 3.0);
+    YARD("yards", "yd", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0 / 3.0),
     /** Meters, in WGS 84 Spherical earth model units. */
-    public final static Length METER = new Length("meter", "m", Planet.wgs84_earthEquatorialCircumferenceMeters_D);
+    METER("meter", "m", Planet.wgs84_earthEquatorialCircumferenceMeters_D),
     /** Kilometers, in WGS 84 Spherical earth model units. */
-    public final static Length KM = new Length("kilometer", "km", Planet.wgs84_earthEquatorialCircumferenceKM_D);
+    KM("kilometer", "km", Planet.wgs84_earthEquatorialCircumferenceKM_D),
     /** Nautical Miles, in WGS 84 Spherical earth model units. */
-    public final static Length NM = new Length("nautical mile", "nm", Planet.wgs84_earthEquatorialCircumferenceNMiles_D);
+    NM("nautical mile", "nm", Planet.wgs84_earthEquatorialCircumferenceNMiles_D),
     /** Decimal Degrees, in WGS 84 Spherical earth model units. */
-    public final static Length DECIMAL_DEGREE = new Length("decimal degree", "deg", 360.0);
+    DECIMAL_DEGREE("decimal degree", "deg", 360.0),
     /** Data Mile, in WGS 84 spherical earth model units. */
-    public final static Length DM =
-            new Length("datamile", "dm", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0 / 6000.0);
+    DM("datamile", "dm", Planet.wgs84_earthEquatorialCircumferenceMiles_D * 5280.0 / 6000.0),
 
     /** Radians, in terms of a spherical earth. */
-    public final static Length RADIAN = new Length("radian", "rad", com.bbn.openmap.MoreMath.TWO_PI_D) {
+    RADIAN("radian", "rad", com.bbn.openmap.MoreMath.TWO_PI_D) {
         public float toRadians(float numUnits) {
             return numUnits;
         }
@@ -84,7 +82,7 @@ public class Length implements Serializable {
      * the earth at its equator. The name and abbreviation are converted to
      * lower case for consistency.
      */
-    public Length(String name, String abbr, double unitEquatorCircumference) {
+    private Length(String name, String abbr, double unitEquatorCircumference) {
         this.name = i18n.get(this, abbr + ".name", name).toLowerCase().intern();
         this.unitEquatorCircumference = unitEquatorCircumference;
         this.constant = unitEquatorCircumference / com.bbn.openmap.MoreMath.TWO_PI_D;
@@ -96,18 +94,12 @@ public class Length implements Serializable {
      * radians.
      */
     public float toRadians(float numUnits) {
-        if (Debug.debugging("length")) {
-            Debug.output("Translating " + name + " from radians");
-        }
-
+        getLogger().fine("Translating " + name + " from radians");
         return numUnits / (float) constant;
     }
 
     public double toRadians(double numUnits) {
-        if (Debug.debugging("length")) {
-            Debug.output("Translating " + name + " from radians");
-        }
-
+        getLogger().fine("Translating " + name + " from radians");
         return numUnits / constant;
     }
 
@@ -116,10 +108,7 @@ public class Length implements Serializable {
      * this length.
      */
     public float fromRadians(float numRadians) {
-        if (Debug.debugging("length")) {
-            Debug.output("Translating radians from " + name);
-        }
-
+        getLogger().fine("Translating radians from " + name);
         return numRadians * (float) constant;
     }
 
@@ -128,10 +117,7 @@ public class Length implements Serializable {
      * this length.
      */
     public double fromRadians(double numRadians) {
-        if (Debug.debugging("length")) {
-            Debug.output("Translating radians from " + name);
-        }
-
+        getLogger().fine("Translating radians from " + name);
         return numRadians * constant;
     }
 
@@ -150,37 +136,47 @@ public class Length implements Serializable {
     }
 
     /**
-     * Get a list of the Lengths currently defined as static implementations of
-     * this class.
-     */
-    public static Length[] getAvailable() {
-        return new Length[] {
-            METER,
-            KM,
-            FEET,
-            YARD,
-            MILE,
-            DM,
-            NM,
-            DECIMAL_DEGREE
-        };
-    }
-
-    /**
      * Get the Length object with the given name or abbreviation. If nothing
      * exists with that name, then return null. The lower case version of the
      * name or abbreviation is checked against the available options.
      */
     public static Length get(String name) {
-        Length[] choices = getAvailable();
         if (name != null) {
-            name = name.toLowerCase();
-            for (Length choice : choices) {
-                if (name.equals(choice.toString()) || name.equals(choice.getAbbr())) {
-                    return choice;
+            for (Length length : values()) {
+                if (length.name.equalsIgnoreCase(name) || length.abbr.equalsIgnoreCase(name)) {
+                    return length;
                 }
             }
         }
         return null;
     }
+
+    // <editor-fold defaultstate="collapsed" desc="Logger Code">
+    /**
+     * Holder for this class's Logger. This allows for lazy initialization of
+     * the logger.
+     */
+    private static final class LoggerHolder {
+        /**
+         * The logger for this class
+         */
+        private static final Logger LOGGER = Logger.getLogger(Length.class.getName());
+
+        /**
+         * Prevent instantiation
+         */
+        private LoggerHolder() {
+            throw new AssertionError("This should never be instantiated");
+        }
+    }
+
+    /**
+     * Get the logger for this class.
+     *
+     * @return logger for this class
+     */
+    private static Logger getLogger() {
+        return LoggerHolder.LOGGER;
+    }
+    // </editor-fold>
 }

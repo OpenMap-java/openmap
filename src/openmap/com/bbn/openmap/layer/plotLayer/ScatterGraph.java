@@ -345,8 +345,8 @@ public class ScatterGraph {
         background.setFillPaint(graph_bg_color);
         background.setLinePaint(graph_bg_color);
 
-        year_axis.setAppObject(this);
-        temp_axis.setAppObject(this);
+        year_axis.putAttribute(OMGraphic.APP_OBJECT, this);
+        temp_axis.putAttribute(OMGraphic.APP_OBJECT, this);
 
         plot_background_.add(background);
 
@@ -383,7 +383,7 @@ public class ScatterGraph {
         graphic.setLinePaint(plot_color_);
         graphic.setFillPaint(plot_color_);
         graphic.setSelectPaint(select_color_);
-        graphic.setAppObject(name);
+        graphic.putAttribute(OMGraphic.APP_OBJECT, name);
 
         return graphic;
     }

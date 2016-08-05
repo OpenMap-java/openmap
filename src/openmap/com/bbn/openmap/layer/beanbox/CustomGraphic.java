@@ -46,7 +46,7 @@ public abstract class CustomGraphic extends OMGraphicList {
 
         super.add(graphic);
 
-        setAppObject(new Long(object.getId()));
+        putAttribute(OMGraphic.APP_OBJECT, new Long(object.getId()));
     }
 
     /**

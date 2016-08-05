@@ -213,15 +213,15 @@ public class E00Parser {
         }
 
         if (labs != null) {
-            labs.setAppObject("LABS");
+            labs.putAttribute(OMGraphic.APP_OBJECT, "LABS");
             WV.add(labs);
         }
         if (arcs != null) {
-            arcs.setAppObject("ARCS");
+            arcs.putAttribute(OMGraphic.APP_OBJECT, "ARCS");
             WV.add(arcs);
         }
         if (tx7 != null) {
-            tx7.setAppObject("TX7");
+            tx7.putAttribute(OMGraphic.APP_OBJECT, "TX7");
             WV.add(tx7);
         }
 
@@ -454,7 +454,7 @@ public class E00Parser {
             setLocationColor(bl, 0);
             bl.setShowLocation(true);
             labs.add(bl);
-            bl.setAppObject(new E00Data(id));
+            bl.putAttribute(OMGraphic.APP_OBJECT, new E00Data(id));
         }
     }
 
@@ -501,7 +501,7 @@ public class E00Parser {
                 P.setSelectPaint(SelectArcColor);
 
             arcs.add(P);
-            P.setAppObject(new E00Data(narc++));
+            P.putAttribute(OMGraphic.APP_OBJECT, new E00Data(narc++));
         }
     }
 
@@ -648,7 +648,7 @@ public class E00Parser {
                 bl.setShowName(true);
             } else
                 bl.setLabel(null);
-            E00Data d = (E00Data) bl.getAppObject();
+            E00Data d = (E00Data) bl.getAttribute(OMGraphic.APP_OBJECT);
             if (itype != -1)
                 d.type = r.getIntField(itype);
             if (ival != -1)
@@ -694,7 +694,7 @@ public class E00Parser {
             if (iID != -1)
                 ID = r.getIntField(iID);
 
-            E00Data data = (E00Data) og.getAppObject();
+            E00Data data = (E00Data) og.getAttribute(OMGraphic.APP_OBJECT);
             data.type = type;
             data.valeur = val;
             data.valeur2 = val;

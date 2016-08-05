@@ -85,8 +85,8 @@ public class CoverageTable {
     /** do we need to append a '.' to three-character file names */
     public boolean appendDot = false;
     /**
-     * Need this in case we have to go from the coverage type->feature
-     * type->tile
+     * Need this in case we have to go from the coverage type-&lt;feature
+     * type-&lt;tile
      */
     protected CoverageAttributeTable cat;
 
@@ -719,12 +719,13 @@ public class CoverageTable {
 
             String featureName = entry.getKey();
             FeatureClassInfo fci = entry.getValue();
-            int fciFeatureIDCol = fci.whatColumn(DcwRecordFile.ID_COLUMN_NAME);
 
-            char featureType = whatFeatureType(warehouse, featureName);
             if (fci == null) {
                 continue;
             }
+            
+            int fciFeatureIDCol = fci.whatColumn(DcwRecordFile.ID_COLUMN_NAME);
+            char featureType = whatFeatureType(warehouse, featureName);
 
             fci.checkInit();
             if (logger.isLoggable(Level.FINE)) {
@@ -854,7 +855,12 @@ public class CoverageTable {
                                                 + " features for " + currentTile);
                                     }
 
-                                    tables.setTables(featureType, currentTile);
+                                    try {
+                                    	tables.setTables(featureType, currentTile);
+                                    } catch (FormatException fe) {
+                                    	System.out.println("missing tile, let's ignore that");
+                                    	continue;
+                                    }
 
                                     // Only need to do this once for a new
                                     // fci...
@@ -885,12 +891,12 @@ public class CoverageTable {
                                 warehouse.handleInformationForOMGraphic(omg, fci, fcirow);
                                 ph.add(omg);
 
-                                if (false) {
+                                if (logger.isLoggable(Level.FINEST)) {
                                     StringBuffer pout = new StringBuffer();
                                     for (Object obj : fcirow) {
                                         pout.append(obj).append(',');
                                     }
-                                    System.out.println(pout);
+                                    logger.finest(pout.toString());
                                 }
                             }
                         } else {

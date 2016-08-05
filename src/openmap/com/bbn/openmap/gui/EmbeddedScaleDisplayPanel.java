@@ -145,8 +145,6 @@ public class EmbeddedScaleDisplayPanel extends OMComponentPanel implements Proje
      * Setter for property unitOfMeasure.
      * 
      * @param unitOfMeasure New value of property unitOfMeasure.
-     * 
-     * @throws PropertyVetoException
      */
     public void setUnitOfMeasure(String unitOfMeasure) {
         if (unitOfMeasure == null)
@@ -161,7 +159,7 @@ public class EmbeddedScaleDisplayPanel extends OMComponentPanel implements Proje
         // Therefore, The following code correctly obtains the proper
         // Length object.
 
-        Length[] choices = Length.getAvailable();
+        Length[] choices = Length.values();
         uom = null;
         for (int i = 0; i < choices.length; i++) {
             if (unitOfMeasure.equalsIgnoreCase(choices[i].toString())
@@ -204,7 +202,7 @@ public class EmbeddedScaleDisplayPanel extends OMComponentPanel implements Proje
                 }
             };
 
-            for (Length lengthType : Length.getAvailable()) {
+            for (Length lengthType : Length.values()) {
                 JRadioButton jrb = new JRadioButton();
                 jrb.setText(lengthType.getAbbr());
                 jrb.setToolTipText(lengthType.toString());

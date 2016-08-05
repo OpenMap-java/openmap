@@ -234,7 +234,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
                 selectedGraphics = new Vector<GLOBESite>();
             }
 
-            Object app_obj = selectedGraphic.getAppObject();
+            Object app_obj = selectedGraphic.getAttribute(OMGraphic.APP_OBJECT);
 
             if (app_obj instanceof GLOBESite) {
                 GLOBESite site = (GLOBESite) app_obj;
@@ -452,7 +452,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
             newSelectedGraphic = graph.selectPoint(e.getX(), e.getY(), 4.0f);
 
             if (newSelectedGraphic != null) {
-                String infostring = (String) (newSelectedGraphic.getAppObject());
+                String infostring = (String) (newSelectedGraphic.getAttribute(OMGraphic.APP_OBJECT));
                 if (infostring != null) {
                     fireRequestInfoLine(infostring);
                 }
@@ -476,7 +476,7 @@ public class PlotLayer extends OMGraphicHandlerLayer implements MapMouseListener
                     selectedGraphic.regenerate(getProjection());
 
                     // display site info on map
-                    GLOBESite site = (GLOBESite) (newSelectedGraphic.getAppObject());
+                    GLOBESite site = (GLOBESite) (newSelectedGraphic.getAttribute(OMGraphic.APP_OBJECT));
                     if (site != null) {
                         fireRequestInfoLine(site.getInfo());
                     }

@@ -68,7 +68,7 @@ public class EsriPolygonMList extends EsriPolygonList {
             EsriGraphic g = (EsriGraphic) iter.next();
             ret.add((OMGraphic) g.shallowCopy());
         }
-        ret.setAppObject(getAppObject());
+        ret.setAttributes(getAttributes());
         return ret;
     }
 }

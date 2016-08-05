@@ -23,7 +23,7 @@
 package com.bbn.openmap.layer.rpf;
 
 import java.io.Serializable;
-import java.util.Vector;
+import java.util.List;
 
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.proj.Projection;
@@ -58,8 +58,7 @@ import com.bbn.openmap.util.Debug;
  * up the cache with the location of the data. The getRectangle() call returns
  * an OMGraphicList of objects to draw, that cover the area asked for.
  */
-public class RpfCacheManager
-        implements Serializable {
+public class RpfCacheManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
     /**
@@ -125,7 +124,8 @@ public class RpfCacheManager
      * @param auxSubframeCacheSize the number of subframes held in the aux
      *        caches.
      */
-    public RpfCacheManager(RpfFrameProvider rfp, RpfViewAttributes rva, int mainCacheSize, int auxSubframeCacheSize) {
+    public RpfCacheManager(RpfFrameProvider rfp, RpfViewAttributes rva, int mainCacheSize,
+            int auxSubframeCacheSize) {
         frameProvider = rfp;
         viewAttributes = rva;
         caches[0] = new RpfCacheHandler(rfp, rva, mainCacheSize);
@@ -202,7 +202,7 @@ public class RpfCacheManager
      * 
      * @return Vector of RpfCoverageBoxes.
      */
-    public Vector<RpfCoverageBox> getCoverageBoxes() {
+    public List<RpfCoverageBox> getCoverageBoxes() {
         return caches[0].getCoverageBoxes();
     }
 
@@ -304,7 +304,8 @@ public class RpfCacheManager
 
         // Normal (maybe) box[0] gets filled every time - bottom right
         // box.
-        caches[0].getSubframes(lat[ya - lat_minus], lon[xa - lon_minus], lat[ya], lon[xa], proj, list);
+        caches[0].getSubframes(lat[ya - lat_minus], lon[xa
+                - lon_minus], lat[ya], lon[xa], proj, list);
 
         if (Debug.debugging("rpf"))
             Debug.output("RpfCacheManager: main (1) cache used.");
@@ -332,8 +333,8 @@ public class RpfCacheManager
                 caches[2] = new RpfCacheHandler(frameProvider, viewAttributes, auxCacheSize);
             }
             caches[2].getSubframes(lat[0], lon[xa - lon_minus], -1f * lat[1], // flip
-                                   // breather
-                                   lon[xa], proj, list);
+                    // breather
+                    lon[xa], proj, list);
 
             if (Debug.debugging("rpf"))
                 Debug.output("-- third cache used");

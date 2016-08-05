@@ -50,7 +50,7 @@ public class GraphicUpdate implements LinkPropertiesConstants {
     public GraphicUpdate(int graphicAction, OMGraphic omg) {
         action = graphicAction;
         if (omg != null) {
-            Object obj = omg.getAppObject();
+            Object obj = omg.getAttribute(OMGraphic.APP_OBJECT);
             if (obj instanceof LinkProperties) {
                 id = ((LinkProperties) obj).getProperty(LPC_GRAPHICID);
             }

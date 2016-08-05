@@ -172,7 +172,7 @@ public class SimpleBeanLayer extends Layer implements BeanBoxHandler {
 
             graphic.setRenderType(OMGraphicConstants.RENDERTYPE_OFFSET);
 
-            graphic.setAppObject(new Long(object.getId()));
+            graphic.putAttribute(OMGraphic.APP_OBJECT, new Long(object.getId()));
 
         } else {
 

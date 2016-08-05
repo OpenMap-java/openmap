@@ -196,7 +196,7 @@ public class AmpLinkLayer extends LinkLayer implements Tool {
         //on what to do with it, to the server.
         String id = null; // unknown
 
-        Object obj = omg.getAppObject();
+        Object obj = omg.getAttribute(OMGraphic.APP_OBJECT);
         LinkProperties lp = null;
 
         if (obj instanceof LinkProperties) {

@@ -759,7 +759,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
 
                     OMRect rect = (OMRect) getDrawingTool().create("com.bbn.openmap.omGraphics.OMRect", fga, layer, false);
                     if (rect != null) {
-                        rect.setAppObject(internalKey);
+                        rect.putAttribute(OMGraphic.APP_OBJECT, internalKey);
                     } else {
                         Debug.error("DemoLayer: Drawing tool can't create OMRect");
                     }
@@ -788,7 +788,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
 
                     if (poly != null) {
                         poly.setIsPolygon(true);
-                        poly.setAppObject(internalKey);
+                        poly.putAttribute(OMGraphic.APP_OBJECT, internalKey);
                     } else {
                         Debug.error("DemoLayer: Drawing tool can't create OMPoly");
                     }
@@ -810,7 +810,7 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
 
                     OMRect rect = (OMRect) getDrawingTool().create("com.bbn.openmap.omGraphics.OMRect", fga, layer, false);
                     if (rect != null) {
-                        rect.setAppObject(externalKey);
+                        rect.putAttribute(OMGraphic.APP_OBJECT, externalKey);
                     } else {
                         Debug.error("DemoLayer: Drawing tool can't create OMRect");
                     }
@@ -996,13 +996,13 @@ public class DemoLayer extends OMGraphicHandlerLayer implements DrawingToolReque
     public void drawingComplete(OMGraphic omg, OMAction action) {
         Debug.message("demo", "DemoLayer: DrawingTool complete");
 
-        Object obj = omg.getAppObject();
+        Object obj = omg.getAttribute(OMGraphic.APP_OBJECT);
 
         if (obj != null && (obj == internalKey || obj == externalKey)
                 && !action.isMask(OMGraphicConstants.DELETE_GRAPHIC_MASK)) {
 
             java.awt.Shape filterShape = omg.getShape();
-            OMGraphicList filteredList = filter(filterShape, (omg.getAppObject() == internalKey));
+            OMGraphicList filteredList = filter(filterShape, (omg.getAttribute(OMGraphic.APP_OBJECT) == internalKey));
             if (Debug.debugging("demo")) {
                 Debug.output("DemoLayer filter: " + filteredList.getDescription());
             }

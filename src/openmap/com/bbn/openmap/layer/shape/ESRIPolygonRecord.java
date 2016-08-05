@@ -24,6 +24,7 @@ package com.bbn.openmap.layer.shape;
 
 import java.io.IOException;
 
+import com.bbn.openmap.dataAccess.shape.ShapeConstants;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMAreaList;
 import com.bbn.openmap.omGraphics.OMGeometry;
@@ -41,7 +42,7 @@ import com.bbn.openmap.proj.ProjMath;
  * arc/polyline record types.
  * 
  * @author Ray Tomlinson
- * @author Tom Mitchell <tmitchell@bbn.com>
+ * @author Tom Mitchell
  * @author HACK-author blame it on aculline
  * @version $Revision: 1.8 $ $Date: 2009/01/21 01:24:42 $
  */
@@ -209,7 +210,7 @@ public class ESRIPolygonRecord extends ESRIRecord {
 
             sublist.setVague(true); // Treat list as one object.
             list.add(sublist);
-            sublist.setAppObject(new Integer(getRecordNumber()));
+            sublist.putAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE, new Integer(getRecordNumber()));
         }
 
         for (int i = 0; i < nPolys; i++) {
@@ -228,7 +229,7 @@ public class ESRIPolygonRecord extends ESRIRecord {
                 sublist.add(p);
             } else {
                 // There should be only one.
-                p.setAppObject(new Integer(getRecordNumber()));
+                p.putAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE, new Integer(getRecordNumber()));
                 list.add(p);
             }
         }

@@ -318,7 +318,7 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
             t = "point";
         }
 
-        E00Data d = (E00Data) omg.getAppObject();
+        E00Data d = (E00Data) omg.getAttribute(OMGraphic.APP_OBJECT);
         return t + d;
     }
 
@@ -460,7 +460,7 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
         } else
             for (int i = 0; i < n; i++) {
                 og = g.getOMGraphicAt(i);
-                O = og.getAppObject();
+                O = og.getAttribute(OMGraphic.APP_OBJECT);
                 if (O == null)
                     setVisible(false);
                 else {
@@ -503,7 +503,7 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
             OMPoly oj = (OMPoly) arcs.getOMGraphicAt(i);
             if (oj == null)
                 continue;
-            E00Data data = (E00Data) oj.getAppObject();
+            E00Data data = (E00Data) oj.getAttribute(OMGraphic.APP_OBJECT);
             if (data == null)
                 continue;
             ll = oj.getLatLonArray();
@@ -514,7 +514,7 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
                         ll[llsize - 1] };
                 ArcData dn = new ArcData(data);
                 dn.coords = coords;
-                oj.setAppObject(dn);
+                oj.putAttribute(OMGraphic.APP_OBJECT, dn);
                 V.add(dn);
             }
             int k = 0;
@@ -614,7 +614,7 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
             OMPoly oj = (OMPoly) arcs.getOMGraphicAt(i);
             if (oj == null)
                 continue;
-            E00Data data = (E00Data) oj.getAppObject();
+            E00Data data = (E00Data) oj.getAttribute(OMGraphic.APP_OBJECT);
             if (data == null)
                 continue;
             ll = oj.getLatLonArray();
@@ -683,7 +683,7 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
                 out.print("MetaPolyline: ");
             }
             out.print(llsize / 2);
-            Object o = oj.getAppObject();
+            Object o = oj.getAttribute(OMGraphic.APP_OBJECT);
             if (o instanceof String)
                 System.out.println(o);
             else
@@ -718,7 +718,7 @@ public class E00Layer extends OMGraphicHandlerLayer implements ActionListener {
             oj = (BasicLocation) labs.getOMGraphicAt(i);
             if (oj == null)
                 continue;
-            E00Data data = (E00Data) oj.getAppObject();
+            E00Data data = (E00Data) getAttribute(OMGraphic.APP_OBJECT);
             if (data == null)
                 continue;
             lt = Math.toRadians(oj.lat);

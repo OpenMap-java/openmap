@@ -61,6 +61,14 @@ public class OMColor extends Color {
      * transparency is not supported.
      */
     public final static transient Color clear = new Color(0, true);
+    /**
+     * We need ALMOST_CLEAR so that the buffered image has a slight
+     * background to it if any of the layers are semi-transparent. If there
+     * is no background, the semi-transparent layers get washed out. Adding
+     * a touch of something to the background of the buffer lets them render
+     * normally.
+     */
+    public final static transient Color ALMOST_CLEAR = new Color(0x01FFFFFF, true);
 
     /**
      * A constructor object which can be used to create new

@@ -71,7 +71,7 @@ public class CSVShapeInfoFile extends CSVFile {
             for (int i = 0; i < numgraphics; i++) {
                 try {
                     OMGraphic omg = list.getOMGraphicAt(i);
-                    Integer recnum = (Integer) (omg.getAppObject());
+                    Integer recnum = (Integer) (omg.getAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE));
                     // OFF BY ONE!!! The shape record numbers
                     // assigned to the records start with 1, while
                     // everything else we do starts with 0...

@@ -518,7 +518,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
 
         PolygonGeometry poly = new PolygonGeometry.LL(llpoints, OMGraphic.DECIMAL_DEGREES, (interval <= 1000 ? OMGraphic.LINETYPE_STRAIGHT
                 : OMGraphic.LINETYPE_GREATCIRCLE));
-        poly.setAppObject(mgrsString);
+        poly.putAttribute(OMGraphic.APP_OBJECT, mgrsString);
         return poly;
     }
 
@@ -587,7 +587,7 @@ public class UTMGridPlugIn extends OMGraphicHandlerPlugIn {
                 Iterator<OMGeometry> it = geoList.iterator();
                 while (it.hasNext()) {
                     PolygonGeometry.LL pll = (PolygonGeometry.LL) it.next();
-                    String labelString = (String) (pll).getAppObject();
+                    String labelString = (String) (pll).getAttribute(OMGraphic.APP_OBJECT);
                     if (labelString == null) {
                         continue;
                     }

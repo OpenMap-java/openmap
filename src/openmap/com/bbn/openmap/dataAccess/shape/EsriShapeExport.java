@@ -169,11 +169,6 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
 
         if (list != null) {
             Object obj = list.getAttribute(DBF_ATTRIBUTE);
-            // Do this check for backward compatibility
-            if (obj == null) {
-                obj = list.getAppObject();
-            }
-
             if (obj instanceof DbfTableModel) {
                 masterDBF = (DbfTableModel) obj;
                 logger.fine("Setting master DBF in ESE");
@@ -677,11 +672,6 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
     protected void export(EsriGraphicList egList) {
 
         Object obj = egList.getAttribute(DBF_ATTRIBUTE);
-        // Backward compatibility
-        if (obj == null) {
-            obj = egList.getAppObject();
-        }
-
         if (obj == null) {
             egList.putAttribute(DBF_ATTRIBUTE, getMasterDBF());
             // egList.setAppObject(getMasterDBF());
@@ -854,7 +844,7 @@ public class EsriShapeExport implements ShapeConstants, OMGraphicConstants {
             List<Object> record = new ArrayList<Object>();
 
             // Description
-            Object obj = omg.getAppObject();
+            Object obj = omg.getAttribute(SHAPE_DBF_DESCRIPTION);
             if (obj instanceof String) {
                 record.add(obj);
             } else {

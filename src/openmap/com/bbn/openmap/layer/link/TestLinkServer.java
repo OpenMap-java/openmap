@@ -95,7 +95,7 @@ public class TestLinkServer extends LinkServer implements LinkActionConstants,
                             System.out.println("TestLinkServer: new graphic");
                             // Set the ID for it, so it can be
                             // referred to later.
-                            LinkProperties props = (LinkProperties) graphic.getAppObject();
+                            LinkProperties props = (LinkProperties) graphic.getAttribute(OMGraphic.APP_OBJECT);
 
                             props.setProperty(LPC_GRAPHICID, "graphic"
                                     + (newGraphicCounter++));

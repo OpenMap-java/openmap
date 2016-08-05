@@ -132,7 +132,7 @@ public class DrawLinkLayer extends LinkLayer {
         String selectable;
         for (Iterator it = graphics.iterator(); it.hasNext();) {
             g = (OMGraphic) it.next();
-            p = (Properties) g.getAppObject();
+            p = (Properties) g.getAttribute(OMGraphic.APP_OBJECT);
             selectable = p.getProperty(LPC_SELECTABLE);
             if (selectable.equals("true")) {
                 selectableList.add(g);
@@ -166,7 +166,7 @@ public class DrawLinkLayer extends LinkLayer {
                 }
 
                 descriptor = LinkUtil.setMask(descriptor, GRAPHIC_ID_MASK);
-                id = ((LinkProperties) gesGraphic.getAppObject()).getProperty(LPC_GRAPHICID);
+                id = ((LinkProperties) gesGraphic.getAttribute(OMGraphic.APP_OBJECT)).getProperty(LPC_GRAPHICID);
             } else {
                 Debug.message("link", "LinkLayer: gesture graphic NOT FOUND");
                 // clear out info line
@@ -242,7 +242,7 @@ public class DrawLinkLayer extends LinkLayer {
             OMGraphic graphic = null;
             if (dt != null) {
 
-                Properties prop = (Properties) gesGraphic.getAppObject();
+                Properties prop = (Properties) gesGraphic.getAttribute(OMGraphic.APP_OBJECT);
                 String editable = prop.getProperty(LPC_EDITABLE);
                 Debug.message("link", "DrawLinkLayer: editable: " + editable);
                 if (editable.equals("false")) {

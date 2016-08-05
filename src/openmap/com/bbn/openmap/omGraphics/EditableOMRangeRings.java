@@ -310,9 +310,9 @@ public class EditableOMRangeRings
       return field;
    }
 
-   private JComboBox makeUnitsCombo() {
-      Length[] available = Length.getAvailable();
-      String[] unitStrings = new String[available.length + 1];
+    private JComboBox makeUnitsCombo() {
+        Length[] available = Length.values();
+        String[] unitStrings = new String[available.length + 1];
 
       String current = null;
       Length l = ((OMRangeRings) circle).getIntervalUnits();
@@ -363,12 +363,13 @@ public class EditableOMRangeRings
                   numSubCircles = rr.subCircles.length;
                }
 
-               if (newLength == null) {
-                  value = numSubCircles;
-               } else if (oldLength == null) {
-                  value = (int) Math.ceil(newLength.fromRadians(Length.DECIMAL_DEGREE.toRadians(rr.getRadius())) / numSubCircles);
-               }
-            }
+                    if (newLength == null) {
+                        value = numSubCircles;
+                    } else if (oldLength == null) {
+                        value = (int) Math.ceil(newLength.fromRadians(Length.DECIMAL_DEGREE.toRadians(rr.getRadius()))
+                                / numSubCircles);
+                    }
+                }
 
             ((OMRangeRings) circle).setIntervalUnits(newLength);
             lastUnit = newLength;
