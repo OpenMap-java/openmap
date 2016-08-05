@@ -34,49 +34,46 @@ import com.bbn.openmap.proj.Projection;
  * @author dietrick
  */
 public interface MapTileFactory {
-    /**
-     * Create an OMGraphicList with a set of tiles on it.
-     * 
-     * @param proj
-     * @return OMGraphicList that was created.
-     * @throws InterruptedException
-     */
-    OMGraphicList getTiles(Projection proj);
+	/**
+	 * Create an OMGraphicList with a set of tiles on it.
+	 * 
+	 * @param proj
+	 * @return OMGraphicList that was created.
+	 */
+	OMGraphicList getTiles(Projection proj);
 
-    /**
-     * Create an OMGraphicList that covers the projection with tiles that suit
-     * the specified zoom level.
-     * 
-     * @throws InterruptedException
-     */
-    OMGraphicList getTiles(Projection proj, int zoomLevel);
+	/**
+	 * Create an OMGraphicList that covers the projection with tiles that suit
+	 * the specified zoom level.
+	 */
+	OMGraphicList getTiles(Projection proj, int zoomLevel);
 
-    /**
-     * Add tiles to OMGraphicList provided that suit the given projection.
-     * 
-     * @param proj
-     * @param list
-     * @return the OMGraphicList provided.
-     * @throws InterruptedException
-     */
-    OMGraphicList getTiles(Projection proj, int zoomLevel, OMGraphicList list);
+	/**
+	 * Add tiles to OMGraphicList provided that suit the given projection.
+	 * 
+	 * @param proj
+	 * @param list
+	 * @return the OMGraphicList provided.
+	 */
+	OMGraphicList getTiles(Projection proj, int zoomLevel, OMGraphicList list);
 
-    /**
-     * Set a MapTileRequestor in the tile factory that should be told to repaint
-     * when new tiles become available, and to check with during the tile fetch
-     * whether to keep going or not. listUpdate will be called when a new tile
-     * has been added to the OMGraphicList passed in the getTiles method, and
-     * shouldContinue will be called during stable times during the getTiles
-     * fetch.
-     * 
-     * @param requestor callback MapTileRequestor to ask status questions.
-     */
-    void setMapTileRequester(MapTileRequester requestor);
+	/**
+	 * Set a MapTileRequestor in the tile factory that should be told to repaint
+	 * when new tiles become available, and to check with during the tile fetch
+	 * whether to keep going or not. listUpdate will be called when a new tile
+	 * has been added to the OMGraphicList passed in the getTiles method, and
+	 * shouldContinue will be called during stable times during the getTiles
+	 * fetch.
+	 * 
+	 * @param requestor
+	 *            callback MapTileRequestor to ask status questions.
+	 */
+	void setMapTileRequester(MapTileRequester requestor);
 
-    /**
-     * Tell the factory to clean up resources.
-     */
-    void reset();
+	/**
+	 * Tell the factory to clean up resources.
+	 */
+	void reset();
 
     /**
      * Get object that handles empty tiles.

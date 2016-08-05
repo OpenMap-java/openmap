@@ -25,7 +25,6 @@ package com.bbn.openmap.util.wanderer;
 import java.io.File;
 
 import com.bbn.openmap.util.ArgParser;
-import com.bbn.openmap.util.Debug;
 
 /**
  * A Wanderer is a class that traverses a directory tree and finds files and
@@ -119,18 +118,18 @@ public class Wanderer {
       return continueWandering;
    }
 
-   /**
-    * Management method for the wanderer, that steps through the children of the
-    * directory and calls handleEntry for them.
-    * 
-    * @param directory the directory to handle
-    * @param contentNames an array of Strings representing children of the
-    *        directory
-    * @return true if the wandering should continue.
-    * @throws SecurityException
-    */
-   protected boolean handleDirectory(File directory, String[] contentNames)
-         throws SecurityException {
+	/**
+	 * Management method for the wanderer, that steps through the children of
+	 * the directory and calls handleEntry for them.
+	 * 
+	 * @param directory
+	 *            the directory to handle
+	 * @param contentNames
+	 *            an array of Strings representing children of the directory
+	 * @return true if the wandering should continue.
+	 * @throws SecurityException
+	 */
+	protected boolean handleDirectory(File directory, String[] contentNames) throws SecurityException {
 
       boolean continueWandering = true;
 
@@ -174,17 +173,16 @@ public class Wanderer {
       this.topToBottom = topToBottom;
    }
 
-   /**
-    * Given a set of files or directories, parade through them to change their
-    * case.
-    * 
-    * @param argv paths to files or directories, use -h to get a usage
-    *        statement.
-    */
-   public static void main(String[] argv) {
-      Debug.init();
-
-      ArgParser ap = new ArgParser("Wanderer");
+	/**
+	 * Given a set of files or directories, parade through them to change their
+	 * case.
+	 * 
+	 * @param argv
+	 *            paths to files or directories, use -h to get a usage
+	 *            statement.
+	 */
+	public static void main(String[] argv) {
+		ArgParser ap = new ArgParser("Wanderer");
 
       if (argv.length == 0) {
          ap.bail("", true);

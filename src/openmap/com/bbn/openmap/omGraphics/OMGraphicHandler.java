@@ -102,7 +102,7 @@ public interface OMGraphicHandler {
      * OMGraphicHandler. If filters have been applied, then the
      * OMGraphics that have made it through the filter are visible.
      * 
-     * @see OMGraphic#isVisible().
+     * @see OMGraphic#isVisible()
      */
     public OMGraphicList getList();
 

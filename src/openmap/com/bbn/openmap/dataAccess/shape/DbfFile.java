@@ -52,7 +52,11 @@ import com.bbn.openmap.util.FileUtils;
 public class DbfFile
         extends DbfTableModel {
 
-    protected int _rowCount;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	protected int _rowCount;
     protected int _recordLength;
     protected int _headerLength;
     /**
@@ -83,7 +87,7 @@ public class DbfFile
     public DbfFile(int columnCount) {
         this();
         _columnCount = columnCount;
-        _records = new ArrayList();
+        _records = new ArrayList<List<Object>>();
         _lengths = new int[columnCount];
         _decimalCounts = new byte[columnCount];
         _types = new byte[columnCount];
@@ -486,9 +490,9 @@ public class DbfFile
                 }
             }
 
-            ArrayList records = null;
+            ArrayList<List<Object>> records = null;
             if (_records != null) {
-                records = new ArrayList(_rowCount);
+                records = new ArrayList<List<Object>>(_rowCount);
             }
             int[] lengths = new int[newColumnCount];
             byte[] decimalCounts = new byte[newColumnCount];

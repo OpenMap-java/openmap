@@ -40,7 +40,7 @@ public class LinkMapRequest {
 
     /** The latitude/longitude of the center of the map. */
     protected LatLonPoint center;
-    /** The scale of the map. The value is interpreted as 1:<scale> */
+    /** The scale of the map. The value is interpreted as 1:scale */
     protected float scale;
     /**
      * A series of LinkBoundingPoly objects making up polygons of
@@ -151,7 +151,7 @@ public class LinkMapRequest {
      * has already been read.
      * 
      * @param link the link to read.
-     * @throws IOException.
+     * @throws IOException
      */
     public String read(Link link) throws IOException {
 

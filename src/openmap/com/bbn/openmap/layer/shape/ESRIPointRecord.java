@@ -26,6 +26,7 @@ import java.io.IOException;
 
 import javax.swing.ImageIcon;
 
+import com.bbn.openmap.dataAccess.shape.ShapeConstants;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGeometry;
 import com.bbn.openmap.omGraphics.OMGeometryList;
@@ -37,7 +38,7 @@ import com.bbn.openmap.omGraphics.OMRaster;
  * An ESRI Point record.
  * 
  * @author Ray Tomlinson
- * @author Tom Mitchell <tmitchell@bbn.com>
+ * @author Tom Mitchell
  * @version $Revision: 1.9 $ $Date: 2006/08/09 21:08:41 $
  */
 public class ESRIPointRecord extends ESRIRecord {
@@ -163,7 +164,9 @@ public class ESRIPointRecord extends ESRIRecord {
                 drawingAttributes.setTo(r);
             }
             list.add(r);
-            r.setAppObject(new Integer(getRecordNumber())); //added by DGK
+            r.putAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE, new Integer(getRecordNumber())); // added
+                                                                                                  // by
+                                                                                                  // DGK
         } else {
             list.add(new OMRaster((float) y, (float) x, -ii.getIconWidth() / 2, -ii.getIconHeight() / 2, ii));
         }

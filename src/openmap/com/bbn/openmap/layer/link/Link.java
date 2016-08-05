@@ -372,8 +372,8 @@ public class Link implements LinkConstants {
     /**
      * readDelimiter is a function designed to read a header string
      * off the data input stream in the Link object. It expects that
-     * the next byte off the link will be a ' <' in the stream, and
-     * then reads through the stream until it finds the '>' expected
+     * the next byte off the link will be a '&lt;' in the stream, and
+     * then reads through the stream until it finds the '&gt;' expected
      * at the end of the string. It will also return a string version
      * of END_TOTAL or END_SECTION if it is encountered instead. If
      * desired, an intern version of the string is returned.
@@ -472,7 +472,7 @@ public class Link implements LinkConstants {
     /**
      * This method is provided for those who want to optimize how they
      * write the graphical objects to the output stream. Look in the
-     * Link <graphics>API to find out the order of the pieces for
+     * LinkGraphics API to find out the order of the pieces for
      * each graphic type. Not recommended for the faint of heart.
      */
     public DataOutput getDOS() {

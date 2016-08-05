@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -81,28 +82,24 @@ import com.bbn.openmap.util.PropUtils;
  * though, where each image could be generated in it's own thread. That code is
  * not written - maybe someday.
  * <P>
- * <code><pre>
- *                 
- *                  
+ * <pre>
  *                   
- *                    # If the ImageServer is created and given a prefix (in this example,
- *                    # 'imageServer') the properties file should contain the properties:
- *                    imageServer.layers=&lt;layer1 layer2 ...&gt;
- *                    layer1.className=&lt;classname&gt;
- *                    layer1.prettyName=&lt;pretty name of layer&gt;
- *                    # Add other attributes as required by layer1...
- *                    layer2.className=&lt;classname&gt;
- *                    layer2.prettyName=&lt;pretty name of layer&gt;
- *                    # Add other attributes as required by layer2...
- *                    # First formatter listed is default.
- *                    imageServer.formatters=&lt;formatter1 formatter2 ...&gt;
- *                    formatter1.class=&lt;classname of formatter 1&gt;
- *                    # Add other formatter1 properties
- *                    formatter2.class=&lt;classname of formatter 2&gt;
- *                    
- *                   
- *                  
- * </pre></code>
+ * # If the ImageServer is created and given a prefix (in this example,
+ * # 'imageServer') the properties file should contain the properties:
+ * imageServer.layers=&lt;layer1 layer2 ...&gt;
+ * layer1.className=&lt;classname&gt;
+ * layer1.prettyName=&lt;pretty name of layer&gt;
+ * # Add other attributes as required by layer1...
+ * layer2.className=&lt;classname&gt;
+ * layer2.prettyName=&lt;pretty name of layer&gt;
+ * # Add other attributes as required by layer2...
+ * # First formatter listed is default.
+ * imageServer.formatters=&lt;formatter1 formatter2 ...&gt;
+ * formatter1.class=&lt;classname of formatter 1&gt;
+ * # Add other formatter1 properties
+ * formatter2.class=&lt;classname of formatter 2&gt;
+ *
+ * </pre>
  * <P>
  * NOTE: If you simply hand the ImageServer a standard openmap.properties file,
  * it works with the addition of the first two attributes except WITHOUT the
@@ -944,15 +941,14 @@ public class ImageServer
         }
 
         int nLayerNames = layerNames.size();
-        Vector<Layer> layers = new Vector<Layer>(nLayerNames);
+        List<Layer> layers = new ArrayList<Layer>(nLayerNames);
 
-        for (int i = 0; i < nLayerNames; i++) {
-            String layerName = (String) layerNames.elementAt(i);
+        for (String layerName : layerNames) {
 
             // Check to see if some other ImageServer has used this
             // layer, and reuse it.
             if (instantiatedLayers != null) {
-                Layer iLayer = (Layer) instantiatedLayers.get(layerName);
+                Layer iLayer = instantiatedLayers.get(layerName);
                 if (iLayer != null) {
 
                     // We might want to consider adding this:
@@ -989,7 +985,7 @@ public class ImageServer
                     l = (Layer) obj;
                 }
 
-                layers.addElement(l);
+                layers.add(l);
 
                 if (instantiatedLayers != null) {
                     instantiatedLayers.put(layerName, l);
@@ -1004,9 +1000,9 @@ public class ImageServer
         if (nLayers == 0) {
             return new Layer[0];
         } else {
-            Layer[] value = new Layer[nLayers];
-            layers.copyInto(value);
-            return value;
+            Layer[] layerArray = new Layer[nLayers];
+            layers.toArray(layerArray);
+            return layerArray;
         }
     }
 

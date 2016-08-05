@@ -74,7 +74,7 @@ public class DataBounds {
     }
 
     /**
-     * @return pper right point
+     * @return upper right point
      */
     public Point2D getMax() {
         return max;
@@ -184,8 +184,7 @@ public class DataBounds {
         }
         if (obj instanceof DataBounds) {
             DataBounds dobj = (DataBounds) obj;
-            boolean match = (min == null && dobj.getMin() == null && max == null
-                    && dobj.getMax() == null);
+            boolean match = (min == null && dobj.getMin() == null && max == null && dobj.getMax() == null);
             boolean match2 = false;
             try {
                 match2 = getMin().equals(dobj.getMin()) && getMax().equals(dobj.getMax());
@@ -220,7 +219,6 @@ public class DataBounds {
         }
         Point2D min2 = db2.getMin();
         Point2D max2 = db2.getMax();
-        return !(min2 == null || (min2.getY() > max.getY() || max2.getY() < min.getY())
-                || (min2.getX() > max.getX() || max2.getX() < min.getX()));
+        return !(min2 == null || (min2.getY() > max.getY() || max2.getY() < min.getY()) || (min2.getX() > max.getX() || max2.getX() < min.getX()));
     }
 }

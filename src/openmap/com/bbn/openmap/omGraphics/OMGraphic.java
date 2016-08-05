@@ -393,7 +393,7 @@ public interface OMGraphic extends OMGeometry, OMGraphicConstants, Cloneable {
     /**
      * Invoke this to regenerate a "dirty" graphic. This method is a wrapper
      * around the <code>generate()</code> method. It invokes
-     * <code>generate()</code> only if</code> needToRegenerate() </code> on the
+     * <code>generate()</code> only if<code> needToRegenerate() </code> on the
      * graphic returns true. To force a graphic to be generated, call
      * <code>generate()</code> directly.
      * 

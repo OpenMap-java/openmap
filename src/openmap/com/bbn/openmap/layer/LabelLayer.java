@@ -41,9 +41,9 @@ import com.bbn.openmap.util.Taskable;
  * Layer that displays a label. This Layer is a Taskable
  * (ActionListener) object so that it can be prompted by a
  * javax.swing.Timer object. This layer understands the following
- * properties: <code><pre>
+ * properties: 
+ * <p><pre>
  * 
- *  
  *   # display font as a Java font string
  *   label.font=SansSerif-Bold
  *   # like XWindows geometry: [+-]X[+-]Y, `+' indicates relative to
@@ -57,24 +57,22 @@ import com.bbn.openmap.util.Taskable;
  *   # date format (using java.text.SimpleDateFormat patterns)
  *   label.text=The Graph
  *   
- *  
- * </pre></code>
+ * </pre>
  * <p>
  * In addition to the previous properties, you can get this layer to
  * work with the OpenMap viewer by adding/editing the additional
  * properties in your <code>openmap.properties</code> file:
- * <code><pre>
+ * <p><pre>
  * 
- *  
  *   # layers
  *   openmap.layers=label ...
  *   # class
  *   label.class=com.bbn.openmap.layer.LabelLayer
  *   # name
  *   label.prettyName=Label Layer
- *   
- *  
- * </pre></code> NOTE: the color properties do not support alpha value if
+ * 
+ * </pre>
+ * <p> NOTE: the color properties do not support alpha value if
  * running on JDK 1.1...
  */
 public class LabelLayer extends OMGraphicHandlerLayer implements Taskable,

@@ -31,7 +31,7 @@ import com.bbn.openmap.util.HashCodeUtil;
  * A class representing an x,y coordinate.
  * 
  * @author Ray Tomlinson
- * @author Tom Mitchell <tmitchell@bbn.com>
+ * @author Tom Mitchell
  * @version $Revision: 1.3 $ $Date: 2004/10/14 18:06:04 $
  */
 public class ESRIPoint {

@@ -268,7 +268,7 @@ public class LinkActionList implements LinkActionConstants,
      * @param proj the projection to apply to the graphic.
      * @param generator an OMGridGenerator that knows how to render grid
      *        objects.
-     * @throws IOException.
+     * @throws IOException
      */
     protected GraphicUpdate readGraphic(int graphicAction, LinkProperties graphicProperties, Projection proj,
                                         OMGridGenerator generator)
@@ -354,7 +354,7 @@ public class LinkActionList implements LinkActionConstants,
      * The server method for writing a request to the client to deselect all the
      * graphics.
      * 
-     * @throws IOException.
+     * @throws IOException
      */
     public void deselectGraphics() throws IOException {
         link.dos.write(Link.UPDATE_GRAPHICS.getBytes());

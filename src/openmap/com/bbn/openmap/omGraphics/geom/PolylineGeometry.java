@@ -30,34 +30,37 @@ import com.bbn.openmap.proj.DrawUtil;
 /**
  * Graphic object that represents a polygon.
  * <p>
- * All of the OMGraphics are moving to having their internal representation as
- * java.awt.Shape objects. Unfortunately, this has the side effect of slowing
- * OMPolys down, because the way that the projection classes handle
- * transformations cause more objects to be allocated and more loops to be run
- * through. So, by default, the OMPoly does NOT use Shape objects internally, to
- * keep layers that throw down many, many polys running quickly. If you want to
- * do some spatial analysis on an OMPoly, call setDoShapes(true) on it, then
- * generate(Projection), and then call getShapes() to get the java.awt.Shape
- * objects for the poly. You can then run the different Shape spatial analysis
- * methods on the Shape objects.
+ * All of the OMGraphics are moving to having their internal
+ * representation as java.awt.Shape objects. Unfortunately, this has
+ * the side effect of slowing OMPolys down, because the way that the
+ * projection classes handle transformations cause more objects to be
+ * allocated and more loops to be run through. So, by default, the
+ * OMPoly does NOT use Shape objects internally, to keep layers that
+ * throw down many, many polys running quickly. If you want to do some
+ * spatial analysis on an OMPoly, call setDoShapes(true) on it, then
+ * generate(Projection), and then call getShapes() to get the
+ * java.awt.Shape objects for the poly. You can then run the different
+ * Shape spatial analysis methods on the Shape objects.
  * 
  * <h3>NOTES:</h3>
  * <ul>
- * <li>See the
- * <a href="../../proj/GeoProj.html#poly_restrictions"> RESTRICTIONS </a> on
- * Lat/Lon polygons/polylines. Not following the guidelines listed may result in
- * ambiguous/undefined shapes! Similar assumptions apply to the other vector
- * graphics that we define: circles, ellipses, rects, lines.
- * <li>LatLon OMPolys store latlon coordinates internally in radian format for
- * efficiency in projecting. Subclasses should follow this model.
- * <li>Holes in the poly are not supported. If you want holes, use multiple
- * PolyGeometrys in a OMGeometryList.
+ * <li>See the <a
+ * href="../../proj/GeoProj.html#poly_restrictions">
+ * RESTRICTIONS </a> on Lat/Lon polygons/polylines. Not following the
+ * guidelines listed may result in ambiguous/undefined shapes! Similar
+ * assumptions apply to the other vector graphics that we define:
+ * circles, ellipses, rects, lines.
+ * <li>LatLon OMPolys store latlon coordinates internally in radian
+ * format for efficiency in projecting. Subclasses should follow this
+ * model.
+ * <li>Holes in the poly are not supported. If you want holes, use
+ * multiple PolyGeometrys in a OMGeometryList.
  * <p>
  * </ul>
  * <h3>TODO:</h3>
  * <ul>
- * <li>Polar filled-polygon correction for Cylindrical projections (like
- * OMCircle).
+ * <li>Polar filled-polygon correction for Cylindrical projections
+ * (like OMCircle).
  * </ul>
  */
 public abstract class PolylineGeometry extends PolygonGeometry implements

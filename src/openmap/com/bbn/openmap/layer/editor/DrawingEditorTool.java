@@ -80,8 +80,7 @@ import com.bbn.openmap.util.PropUtils;
  * Properties for an EditorLayer using the DrawingEditorTool:
  * 
  * <pre>
- * 
- * 
+ *
  *   # Layer declaration, dtlayer has to go in openmap.layers property
  *   dtlayer.class=com.bbn.openmap.layer.editor.EditorLayer
  *   # GUI name for layer, will also be the ID of the 'hidden' mouse mode used for tool.
@@ -106,8 +105,9 @@ import com.bbn.openmap.util.PropUtils;
  *   # EditToolLoader classes for points and lines, they get rendered
  *   # with whatever color was set last for the DrawingEditorTool.
  *   dtlayer.points.class=com.bbn.openmap.tools.drawing.OMPointLoader
- * dtlayer.lines.class=com.bbn.openmap.tools.drawing.OMLineLoader
+ * 	 dtlayer.lines.class=com.bbn.openmap.tools.drawing.OMLineLoader
  * 
+ * </pre>
  */
 public class DrawingEditorTool extends AbstractEditorTool implements ActionListener,
         PropertyChangeListener, PropertyConsumer {

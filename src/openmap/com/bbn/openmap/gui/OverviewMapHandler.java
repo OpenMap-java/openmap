@@ -211,7 +211,7 @@ public class OverviewMapHandler extends OMToolComponent implements ProjectionLis
 
     /**
      * Flag to change the background color to whatever the source map's is
-     * changed to. True byt default.
+     * changed to. True by default.
      */
     protected boolean backgroundSlave = true;
 
@@ -311,12 +311,15 @@ public class OverviewMapHandler extends OMToolComponent implements ProjectionLis
      * Sets the properties for the <code>Layer</code>. This allows
      * <code>Layer</code> s to get a richer set of parameters than the
      * <code>setArgs</code> method. Part of the PropertyConsumer interface.
-     * Layers which override this method should do something like: <code><pre>
+     * Layers which override this method should do something like: 
+     * <p>
+     * <pre>
      * public void setProperties(String prefix, Properties props) {
      *     super.setProperties(prefix, props);
      *     // do local stuff
      * }
-     * </pre></code> If the addToBeanContext property is not defined, it is set
+     * </pre>
+     * <p> If the addToBeanContext property is not defined, it is set
      * to false here.
      * 
      * @param prefix the token to prefix the property names
@@ -482,7 +485,7 @@ public class OverviewMapHandler extends OMToolComponent implements ProjectionLis
      * Passing a null value will remove the current sourceMap from the list of
      * Maps that this handler is controlling and set sourceMap to null.
      * 
-     * @param srcMap srcMap.
+     * @param srcMap the master map.
      */
     public void setSourceMap(MapBean srcMap) {
         if (sourceMap != null) {

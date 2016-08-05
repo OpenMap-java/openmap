@@ -56,11 +56,9 @@ import com.bbn.openmap.util.DataBounds;
 import com.bbn.openmap.util.PropUtils;
 
 /**
- * A data importer for the EventLayer. The location file should contain
- * information about objects that will be moving on the map. The activity file
- * will contain information about where and when the objects moved. Sample
- * properties:
- * 
+ * A data importer for the EventLayer. The location file should contain information about objects that will be moving on
+ * the map. The activity file will contain information about where and when the objects moved. Sample properties:
+ *
  * <pre>
  *    eventLayer.class=com.bbn.openmap.layer.time.EventLayer
  *    eventLayer.importer=com.bbn.openmap.layer.time.CSVEventImporter
@@ -81,7 +79,7 @@ import com.bbn.openmap.util.PropUtils;
  *    # If no icon defined, used for location markers fill.
  *    eventLayer.fillColor=aaaaaa33
  * </pre>
- * 
+ *
  * @author dietrick
  */
 public class CSVEventImporter extends OMComponent implements EventImporter {
@@ -187,8 +185,9 @@ public class CSVEventImporter extends OMComponent implements EventImporter {
                     ImageIcon icon = null;
                     Vector<?> record = records.next();
 
-                    if (record.isEmpty())
-                        continue;
+					if (record.isEmpty()) {
+						continue;
+					}
 
                     name = (String) record.elementAt(nameIndex);
 
@@ -263,8 +262,9 @@ public class CSVEventImporter extends OMComponent implements EventImporter {
 
                     Vector<?> record = records.next();
 
-                    if (record.isEmpty())
-                        continue;
+					if (record.isEmpty()) {
+						continue;
+					}
 
                     name = record.elementAt(activityNameIndex)
                             .toString()
@@ -363,15 +363,16 @@ public class CSVEventImporter extends OMComponent implements EventImporter {
         return list;
     }
 
-    /**
-     * The properties and prefix are managed and decoded here, for the standard
-     * uses of the EventLayer.
-     * 
-     * @param prefix string prefix used in the properties file for this layer.
-     * @param properties the properties set in the properties file.
-     */
-    public void setProperties(String prefix, Properties properties) {
-        super.setProperties(prefix, properties);
+	/**
+	 * The properties and prefix are managed and decoded here, for the standard uses of the EventLayer.
+	 *
+	 * @param prefix string prefix used in the properties file for this layer.
+	 * @param properties the properties set in the properties file.
+	 */
+	public void setProperties(String prefix, Properties properties) {
+		super.setProperties(prefix, properties);
+
+		drawingAttributes.setProperties(prefix, properties);
 
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
 
@@ -417,20 +418,19 @@ public class CSVEventImporter extends OMComponent implements EventImporter {
         }
     }
 
-    /**
-     * PropertyConsumer method, to fill in a Properties object, reflecting the
-     * current values of the layer. If the layer has a propertyPrefix set, the
-     * property keys should have that prefix plus a separating '.' prepended to
-     * each property key it uses for configuration.
-     * 
-     * @param props a Properties object to load the PropertyConsumer properties
-     *        into.
-     * @return Properties object containing PropertyConsumer property values. If
-     *         getList was not null, this should equal getList. Otherwise, it
-     *         should be the Properties object created by the PropertyConsumer.
-     */
-    public Properties getProperties(Properties props) {
-        props = super.getProperties(props);
+	/**
+	 * PropertyConsumer method, to fill in a Properties object, reflecting the current values of the layer. If the layer
+	 * has a propertyPrefix set, the property keys should have that prefix plus a separating '.' prepended to each
+	 * property key it uses for configuration.
+	 *
+	 * @param props a Properties object to load the PropertyConsumer properties into.
+	 * @return Properties object containing PropertyConsumer property values. If getList was not null, this should equal
+	 * getList. Otherwise, it should be the Properties object created by the PropertyConsumer.
+	 */
+	public Properties getProperties(Properties props) {
+		props = super.getProperties(props);
+
+		drawingAttributes.getProperties(props);
 
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
@@ -524,7 +524,9 @@ public class CSVEventImporter extends OMComponent implements EventImporter {
         list.put(DefaultIconURLProperty,
                 "The URL of an image file to use as a default for the location markers (optional).");
 
-        return list;
-    }
+		drawingAttributes.getPropertyInfo(list);
+
+		return list;
+	}
 
 }

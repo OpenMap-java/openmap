@@ -489,7 +489,7 @@ public class InformationDelegator extends OMComponentPanel implements InfoDispla
     /**
      * This method should follow a call to showToolTip in order to indicate that
      * the tooltip should no longer be displayed. This method should always
-     * follow a call to <code>showToolTip</code?
+     * follow a call to <code>showToolTip</code>
      *
      * @param me A MouseEvent which passes from a MapMouseListener to indicate
      *        that a tooltip should disappear
@@ -502,7 +502,7 @@ public class InformationDelegator extends OMComponentPanel implements InfoDispla
     /**
      * This method should follow a call to showToolTip in order to indicate that
      * the tooltip should no longer be displayed. This method should always
-     * follow a call to <code>showToolTip</code?
+     * follow a call to <code>showToolTip</code>
      */
     public void requestHideToolTip() {
         initToolTip();

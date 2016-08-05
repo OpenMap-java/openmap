@@ -43,6 +43,10 @@ import com.bbn.openmap.proj.Projection;
  * background layers eliminates the flashing effect seen when panning or zooming
  * a map when a faster-responding layer is on top.
  * <P>
+ * NOTE: The need for this RenderPolicy is superseded by using the
+ * PanningMouseMode on the MapBean instead.
+ * 
+ * <P>
  * You can set this object on an OMGraphicHandlerLayer through the API, or set
  * it in the properties:
  * 

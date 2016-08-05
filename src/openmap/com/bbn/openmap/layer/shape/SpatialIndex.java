@@ -62,89 +62,30 @@ import com.bbn.openmap.util.PropUtils;
  * <p>
  * The file has a 100 byte header identical to a Shape Index followed by <i>n
  * </i> records.
- * <p>
- * The record layout of the spatial index is as follows:
- * <p>
- * <TABLE BORDER COLS=5 WIDTH="100%" >
- * <TR>
- * <TD ALIGN=CENTER><b><i>Position </i> </b></TD>
- * <TD ALIGN=CENTER><b><i>Field </i> </b></TD>
- * <TD ALIGN=CENTER><b><i>Value </i> </b></TD>
- * <TD ALIGN=CENTER><b><i>Type </i> </b></TD>
- * <TD ALIGN=CENTER><b><i>Byte Order </i> </b></TD>
- * </TR>
- * <TR>
- * <TD ALIGN=CENTER>Byte 0</TD>
- * <TD ALIGN=CENTER>Offset</TD>
- * <TD ALIGN=CENTER>Offset</TD>
- * <TD ALIGN=CENTER>Integer</TD>
- * <TD ALIGN=CENTER>Big</TD>
- * </TR>
- * <TR>
- * <TD ALIGN=CENTER>Byte 4</TD>
- * <TD ALIGN=CENTER>Content Length</TD>
- * <TD ALIGN=CENTER>Content Length</TD>
- * <TD ALIGN=CENTER>Integer</TD>
- * <TD ALIGN=CENTER>Big</TD>
- * </TR>
- * <TR>
- * <TD ALIGN=CENTER>Byte 8</TD>
- * <TD ALIGN=CENTER>Bounding Box</TD>
- * <TD ALIGN=CENTER>Xmin</TD>
- * <TD ALIGN=CENTER>Double</TD>
- * <TD ALIGN=CENTER>Little</TD>
- * </TR>
- * <TR>
- * <TD ALIGN=CENTER>Byte 16</TD>
- * <TD ALIGN=CENTER>Bounding Box</TD>
- * <TD ALIGN=CENTER>Ymin</TD>
- * <TD ALIGN=CENTER>Double</TD>
- * <TD ALIGN=CENTER>Little</TD>
- * </TR>
- * <TR>
- * <TD ALIGN=CENTER>Byte 24</TD>
- * <TD ALIGN=CENTER>Bounding Box</TD>
- * <TD ALIGN=CENTER>Xmax</TD>
- * <TD ALIGN=CENTER>Double</TD>
- * <TD ALIGN=CENTER>Little</TD>
- * </TR>
- * <TR>
- * <TD ALIGN=CENTER>Byte 32</TD>
- * <TD ALIGN=CENTER>Bounding Box</TD>
- * <TD ALIGN=CENTER>Ymax</TD>
- * <TD ALIGN=CENTER>Double</TD>
- * <TD ALIGN=CENTER>Little</TD>
- * </TR>
- * </TABLE>
  * 
- * <H2>Usage</H2>
- * <DT>java com.bbn.openmap.layer.shape.SpatialIndex -d file.ssx</DT>
- * <DD><i>Dumps spatial index information, excluding bounding boxes to stdout.
- * Useful for comparing to a shape index. </i></DD>
- * <p>
- * <DT>java com.bbn.openmap.layer.shape.SpatialIndex -d -b file.ssx</DT>
- * <DD><i>Dumps spatial index information including bounding boxes to stdout.
- * </i></DD>
- * <p>
- * <DT>java com.bbn.openmap.layer.shape.SpatialIndex -c file.shp</DT>
- * <DD><i>Creates spatial index <code>file.ssx</code> from shape file
- * <code>file.shp</code>. </i></DD>
- * <p>
+ * <b>Usage</b>
+ * <pre>
  * 
- * <H2>Notes</H2>
+ * <i>Dumps spatial index information, excluding bounding boxes to stdout.
+ * Useful for comparing to a shape index.</i>
+ * java com.bbn.openmap.layer.shape.SpatialIndex -d file.ssx
+ *
+ * <i>Dumps spatial index information including bounding boxes to stdout.</i>
+ * java com.bbn.openmap.layer.shape.SpatialIndex -d -b file.ssx
+ *
+ * <i>Creates spatial index <code>file.ssx</code> from shape file.shp</i>
+ * java com.bbn.openmap.layer.shape.SpatialIndex -c file.shp
+ * 
+ * </pre>
+ * 
+ * <b>Notes</b><p>
  * When reading the Shape file, the content length is the length of the record's
  * contents, exclusive of the record header (8 bytes). So the size that we need
  * to read in from the Shape file is actually denoted as ((contentLength * 2) +
  * 8). This converts from 16bit units to 8 bit bytes and adds the 8 bytes for
  * the record header.
  * 
- * <H2>To Do</H2>
- * <UL>
- * <LI>index arcs</LI>
- * <LI>index multipoints</LI>
- * </UL>
- * 
- * @author Tom Mitchell <tmitchell@bbn.com>
+ * @author Tom Mitchell
  * @version $Revision: 1.19 $ $Date: 2009/02/25 22:34:04 $
  * @see ShapeIndex
  */

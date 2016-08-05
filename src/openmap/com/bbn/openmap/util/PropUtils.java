@@ -340,11 +340,11 @@ public class PropUtils {
      * @param prop property value to be set in properties after this call
      * @return empty string if prop equals null, else returns what was passed in
      */
-    public static String unnull(String prop) {
+    public static String unnull(Object prop) {
         if (prop == null) {
             return "";
         }
-        return prop;
+        return prop.toString();
     }
 
     /**
@@ -458,8 +458,7 @@ public class PropUtils {
      *        if the value isn't a numerical value.
      * @return boolean value associated with the property.
      */
-    public static boolean booleanFromProperties(Properties p, String propName,
-                                                boolean defaultValue) {
+    public static boolean booleanFromProperties(Properties p, String propName, boolean defaultValue) {
         boolean ret = defaultValue;
         String booleanString = p.getProperty(propName);
         if (booleanString != null) {

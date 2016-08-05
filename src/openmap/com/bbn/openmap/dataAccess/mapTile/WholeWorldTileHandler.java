@@ -243,7 +243,6 @@ public class WholeWorldTileHandler extends ShpFileEmptyTileHandler {
      * write it locally to localFilePath for caching.
      * 
      * @param imagePath the source URL image path.
-     * @param localFilePath the caching local file path
      * @return byte[] of image
      */
     public byte[] getImageBytes(String imagePath) {

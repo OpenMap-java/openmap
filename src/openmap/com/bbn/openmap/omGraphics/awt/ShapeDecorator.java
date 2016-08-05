@@ -107,7 +107,7 @@ public class ShapeDecorator implements Revertable {
         int segType;
         double[] segCoords = new double[6];
 
-        LinkedList points = new LinkedList();
+        LinkedList<Point2D> points = new LinkedList<Point2D>();
         Point2D firstPoint = null;
         Point2D point;
 
@@ -153,9 +153,10 @@ public class ShapeDecorator implements Revertable {
      * @param ycoords array of y floating coordinates
      */
     public void draw(Graphics g, float xcoords[], float[] ycoords) {
-        LinkedList points = new LinkedList();
-        for (int i = 0; i < xcoords.length; i++)
+        LinkedList<Point2D> points = new LinkedList<Point2D>();
+        for (int i = 0; i < xcoords.length; i++) {
             points.add(new Point2D.Double(xcoords[i], ycoords[i]));
+        }
         draw(g, points);
     }
 
@@ -167,7 +168,7 @@ public class ShapeDecorator implements Revertable {
      * @param ycoords array of y integer coordinates
      */
     public void draw(Graphics g, int xcoords[], int[] ycoords) {
-        LinkedList points = new LinkedList();
+        LinkedList<Point2D> points = new LinkedList<Point2D>();
         for (int i = 0; i < xcoords.length; i++)
             points.add(new Point2D.Double(xcoords[i], ycoords[i]));
         draw(g, points);
@@ -180,7 +181,7 @@ public class ShapeDecorator implements Revertable {
      * @param points array of points
      */
     public void draw(Graphics g, Point2D[] points) {
-        LinkedList pointlist = new LinkedList();
+        LinkedList<Point2D> pointlist = new LinkedList<Point2D>();
         for (int i = 0; i < points.length; i++)
             pointlist.add(points[i]);
         draw(g, pointlist);
@@ -194,19 +195,20 @@ public class ShapeDecorator implements Revertable {
      * @param g the Graphics to use
      * @param points array of points (instances of Point2D)
      */
-    protected void draw(Graphics g, LinkedList points) {
+    protected void draw(Graphics g, LinkedList<Point2D> points) {
 
         if (decorations.isEmpty())
             throw new NullPointerException("No decorations");
 
-        Iterator decorationIterator = decorations.listIterator();
-        LinkedList polysegment = new LinkedList();
+        Iterator<ShapeDecoration> decorationIterator = decorations.listIterator();
+        LinkedList<Point2D> polysegment = new LinkedList<Point2D>();
         Point2D[] point2DArrayType = new Point2D.Double[1];
 
         while (!points.isEmpty()) {
-            if (!decorationIterator.hasNext())
+            if (!decorationIterator.hasNext()) {
                 decorationIterator = decorations.listIterator();
-            ShapeDecoration decor = (ShapeDecoration) decorationIterator.next();
+            }
+            ShapeDecoration decor = decorationIterator.next();
 
             boolean complete = LineUtil.retrievePoints(decor.getLength(),
                     points,

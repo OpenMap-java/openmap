@@ -20,7 +20,7 @@ import com.bbn.openmap.io.FormatException;
  * <P>
  * It can parse the expression given per the specification, such as
  * 42|1|bfc|1|0|1, or the strings specified in the symbol tables in the
- * MIL-DTL-89045A, like bfc=81 AND sta<>0and<>1and<>2and<>3and<>5and<>6and<>11.
+ * MIL-DTL-89045A, like bfc=81 AND sta&lt;&gt;0and&lt;&gt;1and&lt;&gt;2and&lt;&gt;3and&lt;&gt;5and&lt;&gt;6and&lt;&gt;11.
  * <P>
  * 
  * @author dietrick

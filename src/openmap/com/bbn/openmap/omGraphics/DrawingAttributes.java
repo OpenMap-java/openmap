@@ -1395,12 +1395,12 @@ public class DrawingAttributes implements ActionListener, Serializable, Cloneabl
      * PropertyConsumer interface. DrawingAttributess which override this method
      * should do something like:
      * 
-     * <code><pre>
+     * <pre>
      * public void setProperties(String prefix, Properties props) {
      *     super.setProperties(prefix, props);
      *     // do local stuff
      * }
-     * </pre></code>
+     * </pre>
      * 
      * If the addToBeanContext property is not defined, it is set to false here.
      * 

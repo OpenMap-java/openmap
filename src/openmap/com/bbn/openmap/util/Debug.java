@@ -34,36 +34,39 @@ import java.util.Hashtable;
 import java.util.Properties;
 
 /**
- * An abstract class that presents a static interface for debugging output. It
- * also provides a way to direct output into a log. There are two types of
- * output - the regular output information, and the error information, and they
- * can be handled separately. There are two differences between the two - the
- * error file only gets created if there is an error, and the error messages
- * have a header and a tail surrounding the messages, making them easier to
- * spot. If the output and error file are set to be the same (setLogFile()),
- * then that file is created automatically, regardless of anything being put
- * into it.
+ * An abstract class that presents a static interface for debugging
+ * output. It also provides a way to direct output into a log. There
+ * are two types of output - the regular output information, and the
+ * error information, and they can be handled separately. There are
+ * two differences between the two - the error file only gets created
+ * if there is an error, and the error messages have a header and a
+ * tail surrounding the messages, making them easier to spot. If the
+ * output and error file are set to be the same (setLogFile()), then
+ * that file is created automatically, regardless of anything being
+ * put into it.
  * <p>
- * Debugging output is turned on or off by system properties for applications,
- * or parameters for applets.
+ * Debugging output is turned on or off by system properties for
+ * applications, or parameters for applets.
  * <p>
  * A programmer can use code like the following:
+ * <p>
+ * <pre><code>
  * 
- * <pre>
- * <code>
  * if (Debug.debugging(&quot;foo&quot;)) {
  *     System.out.println(&quot;Got &quot; + nbytes + &quot; bytes of data.&quot;);
  * }
- * </code>
- * </pre>
+ * 
+ * </code></pre>
  * <p>
  * The message gets printed when the application is run with
  * <code>-Ddebug.foo</code> or when the applet gets run with:
- * <p>
+ * <pre>
+ * 
  * <code>&lt;param name=debug.foo value=&gt;</code>
- * <p>
- * The special token <code>debug.all</code> turns on all debugging for both
- * applets and applications.
+ * 
+ * </pre>
+ * The special token <code>debug.all</code> turns on all debugging
+ * for both applets and applications.
  * 
  * @author Tom Mitchell (tmitchell@bbn.com)
  * @author $Author: dietrick $
@@ -306,7 +309,7 @@ public abstract class Debug {
      * 
      * @param file the file to use for the error log.
      * @param alsoToOutStream true if the out stream should still provide
-     *        output, in addition to logging the output.
+     *        output, in addition to logging the output
      */
     public static void directOutput(File file, boolean alsoToOutStream) {
         try {

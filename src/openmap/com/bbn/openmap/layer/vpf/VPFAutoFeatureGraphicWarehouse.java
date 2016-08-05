@@ -96,8 +96,8 @@ import com.bbn.openmap.util.PropUtils;
  * priority,type,facc,conditions,description
  * 0,Area,BA040,
  * 0,Area,BE010,cvl=99999
- * 0,Area,BE010,idsm=0 AND cvl>=msdcand<>99999
- * 0,Area,BE010,idsm=0 AND cvl>=ssdcand<msdc
+ * 0,Area,BE010,idsm=0 AND cvl&gt;=msdcand&lt;&gt;99999
+ * 0,Area,BE010,idsm=0 AND cvl&gt;=ssdcand&lt;msdc
  * </pre>
  * 
  * The priority field really isn't important, the order of the overall file is.

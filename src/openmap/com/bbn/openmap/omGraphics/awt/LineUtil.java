@@ -67,11 +67,11 @@ public class LineUtil {
      * @param polysegment the returned points
      * @return true if we got the desired length, false otherwise
      */
-    protected static boolean retrievePoints(float length, LinkedList points, LinkedList polysegment) {
+    protected static boolean retrievePoints(float length, LinkedList<Point2D> points, LinkedList<Point2D> polysegment) {
         polysegment.clear();
 
         // first point
-        Point2D point = (Point2D) points.removeFirst();
+        Point2D point = points.removeFirst();
         polysegment.add(point);
 
         double consumedLength = 0.0;

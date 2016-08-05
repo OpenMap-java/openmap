@@ -52,8 +52,7 @@ import com.bbn.openmap.util.PropUtils;
  * the layer. If Layer.isVisible() is true, the layer will be added to the
  * MapBean. There are methods within the LayerHandler that let you change the
  * visibility setting of a layer.
- * <p/>
- * <p/>
+ * <p>
  * The LayerHandler is able to take a Properties object, and create layers that
  * are defined within it. The key property is "layers", which may or may not
  * have a prefix for it. If that property does have a prefix (prefix.layers,
@@ -68,8 +67,8 @@ import com.bbn.openmap.util.PropUtils;
  * particular layer can use should be listed in the Properties, with the
  * applicable marker name as a prefix. Each layer should have its available
  * properties defined in its documentation. For example:
- * <p/>
- * <p/>
+ * <p>
+ * <p>
  * 
  * <pre>
  *           &lt;p/&gt;
@@ -88,9 +87,7 @@ import com.bbn.openmap.util.PropUtils;
  *           &lt;p/&gt;
  * </pre>
  * 
- * <p/>
- * <p/>
- * <p/>
+ * <p>
  * The LayerHandler is a SoloMapComponent, which means that for a particular
  * map, there should only be one of them. When a LayerHandler is added to a
  * BeanContext, it will look for a MapBean to connect to itself as a

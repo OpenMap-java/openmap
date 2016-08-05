@@ -131,7 +131,6 @@ public class EsriPolylineList extends EsriGraphicList {
     public static OMPoly convert(OMLine omLine) {
         if (omLine.getRenderType() == OMGraphic.RENDERTYPE_LATLON) {
         	// Yikes, if we just give omLine LL to OMPoly, they change to radians right under our feet!
-
             OMPoly poly = new OMPoly(DeepCopyUtil.deepCopy(omLine.getLL()), OMGraphic.DECIMAL_DEGREES, omLine.getLineType());
             poly.setAttributes(omLine.getAttributes());
             DrawingAttributes da = new DrawingAttributes();

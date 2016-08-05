@@ -61,9 +61,9 @@ public class ZoomLevelMakerFace extends OMComponentPanel {
     boolean include = false;
 
     protected JList boundsList;
-    protected List<BoundsObject> boundsObjectList;
-    protected BoundsListModel boundsModel;
-    protected OMGraphicList boundaries = new OMGraphicList();
+	protected List<BoundsObject> boundsObjectList;
+	protected BoundsListModel boundsModel;
+	protected OMGraphicList boundaries = new OMGraphicList();
 
     protected List<LayerObject> layerList = new ArrayList<LayerObject>();
     protected MapTileMakerComponent organizer;
@@ -77,7 +77,8 @@ public class ZoomLevelMakerFace extends OMComponentPanel {
     protected JButton scaleButton;
     JSpinner rangeLevelChoice;
 
-    public ZoomLevelMakerFace(ZoomLevelMaker zfi, MapTileMakerComponent mtmc) {
+	@SuppressWarnings("serial")
+	public ZoomLevelMakerFace(ZoomLevelMaker zfi, MapTileMakerComponent mtmc) {
 
         this.zfi = zfi;
         this.organizer = mtmc;
@@ -500,42 +501,42 @@ public class ZoomLevelMakerFace extends OMComponentPanel {
         }
     }
 
-    /**
-     * Bounds list model for boundary JList.
-     * 
-     * @author dietrick
-     */
+	/**
+	 * Bounds list model for boundary JList.
+	 * 
+	 * @author dietrick
+	 */
     private final class BoundsListModel extends AbstractListModel {
-        private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 1L;
 
         public int getSize() {
             return boundsObjectList.size();
         }
 
-        public Object getElementAt(int index) {
-            return boundsObjectList.get(index);
-        }
+		public BoundsObject getElementAt(int index) {
+			return boundsObjectList.get(index);
+		}
 
-        public void editElement(int index) {
-            fireContentsChanged(this, index, index);
-        }
+		public void editElement(int index) {
+			fireContentsChanged(this, index, index);
+		}
 
-        public void insertElement(BoundsObject obj, int index) {
-            boundsObjectList.add(index, obj);
-            fireIntervalAdded(this, index, index);
-        }
+		public void insertElement(BoundsObject obj, int index) {
+			boundsObjectList.add(index, obj);
+			fireIntervalAdded(this, index, index);
+		}
 
-        public void addElement(BoundsObject obj) {
-            int index = getSize();
-            boundsObjectList.add(obj);
-            fireIntervalAdded(this, index, index);
-        }
+		public void addElement(BoundsObject obj) {
+			int index = getSize();
+			boundsObjectList.add(obj);
+			fireIntervalAdded(this, index, index);
+		}
 
-        public BoundsObject removeElementAt(int index) {
-            BoundsObject obj = boundsObjectList.remove(index);
-            fireIntervalRemoved(this, index, index);
-            return obj;
-        }
+		public BoundsObject removeElementAt(int index) {
+			BoundsObject obj = boundsObjectList.remove(index);
+			fireIntervalRemoved(this, index, index);
+			return obj;
+		}
 
         public void clear() {
             int size = boundsObjectList.size();

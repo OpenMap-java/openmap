@@ -17,6 +17,11 @@ import javax.swing.JOptionPane;
 public class DrawingToolRenderException extends Exception {
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
      * Displays a JOtionPane Message Dialog informing the user that
      * any Drawing Tool graphics not rendered in LAT/LON will not be
      * exported.

@@ -98,8 +98,8 @@ public class DTEDFrameUtil {
 
     /**
      * Conversion of a float latitude value and DTED level to a DTED
-     * filename. DTED filenames are based on these two factors -<n/s>
-     * <value>.dt{0,1} DTED Level 0 files are named .dt0. Level 1 and
+     * filename. DTED filenames are based on these two factors -&lt;n/s&gt;
+     * &lt;value&gt;.dt{0,1} DTED Level 0 files are named .dt0. Level 1 and
      * higher are named .dt1, rather than .dt{level}
      * 
      * @param lat latitude in decimal degrees.
@@ -134,7 +134,7 @@ public class DTEDFrameUtil {
     /**
      * Conversion of a float longitude value to a DTED parent
      * directory of frame files. DTED parent directories are based on
-     * latitude -<w/e><value>.
+     * latitude -&lt;w/e&gt;&lt;value&gt;.
      * 
      * @param lon longitude in decimal degrees.
      * @return part of the DTED directory path that longitude

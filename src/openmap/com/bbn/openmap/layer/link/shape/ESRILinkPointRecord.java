@@ -32,7 +32,7 @@ import com.bbn.openmap.layer.shape.ESRIPointRecord;
  * An ESRI Point record.
  * 
  * @author Ray Tomlinson
- * @author Tom Mitchell <tmitchell@bbn.com>
+ * @author Tom Mitchell
  * @version $Revision: 1.4 $ $Date: 2004/10/14 18:05:58 $
  */
 public class ESRILinkPointRecord extends ESRIPointRecord implements

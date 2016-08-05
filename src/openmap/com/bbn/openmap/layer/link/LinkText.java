@@ -47,7 +47,7 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param just the justification of the string.
      * @param properties attributes for the graphic.
      * @param dos DataOutputStream
-     * @throws IOException.
+     * @throws IOException
      */
     public static void write(float latPoint, float lonPoint, String stuff,
                              String font, int just, LinkProperties properties,
@@ -75,7 +75,7 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param just the justification of the string
      * @param properties attributes for the graphic.
      * @param dos DataOutputStream
-     * @throws IOException.
+     * @throws IOException
      */
     public static void write(int x1, int y1, String stuff, String font,
                              int just, LinkProperties properties,
@@ -107,7 +107,7 @@ public class LinkText implements LinkGraphicConstants, LinkPropertiesConstants {
      * @param just the justification of the string.
      * @param properties attributes for the graphic.
      * @param dos DataOutputStream
-     * @throws IOException.
+     * @throws IOException
      */
     public static void write(float latPoint, float lonPoint, int offset_x1,
                              int offset_y1, String stuff, String font,

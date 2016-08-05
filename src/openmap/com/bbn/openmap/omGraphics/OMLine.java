@@ -55,9 +55,7 @@ import com.bbn.openmap.util.DeepCopyUtil;
  * 
  * @see OMPoly
  */
-public class OMLine
-        extends OMAbstractLine
-        implements Serializable, NonRegional {
+public class OMLine extends OMAbstractLine implements Serializable, NonRegional {
 
     /**
      * Figured out after generation, based on what's going on with the map.

@@ -99,9 +99,8 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * @author Doug Van Auken
  */
-public class DbfTableModel
-        extends AbstractTableModel
-        implements ShapeConstants, TableModelListener {
+public class DbfTableModel extends AbstractTableModel
+		implements ShapeConstants, TableModelListener, Iterable<List<Object>> {
 
     /*
      * Binary, Memo, OLE Fields and .DBT Files
@@ -353,15 +352,22 @@ public class DbfTableModel
         return _records.iterator();
     }
 
-    /**
-     * Retrieves the column class for the passed in column index
-     * 
-     * @param c The column index
-     * @return The column class for the given column index
-     */
-    public Class<? extends Object> getColumnClass(int c) {
-        return getValueAt(0, c).getClass();
-    }
+	/**
+	 * Iterable method for the records.
+	 */
+	public Iterator<List<Object>> iterator() {
+		return _records.iterator();
+	}
+
+	/**
+	 * Retrieves the column class for the passed in column index
+	 * 
+	 * @param c The column index
+	 * @return The column class for the given column index
+	 */
+	public Class<? extends Object> getColumnClass(int c) {
+		return getValueAt(0, c).getClass();
+	}
 
     /**
      * Retrieves the number of columns that exist in the model

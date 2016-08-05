@@ -34,7 +34,7 @@ import com.bbn.openmap.omGraphics.OMGraphicList;
  * record header.
  * 
  * @author Ray Tomlinson
- * @author Tom Mitchell <tmitchell@bbn.com>
+ * @author Tom Mitchell
  * @version $Revision: 1.4 $ $Date: 2005/12/09 21:09:10 $
  */
 public abstract class ESRIRecord extends ShapeUtils {

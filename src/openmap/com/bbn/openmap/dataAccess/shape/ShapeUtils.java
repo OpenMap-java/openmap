@@ -32,7 +32,7 @@ import com.bbn.openmap.layer.shape.ESRIPoint;
 /**
  * Utilities for reading and writing the components of shape files.
  * 
- * @author Tom Mitchell <tmitchell@bbn.com>
+ * @author Tom Mitchell
  * @version $Revision: 1.5 $ $Date: 2005/12/09 21:09:09 $
  */
 public class ShapeUtils implements ShapeConstants {

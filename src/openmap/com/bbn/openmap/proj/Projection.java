@@ -38,27 +38,25 @@ import java.util.ArrayList;
  * different units, depending on the projection implementation.
  * <p>
  * 
- * <h4>Projection Notes/Assumptions:</h4>
+ * Projection Notes/Assumptions:
  * <ul>
- * <li>At the center point of the projection, North is to the top of the screen.
- * <br>
- * <li><a href="#poly_restrictions">LatLon Polygon Restrictions. </a> <br>
- * <li><a href="#line_restrictions">LatLon Line Restrictions. </a> <br>
+ * <li>At the center point of the projection, Up is to the top of the screen.</li>
+ * <li><a href="GeoProj.html#poly_restrictions">LatLon Polygon Restrictions. </a></li>
+ * <li><a href="GeoProj.html#line_restrictions">LatLon Line Restrictions. </a></li>
  * </ul>
  * <p>
  * 
- * <h4>Implementation Notes:</h4>
+ * Implementation Notes:
  * <ul>
  * <li>This methods in this interface are safe to use among different threads,
  * BUT the underlying classes may not be. Use with care.
  * </ul>
  * <p>
  * 
- * <h4>Bibliography:</h4>
+ * <b>Bibliography:</b>
  * <br>
  * Many of the specific projection equations were taken from <i>Map Projections
  * --A Working Manual </i>, by John Synder.
- * <p>
  * 
  * @see Proj
  * @see Cylindrical
@@ -302,14 +300,14 @@ public interface Projection extends java.io.Serializable {
     public <T extends Point2D> T inverse(double x, double y, T llpt);
 
     /**
-     * Simple shape inverse projection, converts the x,y values in the shape to
-     * the x, y values of the projection.
-     * 
-     * @param shape projected shape.
-     * @return Shape containing source coordinates inversely projected.
-     */
-    public Shape inverseShape(Shape shape);
-
+	 * Simple shape inverse projection, converts the x,y values in the shape to
+	 * the x, y values of the projection.
+	 * 
+	 * @param shape projected shape.
+	 * @return Shape containing source coordinates inversely projected.
+	 */
+	public Shape inverseShape(Shape shape);
+	
     /**
      * Pan the map/projection.
      * <ul>
@@ -342,7 +340,7 @@ public interface Projection extends java.io.Serializable {
     /**
      * Forward project a line defined by two coordinate end points.
      * <p>
-     * Returns a ArrayList<int[]> of (x[], y[]) coordinate pair(s) of the
+     * Returns a ArrayList int[] of (x[], y[]) coordinate pair(s) of the
      * projected line(s).
      */
     public ArrayList<float[]> forwardLine(Point2D ll1, Point2D ll2);
@@ -351,7 +349,7 @@ public interface Projection extends java.io.Serializable {
      * Forward project a rectangle defined by an upper left point and a lower
      * right point.
      * <p>
-     * Returns a ArrayList<int[]> of (x[], y[]) coordinate pairs of the
+     * Returns a ArrayList int[] of (x[], y[]) coordinate pairs of the
      * projected points.
      * 
      * @param ll1 Point2D of northwest corner
@@ -368,7 +366,7 @@ public interface Projection extends java.io.Serializable {
      * @param rawllpts a set of y, x coordinates.
      * @param isFilled true of is important to note the area of the poly,
      *        instead of just the edge.
-     * @return ArrayList<float[]> contains sets of float[]x, float[] y arrays.
+     * @return ArrayList float[] contains sets of float[]x, float[] y arrays.
      */
     public ArrayList<float[]> forwardPoly(float[] rawllpts, boolean isFilled);
 
@@ -380,7 +378,7 @@ public interface Projection extends java.io.Serializable {
      * @param rawllpts a set of y, x coordinates.
      * @param isFilled true of is important to note the area of the poly,
      *        instead of just the edge.
-     * @return ArrayList<float[]> contains sets of float[]x, float[] y arrays.
+     * @return ArrayList float[] contains sets of float[]x, float[] y arrays.
      */
     public ArrayList<float[]> forwardPoly(double[] rawllpts, boolean isFilled);
 

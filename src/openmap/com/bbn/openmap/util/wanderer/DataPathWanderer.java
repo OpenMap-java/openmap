@@ -3,7 +3,6 @@ package com.bbn.openmap.util.wanderer;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * A DataPathWanderer provides a list of valid data paths found from a parent
  * directory. This class is intended to be provided by a layer to report which
@@ -12,9 +11,7 @@ import java.util.List;
  * 
  * @author dfdietrick
  */
-public abstract class DataPathWanderer
-      extends Wanderer
-      implements WandererCallback {
+public abstract class DataPathWanderer extends Wanderer implements WandererCallback {
 
    protected List<String> dataPaths;
 

@@ -70,7 +70,7 @@ import com.bbn.openmap.util.Debug;
  * 
  * <PRE>
  * 
- * ooxxxxxx|ooxxxxxx|ooxxxxxx|ooxxxxxx|ooxxxxxx|ooxxxxxx -> 1 x 6
+ * ooxxxxxx|ooxxxxxx|ooxxxxxx|ooxxxxxx|ooxxxxxx|ooxxxxxx -&gt; 1 x 6
  * bytes, 6 bytes total
  * 
  * </PRE>
@@ -79,7 +79,7 @@ import com.bbn.openmap.util.Debug;
  * 
  * <PRE>
  * 
- * xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx ->
+ * xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx|xxxxxxxx|ooooooxx -&gt;
  * 2 by 10 bytes, 20 bytes total
  * 
  * </PRE>

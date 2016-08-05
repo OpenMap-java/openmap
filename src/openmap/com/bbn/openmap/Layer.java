@@ -381,12 +381,12 @@ public abstract class Layer extends JComponent implements ProjectionListener, Pr
      * PropertyConsumer interface. Layers which override this method should do
      * something like:
      * 
-     * <code><pre>
+     * <pre>
      * public void setProperties(String prefix, Properties props) {
      *     super.setProperties(prefix, props);
      *     // do local stuff
      * }
-     * </pre></code>
+     * </pre>
      * 
      * If the addToBeanContext property is not defined, it maintains the same
      * state.
@@ -655,7 +655,9 @@ public abstract class Layer extends JComponent implements ProjectionListener, Pr
      * return the appropriate object if they desire to receive MouseEvents. The
      * easiest thing for a Layer to do in order to receive MouseEvents is to
      * implement the MapMouseListener interface and return itself. A code
-     * snippet: <code><pre>
+     * snippet:
+     * <p>
+     * <pre>
      * public MapMouseListener getMapMouseListener() {
      *     return this;
      * }
@@ -663,7 +665,7 @@ public abstract class Layer extends JComponent implements ProjectionListener, Pr
      * public String[] getMouseModeServiceList() {
      *     return new String[] { SelectMouseMode.modeID };
      * }
-     * </pre></code>
+     * </pre>
      * 
      * @return null for the default, method can be overridden to return
      *         something interested in mouse events.

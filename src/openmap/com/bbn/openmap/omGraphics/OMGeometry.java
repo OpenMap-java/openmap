@@ -112,18 +112,16 @@ public interface OMGeometry {
     public void deselect();
 
     /**
-     * Holds an application specific object for later access. This can be used
-     * to associate an application object with an OMGeometry for later
-     * retrieval. For instance, when the graphic is clicked on, the application
-     * gets the OMGeometry object back from the OMGeometryList, and can then get
-     * back to the application level object through this pointer.
+     * For backward compatibility, stores object in attribute map under
+     * OMGraphic.APP_OBJECT key.
      * 
      * @param obj Object
      */
     public void setAppObject(Object obj);
 
     /**
-     * Gets the application's object pointer.
+     * For backward compatibility, retrieves object stored in attribute map
+     * under OMGraphic.APP_OBJECT key.
      * 
      * @return Object
      */
@@ -348,7 +346,7 @@ public interface OMGeometry {
     /**
      * Invoke this to regenerate a "dirty" graphic. This method is a wrapper
      * around the <code>generate()</code> method. It invokes
-     * <code>generate()</code> only if</code> needToRegenerate() </code> on the
+     * <code>generate()</code> only if<code> needToRegenerate() </code> on the
      * graphic returns true. To force a graphic to be generated, call
      * <code>generate()</code> directly.
      * 

@@ -5,11 +5,10 @@ import java.awt.geom.Point2D;
 
 /**
  * A ShapeDecoration is a basic element to be drawn along a path by a
- * ShapeDecorator. The decoration length is measured along the path to
- * decorate,</LI>
- * the width, on a normal to the path.</LI>
- * The decoration may be on the left or on the right of the path.
- * </LI>
+ * ShapeDecorator. The decoration length is measured along the path to decorate,
+ * the width, on a normal to the path. The decoration may be on the left or on
+ * the right of the path.
+ * 
  * 
  * @author Eric LEPICIER
  * @version 26 juil. 2002

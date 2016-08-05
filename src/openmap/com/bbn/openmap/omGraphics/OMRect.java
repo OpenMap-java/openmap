@@ -36,12 +36,12 @@ import com.bbn.openmap.util.Debug;
  * Graphic type that lets you draw four-sided polygons that have corners that
  * share coordinates or window points.
  * <p>
- * <h3>NOTE:</h3> See the
- * <a href="../proj/GeoProj.html#poly_restrictions"> RESTRICTIONS </a> on
- * Lat/Lon polygons/polylines which apply to rectangles as well. Not following
- * the guidelines listed may result in ambiguous/undefined shapes! Similar
- * assumptions apply to the other vector graphics that we define: circles,
- * ellipses, polys, lines.
+ * <h3>NOTE:</h3>
+ * See the <a href="../proj/GeoProj.html#poly_restrictions">
+ * RESTRICTIONS </a> on Lat/Lon polygons/polylines which apply to rectangles as
+ * well. Not following the guidelines listed may result in ambiguous/undefined
+ * shapes! Similar assumptions apply to the other vector graphics that we
+ * define: circles, ellipses, polys, lines.
  * <p>
  * These assumptions are virtually the same as those on the more generic OMPoly
  * graphic type.

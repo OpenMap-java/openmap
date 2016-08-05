@@ -193,7 +193,7 @@ public class MessageHeader {
 
     /**
      * Convert a message-id string to canonical form (strips off
-     * leading and trailing <>s)
+     * leading and trailing &lt;&gt;s)
      */
     public static String canonicalID(String id) {
         if (id == null)

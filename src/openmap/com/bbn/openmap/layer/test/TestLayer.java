@@ -62,8 +62,9 @@ import com.bbn.openmap.util.PaletteHelper;
  * A Layer for testing different types of graphics. The GUI code is
  * very large and ugly. Maybe break this off into several classes.
  * <p>
- * This layer responds to the following properties: <code><pre>
- * 
+ * This layer responds to the following properties: 
+ * <pre>
+ * <code>
  *  # initial visibility settings:
  *  test.line.visible=true
  *  test.circ.visible=true
@@ -73,17 +74,20 @@ import com.bbn.openmap.util.PaletteHelper;
  *  # latlon vertices of the poly
  *  #test.poly.vertices=80 -180 80 -90 80 0 80 90 80 180 70 180 70 90 70 0 70 -90 70 -180
  *  
- * </pre></code> In addition, you can get this layer to work with the
- * OpenMap viewer by editing your openmap.properties file: <code><pre>
- * 
+ * </code>
+ * </pre>
+ * In addition, you can get this layer to work with the
+ * OpenMap viewer by editing your openmap.properties file:
+ * <pre>
+ * <code>
  *  # layers
  *  openmap.layers=test ...
  *  # class
  *  test.class=com.bbn.openmap.layer.TestLayer
  *  # name
  *  test.prettyName=Graticule
- *  
- * </pre></code>
+ * </code>
+ * </pre>
  */
 public class TestLayer extends OMGraphicHandlerLayer implements
         MapMouseListener {
@@ -458,11 +462,11 @@ public class TestLayer extends OMGraphicHandlerLayer implements
      * the MapMouseListener if the mode is set to one that the
      * listener is interested in. Layers interested in receiving
      * events should register for receiving events in "select" mode.
-     * <code>
-     * <pre>
+     * <pre><code>
+     * 
      * return new String[1] { SelectMouseMode.modeID };
-     * </pre>
-     * <code>
+     * 
+     * </code></pre>
      * @see com.bbn.openmap.event.NavMouseMode#modeID
      * @see com.bbn.openmap.event.SelectMouseMode#modeID
      * @see com.bbn.openmap.event.NullMouseMode#modeID

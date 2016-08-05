@@ -23,18 +23,19 @@
 package com.bbn.openmap.util.wanderer;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.bbn.openmap.util.ArgParser;
-import com.bbn.openmap.util.Debug;
 
 /**
- * PURGE deletes files that start with, or end with, certain strings.
- * Good for cleaning up backup leftover from various editors.
+ * PURGE deletes files that start with, or end with, certain strings. Good for
+ * cleaning up backup leftover from various editors.
  * 
  * <pre>
  * 
  *  Usage: java com.bbn.openmap.util.wanderer.Purge (dir path) ...
- *  
+ * 
  * </pre>
  */
 public class Purge extends Wanderer implements WandererCallback {
@@ -55,8 +56,8 @@ public class Purge extends Wanderer implements WandererCallback {
             purgeables[1] = new String[0];
         }
 
-        DETAIL = Debug.debugging("purge");
-        setCallback(this);
+		DETAIL = getLogger().isLoggable(Level.FINE);
+		setCallback(this);
 
         if (DETAIL) {
             StringBuffer sb = new StringBuffer("Deleting files that ");
@@ -69,16 +70,17 @@ public class Purge extends Wanderer implements WandererCallback {
                 sw = true;
             }
 
-            if (endsWith != null && endsWith.length > 0) {
-                if (sw)
-                    sb.append("and ");
-                sb.append("end with ");
-                for (int i = 0; i < endsWith.length; i++) {
-                    sb.append(endsWith[i]).append(" ");
-                }
-            }
-            Debug.output(sb.toString());
-        }
+			if (endsWith != null && endsWith.length > 0) {
+				if (sw) {
+					sb.append("and ");
+				}
+				sb.append("end with ");
+				for (int i = 0; i < endsWith.length; i++) {
+					sb.append(endsWith[i]).append(" ");
+				}
+			}
+			getLogger().info(sb.toString());
+		}
 
     }
 
@@ -91,37 +93,67 @@ public class Purge extends Wanderer implements WandererCallback {
         String fileName = file.getName();
         int i;
 
-        for (i = 0; i < purgeables[0].length; i++) {
-            if (fileName.startsWith(purgeables[0][i])) {
-                if (DETAIL)
-                    Debug.output("Deleting " + fileName);
-                file.delete();
-                return true;
-            }
-        }
+		for (i = 0; i < purgeables[0].length; i++) {
+			if (fileName.startsWith(purgeables[0][i])) {
+				if (DETAIL) {
+					getLogger().info("Deleting " + fileName);
+				}
+				file.delete();
+				return true;
+			}
+		}
 
-        for (i = 0; i < purgeables[1].length; i++) {
-            if (fileName.endsWith(purgeables[1][i])) {
-                if (DETAIL)
-                    Debug.output("Deleting " + fileName);
-                file.delete();
-                return true;
-            }
-        }
-        
-        return true;
-    }
+		for (i = 0; i < purgeables[1].length; i++) {
+			if (fileName.endsWith(purgeables[1][i])) {
+				if (DETAIL) {
+					getLogger().info("Deleting " + fileName);
+				}
+				file.delete();
+				return true;
+			}
+		}
 
-    /**
-     * Given a set of files or directories, parade through them to
-     * find files that end with '`', or files that start with '.#',
-     * and delete them.
-     * 
-     * @param argv paths to files or directories, use -h to get a
-     *        usage statement.
-     */
-    public static void main(String[] argv) {
-        Debug.init();
+		return true;
+	}
+
+	// <editor-fold defaultstate="collapsed" desc="Logger Code">
+	/**
+	 * Holder for this class's Logger. This allows for lazy initialization of
+	 * the logger.
+	 */
+	private static final class LoggerHolder {
+		/**
+		 * The logger for this class
+		 */
+		private static final Logger LOGGER = Logger.getLogger(Purge.class.getName());
+
+		/**
+		 * Prevent instantiation
+		 */
+		private LoggerHolder() {
+			throw new AssertionError("The LoggerHolder should never be instantiated");
+		}
+	}
+
+	/**
+	 * Get the logger for this class.
+	 *
+	 * @return logger for this class
+	 */
+	private static Logger getLogger() {
+		return LoggerHolder.LOGGER;
+	}
+
+	// </editor-fold>
+	/**
+	 * Given a set of files or directories, parade through them to find files
+	 * that end with '`', or files that start with '.#', and delete them.
+	 * 
+	 * @param argv
+	 *            paths to files or directories, use -h to get a usage
+	 *            statement.
+	 */
+	public static void main(String[] argv) {
 
         ArgParser ap = new ArgParser("Purge");
 

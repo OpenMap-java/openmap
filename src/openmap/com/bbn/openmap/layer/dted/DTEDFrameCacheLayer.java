@@ -118,7 +118,7 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * </pre>
  * 
- * @see com.bbn.openmap.layer.rpf.ChangeCase
+ * @see com.bbn.openmap.util.wanderer.ChangeCase
  */
 public class DTEDFrameCacheLayer extends OMGraphicHandlerLayer implements ActionListener,
         Serializable, DTEDConstants {

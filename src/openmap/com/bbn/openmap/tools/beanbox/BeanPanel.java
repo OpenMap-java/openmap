@@ -87,11 +87,8 @@ import com.bbn.openmap.util.Debug;
  * {@link com.bbn.openmap.tools.beanbox.BeanBoxDnDCatcher}catches the
  * bean.
  * <p>
- * <p>
  * The following are the properties that the BeanPanel reads from the
  * openmap properties file:
- * <p>
- * 
  * <pre>
  * 
  *  #------------------------------
@@ -119,16 +116,11 @@ import com.bbn.openmap.util.Debug;
  *  # End of properties for BeanPanel
  *  #-------------------------------------
  *  
- * <p>
- * <p>
- * 
  *  The BeanPanel looks for beanInfos in the same package as the associated
  *  bean as well as in the Introspector's search path. The Introspector's
  *  search path can be augmented by specifying a comma separated list of
  *  package names in the bean.infos.path system (-D) property.
  *  
- * <p><p>
- * 
  *  A BeanPanel can also be created and used as a standalone class, i.e. independent 
  *  of the openmap components architecture by using the BeanPanel constructor that
  *  takes a Properties object as an argument. This constructor creates and initializes 

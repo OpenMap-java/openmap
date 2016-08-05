@@ -290,7 +290,7 @@ public class FilterSupport implements OMGraphicHandler, Serializable {
      * OMGraphics that have made it through the filter are visible.
      * List may be null, if it hasn't been set.
      * 
-     * @see OMGraphic#isVisible().
+     * @see OMGraphic#isVisible()
      */
     public synchronized OMGraphicList getList() {
         if (DEBUG) {

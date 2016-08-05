@@ -98,8 +98,7 @@ public class ArgParser {
      *        arguments that may start with dashes, for instance, a negative
      *        number. False by default.
      */
-    public void add(String argName, String desc, int expectedNumberOfArguments,
-                    boolean expectDashedArguments) {
+    public void add(String argName, String desc, int expectedNumberOfArguments, boolean expectDashedArguments) {
         Arg newArg = new Arg(argName, desc, expectedNumberOfArguments, expectDashedArguments);
         args.add(newArg);
         if (Debug.debugging("parse")) {
@@ -132,8 +131,7 @@ public class ArgParser {
                             if (!curArg.readArgs(argv, ++i)) {
                                 // Something's wrong with the
                                 // arguments.
-                                bail("ArgParser: Unexpected arguments with option " + curArg.name
-                                        + ".", true);
+                                bail("ArgParser: Unexpected arguments with option " + curArg.name + ".", true);
                             }
                             hit = true;
                             if (curArg.numExpectedValues != TO_END) {
@@ -163,8 +161,7 @@ public class ArgParser {
                         }
                     }
                     if (Debug.debugging("parse")) {
-                        Debug.output("ArgParser: adding " + rest.length
-                                + " strings to the leftover list.");
+                        Debug.output("ArgParser: adding " + rest.length + " strings to the leftover list.");
                     }
 
                     return true;
@@ -183,7 +180,7 @@ public class ArgParser {
      * statement, if desired.
      * 
      * @param message a message to display.
-     * @param printUsageStatement true to display a list of available options.
+     * @param printUsageStatement true to display a list of available options
      */
     public void bail(String message, boolean printUsageStatement) {
         Debug.output(message);
@@ -210,7 +207,7 @@ public class ArgParser {
     }
 
     /**
-     * @return a Vector of Arg objects.
+     * @return a Vector of Arg objects
      */
     public Vector getArgs() {
         return args;
@@ -257,7 +254,7 @@ public class ArgParser {
 
     /**
      * @return the String[] that makes up the trailing Strings after the options
-     *         were parsed.
+     *         were parsed
      */
     public String[] getRest() {
         return rest;
@@ -361,8 +358,7 @@ public class ArgParser {
          * @param expectDashedArguments if they could be dashed (like a negative
          *        number)
          */
-        public Arg(String aName, String desc, int expectedNumberOfArguments,
-                boolean expectDashedArguments) {
+        public Arg(String aName, String desc, int expectedNumberOfArguments, boolean expectDashedArguments) {
             name = aName;
             description = desc;
             numExpectedValues = expectedNumberOfArguments;
@@ -371,7 +367,7 @@ public class ArgParser {
         }
 
         /**
-         * Returns true if the string matches the name of the Arg, or, if
+         * Returns true if the atg string matches the name of the Arg, or, if
          * allowAbbr is true, returns true if the arg length is one and it
          * matches the first letter of the arg name.
          * 
@@ -419,8 +415,7 @@ public class ArgParser {
                                 + (numExpectedValues == 1 ? " argument." : " arguments."));
 
                     } else {
-                        Debug.output("ArgParser: Option " + name
-                                + " not expecting options after its values.");
+                        Debug.output("ArgParser: Option " + name + " not expecting options after its values.");
                     }
                     return false; // Unexpected argument.
                 }
@@ -431,8 +426,8 @@ public class ArgParser {
 
         public String toString() {
             StringBuffer sb = new StringBuffer();
-            sb.append("Arg: ").append(name).append(" expects ").append(numExpectedValues).append((numExpectedValues == 1
-                    ? " value.\n" : " values.\n"));
+            sb.append("Arg: ").append(name).append(" expects ").append(numExpectedValues)
+              .append((numExpectedValues == 1 ? " value.\n" : " values.\n"));
             if (values != null) {
                 sb.append("Values: ");
                 for (int i = 0; i < values.length; i++) {
@@ -448,7 +443,8 @@ public class ArgParser {
      * A Arg class to spur off help messages. Gets added automatically to the
      * parser.
      */
-    public class HelpArg extends ArgParser.Arg {
+    public class HelpArg
+            extends ArgParser.Arg {
 
         public HelpArg() {
             super("help", "Print usage statement, with arguments.", 0);

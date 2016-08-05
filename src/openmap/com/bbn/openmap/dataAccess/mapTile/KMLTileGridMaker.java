@@ -137,7 +137,7 @@ public class KMLTileGridMaker {
 
          Element obiElement = appendChild(doc, polygon, "outerBoundaryIs", null);
          Element lrElement = appendChild(doc, obiElement, "LinearRing", null);
-         Element coordElement = appendChild(doc, lrElement, "coordinates", buf.toString());
+         /*Element coordElement = */appendChild(doc, lrElement, "coordinates", buf.toString());
 
          // Label for tile
          Element placemark2 = appendChild(doc, folderElement, "Placemark", null);
@@ -207,13 +207,10 @@ public class KMLTileGridMaker {
             int level = Integer.parseInt(arg[0]);
             new Builder(level).setLineColor(lineColor).setFillColor(fillColor).setLabelColor(lineColor).go();
          } catch (ParserConfigurationException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
          } catch (TransformerException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
          } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
          } catch (NumberFormatException nfe) {
             nfe.printStackTrace();

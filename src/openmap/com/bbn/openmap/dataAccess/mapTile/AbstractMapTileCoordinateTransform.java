@@ -109,7 +109,6 @@ public abstract class AbstractMapTileCoordinateTransform implements MapTileCoord
         int low = 1;
         int high = 20;
 
-        float currentScale = proj.getScale();
         int ret = low;
         for (int currentZoom = low; currentZoom <= high; currentZoom++) {
             // nearest tile to center

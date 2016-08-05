@@ -90,7 +90,7 @@ import com.bbn.openmap.util.Debug;
  * 
  */
 public abstract class GeoProj extends Proj {
-    // Used for generating segments of ArrayList objects
+    // Used for generating segments of List objects
     protected static transient int NUM_DEFAULT_CIRCLE_VERTS = 64;
 
     // SOUTH_POLE <= phi <= NORTH_POLE (radians)
@@ -396,7 +396,7 @@ public abstract class GeoProj extends Proj {
      * @param nsegs number of segments to draw for greatcircle or rhumb lines
      *        (if &lt; 1, this value is generated internally).
      * @param isFilled filled poly?
-     * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
+     * @return ArrayList float[] of x[], y[], x[], y[], ... projected poly
      */
     protected ArrayList<float[]> forwardRhumbPoly(float[] rawllpts, int nsegs, boolean isFilled) {
 
@@ -512,7 +512,7 @@ public abstract class GeoProj extends Proj {
      * @param nsegs number of segments to draw for greatcircle or rhumb lines
      *        (if &lt; 1, this value is generated internally).
      * @param isFilled filled poly?
-     * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
+     * @return ArrayList float[] of x[], y[], x[], y[], ... projected poly
      */
     protected ArrayList<float[]> forwardRhumbPoly(double[] rawllpts, int nsegs, boolean isFilled) {
 
@@ -628,7 +628,7 @@ public abstract class GeoProj extends Proj {
      * @param nsegs number of segments to draw for greatcircle or rhumb lines
      *        (if &lt; 1, this value is generated internally).
      * @param isFilled filled poly?
-     * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
+     * @return ArrayList float[] of x[], y[], x[], y[], ... projected poly
      */
     protected ArrayList<float[]> forwardGreatPoly(float[] rawllpts, int nsegs, boolean isFilled) {
         int i, j, k, totalpts = 0;
@@ -681,7 +681,7 @@ public abstract class GeoProj extends Proj {
      * @param nsegs number of segments to draw for greatcircle or rhumb lines
      *        (if &lt; 1, this value is generated internally).
      * @param isFilled filled poly?
-     * @return ArrayList<float[]> of x[], y[], x[], y[], ... projected poly
+     * @return ArrayList float[] of x[], y[], x[], y[], ... projected poly
      */
     protected ArrayList<float[]> forwardGreatPoly(double[] rawllpts, int nsegs, boolean isFilled) {
         int i, j, k, totalpts = 0;
@@ -867,7 +867,7 @@ public abstract class GeoProj extends Proj {
      * @param nsegs number of segments to draw for greatcircle or rhumb lines
      *        (if &lt; 1, this value is generated internally).
      * @param isFilled filled poly?
-     * @return ArrayList<int[]>
+     * @return ArrayList int[]
      */
     protected ArrayList<float[]> doPolyDispatch(double[] rawllpts, int ltype, int nsegs,
                                                 boolean isFilled) {
@@ -933,9 +933,9 @@ public abstract class GeoProj extends Proj {
 
             double deltaDegrees;
             double pixPerDegree;
-            double deltaPix;
-            double dx = Math.abs(point2.getX() - point1.getX());
-            double dy = Math.abs(point2.getY() - point1.getY());
+            //double deltaPix;
+            //double dx = Math.abs(point2.getX() - point1.getX());
+            //double dy = Math.abs(point2.getY() - point1.getY());
 
             // TODO: mercator getScale is wrong for screens in portrait mode,
             // that is dx<dy. why does this handle portrait different than
@@ -970,7 +970,7 @@ public abstract class GeoProj extends Proj {
             }
 
             deltaDegrees = dlon;
-            deltaPix = dx;
+            //deltaPix = dx;
 
             // This might not be correct for all projection types
             pixPerDegree = getPlanetPixelCircumference() / 360.0;
@@ -1078,9 +1078,9 @@ public abstract class GeoProj extends Proj {
      * Returns a ArrayList of (x[], y[]) coordinate pair(s) of the projected
      * line(s).
      * 
-     * <a name="line_restrictions">
-     * <h4>RESTRICTIONS:</h4>
-     * </a> A line segment must be less than 180 degrees of arc (half the
+     * <a name="line_restrictions"></a>
+     * <b>RESTRICTIONS:</b>
+     * A line segment must be less than 180 degrees of arc (half the
      * circumference of the world). If you need to draw a longer line, then draw
      * several several individual segments of less than 180 degrees, or draw a
      * single polyline of those segments.
@@ -1099,7 +1099,7 @@ public abstract class GeoProj extends Proj {
      * @param ltype line type (straight, rhumbline, greatcircle)
      * @param nsegs number of segment points (only for greatcircle or rhumbline
      *        line types, and if &lt; 1, this value is generated internally)
-     * @return ArrayList<int[]>
+     * @return ArrayList int[]
      * @see LineType#Straight
      * @see LineType#Rhumb
      * @see LineType#GreatCircle
@@ -1127,7 +1127,7 @@ public abstract class GeoProj extends Proj {
      * points.
      * <p>
      * Rects have the same restrictions as <a href="#poly_restrictions"> polys
-     * <a>and <a href="#line_restrictions">lines </a>.
+     * </a> and <a href="#line_restrictions">lines </a>.
      * 
      * @param ll1 LatLonPoint of northwest corner
      * @param ll2 LatLonPoint of southeast corner
@@ -1135,7 +1135,7 @@ public abstract class GeoProj extends Proj {
      * @param nsegs number of segment points (only for greatcircle or rhumbline
      *        line types, and if &lt; 1, this value is generated internally)
      * @see #forwardPoly
-     * @return ArrayList<int[]>
+     * @return ArrayList int[]
      */
     public ArrayList<float[]> forwardRect(LatLonPoint ll1, LatLonPoint ll2, int ltype, int nsegs,
                                           boolean isFilled) {
@@ -1330,10 +1330,10 @@ public abstract class GeoProj extends Proj {
      * Forward project a LatLon Poly.
      * <p>
      * Returns a ArrayList of (x[], y[]) coordinate pair(s) of the projected
-     * poly. <a name="poly_restrictions">
-     * <h4>RESTRICTIONS:</h4>
-     * <br>
-     * </a> All the following restrictions apply to LatLon polygons (either
+     * poly. 
+     * <a name="poly_restrictions"></a>
+     * <b>RESTRICTIONS:</b>
+     * All the following restrictions apply to LatLon polygons (either
      * filled or non-filled). Many of these restrictions apply to other
      * poly-like ArrayList graphics (Lines, Rectangles, Circles, Ellipses, ...).
      * See also <a href="#line_restrictions">restrictions on LatLon lines. </a>

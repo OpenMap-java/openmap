@@ -58,7 +58,7 @@ import com.bbn.openmap.util.PropUtils;
  * 
  * <P>
  * The openmap.properties file can control the layer with the
- * following settings: <code><pre>
+ * following settings:<pre>
  * 
  *  # These are all optional, and can be omitted if you want to use the defaults.
  *  # draw terminator as poly (faster calculation than image,
@@ -80,8 +80,8 @@ import com.bbn.openmap.util.PropUtils;
  *  # Color of the shading (32bit Hex ARGB)
  *  daynight.nighttimeColor=64000000
  *  
- * </pre></code> In addition, you can get this layer to work with the
- * OpenMap viewer by editing your openmap.properties file: <code><pre>
+ * </pre><p> In addition, you can get this layer to work with the
+ * OpenMap viewer by editing your openmap.properties file: <pre>
  * 
  *  # layers
  *  openmap.layers=daynight ...
@@ -90,7 +90,7 @@ import com.bbn.openmap.util.PropUtils;
  *  # name
  *  daynight.prettyName=Day/Night Shading
  *  
- * </pre></code>
+ * </pre>
  *  
  */
 public class DayNightLayer extends OMGraphicHandlerLayer implements

@@ -36,7 +36,7 @@ import com.bbn.openmap.util.HashCodeUtil;
  * </UL>
  * 
  * @author Ray Tomlinson
- * @author Tom Mitchell <tmitchell@bbn.com>
+ * @author Tom Mitchell
  * @version $Revision: 1.3 $ $Date: 2004/10/14 18:06:04 $
  */
 public class ESRIBoundingBox {

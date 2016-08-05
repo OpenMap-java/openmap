@@ -49,8 +49,8 @@ import com.bbn.openmap.util.PropUtils;
  * it was read from the .shp file. This lets you align the object with the
  * correct attribute data in the .dbf file.
  * 
- * <p>
- * <code><pre>
+ * <pre><code>
+ * 
  *  
  *   ############################
  *   # Properties for a multiple shape file layer
@@ -75,7 +75,7 @@ import com.bbn.openmap.util.PropUtils;
  *   shapeLayer.marker_name2.enabled=true/false
  *   ############################
  *   
- * </pre></code>
+ * </code></pre>
  * 
  * @version $Revision: 1.17 $ $Date: 2008/10/16 03:26:50 $
  * @see SpatialIndex

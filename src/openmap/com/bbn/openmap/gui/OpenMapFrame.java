@@ -241,7 +241,7 @@ public class OpenMapFrame
      * @param component component to be used as content.
      */
     public void setContent(Component component) {
-        getContentPane().add((Component) component);
+        getContentPane().add(component);
 
         if (component instanceof MapPanel) {
             MapPanel mapPanel = (MapPanel) component;

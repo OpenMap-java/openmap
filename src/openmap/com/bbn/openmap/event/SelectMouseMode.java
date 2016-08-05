@@ -29,7 +29,9 @@ package com.bbn.openmap.event;
  * Layer to implement the MapMouseListener interface, and indicate
  * that it wants to receive events when the mouse mode is the
  * SelectMouseMode. Here's a code snippet for a Layer that would do
- * this: <code><pre>
+ * this:<p>
+ * 
+ * <pre>
  * public MapMouseListener getMapMouseListener() {
  *     return this;
  * }
@@ -37,7 +39,7 @@ package com.bbn.openmap.event;
  * public String[] getMouseModeServiceList() {
  *     return new String[] { SelectMouseMode.modeID };
  * }
- * </pre></code>
+ * </pre>
  * <p>
  * This class is functionally the same as the AbstractMouseMode,
  * except that it actually calls the fire methods in the

@@ -48,7 +48,7 @@ import com.bbn.openmap.util.DeepCopyUtil;
  * (multi-line-segment-object).
  * <p>
  * 
- * The differentiator between polygons and polylines is the fill color. If the
+ * The differentiators between polygons and polylines is the fill color. If the
  * fillPaint is equal to OMColor.clear, then the poly will be considered a
  * polyline. There are methods to override this in the OMPoly class, but they do
  * play around with the fillPaint, depending on the order in which the methods
@@ -70,11 +70,11 @@ import com.bbn.openmap.util.DeepCopyUtil;
  * 
  * <h3>NOTES:</h3>
  * <ul>
- * <li>See the
- * <a href="../proj/GeoProj.html#poly_restrictions"> RESTRICTIONS </a> on
- * Lat/Lon polygons/polylines. Not following the guidelines listed may result in
- * ambiguous/undefined shapes! Similar assumptions apply to the other vector
- * graphics that we define: circles, ellipses, rects, lines.
+ * <li>See the <a
+ * href="../proj/GeoProj.html#poly_restrictions">
+ * RESTRICTIONS </a> on Lat/Lon polygons/polylines. Not following the guidelines
+ * listed may result in ambiguous/undefined shapes! Similar assumptions apply to
+ * the other vector graphics that we define: circles, ellipses, rects, lines.
  * <li>LatLon OMPolys store latlon coordinates internally in radian format for
  * efficiency in projecting. Subclasses should follow this model.
  * <li>Holes in the poly are not supported.
@@ -676,13 +676,13 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                     ProjMath.arrayDegToRad(rawllpts);
                     units = RADIANS;
                 }
-                vector = ((GeoProj) proj).forwardPoly(rawllpts, lineType, nsegs, isPolygon);
+                vector = ((GeoProj) proj).forwardPoly(rawllpts, lineType, nsegs, isPolygon());
             } else {
                 if (units == RADIANS) {
                     ProjMath.arrayRadToDeg(rawllpts);
                     units = DECIMAL_DEGREES;
                 }
-                vector = proj.forwardPoly(rawllpts, isPolygon);
+                vector = proj.forwardPoly(rawllpts, isPolygon());
             }
 
             int size = vector.size();
@@ -806,7 +806,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
                 }
 
                 // render polygon
-                if (isPolygon) {
+                if (isPolygon()) {
 
                     // fill main polygon
 
@@ -948,7 +948,7 @@ public class OMPoly extends OMAbstractLine implements Serializable {
             _y = ypts[i];
 
             // check if point inside polygon
-            if (isPolygon && DrawUtil.inside_polygon(_x, _y, x, y))
+            if (isPolygon() && DrawUtil.inside_polygon(_x, _y, x, y))
                 return 0f; // close as can be
 
             // get the closest point
@@ -1005,13 +1005,13 @@ public class OMPoly extends OMAbstractLine implements Serializable {
 
         case RENDERTYPE_XY:
         case RENDERTYPE_OFFSET:
-            shape = createShape(xpoints[0], ypoints[0], isPolygon);
+            shape = createShape(xpoints[0], ypoints[0], isPolygon());
             break;
         case RENDERTYPE_LATLON:
             int size = xpoints.length;
 
             for (int i = 0; i < size; i++) {
-                GeneralPath gp = createShape(xpoints[i], ypoints[i], isPolygon);
+                GeneralPath gp = createShape(xpoints[i], ypoints[i], isPolygon());
 
                 shape = appendShapeEdge(shape, gp, false);
             }

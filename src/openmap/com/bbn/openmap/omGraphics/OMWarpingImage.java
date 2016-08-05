@@ -131,8 +131,6 @@ public class OMWarpingImage extends OMGraphicAdapter implements OMGraphic {
      * @param bi a BufferedImage
      * @param transform the transform describing the image's projection.
      * @param imageBounds the bounds of the image, in its coordinate system.
-     * @throws MalformedURLException
-     * @throws InterruptedException
      */
     public OMWarpingImage(BufferedImage bi, GeoCoordTransformation transform, DataBounds imageBounds) {
         setWarp(bi, transform, imageBounds);
@@ -145,8 +143,6 @@ public class OMWarpingImage extends OMGraphicAdapter implements OMGraphic {
      * @param transform transform the transform describing the image's
      *        projection.
      * @param worldfile The WorldFile describing the image's location.
-     * @throws MalformedURLException
-     * @throws InterruptedException
      */
     public OMWarpingImage(BufferedImage bi, GeoCoordTransformation transform, WorldFile worldfile) {
         setWarp(bi, transform, worldfile);
