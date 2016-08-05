@@ -155,10 +155,12 @@ public class SpatialIndexHandler implements PropertyConsumer {
         setPropertyPrefix(prefix);
         String realPrefix = PropUtils.getScopedPropertyPrefix(this);
         prettyName = props.getProperty(realPrefix + Layer.PrettyNameProperty);
-        String dataPathPrefix = props.getProperty(prefix + Layer.DataPathPrefixProperty, "");
+        String dataPathPrefix = props.getProperty(prefix + Layer.DataPathPrefixProperty);
 
         if (dataPathPrefix != null && dataPathPrefix.length() > 0) {
             dataPathPrefix += "/";
+        } else {
+            dataPathPrefix = "";
         }
 
         shapeFileName = dataPathPrefix

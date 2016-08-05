@@ -22,6 +22,7 @@
 
 package com.bbn.openmap.layer.shape;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Graphics;
@@ -38,6 +39,7 @@ import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -63,18 +65,18 @@ import com.bbn.openmap.util.PropUtils;
  * from the .shp file. This lets you align the object with the correct attribute
  * data in the .dbf file.
  * <p>
- * <code><pre>
+ * <pre>
  *       
  * ############################
  * # Properties for a shape layer
  * shapeLayer.class=com.bbn.openmap.layer.shape.ShapeLayer
  * shapeLayer.prettyName=Name_for_Menu
- * shapeLayer.shapeFile=&lt;path to shapefile (.shp)&gt;
- * shapeLayer.spatialIndex=&lt;path to generated spatial index file (.ssx)&gt;
+ * shapeLayer.shapeFile=&amp;ltpath to shapefile (.shp)&amp;gt
+ * shapeLayer.spatialIndex=&amp;ltpath to generated spatial index file (.ssx)&amp;gt
  * shapeLayer.lineColor=ff000000
  * shapeLayer.fillColor=ff000000
  * # plus any other properties used by the DrawingAttributes object.
- * shapeLayer.pointImageURL=&lt;URL for image to use for point objects&gt;
+ * shapeLayer.pointImageURL=&amp;ltURL for image to use for point objects&amp;gt
  *        
  *        
  * # Optionally, Rule marker names specified in space-separated list
@@ -114,9 +116,9 @@ import com.bbn.openmap.util.PropUtils;
  * shapeLayer.rule1.mattingColor=55AAAAAA
  * ############################
  * 
- * </pre></code>
+ * </pre>
  * 
- * @author Tom Mitchell <tmitchell@bbn.com>
+ * @author Tom Mitchell
  * @version $Revision: 1.29 $ $Date: 2008/10/16 17:58:15 $
  * @see SpatialIndex
  */
@@ -131,21 +133,6 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
 
     /** The URL of an image to use for point objects. */
     public final static String pointImageURLProperty = "pointImageURL";
-
-    // Note that shadows are really in the eye of the beholder
-    // The X,Y shadow offset just pushes the resulting picture in the
-    // direction of the offset and draws it there. By setting the
-    // fill and line colors, you make it seem shadowy. By drawing
-    // a layer as a shadow, and then again as a regular layer, you
-    // get the proper effect.
-
-    /** The name of the property that holds the offset of the shadow. */
-    public final static String shadowXProperty = "shadowX";
-    public final static String shadowYProperty = "shadowY";
-
-    /** * The holders of the shadow offset. ** */
-    protected int shadowX = 0;
-    protected int shadowY = 0;
 
     /** The spatial index of the shape file to be rendered. */
     protected SpatialIndex spatialIndex;
@@ -265,10 +252,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
 
         String realPrefix = PropUtils.getScopedPropertyPrefix(this);
         setFileProperties(realPrefix, props);
-
-        shadowX = PropUtils.intFromProperties(props, realPrefix + shadowXProperty, 0);
-        shadowY = PropUtils.intFromProperties(props, realPrefix + shadowYProperty, 0);
     }
+
 
     /**
      * PropertyConsumer method.
@@ -279,9 +264,6 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
         String prefix = PropUtils.getScopedPropertyPrefix(this);
         props.put(prefix + shapeFileProperty, (shapeFileName == null ? "" : shapeFileName));
         props.put(prefix + pointImageURLProperty, (imageURLString == null ? "" : imageURLString));
-
-        props.put(prefix + shadowXProperty, Integer.toString(shadowX));
-        props.put(prefix + shadowYProperty, Integer.toString(shadowY));
 
         if (drawingAttributes != null) {
             drawingAttributes.setPropertyPrefix(getPropertyPrefix());
@@ -325,16 +307,11 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
         PropUtils.setI18NPropertyInfo(i18n, list, ShapeLayer.class, dummyMarker, "Rendering Attributes", "Attributes that determine how the shapes will be drawn.", "com.bbn.openmap.omGraphics.DrawingAttributesPropertyEditor");
 
         list.put(initPropertiesProperty, shapeFileProperty + " " + " " + pointImageURLProperty
-                + " " + shadowXProperty + " " + shadowYProperty + " " + dummyMarker + " "
+                + " " + dummyMarker + " "
                 + AddToBeanContextProperty + " " + MinScaleProperty + " " + MaxScaleProperty);
 
         PropUtils.setI18NPropertyInfo(i18n, list, ShapeLayer.class, shapeFileProperty, shapeFileProperty, "Location of Shape file - .shp (File, CURL or relative file path).", "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-
         PropUtils.setI18NPropertyInfo(i18n, list, ShapeLayer.class, pointImageURLProperty, pointImageURLProperty, "Image file to use for map location of point data (optional).", "com.bbn.openmap.util.propertyEditor.FUPropertyEditor");
-
-        PropUtils.setI18NPropertyInfo(i18n, list, ShapeLayer.class, shadowXProperty, shadowXProperty, "Horizontal pixel offset for shadow image for shapes.", null);
-
-        PropUtils.setI18NPropertyInfo(i18n, list, ShapeLayer.class, shadowYProperty, shadowYProperty, "Vertical pixel offset for shadow image for shapes.", null);
 
         return list;
     }
@@ -376,7 +353,6 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
      */
     public synchronized OMGraphicList prepare() {
 
-        OMGraphicList list = getList();
         Projection projection = getProjection();
 
         boolean DEBUG_FINE = logger.isLoggable(Level.FINE);
@@ -393,6 +369,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
                 logger.fine(getName() + ": spatialIndex is null!");
             }
 
+            OMGraphicList list = getList();
             if (list != null) {
                 list.generate(projection, true);// all new graphics
                 return list;
@@ -411,10 +388,7 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
         double lrLat = lr.getY();
         double lrLon = lr.getX();
 
-        if (list != null) {
-            list.clear();
-            list = new OMGraphicList();
-        }
+        OMGraphicList list = new OMGraphicList();
 
         // check for date line anomaly on the screen. we check for
         // ulLon >= lrLon, but we need to be careful of the check for
@@ -447,7 +421,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
                     fe.printStackTrace();
                 }
             } catch (NullPointerException npe) {
-                // Have seen a NPE as a timing issue on startup that resolves itself quickly - the shp file is null
+                // Have seen a NPE as a timing issue on startup that resolves
+                // itself quickly - the shp file is null
                 if (DEBUG_FINE) {
                     npe.printStackTrace();
                 }
@@ -476,7 +451,8 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
                     fe.printStackTrace();
                 }
             } catch (NullPointerException npe) {
-                // Have seen a NPE as a timing issue on startup that resolves itself quickly - the shp file is null
+                // Have seen a NPE as a timing issue on startup that resolves
+                // itself quickly - the shp file is null
                 if (DEBUG_FINE) {
                     npe.printStackTrace();
                 }
@@ -484,39 +460,6 @@ public class ShapeLayer extends OMGraphicHandlerLayer implements ActionListener,
         }
 
         return list;
-    }
-
-    /**
-     * Renders the layer on the map.
-     * 
-     * @param g a graphics context
-     */
-    public void paint(Graphics g) {
-        if (shadowX == 0 && shadowY == 0) {
-            // Enabling buffer...
-            super.paint(g);
-        } else {
-            // grab local for thread safety
-            OMGraphicList omg = getList();
-
-            if (omg != null) {
-                if (logger.isLoggable(Level.FINE))
-                    logger.fine("ShapeLayer.paint(): " + omg.size() + " omg" + " shadow=" + shadowX
-                            + "," + shadowY);
-
-                if (shadowX != 0 || shadowY != 0) {
-                    Graphics shadowG = g.create();
-                    shadowG.translate(shadowX, shadowY);
-                    omg.render(shadowG);
-                } else {
-                    omg.render(g);
-                }
-
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("ShapeLayer.paint(): done");
-                }
-            }
-        }
     }
 
     protected transient JPanel box;

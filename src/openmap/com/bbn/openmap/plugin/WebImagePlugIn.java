@@ -17,6 +17,7 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -30,6 +31,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import com.bbn.openmap.Environment;
 import com.bbn.openmap.I18n;
@@ -38,7 +40,12 @@ import com.bbn.openmap.gui.MiniBrowser;
 import com.bbn.openmap.image.ImageServerConstants;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMRaster;
+import com.bbn.openmap.omGraphics.OMScalingRaster;
+import com.bbn.openmap.omGraphics.OMWarpingImage;
+import com.bbn.openmap.proj.LLXY;
+import com.bbn.openmap.proj.Proj;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.proj.coords.LatLonGCT;
 import com.bbn.openmap.util.PropUtils;
 
 /**
@@ -74,9 +81,51 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
     @Override
     public OMGraphicList getRectangle(Projection p) {
         OMGraphicList list = new OMGraphicList();
-
         currentProjection = p;
 
+        Point2D ul = p.getUpperLeft();
+        Point2D lr = p.getLowerRight();
+
+        if (lr.getX() < ul.getX()) {
+            // Dateline! Make 2 queries, one for each side.
+            Point2D dateline1 = p.forward(ul.getY(), 179.9999);
+            Point2D dateline2 = p.forward(ul.getY(), -179.9999);
+            int w1 = (int) dateline1.getX();
+            int w2 = p.getWidth() - (int) dateline2.getX() - 1;
+
+            int h = p.getHeight();
+            Point2D c1 = p.inverse(w1 / 2, h / 2);
+            Point2D c2 = p.inverse((w2 / 2) + w1 + 1, h / 2);
+
+            Proj p1 = (Proj) p.makeClone();
+            Proj p2 = (Proj) p.makeClone();
+
+            p1.setCenter(c1);
+            p1.setWidth(w1);
+
+            p2.setCenter(c2);
+            p2.setWidth(w2);
+
+            fetchImageAndAddToList(p1, list);
+            fetchImageAndAddToList(p2, list);
+
+        } else {
+            fetchImageAndAddToList(p, list);
+        }
+
+        list.generate(p);
+        return list;
+    } // end prepare
+
+    /**
+     * Image fetching code, where the query is created based on the provided
+     * projection.
+     * 
+     * @param p projection that image needs to cover
+     * @param list the OMGraphicList that any new image OMGraphics need to be
+     *        added to for the map
+     */
+    protected void fetchImageAndAddToList(Projection p, OMGraphicList list) {
         String urlString = createQueryString(p);
 
         if (logger.isLoggable(Level.FINE)) {
@@ -84,7 +133,7 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
         }
 
         if (urlString == null) {
-            return list;
+            return;
         }
 
         java.net.URL url = null;
@@ -98,13 +147,8 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
             }
 
             if (urlc == null || urlc.getContentType() == null) {
-                if (layer != null) {
-                    layer.fireRequestMessage(getName() + ": unable to connect to "
-                            + getServerName());
-                } else {
-                    logger.warning(getName() + ": unable to connect to " + getServerName());
-                }
-                return list;
+                logger.info(" unable to connect to " + urlString);
+                return;
             }
 
             // text
@@ -116,23 +160,10 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
                     message.append(st);
                 }
 
-                // Debug.error(message.toString());
-                // How about we toss the message out to the user
-                // instead?
-                if (layer != null) {
-                    layer.fireRequestMessage(message.toString());
-                }
+                logger.info("Received text from\n" + urlString + ":\n" + message.toString());
 
                 // image
             } else if (urlc.getContentType().startsWith("image")) {
-                // disconnect and reconnect in ImageIcon is very
-                // expensive
-                // urlc.disconnect();
-                // ImageIcon ii = new ImageIcon(url);
-
-                // this doesn't work always
-                // ImageIcon ii = new ImageIcon((Image)
-                // urlc.getContent());
 
                 // the best way, no reconnect, but can be an
                 // additional 'in memory' image
@@ -162,20 +193,35 @@ public abstract class WebImagePlugIn extends AbstractPlugIn implements ImageServ
                 // FileCacheImageInputStream(in, null);
                 // BufferedImage ii = ImageIO.read(fciis);
 
-                OMRaster image = new OMRaster((int) 0, (int) 0, ii);
-                list.add(image);
+                if (p instanceof LLXY) {
+                    // EPSG:4326, just put it on the screen
+                    OMRaster image = new OMRaster((int) 0, (int) 0, ii);
+                    list.add(image);
+                } else {
+                    Point2D ul = p.getUpperLeft();
+                    Point2D lr = p.getLowerRight();
+                    OMScalingRaster omsr = new OMScalingRaster(ul.getY(), ul.getX(), lr.getY(), lr.getX(), ii);
+
+                    OMWarpingImage omwi = new OMWarpingImage(omsr, LatLonGCT.INSTANCE);
+                    list.add(omwi);
+                }
+
             } // end if image
         } catch (java.net.MalformedURLException murle) {
             logger.warning("WebImagePlugIn: URL \"" + urlString + "\" is malformed.");
         } catch (java.io.IOException ioe) {
-            JOptionPane.showMessageDialog(null, getName() + ":\n\n   Couldn't connect to "
-                    + getServerName(), "Connection Problem", JOptionPane.INFORMATION_MESSAGE);
-
+            handleMessage("Couldn't connect to " + getServerName());
         }
+    }
 
-        list.generate(p);
-        return list;
-    } // end getRectangle
+    protected void handleMessage(final String message) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                JOptionPane.showMessageDialog(null, getName() + ":\n\n   "
+                        + message, "Connection Problem", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+    }
 
     public abstract String getServerName();
 

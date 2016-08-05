@@ -28,6 +28,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 import com.bbn.openmap.MoreMath;
+import com.bbn.openmap.geo.Geo;
 
 /**
  * Math functions used by projection code.
@@ -765,5 +766,31 @@ public final class ProjMath {
         }
         return ret;
     }
+
+	/**
+	 * Cumulative distance calculated between coords.
+	 * @param radianCoords lat, lon, lat, lon order
+	 * @return distance in radians
+	 */
+	public static double distance(double[] radianCoords) {
+		if (radianCoords != null && radianCoords.length >= 4) {
+			double totalDist = 0.0;
+			int len = radianCoords.length;
+			double y1 = radianCoords[0];
+			double x1 = radianCoords[1];
+			for (int i = 2; i < len - 1; i += 2) {
+				double y2 = radianCoords[i];
+				double x2 = radianCoords[i + 1];
+				
+				totalDist += Geo.distance(y1, x1, y2, x2);
+				
+				y1 = y2;
+				x1 = x2;
+			}
+			return totalDist;
+		}
+
+		return 0.0;
+	}
 
 }

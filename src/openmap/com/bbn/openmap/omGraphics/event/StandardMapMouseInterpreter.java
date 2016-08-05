@@ -38,6 +38,7 @@ import com.bbn.openmap.event.MapMouseEvent;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
+import com.bbn.openmap.omGraphics.OMPoint;
 import com.bbn.openmap.util.Debug;
 
 /**
@@ -525,13 +526,13 @@ public class StandardMapMouseInterpreter
         }
         setCurrentMouseEvent(e);
 
-        if ((noTimerOverOMGraphic && getMovementInterest() != null) || mouseTimerInterval <= 0) {
-            return updateMouseMoved(e);
-        } else {
-            if (mouseTimer == null) {
-                mouseTimer = new Timer(mouseTimerInterval, mouseTimerListener);
-                mouseTimer.setRepeats(false);
-            }
+		if (getMovementInterest() == null || noTimerOverOMGraphic || mouseTimerInterval <= 0) {
+			return updateMouseMoved(e);
+		} else {
+			if (mouseTimer == null) {
+				mouseTimer = new Timer(mouseTimerInterval, mouseTimerListener);
+				mouseTimer.setRepeats(false);
+			}
 
             mouseTimerListener.setEvent(e);
             mouseTimer.restart();
@@ -617,32 +618,39 @@ public class StandardMapMouseInterpreter
         OMGraphic omg = getGeometryUnder(e);
         GeometryOfInterest goi = getMovementInterest();
 
-        if (omg != null && grp != null) {
+		boolean mouseOverCurrentGOI = (goi != null && goi.appliesTo(omg));
 
-            // This gets called if the goi is new or if the goi
-            // refers to a different OMGraphic as previously noted.
-            if (goi == null || !goi.appliesTo(omg)) {
+		if (goi != null && !mouseOverCurrentGOI) {
+			// We already had a GOI from preious event, but it's not under the event now...
+			mouseNotOver(goi.getGeometry());
+			setMovementInterest(null);
+		} else {
+			ret = (goi != null);
+		}
 
-                if (goi != null) {
-                    mouseNotOver(goi.getGeometry());
-                }
+		if (omg != null) {
+			// Mouse over OMGraphic
+			if (!mouseOverCurrentGOI) {
+				// We get in here if the GOI should be changed to a new OMGraphic.
+				setMovementInterest(new GeometryOfInterest(omg, e));
 
-                goi = new GeometryOfInterest(omg, e);
-                setMovementInterest(goi);
-                setNoTimerOverOMGraphic(!omg.shouldRenderFill());
-                ret = mouseOver(omg, e);
-            }
+				// Add a specialized check for OMPoint because it shouldn't have a delayed unhighlight.
+				setNoTimerOverOMGraphic(!omg.shouldRenderFill() || omg instanceof OMPoint);
+				ret = mouseOver(omg, e);
+			}
+		} else {
+			// Current mouse event not over an OMGraphic
+			ret = mouseOver(e);
+		}
 
-        } else {
-            if (goi != null) {
-                mouseNotOver(goi.getGeometry());
-                setMovementInterest(null);
-            }
-            ret = mouseOver(e);
-        }
+		ret = ret && consumeEvents;
 
-        return ret && consumeEvents;
-    }
+		if (ret) {
+			e.consume();
+		}
+
+		return ret;
+	}
 
     /**
      * Handle notification that another layer consumed a mouse moved event. Sets
@@ -802,15 +810,15 @@ public class StandardMapMouseInterpreter
             Debug.output("mouseOver(" + omg.getClass().getName() + ") at " + me.getX() + ", " + me.getY());
         }
 
-        if (grp != null) {
-            handleToolTip(grp.getToolTipTextFor(omg), me);
-            handleInfoLine(grp.getInfoText(omg));
-            if (grp.isHighlightable(omg)) {
-                grp.highlight(omg);
-            }
-        }
-        return true;
-    }
+		if (grp != null && !me.isConsumed()) {
+			handleToolTip(grp.getToolTipTextFor(omg), me);
+			handleInfoLine(grp.getInfoText(omg));
+			if (grp.isHighlightable(omg)) {
+				grp.highlight(omg);
+			}
+		}
+		return true;
+	}
 
     /**
      * Given a tool tip String, use the layer to get it displayed.

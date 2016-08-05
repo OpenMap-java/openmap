@@ -22,8 +22,11 @@
 
 package com.bbn.openmap.omGraphics;
 
+import java.awt.BasicStroke;
 import java.awt.Shape;
+import java.awt.geom.FlatteningPathIterator;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.PathIterator;
 
 import com.bbn.openmap.proj.Projection;
 
@@ -38,10 +41,11 @@ import com.bbn.openmap.proj.Projection;
  * Rendering can be unpredictable for large coordinate values.
  */
 public class OMShape extends OMGraphicAdapter implements OMGraphic {
+	private static final long serialVersionUID = 1L;
+	protected Shape origShape = null;
 
-    protected Shape origShape = null;
-
-    protected OMShape() {}
+	protected OMShape() {
+	}
 
     public OMShape(Shape shapeIn) {
         origShape = shapeIn;
@@ -66,16 +70,38 @@ public class OMShape extends OMGraphicAdapter implements OMGraphic {
             return true;
         }
 
-        return false;
-    }
-    
-    public void restore(OMGeometry source) {
-       super.restore(source);
-       if (source instanceof OMShape) {
-          OMShape shape = (OMShape) source;
-          
-          this.origShape = new GeneralPath(shape.origShape);
-       }
-    }
+		return false;
+	}
 
+	public void restore(OMGeometry source) {
+		super.restore(source);
+		if (source instanceof OMShape) {
+			OMShape shape = (OMShape) source;
+
+			this.origShape = new GeneralPath(shape.origShape);
+		}
+	}
+
+	/**
+	 * This is a subclass that uses the provided shape as the generated shape.
+	 * Takes advantage of the rendering mechanism of OMGraphics. Mainly used for
+	 * rendering features already projected for vector tiles.
+	 * 
+	 * @author dietrick
+	 *
+	 */
+	public static class PROJECTED extends OMShape {
+		private static final long serialVersionUID = 1L;
+
+		public PROJECTED(Shape s) {
+			super(s);
+			setShape(new GeneralPath(origShape));
+			setNeedToRegenerate(false);
+		}
+
+		public boolean generate(Projection proj) {
+			// NOOP
+			return true;
+		}
+	}
 }

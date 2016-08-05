@@ -23,18 +23,23 @@
 package com.bbn.openmap.layer;
 
 import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
 import java.awt.Component;
 import java.awt.Composite;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -52,6 +57,7 @@ import com.bbn.openmap.layer.policy.ProjectionChangePolicy;
 import com.bbn.openmap.layer.policy.RenderPolicy;
 import com.bbn.openmap.layer.policy.StandardPCPolicy;
 import com.bbn.openmap.layer.policy.StandardRenderPolicy;
+import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.FilterSupport;
 import com.bbn.openmap.omGraphics.OMAction;
 import com.bbn.openmap.omGraphics.OMGraphic;
@@ -61,9 +67,11 @@ import com.bbn.openmap.omGraphics.event.GestureResponsePolicy;
 import com.bbn.openmap.omGraphics.event.MapMouseInterpreter;
 import com.bbn.openmap.omGraphics.event.StandardMapMouseInterpreter;
 import com.bbn.openmap.proj.Projection;
+import com.bbn.openmap.tools.icon.IconPart;
+import com.bbn.openmap.tools.icon.OMIconFactory;
+import com.bbn.openmap.tools.icon.OpenMapAppPartCollection;
 import com.bbn.openmap.util.ComponentFactory;
 import com.bbn.openmap.util.ISwingWorker;
-import com.bbn.openmap.util.PaletteHelper;
 import com.bbn.openmap.util.PooledSwingWorker;
 import com.bbn.openmap.util.PropUtils;
 
@@ -1250,12 +1258,12 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         return omgl;
     }
 
-    /***************************************************************************
-     * Return a copy of an OMGraphic. Not implemented yet.
-     */
-    public OMGraphicList copy(OMGraphicList omgl) {
-        return null;
-    }
+	/**
+	 * Return a copy of OMGraphics.
+	 */
+	public OMGraphicList copy(OMGraphicList omgl) {
+		return (OMGraphicList) omgl.clone();
+	}
 
     /**
      * Add OMGraphics to the Layer.
@@ -1348,85 +1356,178 @@ public class OMGraphicHandlerLayer extends Layer implements GestureResponsePolic
         return false;
     }
 
-    /**
-     * Create a JPanel that has a slider to control the layer transparency. An
-     * action listener that calls layer repaint() when the value changes will be
-     * added to the slider.
-     *
-     * @param label the label for the panel around the slider.
-     * @param orientation JSlider.HORIZONTAL/JSlider.VERTICAL
-     * @param initialValue an initial transparency value between 0-1, 0 being
-     *        clear.
-     * @return JPanel with controls for transparency setting.
-     */
-    public JPanel getTransparencyAdjustmentPanel(String label, int orientation, float initialValue) {
-        JPanel opaquePanel = PaletteHelper.createPaletteJPanel(label);
-        JSlider opaqueSlide = new JSlider(orientation, 0/* min */, 255/* max */, (int) (255f * initialValue)/* inital */);
-        java.util.Hashtable<Integer, JLabel> dict = new java.util.Hashtable<Integer, JLabel>();
-        dict.put(new Integer(0), new JLabel(i18n.get(OMGraphicHandlerLayer.class, "clearSliderLabel", "clear")));
-        dict.put(new Integer(255), new JLabel(i18n.get(OMGraphicHandlerLayer.class, "opqueSliderLabel", "opaque")));
-        opaqueSlide.setLabelTable(dict);
-        opaqueSlide.setPaintLabels(true);
-        opaqueSlide.setMajorTickSpacing(50);
-        opaqueSlide.setPaintTicks(true);
-        opaqueSlide.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent ce) {
-                JSlider slider = (JSlider) ce.getSource();
-                if (slider.getValueIsAdjusting()) {
-                    OMGraphicHandlerLayer.this.setTransparency((float) slider.getValue() / 255f);
-                    repaint();
-                }
-            }
-        });
-        opaquePanel.add(opaqueSlide);
-        return opaquePanel;
-    }
+	/**
+	 * Create a JPanel that has a slider to control the layer transparency. An
+	 * action listener that calls layer repaint() when the value changes will be
+	 * added to the slider.
+	 *
+	 * @param label
+	 *            the label for the panel around the slider.
+	 * @param orientation
+	 *            JSlider.HORIZONTAL/JSlider.VERTICAL
+	 * @param initialValue
+	 *            an initial transparency value between 0-1, 0 being clear.
+	 * @return JPanel with controls for transparency setting.
+	 */
+	public JPanel getTransparencyAdjustmentPanel(String label, int orientation, float initialValue) {
+		JPanel opaquePanel = new JPanel();
+		// opaquePanel.setBorder(BorderFactory.createEtchedBorder());
 
-    /**
-     * Set the transparency of the layer. This transparency is applied during
-     * rendering.
-     *
-     * @param value 0f for clear, 1f for opaque.
-     */
-    public void setTransparency(float value) {
-        AlphaComposite ac = null;
-        if (value != 1f) {
-            ac = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, value);
-        }
-        getRenderPolicy().setComposite(ac);
-    }
+		GridBagLayout gridbag = new GridBagLayout();
+		GridBagConstraints c = new GridBagConstraints();
+		opaquePanel.setLayout(gridbag);
 
-    /**
-     * Get the transparency value for this layer.
-     *
-     * @return 1 if opaque, 0 for clear.
-     */
-    public float getTransparency() {
-        float ret = 1f;
-        RenderPolicy rp = getRenderPolicy();
+		c.anchor = GridBagConstraints.NORTHWEST;
+		JLabel jb = new JLabel(i18n.get(OMGraphicHandlerLayer.class, "layerTransparency", "Layer Transparency"));
+		gridbag.setConstraints(jb, c);
+		opaquePanel.add(jb);
 
-        if (rp != null) {
-            Composite comp = rp.getComposite();
-            if (comp instanceof AlphaComposite) {
-                ret = ((AlphaComposite) comp).getAlpha();
-            }
-        }
+		JSlider opaqueSlide = new JSlider(orientation, 0/* min */, 255/* max */,
+				(int) (255f * initialValue)/* inital */);
+		java.util.Hashtable<Integer, JLabel> dict = new java.util.Hashtable<Integer, JLabel>();
+		dict.put(new Integer(0), new JLabel(i18n.get(OMGraphicHandlerLayer.class, "clearSliderLabel", "clear")));
+		dict.put(new Integer(255), new JLabel(i18n.get(OMGraphicHandlerLayer.class, "opqueSliderLabel", "opaque")));
+		opaqueSlide.setLabelTable(dict);
+		opaqueSlide.setPaintLabels(true);
+		opaqueSlide.setMajorTickSpacing(50);
+		opaqueSlide.setPaintTicks(true);
+		opaqueSlide.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent ce) {
+				JSlider slider = (JSlider) ce.getSource();
+				if (slider.getValueIsAdjusting()) {
+					OMGraphicHandlerLayer.this.setTransparency((float) slider.getValue() / 255f);
+					repaint();
+				}
+			}
+		});
 
-        return ret;
-    }
+		c.gridy = 1;
+		gridbag.setConstraints(opaqueSlide, c);
+		opaquePanel.add(opaqueSlide);
 
-    /**
-     * Override of Layer's actionPerformed method, adds the capability that
-     * calls doPrepare() if the layer is visible and it receives a RedrawCmd
-     * command. Also calls Layer.actionPerformed(ActionEvent).
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        String cmd = e.getActionCommand();
-        if (cmd == RedrawCmd) {
-            if (isVisible()) {
-                doPrepare();
-            }
-        }
-    }
+		return opaquePanel;
+	}
+
+	public JButton getRedrawButton(String tooltip) {
+		DrawingAttributes da = DrawingAttributes.getDefaultClone();
+		da.setStroke(new BasicStroke(3));
+
+		IconPart reloadSymbol = OpenMapAppPartCollection.getReloadSymbol();
+		reloadSymbol.setRenderingAttributes(da);
+
+		ImageIcon ii = OMIconFactory.getIcon(25, 25, reloadSymbol);
+		JButton redraw = new JButton(ii);
+		redraw.setActionCommand(RedrawCmd);
+		redraw.setToolTipText("Redraw Layer");
+		redraw.addActionListener(this);
+		return redraw;
+	}
+
+	public JButton getSettingsButton(String tooltip) {
+		DrawingAttributes da = DrawingAttributes.getDefaultClone();
+		da.setStroke(new BasicStroke(3));
+
+		IconPart settingsSymbol = OpenMapAppPartCollection.getSettingsSymbol();
+		settingsSymbol.setRenderingAttributes(da);
+
+		ImageIcon ii = OMIconFactory.getIcon(25, 25, settingsSymbol);
+		JButton redraw = new JButton(ii);
+		redraw.setActionCommand(DisplayPropertiesCmd);
+		redraw.setToolTipText(tooltip);
+		redraw.addActionListener(this);
+		return redraw;
+	}
+
+	/**
+	 * Get a default settings panel that contains the layer transparency
+	 * setting, the settings button and a layer refresh button.
+	 * 
+	 * @param clss
+	 *            The class for i18n translations
+	 * @param opaquenessSetting
+	 *            The current opaqueness setting, as some fraction of 255. 1 is
+	 *            opaque.
+	 * @return JPanel with the components all laid out.
+	 */
+	public JPanel getDefaultSettingsPanel(Class<?> clss, float opaquenessSetting) {
+		JPanel panel = new JPanel();
+		GridBagLayout gridbag = new GridBagLayout();
+		GridBagConstraints c = new GridBagConstraints();
+		panel.setLayout(gridbag);
+
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridheight = 2;
+		c.insets = new Insets(5, 5, 5, 0);
+
+		JPanel transPanel = getTransparencyAdjustmentPanel(
+				i18n.get(clss, "layerTransparencyGUILabel", "Layer Transparency"), JSlider.HORIZONTAL,
+				opaquenessSetting);
+		gridbag.setConstraints(transPanel, c);
+		panel.add(transPanel);
+
+		c.gridx = 1;
+		c.gridheight = 1;
+		c.insets = new Insets(5, 0, 0, 5);
+		JButton jb = getSettingsButton(i18n.get(clss, "layerSettingsButtonTooltip", "Change Layer Settings"));
+		gridbag.setConstraints(jb, c);
+		panel.add(jb);
+
+		c.gridy = 1;
+		c.insets = new Insets(0, 0, 5, 5);
+		jb = getRedrawButton(i18n.get(clss, "layerRedrawButtonTooltip", "Refresh Layer"));
+		gridbag.setConstraints(jb, c);
+		panel.add(jb);
+
+		return panel;
+	}
+
+	/**
+	 * Set the transparency of the layer. This transparency is applied during
+	 * rendering.
+	 *
+	 * @param value
+	 *            0f for clear, 1f for opaque.
+	 */
+	public void setTransparency(float value) {
+		AlphaComposite ac = null;
+		if (value != 1f) {
+			ac = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, value);
+		}
+		getRenderPolicy().setComposite(ac);
+	}
+
+	/**
+	 * Get the transparency value for this layer.
+	 *
+	 * @return 1 if opaque, 0 for clear.
+	 */
+	public float getTransparency() {
+		float ret = 1f;
+		RenderPolicy rp = getRenderPolicy();
+
+		if (rp != null) {
+			Composite comp = rp.getComposite();
+			if (comp instanceof AlphaComposite) {
+				ret = ((AlphaComposite) comp).getAlpha();
+			}
+		}
+
+		return ret;
+	}
+
+	/**
+	 * Override of Layer's actionPerformed method, adds the capability that
+	 * calls doPrepare() if the layer is visible and it receives a RedrawCmd
+	 * command. Also calls Layer.actionPerformed(ActionEvent).
+	 */
+	public void actionPerformed(ActionEvent e) {
+		super.actionPerformed(e);
+		String cmd = e.getActionCommand();
+		if (cmd == RedrawCmd) {
+			if (isVisible()) {
+				doPrepare();
+			}
+		}
+	}
 }

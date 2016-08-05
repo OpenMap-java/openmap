@@ -27,7 +27,9 @@ package com.bbn.openmap.tools.icon;
 import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 
 public class OpenMapAppPartCollection extends IconPartCollection {
 
@@ -99,7 +101,7 @@ public class OpenMapAppPartCollection extends IconPartCollection {
                 AffineTransform affTrans) {
             super(n, d, new BasicIconPart(shape, affTrans));
         }
-
+        
         public static class Poly extends OpenMapAppPart {
             public Poly(String n, String d, int[] xp, int[] yp) {
                 this(n, d, xp, yp, (AffineTransform) null);
@@ -124,6 +126,52 @@ public class OpenMapAppPartCollection extends IconPartCollection {
                       af);
             }
         }
+        
+        /**
+         * type = Arc2D.OPEN, Arc2D.CHORD, Arc2D.PIE
+         * @author dietrick
+         *
+         */
+        public static class Arc extends OpenMapAppPart {
+        	public Arc(String n, String d, double x, double y, double radius, double start, double end, int type) {
+        		this(n, d, x, y, radius, start, end, type, null);
+        	}
+        	
+        	public Arc(String n, String d, double x, double y, double radius, double start, double end, int type, AffineTransform af) {
+        		super(n, d, new Arc2D.Double(type), af);
+        		Arc2D arc = (Arc2D) super.getIconPart().getGeometry();
+        		arc.setArcByCenter(x, y, radius, start, end, type);
+        	}
+        }
+    }
+    
+    public static IconPart getReloadSymbol() {
+    	IconPartList ipList = new IconPartList();
+		ipList.add(new OpenMapAppPartCollection.OpenMapAppPart.Arc("RELOAD_ARC", "RELOAD_ARC", 50, 50, 30, 90, 270, Arc2D.OPEN)
+				.getIconPart());
+		ipList.add(new OpenMapAppPartCollection.OpenMapAppPart.Poly("RELOAD_POINT", "RELOAD_POINT",
+				new int[] { 43, 65, 49 }, new int[] { 15, 20, 37 }).getIconPart());
+		return ipList;
+    }
+    
+    public static IconPart getSettingsSymbol() {
+    	IconPartList ipList = new IconPartList();
+		ipList.add(new OpenMapAppPartCollection.OpenMapAppPart.Circle("SETTINGS_CIRCLE", "SETTINGS_CIRCLE", 50, 50, 30).getIconPart());
+		
+		for (int i = 0; i < 360; i+= 30) {
+			double angle = Math.toRadians(i);
+			double cos = Math.cos(angle);
+			double sin = Math.sin(angle);
+			double x1 = 30.0 * cos + 50;
+			double y1 = 30.0 * sin + 50;
+			double x2 = 40.0 * cos + 50;
+			double y2 = 40.0 * sin + 50;
+			
+			Line2D.Double line = new Line2D.Double(x1, y1,  x2, y2);
+			ipList.add(new OpenMapAppPartCollection.OpenMapAppPart("RELOAD_POINT", "RELOAD_POINT", line).getIconPart());
+		}
+		
+		return ipList;    	
     }
 
 }

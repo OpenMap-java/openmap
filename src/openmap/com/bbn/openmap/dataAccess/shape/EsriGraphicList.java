@@ -26,11 +26,14 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.bbn.openmap.dataAccess.shape.input.ShpInputStream;
 import com.bbn.openmap.dataAccess.shape.input.ShxInputStream;
+import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.omGraphics.DrawingAttributes;
 import com.bbn.openmap.omGraphics.OMGraphic;
 import com.bbn.openmap.omGraphics.OMGraphicList;
@@ -182,21 +185,17 @@ public abstract class EsriGraphicList
         }
     }
 
-    /**
-     * Get the DbfTableModel object from the AppObject of this list.
-     */
-    public DbfTableModel getTable() {
-        Object obj = getAttribute(DBF_ATTRIBUTE);
-        // Backward compatibility
-        if (obj == null) {
-            obj = getAppObject();
-        }
-        if (obj instanceof DbfTableModel) {
-            return (DbfTableModel) obj;
-        } else {
-            return null;
-        }
-    }
+	/**
+	 * Get the DbfTableModel object from the AppObject of this list.
+	 */
+	public DbfTableModel getTable() {
+		Object obj = getAttribute(DBF_ATTRIBUTE);
+		if (obj instanceof DbfTableModel) {
+			return (DbfTableModel) obj;
+		} else {
+			return null;
+		}
+	}
 
     /**
      * Create a generic DbfTableModel for the contents of this list, where the
@@ -320,8 +319,36 @@ public abstract class EsriGraphicList
             }
         }
 
-        return getEsriGraphicList(shp, drawingAttributes, dbf, coordTranslator);
-    }
+		return getEsriGraphicList(shp, drawingAttributes, dbf, coordTranslator);
+	}
+
+	/**
+	 * Find EsriGraphics with a certain attribute
+	 * 
+	 * @param value the value of the desired attribute.
+	 * @param columnName the columnName in the dbf
+	 * @return new List of EsriGraphic shapes with value in column
+	 * @throws FormatException thrown if columnName isn't found.
+	 */
+	public List<EsriGraphic> getGraphicsWithValueInColumn(Object value, String columnName) throws FormatException {
+		List<EsriGraphic> ret = new ArrayList<EsriGraphic>();
+		DbfTableModel dbf = getTable();
+		int colIndex = dbf.findColumn(columnName);
+		if (colIndex != -1) {
+			for (OMGraphic eg : this) {
+				Integer index = (Integer) eg.getAttribute(ShapeConstants.SHAPE_INDEX_ATTRIBUTE);
+				List<Object> atts = dbf.getRecord(index);
+
+				if (atts.get(colIndex).equals(value)) {
+					ret.add((EsriGraphic) eg);
+				}
+			}
+		} else {
+			throw new FormatException("Column " + columnName + " not found");
+		}
+
+		return ret;
+	}
 
     public static void main(String[] args) {
 

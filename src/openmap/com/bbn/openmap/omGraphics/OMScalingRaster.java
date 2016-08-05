@@ -304,8 +304,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
 
         if (bitmap != null) {
             if (corners == null) {
-                GeneralPath projectedShape = createBoxShape(point1.x, point1.y, point2.x - point1.x, point2.y
-                        - point1.y);
+                GeneralPath projectedShape = createBoxShape(point1.x, point1.y, point2.x
+                        - point1.x, point2.y - point1.y);
                 int w = bitmap.getWidth(this);
                 int h = bitmap.getHeight(this);
                 double anchorX = point1.x + w / 2;
@@ -571,7 +571,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
             if (visibleImageArea != null) {
 
                 if (DEBUG) {
-                    logger.fine("drawing " + visibleImageArea + " image at " + loc.x + ", " + loc.y);
+                    logger.fine("drawing " + visibleImageArea + " image at " + loc.x + ", "
+                            + loc.y);
                 }
 
                 if (g instanceof Graphics2D) {
@@ -587,7 +588,8 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                         int dx1 = loc.x;
                         int dy1 = loc.y;
                         Point2D d2 = scalingXFormOp.getPoint2D(new Point2D.Double(dx1
-                                + visibleImageArea.width, dy1 + visibleImageArea.height), new Point2D.Double());
+                                + visibleImageArea.width, dy1
+                                        + visibleImageArea.height), new Point2D.Double());
                         int dx2 = (int) d2.getX();
                         int dy2 = (int) d2.getY();
 
@@ -783,6 +785,15 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                 if (image instanceof BufferedImage) {
                     bi = (BufferedImage) image;
                 } else {
+                    int w = image.getWidth(null);
+                    int h = image.getHeight(null);
+
+                    if (w <= 0 || h <= 0) {
+                        // Can't create image if one of these is -1
+                        // (Interrupted).
+                        return imageWarp;
+                    }
+
                     bi = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
                     bi.getGraphics().drawImage(image, 0, 0, null);
                 }

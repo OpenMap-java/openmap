@@ -31,6 +31,7 @@ import java.util.Iterator;
 
 import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.proj.Length;
+import com.bbn.openmap.proj.LineCoordinateGenerator;
 import com.bbn.openmap.proj.ProjMath;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
@@ -39,8 +40,7 @@ import com.bbn.openmap.util.DeepCopyUtil;
 /**
  * OMGraphic object that represents a polyline, labeled with distances.
  */
-public class OMDistance
-      extends OMPoly {
+public class OMDistance extends OMPoly {
 
    protected OMGraphicList labels = new OMGraphicList();
    protected OMGraphicList points = new OMGraphicList();
@@ -154,7 +154,7 @@ public class OMDistance
       }
       points.add(new OMPoint(latpnt, lonpnt, 1));
       Geo curGeo = null;
-      float cumulativeDist = 0f;
+	  double cumulativeDist = 0.0;
       for (int p = 2; p < rawllpts.length; p += 2) {
          if (curGeo == null) {
             curGeo = new Geo(rawllpts[p], rawllpts[p + 1], units == DECIMAL_DEGREES);
@@ -166,8 +166,8 @@ public class OMDistance
             }
          }
 
-         float dist = getDist(lastGeo, curGeo);
-         cumulativeDist += dist;
+			double dist = getDist(lastGeo, curGeo);
+			cumulativeDist += dist;
 
          labels.add(createLabel(lastGeo, curGeo, dist, cumulativeDist, distUnits));
          latpnt = rawllpts[p];
@@ -182,55 +182,57 @@ public class OMDistance
       }
    }
 
-   /**
-    * Get an OMText label for a segments between the given lat/lon points whose
-    * given distance and cumulative distance is specified.
-    */
-   public OMText createLabel(Geo g1, Geo g2, float dist, float cumulativeDist, Length distanceUnits) {
-      Geo mid;
-      switch (getLineType()) {
-         case LINETYPE_STRAIGHT:
-            float lat = (float) (g1.getLatitude() + g2.getLatitude()) / 2f;
-            float lon = (float) (g1.getLongitude() + g2.getLongitude()) / 2f;
-            mid = new Geo(lat, lon);
-            break;
-         case LINETYPE_RHUMB:
-            System.err.println("Rhumb distance calculation not implemented.");
-         case LINETYPE_GREATCIRCLE:
-         case LINETYPE_UNKNOWN:
-         default:
-            mid = g1.midPoint(g2);
-      }
+	/**
+	 * Get an OMText label for a segments between the given lat/lon points whose
+	 * given distance and cumulative distance is specified.
+	 */
+	public OMText createLabel(Geo g1, Geo g2, double dist, double cumulativeDist, Length distanceUnits) {
+		Geo mid;
+		switch (getLineType()) {
+		case LINETYPE_STRAIGHT:
+			double lat = (g1.getLatitude() + g2.getLatitude()) / 2.0;
+			double lon = (g1.getLongitude() + g2.getLongitude()) / 2.0;
+			mid = new Geo(lat, lon);
+			break;
+		case LINETYPE_RHUMB:
+			System.err.println("Rhumb distance calculation not implemented.");
+		case LINETYPE_GREATCIRCLE:
+		case LINETYPE_UNKNOWN:
+		default:
+			mid = g1.midPoint(g2);
+		}
 
       // String text = ((int)dist) + " (" + ((int)cumulativeDist) +
       // ")";
 
-      String text =
-            (df.format(distanceUnits.fromRadians(dist))) + " (" + (df.format(distanceUnits.fromRadians(cumulativeDist))) + ") "
-                  + distanceUnits.getAbbr();
-      OMText omtext = new OMText((float) mid.getLatitude(), (float) mid.getLongitude(), text, OMText.JUSTIFY_LEFT);
-      // omtext.setLinePaint(new Color(200, 200, 255));
-      return omtext;
-   }
+		String text = (df.format(distanceUnits.fromRadians(dist))) + " ("
+				+ (df.format(distanceUnits.fromRadians(cumulativeDist))) + ") " + distanceUnits.getAbbr();
+		OMText omtext = new OMText(mid.getLatitude(), mid.getLongitude(), text, OMText.JUSTIFY_LEFT);
+		// omtext.setLinePaint(new Color(200, 200, 255));
+		return omtext;
+	}
 
-   /**
-    * Return the distance between that lat/lons defined in radians. The returned
-    * value is in radians.
-    */
-   public float getDist(Geo g1, Geo g2) {
-      switch (getLineType()) {
-         case LINETYPE_STRAIGHT:
-            float lonDist = ProjMath.lonDistance((float) g2.getLongitude(), (float) g1.getLongitude());
-            float latDist = (float) g2.getLatitude() - (float) g1.getLatitude();
-            return (float) Math.sqrt(lonDist * lonDist + latDist * latDist);
-         case LINETYPE_RHUMB:
-            Debug.error("Rhumb distance calculation not implemented.");
-         case LINETYPE_GREATCIRCLE:
-         case LINETYPE_UNKNOWN:
-         default:
-            return (float) g1.distance(g2);
-      }
-   }
+	/**
+	 * Return the distance between that lat/lons defined in radians. The
+	 * returned value is in radians and LINETYPE is taken into consideration.
+	 * LINETYPE_STRAIGHT returns same as LINETYPE_GREATCIRCLE, the ground
+	 * distance between all nodes and not the degree distance of the lines.
+	 */
+	public double getDist(Geo g1, Geo g2) {
+		switch (getLineType()) {
+		case LINETYPE_RHUMB:
+
+			double[] coords = new double[] { g1.getLatitudeRadians(), g1.getLongitudeRadians(), g2.getLatitudeRadians(),
+					g2.getLongitudeRadians() };
+			return ProjMath.distance(LineCoordinateGenerator.fromRadians(coords).rhumbLineDoubles());
+
+		case LINETYPE_STRAIGHT:
+		case LINETYPE_GREATCIRCLE:
+		case LINETYPE_UNKNOWN:
+		default:
+			return g1.distance(g2);
+		}
+	}
 
    /**
     * Prepare the poly for rendering.
@@ -339,17 +341,15 @@ public class OMDistance
       return labelFont;
    }
 
-   private void writeObject(java.io.ObjectOutputStream stream)
-         throws java.io.IOException {
-      stream.defaultWriteObject();
-      stream.writeObject(distUnits.getAbbr());
-   }
+	private void writeObject(java.io.ObjectOutputStream stream) throws java.io.IOException {
+		stream.defaultWriteObject();
+		stream.writeObject(distUnits.getAbbr());
+	}
 
-   private void readObject(java.io.ObjectInputStream stream)
-         throws java.io.IOException, ClassNotFoundException {
-      stream.defaultReadObject();
-      distUnits = Length.get((String) stream.readObject());
-   }
+	private void readObject(java.io.ObjectInputStream stream) throws java.io.IOException, ClassNotFoundException {
+		stream.defaultReadObject();
+		distUnits = Length.get((String) stream.readObject());
+	}
 
    public void restore(OMGeometry source) {
       super.restore(source);

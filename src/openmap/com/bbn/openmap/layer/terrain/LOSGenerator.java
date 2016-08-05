@@ -245,7 +245,7 @@ public class LOSGenerator implements TerrainTool {
      * (since they won't make sense.
      */
     public void setScreenParameters(Projection p) {
-        reset(true, true);
+        //reset(true, true);
         proj = p;
         LOSprecision = AZIMUTH;
         graphics.generate(proj);

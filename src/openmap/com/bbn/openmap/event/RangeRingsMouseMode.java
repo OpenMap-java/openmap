@@ -31,7 +31,8 @@ import com.bbn.openmap.util.PropUtils;
 /**
  * Mouse mode for drawing temporary range rings on a map bean.<br>
  * The whole map bean is repainted each time the range rings needs to be
- * repainted. The map bean needs to use a mouseDelegator to repaint properly.<br>
+ * repainted. The map bean needs to use a mouseDelegator to repaint properly.
+ * <br>
  * 
  * @author Stephane Wasserhardt
  * 
@@ -49,7 +50,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
     /**
      * Format used to draw distances.
      */
-    protected Format distanceFormat;
+    protected Format distanceFormat = new DecimalFormat("0.###");
     /**
      * Number of rings to draw. Must be a positive integer, or else the value 1
      * will be used. Default value is 3.<br>
@@ -69,6 +70,10 @@ public class RangeRingsMouseMode extends CoordMouseMode {
     protected Point2D destination = null;
 
     protected DrawingAttributes rrAttributes = DrawingAttributes.getDefaultClone();
+    /**
+     * Distance units for label.
+     */
+    protected Length units = Length.MILE;
 
     public RangeRingsMouseMode() {
         this(true);
@@ -372,7 +377,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
         if (distFormat == null) {
             return Double.toString(distance);
         }
-        return distFormat.format(new Double(distance));
+        return distFormat.format(new Double(units.fromRadians(distance))) + " " + units.getAbbr();
     }
 
     /**
@@ -407,7 +412,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
         super.setProperties(prefix, props);
         rrAttributes.setProperties(prefix, props);
         prefix = PropUtils.getScopedPropertyPrefix(prefix);
-
+        units = Length.get(props.getProperty(prefix + UNITS_PROPERTY, units.getAbbr()));
         numRings = PropUtils.intFromProperties(props, prefix + NUM_RINGS_PROPERTY, numRings);
     }
 
@@ -425,6 +430,7 @@ public class RangeRingsMouseMode extends CoordMouseMode {
 
         String prefix = PropUtils.getScopedPropertyPrefix(getPropertyPrefix());
         props.setProperty(prefix + NUM_RINGS_PROPERTY, Integer.toString(numRings));
+        props.setProperty(prefix + UNITS_PROPERTY, units.getAbbr());
 
         return props;
     }
@@ -440,10 +446,8 @@ public class RangeRingsMouseMode extends CoordMouseMode {
 
         list = rrAttributes.getPropertyInfo(list);
         list.setProperty(NUM_RINGS_PROPERTY, "Number of range rings to be drawn (minimum=1; default=3).");
-
-        list.setProperty(initPropertiesProperty, UnitProperty + " " + ShowCircleProperty + " "
-                + ShowAngleProperty + " " + DrawingAttributes.linePaintProperty + " "
-                + DrawingAttributes.mattingPaintProperty + " " + DrawingAttributes.mattedProperty);
+        list.setProperty(UNITS_PROPERTY, "Units of ring distance");
+        list.setProperty(initPropertiesProperty, UNITS_PROPERTY + " " + NUM_RINGS_PROPERTY);
 
         return list;
     }
