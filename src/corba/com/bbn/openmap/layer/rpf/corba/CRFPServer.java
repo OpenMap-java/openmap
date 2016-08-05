@@ -252,8 +252,8 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * @param p a CADRG projection
      * @param uniqueID a client-unique identifier.
      */
-    public CRFPCoverageBox[] getCoverage(float ullat, float ullon, float lrlat,
-                                         float lrlon, CRFPCADRGProjection p,
+    public CRFPCoverageBox[] getCoverage(double ullat, double ullon, double lrlat, double lrlon,
+                                         CRFPCADRGProjection p,
                                          String uniqueID) {
 
         Debug.message("crfp",
@@ -286,8 +286,8 @@ public class CRFPServer extends ServerPOA implements ActionListener {
      * @param p a CADRG projection
      * @param uniqueID a client-unique identifier.
      */
-    public CRFPCoverageBox[] getCatalogCoverage(float ullat, float ullon,
-                                                float lrlat, float lrlon,
+    public CRFPCoverageBox[] getCatalogCoverage(double ullat, double ullon, double lrlat,
+                                                double lrlon,
                                                 CRFPCADRGProjection p,
                                                 String chartSeriesCode,
                                                 String uniqueID) {

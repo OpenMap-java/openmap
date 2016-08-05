@@ -130,7 +130,7 @@ public class RpfFrameCacheHandler
     * @param chartSeries RpfProductInfo.seriesCode entry.
     * @return Vector of RpfCoverageBoxes.
     */
-   public Vector<RpfCoverageBox> getCatalogCoverage(float ullat, float ullon, float lrlat, float lrlon, Projection proj, String chartSeries) {
+   public Vector<RpfCoverageBox> getCatalogCoverage(double ullat, double ullon, double lrlat, double lrlon, Projection proj, String chartSeries) {
 
       Vector<RpfCoverageBox> coverages = new Vector<RpfCoverageBox>();
       for (RpfTocHandler toc : tocs) {
@@ -163,7 +163,7 @@ public class RpfFrameCacheHandler
     * @return percentage of map covered by specific chart type.
     * @see #getCatalogCoverage
     */
-   public float getCalculatedCoverage(float ullat, float ullon, float lrlat, float lrlon, Projection p, String chartSeries) {
+   public float getCalculatedCoverage(double ullat, double ullon, double lrlat, double lrlon, Projection p, String chartSeries) {
 
       if (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)) {
          return 0f;
@@ -254,7 +254,7 @@ public class RpfFrameCacheHandler
     * from returning early when it found a box that claimed perfect coverage.
     * This was causing problems in some areas, where boxes that claimed coverage
     * didn't actually have it. This could be a data problem, so maybe we can add
-    * the early return back in in the future. 3. Changed < to <= below. 4.
+    * the early return back in in the future. 3. Changed &lt; to &lt;= below. 4.
     * Iterates thru list returned by RpcTocHandler since the return type for
     * getBestCoverageEntry changed from RpfTocEntry to List.
     * 
@@ -265,7 +265,7 @@ public class RpfFrameCacheHandler
     * @param proj CADRG projection to use for zone decisions.
     * @return Vector of RpfCoverageBoxes.
     */
-   public Vector<RpfCoverageBox> getCoverage(float ullat, float ullon, float lrlat, float lrlon, Projection proj) {
+   public Vector<RpfCoverageBox> getCoverage(double ullat, double ullon, double lrlat, double lrlon, Projection proj) {
 
       Debug.message("rpf", "RpfFrameCacheHandler: getCoverage()");
 

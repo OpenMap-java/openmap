@@ -35,16 +35,17 @@
  */
 package com.bbn.openmap.layer.rpf;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Vector;
+
 import com.bbn.openmap.io.BinaryBufferedFile;
 import com.bbn.openmap.io.BinaryFile;
 import com.bbn.openmap.io.FormatException;
 import com.bbn.openmap.proj.CADRG;
 import com.bbn.openmap.proj.Projection;
 import com.bbn.openmap.util.Debug;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Vector;
 
 /**
  * The RpfTocHandler knows how to read A.TOC files for RPF raster data. The A.TOC file describes the coverage found in
@@ -674,7 +675,7 @@ public class RpfTocHandler {
 	}
 
 	/**
-	 * Util-like function that translates a long to the string representation found in the A>TOC file.
+	 * Util-like function that translates a long to the string representation found in the A.TOC file.
 	 */
 	public static String translateScaleToSeries(long scale) {
 		if (scale == 0) {
@@ -779,12 +780,12 @@ public class RpfTocHandler {
 			if (Debug.debugging("rpftoc")) {
 				Debug.output("textScaleToLong: Number Format Exception!!!!" + textScale);
 			}
-            return (long) RpfConstants.Various;
+			return (long) RpfConstants.Various;
 		} catch (StringIndexOutOfBoundsException sioobe) {
 			if (Debug.debugging("rpftoc")) {
 				Debug.output("textScaleToLong: String index out of bounds:\n" + sioobe.getMessage());
 			}
-            return (long) RpfConstants.Various;
+			return (long) RpfConstants.Various;
 		}
 
 		if (colon != -1) {
@@ -801,7 +802,7 @@ public class RpfTocHandler {
 
 	}
 
-	protected int getASCIIZone(float ullat, int zone) {
+	protected int getASCIIZone(double ullat, int zone) {
 		int z = zone;
 		// Now convert it to ASCII to compare
 		if (ullat > 0) {
@@ -827,7 +828,7 @@ public class RpfTocHandler {
 	 * @param chartSeriesCode chart selection. If null, all coverage boxes fitting on the screen will be returned.
 	 * @param coverages a list of potential coverages
 	 */
-	public void getCatalogCoverage(float ullat, float ullon, float lrlat, float lrlon, Projection proj,
+	public void getCatalogCoverage(double ullat, double ullon, double lrlat, double lrlon, Projection proj,
 		String chartSeriesCode,
 		Vector<RpfCoverageBox> coverages) {
 		if (!valid) {
@@ -881,7 +882,7 @@ public class RpfTocHandler {
 	 * @param viewAtts view attributes determine chart selection.
 	 * @return a Vector of applicable RpfCoverageBoxes.
 	 */
-	public List<RpfTocEntry> getBestCoverageEntry(float ullat, float ullon, float lrlat, float lrlon, Projection proj,
+	public List<RpfTocEntry> getBestCoverageEntry(double ullat, double ullon, double lrlat, double lrlon, Projection proj,
 		RpfViewAttributes viewAtts) {
 		if (!valid) {
 			return null;
@@ -935,12 +936,11 @@ public class RpfTocHandler {
 			if (currentEntry.info == null || currentEntry.info.scale == RpfConstants.Various) {
 
 				nscale = (int) textScaleToLong(currentEntry.scale);
-				currentEntry.info = new RpfProductInfo();
 
 				// Reset the RpfProductInfo to the listed parameters
 				// in the A.TOC file.
-				currentEntry.info.scale = (float) nscale;
-				currentEntry.info.scaleString = currentEntry.scale;
+				currentEntry.altScale = (float) nscale;
+				currentEntry.altScaleString = currentEntry.scale;
 				currentEntry.coverage.scale = (float) nscale;
 
 			} else {
@@ -993,7 +993,8 @@ public class RpfTocHandler {
 						float currentEntryPercentCoverage = currentEntry.coverage
 							.setPercentCoverage(ullat, ullon, lrlat, lrlon);
 
-						if ((currentEntryPercentCoverage == 100f || viewAtts.scaleMoreImportantThanCoverage)
+                        if ((currentEntryPercentCoverage == 100f
+                                || (viewAtts != null && viewAtts.scaleMoreImportantThanCoverage))
 							&& newScaleDiff <= bestScaleDiff) {
 							betterScale = true;
 						}
@@ -1065,7 +1066,7 @@ public class RpfTocHandler {
 		return coverageEntries;
 	}
 
-	public static char[] getOkZones(float ullat, float lrlat, char zone) {
+	public static char[] getOkZones(double ullat, double lrlat, char zone) {
 		// allow a maximum of 3 additional zones in either direction
 		char[] okZones = new char[7];
 		// add zone from projection
@@ -1116,7 +1117,7 @@ public class RpfTocHandler {
 		return ok;
 	}
 
-	protected static boolean isBelowZone(float lowerLat, char zone) {
+	protected static boolean isBelowZone(double lowerLat, char zone) {
 		float zoneLowerLat = getLowerZoneExtent(zone);
 		if (lowerLat < zoneLowerLat) {
 			return true;
@@ -1125,7 +1126,7 @@ public class RpfTocHandler {
 		}
 	}
 
-	protected static boolean isAboveZone(float upperLat, char zone) {
+	protected static boolean isAboveZone(double upperLat, char zone) {
 		float zoneUpperLat = getUpperZoneExtent(zone);
 		if (upperLat > zoneUpperLat) {
 			return true;

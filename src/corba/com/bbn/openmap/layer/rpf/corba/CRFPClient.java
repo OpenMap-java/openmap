@@ -231,7 +231,8 @@ public class CRFPClient
      * @param lrlon SE longitude
      * @param p a CADRG projection
      */
-    public Vector getCoverage(float ullat, float ullon, float lrlat, float lrlon, Projection p) {
+    public Vector getCoverage(double ullat, double ullon, double lrlat, double lrlon,
+                              Projection p) {
 
         CRFPCoverageBox[] boxes;
         Server serv = getServer();
@@ -270,7 +271,8 @@ public class CRFPClient
      * @param lrlon SE longitude
      * @param p a CADRG projection
      */
-    public Vector getCatalogCoverage(float ullat, float ullon, float lrlat, float lrlon, Projection p, String chartSeriesCode) {
+    public Vector getCatalogCoverage(double ullat, double ullon, double lrlat, double lrlon,
+                                     Projection p, String chartSeriesCode) {
         CRFPCoverageBox[] boxes;
         Server serv = getServer();
 
@@ -304,7 +306,8 @@ public class CRFPClient
      * @see #getCatalogCoverage(float ullat, float ullon, float lrlat, float
      *      lrlon, Projection p, String chartSeriesCode)
      */
-    public float getCalculatedCoverage(float ullat, float ullon, float lrlat, float lrlon, Projection p, String chartSeries) {
+    public float getCalculatedCoverage(double ullat, double ullon, double lrlat, double lrlon,
+                                       Projection p, String chartSeries) {
         if (chartSeries.equalsIgnoreCase(RpfViewAttributes.ANY)) {
             return 0f;
         }

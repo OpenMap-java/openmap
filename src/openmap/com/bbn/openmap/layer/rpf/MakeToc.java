@@ -122,7 +122,7 @@ import com.bbn.openmap.util.Debug;
  * might not be what you want.
  * </P>
  * 
- * @see com.bbn.openmap.layer.rpf.ChangeCase
+ * @see com.bbn.openmap.util.wanderer.ChangeCase
  */
 public class MakeToc {
 
@@ -652,7 +652,7 @@ public class MakeToc {
 			String seriesCode = head.filename.substring(9, 11);
 			RpfProductInfo rpi = RpfProductInfo.get(seriesCode);
 
-            if (rpi == RpfConstants.UK) {
+			if (rpi == RpfProductInfo.UK) {
 
 				String dblChkSeriesCode = framename.substring(9, 11);
 				RpfProductInfo rpi2 = rpi;
@@ -661,7 +661,7 @@ public class MakeToc {
 					rpi2 = RpfProductInfo.get(dblChkSeriesCode);
 				}
 
-                if (rpi2 == RpfConstants.UK) {
+				if (rpi2 == RpfProductInfo.UK) {
 
 					Debug.output("MakeToc: " + frame.filename + " / " + head.filename
 							+ " (filename/header) unknown map type " + seriesCode + " / " + dblChkSeriesCode

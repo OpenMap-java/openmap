@@ -121,7 +121,7 @@ public class CorbaRpfLayer extends RpfLayer {
         // This, too must never happen.
         frameProvider = null;
 
-        setGraphicList(null);
+        setList(null);
         this.cache = null;
     }
 
@@ -170,7 +170,7 @@ public class CorbaRpfLayer extends RpfLayer {
      * @return OMGraphicList of images and text.
      */
     public OMGraphicList prepare() {
-        OMGraphicList oldList = getGraphicList();
+        OMGraphicList oldList = getList();
         if (oldList != null) {
             oldList.generate(getProjection());
             if (getCoverage() != null) {

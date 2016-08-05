@@ -179,7 +179,7 @@ public class RpfUtil {
                 if (scale > 0) {
                     float rectScale = (float) RpfTocHandler.textScaleToLong(entry.scale);
 
-                    if (rectScale == RpfConstants.UK.scale) {
+                    if (rectScale == RpfProductInfo.UK.scale) {
                         if (verbose) {
                             Debug.output("  RpfTocEntry[" + i
                                     + "] scale unknown ("

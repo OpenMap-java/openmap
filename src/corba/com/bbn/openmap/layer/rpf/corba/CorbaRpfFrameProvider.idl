@@ -55,10 +55,10 @@ module CRpfFrameProvider {
     };
 
     struct CRFPCoverageBox {
-	float nw_lat;
-	float nw_lon;
-	float se_lat;
-	float se_lon;
+	double nw_lat;
+	double nw_lon;
+	double se_lat;
+	double se_lon;
 	double subframeLatInterval;
 	double subframeLonInterval;
 	string chartCode;
@@ -99,14 +99,14 @@ module CRpfFrameProvider {
 			       in string uniqueID);
 
 	CRFPCoverageBoxSeq getCoverage(
-	    in float ullat, in float ullon,
-	    in float lrlat, in float lrlon,
+	    in double ullat, in double ullon,
+	    in double lrlat, in double lrlon,
 	    in CRFPCADRGProjection p,
 	    in string uniqueID);
 
 	CRFPCoverageBoxSeq getCatalogCoverage(
-	    in float ullat, in float ullon,
-	    in float lrlat, in float lrlon,
+	    in double ullat, in double ullon,
+	    in double lrlat, in double lrlon,
 	    in CRFPCADRGProjection p,
 	    in string chartSeriesCode,
 	    in string uniqueID);

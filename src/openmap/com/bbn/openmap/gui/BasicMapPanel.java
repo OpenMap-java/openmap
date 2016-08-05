@@ -142,7 +142,8 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
      */
     public void setProperties(String prefix, Properties props) {
         String scopedPrefix = PropUtils.getScopedPropertyPrefix(prefix);
-        setSetName(PropUtils.booleanFromProperties(props, scopedPrefix + SET_NAME_PROPERTY, isSetName()));
+        setSetName(PropUtils.booleanFromProperties(props, scopedPrefix
+                + SET_NAME_PROPERTY, isSetName()));
         if (isSetName()) {
             super.setProperties(prefix, props);
         }
@@ -209,8 +210,15 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
 
         // Environment will only get loaded after the property file is
         // read.
-        mb.setProjection(mb.getProjectionFactory().getDefaultProjectionFromEnvironment(Environment.getInstance()));
         mb.setBckgrnd(Environment.getCustomBackgroundColor());
+
+        Projection proj = mb.getProjectionFactory().getDefaultProjectionFromEnvironment(Environment.getInstance());
+
+        if (Debug.debugging("mappanel")) {
+            Debug.output("MapPanel: creating MapBean with initial projection " + proj);
+        }
+
+        mb.setProjection(proj);
     }
 
     /**
@@ -313,7 +321,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     // //////////////////////
 
     /**
-     * Adds a component to the map bean context (MapHandler). This makes the
+     * Adds a component to the map bean context. This makes the
      * <code>mapComponent</code> available to the map layers and other
      * components.
      * 
@@ -329,7 +337,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     }
 
     /**
-     * Remove a component from the map bean context (MapHandler).
+     * Remove a component from the map bean context.
      * 
      * @param mapComponent a component to be removed to the map bean context
      * @return true if the mapComponent was removed.
@@ -463,13 +471,7 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
             }
         }
 
-        Projection proj = new ProjectionFactory().getDefaultProjectionFromEnvironment(Environment.getInstance());
-
-        if (Debug.debugging("mappanel")) {
-            Debug.output("MapPanel: creating MapBean with initial projection " + proj);
-        }
-
-        return createMapBean(proj, new BevelBorder(BevelBorder.LOWERED));
+        return createMapBean(null, new BevelBorder(BevelBorder.LOWERED));
     }
 
     /**
@@ -479,8 +481,11 @@ public class BasicMapPanel extends OMComponentPanel implements MapPanel {
     public static MapBean createMapBean(Projection proj, Border border) {
         MapBean mapBeano = new BufferedLayerMapBean();
         mapBeano.setBorder(border);
-        mapBeano.setProjection(proj);
-        mapBeano.setPreferredSize(new Dimension(proj.getWidth(), proj.getHeight()));
+
+        if (proj != null) {
+            mapBeano.setProjection(proj);
+            mapBeano.setPreferredSize(new Dimension(proj.getWidth(), proj.getHeight()));
+        }
         return mapBeano;
     }
 

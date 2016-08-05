@@ -176,8 +176,7 @@ public class RpfCoverageBox {
      * @return how many of the edges of this coverage box fall within
      *         the queried box.
      */
-    public int setBoundaryHits(float ullat, float ullon, float lrlat,
-                               float lrlon) {
+    public int setBoundaryHits(double ullat, double ullon, double lrlat, double lrlon) {
         int boundaryHits = 0;
         if (lrlat < nw_lat)
             boundaryHits++;
@@ -206,8 +205,7 @@ public class RpfCoverageBox {
      * 
      * @return the percentage of coverage over the queried rectangle.
      */
-    public float setPercentCoverage(float ullat, float ullon, float lrlat,
-                                    float lrlon) {
+    public float setPercentCoverage(double ullat, double ullon, double lrlat, double lrlon) {
         startIndexes = new Point();
         endIndexes = new Point();
         return setPercentCoverage(ullat,
@@ -225,8 +223,7 @@ public class RpfCoverageBox {
      * 
      * @return the percentage of coverage over the queried rectangle.
      */
-    public float setPercentCoverage(float ullat, float ullon, float lrlat,
-                                    float lrlon, Point start, Point end) {
+    public float setPercentCoverage(double ullat, double ullon, double lrlat, double lrlon, Point start, Point end) {
 
         startIndexes = start;
         endIndexes = end;
