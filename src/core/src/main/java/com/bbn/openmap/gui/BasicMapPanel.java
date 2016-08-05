@@ -211,8 +211,15 @@ public class BasicMapPanel extends MapPanel {
 
         // Environment will only get loaded after the property file is
         // read.
-        mb.setProjection(mb.getProjectionFactory().getDefaultProjectionFromEnvironment(Environment.getInstance()));
         mb.setBckgrnd(Environment.getCustomBackgroundColor());
+
+        Projection proj = mb.getProjectionFactory().getDefaultProjectionFromEnvironment(Environment.getInstance());
+
+        if (Debug.debugging("mappanel")) {
+            Debug.output("MapPanel: creating MapBean with initial projection " + proj);
+        }
+
+        mb.setProjection(proj);
     }
 
     /**
@@ -380,6 +387,7 @@ public class BasicMapPanel extends MapPanel {
             String myName = getPropertyPrefix();
             boolean hasName = myName != null && myName.trim().length() != 0;
 
+            @SuppressWarnings("null")
             boolean makeMyChild = (hasName && hasNamedParent && myName.equalsIgnoreCase(parentName))
                     || (!hasName && !hasNamedParent);
 
@@ -464,13 +472,7 @@ public class BasicMapPanel extends MapPanel {
             }
         }
 
-        Projection proj = new ProjectionFactory().getDefaultProjectionFromEnvironment(Environment.getInstance());
-
-        if (Debug.debugging("mappanel")) {
-            Debug.output("MapPanel: creating MapBean with initial projection " + proj);
-        }
-
-        return createMapBean(proj, new BevelBorder(BevelBorder.LOWERED));
+        return createMapBean(null, new BevelBorder(BevelBorder.LOWERED));
     }
 
     /**
@@ -480,8 +482,11 @@ public class BasicMapPanel extends MapPanel {
     public static MapBean createMapBean(Projection proj, Border border) {
         MapBean mapBeano = new BufferedLayerMapBean();
         mapBeano.setBorder(border);
-        mapBeano.setProjection(proj);
-        mapBeano.setPreferredSize(new Dimension(proj.getWidth(), proj.getHeight()));
+
+        if (proj != null) {
+            mapBeano.setProjection(proj);
+            mapBeano.setPreferredSize(new Dimension(proj.getWidth(), proj.getHeight()));
+        }
         return mapBeano;
     }
 

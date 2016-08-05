@@ -309,7 +309,7 @@ public abstract class Debug {
      * 
      * @param file the file to use for the error log.
      * @param alsoToOutStream true if the out stream should still
-     *        provide output, in addition to logging the output.
+     *        provide output, in addition to logging the output
      */
     public static void directOutput(File file, boolean alsoToOutStream) {
         try {

@@ -783,6 +783,15 @@ public class OMScalingRaster extends OMRaster implements Serializable {
                 if (image instanceof BufferedImage) {
                     bi = (BufferedImage) image;
                 } else {
+                    int w = image.getWidth(null);
+                    int h = image.getHeight(null);
+
+                    if (w <= 0 || h <= 0) {
+                        // Can't create image if one of these is -1
+                        // (Interrupted).
+                        return imageWarp;
+                    }
+
                     bi = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
                     bi.getGraphics().drawImage(image, 0, 0, null);
                 }

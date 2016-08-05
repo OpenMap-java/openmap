@@ -132,18 +132,20 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Property that sets the class name of the MapTileFactory to use for this
-	 * layer.
-	 */
-	public final static String TILE_FACTORY_CLASS_PROPERTY = "tileFactory";
-	/**
-	 * Property to allow the MapTileFactory to call repaint on this layer as map
-	 * tiles become available. Default is false, enabling it will not allow this
-	 * layer to be used with an ImageServer (renderDataForProjection won't
-	 * work).
-	 */
-	public final static String INCREMENTAL_UPDATES_PROPERTY = "incrementalUpdates";
+    public static Logger logger = Logger.getLogger("com.bbn.openmap.layer.imageTile.TileLayer");
+
+    /**
+     * Property that sets the class name of the MapTileFactory to use for this
+     * layer.
+     */
+    public final static String TILE_FACTORY_CLASS_PROPERTY = "tileFactory";
+    /**
+     * Property to allow the MapTileFactory to call repaint on this layer as map
+     * tiles become available. Default is false, enabling it will not allow this
+     * layer to be used with an ImageServer (renderDataForProjection won't
+     * work).
+     */
+    public final static String INCREMENTAL_UPDATES_PROPERTY = "incrementalUpdates";
 
 	/**
 	 * A property to set if you want to force the layer to use tiles of a
@@ -310,8 +312,9 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
 			}
 		}
 
-		props.put(prefix + INCREMENTAL_UPDATES_PROPERTY, Boolean.toString(incrementalUpdates));
-		props.put(prefix + ZOOM_LEVEL_PROPERTY, Integer.toString(zoomLevel));
+        props.put(prefix + INCREMENTAL_UPDATES_PROPERTY, Boolean.toString(incrementalUpdates));
+        props.put(prefix + ZOOM_LEVEL_PROPERTY, Integer.toString(zoomLevel));
+        props.put(prefix + DATA_ATTRIBUTION_PROPERTY, PropUtils.unnull(attribution));
 
 		attributionAttributes.getProperties(props);
 
@@ -326,16 +329,18 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
 				"Force zoom level for queries (-1 is no forcing)", null);
 		PropUtils.setI18NPropertyInfo(i18n, props, this.getClass(), DATA_ATTRIBUTION_PROPERTY, "Attribution",
 				"Attribution for data source", null);
+        if (tileFactory instanceof StandardMapTileFactory) {
+            ((StandardMapTileFactory) tileFactory).getPropertyInfo(props);
+            props.put(initPropertiesProperty, ((StandardMapTileFactory) tileFactory).getInitPropertiesOrder()
+                    + " " + ZOOM_LEVEL_PROPERTY + " " + DATA_ATTRIBUTION_PROPERTY);
+        } else {
+            props.put(initPropertiesProperty, StandardMapTileFactory.ROOT_DIR_PROPERTY + " "
+                    + StandardMapTileFactory.FILE_EXT_PROPERTY + " " + ZOOM_LEVEL_PROPERTY + " "
+                    + DATA_ATTRIBUTION_PROPERTY);
+        }
 
-		if (tileFactory instanceof PropertyConsumer) {
-			((PropertyConsumer) tileFactory).getPropertyInfo(props);
-		}
-
-		props.put(initPropertiesProperty,
-			  (tileFactory != null?tileFactory.getInitPropertiesOrder() + " ":"") + ZOOM_LEVEL_PROPERTY + " " + DATA_ATTRIBUTION_PROPERTY);
-
-		return props;
-	}
+        return props;
+    }
 
 	/**
 	 * Called when the layer has been turned off and the projection changes,
@@ -388,27 +393,25 @@ public class MapTileLayer extends OMGraphicHandlerLayer implements MapTileReques
 		// Only allow delete cache button if the source of the tiles are from a
 		// server.
 
-		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		if (getTileFactory() instanceof ServerMapTileFactory) {
-			JPanel clearCachePanel = new JPanel(new BorderLayout());
-			clearCachePanel.add(new JPanel(), BorderLayout.WEST);
-			clearCachePanel.add(new JPanel(), BorderLayout.EAST);
-			JButton clearButton = new JButton(i18n.get(MapTileLayer.class, "clearCacheLabel", "Clear Tile Cache"));
-			clearCachePanel.add(clearButton, BorderLayout.CENTER);
-			clearButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					String query = i18n.get(MapTileLayer.class, "mapTileLayerDeleteCacheQuery",
-							"Delete tiles on disk? Click OK to delete...");
+        if (getTileFactory() instanceof ServerMapTileFactory) {
+            JPanel clearCachePanel = new JPanel(new BorderLayout());
+            clearCachePanel.add(new JPanel(), BorderLayout.WEST);
+            clearCachePanel.add(new JPanel(), BorderLayout.EAST);
+            JButton clearButton = new JButton(i18n.get(MapTileLayer.class, "clearCacheLabel", "Clear Tile Cache"));
+            clearCachePanel.add(clearButton, BorderLayout.CENTER);
+            clearButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String query = i18n.get(MapTileLayer.class, "mapTileLayerDeleteCacheQuery", "Delete tiles on disk? Click OK to delete...");
 
-					int dialogResult = JOptionPane.showConfirmDialog(null, query, "Warning",
-							JOptionPane.OK_CANCEL_OPTION);
-					if (dialogResult == JOptionPane.OK_OPTION) {
-						clearCache();
-					}
-				}
-			});
+                    int dialogResult = JOptionPane.showConfirmDialog(null, query, "Warning", JOptionPane.OK_CANCEL_OPTION);
+                    if (dialogResult == JOptionPane.OK_OPTION) {
+                        clearCache();
+                    }
+                }
+            });
 
 			panel.add(clearCachePanel);
 		}

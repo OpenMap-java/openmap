@@ -1,3 +1,89 @@
+2016-08-05  Don Dietrick  <dietrick@hsawaknow.local>
+
+	* Tagged OpenMap 5.1.14
+
+	* MapTileLayer can be used in LayerAddPanel.
+
+	* RPF modifications.  Changed RpfProductInfo to be an enum instead
+	of a class, moved all defining information to it instead of being
+	listed in the RpfConstants class.  Overhauled the RpfCoverage tool
+	used by RpfLayer, simplified it and the RpfCoverageManager.
+	Updated RpfFrameProvider to use List instead of Vector.  Udpated
+	classes to use doubles instead of floats for coordinates.
+
+	* Modified BasicMapPanel startup order to change when startup
+	projection settings are read and set on MapBean.
+
+	* Update StandardMapMouseInterpreter to better handle events over
+	geometries.  It also checks to see if the MouseEvent has been
+	consumed during mouseOver calls.
+
+	* EsriGraphicList can return the EsriGraphic that has a certain
+	attribute in a specified column.
+
+	* Removed shadow x and y and reference from ShapeLayer.
+
+	* Modified OMScalingRaster to check h/w before trying to create
+	image warp object.
+
+	* Added OMShape.PROJECTED class to represent shapes that are
+	defined in pixel space.  Generation does nothing, rendering still
+	works.
+
+	* Modified WebImagePlugin to warp images to match current OpenMap
+	projection.  Also modified to make two separate queries when
+	crossing the dateline.
+
+	* Added method in ProjMath to add distance between points in an
+	array of coordinates.  OMDistance now uses this and the new
+	LineCoordinateGenerator class.  LineCoordinateGenerator class will
+	create interpolated coordinates between two points, for great
+	circle or rhumb lines.
+
+	* Updated RangeRingsMouseMode to take units property.
+
+	* Modified NatCubicSpline to have an extended CLOSED inner class.
+	You create one or the other from static class methods.  OMSpline
+	updated to use new design, and one is only created when it is
+	needed.
+
+	* Added new app parts to OpenMapAppPartCollection, and created a
+	new standard OMGraphicHandlerLayer panel that can modify layer
+	transparency, bring up properties panel, and call doPrepare() on a
+	layer.
+
+	* Modified methods in ColorFactory to handle 3 character color
+	definitions, and to return default value passed in if a
+	NumberFormatException is thrown.
+
+	* Added VPFCoverageTrimmer, which will remove select tiles from
+	the dataset based on their location.
+
+	* Changed Length class to enum.  Updated other classes to use
+	getValues() when needed.
+
+	* Modifcations to mapTile package.  StandardMapTileFactory has an
+	overridable method to create desired file paths.  Useful when
+	creating a factory with a unique naming convention for
+	tiles. Added TileGrabber, which will grab tiles from a server for
+	off-line use.
+
+	* Added ALMOST_CLEAR to OMColor, to help with rendering some
+	OMGraphics against transparent backgrounds.
+
+	* Modified classes to not use
+	OMGraphic.getAppObject()/setAppObject() methods, replaced
+	explicitly setting the OMGraphic.APP_OBJECT parameter in OMGraphic
+	attributes.
+
+	* Modified files for javadoc cleanup, removing problem characters, etc.
+
+	* Added new com.bbn.openmap.omGraphics.rule package, which is
+	taking the Rule objects from the
+	com.bbn.openmap.dataAccess.shp.DbfHandler and making them more
+	general.  The DbfHandler Rules were modified to extend classes
+	from this package.
+
 2015-12-17  Don Dietrick  <dietrick@hsawaknow.local>
 
 	* Tagged OpenMap 5.1.13

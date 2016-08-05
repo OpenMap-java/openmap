@@ -63,7 +63,7 @@ public class ClasspathHacker {
      * Adds a file to the classpath.
      * 
      * @param s a String pointing to the file
-     * @throws IOException
+     * @throws IOException if there was a problem
      */
     public static void addFile(String s)
             throws IOException {
@@ -75,7 +75,7 @@ public class ClasspathHacker {
      * Adds a file to the classpath
      * 
      * @param f the file to be added
-     * @throws IOException
+     * @throws IOException if there was a problem
      */
     public static void addFile(File f)
             throws IOException {
@@ -86,7 +86,7 @@ public class ClasspathHacker {
      * Adds the content pointed by the URL to the classpath.
      * 
      * @param u the URL pointing to the content to be added
-     * @throws IOException
+     * @throws IOException if there was a problem with URL
      */
     public static void addURL(URL u)
             throws IOException {

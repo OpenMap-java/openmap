@@ -25,7 +25,6 @@ package com.bbn.openmap.util;
 
 /**
  * Class to perform fan compression on points.
- * <p>
  * <h3>FAN COMPRESSION</h3>
  * <ul>
  * <li>R.A. Fowell, and D.D. McNeil, Faster Plots by Fan

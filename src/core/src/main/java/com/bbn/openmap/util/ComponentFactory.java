@@ -316,6 +316,7 @@ public class ComponentFactory {
      *        properties.
      * @param properties Properties to use to initialize the object, if the
      *        object is a PropertyConsumer.
+     * @return Object or null if it couldn't be created
      */
     public static Object create(String className, String prefix, Properties properties) {
 

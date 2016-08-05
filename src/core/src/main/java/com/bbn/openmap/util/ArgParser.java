@@ -110,7 +110,8 @@ public class ArgParser {
      * Parse and organize the array of Strings. If something goes wrong, bail()
      * may be called.
      * 
-     * @return true if everything goes well, false if not.
+     * @param argv arguments to be parsed
+     * @return true if everything goes well, false if not
      */
     public boolean parse(String[] argv) {
         try {
@@ -179,7 +180,7 @@ public class ArgParser {
      * statement, if desired.
      * 
      * @param message a message to display.
-     * @param printUsageStatement true to display a list of available options.
+     * @param printUsageStatement true to display a list of available options
      */
     public void bail(String message, boolean printUsageStatement) {
         Debug.output(message);
@@ -190,21 +191,23 @@ public class ArgParser {
 
     /**
      * Tell the parser to accept first-letter representations of the options.
+     * 
+     * @param set true to accept
      */
     public void setAllowAbbr(boolean set) {
         allowAbbr = set;
     }
 
     /**
-     * Tells whether the parser accepts first-letter representations of the
-     * options.
+     * @return true the parser accepts first-letter representations of the
+     *         options
      */
     public boolean getAllowAbbr() {
         return allowAbbr;
     }
 
     /**
-     * Returns a Vector of Arg objects.
+     * @return a Vector of Arg objects
      */
     public Vector getArgs() {
         return args;
@@ -214,6 +217,9 @@ public class ArgParser {
      * Return a Arg object with a particular name. This method shouldn't be used
      * to figure out if values have been passed in to an application. It's to
      * find out if an option is available to be chosen, not if it has.
+     * 
+     * @param name of Arg
+     * @return Arg with name
      */
     public Arg getArg(String name) {
         for (int i = 0; i < args.size(); i++) {
@@ -244,8 +250,8 @@ public class ArgParser {
     }
 
     /**
-     * Get the String[] that makes up the trailing Strings after the options
-     * were parsed.
+     * @return the String[] that makes up the trailing Strings after the options
+     *         were parsed
      */
     public String[] getRest() {
         return rest;
@@ -315,6 +321,9 @@ public class ArgParser {
 
         /**
          * Create an Arg with a name and help line description.
+         * 
+         * @param aName name of arg
+         * @param desc description of arg, used in usage statement
          */
         public Arg(String aName, String desc) {
             this(aName, desc, 0);
@@ -323,6 +332,11 @@ public class ArgParser {
         /**
          * Create an Arg with a name and help line description, along with a
          * number of expected arguments to follow this option.
+         * 
+         * @param aName name of arg
+         * @param desc description of arg, used in usage statement
+         * @param expectedNumberOfArguments number of values expected for
+         *        argument
          */
         public Arg(String aName, String desc, int expectedNumberOfArguments) {
             this(aName, desc, expectedNumberOfArguments, false);
@@ -333,6 +347,13 @@ public class ArgParser {
          * number of expected arguments to follow this option. Has an argument
          * to not check for arguments that may start with dashes, in case one of
          * the arguments may be a negative number.
+         * 
+         * @param aName name of arg
+         * @param desc description of arg, used in usage statement
+         * @param expectedNumberOfArguments number of values expected for
+         *        argument
+         * @param expectDashedArguments if they could be dashed (like a negative
+         *        number)
          */
         public Arg(String aName, String desc, int expectedNumberOfArguments, boolean expectDashedArguments) {
             name = aName;
@@ -346,6 +367,10 @@ public class ArgParser {
          * Returns true if the atg string matches the name of the Arg, or, if
          * allowAbbr is true, returns true if the arg length is one and it
          * matches the first letter of the arg name.
+         * 
+         * @param arg string to test
+         * @param allowAbbr ok to check first letter
+         * @return true if a match
          */
         public boolean is(String arg, boolean allowAbbr) {
             if (name.equalsIgnoreCase(arg)) {

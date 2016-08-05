@@ -55,8 +55,8 @@ public class DataBounds {
     }
 
     /**
-     * Returns a point set to the average of the min and max values. May return
-     * null if no points have been added.
+     * @return a point set to the average of the min and max values. May return
+     *         null if no points have been added
      */
     public Point2D getCenter() {
         if (min != null) {
@@ -74,14 +74,14 @@ public class DataBounds {
     }
 
     /**
-     * Upper right point.
+     * @return upper right point
      */
     public Point2D getMax() {
         return max;
     }
 
     /**
-     * Lower left point.
+     * @return lower left point
      */
     public Point2D getMin() {
         return min;

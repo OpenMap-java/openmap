@@ -37,15 +37,15 @@ public interface Attributable {
      * Put an attribute in the object, the value can be retrieved later via the
      * key.
      * 
-     * @param key
-     * @param value
+     * @param key attribute key
+     * @param value attribute value
      */
     public void putAttribute(Object key, Object value);
 
     /**
      * Get the attribute stored under a key.
      * 
-     * @param key
+     * @param key attribute key
      * @return value if found, null if not.
      */
     public Object getAttribute(Object key);

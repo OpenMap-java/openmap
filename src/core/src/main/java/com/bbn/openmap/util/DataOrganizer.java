@@ -37,6 +37,7 @@ public interface DataOrganizer<T> {
      * 
      * @param lat up-down location (latitude, y)
      * @param lon left-right location (longitude, x)
+     * @param obj object to add
      * @return true if the insertion worked.
      */
     public boolean put(double lat, double lon, T obj);
@@ -46,6 +47,7 @@ public interface DataOrganizer<T> {
      * 
      * @param lat up-down location (latitude, y)
      * @param lon left-right location (longitude, x)
+     * @param obj object to remove
      * @return the object removed, null if the object not found.
      */
     public T remove(double lat, double lon, T obj);

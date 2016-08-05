@@ -155,7 +155,7 @@ public class OMDistance extends OMPoly {
 		}
 		points.add(new OMPoint(latpnt, lonpnt, 1));
 		Geo curGeo = null;
-		double cumulativeDist = 0f;
+		double cumulativeDist = 0.0;
 		for (int p = 2; p < rawllpts.length; p += 2) {
 			if (curGeo == null) {
 				curGeo = new Geo(rawllpts[p], rawllpts[p + 1], units == DECIMAL_DEGREES);

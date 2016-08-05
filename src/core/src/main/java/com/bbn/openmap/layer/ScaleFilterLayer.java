@@ -340,6 +340,9 @@ public class ScaleFilterLayer
      * Implementing the ProjectionPainter interface.
      */
     public synchronized void renderDataForProjection(Projection proj, java.awt.Graphics g) {
+		// This is a special case for a layer - It doesn't get told when sub-layers are done working.
+		// This may be the only time it finds out they are done (if part of SFL in background).
+        fireStatusUpdate(LayerStatusEvent.FINISH_WORKING);
         if (proj == null) {
             logger.info("null projection!");
             return;

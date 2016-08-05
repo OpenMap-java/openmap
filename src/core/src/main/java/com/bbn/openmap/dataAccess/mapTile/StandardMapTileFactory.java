@@ -215,7 +215,6 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
             } catch (Exception fnfe) {
                 logger.fine("file not found: " + imagePath);
             }
-
         }
         return null;
     }
@@ -940,7 +939,7 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
 
     public Properties getPropertyInfo(Properties list) {
         I18n i18n = Environment.getI18n();
-        PropUtils.setI18NPropertyInfo(i18n, list, com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.class, ROOT_DIR_PROPERTY, "Tile Directory", "Root directory containing image tiles", "com.bbn.openmap.util.propertyEditor.DirectoryPropertyEditor");
+        PropUtils.setI18NPropertyInfo(i18n, list, com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.class, ROOT_DIR_PROPERTY, "Tile URL or Path", "Root directory containing image tiles, or URL (http://tileserver/{z}/{x}/{y}.png)", null);
         PropUtils.setI18NPropertyInfo(i18n, list, com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.class, FILE_EXT_PROPERTY, "Image File Extension", "Extension of image files (.jpg, .png, etc)", null);
         PropUtils.setI18NPropertyInfo(i18n, list, com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.class, CACHE_SIZE_PROPERTY, "Cache Size", "Number of tile images held in memory", null);
         PropUtils.setI18NPropertyInfo(i18n, list, com.bbn.openmap.dataAccess.mapTile.StandardMapTileFactory.class, ZOOM_LEVEL_TILE_SIZE_PROPERTY, "Zoom Level Tile Size", "The maximum pixel size of a tile before switching to a higher zoom level (350 is default)", null);
@@ -948,7 +947,7 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
     }
     
 	public String getInitPropertiesOrder() {
-		return ROOT_DIR_PROPERTY + " " + FILE_EXT_PROPERTY;
+        return ROOT_DIR_PROPERTY + " " + FILE_EXT_PROPERTY;
 	}
 
     public String getPropertyPrefix() {
@@ -968,7 +967,7 @@ public class StandardMapTileFactory extends CacheHandler implements MapTileFacto
             setRootDir(rootDirectory);
         }
 
-        String tmpFileExt = setList.getProperty(prefix + FILE_EXT_PROPERTY);
+        String tmpFileExt = setList.getProperty(prefix + FILE_EXT_PROPERTY, getFileExt());
 
         // Add a period if it doesn't exist.
         if (tmpFileExt != null) {

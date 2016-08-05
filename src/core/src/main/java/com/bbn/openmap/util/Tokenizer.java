@@ -95,8 +95,10 @@ public class Tokenizer extends java.io.PushbackReader {
     }
 
     /**
-     * Read the next character. Convert alternative line breaks to
-     * '\n'. Thank you Bill Gates!
+     * Read the next character. Convert alternative line breaks to '\n'. Thank
+     * you Bill Gates!
+     * 
+     * @return next character
      */
     public int next() {
         int c;

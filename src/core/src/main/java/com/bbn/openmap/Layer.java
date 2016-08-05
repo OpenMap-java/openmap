@@ -1613,9 +1613,12 @@ public abstract class Layer extends JComponent implements ProjectionListener, Pr
     }
 
     /**
-     * The dataPathPrefix lets you append a path to a relative path at runtime.
-     * This method checks the layer attribute for such a prefix path, and
-     * prepends it to the given string.
+     * The dataPathPrefix layer attribute lets you append a path to a relative
+     * path at runtime. This method tells the layer to check for that layer
+     * attribute for such a prefix path, and prepends it to the given string
+     * separating them with a '/'.
+     * 
+     * @param fileName to prepend the attribute to
      */
     protected String prependDataPathPrefix(String fileName) {
         String dataPathPrefix = (String) getAttribute(Layer.DataPathPrefixProperty);

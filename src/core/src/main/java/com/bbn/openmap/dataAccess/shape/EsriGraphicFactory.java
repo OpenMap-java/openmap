@@ -1522,11 +1522,11 @@ public class EsriGraphicFactory implements ShapeConstants {
 
             if (dataTransformation != null) {
                 LatLonPoint llpmin = dataTransformation.inverse(xMin, yMin);
-                xMin = llpmin.getLongitude();
-                yMin = llpmin.getLatitude();
+                xMin = llpmin.getX();
+                yMin = llpmin.getY();
                 LatLonPoint llpmax = dataTransformation.inverse(xMax, yMax);
-                xMax = llpmax.getLongitude();
-                yMax = llpmax.getLatitude();
+                xMax = llpmax.getX();
+                yMax = llpmax.getY();
             }
         }
 
@@ -1552,11 +1552,11 @@ public class EsriGraphicFactory implements ShapeConstants {
 
             if (dataTransformation != null) {
                 LatLonPoint llpmin = dataTransformation.inverse(xMin, yMin);
-                xMin = llpmin.getLongitude();
-                yMin = llpmin.getLatitude();
+                xMin = llpmin.getX();
+                yMin = llpmin.getY();
                 LatLonPoint llpmax = dataTransformation.inverse(xMax, yMax);
-                xMax = llpmax.getLongitude();
-                yMax = llpmax.getLatitude();
+                xMax = llpmax.getX();
+                yMax = llpmax.getY();
             }
         }
 

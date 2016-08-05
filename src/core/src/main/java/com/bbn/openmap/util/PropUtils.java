@@ -262,16 +262,23 @@ public class PropUtils {
      * (for scoping purposes), or just returns an empty String. Either way, you
      * get a String you can slap on the beginning of your defined property names
      * to get a valid property based on what the prefix is.
+     * 
+     * @param pc the PropertyConsumer to fetch from
+     * @return an empty string if no prefix, or the prefix with a period at the
+     *         end
      */
     public static String getScopedPropertyPrefix(PropertyConsumer pc) {
         return getScopedPropertyPrefix(pc.getPropertyPrefix());
     }
 
     /**
-     * Given the string, check if it's null. If it is, return an empty string.
-     * If it isn't, check to see if it ends with a period, and do nothing if it
-     * does. If it doesn't end in a period, add one, and then return that. The
-     * returned string should be good for prepending to other properties.
+     * Given the string, check if it's null. If it isn't, check to see if it
+     * ends with a period, and do nothing if it does. If it doesn't end in a
+     * period, add one, and then return that. The returned string should be good
+     * for prepending to other properties.
+     *
+     * @param pre the string to check
+     * @return an empty string or one that ends with a period
      */
     public static String getScopedPropertyPrefix(String pre) {
         if (pre == null || pre.length() == 0) {
@@ -309,7 +316,8 @@ public class PropUtils {
      * is looking at should use the getDummyMarker() call to create the marker
      * for the getPropertyInfor(Properties) call.
      * 
-     * @param possibleDummyMarker
+     * @param possibleDummyMarker string to check for DUMMY_MARKER_NAME,
+     *        indicating that's a dummy
      * @return the encoded 'real' property prefix for the PropertyConsumer
      *         embedded in the dummy marker, or the possibleDummyMarker if it's
      *         not a dummy marker.
@@ -327,7 +335,9 @@ public class PropUtils {
     /**
      * It kills Properties to have null values set. You can wrap a property
      * value in this in PropertyConsumer.getProperties() to not worry about it.
-     * Returns "" if prop == null, else returns what was passed in.toString().
+     * 
+     * @param prop property value to be set in properties after this call
+     * @return empty string if prop equals null, else returns what was passed in
      */
     public static String unnull(Object prop) {
         if (prop == null) {
@@ -375,9 +385,9 @@ public class PropUtils {
      * Return the first letter of the property specified by propName. If that
      * value is null or has length of zero, the default char is returned.
      * 
-     * @param p
-     * @param propName
-     * @param defaultValue
+     * @param p properties to load from
+     * @param propName property name
+     * @param defaultValue default to use if property isn't found
      * @return first char from property, or default.
      */
     public static char charFromProperties(Properties p, String propName, char defaultValue) {
@@ -652,7 +662,7 @@ public class PropUtils {
      * Returns a string representing a color, properly buffered for zeros for
      * different alpha values.
      * 
-     * @param color
+     * @param color the source Color
      * @return string for color with alpha values.
      */
     public static String getProperty(Color color) {
@@ -689,7 +699,8 @@ public class PropUtils {
      * URL. Resources are checked for in the general classpath.
      * 
      * @param name name of the resource, file or URL.
-     * @throws java.net.MalformedURLException
+     * @throws java.net.MalformedURLException if there's a problem finding the
+     *         thingy
      * @return URL
      */
     public static URL getResourceOrFileOrURL(String name) throws java.net.MalformedURLException {
@@ -702,7 +713,8 @@ public class PropUtils {
      * 
      * @param askingClass the object asking for the URL.
      * @param name name of the resource, file or URL.
-     * @throws java.net.MalformedURLException
+     * @throws java.net.MalformedURLException if there's a problem finding the
+     *         thingy
      * @return URL
      */
     public static URL getResourceOrFileOrURL(Object askingClass, String name)
@@ -717,7 +729,8 @@ public class PropUtils {
      * 
      * @param askingClass the class asking for the URL. Can be null.
      * @param name name of the resource, file or URL.
-     * @throws java.net.MalformedURLException
+     * @throws java.net.MalformedURLException if there's a problem finding the
+     *         thingy
      * @return URL
      */
     public static URL getResourceOrFileOrURL(Class<? extends Object> askingClass, String name)
@@ -846,6 +859,24 @@ public class PropUtils {
         return info;
     }
 
+    /**
+     * If the layer has a dataPathPrefix attribute set, that attribute value can
+     * be used as a common path to prepend to any layer's data path. This allows
+     * you to set a relative path to files in the layer's properties, and then
+     * prepend the absolute path later at runtime.
+     * <p>
+     * 
+     * The dataPathPrefix can be set in the properties for a layer, where it is
+     * pushed to the layer's attributes in Layer.setProperties(). This method is
+     * intended for layers that have sub-layers, so the parent layer can set
+     * that dataPathPrefix property on it's children automatically.
+     * 
+     * @param layer the parent layer to retrieve the attribute from
+     * @param props the properties that define the children, and also passed to
+     *        them for configuration
+     * @param layerListProperty the property for the parent that lists the
+     *        marker names for the children
+     */
     public static void putDataPrefixToLayerList(Layer layer, Properties props,
                                                 String layerListProperty) {
         String dataPrefix = (String) layer.getAttribute(Layer.DataPathPrefixProperty);
@@ -855,7 +886,22 @@ public class PropUtils {
     }
 
     /**
-     * Handle setting the dataPathPrefixes on all layer's properties.
+     * If the layer has a dataPathPrefix attribute set, that attribute value can
+     * be used as a common path to prepend to any layer's data path. This allows
+     * you to set a relative path to files in the layer's properties, and then
+     * prepend the absolute path later at runtime.
+     * <p>
+     * 
+     * The dataPathPrefix can be set in the properties for a layer, where it is
+     * pushed to the layer's attributes in Layer.setProperties(). This method is
+     * intended for layers that have sub-layers, so the parent layer can set
+     * that dataPathPrefix property on it's children automatically.
+     * 
+     * @param dataPrefix the dataPathPrefix retrieved from the parent attributes
+     * @param props the properties that define the children, and also passed to
+     *        them for configuration
+     * @param layerListProperty the property for the parent that lists the
+     *        marker names for the children
      */
     public static void putDataPrefixToLayerList(String dataPrefix, Properties props,
                                                 String layerListProperty) {
@@ -935,11 +981,14 @@ public class PropUtils {
      * @param definingProperty definingProperty in example above, scoped
      *        property when combined with marker name to define the class that
      *        should be created for an object.
+     * @param parentMarker the string that should be used as the prefix for the
+     *        defining property
      * @return List of objects created from properties, where properties are
      *         scoped for each object.
      */
     public static List<?> objectsFromScopedProperties(Properties p, String markerListProperty,
-                                                      String definingProperty, String parentMarker) {
+                                                      String definingProperty,
+                                                      String parentMarker) {
         String markerList = p.getProperty(markerListProperty);
         List<Object> ret = new LinkedList<Object>();
         parentMarker = PropUtils.getScopedPropertyPrefix(parentMarker);
@@ -947,7 +996,8 @@ public class PropUtils {
         if (markerList != null) {
             Vector<String> markerNames = parseSpacedMarkers(markerList);
             for (String markerName : markerNames) {
-                String classname = p.getProperty(parentMarker + markerName + "." + definingProperty);
+                String classname = p.getProperty(parentMarker + markerName + "."
+                        + definingProperty);
                 if (classname != null) {
                     Object obj = ComponentFactory.create(classname, markerName, p);
 
@@ -969,6 +1019,7 @@ public class PropUtils {
      * @param propertyName the scoped property to enter value under
      * @param value the object to get property from - toString() will be called
      *        if not null.
+     * @param <T> class for property
      */
     public static <T extends Object> void putIfNotDefault(Properties props, String propertyName,
                                                           T value) {
@@ -986,6 +1037,7 @@ public class PropUtils {
      * @param def the default value of the property. If not null and value not
      *        null, toString().equals() will be used to determine equality. If
      *        not equal, then value will be set in props.
+     * @param <T> matching class types for the property
      */
     public static <T extends Object> void putIfNotDefault(Properties props, String propertyName,
                                                           T value, T def) {

@@ -75,6 +75,9 @@ public class Main extends OpenMap {
      * with it. If the properties file is not valid, the returned
      * PropertyHandler will look for the openmap.properties file in the
      * classpath and the user's home directory.
+     * 
+     * @param propertiesFile path to properties file
+     * @return new PropertyHandler
      */
     public static PropertyHandler configurePropertyHandler(String propertiesFile) {
 
