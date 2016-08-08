@@ -362,10 +362,10 @@ public class TileGrabber {
 		ap.add("maxx", "max x tile (only used if fromZoom and toZoom match)", 1);
 		ap.add("maxy", "max y tile (only used if fromZoom and toZoom match)", 1);
 
-		ap.add("minlon", "min longitude", 1);
-		ap.add("minlat", "min latitude", 1);
-		ap.add("maxlon", "max longitude", 1);
-		ap.add("maxlat", "max latitude", 1);
+		ap.add("minlon", "min longitude", 1, true);
+		ap.add("minlat", "min latitude", 1, true);
+		ap.add("maxlon", "max longitude", 1, true);
+		ap.add("maxlat", "max latitude", 1, true);
 
 		ap.add("shapefile", "fetch coverage over shapes in shapefile", 1);
 
