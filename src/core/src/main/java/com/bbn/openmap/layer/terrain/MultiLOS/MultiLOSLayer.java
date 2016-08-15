@@ -87,7 +87,7 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
     
     // Internal use only members
     DTEDFrameCache dted;
-
+    
     public MultiLOSLayer() {
         dted = new DTEDFrameCache();
     }
@@ -207,22 +207,28 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         
         double maxRangeRad = Length.KM.toRadians(maxRangeKM);
         
-        int maxProgress = (int) ((ll2.getX() - ll1.getX()) / dLon);
-        int currProgress = 0;
+        int checkedPoints = 0;
+        int seenPoints = 0;
+        
         for (double testLon = ll1.getX(); testLon < ll2.getX(); testLon+=dLon) {
-            currProgress++;
-            System.out.println("Progress " + currProgress + " / " + maxProgress);
             for (double testLat = ll2.getY(); testLat < ll1.getY(); testLat+=dLat) {
                 
-                LatLonPoint llp = new LatLonPoint.Double(testLat, testLon);
-                Point2D xyp = proj.forward(llp);
+                if(Thread.currentThread().isInterrupted()) {
+                    // eg, if we're mid-render and someone moves the map again
+                    return;
+                }
+                
+                checkedPoints++;
+                
+                LatLonPoint testp = new LatLonPoint.Double(testLat, testLon);
+                Point2D xyp = proj.forward(testp);
                 
                 int elevation = dted.getElevation((float) testLat, (float) testLon, dtedLevel);
                 if(elevation > 0) {
                     int losCount = 0;
 
                     for (LatLonPoint oneVP : viewPoints) {
-                        final double distanceRad = oneVP.distance(llp);
+                        final double distanceRad = oneVP.distance(testp);
                         
                         if(distanceRad > maxRangeRad) {
                             // Broadphase - skip anything outside our sensor horizon
@@ -234,9 +240,8 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
                                 Math.pow(tXY.getX() - xyp.getX(), 2) +
                                         Math.pow(tXY.getY() - xyp.getY(), 2)
                                 ) / 5);
-//                        int numPixBetween = 3;
                         
-                        if (los.isLOS(oneVP, (int) altitudeM, false, llp, 0,
+                        if (los.isLOS(oneVP, (int) altitudeM, false, testp, 0,
                                 (int) numPixBetween)) {
                             losCount++;
                             // If one can see, that's sufficient for this layer's see/not see metric
@@ -249,15 +254,20 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
                         p.setLinePaint(OMColor.clear);
                         p.setFillPaint(canSeeColor);
                         l.add(p);
+                        seenPoints++;
                     } else if(0 == losCount && null != canNotSeeColor) {
                         OMPoint p = new OMPoint(testLat, testLon);
                         p.setLinePaint(OMColor.clear);
                         p.setFillPaint(canNotSeeColor);
                         l.add(p);
                     }
+                } else {
+                    // Skipped a point because it's elevation was zero or smaller
+                    // System.out.println("elevation " + elevation);
                 }
             }
         }
+        System.out.println("Last Render, " + seenPoints + "/" + checkedPoints + " points seen/total");
     }
 
     private double calculateHorizonDistRad() {
