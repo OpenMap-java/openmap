@@ -5,6 +5,9 @@ import java.util.List;
 
 import com.bbn.openmap.dataAccess.dted.DTEDDirectoryHandler;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
+import com.bbn.openmap.event.ProgressEvent;
+import com.bbn.openmap.event.ProgressSupport;
+import com.bbn.openmap.gui.ProgressListenerGauge;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMCircle;
 import com.bbn.openmap.omGraphics.OMColor;
@@ -19,14 +22,18 @@ import com.bbn.openmap.util.PropUtils;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -87,6 +94,7 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
     
     // Internal use only members
     DTEDFrameCache dted;
+    ProgressSupport progressSupport = null;
     
     public MultiLOSLayer() {
         dted = new DTEDFrameCache();
@@ -141,11 +149,15 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Cannot parse \"" + s + "\" numerically");
             }
         }
+        if(null == progressSupport) {
+            progressSupport = new ProgressSupport(this);
+            progressSupport.add(new ProgressListenerGauge("MultiLOS"));
+        }
     }
     
     
     @Override
-    public synchronized OMGraphicList prepare() {
+    public OMGraphicList prepare() {
         OMGraphicList l = new OMGraphicList();
         
         if(showHorizons) {
@@ -169,28 +181,43 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
 
     @Override
     public Component getGUI() {
-        JPanel pan = new JPanel(new GridLayout(0, 2));
+        JPanel pan = new JPanel(new GridLayout(0, 2, 2, 2));
         
-        pan.add(new JLabel("Altitude (M): "));
+        pan.add(new JLabel("Altitude (M)"));
         final JSpinner altSpinner = new JSpinner(new SpinnerNumberModel(altitudeM, 0.0, 10000.0, 20.0));
         pan.add(altSpinner);
-        altSpinner.addChangeListener(new ChangeListener() {
+        
+        pan.add(new JLabel("Max Range (KM)"));
+        final JSpinner maxRangeSpinner = new JSpinner(new SpinnerNumberModel(maxRangeKM, 0.0, 10000.0, 20.0));
+        pan.add(maxRangeSpinner);
+        
+        pan.add(new JLabel("Show horizons"));
+        final JCheckBox showHorizonCB = new JCheckBox((String)null, showHorizons);
+        pan.add(showHorizonCB);
+        
+        pan.add(new JLabel("Show viewpoints"));
+        final JCheckBox showViewPointsCB = new JCheckBox((String)null, showViewPoints);
+        pan.add(showViewPointsCB);
+        
+        final ChangeListener cl = new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
+                maxRangeKM = (Double)maxRangeSpinner.getValue();
                 altitudeM = (Double)altSpinner.getValue();
                 doPrepare();
             }
-        });
-        
-        pan.add(new JLabel("Max Range (KM): "));
-        final JSpinner maxRangeSpinner = new JSpinner(new SpinnerNumberModel(maxRangeKM, 0.0, 10000.0, 20.0));
-        pan.add(maxRangeSpinner);
-        maxRangeSpinner.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                maxRangeKM = (Double)maxRangeSpinner.getValue();
+        };
+        final ActionListener al = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showHorizons = showHorizonCB.isSelected();
+                showViewPoints = showViewPointsCB.isSelected();
                 doPrepare();
             }
-        });
+        };
         
+        altSpinner.addChangeListener(cl);
+        maxRangeSpinner.addChangeListener(cl);
+        showHorizonCB.addActionListener(al);
+        showViewPointsCB.addActionListener(al);
         return pan;
     }
     
@@ -210,7 +237,20 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         int checkedPoints = 0;
         int seenPoints = 0;
         
+        final int maxProgress = (int) ((ll2.getX() - ll1.getX())/dLon);
+        int currProgress = 0;
+        final String taskName = "MultiLOS Render";
+//        progressSupport.fireUpdate(ProgressEvent.START, taskName, currProgress, maxProgress);
         for (double testLon = ll1.getX(); testLon < ll2.getX(); testLon+=dLon) {
+            currProgress++;
+            // Need it to be final so it can be seen from the inner subclass
+//            final int progress = currProgress;
+//            SwingUtilities.invokeLater(new Runnable() {
+//                public void run() {
+//                    progressSupport.fireUpdate(ProgressEvent.UPDATE, taskName, progress, maxProgress);
+//                }
+//            });
+            
             for (double testLat = ll2.getY(); testLat < ll1.getY(); testLat+=dLat) {
                 
                 if(Thread.currentThread().isInterrupted()) {
@@ -267,6 +307,7 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
                 }
             }
         }
+//        progressSupport.fireUpdate(ProgressEvent.DONE, taskName, currProgress, maxProgress);
         System.out.println("Last Render, " + seenPoints + "/" + checkedPoints + " points seen/total");
     }
 
