@@ -155,7 +155,57 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         }
     }
     
-    
+    @Override
+    public Properties getProperties(Properties props) {
+        props = super.getProperties(props);
+
+        String prefix = PropUtils.getScopedPropertyPrefix(this);
+
+        props.put(prefix + "class", this.getClass().getName());
+        props.put(prefix + altMProperty, altitudeM);
+        props.put(prefix + showHorizonsProperty, Boolean.toString(showHorizons));
+        props.put(prefix + showViewPointsProperty, Boolean.toString(showViewPoints));
+        if(null != canSeeColor) {
+            props.put(prefix + canSeeColorProperty, canSeeColor.toString());
+        } 
+        if(null != canNotSeeColor) {
+            props.put(prefix + canNotSeeColorProperty, canNotSeeColor.toString());
+        }
+        props.put(prefix + dtedLevelProperty, dtedLevel);
+        props.put(prefix + dtedDirProperty, dtedDir);
+        props.put(prefix + maxRangeKMProperty, maxRangeKM);
+
+        StringBuilder vp_prop = new StringBuilder();
+        for(int i = 0; i < viewPoints.size(); i++) {
+            LatLonPoint vp = viewPoints.get(i);
+            if(i > 0) {
+                vp_prop.append(";");
+            }
+            vp_prop.append(vp.getLatitude());
+            vp_prop.append(",");
+            vp_prop.append(vp.getLongitude());
+        }
+        props.put(prefix + viewPointsProperty, vp_prop.toString());
+
+        return props;
+    }
+
+    @Override
+    public Properties getPropertyInfo(Properties list) {
+        list = super.getPropertyInfo(list);
+
+        list.put(altMProperty, "Altitude of viewpoints, in meters");
+        list.put(showHorizonsProperty, "Whether to indicate horizons");
+        list.put(showViewPointsProperty, "Whether to indicate viewpoints");
+        list.put(canSeeColorProperty, "Color to indicate if a point can be seen.");
+        list.put(canNotSeeColorProperty, "Color to indicate if a point cannot be seen. Leave blank to not include points");
+        list.put(dtedLevelProperty, "DTED Level");
+        list.put(dtedDirProperty, "DTED data directory");
+        list.put(maxRangeKMProperty, "Maximum sensor range, in KM");
+        list.put(viewPointsProperty, "Semicolon-separated list of lat,lon pairs");
+        
+        return list;
+    }
     @Override
     public OMGraphicList prepare() {
         OMGraphicList l = new OMGraphicList();
