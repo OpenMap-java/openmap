@@ -1,11 +1,9 @@
 package com.bbn.openmap.layer.terrain.MultiLOS;
 
 import java.awt.geom.Point2D;
-import java.util.List;
 
 import com.bbn.openmap.dataAccess.dted.DTEDDirectoryHandler;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
-import com.bbn.openmap.event.ProgressEvent;
 import com.bbn.openmap.event.ProgressSupport;
 import com.bbn.openmap.gui.ProgressListenerGauge;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
@@ -24,16 +22,18 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -41,39 +41,42 @@ import javax.swing.event.ChangeListener;
  * An OpenMap Layer to display an LOS map for a number of viewpoints, from a given altitude
  * 
  * <pre><code>
- *
- * ############################
- * # Example Properties for a MultiLOS layer
- * multilos.class=com.bbn.openmap.layer.terrain.MultiLOS.MultiLOSLayer
- * multilos.prettyName=MultiLOS
- * 
- * # Properties for the los calculations
- * # Altitude, in MSL meters
- * multilos.altitudeM=500
- * # Max viable sensor distance, in KM
- * multilos.maxRangeKM=200
- * # viewpoints: Semicolon-separated list of lat,lon pairs separated by commas
- * multilos.viewPoints=22.3,116.0;24.3,119.7
- * # Whether to outline horizons, and show view points
- * multilos.showHorizons=TRUE
- * multilos.showViewPoints=TRUE
- * # color of fill. Leaving out means we won't fill that type [canSee or canNotSee]
- * multilos.canSeeColor=4400ff00
- * multilos.canNotSeeColor=44ff0000
- * # DTED
- * multilos.dtedLevel=0
- * multilos.dtedDir=/data/dted/dted0
- * ############################
- * 
- * </code></pre>
+
+ ############################
+ # Example Properties for a MultiLOS layer
+ multilos.class=com.bbn.openmap.layer.terrain.MultiLOS.MultiLOSLayer
+ multilos.prettyName=MultiLOS
+ 
+ # Properties for the los calculations
+ # Altitude is MSL. This is the default altitude if it is not specified on a viewpoint
+ multilos.altitude=500
+ multilos.altitudeUnits=M
+ # Max viable sensor distance, in KM
+ multilos.maxRangeKM=200
+ # viewpoints: Semicolon-separated list of lat,lon pairs separated by commas.
+ # Optionally, lat,lon may have a third item, ",altitude" which overrides the default altitude
+ multilos.viewPoints=22.3,116.0;24.3,119.7,100
+ # Whether to outline horizons, and show view points
+ multilos.showHorizons=TRUE
+ multilos.showViewPoints=TRUE
+ # color of fill. Leaving out means we won't fill that type [canSee or canNotSee]
+ multilos.canSeeColor=4400ff00
+ multilos.canNotSeeColor=44ff0000
+ # DTED
+ multilos.dtedLevel=0
+ multilos.dtedDir=/data/dted/dted0
+ ############################
+ 
+ </code></pre>
  * 
  * @author Gary Briggs 
  */
 public class MultiLOSLayer extends OMGraphicHandlerLayer {
 
     // Properties from the user
-    double altitudeM = 500.0;
-    List<LatLonPoint> viewPoints = new ArrayList<LatLonPoint>();
+    double altitude = 500.0;
+    Length altitudeUnits = Length.METER;
+    Map<LatLonPoint, Double> viewPoints = new HashMap<LatLonPoint, Double>();
     boolean showHorizons = true;
     boolean showViewPoints = true;
     String dtedDir = "/data/dted/dted0";
@@ -82,7 +85,8 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
     Color canNotSeeColor = null;
     double maxRangeKM = 200;
     
-    public final static String altMProperty = "altitudeM";
+    public final static String altProperty = "altitude";
+    public final static String altUnitsProperty = "altitudeUnits";
     public final static String viewPointsProperty = "viewPoints";
     public final static String showHorizonsProperty = "showHorizons";
     public final static String showViewPointsProperty = "showViewPoints";
@@ -105,7 +109,8 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         super.setProperties(prefix, props);
         String realPrefix = PropUtils.getScopedPropertyPrefix(this);
 
-        altitudeM = PropUtils.doubleFromProperties(props, realPrefix + altMProperty, altitudeM);
+        altitude = PropUtils.doubleFromProperties(props, realPrefix + altProperty, altitude);
+        altitudeUnits = Length.get(props.getProperty(realPrefix + altUnitsProperty, altitudeUnits.getAbbr()));
         maxRangeKM = PropUtils.doubleFromProperties(props, realPrefix + maxRangeKMProperty, maxRangeKM);
         
         showHorizons = PropUtils.booleanFromProperties(props, realPrefix + showHorizonsProperty, showHorizons);
@@ -132,21 +137,29 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         }
         
         // Viewpoints are semicolon-separated lat,lon pairs separated by commas
-        viewPoints = new ArrayList<LatLonPoint>();
+        viewPoints = new HashMap<LatLonPoint, Double>();
         String viewPointSource = props.getProperty(realPrefix + viewPointsProperty, null);
         String[] viewPointStrings = viewPointSource.split(";");
         for(String s : viewPointStrings) {
-            String[] oneLL = s.split(",");
-            if(oneLL.length != 2) {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Cannot parse \"" + s + "\" into a single LL pair");
+            String trimmed = s.trim();
+            if(0 == trimmed.length()) {
+                continue;
+            }
+            String[] oneLL = trimmed.split(",");
+            if(oneLL.length != 2 && oneLL.length != 3) {
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Cannot parse \"" + trimmed + "\" into a single LL pair");
                 continue;
             }
             try {
                 Double lat = Double.valueOf(oneLL[0]);
                 Double lon = Double.valueOf(oneLL[1]);
-                viewPoints.add(new LatLonPoint.Double(lat, lon, false));
+                double thisAlt = altitude;
+                if(3 == oneLL.length) {
+                    thisAlt = Double.valueOf(oneLL[2]);
+                }
+                viewPoints.put(new LatLonPoint.Double(lat, lon, false), thisAlt);
             } catch(NumberFormatException ex) {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Cannot parse \"" + s + "\" numerically");
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Cannot parse \"" + trimmed + "\" numerically");
             }
         }
         if(null == progressSupport) {
@@ -162,7 +175,8 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         String prefix = PropUtils.getScopedPropertyPrefix(this);
 
         props.put(prefix + "class", this.getClass().getName());
-        props.put(prefix + altMProperty, altitudeM);
+        props.put(prefix + altProperty, altitude);
+        props.put(prefix + altUnitsProperty, altitudeUnits.getAbbr());
         props.put(prefix + showHorizonsProperty, Boolean.toString(showHorizons));
         props.put(prefix + showViewPointsProperty, Boolean.toString(showViewPoints));
         if(null != canSeeColor) {
@@ -176,14 +190,16 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         props.put(prefix + maxRangeKMProperty, maxRangeKM);
 
         StringBuilder vp_prop = new StringBuilder();
-        for(int i = 0; i < viewPoints.size(); i++) {
-            LatLonPoint vp = viewPoints.get(i);
-            if(i > 0) {
-                vp_prop.append(";");
-            }
+        for(Entry<LatLonPoint, Double> ent : viewPoints.entrySet()) {
+            LatLonPoint vp = ent.getKey();
+            Double thisAlt = ent.getValue();
+            
             vp_prop.append(vp.getLatitude());
             vp_prop.append(",");
             vp_prop.append(vp.getLongitude());
+            vp_prop.append(",");
+            vp_prop.append(thisAlt);
+            vp_prop.append(";");
         }
         props.put(prefix + viewPointsProperty, vp_prop.toString());
 
@@ -194,7 +210,8 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
     public Properties getPropertyInfo(Properties list) {
         list = super.getPropertyInfo(list);
 
-        list.put(altMProperty, "Altitude of viewpoints, in meters");
+        list.put(altProperty, "Default altitude for viewpoints, MSL");
+        list.put(altUnitsProperty, "Units for altitude");
         list.put(showHorizonsProperty, "Whether to indicate horizons");
         list.put(showViewPointsProperty, "Whether to indicate viewpoints");
         list.put(canSeeColorProperty, "Color to indicate if a point can be seen.");
@@ -202,7 +219,7 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         list.put(dtedLevelProperty, "DTED Level");
         list.put(dtedDirProperty, "DTED data directory");
         list.put(maxRangeKMProperty, "Maximum sensor range, in KM");
-        list.put(viewPointsProperty, "Semicolon-separated list of lat,lon pairs");
+        list.put(viewPointsProperty, "Semicolon-separated list of lat,lon pairs with option ',alt' suffix");
         
         return list;
     }
@@ -211,16 +228,18 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         OMGraphicList l = new OMGraphicList();
         
         if(showHorizons) {
-            final double horizonKM = Length.KM.fromRadians(calculateHorizonDistRad());
-            for (LatLonPoint tLoc : viewPoints) {
-                OMCircle circ = new OMCircle(tLoc.getLatitude(), tLoc.getLongitude(), horizonKM, Length.KM);
+            for(Entry<LatLonPoint, Double> ent : viewPoints.entrySet()) {
+                LatLonPoint vp = ent.getKey();
+                Double thisAlt = ent.getValue();
+                final double horizonKM = Length.KM.fromRadians(calculateHorizonDistRad(thisAlt));
+                OMCircle circ = new OMCircle(vp.getLatitude(), vp.getLongitude(), horizonKM, Length.KM);
                 circ.setLinePaint(Color.BLACK);
                 l.add(circ);
             }
         }
         if(showViewPoints) {
-            for (LatLonPoint tLoc : viewPoints) {
-                OMPoint p = new OMPoint(tLoc.getLatitude(), tLoc.getLongitude());
+            for(LatLonPoint vp : viewPoints.keySet()) {
+                OMPoint p = new OMPoint(vp.getLatitude(), vp.getLongitude());
                 l.add(p);
             }
         }
@@ -233,8 +252,9 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
     public Component getGUI() {
         JPanel pan = new JPanel(new GridLayout(0, 2, 2, 2));
         
-        pan.add(new JLabel("Altitude (M)"));
-        final JSpinner altSpinner = new JSpinner(new SpinnerNumberModel(altitudeM, 0.0, 10000.0, 20.0));
+        final JButton setAltsButton = new JButton("Set all viewpoint alts to (" + altitudeUnits.getAbbr() + "):");
+        pan.add(setAltsButton);
+        final JSpinner altSpinner = new JSpinner(new SpinnerNumberModel(altitude, 0.0, 10000.0, 1.0));
         pan.add(altSpinner);
         
         pan.add(new JLabel("Max Range (KM)"));
@@ -249,10 +269,20 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         final JCheckBox showViewPointsCB = new JCheckBox((String)null, showViewPoints);
         pan.add(showViewPointsCB);
         
+        ActionListener altAl = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Double newAlt = (Double)altSpinner.getValue();
+                for(LatLonPoint vp : viewPoints.keySet()) {
+                    viewPoints.put(vp, newAlt);
+                }
+                doPrepare();
+            }
+        };
+        setAltsButton.addActionListener(altAl);
+        
         final ChangeListener cl = new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 maxRangeKM = (Double)maxRangeSpinner.getValue();
-                altitudeM = (Double)altSpinner.getValue();
                 doPrepare();
             }
         };
@@ -264,7 +294,6 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
             }
         };
         
-        altSpinner.addChangeListener(cl);
         maxRangeSpinner.addChangeListener(cl);
         showHorizonCB.addActionListener(al);
         showViewPointsCB.addActionListener(al);
@@ -317,7 +346,11 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
                 if(elevation > 0) {
                     int losCount = 0;
 
-                    for (LatLonPoint oneVP : viewPoints) {
+                    for (Entry<LatLonPoint, Double> ent : viewPoints.entrySet()) {
+                        LatLonPoint oneVP = ent.getKey();
+                        Double thisAlt = ent.getValue();
+                        double thisAltM = Length.METER.fromRadians(altitudeUnits.toRadians(thisAlt));
+                        
                         final double distanceRad = oneVP.distance(testp);
                         
                         if(distanceRad > maxRangeRad) {
@@ -331,7 +364,7 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
                                         Math.pow(tXY.getY() - xyp.getY(), 2)
                                 ) / 5);
                         
-                        if (los.isLOS(oneVP, (int) altitudeM, false, testp, 0,
+                        if (los.isLOS(oneVP, (int) thisAltM, false, testp, 0,
                                 (int) numPixBetween)) {
                             losCount++;
                             // If one can see, that's sufficient for this layer's see/not see metric
@@ -361,8 +394,8 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         System.out.println("Last Render, " + seenPoints + "/" + checkedPoints + " points seen/total");
     }
 
-    private double calculateHorizonDistRad() {
-        final double horizonDistM = Math.sqrt((2 * Planet.wgs84_earthEquatorialRadiusMeters_D * altitudeM) + (altitudeM * altitudeM));
+    private double calculateHorizonDistRad(Double alt) {
+        final double horizonDistM = Math.sqrt((2 * Planet.wgs84_earthEquatorialRadiusMeters_D * alt) + (alt * alt));
         final double horizonDistRad = Length.METER.toRadians(horizonDistM);
         return horizonDistRad;
     }
