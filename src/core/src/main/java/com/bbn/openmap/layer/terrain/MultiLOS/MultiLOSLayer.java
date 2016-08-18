@@ -48,14 +48,17 @@ import javax.swing.SpinnerNumberModel;
  # Altitude is MSL. This is the default altitude if it is not specified on a viewpoint
  multilos.altitude=500
  multilos.altitudeUnits=M
- # Max viable sensor distance, in KM
- multilos.maxRangeKM=200
+ # Max viable sensor distance
+ # This is the default range if it is not specified on a viewpoint
+ multilos.maxRange=200
+ multilos.maxRangeUnits=KM
  # viewpoints: Semicolon-separated list of lat,lon pairs separated by commas.
  # lat,lon[,alt[,sensorRange]]
  multilos.viewPoints=22.3,116.0;24.3,119.7,100,1000
- # Whether to outline horizons, and show view points
+ # Whether to indicate viewpoint properties
  multilos.showHorizons=TRUE
  multilos.showViewPoints=TRUE
+ multilos.showMaxRanges=TRUE
  # color of fill. Leaving out means we won't fill that type [canSee or canNotSee]
  multilos.canSeeColor=4400ff00
  multilos.canNotSeeColor=44ff0000
@@ -69,11 +72,7 @@ import javax.swing.SpinnerNumberModel;
  * @author Gary Briggs 
  */
 public class MultiLOSLayer extends OMGraphicHandlerLayer {
-
-    // Properties from the user
-    double altitude = 500.0;
-    Length altitudeUnits = Length.METER;
-    
+    // Class that represents a viewpoint
     private class MultiLOSViewPoint {
         LatLonPoint p;
         double altitude;
@@ -101,6 +100,9 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         
     };
     
+    // Properties from the user
+    double altitude = 500.0;
+    Length altitudeUnits = Length.METER;
     List<MultiLOSViewPoint> viewPoints = new ArrayList<MultiLOSViewPoint>();
     boolean showHorizons = true;
     boolean showViewPoints = true;
