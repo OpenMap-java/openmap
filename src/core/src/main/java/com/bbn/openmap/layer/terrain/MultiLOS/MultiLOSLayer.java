@@ -55,6 +55,9 @@ import javax.swing.SpinnerNumberModel;
  # viewpoints: Semicolon-separated list of lat,lon pairs separated by commas.
  # lat,lon[,alt[,sensorRange]]
  multilos.viewPoints=22.3,116.0;24.3,119.7,100,1000
+ # If you don't want to specify a list of viewpoints, use this to specify a series of lines:
+ # semicolon-separated list, StartLat,StartLon,EndLat,EndLon,NumPointsBetweenStartEnd
+ multilos.viewPointLines=
  # Whether to indicate viewpoint properties
  multilos.showHorizons=TRUE
  multilos.showViewPoints=TRUE
@@ -117,6 +120,7 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
     public final static String altProperty = "altitude";
     public final static String altUnitsProperty = "altitudeUnits";
     public final static String viewPointsProperty = "viewPoints";
+    public final static String viewPointLinesProperty = "viewPointLines";
     public final static String showHorizonsProperty = "showHorizons";
     public final static String showViewPointsProperty = "showViewPoints";
     public final static String showMaxRangesProperty = "showMaxRanges";
@@ -169,36 +173,77 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
             canNotSeeColor = PropUtils.parseColor(cnsc, true);
         }
         
-        // Viewpoints are semicolon-separated lat,lon pairs separated by commas
         viewPoints = new ArrayList<MultiLOSViewPoint>();
+        
+        // Viewpoints are semicolon-separated lat,lon pairs separated by commas
         String viewPointSource = props.getProperty(realPrefix + viewPointsProperty, null);
-        String[] viewPointStrings = viewPointSource.split(";");
-        for(String s : viewPointStrings) {
-            String trimmed = s.trim();
-            if(0 == trimmed.length()) {
-                continue;
-            }
-            String[] oneLL = trimmed.split(",");
-            if(oneLL.length < 2) {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Error parsing \"" + trimmed + "\": must have at least lat,lon ");
-                continue;
-            }
-            try {
-                Double lat = Double.valueOf(oneLL[0]);
-                Double lon = Double.valueOf(oneLL[1]);
-                double thisAlt = altitude;
-                double thisMaxRange = maxRange;
-                if(3 <= oneLL.length) {
-                    thisAlt = Double.valueOf(oneLL[2]);
+        if(null != viewPointSource) {
+            String[] viewPointStrings = viewPointSource.split(";");
+            for(String s : viewPointStrings) {
+                String trimmed = s.trim();
+                if(0 == trimmed.length()) {
+                    continue;
                 }
-                if(4 <= oneLL.length) {
-                    thisMaxRange = Double.valueOf(oneLL[3]);
+                String[] oneLL = trimmed.split(",");
+                if(oneLL.length < 2) {
+                    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Error parsing \"" + trimmed + "\": must have at least lat,lon ");
+                    continue;
                 }
-                viewPoints.add(new MultiLOSViewPoint(new LatLonPoint.Double(lat, lon, false), thisAlt, thisMaxRange));
-            } catch(NumberFormatException ex) {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Cannot parse \"" + trimmed + "\" numerically");
+                try {
+                    Double lat = Double.valueOf(oneLL[0]);
+                    Double lon = Double.valueOf(oneLL[1]);
+                    double thisAlt = altitude;
+                    double thisMaxRange = maxRange;
+                    if(3 <= oneLL.length) {
+                        thisAlt = Double.valueOf(oneLL[2]);
+                    }
+                    if(4 <= oneLL.length) {
+                        thisMaxRange = Double.valueOf(oneLL[3]);
+                    }
+                    viewPoints.add(new MultiLOSViewPoint(new LatLonPoint.Double(lat, lon, false), thisAlt, thisMaxRange));
+                } catch(NumberFormatException ex) {
+                    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Cannot parse \"" + trimmed + "\" numerically");
+                }
             }
         }
+        
+        
+        String viewPointLinesSource = props.getProperty(realPrefix + viewPointLinesProperty, null);
+        if(null != viewPointLinesSource) {
+            for(String oneViewPointLine : viewPointLinesSource.split(";")) {
+                String trimmed = oneViewPointLine.trim();
+                if(0 == trimmed.length()) {
+                    continue;
+                }
+                String[] linePieces = trimmed.split(",");
+                if(5 != linePieces.length) {
+                    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "ViewPointsLine \"" + trimmed + "\" must be formatted l,l,l,l,n");
+                    continue;
+                }
+
+                try {
+                    Double startLat = Double.valueOf(linePieces[0]);
+                    Double startLon = Double.valueOf(linePieces[1]);
+                    Double endLat = Double.valueOf(linePieces[2]);
+                    Double endLon = Double.valueOf(linePieces[3]);
+                    // Always do the two end points. Bonus: we can skip worrying about div0
+                    int piececnt = 2 + Integer.valueOf(linePieces[4]);
+
+                    double dLat = ((endLat-startLat)/piececnt);
+                    double dLon = ((endLon-startLon)/piececnt);
+
+                    for(int i = 0; i < piececnt; i++) {
+                        double lat = startLat + (i * dLat);
+                        double lon = startLon + (i * dLon);
+                        LatLonPoint.Double p = new LatLonPoint.Double(lat, lon, false);
+                        viewPoints.add(new MultiLOSViewPoint(p, altitude, maxRange));
+                    }
+                } catch(NumberFormatException ex) {
+                    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Cannot parse \"" + trimmed + "\" numerically");
+                }
+            }
+        }
+        
         if(null == progressSupport) {
             progressSupport = new ProgressSupport(this);
             progressSupport.add(new ProgressListenerGauge("MultiLOS"));
