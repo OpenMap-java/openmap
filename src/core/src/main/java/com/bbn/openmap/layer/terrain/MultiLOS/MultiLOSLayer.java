@@ -4,13 +4,12 @@ import java.awt.geom.Point2D;
 
 import com.bbn.openmap.dataAccess.dted.DTEDDirectoryHandler;
 import com.bbn.openmap.dataAccess.dted.DTEDFrameCache;
-import com.bbn.openmap.event.ProgressSupport;
-import com.bbn.openmap.gui.ProgressListenerGauge;
 import com.bbn.openmap.layer.OMGraphicHandlerLayer;
 import com.bbn.openmap.omGraphics.OMCircle;
 import com.bbn.openmap.omGraphics.OMColor;
 import com.bbn.openmap.omGraphics.OMGraphicList;
 import com.bbn.openmap.omGraphics.OMPoint;
+import com.bbn.openmap.omGraphics.OMText;
 import com.bbn.openmap.proj.Length;
 import com.bbn.openmap.proj.Planet;
 import com.bbn.openmap.proj.Projection;
@@ -33,6 +32,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * An OpenMap Layer to display an LOS map for a number of viewpoints, from a given altitude
@@ -62,6 +63,13 @@ import javax.swing.SpinnerNumberModel;
  multilos.showHorizons=TRUE
  multilos.showViewPoints=TRUE
  multilos.showMaxRanges=TRUE
+ multilos.showNumberPoints=TRUE
+ # LOS is calculated per-screen-point, with
+ #  n_samples = pixels_between_viewpoint_and_screen_point / pixelSkip
+ # Number of pixels per point - high numbers are faster/lower resolution. don't go below 1
+ multilos.pixelsPerPoint=2
+ # Multiplier to make rendering faster but less accurate. 1 == "slowest, most accurate"
+ multilos.pixelSkip=3
  # color of fill. Leaving out means we won't fill that type [canSee or canNotSee]
  multilos.canSeeColor=4400ff00
  multilos.canNotSeeColor=44ff0000
@@ -110,8 +118,11 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
     boolean showHorizons = true;
     boolean showViewPoints = true;
     boolean showMaxRanges = true;
+    boolean showNumberPoints = true;
     String dtedDir = "/data/dted/dted0";
     int dtedLevel = 0;
+    int pixelsPerPoint = 2;
+    double pixelSkip = 2.0;
     Color canSeeColor = new Color(0, 255, 0, 100);
     Color canNotSeeColor = null;
     double maxRange = 200;
@@ -130,10 +141,12 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
     public final static String dtedDirProperty = "dtedDir";
     public final static String maxRangeProperty = "maxRange";
     public final static String maxRangeUnitsProperty = "maxRangeUnits";
+    public final static String pixelsPerPointProperty = "pixelsPerPoint";
+    public final static String pixelSkipProperty = "pixelSkip";
+    public final static String showNumberPointsProperty = "showNumberPoints";
     
     // Internal use only members
     DTEDFrameCache dted;
-    ProgressSupport progressSupport = null;
     
     public MultiLOSLayer() {
         dted = new DTEDFrameCache();
@@ -152,7 +165,11 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         showHorizons = PropUtils.booleanFromProperties(props, realPrefix + showHorizonsProperty, showHorizons);
         showMaxRanges = PropUtils.booleanFromProperties(props, realPrefix + showMaxRangesProperty, showMaxRanges);
         showViewPoints = PropUtils.booleanFromProperties(props, realPrefix + showViewPointsProperty, showViewPoints);
-       
+        showNumberPoints = PropUtils.booleanFromProperties(props, realPrefix + showNumberPointsProperty, showNumberPoints);
+        
+        pixelSkip = PropUtils.doubleFromProperties(props, realPrefix + pixelSkipProperty, pixelSkip);
+        pixelsPerPoint = Math.max(1, PropUtils.intFromProperties(props, realPrefix + pixelsPerPointProperty, pixelsPerPoint));
+        
         dtedLevel = PropUtils.intFromProperties(props, realPrefix + dtedLevelProperty, dtedLevel);
         dtedDir = props.getProperty(realPrefix + dtedDirProperty, dtedDir);
         dted.addDTEDDirectoryHandler(new DTEDDirectoryHandler(dtedDir));
@@ -243,11 +260,6 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
                 }
             }
         }
-        
-        if(null == progressSupport) {
-            progressSupport = new ProgressSupport(this);
-            progressSupport.add(new ProgressListenerGauge("MultiLOS"));
-        }
     }
     
     @Override
@@ -259,6 +271,9 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         props.put(prefix + "class", this.getClass().getName());
         props.put(prefix + altProperty, altitude);
         props.put(prefix + altUnitsProperty, altitudeUnits.getAbbr());
+        props.put(prefix + showNumberPointsProperty, Boolean.toString(showNumberPoints));
+        props.put(prefix + pixelSkipProperty, pixelSkip);
+        props.put(prefix + pixelsPerPointProperty, pixelsPerPoint);
         props.put(prefix + showHorizonsProperty, Boolean.toString(showHorizons));
         props.put(prefix + showMaxRangesProperty, Boolean.toString(showMaxRanges));
         props.put(prefix + showViewPointsProperty, Boolean.toString(showViewPoints));
@@ -292,10 +307,13 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         list.put(showHorizonsProperty, "Whether to indicate horizons");
         list.put(showMaxRangesProperty, "Whether to indicate max ranges");
         list.put(showViewPointsProperty, "Whether to indicate viewpoints");
+        list.put(showNumberPointsProperty, "Whether to indicate numbers next to points");
         list.put(canSeeColorProperty, "Color to indicate if a point can be seen.");
         list.put(canNotSeeColorProperty, "Color to indicate if a point cannot be seen. Leave blank to not include points");
         list.put(dtedLevelProperty, "DTED Level");
         list.put(dtedDirProperty, "DTED data directory");
+        list.put(pixelsPerPointProperty, "Pixels per point");
+        list.put(pixelsPerPointProperty, "Pixel Skip");
         list.put(maxRangeProperty, "Maximum sensor range");
         list.put(maxRangeUnitsProperty, "Maximum sensor range units");
         list.put(viewPointsProperty, "Semicolon-separated list of lat,lon pairs with option ',alt' suffix");
@@ -327,10 +345,15 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
             }
         }
         if(showViewPoints) {
-            for(MultiLOSViewPoint mlvp : viewPoints) {
+            for(int i = 0; i < viewPoints.size(); i++) {
+                MultiLOSViewPoint mlvp = viewPoints.get(i);
                 LatLonPoint vp = mlvp.p;
                 OMPoint p = new OMPoint(vp.getLatitude(), vp.getLongitude());
                 l.add(p);
+                if(showNumberPoints) {
+                    OMText t = new OMText(vp.getLatitude(), vp.getLongitude(), Integer.toString(i), OMText.JUSTIFY_LEFT);
+                    l.add(t);
+                }
             }
         }
         createMultiLOS(l);
@@ -344,13 +367,25 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         
         final JButton setAltsButton = new JButton("Set all viewpoint alts to (" + altitudeUnits.getAbbr() + "):");
         pan.add(setAltsButton);
-        final JSpinner altSpinner = new JSpinner(new SpinnerNumberModel(altitude, 0.0, 10000.0, 1.0));
+        final SpinnerNumberModel altSpinnerModel = new SpinnerNumberModel(altitude, 0.0, 1000000.0, 1.0);
+        final JSpinner altSpinner = new JSpinner(altSpinnerModel);
         pan.add(altSpinner);
         
         final JButton setRangesButton = new JButton("Set all viewpoint ranges to (" + maxRangeUnits.getAbbr() + "):");
         pan.add(setRangesButton);
-        final JSpinner maxRangeSpinner = new JSpinner(new SpinnerNumberModel(maxRange, 0.0, 10000.0, 20.0));
+        final SpinnerNumberModel maxRangeSpinnerModel = new SpinnerNumberModel(maxRange, 0.0, 1000000.0, 20.0);
+        final JSpinner maxRangeSpinner = new JSpinner(maxRangeSpinnerModel);
         pan.add(maxRangeSpinner);
+        
+        pan.add(new JLabel("Pixel Skip"));
+        final SpinnerNumberModel pixelSkipSpinnerModel = new SpinnerNumberModel(pixelSkip, 0.01, 1000.0, 1);
+        final JSpinner pixelSkipSpinner = new JSpinner(pixelSkipSpinnerModel);
+        pan.add(pixelSkipSpinner);
+        
+        pan.add(new JLabel("Pixels per Point"));
+        final SpinnerNumberModel pixelsPerPointSpinnerModel = new SpinnerNumberModel(pixelsPerPoint, 1, 1000, 1);
+        final JSpinner pixelPerPointSpinner = new JSpinner(pixelsPerPointSpinnerModel);
+        pan.add(pixelPerPointSpinner);
         
         pan.add(new JLabel("Show horizons"));
         final JCheckBox showHorizonCB = new JCheckBox((String)null, showHorizons);
@@ -364,9 +399,13 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         final JCheckBox showViewPointsCB = new JCheckBox((String)null, showViewPoints);
         pan.add(showViewPointsCB);
         
+        pan.add(new JLabel("Show Point Numbering"));
+        final JCheckBox showNumberPointsCB = new JCheckBox((String)null, showNumberPoints);
+        pan.add(showNumberPointsCB);
+        
         ActionListener altAl = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Double newAlt = (Double)altSpinner.getValue();
+                Double newAlt = altSpinnerModel.getNumber().doubleValue();
                 for(MultiLOSViewPoint mlvp : viewPoints) {
                     mlvp.altitude = newAlt;
                 }
@@ -377,7 +416,7 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         
         ActionListener rangeAl = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Double newMaxRange = (Double)maxRangeSpinner.getValue();
+                Double newMaxRange = maxRangeSpinnerModel.getNumber().doubleValue();
                 for(MultiLOSViewPoint mlvp : viewPoints) {
                     mlvp.maxRange = newMaxRange;
                 }
@@ -388,6 +427,7 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
 
         final ActionListener al = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                showNumberPoints = showNumberPointsCB.isSelected();
                 showHorizons = showHorizonCB.isSelected();
                 showMaxRanges = showMaxRangesCB.isSelected();
                 showViewPoints = showViewPointsCB.isSelected();
@@ -395,6 +435,17 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
             }
         };
         
+        final ChangeListener spinnerListener = new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                pixelsPerPoint = pixelsPerPointSpinnerModel.getNumber().intValue();
+                pixelSkip = pixelSkipSpinnerModel.getNumber().doubleValue();
+                doPrepare();
+            }
+        };
+        pixelPerPointSpinner.addChangeListener(spinnerListener);
+        pixelSkipSpinner.addChangeListener(spinnerListener);
+        
+        showNumberPointsCB.addActionListener(al);
         showHorizonCB.addActionListener(al);
         showMaxRangesCB.addActionListener(al);
         showViewPointsCB.addActionListener(al);
@@ -406,31 +457,12 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
 
         Projection proj = getProjection();
         
-        Point2D ll1 = proj.getUpperLeft();
-        Point2D ll2 = proj.getLowerRight();
-        
-        double dLon = (ll2.getX() - ll1.getX()) / (proj.getWidth() / 4);
-        double dLat = (ll1.getY() - ll2.getY()) / (proj.getHeight() / 4);
-        
         int checkedPoints = 0;
         int seenPoints = 0;
         
-        final int maxProgress = (int) ((ll2.getX() - ll1.getX())/dLon);
-        int currProgress = 0;
-        final String taskName = "MultiLOS Render";
-//        progressSupport.fireUpdate(ProgressEvent.START, taskName, currProgress, maxProgress);
-        for (double testLon = ll1.getX(); testLon < ll2.getX(); testLon+=dLon) {
-            currProgress++;
-            // Need it to be final so it can be seen from the inner subclass
-//            final int progress = currProgress;
-//            SwingUtilities.invokeLater(new Runnable() {
-//                public void run() {
-//                    progressSupport.fireUpdate(ProgressEvent.UPDATE, taskName, progress, maxProgress);
-//                }
-//            });
-            
-            for (double testLat = ll2.getY(); testLat < ll1.getY(); testLat+=dLat) {
-                
+        for (int x = 0; x < proj.getWidth(); x+=pixelsPerPoint) {
+//            System.out.println(String.format("MultiLOS Render: %d/%d", x, proj.getWidth()));
+            for (int y = 0; y < proj.getHeight(); y+=pixelsPerPoint) {
                 if(Thread.currentThread().isInterrupted()) {
                     // eg, if we're mid-render and someone moves the map again
                     return;
@@ -438,8 +470,10 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
                 
                 checkedPoints++;
                 
-                LatLonPoint testp = new LatLonPoint.Double(testLat, testLon);
-                Point2D xyp = proj.forward(testp);
+                LatLonPoint testp = new LatLonPoint.Double();
+                proj.inverse(x, y, testp);
+                double testLat = testp.getLatitude();
+                double testLon = testp.getLongitude();
                 
                 int elevation = dted.getElevation((float) testLat, (float) testLon, dtedLevel);
                 if(elevation > 0) {
@@ -462,9 +496,9 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
 //                        
                         Point2D tXY = proj.forward(oneVP.getLatitude(), oneVP.getLongitude());
                         int numPixBetween = (int) (Math.sqrt(
-                                Math.pow(tXY.getX() - xyp.getX(), 2) +
-                                        Math.pow(tXY.getY() - xyp.getY(), 2)
-                                ) / 5);
+                                Math.pow(tXY.getX() - x, 2) +
+                                        Math.pow(tXY.getY() - y, 2)
+                                ) / pixelSkip);
                         
                         if (los.isLOS(oneVP, (int) thisAltM, false, testp, 0,
                                 (int) numPixBetween)) {
@@ -478,6 +512,7 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
                         OMPoint p = new OMPoint(testLat, testLon);
                         p.setLinePaint(OMColor.clear);
                         p.setFillPaint(canSeeColor);
+                        p.setRadius(pixelsPerPoint / 2);
                         l.add(p);
                         seenPoints++;
                     } else if(0 == losCount && null != canNotSeeColor) {
