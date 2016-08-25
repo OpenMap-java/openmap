@@ -367,24 +367,20 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         
         final JButton setAltsButton = new JButton("Set all viewpoint alts to (" + altitudeUnits.getAbbr() + "):");
         pan.add(setAltsButton);
-        final SpinnerNumberModel altSpinnerModel = new SpinnerNumberModel(altitude, 0.0, 1000000.0, 1.0);
-        final JSpinner altSpinner = new JSpinner(altSpinnerModel);
+        final JSpinner altSpinner = new JSpinner(new SpinnerNumberModel(altitude, 0.0, 1000000.0, 1.0));
         pan.add(altSpinner);
         
         final JButton setRangesButton = new JButton("Set all viewpoint ranges to (" + maxRangeUnits.getAbbr() + "):");
         pan.add(setRangesButton);
-        final SpinnerNumberModel maxRangeSpinnerModel = new SpinnerNumberModel(maxRange, 0.0, 1000000.0, 20.0);
-        final JSpinner maxRangeSpinner = new JSpinner(maxRangeSpinnerModel);
+        final JSpinner maxRangeSpinner = new JSpinner(new SpinnerNumberModel(maxRange, 0.0, 1000000.0, 20.0));
         pan.add(maxRangeSpinner);
         
         pan.add(new JLabel("Pixel Skip"));
-        final SpinnerNumberModel pixelSkipSpinnerModel = new SpinnerNumberModel(pixelSkip, 0.01, 1000.0, 1);
-        final JSpinner pixelSkipSpinner = new JSpinner(pixelSkipSpinnerModel);
+        final JSpinner pixelSkipSpinner = new JSpinner(new SpinnerNumberModel(pixelSkip, 0.01, 1000.0, 1));
         pan.add(pixelSkipSpinner);
         
         pan.add(new JLabel("Pixels per Point"));
-        final SpinnerNumberModel pixelsPerPointSpinnerModel = new SpinnerNumberModel(pixelsPerPoint, 1, 1000, 1);
-        final JSpinner pixelPerPointSpinner = new JSpinner(pixelsPerPointSpinnerModel);
+        final JSpinner pixelPerPointSpinner = new JSpinner(new SpinnerNumberModel(pixelsPerPoint, 1, 1000, 1));
         pan.add(pixelPerPointSpinner);
         
         pan.add(new JLabel("Show horizons"));
@@ -405,7 +401,7 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         
         ActionListener altAl = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Double newAlt = altSpinnerModel.getNumber().doubleValue();
+                Double newAlt = ((SpinnerNumberModel)altSpinner.getModel()).getNumber().doubleValue();
                 for(MultiLOSViewPoint mlvp : viewPoints) {
                     mlvp.altitude = newAlt;
                 }
@@ -416,7 +412,7 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         
         ActionListener rangeAl = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Double newMaxRange = maxRangeSpinnerModel.getNumber().doubleValue();
+                Double newMaxRange = ((SpinnerNumberModel)maxRangeSpinner.getModel()).getNumber().doubleValue();
                 for(MultiLOSViewPoint mlvp : viewPoints) {
                     mlvp.maxRange = newMaxRange;
                 }
@@ -437,8 +433,8 @@ public class MultiLOSLayer extends OMGraphicHandlerLayer {
         
         final ChangeListener spinnerListener = new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                pixelsPerPoint = pixelsPerPointSpinnerModel.getNumber().intValue();
-                pixelSkip = pixelSkipSpinnerModel.getNumber().doubleValue();
+                pixelsPerPoint = ((SpinnerNumberModel)pixelPerPointSpinner.getModel()).getNumber().intValue();
+                pixelSkip = ((SpinnerNumberModel)pixelSkipSpinner.getModel()).getNumber().doubleValue();
                 doPrepare();
             }
         };
