@@ -106,8 +106,8 @@ public abstract class AbstractMapTileCoordinateTransform implements MapTileCoord
      * @return the zoom level.
      */
     public int getZoomLevelForProj(Projection proj, int zoomLevelTileSize) {
-        int low = 1;
-        int high = 20;
+        int low = getMinZoomLevelForProj();
+        int high = getMaxZoomLevelForProj();
 
         int ret = low;
         for (int currentZoom = low; currentZoom <= high; currentZoom++) {
@@ -134,6 +134,26 @@ public abstract class AbstractMapTileCoordinateTransform implements MapTileCoord
         }
 
         return ret;
+    }
+
+    /**
+     * Returns the minimum zoom level for calculating the appropriate zoom
+     * level.
+     * 
+     * @return minimum zoom level
+     */
+    protected int getMinZoomLevelForProj() {
+        return 1;
+    }
+
+    /**
+     * Returns the maximum zoom level for calculating the appropriate zoom
+     * level.
+     * 
+     * @return maximum zoom level
+     */
+    protected int getMaxZoomLevelForProj() {
+        return 20;
     }
 
     /**
