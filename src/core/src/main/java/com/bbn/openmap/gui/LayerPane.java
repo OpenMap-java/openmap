@@ -57,6 +57,7 @@ import com.bbn.openmap.util.I18n;
  * and a toggle button with the layer name.
  * <P>
  */
+@SuppressWarnings("serial")
 public class LayerPane extends JPanel implements Serializable, ActionListener, ComponentListener {
 
 	public static Logger logger = Logger.getLogger("com.bbn.openmap.gui.LayerPane");
@@ -122,9 +123,13 @@ public class LayerPane extends JPanel implements Serializable, ActionListener, C
 		layerName = new JToggleButton(layer.getName());
 		layerName.setBorderPainted(false);
 		layerName.addActionListener(this);
-
+		
 		offColor = layerName.getBackground();
-		layerName.setToolTipText(i18n.get(LayerPane.class, "layerName.tooltip", "Click to select layer"));
+		Object layerDescription = layer.getAttribute(Layer.ToolTipProperty);
+		if (layerDescription == null) {
+			layerDescription = i18n.get(LayerPane.class, "layerName.tooltip", "Click to select layer");
+		}
+		layerName.setToolTipText(layerDescription.toString());
 		layerName.setHorizontalAlignment(SwingConstants.LEFT);
 		bg.add(layerName);
 
